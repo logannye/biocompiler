@@ -2,19 +2,19 @@
 
 This roadmap turns the current semantic foundation into a reproducible compiler path, using **exact, published coding-sequence (CDS) references** for the first molecular benchmarks. Completed tasks below identify implemented, scoped capabilities; unchecked tasks remain planned work. This is the authoritative roadmap. Task IDs are stable so implementation PRs can cite them and mark individual items complete.
 
-Implementation foundation updated on 2026-09-29, developed from commit `4b94cb3` (expanded roadmap baseline):
+Implementation foundation updated on 2026-09-29, with M4 developed from commit `679c7d4` (frozen requests and checked synthetic generation):
 
 | Boundary | Current implementation | Next responsibility |
 | --- | --- | --- |
 | Python → Intent | Typed authoring, frozen versioned BuildRequest and explicit elaboration provenance | Broaden concrete profiles while preserving input authority |
 | Intent → Behavior | Request-authoritative lowering/verification, Behavior IR and reference execution | Continue independent semantic checks |
 | Behavior → Mechanism | Automatic combinational synthetic generation, pinned catalog and independent runner/checker | Temporal and molecular profiles need separate contracts |
-| Mechanism → Components | Minimal versioned synthetic catalog and separate curated CDS references | Full component interfaces, dependency linking and resource accounting |
+| Mechanism → Components | Immutable contracts, offline selection/locks, checked interfaces/domains/providers/resources, synthetic assembly and separate FAP CDS components | Preserve selected components through explicit Construct IR |
 | Components → Construct | Placeholder | Preserve molecular membership, order, orientation, boundaries and relationships |
 | Construct → Molecular specification | DNA/RNA placeholders | Emit and independently check exact scoped sequence artifacts |
 | Molecular specification → Package | Checked in-memory pass manager; molecular manifest remains planned | Package accepted molecular records and reproducible identities |
 
-`compile()` still raises `CompilationUnavailableError`. The synthetic example now generates its candidate automatically. `run_synthetic_pipeline` executes checked Intent → Behavior → synthetic Mechanism passes for its declared finite-history profile. Molecular lowering and sequence emission remain unimplemented.
+`compile()` still raises `CompilationUnavailableError`. The synthetic example now generates its candidate automatically. `run_synthetic_pipeline` executes checked Intent → Behavior → synthetic Mechanism passes for its declared finite-history profile. `run_component_pipeline` additionally checks the synthetic Components stage without broadening the finite-history claim. Molecular lowering and sequence emission remain unimplemented.
 
 ## Development strategy and first deliverables
 
@@ -108,15 +108,17 @@ M0 can proceed alongside M1–M2. M8 is continuous work, not a final testing pha
 
 **Primary modules:** `ir/components.py`, `registry/`, `semantics/`, `models/`, `synthesis/`, `verification/`.
 
-- [ ] **M4.1** Define immutable component records with stable versions/content hashes, typed interfaces, implementation roles, supported targets, model identities, assumptions/guarantees and evidence references. Distinguish a sequence-only reference from a dynamically characterized component.
-- [ ] **M4.2** Express interface meaning, units, role/contact scope, compartment, timing, initialization and parameter provenance. Do not infer compatibility from matching labels or numeric ranges alone.
-- [ ] **M4.3** Check required operating domain ⊆ supported component domain and producer guarantees ⊆ consumer accepted inputs, using a deliberately small first contract language. Report unknown when inclusion cannot be established.
-- [ ] **M4.4** Resolve dependencies to explicit providers: encoded here, another declared payload, host, external supply or unresolved. Detect missing/ambiguous providers and circular justifications of assumptions.
-- [ ] **M4.5** Account for shared resource reservations across the composition, including units, provider capacity, reuse and relevant lifecycle. Define how unknown capacities are represented; absence of a measurement is not unlimited capacity.
-- [ ] **M4.6** Lock registry/model/reference versions before acceptance; make resolution deterministic and runnable offline. Record alternatives considered and why a selection satisfies hard constraints before ranking preferences.
-- [ ] **M4.7** Populate a minimal synthetic component catalog for M3 and a separately classified FAP CDS reference component for M5–M6. Encode only supported sequence identity/structure claims for the latter until a molecular behavioral contract exists.
+- [x] **M4.1** Define immutable component records with stable versions/content hashes, typed interfaces, implementation roles, supported targets, model identities, assumptions/guarantees and evidence references. Distinguish a sequence-only reference from a dynamically characterized component.
+- [x] **M4.2** Express interface meaning, units, role/contact scope, compartment, timing, initialization and parameter provenance. Do not infer compatibility from matching labels or numeric ranges alone.
+- [x] **M4.3** Check required operating domain ⊆ supported component domain and producer guarantees ⊆ consumer accepted inputs, using a deliberately small first contract language. Report unknown when inclusion cannot be established.
+- [x] **M4.4** Resolve dependencies to explicit providers: encoded here, another declared payload, host, external supply or unresolved. Detect missing/ambiguous providers and circular justifications of assumptions.
+- [x] **M4.5** Account for shared resource reservations across the composition, including units, provider capacity, reuse and relevant lifecycle. Define how unknown capacities are represented; absence of a measurement is not unlimited capacity.
+- [x] **M4.6** Lock registry/model/reference versions before acceptance; make resolution deterministic and runnable offline. Record alternatives considered and why a selection satisfies hard constraints before ranking preferences.
+- [x] **M4.7** Populate a minimal synthetic component catalog for M3 and a separately classified FAP CDS reference component for M5–M6. Encode only supported sequence identity/structure claims for the latter until a molecular behavioral contract exists.
 
 **Acceptance:** compatible compositions link; incompatible meaning/scope/compartment, missing providers, unsupported domains, resource over-allocation and stale versions are rejected or explicitly unresolved. Circular assumption chains cannot establish their own guarantees.
+
+Implemented contract limits: Boolean sets, typed closed scalar intervals, exact units and an explicit stateless snapshot timing profile. Provider/capacity declarations remain conditional; unsupported timing or unestablished domains remain unresolved. See [component contracts](component-contracts-v0.1.md) and [component linking](component-linking-v0.1.md).
 
 ## M5 — Preserve selected implementations through Construct IR
 

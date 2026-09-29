@@ -8,7 +8,7 @@ Create a manager with an explicit `TargetContext`, a canonical `request` depende
 
 A `PassContract` pins pass/profile versions, input/output schemas, supported target modalities and operations, capability requirements, consumed requirement IDs, assumptions, introduced obligations, required independent checks, and changed properties. A pass advances exactly one declared stage. `register` requires one provider for every contracted check. Changed providers require a contract version change. Compiler registrations and validator implementations are trusted code and need code review; this API is not a sandbox for malicious plugins.
 
-`run` freezes configuration and dependency identities before calling the producer. The producer returns a `PassResult`, with its candidate, source links and optional observation map. It cannot redefine upstream obligations or supply its own accepted evidence. Empty producer obligation lists do not remove the manager's authoritative obligations. The current destination inventory is an explicit `nodes` array at the contract's declared `operation_path`; strict artifact decoding belongs in the independently registered schema/preservation checks.
+`run` freezes configuration and dependency identities before calling the producer. The producer returns a `PassResult`, with its candidate, source links and optional observation map. It cannot redefine upstream obligations or supply its own accepted evidence. Empty producer obligation lists do not remove the manager's authoritative obligations. The current destination inventory is an explicit `nodes` array at the contract's declared `operation_path`; source inventories use the accepted parent contract's declared path, and strict artifact decoding belongs in the independently registered schema/preservation checks.
 
 Validators receive a `PassContext` containing frozen input and output, target, requirements, source maps, observation map, configuration and dependency identities. Each returns `CheckDecision(pass|fail|unknown|unsupported, detail, evidence)`. All required checks must pass before the stage can be consumed downstream. A source map is correspondence, not a model-based behavioral certificate: every discharge must match the obligation's required evidence kind.
 
@@ -24,9 +24,11 @@ Within a transformation, `changed_properties` records the change. `invalidated_a
 
 ## Scoped completeness
 
-Acceptance of a stage and completion of a requested artifact are different. A `CompletionProfile` declares the terminal stage, exact output schema and required obligation IDs. `result(scope=...)` returns `partial` until that stage and every required obligation for the scope are satisfied. Unresolved obligations in other scopes remain listed even when the requested scope is `complete`.
+Acceptance of a stage and completion of a requested artifact are different. A `CompletionProfile` declares the terminal stage, exact output schema and required obligation IDs. `register_completion_profile` can add a new scope after initialization but cannot replace an existing scope or weaken its promise. `result(scope=...)` returns `partial` until that stage and every required obligation for the scope are satisfied. Unresolved obligations in other scopes remain listed even when the requested scope is `complete`.
 
 For example, exact-CDS identity obligations can eventually be complete while full-payload and empirical biological obligations remain unresolved. There is currently no exact-CDS completion implementation. The first concrete integration is the synthetic finite-history profile, whose success remains conditional on its model, declared domain and exercised history.
+
+`run_component_pipeline` extends the finite-history integration through a third checked pass. The `synthetic_components` scope requires inherited behavior preservation and response checks plus component linkage. Assembly acceptance verifies exact source correspondence as well as generic composition compatibility; a compatible rewired graph is insufficient.
 
 ## Determinism and tests
 

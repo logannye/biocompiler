@@ -329,11 +329,9 @@ class PassManager:
         self._passes = {}
         self._provider_history = {}
         self._records = {}
-        self._profiles = {p.scope: p for p in completion_profiles}
-        require(
-            len(self._profiles) == len(completion_profiles),
-            "Duplicate completion profiles.",
-        )
+        self._profiles = {}
+        for profile in completion_profiles:
+            self.register_completion_profile(profile)
         for key, value in dependencies.items():
             self.set_dependency(key, value)
         if "request" not in self._dependencies:
@@ -343,6 +341,15 @@ class PassManager:
     @property
     def target(self):
         return self._target
+
+    def register_completion_profile(self, profile: CompletionProfile):
+        """Register an additional scope without replacing an existing promise."""
+        require(isinstance(profile, CompletionProfile), "Invalid completion profile.")
+        if profile.scope in self._profiles:
+            raise PipelineError(
+                f"Completion profile {profile.scope!r} is already registered."
+            )
+        self._profiles[profile.scope] = profile
 
     def set_dependency(self, key: str, identity: str):
         name(key, "Dependency name")
@@ -564,9 +571,17 @@ class PassManager:
             raise PipelineError("Invalid source correspondence or pass identity.")
         required = set(source.requirements)
         output_ids = {n.get("id") for n in nodes}
-        input_ids = {n.get("id") for n in source.payload.get("nodes", ())}
-        if "intent" in source.payload:
-            input_ids = {n.get("id") for n in source.payload["intent"].get("nodes", ())}
+        # Accepted stage wrappers may store their operation inventory below
+        # the root (for example SyntheticCandidate.mechanism). Read the same
+        # trusted path used when that parent was accepted.
+        input_inventory = source.payload
+        if source.pass_id is not None:
+            parent_contract = self._passes[source.pass_id][0]
+            for key in parent_contract.operation_path:
+                input_inventory = input_inventory[key]
+        elif "intent" in source.payload:
+            input_inventory = source.payload["intent"]
+        input_ids = {n.get("id") for n in input_inventory.get("nodes", ())}
         if any(
             link.requirement_id not in required
             or link.target_node_id not in output_ids

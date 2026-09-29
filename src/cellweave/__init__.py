@@ -1,6 +1,47 @@
 """Author inspectable therapeutic programs for in-vivo immune-cell engineering."""
 
-__version__ = "0.1.0.dev4"
+__version__ = "0.1.0.dev5"
+
+from cellweave.compiler.components import (
+    ComponentBuild,
+    check_component_assembly,
+    run_component_pipeline,
+)
+from cellweave.ir.component_assembly import ComponentAssembly
+from cellweave.ir.component_contracts import (
+    ComponentRecord,
+    DependencyRequirement,
+    ParameterProvenance,
+    PinnedIdentity,
+    ProvidedCapability,
+    ResourceReservation,
+    SequenceReferenceMetadata,
+)
+from cellweave.ir.composition import (
+    CompositionInstance,
+    CompositionRequest,
+    Connection,
+    DependencyBinding,
+    LifecycleInterval,
+    Provider,
+    ResourceBinding,
+    ResourcePool,
+)
+from cellweave.registry.components import (
+    ComponentRegistry,
+    RegistryLock,
+    SelectionRequest,
+)
+from cellweave.registry.reference_components import (
+    ReferenceSelection,
+    adapt_reference_component,
+)
+from cellweave.semantics.component_contracts import (
+    OperatingDomain as ComponentOperatingDomain,
+    PortContract,
+    ValueDomain,
+)
+from cellweave.verification.components import CompositionResult, check_composition
 
 from cellweave.compiler.behavior import lower_to_behavior, verify_lowering
 from cellweave.compiler.request import (
@@ -124,6 +165,35 @@ from cellweave.verification.realization import (
 )
 
 __all__ = [
+    "ComponentAssembly",
+    "ComponentBuild",
+    "ComponentOperatingDomain",
+    "ComponentRecord",
+    "ComponentRegistry",
+    "CompositionInstance",
+    "CompositionRequest",
+    "CompositionResult",
+    "Connection",
+    "DependencyBinding",
+    "DependencyRequirement",
+    "LifecycleInterval",
+    "ParameterProvenance",
+    "PinnedIdentity",
+    "PortContract",
+    "ProvidedCapability",
+    "Provider",
+    "ReferenceSelection",
+    "RegistryLock",
+    "ResourceBinding",
+    "ResourcePool",
+    "ResourceReservation",
+    "SelectionRequest",
+    "SequenceReferenceMetadata",
+    "ValueDomain",
+    "adapt_reference_component",
+    "check_component_assembly",
+    "check_composition",
+    "run_component_pipeline",
     "SyntheticBuild",
     "SyntheticCandidate",
     "SyntheticGeneratorConfig",

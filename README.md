@@ -2,11 +2,11 @@
 
 A compiler architecture for turning an immune cell engineer's Python-authored intent into an exact, traceable DNA or RNA payload specification.
 
-**Status: frozen build requests, checked passes, automatic synthetic generation and curated CDS references, v0.1 alpha.** Author cell roles, recognition, actions, temporal logic, memory, states, feedback, and communication; export immutable, typed intent graphs as JSON. Checked lowering preserves source requirements in Behavior IR. A reference evaluator executes supported behavior against supplied histories. Explicit response contracts can now be checked against an independently executed synthetic candidate model, producing scoped results, counterexamples, and dependency identities. Frozen requests make input bindings authoritative. A checked pass manager generates a narrow combinational synthetic implementation and verifies it independently. A small offline catalog locks synthetic operators; separately curated FAP-CAR references pin exact CDS expectations. Molecular lowering, full component linking, sequence generation and biological simulation remain future work.
+**Status: checked synthetic generation, component linking and curated CDS references, v0.1 alpha.** Author cell roles, recognition, actions, temporal logic, memory, states, feedback, and communication; export immutable, typed intent graphs as JSON. Checked lowering preserves source requirements in Behavior IR. A reference evaluator executes supported behavior against supplied histories. Explicit response contracts can now be checked against an independently executed synthetic candidate model, producing scoped results, counterexamples, and dependency identities. Frozen requests make input bindings authoritative. A checked pass manager generates a narrow combinational synthetic implementation and verifies it independently. An offline registry locks typed component contracts, models and evidence. The linker checks interface meaning, operating domains, providers and shared resource reservations; separately classified FAP-CAR references pin exact CDS expectations. Construct assembly, molecular lowering, sequence generation and biological simulation remain future work.
 
 ## Planned compiler stack
 
-CellWeave is designed to turn a description of **what an engineered immune cell should do** into an exact specification of **what its genetic payload must contain**. Each layer resolves more implementation detail while carrying the original requirements forward. The diagram shows the intended architecture. Python authoring, frozen requests, intent/behavior graphs, checked passes, abstract execution and automatic combinational synthetic realization are implemented; molecular realization and payload emission remain planned.
+CellWeave is designed to turn a description of **what an engineered immune cell should do** into an exact specification of **what its genetic payload must contain**. Each layer resolves more implementation detail while carrying the original requirements forward. The diagram shows the intended architecture. Python authoring, frozen requests, intent/behavior graphs, checked passes, abstract execution, automatic combinational synthetic realization and component linking are implemented; molecular realization and payload emission remain planned.
 
 ```mermaid
 flowchart LR
@@ -121,6 +121,12 @@ Freeze `BuildRequest` before lowering, then bind the authored response contract 
 
 The [request contract](docs/build-requests-v0.1.md), [pass manager](docs/pass-manager-v0.1.md) and [supported synthetic profile](docs/synthetic-profile-v0.1.md) describe the acceptance boundaries. When verifying legacy `lower_to_behavior(intent, parameters=...)` output, retain the request or provide the original `parameters` to `verify_lowering`; output bindings cannot authorize an override.
 
+## Link components with explicit contracts
+
+`cw.run_component_pipeline(request, history, until=...)` extends the checked synthetic build to a locked `ComponentAssembly`. Its `synthetic_components` completion scope retains the finite-history limit and unresolved molecular behavior. Recheck current acceptance with `build.manager.result("components", scope="synthetic_components")` after updating dependency roots.
+
+The [component example](examples/component_linking.py) also selects an independently pinned FAP RNA-CDS reference. That record has no dynamic ports or molecular behavior guarantee. The [contract language](docs/component-contracts-v0.1.md) and [linker](docs/component-linking-v0.1.md) specify supported checks and explicit unknowns.
+
 ## Repository layout
 
 ```text
@@ -156,6 +162,7 @@ PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 examples/intent_programs.py
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 examples/behavior_trace.py
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 examples/realization_check.py
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 examples/checked_pipeline.py
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 examples/component_linking.py
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 -m unittest discover -s tests -v
 ```
 
@@ -166,7 +173,7 @@ python -m pip install -e .
 cellweave architecture
 ```
 
-Use `cellweave inspect artifact.json` for a saved intent, behavior, mechanism, contract, domain, context, observation map, or check record, or add `--json` to print the normalized artifact. Inspection reads JSON and does not execute authoring scripts. Hosted CI is configured to check package installation, the API test suite, examples, and CLI on Python 3.11 and 3.14.
+Use `cellweave inspect artifact.json` for a saved intent, behavior, mechanism, contract, domain, context, observation map, component assembly, registry, composition, or check record, or add `--json` to print the normalized artifact. Inspection reads JSON and does not execute authoring scripts. Hosted CI is configured to check package installation, the API test suite, examples, and CLI on Python 3.11 and 3.14.
 
 `cw.plan(program, profile=...)` returns a planning report with typed parameter bindings and unresolved choices. `cw.compile(plan)` explicitly raises `CompilationUnavailableError`: this release does not emit DNA/RNA sequences.
 
@@ -181,6 +188,8 @@ Use `cellweave inspect artifact.json` for a saved intent, behavior, mechanism, c
 - [Frozen build requests](docs/build-requests-v0.1.md)
 - [Checked pass manager](docs/pass-manager-v0.1.md)
 - [Synthetic generation profile](docs/synthetic-profile-v0.1.md)
+- [Component contracts](docs/component-contracts-v0.1.md)
+- [Component linking](docs/component-linking-v0.1.md)
 - [Exact coding-sequence reference benchmarks and curation plan](docs/reference-benchmarks.md)
 - [Initial architecture decision](docs/decisions/0001-explicit-contracts-and-staged-compilation.md)
 - [Contributor instructions](AGENTS.md)

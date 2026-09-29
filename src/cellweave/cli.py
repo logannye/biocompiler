@@ -22,6 +22,22 @@ from cellweave.verification.realization import ObservationMap
 from cellweave.synthesis.synthetic import SyntheticCandidate, SyntheticGeneratorConfig
 from cellweave.registry.synthetic import SyntheticCatalog
 from cellweave.registry.references import ReferenceManifest
+from cellweave.ir.component_assembly import ComponentAssembly
+from cellweave.ir.component_contracts import ComponentRecord
+from cellweave.ir.composition import CompositionRequest
+from cellweave.registry.components import (
+    ComponentRegistry,
+    RegistryLock,
+    SelectionRequest,
+    SelectionResult,
+)
+from cellweave.registry.reference_components import ReferenceSelection
+from cellweave.semantics.component_contracts import (
+    OperatingDomain as ComponentOperatingDomain,
+    PortContract,
+    ValueDomain,
+)
+from cellweave.verification.components import CompositionResult
 
 
 def _read_artifact(document):
@@ -46,6 +62,18 @@ def _read_artifact(document):
                 OperatingDomain,
                 ObservationMap,
                 CheckResult,
+                ComponentAssembly,
+                ComponentRecord,
+                CompositionRequest,
+                ComponentRegistry,
+                RegistryLock,
+                SelectionRequest,
+                SelectionResult,
+                ReferenceSelection,
+                ComponentOperatingDomain,
+                PortContract,
+                ValueDomain,
+                CompositionResult,
             )
         }
     )
@@ -73,6 +101,10 @@ def _summary(artifact):
     if isinstance(artifact, CheckResult):
         summary["counterexamples"] = len(artifact.counterexamples)
         summary["diagnostics"] = [item.to_dict() for item in artifact.diagnostics]
+    if isinstance(artifact, (ComponentAssembly, CompositionResult, SelectionResult)):
+        summary["inspection"] = (
+            "Historical content inspection only; recompute acceptance and freshness against current authoritative inputs before reuse."
+        )
     return summary
 
 
@@ -99,7 +131,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     args = parser.parse_args(argv)
     if args.command == "architecture":
         print(
-            "CellWeave pipeline (frozen requests, checked passes and synthetic generation implemented; molecular lowering planned)"
+            "CellWeave pipeline (frozen requests, checked synthetic generation and component linking implemented; molecular lowering planned)"
         )
         print("Python authoring -> immutable intent graph")
         for stage in STAGE_ORDER:
