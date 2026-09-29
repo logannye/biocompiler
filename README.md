@@ -9,22 +9,33 @@ A compiler architecture for turning an immune cell engineer's Python-authored in
 CellWeave is designed to turn a description of **what an engineered immune cell should do** into an exact specification of **what its genetic payload must contain**. Each layer resolves more implementation detail while carrying the original requirements forward. The diagram shows the intended architecture; the current scaffold exposes stages and interfaces only.
 
 ```mermaid
-flowchart TB
-    PY["Python-authored intent<br/>Describe the desired cellular capability"]
-    CONTRACT["Typed intent and contracts<br/>Define inputs, outputs, timing, and scope<br/>Select cell context and DNA or RNA target"]
-    BEHAVIOR["Behavioral IR<br/>Express logic, state, memory, and allowed variability"]
-    MECHANISM["Molecular mechanism IR<br/>Map behavior to target-compatible molecular interactions"]
-    PARTS["Selected component IR<br/>Choose versioned components with models and evidence"]
-    CONSTRUCT["Construct IR<br/>Arrange coding and regulatory elements<br/>Preserve their relationships and molecule boundaries"]
-    DNA["DNA backend<br/>Check target capabilities<br/>Resolve exact DNA specification"]
-    RNA["RNA backend<br/>Check target capabilities<br/>Resolve exact RNA specification"]
-    ARTIFACT["Packaged digital build artifact<br/>Exact sequences and molecular features<br/>Source maps, deployment manifest, and evidence record"]
+flowchart LR
+    subgraph SPEC["1. Specify behavior"]
+        direction TB
+        PY["Python intent<br/>Desired cellular capability"]
+        CONTRACT["Typed contracts<br/>Inputs, outputs, timing, scope<br/>Cell context and DNA/RNA target"]
+        BEHAVIOR["Behavioral IR<br/>Logic, state, memory, variability"]
+        PY --> CONTRACT --> BEHAVIOR
+    end
 
-    PY --> CONTRACT --> BEHAVIOR --> MECHANISM --> PARTS --> CONSTRUCT
-    CONSTRUCT -->|DNA target| DNA
-    CONSTRUCT -->|RNA target| RNA
-    DNA --> ARTIFACT
-    RNA --> ARTIFACT
+    subgraph IMPL["2. Resolve implementation"]
+        direction TB
+        MECHANISM["Mechanism IR<br/>Target-compatible interactions"]
+        PARTS["Component IR<br/>Versioned parts, models, evidence"]
+        CONSTRUCT["Construct IR<br/>Coding and regulatory layout<br/>Relationships and boundaries"]
+        MECHANISM --> PARTS --> CONSTRUCT
+    end
+
+    subgraph EMIT["3. Emit the selected target"]
+        direction TB
+        DNA["DNA backend"]
+        RNA["RNA backend"]
+        ARTIFACT["Digital payload artifact<br/>Exact sequences and molecular features<br/>Source maps, manifest, evidence record"]
+        DNA -->|DNA path| ARTIFACT
+        RNA -->|RNA path| ARTIFACT
+    end
+
+    SPEC --> IMPL --> EMIT
 
     classDef source fill:#eff6ff,stroke:#2563eb,color:#0f172a
     classDef layer fill:#f8fafc,stroke:#64748b,color:#0f172a
