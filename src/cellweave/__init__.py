@@ -2,6 +2,16 @@
 
 __version__ = "0.1.0.dev10"
 
+from cellweave.compiler.deployment import HumanDeploymentRequest
+from cellweave.semantics.deployment import (
+    CoPayloadRequirement,
+    DeliveryPlatformSpec,
+    DeploymentContract,
+    ExposureAssumption,
+    ExpressionTiming,
+)
+from cellweave.verification.deployment import DeploymentAssessment, check_deployment
+
 from cellweave.compiler.human_behavior import HumanBehaviorRequest
 from cellweave.semantics.human_behavior import (
     ConditionalSecretionContract,
@@ -281,6 +291,14 @@ from cellweave.verification.realization import (
 )
 
 __all__ = [
+    "HumanDeploymentRequest",
+    "CoPayloadRequirement",
+    "DeliveryPlatformSpec",
+    "DeploymentContract",
+    "ExposureAssumption",
+    "ExpressionTiming",
+    "DeploymentAssessment",
+    "check_deployment",
     "HumanBehaviorRequest",
     "ConditionalSecretionContract",
     "MeasurementSpec",

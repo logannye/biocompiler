@@ -9,6 +9,15 @@ import sys
 from cellweave import __version__
 from cellweave.compiler.request import BuildRequest, RealizationRequest
 from cellweave.compiler.human_behavior import HumanBehaviorRequest
+from cellweave.compiler.deployment import HumanDeploymentRequest
+from cellweave.semantics.deployment import (
+    CoPayloadRequirement,
+    DeliveryPlatformSpec,
+    DeploymentContract,
+    ExposureAssumption,
+    ExpressionTiming,
+)
+from cellweave.verification.deployment import DeploymentAssessment
 from cellweave.semantics.human_behavior import (
     ConditionalSecretionContract,
     MeasurementSpec,
@@ -111,6 +120,13 @@ def _read_artifact(document):
                 BuildRequest,
                 RealizationRequest,
                 HumanBehaviorRequest,
+                HumanDeploymentRequest,
+                CoPayloadRequirement,
+                DeliveryPlatformSpec,
+                DeploymentContract,
+                ExposureAssumption,
+                ExpressionTiming,
+                DeploymentAssessment,
                 ConditionalSecretionContract,
                 MeasurementSpec,
                 PredicateRefinement,
@@ -188,6 +204,24 @@ def _summary(artifact):
     for key in ("id", "name", "context_id", "outcome", "evidence_kind"):
         if hasattr(artifact, key):
             summary[key] = getattr(artifact, key)
+    if isinstance(artifact, (HumanDeploymentRequest, DeploymentContract)):
+        contract = (
+            artifact.deployment
+            if isinstance(artifact, HumanDeploymentRequest)
+            else artifact
+        )
+        summary["unresolved_evidence"] = list(contract.unresolved_evidence)
+        summary["co_payload_obligations"] = len(contract.co_payloads)
+        summary["inspection"] = (
+            "Frozen delivery declarations only; targeting is separate from disease recognition. Biological delivery, expression and same-cell coexistence remain unestablished."
+        )
+    if isinstance(artifact, DeploymentAssessment):
+        summary["compatibility"] = artifact.compatibility
+        summary["diagnostics"] = list(artifact.diagnostics)
+        summary["unresolved_evidence"] = list(artifact.unresolved_evidence)
+        summary["inspection"] = (
+            "Imported declaration-compatibility record only; rerun check_deployment with independent request authority. Human mechanism selection remains blocked."
+        )
     if isinstance(artifact, (HumanBehaviorRequest, ConditionalSecretionContract)):
         contract = (
             artifact.contract

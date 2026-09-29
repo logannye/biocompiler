@@ -107,6 +107,21 @@ jobs:
           path: generated/human-behavior-ci/
           if-no-files-found: ignore
           retention-days: 7
+      - name: Check and inspect human deployment contracts
+        run: |
+          python examples/human_deployment.py --output generated/deployment-ci
+          cellweave inspect generated/deployment-ci/request-unknown.json
+          cellweave inspect generated/deployment-ci/assessment-pass.json
+          cellweave inspect generated/deployment-ci/assessment-fail.json
+          cellweave inspect generated/deployment-ci/assessment-unsupported.json
+      - name: Retain deployment contract evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: deployment-evidence-python-${{ matrix.python-version }}
+          path: generated/deployment-ci/
+          if-no-files-found: ignore
+          retention-days: 7
       - name: Import scaffold interfaces
         run: |
           python -c "from cellweave.compiler.passes import CompilerPass, PassResult; from cellweave.semantics.context import TargetContext; from cellweave.verification.evidence import Obligation"

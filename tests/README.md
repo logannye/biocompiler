@@ -1,5 +1,13 @@
 # Test boundaries
 
+M10.3 tests preserve delivery/recognition separation, target and recipient
+identity, modality, physical compartments and evidence references. Deployment
+window checks use the latest onset and earliest expression loss, retain unknown
+bounds and reject unsupported co-payload dependencies. A compatibility pass
+remains a declaration check with biological applicability unestablished and
+human mechanism selection blocked. See the
+[deployment profile](../docs/deployment-contract-v0.1.md).
+
 M10.2 tests cover source-preserving goal/predicate refinement, exact product and
 endpoint identity, cell versus evaluator access, units, evidence references and
 strict request imports. The secretion trace tests independently specify expected

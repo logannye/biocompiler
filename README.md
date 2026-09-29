@@ -11,6 +11,7 @@ The central idea is to keep three things connected: **what a cell should do**, *
 | Describe cellular intent | Python authoring for recognition, actions, timing, memory, states, and communication, saved as immutable typed graphs. |
 | Declare a human target | Explicit cell/state, tissue/disease, population, host dependencies, operating conditions and evidence gaps, preserved in frozen build requests. |
 | Specify conditional secretion | Source-linked physical readouts, explicit thresholds, rate ranges and lifecycle deadlines, with bounded checks of supplied traces and separate cellular/evaluator observations. |
+| Freeze deployment requirements | Pinned delivery specification, recipient and exposure assumptions, distinct expression/behavior clocks, and explicit unsupported co-payload obligations. |
 | Evaluate and check abstract behavior | Execution against supplied observation histories, a limited automatic synthetic candidate generator, and independent checks with counterexamples and explicit coverage. |
 | Link components | Versioned component contracts with checked interfaces, operating assumptions, providers, resources, and dependency identities. |
 | Reproduce a reference coding sequence | Checked single-CDS assembly, exact DNA or RNA emission, sequence/translation checks, and reproducible offline build packages. |
