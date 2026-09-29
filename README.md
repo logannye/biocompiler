@@ -170,6 +170,7 @@ Use `cellweave inspect artifact.json` for a saved intent, behavior, mechanism, c
 - [Realization contracts and checking: v0.1](docs/realization-checking-v0.1.md)
 - [Toolchain contracts and future obligations](docs/toolchain-contracts.md)
 - [Architecture and preservation obligations](docs/architecture.md)
-- [Implementation roadmap](docs/roadmap.md)
+- [Development roadmap: milestones, to-dos and acceptance criteria](docs/roadmap.md)
+- [Exact coding-sequence reference benchmarks and curation plan](docs/reference-benchmarks.md)
 - [Initial architecture decision](docs/decisions/0001-explicit-contracts-and-staged-compilation.md)
 - [Contributor instructions](AGENTS.md)
