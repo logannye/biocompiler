@@ -1,6 +1,698 @@
-"""Future pass manager: track dependencies, context, requirements, observation
-mappings, diagnostics and invalidated analyses across refinements. Separate
-candidate search from acceptance. Preserve unknown/failed/unsupported outcomes.
+"""Checked, in-memory pass orchestration with transitive dependency freshness.
 
-Design obligations: docs/toolchain-contracts.md.
+Pass registration is trusted compiler configuration; producer output is not.
+Records are inspection artifacts, never imported acceptance certificates. Every
+read of an accepted stage rechecks its complete dependency ancestry.
 """
+
+from __future__ import annotations
+
+from collections.abc import Callable, Mapping
+from dataclasses import dataclass, field
+from enum import StrEnum
+from typing import Any
+
+from cellweave.artifacts.provenance import SourceLink
+from cellweave.compiler.passes import PassResult
+from cellweave.errors import CellWeaveError
+from cellweave.ir.intent import freeze_json, thaw_json
+from cellweave.ir.serialization import fingerprint, name, names, require
+from cellweave.ir.stages import Stage, STAGE_ORDER
+from cellweave.semantics.context import PayloadFormat, TargetContext
+from cellweave.verification.evidence import CheckOutcome, EvidenceKind
+
+
+class PipelineError(CellWeaveError, ValueError):
+    """A stage has missing providers, stale dependencies or failed checks."""
+
+
+class NoCandidateFound(PipelineError):
+    """This configured search found no candidate; infeasibility is not established."""
+
+    def __init__(self, pass_id, configuration, dependencies):
+        self.pass_id = pass_id
+        self.configuration = freeze_json(configuration)
+        self.dependencies = freeze_json(dependencies)
+        super().__init__(
+            f"No candidate found within search {pass_id!r}; infeasibility is not established."
+        )
+
+
+class ArtifactStatus(StrEnum):
+    PARTIAL = "partial"
+    COMPLETE = "complete"
+
+
+def _document(value: Any) -> Mapping:
+    data = value if isinstance(value, Mapping) else value.to_dict()
+    require(isinstance(data, Mapping), "A pipeline artifact must be an object.")
+    name(data.get("schema_version"), "Artifact schema")
+    return freeze_json(data)
+
+
+@dataclass(frozen=True)
+class ScopedObligation:
+    id: str
+    scope: str
+    evidence_kind: EvidenceKind
+    description: str
+
+    def __post_init__(self):
+        for value, label in (
+            (self.id, "Obligation"),
+            (self.scope, "Scope"),
+            (self.description, "Description"),
+        ):
+            name(value, label)
+        require(isinstance(self.evidence_kind, EvidenceKind), "Invalid evidence kind.")
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "scope": self.scope,
+            "evidence_kind": self.evidence_kind.value,
+            "description": self.description,
+        }
+
+
+@dataclass(frozen=True)
+class CheckSpec:
+    id: str
+    evidence_kind: EvidenceKind
+    discharges: tuple[str, ...] = ()
+
+    def __post_init__(self):
+        name(self.id, "Check id")
+        require(isinstance(self.evidence_kind, EvidenceKind), "Invalid check kind.")
+        require(
+            self.evidence_kind is not EvidenceKind.UNRESOLVED,
+            "An unresolved claim cannot discharge an obligation.",
+        )
+        object.__setattr__(self, "discharges", names(self.discharges, "Discharges"))
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "evidence_kind": self.evidence_kind.value,
+            "discharges": list(self.discharges),
+        }
+
+
+@dataclass(frozen=True)
+class CheckDecision:
+    outcome: CheckOutcome
+    detail: str
+    evidence: Mapping[str, Any] = field(default_factory=dict)
+
+    def __post_init__(self):
+        require(isinstance(self.outcome, CheckOutcome), "Invalid check outcome.")
+        name(self.detail, "Check detail")
+        require(isinstance(self.evidence, Mapping), "Evidence must be an object.")
+        object.__setattr__(self, "evidence", freeze_json(self.evidence))
+
+    def to_dict(self):
+        return {
+            "outcome": self.outcome.value,
+            "detail": self.detail,
+            "evidence": thaw_json(self.evidence),
+        }
+
+
+@dataclass(frozen=True)
+class PassContract:
+    id: str
+    version: str
+    input_stage: Stage
+    output_stage: Stage
+    input_schema: str
+    output_schema: str
+    profile: str
+    profile_version: str
+    supported_operations: tuple[str, ...]
+    checks: tuple[CheckSpec, ...]
+    dependency_keys: tuple[str, ...] = ()
+    targets: tuple[PayloadFormat, ...] = (PayloadFormat.DNA, PayloadFormat.RNA)
+    required_capabilities: tuple[str, ...] = ()
+    consumes_requirements: tuple[str, ...] = ()
+    assumptions: tuple[str, ...] = ()
+    introduces: tuple[ScopedObligation, ...] = ()
+    requires_source_map: bool = True
+    requires_observation_map: bool = False
+    changed_properties: tuple[str, ...] = ()
+    invalidated_analyses: tuple[str, ...] = ()
+    operation_path: tuple[str, ...] = ()
+
+    def __post_init__(self):
+        for key in (
+            "id",
+            "version",
+            "input_schema",
+            "output_schema",
+            "profile",
+            "profile_version",
+        ):
+            name(getattr(self, key), key)
+        require(
+            isinstance(self.input_stage, Stage)
+            and isinstance(self.output_stage, Stage),
+            "Invalid pass stages.",
+        )
+        require(
+            STAGE_ORDER.index(self.output_stage)
+            == STAGE_ORDER.index(self.input_stage) + 1,
+            "A pass must advance exactly one declared compiler stage.",
+        )
+        for key in (
+            "operation_path",
+            "supported_operations",
+            "dependency_keys",
+            "required_capabilities",
+            "consumes_requirements",
+            "assumptions",
+            "changed_properties",
+            "invalidated_analyses",
+        ):
+            object.__setattr__(self, key, names(getattr(self, key), key))
+        for key, cls in (("checks", CheckSpec), ("introduces", ScopedObligation)):
+            items = getattr(self, key)
+            require(
+                isinstance(items, (list, tuple))
+                and all(isinstance(x, cls) for x in items),
+                f"Invalid {key}.",
+            )
+            require(len({x.id for x in items}) == len(items), f"Duplicate {key}.")
+            object.__setattr__(self, key, tuple(items))
+        require(bool(self.checks), "A pass requires at least one independent check.")
+        require(
+            isinstance(self.targets, (tuple, list))
+            and bool(self.targets)
+            and all(isinstance(x, PayloadFormat) for x in self.targets)
+            and len(set(self.targets)) == len(self.targets),
+            "Invalid target applicability.",
+        )
+        object.__setattr__(self, "targets", tuple(self.targets))
+        require(
+            type(self.requires_source_map) is bool
+            and type(self.requires_observation_map) is bool,
+            "Mapping requirements must be Boolean.",
+        )
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "version": self.version,
+            "input_stage": self.input_stage.value,
+            "output_stage": self.output_stage.value,
+            "input_schema": self.input_schema,
+            "output_schema": self.output_schema,
+            "profile": self.profile,
+            "profile_version": self.profile_version,
+            "operation_path": list(self.operation_path),
+            "supported_operations": list(self.supported_operations),
+            "checks": [x.to_dict() for x in self.checks],
+            "dependency_keys": list(self.dependency_keys),
+            "targets": [x.value for x in self.targets],
+            "required_capabilities": list(self.required_capabilities),
+            "consumes_requirements": list(self.consumes_requirements),
+            "assumptions": list(self.assumptions),
+            "introduces": [x.to_dict() for x in self.introduces],
+            "requires_source_map": self.requires_source_map,
+            "requires_observation_map": self.requires_observation_map,
+            "changed_properties": list(self.changed_properties),
+            "invalidated_analyses": list(self.invalidated_analyses),
+        }
+
+    @property
+    def fingerprint(self):
+        return fingerprint(self.to_dict())
+
+
+@dataclass(frozen=True)
+class PassContext:
+    input: Mapping[str, Any]
+    output: Mapping[str, Any] | None
+    target: TargetContext
+    configuration: Mapping[str, Any]
+    dependencies: Mapping[str, str]
+    requirements: tuple[str, ...]
+    source_links: tuple[SourceLink, ...] = ()
+    observation_map: Mapping[str, Any] = field(default_factory=dict)
+
+
+@dataclass(frozen=True)
+class CompletionProfile:
+    scope: str
+    stage: Stage
+    schema: str
+    obligations: tuple[str, ...]
+
+    def __post_init__(self):
+        name(self.scope, "Completion scope")
+        name(self.schema, "Completion schema")
+        require(isinstance(self.stage, Stage), "Invalid completion stage.")
+        object.__setattr__(
+            self, "obligations", names(self.obligations, "Completion obligations")
+        )
+        require(
+            bool(self.obligations),
+            "A completed profile must require explicit obligations.",
+        )
+
+
+@dataclass(frozen=True)
+class StageRecord:
+    id: str
+    stage: Stage
+    payload: Mapping[str, Any]
+    requirements: tuple[str, ...]
+    obligations: tuple[ScopedObligation, ...]
+    discharged: tuple[str, ...]
+    dependencies: Mapping[str, str]
+    parent: str | None
+    pass_id: str | None
+    pass_identity: str | None
+    checks: Mapping[str, Any]
+    provenance: Mapping[str, Any]
+    accepted: bool
+
+    def to_dict(self):
+        return {
+            "schema_version": "cellweave.stage_record.v0.1",
+            "id": self.id,
+            "stage": self.stage.value,
+            "payload": thaw_json(self.payload),
+            "requirements": list(self.requirements),
+            "obligations": [x.to_dict() for x in self.obligations],
+            "discharged": list(self.discharged),
+            "dependencies": thaw_json(self.dependencies),
+            "parent": self.parent,
+            "pass_id": self.pass_id,
+            "pass_identity": self.pass_identity,
+            "checks": thaw_json(self.checks),
+            "provenance": thaw_json(self.provenance),
+            "accepted": self.accepted,
+        }
+
+    @property
+    def fingerprint(self):
+        return fingerprint(self.to_dict())
+
+
+@dataclass(frozen=True)
+class PipelineResult:
+    status: ArtifactStatus
+    artifact: StageRecord
+    scope: str
+    unresolved: tuple[ScopedObligation, ...]
+
+
+class PassManager:
+    """Acceptance is manager-owned; serialized records cannot grant it.
+
+    Dependency values are canonical identities supplied by the caller. Update a
+    root through set_dependency whenever its request, registry, model or tool
+    changes. A subsequent get/run/complete recursively rejects stale descendants.
+    No persistent cache or import-to-acceptance path exists in this profile.
+    """
+
+    def __init__(
+        self,
+        *,
+        target: TargetContext,
+        dependencies: Mapping[str, str],
+        completion_profiles: tuple[CompletionProfile, ...] = (),
+    ):
+        require(isinstance(target, TargetContext), "A pipeline needs a target context.")
+        require(isinstance(dependencies, Mapping), "Dependencies must be a mapping.")
+        self._target = target
+        self._dependencies = {}
+        self._passes = {}
+        self._provider_history = {}
+        self._records = {}
+        self._profiles = {p.scope: p for p in completion_profiles}
+        require(
+            len(self._profiles) == len(completion_profiles),
+            "Duplicate completion profiles.",
+        )
+        for key, value in dependencies.items():
+            self.set_dependency(key, value)
+        if "request" not in self._dependencies:
+            raise PipelineError("Missing authoritative request dependency.")
+        self.set_dependency("target", target.fingerprint)
+
+    @property
+    def target(self):
+        return self._target
+
+    def set_dependency(self, key: str, identity: str):
+        name(key, "Dependency name")
+        name(identity, "Dependency identity")
+        require(
+            len(identity) == 64 and all(c in "0123456789abcdef" for c in identity),
+            "Dependencies require canonical SHA-256 identities.",
+        )
+        if key == "target" and identity != self.target.fingerprint:
+            raise PipelineError(
+                "Target dependency must match the pipeline context; create a new manager."
+            )
+        self._dependencies[key] = identity
+
+    def register(
+        self,
+        contract: PassContract,
+        producer: Callable,
+        validators: Mapping[str, Callable],
+    ):
+        require(isinstance(contract, PassContract), "Invalid pass contract.")
+        require(
+            callable(producer)
+            and isinstance(validators, Mapping)
+            and all(callable(x) for x in validators.values()),
+            "Invalid pass providers.",
+        )
+        if set(validators) != {check.id for check in contract.checks}:
+            raise PipelineError(
+                "Every contracted check needs exactly one independent provider."
+            )
+        if any(validator is producer for validator in validators.values()):
+            raise PipelineError("Candidate generation cannot certify itself.")
+        previous = self._provider_history.get(contract.fingerprint)
+        if previous is not None and previous[0].fingerprint == contract.fingerprint:
+            if previous[1] is not producer or dict(previous[2]) != dict(validators):
+                raise PipelineError(
+                    "Changed pass/check providers must increment the contract version."
+                )
+        registration = (contract, producer, dict(validators))
+        self._passes[contract.id] = registration
+        self._provider_history[contract.fingerprint] = registration
+
+    def add_input(
+        self,
+        identity: str,
+        payload: Any,
+        *,
+        stage: Stage = Stage.INTENT,
+        requirements: tuple[str, ...] = (),
+        obligations: tuple[ScopedObligation, ...] = (),
+    ):
+        name(identity, "Input artifact id")
+        require(
+            stage is Stage.INTENT,
+            "Only authoritative intent inputs can enter a pipeline.",
+        )
+        if identity in self._records:
+            raise PipelineError(f"Artifact {identity!r} already exists.")
+        requirements = names(requirements, "Requirements")
+        require(
+            all(isinstance(x, ScopedObligation) for x in obligations)
+            and len({x.id for x in obligations}) == len(obligations),
+            "Invalid input obligations.",
+        )
+        document = _document(payload)
+        if (
+            getattr(payload, "fingerprint", fingerprint(document))
+            != self._dependencies["request"]
+        ):
+            raise PipelineError(
+                "Input artifact does not match the authoritative request identity."
+            )
+        if (
+            document.get("target") is not None
+            and fingerprint(document["target"]) != self.target.fingerprint
+        ):
+            raise PipelineError(
+                "Input request target differs from the pipeline target."
+            )
+        record = StageRecord(
+            identity,
+            stage,
+            document,
+            requirements,
+            tuple(obligations),
+            (),
+            freeze_json(self._dependencies),
+            None,
+            None,
+            None,
+            freeze_json({}),
+            freeze_json({"authority": "frozen_input"}),
+            True,
+        )
+        self._records[identity] = record
+        return record
+
+    def get(self, identity: str) -> StageRecord:
+        if identity not in self._records:
+            raise PipelineError(f"Missing artifact/provider: {identity!r}.")
+        record = self._records[identity]
+        if not record.accepted:
+            raise PipelineError(
+                f"Artifact {identity!r} has not passed its acceptance checks."
+            )
+        if self._dependencies["target"] != self.target.fingerprint:
+            raise PipelineError("Target context changed after pipeline creation.")
+        changes = [
+            key
+            for key, value in record.dependencies.items()
+            if self._dependencies.get(key) != value
+        ]
+        if changes:
+            raise PipelineError(
+                f"Stale artifact {identity!r}; changed dependencies: {', '.join(changes)}."
+            )
+        if record.parent is not None:
+            self.get(record.parent)
+            registered = self._passes.get(record.pass_id)
+            if registered is None or registered[0].fingerprint != record.pass_identity:
+                raise PipelineError(
+                    f"Stale artifact {identity!r}; pass contract/provider changed."
+                )
+        return record
+
+    def run(
+        self,
+        pass_id: str,
+        input_id: str,
+        output_id: str,
+        *,
+        configuration: Mapping | None = None,
+    ):
+        source = self.get(input_id)
+        name(output_id, "Output artifact id")
+        if output_id in self._records:
+            raise PipelineError(
+                f"Artifact {output_id!r} already exists; use a new identity."
+            )
+        if pass_id not in self._passes:
+            raise PipelineError(f"Missing pass provider: {pass_id!r}.")
+        contract, producer, validators = self._passes[pass_id]
+        if (
+            source.stage is not contract.input_stage
+            or source.payload["schema_version"] != contract.input_schema
+        ):
+            raise PipelineError(
+                "Pass ordering or input schema does not match the accepted stage."
+            )
+        if self.target.payload_format not in contract.targets:
+            raise PipelineError("Pass does not support the requested target.")
+        if not set(contract.required_capabilities) <= set(self.target.capabilities):
+            raise PipelineError("Target lacks required pass capabilities.")
+        missing = set(contract.dependency_keys) - self._dependencies.keys()
+        if missing:
+            raise PipelineError(
+                f"Unresolved dependency providers: {', '.join(sorted(missing))}."
+            )
+        if not set(contract.consumes_requirements) <= set(source.requirements):
+            raise PipelineError(
+                "Pass consumes requirements absent from its authoritative input."
+            )
+        configuration = freeze_json({} if configuration is None else configuration)
+        require(
+            isinstance(configuration, Mapping), "Pass configuration must be an object."
+        )
+        dependencies = freeze_json(self._dependencies)
+        context = PassContext(
+            source.payload,
+            None,
+            self.target,
+            configuration,
+            dependencies,
+            source.requirements,
+        )
+        proposal = producer(context)
+        if not isinstance(proposal, PassResult):
+            raise PipelineError("Pass must return a candidate PassResult.")
+        if proposal.search_status not in {"candidate", "no_candidate_found"}:
+            raise PipelineError(
+                "Unknown search outcome; no-candidate results cannot prove infeasibility."
+            )
+        if proposal.search_status == "no_candidate_found":
+            if proposal.output is not None:
+                raise PipelineError(
+                    "A no-candidate search cannot contain candidate output."
+                )
+            raise NoCandidateFound(pass_id, configuration, dependencies)
+        if proposal.output is None:
+            raise PipelineError("A successful search must supply a candidate.")
+        document = _document(proposal.output)
+        if document["schema_version"] != contract.output_schema:
+            raise PipelineError(
+                "Candidate output schema does not match the destination profile."
+            )
+        inventory = document
+        for key in contract.operation_path:
+            inventory = inventory.get(key) if isinstance(inventory, Mapping) else None
+        nodes = inventory.get("nodes") if isinstance(inventory, Mapping) else None
+        if not isinstance(nodes, (tuple, list)) or any(
+            not isinstance(n, Mapping) or "kind" not in n for n in nodes
+        ):
+            raise PipelineError(
+                "This pipeline profile requires an explicit operation inventory in nodes."
+            )
+        unsupported = sorted(
+            {n["kind"] for n in nodes} - set(contract.supported_operations)
+        )
+        if unsupported:
+            raise PipelineError(
+                f"Unsupported destination operations: {', '.join(unsupported)}."
+            )
+        links = tuple(proposal.source_links)
+        if not all(
+            isinstance(link, SourceLink) and link.pass_name == contract.id
+            for link in links
+        ):
+            raise PipelineError("Invalid source correspondence or pass identity.")
+        required = set(source.requirements)
+        output_ids = {n.get("id") for n in nodes}
+        input_ids = {n.get("id") for n in source.payload.get("nodes", ())}
+        if "intent" in source.payload:
+            input_ids = {n.get("id") for n in source.payload["intent"].get("nodes", ())}
+        if any(
+            link.requirement_id not in required
+            or link.target_node_id not in output_ids
+            or link.source_node_id not in input_ids
+            for link in links
+        ):
+            raise PipelineError("Source map refers to an unknown requirement or node.")
+        if (
+            contract.requires_source_map
+            and {link.requirement_id for link in links} != required
+        ):
+            raise PipelineError(
+                "Candidate must retain source correspondence for every input requirement."
+            )
+        if not isinstance(proposal.observation_map, Mapping):
+            raise PipelineError("Observation mapping must be an object.")
+        observation_map = freeze_json(proposal.observation_map)
+        if contract.requires_observation_map and not observation_map:
+            raise PipelineError(
+                "Candidate is missing its contracted observation mapping."
+            )
+        introduced = {x.id: x for x in contract.introduces}
+        obligations = {x.id: x for x in source.obligations}
+        if set(introduced) & set(obligations):
+            raise PipelineError("Pass cannot redefine an upstream obligation.")
+        obligations.update(introduced)
+        # Producers may declare the contracted obligations but cannot substitute,
+        # weaken, or add accepted claims through their PassResult.
+        if any(
+            x.requirement_id not in obligations
+            or x.evidence_kind != obligations[x.requirement_id].evidence_kind
+            or x.description != obligations[x.requirement_id].description
+            or x.evidence_refs
+            for x in proposal.obligations
+        ):
+            raise PipelineError(
+                "Candidate changed an authoritative obligation or supplied self-certifying evidence."
+            )
+        context = PassContext(
+            source.payload,
+            document,
+            self.target,
+            configuration,
+            dependencies,
+            source.requirements,
+            links,
+            observation_map,
+        )
+        if not set(contract.invalidated_analyses) <= set(obligations):
+            raise PipelineError("Invalidation names an unknown obligation.")
+        checks, discharged = (
+            {},
+            set(source.discharged) - set(contract.invalidated_analyses),
+        )
+        for spec in contract.checks:
+            for obligation_id in spec.discharges:
+                if (
+                    obligation_id not in obligations
+                    or obligations[obligation_id].evidence_kind != spec.evidence_kind
+                ):
+                    raise PipelineError(
+                        "Check scope or evidence kind cannot discharge the claimed obligation."
+                    )
+            decision = validators[spec.id](context)
+            if not isinstance(decision, CheckDecision):
+                raise PipelineError(
+                    "Independent validator must return an explicit CheckDecision."
+                )
+            checks[spec.id] = {
+                **spec.to_dict(),
+                **decision.to_dict(),
+                "subject": fingerprint(document),
+                "dependencies": thaw_json(dependencies),
+            }
+            if decision.outcome is CheckOutcome.PASS:
+                discharged.update(spec.discharges)
+        accepted = all(x["outcome"] == CheckOutcome.PASS.value for x in checks.values())
+        record = StageRecord(
+            output_id,
+            contract.output_stage,
+            document,
+            source.requirements,
+            tuple(obligations.values()),
+            tuple(sorted(discharged)),
+            dependencies,
+            input_id,
+            contract.id,
+            contract.fingerprint,
+            freeze_json(checks),
+            freeze_json(
+                {
+                    "contract": contract.to_dict(),
+                    "configuration": thaw_json(configuration),
+                    "source_links": [vars(x) for x in links],
+                    "observation_map": thaw_json(observation_map),
+                    "search": "deterministic; no inference of infeasibility",
+                }
+            ),
+            accepted,
+        )
+        self._records[output_id] = record
+        # A callback may have changed a root during execution; acceptance always
+        # resolves against the current graph, not only the pre-run snapshot.
+        if accepted:
+            self.get(output_id)
+        return record
+
+    def result(self, identity: str, *, scope: str) -> PipelineResult:
+        artifact = self.get(identity)
+        if scope not in self._profiles:
+            raise PipelineError(f"Unsupported completion profile: {scope!r}.")
+        profile = self._profiles[scope]
+        unresolved = tuple(
+            x for x in artifact.obligations if x.id not in artifact.discharged
+        )
+        required = set(profile.obligations) | {
+            x.id for x in artifact.obligations if x.scope == scope
+        }
+        complete = (
+            artifact.stage is profile.stage
+            and artifact.payload["schema_version"] == profile.schema
+            and required <= set(artifact.discharged)
+        )
+        return PipelineResult(
+            ArtifactStatus.COMPLETE if complete else ArtifactStatus.PARTIAL,
+            artifact,
+            scope,
+            unresolved,
+        )

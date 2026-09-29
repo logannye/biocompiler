@@ -13,13 +13,13 @@ Implementation order, stable task IDs and acceptance gates are tracked in the [d
 | Required responses | Active/inactive ranges, activation/recovery deadlines, exercised finite-trace coverage | Stochastic tolerances, distributional and population quantifiers, long-term adaptation |
 | Operating assumptions | Nonempty typed input domains, contact limits, horizon, declared target capabilities | Cell-state applicability, physical resources, lifecycle and deployment assumptions |
 | Independent acceptance | Synthetic candidate runner and checker, source-linked counterexamples, explicit outcomes | Domain-specific biological adapters and validation evidence |
-| Analysis identity | Fingerprints of checked artifacts, histories, context and tool semantics; freshness comparison | Persistent analysis cache, transitive pass-manager invalidation and signed provenance |
+| Analysis identity | Fingerprints of checked artifacts, histories, context and tool semantics; automatic transitive pass-manager freshness | Persistent analysis cache and signed provenance |
 | Composition | Typed graph edges and explicit contact aggregation | Assume/guarantee compatibility, circular-assumption detection, shared-resource and co-payload dependencies |
-| Parameter meaning | Typed design bindings and candidate constants with content identity | Designed versus measured/calibrated/uncertain/runtime parameter categories and provenance |
+| Parameter meaning | Frozen design bindings with category/provenance/variation metadata, runtime signals kept distinct | Robust checks over uncertain/calibrated quantities |
 | Host and payload linking | Declared candidate capability requirements checked against target declarations | Encoded-here/co-payload/host/external/unresolved dependency inventory and linker |
 | Encoding | Documented preservation obligations | Construct schemas, molecular backends, target-specific features and higher-level revalidation |
 
-The [realization checking profile](realization-checking-v0.1.md) defines the exact implemented scope. Capability declarations are assumptions supplied by a context author, not verified facts about a host. A finite-trace pass is conditional on its recorded inputs; no component selection or sequence-generation capability is implied.
+The [realization checking profile](realization-checking-v0.1.md) defines the exact implemented scope. Capability declarations are assumptions supplied by a context author, not verified facts about a host. A finite-trace pass is conditional on its recorded inputs; the minimal synthetic operator catalog supplies no characterized molecular component or sequence-generation capability.
 
 | Stage | Required representation and obligation |
 | --- | --- |

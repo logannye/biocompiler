@@ -6,7 +6,9 @@ refinement; required responses must be checked as well as permitted behavior.
 See docs/toolchain-contracts.md for downstream obligations.
 """
 
-from dataclasses import dataclass
+from collections.abc import Mapping
+from dataclasses import dataclass, field
+from typing import Any
 from typing import Generic, Protocol, TypeVar
 
 from cellweave.artifacts.provenance import SourceLink
@@ -25,6 +27,8 @@ class PassResult(Generic[OutputT]):
     output: OutputT
     obligations: tuple[Obligation, ...]
     source_links: tuple[SourceLink, ...]
+    observation_map: Mapping[str, Any] = field(default_factory=dict)
+    search_status: str = "candidate"
 
 
 class CompilerPass(Protocol[InputT, OutputT]):

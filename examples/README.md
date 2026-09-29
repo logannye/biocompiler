@@ -18,4 +18,6 @@ meaning.
 
 [behavior_trace.py](behavior_trace.py) lowers a generic authored program and evaluates its abstract output requests against contacted-object histories. Internal timers execute between input snapshots. Run `PYTHONPATH=src python examples/behavior_trace.py`; no molecular model is involved.
 
-[realization_check.py](realization_check.py) binds an explicit output contract to the behavior and checks independently executed synthetic candidates. It demonstrates passing behavior, silent and late counterexamples, and stale evidence after a model change. Run `PYTHONPATH=src python examples/realization_check.py`. This fixture tests the checker; it provides no biological evidence or sequences.
+[realization_check.py](realization_check.py) binds an explicit output contract to the behavior and automatically generates a combinational candidate and checks it with an independent runner. It demonstrates passing behavior, silent and late counterexamples, and stale evidence after a model change. Run `PYTHONPATH=src python examples/realization_check.py`. This fixture tests the checker; it provides no biological evidence or sequences.
+
+[checked_pipeline.py](checked_pipeline.py) freezes build authority, runs two checked passes, checks a generated candidate and demonstrates automatic transitive invalidation. Run `PYTHONPATH=src python examples/checked_pipeline.py`. Its completion scope is a synthetic finite history; molecular obligations remain unresolved.

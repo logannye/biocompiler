@@ -1,0 +1,92 @@
+{
+  "reviewer": "codex-root-independent-audit",
+  "reviewed_on": "2026-09-29",
+  "pdf_sha256": "ccae424960759a2e96d7d9f9b2463b79e73faa389c27f8f950f91b30748b3f72",
+  "method": "Independent full HTMLParser extraction plus separate Tesseract psm 6 OCR and visual comparison of original PDF pages 18-20. Only printed line numbers, margin OCR characters, spurious commas and whitespace excluded from OCR comparison; no nucleotide/amino-acid substitutions. The preserved HTML source is not altered.",
+  "results": [
+    {
+      "sequence_id": 1,
+      "length": 497,
+      "sha256": "ca35f562908d00ac249b9c7b8d6694ff5dc910e0a2ed4f7ddf4346162e91fec8",
+      "pdf_OCR_matches_curated_record": true,
+      "reviewed_layout_exclusions": [
+        {
+          "kind": "printed-line-number-or-margin-OCR",
+          "original": "15 GDQASISCRSSQSIVHSNGNTYLEWYLQKPGQSPKLLIYKVSNRFSGVPDRFSGSGSGTDF",
+          "reviewed": "GDQASISCRSSQSIVHSNGNTYLEWYLQKPGQSPKLLIYKVSNRFSGVPDRFSGSGSGTDF"
+        },
+        {
+          "kind": "printed-line-number-or-margin-OCR",
+          "original": "20 GHDGLYQGLSTATKDTYDALHMQTLAPR* ",
+          "reviewed": "GHDGLYQGLSTATKDTYDALHMQTLAPR* "
+        }
+      ]
+    },
+    {
+      "sequence_id": 2,
+      "length": 1491,
+      "sha256": "04738ea1bec87847cce856152550621551af9d4f73a3e0bbeb929cb89dcbc643",
+      "pdf_OCR_matches_curated_record": true,
+      "reviewed_layout_exclusions": [
+        {
+          "kind": "printed-line-number-or-margin-OCR",
+          "original": "25. ATGTCCTGGGTGCGCCAGACCGCCGACAAGCGCCTGGAGCTGGTGGCCACCACCAAC",
+          "reviewed": "ATGTCCTGGGTGCGCCAGACCGCCGACAAGCGCCTGGAGCTGGTGGCCACCACCAAC"
+        },
+        {
+          "kind": "printed-line-number-or-margin-OCR",
+          "original": "30 GGCGGCGGCTCCGACGTGCTGATGACCCAGACCCCCCTGTCCCTGCCCGTGTCCCTG",
+          "reviewed": "GGCGGCGGCTCCGACGTGCTGATGACCCAGACCCCCCTGTCCCTGCCCGTGTCCCTG"
+        },
+        {
+          "kind": "spurious-terminal-OCR-comma-absent-from-page",
+          "original": "AGGGCACCGGCCTGGACTTCGCCTGCGACATCTACATCTGGGCCCCCCTGGCCGGCA,",
+          "reviewed": "AGGGCACCGGCCTGGACTTCGCCTGCGACATCTACATCTGGGCCCCCCTGGCCGGCA"
+        },
+        {
+          "kind": "printed-line-number-or-margin-OCR",
+          "original": "5 | TCTGCGTGGCCCTGCTGCTGTCCCTGATCATCACCCTGATCTGCTACCACCGCTCCCG",
+          "reviewed": "TCTGCGTGGCCCTGCTGCTGTCCCTGATCATCACCCTGATCTGCTACCACCGCTCCCG"
+        },
+        {
+          "kind": "printed-line-number-or-margin-OCR",
+          "original": "10 |=TGGAGAAGAAGCGCGCCCGCGACCCCGAGATGGGCGGCAAGCAGCAGCGCCGCCGC",
+          "reviewed": "TGGAGAAGAAGCGCGCCCGCGACCCCGAGATGGGCGGCAAGCAGCAGCGCCGCCGC"
+        }
+      ]
+    },
+    {
+      "sequence_id": 3,
+      "length": 1491,
+      "sha256": "90b1d6267fa865806bf73f384125d55d009207e65aac5328045ae7b8e0e4e9d6",
+      "pdf_OCR_matches_curated_record": true,
+      "reviewed_layout_exclusions": [
+        {
+          "kind": "printed-line-number-or-margin-OCR",
+          "original": "20 ACGGCAUGUCCUGGGUGCGCCAGACCGCCGACAAGCGCCUGGAGCUGGUGGCCAC",
+          "reviewed": "ACGGCAUGUCCUGGGUGCGCCAGACCGCCGACAAGCGCCUGGAGCUGGUGGCCAC"
+        },
+        {
+          "kind": "printed-line-number-or-margin-OCR",
+          "original": "25 CGGCGGCUCCUCCGGCGGCGGCUCCGACGUGCUGAUGACCCAGACCCCCCUGUCCC",
+          "reviewed": "CGGCGGCUCCUCCGGCGGCGGCUCCGACGUGCUGAUGACCCAGACCCCCCUGUCCC"
+        },
+        {
+          "kind": "printed-line-number-or-margin-OCR",
+          "original": "30 CGAGGACCUGGGCGUGUACUACUGCUUCCAGGGCUCCCACGUGCCCUACACCUUC",
+          "reviewed": "CGAGGACCUGGGCGUGUACUACUGCUUCCAGGGCUCCCACGUGCCCUACACCUUC"
+        },
+        {
+          "kind": "spurious-terminal-OCR-comma-absent-from-page",
+          "original": "CUCCGCCGAGACCGCCGCCAACCUGCAGGACCCCAACCAGCUGUACAACGAGCUGA,",
+          "reviewed": "CUCCGCCGAGACCGCCGCCAACCUGCAGGACCCCAACCAGCUGUACAACGAGCUGA"
+        },
+        {
+          "kind": "printed-line-number-or-margin-OCR",
+          "original": "5 = ACCUGGGCCGCCGCGAGGAGUACGACGUGCUGGAGAAGAAGCGCGCCCGCGACCC",
+          "reviewed": "ACCUGGGCCGCCGCGAGGAGUACGACGUGCUGGAGAAGAAGCGCGCCCGCGACCC"
+        }
+      ]
+    }
+  ]
+}

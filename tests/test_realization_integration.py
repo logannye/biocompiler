@@ -38,17 +38,22 @@ class RealizationIntegrationTests(unittest.TestCase):
     def test_aggregate_before_conjunction_is_detected_on_split_objects(self):
         behavior, contract, domain, target, candidate, mapping, history = self.args
         cell_boolean = cw.Observable("aggregated_a", BOOLEAN, domain.role)
+        first, second = (item.mechanism_input_id for item in mapping.inputs)
+        aggregate = candidate.find("any_contact")[0].id
         extra = (
-            cw.MechanismNode("any_a", "any_contact", cell_boolean, ("a",)),
+            cw.MechanismNode("any_a", "any_contact", cell_boolean, (first,)),
             cw.MechanismNode(
-                "any_b", "any_contact", replace(cell_boolean, id="aggregated_b"), ("b",)
+                "any_b",
+                "any_contact",
+                replace(cell_boolean, id="aggregated_b"),
+                (second,),
             ),
         )
         wrong = replace(
             candidate,
             nodes=tuple(
                 replace(node, kind="and", inputs=("any_a", "any_b"))
-                if node.id == "any_joint"
+                if node.id == aggregate
                 else node
                 for node in candidate.nodes
             )

@@ -2,11 +2,11 @@
 
 A compiler architecture for turning an immune cell engineer's Python-authored intent into an exact, traceable DNA or RNA payload specification.
 
-**Status: intent authoring, behavior execution, and finite-trace realization checking, v0.1 alpha.** Author cell roles, recognition, actions, temporal logic, memory, states, feedback, and communication; export immutable, typed intent graphs as JSON. Checked lowering preserves source requirements in Behavior IR. A reference evaluator executes supported behavior against supplied histories. Explicit response contracts can now be checked against an independently executed synthetic candidate model, producing scoped results, counterexamples, and dependency identities. Molecular lowering, component selection, sequence generation, and biological simulation remain future work.
+**Status: frozen build requests, checked passes, automatic synthetic generation and curated CDS references, v0.1 alpha.** Author cell roles, recognition, actions, temporal logic, memory, states, feedback, and communication; export immutable, typed intent graphs as JSON. Checked lowering preserves source requirements in Behavior IR. A reference evaluator executes supported behavior against supplied histories. Explicit response contracts can now be checked against an independently executed synthetic candidate model, producing scoped results, counterexamples, and dependency identities. Frozen requests make input bindings authoritative. A checked pass manager generates a narrow combinational synthetic implementation and verifies it independently. A small offline catalog locks synthetic operators; separately curated FAP-CAR references pin exact CDS expectations. Molecular lowering, full component linking, sequence generation and biological simulation remain future work.
 
 ## Planned compiler stack
 
-CellWeave is designed to turn a description of **what an engineered immune cell should do** into an exact specification of **what its genetic payload must contain**. Each layer resolves more implementation detail while carrying the original requirements forward. The diagram shows the intended architecture. Python authoring, intent/behavior graphs, abstract execution, and a synthetic realization-checking profile are implemented; molecular realization and payload emission remain planned.
+CellWeave is designed to turn a description of **what an engineered immune cell should do** into an exact specification of **what its genetic payload must contain**. Each layer resolves more implementation detail while carrying the original requirements forward. The diagram shows the intended architecture. Python authoring, frozen requests, intent/behavior graphs, checked passes, abstract execution and automatic combinational synthetic realization are implemented; molecular realization and payload emission remain planned.
 
 ```mermaid
 flowchart LR
@@ -115,6 +115,12 @@ Define the intended output endpoint, active and inactive ranges, response deadli
 
 The [realization example](examples/realization_check.py) checks a responsive candidate, a silent candidate, and a late candidate, and demonstrates evidence becoming stale after a model change. The [contract specification](docs/realization-checking-v0.1.md) explains timing, contact identity, coverage, and claim boundaries. A passing result supports the checked finite history under the recorded assumptions; it does not establish a molecular implementation or all-input correctness.
 
+## Freeze and run a checked synthetic build
+
+Freeze `BuildRequest` before lowering, then bind the authored response contract and operating domain in a `RealizationRequest`. `run_synthetic_pipeline(request, history, until=...)` generates a candidate, checks it with the independent model runner and returns an explicitly scoped result with unresolved molecular obligations. The [checked example](examples/checked_pipeline.py) demonstrates the complete flow and automatic rejection of stale evidence after a catalog change.
+
+The [request contract](docs/build-requests-v0.1.md), [pass manager](docs/pass-manager-v0.1.md) and [supported synthetic profile](docs/synthetic-profile-v0.1.md) describe the acceptance boundaries. When verifying legacy `lower_to_behavior(intent, parameters=...)` output, retain the request or provide the original `parameters` to `verify_lowering`; output bindings cannot authorize an override.
+
 ## Repository layout
 
 ```text
@@ -135,7 +141,7 @@ src/cellweave/
 docs/             Architecture, roadmap, and decisions
 examples/         Authoring examples as the DSL develops
 tests/            Unit, semantic, and integration test boundaries
-data/             Registry/model fixture policy; no biological library yet
+data/             Small curated CDS references and their source/review records
 .github/workflows/  Hosted package smoke checks
 ```
 
@@ -149,6 +155,7 @@ PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 -m cellweave architecture
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 examples/intent_programs.py
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 examples/behavior_trace.py
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 examples/realization_check.py
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 examples/checked_pipeline.py
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 -m unittest discover -s tests -v
 ```
 
@@ -170,7 +177,10 @@ Use `cellweave inspect artifact.json` for a saved intent, behavior, mechanism, c
 - [Realization contracts and checking: v0.1](docs/realization-checking-v0.1.md)
 - [Toolchain contracts and future obligations](docs/toolchain-contracts.md)
 - [Architecture and preservation obligations](docs/architecture.md)
-- [Development roadmap: milestones, to-dos and acceptance criteria](docs/roadmap.md)
+- [Authoritative development roadmap](docs/roadmap.md)
+- [Frozen build requests](docs/build-requests-v0.1.md)
+- [Checked pass manager](docs/pass-manager-v0.1.md)
+- [Synthetic generation profile](docs/synthetic-profile-v0.1.md)
 - [Exact coding-sequence reference benchmarks and curation plan](docs/reference-benchmarks.md)
 - [Initial architecture decision](docs/decisions/0001-explicit-contracts-and-staged-compilation.md)
 - [Contributor instructions](AGENTS.md)

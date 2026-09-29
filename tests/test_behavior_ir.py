@@ -122,7 +122,9 @@ class BehaviorIRTests(unittest.TestCase):
             lower_to_behavior(source)
         behavior = lower_to_behavior(source, parameters={"wait": Duration(2)})
         self.assertEqual(behavior.parameter_bindings["wait"]["canonical_value"], 2)
-        self.assertTrue(verify_lowering(source, behavior).passed)
+        self.assertTrue(
+            verify_lowering(source, behavior, parameters={"wait": Duration(2)}).passed
+        )
         with self.assertRaises(SerializationError):
             lower_to_behavior(source, parameters={"wait": Duration(-2)})
 
@@ -133,6 +135,30 @@ class BehaviorIRTests(unittest.TestCase):
         data["parameter_bindings"]["amount"]["canonical_value"] = True
         with self.assertRaises(SerializationError):
             BehaviorProgram.from_dict(data)
+
+    def test_consistent_node_and_manifest_tampering_cannot_authorize_binding(self):
+        therapy = Therapy("binding_authority")
+        therapy.parameter("amount", default=1)
+        source = therapy.freeze()
+        data = lower_to_behavior(source).to_dict()
+        node = next(item for item in data["nodes"] if item["kind"] == "parameter")
+        for value in (
+            node["attributes"]["default"],
+            data["parameter_bindings"]["amount"],
+        ):
+            value.update(value=9, canonical_value=9)
+        changed = BehaviorProgram.from_dict(data)
+        with self.assertRaisesRegex(
+            LoweringVerificationError, "authoritative_bindings"
+        ):
+            verify_lowering(source, changed)
+        self.assertTrue(
+            verify_lowering(source, changed, parameters={"amount": 9}).passed
+        )
+        self.assertEqual(
+            lower_to_behavior(source, parameters={"amount": 9}).fingerprint,
+            changed.fingerprint,
+        )
 
     def test_dynamic_duration_rejected_with_source(self):
         therapy = Therapy("dynamic_duration")

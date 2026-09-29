@@ -1,8 +1,21 @@
 """Author inspectable therapeutic programs for in-vivo immune-cell engineering."""
 
-__version__ = "0.1.0.dev3"
+__version__ = "0.1.0.dev4"
 
 from cellweave.compiler.behavior import lower_to_behavior, verify_lowering
+from cellweave.compiler.request import (
+    BindingMetadata,
+    BuildRequest,
+    ElaborationProvenance,
+    RealizationRequest,
+)
+from cellweave.compiler.synthetic import SyntheticBuild, run_synthetic_pipeline
+from cellweave.synthesis.synthetic import (
+    SyntheticCandidate,
+    SyntheticGeneratorConfig,
+    generate_synthetic,
+    check_synthetic_candidate,
+)
 from cellweave.compiler.workflow import (
     BuildProfile,
     DesignChoice,
@@ -111,6 +124,16 @@ from cellweave.verification.realization import (
 )
 
 __all__ = [
+    "SyntheticBuild",
+    "SyntheticCandidate",
+    "SyntheticGeneratorConfig",
+    "generate_synthetic",
+    "check_synthetic_candidate",
+    "run_synthetic_pipeline",
+    "BindingMetadata",
+    "BuildRequest",
+    "ElaborationProvenance",
+    "RealizationRequest",
     "BehaviorContract",
     "CheckDiagnostic",
     "CheckOutcome",
