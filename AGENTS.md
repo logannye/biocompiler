@@ -1,6 +1,6 @@
 # Working on CellWeave
 
-CellWeave implements Python intent authoring, immutable build/realization requests and intent/behavior graphs, authoritative lowering, checked passes, automatic combinational synthetic generation, abstract reference execution, finite-trace checking against independent synthetic models, typed component contracts and offline composition linking. Exact CDS reference fixtures are curated separately from synthetic behavior. Molecular lowering, biological simulation, and sequence generation remain unimplemented.
+CellWeave implements Python intent authoring, immutable build/realization requests and intent/behavior graphs, authoritative lowering, checked passes, automatic combinational synthetic generation, abstract reference execution, finite-trace checking against independent synthetic models, typed component contracts, offline composition linking and single-CDS reference construct assembly. Exact CDS reference fixtures are curated separately from synthetic behavior. Molecular lowering, biological simulation, and sequence generation remain unimplemented.
 
 - Preserve the distinction between exact artifact identity, model-conditional claims, and empirical evidence. Never label an unresolved biological claim as verified.
 - Python authoring will construct typed descriptions. Python control flow must not silently stand in for cellular runtime behavior.
@@ -18,3 +18,5 @@ CellWeave implements Python intent authoring, immutable build/realization reques
 The initial implementation is Python-only. If Rust is introduced, keep editing and static work local, and run compilation, executable native tests, extension rebuilds, and packaging on hosted CI by default. Local Rust compilation, including implicit builds through package managers, requires explicit authorization for the work. Do not silently fall back to local native builds. Record the tested revision and platform and preserve required validation gates.
 
 - Follow `docs/component-contracts-v0.1.md` and `docs/component-linking-v0.1.md` for component changes. Keep model/reference identities locked, providers and resource assumptions explicit, and sequence-only references free of dynamic claims. Component compatibility does not upgrade finite-history evidence.
+
+- Follow `docs/construct-ir-v0.1.md` and `docs/construct-checking-v0.1.md` for assembly. Compare candidates against frozen layout authority and independent reference pins; never use output claims as expected values. Layout changes invalidate affected composition and behavior evidence. The supported reference construct remains one whole CDS with unknown delivered context; no sequence emission or multi-molecule acceptance is implemented.

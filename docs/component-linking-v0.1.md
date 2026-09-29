@@ -128,4 +128,6 @@ linking does not broaden that claim into molecular or empirical validation.
 Sequence reference components are separately classified. Their passing selection
 or linking claim concerns only pinned CDS identity/structure and recorded unknown
 features. They cannot provide dynamic ports, capabilities or biological guarantees.
-Construct IR, molecular lowering and sequence emission remain later milestones.
+The [reference construct pipeline](reference-construct-pipeline-v0.1.md) now checks
+one whole selected CDS layout. Molecular lowering and sequence emission remain
+later milestones.

@@ -2,7 +2,7 @@
 
 This roadmap turns the current semantic foundation into a reproducible compiler path, using **exact, published coding-sequence (CDS) references** for the first molecular benchmarks. Completed tasks below identify implemented, scoped capabilities; unchecked tasks remain planned work. This is the authoritative roadmap. Task IDs are stable so implementation PRs can cite them and mark individual items complete.
 
-Implementation foundation updated on 2026-09-29, with M4 developed from commit `679c7d4` (frozen requests and checked synthetic generation):
+Implementation foundation updated on 2026-09-29, with M5 developed from commit `5a8e072` (checked component contracts and linking):
 
 | Boundary | Current implementation | Next responsibility |
 | --- | --- | --- |
@@ -10,11 +10,11 @@ Implementation foundation updated on 2026-09-29, with M4 developed from commit `
 | Intent → Behavior | Request-authoritative lowering/verification, Behavior IR and reference execution | Continue independent semantic checks |
 | Behavior → Mechanism | Automatic combinational synthetic generation, pinned catalog and independent runner/checker | Temporal and molecular profiles need separate contracts |
 | Mechanism → Components | Immutable contracts, offline selection/locks, checked interfaces/domains/providers/resources, synthetic assembly and separate FAP CDS components | Preserve selected components through explicit Construct IR |
-| Components → Construct | Placeholder | Preserve molecular membership, order, orientation, boundaries and relationships |
+| Components → Construct | Frozen layout authority, Construct IR, independent single-CDS assembly checks and evidence invalidation | Emit the scoped selected CDS and verify its nucleotide identity |
 | Construct → Molecular specification | DNA/RNA placeholders | Emit and independently check exact scoped sequence artifacts |
 | Molecular specification → Package | Checked in-memory pass manager; molecular manifest remains planned | Package accepted molecular records and reproducible identities |
 
-`compile()` still raises `CompilationUnavailableError`. The synthetic example now generates its candidate automatically. `run_synthetic_pipeline` executes checked Intent → Behavior → synthetic Mechanism passes for its declared finite-history profile. `run_component_pipeline` additionally checks the synthetic Components stage without broadening the finite-history claim. Molecular lowering and sequence emission remain unimplemented.
+`compile()` still raises `CompilationUnavailableError`. The synthetic example now generates its candidate automatically. `run_synthetic_pipeline` executes checked Intent → Behavior → synthetic Mechanism passes for its declared finite-history profile. `run_component_pipeline` additionally checks the synthetic Components stage without broadening the finite-history claim. `run_construct_pipeline` checks a separately selected whole reference CDS through the Construct stage. Molecular lowering and sequence emission remain unimplemented.
 
 ## Development strategy and first deliverables
 
@@ -124,15 +124,17 @@ Implemented contract limits: Boolean sets, typed closed scalar intervals, exact 
 
 **Primary modules:** `ir/construct.py`, `compiler/`, `verification/`, `artifacts/provenance.py`.
 
-- [ ] **M5.1** Define immutable, versioned Construct IR: molecule IDs, artifact class, components, order, orientation, junctions, boundaries, regulatory relationships, dependencies and source/requirement correspondence.
-- [ ] **M5.2** Define coordinate and orientation conventions centrally, including zero/one-based indexing, inclusive/exclusive ends, strand interpretation and sequence normalization. Validate exact membership and coverage.
-- [ ] **M5.3** Start with a single reference CDS construct. Preserve that boundary explicitly; do not invent a promoter, UTR, circularization scaffold, poly(A) tail or plasmid backbone to make it appear complete.
-- [ ] **M5.4** Permit subcomponent features only where their boundaries are sourced or separately reviewed. A whole CDS can initially be one pinned component; a domain diagram is insufficient to invent exact junction coordinates.
-- [ ] **M5.5** Independently check that assembly contains each required component with the selected version, orientation, order and frame, and no unexplained bases. Report intentional overlaps and junction choices explicitly.
-- [ ] **M5.6** Represent multiple molecules and co-payload dependencies in the schema, while initially rejecting unsupported multi-molecule assembly. Record same-cell coexistence as an assumption, not a consequence of sharing a manifest.
-- [ ] **M5.7** Treat layout changes as semantic changes where appropriate and invalidate affected composition/behavior evidence.
+- [x] **M5.1** Define immutable, versioned Construct IR: molecule IDs, artifact class, components, order, orientation, junctions, boundaries, regulatory relationships, dependencies and source/requirement correspondence.
+- [x] **M5.2** Define coordinate and orientation conventions centrally, including zero/one-based indexing, inclusive/exclusive ends, strand interpretation and sequence normalization. Validate exact membership and coverage.
+- [x] **M5.3** Start with a single reference CDS construct. Preserve that boundary explicitly; do not invent a promoter, UTR, circularization scaffold, poly(A) tail or plasmid backbone to make it appear complete.
+- [x] **M5.4** Permit subcomponent features only where their boundaries are sourced or separately reviewed. A whole CDS can initially be one pinned component; a domain diagram is insufficient to invent exact junction coordinates.
+- [x] **M5.5** Independently check that assembly contains each required component with the selected version, orientation, order and frame, and no unexplained bases. Report intentional overlaps and junction choices explicitly.
+- [x] **M5.6** Represent multiple molecules and co-payload dependencies in the schema, while initially rejecting unsupported multi-molecule assembly. Record same-cell coexistence as an assumption, not a consequence of sharing a manifest.
+- [x] **M5.7** Treat layout changes as semantic changes where appropriate and invalidate affected composition/behavior evidence.
 
 **Acceptance:** swapped components, missing segments, reversed orientation, off-by-one boundaries, wrong molecule membership and unsupported junctions are detected. Every emitted region has an origin, including any explicitly introduced sequence.
+
+Implemented assembly scope: one whole forward DNA or RNA CDS at frame zero with zero-based half-open reference ranges. The schema retains explicit junctions, features, regulation and multiple molecules, but the initial checker rejects these unsupported assemblies; current reference records do not establish subcomponent boundaries or co-payload coexistence. See [Construct IR](construct-ir-v0.1.md), [construct checking](construct-checking-v0.1.md) and the [checked reference pipeline](reference-construct-pipeline-v0.1.md).
 
 ## M6 — Emit and independently check exact coding sequences
 

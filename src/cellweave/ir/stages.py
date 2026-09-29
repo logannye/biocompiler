@@ -1,4 +1,4 @@
-"""Names of the proposed abstraction boundaries, not executable compiler passes."""
+"""Compiler abstraction boundaries, including supported and planned stages."""
 
 from enum import StrEnum
 

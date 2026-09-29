@@ -240,6 +240,67 @@ class PassContext:
 
 
 @dataclass(frozen=True)
+class ComponentInputContract:
+    """Trusted admission policy for an independently selected component root.
+
+    This narrow entry point does not assert that a behavior or mechanism was
+    realized. Validators must establish current structural input authority.
+    """
+
+    id: str
+    version: str
+    schema: str
+    checks: tuple[CheckSpec, ...]
+    requirements: tuple[str, ...]
+    obligations: tuple[ScopedObligation, ...]
+    dependency_keys: tuple[str, ...] = ()
+    operation_path: tuple[str, ...] = ()
+
+    def __post_init__(self):
+        for key in ("id", "version", "schema"):
+            name(getattr(self, key), key)
+        for key in ("requirements", "dependency_keys", "operation_path"):
+            object.__setattr__(self, key, names(getattr(self, key), key))
+        for key, cls in (("checks", CheckSpec), ("obligations", ScopedObligation)):
+            values = getattr(self, key)
+            require(
+                isinstance(values, (list, tuple))
+                and all(isinstance(item, cls) for item in values)
+                and len({item.id for item in values}) == len(values),
+                f"Invalid component admission {key}.",
+            )
+            object.__setattr__(self, key, tuple(values))
+        require(bool(self.checks), "Component admission needs independent checks.")
+        obligations = {item.id: item for item in self.obligations}
+        for check in self.checks:
+            require(
+                all(
+                    key in obligations
+                    and obligations[key].evidence_kind == check.evidence_kind
+                    for key in check.discharges
+                ),
+                "Component admission check cannot discharge an unknown obligation or evidence kind.",
+            )
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "version": self.version,
+            "schema": self.schema,
+            "stage": Stage.COMPONENTS.value,
+            "checks": [item.to_dict() for item in self.checks],
+            "requirements": list(self.requirements),
+            "obligations": [item.to_dict() for item in self.obligations],
+            "dependency_keys": list(self.dependency_keys),
+            "operation_path": list(self.operation_path),
+        }
+
+    @property
+    def fingerprint(self):
+        return fingerprint(self.to_dict())
+
+
+@dataclass(frozen=True)
 class CompletionProfile:
     scope: str
     stage: Stage
@@ -327,6 +388,7 @@ class PassManager:
         self._target = target
         self._dependencies = {}
         self._passes = {}
+        self._component_inputs = {}
         self._provider_history = {}
         self._records = {}
         self._profiles = {}
@@ -371,6 +433,8 @@ class PassManager:
         validators: Mapping[str, Callable],
     ):
         require(isinstance(contract, PassContract), "Invalid pass contract.")
+        if contract.id in self._component_inputs:
+            raise PipelineError("Pass ID collides with a component admission policy.")
         require(
             callable(producer)
             and isinstance(validators, Mapping)
@@ -392,6 +456,137 @@ class PassManager:
         registration = (contract, producer, dict(validators))
         self._passes[contract.id] = registration
         self._provider_history[contract.fingerprint] = registration
+
+    def register_component_input(
+        self, contract: ComponentInputContract, validators: Mapping[str, Callable]
+    ):
+        """Register trusted code that checks a Components-stage input from scratch."""
+        require(
+            isinstance(contract, ComponentInputContract),
+            "Invalid component input contract.",
+        )
+        require(
+            isinstance(validators, Mapping)
+            and all(callable(value) for value in validators.values()),
+            "Invalid component admission validators.",
+        )
+        if contract.id in self._passes:
+            raise PipelineError("Component admission ID collides with a pass.")
+        if set(validators) != {item.id for item in contract.checks}:
+            raise PipelineError("Every admission check needs an independent provider.")
+        key = ("component_input", contract.fingerprint)
+        previous = self._provider_history.get(key)
+        if previous is not None and previous[1] != dict(validators):
+            raise PipelineError(
+                "Changed admission providers must increment the contract version."
+            )
+        registration = (contract, dict(validators))
+        self._component_inputs[contract.id] = registration
+        self._provider_history[key] = registration
+
+    def admit_component_input(self, contract_id: str, identity: str, payload: Any):
+        """Admit one authoritative structural root, never a serialized receipt.
+
+        The root must match the manager's frozen request identity and pass all
+        freshly executed checks. Existing Intent-root pipelines cannot skip into
+        Components through this entry point.
+        """
+        name(identity, "Input artifact id")
+        if self._records:
+            raise PipelineError(
+                "Component admission requires a new pipeline with no existing records."
+            )
+        if contract_id not in self._component_inputs:
+            raise PipelineError("Missing component admission policy.")
+        contract, validators = self._component_inputs[contract_id]
+        missing = set(contract.dependency_keys) - self._dependencies.keys()
+        if missing:
+            raise PipelineError(
+                "Missing admission dependencies: " + ", ".join(sorted(missing))
+            )
+        document = _document(payload)
+        if document["schema_version"] != contract.schema:
+            raise PipelineError(
+                "Component input schema does not match admission policy."
+            )
+        if fingerprint(document) != self._dependencies["request"]:
+            raise PipelineError(
+                "Component input does not match authoritative request identity."
+            )
+        if fingerprint(document.get("target")) != self.target.fingerprint:
+            raise PipelineError(
+                "Component input target differs from the pipeline target."
+            )
+        inventory = document
+        for key in contract.operation_path:
+            inventory = inventory.get(key) if isinstance(inventory, Mapping) else None
+        nodes = inventory.get("nodes") if isinstance(inventory, Mapping) else None
+        if (
+            not isinstance(nodes, (tuple, list))
+            or not nodes
+            or any(
+                not isinstance(item, Mapping)
+                or item.get("kind") != "component_instance"
+                or not isinstance(item.get("id"), str)
+                or not item["id"].strip()
+                for item in nodes
+            )
+            or len({item["id"] for item in nodes}) != len(nodes)
+        ):
+            raise PipelineError(
+                "Component admission requires a unique component inventory."
+            )
+        dependencies = freeze_json(self._dependencies)
+        context = PassContext(
+            document,
+            None,
+            self.target,
+            freeze_json({}),
+            dependencies,
+            contract.requirements,
+        )
+        checks, discharged = {}, set()
+        for spec in contract.checks:
+            decision = validators[spec.id](context)
+            if not isinstance(decision, CheckDecision):
+                raise PipelineError(
+                    "Admission validator must return an explicit CheckDecision."
+                )
+            checks[spec.id] = {
+                **spec.to_dict(),
+                **decision.to_dict(),
+                "subject": fingerprint(document),
+                "dependencies": thaw_json(dependencies),
+            }
+            if decision.outcome is CheckOutcome.PASS:
+                discharged.update(spec.discharges)
+        accepted = all(
+            item["outcome"] == CheckOutcome.PASS.value for item in checks.values()
+        )
+        record = StageRecord(
+            identity,
+            Stage.COMPONENTS,
+            document,
+            contract.requirements,
+            contract.obligations,
+            tuple(sorted(discharged)),
+            dependencies,
+            None,
+            contract.id,
+            contract.fingerprint,
+            freeze_json(checks),
+            freeze_json(
+                {
+                    "authority": "independently_checked_component_input",
+                    "contract": contract.to_dict(),
+                }
+            ),
+            accepted,
+        )
+        self._records[identity] = record
+        if accepted:
+            self.get(identity)
+        return record
 
     def add_input(
         self,
@@ -473,6 +668,12 @@ class PassManager:
             if registered is None or registered[0].fingerprint != record.pass_identity:
                 raise PipelineError(
                     f"Stale artifact {identity!r}; pass contract/provider changed."
+                )
+        elif record.pass_id is not None:
+            registered = self._component_inputs.get(record.pass_id)
+            if registered is None or registered[0].fingerprint != record.pass_identity:
+                raise PipelineError(
+                    f"Stale artifact {identity!r}; component admission policy changed."
                 )
         return record
 
@@ -576,7 +777,10 @@ class PassManager:
         # trusted path used when that parent was accepted.
         input_inventory = source.payload
         if source.pass_id is not None:
-            parent_contract = self._passes[source.pass_id][0]
+            registrations = (
+                self._passes if source.parent is not None else self._component_inputs
+            )
+            parent_contract = registrations[source.pass_id][0]
             for key in parent_contract.operation_path:
                 input_inventory = input_inventory[key]
         elif "intent" in source.payload:
