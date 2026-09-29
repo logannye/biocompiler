@@ -25,6 +25,15 @@ it provides neither a biological model nor evidence of therapeutic efficacy.
 The runtime input must be cell-accessible; the output assay remains an external
 evaluation readout. General payload compilation remains unavailable.
 
+M10.3 adds a [frozen deployment contract](deployment-contract-v0.1.md) around that
+behavior request. It retains delivery-platform identity, exact human recipient
+scope, modality, intracellular destination, exposure, expression timing and
+unintended-recipient assumptions. Delivery targeting is separate from the
+secretion recognition predicate. The independent deployment checker compares
+declared expression availability against the behavior horizon, retains unknowns
+and rejects unsupported co-payload dependencies. Compatible declarations do not
+establish biological delivery or admit human mechanism selection.
+
 ## Compilation layers
 
 | Layer | Representation | Preservation obligation |

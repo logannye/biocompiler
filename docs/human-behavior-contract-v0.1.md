@@ -144,8 +144,10 @@ example, inspect its artifacts and retain the generated evidence. Tests cover
 source mismatches, invalid observations, unit boundaries, deadline collisions,
 persistence, recovery, vacuity, identity changes and unsupported compilation.
 
-M10.2 completion is limited to this defined and tested behavior contract. M10.3
-delivery, M10.4 prohibited behavior, M10.5 global human admission, the M11 evidence
-audit and M12 biological realization remain separate work. Choosing supported
+M10.2 completion is limited to this defined and tested behavior contract. The
+[M10.3 deployment contract](deployment-contract-v0.1.md) adds delivery declarations
+and expression-window checks without admitting delivery biology. M10.4 prohibited
+behavior, M10.5 global human admission, the M11 evidence audit and M12 biological
+realization remain separate work. Choosing supported
 biological identities and numerical values requires that evidence; fixture values
 must not be reused as human therapeutic recommendations.

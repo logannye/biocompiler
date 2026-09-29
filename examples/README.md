@@ -1,5 +1,13 @@
 # Examples
 
+[human_deployment.py](human_deployment.py) freezes delivery requirements around
+the human behavior request. It demonstrates unknown, compatible, conflicting and
+unsupported co-payload declarations with artificial values. Run
+`PYTHONPATH=src python examples/human_deployment.py --output generated/deployment`.
+The example retains its platform fixture bytes and all request/assessment pairs;
+it chooses no delivery system or therapeutic regimen. See the
+[deployment contract](../docs/deployment-contract-v0.1.md).
+
 [human_behavior.py](human_behavior.py) defines reversible conditional secretion
 for one human-targeted role. It preserves the source goal and predicate, records
 measurement units and access, and checks artificial traces with pass/fail/unknown

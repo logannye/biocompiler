@@ -11,6 +11,8 @@ from typing import Any
 
 from cellweave.compiler.request import BuildRequest, RealizationRequest
 from cellweave.compiler.human_behavior import HumanBehaviorRequest
+from cellweave.compiler.deployment import HumanDeploymentRequest
+from cellweave.verification.deployment import check_deployment
 from cellweave.errors import (
     CompilationUnavailableError,
     DefinitionError,
@@ -317,6 +319,7 @@ def plan(program: IntentProgram, *, profile: BuildProfile) -> RealizationPlan:
     unresolved.extend(_profile_choices(program))
     if isinstance(profile.target, HumanTargetContext):
         unresolved.append(_human_target_choice())
+        unresolved.append(_deployment_missing_choice())
     unresolved.append(
         DesignChoice(
             "molecular_backend_unavailable",
@@ -333,34 +336,76 @@ def _human_target_choice():
     )
 
 
+def _deployment_missing_choice():
+    return DesignChoice(
+        "deployment_contract_missing",
+        "Freeze a HumanDeploymentRequest with explicit delivery, exposure, expression and dependency assumptions before human mechanism selection.",
+    )
+
+
 def compile(
-    design: RealizationPlan | BuildRequest | RealizationRequest | HumanBehaviorRequest,
+    design: RealizationPlan
+    | BuildRequest
+    | RealizationRequest
+    | HumanBehaviorRequest
+    | HumanDeploymentRequest,
 ) -> None:
     """Reject unsupported general intent compilation; reference CDS uses its own API."""
     if not isinstance(
         design,
-        (RealizationPlan, BuildRequest, RealizationRequest, HumanBehaviorRequest),
+        (
+            RealizationPlan,
+            BuildRequest,
+            RealizationRequest,
+            HumanBehaviorRequest,
+            HumanDeploymentRequest,
+        ),
     ):
         raise TypeMismatchError(
-            "compile() requires a RealizationPlan, BuildRequest, RealizationRequest or HumanBehaviorRequest."
+            "compile() requires a RealizationPlan, BuildRequest, RealizationRequest, HumanBehaviorRequest or HumanDeploymentRequest."
         )
     if isinstance(design, RealizationPlan):
         diagnostics = design.unresolved
     else:
         request = (
             design.build_request
-            if isinstance(design, (RealizationRequest, HumanBehaviorRequest))
+            if isinstance(
+                design,
+                (RealizationRequest, HumanBehaviorRequest, HumanDeploymentRequest),
+            )
             else design
         )
         diagnostics = list(_profile_choices(request.intent))
         if isinstance(request.target, HumanTargetContext):
             diagnostics.append(_human_target_choice())
-        if isinstance(design, HumanBehaviorRequest):
+            if not isinstance(design, HumanDeploymentRequest):
+                diagnostics.append(_deployment_missing_choice())
+        if isinstance(design, (HumanBehaviorRequest, HumanDeploymentRequest)):
+            behavior = (
+                design.behavior_request
+                if isinstance(design, HumanDeploymentRequest)
+                else design
+            )
             diagnostics.append(
                 DesignChoice(
                     "human_behavior_empirical_support_unestablished",
                     "The source-linked secretion observation contract defines requested behavior; measurement validity, biological realizability and therapeutic goal attainment remain unestablished.",
-                    design.contract.goal_id,
+                    behavior.contract.goal_id,
+                )
+            )
+        if isinstance(design, HumanDeploymentRequest):
+            assessment = check_deployment(design)
+            diagnostics.extend(
+                DesignChoice(
+                    code,
+                    "Declared deployment dependency or timing prevents supported human mechanism selection.",
+                )
+                for code in assessment.diagnostics
+            )
+            diagnostics.append(
+                DesignChoice(
+                    "deployment_empirical_support_unestablished",
+                    "A delivery specification and compatible timing declarations do not establish recipient targeting, intracellular delivery, expression or same-cell coexistence.",
                 )
             )
         if request.artifact_scope == "complete_payload":
