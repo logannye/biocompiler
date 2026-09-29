@@ -1,6 +1,6 @@
 # CellWeave intent API: v0.1
 
-**Status:** implemented authoring API, 2026-09-29, package `0.1.0.dev1`. Authoring, typed intent graphs, JSON inspection, and parameter-binding reports are available. Molecular realization and DNA/RNA emission are not implemented. This API version is independent of the package version.
+**Status:** implemented authoring API, 2026-09-29, package `0.1.0.dev2`. Authoring, typed intent/behavior graphs, JSON inspection, parameter-binding reports, and abstract behavior execution are available. Molecular realization and DNA/RNA emission are not implemented. This API version is independent of the package version.
 
 CellWeave lets an immune-cell engineer describe an evolving therapeutic behavior and refine it into DNA or RNA payload specifications for engineering cells **in vivo**. The author describes participating cell roles, what they perceive, how they respond, what they remember, and how they work together.
 
@@ -246,7 +246,7 @@ cells.when(phase.is_("recovering")).do(
 )
 ```
 
-`phase.set()` describes an idempotent state assignment. Conditions observe the prior state; resulting transitions do not acquire priority from Python statement order. If different rules can assign incompatible values at the same time, that arbitration is a visible design choice.
+`phase.set()` describes an idempotent state assignment. Conditions observe the prior state; resulting transitions do not acquire priority from Python statement order. If different rules can assign incompatible values at the same time, that arbitration is a visible design choice. The v0.1 behavior profile resolves it by rejecting a conflicting simultaneous assignment; identical typed writes coalesce. State updates commit atomically and propagate through same-time microsteps.
 
 Adding a phase does not implicitly gate earlier rules. To restrict clearance to the active phase, author its guard as `phase.is_("active") & primed.is_set() & recognized` instead of the earlier clearance guard.
 
@@ -393,7 +393,7 @@ profile = cw.BuildProfile(
 
 This identifier is illustrative, not a supplied biological context. A context snapshot must describe the roles used by the program. A build profile selects DNA or RNA before mechanism selection; modality can therefore guide refinement while the behavioral source stays recognizable. The first profile describes one modality for a build, including a build with multiple same-modality payloads. Mixed-modality packages are a future profile extension.
 
-The workflow exposes three stages; the first two currently return inspectable records:
+The molecular workflow exposes three stages; the first two return inspectable records. Behavior lowering and reference execution are a separate, target-independent path described in the [behavior semantics](behavior-semantics-v0.1.md):
 
 ```python
 # Uses the coordinated-response therapy and the profile above.
@@ -525,6 +525,6 @@ These are the bridge from readable therapeutic intent to molecular implementatio
 
 The v0.1 release implements the complete authoring vocabulary in this reference: roles, scopes, signals, types, parameters, signatures, conditions, events, memory, state, actions, outputs, feedback specifications, and channels. Six [executable example programs](../examples/intent_programs.py) cover the main combinations. Tests check ownership, units, temporal metadata, named definitions, immutable serialization, and planning bindings.
 
-The graphs preserve temporal and controller semantics; this release does not execute a time-course simulator. Conflict arbitration remains an explicit unresolved design field, and named biological concepts are not automatically assigned sensors or effectors. The next compiler work is a checked intent-to-behavior lowering, followed by particular molecular realization paths.
+The graphs retain the broad authoring vocabulary. `lower_to_behavior()` implements the executable subset defined in the [behavior semantics](behavior-semantics-v0.1.md); `evaluate()` runs its abstract specification against supplied histories. This is not a biological time-course simulator. Controllers, spatial/multicell transport and other unsupported operators receive explicit lowering diagnostics. Named biological concepts are not automatically assigned sensors or effectors. The next molecular work is a modeled realization path governed by the [toolchain contracts](toolchain-contracts.md).
 
 See [architecture](architecture.md) for compiler stages and [roadmap](roadmap.md) for implementation sequencing.

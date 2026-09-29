@@ -141,11 +141,16 @@ class WorkflowTests(unittest.TestCase):
                 self.assertEqual(
                     saved["target"],
                     {
+                        "schema_version": "cellweave.target.v0.1",
                         "context_id": "symbolic_context",
                         "context_version": "7",
                         "payload_format": modality.value,
+                        "capabilities": [],
+                        "compartments": ["abstract"],
+                        "resources": {},
                     },
                 )
+                self.assertEqual(saved["schema_version"], "cellweave.plan.v0.2")
                 self.assertEqual(saved["program_fingerprint"], self.program.fingerprint)
                 self.assertEqual(saved["status"], "unresolved")
 

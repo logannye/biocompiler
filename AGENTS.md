@@ -1,6 +1,6 @@
 # Working on CellWeave
 
-CellWeave implements a Python intent authoring API and immutable graphs. Molecular lowering, biological simulation, and sequence generation remain unimplemented.
+CellWeave implements Python intent authoring, immutable intent/behavior graphs, checked lowering, abstract reference execution, and finite-trace checking against independent synthetic models. Molecular lowering, biological simulation, and sequence generation remain unimplemented.
 
 - Preserve the distinction between exact artifact identity, model-conditional claims, and empirical evidence. Never label an unresolved biological claim as verified.
 - Python authoring will construct typed descriptions. Python control flow must not silently stand in for cellular runtime behavior.
@@ -9,6 +9,9 @@ CellWeave implements a Python intent authoring API and immutable graphs. Molecul
 - Keep the runtime dependency surface small. Introduce dependencies when a concrete implementation requires them.
 - Keep generated build artifacts and scratch work out of version control. Do not add patient data, credentials, or proprietary biological libraries.
 - Update the architecture and roadmap when an implementation changes their assumptions.
+
+- Follow `docs/behavior-semantics-v0.1.md` for the executable semantic profile and `docs/toolchain-contracts.md` for downstream obligations. Behavior execution is a language reference, not a biological simulator.
+- Follow `docs/realization-checking-v0.1.md` for model checks. Keep candidate execution independent from the behavior evaluator. Preserve non-vacuous coverage and all dependency identities; change tool/profile versions when their semantics change. Never broaden a finite-trace result into a universal or empirical claim.
 
 ## Native build storage
 

@@ -1,6 +1,6 @@
 # Roadmap
 
-The repository begins as an architectural skeleton. Progress should be measured by a small, reviewable vertical slice with explicit acceptance criteria, not by the number of directories or supported concepts.
+The repository now includes intent authoring and its first executable semantic layer. Progress should be measured by a small, reviewable vertical slice with explicit acceptance criteria, not by the number of directories or supported concepts.
 
 ## 0. Establish the scaffold — implemented
 
@@ -14,13 +14,19 @@ The authoring surface is implemented across these concepts. Planning inspection 
 
 Deliver an inspectable intent representation and diagnostics for undefined semantics. Use synthetic fixtures to test the compiler infrastructure; label them as fixtures rather than biological evidence.
 
-## 2. Build the first checked lowering
+## 2. Build the first checked lowering — implemented in v0.1
 
-Build the first intent-to-behavior pass on the implemented Python authoring interface. Preserve source locations and requirement identifiers. Separate design-time Python evaluation from biological operators.
+The first intent-to-behavior pass preserves source locations, requirement identities, typed expressions and explicit execution policies. Immutable Behavior IR has deterministic serialization and a checked source correspondence. An abstract reference evaluator processes object-scoped histories, exact deadlines, concurrent rules, memory and finite state.
 
-Acceptance requires reproducible serialization, clear failures for unsupported operations, and tests showing that scope and timing constraints survive lowering.
+Regression tests distinguish same/different contacted objects, sustained/transient conditions, simultaneous/ordered events, resets/expiry and repeated pulse triggers. The [semantic specification](behavior-semantics-v0.1.md) identifies supported constructs. The authoring language remains broader: continuous models, spatial transport and control-law synthesis need additional semantics.
 
-## 3. Add one modeled realization path
+Extend the behavior profile with explicit quantitative/control semantics as needed. Preserve the [toolchain obligations](toolchain-contracts.md) throughout.
+
+## 3. Add one modeled realization path — synthetic checking foundation implemented
+
+Immutable response contracts, operating domains, typed observation mappings, and target capabilities now support a bounded finite-trace checking profile. An independent synthetic Mechanism IR runner produces candidate trajectories. The checker exercises required responses and returns source-linked counterexamples, coverage, explicit outcomes, and dependency identities. Changes to model parameters, context, contracts, mappings, or histories invalidate old evidence. See [realization checking](realization-checking-v0.1.md).
+
+Next, connect a domain-specific model to this machinery with explicit applicability and uncertainty. The current signal-graph fixture establishes software behavior; it is not a molecular implementation. Add typed parameter provenance, uncertainty/population quantifiers, compositional assumptions, resource accounting, and a dependency linker as their first concrete adapters require them.
 
 Choose one payload modality, one bounded cell context, and a small behavior set for the first realization path. Define mechanism and component schemas, observation mappings, and a minimal versioned registry. Select a tightly scoped model and define its applicability assumptions. Keep the candidate generator separate from the checker.
 

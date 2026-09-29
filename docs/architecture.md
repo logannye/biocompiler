@@ -2,7 +2,7 @@
 
 CellWeave is a proposed compiler for converting an immune-cell engineer's intent into an exact digital specification of a DNA or RNA payload. Its organizing principle is **preservation of a behavioral contract through explicit intermediate representations (IRs)**.
 
-The current repository implements the Python intent frontend and immutable graph serialization, plus planning inspection. Molecular lowering, biological simulation, characterized component libraries, and sequence generation are not implemented. Physical manufacture, administration, and execution in a recipient cell are outside the compiler boundary.
+The current repository implements the Python intent frontend, immutable intent and behavior graphs, checked intent-to-behavior lowering, an abstract reference evaluator, planning inspection, and finite-trace realization checking against independent synthetic models. Molecular lowering, biological simulation, characterized component libraries, and sequence generation are not implemented. Physical manufacture, administration, and execution in a recipient cell are outside the compiler boundary.
 
 The [v0.1 intent API](intent-api-v0.1.md) implements the authoring vocabulary: cell roles, scoped observations, expressions, actions, state, outputs, controllers, and communication. Python constructs an inspectable intent graph; molecular realization remains a later stage.
 
@@ -26,7 +26,7 @@ An exact sequence does not establish exact cellular behavior. Artifact identity 
 | Module | Intended responsibility |
 | --- | --- |
 | `frontend` | Construct scoped, typed intent graphs from Python objects; retain source locations, ownership, and dimensional relationships. |
-| `ir` | Immutable versioned intent graphs and JSON serialization; shared stage identifiers and reserved later-stage schemas. |
+| `ir` | Immutable versioned intent and behavior graphs and JSON serialization; shared stage identifiers and reserved later-stage schemas. |
 | `semantics` | Types, units, context, requirement meanings, observational mappings, and refinement obligations. |
 | `compiler` | Pass interfaces, stage ordering, diagnostics, dependency tracking, and provenance. |
 | `synthesis` | Propose candidate mechanisms, component assignments, and encodings within supported design spaces. |
@@ -65,3 +65,17 @@ The eventual artifact should contain the complete digital molecular specificatio
 Reproducibility means that frozen inputs and tool versions reproduce the same digital artifact and analysis record. It does not imply that biological outcomes are deterministic.
 
 See the [roadmap](roadmap.md) for implementation order and the [initial architecture decision](decisions/0001-explicit-contracts-and-staged-compilation.md) for constraints.
+
+## Executable semantic foundation
+
+The [behavior semantics](behavior-semantics-v0.1.md) define an execution profile independently of molecular implementations. `lower_to_behavior` normalizes supported intent, binds scalar design parameters, records source/requirement lineage and explicit runtime policies, and rejects unsupported semantics. `verify_lowering` checks correspondence. Behavior IR is immutable and serializable; its reference evaluator runs one engineered cell against supplied input histories, including same-time state propagation and internal deadlines.
+
+The [toolchain contracts](toolchain-contracts.md) are design obligations for every later layer: target capabilities, observation mappings, required responses, independent synthesis/checking, composed resource models, host linking, construct partitioning, encoding invalidation and complete molecular artifacts. Future module docstrings point to these obligations. The reference evaluator is an oracle for language semantics; biological model adapters belong to `models`.
+
+## Independent realization checking
+
+The first [realization profile](realization-checking-v0.1.md) makes a subset of these obligations executable. Response contracts attach typed endpoints, contact scope, active/inactive ranges, and deadlines to installed behavior actions. Operating domains and versioned target contexts make assumptions inspectable. Observation maps bind explicit input fields and output endpoints to a synthetic Mechanism IR.
+
+The candidate model executes independently of the behavior evaluator. A checker compares the two complete discrete-event traces and produces scoped outcomes, source-linked counterexamples, coverage, and dependency fingerprints. Empty coverage, missing assumptions, and unsupported semantics cannot silently become passing results. Evidence freshness is checked against all recorded dependencies before reuse.
+
+This profile tests the preservation machinery without claiming a molecular mechanism has been realized. Full model applicability, component and host linking, uncertainty propagation, resource competition, construct composition, and encoding preservation remain separate obligations. [ADR 0003](decisions/0003-independent-realization-checking.md) records this boundary.
