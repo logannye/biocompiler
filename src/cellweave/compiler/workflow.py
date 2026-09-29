@@ -98,7 +98,7 @@ class RealizationPlan:
 
     @property
     def ready(self) -> bool:
-        # No molecular backend exists in the authoring release.
+        # Exact-reference backends do not implement general intent compilation.
         return False
 
     @property
@@ -180,6 +180,73 @@ def _check_bound_quantities(
                 )
 
 
+def _profile_choices(program: IntentProgram) -> tuple[DesignChoice, ...]:
+    """Name missing semantic obligations without inventing an execution profile.
+
+    These are planning diagnostics, not implementations of the named dynamics.
+    Scalar arithmetic and discrete state/pulse operations keep their existing
+    abstract semantics; only explicit unsupported extension nodes are reported.
+    """
+    choices = []
+    profiles = {
+        "curve_apply": (
+            "quantitative_profile_unavailable",
+            "Quantitative response tracking needs a separately versioned execution profile and calibrated observation/output mapping.",
+        ),
+        "integrated": (
+            "continuous_profile_unavailable",
+            "Rolling integration needs defined history, boundary and numerical-error semantics; no continuous model adapter is installed.",
+        ),
+        "controller": (
+            "feedback_profile_unavailable",
+            "Feedback needs an explicit plant model, controller law, arbitration and stability/uncertainty obligations.",
+        ),
+        "spatial_signal": (
+            "spatial_profile_unavailable",
+            "Spatial observations need coordinates, geometry, transport and measurement semantics.",
+        ),
+        "action.migrate_toward": (
+            "spatial_profile_unavailable",
+            "Migration needs a spatial dynamics profile and context-supported response model.",
+        ),
+        "channel": (
+            "population_profile_unavailable",
+            "Intercellular communication needs population, delivery and observation semantics; a declared channel supplies no transport model.",
+        ),
+        "channel_observation": (
+            "population_profile_unavailable",
+            "Received signals need an explicit sender/receiver population and delivery model.",
+        ),
+        "action.emit": (
+            "population_profile_unavailable",
+            "Signal emission needs calibrated transport and receiver semantics.",
+        ),
+    }
+    for node in program.nodes:
+        if node.kind in profiles:
+            code, message = profiles[node.kind]
+            choices.append(DesignChoice(code, message, node.id))
+        if node.kind in {"literal", "parameter"} and node.data_type:
+            kind = TypeSpec.from_dict(node.data_type).kind
+            if kind == "interval":
+                choices.append(
+                    DesignChoice(
+                        "uncertainty_profile_unavailable",
+                        "Interval-valued intent needs explicit quantifiers and uncertainty propagation; an interval is not an empirical distribution.",
+                        node.id,
+                    )
+                )
+            elif kind == "curve":
+                choices.append(
+                    DesignChoice(
+                        "quantitative_profile_unavailable",
+                        "A declared curve retains its interpolation policy but supplies no calibrated biological response or execution profile.",
+                        node.id,
+                    )
+                )
+    return tuple(choices)
+
+
 def plan(program: IntentProgram, *, profile: BuildProfile) -> RealizationPlan:
     """Bind parameters and enumerate unresolved intent; do not synthesize parts."""
     if not isinstance(program, IntentProgram) or not isinstance(profile, BuildProfile):
@@ -246,6 +313,7 @@ def plan(program: IntentProgram, *, profile: BuildProfile) -> RealizationPlan:
                     node.id,
                 )
             )
+    unresolved.extend(_profile_choices(program))
     unresolved.append(
         DesignChoice(
             "molecular_backend_unavailable",
@@ -261,8 +329,30 @@ def compile(design: RealizationPlan | BuildRequest | RealizationRequest) -> None
         raise TypeMismatchError(
             "compile() requires a RealizationPlan, BuildRequest or RealizationRequest."
         )
+    if isinstance(design, RealizationPlan):
+        diagnostics = design.unresolved
+    else:
+        request = (
+            design.build_request if isinstance(design, RealizationRequest) else design
+        )
+        diagnostics = list(_profile_choices(request.intent))
+        if request.artifact_scope == "complete_payload":
+            diagnostics.append(
+                DesignChoice(
+                    "complete_payload_not_promoted",
+                    "Complete-payload compilation requires an independently promoted whole-molecule reference and supported implementation profile; CDS identity and structural readiness cannot complete this scope.",
+                )
+            )
+        diagnostics.append(
+            DesignChoice(
+                "molecular_behavior_unestablished",
+                "An explicit molecular implementation contract must bind selected components to the requested observations with an applicable, independently validated model adapter.",
+            )
+        )
+    detail = "; ".join(dict.fromkeys(choice.code for choice in diagnostics))
     raise CompilationUnavailableError(
         "General intent-to-molecular realization is not implemented. "
         "Use run_molecular_pipeline with an independently pinned ConstructRequest for exact-reference CDS emission; "
-        "inspect design.unresolved or design.to_json() for unresolved intent designs."
+        f"unresolved obligations: {detail}.",
+        diagnostics=diagnostics,
     )

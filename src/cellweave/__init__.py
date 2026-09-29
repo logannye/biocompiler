@@ -1,6 +1,34 @@
 """Author inspectable therapeutic programs for in-vivo immune-cell engineering."""
 
-__version__ = "0.1.0.dev9"
+__version__ = "0.1.0.dev10"
+
+from cellweave.ir.payload import (
+    PayloadFeature,
+    PayloadMolecule,
+    PayloadReference,
+    PayloadRegion,
+    PayloadReview,
+    PayloadSource,
+)
+from cellweave.verification.payload import (
+    PayloadDiagnostic,
+    PayloadResult,
+    check_payload,
+    payload_dependencies,
+)
+from cellweave.semantics.molecular_behavior import (
+    MolecularEvidence,
+    MolecularImplementationContract,
+    MolecularInputBinding,
+    MolecularParameter,
+    MolecularResponseBinding,
+)
+from cellweave.verification.molecular_behavior import (
+    MolecularBehaviorDiagnostic,
+    MolecularBehaviorResult,
+    check_molecular_implementation,
+    molecular_behavior_dependencies,
+)
 
 from cellweave.verification.exploration import (
     AdversarialConfig,
@@ -234,6 +262,25 @@ from cellweave.verification.realization import (
 )
 
 __all__ = [
+    "PayloadFeature",
+    "PayloadMolecule",
+    "PayloadReference",
+    "PayloadRegion",
+    "PayloadReview",
+    "PayloadSource",
+    "PayloadDiagnostic",
+    "PayloadResult",
+    "check_payload",
+    "payload_dependencies",
+    "MolecularEvidence",
+    "MolecularImplementationContract",
+    "MolecularInputBinding",
+    "MolecularParameter",
+    "MolecularResponseBinding",
+    "MolecularBehaviorDiagnostic",
+    "MolecularBehaviorResult",
+    "check_molecular_implementation",
+    "molecular_behavior_dependencies",
     "AdversarialConfig",
     "BooleanContactConfig",
     "BooleanObservation",

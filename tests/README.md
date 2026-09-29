@@ -1,5 +1,7 @@
 # Test boundaries
 
+M9 correspondence tests rerun source/CDS acceptance and distinguish exact linkage from biological UNKNOWN. Independent admission mutations cover forged calibration/material labels, named adapters, endpoint units, omitted outputs and stale evidence. Payload tests use explicitly artificial source/review records to exercise complete-molecule boundaries, exact sequence/translation, topology, end chemistry and authority tampering; structural PASS cannot promote a real reference or admit a complete-payload compiler build. Planning tests retain specific unsupported extension obligations. See [molecular contracts](../docs/molecular-behavior-v0.1.md), [payload readiness](../docs/payload-profiles-v0.1.md) and [M9 evidence](../docs/m9-evidence-review.md).
+
 The standard-library `unittest` suite exercises the authoring API and its serialized
 intent graph, checked lowering, and abstract execution histories. Run from the repository root with Python 3.11 or later:
 

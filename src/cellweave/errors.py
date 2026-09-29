@@ -24,6 +24,10 @@ class SerializationError(CellWeaveError, ValueError):
 class CompilationUnavailableError(CellWeaveError, NotImplementedError):
     """Molecular realization is not implemented."""
 
+    def __init__(self, message, *, diagnostics=()):
+        self.diagnostics = tuple(diagnostics)
+        super().__init__(message)
+
 
 class BehaviorError(CellWeaveError, ValueError):
     """An invalid or unresolved abstract behavior specification."""

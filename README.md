@@ -6,6 +6,8 @@ A compiler architecture for turning an immune cell engineer's Python-authored in
 
 ## Planned compiler stack
 
+M9 adds [molecular implementation contracts](docs/molecular-behavior-v0.1.md) that bind requested behavior and measurements to selected CDS components while keeping biological outcomes unresolved. Separate [whole-molecule readiness profiles](docs/payload-profiles-v0.1.md) check supplied RNA/DNA specifications, retained evidence and molecule completeness. No complete biological payload reference or calibrated biological adapter is admitted yet; the [evidence review](docs/m9-evidence-review.md) records the outstanding gates. Run `PYTHONPATH=src python examples/molecular_contract.py` and `PYTHONPATH=src python examples/payload_readiness.py` for the supported checks.
+
 CellWeave is designed to turn a description of **what an engineered immune cell should do** into an exact specification of **what its genetic payload must contain**. Each layer resolves more implementation detail while carrying the original requirements forward. The diagram shows the intended architecture. Python authoring, frozen requests, intent/behavior graphs, checked passes, abstract execution, automatic combinational synthetic realization, component linking, single-CDS construct assembly, exact-reference nucleotide emission and reproducible reference packaging are implemented; general molecular realization and complete-payload generation remain planned.
 
 ```mermaid

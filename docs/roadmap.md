@@ -2,7 +2,7 @@
 
 This roadmap turns the current semantic foundation into a reproducible compiler path, using **exact, published coding-sequence (CDS) references** for the first molecular benchmarks. Completed tasks below identify implemented, scoped capabilities; unchecked tasks remain planned work. This is the authoritative roadmap. Task IDs are stable so implementation PRs can cite them and mark individual items complete.
 
-Implementation foundation updated on 2026-09-29, with M8 developed from commit `0f14d87` (reproducible offline reference packages):
+Implementation foundation updated on 2026-09-29, with M9 contract and payload-readiness work developed from merged commit `cb57948` (M0–M8):
 
 | Boundary | Current implementation | Next responsibility |
 | --- | --- | --- |
@@ -188,13 +188,19 @@ Implemented M8 profile: 25 literal semantic timelines and five metamorphic invar
 
 **Primary modules:** `models/`, `semantics/`, `synthesis/`, `registry/`, both backends and `interop/` as needed.
 
-- [ ] **M9.1** Add an explicit molecular implementation contract connecting a supported therapeutic Behavior pattern to selected mechanisms/components and their observation mapping. Record applicability, parameters, evidence and unestablished claims. Do not attach a synthetic delay/gate model to a CAR by analogy alone.
+- [x] **M9.1** Add an explicit molecular implementation contract connecting a supported therapeutic Behavior pattern to selected mechanisms/components and their observation mapping. Record applicability, parameters, evidence and unestablished claims. Do not attach a synthetic delay/gate model to a CAR by analogy alone. Implemented as checked **requested correspondence** to the selected exact CDS; a linkage PASS does not establish biological behavior.
 - [ ] **M9.2** Introduce calibrated biological adapters only for concrete supported contexts. Separate model validation, uncertainty, parameter fitting and observed therapeutic outcomes from sequence identity.
 - [ ] **M9.3** Promote a full-mRNA or complete DNA/vector reference only after the [reference promotion gates](reference-benchmarks.md#extending-to-a-complete-payload) pass. Add modality-specific completeness rules and actual delivered-molecule boundaries.
 - [ ] **M9.4** Add quantitative tracking, continuous dynamics, uncertain/population responses, spatial behavior and feedback as separately versioned semantic/model profiles. Keep the broad authoring API available with explicit unsupported-compilation diagnostics.
 - [ ] **M9.5** Introduce optimization, search over alternative implementations and SBOL/SBML interoperation when concrete use cases justify them. Preserve hard requirements, context, source correspondence and revalidation obligations.
 
 **Acceptance:** each additional feature has defined semantics, a supported realization profile, independently checked output and an explicit evidence boundary. Full-payload compilation has its own completion contract; a CDS-only success is never silently promoted.
+
+**M9 implementation status:** M9.1 now has strict [molecular implementation contracts](molecular-behavior-v0.1.md), complete requested input/response mappings, typed parameter provenance, separate evidence categories and an independent checker that reruns source and exact-CDS checks. The FAP example links a requested contact response to its selected CDS and returns biological UNKNOWN. No biological adapter is installed.
+
+For M9.3, separate [payload readiness profiles](payload-profiles-v0.1.md) check supplied mature linear RNA, linear DNA and circular-plasmid specifications against independently pinned expectations and retained source/review bytes. Explicitly artificial fixtures exercise positive structural checks and mutation failures. Structural PASS never admits a complete-payload compiler build or promotes a biological reference. The accepted complete-payload reference inventory remains empty.
+
+M9.2 and actual M9.3 reference promotion remain evidence-dependent. The [M9 source review](m9-evidence-review.md) records the missing compatible calibration/validation dataset, the FAP experimental composite/material gap, and unresolved full-molecule candidate listings/versions. M9.4 now has source-linked planning/compilation diagnostics for quantitative, continuous, uncertainty, spatial, population and feedback extensions; their executable semantic/model profiles remain unimplemented. M9.5 remains deferred until a concrete supported use case can preserve these obligations. **M9 as a whole is not complete.**
 
 ## Current implementation evidence
 
@@ -209,10 +215,11 @@ The following milestones are implemented for their narrow supported profiles:
 - **M6:** [exact DNA/RNA CDS emission](exact-cds-pipeline-v0.1.md), independent nucleotide/protein comparisons, explicit feature uncertainty, encoding invalidation and identity-preserving FASTA/JSON export.
 - **M7:** [portable reference builds](reference-build-v0.1.md), strict canonical manifests/archives, independent offline reconstruction, run-metadata separation and atomic failure preservation.
 - **M8:** [cross-operator semantic matrix](semantic-regression-matrix-v0.1.md), preconditioned metamorphic checks, [explicit bounded exploration and seeded adversarial histories](verification-exploration-v0.1.md), failure-preserving deletion reduction, and an [independence/mutation audit](verification-independence-v0.1.md). The shared checker requires both active and inactive deadlines. The 625-history presence-aware campaign states its fixed suffix and finite time grid; earlier 256-transition and cross-layer mutation tests remain. These bounds do not establish universal or biological validity.
+- **M9.1 and readiness infrastructure:** [requested molecular correspondence](molecular-behavior-v0.1.md), typed parameter/evidence records and independent source/CDS rechecking; [whole-molecule structural readiness](payload-profiles-v0.1.md) with separate authority and exact source/review pins. Biological behavior, reference promotion and full-payload compiler admission remain unestablished.
 
-The existing hosted Python 3.11/3.14 package, test, example and CLI gates are retained and include all integrated component, construct, exact-CDS and packaged-reference examples, plus installed CLI build/inspect/reconstruction and retained failure evidence. They also run the bounded verification example and retain its exploration/reduced-counterexample JSON evidence. Each run reports the exact Git revision and platform. Detailed tests are under `tests/test_build_request.py`, `test_pipeline*.py`, `test_checked_pipeline.py`, `test_references.py`, `test_synthetic_generation.py`, `test_construct*.py`, `test_molecular*.py` and `test_sequence*.py`.
+The existing hosted Python 3.11/3.14 package, test, example and CLI gates are retained and include all integrated component, construct, exact-CDS and packaged-reference examples, plus installed CLI build/inspect/reconstruction and retained failure evidence. They run the bounded verification example and retain its exploration/reduced-counterexample JSON evidence. They also run molecular correspondence and payload-readiness examples and retain explicit UNKNOWN, structural readiness and mutation-rejection records. Each run reports the exact Git revision and platform. Detailed tests are under `tests/test_build_request.py`, `test_pipeline*.py`, `test_checked_pipeline.py`, `test_references.py`, `test_synthetic_generation.py`, `test_construct*.py`, `test_molecular*.py`, `test_payload_profiles.py`, `test_m9_admission_audit.py` and `test_sequence*.py`.
 
-The next implementation milestone is **M9 molecular behavior contracts and broader payload profiles**, starting with an explicitly supported behavior-to-molecular contract and its evidence requirements. Temporal synthetic operators remain a separately specified extension.
+The next M9 gates are a **context-matched calibrated model with independent validation** and an **independently reviewed complete-molecule reference**. The source review lists the concrete missing inputs. Once those gates are met, implement the corresponding adapter and completion profile with fresh checks. Temporal synthetic operators remain a separately specified extension.
 
 ## Suggested implementation PRs
 

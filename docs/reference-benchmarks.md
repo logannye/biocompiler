@@ -90,6 +90,8 @@ Retrieval limitations are recorded as **not verified**, not as proof that a sequ
 
 ## Extending to a complete payload
 
+The M9 [source review](m9-evidence-review.md) reconfirmed that no pending candidate yet meets promotion requirements. It identifies the later Capstan A9 publication, unresolved listing retrieval and the larger FAP experimental coding context. The separate [payload-readiness checker](payload-profiles-v0.1.md) now makes structural/source gates executable for supplied expectations, but does not promote these candidates or change the accepted CDS fixtures.
+
 A future full-payload fixture must identify the actual emitted molecule or coordinated molecule set, including boundaries, relevant noncoding regions, topology and target-specific molecular features. A DNA transcription template, mature linear RNA, circular RNA, transfer plasmid and packaged vector genome require different artifact classes and conversion contracts.
 
 Promotion also requires a supported implementation profile, complete source correspondence, fresh checks and explicit context/evidence linkage. Every added sequence choice changes the reference artifact unless the source already specifies it. Keep molecular behavior modeling and new sequence optimization as separately reviewable work in [M9](roadmap.md#m9--connect-molecular-behavior-and-expand-beyond-cds-references).
