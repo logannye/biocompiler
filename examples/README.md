@@ -23,3 +23,5 @@ meaning.
 [checked_pipeline.py](checked_pipeline.py) freezes build authority, runs two checked passes, checks a generated candidate and demonstrates automatic transitive invalidation. Run `PYTHONPATH=src python examples/checked_pipeline.py`. Its completion scope is a synthetic finite history; molecular obligations remain unresolved.
 
 [component_linking.py](component_linking.py) extends the synthetic pipeline to locked component contracts and separately inspects a pinned FAP RNA-CDS reference. Run `PYTHONPATH=src python examples/component_linking.py`. It preserves finite-history evidence and CDS-only scope; no molecular sequence is emitted.
+
+[reference_construct.py](reference_construct.py) independently selects DNA and RNA CDS records and runs checked single-component construct assembly for each. Run `PYTHONPATH=src python examples/reference_construct.py`. The complete reference layout retains unknown payload context and unresolved emission/biological obligations.

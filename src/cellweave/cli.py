@@ -38,6 +38,8 @@ from cellweave.semantics.component_contracts import (
     ValueDomain,
 )
 from cellweave.verification.components import CompositionResult
+from cellweave.ir.construct import ConstructCandidate, ConstructRequest
+from cellweave.verification.construct import ConstructResult
 
 
 def _read_artifact(document):
@@ -74,6 +76,9 @@ def _read_artifact(document):
                 PortContract,
                 ValueDomain,
                 CompositionResult,
+                ConstructRequest,
+                ConstructCandidate,
+                ConstructResult,
             )
         }
     )
@@ -101,7 +106,17 @@ def _summary(artifact):
     if isinstance(artifact, CheckResult):
         summary["counterexamples"] = len(artifact.counterexamples)
         summary["diagnostics"] = [item.to_dict() for item in artifact.diagnostics]
-    if isinstance(artifact, (ComponentAssembly, CompositionResult, SelectionResult)):
+    if isinstance(
+        artifact,
+        (
+            ComponentAssembly,
+            CompositionResult,
+            SelectionResult,
+            ConstructRequest,
+            ConstructCandidate,
+            ConstructResult,
+        ),
+    ):
         summary["inspection"] = (
             "Historical content inspection only; recompute acceptance and freshness against current authoritative inputs before reuse."
         )
@@ -115,7 +130,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     )
     commands = parser.add_subparsers(dest="command", required=True)
     commands.add_parser(
-        "architecture", help="Show planned intermediate representations"
+        "architecture", help="Show implemented and planned compiler stages"
     )
     inspect_command = commands.add_parser(
         "inspect", help="Inspect a saved versioned JSON artifact"
@@ -123,7 +138,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     inspect_command.add_argument(
         "path",
         type=Path,
-        help="Request, intent, behavior, mechanism, contract, domain, context, map, or check JSON file",
+        help="Request, graph, component, construct, contract, context, or check JSON file",
     )
     inspect_command.add_argument(
         "--json", action="store_true", help="Print the normalized full graph"
@@ -131,7 +146,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     args = parser.parse_args(argv)
     if args.command == "architecture":
         print(
-            "CellWeave pipeline (frozen requests, checked synthetic generation and component linking implemented; molecular lowering planned)"
+            "CellWeave pipeline (checked synthetic generation, component linking and reference construct assembly implemented; sequence emission planned)"
         )
         print("Python authoring -> immutable intent graph")
         for stage in STAGE_ORDER:

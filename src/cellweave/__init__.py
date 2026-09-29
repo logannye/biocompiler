@@ -1,6 +1,26 @@
 """Author inspectable therapeutic programs for in-vivo immune-cell engineering."""
 
-__version__ = "0.1.0.dev5"
+__version__ = "0.1.0.dev6"
+
+from cellweave.compiler.construct import ConstructBuild, run_construct_pipeline
+from cellweave.ir.construct import (
+    ComponentPlacement,
+    ConstructCandidate,
+    ConstructDependency,
+    ConstructFeature,
+    ConstructJunction,
+    ConstructMolecule,
+    ConstructReference,
+    ConstructRequest,
+    LayoutEvidencePolicy,
+    RegulatoryRelationship,
+    SequenceRange,
+)
+from cellweave.synthesis.construct import (
+    generate_construct,
+    prepare_reference_construct,
+)
+from cellweave.verification.construct import ConstructResult, check_construct
 
 from cellweave.compiler.components import (
     ComponentBuild,
@@ -165,6 +185,23 @@ from cellweave.verification.realization import (
 )
 
 __all__ = [
+    "ComponentPlacement",
+    "ConstructBuild",
+    "ConstructCandidate",
+    "ConstructDependency",
+    "ConstructFeature",
+    "ConstructJunction",
+    "ConstructMolecule",
+    "ConstructReference",
+    "ConstructRequest",
+    "ConstructResult",
+    "LayoutEvidencePolicy",
+    "RegulatoryRelationship",
+    "SequenceRange",
+    "check_construct",
+    "generate_construct",
+    "prepare_reference_construct",
+    "run_construct_pipeline",
     "ComponentAssembly",
     "ComponentBuild",
     "ComponentOperatingDomain",
