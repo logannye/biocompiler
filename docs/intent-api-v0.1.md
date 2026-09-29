@@ -1,6 +1,6 @@
-# CellWeave intent API: v0.1 draft
+# CellWeave intent API: v0.1
 
-**Status:** API design proposal, 2026-09-29. The Python below specifies the intended public interface; it is not implemented by the current package. This API version is independent of the package version.
+**Status:** implemented authoring API, 2026-09-29, package `0.1.0.dev1`. Authoring, typed intent graphs, JSON inspection, and parameter-binding reports are available. Molecular realization and DNA/RNA emission are not implemented. This API version is independent of the package version.
 
 CellWeave lets an immune-cell engineer describe an evolving therapeutic behavior and refine it into DNA or RNA payload specifications for engineering cells **in vivo**. The author describes participating cell roles, what they perceive, how they respond, what they remember, and how they work together.
 
@@ -74,13 +74,13 @@ These dimensions compose. The API is not organized around a particular receptor 
 | `Action` | A description of a requested cellular action; constructing it does not install a rule. |
 | `Rule` | Associates a condition or event with actions. |
 | `Memory` / `State` | Retained information and explicit behavioral phases. |
-| `Output` | A named, controllable biological output, such as secretion of a product. |
+| Output (`Secretion`) | A named, controllable biological output, such as secretion of a product. |
 | `Controller` | An objective for adjusting an output in response to an observed quantity. |
 | `Channel` | A communication relationship between cell roles. |
 | `Signature` | A named, reusable recognition expression bound to an observation scope. |
 | `Parameter[T]` | A named design choice whose value can be supplied later. |
 
-These are semantic objects, not molecular parts. The first implementation may use a small number of underlying node classes while exposing these distinct authoring concepts.
+These semantic objects share an underlying graph representation. They describe cell behavior without selecting molecular parts.
 
 ### Scope through ordinary object access
 
@@ -254,7 +254,7 @@ Adding a phase does not implicitly gate earlier rules. To restrict clearance to 
 
 Actions include immediate effect requests and ongoing capabilities. Their action definitions specify which interpretation applies. Constructing `cells.secrete(...)` returns an action specification; a rule or controller must attach it to the program.
 
-The initial vocabulary should include:
+The v0.1 vocabulary includes:
 
 | Action or behavior | Intent |
 | --- | --- |
@@ -376,7 +376,7 @@ A goal initially records named therapeutic intent. It can later be refined into 
 
 Parameters and biological definitions can likewise remain symbolic while the design is explored. Authoring and inspection should work before all values are selected. Subsequent refinements bind values, signatures, sensors, effectors, and context while preserving their source identities.
 
-The build workflow supplies a profile containing the molecular target and context. The draft reuses the scaffold's existing `TargetContext` and `PayloadFormat` types:
+The build workflow supplies a profile containing the molecular target and context. The interface reuses `TargetContext` and `PayloadFormat`:
 
 ```python
 import cellweave as cw
@@ -393,25 +393,50 @@ profile = cw.BuildProfile(
 
 This identifier is illustrative, not a supplied biological context. A context snapshot must describe the roles used by the program. A build profile selects DNA or RNA before mechanism selection; modality can therefore guide refinement while the behavioral source stays recognizable. The first profile describes one modality for a build, including a build with multiple same-modality payloads. Mixed-modality packages are a future profile extension.
 
-The proposed workflow has three separate outputs:
+The workflow exposes three stages; the first two currently return inspectable records:
 
 ```python
 # Uses the coordinated-response therapy and the profile above.
 program = therapy.freeze()                 # Immutable IntentProgram.
 design = cw.plan(program, profile=profile)  # RealizationPlan.
-artifact = cw.compile(design)              # PayloadArtifact.
+try:
+    artifact = cw.compile(design)          # Future molecular compiler boundary.
+except cw.CompilationUnavailableError as exc:
+    print(exc)
 ```
 
-`freeze()` preserves the authored intent and symbolic parameters. `plan()` resolves or exposes remaining design choices. `compile()` emits exact sequences, molecular features, role assignments, and source correspondence for a sufficiently resolved realization. These are proposed APIs, not current capabilities. Physical formulation and manufacture remain outside this interface.
+`freeze()` preserves the authored intent and symbolic parameters. `plan()` validates supplied parameter bindings, retains defaults, and reports unbound parameters and other unresolved design choices. It does not select molecular mechanisms or parts. `compile()` currently raises `CompilationUnavailableError`; future molecular compilation will emit sequences and molecular specifications. Physical formulation and manufacture remain outside this interface.
 
-## 9. Draft signature reference
+A profile can supply typed values without changing the authored snapshot:
+
+```python
+# Creates a separate program for this build.
+import cellweave as cw
+from cellweave.semantics.context import PayloadFormat, TargetContext
+
+therapy = cw.Therapy("timed_response")
+cells = therapy.engineer("responders", cell_type="T_cell")
+window = therapy.parameter("window", type=cw.Duration)
+cue = cells.environment.signal("cue").present()
+cells.when(cue.held_for(window)).do(cells.report("sustained_cue"))
+profile = cw.BuildProfile(
+    target=TargetContext("example_context", "1", PayloadFormat.RNA),
+    parameters={"window": cw.Duration(5, unit="min")},
+)
+design = cw.plan(therapy.freeze(), profile=profile)
+print(design.to_json())
+```
+
+The duration above illustrates units, not a therapeutic timing recommendation. Physical values use typed constructors such as `Duration(5, unit="min")` or `Concentration(1, unit="nM")`; raw numbers represent dimensionless `Level`. `Interval(lower, upper, type=...)` describes a range. Concrete `Curve(points=..., input=..., output=...)` values describe piecewise linear or step responses and can bind curve parameters. Named duration parameters may stay unresolved during authoring; known non-positive time windows and bindings that make a window non-positive are rejected.
+
+## 9. Signature reference
 
 This is a compact signature index, not an executable stub file. `T`, `U`, and `S` denote generic types; `Expr[T]` includes compatible signals, parameters, and derived quantities. Ellipses denote optional or extensible arguments.
 
 ```text
 Therapy(name: str)
-  engineer(name: str, *, cell_type: CellTypeRef | str) -> CellProgram
-  parameter(name: str, *, type: Type[T], default: T | None = None) -> Parameter[T]
+  engineer(name: str, *, cell_type: str) -> CellProgram
+  parameter(name: str, *, type: Type[T] = Level, default: T | None = None) -> Parameter[T]
   channel(name: str, *, scope: str, type: Type[T] = Level) -> Channel[T]
   goal(name: str, ...) -> Goal
   freeze() -> IntentProgram
@@ -426,22 +451,22 @@ CellProgram
   memory(name: str, *, set_when: Condition, reset_when: Condition | None = None,
          duration: Expr[Duration] | None = None) -> Memory
   state(name: str, *, values: Sequence[S], initial: S) -> State[S]
-  secretion(name: str, *, product: ProductRef | str) -> Secretion
+  secretion(name: str, *, product: str) -> Secretion
   regulate(name: str, *, observed: Expr[T], target: Expr[T] | Expr[Interval[T]],
            actuator: ControlPort[U], effect: str,
            when: Condition | None = None) -> Controller
   receives(channel: Channel[T]) -> Condition
   sense(channel: Channel[T]) -> Signal[T]
-  eliminate(target: TargetRef) -> Action
-  engulf(target: TargetRef) -> Action
-  secrete(product: ProductRef | str, *, rate: Expr[ProductionRate] | None = None) -> Action
-  present(antigen: AntigenRef | str) -> Action
+  eliminate(target: ContactScope) -> Action
+  engulf(target: ContactScope) -> Action
+  secrete(product: str, *, rate: Expr[ProductionRate] | None = None) -> Action
+  present(antigen: str) -> Action
   emit(channel: Channel[T], ...) -> Action
   migrate_toward(signal: SpatialSignal[T]) -> Action
-  retain(location: LocationRef) -> Action
+  retain(location: str | Scope) -> Action
   expand() -> Action
   rest() -> Action
-  differentiate(state: PhenotypeRef | str) -> Action
+  differentiate(state: str) -> Action
   report(label: str) -> Action
 
 RuleBuilder.do(*actions: Action) -> Rule
@@ -463,9 +488,9 @@ Secretion.rate: ControlPort[ProductionRate]
 Parameter[Curve[T, U]].__call__(input: Expr[T]) -> Expr[U]
 cw.at_least(count: int, *conditions: Condition) -> Condition
 cw.signature(function: Callable[..., Condition]) -> Signature
-BuildProfile(*, target: TargetContext, ...) -> BuildProfile
+BuildProfile(target: TargetContext, parameters: Mapping[str, Any] = ...) -> BuildProfile
 cw.plan(program: IntentProgram, *, profile: BuildProfile) -> RealizationPlan
-cw.compile(design: RealizationPlan) -> PayloadArtifact
+cw.compile(design: RealizationPlan) -> raises CompilationUnavailableError (future PayloadArtifact)
 ```
 
 Action constructors return inert specifications. `do()` installs a rule, while `engineer()`, `memory()`, `state()`, `secretion()`, and `regulate()` declare named program entities. Unattached expressions and action specifications do not change cellular behavior. Re-declaring a named entity with a different definition is not an implicit update.
@@ -482,7 +507,11 @@ flowchart LR
     MOLECULES --> PAYLOAD["DNA/RNA payload bundle"]
 ```
 
-Every node retains a stable identity and source correspondence. The next representation preserves:
+Every node retains an identity within the authored graph and a source location. `program.nodes` and nested metadata are immutable; `to_dict()` returns an independent mutable copy. `IntentProgram.from_json(program.to_json())` restores the snapshot, including its sources. The loader checks schema, references, structural cycles, and typed records; it does not simulate the program.
+
+`program.fingerprint` is a deterministic SHA-256 of the structural snapshot, excluding source locations. It is not a test of biological or logical equivalence: different construction histories or node identities may yield different fingerprints. `program.find(kind="rule")` and `program.summary()` support inspection. Unattached action expressions are pruned from snapshots, while declared entities such as outputs retain their identity without becoming active.
+
+Subsequent lowering must preserve:
 
 - **Who:** the executing role and the subject of each observation or action.
 - **What:** the meaning of signals, recognition patterns, actions, and goals.
@@ -492,12 +521,10 @@ Every node retains a stable identity and source correspondence. The next represe
 
 These are the bridge from readable therapeutic intent to molecular implementation. Exact payload identity, modeled behavior, and experimental support remain separate records in the existing compiler architecture.
 
-## 11. First implementation slice
+## 11. Implementation status
 
-Implement the authoring core first: `Therapy`, cell roles and scopes, symbolic signals and parameters, condition composition, action specifications, `when().do()`, signatures, and immutable intent serialization. Its output is an inspectable intent program.
+The v0.1 release implements the complete authoring vocabulary in this reference: roles, scopes, signals, types, parameters, signatures, conditions, events, memory, state, actions, outputs, feedback specifications, and channels. Six [executable example programs](../examples/intent_programs.py) cover the main combinations. Tests check ownership, units, temporal metadata, named definitions, immutable serialization, and planning bindings.
 
-Then add events, memory and states; named outputs and controllers; and channels between roles. The broad vocabulary in this draft guides the graph design from the start. Individual molecular realization paths can develop independently, without limiting what the intent layer can describe.
-
-Useful acceptance examples are the programs in this document: contextual clearance, reusable recognition, priming, changing phases, graded secretion, feedback regulation, and cooperating roles. Future semantic checks should confirm that their role, target, temporal, and quantitative relationships survive serialization and lowering.
+The graphs preserve temporal and controller semantics; this release does not execute a time-course simulator. Conflict arbitration remains an explicit unresolved design field, and named biological concepts are not automatically assigned sensors or effectors. The next compiler work is a checked intent-to-behavior lowering, followed by particular molecular realization paths.
 
 See [architecture](architecture.md) for compiler stages and [roadmap](roadmap.md) for implementation sequencing.

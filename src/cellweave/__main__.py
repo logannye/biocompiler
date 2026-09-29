@@ -1,4 +1,4 @@
-"""Run the scaffold's inspection CLI."""
+"""Run the intent and architecture inspection CLI."""
 
 from cellweave.cli import main
 

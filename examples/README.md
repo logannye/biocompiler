@@ -1,7 +1,17 @@
 # Examples
 
-The current executable example is the architecture-inspection CLI documented in the root README.
+[intent_programs.py](intent_programs.py) builds six complete programs: contextual
+clearance, priming and phases, temporal response, graded secretion, feedback
+regulation, and cooperation between cell roles. Each function returns an immutable
+`IntentProgram` for inspection or serialization.
 
-The [v0.1 intent API draft](../docs/intent-api-v0.1.md) contains proposed authoring examples for contextual clearance, reusable recognition, priming memory, behavioral phases, graded secretion, feedback regulation, and cooperating cell roles. These examples document the intended interface; they are not executable against the current package.
+From the repository root, with Python 3.11 or later:
 
-Executable examples will follow as the intent frontend is implemented. Keep hypothetical language sketches clearly marked until implemented. Do not represent a printed sequence or a populated manifest as evidence of successful biological compilation.
+```sh
+PYTHONPATH=src python examples/intent_programs.py
+```
+
+All biological names and parameters are symbolic. These examples construct intent
+graphs; they do not choose molecular mechanisms or generate therapeutic sequences.
+See the [v0.1 API reference](../docs/intent-api-v0.1.md) for the vocabulary and its
+meaning.

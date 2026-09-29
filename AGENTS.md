@@ -1,6 +1,6 @@
 # Working on CellWeave
 
-CellWeave starts as an architecture scaffold, not a functioning biological compiler.
+CellWeave implements a Python intent authoring API and immutable graphs. Molecular lowering, biological simulation, and sequence generation remain unimplemented.
 
 - Preserve the distinction between exact artifact identity, model-conditional claims, and empirical evidence. Never label an unresolved biological claim as verified.
 - Python authoring will construct typed descriptions. Python control flow must not silently stand in for cellular runtime behavior.

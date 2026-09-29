@@ -2,11 +2,11 @@
 
 A compiler architecture for turning an immune cell engineer's Python-authored intent into an exact, traceable DNA or RNA payload specification.
 
-**Status: initial scaffold with a draft intent API.** The repository defines module boundaries, shared interface types, a small architecture-inspection CLI, and a proposed Python authoring interface. It does not implement a biological DSL, lowering passes, component selection, sequence generation, or biological validation. The code contains no therapeutic sequences or characterized biological component library.
+**Status: working Python intent API, v0.1 alpha.** Author cell roles, recognition, actions, temporal logic, memory, states, feedback, and communication; export immutable, typed intent graphs as JSON. Planning inspection binds parameters and reports unresolved design choices. Molecular lowering, component selection, sequence generation, and biological simulation remain future work.
 
 ## Planned compiler stack
 
-CellWeave is designed to turn a description of **what an engineered immune cell should do** into an exact specification of **what its genetic payload must contain**. Each layer resolves more implementation detail while carrying the original requirements forward. The diagram shows the intended architecture; the current scaffold exposes stages and interfaces only.
+CellWeave is designed to turn a description of **what an engineered immune cell should do** into an exact specification of **what its genetic payload must contain**. Each layer resolves more implementation detail while carrying the original requirements forward. The diagram shows the intended architecture. Python authoring and immutable intent graphs are implemented; molecular realization and payload emission remain planned.
 
 ```mermaid
 flowchart LR
@@ -78,9 +78,30 @@ Within in-vivo engineering specifically, the author-contribution statement in [R
 
 CellWeave's intended role is to give this team a shared, traceable design artifact: the biological intent, the selected implementation, the exact molecular specification, and the supporting assumptions and evidence. Scientific ownership of those choices remains with the development team.
 
-## Draft Python intent API
+## Python intent API
 
-The [v0.1 API proposal](docs/intent-api-v0.1.md) describes cell roles, recognition, actions, memory, changing behavioral phases, graded outputs, feedback, and communication between populations. Its central authoring form is `cells.when(condition).do(actions)`. The document includes example programs and a signature reference; these are proposed interfaces, not callable package features yet.
+The [v0.1 API reference](docs/intent-api-v0.1.md) covers the authoring language and its semantics. Six [executable examples](examples/intent_programs.py) demonstrate recognition, memory, phases, pulses, graded responses, feedback, and cooperating populations.
+
+```python
+import cellweave as cw
+
+therapy = cw.Therapy("local_response")
+cells = therapy.engineer("responders", cell_type="T_cell")
+recognized = cells.contact.marker("A").high()
+context = cells.environment.signal("disease_context").present()
+cells.when(recognized & context).do(
+    cells.eliminate(cells.contact),
+    cells.secrete("local_support_factor"),
+)
+
+program = therapy.freeze()
+print(program.summary())
+# Save an inspectable source artifact; this is not a nucleic-acid payload.
+from pathlib import Path
+Path("intent.json").write_text(program.to_json(), encoding="utf-8")
+```
+
+Biological labels in these examples are symbolic design concepts. Python constructs the program description; it does not execute cellular behavior. Scope and dimensional checks catch authoring mistakes while names and parameters can remain unresolved for later design work.
 
 ## Repository layout
 
@@ -106,13 +127,15 @@ data/             Registry/model fixture policy; no biological library yet
 .github/workflows/  Hosted package smoke checks
 ```
 
-## Inspect the scaffold
+## Run the API and CLI
 
 Requires Python 3.11 or newer. No runtime dependencies are needed.
 
 ```bash
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 -m cellweave --version
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 -m cellweave architecture
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 examples/intent_programs.py
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 -m unittest discover -s tests -v
 ```
 
 For an editable installation in an existing Python development environment:
@@ -122,11 +145,13 @@ python -m pip install -e .
 cellweave architecture
 ```
 
-The CLI describes the planned architecture; it does not compile a payload. Hosted CI checks package installation and CLI imports on Python 3.11 and 3.14. Semantic validation will be added alongside implemented compiler passes.
+Use `cellweave inspect intent.json` for a saved graph summary, or add `--json` to print the normalized graph. Inspection reads JSON and does not execute authoring scripts. Hosted CI checks package installation, the API test suite, examples, and CLI on Python 3.11 and 3.14.
+
+`cw.plan(program, profile=...)` returns a planning report with typed parameter bindings and unresolved choices. `cw.compile(plan)` explicitly raises `CompilationUnavailableError`: this release does not emit DNA/RNA sequences.
 
 ## Design documents
 
-- [Python intent API: v0.1 draft](docs/intent-api-v0.1.md)
+- [Python intent API: v0.1](docs/intent-api-v0.1.md)
 - [Architecture and preservation obligations](docs/architecture.md)
 - [Implementation roadmap](docs/roadmap.md)
 - [Initial architecture decision](docs/decisions/0001-explicit-contracts-and-staged-compilation.md)

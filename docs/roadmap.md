@@ -2,21 +2,21 @@
 
 The repository begins as an architectural skeleton. Progress should be measured by a small, reviewable vertical slice with explicit acceptance criteria, not by the number of directories or supported concepts.
 
-## 0. Establish the scaffold
+## 0. Establish the scaffold — implemented
 
 Provide the Python package layout, shared stage and target vocabulary, compiler pass interfaces, and a CLI that lists the planned stages. Reserve modules for future IR schemas. Document what is implemented and what remains conceptual. Do not present the scaffold as a sequence generator or validated biological compiler.
 
-## 1. Define the intent API and its semantic core
+## 1. Define the intent API and its semantic core — implemented in v0.1
 
-The [v0.1 API proposal](intent-api-v0.1.md) describes a broad intent language for in-vivo immune-cell engineering. Its concepts include cell roles, observations, conditional and quantitative responses, memory, phases, and communication. The proposal is documentation, not an implemented DSL.
+The [v0.1 API](intent-api-v0.1.md) implements a broad intent language for in-vivo immune-cell engineering. It includes cell roles, observations, conditional and quantitative responses, memory, phases, communication, and immutable JSON snapshots.
 
-Implement a small authoring slice first: roles and scopes, symbolic signals and parameters, conditions, action specifications, `when().do()`, reusable signatures, and immutable intent serialization. Extend it with events, memory, state, outputs, controllers, and channels. Defining an intent does not require an available molecular realization.
+The authoring surface is implemented across these concepts. Planning inspection validates typed parameter bindings and reports unresolved choices. Defining an intent does not require an available molecular realization.
 
 Deliver an inspectable intent representation and diagnostics for undefined semantics. Use synthetic fixtures to test the compiler infrastructure; label them as fixtures rather than biological evidence.
 
 ## 2. Build the first checked lowering
 
-Implement a restricted Python authoring interface and one intent-to-behavior pass. Preserve source locations and requirement identifiers. Separate design-time Python evaluation from biological operators.
+Build the first intent-to-behavior pass on the implemented Python authoring interface. Preserve source locations and requirement identifiers. Separate design-time Python evaluation from biological operators.
 
 Acceptance requires reproducible serialization, clear failures for unsupported operations, and tests showing that scope and timing constraints survive lowering.
 

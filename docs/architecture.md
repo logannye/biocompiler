@@ -2,15 +2,15 @@
 
 CellWeave is a proposed compiler for converting an immune-cell engineer's intent into an exact digital specification of a DNA or RNA payload. Its organizing principle is **preservation of a behavioral contract through explicit intermediate representations (IRs)**.
 
-The current repository is a skeleton. It supplies vocabulary and extension points, not a biological compiler, validated component library, or sequence generator. Physical manufacture, administration, and execution in a recipient cell are outside the compiler boundary.
+The current repository implements the Python intent frontend and immutable graph serialization, plus planning inspection. Molecular lowering, biological simulation, characterized component libraries, and sequence generation are not implemented. Physical manufacture, administration, and execution in a recipient cell are outside the compiler boundary.
 
-The [v0.1 intent API proposal](intent-api-v0.1.md) defines the planned authoring vocabulary: cell roles, scoped observations, expressions, actions, state, outputs, controllers, and communication. Python constructs an inspectable intent graph; molecular realization remains a later stage.
+The [v0.1 intent API](intent-api-v0.1.md) implements the authoring vocabulary: cell roles, scoped observations, expressions, actions, state, outputs, controllers, and communication. Python constructs an inspectable intent graph; molecular realization remains a later stage.
 
 ## Compilation layers
 
 | Layer | Representation | Preservation obligation |
 | --- | --- | --- |
-| Python frontend | Declarative biological operations authored through a future typed DSL | Separate design-time Python control flow from intended biological control flow. |
+| Python frontend | Declarative biological operations authored through the typed Python DSL | Separate design-time Python control flow from intended biological control flow. |
 | Typed intent | Inputs, outputs, context, requirements, objectives, source locations | Preserve meaning, units, scope, identity, and the distinction between requirements and preferences. |
 | Behavior | Logic, state, timing, memory, observables, acceptable variability | Preserve permitted observable trajectories and the operating assumptions under which they are required. |
 | Mechanism | Molecular entities, interactions, host dependencies, observation mappings | Connect molecular behavior to the original observables; retain assumptions and uncertainty. |
@@ -25,8 +25,8 @@ An exact sequence does not establish exact cellular behavior. Artifact identity 
 
 | Module | Intended responsibility |
 | --- | --- |
-| `frontend` | Parse or construct a typed intent graph; retain source locations and reject unsupported authoring constructs. |
-| `ir` | Shared stage identifiers and reserved modules for future versioned stage-specific schemas. |
+| `frontend` | Construct scoped, typed intent graphs from Python objects; retain source locations, ownership, and dimensional relationships. |
+| `ir` | Immutable versioned intent graphs and JSON serialization; shared stage identifiers and reserved later-stage schemas. |
 | `semantics` | Types, units, context, requirement meanings, observational mappings, and refinement obligations. |
 | `compiler` | Pass interfaces, stage ordering, diagnostics, dependency tracking, and provenance. |
 | `synthesis` | Propose candidate mechanisms, component assignments, and encodings within supported design spaces. |
