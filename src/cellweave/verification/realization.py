@@ -36,13 +36,13 @@ from cellweave.verification.evidence import (
     RequirementCoverage,
 )
 
-CHECKER_VERSION = "cellweave.realization_checker.v0.1"
+CHECKER_VERSION = "cellweave.realization_checker.v0.2"
 CHECKER_SETTINGS = freeze_json(
     {
         "scope": "supplied_contracts_and_finite_history",
         "time": "right_continuous_piecewise_constant",
         "response": "active_inactive_bands_after_transition_deadlines",
-        "nonvacuity": "every_uncancelled_active_episode_requires_a_checked_deadline",
+        "nonvacuity": "checked_active_and_inactive_deadlines_for_every_response_and_complete_uncancelled_episodes",
         "contact_loss": "cancel_contact_scoped_obligations",
         "coverage": "all_selected_role_ongoing_outputs",
     }
@@ -265,8 +265,8 @@ def check_realization(
     """Check active/inactive response envelopes on the supplied finite history.
 
     Contacts preserve identity. Disappearance cancels their pending obligations;
-    reappearance begins a new episode. Unobserved/short active episodes yield
-    UNKNOWN, never a vacuous PASS. Input-domain failures are UNKNOWN; structurally
+    reappearance begins a new episode. Unexercised active or inactive responses
+    and incomplete episodes yield UNKNOWN, never a vacuous PASS. Input-domain failures are UNKNOWN; structurally
     wrong mappings and observed violations are FAIL. Unsupported profiles remain
     explicit. No solver search, sequence generation or empirical claim is made.
     """
@@ -802,6 +802,16 @@ def _monitor(
                 CheckDiagnostic(
                     "unexercised_response",
                     "No active response deadline was exercised for this requirement.",
+                    requirement.id,
+                    requirement.specification_id,
+                    nodes[requirement.specification_id].source,
+                )
+            )
+        if counts[requirement.id]["inactive_deadlines_checked"] == 0:
+            diagnostics.append(
+                CheckDiagnostic(
+                    "unexercised_inactive_response",
+                    "No inactive response deadline was exercised for this requirement.",
                     requirement.id,
                     requirement.specification_id,
                     nodes[requirement.specification_id].source,

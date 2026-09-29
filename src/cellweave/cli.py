@@ -18,6 +18,12 @@ from cellweave.ir.serialization import parse_json
 from cellweave.semantics.context import TargetContext
 from cellweave.semantics.realization import BehaviorContract, OperatingDomain
 from cellweave.verification.evidence import CheckResult
+from cellweave.verification.exploration import (
+    AdversarialConfig,
+    BooleanContactConfig,
+    ExplorationReport,
+    ReductionResult,
+)
 from cellweave.verification.realization import ObservationMap
 from cellweave.synthesis.synthetic import SyntheticCandidate, SyntheticGeneratorConfig
 from cellweave.registry.synthetic import SyntheticCatalog
@@ -79,6 +85,10 @@ def _read_artifact(document):
                 OperatingDomain,
                 ObservationMap,
                 CheckResult,
+                AdversarialConfig,
+                BooleanContactConfig,
+                ExplorationReport,
+                ReductionResult,
                 ComponentAssembly,
                 ComponentRecord,
                 CompositionRequest,
@@ -137,6 +147,8 @@ def _summary(artifact):
             ConstructResult,
             MolecularArtifact,
             MolecularResult,
+            ExplorationReport,
+            ReductionResult,
             BuildManifest,
             ReferenceBuildRequest,
         ),
