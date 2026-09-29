@@ -21,3 +21,5 @@ meaning.
 [realization_check.py](realization_check.py) binds an explicit output contract to the behavior and automatically generates a combinational candidate and checks it with an independent runner. It demonstrates passing behavior, silent and late counterexamples, and stale evidence after a model change. Run `PYTHONPATH=src python examples/realization_check.py`. This fixture tests the checker; it provides no biological evidence or sequences.
 
 [checked_pipeline.py](checked_pipeline.py) freezes build authority, runs two checked passes, checks a generated candidate and demonstrates automatic transitive invalidation. Run `PYTHONPATH=src python examples/checked_pipeline.py`. Its completion scope is a synthetic finite history; molecular obligations remain unresolved.
+
+[component_linking.py](component_linking.py) extends the synthetic pipeline to locked component contracts and separately inspects a pinned FAP RNA-CDS reference. Run `PYTHONPATH=src python examples/component_linking.py`. It preserves finite-history evidence and CDS-only scope; no molecular sequence is emitted.

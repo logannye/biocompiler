@@ -1,6 +1,5 @@
-"""Future versioned component registry: interfaces, models, context applicability and
-implementations alongside sequences. Resolve encoded, host-provided, externally
-supplied and unresolved dependencies explicitly.
+"""Offline versioned registries, deterministic selection and exact dependency locks.
 
-Design obligations: docs/toolchain-contracts.md.
+Synthetic modeled components and sequence-only references are classified separately.
+Contracts and acceptance limits: docs/component-linking-v0.1.md.
 """

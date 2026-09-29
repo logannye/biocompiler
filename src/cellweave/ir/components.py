@@ -1,8 +1,9 @@
 """Small, versioned synthetic component records and exact implementation locks.
 
 These records describe digital fixture operators. They are not sequence records
-or biological parts; provider, resource and biological-domain linking remains a
-separate unimplemented profile.
+or biological parts. The richer component_contracts and composition modules add
+explicit provider, resource and declared-domain linking without changing this
+legacy synthetic catalog schema.
 """
 
 from __future__ import annotations

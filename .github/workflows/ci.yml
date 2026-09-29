@@ -33,6 +33,8 @@ jobs:
         run: python examples/realization_check.py
       - name: Run checked request-to-synthetic pipeline
         run: python examples/checked_pipeline.py
+      - name: Run checked component linking and reference selection
+        run: python examples/component_linking.py
       - name: Inspect CLI
         run: |
           cellweave --version
