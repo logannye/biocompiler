@@ -1,4 +1,10 @@
-"""Typed interface for future lowering passes and their preservation records."""
+"""Typed lowering interfaces and preservation records.
+
+Future pass records additionally track observation mappings, context/assumptions,
+changed properties and invalidated analyses. A source link alone is not proof of
+refinement; required responses must be checked as well as permitted behavior.
+See docs/toolchain-contracts.md for downstream obligations.
+"""
 
 from dataclasses import dataclass
 from typing import Generic, Protocol, TypeVar

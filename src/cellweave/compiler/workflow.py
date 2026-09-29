@@ -100,15 +100,11 @@ class RealizationPlan:
 
     def to_dict(self) -> dict:
         return {
-            "schema_version": "cellweave.plan.v0.1",
+            "schema_version": "cellweave.plan.v0.2",
             "status": "unresolved",
             "program": self.program.to_dict(),
             "program_fingerprint": self.program.fingerprint,
-            "target": {
-                "context_id": self.profile.target.context_id,
-                "context_version": self.profile.target.context_version,
-                "payload_format": self.profile.target.payload_format.value,
-            },
+            "target": self.profile.target.to_dict(),
             "bindings": thaw_json(self.bindings),
             "unresolved": [choice.to_dict() for choice in self.unresolved],
         }
@@ -251,7 +247,7 @@ def compile(design: RealizationPlan) -> None:
             "compile() requires a RealizationPlan returned by plan()."
         )
     raise CompilationUnavailableError(
-        "CellWeave implements intent authoring and planning inspection. "
+        "CellWeave implements intent authoring, abstract behavior execution, and planning inspection. "
         "Molecular realization and DNA/RNA sequence generation are not implemented; "
         "inspect design.unresolved or design.to_json()."
     )

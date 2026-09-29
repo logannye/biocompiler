@@ -1,7 +1,8 @@
 """Author inspectable therapeutic programs for in-vivo immune-cell engineering."""
 
-__version__ = "0.1.0.dev1"
+__version__ = "0.1.0.dev3"
 
+from cellweave.compiler.behavior import lower_to_behavior, verify_lowering
 from cellweave.compiler.workflow import (
     BuildProfile,
     DesignChoice,
@@ -10,7 +11,14 @@ from cellweave.compiler.workflow import (
     plan,
 )
 from cellweave.errors import (
+    BehaviorError,
     CellWeaveError,
+    EvaluationError,
+    LoweringError,
+    LoweringVerificationError,
+    NonConvergenceError,
+    StateConflictError,
+    UnsupportedBehaviorError,
     CompilationUnavailableError,
     DefinitionError,
     ScopeError,
@@ -48,7 +56,31 @@ from cellweave.frontend.expressions import (
 )
 from cellweave.frontend.signatures import Signature, signature
 from cellweave.ir.intent import IntentNode, IntentProgram, SourceLocation
+from cellweave.ir.behavior import BehaviorNode, BehaviorProgram
+from cellweave.ir.mechanism import MechanismNode, MechanismProgram
+from cellweave.models.synthetic import ModelInputFrame, ModelTrace, run_model
+from cellweave.semantics.contracts import (
+    BehaviorRequirement,
+    LoweringReport,
+    PreservationCheck,
+)
+from cellweave.semantics.evaluator import (
+    ActionRequest,
+    EvaluationFrame,
+    EvaluationResult,
+    EventOccurrence,
+    InputFrame,
+    SignalSample,
+    evaluate,
+)
 from cellweave.semantics.context import PayloadFormat, TargetContext
+from cellweave.semantics.realization import (
+    BehaviorContract,
+    InputDomain,
+    Observable,
+    OperatingDomain,
+    ResponseRequirement,
+)
 from cellweave.semantics.types import (
     Concentration,
     Curve,
@@ -60,8 +92,69 @@ from cellweave.semantics.types import (
     SurfaceDensity,
     TypeSpec,
 )
+from cellweave.verification.evidence import (
+    CheckDiagnostic,
+    CheckOutcome,
+    CheckResult,
+    Counterexample,
+    DependencySnapshot,
+    EvidenceKind,
+    FreshnessReport,
+    RequirementCoverage,
+)
+from cellweave.verification.realization import (
+    InputBinding,
+    ObservationMap,
+    OutputBinding,
+    check_realization,
+    realization_dependencies,
+)
 
 __all__ = [
+    "BehaviorContract",
+    "CheckDiagnostic",
+    "CheckOutcome",
+    "CheckResult",
+    "Counterexample",
+    "DependencySnapshot",
+    "EvidenceKind",
+    "FreshnessReport",
+    "RequirementCoverage",
+    "InputBinding",
+    "InputDomain",
+    "MechanismNode",
+    "MechanismProgram",
+    "ModelInputFrame",
+    "ModelTrace",
+    "Observable",
+    "ObservationMap",
+    "OperatingDomain",
+    "OutputBinding",
+    "ResponseRequirement",
+    "check_realization",
+    "realization_dependencies",
+    "run_model",
+    "ActionRequest",
+    "BehaviorError",
+    "BehaviorNode",
+    "BehaviorProgram",
+    "BehaviorRequirement",
+    "EvaluationError",
+    "EvaluationFrame",
+    "EvaluationResult",
+    "EventOccurrence",
+    "InputFrame",
+    "LoweringError",
+    "LoweringReport",
+    "LoweringVerificationError",
+    "NonConvergenceError",
+    "PreservationCheck",
+    "SignalSample",
+    "StateConflictError",
+    "UnsupportedBehaviorError",
+    "evaluate",
+    "lower_to_behavior",
+    "verify_lowering",
     "Action",
     "BuildProfile",
     "CellProgram",

@@ -2,11 +2,11 @@
 
 A compiler architecture for turning an immune cell engineer's Python-authored intent into an exact, traceable DNA or RNA payload specification.
 
-**Status: working Python intent API, v0.1 alpha.** Author cell roles, recognition, actions, temporal logic, memory, states, feedback, and communication; export immutable, typed intent graphs as JSON. Planning inspection binds parameters and reports unresolved design choices. Molecular lowering, component selection, sequence generation, and biological simulation remain future work.
+**Status: intent authoring, behavior execution, and finite-trace realization checking, v0.1 alpha.** Author cell roles, recognition, actions, temporal logic, memory, states, feedback, and communication; export immutable, typed intent graphs as JSON. Checked lowering preserves source requirements in Behavior IR. A reference evaluator executes supported behavior against supplied histories. Explicit response contracts can now be checked against an independently executed synthetic candidate model, producing scoped results, counterexamples, and dependency identities. Molecular lowering, component selection, sequence generation, and biological simulation remain future work.
 
 ## Planned compiler stack
 
-CellWeave is designed to turn a description of **what an engineered immune cell should do** into an exact specification of **what its genetic payload must contain**. Each layer resolves more implementation detail while carrying the original requirements forward. The diagram shows the intended architecture. Python authoring and immutable intent graphs are implemented; molecular realization and payload emission remain planned.
+CellWeave is designed to turn a description of **what an engineered immune cell should do** into an exact specification of **what its genetic payload must contain**. Each layer resolves more implementation detail while carrying the original requirements forward. The diagram shows the intended architecture. Python authoring, intent/behavior graphs, abstract execution, and a synthetic realization-checking profile are implemented; molecular realization and payload emission remain planned.
 
 ```mermaid
 flowchart LR
@@ -103,6 +103,18 @@ Path("intent.json").write_text(program.to_json(), encoding="utf-8")
 
 Biological labels in these examples are symbolic design concepts. Python constructs the program description; it does not execute cellular behavior. Scope and dimensional checks catch authoring mistakes while names and parameters can remain unresolved for later design work.
 
+## Execute an abstract behavior specification
+
+`cw.lower_to_behavior(program)` binds design parameters and produces an immutable, versioned `BehaviorProgram`. `cw.evaluate(behavior, history, until=...)` evaluates one engineered cell against complete, timestamped observation snapshots. Contact observations have explicit object identities; temporal deadlines execute between snapshots; state changes are atomic. The [behavior example](examples/behavior_trace.py) demonstrates the workflow.
+
+The [execution semantics](docs/behavior-semantics-v0.1.md) define the supported profile and its limits. Qualitative observations are supplied explicitly. Unsupported operators produce source-linked diagnostics. The evaluator reports requested actions; it does not predict molecular dynamics or modify the external world.
+
+## Check a candidate against the intended behavior
+
+Define the intended output endpoint, active and inactive ranges, response deadlines, allowed input domain, and target context. Connect a candidate's ports through an explicit observation map. `cw.check_realization(...)` executes the behavior and synthetic model independently, then returns `pass`, `fail`, `unknown`, or `unsupported` for the supplied history.
+
+The [realization example](examples/realization_check.py) checks a responsive candidate, a silent candidate, and a late candidate, and demonstrates evidence becoming stale after a model change. The [contract specification](docs/realization-checking-v0.1.md) explains timing, contact identity, coverage, and claim boundaries. A passing result supports the checked finite history under the recorded assumptions; it does not establish a molecular implementation or all-input correctness.
+
 ## Repository layout
 
 ```text
@@ -135,6 +147,8 @@ Requires Python 3.11 or newer. No runtime dependencies are needed.
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 -m cellweave --version
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 -m cellweave architecture
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 examples/intent_programs.py
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 examples/behavior_trace.py
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 examples/realization_check.py
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 -m unittest discover -s tests -v
 ```
 
@@ -145,13 +159,16 @@ python -m pip install -e .
 cellweave architecture
 ```
 
-Use `cellweave inspect intent.json` for a saved graph summary, or add `--json` to print the normalized graph. Inspection reads JSON and does not execute authoring scripts. Hosted CI checks package installation, the API test suite, examples, and CLI on Python 3.11 and 3.14.
+Use `cellweave inspect artifact.json` for a saved intent, behavior, mechanism, contract, domain, context, observation map, or check record, or add `--json` to print the normalized artifact. Inspection reads JSON and does not execute authoring scripts. Hosted CI is configured to check package installation, the API test suite, examples, and CLI on Python 3.11 and 3.14.
 
 `cw.plan(program, profile=...)` returns a planning report with typed parameter bindings and unresolved choices. `cw.compile(plan)` explicitly raises `CompilationUnavailableError`: this release does not emit DNA/RNA sequences.
 
 ## Design documents
 
 - [Python intent API: v0.1](docs/intent-api-v0.1.md)
+- [Behavior execution semantics: v0.1](docs/behavior-semantics-v0.1.md)
+- [Realization contracts and checking: v0.1](docs/realization-checking-v0.1.md)
+- [Toolchain contracts and future obligations](docs/toolchain-contracts.md)
 - [Architecture and preservation obligations](docs/architecture.md)
 - [Implementation roadmap](docs/roadmap.md)
 - [Initial architecture decision](docs/decisions/0001-explicit-contracts-and-staged-compilation.md)

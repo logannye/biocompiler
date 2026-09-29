@@ -1,4 +1,4 @@
-"""Inspect authored intent graphs and the planned compiler architecture."""
+"""Inspect versioned compiler artifacts and the compiler architecture."""
 
 import argparse
 from collections.abc import Sequence
@@ -10,6 +10,54 @@ from cellweave import __version__
 from cellweave.ir.stages import STAGE_ORDER
 from cellweave.errors import SerializationError
 from cellweave.ir.intent import IntentProgram
+from cellweave.ir.behavior import BehaviorProgram, SCHEMA_VERSION as BEHAVIOR_SCHEMA
+from cellweave.ir.intent import SCHEMA_VERSION as INTENT_SCHEMA
+from cellweave.ir.mechanism import MechanismProgram
+from cellweave.ir.serialization import parse_json
+from cellweave.semantics.context import TargetContext
+from cellweave.semantics.realization import BehaviorContract, OperatingDomain
+from cellweave.verification.evidence import CheckResult
+from cellweave.verification.realization import ObservationMap
+
+
+def _read_artifact(document):
+    # Parse strictly before dispatch: duplicate schema keys must not select a
+    # different parser or weaken an artifact's validation boundary.
+    header = parse_json(document)
+    schema = header.get("schema_version") if isinstance(header, dict) else None
+    types = {INTENT_SCHEMA: IntentProgram, BEHAVIOR_SCHEMA: BehaviorProgram}
+    types.update(
+        {
+            cls.schema_version: cls
+            for cls in (
+                MechanismProgram,
+                TargetContext,
+                BehaviorContract,
+                OperatingDomain,
+                ObservationMap,
+                CheckResult,
+            )
+        }
+    )
+    if not isinstance(schema, str) or schema not in types:
+        raise SerializationError(f"Unknown or missing artifact schema: {schema!r}.")
+    return types[schema].from_dict(header)
+
+
+def _summary(artifact):
+    if isinstance(artifact, (IntentProgram, BehaviorProgram)):
+        return artifact.summary()
+    summary = {
+        "schema_version": artifact.schema_version,
+        "fingerprint": artifact.fingerprint,
+    }
+    for key in ("id", "name", "context_id", "outcome", "evidence_kind"):
+        if hasattr(artifact, key):
+            summary[key] = getattr(artifact, key)
+    if isinstance(artifact, CheckResult):
+        summary["counterexamples"] = len(artifact.counterexamples)
+        summary["diagnostics"] = [item.to_dict() for item in artifact.diagnostics]
+    return summary
 
 
 def main(argv: Sequence[str] | None = None) -> int:
@@ -22,28 +70,42 @@ def main(argv: Sequence[str] | None = None) -> int:
         "architecture", help="Show planned intermediate representations"
     )
     inspect_command = commands.add_parser(
-        "inspect", help="Inspect a saved intent JSON graph"
+        "inspect", help="Inspect a saved versioned JSON artifact"
     )
-    inspect_command.add_argument("path", type=Path, help="IntentProgram JSON file")
+    inspect_command.add_argument(
+        "path",
+        type=Path,
+        help="Intent, behavior, mechanism, contract, domain, context, map, or check JSON file",
+    )
     inspect_command.add_argument(
         "--json", action="store_true", help="Print the normalized full graph"
     )
     args = parser.parse_args(argv)
     if args.command == "architecture":
         print(
-            "CellWeave pipeline (intent authoring implemented; molecular lowering planned)"
+            "CellWeave pipeline (behavior semantics and synthetic realization checks implemented; molecular lowering planned)"
         )
         print("Python authoring -> immutable intent graph")
         for stage in STAGE_ORDER:
             print(f"  -> {stage.value}")
         print("  -> packaged digital build artifact")
+        print(
+            "Independent checking: contract + domain + target + observation map + supplied history"
+        )
     elif args.command == "inspect":
         try:
-            program = IntentProgram.from_json(args.path.read_text(encoding="utf-8"))
-        except (OSError, UnicodeError, SerializationError) as exc:
+            document = args.path.read_text(encoding="utf-8")
+            program = _read_artifact(document)
+        except (
+            OSError,
+            UnicodeError,
+            SerializationError,
+            json.JSONDecodeError,
+            RecursionError,
+        ) as exc:
             print(f"cellweave: {exc}", file=sys.stderr)
             return 2
         print(
-            program.to_json() if args.json else json.dumps(program.summary(), indent=2)
+            program.to_json() if args.json else json.dumps(_summary(program), indent=2)
         )
     return 0
