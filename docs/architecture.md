@@ -2,7 +2,7 @@
 
 CellWeave is a proposed compiler for converting an immune-cell engineer's intent into an exact digital specification of a DNA or RNA payload. Its organizing principle is **preservation of a behavioral contract through explicit intermediate representations (IRs)**.
 
-The current repository implements the Python intent frontend, immutable intent and behavior graphs, checked intent-to-behavior lowering, an abstract reference evaluator, planning inspection, and finite-trace realization checking against independent synthetic models. Molecular lowering, biological simulation, characterized component libraries, and sequence generation are not implemented. Physical manufacture, administration, and execution in a recipient cell are outside the compiler boundary.
+The current repository implements the Python intent frontend, immutable intent and behavior graphs, checked intent-to-behavior lowering, an abstract reference evaluator, planning inspection, frozen build/realization requests, a checked pass manager, automatic combinational synthetic generation with locked operations, and finite-trace realization checking against independent synthetic models. Molecular lowering, biological simulation, characterized component libraries, and sequence generation are not implemented. Physical manufacture, administration, and execution in a recipient cell are outside the compiler boundary.
 
 The [v0.1 intent API](intent-api-v0.1.md) implements the authoring vocabulary: cell roles, scoped observations, expressions, actions, state, outputs, controllers, and communication. Python constructs an inspectable intent graph; molecular realization remains a later stage.
 
@@ -79,3 +79,7 @@ The first [realization profile](realization-checking-v0.1.md) makes a subset of 
 The candidate model executes independently of the behavior evaluator. A checker compares the two complete discrete-event traces and produces scoped outcomes, source-linked counterexamples, coverage, and dependency fingerprints. Empty coverage, missing assumptions, and unsupported semantics cannot silently become passing results. Evidence freshness is checked against all recorded dependencies before reuse.
 
 This profile tests the preservation machinery without claiming a molecular mechanism has been realized. Full model applicability, component and host linking, uncertainty propagation, resource competition, construct composition, and encoding preservation remain separate obligations. [ADR 0003](decisions/0003-independent-realization-checking.md) records this boundary.
+
+## Implemented request and pipeline boundary
+
+The [frozen request design](build-requests-v0.1.md) makes explicit bindings authoritative and separates source/behavior identity from the later contract/domain phase. The [pass manager](pass-manager-v0.1.md) admits only independently checked, fresh stage outputs. The [combinational synthetic profile](synthetic-profile-v0.1.md) has an automatic generator and a small versioned operation catalog. Separately [curated reference records](reference-benchmarks.md) establish exact CDS expectations; they are not molecular implementations of the synthetic graphs. Full component linking, construct assembly and molecular emission remain future stages.

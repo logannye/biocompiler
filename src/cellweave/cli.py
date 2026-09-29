@@ -7,6 +7,7 @@ from pathlib import Path
 import sys
 
 from cellweave import __version__
+from cellweave.compiler.request import BuildRequest, RealizationRequest
 from cellweave.ir.stages import STAGE_ORDER
 from cellweave.errors import SerializationError
 from cellweave.ir.intent import IntentProgram
@@ -18,6 +19,9 @@ from cellweave.semantics.context import TargetContext
 from cellweave.semantics.realization import BehaviorContract, OperatingDomain
 from cellweave.verification.evidence import CheckResult
 from cellweave.verification.realization import ObservationMap
+from cellweave.synthesis.synthetic import SyntheticCandidate, SyntheticGeneratorConfig
+from cellweave.registry.synthetic import SyntheticCatalog
+from cellweave.registry.references import ReferenceManifest
 
 
 def _read_artifact(document):
@@ -30,6 +34,12 @@ def _read_artifact(document):
         {
             cls.schema_version: cls
             for cls in (
+                BuildRequest,
+                RealizationRequest,
+                SyntheticCandidate,
+                SyntheticGeneratorConfig,
+                SyntheticCatalog,
+                ReferenceManifest,
                 MechanismProgram,
                 TargetContext,
                 BehaviorContract,
@@ -54,6 +64,12 @@ def _summary(artifact):
     for key in ("id", "name", "context_id", "outcome", "evidence_kind"):
         if hasattr(artifact, key):
             summary[key] = getattr(artifact, key)
+    if isinstance(artifact, ReferenceManifest):
+        summary["reference_set_id"] = artifact.reference_set_id
+        summary["status"] = artifact.status
+        summary["inspection"] = (
+            "Schema/content inspection only; use load_reference_manifest with a trusted fingerprint to verify retained source files."
+        )
     if isinstance(artifact, CheckResult):
         summary["counterexamples"] = len(artifact.counterexamples)
         summary["diagnostics"] = [item.to_dict() for item in artifact.diagnostics]
@@ -75,7 +91,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     inspect_command.add_argument(
         "path",
         type=Path,
-        help="Intent, behavior, mechanism, contract, domain, context, map, or check JSON file",
+        help="Request, intent, behavior, mechanism, contract, domain, context, map, or check JSON file",
     )
     inspect_command.add_argument(
         "--json", action="store_true", help="Print the normalized full graph"
@@ -83,7 +99,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     args = parser.parse_args(argv)
     if args.command == "architecture":
         print(
-            "CellWeave pipeline (behavior semantics and synthetic realization checks implemented; molecular lowering planned)"
+            "CellWeave pipeline (frozen requests, checked passes and synthetic generation implemented; molecular lowering planned)"
         )
         print("Python authoring -> immutable intent graph")
         for stage in STAGE_ORDER:

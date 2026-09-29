@@ -1,6 +1,6 @@
 # Working on CellWeave
 
-CellWeave implements Python intent authoring, immutable intent/behavior graphs, checked lowering, abstract reference execution, and finite-trace checking against independent synthetic models. Molecular lowering, biological simulation, and sequence generation remain unimplemented.
+CellWeave implements Python intent authoring, immutable build/realization requests and intent/behavior graphs, authoritative lowering, checked passes, automatic combinational synthetic generation, abstract reference execution, and finite-trace checking against independent synthetic models. Exact CDS reference fixtures are curated separately from synthetic behavior. Molecular lowering, biological simulation, and sequence generation remain unimplemented.
 
 - Preserve the distinction between exact artifact identity, model-conditional claims, and empirical evidence. Never label an unresolved biological claim as verified.
 - Python authoring will construct typed descriptions. Python control flow must not silently stand in for cellular runtime behavior.

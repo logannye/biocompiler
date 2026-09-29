@@ -1,20 +1,20 @@
 # Development roadmap
 
-This roadmap turns the current semantic foundation into a reproducible compiler path, using **exact, published coding-sequence (CDS) references** for the first molecular benchmarks. Milestones below are planned work, not implemented capabilities. Task IDs are stable so implementation PRs can cite them and mark individual items complete.
+This roadmap turns the current semantic foundation into a reproducible compiler path, using **exact, published coding-sequence (CDS) references** for the first molecular benchmarks. Completed tasks below identify implemented, scoped capabilities; unchecked tasks remain planned work. This is the authoritative roadmap. Task IDs are stable so implementation PRs can cite them and mark individual items complete.
 
-Baseline reviewed on 2026-09-29 at commit `03db52381beeb3bfbf64bf51da281935d638b98e`:
+Implementation foundation updated on 2026-09-29, developed from commit `4b94cb3` (expanded roadmap baseline):
 
 | Boundary | Current implementation | Next responsibility |
 | --- | --- | --- |
-| Python → Intent | Typed authoring, immutable graphs and planning inspection | Freeze authoritative build inputs and elaboration provenance |
-| Intent → Behavior | Checked lowering, versioned Behavior IR and reference execution | Verify against the requested bindings; strengthen independent semantic checks |
-| Behavior → Mechanism | Separately authored synthetic candidates and an independent runner/checker | Generate candidates automatically for an explicit supported profile |
-| Mechanism → Components | Placeholder component/registry modules | Lock implementations, interfaces, dependencies and composition contracts |
+| Python → Intent | Typed authoring, frozen versioned BuildRequest and explicit elaboration provenance | Broaden concrete profiles while preserving input authority |
+| Intent → Behavior | Request-authoritative lowering/verification, Behavior IR and reference execution | Continue independent semantic checks |
+| Behavior → Mechanism | Automatic combinational synthetic generation, pinned catalog and independent runner/checker | Temporal and molecular profiles need separate contracts |
+| Mechanism → Components | Minimal versioned synthetic catalog and separate curated CDS references | Full component interfaces, dependency linking and resource accounting |
 | Components → Construct | Placeholder | Preserve molecular membership, order, orientation, boundaries and relationships |
 | Construct → Molecular specification | DNA/RNA placeholders | Emit and independently check exact scoped sequence artifacts |
-| Molecular specification → Package | Placeholder manifest/pass manager | Package locked inputs, source maps, scoped checks and reproducible identities |
+| Molecular specification → Package | Checked in-memory pass manager; molecular manifest remains planned | Package accepted molecular records and reproducible identities |
 
-`compile()` still raises `CompilationUnavailableError`. The existing synthetic checking example constructs its candidate manually. No molecular lowering or sequence emission is implemented by adding this roadmap.
+`compile()` still raises `CompilationUnavailableError`. The synthetic example now generates its candidate automatically. `run_synthetic_pipeline` executes checked Intent → Behavior → synthetic Mechanism passes for its declared finite-history profile. Molecular lowering and sequence emission remain unimplemented.
 
 ## Development strategy and first deliverables
 
@@ -25,7 +25,7 @@ Two tracks share build identities, pass contracts and artifact infrastructure:
 
 A synthetic signal graph is not a molecular implementation of a CAR. Connecting the tracks requires an explicit implementation contract and observation mapping; passing either track alone does not supply that connection.
 
-The initial molecular reference is the patent-disclosed, study-associated murine FAP-CAR set: **WO2022081694A1, SEQ ID NO:2 (coding DNA), NO:3 (coding RNA), NO:1 (protein)**. These disclosures are available, but repository fixtures still need extraction, independent review and version locking. They specify coding regions, not complete delivered RNA molecules. See the [reference benchmark plan](reference-benchmarks.md) for sources, promotion gates and pending full-payload candidates.
+The initial molecular reference is the patent-disclosed, study-associated murine FAP-CAR set: **WO2022081694A1, SEQ ID NO:2 (coding DNA), NO:3 (coding RNA), NO:1 (protein)**. The three records are independently extracted, reconciled and version locked in `data/references/fap_car/`; source review was performed by two Codex agents and is not human or experimental validation. They specify coding regions, not complete delivered RNA molecules. See the [reference benchmark plan](reference-benchmarks.md) for sources, promotion gates and pending full-payload candidates.
 
 The first molecular milestone should report **“exact CDS reference reproduced”** and emit its verification record. A later complete-payload profile must additionally resolve regulatory regions, molecule boundaries, relevant chemistry and every obligation required by that profile.
 
@@ -52,12 +52,12 @@ M0 can proceed alongside M1–M2. M8 is continuous work, not a final testing pha
 
 **Primary locations:** `data/`, `registry/`, `tests/` under their existing repository/module roots; detailed record design in [reference-benchmarks.md](reference-benchmarks.md). New paths and schema names below are proposals.
 
-- [ ] **M0.1** Add a small reference manifest schema: stable reference/variant ID, source locator, artifact class, retrieval date, source hash, normalized sequence hash, normalization log and review status.
-- [ ] **M0.2** Independently curate FAP-CAR SEQ IDs 1–3, preserving original source text and declared DNA/RNA/protein alphabets. Record the paper association separately from exact experimental-material identity.
-- [ ] **M0.3** Specify allowed normalization, genetic code, reading frame and terminal-stop conventions. Resolve extraction discrepancies against the source; never silently repair them.
-- [ ] **M0.4** Freeze expected DNA, RNA and protein records independently of the emitter. Check source DNA/RNA T↔U correspondence and translation to the separately curated protein.
-- [ ] **M0.5** Give fixtures explicit states such as candidate, curated and blocked, with machine-readable missing information. Keep synthetic fixtures separately identified.
-- [ ] **M0.6** Define storage and provenance policy for small reviewed references versus large source files/generated output. Record source terms and provenance without introducing a runtime network dependency.
+- [x] **M0.1** Add a small reference manifest schema: stable reference/variant ID, source locator, artifact class, retrieval date, source hash, normalized sequence hash, normalization log and review status.
+- [x] **M0.2** Independently curate FAP-CAR SEQ IDs 1–3, preserving original source text and declared DNA/RNA/protein alphabets. Record the paper association separately from exact experimental-material identity.
+- [x] **M0.3** Specify allowed normalization, genetic code, reading frame and terminal-stop conventions. Resolve extraction discrepancies against the source; never silently repair them.
+- [x] **M0.4** Freeze expected DNA, RNA and protein records independently of the emitter. Check source DNA/RNA T↔U correspondence and translation to the separately curated protein.
+- [x] **M0.5** Give fixtures explicit states such as candidate, curated and blocked, with machine-readable missing information. Keep synthetic fixtures separately identified.
+- [x] **M0.6** Define storage and provenance policy for small reviewed references versus large source files/generated output. Record source terms and provenance without introducing a runtime network dependency.
 
 **Acceptance:** a reviewer can trace every expected base to a specific disclosed record. Tests can distinguish exact nucleotide identity, protein consistency and artifact completeness. Source ambiguity blocks fixture promotion, rather than becoming a compiler-selected base.
 
@@ -65,15 +65,15 @@ M0 can proceed alongside M1–M2. M8 is continuous work, not a final testing pha
 
 **Primary modules:** `frontend/`, `compiler/workflow.py`, `compiler/behavior.py`, `artifacts/provenance.py`, `ir/serialization.py`, `semantics/`.
 
-- [ ] **M1.1** Define an immutable, versioned `BuildRequest` and/or `BoundIntent` containing the frozen intent, explicit overrides, resolved defaults, target context, required artifact scope, implementation constraints and preferences. Bind realization contracts and operating domains in a later immutable request phase as described in M1.8.
-- [ ] **M1.2** Make resolved bindings authoritative inputs to lowering and verification. Output-reported bindings must agree with this input; they cannot establish their own authority.
-- [ ] **M1.3** Separate user-selected constants, compiler-selected alternatives, measured/calibrated parameters, uncertain quantities and runtime observations. Preserve units, provenance and allowed variation for each category.
-- [ ] **M1.4** Record authoring source and dependency identities, explicit external inputs and the resulting graph. Build from the frozen graph without re-executing authoring Python. Capture nondeterministic inputs when used; source text alone is insufficient for reproducible elaboration.
-- [ ] **M1.5** Preserve the distinction between design-time Python control flow and explicit cellular runtime operators. Explain it in diagnostics and examples.
-- [ ] **M1.6** Specify canonical serialization, content identities, schema compatibility and migration/rejection policy. Distinguish semantic identity from file-location and timestamp provenance so workspace relocation does not alter sequence bytes.
-- [ ] **M1.7** Plan compatibility for `BuildProfile`, `RealizationPlan`, `lower_to_behavior`, verification and eventual `compile` entry points. Keep the current unavailable-compilation boundary until a supported artifact profile exists.
+- [x] **M1.1** Define an immutable, versioned `BuildRequest` and/or `BoundIntent` containing the frozen intent, explicit overrides, resolved defaults, target context, required artifact scope, implementation constraints and preferences. Bind realization contracts and operating domains in a later immutable request phase as described in M1.8.
+- [x] **M1.2** Make resolved bindings authoritative inputs to lowering and verification. Output-reported bindings must agree with this input; they cannot establish their own authority.
+- [x] **M1.3** Separate user-selected constants, compiler-selected alternatives, measured/calibrated parameters, uncertain quantities and runtime observations. Preserve units, provenance and allowed variation for each category.
+- [x] **M1.4** Record authoring source and dependency identities, explicit external inputs and the resulting graph. Build from the frozen graph without re-executing authoring Python. Capture nondeterministic inputs when used; source text alone is insufficient for reproducible elaboration.
+- [x] **M1.5** Preserve the distinction between design-time Python control flow and explicit cellular runtime operators. Explain it in diagnostics and examples.
+- [x] **M1.6** Specify canonical serialization, content identities, schema compatibility and migration/rejection policy. Distinguish semantic identity from file-location and timestamp provenance so workspace relocation does not alter sequence bytes.
+- [x] **M1.7** Plan compatibility for `BuildProfile`, `RealizationPlan`, `lower_to_behavior`, verification and eventual `compile` entry points. Keep the current unavailable-compilation boundary until a supported artifact profile exists.
 
-- [ ] **M1.8** Freeze contract binding in two phases: freeze source/bindings, then derive and verify Behavior against that authority; subsequently freeze a realization request containing that exact Behavior identity, its response contracts and operating domain. Existing BehaviorContract records refer to a Behavior fingerprint. Preserve the upstream request identity without creating a circular hash dependency or mutating an accepted request.
+- [x] **M1.8** Freeze contract binding in two phases: freeze source/bindings, then derive and verify Behavior against that authority; subsequently freeze a realization request containing that exact Behavior identity, its response contracts and operating domain. Existing BehaviorContract records refer to a Behavior fingerprint. Preserve the upstream request identity without creating a circular hash dependency or mutating an accepted request.
 
 **Acceptance:** a request selecting value `1` rejects a Behavior artifact whose node and binding manifest were both changed to `9`. An explicitly requested override to `9` succeeds. Unknown, missing and incorrectly typed bindings produce source-linked diagnostics. Mutating caller-owned inputs after freezing cannot change the request.
 
@@ -81,13 +81,13 @@ M0 can proceed alongside M1–M2. M8 is continuous work, not a final testing pha
 
 **Primary modules:** `compiler/passes.py`, `compiler/pipeline.py`, `verification/evidence.py`, `artifacts/provenance.py`.
 
-- [ ] **M2.1** Extend pass contracts with input/output schemas, semantic/profile versions, target applicability, consumed requirements and assumptions, introduced/discharged obligations, source correspondence and observation mappings.
-- [ ] **M2.2** Record pass/tool/configuration identities, dependency fingerprints, changed properties and invalidated analyses. Build an explicit dependency graph, including upstream request and registry/model identities.
-- [ ] **M2.3** Enforce pass ordering and target legalization: every operation admitted to a completed stage must be supported by that destination profile. Preserve actionable diagnostics for remaining operations.
-- [ ] **M2.4** Separate candidate generation from acceptance. Require appropriate independent checks before promoting a candidate to the next accepted stage; an optimizer cannot weaken requirements to obtain success.
-- [ ] **M2.5** Make freshness validation automatic before evidence reuse or artifact acceptance. Propagate invalidation transitively through components, layout, encodings, context and models.
-- [ ] **M2.6** Define statuses for partial designs, complete artifacts within a requested scope, and individual `pass`/`fail`/`unknown`/`unsupported` checks. An exact CDS artifact may be complete as a CDS while full-payload and biological obligations remain unresolved and visible.
-- [ ] **M2.7** Define deterministic tie-breaking and recorded search seeds/configuration. Distinguish “no candidate found within this search” from demonstrated infeasibility. Add persistent caching only after dependency and invalidation behavior is tested.
+- [x] **M2.1** Extend pass contracts with input/output schemas, semantic/profile versions, target applicability, consumed requirements and assumptions, introduced/discharged obligations, source correspondence and observation mappings.
+- [x] **M2.2** Record pass/tool/configuration identities, dependency fingerprints, changed properties and invalidated analyses. Build an explicit dependency graph, including upstream request and registry/model identities.
+- [x] **M2.3** Enforce pass ordering and target legalization: every operation admitted to a completed stage must be supported by that destination profile. Preserve actionable diagnostics for remaining operations.
+- [x] **M2.4** Separate candidate generation from acceptance. Require appropriate independent checks before promoting a candidate to the next accepted stage; an optimizer cannot weaken requirements to obtain success.
+- [x] **M2.5** Make freshness validation automatic before evidence reuse or artifact acceptance. Propagate invalidation transitively through components, layout, encodings, context and models.
+- [x] **M2.6** Define statuses for partial designs, complete artifacts within a requested scope, and individual `pass`/`fail`/`unknown`/`unsupported` checks. An exact CDS artifact may be complete as a CDS while full-payload and biological obligations remain unresolved and visible.
+- [x] **M2.7** Define deterministic tie-breaking and recorded search seeds/configuration. Distinguish “no candidate found within this search” from demonstrated infeasibility. Add persistent caching only after dependency and invalidation behavior is tested.
 
 **Acceptance:** missing passes/providers and unsupported operations cannot disappear from a completed profile. A changed dependency prevents reuse of stale evidence, including changes several passes upstream. Source correspondence alone cannot discharge behavioral refinement.
 
@@ -95,10 +95,10 @@ M0 can proceed alongside M1–M2. M8 is continuous work, not a final testing pha
 
 **Primary modules:** `synthesis/`, `compiler/`, `ir/mechanism.py`, `models/synthetic.py`, `verification/realization.py`.
 
-- [ ] **M3.1** Publish a minimal supported profile: one cell role, explicit observations, a combinational condition and a contracted abstract output over a bounded history. Specify input/output meaning, identity, contact scope, initialization and observation mapping. Require authored response bands and deadlines; do not invent quantitative guarantees during lowering.
-- [ ] **M3.2** Implement Behavior → synthetic Mechanism lowering for that profile, retaining requirement IDs and source maps. Generate the candidate rather than constructing it manually in the example.
-- [ ] **M3.3** Run the existing independent model runner and realization checker on the generated candidate. The runner must not delegate its semantics to the Behavior evaluator.
-- [ ] **M3.4** Preserve contacted-object binding. Same-object conjunction and conjunction over different objects must remain distinct in generation and checking.
+- [x] **M3.1** Publish a minimal supported profile: one cell role, explicit observations, a combinational condition and a contracted abstract output over a bounded history. Specify input/output meaning, identity, contact scope, initialization and observation mapping. Require authored response bands and deadlines; do not invent quantitative guarantees during lowering.
+- [x] **M3.2** Implement Behavior → synthetic Mechanism lowering for that profile, retaining requirement IDs and source maps. Generate the candidate rather than constructing it manually in the example.
+- [x] **M3.3** Run the existing independent model runner and realization checker on the generated candidate. The runner must not delegate its semantics to the Behavior evaluator.
+- [x] **M3.4** Preserve contacted-object binding. Same-object conjunction and conjunction over different objects must remain distinct in generation and checking.
 - [ ] **M3.5** Add temporal support only through separately specified operators and acceptance tests. The current synthetic `delay` delays both edges with inertial cancellation; it is not equivalent to `held_for`. Test rapid fall/re-rise histories before introducing sustained-input lowering.
 - [ ] **M3.6** Extend supported patterns incrementally for pulses, simultaneous events, reset precedence and repeated triggers, with explicit startup/rearming semantics. Reject unsupported timing/state operators until their profile exists.
 
@@ -163,7 +163,7 @@ M0 can proceed alongside M1–M2. M8 is continuous work, not a final testing pha
 
 **Primary modules:** `tests/`, `verification/`, `models/`, `semantics/evaluator.py`; retain the existing tests and hosted release checks.
 
-- [ ] **M8.1** Add the M1 binding-tamper regression first, including an independently specified expected request. Extend tamper tests to contexts, contracts, reference choices and evidence dependencies.
+- [x] **M8.1** Add the M1 binding-tamper regression first, including an independently specified expected request. Extend tamper tests to contexts, contracts, reference choices and evidence dependencies.
 - [ ] **M8.2** Maintain a semantic regression matrix for same/different contacted objects, sustained/transient inputs, simultaneous/ordered events, memory resets/expiry and repeated triggers. Include boundaries between snapshots and exact deadlines.
 - [ ] **M8.3** Generate adversarial histories with deterministic seeds and minimal counterexample reduction. Cover rapid oscillation, contact removal/reappearance, startup-active inputs and incomplete observation histories.
 - [ ] **M8.4** Add metamorphic checks where semantics permit them: consistent object renaming, serialization round trips, reordered independent declarations and redundant unchanged snapshots that introduce no event. State the preconditions for each equivalence.
@@ -185,6 +185,21 @@ M0 can proceed alongside M1–M2. M8 is continuous work, not a final testing pha
 - [ ] **M9.5** Introduce optimization, search over alternative implementations and SBOL/SBML interoperation when concrete use cases justify them. Preserve hard requirements, context, source correspondence and revalidation obligations.
 
 **Acceptance:** each additional feature has defined semantics, a supported realization profile, independently checked output and an explicit evidence boundary. Full-payload compilation has its own completion contract; a CDS-only success is never silently promoted.
+
+## Current implementation evidence
+
+The first four suggested implementation changes are present for the narrow supported profiles:
+
+- **M0:** strict offline reference manifests, retained source excerpts, independent audit record and exact DNA/RNA/protein consistency tests. See [curation evidence](../data/references/fap_car/curation.md).
+- **M1:** [two-phase frozen requests](build-requests-v0.1.md), request-authoritative lowering and binding-tamper regressions. Elaboration provenance is explicitly supplied by the author; missing metadata is not a claim that external inputs were captured.
+- **M2:** [checked pass contracts](pass-manager-v0.1.md), required independent validators, scoped completion and transitive freshness. Callers update changed dependency roots; persistent caching remains deferred. Molecular-stage consumers will be added with their own passes.
+- **M3.1–M3.4:** [combinational synthetic generation](synthetic-profile-v0.1.md), source/requirement maps, locked synthetic operations and independent finite-history acceptance. Run `PYTHONPATH=src python examples/checked_pipeline.py` for the integrated workflow.
+- **Minimal M4 support:** synthetic component records/catalog and content locks exist; the full contract linker, providers, resource accounting and molecular component integration remain unchecked below.
+- **Continuous M8:** binding and dependency tampering, wrong-object candidates, serialization, source mutation, and 256 two-object Boolean transition histories are exercised. This bounded set is not whole-profile exhaustive or biological validation.
+
+The existing hosted Python 3.11/3.14 package, test, example and CLI gates are retained and now include the integrated pipeline example. Each run reports the exact Git revision and platform. Detailed tests are under `tests/test_build_request.py`, `test_pipeline*.py`, `test_checked_pipeline.py`, `test_references.py` and `test_synthetic_generation.py`.
+
+The next implementation milestone is **M4 component contracts and linking**, followed by M5–M7 construct assembly, exact CDS emission and reproducible molecular packaging. Temporal synthetic operators remain a separately specified extension.
 
 ## Suggested implementation PRs
 

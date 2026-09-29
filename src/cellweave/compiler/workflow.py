@@ -9,6 +9,7 @@ import math
 from types import MappingProxyType
 from typing import Any
 
+from cellweave.compiler.request import BuildRequest, RealizationRequest
 from cellweave.errors import (
     CompilationUnavailableError,
     DefinitionError,
@@ -63,6 +64,12 @@ class BuildProfile:
                 )
         object.__setattr__(self, "parameters", MappingProxyType(values))
 
+    def freeze_request(self, program: IntentProgram, **request_options) -> BuildRequest:
+        """Freeze this profile's bindings and target as executable input authority."""
+        return BuildRequest.freeze(
+            program, target=self.target, parameters=self.parameters, **request_options
+        )
+
 
 @dataclass(frozen=True)
 class DesignChoice:
@@ -97,6 +104,14 @@ class RealizationPlan:
     @property
     def diagnostics(self) -> tuple[DesignChoice, ...]:
         return self.unresolved
+
+    def freeze_request(self, **request_options) -> BuildRequest:
+        """Freeze fully bound inputs; unresolved molecular choices remain explicit.
+
+        A missing design binding rejects this conversion. Freezing does not make
+        the plan ready or discharge its implementation/biological obligations.
+        """
+        return self.profile.freeze_request(self.program, **request_options)
 
     def to_dict(self) -> dict:
         return {
@@ -240,11 +255,11 @@ def plan(program: IntentProgram, *, profile: BuildProfile) -> RealizationPlan:
     return RealizationPlan(program, profile, bindings, tuple(unresolved))
 
 
-def compile(design: RealizationPlan) -> None:
+def compile(design: RealizationPlan | BuildRequest | RealizationRequest) -> None:
     """Identify the unimplemented molecular boundary without emitting a payload."""
-    if not isinstance(design, RealizationPlan):
+    if not isinstance(design, (RealizationPlan, BuildRequest, RealizationRequest)):
         raise TypeMismatchError(
-            "compile() requires a RealizationPlan returned by plan()."
+            "compile() requires a RealizationPlan, BuildRequest or RealizationRequest."
         )
     raise CompilationUnavailableError(
         "CellWeave implements intent authoring, abstract behavior execution, and planning inspection. "

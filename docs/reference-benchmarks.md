@@ -1,6 +1,6 @@
 # Exact sequence reference benchmarks
 
-This document defines the molecular fixtures planned in [M0 and M5–M7 of the development roadmap](roadmap.md). It records the research state as of 2026-09-29. No nucleotide fixtures, molecular emitters or full-payload compilation are implemented by this documentation change.
+This document defines the molecular fixtures planned in [M0 and M5–M7 of the development roadmap](roadmap.md). It records the research and implementation state as of 2026-09-29. The [offline reference set](../data/references/fap_car/curation.md) now contains separately extracted nucleotide/protein records and immutable manifests; molecular emission and full-payload compilation remain unimplemented.
 
 ## What the first benchmark establishes
 
@@ -26,26 +26,26 @@ The abstract synthetic test suite continues to check language and model semantic
 | SEQ ID NO:2 | Murine-FAPCAR coding DNA | Exact DNA-CDS expected artifact |
 | SEQ ID NO:3 | Murine-FAPCAR coding RNA | Exact RNA-CDS expected artifact |
 
-**Current status:** nucleotide disclosures inspected during research; fixture extraction, source-file pinning, independent review and normalized hashes remain to do. Use the label **patent-disclosed, study-associated CDS reference**. Do not assert that these records fully identify the manufactured RNA used in the paper. A paper association, exact construct identity and lot-level material identity are different provenance relationships.
+**Current status:** DNA/RNA/protein extracted separately, raw source and normalized hashes pinned, original PDF body cross-checked, and exact correspondence/translation checks pass. A second Codex agent independently re-extracted full HTML, separately OCRed and visually reviewed PDF pages 18–20, and confirmed all three hashes. The set is accepted for software exact-CDS reference use in [manifest.json](../data/references/fap_car/manifest.json); this is not human, empirical or therapeutic validation. Use the label **patent-disclosed, study-associated CDS reference**. Do not assert that these records fully identify the manufactured RNA used in the paper. A paper association, exact construct identity and lot-level material identity are different provenance relationships.
 
 The patent also describes other variants. Lock the named variant and each sequence ID; do not substitute an adjacent sequence or concatenate additional elements because they appear in the same patent. UTRs, cap, modifications, tail and delivered-transcript boundaries are not supplied by this CDS benchmark. The DNA and RNA spellings do not establish two independently tested therapeutic delivery modalities.
 
 ## Curation tasks and promotion gate
 
-- [ ] **REF.1** Retrieve a stable source artifact and record publication/version, exact sequence locator, retrieval date, source URL and raw-file hash. If extracting from rendered text, preserve the original text and review against the original listing or document where available.
-- [ ] **REF.2** Store independently reviewed expected records for DNA, RNA and protein. Record extraction tool/version, reviewer evidence and any discrepancies. Do not derive expected RNA or protein solely from the emitter output under test.
-- [ ] **REF.3** Define normalization narrowly: declared layout-whitespace removal and case normalization may be allowed. Preserve alphabets and source conventions. Do not silently correct OCR, ambiguity symbols, missing bases or apparent sequence errors.
-- [ ] **REF.4** Record canonical sequence lengths and hashes after review. Keep raw-source, normalized sequence, feature annotation and serialized file identities distinct.
-- [ ] **REF.5** Check DNA/RNA correspondence under explicit T↔U conversion and translation against the independently curated protein. Record the genetic code, frame and stop-symbol convention; surface any inconsistency before accepting the fixture.
-- [ ] **REF.6** Record artifact class, completeness and provenance relationships as structured fields. Unknown full-transcript features must remain unknown. Add domain coordinates only after sourcing or independently reviewing them.
-- [ ] **REF.7** Pin the records in a minimal offline reference registry. Keep runtime resolution deterministic; a changed source/reference identity must invalidate dependent accepted builds.
-- [ ] **REF.8** Review source attribution and redistribution terms when adding fixtures. Keep bulky source documents and generated products outside Git; track small curated reference inputs according to [data policy](../data/README.md).
+- [x] **REF.1** Retrieve a stable source artifact and record publication/version, exact sequence locator, retrieval date, source URL and raw-file hash. If extracting from rendered text, preserve the original text and review against the original listing or document where available.
+- [x] **REF.2** Store independently reviewed expected records for DNA, RNA and protein. Record extraction tool/version, reviewer evidence and any discrepancies. Do not derive expected RNA or protein solely from the emitter output under test.
+- [x] **REF.3** Define normalization narrowly: declared layout-whitespace removal and case normalization may be allowed. Preserve alphabets and source conventions. Do not silently correct OCR, ambiguity symbols, missing bases or apparent sequence errors.
+- [x] **REF.4** Record canonical sequence lengths and hashes after review. Keep raw-source, normalized sequence, feature annotation and serialized file identities distinct.
+- [x] **REF.5** Check DNA/RNA correspondence under explicit T↔U conversion and translation against the independently curated protein. Record the genetic code, frame and stop-symbol convention; surface any inconsistency before accepting the fixture.
+- [x] **REF.6** Record artifact class, completeness and provenance relationships as structured fields. Unknown full-transcript features must remain unknown. Add domain coordinates only after sourcing or independently reviewing them.
+- [x] **REF.7** Pin the records in a minimal offline reference registry. Keep runtime resolution deterministic; a changed source/reference identity must invalidate dependent accepted builds.
+- [x] **REF.8** Review source attribution and redistribution terms when adding fixtures. Keep bulky source documents and generated products outside Git; track small curated reference inputs according to [data policy](../data/README.md).
 
 **Promotion rule:** all three expected records must be reviewed and internally reconciled before becoming accepted FAP exact-CDS fixtures. If source records disagree, retain a blocked candidate and a precise diagnostic; do not choose a corrected sequence without documenting a new artifact identity.
 
 ## Proposed reference record and build contents
 
-Schema names are design proposals, not existing APIs. A reference record should capture:
+`cellweave.registry.references.ReferenceRecord` and `ReferenceManifest` implement the first narrow CDS-reference schema. A reference record captures:
 
 - `reference_id`, `variant_id`, record version and schema version;
 - source publication/accession, exact locator, URL, retrieval record and source hash;

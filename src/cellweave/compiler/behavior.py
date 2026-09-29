@@ -11,6 +11,7 @@ from collections.abc import Mapping
 import json
 from typing import Any
 
+from cellweave.compiler.request import BuildRequest
 from cellweave.errors import (
     LoweringVerificationError,
     SerializationError,
@@ -31,7 +32,7 @@ from cellweave.semantics.contracts import (
     LoweringReport,
     PreservationCheck,
 )
-from cellweave.semantics.types import TypeSpec, decode_binding, validate_binding
+from cellweave.semantics.types import TypeSpec, decode_binding
 
 
 def _unsupported(node: IntentNode, message: str) -> None:
@@ -101,35 +102,18 @@ def _check_source_profile(program: IntentProgram) -> None:
             )
 
 
-def _bind_parameters(
-    program: IntentProgram, parameters: Mapping[str, Any] | None
-) -> dict:
-    if parameters is None:
-        parameters = {}
-    if not isinstance(parameters, Mapping):
-        raise TypeMismatchError("Parameter bindings must be a mapping.")
-    declarations = {
-        node.attributes["name"]: node for node in program.find(kind="parameter")
-    }
-    unknown = set(parameters) - declarations.keys()
-    if unknown:
+def _authority(program, parameters):
+    if isinstance(program, BuildRequest):
+        if parameters is not None:
+            raise TypeMismatchError(
+                "A frozen BuildRequest cannot accept later parameter overrides; freeze a new request."
+            )
+        return program
+    if not isinstance(program, IntentProgram):
         raise TypeMismatchError(
-            f"Unknown parameter bindings: {', '.join(sorted(map(str, unknown)))}."
+            "Expected IntentProgram or BuildRequest input authority."
         )
-    bindings = {}
-    for name, node in declarations.items():
-        if name in parameters:
-            bindings[name] = validate_binding(
-                parameters[name], TypeSpec.from_dict(node.data_type)
-            )
-        elif node.attributes["bound"]:
-            bindings[name] = thaw_json(node.attributes["default"])
-        else:
-            _unsupported(
-                node,
-                f"Design parameter {name!r} must be bound before behavior execution.",
-            )
-    return bindings
+    return BuildRequest.freeze(program, parameters=parameters)
 
 
 def _normalized_attributes(node: IntentNode, bindings: Mapping[str, Any]) -> dict:
@@ -155,7 +139,9 @@ def _normalized_attributes(node: IntentNode, bindings: Mapping[str, Any]) -> dic
 
 
 def lower_to_behavior(
-    program: IntentProgram, *, parameters: Mapping[str, Any] | None = None
+    program: IntentProgram | BuildRequest,
+    *,
+    parameters: Mapping[str, Any] | None = None,
 ) -> BehaviorProgram:
     """Resolve the supported abstract execution profile or reject the whole graph.
 
@@ -163,10 +149,10 @@ def lower_to_behavior(
     Bound constants, requirements and source ancestry are serialized in the result.
     No unsupported construct is discarded merely because it has no immediate output.
     """
-    if not isinstance(program, IntentProgram):
-        raise TypeMismatchError("lower_to_behavior() requires an IntentProgram.")
+    authority = _authority(program, parameters)
+    program = authority.intent
     _check_source_profile(program)
-    bindings = _bind_parameters(program, parameters)
+    bindings = authority.resolved_bindings
     source_nodes = {node.id: node for node in program.nodes}
     links = {node.id: lineage_for(source_nodes, node.id) for node in program.nodes}
     requirements = tuple(
@@ -233,23 +219,26 @@ def lower_to_behavior(
         raise SerializationError(
             f"Malformed source operation during behavior lowering: {exc}"
         ) from exc
-    verify_lowering(program, result)
+    verify_lowering(authority, result)
     return result
 
 
-def verify_lowering(intent: IntentProgram, behavior: BehaviorProgram) -> LoweringReport:
+def verify_lowering(
+    intent: IntentProgram | BuildRequest,
+    behavior: BehaviorProgram,
+    *,
+    parameters: Mapping[str, Any] | None = None,
+) -> LoweringReport:
     """Check exact correspondence for this pass; raise on any changed obligation.
 
     Checks cover retained operations/edges/types/scopes, explicitly permitted
     parameter substitution and policy normalization, and full requirement/source
     lineage. They are not a proof that biological mechanisms implement the graph.
     """
-    if not isinstance(intent, IntentProgram) or not isinstance(
-        behavior, BehaviorProgram
-    ):
-        raise TypeMismatchError(
-            "verify_lowering() requires IntentProgram and BehaviorProgram."
-        )
+    authority = _authority(intent, parameters)
+    intent = authority.intent
+    if not isinstance(behavior, BehaviorProgram):
+        raise TypeMismatchError("verify_lowering() requires a BehaviorProgram output.")
     checks = []
 
     def check(name: str, passed: bool, detail: str) -> None:
@@ -271,8 +260,7 @@ def verify_lowering(intent: IntentProgram, behavior: BehaviorProgram) -> Lowerin
         tuple(original) == tuple(emitted) and intent.roots == behavior.roots,
         "Every source node and root must be retained in deterministic order.",
     )
-    # Independently validate serialized bindings against their source declarations;
-    # override values are deliberate design inputs, not constraints to source defaults.
+    # Values reported by an output are evidence to check, never their own authority.
     expected_names = {node.attributes["name"] for node in intent.find(kind="parameter")}
     check(
         "parameter_inventory",
@@ -289,6 +277,12 @@ def verify_lowering(intent: IntentProgram, behavior: BehaviorProgram) -> Lowerin
             raise LoweringVerificationError(
                 f"Invalid parameter binding for {node.id}: {exc}"
             ) from exc
+    check(
+        "authoritative_bindings",
+        json.dumps(thaw_json(behavior.parameter_bindings), sort_keys=True)
+        == json.dumps(thaw_json(authority.resolved_bindings), sort_keys=True),
+        "Output bindings must exactly match the frozen input defaults and explicit overrides.",
+    )
     for node_id, source in original.items():
         target = emitted[node_id]
         check(
@@ -303,7 +297,7 @@ def verify_lowering(intent: IntentProgram, behavior: BehaviorProgram) -> Lowerin
             f"semantics:{node_id}",
             json.dumps(thaw_json(target.attributes), sort_keys=True)
             == json.dumps(
-                _normalized_attributes(source, behavior.parameter_bindings),
+                _normalized_attributes(source, authority.resolved_bindings),
                 sort_keys=True,
             ),
             "Only declared parameter binding and execution-policy normalization may change attributes.",

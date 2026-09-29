@@ -10,7 +10,9 @@ from __future__ import annotations
 from dataclasses import replace
 
 import cellweave as cw
+from cellweave.compiler.request import BuildRequest, RealizationRequest
 from cellweave.semantics.types import BOOLEAN
+from cellweave.synthesis.synthetic import generate_synthetic
 
 
 def build_example():
@@ -19,7 +21,16 @@ def build_example():
     a, b = cell.contact.marker("A"), cell.contact.marker("B")
     action = cell.rest()
     rule = cell.when(a.present() & b.present()).do(action)
-    behavior = cw.lower_to_behavior(therapy.freeze())
+    target = cw.TargetContext(
+        "synthetic_context",
+        "1",
+        cw.PayloadFormat.RNA,
+        capabilities=("synthetic_signal_graph",),
+    )
+    request = BuildRequest.freeze(
+        therapy.freeze(), target=target, artifact_scope="synthetic_realization"
+    )
+    behavior = cw.lower_to_behavior(request)
 
     input_a = cw.Observable("A.present", BOOLEAN, cell.role, scope="contact")
     input_b = cw.Observable("B.present", BOOLEAN, cell.role, scope="contact")
@@ -48,71 +59,12 @@ def build_example():
         minimum_horizon=cw.Duration(7),
         max_contacts=2,
     )
-    target = cw.TargetContext(
-        "synthetic_context",
-        "1",
-        cw.PayloadFormat.RNA,
-        capabilities=("synthetic_signal_graph",),
+    # Lowering retains the full per-contact conjunction before existential
+    # aggregation. Acceptance still uses the independently implemented runner.
+    generated = generate_synthetic(
+        RealizationRequest.freeze(request, behavior, contract, domain)
     )
-
-    # This implementation is authored independently of the Behavior IR. A and B
-    # are conjoined per contact before reducing to the cell-scoped response.
-    def boolean_endpoint(name, *, contact=False):
-        return cw.Observable(
-            name, BOOLEAN, cell.role, scope="contact" if contact else "cell"
-        )
-
-    def level_endpoint(name):
-        return cw.Observable(name, cw.Level, cell.role)
-
-    candidate = cw.MechanismProgram(
-        name="responsive_fixture",
-        nodes=(
-            cw.MechanismNode("a", "input", input_a),
-            cw.MechanismNode("b", "input", input_b),
-            cw.MechanismNode(
-                "joint", "and", boolean_endpoint("joint", contact=True), ("a", "b")
-            ),
-            cw.MechanismNode(
-                "any_joint", "any_contact", boolean_endpoint("any_joint"), ("joint",)
-            ),
-            cw.MechanismNode(
-                "zero", "constant", level_endpoint("zero"), attributes={"value": 0}
-            ),
-            cw.MechanismNode(
-                "one", "constant", level_endpoint("one"), attributes={"value": 1}
-            ),
-            cw.MechanismNode(
-                "level",
-                "select",
-                level_endpoint("selected_level"),
-                ("any_joint", "one", "zero"),
-            ),
-            cw.MechanismNode(
-                "delayed",
-                "delay",
-                level_endpoint("delayed_level"),
-                ("level",),
-                {"duration": cw.Duration(0.25), "initial": 0},
-            ),
-            cw.MechanismNode(
-                "response",
-                "output",
-                output,
-                ("delayed",),
-                requirement_ids=(requirement.id,),
-            ),
-        ),
-        outputs=("response",),
-        required_capabilities=("synthetic_signal_graph",),
-    )
-    observation_map = cw.ObservationMap(
-        inputs=(
-            cw.InputBinding(a.node_id, "present", "a"),
-            cw.InputBinding(b.node_id, "present", "b"),
-        ),
-        outputs=(cw.OutputBinding(requirement.id, "response"),),
-    )
+    candidate, observation_map = generated.mechanism, generated.observation_map
 
     def contact(first, second):
         return {
@@ -133,14 +85,26 @@ def build_example():
 
 
 def with_delay(candidate, duration):
+    """Inject an adversarial delay; generation itself is stateless."""
+    delays = tuple(
+        cw.MechanismNode(
+            f"delayed:{ref}",
+            "delay",
+            replace(candidate.get(ref).output, id=f"delayed:{ref}"),
+            candidate.get(ref).inputs,
+            {"duration": cw.Duration(duration), "initial": 0},
+        )
+        for ref in candidate.outputs
+    )
     return replace(
         candidate,
         nodes=tuple(
-            replace(node, attributes={"duration": cw.Duration(duration), "initial": 0})
-            if node.id == "delayed"
+            replace(node, inputs=(f"delayed:{node.id}",))
+            if node.id in candidate.outputs
             else node
             for node in candidate.nodes
-        ),
+        )
+        + delays,
     )
 
 
@@ -151,7 +115,9 @@ def run_example():
         candidate,
         name="silent_fixture",
         nodes=tuple(
-            replace(node, inputs=("zero",)) if node.id == "response" else node
+            replace(node, inputs=("inactive:response.rest",))
+            if node.id in candidate.outputs
+            else node
             for node in candidate.nodes
         ),
     )
