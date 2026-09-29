@@ -129,5 +129,5 @@ Sequence reference components are separately classified. Their passing selection
 or linking claim concerns only pinned CDS identity/structure and recorded unknown
 features. They cannot provide dynamic ports, capabilities or biological guarantees.
 The [reference construct pipeline](reference-construct-pipeline-v0.1.md) now checks
-one whole selected CDS layout. Molecular lowering and sequence emission remain
-later milestones.
+one whole selected CDS layout. The [exact-CDS pipeline](exact-cds-pipeline-v0.1.md) adds separately checked
+reference emission; general molecular realization remains unsupported.

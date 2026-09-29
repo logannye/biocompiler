@@ -249,20 +249,20 @@ def plan(program: IntentProgram, *, profile: BuildProfile) -> RealizationPlan:
     unresolved.append(
         DesignChoice(
             "molecular_backend_unavailable",
-            "Molecular mechanism selection and DNA/RNA sequence emission are not implemented.",
+            "Intent-to-molecular mechanism selection is not implemented; exact-reference CDS emission requires a separately pinned ConstructRequest.",
         )
     )
     return RealizationPlan(program, profile, bindings, tuple(unresolved))
 
 
 def compile(design: RealizationPlan | BuildRequest | RealizationRequest) -> None:
-    """Identify the unimplemented molecular boundary without emitting a payload."""
+    """Reject unsupported general intent compilation; reference CDS uses its own API."""
     if not isinstance(design, (RealizationPlan, BuildRequest, RealizationRequest)):
         raise TypeMismatchError(
             "compile() requires a RealizationPlan, BuildRequest or RealizationRequest."
         )
     raise CompilationUnavailableError(
-        "CellWeave implements intent authoring, abstract behavior execution, and planning inspection. "
-        "Molecular realization and DNA/RNA sequence generation are not implemented; "
-        "inspect design.unresolved or design.to_json()."
+        "General intent-to-molecular realization is not implemented. "
+        "Use run_molecular_pipeline with an independently pinned ConstructRequest for exact-reference CDS emission; "
+        "inspect design.unresolved or design.to_json() for unresolved intent designs."
     )

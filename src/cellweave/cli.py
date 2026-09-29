@@ -40,6 +40,8 @@ from cellweave.semantics.component_contracts import (
 from cellweave.verification.components import CompositionResult
 from cellweave.ir.construct import ConstructCandidate, ConstructRequest
 from cellweave.verification.construct import ConstructResult
+from cellweave.ir.molecular import MolecularArtifact
+from cellweave.verification.molecular import MolecularResult
 
 
 def _read_artifact(document):
@@ -79,6 +81,8 @@ def _read_artifact(document):
                 ConstructRequest,
                 ConstructCandidate,
                 ConstructResult,
+                MolecularArtifact,
+                MolecularResult,
             )
         }
     )
@@ -115,6 +119,8 @@ def _summary(artifact):
             ConstructRequest,
             ConstructCandidate,
             ConstructResult,
+            MolecularArtifact,
+            MolecularResult,
         ),
     ):
         summary["inspection"] = (
@@ -138,7 +144,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     inspect_command.add_argument(
         "path",
         type=Path,
-        help="Request, graph, component, construct, contract, context, or check JSON file",
+        help="Request, graph, component, construct, molecular, contract, context, or check JSON file",
     )
     inspect_command.add_argument(
         "--json", action="store_true", help="Print the normalized full graph"
@@ -146,7 +152,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     args = parser.parse_args(argv)
     if args.command == "architecture":
         print(
-            "CellWeave pipeline (checked synthetic generation, component linking and reference construct assembly implemented; sequence emission planned)"
+            "CellWeave pipeline (checked synthetic generation, component linking, reference construct assembly and exact DNA/RNA CDS emission implemented; build packaging planned)"
         )
         print("Python authoring -> immutable intent graph")
         for stage in STAGE_ORDER:

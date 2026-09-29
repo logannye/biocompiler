@@ -12,12 +12,12 @@ Implementation order, stable task IDs and acceptance gates are tracked in the [d
 | Observable meaning | Explicit endpoint, type, role, contact scope, compartment, input field and output mapping | Calibrated interpretation of physical measurements and higher-level effects |
 | Required responses | Active/inactive ranges, activation/recovery deadlines, exercised finite-trace coverage | Stochastic tolerances, distributional and population quantifiers, long-term adaptation |
 | Operating assumptions | Nonempty typed input domains, contact limits, horizon, declared target capabilities | Cell-state applicability, physical resources, lifecycle and deployment assumptions |
-| Independent acceptance | Synthetic candidate runner and checker, source-linked counterexamples, explicit outcomes | Domain-specific biological adapters and validation evidence |
+| Independent acceptance | Synthetic candidate runner and checker, independent component/construct/exact-CDS checks, source-linked diagnostics, explicit outcomes | Domain-specific biological adapters and validation evidence |
 | Analysis identity | Fingerprints of checked artifacts, histories, context and tool semantics; automatic transitive pass-manager freshness | Persistent analysis cache and signed provenance |
-| Composition | Typed graph edges and explicit contact aggregation | Assume/guarantee compatibility, circular-assumption detection, shared-resource and co-payload dependencies |
+| Composition | Typed graph edges, contract compatibility, circular-assumption detection and declared shared-resource accounting | Calibrated physical resource demands and biological interaction models |
 | Parameter meaning | Frozen design bindings with category/provenance/variation metadata, runtime signals kept distinct | Robust checks over uncertain/calibrated quantities |
-| Host and payload linking | Declared candidate capability requirements checked against target declarations | Encoded-here/co-payload/host/external/unresolved dependency inventory and linker |
-| Encoding | Documented preservation obligations | Construct schemas, molecular backends, target-specific features and higher-level revalidation |
+| Host and payload linking | Explicit encoded-here/co-payload/host/external/unresolved inventory and offline dependency linker | Independent experimental support for supplied host and delivery assumptions |
+| Encoding | Checked single-CDS Construct IR, exact DNA/RNA backends, scoped feature declarations and conservative invalidation | General molecular realization, complete payload features and calibrated higher-level revalidation |
 
 The [realization checking profile](realization-checking-v0.1.md) defines the exact implemented scope. Capability declarations are assumptions supplied by a context author, not verified facts about a host. A finite-trace pass is conditional on its recorded inputs; the minimal synthetic operator catalog supplies no characterized molecular component or sequence-generation capability.
 

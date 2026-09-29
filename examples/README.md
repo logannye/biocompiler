@@ -25,3 +25,5 @@ meaning.
 [component_linking.py](component_linking.py) extends the synthetic pipeline to locked component contracts and separately inspects a pinned FAP RNA-CDS reference. Run `PYTHONPATH=src python examples/component_linking.py`. It preserves finite-history evidence and CDS-only scope; no molecular sequence is emitted.
 
 [reference_construct.py](reference_construct.py) independently selects DNA and RNA CDS records and runs checked single-component construct assembly for each. Run `PYTHONPATH=src python examples/reference_construct.py`. The complete reference layout retains unknown payload context and unresolved emission/biological obligations.
+
+[reference_sequences.py](reference_sequences.py) runs the exact-CDS pipeline separately for DNA and RNA, prints scoped identities and checks FASTA/JSON exports. Run `PYTHONPATH=src python examples/reference_sequences.py`. It emits each selected reference spelling without optimization or complete-payload/biological claims.

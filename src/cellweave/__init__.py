@@ -1,7 +1,31 @@
 """Author inspectable therapeutic programs for in-vivo immune-cell engineering."""
 
-__version__ = "0.1.0.dev6"
+__version__ = "0.1.0.dev7"
 
+from cellweave.artifacts.sequences import (
+    SequenceExport,
+    export_reference_sequence,
+    verify_sequence_export,
+)
+from cellweave.backends.dna import emit_dna_cds
+from cellweave.backends.rna import emit_rna_cds
+from cellweave.compiler.molecular import MolecularBuild, run_molecular_pipeline
+from cellweave.ir.molecular import (
+    EncodingChange,
+    EncodingEvidencePolicy,
+    EncodingPolicy,
+    FeatureStatus,
+    MolecularArtifact,
+    MolecularRecord,
+    TranslationPolicy,
+    canonical_sequence_sha256,
+)
+from cellweave.verification.molecular import (
+    MolecularCheck,
+    MolecularDiagnostic,
+    MolecularResult,
+    check_molecular,
+)
 from cellweave.compiler.construct import ConstructBuild, run_construct_pipeline
 from cellweave.ir.construct import (
     ComponentPlacement,
@@ -185,6 +209,25 @@ from cellweave.verification.realization import (
 )
 
 __all__ = [
+    "EncodingChange",
+    "EncodingEvidencePolicy",
+    "EncodingPolicy",
+    "FeatureStatus",
+    "MolecularArtifact",
+    "MolecularBuild",
+    "MolecularCheck",
+    "MolecularDiagnostic",
+    "MolecularRecord",
+    "MolecularResult",
+    "SequenceExport",
+    "TranslationPolicy",
+    "canonical_sequence_sha256",
+    "check_molecular",
+    "emit_dna_cds",
+    "emit_rna_cds",
+    "export_reference_sequence",
+    "run_molecular_pipeline",
+    "verify_sequence_export",
     "ComponentPlacement",
     "ConstructBuild",
     "ConstructCandidate",

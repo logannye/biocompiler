@@ -2,11 +2,11 @@
 
 A compiler architecture for turning an immune cell engineer's Python-authored intent into an exact, traceable DNA or RNA payload specification.
 
-**Status: checked synthetic generation, component linking and reference construct assembly, v0.1 alpha.** Author cell roles, recognition, actions, temporal logic, memory, states, feedback, and communication; export immutable, typed intent graphs as JSON. Checked lowering preserves source requirements in Behavior IR. A reference evaluator executes supported behavior against supplied histories. Explicit response contracts can now be checked against an independently executed synthetic candidate model, producing scoped results, counterexamples, and dependency identities. Frozen requests make input bindings authoritative. A checked pass manager generates a narrow combinational synthetic implementation and verifies it independently. An offline registry locks typed component contracts, models and evidence. The linker checks interface meaning, operating domains, providers and shared resource reservations; separately classified FAP-CAR references pin exact CDS expectations. A checked assembly pass now preserves a single selected DNA or RNA CDS as an explicit reference construct. Molecular lowering, sequence generation and biological simulation remain future work.
+**Status: checked synthetic generation and exact-reference DNA/RNA CDS emission, v0.1 alpha.** Author cell roles, recognition, actions, temporal logic, memory, states, feedback, and communication; export immutable, typed intent graphs as JSON. Checked lowering preserves source requirements in Behavior IR. A reference evaluator executes supported behavior against supplied histories. Explicit response contracts can now be checked against an independently executed synthetic candidate model, producing scoped results, counterexamples, and dependency identities. Frozen requests make input bindings authoritative. A checked pass manager generates a narrow combinational synthetic implementation and verifies it independently. An offline registry locks typed component contracts, models and evidence. The linker checks interface meaning, operating domains, providers and shared resource reservations; separately classified FAP-CAR references pin exact CDS expectations. A checked assembly pass now preserves a single selected DNA or RNA CDS as an explicit reference construct. Exact-reference DNA and RNA backends now emit the selected CDS and independently verify its spelling and translation. General molecular mechanism selection, complete-payload generation and biological simulation remain future work.
 
 ## Planned compiler stack
 
-CellWeave is designed to turn a description of **what an engineered immune cell should do** into an exact specification of **what its genetic payload must contain**. Each layer resolves more implementation detail while carrying the original requirements forward. The diagram shows the intended architecture. Python authoring, frozen requests, intent/behavior graphs, checked passes, abstract execution, automatic combinational synthetic realization, component linking and single-CDS construct assembly are implemented; molecular realization and payload emission remain planned.
+CellWeave is designed to turn a description of **what an engineered immune cell should do** into an exact specification of **what its genetic payload must contain**. Each layer resolves more implementation detail while carrying the original requirements forward. The diagram shows the intended architecture. Python authoring, frozen requests, intent/behavior graphs, checked passes, abstract execution, automatic combinational synthetic realization, component linking, single-CDS construct assembly and exact-reference nucleotide emission are implemented; general molecular realization and complete-payload generation remain planned.
 
 ```mermaid
 flowchart LR
@@ -133,6 +133,12 @@ The [component example](examples/component_linking.py) also selects an independe
 
 The [DNA/RNA example](examples/reference_construct.py) completes only the `reference_construct` scope. Sequence emission, full-payload features and biological behavior remain unresolved. Reuse requires `build.manager.result("construct", scope="reference_construct")` with current dependency roots. [Construct IR](docs/construct-ir-v0.1.md), [independent checking](docs/construct-checking-v0.1.md) and the [reference pipeline](docs/reference-construct-pipeline-v0.1.md) document the limits.
 
+## Emit and verify an exact reference CDS
+
+`cw.run_molecular_pipeline(request, registry, manifests)` extends the checked reference construct flow through independent DNA-CDS or RNA-CDS emission. The `exact_cds` scope requires exact nucleotide agreement with the selected record, consistent linked DNA/RNA references, translation to the pinned protein, and preserved layout/source metadata. Complete delivered-payload features and molecular behavior remain unresolved.
+
+The [sequence example](examples/reference_sequences.py) checks both modalities and verifies FASTA/JSON exports. The [exact-CDS pipeline](docs/exact-cds-pipeline-v0.1.md), [molecular schema](docs/molecular-ir-v0.1.md) and [independent checker](docs/molecular-checking-v0.1.md) define the supported profile. Codon optimization is disabled; matching protein sequence cannot excuse changed reference nucleotides.
+
 ## Repository layout
 
 ```text
@@ -170,6 +176,7 @@ PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 examples/realization_check.py
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 examples/checked_pipeline.py
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 examples/component_linking.py
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 examples/reference_construct.py
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 examples/reference_sequences.py
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 -m unittest discover -s tests -v
 ```
 
@@ -180,9 +187,9 @@ python -m pip install -e .
 cellweave architecture
 ```
 
-Use `cellweave inspect artifact.json` for a saved intent, behavior, mechanism, contract, domain, context, observation map, component assembly, registry, composition, construct request/candidate, or check record, or add `--json` to print the normalized artifact. Inspection reads JSON and does not execute authoring scripts. Hosted CI is configured to check package installation, the API test suite, examples, and CLI on Python 3.11 and 3.14.
+Use `cellweave inspect artifact.json` for a saved intent, behavior, mechanism, contract, domain, context, observation map, component assembly, registry, composition, construct request/candidate, molecular artifact, or check record, or add `--json` to print the normalized artifact. Inspection reads JSON and does not execute authoring scripts. Hosted CI is configured to check package installation, the API test suite, examples, and CLI on Python 3.11 and 3.14.
 
-`cw.plan(program, profile=...)` returns a planning report with typed parameter bindings and unresolved choices. `cw.compile(plan)` explicitly raises `CompilationUnavailableError`: this release does not emit DNA/RNA sequences.
+`cw.plan(program, profile=...)` returns a planning report with typed parameter bindings and unresolved choices. `cw.compile(plan)` explicitly raises `CompilationUnavailableError`: general intent-to-molecular compilation remains unsupported. Exact-reference CDS emission uses the separately pinned `run_molecular_pipeline` API.
 
 ## Design documents
 
@@ -200,6 +207,9 @@ Use `cellweave inspect artifact.json` for a saved intent, behavior, mechanism, c
 - [Construct IR](docs/construct-ir-v0.1.md)
 - [Construct checking](docs/construct-checking-v0.1.md)
 - [Reference construct pipeline](docs/reference-construct-pipeline-v0.1.md)
+- [Molecular artifact schema](docs/molecular-ir-v0.1.md)
+- [Independent molecular checking](docs/molecular-checking-v0.1.md)
+- [Exact CDS pipeline and export](docs/exact-cds-pipeline-v0.1.md)
 - [Exact coding-sequence reference benchmarks and curation plan](docs/reference-benchmarks.md)
 - [Initial architecture decision](docs/decisions/0001-explicit-contracts-and-staged-compilation.md)
 - [Contributor instructions](AGENTS.md)

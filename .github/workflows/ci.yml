@@ -37,6 +37,8 @@ jobs:
         run: python examples/component_linking.py
       - name: Run checked DNA and RNA reference construct assembly
         run: python examples/reference_construct.py
+      - name: Emit, check and export exact DNA and RNA reference CDSs
+        run: python examples/reference_sequences.py
       - name: Inspect CLI
         run: |
           cellweave --version
