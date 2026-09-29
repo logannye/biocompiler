@@ -9,7 +9,7 @@ Implementation order, stable task IDs and acceptance gates are tracked in the [d
 | Responsibility | Implemented boundary | Remaining obligation |
 | --- | --- | --- |
 | Execution semantics | Immutable Behavior IR, checked source correspondence, independent reference execution | Continuous control, spatial and population profiles |
-| Observable meaning | Explicit endpoint, type, role, contact scope, compartment, input field and output mapping | Calibrated interpretation of physical measurements and higher-level effects |
+| Observable meaning | Explicit endpoint, type, role, contact scope, compartment, input field and output mapping; source-linked conditional secretion measurements with cell/evaluator access | Calibrated interpretation of physical measurements and higher-level effects |
 | Required responses | Active/inactive ranges, activation/recovery deadlines, exercised finite-trace coverage | Stochastic tolerances, distributional and population quantifiers, long-term adaptation |
 | Operating assumptions | Nonempty typed input domains, contact limits, horizon, declared target capabilities | Cell-state applicability, physical resources, lifecycle and deployment assumptions |
 | Independent acceptance | Synthetic candidate runner and checker, independent component/construct/exact-CDS checks, source-linked diagnostics, explicit outcomes | Domain-specific biological adapters and validation evidence |

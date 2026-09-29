@@ -1,5 +1,14 @@
 # Test boundaries
 
+M10.2 tests cover source-preserving goal/predicate refinement, exact product and
+endpoint identity, cell versus evaluator access, units, evidence references and
+strict request imports. The secretion trace tests independently specify expected
+outcomes at activation/recovery deadlines, initialization, persistence violations,
+cancelled triggers, retriggering and the finite horizon. Silent outputs fail when
+activation is required; unexercised or out-of-domain traces remain unknown. The
+[profile](../docs/human-behavior-contract-v0.1.md) checks supplied piecewise-constant
+observations, not a molecular model or a therapeutic outcome.
+
 M10.1 tests preserve legacy target identities while checking required human
 applicability declarations, species/engineering constraints, evidence categories,
 immutable inventories, compartments, nested request identity and strict imports.

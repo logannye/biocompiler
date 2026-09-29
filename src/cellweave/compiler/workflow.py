@@ -10,6 +10,7 @@ from types import MappingProxyType
 from typing import Any
 
 from cellweave.compiler.request import BuildRequest, RealizationRequest
+from cellweave.compiler.human_behavior import HumanBehaviorRequest
 from cellweave.errors import (
     CompilationUnavailableError,
     DefinitionError,
@@ -332,21 +333,36 @@ def _human_target_choice():
     )
 
 
-def compile(design: RealizationPlan | BuildRequest | RealizationRequest) -> None:
+def compile(
+    design: RealizationPlan | BuildRequest | RealizationRequest | HumanBehaviorRequest,
+) -> None:
     """Reject unsupported general intent compilation; reference CDS uses its own API."""
-    if not isinstance(design, (RealizationPlan, BuildRequest, RealizationRequest)):
+    if not isinstance(
+        design,
+        (RealizationPlan, BuildRequest, RealizationRequest, HumanBehaviorRequest),
+    ):
         raise TypeMismatchError(
-            "compile() requires a RealizationPlan, BuildRequest or RealizationRequest."
+            "compile() requires a RealizationPlan, BuildRequest, RealizationRequest or HumanBehaviorRequest."
         )
     if isinstance(design, RealizationPlan):
         diagnostics = design.unresolved
     else:
         request = (
-            design.build_request if isinstance(design, RealizationRequest) else design
+            design.build_request
+            if isinstance(design, (RealizationRequest, HumanBehaviorRequest))
+            else design
         )
         diagnostics = list(_profile_choices(request.intent))
         if isinstance(request.target, HumanTargetContext):
             diagnostics.append(_human_target_choice())
+        if isinstance(design, HumanBehaviorRequest):
+            diagnostics.append(
+                DesignChoice(
+                    "human_behavior_empirical_support_unestablished",
+                    "The source-linked secretion observation contract defines requested behavior; measurement validity, biological realizability and therapeutic goal attainment remain unestablished.",
+                    design.contract.goal_id,
+                )
+            )
         if request.artifact_scope == "complete_payload":
             diagnostics.append(
                 DesignChoice(

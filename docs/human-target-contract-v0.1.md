@@ -2,9 +2,10 @@
 
 M10.1 specifies and implements the first **target-declaration profile** for human
 in-vivo engineering. It records the context a future implementation must satisfy,
-including missing evidence. It does not choose the first therapeutic behavior,
-delivery platform, admitted biological benchmark or patient population. Those
-decisions and their acceptance belong to M10.2–M10.6 and M11–M15.
+including missing evidence. It does not choose a therapeutic product, delivery
+platform, admitted biological benchmark or patient population. M10.2 separately
+defines the [conditional secretion observation contract](human-behavior-contract-v0.1.md);
+biological profile selection and acceptance remain M10.3–M10.6 and M11–M15 work.
 
 `HumanTargetContext` extends `TargetContext` under the new
 `cellweave.human_target_context.v0.1` schema. It combines the existing explicit
