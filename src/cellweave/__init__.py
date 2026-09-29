@@ -1,7 +1,19 @@
 """Author inspectable therapeutic programs for in-vivo immune-cell engineering."""
 
-__version__ = "0.1.0.dev7"
+__version__ = "0.1.0.dev8"
 
+from cellweave.artifacts.manifest import (
+    BuildManifest,
+    ReferenceBuildRequest,
+    RunMetadata,
+)
+from cellweave.compiler.reference import (
+    ReferencePackage,
+    build_reference_package,
+    prepare_reference_build,
+    publish_reference_package,
+    verify_reference_package,
+)
 from cellweave.artifacts.sequences import (
     SequenceExport,
     export_reference_sequence,
@@ -209,6 +221,14 @@ from cellweave.verification.realization import (
 )
 
 __all__ = [
+    "BuildManifest",
+    "ReferenceBuildRequest",
+    "ReferencePackage",
+    "RunMetadata",
+    "build_reference_package",
+    "prepare_reference_build",
+    "publish_reference_package",
+    "verify_reference_package",
     "EncodingChange",
     "EncodingEvidencePolicy",
     "EncodingPolicy",

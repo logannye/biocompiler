@@ -81,6 +81,7 @@ preserves the full artifact, including source provenance. Write `fasta_bytes` an
 `specification_sha256` hash their complete file bytes. Changing FASTA wrapping
 changes the file hash while preserving the sequence hash. Artifact identity also
 includes lineage, scope and features; absolute source provenance may affect that
-identity. Portable build identity, atomic filesystem publication and complete
-multi-file manifests are M7 work. These export functions produce content in memory
-and make no claim that a complete build package has been published.
+identity. The separate [reference-build profile](reference-build-v0.1.md) now provides portable
+build identity, a complete reference manifest and atomic single-archive publication.
+It requires logical core source paths and stores host paths in separate run metadata.
+These lower-level export functions continue to produce content in memory.

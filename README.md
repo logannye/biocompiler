@@ -6,7 +6,7 @@ A compiler architecture for turning an immune cell engineer's Python-authored in
 
 ## Planned compiler stack
 
-CellWeave is designed to turn a description of **what an engineered immune cell should do** into an exact specification of **what its genetic payload must contain**. Each layer resolves more implementation detail while carrying the original requirements forward. The diagram shows the intended architecture. Python authoring, frozen requests, intent/behavior graphs, checked passes, abstract execution, automatic combinational synthetic realization, component linking, single-CDS construct assembly and exact-reference nucleotide emission are implemented; general molecular realization and complete-payload generation remain planned.
+CellWeave is designed to turn a description of **what an engineered immune cell should do** into an exact specification of **what its genetic payload must contain**. Each layer resolves more implementation detail while carrying the original requirements forward. The diagram shows the intended architecture. Python authoring, frozen requests, intent/behavior graphs, checked passes, abstract execution, automatic combinational synthetic realization, component linking, single-CDS construct assembly, exact-reference nucleotide emission and reproducible reference packaging are implemented; general molecular realization and complete-payload generation remain planned.
 
 ```mermaid
 flowchart LR
@@ -139,6 +139,14 @@ The [DNA/RNA example](examples/reference_construct.py) completes only the `refer
 
 The [sequence example](examples/reference_sequences.py) checks both modalities and verifies FASTA/JSON exports. The [exact-CDS pipeline](docs/exact-cds-pipeline-v0.1.md), [molecular schema](docs/molecular-ir-v0.1.md) and [independent checker](docs/molecular-checking-v0.1.md) define the supported profile. Codon optimization is disabled; matching protein sequence cannot excuse changed reference nucleotides.
 
+## Package a reproducible reference build
+
+```sh
+cellweave reference-build --alphabet RNA --reference-dir data/references/fap_car --output fap-rna.cwb
+```
+
+The package preserves the frozen reference request, accepted component/construct/molecular stages, source evidence, exact CDS, checks and unresolved obligations. It publishes one archive atomically and supports independent offline reconstruction using a separately retained request or build fingerprint. Machine paths and timestamps stay outside the canonical build identity. Complete-payload and biological-performance claims remain unresolved. See [reference builds](docs/reference-build-v0.1.md).
+
 ## Repository layout
 
 ```text
@@ -210,6 +218,8 @@ Use `cellweave inspect artifact.json` for a saved intent, behavior, mechanism, c
 - [Molecular artifact schema](docs/molecular-ir-v0.1.md)
 - [Independent molecular checking](docs/molecular-checking-v0.1.md)
 - [Exact CDS pipeline and export](docs/exact-cds-pipeline-v0.1.md)
+- [Reproducible reference builds](docs/reference-build-v0.1.md)
+- [Build manifest schema](docs/build-manifest-v0.1.md)
 - [Exact coding-sequence reference benchmarks and curation plan](docs/reference-benchmarks.md)
 - [Initial architecture decision](docs/decisions/0001-explicit-contracts-and-staged-compilation.md)
 - [Contributor instructions](AGENTS.md)

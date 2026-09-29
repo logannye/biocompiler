@@ -1,6 +1,6 @@
 # Exact sequence reference benchmarks
 
-This document defines the molecular fixtures covered by [M0 and M5–M7 of the development roadmap](roadmap.md). It records the research and implementation state as of 2026-09-29. The [offline reference set](../data/references/fap_car/curation.md) now contains separately extracted nucleotide/protein records and immutable manifests; checked construct assembly and exact DNA/RNA CDS emission are implemented. Reproducible build packaging and full-payload compilation remain future milestones.
+This document defines the molecular fixtures covered by [M0 and M5–M7 of the development roadmap](roadmap.md). It records the research and implementation state as of 2026-09-29. The [offline reference set](../data/references/fap_car/curation.md) now contains separately extracted nucleotide/protein records and immutable manifests; checked construct assembly and exact DNA/RNA CDS emission are implemented. Reproducible offline reference packaging is implemented; full-payload compilation remains a future milestone.
 
 ## What the first benchmark establishes
 

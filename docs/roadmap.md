@@ -2,19 +2,19 @@
 
 This roadmap turns the current semantic foundation into a reproducible compiler path, using **exact, published coding-sequence (CDS) references** for the first molecular benchmarks. Completed tasks below identify implemented, scoped capabilities; unchecked tasks remain planned work. This is the authoritative roadmap. Task IDs are stable so implementation PRs can cite them and mark individual items complete.
 
-Implementation foundation updated on 2026-09-29, with M6 developed from commit `df37188` (checked reference construct assembly):
+Implementation foundation updated on 2026-09-29, with M7 developed from commit `1eac314` (checked exact DNA/RNA CDS emission):
 
 | Boundary | Current implementation | Next responsibility |
 | --- | --- | --- |
 | Python → Intent | Typed authoring, frozen versioned BuildRequest and explicit elaboration provenance | Broaden concrete profiles while preserving input authority |
 | Intent → Behavior | Request-authoritative lowering/verification, Behavior IR and reference execution | Continue independent semantic checks |
 | Behavior → Mechanism | Automatic combinational synthetic generation, pinned catalog and independent runner/checker | Temporal and molecular profiles need separate contracts |
-| Mechanism → Components | Immutable contracts, offline selection/locks, checked interfaces/domains/providers/resources, synthetic assembly and separate FAP CDS components | Preserve selected components through explicit Construct IR |
-| Components → Construct | Frozen layout authority, Construct IR, independent single-CDS assembly checks and evidence invalidation | Emit the scoped selected CDS and verify its nucleotide identity |
-| Construct → Molecular specification | Separate exact-reference DNA-CDS/RNA-CDS backends, independent spelling/translation checks and identity-preserving exports | Package the scoped accepted records and reproducible build identities |
-| Molecular specification → Package | Checked in-memory pass manager; molecular manifest remains planned | Package accepted molecular records and reproducible identities |
+| Mechanism → Components | Immutable contracts, offline selection/locks, checked interfaces/domains/providers/resources, synthetic assembly and separate FAP CDS components | Broaden independently characterized component implementations |
+| Components → Construct | Frozen layout authority, Construct IR, independent single-CDS assembly checks and evidence invalidation | Broaden separately supported layouts and molecule inventories |
+| Construct → Molecular specification | Separate exact-reference DNA-CDS/RNA-CDS backends, independent spelling/translation checks and identity-preserving exports | Preserve exact scope across future encodings and feature profiles |
+| Molecular specification → Package | Strict reference manifests, deterministic archives, independent offline reconstruction and atomic publication | Broaden verified profiles without upgrading CDS evidence |
 
-`compile()` still raises `CompilationUnavailableError`. The synthetic example now generates its candidate automatically. `run_synthetic_pipeline` executes checked Intent → Behavior → synthetic Mechanism passes for its declared finite-history profile. `run_component_pipeline` additionally checks the synthetic Components stage without broadening the finite-history claim. `run_construct_pipeline` checks a separately selected whole reference CDS through the Construct stage. `run_molecular_pipeline` additionally emits the separately pinned DNA or RNA CDS and completes `exact_cds` after independent checks. General intent-to-molecular realization and complete-payload generation remain unsupported.
+`compile()` still raises `CompilationUnavailableError`. The synthetic example now generates its candidate automatically. `run_synthetic_pipeline` executes checked Intent → Behavior → synthetic Mechanism passes for its declared finite-history profile. `run_component_pipeline` additionally checks the synthetic Components stage without broadening the finite-history claim. `run_construct_pipeline` checks a separately selected whole reference CDS through the Construct stage. `run_molecular_pipeline` additionally emits the separately pinned DNA or RNA CDS and completes `exact_cds` after independent checks. `build_reference_package` packages those accepted stages and `publish_reference_package` atomically publishes a portable archive after fresh offline reconstruction. General intent-to-molecular realization and complete-payload generation remain unsupported.
 
 ## Development strategy and first deliverables
 
@@ -156,14 +156,16 @@ Implemented emission scope: exact whole-CDS reference spelling only, with indepe
 
 **Primary modules:** `artifacts/manifest.py`, `artifacts/provenance.py`, `compiler/workflow.py`, `cli.py`, `examples/`, `.github/workflows/ci.yml`.
 
-- [ ] **M7.1** Package the BuildRequest, all accepted IR identities, locked components/models/tools, exact molecular records, feature maps, source maps, selected alternatives, checks and unresolved obligations.
-- [ ] **M7.2** Separate deterministic artifact/build identity from run metadata such as timestamps, absolute source paths and machine labels. Define what byte-for-byte reproducibility covers.
-- [ ] **M7.3** Expose an explicit reference-build API/CLI/example without suggesting that arbitrary existing intent plans now compile. Publish which request/profile combinations succeed and preserve diagnostics for unsupported requests.
-- [ ] **M7.4** Validate imported artifacts strictly, including schema/version, referenced IDs, payload hashes and evidence freshness. Inspection must not execute authoring code or fetch unpinned dependencies.
-- [ ] **M7.5** Ensure a failed build cannot leave a success manifest or partially overwrite a previous accepted result. Make output publication atomic and reproducible from the frozen request.
-- [ ] **M7.6** Add hosted CI reference builds on the supported Python matrix. Verify offline reconstruction and relocation/repeated-run determinism; record tested revision/platform and retain useful failure evidence.
+- [x] **M7.1** Package the BuildRequest, all accepted IR identities, locked components/models/tools, exact molecular records, feature maps, source maps, selected alternatives, checks and unresolved obligations.
+- [x] **M7.2** Separate deterministic artifact/build identity from run metadata such as timestamps, absolute source paths and machine labels. Define what byte-for-byte reproducibility covers.
+- [x] **M7.3** Expose an explicit reference-build API/CLI/example without suggesting that arbitrary existing intent plans now compile. Publish which request/profile combinations succeed and preserve diagnostics for unsupported requests.
+- [x] **M7.4** Validate imported artifacts strictly, including schema/version, referenced IDs, payload hashes and evidence freshness. Inspection must not execute authoring code or fetch unpinned dependencies.
+- [x] **M7.5** Ensure a failed build cannot leave a success manifest or partially overwrite a previous accepted result. Make output publication atomic and reproducible from the frozen request.
+- [x] **M7.6** Add hosted CI reference builds on the supported Python matrix. Verify offline reconstruction and relocation/repeated-run determinism; record tested revision/platform and retain useful failure evidence.
 
 **Acceptance:** one documented command resolves the pinned reference, traverses the accepted component/construct/molecular stages, emits an exact CDS and manifest, and explains every remaining biological/full-payload obligation. A clean environment reproduces the same canonical identities. No claim of biological refinement is fabricated to complete the package.
+
+Implemented scope: a component-root `ReferenceBuildRequest` packages the frozen construct authority, accepted stage identities, component/tool locks, exact records, source/feature maps, chosen reference and all checks/obligations. No upstream intent-root `BuildRequest` or dynamic model exists for this sequence-only realization; their absence is explicit. Run metadata is excluded from canonical build identity. Fresh verification requires independent request/build authority, reconstructs offline with current tools, and compares every packaged byte. Single-file `.cwb` publication is atomic. See [reference builds](reference-build-v0.1.md) and [manifest schema](build-manifest-v0.1.md).
 
 ## M8 — Strengthen independent verification throughout
 
@@ -203,11 +205,12 @@ The following milestones are implemented for their narrow supported profiles:
 - **M4:** [typed component contracts](component-contracts-v0.1.md), independent offline linking, explicit providers/resources and separately classified sequence-reference components.
 - **M5:** [single-CDS construct assembly](reference-construct-pipeline-v0.1.md), frozen layout authority, source/requirement correspondence and independent structural/reference checking.
 - **M6:** [exact DNA/RNA CDS emission](exact-cds-pipeline-v0.1.md), independent nucleotide/protein comparisons, explicit feature uncertainty, encoding invalidation and identity-preserving FASTA/JSON export.
+- **M7:** [portable reference builds](reference-build-v0.1.md), strict canonical manifests/archives, independent offline reconstruction, run-metadata separation and atomic failure preservation.
 - **Continuous M8:** binding and dependency tampering, wrong-object candidates, serialization, source mutation, synonymous/missense/truncated sequence changes, export mutation, and 256 two-object Boolean transition histories are exercised. This bounded set is not whole-profile exhaustive or biological validation.
 
-The existing hosted Python 3.11/3.14 package, test, example and CLI gates are retained and include all integrated component, construct and exact-CDS examples. Each run reports the exact Git revision and platform. Detailed tests are under `tests/test_build_request.py`, `test_pipeline*.py`, `test_checked_pipeline.py`, `test_references.py`, `test_synthetic_generation.py`, `test_construct*.py`, `test_molecular*.py` and `test_sequence*.py`.
+The existing hosted Python 3.11/3.14 package, test, example and CLI gates are retained and include all integrated component, construct, exact-CDS and packaged-reference examples, plus installed CLI build/inspect/reconstruction and retained failure evidence. Each run reports the exact Git revision and platform. Detailed tests are under `tests/test_build_request.py`, `test_pipeline*.py`, `test_checked_pipeline.py`, `test_references.py`, `test_synthetic_generation.py`, `test_construct*.py`, `test_molecular*.py` and `test_sequence*.py`.
 
-The next implementation milestone is **M7 reproducible reference build packaging**. Temporal synthetic operators remain a separately specified extension.
+The next implementation milestone is **M8 verification hardening across the supported profiles**; M9 molecular behavior and full-payload profiles remain separate future work. Temporal synthetic operators remain a separately specified extension.
 
 ## Suggested implementation PRs
 
