@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cellweave"
+version = "0.1.0.dev0"
+description = "A compiler architecture for translating cellular intent into traceable nucleic-acid payload specifications."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = []
+classifiers = [
+    "Development Status :: 1 - Planning",
+    "Programming Language :: Python :: 3",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+]
+
+[project.scripts]
+cellweave = "cellweave.cli:main"
+
+[project.urls]
+Repository = "https://github.com/logannye/cellweave"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+cellweave = ["py.typed"]

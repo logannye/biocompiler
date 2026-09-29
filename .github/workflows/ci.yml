@@ -1,0 +1,30 @@
+name: Scaffold checks
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  package-smoke:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.11", "3.14"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install package
+        run: python -m pip install .
+      - name: Inspect CLI
+        run: |
+          cellweave --version
+          cellweave architecture
+      - name: Import scaffold interfaces
+        run: |
+          python -c "from cellweave.compiler.passes import CompilerPass, PassResult; from cellweave.semantics.context import TargetContext; from cellweave.verification.evidence import Obligation"
