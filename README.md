@@ -2,7 +2,7 @@
 
 A compiler architecture for turning an immune cell engineer's Python-authored intent into an exact, traceable DNA or RNA payload specification.
 
-**Status: initial scaffold.** The repository defines module boundaries, shared interface types, and a small architecture-inspection CLI. It does not implement a biological DSL, lowering passes, component selection, sequence generation, or biological validation. The code contains no therapeutic sequences or characterized biological component library.
+**Status: initial scaffold with a draft intent API.** The repository defines module boundaries, shared interface types, a small architecture-inspection CLI, and a proposed Python authoring interface. It does not implement a biological DSL, lowering passes, component selection, sequence generation, or biological validation. The code contains no therapeutic sequences or characterized biological component library.
 
 ## Planned compiler stack
 
@@ -78,6 +78,10 @@ Within in-vivo engineering specifically, the author-contribution statement in [R
 
 CellWeave's intended role is to give this team a shared, traceable design artifact: the biological intent, the selected implementation, the exact molecular specification, and the supporting assumptions and evidence. Scientific ownership of those choices remains with the development team.
 
+## Draft Python intent API
+
+The [v0.1 API proposal](docs/intent-api-v0.1.md) describes cell roles, recognition, actions, memory, changing behavioral phases, graded outputs, feedback, and communication between populations. Its central authoring form is `cells.when(condition).do(actions)`. The document includes example programs and a signature reference; these are proposed interfaces, not callable package features yet.
+
 ## Repository layout
 
 ```text
@@ -122,6 +126,7 @@ The CLI describes the planned architecture; it does not compile a payload. Hoste
 
 ## Design documents
 
+- [Python intent API: v0.1 draft](docs/intent-api-v0.1.md)
 - [Architecture and preservation obligations](docs/architecture.md)
 - [Implementation roadmap](docs/roadmap.md)
 - [Initial architecture decision](docs/decisions/0001-explicit-contracts-and-staged-compilation.md)
