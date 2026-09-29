@@ -16,7 +16,7 @@ This is the authoritative development roadmap, revised on **2026-09-29** around 
 
 ## Current implementation boundary
 
-Implementation baseline: merged revision `b4684d8523a8de2eeb422045872111a664fc35da`, including M0–M8 supported profiles and M9 correspondence/readiness infrastructure, extended by the M10.1 human target contract in implementation revision `dc3ec8cac9a3b18f198dd7114282968ee263136b` the M10.2 conditional secretion contract in `563a5b506192c229ac50785a6fcfba2a408e57b8`, and the M10.3 deployment contract in `b4ad25c7a509a41d92925e94da6ec652245791a9`:
+Implementation baseline: merged revision `b4684d8523a8de2eeb422045872111a664fc35da`, including M0–M8 supported profiles and M9 correspondence/readiness infrastructure, extended by the M10.1 human target contract in implementation revision `dc3ec8cac9a3b18f198dd7114282968ee263136b`, the M10.2 conditional secretion contract in `563a5b506192c229ac50785a6fcfba2a408e57b8`, and the M10.3 deployment contract in `b4ad25c7a509a41d92925e94da6ec652245791a9`:
 
 | Boundary | Current implementation | Next responsibility |
 | --- | --- | --- |
