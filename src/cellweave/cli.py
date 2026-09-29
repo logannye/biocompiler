@@ -42,6 +42,19 @@ from cellweave.ir.construct import ConstructCandidate, ConstructRequest
 from cellweave.verification.construct import ConstructResult
 from cellweave.ir.molecular import MolecularArtifact
 from cellweave.verification.molecular import MolecularResult
+from cellweave.artifacts.archive import read_archive
+from cellweave.artifacts.manifest import (
+    BuildManifest,
+    ReferenceBuildRequest,
+    RunMetadata,
+)
+from cellweave.compiler.reference import (
+    build_reference_package,
+    prepare_reference_build,
+    publish_reference_package,
+    verify_reference_package,
+)
+from cellweave.compiler.pipeline import PipelineError
 
 
 def _read_artifact(document):
@@ -83,6 +96,9 @@ def _read_artifact(document):
                 ConstructResult,
                 MolecularArtifact,
                 MolecularResult,
+                BuildManifest,
+                ReferenceBuildRequest,
+                RunMetadata,
             )
         }
     )
@@ -121,6 +137,8 @@ def _summary(artifact):
             ConstructResult,
             MolecularArtifact,
             MolecularResult,
+            BuildManifest,
+            ReferenceBuildRequest,
         ),
     ):
         summary["inspection"] = (
@@ -149,10 +167,139 @@ def main(argv: Sequence[str] | None = None) -> int:
     inspect_command.add_argument(
         "--json", action="store_true", help="Print the normalized full graph"
     )
+    reference_build = commands.add_parser(
+        "reference-build", help="Build one pinned DNA/RNA reference CDS package offline"
+    )
+    source = reference_build.add_mutually_exclusive_group(required=True)
+    source.add_argument("--alphabet", choices=("DNA", "RNA"))
+    source.add_argument(
+        "--request", type=Path, help="Frozen ReferenceBuildRequest JSON"
+    )
+    reference_build.add_argument("--reference-dir", type=Path, required=True)
+    reference_build.add_argument(
+        "--output", type=Path, required=True, help="Atomic .cwb package destination"
+    )
+    reference_build.add_argument(
+        "--run-metadata",
+        type=Path,
+        help="Optional RunMetadata JSON, excluded from build identity",
+    )
+    reference_inspect = commands.add_parser(
+        "reference-inspect",
+        help="Inspect package integrity without granting fresh acceptance",
+    )
+    reference_inspect.add_argument("path", type=Path)
+    reference_verify = commands.add_parser(
+        "reference-verify", help="Rebuild and independently check a package offline"
+    )
+    reference_verify.add_argument("path", type=Path)
+    authority = reference_verify.add_mutually_exclusive_group(required=True)
+    authority.add_argument(
+        "--expected-build", help="Independently retained canonical build fingerprint"
+    )
+    authority.add_argument(
+        "--expected-request",
+        type=Path,
+        help="Independently retained ReferenceBuildRequest JSON",
+    )
     args = parser.parse_args(argv)
+    if args.command.startswith("reference-"):
+        try:
+            if args.command == "reference-build":
+                request = (
+                    ReferenceBuildRequest.from_json(
+                        args.request.read_text(encoding="utf-8")
+                    )
+                    if args.request
+                    else prepare_reference_build(args.alphabet, args.reference_dir)
+                )
+                metadata = (
+                    RunMetadata.from_json(args.run_metadata.read_text(encoding="utf-8"))
+                    if args.run_metadata
+                    else None
+                )
+                package = build_reference_package(
+                    request, args.reference_dir, run_metadata=metadata
+                )
+                output = publish_reference_package(package, args.output)
+                print(
+                    json.dumps(
+                        {
+                            "output": str(output),
+                            "build_fingerprint": package.build_fingerprint,
+                            "archive_sha256": package.archive_sha256,
+                            "scope": "exact_cds",
+                            "status": "complete",
+                            "unresolved": [
+                                "complete_payload_features",
+                                "molecular_behavior",
+                            ],
+                        },
+                        indent=2,
+                    )
+                )
+            else:
+                if args.path.stat().st_size > 64 * 1024 * 1024:
+                    raise SerializationError(
+                        "Reference archive exceeds the size limit."
+                    )
+                data = args.path.read_bytes()
+                if args.command == "reference-verify":
+                    expected = (
+                        ReferenceBuildRequest.from_json(
+                            args.expected_request.read_text(encoding="utf-8")
+                        )
+                        if args.expected_request
+                        else None
+                    )
+                    package = verify_reference_package(
+                        data,
+                        expected_request=expected,
+                        expected_build_fingerprint=args.expected_build,
+                    )
+                    print(
+                        json.dumps(
+                            {
+                                "build_fingerprint": package.build_fingerprint,
+                                "scope": "exact_cds",
+                                "verification": "fresh independent offline reconstruction passed",
+                                "unresolved": [
+                                    "complete_payload_features",
+                                    "molecular_behavior",
+                                ],
+                            },
+                            indent=2,
+                        )
+                    )
+                else:
+                    manifest, _, metadata = read_archive(data)
+                    print(
+                        json.dumps(
+                            {
+                                "build_fingerprint": manifest.build_fingerprint,
+                                "scope": manifest.scope,
+                                "files": len(manifest.files),
+                                "run_metadata": metadata.to_dict()
+                                if metadata
+                                else None,
+                                "inspection": "Historical content and file integrity only; acceptance requires independent authority and current offline reconstruction.",
+                            },
+                            indent=2,
+                        )
+                    )
+        except (
+            OSError,
+            UnicodeError,
+            SerializationError,
+            PipelineError,
+            RecursionError,
+        ) as exc:
+            print(f"cellweave: {exc}", file=sys.stderr)
+            return 2
+        return 0
     if args.command == "architecture":
         print(
-            "CellWeave pipeline (checked synthetic generation, component linking, reference construct assembly and exact DNA/RNA CDS emission implemented; build packaging planned)"
+            "CellWeave pipeline (checked synthetic generation, component linking, reference construct assembly and exact DNA/RNA CDS emission implemented; reproducible reference packaging implemented)"
         )
         print("Python authoring -> immutable intent graph")
         for stage in STAGE_ORDER:

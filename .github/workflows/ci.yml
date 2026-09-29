@@ -39,6 +39,21 @@ jobs:
         run: python examples/reference_construct.py
       - name: Emit, check and export exact DNA and RNA reference CDSs
         run: python examples/reference_sequences.py
+      - name: Build and reconstruct portable reference packages
+        run: |
+          mkdir -p generated/reference-ci
+          python examples/reference_build.py > generated/reference-ci/example.log 2>&1
+          cellweave reference-build --alphabet RNA --reference-dir data/references/fap_car --output generated/reference-ci/rna.cwb > generated/reference-ci/build.json 2> generated/reference-ci/build.log
+          cellweave reference-inspect generated/reference-ci/rna.cwb > generated/reference-ci/inspect.json
+          python -c "import json, pathlib, subprocess; identity = json.loads(pathlib.Path('generated/reference-ci/build.json').read_text())['build_fingerprint']; subprocess.run(['cellweave', 'reference-verify', 'generated/reference-ci/rna.cwb', '--expected-build', identity], check=True)" > generated/reference-ci/verify.json 2> generated/reference-ci/verify.log
+      - name: Retain reference build failure evidence
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: reference-build-failure-python-${{ matrix.python-version }}
+          path: generated/reference-ci/
+          if-no-files-found: ignore
+          retention-days: 7
       - name: Inspect CLI
         run: |
           cellweave --version

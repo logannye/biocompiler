@@ -27,3 +27,5 @@ meaning.
 [reference_construct.py](reference_construct.py) independently selects DNA and RNA CDS records and runs checked single-component construct assembly for each. Run `PYTHONPATH=src python examples/reference_construct.py`. The complete reference layout retains unknown payload context and unresolved emission/biological obligations.
 
 [reference_sequences.py](reference_sequences.py) runs the exact-CDS pipeline separately for DNA and RNA, prints scoped identities and checks FASTA/JSON exports. Run `PYTHONPATH=src python examples/reference_sequences.py`. It emits each selected reference spelling without optimization or complete-payload/biological claims.
+
+- `reference_build.py`: build DNA/RNA `.cwb` packages, publish atomically and independently reconstruct offline. See [reference builds](../docs/reference-build-v0.1.md).

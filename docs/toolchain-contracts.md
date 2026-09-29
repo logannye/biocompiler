@@ -13,7 +13,7 @@ Implementation order, stable task IDs and acceptance gates are tracked in the [d
 | Required responses | Active/inactive ranges, activation/recovery deadlines, exercised finite-trace coverage | Stochastic tolerances, distributional and population quantifiers, long-term adaptation |
 | Operating assumptions | Nonempty typed input domains, contact limits, horizon, declared target capabilities | Cell-state applicability, physical resources, lifecycle and deployment assumptions |
 | Independent acceptance | Synthetic candidate runner and checker, independent component/construct/exact-CDS checks, source-linked diagnostics, explicit outcomes | Domain-specific biological adapters and validation evidence |
-| Analysis identity | Fingerprints of checked artifacts, histories, context and tool semantics; automatic transitive pass-manager freshness | Persistent analysis cache and signed provenance |
+| Analysis identity | Fingerprints of checked artifacts, histories, context and tool semantics; transitive pass freshness and independently reconstructed reference packages | Persistent analysis cache and signed provenance |
 | Composition | Typed graph edges, contract compatibility, circular-assumption detection and declared shared-resource accounting | Calibrated physical resource demands and biological interaction models |
 | Parameter meaning | Frozen design bindings with category/provenance/variation metadata, runtime signals kept distinct | Robust checks over uncertain/calibrated quantities |
 | Host and payload linking | Explicit encoded-here/co-payload/host/external/unresolved inventory and offline dependency linker | Independent experimental support for supplied host and delivery assumptions |

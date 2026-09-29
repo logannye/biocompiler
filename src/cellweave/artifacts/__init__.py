@@ -1,1 +1,1 @@
-"""Exact-reference sequence exports and provenance; full build packaging is planned."""
+"""Exact-reference exports, portable build manifests and atomic offline packages."""
