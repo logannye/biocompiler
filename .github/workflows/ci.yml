@@ -92,6 +92,21 @@ jobs:
         run: |
           python examples/human_target.py --output generated/human-target-ci
           cellweave inspect generated/human-target-ci/human-target.json
+      - name: Check and inspect bounded human secretion contracts
+        run: |
+          python examples/human_behavior.py --output generated/human-behavior-ci
+          cellweave inspect generated/human-behavior-ci/human-behavior-request.json
+          cellweave inspect generated/human-behavior-ci/trace-pass.json
+          cellweave inspect generated/human-behavior-ci/trace-fail.json
+          cellweave inspect generated/human-behavior-ci/trace-unknown.json
+      - name: Retain human behavior contract evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: human-behavior-evidence-python-${{ matrix.python-version }}
+          path: generated/human-behavior-ci/
+          if-no-files-found: ignore
+          retention-days: 7
       - name: Import scaffold interfaces
         run: |
           python -c "from cellweave.compiler.passes import CompilerPass, PassResult; from cellweave.semantics.context import TargetContext; from cellweave.verification.evidence import Obligation"

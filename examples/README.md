@@ -1,5 +1,12 @@
 # Examples
 
+[human_behavior.py](human_behavior.py) defines reversible conditional secretion
+for one human-targeted role. It preserves the source goal and predicate, records
+measurement units and access, and checks artificial traces with pass/fail/unknown
+outcomes. Run `PYTHONPATH=src python examples/human_behavior.py --output generated/human-behavior`.
+All numerical values are software fixtures, not supported biological requirements.
+See the [bounded observation contract](../docs/human-behavior-contract-v0.1.md).
+
 [human_target.py](human_target.py) records an illustrative human in-vivo target
 with mandatory applicability fields and explicit missing evidence. Run
 `PYTHONPATH=src python examples/human_target.py --output generated/human-target`,

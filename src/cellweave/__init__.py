@@ -2,6 +2,18 @@
 
 __version__ = "0.1.0.dev10"
 
+from cellweave.compiler.human_behavior import HumanBehaviorRequest
+from cellweave.semantics.human_behavior import (
+    ConditionalSecretionContract,
+    MeasurementSpec,
+    PredicateRefinement,
+    SecretionSample,
+)
+from cellweave.verification.human_behavior import (
+    SecretionTraceResult,
+    check_secretion_trace,
+)
+
 from cellweave.ir.payload import (
     PayloadFeature,
     PayloadMolecule,
@@ -269,6 +281,13 @@ from cellweave.verification.realization import (
 )
 
 __all__ = [
+    "HumanBehaviorRequest",
+    "ConditionalSecretionContract",
+    "MeasurementSpec",
+    "PredicateRefinement",
+    "SecretionSample",
+    "SecretionTraceResult",
+    "check_secretion_trace",
     "HumanTargetContext",
     "HumanTargetContract",
     "HumanHostDependency",

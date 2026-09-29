@@ -8,6 +8,14 @@ import sys
 
 from cellweave import __version__
 from cellweave.compiler.request import BuildRequest, RealizationRequest
+from cellweave.compiler.human_behavior import HumanBehaviorRequest
+from cellweave.semantics.human_behavior import (
+    ConditionalSecretionContract,
+    MeasurementSpec,
+    PredicateRefinement,
+    SecretionSample,
+)
+from cellweave.verification.human_behavior import SecretionTraceResult
 from cellweave.ir.stages import STAGE_ORDER
 from cellweave.errors import SerializationError
 from cellweave.ir.intent import IntentProgram
@@ -102,6 +110,12 @@ def _read_artifact(document):
             for cls in (
                 BuildRequest,
                 RealizationRequest,
+                HumanBehaviorRequest,
+                ConditionalSecretionContract,
+                MeasurementSpec,
+                PredicateRefinement,
+                SecretionSample,
+                SecretionTraceResult,
                 SyntheticCandidate,
                 SyntheticGeneratorConfig,
                 SyntheticCatalog,
@@ -174,6 +188,22 @@ def _summary(artifact):
     for key in ("id", "name", "context_id", "outcome", "evidence_kind"):
         if hasattr(artifact, key):
             summary[key] = getattr(artifact, key)
+    if isinstance(artifact, (HumanBehaviorRequest, ConditionalSecretionContract)):
+        contract = (
+            artifact.contract
+            if isinstance(artifact, HumanBehaviorRequest)
+            else artifact
+        )
+        summary["unresolved_evidence"] = list(contract.unresolved_evidence)
+        summary["inspection"] = (
+            "Source-linked conditional secretion specification only; biological applicability and therapeutic goal attainment remain unestablished."
+        )
+    if isinstance(artifact, SecretionTraceResult):
+        summary["coverage"] = list(artifact.coverage)
+        summary["diagnostics"] = list(artifact.diagnostics)
+        summary["inspection"] = (
+            "Imported finite-trace record only; rerun check_secretion_trace with independent request/trace authority. No biological validation or therapeutic efficacy is established."
+        )
     if isinstance(artifact, (HumanTargetContext, HumanTargetContract)):
         contract = (
             artifact.human_target

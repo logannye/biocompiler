@@ -15,6 +15,16 @@ planning/compilation retain an applicability diagnostic. This is M10.1's target
 specification foundation; human component admission, delivery contracts and
 biological realization remain separate work.
 
+M10.2 adds the [conditional secretion observation profile](human-behavior-contract-v0.1.md).
+`HumanBehaviorRequest` retains the entire source build and binds its goal,
+qualitative predicate and secretion rule to explicit measurements and lifecycle
+requirements. It checks exact source coverage without rewriting or dropping
+unresolved goals into the legacy Behavior IR. `check_secretion_trace` evaluates
+the requested ranges and deadlines on supplied piecewise-constant observations;
+it provides neither a biological model nor evidence of therapeutic efficacy.
+The runtime input must be cell-accessible; the output assay remains an external
+evaluation readout. General payload compilation remains unavailable.
+
 ## Compilation layers
 
 | Layer | Representation | Preservation obligation |
