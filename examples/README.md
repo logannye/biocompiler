@@ -31,3 +31,7 @@ meaning.
 - `reference_build.py`: build DNA/RNA `.cwb` packages, publish atomically and independently reconstruct offline. See [reference builds](../docs/reference-build-v0.1.md).
 
 - `verification_campaign.py`: bounded exhaustive presence-aware contact histories, seeded adversarial cases and failure-preserving deletion reduction; optional JSON evidence output. These are software-model checks, not universal or empirical claims.
+
+- [molecular_contract.py](molecular_contract.py): bind a requested FAP contact response to the selected CDS, independently recheck its correspondence and retain biological UNKNOWN. The illustrative response bands/deadlines are design obligations, not calibrated measurements. General complete-payload compilation remains unavailable. Use `--output DIRECTORY` to save the contract, authoritative realization request and result.
+
+- [payload_readiness.py](payload_readiness.py): exercise structural RNA/DNA molecule profiles with explicitly artificial software fixtures, independent retained source/review bytes and sequence mutations. A structural PASS grants neither biological reference promotion nor compiler admission. Use `--output DIRECTORY` to retain inspectable evidence.

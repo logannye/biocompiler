@@ -48,6 +48,26 @@ from cellweave.ir.construct import ConstructCandidate, ConstructRequest
 from cellweave.verification.construct import ConstructResult
 from cellweave.ir.molecular import MolecularArtifact
 from cellweave.verification.molecular import MolecularResult
+from cellweave.semantics.molecular_behavior import (
+    MolecularEvidence,
+    MolecularImplementationContract,
+    MolecularInputBinding,
+    MolecularParameter,
+    MolecularResponseBinding,
+)
+from cellweave.verification.molecular_behavior import (
+    MolecularBehaviorDiagnostic,
+    MolecularBehaviorResult,
+)
+from cellweave.ir.payload import (
+    PayloadFeature,
+    PayloadMolecule,
+    PayloadReference,
+    PayloadRegion,
+    PayloadReview,
+    PayloadSource,
+)
+from cellweave.verification.payload import PayloadResult
 from cellweave.artifacts.archive import read_archive
 from cellweave.artifacts.manifest import (
     BuildManifest,
@@ -106,6 +126,20 @@ def _read_artifact(document):
                 ConstructResult,
                 MolecularArtifact,
                 MolecularResult,
+                MolecularImplementationContract,
+                MolecularEvidence,
+                MolecularParameter,
+                MolecularInputBinding,
+                MolecularResponseBinding,
+                MolecularBehaviorDiagnostic,
+                MolecularBehaviorResult,
+                PayloadFeature,
+                PayloadMolecule,
+                PayloadReference,
+                PayloadRegion,
+                PayloadReview,
+                PayloadSource,
+                PayloadResult,
                 BuildManifest,
                 ReferenceBuildRequest,
                 RunMetadata,
@@ -147,6 +181,11 @@ def _summary(artifact):
             ConstructResult,
             MolecularArtifact,
             MolecularResult,
+            MolecularImplementationContract,
+            MolecularBehaviorResult,
+            PayloadMolecule,
+            PayloadReference,
+            PayloadResult,
             ExplorationReport,
             ReductionResult,
             BuildManifest,
@@ -156,6 +195,26 @@ def _summary(artifact):
         summary["inspection"] = (
             "Historical content inspection only; recompute acceptance and freshness against current authoritative inputs before reuse."
         )
+    if isinstance(artifact, MolecularBehaviorResult):
+        summary["linkage_outcome"] = artifact.linkage_outcome.value
+        summary["claim_scope"] = artifact.claim_scope
+        summary["diagnostics"] = [item.to_dict() for item in artifact.diagnostics]
+    if isinstance(artifact, MolecularImplementationContract):
+        summary["model_profile"] = artifact.model_profile
+        summary["unestablished_claims"] = list(artifact.unestablished_claims)
+    if isinstance(artifact, PayloadResult):
+        summary["evidence_boundary"] = artifact.evidence_boundary
+        summary["reference_promotion"] = artifact.reference_promotion
+        summary["compiler_admission"] = artifact.compiler_admission
+        summary["claim_scope"] = artifact.claim_scope
+        summary["diagnostics"] = [item.to_dict() for item in artifact.diagnostics]
+    if isinstance(artifact, PayloadMolecule):
+        summary["artifact_class"] = artifact.artifact_class
+        summary["unknown_features"] = list(artifact.unknown_features)
+        summary["unestablished_claims"] = list(artifact.unestablished_claims)
+    if isinstance(artifact, PayloadReference):
+        summary["source_kind"] = artifact.source_kind
+        summary["reference_promotion"] = "not_promoted"
     return summary
 
 

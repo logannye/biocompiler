@@ -115,3 +115,11 @@ signatures. Passing response evidence requires exercised active and inactive
 deadlines with no unfinished episodes. See [exploration](verification-exploration-v0.1.md),
 [semantic matrix](semantic-regression-matrix-v0.1.md) and
 [independence audit](verification-independence-v0.1.md).
+
+## Molecular correspondence and payload readiness
+
+The [molecular implementation contract](molecular-behavior-v0.1.md) freezes requested observations and responses against the current realization request, selected components, construct and exact molecular artifact. Its checker reruns source lowering and independent molecular checks, requires complete observation/response correspondence, and retains context, typed parameter provenance and distinct evidence categories. A passing linkage result describes that correspondence. The biological result remains UNKNOWN, or UNSUPPORTED for a proposed unimplemented adapter/profile. No synthetic model is assigned to the FAP CDS.
+
+[Whole-molecule readiness](payload-profiles-v0.1.md) has separate immutable molecule/reference records for narrow mature linear RNA, linear DNA and circular-plasmid profiles. The checker requires a separately supplied authority fingerprint, exact retained source/review bytes, independent sequence extraction, whole-molecule feature coverage and explicit topology/chemistry. These results do not enter the exact-CDS pipeline or authorize a complete-payload build. The example records are nonfunctional software fixtures; no complete biological reference is promoted.
+
+Planning and `compile()` now report source-linked missing obligations for quantitative curves, continuous integration, interval-valued intent, population communication, spatial behavior and feedback. They preserve these authored requests without silently assigning an approximate execution model. The [M9 evidence review](m9-evidence-review.md) identifies the scientific and source inputs needed for subsequent adapter and reference-promotion work.

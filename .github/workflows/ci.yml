@@ -60,6 +60,22 @@ jobs:
           path: generated/verification-ci/
           if-no-files-found: ignore
           retention-days: 7
+      - name: Check molecular correspondence and whole-molecule readiness
+        run: |
+          mkdir -p generated/m9-ci
+          python examples/molecular_contract.py --output generated/m9-ci/molecular > generated/m9-ci/molecular.log 2>&1
+          cat generated/m9-ci/molecular.log
+          python examples/payload_readiness.py --output generated/m9-ci/payload > generated/m9-ci/payload.log 2>&1
+          cat generated/m9-ci/payload.log
+          cellweave inspect generated/m9-ci/molecular/molecular-behavior-result.json > generated/m9-ci/molecular-inspection.json
+      - name: Retain M9 contract and readiness evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: molecular-readiness-python-${{ matrix.python-version }}
+          path: generated/m9-ci/
+          if-no-files-found: ignore
+          retention-days: 7
       - name: Retain reference build failure evidence
         if: failure()
         uses: actions/upload-artifact@v4
