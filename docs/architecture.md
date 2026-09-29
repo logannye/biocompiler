@@ -6,6 +6,15 @@ The current repository implements the Python intent frontend, immutable intent a
 
 The [v0.1 intent API](intent-api-v0.1.md) implements the authoring vocabulary: cell roles, scoped observations, expressions, actions, state, outputs, controllers, and communication. Python constructs an inspectable intent graph; molecular realization remains a later stage.
 
+The intended therapeutic target is human biology with in-vivo engineering. The
+[human target contract](human-target-contract-v0.1.md) adds explicit cell/state,
+tissue/disease, population, host-dependency and operating-condition declarations.
+`HumanTargetContext` retains them through frozen requests and strict import while
+preserving legacy target identities. Evidence citations remain unvalidated and
+planning/compilation retain an applicability diagnostic. This is M10.1's target
+specification foundation; human component admission, delivery contracts and
+biological realization remain separate work.
+
 ## Compilation layers
 
 | Layer | Representation | Preservation obligation |

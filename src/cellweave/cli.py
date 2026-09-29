@@ -15,7 +15,14 @@ from cellweave.ir.behavior import BehaviorProgram, SCHEMA_VERSION as BEHAVIOR_SC
 from cellweave.ir.intent import SCHEMA_VERSION as INTENT_SCHEMA
 from cellweave.ir.mechanism import MechanismProgram
 from cellweave.ir.serialization import parse_json
-from cellweave.semantics.context import TargetContext
+from cellweave.semantics.context import HumanTargetContext, TargetContext
+from cellweave.semantics.human_target import (
+    HumanHostDependency,
+    HumanOperatingCondition,
+    HumanTargetContract,
+    TargetClaim,
+    TargetEvidence,
+)
 from cellweave.semantics.realization import BehaviorContract, OperatingDomain
 from cellweave.verification.evidence import CheckResult
 from cellweave.verification.exploration import (
@@ -101,6 +108,12 @@ def _read_artifact(document):
                 ReferenceManifest,
                 MechanismProgram,
                 TargetContext,
+                HumanTargetContext,
+                HumanTargetContract,
+                HumanHostDependency,
+                HumanOperatingCondition,
+                TargetClaim,
+                TargetEvidence,
                 BehaviorContract,
                 OperatingDomain,
                 ObservationMap,
@@ -161,6 +174,16 @@ def _summary(artifact):
     for key in ("id", "name", "context_id", "outcome", "evidence_kind"):
         if hasattr(artifact, key):
             summary[key] = getattr(artifact, key)
+    if isinstance(artifact, (HumanTargetContext, HumanTargetContract)):
+        contract = (
+            artifact.human_target
+            if isinstance(artifact, HumanTargetContext)
+            else artifact
+        )
+        summary["unresolved_evidence"] = list(contract.unresolved_evidence)
+        summary["inspection"] = (
+            "Declared human in-vivo target only; evidence citations are not independently validated and grant no biological or payload admission."
+        )
     if isinstance(artifact, ReferenceManifest):
         summary["reference_set_id"] = artifact.reference_set_id
         summary["status"] = artifact.status

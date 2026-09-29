@@ -1,5 +1,12 @@
 # Examples
 
+[human_target.py](human_target.py) records an illustrative human in-vivo target
+with mandatory applicability fields and explicit missing evidence. Run
+`PYTHONPATH=src python examples/human_target.py --output generated/human-target`,
+then inspect the resulting `human-target.json`. No biological profile, delivery
+system or therapeutic payload is admitted. See the
+[human target contract](../docs/human-target-contract-v0.1.md).
+
 [intent_programs.py](intent_programs.py) builds six complete programs: contextual
 clearance, priming and phases, temporal response, graded secretion, feedback
 regulation, and cooperation between cell roles. Each function returns an immutable

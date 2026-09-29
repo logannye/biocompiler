@@ -9,6 +9,7 @@ The central idea is to keep three things connected: **what a cell should do**, *
 | Workflow | What it provides |
 | --- | --- |
 | Describe cellular intent | Python authoring for recognition, actions, timing, memory, states, and communication, saved as immutable typed graphs. |
+| Declare a human target | Explicit cell/state, tissue/disease, population, host dependencies, operating conditions and evidence gaps, preserved in frozen build requests. |
 | Evaluate and check abstract behavior | Execution against supplied observation histories, a limited automatic synthetic candidate generator, and independent checks with counterexamples and explicit coverage. |
 | Link components | Versioned component contracts with checked interfaces, operating assumptions, providers, resources, and dependency identities. |
 | Reproduce a reference coding sequence | Checked single-CDS assembly, exact DNA or RNA emission, sequence/translation checks, and reproducible offline build packages. |
@@ -24,6 +25,11 @@ CellWeave keeps exact sequence identity, structural consistency, model-condition
 The authoring language is broader than the executable profiles. Unsupported behavior produces explicit diagnostics. General intent-to-molecular compilation through `cw.compile(...)` is unavailable; exact CDS builds use a separate, independently pinned reference workflow. Calibrated biological simulation and complete therapeutic-payload generation are outside the supported workflows.
 
 Molecular correspondence checks can establish source/CDS linkage while leaving biological behavior `UNKNOWN`. Whole-molecule structural checks do not establish functional performance or authorize a complete-payload compiler build. Their included examples use explicitly artificial software fixtures.
+
+The [human target contract](docs/human-target-contract-v0.1.md) fixes human in-vivo
+recipient scope while preserving explicit unresolved applicability. It records
+requirements and evidence citations; it does not validate a human biological
+implementation or admit a therapeutic payload.
 
 ## Quick start
 
