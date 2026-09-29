@@ -1,9 +1,17 @@
 # Test boundaries
 
-No semantic compiler passes exist yet. Hosted CI currently performs package and import smoke checks only.
+The standard-library `unittest` suite exercises the authoring API and its serialized
+intent graph. Run from the repository root with Python 3.11 or later:
 
-- `unit/`: frontend types, diagnostics, serialization, and deterministic transformations.
-- `semantics/`: properties and counterexamples for preservation of scope, time, context, and obligations.
-- `integration/`: end-to-end builds using explicitly documented fixtures and implemented backends.
+```sh
+PYTHONPATH=src python -m unittest discover -s tests -v
+```
 
-Add meaningful tests with each implemented behavior. Avoid tests that simply reproduce constants or mistake structural identity for biological validity.
+Tests cover complete programs, role and target associations, temporal and state
+semantics, quantitative typing, communication, inert actions, declaration conflicts,
+immutable snapshots, deterministic serialization, and the explicit boundary between
+an intent plan and sequence generation.
+
+These tests validate the software representation of authored intent. They do not
+validate molecular realization, biological behavior, or clinical performance. There
+is no implemented sequence-generation backend to exercise yet.

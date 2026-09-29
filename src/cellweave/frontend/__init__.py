@@ -1,1 +1,1 @@
-"""Planned Python DSL and elaboration; no source-language semantics are implemented."""
+"""Symbolic Python authoring of typed therapeutic intent graphs."""
