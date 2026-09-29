@@ -41,7 +41,7 @@ from cellweave.verification.construct import (
 )
 from cellweave.verification.evidence import CheckOutcome, EvidenceKind
 
-CONSTRUCT_PIPELINE_VERSION = "cellweave.reference_construct_pipeline.v0.1"
+CONSTRUCT_PIPELINE_VERSION = "cellweave.reference_construct_pipeline.v0.2"
 
 
 @dataclass(frozen=True)
@@ -118,7 +118,7 @@ def run_construct_pipeline(
         "emitted_sequence_identity",
         "exact_cds",
         EvidenceKind.EXACT,
-        "Sequence emission and independent nucleotide identity verification remain unimplemented.",
+        "Emit the selected nucleotide spelling and independently verify its exact reference identity.",
     )
     payload = ScopedObligation(
         "complete_payload_features",

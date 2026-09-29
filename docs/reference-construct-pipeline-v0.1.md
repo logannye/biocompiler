@@ -56,7 +56,7 @@ acceptance rule in this profile.
 component linkage and exact layout/source checks. It leaves emitted-sequence
 identity, complete delivered-payload features and molecular behavior unresolved.
 Neither `exact_cds` nor `complete_payload` is a supported completion scope here.
-`compile()` remains unavailable until an emission profile exists.
+`run_molecular_pipeline` separately completes the [exact-CDS emission profile](exact-cds-pipeline-v0.1.md). General `compile()` remains unavailable for intent designs.
 
 Before reusing an in-memory result, call
 `build.manager.result("construct", scope="reference_construct")` after updating

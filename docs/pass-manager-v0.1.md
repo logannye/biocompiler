@@ -1,6 +1,6 @@
 # Checked pass manager v0.1
 
-`compiler.pipeline.PassManager` accepts frozen inputs, registers trusted pass contracts and independent validators, and keeps accepted stages in memory. This profile enforces stage ordering, destination operation inventories, target applicability, source correspondence, required observation mappings, and dependency freshness. Molecular passes and persistent caching remain unimplemented.
+`compiler.pipeline.PassManager` accepts frozen inputs, registers trusted pass contracts and independent validators, and keeps accepted stages in memory. This profile enforces stage ordering, destination operation inventories, target applicability, source correspondence, required observation mappings, and dependency freshness. The exact-reference molecular pass is implemented; general molecular realization and persistent caching remain unsupported.
 
 ## Authority and acceptance
 
@@ -26,7 +26,7 @@ Within a transformation, `changed_properties` records the change. `invalidated_a
 
 Acceptance of a stage and completion of a requested artifact are different. A `CompletionProfile` declares the terminal stage, exact output schema and required obligation IDs. `register_completion_profile` can add a new scope after initialization but cannot replace an existing scope or weaken its promise. `result(scope=...)` returns `partial` until that stage and every required obligation for the scope are satisfied. Unresolved obligations in other scopes remain listed even when the requested scope is `complete`.
 
-For example, exact-CDS identity obligations can eventually be complete while full-payload and empirical biological obligations remain unresolved. There is currently no exact-CDS completion implementation. The first concrete integration is the synthetic finite-history profile, whose success remains conditional on its model, declared domain and exercised history.
+For example, exact-CDS identity obligations can eventually be complete while full-payload and empirical biological obligations remain unresolved. The exact-CDS completion implementation is the separately pinned reference-emission profile. The first concrete integration is the synthetic finite-history profile, whose success remains conditional on its model, declared domain and exercised history.
 
 `run_component_pipeline` extends the finite-history integration through a third checked pass. The `synthetic_components` scope requires inherited behavior preservation and response checks plus component linkage. Assembly acceptance verifies exact source correspondence as well as generic composition compatibility; a compatible rewired graph is insufficient.
 
@@ -43,3 +43,7 @@ Reference construction has no upstream behavioral realization to claim. `registe
 Admission does not accept a serialized success flag or trust a producer-defined fingerprint property. Input-policy/provider changes require version changes and stale all descendants. Dependency changes during checking also prevent fresh acceptance. The original Intent-only input API still rejects later-stage injection. This is trusted compiler configuration, like pass registration; an arbitrary always-pass plugin is not an independent checker.
 
 `run_construct_pipeline` admits only the supported single-CDS reference authority and completes the `reference_construct` scope after layout/source checks and renewed conditional composition checks. Sequence emission, complete delivered-payload features and biological behavior remain separate unresolved obligations.
+
+## Checked exact-CDS completion
+
+`run_molecular_pipeline` extends the accepted reference construct with a real Construct → Molecular pass. It requires independent exact sequence/translation/metadata checks and fresh conditional component linkage. Encoding invalidates layout, composition and molecular-behavior claims; the supported identity-preserving reference path independently rechecks the first two and retains biological claims unresolved. The new `exact_cds` completion profile requires all inherited reference/layout obligations plus emitted-sequence identity. Source links must exactly retain placement requirement IDs; an observation map cannot invent a behavioral claim. Emitter, checker, encoding policy and output profile are dependency roots alongside all existing upstream roots.

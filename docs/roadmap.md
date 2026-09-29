@@ -2,7 +2,7 @@
 
 This roadmap turns the current semantic foundation into a reproducible compiler path, using **exact, published coding-sequence (CDS) references** for the first molecular benchmarks. Completed tasks below identify implemented, scoped capabilities; unchecked tasks remain planned work. This is the authoritative roadmap. Task IDs are stable so implementation PRs can cite them and mark individual items complete.
 
-Implementation foundation updated on 2026-09-29, with M5 developed from commit `5a8e072` (checked component contracts and linking):
+Implementation foundation updated on 2026-09-29, with M6 developed from commit `df37188` (checked reference construct assembly):
 
 | Boundary | Current implementation | Next responsibility |
 | --- | --- | --- |
@@ -11,10 +11,10 @@ Implementation foundation updated on 2026-09-29, with M5 developed from commit `
 | Behavior → Mechanism | Automatic combinational synthetic generation, pinned catalog and independent runner/checker | Temporal and molecular profiles need separate contracts |
 | Mechanism → Components | Immutable contracts, offline selection/locks, checked interfaces/domains/providers/resources, synthetic assembly and separate FAP CDS components | Preserve selected components through explicit Construct IR |
 | Components → Construct | Frozen layout authority, Construct IR, independent single-CDS assembly checks and evidence invalidation | Emit the scoped selected CDS and verify its nucleotide identity |
-| Construct → Molecular specification | DNA/RNA placeholders | Emit and independently check exact scoped sequence artifacts |
+| Construct → Molecular specification | Separate exact-reference DNA-CDS/RNA-CDS backends, independent spelling/translation checks and identity-preserving exports | Package the scoped accepted records and reproducible build identities |
 | Molecular specification → Package | Checked in-memory pass manager; molecular manifest remains planned | Package accepted molecular records and reproducible identities |
 
-`compile()` still raises `CompilationUnavailableError`. The synthetic example now generates its candidate automatically. `run_synthetic_pipeline` executes checked Intent → Behavior → synthetic Mechanism passes for its declared finite-history profile. `run_component_pipeline` additionally checks the synthetic Components stage without broadening the finite-history claim. `run_construct_pipeline` checks a separately selected whole reference CDS through the Construct stage. Molecular lowering and sequence emission remain unimplemented.
+`compile()` still raises `CompilationUnavailableError`. The synthetic example now generates its candidate automatically. `run_synthetic_pipeline` executes checked Intent → Behavior → synthetic Mechanism passes for its declared finite-history profile. `run_component_pipeline` additionally checks the synthetic Components stage without broadening the finite-history claim. `run_construct_pipeline` checks a separately selected whole reference CDS through the Construct stage. `run_molecular_pipeline` additionally emits the separately pinned DNA or RNA CDS and completes `exact_cds` after independent checks. General intent-to-molecular realization and complete-payload generation remain unsupported.
 
 ## Development strategy and first deliverables
 
@@ -140,15 +140,17 @@ Implemented assembly scope: one whole forward DNA or RNA CDS at frame zero with 
 
 **Primary modules:** `ir/molecular.py`, `backends/dna/`, `backends/rna/`, `verification/`, `registry/`.
 
-- [ ] **M6.1** Define narrow DNA-CDS and RNA-CDS output profiles, separate from complete DNA constructs or complete mRNA/circRNA payload profiles. Record reference identity and scope in the molecular artifact itself.
-- [ ] **M6.2** Emit the selected reference spelling deterministically through Construct IR. Keep codon/sequence optimization disabled in reference-reproduction mode unless an explicit new mode and comparison contract are introduced.
-- [ ] **M6.3** Validate alphabet, orientation, length, feature coordinates, frame and termination conventions with an independent artifact checker. Reconcile emitted sequence with both Construct IR and the separately curated expected record.
-- [ ] **M6.4** Check exact DNA against source SEQ2, exact RNA against source SEQ3, and translation against source SEQ1. T/U conversion is a consistency check, not evidence that a delivered DNA medicine and an mRNA medicine are interchangeable.
-- [ ] **M6.5** Return explicit fields for known, unknown and inapplicable molecular features. A CDS record must not imply known cap, nucleotide modifications, transcript ends, regulatory context or full-molecule topology.
-- [ ] **M6.6** Define identity-preserving file export, for example FASTA plus a structured molecular specification. Line wrapping may change file bytes; canonical sequence identity must remain separately defined.
-- [ ] **M6.7** Attach any future encoding optimization to a change record and invalidation policy. Protein preservation alone cannot preserve all expression, structural or behavioral analyses.
+- [x] **M6.1** Define narrow DNA-CDS and RNA-CDS output profiles, separate from complete DNA constructs or complete mRNA/circRNA payload profiles. Record reference identity and scope in the molecular artifact itself.
+- [x] **M6.2** Emit the selected reference spelling deterministically through Construct IR. Keep codon/sequence optimization disabled in reference-reproduction mode unless an explicit new mode and comparison contract are introduced.
+- [x] **M6.3** Validate alphabet, orientation, length, feature coordinates, frame and termination conventions with an independent artifact checker. Reconcile emitted sequence with both Construct IR and the separately curated expected record.
+- [x] **M6.4** Check exact DNA against source SEQ2, exact RNA against source SEQ3, and translation against source SEQ1. T/U conversion is a consistency check, not evidence that a delivered DNA medicine and an mRNA medicine are interchangeable.
+- [x] **M6.5** Return explicit fields for known, unknown and inapplicable molecular features. A CDS record must not imply known cap, nucleotide modifications, transcript ends, regulatory context or full-molecule topology.
+- [x] **M6.6** Define identity-preserving file export, for example FASTA plus a structured molecular specification. Line wrapping may change file bytes; canonical sequence identity must remain separately defined.
+- [x] **M6.7** Attach any future encoding optimization to a change record and invalidation policy. Protein preservation alone cannot preserve all expression, structural or behavioral analyses.
 
 **Acceptance:** exact normalized nucleotide outputs match independently frozen references. A synonymous substitution fails exact-reference equality even if translation passes. Missense changes, truncation, wrong alphabet, frame errors and incorrect reference selection fail their respective checks.
+
+Implemented emission scope: exact whole-CDS reference spelling only, with independent nucleotide equality, linked-reference consistency, standard-code translation and structural/provenance checks. Molecular feature statuses distinguish CDS facts from unknown delivered features. FASTA formatting and JSON file hashes remain separate from canonical sequence identity. Optimization/change proposals cannot pass this exact profile. See [molecular artifacts](molecular-ir-v0.1.md), [checking](molecular-checking-v0.1.md) and the [exact-CDS pipeline/export](exact-cds-pipeline-v0.1.md).
 
 ## M7 — Package one reproducible reference build
 
@@ -192,18 +194,20 @@ Implemented assembly scope: one whole forward DNA or RNA CDS at frame zero with 
 
 ## Current implementation evidence
 
-The first four suggested implementation changes are present for the narrow supported profiles:
+The following milestones are implemented for their narrow supported profiles:
 
 - **M0:** strict offline reference manifests, retained source excerpts, independent audit record and exact DNA/RNA/protein consistency tests. See [curation evidence](../data/references/fap_car/curation.md).
 - **M1:** [two-phase frozen requests](build-requests-v0.1.md), request-authoritative lowering and binding-tamper regressions. Elaboration provenance is explicitly supplied by the author; missing metadata is not a claim that external inputs were captured.
-- **M2:** [checked pass contracts](pass-manager-v0.1.md), required independent validators, scoped completion and transitive freshness. Callers update changed dependency roots; persistent caching remains deferred. Molecular-stage consumers will be added with their own passes.
+- **M2:** [checked pass contracts](pass-manager-v0.1.md), required independent validators, scoped completion and transitive freshness. Callers update changed dependency roots; persistent caching remains deferred. The construct and exact-CDS molecular consumers use these contracts.
 - **M3.1–M3.4:** [combinational synthetic generation](synthetic-profile-v0.1.md), source/requirement maps, locked synthetic operations and independent finite-history acceptance. Run `PYTHONPATH=src python examples/checked_pipeline.py` for the integrated workflow.
-- **Minimal M4 support:** synthetic component records/catalog and content locks exist; the full contract linker, providers, resource accounting and molecular component integration remain unchecked below.
-- **Continuous M8:** binding and dependency tampering, wrong-object candidates, serialization, source mutation, and 256 two-object Boolean transition histories are exercised. This bounded set is not whole-profile exhaustive or biological validation.
+- **M4:** [typed component contracts](component-contracts-v0.1.md), independent offline linking, explicit providers/resources and separately classified sequence-reference components.
+- **M5:** [single-CDS construct assembly](reference-construct-pipeline-v0.1.md), frozen layout authority, source/requirement correspondence and independent structural/reference checking.
+- **M6:** [exact DNA/RNA CDS emission](exact-cds-pipeline-v0.1.md), independent nucleotide/protein comparisons, explicit feature uncertainty, encoding invalidation and identity-preserving FASTA/JSON export.
+- **Continuous M8:** binding and dependency tampering, wrong-object candidates, serialization, source mutation, synonymous/missense/truncated sequence changes, export mutation, and 256 two-object Boolean transition histories are exercised. This bounded set is not whole-profile exhaustive or biological validation.
 
-The existing hosted Python 3.11/3.14 package, test, example and CLI gates are retained and now include the integrated pipeline example. Each run reports the exact Git revision and platform. Detailed tests are under `tests/test_build_request.py`, `test_pipeline*.py`, `test_checked_pipeline.py`, `test_references.py` and `test_synthetic_generation.py`.
+The existing hosted Python 3.11/3.14 package, test, example and CLI gates are retained and include all integrated component, construct and exact-CDS examples. Each run reports the exact Git revision and platform. Detailed tests are under `tests/test_build_request.py`, `test_pipeline*.py`, `test_checked_pipeline.py`, `test_references.py`, `test_synthetic_generation.py`, `test_construct*.py`, `test_molecular*.py` and `test_sequence*.py`.
 
-The next implementation milestone is **M4 component contracts and linking**, followed by M5–M7 construct assembly, exact CDS emission and reproducible molecular packaging. Temporal synthetic operators remain a separately specified extension.
+The next implementation milestone is **M7 reproducible reference build packaging**. Temporal synthetic operators remain a separately specified extension.
 
 ## Suggested implementation PRs
 
