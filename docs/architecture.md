@@ -4,6 +4,8 @@ CellWeave is a proposed compiler for converting an immune-cell engineer's intent
 
 The current repository is a skeleton. It supplies vocabulary and extension points, not a biological compiler, validated component library, or sequence generator. Physical manufacture, administration, and execution in a recipient cell are outside the compiler boundary.
 
+The [v0.1 intent API proposal](intent-api-v0.1.md) defines the planned authoring vocabulary: cell roles, scoped observations, expressions, actions, state, outputs, controllers, and communication. Python constructs an inspectable intent graph; molecular realization remains a later stage.
+
 ## Compilation layers
 
 | Layer | Representation | Preservation obligation |

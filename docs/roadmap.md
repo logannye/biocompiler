@@ -6,11 +6,13 @@ The repository begins as an architectural skeleton. Progress should be measured 
 
 Provide the Python package layout, shared stage and target vocabulary, compiler pass interfaces, and a CLI that lists the planned stages. Reserve modules for future IR schemas. Document what is implemented and what remains conceptual. Do not present the scaffold as a sequence generator or validated biological compiler.
 
-## 1. Define a narrow semantic core
+## 1. Define the intent API and its semantic core
 
-Choose one payload modality, one explicitly bounded cell context, and a small supported set of behaviors. Define types for observables, units, spatial scope, timing, requirements, and objectives before adding a broad DSL.
+The [v0.1 API proposal](intent-api-v0.1.md) describes a broad intent language for in-vivo immune-cell engineering. Its concepts include cell roles, observations, conditional and quantitative responses, memory, phases, and communication. The proposal is documentation, not an implemented DSL.
 
-Deliver an inspectable intent representation and diagnostics for ambiguous or unsupported semantics. Use synthetic fixtures to test the compiler infrastructure; label them as fixtures rather than biological evidence.
+Implement a small authoring slice first: roles and scopes, symbolic signals and parameters, conditions, action specifications, `when().do()`, reusable signatures, and immutable intent serialization. Extend it with events, memory, state, outputs, controllers, and channels. Defining an intent does not require an available molecular realization.
+
+Deliver an inspectable intent representation and diagnostics for undefined semantics. Use synthetic fixtures to test the compiler infrastructure; label them as fixtures rather than biological evidence.
 
 ## 2. Build the first checked lowering
 
@@ -20,7 +22,7 @@ Acceptance requires reproducible serialization, clear failures for unsupported o
 
 ## 3. Add one modeled realization path
 
-Define mechanism and component schemas, observation mappings, and a minimal versioned registry. Select a tightly scoped model and define its applicability assumptions. Keep the candidate generator separate from the checker.
+Choose one payload modality, one bounded cell context, and a small behavior set for the first realization path. Define mechanism and component schemas, observation mappings, and a minimal versioned registry. Select a tightly scoped model and define its applicability assumptions. Keep the candidate generator separate from the checker.
 
 Deliver an end-to-end modeled example whose record distinguishes exact checks, model-based results, empirical support, and unresolved obligations. Missing evidence must remain visible. This milestone alone does not establish therapeutic validity.
 
@@ -34,6 +36,6 @@ Acceptance requires traceability from every emitted component to source requirem
 
 Emit a deployment manifest, source maps, locked dependencies, and a machine-readable verification record. Add interoperation only where it supports a concrete workflow. Physical manufacture remains external.
 
-Expand targets or language features one at a time. Each extension needs defined semantics, at least one supported realization, preservation obligations, diagnostics, and appropriate evidence. Add a second DNA/RNA target as a separate backend rather than assuming equivalent mechanisms across modalities.
+Expand language features and molecular targets as separate tracks. Language extensions need defined semantics, inspectable representations, and preservation checks. Realization extensions additionally need supported mechanisms, diagnostics, and appropriate evidence. Add a second DNA/RNA target as a separate backend rather than assuming equivalent mechanisms across modalities.
 
 See [architecture](architecture.md) for the intended module boundaries.
