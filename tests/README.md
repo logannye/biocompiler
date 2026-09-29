@@ -1,5 +1,12 @@
 # Test boundaries
 
+M10.1 tests preserve legacy target identities while checking required human
+applicability declarations, species/engineering constraints, evidence categories,
+immutable inventories, compartments, nested request identity and strict imports.
+Citations and software fixtures leave biological applicability unresolved in the
+planner and CLI. These checks implement the
+[target contract](../docs/human-target-contract-v0.1.md), not biological admission.
+
 M9 correspondence tests rerun source/CDS acceptance and distinguish exact linkage from biological UNKNOWN. Independent admission mutations cover forged calibration/material labels, named adapters, endpoint units, omitted outputs and stale evidence. Payload tests use explicitly artificial source/review records to exercise complete-molecule boundaries, exact sequence/translation, topology, end chemistry and authority tampering; structural PASS cannot promote a real reference or admit a complete-payload compiler build. Planning tests retain specific unsupported extension obligations. See [molecular contracts](../docs/molecular-behavior-v0.1.md), [payload readiness](../docs/payload-profiles-v0.1.md) and [M9 evidence](../docs/m9-evidence-review.md).
 
 The standard-library `unittest` suite exercises the authoring API and its serialized

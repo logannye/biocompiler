@@ -14,6 +14,7 @@ from typing import ClassVar
 
 from cellweave.errors import DefinitionError, SerializationError, TypeMismatchError
 from cellweave.ir.serialization import JsonArtifact, fields, name, names, require
+from cellweave.semantics.human_target import HumanTargetContract
 from cellweave.semantics.types import ScalarLiteral, TypeSpec, decode_binding
 
 
@@ -97,6 +98,12 @@ class TargetContext(JsonArtifact):
 
     @classmethod
     def from_dict(cls, data: Mapping) -> TargetContext:
+        if (
+            cls is TargetContext
+            and isinstance(data, Mapping)
+            and data.get("schema_version") == HumanTargetContext.schema_version
+        ):
+            return HumanTargetContext.from_dict(data)
         fields(
             data,
             {
@@ -138,3 +145,78 @@ class TargetContext(JsonArtifact):
             if isinstance(exc, SerializationError):
                 raise
             raise SerializationError(f"Invalid target context: {exc}") from exc
+
+
+@dataclass(frozen=True)
+class HumanTargetContext(TargetContext):
+    """A target with required human applicability declarations, still unvalidated.
+
+    Legacy TargetContext v0.1 identities are unchanged. Nested request import
+    dispatches explicitly on this new schema rather than discarding its contract.
+    """
+
+    human_target: HumanTargetContract = field(kw_only=True)
+    schema_version: ClassVar[str] = "cellweave.human_target_context.v0.1"
+
+    def __post_init__(self):
+        super().__post_init__()
+        require(
+            isinstance(self.human_target, HumanTargetContract),
+            "A human target requires a HumanTargetContract.",
+        )
+        require(
+            "abstract" not in self.compartments,
+            "Human targets require explicit physical compartments.",
+        )
+        for item in (
+            *self.human_target.host_dependencies,
+            *self.human_target.operating_conditions,
+        ):
+            require(
+                item.compartment in self.compartments,
+                f"Undeclared compartment for {item.id}.",
+            )
+        try:
+            self.to_json(indent=None).encode("utf-8")
+        except UnicodeError as error:
+            raise SerializationError(
+                "Human target strings must be valid UTF-8."
+            ) from error
+
+    def to_dict(self):
+        return {**super().to_dict(), "human_target": self.human_target.to_dict()}
+
+    @classmethod
+    def from_dict(cls, data):
+        fields(
+            data,
+            {
+                "schema_version",
+                "context_id",
+                "context_version",
+                "payload_format",
+                "capabilities",
+                "compartments",
+                "resources",
+                "human_target",
+            },
+            "human target context",
+        )
+        require(
+            data["schema_version"] == cls.schema_version,
+            "Unsupported human target context schema.",
+        )
+        # Parse the shared fields under their unchanged contract after validating
+        # the complete human envelope; this is not an import downgrade fallback.
+        shared = {key: value for key, value in data.items() if key != "human_target"}
+        shared["schema_version"] = TargetContext.schema_version
+        base = TargetContext.from_dict(shared)
+        return cls(
+            base.context_id,
+            base.context_version,
+            base.payload_format,
+            base.capabilities,
+            base.compartments,
+            base.resources,
+            human_target=HumanTargetContract.from_dict(data["human_target"]),
+        )

@@ -1,24 +1,38 @@
 # Development roadmap
 
-This roadmap turns the current semantic foundation into a reproducible compiler path, using **exact, published coding-sequence (CDS) references** for the first molecular benchmarks. Completed tasks below identify implemented, scoped capabilities; unchecked tasks remain planned work. This is the authoritative roadmap. Task IDs are stable so implementation PRs can cite them and mark individual items complete.
+CellWeave's intended function is to compile an immune-cell engineer's Python therapeutic intent into an **exact, complete RNA or DNA molecular specification for in vivo deployment in a human patient**. The nucleotide sequence is the primary output, accompanied by the molecular features, deployment assumptions and evidence needed to interpret it. Physical manufacture, administration and clinical authorization remain external activities; their relevant constraints must inform compilation.
 
-Implementation foundation updated on 2026-09-29, with M9 contract and payload-readiness work developed from merged commit `cb57948` (M0–M8):
+This is the authoritative development roadmap, revised on **2026-09-29** around complete, narrowly supported human workflows. Completed tasks identify implemented, scoped capabilities; unchecked tasks remain planned work. Existing M0–M9 IDs and completion evidence are retained. M10–M16 separate the remaining scientific and engineering obligations into reviewable milestones. M10.1 now implements a human target declaration contract; it promotes no reference or biological claim.
+
+## Human-only product contract
+
+- Human biology and in vivo deployment are mandatory therapeutic compilation targets. Target cell subtype/state, tissue and disease context, population applicability, modality and delivery assumptions must be explicit. Human-only refers to the recipient biology; the provenance and suitability of each encoded element remain separately reviewed.
+- The existing murine FAP-CAR CDS is a software regression reference only. It must not be selectable as an admitted implementation for a human therapeutic build. Enforcing that separation is planned work under M10; current exact-CDS tools remain scoped reference tools.
+- Human cell-line or primary-cell evidence supports only its documented context. Non-human evidence retains its species and translation limitations and cannot substitute for a human benchmark or establish human deployment validity.
+- A precise intent defines measurable required and prohibited behavior, tolerances and operating assumptions. It does not imply identical outcomes in every cell or patient. Unsupported, unknown, failed, search-exhausted and demonstrated-infeasible results must remain distinct.
+- Each supported profile must connect source requirements to molecular implementation, complete payload identity and applicable evidence. Artifact identity, structural completeness, model support, empirical support and externally established clinical-use status remain separate result dimensions.
+
+**First end-to-end completion contract:** given a bounded human therapeutic intent and a declared in vivo deployment context, produce a complete molecular candidate, explain its implementation choices, independently check the supported source-to-payload obligations, report the evidence supporting its predicted behavior, and expose every unresolved claim. Acceptance applies only to the declared profile and evidence scope; a computational build is not clinical authorization.
+
+## Current implementation boundary
+
+Implementation baseline: merged revision `b4684d8523a8de2eeb422045872111a664fc35da`, including M0–M8 supported profiles and M9 correspondence/readiness infrastructure, extended by the M10.1 human target contract in implementation revision `dc3ec8cac9a3b18f198dd7114282968ee263136b`:
 
 | Boundary | Current implementation | Next responsibility |
 | --- | --- | --- |
-| Python → Intent | Typed authoring, frozen versioned BuildRequest and explicit elaboration provenance | Broaden concrete profiles while preserving input authority |
-| Intent → Behavior | Request-authoritative lowering/verification, Behavior IR and reference execution | Continue independent semantic checks |
-| Behavior → Mechanism | Automatic combinational synthetic generation, pinned catalog and independent runner/checker | Temporal and molecular profiles need separate contracts |
-| Mechanism → Components | Immutable contracts, offline selection/locks, checked interfaces/domains/providers/resources, synthetic assembly and separate FAP CDS components | Broaden independently characterized component implementations |
-| Components → Construct | Frozen layout authority, Construct IR, independent single-CDS assembly checks and evidence invalidation | Broaden separately supported layouts and molecule inventories |
-| Construct → Molecular specification | Separate exact-reference DNA-CDS/RNA-CDS backends, independent spelling/translation checks and identity-preserving exports | Preserve exact scope across future encodings and feature profiles |
-| Molecular specification → Package | Strict reference manifests, deterministic archives, independent offline reconstruction and atomic publication | Broaden verified profiles without upgrading CDS evidence |
+| Python → Intent | Typed authoring, frozen versioned BuildRequest, explicit elaboration provenance and versioned human target declarations | M10.2–M10.6: measurable human intent, deployment contracts, prohibited outcomes and admission |
+| Intent → Behavior | Request-authoritative lowering/verification, Behavior IR and reference execution | M10/M12: physical observations, supported tolerances and realizability obligations |
+| Behavior → Mechanism | Automatic combinational synthetic generation, pinned catalog and independent runner/checker | M12: independently evaluated biological dynamics and bounded selection |
+| Mechanism → Components | Immutable contracts, offline selection/locks, checked interfaces/domains/providers/resources, synthetic assembly and separate FAP CDS components | M11/M12: characterized human implementations with applicable evidence |
+| Components → Construct | Frozen layout authority, Construct IR, independent single-CDS assembly checks and evidence invalidation | M13: complete supported molecular layouts and required dependencies |
+| Construct → Molecular specification | Separate exact-reference DNA-CDS/RNA-CDS backends, independent spelling/translation checks and identity-preserving exports | M13: complete target-specific sequences, chemistry and candidate checks |
+| Molecular specification → Package | Strict reference manifests, deterministic archives, independent offline reconstruction and atomic publication | M14/M15: intent-root builds, separate evidence dimensions and evaluation feedback |
 
 `compile()` still raises `CompilationUnavailableError`. The synthetic example now generates its candidate automatically. `run_synthetic_pipeline` executes checked Intent → Behavior → synthetic Mechanism passes for its declared finite-history profile. `run_component_pipeline` additionally checks the synthetic Components stage without broadening the finite-history claim. `run_construct_pipeline` checks a separately selected whole reference CDS through the Construct stage. `run_molecular_pipeline` additionally emits the separately pinned DNA or RNA CDS and completes `exact_cds` after independent checks. `build_reference_package` packages those accepted stages and `publish_reference_package` atomically publishes a portable archive after fresh offline reconstruction. General intent-to-molecular realization and complete-payload generation remain unsupported.
 
-## Development strategy and first deliverables
+## Development strategy and next deliverable
 
-Two tracks share build identities, pass contracts and artifact infrastructure:
+Two existing tracks share build identities, pass contracts and artifact infrastructure:
 
 1. **Semantic correctness:** automatically lower a small Behavior profile into versioned synthetic components and check it independently against abstract histories.
 2. **Molecular reference fidelity:** resolve an explicitly selected published implementation and reproduce its exact CDS through component, construct, molecular and packaging stages.
@@ -27,9 +41,13 @@ A synthetic signal graph is not a molecular implementation of a CAR. Connecting 
 
 The initial molecular reference is the patent-disclosed, study-associated murine FAP-CAR set: **WO2022081694A1, SEQ ID NO:2 (coding DNA), NO:3 (coding RNA), NO:1 (protein)**. The three records are independently extracted, reconciled and version locked in `data/references/fap_car/`; source review was performed by two Codex agents and is not human or experimental validation. They specify coding regions, not complete delivered RNA molecules. See the [reference benchmark plan](reference-benchmarks.md) for sources, promotion gates and pending full-payload candidates.
 
-The first molecular milestone should report **“exact CDS reference reproduced”** and emit its verification record. A later complete-payload profile must additionally resolve regulatory regions, molecule boundaries, relevant chemistry and every obligation required by that profile.
+The existing molecular milestone reports **“exact CDS reference reproduced”** and emits its verification record. It remains a foundation for software testing, not the human product benchmark. A complete-payload profile must additionally resolve regulatory regions, molecule boundaries, relevant chemistry and every obligation required by that profile.
 
-High-level intent generally permits many sequences. Exact reproduction requires a frozen intent **plus pinned implementation choices, component versions and tool semantics**. The compiler must record those choices rather than implying that a therapeutic goal uniquely determines a nucleotide string.
+High-level intent generally permits many sequences. Intent-root builds require frozen source requirements plus pinned implementation choices, component versions and tool semantics. Reference reproduction can start from selected components and must not fabricate upstream intent correspondence. The compiler must record its choices rather than implying that a therapeutic goal uniquely determines a nucleotide string.
+
+**Continue with M10.2–M10.3 and the M11 evidence audit.** M10.1 provides the versioned target declaration and evidence requirements. Select one human cell subtype, one modality, one deployment context and one measurable behavior family based on available evidence. Freeze an initial therapeutic profile only after documenting what can be observed, implemented and checked. Do not broaden the authoring language or add unrestricted sequence optimization before this complete path works.
+
+Delivery participates before mechanism selection. Relevant uncertainty, population variation and prohibited outcomes must be represented within the first profile; they cannot all be postponed to a later general simulator. Start with bounded models adequate for the selected claims. Public or independently supplied experiments can support development; unavailable data or unestablished transfer to human in vivo conditions remains an explicit scientific gate, not an assumed future PASS.
 
 ## Milestone order
 
@@ -44,9 +62,16 @@ High-level intent generally permits many sequences. Exact reproduction requires 
 | M6. Emit exact CDS artifacts | M0, M5 | Independently verified DNA-CDS and RNA-CDS outputs |
 | M7. Package reproducible reference builds | M1–M2, M6 | One-command reference build and portable manifest |
 | M8. Broaden independent verification | Begins with M1; gates each relevant milestone | Adversarial, generated and bounded-exhaustive checks |
-| M9. Connect molecular behavior and expand | M3–M8 and suitable models/reference data | Evidence-backed realization profiles and complete payload targets |
+| M9. Preserve molecular correspondence/readiness foundation | M3–M8 | Existing checked linkage and structural readiness; remaining scope mapped to M10–M16 |
+| M10. Define and enforce one human deployment profile | M1–M4, M9.1; coordinated with M11 audit | Typed human target, measurable intent, delivery and prohibited-behavior contracts |
+| M11. Establish a complete human benchmark and evidence set | Initial M10 scope and source review | Reviewed full molecule, source/material identities, quantitative data and applicability limits |
+| M12. Implement molecular models and characterized components | M10, relevant M11 evidence | Independently evaluated biological adapter and bounded implementation selection |
+| M13. Construct and emit complete molecular candidates | M10–M11, M5–M7; checked component interfaces from M12 | One complete target-specific molecular specification with independent checks |
+| M14. Connect intent to a complete supported build | M10–M13 and required M8 gates | Reproducible intent-root package with separate structural, modeled and empirical results |
+| M15. Evaluate predictions and close the evidence loop | M11–M12; M14 for end-to-end evaluation | Independent prediction assessment, failure-driven revisions and evidence invalidation |
+| M16. Expand validated profiles and design space | M14–M15 for the first profile | Additional supported contexts, dynamics, modalities and transformations with their own gates |
 
-M0 can proceed alongside M1–M2. M8 is continuous work, not a final testing phase. No milestone requires implementation of the entire authoring language.
+M0–M9 retain their historical scopes and open tasks. M8 verification continues through every new milestone. M10 profile definition and M11 evidence discovery inform each other; the M11 audit can begin from a provisional scope. Model/reference work can proceed alongside software contracts, but missing evidence cannot be bypassed at acceptance. M15 validation planning begins with M11 so calibration and evaluation remain separate. No milestone requires implementation of the entire authoring language.
 
 ## M0 — Establish independently curated sequence references
 
@@ -202,6 +227,106 @@ For M9.3, separate [payload readiness profiles](payload-profiles-v0.1.md) check 
 
 M9.2 and actual M9.3 reference promotion remain evidence-dependent. The [M9 source review](m9-evidence-review.md) records the missing compatible calibration/validation dataset, the FAP experimental composite/material gap, and unresolved full-molecule candidate listings/versions. M9.4 now has source-linked planning/compilation diagnostics for quantitative, continuous, uncertainty, spatial, population and feedback extensions; their executable semantic/model profiles remain unimplemented. M9.5 remains deferred until a concrete supported use case can preserve these obligations. **M9 as a whole is not complete.**
 
+### Execution mapping for the remaining M9 scope
+
+M9 IDs remain stable for existing references. The following milestones decompose their outstanding work; adding or completing one subprofile does not automatically complete an entire M9 item.
+
+| Existing item | Execution milestones | Retained completion boundary |
+| --- | --- | --- |
+| M9.2 Biological adapters | M10–M12, M15 | Applicable model, explicit uncertainty and independent validation |
+| M9.3 Complete payload references | M11, M13–M14 | Reviewed full molecule and separately admitted compiler profile |
+| M9.4 Dynamics and population behavior | Required bounded semantics in M10/M12; additional profiles in M16 | Each supported behavior has executable semantics and context-matched evidence |
+| M9.5 Search, optimization and interoperation | Bounded selection in M12/M14; broader transformations and interoperation in M16 | Hard constraints, source correspondence and affected checks are preserved |
+
+## M10 — Define and enforce one human in vivo compilation profile
+
+**Priority:** P0, next engineering milestone. **Primary modules:** `frontend/`, `semantics/context.py`, `semantics/realization.py`, `compiler/workflow.py`, `registry/`, `verification/`.
+
+- [x] **M10.1** Specify a versioned human target contract: cell subtype/state, relevant tissue/disease context, population applicability, modality, compartments, host dependencies and supported operating conditions. Define required fields and evidence for the first profile; missing applicability must not become a universal default.
+- [ ] **M10.2** Define the first bounded therapeutic behavior with measurable inputs/outputs, units, response ranges, timing tolerances, initialization, persistence and termination. Refine symbolic goals and qualitative predicates into explicit observation contracts while preserving source intent. Separate observations available to the cell from measurements available only to an external evaluator.
+- [ ] **M10.3** Freeze a deployment contract before mechanism selection: delivery-platform identity, intended recipient population, intracellular destination, exposure assumptions, expression onset/duration and unintended recipients. Keep delivery targeting distinct from disease recognition. Record same-cell coexistence obligations for any co-payloads; reject unsupported deployment dependencies.
+- [ ] **M10.4** Add required and prohibited behavior to the same acceptance contract: supported healthy-context inactivity, background activity bounds, excessive/prolonged response, persistence and behavior under unavailable inputs or external control. Record observability, controllability and shutdown assumptions without inventing a supported actuator or control guarantee.
+- [ ] **M10.5** Enforce human-profile admission at planning, registry selection, fresh verification and export. Keep murine FAP and synthetic fixtures usable for explicitly labeled software tests while rejecting them as human therapeutic implementations. Retain species, cell-line, primary-cell and in vivo evidence distinctions.
+- [ ] **M10.6** Add positive, negative, conflicting, underspecified and unsupported request examples. Preserve unknown versus failed outcomes and search exhaustion versus demonstrated infeasibility. Document the proposed profile and its completion scope before enabling any corresponding `compile()` path.
+
+**M10.1 completion:** [Human target contract v0.1](human-target-contract-v0.1.md) defines the required declarations and evidence obligations. Immutable records, strict human/in-vivo imports, nested build identity, unresolved planning/CLI diagnostics and an explicitly unvalidated example are implemented. [Hosted validation](https://github.com/logannye/cellweave/actions/runs/36641613970) passed all 627 tests and existing package/example/CLI gates on Python 3.11.16 and 3.14.7, Linux x86_64 (`Linux-6.17.0-1022-azure-x86_64-with-glibc2.39`). The tested PR merge revision was `18dfcfd86b2da9457daeb6dec47826d1ffdf520b`, containing implementation revision `dc3ec8cac9a3b18f198dd7114282968ee263136b`. Completion covers the target-declaration profile; selection and validation of a therapeutic profile and all M10.2–M10.6 obligations remain open.
+
+**Acceptance:** one frozen human profile identifies what is required, what is prohibited, what must be delivered and what can be measured. Changes to target or deployment assumptions invalidate dependent evidence. Negative tests reject non-human substitution, missing applicability, absent delivery support and silent relaxation of requirements. Schema validity alone does not establish biological applicability.
+
+## M11 — Establish a complete human benchmark and evidence set
+
+**Priority:** P0, evidence work begins alongside M10. **Primary locations:** `data/`, `registry/`, `interop/`, `verification/`, reference and evidence documentation.
+
+- [ ] **M11.1** Audit candidate human benchmarks for exact sequences, complete molecule definitions, quantitative measurements, available models, context and reuse terms. Record comparisons and selection reasons. A human cell-line benchmark may support a scoped component/model claim but cannot stand in for primary-human-cell or patient in vivo evidence.
+- [ ] **M11.2** Independently reconcile a complete reference molecule, all required regions, topology and chemistry. Distinguish coding reference, production template, mature product, delivered artifact and experimental material; retain unresolved relationships rather than joining records by analogy.
+- [ ] **M11.3** Retain original sources and normalized data with versions, hashes, units, assay/readout meaning, sampling times, relevant donor/cohort or model context and extraction/review provenance. Separate observed measurements, published fits, digitized values and assumptions. Keep patient-identifying data outside repository artifacts.
+- [ ] **M11.4** Add bounded importers and offline reconstruction for the selected formats. Validate source-to-measurement and source-to-sequence correspondence independently. Access failures are recorded as limitations; they do not establish that a resource does not exist.
+- [ ] **M11.5** Predeclare calibration and independent evaluation partitions, measurement uncertainty and applicability limits. Identify missing human, delivery, exact-material or validation evidence with the specific claim each gap prevents. Benchmark reproduction and an independent predictive evaluation must be separately reported.
+- [ ] **M11.6** Review and freeze the reference/evidence package using existing authority and provenance machinery. Admit it only for the claims supported by the retained evidence. Benchmark selection, reference promotion, model validation and compiler admission remain distinct decisions.
+
+**Acceptance:** a reviewer can reconstruct the complete reference and relevant data, identify the experimental context, and trace every admitted claim to retained evidence. If sequence and measurements cannot be linked, keep them as separate benchmarks. Missing complete-molecule or independent-validation evidence leaves the corresponding gate open; an audit report alone does not complete this milestone.
+
+## M12 — Implement molecular dynamics, characterized components and bounded selection
+
+**Priority:** P0, largest biological implementation gap. **Primary modules:** `ir/`, `models/`, `semantics/`, `registry/`, `synthesis/`, `verification/`.
+
+- [ ] **M12.1** Introduce a versioned biological mechanism representation sufficient for the first profile: entities, interactions, locations, state, initial conditions, quantitative parameters, host dependencies and observation maps. Keep it explicitly distinct from the existing synthetic digital mechanism schema.
+- [ ] **M12.2** Implement an executable adapter for that mechanism and reproduce independently specified benchmark behavior within declared tolerances. Record model equations/implementation, solver configuration where applicable, units, fitted/assumed parameters, uncertainty and supported context. Do not use the Behavior evaluator as the biological execution model.
+- [ ] **M12.3** Characterize the uncertainty, cell-state variation, incomplete engineering and population effects needed for the chosen claims. Include relevant action-to-environment feedback and resource effects, or explicitly restrict the supported scope where evidence justifies doing so. Essential in vivo obligations cannot be deferred merely to obtain a passing model.
+- [ ] **M12.4** Populate a small sequence-backed component catalog with exact molecular identities, dynamic interfaces, human applicability, parameter evidence, host/deployment dependencies and composition limits. Require independent support for every claimed capability; a sequence annotation does not supply functional guarantees.
+- [ ] **M12.5** Lower supported Behavior requirements through deterministic templates or bounded candidate enumeration. Resolve physical sensors and actuators, interface dynamics, shared resources and delivery compatibility before ranking preferences. Record alternatives, search bounds and rejection reasons; preserve contact binding and all required/prohibited outcomes.
+- [ ] **M12.6** Independently assess modeled source-to-mechanism correspondence on the evaluation data reserved in M11 and on defined adversarial cases. Check active and inactive behavior, startup, timing and applicable population uncertainty. Reject out-of-domain use; fitting the calibration data cannot discharge independent validation.
+
+**Acceptance:** at least one supported human implementation has an executable, independently evaluated molecular model and characterized component assignments. A supported request selects a candidate for recorded reasons; incompatible or insufficiently supported requests produce diagnostics. The result states its uncertainty and applicability, and supplies no claim beyond the validated model/evidence scope.
+
+## M13 — Construct and emit one complete molecular payload class
+
+**Priority:** P0. **Primary modules:** `ir/construct.py`, `ir/molecular.py`, `ir/payload.py`, `backends/`, `synthesis/construct.py`, `verification/`, `artifacts/`.
+
+- [ ] **M13.1** Define one target-specific completion profile from the M10/M11 evidence: complete sequence boundaries, coding and noncoding regions, regulatory relationships, orientation, topology and relevant chemistry/end features. Represent only supported molecule classes and keep required unknown features blocking completeness.
+- [ ] **M13.2** Reproduce the complete human reference through checked Components → Construct → Molecular passes. Trace every emitted region to independent authority or an explicitly reviewed generation rule. Preserve production-template, mature-product and delivered-artifact identities through any supported conversion.
+- [ ] **M13.3** Add independent checks for molecular identity, layout, translation where applicable, chemistry, target/deployment compatibility and required host dependencies. Multi-molecule acceptance requires explicit composition and co-delivery support; a shared manifest alone cannot satisfy it.
+- [ ] **M13.4** Define a separate candidate-generation and checking mode for new combinations within the supported design family. Preserve exact-reference equality as a regression oracle while checking generated candidates against their own source/layout authority, model applicability and property obligations. Keep unsupported sequence optimization disabled and invalidate affected analyses after every allowed transformation.
+- [ ] **M13.5** Export the sequence with its complete structured molecular specification and a manufacturing handoff contract. Record relevant product constraints and links for later material identity, quality and potency evidence. Nominal design identity, actual lot identity and measured product variation remain distinct; physical manufacture stays external.
+
+**Acceptance:** the profile emits a complete molecular candidate with no unexplained regions or inferred chemistry, and an independent checker reconciles it with the frozen requirements and evidence. CDS-only records cannot pass complete-payload scope. Sequence equality, structural completeness and predicted biological function remain separate results.
+
+## M14 — Connect intent to one reproducible human compilation workflow
+
+**Priority:** P0, first end-to-end software milestone. **Primary modules:** `compiler/`, `verification/`, `artifacts/`, `cli.py`, `examples/`, `tests/`, hosted CI.
+
+- [ ] **M14.1** Register the M10–M13 passes, dependency identities, independent validators and completion contract with the existing pass manager. Enable `cw.compile(...)` only for the implemented human profile; preserve useful diagnostics for all other requests.
+- [ ] **M14.2** Package frozen intent, human target, deployment contract, mechanism/components, complete molecular specification, source/observation maps, model and evidence locks, alternatives considered and unresolved obligations. Report artifact identity, structural completeness, model support, empirical support and external clinical-use status independently.
+- [ ] **M14.3** Demonstrate that supported changes to source requirements cause an appropriate implementation change or explained rejection. Include a supported alternative within the admitted design family to distinguish synthesis from unconditional reference replay. Reconstruct the same frozen build offline and verify deterministic core identities.
+- [ ] **M14.4** Extend independent integration and mutation checks for wrong human context, non-human substitution, delivery mismatch, missing regions, chemistry edits, altered parameters, broken observation maps, prohibited responses and stale evidence. Preserve all existing software regression gates and their scoped claims.
+- [ ] **M14.5** Ship an end-to-end example and clear profile documentation after required hosted package/test/example/CLI checks pass. Record the exact tested revision, platform, profile and evidence versions. A locally drafted schema or demonstration against invented data cannot complete the human realization profile.
+
+**Acceptance:** a frozen, supported human intent request produces a reproducible complete molecular candidate through checked passes, with traceable implementation choices and independently supported modeled claims. Required evidence gaps prevent the corresponding completion claim. Computational acceptance never grants permission for patient administration.
+
+## M15 — Evaluate predictions and close the experimental evidence loop
+
+**Priority:** P0 for the first profile's predictive claims; evaluation design starts in M11. **Primary modules:** `models/`, `verification/`, `registry/`, `interop/`, `artifacts/`.
+
+- [ ] **M15.1** Predeclare prediction endpoints, tolerances, relevant variability, prohibited outcomes and the independence criteria for evaluation. Where feasible, freeze predictions before inspecting the evaluation results. Distinguish retrospective reproduction, held-out prediction and prospective evaluation.
+- [ ] **M15.2** Ingest independently generated published or externally supplied experimental results with exact construct, chemistry, delivery, material and human-context identities. Record assay uncertainty, negative outcomes and applicability limitations. Record any new experiment needed as an external evidence dependency; software work does not imply laboratory access or execution.
+- [ ] **M15.3** Compare predictions with independent observations, retain failures and unsupported conditions, and update component/model applicability. Prevent shared calibration/validation data or model-generated labels from becoming independent biological validation.
+- [ ] **M15.4** Track how sequence, formulation, manufacturing/material identity, model parameters and context changes affect evidence reuse. Support reviewed updates, withdrawal of unsupported claims and fresh reconstruction of dependent builds. Keep clinical-use status tied to external authority rather than a computed compiler PASS.
+- [ ] **M15.5** Publish a bounded evaluation record for the first complete workflow, including what transfers to human in vivo use and what remains unknown. Update source requirements, model/profile versions and component admission when the evidence requires it.
+
+**Acceptance:** independent results test the declared predictions and drive reviewable changes or a justified retention of the profile. Missing measurements or failed predictions remain visible and block affected claims. The milestone is not complete merely because an ingestion API or an evaluation plan exists.
+
+## M16 — Expand supported human profiles and implementation choices
+
+**Priority:** P1 after the first complete workflow and its required evaluation. **Primary modules:** the affected frontend, semantics, models, registry, synthesis, backends and interoperation modules.
+
+- [ ] **M16.1** Add a second independently reviewed human benchmark and supported context to expose assumptions specific to the first implementation. Require its own evidence and completion contract without scattering benchmark-specific exceptions throughout the compiler.
+- [ ] **M16.2** Extend timing, memory, quantitative control, population distributions, spatial interactions and feedback through separately specified profiles. Retain the essential bounded uncertainty and population checks already required by M10/M12; broader coverage requires new evidence.
+- [ ] **M16.3** Add further RNA/DNA delivered-molecule classes and delivery contexts with separate completeness, conversion and applicability rules. Expression payloads and genome-editing implementations have distinct obligations; adding an alphabet does not implement either class.
+- [ ] **M16.4** Introduce broader search and sequence optimization only with checked transformations, hard-constraint preservation, uncertainty-aware evaluation and transitive revalidation. Report supported alternatives and search limits without claiming a unique or globally optimal biological solution.
+- [ ] **M16.5** Add SBOL/SBML or other interchange adapters when needed for admitted workflows. Test that round trips preserve required meaning, units, molecular features and provenance; external formats do not replace compiler contracts or evidence.
+
+**Acceptance:** each extension has a frozen scope, independent evidence, positive and failure examples, and required hosted validation. Completion of one profile does not imply general human-cell simulation, arbitrary therapeutic compilation or universal portability across patients.
+
 ## Current implementation evidence
 
 The following milestones are implemented for their narrow supported profiles:
@@ -219,19 +344,18 @@ The following milestones are implemented for their narrow supported profiles:
 
 The existing hosted Python 3.11/3.14 package, test, example and CLI gates are retained and include all integrated component, construct, exact-CDS and packaged-reference examples, plus installed CLI build/inspect/reconstruction and retained failure evidence. They run the bounded verification example and retain its exploration/reduced-counterexample JSON evidence. They also run molecular correspondence and payload-readiness examples and retain explicit UNKNOWN, structural readiness and mutation-rejection records. Each run reports the exact Git revision and platform. Detailed tests are under `tests/test_build_request.py`, `test_pipeline*.py`, `test_checked_pipeline.py`, `test_references.py`, `test_synthetic_generation.py`, `test_construct*.py`, `test_molecular*.py`, `test_payload_profiles.py`, `test_m9_admission_audit.py` and `test_sequence*.py`.
 
-The next M9 gates are a **context-matched calibrated model with independent validation** and an **independently reviewed complete-molecule reference**. The source review lists the concrete missing inputs. Once those gates are met, implement the corresponding adapter and completion profile with fresh checks. Temporal synthetic operators remain a separately specified extension.
+M10.1 is implemented and validated within its target-declaration scope; M10.2–M10.6 and M11–M16 remain planned. The next engineering gate is a **measurable human behavior and deployment contract using the versioned target**; the accompanying scientific gates are a **human-context model with independent evaluation** and an **independently reviewed complete-molecule reference**. The source review lists the previously identified missing inputs. The new human benchmark audit must reassess those leads against M10/M11 rather than inheriting murine applicability. Temporal synthetic operators remain a separately specified extension and do not establish molecular timing.
 
-## Suggested implementation PRs
+## Next implementation sequence
 
-1. **Authoritative request and binding verification:** M1 plus M8.1; freeze current gap as a regression and close it.
-2. **Reference curation:** M0, in parallel with PR 1; review expected artifacts before emitter implementation.
-3. **Checked pass manager:** M2; enforce dependencies and status/freshness rules.
-4. **Automatic synthetic candidate generation:** M3.1–M3.4 plus the minimal M4 synthetic catalog; defer temporal operators until independently specified.
-5. **Component contracts and linker:** remaining M4, with domain/provider/resource failures tested.
-6. **Construct and exact CDS backends:** M5–M6, using the reviewed FAP references and independent mutation tests.
-7. **Reproducible packaged reference build:** M7 and the applicable M8 gates; document one-command behavior and remaining obligations.
-8. **Molecular behavior adapters and full-payload references:** M9, each as a separately scoped change.
+1. **Human profile and evidence audit:** build on the completed M10.1 contract to define M10.2–M10.3 with M11.1 candidate review, then implement M10 admission and requirement checks. Deliver a reviewable profile decision and explicit missing-evidence inventory before choosing mechanisms.
+2. **Reference and evidence ingestion:** M11, including complete-molecule curation, independent review and calibration/evaluation separation. Link source-limited results without promoting unsupported claims.
+3. **Biological adapter and component catalog:** M12. Reproduce and independently evaluate the selected model, characterize supported components, then implement bounded selection and required uncertainty/prohibited-behavior checks.
+4. **Complete molecular backend:** M13. Reproduce the whole reference, introduce separately checked candidate construction, and preserve chemistry, delivery and manufacturing handoff obligations.
+5. **Supported intent-root compilation:** M14 with M8 integration/mutation checks. Enable one explicit `compile()` profile only after all required acceptance gates pass and hosted validation is recorded.
+6. **Prediction assessment and feedback:** M15, with evaluation planning started during M11. Incorporate independent results and update applicability before declaring predictive support or expanding affected claims.
+7. **Second benchmark and broader profiles:** M16. Extend only the supported behaviors, contexts, modalities and transformations that have their own evidence and completion gates.
 
-For each PR, update task checkboxes only for completed work, list relevant acceptance evidence, preserve existing tests and record the tested revision/platform. Documentation-only planning does not complete an implementation milestone. Follow the [native build policy](../AGENTS.md#native-build-storage) if Rust is introduced; local native builds remain opt-in.
+For each PR, update task checkboxes only for completed work, list relevant acceptance evidence, preserve existing tests and record the tested revision/platform. Split larger milestones into coherent reviewable changes without marking a biological gate complete for an interface, schema or plan alone. Preserve all existing completion states and note which new scope is being implemented. Documentation-only planning does not complete an implementation milestone. Follow the [native build policy](../AGENTS.md#native-build-storage) if Rust is introduced; local native builds remain opt-in.
 
 See [architecture](architecture.md), [Behavior semantics](behavior-semantics-v0.1.md), [realization checking](realization-checking-v0.1.md) and [cross-layer contracts](toolchain-contracts.md) for the governing designs.

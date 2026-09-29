@@ -224,7 +224,14 @@ from cellweave.semantics.evaluator import (
     SignalSample,
     evaluate,
 )
-from cellweave.semantics.context import PayloadFormat, TargetContext
+from cellweave.semantics.context import HumanTargetContext, PayloadFormat, TargetContext
+from cellweave.semantics.human_target import (
+    HumanHostDependency,
+    HumanOperatingCondition,
+    HumanTargetContract,
+    TargetClaim,
+    TargetEvidence,
+)
 from cellweave.semantics.realization import (
     BehaviorContract,
     InputDomain,
@@ -262,6 +269,12 @@ from cellweave.verification.realization import (
 )
 
 __all__ = [
+    "HumanTargetContext",
+    "HumanTargetContract",
+    "HumanHostDependency",
+    "HumanOperatingCondition",
+    "TargetClaim",
+    "TargetEvidence",
     "PayloadFeature",
     "PayloadMolecule",
     "PayloadReference",

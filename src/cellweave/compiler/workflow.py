@@ -17,7 +17,7 @@ from cellweave.errors import (
 )
 from cellweave.ir.intent import IntentProgram, freeze_json, thaw_json
 from cellweave.frontend.expressions import _constant_value
-from cellweave.semantics.context import PayloadFormat, TargetContext
+from cellweave.semantics.context import HumanTargetContext, PayloadFormat, TargetContext
 from cellweave.semantics.types import (
     Curve,
     Interval,
@@ -314,6 +314,8 @@ def plan(program: IntentProgram, *, profile: BuildProfile) -> RealizationPlan:
                 )
             )
     unresolved.extend(_profile_choices(program))
+    if isinstance(profile.target, HumanTargetContext):
+        unresolved.append(_human_target_choice())
     unresolved.append(
         DesignChoice(
             "molecular_backend_unavailable",
@@ -321,6 +323,13 @@ def plan(program: IntentProgram, *, profile: BuildProfile) -> RealizationPlan:
         )
     )
     return RealizationPlan(program, profile, bindings, tuple(unresolved))
+
+
+def _human_target_choice():
+    return DesignChoice(
+        "human_target_applicability_unestablished",
+        "Human target declarations and evidence citations require independent applicability review; the target contract grants no biological or payload admission.",
+    )
 
 
 def compile(design: RealizationPlan | BuildRequest | RealizationRequest) -> None:
@@ -336,6 +345,8 @@ def compile(design: RealizationPlan | BuildRequest | RealizationRequest) -> None
             design.build_request if isinstance(design, RealizationRequest) else design
         )
         diagnostics = list(_profile_choices(request.intent))
+        if isinstance(request.target, HumanTargetContext):
+            diagnostics.append(_human_target_choice())
         if request.artifact_scope == "complete_payload":
             diagnostics.append(
                 DesignChoice(

@@ -88,6 +88,10 @@ jobs:
         run: |
           cellweave --version
           cellweave architecture
+      - name: Record and inspect unresolved human target contract
+        run: |
+          python examples/human_target.py --output generated/human-target-ci
+          cellweave inspect generated/human-target-ci/human-target.json
       - name: Import scaffold interfaces
         run: |
           python -c "from cellweave.compiler.passes import CompilerPass, PassResult; from cellweave.semantics.context import TargetContext; from cellweave.verification.evidence import Obligation"
