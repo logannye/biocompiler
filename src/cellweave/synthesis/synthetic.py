@@ -34,7 +34,7 @@ from cellweave.verification.realization import (
 )
 
 GENERATOR_VERSION = "cellweave.synthetic.generator.v0.1"
-SYNTHETIC_CHECKER_VERSION = "cellweave.synthetic.acceptance.v0.1"
+SYNTHETIC_CHECKER_VERSION = "cellweave.synthetic.acceptance.v0.2"
 
 
 def _identity(value, label):
@@ -680,21 +680,4 @@ def check_synthetic_candidate(
         frames,
         until=until,
     )
-    result = replace(result, dependencies=dependencies)
-    if result.outcome == CheckOutcome.PASS:
-        missing = tuple(
-            CheckDiagnostic(
-                "unexercised_inactive_response",
-                "No inactive response deadline was exercised for this requirement.",
-                item.requirement_id,
-            )
-            for item in result.coverage
-            if item.inactive_deadlines_checked == 0
-        )
-        if missing:
-            return replace(
-                result,
-                outcome=CheckOutcome.UNKNOWN,
-                diagnostics=result.diagnostics + missing,
-            )
-    return result
+    return replace(result, dependencies=dependencies)

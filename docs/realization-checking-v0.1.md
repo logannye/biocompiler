@@ -18,7 +18,7 @@ flowchart LR
     CHECK --> R[Outcome, counterexamples,<br/>coverage, dependency identities]
 ```
 
-The candidate cannot choose its own acceptance criteria. The checker runs the reference evaluator and model separately, checks their observation mapping, and evaluates the supplied response contracts. Candidate generation remains a future responsibility of `synthesis`.
+The candidate cannot choose its own acceptance criteria. The checker runs the reference evaluator and model separately, checks their observation mapping, and evaluates the supplied response contracts. Automatic candidate generation is implemented for the separately scoped combinational synthetic profile in `synthesis`; temporal candidate generation remains unsupported.
 
 ## Python entry points
 
@@ -99,7 +99,7 @@ The initial checker evaluates a **finite supplied history**, including internal 
 | `unknown` | The history or assumptions are insufficient, outside the domain, or leave response obligations unexercised or unfinished. |
 | `unsupported` | The request uses semantics the checker cannot interpret. |
 
-A passing outcome is model-conditional evidence. It is neither proof for all possible histories nor empirical support for a biological implementation. An inactive history cannot establish required responsiveness. In particular, a silent implementation fails when an exercised response deadline passes; an unexercised response is unknown.
+A passing outcome is model-conditional evidence. It is neither proof for all possible histories nor empirical support for a biological implementation. An inactive history cannot establish required responsiveness, and an active-only history cannot establish shutdown. A passing result requires both active and inactive deadlines for every requirement, with no incomplete episodes. A silent implementation fails when an exercised response deadline passes; either unexercised response is unknown. This rule is enforced by the public checker and by strict result deserialization, not only by a synthesis wrapper.
 
 After a desired state transition, the applicable delay defines the deadline for reaching the corresponding range. The checker enforces the range after that deadline while the desired state continues. It checks model transition times as well as deadlines so a temporary deviation between external snapshots is not missed. Short or truncated episodes that do not expose a response obligation cannot establish full coverage.
 
@@ -119,4 +119,21 @@ These identities prevent accidental reuse, not malicious certificate forgery. Se
 
 New operators need an independent reference meaning, validation rules, model execution semantics, and adversarial preservation tests. New adapters must declare applicability, units, observation meaning, uncertainty, dependencies, and whether their trajectory is complete or sampled. Unsupported cases must stay explicit.
 
-The next obligations include uncertainty and population quantifiers; calibration provenance; continuous dynamics and solver error; assumption composition and shared-resource constraints; a host/payload dependency linker; component selection; construct semantics; and DNA/RNA encoding. The [toolchain contract matrix](toolchain-contracts.md) keeps these separate from the implemented finite-trace checks.
+The remaining obligations include uncertainty and population quantifiers, calibration provenance, continuous dynamics and solver error, calibrated biological composition and complete-payload realization. Declared component composition, offline linking, single-CDS construct assembly and exact DNA/RNA reference encoding now have separate checked profiles. The [toolchain contract matrix](toolchain-contracts.md) keeps these separate from the implemented finite-trace checks.
+
+## Verification hardening in M8
+
+The realization checker and synthetic acceptance versions are now `v0.2` to record
+the shared active-and-inactive coverage policy. Historical results with only active
+coverage cannot be imported as passing under the current result invariants.
+`exercised_requirement_ids` identifies requirements with both kinds of deadline
+checked; the individual coverage counts remain available.
+
+The [semantic matrix](semantic-regression-matrix-v0.1.md) tests cross-operator time
+and object-identity boundaries using literal expected timelines. The
+[exploration tools](verification-exploration-v0.1.md) add explicitly bounded input
+spaces, deterministic adversarial histories and failure-preserving reduction.
+These are regression and exploration records, not a broader evidence kind or an
+unqualified proof over arbitrary time, inputs or biology. The
+[independence audit](verification-independence-v0.1.md) records shared declarations,
+separate execution paths and the precise rejection gates exercised by mutations.

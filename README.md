@@ -147,6 +147,14 @@ cellweave reference-build --alphabet RNA --reference-dir data/references/fap_car
 
 The package preserves the frozen reference request, accepted component/construct/molecular stages, source evidence, exact CDS, checks and unresolved obligations. It publishes one archive atomically and supports independent offline reconstruction using a separately retained request or build fingerprint. Machine paths and timestamps stay outside the canonical build identity. Complete-payload and biological-performance claims remain unresolved. See [reference builds](docs/reference-build-v0.1.md).
 
+## Explore a bounded verification profile
+
+```sh
+PYTHONPATH=src python examples/verification_campaign.py --output generated/verification
+```
+
+The campaign checks all 625 histories in a declared two-contact Boolean input space, adds deterministic adversarial cases and reduces a delayed-model failure while preserving its selected counterexample. Reports retain explicit time/state bounds, fixed suffixes, per-history coverage and dependencies. Passing remains bounded model-conditional evidence. See [exploration](docs/verification-exploration-v0.1.md), the [semantic matrix](docs/semantic-regression-matrix-v0.1.md) and [independence audit](docs/verification-independence-v0.1.md).
+
 ## Repository layout
 
 ```text

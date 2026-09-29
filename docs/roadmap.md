@@ -2,7 +2,7 @@
 
 This roadmap turns the current semantic foundation into a reproducible compiler path, using **exact, published coding-sequence (CDS) references** for the first molecular benchmarks. Completed tasks below identify implemented, scoped capabilities; unchecked tasks remain planned work. This is the authoritative roadmap. Task IDs are stable so implementation PRs can cite them and mark individual items complete.
 
-Implementation foundation updated on 2026-09-29, with M7 developed from commit `1eac314` (checked exact DNA/RNA CDS emission):
+Implementation foundation updated on 2026-09-29, with M8 developed from commit `0f14d87` (reproducible offline reference packages):
 
 | Boundary | Current implementation | Next responsibility |
 | --- | --- | --- |
@@ -172,15 +172,17 @@ Implemented scope: a component-root `ReferenceBuildRequest` packages the frozen 
 **Primary modules:** `tests/`, `verification/`, `models/`, `semantics/evaluator.py`; retain the existing tests and hosted release checks.
 
 - [x] **M8.1** Add the M1 binding-tamper regression first, including an independently specified expected request. Extend tamper tests to contexts, contracts, reference choices and evidence dependencies.
-- [ ] **M8.2** Maintain a semantic regression matrix for same/different contacted objects, sustained/transient inputs, simultaneous/ordered events, memory resets/expiry and repeated triggers. Include boundaries between snapshots and exact deadlines.
-- [ ] **M8.3** Generate adversarial histories with deterministic seeds and minimal counterexample reduction. Cover rapid oscillation, contact removal/reappearance, startup-active inputs and incomplete observation histories.
-- [ ] **M8.4** Add metamorphic checks where semantics permit them: consistent object renaming, serialization round trips, reordered independent declarations and redundant unchanged snapshots that introduce no event. State the preconditions for each equivalence.
-- [ ] **M8.5** Add bounded exhaustive checking for a small finite profile. Record explored bounds, state/input space and coverage separately from ordinary finite-trace results.
-- [ ] **M8.6** Audit independence between transformations and validators. Use separately specified expected behavior/reference artifacts so a shared normalization bug cannot validate itself. Avoid duplicating entire runtimes merely to add another nominal checker.
-- [ ] **M8.7** Mutation-test the obligations that matter: incorrect bindings, scope changes, silent responses, shifted deadlines, stale dependencies, wrong component order and changed bases must be caught by the intended check.
-- [ ] **M8.8** Keep exact structural checks, model-conditional checks and empirical evidence separately reported. Exercise required active and inactive responses; unexercised coverage must not become a passing realization result.
+- [x] **M8.2** Maintain a semantic regression matrix for same/different contacted objects, sustained/transient inputs, simultaneous/ordered events, memory resets/expiry and repeated triggers. Include boundaries between snapshots and exact deadlines.
+- [x] **M8.3** Generate adversarial histories with deterministic seeds and minimal counterexample reduction. Cover rapid oscillation, contact removal/reappearance, startup-active inputs and incomplete observation histories.
+- [x] **M8.4** Add metamorphic checks where semantics permit them: consistent object renaming, serialization round trips, reordered independent declarations and redundant unchanged snapshots that introduce no event. State the preconditions for each equivalence.
+- [x] **M8.5** Add bounded exhaustive checking for a small finite profile. Record explored bounds, state/input space and coverage separately from ordinary finite-trace results.
+- [x] **M8.6** Audit independence between transformations and validators. Use separately specified expected behavior/reference artifacts so a shared normalization bug cannot validate itself. Avoid duplicating entire runtimes merely to add another nominal checker.
+- [x] **M8.7** Mutation-test the obligations that matter: incorrect bindings, scope changes, silent responses, shifted deadlines, stale dependencies, wrong component order and changed bases must be caught by the intended check.
+- [x] **M8.8** Keep exact structural checks, model-conditional checks and empirical evidence separately reported. Exercise required active and inactive responses; unexercised coverage must not become a passing realization result.
 
 **Acceptance:** each milestone has a focused positive case and failure cases that would catch plausible compiler bugs. Passing a bounded suite reports its bounds; it does not claim correctness throughout an unexamined biological operating domain.
+
+Implemented M8 profile: 25 literal semantic timelines and five metamorphic invariant groups; deterministic seeded histories and deletion-1-minimal counterexample reduction; explicit bounded exploration reports with capped-prefix versus complete enumeration status; an eight-mutation audit with intended diagnostics; and shared active/inactive coverage enforcement. The standard example explores 25 contact states at two variable times (625 histories), with separately recorded active/inactive suffix and finite horizon. UNKNOWN remains distinct from failure. See [semantic matrix](semantic-regression-matrix-v0.1.md), [exploration](verification-exploration-v0.1.md) and [independence audit](verification-independence-v0.1.md).
 
 ## M9 — Connect molecular behavior and expand beyond CDS references
 
@@ -206,11 +208,11 @@ The following milestones are implemented for their narrow supported profiles:
 - **M5:** [single-CDS construct assembly](reference-construct-pipeline-v0.1.md), frozen layout authority, source/requirement correspondence and independent structural/reference checking.
 - **M6:** [exact DNA/RNA CDS emission](exact-cds-pipeline-v0.1.md), independent nucleotide/protein comparisons, explicit feature uncertainty, encoding invalidation and identity-preserving FASTA/JSON export.
 - **M7:** [portable reference builds](reference-build-v0.1.md), strict canonical manifests/archives, independent offline reconstruction, run-metadata separation and atomic failure preservation.
-- **Continuous M8:** binding and dependency tampering, wrong-object candidates, serialization, source mutation, synonymous/missense/truncated sequence changes, export mutation, and 256 two-object Boolean transition histories are exercised. This bounded set is not whole-profile exhaustive or biological validation.
+- **M8:** [cross-operator semantic matrix](semantic-regression-matrix-v0.1.md), preconditioned metamorphic checks, [explicit bounded exploration and seeded adversarial histories](verification-exploration-v0.1.md), failure-preserving deletion reduction, and an [independence/mutation audit](verification-independence-v0.1.md). The shared checker requires both active and inactive deadlines. The 625-history presence-aware campaign states its fixed suffix and finite time grid; earlier 256-transition and cross-layer mutation tests remain. These bounds do not establish universal or biological validity.
 
-The existing hosted Python 3.11/3.14 package, test, example and CLI gates are retained and include all integrated component, construct, exact-CDS and packaged-reference examples, plus installed CLI build/inspect/reconstruction and retained failure evidence. Each run reports the exact Git revision and platform. Detailed tests are under `tests/test_build_request.py`, `test_pipeline*.py`, `test_checked_pipeline.py`, `test_references.py`, `test_synthetic_generation.py`, `test_construct*.py`, `test_molecular*.py` and `test_sequence*.py`.
+The existing hosted Python 3.11/3.14 package, test, example and CLI gates are retained and include all integrated component, construct, exact-CDS and packaged-reference examples, plus installed CLI build/inspect/reconstruction and retained failure evidence. They also run the bounded verification example and retain its exploration/reduced-counterexample JSON evidence. Each run reports the exact Git revision and platform. Detailed tests are under `tests/test_build_request.py`, `test_pipeline*.py`, `test_checked_pipeline.py`, `test_references.py`, `test_synthetic_generation.py`, `test_construct*.py`, `test_molecular*.py` and `test_sequence*.py`.
 
-The next implementation milestone is **M8 verification hardening across the supported profiles**; M9 molecular behavior and full-payload profiles remain separate future work. Temporal synthetic operators remain a separately specified extension.
+The next implementation milestone is **M9 molecular behavior contracts and broader payload profiles**, starting with an explicitly supported behavior-to-molecular contract and its evidence requirements. Temporal synthetic operators remain a separately specified extension.
 
 ## Suggested implementation PRs
 

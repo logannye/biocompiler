@@ -1,7 +1,20 @@
 """Author inspectable therapeutic programs for in-vivo immune-cell engineering."""
 
-__version__ = "0.1.0.dev8"
+__version__ = "0.1.0.dev9"
 
+from cellweave.verification.exploration import (
+    AdversarialConfig,
+    BooleanContactConfig,
+    BooleanObservation,
+    ExplorationReport,
+    FailureSignature,
+    HistoryCase,
+    ReductionResult,
+    enumerate_boolean_histories,
+    explore_boolean_histories,
+    generate_adversarial_histories,
+    reduce_counterexample,
+)
 from cellweave.artifacts.manifest import (
     BuildManifest,
     ReferenceBuildRequest,
@@ -221,6 +234,17 @@ from cellweave.verification.realization import (
 )
 
 __all__ = [
+    "AdversarialConfig",
+    "BooleanContactConfig",
+    "BooleanObservation",
+    "ExplorationReport",
+    "FailureSignature",
+    "HistoryCase",
+    "ReductionResult",
+    "enumerate_boolean_histories",
+    "explore_boolean_histories",
+    "generate_adversarial_histories",
+    "reduce_counterexample",
     "BuildManifest",
     "ReferenceBuildRequest",
     "ReferencePackage",

@@ -97,3 +97,21 @@ Molecular artifacts distinguish canonical sequence hashes from complete artifact
 `ReferenceBuildRequest` is the frozen authority for the supported component-root CDS profile. The manifest pins its request, all accepted stage records, retained references, selected components and current tools. The package retains feature/source maps, exact sequence, checks and unresolved full-payload/biology obligations. An upstream intent `BuildRequest` and behavioral realization are absent and explicitly unclaimed.
 
 Canonical build identity excludes optional timestamps, machine labels and host locations. Core source paths are logical relative names. A strict canonical ZIP container supports identical relocated/repeated builds; fresh verification reconstructs the offline inputs against separately retained request/build authority and compares all records with current checks. Single-file atomic publication exposes either the prior complete archive or the new complete archive. See [reference builds](reference-build-v0.1.md).
+
+## Bounded verification and independence
+
+The verification layer keeps per-history model-conditional evidence separate from
+exploration records. Boolean contact exploration states its object IDs, observation
+fields, variable snapshot times, fixed suffix and finite horizon. Completion means
+that declared finite space was visited; it does not cover arbitrary real-valued
+times, unbounded object populations or biological dynamics. Seeded adversarial
+histories and deletion-based counterexample reduction retain UNKNOWN outcomes and
+the chosen failure signature.
+
+The reference evaluator, synthetic runner and exact-reference checker have
+independently exercised execution paths. Shared typed declarations and policy
+schemas are documented explicitly, and mutation tests check intended rejection
+signatures. Passing response evidence requires exercised active and inactive
+deadlines with no unfinished episodes. See [exploration](verification-exploration-v0.1.md),
+[semantic matrix](semantic-regression-matrix-v0.1.md) and
+[independence audit](verification-independence-v0.1.md).

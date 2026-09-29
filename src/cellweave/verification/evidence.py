@@ -485,10 +485,11 @@ class CheckResult:
                 set(coverage_ids) == known
                 and all(
                     item.activation_deadlines_checked > 0
+                    and item.inactive_deadlines_checked > 0
                     and item.incomplete_episode_count == 0
                     for item in self.coverage
                 ),
-                "A passing result requires exercised complete response coverage.",
+                "A passing result requires exercised active and inactive deadlines and complete response coverage.",
             )
 
     @property
@@ -501,6 +502,7 @@ class CheckResult:
             item.requirement_id
             for item in self.coverage
             if item.activation_deadlines_checked > 0
+            and item.inactive_deadlines_checked > 0
         )
 
     def freshness(self, current: DependencySnapshot) -> FreshnessReport:

@@ -46,6 +46,20 @@ jobs:
           cellweave reference-build --alphabet RNA --reference-dir data/references/fap_car --output generated/reference-ci/rna.cwb > generated/reference-ci/build.json 2> generated/reference-ci/build.log
           cellweave reference-inspect generated/reference-ci/rna.cwb > generated/reference-ci/inspect.json
           python -c "import json, pathlib, subprocess; identity = json.loads(pathlib.Path('generated/reference-ci/build.json').read_text())['build_fingerprint']; subprocess.run(['cellweave', 'reference-verify', 'generated/reference-ci/rna.cwb', '--expected-build', identity], check=True)" > generated/reference-ci/verify.json 2> generated/reference-ci/verify.log
+      - name: Run bounded verification and preserve counterexample evidence
+        run: |
+          mkdir -p generated/verification-ci
+          python examples/verification_campaign.py --output generated/verification-ci > generated/verification-ci/campaign.log 2>&1
+          cat generated/verification-ci/campaign.log
+          cellweave inspect generated/verification-ci/bounded-report.json > generated/verification-ci/inspection.json
+      - name: Retain verification campaign evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: verification-evidence-python-${{ matrix.python-version }}
+          path: generated/verification-ci/
+          if-no-files-found: ignore
+          retention-days: 7
       - name: Retain reference build failure evidence
         if: failure()
         uses: actions/upload-artifact@v4
