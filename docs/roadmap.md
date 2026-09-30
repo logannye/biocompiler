@@ -1,5 +1,7 @@
 # Development roadmap
 
+For a fresh session starting at M11.1, read the [session handoff](session-handoff.md).
+
 biocompiler's intended function is to compile an immune-cell engineer's Python therapeutic intent into an **exact, complete RNA or DNA molecular specification for in vivo deployment in a human patient**. The nucleotide sequence is the primary output, accompanied by the molecular features, deployment assumptions and evidence needed to interpret it. Physical manufacture, administration and clinical authorization remain external activities; their relevant constraints must inform compilation.
 
 This is the authoritative development roadmap, revised on **2026-09-29** around complete, narrowly supported human workflows. Completed tasks identify implemented, scoped capabilities; unchecked tasks remain planned work. Existing M0–M9 IDs and completion evidence are retained. M10–M16 separate the remaining scientific and engineering obligations into reviewable milestones. M10.1–M10.6 now implement human target declarations, bounded conditional secretion, frozen deployment, unified required/prohibited observation contracts, enforced human-profile admission and proposed-profile request cases with explicit completion scope; they promote no reference or biological claim.
