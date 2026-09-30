@@ -5,7 +5,12 @@
 Updated **2026-09-30 (America/Los_Angeles)**. Version `0.1.0.dev15` implements
 three further code-only extensions: M4.8 executable temporal component composition,
 M8.9 reusable mixed-input verification workflows, and M3.7 bounded implementation
-selection. Hosted validation is pending before the roadmap items close.
+selection in [PR #22](https://github.com/logannye/biocompiler/pull/22).
+All three roadmap items are complete. [Hosted validation](https://github.com/logannye/biocompiler/actions/runs/36732519868)
+passed all 884 tests, package installation, examples, installed CLI commands and
+reference/synthetic/component reconstruction on Python 3.11.16 and 3.14.7,
+Linux x86_64. The roadmap records the exact tested revision and platform.
+No local native build was used.
 
 The integrated `examples/synthetic_design.py` freezes an operator constraint,
 selects a checked alternate graph, reconstructs a Components package and checks
@@ -50,8 +55,9 @@ requires independent full request/build authority and reruns current checks.
 Examples use portable logical source paths and require no external data.
 
 The default combinational profile remains supported. Temporal component
-composition, `recently`, `followed_by`, arbitrary state assignments, quantitative
-biological modeling and human therapeutic compilation remain unsupported.
+composition was outside PR #21's scope and is now implemented by M4.8 above.
+`recently`, `followed_by`, arbitrary state assignments, quantitative biological
+modeling and human therapeutic compilation remain unsupported.
 M11.2–M11.6 remain open. The separately reviewed partial source-reconciliation
 work is in [PR #20](https://github.com/logannye/biocompiler/pull/20); this code-only
 branch starts from the merged M11.1 baseline and does not depend on that PR.

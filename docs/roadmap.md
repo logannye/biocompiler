@@ -1,6 +1,6 @@
 # Development roadmap
 
-For the M10 closing context, read the [session handoff](session-handoff.md).
+For the current resumption point and prior milestones, read the [session handoff](session-handoff.md).
 The [M11.1 audit](m11-human-benchmark-audit.md) records the current candidate
 comparison and explicit therapeutic-benchmark deferral. M11.1 is complete within
 that audit scope; M11.2–M11.6 remain open. A separate code-only track adds
@@ -8,7 +8,7 @@ that audit scope; M11.2–M11.6 remain open. A separate code-only track adds
 [reproducible synthetic packages](synthetic-build-v0.1.md), without waiting for
 external biological evidence or changing therapeutic admission.
 
-The next software extensions are [executable temporal composition](temporal-components-v0.1.md),
+The completed software extensions add [executable temporal composition](temporal-components-v0.1.md),
 [reusable verification workflows](synthetic-verification-v0.1.md) and
 [bounded implementation selection](synthetic-selection-v0.1.md). These preserve
 source authority, explicit implementation choices and independently checked
@@ -31,7 +31,7 @@ This is the authoritative development roadmap, revised on **2026-09-30** around 
 
 ## Current implementation boundary
 
-Implementation baseline: merged revision `42a76a760f91022c005151d792282afb09d467dd`, containing M0–M10 infrastructure and the M11.1 bounded evidence audit, extended by temporal synthetic generation and workflow packaging in implementation revision `1eac5c858b1fc4243900848169a503f8c6172a63`:
+Implementation baseline: merged revision `2d4629ab3e4b2f048038f81759b96e6274d4bf42`, containing M0–M10 infrastructure, the M11.1 bounded evidence audit and temporal synthetic generation/packaging, extended by executable composition, reusable verification and bounded implementation selection in implementation revision `2be77e52973ec5c8ff2b8bf388a18a57de88aeb2`:
 
 | Boundary | Current implementation | Next responsibility |
 | --- | --- | --- |
@@ -142,7 +142,7 @@ M0–M9 retain their historical scopes and open tasks. M8 verification continues
 - [x] **M3.5** Add temporal support only through separately specified operators and acceptance tests. The current synthetic `delay` delays both edges with inertial cancellation; it is not equivalent to `held_for`. Test rapid fall/re-rise histories before introducing sustained-input lowering.
 - [x] **M3.6** Extend supported patterns incrementally for pulses, simultaneous events, reset precedence and repeated triggers, with explicit startup/rearming semantics. Reject unsupported timing/state operators until their profile exists.
 
-- [ ] **M3.7 — code-only extension** Select between two explicitly bounded whole-program conjunction strategies under frozen allowed-operator/gate-count constraints. Independently check every eligible candidate before deterministic preference ranking; retain exact alternatives, costs and rejections. Separate exhausted, unknown, unsupported and selected outcomes; software gate count establishes no biological efficiency.
+- [x] **M3.7 — code-only extension** Select between two explicitly bounded whole-program conjunction strategies under frozen allowed-operator/gate-count constraints. Independently check every eligible candidate before deterministic preference ranking; retain exact alternatives, costs and rejections. Separate exhausted, unknown, unsupported and selected outcomes; software gate count establishes no biological efficiency.
 
 **M3.5–M3.6 completion:** The [temporal profile](synthetic-temporal-v0.1.md) adds uninterrupted `held_for`, onset events, condition/event-triggered pulses and permanent/bounded resettable memory. Independent timers preserve contact episodes, cell/contact aggregation order, exact deadlines and reset/set/expiry precedence. Tests use 21 existing literal semantic scenarios plus targeted boundaries, an explicitly bounded 81-history dwell campaign and timing mutants. `recently`, `followed_by`, finite-state assignments and quantitative output laws remain unsupported. Temporal component composition was outside PR #21's scope and is added by M4.8 below. [Hosted validation](https://github.com/logannye/biocompiler/actions/runs/36672243796) passed all 836 tests, package installation, existing and new examples, installed CLI commands and reference/synthetic reconstruction on Python 3.11.16 and 3.14.7, Linux x86_64 (`Linux-6.17.0-1022-azure-x86_64-with-glibc2.39`). Tested PR merge revision: `78c99b4810222c0aab8e44818ba4329a1a2fbdab`, containing implementation `1eac5c858b1fc4243900848169a503f8c6172a63` in [PR #21](https://github.com/logannye/biocompiler/pull/21). These are finite-history software-model results; no biological profile is admitted.
 
@@ -159,7 +159,7 @@ M0–M9 retain their historical scopes and open tasks. M8 verification continues
 - [x] **M4.5** Account for shared resource reservations across the composition, including units, provider capacity, reuse and relevant lifecycle. Define how unknown capacities are represented; absence of a measurement is not unlimited capacity.
 - [x] **M4.6** Lock registry/model/reference versions before acceptance; make resolution deterministic and runnable offline. Record alternatives considered and why a selection satisfies hard constraints before ranking preferences.
 - [x] **M4.7** Populate a minimal synthetic component catalog for M3 and a separately classified FAP CDS reference component for M5–M6. Encode only supported sequence identity/structure claims for the latter until a molecular behavioral contract exists.
-- [ ] **M4.8 — code-only extension** Carry temporal mechanisms into executable component assemblies with explicit event/level timing, canonical units, operator attributes, initialization and contact lifecycle. Reconstruct execution from actual locked records, ordered wiring and observation bindings without reading the source mechanism. Require structural linking and independent finite-history behavior, retain source correspondence, and explicitly package this further stage.
+- [x] **M4.8 — code-only extension** Carry temporal mechanisms into executable component assemblies with explicit event/level timing, canonical units, operator attributes, initialization and contact lifecycle. Reconstruct execution from actual locked records, ordered wiring and observation bindings without reading the source mechanism. Require structural linking and independent finite-history behavior, retain source correspondence, and explicitly package this further stage.
 
 **Acceptance:** compatible compositions link; incompatible meaning/scope/compartment, missing providers, unsupported domains, resource over-allocation and stale versions are rejected or explicitly unresolved. Circular assumption chains cannot establish their own guarantees.
 
@@ -227,9 +227,9 @@ Implemented scope: a component-root `ReferenceBuildRequest` packages the frozen 
 - [x] **M8.6** Audit independence between transformations and validators. Use separately specified expected behavior/reference artifacts so a shared normalization bug cannot validate itself. Avoid duplicating entire runtimes merely to add another nominal checker.
 - [x] **M8.7** Mutation-test the obligations that matter: incorrect bindings, scope changes, silent responses, shifted deadlines, stale dependencies, wrong component order and changed bases must be caught by the intended check.
 - [x] **M8.8** Keep exact structural checks, model-conditional checks and empirical evidence separately reported. Exercise required active and inactive responses; unexercised coverage must not become a passing realization result.
-- [ ] **M8.9 — code-only extension** Expose reusable JSON check/explore/reduce/replay workflows, including cell-local Boolean inputs alongside contact histories. Bind exact operation authority, bounds, suffix, horizon and budgets; retain nonpassing diagnostics and selected reduced failures independently of accepted builds. Reuse existing independent checkers and preserve finite enumeration/minimality limits.
+- [x] **M8.9 — code-only extension** Expose reusable JSON check/explore/reduce/replay workflows, including cell-local Boolean inputs alongside contact histories. Bind exact operation authority, bounds, suffix, horizon and budgets; retain nonpassing diagnostics and selected reduced failures independently of accepted builds. Reuse existing independent checkers and preserve finite enumeration/minimality limits.
 
-**Code-only design-loop implementation (M3.7/M4.8/M8.9):** [Selection](synthetic-selection-v0.1.md), [temporal composition](temporal-components-v0.1.md) and [verification workflows](synthetic-verification-v0.1.md) are integrated in `examples/synthetic_design.py`. A forbidden native conjunction selects the independently passing De Morgan implementation, packages checked Components and verifies 100 mixed reset/contact histories. A separate wrong-reset model produces a replayable reduced inactive-response failure. Current package version is `0.1.0.dev15`; changed schemas/tool versions require fresh reconstruction. Hosted validation is pending before closing these checkboxes.
+**Code-only design-loop completion (M3.7/M4.8/M8.9):** [Selection](synthetic-selection-v0.1.md), [temporal composition](temporal-components-v0.1.md) and [verification workflows](synthetic-verification-v0.1.md) are integrated in `examples/synthetic_design.py`. A forbidden native conjunction selects the independently passing De Morgan implementation, packages checked Components and verifies 100 mixed reset/contact histories. A separate wrong-reset model produces a replayable reduced inactive-response failure. Current package version is `0.1.0.dev15`; changed schemas/tool versions require fresh reconstruction. [Hosted validation](https://github.com/logannye/biocompiler/actions/runs/36732519868) passed all 884 tests, package installation, existing/new examples, installed CLI commands and reference/synthetic/component reconstruction on Python 3.11.16 and 3.14.7, Linux x86_64 (`Linux-6.17.0-1022-azure-x86_64-with-glibc2.39`). Tested PR merge revision: `adb6f8f935806d882f0c5d9444cabf967170fb8c`, containing implementation `2be77e52973ec5c8ff2b8bf388a18a57de88aeb2` in [PR #22](https://github.com/logannye/biocompiler/pull/22). No local native build was used. Completion covers the declared finite software profiles and does not admit biological models or human deployment.
 
 **Acceptance:** each milestone has a focused positive case and failure cases that would catch plausible compiler bugs. Passing a bounded suite reports its bounds; it does not claim correctness throughout an unexamined biological operating domain.
 
