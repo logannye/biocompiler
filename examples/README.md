@@ -1,5 +1,12 @@
 # Examples
 
+[circuit_sources.py](circuit_sources.py) demonstrates partial R1 source-metadata
+checks using non-biological fixtures. Run
+`PYTHONPATH=src python examples/circuit_sources.py --output generated/circuit-sources`.
+The inventory retains all scientific coverage as unresolved and shows how a case
+edit invalidates an existing metadata review. See the
+[source inventory guide](../docs/circuit-source-inventory-v0.1.md) for the CLI.
+
 [circuit_profile.py](circuit_profile.py) exercises the human immune target and
 separate illustrative human-reference context across all five scope boundaries.
 Run `PYTHONPATH=src python examples/circuit_profile.py --output generated/circuit-profile`.

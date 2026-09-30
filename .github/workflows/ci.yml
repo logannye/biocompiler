@@ -29,6 +29,21 @@ jobs:
         run: python -m unittest discover -s tests -v
       - name: Run authoring examples
         run: python examples/intent_programs.py
+      - name: Check offline circuit source metadata and unresolved gaps
+        run: |
+          python examples/circuit_sources.py --output generated/circuit-sources-ci
+          biocompiler circuit-sources-check --inventory generated/circuit-sources-ci/inventory.json --output generated/circuit-sources-ci/cli.assessment.json
+          biocompiler circuit-sources-verify generated/circuit-sources-ci/cli.assessment.json --expected-inventory generated/circuit-sources-ci/inventory.json
+          biocompiler inspect generated/circuit-sources-ci/cli.assessment.json
+          python -c "import subprocess; result = subprocess.run(['biocompiler', 'circuit-sources-check', '--inventory', 'generated/circuit-sources-ci/stale-review.inventory.json', '--output', 'generated/circuit-sources-ci/stale-cli.assessment.json']); assert result.returncode == 1, result.returncode"
+      - name: Retain source metadata evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: circuit-source-metadata-py${{ matrix.python-version }}
+          path: generated/circuit-sources-ci/
+          if-no-files-found: ignore
+          retention-days: 7
       - name: Check human circuit profile scope and independent authority
         run: |
           python examples/circuit_profile.py --output generated/circuit-profile-ci

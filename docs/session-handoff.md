@@ -1,6 +1,23 @@
 # Session handoff and current resumption point
 
-## Current resumption point — R0 human circuit contracts
+## Current resumption point — R0 merged; R1 metadata infrastructure partial
+
+R0 is merged as `651f1aeaebe4f92defd744aad60e2a171ae8c9f0`,
+[PR #27](https://github.com/logannye/biocompiler/pull/27), version `0.1.0.dev20`.
+Final hosted validation for its documentation head also passed in
+[run 36779542656](https://github.com/logannye/biocompiler/actions/runs/36779542656).
+
+The current R1 work is a partial `0.1.0.dev21` metadata layer, described in
+[source inventories](circuit-source-inventory-v0.1.md): strict document/case/review
+records, explicit coverage gaps, content-pin consistency, current-authority replay
+and Python/CLI examples. It supplies no reviewed publication corpus, source bytes,
+sequence extraction, complete molecular authority or biological observations.
+R1 is not complete and must not be merged as a completed milestone.
+
+The source-reconstruction research task was blocked by a safety control during
+this session. No alternative sequence-reconstruction route was attempted. The
+remaining work here is limited to general metadata/provenance infrastructure;
+the sequence-dependent completion gates remain open. R2–R13 were not implemented.
 
 Scope clarification, 2026-09-30: the sole product target is human DNA/RNA
 payloads for in-vivo immune-cell deployment. The plan and repository instructions

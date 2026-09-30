@@ -11,7 +11,10 @@ target/deployment path is required. Non-human targets and sequencing workflows
 are out of scope. R0 implements the [human circuit scope contract](human-circuit-profile-v0.1.md)
 in `0.1.0.dev20`; its [hosted validation](rna-circuit-reproduction-plan.md#r0--freeze-the-profile-and-completion-contracts)
 records the tested revision and platform.
-R1–R13 remain open. No therapeutic admission or molecular circuit generation is added.
+R1–R13 remain open. The [partial R1 metadata workflow](circuit-source-inventory-v0.1.md)
+preserves source gaps and checks declared relationships; it supplies no curated
+publication or complete-molecule authority. No therapeutic admission or molecular
+circuit generation is added.
 
 The [M11.1 audit](m11-human-benchmark-audit.md) records the current candidate
 comparison and explicit therapeutic-benchmark deferral. M11.1 is complete within

@@ -72,7 +72,10 @@ typed immune-recipient bindings, separate source context, independent claim
 dimensions and fresh assessment replay against the complete expected request.
 Original behavior/deployment/acceptance wrappers remain intact. The CLI exposes
 scope checking and verification; `compile(CircuitProfileRequest)` explicitly
-refuses molecular generation. R1–R13 remain unimplemented.
+refuses molecular generation. R1's [source metadata layer](circuit-source-inventory-v0.1.md)
+adds immutable document/case/review inventories and independent relationship
+checks. It does not retrieve source bytes or establish molecular/empirical
+authority. R1 remains partial; R2–R13 remain unimplemented.
 
 | Layer | Representation | Preservation obligation |
 | --- | --- | --- |

@@ -1,6 +1,13 @@
 """Author inspectable therapeutic programs for in-vivo immune-cell engineering."""
 
-__version__ = "0.1.0.dev20"
+__version__ = "0.1.0.dev21"
+
+from biocompiler.ir.circuit_sources import (
+    CircuitSourceCase, CircuitSourceInventory, SourceDocument, SourceGap, SourceReview,
+)
+from biocompiler.verification.circuit_sources import (
+    CircuitSourcesAssessment, check_circuit_sources, verify_circuit_sources,
+)
 
 from biocompiler.ir.circuit_profile import (
     CircuitProfileRequest,
@@ -406,6 +413,8 @@ from biocompiler.verification.realization import (
 )
 
 __all__ = [
+    "CircuitSourceCase", "CircuitSourceInventory", "SourceDocument", "SourceGap", "SourceReview",
+    "CircuitSourcesAssessment", "check_circuit_sources", "verify_circuit_sources",
     "CircuitProfileRequest", "HumanExperimentContext", "ImmuneLineage",
     "ImmuneRecipientIdentity", "CircuitProfileAssessment",
     "check_circuit_profile", "verify_circuit_profile",

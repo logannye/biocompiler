@@ -19,6 +19,7 @@ The current milestone connects therapeutic requirement analysis to a declared mo
 | --- | --- |
 | Author intent and context | Typed Python descriptions of recognition, actions, timing and goals, with frozen human target, behavior, deployment and prohibited-outcome contracts. |
 | Check circuit scope | Human immune-recipient declarations bound to the exact target, separate human study context, and fresh checking against retained request authority; molecular compilation remains unsupported. |
+| Inventory source metadata | Versioned source declarations, explicit coverage gaps, reviews bound to exact records and independent metadata replay; source bytes and molecular readiness remain unchecked. |
 | Start in a guided workspace | A local browser GUI explains the example, lets you choose product and architecture constraints, and runs the real compiler with verified downloads. |
 | Analyze implementation requirements | Retain the complete source and human contracts, classify sensing, control, product, timing and deployment obligations, and identify missing refinements or contradictions. |
 | Compile a declared precursor implementation | `bc.compile(ImplementationRequest(...))` selects a supplied signal-prefix/product architecture, checks declared host dependencies and processing relationships, derives a composite CDS and emits exact RNA with base-level correspondence. |
@@ -39,6 +40,9 @@ The [human circuit profile](docs/human-circuit-profile-v0.1.md) implements R0 of
 the [RNA-circuit plan](docs/rna-circuit-reproduction-plan.md). Its Python and CLI
 checks establish declared scope and preserve independent evidence dimensions.
 It does not yet reconstruct a published circuit or emit a circuit payload.
+The [source inventory workflow](docs/circuit-source-inventory-v0.1.md) adds
+partial R1 metadata infrastructure. The required reviewed publication corpus and
+complete source authority remain outstanding.
 
 The next compiler capabilities must connect more source requirements to explicit molecular mechanisms, characterized components and supported implementation families. Quantitative models and observation mappings should evaluate those selected implementations, with separate evidence for their applicability. Complete therapeutic compilation also requires independently supported human biology, complete molecular identities and deployment compatibility. These are open engineering and scientific requirements, not capabilities established by the software fixtures.
 

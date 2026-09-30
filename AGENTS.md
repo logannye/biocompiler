@@ -26,6 +26,13 @@ typed recipient binding, source-context separation and fresh assessment replay.
 Declared eligibility establishes neither physical cell identity nor biological
 evidence. Molecular circuit generation remains unimplemented.
 
+Follow `docs/circuit-source-inventory-v0.1.md` for partial R1 metadata work.
+Metadata hashes, declared byte receipts and content validation are distinct.
+Explicit gaps, `provided` declarations and metadata-only reviews cannot establish
+complete source authority, molecular readiness or empirical support. Fresh replay
+requires the complete independently retained inventory. R1 remains incomplete
+until its reviewed source corpus and import/authority requirements are satisfied.
+
 ## Current implementation and engineering rules
 
 biocompiler implements Python intent authoring, immutable build/realization requests and intent/behavior graphs, authoritative lowering, checked passes, automatic combinational/temporal synthetic generation and bounded digital implementation selection, abstract reference execution, finite-trace checking against independent synthetic models, typed component contracts, offline composition linking with executable digital assembly reconstruction, reusable JSON verification workflows, single-CDS reference construct assembly and independently checked exact-reference DNA/RNA emission with reproducible offline reference packaging. A separate software molecular-design profile assembles and independently checks multi-region RNA specifications from supplied fragment/layout authority. The partial intent-candidate compiler now selects a supplied product CDS and RNA architecture from source requirements, derives the layout and emits an independently checked structural cassette. Exact CDS references, artificial molecular fixtures and synthetic behavior remain distinct. General molecular mechanism selection, biological simulation and human therapeutic-payload generation remain unimplemented.

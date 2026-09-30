@@ -256,6 +256,14 @@ example. No local package installation or native build was used.
 
 ### R1 — Curate independent publication and sequence authority
 
+**Partial software infrastructure:** `0.1.0.dev21` adds strict source metadata,
+case coverage/gap ledgers, pinned metadata reviews, independent consistency
+checking and public Python/CLI examples. The
+[source inventory guide](circuit-source-inventory-v0.1.md) documents the limits.
+No actual publication case, reviewed source bytes, sequence extraction, complete
+molecule authority or observations are supplied. This does not complete R1 or
+check off any of its full-scope tasks below.
+
 Primary areas: `registry/`, `ir/payload.py`, `verification/payload.py`,
 `data/references/`, `tools/`; reuse retained-source and review infrastructure.
 

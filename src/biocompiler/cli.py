@@ -19,6 +19,18 @@ from biocompiler.verification.circuit_profile import (
     check_circuit_profile,
     verify_circuit_profile,
 )
+from biocompiler.ir.circuit_sources import (
+    CircuitSourceCase,
+    CircuitSourceInventory,
+    SourceDocument,
+    SourceGap,
+    SourceReview,
+)
+from biocompiler.verification.circuit_sources import (
+    CircuitSourcesAssessment,
+    check_circuit_sources,
+    verify_circuit_sources,
+)
 from biocompiler.ir.candidate import CandidateRequest, CandidateRequirements, MolecularLibrary
 from biocompiler.ir.candidate_build import CandidateBuildRecord
 from biocompiler.ir.implementation import (
@@ -191,6 +203,12 @@ def _read_artifact(document):
                 HumanExperimentContext,
                 ImmuneRecipientIdentity,
                 CircuitProfileAssessment,
+                CircuitSourceCase,
+                CircuitSourceInventory,
+                SourceDocument,
+                SourceGap,
+                SourceReview,
+                CircuitSourcesAssessment,
                 AdmissionRequest,
                 AdmissionAssessment,
                 BuildRequest,
@@ -307,6 +325,12 @@ def _read_artifact(document):
         HumanExperimentContext,
         ImmuneRecipientIdentity,
         CircuitProfileAssessment,
+        CircuitSourceCase,
+        CircuitSourceInventory,
+        SourceDocument,
+        SourceGap,
+        SourceReview,
+        CircuitSourcesAssessment,
     ):
         # Preserve the profile's raw-byte limits even for whitespace-padded
         # records inspected through the generic artifact entry point.
@@ -321,6 +345,29 @@ def _summary(artifact):
         "schema_version": artifact.schema_version,
         "fingerprint": artifact.fingerprint,
     }
+    if isinstance(artifact, (
+        CircuitSourceCase, CircuitSourceInventory, SourceDocument, SourceGap, SourceReview,
+    )):
+        summary.update(
+            scope="source_metadata_only",
+            source_bytes="not_checked",
+            molecular_readiness="unassessed",
+            human_admission="not_admitted",
+            inspection="Declared metadata only; source bytes and scientific completeness are not checked.",
+        )
+    if isinstance(artifact, CircuitSourceInventory):
+        summary.update(sources=len(artifact.sources), cases=len(artifact.cases), reviews=len(artifact.reviews))
+    if isinstance(artifact, CircuitSourcesAssessment):
+        summary.update(
+            scope=artifact.claim_scope,
+            source_bytes=artifact.source_bytes,
+            molecular_readiness=artifact.molecular_readiness,
+            empirical_validation=artifact.empirical_validation,
+            human_admission=artifact.human_admission,
+            diagnostics=list(artifact.diagnostics),
+            cases=len(artifact.case_summaries),
+            inspection="Historical metadata assessment; fresh verification requires independent complete inventory authority.",
+        )
     if isinstance(artifact, CircuitProfileRequest):
         summary.update(
             purpose=artifact.purpose,
@@ -538,6 +585,16 @@ def main(argv: Sequence[str] | None = None) -> int:
         "--version", action="version", version=f"biocompiler {__version__}"
     )
     commands = parser.add_subparsers(dest="command", required=True)
+    source_check = commands.add_parser(
+        "circuit-sources-check", help="Check source inventory metadata consistency and explicit gaps"
+    )
+    source_check.add_argument("--inventory", type=Path, required=True)
+    source_check.add_argument("--output", type=Path, required=True)
+    source_verify = commands.add_parser(
+        "circuit-sources-verify", help="Recheck metadata against independent complete inventory authority"
+    )
+    source_verify.add_argument("path", type=Path)
+    source_verify.add_argument("--expected-inventory", type=Path, required=True)
     circuit_check = commands.add_parser(
         "circuit-profile-check",
         help="Check declared human circuit scope without compiling a molecule",
@@ -724,6 +781,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         command.add_argument("path", type=Path)
         command.add_argument("--expected-request", type=Path, required=True)
     args = parser.parse_args(argv)
+    if args.command.startswith("circuit-sources-"):
+        return _circuit_sources_command(args)
     if args.command.startswith("circuit-profile-"):
         return _circuit_profile_command(args)
     if args.command == "studio":
@@ -890,6 +949,24 @@ def main(argv: Sequence[str] | None = None) -> int:
             program.to_json() if args.json else json.dumps(_summary(program), indent=2)
         )
     return 0
+
+
+def _circuit_sources_command(args):
+    try:
+        if args.command == "circuit-sources-check":
+            inventory = CircuitSourceInventory.from_json(_bounded_text(args.inventory))
+            assessment = check_circuit_sources(inventory)
+            verify_circuit_sources(assessment, expected_inventory=inventory)
+            _publish_report(assessment, args.output, inputs=(args.inventory,))
+        else:
+            inventory = CircuitSourceInventory.from_json(_bounded_text(args.expected_inventory))
+            assessment = CircuitSourcesAssessment.from_json(_bounded_text(args.path))
+            assessment = verify_circuit_sources(assessment, expected_inventory=inventory)
+        print(json.dumps(_summary(assessment), sort_keys=True, indent=2))
+        return 0 if assessment.outcome.value == "pass" else 1
+    except (BiocompilerError, OSError, ValueError, TypeError, RecursionError) as exc:
+        print(f"biocompiler: {exc}", file=sys.stderr)
+        return 2
 
 
 def _circuit_profile_command(args):
