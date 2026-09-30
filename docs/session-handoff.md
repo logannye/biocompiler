@@ -4,10 +4,14 @@
 
 Updated **2026-09-29 (America/Los_Angeles)**. The code-only track implements
 M3.5 sustained-input generation, M3.6 pulses/retriggering/resettable memory, and
-the M7.7 synthetic workflow packaging extension in version `0.1.0.dev14`.
+the M7.7 synthetic workflow packaging extension in version `0.1.0.dev14`,
+implemented and hosted-validated in [PR #21](https://github.com/logannye/biocompiler/pull/21).
 See [temporal generation](synthetic-temporal-v0.1.md) and
-[synthetic build/verify packages](synthetic-build-v0.1.md). The roadmap records
-required hosted validation before these milestones are closed.
+[synthetic build/verify packages](synthetic-build-v0.1.md). These three roadmap
+items are complete. [Hosted validation](https://github.com/logannye/biocompiler/actions/runs/36672243796)
+passed all 836 tests, package installation, examples, CLI and offline
+reconstruction on Python 3.11.16 and 3.14.7, Linux x86_64. The roadmap records
+the exact tested revision and platform. No local native build was used.
 
 The explicit temporal profile independently schedules timers and preserves
 contact episodes, onset aggregation order and reset/set/expiry precedence.
