@@ -1,6 +1,6 @@
 """Author inspectable therapeutic programs for in-vivo immune-cell engineering."""
 
-__version__ = "0.1.0.dev15"
+__version__ = "0.1.0.dev16"
 
 from biocompiler.semantics.admission import AdmissionAssessment, AdmissionRequest
 from biocompiler.verification.admission import assess_admission, verify_admission
@@ -200,6 +200,33 @@ from biocompiler.compiler.synthetic_build import (
     verify_synthetic_package,
     publish_synthetic_package,
 )
+from biocompiler.ir.molecular_design import (
+    SequenceFragment,
+    FragmentPlacement,
+    MolecularDesignRequest,
+    MolecularDesignConstruct,
+    MolecularDesignArtifact,
+)
+from biocompiler.compiler.molecular_design import (
+    MolecularDesignBuild,
+    run_molecular_design_pipeline,
+)
+from biocompiler.verification.molecular_design import (
+    MolecularDesignResult,
+    check_molecular_design_request,
+    check_molecular_design_construct,
+    check_molecular_design,
+)
+from biocompiler.artifacts.molecular_design import (
+    MolecularDesignBuildManifest,
+    MolecularDesignHandoff,
+)
+from biocompiler.compiler.molecular_design_build import (
+    MolecularDesignPackage,
+    build_molecular_design_package,
+    verify_molecular_design_package,
+    publish_molecular_design_package,
+)
 from biocompiler.registry.synthetic import TEMPORAL_PROFILE_VERSION
 from biocompiler.synthesis.synthetic import (
     SyntheticCandidate,
@@ -338,6 +365,23 @@ from biocompiler.verification.realization import (
 )
 
 __all__ = [
+    "SequenceFragment",
+    "FragmentPlacement",
+    "MolecularDesignRequest",
+    "MolecularDesignConstruct",
+    "MolecularDesignArtifact",
+    "MolecularDesignBuild",
+    "run_molecular_design_pipeline",
+    "MolecularDesignResult",
+    "check_molecular_design_request",
+    "check_molecular_design_construct",
+    "check_molecular_design",
+    "MolecularDesignBuildManifest",
+    "MolecularDesignHandoff",
+    "MolecularDesignPackage",
+    "build_molecular_design_package",
+    "verify_molecular_design_package",
+    "publish_molecular_design_package",
     "SyntheticBuildRequest",
     "SyntheticHistory",
     "SyntheticBuildManifest",

@@ -128,6 +128,23 @@ from biocompiler.compiler.synthetic_build import (
     publish_synthetic_package,
     verify_synthetic_package,
 )
+from biocompiler.ir.molecular_design import (
+    SequenceFragment,
+    FragmentPlacement,
+    MolecularDesignRequest,
+    MolecularDesignConstruct,
+    MolecularDesignArtifact,
+)
+from biocompiler.artifacts.molecular_design import (
+    MolecularDesignBuildManifest,
+    MolecularDesignHandoff,
+)
+from biocompiler.compiler.molecular_design_build import (
+    build_molecular_design_package,
+    publish_molecular_design_package,
+    verify_molecular_design_package,
+)
+from biocompiler.verification.molecular_design import MolecularDesignResult
 from biocompiler.compiler.verification_workflow import (
     SyntheticVerificationRequest,
     SyntheticVerificationRecord,
@@ -236,6 +253,14 @@ def _read_artifact(document):
                 SyntheticSelectionResult,
                 BooleanInputConfig,
                 BooleanInputExplorationReport,
+                SequenceFragment,
+                FragmentPlacement,
+                MolecularDesignRequest,
+                MolecularDesignConstruct,
+                MolecularDesignArtifact,
+                MolecularDesignBuildManifest,
+                MolecularDesignHandoff,
+                MolecularDesignResult,
             )
         }
     )
@@ -400,6 +425,28 @@ def _summary(artifact):
     if isinstance(artifact, PayloadReference):
         summary["source_kind"] = artifact.source_kind
         summary["reference_promotion"] = "not_promoted"
+    if isinstance(
+        artifact,
+        (
+            MolecularDesignRequest,
+            MolecularDesignConstruct,
+            MolecularDesignArtifact,
+            MolecularDesignBuildManifest,
+            MolecularDesignHandoff,
+            MolecularDesignResult,
+        ),
+    ):
+        summary.update(
+            intended_use="software_test",
+            human_therapeutic_admission="not_admitted",
+            reference_promotion="not_promoted",
+            evidence_boundary="software_fixture",
+            inspection="Historical structural design content only; current acceptance requires independent request authority and fresh checks. Biological behavior and experimental material identity remain unresolved.",
+        )
+    if isinstance(artifact, MolecularDesignResult):
+        summary["stage"] = artifact.stage
+        summary["claim_scope"] = artifact.claim_scope
+        summary["diagnostics"] = [item.to_dict() for item in artifact.diagnostics]
     return summary
 
 
@@ -520,7 +567,29 @@ def main(argv: Sequence[str] | None = None) -> int:
     selection.add_argument(
         "--output", type=Path, help="Atomic selection report destination"
     )
+    molecular_build = commands.add_parser(
+        "molecular-design-build",
+        help="Assemble, independently check and package one software RNA design",
+    )
+    molecular_build.add_argument("--request", type=Path, required=True)
+    molecular_build.add_argument("--output", type=Path, required=True)
+    molecular_build.add_argument("--run-metadata", type=Path)
+    molecular_inspect = commands.add_parser(
+        "molecular-design-inspect",
+        help="Inspect a molecular design package without granting fresh acceptance",
+    )
+    molecular_inspect.add_argument("path", type=Path)
+    molecular_verify = commands.add_parser(
+        "molecular-design-verify",
+        help="Reconstruct a molecular design package from independent authority",
+    )
+    molecular_verify.add_argument("path", type=Path)
+    molecular_authority = molecular_verify.add_mutually_exclusive_group(required=True)
+    molecular_authority.add_argument("--expected-build")
+    molecular_authority.add_argument("--expected-request", type=Path)
     args = parser.parse_args(argv)
+    if args.command.startswith("molecular-design-"):
+        return _molecular_design_command(args)
     if args.command in {
         "synthetic-check",
         "synthetic-explore",
@@ -804,6 +873,79 @@ def _selection_command(args):
     except (OSError, UnicodeError, BiocompilerError, RecursionError) as exc:
         print(f"biocompiler: {exc}", file=sys.stderr)
         return 2
+
+
+def _molecular_design_command(args):
+    try:
+        if args.command == "molecular-design-build":
+            inputs = (args.request, args.run_metadata)
+            if args.output.resolve() in {
+                path.resolve() for path in inputs if path is not None
+            }:
+                raise SerializationError(
+                    "A design package cannot overwrite its independent input authority."
+                )
+            request = MolecularDesignRequest.from_json(_bounded_text(args.request))
+            metadata = (
+                RunMetadata.from_json(_bounded_text(args.run_metadata, 1024 * 1024))
+                if args.run_metadata
+                else None
+            )
+            package = build_molecular_design_package(request, run_metadata=metadata)
+            output = publish_molecular_design_package(package, args.output)
+            summary = {
+                "output": str(output),
+                "build_fingerprint": package.build_fingerprint,
+                "archive_sha256": package.archive_sha256,
+                "status": "complete",
+            }
+        else:
+            with args.path.open("rb") as source:
+                data = source.read(64 * 1024 * 1024 + 1)
+            if len(data) > 64 * 1024 * 1024:
+                raise SerializationError(
+                    "Molecular design archive exceeds the size limit."
+                )
+            if args.command == "molecular-design-verify":
+                expected = (
+                    MolecularDesignRequest.from_json(
+                        _bounded_text(args.expected_request)
+                    )
+                    if args.expected_request
+                    else None
+                )
+                package = verify_molecular_design_package(
+                    data,
+                    expected_request=expected,
+                    expected_build_fingerprint=args.expected_build,
+                )
+                summary = {
+                    "build_fingerprint": package.build_fingerprint,
+                    "verification": "fresh independent offline reconstruction passed",
+                }
+            else:
+                manifest, files, metadata = read_archive(data)
+                if not isinstance(manifest, MolecularDesignBuildManifest):
+                    raise SerializationError("Expected a molecular design package.")
+                summary = {
+                    "build_fingerprint": manifest.build_fingerprint,
+                    "files": len(files),
+                    "run_metadata": metadata.to_dict() if metadata else None,
+                    "inspection": "Historical content and file integrity only; acceptance requires independent authority and current offline reconstruction.",
+                }
+        summary.update(
+            scope="software_molecular_design",
+            intended_use="software_test",
+            human_therapeutic_admission="not_admitted",
+            reference_promotion="not_promoted",
+            evidence_boundary="software_fixture",
+            claim_scope="Exact structural RNA design under frozen fragment, layout and chemistry authority; no biological or experimental-material claim.",
+        )
+        print(json.dumps(summary, indent=2))
+    except (OSError, UnicodeError, BiocompilerError, RecursionError) as exc:
+        print(f"biocompiler: {exc}", file=sys.stderr)
+        return 2
+    return 0
 
 
 def _synthetic_command(args):

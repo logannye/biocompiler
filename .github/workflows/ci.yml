@@ -81,6 +81,22 @@ jobs:
           retention-days: 7
       - name: Run checked component linking and reference selection
         run: python examples/component_linking.py
+      - name: Assemble and reconstruct complete structural RNA designs
+        run: |
+          python examples/molecular_design.py --output generated/molecular-design-ci
+          biocompiler molecular-design-build --request generated/molecular-design-ci/request.json --output generated/molecular-design-ci/cli.bcb > generated/molecular-design-ci/build-summary.json
+          biocompiler molecular-design-inspect generated/molecular-design-ci/cli.bcb > generated/molecular-design-ci/inspection.json
+          biocompiler molecular-design-verify generated/molecular-design-ci/cli.bcb --expected-request generated/molecular-design-ci/request.json > generated/molecular-design-ci/verification.json
+          biocompiler inspect generated/molecular-design-ci/handoff.json > generated/molecular-design-ci/handoff-inspection.json
+          biocompiler inspect generated/molecular-design-ci/substitution-failure.json > generated/molecular-design-ci/failure-inspection.json
+      - name: Retain molecular design and candidate-checking evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: molecular-design-python-${{ matrix.python-version }}
+          path: generated/molecular-design-ci/
+          if-no-files-found: ignore
+          retention-days: 7
       - name: Run checked DNA and RNA reference construct assembly
         run: python examples/reference_construct.py
       - name: Emit, check and export exact DNA and RNA reference CDSs

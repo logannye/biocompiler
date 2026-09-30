@@ -19,11 +19,12 @@ from types import MappingProxyType
 import zipfile
 
 from biocompiler.artifacts.manifest import BuildManifest, RunMetadata
+from biocompiler.artifacts.molecular_design import MolecularDesignBuildManifest
 from biocompiler.artifacts.synthetic_build import SyntheticBuildManifest
 from biocompiler.errors import SerializationError
 from biocompiler.ir.serialization import parse_json, require
 
-ARCHIVE_VERSION = "biocompiler.reference_archive.v0.3"
+ARCHIVE_VERSION = "biocompiler.reference_archive.v0.4"
 MAX_ARCHIVE_BYTES = 64 * 1024 * 1024
 MAX_MEMBER_BYTES = 16 * 1024 * 1024
 MAX_METADATA_BYTES = 1024 * 1024
@@ -62,7 +63,10 @@ def _json_bytes(artifact):
 
 def _files(manifest, files):
     require(
-        isinstance(manifest, (BuildManifest, SyntheticBuildManifest)),
+        isinstance(
+            manifest,
+            (BuildManifest, SyntheticBuildManifest, MolecularDesignBuildManifest),
+        ),
         "Expected a build manifest.",
     )
     require(isinstance(files, Mapping), "Package files must be a byte mapping.")
@@ -119,7 +123,7 @@ def _canonical_zip(entries):
 
 
 def assemble_archive(
-    manifest: BuildManifest | SyntheticBuildManifest,
+    manifest: BuildManifest | SyntheticBuildManifest | MolecularDesignBuildManifest,
     files: Mapping[str, bytes],
     run_metadata: RunMetadata | None = None,
 ) -> bytes:
@@ -267,6 +271,7 @@ def read_archive(data: bytes):
         manifest_type = {
             BuildManifest.schema_version: BuildManifest,
             SyntheticBuildManifest.schema_version: SyntheticBuildManifest,
+            MolecularDesignBuildManifest.schema_version: MolecularDesignBuildManifest,
         }.get(schema)
         require(manifest_type is not None, "Unsupported archive manifest schema.")
         manifest = manifest_type.from_dict(document)

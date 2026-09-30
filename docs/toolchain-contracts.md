@@ -17,7 +17,7 @@ Implementation order, stable task IDs and acceptance gates are tracked in the [d
 | Composition | Typed graph edges, contract compatibility, circular-assumption detection and declared shared-resource accounting | Calibrated physical resource demands and biological interaction models |
 | Parameter meaning | Frozen design bindings with category/provenance/variation metadata, runtime signals kept distinct | Robust checks over uncertain/calibrated quantities |
 | Host and payload linking | Explicit encoded-here/co-payload/host/external/unresolved inventory and offline dependency linker | Independent experimental support for supplied host and delivery assumptions |
-| Encoding | Checked single-CDS Construct IR, exact DNA/RNA backends, scoped feature declarations and conservative invalidation | General molecular realization, complete payload features and calibrated higher-level revalidation |
+| Encoding | Checked exact-CDS backends plus separate multi-region structural RNA design, explicit fragment/layout/chemistry authority and conservative invalidation | General molecular realization, biologically supported complete payloads and calibrated higher-level revalidation |
 
 The [realization checking profile](realization-checking-v0.1.md) defines the exact implemented scope. Capability declarations are assumptions supplied by a context author, not verified facts about a host. A finite-trace pass is conditional on its recorded inputs; the minimal synthetic operator catalog supplies no characterized molecular component or sequence-generation capability.
 

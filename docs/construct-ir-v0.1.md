@@ -1,5 +1,10 @@
 # Construct IR and frozen assembly authority
 
+This document governs the existing exact-reference CDS profile. The separate
+[molecular-design profile](molecular-design-v0.1.md) uses independently frozen
+fragment/layout authority for multi-region structural RNA candidates and has its
+own versioned construct schema and checker. It does not broaden reference acceptance.
+
 M5 introduces a checked representation of how selected components occupy a
 sequence reference. It starts with one whole, reviewed CDS. The Construct IR
 does not contain emitted nucleotide text, an acceptance certificate, or a claim

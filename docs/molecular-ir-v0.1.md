@@ -1,5 +1,10 @@
 # Molecular IR v0.1
 
+This document governs exact-reference CDS artifacts. The separate
+[molecular-design profile](molecular-design-v0.1.md) wraps a complete structural
+RNA `PayloadMolecule` with request, construct and fragment-source identities.
+Its generated-candidate checks are distinct from exact-reference reproduction.
+
 `MolecularArtifact` is an immutable candidate for the `DNA-CDS` or `RNA-CDS`
 profile with `artifact_scope="exact_cds"`. Each record carries an exact nucleotide
 spelling and its CDS-only scope. Schema validity grants no acceptance. The

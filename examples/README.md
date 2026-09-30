@@ -86,6 +86,17 @@ failed and unknown reports remain separate from accepted packages.
 
 [reference_sequences.py](reference_sequences.py) runs the exact-CDS pipeline separately for DNA and RNA, prints scoped identities and checks FASTA/JSON exports. Run `PYTHONPATH=src python examples/reference_sequences.py`. It emits each selected reference spelling without optimization or complete-payload/biological claims.
 
+[molecular_design.py](molecular_design.py) freezes four artificial RNA fragments,
+assembles and independently checks a complete 17-base structural specification,
+packages its provenance/chemistry/handoff, and reconstructs it offline. It also
+builds an explicitly authorized synonymous alternative and retains rejection of
+that same edit under the original authority. Run
+`PYTHONPATH=src python examples/molecular_design.py --output generated/molecular-design`.
+Use installed `molecular-design-build`, `molecular-design-inspect` and
+`molecular-design-verify` to repeat the [workflow](../docs/molecular-design-v0.1.md).
+Region names are annotations of nonfunctional test fragments. No upstream
+behavioral implementation, biological reference or human admission is claimed.
+
 - `reference_build.py`: build DNA/RNA `.bcb` packages, publish atomically and independently reconstruct offline. See [reference builds](../docs/reference-build-v0.1.md).
 
 - `verification_campaign.py`: bounded exhaustive presence-aware contact histories, seeded adversarial cases and failure-preserving deletion reduction; optional JSON evidence output. These are software-model checks, not universal or empirical claims.
