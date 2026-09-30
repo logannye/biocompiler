@@ -471,6 +471,17 @@ def main(argv: Sequence[str] | None = None) -> int:
         "--version", action="version", version=f"biocompiler {__version__}"
     )
     commands = parser.add_subparsers(dest="command", required=True)
+    studio = commands.add_parser(
+        "studio", help="Open the guided local design workspace in your browser"
+    )
+    studio.add_argument(
+        "--port", type=int, default=8765,
+        help="Local port (default: 8765; use 0 to choose an available port)",
+    )
+    studio.add_argument(
+        "--no-open", action="store_true",
+        help="Print the local URL without opening a browser",
+    )
     commands.add_parser(
         "architecture", help="Show implemented and planned compiler stages"
     )
@@ -616,6 +627,21 @@ def main(argv: Sequence[str] | None = None) -> int:
         candidate_command.add_argument("path", type=Path)
         candidate_command.add_argument("--expected-request", type=Path, required=True)
     args = parser.parse_args(argv)
+    if args.command == "studio":
+        if not 0 <= args.port <= 65535:
+            parser.error("studio --port must be between 0 and 65535")
+        from biocompiler.studio.server import serve
+
+        try:
+            serve(port=args.port, open_browser=not args.no_open)
+        except OSError as exc:
+            print(
+                f"Unable to start the local workspace: {exc}. "
+                "Try biocompiler studio --port 0.",
+                file=sys.stderr,
+            )
+            return 2
+        return 0
     if args.command.startswith("candidate-"):
         return _candidate_command(args)
     if args.command.startswith("molecular-design-"):

@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "biocompiler"
-version = "0.1.0.dev17"
+version = "0.1.0.dev18"
 description = "An experimental compiler aiming to translate high-level therapeutic intent into precise DNA/RNA payloads for in vivo immune cell therapies."
 readme = "README.md"
 requires-python = ">=3.11"
@@ -28,4 +28,4 @@ Issues = "https://github.com/logannye/biocompiler/issues"
 where = ["src"]
 
 [tool.setuptools.package-data]
-biocompiler = ["py.typed"]
+biocompiler = ["py.typed", "studio/static/*", "studio/data/*.json"]

@@ -13,6 +13,7 @@ The current milestone is a working, bounded bridge from an authored product requ
 | Workflow | What it provides |
 | --- | --- |
 | Author intent and context | Typed Python descriptions of recognition, actions, timing and goals, with frozen human target, behavior, deployment and prohibited-outcome contracts. |
+| Start in a guided workspace | A local browser GUI explains the example, lets you choose product and architecture constraints, and runs the real compiler with verified downloads. |
 | Compile an RNA cassette candidate | `bc.compile(CandidateRequest(...))` selects supplied product-coding parts and an architecture, derives the layout, and emits independently checked exact bases. |
 | Explain and reproduce a build | Retained source requirements, alternatives, rejection reasons, part identities, molecular features and checks; JSON records and verified FASTA under independent request authority. |
 | Check abstract behavior | Bounded digital models, temporal execution, component linking, supplied-trace checks and reproducible failure analysis. |
@@ -41,17 +42,22 @@ python3 -m venv .venv
 . .venv/bin/activate
 python -m pip install -e .
 biocompiler --version
-python examples/intent_programs.py
+biocompiler studio
 ```
 
 You can also run directly from the repository without installing:
 
 ```sh
-PYTHONPATH=src python3 -m biocompiler --version
-PYTHONPATH=src python3 examples/intent_programs.py
+PYTHONPATH=src python3 -m biocompiler studio
 ```
 
-### Describe an intended response
+The [guided workspace](docs/studio-v0.1.md) opens locally in your browser. Start
+with its artificial example, compile a candidate, inspect the selected parts and
+download verified results. You can also import an existing candidate request.
+Keep the terminal running; press Ctrl+C to stop the workspace. Use `--port 0` if
+the default port is occupied, or `--no-open` to print the URL without opening it.
+
+### Describe an intended response in Python
 
 ```python
 import biocompiler as bc

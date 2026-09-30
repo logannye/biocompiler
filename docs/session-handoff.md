@@ -1,6 +1,19 @@
 # Session handoff and current resumption point
 
-## Current resumption point — intent-directed molecular candidates
+## Current resumption point — guided local design workspace
+
+Version `0.1.0.dev18` adds `biocompiler studio`, a local browser GUI for first-time
+use of the supported RNA candidate compiler. The guided example, read-only request
+import, architecture choices, exact sequence view and verified downloads all use
+the existing Python compilation and independent checking path. The server and
+static assets ship in the Python package without new runtime dependencies.
+See the [workspace guide](studio-v0.1.md). Local validation passes all 982 Python
+3.12 tests, Ruff, frozen audit integrity, and the real Chromium guided/import/
+download flow at desktop and mobile sizes. Hosted installed-package validation
+is pending. Biological implementation and admission are
+unchanged; the result remains a partial structural research candidate.
+
+## Previous resumption point — intent-directed molecular candidates
 
 Updated **2026-09-30 (America/Los_Angeles)**. Version `0.1.0.dev17` implements
 the bounded source-to-product-cassette compiler described in
