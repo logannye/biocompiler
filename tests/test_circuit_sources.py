@@ -1,10 +1,13 @@
 """Metadata-only source authority, coverage gaps and immutable provenance."""
 
+from collections.abc import Mapping
 from dataclasses import FrozenInstanceError, replace
 import json
 import unittest
+from unittest.mock import patch
 
 from biocompiler.errors import SerializationError
+from biocompiler.ir import circuit_sources as source_ir
 from biocompiler.ir.circuit_profile import HumanExperimentContext
 from biocompiler.ir.circuit_sources import (
     COVERAGE_FIELDS,
@@ -475,6 +478,28 @@ class CircuitSourceTests(unittest.TestCase):
                 CircuitSourceInventory.from_dict(data)
         with self.assertRaisesRegex(SerializationError, "byte limit"):
             CircuitSourceInventory.from_json(" " * (MAX_SOURCE_JSON_BYTES + 1))
+
+    def test_pending_items_are_budgeted_before_nested_container_expansion(self):
+        class MappingTrap(Mapping):
+            def __len__(self):
+                return 2
+
+            def __iter__(self):
+                raise AssertionError("Oversized mapping must not be expanded.")
+
+            def __getitem__(self, key):
+                raise AssertionError("Oversized mapping must not be read.")
+
+        class SequenceTrap(list):
+            def __iter__(self):
+                raise AssertionError("Oversized sequence must not be expanded.")
+
+        with patch.object(source_ir, "MAX_METADATA_ITEMS", 12):
+            source_ir._bounded_metadata([None] * 11)
+            for nested in (MappingTrap(), SequenceTrap([None] * 4)):
+                with self.subTest(container=type(nested).__name__):
+                    with self.assertRaisesRegex(SerializationError, "item limit"):
+                        CircuitSourceInventory.from_dict([None] * 7 + [nested])
 
     def test_near_limit_inventory_publishes_and_roundtrips_pretty_json(self):
         data = inventory(sources=(), cases=(), reviews=()).to_dict()

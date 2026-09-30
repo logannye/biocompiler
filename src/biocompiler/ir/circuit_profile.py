@@ -81,9 +81,10 @@ def _bounded_tree(value):
         count += 1
         require(count <= MAX_PROFILE_ITEMS, "Circuit profile item limit exceeded.")
         require(depth <= MAX_PROFILE_DEPTH, "Circuit profile nesting limit exceeded.")
+        remaining = MAX_PROFILE_ITEMS - count - len(stack)
         if isinstance(item, Mapping):
             require(
-                len(item) <= MAX_PROFILE_ITEMS - count,
+                2 * len(item) <= remaining,
                 "Circuit profile item limit exceeded.",
             )
             for key, child in item.items():
@@ -91,7 +92,7 @@ def _bounded_tree(value):
                 stack.extend(((key, depth + 1), (child, depth + 1)))
         elif isinstance(item, (tuple, list)):
             require(
-                len(item) <= MAX_PROFILE_ITEMS - count,
+                len(item) <= remaining,
                 "Circuit profile item limit exceeded.",
             )
             stack.extend((child, depth + 1) for child in item)

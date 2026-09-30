@@ -95,9 +95,10 @@ def _bounded_metadata(value):
         count += 1
         require(count <= MAX_METADATA_ITEMS, "Source metadata item limit exceeded.")
         require(depth <= MAX_METADATA_DEPTH, "Source metadata nesting limit exceeded.")
+        remaining = MAX_METADATA_ITEMS - count - len(stack)
         if isinstance(item, Mapping):
             require(
-                len(item) <= MAX_METADATA_ITEMS - count,
+                2 * len(item) <= remaining,
                 "Source metadata item limit exceeded.",
             )
             for key, child in item.items():
@@ -105,7 +106,7 @@ def _bounded_metadata(value):
                 stack.extend(((key, depth + 1), (child, depth + 1)))
         elif isinstance(item, (tuple, list)):
             require(
-                len(item) <= MAX_METADATA_ITEMS - count,
+                len(item) <= remaining,
                 "Source metadata item limit exceeded.",
             )
             stack.extend((child, depth + 1) for child in item)
