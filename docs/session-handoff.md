@@ -1,6 +1,46 @@
 # Session handoff and current resumption point
 
-## Current resumption point — checked molecular implementation
+## Current resumption point — R0 human circuit contracts
+
+Scope clarification, 2026-09-30: the sole product target is human DNA/RNA
+payloads for in-vivo immune-cell deployment. The plan and repository instructions
+now make this invariant explicit. Non-human organism/sequencing work is out of
+scope. Human-cell publication reconstruction is a supporting reference workflow;
+human non-immune/in-vitro evidence must retain its actual context and cannot
+replace the intended deployment target. Preserve component origins separately
+from recipient species, including exact engineered reference parts.
+
+The user requested complete development of the previously proposed RNA-logic
+capabilities, beginning with an ordered development plan, and asked to borrow
+applicable Cello UI/UX patterns. The [plan](rna-circuit-reproduction-plan.md)
+defines R0–R13 packages, source/benchmark gates, module responsibilities,
+dependencies, independent acceptance and a dedicated Cello-inspired UI workstream.
+It includes the multi-mRNA, post-poly(A), ADAR, IRES/circular, split-protein and
+noncoding-RNA families, plus precise Python authoring and complete transcript
+set/chemistry packaging.
+
+The user authorized systematic R0–R13 implementation, with a push and merge after
+each completed R milestone. R0 in `0.1.0.dev20` adds strict profile requests,
+typed immune-recipient declarations, separate human source context, independent
+claim dimensions and fresh verification against full expected-request authority.
+The public Python/CLI example retains original source wrappers and explicitly
+refuses molecular compilation. See the [profile guide](human-circuit-profile-v0.1.md).
+
+Continue with the R1 source inventory, then R2/R3 in parallel.
+R6a's first complete vertical slice unlocks the remaining families; one study's
+missing source record must not block unrelated implementation. Full corpus
+closure remains required at R13. Human target-path integration is mandatory in
+R2/R5/R6a/R12/R13; do not implement a separate general research compiler or
+remove the product's in-vivo restriction. Full human therapeutic completion and
+admission still require their own applicable evidence and original obligations.
+
+R0's required hosted validation is pending at this commit. R1–R13 remain open;
+no benchmark curation, molecular circuit generation or biological validation is
+claimed. The previous baseline is `0.1.0.dev19`, merged revision
+`0dbae3ca0e0821b64a3579f61a83aa15ee41be52`. Its implementation and validation
+are retained below.
+
+## Implementation baseline — checked molecular implementation
 
 Version `0.1.0.dev19` adds the three connected increments documented in
 [molecular implementation](molecular-implementation-v0.1.md): full-source typed

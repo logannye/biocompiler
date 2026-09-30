@@ -1,6 +1,32 @@
 # Working on biocompiler
 
-The primary purpose is to translate high-level Python and eventually natural-language therapeutic intent into exact, complete DNA/RNA specifications for immune cells engineered in vivo in humans. Prioritize work that connects source requirements to selected molecular implementations and emitted bases. Quantitative execution and evaluation should support those selected implementations, with explicit observation maps and evidence, rather than become a disconnected simulator. Natural-language authoring and complete therapeutic compilation are not yet implemented.
+The sole product purpose is to translate high-level Python and eventually natural-language therapeutic intent into exact, complete DNA/RNA specifications for immune cells engineered in vivo in humans. Prioritize work that connects source requirements to selected molecular implementations and emitted bases. Quantitative execution and evaluation should support those selected implementations, with explicit observation maps and evidence, rather than become a disconnected simulator. Natural-language authoring and complete therapeutic compilation are not yet implemented.
+
+## Human-only product scope
+
+User clarification, 2026-09-30: only human biology and DNA/RNA payloads for
+in-vivo immune-cell deployment are product targets. Do not add non-human
+organism backends, gate libraries, sequencing workflows, organism selectors or
+general cell-engineering product tracks. Human-cell literature reconstruction
+is a supporting reference/evidence workflow through shared compiler passes,
+not an alternate deployment target. Keep source-experiment context separate
+from the intended human immune target and preserve all original deployment and
+acceptance obligations. Human non-immune or in-vitro results cannot silently
+become immune-cell or in-vivo evidence.
+
+Recipient species and component origin are distinct. Preserve exact synthetic,
+heterologous or chimeric reference parts and their provenance; assess their
+human immune applicability separately. Do not silently humanize a reference or
+treat non-human component origin as permission for a non-human target. Existing
+historical non-human fixtures retain their limited regression role; do not expand
+or promote them into the new benchmark/product scope. Cello is UI/software
+inspiration only. This scope must govern plans, implementation and user-facing
+workflows. Follow `docs/human-circuit-profile-v0.1.md` for R0 scope declarations,
+typed recipient binding, source-context separation and fresh assessment replay.
+Declared eligibility establishes neither physical cell identity nor biological
+evidence. Molecular circuit generation remains unimplemented.
+
+## Current implementation and engineering rules
 
 biocompiler implements Python intent authoring, immutable build/realization requests and intent/behavior graphs, authoritative lowering, checked passes, automatic combinational/temporal synthetic generation and bounded digital implementation selection, abstract reference execution, finite-trace checking against independent synthetic models, typed component contracts, offline composition linking with executable digital assembly reconstruction, reusable JSON verification workflows, single-CDS reference construct assembly and independently checked exact-reference DNA/RNA emission with reproducible offline reference packaging. A separate software molecular-design profile assembles and independently checks multi-region RNA specifications from supplied fragment/layout authority. The partial intent-candidate compiler now selects a supplied product CDS and RNA architecture from source requirements, derives the layout and emits an independently checked structural cassette. Exact CDS references, artificial molecular fixtures and synthetic behavior remain distinct. General molecular mechanism selection, biological simulation and human therapeutic-payload generation remain unimplemented.
 

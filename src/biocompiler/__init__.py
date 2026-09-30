@@ -1,6 +1,18 @@
 """Author inspectable therapeutic programs for in-vivo immune-cell engineering."""
 
-__version__ = "0.1.0.dev19"
+__version__ = "0.1.0.dev20"
+
+from biocompiler.ir.circuit_profile import (
+    CircuitProfileRequest,
+    HumanExperimentContext,
+    ImmuneLineage,
+    ImmuneRecipientIdentity,
+)
+from biocompiler.verification.circuit_profile import (
+    CircuitProfileAssessment,
+    check_circuit_profile,
+    verify_circuit_profile,
+)
 
 from biocompiler.semantics.admission import AdmissionAssessment, AdmissionRequest
 from biocompiler.verification.admission import assess_admission, verify_admission
@@ -394,6 +406,9 @@ from biocompiler.verification.realization import (
 )
 
 __all__ = [
+    "CircuitProfileRequest", "HumanExperimentContext", "ImmuneLineage",
+    "ImmuneRecipientIdentity", "CircuitProfileAssessment",
+    "check_circuit_profile", "verify_circuit_profile",
     "ImplementationRequirements", "ImplementationObligation", "ImplementationDiagnostic",
     "ProductRequirement", "analyze_implementation_requirements", "SequenceAuthority",
     "CodingSegment", "CodingJunction", "ImplementationDependencyBinding", "SecretedRNAArchitecture",

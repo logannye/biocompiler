@@ -29,6 +29,21 @@ jobs:
         run: python -m unittest discover -s tests -v
       - name: Run authoring examples
         run: python examples/intent_programs.py
+      - name: Check human circuit profile scope and independent authority
+        run: |
+          python examples/circuit_profile.py --output generated/circuit-profile-ci
+          biocompiler circuit-profile-check --request generated/circuit-profile-ci/product.request.json --output generated/circuit-profile-ci/cli.assessment.json
+          biocompiler circuit-profile-verify generated/circuit-profile-ci/cli.assessment.json --expected-request generated/circuit-profile-ci/product.request.json
+          biocompiler inspect generated/circuit-profile-ci/reference.request.json
+          biocompiler inspect generated/circuit-profile-ci/cli.assessment.json
+      - name: Retain circuit profile evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: circuit-profile-evidence-py${{ matrix.python-version }}
+          path: generated/circuit-profile-ci/
+          if-no-files-found: ignore
+          retention-days: 7
       - name: Compile and independently verify intent-directed molecular candidates
         run: |
           python examples/intent_candidate.py --output generated/intent-candidate-ci

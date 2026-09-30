@@ -9,6 +9,16 @@ import sys
 import tempfile
 
 from biocompiler import __version__
+from biocompiler.ir.circuit_profile import (
+    CircuitProfileRequest,
+    HumanExperimentContext,
+    ImmuneRecipientIdentity,
+)
+from biocompiler.verification.circuit_profile import (
+    CircuitProfileAssessment,
+    check_circuit_profile,
+    verify_circuit_profile,
+)
 from biocompiler.ir.candidate import CandidateRequest, CandidateRequirements, MolecularLibrary
 from biocompiler.ir.candidate_build import CandidateBuildRecord
 from biocompiler.ir.implementation import (
@@ -177,6 +187,10 @@ def _read_artifact(document):
         {
             cls.schema_version: cls
             for cls in (
+                CircuitProfileRequest,
+                HumanExperimentContext,
+                ImmuneRecipientIdentity,
+                CircuitProfileAssessment,
                 AdmissionRequest,
                 AdmissionAssessment,
                 BuildRequest,
@@ -288,6 +302,15 @@ def _read_artifact(document):
     )
     if not isinstance(schema, str) or schema not in types:
         raise SerializationError(f"Unknown or missing artifact schema: {schema!r}.")
+    if types[schema] in (
+        CircuitProfileRequest,
+        HumanExperimentContext,
+        ImmuneRecipientIdentity,
+        CircuitProfileAssessment,
+    ):
+        # Preserve the profile's raw-byte limits even for whitespace-padded
+        # records inspected through the generic artifact entry point.
+        return types[schema].from_json(document)
     return types[schema].from_dict(header)
 
 
@@ -298,6 +321,25 @@ def _summary(artifact):
         "schema_version": artifact.schema_version,
         "fingerprint": artifact.fingerprint,
     }
+    if isinstance(artifact, CircuitProfileRequest):
+        summary.update(
+            purpose=artifact.purpose,
+            mode=artifact.mode,
+            molecular_form=artifact.molecular_form.value,
+            boundary=artifact.boundary,
+            inspection="Declared scope only; molecular compilation is not implemented.",
+        )
+    if isinstance(artifact, CircuitProfileAssessment):
+        summary.update(
+            purpose=artifact.request.purpose,
+            boundary=artifact.boundary,
+            eligibility=artifact.eligibility,
+            dimensions=dict(artifact.dimensions),
+            diagnostics=list(artifact.diagnostics),
+            molecular_generation=artifact.molecular_generation,
+            human_therapeutic_admission=artifact.human_therapeutic_admission,
+            inspection="Historical scope assessment; fresh verification requires independent complete request authority.",
+        )
     if isinstance(artifact, CandidateBuildRecord):
         summary.update(
             status=artifact.status, scope="product_cassette_structure",
@@ -496,6 +538,18 @@ def main(argv: Sequence[str] | None = None) -> int:
         "--version", action="version", version=f"biocompiler {__version__}"
     )
     commands = parser.add_subparsers(dest="command", required=True)
+    circuit_check = commands.add_parser(
+        "circuit-profile-check",
+        help="Check declared human circuit scope without compiling a molecule",
+    )
+    circuit_check.add_argument("--request", type=Path, required=True)
+    circuit_check.add_argument("--output", type=Path, required=True)
+    circuit_verify = commands.add_parser(
+        "circuit-profile-verify",
+        help="Recheck a scope assessment against independent request authority",
+    )
+    circuit_verify.add_argument("path", type=Path)
+    circuit_verify.add_argument("--expected-request", type=Path, required=True)
     studio = commands.add_parser(
         "studio", help="Open the guided local design workspace in your browser"
     )
@@ -670,6 +724,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         command.add_argument("path", type=Path)
         command.add_argument("--expected-request", type=Path, required=True)
     args = parser.parse_args(argv)
+    if args.command.startswith("circuit-profile-"):
+        return _circuit_profile_command(args)
     if args.command == "studio":
         if not 0 <= args.port <= 65535:
             parser.error("studio --port must be between 0 and 65535")
@@ -819,7 +875,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         )
     elif args.command == "inspect":
         try:
-            document = args.path.read_text(encoding="utf-8")
+            document = _bounded_text(args.path)
             program = _read_artifact(document)
         except (
             OSError,
@@ -834,6 +890,27 @@ def main(argv: Sequence[str] | None = None) -> int:
             program.to_json() if args.json else json.dumps(_summary(program), indent=2)
         )
     return 0
+
+
+def _circuit_profile_command(args):
+    try:
+        if args.command == "circuit-profile-check":
+            request = CircuitProfileRequest.from_json(_bounded_text(args.request))
+            assessment = check_circuit_profile(request)
+            verify_circuit_profile(assessment, expected_request=request)
+            _publish_report(assessment, args.output, inputs=(args.request,))
+        else:
+            request = CircuitProfileRequest.from_json(
+                _bounded_text(args.expected_request)
+            )
+            assessment = CircuitProfileAssessment.from_json(_bounded_text(args.path))
+            assessment = verify_circuit_profile(assessment, expected_request=request)
+        print(json.dumps(_summary(assessment), sort_keys=True, indent=2))
+        # This command checks scope/record consistency, not molecular capability.
+        return 0
+    except (BiocompilerError, OSError, ValueError, TypeError) as error:
+        print(str(error), file=sys.stderr)
+        return 2
 
 
 def _implementation_summary(record):
