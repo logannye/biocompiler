@@ -51,6 +51,34 @@ jobs:
           path: generated/synthetic-ci/
           if-no-files-found: ignore
           retention-days: 7
+      - name: Select, compose and reconstruct a bounded digital design
+        run: |
+          python examples/synthetic_selection.py
+          python examples/synthetic_design.py --output generated/synthetic-design-ci
+          biocompiler synthetic-select --request generated/synthetic-design-ci/request.json --output generated/synthetic-design-ci/selection-cli.json > generated/synthetic-design-ci/selection-summary.json
+          biocompiler synthetic-build --request generated/synthetic-design-ci/request.json --output generated/synthetic-design-ci/design-cli.bcb > generated/synthetic-design-ci/build-summary.json
+          biocompiler synthetic-inspect generated/synthetic-design-ci/design-cli.bcb > generated/synthetic-design-ci/inspect.json
+          biocompiler synthetic-verify generated/synthetic-design-ci/design-cli.bcb --expected-request generated/synthetic-design-ci/request.json > generated/synthetic-design-ci/verify.json
+          biocompiler synthetic-explore --request generated/synthetic-design-ci/campaign-request.json --output generated/synthetic-design-ci/campaign-cli-record.json > generated/synthetic-design-ci/campaign-summary.json
+          biocompiler synthetic-replay generated/synthetic-design-ci/campaign-cli-record.json --expected-request generated/synthetic-design-ci/campaign-request.json > generated/synthetic-design-ci/replay.json
+      - name: Retain and replay failed temporal verification evidence
+        run: |
+          python examples/synthetic_verification.py --output generated/synthetic-verification-ci
+          biocompiler synthetic-check --request generated/synthetic-verification-ci/check-request.json --output generated/synthetic-verification-ci/check-cli-record.json > generated/synthetic-verification-ci/check-summary.json
+          python -c "import subprocess; result = subprocess.run(['biocompiler', 'synthetic-check', '--request', 'generated/synthetic-verification-ci/wrong-reset-request.json', '--output', 'generated/synthetic-verification-ci/wrong-reset-cli-record.json']); assert result.returncode == 1, result.returncode" > generated/synthetic-verification-ci/wrong-reset-summary.json
+          biocompiler synthetic-reduce --request generated/synthetic-verification-ci/reduction-request.json --output generated/synthetic-verification-ci/reduction-cli-record.json > generated/synthetic-verification-ci/reduction-summary.json
+          biocompiler synthetic-replay generated/synthetic-verification-ci/reduction-cli-record.json --expected-request generated/synthetic-verification-ci/reduction-request.json > generated/synthetic-verification-ci/replay.json
+          biocompiler inspect generated/synthetic-verification-ci/wrong-reset-cli-record.json > generated/synthetic-verification-ci/inspection.json
+      - name: Retain design selection and verification workflow evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: synthetic-design-python-${{ matrix.python-version }}
+          path: |
+            generated/synthetic-design-ci/
+            generated/synthetic-verification-ci/
+          if-no-files-found: ignore
+          retention-days: 7
       - name: Run checked component linking and reference selection
         run: python examples/component_linking.py
       - name: Run checked DNA and RNA reference construct assembly

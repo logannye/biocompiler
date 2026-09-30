@@ -3,8 +3,10 @@
 import argparse
 from collections.abc import Sequence
 import json
+import os
 from pathlib import Path
 import sys
+import tempfile
 
 from biocompiler import __version__
 from biocompiler.semantics.admission import AdmissionAssessment, AdmissionRequest
@@ -126,6 +128,17 @@ from biocompiler.compiler.synthetic_build import (
     publish_synthetic_package,
     verify_synthetic_package,
 )
+from biocompiler.compiler.verification_workflow import (
+    SyntheticVerificationRequest,
+    SyntheticVerificationRecord,
+    run_synthetic_verification,
+    replay_synthetic_verification,
+)
+from biocompiler.synthesis.selection import SyntheticSelectionResult, select_synthetic
+from biocompiler.verification.exploration import (
+    BooleanInputConfig,
+    BooleanInputExplorationReport,
+)
 
 
 def _read_artifact(document):
@@ -218,6 +231,11 @@ def _read_artifact(document):
                 SyntheticBuildManifest,
                 SyntheticBuildRequest,
                 SyntheticHistory,
+                SyntheticVerificationRequest,
+                SyntheticVerificationRecord,
+                SyntheticSelectionResult,
+                BooleanInputConfig,
+                BooleanInputExplorationReport,
             )
         }
     )
@@ -233,6 +251,19 @@ def _summary(artifact):
         "schema_version": artifact.schema_version,
         "fingerprint": artifact.fingerprint,
     }
+    if isinstance(artifact, SyntheticVerificationRecord):
+        summary.update(_verification_summary(artifact))
+        summary["inspection"] = (
+            "Historical report only; fresh replay requires independent complete operation authority."
+        )
+    if isinstance(artifact, SyntheticSelectionResult):
+        summary.update(
+            outcome=artifact.outcome,
+            selected_strategy=artifact.selected_strategy,
+            checked_candidates=artifact.checked_candidates,
+            rejected_candidates=artifact.rejected_candidates,
+            inspection="Historical bounded digital selection only; rerun with independent request/history/configuration authority.",
+        )
     for key in ("id", "name", "context_id", "outcome", "evidence_kind"):
         if hasattr(artifact, key):
             summary[key] = getattr(artifact, key)
@@ -455,7 +486,50 @@ def main(argv: Sequence[str] | None = None) -> int:
         type=Path,
         help="Independent complete SyntheticBuildRequest JSON, including history/horizon/config",
     )
+    for operation in ("check", "explore", "reduce"):
+        workflow = commands.add_parser(
+            f"synthetic-{operation}",
+            help=f"Run a declared {operation} operation and retain scoped software-model evidence",
+        )
+        workflow.add_argument(
+            "--request",
+            type=Path,
+            required=True,
+            help="Complete SyntheticVerificationRequest JSON",
+        )
+        workflow.add_argument(
+            "--output", type=Path, help="Atomic JSON report destination"
+        )
+    replay = commands.add_parser(
+        "synthetic-replay",
+        help="Reexecute a report with independent complete operation authority",
+    )
+    replay.add_argument("path", type=Path)
+    replay.add_argument("--expected-request", type=Path, required=True)
+    replay.add_argument("--output", type=Path)
+    selection = commands.add_parser(
+        "synthetic-select",
+        help="Check two bounded digital implementations before ranking",
+    )
+    selection.add_argument(
+        "--request",
+        type=Path,
+        required=True,
+        help="SyntheticBuildRequest JSON binding source, history, horizon and policy",
+    )
+    selection.add_argument(
+        "--output", type=Path, help="Atomic selection report destination"
+    )
     args = parser.parse_args(argv)
+    if args.command in {
+        "synthetic-check",
+        "synthetic-explore",
+        "synthetic-reduce",
+        "synthetic-replay",
+    }:
+        return _verification_command(args)
+    if args.command == "synthetic-select":
+        return _selection_command(args)
     if args.command.startswith("synthetic-"):
         return _synthetic_command(args)
     if args.command.startswith("reference-"):
@@ -598,6 +672,140 @@ def _bounded_text(path, limit=16 * 1024 * 1024):
     return data.decode("utf-8")
 
 
+def _publish_report(artifact, destination, *, inputs=()):
+    """Atomically retain diagnostics as diagnostics, including nonpassing results."""
+    if destination is None:
+        return
+    if destination.resolve() in {path.resolve() for path in inputs}:
+        raise SerializationError(
+            "A report cannot overwrite its independent input authority."
+        )
+    if not destination.parent.is_dir():
+        raise SerializationError("Report destination parent must already exist.")
+    if destination.is_symlink() or (destination.exists() and not destination.is_file()):
+        raise SerializationError("Report destination must be a regular file.")
+    payload = (artifact.to_json() + "\n").encode("utf-8")
+    if len(payload) > 64 * 1024 * 1024:
+        raise SerializationError("Verification report exceeds the 64 MiB size limit.")
+    descriptor, temporary = tempfile.mkstemp(
+        prefix=f".{destination.name}.", suffix=".tmp", dir=destination.parent
+    )
+    try:
+        with os.fdopen(descriptor, "wb") as target:
+            descriptor = None
+            if target.write(payload) != len(payload):
+                raise OSError("Incomplete verification report write.")
+            target.flush()
+            os.fsync(target.fileno())
+        os.replace(temporary, destination)
+    finally:
+        if descriptor is not None:
+            os.close(descriptor)
+        Path(temporary).unlink(missing_ok=True)
+
+
+def _verification_summary(record):
+    operation = record.request.operation
+    result = record.result
+    summary = {
+        "record_fingerprint": record.fingerprint,
+        "request_fingerprint": record.request.fingerprint,
+        "operation": operation,
+        "mode": record.request.mode,
+        "intended_use": "software_test",
+        "human_therapeutic_admission": "not_admitted",
+        "claim_scope": record.claim_scope,
+    }
+    if operation == "check":
+        summary.update(
+            outcome=result.outcome.value,
+            diagnostics=[item.to_dict() for item in result.diagnostics],
+            counterexamples=[item.to_dict() for item in result.counterexamples],
+            coverage=[item.to_dict() for item in result.coverage],
+        )
+    elif operation == "explore":
+        summary.update(
+            complete=result.complete,
+            all_passed=result.all_passed,
+            evaluated_histories=result.evaluated_histories,
+            possible_histories=result.possible_histories,
+            outcome_counts=dict(result.outcome_counts),
+            bounds=result.config.to_dict(),
+        )
+    else:
+        summary.update(
+            outcome=result.result.outcome.value,
+            one_minimal=result.one_minimal,
+            evaluations=result.evaluations,
+            original_frames=len(result.original_history),
+            reduced_frames=len(result.history),
+            selected_failure=result.signature.to_dict(),
+        )
+    return summary
+
+
+def _verification_command(args):
+    try:
+        if args.command == "synthetic-replay":
+            authority = SyntheticVerificationRequest.from_json(
+                _bounded_text(args.expected_request)
+            )
+            historical = SyntheticVerificationRecord.from_json(
+                _bounded_text(args.path, 64 * 1024 * 1024)
+            )
+            record = replay_synthetic_verification(
+                historical, expected_request=authority
+            )
+            inputs = (args.path, args.expected_request)
+            exit_code = 0  # Reproducing a retained failure is a successful replay.
+        else:
+            authority = SyntheticVerificationRequest.from_json(
+                _bounded_text(args.request)
+            )
+            if args.command != f"synthetic-{authority.operation}":
+                raise SerializationError(
+                    "Command and frozen verification operation disagree."
+                )
+            record = run_synthetic_verification(authority)
+            inputs = (args.request,)
+            if authority.operation == "check":
+                exit_code = 0 if record.result.passed else 1
+            elif authority.operation == "explore":
+                exit_code = 0 if record.result.all_passed else 1
+            else:
+                exit_code = 0 if record.result.one_minimal else 1
+        _publish_report(record, args.output, inputs=inputs)
+        summary = _verification_summary(record)
+        if args.command == "synthetic-replay":
+            summary["replay"] = (
+                "Fresh execution reproduced the declared outcome; this does not turn a failure or unknown into PASS."
+            )
+        if args.output:
+            summary["output"] = str(args.output)
+        print(json.dumps(summary, indent=2))
+        return exit_code
+    except (OSError, UnicodeError, BiocompilerError, RecursionError) as exc:
+        print(f"biocompiler: {exc}", file=sys.stderr)
+        return 2
+
+
+def _selection_command(args):
+    try:
+        request = SyntheticBuildRequest.from_json(_bounded_text(args.request))
+        result = select_synthetic(
+            request.realization,
+            request.history.frames,
+            until=request.until,
+            config=request.config,
+        )
+        _publish_report(result, args.output, inputs=(args.request,))
+        print(result.to_json())
+        return 0 if result.candidate is not None else 1
+    except (OSError, UnicodeError, BiocompilerError, RecursionError) as exc:
+        print(f"biocompiler: {exc}", file=sys.stderr)
+        return 2
+
+
 def _synthetic_command(args):
     try:
         if args.command == "synthetic-build":
@@ -608,6 +816,7 @@ def _synthetic_command(args):
                 else None
             )
             package = build_synthetic_package(request, run_metadata=metadata)
+            scope = package.manifest.scope
             output = publish_synthetic_package(package, args.output)
             summary = {
                 "output": str(output),
@@ -633,6 +842,7 @@ def _synthetic_command(args):
                     expected_request=expected,
                     expected_build_fingerprint=args.expected_build,
                 )
+                scope = package.manifest.scope
                 summary = {
                     "build_fingerprint": package.build_fingerprint,
                     "verification": "fresh independent offline reconstruction passed",
@@ -641,6 +851,7 @@ def _synthetic_command(args):
                 manifest, files, metadata = read_archive(data)
                 if not isinstance(manifest, SyntheticBuildManifest):
                     raise SerializationError("Expected a synthetic package.")
+                scope = manifest.scope
                 summary = {
                     "build_fingerprint": manifest.build_fingerprint,
                     "files": len(files),
@@ -648,7 +859,7 @@ def _synthetic_command(args):
                     "inspection": "Historical content and file integrity only; acceptance requires independent authority and current offline reconstruction.",
                 }
         summary.update(
-            scope="synthetic_realization",
+            scope=scope,
             intended_use="software_test",
             human_therapeutic_admission="not_admitted",
             unresolved=["molecular_behavior"],

@@ -62,6 +62,24 @@ archive and reconstructs it against independent authority. Run
 `PYTHONPATH=src python examples/synthetic_build.py --output generated/synthetic`.
 See the [synthetic build/verify CLI](../docs/synthetic-build-v0.1.md).
 
+[synthetic_design.py](synthetic_design.py) runs the integrated offline design loop:
+author an operator constraint, select a passing alternate graph, reconstruct a
+temporal component package and check 100 mixed cell/contact histories. Run
+`PYTHONPATH=src python examples/synthetic_design.py --output generated/design`.
+The retained request, selected implementation, package and campaign can be
+rechecked with installed `synthetic-select`, `synthetic-build`, `synthetic-verify`,
+`synthetic-explore` and `synthetic-replay` commands.
+
+[synthetic_selection.py](synthetic_selection.py) demonstrates native versus
+De Morgan conjunction, a constraint forcing the alternate implementation and
+bounded search exhaustion. Gate counts are software costs, not molecular costs.
+
+[synthetic_verification.py](synthetic_verification.py) retains passing checks,
+bounded mixed-input exploration and a wrong-reset diagnostic failure reduced from
+five to three frames. Run `PYTHONPATH=src python examples/synthetic_verification.py --output generated/verification`.
+All records include complete independent operation requests for fresh replay;
+failed and unknown reports remain separate from accepted packages.
+
 [component_linking.py](component_linking.py) extends the synthetic pipeline to locked component contracts and separately inspects a pinned FAP RNA-CDS reference. Run `PYTHONPATH=src python examples/component_linking.py`. It preserves finite-history evidence and CDS-only scope; no molecular sequence is emitted.
 
 [reference_construct.py](reference_construct.py) independently selects DNA and RNA CDS records and runs checked single-component construct assembly for each. Run `PYTHONPATH=src python examples/reference_construct.py`. The complete reference layout retains unknown payload context and unresolved emission/biological obligations.

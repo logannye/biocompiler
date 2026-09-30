@@ -23,7 +23,7 @@ from biocompiler.artifacts.synthetic_build import SyntheticBuildManifest
 from biocompiler.errors import SerializationError
 from biocompiler.ir.serialization import parse_json, require
 
-ARCHIVE_VERSION = "biocompiler.reference_archive.v0.2"
+ARCHIVE_VERSION = "biocompiler.reference_archive.v0.3"
 MAX_ARCHIVE_BYTES = 64 * 1024 * 1024
 MAX_MEMBER_BYTES = 16 * 1024 * 1024
 MAX_METADATA_BYTES = 1024 * 1024

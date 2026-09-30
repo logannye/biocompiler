@@ -17,9 +17,11 @@ This release uses the `biocompiler` package, CLI and artifact namespace. See the
 | Check required and prohibited observations | One acceptance authority for source responses, healthy-context inactivity, background/peak limits, response duration, input-access loss and external shutdown assumptions. |
 | Freeze deployment requirements | Pinned delivery specification, recipient and exposure assumptions, distinct expression/behavior clocks, and explicit unsupported co-payload obligations. |
 | Evaluate and check abstract behavior | Execution against supplied observation histories, a limited automatic synthetic candidate generator, and independent checks with counterexamples and explicit coverage. |
+| Compare digital implementations | Two bounded conjunction strategies, authored operator/gate constraints, independent candidate checks, deterministic ranking and retained rejection reasons. |
+| Stress-check and replay a design | JSON-driven checks, mixed cell/contact exploration and selected-failure reduction with exact bounds, explicit unknowns and independent replay authority. |
 | Inspect proposed profile cases | Positive, negative, conflicting, underspecified and unsupported requests, with separate admission and bounded-search outcomes. |
 | Enforce human-profile admission | Fresh gates at planning, selection, verification and export; existing artifacts are software-only and no human therapeutic profile is admitted. |
-| Link components | Versioned component contracts with checked interfaces, operating assumptions, providers, resources, and dependency identities. |
+| Link and execute digital components | Versioned stateless/temporal contracts, explicit events and values, actual assembly reconstruction, checked providers/resources and independent behavior checks. |
 | Reproduce a reference coding sequence | Checked single-CDS assembly, exact DNA or RNA emission, sequence/translation checks, and reproducible offline build packages. |
 | Record molecular correspondence | Contracts connecting requested observations and responses to selected CDS components, with separate parameter, context, and evidence records. |
 | Check a supplied molecule specification | Structural profiles for mature linear RNA, linear DNA, and circular plasmids, checked against independently pinned references and retained source/review records. |
@@ -94,6 +96,23 @@ python examples/payload_readiness.py
 ```
 
 These examples cover abstract execution, independent combinational/temporal synthetic checks, reproducible workflow packages, molecular correspondence, and whole-molecule structural checks. The [example guide](examples/README.md) explains each example and its evidence boundaries. The [temporal profile](docs/synthetic-temporal-v0.1.md) supports sustained conditions, pulses and resettable memory; [synthetic packages](docs/synthetic-build-v0.1.md) provide offline build/verify commands without molecular or human-admission claims.
+
+For the integrated offline design loop:
+
+```sh
+python examples/synthetic_design.py --output generated/design
+biocompiler synthetic-select --request generated/design/request.json
+biocompiler synthetic-verify generated/design/design.bcb --expected-request generated/design/request.json
+biocompiler synthetic-explore --request generated/design/campaign-request.json --output generated/design/rechecked.json
+biocompiler synthetic-replay generated/design/rechecked.json --expected-request generated/design/campaign-request.json
+```
+
+This selects an implementation under a frozen operator constraint, packages its
+checked component assembly and explores 100 declared mixed-input histories.
+[Selection](docs/synthetic-selection-v0.1.md), [temporal composition](docs/temporal-components-v0.1.md)
+and [verification](docs/synthetic-verification-v0.1.md) preserve the requirements,
+implementation choices and evidence boundaries needed by future molecular profiles.
+They use software fixtures and require no outside data or laboratory access.
 
 To build and inspect a package containing the bundled RNA-CDS reference:
 

@@ -17,6 +17,10 @@ from biocompiler.errors import SerializationError
 from biocompiler.ir.serialization import JsonArtifact, fields, name, names, require
 from biocompiler.semantics.types import BOOLEAN, LEVEL, TypeSpec
 
+STATELESS_TIMING = "atomic_snapshot_stateless.v0.1"
+TEMPORAL_LEVEL_TIMING = "atomic_discrete_event_level.v0.1"
+TEMPORAL_EVENT_TIMING = "atomic_discrete_event_event.v0.1"
+
 
 def _schema(data, cls, keys):
     fields(data, keys | {"schema_version"}, cls.__name__)
@@ -34,6 +38,26 @@ def contract_type(value) -> TypeSpec:
         "Component contracts support Boolean and scalar types only.",
     )
     return value
+
+
+def canonical_synthetic_unit(dtype: TypeSpec) -> str:
+    """Canonical runner units for closed digital models; never convert labels.
+
+    Generic component contracts can describe other units. Executable synthetic
+    ports must use the runner's canonical units because values enter unchanged.
+    """
+    contract_type(dtype)
+    known = {
+        (): "1",
+        (("time", 1),): "s",
+        (("amount", 1), ("length", -3)): "mol/m^3",
+        (("amount", 1), ("length", -2)): "mol/m^2",
+        (("amount", 1), ("time", -1)): "mol/s",
+    }
+    return known.get(
+        dtype.dimensions,
+        "canonical:" + ";".join(f"{key}^{power}" for key, power in dtype.dimensions),
+    )
 
 
 def decode_type(data) -> TypeSpec:
@@ -219,6 +243,63 @@ def domain_subset(required: ValueDomain, supported: ValueDomain) -> DomainCheck:
     )
 
 
+def synthetic_output_domain(operation, attributes, inputs, dtype, *,
+                            initialization=False, max_contacts=None):
+    """Sound local abstraction for the closed executable software operators.
+
+    Correlations and symbolic transition proofs are deliberately absent. An
+    external input declares an assumption, so its bound is not inferred here.
+    Unknown operands never establish a narrower known guarantee.
+    """
+    unit = canonical_synthetic_unit(dtype)
+    if operation == "input":
+        return None
+    if operation == "constant":
+        literal = attributes["value"]
+        return (ValueDomain.boolean((literal,)) if type(literal) is bool else
+                ValueDomain.interval(literal["canonical_value"], literal["canonical_value"], dtype, unit))
+    if operation == "held_for" and initialization:
+        return ValueDomain.boolean((False,))
+    if any(item.kind == "unknown" for item in inputs):
+        return ValueDomain.unknown(dtype, unit, "Executable input domain is unknown.")
+    if operation in {"and", "or"}:
+        if operation == "and":
+            values = ({False} if any(False in item.values for item in inputs) else set()) | (
+                {True} if all(True in item.values for item in inputs) else set())
+        else:
+            values = ({True} if any(True in item.values for item in inputs) else set()) | (
+                {False} if all(False in item.values for item in inputs) else set())
+        return ValueDomain.boolean(tuple(sorted(values)))
+    if operation == "not":
+        return ValueDomain.boolean(tuple(not value for value in inputs[0].values))
+    if operation == "compare":
+        return ValueDomain.boolean()
+    if operation == "any_contact":
+        return ValueDomain.boolean((False, True) if True in inputs[0].values
+                                   and max_contacts != 0 else (False,))
+    if operation == "select":
+        branches = [inputs[1] if condition else inputs[2] for condition in inputs[0].values]
+        if dtype.kind == "condition":
+            return ValueDomain.boolean(tuple(sorted({v for branch in branches for v in branch.values})))
+        return ValueDomain.interval(min(branch.lower for branch in branches),
+                                    max(branch.upper for branch in branches), dtype, unit)
+    if operation == "output":
+        return inputs[0]
+    if operation in {"held_for", "onset", "pulse"}:
+        if initialization and operation in {"onset", "pulse"}:
+            return inputs[0]
+        return ValueDomain.boolean((False, True) if True in inputs[0].values else (False,))
+    if operation == "memory":
+        if initialization:
+            values = {
+                setting and not resetting
+                for setting in inputs[0].values for resetting in inputs[1].values
+            }
+            return ValueDomain.boolean(tuple(sorted(values)))
+        return ValueDomain.boolean()
+    require(False, "Unsupported executable domain abstraction.")
+
+
 @dataclass(frozen=True)
 class OperatingDomain(JsonArtifact):
     """A conjunction of named constraints; omitted coordinates mean unknown."""
@@ -305,13 +386,14 @@ class PortContract(JsonArtifact):
     timing: str
     initialization: ValueDomain
     domain: ValueDomain
-    schema_version: ClassVar[str] = "biocompiler.component_port.v0.1"
+    schema_version: ClassVar[str] = "biocompiler.component_port.v0.2"
 
     def __post_init__(self):
         for key in ("id", "meaning", "unit", "role", "compartment", "timing"):
             name(getattr(self, key), f"Port {key}")
         require(
-            self.timing in {"atomic_snapshot_stateless.v0.1", "unknown"},
+            self.timing in {STATELESS_TIMING, TEMPORAL_LEVEL_TIMING,
+                            TEMPORAL_EVENT_TIMING, "unknown"},
             "Unsupported component timing profile.",
         )
         require(
@@ -323,6 +405,8 @@ class PortContract(JsonArtifact):
             "Port scope must be cell or contact.",
         )
         contract_type(self.dtype)
+        require(self.timing != TEMPORAL_EVENT_TIMING or self.dtype.kind == "condition",
+                "Instantaneous event interfaces require Boolean values.")
         for key in ("initialization", "domain"):
             value = getattr(self, key)
             require(

@@ -13,6 +13,7 @@ from biocompiler.ir.component_contracts import (
     ComponentRecord,
     ParameterProvenance,
     PinnedIdentity,
+    SyntheticOperatorModel,
 )
 from biocompiler.ir.composition import (
     CompositionInstance,
@@ -22,18 +23,19 @@ from biocompiler.ir.composition import (
 from biocompiler.ir.serialization import require
 from biocompiler.models.synthetic import MODEL_RUNNER_VERSION
 from biocompiler.registry.components import ComponentRegistry
-from biocompiler.registry.synthetic import SYNTHETIC_CATALOG, SYNTHETIC_PROFILE_VERSION
+from biocompiler.registry.synthetic import catalog_for_profile, SYNTHETIC_PROFILE_VERSION
 from biocompiler.semantics.component_contracts import (
     OperatingDomain,
     PortContract,
     ValueDomain,
+    canonical_synthetic_unit, synthetic_output_domain,
+    STATELESS_TIMING, TEMPORAL_LEVEL_TIMING, TEMPORAL_EVENT_TIMING,
 )
-from biocompiler.semantics.types import Interval
+from biocompiler.semantics.types import Interval, DURATION
 from biocompiler.synthesis.synthetic import check_synthetic_candidate
 from biocompiler.verification.evidence import CheckOutcome, CheckResult
 
-SYNTHETIC_COMPONENT_ADAPTER_VERSION = "biocompiler.synthetic_components.v0.1"
-_TIMING = "atomic_snapshot_stateless.v0.1"
+SYNTHETIC_COMPONENT_ADAPTER_VERSION = "biocompiler.synthetic_components.v0.2"
 
 
 @dataclass(frozen=True)
@@ -43,33 +45,18 @@ class SyntheticComposition:
     acceptance: CheckResult
 
 
-def _unit(dtype):
-    """Name canonical base units; no conversion or label-based equivalence."""
-    known = {
-        (): "1",
-        (("time", 1),): "s",
-        (("amount", 1), ("length", -3)): "mol/m^3",
-        (("amount", 1), ("length", -2)): "mol/m^2",
-        (("amount", 1), ("time", -1)): "mol/s",
-    }
-    return known.get(
-        dtype.dimensions,
-        "canonical:" + ";".join(f"{key}^{power}" for key, power in dtype.dimensions),
-    )
-
-
 def _input_domain(item):
     if isinstance(item.allowed, Interval):
         return ValueDomain.interval(
             item.allowed.lower.canonical_value,
             item.allowed.upper.canonical_value,
             item.observable.dtype,
-            _unit(item.observable.dtype),
+            canonical_synthetic_unit(item.observable.dtype),
         )
     return ValueDomain.boolean(item.allowed)
 
 
-def _output_domains(request, candidate):
+def _output_domains(request, candidate, *, initialization=False):
     authored = {
         (item.signal_id, item.field): _input_domain(item)
         for item in request.domain.inputs
@@ -80,66 +67,16 @@ def _output_domains(request, candidate):
     }
     result = {}
     for node in candidate.mechanism.topological_nodes():
-        incoming = [result[ref] for ref in node.inputs]
-        if node.kind == "input":
-            value = input_domains[node.id]
-        elif node.kind == "constant":
-            literal = node.attributes["value"]
-            value = (
-                ValueDomain.boolean((literal,))
-                if type(literal) is bool
-                else ValueDomain.interval(
-                    literal["canonical_value"],
-                    literal["canonical_value"],
-                    node.output.dtype,
-                    _unit(node.output.dtype),
-                )
+        result[node.id] = (
+            input_domains[node.id] if node.kind == "input" else
+            synthetic_output_domain(
+                node.kind, node.attributes, [result[ref] for ref in node.inputs],
+                node.output.dtype, initialization=initialization,
+                max_contacts=request.domain.max_contacts,
             )
-        elif node.kind in {"and", "or"}:
-            if node.kind == "and":
-                values = (
-                    {False} if any(False in item.values for item in incoming) else set()
-                ) | ({True} if all(True in item.values for item in incoming) else set())
-            else:
-                values = (
-                    {True} if any(True in item.values for item in incoming) else set()
-                ) | (
-                    {False} if all(False in item.values for item in incoming) else set()
-                )
-            value = ValueDomain.boolean(tuple(sorted(values)))
-        elif node.kind == "not":
-            value = ValueDomain.boolean(tuple(not item for item in incoming[0].values))
-        elif node.kind == "compare":
-            # A sound bound. Relational correlations are outside this contract algebra.
-            value = ValueDomain.boolean()
-        elif node.kind == "any_contact":
-            value = ValueDomain.boolean(
-                (False, True)
-                if True in incoming[0].values and request.domain.max_contacts
-                else (False,)
-            )
-        elif node.kind == "select":
-            branches = [
-                incoming[1] if condition else incoming[2]
-                for condition in incoming[0].values
-            ]
-            if node.output.dtype.kind == "condition":
-                value = ValueDomain.boolean(
-                    tuple(sorted({v for branch in branches for v in branch.values}))
-                )
-            else:
-                value = ValueDomain.interval(
-                    min(branch.lower for branch in branches),
-                    max(branch.upper for branch in branches),
-                    node.output.dtype,
-                    _unit(node.output.dtype),
-                )
-        elif node.kind == "output":
-            value = incoming[0]
-        else:
-            require(False, "Unsupported synthetic component operation.")
-        result[node.id] = value
+        )
     return result
+
 
 
 def adapt_synthetic_components(
@@ -150,10 +87,8 @@ def adapt_synthetic_components(
     This requires independently checked finite-trace acceptance. Composition
     linking does not upgrade that result into universal or biological evidence.
     """
-    require(
-        candidate.generator_config.profile_version == SYNTHETIC_PROFILE_VERSION,
-        "The component linker currently supports only the stateless combinational profile; temporal interfaces require a separate timing contract.",
-    )
+    profile = candidate.generator_config.profile_version
+    catalog = catalog_for_profile(profile)
     acceptance = check_synthetic_candidate(
         request, candidate, tuple(history), until=until
     )
@@ -162,7 +97,12 @@ def adapt_synthetic_components(
         "Component adaptation requires passing synthetic acceptance for the current request, candidate and history.",
     )
     domains = _output_domains(request, candidate)
+    initial_domains = _output_domains(request, candidate, initialization=True)
     nodes = {node.id: node for node in candidate.mechanism.nodes}
+    events = set()
+    for node in candidate.mechanism.topological_nodes():
+        if node.kind == "onset" or (node.kind == "any_contact" and node.inputs[0] in events):
+            events.add(node.id)
     required_domain = OperatingDomain(
         {
             **{
@@ -186,8 +126,8 @@ def adapt_synthetic_components(
         PinnedIdentity(
             "registry",
             "synthetic.catalog",
-            SYNTHETIC_CATALOG.version,
-            SYNTHETIC_CATALOG.fingerprint,
+            catalog.version,
+            catalog.fingerprint,
         ),
     )
 
@@ -202,14 +142,16 @@ def adapt_synthetic_components(
             observable.role,
             observable.scope,
             observable.compartment,
-            _TIMING,
-            domains[ref],
+            STATELESS_TIMING if profile == SYNTHETIC_PROFILE_VERSION else (
+                TEMPORAL_EVENT_TIMING if ref in events else TEMPORAL_LEVEL_TIMING
+            ),
+            initial_domains[ref],
             domains[ref],
         )
 
     records = {}
     for node in candidate.mechanism.nodes:
-        operator = SYNTHETIC_CATALOG.for_operation(node.kind)
+        operator = catalog.for_operation(node.kind)
         parameters = ()
         if node.kind == "constant":
             parameters = (
@@ -222,6 +164,12 @@ def adapt_synthetic_components(
                     else "contract_band_lower_endpoint_witness",
                 ),
             )
+        elif node.kind in {"held_for", "pulse", "memory"} and node.attributes["duration"] is not None:
+            duration = node.attributes["duration"]["canonical_value"]
+            parameters = (ParameterProvenance(
+                "duration", ValueDomain.interval(duration, duration, DURATION, "s"),
+                request_identity, "authored_bound_duration",
+            ),)
         records[node.id] = ComponentRecord(
             id="synthetic.instance:" + node.id,
             version="1",
@@ -249,6 +197,10 @@ def adapt_synthetic_components(
             ),
             guarantees=operator.guarantees,
             parameters=parameters,
+            synthetic_model=SyntheticOperatorModel(
+                node.kind, node.attributes,
+                tuple(f"in:{index}" for index in range(len(node.inputs))),
+            ),
         )
     registry = ComponentRegistry(
         "synthetic.components:" + candidate.fingerprint,

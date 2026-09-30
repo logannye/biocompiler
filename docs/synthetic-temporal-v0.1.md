@@ -80,15 +80,17 @@ checks that provenance and independently executes both models against unchanged
 caller contracts. Active and inactive coverage are still required; sparse or
 unexercised cases remain UNKNOWN. Passing one history does not prove all histories.
 
-This change uses Mechanism IR and runner `v0.2`, generator `v0.3`, acceptance
-`v0.4`, catalog `v0.2`, generator-config schema `v0.2` and candidate schema `v0.3`.
+The current implementation uses Mechanism IR and runner `v0.2`, generator `v0.4`,
+acceptance `v0.5`, catalog `v0.2`, generator-config schema `v0.3` and candidate schema `v0.4`.
 Previously saved artifacts with obsolete schemas, models or catalog pins must be
 regenerated and rechecked; changing their version labels is not migration.
 
-The separate Mechanism-to-Components linker currently has a stateless snapshot
-timing contract and explicitly rejects temporal profiles. These builds complete
-the `synthetic_realization` scope at Mechanism IR. Full dynamic composition and
-molecular realization require their own profiles.
+The separate [temporal component profile](temporal-components-v0.1.md) now
+preserves event/level ports, executable operator parameters and observation
+bindings through Components. Independent reconstruction executes the actual
+assembly wiring. The default build completes `synthetic_realization` at Mechanism
+IR; an explicitly requested `synthetic_components` package retains this further
+checked stage. Biological dynamics and molecular realization remain unsupported.
 
 ## Verification
 

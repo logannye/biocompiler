@@ -12,7 +12,9 @@ The current call graph has these boundaries:
 | Intent to Behavior | `verify_lowering` checks output bindings against the separately frozen `BuildRequest`, then retained operations, edges, types, sources and contact identities | The lowerer and verifier share attribute normalization, lineage and contact-binding helpers. Explicit expected bindings and semantic regression histories test those conventions; this structural pass does not independently prove their entire semantics. |
 | Behavior to synthetic mechanism | `check_realization` executes `semantics.evaluator.evaluate` for requested actions and `models.synthetic.run_model` for candidate outputs, then monitors the declared response envelopes | The two runtimes share immutable types and artifact schemas, but neither invokes the other. Both are software models over supplied observations, with no biological parameter model. |
 | Synthetic candidate provenance | `check_synthetic_candidate` checks request/catalog identities and invokes the independent finite-history checker | It replays `generate_synthetic` for deterministic source-map policy. That replay establishes only provenance correspondence; it does not supply expected output traces or discharge response obligations. |
-| Synthetic component assembly | `check_component_assembly` checks explicit mechanism edges/input order and reruns `check_composition` | It shares the deterministic component adapter for expected records and provenance. The linker independently checks locked interfaces, domains, providers, cycles and resources; biological applicability remains conditional. |
+| Synthetic component assembly | `check_component_assembly` checks explicit mechanism attributes/edges/input order, reruns `check_composition` and requires independently reconstructed behavior | It shares the deterministic adapter for expected records/provenance. `models.components` reconstructs actual locked operators, wiring and bindings without reading the source graph or importing synthesis; the existing independent runner executes the result. This is not a third interpreter. |
+| Bounded digital selection | Every hard-eligible native/De Morgan candidate receives independent finite-history checking before ranking | Generator/provenance logic is shared with ordinary acceptance. Actual graph mutations must fail the execution check, and eligible UNKNOWN/UNSUPPORTED results cannot be ranked as PASS. Two template outcomes do not establish general feasibility. |
+| Imported verification workflow record | Fresh replay requires independent complete operation authority and compares fully rerun evidence | It reuses existing checkers, enumerator and selected-failure reducer. Bounds, suffix, horizon, budgets and diagnostic mode are inputs, not trusted claims from the saved report. |
 | Components to Construct | `check_construct_request` recreates the expected reference contract from trusted reviewed pins and checks whole-CDS layout; `check_construct` compares the proposed candidate with that authority | The reference adapter is shared. Expected manifest/record fingerprints were curated independently of the assembler. The checker imports no construct generator. |
 | Construct to Molecular | `check_molecular` rechecks Construct, compares every nucleotide with the selected reviewed record and translates against the separately frozen protein | Feature-status schema rules are shared with the emitter. Translation uses the reference translation implementation; the emitter only copies the selected nucleotide record. The checker imports no emitter. |
 | Imported reference package | `verify_reference_package` requires an independently supplied request/build identity, reloads retained pinned evidence and reconstructs with current checkers | Archive hashes establish file integrity. Historical check records are compared with freshly reconstructed evidence, rather than promoted to acceptance. |
@@ -25,6 +27,14 @@ or move pulse expiry; response violations, rather than unrelated parse failures,
 must identify the changed behavior. The profile's bounded dwell campaign uses 81
 histories with three contact states at four variable timestamps and a declared
 active/inactive suffix and horizon; this does not cover every possible history.
+
+The mixed-input workflow campaign adds a cell-local reset to one contact with two
+Boolean fields: ten snapshot states at two variable times yield 100 histories,
+followed by a declared active/reset/inactive suffix. It remains a fixed finite
+lattice. A wrong-reset diagnostic model reduces from five snapshots to three
+while retaining the selected inactive-response failure. Component tests also
+change rehashed timer parameters or compatible wiring: structural linking can
+pass while independently reconstructed behavior correctly fails.
 
 The runtime dependency audit in `tests/test_verification_mutations.py` checks that
 the Behavior evaluator and synthetic runner have no direct execution dependency

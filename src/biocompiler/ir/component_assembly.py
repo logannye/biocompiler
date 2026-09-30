@@ -16,6 +16,7 @@ from biocompiler.ir.serialization import (
     require,
 )
 from biocompiler.registry.components import ComponentRegistry
+from biocompiler.verification.realization import ObservationMap
 
 
 @dataclass(frozen=True)
@@ -25,9 +26,12 @@ class ComponentAssembly(JsonArtifact):
     request_fingerprint: str
     candidate_fingerprint: str
     behavior_sources: Mapping[str, tuple[str, ...]]
-    schema_version: ClassVar[str] = "biocompiler.component_assembly.v0.1"
+    observation_map: ObservationMap
+    schema_version: ClassVar[str] = "biocompiler.component_assembly.v0.2"
 
     def __post_init__(self):
+        require(isinstance(self.observation_map, ObservationMap),
+                "A component assembly requires explicit input/output bindings.")
         require(
             isinstance(self.registry, ComponentRegistry),
             "Expected a component registry.",
@@ -71,6 +75,7 @@ class ComponentAssembly(JsonArtifact):
             "composition": self.composition.to_dict(),
             "request_fingerprint": self.request_fingerprint,
             "candidate_fingerprint": self.candidate_fingerprint,
+            "observation_map": self.observation_map.to_dict(),
             "behavior_sources": {
                 key: list(value) for key, value in self.behavior_sources.items()
             },
@@ -91,6 +96,7 @@ class ComponentAssembly(JsonArtifact):
                 "request_fingerprint",
                 "candidate_fingerprint",
                 "behavior_sources",
+                "observation_map",
                 "nodes",
             },
             cls.__name__,
@@ -105,6 +111,7 @@ class ComponentAssembly(JsonArtifact):
             data["request_fingerprint"],
             data["candidate_fingerprint"],
             data["behavior_sources"],
+            ObservationMap.from_dict(data["observation_map"]),
         )
         require(
             isinstance(data["nodes"], (tuple, list))
