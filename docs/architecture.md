@@ -2,6 +2,13 @@
 
 biocompiler is an experimental compiler working toward translating high-level therapeutic intent into an exact, complete DNA or RNA payload specification for in vivo immune cell therapies. Python is the implemented authoring language; natural-language authoring is a future frontend to the same explicit requirements. Its organizing principle is **preservation of a behavioral contract through explicit intermediate representations (IRs)**. Each molecular choice should remain traceable to the intended response, its deployment context and the evidence supporting it.
 
+**Human in-vivo immune-cell deployment is the sole product target.** Non-human
+organism compilation, sequencing and general cell-engineering workflows are out
+of scope. Human source experiments are supporting evidence with their own actual
+cell and assay context; that context never substitutes for the deployment target.
+Component origin is separate from recipient biology and requires its own
+provenance and human-context applicability assessment.
+
 The current repository implements the Python intent frontend, immutable intent and behavior graphs, checked intent-to-behavior lowering, an abstract reference evaluator, planning inspection, frozen build/realization requests, a checked pass manager, automatic combinational and temporal synthetic generation with locked operations, finite-trace realization checking against independent synthetic models, reproducible synthetic workflow packages, immutable typed component contracts, deterministic offline selection, and composition linking with provider/resource checks, independently checked whole-CDS reference construct assembly, and exact-reference DNA/RNA emission. A separate software molecular-design pipeline constructs and independently checks multi-region structural RNA specifications. The intent-candidate pipeline connects one authored product requirement to supplied CDS/architecture selection and automatic RNA assembly, retaining all unimplemented behavior. The checked molecular-implementation pipeline adds full requirement analysis, declared precursor/processing relationships, explicit providers and composite coding-segment construction under the separate `secreted_precursor_structure` scope. General molecular mechanism selection, biological simulation, characterized component libraries and human therapeutic-payload generation are not implemented. Physical manufacture, administration, and execution in a recipient cell are outside the compiler boundary.
 
 The [v0.1 intent API](intent-api-v0.1.md) implements the authoring vocabulary: cell roles, scoped observations, expressions, actions, state, outputs, controllers, and communication. Python constructs an inspectable intent graph; molecular realization remains a later stage.
@@ -49,6 +56,23 @@ requires fresh builds and checks; see [migration notes](biocompiler-migration.md
 Historical validation records keep their original revision and evidence scope.
 
 ## Compilation layers
+
+The planned [human immune-cell RNA-circuit track](rna-circuit-reproduction-plan.md)
+extends these layers with typed molecular observations, separate human
+source-experiment metadata, selected molecular mechanisms, complete molecule
+sets, checked molecular-form transformations, overlapping features and structured
+chemistry. It preserves
+separate base identity, nominal molecular identity, mechanistic correspondence,
+model and experimental results. Its Cello-inspired UI will expose linked views
+of the same checked human immune request and artifacts, with human-reference
+validation as a supporting workflow. Integration into the existing human
+target/deployment/acceptance path is required. R0 now adds the
+[human circuit profile](human-circuit-profile-v0.1.md): strict scope requests,
+typed immune-recipient bindings, separate source context, independent claim
+dimensions and fresh assessment replay against the complete expected request.
+Original behavior/deployment/acceptance wrappers remain intact. The CLI exposes
+scope checking and verification; `compile(CircuitProfileRequest)` explicitly
+refuses molecular generation. R1–R13 remain unimplemented.
 
 | Layer | Representation | Preservation obligation |
 | --- | --- | --- |

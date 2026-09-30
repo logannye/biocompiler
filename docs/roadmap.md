@@ -1,6 +1,18 @@
 # Development roadmap
 
 For the current resumption point and prior milestones, read the [session handoff](session-handoff.md).
+The next human immune-payload development track is the [RNA-circuit plan](rna-circuit-reproduction-plan.md):
+R0–R13 cover precise Python authoring, independently curated publication authority,
+multi-transcript mechanisms, exact sequence/chemistry construction, all proposed
+human RNA-logic families, bounded design and a Cello-inspired guided workspace.
+Human in-vivo immune-cell deployment is the sole product target; human-study
+reconstruction is a supporting evidence workflow, and integration into the human
+target/deployment path is required. Non-human targets and sequencing workflows
+are out of scope. R0 implements the [human circuit scope contract](human-circuit-profile-v0.1.md)
+in `0.1.0.dev20`; its [hosted validation](rna-circuit-reproduction-plan.md#r0--freeze-the-profile-and-completion-contracts)
+records the tested revision and platform.
+R1–R13 remain open. No therapeutic admission or molecular circuit generation is added.
+
 The [M11.1 audit](m11-human-benchmark-audit.md) records the current candidate
 comparison and explicit therapeutic-benchmark deferral. M11.1 is complete within
 that audit scope; M11.2–M11.6 remain open. A separate code-only track adds
@@ -422,6 +434,18 @@ The existing hosted Python 3.11/3.14 package, test, example and CLI gates are re
 M10.1–M10.6 software contracts, admission gates and examples and the M11.1 bounded evidence audit are complete within their documented scopes. The biological profile acceptance condition, M11.2–M11.6 and the biological scopes of M12–M16 remain open. The M12.7/M12.8/M14.6 product-cassette and M12.9/M12.10/M13.6 declared-precursor software increments are complete within their structural scopes, with hosted validation recorded above. The next evidence-dependent deliverable is **exact-material/source correspondence sufficient to begin M11.2 complete-reference reconciliation**, following the [audit gaps](m11-human-benchmark-audit.md#claim-blocking-gaps-and-next-work). Roybal supplemental material remains unretrieved and Allen correction/full-record correspondence unresolved. The accompanying scientific gates are a human-context model with independent evaluation and an independently reviewed complete-molecule reference. Separate reporter, primary-cell and animal evidence cannot be combined into an unsupported human in-vivo claim.
 
 ## Next implementation sequence
+
+For the human in-vivo immune-cell RNA-logic compiler work, execute
+[R0–R13](rna-circuit-reproduction-plan.md#ordered-implementation-work) in dependency
+order: human target/source authority; typed intent and molecular representations;
+independent transformation/assembly checks; mechanism correspondence; one complete
+vertical slice; the full publication/family collection; selection and evidence;
+public tooling and Cello-inspired UI; cross-family release acceptance. Source
+curation runs in parallel from the start. Missing source records remain explicit
+per-case gates, while independent families can continue. Human reference
+reconstruction supports this product; it cannot grant deployment admission or
+replace the original human immune target. Integration into the target path is
+mandatory in R2/R5/R6a/R12/R13. Do not build a separate general research compiler.
 
 The code-only track now reaches exact molecular candidates from an authored
 product requirement. M12.9/M12.10/M13.6 complete full implementation requirements,

@@ -2,6 +2,11 @@
 
 biocompiler is an experimental compiler project with a long-term goal: **turn high-level therapeutic intent into a precise, complete DNA or RNA payload specification for in vivo immune-cell therapy in humans**.
 
+This is its **only product target**. Human-cell studies provide supporting
+reference benchmarks; they do not create a general cell-culture or non-human
+compiler product. Source-experiment context and component origin remain distinct
+from the intended human immune-cell deployment and its evidence requirements.
+
 An engineer should be able to describe which cells to engineer, what those cells should recognize, how they should respond, and which outcomes they must avoid. The compiler should turn those requirements into explicit molecular implementation choices and exact nucleotide sequences, accompanied by molecular features, deployment assumptions, source maps and evidence. Python is the current authoring language; natural-language authoring is part of the longer-term vision.
 
 The central idea is to keep three things connected: **what a cell should do**, **how a proposed implementation is described**, and **what experimental evidence supports**. Typed descriptions and independent checks make those relationships inspectable throughout a design.
@@ -13,6 +18,7 @@ The current milestone connects therapeutic requirement analysis to a declared mo
 | Workflow | What it provides |
 | --- | --- |
 | Author intent and context | Typed Python descriptions of recognition, actions, timing and goals, with frozen human target, behavior, deployment and prohibited-outcome contracts. |
+| Check circuit scope | Human immune-recipient declarations bound to the exact target, separate human study context, and fresh checking against retained request authority; molecular compilation remains unsupported. |
 | Start in a guided workspace | A local browser GUI explains the example, lets you choose product and architecture constraints, and runs the real compiler with verified downloads. |
 | Analyze implementation requirements | Retain the complete source and human contracts, classify sensing, control, product, timing and deployment obligations, and identify missing refinements or contradictions. |
 | Compile a declared precursor implementation | `bc.compile(ImplementationRequest(...))` selects a supplied signal-prefix/product architecture, checks declared host dependencies and processing relationships, derives a composite CDS and emits exact RNA with base-level correspondence. |
@@ -28,6 +34,11 @@ Its bundled examples use **artificial, nonfunctional fragments and protein strin
 The GUI continues to use the earlier [intent-candidate profile](docs/intent-candidate-v0.1.md). The new precursor workflow is available through Python and the CLI, ready for later GUI integration.
 
 ## What remains to build
+
+The [human circuit profile](docs/human-circuit-profile-v0.1.md) implements R0 of
+the [RNA-circuit plan](docs/rna-circuit-reproduction-plan.md). Its Python and CLI
+checks establish declared scope and preserve independent evidence dimensions.
+It does not yet reconstruct a published circuit or emit a circuit payload.
 
 The next compiler capabilities must connect more source requirements to explicit molecular mechanisms, characterized components and supported implementation families. Quantitative models and observation mappings should evaluate those selected implementations, with separate evidence for their applicability. Complete therapeutic compilation also requires independently supported human biology, complete molecular identities and deployment compatibility. These are open engineering and scientific requirements, not capabilities established by the software fixtures.
 

@@ -1,5 +1,13 @@
 # Examples
 
+[circuit_profile.py](circuit_profile.py) exercises the human immune target and
+separate illustrative human-reference context across all five scope boundaries.
+Run `PYTHONPATH=src python examples/circuit_profile.py --output generated/circuit-profile`.
+It retains complete source wrappers and demonstrates independent request replay,
+unsupported circuit generation and absent therapeutic admission. The reference
+is a software fixture, not experimental evidence. See the
+[profile guide](../docs/human-circuit-profile-v0.1.md) for the check/verify CLI.
+
 [molecular_implementation.py](molecular_implementation.py) connects complete source
 analysis to declared precursor architectures, selected sequence authorities,
 composite coding/processing maps and exact RNA. Run
