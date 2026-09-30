@@ -83,6 +83,16 @@ Candidate generation and acceptance are separate responsibilities. A search algo
 
 ## Source-driven molecular candidates
 
+The [guided local workspace](studio-v0.1.md) is a browser frontend to this same
+profile. It prepares the bundled example or validates an imported frozen request,
+calls the existing compiler and independent checks, and freshly verifies each
+download against complete request authority. Its presentation summary has no
+independent authority to establish biological behavior. The package includes all
+static assets and the portable artificial request; Python's standard library
+serves them only on loopback. No JavaScript build or external runtime dependency
+is required. Editing inputs invalidates visible results, and imports remain
+read-only rather than receiving silent source rewrites.
+
 The [intent-candidate profile](intent-candidate-v0.1.md) is the first executable
 bridge from a source product requirement to emitted RNA. `CandidateRequest`
 freezes the original source request, supplied molecular library and separate hard

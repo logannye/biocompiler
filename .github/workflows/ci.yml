@@ -246,3 +246,36 @@ jobs:
       - name: Import scaffold interfaces
         run: |
           python -c "from biocompiler.compiler.passes import CompilerPass, PassResult; from biocompiler.semantics.context import TargetContext; from biocompiler.verification.evidence import Obligation"
+
+  studio-browser:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Record tested revision and platform
+        run: |
+          python -c "import os, platform; print('Revision:', os.environ['GITHUB_SHA']); print('Platform:', platform.platform()); print('Python:', platform.python_version())"
+          node --version
+      - name: Install package and browser test tools
+        run: |
+          python -m pip install .
+          npm install --prefix generated/browser-tools --no-save --ignore-scripts playwright@1.62.1
+          node generated/browser-tools/node_modules/playwright/cli.js install --with-deps chromium
+      - name: Exercise the installed guided workspace in a browser
+        env:
+          NODE_PATH: ${{ github.workspace }}/generated/browser-tools/node_modules
+          STUDIO_TEST_OUTPUT: ${{ github.workspace }}/generated/studio-browser-ci
+        run: node tests/browser/studio.cjs
+      - name: Retain GUI screenshots and verification evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: studio-browser-evidence
+          path: generated/studio-browser-ci/
+          if-no-files-found: ignore
+          retention-days: 7

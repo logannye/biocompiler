@@ -1,6 +1,24 @@
 # Session handoff and current resumption point
 
-## Current resumption point — intent-directed molecular candidates
+## Current resumption point — guided local design workspace
+
+Version `0.1.0.dev18` adds `biocompiler studio`, a local browser GUI for first-time
+use of the supported RNA candidate compiler. The guided example, read-only request
+import, architecture choices, exact sequence view and verified downloads all use
+the existing Python compilation and independent checking path. The server and
+static assets ship in the Python package without new runtime dependencies.
+See the [workspace guide](studio-v0.1.md). Local validation passes all 982 Python
+3.12 tests, Ruff, frozen audit integrity, and the real Chromium guided/import/
+download flow at desktop and mobile sizes. [Hosted validation](https://github.com/logannye/biocompiler/actions/runs/36753899559)
+passed all 982 tests, installation and existing gates on Python 3.11.16 and
+3.14.7, Linux x86_64. The separate installed-GUI job passed Chromium
+151.0.7922.34 / Playwright 1.62.1 with Node 22.23.3. Tested PR merge revision:
+`998686267f70124ad8b38614b3bcaa9e47a4beff`; implementation head:
+`ddfdd2e5dc5ddffd9584005d114f51da4ba6b083`, [PR #25](https://github.com/logannye/biocompiler/pull/25).
+M14.7 is complete within this software scope. Biological implementation and admission are
+unchanged; the result remains a partial structural research candidate.
+
+## Previous resumption point — intent-directed molecular candidates
 
 Updated **2026-09-30 (America/Los_Angeles)**. Version `0.1.0.dev17` implements
 the bounded source-to-product-cassette compiler described in
