@@ -12,6 +12,8 @@ from typing import Any, TYPE_CHECKING
 if TYPE_CHECKING:
     from biocompiler.ir.candidate import CandidateRequest
     from biocompiler.compiler.candidate import CandidateCompilation
+    from biocompiler.ir.implementation import ImplementationRequest
+    from biocompiler.compiler.implementation import ImplementationCompilation
 
 from biocompiler.verification.admission import admission_for_target
 from biocompiler.compiler.request import BuildRequest, RealizationRequest
@@ -383,10 +385,15 @@ def compile(
     | HumanBehaviorRequest
     | HumanDeploymentRequest
     | HumanAcceptanceRequest
-    | CandidateRequest,
-) -> CandidateCompilation:
+    | CandidateRequest
+    | ImplementationRequest,
+) -> CandidateCompilation | ImplementationCompilation:
     """Compile explicit research candidates; reject unimplemented human realization."""
     from biocompiler.ir.candidate import CandidateRequest
+    from biocompiler.ir.implementation import ImplementationRequest
+    if isinstance(design, ImplementationRequest):
+        from biocompiler.compiler.implementation import compile_implementation
+        return compile_implementation(design)
     if isinstance(design, CandidateRequest):
         from biocompiler.compiler.candidate import compile_candidate
         return compile_candidate(design)

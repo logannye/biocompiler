@@ -6,7 +6,7 @@ An engineer should be able to describe which cells to engineer, what those cells
 
 The central idea is to keep three things connected: **what a cell should do**, **how a proposed implementation is described**, and **what experimental evidence supports**. Typed descriptions and independent checks make those relationships inspectable throughout a design.
 
-The current milestone is a working, bounded bridge from an authored product requirement to an exact RNA cassette. Complete functional therapeutic compilation remains future work.
+The current milestone connects therapeutic requirement analysis to a declared molecular implementation, selected sequence parts and an exact RNA precursor construct. Complete functional therapeutic compilation remains future work.
 
 ## What works today
 
@@ -14,14 +14,18 @@ The current milestone is a working, bounded bridge from an authored product requ
 | --- | --- |
 | Author intent and context | Typed Python descriptions of recognition, actions, timing and goals, with frozen human target, behavior, deployment and prohibited-outcome contracts. |
 | Start in a guided workspace | A local browser GUI explains the example, lets you choose product and architecture constraints, and runs the real compiler with verified downloads. |
+| Analyze implementation requirements | Retain the complete source and human contracts, classify sensing, control, product, timing and deployment obligations, and identify missing refinements or contradictions. |
+| Compile a declared precursor implementation | `bc.compile(ImplementationRequest(...))` selects a supplied signal-prefix/product architecture, checks declared host dependencies and processing relationships, derives a composite CDS and emits exact RNA with base-level correspondence. |
 | Compile an RNA cassette candidate | `bc.compile(CandidateRequest(...))` selects supplied product-coding parts and an architecture, derives the layout, and emits independently checked exact bases. |
 | Explain and reproduce a build | Retained source requirements, alternatives, rejection reasons, part identities, molecular features and checks; JSON records and verified FASTA under independent request authority. |
 | Check abstract behavior | Bounded digital models, temporal execution, component linking, supplied-trace checks and reproducible failure analysis. |
 | Check molecular structure and references | Exact DNA/RNA coding-sequence reproduction, multi-region RNA construction and structural molecule checks, with separate reference/design packages. |
 
-The [intent-candidate compiler](docs/intent-candidate-v0.1.md) is the central executable path toward the vision. It currently handles one authored product requirement within a supplied, finite RNA-part library. Changing a supported product or architecture constraint changes the emitted sequence or produces an explained rejection. The caller supplies part identities and exact fragment authority; the compiler derives nucleotide coordinates automatically.
+The [molecular implementation compiler](docs/molecular-implementation-v0.1.md) is the newest executable path toward the vision. Its first family handles one conditionally requested secreted product using a finite, caller-supplied library. It retains the source guard as unresolved while checking the declared precursor, mature product, processing boundary, host dependencies and RNA structure. Changing a product or architecture constraint changes the sequence or produces an explained rejection. The compiler derives all nucleotide coordinates and independently verifies the proposed artifacts against the original request.
 
-Its bundled examples use **artificial, nonfunctional fragments and protein strings**. The resulting cassette is structurally complete within its declared profile, while conditional sensing, regulation, secretion, quantitative response and therapeutic function remain unresolved. The compiler retains the original human target and full source contracts, and reports partial therapeutic implementation with no human therapeutic admission. General therapeutic compilation from a `BuildRequest` still raises `CompilationUnavailableError`.
+Its bundled examples use **artificial, nonfunctional fragments and protein strings**. A caller can also supply exact sequence authorities with declared provenance; those records do not establish physical processing, secretion or therapeutic behavior. A structural result retains all unresolved functional obligations. Setting `require_implementation_complete=True` withholds molecular output under the current family. General therapeutic compilation from a `BuildRequest` still raises `CompilationUnavailableError`.
+
+The GUI continues to use the earlier [intent-candidate profile](docs/intent-candidate-v0.1.md). The new precursor workflow is available through Python and the CLI, ready for later GUI integration.
 
 ## What remains to build
 
@@ -74,7 +78,21 @@ print(program.summary())
 
 This builds an inspectable program description. Names such as `A` and `disease_context` are symbolic requirements; Python does not execute the cellular response. See the [intent API](docs/intent-api-v0.1.md) for the authoring vocabulary.
 
-### Compile a source-driven RNA candidate
+### Compile a declared molecular implementation
+
+This example retains a complete human source request, selects between two artificial precursor architectures and demonstrates rejected strict, size-limited and missing-provider cases:
+
+```sh
+python examples/molecular_implementation.py --output generated/molecular-implementation
+biocompiler implementation-analyze --request generated/molecular-implementation/source.json --output generated/molecular-implementation/analysis.json
+biocompiler implementation-build --request generated/molecular-implementation/compact.request.json --output generated/molecular-implementation/cli.build.json
+biocompiler implementation-verify generated/molecular-implementation/cli.build.json --expected-request generated/molecular-implementation/compact.request.json
+biocompiler implementation-fasta generated/molecular-implementation/cli.build.json --expected-request generated/molecular-implementation/compact.request.json
+```
+
+The build retains typed requirements, every bounded alternative, the selected plan and sequence authorities, derived coding/processing coordinates, molecular features and independent checks. FASTA export rechecks the complete build against the separately retained request. The [implementation guide](docs/molecular-implementation-v0.1.md) explains how to supply a library and interpret the result.
+
+### Use the earlier product-cassette profile
 
 The integrated example supplies two artificial products and two explicit architectures, preserving its human source request and all unresolved behavior:
 

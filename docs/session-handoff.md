@@ -1,6 +1,33 @@
 # Session handoff and current resumption point
 
-## Current resumption point — guided local design workspace
+## Current resumption point — checked molecular implementation
+
+Version `0.1.0.dev19` adds the three connected increments documented in
+[molecular implementation](molecular-implementation-v0.1.md): full-source typed
+requirements and diagnostics, declared sequence-backed precursor architectures,
+and checked composite construction with exact RNA emission. The original source,
+human target and behavior/deployment/acceptance contracts remain authoritative.
+Independent verification reconstructs every proposed stage, all alternatives,
+dependencies, processing coordinates and bases without calling the generators.
+
+`bc.compile(ImplementationRequest(...))` and the
+`implementation-analyze/build/verify/fasta` CLI commands expose this workflow.
+The [example](../examples/molecular_implementation.py) builds two artificial
+precursors for one mature product and retains strict, size and missing-provider
+rejections. User-supplied sequence/reference records preserve their declared
+provenance without implying empirical support.
+
+Completion is `secreted_precursor_structure`; therapeutic implementation remains
+partial, physical function unestablished and human admission absent. Strict
+completeness emits no molecule. The next functional family must implement source
+sensing/control through declared molecular rules and explicit model/observation
+bindings. Quantitative work must attach to selected sequence identities. The
+guided GUI remains on its earlier candidate profile for later iteration.
+
+Validation receipt will be recorded after hosted checks pass. No local package
+installation or native compilation is used.
+
+## Previous resumption point — guided local design workspace
 
 Version `0.1.0.dev18` adds `biocompiler studio`, a local browser GUI for first-time
 use of the supported RNA candidate compiler. The guided example, read-only request

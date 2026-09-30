@@ -11,6 +11,12 @@ import tempfile
 from biocompiler import __version__
 from biocompiler.ir.candidate import CandidateRequest, CandidateRequirements, MolecularLibrary
 from biocompiler.ir.candidate_build import CandidateBuildRecord
+from biocompiler.ir.implementation import (
+    ImplementationRequest, ImplementationLibrary, ImplementationSelection,
+    ImplementationPlan, ImplementationConstruct,
+)
+from biocompiler.ir.implementation_requirements import ImplementationRequirements
+from biocompiler.ir.implementation_build import ImplementationBuildRecord
 from biocompiler.ir.candidate_selection import CandidateSelection, CandidateLayout
 from biocompiler.semantics.admission import AdmissionAssessment, AdmissionRequest
 from biocompiler.compiler.acceptance import HumanAcceptanceRequest
@@ -175,6 +181,13 @@ def _read_artifact(document):
                 AdmissionAssessment,
                 BuildRequest,
                 CandidateRequest,
+                ImplementationRequest,
+                ImplementationLibrary,
+                ImplementationRequirements,
+                ImplementationSelection,
+                ImplementationPlan,
+                ImplementationConstruct,
+                ImplementationBuildRecord,
                 CandidateRequirements,
                 MolecularLibrary,
                 CandidateBuildRecord,
@@ -291,6 +304,18 @@ def _summary(artifact):
             therapeutic_implementation="partial", human_therapeutic_admission="not_admitted",
             inspection="Historical candidate only; fresh verification requires independent complete request authority.",
         )
+    if isinstance(artifact, ImplementationRequirements):
+        summary.update(
+            scope=artifact.scope, supported_profile=artifact.supported_profile,
+            products=[item.product for item in artifact.products],
+            obligations=len(artifact.obligations),
+            diagnostics=[item.to_dict() for item in artifact.diagnostics],
+            physical_function="unestablished",
+            inspection="Historical analysis; compare against the independently retained source.",
+        )
+    if isinstance(artifact, ImplementationBuildRecord):
+        summary.update(_implementation_summary(artifact))
+        summary["inspection"] = "Historical build; fresh verification requires independent complete request authority."
     if isinstance(artifact, SyntheticVerificationRecord):
         summary.update(_verification_summary(artifact))
         summary["inspection"] = (
@@ -626,6 +651,24 @@ def main(argv: Sequence[str] | None = None) -> int:
         )
         candidate_command.add_argument("path", type=Path)
         candidate_command.add_argument("--expected-request", type=Path, required=True)
+    implementation_analyze = commands.add_parser(
+        "implementation-analyze", help="Inspect full therapeutic implementation obligations"
+    )
+    implementation_analyze.add_argument("--request", type=Path, required=True)
+    implementation_analyze.add_argument("--output", type=Path, required=True)
+    implementation_build = commands.add_parser(
+        "implementation-build", help="Compile a checked declared precursor RNA architecture"
+    )
+    implementation_build.add_argument("--request", type=Path, required=True)
+    implementation_build.add_argument("--output", type=Path, required=True)
+    for operation in ("verify", "fasta"):
+        command = commands.add_parser(
+            "implementation-" + operation,
+            help="Freshly verify a molecular implementation build" if operation == "verify"
+            else "Export independently verified precursor RNA with completion scope",
+        )
+        command.add_argument("path", type=Path)
+        command.add_argument("--expected-request", type=Path, required=True)
     args = parser.parse_args(argv)
     if args.command == "studio":
         if not 0 <= args.port <= 65535:
@@ -644,6 +687,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         return 0
     if args.command.startswith("candidate-"):
         return _candidate_command(args)
+    if args.command.startswith("implementation-"):
+        return _implementation_command(args)
     if args.command.startswith("molecular-design-"):
         return _molecular_design_command(args)
     if args.command in {
@@ -789,6 +834,57 @@ def main(argv: Sequence[str] | None = None) -> int:
             program.to_json() if args.json else json.dumps(_summary(program), indent=2)
         )
     return 0
+
+
+def _implementation_summary(record):
+    return dict(
+        build_fingerprint=record.fingerprint,
+        status=record.status,
+        scope=record.scope,
+        selected_architecture=record.selection.selected_architecture_id,
+        structural_completion=record.molecule is not None,
+        physical_function="unestablished",
+        therapeutic_implementation="partial",
+        human_therapeutic_admission="not_admitted",
+        unresolved=[item.id for item in record.requirements.obligations],
+        diagnostics=[item.to_dict() for item in record.requirements.diagnostics],
+        selection_diagnostics=list(record.selection.diagnostics),
+        alternatives=[item.to_dict() for item in record.selection.alternatives],
+    )
+
+
+def _implementation_command(args):
+    from biocompiler.compiler.implementation import (
+        compile_implementation, export_implementation_fasta,
+        verify_implementation_build, verify_implementation_requirements,
+    )
+    from biocompiler.compiler.implementation_requirements import analyze_implementation_requirements
+    from biocompiler.ir.implementation_requirements import source_request_from_dict
+
+    try:
+        if args.command == "implementation-analyze":
+            source = source_request_from_dict(parse_json(_bounded_text(args.request)))
+            report = analyze_implementation_requirements(source)
+            verify_implementation_requirements(report, expected_source=source)
+            _publish_report(report, args.output, inputs=(args.request,))
+            print(json.dumps(_summary(report), sort_keys=True, indent=2))
+            return 0  # Successful analysis is not a claim of implementability.
+        if args.command == "implementation-build":
+            request = ImplementationRequest.from_json(_bounded_text(args.request))
+            record = compile_implementation(request).record
+            _publish_report(record, args.output, inputs=(args.request,))
+        else:
+            request = ImplementationRequest.from_json(_bounded_text(args.expected_request))
+            record = ImplementationBuildRecord.from_json(_bounded_text(args.path, limit=64 * 1024 * 1024))
+            record = verify_implementation_build(record, expected_request=request)
+            if args.command == "implementation-fasta":
+                print(export_implementation_fasta(record, expected_request=request), end="")
+                return 0
+        print(json.dumps(_implementation_summary(record), sort_keys=True, indent=2))
+        return 0 if record.molecule is not None else 1
+    except (BiocompilerError, OSError, ValueError, TypeError) as error:
+        print(str(error), file=sys.stderr)
+        return 2
 
 
 def _candidate_command(args):

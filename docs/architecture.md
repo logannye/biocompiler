@@ -2,7 +2,7 @@
 
 biocompiler is an experimental compiler working toward translating high-level therapeutic intent into an exact, complete DNA or RNA payload specification for in vivo immune cell therapies. Python is the implemented authoring language; natural-language authoring is a future frontend to the same explicit requirements. Its organizing principle is **preservation of a behavioral contract through explicit intermediate representations (IRs)**. Each molecular choice should remain traceable to the intended response, its deployment context and the evidence supporting it.
 
-The current repository implements the Python intent frontend, immutable intent and behavior graphs, checked intent-to-behavior lowering, an abstract reference evaluator, planning inspection, frozen build/realization requests, a checked pass manager, automatic combinational and temporal synthetic generation with locked operations, finite-trace realization checking against independent synthetic models, reproducible synthetic workflow packages, immutable typed component contracts, deterministic offline selection, and composition linking with provider/resource checks, independently checked whole-CDS reference construct assembly, and exact-reference DNA/RNA emission. A separate software molecular-design pipeline constructs and independently checks multi-region structural RNA specifications. The intent-candidate pipeline connects one authored product requirement to supplied CDS/architecture selection and automatic RNA assembly, retaining all unimplemented behavior. General molecular mechanism selection, biological simulation, characterized component libraries and human therapeutic-payload generation are not implemented. Physical manufacture, administration, and execution in a recipient cell are outside the compiler boundary.
+The current repository implements the Python intent frontend, immutable intent and behavior graphs, checked intent-to-behavior lowering, an abstract reference evaluator, planning inspection, frozen build/realization requests, a checked pass manager, automatic combinational and temporal synthetic generation with locked operations, finite-trace realization checking against independent synthetic models, reproducible synthetic workflow packages, immutable typed component contracts, deterministic offline selection, and composition linking with provider/resource checks, independently checked whole-CDS reference construct assembly, and exact-reference DNA/RNA emission. A separate software molecular-design pipeline constructs and independently checks multi-region structural RNA specifications. The intent-candidate pipeline connects one authored product requirement to supplied CDS/architecture selection and automatic RNA assembly, retaining all unimplemented behavior. The checked molecular-implementation pipeline adds full requirement analysis, declared precursor/processing relationships, explicit providers and composite coding-segment construction under the separate `secreted_precursor_structure` scope. General molecular mechanism selection, biological simulation, characterized component libraries and human therapeutic-payload generation are not implemented. Physical manufacture, administration, and execution in a recipient cell are outside the compiler boundary.
 
 The [v0.1 intent API](intent-api-v0.1.md) implements the authoring vocabulary: cell roles, scoped observations, expressions, actions, state, outputs, controllers, and communication. Python constructs an inspectable intent graph; molecular realization remains a later stage.
 
@@ -68,7 +68,7 @@ An exact sequence does not establish exact cellular behavior. Artifact identity 
 | Module | Intended responsibility |
 | --- | --- |
 | `frontend` | Construct scoped, typed intent graphs from Python objects; retain source locations, ownership, and dimensional relationships. |
-| `ir` | Immutable versioned intent, behavior, mechanism, component, construct and exact-CDS molecular schemas; strict JSON serialization and shared stage identifiers. |
+| `ir` | Immutable versioned intent, behavior, mechanism, component, construct and molecular schemas, including implementation requirements and declared precursor plans; strict JSON serialization and shared stage identifiers. |
 | `semantics` | Types, units, context, requirement meanings, observational mappings, and refinement obligations. |
 | `compiler` | Pass interfaces, stage ordering, diagnostics, dependency tracking, and provenance. |
 | `synthesis` | Propose candidate mechanisms, component assignments, and encodings within supported design spaces. |
@@ -83,15 +83,16 @@ Candidate generation and acceptance are separate responsibilities. A search algo
 
 ## Source-driven molecular candidates
 
-The [guided local workspace](studio-v0.1.md) is a browser frontend to this same
-profile. It prepares the bundled example or validates an imported frozen request,
+The [guided local workspace](studio-v0.1.md) is a browser frontend to the earlier
+`CandidateRequest` product-cassette profile. It prepares the bundled example or validates an imported frozen request,
 calls the existing compiler and independent checks, and freshly verifies each
 download against complete request authority. Its presentation summary has no
 independent authority to establish biological behavior. The package includes all
 static assets and the portable artificial request; Python's standard library
 serves them only on loopback. No JavaScript build or external runtime dependency
 is required. Editing inputs invalidates visible results, and imports remain
-read-only rather than receiving silent source rewrites.
+read-only rather than receiving silent source rewrites. It does not yet expose
+the newer `ImplementationRequest` precursor family described below.
 
 The [intent-candidate profile](intent-candidate-v0.1.md) is the first executable
 bridge from a source product requirement to emitted RNA. `CandidateRequest`
@@ -133,6 +134,79 @@ identity and scope labels. These records are separate from the existing `.bcb`
 packages. Future quantitative models should bind to the selected part and sequence
 identities through explicit observation maps. No sequence-to-rate inference or
 empirical support follows from this structural bridge.
+
+## Checked requirements and declared molecular implementations
+
+The [molecular-implementation profile](molecular-implementation-v0.1.md) extends
+source-driven construction through a separate checked chain:
+
+```text
+original source + supplied library + hard constraints/preferences
+    → implementation requirements
+    → bounded selection and declared molecular plan
+    → exact selected components
+    → composite precursor construct
+    → complete structural RNA specification
+```
+
+`analyze_implementation_requirements(source)` accepts the existing frozen source
+request types, retaining every source node, original provenance, target and
+wrapped behavior/deployment/acceptance contract. Typed obligations expose
+encoding, localization/processing, sensing, control, timing/state, quantitative
+response, actions, host/deployment and evidence requirements. Each carries exact
+operation arguments and source/context links. Broader unsupported designs remain
+analyzable; diagnostics separate unsupported semantics, missing refinements and
+known contradictions. An accurate analysis of an unsupported design can pass its
+independent correspondence check without making that design implementable.
+
+`ImplementationRequest` freezes source, `ImplementationLibrary` and
+`ImplementationConstraints`. The first selectable family contains one role and
+one ongoing product secretion under a condition rule. Each supplied RNA
+architecture explicitly declares UTRs, a signal-peptide coding segment, an
+optional coding junction, a mature-product segment, a terminal stop, optional
+poly(A), precursor/product expectations, processing boundary and RNA chemistry.
+One product identity must retain the same mature protein throughout the library;
+different product variants need distinct identities. Sequence provenance can be
+an artificial fixture, supplied sequence or supplied pinned reference. Those
+categories record attribution and do not establish biological support.
+
+The plan separates encoded structure from declared processing and transport.
+Its typed roles and edges connect translation, precursor, processing, mature
+product and extracellular destination. Translation, secretory translocation,
+processing and secretion transport each need an explicit compatible host or
+external provider. Selection checks exact recipient role, cell scope, physical
+compartments and target identity; human host assumptions remain in the original
+human contract. Missing or incompatible providers reject an alternative.
+Compatible declarations still leave physical function unestablished.
+
+The compiler enumerates product-matching architectures, retains all rejection
+reasons, and ranks eligible options after hard constraints. It derives whole-
+segment nucleotide placements, in-frame junctions, protein ranges and the
+declared processing boundary. Independent checks reconstruct the requirements,
+selection, relationships, layout, precursor/mature-protein correspondence,
+chemistry and emitted bases from the original request. The checker does not use
+the analyzer, selector, construct generator or emitter as an oracle.
+
+`bc.compile(ImplementationRequest(...))` integrates these stages with the pass
+manager. Requirements and declared plans occupy the Behavior and Mechanism stage
+slots under this profile's structural scope; they are not biological dynamics.
+Completion means `secreted_precursor_structure`, with
+`therapeutic_implementation="partial"`, `physical_function="unestablished"` and
+`human_therapeutic_admission="not_admitted"`. Every implementation obligation
+remains unresolved. A strict `require_implementation_complete=True` request
+cannot emit a molecule from this family. Neither the default partial mode nor a
+structural PASS implements the source guard, shutdown priority, secretion rate,
+physical processing, delivery or therapeutic effect.
+
+Saved JSON records retain original authority, alternatives, all stages, tool
+identities and independent checks. Fresh verification and FASTA export require
+the separately retained complete request and reject stale or altered records.
+FASTA omits structured chemistry and remaining obligations, so the corresponding
+request and build record remain necessary. These artifacts do not add a `.bcb`
+package format or change existing exact-reference contracts. Future functional
+families and quantitative adapters must bind their claims to the selected
+components, emitted sequences and explicit observation maps. See
+[ADR 0004](decisions/0004-checked-molecular-implementation.md).
 
 ## Semantic preservation
 
@@ -277,11 +351,11 @@ The [molecular implementation contract](molecular-behavior-v0.1.md) freezes requ
 
 [Whole-molecule readiness](payload-profiles-v0.1.md) has separate immutable molecule/reference records for narrow mature linear RNA, linear DNA and circular-plasmid profiles. The checker requires a separately supplied authority fingerprint, exact retained source/review bytes, independent sequence extraction, whole-molecule feature coverage and explicit topology/chemistry. These results do not enter the exact-CDS pipeline or authorize a complete-payload build. The example records are nonfunctional software fixtures; no complete biological reference is promoted.
 
-Planning and general therapeutic compilation report source-linked missing obligations for quantitative curves, continuous integration, interval-valued intent, population communication, spatial behavior and feedback. They preserve these authored requests without silently assigning an approximate execution model. The partial intent-candidate profile retains such obligations while implementing only its supported product-cassette structure. The [M9 evidence review](m9-evidence-review.md) identifies the scientific and source inputs needed for subsequent adapter and reference-promotion work.
+Planning and general therapeutic compilation report source-linked missing obligations for quantitative curves, continuous integration, interval-valued intent, population communication, spatial behavior and feedback. They preserve these authored requests without silently assigning an approximate execution model. The partial intent-candidate and declared precursor profiles retain such obligations while implementing only their supported structural scopes. The [M9 evidence review](m9-evidence-review.md) identifies the scientific and source inputs needed for subsequent adapter and reference-promotion work.
 
 ## Human-profile use admission
 
-The [M10.5 admission policy](human-admission-v0.1.md) is shared by planning, registry selection, fresh implementation verification and export. Its immutable request binds target, intended use, boundary and selected component records; the assessment preserves declared evidence categories and limitations. The current policy admits no human therapeutic profiles. Generic targets can request labeled software workflows only; human contexts cannot bypass admission by requesting software use. The partial research-candidate workflow retains human requirements and admission refusal while emitting a structurally checked cassette; it grants no implementation eligibility. Supplied human-contract observations may pass their finite checks without granting implementation eligibility.
+The [M10.5 admission policy](human-admission-v0.1.md) is shared by planning, registry selection, fresh implementation verification and export. Its immutable request binds target, intended use, boundary and selected component records; the assessment preserves declared evidence categories and limitations. The current policy admits no human therapeutic profiles. Generic targets can request labeled software workflows only; human contexts cannot bypass admission by requesting software use. The partial product-cassette and declared precursor workflows retain human requirements and admission refusal while emitting structurally checked research candidates; they grant no therapeutic implementation eligibility. Supplied human-contract observations may pass their finite checks without granting implementation eligibility.
 
 Independent composition, construct and molecular checks rerun admission even for exact manually supplied locks. Synthetic generation and direct realization checks reject human targets. Reference export and archive reconstruction check use before accepting a build. Molecular/synthetic artifacts, reference manifests and summaries carry fixed software-use labels; FASTA carries equivalent header fields. Policy identities enter verification, pass-manager and package dependencies. Matching saved hashes or PASS labels cannot replace fresh current checks.
 
