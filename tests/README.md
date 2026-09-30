@@ -1,5 +1,13 @@
 # Test boundaries
 
+M10.4 adds 32 acceptance tests for source/prohibition conjunction, timing and bout
+boundaries, healthy/source conflicts, cell access versus evaluator missingness,
+latched shutdown, deployment checks, non-vacuous coverage, strict imports and
+stale evidence. Three namespace-migration tests reject historical schema/pin
+reuse while preserving independently pinned sequence records. All 721 tests
+exercise software contracts; biological support and actuator implementation
+remain unresolved. See the [acceptance contract](../docs/human-acceptance-contract-v0.1.md).
+
 M10.3 tests preserve delivery/recognition separation, target and recipient
 identity, modality, physical compartments and evidence references. Deployment
 window checks use the latest onset and earliest expression loss, retain unknown
