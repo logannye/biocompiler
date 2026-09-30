@@ -10,6 +10,8 @@ from types import MappingProxyType
 from typing import Any, TYPE_CHECKING
 
 if TYPE_CHECKING:
+    from biocompiler.ir.circuit_molecules import CircuitMoleculeSet
+    from biocompiler.artifacts.circuit_molecules import CircuitMoleculeRecord
     from biocompiler.ir.circuit_intent import CircuitRequest
     from biocompiler.ir.circuit_profile import CircuitProfileRequest
     from biocompiler.ir.candidate import CandidateRequest
@@ -390,13 +392,22 @@ def compile(
     | CandidateRequest
     | ImplementationRequest
     | CircuitProfileRequest
-    | CircuitRequest,
+    | CircuitRequest
+    | CircuitMoleculeSet
+    | CircuitMoleculeRecord,
 ) -> CandidateCompilation | ImplementationCompilation:
     """Compile explicit research candidates; reject unimplemented human realization."""
+    from biocompiler.ir.circuit_molecules import CircuitMoleculeSet
+    from biocompiler.artifacts.circuit_molecules import CircuitMoleculeRecord
     from biocompiler.ir.circuit_intent import CircuitRequest
     from biocompiler.ir.circuit_profile import CircuitProfileRequest
     from biocompiler.ir.candidate import CandidateRequest
     from biocompiler.ir.implementation import ImplementationRequest
+    if isinstance(design, (CircuitMoleculeSet, CircuitMoleculeRecord)):
+        raise CompilationUnavailableError(
+            "Molecular declarations are recorded; checked circuit construction is not implemented.",
+            diagnostics=("declared_assembly_unverified", "source_correspondence_unverified", "functional_implementation_unestablished", "human_therapeutic_use_not_admitted"),
+        )
     if isinstance(design, CircuitRequest):
         from biocompiler.verification.circuit_intent import check_circuit_intent
 

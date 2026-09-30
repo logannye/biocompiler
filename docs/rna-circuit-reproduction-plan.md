@@ -368,38 +368,46 @@ No frontend-only success is labeled molecular implementation.
 Primary areas: `ir/molecular_design.py`, `ir/construct.py`, `ir/molecular.py`,
 `ir/payload.py`, `ir/implementation.py`, `artifacts/`.
 
-- [ ] Introduce named molecule sets and identities for templates, primary RNA,
+- [x] Introduce named molecule sets and identities for templates, primary RNA,
   delivered RNA, processed RNA, edited states, noncoding RNA, protein precursors
   and mature products. Represent noncovalent protein complexes by constituent
   identities and declared stoichiometry, not an invented concatenated peptide.
   Support linear and circular topology, multiple ORFs, uORFs and explicitly
   noncoding molecules.
-- [ ] Preserve complete DNA and RNA payload identities where supported for human
+- [x] Preserve complete DNA and RNA payload identities where supported for human
   in-vivo immune deployment. Distinguish a deposited cloning/template record from
   the requested delivered DNA or RNA; cloning hosts are provenance, not targets.
   Do not infer a complete DNA payload from an RNA cassette or vice versa.
-- [ ] Separate the ordered, disjoint assembly partition from overlapping
+- [x] Separate the ordered, disjoint assembly partition from overlapping
   annotations. A recognition site, CDS, stem, IRES and regulatory feature may
-  overlap; each emitted base still has exactly one assembly origin. Repeated
+  overlap; each supplied residue still has exactly one declared assembly origin. Repeated
   motifs retain separate occurrence identities and coordinates.
-- [ ] Specify zero-based half-open sequence coordinates, strand/orientation,
+- [x] Specify zero-based half-open sequence coordinates, strand/orientation,
   alphabet, biological 5′→3′ direction, coordinate-space identity and mappings
   between forms. Circular features may cross the nominated origin.
-- [ ] Add structured chemistry: canonical base sequence, modification identity
+- [x] Add structured chemistry: canonical base sequence, modification identity
   and scope/position or documented substitution policy, cap, terminal groups,
   internal poly(A), terminal tail, exact length or documented uncertainty.
   Resolve I/inosine separately from G; an editing readout is not a base substitution
   license. Distinguish pseudouridine and N1-methylpseudouridine.
-- [ ] Define content identity for base strings, nominal molecules and whole
+- [x] Define content identity for base strings, nominal molecules and whole
   circuit bundles. Stable ordering must not erase molecule multiplicity or
   distinct roles. Separate species identity, role instances, unique record IDs
   and experimental copy number/amount; one species may fill several roles when
   the locked implementation permits it. For circles retain the source origin
   and a separately defined rotation-equivalence identity; never silently rotate
   a requested reference.
-- [ ] Version all schemas, enforce strict parsing and size limits, and preserve
+- [x] Version all schemas, enforce strict parsing and size limits, and preserve
   legacy profile behavior. Add inspectable provenance for every feature boundary
   and chemistry declaration, including explicit unknowns.
+
+**Implementation:** `0.1.0.dev23` adds the [declared molecule profile](circuit-molecules-v0.1.md).
+Complete human authority remains attached; species, role instances, archival IDs,
+experimental amounts and run metadata have separate identities. Supplied
+spellings and nominal chemistry are declarations, not checked construction,
+source correspondence or empirical evidence. Existing profiles stay unchanged.
+Required hosted validation is recorded in the milestone pull request and the
+external session receipt with the tested revision/platform.
 
 **Acceptance:** round-trip examples represent a multi-RNA circuit, overlapping
 features, a post-poly(A) extension, a circle, an internal conditional stop and a

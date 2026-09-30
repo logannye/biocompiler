@@ -29,6 +29,17 @@ jobs:
         run: python -m unittest discover -s tests -v
       - name: Run authoring examples
         run: python examples/intent_programs.py
+      - name: Inspect structured circuit molecule declarations
+        run: |
+          python examples/circuit_molecules.py --output generated/circuit-molecules-ci
+          biocompiler inspect generated/circuit-molecules-ci/bundle.json
+          biocompiler inspect generated/circuit-molecules-ci/record.json
+      - name: Retain declared molecule identity evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: circuit-molecule-declarations-py${{ matrix.python-version }}
+          path: generated/circuit-molecules-ci/
       - name: Check circuit intent authoring and independent replay
         run: |
           python examples/circuit_intent.py --output generated/circuit-intent-ci

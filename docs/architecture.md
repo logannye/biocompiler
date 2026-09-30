@@ -76,8 +76,11 @@ refuses molecular generation. [R2 circuit intent](circuit-intent-v0.1.md) now ad
 role-bound supplemental requirements, exact nominal observations, canonical
 Boolean tables, output/provider/lifecycle requirements and declared reference
 locks. The independent checker retains the complete original graph and wrappers;
-`compile(CircuitRequest)` also refuses molecular generation. R1 and R3–R13 remain
-open; no source-backed reconstruction is established.
+`compile(CircuitRequest)` also refuses molecular generation. [R3 molecular declarations](circuit-molecules-v0.1.md) add named strands/chains,
+nominal complexes, explicit coordinates/chemistry, separate assembly partitions
+and overlapping annotations, plus independent identity and experimental-amount
+layers. Their source bytes and transformations remain unverified. R1 and R4–R13
+remain open; no source-backed reconstruction is established.
 
 | Layer | Representation | Preservation obligation |
 | --- | --- | --- |
