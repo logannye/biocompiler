@@ -1,5 +1,17 @@
 # Test boundaries
 
+M12.9/M12.10/M13.6 add full-source requirement analysis, declared precursor
+selection and composite RNA construction tests. Their regressions cover source
+and wrapper retention, unsupported behavior, known contradictions, product versus
+architecture identity, exact translation and processing maps, context-matched
+dependencies, strict/empty searches, fresh verification with producers disabled,
+rehashed sequence tampering and atomic CLI publication. Source-guard edits can
+retain the same structural RNA only while control remains explicitly unresolved;
+a product edit cannot reuse an unrelated library binding. These checks establish
+software correspondence, not physical cleavage, secretion or therapeutic behavior.
+The [implementation guide](../docs/molecular-implementation-v0.1.md) defines scope;
+the [roadmap](../docs/roadmap.md) records hosted validation.
+
 M10.6 adds 29 profile-case regressions; all 783 software tests pass on hosted
 Python 3.11 and 3.14. Exact revisions/platforms and completion scope are recorded
 in the [roadmap](../docs/roadmap.md).

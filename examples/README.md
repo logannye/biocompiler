@@ -1,5 +1,17 @@
 # Examples
 
+[molecular_implementation.py](molecular_implementation.py) connects complete source
+analysis to declared precursor architectures, selected sequence authorities,
+composite coding/processing maps and exact RNA. Run
+`PYTHONPATH=src python examples/molecular_implementation.py --output generated/molecular-implementation`.
+Two artificial architectures demonstrate different encoded prefixes for the same
+mature product. Strict completeness, impossible length and absent providers retain
+explained empty searches. Saved request/build JSON and verified FASTA retain
+`secreted_precursor_structure` scope, partial therapeutic implementation and
+unestablished physical function. The [implementation guide](../docs/molecular-implementation-v0.1.md)
+documents Python and installed `implementation-analyze/build/verify/fasta` commands.
+The GUI still uses the earlier candidate example below.
+
 [intent_candidate.py](intent_candidate.py) connects authored product requirements
 to exact RNA cassette candidates through supplied parts and architectures. Run
 `PYTHONPATH=src python examples/intent_candidate.py --output generated/intent-candidate`.

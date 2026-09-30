@@ -42,6 +42,24 @@ jobs:
           path: generated/intent-candidate-ci
       - name: Run behavior trace example
         run: python examples/behavior_trace.py
+      - name: Analyze requirements and compile declared molecular implementations
+        run: |
+          python examples/molecular_implementation.py --output generated/molecular-implementation-ci
+          biocompiler implementation-analyze --request generated/molecular-implementation-ci/source.json --output generated/molecular-implementation-ci/requirements-cli.json
+          biocompiler implementation-build --request generated/molecular-implementation-ci/compact.request.json --output generated/molecular-implementation-ci/cli.build.json
+          biocompiler implementation-verify generated/molecular-implementation-ci/cli.build.json --expected-request generated/molecular-implementation-ci/compact.request.json
+          biocompiler implementation-fasta generated/molecular-implementation-ci/cli.build.json --expected-request generated/molecular-implementation-ci/compact.request.json > generated/molecular-implementation-ci/cli.fasta
+          biocompiler inspect generated/molecular-implementation-ci/requirements-cli.json
+          biocompiler inspect generated/molecular-implementation-ci/cli.build.json
+          python -c "import subprocess; result = subprocess.run(['biocompiler', 'implementation-build', '--request', 'generated/molecular-implementation-ci/strict.request.json', '--output', 'generated/molecular-implementation-ci/strict-cli.build.json']); assert result.returncode == 1, result.returncode"
+      - name: Retain molecular implementation evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: molecular-implementation-evidence-py${{ matrix.python-version }}
+          path: generated/molecular-implementation-ci/
+          if-no-files-found: ignore
+          retention-days: 7
       - name: Run independent realization checks
         run: python examples/realization_check.py
       - name: Run checked request-to-synthetic pipeline

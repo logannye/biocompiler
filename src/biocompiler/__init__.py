@@ -1,6 +1,6 @@
 """Author inspectable therapeutic programs for in-vivo immune-cell engineering."""
 
-__version__ = "0.1.0.dev18"
+__version__ = "0.1.0.dev19"
 
 from biocompiler.semantics.admission import AdmissionAssessment, AdmissionRequest
 from biocompiler.verification.admission import assess_admission, verify_admission
@@ -190,6 +190,27 @@ from biocompiler.ir.candidate_build import CandidateBuildRecord
 from biocompiler.compiler.candidate import (
     CandidateCompilation, compile_candidate, verify_candidate_build, export_candidate_fasta,
 )
+from biocompiler.ir.implementation_requirements import (
+    ImplementationRequirements, ImplementationObligation, ImplementationDiagnostic, ProductRequirement,
+)
+from biocompiler.compiler.implementation_requirements import analyze_implementation_requirements
+from biocompiler.ir.implementation import (
+    SequenceAuthority, CodingSegment, CodingJunction, ImplementationDependencyBinding,
+    SecretedRNAArchitecture, ImplementationLibrary, ImplementationConstraints,
+    ImplementationRequest, ImplementationRejection, ImplementationAlternative,
+    ImplementationSelection, ImplementationRole, ImplementationEdge, ImplementationDependency,
+    ImplementationPlan, ImplementationPlacement, ImplementationConstruct,
+)
+from biocompiler.ir.implementation_build import ImplementationBuildRecord
+from biocompiler.compiler.implementation import (
+    ImplementationCompilation, compile_implementation, verify_implementation_requirements,
+    verify_implementation_build, export_implementation_fasta,
+)
+from biocompiler.verification.implementation import (
+    ImplementationVerificationResult, check_implementation_requirements,
+    check_implementation_selection, check_implementation_plan,
+    check_implementation_construct, check_implementation, implementation_dependencies,
+)
 from biocompiler.compiler.request import (
     BindingMetadata,
     BuildRequest,
@@ -373,6 +394,17 @@ from biocompiler.verification.realization import (
 )
 
 __all__ = [
+    "ImplementationRequirements", "ImplementationObligation", "ImplementationDiagnostic",
+    "ProductRequirement", "analyze_implementation_requirements", "SequenceAuthority",
+    "CodingSegment", "CodingJunction", "ImplementationDependencyBinding", "SecretedRNAArchitecture",
+    "ImplementationLibrary", "ImplementationConstraints", "ImplementationRequest",
+    "ImplementationRejection", "ImplementationAlternative", "ImplementationSelection",
+    "ImplementationRole", "ImplementationEdge", "ImplementationDependency", "ImplementationPlan",
+    "ImplementationPlacement", "ImplementationConstruct", "ImplementationBuildRecord",
+    "ImplementationCompilation", "compile_implementation", "verify_implementation_requirements",
+    "verify_implementation_build", "export_implementation_fasta", "ImplementationVerificationResult",
+    "check_implementation_requirements", "check_implementation_selection", "check_implementation_plan",
+    "check_implementation_construct", "check_implementation", "implementation_dependencies",
     "CandidateRequest", "CandidateConstraints", "CandidateRequirements", "CandidateObligation",
     "MolecularLibrary", "MolecularPart", "ProductBinding", "RNAArchitecture",
     "CandidateBuildRecord", "CandidateCompilation", "compile_candidate",
