@@ -1,0 +1,264 @@
+{
+  "schema": "biocompiler.human_benchmark_sources.v1",
+  "sources": [
+    {
+      "id": "roybal2016",
+      "title": "Roybal et al., Cell 2016",
+      "url": "https://ucsf-cmp.github.io/lim-lab/papers/pdfs/ktr_2016_2.pdf",
+      "version": "DOI 10.1016/j.cell.2016.09.011; publication PDF",
+      "locators": [
+        "Figures 2/S2",
+        "Key Resources, printed e2-e3",
+        "Secretion measurement, printed e4"
+      ],
+      "checked_on": "2026-09-29",
+      "timezone": "America/Los_Angeles",
+      "access": "Author PDF inspected and retained outside Git. Indexed supplement DOCX URL returned 21,377-byte reCAPTCHA HTML, not DOCX; contents and Table S1 identity uninspected. Legacy attachment path HTTP 404; publisher PII S0092-8674(16)31244-2 HTTP 403; Europe PMC fullTextXML HTTP 500. No challenge bypass.",
+      "reuse": "Elsevier copyright; no unrestricted redistribution permission established. PDF not redistributed.",
+      "supplement_attachment_url": "https://pmc.ncbi.nlm.nih.gov/articles/instance/5072533/bin/NIHMS820006-supplement-1.docx"
+    },
+    {
+      "id": "synnotch79125",
+      "title": "Addgene receptor deposit 79125",
+      "url": "https://www.addgene.org/79125/",
+      "version": "Unversioned catalog, accessed on audit date",
+      "locators": [
+        "Sequence Information",
+        "Terms and Licenses"
+      ],
+      "checked_on": "2026-09-29",
+      "timezone": "America/Los_Angeles",
+      "access": "Catalog inspected; Affinity Reagent Sequence Policy not accepted; nucleotide bytes not retrieved.",
+      "reuse": "Page lists academic/nonprofit UBMTA; no industry availability. No legal clearance inferred."
+    },
+    {
+      "id": "response79123",
+      "title": "Addgene empty response backbone 79123",
+      "url": "https://www.addgene.org/79123/",
+      "version": "Unversioned catalog, accessed on audit date",
+      "locators": [
+        "Plasmid description",
+        "Sequence Information"
+      ],
+      "checked_on": "2026-09-29",
+      "timezone": "America/Los_Angeles",
+      "access": "Catalog inspected; sequence download requires login; no bytes retrieved.",
+      "reuse": "Deposit terms require separate review; empty backbone is not a complete cytokine payload."
+    },
+    {
+      "id": "allen2022",
+      "title": "Allen et al., Science 2022",
+      "url": "https://allen-lab.org/static/pdf/2022_allen_science.pdf",
+      "version": "DOI 10.1126/science.aba1624; banner Corrected 13 January 2023",
+      "locators": [
+        "Figure 1B-E",
+        "Data and materials availability",
+        "Correction banner, printed p.9"
+      ],
+      "checked_on": "2026-09-29",
+      "timezone": "America/Los_Angeles",
+      "access": "Author main text inspected; Science correction details returned HTTP 403 and remain unresolved.",
+      "reuse": "No unrestricted redistribution license established; reagents may be requested. Main paper not redistributed."
+    },
+    {
+      "id": "allen_supplement",
+      "title": "Allen supplementary materials",
+      "url": "https://hershbhargava.com/static/pdf/2022_Allen_Science_supplement.pdf",
+      "version": "Supplement associated with DOI 10.1126/science.aba1624; correction correspondence unresolved",
+      "locators": [
+        "Methods pp.2/4",
+        "Tables S1/S2 pp.24-29",
+        "Tables S3-S6, mouse constructs"
+      ],
+      "checked_on": "2026-09-29",
+      "timezone": "America/Los_Angeles",
+      "access": "Author-hosted PDF retrieved and text-inspected; retained outside Git.",
+      "reuse": "No unrestricted redistribution permission established; PDF not redistributed."
+    },
+    {
+      "id": "zhang2015",
+      "title": "Zhang et al., Clinical Cancer Research 2015",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4433819/",
+      "version": "DOI 10.1158/1078-0432.CCR-14-2085",
+      "locators": [
+        "Gene Transfer",
+        "Properties of the Infused Cells / Table 2",
+        "Multiplex cytokine analysis",
+        "Abstract / toxicity findings"
+      ],
+      "checked_on": "2026-09-29",
+      "timezone": "America/Los_Angeles",
+      "access": "Partial inspection via indexed primary-text passages and publisher abstract; direct PMC browser challenge. Complete files not retrieved.",
+      "reuse": "Publisher AACR copyright; redistribution scope unresolved. No patient-level data retained."
+    },
+    {
+      "id": "equalizer_article",
+      "title": "Yang et al., Nature Communications 2021",
+      "url": "https://doi.org/10.1038/s41467-021-23889-0",
+      "version": "PMC8257781.1 historical XML; article freshly inspected",
+      "locators": [
+        "Methods / Cell lines",
+        "Figure 4",
+        "Data availability",
+        "Code availability",
+        "Rights and permissions"
+      ],
+      "checked_on": "2026-09-29",
+      "timezone": "America/Los_Angeles",
+      "access": "Fresh public page read plus complete historical local-source integrity recheck; supplement not downloaded in this audit.",
+      "reuse": "Article CC BY 4.0 with third-party exceptions; code archive terms separate."
+    },
+    {
+      "id": "equalizer_release",
+      "title": "Equalizer v1.0.0 research release",
+      "url": "https://doi.org/10.5281/zenodo.4741005",
+      "version": "v1.0.0; archive stpierrelab-Equalizer-db80935; historical observed Git commit db809355bb29d8a3543d7f8e60a8506b356dfc8e",
+      "locators": [
+        "ExperimentData/Figure 4 Data Points.xlsx",
+        "Models/",
+        "Code/Fig4a_Eq_IFF_NF.m",
+        "LICENSE"
+      ],
+      "checked_on": "2026-09-29",
+      "timezone": "America/Los_Angeles",
+      "access": "Fresh Zenodo/GitHub page checks and historical archive-byte recheck; no fresh remote-byte comparison or model execution.",
+      "reuse": "Archive LICENSE GPL-3.0; Zenodo metadata CC BY 4.0. Scope unresolved; no code/models/workbook redistributed by this PR."
+    },
+    {
+      "id": "equalizer_sequences",
+      "title": "NCBI Equalizer selected sequence records",
+      "url": "https://www.ncbi.nlm.nih.gov/nuccore/MW987522.1",
+      "version": "MW987522.1, MW987536.1, MW987537.1, MZ220611.1, MW987525.1, MW987530.1",
+      "locators": [
+        "Historical GenBank and version-specific FASTA source files"
+      ],
+      "checked_on": "2026-09-29",
+      "timezone": "America/Los_Angeles",
+      "access": "Historical retained bytes rechecked; fresh remote sequence retrieval not completed. Formats use the same database.",
+      "reuse": "NCBI molecular-data policy; public access does not establish third-party rights clearance."
+    },
+    {
+      "id": "cellosaurus",
+      "title": "Cellosaurus Flp-In 293",
+      "url": "https://www.cellosaurus.org/CVCL_U421",
+      "version": "Historical retained entry version 15; current page separately checked",
+      "locators": [
+        "Species",
+        "Cell-line identifiers"
+      ],
+      "checked_on": "2026-09-29",
+      "timezone": "America/Los_Angeles",
+      "access": "Fresh public page inspection and retained-source hash recheck.",
+      "reuse": "Site notices are separate from article/model terms."
+    },
+    {
+      "id": "capstan_a9",
+      "title": "WO2025096878A9",
+      "url": "https://patents.google.com/patent/WO2025096878A9/en",
+      "version": "A9 published 2025-07-10; A1 published 2025-05-08; correction scope unresolved",
+      "locators": [
+        "[0002]",
+        "[00564]",
+        "[00471]",
+        "[00408]",
+        "[0089]",
+        "Figures 3B, 14, 23-24"
+      ],
+      "checked_on": "2026-09-29",
+      "timezone": "America/Los_Angeles",
+      "access": "Patent pages freshly inspected; WIPO initializing shell; listing bytes not retrieved/validated. Historical CAPTCHA not bypassed.",
+      "reuse": "Publication does not establish redistribution/implementation rights."
+    },
+    {
+      "id": "addgene135992",
+      "title": "Addgene pSLCAR-CD19-BBz",
+      "url": "https://www.addgene.org/135992/",
+      "version": "Unversioned current catalog; experiment-to-deposit version unresolved",
+      "locators": [
+        "Sequence Information",
+        "Terms and Licenses",
+        "Plasmid description"
+      ],
+      "checked_on": "2026-09-29",
+      "timezone": "America/Los_Angeles",
+      "access": "Public page inspected; sequence-policy gate not accepted; raw record not validated.",
+      "reuse": "Academic/nonprofit UBMTA and no industry availability displayed; no legal conclusion inferred."
+    },
+    {
+      "id": "ibrahim2026",
+      "title": "Ibrahim et al., Nature Communications 2026",
+      "url": "https://www.nature.com/articles/s41467-026-71395-y",
+      "version": "DOI 10.1038/s41467-026-71395-y; published 2026-04-06; version of record 2026-06-04",
+      "locators": [
+        "Methods / Vector design",
+        "Figures 4f, 5c/e",
+        "Data availability",
+        "Supplementary Data 1-4 descriptions"
+      ],
+      "checked_on": "2026-09-29",
+      "timezone": "America/Los_Angeles",
+      "access": "Article and supplement index inspected; Source Data click failed; BioImage S-BIAD2901 application shell only. Dataset bytes not inspected.",
+      "reuse": "Publisher CC BY-NC-ND 4.0; supplementary/third-party and sequence rights require separate review."
+    },
+    {
+      "id": "wang2025",
+      "title": "Wang et al., Cell Reports Medicine 2025",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12432353/",
+      "version": "DOI 10.1016/j.xcrm.2025.102250; published 2025-07-24",
+      "locators": [
+        "Results / CircRNA expression",
+        "Figure 1C-Q",
+        "Methods / Flow cytometry",
+        "Table S1 mmc2.xlsx",
+        "Resource availability; GSE268105"
+      ],
+      "checked_on": "2026-09-29",
+      "timezone": "America/Los_Angeles",
+      "access": "Main article freshly inspected; prior coding-domain workbook review not re-extracted. Mature-circle sequence unvalidated.",
+      "reuse": "CC BY-NC 4.0; further data/reagents by request/MTA. No unique code reported; transcriptomics is a separate dataset."
+    },
+    {
+      "id": "diblasi2023",
+      "title": "Di Blasi et al., resource-aware construct design",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10275982/",
+      "version": "Historical XML and Figshare 10.6084/m9.figshare.22659211.v1",
+      "locators": [
+        "Historical source archive, GenBank members and source tables"
+      ],
+      "checked_on": "2026-09-29",
+      "timezone": "America/Los_Angeles",
+      "access": "Historical retained bytes freshly rechecked; no fresh full scientific candidate review.",
+      "reuse": "Historical article/source-data metadata CC BY 4.0; use only human subset."
+    },
+    {
+      "id": "frei2020",
+      "title": "Frei et al., gene-expression burden",
+      "url": "https://doi.org/10.1038/s41467-020-18392-x",
+      "version": "Historical PMC7492461 XML",
+      "locators": [
+        "Historical source review"
+      ],
+      "checked_on": "2026-09-29",
+      "timezone": "America/Los_Angeles",
+      "access": "Historical XML hash freshly rechecked; sequence/model/measurement correspondence not audited to selected-benchmark depth.",
+      "reuse": "Historical article CC BY 4.0; other materials require their own terms review."
+    }
+  ],
+  "external_source_receipts": [
+    {
+      "source_id": "roybal2016",
+      "bytes": 5783563,
+      "sha256": "fac865695eb070c7b2c621b1c0a1fc24089a91903c9e3cfbbe396233b7ae2e6c",
+      "retention": "external_review_cache_not_redistributed",
+      "retrieved_on": "2026-09-29"
+    },
+    {
+      "source_id": "allen_supplement",
+      "bytes": 13338063,
+      "sha256": "4b48bb5f8098b2ab595af856ce2ea0355c5e564e5f92b07ad09caf6d92b5b5b4",
+      "retention": "external_review_cache_not_redistributed",
+      "retrieved_on": "2026-09-29"
+    }
+  ],
+  "retrieval_limit": "A reviewed page or paper locator is not a complete source freeze. Explicit access failures and partial inspection are retained; neither proves nonexistence."
+}

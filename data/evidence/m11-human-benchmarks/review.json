@@ -1,0 +1,58 @@
+{
+  "schema": "biocompiler.human_benchmark_review.v1",
+  "status": "reviewed_with_explicit_scientific_gaps",
+  "date": "2026-09-29",
+  "timezone": "America/Los_Angeles",
+  "review_scope": "Independent software-agent source/scope review plus integrator final-file pinning after corrections. Not human review, experimental validation or signed authority.",
+  "reviewers": [
+    {
+      "agent": "equalizer_reaudit",
+      "scope": "Equalizer evidence, retained-byte comparison, audit checker and CI scope",
+      "findings_resolved": [
+        "Exclude only root audit.lock.json from inventory.",
+        "State that the audit has not established the full chain, rather than that no candidate supplies one."
+      ],
+      "outcome": "No other blocking findings within reviewed scope."
+    },
+    {
+      "agent": "delivery_leads_reaudit",
+      "scope": "Three delivery leads, source dimensions and no-admission limits",
+      "findings_resolved": [
+        "Distinguish BBx/BBz naming discrepancy from unreviewed experiment-to-deposit version correspondence.",
+        "Retain available observation times/units and replicate summaries."
+      ],
+      "outcome": "No blocking reference-promotion or admission overclaim."
+    },
+    {
+      "agent": "secretion_benchmark_audit",
+      "scope": "Roybal, Allen and Zhang source/context/observation boundaries and bounded supplement retrieval",
+      "findings_resolved": [
+        "Record exact failed Roybal attachment URL and HTML challenge; retain Table S1 as uninspected."
+      ],
+      "outcome": "No blocking scientific-scope defects in reviewed entries."
+    }
+  ],
+  "reviewed_files": [
+    {
+      "path": "data/evidence/m11-human-benchmarks/audit.json",
+      "bytes": 18521,
+      "sha256": "25aee90ed2a3065057356785e177faab975a6bed2bba678070bf91b8b0ee8c9a"
+    },
+    {
+      "path": "data/evidence/m11-human-benchmarks/source-inventory.json",
+      "bytes": 11908,
+      "sha256": "3d706937b4d50398cb84007779b9866935da0a4d6a3e73c03bfd8c8ee0345de6"
+    },
+    {
+      "path": "docs/m11-human-benchmark-audit.md",
+      "bytes": 14651,
+      "sha256": "84da26e4262c7e4f1b8c67544d85a147a7a8aca003a47250382d41d5743c9d39"
+    },
+    {
+      "path": "tools/check_human_benchmark_audit.py",
+      "bytes": 6347,
+      "sha256": "de7bb4773aec3c1ad9774b00bac9a068298da28e7f8139925ceca1493fa3444f"
+    }
+  ],
+  "scientific_gates_remaining": "G1-G8 in audit.json; no biological reference promotion or compiler admission."
+}

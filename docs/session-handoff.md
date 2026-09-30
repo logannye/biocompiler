@@ -1,4 +1,23 @@
-# Session handoff: resume at M11.1
+# Session handoff and current resumption point
+
+## Current resumption point — after M11.1
+
+Updated **2026-09-29 (America/Los_Angeles)** in [PR #19](https://github.com/logannye/biocompiler/pull/19).
+M11.1's [bounded audit](m11-human-benchmark-audit.md) is complete with a justified
+deferral of a complete therapeutic benchmark. The [roadmap](roadmap.md) records
+the exact tested revision/platform and hosted validation. Nine candidates,
+sixteen source records, eight claim-blocking gaps and a small locked audit trail
+are retained. The profile, compiler admission and biological capabilities are unchanged.
+
+Resume with exact material/source correspondence for the prioritized Roybal
+secretion-observation and Allen component/context leads before M11.2 reference
+reconciliation. Roybal's indexed supplemental attachment returned challenge HTML;
+Allen's correction and full-record correspondence remain unresolved. Retain
+Equalizer as a separate scoped reporter/model candidate. Do not substitute its
+evidence for therapeutic secretion, primary-T-cell applicability or patient delivery.
+M11.2–M11.6 remain open; no human therapeutic profile is admitted.
+
+## Historical M10 closing snapshot
 
 Session closed on **2026-09-29 (America/Los_Angeles)** after M10.6. This is a
 handoff snapshot; [the development roadmap](roadmap.md) remains authoritative
@@ -25,7 +44,7 @@ capabilities cover typed intent/contracts, abstract software execution and
 independently checked reference CDS reproduction. **Human therapeutic compilation
 is unavailable; no human profile or complete therapeutic payload is admitted.**
 
-## First actions in the fresh session
+## Historical opening actions at M10 close
 
 1. Start from current `main` in the canonical `biocompiler` repository and read
    [AGENTS.md](../AGENTS.md), [the roadmap](roadmap.md), and
@@ -91,6 +110,6 @@ therapeutic goal is biologically infeasible.
 - Continue the established branch/PR workflow, record tested revisions/platforms,
   and merge only after required checks pass.
 
-Suggested opening prompt: **“Resume biocompiler at M11.1. Read
+Historical opening prompt: **“Resume biocompiler at M11.1. Read
 `docs/session-handoff.md`, `AGENTS.md` and the roadmap, then begin the human
 benchmark and evidence audit.”**

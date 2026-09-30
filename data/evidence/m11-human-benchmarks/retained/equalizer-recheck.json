@@ -1,0 +1,14 @@
+{
+  "benchmark_lock_sha256": "8abf21c25f636aae91aba01a317269579f956fa99598f70f0a42fc4fe2b75300",
+  "compiler_tests": "NOT_RUN_NO_COMPILER_CHANGES",
+  "empirical_or_therapeutic_validation": "NOT_ESTABLISHED",
+  "mode": "verify",
+  "model_execution": "NOT_RUN",
+  "native_builds": false,
+  "network_used": false,
+  "openpyxl": "3.1.5",
+  "platform": "macOS-26.2-arm64-arm-64bit",
+  "python": "3.12.14",
+  "status": "PASS_STATIC_EVIDENCE_AUDIT",
+  "utc": "2026-09-30T01:23:15.148113+00:00"
+}
