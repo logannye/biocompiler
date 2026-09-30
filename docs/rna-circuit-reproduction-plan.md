@@ -344,8 +344,17 @@ Requirements supplement the unchanged full source wrapper; every source obligati
 remains conjunctive and unresolved at the molecular boundary. R2 uses the existing
 source/evidence pin schema; R1 curation and its metadata-only draft remain open.
 The API remains provisional until R6; this milestone establishes no published
-reconstruction or molecular output. Hosted validation evidence is recorded below
-after the final revision passes.
+reconstruction or molecular output. [Hosted validation](https://github.com/logannye/biocompiler/actions/runs/36784667535)
+passed all **1,206 tests (124 new)**, package installation, installed circuit
+intent example/check/verify/inspect workflows, every existing package gate and
+the installed browser suite on Python 3.11.16 and 3.14.7, Linux x86_64
+(`Linux-6.17.0-1022-azure-x86_64-with-glibc2.39`). Tested PR merge revision:
+`3477ad090a1446f47e5f8617dfb1dc8ae6e76f1e`; implementation head:
+`77f063d9be29e49256c4930e9577b21650a86ae3`, [PR #29](https://github.com/logannye/biocompiler/pull/29).
+Local Python 3.14.6 on macOS arm64 also passed all 1,206 tests, Ruff, audit
+integrity and the new example. No local native build or package installation
+was used. This receipt identifies the tested implementation; subsequent
+validation-documentation commits receive the same required hosted gates.
 
 **Acceptance:** all 16 two-input Boolean functions round-trip with stable source
 identities; quantity/compartment/entity mismatches fail; missing input states

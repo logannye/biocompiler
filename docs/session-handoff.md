@@ -42,8 +42,7 @@ R2/R5/R6a/R12/R13; do not implement a separate general research compiler or
 remove the product's in-vivo restriction. Full human therapeutic completion and
 admission still require their own applicable evidence and original obligations.
 
-R0's required hosted validation passed. R2 validation is recorded below after
-its final revision passes; R1 and R3–R13 remain open;
+R0 and R2's required hosted validation passed; R1 and R3–R13 remain open;
 no benchmark curation, molecular circuit generation or biological validation is
 claimed. The previous baseline is `0.1.0.dev19`, merged revision
 `0dbae3ca0e0821b64a3579f61a83aa15ee41be52`. Its implementation and validation
@@ -59,6 +58,20 @@ implementation head: `f7dfd629fec20c4d595c51a36d6c3fb08686b109`,
 [PR #27](https://github.com/logannye/biocompiler/pull/27). Local Python 3.14.6
 on macOS arm64 also passed all 1,082 tests, Ruff, audit integrity and the new
 example. No local package installation or native build was used.
+
+### R2 validation
+
+[Hosted validation](https://github.com/logannye/biocompiler/actions/runs/36784667535)
+passed all **1,206 tests (124 new)**, package installation, installed circuit
+intent example/check/verify/inspect workflows, every existing package gate and
+the installed browser suite on Python 3.11.16 and 3.14.7, Linux x86_64
+(`Linux-6.17.0-1022-azure-x86_64-with-glibc2.39`). Tested PR merge revision:
+`3477ad090a1446f47e5f8617dfb1dc8ae6e76f1e`; implementation head:
+`77f063d9be29e49256c4930e9577b21650a86ae3`, [PR #29](https://github.com/logannye/biocompiler/pull/29).
+Local Python 3.14.6 on macOS arm64 also passed all 1,206 tests, Ruff, audit
+integrity and the new example. No local native build or package installation
+was used. This receipt identifies the tested implementation; subsequent
+validation-documentation commits receive the same required hosted gates.
 
 ## Implementation baseline — checked molecular implementation
 
