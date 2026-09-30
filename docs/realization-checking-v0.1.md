@@ -18,7 +18,7 @@ flowchart LR
     CHECK --> R[Outcome, counterexamples,<br/>coverage, dependency identities]
 ```
 
-The candidate cannot choose its own acceptance criteria. The checker runs the reference evaluator and model separately, checks their observation mapping, and evaluates the supplied response contracts. Automatic candidate generation is implemented for the separately scoped combinational synthetic profile in `synthesis`; temporal candidate generation remains unsupported.
+The candidate cannot choose its own acceptance criteria. The checker runs the reference evaluator and model separately, checks their observation mapping, and evaluates the supplied response contracts. Automatic candidate generation is implemented for the separately scoped [combinational](synthetic-profile-v0.1.md) and [temporal](synthetic-temporal-v0.1.md) synthetic profiles. The temporal profile covers sustained qualification, pulses and resettable memory; other timing/state operators remain explicitly unsupported.
 
 ## Python entry points
 

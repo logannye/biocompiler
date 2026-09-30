@@ -50,6 +50,18 @@ meaning.
 
 [checked_pipeline.py](checked_pipeline.py) freezes build authority, runs two checked passes, checks a generated candidate and demonstrates automatic transitive invalidation. Run `PYTHONPATH=src python examples/checked_pipeline.py`. Its completion scope is a synthetic finite history; molecular obligations remain unresolved.
 
+[temporal_pipeline.py](temporal_pipeline.py) generates sustained qualification,
+cell/contact pulses and bounded resettable memory under an explicit temporal
+profile. Run `PYTHONPATH=src python examples/temporal_pipeline.py`. Internal
+timers execute between snapshots, and the independent checker preserves
+contact episodes, trigger scope and exact deadline precedence.
+
+[synthetic_build.py](synthetic_build.py) freezes the temporal request, input
+history, horizon and generator configuration, builds a portable software-model
+archive and reconstructs it against independent authority. Run
+`PYTHONPATH=src python examples/synthetic_build.py --output generated/synthetic`.
+See the [synthetic build/verify CLI](../docs/synthetic-build-v0.1.md).
+
 [component_linking.py](component_linking.py) extends the synthetic pipeline to locked component contracts and separately inspects a pinned FAP RNA-CDS reference. Run `PYTHONPATH=src python examples/component_linking.py`. It preserves finite-history evidence and CDS-only scope; no molecular sequence is emitted.
 
 [reference_construct.py](reference_construct.py) independently selects DNA and RNA CDS records and runs checked single-component construct assembly for each. Run `PYTHONPATH=src python examples/reference_construct.py`. The complete reference layout retains unknown payload context and unresolved emission/biological obligations.

@@ -256,6 +256,7 @@ def verify_reference_package(
         "Expected a frozen ReferenceBuildRequest.",
     )
     manifest, files, metadata = read_archive(data)
+    require(isinstance(manifest, BuildManifest), "Expected a reference package.")
     try:
         request = ReferenceBuildRequest.from_json(files["request.json"].decode("utf-8"))
     except UnicodeError as error:

@@ -21,7 +21,7 @@ from biocompiler.semantics.types import (
     validate_binding,
 )
 
-SCHEMA_VERSION = "biocompiler.mechanism.synthetic.v0.1"
+SCHEMA_VERSION = "biocompiler.mechanism.synthetic.v0.2"
 SUPPORTED_OPERATIONS = frozenset(
     {
         "input",
@@ -32,6 +32,10 @@ SUPPORTED_OPERATIONS = frozenset(
         "compare",
         "select",
         "delay",
+        "held_for",
+        "onset",
+        "pulse",
+        "memory",
         "output",
         "any_contact",
     }
@@ -122,6 +126,8 @@ class MechanismNode:
             if self.kind == "compare"
             else {"duration", "initial"}
             if self.kind == "delay"
+            else {"duration"}
+            if self.kind in {"held_for", "pulse", "memory"}
             else set()
         )
         _require(set(attrs) == expected, f"Invalid attributes for {self.kind!r}.")
@@ -133,21 +139,24 @@ class MechanismNode:
                 and attrs["operator"] in {"lt", "le", "gt", "ge", "eq", "ne"},
                 "Unknown comparison operator.",
             )
-        elif self.kind == "delay":
+        elif self.kind in {"delay", "held_for", "pulse", "memory"}:
             value = attrs["duration"]
-            if isinstance(value, ScalarLiteral):
-                value = value.to_dict()
-            try:
-                duration = decode_binding(value, DURATION)
-            except (TypeMismatchError, ValueError, KeyError) as exc:
-                raise SerializationError(
-                    f"Delay duration requires a typed Duration: {exc}"
-                ) from exc
-            _require(
-                duration.canonical_value > 0, "An inertial delay must be positive."
-            )
-            attrs["duration"] = duration.to_dict()
-            attrs["initial"] = _literal(attrs["initial"], self.output.dtype)
+            if not (self.kind == "memory" and value is None):
+                if isinstance(value, ScalarLiteral):
+                    value = value.to_dict()
+                try:
+                    duration = decode_binding(value, DURATION)
+                except (TypeMismatchError, ValueError, KeyError) as exc:
+                    raise SerializationError(
+                        f"{self.kind} duration requires a typed Duration: {exc}"
+                    ) from exc
+                _require(
+                    duration.canonical_value > 0,
+                    f"A {self.kind} duration must be positive.",
+                )
+                attrs["duration"] = duration.to_dict()
+            if self.kind == "delay":
+                attrs["initial"] = _literal(attrs["initial"], self.output.dtype)
         object.__setattr__(self, "attributes", freeze_json(attrs))
 
     @property
@@ -203,7 +212,25 @@ def _validate_node(node: MechanismNode, nodes: Mapping[str, MechanismNode]) -> N
     def same_type(other):
         return node.output.dtype.compatible(other.output.dtype)
 
-    for other in inputs:
+    def event_trigger(other, seen=frozenset()):
+        if other.id in seen:
+            return False
+        if other.kind == "onset":
+            return True
+        return (
+            other.kind == "any_contact"
+            and len(other.inputs) == 1
+            and other.inputs[0] in nodes
+            and event_trigger(nodes[other.inputs[0]], seen | {other.id})
+        )
+
+    for index, other in enumerate(inputs):
+        if event_trigger(other):
+            check(
+                index == 0 and node.kind in {"pulse", "memory", "any_contact"},
+                "Event values require a pulse/memory trigger or any_contact aggregation; "
+                "they cannot serve as continuous level signals.",
+            )
         check(
             other.role == node.role,
             "Cross-role edges require an unimplemented transport model.",
@@ -255,6 +282,21 @@ def _validate_node(node: MechanismNode, nodes: Mapping[str, MechanismNode]) -> N
     elif node.kind in {"delay", "output"}:
         check(len(inputs) == 1, "Expected one input edge.")
         check(same_type(inputs[0]), "Input and output types must agree.")
+    elif node.kind in {"held_for", "onset", "pulse", "memory"}:
+        count = 2 if node.kind == "memory" else 1
+        check(len(inputs) == count, f"Expected {count} input edges.")
+        check(
+            node.output.dtype.kind == "condition"
+            and all(other.output.dtype.kind == "condition" for other in inputs),
+            "Temporal operators require Boolean ports.",
+        )
+        if node.kind == "memory":
+            check(node.scope == "cell", "Memory requires cell scope.")
+        if node.kind in {"pulse", "memory"}:
+            check(
+                event_trigger(inputs[0]),
+                "Trigger requires onset or explicit any_contact aggregation of onsets.",
+            )
     elif node.kind == "any_contact":
         check(len(inputs) == 1, "Expected one input edge.")
         check(

@@ -16,6 +16,15 @@ The current call graph has these boundaries:
 | Components to Construct | `check_construct_request` recreates the expected reference contract from trusted reviewed pins and checks whole-CDS layout; `check_construct` compares the proposed candidate with that authority | The reference adapter is shared. Expected manifest/record fingerprints were curated independently of the assembler. The checker imports no construct generator. |
 | Construct to Molecular | `check_molecular` rechecks Construct, compares every nucleotide with the selected reviewed record and translates against the separately frozen protein | Feature-status schema rules are shared with the emitter. Translation uses the reference translation implementation; the emitter only copies the selected nucleotide record. The checker imports no emitter. |
 | Imported reference package | `verify_reference_package` requires an independently supplied request/build identity, reloads retained pinned evidence and reconstructs with current checkers | Archive hashes establish file integrity. Historical check records are compared with freshly reconstructed evidence, rather than promoted to acceptance. |
+| Imported synthetic package | `verify_synthetic_package` requires an independent full synthetic-build request or expected build identity and reconstructs with current generation/execution/checking | Request authority binds history, horizon and profile/configuration as well as realization requirements. Regeneration is not another independent oracle; acceptance still executes separate runtimes and uses literal timeline regressions. |
+
+The temporal generator is tested against the previously specified literal contact,
+pulse and memory timelines. New literal runner expectations do not call the
+Behavior evaluator. Mutants substitute inertial delay for sustained qualification
+or move pulse expiry; response violations, rather than unrelated parse failures,
+must identify the changed behavior. The profile's bounded dwell campaign uses 81
+histories with three contact states at four variable timestamps and a declared
+active/inactive suffix and horizon; this does not cover every possible history.
 
 The runtime dependency audit in `tests/test_verification_mutations.py` checks that
 the Behavior evaluator and synthetic runner have no direct execution dependency

@@ -1,4 +1,4 @@
-"""Deterministic, bounded reference-build archives and atomic file publication.
+"""Deterministic, bounded build archives and atomic file publication.
 
 Archive inspection verifies container structure and declared byte identities. It
 never grants scientific or compiler acceptance; consumers recheck current frozen
@@ -19,10 +19,11 @@ from types import MappingProxyType
 import zipfile
 
 from biocompiler.artifacts.manifest import BuildManifest, RunMetadata
+from biocompiler.artifacts.synthetic_build import SyntheticBuildManifest
 from biocompiler.errors import SerializationError
-from biocompiler.ir.serialization import require
+from biocompiler.ir.serialization import parse_json, require
 
-ARCHIVE_VERSION = "biocompiler.reference_archive.v0.1"
+ARCHIVE_VERSION = "biocompiler.reference_archive.v0.2"
 MAX_ARCHIVE_BYTES = 64 * 1024 * 1024
 MAX_MEMBER_BYTES = 16 * 1024 * 1024
 MAX_METADATA_BYTES = 1024 * 1024
@@ -60,7 +61,10 @@ def _json_bytes(artifact):
 
 
 def _files(manifest, files):
-    require(isinstance(manifest, BuildManifest), "Expected a build manifest.")
+    require(
+        isinstance(manifest, (BuildManifest, SyntheticBuildManifest)),
+        "Expected a build manifest.",
+    )
     require(isinstance(files, Mapping), "Package files must be a byte mapping.")
     expected = {item.path: item for item in manifest.files}
     require(len(expected) == len(manifest.files), "Duplicate manifest member paths.")
@@ -115,7 +119,7 @@ def _canonical_zip(entries):
 
 
 def assemble_archive(
-    manifest: BuildManifest,
+    manifest: BuildManifest | SyntheticBuildManifest,
     files: Mapping[str, bytes],
     run_metadata: RunMetadata | None = None,
 ) -> bytes:
@@ -256,7 +260,16 @@ def read_archive(data: bytes):
         raise SerializationError(f"Invalid reference archive: {error}") from error
     require("manifest.json" in entries, "Archive has no build manifest.")
     try:
-        manifest = BuildManifest.from_json(entries["manifest.json"].decode("utf-8"))
+        document = parse_json(entries["manifest.json"].decode("utf-8"))
+        require(isinstance(document, dict), "Archive manifest must be an object.")
+        schema = document.get("schema_version")
+        require(isinstance(schema, str), "Archive manifest schema must be text.")
+        manifest_type = {
+            BuildManifest.schema_version: BuildManifest,
+            SyntheticBuildManifest.schema_version: SyntheticBuildManifest,
+        }.get(schema)
+        require(manifest_type is not None, "Unsupported archive manifest schema.")
+        manifest = manifest_type.from_dict(document)
         metadata = (
             RunMetadata.from_json(entries["run.json"].decode("utf-8"))
             if "run.json" in entries
@@ -284,9 +297,7 @@ def write_archive_atomic(path, data: bytes) -> Path:
     """
     read_archive(data)
     destination = Path(path)
-    require(
-        destination.suffix == ".bcb", "Reference archives require a .bcb destination."
-    )
+    require(destination.suffix == ".bcb", "Build archives require a .bcb destination.")
     require(
         destination.parent.is_dir(), "Archive destination parent must already exist."
     )

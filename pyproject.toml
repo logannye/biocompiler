@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "biocompiler"
-version = "0.1.0.dev13"
+version = "0.1.0.dev14"
 description = "A compiler architecture for translating cellular intent into traceable nucleic-acid payload specifications."
 readme = "README.md"
 requires-python = ">=3.11"

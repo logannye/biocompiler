@@ -115,6 +115,17 @@ from biocompiler.compiler.reference import (
     verify_reference_package,
 )
 from biocompiler.compiler.pipeline import PipelineError
+from biocompiler.errors import BiocompilerError
+from biocompiler.artifacts.synthetic_build import (
+    SyntheticBuildManifest,
+    SyntheticBuildRequest,
+    SyntheticHistory,
+)
+from biocompiler.compiler.synthetic_build import (
+    build_synthetic_package,
+    publish_synthetic_package,
+    verify_synthetic_package,
+)
 
 
 def _read_artifact(document):
@@ -204,6 +215,9 @@ def _read_artifact(document):
                 BuildManifest,
                 ReferenceBuildRequest,
                 RunMetadata,
+                SyntheticBuildManifest,
+                SyntheticBuildRequest,
+                SyntheticHistory,
             )
         }
     )
@@ -232,7 +246,10 @@ def _summary(artifact):
         )
     if isinstance(artifact, SelectionResult):
         summary["admission"] = artifact.admission.to_dict()
-    if isinstance(artifact, (MolecularArtifact, SyntheticCandidate, BuildManifest)):
+    if isinstance(
+        artifact,
+        (MolecularArtifact, SyntheticCandidate, BuildManifest, SyntheticBuildManifest),
+    ):
         summary["intended_use"] = "software_test"
         summary["human_therapeutic_admission"] = "not_admitted"
     if isinstance(artifact, (HumanAcceptanceRequest, HumanAcceptanceContract)):
@@ -325,6 +342,8 @@ def _summary(artifact):
             ReductionResult,
             BuildManifest,
             ReferenceBuildRequest,
+            SyntheticBuildManifest,
+            SyntheticBuildRequest,
         ),
     ):
         summary["inspection"] = (
@@ -408,7 +427,37 @@ def main(argv: Sequence[str] | None = None) -> int:
         type=Path,
         help="Independently retained ReferenceBuildRequest JSON",
     )
+    synthetic_build = commands.add_parser(
+        "synthetic-build",
+        help="Build a frozen finite-history software-model package offline",
+    )
+    synthetic_build.add_argument(
+        "--request",
+        type=Path,
+        required=True,
+        help="SyntheticBuildRequest JSON binding realization, history, horizon and config",
+    )
+    synthetic_build.add_argument("--output", type=Path, required=True)
+    synthetic_build.add_argument("--run-metadata", type=Path)
+    synthetic_inspect = commands.add_parser(
+        "synthetic-inspect",
+        help="Inspect synthetic package integrity without fresh acceptance",
+    )
+    synthetic_inspect.add_argument("path", type=Path)
+    synthetic_verify = commands.add_parser(
+        "synthetic-verify", help="Reconstruct and check a synthetic package offline"
+    )
+    synthetic_verify.add_argument("path", type=Path)
+    synthetic_authority = synthetic_verify.add_mutually_exclusive_group(required=True)
+    synthetic_authority.add_argument("--expected-build")
+    synthetic_authority.add_argument(
+        "--expected-request",
+        type=Path,
+        help="Independent complete SyntheticBuildRequest JSON, including history/horizon/config",
+    )
     args = parser.parse_args(argv)
+    if args.command.startswith("synthetic-"):
+        return _synthetic_command(args)
     if args.command.startswith("reference-"):
         try:
             if args.command == "reference-build":
@@ -483,6 +532,8 @@ def main(argv: Sequence[str] | None = None) -> int:
                     )
                 else:
                     manifest, _, metadata = read_archive(data)
+                    if not isinstance(manifest, BuildManifest):
+                        raise SerializationError("Expected a reference package.")
                     print(
                         json.dumps(
                             {
@@ -511,7 +562,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         return 0
     if args.command == "architecture":
         print(
-            "biocompiler pipeline (checked synthetic generation, component linking, reference construct assembly and exact DNA/RNA CDS emission implemented; reproducible reference packaging implemented)"
+            "biocompiler pipeline (checked synthetic generation, component linking, reference construct assembly and exact DNA/RNA CDS emission implemented; reproducible reference and synthetic packaging implemented)"
         )
         print("Python authoring -> immutable intent graph")
         for stage in STAGE_ORDER:
@@ -536,4 +587,75 @@ def main(argv: Sequence[str] | None = None) -> int:
         print(
             program.to_json() if args.json else json.dumps(_summary(program), indent=2)
         )
+    return 0
+
+
+def _bounded_text(path, limit=16 * 1024 * 1024):
+    with path.open("rb") as source:
+        data = source.read(limit + 1)
+    if len(data) > limit:
+        raise SerializationError("Input JSON exceeds the size limit.")
+    return data.decode("utf-8")
+
+
+def _synthetic_command(args):
+    try:
+        if args.command == "synthetic-build":
+            request = SyntheticBuildRequest.from_json(_bounded_text(args.request))
+            metadata = (
+                RunMetadata.from_json(_bounded_text(args.run_metadata, 1024 * 1024))
+                if args.run_metadata
+                else None
+            )
+            package = build_synthetic_package(request, run_metadata=metadata)
+            output = publish_synthetic_package(package, args.output)
+            summary = {
+                "output": str(output),
+                "build_fingerprint": package.build_fingerprint,
+                "archive_sha256": package.archive_sha256,
+                "status": "complete",
+            }
+        else:
+            with args.path.open("rb") as source:
+                data = source.read(64 * 1024 * 1024 + 1)
+            if len(data) > 64 * 1024 * 1024:
+                raise SerializationError("Synthetic archive exceeds the size limit.")
+            if args.command == "synthetic-verify":
+                expected = (
+                    SyntheticBuildRequest.from_json(
+                        _bounded_text(args.expected_request)
+                    )
+                    if args.expected_request
+                    else None
+                )
+                package = verify_synthetic_package(
+                    data,
+                    expected_request=expected,
+                    expected_build_fingerprint=args.expected_build,
+                )
+                summary = {
+                    "build_fingerprint": package.build_fingerprint,
+                    "verification": "fresh independent offline reconstruction passed",
+                }
+            else:
+                manifest, files, metadata = read_archive(data)
+                if not isinstance(manifest, SyntheticBuildManifest):
+                    raise SerializationError("Expected a synthetic package.")
+                summary = {
+                    "build_fingerprint": manifest.build_fingerprint,
+                    "files": len(files),
+                    "run_metadata": metadata.to_dict() if metadata else None,
+                    "inspection": "Historical content and file integrity only; acceptance requires independent authority and current offline reconstruction.",
+                }
+        summary.update(
+            scope="synthetic_realization",
+            intended_use="software_test",
+            human_therapeutic_admission="not_admitted",
+            unresolved=["molecular_behavior"],
+            claim_scope="Finite supplied-history software-model evidence only.",
+        )
+        print(json.dumps(summary, indent=2))
+    except (OSError, UnicodeError, BiocompilerError, RecursionError) as exc:
+        print(f"biocompiler: {exc}", file=sys.stderr)
+        return 2
     return 0

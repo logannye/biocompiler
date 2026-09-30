@@ -555,9 +555,10 @@ class AdmissionBoundaryTests(unittest.TestCase):
             manifest_fixture(),
             generate_synthetic(software),
         ):
-            self.assertTrue(artifact.schema_version.endswith(".v0.2"))
+            legacy_schema = artifact.schema_version.rsplit(".v", 1)[0] + ".v0.1"
+            self.assertNotEqual(artifact.schema_version, legacy_schema)
             data = artifact.to_dict()
-            data["schema_version"] = artifact.schema_version.replace(".v0.2", ".v0.1")
+            data["schema_version"] = legacy_schema
             with self.assertRaises(bc.SerializationError):
                 type(artifact).from_dict(data)
 

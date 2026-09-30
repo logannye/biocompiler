@@ -1,6 +1,28 @@
 # Session handoff and current resumption point
 
-## Current resumption point — after M11.1
+## Current resumption point — code-only temporal and packaging work
+
+Updated **2026-09-29 (America/Los_Angeles)**. The code-only track implements
+M3.5 sustained-input generation, M3.6 pulses/retriggering/resettable memory, and
+the M7.7 synthetic workflow packaging extension in version `0.1.0.dev14`.
+See [temporal generation](synthetic-temporal-v0.1.md) and
+[synthetic build/verify packages](synthetic-build-v0.1.md). The roadmap records
+required hosted validation before these milestones are closed.
+
+The explicit temporal profile independently schedules timers and preserves
+contact episodes, onset aggregation order and reset/set/expiry precedence.
+Packages bind frozen realization, history, horizon and configuration; verification
+requires independent full request/build authority and reruns current checks.
+Examples use portable logical source paths and require no external data.
+
+The default combinational profile remains supported. Temporal component
+composition, `recently`, `followed_by`, arbitrary state assignments, quantitative
+biological modeling and human therapeutic compilation remain unsupported.
+M11.2–M11.6 remain open. The separately reviewed partial source-reconciliation
+work is in [PR #20](https://github.com/logannye/biocompiler/pull/20); this code-only
+branch starts from the merged M11.1 baseline and does not depend on that PR.
+
+## Prior resumption point — after M11.1
 
 Updated **2026-09-29 (America/Los_Angeles)** in [PR #19](https://github.com/logannye/biocompiler/pull/19).
 M11.1's [bounded audit](m11-human-benchmark-audit.md) is complete with a justified

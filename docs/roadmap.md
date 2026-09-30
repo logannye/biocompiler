@@ -3,7 +3,10 @@
 For the M10 closing context, read the [session handoff](session-handoff.md).
 The [M11.1 audit](m11-human-benchmark-audit.md) records the current candidate
 comparison and explicit therapeutic-benchmark deferral. M11.1 is complete within
-that audit scope; M11.2–M11.6 remain open.
+that audit scope; M11.2–M11.6 remain open. A separate code-only track adds
+[temporal synthetic generation](synthetic-temporal-v0.1.md) and
+[reproducible synthetic packages](synthetic-build-v0.1.md), without waiting for
+external biological evidence or changing therapeutic admission.
 
 biocompiler's intended function is to compile an immune-cell engineer's Python therapeutic intent into an **exact, complete RNA or DNA molecular specification for in vivo deployment in a human patient**. The nucleotide sequence is the primary output, accompanied by the molecular features, deployment assumptions and evidence needed to interpret it. Physical manufacture, administration and clinical authorization remain external activities; their relevant constraints must inform compilation.
 
@@ -27,13 +30,13 @@ Implementation baseline: merged revision `a446b9cd12cccaf29e5ee9db04f7a7725c89c7
 | --- | --- | --- |
 | Python → Intent | Typed authoring, frozen requests, source provenance, human targets, source-linked secretion observations, deployment declarations, conjunctive acceptance, use admission and integrated profile cases | M11 evidence for biological identities, delivery and bounds |
 | Intent → Behavior | Request-authoritative lowering/verification, Behavior IR and reference execution | M10/M12: physical observations, supported tolerances and realizability obligations |
-| Behavior → Mechanism | Automatic combinational synthetic generation, pinned catalog and independent runner/checker | M12: independently evaluated biological dynamics and bounded selection |
+| Behavior → Mechanism | Automatic combinational and explicit temporal synthetic generation, profile-specific catalogs and independent runner/checker | M12: independently evaluated biological dynamics and bounded selection |
 | Mechanism → Components | Immutable contracts, offline selection/locks, checked interfaces/domains/providers/resources, synthetic assembly and separate FAP CDS components | M11/M12: characterized human implementations with applicable evidence |
 | Components → Construct | Frozen layout authority, Construct IR, independent single-CDS assembly checks and evidence invalidation | M13: complete supported molecular layouts and required dependencies |
 | Construct → Molecular specification | Separate exact-reference DNA-CDS/RNA-CDS backends, independent spelling/translation checks and identity-preserving exports | M13: complete target-specific sequences, chemistry and candidate checks |
 | Molecular specification → Package | Strict reference manifests, deterministic archives, independent offline reconstruction and atomic publication | M14/M15: intent-root builds, separate evidence dimensions and evaluation feedback |
 
-`compile()` still raises `CompilationUnavailableError`. The synthetic example now generates its candidate automatically. `run_synthetic_pipeline` executes checked Intent → Behavior → synthetic Mechanism passes for its declared finite-history profile. `run_component_pipeline` additionally checks the synthetic Components stage without broadening the finite-history claim. `run_construct_pipeline` checks a separately selected whole reference CDS through the Construct stage. `run_molecular_pipeline` additionally emits the separately pinned DNA or RNA CDS and completes `exact_cds` after independent checks. `build_reference_package` packages those accepted stages and `publish_reference_package` atomically publishes a portable archive after fresh offline reconstruction. General intent-to-molecular realization and complete-payload generation remain unsupported.
+`compile()` still raises `CompilationUnavailableError`. `run_synthetic_pipeline` executes checked Intent → Behavior → synthetic Mechanism passes for the selected combinational or temporal finite-history profile. `build_synthetic_package` binds the exact frozen request, input history, horizon and configuration; the synthetic build/verify CLI reconstructs the result offline. `run_component_pipeline` additionally checks the stateless combinational Components stage; temporal composition interfaces remain unsupported. `run_construct_pipeline` checks a separately selected whole reference CDS through the Construct stage. `run_molecular_pipeline` additionally emits the separately pinned DNA or RNA CDS and completes `exact_cds` after independent checks. `build_reference_package` packages those accepted stages and `publish_reference_package` atomically publishes a portable archive after fresh offline reconstruction. General intent-to-molecular realization and complete-payload generation remain unsupported.
 
 ## Development strategy and next deliverable
 
@@ -132,6 +135,8 @@ M0–M9 retain their historical scopes and open tasks. M8 verification continues
 - [ ] **M3.5** Add temporal support only through separately specified operators and acceptance tests. The current synthetic `delay` delays both edges with inertial cancellation; it is not equivalent to `held_for`. Test rapid fall/re-rise histories before introducing sustained-input lowering.
 - [ ] **M3.6** Extend supported patterns incrementally for pulses, simultaneous events, reset precedence and repeated triggers, with explicit startup/rearming semantics. Reject unsupported timing/state operators until their profile exists.
 
+**M3.5–M3.6 implementation:** The [temporal profile](synthetic-temporal-v0.1.md) adds uninterrupted `held_for`, onset events, condition/event-triggered pulses and permanent/bounded resettable memory. Independent timers preserve contact episodes, cell/contact aggregation order, exact deadlines and reset/set/expiry precedence. Tests use 21 existing literal semantic scenarios plus targeted boundaries, an explicitly bounded 81-history dwell campaign and timing mutants. `recently`, `followed_by`, finite-state assignments, quantitative output laws and temporal component composition remain unsupported. Hosted validation is pending before closing these checkboxes.
+
 **Acceptance:** a supported Behavior program produces a candidate without manual graph construction and passes exercised finite-history contracts. Silent, late, wrong-object and wrongly scoped candidates fail. Unsupported temporal operators report diagnostics rather than being approximated.
 
 ## M4 — Select and compose versioned components
@@ -192,6 +197,7 @@ Implemented emission scope: exact whole-CDS reference spelling only, with indepe
 - [x] **M7.4** Validate imported artifacts strictly, including schema/version, referenced IDs, payload hashes and evidence freshness. Inspection must not execute authoring code or fetch unpinned dependencies.
 - [x] **M7.5** Ensure a failed build cannot leave a success manifest or partially overwrite a previous accepted result. Make output publication atomic and reproducible from the frozen request.
 - [x] **M7.6** Add hosted CI reference builds on the supported Python matrix. Verify offline reconstruction and relocation/repeated-run determinism; record tested revision/platform and retain useful failure evidence.
+- [ ] **M7.7 — code-only extension** Package the checked synthetic workflow with frozen realization authority, history, horizon, profile/configuration, generated mechanism, catalog/tool identities, checks and unresolved obligations. Provide build/inspect/verify CLI commands, independent offline reconstruction, tamper rejection and atomic publication. Keep its software-model scope distinct from the reference-CDS package and human compilation.
 
 **Acceptance:** one documented command resolves the pinned reference, traverses the accepted component/construct/molecular stages, emits an exact CDS and manifest, and explains every remaining biological/full-payload obligation. A clean environment reproduces the same canonical identities. No claim of biological refinement is fabricated to complete the package.
 

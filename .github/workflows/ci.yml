@@ -35,6 +35,22 @@ jobs:
         run: python examples/realization_check.py
       - name: Run checked request-to-synthetic pipeline
         run: python examples/checked_pipeline.py
+      - name: Run checked temporal generation
+        run: python examples/temporal_pipeline.py
+      - name: Build and reconstruct portable temporal synthetic packages
+        run: |
+          python examples/synthetic_build.py --output generated/synthetic-ci
+          biocompiler synthetic-build --request generated/synthetic-ci/request.json --output generated/synthetic-ci/cli.bcb > generated/synthetic-ci/build.json
+          biocompiler synthetic-inspect generated/synthetic-ci/cli.bcb > generated/synthetic-ci/inspect.json
+          biocompiler synthetic-verify generated/synthetic-ci/cli.bcb --expected-request generated/synthetic-ci/request.json > generated/synthetic-ci/verify.json
+      - name: Retain synthetic workflow evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: synthetic-workflow-python-${{ matrix.python-version }}
+          path: generated/synthetic-ci/
+          if-no-files-found: ignore
+          retention-days: 7
       - name: Run checked component linking and reference selection
         run: python examples/component_linking.py
       - name: Run checked DNA and RNA reference construct assembly

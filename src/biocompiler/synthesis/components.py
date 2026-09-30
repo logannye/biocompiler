@@ -22,7 +22,7 @@ from biocompiler.ir.composition import (
 from biocompiler.ir.serialization import require
 from biocompiler.models.synthetic import MODEL_RUNNER_VERSION
 from biocompiler.registry.components import ComponentRegistry
-from biocompiler.registry.synthetic import SYNTHETIC_CATALOG
+from biocompiler.registry.synthetic import SYNTHETIC_CATALOG, SYNTHETIC_PROFILE_VERSION
 from biocompiler.semantics.component_contracts import (
     OperatingDomain,
     PortContract,
@@ -150,6 +150,10 @@ def adapt_synthetic_components(
     This requires independently checked finite-trace acceptance. Composition
     linking does not upgrade that result into universal or biological evidence.
     """
+    require(
+        candidate.generator_config.profile_version == SYNTHETIC_PROFILE_VERSION,
+        "The component linker currently supports only the stateless combinational profile; temporal interfaces require a separate timing contract.",
+    )
     acceptance = check_synthetic_candidate(
         request, candidate, tuple(history), until=until
     )
