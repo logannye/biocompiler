@@ -24,8 +24,15 @@ sensing/control through declared molecular rules and explicit model/observation
 bindings. Quantitative work must attach to selected sequence identities. The
 guided GUI remains on its earlier candidate profile for later iteration.
 
-Validation receipt will be recorded after hosted checks pass. No local package
-installation or native compilation is used.
+[Hosted validation](https://github.com/logannye/biocompiler/actions/runs/36765484399)
+passed all **1,034 tests (52 new)**, package installation, existing workflows and
+installed implementation CLI commands on Python 3.11.16 and 3.14.7, Linux x86_64.
+The installed-GUI browser job also passed. Tested PR merge revision:
+`d97c8fb02b441ea89daeba4a54d5332116f2f8c0`; implementation head:
+`78c0a366b2ebafbe60c116359d183e6c9eae5224`, [PR #26](https://github.com/logannye/biocompiler/pull/26).
+Local Python 3.12.14 tests, Ruff, frozen audit integrity and the complete example
+also pass. M12.9, M12.10 and M13.6 are complete within this structural scope.
+No local package installation or native compilation was used.
 
 ## Previous resumption point — guided local design workspace
 
