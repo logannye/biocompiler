@@ -65,3 +65,5 @@ meaning.
 - [payload_readiness.py](payload_readiness.py): exercise structural RNA/DNA molecule profiles with explicitly artificial software fixtures, independent retained source/review bytes and sequence mutations. A structural PASS grants neither biological reference promotion nor compiler admission. Use `--output DIRECTORY` to retain inspectable evidence.
 
 - [human_admission.py](human_admission.py): show a finite supplied-observation PASS beside rejected human implementation admission, preserve software-only reference selection and save immutable admission requests/assessments. Use `--output DIRECTORY` for CLI inspection. See [M10.5](../docs/human-admission-v0.1.md).
+
+- [human_profile_cases.py](human_profile_cases.py): ten M10.6 requests spanning positive, negative, conflicting, underspecified and unsupported cases; separate admission/compilation status, bounded artificial-trace search and a conditional rate-constraint contradiction. Use `--output DIRECTORY` to save evidence and `--verify DIRECTORY` to recompute it against current example authority. See [proposed profile and completion scope](../docs/human-profile-v0.1.md).

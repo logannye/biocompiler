@@ -153,6 +153,23 @@ jobs:
           path: generated/admission-ci/
           if-no-files-found: ignore
           retention-days: 7
+      - name: Run and recheck proposed human profile cases
+        run: |
+          python examples/human_profile_cases.py --output generated/profile-cases-ci
+          python examples/human_profile_cases.py --verify generated/profile-cases-ci
+          biocompiler inspect generated/profile-cases-ci/positive/request.json
+          biocompiler inspect generated/profile-cases-ci/positive/acceptance.json
+          biocompiler inspect generated/profile-cases-ci/conflicting_healthy/acceptance.json
+          biocompiler inspect generated/profile-cases-ci/underspecified_deployment/deployment.json
+          biocompiler inspect generated/profile-cases-ci/unsupported_co_payload/admission.json
+      - name: Retain proposed human profile cases
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: human-profile-cases-python-${{ matrix.python-version }}
+          path: generated/profile-cases-ci/
+          if-no-files-found: ignore
+          retention-days: 7
       - name: Import scaffold interfaces
         run: |
           python -c "from biocompiler.compiler.passes import CompilerPass, PassResult; from biocompiler.semantics.context import TargetContext; from biocompiler.verification.evidence import Obligation"

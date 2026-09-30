@@ -1,5 +1,9 @@
 # Test boundaries
 
+M10.6 adds 29 profile-case regressions; all 783 software tests pass on hosted
+Python 3.11 and 3.14. Exact revisions/platforms and completion scope are recorded
+in the [roadmap](../docs/roadmap.md).
+
 M10.5 adds 33 admission tests; all 754 software tests pass on hosted Python 3.11
 and 3.14. Exact revisions/platforms and completion scope are recorded in the
 [roadmap](../docs/roadmap.md).
@@ -71,3 +75,5 @@ M7 tests cover portable request/manifest schemas, canonical ZIP inventory and ha
 M8 adds a cross-operator semantic matrix and metamorphic tests with explicit preconditions, deterministic adversarial histories, bounded exhaustive exploration with recorded state/time bounds, failure-preserving deletion reduction and an auditable mutation/independence matrix. The shared finite-trace checker requires active and inactive deadlines for every passing requirement. See [verification exploration](../docs/verification-exploration-v0.1.md), [semantic matrix](../docs/semantic-regression-matrix-v0.1.md) and [independence audit](../docs/verification-independence-v0.1.md).
 
 M10.5 admission tests cover strict immutable policy inputs/results, all declared evidence categories, unsupported human profiles, unchanged software selection unknowns, synthetic/reference/model classification limits, preferences and renamed records, manually locked composition, coordinated construct/molecular identity changes, direct export gates, rehashed archives with saved PASS evidence and atomic publication refusal. Artifact labels are fixed; finite human observation PASS remains separate from implementation admission. No test establishes biological applicability.
+
+M10.6 tests execute all five request categories with independently specified expected outcomes, distinguish missing output from measured zero, preserve known violations alongside unknowns, check conditional contradictions independently of candidate rates, and retain separate search exhaustion/budget/witness outcomes. Evidence regeneration rejects altered authority/results and preserves logical source correspondence. Every case still rejects human compilation. See [the proposed profile](../docs/human-profile-v0.1.md).
