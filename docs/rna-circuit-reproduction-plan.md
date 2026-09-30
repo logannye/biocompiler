@@ -3,7 +3,7 @@
 Date: 2026-09-30. Baseline: `0.1.0.dev19`, merged revision
 `0dbae3ca0e0821b64a3579f61a83aa15ee41be52`.
 
-**Status: R0 contracts implemented; hosted acceptance pending. R1–R13 remain open.**
+**Status: R0 complete within its scope/claim contract. R1–R13 remain open.**
 R0 adds the scope and claim contracts documented in the
 [profile guide](human-circuit-profile-v0.1.md). No literature record is promoted
 to a verified molecular reference.
@@ -241,8 +241,18 @@ contracts and human benchmark inventory policy are reviewable.
 
 **Implementation:** `0.1.0.dev20` adds the strict Python contracts, independent
 checker, public API/CLI, executable example, authority-mutation tests and hosted
-CI gates. The checked items above record implemented work; final R0 acceptance
-requires a passing hosted run on the PR revision. No molecular backend is added.
+CI gates. No molecular backend is added.
+
+[Hosted validation](https://github.com/logannye/biocompiler/actions/runs/36779026077)
+passed all **1,082 tests (48 new)**, package installation, the new installed
+profile example/check/verify/inspect workflow and every existing package gate
+on Python 3.11.16 and 3.14.7, Linux x86_64
+(`Linux-6.17.0-1022-azure-x86_64-with-glibc2.39`). The installed browser suite
+also passed. Tested PR merge revision: `c32bc6afa7917afa3e4fd9fbe4006823a6ed1e97`;
+implementation head: `f7dfd629fec20c4d595c51a36d6c3fb08686b109`,
+[PR #27](https://github.com/logannye/biocompiler/pull/27). Local Python 3.14.6
+on macOS arm64 also passed all 1,082 tests, Ruff, audit integrity and the new
+example. No local package installation or native build was used.
 
 ### R1 — Curate independent publication and sequence authority
 

@@ -34,11 +34,22 @@ R2/R5/R6a/R12/R13; do not implement a separate general research compiler or
 remove the product's in-vivo restriction. Full human therapeutic completion and
 admission still require their own applicable evidence and original obligations.
 
-R0's required hosted validation is pending at this commit. R1–R13 remain open;
+R0's required hosted validation passed; R1–R13 remain open;
 no benchmark curation, molecular circuit generation or biological validation is
 claimed. The previous baseline is `0.1.0.dev19`, merged revision
 `0dbae3ca0e0821b64a3579f61a83aa15ee41be52`. Its implementation and validation
 are retained below.
+
+[Hosted validation](https://github.com/logannye/biocompiler/actions/runs/36779026077)
+passed all **1,082 tests (48 new)**, package installation, the new installed
+profile example/check/verify/inspect workflow and every existing package gate
+on Python 3.11.16 and 3.14.7, Linux x86_64
+(`Linux-6.17.0-1022-azure-x86_64-with-glibc2.39`). The installed browser suite
+also passed. Tested PR merge revision: `c32bc6afa7917afa3e4fd9fbe4006823a6ed1e97`;
+implementation head: `f7dfd629fec20c4d595c51a36d6c3fb08686b109`,
+[PR #27](https://github.com/logannye/biocompiler/pull/27). Local Python 3.14.6
+on macOS arm64 also passed all 1,082 tests, Ruff, audit integrity and the new
+example. No local package installation or native build was used.
 
 ## Implementation baseline — checked molecular implementation
 

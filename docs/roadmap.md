@@ -9,7 +9,8 @@ Human in-vivo immune-cell deployment is the sole product target; human-study
 reconstruction is a supporting evidence workflow, and integration into the human
 target/deployment path is required. Non-human targets and sequencing workflows
 are out of scope. R0 implements the [human circuit scope contract](human-circuit-profile-v0.1.md)
-in `0.1.0.dev20`; its hosted validation is recorded with the milestone below.
+in `0.1.0.dev20`; its [hosted validation](rna-circuit-reproduction-plan.md#r0--freeze-the-profile-and-completion-contracts)
+records the tested revision and platform.
 R1–R13 remain open. No therapeutic admission or molecular circuit generation is added.
 
 The [M11.1 audit](m11-human-benchmark-audit.md) records the current candidate
