@@ -10,6 +10,7 @@ from types import MappingProxyType
 from typing import Any, TYPE_CHECKING
 
 if TYPE_CHECKING:
+    from biocompiler.ir.circuit_intent import CircuitRequest
     from biocompiler.ir.circuit_profile import CircuitProfileRequest
     from biocompiler.ir.candidate import CandidateRequest
     from biocompiler.compiler.candidate import CandidateCompilation
@@ -388,12 +389,22 @@ def compile(
     | HumanAcceptanceRequest
     | CandidateRequest
     | ImplementationRequest
-    | CircuitProfileRequest,
+    | CircuitProfileRequest
+    | CircuitRequest,
 ) -> CandidateCompilation | ImplementationCompilation:
     """Compile explicit research candidates; reject unimplemented human realization."""
+    from biocompiler.ir.circuit_intent import CircuitRequest
     from biocompiler.ir.circuit_profile import CircuitProfileRequest
     from biocompiler.ir.candidate import CandidateRequest
     from biocompiler.ir.implementation import ImplementationRequest
+    if isinstance(design, CircuitRequest):
+        from biocompiler.verification.circuit_intent import check_circuit_intent
+
+        assessment = check_circuit_intent(design)
+        raise CompilationUnavailableError(
+            "Circuit intent is recorded; molecular circuit generation is not implemented.",
+            diagnostics=assessment.diagnostics,
+        )
     if isinstance(design, CircuitProfileRequest):
         from biocompiler.verification.circuit_profile import check_circuit_profile
 

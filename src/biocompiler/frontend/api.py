@@ -245,6 +245,12 @@ class CellProgram(Handle):
         self.name, self.cell_type = name, cell_type
         self._scopes: dict[str, Scope] = {}
 
+    def circuit(self, name: str):
+        """Add role-bound circuit requirements alongside the frozen source."""
+        from biocompiler.frontend.circuits import CircuitBuilder
+
+        return CircuitBuilder.for_cells(self, name)
+
     def _scope(self, name: str, cls: type[Scope]) -> Scope:
         if name not in self._scopes:
             node = self._graph.declare(

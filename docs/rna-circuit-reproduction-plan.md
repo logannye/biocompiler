@@ -302,42 +302,50 @@ Source retrieval happens during curation; regression tests run offline.
 Primary areas: `frontend/api.py`, `frontend/expressions.py`, `ir/behavior.py`,
 `semantics/types.py`, `semantics/context.py`, implementation requirement analysis.
 
-- [ ] Add circuit requirements to existing human therapy authoring and frozen
+- [x] Add circuit requirements to existing human therapy authoring and frozen
   request machinery. Keep `Therapy.engineer` and the product behavior validator's
   in-vivo constraint. Require explicit human immune-cell type/state, relevant
   tissue/compartment and deployment identity for product requests.
-- [ ] Add a bounded human-reference authoring/replay entry point using the same
+- [x] Add a bounded human-reference authoring/replay entry point using the same
   requirement and mechanism schemas with separate source-experiment metadata.
   It can recreate a published human-cell circuit without fabricating an immune
   experiment; its output cannot be passed off as an admitted deployment payload.
-- [ ] Carry the existing human behavior, deployment, prohibitions and admission
+- [x] Carry the existing human behavior, deployment, prohibitions and admission
   contracts through circuit lowering. Model cell-accessible sensing, output
   lifecycle, payload modality and required co-delivery/provider relationships;
   missing refinements remain explicit and block strict product completion.
-- [ ] Add molecular observations with entity/isoform identity, quantity kind,
+- [x] Add molecular observations with entity/isoform identity, quantity kind,
   compartment and scope. Distinguish miRNA activity, RNA abundance, protein
   abundance, ligand concentration, translation rate and downstream activity.
   `TypeSpec.compatible` currently ignores scalar names; use real nominal
   distinctions or an explicit observation schema, not decorative type names.
-- [ ] Bind HIGH/LOW to the case's encoding and observation contract, with units,
+- [x] Bind HIGH/LOW to the case's encoding and observation contract, with units,
   allowed ranges or explicitly qualitative states, missingness rules and time.
   Preserve unknown/ambiguous states. Input mimic dose is not automatically the
   intracellular activity sensed by the circuit.
-- [ ] Introduce protein-expression/product and RNA-product requirements. Keep
+- [x] Introduce protein-expression/product and RNA-product requirements. Keep
   translation, mature protein quantity, reporter fluorescence and biological
   activity distinct. The existing instantaneous `report()` action cannot stand
   in for regulated protein expression.
-- [ ] Support compositional NOT/AND/OR/XOR/XNOR, asymmetric expressions,
+- [x] Support compositional NOT/AND/OR/XOR/XNOR, asymmetric expressions,
   constants, projections and truth-table authoring through a canonical typed
   Boolean representation. Define multi-input parity/equivalence explicitly.
   Keep Python Boolean coercion forbidden and Python loops design-time only.
-- [ ] Preserve all source requirements, prohibitions, locations and wrapper
+- [x] Preserve all source requirements, prohibitions, locations and wrapper
   contracts through analysis. Unsupported timing, feedback, state, secretion,
   delivery or output behavior remains an obligation rather than disappearing
   when a reporter circuit is selected.
-- [ ] Add explicit exact-reproduction and candidate-design request modes, with
+- [x] Add explicit exact-reproduction and candidate-design request modes, with
   selected realization, authority lock, requested molecular form and fidelity
   scope. Freeze the API only after the R6 vertical slice exercises it.
+
+**Implementation:** `0.1.0.dev22` adds the [typed circuit intent contract](circuit-intent-v0.1.md).
+Requirements supplement the unchanged full source wrapper; every source obligation
+remains conjunctive and unresolved at the molecular boundary. R2 uses the existing
+source/evidence pin schema; R1 curation and its metadata-only draft remain open.
+The API remains provisional until R6; this milestone establishes no published
+reconstruction or molecular output. Hosted validation evidence is recorded below
+after the final revision passes.
 
 **Acceptance:** all 16 two-input Boolean functions round-trip with stable source
 identities; quantity/compartment/entity mismatches fail; missing input states
