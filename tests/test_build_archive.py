@@ -49,7 +49,7 @@ def archive_fixture():
         for stage, schema in (
             ("components", "biocompiler.construct_request.v0.1"),
             ("construct", "biocompiler.construct.v0.1"),
-            ("molecular", "biocompiler.molecular.v0.1"),
+            ("molecular", "biocompiler.molecular.v0.2"),
         )
     )
     manifest = BuildManifest(

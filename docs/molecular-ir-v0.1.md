@@ -86,3 +86,7 @@ what must be rechecked; it is not a receipt that rechecking occurred.
 All records use strict versioned serialization, reject unknown fields and duplicate
 JSON keys, freeze nested inventories and return `SerializationError` for malformed
 imports. An artifact contains no producer-supplied success certificate.
+
+## Software-use labels
+
+M10.5 advances MolecularArtifact to schema v0.2 with fixed `intended_use=software_test` and `human_therapeutic_admission=not_admitted` fields. These change artifact identity, while nucleotide-content hashes are unchanged. Import rejects promotion or missing labels. See [human admission](human-admission-v0.1.md) for fresh checks and migration.

@@ -1,6 +1,9 @@
 """Author inspectable therapeutic programs for in-vivo immune-cell engineering."""
 
-__version__ = "0.1.0.dev11"
+__version__ = "0.1.0.dev12"
+
+from biocompiler.semantics.admission import AdmissionAssessment, AdmissionRequest
+from biocompiler.verification.admission import assess_admission, verify_admission
 
 from biocompiler.compiler.acceptance import HumanAcceptanceRequest
 from biocompiler.semantics.acceptance import (
@@ -307,6 +310,10 @@ from biocompiler.verification.realization import (
 )
 
 __all__ = [
+    "AdmissionRequest",
+    "AdmissionAssessment",
+    "assess_admission",
+    "verify_admission",
     "HumanAcceptanceRequest",
     "HumanAcceptanceContract",
     "InputAvailabilitySpec",

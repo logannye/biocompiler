@@ -24,9 +24,11 @@ from biocompiler.semantics.component_contracts import (
     operating_domain_subset,
     ports_compatible,
 )
+from biocompiler.semantics.admission import ADMISSION_POLICY_VERSION
+from biocompiler.verification.admission import admission_for_target
 from biocompiler.verification.evidence import CheckOutcome, FreshnessReport
 
-CHECKER_VERSION = "biocompiler.component_linker.v0.1"
+CHECKER_VERSION = "biocompiler.component_linker.v0.2"
 CLAIM_SCOPE = (
     "Structural component compatibility under the locked records and declared "
     "target, provider, lifecycle, model and resource assumptions only. This is "
@@ -129,6 +131,7 @@ def composition_dependencies(request: CompositionRequest, registry: ComponentReg
         "registry_lock": request.registry_lock.fingerprint,
         "target": request.target.fingerprint,
         "checker": CHECKER_VERSION,
+        "admission_policy": ADMISSION_POLICY_VERSION,
         "identities": [item.to_dict() for item in request.registry_lock.identities],
     }
 
@@ -142,13 +145,21 @@ class CompositionResult(JsonArtifact):
     resolved_dependencies: tuple[ResolvedDependency, ...] = ()
     resource_usage: tuple[ResourceUsage, ...] = ()
     claim_scope: str = CLAIM_SCOPE
-    schema_version: ClassVar[str] = "biocompiler.component_link_result.v0.1"
+    schema_version: ClassVar[str] = "biocompiler.component_link_result.v0.2"
 
     def __post_init__(self):
         require(isinstance(self.outcome, CheckOutcome), "Invalid composition outcome.")
         fields(
             self.dependencies,
-            {"request", "registry", "registry_lock", "target", "checker", "identities"},
+            {
+                "request",
+                "registry",
+                "registry_lock",
+                "target",
+                "checker",
+                "identities",
+                "admission_policy",
+            },
             "Composition dependencies",
         )
         for key in ("request", "registry", "registry_lock", "target"):
@@ -160,7 +171,8 @@ class CompositionResult(JsonArtifact):
                 "Invalid composition dependency hash.",
             )
         require(
-            self.dependencies["checker"] == CHECKER_VERSION,
+            self.dependencies["checker"] == CHECKER_VERSION
+            and self.dependencies["admission_policy"] == ADMISSION_POLICY_VERSION,
             "Unsupported checker version.",
         )
         identities = self.dependencies["identities"]
@@ -340,6 +352,16 @@ def check_composition(
             "Instances must exactly match the locked selections.",
         )
         return finish()
+
+    admission = admission_for_target(
+        request.target, boundary="verification", components=tuple(records.values())
+    )
+    if admission.decision != "software_only":
+        diagnostic(
+            "unsupported",
+            "human_profile_not_admitted",
+            "; ".join(admission.diagnostics),
+        )
 
     target = request.target.payload_format.value
     invalid_providers = set()

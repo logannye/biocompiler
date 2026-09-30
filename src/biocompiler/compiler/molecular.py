@@ -21,6 +21,7 @@ from biocompiler.compiler.pipeline import (
 )
 from biocompiler.ir.construct import ConstructCandidate, ConstructRequest
 from biocompiler.ir.molecular import EncodingPolicy, MolecularArtifact
+from biocompiler.semantics.admission import ADMISSION_POLICY_VERSION
 from biocompiler.ir.serialization import fingerprint, require
 from biocompiler.ir.stages import Stage
 from biocompiler.verification.components import check_composition
@@ -59,6 +60,7 @@ def run_molecular_pipeline(
     upstream = run_construct_pipeline(request, registry, references)
     manager = upstream.manager
     dependencies = {
+        "human_admission_policy": fingerprint(ADMISSION_POLICY_VERSION),
         "molecular_emitter": fingerprint(EMITTER_VERSION),
         "molecular_checker": fingerprint(CHECKER_VERSION),
         "molecular_profile": fingerprint(request.target.payload_format.value + "-CDS"),

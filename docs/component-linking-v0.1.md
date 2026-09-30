@@ -131,3 +131,7 @@ features. They cannot provide dynamic ports, capabilities or biological guarante
 The [reference construct pipeline](reference-construct-pipeline-v0.1.md) now checks
 one whole selected CDS layout. The [exact-CDS pipeline](exact-cds-pipeline-v0.1.md) adds separately checked
 reference emission; general molecular realization remains unsupported.
+
+## Current human admission gate
+
+The v0.2 linker/result checks [human use admission](human-admission-v0.1.md) from the current target and resolved component inventory. Manually supplied exact locks cannot bypass registry admission. Unsupported human use produces `human_profile_not_admitted`; other independent diagnostics are retained. The dependency snapshot includes the admission policy version, and construct/molecular verification reruns the gate. Software fixture consistency remains the supported scope.

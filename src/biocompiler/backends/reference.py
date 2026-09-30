@@ -21,7 +21,7 @@ from biocompiler.registry.components import ComponentRegistry
 from biocompiler.registry.references import ReferenceManifest
 from biocompiler.verification.construct import check_construct
 
-EMITTER_VERSION = "biocompiler.reference_sequence_emitter.v0.1"
+EMITTER_VERSION = "biocompiler.reference_sequence_emitter.v0.2"
 
 
 def emit_reference_sequence(

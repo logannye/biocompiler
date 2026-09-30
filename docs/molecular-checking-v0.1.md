@@ -66,3 +66,5 @@ and never authorize a modified artifact or export.
 Passing establishes the selected coding-reference spelling and the stated
 comparisons. It establishes no complete delivered payload, expression behavior,
 empirical function or efficacy.
+
+The M10.5 molecular checker/result uses v0.2 and includes the current human admission policy in its dependency snapshot. It reruns construct/composition checks and cannot accept a human implementation through reidentified candidate metadata. Sequence identity remains distinct from use admission; see [the policy](human-admission-v0.1.md).

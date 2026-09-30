@@ -127,3 +127,7 @@ both modalities offline, compares relocated/repeated build bytes and retains
 reference-build logs on failure. It reports the tested revision/platform. See the
 [manifest schema](build-manifest-v0.1.md) and
 [exact-CDS pipeline](exact-cds-pipeline-v0.1.md) for the underlying contracts.
+
+## Software-only use and fresh admission
+
+Reference-build policy v0.2 checks [current admission](human-admission-v0.1.md) before building or reconstructing a package. A human target is rejected even if its archived request and manifest hashes match and retained checks say PASS. Publication repeats fresh verification before writing. Manifest and summary schemas v0.2 label software use and non-admission explicitly; the admission policy is pinned in the toolchain. No human therapeutic profile is admitted. The independently retained sequence/reference pins are unchanged.

@@ -9,6 +9,7 @@ import math
 from types import MappingProxyType
 from typing import Any
 
+from biocompiler.verification.admission import admission_for_target
 from biocompiler.compiler.request import BuildRequest, RealizationRequest
 from biocompiler.compiler.human_behavior import HumanBehaviorRequest
 from biocompiler.compiler.deployment import HumanDeploymentRequest
@@ -123,7 +124,10 @@ class RealizationPlan:
 
     def to_dict(self) -> dict:
         return {
-            "schema_version": "biocompiler.plan.v0.2",
+            "schema_version": "biocompiler.plan.v0.3",
+            "admission": admission_for_target(
+                self.profile.target, boundary="planning"
+            ).to_dict(),
             "status": "unresolved",
             "program": self.program.to_dict(),
             "program_fingerprint": self.program.fingerprint,
@@ -323,6 +327,7 @@ def plan(program: IntentProgram, *, profile: BuildProfile) -> RealizationPlan:
             )
     unresolved.extend(_profile_choices(program))
     if isinstance(profile.target, HumanTargetContext):
+        unresolved.extend(_admission_choices(profile.target))
         unresolved.append(_human_target_choice())
         unresolved.append(_deployment_missing_choice())
         unresolved.append(_acceptance_missing_choice())
@@ -333,6 +338,17 @@ def plan(program: IntentProgram, *, profile: BuildProfile) -> RealizationPlan:
         )
     )
     return RealizationPlan(program, profile, bindings, tuple(unresolved))
+
+
+def _admission_choices(target):
+    assessment = admission_for_target(target, boundary="planning")
+    return tuple(
+        DesignChoice(
+            code,
+            "Human therapeutic compilation requires an independently admitted profile; declared evidence and software PASS results cannot authorize use.",
+        )
+        for code in assessment.diagnostics
+    )
 
 
 def _human_target_choice():
@@ -396,6 +412,7 @@ def compile(
         )
         diagnostics = list(_profile_choices(request.intent))
         if isinstance(request.target, HumanTargetContext):
+            diagnostics.extend(_admission_choices(request.target))
             diagnostics.append(_human_target_choice())
             if not isinstance(design, HumanDeploymentRequest):
                 diagnostics.append(_deployment_missing_choice())

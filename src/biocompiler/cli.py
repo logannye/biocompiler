@@ -7,6 +7,7 @@ from pathlib import Path
 import sys
 
 from biocompiler import __version__
+from biocompiler.semantics.admission import AdmissionAssessment, AdmissionRequest
 from biocompiler.compiler.acceptance import HumanAcceptanceRequest
 from biocompiler.semantics.acceptance import (
     AcceptanceSample,
@@ -126,6 +127,8 @@ def _read_artifact(document):
         {
             cls.schema_version: cls
             for cls in (
+                AdmissionRequest,
+                AdmissionAssessment,
                 BuildRequest,
                 RealizationRequest,
                 HumanBehaviorRequest,
@@ -219,6 +222,19 @@ def _summary(artifact):
     for key in ("id", "name", "context_id", "outcome", "evidence_kind"):
         if hasattr(artifact, key):
             summary[key] = getattr(artifact, key)
+    if isinstance(artifact, AdmissionAssessment):
+        summary["intended_use"] = artifact.intended_use
+        summary["decision"] = artifact.decision
+        summary["diagnostics"] = list(artifact.diagnostics)
+        summary["evidence"] = [item.to_dict() for item in artifact.evidence]
+        summary["inspection"] = (
+            "Historical admission record only; rerun assess_admission with independent request authority. Declared evidence is unvalidated; no human therapeutic profile is admitted."
+        )
+    if isinstance(artifact, SelectionResult):
+        summary["admission"] = artifact.admission.to_dict()
+    if isinstance(artifact, (MolecularArtifact, SyntheticCandidate, BuildManifest)):
+        summary["intended_use"] = "software_test"
+        summary["human_therapeutic_admission"] = "not_admitted"
     if isinstance(artifact, (HumanAcceptanceRequest, HumanAcceptanceContract)):
         contract = (
             artifact.acceptance
@@ -419,6 +435,8 @@ def main(argv: Sequence[str] | None = None) -> int:
                             "build_fingerprint": package.build_fingerprint,
                             "archive_sha256": package.archive_sha256,
                             "scope": "exact_cds",
+                            "intended_use": "software_test",
+                            "human_therapeutic_admission": "not_admitted",
                             "status": "complete",
                             "unresolved": [
                                 "complete_payload_features",
@@ -452,6 +470,8 @@ def main(argv: Sequence[str] | None = None) -> int:
                             {
                                 "build_fingerprint": package.build_fingerprint,
                                 "scope": "exact_cds",
+                                "intended_use": "software_test",
+                                "human_therapeutic_admission": "not_admitted",
                                 "verification": "fresh independent offline reconstruction passed",
                                 "unresolved": [
                                     "complete_payload_features",
@@ -468,6 +488,8 @@ def main(argv: Sequence[str] | None = None) -> int:
                             {
                                 "build_fingerprint": manifest.build_fingerprint,
                                 "scope": manifest.scope,
+                                "intended_use": manifest.intended_use,
+                                "human_therapeutic_admission": manifest.human_therapeutic_admission,
                                 "files": len(manifest.files),
                                 "run_metadata": metadata.to_dict()
                                 if metadata

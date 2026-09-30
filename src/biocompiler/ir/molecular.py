@@ -376,8 +376,10 @@ class MolecularArtifact(_Record):
     changes: tuple[EncodingChange, ...] = ()
     source_request_fingerprint: str | None = None
     artifact_scope: str = "exact_cds"
-    schema_version: ClassVar[str] = "biocompiler.molecular.v0.1"
-    _derived: ClassVar[frozenset[str]] = frozenset({"nodes"})
+    schema_version: ClassVar[str] = "biocompiler.molecular.v0.2"
+    _derived: ClassVar[frozenset[str]] = frozenset(
+        {"nodes", "intended_use", "human_therapeutic_admission"}
+    )
     _decoders: ClassVar[dict] = {
         "registry_lock": RegistryLock.from_dict,
         "records": lambda value: _decode_array(value, MolecularRecord),
@@ -422,9 +424,11 @@ class MolecularArtifact(_Record):
 
     def to_dict(self):
         return super().to_dict() | {
+            "intended_use": "software_test",
+            "human_therapeutic_admission": "not_admitted",
             "nodes": [
                 {"id": item.instance_id, "kind": "cds_record"} for item in self.records
-            ]
+            ],
         }
 
 

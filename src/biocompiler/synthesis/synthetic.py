@@ -33,8 +33,10 @@ from biocompiler.verification.realization import (
     realization_dependencies,
 )
 
-GENERATOR_VERSION = "biocompiler.synthetic.generator.v0.1"
-SYNTHETIC_CHECKER_VERSION = "biocompiler.synthetic.acceptance.v0.2"
+from biocompiler.verification.admission import admission_for_target
+
+GENERATOR_VERSION = "biocompiler.synthetic.generator.v0.2"
+SYNTHETIC_CHECKER_VERSION = "biocompiler.synthetic.acceptance.v0.3"
 
 
 def _identity(value, label):
@@ -114,7 +116,7 @@ class SyntheticCandidate(JsonArtifact):
     behavior_requirement_ids: Mapping[str, tuple[str, ...]]
     component_locks: tuple[ComponentLock, ...]
     generator_config: SyntheticGeneratorConfig
-    schema_version: ClassVar[str] = "biocompiler.synthetic_candidate.v0.1"
+    schema_version: ClassVar[str] = "biocompiler.synthetic_candidate.v0.2"
 
     def __post_init__(self):
         _identity(self.request_fingerprint, "Request fingerprint")
@@ -160,6 +162,8 @@ class SyntheticCandidate(JsonArtifact):
     def to_dict(self):
         return {
             "schema_version": self.schema_version,
+            "intended_use": "software_test",
+            "human_therapeutic_admission": "not_admitted",
             "request_fingerprint": self.request_fingerprint,
             "mechanism": self.mechanism.to_dict(),
             "observation_map": self.observation_map.to_dict(),
@@ -175,6 +179,8 @@ class SyntheticCandidate(JsonArtifact):
             data,
             {
                 "schema_version",
+                "intended_use",
+                "human_therapeutic_admission",
                 "request_fingerprint",
                 "mechanism",
                 "observation_map",
@@ -186,7 +192,9 @@ class SyntheticCandidate(JsonArtifact):
             cls.__name__,
         )
         require(
-            data["schema_version"] == cls.schema_version,
+            data["schema_version"] == cls.schema_version
+            and data["intended_use"] == "software_test"
+            and data["human_therapeutic_admission"] == "not_admitted",
             "Unsupported candidate schema.",
         )
         require(
@@ -243,6 +251,12 @@ def generate_synthetic(
             message,
             node_id=node.id if node else None,
             source=node.source if node else None,
+        )
+
+    admission = admission_for_target(target, boundary="selection")
+    if admission.decision != "software_only":
+        reject(
+            "Human therapeutic use is not admitted: " + "; ".join(admission.diagnostics)
         )
 
     if request.build_request.artifact_scope != "synthetic_realization":

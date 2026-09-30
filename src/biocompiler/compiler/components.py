@@ -19,6 +19,7 @@ from biocompiler.compiler.pipeline import (
 from biocompiler.compiler.request import RealizationRequest
 from biocompiler.compiler.synthetic import run_synthetic_pipeline
 from biocompiler.ir.component_assembly import ComponentAssembly
+from biocompiler.semantics.admission import ADMISSION_POLICY_VERSION
 from biocompiler.ir.serialization import fingerprint
 from biocompiler.ir.stages import Stage
 from biocompiler.registry.components import REGISTRY_POLICY_VERSION
@@ -106,6 +107,7 @@ def run_component_pipeline(
     adapted = adapt_synthetic_components(request, candidate, frames, until=until)
     manager = upstream.manager
     dependencies = {
+        "human_admission_policy": fingerprint(ADMISSION_POLICY_VERSION),
         "component_registry": adapted.registry.fingerprint,
         "component_lock": adapted.composition.registry_lock.fingerprint,
         "composition_request": adapted.composition.fingerprint,

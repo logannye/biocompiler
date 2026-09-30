@@ -23,6 +23,7 @@ from biocompiler.compiler.pipeline import (
 )
 from biocompiler.compiler.request import BuildRequest, RealizationRequest
 from biocompiler.ir.behavior import BehaviorProgram, SCHEMA_VERSION, SUPPORTED_KINDS
+from biocompiler.semantics.admission import ADMISSION_POLICY_VERSION
 from biocompiler.ir.serialization import fingerprint
 from biocompiler.ir.stages import Stage
 from biocompiler.models.synthetic import MODEL_RUNNER_VERSION
@@ -71,6 +72,7 @@ def run_synthetic_pipeline(
         raise TypeError("Expected a SyntheticGeneratorConfig.")
     frames = tuple(history)
     dependencies = {
+        "human_admission_policy": fingerprint(ADMISSION_POLICY_VERSION),
         "request": request.build_request.fingerprint,
         "request_artifact": request.build_request.artifact_fingerprint,
         "realization_request": request.fingerprint,

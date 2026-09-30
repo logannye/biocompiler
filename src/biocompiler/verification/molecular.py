@@ -14,6 +14,7 @@ from typing import ClassVar
 from biocompiler.errors import SerializationError
 from biocompiler.ir.construct import ConstructCandidate, ConstructRequest
 from biocompiler.ir.intent import SourceLocation, freeze_json, thaw_json
+from biocompiler.semantics.admission import ADMISSION_POLICY_VERSION
 from biocompiler.ir.serialization import (
     JsonArtifact,
     fields,
@@ -30,7 +31,7 @@ from biocompiler.verification.construct import (
 )
 from biocompiler.verification.evidence import CheckOutcome, FreshnessReport
 
-CHECKER_VERSION = "biocompiler.molecular_checker.v0.1"
+CHECKER_VERSION = "biocompiler.molecular_checker.v0.2"
 _COMPARISONS = frozenset(
     {
         "canonical_hash",
@@ -187,7 +188,7 @@ class MolecularResult(JsonArtifact):
     diagnostics: tuple[MolecularDiagnostic, ...] = ()
     checks: tuple[MolecularCheck, ...] = ()
     claim_scope: str = CLAIM_SCOPE
-    schema_version: ClassVar[str] = "biocompiler.molecular_result.v0.1"
+    schema_version: ClassVar[str] = "biocompiler.molecular_result.v0.2"
 
     def __post_init__(self):
         require(
@@ -207,13 +208,14 @@ class MolecularResult(JsonArtifact):
         }
         fields(
             self.dependencies,
-            hashes | {"references", "checker", "construct_checker"},
+            hashes | {"references", "checker", "construct_checker", "admission_policy"},
             "Molecular dependencies",
         )
         for key in hashes:
             _hash(self.dependencies[key], key)
         for key, expected in (
             ("checker", CHECKER_VERSION),
+            ("admission_policy", ADMISSION_POLICY_VERSION),
             ("construct_checker", CONSTRUCT_CHECKER_VERSION),
         ):
             require(self.dependencies[key] == expected, f"Unsupported {key} version.")
@@ -367,6 +369,7 @@ def molecular_dependencies(request, construct, candidate, registry, manifests):
             key: item.fingerprint for key, item in sorted(manifests.items())
         },
         "checker": CHECKER_VERSION,
+        "admission_policy": ADMISSION_POLICY_VERSION,
         "construct_checker": CONSTRUCT_CHECKER_VERSION,
     }
 

@@ -10,6 +10,9 @@ from collections.abc import Mapping
 from dataclasses import dataclass
 from typing import ClassVar
 
+from biocompiler.semantics.admission import AdmissionAssessment
+from biocompiler.verification.admission import admission_for_target
+
 from biocompiler.ir.component_contracts import ComponentRecord, PinnedIdentity
 from biocompiler.ir.components import ComponentLock
 from biocompiler.ir.serialization import JsonArtifact, fields, name, names, require
@@ -19,7 +22,7 @@ from biocompiler.semantics.component_contracts import (
     operating_domain_subset,
 )
 
-REGISTRY_POLICY_VERSION = "biocompiler.component_registry.v0.1"
+REGISTRY_POLICY_VERSION = "biocompiler.component_registry.v0.2"
 
 
 def _hash(value, label):
@@ -228,9 +231,18 @@ class SelectionResult(JsonArtifact):
     request_fingerprint: str
     selected: ComponentLock | None
     alternatives: tuple[SelectionAlternative, ...]
-    schema_version: ClassVar[str] = "biocompiler.component_selection_result.v0.1"
+    admission: AdmissionAssessment
+    schema_version: ClassVar[str] = "biocompiler.component_selection_result.v0.2"
 
     def __post_init__(self):
+        require(
+            isinstance(self.admission, AdmissionAssessment),
+            "Selection requires an explicit admission assessment.",
+        )
+        require(
+            self.selected is None or self.admission.decision == "software_only",
+            "A non-admitted request cannot select a component.",
+        )
         _hash(self.registry_fingerprint, "Registry fingerprint")
         _hash(self.request_fingerprint, "Selection request fingerprint")
         require(
@@ -289,6 +301,8 @@ class SelectionResult(JsonArtifact):
 
     @property
     def outcome(self):
+        if self.admission.decision != "software_only":
+            return "unsupported"
         return (
             "pass"
             if self.selected is not None
@@ -304,11 +318,13 @@ class SelectionResult(JsonArtifact):
             "request_fingerprint": self.request_fingerprint,
             "selected": self.selected.to_dict() if self.selected else None,
             "alternatives": [item.to_dict() for item in self.alternatives],
+            "admission": self.admission.to_dict(),
         }
 
     @classmethod
     def from_dict(cls, data):
         values = _read(data, cls)
+        values["admission"] = AdmissionAssessment.from_dict(values["admission"])
         values["selected"] = (
             ComponentLock.from_dict(values["selected"])
             if values["selected"] is not None
@@ -430,9 +446,17 @@ class ComponentRegistry(JsonArtifact):
             isinstance(request, SelectionRequest),
             "A frozen selection request is required.",
         )
+        admission = admission_for_target(
+            request.target, boundary="selection", components=self.components
+        )
         alternatives = []
         for component in self.components:
-            reasons = []
+            policy = admission_for_target(
+                request.target, boundary="selection", components=(component,)
+            )
+            reasons = (
+                list(policy.diagnostics) if policy.decision != "software_only" else []
+            )
             if component.implementation_role != request.implementation_role:
                 reasons.append("implementation_role_mismatch")
             if request.target.payload_format.value not in component.supported_targets:
@@ -527,7 +551,11 @@ class ComponentRegistry(JsonArtifact):
             else None
         )
         return SelectionResult(
-            self.fingerprint, request.fingerprint, selected, tuple(alternatives)
+            self.fingerprint,
+            request.fingerprint,
+            selected,
+            tuple(alternatives),
+            admission,
         )
 
     def verify_selection(

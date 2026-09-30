@@ -108,3 +108,7 @@ See [Molecular IR](molecular-ir-v0.1.md) for sequence and feature identity, and
 [the exact-CDS pipeline](exact-cds-pipeline-v0.1.md) for the checks that establish the
 narrow accepted scope. Complete delivered payload and biological obligations
 remain unresolved in this package.
+
+## M10.5 schema update
+
+Build manifest schema v0.2 fixes `intended_use=software_test` and `human_therapeutic_admission=not_admitted`. The accepted Molecular stage uses `biocompiler.molecular.v0.2`; the package toolchain pins the admission policy. [Current admission rules](human-admission-v0.1.md) apply before build, fresh verification and publication. Reconstruct affected software packages from independent inputs; old manifests cannot be relabeled into current authority.

@@ -17,6 +17,7 @@ This release uses the `biocompiler` package, CLI and artifact namespace. See the
 | Check required and prohibited observations | One acceptance authority for source responses, healthy-context inactivity, background/peak limits, response duration, input-access loss and external shutdown assumptions. |
 | Freeze deployment requirements | Pinned delivery specification, recipient and exposure assumptions, distinct expression/behavior clocks, and explicit unsupported co-payload obligations. |
 | Evaluate and check abstract behavior | Execution against supplied observation histories, a limited automatic synthetic candidate generator, and independent checks with counterexamples and explicit coverage. |
+| Enforce human-profile admission | Fresh gates at planning, selection, verification and export; existing artifacts are software-only and no human therapeutic profile is admitted. |
 | Link components | Versioned component contracts with checked interfaces, operating assumptions, providers, resources, and dependency identities. |
 | Reproduce a reference coding sequence | Checked single-CDS assembly, exact DNA or RNA emission, sequence/translation checks, and reproducible offline build packages. |
 | Record molecular correspondence | Contracts connecting requested observations and responses to selected CDS components, with separate parameter, context, and evidence records. |
@@ -36,6 +37,11 @@ The [human target contract](docs/human-target-contract-v0.1.md) fixes human in-v
 recipient scope while preserving explicit unresolved applicability. It records
 requirements and evidence citations; it does not validate a human biological
 implementation or admit a therapeutic payload.
+
+The [human admission policy](docs/human-admission-v0.1.md) enforces this boundary
+through selection and export. Reference and synthetic artifacts carry fixed
+software-use labels. Release `0.1.0.dev12` changes affected artifact identities;
+rebuild from independent authority instead of relabeling an old PASS.
 
 ## Quick start
 

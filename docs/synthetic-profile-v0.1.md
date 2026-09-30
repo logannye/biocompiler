@@ -125,3 +125,7 @@ snapshot at 4 and all-inactive snapshot at 6, checked through 7 seconds. That
 suffix exercises both response states with 0.5-second deadlines. These bounds
 cover this finite Boolean transition test, not every history, continuous input,
 contact lifecycle or biological operating domain.
+
+## Software-use admission
+
+Synthetic candidate schema v0.2 fixes `intended_use=software_test` and `human_therapeutic_admission=not_admitted`. The generator and independent realization checker reject human implementation contexts under the [M10.5 admission policy](human-admission-v0.1.md). Exact request identities and a passing finite history cannot promote a software model to a human implementation. Policy identity participates in verification and pipeline dependencies.
