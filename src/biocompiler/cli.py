@@ -9,6 +9,9 @@ import sys
 import tempfile
 
 from biocompiler import __version__
+from biocompiler.ir.candidate import CandidateRequest, CandidateRequirements, MolecularLibrary
+from biocompiler.ir.candidate_build import CandidateBuildRecord
+from biocompiler.ir.candidate_selection import CandidateSelection, CandidateLayout
 from biocompiler.semantics.admission import AdmissionAssessment, AdmissionRequest
 from biocompiler.compiler.acceptance import HumanAcceptanceRequest
 from biocompiler.semantics.acceptance import (
@@ -171,6 +174,12 @@ def _read_artifact(document):
                 AdmissionRequest,
                 AdmissionAssessment,
                 BuildRequest,
+                CandidateRequest,
+                CandidateRequirements,
+                MolecularLibrary,
+                CandidateBuildRecord,
+                CandidateSelection,
+                CandidateLayout,
                 RealizationRequest,
                 HumanBehaviorRequest,
                 HumanDeploymentRequest,
@@ -276,6 +285,12 @@ def _summary(artifact):
         "schema_version": artifact.schema_version,
         "fingerprint": artifact.fingerprint,
     }
+    if isinstance(artifact, CandidateBuildRecord):
+        summary.update(
+            status=artifact.status, scope="product_cassette_structure",
+            therapeutic_implementation="partial", human_therapeutic_admission="not_admitted",
+            inspection="Historical candidate only; fresh verification requires independent complete request authority.",
+        )
     if isinstance(artifact, SyntheticVerificationRecord):
         summary.update(_verification_summary(artifact))
         summary["inspection"] = (
@@ -587,7 +602,22 @@ def main(argv: Sequence[str] | None = None) -> int:
     molecular_authority = molecular_verify.add_mutually_exclusive_group(required=True)
     molecular_authority.add_argument("--expected-build")
     molecular_authority.add_argument("--expected-request", type=Path)
+    candidate_build = commands.add_parser(
+        "candidate-build", help="Compile a source-rooted RNA research candidate"
+    )
+    candidate_build.add_argument("--request", type=Path, required=True)
+    candidate_build.add_argument("--output", type=Path, required=True)
+    for operation in ("verify", "fasta"):
+        candidate_command = commands.add_parser(
+            "candidate-" + operation,
+            help="Independently verify a research candidate" if operation == "verify"
+            else "Export verified candidate bases with scope and build identity",
+        )
+        candidate_command.add_argument("path", type=Path)
+        candidate_command.add_argument("--expected-request", type=Path, required=True)
     args = parser.parse_args(argv)
+    if args.command.startswith("candidate-"):
+        return _candidate_command(args)
     if args.command.startswith("molecular-design-"):
         return _molecular_design_command(args)
     if args.command in {
@@ -708,6 +738,8 @@ def main(argv: Sequence[str] | None = None) -> int:
             "biocompiler pipeline (checked synthetic generation, component linking, reference construct assembly and exact DNA/RNA CDS emission implemented; reproducible reference and synthetic packaging implemented)"
         )
         print("Python authoring -> immutable intent graph")
+        print("Implemented candidate path: source product -> bounded RNA architecture/parts -> derived layout -> exact RNA")
+        print("Candidate completion: product cassette structure; therapeutic implementation remains partial")
         for stage in STAGE_ORDER:
             print(f"  -> {stage.value}")
         print("  -> packaged digital build artifact")
@@ -731,6 +763,35 @@ def main(argv: Sequence[str] | None = None) -> int:
             program.to_json() if args.json else json.dumps(_summary(program), indent=2)
         )
     return 0
+
+
+def _candidate_command(args):
+    from biocompiler.compiler.candidate import compile_candidate, export_candidate_fasta, verify_candidate_build
+    from biocompiler.ir.candidate import CandidateRequest
+    from biocompiler.ir.candidate_build import CandidateBuildRecord
+
+    try:
+        if args.command == "candidate-build":
+            request = CandidateRequest.from_json(_bounded_text(args.request))
+            record = compile_candidate(request).record
+            _publish_report(record, args.output, inputs=(args.request,))
+        else:
+            request = CandidateRequest.from_json(_bounded_text(args.expected_request))
+            record = CandidateBuildRecord.from_json(_bounded_text(args.path, limit=64 * 1024 * 1024))
+            record = verify_candidate_build(record, expected_request=request)
+            if args.command == "candidate-fasta":
+                print(export_candidate_fasta(record, expected_request=request), end="")
+                return 0
+        print(json.dumps(dict(
+            build_fingerprint=record.fingerprint, status=record.status,
+            scope="product_cassette_structure", therapeutic_implementation="partial",
+            human_therapeutic_admission="not_admitted",
+            unresolved=[item.id for item in record.requirements.unresolved],
+        ), sort_keys=True, indent=2))
+        return 0 if record.molecule is not None else 1
+    except (BiocompilerError, OSError, ValueError, TypeError) as error:
+        print(str(error), file=sys.stderr)
+        return 2
 
 
 def _bounded_text(path, limit=16 * 1024 * 1024):

@@ -1,8 +1,8 @@
 # biocompiler
 
-biocompiler is an experimental Python compiler toolkit for describing engineered immune-cell behavior and producing inspectable DNA/RNA reference artifacts. It is intended for cell engineers, synthetic biologists, computational biologists, and scientific software developers who need to connect design requirements with explicit assumptions, checks, and evidence.
+biocompiler is an experimental compiler toolkit working toward a concrete goal: translate high-level therapeutic intent into an exact, complete DNA or RNA specification for immune cells engineered in vivo. Python authoring is implemented; natural-language authoring and complete therapeutic compilation remain future work. The toolkit connects design requirements, molecular choices, checks, and evidence for cell engineers, synthetic biologists, computational biologists, and scientific software developers.
 
-The central idea is to keep three things connected: **what a cell should do**, **how a proposed implementation is described**, and **what the supporting evidence establishes**. Typed descriptions and independent checks make those relationships inspectable throughout a design.
+The central idea is to keep three things connected: **what a cell should do**, **how a proposed implementation is described**, and **what the experimental evidence supports**. Typed descriptions and independent checks make those relationships inspectable throughout a design.
 
 This release uses the `biocompiler` package, CLI and artifact namespace. See the
 [rename and artifact migration notes](docs/biocompiler-migration.md) before reusing historical builds.
@@ -20,10 +20,11 @@ This release uses the `biocompiler` package, CLI and artifact namespace. See the
 | Compare digital implementations | Two bounded conjunction strategies, authored operator/gate constraints, independent candidate checks, deterministic ranking and retained rejection reasons. |
 | Stress-check and replay a design | JSON-driven checks, mixed cell/contact exploration and selected-failure reduction with exact bounds, explicit unknowns and independent replay authority. |
 | Inspect proposed profile cases | Positive, negative, conflicting, underspecified and unsupported requests, with separate admission and bounded-search outcomes. |
-| Enforce human-profile admission | Fresh gates at planning, selection, verification and export; existing artifacts are software-only and no human therapeutic profile is admitted. |
+| Enforce human-profile admission | Fresh gates at planning, selection, verification and export; research artifacts preserve their limited scope and no human therapeutic profile is admitted. |
 | Link and execute digital components | Versioned stateless/temporal contracts, explicit events and values, actual assembly reconstruction, checked providers/resources and independent behavior checks. |
 | Reproduce a reference coding sequence | Checked single-CDS assembly, exact DNA or RNA emission, sequence/translation checks, and reproducible offline build packages. |
 | Assemble a structural RNA design | Explicit sequence fragments and layout, independent generated-candidate checks, complete structured specification and reproducible packages under a software-only profile. |
+| Compile a product-cassette candidate | Source product requirements select supplied RNA parts and an architecture; the compiler derives coordinates, checks every stage and emits exact bases while retaining unimplemented therapeutic obligations. |
 | Record molecular correspondence | Contracts connecting requested observations and responses to selected CDS components, with separate parameter, context, and evidence records. |
 | Check a supplied molecule specification | Structural profiles for mature linear RNA, linear DNA, and circular plasmids, checked against independently pinned references and retained source/review records. |
 
@@ -33,9 +34,11 @@ A **coding sequence (CDS)** is the protein-coding portion of a genetic construct
 
 biocompiler keeps exact sequence identity, structural consistency, model-conditional behavior, and empirical biological evidence separate. A passing check applies to its stated scope, assumptions, dependencies, and observation history. Changed inputs can invalidate an earlier result; saved reports retain their history but require fresh checks before reuse.
 
-The authoring language is broader than the executable profiles. Unsupported behavior produces explicit diagnostics. General intent-to-molecular compilation through `bc.compile(...)` is unavailable; exact CDS builds use a separate, independently pinned reference workflow. Calibrated biological simulation and complete therapeutic-payload generation are outside the supported workflows.
+The authoring language is broader than the executable profiles. `bc.compile(CandidateRequest(...))` now connects one source product requirement to a structurally complete RNA cassette from a supplied bounded library. Its result is explicitly a partial research candidate: conditional sensing, regulation, secretion, quantitative response and therapeutic function remain unresolved. General therapeutic compilation from a `BuildRequest` still raises `CompilationUnavailableError`. Calibrated biological simulation and complete therapeutic-payload generation remain outside the supported workflows.
 
 Molecular correspondence checks can establish source/CDS linkage while leaving biological behavior `UNKNOWN`. Whole-molecule structural checks do not establish functional performance or authorize a human payload build. A separate software molecular-design profile assembles explicit fragments into one complete structural RNA specification. Its examples use artificial, nonfunctional fixtures; source-to-biological implementation and human admission remain unestablished.
+
+The [intent-candidate workflow](docs/intent-candidate-v0.1.md) retains the original human target and complete source contracts rather than replacing them with a generic target. Changing a supported source product or architecture constraint changes the emitted sequence or produces an explained rejection. The bundled library contains artificial fragments; its successful assembly establishes software correspondence, not biological function.
 
 The [human target contract](docs/human-target-contract-v0.1.md) fixes human in-vivo
 recipient scope while preserving explicit unresolved applicability. It records
@@ -82,6 +85,19 @@ print(program.summary())
 ```
 
 This builds an inspectable program description. Names such as `A` and `disease_context` are symbolic requirements; Python does not execute the cellular response. See the [intent API](docs/intent-api-v0.1.md) for the authoring vocabulary.
+
+### Compile a source-driven RNA candidate
+
+The integrated example supplies two artificial products and two explicit architectures, preserving its human source request and all unresolved behavior:
+
+```sh
+python examples/intent_candidate.py --output generated/intent-candidate
+biocompiler candidate-build --request generated/intent-candidate/product_a.request.json --output generated/intent-candidate/cli.build.json
+biocompiler candidate-verify generated/intent-candidate/cli.build.json --expected-request generated/intent-candidate/product_a.request.json
+biocompiler candidate-fasta generated/intent-candidate/cli.build.json --expected-request generated/intent-candidate/product_a.request.json
+```
+
+The JSON build record contains the frozen request, alternatives, selected parts, derived layout, molecule and independent checks. FASTA export rechecks the record against the separately retained request and labels its structural scope, partial therapeutic implementation and absent human admission. See the [candidate profile](docs/intent-candidate-v0.1.md) for the supported source subset and Python API.
 
 ### Explore checks and artifacts
 

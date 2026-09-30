@@ -1,6 +1,33 @@
 # Session handoff and current resumption point
 
-## Current resumption point — structural molecular construction
+## Current resumption point — intent-directed molecular candidates
+
+Updated **2026-09-30 (America/Los_Angeles)**. Version `0.1.0.dev17` implements
+the bounded source-to-product-cassette compiler described in
+[intent-directed candidates](intent-candidate-v0.1.md): source requirement
+extraction, explicit RNA architecture/part selection, automatic coordinate
+generation, exact RNA emission, independent correspondence checks and fresh
+JSON/FASTA verification. `bc.compile(CandidateRequest(...))` preserves the
+original human target and full wrapped contracts through checked passes.
+
+The source product and architecture constraints determine emitted bases. The
+new example exercises two products, two architectures and exhausted selection.
+The local Python 3.12 source suite passes all **959 tests**, including 39 new
+candidate tests; Ruff and frozen benchmark-audit integrity pass. Hosted package,
+example and installed CLI validation is pending for this revision. No local
+native build or package installation was performed.
+
+Completion is `product_cassette_structure`. Therapeutic implementation remains
+partial: sensing, regulation, secretion, quantitative response, delivery and
+prohibited-outcome mechanisms remain unresolved. Artificial library parts do not
+establish biological function or human-use admission. M11–M16 biological
+acceptance remains open. The long-term purpose in AGENTS.md and architecture is
+source intent to complete human in-vivo payload specification; future mechanism
+and quantitative work should attach to these explicitly selected designs.
+
+The following entries describe earlier completed scopes.
+
+## Previous resumption point — structural molecular construction
 
 Updated **2026-09-30 (America/Los_Angeles)**. Version `0.1.0.dev16` implements
 M5.8 multi-region RNA assembly, M6.8 independent generated-candidate checking

@@ -1,6 +1,6 @@
 """Author inspectable therapeutic programs for in-vivo immune-cell engineering."""
 
-__version__ = "0.1.0.dev16"
+__version__ = "0.1.0.dev17"
 
 from biocompiler.semantics.admission import AdmissionAssessment, AdmissionRequest
 from biocompiler.verification.admission import assess_admission, verify_admission
@@ -182,6 +182,14 @@ from biocompiler.semantics.component_contracts import (
 from biocompiler.verification.components import CompositionResult, check_composition
 
 from biocompiler.compiler.behavior import lower_to_behavior, verify_lowering
+from biocompiler.ir.candidate import (
+    CandidateRequest, CandidateConstraints, CandidateRequirements, CandidateObligation,
+    MolecularLibrary, MolecularPart, ProductBinding, RNAArchitecture,
+)
+from biocompiler.ir.candidate_build import CandidateBuildRecord
+from biocompiler.compiler.candidate import (
+    CandidateCompilation, compile_candidate, verify_candidate_build, export_candidate_fasta,
+)
 from biocompiler.compiler.request import (
     BindingMetadata,
     BuildRequest,
@@ -365,6 +373,10 @@ from biocompiler.verification.realization import (
 )
 
 __all__ = [
+    "CandidateRequest", "CandidateConstraints", "CandidateRequirements", "CandidateObligation",
+    "MolecularLibrary", "MolecularPart", "ProductBinding", "RNAArchitecture",
+    "CandidateBuildRecord", "CandidateCompilation", "compile_candidate",
+    "verify_candidate_build", "export_candidate_fasta",
     "SequenceFragment",
     "FragmentPlacement",
     "MolecularDesignRequest",
