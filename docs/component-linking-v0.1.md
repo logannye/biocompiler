@@ -43,10 +43,13 @@ similarly named signals.
 
 Every input port has exactly one producer. Producer and consumer must agree on
 direction, meaning, exact type, explicit units, role, contact scope, compartment
-and supported timing profile. Producer runtime guarantees and initial values must
+and supported timing profile. Discrete-event interfaces require an explicit
+closed synthetic transition model; event and level interfaces cannot be substituted.
+Producer runtime guarantees and initial values must
 be subsets of the consumer's accepted values. Port compartments must exist in the
 target. Cyclic wiring is unsupported by the stateless timing profile; matching
-interface declarations cannot establish a feedback solution.
+interface declarations cannot establish a feedback solution. The temporal
+software profile also remains acyclic.
 
 ## Explicit providers and grounding
 
@@ -124,6 +127,13 @@ while its required checks and dependency identities remain fresh. Upstream chang
 invalidate downstream acceptance. Synthetic behavior evidence remains restricted
 to the independently checked finite input history and horizon; structural component
 linking does not broaden that claim into molecular or empirical validation.
+
+The [temporal component profile](temporal-components-v0.1.md) additionally
+reconstructs executable models from actual locked records, wiring and explicit
+observation bindings. `ComponentBuild.behavior_result` retains the independent
+finite-history check separately from `link_result`. Exact source operation and
+parameter correspondence remains mandatory; passing interface checks alone does
+not establish preserved behavior.
 
 Sequence reference components are separately classified. Their passing selection
 or linking claim concerns only pinned CDS identity/structure and recorded unknown

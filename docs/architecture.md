@@ -132,17 +132,39 @@ The [temporal synthetic profile](synthetic-temporal-v0.1.md) independently execu
 sustained qualification, pulse/retrigger behavior and resettable memory. It keeps
 cell histories separate from contact episodes and gives reset/set/expiry explicit
 precedence. An internal onset event cannot escape into a continuous level readout.
-The default combinational profile remains available, while the current stateless
-component-composition adapter explicitly rejects temporal profiles.
+The default combinational profile remains available. The [temporal component
+profile](temporal-components-v0.1.md) adds explicit event/level interfaces and
+executable operator attributes. Reconstruction reads locked component records,
+ordered wiring and observation bindings, independently of the source mechanism;
+the existing model runner then executes that reconstructed assembly.
 
 [Synthetic workflow packages](synthetic-build-v0.1.md) stop at the checked
-Mechanism stage. Their frozen authority includes realization request, supplied
+Mechanism stage by default and can explicitly include the further checked
+Components stage. Their frozen authority includes realization request, supplied
 history, horizon and generation configuration. Fresh verification requires an
 independent complete request or expected build identity, reruns current tools and
 compares every retained deterministic artifact. Runtime metadata stays outside
 the canonical build identity. Archive inspection neither executes Python nor
 fetches data; publication is atomic. These packages add no molecular output or
 human implementation admission.
+
+[Bounded digital selection](synthetic-selection-v0.1.md) evaluates two whole-program
+conjunction strategies. Frozen hard constraints filter actual operators and graph
+cost; every eligible candidate is independently checked before preference ranking.
+The requested and selected configurations remain distinct, with exact alternatives,
+rejection reasons and selection-policy dependencies retained in packages.
+
+The [verification workflow](synthetic-verification-v0.1.md) exposes finite checks,
+mixed cell/contact exploration and selected-failure reduction through JSON-only
+commands. Complete operation authority binds the model, requirements, exact
+history/time grid/suffix/horizon, mode and budgets. Fresh replay reexecutes current
+checks against that authority. Historical reports, observed failures and incomplete
+coverage cannot become accepted compilation merely by parsing or rehashing them.
+
+These interfaces support the intended future source-to-molecular workflow: a
+selected implementation must preserve required behavior and carry its evidence
+and unresolved obligations downstream. Digital operator equivalence and software
+costs supply no characterization of a molecular component or biological efficiency.
 
 ## Reference construct entry and evidence
 

@@ -15,7 +15,7 @@ from biocompiler.artifacts.archive import (
 )
 from biocompiler.artifacts.manifest import RunMetadata, ToolPin
 from biocompiler.artifacts.synthetic_build import (
-    REQUIRED_FILES,
+    required_files,
     SyntheticBuildManifest,
     SyntheticBuildRequest,
     SyntheticPackageFile,
@@ -35,7 +35,7 @@ from biocompiler.synthesis.synthetic import (
 from biocompiler.verification.admission import require_software_use
 from biocompiler.verification.realization import CHECKER_VERSION
 
-SYNTHETIC_BUILD_VERSION = "biocompiler.synthetic_build.v0.1"
+SYNTHETIC_BUILD_VERSION = "biocompiler.synthetic_build.v0.2"
 
 
 def _json_bytes(value):
@@ -45,7 +45,7 @@ def _json_bytes(value):
     ).encode("utf-8")
 
 
-def _tools():
+def _tools(profile, *, selection_requested=False):
     versions = {
         "synthetic_build": SYNTHETIC_BUILD_VERSION,
         "archive": ARCHIVE_VERSION,
@@ -56,6 +56,22 @@ def _tools():
         "realization_checker": CHECKER_VERSION,
         "reference_evaluator": REFERENCE_EVALUATOR_VERSION,
     }
+    if selection_requested:
+        from biocompiler.synthesis.selection import SELECTION_VERSION
+
+        versions["synthetic_selection"] = SELECTION_VERSION
+    if profile == "synthetic_components":
+        from biocompiler.models.components import COMPONENT_MODEL_VERSION
+        from biocompiler.synthesis.components import SYNTHETIC_COMPONENT_ADAPTER_VERSION
+        from biocompiler.verification.components import (
+            CHECKER_VERSION as LINKER_VERSION,
+        )
+
+        versions.update(
+            component_model=COMPONENT_MODEL_VERSION,
+            component_adapter=SYNTHETIC_COMPONENT_ADAPTER_VERSION,
+            component_linker=LINKER_VERSION,
+        )
     return tuple(
         ToolPin(key, value, fingerprint(value))
         for key, value in sorted(versions.items())
@@ -93,7 +109,12 @@ def build_synthetic_package(
         isinstance(request, SyntheticBuildRequest), "Expected SyntheticBuildRequest."
     )
     require_software_use(request.realization.target, boundary="export")
-    build = run_synthetic_pipeline(
+    builder = run_synthetic_pipeline
+    if request.profile == "synthetic_components":
+        from biocompiler.compiler.components import run_component_pipeline
+
+        builder = run_component_pipeline
+    build = builder(
         request.realization,
         request.history.frames,
         until=request.until,
@@ -107,13 +128,14 @@ def build_synthetic_package(
         until=request.until,
     )
     require(check.passed, "The current independent synthetic check did not pass.")
-    completion = build.manager.result("mechanism", scope="synthetic_realization")
+    stage_ids = ("request", "behavior", "mechanism")
+    if request.profile == "synthetic_components":
+        stage_ids += ("components",)
+    completion = build.manager.result(stage_ids[-1], scope=request.profile)
     require(
         completion.status.value == "complete", "Synthetic build scope is incomplete."
     )
-    records = tuple(
-        build.manager.get(stage) for stage in ("request", "behavior", "mechanism")
-    )
+    records = tuple(build.manager.get(stage) for stage in stage_ids)
     catalog = catalog_for_profile(request.config.profile_version)
     documents = {
         "request.json": request.to_dict(),
@@ -121,10 +143,19 @@ def build_synthetic_package(
         "inputs/config.json": request.config.to_dict(),
         "inputs/catalog.json": catalog.to_dict(),
         "candidate.json": build.candidate.to_dict(),
+        "selection.json": (
+            build.selection_result.to_dict()
+            if build.selection_result is not None
+            else {
+                "schema_version": "biocompiler.synthetic_selection_status.v0.1",
+                "status": "not_requested",
+                "reason": "No implementation constraints or preferences were authored; the explicit generator configuration is used.",
+            }
+        ),
         "checks/realization.json": check.to_dict(),
         **{f"stages/{record.id}.json": record.to_dict() for record in records},
         "result.json": {
-            "schema_version": "biocompiler.synthetic_build_summary.v0.1",
+            "schema_version": "biocompiler.synthetic_build_summary.v0.2",
             "status": completion.status.value,
             "scope": completion.scope,
             "intended_use": "software_test",
@@ -135,6 +166,7 @@ def build_synthetic_package(
             "history_fingerprint": request.history.fingerprint,
             "until": request.until,
             "generator_config_fingerprint": request.config.fingerprint,
+            "selected_generator_config_fingerprint": build.candidate.generator_config.fingerprint,
             "component_locks": [
                 lock.to_dict() for lock in build.candidate.component_locks
             ],
@@ -151,11 +183,24 @@ def build_synthetic_package(
             "limitations": "Finite supplied-history software-model evidence only; no empirical, universal or molecular implementation claim.",
         },
     }
+    if request.profile == "synthetic_components":
+        require(
+            build.behavior_result.passed,
+            "The reconstructed component behavior did not independently pass.",
+        )
+        documents.update(
+            {
+                "assembly.json": build.assembly.to_dict(),
+                "checks/composition.json": build.link_result.to_dict(),
+                "checks/component-behavior.json": build.behavior_result.to_dict(),
+            }
+        )
     files = {path: _json_bytes(value) for path, value in documents.items()}
+    inventory = required_files(request.profile)
     entries = tuple(
         SyntheticPackageFile(
             path,
-            REQUIRED_FILES[path],
+            inventory[path],
             hashlib.sha256(content).hexdigest(),
             len(content),
         )
@@ -164,7 +209,12 @@ def build_synthetic_package(
     from biocompiler import __version__
 
     manifest = SyntheticBuildManifest(
-        request.fingerprint, entries, _tools(), __version__
+        request.fingerprint,
+        entries,
+        _tools(request.profile, selection_requested=build.selection_result is not None),
+        __version__,
+        profile=request.profile,
+        scope=request.profile,
     )
     return SyntheticPackage(
         request, manifest, assemble_archive(manifest, files, run_metadata)

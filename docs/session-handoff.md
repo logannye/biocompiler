@@ -1,6 +1,36 @@
 # Session handoff and current resumption point
 
-## Current resumption point — code-only temporal and packaging work
+## Current resumption point — offline design, composition and verification
+
+Updated **2026-09-30 (America/Los_Angeles)**. Version `0.1.0.dev15` implements
+three further code-only extensions: M4.8 executable temporal component composition,
+M8.9 reusable mixed-input verification workflows, and M3.7 bounded implementation
+selection. Hosted validation is pending before the roadmap items close.
+
+The integrated `examples/synthetic_design.py` freezes an operator constraint,
+selects a checked alternate graph, reconstructs a Components package and checks
+100 declared reset/contact histories. `examples/synthetic_verification.py` retains
+passing/failing diagnostics and selected-failure reduction; the workflow also preserves UNKNOWN outcomes. CLI commands
+are `synthetic-select`, `synthetic-check`, `synthetic-explore`, `synthetic-reduce`
+and `synthetic-replay`, alongside build/inspect/verify. New operator and component
+contracts preserve exact parameters, event/level meaning, canonical units,
+initialization, source correspondence and current model identities.
+
+Read [temporal composition](temporal-components-v0.1.md),
+[selection](synthetic-selection-v0.1.md), [verification](synthetic-verification-v0.1.md)
+and [package scope](synthetic-build-v0.1.md). Prior artifact versions must be
+reconstructed from independent authority; relabeling saved PASS records is not
+migration. These software contracts support later molecular implementation work
+without granting biological characterization or human admission.
+
+The intended product remains a complete exact RNA/DNA molecular specification
+for human in-vivo deployment, with independently supported modeled claims and
+explicit unresolved obligations. Current digital costs are not molecular costs.
+M11.2–M11.6 and subsequent biological implementation/evaluation gates remain open.
+PR #20 is separate, unmerged source work and must be reconciled with current main
+and freshly validated before any later integration.
+
+## Prior resumption point — code-only temporal and packaging work
 
 Updated **2026-09-29 (America/Los_Angeles)**. The code-only track implements
 M3.5 sustained-input generation, M3.6 pulses/retriggering/resettable memory, and

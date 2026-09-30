@@ -34,6 +34,12 @@ from biocompiler.verification.evidence import (
 )
 
 EXPLORATION_VERSION = "biocompiler.boolean_exploration.v0.1"
+INPUT_EXPLORATION_VERSION = "biocompiler.boolean_input_exploration.v0.1"
+INPUT_CLAIM_SCOPE = (
+    "Only the declared Boolean cell and contact states on the variable time lattice "
+    "with the exact fixed suffix and finite horizon are enumerated. Completion means "
+    "enumeration coverage, not whole-profile, temporal or biological refinement."
+)
 CLAIM_SCOPE = (
     "Only the declared Boolean contact states on the variable time lattice with "
     "the exact fixed suffix and finite horizon are enumerated. Completion means "
@@ -239,17 +245,22 @@ class BooleanContactConfig(_Record):
 
     def __post_init__(self):
         object.__setattr__(self, "contact_ids", names(self.contact_ids, "Contact IDs"))
+        mixed = isinstance(self, BooleanInputConfig)
         require(
-            1 <= len(self.contact_ids) <= 8,
-            "Exploration supports one to eight fixed contact IDs.",
+            (0 if mixed else 1) <= len(self.contact_ids) <= 8,
+            "Exploration supports at most eight fixed contact IDs; contact-only bounds require one.",
         )
         require(
             isinstance(self.observations, (tuple, list))
-            and 1 <= len(self.observations) <= 8
+            and (0 if mixed else 1) <= len(self.observations) <= 8
             and all(isinstance(item, BooleanObservation) for item in self.observations),
             "Exploration supports one to eight Boolean observations.",
         )
         object.__setattr__(self, "observations", tuple(self.observations))
+        require(
+            bool(self.contact_ids) == bool(self.observations),
+            "Contact observations and contact IDs must either both be present or both be empty.",
+        )
         require(
             len({(item.signal_id, item.field) for item in self.observations})
             == len(self.observations),
@@ -287,45 +298,107 @@ class BooleanContactConfig(_Record):
         return self.state_count ** len(self.variable_times)
 
 
+@dataclass(frozen=True)
+class BooleanInputConfig(BooleanContactConfig):
+    """Versioned mixed Boolean bounds; contact absence remains distinct from false."""
+
+    cell_observations: tuple[BooleanObservation, ...] = ()
+    schema_version: ClassVar[str] = "biocompiler.boolean_input_config.v0.1"
+    _decoders: ClassVar[dict] = {
+        **BooleanContactConfig._decoders,
+        "cell_observations": lambda value: _decode_array(value, BooleanObservation),
+    }
+
+    def __post_init__(self):
+        require(
+            isinstance(self.cell_observations, (tuple, list))
+            and len(self.cell_observations) <= 8
+            and all(
+                isinstance(item, BooleanObservation) for item in self.cell_observations
+            ),
+            "Mixed exploration supports at most eight Boolean cell observations.",
+        )
+        cell = tuple(self.cell_observations)
+        require(
+            len({(item.signal_id, item.field) for item in cell}) == len(cell),
+            "Duplicate Boolean cell observation.",
+        )
+        require(
+            bool(cell) or bool(self.observations), "Mixed bounds need an observation."
+        )
+        require(
+            not (
+                {item.signal_id for item in cell}
+                & {item.signal_id for item in self.observations}
+            ),
+            "A signal cannot be both cell-local and contact-local.",
+        )
+        object.__setattr__(self, "cell_observations", cell)
+        super().__post_init__()
+
+    @property
+    def state_count(self):
+        return 2 ** len(self.cell_observations) * super().state_count
+
+
+def boolean_config_from_dict(data):
+    require(isinstance(data, Mapping), "Boolean bounds must be an object.")
+    schema = data.get("schema_version")
+    require(isinstance(schema, str), "Boolean bounds schema must be text.")
+    cls = {
+        BooleanContactConfig.schema_version: BooleanContactConfig,
+        BooleanInputConfig.schema_version: BooleanInputConfig,
+    }.get(schema)
+    require(cls is not None, "Unsupported Boolean bounds schema.")
+    return cls.from_dict(data)
+
+
+def _complete_samples(samples, observations):
+    expected = {(item.signal_id, item.field) for item in observations}
+    require(
+        set(samples) == {item.signal_id for item in observations},
+        "Snapshots require the complete declared signal inventory.",
+    )
+    for signal_id, sample in samples.items():
+        for key, value in sample.to_dict().items():
+            require(
+                type(value) is bool if (signal_id, key) in expected else value is None,
+                "Snapshot observations differ from the declared Boolean bounds.",
+            )
+
+
 def _complete_snapshot(config, frame):
     require(
-        not frame.signals and set(frame.contacts) <= set(config.contact_ids),
-        "Snapshot contains signals or contacts outside the Boolean bounds.",
+        set(frame.contacts) <= set(config.contact_ids),
+        "Snapshot contains contacts outside the Boolean bounds.",
     )
-    expected = {(item.signal_id, item.field) for item in config.observations}
-    signal_ids = {item.signal_id for item in config.observations}
+    _complete_samples(frame.signals, getattr(config, "cell_observations", ()))
     for samples in frame.contacts.values():
-        require(
-            set(samples) == signal_ids,
-            "Present contacts require the complete declared signal inventory.",
+        _complete_samples(samples, config.observations)
+
+
+def _boolean_samples(observations, state):
+    samples = {}
+    for index, observation in enumerate(observations):
+        samples.setdefault(observation.signal_id, {})[observation.field] = bool(
+            state & (1 << index)
         )
-        for signal_id, sample in samples.items():
-            for key, value in sample.to_dict().items():
-                require(
-                    type(value) is bool
-                    if (signal_id, key) in expected
-                    else value is None,
-                    "Snapshot observations differ from the declared Boolean bounds.",
-                )
+    return {key: SignalSample(**value) for key, value in samples.items()}
 
 
 def _snapshot(config, time, code):
     contacts = {}
+    cell_observations = getattr(config, "cell_observations", ())
+    code, cell_state = divmod(code, 2 ** len(cell_observations))
+    signals = _boolean_samples(cell_observations, cell_state)
     radix = 1 + 2 ** len(config.observations)
     for identity in config.contact_ids:
         code, state = divmod(code, radix)
         if state == 0:
             continue
         state -= 1
-        samples = {}
-        for index, observation in enumerate(config.observations):
-            samples.setdefault(observation.signal_id, {})[observation.field] = bool(
-                state & (1 << index)
-            )
-        contacts[identity] = {
-            key: SignalSample(**value) for key, value in samples.items()
-        }
-    return InputFrame(time, contacts=contacts)
+        contacts[identity] = _boolean_samples(config.observations, state)
+    return InputFrame(time, signals=signals, contacts=contacts)
 
 
 def _history_at(config, index):
@@ -415,9 +488,12 @@ class ExplorationReport(_Record):
             "Invalid evaluated history count.",
         )
         object.__setattr__(self, "results", tuple(self.results))
+        mixed = isinstance(self.config, BooleanInputConfig)
         require(
-            self.explorer_version == EXPLORATION_VERSION
-            and self.claim_scope == CLAIM_SCOPE,
+            self.explorer_version
+            == (INPUT_EXPLORATION_VERSION if mixed else EXPLORATION_VERSION)
+            and self.claim_scope == (INPUT_CLAIM_SCOPE if mixed else CLAIM_SCOPE)
+            and isinstance(self, BooleanInputExplorationReport) == mixed,
             "Invalid exploration version or claim scope.",
         )
         stable = None
@@ -498,6 +574,17 @@ class ExplorationReport(_Record):
         }
 
 
+@dataclass(frozen=True)
+class BooleanInputExplorationReport(ExplorationReport):
+    explorer_version: str = INPUT_EXPLORATION_VERSION
+    claim_scope: str = INPUT_CLAIM_SCOPE
+    schema_version: ClassVar[str] = "biocompiler.boolean_input_exploration_report.v0.1"
+    _decoders: ClassVar[dict] = {
+        "config": BooleanInputConfig.from_dict,
+        "results": lambda value: _decode_array(value, CheckResult),
+    }
+
+
 def explore_boolean_histories(
     config: BooleanContactConfig, evaluate
 ) -> ExplorationReport:
@@ -511,7 +598,12 @@ def explore_boolean_histories(
         )
         stable = _stable_dependencies(result)
         results.append(result)
-    return ExplorationReport(config, tuple(results))
+    cls = (
+        BooleanInputExplorationReport
+        if isinstance(config, BooleanInputConfig)
+        else ExplorationReport
+    )
+    return cls(config, tuple(results))
 
 
 @dataclass(frozen=True)
@@ -524,7 +616,7 @@ class AdversarialConfig(_Record):
 
     def __post_init__(self):
         require(
-            isinstance(self.bounds, BooleanContactConfig)
+            type(self.bounds) is BooleanContactConfig
             and len(self.bounds.variable_times) >= 3,
             "Adversarial transition cases need at least three variable times.",
         )

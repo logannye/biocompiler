@@ -574,11 +574,15 @@ class TemporalGenerationTests(unittest.TestCase):
             bc.CheckOutcome.PASS,
         )
 
-    def test_temporal_candidate_cannot_enter_stateless_component_linking(self):
+    def test_temporal_candidate_uses_explicit_discrete_event_component_interfaces(self):
         request, history = build_request()
         candidate = generate_synthetic(request, config=temporal_config())
-        with self.assertRaisesRegex(ValueError, "stateless combinational"):
-            adapt_synthetic_components(request, candidate, history, until=9)
+        adapted = adapt_synthetic_components(request, candidate, history, until=9)
+        self.assertTrue(bc.check_composition(adapted.composition, adapted.registry).passed)
+        self.assertTrue(all(
+            port.timing.startswith("atomic_discrete_event_")
+            for record in adapted.registry.components for port in record.ports
+        ))
 
     def test_profile_catalog_and_schema_pins_reject_stale_authority(self):
         for changes in (

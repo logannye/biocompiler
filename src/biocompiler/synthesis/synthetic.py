@@ -23,6 +23,7 @@ from biocompiler.registry.synthetic import (
 from biocompiler.semantics.evaluator import InputFrame
 from biocompiler.semantics.realization import Observable
 from biocompiler.semantics.types import BOOLEAN, DURATION, TypeSpec, decode_binding
+from biocompiler.synthesis.policy import STRATEGIES, policy_for_request
 from biocompiler.verification.evidence import (
     CheckDiagnostic,
     CheckOutcome,
@@ -39,8 +40,8 @@ from biocompiler.verification.realization import (
 
 from biocompiler.verification.admission import admission_for_target
 
-GENERATOR_VERSION = "biocompiler.synthetic.generator.v0.3"
-SYNTHETIC_CHECKER_VERSION = "biocompiler.synthetic.acceptance.v0.4"
+GENERATOR_VERSION = "biocompiler.synthetic.generator.v0.4"
+SYNTHETIC_CHECKER_VERSION = "biocompiler.synthetic.acceptance.v0.5"
 
 
 def _identity(value, label):
@@ -60,7 +61,8 @@ class SyntheticGeneratorConfig(JsonArtifact):
     generator_version: str = GENERATOR_VERSION
     catalog_fingerprint: str | None = None
     witness_selection: str = "closed_band_lower_endpoint"
-    schema_version: ClassVar[str] = "biocompiler.synthetic_generator_config.v0.2"
+    conjunction_strategy: str = "native"
+    schema_version: ClassVar[str] = "biocompiler.synthetic_generator_config.v0.3"
 
     def __post_init__(self):
         catalog = catalog_for_profile(self.profile_version)
@@ -78,6 +80,9 @@ class SyntheticGeneratorConfig(JsonArtifact):
             self.witness_selection == "closed_band_lower_endpoint",
             "Unsupported response witness selection policy.",
         )
+        require(
+            self.conjunction_strategy in STRATEGIES, "Unsupported conjunction strategy."
+        )
 
     def to_dict(self):
         return {
@@ -86,6 +91,7 @@ class SyntheticGeneratorConfig(JsonArtifact):
             "generator_version": self.generator_version,
             "catalog_fingerprint": self.catalog_fingerprint,
             "witness_selection": self.witness_selection,
+            "conjunction_strategy": self.conjunction_strategy,
         }
 
     @classmethod
@@ -98,6 +104,7 @@ class SyntheticGeneratorConfig(JsonArtifact):
                 "generator_version",
                 "catalog_fingerprint",
                 "witness_selection",
+                "conjunction_strategy",
             },
             cls.__name__,
         )
@@ -120,7 +127,7 @@ class SyntheticCandidate(JsonArtifact):
     behavior_requirement_ids: Mapping[str, tuple[str, ...]]
     component_locks: tuple[ComponentLock, ...]
     generator_config: SyntheticGeneratorConfig
-    schema_version: ClassVar[str] = "biocompiler.synthetic_candidate.v0.3"
+    schema_version: ClassVar[str] = "biocompiler.synthetic_candidate.v0.4"
 
     def __post_init__(self):
         _identity(self.request_fingerprint, "Request fingerprint")
@@ -230,7 +237,7 @@ def _request(request):
     )
 
 
-def generate_synthetic(
+def _generate_synthetic(
     request, *, config: SyntheticGeneratorConfig | None = None
 ) -> SyntheticCandidate:
     """Generate digital operators from an authorized Behavior artifact.
@@ -269,13 +276,7 @@ def generate_synthetic(
         reject(
             "Synthetic generation requires the explicit synthetic_realization artifact scope."
         )
-    if (
-        request.build_request.implementation_constraints
-        or request.build_request.preferences
-    ):
-        reject(
-            "This fixed synthetic catalog has no implementation-constraint or preference resolver; nonempty selections are unsupported."
-        )
+    policy_for_request(request, config.profile_version)
     if len(behavior.find(kind="role")) != 1 or domain.role != contract.role:
         reject("The synthetic profile requires exactly one executing role.")
     if domain.max_contacts is None:
@@ -496,6 +497,26 @@ def generate_synthetic(
                     ]
                 },
             )
+        elif node.kind == "and" and config.conjunction_strategy == "de_morgan":
+            # Rewrite the complete guard inside its original binding. Negating
+            # each operand must never aggregate different contacted objects.
+            negated = tuple(
+                add(
+                    f"expression:{ref}:not:{index}",
+                    "not",
+                    BOOLEAN,
+                    scope,
+                    (ref,),
+                    inputs=(expression(item),),
+                )
+                for index, item in enumerate(node.inputs)
+            )
+            union = add(
+                f"expression:{ref}:or", "or", BOOLEAN, scope, (ref,), inputs=negated
+            )
+            result = add(
+                f"expression:{ref}", "not", BOOLEAN, scope, (ref,), inputs=(union,)
+            )
         elif node.kind in {"and", "or", "not", "compare"}:
             result = add(
                 f"expression:{ref}",
@@ -693,6 +714,23 @@ def generate_synthetic(
     )
 
 
+def generate_synthetic(request, *, config: SyntheticGeneratorConfig | None = None):
+    """Propose one deterministic graph; no history or selection claim is used.
+
+    Hard constraints apply to the actual graph. Preferences are interpreted only
+    by ``select_synthetic``, which checks both bounded alternatives before ranking.
+    """
+    candidate = _generate_synthetic(request, config=config)
+    violations = policy_for_request(
+        request, candidate.generator_config.profile_version
+    ).violations(candidate.mechanism)
+    if violations:
+        raise UnsupportedBehaviorError(
+            "Synthetic proposal violates hard constraints: " + "; ".join(violations)
+        )
+    return candidate
+
+
 def check_synthetic_candidate(
     request, candidate: SyntheticCandidate, history: Iterable[InputFrame], *, until=None
 ) -> CheckResult:
@@ -748,6 +786,19 @@ def check_synthetic_candidate(
             "candidate_request_identity",
             "The candidate belongs to a different frozen realization request.",
         )
+    try:
+        violations = policy_for_request(
+            request, candidate.generator_config.profile_version
+        ).violations(candidate.mechanism)
+    except UnsupportedBehaviorError as error:
+        return CheckResult(
+            CheckOutcome.UNSUPPORTED,
+            dependencies,
+            tuple(item.id for item in contract.requirements),
+            (CheckDiagnostic("unsupported_selection_policy", str(error)),),
+        )
+    if violations:
+        return failure("candidate_hard_constraints", "; ".join(violations))
     try:
         provenance = generate_synthetic(request, config=candidate.generator_config)
     except UnsupportedBehaviorError as error:

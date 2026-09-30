@@ -1,6 +1,7 @@
 # Reproducible synthetic builds v0.1
 
-The synthetic build packages a checked intent → behavior → mechanism workflow.
+The synthetic build packages a checked intent → behavior → mechanism workflow,
+optionally extended through executable component assembly.
 It retains the complete frozen request, finite input history, explicit observation
 horizon, selected generator configuration, component catalog and locks, accepted
 stage records and independent response checks. This is a software-model package:
@@ -37,11 +38,23 @@ labels the result historical. Imported PASS labels never grant current acceptanc
 ## Frozen input authority
 
 `SyntheticBuildRequest(realization, history, until, config)` is immutable and uses
-`biocompiler.synthetic_build_request.v0.1`. `realization` is a fully frozen
+`biocompiler.synthetic_build_request.v0.2`. `realization` is a fully frozen
 `RealizationRequest`; `history` is `SyntheticHistory(tuple_of_InputFrame)`; `until`
 is an explicit finite horizon in canonical seconds; `config` preserves the exact
 selected `SyntheticGeneratorConfig`. Both combinational and temporal profiles
 remain available and use their respective current catalogs.
+
+`profile="synthetic_components"` explicitly requests the further component stage;
+the default remains `synthetic_realization`. The source BuildRequest retains its
+synthetic-realization authority, and the enclosing build request freezes this
+additional completion scope. A changed package profile changes its authority and
+identity. Neither profile permits molecular or human completion.
+
+Authored constraints/preferences trigger [bounded implementation selection](synthetic-selection-v0.1.md).
+The requested config remains frozen in `inputs/config.json`; the selected
+candidate carries its exact chosen config. Both identities and the selection
+report are retained. Without authored selection controls, `selection.json`
+explicitly records `not_requested`, and generation uses the chosen config directly.
 
 The versioned `SyntheticHistory` JSON contains exactly `schema_version` and
 `frames`. Every frame has exactly `time`, `signals` and `contacts`. Signals map
@@ -70,7 +83,7 @@ identity and dependency declarations remain in the request.
 
 A synthetic `.bcb` is the same bounded, canonical stored-ZIP container used for
 reference packages, with a distinct `SyntheticBuildManifest` schema. The shared
-archive tool version is `biocompiler.reference_archive.v0.2`; prior saved tool
+archive tool version is `biocompiler.reference_archive.v0.3`; prior saved tool
 pins require fresh reconstruction. Its fixed
 inventory is:
 
@@ -78,14 +91,22 @@ inventory is:
 | --- | --- |
 | `request.json` | Complete frozen authority |
 | `inputs/history.json` | Immutable observation snapshots |
-| `inputs/config.json` | Selected generator policy and profile |
+| `inputs/config.json` | Requested generator policy and profile |
 | `inputs/catalog.json` | Trusted current digital component catalog |
 | `stages/request.json` | Input stage identity and unresolved obligations |
 | `stages/behavior.json` | Accepted authoritative lowering and source correspondence |
 | `stages/mechanism.json` | Accepted candidate, dependencies and independent checks |
 | `candidate.json` | Generated mechanism, observation map, source map and component locks |
+| `selection.json` | Exact bounded alternatives/checks/rejections, or explicit selection-not-requested status |
 | `checks/realization.json` | Fresh independent finite-history result and dependency identities |
 | `result.json` | Scope, input/stage identities, component locks and unresolved obligations |
+
+The explicit `synthetic_components` profile adds exactly four files:
+`assembly.json`, `stages/components.json`, `checks/composition.json` and
+`checks/component-behavior.json`. These retain executable locked records, actual
+wiring and bindings, the structural link result and independent execution of the
+reconstructed assembly. Profile-specific exact inventories reject erased stages
+or a relabeled completion scope. Manifest and file schemas are now `v0.2`.
 
 The separate `manifest.json` records every inventoried file's exact byte length
 and SHA-256, the complete request identity, tool versions and package version.
@@ -125,7 +146,14 @@ Only the fixed synthetic inventory is admitted, so executable authoring payloads
 cannot enter a package. Human targets fail closed at build, reconstruction and
 publication boundaries.
 
-The completed scope is finite-history synthetic realization. It does not prove
+The completed scope is the explicitly requested finite-history synthetic
+realization or synthetic component assembly. It does not prove
 all possible histories, empirical performance or complete-payload feasibility.
 See [temporal semantics](synthetic-temporal-v0.1.md) for timer/reset ordering and
 [reference packaging](reference-build-v0.1.md) for the separate exact-CDS profile.
+
+Run `PYTHONPATH=src python examples/synthetic_design.py --output generated/design`
+to author an operator constraint, select a passing alternate implementation,
+reconstruct a component package and explore 100 declared mixed-input histories.
+The [verification workflow](synthetic-verification-v0.1.md) separately retains
+failed and unknown diagnostic reports; they cannot be published as accepted builds.

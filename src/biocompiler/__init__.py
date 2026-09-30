@@ -1,6 +1,6 @@
 """Author inspectable therapeutic programs for in-vivo immune-cell engineering."""
 
-__version__ = "0.1.0.dev14"
+__version__ = "0.1.0.dev15"
 
 from biocompiler.semantics.admission import AdmissionAssessment, AdmissionRequest
 from biocompiler.verification.admission import assess_admission, verify_admission
@@ -70,6 +70,8 @@ from biocompiler.verification.molecular_behavior import (
 from biocompiler.verification.exploration import (
     AdversarialConfig,
     BooleanContactConfig,
+    BooleanInputConfig,
+    BooleanInputExplorationReport,
     BooleanObservation,
     ExplorationReport,
     FailureSignature,
@@ -139,11 +141,13 @@ from biocompiler.verification.construct import ConstructResult, check_construct
 from biocompiler.compiler.components import (
     ComponentBuild,
     check_component_assembly,
+    check_component_behavior,
     run_component_pipeline,
 )
 from biocompiler.ir.component_assembly import ComponentAssembly
 from biocompiler.ir.component_contracts import (
     ComponentRecord,
+    SyntheticOperatorModel,
     DependencyRequirement,
     ParameterProvenance,
     PinnedIdentity,
@@ -202,6 +206,18 @@ from biocompiler.synthesis.synthetic import (
     SyntheticGeneratorConfig,
     generate_synthetic,
     check_synthetic_candidate,
+)
+from biocompiler.synthesis.selection import (
+    SyntheticAlternative,
+    SyntheticSelectionResult,
+    select_synthetic,
+)
+from biocompiler.models.components import reconstruct_component_mechanism
+from biocompiler.compiler.verification_workflow import (
+    SyntheticVerificationRequest,
+    SyntheticVerificationRecord,
+    run_synthetic_verification,
+    replay_synthetic_verification,
 )
 from biocompiler.compiler.workflow import (
     BuildProfile,
@@ -322,6 +338,26 @@ from biocompiler.verification.realization import (
 )
 
 __all__ = [
+    "SyntheticBuildRequest",
+    "SyntheticHistory",
+    "SyntheticBuildManifest",
+    "SyntheticPackage",
+    "build_synthetic_package",
+    "verify_synthetic_package",
+    "publish_synthetic_package",
+    "TEMPORAL_PROFILE_VERSION",
+    "BooleanInputConfig",
+    "BooleanInputExplorationReport",
+    "SyntheticOperatorModel",
+    "check_component_behavior",
+    "reconstruct_component_mechanism",
+    "SyntheticAlternative",
+    "SyntheticSelectionResult",
+    "select_synthetic",
+    "SyntheticVerificationRequest",
+    "SyntheticVerificationRecord",
+    "run_synthetic_verification",
+    "replay_synthetic_verification",
     "AdmissionRequest",
     "AdmissionAssessment",
     "assess_admission",

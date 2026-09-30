@@ -33,10 +33,29 @@ REQUIRED_FILES = MappingProxyType(
         "stages/behavior.json": "behavior-stage",
         "stages/mechanism.json": "mechanism-stage",
         "candidate.json": "synthetic-candidate",
+        "selection.json": "synthetic-selection",
         "checks/realization.json": "realization-check",
         "result.json": "build-summary",
     }
 )
+COMPONENT_FILES = MappingProxyType(
+    {
+        "assembly.json": "component-assembly",
+        "stages/components.json": "components-stage",
+        "checks/composition.json": "component-composition-check",
+        "checks/component-behavior.json": "component-behavior-check",
+    }
+)
+ALL_FILES = MappingProxyType({**REQUIRED_FILES, **COMPONENT_FILES})
+
+
+def required_files(profile):
+    require(
+        isinstance(profile, str)
+        and profile in {"synthetic_realization", "synthetic_components"},
+        "Unsupported synthetic package profile.",
+    )
+    return ALL_FILES if profile == "synthetic_components" else REQUIRED_FILES
 
 
 def _sample(data):
@@ -95,7 +114,7 @@ class SyntheticBuildRequest(_Record):
     config: SyntheticGeneratorConfig = field(default_factory=SyntheticGeneratorConfig)
     profile: str = "synthetic_realization"
     intended_use: str = "software_test"
-    schema_version: ClassVar[str] = "biocompiler.synthetic_build_request.v0.1"
+    schema_version: ClassVar[str] = "biocompiler.synthetic_build_request.v0.2"
     _decoders: ClassVar[dict] = {
         "realization": RealizationRequest.from_dict,
         "history": SyntheticHistory.from_dict,
@@ -125,10 +144,10 @@ class SyntheticBuildRequest(_Record):
             finite and self.until >= self.history.frames[-1].time,
             "Horizon must be finite and at least the last input time.",
         )
+        required_files(self.profile)
         require(
-            self.profile == "synthetic_realization"
-            and self.intended_use == "software_test",
-            "Synthetic builds only support software_test synthetic_realization.",
+            self.intended_use == "software_test",
+            "Synthetic builds only support software_test use.",
         )
         require(
             self.realization.build_request.artifact_scope == "synthetic_realization",
@@ -148,12 +167,12 @@ class SyntheticPackageFile(_Record):
     role: str
     sha256: str
     byte_length: int
-    schema_version: ClassVar[str] = "biocompiler.synthetic_package_file.v0.1"
+    schema_version: ClassVar[str] = "biocompiler.synthetic_package_file.v0.2"
 
     def __post_init__(self):
         validate_package_path(self.path)
         require(
-            REQUIRED_FILES.get(self.path) == self.role,
+            ALL_FILES.get(self.path) == self.role,
             "Unsupported synthetic package path/role.",
         )
         _hash(self.sha256, "Synthetic package file")
@@ -174,7 +193,7 @@ class SyntheticBuildManifest(_Record):
     scope: str = "synthetic_realization"
     intended_use: str = "software_test"
     human_therapeutic_admission: str = "not_admitted"
-    schema_version: ClassVar[str] = "biocompiler.synthetic_build_manifest.v0.1"
+    schema_version: ClassVar[str] = "biocompiler.synthetic_build_manifest.v0.2"
     _decoders: ClassVar[dict] = {
         "files": lambda value: _decode_array(value, SyntheticPackageFile),
         "toolchain": lambda value: _decode_array(value, ToolPin),
@@ -183,9 +202,9 @@ class SyntheticBuildManifest(_Record):
     def __post_init__(self):
         _hash(self.request_fingerprint, "Synthetic build request")
         _plain_text(self.package_version, "Package version")
+        inventory = required_files(self.profile)
         require(
-            self.profile == self.scope == "synthetic_realization"
-            and self.status == "complete",
+            self.profile == self.scope and self.status == "complete",
             "Unsupported synthetic manifest profile/status/scope.",
         )
         require(
@@ -195,8 +214,8 @@ class SyntheticBuildManifest(_Record):
         )
         files = _array(self.files, SyntheticPackageFile, "Synthetic package files")
         require(
-            len(files) == len(REQUIRED_FILES)
-            and {item.path: item.role for item in files} == REQUIRED_FILES,
+            len(files) == len(inventory)
+            and {item.path: item.role for item in files} == inventory,
             "Synthetic manifest requires the exact file inventory.",
         )
         tools = _array(self.toolchain, ToolPin, "Toolchain")
