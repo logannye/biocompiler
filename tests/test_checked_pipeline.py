@@ -7,11 +7,11 @@ from pathlib import Path
 import tempfile
 import unittest
 
-import cellweave as cw
-from cellweave.cli import main
-from cellweave.compiler.pipeline import ArtifactStatus, PipelineError
-from cellweave.compiler.synthetic import run_synthetic_pipeline
-from cellweave.ir.serialization import fingerprint
+import biocompiler as bc
+from biocompiler.cli import main
+from biocompiler.compiler.pipeline import ArtifactStatus, PipelineError
+from biocompiler.compiler.synthetic import run_synthetic_pipeline
+from biocompiler.ir.serialization import fingerprint
 from examples.checked_pipeline import build_request
 
 
@@ -38,7 +38,7 @@ class CheckedPipelineTests(unittest.TestCase):
         )
 
     def test_imported_request_builds_without_authoring_and_has_same_identity(self):
-        restored = cw.RealizationRequest.from_json(self.request.to_json())
+        restored = bc.RealizationRequest.from_json(self.request.to_json())
         first = run_synthetic_pipeline(self.request, self.history, until=7)
         second = run_synthetic_pipeline(restored, self.history, until=7)
         self.assertEqual(first.candidate.fingerprint, second.candidate.fingerprint)
@@ -80,8 +80,8 @@ class CheckedPipelineTests(unittest.TestCase):
                 with redirect_stdout(out):
                     self.assertEqual(main(["inspect", str(path)]), 0)
                 self.assertIn(request.fingerprint, out.getvalue())
-        with self.assertRaises(cw.SerializationError):
-            cw.BuildRequest.from_json('{"schema_version":"a","schema_version":"b"}')
+        with self.assertRaises(bc.SerializationError):
+            bc.BuildRequest.from_json('{"schema_version":"a","schema_version":"b"}')
 
 
 if __name__ == "__main__":

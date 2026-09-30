@@ -7,20 +7,20 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from cellweave.errors import SerializationError
-from cellweave.ir.component_contracts import PinnedIdentity
-from cellweave.ir.composition import CompositionInstance, CompositionRequest, Provider
-from cellweave.ir.construct import ConstructCandidate, ConstructRequest, SequenceRange
-from cellweave.ir.intent import SourceLocation
-from cellweave.registry.components import ComponentRegistry
-from cellweave.registry.reference_components import (
+from biocompiler.errors import SerializationError
+from biocompiler.ir.component_contracts import PinnedIdentity
+from biocompiler.ir.composition import CompositionInstance, CompositionRequest, Provider
+from biocompiler.ir.construct import ConstructCandidate, ConstructRequest, SequenceRange
+from biocompiler.ir.intent import SourceLocation
+from biocompiler.registry.components import ComponentRegistry
+from biocompiler.registry.reference_components import (
     ReferenceSelection,
     adapt_reference_component,
 )
-from cellweave.registry.references import load_reference_manifest
-from cellweave.semantics.component_contracts import OperatingDomain
-from cellweave.semantics.context import PayloadFormat, TargetContext
-from cellweave.synthesis.construct import (
+from biocompiler.registry.references import load_reference_manifest
+from biocompiler.semantics.component_contracts import OperatingDomain
+from biocompiler.semantics.context import PayloadFormat, TargetContext
+from biocompiler.synthesis.construct import (
     generate_construct,
     prepare_reference_construct,
 )
@@ -30,7 +30,7 @@ MANIFEST = PinnedIdentity(
     "reference",
     "wo2022081694a1.murine-fapcar.cds",
     "1",
-    "8d26e8d3e960d8dc0996e1f0582372ddfc9685795ed54131557f101be8849a41",
+    "e6bd93305ccf638757844d744c9ce9f8d84bbea4cfed40ba4cb224f28e610102",
 )
 REFERENCE_PINS = {
     "DNA": PinnedIdentity(

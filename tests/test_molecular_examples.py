@@ -7,8 +7,8 @@ from pathlib import Path
 import tempfile
 import unittest
 
-import cellweave as cw
-from cellweave.cli import main
+import biocompiler as bc
+from biocompiler.cli import main
 from examples.molecular_contract import requested_fap_contract
 
 
@@ -32,15 +32,15 @@ class MolecularExampleTests(unittest.TestCase):
             return summary
 
     def test_actual_fap_correspondence_never_completes_requested_payload(self):
-        self.assertEqual(self.result.linkage_outcome, cw.CheckOutcome.PASS)
-        self.assertEqual(self.result.outcome, cw.CheckOutcome.UNKNOWN)
+        self.assertEqual(self.result.linkage_outcome, bc.CheckOutcome.PASS)
+        self.assertEqual(self.result.outcome, bc.CheckOutcome.UNKNOWN)
         self.assertFalse(self.result.passed)
         self.assertTrue(self.result.freshness(*self.inputs).fresh)
         self.assertEqual(
             self.inputs[1].build_request.artifact_scope, "complete_payload"
         )
-        with self.assertRaises(cw.CompilationUnavailableError) as captured:
-            cw.compile(self.inputs[1])
+        with self.assertRaises(bc.CompilationUnavailableError) as captured:
+            bc.compile(self.inputs[1])
         self.assertIn(
             "complete_payload_not_promoted",
             {d.code for d in captured.exception.diagnostics},
@@ -79,7 +79,7 @@ class MolecularExampleTests(unittest.TestCase):
             *reference.reviews,
         ):
             summary = self.inspect(record)
-            if isinstance(record, cw.PayloadResult):
+            if isinstance(record, bc.PayloadResult):
                 self.assertEqual(summary["evidence_boundary"], "software_fixture")
                 self.assertEqual(summary["reference_promotion"], "not_promoted")
                 self.assertIs(summary["compiler_admission"], False)

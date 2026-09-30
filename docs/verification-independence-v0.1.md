@@ -44,7 +44,7 @@ The last row demonstrates why protein preservation cannot replace nucleotide
 identity or preserve expression, structure and behavioral evidence. The reviewed
 DNA, RNA and protein expectations remain separate from emitted output.
 
-The realization checker policy is `cellweave.realization_checker.v0.2`. A passing
+The realization checker policy is `biocompiler.realization_checker.v0.2`. A passing
 finite-history result now requires an exercised active deadline **and** an
 exercised inactive deadline for every response requirement, with no incomplete
 uncancelled episode. An active-only history previously passed the base public

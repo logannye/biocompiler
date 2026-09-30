@@ -6,8 +6,8 @@ The two selections remain distinct; no molecular sequence is emitted here.
 
 from pathlib import Path
 
-import cellweave as cw
-from cellweave.registry.references import load_reference_manifest
+import biocompiler as bc
+from biocompiler.registry.references import load_reference_manifest
 
 if __package__:
     from .checked_pipeline import build_request
@@ -17,7 +17,7 @@ else:
 
 def main():
     request, history = build_request()
-    build = cw.run_component_pipeline(request, history, until=7)
+    build = bc.run_component_pipeline(request, history, until=7)
     print(f"Scope: {build.result.scope}; status: {build.result.status.value}")
     print(f"Component instances: {len(build.assembly.composition.instances)}")
     print(f"Registry lock: {build.assembly.composition.registry_lock.fingerprint}")
@@ -28,17 +28,17 @@ def main():
 
     # This review pin is independent of the manifest being opened. The loader
     # verifies retained source and review files before reference adaptation.
-    trusted = "8d26e8d3e960d8dc0996e1f0582372ddfc9685795ed54131557f101be8849a41"
+    trusted = "e6bd93305ccf638757844d744c9ce9f8d84bbea4cfed40ba4cb224f28e610102"
     path = Path(__file__).resolve().parents[1] / "data/references/fap_car/manifest.json"
     manifest = load_reference_manifest(path, expected_fingerprint=trusted)
     reference = manifest.record("wo2022081694a1.murine-fapcar.seq3")
-    component = cw.adapt_reference_component(
+    component = bc.adapt_reference_component(
         manifest,
-        cw.ReferenceSelection(
-            cw.PinnedIdentity(
+        bc.ReferenceSelection(
+            bc.PinnedIdentity(
                 "reference", manifest.reference_set_id, manifest.version, trusted
             ),
-            cw.PinnedIdentity(
+            bc.PinnedIdentity(
                 "reference",
                 reference.reference_id,
                 reference.version,
@@ -46,12 +46,12 @@ def main():
             ),
         ),
     )
-    registry = cw.ComponentRegistry("reviewed-cds", "1", (component,))
+    registry = bc.ComponentRegistry("reviewed-cds", "1", (component,))
     selected = registry.select(
-        cw.SelectionRequest(
+        bc.SelectionRequest(
             "exact_cds_reference",
-            cw.TargetContext("reference", "1", cw.PayloadFormat.RNA),
-            cw.ComponentOperatingDomain(),
+            bc.TargetContext("reference", "1", bc.PayloadFormat.RNA),
+            bc.ComponentOperatingDomain(),
             classification="sequence_reference",
             component_id=component.id,
             component_version=component.version,

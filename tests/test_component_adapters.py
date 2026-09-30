@@ -5,18 +5,18 @@ from pathlib import Path
 import unittest
 from unittest.mock import patch
 
-import cellweave as cw
-from cellweave.errors import SerializationError
-from cellweave.ir.component_contracts import PinnedIdentity
-from cellweave.registry.components import ComponentRegistry
-from cellweave.registry.reference_components import (
+import biocompiler as bc
+from biocompiler.errors import SerializationError
+from biocompiler.ir.component_contracts import PinnedIdentity
+from biocompiler.registry.components import ComponentRegistry
+from biocompiler.registry.reference_components import (
     ReferenceSelection,
     adapt_reference_component,
 )
-from cellweave.registry.references import load_reference_manifest
-from cellweave.synthesis.components import adapt_synthetic_components
-from cellweave.synthesis.synthetic import generate_synthetic
-from cellweave.verification.components import check_composition
+from biocompiler.registry.references import load_reference_manifest
+from biocompiler.synthesis.components import adapt_synthetic_components
+from biocompiler.synthesis.synthetic import generate_synthetic
+from biocompiler.verification.components import check_composition
 from test_synthetic_generation import exercised_history, fixture
 
 FIXTURE = Path(__file__).resolve().parents[1] / "data/references/fap_car/manifest.json"
@@ -24,7 +24,7 @@ MANIFEST = PinnedIdentity(
     "reference",
     "wo2022081694a1.murine-fapcar.cds",
     "1",
-    "8d26e8d3e960d8dc0996e1f0582372ddfc9685795ed54131557f101be8849a41",
+    "e6bd93305ccf638757844d744c9ce9f8d84bbea4cfed40ba4cb224f28e610102",
 )
 DNA = PinnedIdentity(
     "reference",
@@ -50,7 +50,7 @@ class ComponentAdapterTests(unittest.TestCase):
             )
             self.assertEqual(
                 check_composition(assembled.composition, assembled.registry).outcome,
-                cw.CheckOutcome.PASS,
+                bc.CheckOutcome.PASS,
             )
             records = assembled.registry.resolve(assembled.composition.registry_lock)
             self.assertEqual(
@@ -88,9 +88,9 @@ class ComponentAdapterTests(unittest.TestCase):
         request, sample = fixture(numeric=True)
         candidate = generate_synthetic(request)
         history = (
-            cw.InputFrame(0, contacts={"x": sample(1, True)}),
-            cw.InputFrame(1, contacts={"x": sample(3, True)}),
-            cw.InputFrame(5, contacts={"x": sample(2, True)}),
+            bc.InputFrame(0, contacts={"x": sample(1, True)}),
+            bc.InputFrame(1, contacts={"x": sample(3, True)}),
+            bc.InputFrame(5, contacts={"x": sample(2, True)}),
         )
         assembled = adapt_synthetic_components(request, candidate, history, until=7)
         records = assembled.registry.resolve(assembled.composition.registry_lock)
@@ -123,7 +123,7 @@ class ComponentAdapterTests(unittest.TestCase):
             self.assertEqual(parameter.source.content_fingerprint, request.fingerprint)
         self.assertEqual(
             check_composition(assembled.composition, assembled.registry).outcome,
-            cw.CheckOutcome.PASS,
+            bc.CheckOutcome.PASS,
         )
 
     def test_stale_unexercised_and_silent_candidates_cannot_be_adapted(self):

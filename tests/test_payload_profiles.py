@@ -6,9 +6,9 @@ import json
 import unittest
 from unittest.mock import patch
 
-from cellweave.errors import SerializationError
-from cellweave.ir.molecular import MolecularArtifact
-from cellweave.ir.payload import (
+from biocompiler.errors import SerializationError
+from biocompiler.ir.molecular import MolecularArtifact
+from biocompiler.ir.payload import (
     ACCEPTED_BIOLOGICAL_PAYLOAD_PINS,
     PayloadFeature,
     PayloadMolecule,
@@ -17,9 +17,9 @@ from cellweave.ir.payload import (
     PayloadReview,
     PayloadSource,
 )
-from cellweave.semantics.coordinates import SequenceRange
-from cellweave.verification.evidence import CheckOutcome
-from cellweave.verification.payload import (
+from biocompiler.semantics.coordinates import SequenceRange
+from biocompiler.verification.evidence import CheckOutcome
+from biocompiler.verification.payload import (
     PayloadResult,
     REVIEW_SCHEMA_VERSION,
     check_payload,

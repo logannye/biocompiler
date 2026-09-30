@@ -5,18 +5,18 @@ from dataclasses import FrozenInstanceError, replace
 import unittest
 from unittest.mock import patch
 
-from cellweave.errors import SerializationError
-from cellweave.ir.component_contracts import (
+from biocompiler.errors import SerializationError
+from biocompiler.ir.component_contracts import (
     ComponentRecord,
     PinnedIdentity,
     ParameterProvenance,
 )
-from cellweave.semantics.context import TargetContext, PayloadFormat
-from cellweave.registry.components import (
+from biocompiler.semantics.context import TargetContext, PayloadFormat
+from biocompiler.registry.components import (
     ComponentRegistry,
     SelectionRequest,
 )
-from cellweave.semantics.component_contracts import OperatingDomain, ValueDomain
+from biocompiler.semantics.component_contracts import OperatingDomain, ValueDomain
 from test_references import json_paths
 
 

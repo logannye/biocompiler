@@ -1,5 +1,11 @@
 # Examples
 
+[human_acceptance.py](human_acceptance.py) combines required secretion and prohibited
+observations in one request. Run `PYTHONPATH=src python examples/human_acceptance.py --output generated/acceptance`
+for artificial pass/fail/unknown/unsupported cases covering healthy-context activity,
+peak and duration limits, cell input loss and shutdown. It asserts no biological
+bounds, sensor or supported actuator. See the [acceptance contract](../docs/human-acceptance-contract-v0.1.md).
+
 [human_deployment.py](human_deployment.py) freezes delivery requirements around
 the human behavior request. It demonstrates unknown, compatible, conflicting and
 unsupported co-payload declarations with artificial values. Run
@@ -50,7 +56,7 @@ meaning.
 
 [reference_sequences.py](reference_sequences.py) runs the exact-CDS pipeline separately for DNA and RNA, prints scoped identities and checks FASTA/JSON exports. Run `PYTHONPATH=src python examples/reference_sequences.py`. It emits each selected reference spelling without optimization or complete-payload/biological claims.
 
-- `reference_build.py`: build DNA/RNA `.cwb` packages, publish atomically and independently reconstruct offline. See [reference builds](../docs/reference-build-v0.1.md).
+- `reference_build.py`: build DNA/RNA `.bcb` packages, publish atomically and independently reconstruct offline. See [reference builds](../docs/reference-build-v0.1.md).
 
 - `verification_campaign.py`: bounded exhaustive presence-aware contact histories, seeded adversarial cases and failure-preserving deletion reduction; optional JSON evidence output. These are software-model checks, not universal or empirical claims.
 

@@ -1,8 +1,8 @@
-# CellWeave intent API: v0.1
+# biocompiler intent API: v0.1
 
 **Status:** implemented authoring API, 2026-09-29, package `0.1.0.dev2`. Authoring, typed intent/behavior graphs, JSON inspection, parameter-binding reports, and abstract behavior execution are available. Molecular realization and DNA/RNA emission are not implemented. This API version is independent of the package version.
 
-CellWeave lets an immune-cell engineer describe an evolving therapeutic behavior and refine it into DNA or RNA payload specifications for engineering cells **in vivo**. The author describes participating cell roles, what they perceive, how they respond, what they remember, and how they work together.
+biocompiler lets an immune-cell engineer describe an evolving therapeutic behavior and refine it into DNA or RNA payload specifications for engineering cells **in vivo**. The author describes participating cell roles, what they perceive, how they respond, what they remember, and how they work together.
 
 The primary authoring sentence is:
 
@@ -17,9 +17,9 @@ The API is designed to express a broad range of therapeutic intent. Molecular re
 All biological names in these examples are symbolic. They illustrate the language rather than prescribe a therapeutic construct. Each full example creates its own therapy; shorter fragments explicitly extend an earlier example.
 
 ```python
-import cellweave as cw
+import biocompiler as bc
 
-therapy = cw.Therapy("context_aware_response")
+therapy = bc.Therapy("context_aware_response")
 responders = therapy.engineer("responders", cell_type="T_cell")
 
 target = responders.contact
@@ -107,11 +107,11 @@ Numeric comparisons and arithmetic produce symbolic expressions too:
 
 ```python
 # Extends the first example.
-threshold = therapy.parameter("activation_threshold", type=cw.Level)
-activation = responders.internal.signal("activation", type=cw.Level)
+threshold = therapy.parameter("activation_threshold", type=bc.Level)
+activation = responders.internal.signal("activation", type=bc.Level)
 strong_activation = activation > threshold
 
-two_of_three = cw.at_least(
+two_of_three = bc.at_least(
     2,
     target.marker("A").present(),
     target.marker("B").present(),
@@ -119,7 +119,7 @@ two_of_three = cw.at_least(
 )
 ```
 
-`cw.Level` is a dimensionless scalar, useful for normalized or initially abstract signals. Physical quantities can use explicit dimensions such as `cw.Concentration`, `cw.SurfaceDensity`, `cw.Duration`, and `cw.ProductionRate`. Refinement of an abstract level into a physical observation retains the mapping between them.
+`bc.Level` is a dimensionless scalar, useful for normalized or initially abstract signals. Physical quantities can use explicit dimensions such as `bc.Concentration`, `bc.SurfaceDensity`, `bc.Duration`, and `bc.ProductionRate`. Refinement of an abstract level into a physical observation retains the mapping between them.
 
 Conditions compose with `&`, `|`, and `~`. Quantities support arithmetic and comparison. Parentheses make compositions readable. Python `and`, `or`, `not`, and `if` are not biological operators; symbolic expressions cannot be coerced to Python booleans.
 
@@ -128,9 +128,9 @@ Conditions compose with `&`, `|`, and `~`. Quantities support arithmetic and com
 A signature is an ordinary Python function that returns a condition. The decorator adds a name and source identity. Binding it to a scope makes reuse explicit.
 
 ```python
-import cellweave as cw
+import biocompiler as bc
 
-@cw.signature
+@bc.signature
 def pathological(target):
     return (
         target.marker("A").high()
@@ -146,7 +146,7 @@ def install_local_clearance(cells, *, context):
         cells.secrete("local_support_factor"),
     )
 
-therapy = cw.Therapy("reusable_response")
+therapy = bc.Therapy("reusable_response")
 responders = therapy.engineer("responders", cell_type="T_cell")
 install_local_clearance(
     responders,
@@ -189,7 +189,7 @@ An event can also start a timed behavior:
 
 ```python
 # Extends the first example.
-pulse_duration = therapy.parameter("pulse_duration", type=cw.Duration)
+pulse_duration = therapy.parameter("pulse_duration", type=bc.Duration)
 responders.on(disease_context.became_true()).do(
     responders.secrete("pulse_factor").for_(pulse_duration)
 )
@@ -200,11 +200,11 @@ responders.on(disease_context.became_true()).do(
 ### Priming memory
 
 ```python
-import cellweave as cw
+import biocompiler as bc
 
-therapy = cw.Therapy("primed_response")
+therapy = bc.Therapy("primed_response")
 cells = therapy.engineer("responders", cell_type="T_cell")
-dwell = therapy.parameter("priming_duration", type=cw.Duration)
+dwell = therapy.parameter("priming_duration", type=bc.Duration)
 
 disease = cells.environment.signal("disease_context").present()
 recovery = cells.environment.signal("recovery").high()
@@ -275,15 +275,15 @@ The `cells` object owns each of these operations. Their availability and realiza
 A named output is useful when several parts of the design refer to the same effector. The following is a complete graded-response example:
 
 ```python
-import cellweave as cw
+import biocompiler as bc
 
-therapy = cw.Therapy("graded_local_response")
+therapy = bc.Therapy("graded_local_response")
 cells = therapy.engineer("regulators", cell_type="regulatory_T_cell")
 
-inflammation = cells.environment.signal("inflammation", type=cw.Level)
+inflammation = cells.environment.signal("inflammation", type=bc.Level)
 rate_map = therapy.parameter(
     "secretion_response",
-    type=cw.Curve[cw.Level, cw.ProductionRate],
+    type=bc.Curve[bc.Level, bc.ProductionRate],
 )
 resolution = cells.secretion("resolution", product="resolution_factor")
 
@@ -301,13 +301,13 @@ Curve objects support graded, thresholded, saturating, or other relationships. T
 This is an alternative complete program, using feedback instead of a specified input-output curve:
 
 ```python
-import cellweave as cw
+import biocompiler as bc
 
-therapy = cw.Therapy("local_resolution")
+therapy = bc.Therapy("local_resolution")
 cells = therapy.engineer("regulators", cell_type="regulatory_T_cell")
 
-inflammation = cells.environment.signal("inflammation", type=cw.Level)
-desired = therapy.parameter("desired_inflammation", type=cw.Level)
+inflammation = cells.environment.signal("inflammation", type=bc.Level)
+desired = therapy.parameter("desired_inflammation", type=bc.Level)
 resolution = cells.secretion("resolution", product="resolution_factor")
 
 cells.regulate(
@@ -326,12 +326,12 @@ A response curve maps an input directly to an output. A controller expresses a d
 ## 7. Cooperating cell populations
 
 ```python
-import cellweave as cw
+import biocompiler as bc
 
-therapy = cw.Therapy("coordinated_response")
+therapy = bc.Therapy("coordinated_response")
 scouts = therapy.engineer("scouts", cell_type="macrophage")
 responders = therapy.engineer("responders", cell_type="NK_cell")
-alert = therapy.channel("disease_alert", scope="local", type=cw.Level)
+alert = therapy.channel("disease_alert", scope="local", type=bc.Level)
 
 scouts.when(
     scouts.environment.signal("tissue_damage").high(),
@@ -379,10 +379,10 @@ Parameters and biological definitions can likewise remain symbolic while the des
 The build workflow supplies a profile containing the molecular target and context. The interface reuses `TargetContext` and `PayloadFormat`:
 
 ```python
-import cellweave as cw
-from cellweave.semantics.context import PayloadFormat, TargetContext
+import biocompiler as bc
+from biocompiler.semantics.context import PayloadFormat, TargetContext
 
-profile = cw.BuildProfile(
+profile = bc.BuildProfile(
     target=TargetContext(
         context_id="example_context",
         context_version="1",
@@ -398,10 +398,10 @@ The molecular workflow exposes three stages; the first two return inspectable re
 ```python
 # Uses the coordinated-response therapy and the profile above.
 program = therapy.freeze()                 # Immutable IntentProgram.
-design = cw.plan(program, profile=profile)  # RealizationPlan.
+design = bc.plan(program, profile=profile)  # RealizationPlan.
 try:
-    artifact = cw.compile(design)          # Future molecular compiler boundary.
-except cw.CompilationUnavailableError as exc:
+    artifact = bc.compile(design)          # Future molecular compiler boundary.
+except bc.CompilationUnavailableError as exc:
     print(exc)
 ```
 
@@ -411,19 +411,19 @@ A profile can supply typed values without changing the authored snapshot:
 
 ```python
 # Creates a separate program for this build.
-import cellweave as cw
-from cellweave.semantics.context import PayloadFormat, TargetContext
+import biocompiler as bc
+from biocompiler.semantics.context import PayloadFormat, TargetContext
 
-therapy = cw.Therapy("timed_response")
+therapy = bc.Therapy("timed_response")
 cells = therapy.engineer("responders", cell_type="T_cell")
-window = therapy.parameter("window", type=cw.Duration)
+window = therapy.parameter("window", type=bc.Duration)
 cue = cells.environment.signal("cue").present()
 cells.when(cue.held_for(window)).do(cells.report("sustained_cue"))
-profile = cw.BuildProfile(
+profile = bc.BuildProfile(
     target=TargetContext("example_context", "1", PayloadFormat.RNA),
-    parameters={"window": cw.Duration(5, unit="min")},
+    parameters={"window": bc.Duration(5, unit="min")},
 )
-design = cw.plan(therapy.freeze(), profile=profile)
+design = bc.plan(therapy.freeze(), profile=profile)
 print(design.to_json())
 ```
 
@@ -486,11 +486,11 @@ Action.for_(duration: Expr[Duration]) -> Action
 Secretion.produce(*, rate: Expr[ProductionRate] | None = None) -> Action
 Secretion.rate: ControlPort[ProductionRate]
 Parameter[Curve[T, U]].__call__(input: Expr[T]) -> Expr[U]
-cw.at_least(count: int, *conditions: Condition) -> Condition
-cw.signature(function: Callable[..., Condition]) -> Signature
+bc.at_least(count: int, *conditions: Condition) -> Condition
+bc.signature(function: Callable[..., Condition]) -> Signature
 BuildProfile(target: TargetContext, parameters: Mapping[str, Any] = ...) -> BuildProfile
-cw.plan(program: IntentProgram, *, profile: BuildProfile) -> RealizationPlan
-cw.compile(design: RealizationPlan) -> raises CompilationUnavailableError (future PayloadArtifact)
+bc.plan(program: IntentProgram, *, profile: BuildProfile) -> RealizationPlan
+bc.compile(design: RealizationPlan) -> raises CompilationUnavailableError (future PayloadArtifact)
 ```
 
 Action constructors return inert specifications. `do()` installs a rule, while `engineer()`, `memory()`, `state()`, `secretion()`, and `regulate()` declare named program entities. Unattached expressions and action specifications do not change cellular behavior. Re-declaring a named entity with a different definition is not an implicit update.

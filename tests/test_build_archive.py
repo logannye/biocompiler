@@ -12,14 +12,14 @@ import unittest
 from unittest.mock import patch
 import zipfile
 
-from cellweave.artifacts.archive import (
+from biocompiler.artifacts.archive import (
     MAX_ENTRIES,
     MAX_MEMBER_BYTES,
     assemble_archive,
     read_archive,
     write_archive_atomic,
 )
-from cellweave.artifacts.manifest import (
+from biocompiler.artifacts.manifest import (
     REQUIRED_FILES,
     AcceptedStage,
     BuildManifest,
@@ -27,7 +27,7 @@ from cellweave.artifacts.manifest import (
     RunMetadata,
     ToolPin,
 )
-from cellweave.errors import SerializationError
+from biocompiler.errors import SerializationError
 
 
 def archive_fixture():
@@ -47,9 +47,9 @@ def archive_fixture():
     stages = tuple(
         AcceptedStage(stage, "1" * 64, "2" * 64, schema)
         for stage, schema in (
-            ("components", "cellweave.construct_request.v0.1"),
-            ("construct", "cellweave.construct.v0.1"),
-            ("molecular", "cellweave.molecular.v0.1"),
+            ("components", "biocompiler.construct_request.v0.1"),
+            ("construct", "biocompiler.construct.v0.1"),
+            ("molecular", "biocompiler.molecular.v0.1"),
         )
     )
     manifest = BuildManifest(
@@ -279,7 +279,7 @@ class BuildArchiveTests(unittest.TestCase):
             MAX_MEMBER_BYTES + 1,
         )
         with patch(
-            "cellweave.artifacts.archive.zipfile.ZipFile.read",
+            "biocompiler.artifacts.archive.zipfile.ZipFile.read",
             side_effect=AssertionError("payload read before bound"),
         ):
             with self.assertRaisesRegex(SerializationError, "size limit"):
@@ -300,7 +300,7 @@ class BuildArchiveTests(unittest.TestCase):
             changed = bytearray(encoded)
             struct.pack_into("<HH", changed, len(changed) - 22 + 8, count, count)
             with patch(
-                "cellweave.artifacts.archive.zipfile.ZipFile",
+                "biocompiler.artifacts.archive.zipfile.ZipFile",
                 side_effect=AssertionError("ZipFile opened before count validation"),
             ):
                 with self.subTest(count=count), self.assertRaises(SerializationError):
@@ -309,16 +309,16 @@ class BuildArchiveTests(unittest.TestCase):
     def test_member_archive_metadata_and_path_limits_are_bounded(self):
         manifest, files = archive_fixture()
         encoded = assemble_archive(manifest, files)
-        with patch("cellweave.artifacts.archive.MAX_ARCHIVE_BYTES", len(encoded) - 1):
+        with patch("biocompiler.artifacts.archive.MAX_ARCHIVE_BYTES", len(encoded) - 1):
             with self.assertRaises(SerializationError):
                 read_archive(encoded)
-        with patch("cellweave.artifacts.archive.MAX_METADATA_BYTES", 1):
+        with patch("biocompiler.artifacts.archive.MAX_METADATA_BYTES", 1):
             with self.assertRaises(SerializationError):
                 assemble_archive(manifest, files)
-        with patch("cellweave.artifacts.archive.MAX_MEMBER_BYTES", 1):
+        with patch("biocompiler.artifacts.archive.MAX_MEMBER_BYTES", 1):
             with self.assertRaises(SerializationError):
                 assemble_archive(manifest, files)
-        with patch("cellweave.artifacts.archive.MAX_ENTRIES", 1):
+        with patch("biocompiler.artifacts.archive.MAX_ENTRIES", 1):
             with self.assertRaises(SerializationError):
                 assemble_archive(manifest, files)
         with self.assertRaises(SerializationError):
@@ -335,7 +335,7 @@ class ArchivePublicationTests(unittest.TestCase):
 
     def test_atomic_creation_and_replacement_publish_only_complete_archives(self):
         with tempfile.TemporaryDirectory() as directory:
-            path = Path(directory) / "reference.cwb"
+            path = Path(directory) / "reference.bcb"
             self.assertEqual(write_archive_atomic(path, self.original), path)
             self.assertEqual(path.read_bytes(), self.original)
             self.assertEqual(write_archive_atomic(path, self.updated), path)
@@ -349,9 +349,9 @@ class ArchivePublicationTests(unittest.TestCase):
         self,
     ):
         with tempfile.TemporaryDirectory() as directory:
-            path = Path(directory) / "reference.cwb"
+            path = Path(directory) / "reference.bcb"
             path.write_bytes(self.original)
-            with patch("cellweave.artifacts.archive.tempfile.mkstemp") as temporary:
+            with patch("biocompiler.artifacts.archive.tempfile.mkstemp") as temporary:
                 with self.assertRaises(SerializationError):
                     write_archive_atomic(path, self.updated + b"invalid")
                 temporary.assert_not_called()
@@ -369,10 +369,10 @@ class ArchivePublicationTests(unittest.TestCase):
                 self.subTest(operation=operation, error=type(error).__name__),
                 tempfile.TemporaryDirectory() as directory,
             ):
-                path = Path(directory) / "reference.cwb"
+                path = Path(directory) / "reference.bcb"
                 path.write_bytes(self.original)
                 with patch(
-                    "cellweave.artifacts.archive." + operation, side_effect=error
+                    "biocompiler.artifacts.archive." + operation, side_effect=error
                 ):
                     with self.assertRaises(type(error)):
                         write_archive_atomic(path, self.updated)
@@ -396,9 +396,9 @@ class ArchivePublicationTests(unittest.TestCase):
                 return self.output.write(data[: len(data) // 2])
 
         with tempfile.TemporaryDirectory() as directory:
-            path = Path(directory) / "reference.cwb"
+            path = Path(directory) / "reference.bcb"
             path.write_bytes(self.original)
-            with patch("cellweave.artifacts.archive.os.fdopen", PartialWriter):
+            with patch("biocompiler.artifacts.archive.os.fdopen", PartialWriter):
                 with self.assertRaisesRegex(OSError, "Incomplete"):
                     write_archive_atomic(path, self.updated)
             self.assertEqual(path.read_bytes(), self.original)
@@ -408,9 +408,10 @@ class ArchivePublicationTests(unittest.TestCase):
         self,
     ):
         with tempfile.TemporaryDirectory() as directory:
-            path = Path(directory) / "reference.cwb"
+            path = Path(directory) / "reference.bcb"
             with patch(
-                "cellweave.artifacts.archive.os.replace", side_effect=OSError("failed")
+                "biocompiler.artifacts.archive.os.replace",
+                side_effect=OSError("failed"),
             ):
                 with self.assertRaises(OSError):
                     write_archive_atomic(path, self.original)
@@ -420,17 +421,17 @@ class ArchivePublicationTests(unittest.TestCase):
     def test_publication_refuses_symlinks_directories_and_wrong_extensions(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
-            target = root / "accepted.cwb"
+            target = root / "accepted.bcb"
             target.write_bytes(self.original)
-            symlink = root / "linked.cwb"
+            symlink = root / "linked.bcb"
             symlink.symlink_to(target)
-            folder = root / "folder.cwb"
+            folder = root / "folder.bcb"
             folder.mkdir()
             for path in (
                 symlink,
                 folder,
                 root / "wrong.zip",
-                root / "missing/parent.cwb",
+                root / "missing/parent.bcb",
             ):
                 with self.subTest(path=path), self.assertRaises(SerializationError):
                     write_archive_atomic(path, self.updated)

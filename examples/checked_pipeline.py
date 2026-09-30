@@ -4,64 +4,64 @@ Run: PYTHONPATH=src python examples/checked_pipeline.py
 The output is a software-model result, not a molecular build.
 """
 
-import cellweave as cw
-from cellweave.compiler.synthetic import run_synthetic_pipeline
-from cellweave.ir.serialization import fingerprint
-from cellweave.semantics.types import BOOLEAN
+import biocompiler as bc
+from biocompiler.compiler.synthetic import run_synthetic_pipeline
+from biocompiler.ir.serialization import fingerprint
+from biocompiler.semantics.types import BOOLEAN
 
 
 def build_request():
-    therapy = cw.Therapy("checked_combinational_pipeline")
+    therapy = bc.Therapy("checked_combinational_pipeline")
     cell = therapy.engineer("observer", cell_type="abstract_cell")
     a, b = cell.contact.marker("A"), cell.contact.marker("B")
     action = cell.rest()
     rule = cell.when(a.present() & b.present()).do(action)
-    target = cw.TargetContext(
-        "synthetic", "1", cw.PayloadFormat.RNA, capabilities=("synthetic_signal_graph",)
+    target = bc.TargetContext(
+        "synthetic", "1", bc.PayloadFormat.RNA, capabilities=("synthetic_signal_graph",)
     )
-    build = cw.BuildRequest.freeze(
+    build = bc.BuildRequest.freeze(
         therapy.freeze(), target=target, artifact_scope="synthetic_realization"
     )
-    behavior = cw.lower_to_behavior(build)
-    response = cw.ResponseRequirement(
+    behavior = bc.lower_to_behavior(build)
+    response = bc.ResponseRequirement(
         "response",
         rule.node_id,
         action.node_id,
-        cw.Observable("rest_readout", cw.Level, cell.role),
-        cw.Interval(0.9, 1.1),
-        cw.Interval(0, 0.1),
-        cw.Duration(0.5),
-        cw.Duration(0.5),
+        bc.Observable("rest_readout", bc.Level, cell.role),
+        bc.Interval(0.9, 1.1),
+        bc.Interval(0, 0.1),
+        bc.Duration(0.5),
+        bc.Duration(0.5),
     )
-    contract = cw.BehaviorContract("rest", behavior.fingerprint, (response,))
-    domain = cw.OperatingDomain(
+    contract = bc.BehaviorContract("rest", behavior.fingerprint, (response,))
+    domain = bc.OperatingDomain(
         "two_objects",
         "1",
         cell.role,
         tuple(
-            cw.InputDomain(
+            bc.InputDomain(
                 signal.node_id,
                 "present",
-                cw.Observable(label, BOOLEAN, cell.role, scope="contact"),
+                bc.Observable(label, BOOLEAN, cell.role, scope="contact"),
                 (False, True),
             )
             for signal, label in ((a, "A"), (b, "B"))
         ),
-        cw.Duration(7),
+        bc.Duration(7),
         max_contacts=2,
     )
-    request = cw.RealizationRequest.freeze(build, behavior, contract, domain)
+    request = bc.RealizationRequest.freeze(build, behavior, contract, domain)
 
     def sample(first, second):
         return {
-            a.node_id: cw.SignalSample(present=first),
-            b.node_id: cw.SignalSample(present=second),
+            a.node_id: bc.SignalSample(present=first),
+            b.node_id: bc.SignalSample(present=second),
         }
 
     history = (
-        cw.InputFrame(0, contacts={"x": sample(True, False), "y": sample(False, True)}),
-        cw.InputFrame(1, contacts={"x": sample(True, True), "y": sample(False, True)}),
-        cw.InputFrame(5, contacts={"x": sample(False, False)}),
+        bc.InputFrame(0, contacts={"x": sample(True, False), "y": sample(False, True)}),
+        bc.InputFrame(1, contacts={"x": sample(True, True), "y": sample(False, True)}),
+        bc.InputFrame(5, contacts={"x": sample(False, False)}),
     )
     return request, history
 

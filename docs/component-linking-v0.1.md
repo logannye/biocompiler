@@ -5,7 +5,7 @@ passing result establishes structural compatibility under the declared component
 target, model, provider and lifecycle assumptions. It does not establish empirical
 function, biological efficacy, sequence production or universal refinement.
 
-`cellweave.check_composition(request, registry)` independently recomputes these
+`biocompiler.check_composition(request, registry)` independently recomputes these
 checks. It accepts a `CompositionRequest`, not a producer's acceptance report.
 Its `CompositionResult` has `pass`, `fail`, `unknown` or `unsupported` outcome,
 explicit claim scope, requirement correspondence, provider resolutions, resource
@@ -113,7 +113,7 @@ defined. Renaming a host provider does not multiply one target host's capacity.
 
 ## Checked pipeline integration
 
-`cellweave.run_component_pipeline(...)` extends the checked synthetic pipeline
+`biocompiler.run_component_pipeline(...)` extends the checked synthetic pipeline
 through `Stage.COMPONENTS` with the `synthetic_components` scope. It preserves the
 upstream immutable request, source and requirement correspondence, and exact
 synthetic registry/model identities. The manager reruns independent acceptance;

@@ -7,19 +7,19 @@ from pathlib import Path
 import tempfile
 import unittest
 
-import cellweave as cw
-from cellweave.cli import main
+import biocompiler as bc
+from biocompiler.cli import main
 
 
 class BehaviorCliTests(unittest.TestCase):
     def setUp(self):
-        therapy = cw.Therapy("inspection")
+        therapy = bc.Therapy("inspection")
         cell = therapy.engineer("observer", cell_type="abstract_cell")
         cell.when(cell.environment.signal("A").present()).do(cell.report("seen"))
-        self.behavior = cw.lower_to_behavior(therapy.freeze())
+        self.behavior = bc.lower_to_behavior(therapy.freeze())
 
     def inspect(self, document, *, full=False):
-        with tempfile.TemporaryDirectory(prefix="cellweave-behavior-") as directory:
+        with tempfile.TemporaryDirectory(prefix="biocompiler-behavior-") as directory:
             path = Path(directory) / "behavior.json"
             path.write_text(document, encoding="utf-8")
             output, error = io.StringIO(), io.StringIO()
@@ -33,7 +33,7 @@ class BehaviorCliTests(unittest.TestCase):
         self.assertEqual(json.loads(output), self.behavior.summary())
         status, output, error = self.inspect(self.behavior.to_json(), full=True)
         self.assertEqual(status, 0, error)
-        self.assertEqual(cw.BehaviorProgram.from_json(output), self.behavior)
+        self.assertEqual(bc.BehaviorProgram.from_json(output), self.behavior)
 
     def test_duplicate_keys_cannot_bypass_strict_behavior_parser(self):
         document = self.behavior.to_json()
@@ -45,7 +45,7 @@ class BehaviorCliTests(unittest.TestCase):
 
     def test_unknown_schema_and_wrong_document_shape_are_diagnostics(self):
         future = self.behavior.to_dict()
-        future["schema_version"] = "cellweave.behavior.v99"
+        future["schema_version"] = "biocompiler.behavior.v99"
         for document in (
             json.dumps(future),
             "[]",
@@ -56,7 +56,7 @@ class BehaviorCliTests(unittest.TestCase):
                 status, output, error = self.inspect(document)
                 self.assertEqual(status, 2)
                 self.assertEqual(output, "")
-                self.assertIn("cellweave:", error)
+                self.assertIn("biocompiler:", error)
 
 
 if __name__ == "__main__":

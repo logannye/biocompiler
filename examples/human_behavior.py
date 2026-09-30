@@ -5,7 +5,7 @@ from dataclasses import replace
 import json
 from pathlib import Path
 
-import cellweave as cw
+import biocompiler as bc
 
 if __package__:
     from .human_target import make_human_target
@@ -15,40 +15,40 @@ else:
 
 def make_human_behavior():
     def assumed(description):
-        return cw.TargetClaim(
+        return bc.TargetClaim(
             description,
             "assumed",
             (),
             "Artificial software fixture only. No assay, sensor, product, clinical threshold or timing is validated.",
         )
 
-    therapy = cw.Therapy("conditional_secretion_specification")
+    therapy = bc.Therapy("conditional_secretion_specification")
     cell = therapy.engineer("recipient", cell_type="human_T_cell")
     goal = therapy.goal(
         "conditional_therapeutic_secretion",
         description="Secrete a declared product while a qualifying cue is present, then return to baseline.",
     )
-    cue = cell.external.signal("declared_cue", type=cw.Concentration)
+    cue = cell.external.signal("declared_cue", type=bc.Concentration)
     predicate = cue.high()
     action = cell.secrete("declared_product")
     rule = cell.when(predicate).do(action)
     target = replace(make_human_target(), compartments=("cytoplasm", "extracellular"))
-    build = cw.BuildRequest.freeze(
+    build = bc.BuildRequest.freeze(
         therapy.freeze(), target=target, artifact_scope="complete_payload"
     )
-    input_observable = cw.Observable(
+    input_observable = bc.Observable(
         "local_cue_concentration",
-        cw.Concentration,
+        bc.Concentration,
         cell.role,
         compartment="extracellular",
     )
-    output_observable = cw.Observable(
+    output_observable = bc.Observable(
         "product_secretion_rate_per_cell",
-        cw.ProductionRate,
+        bc.ProductionRate,
         cell.role,
         compartment="extracellular",
     )
-    input_spec = cw.MeasurementSpec(
+    input_spec = bc.MeasurementSpec(
         input_observable,
         "Local concentration of the declared extracellular cue at the recipient cell.",
         "cell",
@@ -57,7 +57,7 @@ def make_human_behavior():
             "Runtime accessibility and readout correspondence are requested, not established."
         ),
     )
-    output_spec = cw.MeasurementSpec(
+    output_spec = bc.MeasurementSpec(
         output_observable,
         "Exported declared product amount per unit time from this one recipient cell.",
         "external_evaluator",
@@ -66,48 +66,48 @@ def make_human_behavior():
             "The output is a required measurement; no assay or conversion has been validated."
         ),
     )
-    contract = cw.ConditionalSecretionContract(
+    contract = bc.ConditionalSecretionContract(
         id="conditional_secretion_fixture",
         goal_id=goal.node_id,
         product="declared_product",
         input_signal_id=cue.node_id,
         input_measurement=input_spec,
-        input_range=cw.Interval(
-            cw.Concentration(0, unit="nM"),
-            cw.Concentration(10, unit="nM"),
-            type=cw.Concentration,
+        input_range=bc.Interval(
+            bc.Concentration(0, unit="nM"),
+            bc.Concentration(10, unit="nM"),
+            type=bc.Concentration,
         ),
-        predicate=cw.PredicateRefinement(
+        predicate=bc.PredicateRefinement(
             predicate.node_id,
             ">=",
-            cw.Concentration(5, unit="nM"),
+            bc.Concentration(5, unit="nM"),
             assumed("A software-only threshold refines the source high predicate."),
         ),
         output_measurement=output_spec,
-        response=cw.ResponseRequirement(
+        response=bc.ResponseRequirement(
             "response.secretion",
             rule.node_id,
             action.node_id,
             output_observable,
-            cw.Interval(
-                cw.ProductionRate(2, unit="molecules/s"),
-                cw.ProductionRate(3, unit="molecules/s"),
-                type=cw.ProductionRate,
+            bc.Interval(
+                bc.ProductionRate(2, unit="molecules/s"),
+                bc.ProductionRate(3, unit="molecules/s"),
+                type=bc.ProductionRate,
             ),
-            cw.Interval(
-                cw.ProductionRate(0, unit="molecules/s"),
-                cw.ProductionRate(0.1, unit="molecules/s"),
-                type=cw.ProductionRate,
+            bc.Interval(
+                bc.ProductionRate(0, unit="molecules/s"),
+                bc.ProductionRate(0.1, unit="molecules/s"),
+                type=bc.ProductionRate,
             ),
-            cw.Duration(2),
-            cw.Duration(1),
+            bc.Duration(2),
+            bc.Duration(1),
         ),
-        initial_range=cw.Interval(
-            cw.ProductionRate(0, unit="molecules/s"),
-            cw.ProductionRate(0.05, unit="molecules/s"),
-            type=cw.ProductionRate,
+        initial_range=bc.Interval(
+            bc.ProductionRate(0, unit="molecules/s"),
+            bc.ProductionRate(0.05, unit="molecules/s"),
+            type=bc.ProductionRate,
         ),
-        horizon=cw.Duration(10),
+        horizon=bc.Duration(10),
         goal_refinement=assumed(
             "The source goal is refined to secretion of the same declared product under the same cue; this readout does not establish clinical benefit."
         ),
@@ -115,14 +115,14 @@ def make_human_behavior():
             "All numeric ranges, delays and the horizon are invented test values, not recommended biological requirements."
         ),
     )
-    return cw.HumanBehaviorRequest(build, contract)
+    return bc.HumanBehaviorRequest(build, contract)
 
 
 def sample(time, cue, rate):
-    return cw.SecretionSample(
-        cw.Duration(time),
-        cw.Concentration(cue, unit="nM"),
-        cw.ProductionRate(rate, unit="molecules/s"),
+    return bc.SecretionSample(
+        bc.Duration(time),
+        bc.Concentration(cue, unit="nM"),
+        bc.ProductionRate(rate, unit="molecules/s"),
     )
 
 
@@ -143,19 +143,19 @@ def main():
     args = parser.parse_args()
     request = make_human_behavior()
     trace = example_trace()
-    passing = cw.check_secretion_trace(request, trace)
-    silent = cw.check_secretion_trace(
+    passing = bc.check_secretion_trace(request, trace)
+    silent = bc.check_secretion_trace(
         request,
-        tuple(replace(item, output_value=cw.ProductionRate(0)) for item in trace),
+        tuple(replace(item, output_value=bc.ProductionRate(0)) for item in trace),
     )
-    inactive = cw.check_secretion_trace(request, (sample(0, 0, 0), sample(10, 0, 0)))
+    inactive = bc.check_secretion_trace(request, (sample(0, 0, 0), sample(10, 0, 0)))
     assert (passing.outcome, silent.outcome, inactive.outcome) == (
         "pass",
         "fail",
         "unknown",
     )
     assert (
-        cw.HumanBehaviorRequest.from_json(request.to_json()).fingerprint
+        bc.HumanBehaviorRequest.from_json(request.to_json()).fingerprint
         == request.fingerprint
     )
     print("Conditional secretion contract: source correspondence checked")

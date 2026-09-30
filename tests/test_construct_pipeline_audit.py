@@ -4,7 +4,7 @@ from dataclasses import replace
 import unittest
 from unittest.mock import Mock
 
-from cellweave.compiler.pipeline import (
+from biocompiler.compiler.pipeline import (
     CheckDecision,
     CheckSpec,
     ComponentInputContract,
@@ -12,9 +12,9 @@ from cellweave.compiler.pipeline import (
     PipelineError,
     ScopedObligation,
 )
-from cellweave.ir.serialization import fingerprint
-from cellweave.semantics.context import PayloadFormat, TargetContext
-from cellweave.verification.evidence import CheckOutcome, EvidenceKind
+from biocompiler.ir.serialization import fingerprint
+from biocompiler.semantics.context import PayloadFormat, TargetContext
+from biocompiler.verification.evidence import CheckOutcome, EvidenceKind
 
 
 def admission_fixture():

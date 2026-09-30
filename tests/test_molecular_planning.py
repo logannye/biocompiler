@@ -2,25 +2,25 @@
 
 import unittest
 
-import cellweave as cw
+import biocompiler as bc
 
 
 class MolecularPlanningTests(unittest.TestCase):
     def setUp(self):
-        self.therapy = cw.Therapy("extension_obligations")
+        self.therapy = bc.Therapy("extension_obligations")
         self.cells = self.therapy.engineer("responder", cell_type="T_cell")
-        self.signal = self.cells.environment.signal("measurement", type=cw.Level)
-        self.target = cw.TargetContext("declared_context", "1", cw.PayloadFormat.RNA)
-        self.profile = cw.BuildProfile(self.target)
+        self.signal = self.cells.environment.signal("measurement", type=bc.Level)
+        self.target = bc.TargetContext("declared_context", "1", bc.PayloadFormat.RNA)
+        self.profile = bc.BuildProfile(self.target)
 
     def test_all_requested_extension_obligations_survive_plan_and_compile(self):
         curve = self.therapy.parameter(
             "response",
-            type=cw.Curve[cw.Level, cw.ProductionRate],
-            default=cw.Curve(
-                points=((0, cw.ProductionRate(0)), (1, cw.ProductionRate(1))),
-                input=cw.Level,
-                output=cw.ProductionRate,
+            type=bc.Curve[bc.Level, bc.ProductionRate],
+            default=bc.Curve(
+                points=((0, bc.ProductionRate(0)), (1, bc.ProductionRate(1))),
+                input=bc.Level,
+                output=bc.ProductionRate,
                 interpolation="linear",
                 extrapolation="clamp",
             ),
@@ -32,12 +32,12 @@ class MolecularPlanningTests(unittest.TestCase):
         self.cells.regulate(
             "controller",
             observed=self.signal,
-            target=cw.Interval(0.2, 0.4),
+            target=bc.Interval(0.2, 0.4),
             actuator=output.rate,
             effect="decrease_observed",
         )
         self.cells.when(
-            self.signal.integrated(over=cw.Duration(1)) > self.signal * cw.Duration(1)
+            self.signal.integrated(over=bc.Duration(1)) > self.signal * bc.Duration(1)
         ).do(self.cells.rest())
         channel = self.therapy.channel("communication", scope="local")
         self.cells.when(self.cells.receives(channel)).do(
@@ -45,7 +45,7 @@ class MolecularPlanningTests(unittest.TestCase):
         )
         source = self.therapy.freeze()
         before = source.to_json()
-        design = cw.plan(source, profile=self.profile)
+        design = bc.plan(source, profile=self.profile)
         required = {
             "quantitative_profile_unavailable",
             "continuous_profile_unavailable",
@@ -58,12 +58,12 @@ class MolecularPlanningTests(unittest.TestCase):
         self.assertEqual({d.code for d in choices}, required)
         self.assertTrue(all(d.node_id in {n.id for n in source.nodes} for d in choices))
         self.assertEqual(source.to_json(), before)
-        with self.assertRaises(cw.CompilationUnavailableError) as captured:
-            cw.compile(design)
+        with self.assertRaises(bc.CompilationUnavailableError) as captured:
+            bc.compile(design)
         self.assertEqual(captured.exception.diagnostics, design.diagnostics)
         request = design.freeze_request(artifact_scope="complete_payload")
-        with self.assertRaises(cw.CompilationUnavailableError) as captured:
-            cw.compile(cw.BuildRequest.from_json(request.to_json()))
+        with self.assertRaises(bc.CompilationUnavailableError) as captured:
+            bc.compile(bc.BuildRequest.from_json(request.to_json()))
         codes = {d.code for d in captured.exception.diagnostics}
         self.assertTrue(required <= codes)
         self.assertIn("complete_payload_not_promoted", codes)
@@ -71,19 +71,19 @@ class MolecularPlanningTests(unittest.TestCase):
 
     def test_supported_scalar_and_discrete_semantics_are_not_reclassified(self):
         state = self.cells.state("phase", values=("idle", "active"), initial="idle")
-        self.cells.when((self.signal + 1 > 2).held_for(cw.Duration(1))).do(
+        self.cells.when((self.signal + 1 > 2).held_for(bc.Duration(1))).do(
             state.set("active"), self.cells.report("active")
         )
         source = self.therapy.freeze()
-        design = cw.plan(source, profile=self.profile)
+        design = bc.plan(source, profile=self.profile)
         self.assertFalse(
             any("profile_unavailable" in d.code for d in design.diagnostics)
         )
         request = design.freeze_request()
-        behavior = cw.lower_to_behavior(request)
-        cw.verify_lowering(request, behavior)
-        with self.assertRaises(cw.CompilationUnavailableError) as captured:
-            cw.compile(request)
+        behavior = bc.lower_to_behavior(request)
+        bc.verify_lowering(request, behavior)
+        with self.assertRaises(bc.CompilationUnavailableError) as captured:
+            bc.compile(request)
         self.assertEqual(
             {d.code for d in captured.exception.diagnostics},
             {"molecular_behavior_unestablished"},

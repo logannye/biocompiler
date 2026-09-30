@@ -5,14 +5,14 @@ from __future__ import annotations
 import math
 import unittest
 
-import cellweave as cw
-from cellweave.compiler.behavior import lower_to_behavior
-from cellweave.errors import CellWeaveError, UnsupportedBehaviorError
-from cellweave.semantics.evaluator import InputFrame, SignalSample, evaluate
+import biocompiler as bc
+from biocompiler.compiler.behavior import lower_to_behavior
+from biocompiler.errors import BiocompilerError, UnsupportedBehaviorError
+from biocompiler.semantics.evaluator import InputFrame, SignalSample, evaluate
 
 
 def model(name="trace"):
-    therapy = cw.Therapy(name)
+    therapy = bc.Therapy(name)
     cells = therapy.engineer("responder", cell_type="abstract_cell")
     return therapy, cells
 
@@ -92,7 +92,7 @@ class ContactExecutionTests(unittest.TestCase):
         therapy, cells = model()
         a = cells.contact.marker("A")
         output = cells.report("sustained")
-        cells.when(a.present().held_for(cw.Duration(3))).do(output)
+        cells.when(a.present().held_for(bc.Duration(3))).do(output)
         behavior = lower_to_behavior(therapy.freeze())
         contact = {"same": {a.node_id: SignalSample(present=True)}}
         result = evaluate(
@@ -110,7 +110,7 @@ class ContactExecutionTests(unittest.TestCase):
         therapy, cells = model()
         a = cells.contact.marker("A")
         output = cells.report("sustained")
-        cells.when(a.present().held_for(cw.Duration(3))).do(output)
+        cells.when(a.present().held_for(bc.Duration(3))).do(output)
         result = evaluate(
             lower_to_behavior(therapy.freeze()),
             [
@@ -131,7 +131,7 @@ class ContactExecutionTests(unittest.TestCase):
         a = cells.contact.marker("A")
         memory = cells.memory("seen", set_when=a.present())
         output = cells.eliminate(cells.contact)
-        cells.when(a.present()).do(output.for_(cw.Duration(5)))
+        cells.when(a.present()).do(output.for_(bc.Duration(5)))
         result = evaluate(
             lower_to_behavior(therapy.freeze()),
             [
@@ -186,7 +186,7 @@ class TemporalExecutionTests(unittest.TestCase):
         therapy, cells = model()
         signal = cells.environment.signal("input")
         output = cells.report("ready")
-        cells.when(signal.present().held_for(cw.Duration(3))).do(output)
+        cells.when(signal.present().held_for(bc.Duration(3))).do(output)
         result = evaluate(
             lower_to_behavior(therapy.freeze()),
             [InputFrame(0, {signal.node_id: SignalSample(present=True)})],
@@ -198,7 +198,7 @@ class TemporalExecutionTests(unittest.TestCase):
         therapy, cells = model()
         signal = cells.environment.signal("input")
         output = cells.report("ready")
-        cells.when(signal.present().held_for(cw.Duration(3))).do(output)
+        cells.when(signal.present().held_for(bc.Duration(3))).do(output)
         result = evaluate(
             lower_to_behavior(therapy.freeze()),
             [
@@ -213,7 +213,7 @@ class TemporalExecutionTests(unittest.TestCase):
         therapy, cells = model()
         signal = cells.environment.signal("input")
         output = cells.report("ready")
-        cells.when(signal.present().held_for(cw.Duration(3))).do(output)
+        cells.when(signal.present().held_for(bc.Duration(3))).do(output)
         result = evaluate(
             lower_to_behavior(therapy.freeze()),
             [
@@ -228,7 +228,7 @@ class TemporalExecutionTests(unittest.TestCase):
         therapy, cells = model()
         signal = cells.environment.signal("input")
         output = cells.rest()
-        cells.when(signal.present().recently(within=cw.Duration(3))).do(output)
+        cells.when(signal.present().recently(within=bc.Duration(3))).do(output)
         result = evaluate(
             lower_to_behavior(therapy.freeze()),
             [
@@ -247,7 +247,7 @@ class TemporalExecutionTests(unittest.TestCase):
         event = (
             a.present()
             .became_true()
-            .followed_by(b.present().became_true(), within=cw.Duration(3))
+            .followed_by(b.present().became_true(), within=bc.Duration(3))
         )
         cells.on(event).do(output)
         result = evaluate(
@@ -271,7 +271,7 @@ class TemporalExecutionTests(unittest.TestCase):
         cells.on(
             a.present()
             .became_true()
-            .followed_by(b.present().became_true(), within=cw.Duration(3))
+            .followed_by(b.present().became_true(), within=bc.Duration(3))
         ).do(output)
         history = [
             InputFrame(
@@ -300,7 +300,7 @@ class TemporalExecutionTests(unittest.TestCase):
         cells.on(
             signal.present()
             .became_true()
-            .followed_by(state.is_("ready").became_true(), within=cw.Duration(3))
+            .followed_by(state.is_("ready").became_true(), within=bc.Duration(3))
         ).do(output)
         result = evaluate(
             lower_to_behavior(therapy.freeze()),
@@ -329,7 +329,7 @@ class TemporalExecutionTests(unittest.TestCase):
         therapy, cells = model()
         signal = cells.environment.signal("input")
         output = cells.report("ready")
-        cells.when(signal.present().held_for(cw.Duration(3))).do(output)
+        cells.when(signal.present().held_for(bc.Duration(3))).do(output)
         behavior = lower_to_behavior(therapy.freeze())
         sample = {signal.node_id: SignalSample(present=True)}
         sparse = evaluate(behavior, [InputFrame(0, sample)], until=5)
@@ -343,7 +343,7 @@ class TemporalExecutionTests(unittest.TestCase):
         therapy, cells = model()
         signal = cells.environment.signal("input")
         output = cells.report("ready")
-        cells.when(signal.present().held_for(cw.Duration(3))).do(output)
+        cells.when(signal.present().held_for(bc.Duration(3))).do(output)
         result = evaluate(
             lower_to_behavior(therapy.freeze()),
             [InputFrame(0, {signal.node_id: SignalSample(present=True)})],
@@ -361,7 +361,7 @@ class AtomicStateTests(unittest.TestCase):
         state = cells.state("choice", values=("unset", True, 1), initial="unset")
         cells.when(signal.present()).do(state.set(True))
         cells.when(signal.present()).do(state.set(1))
-        with self.assertRaisesRegex(CellWeaveError, "[Cc]onflict"):
+        with self.assertRaisesRegex(BiocompilerError, "[Cc]onflict"):
             evaluate(
                 lower_to_behavior(therapy.freeze()),
                 [InputFrame(0, {signal.node_id: SignalSample(present=True)})],
@@ -398,7 +398,7 @@ class AtomicStateTests(unittest.TestCase):
                 values = ("second", "first") if reversed_order else ("first", "second")
                 for value in values:
                     cells.when(signal.present()).do(state.set(value))
-                with self.assertRaisesRegex(CellWeaveError, "[Cc]onflict"):
+                with self.assertRaisesRegex(BiocompilerError, "[Cc]onflict"):
                     evaluate(
                         lower_to_behavior(therapy.freeze()),
                         [InputFrame(0, {signal.node_id: SignalSample(present=True)})],
@@ -425,7 +425,7 @@ class AtomicStateTests(unittest.TestCase):
         state = cells.state("phase", values=("left", "right"), initial="left")
         cells.when(state.is_("left")).do(state.set("right"))
         cells.when(state.is_("right")).do(state.set("left"))
-        with self.assertRaisesRegex(CellWeaveError, "[Mm]icrostep|[Cc]onverg"):
+        with self.assertRaisesRegex(BiocompilerError, "[Mm]icrostep|[Cc]onverg"):
             evaluate(
                 lower_to_behavior(therapy.freeze()), [InputFrame(0)], max_microsteps=8
             )
@@ -443,7 +443,7 @@ class MemoryAndPulseTests(unittest.TestCase):
             "producer",
             set_when=setting.present(),
             reset_when=reset.present(),
-            duration=cw.Duration(3),
+            duration=bc.Duration(3),
         )
         consumer = cells.memory("consumer", set_when=producer.is_set() & gate.present())
         output = cells.report("consumer_latched")
@@ -507,7 +507,7 @@ class MemoryAndPulseTests(unittest.TestCase):
             "seen",
             set_when=setting.present(),
             reset_when=reset.present(),
-            duration=cw.Duration(3),
+            duration=bc.Duration(3),
         )
         output = cells.report("guarded")
         cells.when(memory.is_set() & gate.present()).do(output)
@@ -551,7 +551,7 @@ class MemoryAndPulseTests(unittest.TestCase):
         therapy, cells = model()
         setting = cells.environment.signal("set")
         memory = cells.memory(
-            "seen", set_when=setting.present(), duration=cw.Duration(3)
+            "seen", set_when=setting.present(), duration=bc.Duration(3)
         )
         output = cells.report("memory_onset")
         cells.on(memory.is_set().became_true()).do(output)
@@ -599,7 +599,7 @@ class MemoryAndPulseTests(unittest.TestCase):
         therapy, cells = model()
         signal = cells.contact.marker("A")
         output = cells.rest()
-        cells.when(signal.present()).do(output.for_(cw.Duration(3)))
+        cells.when(signal.present()).do(output.for_(bc.Duration(3)))
         result = evaluate(
             lower_to_behavior(therapy.freeze()),
             [
@@ -624,7 +624,7 @@ class MemoryAndPulseTests(unittest.TestCase):
             "remembered",
             set_when=setting.present(),
             reset_when=reset.present(),
-            duration=cw.Duration(3),
+            duration=bc.Duration(3),
         )
         output = cells.report("remembered")
         cells.when(memory.is_set()).do(output)
@@ -720,7 +720,7 @@ class MemoryAndPulseTests(unittest.TestCase):
         therapy, cells = model()
         signal = cells.contact.marker("A")
         memory = cells.memory(
-            "seen", set_when=signal.present(), duration=cw.Duration(3)
+            "seen", set_when=signal.present(), duration=bc.Duration(3)
         )
         contact = {signal.node_id: SignalSample(present=True)}
         result = evaluate(
@@ -739,7 +739,7 @@ class MemoryAndPulseTests(unittest.TestCase):
         therapy, cells = model()
         signal = cells.environment.signal("input")
         output = cells.rest()
-        cells.on(signal.present().became_true()).do(output.for_(cw.Duration(3)))
+        cells.on(signal.present().became_true()).do(output.for_(bc.Duration(3)))
         result = evaluate(
             lower_to_behavior(therapy.freeze()),
             [
@@ -757,7 +757,7 @@ class MemoryAndPulseTests(unittest.TestCase):
         therapy, cells = model()
         signal = cells.environment.signal("input")
         output = cells.rest()
-        cells.when(signal.present()).do(output.for_(cw.Duration(3)))
+        cells.when(signal.present()).do(output.for_(bc.Duration(3)))
         result = evaluate(
             lower_to_behavior(therapy.freeze()),
             [
@@ -772,7 +772,7 @@ class MemoryAndPulseTests(unittest.TestCase):
 
 class ObservationAndBoundaryTests(unittest.TestCase):
     def test_unused_signature_argument_does_not_become_a_runtime_observation(self):
-        @cw.signature
+        @bc.signature
         def select(first, unused):
             return first
 
@@ -791,7 +791,7 @@ class ObservationAndBoundaryTests(unittest.TestCase):
         therapy, cells = model()
         signal = cells.environment.signal("denominator")
         cells.when(1 / signal > 0).do(cells.rest())
-        with self.assertRaisesRegex(CellWeaveError, "[Zz]ero|[Aa]rithmetic|[Dd]iv"):
+        with self.assertRaisesRegex(BiocompilerError, "[Zz]ero|[Aa]rithmetic|[Dd]iv"):
             evaluate(
                 lower_to_behavior(therapy.freeze()),
                 [InputFrame(0, {signal.node_id: SignalSample(value=0)})],
@@ -799,7 +799,7 @@ class ObservationAndBoundaryTests(unittest.TestCase):
 
     def test_numeric_arithmetic_and_qualitative_observations_are_independent(self):
         therapy, cells = model()
-        signal = cells.environment.signal("input", type=cw.Level)
+        signal = cells.environment.signal("input", type=bc.Level)
         numeric, qualitative = cells.report("numeric"), cells.report("qualitative")
         cells.when(signal * 2 > 1).do(numeric)
         cells.when(signal.high()).do(qualitative)
@@ -814,7 +814,7 @@ class ObservationAndBoundaryTests(unittest.TestCase):
         therapy, cells = model()
         signal = cells.environment.signal("input")
         cells.when(signal.high()).do(cells.report("high"))
-        with self.assertRaisesRegex(CellWeaveError, "high|[Oo]bserv"):
+        with self.assertRaisesRegex(BiocompilerError, "high|[Oo]bserv"):
             evaluate(
                 lower_to_behavior(therapy.freeze()),
                 [InputFrame(0, {signal.node_id: SignalSample(value=100)})],
@@ -822,9 +822,9 @@ class ObservationAndBoundaryTests(unittest.TestCase):
 
     def test_physical_signal_values_use_canonical_units(self):
         therapy, cells = model()
-        signal = cells.environment.signal("input", type=cw.Concentration)
+        signal = cells.environment.signal("input", type=bc.Concentration)
         output = cells.report("above")
-        threshold = cw.Concentration(1, unit="nM")
+        threshold = bc.Concentration(1, unit="nM")
         cells.when(signal > threshold).do(output)
         result = evaluate(
             lower_to_behavior(therapy.freeze()),
@@ -841,7 +841,7 @@ class ObservationAndBoundaryTests(unittest.TestCase):
         therapy, cells = model()
         signal = cells.environment.signal("input")
         cells.when(signal.present()).do(cells.rest())
-        with self.assertRaisesRegex(CellWeaveError, "[Mm]issing|[Oo]bserv"):
+        with self.assertRaisesRegex(BiocompilerError, "[Mm]issing|[Oo]bserv"):
             evaluate(lower_to_behavior(therapy.freeze()), [InputFrame(0)])
 
     def test_invalid_histories_and_nonfinite_values_are_rejected(self):
@@ -854,13 +854,13 @@ class ObservationAndBoundaryTests(unittest.TestCase):
         for times in invalid_times:
             with (
                 self.subTest(times=times),
-                self.assertRaises((CellWeaveError, ValueError, TypeError)),
+                self.assertRaises((BiocompilerError, ValueError, TypeError)),
             ):
                 evaluate(behavior, [InputFrame(time, valid) for time in times])
         for value in (math.nan, math.inf, -math.inf, True):
             with (
                 self.subTest(value=value),
-                self.assertRaises((CellWeaveError, ValueError, TypeError)),
+                self.assertRaises((BiocompilerError, ValueError, TypeError)),
             ):
                 evaluate(
                     behavior,
@@ -917,7 +917,7 @@ class ObservationAndBoundaryTests(unittest.TestCase):
     def test_unsupported_integral_reports_the_lowering_boundary(self):
         therapy, cells = model()
         signal = cells.environment.signal("input")
-        window = cw.Duration(3)
+        window = bc.Duration(3)
         cells.when(signal.integrated(over=window) > signal * window).do(cells.rest())
         with self.assertRaisesRegex(UnsupportedBehaviorError, "integrated|[Ii]ntegr"):
             lower_to_behavior(therapy.freeze())

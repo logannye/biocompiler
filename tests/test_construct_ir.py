@@ -4,9 +4,9 @@ from copy import deepcopy
 from dataclasses import FrozenInstanceError, replace
 import unittest
 
-from cellweave.errors import SerializationError
-from cellweave.ir.component_contracts import PinnedIdentity
-from cellweave.ir.construct import (
+from biocompiler.errors import SerializationError
+from biocompiler.ir.component_contracts import PinnedIdentity
+from biocompiler.ir.construct import (
     ConstructCandidate,
     ConstructDependency,
     ConstructFeature,
@@ -15,8 +15,8 @@ from cellweave.ir.construct import (
     LayoutEvidencePolicy,
     RegulatoryRelationship,
 )
-from cellweave.semantics.coordinates import COORDINATE_CONVENTION, SequenceRange
-from cellweave.synthesis.construct import (
+from biocompiler.semantics.coordinates import COORDINATE_CONVENTION, SequenceRange
+from biocompiler.synthesis.construct import (
     generate_construct,
     prepare_reference_construct,
 )

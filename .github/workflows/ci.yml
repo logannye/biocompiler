@@ -43,15 +43,15 @@ jobs:
         run: |
           mkdir -p generated/reference-ci
           python examples/reference_build.py > generated/reference-ci/example.log 2>&1
-          cellweave reference-build --alphabet RNA --reference-dir data/references/fap_car --output generated/reference-ci/rna.cwb > generated/reference-ci/build.json 2> generated/reference-ci/build.log
-          cellweave reference-inspect generated/reference-ci/rna.cwb > generated/reference-ci/inspect.json
-          python -c "import json, pathlib, subprocess; identity = json.loads(pathlib.Path('generated/reference-ci/build.json').read_text())['build_fingerprint']; subprocess.run(['cellweave', 'reference-verify', 'generated/reference-ci/rna.cwb', '--expected-build', identity], check=True)" > generated/reference-ci/verify.json 2> generated/reference-ci/verify.log
+          biocompiler reference-build --alphabet RNA --reference-dir data/references/fap_car --output generated/reference-ci/rna.bcb > generated/reference-ci/build.json 2> generated/reference-ci/build.log
+          biocompiler reference-inspect generated/reference-ci/rna.bcb > generated/reference-ci/inspect.json
+          python -c "import json, pathlib, subprocess; identity = json.loads(pathlib.Path('generated/reference-ci/build.json').read_text())['build_fingerprint']; subprocess.run(['biocompiler', 'reference-verify', 'generated/reference-ci/rna.bcb', '--expected-build', identity], check=True)" > generated/reference-ci/verify.json 2> generated/reference-ci/verify.log
       - name: Run bounded verification and preserve counterexample evidence
         run: |
           mkdir -p generated/verification-ci
           python examples/verification_campaign.py --output generated/verification-ci > generated/verification-ci/campaign.log 2>&1
           cat generated/verification-ci/campaign.log
-          cellweave inspect generated/verification-ci/bounded-report.json > generated/verification-ci/inspection.json
+          biocompiler inspect generated/verification-ci/bounded-report.json > generated/verification-ci/inspection.json
       - name: Retain verification campaign evidence
         if: always()
         uses: actions/upload-artifact@v4
@@ -67,7 +67,7 @@ jobs:
           cat generated/m9-ci/molecular.log
           python examples/payload_readiness.py --output generated/m9-ci/payload > generated/m9-ci/payload.log 2>&1
           cat generated/m9-ci/payload.log
-          cellweave inspect generated/m9-ci/molecular/molecular-behavior-result.json > generated/m9-ci/molecular-inspection.json
+          biocompiler inspect generated/m9-ci/molecular/molecular-behavior-result.json > generated/m9-ci/molecular-inspection.json
       - name: Retain M9 contract and readiness evidence
         if: always()
         uses: actions/upload-artifact@v4
@@ -86,19 +86,19 @@ jobs:
           retention-days: 7
       - name: Inspect CLI
         run: |
-          cellweave --version
-          cellweave architecture
+          biocompiler --version
+          biocompiler architecture
       - name: Record and inspect unresolved human target contract
         run: |
           python examples/human_target.py --output generated/human-target-ci
-          cellweave inspect generated/human-target-ci/human-target.json
+          biocompiler inspect generated/human-target-ci/human-target.json
       - name: Check and inspect bounded human secretion contracts
         run: |
           python examples/human_behavior.py --output generated/human-behavior-ci
-          cellweave inspect generated/human-behavior-ci/human-behavior-request.json
-          cellweave inspect generated/human-behavior-ci/trace-pass.json
-          cellweave inspect generated/human-behavior-ci/trace-fail.json
-          cellweave inspect generated/human-behavior-ci/trace-unknown.json
+          biocompiler inspect generated/human-behavior-ci/human-behavior-request.json
+          biocompiler inspect generated/human-behavior-ci/trace-pass.json
+          biocompiler inspect generated/human-behavior-ci/trace-fail.json
+          biocompiler inspect generated/human-behavior-ci/trace-unknown.json
       - name: Retain human behavior contract evidence
         if: always()
         uses: actions/upload-artifact@v4
@@ -110,10 +110,10 @@ jobs:
       - name: Check and inspect human deployment contracts
         run: |
           python examples/human_deployment.py --output generated/deployment-ci
-          cellweave inspect generated/deployment-ci/request-unknown.json
-          cellweave inspect generated/deployment-ci/assessment-pass.json
-          cellweave inspect generated/deployment-ci/assessment-fail.json
-          cellweave inspect generated/deployment-ci/assessment-unsupported.json
+          biocompiler inspect generated/deployment-ci/request-unknown.json
+          biocompiler inspect generated/deployment-ci/assessment-pass.json
+          biocompiler inspect generated/deployment-ci/assessment-fail.json
+          biocompiler inspect generated/deployment-ci/assessment-unsupported.json
       - name: Retain deployment contract evidence
         if: always()
         uses: actions/upload-artifact@v4
@@ -122,6 +122,22 @@ jobs:
           path: generated/deployment-ci/
           if-no-files-found: ignore
           retention-days: 7
+      - name: Check and inspect required and prohibited human behavior
+        run: |
+          python examples/human_acceptance.py --output generated/acceptance-ci
+          biocompiler inspect generated/acceptance-ci/human-acceptance-request.json
+          biocompiler inspect generated/acceptance-ci/assessment-pass.json
+          biocompiler inspect generated/acceptance-ci/assessment-fail.json
+          biocompiler inspect generated/acceptance-ci/assessment-unknown.json
+          biocompiler inspect generated/acceptance-ci/assessment-unsupported.json
+      - name: Retain human acceptance evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: human-acceptance-evidence-python-${{ matrix.python-version }}
+          path: generated/acceptance-ci/
+          if-no-files-found: ignore
+          retention-days: 7
       - name: Import scaffold interfaces
         run: |
-          python -c "from cellweave.compiler.passes import CompilerPass, PassResult; from cellweave.semantics.context import TargetContext; from cellweave.verification.evidence import Obligation"
+          python -c "from biocompiler.compiler.passes import CompilerPass, PassResult; from biocompiler.semantics.context import TargetContext; from biocompiler.verification.evidence import Obligation"

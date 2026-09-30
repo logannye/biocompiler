@@ -40,7 +40,7 @@ Raw source-file identity, raw extracted-text identity, canonical sequence identi
 
 ## Offline use and storage
 
-`cellweave.registry.references.load_reference_manifest(path, expected_fingerprint=...)` reads local files, validates the strict schema and checks retained source-file hashes. `manifest.record(reference_id)` rejects candidates and blocked sets by default. Resolution needs no network. Copying this directory to another workspace preserves identities. The original PDF and full HTML are external provenance artifacts; routine resolution uses the retained small source excerpt. Large scans, temporary renders/OCR and generated molecular outputs do not belong in Git.
+`biocompiler.registry.references.load_reference_manifest(path, expected_fingerprint=...)` reads local files, validates the strict schema and checks retained source-file hashes. `manifest.record(reference_id)` rejects candidates and blocked sets by default. Resolution needs no network. Copying this directory to another workspace preserves identities. The original PDF and full HTML are external provenance artifacts; routine resolution uses the retained small source excerpt. Large scans, temporary renders/OCR and generated molecular outputs do not belong in Git.
 
 UTRs, cap, nucleotide modifications, poly(A) tail, full molecule boundaries/topology, regulatory context and exact manufactured material identity are unresolved. An accepted fixture supplies scoped source identity/structural consistency only; the molecular behavior contract remains unestablished.
 

@@ -39,23 +39,23 @@ A reference evaluator provides a semantics oracle for subsequent compiler work. 
 ## Python workflow
 
 ```python
-import cellweave as cw
+import biocompiler as bc
 
-therapy = cw.Therapy("abstract_dwell")
+therapy = bc.Therapy("abstract_dwell")
 cell = therapy.engineer("observer", cell_type="abstract_cell")
 signal = cell.environment.signal("A")
-cell.when(signal.present().held_for(cw.Duration(2, unit="s"))).do(
+cell.when(signal.present().held_for(bc.Duration(2, unit="s"))).do(
     cell.report("dwell_complete")
 )
 intent = therapy.freeze()
-behavior = cw.lower_to_behavior(intent)
-assert cw.verify_lowering(intent, behavior).passed
-restored = cw.BehaviorProgram.from_json(behavior.to_json())
+behavior = bc.lower_to_behavior(intent)
+assert bc.verify_lowering(intent, behavior).passed
+restored = bc.BehaviorProgram.from_json(behavior.to_json())
 assert restored.fingerprint == behavior.fingerprint
 
-result = cw.evaluate(
+result = bc.evaluate(
     restored,
-    [cw.InputFrame(0, signals={signal.node_id: cw.SignalSample(present=True)})],
+    [bc.InputFrame(0, signals={signal.node_id: bc.SignalSample(present=True)})],
     until=3,
 )
 assert [frame.time for frame in result.frames if frame.reactions] == [2]
@@ -67,4 +67,4 @@ assert [frame.time for frame in result.frames if frame.reactions] == [2]
 
 `EvaluationResult.frames` contains settled snapshots at external changes, internal deadlines and the horizon. A frame's `actions` are ongoing requests; `reactions` are instantaneous requests; `events` are emitted event occurrences; `states` and `memories` are post-settlement values keyed by declaration ID. A frame's `microsteps` records convergence work. `result.to_json()` serializes the trace for inspection. Source locations and requirement IDs accompany requested actions/events. Each action request retains both its primitive `action_id` and installed `specification_id` (the pulse wrapper where applicable). Results record the behavior fingerprint, original intent fingerprint and execution profile. The [complete example](../examples/behavior_trace.py) adds contact identity, memory, state transitions and a pulse.
 
-Behavior documents can also be inspected using `cellweave inspect behavior.json` or `cellweave inspect behavior.json --json`. Both parsers reject malformed or unsupported schemas. Requirement IDs are stable within a frozen source snapshot, not guaranteed edit-stable identities across source refactoring. The source fingerprint distinguishes graphs, and source locations are excluded from structural fingerprints.
+Behavior documents can also be inspected using `biocompiler inspect behavior.json` or `biocompiler inspect behavior.json --json`. Both parsers reject malformed or unsupported schemas. Requirement IDs are stable within a frozen source snapshot, not guaranteed edit-stable identities across source refactoring. The source fingerprint distinguishes graphs, and source locations are excluded from structural fingerprints.

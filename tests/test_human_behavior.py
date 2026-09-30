@@ -8,18 +8,18 @@ from pathlib import Path
 import tempfile
 import unittest
 
-import cellweave as cw
-from cellweave.cli import main as cli_main
+import biocompiler as bc
+from biocompiler.cli import main as cli_main
 from examples.human_behavior import example_trace, make_human_behavior, sample
 from examples.human_target import make_human_target
 
 
 def rate(value):
-    return cw.ProductionRate(value, unit="molecules/s")
+    return bc.ProductionRate(value, unit="molecules/s")
 
 
 def rates(lower, upper):
-    return cw.Interval(rate(lower), rate(upper), type=cw.ProductionRate)
+    return bc.Interval(rate(lower), rate(upper), type=bc.ProductionRate)
 
 
 class HumanBehaviorTests(unittest.TestCase):
@@ -42,13 +42,13 @@ class HumanBehaviorTests(unittest.TestCase):
         )
         return replace(
             self.request,
-            build_request=cw.BuildRequest.freeze(
+            build_request=bc.BuildRequest.freeze(
                 intent, target=self.request.target, artifact_scope="complete_payload"
             ),
         )
 
     def test_roundtrip_retains_source_and_units(self):
-        restored = cw.HumanBehaviorRequest.from_json(self.request.to_json())
+        restored = bc.HumanBehaviorRequest.from_json(self.request.to_json())
         self.assertEqual(restored.fingerprint, self.request.fingerprint)
         self.assertEqual(
             restored.build_request.intent.to_dict(),
@@ -78,11 +78,11 @@ class HumanBehaviorTests(unittest.TestCase):
                 with self.subTest(artifact=type(artifact), missing=key):
                     data = artifact.to_dict()
                     del data[key]
-                    with self.assertRaises(cw.SerializationError):
+                    with self.assertRaises(bc.SerializationError):
                         type(artifact).from_dict(data)
             for change in ({"schema_version": "future"}, {"validated": True}):
                 data = {**artifact.to_dict(), **change}
-                with self.assertRaises(cw.SerializationError):
+                with self.assertRaises(bc.SerializationError):
                     type(artifact).from_dict(data)
 
     def test_fixed_lifecycle_cannot_be_relabelled(self):
@@ -95,31 +95,31 @@ class HumanBehaviorTests(unittest.TestCase):
         ):
             data = self.contract.to_dict()
             data[key] = "arbitrary"
-            with self.subTest(key=key), self.assertRaises(cw.SerializationError):
-                cw.ConditionalSecretionContract.from_dict(data)
+            with self.subTest(key=key), self.assertRaises(bc.SerializationError):
+                bc.ConditionalSecretionContract.from_dict(data)
 
     def test_duplicate_json_nonfinite_and_bad_unicode_rejected(self):
         document = self.request.to_json()
-        with self.assertRaises(cw.SerializationError):
-            cw.HumanBehaviorRequest.from_json(
+        with self.assertRaises(bc.SerializationError):
+            bc.HumanBehaviorRequest.from_json(
                 document.replace(
                     '"product": "declared_product"',
                     '"product": "declared_product", "product": "other"',
                 )
             )
-        with self.assertRaises(cw.SerializationError):
+        with self.assertRaises(bc.SerializationError):
             replace(self.contract.input_measurement, meaning="bad\ud800")
         for value in (float("inf"), float("nan")):
             data = self.trace[0].to_dict()
             data["input_value"]["value"] = value
-            with self.assertRaises(cw.SerializationError):
-                cw.SecretionSample.from_dict(data)
+            with self.assertRaises(bc.SerializationError):
+                bc.SecretionSample.from_dict(data)
 
     def test_immutable_and_every_contract_dimension_changes_identity(self):
         with self.assertRaises(FrozenInstanceError):
             self.contract.product = "another"
         changes = (
-            {"horizon": cw.Duration(11)},
+            {"horizon": bc.Duration(11)},
             {
                 "input_measurement": replace(
                     self.contract.input_measurement,
@@ -128,13 +128,13 @@ class HumanBehaviorTests(unittest.TestCase):
             },
             {
                 "predicate": replace(
-                    self.contract.predicate, threshold=cw.Concentration(4, unit="nM")
+                    self.contract.predicate, threshold=bc.Concentration(4, unit="nM")
                 )
             },
             {"initial_range": rates(0, 0.01)},
             {
                 "response": replace(
-                    self.contract.response, max_activation_delay=cw.Duration(1)
+                    self.contract.response, max_activation_delay=bc.Duration(1)
                 )
             },
             {
@@ -148,7 +148,7 @@ class HumanBehaviorTests(unittest.TestCase):
                 self.assertNotEqual(
                     self.bind(**change).fingerprint, self.request.fingerprint
                 )
-        dna = replace(self.request.target, payload_format=cw.PayloadFormat.DNA)
+        dna = replace(self.request.target, payload_format=bc.PayloadFormat.DNA)
         self.assertNotEqual(
             replace(
                 self.request,
@@ -158,13 +158,13 @@ class HumanBehaviorTests(unittest.TestCase):
         )
 
     def test_evaluator_only_input_cannot_drive_the_cell(self):
-        with self.assertRaises(cw.SerializationError):
+        with self.assertRaises(bc.SerializationError):
             self.bind(
                 input_measurement=replace(
                     self.contract.input_measurement, access="external_evaluator"
                 )
             )
-        with self.assertRaises(cw.SerializationError):
+        with self.assertRaises(bc.SerializationError):
             self.bind(
                 output_measurement=replace(
                     self.contract.output_measurement, access="cell"
@@ -179,37 +179,37 @@ class HumanBehaviorTests(unittest.TestCase):
         ):
             with (
                 self.subTest(observable=observable),
-                self.assertRaises(cw.SerializationError),
+                self.assertRaises(bc.SerializationError),
             ):
                 self.bind(input_measurement=replace(incoming, observable=observable))
-        with self.assertRaises(cw.SerializationError):
-            self.bind(predicate=replace(self.contract.predicate, threshold=cw.Level(5)))
-        with self.assertRaises(cw.SerializationError):
+        with self.assertRaises(bc.SerializationError):
+            self.bind(predicate=replace(self.contract.predicate, threshold=bc.Level(5)))
+        with self.assertRaises(bc.SerializationError):
             replace(incoming, observable=replace(incoming.observable, scope="contact"))
 
     def test_no_universal_domain_or_vacuous_threshold(self):
         for threshold in (0, 11):
             with (
                 self.subTest(threshold=threshold),
-                self.assertRaises(cw.SerializationError),
+                self.assertRaises(bc.SerializationError),
             ):
                 self.bind(
                     predicate=replace(
                         self.contract.predicate,
-                        threshold=cw.Concentration(threshold, unit="nM"),
+                        threshold=bc.Concentration(threshold, unit="nM"),
                     )
                 )
-        with self.assertRaises(cw.SerializationError):
-            self.bind(horizon=cw.Duration(3))
+        with self.assertRaises(bc.SerializationError):
+            self.bind(horizon=bc.Duration(3))
 
     def test_initial_and_response_rates_are_consistent(self):
         for initial in (rates(-1, 0), rates(0, 0.2)):
             with (
                 self.subTest(initial=initial),
-                self.assertRaises(cw.SerializationError),
+                self.assertRaises(bc.SerializationError),
             ):
                 self.bind(initial_range=initial)
-        with self.assertRaises(cw.SerializationError):
+        with self.assertRaises(bc.SerializationError):
             self.bind(
                 response=replace(
                     self.contract.response,
@@ -230,11 +230,11 @@ class HumanBehaviorTests(unittest.TestCase):
             },
             {"response": replace(self.contract.response, rule_id="missing")},
         ):
-            with self.subTest(change=change), self.assertRaises(cw.SerializationError):
+            with self.subTest(change=change), self.assertRaises(bc.SerializationError):
                 self.bind(**change)
 
     def test_source_predicate_direction_cannot_be_reversed(self):
-        with self.assertRaises(cw.SerializationError):
+        with self.assertRaises(bc.SerializationError):
             self.bind(predicate=replace(self.contract.predicate, operator="<"))
         source = self.request.build_request.intent
         nodes = tuple(
@@ -243,17 +243,17 @@ class HumanBehaviorTests(unittest.TestCase):
             else node
             for node in source.nodes
         )
-        build = cw.BuildRequest.freeze(
+        build = bc.BuildRequest.freeze(
             replace(source, nodes=nodes), target=self.request.target
         )
-        request = cw.HumanBehaviorRequest(
+        request = bc.HumanBehaviorRequest(
             build,
             replace(
                 self.contract, predicate=replace(self.contract.predicate, operator="<")
             ),
         )
         self.assertTrue(
-            request.contract.predicate.accepts(cw.Concentration(1, unit="nM"))
+            request.contract.predicate.accepts(bc.Concentration(1, unit="nM"))
         )
 
     def test_extra_source_goal_is_not_silently_dropped(self):
@@ -263,22 +263,22 @@ class HumanBehaviorTests(unittest.TestCase):
         intent = replace(
             source, nodes=(*source.nodes, extra), roots=(*source.roots, extra.id)
         )
-        with self.assertRaises(cw.SerializationError):
+        with self.assertRaises(bc.SerializationError):
             replace(
                 self.request,
-                build_request=cw.BuildRequest.freeze(
+                build_request=bc.BuildRequest.freeze(
                     intent, target=self.request.target
                 ),
             )
 
     def test_legacy_target_cannot_replace_human_target(self):
-        target = cw.TargetContext("legacy", "1", cw.PayloadFormat.RNA)
-        with self.assertRaises(cw.SerializationError):
+        target = bc.TargetContext("legacy", "1", bc.PayloadFormat.RNA)
+        with self.assertRaises(bc.SerializationError):
             replace(
                 self.request,
                 build_request=replace(self.request.build_request, target=target),
             )
-        with self.assertRaises(cw.SerializationError):
+        with self.assertRaises(bc.SerializationError):
             replace(
                 self.request,
                 build_request=replace(
@@ -290,7 +290,7 @@ class HumanBehaviorTests(unittest.TestCase):
         cited = replace(
             self.contract.response_support, basis="cited", evidence_ids=("missing",)
         )
-        with self.assertRaises(cw.SerializationError):
+        with self.assertRaises(bc.SerializationError):
             self.bind(response_support=cited)
         from tests.test_human_target import fixture_evidence
 
@@ -301,7 +301,7 @@ class HumanBehaviorTests(unittest.TestCase):
                 self.request.target.human_target, evidence=(evidence,)
             ),
         )
-        request = cw.HumanBehaviorRequest(
+        request = bc.HumanBehaviorRequest(
             replace(self.request.build_request, target=target),
             replace(self.contract, response_support=cited),
         )
@@ -311,10 +311,10 @@ class HumanBehaviorTests(unittest.TestCase):
         self.assertFalse(hasattr(request, "passed"))
 
     def test_symbolic_source_still_cannot_use_general_lowering_or_compilation(self):
-        with self.assertRaises(cw.UnsupportedBehaviorError):
-            cw.lower_to_behavior(self.request.build_request)
-        with self.assertRaises(cw.CompilationUnavailableError) as error:
-            cw.compile(self.request)
+        with self.assertRaises(bc.UnsupportedBehaviorError):
+            bc.lower_to_behavior(self.request.build_request)
+        with self.assertRaises(bc.CompilationUnavailableError) as error:
+            bc.compile(self.request)
         diagnostics = {item.code: item for item in error.exception.diagnostics}
         self.assertIn("human_target_applicability_unestablished", diagnostics)
         self.assertEqual(
@@ -323,7 +323,7 @@ class HumanBehaviorTests(unittest.TestCase):
         )
 
     def test_exact_deadlines_and_closed_ranges_pass(self):
-        result = cw.check_secretion_trace(self.request, self.trace)
+        result = bc.check_secretion_trace(self.request, self.trace)
         self.assertEqual(result.outcome, "pass")
         self.assertEqual(set(result.coverage), {"active", "inactive", "recovered"})
         self.assertEqual(result.request_fingerprint, self.request.fingerprint)
@@ -336,21 +336,21 @@ class HumanBehaviorTests(unittest.TestCase):
                 for item in self.trace
             )
             self.assertEqual(
-                cw.check_secretion_trace(self.request, changed).outcome, "pass"
+                bc.check_secretion_trace(self.request, changed).outcome, "pass"
             )
 
     def test_threshold_inclusion_and_units_are_explicit(self):
         threshold = self.contract.predicate
-        self.assertTrue(threshold.accepts(cw.Concentration(5, unit="nM")))
+        self.assertTrue(threshold.accepts(bc.Concentration(5, unit="nM")))
         self.assertFalse(
-            replace(threshold, operator=">").accepts(cw.Concentration(5, unit="nM"))
+            replace(threshold, operator=">").accepts(bc.Concentration(5, unit="nM"))
         )
-        self.assertTrue(threshold.accepts(cw.Concentration(0.006, unit="uM")))
+        self.assertTrue(threshold.accepts(bc.Concentration(0.006, unit="uM")))
 
     def test_never_responding_trace_fails_and_never_activated_trace_is_unknown(self):
         silent = tuple(replace(item, output_value=rate(0)) for item in self.trace)
-        self.assertEqual(cw.check_secretion_trace(self.request, silent).outcome, "fail")
-        result = cw.check_secretion_trace(
+        self.assertEqual(bc.check_secretion_trace(self.request, silent).outcome, "fail")
+        result = bc.check_secretion_trace(
             self.request, (sample(0, 0, 0), sample(10, 0, 0))
         )
         self.assertEqual(result.outcome, "unknown")
@@ -365,7 +365,7 @@ class HumanBehaviorTests(unittest.TestCase):
             sample(7, 0, 0),
             sample(10, 0, 0),
         )
-        result = cw.check_secretion_trace(self.request, trace)
+        result = bc.check_secretion_trace(self.request, trace)
         self.assertEqual(result.outcome, "fail")
         self.assertIn("active_range_violation_at:3", result.diagnostics)
 
@@ -376,7 +376,7 @@ class HumanBehaviorTests(unittest.TestCase):
             (persistence, "active_range_violation_at:4"),
             (recovery, "inactive_range_violation_at:7"),
         ):
-            result = cw.check_secretion_trace(self.request, trace)
+            result = bc.check_secretion_trace(self.request, trace)
             self.assertEqual(result.outcome, "fail")
             self.assertIn(diagnostic, result.diagnostics)
 
@@ -385,16 +385,16 @@ class HumanBehaviorTests(unittest.TestCase):
             (sample(0, 6, 0), "initial_input_must_be_inactive"),
             (sample(0, 0, 0.08), "initial_output_outside_initial_range"),
         ):
-            result = cw.check_secretion_trace(self.request, (initial, *self.trace[1:]))
+            result = bc.check_secretion_trace(self.request, (initial, *self.trace[1:]))
             self.assertEqual(result.outcome, "fail")
             self.assertIn(diagnostic, result.diagnostics)
 
     def test_out_of_domain_is_unknown_and_horizon_is_not_extrapolated(self):
-        result = cw.check_secretion_trace(
+        result = bc.check_secretion_trace(
             self.request, (sample(0, 11, 0), *self.trace[1:])
         )
         self.assertEqual(result.outcome, "unknown")
-        result = cw.check_secretion_trace(
+        result = bc.check_secretion_trace(
             self.request, (*self.trace[:-1], sample(9, 0, 0))
         )
         self.assertEqual(result.outcome, "unknown")
@@ -408,7 +408,7 @@ class HumanBehaviorTests(unittest.TestCase):
                 sample(cessation, 0, 0),
                 sample(10, 0, 0),
             )
-            result = cw.check_secretion_trace(self.request, trace)
+            result = bc.check_secretion_trace(self.request, trace)
             self.assertEqual(result.outcome, "unknown")
             self.assertNotIn("active", result.coverage)
 
@@ -424,19 +424,19 @@ class HumanBehaviorTests(unittest.TestCase):
             sample(8, 0, 0),
             sample(10, 0, 0),
         )
-        self.assertEqual(cw.check_secretion_trace(self.request, trace).outcome, "pass")
+        self.assertEqual(bc.check_secretion_trace(self.request, trace).outcome, "pass")
 
     def test_zero_delays_enforce_new_values_at_transition(self):
         request = self.bind(
             response=replace(
                 self.contract.response,
-                max_activation_delay=cw.Duration(0),
-                max_deactivation_delay=cw.Duration(0),
+                max_activation_delay=bc.Duration(0),
+                max_deactivation_delay=bc.Duration(0),
             )
         )
         trace = (sample(0, 0, 0), sample(1, 6, 2.5), sample(6, 0, 0), sample(10, 0, 0))
-        self.assertEqual(cw.check_secretion_trace(request, trace).outcome, "pass")
-        self.assertEqual(cw.check_secretion_trace(request, self.trace).outcome, "fail")
+        self.assertEqual(bc.check_secretion_trace(request, trace).outcome, "pass")
+        self.assertEqual(bc.check_secretion_trace(request, self.trace).outcome, "fail")
 
     def test_instantaneous_endpoint_is_not_positive_duration_coverage(self):
         trace = (
@@ -446,7 +446,7 @@ class HumanBehaviorTests(unittest.TestCase):
             sample(9, 0, 2.5),
             sample(10, 0, 0),
         )
-        result = cw.check_secretion_trace(self.request, trace)
+        result = bc.check_secretion_trace(self.request, trace)
         self.assertEqual(result.outcome, "unknown")
         self.assertIn("unexercised_recovered_interval", result.diagnostics)
 
@@ -458,36 +458,36 @@ class HumanBehaviorTests(unittest.TestCase):
             (sample(0, 0, 0), sample(11, 0, 0)),
             (sample(0, 0, 0), sample(4, 0, 0), sample(3, 0, 0)),
         ):
-            with self.subTest(trace=trace), self.assertRaises(cw.SerializationError):
-                cw.check_secretion_trace(self.request, trace)
-        with self.assertRaises(cw.TypeMismatchError):
-            cw.check_secretion_trace(
+            with self.subTest(trace=trace), self.assertRaises(bc.SerializationError):
+                bc.check_secretion_trace(self.request, trace)
+        with self.assertRaises(bc.TypeMismatchError):
+            bc.check_secretion_trace(
                 self.request,
                 (
-                    replace(self.trace[0], output_value=cw.Concentration(1)),
+                    replace(self.trace[0], output_value=bc.Concentration(1)),
                     *self.trace[1:],
                 ),
             )
 
     def test_dependencies_and_imported_results_cannot_self_certify(self):
-        original = cw.check_secretion_trace(self.request, self.trace)
-        changed = cw.check_secretion_trace(
+        original = bc.check_secretion_trace(self.request, self.trace)
+        changed = bc.check_secretion_trace(
             self.request, (*self.trace[:3], sample(4, 6, 2.4), *self.trace[3:])
         )
         self.assertNotEqual(original.trace_fingerprint, changed.trace_fingerprint)
         self.assertEqual(
-            cw.SecretionTraceResult.from_json(original.to_json()), original
+            bc.SecretionTraceResult.from_json(original.to_json()), original
         )
         for changes in (
             {"biological_applicability": "validated"},
             {"scope": "all_human_cells"},
             {"checker": "untrusted"},
         ):
-            with self.assertRaises(cw.SerializationError):
-                cw.SecretionTraceResult.from_dict({**original.to_dict(), **changes})
+            with self.assertRaises(bc.SerializationError):
+                bc.SecretionTraceResult.from_dict({**original.to_dict(), **changes})
 
     def test_cli_retains_scope_and_unresolved_evidence(self):
-        artifacts = (self.request, cw.check_secretion_trace(self.request, self.trace))
+        artifacts = (self.request, bc.check_secretion_trace(self.request, self.trace))
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "artifact.json"
             for artifact in artifacts:

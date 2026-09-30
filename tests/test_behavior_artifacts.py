@@ -3,23 +3,23 @@
 import json
 import unittest
 
-import cellweave as cw
+import biocompiler as bc
 
 
 class BehaviorArtifactTests(unittest.TestCase):
     def test_two_pulses_of_one_action_retain_distinct_specification_identities(self):
-        therapy = cw.Therapy("pulse_provenance")
+        therapy = bc.Therapy("pulse_provenance")
         cell = therapy.engineer("observer", cell_type="abstract_cell")
         signal = cell.environment.signal("A")
         base = cell.rest()
-        short = base.for_(cw.Duration(2))
-        long = base.for_(cw.Duration(3))
+        short = base.for_(bc.Duration(2))
+        long = base.for_(bc.Duration(3))
         cell.when(signal.present()).do(short, long)
         intent = therapy.freeze()
-        behavior = cw.lower_to_behavior(intent)
-        result = cw.evaluate(
+        behavior = bc.lower_to_behavior(intent)
+        result = bc.evaluate(
             behavior,
-            [cw.InputFrame(0, {signal.node_id: cw.SignalSample(present=True)})],
+            [bc.InputFrame(0, {signal.node_id: bc.SignalSample(present=True)})],
             until=4,
         )
         initial = result.frames[0].actions
@@ -38,15 +38,15 @@ class BehaviorArtifactTests(unittest.TestCase):
         self.assertFalse(result.frames[-1].actions)
 
     def test_saved_trace_is_immutable_and_tied_to_exact_source_and_behavior(self):
-        therapy = cw.Therapy("trace_identity")
+        therapy = bc.Therapy("trace_identity")
         cell = therapy.engineer("observer", cell_type="abstract_cell")
         signal = cell.environment.signal("A")
         cell.when(signal.present()).do(cell.report("observed"))
         intent = therapy.freeze()
-        behavior = cw.lower_to_behavior(intent)
-        result = cw.evaluate(
+        behavior = bc.lower_to_behavior(intent)
+        result = bc.evaluate(
             behavior,
-            [cw.InputFrame(0, {signal.node_id: cw.SignalSample(present=True)})],
+            [bc.InputFrame(0, {signal.node_id: bc.SignalSample(present=True)})],
         )
         data = json.loads(result.to_json())
         self.assertEqual(data["behavior_fingerprint"], behavior.fingerprint)

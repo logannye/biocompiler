@@ -3,8 +3,8 @@
 from dataclasses import FrozenInstanceError, replace
 import unittest
 
-from cellweave.errors import SerializationError
-from cellweave.ir.component_contracts import (
+from biocompiler.errors import SerializationError
+from biocompiler.ir.component_contracts import (
     ComponentRecord,
     DependencyRequirement,
     ParameterProvenance,
@@ -13,7 +13,7 @@ from cellweave.ir.component_contracts import (
     ResourceReservation,
     SequenceReferenceMetadata,
 )
-from cellweave.semantics.component_contracts import (
+from biocompiler.semantics.component_contracts import (
     DomainCheck,
     OperatingDomain,
     PortContract,
@@ -22,7 +22,7 @@ from cellweave.semantics.component_contracts import (
     operating_domain_subset,
     ports_compatible,
 )
-from cellweave.semantics.types import BOOLEAN, DURATION, LEVEL, TypeSpec
+from biocompiler.semantics.types import BOOLEAN, DURATION, LEVEL, TypeSpec
 
 
 def pinned(kind="model", id="fixture-model"):

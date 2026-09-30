@@ -3,19 +3,19 @@
 import argparse
 from pathlib import Path
 
-import cellweave as cw
+import biocompiler as bc
 
 
 def make_human_target():
     def pending(description):
-        return cw.TargetClaim(
+        return bc.TargetClaim(
             description=description,
             basis="unestablished",
             evidence_ids=(),
             limitations="Illustrative requirement only; applicable evidence has not been supplied.",
         )
 
-    contract = cw.HumanTargetContract(
+    contract = bc.HumanTargetContract(
         cell_subtype=pending(
             "Human CD8-positive T-cell recipients; subtype refinement remains open."
         ),
@@ -31,7 +31,7 @@ def make_human_target():
             "Population exclusions require an explicit applicability review."
         ),
         host_dependencies=(
-            cw.HumanHostDependency(
+            bc.HumanHostDependency(
                 "translation",
                 "host_translation",
                 "cytoplasm",
@@ -39,11 +39,11 @@ def make_human_target():
             ),
         ),
         operating_conditions=(
-            cw.HumanOperatingCondition(
+            bc.HumanOperatingCondition(
                 "resource_availability",
                 "available_translation_resources",
                 "cytoplasm",
-                cw.ValueDomain.unknown(
+                bc.ValueDomain.unknown(
                     reason="No supported resource operating range is established."
                 ),
                 pending(
@@ -53,10 +53,10 @@ def make_human_target():
         ),
         evidence=(),
     )
-    return cw.HumanTargetContext(
+    return bc.HumanTargetContext(
         "illustrative_human_target",
         "1",
-        cw.PayloadFormat.RNA,
+        bc.PayloadFormat.RNA,
         compartments=("cytoplasm",),
         human_target=contract,
     )
@@ -67,7 +67,7 @@ def main():
     parser.add_argument("--output", type=Path)
     args = parser.parse_args()
     target = make_human_target()
-    restored = cw.TargetContext.from_json(target.to_json())
+    restored = bc.TargetContext.from_json(target.to_json())
     assert restored == target
     print("Human in-vivo target specification: recorded")
     print("Biological applicability: unestablished")

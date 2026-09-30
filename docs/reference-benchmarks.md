@@ -45,7 +45,7 @@ The patent also describes other variants. Lock the named variant and each sequen
 
 ## Proposed reference record and build contents
 
-`cellweave.registry.references.ReferenceRecord` and `ReferenceManifest` implement the first narrow CDS-reference schema. A reference record captures:
+`biocompiler.registry.references.ReferenceRecord` and `ReferenceManifest` implement the first narrow CDS-reference schema. A reference record captures:
 
 - `reference_id`, `variant_id`, record version and schema version;
 - source publication/accession, exact locator, URL, retrieval record and source hash;

@@ -10,8 +10,8 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from cellweave.errors import SerializationError
-from cellweave.registry.references import (
+from biocompiler.errors import SerializationError
+from biocompiler.registry.references import (
     ReferenceManifest,
     ReferenceRecord,
     load_reference_manifest,

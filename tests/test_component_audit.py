@@ -4,8 +4,8 @@ from dataclasses import replace
 from pathlib import Path
 import unittest
 
-from cellweave.errors import SerializationError
-from cellweave.ir.component_contracts import (
+from biocompiler.errors import SerializationError
+from biocompiler.ir.component_contracts import (
     ComponentRecord,
     DependencyRequirement,
     ParameterProvenance,
@@ -13,7 +13,7 @@ from cellweave.ir.component_contracts import (
     ProvidedCapability,
     ResourceReservation,
 )
-from cellweave.ir.composition import (
+from biocompiler.ir.composition import (
     CompositionInstance,
     CompositionRequest,
     Connection,
@@ -21,20 +21,20 @@ from cellweave.ir.composition import (
     ResourceBinding,
     ResourcePool,
 )
-from cellweave.registry.components import ComponentRegistry
-from cellweave.registry.reference_components import (
+from biocompiler.registry.components import ComponentRegistry
+from biocompiler.registry.reference_components import (
     ReferenceSelection,
     adapt_reference_component,
 )
-from cellweave.registry.references import load_reference_manifest
-from cellweave.semantics.component_contracts import (
+from biocompiler.registry.references import load_reference_manifest
+from biocompiler.semantics.component_contracts import (
     OperatingDomain,
     PortContract,
     ValueDomain,
 )
-from cellweave.semantics.context import PayloadFormat, TargetContext
-from cellweave.semantics.types import LEVEL
-from cellweave.verification.components import (
+from biocompiler.semantics.context import PayloadFormat, TargetContext
+from biocompiler.semantics.types import LEVEL
+from biocompiler.verification.components import (
     CompositionResult,
     LinkDiagnostic,
     check_composition,

@@ -11,18 +11,18 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from cellweave.artifacts.archive import assemble_archive, read_archive
-from cellweave.artifacts.manifest import ReferenceBuildRequest, RunMetadata
-from cellweave.cli import main
-from cellweave.compiler.pipeline import PipelineError
-from cellweave.compiler.reference import (
+from biocompiler.artifacts.archive import assemble_archive, read_archive
+from biocompiler.artifacts.manifest import ReferenceBuildRequest, RunMetadata
+from biocompiler.cli import main
+from biocompiler.compiler.pipeline import PipelineError
+from biocompiler.compiler.reference import (
     build_reference_package,
     prepare_reference_build,
     publish_reference_package,
     verify_reference_package,
 )
-from cellweave.errors import SerializationError
-from cellweave.ir.serialization import fingerprint
+from biocompiler.errors import SerializationError
+from biocompiler.ir.serialization import fingerprint
 
 REFERENCE = Path(__file__).resolve().parents[1] / "data/references/fap_car"
 
@@ -156,25 +156,25 @@ class ReferencePackageTests(unittest.TestCase):
     def test_current_tools_and_fresh_checks_are_required(self):
         package = self.build()
         with patch(
-            "cellweave.compiler.reference.MOLECULAR_CHECKER_VERSION", "changed.v2"
+            "biocompiler.compiler.reference.MOLECULAR_CHECKER_VERSION", "changed.v2"
         ):
             with self.assertRaisesRegex(
                 SerializationError, "stale|altered|unsupported"
             ):
                 verify_reference_package(package.data, expected_request=self.request)
         with patch(
-            "cellweave.compiler.reference.run_molecular_pipeline",
+            "biocompiler.compiler.reference.run_molecular_pipeline",
             side_effect=PipelineError("fresh check rejected"),
         ):
             with self.assertRaisesRegex(PipelineError, "fresh check rejected"):
                 verify_reference_package(package.data, expected_request=self.request)
 
     def test_distribution_version_is_pinned_and_rechecked(self):
-        from cellweave import __version__
+        from biocompiler import __version__
 
         package = self.build()
         self.assertEqual(package.manifest.package_version, __version__)
-        with patch("cellweave.__version__", "0.1.0.dev999"):
+        with patch("biocompiler.__version__", "0.1.0.dev999"):
             with self.assertRaisesRegex(
                 SerializationError, "stale|altered|unsupported"
             ):
@@ -197,7 +197,7 @@ class ReferencePackageTests(unittest.TestCase):
     def test_failed_publication_preserves_previously_accepted_result(self):
         package = self.build()
         with tempfile.TemporaryDirectory() as temporary:
-            path = Path(temporary) / "accepted.cwb"
+            path = Path(temporary) / "accepted.bcb"
             publish_reference_package(package, path)
             prior = path.read_bytes()
             bad = replace(
@@ -212,12 +212,12 @@ class ReferencePackageTests(unittest.TestCase):
                 publish_reference_package(bad, path)
             self.assertEqual(path.read_bytes(), prior)
             self.assertEqual(
-                sorted(item.name for item in path.parent.iterdir()), ["accepted.cwb"]
+                sorted(item.name for item in path.parent.iterdir()), ["accepted.bcb"]
             )
 
     def test_cli_build_inspect_verify_and_rejection(self):
         with tempfile.TemporaryDirectory() as temporary:
-            path = Path(temporary) / "reference.cwb"
+            path = Path(temporary) / "reference.bcb"
             output = io.StringIO()
             with redirect_stdout(output):
                 self.assertEqual(

@@ -8,11 +8,11 @@ import importlib.util
 from pathlib import Path
 import unittest
 
-import cellweave as cw
+import biocompiler as bc
 
 
 EXAMPLE_FILE = Path(__file__).resolve().parents[1] / "examples" / "intent_programs.py"
-spec = importlib.util.spec_from_file_location("cellweave_examples", EXAMPLE_FILE)
+spec = importlib.util.spec_from_file_location("biocompiler_examples", EXAMPLE_FILE)
 examples = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(examples)
 
@@ -25,7 +25,7 @@ class SerializationTests(unittest.TestCase):
         for name, build in examples.EXAMPLES.items():
             with self.subTest(example=name):
                 program = build()
-                restored = cw.IntentProgram.from_json(program.to_json())
+                restored = bc.IntentProgram.from_json(program.to_json())
                 self.assertEqual(restored.to_dict(), program.to_dict())
                 self.assertEqual(restored.fingerprint, program.fingerprint)
                 self.assertTrue(
@@ -40,7 +40,7 @@ class SerializationTests(unittest.TestCase):
                 self.assertEqual(first.fingerprint, second.fingerprint)
 
     def test_frozen_snapshot_is_unchanged_by_further_authoring(self):
-        therapy = cw.Therapy("snapshot")
+        therapy = bc.Therapy("snapshot")
         cells = therapy.engineer("responders", cell_type="T_cell")
         old = therapy.freeze()
         before = old.to_json()
@@ -72,7 +72,7 @@ class SerializationTests(unittest.TestCase):
 
     def test_input_dictionary_is_copied_on_deserialization(self):
         data = self.program.to_dict()
-        restored = cw.IntentProgram.from_dict(data)
+        restored = bc.IntentProgram.from_dict(data)
         original = restored.to_json()
         data["nodes"][0]["attributes"]["new"] = ["mutable"]
         data["roots"].clear()
@@ -84,7 +84,7 @@ class SerializationTests(unittest.TestCase):
         self.assertTrue(sourced)
         for node in sourced:
             node["source"]["line"] += 100
-        moved = cw.IntentProgram.from_dict(data)
+        moved = bc.IntentProgram.from_dict(data)
         self.assertNotEqual(moved.to_json(), self.program.to_json())
         self.assertEqual(moved.fingerprint, self.program.fingerprint)
 
@@ -92,38 +92,38 @@ class SerializationTests(unittest.TestCase):
         data = self.program.to_dict()
         state = next(node for node in data["nodes"] if node["kind"] == "state")
         state["attributes"]["initial"] = "active"
-        changed = cw.IntentProgram.from_dict(data)
+        changed = bc.IntentProgram.from_dict(data)
         self.assertNotEqual(changed.fingerprint, self.program.fingerprint)
 
     def test_dangling_reference_is_rejected(self):
         data = self.program.to_dict()
         data["nodes"][-1]["inputs"].append("does_not_exist")
         with self.assertRaises((TypeError, ValueError)):
-            cw.IntentProgram.from_dict(data)
+            bc.IntentProgram.from_dict(data)
 
     def test_duplicate_node_identity_is_rejected(self):
         data = self.program.to_dict()
         data["nodes"].append(copy.deepcopy(data["nodes"][0]))
         with self.assertRaises((TypeError, ValueError)):
-            cw.IntentProgram.from_dict(data)
+            bc.IntentProgram.from_dict(data)
 
     def test_dependency_cycle_is_rejected(self):
         data = self.program.to_dict()
         data["nodes"][0]["inputs"].append(data["nodes"][-1]["id"])
         with self.assertRaises((TypeError, ValueError)):
-            cw.IntentProgram.from_dict(data)
+            bc.IntentProgram.from_dict(data)
 
     def test_unknown_schema_version_is_rejected(self):
         data = self.program.to_dict()
         data["schema_version"] = "999.0"
         with self.assertRaises((TypeError, ValueError)):
-            cw.IntentProgram.from_dict(data)
+            bc.IntentProgram.from_dict(data)
 
     def test_missing_root_is_rejected(self):
         data = self.program.to_dict()
         data["roots"].append("does_not_exist")
         with self.assertRaises((TypeError, ValueError)):
-            cw.IntentProgram.from_dict(data)
+            bc.IntentProgram.from_dict(data)
 
     def test_role_reference_must_point_to_a_role(self):
         data = self.program.to_dict()
@@ -131,7 +131,7 @@ class SerializationTests(unittest.TestCase):
         rule = next(node for node in data["nodes"] if node["kind"] == "rule")
         rule["role"] = state["id"]
         with self.assertRaises((TypeError, ValueError)):
-            cw.IntentProgram.from_dict(data)
+            bc.IntentProgram.from_dict(data)
 
     def test_malformed_type_descriptors_are_rejected(self):
         malformed = (
@@ -152,56 +152,56 @@ class SerializationTests(unittest.TestCase):
                 )
                 parameter["data_type"] = descriptor
                 with self.assertRaises((TypeError, ValueError)):
-                    cw.IntentProgram.from_dict(data)
+                    bc.IntentProgram.from_dict(data)
 
     def test_duplicate_json_keys_are_rejected(self):
         with self.assertRaises((TypeError, ValueError)):
-            cw.IntentProgram.from_json('{"name":"first","name":"second"}')
+            bc.IntentProgram.from_json('{"name":"first","name":"second"}')
 
     def test_imported_parameter_names_must_be_present_and_unique(self):
         data = self.program.to_dict()
         parameters = [node for node in data["nodes"] if node["kind"] == "parameter"]
         parameters[1]["attributes"]["name"] = parameters[0]["attributes"]["name"]
         with self.assertRaises((TypeError, ValueError)):
-            cw.IntentProgram.from_dict(data)
+            bc.IntentProgram.from_dict(data)
         data = self.program.to_dict()
         parameter = next(node for node in data["nodes"] if node["kind"] == "parameter")
         del parameter["attributes"]["name"]
         with self.assertRaises((TypeError, ValueError)):
-            cw.IntentProgram.from_dict(data)
+            bc.IntentProgram.from_dict(data)
 
     def test_imported_parameter_default_must_match_declared_type(self):
-        therapy = cw.Therapy("typed_defaults")
-        therapy.parameter("threshold", type=cw.Level, default=0.5)
+        therapy = bc.Therapy("typed_defaults")
+        therapy.parameter("threshold", type=bc.Level, default=0.5)
         data = therapy.freeze().to_dict()
         parameter = next(node for node in data["nodes"] if node["kind"] == "parameter")
-        parameter["attributes"]["default"] = cw.Duration(5).to_dict()
+        parameter["attributes"]["default"] = bc.Duration(5).to_dict()
         with self.assertRaises((TypeError, ValueError)):
-            cw.IntentProgram.from_dict(data)
+            bc.IntentProgram.from_dict(data)
 
     def test_imported_units_cannot_disagree_with_canonical_value(self):
-        therapy = cw.Therapy("typed_defaults")
+        therapy = bc.Therapy("typed_defaults")
         therapy.parameter(
-            "window", type=cw.Duration, default=cw.Duration(1, unit="min")
+            "window", type=bc.Duration, default=bc.Duration(1, unit="min")
         )
         data = therapy.freeze().to_dict()
         parameter = next(node for node in data["nodes"] if node["kind"] == "parameter")
         parameter["attributes"]["default"]["canonical_value"] = 1
         with self.assertRaises((TypeError, ValueError)):
-            cw.IntentProgram.from_dict(data)
+            bc.IntentProgram.from_dict(data)
 
     def test_malformed_payloads_are_rejected(self):
         malformed = [None, [], "program", {"name": "incomplete"}]
         for value in malformed:
             with self.subTest(value=value), self.assertRaises((TypeError, ValueError)):
-                cw.IntentProgram.from_dict(value)
+                bc.IntentProgram.from_dict(value)
         for value in ("null", "[]", "{invalid", "42"):
             with self.subTest(value=value), self.assertRaises((TypeError, ValueError)):
-                cw.IntentProgram.from_json(value)
+                bc.IntentProgram.from_json(value)
         data = self.program.to_dict()
         data["nodes"][0]["inputs"] = "not_a_list_of_ids"
         with self.assertRaises((TypeError, ValueError)):
-            cw.IntentProgram.from_dict(data)
+            bc.IntentProgram.from_dict(data)
 
     def test_summary_reports_the_serialized_program(self):
         summary = self.program.summary()

@@ -8,12 +8,12 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from cellweave.cli import main
-from cellweave.compiler.construct import run_construct_pipeline
-from cellweave.compiler.pipeline import ArtifactStatus, PassManager, PipelineError
-from cellweave.ir.construct import ConstructCandidate, ConstructRequest, SequenceRange
-from cellweave.ir.serialization import fingerprint
-from cellweave.verification.evidence import CheckOutcome
+from biocompiler.cli import main
+from biocompiler.compiler.construct import run_construct_pipeline
+from biocompiler.compiler.pipeline import ArtifactStatus, PassManager, PipelineError
+from biocompiler.ir.construct import ConstructCandidate, ConstructRequest, SequenceRange
+from biocompiler.ir.serialization import fingerprint
+from biocompiler.verification.evidence import CheckOutcome
 from examples.reference_construct import reference_request
 
 
@@ -106,7 +106,7 @@ class ConstructPipelineTests(unittest.TestCase):
     def test_bad_authority_never_invokes_candidate_generator(self):
         changed = replace(self.registry, version="stale")
         with patch(
-            "cellweave.compiler.construct.generate_construct",
+            "biocompiler.compiler.construct.generate_construct",
             side_effect=AssertionError("Should not generate"),
         ):
             with self.assertRaisesRegex(PipelineError, "not passed"):
@@ -132,14 +132,14 @@ class ConstructPipelineTests(unittest.TestCase):
         self.assertEqual({link["source_node_id"] for link in links}, {instance.id})
 
     def test_candidate_with_edited_orientation_is_not_accepted(self):
-        from cellweave.synthesis.construct import generate_construct
+        from biocompiler.synthesis.construct import generate_construct
 
         valid = generate_construct(self.request)
         changed = replace(
             valid, placements=(replace(valid.placements[0], orientation="reverse"),)
         )
         with patch(
-            "cellweave.compiler.construct.generate_construct", return_value=changed
+            "biocompiler.compiler.construct.generate_construct", return_value=changed
         ):
             with self.assertRaisesRegex(PipelineError, "not passed"):
                 self.build()

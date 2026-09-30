@@ -3,17 +3,17 @@
 from dataclasses import replace
 import unittest
 
-from cellweave.artifacts.provenance import SourceLink
-from cellweave.compiler.passes import PassResult
-from cellweave.compiler.pipeline import (
+from biocompiler.artifacts.provenance import SourceLink
+from biocompiler.compiler.passes import PassResult
+from biocompiler.compiler.pipeline import (
     ArtifactStatus,
     CheckSpec,
     CompletionProfile,
     PassContract,
     PipelineError,
 )
-from cellweave.ir.stages import Stage
-from cellweave.verification.evidence import EvidenceKind
+from biocompiler.ir.stages import Stage
+from biocompiler.verification.evidence import EvidenceKind
 import test_pipeline as fixtures
 
 

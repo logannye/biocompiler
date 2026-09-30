@@ -5,11 +5,11 @@ import hashlib
 import json
 import unittest
 
-from cellweave.errors import SerializationError
-from cellweave.ir.serialization import fingerprint
-from cellweave.semantics.evaluator import InputFrame, SignalSample
-from cellweave.semantics.types import Interval
-from cellweave.verification.evidence import (
+from biocompiler.errors import SerializationError
+from biocompiler.ir.serialization import fingerprint
+from biocompiler.semantics.evaluator import InputFrame, SignalSample
+from biocompiler.semantics.types import Interval
+from biocompiler.verification.evidence import (
     CheckDiagnostic,
     CheckOutcome,
     CheckResult,
@@ -17,7 +17,7 @@ from cellweave.verification.evidence import (
     DependencySnapshot,
     RequirementCoverage,
 )
-from cellweave.verification.exploration import (
+from biocompiler.verification.exploration import (
     EXPLORATION_VERSION,
     AdversarialConfig,
     BooleanContactConfig,

@@ -3,9 +3,9 @@
 from dataclasses import replace
 import unittest
 
-from cellweave.ir.intent import SourceLocation
-from cellweave.verification.construct import check_construct
-from cellweave.verification.evidence import CheckOutcome
+from biocompiler.ir.intent import SourceLocation
+from biocompiler.verification.construct import check_construct
+from biocompiler.verification.evidence import CheckOutcome
 from test_construct_checker import candidate_for, fixture
 
 

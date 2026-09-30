@@ -3,11 +3,11 @@
 from dataclasses import replace
 import unittest
 
-from cellweave import Therapy
-from cellweave.compiler.pipeline import PassManager, PipelineError
-from cellweave.compiler.request import BuildRequest
-from cellweave.errors import SerializationError
-from cellweave.semantics.context import PayloadFormat, TargetContext
+from biocompiler import Therapy
+from biocompiler.compiler.pipeline import PassManager, PipelineError
+from biocompiler.compiler.request import BuildRequest
+from biocompiler.errors import SerializationError
+from biocompiler.semantics.context import PayloadFormat, TargetContext
 import test_pipeline as fixtures
 
 

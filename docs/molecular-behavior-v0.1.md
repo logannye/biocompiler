@@ -2,7 +2,7 @@
 
 M9 introduces an explicit, independently checked request connecting frozen
 Behavior inputs and responses to selected exact-CDS components. The implemented
-profile is `cellweave.molecular_correspondence.v0.1`. It establishes requested
+profile is `biocompiler.molecular_correspondence.v0.1`. It establishes requested
 correspondence and exact artifact linkage; it supplies no calibrated biological
 adapter or molecular execution semantics. A valid request therefore has
 `linkage_outcome: pass` and molecular behavior `outcome: unknown`.

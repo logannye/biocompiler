@@ -3,15 +3,15 @@
 from dataclasses import replace
 import unittest
 
-from cellweave.errors import SerializationError
-from cellweave.ir.component_contracts import (
+from biocompiler.errors import SerializationError
+from biocompiler.ir.component_contracts import (
     ComponentRecord,
     DependencyRequirement,
     PinnedIdentity,
     ProvidedCapability,
     ResourceReservation,
 )
-from cellweave.ir.composition import (
+from biocompiler.ir.composition import (
     CompositionInstance,
     CompositionRequest,
     Connection,
@@ -21,16 +21,16 @@ from cellweave.ir.composition import (
     ResourceBinding,
     ResourcePool,
 )
-from cellweave.ir.intent import SourceLocation
-from cellweave.registry.components import ComponentRegistry
-from cellweave.semantics.component_contracts import (
+from biocompiler.ir.intent import SourceLocation
+from biocompiler.registry.components import ComponentRegistry
+from biocompiler.semantics.component_contracts import (
     OperatingDomain,
     PortContract,
     ValueDomain,
 )
-from cellweave.semantics.context import PayloadFormat, TargetContext
-from cellweave.semantics.types import LEVEL, Level, TypeSpec
-from cellweave.verification.components import CompositionResult, check_composition
+from biocompiler.semantics.context import PayloadFormat, TargetContext
+from biocompiler.semantics.types import LEVEL, Level, TypeSpec
+from biocompiler.verification.components import CompositionResult, check_composition
 
 
 MODEL = PinnedIdentity("model", "fixture", "1", "0" * 64)

@@ -5,25 +5,25 @@ import itertools
 import json
 import unittest
 
-import cellweave as cw
+import biocompiler as bc
 
 
 def contact_program():
-    therapy = cw.Therapy("metamorphic-contact")
+    therapy = bc.Therapy("metamorphic-contact")
     cell = therapy.engineer("observer", cell_type="abstract_cell")
     a, b = cell.contact.marker("A"), cell.contact.marker("B")
-    ready = (a.present() & b.present()).held_for(cw.Duration(1))
+    ready = (a.present() & b.present()).held_for(bc.Duration(1))
     ordered = (
         a.present()
         .became_true()
-        .followed_by(b.present().became_true(), within=cw.Duration(2))
+        .followed_by(b.present().became_true(), within=bc.Duration(2))
     )
-    memory = cell.memory("seen", set_when=ready, duration=cw.Duration(2))
+    memory = cell.memory("seen", set_when=ready, duration=bc.Duration(2))
     local, target = cell.rest(), cell.eliminate(cell.contact)
     cell.when(ready).do(
-        local.for_(cw.Duration(2)), target.for_(cw.Duration(2)), cell.report("ready")
+        local.for_(bc.Duration(2)), target.for_(bc.Duration(2)), cell.report("ready")
     )
-    cell.on(ordered).do(target.for_(cw.Duration(1)), cell.report("ordered"))
+    cell.on(ordered).do(target.for_(bc.Duration(1)), cell.report("ordered"))
     cell.on(memory.is_set().became_true()).do(cell.report("memory"))
     intent = therapy.freeze()
     observations = (
@@ -35,19 +35,19 @@ def contact_program():
         (4, {"x": (True, True)}),
     )
     history = tuple(
-        cw.InputFrame(
+        bc.InputFrame(
             time,
             contacts={
                 identity: {
-                    a.node_id: cw.SignalSample(present=values[0]),
-                    b.node_id: cw.SignalSample(present=values[1]),
+                    a.node_id: bc.SignalSample(present=values[0]),
+                    b.node_id: bc.SignalSample(present=values[1]),
                 }
                 for identity, values in contacts.items()
             },
         )
         for time, contacts in observations
     )
-    return intent, cw.lower_to_behavior(intent), history
+    return intent, bc.lower_to_behavior(intent), history
 
 
 def semantic_frames(result, *, contact_inverse=None, collapse_stutter=False):
@@ -83,7 +83,7 @@ def semantic_frames(result, *, contact_inverse=None, collapse_stutter=False):
 
 def independent_program(order):
     """Branches share no state writes, memory controls or output feedback."""
-    therapy = cw.Therapy("metamorphic-independent")
+    therapy = bc.Therapy("metamorphic-independent")
     cell = therapy.engineer("observer", cell_type="abstract_cell")
     signals, states, memories, actions, events = {}, {}, {}, {}, {}
     for branch in order:
@@ -94,7 +94,7 @@ def independent_program(order):
         memories[branch] = cell.memory(
             branch + "-memory",
             set_when=signals[branch].present(),
-            duration=cw.Duration(2),
+            duration=bc.Duration(2),
         )
         cell.when(signals[branch].present()).do(states[branch].set("latched"))
         state_event = states[branch].is_("latched").became_true()
@@ -105,8 +105,8 @@ def independent_program(order):
         cell.on(memory_event).do(cell.report(branch + "-memory"))
         action = cell.rest()
         actions[action.node_id] = branch
-        cell.when(memories[branch].is_set()).do(action.for_(cw.Duration(3)))
-    behavior = cw.lower_to_behavior(therapy.freeze())
+        cell.when(memories[branch].is_set()).do(action.for_(bc.Duration(3)))
+    behavior = bc.lower_to_behavior(therapy.freeze())
     values = (
         (0, {"alpha": True, "beta": False, "gamma": False}),
         (0.5, {"alpha": False, "beta": False, "gamma": False}),
@@ -115,10 +115,10 @@ def independent_program(order):
         (2, {"alpha": True, "beta": False, "gamma": False}),
     )
     history = tuple(
-        cw.InputFrame(
+        bc.InputFrame(
             time,
             {
-                signals[name].node_id: cw.SignalSample(present=value)
+                signals[name].node_id: bc.SignalSample(present=value)
                 for name, value in sample.items()
             },
         )
@@ -171,7 +171,7 @@ def named_frames(result, states, memories, actions, events):
 class SemanticMetamorphicTests(unittest.TestCase):
     def test_consistent_bijective_contact_renaming_maps_bound_actions_and_events(self):
         _, behavior, history = contact_program()
-        baseline = cw.evaluate(behavior, history, until=7)
+        baseline = bc.evaluate(behavior, history, until=7)
         self.assertEqual(
             {
                 item.contact_id
@@ -188,7 +188,7 @@ class SemanticMetamorphicTests(unittest.TestCase):
             with self.subTest(renaming=renaming):
                 self.assertEqual(len(set(renaming.values())), len(renaming))
                 renamed = tuple(
-                    cw.InputFrame(
+                    bc.InputFrame(
                         frame.time,
                         frame.signals,
                         {
@@ -198,7 +198,7 @@ class SemanticMetamorphicTests(unittest.TestCase):
                     )
                     for frame in history
                 )
-                result = cw.evaluate(behavior, renamed, until=7)
+                result = bc.evaluate(behavior, renamed, until=7)
                 self.assertEqual(
                     semantic_frames(
                         result,
@@ -211,35 +211,35 @@ class SemanticMetamorphicTests(unittest.TestCase):
         self,
     ):
         intent, behavior, history = contact_program()
-        restored_intent = cw.IntentProgram.from_json(intent.to_json())
-        restored_behavior = cw.BehaviorProgram.from_json(behavior.to_json())
-        lowered_again = cw.lower_to_behavior(restored_intent)
-        self.assertTrue(cw.verify_lowering(restored_intent, restored_behavior).passed)
+        restored_intent = bc.IntentProgram.from_json(intent.to_json())
+        restored_behavior = bc.BehaviorProgram.from_json(behavior.to_json())
+        lowered_again = bc.lower_to_behavior(restored_intent)
+        self.assertTrue(bc.verify_lowering(restored_intent, restored_behavior).passed)
         self.assertEqual(restored_behavior.fingerprint, behavior.fingerprint)
         self.assertEqual(lowered_again.fingerprint, behavior.fingerprint)
         serialized_history = json.loads(
             json.dumps([frame.to_dict() for frame in history])
         )
         restored_history = tuple(
-            cw.InputFrame(
+            bc.InputFrame(
                 frame["time"],
                 {
-                    key: cw.SignalSample(**value)
+                    key: bc.SignalSample(**value)
                     for key, value in frame["signals"].items()
                 },
                 {
                     identity: {
-                        key: cw.SignalSample(**value) for key, value in values.items()
+                        key: bc.SignalSample(**value) for key, value in values.items()
                     }
                     for identity, values in frame["contacts"].items()
                 },
             )
             for frame in serialized_history
         )
-        expected = cw.evaluate(behavior, history, until=7).to_dict()
+        expected = bc.evaluate(behavior, history, until=7).to_dict()
         for program in (restored_behavior, lowered_again):
             self.assertEqual(
-                cw.evaluate(program, restored_history, until=7).to_dict(), expected
+                bc.evaluate(program, restored_history, until=7).to_dict(), expected
             )
         reactions = [
             (frame["time"], item["attributes"]["label"])
@@ -257,7 +257,7 @@ class SemanticMetamorphicTests(unittest.TestCase):
         for order in itertools.permutations(("alpha", "beta", "gamma")):
             behavior, history, *aliases = independent_program(order)
             fingerprints.add(behavior.fingerprint)
-            observed = named_frames(cw.evaluate(behavior, history, until=5), *aliases)
+            observed = named_frames(bc.evaluate(behavior, history, until=5), *aliases)
             if baseline is None:
                 baseline = observed
                 reactions = [
@@ -277,7 +277,7 @@ class SemanticMetamorphicTests(unittest.TestCase):
 
     def test_unchanged_complete_snapshots_preserve_events_and_every_deadline(self):
         _, behavior, sparse = contact_program()
-        baseline = cw.evaluate(behavior, sparse, until=7)
+        baseline = bc.evaluate(behavior, sparse, until=7)
         times = [frame.time for frame in sparse]
         # Extra polls include exact internal deadlines; each still has the complete
         # last external snapshot, and the horizon remains fixed.
@@ -287,7 +287,7 @@ class SemanticMetamorphicTests(unittest.TestCase):
         ):
             all_times = sorted(set(times) | set(inserted))
             dense = tuple(
-                cw.InputFrame(
+                bc.InputFrame(
                     time,
                     sparse[bisect_right(times, time) - 1].signals,
                     sparse[bisect_right(times, time) - 1].contacts,
@@ -295,7 +295,7 @@ class SemanticMetamorphicTests(unittest.TestCase):
                 for time in all_times
             )
             with self.subTest(inserted=len(inserted)):
-                result = cw.evaluate(behavior, dense, until=7)
+                result = bc.evaluate(behavior, dense, until=7)
                 self.assertEqual(
                     semantic_frames(result, collapse_stutter=True),
                     semantic_frames(baseline, collapse_stutter=True),
@@ -307,7 +307,7 @@ class SemanticMetamorphicTests(unittest.TestCase):
     def test_atomic_snapshot_mapping_order_never_becomes_execution_priority(self):
         _, behavior, history = contact_program()
         reordered = tuple(
-            cw.InputFrame(
+            bc.InputFrame(
                 frame.time,
                 dict(reversed(tuple(frame.signals.items()))),
                 {
@@ -318,8 +318,8 @@ class SemanticMetamorphicTests(unittest.TestCase):
             for frame in history
         )
         self.assertEqual(
-            semantic_frames(cw.evaluate(behavior, reordered, until=7)),
-            semantic_frames(cw.evaluate(behavior, history, until=7)),
+            semantic_frames(bc.evaluate(behavior, reordered, until=7)),
+            semantic_frames(bc.evaluate(behavior, history, until=7)),
         )
 
 

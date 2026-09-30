@@ -9,13 +9,13 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from cellweave.cli import main
-from cellweave.compiler.molecular import run_molecular_pipeline
-from cellweave.compiler.pipeline import ArtifactStatus, PassManager, PipelineError
-from cellweave.ir.construct import ConstructRequest
-from cellweave.ir.molecular import MolecularArtifact
-from cellweave.ir.serialization import fingerprint
-from cellweave.verification.evidence import CheckOutcome
+from biocompiler.cli import main
+from biocompiler.compiler.molecular import run_molecular_pipeline
+from biocompiler.compiler.pipeline import ArtifactStatus, PassManager, PipelineError
+from biocompiler.ir.construct import ConstructRequest
+from biocompiler.ir.molecular import MolecularArtifact
+from biocompiler.ir.serialization import fingerprint
+from biocompiler.verification.evidence import CheckOutcome
 from examples.reference_construct import reference_request
 
 
@@ -106,7 +106,7 @@ class MolecularPipelineTests(unittest.TestCase):
 
     def test_failed_authority_never_invokes_emission(self):
         with patch(
-            "cellweave.compiler.molecular.emit_reference_sequence",
+            "biocompiler.compiler.molecular.emit_reference_sequence",
             side_effect=AssertionError("Should not emit"),
         ):
             with self.assertRaisesRegex(PipelineError, "not passed"):
@@ -129,7 +129,7 @@ class MolecularPipelineTests(unittest.TestCase):
         )
         artifact = replace(valid, records=(changed,))
         with patch(
-            "cellweave.compiler.molecular.emit_reference_sequence",
+            "biocompiler.compiler.molecular.emit_reference_sequence",
             return_value=artifact,
         ):
             with self.assertRaisesRegex(PipelineError, "not passed"):

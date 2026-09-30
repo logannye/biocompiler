@@ -1,8 +1,11 @@
-# CellWeave
+# biocompiler
 
-CellWeave is an experimental Python compiler toolkit for describing engineered immune-cell behavior and producing inspectable DNA/RNA reference artifacts. It is intended for cell engineers, synthetic biologists, computational biologists, and scientific software developers who need to connect design requirements with explicit assumptions, checks, and evidence.
+biocompiler is an experimental Python compiler toolkit for describing engineered immune-cell behavior and producing inspectable DNA/RNA reference artifacts. It is intended for cell engineers, synthetic biologists, computational biologists, and scientific software developers who need to connect design requirements with explicit assumptions, checks, and evidence.
 
 The central idea is to keep three things connected: **what a cell should do**, **how a proposed implementation is described**, and **what the supporting evidence establishes**. Typed descriptions and independent checks make those relationships inspectable throughout a design.
+
+This release uses the `biocompiler` package, CLI and artifact namespace. See the
+[rename and artifact migration notes](docs/biocompiler-migration.md) before reusing historical builds.
 
 ## What you can do
 
@@ -11,6 +14,7 @@ The central idea is to keep three things connected: **what a cell should do**, *
 | Describe cellular intent | Python authoring for recognition, actions, timing, memory, states, and communication, saved as immutable typed graphs. |
 | Declare a human target | Explicit cell/state, tissue/disease, population, host dependencies, operating conditions and evidence gaps, preserved in frozen build requests. |
 | Specify conditional secretion | Source-linked physical readouts, explicit thresholds, rate ranges and lifecycle deadlines, with bounded checks of supplied traces and separate cellular/evaluator observations. |
+| Check required and prohibited observations | One acceptance authority for source responses, healthy-context inactivity, background/peak limits, response duration, input-access loss and external shutdown assumptions. |
 | Freeze deployment requirements | Pinned delivery specification, recipient and exposure assumptions, distinct expression/behavior clocks, and explicit unsupported co-payload obligations. |
 | Evaluate and check abstract behavior | Execution against supplied observation histories, a limited automatic synthetic candidate generator, and independent checks with counterexamples and explicit coverage. |
 | Link components | Versioned component contracts with checked interfaces, operating assumptions, providers, resources, and dependency identities. |
@@ -22,9 +26,9 @@ A **coding sequence (CDS)** is the protein-coding portion of a genetic construct
 
 ## Understanding the results
 
-CellWeave keeps exact sequence identity, structural consistency, model-conditional behavior, and empirical biological evidence separate. A passing check applies to its stated scope, assumptions, dependencies, and observation history. Changed inputs can invalidate an earlier result; saved reports retain their history but require fresh checks before reuse.
+biocompiler keeps exact sequence identity, structural consistency, model-conditional behavior, and empirical biological evidence separate. A passing check applies to its stated scope, assumptions, dependencies, and observation history. Changed inputs can invalidate an earlier result; saved reports retain their history but require fresh checks before reuse.
 
-The authoring language is broader than the executable profiles. Unsupported behavior produces explicit diagnostics. General intent-to-molecular compilation through `cw.compile(...)` is unavailable; exact CDS builds use a separate, independently pinned reference workflow. Calibrated biological simulation and complete therapeutic-payload generation are outside the supported workflows.
+The authoring language is broader than the executable profiles. Unsupported behavior produces explicit diagnostics. General intent-to-molecular compilation through `bc.compile(...)` is unavailable; exact CDS builds use a separate, independently pinned reference workflow. Calibrated biological simulation and complete therapeutic-payload generation are outside the supported workflows.
 
 Molecular correspondence checks can establish source/CDS linkage while leaving biological behavior `UNKNOWN`. Whole-molecule structural checks do not establish functional performance or authorize a complete-payload compiler build. Their included examples use explicitly artificial software fixtures.
 
@@ -41,23 +45,23 @@ Requires **Python 3.11 or newer** and has no runtime dependencies. From a source
 python3 -m venv .venv
 . .venv/bin/activate
 python -m pip install -e .
-cellweave --version
+biocompiler --version
 python examples/intent_programs.py
 ```
 
 You can also run directly from the repository without installing:
 
 ```sh
-PYTHONPATH=src python3 -m cellweave --version
+PYTHONPATH=src python3 -m biocompiler --version
 PYTHONPATH=src python3 examples/intent_programs.py
 ```
 
 ### Describe an intended response
 
 ```python
-import cellweave as cw
+import biocompiler as bc
 
-therapy = cw.Therapy("contextual_response")
+therapy = bc.Therapy("contextual_response")
 cells = therapy.engineer("responders", cell_type="T_cell")
 recognized = cells.contact.marker("A").high()
 context = cells.environment.signal("disease_context").present()
@@ -86,18 +90,18 @@ To build and inspect a package containing the bundled RNA-CDS reference:
 
 ```sh
 mkdir -p generated
-cellweave reference-build --alphabet RNA \
-  --reference-dir data/references/fap_car --output generated/fap-rna.cwb
-cellweave reference-inspect generated/fap-rna.cwb
+biocompiler reference-build --alphabet RNA \
+  --reference-dir data/references/fap_car --output generated/fap-rna.bcb
+biocompiler reference-inspect generated/fap-rna.bcb
 ```
 
-The `.cwb` package retains the exact sequence, frozen inputs, checks, and unresolved obligations. Choose `--alphabet DNA` for the separately pinned DNA reference. [Reference-build documentation](docs/reference-build-v0.1.md) explains fresh offline verification using independently retained authority. `cellweave inspect artifact.json` inspects supported JSON artifacts without executing authoring code.
+The `.bcb` package retains the exact sequence, frozen inputs, checks, and unresolved obligations. Choose `--alphabet DNA` for the separately pinned DNA reference. [Reference-build documentation](docs/reference-build-v0.1.md) explains fresh offline verification using independently retained authority. `biocompiler inspect artifact.json` inspects supported JSON artifacts without executing authoring code.
 
 ## Repository guide
 
 | Path | Contents |
 | --- | --- |
-| [`src/cellweave/`](src/cellweave/) | Authoring, intermediate representations, compiler passes, models, independent checkers, registries, DNA/RNA backends, and artifact packaging. |
+| [`src/biocompiler/`](src/biocompiler/) | Authoring, intermediate representations, compiler passes, models, independent checkers, registries, DNA/RNA backends, and artifact packaging. |
 | [`examples/`](examples/README.md) | Runnable workflows and explanations of their scope. |
 | [`data/references/`](data/references/) | Small curated coding-sequence references with retained source and review records. |
 | [`tests/`](tests/README.md) | Unit, semantic, mutation, and integration tests. |

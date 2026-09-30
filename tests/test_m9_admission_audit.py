@@ -5,23 +5,23 @@ import hashlib
 import json
 import unittest
 
-import cellweave as cw
-from cellweave.compiler.request import BuildRequest, RealizationRequest
-from cellweave.errors import SerializationError
-from cellweave.ir.component_contracts import PinnedIdentity
-from cellweave.semantics.molecular_behavior import (
+import biocompiler as bc
+from biocompiler.compiler.request import BuildRequest, RealizationRequest
+from biocompiler.errors import SerializationError
+from biocompiler.ir.component_contracts import PinnedIdentity
+from biocompiler.semantics.molecular_behavior import (
     MolecularEvidence,
     MolecularImplementationContract,
     MolecularInputBinding,
     MolecularParameter,
     MolecularResponseBinding,
 )
-from cellweave.semantics.types import BOOLEAN, DURATION
-from cellweave.verification.molecular_behavior import (
+from biocompiler.semantics.types import BOOLEAN, DURATION
+from biocompiler.verification.molecular_behavior import (
     MolecularBehaviorResult,
     check_molecular_implementation,
 )
-from cellweave.verification.payload import check_payload
+from biocompiler.verification.payload import check_payload
 from test_molecular_checker import fixture as exact_fixture
 from test_payload_profiles import fixture as payload_fixture
 
@@ -30,37 +30,37 @@ def correspondence_fixture():
     """Declare artificial observations over a source-only CDS without a model."""
     downstream = exact_fixture("RNA")
     construct_request, _, molecular, _, _ = downstream
-    therapy = cw.Therapy("admission-audit")
+    therapy = bc.Therapy("admission-audit")
     cell = therapy.engineer("cell", cell_type="abstract_cell")
     signal = cell.contact.marker("fixture-marker")
     action = cell.rest()
     rule = cell.when(signal.present()).do(action)
     build = BuildRequest.freeze(therapy.freeze(), target=construct_request.target)
-    behavior = cw.lower_to_behavior(build)
-    observable = cw.Observable("fixture-output", cw.Level, cell.role)
-    response = cw.ResponseRequirement(
+    behavior = bc.lower_to_behavior(build)
+    observable = bc.Observable("fixture-output", bc.Level, cell.role)
+    response = bc.ResponseRequirement(
         "fixture-response",
         rule.node_id,
         action.node_id,
         observable,
-        cw.Interval(0.9, 1.1),
-        cw.Interval(0, 0.1),
-        cw.Duration(1),
-        cw.Duration(1),
+        bc.Interval(0.9, 1.1),
+        bc.Interval(0, 0.1),
+        bc.Duration(1),
+        bc.Duration(1),
     )
-    measured = cw.Observable("fixture-input", BOOLEAN, cell.role, scope="contact")
-    domain = cw.OperatingDomain(
+    measured = bc.Observable("fixture-input", BOOLEAN, cell.role, scope="contact")
+    domain = bc.OperatingDomain(
         "fixture-domain",
         "1",
         cell.role,
-        (cw.InputDomain(signal.node_id, "present", measured, (False, True)),),
-        cw.Duration(10),
+        (bc.InputDomain(signal.node_id, "present", measured, (False, True)),),
+        bc.Duration(10),
         max_contacts=1,
     )
     request = RealizationRequest.freeze(
         build,
         behavior,
-        cw.BehaviorContract("fixture-contract", behavior.fingerprint, (response,)),
+        bc.BehaviorContract("fixture-contract", behavior.fingerprint, (response,)),
         domain,
     )
     instance = construct_request.registry_lock.components[0].node_id
@@ -86,8 +86,8 @@ class M9AdmissionAuditTests(unittest.TestCase):
         self.inputs = correspondence_fixture()
         self.contract = self.inputs[0]
         self.control = check_molecular_implementation(*self.inputs)
-        self.assertEqual(self.control.linkage_outcome, cw.CheckOutcome.PASS)
-        self.assertEqual(self.control.outcome, cw.CheckOutcome.UNKNOWN)
+        self.assertEqual(self.control.linkage_outcome, bc.CheckOutcome.PASS)
+        self.assertEqual(self.control.outcome, bc.CheckOutcome.UNKNOWN)
         self.assertFalse(self.control.passed)
 
     def check(self, contract):
@@ -115,13 +115,13 @@ class M9AdmissionAuditTests(unittest.TestCase):
             "claimed-time",
             DURATION,
             category="measured",
-            value=cw.Duration(1),
+            value=bc.Duration(1),
             source=evidence[0].source,
         )
         altered = replace(self.contract, evidence=evidence, parameters=(parameter,))
         result = self.check(altered)
-        self.assertEqual(result.linkage_outcome, cw.CheckOutcome.PASS)
-        self.assertEqual(result.outcome, cw.CheckOutcome.UNKNOWN)
+        self.assertEqual(result.linkage_outcome, bc.CheckOutcome.PASS)
+        self.assertEqual(result.outcome, bc.CheckOutcome.UNKNOWN)
         self.assertFalse(result.passed)
         codes = {item.code for item in result.diagnostics}
         for item in evidence:
@@ -141,7 +141,7 @@ class M9AdmissionAuditTests(unittest.TestCase):
             ),
         )
         result = self.check(proposal)
-        self.assertEqual(result.outcome, cw.CheckOutcome.UNSUPPORTED)
+        self.assertEqual(result.outcome, bc.CheckOutcome.UNSUPPORTED)
         self.assertFalse(result.passed)
         self.assertIn("adapter_provider", {item.code for item in result.diagnostics})
 
@@ -155,8 +155,8 @@ class M9AdmissionAuditTests(unittest.TestCase):
                 result = self.check(
                     replace(self.contract, response_bindings=(binding,))
                 )
-                self.assertEqual(result.outcome, cw.CheckOutcome.FAIL)
-                self.assertEqual(result.linkage_outcome, cw.CheckOutcome.FAIL)
+                self.assertEqual(result.outcome, bc.CheckOutcome.FAIL)
+                self.assertEqual(result.linkage_outcome, bc.CheckOutcome.FAIL)
                 self.assertFalse(result.passed)
                 self.assertEqual(result.checked_requirement_ids, ("fixture-response",))
 
@@ -175,7 +175,7 @@ class M9AdmissionAuditTests(unittest.TestCase):
             MolecularBehaviorResult.from_dict(altered)
         restored = MolecularBehaviorResult.from_json(self.control.to_json())
         self.assertFalse(restored.passed)
-        self.assertEqual(restored.outcome, cw.CheckOutcome.UNKNOWN)
+        self.assertEqual(restored.outcome, bc.CheckOutcome.UNKNOWN)
 
 
 class PayloadAdmissionAuditTests(unittest.TestCase):
@@ -197,7 +197,7 @@ class PayloadAdmissionAuditTests(unittest.TestCase):
     def test_review_classification_cannot_be_changed_without_bound_attestations(self):
         altered = replace(self.reference, source_kind="externally_reviewed")
         result = self.check(altered, self.retained)
-        self.assertEqual(result.outcome, cw.CheckOutcome.FAIL)
+        self.assertEqual(result.outcome, bc.CheckOutcome.FAIL)
         self.assertIn("payload_review_statement", {x.code for x in result.diagnostics})
         self.assertFalse(result.compiler_admission)
         self.assertEqual(result.reference_promotion, "not_promoted")
@@ -220,7 +220,7 @@ class PayloadAdmissionAuditTests(unittest.TestCase):
             self.reference, reviews=(self.reference.reviews[0], updated_review)
         )
         result = self.check(altered, self.retained | {review.source.id: duplicated})
-        self.assertEqual(result.outcome, cw.CheckOutcome.FAIL)
+        self.assertEqual(result.outcome, bc.CheckOutcome.FAIL)
         codes = {x.code for x in result.diagnostics}
         self.assertIn("payload_review_statement", codes)
         self.assertNotIn("payload_source_hash", codes)

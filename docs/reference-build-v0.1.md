@@ -5,15 +5,15 @@ RNA-CDS reference after accepted Components → Construct → Molecular passes. 
 retains the exact spelling, checks and all remaining obligations. It does not
 compile arbitrary intent programs or establish biological refinement.
 
-From the repository, with CellWeave installed, one command builds a package:
+From the repository, with biocompiler installed, one command builds a package:
 
 ```sh
-cellweave reference-build --alphabet RNA \
-  --reference-dir data/references/fap_car --output fap-rna.cwb
+biocompiler reference-build --alphabet RNA \
+  --reference-dir data/references/fap_car --output fap-rna.bcb
 ```
 
 For a source checkout without installing the package, use
-`PYTHONPATH=src python -m cellweave` instead of `cellweave`. Choose `DNA` to reproduce
+`PYTHONPATH=src python -m biocompiler` instead of `biocompiler`. Choose `DNA` to reproduce
 the separately pinned DNA reference. The command uses only retained local files;
 it performs no network fetch or authoring-code execution. The output parent must
 already exist. Unknown modalities, incomplete sources and failed checks produce a
@@ -43,7 +43,7 @@ boundary instead of fabricating an upstream request or proof. Only the supported
 whole-CDS layout can pass; changed target, reference, selection or layout must
 satisfy the existing independent checkers.
 
-A `.cwb` file is a canonical stored ZIP archive containing:
+A `.bcb` file is a canonical stored ZIP archive containing:
 
 - `manifest.json`: canonical build identity inputs, file sizes/hashes, accepted
   stage identities and locked tool versions.
@@ -88,8 +88,8 @@ identity even when nucleotide identity is unchanged.
 ## Inspection and independent reconstruction
 
 ```sh
-cellweave reference-inspect fap-rna.cwb
-cellweave reference-verify fap-rna.cwb --expected-build TRUSTED_BUILD_FINGERPRINT
+biocompiler reference-inspect fap-rna.bcb
+biocompiler reference-verify fap-rna.bcb --expected-build TRUSTED_BUILD_FINGERPRINT
 ```
 
 Retain the expected fingerprint independently from the original successful build.

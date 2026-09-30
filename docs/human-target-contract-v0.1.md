@@ -8,7 +8,7 @@ defines the [conditional secretion observation contract](human-behavior-contract
 biological profile selection and acceptance remain M10.3–M10.6 and M11–M15 work.
 
 `HumanTargetContext` extends `TargetContext` under the new
-`cellweave.human_target_context.v0.1` schema. It combines the existing explicit
+`biocompiler.human_target_context.v0.1` schema. It combines the existing explicit
 DNA/RNA modality, compartments, capability/resource assumptions and context
 identity with a mandatory `HumanTargetContract`. The nested contract fixes
 `recipient_taxon_id=9606` and `engineering="in_vivo"`; import rejects any other
@@ -113,7 +113,7 @@ Run the deliberately unresolved example from a source checkout:
 
 ```sh
 PYTHONPATH=src python examples/human_target.py --output generated/human-target
-PYTHONPATH=src python -m cellweave inspect generated/human-target/human-target.json
+PYTHONPATH=src python -m biocompiler inspect generated/human-target/human-target.json
 ```
 
 The example names an illustrative human T-cell recipient but supplies no empirical

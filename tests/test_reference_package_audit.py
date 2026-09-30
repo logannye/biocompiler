@@ -7,15 +7,15 @@ from pathlib import Path
 import unittest
 from unittest.mock import patch
 
-from cellweave.artifacts.archive import assemble_archive, read_archive
-from cellweave.artifacts.manifest import PackageFile
-from cellweave.compiler.reference import (
+from biocompiler.artifacts.archive import assemble_archive, read_archive
+from biocompiler.artifacts.manifest import PackageFile
+from biocompiler.compiler.reference import (
     build_reference_package,
     prepare_reference_build,
     verify_reference_package,
 )
-from cellweave.errors import SerializationError
-from cellweave.registry.reference_builds import MANIFEST_PIN
+from biocompiler.errors import SerializationError
+from biocompiler.registry.reference_builds import MANIFEST_PIN
 
 
 REFERENCE = Path(__file__).resolve().parents[1] / "data/references/fap_car"

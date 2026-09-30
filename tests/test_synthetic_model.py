@@ -6,17 +6,17 @@ import math
 import unittest
 from unittest.mock import patch
 
-from cellweave.errors import SerializationError
-from cellweave.ir.mechanism import MechanismNode, MechanismProgram
-from cellweave.models.synthetic import (
+from biocompiler.errors import SerializationError
+from biocompiler.ir.mechanism import MechanismNode, MechanismProgram
+from biocompiler.models.synthetic import (
     MODEL_RUNNER_VERSION,
     ModelInputFrame,
     ModelTrace,
     SyntheticModelError,
     run_model,
 )
-from cellweave.semantics.realization import Observable
-from cellweave.semantics.types import (
+from biocompiler.semantics.realization import Observable
+from biocompiler.semantics.types import (
     BOOLEAN,
     Concentration,
     Duration,
@@ -149,7 +149,7 @@ class InertialModelTests(unittest.TestCase):
 
     def test_runner_does_not_call_behavior_evaluator(self):
         with patch(
-            "cellweave.semantics.evaluator.evaluate",
+            "biocompiler.semantics.evaluator.evaluate",
             side_effect=AssertionError("The independent model called its oracle"),
         ):
             trace = run_model(delayed(), [ModelInputFrame(0, {"input": True})], until=2)

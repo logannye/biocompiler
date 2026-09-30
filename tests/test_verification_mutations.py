@@ -11,17 +11,17 @@ from pathlib import Path
 import unittest
 from unittest.mock import patch
 
-import cellweave as cw
-from cellweave.compiler.behavior import lower_to_behavior, verify_lowering
-from cellweave.compiler.request import BuildRequest
-from cellweave.compiler.synthetic import run_synthetic_pipeline
-from cellweave.errors import LoweringVerificationError, SerializationError
-from cellweave.ir.behavior import BehaviorProgram
-from cellweave.semantics.types import BOOLEAN
-from cellweave.verification.construct import check_construct
-from cellweave.verification.evidence import CheckOutcome, CheckResult, EvidenceKind
-from cellweave.verification.molecular import check_molecular
-from cellweave.verification.realization import (
+import biocompiler as bc
+from biocompiler.compiler.behavior import lower_to_behavior, verify_lowering
+from biocompiler.compiler.request import BuildRequest
+from biocompiler.compiler.synthetic import run_synthetic_pipeline
+from biocompiler.errors import LoweringVerificationError, SerializationError
+from biocompiler.ir.behavior import BehaviorProgram
+from biocompiler.semantics.types import BOOLEAN
+from biocompiler.verification.construct import check_construct
+from biocompiler.verification.evidence import CheckOutcome, CheckResult, EvidenceKind
+from biocompiler.verification.molecular import check_molecular
+from biocompiler.verification.realization import (
     check_realization,
     realization_dependencies,
 )
@@ -53,10 +53,10 @@ def _aggregate_before_conjunction(args):
     candidate, mapping, domain = args[4], args[5], args[2]
     first, second = (item.mechanism_input_id for item in mapping.inputs)
     aggregate = candidate.find("any_contact")[0].id
-    boolean = cw.Observable("aggregated_a", BOOLEAN, domain.role)
+    boolean = bc.Observable("aggregated_a", BOOLEAN, domain.role)
     extra = (
-        cw.MechanismNode("any_a", "any_contact", boolean, (first,)),
-        cw.MechanismNode(
+        bc.MechanismNode("any_a", "any_contact", boolean, (first,)),
+        bc.MechanismNode(
             "any_b", "any_contact", replace(boolean, id="aggregated_b"), (second,)
         ),
     )
@@ -204,13 +204,13 @@ class VerificationMutationCampaignTests(unittest.TestCase):
     def test_behavior_runtime_and_model_runner_have_separate_execution_dependencies(
         self,
     ):
-        root = Path(__file__).resolve().parents[1] / "src/cellweave"
+        root = Path(__file__).resolve().parents[1] / "src/biocompiler"
         restrictions = {
             "models/synthetic.py": (
-                "cellweave.semantics.evaluator",
-                "cellweave.synthesis",
+                "biocompiler.semantics.evaluator",
+                "biocompiler.synthesis",
             ),
-            "semantics/evaluator.py": ("cellweave.models", "cellweave.synthesis"),
+            "semantics/evaluator.py": ("biocompiler.models", "biocompiler.synthesis"),
         }
         for relative, forbidden in restrictions.items():
             tree = ast.parse((root / relative).read_text(encoding="utf-8"))
@@ -240,10 +240,10 @@ class VerificationMutationCampaignTests(unittest.TestCase):
         molecular = molecular_fixture()
         with ExitStack() as stack:
             for symbol in (
-                "cellweave.compiler.behavior.lower_to_behavior",
-                "cellweave.synthesis.synthetic.generate_synthetic",
-                "cellweave.synthesis.construct.generate_construct",
-                "cellweave.backends.reference.emit_reference_sequence",
+                "biocompiler.compiler.behavior.lower_to_behavior",
+                "biocompiler.synthesis.synthetic.generate_synthetic",
+                "biocompiler.synthesis.construct.generate_construct",
+                "biocompiler.backends.reference.emit_reference_sequence",
             ):
                 stack.enter_context(
                     patch(
@@ -262,7 +262,7 @@ class EvidenceCoverageAuditTests(unittest.TestCase):
     def history(self, args, events):
         signal = args[2].inputs[0].signal_id
         return tuple(
-            cw.InputFrame(time, {signal: cw.SignalSample(present=value)})
+            bc.InputFrame(time, {signal: bc.SignalSample(present=value)})
             for time, value in events
         )
 
@@ -323,8 +323,8 @@ class EvidenceCoverageAuditTests(unittest.TestCase):
         args = realization_fixture(delay=0)
         scenarios = (
             ((), "empty_history"),
-            ((cw.InputFrame(1),), "invalid_history"),
-            ((cw.InputFrame(0), cw.InputFrame(10)), "outside_domain"),
+            ((bc.InputFrame(1),), "invalid_history"),
+            ((bc.InputFrame(0), bc.InputFrame(10)), "outside_domain"),
         )
         for history, code in scenarios:
             result = check_realization(*args[:6], history, until=10)

@@ -5,13 +5,13 @@ import hashlib
 import unittest
 from unittest.mock import patch
 
-from cellweave.backends.dna import emit_dna_cds
-from cellweave.backends.reference import emit_reference_sequence
-from cellweave.backends.rna import emit_rna_cds
-from cellweave.errors import SerializationError
-from cellweave.ir.molecular import MolecularArtifact
-from cellweave.registry.references import ReferenceManifest
-from cellweave.verification.construct import check_construct
+from biocompiler.backends.dna import emit_dna_cds
+from biocompiler.backends.reference import emit_reference_sequence
+from biocompiler.backends.rna import emit_rna_cds
+from biocompiler.errors import SerializationError
+from biocompiler.ir.molecular import MolecularArtifact
+from biocompiler.registry.references import ReferenceManifest
+from biocompiler.verification.construct import check_construct
 from test_construct_checker import candidate_for, fixture
 
 EXPECTED_HASHES = {
@@ -84,7 +84,7 @@ class SequenceEmissionTests(unittest.TestCase):
         # Isolate emission from the already established M5 checker. Any attempt
         # to synthesize RNA by opening the DNA record is now a test failure.
         with patch(
-            "cellweave.backends.reference.check_construct", return_value=checked
+            "biocompiler.backends.reference.check_construct", return_value=checked
         ):
             with patch.object(ReferenceManifest, "record", selected_only):
                 artifact = emit_rna_cds(request, construct, registry, manifests)

@@ -127,7 +127,7 @@ human-target evidence inventory; citations do not become validated support.
 
 `is_current(request)` compares exact dependency identity only. Imported results
 and freshness matches are not independent acceptance; rerun the checker with
-separately retained authority. `cellweave inspect` states these limits.
+separately retained authority. `biocompiler inspect` states these limits.
 
 Human planning and compilation without a deployment request report
 `deployment_contract_missing`. `compile(HumanDeploymentRequest(...))` rechecks
@@ -140,8 +140,8 @@ admission at all registry, verification and export boundaries remains M10.5.
 
 ```sh
 PYTHONPATH=src python examples/human_deployment.py --output generated/deployment
-PYTHONPATH=src python -m cellweave inspect generated/deployment/request-unknown.json
-PYTHONPATH=src python -m cellweave inspect generated/deployment/assessment-pass.json
+PYTHONPATH=src python -m biocompiler inspect generated/deployment/request-unknown.json
+PYTHONPATH=src python -m biocompiler inspect generated/deployment/assessment-pass.json
 ```
 
 The example starts with unestablished exposure/timing, then uses artificial bounds
