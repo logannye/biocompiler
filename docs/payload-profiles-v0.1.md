@@ -3,8 +3,11 @@
 `check_payload` checks structural completeness of a supplied exact molecule against
 a separately pinned `PayloadReference`. A passing result grants neither compiler
 admission nor biological reference promotion. This is a new readiness gate; the
-accepted Construct/Molecular pipelines still support exact CDS references only.
-Their profiles, interpretation and unknown full-payload features are unchanged.
+exact-reference Construct/Molecular pipelines still support exact CDS references
+only. A separate [software molecular-design pipeline](molecular-design-v0.1.md)
+now constructs multi-region RNA candidates from frozen fragment/layout authority;
+it has a separate candidate checker and grants no biological reference promotion.
+The original readiness and exact-reference contracts are unchanged.
 
 The supported classes are deliberately narrow:
 

@@ -1,6 +1,33 @@
 # Session handoff and current resumption point
 
-## Current resumption point — offline design, composition and verification
+## Current resumption point — structural molecular construction
+
+Updated **2026-09-30 (America/Los_Angeles)**. Version `0.1.0.dev16` implements
+M5.8 multi-region RNA assembly, M6.8 independent generated-candidate checking
+and M7.8 reproducible complete-specification packages. Hosted validation is
+pending before the three code-only milestone checkboxes close.
+
+Read [molecular design](molecular-design-v0.1.md) and the [roadmap](roadmap.md).
+`examples/molecular_design.py` assembles a four-region nonfunctional fixture,
+compares its emitted sequence with a separately specified literal expectation,
+reconstructs its package, builds an authorized synonymous alternative and retains
+rejection of that edit under the original request. The CLI commands are
+`molecular-design-build`, `molecular-design-inspect` and `molecular-design-verify`.
+
+The Components entry is frozen sequence-fragment authority. Checked passes preserve
+layout provenance, exact source/destination coordinates, explicit chemistry and
+current dependencies. They supply no upstream intent or dynamic-component mapping.
+The nominal-design handoff separates design identity from actual material, quality,
+potency and clinical-use authority. General human `compile()` remains unavailable;
+M13's biological/reference requirements and M11.2–M11.6 remain open.
+
+The archive tool version changed, so fresh reconstruction of any package family
+requires current tools and independently retained authority; saved PASS records
+cannot be relabeled. The separate PR #20 source work remains unmerged. The next
+user-requested discussion is quantitative execution and independent evaluation;
+those implementations are outside this molecular-construction increment.
+
+## Prior resumption point — offline design, composition and verification
 
 Updated **2026-09-30 (America/Los_Angeles)**. Version `0.1.0.dev15` implements
 three further code-only extensions: M4.8 executable temporal component composition,

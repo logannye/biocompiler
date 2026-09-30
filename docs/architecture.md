@@ -2,7 +2,7 @@
 
 biocompiler is a proposed compiler for converting an immune-cell engineer's intent into an exact digital specification of a DNA or RNA payload. Its organizing principle is **preservation of a behavioral contract through explicit intermediate representations (IRs)**.
 
-The current repository implements the Python intent frontend, immutable intent and behavior graphs, checked intent-to-behavior lowering, an abstract reference evaluator, planning inspection, frozen build/realization requests, a checked pass manager, automatic combinational and temporal synthetic generation with locked operations, finite-trace realization checking against independent synthetic models, reproducible synthetic workflow packages, immutable typed component contracts, deterministic offline selection, and composition linking with provider/resource checks, independently checked whole-CDS reference construct assembly, and exact-reference DNA/RNA emission. General molecular mechanism selection, biological simulation, characterized component libraries and complete-payload generation are not implemented. Physical manufacture, administration, and execution in a recipient cell are outside the compiler boundary.
+The current repository implements the Python intent frontend, immutable intent and behavior graphs, checked intent-to-behavior lowering, an abstract reference evaluator, planning inspection, frozen build/realization requests, a checked pass manager, automatic combinational and temporal synthetic generation with locked operations, finite-trace realization checking against independent synthetic models, reproducible synthetic workflow packages, immutable typed component contracts, deterministic offline selection, and composition linking with provider/resource checks, independently checked whole-CDS reference construct assembly, and exact-reference DNA/RNA emission. A separate software molecular-design pipeline constructs and independently checks multi-region structural RNA specifications. General molecular mechanism selection, biological simulation, characterized component libraries and human therapeutic-payload generation are not implemented. Physical manufacture, administration, and execution in a recipient cell are outside the compiler boundary.
 
 The [v0.1 intent API](intent-api-v0.1.md) implements the authoring vocabulary: cell roles, scoped observations, expressions, actions, state, outputs, controllers, and communication. Python constructs an inspectable intent graph; molecular realization remains a later stage.
 
@@ -124,7 +124,7 @@ This profile tests the preservation machinery without claiming a molecular mecha
 
 ## Implemented request and pipeline boundary
 
-The [frozen request design](build-requests-v0.1.md) makes explicit bindings authoritative and separates source/behavior identity from the later contract/domain phase. The [pass manager](pass-manager-v0.1.md) admits only independently checked, fresh stage outputs. The [combinational synthetic profile](synthetic-profile-v0.1.md) has an automatic generator and a small versioned operation catalog. Separately [curated reference records](reference-benchmarks.md) establish exact CDS expectations; they are not molecular implementations of the synthetic graphs. The [component contracts](component-contracts-v0.1.md) and [offline linker](component-linking-v0.1.md) now support checked synthetic Mechanism → Components lowering. Interface meaning and domain inclusion, explicit providers, assumption cycles, shared capacities and dependency locks are checked independently. `run_component_pipeline` preserves source lineage and finite-history evidence in a `synthetic_components` scope. A [frozen construct request](construct-ir-v0.1.md) now fixes selected membership, reference ranges and expected layout before generation. The [independent construct checker](construct-checking-v0.1.md) validates a single whole DNA or RNA CDS and retains unknown delivered-molecule context. The [exact-CDS pipeline](exact-cds-pipeline-v0.1.md) now emits that selected reference spelling through a separate DNA or RNA backend and independently verifies nucleotide identity, linked-reference consistency, translation and source correspondence. Multi-molecule assembly, general molecular realization and full-payload generation remain future work.
+The [frozen request design](build-requests-v0.1.md) makes explicit bindings authoritative and separates source/behavior identity from the later contract/domain phase. The [pass manager](pass-manager-v0.1.md) admits only independently checked, fresh stage outputs. The [combinational synthetic profile](synthetic-profile-v0.1.md) has an automatic generator and a small versioned operation catalog. Separately [curated reference records](reference-benchmarks.md) establish exact CDS expectations; they are not molecular implementations of the synthetic graphs. The [component contracts](component-contracts-v0.1.md) and [offline linker](component-linking-v0.1.md) now support checked synthetic Mechanism → Components lowering. Interface meaning and domain inclusion, explicit providers, assumption cycles, shared capacities and dependency locks are checked independently. `run_component_pipeline` preserves source lineage and finite-history evidence in a `synthetic_components` scope. A [frozen construct request](construct-ir-v0.1.md) now fixes selected membership, reference ranges and expected layout before generation. The [independent construct checker](construct-checking-v0.1.md) validates a single whole DNA or RNA CDS and retains unknown delivered-molecule context. The [exact-CDS pipeline](exact-cds-pipeline-v0.1.md) now emits that selected reference spelling through a separate DNA or RNA backend and independently verifies nucleotide identity, linked-reference consistency, translation and source correspondence. Multi-molecule assembly, general molecular realization and human therapeutic-payload generation remain future work. The separate structural molecular-design profile below supports explicitly supplied RNA fragment/layout authority.
 
 ## Temporal synthetic builds
 
@@ -165,6 +165,26 @@ These interfaces support the intended future source-to-molecular workflow: a
 selected implementation must preserve required behavior and carry its evidence
 and unresolved obligations downstream. Digital operator equivalence and software
 costs supply no characterization of a molecular component or biological efficiency.
+
+## Structural molecular design
+
+The [molecular-design profile](molecular-design-v0.1.md) adds a separate checked
+Components → Construct → Molecular path for one mature linear RNA software
+specification. Components entry contains exact supplied sequence fragments and
+their pins. Frozen layout authority fixes each source slice, destination interval,
+region annotation, protein expectation and chemistry declaration. The construct
+contains layout; emission proposes the sequence and complete structured molecule.
+An independent checker reconciles every region and property with caller authority
+and does not import the assembler or emitter.
+
+The pass manager retains layout-only source links, current dependencies and
+separate biological/material obligations. This path has no upstream intent or
+synthetic-mechanism correspondence. A revised request can authorize a new
+combination, while the original request and exact-reference contracts reject
+unapproved substitutions. Its package retains all stages, source maps, chemistry,
+independent checks and a nominal-design handoff, then reconstructs offline against
+independent request/build authority. Structural completion and software fixture
+labels cannot grant biological reference promotion or human admission.
 
 ## Reference construct entry and evidence
 

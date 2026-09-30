@@ -23,6 +23,7 @@ This release uses the `biocompiler` package, CLI and artifact namespace. See the
 | Enforce human-profile admission | Fresh gates at planning, selection, verification and export; existing artifacts are software-only and no human therapeutic profile is admitted. |
 | Link and execute digital components | Versioned stateless/temporal contracts, explicit events and values, actual assembly reconstruction, checked providers/resources and independent behavior checks. |
 | Reproduce a reference coding sequence | Checked single-CDS assembly, exact DNA or RNA emission, sequence/translation checks, and reproducible offline build packages. |
+| Assemble a structural RNA design | Explicit sequence fragments and layout, independent generated-candidate checks, complete structured specification and reproducible packages under a software-only profile. |
 | Record molecular correspondence | Contracts connecting requested observations and responses to selected CDS components, with separate parameter, context, and evidence records. |
 | Check a supplied molecule specification | Structural profiles for mature linear RNA, linear DNA, and circular plasmids, checked against independently pinned references and retained source/review records. |
 
@@ -34,7 +35,7 @@ biocompiler keeps exact sequence identity, structural consistency, model-conditi
 
 The authoring language is broader than the executable profiles. Unsupported behavior produces explicit diagnostics. General intent-to-molecular compilation through `bc.compile(...)` is unavailable; exact CDS builds use a separate, independently pinned reference workflow. Calibrated biological simulation and complete therapeutic-payload generation are outside the supported workflows.
 
-Molecular correspondence checks can establish source/CDS linkage while leaving biological behavior `UNKNOWN`. Whole-molecule structural checks do not establish functional performance or authorize a complete-payload compiler build. Their included examples use explicitly artificial software fixtures.
+Molecular correspondence checks can establish source/CDS linkage while leaving biological behavior `UNKNOWN`. Whole-molecule structural checks do not establish functional performance or authorize a human payload build. A separate software molecular-design profile assembles explicit fragments into one complete structural RNA specification. Its examples use artificial, nonfunctional fixtures; source-to-biological implementation and human admission remain unestablished.
 
 The [human target contract](docs/human-target-contract-v0.1.md) fixes human in-vivo
 recipient scope while preserving explicit unresolved applicability. It records
@@ -113,6 +114,21 @@ checked component assembly and explores 100 declared mixed-input histories.
 and [verification](docs/synthetic-verification-v0.1.md) preserve the requirements,
 implementation choices and evidence boundaries needed by future molecular profiles.
 They use software fixtures and require no outside data or laboratory access.
+
+For checked multi-region molecular construction:
+
+```sh
+python examples/molecular_design.py --output generated/molecular-design
+biocompiler molecular-design-build --request generated/molecular-design/request.json --output generated/molecular-design/cli.bcb
+biocompiler molecular-design-inspect generated/molecular-design/cli.bcb
+biocompiler molecular-design-verify generated/molecular-design/cli.bcb --expected-request generated/molecular-design/request.json
+```
+
+The [molecular-design workflow](docs/molecular-design-v0.1.md) independently checks
+every emitted region against frozen fragment/layout authority and retains chemistry,
+provenance and a nominal-design handoff. The example shows an authorized alternate
+design and rejection of an unauthorized synonymous edit. Structural completion
+supplies no biological function, experimental-material identity or clinical authority.
 
 To build and inspect a package containing the bundled RNA-CDS reference:
 
