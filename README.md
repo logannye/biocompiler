@@ -38,7 +38,11 @@ The GUI continues to use the earlier [intent-candidate profile](docs/intent-cand
 The [human circuit profile](docs/human-circuit-profile-v0.1.md) implements R0 of
 the [RNA-circuit plan](docs/rna-circuit-reproduction-plan.md). Its Python and CLI
 checks establish declared scope and preserve independent evidence dimensions.
-It does not yet reconstruct a published circuit or emit a circuit payload.
+The [R2 circuit intent API](docs/circuit-intent-v0.1.md) adds nominal observations,
+composable Boolean tables, explicit products/lifecycles/providers and complete
+reference locks alongside the original human request. Independent checking
+retains every source obligation. Neither layer reconstructs a published circuit
+or emits a circuit payload.
 
 The next compiler capabilities must connect more source requirements to explicit molecular mechanisms, characterized components and supported implementation families. Quantitative models and observation mappings should evaluate those selected implementations, with separate evidence for their applicability. Complete therapeutic compilation also requires independently supported human biology, complete molecular identities and deployment compatibility. These are open engineering and scientific requirements, not capabilities established by the software fixtures.
 

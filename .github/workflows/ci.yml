@@ -29,6 +29,19 @@ jobs:
         run: python -m unittest discover -s tests -v
       - name: Run authoring examples
         run: python examples/intent_programs.py
+      - name: Check circuit intent authoring and independent replay
+        run: |
+          python examples/circuit_intent.py --output generated/circuit-intent-ci
+          biocompiler circuit-intent-check --request generated/circuit-intent-ci/product.request.json --output generated/circuit-intent-ci/cli.assessment.json
+          biocompiler circuit-intent-verify generated/circuit-intent-ci/cli.assessment.json --expected-request generated/circuit-intent-ci/product.request.json
+          biocompiler inspect generated/circuit-intent-ci/reference.request.json
+          biocompiler inspect generated/circuit-intent-ci/cli.assessment.json
+      - name: Retain circuit intent evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: circuit-intent-evidence-py${{ matrix.python-version }}
+          path: generated/circuit-intent-ci/
       - name: Check human circuit profile scope and independent authority
         run: |
           python examples/circuit_profile.py --output generated/circuit-profile-ci

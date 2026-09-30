@@ -64,6 +64,10 @@ def _choice(value, options, label):
 
 
 def _text(value, label):
+    require(
+        isinstance(value, str) and len(value) <= MAX_PROFILE_TEXT_BYTES,
+        f"{label} exceeds the circuit profile text limit.",
+    )
     _plain_text(value, label)
     require(
         len(value.encode("utf-8")) <= MAX_PROFILE_TEXT_BYTES,
@@ -81,9 +85,10 @@ def _bounded_tree(value):
         count += 1
         require(count <= MAX_PROFILE_ITEMS, "Circuit profile item limit exceeded.")
         require(depth <= MAX_PROFILE_DEPTH, "Circuit profile nesting limit exceeded.")
+        remaining = MAX_PROFILE_ITEMS - count - len(stack)
         if isinstance(item, Mapping):
             require(
-                len(item) <= MAX_PROFILE_ITEMS - count,
+                2 * len(item) <= remaining,
                 "Circuit profile item limit exceeded.",
             )
             for key, child in item.items():
@@ -91,11 +96,15 @@ def _bounded_tree(value):
                 stack.extend(((key, depth + 1), (child, depth + 1)))
         elif isinstance(item, (tuple, list)):
             require(
-                len(item) <= MAX_PROFILE_ITEMS - count,
+                len(item) <= remaining,
                 "Circuit profile item limit exceeded.",
             )
             stack.extend((child, depth + 1) for child in item)
         elif isinstance(item, str):
+            require(
+                len(item) <= MAX_PROFILE_TEXT_BYTES,
+                "Circuit profile text limit exceeded.",
+            )
             try:
                 size = len(item.encode("utf-8"))
             except UnicodeError as exc:
@@ -124,6 +133,9 @@ class _ProfileRecord(_Record):
     @classmethod
     def from_json(cls, text):
         require(isinstance(text, str), "Circuit profile JSON must be text.")
+        require(
+            len(text) <= MAX_PROFILE_JSON_BYTES, "Circuit profile byte limit exceeded."
+        )
         try:
             size = len(text.encode("utf-8"))
         except UnicodeError as exc:
@@ -132,6 +144,10 @@ class _ProfileRecord(_Record):
         return cls.from_dict(parse_json(text))
 
     def to_json(self, *, indent=2):
+        require(
+            indent is None or (type(indent) is int and 0 <= indent <= 8),
+            "Circuit JSON indentation must be None or an integer from 0 to 8.",
+        )
         try:
             text = super().to_json(indent=indent)
             size = len(text.encode("utf-8"))

@@ -1,7 +1,24 @@
 """Author inspectable therapeutic programs for in-vivo immune-cell engineering."""
 
-__version__ = "0.1.0.dev20"
+__version__ = "0.1.0.dev22"
 
+from biocompiler.ir.circuit_logic import (
+    BooleanSpec, CircuitSignal, LogicValue, all_equal, nand, nor, parity, xnor,
+)
+from biocompiler.ir.circuit_observations import (
+    CircuitObservation, CircuitProduct, NumericInterval, ObservationEncoding,
+    ObservationEntity, ObservationSample, ObservationScope, ObservationWindow,
+    ProductKind, QuantityKind, classify_observation,
+)
+from biocompiler.ir.circuit_intent import (
+    CircuitBehavior, CircuitBehaviorExpectation, CircuitInputBinding, CircuitLifecycle,
+    CircuitProviderRequirement, CircuitReferenceLock, CircuitRequest,
+    CircuitRequirement,
+)
+from biocompiler.frontend.circuits import CircuitBuilder
+from biocompiler.verification.circuit_intent import (
+    CircuitIntentAssessment, check_circuit_intent, verify_circuit_intent,
+)
 from biocompiler.ir.circuit_profile import (
     CircuitProfileRequest,
     HumanExperimentContext,
@@ -406,6 +423,38 @@ from biocompiler.verification.realization import (
 )
 
 __all__ = [
+    "BooleanSpec",
+    "CircuitSignal",
+    "LogicValue",
+    "all_equal",
+    "nand",
+    "nor",
+    "parity",
+    "xnor",
+    "CircuitObservation",
+    "CircuitProduct",
+    "NumericInterval",
+    "ObservationEncoding",
+    "ObservationEntity",
+    "ObservationSample",
+    "ObservationScope",
+    "ObservationWindow",
+    "ProductKind",
+    "QuantityKind",
+    "classify_observation",
+    "CircuitBehavior",
+    "CircuitBehaviorExpectation",
+    "CircuitInputBinding",
+    "CircuitLifecycle",
+    "CircuitProviderRequirement",
+    "CircuitReferenceLock",
+    "CircuitRequest",
+    "CircuitRequirement",
+    "CircuitBuilder",
+    "CircuitIntentAssessment",
+    "check_circuit_intent",
+    "verify_circuit_intent",
+
     "CircuitProfileRequest", "HumanExperimentContext", "ImmuneLineage",
     "ImmuneRecipientIdentity", "CircuitProfileAssessment",
     "check_circuit_profile", "verify_circuit_profile",

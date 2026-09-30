@@ -9,6 +9,10 @@ import sys
 import tempfile
 
 from biocompiler import __version__
+from biocompiler.ir.circuit_intent import CircuitRequest
+from biocompiler.verification.circuit_intent import (
+    CircuitIntentAssessment, check_circuit_intent, verify_circuit_intent,
+)
 from biocompiler.ir.circuit_profile import (
     CircuitProfileRequest,
     HumanExperimentContext,
@@ -187,6 +191,8 @@ def _read_artifact(document):
         {
             cls.schema_version: cls
             for cls in (
+                CircuitRequest,
+                CircuitIntentAssessment,
                 CircuitProfileRequest,
                 HumanExperimentContext,
                 ImmuneRecipientIdentity,
@@ -303,6 +309,8 @@ def _read_artifact(document):
     if not isinstance(schema, str) or schema not in types:
         raise SerializationError(f"Unknown or missing artifact schema: {schema!r}.")
     if types[schema] in (
+        CircuitRequest,
+        CircuitIntentAssessment,
         CircuitProfileRequest,
         HumanExperimentContext,
         ImmuneRecipientIdentity,
@@ -321,6 +329,23 @@ def _summary(artifact):
         "schema_version": artifact.schema_version,
         "fingerprint": artifact.fingerprint,
     }
+    if isinstance(artifact, CircuitRequest):
+        summary.update(
+            purpose=artifact.profile.purpose, mode=artifact.profile.mode,
+            requested_form=artifact.requested_form, fidelity_scope=artifact.fidelity_scope,
+            deployment_id=artifact.deployment_id, requirements=len(artifact.requirements),
+            inspection="Declared typed intent only; molecular implementation remains unsupported.",
+        )
+    if isinstance(artifact, CircuitIntentAssessment):
+        summary.update(
+            intent_consistency=artifact.intent_consistency,
+            outcome=artifact.outcome.value,
+            molecular_implementation=artifact.molecular_implementation,
+            empirical_validation=artifact.empirical_validation,
+            human_therapeutic_admission=artifact.human_therapeutic_admission,
+            diagnostics=list(artifact.diagnostics),
+            inspection="Historical consistency record; fresh verification requires independent complete request authority.",
+        )
     if isinstance(artifact, CircuitProfileRequest):
         summary.update(
             purpose=artifact.purpose,
@@ -538,6 +563,18 @@ def main(argv: Sequence[str] | None = None) -> int:
         "--version", action="version", version=f"biocompiler {__version__}"
     )
     commands = parser.add_subparsers(dest="command", required=True)
+    intent_check = commands.add_parser(
+        "circuit-intent-check",
+        help="Check complete typed circuit intent without molecular generation",
+    )
+    intent_check.add_argument("--request", type=Path, required=True)
+    intent_check.add_argument("--output", type=Path, required=True)
+    intent_verify = commands.add_parser(
+        "circuit-intent-verify",
+        help="Replay intent consistency against independent complete authority",
+    )
+    intent_verify.add_argument("path", type=Path)
+    intent_verify.add_argument("--expected-request", type=Path, required=True)
     circuit_check = commands.add_parser(
         "circuit-profile-check",
         help="Check declared human circuit scope without compiling a molecule",
@@ -724,6 +761,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         command.add_argument("path", type=Path)
         command.add_argument("--expected-request", type=Path, required=True)
     args = parser.parse_args(argv)
+    if args.command.startswith("circuit-intent-"):
+        return _circuit_intent_command(args)
     if args.command.startswith("circuit-profile-"):
         return _circuit_profile_command(args)
     if args.command == "studio":
@@ -890,6 +929,24 @@ def main(argv: Sequence[str] | None = None) -> int:
             program.to_json() if args.json else json.dumps(_summary(program), indent=2)
         )
     return 0
+
+
+def _circuit_intent_command(args):
+    try:
+        if args.command == "circuit-intent-check":
+            request = CircuitRequest.from_json(_bounded_text(args.request))
+            assessment = check_circuit_intent(request)
+            verify_circuit_intent(assessment, expected_request=request)
+            _publish_report(assessment, args.output, inputs=(args.request,))
+        else:
+            request = CircuitRequest.from_json(_bounded_text(args.expected_request))
+            assessment = CircuitIntentAssessment.from_json(_bounded_text(args.path))
+            assessment = verify_circuit_intent(assessment, expected_request=request)
+        print(json.dumps(_summary(assessment), sort_keys=True, indent=2))
+        return 0
+    except (BiocompilerError, OSError, ValueError, TypeError) as error:
+        print(str(error), file=sys.stderr)
+        return 2
 
 
 def _circuit_profile_command(args):
