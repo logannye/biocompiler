@@ -13,7 +13,9 @@ in `0.1.0.dev20`; its [hosted validation](rna-circuit-reproduction-plan.md#r0--f
 records the tested revision and platform.
 [R2 typed circuit intent](circuit-intent-v0.1.md) adds expressive authoring and
 independent complete-authority replay in `0.1.0.dev22`; its API remains provisional
-until R6. R1 and R3–R13 remain open. No therapeutic admission or molecular circuit
+until R6. [R3 molecular declarations](circuit-molecules-v0.1.md) represent named
+sets, coordinate frames, chemistry and uncertainty in `0.1.0.dev23`, with no
+checked transformations or molecular-function claim. R1 and R4–R13 remain open. No therapeutic admission or molecular circuit
 generation is added.
 
 The [M11.1 audit](m11-human-benchmark-audit.md) records the current candidate

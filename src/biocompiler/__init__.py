@@ -1,7 +1,18 @@
 """Author inspectable therapeutic programs for in-vivo immune-cell engineering."""
 
-__version__ = "0.1.0.dev22"
+__version__ = "0.1.0.dev23"
 
+from biocompiler.ir.molecule_records import DeclarationProvenance
+from biocompiler.semantics.molecule_coordinates import CoordinateSpace, IndexSpan, CoordinatePath
+from biocompiler.ir.molecule_chemistry import (
+    ChemicalIdentity, ChemistryClaim, BaseModification, TailLength,
+    TailDeclaration, MoleculeChemistry,
+)
+from biocompiler.ir.circuit_molecules import (
+    AssemblyOrigin, MoleculeFeature, CircuitMolecule, ComplexConstituent,
+    MolecularComplex, MoleculeRoleInstance, FormCoordinateMapping, CircuitMoleculeSet,
+)
+from biocompiler.artifacts.circuit_molecules import ExperimentalAmount, CircuitMoleculeRecord
 from biocompiler.ir.circuit_logic import (
     BooleanSpec, CircuitSignal, LogicValue, all_equal, nand, nor, parity, xnor,
 )
@@ -423,6 +434,27 @@ from biocompiler.verification.realization import (
 )
 
 __all__ = [
+    "DeclarationProvenance",
+    "CoordinateSpace",
+    "IndexSpan",
+    "CoordinatePath",
+    "ChemicalIdentity",
+    "ChemistryClaim",
+    "BaseModification",
+    "TailLength",
+    "TailDeclaration",
+    "MoleculeChemistry",
+    "AssemblyOrigin",
+    "MoleculeFeature",
+    "CircuitMolecule",
+    "ComplexConstituent",
+    "MolecularComplex",
+    "MoleculeRoleInstance",
+    "FormCoordinateMapping",
+    "CircuitMoleculeSet",
+    "ExperimentalAmount",
+    "CircuitMoleculeRecord",
+
     "BooleanSpec",
     "CircuitSignal",
     "LogicValue",

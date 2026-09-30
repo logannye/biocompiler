@@ -42,7 +42,9 @@ The [R2 circuit intent API](docs/circuit-intent-v0.1.md) adds nominal observatio
 composable Boolean tables, explicit products/lifecycles/providers and complete
 reference locks alongside the original human request. Independent checking
 retains every source obligation. Neither layer reconstructs a published circuit
-or emits a circuit payload.
+or emits a circuit payload. The [R3 molecular declaration layer](docs/circuit-molecules-v0.1.md)
+represents named molecule sets, exact coordinate frames, overlapping annotations,
+chemistry and uncertainty without promoting them to checked assembly or biology.
 
 The next compiler capabilities must connect more source requirements to explicit molecular mechanisms, characterized components and supported implementation families. Quantitative models and observation mappings should evaluate those selected implementations, with separate evidence for their applicability. Complete therapeutic compilation also requires independently supported human biology, complete molecular identities and deployment compatibility. These are open engineering and scientific requirements, not capabilities established by the software fixtures.
 

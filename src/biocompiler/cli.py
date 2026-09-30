@@ -9,6 +9,8 @@ import sys
 import tempfile
 
 from biocompiler import __version__
+from biocompiler.ir.circuit_molecules import CircuitMolecule, CircuitMoleculeSet
+from biocompiler.artifacts.circuit_molecules import CircuitMoleculeRecord
 from biocompiler.ir.circuit_intent import CircuitRequest
 from biocompiler.verification.circuit_intent import (
     CircuitIntentAssessment, check_circuit_intent, verify_circuit_intent,
@@ -191,6 +193,9 @@ def _read_artifact(document):
         {
             cls.schema_version: cls
             for cls in (
+                CircuitMolecule,
+                CircuitMoleculeSet,
+                CircuitMoleculeRecord,
                 CircuitRequest,
                 CircuitIntentAssessment,
                 CircuitProfileRequest,
@@ -309,6 +314,9 @@ def _read_artifact(document):
     if not isinstance(schema, str) or schema not in types:
         raise SerializationError(f"Unknown or missing artifact schema: {schema!r}.")
     if types[schema] in (
+        CircuitMolecule,
+        CircuitMoleculeSet,
+        CircuitMoleculeRecord,
         CircuitRequest,
         CircuitIntentAssessment,
         CircuitProfileRequest,
@@ -329,6 +337,34 @@ def _summary(artifact):
         "schema_version": artifact.schema_version,
         "fingerprint": artifact.fingerprint,
     }
+    if isinstance(artifact, (CircuitMolecule, CircuitMoleculeSet, CircuitMoleculeRecord)):
+        summary.update(
+            scope="declared_molecular_identity",
+            source_correspondence="unverified", molecular_function="unestablished",
+            molecular_assembly="unverified", human_therapeutic_admission="not_admitted",
+            inspection="Supplied molecular declarations only; no checked transformation, circuit implementation or experimental validation.",
+        )
+        if isinstance(artifact, CircuitMolecule):
+            summary.update(
+                form=artifact.form, alphabet=artifact.space.alphabet,
+                topology=artifact.space.topology, sequence_extent=artifact.sequence_extent,
+                spelling_identity=artifact.spelling_identity,
+                declared_nominal_identity=artifact.declared_nominal_identity,
+                declared_nominal_complete=artifact.declared_nominal_complete,
+                base_rotation_identity=artifact.base_rotation_identity,
+            )
+        else:
+            bundle = artifact.bundle if isinstance(artifact, CircuitMoleculeRecord) else artifact
+            summary.update(
+                purpose=bundle.request.profile.purpose,
+                requested_form=bundle.request.requested_form,
+                molecule_records=len(bundle.molecules), complex_records=len(bundle.complexes),
+                role_instances=len(bundle.role_instances),
+                declared_nominal_bundle_identity=bundle.declared_nominal_bundle_identity,
+                declared_nominal_complete=bundle.declared_nominal_complete,
+            )
+            if isinstance(artifact, CircuitMoleculeRecord):
+                summary.update(experimental_specification_identity=artifact.experimental_specification_identity)
     if isinstance(artifact, CircuitRequest):
         summary.update(
             purpose=artifact.profile.purpose, mode=artifact.profile.mode,
