@@ -1,0 +1,46 @@
+{
+  "schema": "biocompiler.human_benchmark_audit_lock.v1",
+  "claim_limit": "Retained audit identity only. Not a complete data bundle, independent biological validation or signed authority.",
+  "files": [
+    {
+      "path": "data/evidence/m11-human-benchmarks/audit.json",
+      "bytes": 18521,
+      "sha256": "25aee90ed2a3065057356785e177faab975a6bed2bba678070bf91b8b0ee8c9a"
+    },
+    {
+      "path": "data/evidence/m11-human-benchmarks/retained/equalizer-recheck.json",
+      "bytes": 489,
+      "sha256": "f7f949818fcaefbf4b9f92c1f8ba2205fdb8eb1e526b295e9f9f009f2a530fe7"
+    },
+    {
+      "path": "data/evidence/m11-human-benchmarks/retained/equalizer-zenodo-metadata.json",
+      "bytes": 4425,
+      "sha256": "f76b040ca0da0bb0c4b521cd323a4db7db6d2ab55858e533a8e03886c3ad4667"
+    },
+    {
+      "path": "data/evidence/m11-human-benchmarks/retained/historical-equalizer-lock.json",
+      "bytes": 24477,
+      "sha256": "8abf21c25f636aae91aba01a317269579f956fa99598f70f0a42fc4fe2b75300"
+    },
+    {
+      "path": "data/evidence/m11-human-benchmarks/review.json",
+      "bytes": 2474,
+      "sha256": "5fcd36283e7eb505e82e656fcbde031294fbc8413123b68f95a8ea0708ff1c38"
+    },
+    {
+      "path": "data/evidence/m11-human-benchmarks/source-inventory.json",
+      "bytes": 11908,
+      "sha256": "3d706937b4d50398cb84007779b9866935da0a4d6a3e73c03bfd8c8ee0345de6"
+    },
+    {
+      "path": "docs/m11-human-benchmark-audit.md",
+      "bytes": 14651,
+      "sha256": "84da26e4262c7e4f1b8c67544d85a147a7a8aca003a47250382d41d5743c9d39"
+    },
+    {
+      "path": "tools/check_human_benchmark_audit.py",
+      "bytes": 6347,
+      "sha256": "de7bb4773aec3c1ad9774b00bac9a068298da28e7f8139925ceca1493fa3444f"
+    }
+  ]
+}

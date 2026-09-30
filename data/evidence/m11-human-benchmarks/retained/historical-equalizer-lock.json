@@ -1,0 +1,694 @@
+{
+  "alternative_genbank_member_count": 85,
+  "benchmark_id": "human-flpin293-equalizer-2021.v1",
+  "claim_limit": "Integrity and static audit only. No model run, compiler admission, biological validation, therapeutic validation, or third-party rights clearance.",
+  "files": [
+    {
+      "bytes": 8983,
+      "path": "benchmark.json",
+      "sha256": "221f4cb27f24d634ff66f22c22db6a4372e55f4c85ed92ae8be145e3a3b065f5"
+    },
+    {
+      "bytes": 13227,
+      "path": "selection.md",
+      "sha256": "234b148c027b968d39c2d6b57c5679183cb917da5903c22fd70415cd8405eb14"
+    },
+    {
+      "bytes": 13410,
+      "path": "verify.py",
+      "sha256": "ef38ef4c7b6ad1649b6d12cb0cfc5a83b921b84935851564dbea3deddf1745b2"
+    },
+    {
+      "bytes": 176865,
+      "path": "sources/PMC8257781.xml",
+      "sha256": "fd0bb703aa3f307151b3e0cc4f0fc952b65864c43bc9035716a514d0df08ea86"
+    },
+    {
+      "bytes": 10602,
+      "path": "sources/cellosaurus-CVCL_U421.html",
+      "sha256": "4732ebdcad97cfe81b9a0c9da3e51d127235edf5867cba17ac9228757efae9ea"
+    },
+    {
+      "bytes": 4425,
+      "path": "sources/equalizer-zenodo-metadata.json",
+      "sha256": "f76b040ca0da0bb0c4b521cd323a4db7db6d2ab55858e533a8e03886c3ad4667"
+    },
+    {
+      "bytes": 853083,
+      "path": "sources/equalizer-v1.0.0.zip",
+      "sha256": "c32408e6f813aba33453d43edfcb83fd606a506dda2ea5ba94cae8d99ef98ae8"
+    },
+    {
+      "bytes": 6643,
+      "path": "sources/equalizer-github-commit.json",
+      "sha256": "dbc95f515726e8620fd2f2226b0cc4b126d804840df64e88bf28589fd4440373"
+    },
+    {
+      "bytes": 19764,
+      "path": "sources/equalizer-github-tree.json",
+      "sha256": "5994cafc2fa528fd576947b4c5727673295945cb63007ff9c233346f279a1949"
+    },
+    {
+      "bytes": 293845,
+      "path": "sources/equalizer-genbank-records.gb",
+      "sha256": "3e4ba6f1aa6d30397555b09cf9646f71db33d73f56fcad6974c998d58a481f87"
+    },
+    {
+      "bytes": 49115,
+      "path": "sources/equalizer-selected.fasta",
+      "sha256": "8c8780f1b5487bc146bc23819bc4ec0d978def00eb962c907d82e4d3b10fdf08"
+    },
+    {
+      "bytes": 38936,
+      "path": "sources/ncbi-disclaimer.html",
+      "sha256": "8ad8f6f186ca51ec73a5fb8935ecfa17b8cbaad300b7025b381898ab72621869"
+    },
+    {
+      "bytes": 111463,
+      "path": "sources/PMC10275982.xml",
+      "sha256": "66134e2772ca90d79406612129ca812ac9f8fb6cde1fb7c1ca8f93aad0c9c271"
+    },
+    {
+      "bytes": 4722,
+      "path": "sources/figshare-22659211-metadata.json",
+      "sha256": "e95effb543fff635e859481b35bacb3b5662dcb6e2de022de175f7caa62d66b6"
+    },
+    {
+      "bytes": 577293,
+      "path": "sources/resource-aware-2023-source-data.zip",
+      "sha256": "d582b5848b62f257935e40e02fa1a55f2af33448d2eb690125f3b4e108f3e219"
+    },
+    {
+      "bytes": 145391,
+      "path": "sources/PMC7492461.xml",
+      "sha256": "b1f286423f811d6a00902e53b51b18e91b48c48a5b4b3841cbd95c6afea40d1c"
+    },
+    {
+      "bytes": 2,
+      "path": "sources/equalizer-figshare-search.json",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "bytes": 1554,
+      "path": "sources/retrieval-selected.json",
+      "sha256": "fca55a58c1e7e1263e0b43a19d2a4c662ed07da7a5a4ad820b44e0d71bda75f4"
+    },
+    {
+      "bytes": 632,
+      "path": "sources/retrieval-additional.json",
+      "sha256": "9c264d45d66429779cc938e3b5ca895b02967d3e544f6ec919da169800d4dd77"
+    }
+  ],
+  "genbank_records": [
+    {
+      "accession_version": "MW962296.2",
+      "definition": "Cloning vector pCEP4_PGK.tetO2_EGFP_mCherry cassette PGK+ episome, complete sequence.",
+      "length_bp": 13437,
+      "molecule": "DNA",
+      "sequence_sha256": "b0e117c7a24f0403e4dacdff3373c57c1606c0fa1784bc6ae1296ec5df34b929",
+      "topology": "circular"
+    },
+    {
+      "accession_version": "MW962297.1",
+      "definition": "Cloning vector pcDNA5- tetR-P2A-eGFP-miR.FF3 target-miR.FF3 Equalizer-H, complete genome.",
+      "length_bp": 7978,
+      "molecule": "DNA",
+      "sequence_sha256": "148972e88a9d0d5e921c707330cf441218304142b37c4d2dd64c72f5126854be",
+      "topology": "circular"
+    },
+    {
+      "accession_version": "MW987521.1",
+      "definition": "Cloning vector pDN-D2ir.tetR_P2A_EGFP_FF4_miRNA equalizer-M, complete sequence.",
+      "length_bp": 7978,
+      "molecule": "DNA",
+      "sequence_sha256": "9ad747f78b6fcb1e1454e6454a7759c19c649e7b1e86eb0231f42f3549d48524",
+      "topology": "circular"
+    },
+    {
+      "accession_version": "MW987522.1",
+      "definition": "Cloning vector pDN-D2ir.FF4_tetR_P2A_EGFP_FF4_miRNA equalizer-L plasmid, complete sequence.",
+      "length_bp": 8000,
+      "molecule": "DNA",
+      "sequence_sha256": "88bcfcd986f0c4454526dc3f236b9100cdb5676d6574074d1768920a3599dc90",
+      "topology": "circular"
+    },
+    {
+      "accession_version": "MW987525.1",
+      "definition": "Cloning vector equalizer-L with onboard mCherry cassette, complete sequence.",
+      "length_bp": 10481,
+      "molecule": "DNA",
+      "sequence_sha256": "bfd86daa49b5ab0dbe5c56c0a5ba93350d97df81b491d8ba97be9d33c97df296",
+      "topology": "circular"
+    },
+    {
+      "accession_version": "MW987526.1",
+      "definition": "Cloning vector equalizer-L mScarlet-I with onboard mCitrine cassette, complete sequence.",
+      "length_bp": 10767,
+      "molecule": "DNA",
+      "sequence_sha256": "3ed3e2ffbf8d2fccebdbf99089935dbadbb6190fc482a61bec80d000512a5dc5",
+      "topology": "circular"
+    },
+    {
+      "accession_version": "MW987527.2",
+      "definition": "Cloning vector equalizer-L episome, complete sequence.",
+      "length_bp": 14857,
+      "molecule": "DNA",
+      "sequence_sha256": "7364c086664fe77c4dc97d982427bee6a019ec90367f3ac0a2f61cb29af3e5e9",
+      "topology": "circular"
+    },
+    {
+      "accession_version": "MW987529.1",
+      "definition": "Cloning vector pDN-D2ir.tetO2_EGFP CMV+, complete sequence.",
+      "length_bp": 6833,
+      "molecule": "DNA",
+      "sequence_sha256": "2dba8922b1a3dcd4c00f66880c3ba96630bdd02f738541f9554ebeb6c257410e",
+      "topology": "circular"
+    },
+    {
+      "accession_version": "MW987530.1",
+      "definition": "Cloning vector CMV+ with onboard mCherry cassette, complete sequence.",
+      "length_bp": 9314,
+      "molecule": "DNA",
+      "sequence_sha256": "3b092e0f61278afb2454eda0daeceb9b643c5a4dd30f4757d6aecf853203db97",
+      "topology": "circular"
+    },
+    {
+      "accession_version": "MW987531.2",
+      "definition": "Cloning vector pCEP4_CMV.tetO2_EGFP_mCherry cassette CMV+ episome, complete sequence.",
+      "length_bp": 13690,
+      "molecule": "DNA",
+      "sequence_sha256": "b930e1bf206688d7e634e260074821f53fadef366d4a2c667a7beda0fd11ba24",
+      "topology": "circular"
+    },
+    {
+      "accession_version": "MW987532.2",
+      "definition": "Cloning vector CMV+ mScarlet-I with onboard mCitrine cassette, complete sequence.",
+      "length_bp": 9294,
+      "molecule": "DNA",
+      "sequence_sha256": "cba3fd361c371b33f2f49fff3661d2ab56ac3c298b5fcda407df030e8f5e1b1b",
+      "topology": "circular"
+    },
+    {
+      "accession_version": "MW987533.1",
+      "definition": "Cloning vector pcDNA5_PGK_EGFP PGK, complete sequence.",
+      "length_bp": 5396,
+      "molecule": "DNA",
+      "sequence_sha256": "c3568434934b85d3adb894218d5c10e6ff927af568dc443acf499af3ee215bd2",
+      "topology": "circular"
+    },
+    {
+      "accession_version": "MW987534.1",
+      "definition": "Cloning vector PGK+ with onboard mCherry cassette, complete sequence.",
+      "length_bp": 9257,
+      "molecule": "DNA",
+      "sequence_sha256": "d202e0d50dd76640f9e1c30d1360ca1ec628e61db65422c8213177fbe36dc61a",
+      "topology": "circular"
+    },
+    {
+      "accession_version": "MW987535.2",
+      "definition": "Cloning vector pcDNA5_EGFP UBC, complete sequence.",
+      "length_bp": 6145,
+      "molecule": "DNA",
+      "sequence_sha256": "fd584dab2bc096e69973f34a771d8d79c7557c5c2d1549e096e54c2cc72785d7",
+      "topology": "circular"
+    },
+    {
+      "accession_version": "MW987536.1",
+      "definition": "Cloning vector negative feedback, complete sequence.",
+      "length_bp": 7574,
+      "molecule": "DNA",
+      "sequence_sha256": "031a4e41c845078853b7a446b6b84336d2a245a1dc65d114e6d0a840e9b19cca",
+      "topology": "circular"
+    },
+    {
+      "accession_version": "MW987537.1",
+      "definition": "Cloning vector 'incoherent feedforward', complete sequence.",
+      "length_bp": 7259,
+      "molecule": "DNA",
+      "sequence_sha256": "8d9f89f9b53b55fabc5b9d064128d48f2033a2048c6f573f9fa6fff6c5fa52f3",
+      "topology": "circular"
+    },
+    {
+      "accession_version": "MZ099631.1",
+      "definition": "Multi-promoter Equalizer-L/mCherry cassette vector, complete sequence.",
+      "length_bp": 14926,
+      "molecule": "DNA",
+      "sequence_sha256": "54aeb44a3f24307ff3f1ef32d3b48804c0528a4a15a89c1484668db60b1fbd93",
+      "topology": "circular"
+    },
+    {
+      "accession_version": "MZ220609.1",
+      "definition": "Cloning vector pGL127_HYB_mCitrine-Cassette_mScarlet-i(FF4), complete sequence.",
+      "length_bp": 11856,
+      "molecule": "DNA",
+      "sequence_sha256": "cdffed93305e119b36e1f2f24f24273ca5cebaeef4b9f2913541f11905ca9080",
+      "topology": "circular"
+    },
+    {
+      "accession_version": "MZ220610.1",
+      "definition": "Cloning vector pGL130_TRE_OL_mCitrine-Cassette_mScarlet-i(FF4), complete sequence.",
+      "length_bp": 11840,
+      "molecule": "DNA",
+      "sequence_sha256": "223380b775df783a149da5aab1947f7f5f4a4dd082d38d89a50fe6d64b5dbc86",
+      "topology": "circular"
+    },
+    {
+      "accession_version": "MZ220611.1",
+      "definition": "Cloning vector pCMV-mCherry, complete sequence.",
+      "length_bp": 5326,
+      "molecule": "DNA",
+      "sequence_sha256": "e227efcbab466240acfae5209aaaf124185d3794a08076566173ad4da59a5236",
+      "topology": "circular"
+    }
+  ],
+  "identity_recipe": "SHA-256 of retained bytes; sequences are uppercase ASCII without whitespace, preserving deposited orientation and coordinate origin; tables use sorted-key JSON with indent=2 and final newline",
+  "known_absent_plot_input": "ExperimentData/Fig4a_Eq_IFF_NF.mat",
+  "measurement_tables": [
+    {
+      "cell_labels": [
+        "HEK293"
+      ],
+      "circuit_counts": {
+        "Equalizer-L plasmid": 3,
+        "Incoherent feedforward plasmid": 3,
+        "Negative feedback plasmid": 3
+      },
+      "headers": [
+        "Cell type",
+        "Circuit",
+        "Transfection dosage (ng per well of 96-well plate)",
+        "Doxycycline concentration (ng/mL)",
+        "Relative circuit output (relative to mean of Equalizer-L)",
+        "Output variability, CV (%)"
+      ],
+      "id": "figure4a_c_human",
+      "range": "A3:F11",
+      "rows": 9,
+      "selected_cells_sha256": "d3d4ebd7444b3fa7d1db4a826833c8c33bd515d5f47d0745f0f44fba1fff8138",
+      "sheet": "Fig. 4a,c"
+    },
+    {
+      "cell_labels": [
+        "HEK293"
+      ],
+      "circuit_counts": {
+        "Equalizer-L plasmid": 24,
+        "Negative feedback plasmid": 24
+      },
+      "headers": [
+        "Cell type",
+        "Circuit",
+        "Transfection dosage (ng per well of 96-well plate)",
+        "Doxycycline concentration (ng/mL)",
+        "Output variability, CV (%)"
+      ],
+      "id": "figure4b_human",
+      "range": "A3:E50",
+      "rows": 48,
+      "selected_cells_sha256": "1c065f77da2b76b31c532da2e2414a265d656556c566cbaa464e135d3a082b08",
+      "sheet": "Fig. 4b"
+    }
+  ],
+  "release_members": [
+    {
+      "bytes": 420,
+      "path": ".gitattributes",
+      "sha256": "7277a86eee2285c209f5b769dc3beaa4a4f8bb901f7fae60a4f85c6dcd1e9bf7"
+    },
+    {
+      "bytes": 15,
+      "path": ".gitignore",
+      "sha256": "3dc98eb6c3dbcecc5ae60b006b0c2934544d8bddf7a6aaf4f05cc822fee48aa1"
+    },
+    {
+      "bytes": 2337,
+      "path": "Code/Fig2b_IFF.m",
+      "sha256": "16d0ec719cd304769091c14bb1dcb440c731da78de150c35b9fa9b280c1c00ac"
+    },
+    {
+      "bytes": 4153,
+      "path": "Code/Fig2d_NF.m",
+      "sha256": "a08cc8429f43a88ce7afd5e3aa37ae9a19a1c1b2c2da78e3a88fdbebe1432d9c"
+    },
+    {
+      "bytes": 2922,
+      "path": "Code/Fig2f_Eq.m",
+      "sha256": "1fd807b060599bb1dfcb4c97dd5515b17c38280ce5ac3eb1493f9a9d7fdb44c8"
+    },
+    {
+      "bytes": 3203,
+      "path": "Code/Fig4a_Eq_IFF_NF.m",
+      "sha256": "6ce77bf72c630820cb6a4c3a5c9c51ea8cccb443b7ad558cc06eae4fb7b5848e"
+    },
+    {
+      "bytes": 7157,
+      "path": "Code/Fig4bc_CV_prediction.m",
+      "sha256": "98e883dd903244f7758ca43ee1719d2b5cb18663816d10c87da35cb63c9d242e"
+    },
+    {
+      "bytes": 5406,
+      "path": "Code/Fig4d_Eq_IFF_NF_plasmidCDF.m",
+      "sha256": "86768f530dc8af402f9db4d13acf37720e525e5b8909456021bfd0a9b9625d47"
+    },
+    {
+      "bytes": 6460,
+      "path": "Code/Fig4e_ExpressionRate.m",
+      "sha256": "3e67d21283ce32d79f58d9a742380366dabc21bc54e7caa6f33c5d66282c771b"
+    },
+    {
+      "bytes": 4537,
+      "path": "Code/Fig4f_TranslationRate.m",
+      "sha256": "200c7f37c91dc5159eaf6d268303447dbb3216e4d22de6cdcf6846dea54212a5"
+    },
+    {
+      "bytes": 4495,
+      "path": "Code/Fig4g_TranscriptionRate.m",
+      "sha256": "88611b30587db6a6bf73a07434e2b04bfe8be5ff1f7133be498b939efe3b2c65"
+    },
+    {
+      "bytes": 3523,
+      "path": "Code/SuppFig12_EqvsIFF.m",
+      "sha256": "d57bf38f623d8492fb5d78b08fe6de55efe8328b918e6bea0b322b01b77c3b5b"
+    },
+    {
+      "bytes": 4861,
+      "path": "Code/SuppFig15_EqvsMultipromoterEq_CV.m",
+      "sha256": "766e1319c9d8cb9b0ba64a0f6a157318990f181b6445f42f2d0baa71fdf64f93"
+    },
+    {
+      "bytes": 1698,
+      "path": "Code/SuppFig15_Stochastic_Barplots.m",
+      "sha256": "8aaf9ce52af6e24deef92563ae3e5f4e67b4f2c5aef2caf134a25245b33d737e"
+    },
+    {
+      "bytes": 2404,
+      "path": "Code/SuppFig2a_IdealNF_logsensitivity.m",
+      "sha256": "c8a1f0b61dc013e94b18654144a5b4ff5c6c5d2b37b884f83db4ac9d6abd7b15"
+    },
+    {
+      "bytes": 2416,
+      "path": "Code/SuppFig2a_IdealNF_logsensitivity_inset.m",
+      "sha256": "a69cfd760e9d9a5c07c698d961ec07979fff33ca35d7c25eaad53758d2f1e14b"
+    },
+    {
+      "bytes": 2429,
+      "path": "Code/SuppFig2b_NF_logsensitivity.m",
+      "sha256": "f6fdf5daf5c15a59cda09c7349c4d74bbcb45760fe5bfdce75a43f66d05ade64"
+    },
+    {
+      "bytes": 2485,
+      "path": "Code/SuppFig4a_Eq_logsensitivity.m",
+      "sha256": "1aadd189585c1425ebbb894dc4cbd426cdb200bf349a1ac8d8339a1976e7f581"
+    },
+    {
+      "bytes": 2335,
+      "path": "Code/SuppFig4b_IFF_logSensitivity_RISCscan.m",
+      "sha256": "a3459910869d2c3ea7b99ac940c7e252a58698ba83e2c59c3f1b31072ffa4593"
+    },
+    {
+      "bytes": 2655,
+      "path": "Code/SuppFig4c_Eq_logSensitivity_RISCscan.m",
+      "sha256": "eb8290c37647878a6f1f888b0302464f22c8deb10404d6ccc2c2e407cbeb333c"
+    },
+    {
+      "bytes": 2298,
+      "path": "Code/SuppFig4d_IFF_logSensitivity_microRNAscan.m",
+      "sha256": "4a69e6bcf306263ac0d9d0893e0b65d4a04158a96628314fa0063ba6762531b0"
+    },
+    {
+      "bytes": 2509,
+      "path": "Code/SuppFig4e_Equalizer_logSensitivity_microRNAscan.m",
+      "sha256": "1fc94913308048da8cd1620cf4befd2b0b4c5a6e1b282e3e79615afc7b2d6a6c"
+    },
+    {
+      "bytes": 2831,
+      "path": "Code/SuppNote3_CopyNumberDistScaleParameter_1dScan.m",
+      "sha256": "055a403bc0b5d2b028acfa898f2b7a5ff387a165a93e13d282fa4307af5afee0"
+    },
+    {
+      "bytes": 2890,
+      "path": "Code/SuppNote3_CopyNumberDistScaleParameter_Leakage_Estimate.m",
+      "sha256": "d22eccc7f1a13842dee0d5a011f4c44b17d2f0778199992113a0a876155245fc"
+    },
+    {
+      "bytes": 1024,
+      "path": "Code/SuppNote3_CopyNumberDistShapeParameterEstimate.m",
+      "sha256": "4fbdd5abecfc901372c72c531584dfdd2d73f5fe95c4cb281080b4196a78f8e0"
+    },
+    {
+      "bytes": 1020,
+      "path": "Code/SuppNote3_CopyNumberDistShapeParameterEstimate_WeakPromoter.m",
+      "sha256": "c58e4ec29c996904ada2d9ed8865becddfaf4dcbc1992392705a25b475c6e671"
+    },
+    {
+      "bytes": 5057,
+      "path": "Code/SuppNote4_microRNAaffinity_Estimate.m",
+      "sha256": "9d91cdeae0dc7e5d4be7438c3af180e4c65a4e522fea82b59ea14ae5087462ae"
+    },
+    {
+      "bytes": 5053,
+      "path": "Code/SuppNote4_microRNAaffinity_Estimate_theta100.m",
+      "sha256": "14458d682257fe2946cddcfe8542a2deccbf15b3d7836c5c48b6f6e76b9790e7"
+    },
+    {
+      "bytes": 7156,
+      "path": "Code/SuppNote5_CV_prediction.m",
+      "sha256": "18d4d27eb5aca573d3985820f38c9e54ae367aa3dfc288d4ba953091e5692db3"
+    },
+    {
+      "bytes": 6353,
+      "path": "Code/SupplementaryFig11_logsensitivity.m",
+      "sha256": "ba19af7dc7086a1f1be35fc2d8340fed421d482083e28d4023267b3b51041918"
+    },
+    {
+      "bytes": 4362,
+      "path": "Code/SupplementaryNote6_AutocorrelationTime.m",
+      "sha256": "b5b2f843f8537ba6bd58949e15a45ec38cc9b48097298bbf8b2118cfe3da3b39"
+    },
+    {
+      "bytes": 8780,
+      "path": "Code/swtest.m",
+      "sha256": "6850dedabedbce5bc91e03259020c371492417a878e25b7fb86b5b7da6ddc0fa"
+    },
+    {
+      "bytes": 26948,
+      "path": "ExperimentData/Figure 3 Data Points.xlsx",
+      "sha256": "63c35ae62019dd714dbd4e2c1da4cf5b33a02a3adadccfc664fa5428290a9ff6"
+    },
+    {
+      "bytes": 14422,
+      "path": "ExperimentData/Figure 4 Data Points.xlsx",
+      "sha256": "4b50ada6b83daec1e848c8419356baa44ecb4909be2f81d87d5e23885154eb3a"
+    },
+    {
+      "bytes": 17649,
+      "path": "ExperimentData/Figure 5 Data Points.xlsx",
+      "sha256": "49f76c3420b757323393b15daed0f9e8a87477d89137f25b5a7cbc064832760a"
+    },
+    {
+      "bytes": 16808,
+      "path": "ExperimentData/Figure 6 Data Points.xlsx",
+      "sha256": "30be8352a58d58661d113d492b5820e730f4ed24ca4da21347e409986cf110d1"
+    },
+    {
+      "bytes": 2789,
+      "path": "ExperimentData/SuppNote3_CMV_SingleCellExpression.mat",
+      "sha256": "d020051eede0bb88a6dca0d3bed4231e02a31781331fc599a9e84b5ca013cbc5"
+    },
+    {
+      "bytes": 488,
+      "path": "ExperimentData/SuppNote3_NF_expression.mat",
+      "sha256": "88dbaf1326eacabab16cf9240076af0eb2e39ab2388d18ca19b070408f270e91"
+    },
+    {
+      "bytes": 1814,
+      "path": "ExperimentData/SuppNote3_PGK_SingleCellExpression.mat",
+      "sha256": "14b3d3899eabdbfaf8a9e695a01cd5da69205c62f0b46bf40866df4bf05494d9"
+    },
+    {
+      "bytes": 327,
+      "path": "ExperimentData/SuppNote4_Equalizer_expression_Fig4a.mat",
+      "sha256": "d27c631a42b6d4cd54b863fe41f28a160d6a3e8864ae889e885c6d7ad1dd6d87"
+    },
+    {
+      "bytes": 327,
+      "path": "ExperimentData/SuppNote4_NF_expression_Fig4a.mat",
+      "sha256": "dc16492c083965afd6286633c90fd0b69e71b1bcffa4d3615b49bb9430cd6ddd"
+    },
+    {
+      "bytes": 35149,
+      "path": "LICENSE",
+      "sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986"
+    },
+    {
+      "bytes": 19661,
+      "path": "Models/Constitutive_model.sbproj",
+      "sha256": "9465abda1b8cd14a73912168e4e4d0db5d66feb7cfcfe028c6000ec171017bdd"
+    },
+    {
+      "bytes": 94976,
+      "path": "Models/Equalizer_model.sbproj",
+      "sha256": "8485b2af54acd8ba3755b8a67820af433e07db4632c9394cd34983fe95b58c2e"
+    },
+    {
+      "bytes": 94972,
+      "path": "Models/Equalizer_model_no_cooperativity.sbproj",
+      "sha256": "410ad354d2db19de74f6b310ff37c85f5f86b2270c9ee8cc9c26a4bf9f11c8f5"
+    },
+    {
+      "bytes": 122199,
+      "path": "Models/Equalizer_multipromoter_model.sbproj",
+      "sha256": "1d0584a596db7e7d0c1b286d27155ebd35b70c598b46808c3407fad10ab1bc37"
+    },
+    {
+      "bytes": 139401,
+      "path": "Models/Equalizer_multipromoter_stochastic_model.sbproj",
+      "sha256": "b127f510631d272ff6217b56d1b7751f9906e39d27252dfd26d9b2c5774a532b"
+    },
+    {
+      "bytes": 78051,
+      "path": "Models/Equalizer_stochastic_model.sbproj",
+      "sha256": "cdf967c4a38ed6e0b081104b93cd0fe6cd9062668a18654dbdcd2fe2c68d5060"
+    },
+    {
+      "bytes": 52728,
+      "path": "Models/IFF_model.sbproj",
+      "sha256": "e9cf5937e4077881982acfd3a8584e3e75ff5fcc8db22e1716cfd04d188a2629"
+    },
+    {
+      "bytes": 37374,
+      "path": "Models/NF_model.sbproj",
+      "sha256": "69c746f959e632f3bee583431b4b38d71a62f761d72346eeffa4988faf020496"
+    },
+    {
+      "bytes": 37377,
+      "path": "Models/NF_model_ideal.sbproj",
+      "sha256": "65583ba7185899099ffa1d2819fc426321bee18555a784cb00d74375cfdb16e9"
+    },
+    {
+      "bytes": 42848,
+      "path": "Models/SBML/Eq_multipromoter_stochastic.sbml",
+      "sha256": "f0bf3c92a110d987297ac5a5941163922faaa2069a087a7e33bb01a76ecc008b"
+    },
+    {
+      "bytes": 28545,
+      "path": "Models/SBML/Eq_stochastic.sbml",
+      "sha256": "b32a7f20a43bfe71001244374a29bf55ef12dc1837be093c1b6d8e43a9193ed4"
+    },
+    {
+      "bytes": 22505,
+      "path": "Models/StochKit2Models/StochKitSBML/Eq_multipromoter_stochastic.xml",
+      "sha256": "68f53230c9d73dde184916c55999970dab2a12b40d525d43d03795c3b5b99070"
+    },
+    {
+      "bytes": 14999,
+      "path": "Models/StochKit2Models/StochKitSBML/Eq_stochastic.xml",
+      "sha256": "b0663319b8f7ea29ca1f75c821cfdd48986f8dc4ddabb864be74c4439df82f9e"
+    },
+    {
+      "bytes": 22511,
+      "path": "Models/StochKit2Models/StochKitSBML_TranscriptionalBursting/Eq_multipromoter_stochastic.xml",
+      "sha256": "0512301456122e39d3f7fd94a513976b1c2364fdc33e6b796bdeac20664c0e99"
+    },
+    {
+      "bytes": 15001,
+      "path": "Models/StochKit2Models/StochKitSBML_TranscriptionalBursting/Eq_stochastic.xml",
+      "sha256": "4a249ba330be394cbe25ee2c1552e9668fe725430818abb890e2363a05fb430c"
+    },
+    {
+      "bytes": 22505,
+      "path": "Models/StochKit2Models/StochKitSBML_TranslationalBursting/Eq_multipromoter_stochastic.xml",
+      "sha256": "2e5d2d0969b314ac5eb540f0ae71709ffad425bdf37767cf1f595e2b73f1ad59"
+    },
+    {
+      "bytes": 14997,
+      "path": "Models/StochKit2Models/StochKitSBML_TranslationalBursting/Eq_stochastic.xml",
+      "sha256": "ef827f2d9da78030709fa67bb236703d844c9945a2d8836014e5ec3c6fd8af3e"
+    },
+    {
+      "bytes": 22520,
+      "path": "Models/StochKit2Models/StochKitSBMLafter1e6/Eq_multipromoter_stochastic.xml",
+      "sha256": "e4df659c7534ac3ee3977871e75fd37d7f99682ca9f4bf41175a42b391a8fd15"
+    },
+    {
+      "bytes": 15013,
+      "path": "Models/StochKit2Models/StochKitSBMLafter1e6/Eq_stochastic.xml",
+      "sha256": "5e608d47bd466f00460e7113ece2ac8fbe34c717c9fcc05afacc7916777057a0"
+    },
+    {
+      "bytes": 22524,
+      "path": "Models/StochKit2Models/StochKitSBMLafter1e6_TranscriptionalBursting/Eq_multipromoter_stochastic.xml",
+      "sha256": "0f350ef9b26c4b15bc22e88bf7d4e469dfb6858c4cacd81ba118b403a716a898"
+    },
+    {
+      "bytes": 15014,
+      "path": "Models/StochKit2Models/StochKitSBMLafter1e6_TranscriptionalBursting/Eq_stochastic.xml",
+      "sha256": "3806cfa6c5adbb05c93c28a8e837cd9fd2641a0059c1ee8249274094f19f5ec5"
+    },
+    {
+      "bytes": 22508,
+      "path": "Models/StochKit2Models/StochKitSBMLafter1e6_TranslationalBursting/Eq_multipromoter_stochastic.xml",
+      "sha256": "c5d55138dfbc7362e83a02f303d8c51525527d27131bc3d68bd61ba2288581e8"
+    },
+    {
+      "bytes": 15001,
+      "path": "Models/StochKit2Models/StochKitSBMLafter1e6_TranslationalBursting/Eq_stochastic.xml",
+      "sha256": "de4a7223472fd73d4b74db5dce37a580eafee4d20982eba627f90b2dacc4434d"
+    },
+    {
+      "bytes": 1263,
+      "path": "README.md",
+      "sha256": "bd95b863c3d404ce4540d2f6202a0d7599ef6ddc964509b58829cc5684672a9c"
+    }
+  ],
+  "sbml_static_inventory": {
+    "assignmentRule": 0,
+    "event": 0,
+    "level": "2",
+    "parameter": 26,
+    "path": "Models/SBML/Eq_stochastic.sbml",
+    "reaction": 22,
+    "species": 14,
+    "version": "4"
+  },
+  "schema": "cellweave.benchmark-evidence-lock.v1",
+  "selected_fasta_crosschecks": [
+    "MW987522.1",
+    "MW987525.1",
+    "MW987530.1",
+    "MW987536.1",
+    "MW987537.1",
+    "MZ220611.1"
+  ],
+  "simbiology_container_members": {
+    "Models/Equalizer_model.sbproj": [
+      "description.mat",
+      "diagram_1.json",
+      "externalDataLookup.mat",
+      "externaldata.mat",
+      "manifest.proj",
+      "modelLookup.mat",
+      "projectVersion.json",
+      "simbiodata.mat",
+      "taskLookup.mat"
+    ],
+    "Models/IFF_model.sbproj": [
+      "description.mat",
+      "diagram_1.json",
+      "manifest.proj",
+      "modelLookup.mat",
+      "projectVersion.json",
+      "simbiodata.mat",
+      "taskLookup.mat"
+    ],
+    "Models/NF_model.sbproj": [
+      "description.mat",
+      "diagram_1.json",
+      "manifest.proj",
+      "modelLookup.mat",
+      "projectVersion.json",
+      "simbiodata.mat",
+      "taskLookup.mat"
+    ]
+  }
+}

@@ -1,6 +1,8 @@
 # Development roadmap
 
-For a fresh session starting at M11.1, read the [session handoff](session-handoff.md).
+For the M10 closing context, read the [session handoff](session-handoff.md).
+The [M11.1 audit](m11-human-benchmark-audit.md) records the current candidate
+comparison and explicit therapeutic-benchmark deferral; validation is pending.
 
 biocompiler's intended function is to compile an immune-cell engineer's Python therapeutic intent into an **exact, complete RNA or DNA molecular specification for in vivo deployment in a human patient**. The nucleotide sequence is the primary output, accompanied by the molecular features, deployment assumptions and evidence needed to interpret it. Physical manufacture, administration and clinical authorization remain external activities; their relevant constraints must inform compilation.
 
@@ -47,7 +49,7 @@ The existing molecular milestone reports **“exact CDS reference reproduced”*
 
 High-level intent generally permits many sequences. Intent-root builds require frozen source requirements plus pinned implementation choices, component versions and tool semantics. Reference reproduction can start from selected components and must not fabricate upstream intent correspondence. The compiler must record its choices rather than implying that a therapeutic goal uniquely determines a nucleotide string.
 
-**Continue with M11.1: audit human benchmarks and evidence.** M10.1 provides the target declaration and evidence requirements; M10.2 defines reversible conditional secretion; M10.3 freezes its deployment assumptions and checks declared timing/dependency compatibility; M10.4 conjoins required responses with prohibited observations and explicit input-loss/shutdown assumptions; M10.5 enforces current use admission at planning, selection, fresh verification and export; M10.6 adds ten integrated request cases, preserves outcome/search distinctions and documents the proposed profile and completion scope. Select supported biological cue/product identities, quantitative bounds, one human cell subtype, one modality and one deployment context based on available evidence. Freeze an initial therapeutic profile only after documenting what can be observed, implemented and checked. Do not broaden the authoring language or add unrestricted sequence optimization before this complete path works.
+**Current work: M11.1 human benchmark and evidence audit.** The [audit decision](m11-human-benchmark-audit.md) prioritizes Roybal's direct human secretion-observation lead and Allen's complementary component/context lead, retains Equalizer as a separate reporter/model candidate, and defers a complete therapeutic benchmark. Source review and hosted validation govern completion below. M10.1–M10.6 supply target, behavior, deployment, required/prohibited observation and admission contracts plus ten integrated request cases. Biological cue/product identities, bounds, precise cell context and applicable delivery remain unresolved. Freeze a therapeutic profile only after documenting what can be observed, implemented and checked; do not silently substitute a DNA/ex-vivo benchmark for the proposed RNA/in-vivo scope.
 
 Delivery participates before mechanism selection. Relevant uncertainty, population variation and prohibited outcomes must be represented within the first profile; they cannot all be postponed to a later general simulator. Start with bounded models adequate for the selected claims. Public or independently supplied experiments can support development; unavailable data or unestablished transfer to human in vivo conditions remains an explicit scientific gate, not an assumed future PASS.
 

@@ -1,0 +1,428 @@
+{
+  "schema": "biocompiler.human_benchmark_audit.v1",
+  "audit_date": "2026-09-29",
+  "timezone": "America/Los_Angeles",
+  "baseline_revision": "79b9d4dc7953fa08ff34c00cd4b2d153785d7b1c",
+  "profile": "biocompiler.proposed_conditional_secretion_examples.v0.1",
+  "decision": {
+    "status": "defer_complete_therapeutic_benchmark",
+    "selected_therapeutic_candidate": null,
+    "prioritized_behavior_leads": [
+      "roybal",
+      "allen"
+    ],
+    "supporting_reporter_candidate": "equalizer",
+    "reference_promoted": false,
+    "compiler_admission": false,
+    "human_compilation_enabled": false,
+    "m11_1": "bounded_audit_and_deferral",
+    "m11_2_through_6": "open",
+    "rationale": "This audit has not established the complete exact-material/measurement/model/deployment chain for any reviewed candidate. Separate source identities cannot be joined by analogy; profile remains unchanged."
+  },
+  "candidates": [
+    {
+      "id": "roybal",
+      "name": "Roybal 2016 conditional T-cell secretion",
+      "decision": "prioritized_direct_secretion_lead",
+      "source_ids": [
+        "roybal2016",
+        "synnotch79125",
+        "response79123"
+      ],
+      "evidence_contexts": [
+        "primary_human_cells_ex_vivo",
+        "human_cells_in_mouse"
+      ],
+      "assessment": {
+        "exact_sequence": "Receptor and empty-backbone deposits identified; complete measured cytokine construct not frozen; Table S1 not retrieved.",
+        "complete_molecule": "Full nucleotide payload, response elements, experimental preparation and delivered identity not independently reconciled.",
+        "quantitative_measurements": "Principally human CD4 cytokine panel: 24-hour supernatant pg/mL by Luminex, antigen-negative controls; Figure 2D n=3/SEM, S2D n=4. Not a per-cell secretion-flux trajectory.",
+        "available_model": "No matched executable secretion model established in inspected publication.",
+        "biological_context": "Human primary CD4/CD8 ex-vivo engineered cells; nuclear response and surface-antigen contact; mouse recipients remain mouse.",
+        "reuse_terms": "Copyright and deposit terms unresolved for source freeze; no policy accepted.",
+        "material_correspondence": "Resource names are leads; empty response backbone cannot establish measured payload identity."
+      },
+      "blocking_gap_ids": [
+        "G1",
+        "G2",
+        "G3",
+        "G4",
+        "G5",
+        "G6",
+        "G7",
+        "G8"
+      ],
+      "complete_therapeutic_benchmark": false,
+      "compiler_admission": false,
+      "independent_predictive_validation": "not_established"
+    },
+    {
+      "id": "allen",
+      "name": "Allen 2022 conditional IL-2 component/context lead",
+      "decision": "prioritized_complementary_context_lead",
+      "source_ids": [
+        "allen2022",
+        "allen_supplement"
+      ],
+      "evidence_contexts": [
+        "primary_human_cells_ex_vivo",
+        "human_cells_in_mouse",
+        "mouse_cells_in_mouse"
+      ],
+      "assessment": {
+        "exact_sequence": "Human Tables S1/S2: ordered elements and mixed protein/regulatory-DNA sequences; not full exact nucleotide constructs.",
+        "complete_molecule": "No complete cytoplasmic RNA/mature-product/material record independently reconciled.",
+        "quantitative_measurements": "Human IL-2 intracellular staining after secretion blockade and proliferation; ELISA described for mouse cells; no human secretion-rate conversion.",
+        "available_model": "No matched executable secretion model established in inspected main text/supplement.",
+        "biological_context": "Human CD8 prototype and NSG transfer distinct from later syngeneic mouse experiments; same-cell/two-cell systems distinct.",
+        "reuse_terms": "No unrestricted redistribution license established; source correction details unresolved.",
+        "material_correspondence": "Corrected main publication and supplement relationship, component-to-whole-construct and exact measured material links remain open."
+      },
+      "blocking_gap_ids": [
+        "G1",
+        "G2",
+        "G3",
+        "G4",
+        "G5",
+        "G6",
+        "G7",
+        "G8"
+      ],
+      "complete_therapeutic_benchmark": false,
+      "compiler_admission": false,
+      "independent_predictive_validation": "not_established"
+    },
+    {
+      "id": "zhang",
+      "name": "Zhang 2015 inducible IL-12 TIL clinical boundary",
+      "decision": "clinical_boundary_comparator",
+      "source_ids": [
+        "zhang2015"
+      ],
+      "evidence_contexts": [
+        "human_patient_after_ex_vivo_cell_engineering"
+      ],
+      "assessment": {
+        "exact_sequence": "Complete versioned nucleotide files not retrieved.",
+        "complete_molecule": "Engineered cell product differs from a complete RNA specification delivered for in-vivo engineering.",
+        "quantitative_measurements": "Partial primary-text inspection identifies concentrations, serial serum observations and adverse outcomes; no instantaneous per-cell rate or cue-off trajectory.",
+        "available_model": "No matched executable model or independent evaluation partition established by partial review.",
+        "biological_context": "Patients receiving autologous ex-vivo engineered TILs; not in-vivo RNA engineering or a general human population.",
+        "reuse_terms": "AACR copyright; complete-source/redistribution review open; no patient-level records retained.",
+        "material_correspondence": "Construct-to-lot-to-observation chain not independently reconciled; does not validate a different product."
+      },
+      "blocking_gap_ids": [
+        "G1",
+        "G2",
+        "G3",
+        "G4",
+        "G5",
+        "G6",
+        "G7",
+        "G8"
+      ],
+      "complete_therapeutic_benchmark": false,
+      "compiler_admission": false,
+      "independent_predictive_validation": "not_established"
+    },
+    {
+      "id": "equalizer",
+      "name": "Yang 2021 Equalizer-L Flp-In 293",
+      "decision": "retained_scoped_reporter_model_candidate",
+      "source_ids": [
+        "equalizer_article",
+        "equalizer_release",
+        "equalizer_sequences",
+        "cellosaurus"
+      ],
+      "evidence_contexts": [
+        "human_cell_line_flp_in_293"
+      ],
+      "assessment": {
+        "exact_sequence": "Six selected/reserve version-specific sequences rechecked; all twenty deposited GenBank records retained in historical bundle.",
+        "complete_molecule": "Complete deposited circular DNA records; experimental preparation, companion material and chemistry not fully reconciled.",
+        "quantitative_measurements": "57 processed fluorescence/CV summary rows in two Figure 4 ranges; not secretion, raw single-cell data or independent evaluation cases.",
+        "available_model": "Versioned SimBiology sources available, not executed. Missing plotting MAT input; stochastic SBML not an equivalent deterministic model.",
+        "biological_context": "Flp-In 293, source alias HEK293, CVCL_U421; not primary T cells or patient deployment.",
+        "reuse_terms": "GPL-3.0 archive versus CC BY 4.0 metadata; scope unresolved; no code integrated.",
+        "material_correspondence": "Study/accession/construct-label correspondence; feature-to-model and manufactured-material correspondence unestablished."
+      },
+      "blocking_gap_ids": [
+        "G1",
+        "G2",
+        "G3",
+        "G4",
+        "G5",
+        "G6",
+        "G7",
+        "G8"
+      ],
+      "complete_therapeutic_benchmark": false,
+      "compiler_admission": false,
+      "independent_predictive_validation": "not_established"
+    },
+    {
+      "id": "capstan",
+      "name": "Capstan RM_61461 / SEQ151",
+      "decision": "delivery_molecule_comparator_deferred",
+      "source_ids": [
+        "capstan_a9"
+      ],
+      "evidence_contexts": [
+        "primary_human_cells_ex_vivo",
+        "human_pbmc_in_mouse",
+        "nonhuman_primate"
+      ],
+      "assessment": {
+        "exact_sequence": "23-1871-WO_SequenceListing.xml identified, not retrieved or validated; A1/A9 correction scope open.",
+        "complete_molecule": "Named transcript/chemistry disclosures do not reconcile complete mature molecule or heterogeneous preparation.",
+        "quantitative_measurements": "Figure 3B: 6/24/48-hour triplicate fluorescence-equivalent molecules/cell; expression/depletion, not secretion. This CD5 screen and later CD8-targeted experiments remain separate.",
+        "available_model": "No matched predictive model/parameter uncertainty/evaluation package established in inspected disclosure.",
+        "biological_context": "Donor-derived human T cells, human-PBMC mice and NHP experiments are distinct; no human in-vivo claim established here.",
+        "reuse_terms": "Patent disclosure not rights clearance; official listing access unresolved.",
+        "material_correspondence": "RM_61461-to-SEQ151/formulation labels are a source chain, not frozen exact sequence/chemistry/lot identity."
+      },
+      "blocking_gap_ids": [
+        "G1",
+        "G2",
+        "G3",
+        "G4",
+        "G5",
+        "G6",
+        "G7",
+        "G8"
+      ],
+      "complete_therapeutic_benchmark": false,
+      "compiler_admission": false,
+      "independent_predictive_validation": "not_established"
+    },
+    {
+      "id": "ibrahim",
+      "name": "Addgene 135992 / Ibrahim 2026",
+      "decision": "delivery_molecule_comparator_deferred",
+      "source_ids": [
+        "addgene135992",
+        "ibrahim2026"
+      ],
+      "evidence_contexts": [
+        "primary_human_cells_ex_vivo",
+        "human_cell_lines",
+        "human_cells_in_mouse"
+      ],
+      "assessment": {
+        "exact_sequence": "Sequence-policy gate not accepted; raw record unvalidated; BBx/BBz naming discrepancy and experiment-to-deposit version correspondence unresolved.",
+        "complete_molecule": "Transfer plasmid, packaged vector genome and delivery preparation remain separate.",
+        "quantitative_measurements": "Figure 4f day-3/day-6 co-culture; Figure 5c/e CAR-positive frequency (mean +/- SD, n=3 mice) and tumor photons/second. Source Data advertised but not inspected; not secretion rates.",
+        "available_model": "No matched mechanistic model/calibration package identified in inspected article.",
+        "biological_context": "Human primary cells and lines; human-cell NSG experiments do not establish human in-vivo delivery.",
+        "reuse_terms": "Article CC BY-NC-ND 4.0 plus separate Addgene/material terms; no sequence-policy acceptance.",
+        "material_correspondence": "Supplemental plasmid/domain locators are not validated whole-record/material links; experimental edits unreviewed."
+      },
+      "blocking_gap_ids": [
+        "G1",
+        "G2",
+        "G3",
+        "G4",
+        "G5",
+        "G6",
+        "G7",
+        "G8"
+      ],
+      "complete_therapeutic_benchmark": false,
+      "compiler_admission": false,
+      "independent_predictive_validation": "not_established"
+    },
+    {
+      "id": "wang",
+      "name": "Wang 2025 circRNA CAR-opt-3",
+      "decision": "delivery_molecule_comparator_deferred",
+      "source_ids": [
+        "wang2025"
+      ],
+      "evidence_contexts": [
+        "primary_human_cells_one_donor",
+        "human_cell_lines",
+        "mouse_in_vivo"
+      ],
+      "assessment": {
+        "exact_sequence": "Prior coding-domain review retained historically; opt-3 correspondence and full mature circle unvalidated.",
+        "complete_molecule": "Complete circle/junction, precursor and preparation identities not reconciled.",
+        "quantitative_measurements": "Flow-cytometry methods use a 24-hour expression readout; Figure 1C-Q mean +/- SEM, n=3. Not conditional secretion kinetics; transcriptomic accession separate.",
+        "available_model": "Article reports no unique code; no compatible predictive model or independent evaluation established.",
+        "biological_context": "One-donor primary-cell electroporation, human lines and mouse LNP evidence are separate contexts.",
+        "reuse_terms": "CC BY-NC 4.0; further data/reagents by request/MTA; scope requires review.",
+        "material_correspondence": "Coding domains do not identify the mature selected circle or its exact experimental preparation."
+      },
+      "blocking_gap_ids": [
+        "G1",
+        "G2",
+        "G3",
+        "G4",
+        "G5",
+        "G6",
+        "G7",
+        "G8"
+      ],
+      "complete_therapeutic_benchmark": false,
+      "compiler_admission": false,
+      "independent_predictive_validation": "not_established"
+    },
+    {
+      "id": "diblasi",
+      "name": "Di Blasi 2023 resource-aware mammalian design",
+      "decision": "historical_reserve_only",
+      "source_ids": [
+        "diblasi2023"
+      ],
+      "evidence_contexts": [
+        "human_cell_line_hek293t",
+        "hamster_cell_line_cho_k1_excluded"
+      ],
+      "assessment": {
+        "exact_sequence": "Historical original archive contains actual GenBank plasmid files; bytes rechecked.",
+        "complete_molecule": "Whole deposited plasmid/material correspondence not newly curated for M10.",
+        "quantitative_measurements": "Historical quantitative source tables available; human subset must be isolated.",
+        "available_model": "Equivalent frozen model/correspondence not established in prior bounded audit; not newly assessed.",
+        "biological_context": "Human HEK293T separate from hamster CHO-K1; neither supports patient deployment.",
+        "reuse_terms": "Historical CC BY 4.0 metadata; new downstream material review still required.",
+        "material_correspondence": "No complete sequence-to-model-to-observation reconciliation claimed."
+      },
+      "blocking_gap_ids": [
+        "G1",
+        "G2",
+        "G3",
+        "G4",
+        "G5",
+        "G6",
+        "G7",
+        "G8"
+      ],
+      "complete_therapeutic_benchmark": false,
+      "compiler_admission": false,
+      "independent_predictive_validation": "not_established"
+    },
+    {
+      "id": "frei",
+      "name": "Frei 2020 mammalian gene-expression burden",
+      "decision": "historical_reserve_only",
+      "source_ids": [
+        "frei2020"
+      ],
+      "evidence_contexts": [
+        "mixed_human_nonhuman_cell_lines"
+      ],
+      "assessment": {
+        "exact_sequence": "Sequence correspondence not deeply audited; do not infer absence.",
+        "complete_molecule": "Not established for a current complete therapeutic reference.",
+        "quantitative_measurements": "Historical article describes measurements; no new normalization or extraction.",
+        "available_model": "Historical article describes modeling; matched versioned package not established by this audit.",
+        "biological_context": "Mixed cell lines; retain species and exact context if later selected.",
+        "reuse_terms": "Historical article CC BY 4.0; additional source terms not assessed.",
+        "material_correspondence": "Less deeply audited reserve; no exact-material chain claimed."
+      },
+      "blocking_gap_ids": [
+        "G1",
+        "G2",
+        "G3",
+        "G4",
+        "G5",
+        "G6",
+        "G7",
+        "G8"
+      ],
+      "complete_therapeutic_benchmark": false,
+      "compiler_admission": false,
+      "independent_predictive_validation": "not_established"
+    }
+  ],
+  "gaps": [
+    {
+      "id": "G1",
+      "kind": "complete_material",
+      "blocked_claim": "Exact complete-molecule reproduction",
+      "evidence_required": "Versioned full record; all regions, topology/chemistry, independent boundary review; separate template, mature molecule and preparation.",
+      "next_gates": [
+        "M11.2"
+      ]
+    },
+    {
+      "id": "G2",
+      "kind": "source_material_correspondence",
+      "blocked_claim": "Sequence-linked empirical behavior",
+      "evidence_required": "Exact construct/variant-to-measured preparation links; retain unresolved joins.",
+      "next_gates": [
+        "M11.3",
+        "M11.4"
+      ]
+    },
+    {
+      "id": "G3",
+      "kind": "observation_mapping",
+      "blocked_claim": "M10 quantitative secretion acceptance",
+      "evidence_required": "Matched units/readouts, sampling/cell-time information and uncertainty; justified observation model.",
+      "next_gates": [
+        "M11.3",
+        "M12"
+      ]
+    },
+    {
+      "id": "G4",
+      "kind": "temporal_and_prohibited_coverage",
+      "blocked_claim": "Reversible secretion/control guarantees",
+      "evidence_required": "Applicable activation, inactivity, persistence, recovery, healthy, input-loss and shutdown observations/actuation.",
+      "next_gates": [
+        "M11.5",
+        "M12"
+      ]
+    },
+    {
+      "id": "G5",
+      "kind": "deployment_applicability",
+      "blocked_claim": "Human in-vivo implementation admission",
+      "evidence_required": "Exact recipient state/population, modality, delivery/exposure, destination and unintended recipients.",
+      "next_gates": [
+        "M10 biological acceptance",
+        "M11.6",
+        "M14"
+      ]
+    },
+    {
+      "id": "G6",
+      "kind": "model_and_independent_evaluation",
+      "blocked_claim": "Predictive biological checking",
+      "evidence_required": "Versioned matched model, parameter provenance, independently justified evaluation partition.",
+      "next_gates": [
+        "M11.5",
+        "M12"
+      ]
+    },
+    {
+      "id": "G7",
+      "kind": "access_reuse_and_version",
+      "blocked_claim": "Reviewed reference/evidence freeze",
+      "evidence_required": "Permitted source bytes, source corrections and material-specific access/reuse review.",
+      "next_gates": [
+        "M11.2",
+        "M11.6"
+      ]
+    },
+    {
+      "id": "G8",
+      "kind": "uncertainty_and_population",
+      "blocked_claim": "Robust population applicability",
+      "evidence_required": "Matched donor/cell-state/measurement variability and limits for each proposed claim.",
+      "next_gates": [
+        "M11.5",
+        "M12.3"
+      ]
+    }
+  ],
+  "evaluation": {
+    "partition_status": "not_predeclared",
+    "independent_evaluation_established": false,
+    "numerical_bounds_inferred": false,
+    "models_executed": false,
+    "reason": "No complete matched model/material/observation set selected. Inspected figures and prior fits are not a held-out partition."
+  },
+  "retention_scope": "Small audit records/metadata only. Original full papers, sequences, models and measurement bundles are not included; offline integrity does not reconstruct biology."
+}

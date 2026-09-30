@@ -2,6 +2,14 @@
 
 Small pinned reference inputs belong here, separately from generated outputs and synthetic software-test models. Every reference must identify its source, version, exact scope, normalization, content identities, review evidence, applicable assumptions and unresolved features. Sequence identity alone does not establish biological behavior or experimental material identity.
 
+The [M11.1 human benchmark audit](../docs/m11-human-benchmark-audit.md) retains a
+candidate comparison, source/access inventory, claim-blocking gaps and a small
+locked audit trail under `evidence/m11-human-benchmarks/`. These records are not
+compiler registry entries, admitted references or a complete offline source/data
+bundle. Complete therapeutic benchmark selection is deferred. Run
+`python tools/check_human_benchmark_audit.py` for integrity/relationship checks;
+that check cannot validate the scientific claims or enable compilation.
+
 The [Murine FAP-CAR CDS reference set](references/fap_car/curation.md) contains separately extracted DNA, RNA and protein from WO2022081694A1 SEQ IDs 1–3. It retains a small original HTML excerpt, raw extracted strings and canonical sequences, with full source-file hashes and separate normalized-content hashes. Consult `manifest.json` for its current promotion status. No complete delivered RNA or DNA medicine is specified.
 
 Keep bulky source documents, rendered pages, scratch OCR, datasets and generated build products outside Git. Retain source URLs and raw hashes; runtime reference resolution must remain offline and deterministic. Store small source excerpts only with attribution and an honest redistribution record. The repository software license does not grant rights to third-party source material or patents. Do not add patient data, credentials or proprietary biological libraries.
