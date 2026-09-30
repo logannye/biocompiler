@@ -60,3 +60,5 @@ authorize a new candidate or preserve previous behavior evidence.
 A passing result establishes the stated coding-reference layout only.
 Component compatibility remains conditional on its declared contracts; neither
 complete delivered-payload construction nor molecular behavior is established.
+
+The M10.5 construct checker/result uses v0.2 and includes the current human admission policy in its dependency snapshot. It reruns composition admission; matching candidate/request metadata cannot authorize a human implementation. See [admission](human-admission-v0.1.md).

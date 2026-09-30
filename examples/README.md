@@ -63,3 +63,5 @@ meaning.
 - [molecular_contract.py](molecular_contract.py): bind a requested FAP contact response to the selected CDS, independently recheck its correspondence and retain biological UNKNOWN. The illustrative response bands/deadlines are design obligations, not calibrated measurements. General complete-payload compilation remains unavailable. Use `--output DIRECTORY` to save the contract, authoritative realization request and result.
 
 - [payload_readiness.py](payload_readiness.py): exercise structural RNA/DNA molecule profiles with explicitly artificial software fixtures, independent retained source/review bytes and sequence mutations. A structural PASS grants neither biological reference promotion nor compiler admission. Use `--output DIRECTORY` to retain inspectable evidence.
+
+- [human_admission.py](human_admission.py): show a finite supplied-observation PASS beside rejected human implementation admission, preserve software-only reference selection and save immutable admission requests/assessments. Use `--output DIRECTORY` for CLI inspection. See [M10.5](../docs/human-admission-v0.1.md).

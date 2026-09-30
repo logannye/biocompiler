@@ -14,11 +14,14 @@ from urllib.parse import quote, unquote_to_bytes
 from biocompiler.errors import SerializationError
 from biocompiler.ir.molecular import MolecularArtifact
 from biocompiler.ir.serialization import require
+from biocompiler.verification.admission import require_software_use
 from biocompiler.verification.molecular import check_molecular
 
-SEQUENCE_EXPORT_VERSION = "biocompiler.sequence_export.v0.1"
-FASTA_POLICY = "single-reference-percent-encoded-id-uppercase-lf-terminal-newline.v1"
-JSON_POLICY = "molecular-specification-sorted-keys-indent-2-utf8-lf-terminal-newline.v1"
+SEQUENCE_EXPORT_VERSION = "biocompiler.sequence_export.v0.2"
+FASTA_POLICY = (
+    "single-reference-software-use-percent-encoded-id-uppercase-lf-terminal-newline.v2"
+)
+JSON_POLICY = "molecular-specification-software-use-sorted-keys-indent-2-utf8-lf-terminal-newline.v2"
 
 
 def _digest(data):
@@ -109,8 +112,8 @@ def verify_sequence_export(bundle: SequenceExport, artifact: MolecularArtifact) 
     require(header.startswith(">"), "FASTA is missing its record header.")
     tokens = header[1:].split(" ")
     require(
-        len(tokens) == 3,
-        "FASTA header must identify exactly one reference, alphabet and scope.",
+        len(tokens) == 5,
+        "FASTA header must identify reference, alphabet, scope, software use and non-admission.",
     )
     try:
         reference_id = unquote_to_bytes(tokens[0]).decode("utf-8")
@@ -120,7 +123,9 @@ def verify_sequence_export(bundle: SequenceExport, artifact: MolecularArtifact) 
         quote(reference_id, safe="-._~") == tokens[0]
         and reference_id == record.reference_selection.reference.id
         and tokens[1] == "alphabet=" + record.alphabet
-        and tokens[2] == "scope=CDS-reference-only",
+        and tokens[2] == "scope=CDS-reference-only"
+        and tokens[3] == "use=software_test"
+        and tokens[4] == "human_admission=not_admitted",
         "FASTA header changed reference identity, alphabet, scope or encoding.",
     )
     require(
@@ -168,6 +173,7 @@ def export_reference_sequence(
     success manifest or promise atomic multi-file packaging.
     """
     _line_width(line_width)
+    require_software_use(request.target, boundary="export")
     checked = check_molecular(request, construct, artifact, registry, manifests)
     require(
         checked.passed,
@@ -180,7 +186,7 @@ def export_reference_sequence(
         + quote(record.reference_selection.reference.id, safe="-._~")
         + " alphabet="
         + record.alphabet
-        + " scope=CDS-reference-only\n"
+        + " scope=CDS-reference-only use=software_test human_admission=not_admitted\n"
     )
     sequence_lines = (
         record.sequence[start : start + line_width]

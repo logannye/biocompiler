@@ -31,6 +31,8 @@ from biocompiler.semantics.evaluator import (
 )
 from biocompiler.semantics.realization import BehaviorContract, OperatingDomain
 from biocompiler.semantics.types import BOOLEAN, Interval, TypeSpec
+from biocompiler.semantics.admission import ADMISSION_POLICY_VERSION
+from biocompiler.verification.admission import admission_for_target
 from biocompiler.verification.evidence import (
     CheckDiagnostic,
     CheckOutcome,
@@ -40,10 +42,12 @@ from biocompiler.verification.evidence import (
     RequirementCoverage,
 )
 
-CHECKER_VERSION = "biocompiler.realization_checker.v0.2"
+CHECKER_VERSION = "biocompiler.realization_checker.v0.3"
 CHECKER_SETTINGS = freeze_json(
     {
         "scope": "supplied_contracts_and_finite_history",
+        "intended_use": "software_test",
+        "human_admission_policy": ADMISSION_POLICY_VERSION,
         "time": "right_continuous_piecewise_constant",
         "response": "active_inactive_bands_after_transition_deadlines",
         "nonvacuity": "checked_active_and_inactive_deadlines_for_every_response_and_complete_uncancelled_episodes",
@@ -319,6 +323,14 @@ def check_realization(
                 )
             )
         return CheckResult(outcome, deps, ids, tuple(entries), tuple(examples))
+
+    admission = admission_for_target(target, boundary="verification")
+    if admission.decision != "software_only":
+        return result(
+            CheckOutcome.UNSUPPORTED,
+            "human_profile_not_admitted",
+            "; ".join(admission.diagnostics),
+        )
 
     if contract.behavior_fingerprint != behavior.fingerprint:
         return result(

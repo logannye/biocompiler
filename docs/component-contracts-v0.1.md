@@ -123,3 +123,7 @@ content identity changes, resource unknowns and sequence/model separation.
 Composition and catalog tests additionally exercise provider grounding,
 resource capacities and stale locks. These are exact software checks over this
 finite contract language, not biological calibration or molecular refinement.
+
+## Current use admission
+
+[M10.5](human-admission-v0.1.md) adds use checks before preference ranking. Registry and selection-result schemas are v0.2. Every selection result includes its admission assessment. A human request returns `unsupported` with no selected component, including an empty registry; this does not demonstrate biological infeasibility. Generic targets remain software-only. `sequence_reference`, `synthetic_model` and self-declared `modeled_component` records cannot provide human admission. Evidence categories and exact source/context limitations remain distinct.

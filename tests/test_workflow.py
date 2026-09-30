@@ -150,7 +150,7 @@ class WorkflowTests(unittest.TestCase):
                         "resources": {},
                     },
                 )
-                self.assertEqual(saved["schema_version"], "biocompiler.plan.v0.2")
+                self.assertEqual(saved["schema_version"], "biocompiler.plan.v0.3")
                 self.assertEqual(saved["program_fingerprint"], self.program.fingerprint)
                 self.assertEqual(saved["status"], "unresolved")
 

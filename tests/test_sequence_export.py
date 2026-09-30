@@ -49,7 +49,7 @@ class SequenceExportTests(unittest.TestCase):
                 self.assertNotEqual(bundle.sequence_sha256, bundle.fasta_sha256)
                 self.assertEqual(
                     bundle.fasta.splitlines()[0],
-                    f">{artifact.records[0].reference.id} alphabet={alphabet} scope=CDS-reference-only",
+                    f">{artifact.records[0].reference.id} alphabet={alphabet} scope=CDS-reference-only use=software_test human_admission=not_admitted",
                 )
                 self.assertNotIn(
                     artifact.records[0].source.file, bundle.fasta.splitlines()[0]

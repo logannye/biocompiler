@@ -20,6 +20,7 @@ from biocompiler.compiler.pipeline import (
     ScopedObligation,
 )
 from biocompiler.ir.construct import ConstructCandidate, ConstructRequest
+from biocompiler.semantics.admission import ADMISSION_POLICY_VERSION
 from biocompiler.ir.serialization import fingerprint, require
 from biocompiler.ir.stages import Stage
 from biocompiler.registry.components import ComponentRegistry
@@ -82,6 +83,7 @@ def run_construct_pipeline(
     )
     references = MappingProxyType(dict(manifests))
     dependencies = {
+        "human_admission_policy": fingerprint(ADMISSION_POLICY_VERSION),
         "request": request.fingerprint,
         "composition": request.composition.fingerprint,
         "component_registry": registry.fingerprint,

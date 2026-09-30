@@ -13,6 +13,7 @@ from typing import ClassVar
 
 from biocompiler.errors import SerializationError
 from biocompiler.ir.intent import SourceLocation, freeze_json, thaw_json
+from biocompiler.semantics.admission import ADMISSION_POLICY_VERSION
 from biocompiler.ir.serialization import (
     JsonArtifact,
     fields,
@@ -33,7 +34,7 @@ from biocompiler.verification.components import (
 )
 from biocompiler.verification.evidence import CheckOutcome, FreshnessReport
 
-CHECKER_VERSION = "biocompiler.construct_checker.v0.1"
+CHECKER_VERSION = "biocompiler.construct_checker.v0.2"
 CLAIM_SCOPE = (
     "Exact layout and source correspondence of the selected whole reference CDS, "
     "with component compatibility conditional on locked declarations only. "
@@ -125,7 +126,7 @@ class ConstructResult(JsonArtifact):
     checked_requirement_ids: tuple[str, ...]
     diagnostics: tuple[ConstructDiagnostic, ...] = ()
     claim_scope: str = CLAIM_SCOPE
-    schema_version: ClassVar[str] = "biocompiler.construct_result.v0.1"
+    schema_version: ClassVar[str] = "biocompiler.construct_result.v0.2"
 
     def __post_init__(self):
         require(
@@ -142,13 +143,21 @@ class ConstructResult(JsonArtifact):
         }
         fields(
             self.dependencies,
-            hash_keys | {"references", "checker", "linker", "reference_adapter"},
+            hash_keys
+            | {
+                "references",
+                "checker",
+                "linker",
+                "reference_adapter",
+                "admission_policy",
+            },
             "Construct dependencies",
         )
         for key in hash_keys:
             _hash(self.dependencies[key], key)
         for key, expected in (
             ("checker", CHECKER_VERSION),
+            ("admission_policy", ADMISSION_POLICY_VERSION),
             ("linker", LINKER_VERSION),
             ("reference_adapter", REFERENCE_COMPONENT_VERSION),
         ):
@@ -272,6 +281,7 @@ def construct_dependencies(request, candidate, registry, manifests):
             key: item.fingerprint for key, item in sorted(manifests.items())
         },
         "checker": CHECKER_VERSION,
+        "admission_policy": ADMISSION_POLICY_VERSION,
         "linker": LINKER_VERSION,
         "reference_adapter": REFERENCE_COMPONENT_VERSION,
     }

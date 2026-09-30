@@ -338,7 +338,7 @@ class EvidenceCoverageAuditTests(unittest.TestCase):
     def test_serialized_pass_cannot_drop_inactive_coverage_or_promote_evidence(self):
         result = check_realization(*realization_fixture())
         self.assertTrue(result.passed)
-        self.assertIn("v0.2", result.dependencies.values["checker"])
+        self.assertIn("v0.3", result.dependencies.values["checker"])
         missing = result.to_dict()
         missing["coverage"][0]["inactive_deadlines_checked"] = 0
         with self.assertRaisesRegex(SerializationError, "active and inactive"):

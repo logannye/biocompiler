@@ -69,7 +69,12 @@ It never trusts an imported PASS label. `verify_sequence_export` parses those
 encodings and verifies their fidelity to the supplied artifact; by itself it does
 not establish reference acceptance.
 
-The FASTA header uses a percent-encoded reference ID, alphabet and CDS-only scope.
+The FASTA header uses a percent-encoded reference ID, alphabet, CDS-only scope,
+and fixed `use=software_test human_admission=not_admitted` labels. M10.5 export
+policy v0.2 requires current [use admission](human-admission-v0.1.md) before the
+independent molecular check. Molecular JSON uses schema v0.2 with equivalent fixed
+labels. Rebuild affected exports from independent authority; sequence-content
+hashes remain unchanged.
 It excludes local paths and caller-selected molecule names. Nucleotides are exact
 uppercase symbols with LF newlines, a declared line width (80 by default) and one
 terminal newline. No whitespace or alphabet repair occurs during verification.

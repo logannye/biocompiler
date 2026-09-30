@@ -138,6 +138,21 @@ jobs:
           path: generated/acceptance-ci/
           if-no-files-found: ignore
           retention-days: 7
+      - name: Check human admission and inspect software-only artifacts
+        run: |
+          python examples/human_admission.py --output generated/admission-ci
+          biocompiler inspect generated/admission-ci/human-request.json
+          biocompiler inspect generated/admission-ci/human-assessment.json
+          biocompiler inspect generated/admission-ci/software-assessment.json
+          biocompiler inspect generated/admission-ci/human-selection.json
+      - name: Retain human admission evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: human-admission-evidence-python-${{ matrix.python-version }}
+          path: generated/admission-ci/
+          if-no-files-found: ignore
+          retention-days: 7
       - name: Import scaffold interfaces
         run: |
           python -c "from biocompiler.compiler.passes import CompilerPass, PassResult; from biocompiler.semantics.context import TargetContext; from biocompiler.verification.evidence import Obligation"

@@ -48,7 +48,7 @@ def manifest_fixture():
                 "construct", "d" * 64, "e" * 64, "biocompiler.construct.v0.1"
             ),
             AcceptedStage(
-                "molecular", "f" * 64, "0" * 64, "biocompiler.molecular.v0.1"
+                "molecular", "f" * 64, "0" * 64, "biocompiler.molecular.v0.2"
             ),
         ),
         toolchain=(ToolPin("compiler", "1", "1" * 64),),

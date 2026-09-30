@@ -54,7 +54,10 @@ from biocompiler.verification.molecular import (
     CHECKER_VERSION as MOLECULAR_CHECKER_VERSION,
 )
 
-REFERENCE_BUILD_VERSION = "biocompiler.reference_build.v0.1"
+from biocompiler.semantics.admission import ADMISSION_POLICY_VERSION
+from biocompiler.verification.admission import require_software_use
+
+REFERENCE_BUILD_VERSION = "biocompiler.reference_build.v0.2"
 
 
 def _json_bytes(value):
@@ -67,6 +70,7 @@ def _json_bytes(value):
 def _tools():
     versions = {
         "reference_build": REFERENCE_BUILD_VERSION,
+        "human_admission_policy": ADMISSION_POLICY_VERSION,
         "reference_inputs": REFERENCE_BUILD_INPUTS_VERSION,
         "archive": ARCHIVE_VERSION,
         "sequence_export": SEQUENCE_EXPORT_VERSION,
@@ -124,6 +128,7 @@ def build_reference_package(
         isinstance(request, ReferenceBuildRequest),
         "Expected a frozen ReferenceBuildRequest; general intent compilation is unsupported.",
     )
+    require_software_use(request.construct.target, boundary="export")
     _, reference, registry = load_reference_inputs(
         request.construct.target.payload_format.value, reference_directory
     )
@@ -173,7 +178,9 @@ def build_reference_package(
         require(result.passed, "A current independent check failed during packaging.")
         add(f"checks/{name}.json", f"{name}-check", _json_bytes(result.to_dict()))
     summary = {
-        "schema_version": "biocompiler.reference_build_summary.v0.1",
+        "schema_version": "biocompiler.reference_build_summary.v0.2",
+        "intended_use": "software_test",
+        "human_therapeutic_admission": "not_admitted",
         "status": completion.status.value,
         "scope": completion.scope,
         "request_fingerprint": request.fingerprint,
@@ -267,6 +274,7 @@ def verify_reference_package(
         manifest.request_fingerprint == request.fingerprint,
         "Packaged request fingerprint mismatch.",
     )
+    require_software_use(request.construct.target, boundary="verification")
     prefix = f"references/{MANIFEST_PIN.id}/"
     # read_archive has already rejected traversal, duplicate and symlink entries.
     with tempfile.TemporaryDirectory(prefix="biocompiler-reference-") as temporary:

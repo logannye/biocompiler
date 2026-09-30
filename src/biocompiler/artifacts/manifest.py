@@ -288,7 +288,7 @@ class AcceptedStage(_Record):
         expected_schemas = {
             "components": "biocompiler.construct_request.v0.1",
             "construct": "biocompiler.construct.v0.1",
-            "molecular": "biocompiler.molecular.v0.1",
+            "molecular": "biocompiler.molecular.v0.2",
         }
         require(
             self.artifact_schema == expected_schemas[self.stage],
@@ -321,7 +321,9 @@ class BuildManifest(_Record):
     profile: str = "reference_cds"
     status: str = "complete"
     scope: str = "exact_cds"
-    schema_version: ClassVar[str] = "biocompiler.build_manifest.v0.1"
+    intended_use: str = "software_test"
+    human_therapeutic_admission: str = "not_admitted"
+    schema_version: ClassVar[str] = "biocompiler.build_manifest.v0.2"
     _decoders: ClassVar[dict] = {
         "files": lambda value: _decode_array(value, PackageFile),
         "accepted_stages": lambda value: _decode_array(value, AcceptedStage),
@@ -329,6 +331,11 @@ class BuildManifest(_Record):
     }
 
     def __post_init__(self):
+        require(
+            self.intended_use == "software_test"
+            and self.human_therapeutic_admission == "not_admitted",
+            "Reference manifests are software-only; human therapeutic use is not admitted.",
+        )
         _hash(self.request_fingerprint, "Reference build request")
         _plain_text(self.package_version, "Package version")
         require(
