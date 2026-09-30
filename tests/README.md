@@ -1,5 +1,9 @@
 # Test boundaries
 
+M10.6 adds 29 profile-case regressions; all 783 software tests pass on hosted
+Python 3.11 and 3.14. Exact revisions/platforms and completion scope are recorded
+in the [roadmap](../docs/roadmap.md).
+
 M10.5 adds 33 admission tests; all 754 software tests pass on hosted Python 3.11
 and 3.14. Exact revisions/platforms and completion scope are recorded in the
 [roadmap](../docs/roadmap.md).
