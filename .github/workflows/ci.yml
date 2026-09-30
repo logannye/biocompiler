@@ -29,6 +29,17 @@ jobs:
         run: python -m unittest discover -s tests -v
       - name: Run authoring examples
         run: python examples/intent_programs.py
+      - name: Compile and independently verify intent-directed molecular candidates
+        run: |
+          python examples/intent_candidate.py --output generated/intent-candidate-ci
+          biocompiler candidate-build --request generated/intent-candidate-ci/product_a.request.json --output generated/intent-candidate-ci/cli.build.json
+          biocompiler candidate-verify generated/intent-candidate-ci/cli.build.json --expected-request generated/intent-candidate-ci/product_a.request.json
+          biocompiler candidate-fasta generated/intent-candidate-ci/cli.build.json --expected-request generated/intent-candidate-ci/product_a.request.json > generated/intent-candidate-ci/cli.fasta
+      - name: Retain intent-directed molecular candidate evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: intent-candidate-evidence-py${{ matrix.python-version }}
+          path: generated/intent-candidate-ci
       - name: Run behavior trace example
         run: python examples/behavior_trace.py
       - name: Run independent realization checks

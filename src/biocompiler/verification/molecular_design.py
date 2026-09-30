@@ -25,7 +25,7 @@ from biocompiler.verification.admission import admission_for_target
 from biocompiler.verification.evidence import CheckOutcome, FreshnessReport
 from biocompiler.verification.payload import PayloadDiagnostic
 
-CHECKER_VERSION = "biocompiler.molecular_design_checker.v0.1"
+CHECKER_VERSION = "biocompiler.molecular_design_checker.v0.2"
 CLAIM_SCOPE = (
     "Exact supplied-fragment identity, assembly correspondence and complete "
     "mature-linear-RNA structure within a frozen software-only request. No "
@@ -373,6 +373,22 @@ def _request_diagnostics(request, expected_request_fingerprint):
             "Software fragment assembly provides no host capabilities, compartments or resource model.",
             "unsupported",
         )
+    diagnostics.extend(structural_rna_diagnostics(request))
+    return diagnostics
+
+
+def structural_rna_diagnostics(request):
+    """Check literal RNA structure without making target or use-admission claims.
+
+    Callers must separately establish request authority, allowed purpose, target
+    modality and source correspondence. This shared structural kernel admits no
+    compiler profile and does not establish any biological implementation.
+    """
+    diagnostics = []
+
+    def problem(code, message, status="fail"):
+        diagnostics.append(PayloadDiagnostic(status, code, message))
+
     fragments = {item.id: item for item in request.fragments}
     if set(fragments) != {item.fragment_id for item in request.placements}:
         problem(

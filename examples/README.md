@@ -1,5 +1,28 @@
 # Examples
 
+[intent_candidate.py](intent_candidate.py) connects authored product requirements
+to exact RNA cassette candidates through supplied parts and architectures. Run
+`PYTHONPATH=src python examples/intent_candidate.py --output generated/intent-candidate`.
+Two artificial products and two architectures demonstrate that a source product
+edit or an architecture constraint changes the emitted sequence; a length bound
+produces an explained empty search. The original human target, conditional rule,
+deployment and prohibited-behavior contracts remain in every request. Sensing,
+regulation, secretion and therapeutic function remain unimplemented.
+
+The example saves complete request/build JSON and verified FASTA. Repeat a build
+and independently verify it with the installed CLI:
+
+```sh
+biocompiler candidate-build --request generated/intent-candidate/product_a.request.json --output generated/intent-candidate/cli.build.json
+biocompiler candidate-verify generated/intent-candidate/cli.build.json --expected-request generated/intent-candidate/product_a.request.json
+biocompiler candidate-fasta generated/intent-candidate/cli.build.json --expected-request generated/intent-candidate/product_a.request.json
+```
+
+These records have `product_cassette_structure` scope and retain partial
+therapeutic implementation and absent human admission. They are JSON records,
+not `.bcb` packages. All fragments and protein strings are nonfunctional software
+fixtures. See the [intent-candidate profile](../docs/intent-candidate-v0.1.md).
+
 [human_acceptance.py](human_acceptance.py) combines required secretion and prohibited
 observations in one request. Run `PYTHONPATH=src python examples/human_acceptance.py --output generated/acceptance`
 for artificial pass/fail/unknown/unsupported cases covering healthy-context activity,

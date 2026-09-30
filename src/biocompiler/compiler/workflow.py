@@ -7,7 +7,11 @@ from dataclasses import dataclass, field, replace
 import json
 import math
 from types import MappingProxyType
-from typing import Any
+from typing import Any, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from biocompiler.ir.candidate import CandidateRequest
+    from biocompiler.compiler.candidate import CandidateCompilation
 
 from biocompiler.verification.admission import admission_for_target
 from biocompiler.compiler.request import BuildRequest, RealizationRequest
@@ -378,9 +382,14 @@ def compile(
     | RealizationRequest
     | HumanBehaviorRequest
     | HumanDeploymentRequest
-    | HumanAcceptanceRequest,
-) -> None:
-    """Reject unsupported general intent compilation; reference CDS uses its own API."""
+    | HumanAcceptanceRequest
+    | CandidateRequest,
+) -> CandidateCompilation:
+    """Compile explicit research candidates; reject unimplemented human realization."""
+    from biocompiler.ir.candidate import CandidateRequest
+    if isinstance(design, CandidateRequest):
+        from biocompiler.compiler.candidate import compile_candidate
+        return compile_candidate(design)
     if not isinstance(
         design,
         (
