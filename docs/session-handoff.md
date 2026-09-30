@@ -1,18 +1,27 @@
 # Session handoff and current resumption point
 
-## Current resumption point — after M11.1
+## Current resumption point — partial reconciliation toward M11.2
 
-Updated **2026-09-29 (America/Los_Angeles)** in [PR #19](https://github.com/logannye/biocompiler/pull/19).
+Updated **2026-09-29 (America/Los_Angeles)** following [PR #19](https://github.com/logannye/biocompiler/pull/19).
 M11.1's [bounded audit](m11-human-benchmark-audit.md) is complete with a justified
 deferral of a complete therapeutic benchmark. The [roadmap](roadmap.md) records
 the exact tested revision/platform and hosted validation. Nine candidates,
 sixteen source records, eight claim-blocking gaps and a small locked audit trail
 are retained. The profile, compiler admission and biological capabilities are unchanged.
 
-Resume with exact material/source correspondence for the prioritized Roybal
-secretion-observation and Allen component/context leads before M11.2 reference
-reconciliation. Roybal's indexed supplemental attachment returned challenge HTML;
-Allen's correction and full-record correspondence remain unresolved. Retain
+The [partial material reconciliation](m11-material-reconciliation.md) resolves
+Allen's correction to structured-abstract panel C axis/day labels, confirms
+identical current publisher/PMC/author supplement bytes, and adds two independently
+reviewed source-literal component rows with offline reconstruction and separate
+assay provenance. This companion preserves the frozen M11.1 audit.
+
+Resume by obtaining a complete source record with experimental-material
+correspondence before M11.2 complete-reference reconciliation. Roybal's advertised
+DOCX remains unretrieved after official PMC metadata, the author repository and
+the institutional API were inspected. Allen's component table is insufficient
+for complete nucleotide identity; the exact measured-preparation join remains
+unresolved. Additional source access or a specific author/material request is the
+next evidence-changing step. No author contact or terms acceptance has occurred. Retain
 Equalizer as a separate scoped reporter/model candidate. Do not substitute its
 evidence for therapeutic secretion, primary-T-cell applicability or patient delivery.
 M11.2–M11.6 remain open; no human therapeutic profile is admitted.

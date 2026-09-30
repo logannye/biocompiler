@@ -1,0 +1,50 @@
+{
+  "schema": "biocompiler.material_reconciliation_candidates.v1",
+  "rows": [
+    {
+      "id": "allen-gal4uas",
+      "source_id": "allen-2022-supplement",
+      "source_sha256": "4b48bb5f8098b2ab595af856ce2ea0355c5e564e5f92b07ad09caf6d92b5b5b4",
+      "label": "GAL4UAS (5x Gal4 response elements with mCMV promoter)",
+      "locator": "Table S2; printed p26; GAL4UAS row",
+      "alphabet": "DNA",
+      "role": "regulatory_dna",
+      "scope": "component_only",
+      "raw_sha256": "994f9026229e1f06fd71399917dbd8a15f057ca5a56d483492204984e37558ea",
+      "sequence": "GGAGCACTGTCCTCCGAACGTCGGAGCACTGTCCTCCGAACGTCGGAGCACTGTCCTCCGAACGTCGGAGCACTGTCCTCCGAACGGAGCATGTCCTCCGAACGTCGGAGCACTGTCCTCCGAACGACTAGTTAGGCGTGTACGGTGGGAGGCCTATATAAGCAGAGCTCGTTTAGTGAACCGTCAGATCGCCTGGAGACGCCATCCACGCTGTTTTGACCTCCATAGAAGACACCGGGACCGATCCAGC",
+      "sequence_sha256": "3b3a17e28bdfdc37d1d6457fdc67c5175a1316d7db852b49f77ac2ff3dce96d8",
+      "length": 250,
+      "normalization": {
+        "policy": "ascii-layout-whitespace-and-uppercase.v1",
+        "removed_ascii_whitespace": 6,
+        "uppercased_characters": 0
+      }
+    },
+    {
+      "id": "allen-human-il2",
+      "source_id": "allen-2022-supplement",
+      "source_sha256": "4b48bb5f8098b2ab595af856ce2ea0355c5e564e5f92b07ad09caf6d92b5b5b4",
+      "label": "Human IL-2",
+      "locator": "Table S2; printed p27; Human IL-2 row",
+      "alphabet": "protein",
+      "role": "protein_component",
+      "scope": "component_only",
+      "raw_sha256": "cc6d5c03ec6ddbf4ef9df4ca16ea2e5caf07c64d42ed67f98758b580175f4d10",
+      "sequence": "MYRMQLLSCIALSLALVTNSAPTSSSTKKTQLQLEHLLLDLQMILNGINNYKNPKLTRMLTFKFYMPKKATELKHLQCLEEELKPLEEVLNLAQSKNFHLRPRDLISNINVIVLELKGSETTFMCEYADETATIVEFLNRWITFCQSIISTLT",
+      "sequence_sha256": "e667127c8e1b5595f8cdcba9c81b3a15ee9c5eb1a5db018c3e84839b66318365",
+      "length": 153,
+      "normalization": {
+        "policy": "ascii-layout-whitespace-and-uppercase.v1",
+        "removed_ascii_whitespace": 4,
+        "uppercased_characters": 0
+      }
+    }
+  ],
+  "claims": {
+    "complete_molecule": false,
+    "exact_experimental_material": false,
+    "quantitative_secretion_rate": false,
+    "model_validation": false,
+    "human_admission": false
+  }
+}

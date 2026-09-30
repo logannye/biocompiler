@@ -1,0 +1,86 @@
+{
+  "schema": "biocompiler.material_reconciliation_authority.v1",
+  "source": {
+    "id": "allen-2022-supplement",
+    "doi": "10.1126/science.aba1624",
+    "sha256": "4b48bb5f8098b2ab595af856ce2ea0355c5e564e5f92b07ad09caf6d92b5b5b4",
+    "bytes": 13338063,
+    "urls": [
+      "https://www.science.org/doi/suppl/10.1126/science.aba1624/suppl_file/science.aba1624_sm.pdf",
+      "https://pmc-oa-opendata.s3.amazonaws.com/PMC9970000.1/NIHMS1871154-supplement-Supp_Mats_Allen_GM.pdf?md5=cd19b12bfd414876f655f08db7885ce0",
+      "https://hershbhargava.com/static/pdf/2022_Allen_Science_supplement.pdf"
+    ],
+    "correction": {
+      "date": "2023-01-13",
+      "url": "https://www.science.org/doi/10.1126/science.aba1624",
+      "scope": "Structured-abstract figure panel C: x-axis labels and day numbers corrected at authors' request.",
+      "supplement_relationship": "Current publisher, PMC and author copies are byte-identical. The notice does not describe sequence/supplement changes; historical byte identity is not established."
+    }
+  },
+  "rows": [
+    {
+      "id": "allen-gal4uas",
+      "label": "GAL4UAS (5x Gal4 response elements with mCMV promoter)",
+      "locator": "Table S2; printed p26; GAL4UAS row",
+      "alphabet": "DNA",
+      "role": "regulatory_dna",
+      "raw_path": "raw/allen-gal4uas.txt"
+    },
+    {
+      "id": "allen-human-il2",
+      "label": "Human IL-2",
+      "locator": "Table S2; printed p27; Human IL-2 row",
+      "alphabet": "protein",
+      "role": "protein_component",
+      "raw_path": "raw/allen-human-il2.txt"
+    }
+  ],
+  "correspondence": [
+    {
+      "id": "allen-table-s1-hil2-response",
+      "locator": "Table S1; printed p24; GAL4UAS hIL-2 IRES mCherry row",
+      "source_construct_label": "GAL4UAS hIL-2 IRES mCherry",
+      "source_ordered_elements": [
+        "GAL4UAS",
+        "human IL-2",
+        "IRES",
+        "mCherry"
+      ],
+      "component_ids": [
+        "allen-gal4uas",
+        "allen-human-il2"
+      ],
+      "relationship": "Named component association in Tables S1/S2, not complete nucleotide identity.",
+      "material_class": "Source-described pHR lentiviral vector; production template is distinct from packaged vector and engineered cell preparation.",
+      "complete_nucleotide_record": null,
+      "exact_measured_preparation": null,
+      "mature_product_boundaries": null,
+      "delivered_artifact_identity": null
+    }
+  ],
+  "observations": [
+    {
+      "id": "allen-human-il2-assay-description",
+      "locator": "Materials and Methods; printed p4; In-Vitro Immune Cell Assays",
+      "record_kind": "assay_descriptor_no_numeric_data",
+      "producing_cells": "Primary human T cells; precise subset and preparation not joined in this descriptor.",
+      "culture_context": "A375/T-cell co-culture in vitro",
+      "recipient_organism": null,
+      "readout": "Intracellular IL-2 antibody staining by flow cytometry after secretion blockade",
+      "timing": "24 h co-culture followed by 4 h golgi-plug/stop exposure before fixation/staining",
+      "units": null,
+      "normalization": null,
+      "replicates_and_uncertainty": null,
+      "numeric_observations": null,
+      "exact_construct_join": null,
+      "limit": "This methods paragraph does not itself establish a figure-specific construct/sample mapping or extracellular per-cell secretion rate. Adjacent ELISA methods concern mouse T cells."
+    }
+  ],
+  "limitations": [
+    "Partial source-literal component extraction only; no complete molecule or full plasmid reference.",
+    "Protein text is not nucleotide authority; regulatory DNA is not a CDS. No back-translation, concatenation, inferred junctions or sequence repair.",
+    "Source-described vector, production template, packaged material, mature product and measured cell preparation remain distinct.",
+    "Human-cell experiments in mice retain a nonhuman recipient; mouse tables/assays cannot be substituted for human evidence.",
+    "No rate calibration, model evaluation, RNA/in-vivo profile change, benchmark promotion or human admission."
+  ]
+}
