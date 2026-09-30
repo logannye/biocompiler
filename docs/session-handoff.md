@@ -2,7 +2,8 @@
 
 ## Current resumption point — partial reconciliation toward M11.2
 
-Updated **2026-09-29 (America/Los_Angeles)** following [PR #19](https://github.com/logannye/biocompiler/pull/19).
+Updated **2026-09-29 (America/Los_Angeles)** in [PR #20](https://github.com/logannye/biocompiler/pull/20), following
+[M11.1 PR #19](https://github.com/logannye/biocompiler/pull/19).
 M11.1's [bounded audit](m11-human-benchmark-audit.md) is complete with a justified
 deferral of a complete therapeutic benchmark. The [roadmap](roadmap.md) records
 the exact tested revision/platform and hosted validation. Nine candidates,
