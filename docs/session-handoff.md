@@ -4,8 +4,12 @@
 
 Updated **2026-09-30 (America/Los_Angeles)**. Version `0.1.0.dev16` implements
 M5.8 multi-region RNA assembly, M6.8 independent generated-candidate checking
-and M7.8 reproducible complete-specification packages. Hosted validation is
-pending before the three code-only milestone checkboxes close.
+and M7.8 reproducible complete-specification packages in [PR #23](https://github.com/logannye/biocompiler/pull/23).
+All three code-only milestones are complete. [Hosted validation](https://github.com/logannye/biocompiler/actions/runs/36737065716)
+passed all 920 tests, installation, examples, installed CLI commands and offline
+reconstruction on Python 3.11.16 and 3.14.7, Linux x86_64. Both runners produced
+the same canonical molecular-design package identity. The roadmap records the
+exact tested revision, platform and identity. No local native build was used.
 
 Read [molecular design](molecular-design-v0.1.md) and the [roadmap](roadmap.md).
 `examples/molecular_design.py` assembles a four-region nonfunctional fixture,
