@@ -68,3 +68,7 @@ unestablished/unimplemented even when all declared observations pass.
 ## Human-profile admission gate
 
 [M10.5](human-admission-v0.1.md) adds a current use-eligibility check at planning, component selection, fresh verification and export. There are no admitted human therapeutic profiles in this release. Generic targets permit software workflows only; human contexts require independent profile admission. Source/CDS identity, finite-model PASS, supplied human-contract observations and self-declared evidence categories cannot authorize human implementations. Policy identity is retained in affected dependency snapshots and reference packages. Future supported profiles must revise this gate with independently reviewed authority rather than adding an override label.
+
+## Proposed-profile examples and result distinctions
+
+The [M10.6 profile document](human-profile-v0.1.md) fixes the scope of the first request-case suite before any human `compile()` path is enabled. Keep missing measurements and unknown deployment bounds distinct from observed failures and unsupported dependencies. Report admission independently from observation consistency. The example-only trace search retains finite candidate/budget bounds and cannot infer infeasibility from exhaustion. Its conditional rate-bound contradiction has a narrower mathematical scope than therapeutic feasibility. M11 evidence review and M12–M14 implementation/admission work remain necessary.

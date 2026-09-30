@@ -17,6 +17,7 @@ This release uses the `biocompiler` package, CLI and artifact namespace. See the
 | Check required and prohibited observations | One acceptance authority for source responses, healthy-context inactivity, background/peak limits, response duration, input-access loss and external shutdown assumptions. |
 | Freeze deployment requirements | Pinned delivery specification, recipient and exposure assumptions, distinct expression/behavior clocks, and explicit unsupported co-payload obligations. |
 | Evaluate and check abstract behavior | Execution against supplied observation histories, a limited automatic synthetic candidate generator, and independent checks with counterexamples and explicit coverage. |
+| Inspect proposed profile cases | Positive, negative, conflicting, underspecified and unsupported requests, with separate admission and bounded-search outcomes. |
 | Enforce human-profile admission | Fresh gates at planning, selection, verification and export; existing artifacts are software-only and no human therapeutic profile is admitted. |
 | Link components | Versioned component contracts with checked interfaces, operating assumptions, providers, resources, and dependency identities. |
 | Reproduce a reference coding sequence | Checked single-CDS assembly, exact DNA or RNA emission, sequence/translation checks, and reproducible offline build packages. |
@@ -120,5 +121,12 @@ PYTHONPATH=src python3 -m unittest discover -s tests -v
 ```
 
 Hosted CI checks package installation, tests, examples, and the CLI on Python 3.11 and 3.14. These checks validate software behavior within the documented profiles; biological performance requires separate evidence.
+
+The [proposed human profile](docs/human-profile-v0.1.md) documents the first
+conditional-secretion scope and its unresolved biological choices. Run
+`python examples/human_profile_cases.py --output generated/profile-cases` to
+retain the ten request cases, then use `--verify generated/profile-cases` to
+recompute them from current example authority. Every case remains unavailable
+for human payload compilation.
 
 For deeper reading, start with the [architecture](docs/architecture.md), [behavior semantics](docs/behavior-semantics-v0.1.md), [molecular contracts](docs/molecular-behavior-v0.1.md), and [payload profiles](docs/payload-profiles-v0.1.md). Contributors should also read [AGENTS.md](AGENTS.md).

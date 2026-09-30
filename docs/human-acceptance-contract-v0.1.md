@@ -136,3 +136,5 @@ Run `python examples/human_acceptance.py --output generated/acceptance` for
 reproducible PASS, FAIL, UNKNOWN and UNSUPPORTED fixtures. Inspect saved contracts
 and results with `biocompiler inspect`. See the [rename notes](biocompiler-migration.md)
 for the artifact namespace break in this release.
+
+The [M10.6 request suite](human-profile-v0.1.md) exercises these contracts alongside deployment and admission. It includes an explicit source/healthy-context conflict, unknown measurements, missing deployment bounds and unsupported dependencies, with independent status dimensions and fresh saved-evidence comparison.
