@@ -1,4 +1,4 @@
-"""Deterministic generation for a narrow combinational synthetic profile.
+"""Deterministic generation for explicit combinational and temporal profiles.
 
 Generation establishes no acceptance claim. ``check_synthetic_candidate`` runs
 the separate model runner and finite-history response checker afterwards.
@@ -15,10 +15,14 @@ from biocompiler.ir.components import ComponentLock
 from biocompiler.ir.intent import freeze_json, thaw_json
 from biocompiler.ir.mechanism import MechanismNode, MechanismProgram
 from biocompiler.ir.serialization import JsonArtifact, fields, names, require
-from biocompiler.registry.synthetic import SYNTHETIC_CATALOG, SYNTHETIC_PROFILE_VERSION
+from biocompiler.registry.synthetic import (
+    SYNTHETIC_PROFILE_VERSION,
+    TEMPORAL_PROFILE_VERSION,
+    catalog_for_profile,
+)
 from biocompiler.semantics.evaluator import InputFrame
 from biocompiler.semantics.realization import Observable
-from biocompiler.semantics.types import BOOLEAN, TypeSpec
+from biocompiler.semantics.types import BOOLEAN, DURATION, TypeSpec, decode_binding
 from biocompiler.verification.evidence import (
     CheckDiagnostic,
     CheckOutcome,
@@ -35,8 +39,8 @@ from biocompiler.verification.realization import (
 
 from biocompiler.verification.admission import admission_for_target
 
-GENERATOR_VERSION = "biocompiler.synthetic.generator.v0.2"
-SYNTHETIC_CHECKER_VERSION = "biocompiler.synthetic.acceptance.v0.3"
+GENERATOR_VERSION = "biocompiler.synthetic.generator.v0.3"
+SYNTHETIC_CHECKER_VERSION = "biocompiler.synthetic.acceptance.v0.4"
 
 
 def _identity(value, label):
@@ -54,21 +58,20 @@ class SyntheticGeneratorConfig(JsonArtifact):
 
     profile_version: str = SYNTHETIC_PROFILE_VERSION
     generator_version: str = GENERATOR_VERSION
-    catalog_fingerprint: str = SYNTHETIC_CATALOG.fingerprint
+    catalog_fingerprint: str | None = None
     witness_selection: str = "closed_band_lower_endpoint"
-    schema_version: ClassVar[str] = "biocompiler.synthetic_generator_config.v0.1"
+    schema_version: ClassVar[str] = "biocompiler.synthetic_generator_config.v0.2"
 
     def __post_init__(self):
-        require(
-            self.profile_version == SYNTHETIC_PROFILE_VERSION,
-            "Unsupported synthetic generation profile.",
-        )
+        catalog = catalog_for_profile(self.profile_version)
+        if self.catalog_fingerprint is None:
+            object.__setattr__(self, "catalog_fingerprint", catalog.fingerprint)
         require(
             self.generator_version == GENERATOR_VERSION,
             "Unsupported synthetic generator version.",
         )
         require(
-            self.catalog_fingerprint == SYNTHETIC_CATALOG.fingerprint,
+            self.catalog_fingerprint == catalog.fingerprint,
             "The selected synthetic catalog is unavailable or stale.",
         )
         require(
@@ -102,6 +105,7 @@ class SyntheticGeneratorConfig(JsonArtifact):
             data["schema_version"] == cls.schema_version,
             "Unsupported generator-config schema.",
         )
+        _identity(data["catalog_fingerprint"], "Catalog fingerprint")
         return cls(
             **{key: value for key, value in data.items() if key != "schema_version"}
         )
@@ -116,7 +120,7 @@ class SyntheticCandidate(JsonArtifact):
     behavior_requirement_ids: Mapping[str, tuple[str, ...]]
     component_locks: tuple[ComponentLock, ...]
     generator_config: SyntheticGeneratorConfig
-    schema_version: ClassVar[str] = "biocompiler.synthetic_candidate.v0.2"
+    schema_version: ClassVar[str] = "biocompiler.synthetic_candidate.v0.3"
 
     def __post_init__(self):
         _identity(self.request_fingerprint, "Request fingerprint")
@@ -229,7 +233,7 @@ def _request(request):
 def generate_synthetic(
     request, *, config: SyntheticGeneratorConfig | None = None
 ) -> SyntheticCandidate:
-    """Generate stateless digital operators from an authorized Behavior artifact.
+    """Generate digital operators from an authorized Behavior artifact.
 
     Supported guards are explicit qualitative observations, scalar observations
     compared to literals/bound parameters, and Boolean and/or/not combinations.
@@ -244,6 +248,8 @@ def generate_synthetic(
         isinstance(config, SyntheticGeneratorConfig),
         "Expected a synthetic generator configuration.",
     )
+    catalog = catalog_for_profile(config.profile_version)
+    temporal = config.profile_version == TEMPORAL_PROFILE_VERSION
     source_nodes = {node.id: node for node in behavior.nodes}
 
     def reject(message, node=None):
@@ -271,13 +277,9 @@ def generate_synthetic(
             "This fixed synthetic catalog has no implementation-constraint or preference resolver; nonempty selections are unsupported."
         )
     if len(behavior.find(kind="role")) != 1 or domain.role != contract.role:
-        reject(
-            "The combinational synthetic profile requires exactly one executing role."
-        )
+        reject("The synthetic profile requires exactly one executing role.")
     if domain.max_contacts is None:
-        reject(
-            "The combinational profile requires an explicit finite max_contacts bound."
-        )
+        reject("The synthetic profile requires an explicit finite max_contacts bound.")
     if target is None or "synthetic_signal_graph" not in target.capabilities:
         reject(
             "Synthetic generation requires a target with synthetic_signal_graph capability."
@@ -303,17 +305,28 @@ def generate_synthetic(
         "action.eliminate",
         "action.engulf",
     }
+    if temporal:
+        supported.update(
+            {"held_for", "became_true", "memory", "memory.is_set", "action.pulse"}
+        )
     for node in behavior.nodes:
         if node.kind not in supported:
             reject(
-                f"Operation {node.kind!r} is unsupported by {SYNTHETIC_PROFILE_VERSION}; temporal/state semantics are never approximated.",
+                f"Operation {node.kind!r} is unsupported by {config.profile_version}; temporal/state semantics are never approximated.",
                 node,
             )
-        if node.kind == "rule" and node.attributes["trigger"] != "condition":
+        if (
+            node.kind == "rule"
+            and node.attributes["trigger"] != "condition"
+            and not temporal
+        ):
             reject(
                 "The combinational synthetic profile requires condition-triggered rules.",
                 node,
             )
+        if node.kind == "rule" and node.attributes["trigger"] == "event":
+            if any(source_nodes[ref].kind != "action.pulse" for ref in node.inputs[2:]):
+                reject("Synthetic event rules require explicit-duration pulses.", node)
     installed = {
         (rule.id, action)
         for rule in behavior.find(kind="rule")
@@ -441,6 +454,21 @@ def generate_synthetic(
             )
         return input_map[key]
 
+    def duration(ref):
+        node = source_nodes[ref]
+        if node.kind not in {"literal", "parameter"}:
+            reject("Synthetic durations must be bound design-time constants.", node)
+        value = node.attributes["value" if node.kind == "literal" else "default"]
+        value = decode_binding(value, DURATION)
+        if value.canonical_value <= 0:
+            reject("Synthetic durations must be positive.", node)
+        return value.to_dict()
+
+    def aggregate(ref, output_id, sources):
+        if generated[ref].scope == "cell":
+            return ref
+        return add(output_id, "any_contact", BOOLEAN, "cell", sources, inputs=(ref,))
+
     def expression(ref):
         if ref in expression_cache:
             return expression_cache[ref]
@@ -480,13 +508,84 @@ def generate_synthetic(
                 if node.kind == "compare"
                 else None,
             )
+        elif node.kind == "held_for":
+            result = add(
+                f"expression:{ref}",
+                "held_for",
+                BOOLEAN,
+                scope,
+                (ref,),
+                inputs=(expression(node.inputs[0]),),
+                attributes={"duration": duration(node.inputs[1])},
+            )
+        elif node.kind == "became_true":
+            result = add(
+                f"expression:{ref}",
+                "onset",
+                BOOLEAN,
+                scope,
+                (ref,),
+                inputs=(expression(node.inputs[0]),),
+            )
+        elif node.kind == "memory.is_set":
+            result = expression(node.inputs[0])
+            source_map[result] = tuple(
+                sorted(set(source_map[result]) | set(behavior.source_links[ref]))
+            )
+            behavior_requirements[result] = tuple(
+                sorted(set(behavior_requirements[result]) | set(node.requirement_ids))
+            )
+        elif node.kind == "memory":
+            controls = dict(zip(node.attributes["input_names"], node.inputs))
+            setting = expression(controls["set_when"])
+            event = add(
+                f"memory_onset:{ref}",
+                "onset",
+                BOOLEAN,
+                generated[setting].scope,
+                (ref,),
+                inputs=(setting,),
+            )
+            # A new qualifying contact refreshes memory even when another
+            # contact stays qualified: onset precedes existential aggregation.
+            setting = aggregate(event, f"memory_set:{ref}", (ref,))
+            if "reset_when" in controls:
+                resetting = aggregate(
+                    expression(controls["reset_when"]), f"memory_reset:{ref}", (ref,)
+                )
+            else:
+                resetting = add(
+                    f"memory_reset:{ref}",
+                    "constant",
+                    BOOLEAN,
+                    "cell",
+                    (ref,),
+                    attributes={"value": False},
+                )
+            result = add(
+                f"expression:{ref}",
+                "memory",
+                BOOLEAN,
+                "cell",
+                (ref,),
+                inputs=(setting, resetting),
+                attributes={
+                    "duration": duration(controls["duration"])
+                    if "duration" in controls
+                    else None
+                },
+            )
         else:
-            reject(f"Unsupported combinational expression {node.kind!r}.", node)
+            reject(f"Unsupported synthetic expression {node.kind!r}.", node)
         expression_cache[ref] = result
         return result
 
     outputs = []
     bindings = []
+    # Declarations have automatic controls even if no output reads the latch.
+    # Keep their observations, source requirements and execution in the graph.
+    for memory in behavior.find(kind="memory"):
+        expression(memory.id)
     for requirement in contract.requirements:
         rule = source_nodes[requirement.rule_id]
         action = source_nodes[requirement.specification_id]
@@ -508,6 +607,29 @@ def generate_synthetic(
                 "cell",
                 (rule.id,),
                 inputs=(guard,),
+                response_ids=(requirement.id,),
+            )
+        if action.kind == "action.pulse":
+            if rule.attributes["trigger"] == "condition":
+                # Cell pulses observe the onset of the complete aggregated
+                # guard; contact pulses keep their own episode/onset history.
+                guard = add(
+                    f"pulse_onset:{requirement.id}",
+                    "onset",
+                    BOOLEAN,
+                    scope,
+                    (rule.id, action.id),
+                    inputs=(guard,),
+                    response_ids=(requirement.id,),
+                )
+            guard = add(
+                f"pulse:{requirement.id}",
+                "pulse",
+                BOOLEAN,
+                scope,
+                (rule.id, action.id),
+                inputs=(guard,),
+                attributes={"duration": duration(action.inputs[1])},
                 response_ids=(requirement.id,),
             )
         values = []
@@ -566,7 +688,7 @@ def generate_synthetic(
         ),
         source_map,
         behavior_requirements,
-        SYNTHETIC_CATALOG.lock(mechanism),
+        catalog.lock(mechanism),
         config,
     )
 
@@ -586,6 +708,7 @@ def check_synthetic_candidate(
     if not isinstance(candidate, SyntheticCandidate):
         raise TypeError("Expected a SyntheticCandidate.")
     frames = tuple(history)
+    catalog = catalog_for_profile(candidate.generator_config.profile_version)
     dependencies = realization_dependencies(
         behavior,
         contract,
@@ -602,11 +725,11 @@ def check_synthetic_candidate(
             "settings": {
                 **dependencies.values["settings"],
                 "synthetic_acceptance": SYNTHETIC_CHECKER_VERSION,
-                "synthetic_profile": SYNTHETIC_PROFILE_VERSION,
+                "synthetic_profile": candidate.generator_config.profile_version,
                 "synthetic_candidate": candidate.fingerprint,
                 "realization_request": request.fingerprint,
                 "generator_configuration": candidate.generator_config.fingerprint,
-                "catalog": SYNTHETIC_CATALOG.fingerprint,
+                "catalog": catalog.fingerprint,
                 "required_coverage": "active_and_inactive_deadlines_for_every_response",
             },
         }
@@ -652,11 +775,11 @@ def check_synthetic_candidate(
             "Source correspondence or requirement lineage differs from the declared generation profile.",
         )
     try:
-        expected_locks = SYNTHETIC_CATALOG.lock(candidate.mechanism)
+        expected_locks = catalog.lock(candidate.mechanism)
     except KeyError:
         return failure(
             "candidate_component",
-            "The candidate contains an operation outside the pinned combinational catalog.",
+            "The candidate contains an operation outside its pinned synthetic catalog.",
         )
     if candidate.component_locks != expected_locks:
         return failure(

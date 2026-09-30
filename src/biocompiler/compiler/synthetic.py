@@ -27,7 +27,7 @@ from biocompiler.semantics.admission import ADMISSION_POLICY_VERSION
 from biocompiler.ir.serialization import fingerprint
 from biocompiler.ir.stages import Stage
 from biocompiler.models.synthetic import MODEL_RUNNER_VERSION
-from biocompiler.registry.synthetic import SYNTHETIC_CATALOG, SYNTHETIC_PROFILE_VERSION
+from biocompiler.registry.synthetic import catalog_for_profile
 from biocompiler.semantics.evaluator import REFERENCE_EVALUATOR_VERSION
 from biocompiler.synthesis.synthetic import (
     GENERATOR_VERSION,
@@ -70,6 +70,7 @@ def run_synthetic_pipeline(
     config = SyntheticGeneratorConfig() if config is None else config
     if not isinstance(config, SyntheticGeneratorConfig):
         raise TypeError("Expected a SyntheticGeneratorConfig.")
+    catalog = catalog_for_profile(config.profile_version)
     frames = tuple(history)
     dependencies = {
         "human_admission_policy": fingerprint(ADMISSION_POLICY_VERSION),
@@ -77,7 +78,7 @@ def run_synthetic_pipeline(
         "request_artifact": request.build_request.artifact_fingerprint,
         "realization_request": request.fingerprint,
         "realization_artifact": request.artifact_fingerprint,
-        "catalog": SYNTHETIC_CATALOG.fingerprint,
+        "catalog": catalog.fingerprint,
         "generator": fingerprint(config.to_dict()),
         "model": fingerprint(MODEL_RUNNER_VERSION),
         "checker": fingerprint(CHECKER_VERSION),
@@ -168,9 +169,9 @@ def run_synthetic_pipeline(
         Stage.MECHANISM,
         SCHEMA_VERSION,
         SyntheticCandidate.schema_version,
-        "synthetic_combinational",
-        SYNTHETIC_PROFILE_VERSION,
-        tuple(item.operation for item in SYNTHETIC_CATALOG.components),
+        "synthetic_digital",
+        config.profile_version,
+        tuple(item.operation for item in catalog.components),
         (CheckSpec("finite_history", EvidenceKind.MODEL_CONDITIONAL, (response.id,)),),
         dependency_keys=(
             "realization_request",

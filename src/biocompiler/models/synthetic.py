@@ -17,7 +17,7 @@ from biocompiler.errors import BiocompilerError
 from biocompiler.ir.mechanism import MechanismProgram
 from biocompiler.ir.serialization import JsonArtifact, fields, require
 
-MODEL_RUNNER_VERSION = "biocompiler.synthetic.runner.v0.1"
+MODEL_RUNNER_VERSION = "biocompiler.synthetic.runner.v0.2"
 
 
 class SyntheticModelError(BiocompilerError, ValueError):
@@ -201,6 +201,10 @@ class _ModelSession:
         self.snapshot = ModelInputFrame(0)
         self.delayed: dict[tuple[str, str | None], Any] = {}
         self.pending: dict[tuple[str, str | None], tuple[float | int, Any]] = {}
+        self.held: dict[tuple[str, str | None], float | int] = {}
+        self.previous: dict[tuple[str, str | None], bool] = {}
+        self.pulses: dict[tuple[str, str | None], float | int] = {}
+        self.memories: dict[tuple[str, str | None], float | int | None] = {}
 
     def update(self, frame: ModelInputFrame) -> None:
         for identity, values in ((None, frame.values), *frame.contacts.items()):
@@ -224,11 +228,28 @@ class _ModelSession:
                         f"Input {ref!r} requires {'a Boolean' if boolean else 'a canonical scalar'}, not {type(value).__name__}."
                     )
         disappeared = set(self.snapshot.contacts) - set(frame.contacts)
-        for mapping in (self.delayed, self.pending):
+        for mapping in (
+            self.delayed, self.pending, self.held, self.previous, self.pulses
+        ):
             for key in tuple(mapping):
                 if key[1] in disappeared:
                     del mapping[key]
         self.snapshot = frame
+
+    def deadlines(self):
+        yield from (deadline for deadline, _ in self.pending.values())
+        yield from self.held.values()
+        yield from self.pulses.values()
+        yield from (value for value in self.memories.values() if value is not None)
+
+    @staticmethod
+    def deadline(time, duration, label):
+        deadline = _number(time + duration, f"{label} deadline")
+        if deadline <= time:
+            raise SyntheticModelError(
+                f"A {label} duration must advance the representable model time."
+            )
+        return deadline
 
     def step(self, time: float | int) -> ModelFrame:
         values = {}
@@ -275,6 +296,51 @@ class _ModelSession:
                     )
                 elif node.kind == "output":
                     value = get(node.inputs[0])
+                elif node.kind == "held_for":
+                    if not get(node.inputs[0]):
+                        self.held.pop(key, None)
+                        value = False
+                    else:
+                        if key not in self.held:
+                            self.held[key] = self.deadline(
+                                time,
+                                node.attributes["duration"]["canonical_value"],
+                                "held_for",
+                            )
+                        value = time >= self.held[key]
+                elif node.kind == "onset":
+                    current = get(node.inputs[0])
+                    value = current and not self.previous.get(key, False)
+                    self.previous[key] = current
+                elif node.kind == "pulse":
+                    if get(node.inputs[0]):
+                        self.pulses[key] = self.deadline(
+                            time,
+                            node.attributes["duration"]["canonical_value"],
+                            "pulse",
+                        )
+                    elif key in self.pulses and self.pulses[key] <= time:
+                        del self.pulses[key]
+                    value = key in self.pulses
+                elif node.kind == "memory":
+                    # The DAG settles each producer before its consumer. No
+                    # provisional latch value escapes reset/expiry resolution.
+                    if get(node.inputs[1]):
+                        self.memories.pop(key, None)
+                    elif get(node.inputs[0]):
+                        duration = node.attributes["duration"]
+                        self.memories[key] = (
+                            None
+                            if duration is None
+                            else self.deadline(
+                                time, duration["canonical_value"], "memory"
+                            )
+                        )
+                    elif key in self.memories:
+                        expiry = self.memories[key]
+                        if expiry is not None and expiry <= time:
+                            del self.memories[key]
+                    value = key in self.memories
                 elif node.kind == "delay":
                     desired = get(node.inputs[0])
                     current = self.delayed.setdefault(
@@ -290,11 +356,7 @@ class _ModelSession:
                             del self.pending[key]
                     else:
                         duration = node.attributes["duration"]["canonical_value"]
-                        deadline = _number(time + duration, "Delay deadline")
-                        if deadline <= time:
-                            raise SyntheticModelError(
-                                "A delay must advance the representable model time."
-                            )
+                        deadline = self.deadline(time, duration, "delay")
                         self.pending[key] = (deadline, desired)
                     value = current
                 else:
@@ -324,13 +386,21 @@ def run_model(
     *,
     until: float | int | None = None,
 ) -> ModelTrace:
-    """Run the independent inertial-delay fixture through an inclusive horizon.
+    """Run the independent digital fixture through an inclusive horizon.
 
     External changes are applied before timers at the same timestamp. Every
     delay starts with its declared value; a pending transition is canceled if
     the driving value returns to that value before or at the deadline. A new
     different value restarts the full delay. Contact disappearance clears the
     corresponding stored values and pending transitions.
+
+    Held conditions require uninterrupted input from initialization or the most
+    recent false-to-true transition. Onsets are one-timestamp event values;
+    pulse and memory triggers must be onset operations or their explicit
+    contact aggregation. Pulses refresh on every event and exclude their expiry
+    endpoint. Initially false memories persist until reset or optional expiry;
+    reset dominates setting, and setting dominates expiry. A single topological
+    settlement publishes only final producer values to dependent operators.
     """
     if not isinstance(program, MechanismProgram):
         raise SyntheticModelError("run_model() requires a MechanismProgram.")
@@ -369,7 +439,7 @@ def run_model(
             candidates.append(frames[index].time)
         candidates.extend(
             deadline
-            for deadline, _ in session.pending.values()
+            for deadline in session.deadlines()
             if time < deadline <= horizon
         )
         time = min(candidates)

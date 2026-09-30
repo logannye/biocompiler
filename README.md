@@ -87,11 +87,13 @@ With the package installed, run:
 ```sh
 python examples/behavior_trace.py
 python examples/checked_pipeline.py
+python examples/temporal_pipeline.py
+python examples/synthetic_build.py --output generated/synthetic
 python examples/molecular_contract.py
 python examples/payload_readiness.py
 ```
 
-These examples cover abstract execution, independent synthetic checks, molecular correspondence, and whole-molecule structural checks. The [example guide](examples/README.md) explains each example and its evidence boundaries.
+These examples cover abstract execution, independent combinational/temporal synthetic checks, reproducible workflow packages, molecular correspondence, and whole-molecule structural checks. The [example guide](examples/README.md) explains each example and its evidence boundaries. The [temporal profile](docs/synthetic-temporal-v0.1.md) supports sustained conditions, pulses and resettable memory; [synthetic packages](docs/synthetic-build-v0.1.md) provide offline build/verify commands without molecular or human-admission claims.
 
 To build and inspect a package containing the bundled RNA-CDS reference:
 
