@@ -2,7 +2,7 @@
 
 biocompiler is an experimental compiler toolkit working toward a concrete goal: translate high-level therapeutic intent into an exact, complete DNA or RNA specification for immune cells engineered in vivo. Python authoring is implemented; natural-language authoring and complete therapeutic compilation remain future work. The toolkit connects design requirements, molecular choices, checks, and evidence for cell engineers, synthetic biologists, computational biologists, and scientific software developers.
 
-The central idea is to keep three things connected: **what a cell should do**, **how a proposed implementation is described**, and **what the experimental evidence supports**. Typed descriptions and independent checks make those relationships inspectable throughout a design.
+The central idea is to keep three things connected: **what a cell should do**, **how a proposed implementation is described**, and **what experimental evidence supports**. Typed descriptions and independent checks make those relationships inspectable throughout a design.
 
 This release uses the `biocompiler` package, CLI and artifact namespace. See the
 [rename and artifact migration notes](docs/biocompiler-migration.md) before reusing historical builds.
