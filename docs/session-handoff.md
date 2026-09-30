@@ -1,5 +1,16 @@
 # Session handoff and current resumption point
 
+## Stopped at user request — completed R2/R3, unfinished R4 checkpoint
+
+R2 [PR #29](https://github.com/logannye/biocompiler/pull/29) and R3
+[PR #30](https://github.com/logannye/biocompiler/pull/30) are merged. The user
+requested a fresh session after those merges had completed. Development is
+stopped. `codex/r4-checked-transformations` preserves unfinished R4 work and
+known failing edge cases; it must not be merged or reported complete yet.
+Read [the R4 checkpoint](r4-work-in-progress.md) for final baseline receipts,
+saved modules, known failures, test scope and the ordered resumption checklist.
+The historical continuation directions below do not override this stop request.
+
 ## Current resumption point — R3 declared molecular identities
 
 Scope clarification, 2026-09-30: the sole product target is human DNA/RNA
