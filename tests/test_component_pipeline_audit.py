@@ -6,10 +6,10 @@ import io
 import unittest
 from unittest.mock import patch
 
-import cellweave as cw
-from cellweave.compiler.pipeline import PassManager, PipelineError
-from cellweave.ir.serialization import fingerprint
-from cellweave.semantics.component_contracts import ValueDomain
+import biocompiler as bc
+from biocompiler.compiler.pipeline import PassManager, PipelineError
+from biocompiler.ir.serialization import fingerprint
+from biocompiler.semantics.component_contracts import ValueDomain
 from examples.checked_pipeline import build_request
 from examples.component_linking import main as example
 
@@ -18,7 +18,7 @@ class ComponentPipelineAuditTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.request, cls.history = build_request()
-        cls.build = cw.run_component_pipeline(cls.request, cls.history, until=7)
+        cls.build = bc.run_component_pipeline(cls.request, cls.history, until=7)
 
     def run_with_metadata_mutation(self, mutation):
         original_register = PassManager.register
@@ -33,7 +33,7 @@ class ComponentPipelineAuditTests(unittest.TestCase):
             return original_register(manager, contract, producer, validators)
 
         with patch.object(PassManager, "register", register):
-            return cw.run_component_pipeline(self.request, self.history, until=7)
+            return bc.run_component_pipeline(self.request, self.history, until=7)
 
     def test_nonempty_forged_observation_map_cannot_pass(self):
         with self.assertRaisesRegex(PipelineError, "provenance"):
@@ -96,9 +96,9 @@ class ComponentPipelineAuditTests(unittest.TestCase):
             ),
         )
         tampered = replace(assembly, registry=registry, composition=composition)
-        self.assertTrue(cw.check_composition(composition, registry).passed)
+        self.assertTrue(bc.check_composition(composition, registry).passed)
         with self.assertRaisesRegex(PipelineError, "source correspondence"):
-            cw.check_component_assembly(
+            bc.check_component_assembly(
                 self.request, self.build.candidate, tampered, self.history, until=7
             )
 
@@ -112,7 +112,7 @@ class ComponentPipelineAuditTests(unittest.TestCase):
             "evaluator",
         ):
             with self.subTest(key=key):
-                build = cw.run_component_pipeline(self.request, self.history, until=7)
+                build = bc.run_component_pipeline(self.request, self.history, until=7)
                 build.manager.set_dependency(key, fingerprint("changed:" + key))
                 with self.assertRaisesRegex(PipelineError, "Stale"):
                     build.manager.result("components", scope="synthetic_components")
@@ -121,9 +121,9 @@ class ComponentPipelineAuditTests(unittest.TestCase):
         for history, until in ((self.history[:1], 7), (self.history, 1.2)):
             with self.subTest(until=until, frames=len(history)):
                 with self.assertRaisesRegex(
-                    cw.SerializationError, "passing synthetic acceptance"
+                    bc.SerializationError, "passing synthetic acceptance"
                 ):
-                    cw.check_component_assembly(
+                    bc.check_component_assembly(
                         self.request,
                         self.build.candidate,
                         self.build.assembly,
@@ -132,7 +132,7 @@ class ComponentPipelineAuditTests(unittest.TestCase):
                     )
         unresolved = self.build.result.unresolved[0]
         self.assertEqual(unresolved.id, "molecular_behavior")
-        self.assertEqual(unresolved.evidence_kind, cw.EvidenceKind.EMPIRICAL)
+        self.assertEqual(unresolved.evidence_kind, bc.EvidenceKind.EMPIRICAL)
         self.assertIn("not biological", self.build.link_result.claim_scope)
 
     def test_documented_example_uses_full_target_selection(self):

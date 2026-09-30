@@ -7,10 +7,10 @@ from pathlib import Path
 import tempfile
 import unittest
 
-import cellweave as cw
-from cellweave.cli import main
-from cellweave.compiler.pipeline import ArtifactStatus, PipelineError
-from cellweave.ir.serialization import fingerprint
+import biocompiler as bc
+from biocompiler.cli import main
+from biocompiler.compiler.pipeline import ArtifactStatus, PipelineError
+from biocompiler.ir.serialization import fingerprint
 from examples.checked_pipeline import build_request
 
 
@@ -18,10 +18,10 @@ class ComponentPipelineTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.request, cls.history = build_request()
-        cls.build = cw.run_component_pipeline(cls.request, cls.history, until=7)
+        cls.build = bc.run_component_pipeline(cls.request, cls.history, until=7)
 
     def check(self, assembly):
-        return cw.check_component_assembly(
+        return bc.check_component_assembly(
             self.request, self.build.candidate, assembly, self.history, until=7
         )
 
@@ -49,9 +49,9 @@ class ComponentPipelineTests(unittest.TestCase):
         )
 
     def test_import_roundtrip_preserves_locked_artifact(self):
-        request = cw.RealizationRequest.from_json(self.request.to_json())
-        restored = cw.ComponentAssembly.from_json(self.build.assembly.to_json())
-        repeated = cw.run_component_pipeline(request, self.history, until=7)
+        request = bc.RealizationRequest.from_json(self.request.to_json())
+        restored = bc.ComponentAssembly.from_json(self.build.assembly.to_json())
+        repeated = bc.run_component_pipeline(request, self.history, until=7)
         self.assertEqual(restored.fingerprint, repeated.assembly.fingerprint)
         self.assertEqual(
             self.build.result.artifact.fingerprint, repeated.result.artifact.fingerprint
@@ -76,7 +76,7 @@ class ComponentPipelineTests(unittest.TestCase):
             "horizon",
         ):
             with self.subTest(key=key):
-                build = cw.run_component_pipeline(self.request, self.history, until=7)
+                build = bc.run_component_pipeline(self.request, self.history, until=7)
                 build.manager.set_dependency(key, fingerprint("changed:" + key))
                 with self.assertRaisesRegex(PipelineError, "Stale"):
                     build.manager.result("components", scope="synthetic_components")
@@ -118,7 +118,7 @@ class ComponentPipelineTests(unittest.TestCase):
             connections=connections,
         )
         wrong = replace(assembly, registry=registry, composition=composition)
-        self.assertTrue(cw.check_composition(wrong.composition, wrong.registry).passed)
+        self.assertTrue(bc.check_composition(wrong.composition, wrong.registry).passed)
         with self.assertRaisesRegex(PipelineError, "source correspondence"):
             self.check(wrong)
 
@@ -152,18 +152,18 @@ class ComponentPipelineTests(unittest.TestCase):
         ):
             document = self.build.assembly.to_dict()
             document["nodes"] = value
-            with self.assertRaises(cw.SerializationError):
-                cw.ComponentAssembly.from_dict(document)
+            with self.assertRaises(bc.SerializationError):
+                bc.ComponentAssembly.from_dict(document)
 
     def test_unknown_history_cannot_be_promoted_by_linking(self):
         with self.assertRaisesRegex(PipelineError, "not passed"):
-            cw.run_component_pipeline(self.request, self.history[:1], until=7)
+            bc.run_component_pipeline(self.request, self.history[:1], until=7)
 
     def test_component_scope_cannot_complete_molecular_payload(self):
         with self.assertRaises(PipelineError):
             self.build.manager.result("components", scope="complete_payload")
-        with self.assertRaises(cw.CompilationUnavailableError):
-            cw.compile(self.request.build_request)
+        with self.assertRaises(bc.CompilationUnavailableError):
+            bc.compile(self.request.build_request)
 
     def test_cli_inspection_roundtrips_without_asserting_current_acceptance(self):
         with tempfile.TemporaryDirectory() as directory:

@@ -7,14 +7,14 @@ from pathlib import Path
 import tempfile
 import unittest
 
-from cellweave.artifacts.sequences import (
+from biocompiler.artifacts.sequences import (
     SequenceExport,
     export_reference_sequence,
     verify_sequence_export,
 )
-from cellweave.backends.reference import emit_reference_sequence
-from cellweave.errors import SerializationError
-from cellweave.ir.molecular import MolecularArtifact
+from biocompiler.backends.reference import emit_reference_sequence
+from biocompiler.errors import SerializationError
+from biocompiler.ir.molecular import MolecularArtifact
 from test_construct_checker import candidate_for, fixture
 
 

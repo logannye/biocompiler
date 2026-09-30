@@ -9,34 +9,34 @@ from pathlib import Path
 import tempfile
 import unittest
 
-from cellweave import Duration, Level, Therapy
-from cellweave.compiler.behavior import lower_to_behavior, verify_lowering
-from cellweave.compiler.request import (
+from biocompiler import Duration, Level, Therapy
+from biocompiler.compiler.behavior import lower_to_behavior, verify_lowering
+from biocompiler.compiler.request import (
     BindingMetadata,
     BuildRequest,
     ElaborationProvenance,
     RealizationRequest,
 )
-from cellweave.compiler.workflow import BuildProfile, compile, plan
-from cellweave.cli import main
-from cellweave.errors import (
+from biocompiler.compiler.workflow import BuildProfile, compile, plan
+from biocompiler.cli import main
+from biocompiler.errors import (
     CompilationUnavailableError,
     LoweringVerificationError,
     SerializationError,
     TypeMismatchError,
     UnsupportedBehaviorError,
 )
-from cellweave.ir.behavior import BehaviorProgram
-from cellweave.ir.intent import IntentProgram, SourceLocation
-from cellweave.semantics.context import PayloadFormat, TargetContext
-from cellweave.semantics.realization import (
+from biocompiler.ir.behavior import BehaviorProgram
+from biocompiler.ir.intent import IntentProgram, SourceLocation
+from biocompiler.semantics.context import PayloadFormat, TargetContext
+from biocompiler.semantics.realization import (
     BehaviorContract,
     InputDomain,
     Observable,
     OperatingDomain,
     ResponseRequirement,
 )
-from cellweave.semantics.types import BOOLEAN, Interval
+from biocompiler.semantics.types import BOOLEAN, Interval
 
 
 def inputs(*, unbound=False):
@@ -498,7 +498,9 @@ class RealizationRequestTests(unittest.TestCase):
             if node["kind"] == "rule"
         )
         rule["attributes"]["trigger"] = []
-        with tempfile.TemporaryDirectory(prefix="cellweave-request-test-") as directory:
+        with tempfile.TemporaryDirectory(
+            prefix="biocompiler-request-test-"
+        ) as directory:
             path = Path(directory) / "request.json"
             for document in (first, second, third):
                 path.write_text(json.dumps(document), encoding="utf-8")
@@ -508,7 +510,7 @@ class RealizationRequestTests(unittest.TestCase):
                     redirect_stderr(error),
                 ):
                     self.assertEqual(main(["inspect", str(path)]), 2)
-                self.assertIn("cellweave:", error.getvalue())
+                self.assertIn("biocompiler:", error.getvalue())
                 self.assertNotIn("Traceback", error.getvalue())
 
 

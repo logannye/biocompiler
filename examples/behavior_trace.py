@@ -7,21 +7,21 @@ Run ``PYTHONPATH=src python examples/behavior_trace.py`` from the checkout.
 
 from __future__ import annotations
 
-import cellweave as cw
-from cellweave.compiler.behavior import lower_to_behavior, verify_lowering
-from cellweave.semantics.evaluator import InputFrame, SignalSample, evaluate
+import biocompiler as bc
+from biocompiler.compiler.behavior import lower_to_behavior, verify_lowering
+from biocompiler.semantics.evaluator import InputFrame, SignalSample, evaluate
 
 
 def run_example():
-    therapy = cw.Therapy("abstract_behavior_trace")
+    therapy = bc.Therapy("abstract_behavior_trace")
     cells = therapy.engineer("responder", cell_type="abstract_cell")
     a, b = cells.contact.marker("A"), cells.contact.marker("B")
-    matched = (a.present() & b.present()).held_for(cw.Duration(2, unit="s"))
-    memory = cells.memory("matched", set_when=matched, duration=cw.Duration(4))
+    matched = (a.present() & b.present()).held_for(bc.Duration(2, unit="s"))
+    memory = cells.memory("matched", set_when=matched, duration=bc.Duration(4))
     phase = cells.state("phase", values=("searching", "ready"), initial="searching")
     cells.when(memory.is_set()).do(phase.set("ready"))
     cells.on(phase.is_("ready").became_true()).do(
-        cells.report("ready"), cells.rest().for_(cw.Duration(3))
+        cells.report("ready"), cells.rest().for_(bc.Duration(3))
     )
 
     intent = therapy.freeze()

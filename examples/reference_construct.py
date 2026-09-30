@@ -5,8 +5,8 @@ Run: PYTHONPATH=src python examples/reference_construct.py
 
 from pathlib import Path
 
-from cellweave.compiler.construct import run_construct_pipeline
-from cellweave.registry.reference_builds import (
+from biocompiler.compiler.construct import run_construct_pipeline
+from biocompiler.registry.reference_builds import (
     MANIFEST_PIN as MANIFEST_PIN,
     REFERENCE_PINS as REFERENCE_PINS,
     load_reference_inputs,

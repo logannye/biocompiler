@@ -4,11 +4,11 @@ from dataclasses import replace
 import itertools
 import unittest
 
-import cellweave as cw
-from cellweave.compiler.request import BuildRequest, RealizationRequest
-from cellweave.registry.synthetic import SYNTHETIC_CATALOG
-from cellweave.semantics.types import BOOLEAN
-from cellweave.synthesis.synthetic import (
+import biocompiler as bc
+from biocompiler.compiler.request import BuildRequest, RealizationRequest
+from biocompiler.registry.synthetic import SYNTHETIC_CATALOG
+from biocompiler.semantics.types import BOOLEAN
+from biocompiler.synthesis.synthetic import (
     SyntheticGeneratorConfig,
     check_synthetic_candidate,
     generate_synthetic,
@@ -17,17 +17,17 @@ from examples.realization_check import with_delay
 
 
 def fixture(*, contact=False, temporal=False, numeric=False, negate=False):
-    therapy = cw.Therapy("generated_fixture")
+    therapy = bc.Therapy("generated_fixture")
     cell = therapy.engineer("cell", cell_type="abstract_cell")
     a, b = cell.contact.marker("A"), cell.contact.marker("B")
     if numeric:
-        condition = (a > cw.SurfaceDensity(2)) & b.present()
+        condition = (a > bc.SurfaceDensity(2)) & b.present()
     else:
         condition = a.present() & (~b.present() if negate else b.present())
     if temporal is True or temporal == "held_for":
-        condition = condition.held_for(cw.Duration(1))
+        condition = condition.held_for(bc.Duration(1))
     elif temporal == "recently":
-        condition = condition.recently(within=cw.Duration(1))
+        condition = condition.recently(within=bc.Duration(1))
     elif temporal == "memory":
         condition = cell.memory("observed", set_when=condition).is_set()
     elif temporal == "state":
@@ -36,61 +36,61 @@ def fixture(*, contact=False, temporal=False, numeric=False, negate=False):
         ).is_("on")
     action = cell.eliminate(cell.contact) if contact else cell.rest()
     if temporal == "pulse":
-        action = action.for_(cw.Duration(1))
+        action = action.for_(bc.Duration(1))
     elif temporal == "became_true":
         condition = condition.became_true()
-        action = action.for_(cw.Duration(1))
+        action = action.for_(bc.Duration(1))
     rule = (
         cell.on(condition) if temporal == "became_true" else cell.when(condition)
     ).do(action)
-    target = cw.TargetContext(
-        "synthetic", "1", cw.PayloadFormat.RNA, capabilities=("synthetic_signal_graph",)
+    target = bc.TargetContext(
+        "synthetic", "1", bc.PayloadFormat.RNA, capabilities=("synthetic_signal_graph",)
     )
     build = BuildRequest.freeze(
         therapy.freeze(), target=target, artifact_scope="synthetic_realization"
     )
-    behavior = cw.lower_to_behavior(build)
-    output = cw.Observable(
-        "abstract_request", cw.Level, cell.role, scope="contact" if contact else "cell"
+    behavior = bc.lower_to_behavior(build)
+    output = bc.Observable(
+        "abstract_request", bc.Level, cell.role, scope="contact" if contact else "cell"
     )
-    response = cw.ResponseRequirement(
+    response = bc.ResponseRequirement(
         "response",
         rule.node_id,
         action.node_id,
         output,
-        cw.Interval(0.9, 1.1),
-        cw.Interval(0, 0.1),
-        cw.Duration(0.5),
-        cw.Duration(0.5),
+        bc.Interval(0.9, 1.1),
+        bc.Interval(0, 0.1),
+        bc.Duration(0.5),
+        bc.Duration(0.5),
     )
-    contract = cw.BehaviorContract("contract", behavior.fingerprint, (response,))
-    first = cw.InputDomain(
+    contract = bc.BehaviorContract("contract", behavior.fingerprint, (response,))
+    first = bc.InputDomain(
         a.node_id,
         "value" if numeric else "present",
-        cw.Observable(
-            "A", cw.SurfaceDensity if numeric else BOOLEAN, cell.role, scope="contact"
+        bc.Observable(
+            "A", bc.SurfaceDensity if numeric else BOOLEAN, cell.role, scope="contact"
         ),
-        cw.Interval(cw.SurfaceDensity(0), cw.SurfaceDensity(10), type=cw.SurfaceDensity)
+        bc.Interval(bc.SurfaceDensity(0), bc.SurfaceDensity(10), type=bc.SurfaceDensity)
         if numeric
         else (False, True),
     )
-    second = cw.InputDomain(
+    second = bc.InputDomain(
         b.node_id,
         "present",
-        cw.Observable("B", BOOLEAN, cell.role, scope="contact"),
+        bc.Observable("B", BOOLEAN, cell.role, scope="contact"),
         (False, True),
     )
-    domain = cw.OperatingDomain(
-        "two_contacts", "1", cell.role, (first, second), cw.Duration(7), max_contacts=2
+    domain = bc.OperatingDomain(
+        "two_contacts", "1", cell.role, (first, second), bc.Duration(7), max_contacts=2
     )
     request = RealizationRequest.freeze(build, behavior, contract, domain)
 
     def sample(first, second):
         return {
-            a.node_id: cw.SignalSample(value=first)
+            a.node_id: bc.SignalSample(value=first)
             if numeric
-            else cw.SignalSample(present=first),
-            b.node_id: cw.SignalSample(present=second),
+            else bc.SignalSample(present=first),
+            b.node_id: bc.SignalSample(present=second),
         }
 
     return request, sample
@@ -98,9 +98,9 @@ def fixture(*, contact=False, temporal=False, numeric=False, negate=False):
 
 def exercised_history(sample):
     return (
-        cw.InputFrame(0, contacts={"x": sample(True, False), "y": sample(False, True)}),
-        cw.InputFrame(1, contacts={"x": sample(True, True), "y": sample(False, True)}),
-        cw.InputFrame(
+        bc.InputFrame(0, contacts={"x": sample(True, False), "y": sample(False, True)}),
+        bc.InputFrame(1, contacts={"x": sample(True, True), "y": sample(False, True)}),
+        bc.InputFrame(
             5, contacts={"x": sample(False, False), "y": sample(False, False)}
         ),
     )
@@ -121,7 +121,7 @@ class SyntheticGenerationTests(unittest.TestCase):
         )
 
     def direct_check(self, request, mechanism, mapping, history, until=7):
-        return cw.check_realization(
+        return bc.check_realization(
             request.behavior,
             request.contract,
             request.domain,
@@ -133,7 +133,7 @@ class SyntheticGenerationTests(unittest.TestCase):
         )
 
     def test_generated_candidate_passes_and_retains_requirements_and_sources(self):
-        self.assertEqual(self.check().outcome, cw.CheckOutcome.PASS)
+        self.assertEqual(self.check().outcome, bc.CheckOutcome.PASS)
         self.assertEqual(self.candidate.request_fingerprint, self.request.fingerprint)
         carried = {
             item
@@ -191,7 +191,7 @@ class SyntheticGenerationTests(unittest.TestCase):
             ),
         )
         result = self.check(replace(self.candidate, mechanism=model))
-        self.assertEqual(result.outcome, cw.CheckOutcome.FAIL)
+        self.assertEqual(result.outcome, bc.CheckOutcome.FAIL)
         self.assertEqual(result.counterexamples[0].time, 1.5)
 
     def test_late_candidate_fails_exact_deadline(self):
@@ -201,7 +201,7 @@ class SyntheticGenerationTests(unittest.TestCase):
             self.candidate.observation_map,
             self.history,
         )
-        self.assertEqual(result.outcome, cw.CheckOutcome.FAIL)
+        self.assertEqual(result.outcome, bc.CheckOutcome.FAIL)
         self.assertEqual(result.counterexamples[0].time, 1.5)
 
     def test_wrong_contact_aggregation_fails_on_split_objects(self):
@@ -211,10 +211,10 @@ class SyntheticGenerationTests(unittest.TestCase):
         ]
         aggregate = model.find("any_contact")[0]
         extras = tuple(
-            cw.MechanismNode(
+            bc.MechanismNode(
                 f"any{index}",
                 "any_contact",
-                cw.Observable(f"any{index}", BOOLEAN, self.request.domain.role),
+                bc.Observable(f"any{index}", BOOLEAN, self.request.domain.role),
                 (ref,),
             )
             for index, ref in enumerate(inputs)
@@ -232,7 +232,7 @@ class SyntheticGenerationTests(unittest.TestCase):
         result = self.direct_check(
             self.request, wrong, self.candidate.observation_map, self.history
         )
-        self.assertEqual(result.outcome, cw.CheckOutcome.FAIL)
+        self.assertEqual(result.outcome, bc.CheckOutcome.FAIL)
         self.assertEqual(result.counterexamples[0].expected["state"], "inactive")
 
     def test_contact_outputs_preserve_object_identity_and_reject_broadcast(self):
@@ -241,13 +241,13 @@ class SyntheticGenerationTests(unittest.TestCase):
         history = exercised_history(sample)
         self.assertEqual(
             check_synthetic_candidate(request, candidate, history, until=7).outcome,
-            cw.CheckOutcome.PASS,
+            bc.CheckOutcome.PASS,
         )
         selected = candidate.mechanism.find("select")[0]
-        aggregate = cw.MechanismNode(
+        aggregate = bc.MechanismNode(
             "wrong_any",
             "any_contact",
-            cw.Observable("wrong_any", BOOLEAN, request.domain.role),
+            bc.Observable("wrong_any", BOOLEAN, request.domain.role),
             (selected.inputs[0],),
         )
         wrong = replace(
@@ -261,7 +261,7 @@ class SyntheticGenerationTests(unittest.TestCase):
             + (aggregate,),
         )
         result = self.direct_check(request, wrong, candidate.observation_map, history)
-        self.assertEqual(result.outcome, cw.CheckOutcome.FAIL)
+        self.assertEqual(result.outcome, bc.CheckOutcome.FAIL)
         self.assertEqual(result.counterexamples[0].contact_id, "y")
 
     def test_wrongly_scoped_output_fails_endpoint_check(self):
@@ -275,7 +275,7 @@ class SyntheticGenerationTests(unittest.TestCase):
             ),
         )
         result = self.check(replace(self.candidate, mechanism=wrong))
-        self.assertEqual(result.outcome, cw.CheckOutcome.FAIL)
+        self.assertEqual(result.outcome, bc.CheckOutcome.FAIL)
         self.assertEqual(result.diagnostics[0].code, "output_endpoint")
 
     def test_temporal_and_state_operations_are_rejected_with_source_location(self):
@@ -289,7 +289,7 @@ class SyntheticGenerationTests(unittest.TestCase):
         ):
             with self.subTest(operation=operation):
                 request, _ = fixture(temporal=operation)
-                with self.assertRaises(cw.UnsupportedBehaviorError) as error:
+                with self.assertRaises(bc.UnsupportedBehaviorError) as error:
                     generate_synthetic(request)
                 self.assertIsNotNone(error.exception.node_id)
                 self.assertIsNotNone(error.exception.source)
@@ -300,63 +300,63 @@ class SyntheticGenerationTests(unittest.TestCase):
         result = check_synthetic_candidate(
             request, forged, exercised_history(sample), until=7
         )
-        self.assertEqual(result.outcome, cw.CheckOutcome.UNSUPPORTED)
+        self.assertEqual(result.outcome, bc.CheckOutcome.UNSUPPORTED)
         self.assertEqual(result.diagnostics[0].code, "unsupported_generation_profile")
 
     def test_numeric_comparison_and_negation_have_independent_checks(self):
         request, sample = fixture(numeric=True)
         candidate = generate_synthetic(request)
         history = (
-            cw.InputFrame(0, contacts={"x": sample(1, True)}),
-            cw.InputFrame(1, contacts={"x": sample(3, True)}),
-            cw.InputFrame(5, contacts={"x": sample(2, True)}),
+            bc.InputFrame(0, contacts={"x": sample(1, True)}),
+            bc.InputFrame(1, contacts={"x": sample(3, True)}),
+            bc.InputFrame(5, contacts={"x": sample(2, True)}),
         )
         self.assertEqual(
             check_synthetic_candidate(request, candidate, history, until=7).outcome,
-            cw.CheckOutcome.PASS,
+            bc.CheckOutcome.PASS,
         )
         request, sample = fixture(negate=True)
         self.assertEqual(
             check_synthetic_candidate(
                 request, generate_synthetic(request), exercised_history(sample), until=7
             ).outcome,
-            cw.CheckOutcome.PASS,
+            bc.CheckOutcome.PASS,
         )
 
     def test_unexercised_and_short_histories_are_unknown(self):
-        self.assertEqual(self.check(history=()).outcome, cw.CheckOutcome.UNKNOWN)
-        inactive = (cw.InputFrame(0, contacts={"x": self.sample(False, False)}),)
-        self.assertEqual(self.check(history=inactive).outcome, cw.CheckOutcome.UNKNOWN)
-        self.assertEqual(self.check(until=1.2).outcome, cw.CheckOutcome.UNKNOWN)
-        active = (cw.InputFrame(0, contacts={"x": self.sample(True, True)}),)
+        self.assertEqual(self.check(history=()).outcome, bc.CheckOutcome.UNKNOWN)
+        inactive = (bc.InputFrame(0, contacts={"x": self.sample(False, False)}),)
+        self.assertEqual(self.check(history=inactive).outcome, bc.CheckOutcome.UNKNOWN)
+        self.assertEqual(self.check(until=1.2).outcome, bc.CheckOutcome.UNKNOWN)
+        active = (bc.InputFrame(0, contacts={"x": self.sample(True, True)}),)
         result = self.check(history=active)
-        self.assertEqual(result.outcome, cw.CheckOutcome.UNKNOWN)
+        self.assertEqual(result.outcome, bc.CheckOutcome.UNKNOWN)
         self.assertEqual(result.diagnostics[0].code, "unexercised_inactive_response")
 
     def test_changed_source_correspondence_cannot_establish_acceptance(self):
         source_map = dict(self.candidate.source_map)
         source_map[self.candidate.mechanism.outputs[0]] = (self.request.domain.role,)
         result = self.check(replace(self.candidate, source_map=source_map))
-        self.assertEqual(result.outcome, cw.CheckOutcome.FAIL)
+        self.assertEqual(result.outcome, bc.CheckOutcome.FAIL)
         self.assertEqual(result.diagnostics[0].code, "candidate_lineage")
 
     def test_startup_active_and_contact_removal_reappearance(self):
         history = (
-            cw.InputFrame(0, contacts={"x": self.sample(True, True)}),
-            cw.InputFrame(2, contacts={}),
-            cw.InputFrame(3, contacts={"x": self.sample(False, False)}),
-            cw.InputFrame(4, contacts={"x": self.sample(True, True)}),
-            cw.InputFrame(6, contacts={"x": self.sample(False, False)}),
+            bc.InputFrame(0, contacts={"x": self.sample(True, True)}),
+            bc.InputFrame(2, contacts={}),
+            bc.InputFrame(3, contacts={"x": self.sample(False, False)}),
+            bc.InputFrame(4, contacts={"x": self.sample(True, True)}),
+            bc.InputFrame(6, contacts={"x": self.sample(False, False)}),
         )
-        self.assertEqual(self.check(history=history).outcome, cw.CheckOutcome.PASS)
+        self.assertEqual(self.check(history=history).outcome, bc.CheckOutcome.PASS)
 
     def test_unknown_observations_and_unbounded_domain_are_rejected(self):
         first = self.request.domain.inputs[0]
         missing = replace(self.request.domain, inputs=self.request.domain.inputs[1:])
-        with self.assertRaises(cw.UnsupportedBehaviorError):
+        with self.assertRaises(bc.UnsupportedBehaviorError):
             generate_synthetic(replace(self.request, domain=missing))
         unbounded = replace(self.request.domain, max_contacts=None)
-        with self.assertRaises(cw.UnsupportedBehaviorError):
+        with self.assertRaises(bc.UnsupportedBehaviorError):
             generate_synthetic(replace(self.request, domain=unbounded))
         self.assertEqual(first.scope, "contact")
 
@@ -369,7 +369,7 @@ class SyntheticGenerationTests(unittest.TestCase):
         self.assertEqual(
             self.check(wrong).diagnostics[0].code, "candidate_request_identity"
         )
-        with self.assertRaises(cw.SerializationError):
+        with self.assertRaises(bc.SerializationError):
             SyntheticGeneratorConfig(catalog_fingerprint="0" * 64)
 
     def test_bounded_exhaustive_two_object_boolean_transitions(self):
@@ -385,7 +385,7 @@ class SyntheticGenerationTests(unittest.TestCase):
                 (6, (False,) * 4),
             ):
                 frames.append(
-                    cw.InputFrame(
+                    bc.InputFrame(
                         time,
                         contacts={
                             "x": self.sample(*state[:2]),
@@ -395,7 +395,7 @@ class SyntheticGenerationTests(unittest.TestCase):
                 )
             result = self.check(history=frames, until=7)
             self.assertEqual(
-                result.outcome, cw.CheckOutcome.PASS, (left, right, result.to_dict())
+                result.outcome, bc.CheckOutcome.PASS, (left, right, result.to_dict())
             )
 
 

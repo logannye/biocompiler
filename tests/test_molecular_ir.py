@@ -5,8 +5,8 @@ from dataclasses import FrozenInstanceError, replace
 import hashlib
 import unittest
 
-from cellweave.errors import SerializationError
-from cellweave.ir.molecular import (
+from biocompiler.errors import SerializationError
+from biocompiler.ir.molecular import (
     EncodingChange,
     EncodingEvidencePolicy,
     EncodingPolicy,
@@ -17,8 +17,8 @@ from cellweave.ir.molecular import (
     canonical_sequence_sha256,
     reference_feature_statuses,
 )
-from cellweave.semantics.coordinates import SequenceRange
-from cellweave.synthesis.construct import (
+from biocompiler.semantics.coordinates import SequenceRange
+from biocompiler.synthesis.construct import (
     generate_construct,
     prepare_reference_construct,
 )

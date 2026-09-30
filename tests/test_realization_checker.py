@@ -6,25 +6,25 @@ from dataclasses import replace
 import unittest
 from unittest.mock import patch
 
-import cellweave as cw
-from cellweave.compiler.behavior import lower_to_behavior
-from cellweave.errors import SerializationError
-from cellweave.ir.mechanism import MechanismNode, MechanismProgram
-from cellweave.semantics.evaluator import InputFrame, SignalSample
-from cellweave.semantics.realization import (
+import biocompiler as bc
+from biocompiler.compiler.behavior import lower_to_behavior
+from biocompiler.errors import SerializationError
+from biocompiler.ir.mechanism import MechanismNode, MechanismProgram
+from biocompiler.semantics.evaluator import InputFrame, SignalSample
+from biocompiler.semantics.realization import (
     BehaviorContract,
     InputDomain,
     Observable,
     OperatingDomain,
     ResponseRequirement,
 )
-from cellweave.semantics.types import BOOLEAN
-from cellweave.verification.evidence import (
+from biocompiler.semantics.types import BOOLEAN
+from biocompiler.verification.evidence import (
     CheckOutcome,
     CheckResult,
     DependencySnapshot,
 )
-from cellweave.verification.realization import (
+from biocompiler.verification.realization import (
     CHECKER_SETTINGS,
     InputBinding,
     ObservationMap,
@@ -43,7 +43,7 @@ def fixture(
     wrong_logic=False,
     pulse=False,
 ):
-    therapy = cw.Therapy("finite_response")
+    therapy = bc.Therapy("finite_response")
     cell = therapy.engineer("observer", cell_type="abstract_cell")
     scope = cell.contact if contact else cell.environment
     first = scope.signal("A")
@@ -54,7 +54,7 @@ def fixture(
         signals.append(second)
         condition = condition & second.present()
     action = cell.eliminate(cell.contact) if contact else cell.rest()
-    specification = action.for_(cw.Duration(4)) if pulse else action
+    specification = action.for_(bc.Duration(4)) if pulse else action
     rule = cell.when(condition).do(specification)
     behavior = lower_to_behavior(therapy.freeze())
     port_scope = "contact" if contact else "cell"
@@ -63,7 +63,7 @@ def fixture(
         for index in range(len(signals))
     )
     output_endpoint = Observable(
-        "response_activity", cw.Level, cell.node_id, port_scope
+        "response_activity", bc.Level, cell.node_id, port_scope
     )
     inputs = tuple(
         InputDomain(signal.node_id, "present", endpoint, (False, True))
@@ -74,7 +74,7 @@ def fixture(
         "1",
         cell.node_id,
         inputs,
-        cw.Duration(8),
+        bc.Duration(8),
         max_contacts=2 if contact else None,
         required_capabilities=("synthetic_fixture",),
     )
@@ -83,14 +83,14 @@ def fixture(
         rule.node_id,
         specification.node_id,
         output_endpoint,
-        cw.Interval(0.9, 1.1),
-        cw.Interval(-0.1, 0.1),
-        cw.Duration(1),
-        cw.Duration(1),
+        bc.Interval(0.9, 1.1),
+        bc.Interval(-0.1, 0.1),
+        bc.Duration(1),
+        bc.Duration(1),
     )
     contract = BehaviorContract("contract", behavior.fingerprint, (requirement,))
-    target = cw.TargetContext(
-        "fixture", "1", cw.PayloadFormat.RNA, capabilities=("synthetic_fixture",)
+    target = bc.TargetContext(
+        "fixture", "1", bc.PayloadFormat.RNA, capabilities=("synthetic_fixture",)
     )
     nodes = [
         MechanismNode(f"input{index}", "input", endpoint)
@@ -109,7 +109,7 @@ def fixture(
         )
 
     def numeric(name):
-        return Observable(name, cw.Level, cell.node_id, port_scope)
+        return Observable(name, bc.Level, cell.node_id, port_scope)
 
     nodes += [
         MechanismNode("high", "constant", numeric("high"), attributes={"value": 1}),
@@ -126,7 +126,7 @@ def fixture(
                 "delay",
                 numeric("delayed"),
                 (selected,),
-                {"duration": cw.Duration(delay), "initial": 0},
+                {"duration": bc.Duration(delay), "initial": 0},
             )
         )
         selected = "delay"
@@ -219,7 +219,7 @@ class FiniteTraceCheckerTests(unittest.TestCase):
         args[1] = replace(
             args[1],
             requirements=(
-                replace(requirement, max_activation_delay=cw.Duration(0.25)),
+                replace(requirement, max_activation_delay=bc.Duration(0.25)),
             ),
         )
         signal = args[2].inputs[0].signal_id
@@ -286,12 +286,12 @@ class FiniteTraceCheckerTests(unittest.TestCase):
         requirement = args[1].requirements[0]
         requirement = replace(
             requirement,
-            observable=replace(requirement.observable, dtype=cw.Concentration),
-            active_range=cw.Interval(
-                cw.Concentration(1), cw.Concentration(2), type=cw.Concentration
+            observable=replace(requirement.observable, dtype=bc.Concentration),
+            active_range=bc.Interval(
+                bc.Concentration(1), bc.Concentration(2), type=bc.Concentration
             ),
-            inactive_range=cw.Interval(
-                cw.Concentration(0), cw.Concentration(0.1), type=cw.Concentration
+            inactive_range=bc.Interval(
+                bc.Concentration(0), bc.Concentration(0.1), type=bc.Concentration
             ),
         )
         args[1] = replace(args[1], requirements=(requirement,))
@@ -445,7 +445,7 @@ class CheckArtifactTests(unittest.TestCase):
         for requirement in data["requirements"]:
             if requirement.get("source"):
                 requirement["source"]["file"] = "relocated.py"
-        args[0] = cw.BehaviorProgram.from_dict(data)
+        args[0] = bc.BehaviorProgram.from_dict(data)
         self.assertEqual(args[0].fingerprint, result.dependencies.values["behavior"])
         self.assertEqual(
             result.freshness(realization_dependencies(*args)).changed_dependencies,
@@ -514,7 +514,7 @@ class CheckArtifactTests(unittest.TestCase):
         mechanism = args[4]
         delay = replace(
             mechanism.get("delay"),
-            attributes={"duration": cw.Duration(0.75), "initial": 0},
+            attributes={"duration": bc.Duration(0.75), "initial": 0},
         )
         changed[4] = replace(
             mechanism,
@@ -535,7 +535,7 @@ class CheckArtifactTests(unittest.TestCase):
             result.freshness(realization_dependencies(*changed)).changed_dependencies,
             ("history", "horizon"),
         )
-        with patch("cellweave.verification.realization.CHECKER_VERSION", "changed"):
+        with patch("biocompiler.verification.realization.CHECKER_VERSION", "changed"):
             self.assertEqual(
                 result.freshness(realization_dependencies(*args)).changed_dependencies,
                 ("checker",),

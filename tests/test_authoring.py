@@ -4,12 +4,12 @@ from __future__ import annotations
 
 import unittest
 
-import cellweave as cw
+import biocompiler as bc
 
 
 class AuthoringTests(unittest.TestCase):
     def setUp(self):
-        self.therapy = cw.Therapy("example")
+        self.therapy = bc.Therapy("example")
         self.cells = self.therapy.engineer("responders", cell_type="T_cell")
         self.present = self.cells.contact.marker("target").present()
 
@@ -43,7 +43,7 @@ class AuthoringTests(unittest.TestCase):
         self.assertFalse(after.find(kind="action.eliminate"))
 
     def test_declarations_survive_without_rules(self):
-        self.therapy.parameter("dwell", type=cw.Duration)
+        self.therapy.parameter("dwell", type=bc.Duration)
         self.therapy.channel("alert", scope="local")
         self.therapy.goal("support_recovery")
         self.cells.state("phase", values=("searching", "active"), initial="searching")
@@ -110,7 +110,7 @@ class AuthoringTests(unittest.TestCase):
             self.cells.eliminate(other.contact)
 
     def test_cross_therapy_objects_are_rejected_even_with_matching_names(self):
-        other_therapy = cw.Therapy("example")
+        other_therapy = bc.Therapy("example")
         other = other_therapy.engineer("responders", cell_type="T_cell")
         foreign_condition = other.contact.marker("target").present()
         with self.assertRaises(ValueError):
@@ -139,7 +139,7 @@ class AuthoringTests(unittest.TestCase):
             state.is_("missing")
 
     def test_signature_rebinds_observations_to_each_role(self):
-        @cw.signature
+        @bc.signature
         def recognized(target):
             return target.marker("A").high() & target.marker("B").present()
 
@@ -154,7 +154,7 @@ class AuthoringTests(unittest.TestCase):
             self.assertEqual(len([node for node in signals if node.role == role]), 2)
 
     def test_signature_must_return_a_condition(self):
-        @cw.signature
+        @bc.signature
         def invalid(target):
             return target.marker("A")
 

@@ -5,19 +5,19 @@ import hashlib
 import unittest
 from unittest.mock import patch
 
-from cellweave.errors import SerializationError
-from cellweave.ir.construct import ConstructFeature
-from cellweave.ir.molecular import (
+from biocompiler.errors import SerializationError
+from biocompiler.ir.construct import ConstructFeature
+from biocompiler.ir.molecular import (
     EncodingChange,
     MolecularArtifact,
     MolecularRecord,
     TranslationPolicy,
     reference_feature_statuses,
 )
-from cellweave.registry.references import translate_cds
-from cellweave.semantics.coordinates import SequenceRange
-from cellweave.verification.evidence import CheckOutcome
-from cellweave.verification.molecular import MolecularResult, check_molecular
+from biocompiler.registry.references import translate_cds
+from biocompiler.semantics.coordinates import SequenceRange
+from biocompiler.verification.evidence import CheckOutcome
+from biocompiler.verification.molecular import MolecularResult, check_molecular
 from test_component_adapters import DNA, MANIFEST, RNA
 from test_construct_checker import fixture as construct_fixture
 

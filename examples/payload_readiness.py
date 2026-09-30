@@ -10,7 +10,7 @@ import hashlib
 import json
 from pathlib import Path
 
-from cellweave.ir.payload import (
+from biocompiler.ir.payload import (
     PayloadFeature,
     PayloadMolecule,
     PayloadReference,
@@ -18,9 +18,9 @@ from cellweave.ir.payload import (
     PayloadReview,
     PayloadSource,
 )
-from cellweave.semantics.coordinates import SequenceRange
-from cellweave.verification.evidence import CheckOutcome
-from cellweave.verification.payload import REVIEW_SCHEMA_VERSION, check_payload
+from biocompiler.semantics.coordinates import SequenceRange
+from biocompiler.verification.evidence import CheckOutcome
+from biocompiler.verification.payload import REVIEW_SCHEMA_VERSION, check_payload
 
 
 def _sha(value):

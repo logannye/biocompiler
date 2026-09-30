@@ -9,9 +9,12 @@ from collections import Counter
 from pathlib import Path
 import json
 
-import cellweave as cw
-from cellweave.synthesis.synthetic import generate_synthetic, check_synthetic_candidate
-from cellweave.verification.exploration import (
+import biocompiler as bc
+from biocompiler.synthesis.synthetic import (
+    generate_synthetic,
+    check_synthetic_candidate,
+)
+from biocompiler.verification.exploration import (
     AdversarialConfig,
     BooleanContactConfig,
     BooleanObservation,
@@ -37,11 +40,11 @@ def run_campaign():
     )
 
     def sample(value):
-        return {item.signal_id: cw.SignalSample(present=value) for item in observations}
+        return {item.signal_id: bc.SignalSample(present=value) for item in observations}
 
     suffix = (
-        cw.InputFrame(4, contacts={"x": sample(True), "y": sample(True)}),
-        cw.InputFrame(6, contacts={"x": sample(False), "y": sample(False)}),
+        bc.InputFrame(4, contacts={"x": sample(True), "y": sample(True)}),
+        bc.InputFrame(6, contacts={"x": sample(False), "y": sample(False)}),
     )
     bounds = BooleanContactConfig(("x", "y"), observations, (0, 2), 7, suffix)
 
@@ -56,7 +59,7 @@ def run_campaign():
             (
                 (index, result.to_dict())
                 for index, result in enumerate(report.results)
-                if result.outcome is not cw.CheckOutcome.PASS
+                if result.outcome is not bc.CheckOutcome.PASS
             ),
             None,
         ),
@@ -72,12 +75,12 @@ def run_campaign():
     for case in cases:
         result = check(case.history, until=case.until)
         outcomes[result.outcome.value] += 1
-        assert result.outcome in {cw.CheckOutcome.PASS, cw.CheckOutcome.UNKNOWN}, {
+        assert result.outcome in {bc.CheckOutcome.PASS, bc.CheckOutcome.UNKNOWN}, {
             "case": case.to_dict(),
             "result": result.to_dict(),
         }
         if case.intentionally_incomplete:
-            assert result.outcome is cw.CheckOutcome.UNKNOWN, {
+            assert result.outcome is bc.CheckOutcome.UNKNOWN, {
                 "case": case.to_dict(),
                 "result": result.to_dict(),
             }
@@ -85,7 +88,7 @@ def run_campaign():
     delayed = with_delay(candidate.mechanism, 2)
 
     def check_delayed(history, *, until):
-        return cw.check_realization(
+        return bc.check_realization(
             request.behavior,
             request.contract,
             request.domain,
@@ -98,18 +101,18 @@ def run_campaign():
 
     noisy = (
         original_history[0],
-        cw.InputFrame(0.25, contacts=original_history[0].contacts),
+        bc.InputFrame(0.25, contacts=original_history[0].contacts),
         original_history[1],
-        cw.InputFrame(2, contacts=original_history[1].contacts),
-        cw.InputFrame(3, contacts=original_history[1].contacts),
-        cw.InputFrame(4, contacts=original_history[1].contacts),
+        bc.InputFrame(2, contacts=original_history[1].contacts),
+        bc.InputFrame(3, contacts=original_history[1].contacts),
+        bc.InputFrame(4, contacts=original_history[1].contacts),
         original_history[2],
     )
     failure = check_delayed(noisy, until=7)
-    assert failure.outcome is cw.CheckOutcome.FAIL
+    assert failure.outcome is bc.CheckOutcome.FAIL
     signature = FailureSignature.from_counterexample(failure.counterexamples[0])
     reduced = reduce_counterexample(noisy, 7, check_delayed, signature)
-    assert reduced.one_minimal and reduced.result.outcome is cw.CheckOutcome.FAIL
+    assert reduced.one_minimal and reduced.result.outcome is bc.CheckOutcome.FAIL
     return report, stress_config, cases, dict(sorted(outcomes.items())), reduced
 
 

@@ -3,7 +3,7 @@
 from pathlib import Path
 import tempfile
 
-from cellweave import (
+from biocompiler import (
     build_reference_package,
     prepare_reference_build,
     publish_reference_package,
@@ -20,7 +20,7 @@ def main():
             request = prepare_reference_build(alphabet, reference_directory)
             package = build_reference_package(request, reference_directory)
             path = publish_reference_package(
-                package, Path(temporary) / f"{alphabet}.cwb"
+                package, Path(temporary) / f"{alphabet}.bcb"
             )
             restored = verify_reference_package(
                 path.read_bytes(), expected_request=request

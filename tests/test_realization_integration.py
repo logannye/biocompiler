@@ -11,9 +11,9 @@ import sys
 import tempfile
 import unittest
 
-import cellweave as cw
-from cellweave.cli import main
-from cellweave.semantics.types import BOOLEAN
+import biocompiler as bc
+from biocompiler.cli import main
+from biocompiler.semantics.types import BOOLEAN
 from examples.realization_check import build_example, run_example
 
 
@@ -22,13 +22,13 @@ class RealizationIntegrationTests(unittest.TestCase):
         self.args = build_example()
 
     def check(self, *args, until=7):
-        return cw.check_realization(*(args or self.args), until=until)
+        return bc.check_realization(*(args or self.args), until=until)
 
     def test_public_workflow_exposes_success_counterexamples_and_staleness(self):
         results, changed = run_example()
-        self.assertEqual(results["responsive"].outcome, cw.CheckOutcome.PASS)
+        self.assertEqual(results["responsive"].outcome, bc.CheckOutcome.PASS)
         for label in ("silent", "late"):
-            self.assertEqual(results[label].outcome, cw.CheckOutcome.FAIL)
+            self.assertEqual(results[label].outcome, bc.CheckOutcome.FAIL)
             counterexample = results[label].counterexamples[0]
             self.assertEqual(counterexample.time, 1.5)
             self.assertEqual(counterexample.actual, 0)
@@ -37,12 +37,12 @@ class RealizationIntegrationTests(unittest.TestCase):
 
     def test_aggregate_before_conjunction_is_detected_on_split_objects(self):
         behavior, contract, domain, target, candidate, mapping, history = self.args
-        cell_boolean = cw.Observable("aggregated_a", BOOLEAN, domain.role)
+        cell_boolean = bc.Observable("aggregated_a", BOOLEAN, domain.role)
         first, second = (item.mechanism_input_id for item in mapping.inputs)
         aggregate = candidate.find("any_contact")[0].id
         extra = (
-            cw.MechanismNode("any_a", "any_contact", cell_boolean, (first,)),
-            cw.MechanismNode(
+            bc.MechanismNode("any_a", "any_contact", cell_boolean, (first,)),
+            bc.MechanismNode(
                 "any_b",
                 "any_contact",
                 replace(cell_boolean, id="aggregated_b"),
@@ -60,13 +60,13 @@ class RealizationIntegrationTests(unittest.TestCase):
             + extra,
         )
         result = self.check(behavior, contract, domain, target, wrong, mapping, history)
-        self.assertEqual(result.outcome, cw.CheckOutcome.FAIL)
+        self.assertEqual(result.outcome, bc.CheckOutcome.FAIL)
         self.assertEqual(result.counterexamples[0].time, 0.5)
         self.assertEqual(result.counterexamples[0].expected["state"], "inactive")
 
     def test_artifacts_roundtrip_and_inspect_without_executing_authoring(self):
         artifacts = (*self.args[:-1], self.check())
-        with tempfile.TemporaryDirectory(prefix="cellweave-inspect-") as directory:
+        with tempfile.TemporaryDirectory(prefix="biocompiler-inspect-") as directory:
             path = Path(directory) / "artifact.json"
             for artifact in artifacts:
                 with self.subTest(schema=artifact.schema_version):
@@ -94,19 +94,19 @@ class RealizationIntegrationTests(unittest.TestCase):
                     ):
                         try:
                             type(artifact).from_json(json.dumps(document))
-                        except cw.SerializationError:
+                        except bc.SerializationError:
                             pass
 
     def test_plan_retains_context_assumptions_and_molecular_boundary(self):
-        therapy = cw.Therapy("planning_context")
+        therapy = bc.Therapy("planning_context")
         cell = therapy.engineer("responder", cell_type="abstract_cell")
         cell.when(cell.internal.signal("A").present()).do(cell.rest())
-        target = replace(self.args[3], resources={"abstract_budget": cw.Level(5)})
-        plan = cw.plan(therapy.freeze(), profile=cw.BuildProfile(target))
+        target = replace(self.args[3], resources={"abstract_budget": bc.Level(5)})
+        plan = bc.plan(therapy.freeze(), profile=bc.BuildProfile(target))
         self.assertEqual(plan.to_dict()["target"], target.to_dict())
         self.assertFalse(plan.ready)
-        with self.assertRaises(cw.CompilationUnavailableError):
-            cw.compile(plan)
+        with self.assertRaises(bc.CompilationUnavailableError):
+            bc.compile(plan)
 
     def test_evidence_is_reproducible_across_hash_seeds(self):
         root = Path(__file__).resolve().parents[1]

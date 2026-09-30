@@ -23,7 +23,7 @@ unchanged. Delivered topology and localization remain unspecified.
 ## Checked execution
 
 ```python
-build = cw.run_construct_pipeline(
+build = bc.run_construct_pipeline(
     request,
     registry,
     {manifest.reference_set_id: manifest},

@@ -5,7 +5,7 @@
 
 ## Context
 
-CellWeave explores compilation from an immune-cell engineer's high-level intent to an exact DNA or RNA payload specification. A single translation from Python to nucleotide letters would hide the mechanism choices and assumptions that give the result meaning. The project also needs to distinguish exact artifact identity from conditional predictions of cellular behavior.
+biocompiler explores compilation from an immune-cell engineer's high-level intent to an exact DNA or RNA payload specification. A single translation from Python to nucleotide letters would hide the mechanism choices and assumptions that give the result meaning. The project also needs to distinguish exact artifact identity from conditional predictions of cellular behavior.
 
 ## Decision
 

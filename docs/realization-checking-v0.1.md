@@ -1,6 +1,6 @@
 # Realization contracts and finite-trace checking
 
-CellWeave can compare an abstract behavior specification with an independently executed candidate model. This is the first executable bridge below Behavior IR. Its initial model is a synthetic signal-processing graph, designed to test compiler semantics. It does not model molecular kinetics or generate sequences.
+biocompiler can compare an abstract behavior specification with an independently executed candidate model. This is the first executable bridge below Behavior IR. Its initial model is a synthetic signal-processing graph, designed to test compiler semantics. It does not model molecular kinetics or generate sequences.
 
 The pipeline has two branches that meet at a checker:
 
@@ -25,14 +25,14 @@ The candidate cannot choose its own acceptance criteria. The checker runs the re
 The [executable example](../examples/realization_check.py) constructs every artifact and includes deliberately incorrect candidates. The public checking call is:
 
 ```python
-result = cw.check_realization(
+result = bc.check_realization(
     behavior, contract, domain, target, candidate, observation_map, history,
     until=7,
 )
 print(result.outcome, result.coverage, result.counterexamples)
 
 # Compare identities before reusing an earlier result.
-current = cw.realization_dependencies(
+current = bc.realization_dependencies(
     behavior, contract, domain, target, changed_candidate, observation_map,
     history, until=7,
 )
@@ -52,9 +52,9 @@ print(result.freshness(current).changed_dependencies)
 | `ObservationMap` | `InputBinding(signal_id, field, mechanism_input_id)` and `OutputBinding(requirement_id, mechanism_output_id)` records |
 | `CheckResult` | Outcome, evidence kind, scoped claim, diagnostics, per-requirement coverage, counterexamples, dependencies |
 
-Top-level artifacts support `to_json()`, `from_json()`, and `fingerprint`. `cellweave inspect artifact.json` reports identity and summary; `--json` prints the validated normalized artifact. JSON is data: inspection never executes an authoring script.
+Top-level artifacts support `to_json()`, `from_json()`, and `fingerprint`. `biocompiler inspect artifact.json` reports identity and summary; `--json` prints the validated normalized artifact. JSON is data: inspection never executes an authoring script.
 
-Planning reports now emit `cellweave.plan.v0.2`, embedding the complete versioned `TargetContext` instead of the earlier three-field target reference. Existing three-argument Python construction of `TargetContext` remains supported. This change prevents capability, compartment, and resource assumptions from being lost during plan serialization.
+Planning reports now emit `biocompiler.plan.v0.2`, embedding the complete versioned `TargetContext` instead of the earlier three-field target reference. Existing three-argument Python construction of `TargetContext` remains supported. This change prevents capability, compartment, and resource assumptions from being lost during plan serialization.
 
 ## What the contract means
 

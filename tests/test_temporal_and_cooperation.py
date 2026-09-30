@@ -4,16 +4,16 @@ from __future__ import annotations
 
 import unittest
 
-import cellweave as cw
+import biocompiler as bc
 
 
 class TemporalAndCooperationTests(unittest.TestCase):
     def setUp(self):
-        self.therapy = cw.Therapy("history")
+        self.therapy = bc.Therapy("history")
         self.cells = self.therapy.engineer("responders", cell_type="T_cell")
         self.disease = self.cells.environment.signal("disease").present()
         self.recovery = self.cells.environment.signal("recovery").high()
-        self.window = self.therapy.parameter("window", type=cw.Duration)
+        self.window = self.therapy.parameter("window", type=bc.Duration)
 
     def test_memory_retains_setting_reset_expiry_and_role(self):
         memory = self.cells.memory(
@@ -94,7 +94,7 @@ class TemporalAndCooperationTests(unittest.TestCase):
 
     def test_channel_links_roles_without_sharing_observations(self):
         scouts = self.therapy.engineer("scouts", cell_type="macrophage")
-        alert = self.therapy.channel("alert", scope="local", type=cw.Level)
+        alert = self.therapy.channel("alert", scope="local", type=bc.Level)
         scouts.when(scouts.environment.signal("damage").high()).do(scouts.emit(alert))
         self.cells.when(self.cells.receives(alert)).do(
             self.cells.migrate_toward(self.cells.environment.gradient(alert))
@@ -110,9 +110,9 @@ class TemporalAndCooperationTests(unittest.TestCase):
         self.assertEqual(len(program.find(kind="rule")), 3)
 
     def test_communication_values_obey_channel_dimension(self):
-        channel = self.therapy.channel("factor", scope="local", type=cw.Concentration)
+        channel = self.therapy.channel("factor", scope="local", type=bc.Concentration)
         self.cells.when(self.disease).do(
-            self.cells.emit(channel, value=cw.Concentration(1, unit="nM"))
+            self.cells.emit(channel, value=bc.Concentration(1, unit="nM"))
         )
         with self.assertRaises(TypeError):
             self.cells.emit(channel, value=1)

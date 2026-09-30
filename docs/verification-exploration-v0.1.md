@@ -1,6 +1,6 @@
 # Bounded verification exploration v0.1
 
-`cellweave.verification.exploration` supplies explicit Boolean history enumeration,
+`biocompiler.verification.exploration` supplies explicit Boolean history enumeration,
 seeded adversarial histories and failure-preserving history reduction. It calls a
 supplied checker on finite histories. It does not establish universal temporal,
 whole-profile or biological refinement.

@@ -5,9 +5,9 @@ from pathlib import Path
 import unittest
 from unittest.mock import patch
 
-from cellweave.errors import SerializationError
-from cellweave.ir.composition import CompositionInstance, CompositionRequest
-from cellweave.ir.construct import (
+from biocompiler.errors import SerializationError
+from biocompiler.ir.composition import CompositionInstance, CompositionRequest
+from biocompiler.ir.construct import (
     ComponentPlacement,
     ConstructCandidate,
     ConstructDependency,
@@ -18,22 +18,22 @@ from cellweave.ir.construct import (
     ConstructRequest,
     RegulatoryRelationship,
 )
-from cellweave.ir.intent import SourceLocation
-from cellweave.registry.components import ComponentRegistry
-from cellweave.registry.reference_components import (
+from biocompiler.ir.intent import SourceLocation
+from biocompiler.registry.components import ComponentRegistry
+from biocompiler.registry.reference_components import (
     ReferenceSelection,
     adapt_reference_component,
 )
-from cellweave.registry.references import load_reference_manifest
-from cellweave.semantics.component_contracts import OperatingDomain
-from cellweave.semantics.context import PayloadFormat, TargetContext
-from cellweave.semantics.coordinates import SequenceRange
-from cellweave.verification.construct import (
+from biocompiler.registry.references import load_reference_manifest
+from biocompiler.semantics.component_contracts import OperatingDomain
+from biocompiler.semantics.context import PayloadFormat, TargetContext
+from biocompiler.semantics.coordinates import SequenceRange
+from biocompiler.verification.construct import (
     ConstructResult,
     check_construct,
     check_construct_request,
 )
-from cellweave.verification.evidence import CheckOutcome
+from biocompiler.verification.evidence import CheckOutcome
 from test_component_adapters import DNA, MANIFEST, RNA
 
 

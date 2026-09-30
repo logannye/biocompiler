@@ -4,7 +4,7 @@ from copy import deepcopy
 from dataclasses import FrozenInstanceError, replace
 import unittest
 
-from cellweave.artifacts.manifest import (
+from biocompiler.artifacts.manifest import (
     REQUIRED_FILES,
     AcceptedStage,
     BuildManifest,
@@ -14,9 +14,9 @@ from cellweave.artifacts.manifest import (
     ToolPin,
     validate_package_path,
 )
-from cellweave.errors import SerializationError
-from cellweave.ir.intent import SourceLocation
-from cellweave.ir.serialization import fingerprint
+from biocompiler.errors import SerializationError
+from biocompiler.ir.intent import SourceLocation
+from biocompiler.ir.serialization import fingerprint
 from examples.reference_construct import reference_request
 
 
@@ -42,10 +42,14 @@ def manifest_fixture():
         ),
         accepted_stages=(
             AcceptedStage(
-                "components", "b" * 64, "c" * 64, "cellweave.construct_request.v0.1"
+                "components", "b" * 64, "c" * 64, "biocompiler.construct_request.v0.1"
             ),
-            AcceptedStage("construct", "d" * 64, "e" * 64, "cellweave.construct.v0.1"),
-            AcceptedStage("molecular", "f" * 64, "0" * 64, "cellweave.molecular.v0.1"),
+            AcceptedStage(
+                "construct", "d" * 64, "e" * 64, "biocompiler.construct.v0.1"
+            ),
+            AcceptedStage(
+                "molecular", "f" * 64, "0" * 64, "biocompiler.molecular.v0.1"
+            ),
         ),
         toolchain=(ToolPin("compiler", "1", "1" * 64),),
         package_version="0.1.0.dev8",
@@ -199,7 +203,7 @@ class BuildManifestTests(unittest.TestCase):
                 replace(manifest, **change)
         for stage in manifest.accepted_stages:
             with self.subTest(stage=stage.stage), self.assertRaises(SerializationError):
-                replace(stage, artifact_schema="cellweave.behavior.v0.1")
+                replace(stage, artifact_schema="biocompiler.behavior.v0.1")
         with self.assertRaises(SerializationError):
             replace(manifest.files[0], role="sequence")
         with self.assertRaises(SerializationError):

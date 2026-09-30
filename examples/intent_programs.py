@@ -1,4 +1,4 @@
-"""Executable, symbolic examples of CellWeave's complete authoring API.
+"""Executable, symbolic examples of biocompiler's complete authoring API.
 
 Run ``PYTHONPATH=src python examples/intent_programs.py`` from the checkout.
 These programs describe intent; they do not create therapeutic sequences.
@@ -6,10 +6,10 @@ These programs describe intent; they do not create therapeutic sequences.
 
 from __future__ import annotations
 
-import cellweave as cw
+import biocompiler as bc
 
 
-@cw.signature
+@bc.signature
 def pathological(target):
     """A reusable recognition pattern bound to each contacted target."""
     return target.marker("A").high() & (
@@ -17,8 +17,8 @@ def pathological(target):
     )
 
 
-def contextual_clearance() -> cw.IntentProgram:
-    therapy = cw.Therapy("context_aware_response")
+def contextual_clearance() -> bc.IntentProgram:
+    therapy = bc.Therapy("context_aware_response")
     cells = therapy.engineer("responders", cell_type="T_cell")
     context = cells.environment.signal("disease_context").present()
     cells.when(pathological(cells.contact) & context, name="local_clearance").do(
@@ -29,11 +29,11 @@ def contextual_clearance() -> cw.IntentProgram:
     return therapy.freeze()
 
 
-def priming_and_phases() -> cw.IntentProgram:
-    therapy = cw.Therapy("primed_response")
+def priming_and_phases() -> bc.IntentProgram:
+    therapy = bc.Therapy("primed_response")
     cells = therapy.engineer("responders", cell_type="T_cell")
-    dwell = therapy.parameter("priming_duration", type=cw.Duration)
-    expiry = therapy.parameter("memory_duration", type=cw.Duration)
+    dwell = therapy.parameter("priming_duration", type=bc.Duration)
+    expiry = therapy.parameter("memory_duration", type=bc.Duration)
     disease = cells.environment.signal("disease_context").present()
     recovery = cells.environment.signal("recovery").high()
     primed = cells.memory(
@@ -54,11 +54,11 @@ def priming_and_phases() -> cw.IntentProgram:
     return therapy.freeze()
 
 
-def temporal_response() -> cw.IntentProgram:
-    therapy = cw.Therapy("temporal_response")
+def temporal_response() -> bc.IntentProgram:
+    therapy = bc.Therapy("temporal_response")
     cells = therapy.engineer("responders", cell_type="T_cell")
-    interval = therapy.parameter("observation_window", type=cw.Duration)
-    pulse = therapy.parameter("pulse_duration", type=cw.Duration)
+    interval = therapy.parameter("observation_window", type=bc.Duration)
+    pulse = therapy.parameter("pulse_duration", type=bc.Duration)
     context = cells.environment.signal("disease_context").present()
     recognition = cells.contact.marker("target_marker").present()
     ordered_encounter = context.became_true().followed_by(
@@ -74,23 +74,23 @@ def temporal_response() -> cw.IntentProgram:
     return therapy.freeze()
 
 
-def graded_response() -> cw.IntentProgram:
-    therapy = cw.Therapy("graded_local_response")
+def graded_response() -> bc.IntentProgram:
+    therapy = bc.Therapy("graded_local_response")
     cells = therapy.engineer("regulators", cell_type="regulatory_T_cell")
-    inflammation = cells.environment.signal("inflammation", type=cw.Level)
+    inflammation = cells.environment.signal("inflammation", type=bc.Level)
     response = therapy.parameter(
-        "secretion_response", type=cw.Curve[cw.Level, cw.ProductionRate]
+        "secretion_response", type=bc.Curve[bc.Level, bc.ProductionRate]
     )
     resolution = cells.secretion("resolution", product="resolution_factor")
     cells.when(inflammation.high()).do(resolution.produce(rate=response(inflammation)))
     return therapy.freeze()
 
 
-def feedback_regulation() -> cw.IntentProgram:
-    therapy = cw.Therapy("local_resolution")
+def feedback_regulation() -> bc.IntentProgram:
+    therapy = bc.Therapy("local_resolution")
     cells = therapy.engineer("regulators", cell_type="regulatory_T_cell")
-    inflammation = cells.environment.signal("inflammation", type=cw.Level)
-    desired = therapy.parameter("desired_inflammation", type=cw.Level, default=0.2)
+    inflammation = cells.environment.signal("inflammation", type=bc.Level)
+    desired = therapy.parameter("desired_inflammation", type=bc.Level, default=0.2)
     resolution = cells.secretion("resolution", product="resolution_factor")
     cells.regulate(
         "resolve_inflammation",
@@ -104,11 +104,11 @@ def feedback_regulation() -> cw.IntentProgram:
     return therapy.freeze()
 
 
-def coordinated_response() -> cw.IntentProgram:
-    therapy = cw.Therapy("coordinated_response")
+def coordinated_response() -> bc.IntentProgram:
+    therapy = bc.Therapy("coordinated_response")
     scouts = therapy.engineer("scouts", cell_type="macrophage")
     responders = therapy.engineer("responders", cell_type="NK_cell")
-    alert = therapy.channel("disease_alert", scope="local", type=cw.Level)
+    alert = therapy.channel("disease_alert", scope="local", type=bc.Level)
     scouts.when(
         scouts.environment.signal("tissue_damage").high(), name="announce_damage"
     ).do(scouts.emit(alert))

@@ -7,14 +7,14 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from cellweave.errors import SerializationError
-from cellweave.registry.reference_builds import (
+from biocompiler.errors import SerializationError
+from biocompiler.registry.reference_builds import (
     MANIFEST_PIN,
     REFERENCE_PINS,
     collect_reference_files,
     load_reference_inputs,
 )
-from cellweave.registry.references import ReferenceManifest
+from biocompiler.registry.references import ReferenceManifest
 
 REFERENCE_DIRECTORY = Path(__file__).resolve().parents[1] / "data/references/fap_car"
 
@@ -165,7 +165,7 @@ class ReferenceBuildInputsTests(unittest.TestCase):
                         collect_reference_files(destination, original)
 
     def test_bounded_reads_and_missing_evidence_fail_before_acceptance(self):
-        with patch("cellweave.registry.reference_builds.MAX_REFERENCE_FILE_BYTES", 1):
+        with patch("biocompiler.registry.reference_builds.MAX_REFERENCE_FILE_BYTES", 1):
             with self.assertRaisesRegex(SerializationError, "bounded"):
                 load_reference_inputs("DNA", REFERENCE_DIRECTORY)
         with tempfile.TemporaryDirectory() as temporary:

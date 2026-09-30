@@ -8,16 +8,16 @@ from pathlib import Path
 import tempfile
 import unittest
 
-import cellweave as cw
-from cellweave.cli import main as cli_main
-from cellweave.ir.serialization import fingerprint
+import biocompiler as bc
+from biocompiler.cli import main as cli_main
+from biocompiler.ir.serialization import fingerprint
 from examples.human_target import make_human_target
 
 
 def fixture_evidence(**changes):
     values = {
         "id": "source_fixture",
-        "source": cw.PinnedIdentity(
+        "source": bc.PinnedIdentity(
             "source", "artificial-target-description", "1", "a" * 64
         ),
         "taxon_id": None,
@@ -27,7 +27,7 @@ def fixture_evidence(**changes):
         "limitations": "No empirical applicability or validated human biology.",
     }
     values.update(changes)
-    return cw.TargetEvidence(**values)
+    return bc.TargetEvidence(**values)
 
 
 class HumanTargetTests(unittest.TestCase):
@@ -37,7 +37,7 @@ class HumanTargetTests(unittest.TestCase):
 
     def test_legacy_wire_identity_stays_exact(self):
         expected = {
-            "schema_version": "cellweave.target.v0.1",
+            "schema_version": "biocompiler.target.v0.1",
             "context_id": "legacy",
             "context_version": "1",
             "payload_format": "RNA",
@@ -45,16 +45,16 @@ class HumanTargetTests(unittest.TestCase):
             "compartments": ["abstract"],
             "resources": {},
         }
-        target = cw.TargetContext("legacy", "1", cw.PayloadFormat.RNA)
+        target = bc.TargetContext("legacy", "1", bc.PayloadFormat.RNA)
         self.assertEqual(target.to_dict(), expected)
         self.assertEqual(target.fingerprint, fingerprint(expected))
-        self.assertEqual(cw.TargetContext.from_dict(expected), target)
+        self.assertEqual(bc.TargetContext.from_dict(expected), target)
 
     def test_human_context_roundtrip_preserves_complete_authority(self):
-        for cls in (cw.TargetContext, cw.HumanTargetContext):
+        for cls in (bc.TargetContext, bc.HumanTargetContext):
             with self.subTest(cls=cls):
                 restored = cls.from_json(self.target.to_json())
-                self.assertIsInstance(restored, cw.HumanTargetContext)
+                self.assertIsInstance(restored, bc.HumanTargetContext)
                 self.assertEqual(restored, self.target)
                 self.assertEqual(restored.fingerprint, self.target.fingerprint)
         self.assertEqual(self.contract.to_dict()["recipient_taxon_id"], 9606)
@@ -75,14 +75,14 @@ class HumanTargetTests(unittest.TestCase):
             with self.subTest(key=key):
                 data = self.contract.to_dict()
                 del data[key]
-                with self.assertRaises(cw.SerializationError):
-                    cw.HumanTargetContract.from_dict(data)
-                with self.assertRaises(cw.SerializationError):
+                with self.assertRaises(bc.SerializationError):
+                    bc.HumanTargetContract.from_dict(data)
+                with self.assertRaises(bc.SerializationError):
                     replace(self.contract, **{key: None})
 
     def test_empty_operating_or_host_inventory_is_not_universal_applicability(self):
         for key in ("host_dependencies", "operating_conditions"):
-            with self.subTest(key=key), self.assertRaises(cw.SerializationError):
+            with self.subTest(key=key), self.assertRaises(bc.SerializationError):
                 replace(self.contract, **{key: ()})
         self.assertEqual(self.contract.evidence, ())
         self.assertEqual(len(self.contract.unresolved_evidence), 8)
@@ -98,13 +98,13 @@ class HumanTargetTests(unittest.TestCase):
             with self.subTest(key=key, value=value):
                 data = self.contract.to_dict()
                 data[key] = value
-                with self.assertRaises(cw.SerializationError):
-                    cw.HumanTargetContract.from_dict(data)
+                with self.assertRaises(bc.SerializationError):
+                    bc.HumanTargetContract.from_dict(data)
 
     def test_unknown_fields_versions_and_downgrade_are_rejected(self):
         mutations = (
-            {"schema_version": "cellweave.target.v0.1"},
-            {"schema_version": "cellweave.human_target_context.v9"},
+            {"schema_version": "biocompiler.target.v0.1"},
+            {"schema_version": "biocompiler.human_target_context.v9"},
             {"human_target": None},
             {"biologically_verified": True},
         )
@@ -112,18 +112,18 @@ class HumanTargetTests(unittest.TestCase):
             with self.subTest(change=change):
                 data = self.target.to_dict()
                 data.update(change)
-                with self.assertRaises(cw.SerializationError):
-                    cw.TargetContext.from_dict(data)
+                with self.assertRaises(bc.SerializationError):
+                    bc.TargetContext.from_dict(data)
         data = self.target.to_dict()
         del data["human_target"]
-        with self.assertRaises(cw.SerializationError):
-            cw.TargetContext.from_dict(data)
+        with self.assertRaises(bc.SerializationError):
+            bc.TargetContext.from_dict(data)
 
     def test_abstract_and_undeclared_compartments_are_rejected(self):
         for compartments in (("abstract",), ("nucleus",), ()):
             with (
                 self.subTest(compartments=compartments),
-                self.assertRaises(cw.SerializationError),
+                self.assertRaises(bc.SerializationError),
             ):
                 replace(self.target, compartments=compartments)
 
@@ -131,7 +131,7 @@ class HumanTargetTests(unittest.TestCase):
         cited = replace(
             self.contract.cell_subtype, basis="cited", evidence_ids=("missing",)
         )
-        with self.assertRaises(cw.SerializationError):
+        with self.assertRaises(bc.SerializationError):
             replace(self.contract, cell_subtype=cited)
 
     def test_citations_never_discharge_applicability(self):
@@ -152,7 +152,7 @@ class HumanTargetTests(unittest.TestCase):
                 contract = replace(
                     self.contract, cell_subtype=cited, evidence=(evidence,)
                 )
-                restored = cw.HumanTargetContract.from_json(contract.to_json())
+                restored = bc.HumanTargetContract.from_json(contract.to_json())
                 self.assertEqual(restored.evidence[0].system, system)
                 self.assertEqual(
                     restored.unresolved_evidence, self.contract.unresolved_evidence
@@ -161,7 +161,7 @@ class HumanTargetTests(unittest.TestCase):
 
     def test_claim_cannot_self_declare_verification(self):
         for basis in ("verified", "validated", "pass", "", [], None):
-            with self.subTest(basis=basis), self.assertRaises(cw.SerializationError):
+            with self.subTest(basis=basis), self.assertRaises(bc.SerializationError):
                 replace(self.contract.cell_state, basis=basis)
         for changes in (
             {"basis": "cited", "evidence_ids": ()},
@@ -171,7 +171,7 @@ class HumanTargetTests(unittest.TestCase):
         ):
             with (
                 self.subTest(changes=changes),
-                self.assertRaises(cw.SerializationError),
+                self.assertRaises(bc.SerializationError),
             ):
                 replace(self.contract.cell_state, **changes)
 
@@ -183,12 +183,12 @@ class HumanTargetTests(unittest.TestCase):
             {"system": "software_fixture", "taxon_id": 9606},
             {"system": "cell_free", "taxon_id": True},
             {"system": "clinical_proof"},
-            {"source": cw.PinnedIdentity("model", "model", "1", "a" * 64)},
+            {"source": bc.PinnedIdentity("model", "model", "1", "a" * 64)},
             {"source": None},
         ):
             with (
                 self.subTest(changes=changes),
-                self.assertRaises(cw.SerializationError),
+                self.assertRaises(bc.SerializationError),
             ):
                 fixture_evidence(**changes)
 
@@ -214,14 +214,14 @@ class HumanTargetTests(unittest.TestCase):
             ("operating_conditions", contract.operating_conditions),
             ("evidence", contract.evidence),
         ):
-            with self.subTest(key=key), self.assertRaises(cw.SerializationError):
+            with self.subTest(key=key), self.assertRaises(bc.SerializationError):
                 replace(contract, **{key: items * 2})
 
     def test_all_applicability_dimensions_change_build_identity(self):
-        therapy = cw.Therapy("identity")
+        therapy = bc.Therapy("identity")
         therapy.engineer("recipient", cell_type="T_cell")
         source = therapy.freeze()
-        original = cw.BuildRequest.freeze(source, target=self.target)
+        original = bc.BuildRequest.freeze(source, target=self.target)
         variants = []
         for key in self.contract._claim_fields:
             claim = replace(
@@ -235,7 +235,7 @@ class HumanTargetTests(unittest.TestCase):
             )
         variants.extend(
             (
-                replace(self.target, payload_format=cw.PayloadFormat.DNA),
+                replace(self.target, payload_format=bc.PayloadFormat.DNA),
                 replace(
                     self.target,
                     human_target=replace(
@@ -255,7 +255,7 @@ class HumanTargetTests(unittest.TestCase):
                         operating_conditions=(
                             replace(
                                 self.contract.operating_conditions[0],
-                                domain=cw.ValueDomain.interval(0, 1),
+                                domain=bc.ValueDomain.interval(0, 1),
                             ),
                         ),
                     ),
@@ -268,10 +268,10 @@ class HumanTargetTests(unittest.TestCase):
         )
         for target in variants:
             with self.subTest(target=target.fingerprint):
-                changed = cw.BuildRequest.freeze(source, target=target)
+                changed = bc.BuildRequest.freeze(source, target=target)
                 self.assertNotEqual(changed.fingerprint, original.fingerprint)
-                restored = cw.BuildRequest.from_json(changed.to_json())
-                self.assertIsInstance(restored.target, cw.HumanTargetContext)
+                restored = bc.BuildRequest.from_json(changed.to_json())
+                self.assertIsInstance(restored.target, bc.HumanTargetContext)
                 self.assertEqual(restored.fingerprint, changed.fingerprint)
                 self.assertEqual(restored.target, target)
 
@@ -281,28 +281,28 @@ class HumanTargetTests(unittest.TestCase):
             '"payload_format": "RNA"',
             '"payload_format": "RNA", "payload_format": "DNA"',
         )
-        with self.assertRaises(cw.SerializationError):
-            cw.TargetContext.from_json(bad)
+        with self.assertRaises(bc.SerializationError):
+            bc.TargetContext.from_json(bad)
         for data in ([], None, 42, "target"):
-            with self.subTest(data=data), self.assertRaises(cw.SerializationError):
-                cw.HumanTargetContext.from_dict(data)
+            with self.subTest(data=data), self.assertRaises(bc.SerializationError):
+                bc.HumanTargetContext.from_dict(data)
         for cls, artifact in (
-            (cw.HumanTargetContract, self.contract),
-            (cw.TargetClaim, self.contract.cell_state),
-            (cw.TargetEvidence, fixture_evidence()),
-            (cw.HumanHostDependency, self.contract.host_dependencies[0]),
-            (cw.HumanOperatingCondition, self.contract.operating_conditions[0]),
+            (bc.HumanTargetContract, self.contract),
+            (bc.TargetClaim, self.contract.cell_state),
+            (bc.TargetEvidence, fixture_evidence()),
+            (bc.HumanHostDependency, self.contract.host_dependencies[0]),
+            (bc.HumanOperatingCondition, self.contract.operating_conditions[0]),
         ):
             data = artifact.to_dict()
             data["schema_version"] = "unexpected.v0.1"
-            with self.subTest(cls=cls), self.assertRaises(cw.SerializationError):
+            with self.subTest(cls=cls), self.assertRaises(bc.SerializationError):
                 cls.from_dict(data)
         domain = self.contract.operating_conditions[0].to_dict()
         domain["domain"].update(
             kind="scalar_interval", lower=0, upper=float("inf"), reason=None
         )
-        with self.assertRaises(cw.SerializationError):
-            cw.HumanOperatingCondition.from_dict(domain)
+        with self.assertRaises(bc.SerializationError):
+            bc.HumanOperatingCondition.from_dict(domain)
 
     def test_evidence_edits_change_identity_even_when_claim_text_is_unchanged(self):
         original = replace(self.contract, evidence=(fixture_evidence(),))
@@ -310,7 +310,7 @@ class HumanTargetTests(unittest.TestCase):
             original,
             evidence=(
                 fixture_evidence(
-                    source=cw.PinnedIdentity(
+                    source=bc.PinnedIdentity(
                         "source", "artificial-target-description", "2", "b" * 64
                     )
                 ),
@@ -320,22 +320,22 @@ class HumanTargetTests(unittest.TestCase):
         self.assertEqual(original.cell_subtype, changed.cell_subtype)
 
     def test_planning_and_compilation_keep_human_applicability_unresolved(self):
-        therapy = cw.Therapy("human_plan")
+        therapy = bc.Therapy("human_plan")
         cell = therapy.engineer("recipient", cell_type="T_cell")
         cell.when(cell.external.signal("symbolic_input").present()).do(cell.rest())
-        plan = cw.plan(therapy.freeze(), profile=cw.BuildProfile(self.target))
+        plan = bc.plan(therapy.freeze(), profile=bc.BuildProfile(self.target))
         self.assertFalse(plan.ready)
         self.assertIn(
             "human_target_applicability_unestablished",
             {item.code for item in plan.diagnostics},
         )
         request = plan.freeze_request(artifact_scope="complete_payload")
-        for item in (plan, cw.BuildRequest.from_json(request.to_json())):
+        for item in (plan, bc.BuildRequest.from_json(request.to_json())):
             with (
                 self.subTest(item=type(item)),
-                self.assertRaises(cw.CompilationUnavailableError) as error,
+                self.assertRaises(bc.CompilationUnavailableError) as error,
             ):
-                cw.compile(item)
+                bc.compile(item)
             self.assertIn(
                 "human_target_applicability_unestablished",
                 {d.code for d in error.exception.diagnostics},
@@ -369,7 +369,7 @@ class HumanTargetTests(unittest.TestCase):
         self.assertEqual(first.to_json(), second.to_json())
 
     def test_invalid_unicode_rejected_at_construction(self):
-        with self.assertRaises(cw.SerializationError):
+        with self.assertRaises(bc.SerializationError):
             replace(self.contract.cell_state, description="invalid\ud800")
 
 

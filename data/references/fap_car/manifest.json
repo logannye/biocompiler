@@ -172,7 +172,7 @@
       }
     }
   ],
-  "schema_version": "cellweave.reference.v0.1",
+  "schema_version": "biocompiler.reference.v0.1",
   "sources": [
     {
       "id": "patent-html",

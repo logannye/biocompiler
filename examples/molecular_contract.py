@@ -9,11 +9,11 @@ import argparse
 from dataclasses import replace
 from pathlib import Path
 
-import cellweave as cw
-from cellweave.compiler.molecular import run_molecular_pipeline
-from cellweave.ir.component_contracts import PinnedIdentity
-from cellweave.semantics.types import BOOLEAN, DURATION
-from cellweave.synthesis.construct import prepare_reference_construct
+import biocompiler as bc
+from biocompiler.compiler.molecular import run_molecular_pipeline
+from biocompiler.ir.component_contracts import PinnedIdentity
+from biocompiler.semantics.types import BOOLEAN, DURATION
+from biocompiler.synthesis.construct import prepare_reference_construct
 
 if __package__:
     from .reference_construct import reference_request
@@ -23,8 +23,8 @@ else:
 
 def requested_fap_contract():
     construct_request, manifest, registry = reference_request("RNA")
-    target = cw.TargetContext(
-        "requested_murine_T_cell_FAP_context", "1", cw.PayloadFormat.RNA
+    target = bc.TargetContext(
+        "requested_murine_T_cell_FAP_context", "1", bc.PayloadFormat.RNA
     )
     construct_request = prepare_reference_construct(
         manifest,
@@ -34,52 +34,52 @@ def requested_fap_contract():
     )
     manifests = {manifest.reference_set_id: manifest}
     molecular_build = run_molecular_pipeline(construct_request, registry, manifests)
-    therapy = cw.Therapy("requested_fap_contact_response")
+    therapy = bc.Therapy("requested_fap_contact_response")
     cells = therapy.engineer("responder", cell_type="murine_T_cell")
     signal = cells.contact.marker("FAP")
     action = cells.eliminate(cells.contact)
     rule = cells.when(signal.present(), name="requested_FAP_response").do(action)
-    build_request = cw.BuildRequest.freeze(
+    build_request = bc.BuildRequest.freeze(
         therapy.freeze(), target=target, artifact_scope="complete_payload"
     )
-    behavior = cw.lower_to_behavior(build_request)
-    response = cw.ResponseRequirement(
+    behavior = bc.lower_to_behavior(build_request)
+    response = bc.ResponseRequirement(
         "requested_target_response",
         rule.node_id,
         action.node_id,
-        cw.Observable(
+        bc.Observable(
             "requested_normalized_contact_readout",
-            cw.Level,
+            bc.Level,
             cells.role,
             scope="contact",
         ),
-        cw.Interval(0.9, 1),
-        cw.Interval(0, 0.1),
-        cw.Duration(1),
-        cw.Duration(1),
+        bc.Interval(0.9, 1),
+        bc.Interval(0, 0.1),
+        bc.Duration(1),
+        bc.Duration(1),
     )
-    requested_behavior = cw.BehaviorContract(
+    requested_behavior = bc.BehaviorContract(
         "requested_FAP_response", behavior.fingerprint, (response,)
     )
-    observed = cw.InputDomain(
+    observed = bc.InputDomain(
         signal.node_id,
         "present",
-        cw.Observable("requested_FAP_presence", BOOLEAN, cells.role, scope="contact"),
+        bc.Observable("requested_FAP_presence", BOOLEAN, cells.role, scope="contact"),
         (False, True),
     )
-    domain = cw.OperatingDomain(
+    domain = bc.OperatingDomain(
         "requested_contact_domain",
         "1",
         cells.role,
         (observed,),
-        cw.Duration(4),
+        bc.Duration(4),
         max_contacts=1,
     )
-    realization = cw.RealizationRequest.freeze(
+    realization = bc.RealizationRequest.freeze(
         build_request, behavior, requested_behavior, domain
     )
     source = next(s for s in manifest.sources if s["id"] == "retained-html-excerpts")
-    citation = cw.MolecularEvidence(
+    citation = bc.MolecularEvidence(
         "disclosed_cds",
         "sequence_identity",
         PinnedIdentity(
@@ -89,18 +89,18 @@ def requested_fap_contract():
         "associated_reference",
         "The selected patent-disclosed CDS is a study-associated reference; exact experimental composite/material identity and dynamics remain unestablished.",
     )
-    contract = cw.MolecularImplementationContract.freeze(
+    contract = bc.MolecularImplementationContract.freeze(
         "requested_FAP_to_CDS_correspondence",
         realization,
         construct_request,
         molecular_build.candidate,
         input_bindings=(
-            cw.MolecularInputBinding(
+            bc.MolecularInputBinding(
                 signal.node_id, "present", "fap_cds", observed.observable
             ),
         ),
         response_bindings=(
-            cw.MolecularResponseBinding(
+            bc.MolecularResponseBinding(
                 response.id,
                 rule.node_id,
                 action.node_id,
@@ -115,8 +115,8 @@ def requested_fap_contract():
             "The larger experimental P2A/RISR-RIAD context and complete transcript remain unreconciled.",
         ),
         parameters=(
-            cw.MolecularParameter("activation_delay", DURATION),
-            cw.MolecularParameter("recovery_delay", DURATION),
+            bc.MolecularParameter("activation_delay", DURATION),
+            bc.MolecularParameter("recovery_delay", DURATION),
         ),
         evidence=(citation,),
     )
@@ -129,7 +129,7 @@ def requested_fap_contract():
         registry,
         manifests,
     )
-    result = cw.check_molecular_implementation(*inputs)
+    result = bc.check_molecular_implementation(*inputs)
     return inputs, result
 
 
@@ -139,16 +139,16 @@ def main(argv=None):
     args = parser.parse_args(argv)
     inputs, result = requested_fap_contract()
     contract, realization = inputs[:2]
-    assert result.linkage_outcome is cw.CheckOutcome.PASS
-    assert result.outcome is cw.CheckOutcome.UNKNOWN
+    assert result.linkage_outcome is bc.CheckOutcome.PASS
+    assert result.outcome is bc.CheckOutcome.UNKNOWN
     assert not result.passed
     assert result.freshness(*inputs).fresh
     print(f"Exact source/observation/CDS linkage: {result.linkage_outcome.value}")
     print(f"Molecular behavior: {result.outcome.value}")
     print("Unestablished: " + ", ".join(contract.unestablished_claims))
     try:
-        cw.compile(realization)
-    except cw.CompilationUnavailableError as error:
+        bc.compile(realization)
+    except bc.CompilationUnavailableError as error:
         assert "complete_payload_not_promoted" in {d.code for d in error.diagnostics}
         print(
             "Complete-payload compilation: unavailable; no promoted full-molecule reference"

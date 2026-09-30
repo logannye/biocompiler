@@ -5,7 +5,7 @@ from dataclasses import replace
 import hashlib
 from pathlib import Path
 
-import cellweave as cw
+import biocompiler as bc
 
 if __package__:
     from .human_behavior import make_human_behavior
@@ -13,11 +13,11 @@ else:
     from human_behavior import make_human_behavior
 
 
-PLATFORM_SOURCE = b"CellWeave RNA delivery specification fixture v1. No delivery technology, formulation, route, dose or biological performance is specified.\n"
+PLATFORM_SOURCE = b"biocompiler RNA delivery specification fixture v1. No delivery technology, formulation, route, dose or biological performance is specified.\n"
 
 
 def pending(description):
-    return cw.TargetClaim(
+    return bc.TargetClaim(
         description,
         "unestablished",
         (),
@@ -26,20 +26,20 @@ def pending(description):
 
 
 def seconds(lower, upper):
-    return cw.Interval(cw.Duration(lower), cw.Duration(upper), type=cw.Duration)
+    return bc.Interval(bc.Duration(lower), bc.Duration(upper), type=bc.Duration)
 
 
 def make_human_deployment():
     behavior = make_human_behavior()
     target = behavior.target
-    platform = cw.DeliveryPlatformSpec(
-        cw.PinnedIdentity(
+    platform = bc.DeliveryPlatformSpec(
+        bc.PinnedIdentity(
             "source",
             "unselected_delivery_fixture",
             "1",
             hashlib.sha256(PLATFORM_SOURCE).hexdigest(),
         ),
-        cw.PayloadFormat.RNA,
+        bc.PayloadFormat.RNA,
         pending(
             "Administration route, setting and exposure conditions remain to be selected."
         ),
@@ -50,18 +50,18 @@ def make_human_deployment():
             "This pin identifies an artificial specification, not a characterized delivery platform."
         ),
     )
-    exposure = cw.ExposureAssumption(
+    exposure = bc.ExposureAssumption(
         "local_payload",
         "Normalized local intact-payload availability in an artificial software scenario.",
         "extracellular",
-        cw.ValueDomain.unknown(
+        bc.ValueDomain.unknown(
             reason="No exposure measurement or bounds are established."
         ),
         pending(
             "Exposure must be characterized separately from uptake, intracellular release and expression."
         ),
     )
-    contract = cw.DeploymentContract(
+    contract = bc.DeploymentContract(
         id="human_deployment_fixture",
         target_fingerprint=target.fingerprint,
         recipient_role=behavior.contract.input_measurement.observable.role,
@@ -71,10 +71,10 @@ def make_human_deployment():
         intracellular_destination="cytoplasm",
         exposure_window=seconds(0, 1),
         exposures=(exposure,),
-        timing=cw.ExpressionTiming(
+        timing=bc.ExpressionTiming(
             None,
             None,
-            cw.Duration(2),
+            bc.Duration(2),
             "Expression onset and duration lack applicable data.",
             pending(
                 "The deployment origin, exposure window and behavior offset are artificial requirements, not established biological timing."
@@ -85,7 +85,7 @@ def make_human_deployment():
         ),
         co_payloads=(),
     )
-    return cw.HumanDeploymentRequest(behavior, contract)
+    return bc.HumanDeploymentRequest(behavior, contract)
 
 
 def with_fixture_bounds(request):
@@ -104,7 +104,7 @@ def with_fixture_bounds(request):
     exposures = tuple(
         replace(
             item,
-            domain=cw.ValueDomain.interval(0, 1),
+            domain=bc.ValueDomain.interval(0, 1),
             support=replace(item.support, basis="assumed"),
         )
         for item in deployment.exposures
@@ -115,9 +115,9 @@ def with_fixture_bounds(request):
 
 
 def co_payload_fixture():
-    return cw.CoPayloadRequirement(
+    return bc.CoPayloadRequirement(
         "additional_payload",
-        cw.PinnedIdentity("reference", "nonexistent_software_payload", "1", "c" * 64),
+        bc.PinnedIdentity("reference", "nonexistent_software_payload", "1", "c" * 64),
         "declared_additional_capability",
         "cytoplasm",
         seconds(2, 12),
@@ -152,10 +152,10 @@ def main():
     )
     records = []
     for expected, request in cases:
-        result = cw.check_deployment(request)
+        result = bc.check_deployment(request)
         assert result.compatibility == expected
         assert (
-            cw.HumanDeploymentRequest.from_json(request.to_json()).fingerprint
+            bc.HumanDeploymentRequest.from_json(request.to_json()).fingerprint
             == request.fingerprint
         )
         records.extend(

@@ -7,19 +7,19 @@ pinned whole DNA or RNA coding reference. General intent compilation and complet
 payload realization remain separate future profiles.
 
 ```python
-import cellweave as cw
+import biocompiler as bc
 from examples.reference_construct import reference_request
 
 request, manifest, registry = reference_request("RNA")
 manifests = {manifest.reference_set_id: manifest}
-build = cw.run_molecular_pipeline(request, registry, manifests)
+build = bc.run_molecular_pipeline(request, registry, manifests)
 assert build.result.scope == "exact_cds"
 assert build.check_result.passed
 
-export = cw.export_reference_sequence(
+export = bc.export_reference_sequence(
     request, build.construct, build.candidate, registry, manifests
 )
-assert cw.verify_sequence_export(export, build.candidate)
+assert bc.verify_sequence_export(export, build.candidate)
 ```
 
 The example helper loads retained source files with independently recorded trusted

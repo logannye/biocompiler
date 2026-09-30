@@ -4,16 +4,16 @@ from dataclasses import FrozenInstanceError, replace
 import json
 import unittest
 
-from cellweave.errors import DefinitionError, SerializationError, TypeMismatchError
-from cellweave.semantics.context import PayloadFormat, TargetContext
-from cellweave.semantics.realization import (
+from biocompiler.errors import DefinitionError, SerializationError, TypeMismatchError
+from biocompiler.semantics.context import PayloadFormat, TargetContext
+from biocompiler.semantics.realization import (
     BehaviorContract,
     InputDomain,
     Observable,
     OperatingDomain,
     ResponseRequirement,
 )
-from cellweave.semantics.types import (
+from biocompiler.semantics.types import (
     BOOLEAN,
     Concentration,
     Duration,

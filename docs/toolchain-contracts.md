@@ -1,6 +1,6 @@
 # Toolchain contracts and future obligations
 
-CellWeave progressively refines authored behavior into a physical implementation. Compiler transformations preserve meaning; synthesis proposes implementations. A precise nucleotide artifact does not establish a precise cellular outcome. This document records cross-layer requirements and distinguishes implemented checks from future molecular capabilities.
+biocompiler progressively refines authored behavior into a physical implementation. Compiler transformations preserve meaning; synthesis proposes implementations. A precise nucleotide artifact does not establish a precise cellular outcome. This document records cross-layer requirements and distinguishes implemented checks from future molecular capabilities.
 
 Implementation order, stable task IDs and acceptance gates are tracked in the [development roadmap](roadmap.md). Its first molecular milestones use [exact CDS reference benchmarks](reference-benchmarks.md), with completeness judged against an explicit requested artifact scope. CDS identity, synthetic-model correctness and molecular behavioral refinement remain separate checks.
 
@@ -50,6 +50,17 @@ Sequence changes can affect higher-level properties even when the encoded protei
 
 ## Interoperation and architecture
 
-SBOL can exchange components, sequences and interactions; SBML can exchange mathematical models. Neither substitutes for CellWeave's behavioral contracts. Target capabilities, component libraries and solver/model adapters should evolve independently of the authoring language.
+SBOL can exchange components, sequences and interactions; SBML can exchange mathematical models. Neither substitutes for biocompiler's behavioral contracts. Target capabilities, component libraries and solver/model adapters should evolve independently of the authoring language.
 
 Background: [LLVM code generation](https://llvm.org/docs/CodeGenerator.html), [Cello 2.0](https://www.nature.com/articles/s41596-021-00675-2), [resource-aware mammalian constructs](https://www.nature.com/articles/s41467-023-39252-4), [SBOL](https://sbolstandard.org/docs/SBOL3.1.0.pdf), [SBML](https://sbml.org/documents/specifications/).
+
+## Human acceptance authority
+
+Before human mechanism selection, retain the [M10.4 acceptance request](human-acceptance-contract-v0.1.md)
+as one authority for source behavior, deployment and prohibitions. Its healthy
+classifier remains evaluator-only; input-loss and shutdown requirements need
+separate mechanism mappings. A source/control conflict cannot be resolved by
+silently adding priority. Rerun supplied-trace checks against independent request
+and observation authority; imported results and current fingerprints alone do
+not establish acceptance. Biological applicability and actuator support remain
+unestablished/unimplemented even when all declared observations pass.

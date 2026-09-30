@@ -5,21 +5,21 @@ import hashlib
 import unittest
 from unittest.mock import patch
 
-import cellweave as cw
-from cellweave.compiler.molecular import run_molecular_pipeline
-from cellweave.errors import SerializationError, TypeMismatchError
-from cellweave.ir.component_contracts import PinnedIdentity
-from cellweave.ir.serialization import fingerprint
-from cellweave.semantics.molecular_behavior import (
+import biocompiler as bc
+from biocompiler.compiler.molecular import run_molecular_pipeline
+from biocompiler.errors import SerializationError, TypeMismatchError
+from biocompiler.ir.component_contracts import PinnedIdentity
+from biocompiler.ir.serialization import fingerprint
+from biocompiler.semantics.molecular_behavior import (
     MolecularEvidence,
     MolecularImplementationContract,
     MolecularInputBinding,
     MolecularParameter,
     MolecularResponseBinding,
 )
-from cellweave.semantics.types import BOOLEAN, DURATION
-from cellweave.verification.evidence import CheckOutcome
-from cellweave.verification.molecular_behavior import (
+from biocompiler.semantics.types import BOOLEAN, DURATION
+from biocompiler.verification.evidence import CheckOutcome
+from biocompiler.verification.molecular_behavior import (
     MolecularBehaviorResult,
     check_molecular_implementation,
 )
@@ -30,48 +30,48 @@ def molecular_fixture(alphabet="RNA", *, extra_action=False):
     construct_request, manifest, registry = reference_request(alphabet)
     manifests = {manifest.reference_set_id: manifest}
     built = run_molecular_pipeline(construct_request, registry, manifests)
-    therapy = cw.Therapy("molecular_correspondence_fixture")
+    therapy = bc.Therapy("molecular_correspondence_fixture")
     cell = therapy.engineer("effector", cell_type="requested_cell")
     marker = cell.contact.marker("requested_marker")
     action = cell.eliminate(cell.contact)
     rule = cell.when(marker.present()).do(action)
     if extra_action:
         cell.when(marker.present()).do(cell.rest())
-    build_request = cw.BuildRequest.freeze(
+    build_request = bc.BuildRequest.freeze(
         therapy.freeze(), target=construct_request.target, artifact_scope="exact_cds"
     )
-    behavior = cw.lower_to_behavior(build_request)
-    response = cw.ResponseRequirement(
+    behavior = bc.lower_to_behavior(build_request)
+    response = bc.ResponseRequirement(
         "requested_response",
         rule.node_id,
         action.node_id,
-        cw.Observable("requested_measurement", cw.Level, cell.role, scope="contact"),
-        cw.Interval(0.9, 1.1),
-        cw.Interval(0, 0.1),
-        cw.Duration(2),
-        cw.Duration(2),
+        bc.Observable("requested_measurement", bc.Level, cell.role, scope="contact"),
+        bc.Interval(0.9, 1.1),
+        bc.Interval(0, 0.1),
+        bc.Duration(2),
+        bc.Duration(2),
     )
-    domain = cw.OperatingDomain(
+    domain = bc.OperatingDomain(
         "requested_domain",
         "1",
         cell.role,
         (
-            cw.InputDomain(
+            bc.InputDomain(
                 marker.node_id,
                 "present",
-                cw.Observable(
+                bc.Observable(
                     "marker_observation", BOOLEAN, cell.role, scope="contact"
                 ),
                 (False, True),
             ),
         ),
-        cw.Duration(5),
+        bc.Duration(5),
         max_contacts=1,
     )
-    realization = cw.RealizationRequest.freeze(
+    realization = bc.RealizationRequest.freeze(
         build_request,
         behavior,
-        cw.BehaviorContract("requested_response", behavior.fingerprint, (response,)),
+        bc.BehaviorContract("requested_response", behavior.fingerprint, (response,)),
         domain,
     )
     contract = MolecularImplementationContract.freeze(
@@ -154,24 +154,24 @@ class MolecularBehaviorTests(unittest.TestCase):
     def test_independent_checkers_run_and_generators_are_not_required(self):
         with (
             patch(
-                "cellweave.compiler.molecular.emit_reference_sequence",
+                "biocompiler.compiler.molecular.emit_reference_sequence",
                 side_effect=AssertionError("must not emit"),
             ),
             patch(
-                "cellweave.synthesis.synthetic.generate_synthetic",
+                "biocompiler.synthesis.synthetic.generate_synthetic",
                 side_effect=AssertionError("must not generate"),
             ),
         ):
             result = self.check()
         self.assertEqual(result.linkage_outcome, CheckOutcome.PASS)
         with patch(
-            "cellweave.verification.molecular_behavior.verify_lowering",
+            "biocompiler.verification.molecular_behavior.verify_lowering",
             side_effect=AssertionError("authority rechecked"),
         ):
             with self.assertRaisesRegex(AssertionError, "authority rechecked"):
                 self.check()
         with patch(
-            "cellweave.verification.molecular_behavior.check_molecular",
+            "biocompiler.verification.molecular_behavior.check_molecular",
             side_effect=AssertionError("sequence rechecked"),
         ):
             with self.assertRaisesRegex(AssertionError, "sequence rechecked"):
@@ -345,10 +345,10 @@ class MolecularBehaviorTests(unittest.TestCase):
             "response_time",
             DURATION,
             "fitted",
-            cw.Duration(2),
+            bc.Duration(2),
             source,
             "Explicit test fixture fit",
-            cw.Interval(cw.Duration(1), cw.Duration(3), type=cw.Duration),
+            bc.Interval(bc.Duration(1), bc.Duration(3), type=bc.Duration),
         )
         for category in (
             "sequence_identity",
@@ -384,7 +384,7 @@ class MolecularBehaviorTests(unittest.TestCase):
         with self.assertRaises(SerializationError):
             replace(contract, unestablished_claims=())
         with self.assertRaises(TypeMismatchError):
-            replace(parameter, value=cw.Level(2))
+            replace(parameter, value=bc.Level(2))
         with self.assertRaises(SerializationError):
             replace(parameter, category="unestablished")
         self.assertEqual(MolecularParameter.from_json(parameter.to_json()), parameter)
@@ -445,7 +445,7 @@ class MolecularBehaviorTests(unittest.TestCase):
             contract,
             parameters=(
                 MolecularParameter(
-                    "response_time", DURATION, "fitted", cw.Duration(2), source
+                    "response_time", DURATION, "fitted", bc.Duration(2), source
                 ),
             ),
         )

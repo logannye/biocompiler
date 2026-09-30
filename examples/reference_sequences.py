@@ -4,11 +4,11 @@ Run: PYTHONPATH=src python examples/reference_sequences.py
 The example prints identities and scope, without dumping nucleotide sequences.
 """
 
-from cellweave.artifacts.sequences import (
+from biocompiler.artifacts.sequences import (
     export_reference_sequence,
     verify_sequence_export,
 )
-from cellweave.compiler.molecular import run_molecular_pipeline
+from biocompiler.compiler.molecular import run_molecular_pipeline
 
 if __package__:
     from .reference_construct import reference_request

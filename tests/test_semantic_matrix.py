@@ -7,7 +7,7 @@ name and sort observables; they never compute deadlines or trigger conditions.
 from dataclasses import dataclass
 import unittest
 
-import cellweave as cw
+import biocompiler as bc
 
 
 @dataclass(frozen=True)
@@ -55,16 +55,16 @@ def observable_timeline(result, actions, memories=()):
 
 
 def cell_model(name):
-    therapy = cw.Therapy(name)
+    therapy = bc.Therapy(name)
     return therapy, therapy.engineer("observer", cell_type="abstract_cell")
 
 
 def signal_history(signals, entries):
     return tuple(
-        cw.InputFrame(
+        bc.InputFrame(
             time,
             {
-                signal.node_id: cw.SignalSample(present=value)
+                signal.node_id: bc.SignalSample(present=value)
                 for signal, value in zip(signals, values)
             },
         )
@@ -294,24 +294,24 @@ class SemanticRegressionMatrixTests(unittest.TestCase):
     def test_contact_dwell_pulses_and_memory_matrix(self):
         therapy, cell = cell_model("contact-matrix")
         a, b = cell.contact.marker("A"), cell.contact.marker("B")
-        guard = (a.present() & b.present()).held_for(cw.Duration(2))
-        memory = cell.memory("seen", set_when=guard, duration=cw.Duration(3))
+        guard = (a.present() & b.present()).held_for(bc.Duration(2))
+        memory = cell.memory("seen", set_when=guard, duration=bc.Duration(3))
         local, target = cell.rest(), cell.eliminate(cell.contact)
         cell.when(guard).do(
-            local.for_(cw.Duration(3)),
-            target.for_(cw.Duration(3)),
+            local.for_(bc.Duration(3)),
+            target.for_(bc.Duration(3)),
             cell.report("qualified"),
         )
         cell.on(memory.is_set().became_true()).do(cell.report("memory"))
-        behavior = cw.lower_to_behavior(therapy.freeze())
+        behavior = bc.lower_to_behavior(therapy.freeze())
         for case in CONTACT_CASES:
             history = tuple(
-                cw.InputFrame(
+                bc.InputFrame(
                     time,
                     contacts={
                         identity: {
-                            a.node_id: cw.SignalSample(present=values[0]),
-                            b.node_id: cw.SignalSample(present=values[1]),
+                            a.node_id: bc.SignalSample(present=values[0]),
+                            b.node_id: bc.SignalSample(present=values[1]),
                         }
                         for identity, values in contacts.items()
                     },
@@ -319,7 +319,7 @@ class SemanticRegressionMatrixTests(unittest.TestCase):
                 for time, contacts in case.history
             )
             with self.subTest(case=case.name):
-                result = cw.evaluate(behavior, history, until=case.horizon)
+                result = bc.evaluate(behavior, history, until=case.horizon)
                 self.assertEqual(
                     observable_timeline(
                         result,
@@ -335,16 +335,16 @@ class SemanticRegressionMatrixTests(unittest.TestCase):
         cell.on(
             a.present()
             .became_true()
-            .followed_by(b.present().became_true(), within=cw.Duration(2))
+            .followed_by(b.present().became_true(), within=bc.Duration(2))
         ).do(cell.report("ordered"))
         active = cell.rest()
-        cell.when(a.present().recently(within=cw.Duration(2)) & b.present()).do(
+        cell.when(a.present().recently(within=bc.Duration(2)) & b.present()).do(
             active, cell.report("recent-onset")
         )
-        behavior = cw.lower_to_behavior(therapy.freeze())
+        behavior = bc.lower_to_behavior(therapy.freeze())
         for case in ORDER_CASES:
             with self.subTest(case=case.name):
-                result = cw.evaluate(
+                result = bc.evaluate(
                     behavior, signal_history((a, b), case.history), until=case.horizon
                 )
                 self.assertEqual(
@@ -361,21 +361,21 @@ class SemanticRegressionMatrixTests(unittest.TestCase):
             "producer",
             set_when=setting.present(),
             reset_when=reset.present(),
-            duration=cw.Duration(2),
+            duration=bc.Duration(2),
         )
         consumer = cell.memory(
             "consumer",
             set_when=producer.is_set() & gate.present(),
-            duration=cw.Duration(1),
+            duration=bc.Duration(1),
         )
         active = cell.rest()
         cell.when(consumer.is_set()).do(active)
         cell.on(producer.is_set().became_true()).do(cell.report("producer-onset"))
         cell.on(consumer.is_set().became_true()).do(cell.report("consumer-onset"))
-        behavior = cw.lower_to_behavior(therapy.freeze())
+        behavior = bc.lower_to_behavior(therapy.freeze())
         for case in MEMORY_CASES:
             with self.subTest(case=case.name):
-                result = cw.evaluate(
+                result = bc.evaluate(
                     behavior,
                     signal_history((setting, reset, gate), case.history),
                     until=case.horizon,
@@ -398,11 +398,11 @@ class SemanticRegressionMatrixTests(unittest.TestCase):
                 if mode == "condition"
                 else cell.on(guard.became_true())
             )
-            rule.do(output.for_(cw.Duration(2)), cell.report("onset"))
-            behavior = cw.lower_to_behavior(therapy.freeze())
+            rule.do(output.for_(bc.Duration(2)), cell.report("onset"))
+            behavior = bc.lower_to_behavior(therapy.freeze())
             for case in PULSE_CASES:
                 with self.subTest(mode=mode, case=case.name):
-                    result = cw.evaluate(
+                    result = bc.evaluate(
                         behavior,
                         signal_history((signal,), case.history),
                         until=case.horizon,

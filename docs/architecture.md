@@ -1,6 +1,6 @@
 # Architecture
 
-CellWeave is a proposed compiler for converting an immune-cell engineer's intent into an exact digital specification of a DNA or RNA payload. Its organizing principle is **preservation of a behavioral contract through explicit intermediate representations (IRs)**.
+biocompiler is a proposed compiler for converting an immune-cell engineer's intent into an exact digital specification of a DNA or RNA payload. Its organizing principle is **preservation of a behavioral contract through explicit intermediate representations (IRs)**.
 
 The current repository implements the Python intent frontend, immutable intent and behavior graphs, checked intent-to-behavior lowering, an abstract reference evaluator, planning inspection, frozen build/realization requests, a checked pass manager, automatic combinational synthetic generation with locked operations, finite-trace realization checking against independent synthetic models, immutable typed component contracts, deterministic offline selection, and composition linking with provider/resource checks, independently checked whole-CDS reference construct assembly, and exact-reference DNA/RNA emission. General molecular mechanism selection, biological simulation, characterized component libraries and complete-payload generation are not implemented. Physical manufacture, administration, and execution in a recipient cell are outside the compiler boundary.
 
@@ -12,8 +12,8 @@ tissue/disease, population, host-dependency and operating-condition declarations
 `HumanTargetContext` retains them through frozen requests and strict import while
 preserving legacy target identities. Evidence citations remain unvalidated and
 planning/compilation retain an applicability diagnostic. This is M10.1's target
-specification foundation; human component admission, delivery contracts and
-biological realization remain separate work.
+specification foundation; later contracts add delivery declarations while human
+component admission and biological realization remain separate work.
 
 M10.2 adds the [conditional secretion observation profile](human-behavior-contract-v0.1.md).
 `HumanBehaviorRequest` retains the entire source build and binds its goal,
@@ -33,6 +33,20 @@ secretion recognition predicate. The independent deployment checker compares
 declared expression availability against the behavior horizon, retains unknowns
 and rejects unsupported co-payload dependencies. Compatible declarations do not
 establish biological delivery or admit human mechanism selection.
+
+M10.4 adds the [human acceptance contract](human-acceptance-contract-v0.1.md).
+`HumanAcceptanceRequest` binds source behavior, deployment and prohibitions into
+one frozen authority. Its supplied-trace checker conjoins required secretion
+with healthy-context inactivity, background/peak ceilings, maximum activity bouts,
+input-access loss recovery and latched external shutdown requirements. Missing
+evaluator observations remain unknown. Healthy classification and shutdown never
+silently override an active source rule; conflicts are explicit. Observability,
+controllability and shutdown implementation remain unresolved evidence obligations.
+No actuator, biological model or human payload admission is supplied.
+
+The development-version rename uses the `biocompiler.*` schema namespace and
+requires fresh builds and checks; see [migration notes](biocompiler-migration.md).
+Historical validation records keep their original revision and evidence scope.
 
 ## Compilation layers
 

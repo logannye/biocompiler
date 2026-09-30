@@ -1,6 +1,6 @@
 # Combinational synthetic generation v0.1
 
-`cellweave.synthetic.combinational.v0.1` automatically generates an abstract
+`biocompiler.synthetic.combinational.v0.1` automatically generates an abstract
 digital mechanism from a frozen `RealizationRequest`. It is a software model
 fixture, not a molecular implementation of a CAR or a prediction of cellular
 effects. The existing `compile()` molecular boundary remains unavailable.
@@ -67,7 +67,7 @@ from an action name.
 ## Artifacts, catalog and acceptance
 
 ```python
-from cellweave.synthesis.synthetic import generate_synthetic, check_synthetic_candidate
+from biocompiler.synthesis.synthetic import generate_synthetic, check_synthetic_candidate
 
 candidate = generate_synthetic(realization_request)
 result = check_synthetic_candidate(realization_request, candidate, history, until=7)

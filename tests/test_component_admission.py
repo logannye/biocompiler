@@ -3,9 +3,9 @@
 from dataclasses import replace
 import unittest
 
-from cellweave.artifacts.provenance import SourceLink
-from cellweave.compiler.passes import PassResult
-from cellweave.compiler.pipeline import (
+from biocompiler.artifacts.provenance import SourceLink
+from biocompiler.compiler.passes import PassResult
+from biocompiler.compiler.pipeline import (
     CheckDecision,
     CheckSpec,
     ComponentInputContract,
@@ -14,11 +14,11 @@ from cellweave.compiler.pipeline import (
     PipelineError,
     ScopedObligation,
 )
-from cellweave.errors import SerializationError
-from cellweave.ir.serialization import fingerprint
-from cellweave.ir.stages import Stage
-from cellweave.semantics.context import PayloadFormat, TargetContext
-from cellweave.verification.evidence import CheckOutcome, EvidenceKind
+from biocompiler.errors import SerializationError
+from biocompiler.ir.serialization import fingerprint
+from biocompiler.ir.stages import Stage
+from biocompiler.semantics.context import PayloadFormat, TargetContext
+from biocompiler.verification.evidence import CheckOutcome, EvidenceKind
 
 
 class ComponentAdmissionTests(unittest.TestCase):

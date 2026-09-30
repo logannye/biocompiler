@@ -7,8 +7,8 @@ scope, execution profile, implementation constraints, preferences and elaboratio
 provenance. No authoring Python executes while importing or lowering a request.
 
 ```python
-from cellweave.compiler.request import BuildRequest
-from cellweave.compiler.behavior import lower_to_behavior, verify_lowering
+from biocompiler.compiler.request import BuildRequest
+from biocompiler.compiler.behavior import lower_to_behavior, verify_lowering
 
 # intent is the result of therapy.freeze(); it is already an immutable graph.
 request = BuildRequest.freeze(intent, parameters={"threshold": 1})
@@ -33,7 +33,7 @@ authorization to replace an input request.
    Behavior identity, then freeze a `RealizationRequest`.
 
 ```python
-from cellweave.compiler.request import RealizationRequest
+from biocompiler.compiler.request import RealizationRequest
 
 realization = RealizationRequest.freeze(request, behavior, contract, domain)
 assert realization.upstream_request_fingerprint == request.fingerprint

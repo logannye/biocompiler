@@ -6,9 +6,9 @@ from pathlib import Path
 import tempfile
 import unittest
 
-from cellweave.cli import main
-from cellweave.verification.evidence import CheckOutcome, EvidenceKind
-from cellweave.verification.exploration import ExplorationReport, ReductionResult
+from biocompiler.cli import main
+from biocompiler.verification.evidence import CheckOutcome, EvidenceKind
+from biocompiler.verification.exploration import ExplorationReport, ReductionResult
 from examples.verification_campaign import run_campaign
 
 

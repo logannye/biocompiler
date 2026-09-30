@@ -127,7 +127,7 @@ independent review; schema validity and a trace pass cannot certify biology.
 All records are immutable and use strict versioned JSON. Unknown fields,
 duplicate keys and incompatible profile versions are rejected. Contract changes
 alter request identity and invalidate previous trace-result dependencies.
-`cellweave inspect` describes scope and unresolved evidence. `compile(request)`
+`biocompiler inspect` describes scope and unresolved evidence. `compile(request)`
 retains the human applicability, behavioral evidence and payload admission
 diagnostics and remains unavailable.
 
@@ -135,7 +135,7 @@ Run the source-preserving example and inspect its request:
 
 ```sh
 PYTHONPATH=src python examples/human_behavior.py --output generated/human-behavior
-PYTHONPATH=src python -m cellweave inspect generated/human-behavior/human-behavior-request.json
+PYTHONPATH=src python -m biocompiler inspect generated/human-behavior/human-behavior-request.json
 ```
 
 The example retains the request, supplied passing trace and pass/fail/unknown

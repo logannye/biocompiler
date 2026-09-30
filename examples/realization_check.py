@@ -9,54 +9,54 @@ from __future__ import annotations
 
 from dataclasses import replace
 
-import cellweave as cw
-from cellweave.compiler.request import BuildRequest, RealizationRequest
-from cellweave.semantics.types import BOOLEAN
-from cellweave.synthesis.synthetic import generate_synthetic
+import biocompiler as bc
+from biocompiler.compiler.request import BuildRequest, RealizationRequest
+from biocompiler.semantics.types import BOOLEAN
+from biocompiler.synthesis.synthetic import generate_synthetic
 
 
 def build_example():
-    therapy = cw.Therapy("synthetic_realization")
+    therapy = bc.Therapy("synthetic_realization")
     cell = therapy.engineer("responder", cell_type="abstract_cell")
     a, b = cell.contact.marker("A"), cell.contact.marker("B")
     action = cell.rest()
     rule = cell.when(a.present() & b.present()).do(action)
-    target = cw.TargetContext(
+    target = bc.TargetContext(
         "synthetic_context",
         "1",
-        cw.PayloadFormat.RNA,
+        bc.PayloadFormat.RNA,
         capabilities=("synthetic_signal_graph",),
     )
     request = BuildRequest.freeze(
         therapy.freeze(), target=target, artifact_scope="synthetic_realization"
     )
-    behavior = cw.lower_to_behavior(request)
+    behavior = bc.lower_to_behavior(request)
 
-    input_a = cw.Observable("A.present", BOOLEAN, cell.role, scope="contact")
-    input_b = cw.Observable("B.present", BOOLEAN, cell.role, scope="contact")
-    output = cw.Observable("abstract_rest_request_readout", cw.Level, cell.role)
-    requirement = cw.ResponseRequirement(
+    input_a = bc.Observable("A.present", BOOLEAN, cell.role, scope="contact")
+    input_b = bc.Observable("B.present", BOOLEAN, cell.role, scope="contact")
+    output = bc.Observable("abstract_rest_request_readout", bc.Level, cell.role)
+    requirement = bc.ResponseRequirement(
         id="response.rest",
         rule_id=rule.node_id,
         specification_id=action.node_id,
         observable=output,
-        active_range=cw.Interval(0.9, 1.1),
-        inactive_range=cw.Interval(0, 0.1),
-        max_activation_delay=cw.Duration(0.5),
-        max_deactivation_delay=cw.Duration(0.5),
+        active_range=bc.Interval(0.9, 1.1),
+        inactive_range=bc.Interval(0, 0.1),
+        max_activation_delay=bc.Duration(0.5),
+        max_deactivation_delay=bc.Duration(0.5),
     )
-    contract = cw.BehaviorContract(
+    contract = bc.BehaviorContract(
         "rest_contract", behavior.fingerprint, (requirement,)
     )
-    domain = cw.OperatingDomain(
+    domain = bc.OperatingDomain(
         id="two_contact_fixture",
         version="1",
         role=cell.role,
         inputs=(
-            cw.InputDomain(a.node_id, "present", input_a, (False, True)),
-            cw.InputDomain(b.node_id, "present", input_b, (False, True)),
+            bc.InputDomain(a.node_id, "present", input_a, (False, True)),
+            bc.InputDomain(b.node_id, "present", input_b, (False, True)),
         ),
-        minimum_horizon=cw.Duration(7),
+        minimum_horizon=bc.Duration(7),
         max_contacts=2,
     )
     # Lowering retains the full per-contact conjunction before existential
@@ -68,18 +68,18 @@ def build_example():
 
     def contact(first, second):
         return {
-            a.node_id: cw.SignalSample(present=first),
-            b.node_id: cw.SignalSample(present=second),
+            a.node_id: bc.SignalSample(present=first),
+            b.node_id: bc.SignalSample(present=second),
         }
 
     history = (
-        cw.InputFrame(
+        bc.InputFrame(
             0, contacts={"first": contact(True, False), "second": contact(False, True)}
         ),
-        cw.InputFrame(
+        bc.InputFrame(
             1, contacts={"first": contact(True, True), "second": contact(False, True)}
         ),
-        cw.InputFrame(5, contacts={"first": contact(False, False)}),
+        bc.InputFrame(5, contacts={"first": contact(False, False)}),
     )
     return behavior, contract, domain, target, candidate, observation_map, history
 
@@ -87,12 +87,12 @@ def build_example():
 def with_delay(candidate, duration):
     """Inject an adversarial delay; generation itself is stateless."""
     delays = tuple(
-        cw.MechanismNode(
+        bc.MechanismNode(
             f"delayed:{ref}",
             "delay",
             replace(candidate.get(ref).output, id=f"delayed:{ref}"),
             candidate.get(ref).inputs,
-            {"duration": cw.Duration(duration), "initial": 0},
+            {"duration": bc.Duration(duration), "initial": 0},
         )
         for ref in candidate.outputs
     )
@@ -122,7 +122,7 @@ def run_example():
         ),
     )
     results = {
-        label: cw.check_realization(
+        label: bc.check_realization(
             behavior, contract, domain, target, model, mapping, history, until=7
         )
         for label, model in (
@@ -131,7 +131,7 @@ def run_example():
             ("late", late),
         )
     }
-    dependencies = cw.realization_dependencies(
+    dependencies = bc.realization_dependencies(
         behavior, contract, domain, target, late, mapping, history, until=7
     )
     return results, dependencies
@@ -146,9 +146,9 @@ def main():
                 f"  {item.requirement_id} at {item.time:g} s: "
                 f"expected {item.expected['state']} range, observed {item.actual}"
             )
-    assert results["responsive"].outcome == cw.CheckOutcome.PASS
-    assert results["silent"].outcome == cw.CheckOutcome.FAIL
-    assert results["late"].outcome == cw.CheckOutcome.FAIL
+    assert results["responsive"].outcome == bc.CheckOutcome.PASS
+    assert results["silent"].outcome == bc.CheckOutcome.FAIL
+    assert results["late"].outcome == bc.CheckOutcome.FAIL
     assert not results["responsive"].is_fresh(changed_dependencies)
     print("Changing the model delay makes the earlier passing result stale.")
     print(

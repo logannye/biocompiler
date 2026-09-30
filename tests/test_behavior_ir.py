@@ -4,15 +4,15 @@ import copy
 from dataclasses import FrozenInstanceError, replace
 import unittest
 
-from cellweave import Duration, Level, Therapy, signature
-from cellweave.compiler.behavior import lower_to_behavior, verify_lowering
-from cellweave.errors import (
+from biocompiler import Duration, Level, Therapy, signature
+from biocompiler.compiler.behavior import lower_to_behavior, verify_lowering
+from biocompiler.errors import (
     LoweringVerificationError,
     SerializationError,
     UnsupportedBehaviorError,
 )
-from cellweave.ir.behavior import BehaviorProgram
-from cellweave.ir.intent import IntentProgram
+from biocompiler.ir.behavior import BehaviorProgram
+from biocompiler.ir.intent import IntentProgram
 
 
 def basic_program():

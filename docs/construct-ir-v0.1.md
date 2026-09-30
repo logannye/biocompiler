@@ -56,7 +56,7 @@ precise nucleotide boundaries.
 
 ## Coordinates, orientation and frame
 
-[`SequenceRange`](../src/cellweave/semantics/coordinates.py) defines the central
+[`SequenceRange`](../src/biocompiler/semantics/coordinates.py) defines the central
 convention `zero-based-half-open-reference-5prime-to-3prime.v1`. The interval
 `[start, end)` includes `start`, excludes `end`, and has length `end - start`.
 Coordinates count normalized nucleotide symbols, not source-document bytes or
