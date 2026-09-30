@@ -31,6 +31,11 @@ acceptance remains open. The long-term purpose in AGENTS.md and architecture is
 source intent to complete human in-vivo payload specification; future mechanism
 and quantitative work should attach to these explicitly selected designs.
 
+The README, architecture introduction, package metadata and CLI help now center
+that purpose while distinguishing the implemented candidate profile from the
+long-term therapeutic compiler. GitHub's public About description and topics
+were updated and read back on 2026-09-30; no project website was invented.
+
 The following entries describe earlier completed scopes.
 
 ## Previous resumption point — structural molecular construction

@@ -1,4 +1,4 @@
-"""Inspect versioned compiler artifacts and the compiler architecture."""
+"""Compile supported RNA candidates and inspect therapeutic design artifacts."""
 
 import argparse
 from collections.abc import Sequence
