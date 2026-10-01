@@ -10,7 +10,21 @@ domain batch passed every hosted gate and was merged in PR38. It implements
 internal OCaml BuildRequest, Behavior and molecular coordinate decoders. Its retained-request tests compare full/semantic identities
 and reject altered declarations. These checks do not execute the case B timeline,
 reconstruct candidate behavior or certify its sequence and architecture. The
-remaining acceptance responsibilities below still apply in full.
+remaining acceptance responsibilities below still apply in full. PR39 subsequently
+validated circuit declarations and independent source-to-Behavior correspondence,
+including both original-source and supplied-model case B pairs. Its
+[receipt](../protocol/migration-source-correspondence-validation.json) binds the
+exact source, tested merge, native platforms and integrated main validation.
+
+The current B1.05 batch implements the full per-role reference evaluator, extending
+beyond case B to all 38 v0.1 and four v0.2 operation kinds. The retained corpus
+contains 66 programs, 86 complete traces, 23 intended evaluator failures and 16
+parser failures, including all 24 case B timeline/parameter combinations. Three
+complete traces and three numeric projections have independently authored literal
+expectations. Sixty-one existing source tests run their original assertions while
+the corpus is frozen; exclusions are explicit. The separate numeric corpus adds
+1,948 scalar witnesses. Hosted parity is a required gate for this batch; these
+checks do not reconstruct candidate execution, transport channels or accept RNA.
 
 The language decision is fixed. The immediate objective is to accept or reject an
 existing Python-produced stateful RNA architecture candidate against separately

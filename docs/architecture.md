@@ -7,7 +7,12 @@ and the [session migration roadmap](language-migration-roadmap.md). Studio now
 builds from strict TypeScript. Production compiler and acceptance paths remain
 Python; the experimental OCaml core provides canonicalization, structural
 intent validation and explicit independent source-to-Behavior correspondence.
-Internal typed request and coordinate layers prepare architecture checking.
+Internal typed request and coordinate layers prepare architecture checking. A separate
+`bioc_semantics` library implements per-role reference execution for hosted
+conformance; it is not linked by the checker service or standalone verifier. Its
+execution records and numeric primitives are part of the declared trusted base.
+Channels are supplied observation/action endpoints at this layer; coupled transport
+still requires its own architecture implementation and validation.
 The domain layers and preservation obligations below continue to govern both.
 
 The current product interface is **therapeutic program design → corresponding
