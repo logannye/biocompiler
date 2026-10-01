@@ -1,0 +1,278 @@
+{
+  "baseline_tree": "3520912f6a7bcff2460822fff3fcc1380abe2413",
+  "implementation_branch": "codex/language-migration",
+  "jobs": [
+    {
+      "duration_seconds": 289.253264,
+      "finished_at": "2026-10-01T17:41:31.132665+00:00",
+      "job": "circuit-integration",
+      "platform": "Linux-6.17.0-1022-azure-x86_64-with-glibc2.39",
+      "python_version": "3.11.16",
+      "revision": "6156ed2841fd3308df833f1afe0e3f6af5d12bf6",
+      "run_attempt": "1",
+      "run_id": "36900639059",
+      "schema_version": "biocompiler.ci_job_receipt.v0.1",
+      "started_at": "2026-10-01T17:36:41.879403+00:00",
+      "status": "success",
+      "variant": "3.11"
+    },
+    {
+      "duration_seconds": 232.38434,
+      "finished_at": "2026-10-01T17:40:33.986293+00:00",
+      "job": "circuit-integration",
+      "platform": "Linux-6.17.0-1022-azure-x86_64-with-glibc2.39",
+      "python_version": "3.14.7",
+      "revision": "6156ed2841fd3308df833f1afe0e3f6af5d12bf6",
+      "run_attempt": "1",
+      "run_id": "36900639059",
+      "schema_version": "biocompiler.ci_job_receipt.v0.1",
+      "started_at": "2026-10-01T17:36:41.601951+00:00",
+      "status": "success",
+      "variant": "3.14"
+    },
+    {
+      "duration_seconds": 2.075096,
+      "finished_at": "2026-10-01T17:41:42.677220+00:00",
+      "job": "circuit-reproducibility",
+      "platform": "Linux-6.17.0-1022-azure-x86_64-with-glibc2.39",
+      "python_version": "3.12.3",
+      "revision": "6156ed2841fd3308df833f1afe0e3f6af5d12bf6",
+      "run_attempt": "1",
+      "run_id": "36900639059",
+      "schema_version": "biocompiler.ci_job_receipt.v0.1",
+      "started_at": "2026-10-01T17:41:40.602127+00:00",
+      "status": "success",
+      "variant": "cross-python"
+    },
+    {
+      "duration_seconds": 1.93082,
+      "finished_at": "2026-10-01T17:37:44.999606+00:00",
+      "job": "executable-rna-reproducibility",
+      "platform": "Linux-6.17.0-1022-azure-x86_64-with-glibc2.39",
+      "python_version": "3.12.3",
+      "revision": "6156ed2841fd3308df833f1afe0e3f6af5d12bf6",
+      "run_attempt": "1",
+      "run_id": "36900639059",
+      "schema_version": "biocompiler.ci_job_receipt.v0.1",
+      "started_at": "2026-10-01T17:37:43.068787+00:00",
+      "status": "success",
+      "variant": "cross-python"
+    },
+    {
+      "duration_seconds": 347.06863,
+      "finished_at": "2026-10-01T17:42:32.081701+00:00",
+      "job": "installed-architecture",
+      "platform": "Linux-6.17.0-1022-azure-x86_64-with-glibc2.39",
+      "python_version": "3.11.16",
+      "revision": "6156ed2841fd3308df833f1afe0e3f6af5d12bf6",
+      "run_attempt": "1",
+      "run_id": "36900639059",
+      "schema_version": "biocompiler.ci_job_receipt.v0.1",
+      "started_at": "2026-10-01T17:36:45.013071+00:00",
+      "status": "success",
+      "variant": "3.11"
+    },
+    {
+      "duration_seconds": 481.25627,
+      "finished_at": "2026-10-01T17:44:42.419820+00:00",
+      "job": "installed-architecture",
+      "platform": "Linux-6.17.0-1022-azure-x86_64-with-glibc2.39",
+      "python_version": "3.14.7",
+      "revision": "6156ed2841fd3308df833f1afe0e3f6af5d12bf6",
+      "run_attempt": "1",
+      "run_id": "36900639059",
+      "schema_version": "biocompiler.ci_job_receipt.v0.1",
+      "started_at": "2026-10-01T17:36:41.163555+00:00",
+      "status": "success",
+      "variant": "3.14"
+    },
+    {
+      "duration_seconds": 23.943782,
+      "finished_at": "2026-10-01T17:37:05.626696+00:00",
+      "job": "installed-executable",
+      "platform": "Linux-6.17.0-1022-azure-x86_64-with-glibc2.39",
+      "python_version": "3.11.16",
+      "revision": "6156ed2841fd3308df833f1afe0e3f6af5d12bf6",
+      "run_attempt": "1",
+      "run_id": "36900639059",
+      "schema_version": "biocompiler.ci_job_receipt.v0.1",
+      "started_at": "2026-10-01T17:36:41.682918+00:00",
+      "status": "success",
+      "variant": "3.11"
+    },
+    {
+      "duration_seconds": 48.350785,
+      "finished_at": "2026-10-01T17:37:28.867664+00:00",
+      "job": "installed-executable",
+      "platform": "Linux-6.17.0-1022-azure-x86_64-with-glibc2.39",
+      "python_version": "3.14.7",
+      "revision": "6156ed2841fd3308df833f1afe0e3f6af5d12bf6",
+      "run_attempt": "1",
+      "run_id": "36900639059",
+      "schema_version": "biocompiler.ci_job_receipt.v0.1",
+      "started_at": "2026-10-01T17:36:40.516878+00:00",
+      "status": "success",
+      "variant": "3.14"
+    },
+    {
+      "duration_seconds": 108.516876,
+      "finished_at": "2026-10-01T17:38:31.109360+00:00",
+      "job": "integration-examples",
+      "platform": "Linux-6.17.0-1022-azure-x86_64-with-glibc2.39",
+      "python_version": "3.11.16",
+      "revision": "6156ed2841fd3308df833f1afe0e3f6af5d12bf6",
+      "run_attempt": "1",
+      "run_id": "36900639059",
+      "schema_version": "biocompiler.ci_job_receipt.v0.1",
+      "started_at": "2026-10-01T17:36:42.592491+00:00",
+      "status": "success",
+      "variant": "3.11"
+    },
+    {
+      "duration_seconds": 116.334772,
+      "finished_at": "2026-10-01T17:38:38.692016+00:00",
+      "job": "integration-examples",
+      "platform": "Linux-6.17.0-1022-azure-x86_64-with-glibc2.39",
+      "python_version": "3.14.7",
+      "revision": "6156ed2841fd3308df833f1afe0e3f6af5d12bf6",
+      "run_attempt": "1",
+      "run_id": "36900639059",
+      "schema_version": "biocompiler.ci_job_receipt.v0.1",
+      "started_at": "2026-10-01T17:36:42.357247+00:00",
+      "status": "success",
+      "variant": "3.14"
+    },
+    {
+      "duration_seconds": 3.439882,
+      "finished_at": "2026-10-01T17:44:56.030797+00:00",
+      "job": "payload-architecture-reproducibility",
+      "platform": "Linux-6.17.0-1022-azure-x86_64-with-glibc2.39",
+      "python_version": "3.12.3",
+      "revision": "6156ed2841fd3308df833f1afe0e3f6af5d12bf6",
+      "run_attempt": "1",
+      "run_id": "36900639059",
+      "schema_version": "biocompiler.ci_job_receipt.v0.1",
+      "started_at": "2026-10-01T17:44:52.590918+00:00",
+      "status": "success",
+      "variant": "cross-python"
+    },
+    {
+      "duration_seconds": 368.654119,
+      "finished_at": "2026-10-01T17:42:50.427211+00:00",
+      "job": "studio-browser",
+      "platform": "Linux-6.17.0-1022-azure-x86_64-with-glibc2.39",
+      "python_version": "3.11.16",
+      "revision": "6156ed2841fd3308df833f1afe0e3f6af5d12bf6",
+      "run_attempt": "1",
+      "run_id": "36900639059",
+      "schema_version": "biocompiler.ci_job_receipt.v0.1",
+      "started_at": "2026-10-01T17:36:41.773091+00:00",
+      "status": "success",
+      "variant": "3.11"
+    }
+  ],
+  "limitations": [
+    "The initial run lost one hosted runner; retry 2 passed exact coverage accounting.",
+    "Job wall times are retained; per-operation peak-memory baselines have not yet been measured.",
+    "This baseline certifies the old Python implementation, not any language-migration changes."
+  ],
+  "package_version": "0.1.0.dev29",
+  "prerequisites": {
+    "circuit-integration": {
+      "outputs": {},
+      "result": "success"
+    },
+    "circuit-reproducibility": {
+      "outputs": {},
+      "result": "success"
+    },
+    "executable-rna-reproducibility": {
+      "outputs": {},
+      "result": "success"
+    },
+    "installed-architecture": {
+      "outputs": {},
+      "result": "success"
+    },
+    "installed-executable": {
+      "outputs": {},
+      "result": "success"
+    },
+    "integration-examples": {
+      "outputs": {},
+      "result": "success"
+    },
+    "payload-architecture-reproducibility": {
+      "outputs": {},
+      "result": "success"
+    },
+    "studio-browser": {
+      "outputs": {},
+      "result": "success"
+    },
+    "unit-accounting": {
+      "outputs": {},
+      "result": "success"
+    },
+    "unit-plan": {
+      "outputs": {},
+      "result": "success"
+    },
+    "unit-tests": {
+      "outputs": {},
+      "result": "success"
+    }
+  },
+  "problems": [],
+  "revision": "6156ed2841fd3308df833f1afe0e3f6af5d12bf6",
+  "run_attempt": "2",
+  "run_id": "36900639059",
+  "run_url": "https://github.com/logannye/biocompiler/actions/runs/36900639059",
+  "schema_version": "biocompiler.ci_validation.v0.1",
+  "source_receipt_sha256": "23551f189b31cbaeae77efaa71d2ba33704599737db5fcf2f3f40119ce028fe9",
+  "status": "pass",
+  "test_accounting": [
+    {
+      "discovery_digest": "aee8ecdf2fb9b49dde31548a6b9bbae65a486bdbee9389061b119ebd3b142f53",
+      "plan_fingerprint": "072cb31179cd3d852fd1582c58f34ede8b991b94c8c39dbb9f0f05b421c4cdf5",
+      "python_version": "3.11.16",
+      "result_digests": [
+        "1c393dfd4a4904382279ebecd76e78580e0e8a8ef039cf473e78c95ce8914b55",
+        "2716a82a622a4919f2e20f8def38f1cc4b5e799c42f864d131536b7535f95e0d",
+        "434b906dcf4865e6d48970f8a2e27727660af2d1bc5259c1caf38d4ef57a16ec",
+        "8a04bccd1f4a3ed725c8c61351e33d852dca302c4c8b8a6c4575cb2026e23741",
+        "b083f22724a05d961d925f6a253eaf6438ec83fd092309d8ec7f3108e4ec536c"
+      ],
+      "shard_seconds": {
+        "0": 689.042248,
+        "1": 739.141267,
+        "2": 744.766377,
+        "3": 695.967789,
+        "4": 759.240318
+      },
+      "status": "pass",
+      "total_tests": 2001
+    },
+    {
+      "discovery_digest": "aee8ecdf2fb9b49dde31548a6b9bbae65a486bdbee9389061b119ebd3b142f53",
+      "plan_fingerprint": "933e0cb3ef70850ad76bc6083663f4399371e3802c26573b3a5d727831e5dea4",
+      "python_version": "3.14.7",
+      "result_digests": [
+        "4b9fabd29412bc2748f1884c7eaf9dc30a97a4acb7447ee72c0aef0ea2ed7290",
+        "62e35ddba6d024c1d95e381bd8d0a53a6e351f8c80aeace68c1a03db47f01ed5",
+        "8f1e925de06e14c78a3ddf27d9c3d7347cb3c028c03a1f169a680c8049768e3e",
+        "925abd7925e55e727a7970ed9bb17a3f9853ff49952b1c258928bd5bb92149c6",
+        "cabf765b17565cf3b13f6edb7484eeb24f178d6b4189210318902bfc41e13328"
+      ],
+      "shard_seconds": {
+        "0": 726.135269,
+        "1": 557.509722,
+        "2": 563.712424,
+        "3": 735.820673,
+        "4": 435.211928
+      },
+      "status": "pass",
+      "total_tests": 2001
+    }
+  ]
+}

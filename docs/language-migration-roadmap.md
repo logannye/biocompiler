@@ -1,0 +1,431 @@
+# Biocompiler language migration: session roadmap
+
+Created: 2026-10-01, America/Los_Angeles.
+
+**Decision:** TypeScript for Studio; Python for authoring, orchestration and scientific exploration; OCaml for the semantic compiler, independent checking and canonical emission.
+
+**Status:** implementation underway on `codex/language-migration`. The baseline passed hosted validation; B0 foundations and the TypeScript source port are implemented locally and awaiting native/installed/browser validation. This document tracks execution, not a claim that the migration has occurred. The language choices are accepted; the first vertical slice establishes the migration method and release readiness rather than reopening the language comparison.
+
+**Validated baseline:** package 0.1.0.dev29, commit 6156ed2841fd3308df833f1afe0e3f6af5d12bf6. [Hosted run 36900639059](https://github.com/logannye/biocompiler/actions/runs/36900639059), attempt 2, passed all required gates and exactly 2,001 discovered tests on each Python version (3.11.16 and 3.14.7). The first attempt lost a hosted runner; the retry passed. [Pinned baseline receipt](../protocol/migration-baseline.json) retains revision, tree, receipts and shard/job timings. New revisions rediscover their own tests; this count is not the migration acceptance target.
+
+Governing references: [language decision](decisions/0007-language-boundaries-and-ocaml-core.md), [architecture](architecture.md), [toolchain contracts](toolchain-contracts.md), [development validation](development-validation.md), [verification independence](verification-independence-v0.1.md), and [existing product roadmap](roadmap.md).
+
+## 1. Outcome and scope
+
+The completed migration must preserve the public therapeutic-program-to-RNA product while moving authoritative semantic work to OCaml. Python remains the public authoring language. The complete corresponding RNA set and companion manifest remain the output for human immune cells engineered in vivo, conditional on explicit supplied contracts.
+
+Completion requires a working installed product, complete checker coverage, cross-language compatibility, all existing release gates, new OCaml/TypeScript gates, and recorded validation of the exact integrated revision. Schemas, stubs, an OCaml executable that delegates semantics back to Python, or a single passing demonstration do not establish migration completion.
+
+This roadmap covers all eleven agreed layers. It does not expand the biological target, introduce new organism backends, discover mechanisms or sequences, establish empirical therapeutic function, or remove existing limitations. The conversational layer is new product functionality and has its own completion criteria; preserving an extension point alone does not complete that layer.
+
+Work begins with the ordered session batches in section 5 and continues through the remaining checklist. No fixed wall-clock promise is attached to a system-wide migration. At every handoff, retain the last fully checked product and identify the next uncompleted task.
+
+## 2. Fixed architectural decisions
+
+| Layer | Target language and ownership | Migration task |
+| --- | --- | --- |
+| 1. Studio | TypeScript, HTML and CSS; presentation and editing only | LM-10 |
+| 2. Conversational authoring | Python proposal orchestration; explicit reviewable intent as output | LM-11 |
+| 3. SDK, notebooks and CLI | Python restricted DSL and thin core adapter | LM-12 |
+| 4. Canonical intent and analysis | OCaml validated types, identity, units and scope | LM-20 |
+| 5. Behavioral IR and reference semantics | OCaml typed operations, lowering and reference execution | LM-21 |
+| 6. Mechanism IR and realization contracts | OCaml causal/model contracts; Python scientific adapters | LM-22 |
+| 7. Components and architecture | OCaml deterministic compilation and acceptance; Python exploratory proposals | LM-23 |
+| 8. Construction and emission | OCaml molecular types, transformations and exact candidate emission | LM-24 |
+| 9. Independent verification and acceptance | Separately runnable OCaml checker with independent reconstruction | LM-25 |
+| 10. Canonical artifacts | OCaml canonical content and acceptance binding; Python storage/workflow | LM-26 |
+| 11. Physical biological execution | No software implementation language; explicit external boundary | LM-27 |
+
+### 2.1 One semantic core, explicit internal separation
+
+Use one OCaml project with explicit Dune library dependencies and separate compiler/checker entry points. Target layout (foundation libraries now exist; later semantic libraries remain to be implemented):
+
+    core/
+      dune-project
+      lib/wire/                 bounded decoding, protocol envelopes
+      lib/domain/               validated types, IDs, units, schemas
+      lib/semantics/            versioned source reference semantics
+      lib/compiler/             lowering, matching, selection, generation
+      lib/candidate_runtime/    execution reconstructed from candidate records
+      lib/checker/              independent correspondence and acceptance
+      lib/artifact/             canonical representation and archive rules
+      bin/core/                 biocompiler-core command interface
+      bin/verify/               biocompiler-verify standalone verifier
+      test/
+    protocol/                   versioned transport/schema specifications
+    tests/conformance/          retained inputs, literal expectations, mutations
+    studio/                     TypeScript sources and pinned build configuration
+
+The checker must not link compiler, synthesis, matcher, assembler or emitter libraries. Keep candidate execution separate from source reference execution. Shared primitive types, decoding and canonicalization are part of the documented trusted base; sharing them does not constitute independent verification. The artifact library must separate content/codec rules from producer-dependent assembly.
+
+OCaml abstract types and controlled constructors protect validated representations. Distinguish structural validation, conditional behavioral results, empirical assessment and admission as independent dimensions. Do not represent them as one universal Verified state.
+
+Prefer explicit variants, immutable snapshots and nominal IDs. Use GADTs only where a concrete invariant benefits. Make incomplete matches errors for closed semantic variants; reject catch-all handling that could silently accept a new operation.
+
+No Rust, C, Haskell, Julia, SMT solver or proof assistant is required by this migration. Existing scientific libraries remain behind explicit Python adapters. Add specialized execution or proof tools only when a concrete later obligation justifies them.
+
+### 2.2 A local executable protocol
+
+Start with bounded, versioned requests to an explicitly selected local core executable. Python submits complete operations rather than exposing OCaml object pointers. Initial operation families: capabilities/version, validate, lower, evaluate, compile, verify, inspect and checked export. Define the exact subset at LM-02; these names describe planned families, not shipped commands.
+
+Each envelope carries request identity, protocol version, operation/profile, complete source authority or verified content references, limits and expected tool compatibility. Responses carry structured outcomes, diagnostics, artifacts and execution identity. Standard output is protocol-only; diagnostics use standard error. Define cancellation, timeouts, bounded response size, process failure and partial-output rejection.
+
+The standalone verifier accepts the candidate and separately supplied full expected request, component/library pins and sequence/construction roots. A candidate's own hashes, embedded source or stored PASS cannot supply independent authority.
+
+Python and TypeScript models support authoring and display. Only the core validates imported semantic authority after the relevant operation is migrated. No executable Python object serialization or dynamic import of supplied code is part of the wire protocol.
+
+### 2.3 Preserve compatibility without accepting stale claims
+
+Freeze Python API names, CLI commands, exception categories, diagnostic codes, supported profiles and wire schemas before migrating their implementation. Preserve compatibility unless an intentional versioned change is documented and tested.
+
+Transport version, domain schema version, source-semantics version, checker-policy version and implementation/tool identity are separate. A new checker implementation receives an explicit identity and fresh receipts. Do not silently relabel historical Python receipts as OCaml verification.
+
+Compare canonical request/IR bytes where the contract is unchanged and exact molecule bytes for equivalent builds. Full build/report bytes may intentionally change when tool identity changes: enumerate those fields in a reviewed migration manifest and regenerate affected identities. Never use a broad normalization that hides missing obligations, changed assumptions or changed decisions.
+
+## 3. Starting conditions and migration risks
+
+| Observed baseline | Required response |
+| --- | --- |
+| Core is Python, setuptools, no declared runtime dependencies | Introduce OCaml distribution deliberately; end users must not acquire a compiler merely to use a released package. |
+| Behavior includes v0.1 and v0.2 sampled integration/channels | Port each supported semantic profile; a Boolean-only slice cannot replace the product. |
+| Architecture checker policy is v0.3; architecture records include matching and availability authority | Preserve all matching, control, helper, recipient and bounded-execution obligations. |
+| Studio has app.js and construction.js; its guided builder uses the older CandidateRequest profile | Preserve existing Studio behavior during the TypeScript conversion. Add modern architecture authoring as a separately tested increment. |
+| Hashes use Python JSON serialization conventions | Freeze exact compatibility vectors before any canonicalization rewrite. |
+| CI has a fail-closed registry of required jobs and receipts | Update workflow, registry, accounting tests and aggregate dependencies together when adding language gates. |
+| Multiple historical/reference/synthetic public workflows remain | Inventory every public entry point; explicitly retain, migrate or deprecate each. No invisible loss of coverage. |
+
+The largest risks are semantic drift, canonical identity drift, a checker that accidentally calls a producer, platform packaging failures, and two engines becoming permanent competing authorities.
+
+## 4. Foundation work
+
+### LM-00 — Freeze the capability and authority inventory
+
+- [x] Record starting commit/tree, package version, active branch and exact latest applicable CI receipts. Preserve unrelated work and use a dedicated codex/language-migration branch for implementation.
+- [ ] Inventory public exports, CLI commands, profiles, artifact schemas, serializers, example families, source/candidate execution paths and Studio endpoints.
+- [ ] For every entry point, record: current implementation; source of authority; target owner; dependent tasks; compatibility contract; test coverage; and migration state.
+- [x] Discover the current test suite using the existing accounting mechanism in the authorized validation environment. Do not copy an old test count into the new acceptance criteria.
+- [ ] Freeze representative positive, failed, unknown, unsupported, malformed and stale-authority inputs; retain literal expectations and current engine outputs separately.
+
+**Deliverables:** migration coverage ledger, baseline receipt, pinned input corpus and measured baseline timings/memory for representative cases.
+
+**Exit:** every supported public path has an owner and disposition; no implementation work relies on a stale handoff as its sole baseline.
+
+### LM-01 — Establish OCaml, TypeScript and hosted build foundations
+
+Depends on LM-00.
+
+- [ ] Pin OCaml, Dune and dependencies with a reproducible lock strategy; add formatting, warnings-as-errors and bounded test execution. Pin versions in the implementation batch rather than inventing untested version combinations in this plan.
+- [ ] Create the core library dependency graph and two real executable entry points. Add a dependency test that fails when the verifier links producer libraries.
+- [ ] Add TypeScript strict configuration, a package lock and deterministic build into the existing installed static asset locations. Avoid a new UI framework or redesign unless separately needed.
+- [ ] Produce an initial hosted binary for Linux x86_64 and macOS arm64, and test its protocol startup on those platforms. Inventory other current distribution targets before claiming they are supported.
+- [ ] Extend the CI registry and aggregate gate alongside workflow changes. Keep every existing job and receipt requirement.
+
+**Exit:** hosted builds produce revision-bound binaries and packaged Studio assets; a separately executable verifier starts without producer libraries. Skeleton success is foundation completion only.
+
+### LM-02 — Specify and implement wire, numeric and canonical contracts
+
+Depends on LM-00; implementation uses LM-01.
+
+- [ ] Specify strict decoding, unknown-field/version rejection, exact field types, duplicate-key rejection, null versus absence, Unicode validity and cumulative input/work limits.
+- [ ] Freeze fingerprint behavior from [serialization.py](../src/biocompiler/ir/serialization.py). It is SHA-256 over Python's compact sorted-key UTF-8 JSON, not an assumed generic canonical-JSON standard.
+- [ ] Test arbitrary-size integers, the JavaScript safe-integer boundary, bool versus int, int versus float, exponent spelling, negative zero, finite float roundtrips, invalid Unicode and object-key ordering. Do not truncate Python integers to OCaml machine integers.
+- [ ] Preserve exact decimal interval semantics where already used, and existing floating-point behavior where specified. In particular, the availability checker uses Fraction(str(value)); reproduce its decimal-to-rational boundary behavior rather than replacing it with binary floats. Numeric-model improvements require a separately versioned semantic change.
+- [ ] Preserve raw authoritative JSON through browser and adapter workflows; parsed JavaScript objects are display/editing aids and must not silently reserialize imported authority.
+- [ ] Separate semantic fingerprints from run timestamps, local paths and packaging metadata. Document canonical binary/text encodings and archive determinism.
+- [ ] Implement protocol errors, crash/timeout/cancellation handling and executable compatibility checks. Reject incomplete responses and ambiguous outputs.
+
+**Exit:** Python and OCaml agree on the retained canonical vectors and rejection cases; TypeScript roundtrips original authority without numeric or text loss. Any necessary format break is explicit, versioned and accompanied by a conversion/reverification policy.
+
+### LM-03 — Create conformance, mutation and performance evidence
+
+Depends on LM-00 and LM-02; grows throughout implementation.
+
+- [ ] Establish Python-to-OCaml and OCaml-to-Python import/replay checks where the profile is compatible.
+- [ ] Compare against both the baseline implementation and independent literal expectations. Agreement between two implementations is not proof that either is correct.
+- [ ] Retain the intended failure signature for each mutation; a crash or unrelated rejection is not successful detection.
+- [ ] Record wall time, peak memory, serialized size and protocol overhead for representative small and composite programs on the same platform.
+- [ ] Require explicit case accounting: skipped, missing, unsupported-by-the-new-engine and timed-out migrated cases cannot count as parity.
+
+**Exit:** the harness exposes structured mismatches and cannot promote a partially tested profile.
+
+## 5. Ordered session batches
+
+Implement coherent batches; update this table after each verified checkpoint. Parallel work may start when its contracts are stable.
+
+| Batch | Work | Completion gate | Status |
+| --- | --- | --- | --- |
+| B0 | LM-00 inventory; LM-01 skeleton; LM-02 protocol/canonical vectors | Baseline and executable interface are pinned; canonical compatibility is established | In progress; native conformance pending |
+| B1 | First checker-led vertical slice: LM-20/21/22/24/25 subset, LM-23 records/decoders, Python adapter in shadow mode | Existing case B request and Python candidate are independently checked in OCaml; targeted temporal/authority/sequence mutants fail correctly | Queued |
+| B2 | Port producer for that same slice; extend LM-23/24/26 | Python authoring → OCaml compilation → independent OCaml check → paired RNA/manifest export works outside checkout | Queued |
+| B3 | Expand all behavior/architecture/control profiles and historical public coverage | Complete capability ledger and all 13 current architecture cases pass with fresh identity and mutation evidence | Queued |
+| B4 | LM-10 TypeScript parity; LM-12 installed SDK/CLI parity; deliberate architecture UI integration | Existing browser and installed workflows pass; migrated paths visibly use compatible OCaml core | TypeScript parity implemented; hosted/browser and architecture integration pending |
+| B5 | LM-11 conversational draft/review flow and LM-27 scope enforcement | Draft → explicit reviewed intent → existing validated pipeline; ambiguity and unsupported claims remain visible | Queued |
+| B6 | LM-30 release/cutover and legacy retirement | All required gates pass at the integrated revision; supported-platform installations and rollback are verified | Queued |
+
+**First implementation action:** execute LM-00, then specify the LM-02 protocol/canonical vectors while LM-01 infrastructure is prepared.
+
+**First vertical slice:** use the existing artificial architecture case B (prime/act/recover, timeout, reset and shutdown) with exact supplied source correspondence. Reuse its actual request/templates. The initial checker stage reads the existing Python-produced candidate and independently reconstructs it. Then port its producer. Do not replace this slice with an unrelated toy expression interpreter.
+
+Required pilot negatives: missing or extra source requirement; changed temporal boundary/reset priority; source/controller mismatch; stale independent request or component authority; modified emitted nucleotide; incomplete molecule inventory; malformed or exhausted input; missing or incompatible core executable. Every failure must retain the intended reason and emit no accepted export.
+
+Expand material-cardinality cases A/E, sampled integration C, channel/state composition D/F, automatic B/F matching, automatic timing, and the four control cases. These are coverage increments; dependencies may require implementing shared primitives earlier.
+
+## 6. Work by architectural layer
+
+### LM-10 — Layer 1: Studio in TypeScript
+
+Starting points: [app.js](../src/biocompiler/studio/static/app.js), [construction.js](../src/biocompiler/studio/static/construction.js), [server.py](../src/biocompiler/studio/server.py), [service.py](../src/biocompiler/studio/service.py), [construction service](../src/biocompiler/studio/construction.py).
+
+Depends on LM-02 for protocol contracts; the UI source port can run alongside core development.
+
+- [ ] Move the two clients into strict TypeScript modules with typed transport, editor state, diagnostics, request/result identities and artifact views.
+- [ ] Preserve existing DOM behavior, accessibility, responsive layouts, hostile-label escaping, request bounds and source/assumption visibility.
+- [ ] Keep raw uploaded authority intact, including existing CRLF/BOM behavior. Reject invalid encodings according to the existing contract. Preserve request-generation tokens and rejection of late responses/downloads.
+- [ ] Generate only syntactic client models from shared schemas; retain runtime response validation. No client-generated PASS or local hash becomes authoritative.
+- [ ] Preserve the Python Studio server's loopback Host/Origin, session-token, header/body/encoding bounds, route allowlist, CSP and no-store protections while replacing service internals with core adapters.
+- [ ] Build and include JavaScript assets in installed packages. End users do not need Node or TypeScript; no stale checked-in asset may mask a changed source.
+- [ ] First pass both existing browser suites unchanged. Then add full architecture editing/inspection through explicit new service endpoints, preserving the older partial profile's label until deliberately superseded.
+
+**Exit:** strict TypeScript build and installed browser suites pass; architecture UI behavior is separately exercised; every downloaded artifact derives from the same current accepted request. A language-only UI port does not complete architecture feature integration.
+
+### LM-11 — Layer 2: conversational authoring in Python
+
+Current state: future frontend, not an existing capability to merely port.
+
+Depends on LM-02, LM-12 and validated LM-20; a deterministic draft adapter can be developed in parallel.
+
+- [ ] Define a versioned draft/ambiguity model with source-text spans, proposed intent, explicit assumptions, missing information and unsupported requests.
+- [ ] Implement a Python proposal adapter that produces declarative data. Do not execute model-generated Python or grant model text checker authority.
+- [ ] Route drafts through the same OCaml validation path as authored programs. Require an explicit reviewed-intent state before compilation; retain the draft and revision lineage.
+- [ ] Add concise clarification handling for unresolved meaning. Do not infer missing sequences, component mechanisms, delivery guarantees or numerical parameters.
+- [ ] Test paraphrases, contradictory requirements, unsupported timing/context, unknown components, attempted instruction injection in imported text and edited drafts that invalidate old review state.
+- [ ] Exercise a real configured provider through the same interface before claiming the end-to-end conversational feature. Deterministic adapter fixtures validate orchestration only. Provider selection and credentials remain an explicit integration prerequisite; independent migration work continues without them.
+
+**Exit:** a reviewed conversation draft produces the same canonical intent and compiler behavior as an equivalent Python-authored fixture; ambiguous requests cannot silently compile. If no provider is configured, record this layer as adapter-complete/integration-pending, not complete.
+
+### LM-12 — Layer 3: Python SDK, notebooks and CLI
+
+Starting points: [frontend](../src/biocompiler/frontend/api.py), [symbolic expressions](../src/biocompiler/frontend/expressions.py), [public exports](../src/biocompiler/__init__.py), [CLI](../src/biocompiler/cli.py), [packaging](../pyproject.toml).
+
+Depends on LM-02; individual operations route to OCaml only after their core parity gate.
+
+- [ ] Add a thin typed core-process adapter with operation negotiation, explicit executable discovery, timeouts, cancellation and stable error mapping.
+- [ ] Preserve Python symbolic construction and its ban on Python truth testing. Retain cross-program, role, type and unit diagnostics.
+- [ ] Keep public class/function names, return interfaces, JSON roundtrips and CLI behavior where specified. Inventory and test intentional changes rather than silently substituting dictionaries for public objects.
+- [ ] Add strict static checking for new adapters and touched public boundaries; expand by module with an explicit remaining ledger. Do not mask migrated paths with Any or blanket ignore rules.
+- [ ] Keep reference Python internals available for conformance during migration. Production routing is explicit per operation/profile; no retry through Python after an OCaml rejection, crash or timeout.
+- [ ] Update every example and notebook-facing path to work using installed packages outside the source checkout.
+
+**Exit:** existing public workflows pass on Python 3.11 and 3.14 using the selected core; missing/wrong binaries fail clearly; no implicit native build or network download occurs at import or compile time.
+
+### LM-20 — Layer 4: canonical intent and semantic analysis
+
+Starting points: [intent IR](../src/biocompiler/ir/intent.py), [types](../src/biocompiler/semantics/types.py), [context](../src/biocompiler/semantics/context.py), [build request](../src/biocompiler/compiler/request.py).
+
+Depends on LM-02.
+
+- [ ] Define nominal node, requirement, role, observation, product, component and molecule IDs, plus units and typed values. Keep domain identity distinct from identical sequence content.
+- [ ] Decode into raw wire structures, then resolve graph references, ownership, types, dimensions, bounds and human target/deployment/acceptance wrappers.
+- [ ] Produce abstract validated intent types through controlled constructors; prevent downstream code from bypassing validation.
+- [ ] Preserve original requirements, source locations, assumptions, hard constraints versus preferences, and unsupported meanings.
+- [ ] Port strict import limits and rejection behavior; test duplicate IDs, missing references, invalid scalar types and scope mixing.
+
+**Exit:** all inventoried intent/request schemas roundtrip or reject consistently; canonical identities agree for unchanged semantics; unsupported requirements remain in the ledger.
+
+### LM-21 — Layer 5: behavior lowering and reference semantics
+
+Starting points: [behavior IR](../src/biocompiler/ir/behavior.py), [lowerer](../src/biocompiler/compiler/behavior.py), [reference evaluator](../src/biocompiler/semantics/evaluator.py), [coupled executor](../src/biocompiler/semantics/architecture_execution.py), [semantic specification](behavior-semantics-v0.1.md).
+
+Depends on LM-20 and LM-03.
+
+- [ ] Port closed typed operation variants and Intent-to-Behavior lowering with source correspondence, bindings and obligations.
+- [ ] Implement behavior v0.1 timelines: same-contact conjunction, onset semantics, dwell/recent/followed-by boundaries, pulses, reset priority, initialization and bounded same-time settling.
+- [ ] Preserve simultaneous state assignment, conflict rejection, ordering policies, missing observations, non-finite rejection and explicit horizons.
+- [ ] Port behavior v0.2 sampled integrals and declared channel latency, persistence, aggregation and failure policies. Preserve supplied finite-grid semantics rather than inventing continuous guarantees.
+- [ ] Keep the source interpreter and independently reconstructed candidate runtime in different libraries. Shared primitive numeric definitions must be declared and covered by independent literal cases.
+- [ ] Compare complete actions, reactions, state, event times and requirement traces, including boundary timestamps; summary PASS agreement is insufficient.
+
+**Exit:** every supported operation/policy profile has positive and negative coverage; literal boundary timelines and existing semantic regressions pass under OCaml.
+
+### LM-22 — Layer 6: mechanisms and realization contracts
+
+Starting points: [mechanism IR](../src/biocompiler/ir/mechanism.py), [realization semantics](../src/biocompiler/semantics/realization.py), [synthetic model](../src/biocompiler/models/synthetic.py), [component model](../src/biocompiler/models/components.py), [molecular behavior contract](molecular-behavior-v0.1.md).
+
+Depends on LM-20/21.
+
+- [ ] Port the currently supported mechanism/model contracts, endpoint observation maps, parameter identities, operating contexts and causal dependencies.
+- [ ] Reconstruct candidate execution from actual locked records/wiring, not from requested source outputs.
+- [ ] Preserve independent active/inactive response coverage, unfinished deadlines, failure precedence and exact bounded-history claims.
+- [ ] Define Python scientific adapter requests/results with pinned model, parameter, context, numerical-method and execution identities. Adapter outputs remain scoped results, not self-authenticating verification.
+- [ ] Keep unsupported mechanism discovery, general biological simulation and unmapped operating/resource contracts explicit. This migration does not fill them with nominal implementations.
+
+**Exit:** existing synthetic and supplied-contract realization paths preserve their actual claims and limits; mutated wiring/parameters fail the intended response or identity check.
+
+### LM-23 — Layer 7: component selection and architecture
+
+Starting points: [component contracts](../src/biocompiler/ir/component_contracts.py), [component compiler](../src/biocompiler/compiler/components.py), [architecture compiler](../src/biocompiler/compiler/payload_architecture.py), [matcher](../src/biocompiler/compiler/architecture_matching.py), [architecture profile](payload-architecture-v0.1.md).
+
+Depends on LM-20/21/22; checker ports proceed before producer replacement.
+
+- [ ] Port component identities, interface contracts, providers, complete source/model maps, material placements and recipient/delivery bindings.
+- [ ] Preserve many-to-many behavior/component/RNA relations and namespace refinement instances. Do not deduplicate functional instances by sequence equality.
+- [ ] Port exact semantic matching, partial anchors, ambiguity handling, cumulative search/match limits and deterministic tie-breaking.
+- [ ] Preserve hard-constraint rejection before preference ranking; exhaustion and no-candidate results cannot become infeasibility or certified optimality.
+- [ ] Port helper bootstrap, sharing/capacity, compartment and same-recipient availability checks, counting every delivered helper RNA.
+- [ ] Preserve activation, production adjustment, activity control, memory reset, shutdown, physical separation and dependency disjointness as separate contracts; port every bounded proof and its witnesses.
+- [ ] Python search may propose candidates through a versioned proposal interface. Every proposal undergoes the same OCaml acceptance; search has no power to weaken source authority.
+
+**Exit:** all 13 installed architecture cases and targeted matching/control/resource mutations pass the conformance gate; retained candidate/rejection inventories are complete and deterministic.
+
+### LM-24 — Layer 8: molecular construction and emission
+
+Starting points: [molecular records](../src/biocompiler/ir/molecule_records.py), [chemistry](../src/biocompiler/ir/molecule_chemistry.py), [construction IR](../src/biocompiler/ir/circuit_construction.py), [construction backend](../src/biocompiler/backends/circuit_construction.py), [recoding backend](../src/biocompiler/backends/circuit_recoding.py).
+
+Depends on LM-02 and the required domain types from LM-20/22/23.
+
+- [ ] Port exact molecular alphabets, structured chemistry, topology, region/feature inventories, molecule membership and coordinate frames.
+- [ ] Preserve source/destination residue maps, overlap rules, strand/orientation, junction/processing correspondence and protein identity checks where supported.
+- [ ] Port supplied construction operations with deterministic order, cumulative bounds, complete multi-output results and atomic candidate creation.
+- [ ] Retain distinct template/intermediate/delivered identities. Existing DNA reference utilities remain shared infrastructure; therapeutic delivered genetic members remain RNA.
+- [ ] Make producer emission deterministic, then independently verify every emitted base, required feature and member against external roots and operation authority.
+
+**Exit:** molecule bytes and required structural meaning match compatible baseline outputs; missing members, wrong bases/coordinates/chemistry and changed supplied authority fail independently.
+
+### LM-25 — Layer 9: independent verification and export acceptance
+
+Starting points: [architecture checker](../src/biocompiler/verification/payload_architecture.py), [control checker](../src/biocompiler/verification/architecture_controls.py), [availability checker](../src/biocompiler/verification/architecture_deployment.py), [independence audit](verification-independence-v0.1.md).
+
+Begins immediately after LM-02/20 with existing Python-produced candidates; expands with LM-21–24.
+
+- [ ] Define the trusted-base/dependency inventory and separate OCaml checker executable before producer migration.
+- [ ] Port independent request/source/model correspondence, actual candidate execution, construction reconstruction and result freshness checks.
+- [ ] Port the authoritative checked pass manager from [pipeline.py](../src/biocompiler/compiler/pipeline.py) and [passes.py](../src/biocompiler/compiler/passes.py): stage order/schema/target validation, controlled Components-root admission, scoped completion, obligation invalidation, ancestor freshness and dependency changes during execution. Require [pipeline regressions](../tests/test_pipeline.py); these decisions must not remain in Python workflow orchestration.
+- [ ] Require full external expected authority for fresh verification and reject altered claims even when candidate hashes are recomputed.
+- [ ] Preserve PASS/FAIL/UNKNOWN/UNSUPPORTED, translation completeness, structural completeness, empirical support and admission as separate dimensions.
+- [ ] Port current adversarial mutation and dependency-isolation tests. Verify successfully with producer modules absent; ensure deliberate emitter/matcher corruption cannot manufacture acceptance.
+- [ ] Export freshly checked immutable content or recheck the exact content immediately before atomic publication. Prevent changes between acceptance and writing.
+- [ ] Preserve honest residual sharing: common decoding/canonicalization needs separate conformance evidence; do not call common-mode agreement independent proof.
+
+**Exit:** standalone installed verification works without Python semantic execution or linked OCaml producers; all acceptance categories and independence tests pass; no stale report can authorize export.
+
+### LM-26 — Layer 10: canonical artifacts and manifests
+
+Starting points: [manifest](../src/biocompiler/artifacts/manifest.py), [archive codec](../src/biocompiler/artifacts/archive_container.py), [review bundles](../src/biocompiler/artifacts/circuit_review_bundle.py), [construction artifacts](../src/biocompiler/artifacts/circuit_construction_build.py), [manifest contract](build-manifest-v0.1.md).
+
+Depends on LM-02/24/25.
+
+- [ ] Port canonical semantic content, fingerprints, complete relative-file inventories, bounded archive decoding and deterministic package ordering/metadata.
+- [ ] Bind FASTA and manifest as one accepted output set; retain all source/model/material/recipient identities, assumptions, outstanding obligations and checker scope.
+- [ ] Preserve independent authority requirements for imported packages, source review bundles, inspection and fresh replay.
+- [ ] Keep timestamps, machine paths and transport details outside canonical semantic identities. Preserve exact original evidence/source bytes where required.
+- [ ] Test cross-Python and cross-platform semantic artifact identity. Preserve complete canonical ToolPin/tool-source identities and bind each platform executable digest and distribution receipt to the actual checked execution. Compare exact molecule and unchanged semantic payload identity across platforms; record explicit versioned build/provenance differences where platform binary identities differ. Do not remove tool pins or detach execution receipts to force byte equality.
+- [ ] Implement explicit old-to-new artifact compatibility/reverification records and atomic writes. Python workflow code transports opaque accepted artifacts; it cannot rewrite their semantic content while retaining acceptance.
+
+**Exit:** complete installed builds and exports reproduce; no partial paired export, empty comparison directory, stale receipt or self-supplied hash passes.
+
+### LM-27 — Layer 11: preserve the physical-execution boundary
+
+Cross-cutting; depends on LM-20/22/25/26 for enforcement.
+
+- [ ] Carry target context, source-experiment context, deployment assumptions, empirical evidence and admission through every representation.
+- [ ] Preserve the distinction among exact digital molecule identity, model-conditional behavior and actual biological performance.
+- [ ] Keep manufacturing, delivery, expression, potency and clinical outcomes outside the software compiler's success claim.
+- [ ] Add regressions showing that software PASS, artificial fixtures, imported citations and compatible declarations do not become biological validation or human-use admission.
+- [ ] Update UI, API, manifests and documentation consistently; conditional translation remains possible without requiring empirical evidence.
+
+**Exit:** all layer outputs and user-facing claims retain the same scoped meaning; no physical execution engine, wet-lab work or empirical collection is introduced by the migration.
+
+## 7. Packaging, CI and integration
+
+### LM-30 — Distribution and release gates
+
+Depends on LM-01 onward; implement packaging early and expand required gates with coverage.
+
+**Distribution plan**
+
+- [ ] Build OCaml binaries on hosted runners; record source revision, toolchain/lock identity, OS/architecture and artifact digest. Prefer one reusable build workspace per runner/job and bounded caches.
+- [ ] Package a matching core distribution for each declared platform, selected through an explicit Python installation dependency or bundled platform package strategy fixed at B0. Test the actual strategy on Linux x86_64 and macOS arm64 before expanding it.
+- [ ] End-user installation must use prebuilt supported artifacts. No silent opam, Dune, Rust, C, npm or other native build at Python import or compiler execution. Unsupported platforms receive a clear documented outcome.
+- [ ] Verify package/core protocol and release compatibility at startup. Do not execute an unrelated binary found implicitly on PATH.
+- [ ] Include compiled Studio assets in wheels and source-release build workflows; do not require Node on end-user machines.
+- [ ] Test fresh installation, offline runtime, missing/wrong binaries, cancellation, uninstall/upgrade behavior and standalone verification outside the repository.
+
+**Existing gates that remain required**
+
+Keep the complete [development validation protocol](development-validation.md): Python 3.11 and 3.14, all discovered tests in five whole-class shards per version, independent unit accounting, installed-executable, installed-architecture, circuit-integration, integration-examples, studio-browser, and all three reproducibility jobs. Preserve every expected-failure assertion and output artifact.
+
+**New gates**
+
+| Gate | Required evidence |
+| --- | --- |
+| OCaml static/build/test | Pinned toolchain, warnings policy, unit/property tests, complete test accounting and clean executable packaging |
+| Core dependency independence | Verifier cannot depend on producers; candidate runtime does not call source evaluator |
+| Wire/canonical conformance | Exact compatibility vectors, hostile/malformed inputs and cross-language roundtrips |
+| Semantic/architecture parity | Complete migrated operation census, literal timelines, all required examples and intended mutation failures |
+| TypeScript static/build | Strict checking, deterministic assets and package-content assertions |
+| Supported-platform install | Linux x86_64 and macOS arm64 installed SDK/core/standalone-verifier smoke, plus any further platform explicitly advertised |
+| Aggregate migration acceptance | Exact revision/platform/artifact identity; every required existing and new prerequisite successful |
+
+Update [.github/workflows/ci.yml](../.github/workflows/ci.yml), [tools/ci_validation.py](../tools/ci_validation.py), [tests/test_ci_validation.py](../tests/test_ci_validation.py) and aggregate dependencies together. The job registry rejects unregistered or missing work; adding YAML alone is insufficient.
+
+Retain one coherent PR validation run per update, main integration validation and deliberate manual dispatch where needed. Preserve successful independent work while a longer gate runs. Never remove tests or treat skipped/canceled/missing jobs as success to meet a time target.
+
+Native compilation, native executable tests and package builds run on hosted CI or an already-authorized remote environment. This roadmap deliberately applies the existing hosted-native workflow to OCaml as well. Local editing, documentation, formatting and genuinely non-build static checks can continue. Do not silently install toolchains or compile locally if hosted execution is unavailable.
+
+### LM-31 — Controlled cutover and retirement
+
+Depends on complete per-profile gates and LM-30.
+
+- [ ] Track each operation/profile as legacy, shadow, OCaml-supported, default or retired in the coverage ledger.
+- [ ] In shadow mode, the current engine remains explicit; mismatches block promotion and produce retained diagnostics. Shadow results cannot grant authority.
+- [ ] Switch one complete profile at a time only after its installed, semantic, mutation, packaging and reproducibility gates pass.
+- [ ] Fail closed on a selected OCaml engine's rejection, incompatibility, crash or timeout. Do not automatically retry a rejected request through a more permissive engine.
+- [ ] Roll back by selecting a known validated release/profile with compatible artifacts. Keep historical receipts and inputs intact; a rollback is not permission to reuse stale acceptance.
+- [ ] Remove duplicated production Python semantic/checker code only after every dependent public path is migrated or explicitly deprecated with compatibility coverage. Retain compact independent conformance oracles and test fixtures.
+- [ ] Update AGENTS, architecture, public docs, examples, package metadata and migration instructions to describe actual ownership and installed behavior.
+
+**Exit:** every inventoried public path has a final disposition, OCaml is authoritative for all agreed core layers, and no hidden Python semantic dependency remains in migrated production operations.
+
+## 8. Parallel work and session tracking
+
+After B0 stabilizes the protocol, use three bounded workstreams:
+
+| Workstream | Owned scope | Shared dependencies |
+| --- | --- | --- |
+| Core semantics/representation | LM-20/21/22 and domain types | LM-02 protocol and numeric contracts |
+| Independent checking/construction | LM-25 first, then LM-23/24/26 integration | Same public schemas; no producer implementation sharing |
+| Python/Studio/distribution | LM-10/11/12 and LM-30 | Versioned protocol and per-profile capability ledger |
+
+One integrating owner controls protocol/schema changes, Dune library dependencies, CI registry changes and cutover. Agents must use separate file ownership and coherent checkpoints. Do not multiply local toolchains, build trees or native validation processes.
+
+Every completed task records: task ID; implemented scope; commit/tree; applicable schema/semantic/checker versions; hosted run and platform; positive/negative/mutation census; artifact paths/digests; unresolved limitations; next task. Update task checkboxes only when their stated exit conditions pass.
+
+### Session acceptance checkpoints
+
+- [ ] **Checkpoint A — foundation:** LM-00/01/02 complete and LM-03 harness running.
+- [ ] **Checkpoint B — checker-led pilot:** existing case B independently accepted/rejected in OCaml with required mutants.
+- [ ] **Checkpoint C — complete migrated slice:** Python authoring through OCaml producer/checker to exact RNA plus manifest; installed replay succeeds.
+- [ ] **Checkpoint D — product parity:** every supported core profile and historical public workflow accounted for; all architecture/control cases and scope boundaries preserved.
+- [ ] **Checkpoint E — frontend completion:** TypeScript parity and intentional architecture integration, Python compatibility, and conversational integration status honestly recorded.
+- [ ] **Checkpoint F — system migration complete:** supported-platform distribution, all exact-revision gates, default routing, documentation and legacy disposition complete.
+
+If the session ends before Checkpoint F, save the highest completed checkpoint, the exact remaining task and any active hosted validation identity. A partial port is a useful checkpoint, not a completed system migration.
+
+## 9. Non-negotiable regression checklist
+
+Before promoting any migrated profile, verify the relevant obligations below:
+
+- Source requirements, human target and wrapped deployment/acceptance contracts are retained.
+- Python authoring control flow cannot silently become cellular execution semantics.
+- Same-contact and same-recipient scope survive transformations.
+- Active and inactive obligations are non-vacuous; unknowns remain explicit.
+- Reset, simultaneous state updates, event boundaries and finite-grid policies remain exact.
+- Hard constraints precede preferences; exhausted search is not infeasibility.
+- Components, functional instances, RNA partitions and recipient roles retain distinct identities.
+- Helpers cannot bootstrap from circular absent supply; delivered helpers count in material budgets.
+- Production control, activity control, shutdown, physical separation and dependency independence remain distinct.
+- Molecular alphabet, chemistry, coordinates, processing relationships and every required member are checked against independent authority.
+- Imported PASS labels and rehashed tampered candidates cannot authorize export.
+- Semantic changes invalidate dependent results; tool changes receive fresh execution identity.
+- FASTA and manifest refer to the same freshly accepted content.
+- Artificial controls and software compilation never establish empirical behavior or human admission.

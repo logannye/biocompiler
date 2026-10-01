@@ -1,5 +1,19 @@
 # Development roadmap
 
+## Active implementation roadmap — language migration
+
+The 2026-10-01 [language migration roadmap](language-migration-roadmap.md) is the
+session execution plan for the accepted TypeScript/Python/OCaml architecture in
+[ADR 0007](decisions/0007-language-boundaries-and-ocaml-core.md). It covers all
+eleven layers, compatibility, independent verification, hosted validation and
+controlled cutover. Its implementation tasks are queued; the compiler remains
+Python and Studio remains JavaScript at this planning checkpoint.
+
+Begin with LM-00's current-revision inventory and LM-02's wire/canonical
+compatibility contracts. The product capabilities and remaining biological
+obligations below remain authoritative; language migration does not complete
+them or expand their claims.
+
 ## Current code-only RNA translation sprint
 
 The product scope is therapeutic program input and exact RNA payload output for

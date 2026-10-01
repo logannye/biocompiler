@@ -1,0 +1,5 @@
+(executable
+ (name main)
+ (public_name biocompiler-core)
+ (package biocompiler_core)
+ (libraries bioc_wire bioc_service))

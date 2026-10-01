@@ -85,7 +85,20 @@ running checks unless a necessary correction changes the tested revision.
 
 ## Native build storage
 
-The initial implementation is Python-only. If Rust is introduced, keep editing and static work local, and run compilation, executable native tests, extension rebuilds, and packaging on hosted CI by default. Local Rust compilation, including implicit builds through package managers, requires explicit authorization for the work. Do not silently fall back to local native builds. Record the tested revision and platform and preserve required validation gates.
+Production semantic paths currently use Python; the accepted migration adds an
+experimental OCaml core and TypeScript Studio sources. Follow
+`docs/language-migration-roadmap.md` and `protocol/core-v1.md`; do not promote
+structural intent validation into translation acceptance or silently switch an
+unmigrated operation's authority. Keep editing and static work local, and run
+OCaml or Rust compilation, executable native tests, extension rebuilds and native
+packaging on hosted CI by default. Local native compilation, including implicit
+builds through package managers, requires explicit authorization for the work.
+Do not silently fall back to local native builds. Record the tested revision and
+platform and preserve required validation gates. Studio's tracked generated JS
+and hash manifest are release assets needed by installed Python packages; check
+them against the pinned TypeScript sources before any CI step regenerates them.
+Keep native build trees, dependency installations and other scratch outputs out
+of version control.
 
 - Follow `docs/component-contracts-v0.1.md` and `docs/component-linking-v0.1.md` for component changes. Keep model/reference identities locked, providers and resource assumptions explicit, and sequence-only references free of dynamic claims. Component compatibility does not upgrade finite-history evidence.
 

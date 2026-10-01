@@ -1,0 +1,161 @@
+{
+  "schema_version": "biocompiler.core_json_conformance.v0.1",
+  "literal_basis": "Expected canonical_json strings are independently authored literals. Their stored SHA-256 values hash these literal bytes, not core output or dynamically generated expectations.",
+  "literal_vectors": [
+    {
+      "id": "null",
+      "input_json": "null",
+      "canonical_json": "null",
+      "sha256": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b"
+    },
+    {
+      "id": "booleans-empty",
+      "input_json": "[true,false,{},[]]",
+      "canonical_json": "[true,false,{},[]]",
+      "sha256": "bd3add0e362bc93bfb3e9e3ed04803e7d1f040cbab2b0b4c8b85e1feb19161d9"
+    },
+    {
+      "id": "sorted-keys",
+      "input_json": "{\"z\":2,\"a\":1}",
+      "canonical_json": "{\"a\":1,\"z\":2}",
+      "sha256": "99168216144c7fed5d4c54916cf98d9c66096280c04a499822a99b6658bd177a"
+    },
+    {
+      "id": "integer-and-float-spelling",
+      "input_json": "[-0,0,1,1.0,-0.0,1E+20,0.0001,0.00001,1e-6,1e16,1e15]",
+      "canonical_json": "[0,0,1,1.0,-0.0,1e+20,0.0001,1e-05,1e-06,1e+16,1000000000000000.0]",
+      "sha256": "f2894a054089aab737ee72d2771d05b5a6f1e7f7e40b7be4dc8f540abd385801"
+    },
+    {
+      "id": "large-exact-integers",
+      "input_json": "[9007199254740993,18446744073709551616,340282366920938463463374607431768211455]",
+      "canonical_json": "[9007199254740993,18446744073709551616,340282366920938463463374607431768211455]",
+      "sha256": "406a8e8db37811103e4551cd61d2eb372f4967c24dbee0a97dbf2323235da1fd"
+    },
+    {
+      "id": "unicode-codepoint-order",
+      "input_json": "{\"😀\":\"emoji\",\"é\":\"composed\",\"é\":\"decomposed\",\"中\":\"han\",\"\\u0001\":\"control\"}",
+      "canonical_json": "{\"\\u0001\":\"control\",\"é\":\"decomposed\",\"é\":\"composed\",\"中\":\"han\",\"😀\":\"emoji\"}",
+      "sha256": "462b99b7d84c2309f29be704c33695b9b1f2247894edf2eb0aee2caf3c2a96fc"
+    },
+    {
+      "id": "utf16-order-differs",
+      "input_json": "{\"\\ud800\\udc00\":2,\"\\uffff\":1}",
+      "canonical_json": "{\"￿\":1,\"𐀀\":2}",
+      "sha256": "5d0565db2590e7475bdf0f43c32a52eafabf71219c8a4aa8bf2099d799cefd0c"
+    },
+    {
+      "id": "literal-escapes",
+      "input_json": "\"\\\"\\\\\\/\\b\\f\\n\\r\\t\\u0000\\u001f\"",
+      "canonical_json": "\"\\\"\\\\/\\b\\f\\n\\r\\t\\u0000\\u001f\"",
+      "sha256": "c5b64de3af33da6a91c5637925ef228492bc3a984f636ce99bc0e6621107f0f6"
+    },
+    {
+      "id": "unicode-not-normalized",
+      "input_json": "[\"é\",\"é\",\"\\u2028\",\"\\u2029\"]",
+      "canonical_json": "[\"é\",\"é\",\" \",\" \"]",
+      "sha256": "cf2de74d025ac48ec364255f25c0d4d061d044af8c0c0149375b2f1bc590b174"
+    },
+    {
+      "id": "underflow-and-signed-zero",
+      "input_json": "[1e-999,-1e-999,-0.0000]",
+      "canonical_json": "[0.0,-0.0,-0.0]",
+      "sha256": "2cbc290226d0d3bb06edc4b6e535d52199a5124dc80f241436bcc83116fbfa53"
+    },
+    {
+      "id": "finite-extremes",
+      "input_json": "[5e-324,2.2250738585072014e-308,1.7976931348623157e308]",
+      "canonical_json": "[5e-324,2.2250738585072014e-308,1.7976931348623157e+308]",
+      "sha256": "b28df34c51135c4faee6b6815ac08d8fe348e66ef0b04cf69d2d1a8f43a009a6"
+    },
+    {
+      "id": "nested-values",
+      "input_json": " { \"b\": [null, {\"z\":false,\"a\":true}], \"a\": 2 } ",
+      "canonical_json": "{\"a\":2,\"b\":[null,{\"a\":true,\"z\":false}]}",
+      "sha256": "afed4a41b165ce40b6e5b9cada901f8395f23059d06f2bdf69581ea76c57bb33"
+    }
+  ],
+  "python_oracle": {
+    "basis": "Separate Python json.dumps reference comparison; agreement is not independent semantic proof. Seeded IEEE-754 patterns retain exact requested bit identities.",
+    "seed": 20261001,
+    "finite_float_count": 4096,
+    "batch_size": 128
+  },
+  "raw_rejections": [
+    {
+      "id": "duplicate-key",
+      "payload_json": "{\"x\":1,\"x\":2}",
+      "error_code": "duplicate_key"
+    },
+    {
+      "id": "escaped-duplicate-key",
+      "payload_json": "{\"a\":1,\"\\u0061\":2}",
+      "error_code": "duplicate_key"
+    },
+    {
+      "id": "lone-high-surrogate",
+      "payload_json": "\"\\ud800\"",
+      "error_code": "invalid_json"
+    },
+    {
+      "id": "lone-low-surrogate",
+      "payload_json": "\"\\udfff\"",
+      "error_code": "invalid_json"
+    },
+    {
+      "id": "wrong-surrogate-pair",
+      "payload_json": "\"\\ud800\\u0041\"",
+      "error_code": "invalid_json"
+    },
+    {
+      "id": "surrogate-utf8",
+      "payload_hex": "22eda08022",
+      "error_code": "invalid_utf8"
+    },
+    {
+      "id": "overlong-utf8",
+      "payload_hex": "22c08022",
+      "error_code": "invalid_utf8"
+    },
+    {
+      "id": "truncated-utf8",
+      "payload_hex": "22e282",
+      "error_code": "invalid_utf8"
+    },
+    {
+      "id": "leading-zero",
+      "payload_json": "01",
+      "error_code": "invalid_json"
+    },
+    {
+      "id": "plus-integer",
+      "payload_json": "+1",
+      "error_code": "invalid_json"
+    },
+    {
+      "id": "nan",
+      "payload_json": "NaN",
+      "error_code": "invalid_json"
+    },
+    {
+      "id": "infinity",
+      "payload_json": "Infinity",
+      "error_code": "invalid_json"
+    },
+    {
+      "id": "float-overflow",
+      "payload_json": "1e309",
+      "error_code": "nonfinite_number"
+    },
+    {
+      "id": "negative-float-overflow",
+      "payload_json": "-1e309",
+      "error_code": "nonfinite_number"
+    },
+    {
+      "id": "unescaped-newline",
+      "payload_json": "\"a\nb\"",
+      "error_code": "invalid_json"
+    }
+  ]
+}

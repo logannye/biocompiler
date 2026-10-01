@@ -16,3 +16,7 @@ dist/
 !.env.example
 /work/
 /generated/
+/core/_build/
+/core/_opam/
+/studio/node_modules/
+/studio/.build/

@@ -1,0 +1,18 @@
+{
+  "schema_version": "biocompiler.studio_assets.v0.1",
+  "typescript": "6.0.3",
+  "inputs": {
+    "package-lock.json": "8319f13a2d16043f3db257632df1f1d7b820fb82d523ac2ed9fcad361dcd92fb",
+    "package.json": "c2b4618d166b9f829b48a92eb22db17c3cbb9aa44249e2fa2c64c0b5dd67aa84",
+    "src/app.ts": "03f677fb762578aad28c99894cb32671dd3520e6171ac11ce23e3adaba78caff",
+    "src/construction.ts": "5b0912376abfaa0e8085127b5abe07e2a439a687f4acc050530deda39c446103",
+    "src/transport.ts": "45f6ad38c0b19d30aa8849d1b1f3839aa84c8d1aefad69acb3197c682d014241",
+    "tools/build.mjs": "fb16c878e51fb0d71791b210b9ad416b0de0c22ff13c93f8db2022a2e0145b58",
+    "tsconfig.json": "be68535cbd2d66451009ac6a4ad16bef53bac84116439bf0bc0d82125d6cf25d"
+  },
+  "assets": {
+    "app.js": "d8a680b46baa27b4dab399734335cf1afcaea89df4c19bfd853bc6f79613bbc3",
+    "construction.js": "115a2a00d4df4438d384fd36e77eb4bbd956d5d989ff333c288e6d1bb54f44c1",
+    "transport.js": "b31223b9f5370b5dbaf0bf290e67516aaa3a4042341f44d33fd4ad0f9b8e179c"
+  }
+}

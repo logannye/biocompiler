@@ -1,0 +1,299 @@
+#!/usr/bin/env python3
+"""Check the reviewed OCaml link graph and fail closed on dependency expansion.
+
+This static gate does not build OCaml or prove semantic independence. It records
+actual Dune edges, their transitive closure, and source identities; a native build
+and the independent conformance/mutation suite remain required hosted gates.
+"""
+
+from __future__ import annotations
+
+import argparse
+import hashlib
+import json
+from pathlib import Path
+import re
+import sys
+
+
+ROOT = Path(__file__).resolve().parents[1]
+EXTERNAL_LIBRARIES = frozenset({"digestif", "zarith"})
+# New libraries/dependencies require deliberate policy review, even when harmless.
+LIBRARIES = {
+    "bioc_wire": ("lib/wire/dune", {"digestif", "zarith"}, "trusted_primitive"),
+    "bioc_domain": ("lib/domain/dune", {"bioc_wire", "zarith"}, "trusted_domain"),
+    "bioc_checker": ("lib/checker/dune", {"bioc_wire", "bioc_domain"}, "checker"),
+    "bioc_service": ("lib/service/dune", {"bioc_wire", "bioc_domain", "bioc_checker"}, "checker_service"),
+}
+EXECUTABLES = {
+    "biocompiler-core": ("bin/core/dune", {"bioc_wire", "bioc_service"}, "core_entrypoint"),
+    "biocompiler-verify": ("bin/verify/dune", {"bioc_wire", "bioc_service"}, "verifier"),
+}
+TESTS = {
+    "test_wire": {"bioc_wire", "zarith"},
+    "test_intent": {"bioc_wire", "bioc_domain", "bioc_checker"},
+    "test_protocol": {"bioc_wire", "bioc_service"},
+}
+PRODUCER_ROLES = frozenset({"compiler", "matcher", "selection", "emitter", "assembler", "producer"})
+TOKEN = re.compile(r'\s+|;[^\n]*(?:\n|$)|\(|\)|"(?:\\.|[^"\\])*"|[^\s();"]+')
+IDENTIFIER = re.compile(r"[A-Za-z_][A-Za-z0-9_']*|\.")
+
+
+class BoundaryError(ValueError):
+    """The current source graph exceeds the reviewed boundary policy."""
+
+
+def sexps(text):
+    """Parse Dune's ordinary atoms/lists; dynamic forms are rejected downstream."""
+    tokens, offset = [], 0
+    while offset < len(text):
+        match = TOKEN.match(text, offset)
+        if match is None:
+            raise BoundaryError(f"Unsupported Dune syntax at offset {offset}")
+        token = match.group()
+        offset = match.end()
+        if token.isspace() or token.startswith(";"):
+            continue
+        if token.startswith('"'):
+            try:
+                token = json.loads(token)
+            except json.JSONDecodeError as exc:
+                raise BoundaryError("Unsupported Dune quoted atom") from exc
+        tokens.append(token)
+    root, stack = [], []
+    current = root
+    for token in tokens:
+        if token == "(":
+            child = []
+            current.append(child)
+            stack.append(current)
+            current = child
+        elif token == ")":
+            if not stack:
+                raise BoundaryError("Unmatched Dune closing parenthesis")
+            current = stack.pop()
+        else:
+            current.append(token)
+    if stack:
+        raise BoundaryError("Unclosed Dune list")
+    if any(not isinstance(item, list) or not item for item in root):
+        raise BoundaryError("Dune requires nonempty top-level stanzas")
+    return root
+
+
+def fields(stanza, allowed):
+    result = {}
+    for field in stanza[1:]:
+        if not isinstance(field, list) or not field or not isinstance(field[0], str):
+            raise BoundaryError("Malformed Dune field")
+        key = field[0]
+        if key not in allowed or key in result:
+            raise BoundaryError(f"Unreviewed or duplicate Dune field: {key}")
+        if any(not isinstance(value, str) or "%{" in value for value in field[1:]):
+            raise BoundaryError(f"Dynamic Dune field requires review: {key}")
+        result[key] = field[1:]
+    return result
+
+
+def one(values, key):
+    value = values.get(key, [])
+    if len(value) != 1:
+        raise BoundaryError(f"Expected exactly one Dune {key}")
+    return value[0]
+
+
+def validate_graph(graph, roles, external=EXTERNAL_LIBRARIES):
+    """Enforce semantic roles on transitive dependencies, not name substrings."""
+    if set(graph) != set(roles):
+        raise BoundaryError("Every graph node needs exactly one reviewed role")
+    closure, visiting = {}, set()
+
+    def visit(name):
+        if name in closure:
+            return closure[name]
+        if name in visiting:
+            raise BoundaryError(f"Cyclic Dune dependency at {name}")
+        visiting.add(name)
+        found = set()
+        for dependency in graph[name]:
+            found.add(dependency)
+            if dependency in graph:
+                found.update(visit(dependency))
+            elif dependency not in external:
+                raise BoundaryError(f"Unreviewed external or missing local dependency: {dependency}")
+        visiting.remove(name)
+        closure[name] = found
+        return found
+
+    for name in sorted(graph):
+        dependencies = visit(name)
+        dependency_roles = {roles[dependency] for dependency in dependencies if dependency in roles}
+        role = roles[name]
+        if role in {"checker", "checker_service", "verifier"} and dependency_roles & PRODUCER_ROLES:
+            raise BoundaryError(f"{name} transitively depends on a producer: {sorted(dependencies)}")
+        if role == "candidate_runtime" and "source_semantics" in dependency_roles:
+            raise BoundaryError(f"{name} depends on source reference execution")
+        if role == "source_semantics" and "candidate_runtime" in dependency_roles:
+            raise BoundaryError(f"{name} depends on reconstructed candidate execution")
+    return {name: sorted(dependencies) for name, dependencies in sorted(closure.items())}
+
+
+def ocaml_tokens(text):
+    """Ignore strings and nested comments before checking escape/module tokens."""
+    result, index = [], 0
+    while index < len(text):
+        if text.startswith("(*", index):
+            depth, index = 1, index + 2
+            while index < len(text) and depth:
+                if text.startswith("(*", index):
+                    depth, index = depth + 1, index + 2
+                elif text.startswith("*)", index):
+                    depth, index = depth - 1, index + 2
+                else:
+                    index += 1
+            if depth:
+                raise BoundaryError("Unclosed OCaml comment")
+        elif text[index] == '"':
+            index += 1
+            while index < len(text) and text[index] != '"':
+                index += 2 if text[index] == "\\" else 1
+            if index >= len(text):
+                raise BoundaryError("Unclosed OCaml string")
+            index += 1
+        elif text[index] == "{" and re.match(r"\{[a-z_]*\|", text[index:]):
+            opening = re.match(r"\{([a-z_]*)\|", text[index:])
+            closing = "|" + opening.group(1) + "}"
+            end = text.find(closing, index + len(opening.group()))
+            if end < 0:
+                raise BoundaryError("Unclosed OCaml quoted string")
+            index = end + len(closing)
+        elif text[index] == "'" and re.match(r"'(?:\\(?:[0-9]{3}|x[0-9a-fA-F]{2}|.|)|[^'\\])'", text[index:]):
+            # Character literals are not identifiers; type variables remain tokens.
+            char = re.match(r"'(?:\\(?:[0-9]{3}|x[0-9a-fA-F]{2}|.|)|[^'\\])'", text[index:])
+            index += len(char.group())
+        else:
+            match = IDENTIFIER.match(text, index)
+            if match:
+                result.append(match.group())
+                index = match.end()
+            else:
+                index += 1
+    return result
+
+
+def source_boundary(path, allowed_libraries):
+    tokens = ocaml_tokens(path.read_text(encoding="utf-8"))
+    referenced = set()
+    for index, token in enumerate(tokens):
+        if token == "external" or token in {"Unix", "Dynlink", "Obj", "Marshal"}:
+            raise BoundaryError(f"Unreviewed native/process/dynamic-code escape {token} in {path.name}")
+        if token == "Sys" and tokens[index:index + 3] != ["Sys", ".", "argv"]:
+            raise BoundaryError(f"Unreviewed Sys access in {path.name}; only argv is allowed")
+        if token.startswith("Bioc_"):
+            library = token[:1].lower() + token[1:]
+            if library not in allowed_libraries:
+                raise BoundaryError(f"Undeclared local module dependency {token} in {path.name}")
+            referenced.add(library)
+    return sorted(referenced)
+
+
+def check_boundaries(root: Path):
+    root = root.resolve()
+    core = root / "core"
+    project_path = core / "dune-project"
+    project = sexps(project_path.read_text(encoding="utf-8"))
+    implicit = [stanza for stanza in project if stanza[0] == "implicit_transitive_deps"]
+    if implicit != [["implicit_transitive_deps", "false"]]:
+        raise BoundaryError("Dune must explicitly disable implicit_transitive_deps")
+    allowed_project = {"lang", "name", "generate_opam_files", "implicit_transitive_deps", "package"}
+    if any(stanza[0] not in allowed_project for stanza in project):
+        raise BoundaryError("Unreviewed Dune project extension")
+    graph, roles, locations, tests = {}, {}, {}, {}
+    source_files = {"core/dune-project": hashlib.sha256(project_path.read_bytes()).hexdigest()}
+    dune_paths = sorted(path for path in core.rglob("dune") if "_build" not in path.relative_to(core).parts)
+    for path in dune_paths:
+        relative = path.relative_to(core).as_posix()
+        source_files[path.relative_to(root).as_posix()] = hashlib.sha256(path.read_bytes()).hexdigest()
+        for stanza in sexps(path.read_text(encoding="utf-8")):
+            kind = stanza[0]
+            if kind == "env":
+                if relative != "dune" or stanza != ["env", ["_", ["flags", [":standard", "-w", "+a-4-40-42-44-45-48-70", "-warn-error", "+a-4-40-42-44-45-48-70"]]]]:
+                    raise BoundaryError("Unreviewed Dune environment flags")
+                continue
+            if kind not in {"library", "executable", "test"}:
+                raise BoundaryError(f"Unreviewed Dune stanza {kind} in {relative}")
+            allowed = {"name", "libraries"} if kind == "library" else {"name", "public_name", "package", "libraries"} if kind == "executable" else {"name", "modules", "libraries"}
+            values = fields(stanza, allowed)
+            dependencies = values.get("libraries", [])
+            if len(dependencies) != len(set(dependencies)):
+                raise BoundaryError(f"Duplicate Dune dependency in {relative}")
+            dependencies = set(dependencies)
+            name = one(values, "name")
+            if kind == "library":
+                if name not in LIBRARIES:
+                    raise BoundaryError(f"Unreviewed Dune library: {name}")
+                expected_path, expected_dependencies, role = LIBRARIES[name]
+                key = name
+            elif kind == "executable":
+                public_name = one(values, "public_name")
+                if public_name not in EXECUTABLES or name != "main" or one(values, "package") != "biocompiler_core":
+                    raise BoundaryError(f"Unreviewed Dune executable: {public_name}")
+                expected_path, expected_dependencies, role = EXECUTABLES[public_name]
+                key = "executable:" + public_name
+            else:
+                if relative != "test/dune" or name not in TESTS or values.get("modules") != [name]:
+                    raise BoundaryError(f"Unreviewed native test stanza: {name}")
+                if name in tests or dependencies != TESTS[name]:
+                    raise BoundaryError(f"Duplicate or changed native test dependencies: {name}")
+                tests[name] = sorted(dependencies)
+                continue
+            if relative != expected_path or dependencies != expected_dependencies or key in graph:
+                raise BoundaryError(f"Changed/duplicate Dune boundary for {key}: {relative} -> {sorted(dependencies)}")
+            graph[key], roles[key], locations[path.parent] = sorted(dependencies), role, key
+    expected_nodes = set(LIBRARIES) | {"executable:" + name for name in EXECUTABLES}
+    if set(graph) != expected_nodes or set(tests) != set(TESTS):
+        raise BoundaryError("Missing reviewed libraries, executables or native tests")
+    closure = validate_graph(graph, roles)
+    references = {}
+    for path in sorted(core.rglob("*")):
+        if "_build" in path.relative_to(core).parts or path.suffix not in {".ml", ".mli"}:
+            continue
+        relative = path.relative_to(root).as_posix()
+        source_files[relative] = hashlib.sha256(path.read_bytes()).hexdigest()
+        owner = locations.get(path.parent)
+        if owner:
+            allowed = set(graph[owner]) | ({owner} if owner in LIBRARIES else set())
+        elif path.parent == core / "test" and path.stem in tests:
+            allowed = set(tests[path.stem])
+        else:
+            raise BoundaryError(f"OCaml source has no reviewed Dune owner: {relative}")
+        references[relative] = source_boundary(path, allowed)
+    return {"schema_version": "biocompiler.core_boundaries.v0.1", "status": "pass",
+            "claim_scope": "static_declared_link_graph_and_source_escape_policy_only",
+            "native_build_and_semantic_independence": "separate_hosted_validation_required",
+            "libraries_and_executables": graph, "roles": roles, "transitive_dependencies": closure,
+            "external_trusted_dependencies": sorted(EXTERNAL_LIBRARIES),
+            "shared_trusted_base": ["bioc_wire", "bioc_domain"],
+            "native_tests": tests, "source_module_references": references,
+            "source_sha256": dict(sorted(source_files.items()))}
+
+
+def main(argv=None):
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--root", type=Path, default=ROOT)
+    parser.add_argument("--output", type=Path)
+    args = parser.parse_args(argv)
+    try:
+        receipt = check_boundaries(args.root.resolve())
+        if args.output:
+            args.output.parent.mkdir(parents=True, exist_ok=True)
+            args.output.write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        print("Core dependency boundaries passed: verifier/checker have no producer dependencies; shared TCB recorded")
+        return 0
+    except (BoundaryError, OSError, UnicodeError) as exc:
+        print(f"core dependency boundary: {exc}", file=sys.stderr)
+        return 1
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
