@@ -135,6 +135,7 @@ def _request(document):
 def _json_document(text, label):
     """Keep browser number coercion outside authoritative artifact transport."""
     require(isinstance(text, str), f"{label} must be a JSON string.")
+    require(len(text) <= MAX_JSON_TEXT_BYTES, f"{label} exceeds the Studio JSON size limit.")
     try:
         size = len(text.encode("utf-8"))
     except UnicodeError as exc:

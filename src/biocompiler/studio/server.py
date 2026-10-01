@@ -10,6 +10,7 @@ import webbrowser
 from biocompiler.errors import BiocompilerError
 from biocompiler.ir.serialization import parse_json
 from biocompiler.studio import service
+from biocompiler.studio import construction
 
 MAX_BODY_BYTES = 2 * 1024 * 1024
 _STATIC = {
@@ -17,11 +18,16 @@ _STATIC = {
     "/index.html": ("index.html", "text/html; charset=utf-8"),
     "/app.css": ("app.css", "text/css; charset=utf-8"),
     "/app.js": ("app.js", "text/javascript; charset=utf-8"),
+    "/construction": ("construction.html", "text/html; charset=utf-8"),
+    "/construction.css": ("construction.css", "text/css; charset=utf-8"),
+    "/construction.js": ("construction.js", "text/javascript; charset=utf-8"),
 }
 _POST = {
     "/api/prepare": service.prepare,
     "/api/compile": service.compile_request,
     "/api/export": service.export,
+    "/api/construction/inspect": construction.inspect,
+    "/api/construction/save": construction.save,
 }
 
 

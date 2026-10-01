@@ -4,6 +4,22 @@ Reviewed on 2026-09-30 after resuming the R4 checkpoint. This records outstandin
 acceptance work; it is not a completed milestone or a replacement for the
 [implementation plan](rna-circuit-reproduction-plan.md).
 
+## Separate acceptance tracks
+
+Track software implementation, reviewed reference correspondence and human
+biological applicability independently. The bounded
+[authority infrastructure](circuit-infrastructure-v0.1.md) in `0.1.0.dev25`
+adds R1 strict metadata imports/readiness, R5 nominal role/observation/provider
+bindings, R11 dependency invalidation, R12 retained-artifact inspection and
+lossless save/reopen, and R13 adversarial/independence/hosted gates. These are
+scoped engineering deliverables, not completion of the source-dependent milestones.
+Artificial fixtures test the software contracts only.
+
+R5's nominal binding layer can proceed from R2/R4. Actual family semantics and
+integrated family workflows still require the R6a reviewed case and their own
+evidence. The [first-case readiness record](r6a-reference-readiness.md) lists the
+missing authority without claiming that metadata review resolves it.
+
 ## Existing authority and the next gate
 
 R2 retains precise observations, truth tables, source identities and the complete
@@ -22,8 +38,9 @@ fixtures remain software regression controls.
 R5 may follow R2/R4 in the dependency graph, but its acceptance requires checked
 family semantics and independently derived requirement correspondence. An
 arbitrary rule table labeled as a biological family would not satisfy that gate.
-The plan requires reviewing the interface against a complete real case before
-extending adapters. Additional speculative schemas cannot replace that authority.
+The plan requires reviewing the family interface against a complete real case
+before extending integrated adapters. Bounded generic binding and evidence
+contracts can advance engineering while that acceptance authority remains absent.
 
 ## Dependency audit
 
@@ -51,5 +68,7 @@ boundaries/topology, chemical/end/tail declarations, experiment/material mapping
 actual input/output observations and reuse terms. Do not infer absent fields or
 construct a published expectation with the production assembler.
 
-R5–R13 remain open. No later milestone should be pushed or merged as complete on
-the strength of artificial fixture success or R4's structural PASS.
+R1 and R5–R13 remain open. Scoped infrastructure PRs may be pushed and merged
+after their exact-revision gates pass, with these unresolved acceptance dimensions
+recorded. No full milestone is complete on artificial fixture success or R4's
+structural PASS.

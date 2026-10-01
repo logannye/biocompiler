@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>biocompiler · Construction inspection</title>
+  <link rel="stylesheet" href="/app.css"><link rel="stylesheet" href="/construction.css">
+  <script src="/construction.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#workspace">Skip to inspection</a>
+  <header class="site-header"><a class="brand" href="/">biocompiler<span class="brand-subtitle">/ inspection</span></a><a href="/">Candidate studio</a></header>
+  <main id="workspace">
+    <section class="introduction"><h1>Inspect the record and its authority.</h1><p>Open a saved construction to inspect its members, chemistry, source maps and missing obligations. A stored result is historical until checked against separately retained authority.</p><p>Structural checks establish no biological function, reviewed publication fidelity or human admission.</p></section>
+    <p id="connection" role="status">Connecting to the local workspace…</p>
+    <p id="error" class="error-panel" role="alert" hidden></p>
+    <div class="inspection-grid">
+      <section class="panel input-panel" aria-labelledby="inputs-title">
+        <h2 id="inputs-title">Open a construction</h2>
+        <label for="build-file" class="field-label">Saved build JSON</label><input id="build-file" type="file" accept=".json,application/json" disabled>
+        <label for="build-json" class="field-label">Or paste build JSON</label><textarea id="build-json" rows="8" spellcheck="false" disabled></textarea>
+        <details><summary>Check against independent authority</summary><p>Provide the complete construction request retained separately from the build.</p><label for="authority-file" class="field-label">Authority JSON file</label><input id="authority-file" type="file" accept=".json,application/json" disabled><label for="authority-json" class="field-label">Or paste authority JSON</label><textarea id="authority-json" rows="6" spellcheck="false" disabled></textarea></details>
+        <p class="field-help">Each input is limited to 1 MiB; the encoded operation must fit within 2 MiB. The original JSON is preserved on save.</p>
+        <div class="download-actions"><button id="inspect" class="button primary" disabled>Inspect record</button><button id="save" class="button secondary" disabled>Save original build</button></div>
+        <p id="status" role="status">Choose a saved build to begin.</p>
+      </section>
+      <section class="panel result-panel" id="inspection" aria-labelledby="inspection-title" aria-busy="false">
+        <h2 id="inspection-title">Construction record</h2>
+        <p id="empty">No record inspected yet.</p>
+        <div id="result" hidden>
+          <p id="freshness" class="scope-note"></p>
+          <dl class="provenance"><dt>Build identity</dt><dd id="identity" class="hash"></dd><dt>Stored assessment</dt><dd id="stored-outcome"></dd><dt>Current replay</dt><dd id="current-outcome"></dd></dl>
+          <h3>Final members</h3><div class="table-scroll" tabindex="0" aria-label="Final member table"><table><caption>Declared molecular forms and coordinate frames</caption><thead><tr><th scope="col">Member</th><th scope="col">Form</th><th scope="col">Alphabet</th><th scope="col">Topology</th><th scope="col">Length</th></tr></thead><tbody id="members"></tbody></table></div>
+          <h3>Required roles</h3><div class="table-scroll" tabindex="0" aria-label="Required role table"><table><caption>Member obligations retained from the request</caption><thead><tr><th scope="col">Requirement</th><th scope="col">Category</th><th scope="col">Subject</th><th scope="col">Roles and compartments</th></tr></thead><tbody id="roles"></tbody></table></div>
+          <h3>Missing members and diagnostics</h3><ul id="diagnostics"></ul>
+          <details><summary>Chemistry, features and derivation maps</summary><p>Coordinates are zero-based and exclude the end position. No sequence alignment or biological interpretation is inferred.</p><pre id="maps" tabindex="0" aria-label="Chemistry and coordinate maps"></pre></details>
+          <details><summary>Original human request and remaining claims</summary><pre id="authority-view" tabindex="0" aria-label="Original request and claim boundaries"></pre></details>
+        </div>
+      </section>
+    </div>
+  </main>
+  <noscript><p class="error-panel">Inspection requires JavaScript. The circuit-inspect CLI is also available.</p></noscript>
+</body>
+</html>

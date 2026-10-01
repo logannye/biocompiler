@@ -11,6 +11,16 @@ to a verified molecular reference.
 The [roadmap](roadmap.md) and [architecture](architecture.md) retain the existing
 implementation and therapeutic-evidence boundaries.
 
+**Scoped infrastructure:** `0.1.0.dev25` implements strict R1 metadata/readiness,
+R5 nominal requirement/role/observation/provider bindings, R11 evidence identity
+invalidation, R12 retained-artifact inspection and lossless save/reopen, and R13
+adversarial/independence/hosted gate support. See the
+[infrastructure guide](circuit-infrastructure-v0.1.md). Track software implementation,
+reviewed reference correspondence and human biological applicability separately.
+A scoped PR may advance software without completing its milestone. R6a still
+needs the [first admissible reviewed case](r6a-reference-readiness.md); integrated
+family workflows retain that dependency.
+
 ## Product scope: human in-vivo immune-cell deployment only
 
 The user's scope clarification is authoritative: **Biocompiler's only product

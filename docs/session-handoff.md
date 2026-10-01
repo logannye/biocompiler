@@ -1,6 +1,27 @@
 # Session handoff and current resumption point
 
-## Current continuation — R4 supplied construction
+## Current continuation — circuit authority infrastructure
+
+R4 is merged as [PR31](https://github.com/logannye/biocompiler/pull/31), merge
+`2815497a06740731db03d0010b7429f85318909e`. Final head
+`4ee87f0dc58a1e696eb2dadff91546db66923a26` and tested PR merge
+`e40d79642b9ff2233222f6688ee6a258f6149159` have the same tree as the merge.
+The [final PR CI](https://github.com/logannye/biocompiler/actions/runs/36794298289)
+and [merged-main CI](https://github.com/logannye/biocompiler/actions/runs/36795594271)
+passed all 1,528 tests and package/browser gates on Linux x86_64, Python
+3.11.16/3.14.7. External receipts are retained in the parent workspace.
+
+The user subsequently authorized independent infrastructure work and explicitly
+required separate implementation, reviewed-reference and human-applicability
+gates. Branch `codex/circuit-authority-infrastructure`, version `0.1.0.dev25`,
+implements the [bounded support increment](circuit-infrastructure-v0.1.md) for
+R1/R5/R11/R12/R13. Its exact-revision hosted gates must pass before merge.
+The [first-case readiness record](r6a-reference-readiness.md) records why R6a is
+still open; no complete reviewed source case was supplied or reconstructed.
+R1 PR28 remains an incomplete unmerged draft even though its metadata software
+is selectively integrated here. Integrated family workflows retain R6a.
+
+## Historical continuation — R4 supplied construction
 
 The user resumed the saved R4 checkpoint on 2026-09-30 and authorized milestone
 push/merge only after exact-revision hosted gates. R2 PR29 and R3 PR30 remain
