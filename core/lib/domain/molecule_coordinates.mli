@@ -44,7 +44,7 @@ module Path : sig
   val strand : t -> strand
   val length : t -> int
   val validate_for : t -> Space.t -> unit
-  (** [positions] bounds work before enumerating indices. Reverse traversal
+  (* [positions] bounds work before enumerating indices. Reverse traversal
       reverses each span while retaining the supplied span order. *)
   val positions : ?limit:int -> t -> Space.t -> int list
 end
