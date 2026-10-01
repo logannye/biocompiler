@@ -1,17 +1,25 @@
 name: Python checks
 
 on:
-  push:
   pull_request:
+  push:
+    branches: [main]
   workflow_dispatch:
+
+# Only newer revisions of the same PR replace prior work. Main pushes and
+# manual runs keep unique groups, so neither can cancel another needed run.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.pull_request.number) || format('run-{0}', github.run_id) }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 permissions:
   contents: read
 
 jobs:
-  package-smoke:
+  unit-plan:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         python-version: ["3.11", "3.14"]
     steps:
@@ -21,12 +29,113 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Record tested revision and platform
         run: python -c "import os, platform; print('Revision:', os.environ['GITHUB_SHA']); print('Platform:', platform.platform()); print('Python:', platform.python_version())"
-      - name: Check human benchmark audit integrity and claim boundaries
-        run: python tools/check_human_benchmark_audit.py
       - name: Install package
         run: python -m pip install .
-      - name: Reconstruct reviewed partial material evidence
-        run: python tools/check_material_reconciliation.py
+      - name: Discover every test and balance five whole-class shards
+        run: python tools/test_shards.py plan --start-directory tests --shards 5 --output generated/unit-plan/plan.json
+      - name: Retain exact test plan
+        uses: actions/upload-artifact@v4
+        with:
+          name: unit-plan-py${{ matrix.python-version }}
+          path: generated/unit-plan/plan.json
+          if-no-files-found: error
+          overwrite: true
+          retention-days: 7
+
+  unit-tests:
+    needs: unit-plan
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      max-parallel: 10
+      matrix:
+        python-version: ["3.11", "3.14"]
+        shard: [0, 1, 2, 3, 4]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Record tested revision and platform
+        run: python -c "import os, platform; print('Revision:', os.environ['GITHUB_SHA']); print('Platform:', platform.platform()); print('Python:', platform.python_version())"
+      - name: Install package
+        run: python -m pip install .
+      - uses: actions/download-artifact@v4
+        with:
+          name: unit-plan-py${{ matrix.python-version }}
+          path: generated/unit-plan
+      - name: Rediscover and execute assigned tests with timing and accounting
+        run: python tools/test_shards.py run --plan generated/unit-plan/plan.json --shard ${{ matrix.shard }} --output generated/unit-result/shard-${{ matrix.shard }}.json
+      - name: Retain test outcomes even on failure
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: unit-result-py${{ matrix.python-version }}-shard-${{ matrix.shard }}
+          path: generated/unit-result/shard-${{ matrix.shard }}.json
+          if-no-files-found: error
+          overwrite: true
+          retention-days: 7
+
+  unit-accounting:
+    if: always()
+    needs: [unit-plan, unit-tests]
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.14"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Record tested revision and platform
+        run: python -c "import os, platform; print('Revision:', os.environ['GITHUB_SHA']); print('Platform:', platform.platform()); print('Python:', platform.python_version())"
+      - name: Install package
+        run: python -m pip install .
+      - uses: actions/download-artifact@v4
+        with:
+          name: unit-plan-py${{ matrix.python-version }}
+          path: generated/unit-plan
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: unit-result-py${{ matrix.python-version }}-shard-*
+          path: generated/unit-results
+          merge-multiple: true
+      - name: Require every discovered test exactly once and all shards successful
+        if: always()
+        run: |
+          python tools/test_shards.py verify --plan generated/unit-plan/plan.json \
+            --result generated/unit-results/shard-0.json --result generated/unit-results/shard-1.json \
+            --result generated/unit-results/shard-2.json --result generated/unit-results/shard-3.json \
+            --result generated/unit-results/shard-4.json --output generated/unit-accounting/accounting-py${{ matrix.python-version }}.json
+      - name: Retain coverage accounting and measured shard runtimes
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: unit-accounting-py${{ matrix.python-version }}
+          path: generated/unit-accounting/accounting-py${{ matrix.python-version }}.json
+          if-no-files-found: error
+          overwrite: true
+          retention-days: 7
+
+  installed-executable:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.14"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Record tested revision and platform
+        run: python -c "import os, platform; print('Revision:', os.environ['GITHUB_SHA']); print('Platform:', platform.platform()); print('Python:', platform.python_version())"
+      - name: Record job authority and start time
+        run: python tools/ci_validation.py start --job installed-executable --variant ${{ matrix.python-version }} --output generated/ci/start.json
+      - name: Install package
+        run: python -m pip install .
       - name: Compile and independently replay executable RNA payloads outside the checkout
         working-directory: ${{ runner.temp }}
         env:
@@ -42,10 +151,40 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
+          overwrite: true
           name: executable-rna-payload-py${{ matrix.python-version }}
           path: generated/executable-rna-payload-ci/
           if-no-files-found: error
           retention-days: 7
+      - name: Record successful validation and runtime
+        run: python tools/ci_validation.py finish --start generated/ci/start.json --output generated/ci/installed-executable-${{ matrix.python-version }}.json
+      - name: Retain required job receipt
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ci-job-installed-executable-${{ matrix.python-version }}
+          path: generated/ci/installed-executable-${{ matrix.python-version }}.json
+          if-no-files-found: error
+          overwrite: true
+          retention-days: 7
+
+  installed-architecture:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.14"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Record tested revision and platform
+        run: python -c "import os, platform; print('Revision:', os.environ['GITHUB_SHA']); print('Platform:', platform.platform()); print('Python:', platform.python_version())"
+      - name: Record job authority and start time
+        run: python tools/ci_validation.py start --job installed-architecture --variant ${{ matrix.python-version }} --output generated/ci/start.json
+      - name: Install package
+        run: python -m pip install .
       - name: Compile and independently replay RNA architectures, automatic matches and controls outside the checkout
         working-directory: ${{ runner.temp }}
         env:
@@ -55,14 +194,40 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
+          overwrite: true
           name: payload-architecture-py${{ matrix.python-version }}
           path: generated/payload-architecture-ci/
           if-no-files-found: error
           retention-days: 7
-      - name: Test authoring, behavior, and realization contracts
-        run: python -m unittest discover -s tests -v
-      - name: Run authoring examples
-        run: python examples/intent_programs.py
+      - name: Record successful validation and runtime
+        run: python tools/ci_validation.py finish --start generated/ci/start.json --output generated/ci/installed-architecture-${{ matrix.python-version }}.json
+      - name: Retain required job receipt
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ci-job-installed-architecture-${{ matrix.python-version }}
+          path: generated/ci/installed-architecture-${{ matrix.python-version }}.json
+          if-no-files-found: error
+          overwrite: true
+          retention-days: 7
+
+  circuit-integration:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.14"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Record tested revision and platform
+        run: python -c "import os, platform; print('Revision:', os.environ['GITHUB_SHA']); print('Platform:', platform.platform()); print('Python:', platform.python_version())"
+      - name: Record job authority and start time
+        run: python tools/ci_validation.py start --job circuit-integration --variant ${{ matrix.python-version }} --output generated/ci/start.json
+      - name: Install package
+        run: python -m pip install .
       - name: Check source metadata and circuit infrastructure outside the checkout
         working-directory: ${{ runner.temp }}
         env:
@@ -92,6 +257,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
+          overwrite: true
           name: circuit-infrastructure-evidence-py${{ matrix.python-version }}
           path: |
             generated/circuit-infrastructure-ci/
@@ -118,6 +284,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
+          overwrite: true
           name: circuit-construction-evidence-py${{ matrix.python-version }}
           path: generated/circuit-construction-ci/
           if-no-files-found: ignore
@@ -131,6 +298,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
+          overwrite: true
           name: circuit-molecule-declarations-py${{ matrix.python-version }}
           path: generated/circuit-molecules-ci/
       - name: Check circuit intent authoring and independent replay
@@ -144,6 +312,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
+          overwrite: true
           name: circuit-intent-evidence-py${{ matrix.python-version }}
           path: generated/circuit-intent-ci/
       - name: Check human circuit profile scope and independent authority
@@ -157,10 +326,46 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
+          overwrite: true
           name: circuit-profile-evidence-py${{ matrix.python-version }}
           path: generated/circuit-profile-ci/
           if-no-files-found: ignore
           retention-days: 7
+      - name: Record successful validation and runtime
+        run: python tools/ci_validation.py finish --start generated/ci/start.json --output generated/ci/circuit-integration-${{ matrix.python-version }}.json
+      - name: Retain required job receipt
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ci-job-circuit-integration-${{ matrix.python-version }}
+          path: generated/ci/circuit-integration-${{ matrix.python-version }}.json
+          if-no-files-found: error
+          overwrite: true
+          retention-days: 7
+
+  integration-examples:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.14"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Record tested revision and platform
+        run: python -c "import os, platform; print('Revision:', os.environ['GITHUB_SHA']); print('Platform:', platform.platform()); print('Python:', platform.python_version())"
+      - name: Record job authority and start time
+        run: python tools/ci_validation.py start --job integration-examples --variant ${{ matrix.python-version }} --output generated/ci/start.json
+      - name: Install package
+        run: python -m pip install .
+      - name: Check human benchmark audit integrity and claim boundaries
+        run: python tools/check_human_benchmark_audit.py
+      - name: Reconstruct reviewed partial material evidence
+        run: python tools/check_material_reconciliation.py
+      - name: Run authoring examples
+        run: python examples/intent_programs.py
       - name: Compile and independently verify intent-directed molecular candidates
         run: |
           python examples/intent_candidate.py --output generated/intent-candidate-ci
@@ -170,6 +375,7 @@ jobs:
       - name: Retain intent-directed molecular candidate evidence
         uses: actions/upload-artifact@v4
         with:
+          overwrite: true
           name: intent-candidate-evidence-py${{ matrix.python-version }}
           path: generated/intent-candidate-ci
       - name: Run behavior trace example
@@ -188,6 +394,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
+          overwrite: true
           name: molecular-implementation-evidence-py${{ matrix.python-version }}
           path: generated/molecular-implementation-ci/
           if-no-files-found: ignore
@@ -208,6 +415,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
+          overwrite: true
           name: synthetic-workflow-python-${{ matrix.python-version }}
           path: generated/synthetic-ci/
           if-no-files-found: ignore
@@ -234,6 +442,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
+          overwrite: true
           name: synthetic-design-python-${{ matrix.python-version }}
           path: |
             generated/synthetic-design-ci/
@@ -254,6 +463,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
+          overwrite: true
           name: molecular-design-python-${{ matrix.python-version }}
           path: generated/molecular-design-ci/
           if-no-files-found: ignore
@@ -279,6 +489,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
+          overwrite: true
           name: verification-evidence-python-${{ matrix.python-version }}
           path: generated/verification-ci/
           if-no-files-found: ignore
@@ -295,6 +506,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
+          overwrite: true
           name: molecular-readiness-python-${{ matrix.python-version }}
           path: generated/m9-ci/
           if-no-files-found: ignore
@@ -303,6 +515,7 @@ jobs:
         if: failure()
         uses: actions/upload-artifact@v4
         with:
+          overwrite: true
           name: reference-build-failure-python-${{ matrix.python-version }}
           path: generated/reference-ci/
           if-no-files-found: ignore
@@ -326,6 +539,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
+          overwrite: true
           name: human-behavior-evidence-python-${{ matrix.python-version }}
           path: generated/human-behavior-ci/
           if-no-files-found: ignore
@@ -341,6 +555,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
+          overwrite: true
           name: deployment-evidence-python-${{ matrix.python-version }}
           path: generated/deployment-ci/
           if-no-files-found: ignore
@@ -357,6 +572,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
+          overwrite: true
           name: human-acceptance-evidence-python-${{ matrix.python-version }}
           path: generated/acceptance-ci/
           if-no-files-found: ignore
@@ -372,6 +588,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
+          overwrite: true
           name: human-admission-evidence-python-${{ matrix.python-version }}
           path: generated/admission-ci/
           if-no-files-found: ignore
@@ -389,6 +606,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
+          overwrite: true
           name: human-profile-cases-python-${{ matrix.python-version }}
           path: generated/profile-cases-ci/
           if-no-files-found: ignore
@@ -396,11 +614,25 @@ jobs:
       - name: Import scaffold interfaces
         run: |
           python -c "from biocompiler.compiler.passes import CompilerPass, PassResult; from biocompiler.semantics.context import TargetContext; from biocompiler.verification.evidence import Obligation"
+      - name: Record successful validation and runtime
+        run: python tools/ci_validation.py finish --start generated/ci/start.json --output generated/ci/integration-examples-${{ matrix.python-version }}.json
+      - name: Retain required job receipt
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ci-job-integration-examples-${{ matrix.python-version }}
+          path: generated/ci/integration-examples-${{ matrix.python-version }}.json
+          if-no-files-found: error
+          overwrite: true
+          retention-days: 7
 
   executable-rna-reproducibility:
-    needs: package-smoke
+    needs: installed-executable
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
+      - name: Record job authority and start time
+        run: python tools/ci_validation.py start --job executable-rna-reproducibility --variant cross-python --output generated/ci/start.json
       - uses: actions/download-artifact@v4
         with:
           name: executable-rna-payload-py3.11
@@ -422,11 +654,25 @@ jobs:
           for name, digest in sorted(manifests[0].items()):
               print(digest, name)
           PY
+      - name: Record successful validation and runtime
+        run: python tools/ci_validation.py finish --start generated/ci/start.json --output generated/ci/executable-rna-reproducibility-cross-python.json
+      - name: Retain required job receipt
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ci-job-executable-rna-reproducibility-cross-python
+          path: generated/ci/executable-rna-reproducibility-cross-python.json
+          if-no-files-found: error
+          overwrite: true
+          retention-days: 7
 
   payload-architecture-reproducibility:
-    needs: package-smoke
+    needs: installed-architecture
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
+      - name: Record job authority and start time
+        run: python tools/ci_validation.py start --job payload-architecture-reproducibility --variant cross-python --output generated/ci/start.json
       - uses: actions/download-artifact@v4
         with:
           name: payload-architecture-py3.11
@@ -454,11 +700,25 @@ jobs:
               print(digest, name)
           print('Identical artifacts:', len(manifests[0]))
           PY
+      - name: Record successful validation and runtime
+        run: python tools/ci_validation.py finish --start generated/ci/start.json --output generated/ci/payload-architecture-reproducibility-cross-python.json
+      - name: Retain required job receipt
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ci-job-payload-architecture-reproducibility-cross-python
+          path: generated/ci/payload-architecture-reproducibility-cross-python.json
+          if-no-files-found: error
+          overwrite: true
+          retention-days: 7
 
   circuit-reproducibility:
-    needs: package-smoke
+    needs: circuit-integration
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
+      - name: Record job authority and start time
+        run: python tools/ci_validation.py start --job circuit-reproducibility --variant cross-python --output generated/ci/start.json
       - uses: actions/download-artifact@v4
         with:
           name: circuit-infrastructure-evidence-py3.11
@@ -481,6 +741,17 @@ jobs:
               print(digest, name)
           print('Identical artifacts:', len(manifests[0]))
           PY
+      - name: Record successful validation and runtime
+        run: python tools/ci_validation.py finish --start generated/ci/start.json --output generated/ci/circuit-reproducibility-cross-python.json
+      - name: Retain required job receipt
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ci-job-circuit-reproducibility-cross-python
+          path: generated/ci/circuit-reproducibility-cross-python.json
+          if-no-files-found: error
+          overwrite: true
+          retention-days: 7
 
   studio-browser:
     runs-on: ubuntu-latest
@@ -496,6 +767,8 @@ jobs:
         run: |
           python -c "import os, platform; print('Revision:', os.environ['GITHUB_SHA']); print('Platform:', platform.platform()); print('Python:', platform.python_version())"
           node --version
+      - name: Record job authority and start time
+        run: python tools/ci_validation.py start --job studio-browser --variant 3.11 --output generated/ci/start.json
       - name: Install package and browser test tools
         run: |
           python -m pip install .
@@ -530,7 +803,65 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
+          overwrite: true
           name: studio-browser-evidence
           path: generated/studio-browser-ci/
           if-no-files-found: ignore
+          retention-days: 7
+      - name: Record successful validation and runtime
+        run: python tools/ci_validation.py finish --start generated/ci/start.json --output generated/ci/studio-browser-3.11.json
+      - name: Retain required job receipt
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ci-job-studio-browser-3.11
+          path: generated/ci/studio-browser-3.11.json
+          if-no-files-found: error
+          overwrite: true
+          retention-days: 7
+
+  validation:
+    name: Validation complete
+    if: always()
+    needs:
+      - unit-plan
+      - unit-tests
+      - unit-accounting
+      - installed-executable
+      - installed-architecture
+      - circuit-integration
+      - integration-examples
+      - studio-browser
+      - executable-rna-reproducibility
+      - payload-architecture-reproducibility
+      - circuit-reproducibility
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: ci-job-*
+          path: generated/ci-job-receipts
+          merge-multiple: true
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: unit-accounting-py*
+          path: generated/ci-test-accounting
+          merge-multiple: true
+      - name: Reject missing, skipped, cancelled, failed or stale required work
+        if: always()
+        env:
+          CI_NEEDS: ${{ toJSON(needs) }}
+        run: python tools/ci_validation.py gate --receipts generated/ci-job-receipts --accounting generated/ci-test-accounting --output generated/validation/receipt.json
+      - name: Retain final revision, job, test coverage and timing receipt
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: validation-receipt
+          path: generated/validation/receipt.json
+          if-no-files-found: error
+          overwrite: true
           retention-days: 7
