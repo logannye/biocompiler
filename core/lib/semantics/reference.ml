@@ -58,7 +58,7 @@ type session = {
   budget : budget;
   mutable work : int;
   mutable trace_items : int;
-  mutable states : (string, B.state_value) Hashtbl.t;
+  states : (string, B.state_value) Hashtbl.t;
   mutable memories : (string, bool) Hashtbl.t;
   mutable memory_working : (string, bool) Hashtbl.t option;
   previous : (timer_key, bool) Hashtbl.t;
