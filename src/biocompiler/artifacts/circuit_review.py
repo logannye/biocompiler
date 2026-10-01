@@ -24,7 +24,7 @@ from biocompiler.ir.molecule_records import _MoleculeRecord, _decode_records, _t
 from biocompiler.ir.serialization import parse_json, require
 
 REVIEW_POLICY_VERSION = "biocompiler.circuit_review_policy.v0.1"
-REVIEW_PACKAGE_VERSION = "0.1.0.dev28"
+REVIEW_PACKAGE_VERSION = "0.1.0.dev29"
 MAX_AUTHORITY_BYTES = 24 * 1024 * 1024
 FILE_ROLES = MappingProxyType(
     {
