@@ -22,6 +22,7 @@ EXTERNAL_LIBRARIES = frozenset({"digestif", "zarith"})
 LIBRARIES = {
     "bioc_wire": ("lib/wire/dune", {"digestif", "zarith"}, "trusted_primitive"),
     "bioc_domain": ("lib/domain/dune", {"bioc_wire", "zarith"}, "trusted_domain"),
+    "bioc_semantics": ("lib/semantics/dune", {"bioc_wire", "bioc_domain", "zarith"}, "source_semantics"),
     "bioc_checker": ("lib/checker/dune", {"bioc_wire", "bioc_domain"}, "checker"),
     "bioc_service": ("lib/service/dune", {"bioc_wire", "bioc_domain", "bioc_checker"}, "checker_service"),
 }
@@ -39,6 +40,9 @@ TESTS = {
     "test_molecule_coordinates": {"bioc_wire", "bioc_domain", "zarith"},
     "test_circuit_request": {"bioc_wire", "bioc_domain", "zarith"},
     "test_lowering_check": {"bioc_wire", "bioc_domain", "bioc_checker", "zarith"},
+    "test_runtime_number": {"bioc_wire", "bioc_domain", "zarith"},
+    "test_execution_data": {"bioc_wire", "bioc_domain", "zarith"},
+    "test_reference": {"bioc_wire", "bioc_domain", "bioc_semantics", "zarith"},
 }
 PRODUCER_ROLES = frozenset({"compiler", "matcher", "selection", "emitter", "assembler", "producer"})
 TOKEN = re.compile(r'\s+|;[^\n]*(?:\n|$)|\(|\)|"(?:\\.|[^"\\])*"|[^\s();"]+')

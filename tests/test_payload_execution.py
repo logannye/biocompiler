@@ -73,7 +73,7 @@ class StatefulExecutionTests(unittest.TestCase):
     def test_prime_act_recover_timeout_reset_and_shutdown_precedence(self):
         therapy, cells = model()
         phase = cells.state("phase", values=("idle", "primed", "active", "recover", "off"), initial="idle")
-        prime, act, reset, stop = [cells.environment.signal(name) for name in ("prime", "act", "reset", "stop")]
+        prime, act, reset, stop = (cells.environment.signal("prime"), cells.environment.signal("act"), cells.environment.signal("reset"), cells.environment.signal("stop"))
         permitted = ~stop.present() & ~reset.present()
         cells.when(stop.present()).do(phase.set("off"))
         cells.when(~stop.present() & reset.present()).do(phase.set("idle"))

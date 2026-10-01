@@ -2,7 +2,9 @@
 
 This is the first native migration increment. It implements bounded strict JSON,
 legacy Python-compatible canonical fingerprints and structural intent/type/literal
-validation, plus independent frozen source-to-Behavior correspondence. It does not yet implement compilation, behavioral execution,
+validation, plus independent frozen source-to-Behavior correspondence. A separate
+internal library implements per-role reference execution for conformance. The
+public protocol does not yet implement compilation, behavioral execution,
 molecular verification, export acceptance or human-use admission. Capabilities
 are explicit; unimplemented operations return `unsupported` without fallback.
 
@@ -80,6 +82,22 @@ The internal domain and checker modules prepare the stateful architecture checke
   frozen BuildRequest, accounting for every operation, binding, requirement and
   source correspondence. Its abstract report binds full and semantic identities
   and carries all remaining execution, realization and acceptance obligations.
+- `Execution_data` provides abstract finite samples, input frames, actions,
+  events and complete traces. Its strict internal codec rejects missing/unknown
+  fields, duplicate mappings and excessive serialized inventories. This is a
+  narrower native import boundary than the permissive Python trace dataclasses.
+- `Runtime_number` preserves integer/float distinctions, exact mixed comparison,
+  integer true division, signed zero and correctly rounded accurate summation.
+  Like the existing evaluator, arithmetic must retain a finite binary64
+  conversion; a positive timer duration must advance representable time.
+- `bioc_semantics.Reference` evaluates both closed Behavior profiles in fresh
+  sessions, with eager temporal evaluation, atomic state updates, causal memory
+  settlement, contact identity, exact event/pulse boundaries and sampled
+  integration. Cumulative work, frame, transient action/event and serialized
+  output limits reject excess without a partial successful result. This library
+  has no producer or candidate-runtime dependency and is not exposed by the
+  service or standalone verifier. Declared channels remain supplied per-role
+  observation/action endpoints; coupled transport is a later architecture layer.
 
 Request/coordinate declarations are internal library APIs. The explicitly scoped
 `verify-lowering` operation exposes source-to-Behavior checking through both
@@ -98,8 +116,18 @@ core/_build/default/test/test_behavior.exe "$GITHUB_WORKSPACE/tests/conformance/
 core/_build/default/test/test_molecule_coordinates.exe "$GITHUB_WORKSPACE/tests/conformance/molecule-coordinates-v1.json"
 core/_build/default/test/test_circuit_request.exe "$GITHUB_WORKSPACE/tests/conformance/request-domains-v1.json"
 core/_build/default/test/test_lowering_check.exe "$GITHUB_WORKSPACE/tests/conformance/case-b" "$GITHUB_WORKSPACE/tests/conformance/request-domains-v1.json"
+core/_build/default/test/test_runtime_number.exe "$GITHUB_WORKSPACE/tests/conformance/runtime-numbers-v1.json"
+core/_build/default/test/test_execution_data.exe "$GITHUB_WORKSPACE/tests/conformance/reference-execution-v1.json"
+core/_build/default/test/test_reference.exe "$GITHUB_WORKSPACE/tests/conformance/reference-execution-v1.json"
 ```
 
-The case B architecture checker, source interpreter, independent candidate
+The numeric corpus retains 1,948 CPython results and 28 independent literal
+witnesses. Full reference traces retain source/requirement lineage, all action
+and event fields, states, memories, timestamps and microsteps; intended evaluator
+failures are separate from parser failures. Both corpora must pass on each native
+platform before this batch is considered validated. Source fixture checks run
+without any native build.
+
+The case B architecture checker, coupled source execution, independent candidate
 runtime, construction reconstruction and exact export acceptance remain to be
 implemented before any production semantic authority can move to OCaml.

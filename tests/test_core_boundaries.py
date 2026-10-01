@@ -31,6 +31,10 @@ class CoreBoundaryTests(unittest.TestCase):
         dependencies = receipt["transitive_dependencies"]["executable:biocompiler-verify"]
         self.assertEqual(set(dependencies), {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_service", "digestif", "zarith"})
         self.assertEqual(receipt["roles"]["bioc_checker"], "checker")
+        self.assertEqual(receipt["roles"]["bioc_semantics"], "source_semantics")
+        self.assertNotIn("bioc_semantics", dependencies)
+        self.assertEqual(set(receipt["transitive_dependencies"]["bioc_semantics"]),
+                         {"bioc_wire", "bioc_domain", "digestif", "zarith"})
         self.assertEqual(receipt["shared_trusted_base"], ["bioc_wire", "bioc_domain"])
         self.assertIn("core/lib/checker/intent_check.ml", receipt["source_sha256"])
         self.assertEqual(receipt["native_build_and_semantic_independence"], "separate_hosted_validation_required")

@@ -1,0 +1,3 @@
+(library
+ (name bioc_semantics)
+ (libraries bioc_wire bioc_domain zarith))

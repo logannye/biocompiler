@@ -42,3 +42,18 @@
  (name test_lowering_check)
  (modules test_lowering_check)
  (libraries bioc_wire bioc_domain bioc_checker zarith))
+
+(test
+ (name test_runtime_number)
+ (modules test_runtime_number)
+ (libraries bioc_wire bioc_domain zarith))
+
+(test
+ (name test_execution_data)
+ (modules test_execution_data)
+ (libraries bioc_wire bioc_domain zarith))
+
+(test
+ (name test_reference)
+ (modules test_reference)
+ (libraries bioc_wire bioc_domain bioc_semantics zarith))
