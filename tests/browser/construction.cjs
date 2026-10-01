@@ -271,6 +271,42 @@ async function main() {
         clippedControls: [...document.querySelectorAll('button,input,textarea')].filter(e => e.getClientRects().length).filter(e => { const r = e.getBoundingClientRect(); return r.left < -1 || r.right > innerWidth + 1; }).map(e => e.id) }));
       assert(layout.bodyWidth <= width + 1, JSON.stringify(layout));
       assert.deepEqual(layout.clippedControls, []);
+      if (suite === 'review') {
+        const tables = await page.locator('.review-section .table-scroll').evaluateAll(regions => regions.map(region => ({
+          label: region.getAttribute('aria-label'),
+          width: region.clientWidth,
+          scrollWidth: region.scrollWidth,
+          tableWidth: region.querySelector('table').getBoundingClientRect().width,
+          left: region.getBoundingClientRect().left,
+          right: region.getBoundingClientRect().right,
+          cellWidths: [...region.querySelectorAll('tbody tr:first-child td')].map(cell => cell.getBoundingClientRect().width),
+        })));
+        for (const table of tables) {
+          assert(table.left >= -1 && table.right <= width + 1, JSON.stringify(table));
+          if (table.cellWidths.length > 2) {
+            assert(table.tableWidth >= 639, JSON.stringify(table));
+            assert(table.cellWidths.every(cellWidth => cellWidth >= 159), JSON.stringify(table));
+          }
+          if (width === 1440) assert(table.scrollWidth <= table.width + 1, JSON.stringify(table));
+          if (width === 320 && table.cellWidths.length > 2) assert(table.scrollWidth > table.width, JSON.stringify(table));
+          if (width === 320 && table.cellWidths.length === 2) assert(table.scrollWidth <= table.width + 1, JSON.stringify(table));
+        }
+        layout.reviewTables = tables;
+        if (width === 320) {
+          const region = page.getByRole('region', {name: 'Source gap table', exact: true});
+          assert.equal(await page.locator('#review-table-help').isVisible(), true);
+          assert.equal(await region.getAttribute('aria-describedby'), 'review-table-help');
+          await region.press('ArrowRight');
+          await page.waitForFunction(() => document.querySelector('#source-review .table-scroll').scrollLeft > 0);
+          const position = await region.evaluate(element => ({focused: document.activeElement === element, left: element.scrollLeft}));
+          assert.equal(position.focused, true);
+          assert(position.left > 0, JSON.stringify(position));
+          layout.keyboardScroll = position;
+          await region.press('ArrowLeft');
+          await page.waitForFunction(() => document.querySelector('#source-review .table-scroll').scrollLeft === 0);
+          mark('mobile review tables retain readable columns and keyboard horizontal scrolling');
+        }
+      }
       evidence.layout.push(layout);
       if ([1440, 320].includes(width)) await page.screenshot({ path: path.join(output, artifactPrefix + '-' + width + '.png'), fullPage: true });
     }
