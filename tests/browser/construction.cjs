@@ -19,8 +19,15 @@ async function main() {
     ['-u', '-m', 'biocompiler', 'studio', '--port', '0', '--no-open'],
     { cwd: outside, env: process.env, stdio: ['ignore', 'pipe', 'pipe'] });
   let log = '', browser, page;
-  const deadline = setTimeout(() => { server.kill('SIGTERM'); process.exit(1); }, 120000);
   const evidence = { scope: 'artificial_software_contracts_only', cases: [], layout: [] };
+  const started = Date.now();
+  const mark = name => { evidence.cases.push(name); console.log(Math.round((Date.now() - started) / 1000) + 's: ' + name); };
+  const deadline = setTimeout(async () => {
+    console.error('Construction browser acceptance exceeded 300 seconds.', evidence.cases);
+    if (page) await page.screenshot({ path: path.join(output, 'construction-timeout.png'), fullPage: true, timeout: 5000 }).catch(() => {});
+    await fs.writeFile(path.join(output, 'construction-timeout.json'), JSON.stringify(evidence, null, 2));
+    server.kill('SIGTERM'); process.exit(1);
+  }, 300000);
   try {
     const url = await new Promise((resolve, reject) => {
       const timeout = setTimeout(() => reject(new Error('Studio did not start: ' + log)), 15000);
@@ -35,6 +42,7 @@ async function main() {
     });
     browser = await chromium.launch({ headless: true });
     page = await browser.newPage({ viewport: { width: 1440, height: 1100 }, acceptDownloads: true });
+    page.setDefaultTimeout(45000);
     const errors = [];
     page.on('pageerror', error => errors.push(String(error)));
     page.on('console', message => {
@@ -63,12 +71,12 @@ async function main() {
     await page.locator('#inspect').click();
     await page.locator('#error').waitFor({ state: 'visible' });
     assert.equal(await page.locator('#save').isDisabled(), true);
-    evidence.cases.push('invalid imports have an accessible error and cannot be saved');
+    mark('invalid imports have an accessible error and cannot be saved');
 
     await page.locator('#build-file').setInputFiles({ name: 'invalid-utf8.json', mimeType: 'application/json', buffer: Buffer.from([0xff]) });
     await page.locator('#error').waitFor({ state: 'visible' });
     assert.equal(await page.locator('#save').isDisabled(), true);
-    evidence.cases.push('invalid UTF-8 is rejected without silent replacement');
+    mark('invalid UTF-8 is rejected without silent replacement');
 
     await page.evaluate(() => {
       window.originalFileReader = File.prototype.arrayBuffer;
@@ -86,7 +94,7 @@ async function main() {
     await page.evaluate(() => { window.releaseFileRead(); File.prototype.arrayBuffer = window.originalFileReader; });
     await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
     assert.equal(await page.locator('#build-json').inputValue(), '{edited while reading');
-    evidence.cases.push('pending file reads block old inspection and cannot replace later edits');
+    mark('pending file reads block old inspection and cannot replace later edits');
 
     await page.locator('#build-file').setInputFiles({ name: 'build.json', mimeType: 'application/json', buffer: Buffer.from(build) });
     await page.waitForFunction(expected => document.getElementById('build-json').value === expected, visibleBuild);
@@ -94,7 +102,7 @@ async function main() {
     assert.equal(historical.freshness.status, 'not_replayed');
     assert.match(await page.locator('#stored-outcome').textContent(), /historical/);
     assert.equal(await page.locator('#current-outcome').textContent(), 'Not assessed');
-    evidence.cases.push('stored PASS remains historical without external authority');
+    mark('stored PASS remains historical without external authority');
 
     await page.locator('.input-panel details > summary').click();
     await page.locator('#authority-file').setInputFiles({ name: 'request.json', mimeType: 'application/json', buffer: Buffer.from(authority) });
@@ -103,7 +111,7 @@ async function main() {
     const replay = await inspect();
     assert.equal(replay.freshness.status, 'replayed_external_authority');
     assert.equal(replay.freshness.assessment.outcome, 'pass');
-    evidence.cases.push('fresh independent replay remains structural only');
+    mark('fresh independent replay remains structural only');
 
     const downloadEvent = page.waitForEvent('download');
     await page.locator('#save').click();
@@ -114,7 +122,7 @@ async function main() {
     await page.locator('#build-file').setInputFiles(saved);
     await page.waitForFunction(expected => document.getElementById('build-json').value === expected, visibleBuild);
     assert.equal((await inspect()).build_fingerprint, replay.build_fingerprint);
-    evidence.cases.push('save and reopen preserve original bytes and identity');
+    mark('save and reopen preserve original bytes and identity');
 
     async function rejectLate(routeName, button, saving) {
       let release, entered;
@@ -141,7 +149,7 @@ async function main() {
     }
     await rejectLate('inspect', '#inspect', false);
     await rejectLate('save', '#save', true);
-    evidence.cases.push('late inspection and save responses cannot publish edited inputs');
+    mark('late inspection and save responses cannot publish edited inputs');
 
     // Adversarial labels are transported as literal text even inside historical artifacts.
     const hostile = await fs.readFile(path.join(fixtures, 'hostile-label.build.json'), 'utf8');
@@ -153,7 +161,7 @@ async function main() {
     await page.locator('#build-json').fill(build);
     await page.locator('#authority-json').fill(authority);
     await inspect();
-    evidence.cases.push('adversarial altered imports cannot inject HTML');
+    mark('adversarial altered imports cannot inject HTML');
 
     for (const width of [1440, 1024, 768, 320]) {
       await page.setViewportSize({ width, height: 1000 });
