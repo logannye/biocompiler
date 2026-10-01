@@ -1,0 +1,368 @@
+{
+  "diagnostic_compatibility_exception": "Missing-coordinate reasons use pinned Unicode14 printability; statuses and input names retain semantics; newer-Unicode Python repr and assessment hashes can differ.",
+  "integrated_revision": "e3d3cbcf1a7b05ccdbc34fdb69127c22e8ea8345",
+  "integrated_tree_matches_tested_source": true,
+  "jobs": [
+    {
+      "duration_seconds": 314.494218,
+      "finished_at": "2026-10-01T22:36:21.186651+00:00",
+      "job": "circuit-integration",
+      "machine": "x86_64",
+      "platform": "Linux-6.17.0-1022-azure-x86_64-with-glibc2.39",
+      "python_version": "3.11.16",
+      "revision": "2f70984e1659c2c7235726952ba7e832df735624",
+      "run_attempt": "1",
+      "run_id": "36935530782",
+      "schema_version": "biocompiler.ci_job_receipt.v0.1",
+      "started_at": "2026-10-01T22:31:06.692436+00:00",
+      "status": "success",
+      "system": "Linux",
+      "variant": "3.11"
+    },
+    {
+      "duration_seconds": 316.379546,
+      "finished_at": "2026-10-01T22:36:23.411657+00:00",
+      "job": "circuit-integration",
+      "machine": "x86_64",
+      "platform": "Linux-6.17.0-1022-azure-x86_64-with-glibc2.39",
+      "python_version": "3.14.7",
+      "revision": "2f70984e1659c2c7235726952ba7e832df735624",
+      "run_attempt": "1",
+      "run_id": "36935530782",
+      "schema_version": "biocompiler.ci_job_receipt.v0.1",
+      "started_at": "2026-10-01T22:31:07.032112+00:00",
+      "status": "success",
+      "system": "Linux",
+      "variant": "3.14"
+    },
+    {
+      "duration_seconds": 1.120673,
+      "finished_at": "2026-10-01T22:36:34.096016+00:00",
+      "job": "circuit-reproducibility",
+      "machine": "x86_64",
+      "platform": "Linux-6.17.0-1022-azure-x86_64-with-glibc2.39",
+      "python_version": "3.12.3",
+      "revision": "2f70984e1659c2c7235726952ba7e832df735624",
+      "run_attempt": "1",
+      "run_id": "36935530782",
+      "schema_version": "biocompiler.ci_job_receipt.v0.1",
+      "started_at": "2026-10-01T22:36:32.975343+00:00",
+      "status": "success",
+      "system": "Linux",
+      "variant": "cross-python"
+    },
+    {
+      "duration_seconds": 0.866541,
+      "finished_at": "2026-10-01T22:32:03.159368+00:00",
+      "job": "executable-rna-reproducibility",
+      "machine": "x86_64",
+      "platform": "Linux-6.17.0-1022-azure-x86_64-with-glibc2.39",
+      "python_version": "3.12.3",
+      "revision": "2f70984e1659c2c7235726952ba7e832df735624",
+      "run_attempt": "1",
+      "run_id": "36935530782",
+      "schema_version": "biocompiler.ci_job_receipt.v0.1",
+      "started_at": "2026-10-01T22:32:02.292829+00:00",
+      "status": "success",
+      "system": "Linux",
+      "variant": "cross-python"
+    },
+    {
+      "duration_seconds": 586.073662,
+      "finished_at": "2026-10-01T22:40:53.207920+00:00",
+      "job": "installed-architecture",
+      "machine": "x86_64",
+      "platform": "Linux-6.17.0-1022-azure-x86_64-with-glibc2.39",
+      "python_version": "3.11.16",
+      "revision": "2f70984e1659c2c7235726952ba7e832df735624",
+      "run_attempt": "1",
+      "run_id": "36935530782",
+      "schema_version": "biocompiler.ci_job_receipt.v0.1",
+      "started_at": "2026-10-01T22:31:07.134254+00:00",
+      "status": "success",
+      "system": "Linux",
+      "variant": "3.11"
+    },
+    {
+      "duration_seconds": 538.30963,
+      "finished_at": "2026-10-01T22:40:04.922657+00:00",
+      "job": "installed-architecture",
+      "machine": "x86_64",
+      "platform": "Linux-6.17.0-1022-azure-x86_64-with-glibc2.39",
+      "python_version": "3.14.7",
+      "revision": "2f70984e1659c2c7235726952ba7e832df735624",
+      "run_attempt": "1",
+      "run_id": "36935530782",
+      "schema_version": "biocompiler.ci_job_receipt.v0.1",
+      "started_at": "2026-10-01T22:31:06.613032+00:00",
+      "status": "success",
+      "system": "Linux",
+      "variant": "3.14"
+    },
+    {
+      "duration_seconds": 44.634221,
+      "finished_at": "2026-10-01T22:31:50.400955+00:00",
+      "job": "installed-executable",
+      "machine": "x86_64",
+      "platform": "Linux-6.17.0-1022-azure-x86_64-with-glibc2.39",
+      "python_version": "3.11.16",
+      "revision": "2f70984e1659c2c7235726952ba7e832df735624",
+      "run_attempt": "1",
+      "run_id": "36935530782",
+      "schema_version": "biocompiler.ci_job_receipt.v0.1",
+      "started_at": "2026-10-01T22:31:05.766733+00:00",
+      "status": "success",
+      "system": "Linux",
+      "variant": "3.11"
+    },
+    {
+      "duration_seconds": 49.658034,
+      "finished_at": "2026-10-01T22:31:55.649250+00:00",
+      "job": "installed-executable",
+      "machine": "x86_64",
+      "platform": "Linux-6.17.0-1022-azure-x86_64-with-glibc2.39",
+      "python_version": "3.14.7",
+      "revision": "2f70984e1659c2c7235726952ba7e832df735624",
+      "run_attempt": "1",
+      "run_id": "36935530782",
+      "schema_version": "biocompiler.ci_job_receipt.v0.1",
+      "started_at": "2026-10-01T22:31:05.991215+00:00",
+      "status": "success",
+      "system": "Linux",
+      "variant": "3.14"
+    },
+    {
+      "duration_seconds": 97.171805,
+      "finished_at": "2026-10-01T22:32:45.168262+00:00",
+      "job": "integration-examples",
+      "machine": "x86_64",
+      "platform": "Linux-6.17.0-1022-azure-x86_64-with-glibc2.39",
+      "python_version": "3.11.16",
+      "revision": "2f70984e1659c2c7235726952ba7e832df735624",
+      "run_attempt": "1",
+      "run_id": "36935530782",
+      "schema_version": "biocompiler.ci_job_receipt.v0.1",
+      "started_at": "2026-10-01T22:31:07.996454+00:00",
+      "status": "success",
+      "system": "Linux",
+      "variant": "3.11"
+    },
+    {
+      "duration_seconds": 98.510906,
+      "finished_at": "2026-10-01T22:32:46.231748+00:00",
+      "job": "integration-examples",
+      "machine": "x86_64",
+      "platform": "Linux-6.17.0-1022-azure-x86_64-with-glibc2.39",
+      "python_version": "3.14.7",
+      "revision": "2f70984e1659c2c7235726952ba7e832df735624",
+      "run_attempt": "1",
+      "run_id": "36935530782",
+      "schema_version": "biocompiler.ci_job_receipt.v0.1",
+      "started_at": "2026-10-01T22:31:07.720837+00:00",
+      "status": "success",
+      "system": "Linux",
+      "variant": "3.14"
+    },
+    {
+      "duration_seconds": 87.401667,
+      "finished_at": "2026-10-01T22:32:34.046609+00:00",
+      "job": "ocaml-core",
+      "machine": "x86_64",
+      "platform": "Linux-6.17.0-1022-azure-x86_64-with-glibc2.39",
+      "python_version": "3.11.16",
+      "revision": "2f70984e1659c2c7235726952ba7e832df735624",
+      "run_attempt": "1",
+      "run_id": "36935530782",
+      "schema_version": "biocompiler.ci_job_receipt.v0.1",
+      "started_at": "2026-10-01T22:31:06.644941+00:00",
+      "status": "success",
+      "system": "Linux",
+      "variant": "linux-x86_64"
+    },
+    {
+      "duration_seconds": 138.831618,
+      "finished_at": "2026-10-01T22:33:33.629990+00:00",
+      "job": "ocaml-core",
+      "machine": "arm64",
+      "platform": "macOS-14.8.9-arm64-arm-64bit",
+      "python_version": "3.11.9",
+      "revision": "2f70984e1659c2c7235726952ba7e832df735624",
+      "run_attempt": "1",
+      "run_id": "36935530782",
+      "schema_version": "biocompiler.ci_job_receipt.v0.1",
+      "started_at": "2026-10-01T22:31:14.728730+00:00",
+      "status": "success",
+      "system": "Darwin",
+      "variant": "macos-arm64"
+    },
+    {
+      "duration_seconds": 3.018039,
+      "finished_at": "2026-10-01T22:41:09.820113+00:00",
+      "job": "payload-architecture-reproducibility",
+      "machine": "x86_64",
+      "platform": "Linux-6.17.0-1022-azure-x86_64-with-glibc2.39",
+      "python_version": "3.12.3",
+      "revision": "2f70984e1659c2c7235726952ba7e832df735624",
+      "run_attempt": "1",
+      "run_id": "36935530782",
+      "schema_version": "biocompiler.ci_job_receipt.v0.1",
+      "started_at": "2026-10-01T22:41:06.802077+00:00",
+      "status": "success",
+      "system": "Linux",
+      "variant": "cross-python"
+    },
+    {
+      "duration_seconds": 176.258079,
+      "finished_at": "2026-10-01T22:34:08.003923+00:00",
+      "job": "studio-browser",
+      "machine": "x86_64",
+      "platform": "Linux-6.17.0-1022-azure-x86_64-with-glibc2.39",
+      "python_version": "3.11.16",
+      "revision": "2f70984e1659c2c7235726952ba7e832df735624",
+      "run_attempt": "1",
+      "run_id": "36935530782",
+      "schema_version": "biocompiler.ci_job_receipt.v0.1",
+      "started_at": "2026-10-01T22:31:11.745842+00:00",
+      "status": "success",
+      "system": "Linux",
+      "variant": "3.11"
+    },
+    {
+      "duration_seconds": 41.794559,
+      "finished_at": "2026-10-01T22:31:53.021935+00:00",
+      "job": "studio-typescript",
+      "machine": "x86_64",
+      "platform": "Linux-6.17.0-1022-azure-x86_64-with-glibc2.39",
+      "python_version": "3.11.16",
+      "revision": "2f70984e1659c2c7235726952ba7e832df735624",
+      "run_attempt": "1",
+      "run_id": "36935530782",
+      "schema_version": "biocompiler.ci_job_receipt.v0.1",
+      "started_at": "2026-10-01T22:31:11.227373+00:00",
+      "status": "success",
+      "system": "Linux",
+      "variant": "3.11"
+    }
+  ],
+  "local_native_compilation": false,
+  "native": {
+    "binary_metadata": {
+      "linux-x86_64": {
+        "machine": "x86_64",
+        "revision": "2f70984e1659c2c7235726952ba7e832df735624",
+        "sha256": {
+          "biocompiler-core": "3cdb6b23b724ae0652e21b9d7808c76e562219a909b1420cddfd5407f9e866fd",
+          "biocompiler-verify": "b4b3c29fe8191912ef802f7063a73dbe9e2e0e64778b8d9463cb3b704ec0b1f4"
+        },
+        "system": "Linux"
+      },
+      "macos-arm64": {
+        "machine": "arm64",
+        "revision": "2f70984e1659c2c7235726952ba7e832df735624",
+        "sha256": {
+          "biocompiler-core": "7fa6220dd1d09e3da465f1376e129c8f75a8aa881608e638d2db684860f76351",
+          "biocompiler-verify": "9096ca7a166b48964a95c435b6fb4b699d557ecfe28ab46fcb5941a2a7d74d69"
+        },
+        "system": "Darwin"
+      }
+    },
+    "component_contract": {
+      "algebra_cases": 77,
+      "literal_algebra": 71,
+      "negative": 35,
+      "positive": 30,
+      "unicode_profile_witnesses": 3
+    },
+    "lowering": {
+      "literals": 6,
+      "negative": 32,
+      "operation_kinds": 42,
+      "positive": 31
+    },
+    "molecular_chemistry": {
+      "context_checks": 29,
+      "negative": 82,
+      "positive": 47,
+      "pretty_size_cases": 50,
+      "text_cases": 10
+    },
+    "native_artifact_ids": {
+      "linux-x86_64": 11197621561,
+      "macos-arm64": 11197981577
+    },
+    "platforms": [
+      "linux-x86_64",
+      "macos-arm64"
+    ],
+    "protocol_checks": 936,
+    "suites": 17
+  },
+  "peak_memory": "not_measured",
+  "post_merge_validation": {
+    "revision": "e3d3cbcf1a7b05ccdbc34fdb69127c22e8ea8345",
+    "run_url": "https://github.com/logannye/biocompiler/actions/runs/36937189850",
+    "status": "in_progress"
+  },
+  "prerequisites": {
+    "circuit-integration": "success",
+    "circuit-reproducibility": "success",
+    "executable-rna-reproducibility": "success",
+    "installed-architecture": "success",
+    "installed-executable": "success",
+    "integration-examples": "success",
+    "ocaml-core": "success",
+    "payload-architecture-reproducibility": "success",
+    "studio-browser": "success",
+    "studio-typescript": "success",
+    "unit-accounting": "success",
+    "unit-plan": "success",
+    "unit-tests": "success"
+  },
+  "pull_request": "https://github.com/logannye/biocompiler/pull/41",
+  "remaining_scope": [
+    "complete_component_records",
+    "full_molecule_and_construction_records",
+    "source_wrappers",
+    "architecture_acceptance",
+    "sequence_emission",
+    "checked_export",
+    "installed_cutover"
+  ],
+  "run_attempt": "1",
+  "run_url": "https://github.com/logannye/biocompiler/actions/runs/36935530782",
+  "schema_version": "biocompiler.lowering_contract_domains_validation.v0.1",
+  "source_revision": "569b430890d28cf6d109ed0e599e1b57ffb1ed1c",
+  "source_tree": "d71ef94997417f598def776fd8dc47f8d39f3060",
+  "status": "pass",
+  "test_accounting": [
+    {
+      "discovered_count": 2122,
+      "discovery_digest": "a6f2463e50b4e30fbe11b6340b64f486a7a1b08e96ea65539e8be2401685026c",
+      "executed_count": 2122,
+      "python_version": "3.11.16",
+      "shard_seconds": {
+        "0": 782.601897,
+        "1": 722.936542,
+        "2": 372.777877,
+        "3": 410.968456,
+        "4": 516.75222
+      },
+      "status": "pass"
+    },
+    {
+      "discovered_count": 2122,
+      "discovery_digest": "a6f2463e50b4e30fbe11b6340b64f486a7a1b08e96ea65539e8be2401685026c",
+      "executed_count": 2122,
+      "python_version": "3.14.7",
+      "shard_seconds": {
+        "0": 655.475223,
+        "1": 434.343905,
+        "2": 775.587466,
+        "3": 376.594394,
+        "4": 423.797788
+      },
+      "status": "pass"
+    }
+  ],
+  "tested_merge_revision": "2f70984e1659c2c7235726952ba7e832df735624"
+}

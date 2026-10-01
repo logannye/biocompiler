@@ -82,3 +82,28 @@
  (name test_lowering)
  (modules test_lowering)
  (libraries bioc_wire bioc_domain bioc_compiler bioc_checker))
+
+(test
+ (name test_architecture_deployment)
+ (modules test_architecture_deployment)
+ (libraries bioc_wire bioc_domain zarith))
+
+(test
+ (name test_component)
+ (modules test_component)
+ (libraries bioc_wire bioc_domain zarith))
+
+(test
+ (name test_human_wrappers)
+ (modules test_human_wrappers)
+ (libraries bioc_wire bioc_domain zarith))
+
+(test
+ (name test_molecule)
+ (modules test_molecule)
+ (libraries bioc_wire bioc_domain zarith))
+
+(test
+ (name test_molecule_set)
+ (modules test_molecule_set)
+ (libraries bioc_wire bioc_domain zarith))

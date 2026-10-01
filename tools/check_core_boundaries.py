@@ -21,7 +21,7 @@ EXTERNAL_LIBRARIES = frozenset({"digestif", "zarith"})
 # New libraries/dependencies require deliberate policy review, even when harmless.
 LIBRARIES = {
     "bioc_wire": ("lib/wire/dune", {"digestif", "zarith"}, "trusted_primitive"),
-    "bioc_domain": ("lib/domain/dune", {"bioc_wire", "zarith"}, "trusted_domain"),
+    "bioc_domain": ("lib/domain/dune", {"bioc_wire", "zarith", "digestif"}, "trusted_domain"),
     "bioc_semantics": ("lib/semantics/dune", {"bioc_wire", "bioc_domain", "zarith"}, "source_semantics"),
     "bioc_compiler": ("lib/compiler/dune", {"bioc_wire", "bioc_domain", "bioc_checker"}, "compiler"),
     "bioc_checker": ("lib/checker/dune", {"bioc_wire", "bioc_domain"}, "checker"),
@@ -49,6 +49,11 @@ TESTS = {
     "test_molecular_record": {"bioc_wire", "bioc_domain", "zarith"},
     "test_molecule_chemistry": {"bioc_wire", "bioc_domain"},
     "test_lowering": {"bioc_wire", "bioc_domain", "bioc_compiler", "bioc_checker"},
+    "test_architecture_deployment": {"bioc_wire", "bioc_domain", "zarith"},
+    "test_component": {"bioc_wire", "bioc_domain", "zarith"},
+    "test_human_wrappers": {"bioc_wire", "bioc_domain", "zarith"},
+    "test_molecule": {"bioc_wire", "bioc_domain", "zarith"},
+    "test_molecule_set": {"bioc_wire", "bioc_domain", "zarith"},
 }
 PRODUCER_ROLES = frozenset({"compiler", "matcher", "selection", "emitter", "assembler", "producer"})
 TOKEN = re.compile(r'\s+|;[^\n]*(?:\n|$)|\(|\)|"(?:\\.|[^"\\])*"|[^\s();"]+')

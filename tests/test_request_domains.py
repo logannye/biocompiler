@@ -46,8 +46,8 @@ class RequestDomainCorpusTests(unittest.TestCase):
 
     def test_all_public_records_and_lowering_pairs_remain_mandatory(self):
         self.assertEqual(self.corpus["coverage"]["covered_record_kinds"], sorted(campaign.PARSERS))
-        self.assertEqual(len(self.corpus["cases"]), 46)
-        self.assertEqual(len(self.corpus["rejections"]), 65)
+        self.assertEqual(len(self.corpus["cases"]), 49)
+        self.assertEqual(len(self.corpus["rejections"]), 62)
         self.assertEqual(len(self.corpus["lowering_cases"]), 14)
         self.assertEqual(len(self.corpus["lowering_rejections"]), 14)
         self.assertEqual(len(self.corpus["coverage"]["variants"]["immune_lineages"]), 11)
@@ -65,17 +65,17 @@ class RequestDomainCorpusTests(unittest.TestCase):
         with self.assertRaisesRegex(AssertionError, "Duplicate fixture identities"):
             campaign.check_corpus(changed)
 
-    def test_valid_deferred_wrappers_retain_full_original_authority(self):
-        cases = [case for case in self.corpus["rejections"] if case["expected_outcome"] == "unsupported"]
+    def test_valid_typed_wrappers_retain_full_original_authority(self):
+        cases = [case for case in self.corpus["cases"] if case["id"].startswith("wrapped_")]
         self.assertEqual(len(cases), 3)
         actual_schemas = []
         for case in cases:
             profile = campaign.CircuitProfileRequest.from_dict(case["input"])
-            self.assertEqual(case["expected_code"], "wrapped_source_obligations")
-            self.assertEqual(campaign.encoded(profile.to_dict()), campaign.encoded(case["input"]))
+            self.assertEqual(campaign.encoded(profile.to_dict()), campaign.encoded(case["normalized"]))
             actual_schemas.append(profile.source_request.schema_version)
             self.assertNotEqual(profile.source_request.schema_version, campaign.BuildRequest.schema_version)
-        self.assertEqual(sorted(actual_schemas), campaign.DEFERRED)
+        self.assertEqual(sorted(actual_schemas), campaign.WRAPPER_SCHEMAS)
+        self.assertFalse(any(case["expected_outcome"] == "unsupported" for case in self.corpus["rejections"]))
 
     def test_source_only_mutation_preserves_semantics_but_breaks_correspondence(self):
         positive = next(case for case in self.corpus["lowering_cases"] if case["id"] == "explicit_source_locations")
