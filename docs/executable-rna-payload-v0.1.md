@@ -57,6 +57,9 @@ contracts bind those nodes to declared physical compartments in the original
 human target. That intermediate representation does not substitute a different
 organism or deployment target. DNA roots or construction intermediates may occur
 in supplied templates, but final nucleotide members in this profile must be RNA.
+Every delivered payload or helper must also be RNA, including each constituent
+of a delivered complex. Declared encoded protein products may remain in the
+complete JSON specification without becoming additional delivered payloads.
 
 ## Supported execution and retained limits
 

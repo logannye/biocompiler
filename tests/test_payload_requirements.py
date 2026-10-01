@@ -265,6 +265,32 @@ class PayloadRequirementsTests(unittest.TestCase):
         self.assertTrue({report_action.node_id, scope_action.node_id} <= unsupported)
 
 
+    def test_shared_predicate_input_preserves_both_rule_requirement_identities(self):
+        therapy, cell = author()
+        signal = cell.environment.signal("shared")
+        cell.when(signal.present()).do(cell.secrete("artificial_first"))
+        cell.when(signal.present()).do(cell.secrete("artificial_second"))
+        report = extract_payload_requirements(BuildRequest.freeze(therapy.freeze()))
+        self.assertEqual(len(report.behavior.find(kind="qualitative")), 2)
+        shared = report.mechanism.find("input")
+        self.assertEqual(len(shared), 1)
+        self.assertEqual(shared[0].requirement_ids, tuple(output.id for output in report.outputs))
+        for predicate in report.behavior.find(kind="qualitative"):
+            self.assertIn(predicate.id, report.source_map[shared[0].id])
+        self.assertEqual(PayloadRequirements.from_json(report.to_json()), report)
+
+    def test_shared_input_attribution_does_not_absorb_unrelated_rule_ancestry(self):
+        therapy, cell = author()
+        signal = cell.environment.signal("shared")
+        cell.when(signal.high()).do(cell.secrete("artificial_first"))
+        cell.when(signal.high()).do(cell.secrete("artificial_second"))
+        cell.when(signal.low()).do(cell.secrete("artificial_third"))
+        report = extract_payload_requirements(BuildRequest.freeze(therapy.freeze()))
+        inputs = {node.id.rsplit(":", 1)[1]: node for node in report.mechanism.find("input")}
+        self.assertEqual(inputs["high"].requirement_ids, tuple(item.id for item in report.outputs[:2]))
+        self.assertEqual(inputs["low"].requirement_ids, (report.outputs[2].id,))
+
+
 class PayloadDependencyGroundingTests(unittest.TestCase):
     """Declared prerequisites must have a finite grounded explanation."""
 

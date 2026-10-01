@@ -92,6 +92,59 @@ class ExecutablePayloadVerificationTests(unittest.TestCase):
         self.assertTrue(checked.passed)
         self.assertTrue(checked.translation_complete)
 
+    def test_delivered_protein_helper_cannot_be_exported_as_complete_rna_payload(self):
+        from biocompiler.compiler.executable_payload import _construction
+        from examples.circuit_molecules import make_molecule
+        request, build = fixture()
+        contract_id = build.selected[build.mechanism.outputs[0]]
+        original = next(contract for contract in request.library.contracts if contract.id == contract_id)
+        template = original.template
+        helper = next(root for root in template.sources if root.id == "helper.source")
+        protein = make_molecule(helper.molecule.id, "ACDEFG", form="mature_protein", coding_status="inapplicable")
+        protein = replace(protein, features=helper.molecule.features)
+        template = replace(template,
+                           sources=tuple(replace(root, molecule=protein) if root.id == helper.id else root
+                                         for root in template.sources),
+                           output_members=tuple(replace(member, form="mature_protein", coding_status="inapplicable")
+                                                if member.id == "helper" else member for member in template.output_members))
+        changed_contract = replace(original, template=template)
+        changed = replace(request, library=replace(request.library, contracts=tuple(
+            changed_contract if contract.id == contract_id else contract for contract in request.library.contracts)))
+        by_id = {contract.id: contract for contract in changed.library.contracts}
+        selected = {identity: by_id[ref] for identity, ref in build.selected.items()}
+        construction = _construction(selected, changed)
+        self.assertTrue(construction.assessment.passed)
+        mutant = replace(build, request_fingerprint=changed.fingerprint, construction=construction)
+        helper_id = next(requirement.member_id for requirement in construction.request.requirements
+                         if requirement.category == "delivered_helper")
+        self.check_rejected(mutant, changed, "fail:delivered_member_not_rna:" + helper_id)
+
+        # The same protein may be retained as an encoded product rather than
+        # incorrectly claimed as a delivered RNA member.
+        product_template = replace(template, requirements=tuple(
+            replace(requirement, category="encoded_product") if requirement.member_id == "helper" else requirement
+            for requirement in template.requirements))
+        product_contract = replace(original, template=product_template)
+        product_request = replace(request, library=replace(request.library, contracts=tuple(
+            product_contract if contract.id == contract_id else contract for contract in request.library.contracts)))
+        compiled = compile_payload(product_request)
+        self.assertTrue(check_payload_build(compiled, expected_request=product_request).translation_complete)
+
+    def test_delivered_complex_checks_every_constituent_and_absent_member(self):
+        from types import SimpleNamespace
+        from biocompiler.verification.executable_payload import _delivered_rna_diagnostics
+        records = (SimpleNamespace(id="rna", space=SimpleNamespace(alphabet="RNA")),
+                   SimpleNamespace(id="protein", space=SimpleNamespace(alphabet="protein")))
+        def assessment(*constituents):
+            complex_ = SimpleNamespace(id="helper_complex", constituents=tuple(
+                SimpleNamespace(molecule_id=identity) for identity in constituents))
+            bundle = SimpleNamespace(molecules=records, complexes=(complex_,))
+            authority = SimpleNamespace(requirements=(SimpleNamespace(category="delivered_helper", member_id="helper_complex"),))
+            return _delivered_rna_diagnostics(authority, bundle)
+        self.assertEqual(assessment("rna"), [])
+        self.assertEqual(assessment("rna", "protein"), ["fail:delivered_member_not_rna:helper_complex"])
+        self.assertEqual(assessment("rna", "absent"), ["fail:delivered_member_not_rna:helper_complex"])
+
     def check_rejected(self, build, request, code):
         result = check_payload_build(build, expected_request=request)
         self.assertFalse(result.passed, result.to_dict())
@@ -125,6 +178,41 @@ class ExecutablePayloadVerificationTests(unittest.TestCase):
         _, build = fixture()
         independent = make_payload_request(guard="or")
         self.check_rejected(build, independent, "fail:original_source_authority")
+
+    def test_bool_integer_source_mutation_cannot_pass_python_equality(self):
+        request, build = fixture()
+        source = build.requirements.source
+        action = source.intent.find(kind="action.secrete")[0]
+        changed = replace(source, intent=replace(source.intent, nodes=tuple(
+            replace(node, attributes={**node.attributes, "ongoing": 1}) if node.id == action.id else node
+            for node in source.intent.nodes)))
+        self.assertEqual(source.to_dict(), changed.to_dict())  # Python erases this distinction.
+        self.assertNotEqual(source.fingerprint, changed.fingerprint)
+        mutant = replace(build, requirements=replace(build.requirements, source=changed))
+        imported = type(mutant).from_json(mutant.to_json())
+        self.check_rejected(imported, request, "fail:original_source_authority")
+
+    def test_bool_integer_output_semantics_mutation_cannot_pass_python_equality(self):
+        request, build = fixture()
+        output = build.requirements.outputs[0]
+        semantics = thaw_json(output.semantics)
+        semantics["primitive_action"]["attributes"]["ongoing"] = 1
+        changed = replace(output, semantics=semantics)
+        self.assertEqual(output.to_dict(), changed.to_dict())
+        self.assertNotEqual(output.fingerprint, changed.fingerprint)
+        mutant = replace(build, requirements=replace(build.requirements, outputs=(changed,)))
+        imported = type(mutant).from_json(mutant.to_json())
+        self.check_rejected(imported, request, "fail:complete_source_output_inventory")
+
+    def test_self_consistent_dropped_graph_requirement_ids_are_reconstructed(self):
+        request, build = fixture()
+        identity = build.mechanism.outputs[0]
+        def erase(graph):
+            return replace(graph, nodes=tuple(replace(node, requirement_ids=()) if node.id == identity else node
+                                               for node in graph.nodes))
+        mutant = replace(build, mechanism=erase(build.mechanism),
+                         requirements=replace(build.requirements, mechanism=erase(build.requirements.mechanism)))
+        self.check_rejected(mutant, request, "fail:source_activation_requirement_ids")
 
     def test_self_consistent_guard_change_still_compares_original_source(self):
         request, build = fixture()

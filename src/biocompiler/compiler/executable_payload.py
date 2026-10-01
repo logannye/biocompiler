@@ -278,9 +278,21 @@ def compile_payload(request: PayloadCompilationRequest) -> PayloadBuild:
                     if not reasons:
                         reasons.append("construction:incomplete_molecule_set")
                 if construction.candidate.bundle is not None:
-                    if any(x.space.alphabet == "DNA" for x in construction.candidate.bundle.molecules):
+                    bundle = construction.candidate.bundle
+                    if any(x.space.alphabet == "DNA" for x in bundle.molecules):
                         reasons.append("unsupported_final_dna_member:rna_payload_only")
-                    length = sum(len(x.sequence) for x in construction.candidate.bundle.molecules
+                    molecules = {item.id: item for item in bundle.molecules}
+                    complexes = {item.id: item for item in bundle.complexes}
+                    delivered = {item.member_id for item in construction.request.requirements
+                                 if item.category in {"payload", "delivered_helper"}}
+                    for identity in sorted(delivered):
+                        member_ids = ((identity,) if identity in molecules else
+                                      tuple(item.molecule_id for item in complexes[identity].constituents)
+                                      if identity in complexes else ())
+                        if not member_ids or any(item not in molecules or molecules[item].space.alphabet != "RNA"
+                                                 for item in member_ids):
+                            reasons.append("unsupported_delivered_member:rna_payload_only:" + identity)
+                    length = sum(len(x.sequence) for x in bundle.molecules
                                  if x.space.alphabet in {"DNA", "RNA"})
                     if request.constraints.max_total_bases is not None and length > request.constraints.max_total_bases:
                         reasons.append("complete_set_nucleotide_budget_exceeded")

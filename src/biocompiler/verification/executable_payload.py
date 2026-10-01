@@ -284,10 +284,11 @@ def _source_correspondence(source):
     nodes = {node.id: node for node in build.intent.nodes}
     contacts = contact_bindings(nodes)
     ancestry = {ref: set(lineage_for(nodes, ref)) for ref in nodes}
-    mapped, edges, cache = {}, {}, {}
+    mapped, edges, cache, contributors = {}, {}, {}, {}
 
     def add(identity, refs, inputs=()):
         mapped.setdefault(identity, set()).update(ancestor for ref in refs for ancestor in ancestry[ref])
+        contributors.setdefault(identity, set()).update(refs)
         edges[identity] = tuple(inputs)
         return identity
 
@@ -303,6 +304,7 @@ def _source_correspondence(source):
         elif node.kind in {"signature", "memory.is_set"}:
             identity = expression(node.inputs[0])
             mapped[identity].update(ancestry[ref])
+            contributors[identity].add(ref)
         elif node.kind in {"literal", "parameter"}:
             add(identity, (ref,))
         elif node.kind in {"and", "or", "not", "compare"}:
@@ -343,7 +345,13 @@ def _source_correspondence(source):
                     guard = add("pulse_onset:" + identity, (rule.id, action_id), (guard,))
                 guard = add("pulse:" + identity, (rule.id, action_id), (guard,))
             add(identity, (rule.id, action_id), (guard,))
-    return {identity: tuple(sorted(refs)) for identity, refs in mapped.items()}, edges
+    _, outputs = _source_inventory(source)
+    requirement_ids = {
+        identity: tuple(output["id"] for output in outputs
+                        if refs.intersection(output["lineage"]))
+        for identity, refs in contributors.items()
+    }
+    return {identity: tuple(sorted(refs)) for identity, refs in mapped.items()}, edges, requirement_ids
 
 
 def _check_circuit_bindings(request):
@@ -615,6 +623,31 @@ def _molecular_bindings(selected, bundle):
     return problems
 
 
+def _delivered_rna_diagnostics(construction, bundle):
+    """Delivered payload and helper members must be RNA, including complexes.
+
+    The requirement category is authoritative here: encoded protein products
+    share a helper role label but remain permissible derived-product metadata.
+    """
+    molecules = {item.id: item for item in bundle.molecules}
+    complexes = {item.id: item for item in bundle.complexes}
+    diagnostics = []
+    for requirement in construction.requirements:
+        if requirement.category not in {"payload", "delivered_helper"}:
+            continue
+        identity = requirement.member_id
+        if identity in molecules:
+            components = (molecules[identity],)
+        elif identity in complexes:
+            components = tuple(molecules.get(item.molecule_id)
+                               for item in complexes[identity].constituents)
+        else:
+            components = ()
+        if not components or any(item is None or item.space.alphabet != "RNA" for item in components):
+            diagnostics.append("fail:delivered_member_not_rna:" + str(identity))
+    return diagnostics
+
+
 def check_payload_build(build, *, expected_request):
     """Check source, selected contracts and every molecule against separate authority.
 
@@ -632,12 +665,12 @@ def check_payload_build(build, *, expected_request):
     requirements = build.requirements
     if build.request_fingerprint != request.fingerprint:
         diagnostics.append("fail:payload_request_authority")
-    if requirements.source.to_dict() != request.source.to_dict():
+    if requirements.source.fingerprint != request.source.fingerprint:
         diagnostics.append("fail:original_source_authority")
     expected_inventory, expected_outputs = _source_inventory(request.source)
     if fingerprint(requirements.requirements) != fingerprint(expected_inventory):
         diagnostics.append("fail:complete_source_requirement_inventory")
-    if [item.to_dict() for item in requirements.outputs] != expected_outputs:
+    if fingerprint([item.to_dict() for item in requirements.outputs]) != fingerprint(expected_outputs):
         diagnostics.append("fail:complete_source_output_inventory")
     source_build = source_build_request(request.source)
     if requirements.behavior is None:
@@ -687,13 +720,15 @@ def check_payload_build(build, *, expected_request):
         try:
             wanted, automatic, _ = _source_symbols(request.source)
             observed, remembered = _mechanism_symbols(requirements.mechanism, requirements.observation_map)
-            lineage, edges = _source_correspondence(request.source)
+            lineage, edges, required_ids = _source_correspondence(request.source)
             if observed != wanted or sorted(remembered, key=repr) != sorted(automatic.values(), key=repr):
                 diagnostics.append("fail:source_activation_graph_semantics")
             if fingerprint(requirements.source_map) != fingerprint(lineage):
                 diagnostics.append("fail:source_activation_lineage")
             if {node.id: node.inputs for node in requirements.mechanism.nodes} != edges:
                 diagnostics.append("fail:source_activation_node_inventory")
+            if {node.id: node.requirement_ids for node in requirements.mechanism.nodes} != required_ids:
+                diagnostics.append("fail:source_activation_requirement_ids")
         except (BiocompilerError, KeyError, ValueError, RecursionError):
             diagnostics.append("fail:source_activation_reconstruction")
     elif requirements.behavior is not None and not any(
@@ -722,7 +757,7 @@ def check_payload_build(build, *, expected_request):
                     diagnostics.append("fail:source_activation_graph_semantics")
                 actual_nodes = {node.id: node for node in build.mechanism.nodes}
                 source_nodes = {node.id: node for node in requirements.mechanism.nodes}
-                expected_map, expected_edges = _source_correspondence(request.source)
+                expected_map, expected_edges, expected_requirement_ids = _source_correspondence(request.source)
                 if fingerprint(requirements.source_map) != fingerprint(expected_map):
                     diagnostics.append("fail:source_activation_lineage")
                 if actual_nodes.keys() != source_nodes.keys() or actual_nodes.keys() != expected_edges.keys():
@@ -732,6 +767,8 @@ def check_payload_build(build, *, expected_request):
                     if (actual.inputs != original.inputs or actual.inputs != expected_edges.get(identity)
                             or actual.requirement_ids != original.requirement_ids):
                         diagnostics.append("fail:source_activation_wiring:" + identity)
+                    if actual.requirement_ids != expected_requirement_ids.get(identity):
+                        diagnostics.append("fail:source_activation_requirement_ids:" + identity)
                 selected, problems = _component_checks(request, build, actual_nodes, expected_outputs)
                 diagnostics.extend(problems)
         except (BiocompilerError, KeyError, ValueError, RecursionError):
@@ -753,7 +790,7 @@ def check_payload_build(build, *, expected_request):
     elif selected:
         try:
             expected_construction = _expected_construction(request, selected)
-            if build.construction.request.to_dict() != expected_construction.to_dict():
+            if build.construction.request.fingerprint != expected_construction.fingerprint:
                 diagnostics.append("fail:selected_template_construction_authority")
             check = check_circuit_construction(build.construction.candidate,
                                               expected_request=expected_construction)
@@ -761,10 +798,11 @@ def check_payload_build(build, *, expected_request):
             diagnostics.extend(check.diagnostics)
             if not check.passed:
                 diagnostics.append("fail:selected_molecule_set_incomplete")
-            if build.construction.assessment.to_dict() != check.to_dict():
+            if build.construction.assessment.fingerprint != check.fingerprint:
                 diagnostics.append("fail:historical_construction_assessment")
             if build.molecules is not None:
                 diagnostics.extend(_molecular_bindings(selected, build.molecules))
+                diagnostics.extend(_delivered_rna_diagnostics(expected_construction, build.molecules))
                 if any(item.space.alphabet == "DNA" for item in build.molecules.molecules):
                     diagnostics.append("fail:final_dna_member_outside_rna_payload_scope")
                 limit = request.constraints.max_total_bases
@@ -793,6 +831,6 @@ def verify_payload_build(verification, build, *, expected_request):
     """Recompute a historical receipt using separately retained complete authority."""
     require(isinstance(verification, PayloadVerification), "Expected a payload verification receipt.")
     fresh = check_payload_build(build, expected_request=expected_request)
-    require(verification.to_dict() == fresh.to_dict(),
+    require(verification.fingerprint == fresh.fingerprint,
             "Payload verification differs from current independent complete replay.")
     return fresh

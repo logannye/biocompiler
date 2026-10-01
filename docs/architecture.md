@@ -11,7 +11,7 @@ whether the supplied parts fulfill their contracts remains unresolved. The
 broader DNA utilities and earlier milestones described below are infrastructure
 and historical context, not an additional current product target.
 
-biocompiler is an experimental compiler working toward translating high-level therapeutic intent into an exact, complete DNA or RNA payload specification for in vivo immune cell therapies. Python is the implemented authoring language; natural-language authoring is a future frontend to the same explicit requirements. Its organizing principle is **preservation of a behavioral contract through explicit intermediate representations (IRs)**. Each molecular choice should remain traceable to the intended response, its deployment context and the evidence supporting it.
+biocompiler translates supported high-level therapeutic intent into exact RNA payload specifications for human immune cells engineered in vivo, conditional on supplied executable component contracts and sequence templates. Python is the implemented authoring language; natural-language authoring is a future frontend to the same explicit requirements. Its organizing principle is **preservation of a behavioral contract through explicit intermediate representations (IRs)**. Each molecular choice remains traceable to the intended response, its deployment context, declared assumptions and any separately supplied evidence.
 
 **Human in-vivo immune-cell deployment is the sole product target.** Non-human
 organism compilation, sequencing and general cell-engineering workflows are out
@@ -20,7 +20,7 @@ cell and assay context; that context never substitutes for the deployment target
 Component origin is separate from recipient biology and requires its own
 provenance and human-context applicability assessment.
 
-The current repository implements the Python intent frontend, immutable intent and behavior graphs, checked intent-to-behavior lowering, an abstract reference evaluator, planning inspection, frozen build/realization requests, a checked pass manager, automatic combinational and temporal synthetic generation with locked operations, finite-trace realization checking against independent synthetic models, reproducible synthetic workflow packages, immutable typed component contracts, deterministic offline selection, and composition linking with provider/resource checks, independently checked whole-CDS reference construct assembly, and exact-reference DNA/RNA emission. A separate software molecular-design pipeline constructs and independently checks multi-region structural RNA specifications. The intent-candidate pipeline connects one authored product requirement to supplied CDS/architecture selection and automatic RNA assembly, retaining all unimplemented behavior. The checked molecular-implementation pipeline adds full requirement analysis, declared precursor/processing relationships, explicit providers and composite coding-segment construction under the separate `secreted_precursor_structure` scope. General molecular mechanism selection, biological simulation, characterized component libraries and human therapeutic-payload generation are not implemented. Physical manufacture, administration, and execution in a recipient cell are outside the compiler boundary.
+The current repository implements the Python intent frontend, immutable intent and behavior graphs, checked intent-to-behavior lowering, an abstract reference evaluator, planning inspection, frozen build/realization requests, a checked pass manager, automatic combinational and temporal synthetic generation with locked operations, finite-trace realization checking against independent synthetic models, reproducible synthetic workflow packages, immutable typed component contracts, deterministic offline selection, and composition linking with provider/resource checks, independently checked whole-CDS reference construct assembly, and exact-reference DNA/RNA emission. A separate software molecular-design pipeline constructs and independently checks multi-region structural RNA specifications. The intent-candidate pipeline connects one authored product requirement to supplied CDS/architecture selection and automatic RNA assembly, retaining all unimplemented behavior. The checked molecular-implementation pipeline adds full requirement analysis, declared precursor/processing relationships, explicit providers and composite coding-segment construction under the separate `secreted_precursor_structure` scope. The executable RNA payload profile connects source activation and action semantics to bounded selection of supplied contracts, complete molecule-set construction and independent source/component/sequence checking. Unrestricted molecular mechanism discovery, biological simulation, characterized component libraries and empirically supported therapeutic function remain open. Physical manufacture, administration, and execution in a recipient cell are outside the compiler boundary.
 
 The [v0.1 intent API](intent-api-v0.1.md) implements the authoring vocabulary: cell roles, scoped observations, expressions, actions, state, outputs, controllers, and communication. Python constructs an inspectable intent graph; molecular realization remains a later stage.
 
@@ -41,7 +41,9 @@ unresolved goals into the legacy Behavior IR. `check_secretion_trace` evaluates
 the requested ranges and deadlines on supplied piecewise-constant observations;
 it provides neither a biological model nor evidence of therapeutic efficacy.
 The runtime input must be cell-accessible; the output assay remains an external
-evaluation readout. General payload compilation remains unavailable.
+evaluation readout. This observation profile alone supplies no molecular
+implementation; the separate executable RNA profile requires supplied component
+contracts and sequence templates.
 
 M10.3 adds a [frozen deployment contract](deployment-contract-v0.1.md) around that
 behavior request. It retains delivery-platform identity, exact human recipient
@@ -141,7 +143,7 @@ An exact sequence does not establish exact cellular behavior. Artifact identity 
 | `verification` | Independently check structural and behavioral obligations; retain unknown or failed outcomes. |
 | `registry` | Versioned component interfaces, models, context applicability, and evidence references. |
 | `models` | Quantitative model adapters and uncertainty representations. |
-| `backends/dna`, `backends/rna` | Target capabilities, modality-specific lowering, and molecular specification emission. |
+| `backends/dna`, `backends/rna` | Distinct reference/construction alphabets and emission rules; therapeutic payload output is restricted to RNA. |
 | `artifacts` | Deterministic serialization, manifests, provenance, and source maps. |
 | `interop` | Future import/export adapters for external representations, such as SBOL and SBML. |
 
@@ -289,7 +291,7 @@ Some properties admit exact checks, such as referential integrity or corresponde
 
 ## Target selection and revalidation
 
-DNA and RNA are distinct targets with different available mechanisms. Select the target before choosing mechanisms; emit target-specific molecular details later. A backend must reject an unsupported mechanism rather than approximate it without an explicit contract change.
+The therapeutic product target is human in-vivo immune-cell RNA. Shared reference and construction infrastructure preserves distinct DNA and RNA alphabets, coordinate systems and explicit conversion rules; DNA roots or intermediates do not authorize a delivered DNA payload. Select the RNA target and its context before choosing implementations. A backend must reject an unsupported mechanism rather than approximate it without an explicit contract change.
 
 Sequence optimization may preserve a protein sequence while changing modeled expression or stability. Therefore a later sequence change can invalidate higher-level analyses. Track these dependencies so the compiler reruns affected checks instead of equating sequence-level compatibility with behavioral equivalence.
 
@@ -317,7 +319,7 @@ This profile tests the preservation machinery without claiming a molecular mecha
 
 ## Implemented request and pipeline boundary
 
-The [frozen request design](build-requests-v0.1.md) makes explicit bindings authoritative and separates source/behavior identity from the later contract/domain phase. The [pass manager](pass-manager-v0.1.md) admits only independently checked, fresh stage outputs. The [combinational synthetic profile](synthetic-profile-v0.1.md) has an automatic generator and a small versioned operation catalog. Separately [curated reference records](reference-benchmarks.md) establish exact CDS expectations; they are not molecular implementations of the synthetic graphs. The [component contracts](component-contracts-v0.1.md) and [offline linker](component-linking-v0.1.md) now support checked synthetic Mechanism → Components lowering. Interface meaning and domain inclusion, explicit providers, assumption cycles, shared capacities and dependency locks are checked independently. `run_component_pipeline` preserves source lineage and finite-history evidence in a `synthetic_components` scope. A [frozen construct request](construct-ir-v0.1.md) now fixes selected membership, reference ranges and expected layout before generation. The [independent construct checker](construct-checking-v0.1.md) validates a single whole DNA or RNA CDS and retains unknown delivered-molecule context. The [exact-CDS pipeline](exact-cds-pipeline-v0.1.md) now emits that selected reference spelling through a separate DNA or RNA backend and independently verifies nucleotide identity, linked-reference consistency, translation and source correspondence. Multi-molecule assembly, general molecular realization and human therapeutic-payload generation remain future work. The separate structural molecular-design profile below supports explicitly supplied RNA fragment/layout authority.
+The [frozen request design](build-requests-v0.1.md) makes explicit bindings authoritative and separates source/behavior identity from the later contract/domain phase. The [pass manager](pass-manager-v0.1.md) admits only independently checked, fresh stage outputs. The [combinational synthetic profile](synthetic-profile-v0.1.md) has an automatic generator and a small versioned operation catalog. Separately [curated reference records](reference-benchmarks.md) establish exact CDS expectations; they are not molecular implementations of the synthetic graphs. The [component contracts](component-contracts-v0.1.md) and [offline linker](component-linking-v0.1.md) now support checked synthetic Mechanism → Components lowering. Interface meaning and domain inclusion, explicit providers, assumption cycles, shared capacities and dependency locks are checked independently. `run_component_pipeline` preserves source lineage and finite-history evidence in a `synthetic_components` scope. A [frozen construct request](construct-ir-v0.1.md) now fixes selected membership, reference ranges and expected layout before generation. The [independent construct checker](construct-checking-v0.1.md) validates a single whole DNA or RNA CDS and retains unknown delivered-molecule context. The [exact-CDS pipeline](exact-cds-pipeline-v0.1.md) now emits that selected reference spelling through a separate DNA or RNA backend and independently verifies nucleotide identity, linked-reference consistency, translation and source correspondence. This exact-reference path retains its single-CDS scope. Complete multi-member construction and bounded source-to-RNA translation are implemented by the separate supplied-construction and executable payload profiles; unrestricted molecular realization and empirical therapeutic function remain open. The structural molecular-design profile below supports explicitly supplied RNA fragment/layout authority.
 
 ## Temporal synthetic builds
 
@@ -354,7 +356,7 @@ history/time grid/suffix/horizon, mode and budgets. Fresh replay reexecutes curr
 checks against that authority. Historical reports, observed failures and incomplete
 coverage cannot become accepted compilation merely by parsing or rehashing them.
 
-These interfaces support the intended future source-to-molecular workflow: a
+These interfaces support the current bounded source-to-RNA workflow and its extensions: a
 selected implementation must preserve required behavior and carry its evidence
 and unresolved obligations downstream. Digital operator equivalence and software
 costs supply no characterization of a molecular component or biological efficiency.

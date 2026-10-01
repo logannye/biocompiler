@@ -8,7 +8,7 @@ remain authoritative. No target, physiological observation, or sequence is infer
 from __future__ import annotations
 
 from collections.abc import Mapping
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from typing import ClassVar
 
 from biocompiler.compiler.behavior import lower_to_behavior
@@ -248,6 +248,17 @@ def _digital_graph(behavior, outputs):
         source_map[identity] = lineage
         return identity
 
+    def merge_source(identity, ref):
+        # Coalescing equal observations/forwarded expressions must retain every
+        # original output requirement that names a contributing source node.
+        # Do not intersect complete ancestry here: shared role ancestors would
+        # spuriously attribute unrelated output requirements to every node.
+        source_map[identity] = tuple(sorted(set(source_map[identity]) | set(behavior.source_links[ref])))
+        attributed = set(generated[identity].requirement_ids)
+        attributed.update(item.id for item in outputs if ref in item.lineage)
+        generated[identity] = replace(generated[identity], requirement_ids=tuple(
+            item.id for item in outputs if item.id in attributed))
+
     def aggregate(ref, identity, source):
         return ref if generated[ref].scope == "cell" else add(identity, "any_contact", "cell", (source,), (ref,))
 
@@ -273,10 +284,10 @@ def _digital_graph(behavior, outputs):
                 add(identity, "input", scope, (ref,), dtype=dtype)
                 bindings[key] = InputBinding(signal_id, field, identity)
             else:
-                source_map[identity] = tuple(sorted(set(source_map[identity]) | set(behavior.source_links[ref])))
+                merge_source(identity, ref)
         elif node.kind in {"signature", "memory.is_set"}:
             identity = expression(node.inputs[0])
-            source_map[identity] = tuple(sorted(set(source_map[identity]) | set(behavior.source_links[ref])))
+            merge_source(identity, ref)
         elif node.kind in {"literal", "parameter"}:
             add(identity, "constant", "cell", (ref,), attributes={"value": node.attributes[
                 "value" if node.kind == "literal" else "default"]}, dtype=TypeSpec.from_dict(node.data_type))

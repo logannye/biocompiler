@@ -19,6 +19,32 @@ from examples.executable_payload import make_payload_request
 from examples.circuit_molecules import make_molecule
 
 
+def with_protein_helper(request, *, category):
+    """Supply protein metadata while retaining its explicit member disposition."""
+    contracts = []
+    for contract in request.library.contracts:
+        if contract.template is None or contract.component.implementation_role != "output":
+            contracts.append(contract)
+            continue
+        template = contract.template
+        sources = []
+        for source in template.sources:
+            if source.id == "helper.source":
+                protein = make_molecule(source.molecule.id, "ACDEFG", form="mature_protein")
+                source = replace(source, molecule=replace(protein, features=source.molecule.features))
+            sources.append(source)
+        template = replace(
+            template,
+            sources=tuple(sources),
+            output_members=tuple(replace(member, form="mature_protein", coding_status="inapplicable")
+                                 if member.id == "helper" else member for member in template.output_members),
+            requirements=tuple(replace(item, category=category) if item.member_id == "helper" else item
+                               for item in template.requirements),
+        )
+        contracts.append(replace(contract, template=template))
+    return replace(request, library=replace(request.library, contracts=tuple(contracts)))
+
+
 class ExecutablePayloadTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -98,6 +124,30 @@ class ExecutablePayloadTests(unittest.TestCase):
         self.assertEqual(build.status, "no_solution")
         self.assertTrue(any("unsupported_final_dna_member:rna_payload_only" in option.reasons
                             for option in build.alternatives))
+
+    def test_delivered_protein_helper_is_outside_rna_payload_scope(self):
+        request = with_protein_helper(self.request, category="delivered_helper")
+        build = compile_payload(request)
+        self.assertEqual(build.status, "no_solution")
+        self.assertIsNone(build.molecules)
+        helper_id = next(item.member_id for item in self.build.construction.request.requirements
+                         if item.category == "delivered_helper")
+        reason = "unsupported_delivered_member:rna_payload_only:" + helper_id
+        self.assertTrue(any(reason in option.reasons for option in build.alternatives))
+
+    def test_encoded_product_protein_metadata_remains_legal(self):
+        request = with_protein_helper(self.request, category="encoded_product")
+        build = compile_payload(request)
+        self.assertEqual(build.status, "compiled")
+        check = check_payload_build(build, expected_request=request)
+        self.assertTrue(check.passed and check.translation_complete)
+        product_id = next(item.member_id for item in build.construction.request.requirements
+                          if item.category == "encoded_product")
+        protein = next(item for item in build.molecules.molecules if item.id == product_id)
+        self.assertEqual((protein.space.alphabet, protein.sequence), ("protein", "ACDEFG"))
+        fasta = export_payload_fasta(build, expected_request=request)
+        self.assertNotIn(">" + product_id, fasta)
+        self.assertEqual(fasta.count(">"), 3)
 
     def test_empty_library_retains_precise_missing_implementation_reasons(self):
         request = replace(self.request, library=PayloadContractLibrary("empty", ()))
