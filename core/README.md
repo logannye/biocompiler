@@ -1,9 +1,10 @@
 # OCaml core
 
-This is the first native migration increment. It implements bounded strict JSON,
-legacy Python-compatible canonical fingerprints and structural intent/type/literal
-validation, plus independent frozen source-to-Behavior correspondence. A separate
-internal library implements per-role reference execution for conformance. The
+The native migration implements bounded strict JSON, Python-compatible canonical
+fingerprints, checked domains and independent frozen source-to-Behavior
+correspondence. Internal libraries add per-role reference execution and fresh
+Intent-to-Behavior lowering. The current domain batch adds shared content pins,
+component contract algebra, molecular provenance and nominal chemistry. The
 public protocol does not yet implement compilation, behavioral execution,
 molecular verification, export acceptance or human-use admission. Capabilities
 are explicit; unimplemented operations return `unsupported` without fallback.
@@ -16,8 +17,17 @@ There is no Python semantic execution or runtime network request in either binar
 Libraries have explicit dependencies. `bioc_checker` only depends on immutable
 domain/wire modules. `bioc_service` exposes that checker; the standalone verifier
 has no dependency on a compiler, selector, matcher, assembler or emitter.
-The shared JSON codec, canonicalizer, numeric conventions and domain validators
-are part of the common trusted base, not independent execution evidence.
+The producer library `bioc_compiler` depends on the checker for its final
+correspondence check; the checker has no reverse dependency. Reference execution
+also remains separate. The shared JSON codec, canonicalizer, numeric conventions
+and domain validators are part of the common trusted base, not independent
+execution evidence.
+
+PR37–39 are merged and fully validated. PR40 reference execution still awaits its
+fresh complete [CI run 36935066451](https://github.com/logannye/biocompiler/actions/runs/36935066451) after the cross-Python fixture correction `e4846f0`. The current
+`codex/ocaml-lowering-contract-domains` batch is rebased onto that correction;
+its implementation and test wiring are present, with hosted validation pending.
+No new production routing or public protocol operation is enabled by this batch.
 
 ## Hosted validation
 
@@ -82,6 +92,30 @@ The internal domain and checker modules prepare the stateful architecture checke
   frozen BuildRequest, accounting for every operation, binding, requirement and
   source correspondence. Its abstract report binds full and semantic identities
   and carries all remaining execution, realization and acceptance obligations.
+- `bioc_compiler.Lowering` produces a complete Behavior from a frozen
+  BuildRequest. It implements its own policy rewrites, binding substitution,
+  ancestry, contact and requirement derivation, then requires `Behavior`
+  validation and independent `Lowering_check` against the original request.
+  It does not select components or emit molecular candidates.
+- `Pinned_identity` is the shared immutable model/reference/registry/source/
+  evidence content pin. Parsing a pin establishes neither content availability
+  nor support for a claim.
+- `Component_contract` checks value domains, archived domain-check claims,
+  operating domains and ports. Its Boolean/closed-interval/unknown algebra uses
+  exact types and explicit units, checks initialization separately from runtime
+  inclusion, and covers all 13 synthetic domain operations. Imported claims
+  cannot construct the abstract fresh-assessment type. The full component-model
+  and architecture records remain separate unfinished work.
+- `Diagnostic_text` fixes missing-coordinate diagnostic spelling to
+  `python_repr_unicode14.v1`. See the deliberate compatibility exception below.
+- `Molecular_record` applies molecular resource/text/serialization bounds and
+  checks `Provenance` declarations using shared pins. Declared or unknown
+  provenance remains supplied metadata, not independently established evidence.
+- `Molecule_chemistry` checks chemical identities, claims, modifications, tail
+  lengths, terminal tails and complete chemistry declarations. `validate_for`
+  checks their consistency with supplied coordinates, alphabet, sequence and
+  complete/exact-core extent. Nominal chemistry identity is distinct from
+  provenance completeness, transformation correctness and empirical function.
 - `Execution_data` provides abstract finite samples, input frames, actions,
   events and complete traces. Its strict internal codec rejects missing/unknown
   fields, duplicate mappings and excessive serialized inventories. This is a
@@ -99,6 +133,19 @@ The internal domain and checker modules prepare the stateful architecture checke
   service or standalone verifier. Declared channels remain supplied per-role
   observation/action endpoints; coupled transport is a later architecture layer.
 
+The diagnostic profile is an intentional compatibility exception. Python repr
+uses the host Unicode database; native missing-coordinate reasons use a complete,
+fixed Unicode 14 printability table. Newly assigned Unicode 15/16 characters
+therefore stay escaped, which can change reason text and fresh assessment hashes
+relative to newer Python versions. Semantic status and raw identifiers are
+unchanged; imported reason strings are preserved. Shared fixture characters must
+still match exactly, and explicit newer/unassigned witnesses test the exception.
+The [table](../protocol/unicode14-printability.json) records the official source
+and source/range SHA-256 pins; the [Unicode license](../protocol/UNICODE-LICENSE.txt)
+is retained. Regeneration reads checksum-pinned category data, never the host
+Python Unicode database. Offline checking uses
+`python3 tools/freeze_unicode14_printability.py --check`.
+
 Request/coordinate declarations are internal library APIs. The explicitly scoped
 `verify-lowering` operation exposes source-to-Behavior checking through both
 executables and the opt-in Python process adapter; production Python routing
@@ -108,7 +155,11 @@ mutation tests. Seven artificial Behavior documents cover all 38 legacy and four
 extension operation kinds, with exact document/fingerprint and census checks.
 The deterministic corpus can be checked with
 `PYTHONPATH=src python3 tools/freeze_behavior_domains.py` (a source check only).
-After `dune runtest`, the required CI job invokes:
+The configured hosted gate now contains 17 native suites, including five new
+suites for lowering, pins, component contracts, molecular records and chemistry.
+Pins have literal tests under `dune runtest`; the other four also have required
+fixture-file replay. These are configured gates, not a claim that the current
+batch has passed. After `dune runtest`, the required CI job invokes:
 
 ```sh
 core/_build/default/test/test_build_request.exe "$GITHUB_WORKSPACE/tests/conformance/case-b"
@@ -119,6 +170,29 @@ core/_build/default/test/test_lowering_check.exe "$GITHUB_WORKSPACE/tests/confor
 core/_build/default/test/test_runtime_number.exe "$GITHUB_WORKSPACE/tests/conformance/runtime-numbers-v1.json"
 core/_build/default/test/test_execution_data.exe "$GITHUB_WORKSPACE/tests/conformance/reference-execution-v1.json"
 core/_build/default/test/test_reference.exe "$GITHUB_WORKSPACE/tests/conformance/reference-execution-v1.json"
+core/_build/default/test/test_lowering.exe "$GITHUB_WORKSPACE/tests/conformance/lowering-v1.json"
+core/_build/default/test/test_component_contract.exe "$GITHUB_WORKSPACE/tests/conformance/component-contracts-v1.json"
+core/_build/default/test/test_molecular_record.exe "$GITHUB_WORKSPACE/tests/conformance/molecule-chemistry-v1.json"
+core/_build/default/test/test_molecule_chemistry.exe "$GITHUB_WORKSPACE/tests/conformance/molecule-chemistry-v1.json"
+```
+
+The new retained corpus census is:
+
+| Area | Required cases |
+| --- | --- |
+| Fresh lowering | 31 exact positives and 32 intended rejections |
+| Component contracts | 30 records, 35 malformed records, 77 algebra cases and three diagnostic-profile witnesses |
+| Molecular chemistry | 47 records, 82 decode rejections and 29 coordinate/sequence validation cases |
+| Molecular record boundaries | 10 text cases and 50 exact serialization-size cases |
+
+Missing fixture paths, truncated inventories and unintended rejection categories
+fail the native tests. Pure-Python regeneration checks need no native build:
+
+```sh
+python3 tools/freeze_lowering.py --check
+python3 tools/freeze_component_contracts.py --check
+python3 tools/freeze_unicode14_printability.py --check
+python3 tools/freeze_molecule_chemistry.py
 ```
 
 The numeric corpus retains 1,948 CPython results and 28 independent literal

@@ -32,6 +32,9 @@ class CoreBoundaryTests(unittest.TestCase):
         self.assertEqual(set(dependencies), {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_service", "digestif", "zarith"})
         self.assertEqual(receipt["roles"]["bioc_checker"], "checker")
         self.assertEqual(receipt["roles"]["bioc_semantics"], "source_semantics")
+        self.assertEqual(receipt["roles"]["bioc_compiler"], "compiler")
+        self.assertNotIn("bioc_compiler", dependencies)
+        self.assertIn("bioc_checker", receipt["transitive_dependencies"]["bioc_compiler"])
         self.assertNotIn("bioc_semantics", dependencies)
         self.assertEqual(set(receipt["transitive_dependencies"]["bioc_semantics"]),
                          {"bioc_wire", "bioc_domain", "digestif", "zarith"})

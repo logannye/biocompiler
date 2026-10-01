@@ -57,3 +57,28 @@
  (name test_reference)
  (modules test_reference)
  (libraries bioc_wire bioc_domain bioc_semantics zarith))
+
+(test
+ (name test_pinned_identity)
+ (modules test_pinned_identity)
+ (libraries bioc_wire bioc_domain))
+
+(test
+ (name test_component_contract)
+ (modules test_component_contract)
+ (libraries bioc_wire bioc_domain zarith))
+
+(test
+ (name test_molecular_record)
+ (modules test_molecular_record)
+ (libraries bioc_wire bioc_domain zarith))
+
+(test
+ (name test_molecule_chemistry)
+ (modules test_molecule_chemistry)
+ (libraries bioc_wire bioc_domain))
+
+(test
+ (name test_lowering)
+ (modules test_lowering)
+ (libraries bioc_wire bioc_domain bioc_compiler bioc_checker))

@@ -23,6 +23,7 @@ LIBRARIES = {
     "bioc_wire": ("lib/wire/dune", {"digestif", "zarith"}, "trusted_primitive"),
     "bioc_domain": ("lib/domain/dune", {"bioc_wire", "zarith"}, "trusted_domain"),
     "bioc_semantics": ("lib/semantics/dune", {"bioc_wire", "bioc_domain", "zarith"}, "source_semantics"),
+    "bioc_compiler": ("lib/compiler/dune", {"bioc_wire", "bioc_domain", "bioc_checker"}, "compiler"),
     "bioc_checker": ("lib/checker/dune", {"bioc_wire", "bioc_domain"}, "checker"),
     "bioc_service": ("lib/service/dune", {"bioc_wire", "bioc_domain", "bioc_checker"}, "checker_service"),
 }
@@ -43,6 +44,11 @@ TESTS = {
     "test_runtime_number": {"bioc_wire", "bioc_domain", "zarith"},
     "test_execution_data": {"bioc_wire", "bioc_domain", "zarith"},
     "test_reference": {"bioc_wire", "bioc_domain", "bioc_semantics", "zarith"},
+    "test_pinned_identity": {"bioc_wire", "bioc_domain"},
+    "test_component_contract": {"bioc_wire", "bioc_domain", "zarith"},
+    "test_molecular_record": {"bioc_wire", "bioc_domain", "zarith"},
+    "test_molecule_chemistry": {"bioc_wire", "bioc_domain"},
+    "test_lowering": {"bioc_wire", "bioc_domain", "bioc_compiler", "bioc_checker"},
 }
 PRODUCER_ROLES = frozenset({"compiler", "matcher", "selection", "emitter", "assembler", "producer"})
 TOKEN = re.compile(r'\s+|;[^\n]*(?:\n|$)|\(|\)|"(?:\\.|[^"\\])*"|[^\s();"]+')
