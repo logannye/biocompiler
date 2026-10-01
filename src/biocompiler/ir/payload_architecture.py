@@ -14,6 +14,7 @@ import math
 from typing import ClassVar
 
 from biocompiler.ir.behavior import BehaviorProgram
+from biocompiler.ir.architecture_deployment import RNAAvailabilityContract, RNADeploymentRequirement
 from biocompiler.ir.circuit_intent import CircuitLifecycle
 from biocompiler.ir.circuit_observations import CircuitProduct
 from biocompiler.ir.component_contracts import ComponentRecord
@@ -26,6 +27,7 @@ from biocompiler.ir.serialization import require
 
 MAX_ARCHITECTURE_RECORDS = 256
 MAX_ARCHITECTURE_NODES = 4096
+MAX_ARCHITECTURE_MATCH_STATES = 1_000_000
 CONTROL_KINDS = frozenset({
     "activation", "production_adjustment", "activity_control", "memory_reset",
     "shutdown", "physical_separation", "dependency_disjointness",
@@ -309,10 +311,14 @@ class RNAArchitectureConstraints(_MoleculeRecord):
     preferred_refinement_ids: tuple[str, ...] = ()
     max_combinations: int = 256
     require_complete: bool = False
-    schema_version: ClassVar[str] = "biocompiler.rna_architecture_constraints.v0.1"
+    max_match_states: int = 100_000
+    max_match_instances: int = MAX_ARCHITECTURE_RECORDS
+    deployment_requirements: tuple[RNADeploymentRequirement, ...] = ()
+    schema_version: ClassVar[str] = "biocompiler.rna_architecture_constraints.v0.2"
     _decoders: ClassVar[dict] = {
         "delivery_groups": _decode_records(RecipientDeliveryGroup, MAX_ARCHITECTURE_RECORDS),
         "control_requirements": _decode_records(ControlRequirement, MAX_ARCHITECTURE_RECORDS),
+        "deployment_requirements": _decode_records(RNADeploymentRequirement, MAX_ARCHITECTURE_RECORDS),
     }
 
     def __post_init__(self):
@@ -323,7 +329,12 @@ class RNAArchitectureConstraints(_MoleculeRecord):
         require(self.exact_count is None or self.max_count is None or self.exact_count <= self.max_count,
                 "Exact RNA count exceeds maximum count.")
         _limit(self.max_combinations, "architecture search bound", 4096, optional=False, minimum=1)
-        for key, cls in (("delivery_groups", RecipientDeliveryGroup), ("control_requirements", ControlRequirement)):
+        _limit(self.max_match_states, "architecture matching work bound", MAX_ARCHITECTURE_MATCH_STATES,
+               optional=False, minimum=1)
+        _limit(self.max_match_instances, "architecture matching instance bound", MAX_ARCHITECTURE_RECORDS,
+               optional=False, minimum=1)
+        for key, cls in (("delivery_groups", RecipientDeliveryGroup), ("control_requirements", ControlRequirement),
+                         ("deployment_requirements", RNADeploymentRequirement)):
             object.__setattr__(self, key, _records(getattr(self, key), cls, MAX_ARCHITECTURE_RECORDS, key))
         object.__setattr__(self, "preferred_refinement_ids", _names(
             self.preferred_refinement_ids, "preferred refinements", maximum=MAX_ARCHITECTURE_RECORDS))
@@ -332,10 +343,48 @@ class RNAArchitectureConstraints(_MoleculeRecord):
 
 
 @dataclass(frozen=True)
+class ArchitectureMatchPolicy(_MoleculeRecord):
+    """Identity-independent exact graph embedding, without semantic rewrites.
+
+    Attributes, ordered inputs, types, role edges and execution policies remain
+    authoritative. Source correspondence in the enclosing refinement supplies
+    optional anchors; no nominal biological symbol is treated as a wildcard.
+    """
+
+    mode: str = "exact_semantic_subgraph"
+    schema_version: ClassVar[str] = "biocompiler.architecture_match_policy.v0.1"
+
+    def __post_init__(self):
+        require(self.mode == "exact_semantic_subgraph", "Unsupported architecture matching policy.")
+        self._check_resources()
+
+
+@dataclass(frozen=True)
+class ArchitectureRefinementInstance(_MoleculeRecord):
+    """Complete selected correspondence to independently supplied authority."""
+
+    id: str
+    refinement_id: str
+    source_bindings: Mapping[str, str]
+    schema_version: ClassVar[str] = "biocompiler.architecture_refinement_instance.v0.1"
+
+    def __post_init__(self):
+        _text(self.id, "Architecture instance identity")
+        _text(self.refinement_id, "Supplied refinement identity")
+        object.__setattr__(self, "source_bindings", _mapping(self.source_bindings, "instance source correspondence"))
+        require(bool(self.source_bindings), "Architecture instances need complete source correspondence.")
+        require(len(set(self.source_bindings.values())) == len(self.source_bindings),
+                "Instance source correspondence must be injective.")
+        self._check_resources()
+
+
+@dataclass(frozen=True)
 class PayloadArchitectureRefinement(_MoleculeRecord):
     """One independently supplied composite behavior-to-material contract.
 
-    Every model node has an injective source correspondence. ``owned_node_ids``
+    Explicit refinements give every model node an injective source correspondence.
+    A matching policy instead makes that map a set of optional anchors; emitted
+    instances always retain the complete correspondence. ``owned_node_ids``
     distinguishes installed effects/state from the referenced boundary scaffold;
     overlap eligibility is checked during composition, never waived by a label.
     All behavior identities in placements, helpers, controls and channels are
@@ -360,9 +409,13 @@ class PayloadArchitectureRefinement(_MoleculeRecord):
     helpers: tuple[ArchitectureHelper, ...] = ()
     channels: tuple[ArchitectureChannel, ...] = ()
     output_contracts: tuple[ArchitectureOutputBinding, ...] = ()
-    schema_version: ClassVar[str] = "biocompiler.payload_architecture_refinement.v0.1"
+    match_policy: ArchitectureMatchPolicy | None = None
+    availability: tuple[RNAAvailabilityContract, ...] = ()
+    schema_version: ClassVar[str] = "biocompiler.payload_architecture_refinement.v0.2"
     _decoders: ClassVar[dict] = {
         "behavior": BehaviorProgram.from_dict,
+        "match_policy": lambda data: None if data is None else ArchitectureMatchPolicy.from_dict(data),
+        "availability": _decode_records(RNAAvailabilityContract, MAX_ARCHITECTURE_RECORDS),
         "components": _decode_records(ComponentRecord, MAX_ARCHITECTURE_RECORDS),
         "templates": _decode_records(PayloadTemplate, MAX_ARCHITECTURE_RECORDS),
         "bindings": _decode_records(ArchitectureBinding, MAX_ARCHITECTURE_RECORDS),
@@ -382,7 +435,13 @@ class PayloadArchitectureRefinement(_MoleculeRecord):
         object.__setattr__(self, "behavior", BehaviorProgram.from_dict(self.behavior.to_dict()))
         object.__setattr__(self, "source_bindings", _mapping(self.source_bindings, "source correspondence"))
         nodes = {node.id: node for node in self.behavior.nodes}
-        require(set(self.source_bindings) == nodes.keys(), "Every model node needs exact source correspondence.")
+        require(self.match_policy is None or isinstance(self.match_policy, ArchitectureMatchPolicy),
+                "Invalid architecture matching policy.")
+        if self.match_policy is None:
+            require(set(self.source_bindings) == nodes.keys(), "Every model node needs exact source correspondence.")
+        else:
+            _text(self.id, "Automatically matched refinement identity", maximum=4000)
+            require(set(self.source_bindings) <= nodes.keys(), "Source anchor refers to an absent model node.")
         require(len(set(self.source_bindings.values())) == len(self.source_bindings),
                 "Source correspondence must be injective within a refinement.")
         object.__setattr__(self, "owned_node_ids", _names(
@@ -394,10 +453,16 @@ class PayloadArchitectureRefinement(_MoleculeRecord):
             ("connections", ArchitectureConnection, False),
             ("controls", ArchitectureControl, False), ("helpers", ArchitectureHelper, False),
             ("channels", ArchitectureChannel, False), ("output_contracts", ArchitectureOutputBinding, False),
+            ("availability", RNAAvailabilityContract, False),
         ):
             object.__setattr__(self, key, _records(getattr(self, key), cls,
                                MAX_ARCHITECTURE_RECORDS, key, nonempty=nonempty))
         components = {record.id for record in self.components}
+        placement_ids = {placement.id for placement in self.placements}
+        require(all(contract.placement_id in placement_ids for contract in self.availability),
+                "Availability contract references an absent placement.")
+        require(len({contract.placement_id for contract in self.availability}) == len(self.availability),
+                "Every placement can have only one supplied availability contract.")
         ports = {record.id: {port.id: port for port in record.ports} for record in self.components}
         destinations = set()
         for connection in self.connections:

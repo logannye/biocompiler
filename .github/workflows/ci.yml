@@ -46,7 +46,7 @@ jobs:
           path: generated/executable-rna-payload-ci/
           if-no-files-found: error
           retention-days: 7
-      - name: Compile and independently replay A–F RNA architectures outside the checkout
+      - name: Compile and independently replay RNA architectures, automatic matches and controls outside the checkout
         working-directory: ${{ runner.temp }}
         env:
           ARCHITECTURE_OUTPUT: ${{ github.workspace }}/generated/payload-architecture-ci
@@ -435,7 +435,7 @@ jobs:
         with:
           name: payload-architecture-py3.14
           path: artifacts/python314
-      - name: Compare complete A–F source, model, RNA and manifest artifacts across Python versions
+      - name: Compare complete source, model, RNA, matching, control and manifest artifacts across Python versions
         run: |
           python3 - <<'PY'
           import hashlib
@@ -443,10 +443,12 @@ jobs:
           roots = [Path('artifacts/python311'), Path('artifacts/python314')]
           manifests = [{str(p.relative_to(root)): hashlib.sha256(p.read_bytes()).hexdigest()
                         for p in root.rglob('*') if p.is_file()} for root in roots]
-          required = {f'{case}/{name}' for case in 'abcdef'
+          cases = [*'abcdef', 'automatic_timing', 'automatic_b', 'automatic_f',
+                   'memory_reset', 'state_reset', 'production_adjustment', 'activity_control']
+          required = {f'{case}/{name}' for case in cases
                       for name in ('request.json', 'build.json', 'payloads.fasta', 'manifest.json',
                                    'cli.build.json', 'cli.export.json', 'cli.verification.json')}
-          assert required <= manifests[0].keys(), 'Missing complete A–F architecture artifacts'
+          assert required <= manifests[0].keys(), 'Missing complete architecture acceptance artifacts'
           assert manifests[0] == manifests[1], 'Cross-Python architecture artifacts differ'
           for name, digest in sorted(manifests[0].items()):
               print(digest, name)

@@ -87,12 +87,39 @@ sequence-only records and unrelated intrinsic operators cannot discharge runtime
 meaning. The independent checker reconstructs source/model correspondence and
 construction authority from the original request.
 
+In `0.1.0.dev29`, `ArchitectureMatchPolicy` permits exact semantic subgraph
+matching with empty or partial source anchors. Matching preserves node kinds,
+attributes, types, ordered inputs, roles, execution policies and explicitly
+pinned output identities. The compiler records each complete correspondence as
+an `ArchitectureRefinementInstance`, bounds both search work and the retained
+match census, and refuses sequence emission when matching is exhausted. The
+checker reconstructs selected correspondences without calling the matcher.
+This automates supplied implementation reuse across source node IDs; arbitrary
+mechanism discovery and parameter synthesis remain open.
+
 Source-side control requirements distinguish activation, production adjustment,
 activity control, memory reset, shutdown, physical separation and dependency
 disjointness. Declared control domains and causal inputs are checked independently
 of RNA count. Helper capabilities, initialization, capacity, sharing, compartment
 and explicit same-recipient delivery determine availability. All delivered helper
 RNAs contribute to count/size constraints and export.
+
+Bounded functional proofs additionally cover reset-priority Boolean memory,
+finite-state reset, monotone changes to the complete requested production rate
+for a role/product, and explicit ongoing activity gating. Proofs require
+nonvacuous controls and inspect all relevant source writers or action branches.
+Production independence includes every branch's causal inputs and implementing
+components. Unsupported temporal or quantitative control proofs retain precise
+failures even when the underlying Behavior is executable.
+
+`RNAAvailabilityContract` supplies an onset interval and duration interval for a
+placement relative to a declared exposure start. `RNADeploymentRequirement`
+requires every group/recipient member, including helpers, to cover an execution
+window in its declared compartment and optionally cease availability by a
+deadline. The checker uses worst-case interval endpoints and explicit
+same-recipient assumptions. It predicts neither delivery success nor effector
+clearance. These requirements do not discharge unmapped source deployment or
+acceptance wrappers.
 
 Behavior v0.2 provides restricted sampled rolling integration and typed channel
 observations/emissions. Coupled execution reuses the original per-role evaluator

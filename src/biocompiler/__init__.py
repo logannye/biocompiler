@@ -1,6 +1,6 @@
 """Author inspectable therapeutic programs for in-vivo immune-cell engineering."""
 
-__version__ = "0.1.0.dev28"
+__version__ = "0.1.0.dev29"
 
 from biocompiler.ir.architecture_build import (
     ArchitectureGap, RequirementRealization, ArchitectureAlternative,
@@ -12,7 +12,9 @@ from biocompiler.ir.payload_architecture import (
     ArchitectureControl, ControlRequirement, ArchitectureHelper, ArchitectureChannel,
     ArchitectureOutputBinding, RecipientDeliveryGroup, RNAArchitectureConstraints,
     PayloadArchitectureRefinement, PayloadArchitectureLibrary,
+    ArchitectureMatchPolicy, ArchitectureRefinementInstance,
 )
+from biocompiler.ir.architecture_deployment import RNAAvailabilityContract, RNADeploymentRequirement
 from biocompiler.ir.circuit_intent import ExecutableCircuitBehavior
 from biocompiler.ir.behavior import BEHAVIOR_V2
 from biocompiler.semantics.payload_execution import SourceExecutionManifest, derive_source_execution
@@ -533,6 +535,7 @@ __all__ = [
     "ArchitectureBinding", "ArchitectureConnection", "ArchitecturePlacement", "ArchitectureControl", "ControlRequirement",
     "ArchitectureHelper", "ArchitectureChannel", "ArchitectureOutputBinding", "RecipientDeliveryGroup",
     "RNAArchitectureConstraints", "PayloadArchitectureRefinement", "PayloadArchitectureLibrary",
+    "ArchitectureMatchPolicy", "ArchitectureRefinementInstance", "RNAAvailabilityContract", "RNADeploymentRequirement",
     "ExecutableCircuitBehavior", "BEHAVIOR_V2", "SourceExecutionManifest", "derive_source_execution",
     "compile_payload_architecture", "export_payload_architecture",
     "PayloadArchitectureVerification", "check_payload_architecture", "verify_payload_architecture",

@@ -233,9 +233,10 @@ class PayloadArchitectureVerificationTests(unittest.TestCase):
                 self.assertTrue(any(reason in gap.code for candidate in build.alternatives for gap in candidate.gaps),
                                 build.alternatives)
 
-    def test_other_functional_control_kinds_remain_unsupported(self):
+    def test_production_adjustment_requires_explicit_source_rates(self):
         request = make_architecture_request("A", variants=("many_components_one_rna",), independent_shutdown=True)
-        required = replace(request.constraints.control_requirements[0], kind="production_adjustment")
+        required = replace(request.constraints.control_requirements[0],
+                           id="independent-production", kind="production_adjustment")
         refinement = request.library.refinements[0]
         refinement = replace(refinement, controls=tuple(replace(item, kind="production_adjustment")
             if item.kind == "shutdown" else item for item in refinement.controls))
@@ -243,7 +244,7 @@ class PayloadArchitectureVerificationTests(unittest.TestCase):
                           library=replace(request.library, refinements=(refinement,)))
         build = compile_payload_architecture(request)
         self.assertEqual(build.status, "no_solution")
-        self.assertTrue(any("kind_not_implemented" in gap.code
+        self.assertTrue(any("unspecified_production_rate" in gap.code
                             for candidate in build.alternatives for gap in candidate.gaps))
 
     def test_contact_predicate_assertion_has_no_implicit_universal_scope(self):
@@ -289,8 +290,8 @@ class PayloadArchitectureVerificationTests(unittest.TestCase):
         from biocompiler.errors import SerializationError
         request, build = fixture()
         receipt = check_payload_architecture(build, expected_request=request).to_dict()
-        self.assertEqual(receipt["checker_version"], "biocompiler.payload_architecture_checker.v0.2")
-        receipt["checker_version"] = "biocompiler.payload_architecture_checker.v0.1"
+        self.assertEqual(receipt["checker_version"], "biocompiler.payload_architecture_checker.v0.3")
+        receipt["checker_version"] = "biocompiler.payload_architecture_checker.v0.2"
         with self.assertRaises(SerializationError):
             PayloadArchitectureVerification.from_dict(receipt)
 

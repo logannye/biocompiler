@@ -9,8 +9,12 @@ component contracts without requiring biological evidence. Keep whether those
 contracts hold in human cells as a separate unresolved empirical question.
 Follow `docs/payload-architecture-v0.1.md` for the current composite architecture
 profile and `docs/executable-rna-payload-v0.1.md` for the earlier per-operator path.
-Package `0.1.0.dev28` keeps behavioral meaning, implementation components, RNA
+Package `0.1.0.dev29` keeps behavioral meaning, implementation components, RNA
 partitioning and recipient roles separate with explicit many-to-many bindings.
+Opt-in exact semantic matching derives source correspondences from supplied
+models. Independent bounded control and RNA availability checks retain every
+unsupported requirement; neither matching nor availability invents biological
+mechanisms, sequences or delivery guarantees.
 
 The sole product purpose is to translate high-level Python and eventually natural-language therapeutic intent into exact, complete RNA payload specifications for immune cells engineered in vivo in humans. Prioritize work that connects source requirements to selected molecular implementations and emitted bases. Quantitative execution and evaluation should support those selected implementations, with explicit observation maps, assumptions and separately assessed evidence, rather than become a disconnected simulator. Bounded compilation under supplied executable component contracts is implemented; natural-language authoring, unrestricted molecular realization and empirical therapeutic validation remain open.
 

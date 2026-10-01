@@ -3,7 +3,7 @@
 ## Current code-only RNA translation sprint
 
 The product scope is therapeutic program input and exact RNA payload output for
-human immune cells engineered in vivo. In `0.1.0.dev28`, the
+human immune cells engineered in vivo. In `0.1.0.dev29`, the
 [composite architecture profile](payload-architecture-v0.1.md) extends the
 [earlier executable RNA profile](executable-rna-payload-v0.1.md) through full
 source Behavior contracts, exact source/model correspondence and many-to-many
@@ -19,7 +19,18 @@ full temporal/stateful program for supplementary outputs. Behavior v0.2 explicit
 versions sampled integration and channel semantics. These software checks require
 no biological evidence and do not close reference-review or applicability gates.
 
-Remaining work includes general refinement discovery, additional implementation
+The next automation increment now derives exact semantic source-to-component
+correspondences from supplied Behavior models, with optional partial anchors,
+bounded matching and retained ambiguity/rejection reasons. Independent checking
+reconstructs the selected maps without trusting the matcher. New integrated
+examples cover automatic stateful/coupled matching, helper availability windows,
+Boolean memory reset, finite-state reset, aggregate production adjustment and
+activity gating. All paths still use supplied exact sequence templates and the
+existing RNA construction engine. Selected instance and match-census receipts
+use v0.2 architecture schemas; checker policy v0.3 requires fresh verification.
+
+Remaining work includes general mechanism discovery beyond exact supplied-model
+matching, additional implementation
 families, mapped component resource/operating-domain contracts, external helper
 observation bindings, continuous/stochastic physiology and broader deployment
 obligations. Search optimality is not independently certified. Sampled numerical

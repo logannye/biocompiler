@@ -39,17 +39,21 @@ def check_install(output, *, cli=("biocompiler",)):
     # Main has already checked the installed import origin before this addition.
     sys.path.insert(0, str(REPOSITORY))
     from examples.payload_architectures import make_architecture_request
+    from examples.architecture_automation import make_automatic_case, make_automation_request
+    from examples.architecture_control_designs import make_control_request
 
     output = Path(output)
-    for case in "ABCDEF":
+    cases = [(case, make_architecture_request(case,
+                variants=("one_rna", "many_components_one_rna", "two_rna", "one_rna_helper"),
+                independent_shutdown=True) if case == "A" else make_architecture_request(case))
+             for case in "ABCDEF"]
+    cases += [("automatic_timing", make_automation_request())]
+    cases += [("automatic_" + case.lower(), make_automatic_case(case)) for case in "BF"]
+    cases += [(case, make_control_request(case)) for case in
+              ("memory_reset", "state_reset", "production_adjustment", "activity_control")]
+    for case, request in cases:
         directory = output / case.lower()
         directory.mkdir(parents=True, exist_ok=True)
-        request = (
-            make_architecture_request(case,
-                variants=("one_rna", "many_components_one_rna", "two_rna", "one_rna_helper"),
-                independent_shutdown=True)
-            if case == "A" else make_architecture_request(case)
-        )
         request_path, build_path = directory / "request.json", directory / "build.json"
         _save(request_path, request)
         # Roundtrip the independently retained request before API compilation.
