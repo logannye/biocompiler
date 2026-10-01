@@ -59,6 +59,30 @@ biocompiler implements Python intent authoring, immutable build/realization requ
 - Follow `docs/behavior-semantics-v0.1.md` for the executable semantic profile and `docs/toolchain-contracts.md` for downstream obligations. Behavior execution is a language reference, not a biological simulator.
 - Follow `docs/realization-checking-v0.1.md` for model checks. Keep candidate execution independent from the behavior evaluator. Preserve non-vacuous coverage and all dependency identities; change tool/profile versions when their semantics change. Never broaden a finite-trace result into a universal or empirical claim.
 
+## Development cadence and validation
+
+Follow [development validation](docs/development-validation.md) for the approved
+CI protocol. Commit useful local checkpoints freely, push coherent batches, and
+merge a cohesive completed feature when its exact revision passes the required
+checks. Do not require a fresh remote run for every small local edit or hold a
+finished feature for unrelated future work. Preserve active PRs and their valid
+running checks unless a necessary correction changes the tested revision.
+
+- Use one PR validation run per update, main-branch push validation, and explicit
+  manual dispatch when needed; avoid duplicate branch-push and PR runs.
+- Keep all discovered unit tests on Python 3.11 and 3.14, partitioned into five
+  balanced shards per version. Exact discovery accounting must reject missing,
+  duplicate, failed, canceled or stale execution; skipped jobs are not a pass.
+- Run installed-package, integration, browser and reproducibility checks in
+  parallel. Keep all existing commands, expected-failure assertions, independent
+  verification, exports and artifact comparisons when moving work between jobs.
+- Use measured per-test/class and job timings to rebalance. A 10–20 minute hosted
+  validation cycle is a target to measure, not a guarantee or a reason to remove
+  coverage. Runner availability and slow remaining work must remain visible.
+- Reuse immutable fixture inputs where useful, but never substitute a cached
+  PASS, stale authority or skipped checker for fresh validation of the current
+  revision. Preserve revision/platform metadata and fail-closed aggregate gates.
+
 ## Native build storage
 
 The initial implementation is Python-only. If Rust is introduced, keep editing and static work local, and run compilation, executable native tests, extension rebuilds, and packaging on hosted CI by default. Local Rust compilation, including implicit builds through package managers, requires explicit authorization for the work. Do not silently fall back to local native builds. Record the tested revision and platform and preserve required validation gates.
