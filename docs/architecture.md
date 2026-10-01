@@ -1,5 +1,12 @@
 # Architecture
 
+The accepted target implementation uses TypeScript for Studio, Python for
+authoring/orchestration/scientific exploration, and OCaml for the compiler,
+independent checking and canonical emission. See [ADR 0007](decisions/0007-language-boundaries-and-ocaml-core.md)
+and the [session migration roadmap](language-migration-roadmap.md). This is a
+planned migration: the current compiler is Python and Studio is JavaScript.
+The domain layers and preservation obligations below continue to govern both.
+
 The current product interface is **therapeutic program design → corresponding
 payload RNA sequences for human immune cells engineered in vivo**. The
 [RNA architecture profile](payload-architecture-v0.1.md) connects complete source

@@ -1,4 +1,4 @@
-name: Python checks
+name: Compiler checks
 
 on:
   pull_request:
@@ -820,6 +820,111 @@ jobs:
           overwrite: true
           retention-days: 7
 
+  ocaml-core:
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 35
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: ubuntu-24.04
+            platform: linux-x86_64
+          - runner: macos-14
+            platform: macos-arm64
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Record revision and verify the actual native platform
+        run: python tools/ci_validation.py start --job ocaml-core --variant ${{ matrix.platform }} --output generated/ci/start.json
+      - uses: ocaml/setup-ocaml@93303b622b2522e4411e295f9e77411a24912ac7 # v3, pinned 2026-10-01
+        with:
+          ocaml-compiler: "5.4.0"
+          opam-pin: false
+          opam-repositories: |
+            default: git+https://github.com/ocaml/opam-repository.git#ac27950e5eac6c981ad809dff370c937820b7893
+      - name: Resolve pinned native dependencies and retain the platform lock
+        run: |
+          opam install core/biocompiler_core.opam --deps-only --with-test --yes
+          opam lock core/biocompiler_core.opam
+          mkdir -p generated/core
+          cp biocompiler_core.opam.locked generated/core/dependencies.opam.locked
+          opam switch export generated/core/switch.export
+          opam list --installed --columns=name,version > generated/core/packages.txt
+      - name: Install Python package and check compiler/checker dependency separation
+        run: |
+          python -m pip install .
+          python tools/check_core_boundaries.py --output generated/core/boundaries.json
+      - name: Compile and test native core and standalone verifier
+        run: |
+          opam exec -- dune build --root core @all
+          opam exec -- dune runtest --root core
+      - name: Check exact cross-language bytes and structural intent parity
+        env:
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          python tools/check_core_conformance.py \
+            --core "$GITHUB_WORKSPACE/core/_build/default/bin/core/main.exe" \
+            --verify "$GITHUB_WORKSPACE/core/_build/default/bin/verify/main.exe" \
+            --output generated/core/conformance.json
+      - name: Retain revision-bound native executables
+        run: |
+          cp core/_build/default/bin/core/main.exe generated/core/biocompiler-core
+          cp core/_build/default/bin/verify/main.exe generated/core/biocompiler-verify
+          python -c 'import hashlib,json,os,pathlib,platform; p=pathlib.Path("generated/core"); p.joinpath("binaries.json").write_text(json.dumps({"revision":os.environ["GITHUB_SHA"],"system":platform.system(),"machine":platform.machine(),"sha256":{n:hashlib.sha256(p.joinpath(n).read_bytes()).hexdigest() for n in ("biocompiler-core","biocompiler-verify")}},sort_keys=True,indent=2)+"\n")'
+      - name: Retain native evidence even on failure
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: core-${{ matrix.platform }}
+          path: generated/core/
+          if-no-files-found: warn
+          overwrite: true
+          retention-days: 7
+      - name: Record successful native validation
+        run: python tools/ci_validation.py finish --start generated/ci/start.json --output generated/ci/ocaml-core-${{ matrix.platform }}.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ci-job-ocaml-core-${{ matrix.platform }}
+          path: generated/ci/ocaml-core-${{ matrix.platform }}.json
+          if-no-files-found: error
+          overwrite: true
+          retention-days: 7
+
+  studio-typescript:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Record job authority and start time
+        run: python tools/ci_validation.py start --job studio-typescript --variant 3.11 --output generated/ci/start.json
+      - name: Install package and pinned TypeScript tooling without lifecycle scripts
+        run: |
+          python -m pip install .
+          npm --prefix studio ci --ignore-scripts
+      - name: Require strict types and exact committed release assets before rebuilding
+        run: |
+          npm --prefix studio run typecheck
+          npm --prefix studio run check:assets
+          npm --prefix studio test
+          python tools/migration_inventory.py --check
+      - name: Record successful TypeScript validation
+        run: python tools/ci_validation.py finish --start generated/ci/start.json --output generated/ci/studio-typescript-3.11.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ci-job-studio-typescript-3.11
+          path: generated/ci/studio-typescript-3.11.json
+          if-no-files-found: error
+          overwrite: true
+          retention-days: 7
+
   validation:
     name: Validation complete
     if: always()
@@ -835,6 +940,8 @@ jobs:
       - executable-rna-reproducibility
       - payload-architecture-reproducibility
       - circuit-reproducibility
+      - ocaml-core
+      - studio-typescript
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

@@ -1,0 +1,14 @@
+(test
+ (name test_wire)
+ (modules test_wire)
+ (libraries bioc_wire zarith))
+
+(test
+ (name test_intent)
+ (modules test_intent)
+ (libraries bioc_wire bioc_domain bioc_checker))
+
+(test
+ (name test_protocol)
+ (modules test_protocol)
+ (libraries bioc_wire bioc_service))

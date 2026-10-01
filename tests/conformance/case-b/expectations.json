@@ -1,0 +1,89 @@
+{
+  "schema_version": "biocompiler.migration_case_b_expectations.v0.1",
+  "authorship": "Literal expectations retained from separately reading the authored rules and artificial construction authority. The generator compares against these; it never rewrites them from its outputs.",
+  "base_identities": {
+    "intent": "07d7e859c0e6c291a1b93dc37244fdea270328e69a47d057b2c5cea9c720f9ff",
+    "behavior": "c065e54650b218dfcebe4129c7012c45ca056b13aa618184ddf46eec623eff9e"
+  },
+  "structure": {
+    "intent_node_count": 33,
+    "intent_kinds": {"action.secrete": 1, "action.state_set": 4, "and": 6, "held_for": 1, "literal": 1, "not": 3, "qualitative": 3, "role": 1, "rule": 5, "scope": 1, "secretion": 1, "signal": 3, "state": 1, "state.is": 2},
+    "runtime_node_count": 11,
+    "role_count": 1,
+    "channel_count": 0,
+    "state_declarations": [{"values": ["prime", "act", "recover"], "initial": "prime", "observation": "prior_state", "arbitration": "unspecified", "assignment_values": ["act", "recover", "prime", "recover"]}],
+    "outputs": [
+      {"action_kind": "action.state_set", "trigger": "condition", "activation": "level", "product": null, "assigned_value": "act", "ongoing": false, "rate": null},
+      {"action_kind": "action.state_set", "trigger": "condition", "activation": "level", "product": null, "assigned_value": "recover", "ongoing": false, "rate": null},
+      {"action_kind": "action.state_set", "trigger": "condition", "activation": "level", "product": null, "assigned_value": "prime", "ongoing": false, "rate": null},
+      {"action_kind": "action.state_set", "trigger": "condition", "activation": "level", "product": null, "assigned_value": "recover", "ongoing": false, "rate": null},
+      {"action_kind": "action.secrete", "trigger": "condition", "activation": "level", "product": "artificial_alpha", "assigned_value": null, "ongoing": true, "rate": "unspecified"}
+    ],
+    "rna_count": 1,
+    "rna_sequences": ["ACGUAC"],
+    "requested_control_requirements": 0,
+    "supplier_control_kinds": ["activation", "shutdown"],
+    "require_complete": false
+  },
+  "verification": {
+    "outcome": "pass", "translation_complete": true, "construction_complete": true,
+    "diagnostics": [], "unresolved": [], "search_verified": false,
+    "empirical_validation": "unknown", "human_therapeutic_admission": "not_admitted",
+    "claim_scope": "Exact source and supplied composite execution-contract correspondence, explicit functional requirements under bounded control proof profiles, declared RNA availability intervals, physical composition and complete RNA construction only. No empirical component function or human therapeutic admission is established."
+  },
+  "bindings": {
+    "base": {"explicit_overrides": {}, "resolved_defaults": {}, "resolved_bindings": {}},
+    "parameter-default": {
+      "explicit_overrides": {},
+      "resolved_defaults": {"dwell_duration": {"kind": "scalar", "value": 2, "unit": "s", "canonical_value": 2, "type": {"kind": "scalar", "name": "Duration", "dimensions": {"time": 1}, "arguments": []}}},
+      "resolved_bindings": {"dwell_duration": {"kind": "scalar", "value": 2, "unit": "s", "canonical_value": 2, "type": {"kind": "scalar", "name": "Duration", "dimensions": {"time": 1}, "arguments": []}}}
+    },
+    "parameter-override": {
+      "explicit_overrides": {"dwell_duration": {"kind": "scalar", "value": 3, "unit": "s", "canonical_value": 3, "type": {"kind": "scalar", "name": "Duration", "dimensions": {"time": 1}, "arguments": []}}},
+      "resolved_defaults": {},
+      "resolved_bindings": {"dwell_duration": {"kind": "scalar", "value": 3, "unit": "s", "canonical_value": 3, "type": {"kind": "scalar", "name": "Duration", "dimensions": {"time": 1}, "arguments": []}}}
+    }
+  },
+  "timelines": [
+    {
+      "id": "initial_context_and_dwell", "variants": ["base", "parameter-default"], "horizon": 2,
+      "inputs": [{"time": 0, "present": {"context": true, "reset": false, "shutdown": false}}],
+      "frames": [{"time": 0, "state": "act", "secretion_count": 1}, {"time": 2, "state": "recover", "secretion_count": 0}]
+    },
+    {
+      "id": "context_loss_does_not_veto_act", "variants": ["base"], "horizon": 2,
+      "inputs": [{"time": 0, "present": {"context": true, "reset": false, "shutdown": false}}, {"time": 1, "present": {"context": false, "reset": false, "shutdown": false}}],
+      "frames": [{"time": 0, "state": "act", "secretion_count": 1}, {"time": 1, "state": "act", "secretion_count": 1}, {"time": 2, "state": "recover", "secretion_count": 0}]
+    },
+    {
+      "id": "reset_and_fresh_reentry", "variants": ["base"], "horizon": 3.5,
+      "inputs": [{"time": 0, "present": {"context": true, "reset": false, "shutdown": false}}, {"time": 1, "present": {"context": true, "reset": true, "shutdown": false}}, {"time": 1.5, "present": {"context": true, "reset": false, "shutdown": false}}],
+      "frames": [{"time": 0, "state": "act", "secretion_count": 1}, {"time": 1, "state": "prime", "secretion_count": 0}, {"time": 1.5, "state": "act", "secretion_count": 1}, {"time": 3.5, "state": "recover", "secretion_count": 0}]
+    },
+    {
+      "id": "shutdown_disables_reset", "variants": ["base"], "horizon": 1,
+      "inputs": [{"time": 0, "present": {"context": true, "reset": false, "shutdown": false}}, {"time": 1, "present": {"context": true, "reset": true, "shutdown": true}}],
+      "frames": [{"time": 0, "state": "act", "secretion_count": 1}, {"time": 1, "state": "recover", "secretion_count": 0}]
+    },
+    {
+      "id": "reset_at_deadline", "variants": ["base"], "horizon": 2,
+      "inputs": [{"time": 0, "present": {"context": true, "reset": false, "shutdown": false}}, {"time": 2, "present": {"context": true, "reset": true, "shutdown": false}}],
+      "frames": [{"time": 0, "state": "act", "secretion_count": 1}, {"time": 2, "state": "prime", "secretion_count": 0}]
+    },
+    {
+      "id": "explicit_horizon_before_deadline", "variants": ["base"], "horizon": 1,
+      "inputs": [{"time": 0, "present": {"context": true, "reset": false, "shutdown": false}}],
+      "frames": [{"time": 0, "state": "act", "secretion_count": 1}, {"time": 1, "state": "act", "secretion_count": 1}]
+    },
+    {
+      "id": "no_context_stays_prime", "variants": ["base"], "horizon": 3,
+      "inputs": [{"time": 0, "present": {"context": false, "reset": false, "shutdown": false}}],
+      "frames": [{"time": 0, "state": "prime", "secretion_count": 0}, {"time": 3, "state": "prime", "secretion_count": 0}]
+    },
+    {
+      "id": "override_changes_deadline", "variants": ["parameter-override"], "horizon": 3,
+      "inputs": [{"time": 0, "present": {"context": true, "reset": false, "shutdown": false}}, {"time": 2, "present": {"context": false, "reset": false, "shutdown": false}}],
+      "frames": [{"time": 0, "state": "act", "secretion_count": 1}, {"time": 2, "state": "act", "secretion_count": 1}, {"time": 3, "state": "recover", "secretion_count": 0}]
+    }
+  ]
+}

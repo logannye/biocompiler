@@ -1,0 +1,2630 @@
+{
+  "base": {
+    "source": {
+      "authoring_variant": "base",
+      "nodes": [
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 49
+          },
+          "node_id": "n000001",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 49
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 50
+          },
+          "node_id": "n000002",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 50
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 50
+          },
+          "node_id": "n000003",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 50
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 50
+          },
+          "node_id": "n000004",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 50
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 51
+          },
+          "node_id": "n000005",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 51
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 51
+          },
+          "node_id": "n000006",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 51
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 52
+          },
+          "node_id": "n000007",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 52
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 52
+          },
+          "node_id": "n000008",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 52
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 53
+          },
+          "node_id": "n000009",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 53
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 54
+          },
+          "node_id": "n000010",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 54
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 54
+          },
+          "node_id": "n000011",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 54
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 54
+          },
+          "node_id": "n000012",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 54
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 55
+          },
+          "node_id": "n000013",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 55
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 55
+          },
+          "node_id": "n000014",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 55
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 55
+          },
+          "node_id": "n000015",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 55
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 55
+          },
+          "node_id": "n000016",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 55
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 55
+          },
+          "node_id": "n000017",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 55
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 56
+          },
+          "node_id": "n000018",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 56
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 56
+          },
+          "node_id": "n000019",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 56
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 56
+          },
+          "node_id": "n000020",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 56
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 56
+          },
+          "node_id": "n000021",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 56
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 56
+          },
+          "node_id": "n000022",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 56
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 56
+          },
+          "node_id": "n000023",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 56
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 57
+          },
+          "node_id": "n000024",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 57
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 57
+          },
+          "node_id": "n000025",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 57
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 57
+          },
+          "node_id": "n000026",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 57
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 57
+          },
+          "node_id": "n000027",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 57
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 58
+          },
+          "node_id": "n000028",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 58
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 58
+          },
+          "node_id": "n000029",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 58
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 59
+          },
+          "node_id": "n000030",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 59
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 59
+          },
+          "node_id": "n000031",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 59
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 59
+          },
+          "node_id": "n000032",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 59
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 59
+          },
+          "node_id": "n000033",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 59
+          }
+        }
+      ],
+      "normalized_intent_semantic_fingerprint": "07d7e859c0e6c291a1b93dc37244fdea270328e69a47d057b2c5cea9c720f9ff",
+      "raw_intent_semantic_fingerprint": "07d7e859c0e6c291a1b93dc37244fdea270328e69a47d057b2c5cea9c720f9ff",
+      "variant_intent_semantic_fingerprint": "07d7e859c0e6c291a1b93dc37244fdea270328e69a47d057b2c5cea9c720f9ff"
+    },
+    "supplier": {
+      "authoring_variant": "base",
+      "nodes": [
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 108
+          },
+          "node_id": "n000001",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 108
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 109
+          },
+          "node_id": "n000002",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 109
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 109
+          },
+          "node_id": "n000003",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 109
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 109
+          },
+          "node_id": "n000004",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 109
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 110
+          },
+          "node_id": "n000005",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 110
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 110
+          },
+          "node_id": "n000006",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 110
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 111
+          },
+          "node_id": "n000007",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 111
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 111
+          },
+          "node_id": "n000008",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 111
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 112
+          },
+          "node_id": "n000009",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 112
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 113
+          },
+          "node_id": "n000010",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 113
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 113
+          },
+          "node_id": "n000011",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 113
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 113
+          },
+          "node_id": "n000012",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 113
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 114
+          },
+          "node_id": "n000013",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 114
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 114
+          },
+          "node_id": "n000014",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 114
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 114
+          },
+          "node_id": "n000015",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 114
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 114
+          },
+          "node_id": "n000016",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 114
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 114
+          },
+          "node_id": "n000017",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 114
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 115
+          },
+          "node_id": "n000018",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 115
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 115
+          },
+          "node_id": "n000019",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 115
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 115
+          },
+          "node_id": "n000020",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 115
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 115
+          },
+          "node_id": "n000021",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 115
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 115
+          },
+          "node_id": "n000022",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 115
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 115
+          },
+          "node_id": "n000023",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 115
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 116
+          },
+          "node_id": "n000024",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 116
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 116
+          },
+          "node_id": "n000025",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 116
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 116
+          },
+          "node_id": "n000026",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 116
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 116
+          },
+          "node_id": "n000027",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 116
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 117
+          },
+          "node_id": "n000028",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 117
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 117
+          },
+          "node_id": "n000029",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 117
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 118
+          },
+          "node_id": "n000030",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 118
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 118
+          },
+          "node_id": "n000031",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 118
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 118
+          },
+          "node_id": "n000032",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 118
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 118
+          },
+          "node_id": "n000033",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 118
+          }
+        }
+      ],
+      "normalized_intent_semantic_fingerprint": "3e335ab3a02d0a5bbf9ab036d3be7391a210632e79679200b14c313ffdbdf0bc",
+      "raw_intent_semantic_fingerprint": "3e335ab3a02d0a5bbf9ab036d3be7391a210632e79679200b14c313ffdbdf0bc",
+      "variant_intent_semantic_fingerprint": "3e335ab3a02d0a5bbf9ab036d3be7391a210632e79679200b14c313ffdbdf0bc"
+    }
+  },
+  "parameter-default": {
+    "source": {
+      "authoring_variant": "parameter-default",
+      "nodes": [
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 49
+          },
+          "node_id": "n000001",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 49
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 50
+          },
+          "node_id": "n000002",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 50
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 50
+          },
+          "node_id": "n000003",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 50
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 50
+          },
+          "node_id": "n000004",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 50
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 51
+          },
+          "node_id": "n000005",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 51
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 51
+          },
+          "node_id": "n000006",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 51
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 52
+          },
+          "node_id": "n000007",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 52
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 52
+          },
+          "node_id": "n000008",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 52
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 53
+          },
+          "node_id": "n000009",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 53
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 54
+          },
+          "node_id": "n000010",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 54
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 54
+          },
+          "node_id": "n000011",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 54
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 54
+          },
+          "node_id": "n000012",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 54
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 55
+          },
+          "node_id": "n000013",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 55
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 55
+          },
+          "node_id": "n000014",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 55
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 55
+          },
+          "node_id": "n000015",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 55
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 55
+          },
+          "node_id": "n000016",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 55
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 55
+          },
+          "node_id": "n000017",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 55
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 56
+          },
+          "node_id": "n000018",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 56
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 56
+          },
+          "node_id": "n000019",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 56
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 56
+          },
+          "node_id": "n000020",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 56
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 56
+          },
+          "node_id": "n000021",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 56
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 56
+          },
+          "node_id": "n000022",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 56
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 56
+          },
+          "node_id": "n000023",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 56
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 57
+          },
+          "node_id": "n000024",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 57
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 57
+          },
+          "node_id": "n000025",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 57
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 57
+          },
+          "node_id": "n000026",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 57
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 57
+          },
+          "node_id": "n000027",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 57
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 58
+          },
+          "node_id": "n000028",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 58
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 58
+          },
+          "node_id": "n000029",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 58
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 59
+          },
+          "node_id": "n000030",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 59
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 59
+          },
+          "node_id": "n000031",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 59
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 59
+          },
+          "node_id": "n000032",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 59
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 59
+          },
+          "node_id": "n000033",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 59
+          }
+        }
+      ],
+      "normalized_intent_semantic_fingerprint": "07d7e859c0e6c291a1b93dc37244fdea270328e69a47d057b2c5cea9c720f9ff",
+      "raw_intent_semantic_fingerprint": "07d7e859c0e6c291a1b93dc37244fdea270328e69a47d057b2c5cea9c720f9ff",
+      "variant_intent_semantic_fingerprint": "00915b2c2d8c7ad59aa9d44a9456d2e356305ff8f8f858e059c6ade9fb1e78c5"
+    },
+    "supplier": {
+      "authoring_variant": "parameter-default",
+      "nodes": [
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 108
+          },
+          "node_id": "n000001",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 108
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 109
+          },
+          "node_id": "n000002",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 109
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 109
+          },
+          "node_id": "n000003",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 109
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 109
+          },
+          "node_id": "n000004",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 109
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 110
+          },
+          "node_id": "n000005",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 110
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 110
+          },
+          "node_id": "n000006",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 110
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 111
+          },
+          "node_id": "n000007",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 111
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 111
+          },
+          "node_id": "n000008",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 111
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 112
+          },
+          "node_id": "n000009",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 112
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 113
+          },
+          "node_id": "n000010",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 113
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 113
+          },
+          "node_id": "n000011",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 113
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 113
+          },
+          "node_id": "n000012",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 113
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 114
+          },
+          "node_id": "n000013",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 114
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 114
+          },
+          "node_id": "n000014",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 114
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 114
+          },
+          "node_id": "n000015",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 114
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 114
+          },
+          "node_id": "n000016",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 114
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 114
+          },
+          "node_id": "n000017",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 114
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 115
+          },
+          "node_id": "n000018",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 115
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 115
+          },
+          "node_id": "n000019",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 115
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 115
+          },
+          "node_id": "n000020",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 115
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 115
+          },
+          "node_id": "n000021",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 115
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 115
+          },
+          "node_id": "n000022",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 115
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 115
+          },
+          "node_id": "n000023",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 115
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 116
+          },
+          "node_id": "n000024",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 116
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 116
+          },
+          "node_id": "n000025",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 116
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 116
+          },
+          "node_id": "n000026",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 116
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 116
+          },
+          "node_id": "n000027",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 116
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 117
+          },
+          "node_id": "n000028",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 117
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 117
+          },
+          "node_id": "n000029",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 117
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 118
+          },
+          "node_id": "n000030",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 118
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 118
+          },
+          "node_id": "n000031",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 118
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 118
+          },
+          "node_id": "n000032",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 118
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 118
+          },
+          "node_id": "n000033",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 118
+          }
+        }
+      ],
+      "normalized_intent_semantic_fingerprint": "3e335ab3a02d0a5bbf9ab036d3be7391a210632e79679200b14c313ffdbdf0bc",
+      "raw_intent_semantic_fingerprint": "3e335ab3a02d0a5bbf9ab036d3be7391a210632e79679200b14c313ffdbdf0bc",
+      "variant_intent_semantic_fingerprint": "122794b907df8c93784ad30321ebda7bb03aa92b0c67910a36bca214f99d2584"
+    }
+  },
+  "parameter-override": {
+    "source": {
+      "authoring_variant": "parameter-override",
+      "nodes": [
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 49
+          },
+          "node_id": "n000001",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 49
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 50
+          },
+          "node_id": "n000002",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 50
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 50
+          },
+          "node_id": "n000003",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 50
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 50
+          },
+          "node_id": "n000004",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 50
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 51
+          },
+          "node_id": "n000005",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 51
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 51
+          },
+          "node_id": "n000006",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 51
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 52
+          },
+          "node_id": "n000007",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 52
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 52
+          },
+          "node_id": "n000008",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 52
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 53
+          },
+          "node_id": "n000009",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 53
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 54
+          },
+          "node_id": "n000010",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 54
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 54
+          },
+          "node_id": "n000011",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 54
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 54
+          },
+          "node_id": "n000012",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 54
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 55
+          },
+          "node_id": "n000013",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 55
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 55
+          },
+          "node_id": "n000014",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 55
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 55
+          },
+          "node_id": "n000015",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 55
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 55
+          },
+          "node_id": "n000016",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 55
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 55
+          },
+          "node_id": "n000017",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 55
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 56
+          },
+          "node_id": "n000018",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 56
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 56
+          },
+          "node_id": "n000019",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 56
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 56
+          },
+          "node_id": "n000020",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 56
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 56
+          },
+          "node_id": "n000021",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 56
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 56
+          },
+          "node_id": "n000022",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 56
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 56
+          },
+          "node_id": "n000023",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 56
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 57
+          },
+          "node_id": "n000024",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 57
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 57
+          },
+          "node_id": "n000025",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 57
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 57
+          },
+          "node_id": "n000026",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 57
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 57
+          },
+          "node_id": "n000027",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 57
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 58
+          },
+          "node_id": "n000028",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 58
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 58
+          },
+          "node_id": "n000029",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 58
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 59
+          },
+          "node_id": "n000030",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 59
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 59
+          },
+          "node_id": "n000031",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 59
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 59
+          },
+          "node_id": "n000032",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 59
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 59
+          },
+          "node_id": "n000033",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "source_program",
+            "line": 59
+          }
+        }
+      ],
+      "normalized_intent_semantic_fingerprint": "07d7e859c0e6c291a1b93dc37244fdea270328e69a47d057b2c5cea9c720f9ff",
+      "raw_intent_semantic_fingerprint": "07d7e859c0e6c291a1b93dc37244fdea270328e69a47d057b2c5cea9c720f9ff",
+      "variant_intent_semantic_fingerprint": "00915b2c2d8c7ad59aa9d44a9456d2e356305ff8f8f858e059c6ade9fb1e78c5"
+    },
+    "supplier": {
+      "authoring_variant": "parameter-override",
+      "nodes": [
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 108
+          },
+          "node_id": "n000001",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 108
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 109
+          },
+          "node_id": "n000002",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 109
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 109
+          },
+          "node_id": "n000003",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 109
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 109
+          },
+          "node_id": "n000004",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 109
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 110
+          },
+          "node_id": "n000005",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 110
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 110
+          },
+          "node_id": "n000006",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 110
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 111
+          },
+          "node_id": "n000007",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 111
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 111
+          },
+          "node_id": "n000008",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 111
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 112
+          },
+          "node_id": "n000009",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 112
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 113
+          },
+          "node_id": "n000010",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 113
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 113
+          },
+          "node_id": "n000011",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 113
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 113
+          },
+          "node_id": "n000012",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 113
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 114
+          },
+          "node_id": "n000013",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 114
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 114
+          },
+          "node_id": "n000014",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 114
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 114
+          },
+          "node_id": "n000015",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 114
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 114
+          },
+          "node_id": "n000016",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 114
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 114
+          },
+          "node_id": "n000017",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 114
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 115
+          },
+          "node_id": "n000018",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 115
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 115
+          },
+          "node_id": "n000019",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 115
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 115
+          },
+          "node_id": "n000020",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 115
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 115
+          },
+          "node_id": "n000021",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 115
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 115
+          },
+          "node_id": "n000022",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 115
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 115
+          },
+          "node_id": "n000023",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 115
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 116
+          },
+          "node_id": "n000024",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 116
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 116
+          },
+          "node_id": "n000025",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 116
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 116
+          },
+          "node_id": "n000026",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 116
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 116
+          },
+          "node_id": "n000027",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 116
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 117
+          },
+          "node_id": "n000028",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 117
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 117
+          },
+          "node_id": "n000029",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 117
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 118
+          },
+          "node_id": "n000030",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 118
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 118
+          },
+          "node_id": "n000031",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 118
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 118
+          },
+          "node_id": "n000032",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 118
+          }
+        },
+        {
+          "canonical": {
+            "file": "examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 118
+          },
+          "node_id": "n000033",
+          "original": {
+            "file": "<checkout>/examples/payload_architectures.py",
+            "function": "contract_program",
+            "line": 118
+          }
+        }
+      ],
+      "normalized_intent_semantic_fingerprint": "3e335ab3a02d0a5bbf9ab036d3be7391a210632e79679200b14c313ffdbdf0bc",
+      "raw_intent_semantic_fingerprint": "3e335ab3a02d0a5bbf9ab036d3be7391a210632e79679200b14c313ffdbdf0bc",
+      "variant_intent_semantic_fingerprint": "122794b907df8c93784ad30321ebda7bb03aa92b0c67910a36bca214f99d2584"
+    }
+  }
+}

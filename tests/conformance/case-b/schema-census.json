@@ -1,0 +1,6018 @@
+{
+  "base/candidate": {
+    "biocompiler.architecture_alternative.v0.1": {
+      "field_sets": [
+        [
+          "gaps",
+          "refinement_ids",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/alternatives/0"
+      ]
+    },
+    "biocompiler.architecture_control.v0.1": {
+      "field_sets": [
+        [
+          "assumptions",
+          "behavior_node_ids",
+          "component_ids",
+          "controlling_node_ids",
+          "domain_id",
+          "id",
+          "kind",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/plan/control_domains/0",
+        "/plan/control_domains/1"
+      ]
+    },
+    "biocompiler.architecture_placement.v0.1": {
+      "field_sets": [
+        [
+          "compartment",
+          "delivery_group",
+          "id",
+          "member_id",
+          "recipient_role",
+          "schema_version",
+          "template_id"
+        ]
+      ],
+      "paths": [
+        "/plan/placements/0"
+      ]
+    },
+    "biocompiler.architecture_refinement_instance.v0.1": {
+      "field_sets": [
+        [
+          "id",
+          "refinement_id",
+          "schema_version",
+          "source_bindings"
+        ]
+      ],
+      "paths": [
+        "/plan/instances/0",
+        "/match_instances/0"
+      ]
+    },
+    "biocompiler.assembly_origin.v0.1": {
+      "field_sets": [
+        [
+          "destination",
+          "id",
+          "provenance",
+          "schema_version",
+          "source_path",
+          "source_space"
+        ]
+      ],
+      "paths": [
+        "/construction/request/sources/0/molecule/assembly/0",
+        "/construction/candidate/bundle/molecules/0/assembly/0"
+      ]
+    },
+    "biocompiler.behavior.v0.2": {
+      "field_sets": [
+        [
+          "name",
+          "nodes",
+          "parameter_bindings",
+          "policies",
+          "requirements",
+          "roots",
+          "schema_version",
+          "source_fingerprint",
+          "source_links"
+        ]
+      ],
+      "paths": [
+        "/execution/behavior",
+        "/construction/request/circuit/requirements/0/behavior/response",
+        "/construction/candidate/bundle/request/requirements/0/behavior/response"
+      ]
+    },
+    "biocompiler.build_request.v0.1": {
+      "field_sets": [
+        [
+          "artifact_scope",
+          "behavior_profile",
+          "explicit_overrides",
+          "implementation_constraints",
+          "intent",
+          "parameter_metadata",
+          "preferences",
+          "provenance",
+          "resolved_bindings",
+          "resolved_defaults",
+          "schema_version",
+          "target"
+        ]
+      ],
+      "paths": [
+        "/execution/source",
+        "/execution/ledger/33/semantics",
+        "/construction/request/circuit/profile/source_request",
+        "/construction/candidate/bundle/request/profile/source_request"
+      ]
+    },
+    "biocompiler.chemical_identity.v0.1": {
+      "field_sets": [
+        [
+          "accession",
+          "namespace",
+          "schema_version",
+          "version"
+        ]
+      ],
+      "paths": [
+        "/construction/request/sources/0/molecule/chemistry/start_end/identity",
+        "/construction/request/sources/0/molecule/chemistry/finish_end/identity",
+        "/construction/candidate/bundle/molecules/0/chemistry/start_end/identity",
+        "/construction/candidate/bundle/molecules/0/chemistry/finish_end/identity"
+      ]
+    },
+    "biocompiler.chemistry_claim.v0.1": {
+      "field_sets": [
+        [
+          "identity",
+          "provenance",
+          "schema_version",
+          "status"
+        ]
+      ],
+      "paths": [
+        "/construction/request/sources/0/molecule/chemistry/cap",
+        "/construction/request/sources/0/molecule/chemistry/start_end",
+        "/construction/request/sources/0/molecule/chemistry/finish_end",
+        "/construction/candidate/bundle/molecules/0/chemistry/cap",
+        "/construction/candidate/bundle/molecules/0/chemistry/start_end",
+        "/construction/candidate/bundle/molecules/0/chemistry/finish_end"
+      ]
+    },
+    "biocompiler.circuit_construction_assessment.v0.1": {
+      "field_sets": [
+        [
+          "admission_policy",
+          "biological_function",
+          "candidate_fingerprint",
+          "capability_version",
+          "checker_version",
+          "claim_scope",
+          "complete",
+          "construction_profile",
+          "diagnostics",
+          "empirical_validation",
+          "human_therapeutic_admission",
+          "outcome",
+          "reconstructed_fingerprint",
+          "request_fingerprint",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/construction/assessment"
+      ]
+    },
+    "biocompiler.circuit_construction_build.v0.1": {
+      "field_sets": [
+        [
+          "assessment",
+          "candidate",
+          "request",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/construction"
+      ]
+    },
+    "biocompiler.circuit_construction_candidate.v0.1": {
+      "field_sets": [
+        [
+          "bundle",
+          "diagnostics",
+          "experimental_amounts",
+          "missing_members",
+          "request_fingerprint",
+          "schema_version",
+          "values"
+        ]
+      ],
+      "paths": [
+        "/construction/candidate"
+      ]
+    },
+    "biocompiler.circuit_construction_request.v0.1": {
+      "field_sets": [
+        [
+          "amounts",
+          "circuit",
+          "complex_members",
+          "id",
+          "mode",
+          "output_members",
+          "payload_structures",
+          "requirements",
+          "schema_version",
+          "sources",
+          "steps"
+        ]
+      ],
+      "paths": [
+        "/construction/request"
+      ]
+    },
+    "biocompiler.circuit_executable_behavior.v0.1": {
+      "field_sets": [
+        [
+          "action_ids",
+          "dependencies",
+          "inputs",
+          "lifecycle",
+          "output",
+          "response",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/construction/request/circuit/requirements/0/behavior",
+        "/construction/candidate/bundle/request/requirements/0/behavior"
+      ]
+    },
+    "biocompiler.circuit_lifecycle.v0.1": {
+      "field_sets": [
+        [
+          "cessation",
+          "clearance",
+          "mode",
+          "onset",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/construction/request/circuit/requirements/0/behavior/lifecycle",
+        "/construction/candidate/bundle/request/requirements/0/behavior/lifecycle"
+      ]
+    },
+    "biocompiler.circuit_molecule.v0.1": {
+      "field_sets": [
+        [
+          "assembly",
+          "chemistry",
+          "coding_status",
+          "features",
+          "form",
+          "id",
+          "provenance",
+          "schema_version",
+          "sequence",
+          "sequence_extent",
+          "space"
+        ]
+      ],
+      "paths": [
+        "/construction/request/sources/0/molecule",
+        "/construction/candidate/bundle/molecules/0"
+      ]
+    },
+    "biocompiler.circuit_molecule_set.v0.1": {
+      "field_sets": [
+        [
+          "complexes",
+          "form_mappings",
+          "id",
+          "molecules",
+          "request",
+          "role_instances",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/construction/candidate/bundle"
+      ]
+    },
+    "biocompiler.circuit_observation.v0.1": {
+      "field_sets": [
+        [
+          "compartment",
+          "encoding",
+          "entity",
+          "id",
+          "quantity",
+          "schema_version",
+          "scope",
+          "window"
+        ]
+      ],
+      "paths": [
+        "/construction/request/circuit/requirements/0/behavior/output/observation",
+        "/construction/candidate/bundle/request/requirements/0/behavior/output/observation"
+      ]
+    },
+    "biocompiler.circuit_product.v0.1": {
+      "field_sets": [
+        [
+          "id",
+          "kind",
+          "observation",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/construction/request/circuit/requirements/0/behavior/output",
+        "/construction/candidate/bundle/request/requirements/0/behavior/output"
+      ]
+    },
+    "biocompiler.circuit_profile_request.v0.1": {
+      "field_sets": [
+        [
+          "boundary",
+          "mode",
+          "molecular_form",
+          "purpose",
+          "recipient",
+          "schema_version",
+          "source_experiment",
+          "source_request",
+          "target"
+        ]
+      ],
+      "paths": [
+        "/construction/request/circuit/profile",
+        "/construction/candidate/bundle/request/profile"
+      ]
+    },
+    "biocompiler.circuit_request.v0.1": {
+      "field_sets": [
+        [
+          "deployment_id",
+          "fidelity_scope",
+          "profile",
+          "reference_lock",
+          "requested_form",
+          "requirements",
+          "schema_version",
+          "selected_realization"
+        ]
+      ],
+      "paths": [
+        "/construction/request/circuit",
+        "/construction/candidate/bundle/request"
+      ]
+    },
+    "biocompiler.circuit_requirement.v0.1": {
+      "field_sets": [
+        [
+          "behavior",
+          "id",
+          "input_bindings",
+          "role_id",
+          "schema_version",
+          "source_location",
+          "source_node_ids"
+        ]
+      ],
+      "paths": [
+        "/construction/request/circuit/requirements/0",
+        "/construction/candidate/bundle/request/requirements/0"
+      ]
+    },
+    "biocompiler.component_identity.v0.1": {
+      "field_sets": [
+        [
+          "content_fingerprint",
+          "id",
+          "kind",
+          "schema_version",
+          "version"
+        ]
+      ],
+      "paths": [
+        "/construction/request/sources/0/molecule/assembly/0/provenance/authority/0",
+        "/construction/request/sources/0/molecule/features/0/provenance/authority/0",
+        "/construction/request/sources/0/molecule/chemistry/cap/provenance/authority/0",
+        "/construction/request/sources/0/molecule/chemistry/start_end/provenance/authority/0",
+        "/construction/request/sources/0/molecule/chemistry/finish_end/provenance/authority/0",
+        "/construction/request/sources/0/molecule/chemistry/modification_inventory_provenance/authority/0",
+        "/construction/request/sources/0/molecule/chemistry/terminal_tail/provenance/authority/0",
+        "/construction/request/sources/0/molecule/provenance/authority/0",
+        "/construction/request/sources/0/provenance/authority/0",
+        "/construction/request/output_members/0/provenance/authority/0",
+        "/construction/request/payload_structures/0/provenance/authority/0",
+        "/construction/candidate/bundle/molecules/0/assembly/0/provenance/authority/0",
+        "/construction/candidate/bundle/molecules/0/features/0/provenance/authority/0",
+        "/construction/candidate/bundle/molecules/0/chemistry/cap/provenance/authority/0",
+        "/construction/candidate/bundle/molecules/0/chemistry/start_end/provenance/authority/0",
+        "/construction/candidate/bundle/molecules/0/chemistry/finish_end/provenance/authority/0",
+        "/construction/candidate/bundle/molecules/0/chemistry/modification_inventory_provenance/authority/0",
+        "/construction/candidate/bundle/molecules/0/chemistry/terminal_tail/provenance/authority/0",
+        "/construction/candidate/bundle/molecules/0/provenance/authority/0"
+      ]
+    },
+    "biocompiler.component_value_domain.v0.1": {
+      "field_sets": [
+        [
+          "dtype",
+          "kind",
+          "lower",
+          "reason",
+          "schema_version",
+          "unit",
+          "upper",
+          "values"
+        ]
+      ],
+      "paths": [
+        "/execution/source/target/human_target/operating_conditions/0/domain",
+        "/execution/ledger/33/semantics/target/human_target/operating_conditions/0/domain",
+        "/construction/request/circuit/profile/target/human_target/operating_conditions/0/domain",
+        "/construction/request/circuit/profile/source_request/target/human_target/operating_conditions/0/domain",
+        "/construction/candidate/bundle/request/profile/target/human_target/operating_conditions/0/domain",
+        "/construction/candidate/bundle/request/profile/source_request/target/human_target/operating_conditions/0/domain"
+      ]
+    },
+    "biocompiler.construction_member_requirement.v0.1": {
+      "field_sets": [
+        [
+          "category",
+          "external_fingerprint",
+          "external_id",
+          "id",
+          "member_id",
+          "roles",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/construction/request/requirements/0"
+      ]
+    },
+    "biocompiler.construction_output_member.v0.1": {
+      "field_sets": [
+        [
+          "coding_status",
+          "form",
+          "id",
+          "provenance",
+          "schema_version",
+          "sequence_extent",
+          "space_id",
+          "value"
+        ]
+      ],
+      "paths": [
+        "/construction/request/output_members/0"
+      ]
+    },
+    "biocompiler.construction_role_declaration.v0.1": {
+      "field_sets": [
+        [
+          "compartment",
+          "id",
+          "purpose",
+          "role",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/construction/request/requirements/0/roles/0"
+      ]
+    },
+    "biocompiler.construction_root_source.v0.1": {
+      "field_sets": [
+        [
+          "id",
+          "molecule",
+          "provenance",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/construction/request/sources/0"
+      ]
+    },
+    "biocompiler.construction_value_ref.v0.1": {
+      "field_sets": [
+        [
+          "id",
+          "kind",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/construction/request/output_members/0/value"
+      ]
+    },
+    "biocompiler.elaboration_provenance.v0.1": {
+      "field_sets": [
+        [
+          "dependency_identities",
+          "external_inputs",
+          "locations",
+          "recorded_at",
+          "schema_version",
+          "source_identities"
+        ]
+      ],
+      "paths": [
+        "/execution/source/provenance",
+        "/execution/ledger/33/semantics/provenance",
+        "/construction/request/circuit/profile/source_request/provenance",
+        "/construction/candidate/bundle/request/profile/source_request/provenance"
+      ]
+    },
+    "biocompiler.human_host_dependency.v0.1": {
+      "field_sets": [
+        [
+          "capability",
+          "compartment",
+          "id",
+          "schema_version",
+          "support"
+        ]
+      ],
+      "paths": [
+        "/execution/source/target/human_target/host_dependencies/0",
+        "/execution/ledger/33/semantics/target/human_target/host_dependencies/0",
+        "/construction/request/circuit/profile/target/human_target/host_dependencies/0",
+        "/construction/request/circuit/profile/source_request/target/human_target/host_dependencies/0",
+        "/construction/candidate/bundle/request/profile/target/human_target/host_dependencies/0",
+        "/construction/candidate/bundle/request/profile/source_request/target/human_target/host_dependencies/0"
+      ]
+    },
+    "biocompiler.human_operating_condition.v0.1": {
+      "field_sets": [
+        [
+          "compartment",
+          "domain",
+          "id",
+          "observable",
+          "schema_version",
+          "support"
+        ]
+      ],
+      "paths": [
+        "/execution/source/target/human_target/operating_conditions/0",
+        "/execution/ledger/33/semantics/target/human_target/operating_conditions/0",
+        "/construction/request/circuit/profile/target/human_target/operating_conditions/0",
+        "/construction/request/circuit/profile/source_request/target/human_target/operating_conditions/0",
+        "/construction/candidate/bundle/request/profile/target/human_target/operating_conditions/0",
+        "/construction/candidate/bundle/request/profile/source_request/target/human_target/operating_conditions/0"
+      ]
+    },
+    "biocompiler.human_target_context.v0.1": {
+      "field_sets": [
+        [
+          "capabilities",
+          "compartments",
+          "context_id",
+          "context_version",
+          "human_target",
+          "payload_format",
+          "resources",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/execution/source/target",
+        "/execution/ledger/33/semantics/target",
+        "/construction/request/circuit/profile/target",
+        "/construction/request/circuit/profile/source_request/target",
+        "/construction/candidate/bundle/request/profile/target",
+        "/construction/candidate/bundle/request/profile/source_request/target"
+      ]
+    },
+    "biocompiler.human_target_contract.v0.1": {
+      "field_sets": [
+        [
+          "cell_state",
+          "cell_subtype",
+          "disease_context",
+          "engineering",
+          "evidence",
+          "host_dependencies",
+          "operating_conditions",
+          "population_exclusion",
+          "population_inclusion",
+          "recipient_taxon_id",
+          "schema_version",
+          "tissue_context"
+        ]
+      ],
+      "paths": [
+        "/execution/source/target/human_target",
+        "/execution/ledger/33/semantics/target/human_target",
+        "/construction/request/circuit/profile/target/human_target",
+        "/construction/request/circuit/profile/source_request/target/human_target",
+        "/construction/candidate/bundle/request/profile/target/human_target",
+        "/construction/candidate/bundle/request/profile/source_request/target/human_target"
+      ]
+    },
+    "biocompiler.immune_recipient_identity.v0.1": {
+      "field_sets": [
+        [
+          "cell_subtype_claim_fingerprint",
+          "eligibility_basis",
+          "empirical_support",
+          "lineage",
+          "schema_version",
+          "target_fingerprint"
+        ]
+      ],
+      "paths": [
+        "/construction/request/circuit/profile/recipient",
+        "/construction/candidate/bundle/request/profile/recipient"
+      ]
+    },
+    "biocompiler.intent.v0.1": {
+      "field_sets": [
+        [
+          "name",
+          "nodes",
+          "roots",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/execution/source/intent",
+        "/execution/ledger/33/semantics/intent",
+        "/construction/request/circuit/profile/source_request/intent",
+        "/construction/candidate/bundle/request/profile/source_request/intent"
+      ]
+    },
+    "biocompiler.molecular_declaration_provenance.v0.1": {
+      "field_sets": [
+        [
+          "authority",
+          "locator",
+          "reason",
+          "schema_version",
+          "status"
+        ]
+      ],
+      "paths": [
+        "/construction/request/sources/0/molecule/assembly/0/provenance",
+        "/construction/request/sources/0/molecule/features/0/provenance",
+        "/construction/request/sources/0/molecule/chemistry/cap/provenance",
+        "/construction/request/sources/0/molecule/chemistry/start_end/provenance",
+        "/construction/request/sources/0/molecule/chemistry/finish_end/provenance",
+        "/construction/request/sources/0/molecule/chemistry/modification_inventory_provenance",
+        "/construction/request/sources/0/molecule/chemistry/terminal_tail/provenance",
+        "/construction/request/sources/0/molecule/provenance",
+        "/construction/request/sources/0/provenance",
+        "/construction/request/output_members/0/provenance",
+        "/construction/request/payload_structures/0/provenance",
+        "/construction/candidate/bundle/molecules/0/assembly/0/provenance",
+        "/construction/candidate/bundle/molecules/0/features/0/provenance",
+        "/construction/candidate/bundle/molecules/0/chemistry/cap/provenance",
+        "/construction/candidate/bundle/molecules/0/chemistry/start_end/provenance",
+        "/construction/candidate/bundle/molecules/0/chemistry/finish_end/provenance",
+        "/construction/candidate/bundle/molecules/0/chemistry/modification_inventory_provenance",
+        "/construction/candidate/bundle/molecules/0/chemistry/terminal_tail/provenance",
+        "/construction/candidate/bundle/molecules/0/provenance"
+      ]
+    },
+    "biocompiler.molecule_chemistry.v0.1": {
+      "field_sets": [
+        [
+          "cap",
+          "finish_end",
+          "modification_inventory_provenance",
+          "modification_inventory_status",
+          "modifications",
+          "schema_version",
+          "start_end",
+          "terminal_tail"
+        ]
+      ],
+      "paths": [
+        "/construction/request/sources/0/molecule/chemistry",
+        "/construction/candidate/bundle/molecules/0/chemistry"
+      ]
+    },
+    "biocompiler.molecule_coordinate_path.v0.1": {
+      "field_sets": [
+        [
+          "schema_version",
+          "space_id",
+          "spans",
+          "strand"
+        ]
+      ],
+      "paths": [
+        "/construction/request/sources/0/molecule/assembly/0/destination",
+        "/construction/request/sources/0/molecule/assembly/0/source_path",
+        "/construction/request/sources/0/molecule/features/0/path",
+        "/construction/candidate/bundle/molecules/0/assembly/0/destination",
+        "/construction/candidate/bundle/molecules/0/assembly/0/source_path",
+        "/construction/candidate/bundle/molecules/0/features/0/path"
+      ]
+    },
+    "biocompiler.molecule_coordinate_space.v0.1": {
+      "field_sets": [
+        [
+          "alphabet",
+          "axis",
+          "id",
+          "length",
+          "schema_version",
+          "topology"
+        ]
+      ],
+      "paths": [
+        "/construction/request/sources/0/molecule/space",
+        "/construction/request/sources/0/molecule/assembly/0/source_space",
+        "/construction/candidate/bundle/molecules/0/space",
+        "/construction/candidate/bundle/molecules/0/assembly/0/source_space"
+      ]
+    },
+    "biocompiler.molecule_feature.v0.1": {
+      "field_sets": [
+        [
+          "id",
+          "kind",
+          "path",
+          "provenance",
+          "reading_frame",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/construction/request/sources/0/molecule/features/0",
+        "/construction/candidate/bundle/molecules/0/features/0"
+      ]
+    },
+    "biocompiler.molecule_index_span.v0.1": {
+      "field_sets": [
+        [
+          "end",
+          "schema_version",
+          "start"
+        ]
+      ],
+      "paths": [
+        "/construction/request/sources/0/molecule/assembly/0/destination/spans/0",
+        "/construction/request/sources/0/molecule/assembly/0/source_path/spans/0",
+        "/construction/request/sources/0/molecule/features/0/path/spans/0",
+        "/construction/candidate/bundle/molecules/0/assembly/0/destination/spans/0",
+        "/construction/candidate/bundle/molecules/0/assembly/0/source_path/spans/0",
+        "/construction/candidate/bundle/molecules/0/features/0/path/spans/0"
+      ]
+    },
+    "biocompiler.molecule_role_instance.v0.1": {
+      "field_sets": [
+        [
+          "compartment",
+          "id",
+          "purpose",
+          "role",
+          "schema_version",
+          "subject_fingerprint",
+          "subject_id"
+        ]
+      ],
+      "paths": [
+        "/construction/candidate/bundle/role_instances/0"
+      ]
+    },
+    "biocompiler.observation_encoding.v0.1": {
+      "field_sets": [
+        [
+          "allowed_range",
+          "high",
+          "low",
+          "mode",
+          "schema_version",
+          "unit"
+        ]
+      ],
+      "paths": [
+        "/construction/request/circuit/requirements/0/behavior/output/observation/encoding",
+        "/construction/candidate/bundle/request/requirements/0/behavior/output/observation/encoding"
+      ]
+    },
+    "biocompiler.observation_entity.v0.1": {
+      "field_sets": [
+        [
+          "accession",
+          "isoform",
+          "namespace",
+          "schema_version",
+          "version"
+        ]
+      ],
+      "paths": [
+        "/construction/request/circuit/requirements/0/behavior/output/observation/entity",
+        "/construction/candidate/bundle/request/requirements/0/behavior/output/observation/entity"
+      ]
+    },
+    "biocompiler.observation_window.v0.1": {
+      "field_sets": [
+        [
+          "aggregation",
+          "end",
+          "reference",
+          "schema_version",
+          "start",
+          "unit"
+        ]
+      ],
+      "paths": [
+        "/construction/request/circuit/requirements/0/behavior/output/observation/window",
+        "/construction/candidate/bundle/request/requirements/0/behavior/output/observation/window"
+      ]
+    },
+    "biocompiler.payload_architecture_build.v0.2": {
+      "field_sets": [
+        [
+          "alternatives",
+          "construction",
+          "diagnostics",
+          "execution",
+          "match_instances",
+          "plan",
+          "request_fingerprint",
+          "schema_version",
+          "status"
+        ]
+      ],
+      "paths": [
+        "/"
+      ]
+    },
+    "biocompiler.payload_architecture_plan.v0.2": {
+      "field_sets": [
+        [
+          "assumptions",
+          "availability",
+          "channels",
+          "control_domains",
+          "helpers",
+          "instances",
+          "ledger",
+          "placements",
+          "schema_version",
+          "selected_refinement_ids"
+        ]
+      ],
+      "paths": [
+        "/plan"
+      ]
+    },
+    "biocompiler.payload_structure_contract.v0.1": {
+      "field_sets": [
+        [
+          "form",
+          "member_id",
+          "provenance",
+          "regions",
+          "schema_version",
+          "topology"
+        ]
+      ],
+      "paths": [
+        "/construction/request/payload_structures/0"
+      ]
+    },
+    "biocompiler.required_payload_region.v0.1": {
+      "field_sets": [
+        [
+          "feature_id",
+          "kind",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/construction/request/payload_structures/0/regions/0"
+      ]
+    },
+    "biocompiler.requirement_realization.v0.1": {
+      "field_sets": [
+        [
+          "assumptions",
+          "id",
+          "reasons",
+          "refinement_ids",
+          "schema_version",
+          "source_node_ids",
+          "status"
+        ]
+      ],
+      "paths": [
+        "/plan/ledger/0",
+        "/plan/ledger/1",
+        "/plan/ledger/2",
+        "/plan/ledger/3",
+        "/plan/ledger/4",
+        "/plan/ledger/5",
+        "/plan/ledger/6",
+        "/plan/ledger/7",
+        "/plan/ledger/8",
+        "/plan/ledger/9",
+        "/plan/ledger/10",
+        "/plan/ledger/11",
+        "/plan/ledger/12",
+        "/plan/ledger/13",
+        "/plan/ledger/14",
+        "/plan/ledger/15",
+        "/plan/ledger/16",
+        "/plan/ledger/17",
+        "/plan/ledger/18",
+        "/plan/ledger/19",
+        "/plan/ledger/20",
+        "/plan/ledger/21",
+        "/plan/ledger/22",
+        "/plan/ledger/23",
+        "/plan/ledger/24",
+        "/plan/ledger/25",
+        "/plan/ledger/26",
+        "/plan/ledger/27",
+        "/plan/ledger/28",
+        "/plan/ledger/29",
+        "/plan/ledger/30",
+        "/plan/ledger/31",
+        "/plan/ledger/32",
+        "/plan/ledger/33",
+        "/plan/ledger/34",
+        "/plan/ledger/35",
+        "/plan/ledger/36",
+        "/plan/ledger/37",
+        "/plan/ledger/38",
+        "/plan/ledger/39",
+        "/plan/ledger/40",
+        "/plan/ledger/41",
+        "/plan/ledger/42",
+        "/plan/ledger/43",
+        "/plan/ledger/44",
+        "/plan/ledger/45",
+        "/plan/ledger/46"
+      ]
+    },
+    "biocompiler.source_execution_manifest.v0.1": {
+      "field_sets": [
+        [
+          "behavior",
+          "channels",
+          "claim_scope",
+          "diagnostics",
+          "ledger",
+          "outputs",
+          "role_nodes",
+          "roles",
+          "schema_version",
+          "source",
+          "states"
+        ]
+      ],
+      "paths": [
+        "/execution"
+      ]
+    },
+    "biocompiler.tail_declaration.v0.1": {
+      "field_sets": [
+        [
+          "length",
+          "path",
+          "placement",
+          "provenance",
+          "schema_version",
+          "status"
+        ]
+      ],
+      "paths": [
+        "/construction/request/sources/0/molecule/chemistry/terminal_tail",
+        "/construction/candidate/bundle/molecules/0/chemistry/terminal_tail"
+      ]
+    },
+    "biocompiler.tail_length.v0.1": {
+      "field_sets": [
+        [
+          "exact",
+          "lower",
+          "mode",
+          "schema_version",
+          "upper"
+        ]
+      ],
+      "paths": [
+        "/construction/request/sources/0/molecule/chemistry/terminal_tail/length",
+        "/construction/candidate/bundle/molecules/0/chemistry/terminal_tail/length"
+      ]
+    },
+    "biocompiler.target_claim.v0.1": {
+      "field_sets": [
+        [
+          "basis",
+          "description",
+          "evidence_ids",
+          "limitations",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/execution/source/target/human_target/cell_subtype",
+        "/execution/source/target/human_target/cell_state",
+        "/execution/source/target/human_target/tissue_context",
+        "/execution/source/target/human_target/disease_context",
+        "/execution/source/target/human_target/population_inclusion",
+        "/execution/source/target/human_target/population_exclusion",
+        "/execution/source/target/human_target/host_dependencies/0/support",
+        "/execution/source/target/human_target/operating_conditions/0/support",
+        "/execution/ledger/33/semantics/target/human_target/cell_subtype",
+        "/execution/ledger/33/semantics/target/human_target/cell_state",
+        "/execution/ledger/33/semantics/target/human_target/tissue_context",
+        "/execution/ledger/33/semantics/target/human_target/disease_context",
+        "/execution/ledger/33/semantics/target/human_target/population_inclusion",
+        "/execution/ledger/33/semantics/target/human_target/population_exclusion",
+        "/execution/ledger/33/semantics/target/human_target/host_dependencies/0/support",
+        "/execution/ledger/33/semantics/target/human_target/operating_conditions/0/support",
+        "/construction/request/circuit/profile/target/human_target/cell_subtype",
+        "/construction/request/circuit/profile/target/human_target/cell_state",
+        "/construction/request/circuit/profile/target/human_target/tissue_context",
+        "/construction/request/circuit/profile/target/human_target/disease_context",
+        "/construction/request/circuit/profile/target/human_target/population_inclusion",
+        "/construction/request/circuit/profile/target/human_target/population_exclusion",
+        "/construction/request/circuit/profile/target/human_target/host_dependencies/0/support",
+        "/construction/request/circuit/profile/target/human_target/operating_conditions/0/support",
+        "/construction/request/circuit/profile/source_request/target/human_target/cell_subtype",
+        "/construction/request/circuit/profile/source_request/target/human_target/cell_state",
+        "/construction/request/circuit/profile/source_request/target/human_target/tissue_context",
+        "/construction/request/circuit/profile/source_request/target/human_target/disease_context",
+        "/construction/request/circuit/profile/source_request/target/human_target/population_inclusion",
+        "/construction/request/circuit/profile/source_request/target/human_target/population_exclusion",
+        "/construction/request/circuit/profile/source_request/target/human_target/host_dependencies/0/support",
+        "/construction/request/circuit/profile/source_request/target/human_target/operating_conditions/0/support",
+        "/construction/candidate/bundle/request/profile/target/human_target/cell_subtype",
+        "/construction/candidate/bundle/request/profile/target/human_target/cell_state",
+        "/construction/candidate/bundle/request/profile/target/human_target/tissue_context",
+        "/construction/candidate/bundle/request/profile/target/human_target/disease_context",
+        "/construction/candidate/bundle/request/profile/target/human_target/population_inclusion",
+        "/construction/candidate/bundle/request/profile/target/human_target/population_exclusion",
+        "/construction/candidate/bundle/request/profile/target/human_target/host_dependencies/0/support",
+        "/construction/candidate/bundle/request/profile/target/human_target/operating_conditions/0/support",
+        "/construction/candidate/bundle/request/profile/source_request/target/human_target/cell_subtype",
+        "/construction/candidate/bundle/request/profile/source_request/target/human_target/cell_state",
+        "/construction/candidate/bundle/request/profile/source_request/target/human_target/tissue_context",
+        "/construction/candidate/bundle/request/profile/source_request/target/human_target/disease_context",
+        "/construction/candidate/bundle/request/profile/source_request/target/human_target/population_inclusion",
+        "/construction/candidate/bundle/request/profile/source_request/target/human_target/population_exclusion",
+        "/construction/candidate/bundle/request/profile/source_request/target/human_target/host_dependencies/0/support",
+        "/construction/candidate/bundle/request/profile/source_request/target/human_target/operating_conditions/0/support"
+      ]
+    }
+  },
+  "base/request": {
+    "biocompiler.architecture_binding.v0.1": {
+      "field_sets": [
+        [
+          "behavior_node_ids",
+          "component_ids",
+          "id",
+          "placement_ids",
+          "schema_version",
+          "template_ids"
+        ]
+      ],
+      "paths": [
+        "/library/refinements/0/bindings/0"
+      ]
+    },
+    "biocompiler.architecture_control.v0.1": {
+      "field_sets": [
+        [
+          "assumptions",
+          "behavior_node_ids",
+          "component_ids",
+          "controlling_node_ids",
+          "domain_id",
+          "id",
+          "kind",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/library/refinements/0/controls/0",
+        "/library/refinements/0/controls/1"
+      ]
+    },
+    "biocompiler.architecture_output_binding.v0.1": {
+      "field_sets": [
+        [
+          "action_ids",
+          "id",
+          "lifecycle",
+          "product",
+          "requirement_id",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/library/refinements/0/output_contracts/0"
+      ]
+    },
+    "biocompiler.architecture_placement.v0.1": {
+      "field_sets": [
+        [
+          "compartment",
+          "delivery_group",
+          "id",
+          "member_id",
+          "recipient_role",
+          "schema_version",
+          "template_id"
+        ]
+      ],
+      "paths": [
+        "/library/refinements/0/placements/0"
+      ]
+    },
+    "biocompiler.assembly_origin.v0.1": {
+      "field_sets": [
+        [
+          "destination",
+          "id",
+          "provenance",
+          "schema_version",
+          "source_path",
+          "source_space"
+        ]
+      ],
+      "paths": [
+        "/library/refinements/0/templates/0/sources/0/molecule/assembly/0"
+      ]
+    },
+    "biocompiler.behavior.v0.2": {
+      "field_sets": [
+        [
+          "name",
+          "nodes",
+          "parameter_bindings",
+          "policies",
+          "requirements",
+          "roots",
+          "schema_version",
+          "source_fingerprint",
+          "source_links"
+        ]
+      ],
+      "paths": [
+        "/circuit/requirements/0/behavior/response",
+        "/library/refinements/0/behavior"
+      ]
+    },
+    "biocompiler.build_request.v0.1": {
+      "field_sets": [
+        [
+          "artifact_scope",
+          "behavior_profile",
+          "explicit_overrides",
+          "implementation_constraints",
+          "intent",
+          "parameter_metadata",
+          "preferences",
+          "provenance",
+          "resolved_bindings",
+          "resolved_defaults",
+          "schema_version",
+          "target"
+        ]
+      ],
+      "paths": [
+        "/circuit/profile/source_request"
+      ]
+    },
+    "biocompiler.chemical_identity.v0.1": {
+      "field_sets": [
+        [
+          "accession",
+          "namespace",
+          "schema_version",
+          "version"
+        ]
+      ],
+      "paths": [
+        "/library/refinements/0/templates/0/sources/0/molecule/chemistry/start_end/identity",
+        "/library/refinements/0/templates/0/sources/0/molecule/chemistry/finish_end/identity"
+      ]
+    },
+    "biocompiler.chemistry_claim.v0.1": {
+      "field_sets": [
+        [
+          "identity",
+          "provenance",
+          "schema_version",
+          "status"
+        ]
+      ],
+      "paths": [
+        "/library/refinements/0/templates/0/sources/0/molecule/chemistry/cap",
+        "/library/refinements/0/templates/0/sources/0/molecule/chemistry/start_end",
+        "/library/refinements/0/templates/0/sources/0/molecule/chemistry/finish_end"
+      ]
+    },
+    "biocompiler.circuit_executable_behavior.v0.1": {
+      "field_sets": [
+        [
+          "action_ids",
+          "dependencies",
+          "inputs",
+          "lifecycle",
+          "output",
+          "response",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/circuit/requirements/0/behavior"
+      ]
+    },
+    "biocompiler.circuit_lifecycle.v0.1": {
+      "field_sets": [
+        [
+          "cessation",
+          "clearance",
+          "mode",
+          "onset",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/circuit/requirements/0/behavior/lifecycle",
+        "/library/refinements/0/output_contracts/0/lifecycle"
+      ]
+    },
+    "biocompiler.circuit_molecule.v0.1": {
+      "field_sets": [
+        [
+          "assembly",
+          "chemistry",
+          "coding_status",
+          "features",
+          "form",
+          "id",
+          "provenance",
+          "schema_version",
+          "sequence",
+          "sequence_extent",
+          "space"
+        ]
+      ],
+      "paths": [
+        "/library/refinements/0/templates/0/sources/0/molecule"
+      ]
+    },
+    "biocompiler.circuit_observation.v0.1": {
+      "field_sets": [
+        [
+          "compartment",
+          "encoding",
+          "entity",
+          "id",
+          "quantity",
+          "schema_version",
+          "scope",
+          "window"
+        ]
+      ],
+      "paths": [
+        "/circuit/requirements/0/behavior/output/observation",
+        "/library/refinements/0/output_contracts/0/product/observation"
+      ]
+    },
+    "biocompiler.circuit_product.v0.1": {
+      "field_sets": [
+        [
+          "id",
+          "kind",
+          "observation",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/circuit/requirements/0/behavior/output",
+        "/library/refinements/0/output_contracts/0/product"
+      ]
+    },
+    "biocompiler.circuit_profile_request.v0.1": {
+      "field_sets": [
+        [
+          "boundary",
+          "mode",
+          "molecular_form",
+          "purpose",
+          "recipient",
+          "schema_version",
+          "source_experiment",
+          "source_request",
+          "target"
+        ]
+      ],
+      "paths": [
+        "/circuit/profile"
+      ]
+    },
+    "biocompiler.circuit_request.v0.1": {
+      "field_sets": [
+        [
+          "deployment_id",
+          "fidelity_scope",
+          "profile",
+          "reference_lock",
+          "requested_form",
+          "requirements",
+          "schema_version",
+          "selected_realization"
+        ]
+      ],
+      "paths": [
+        "/circuit"
+      ]
+    },
+    "biocompiler.circuit_requirement.v0.1": {
+      "field_sets": [
+        [
+          "behavior",
+          "id",
+          "input_bindings",
+          "role_id",
+          "schema_version",
+          "source_location",
+          "source_node_ids"
+        ]
+      ],
+      "paths": [
+        "/circuit/requirements/0"
+      ]
+    },
+    "biocompiler.component_identity.v0.1": {
+      "field_sets": [
+        [
+          "content_fingerprint",
+          "id",
+          "kind",
+          "schema_version",
+          "version"
+        ]
+      ],
+      "paths": [
+        "/library/refinements/0/components/0/identities/0",
+        "/library/refinements/0/templates/0/sources/0/molecule/assembly/0/provenance/authority/0",
+        "/library/refinements/0/templates/0/sources/0/molecule/features/0/provenance/authority/0",
+        "/library/refinements/0/templates/0/sources/0/molecule/chemistry/cap/provenance/authority/0",
+        "/library/refinements/0/templates/0/sources/0/molecule/chemistry/start_end/provenance/authority/0",
+        "/library/refinements/0/templates/0/sources/0/molecule/chemistry/finish_end/provenance/authority/0",
+        "/library/refinements/0/templates/0/sources/0/molecule/chemistry/modification_inventory_provenance/authority/0",
+        "/library/refinements/0/templates/0/sources/0/molecule/chemistry/terminal_tail/provenance/authority/0",
+        "/library/refinements/0/templates/0/sources/0/molecule/provenance/authority/0",
+        "/library/refinements/0/templates/0/sources/0/provenance/authority/0",
+        "/library/refinements/0/templates/0/output_members/0/provenance/authority/0",
+        "/library/refinements/0/templates/0/payload_structures/0/provenance/authority/0"
+      ]
+    },
+    "biocompiler.component_operating_domain.v0.1": {
+      "field_sets": [
+        [
+          "constraints",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/library/refinements/0/components/0/supported_domain"
+      ]
+    },
+    "biocompiler.component_port.v0.2": {
+      "field_sets": [
+        [
+          "compartment",
+          "direction",
+          "domain",
+          "dtype",
+          "id",
+          "initialization",
+          "meaning",
+          "role",
+          "schema_version",
+          "scope",
+          "timing",
+          "unit"
+        ]
+      ],
+      "paths": [
+        "/library/refinements/0/components/0/ports/0"
+      ]
+    },
+    "biocompiler.component_record.v0.2": {
+      "field_sets": [
+        [
+          "assumptions",
+          "capabilities",
+          "classification",
+          "dependencies",
+          "evidence",
+          "guarantees",
+          "id",
+          "identities",
+          "implementation_role",
+          "parameters",
+          "ports",
+          "reference_metadata",
+          "resources",
+          "schema_version",
+          "supported_domain",
+          "supported_targets",
+          "synthetic_model",
+          "version"
+        ]
+      ],
+      "paths": [
+        "/library/refinements/0/components/0"
+      ]
+    },
+    "biocompiler.component_value_domain.v0.1": {
+      "field_sets": [
+        [
+          "dtype",
+          "kind",
+          "lower",
+          "reason",
+          "schema_version",
+          "unit",
+          "upper",
+          "values"
+        ]
+      ],
+      "paths": [
+        "/circuit/profile/target/human_target/operating_conditions/0/domain",
+        "/circuit/profile/source_request/target/human_target/operating_conditions/0/domain",
+        "/library/refinements/0/components/0/ports/0/initialization",
+        "/library/refinements/0/components/0/ports/0/domain"
+      ]
+    },
+    "biocompiler.construction_member_requirement.v0.1": {
+      "field_sets": [
+        [
+          "category",
+          "external_fingerprint",
+          "external_id",
+          "id",
+          "member_id",
+          "roles",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/library/refinements/0/templates/0/requirements/0"
+      ]
+    },
+    "biocompiler.construction_output_member.v0.1": {
+      "field_sets": [
+        [
+          "coding_status",
+          "form",
+          "id",
+          "provenance",
+          "schema_version",
+          "sequence_extent",
+          "space_id",
+          "value"
+        ]
+      ],
+      "paths": [
+        "/library/refinements/0/templates/0/output_members/0"
+      ]
+    },
+    "biocompiler.construction_role_declaration.v0.1": {
+      "field_sets": [
+        [
+          "compartment",
+          "id",
+          "purpose",
+          "role",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/library/refinements/0/templates/0/requirements/0/roles/0"
+      ]
+    },
+    "biocompiler.construction_root_source.v0.1": {
+      "field_sets": [
+        [
+          "id",
+          "molecule",
+          "provenance",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/library/refinements/0/templates/0/sources/0"
+      ]
+    },
+    "biocompiler.construction_value_ref.v0.1": {
+      "field_sets": [
+        [
+          "id",
+          "kind",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/library/refinements/0/templates/0/output_members/0/value"
+      ]
+    },
+    "biocompiler.elaboration_provenance.v0.1": {
+      "field_sets": [
+        [
+          "dependency_identities",
+          "external_inputs",
+          "locations",
+          "recorded_at",
+          "schema_version",
+          "source_identities"
+        ]
+      ],
+      "paths": [
+        "/circuit/profile/source_request/provenance"
+      ]
+    },
+    "biocompiler.human_host_dependency.v0.1": {
+      "field_sets": [
+        [
+          "capability",
+          "compartment",
+          "id",
+          "schema_version",
+          "support"
+        ]
+      ],
+      "paths": [
+        "/circuit/profile/target/human_target/host_dependencies/0",
+        "/circuit/profile/source_request/target/human_target/host_dependencies/0"
+      ]
+    },
+    "biocompiler.human_operating_condition.v0.1": {
+      "field_sets": [
+        [
+          "compartment",
+          "domain",
+          "id",
+          "observable",
+          "schema_version",
+          "support"
+        ]
+      ],
+      "paths": [
+        "/circuit/profile/target/human_target/operating_conditions/0",
+        "/circuit/profile/source_request/target/human_target/operating_conditions/0"
+      ]
+    },
+    "biocompiler.human_target_context.v0.1": {
+      "field_sets": [
+        [
+          "capabilities",
+          "compartments",
+          "context_id",
+          "context_version",
+          "human_target",
+          "payload_format",
+          "resources",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/circuit/profile/target",
+        "/circuit/profile/source_request/target"
+      ]
+    },
+    "biocompiler.human_target_contract.v0.1": {
+      "field_sets": [
+        [
+          "cell_state",
+          "cell_subtype",
+          "disease_context",
+          "engineering",
+          "evidence",
+          "host_dependencies",
+          "operating_conditions",
+          "population_exclusion",
+          "population_inclusion",
+          "recipient_taxon_id",
+          "schema_version",
+          "tissue_context"
+        ]
+      ],
+      "paths": [
+        "/circuit/profile/target/human_target",
+        "/circuit/profile/source_request/target/human_target"
+      ]
+    },
+    "biocompiler.immune_recipient_identity.v0.1": {
+      "field_sets": [
+        [
+          "cell_subtype_claim_fingerprint",
+          "eligibility_basis",
+          "empirical_support",
+          "lineage",
+          "schema_version",
+          "target_fingerprint"
+        ]
+      ],
+      "paths": [
+        "/circuit/profile/recipient"
+      ]
+    },
+    "biocompiler.intent.v0.1": {
+      "field_sets": [
+        [
+          "name",
+          "nodes",
+          "roots",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/circuit/profile/source_request/intent"
+      ]
+    },
+    "biocompiler.molecular_declaration_provenance.v0.1": {
+      "field_sets": [
+        [
+          "authority",
+          "locator",
+          "reason",
+          "schema_version",
+          "status"
+        ]
+      ],
+      "paths": [
+        "/library/refinements/0/templates/0/sources/0/molecule/assembly/0/provenance",
+        "/library/refinements/0/templates/0/sources/0/molecule/features/0/provenance",
+        "/library/refinements/0/templates/0/sources/0/molecule/chemistry/cap/provenance",
+        "/library/refinements/0/templates/0/sources/0/molecule/chemistry/start_end/provenance",
+        "/library/refinements/0/templates/0/sources/0/molecule/chemistry/finish_end/provenance",
+        "/library/refinements/0/templates/0/sources/0/molecule/chemistry/modification_inventory_provenance",
+        "/library/refinements/0/templates/0/sources/0/molecule/chemistry/terminal_tail/provenance",
+        "/library/refinements/0/templates/0/sources/0/molecule/provenance",
+        "/library/refinements/0/templates/0/sources/0/provenance",
+        "/library/refinements/0/templates/0/output_members/0/provenance",
+        "/library/refinements/0/templates/0/payload_structures/0/provenance"
+      ]
+    },
+    "biocompiler.molecule_chemistry.v0.1": {
+      "field_sets": [
+        [
+          "cap",
+          "finish_end",
+          "modification_inventory_provenance",
+          "modification_inventory_status",
+          "modifications",
+          "schema_version",
+          "start_end",
+          "terminal_tail"
+        ]
+      ],
+      "paths": [
+        "/library/refinements/0/templates/0/sources/0/molecule/chemistry"
+      ]
+    },
+    "biocompiler.molecule_coordinate_path.v0.1": {
+      "field_sets": [
+        [
+          "schema_version",
+          "space_id",
+          "spans",
+          "strand"
+        ]
+      ],
+      "paths": [
+        "/library/refinements/0/templates/0/sources/0/molecule/assembly/0/destination",
+        "/library/refinements/0/templates/0/sources/0/molecule/assembly/0/source_path",
+        "/library/refinements/0/templates/0/sources/0/molecule/features/0/path"
+      ]
+    },
+    "biocompiler.molecule_coordinate_space.v0.1": {
+      "field_sets": [
+        [
+          "alphabet",
+          "axis",
+          "id",
+          "length",
+          "schema_version",
+          "topology"
+        ]
+      ],
+      "paths": [
+        "/library/refinements/0/templates/0/sources/0/molecule/space",
+        "/library/refinements/0/templates/0/sources/0/molecule/assembly/0/source_space"
+      ]
+    },
+    "biocompiler.molecule_feature.v0.1": {
+      "field_sets": [
+        [
+          "id",
+          "kind",
+          "path",
+          "provenance",
+          "reading_frame",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/library/refinements/0/templates/0/sources/0/molecule/features/0"
+      ]
+    },
+    "biocompiler.molecule_index_span.v0.1": {
+      "field_sets": [
+        [
+          "end",
+          "schema_version",
+          "start"
+        ]
+      ],
+      "paths": [
+        "/library/refinements/0/templates/0/sources/0/molecule/assembly/0/destination/spans/0",
+        "/library/refinements/0/templates/0/sources/0/molecule/assembly/0/source_path/spans/0",
+        "/library/refinements/0/templates/0/sources/0/molecule/features/0/path/spans/0"
+      ]
+    },
+    "biocompiler.observation_encoding.v0.1": {
+      "field_sets": [
+        [
+          "allowed_range",
+          "high",
+          "low",
+          "mode",
+          "schema_version",
+          "unit"
+        ]
+      ],
+      "paths": [
+        "/circuit/requirements/0/behavior/output/observation/encoding",
+        "/library/refinements/0/output_contracts/0/product/observation/encoding"
+      ]
+    },
+    "biocompiler.observation_entity.v0.1": {
+      "field_sets": [
+        [
+          "accession",
+          "isoform",
+          "namespace",
+          "schema_version",
+          "version"
+        ]
+      ],
+      "paths": [
+        "/circuit/requirements/0/behavior/output/observation/entity",
+        "/library/refinements/0/output_contracts/0/product/observation/entity"
+      ]
+    },
+    "biocompiler.observation_window.v0.1": {
+      "field_sets": [
+        [
+          "aggregation",
+          "end",
+          "reference",
+          "schema_version",
+          "start",
+          "unit"
+        ]
+      ],
+      "paths": [
+        "/circuit/requirements/0/behavior/output/observation/window",
+        "/library/refinements/0/output_contracts/0/product/observation/window"
+      ]
+    },
+    "biocompiler.payload_architecture_library.v0.1": {
+      "field_sets": [
+        [
+          "assumptions",
+          "id",
+          "refinements",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/library"
+      ]
+    },
+    "biocompiler.payload_architecture_refinement.v0.2": {
+      "field_sets": [
+        [
+          "assumptions",
+          "availability",
+          "behavior",
+          "bindings",
+          "channels",
+          "components",
+          "connections",
+          "controls",
+          "helpers",
+          "id",
+          "match_policy",
+          "output_contracts",
+          "owned_node_ids",
+          "placements",
+          "schema_version",
+          "source_bindings",
+          "templates",
+          "version"
+        ]
+      ],
+      "paths": [
+        "/library/refinements/0"
+      ]
+    },
+    "biocompiler.payload_architecture_request.v0.1": {
+      "field_sets": [
+        [
+          "circuit",
+          "constraints",
+          "id",
+          "library",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/"
+      ]
+    },
+    "biocompiler.payload_structure_contract.v0.1": {
+      "field_sets": [
+        [
+          "form",
+          "member_id",
+          "provenance",
+          "regions",
+          "schema_version",
+          "topology"
+        ]
+      ],
+      "paths": [
+        "/library/refinements/0/templates/0/payload_structures/0"
+      ]
+    },
+    "biocompiler.payload_template.v0.1": {
+      "field_sets": [
+        [
+          "amounts",
+          "complex_members",
+          "id",
+          "output_members",
+          "payload_structures",
+          "requirements",
+          "schema_version",
+          "sources",
+          "steps"
+        ]
+      ],
+      "paths": [
+        "/library/refinements/0/templates/0"
+      ]
+    },
+    "biocompiler.recipient_delivery_group.v0.1": {
+      "field_sets": [
+        [
+          "assumptions",
+          "exact_count",
+          "id",
+          "max_count",
+          "max_total_bases",
+          "mode",
+          "recipient_roles",
+          "same_recipient",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/constraints/delivery_groups/0"
+      ]
+    },
+    "biocompiler.required_payload_region.v0.1": {
+      "field_sets": [
+        [
+          "feature_id",
+          "kind",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/library/refinements/0/templates/0/payload_structures/0/regions/0"
+      ]
+    },
+    "biocompiler.rna_architecture_constraints.v0.2": {
+      "field_sets": [
+        [
+          "control_requirements",
+          "delivery_groups",
+          "deployment_requirements",
+          "exact_count",
+          "max_combinations",
+          "max_count",
+          "max_match_instances",
+          "max_match_states",
+          "max_member_bases",
+          "max_total_bases",
+          "preferred_refinement_ids",
+          "require_complete",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/constraints"
+      ]
+    },
+    "biocompiler.tail_declaration.v0.1": {
+      "field_sets": [
+        [
+          "length",
+          "path",
+          "placement",
+          "provenance",
+          "schema_version",
+          "status"
+        ]
+      ],
+      "paths": [
+        "/library/refinements/0/templates/0/sources/0/molecule/chemistry/terminal_tail"
+      ]
+    },
+    "biocompiler.tail_length.v0.1": {
+      "field_sets": [
+        [
+          "exact",
+          "lower",
+          "mode",
+          "schema_version",
+          "upper"
+        ]
+      ],
+      "paths": [
+        "/library/refinements/0/templates/0/sources/0/molecule/chemistry/terminal_tail/length"
+      ]
+    },
+    "biocompiler.target_claim.v0.1": {
+      "field_sets": [
+        [
+          "basis",
+          "description",
+          "evidence_ids",
+          "limitations",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/circuit/profile/target/human_target/cell_subtype",
+        "/circuit/profile/target/human_target/cell_state",
+        "/circuit/profile/target/human_target/tissue_context",
+        "/circuit/profile/target/human_target/disease_context",
+        "/circuit/profile/target/human_target/population_inclusion",
+        "/circuit/profile/target/human_target/population_exclusion",
+        "/circuit/profile/target/human_target/host_dependencies/0/support",
+        "/circuit/profile/target/human_target/operating_conditions/0/support",
+        "/circuit/profile/source_request/target/human_target/cell_subtype",
+        "/circuit/profile/source_request/target/human_target/cell_state",
+        "/circuit/profile/source_request/target/human_target/tissue_context",
+        "/circuit/profile/source_request/target/human_target/disease_context",
+        "/circuit/profile/source_request/target/human_target/population_inclusion",
+        "/circuit/profile/source_request/target/human_target/population_exclusion",
+        "/circuit/profile/source_request/target/human_target/host_dependencies/0/support",
+        "/circuit/profile/source_request/target/human_target/operating_conditions/0/support"
+      ]
+    }
+  },
+  "parameter-default/candidate": {
+    "biocompiler.architecture_alternative.v0.1": {
+      "field_sets": [
+        [
+          "gaps",
+          "refinement_ids",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/alternatives/0"
+      ]
+    },
+    "biocompiler.architecture_control.v0.1": {
+      "field_sets": [
+        [
+          "assumptions",
+          "behavior_node_ids",
+          "component_ids",
+          "controlling_node_ids",
+          "domain_id",
+          "id",
+          "kind",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/plan/control_domains/0",
+        "/plan/control_domains/1"
+      ]
+    },
+    "biocompiler.architecture_placement.v0.1": {
+      "field_sets": [
+        [
+          "compartment",
+          "delivery_group",
+          "id",
+          "member_id",
+          "recipient_role",
+          "schema_version",
+          "template_id"
+        ]
+      ],
+      "paths": [
+        "/plan/placements/0"
+      ]
+    },
+    "biocompiler.architecture_refinement_instance.v0.1": {
+      "field_sets": [
+        [
+          "id",
+          "refinement_id",
+          "schema_version",
+          "source_bindings"
+        ]
+      ],
+      "paths": [
+        "/plan/instances/0",
+        "/match_instances/0"
+      ]
+    },
+    "biocompiler.assembly_origin.v0.1": {
+      "field_sets": [
+        [
+          "destination",
+          "id",
+          "provenance",
+          "schema_version",
+          "source_path",
+          "source_space"
+        ]
+      ],
+      "paths": [
+        "/construction/request/sources/0/molecule/assembly/0",
+        "/construction/candidate/bundle/molecules/0/assembly/0"
+      ]
+    },
+    "biocompiler.behavior.v0.2": {
+      "field_sets": [
+        [
+          "name",
+          "nodes",
+          "parameter_bindings",
+          "policies",
+          "requirements",
+          "roots",
+          "schema_version",
+          "source_fingerprint",
+          "source_links"
+        ]
+      ],
+      "paths": [
+        "/execution/behavior",
+        "/construction/request/circuit/requirements/0/behavior/response",
+        "/construction/candidate/bundle/request/requirements/0/behavior/response"
+      ]
+    },
+    "biocompiler.binding_metadata.v0.1": {
+      "field_sets": [
+        [
+          "allowed_variation",
+          "category",
+          "provenance",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/execution/source/parameter_metadata/dwell_duration",
+        "/execution/ledger/33/semantics/parameter_metadata/dwell_duration",
+        "/construction/request/circuit/profile/source_request/parameter_metadata/dwell_duration",
+        "/construction/candidate/bundle/request/profile/source_request/parameter_metadata/dwell_duration"
+      ]
+    },
+    "biocompiler.build_request.v0.1": {
+      "field_sets": [
+        [
+          "artifact_scope",
+          "behavior_profile",
+          "explicit_overrides",
+          "implementation_constraints",
+          "intent",
+          "parameter_metadata",
+          "preferences",
+          "provenance",
+          "resolved_bindings",
+          "resolved_defaults",
+          "schema_version",
+          "target"
+        ]
+      ],
+      "paths": [
+        "/execution/source",
+        "/execution/ledger/33/semantics",
+        "/construction/request/circuit/profile/source_request",
+        "/construction/candidate/bundle/request/profile/source_request"
+      ]
+    },
+    "biocompiler.chemical_identity.v0.1": {
+      "field_sets": [
+        [
+          "accession",
+          "namespace",
+          "schema_version",
+          "version"
+        ]
+      ],
+      "paths": [
+        "/construction/request/sources/0/molecule/chemistry/start_end/identity",
+        "/construction/request/sources/0/molecule/chemistry/finish_end/identity",
+        "/construction/candidate/bundle/molecules/0/chemistry/start_end/identity",
+        "/construction/candidate/bundle/molecules/0/chemistry/finish_end/identity"
+      ]
+    },
+    "biocompiler.chemistry_claim.v0.1": {
+      "field_sets": [
+        [
+          "identity",
+          "provenance",
+          "schema_version",
+          "status"
+        ]
+      ],
+      "paths": [
+        "/construction/request/sources/0/molecule/chemistry/cap",
+        "/construction/request/sources/0/molecule/chemistry/start_end",
+        "/construction/request/sources/0/molecule/chemistry/finish_end",
+        "/construction/candidate/bundle/molecules/0/chemistry/cap",
+        "/construction/candidate/bundle/molecules/0/chemistry/start_end",
+        "/construction/candidate/bundle/molecules/0/chemistry/finish_end"
+      ]
+    },
+    "biocompiler.circuit_construction_assessment.v0.1": {
+      "field_sets": [
+        [
+          "admission_policy",
+          "biological_function",
+          "candidate_fingerprint",
+          "capability_version",
+          "checker_version",
+          "claim_scope",
+          "complete",
+          "construction_profile",
+          "diagnostics",
+          "empirical_validation",
+          "human_therapeutic_admission",
+          "outcome",
+          "reconstructed_fingerprint",
+          "request_fingerprint",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/construction/assessment"
+      ]
+    },
+    "biocompiler.circuit_construction_build.v0.1": {
+      "field_sets": [
+        [
+          "assessment",
+          "candidate",
+          "request",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/construction"
+      ]
+    },
+    "biocompiler.circuit_construction_candidate.v0.1": {
+      "field_sets": [
+        [
+          "bundle",
+          "diagnostics",
+          "experimental_amounts",
+          "missing_members",
+          "request_fingerprint",
+          "schema_version",
+          "values"
+        ]
+      ],
+      "paths": [
+        "/construction/candidate"
+      ]
+    },
+    "biocompiler.circuit_construction_request.v0.1": {
+      "field_sets": [
+        [
+          "amounts",
+          "circuit",
+          "complex_members",
+          "id",
+          "mode",
+          "output_members",
+          "payload_structures",
+          "requirements",
+          "schema_version",
+          "sources",
+          "steps"
+        ]
+      ],
+      "paths": [
+        "/construction/request"
+      ]
+    },
+    "biocompiler.circuit_executable_behavior.v0.1": {
+      "field_sets": [
+        [
+          "action_ids",
+          "dependencies",
+          "inputs",
+          "lifecycle",
+          "output",
+          "response",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/construction/request/circuit/requirements/0/behavior",
+        "/construction/candidate/bundle/request/requirements/0/behavior"
+      ]
+    },
+    "biocompiler.circuit_lifecycle.v0.1": {
+      "field_sets": [
+        [
+          "cessation",
+          "clearance",
+          "mode",
+          "onset",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/construction/request/circuit/requirements/0/behavior/lifecycle",
+        "/construction/candidate/bundle/request/requirements/0/behavior/lifecycle"
+      ]
+    },
+    "biocompiler.circuit_molecule.v0.1": {
+      "field_sets": [
+        [
+          "assembly",
+          "chemistry",
+          "coding_status",
+          "features",
+          "form",
+          "id",
+          "provenance",
+          "schema_version",
+          "sequence",
+          "sequence_extent",
+          "space"
+        ]
+      ],
+      "paths": [
+        "/construction/request/sources/0/molecule",
+        "/construction/candidate/bundle/molecules/0"
+      ]
+    },
+    "biocompiler.circuit_molecule_set.v0.1": {
+      "field_sets": [
+        [
+          "complexes",
+          "form_mappings",
+          "id",
+          "molecules",
+          "request",
+          "role_instances",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/construction/candidate/bundle"
+      ]
+    },
+    "biocompiler.circuit_observation.v0.1": {
+      "field_sets": [
+        [
+          "compartment",
+          "encoding",
+          "entity",
+          "id",
+          "quantity",
+          "schema_version",
+          "scope",
+          "window"
+        ]
+      ],
+      "paths": [
+        "/construction/request/circuit/requirements/0/behavior/output/observation",
+        "/construction/candidate/bundle/request/requirements/0/behavior/output/observation"
+      ]
+    },
+    "biocompiler.circuit_product.v0.1": {
+      "field_sets": [
+        [
+          "id",
+          "kind",
+          "observation",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/construction/request/circuit/requirements/0/behavior/output",
+        "/construction/candidate/bundle/request/requirements/0/behavior/output"
+      ]
+    },
+    "biocompiler.circuit_profile_request.v0.1": {
+      "field_sets": [
+        [
+          "boundary",
+          "mode",
+          "molecular_form",
+          "purpose",
+          "recipient",
+          "schema_version",
+          "source_experiment",
+          "source_request",
+          "target"
+        ]
+      ],
+      "paths": [
+        "/construction/request/circuit/profile",
+        "/construction/candidate/bundle/request/profile"
+      ]
+    },
+    "biocompiler.circuit_request.v0.1": {
+      "field_sets": [
+        [
+          "deployment_id",
+          "fidelity_scope",
+          "profile",
+          "reference_lock",
+          "requested_form",
+          "requirements",
+          "schema_version",
+          "selected_realization"
+        ]
+      ],
+      "paths": [
+        "/construction/request/circuit",
+        "/construction/candidate/bundle/request"
+      ]
+    },
+    "biocompiler.circuit_requirement.v0.1": {
+      "field_sets": [
+        [
+          "behavior",
+          "id",
+          "input_bindings",
+          "role_id",
+          "schema_version",
+          "source_location",
+          "source_node_ids"
+        ]
+      ],
+      "paths": [
+        "/construction/request/circuit/requirements/0",
+        "/construction/candidate/bundle/request/requirements/0"
+      ]
+    },
+    "biocompiler.component_identity.v0.1": {
+      "field_sets": [
+        [
+          "content_fingerprint",
+          "id",
+          "kind",
+          "schema_version",
+          "version"
+        ]
+      ],
+      "paths": [
+        "/construction/request/sources/0/molecule/assembly/0/provenance/authority/0",
+        "/construction/request/sources/0/molecule/features/0/provenance/authority/0",
+        "/construction/request/sources/0/molecule/chemistry/cap/provenance/authority/0",
+        "/construction/request/sources/0/molecule/chemistry/start_end/provenance/authority/0",
+        "/construction/request/sources/0/molecule/chemistry/finish_end/provenance/authority/0",
+        "/construction/request/sources/0/molecule/chemistry/modification_inventory_provenance/authority/0",
+        "/construction/request/sources/0/molecule/chemistry/terminal_tail/provenance/authority/0",
+        "/construction/request/sources/0/molecule/provenance/authority/0",
+        "/construction/request/sources/0/provenance/authority/0",
+        "/construction/request/output_members/0/provenance/authority/0",
+        "/construction/request/payload_structures/0/provenance/authority/0",
+        "/construction/candidate/bundle/molecules/0/assembly/0/provenance/authority/0",
+        "/construction/candidate/bundle/molecules/0/features/0/provenance/authority/0",
+        "/construction/candidate/bundle/molecules/0/chemistry/cap/provenance/authority/0",
+        "/construction/candidate/bundle/molecules/0/chemistry/start_end/provenance/authority/0",
+        "/construction/candidate/bundle/molecules/0/chemistry/finish_end/provenance/authority/0",
+        "/construction/candidate/bundle/molecules/0/chemistry/modification_inventory_provenance/authority/0",
+        "/construction/candidate/bundle/molecules/0/chemistry/terminal_tail/provenance/authority/0",
+        "/construction/candidate/bundle/molecules/0/provenance/authority/0"
+      ]
+    },
+    "biocompiler.component_value_domain.v0.1": {
+      "field_sets": [
+        [
+          "dtype",
+          "kind",
+          "lower",
+          "reason",
+          "schema_version",
+          "unit",
+          "upper",
+          "values"
+        ]
+      ],
+      "paths": [
+        "/execution/source/target/human_target/operating_conditions/0/domain",
+        "/execution/ledger/33/semantics/target/human_target/operating_conditions/0/domain",
+        "/construction/request/circuit/profile/target/human_target/operating_conditions/0/domain",
+        "/construction/request/circuit/profile/source_request/target/human_target/operating_conditions/0/domain",
+        "/construction/candidate/bundle/request/profile/target/human_target/operating_conditions/0/domain",
+        "/construction/candidate/bundle/request/profile/source_request/target/human_target/operating_conditions/0/domain"
+      ]
+    },
+    "biocompiler.construction_member_requirement.v0.1": {
+      "field_sets": [
+        [
+          "category",
+          "external_fingerprint",
+          "external_id",
+          "id",
+          "member_id",
+          "roles",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/construction/request/requirements/0"
+      ]
+    },
+    "biocompiler.construction_output_member.v0.1": {
+      "field_sets": [
+        [
+          "coding_status",
+          "form",
+          "id",
+          "provenance",
+          "schema_version",
+          "sequence_extent",
+          "space_id",
+          "value"
+        ]
+      ],
+      "paths": [
+        "/construction/request/output_members/0"
+      ]
+    },
+    "biocompiler.construction_role_declaration.v0.1": {
+      "field_sets": [
+        [
+          "compartment",
+          "id",
+          "purpose",
+          "role",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/construction/request/requirements/0/roles/0"
+      ]
+    },
+    "biocompiler.construction_root_source.v0.1": {
+      "field_sets": [
+        [
+          "id",
+          "molecule",
+          "provenance",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/construction/request/sources/0"
+      ]
+    },
+    "biocompiler.construction_value_ref.v0.1": {
+      "field_sets": [
+        [
+          "id",
+          "kind",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/construction/request/output_members/0/value"
+      ]
+    },
+    "biocompiler.elaboration_provenance.v0.1": {
+      "field_sets": [
+        [
+          "dependency_identities",
+          "external_inputs",
+          "locations",
+          "recorded_at",
+          "schema_version",
+          "source_identities"
+        ]
+      ],
+      "paths": [
+        "/execution/source/provenance",
+        "/execution/ledger/33/semantics/provenance",
+        "/construction/request/circuit/profile/source_request/provenance",
+        "/construction/candidate/bundle/request/profile/source_request/provenance"
+      ]
+    },
+    "biocompiler.human_host_dependency.v0.1": {
+      "field_sets": [
+        [
+          "capability",
+          "compartment",
+          "id",
+          "schema_version",
+          "support"
+        ]
+      ],
+      "paths": [
+        "/execution/source/target/human_target/host_dependencies/0",
+        "/execution/ledger/33/semantics/target/human_target/host_dependencies/0",
+        "/construction/request/circuit/profile/target/human_target/host_dependencies/0",
+        "/construction/request/circuit/profile/source_request/target/human_target/host_dependencies/0",
+        "/construction/candidate/bundle/request/profile/target/human_target/host_dependencies/0",
+        "/construction/candidate/bundle/request/profile/source_request/target/human_target/host_dependencies/0"
+      ]
+    },
+    "biocompiler.human_operating_condition.v0.1": {
+      "field_sets": [
+        [
+          "compartment",
+          "domain",
+          "id",
+          "observable",
+          "schema_version",
+          "support"
+        ]
+      ],
+      "paths": [
+        "/execution/source/target/human_target/operating_conditions/0",
+        "/execution/ledger/33/semantics/target/human_target/operating_conditions/0",
+        "/construction/request/circuit/profile/target/human_target/operating_conditions/0",
+        "/construction/request/circuit/profile/source_request/target/human_target/operating_conditions/0",
+        "/construction/candidate/bundle/request/profile/target/human_target/operating_conditions/0",
+        "/construction/candidate/bundle/request/profile/source_request/target/human_target/operating_conditions/0"
+      ]
+    },
+    "biocompiler.human_target_context.v0.1": {
+      "field_sets": [
+        [
+          "capabilities",
+          "compartments",
+          "context_id",
+          "context_version",
+          "human_target",
+          "payload_format",
+          "resources",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/execution/source/target",
+        "/execution/ledger/33/semantics/target",
+        "/construction/request/circuit/profile/target",
+        "/construction/request/circuit/profile/source_request/target",
+        "/construction/candidate/bundle/request/profile/target",
+        "/construction/candidate/bundle/request/profile/source_request/target"
+      ]
+    },
+    "biocompiler.human_target_contract.v0.1": {
+      "field_sets": [
+        [
+          "cell_state",
+          "cell_subtype",
+          "disease_context",
+          "engineering",
+          "evidence",
+          "host_dependencies",
+          "operating_conditions",
+          "population_exclusion",
+          "population_inclusion",
+          "recipient_taxon_id",
+          "schema_version",
+          "tissue_context"
+        ]
+      ],
+      "paths": [
+        "/execution/source/target/human_target",
+        "/execution/ledger/33/semantics/target/human_target",
+        "/construction/request/circuit/profile/target/human_target",
+        "/construction/request/circuit/profile/source_request/target/human_target",
+        "/construction/candidate/bundle/request/profile/target/human_target",
+        "/construction/candidate/bundle/request/profile/source_request/target/human_target"
+      ]
+    },
+    "biocompiler.immune_recipient_identity.v0.1": {
+      "field_sets": [
+        [
+          "cell_subtype_claim_fingerprint",
+          "eligibility_basis",
+          "empirical_support",
+          "lineage",
+          "schema_version",
+          "target_fingerprint"
+        ]
+      ],
+      "paths": [
+        "/construction/request/circuit/profile/recipient",
+        "/construction/candidate/bundle/request/profile/recipient"
+      ]
+    },
+    "biocompiler.intent.v0.1": {
+      "field_sets": [
+        [
+          "name",
+          "nodes",
+          "roots",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/execution/source/intent",
+        "/execution/ledger/33/semantics/intent",
+        "/construction/request/circuit/profile/source_request/intent",
+        "/construction/candidate/bundle/request/profile/source_request/intent"
+      ]
+    },
+    "biocompiler.molecular_declaration_provenance.v0.1": {
+      "field_sets": [
+        [
+          "authority",
+          "locator",
+          "reason",
+          "schema_version",
+          "status"
+        ]
+      ],
+      "paths": [
+        "/construction/request/sources/0/molecule/assembly/0/provenance",
+        "/construction/request/sources/0/molecule/features/0/provenance",
+        "/construction/request/sources/0/molecule/chemistry/cap/provenance",
+        "/construction/request/sources/0/molecule/chemistry/start_end/provenance",
+        "/construction/request/sources/0/molecule/chemistry/finish_end/provenance",
+        "/construction/request/sources/0/molecule/chemistry/modification_inventory_provenance",
+        "/construction/request/sources/0/molecule/chemistry/terminal_tail/provenance",
+        "/construction/request/sources/0/molecule/provenance",
+        "/construction/request/sources/0/provenance",
+        "/construction/request/output_members/0/provenance",
+        "/construction/request/payload_structures/0/provenance",
+        "/construction/candidate/bundle/molecules/0/assembly/0/provenance",
+        "/construction/candidate/bundle/molecules/0/features/0/provenance",
+        "/construction/candidate/bundle/molecules/0/chemistry/cap/provenance",
+        "/construction/candidate/bundle/molecules/0/chemistry/start_end/provenance",
+        "/construction/candidate/bundle/molecules/0/chemistry/finish_end/provenance",
+        "/construction/candidate/bundle/molecules/0/chemistry/modification_inventory_provenance",
+        "/construction/candidate/bundle/molecules/0/chemistry/terminal_tail/provenance",
+        "/construction/candidate/bundle/molecules/0/provenance"
+      ]
+    },
+    "biocompiler.molecule_chemistry.v0.1": {
+      "field_sets": [
+        [
+          "cap",
+          "finish_end",
+          "modification_inventory_provenance",
+          "modification_inventory_status",
+          "modifications",
+          "schema_version",
+          "start_end",
+          "terminal_tail"
+        ]
+      ],
+      "paths": [
+        "/construction/request/sources/0/molecule/chemistry",
+        "/construction/candidate/bundle/molecules/0/chemistry"
+      ]
+    },
+    "biocompiler.molecule_coordinate_path.v0.1": {
+      "field_sets": [
+        [
+          "schema_version",
+          "space_id",
+          "spans",
+          "strand"
+        ]
+      ],
+      "paths": [
+        "/construction/request/sources/0/molecule/assembly/0/destination",
+        "/construction/request/sources/0/molecule/assembly/0/source_path",
+        "/construction/request/sources/0/molecule/features/0/path",
+        "/construction/candidate/bundle/molecules/0/assembly/0/destination",
+        "/construction/candidate/bundle/molecules/0/assembly/0/source_path",
+        "/construction/candidate/bundle/molecules/0/features/0/path"
+      ]
+    },
+    "biocompiler.molecule_coordinate_space.v0.1": {
+      "field_sets": [
+        [
+          "alphabet",
+          "axis",
+          "id",
+          "length",
+          "schema_version",
+          "topology"
+        ]
+      ],
+      "paths": [
+        "/construction/request/sources/0/molecule/space",
+        "/construction/request/sources/0/molecule/assembly/0/source_space",
+        "/construction/candidate/bundle/molecules/0/space",
+        "/construction/candidate/bundle/molecules/0/assembly/0/source_space"
+      ]
+    },
+    "biocompiler.molecule_feature.v0.1": {
+      "field_sets": [
+        [
+          "id",
+          "kind",
+          "path",
+          "provenance",
+          "reading_frame",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/construction/request/sources/0/molecule/features/0",
+        "/construction/candidate/bundle/molecules/0/features/0"
+      ]
+    },
+    "biocompiler.molecule_index_span.v0.1": {
+      "field_sets": [
+        [
+          "end",
+          "schema_version",
+          "start"
+        ]
+      ],
+      "paths": [
+        "/construction/request/sources/0/molecule/assembly/0/destination/spans/0",
+        "/construction/request/sources/0/molecule/assembly/0/source_path/spans/0",
+        "/construction/request/sources/0/molecule/features/0/path/spans/0",
+        "/construction/candidate/bundle/molecules/0/assembly/0/destination/spans/0",
+        "/construction/candidate/bundle/molecules/0/assembly/0/source_path/spans/0",
+        "/construction/candidate/bundle/molecules/0/features/0/path/spans/0"
+      ]
+    },
+    "biocompiler.molecule_role_instance.v0.1": {
+      "field_sets": [
+        [
+          "compartment",
+          "id",
+          "purpose",
+          "role",
+          "schema_version",
+          "subject_fingerprint",
+          "subject_id"
+        ]
+      ],
+      "paths": [
+        "/construction/candidate/bundle/role_instances/0"
+      ]
+    },
+    "biocompiler.observation_encoding.v0.1": {
+      "field_sets": [
+        [
+          "allowed_range",
+          "high",
+          "low",
+          "mode",
+          "schema_version",
+          "unit"
+        ]
+      ],
+      "paths": [
+        "/construction/request/circuit/requirements/0/behavior/output/observation/encoding",
+        "/construction/candidate/bundle/request/requirements/0/behavior/output/observation/encoding"
+      ]
+    },
+    "biocompiler.observation_entity.v0.1": {
+      "field_sets": [
+        [
+          "accession",
+          "isoform",
+          "namespace",
+          "schema_version",
+          "version"
+        ]
+      ],
+      "paths": [
+        "/construction/request/circuit/requirements/0/behavior/output/observation/entity",
+        "/construction/candidate/bundle/request/requirements/0/behavior/output/observation/entity"
+      ]
+    },
+    "biocompiler.observation_window.v0.1": {
+      "field_sets": [
+        [
+          "aggregation",
+          "end",
+          "reference",
+          "schema_version",
+          "start",
+          "unit"
+        ]
+      ],
+      "paths": [
+        "/construction/request/circuit/requirements/0/behavior/output/observation/window",
+        "/construction/candidate/bundle/request/requirements/0/behavior/output/observation/window"
+      ]
+    },
+    "biocompiler.payload_architecture_build.v0.2": {
+      "field_sets": [
+        [
+          "alternatives",
+          "construction",
+          "diagnostics",
+          "execution",
+          "match_instances",
+          "plan",
+          "request_fingerprint",
+          "schema_version",
+          "status"
+        ]
+      ],
+      "paths": [
+        "/"
+      ]
+    },
+    "biocompiler.payload_architecture_plan.v0.2": {
+      "field_sets": [
+        [
+          "assumptions",
+          "availability",
+          "channels",
+          "control_domains",
+          "helpers",
+          "instances",
+          "ledger",
+          "placements",
+          "schema_version",
+          "selected_refinement_ids"
+        ]
+      ],
+      "paths": [
+        "/plan"
+      ]
+    },
+    "biocompiler.payload_structure_contract.v0.1": {
+      "field_sets": [
+        [
+          "form",
+          "member_id",
+          "provenance",
+          "regions",
+          "schema_version",
+          "topology"
+        ]
+      ],
+      "paths": [
+        "/construction/request/payload_structures/0"
+      ]
+    },
+    "biocompiler.required_payload_region.v0.1": {
+      "field_sets": [
+        [
+          "feature_id",
+          "kind",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/construction/request/payload_structures/0/regions/0"
+      ]
+    },
+    "biocompiler.requirement_realization.v0.1": {
+      "field_sets": [
+        [
+          "assumptions",
+          "id",
+          "reasons",
+          "refinement_ids",
+          "schema_version",
+          "source_node_ids",
+          "status"
+        ]
+      ],
+      "paths": [
+        "/plan/ledger/0",
+        "/plan/ledger/1",
+        "/plan/ledger/2",
+        "/plan/ledger/3",
+        "/plan/ledger/4",
+        "/plan/ledger/5",
+        "/plan/ledger/6",
+        "/plan/ledger/7",
+        "/plan/ledger/8",
+        "/plan/ledger/9",
+        "/plan/ledger/10",
+        "/plan/ledger/11",
+        "/plan/ledger/12",
+        "/plan/ledger/13",
+        "/plan/ledger/14",
+        "/plan/ledger/15",
+        "/plan/ledger/16",
+        "/plan/ledger/17",
+        "/plan/ledger/18",
+        "/plan/ledger/19",
+        "/plan/ledger/20",
+        "/plan/ledger/21",
+        "/plan/ledger/22",
+        "/plan/ledger/23",
+        "/plan/ledger/24",
+        "/plan/ledger/25",
+        "/plan/ledger/26",
+        "/plan/ledger/27",
+        "/plan/ledger/28",
+        "/plan/ledger/29",
+        "/plan/ledger/30",
+        "/plan/ledger/31",
+        "/plan/ledger/32",
+        "/plan/ledger/33",
+        "/plan/ledger/34",
+        "/plan/ledger/35",
+        "/plan/ledger/36",
+        "/plan/ledger/37",
+        "/plan/ledger/38",
+        "/plan/ledger/39",
+        "/plan/ledger/40",
+        "/plan/ledger/41",
+        "/plan/ledger/42",
+        "/plan/ledger/43",
+        "/plan/ledger/44",
+        "/plan/ledger/45",
+        "/plan/ledger/46"
+      ]
+    },
+    "biocompiler.source_execution_manifest.v0.1": {
+      "field_sets": [
+        [
+          "behavior",
+          "channels",
+          "claim_scope",
+          "diagnostics",
+          "ledger",
+          "outputs",
+          "role_nodes",
+          "roles",
+          "schema_version",
+          "source",
+          "states"
+        ]
+      ],
+      "paths": [
+        "/execution"
+      ]
+    },
+    "biocompiler.tail_declaration.v0.1": {
+      "field_sets": [
+        [
+          "length",
+          "path",
+          "placement",
+          "provenance",
+          "schema_version",
+          "status"
+        ]
+      ],
+      "paths": [
+        "/construction/request/sources/0/molecule/chemistry/terminal_tail",
+        "/construction/candidate/bundle/molecules/0/chemistry/terminal_tail"
+      ]
+    },
+    "biocompiler.tail_length.v0.1": {
+      "field_sets": [
+        [
+          "exact",
+          "lower",
+          "mode",
+          "schema_version",
+          "upper"
+        ]
+      ],
+      "paths": [
+        "/construction/request/sources/0/molecule/chemistry/terminal_tail/length",
+        "/construction/candidate/bundle/molecules/0/chemistry/terminal_tail/length"
+      ]
+    },
+    "biocompiler.target_claim.v0.1": {
+      "field_sets": [
+        [
+          "basis",
+          "description",
+          "evidence_ids",
+          "limitations",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/execution/source/target/human_target/cell_subtype",
+        "/execution/source/target/human_target/cell_state",
+        "/execution/source/target/human_target/tissue_context",
+        "/execution/source/target/human_target/disease_context",
+        "/execution/source/target/human_target/population_inclusion",
+        "/execution/source/target/human_target/population_exclusion",
+        "/execution/source/target/human_target/host_dependencies/0/support",
+        "/execution/source/target/human_target/operating_conditions/0/support",
+        "/execution/ledger/33/semantics/target/human_target/cell_subtype",
+        "/execution/ledger/33/semantics/target/human_target/cell_state",
+        "/execution/ledger/33/semantics/target/human_target/tissue_context",
+        "/execution/ledger/33/semantics/target/human_target/disease_context",
+        "/execution/ledger/33/semantics/target/human_target/population_inclusion",
+        "/execution/ledger/33/semantics/target/human_target/population_exclusion",
+        "/execution/ledger/33/semantics/target/human_target/host_dependencies/0/support",
+        "/execution/ledger/33/semantics/target/human_target/operating_conditions/0/support",
+        "/construction/request/circuit/profile/target/human_target/cell_subtype",
+        "/construction/request/circuit/profile/target/human_target/cell_state",
+        "/construction/request/circuit/profile/target/human_target/tissue_context",
+        "/construction/request/circuit/profile/target/human_target/disease_context",
+        "/construction/request/circuit/profile/target/human_target/population_inclusion",
+        "/construction/request/circuit/profile/target/human_target/population_exclusion",
+        "/construction/request/circuit/profile/target/human_target/host_dependencies/0/support",
+        "/construction/request/circuit/profile/target/human_target/operating_conditions/0/support",
+        "/construction/request/circuit/profile/source_request/target/human_target/cell_subtype",
+        "/construction/request/circuit/profile/source_request/target/human_target/cell_state",
+        "/construction/request/circuit/profile/source_request/target/human_target/tissue_context",
+        "/construction/request/circuit/profile/source_request/target/human_target/disease_context",
+        "/construction/request/circuit/profile/source_request/target/human_target/population_inclusion",
+        "/construction/request/circuit/profile/source_request/target/human_target/population_exclusion",
+        "/construction/request/circuit/profile/source_request/target/human_target/host_dependencies/0/support",
+        "/construction/request/circuit/profile/source_request/target/human_target/operating_conditions/0/support",
+        "/construction/candidate/bundle/request/profile/target/human_target/cell_subtype",
+        "/construction/candidate/bundle/request/profile/target/human_target/cell_state",
+        "/construction/candidate/bundle/request/profile/target/human_target/tissue_context",
+        "/construction/candidate/bundle/request/profile/target/human_target/disease_context",
+        "/construction/candidate/bundle/request/profile/target/human_target/population_inclusion",
+        "/construction/candidate/bundle/request/profile/target/human_target/population_exclusion",
+        "/construction/candidate/bundle/request/profile/target/human_target/host_dependencies/0/support",
+        "/construction/candidate/bundle/request/profile/target/human_target/operating_conditions/0/support",
+        "/construction/candidate/bundle/request/profile/source_request/target/human_target/cell_subtype",
+        "/construction/candidate/bundle/request/profile/source_request/target/human_target/cell_state",
+        "/construction/candidate/bundle/request/profile/source_request/target/human_target/tissue_context",
+        "/construction/candidate/bundle/request/profile/source_request/target/human_target/disease_context",
+        "/construction/candidate/bundle/request/profile/source_request/target/human_target/population_inclusion",
+        "/construction/candidate/bundle/request/profile/source_request/target/human_target/population_exclusion",
+        "/construction/candidate/bundle/request/profile/source_request/target/human_target/host_dependencies/0/support",
+        "/construction/candidate/bundle/request/profile/source_request/target/human_target/operating_conditions/0/support"
+      ]
+    }
+  },
+  "parameter-default/request": {
+    "biocompiler.architecture_binding.v0.1": {
+      "field_sets": [
+        [
+          "behavior_node_ids",
+          "component_ids",
+          "id",
+          "placement_ids",
+          "schema_version",
+          "template_ids"
+        ]
+      ],
+      "paths": [
+        "/library/refinements/0/bindings/0"
+      ]
+    },
+    "biocompiler.architecture_control.v0.1": {
+      "field_sets": [
+        [
+          "assumptions",
+          "behavior_node_ids",
+          "component_ids",
+          "controlling_node_ids",
+          "domain_id",
+          "id",
+          "kind",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/library/refinements/0/controls/0",
+        "/library/refinements/0/controls/1"
+      ]
+    },
+    "biocompiler.architecture_output_binding.v0.1": {
+      "field_sets": [
+        [
+          "action_ids",
+          "id",
+          "lifecycle",
+          "product",
+          "requirement_id",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/library/refinements/0/output_contracts/0"
+      ]
+    },
+    "biocompiler.architecture_placement.v0.1": {
+      "field_sets": [
+        [
+          "compartment",
+          "delivery_group",
+          "id",
+          "member_id",
+          "recipient_role",
+          "schema_version",
+          "template_id"
+        ]
+      ],
+      "paths": [
+        "/library/refinements/0/placements/0"
+      ]
+    },
+    "biocompiler.assembly_origin.v0.1": {
+      "field_sets": [
+        [
+          "destination",
+          "id",
+          "provenance",
+          "schema_version",
+          "source_path",
+          "source_space"
+        ]
+      ],
+      "paths": [
+        "/library/refinements/0/templates/0/sources/0/molecule/assembly/0"
+      ]
+    },
+    "biocompiler.behavior.v0.2": {
+      "field_sets": [
+        [
+          "name",
+          "nodes",
+          "parameter_bindings",
+          "policies",
+          "requirements",
+          "roots",
+          "schema_version",
+          "source_fingerprint",
+          "source_links"
+        ]
+      ],
+      "paths": [
+        "/circuit/requirements/0/behavior/response",
+        "/library/refinements/0/behavior"
+      ]
+    },
+    "biocompiler.binding_metadata.v0.1": {
+      "field_sets": [
+        [
+          "allowed_variation",
+          "category",
+          "provenance",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/circuit/profile/source_request/parameter_metadata/dwell_duration"
+      ]
+    },
+    "biocompiler.build_request.v0.1": {
+      "field_sets": [
+        [
+          "artifact_scope",
+          "behavior_profile",
+          "explicit_overrides",
+          "implementation_constraints",
+          "intent",
+          "parameter_metadata",
+          "preferences",
+          "provenance",
+          "resolved_bindings",
+          "resolved_defaults",
+          "schema_version",
+          "target"
+        ]
+      ],
+      "paths": [
+        "/circuit/profile/source_request"
+      ]
+    },
+    "biocompiler.chemical_identity.v0.1": {
+      "field_sets": [
+        [
+          "accession",
+          "namespace",
+          "schema_version",
+          "version"
+        ]
+      ],
+      "paths": [
+        "/library/refinements/0/templates/0/sources/0/molecule/chemistry/start_end/identity",
+        "/library/refinements/0/templates/0/sources/0/molecule/chemistry/finish_end/identity"
+      ]
+    },
+    "biocompiler.chemistry_claim.v0.1": {
+      "field_sets": [
+        [
+          "identity",
+          "provenance",
+          "schema_version",
+          "status"
+        ]
+      ],
+      "paths": [
+        "/library/refinements/0/templates/0/sources/0/molecule/chemistry/cap",
+        "/library/refinements/0/templates/0/sources/0/molecule/chemistry/start_end",
+        "/library/refinements/0/templates/0/sources/0/molecule/chemistry/finish_end"
+      ]
+    },
+    "biocompiler.circuit_executable_behavior.v0.1": {
+      "field_sets": [
+        [
+          "action_ids",
+          "dependencies",
+          "inputs",
+          "lifecycle",
+          "output",
+          "response",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/circuit/requirements/0/behavior"
+      ]
+    },
+    "biocompiler.circuit_lifecycle.v0.1": {
+      "field_sets": [
+        [
+          "cessation",
+          "clearance",
+          "mode",
+          "onset",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/circuit/requirements/0/behavior/lifecycle",
+        "/library/refinements/0/output_contracts/0/lifecycle"
+      ]
+    },
+    "biocompiler.circuit_molecule.v0.1": {
+      "field_sets": [
+        [
+          "assembly",
+          "chemistry",
+          "coding_status",
+          "features",
+          "form",
+          "id",
+          "provenance",
+          "schema_version",
+          "sequence",
+          "sequence_extent",
+          "space"
+        ]
+      ],
+      "paths": [
+        "/library/refinements/0/templates/0/sources/0/molecule"
+      ]
+    },
+    "biocompiler.circuit_observation.v0.1": {
+      "field_sets": [
+        [
+          "compartment",
+          "encoding",
+          "entity",
+          "id",
+          "quantity",
+          "schema_version",
+          "scope",
+          "window"
+        ]
+      ],
+      "paths": [
+        "/circuit/requirements/0/behavior/output/observation",
+        "/library/refinements/0/output_contracts/0/product/observation"
+      ]
+    },
+    "biocompiler.circuit_product.v0.1": {
+      "field_sets": [
+        [
+          "id",
+          "kind",
+          "observation",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/circuit/requirements/0/behavior/output",
+        "/library/refinements/0/output_contracts/0/product"
+      ]
+    },
+    "biocompiler.circuit_profile_request.v0.1": {
+      "field_sets": [
+        [
+          "boundary",
+          "mode",
+          "molecular_form",
+          "purpose",
+          "recipient",
+          "schema_version",
+          "source_experiment",
+          "source_request",
+          "target"
+        ]
+      ],
+      "paths": [
+        "/circuit/profile"
+      ]
+    },
+    "biocompiler.circuit_request.v0.1": {
+      "field_sets": [
+        [
+          "deployment_id",
+          "fidelity_scope",
+          "profile",
+          "reference_lock",
+          "requested_form",
+          "requirements",
+          "schema_version",
+          "selected_realization"
+        ]
+      ],
+      "paths": [
+        "/circuit"
+      ]
+    },
+    "biocompiler.circuit_requirement.v0.1": {
+      "field_sets": [
+        [
+          "behavior",
+          "id",
+          "input_bindings",
+          "role_id",
+          "schema_version",
+          "source_location",
+          "source_node_ids"
+        ]
+      ],
+      "paths": [
+        "/circuit/requirements/0"
+      ]
+    },
+    "biocompiler.component_identity.v0.1": {
+      "field_sets": [
+        [
+          "content_fingerprint",
+          "id",
+          "kind",
+          "schema_version",
+          "version"
+        ]
+      ],
+      "paths": [
+        "/library/refinements/0/components/0/identities/0",
+        "/library/refinements/0/templates/0/sources/0/molecule/assembly/0/provenance/authority/0",
+        "/library/refinements/0/templates/0/sources/0/molecule/features/0/provenance/authority/0",
+        "/library/refinements/0/templates/0/sources/0/molecule/chemistry/cap/provenance/authority/0",
+        "/library/refinements/0/templates/0/sources/0/molecule/chemistry/start_end/provenance/authority/0",
+        "/library/refinements/0/templates/0/sources/0/molecule/chemistry/finish_end/provenance/authority/0",
+        "/library/refinements/0/templates/0/sources/0/molecule/chemistry/modification_inventory_provenance/authority/0",
+        "/library/refinements/0/templates/0/sources/0/molecule/chemistry/terminal_tail/provenance/authority/0",
+        "/library/refinements/0/templates/0/sources/0/molecule/provenance/authority/0",
+        "/library/refinements/0/templates/0/sources/0/provenance/authority/0",
+        "/library/refinements/0/templates/0/output_members/0/provenance/authority/0",
+        "/library/refinements/0/templates/0/payload_structures/0/provenance/authority/0"
+      ]
+    },
+    "biocompiler.component_operating_domain.v0.1": {
+      "field_sets": [
+        [
+          "constraints",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/library/refinements/0/components/0/supported_domain"
+      ]
+    },
+    "biocompiler.component_port.v0.2": {
+      "field_sets": [
+        [
+          "compartment",
+          "direction",
+          "domain",
+          "dtype",
+          "id",
+          "initialization",
+          "meaning",
+          "role",
+          "schema_version",
+          "scope",
+          "timing",
+          "unit"
+        ]
+      ],
+      "paths": [
+        "/library/refinements/0/components/0/ports/0"
+      ]
+    },
+    "biocompiler.component_record.v0.2": {
+      "field_sets": [
+        [
+          "assumptions",
+          "capabilities",
+          "classification",
+          "dependencies",
+          "evidence",
+          "guarantees",
+          "id",
+          "identities",
+          "implementation_role",
+          "parameters",
+          "ports",
+          "reference_metadata",
+          "resources",
+          "schema_version",
+          "supported_domain",
+          "supported_targets",
+          "synthetic_model",
+          "version"
+        ]
+      ],
+      "paths": [
+        "/library/refinements/0/components/0"
+      ]
+    },
+    "biocompiler.component_value_domain.v0.1": {
+      "field_sets": [
+        [
+          "dtype",
+          "kind",
+          "lower",
+          "reason",
+          "schema_version",
+          "unit",
+          "upper",
+          "values"
+        ]
+      ],
+      "paths": [
+        "/circuit/profile/target/human_target/operating_conditions/0/domain",
+        "/circuit/profile/source_request/target/human_target/operating_conditions/0/domain",
+        "/library/refinements/0/components/0/ports/0/initialization",
+        "/library/refinements/0/components/0/ports/0/domain"
+      ]
+    },
+    "biocompiler.construction_member_requirement.v0.1": {
+      "field_sets": [
+        [
+          "category",
+          "external_fingerprint",
+          "external_id",
+          "id",
+          "member_id",
+          "roles",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/library/refinements/0/templates/0/requirements/0"
+      ]
+    },
+    "biocompiler.construction_output_member.v0.1": {
+      "field_sets": [
+        [
+          "coding_status",
+          "form",
+          "id",
+          "provenance",
+          "schema_version",
+          "sequence_extent",
+          "space_id",
+          "value"
+        ]
+      ],
+      "paths": [
+        "/library/refinements/0/templates/0/output_members/0"
+      ]
+    },
+    "biocompiler.construction_role_declaration.v0.1": {
+      "field_sets": [
+        [
+          "compartment",
+          "id",
+          "purpose",
+          "role",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/library/refinements/0/templates/0/requirements/0/roles/0"
+      ]
+    },
+    "biocompiler.construction_root_source.v0.1": {
+      "field_sets": [
+        [
+          "id",
+          "molecule",
+          "provenance",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/library/refinements/0/templates/0/sources/0"
+      ]
+    },
+    "biocompiler.construction_value_ref.v0.1": {
+      "field_sets": [
+        [
+          "id",
+          "kind",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/library/refinements/0/templates/0/output_members/0/value"
+      ]
+    },
+    "biocompiler.elaboration_provenance.v0.1": {
+      "field_sets": [
+        [
+          "dependency_identities",
+          "external_inputs",
+          "locations",
+          "recorded_at",
+          "schema_version",
+          "source_identities"
+        ]
+      ],
+      "paths": [
+        "/circuit/profile/source_request/provenance"
+      ]
+    },
+    "biocompiler.human_host_dependency.v0.1": {
+      "field_sets": [
+        [
+          "capability",
+          "compartment",
+          "id",
+          "schema_version",
+          "support"
+        ]
+      ],
+      "paths": [
+        "/circuit/profile/target/human_target/host_dependencies/0",
+        "/circuit/profile/source_request/target/human_target/host_dependencies/0"
+      ]
+    },
+    "biocompiler.human_operating_condition.v0.1": {
+      "field_sets": [
+        [
+          "compartment",
+          "domain",
+          "id",
+          "observable",
+          "schema_version",
+          "support"
+        ]
+      ],
+      "paths": [
+        "/circuit/profile/target/human_target/operating_conditions/0",
+        "/circuit/profile/source_request/target/human_target/operating_conditions/0"
+      ]
+    },
+    "biocompiler.human_target_context.v0.1": {
+      "field_sets": [
+        [
+          "capabilities",
+          "compartments",
+          "context_id",
+          "context_version",
+          "human_target",
+          "payload_format",
+          "resources",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/circuit/profile/target",
+        "/circuit/profile/source_request/target"
+      ]
+    },
+    "biocompiler.human_target_contract.v0.1": {
+      "field_sets": [
+        [
+          "cell_state",
+          "cell_subtype",
+          "disease_context",
+          "engineering",
+          "evidence",
+          "host_dependencies",
+          "operating_conditions",
+          "population_exclusion",
+          "population_inclusion",
+          "recipient_taxon_id",
+          "schema_version",
+          "tissue_context"
+        ]
+      ],
+      "paths": [
+        "/circuit/profile/target/human_target",
+        "/circuit/profile/source_request/target/human_target"
+      ]
+    },
+    "biocompiler.immune_recipient_identity.v0.1": {
+      "field_sets": [
+        [
+          "cell_subtype_claim_fingerprint",
+          "eligibility_basis",
+          "empirical_support",
+          "lineage",
+          "schema_version",
+          "target_fingerprint"
+        ]
+      ],
+      "paths": [
+        "/circuit/profile/recipient"
+      ]
+    },
+    "biocompiler.intent.v0.1": {
+      "field_sets": [
+        [
+          "name",
+          "nodes",
+          "roots",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/circuit/profile/source_request/intent"
+      ]
+    },
+    "biocompiler.molecular_declaration_provenance.v0.1": {
+      "field_sets": [
+        [
+          "authority",
+          "locator",
+          "reason",
+          "schema_version",
+          "status"
+        ]
+      ],
+      "paths": [
+        "/library/refinements/0/templates/0/sources/0/molecule/assembly/0/provenance",
+        "/library/refinements/0/templates/0/sources/0/molecule/features/0/provenance",
+        "/library/refinements/0/templates/0/sources/0/molecule/chemistry/cap/provenance",
+        "/library/refinements/0/templates/0/sources/0/molecule/chemistry/start_end/provenance",
+        "/library/refinements/0/templates/0/sources/0/molecule/chemistry/finish_end/provenance",
+        "/library/refinements/0/templates/0/sources/0/molecule/chemistry/modification_inventory_provenance",
+        "/library/refinements/0/templates/0/sources/0/molecule/chemistry/terminal_tail/provenance",
+        "/library/refinements/0/templates/0/sources/0/molecule/provenance",
+        "/library/refinements/0/templates/0/sources/0/provenance",
+        "/library/refinements/0/templates/0/output_members/0/provenance",
+        "/library/refinements/0/templates/0/payload_structures/0/provenance"
+      ]
+    },
+    "biocompiler.molecule_chemistry.v0.1": {
+      "field_sets": [
+        [
+          "cap",
+          "finish_end",
+          "modification_inventory_provenance",
+          "modification_inventory_status",
+          "modifications",
+          "schema_version",
+          "start_end",
+          "terminal_tail"
+        ]
+      ],
+      "paths": [
+        "/library/refinements/0/templates/0/sources/0/molecule/chemistry"
+      ]
+    },
+    "biocompiler.molecule_coordinate_path.v0.1": {
+      "field_sets": [
+        [
+          "schema_version",
+          "space_id",
+          "spans",
+          "strand"
+        ]
+      ],
+      "paths": [
+        "/library/refinements/0/templates/0/sources/0/molecule/assembly/0/destination",
+        "/library/refinements/0/templates/0/sources/0/molecule/assembly/0/source_path",
+        "/library/refinements/0/templates/0/sources/0/molecule/features/0/path"
+      ]
+    },
+    "biocompiler.molecule_coordinate_space.v0.1": {
+      "field_sets": [
+        [
+          "alphabet",
+          "axis",
+          "id",
+          "length",
+          "schema_version",
+          "topology"
+        ]
+      ],
+      "paths": [
+        "/library/refinements/0/templates/0/sources/0/molecule/space",
+        "/library/refinements/0/templates/0/sources/0/molecule/assembly/0/source_space"
+      ]
+    },
+    "biocompiler.molecule_feature.v0.1": {
+      "field_sets": [
+        [
+          "id",
+          "kind",
+          "path",
+          "provenance",
+          "reading_frame",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/library/refinements/0/templates/0/sources/0/molecule/features/0"
+      ]
+    },
+    "biocompiler.molecule_index_span.v0.1": {
+      "field_sets": [
+        [
+          "end",
+          "schema_version",
+          "start"
+        ]
+      ],
+      "paths": [
+        "/library/refinements/0/templates/0/sources/0/molecule/assembly/0/destination/spans/0",
+        "/library/refinements/0/templates/0/sources/0/molecule/assembly/0/source_path/spans/0",
+        "/library/refinements/0/templates/0/sources/0/molecule/features/0/path/spans/0"
+      ]
+    },
+    "biocompiler.observation_encoding.v0.1": {
+      "field_sets": [
+        [
+          "allowed_range",
+          "high",
+          "low",
+          "mode",
+          "schema_version",
+          "unit"
+        ]
+      ],
+      "paths": [
+        "/circuit/requirements/0/behavior/output/observation/encoding",
+        "/library/refinements/0/output_contracts/0/product/observation/encoding"
+      ]
+    },
+    "biocompiler.observation_entity.v0.1": {
+      "field_sets": [
+        [
+          "accession",
+          "isoform",
+          "namespace",
+          "schema_version",
+          "version"
+        ]
+      ],
+      "paths": [
+        "/circuit/requirements/0/behavior/output/observation/entity",
+        "/library/refinements/0/output_contracts/0/product/observation/entity"
+      ]
+    },
+    "biocompiler.observation_window.v0.1": {
+      "field_sets": [
+        [
+          "aggregation",
+          "end",
+          "reference",
+          "schema_version",
+          "start",
+          "unit"
+        ]
+      ],
+      "paths": [
+        "/circuit/requirements/0/behavior/output/observation/window",
+        "/library/refinements/0/output_contracts/0/product/observation/window"
+      ]
+    },
+    "biocompiler.payload_architecture_library.v0.1": {
+      "field_sets": [
+        [
+          "assumptions",
+          "id",
+          "refinements",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/library"
+      ]
+    },
+    "biocompiler.payload_architecture_refinement.v0.2": {
+      "field_sets": [
+        [
+          "assumptions",
+          "availability",
+          "behavior",
+          "bindings",
+          "channels",
+          "components",
+          "connections",
+          "controls",
+          "helpers",
+          "id",
+          "match_policy",
+          "output_contracts",
+          "owned_node_ids",
+          "placements",
+          "schema_version",
+          "source_bindings",
+          "templates",
+          "version"
+        ]
+      ],
+      "paths": [
+        "/library/refinements/0"
+      ]
+    },
+    "biocompiler.payload_architecture_request.v0.1": {
+      "field_sets": [
+        [
+          "circuit",
+          "constraints",
+          "id",
+          "library",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/"
+      ]
+    },
+    "biocompiler.payload_structure_contract.v0.1": {
+      "field_sets": [
+        [
+          "form",
+          "member_id",
+          "provenance",
+          "regions",
+          "schema_version",
+          "topology"
+        ]
+      ],
+      "paths": [
+        "/library/refinements/0/templates/0/payload_structures/0"
+      ]
+    },
+    "biocompiler.payload_template.v0.1": {
+      "field_sets": [
+        [
+          "amounts",
+          "complex_members",
+          "id",
+          "output_members",
+          "payload_structures",
+          "requirements",
+          "schema_version",
+          "sources",
+          "steps"
+        ]
+      ],
+      "paths": [
+        "/library/refinements/0/templates/0"
+      ]
+    },
+    "biocompiler.recipient_delivery_group.v0.1": {
+      "field_sets": [
+        [
+          "assumptions",
+          "exact_count",
+          "id",
+          "max_count",
+          "max_total_bases",
+          "mode",
+          "recipient_roles",
+          "same_recipient",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/constraints/delivery_groups/0"
+      ]
+    },
+    "biocompiler.required_payload_region.v0.1": {
+      "field_sets": [
+        [
+          "feature_id",
+          "kind",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/library/refinements/0/templates/0/payload_structures/0/regions/0"
+      ]
+    },
+    "biocompiler.rna_architecture_constraints.v0.2": {
+      "field_sets": [
+        [
+          "control_requirements",
+          "delivery_groups",
+          "deployment_requirements",
+          "exact_count",
+          "max_combinations",
+          "max_count",
+          "max_match_instances",
+          "max_match_states",
+          "max_member_bases",
+          "max_total_bases",
+          "preferred_refinement_ids",
+          "require_complete",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/constraints"
+      ]
+    },
+    "biocompiler.tail_declaration.v0.1": {
+      "field_sets": [
+        [
+          "length",
+          "path",
+          "placement",
+          "provenance",
+          "schema_version",
+          "status"
+        ]
+      ],
+      "paths": [
+        "/library/refinements/0/templates/0/sources/0/molecule/chemistry/terminal_tail"
+      ]
+    },
+    "biocompiler.tail_length.v0.1": {
+      "field_sets": [
+        [
+          "exact",
+          "lower",
+          "mode",
+          "schema_version",
+          "upper"
+        ]
+      ],
+      "paths": [
+        "/library/refinements/0/templates/0/sources/0/molecule/chemistry/terminal_tail/length"
+      ]
+    },
+    "biocompiler.target_claim.v0.1": {
+      "field_sets": [
+        [
+          "basis",
+          "description",
+          "evidence_ids",
+          "limitations",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/circuit/profile/target/human_target/cell_subtype",
+        "/circuit/profile/target/human_target/cell_state",
+        "/circuit/profile/target/human_target/tissue_context",
+        "/circuit/profile/target/human_target/disease_context",
+        "/circuit/profile/target/human_target/population_inclusion",
+        "/circuit/profile/target/human_target/population_exclusion",
+        "/circuit/profile/target/human_target/host_dependencies/0/support",
+        "/circuit/profile/target/human_target/operating_conditions/0/support",
+        "/circuit/profile/source_request/target/human_target/cell_subtype",
+        "/circuit/profile/source_request/target/human_target/cell_state",
+        "/circuit/profile/source_request/target/human_target/tissue_context",
+        "/circuit/profile/source_request/target/human_target/disease_context",
+        "/circuit/profile/source_request/target/human_target/population_inclusion",
+        "/circuit/profile/source_request/target/human_target/population_exclusion",
+        "/circuit/profile/source_request/target/human_target/host_dependencies/0/support",
+        "/circuit/profile/source_request/target/human_target/operating_conditions/0/support"
+      ]
+    }
+  },
+  "parameter-override/candidate": {
+    "biocompiler.architecture_alternative.v0.1": {
+      "field_sets": [
+        [
+          "gaps",
+          "refinement_ids",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/alternatives/0"
+      ]
+    },
+    "biocompiler.architecture_control.v0.1": {
+      "field_sets": [
+        [
+          "assumptions",
+          "behavior_node_ids",
+          "component_ids",
+          "controlling_node_ids",
+          "domain_id",
+          "id",
+          "kind",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/plan/control_domains/0",
+        "/plan/control_domains/1"
+      ]
+    },
+    "biocompiler.architecture_placement.v0.1": {
+      "field_sets": [
+        [
+          "compartment",
+          "delivery_group",
+          "id",
+          "member_id",
+          "recipient_role",
+          "schema_version",
+          "template_id"
+        ]
+      ],
+      "paths": [
+        "/plan/placements/0"
+      ]
+    },
+    "biocompiler.architecture_refinement_instance.v0.1": {
+      "field_sets": [
+        [
+          "id",
+          "refinement_id",
+          "schema_version",
+          "source_bindings"
+        ]
+      ],
+      "paths": [
+        "/plan/instances/0",
+        "/match_instances/0"
+      ]
+    },
+    "biocompiler.assembly_origin.v0.1": {
+      "field_sets": [
+        [
+          "destination",
+          "id",
+          "provenance",
+          "schema_version",
+          "source_path",
+          "source_space"
+        ]
+      ],
+      "paths": [
+        "/construction/request/sources/0/molecule/assembly/0",
+        "/construction/candidate/bundle/molecules/0/assembly/0"
+      ]
+    },
+    "biocompiler.behavior.v0.2": {
+      "field_sets": [
+        [
+          "name",
+          "nodes",
+          "parameter_bindings",
+          "policies",
+          "requirements",
+          "roots",
+          "schema_version",
+          "source_fingerprint",
+          "source_links"
+        ]
+      ],
+      "paths": [
+        "/execution/behavior",
+        "/construction/request/circuit/requirements/0/behavior/response",
+        "/construction/candidate/bundle/request/requirements/0/behavior/response"
+      ]
+    },
+    "biocompiler.binding_metadata.v0.1": {
+      "field_sets": [
+        [
+          "allowed_variation",
+          "category",
+          "provenance",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/execution/source/parameter_metadata/dwell_duration",
+        "/execution/ledger/33/semantics/parameter_metadata/dwell_duration",
+        "/construction/request/circuit/profile/source_request/parameter_metadata/dwell_duration",
+        "/construction/candidate/bundle/request/profile/source_request/parameter_metadata/dwell_duration"
+      ]
+    },
+    "biocompiler.build_request.v0.1": {
+      "field_sets": [
+        [
+          "artifact_scope",
+          "behavior_profile",
+          "explicit_overrides",
+          "implementation_constraints",
+          "intent",
+          "parameter_metadata",
+          "preferences",
+          "provenance",
+          "resolved_bindings",
+          "resolved_defaults",
+          "schema_version",
+          "target"
+        ]
+      ],
+      "paths": [
+        "/execution/source",
+        "/execution/ledger/33/semantics",
+        "/construction/request/circuit/profile/source_request",
+        "/construction/candidate/bundle/request/profile/source_request"
+      ]
+    },
+    "biocompiler.chemical_identity.v0.1": {
+      "field_sets": [
+        [
+          "accession",
+          "namespace",
+          "schema_version",
+          "version"
+        ]
+      ],
+      "paths": [
+        "/construction/request/sources/0/molecule/chemistry/start_end/identity",
+        "/construction/request/sources/0/molecule/chemistry/finish_end/identity",
+        "/construction/candidate/bundle/molecules/0/chemistry/start_end/identity",
+        "/construction/candidate/bundle/molecules/0/chemistry/finish_end/identity"
+      ]
+    },
+    "biocompiler.chemistry_claim.v0.1": {
+      "field_sets": [
+        [
+          "identity",
+          "provenance",
+          "schema_version",
+          "status"
+        ]
+      ],
+      "paths": [
+        "/construction/request/sources/0/molecule/chemistry/cap",
+        "/construction/request/sources/0/molecule/chemistry/start_end",
+        "/construction/request/sources/0/molecule/chemistry/finish_end",
+        "/construction/candidate/bundle/molecules/0/chemistry/cap",
+        "/construction/candidate/bundle/molecules/0/chemistry/start_end",
+        "/construction/candidate/bundle/molecules/0/chemistry/finish_end"
+      ]
+    },
+    "biocompiler.circuit_construction_assessment.v0.1": {
+      "field_sets": [
+        [
+          "admission_policy",
+          "biological_function",
+          "candidate_fingerprint",
+          "capability_version",
+          "checker_version",
+          "claim_scope",
+          "complete",
+          "construction_profile",
+          "diagnostics",
+          "empirical_validation",
+          "human_therapeutic_admission",
+          "outcome",
+          "reconstructed_fingerprint",
+          "request_fingerprint",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/construction/assessment"
+      ]
+    },
+    "biocompiler.circuit_construction_build.v0.1": {
+      "field_sets": [
+        [
+          "assessment",
+          "candidate",
+          "request",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/construction"
+      ]
+    },
+    "biocompiler.circuit_construction_candidate.v0.1": {
+      "field_sets": [
+        [
+          "bundle",
+          "diagnostics",
+          "experimental_amounts",
+          "missing_members",
+          "request_fingerprint",
+          "schema_version",
+          "values"
+        ]
+      ],
+      "paths": [
+        "/construction/candidate"
+      ]
+    },
+    "biocompiler.circuit_construction_request.v0.1": {
+      "field_sets": [
+        [
+          "amounts",
+          "circuit",
+          "complex_members",
+          "id",
+          "mode",
+          "output_members",
+          "payload_structures",
+          "requirements",
+          "schema_version",
+          "sources",
+          "steps"
+        ]
+      ],
+      "paths": [
+        "/construction/request"
+      ]
+    },
+    "biocompiler.circuit_executable_behavior.v0.1": {
+      "field_sets": [
+        [
+          "action_ids",
+          "dependencies",
+          "inputs",
+          "lifecycle",
+          "output",
+          "response",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/construction/request/circuit/requirements/0/behavior",
+        "/construction/candidate/bundle/request/requirements/0/behavior"
+      ]
+    },
+    "biocompiler.circuit_lifecycle.v0.1": {
+      "field_sets": [
+        [
+          "cessation",
+          "clearance",
+          "mode",
+          "onset",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/construction/request/circuit/requirements/0/behavior/lifecycle",
+        "/construction/candidate/bundle/request/requirements/0/behavior/lifecycle"
+      ]
+    },
+    "biocompiler.circuit_molecule.v0.1": {
+      "field_sets": [
+        [
+          "assembly",
+          "chemistry",
+          "coding_status",
+          "features",
+          "form",
+          "id",
+          "provenance",
+          "schema_version",
+          "sequence",
+          "sequence_extent",
+          "space"
+        ]
+      ],
+      "paths": [
+        "/construction/request/sources/0/molecule",
+        "/construction/candidate/bundle/molecules/0"
+      ]
+    },
+    "biocompiler.circuit_molecule_set.v0.1": {
+      "field_sets": [
+        [
+          "complexes",
+          "form_mappings",
+          "id",
+          "molecules",
+          "request",
+          "role_instances",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/construction/candidate/bundle"
+      ]
+    },
+    "biocompiler.circuit_observation.v0.1": {
+      "field_sets": [
+        [
+          "compartment",
+          "encoding",
+          "entity",
+          "id",
+          "quantity",
+          "schema_version",
+          "scope",
+          "window"
+        ]
+      ],
+      "paths": [
+        "/construction/request/circuit/requirements/0/behavior/output/observation",
+        "/construction/candidate/bundle/request/requirements/0/behavior/output/observation"
+      ]
+    },
+    "biocompiler.circuit_product.v0.1": {
+      "field_sets": [
+        [
+          "id",
+          "kind",
+          "observation",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/construction/request/circuit/requirements/0/behavior/output",
+        "/construction/candidate/bundle/request/requirements/0/behavior/output"
+      ]
+    },
+    "biocompiler.circuit_profile_request.v0.1": {
+      "field_sets": [
+        [
+          "boundary",
+          "mode",
+          "molecular_form",
+          "purpose",
+          "recipient",
+          "schema_version",
+          "source_experiment",
+          "source_request",
+          "target"
+        ]
+      ],
+      "paths": [
+        "/construction/request/circuit/profile",
+        "/construction/candidate/bundle/request/profile"
+      ]
+    },
+    "biocompiler.circuit_request.v0.1": {
+      "field_sets": [
+        [
+          "deployment_id",
+          "fidelity_scope",
+          "profile",
+          "reference_lock",
+          "requested_form",
+          "requirements",
+          "schema_version",
+          "selected_realization"
+        ]
+      ],
+      "paths": [
+        "/construction/request/circuit",
+        "/construction/candidate/bundle/request"
+      ]
+    },
+    "biocompiler.circuit_requirement.v0.1": {
+      "field_sets": [
+        [
+          "behavior",
+          "id",
+          "input_bindings",
+          "role_id",
+          "schema_version",
+          "source_location",
+          "source_node_ids"
+        ]
+      ],
+      "paths": [
+        "/construction/request/circuit/requirements/0",
+        "/construction/candidate/bundle/request/requirements/0"
+      ]
+    },
+    "biocompiler.component_identity.v0.1": {
+      "field_sets": [
+        [
+          "content_fingerprint",
+          "id",
+          "kind",
+          "schema_version",
+          "version"
+        ]
+      ],
+      "paths": [
+        "/construction/request/sources/0/molecule/assembly/0/provenance/authority/0",
+        "/construction/request/sources/0/molecule/features/0/provenance/authority/0",
+        "/construction/request/sources/0/molecule/chemistry/cap/provenance/authority/0",
+        "/construction/request/sources/0/molecule/chemistry/start_end/provenance/authority/0",
+        "/construction/request/sources/0/molecule/chemistry/finish_end/provenance/authority/0",
+        "/construction/request/sources/0/molecule/chemistry/modification_inventory_provenance/authority/0",
+        "/construction/request/sources/0/molecule/chemistry/terminal_tail/provenance/authority/0",
+        "/construction/request/sources/0/molecule/provenance/authority/0",
+        "/construction/request/sources/0/provenance/authority/0",
+        "/construction/request/output_members/0/provenance/authority/0",
+        "/construction/request/payload_structures/0/provenance/authority/0",
+        "/construction/candidate/bundle/molecules/0/assembly/0/provenance/authority/0",
+        "/construction/candidate/bundle/molecules/0/features/0/provenance/authority/0",
+        "/construction/candidate/bundle/molecules/0/chemistry/cap/provenance/authority/0",
+        "/construction/candidate/bundle/molecules/0/chemistry/start_end/provenance/authority/0",
+        "/construction/candidate/bundle/molecules/0/chemistry/finish_end/provenance/authority/0",
+        "/construction/candidate/bundle/molecules/0/chemistry/modification_inventory_provenance/authority/0",
+        "/construction/candidate/bundle/molecules/0/chemistry/terminal_tail/provenance/authority/0",
+        "/construction/candidate/bundle/molecules/0/provenance/authority/0"
+      ]
+    },
+    "biocompiler.component_value_domain.v0.1": {
+      "field_sets": [
+        [
+          "dtype",
+          "kind",
+          "lower",
+          "reason",
+          "schema_version",
+          "unit",
+          "upper",
+          "values"
+        ]
+      ],
+      "paths": [
+        "/execution/source/target/human_target/operating_conditions/0/domain",
+        "/execution/ledger/33/semantics/target/human_target/operating_conditions/0/domain",
+        "/construction/request/circuit/profile/target/human_target/operating_conditions/0/domain",
+        "/construction/request/circuit/profile/source_request/target/human_target/operating_conditions/0/domain",
+        "/construction/candidate/bundle/request/profile/target/human_target/operating_conditions/0/domain",
+        "/construction/candidate/bundle/request/profile/source_request/target/human_target/operating_conditions/0/domain"
+      ]
+    },
+    "biocompiler.construction_member_requirement.v0.1": {
+      "field_sets": [
+        [
+          "category",
+          "external_fingerprint",
+          "external_id",
+          "id",
+          "member_id",
+          "roles",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/construction/request/requirements/0"
+      ]
+    },
+    "biocompiler.construction_output_member.v0.1": {
+      "field_sets": [
+        [
+          "coding_status",
+          "form",
+          "id",
+          "provenance",
+          "schema_version",
+          "sequence_extent",
+          "space_id",
+          "value"
+        ]
+      ],
+      "paths": [
+        "/construction/request/output_members/0"
+      ]
+    },
+    "biocompiler.construction_role_declaration.v0.1": {
+      "field_sets": [
+        [
+          "compartment",
+          "id",
+          "purpose",
+          "role",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/construction/request/requirements/0/roles/0"
+      ]
+    },
+    "biocompiler.construction_root_source.v0.1": {
+      "field_sets": [
+        [
+          "id",
+          "molecule",
+          "provenance",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/construction/request/sources/0"
+      ]
+    },
+    "biocompiler.construction_value_ref.v0.1": {
+      "field_sets": [
+        [
+          "id",
+          "kind",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/construction/request/output_members/0/value"
+      ]
+    },
+    "biocompiler.elaboration_provenance.v0.1": {
+      "field_sets": [
+        [
+          "dependency_identities",
+          "external_inputs",
+          "locations",
+          "recorded_at",
+          "schema_version",
+          "source_identities"
+        ]
+      ],
+      "paths": [
+        "/execution/source/provenance",
+        "/execution/ledger/33/semantics/provenance",
+        "/construction/request/circuit/profile/source_request/provenance",
+        "/construction/candidate/bundle/request/profile/source_request/provenance"
+      ]
+    },
+    "biocompiler.human_host_dependency.v0.1": {
+      "field_sets": [
+        [
+          "capability",
+          "compartment",
+          "id",
+          "schema_version",
+          "support"
+        ]
+      ],
+      "paths": [
+        "/execution/source/target/human_target/host_dependencies/0",
+        "/execution/ledger/33/semantics/target/human_target/host_dependencies/0",
+        "/construction/request/circuit/profile/target/human_target/host_dependencies/0",
+        "/construction/request/circuit/profile/source_request/target/human_target/host_dependencies/0",
+        "/construction/candidate/bundle/request/profile/target/human_target/host_dependencies/0",
+        "/construction/candidate/bundle/request/profile/source_request/target/human_target/host_dependencies/0"
+      ]
+    },
+    "biocompiler.human_operating_condition.v0.1": {
+      "field_sets": [
+        [
+          "compartment",
+          "domain",
+          "id",
+          "observable",
+          "schema_version",
+          "support"
+        ]
+      ],
+      "paths": [
+        "/execution/source/target/human_target/operating_conditions/0",
+        "/execution/ledger/33/semantics/target/human_target/operating_conditions/0",
+        "/construction/request/circuit/profile/target/human_target/operating_conditions/0",
+        "/construction/request/circuit/profile/source_request/target/human_target/operating_conditions/0",
+        "/construction/candidate/bundle/request/profile/target/human_target/operating_conditions/0",
+        "/construction/candidate/bundle/request/profile/source_request/target/human_target/operating_conditions/0"
+      ]
+    },
+    "biocompiler.human_target_context.v0.1": {
+      "field_sets": [
+        [
+          "capabilities",
+          "compartments",
+          "context_id",
+          "context_version",
+          "human_target",
+          "payload_format",
+          "resources",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/execution/source/target",
+        "/execution/ledger/33/semantics/target",
+        "/construction/request/circuit/profile/target",
+        "/construction/request/circuit/profile/source_request/target",
+        "/construction/candidate/bundle/request/profile/target",
+        "/construction/candidate/bundle/request/profile/source_request/target"
+      ]
+    },
+    "biocompiler.human_target_contract.v0.1": {
+      "field_sets": [
+        [
+          "cell_state",
+          "cell_subtype",
+          "disease_context",
+          "engineering",
+          "evidence",
+          "host_dependencies",
+          "operating_conditions",
+          "population_exclusion",
+          "population_inclusion",
+          "recipient_taxon_id",
+          "schema_version",
+          "tissue_context"
+        ]
+      ],
+      "paths": [
+        "/execution/source/target/human_target",
+        "/execution/ledger/33/semantics/target/human_target",
+        "/construction/request/circuit/profile/target/human_target",
+        "/construction/request/circuit/profile/source_request/target/human_target",
+        "/construction/candidate/bundle/request/profile/target/human_target",
+        "/construction/candidate/bundle/request/profile/source_request/target/human_target"
+      ]
+    },
+    "biocompiler.immune_recipient_identity.v0.1": {
+      "field_sets": [
+        [
+          "cell_subtype_claim_fingerprint",
+          "eligibility_basis",
+          "empirical_support",
+          "lineage",
+          "schema_version",
+          "target_fingerprint"
+        ]
+      ],
+      "paths": [
+        "/construction/request/circuit/profile/recipient",
+        "/construction/candidate/bundle/request/profile/recipient"
+      ]
+    },
+    "biocompiler.intent.v0.1": {
+      "field_sets": [
+        [
+          "name",
+          "nodes",
+          "roots",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/execution/source/intent",
+        "/execution/ledger/33/semantics/intent",
+        "/construction/request/circuit/profile/source_request/intent",
+        "/construction/candidate/bundle/request/profile/source_request/intent"
+      ]
+    },
+    "biocompiler.molecular_declaration_provenance.v0.1": {
+      "field_sets": [
+        [
+          "authority",
+          "locator",
+          "reason",
+          "schema_version",
+          "status"
+        ]
+      ],
+      "paths": [
+        "/construction/request/sources/0/molecule/assembly/0/provenance",
+        "/construction/request/sources/0/molecule/features/0/provenance",
+        "/construction/request/sources/0/molecule/chemistry/cap/provenance",
+        "/construction/request/sources/0/molecule/chemistry/start_end/provenance",
+        "/construction/request/sources/0/molecule/chemistry/finish_end/provenance",
+        "/construction/request/sources/0/molecule/chemistry/modification_inventory_provenance",
+        "/construction/request/sources/0/molecule/chemistry/terminal_tail/provenance",
+        "/construction/request/sources/0/molecule/provenance",
+        "/construction/request/sources/0/provenance",
+        "/construction/request/output_members/0/provenance",
+        "/construction/request/payload_structures/0/provenance",
+        "/construction/candidate/bundle/molecules/0/assembly/0/provenance",
+        "/construction/candidate/bundle/molecules/0/features/0/provenance",
+        "/construction/candidate/bundle/molecules/0/chemistry/cap/provenance",
+        "/construction/candidate/bundle/molecules/0/chemistry/start_end/provenance",
+        "/construction/candidate/bundle/molecules/0/chemistry/finish_end/provenance",
+        "/construction/candidate/bundle/molecules/0/chemistry/modification_inventory_provenance",
+        "/construction/candidate/bundle/molecules/0/chemistry/terminal_tail/provenance",
+        "/construction/candidate/bundle/molecules/0/provenance"
+      ]
+    },
+    "biocompiler.molecule_chemistry.v0.1": {
+      "field_sets": [
+        [
+          "cap",
+          "finish_end",
+          "modification_inventory_provenance",
+          "modification_inventory_status",
+          "modifications",
+          "schema_version",
+          "start_end",
+          "terminal_tail"
+        ]
+      ],
+      "paths": [
+        "/construction/request/sources/0/molecule/chemistry",
+        "/construction/candidate/bundle/molecules/0/chemistry"
+      ]
+    },
+    "biocompiler.molecule_coordinate_path.v0.1": {
+      "field_sets": [
+        [
+          "schema_version",
+          "space_id",
+          "spans",
+          "strand"
+        ]
+      ],
+      "paths": [
+        "/construction/request/sources/0/molecule/assembly/0/destination",
+        "/construction/request/sources/0/molecule/assembly/0/source_path",
+        "/construction/request/sources/0/molecule/features/0/path",
+        "/construction/candidate/bundle/molecules/0/assembly/0/destination",
+        "/construction/candidate/bundle/molecules/0/assembly/0/source_path",
+        "/construction/candidate/bundle/molecules/0/features/0/path"
+      ]
+    },
+    "biocompiler.molecule_coordinate_space.v0.1": {
+      "field_sets": [
+        [
+          "alphabet",
+          "axis",
+          "id",
+          "length",
+          "schema_version",
+          "topology"
+        ]
+      ],
+      "paths": [
+        "/construction/request/sources/0/molecule/space",
+        "/construction/request/sources/0/molecule/assembly/0/source_space",
+        "/construction/candidate/bundle/molecules/0/space",
+        "/construction/candidate/bundle/molecules/0/assembly/0/source_space"
+      ]
+    },
+    "biocompiler.molecule_feature.v0.1": {
+      "field_sets": [
+        [
+          "id",
+          "kind",
+          "path",
+          "provenance",
+          "reading_frame",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/construction/request/sources/0/molecule/features/0",
+        "/construction/candidate/bundle/molecules/0/features/0"
+      ]
+    },
+    "biocompiler.molecule_index_span.v0.1": {
+      "field_sets": [
+        [
+          "end",
+          "schema_version",
+          "start"
+        ]
+      ],
+      "paths": [
+        "/construction/request/sources/0/molecule/assembly/0/destination/spans/0",
+        "/construction/request/sources/0/molecule/assembly/0/source_path/spans/0",
+        "/construction/request/sources/0/molecule/features/0/path/spans/0",
+        "/construction/candidate/bundle/molecules/0/assembly/0/destination/spans/0",
+        "/construction/candidate/bundle/molecules/0/assembly/0/source_path/spans/0",
+        "/construction/candidate/bundle/molecules/0/features/0/path/spans/0"
+      ]
+    },
+    "biocompiler.molecule_role_instance.v0.1": {
+      "field_sets": [
+        [
+          "compartment",
+          "id",
+          "purpose",
+          "role",
+          "schema_version",
+          "subject_fingerprint",
+          "subject_id"
+        ]
+      ],
+      "paths": [
+        "/construction/candidate/bundle/role_instances/0"
+      ]
+    },
+    "biocompiler.observation_encoding.v0.1": {
+      "field_sets": [
+        [
+          "allowed_range",
+          "high",
+          "low",
+          "mode",
+          "schema_version",
+          "unit"
+        ]
+      ],
+      "paths": [
+        "/construction/request/circuit/requirements/0/behavior/output/observation/encoding",
+        "/construction/candidate/bundle/request/requirements/0/behavior/output/observation/encoding"
+      ]
+    },
+    "biocompiler.observation_entity.v0.1": {
+      "field_sets": [
+        [
+          "accession",
+          "isoform",
+          "namespace",
+          "schema_version",
+          "version"
+        ]
+      ],
+      "paths": [
+        "/construction/request/circuit/requirements/0/behavior/output/observation/entity",
+        "/construction/candidate/bundle/request/requirements/0/behavior/output/observation/entity"
+      ]
+    },
+    "biocompiler.observation_window.v0.1": {
+      "field_sets": [
+        [
+          "aggregation",
+          "end",
+          "reference",
+          "schema_version",
+          "start",
+          "unit"
+        ]
+      ],
+      "paths": [
+        "/construction/request/circuit/requirements/0/behavior/output/observation/window",
+        "/construction/candidate/bundle/request/requirements/0/behavior/output/observation/window"
+      ]
+    },
+    "biocompiler.payload_architecture_build.v0.2": {
+      "field_sets": [
+        [
+          "alternatives",
+          "construction",
+          "diagnostics",
+          "execution",
+          "match_instances",
+          "plan",
+          "request_fingerprint",
+          "schema_version",
+          "status"
+        ]
+      ],
+      "paths": [
+        "/"
+      ]
+    },
+    "biocompiler.payload_architecture_plan.v0.2": {
+      "field_sets": [
+        [
+          "assumptions",
+          "availability",
+          "channels",
+          "control_domains",
+          "helpers",
+          "instances",
+          "ledger",
+          "placements",
+          "schema_version",
+          "selected_refinement_ids"
+        ]
+      ],
+      "paths": [
+        "/plan"
+      ]
+    },
+    "biocompiler.payload_structure_contract.v0.1": {
+      "field_sets": [
+        [
+          "form",
+          "member_id",
+          "provenance",
+          "regions",
+          "schema_version",
+          "topology"
+        ]
+      ],
+      "paths": [
+        "/construction/request/payload_structures/0"
+      ]
+    },
+    "biocompiler.required_payload_region.v0.1": {
+      "field_sets": [
+        [
+          "feature_id",
+          "kind",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/construction/request/payload_structures/0/regions/0"
+      ]
+    },
+    "biocompiler.requirement_realization.v0.1": {
+      "field_sets": [
+        [
+          "assumptions",
+          "id",
+          "reasons",
+          "refinement_ids",
+          "schema_version",
+          "source_node_ids",
+          "status"
+        ]
+      ],
+      "paths": [
+        "/plan/ledger/0",
+        "/plan/ledger/1",
+        "/plan/ledger/2",
+        "/plan/ledger/3",
+        "/plan/ledger/4",
+        "/plan/ledger/5",
+        "/plan/ledger/6",
+        "/plan/ledger/7",
+        "/plan/ledger/8",
+        "/plan/ledger/9",
+        "/plan/ledger/10",
+        "/plan/ledger/11",
+        "/plan/ledger/12",
+        "/plan/ledger/13",
+        "/plan/ledger/14",
+        "/plan/ledger/15",
+        "/plan/ledger/16",
+        "/plan/ledger/17",
+        "/plan/ledger/18",
+        "/plan/ledger/19",
+        "/plan/ledger/20",
+        "/plan/ledger/21",
+        "/plan/ledger/22",
+        "/plan/ledger/23",
+        "/plan/ledger/24",
+        "/plan/ledger/25",
+        "/plan/ledger/26",
+        "/plan/ledger/27",
+        "/plan/ledger/28",
+        "/plan/ledger/29",
+        "/plan/ledger/30",
+        "/plan/ledger/31",
+        "/plan/ledger/32",
+        "/plan/ledger/33",
+        "/plan/ledger/34",
+        "/plan/ledger/35",
+        "/plan/ledger/36",
+        "/plan/ledger/37",
+        "/plan/ledger/38",
+        "/plan/ledger/39",
+        "/plan/ledger/40",
+        "/plan/ledger/41",
+        "/plan/ledger/42",
+        "/plan/ledger/43",
+        "/plan/ledger/44",
+        "/plan/ledger/45",
+        "/plan/ledger/46"
+      ]
+    },
+    "biocompiler.source_execution_manifest.v0.1": {
+      "field_sets": [
+        [
+          "behavior",
+          "channels",
+          "claim_scope",
+          "diagnostics",
+          "ledger",
+          "outputs",
+          "role_nodes",
+          "roles",
+          "schema_version",
+          "source",
+          "states"
+        ]
+      ],
+      "paths": [
+        "/execution"
+      ]
+    },
+    "biocompiler.tail_declaration.v0.1": {
+      "field_sets": [
+        [
+          "length",
+          "path",
+          "placement",
+          "provenance",
+          "schema_version",
+          "status"
+        ]
+      ],
+      "paths": [
+        "/construction/request/sources/0/molecule/chemistry/terminal_tail",
+        "/construction/candidate/bundle/molecules/0/chemistry/terminal_tail"
+      ]
+    },
+    "biocompiler.tail_length.v0.1": {
+      "field_sets": [
+        [
+          "exact",
+          "lower",
+          "mode",
+          "schema_version",
+          "upper"
+        ]
+      ],
+      "paths": [
+        "/construction/request/sources/0/molecule/chemistry/terminal_tail/length",
+        "/construction/candidate/bundle/molecules/0/chemistry/terminal_tail/length"
+      ]
+    },
+    "biocompiler.target_claim.v0.1": {
+      "field_sets": [
+        [
+          "basis",
+          "description",
+          "evidence_ids",
+          "limitations",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/execution/source/target/human_target/cell_subtype",
+        "/execution/source/target/human_target/cell_state",
+        "/execution/source/target/human_target/tissue_context",
+        "/execution/source/target/human_target/disease_context",
+        "/execution/source/target/human_target/population_inclusion",
+        "/execution/source/target/human_target/population_exclusion",
+        "/execution/source/target/human_target/host_dependencies/0/support",
+        "/execution/source/target/human_target/operating_conditions/0/support",
+        "/execution/ledger/33/semantics/target/human_target/cell_subtype",
+        "/execution/ledger/33/semantics/target/human_target/cell_state",
+        "/execution/ledger/33/semantics/target/human_target/tissue_context",
+        "/execution/ledger/33/semantics/target/human_target/disease_context",
+        "/execution/ledger/33/semantics/target/human_target/population_inclusion",
+        "/execution/ledger/33/semantics/target/human_target/population_exclusion",
+        "/execution/ledger/33/semantics/target/human_target/host_dependencies/0/support",
+        "/execution/ledger/33/semantics/target/human_target/operating_conditions/0/support",
+        "/construction/request/circuit/profile/target/human_target/cell_subtype",
+        "/construction/request/circuit/profile/target/human_target/cell_state",
+        "/construction/request/circuit/profile/target/human_target/tissue_context",
+        "/construction/request/circuit/profile/target/human_target/disease_context",
+        "/construction/request/circuit/profile/target/human_target/population_inclusion",
+        "/construction/request/circuit/profile/target/human_target/population_exclusion",
+        "/construction/request/circuit/profile/target/human_target/host_dependencies/0/support",
+        "/construction/request/circuit/profile/target/human_target/operating_conditions/0/support",
+        "/construction/request/circuit/profile/source_request/target/human_target/cell_subtype",
+        "/construction/request/circuit/profile/source_request/target/human_target/cell_state",
+        "/construction/request/circuit/profile/source_request/target/human_target/tissue_context",
+        "/construction/request/circuit/profile/source_request/target/human_target/disease_context",
+        "/construction/request/circuit/profile/source_request/target/human_target/population_inclusion",
+        "/construction/request/circuit/profile/source_request/target/human_target/population_exclusion",
+        "/construction/request/circuit/profile/source_request/target/human_target/host_dependencies/0/support",
+        "/construction/request/circuit/profile/source_request/target/human_target/operating_conditions/0/support",
+        "/construction/candidate/bundle/request/profile/target/human_target/cell_subtype",
+        "/construction/candidate/bundle/request/profile/target/human_target/cell_state",
+        "/construction/candidate/bundle/request/profile/target/human_target/tissue_context",
+        "/construction/candidate/bundle/request/profile/target/human_target/disease_context",
+        "/construction/candidate/bundle/request/profile/target/human_target/population_inclusion",
+        "/construction/candidate/bundle/request/profile/target/human_target/population_exclusion",
+        "/construction/candidate/bundle/request/profile/target/human_target/host_dependencies/0/support",
+        "/construction/candidate/bundle/request/profile/target/human_target/operating_conditions/0/support",
+        "/construction/candidate/bundle/request/profile/source_request/target/human_target/cell_subtype",
+        "/construction/candidate/bundle/request/profile/source_request/target/human_target/cell_state",
+        "/construction/candidate/bundle/request/profile/source_request/target/human_target/tissue_context",
+        "/construction/candidate/bundle/request/profile/source_request/target/human_target/disease_context",
+        "/construction/candidate/bundle/request/profile/source_request/target/human_target/population_inclusion",
+        "/construction/candidate/bundle/request/profile/source_request/target/human_target/population_exclusion",
+        "/construction/candidate/bundle/request/profile/source_request/target/human_target/host_dependencies/0/support",
+        "/construction/candidate/bundle/request/profile/source_request/target/human_target/operating_conditions/0/support"
+      ]
+    }
+  },
+  "parameter-override/request": {
+    "biocompiler.architecture_binding.v0.1": {
+      "field_sets": [
+        [
+          "behavior_node_ids",
+          "component_ids",
+          "id",
+          "placement_ids",
+          "schema_version",
+          "template_ids"
+        ]
+      ],
+      "paths": [
+        "/library/refinements/0/bindings/0"
+      ]
+    },
+    "biocompiler.architecture_control.v0.1": {
+      "field_sets": [
+        [
+          "assumptions",
+          "behavior_node_ids",
+          "component_ids",
+          "controlling_node_ids",
+          "domain_id",
+          "id",
+          "kind",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/library/refinements/0/controls/0",
+        "/library/refinements/0/controls/1"
+      ]
+    },
+    "biocompiler.architecture_output_binding.v0.1": {
+      "field_sets": [
+        [
+          "action_ids",
+          "id",
+          "lifecycle",
+          "product",
+          "requirement_id",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/library/refinements/0/output_contracts/0"
+      ]
+    },
+    "biocompiler.architecture_placement.v0.1": {
+      "field_sets": [
+        [
+          "compartment",
+          "delivery_group",
+          "id",
+          "member_id",
+          "recipient_role",
+          "schema_version",
+          "template_id"
+        ]
+      ],
+      "paths": [
+        "/library/refinements/0/placements/0"
+      ]
+    },
+    "biocompiler.assembly_origin.v0.1": {
+      "field_sets": [
+        [
+          "destination",
+          "id",
+          "provenance",
+          "schema_version",
+          "source_path",
+          "source_space"
+        ]
+      ],
+      "paths": [
+        "/library/refinements/0/templates/0/sources/0/molecule/assembly/0"
+      ]
+    },
+    "biocompiler.behavior.v0.2": {
+      "field_sets": [
+        [
+          "name",
+          "nodes",
+          "parameter_bindings",
+          "policies",
+          "requirements",
+          "roots",
+          "schema_version",
+          "source_fingerprint",
+          "source_links"
+        ]
+      ],
+      "paths": [
+        "/circuit/requirements/0/behavior/response",
+        "/library/refinements/0/behavior"
+      ]
+    },
+    "biocompiler.binding_metadata.v0.1": {
+      "field_sets": [
+        [
+          "allowed_variation",
+          "category",
+          "provenance",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/circuit/profile/source_request/parameter_metadata/dwell_duration"
+      ]
+    },
+    "biocompiler.build_request.v0.1": {
+      "field_sets": [
+        [
+          "artifact_scope",
+          "behavior_profile",
+          "explicit_overrides",
+          "implementation_constraints",
+          "intent",
+          "parameter_metadata",
+          "preferences",
+          "provenance",
+          "resolved_bindings",
+          "resolved_defaults",
+          "schema_version",
+          "target"
+        ]
+      ],
+      "paths": [
+        "/circuit/profile/source_request"
+      ]
+    },
+    "biocompiler.chemical_identity.v0.1": {
+      "field_sets": [
+        [
+          "accession",
+          "namespace",
+          "schema_version",
+          "version"
+        ]
+      ],
+      "paths": [
+        "/library/refinements/0/templates/0/sources/0/molecule/chemistry/start_end/identity",
+        "/library/refinements/0/templates/0/sources/0/molecule/chemistry/finish_end/identity"
+      ]
+    },
+    "biocompiler.chemistry_claim.v0.1": {
+      "field_sets": [
+        [
+          "identity",
+          "provenance",
+          "schema_version",
+          "status"
+        ]
+      ],
+      "paths": [
+        "/library/refinements/0/templates/0/sources/0/molecule/chemistry/cap",
+        "/library/refinements/0/templates/0/sources/0/molecule/chemistry/start_end",
+        "/library/refinements/0/templates/0/sources/0/molecule/chemistry/finish_end"
+      ]
+    },
+    "biocompiler.circuit_executable_behavior.v0.1": {
+      "field_sets": [
+        [
+          "action_ids",
+          "dependencies",
+          "inputs",
+          "lifecycle",
+          "output",
+          "response",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/circuit/requirements/0/behavior"
+      ]
+    },
+    "biocompiler.circuit_lifecycle.v0.1": {
+      "field_sets": [
+        [
+          "cessation",
+          "clearance",
+          "mode",
+          "onset",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/circuit/requirements/0/behavior/lifecycle",
+        "/library/refinements/0/output_contracts/0/lifecycle"
+      ]
+    },
+    "biocompiler.circuit_molecule.v0.1": {
+      "field_sets": [
+        [
+          "assembly",
+          "chemistry",
+          "coding_status",
+          "features",
+          "form",
+          "id",
+          "provenance",
+          "schema_version",
+          "sequence",
+          "sequence_extent",
+          "space"
+        ]
+      ],
+      "paths": [
+        "/library/refinements/0/templates/0/sources/0/molecule"
+      ]
+    },
+    "biocompiler.circuit_observation.v0.1": {
+      "field_sets": [
+        [
+          "compartment",
+          "encoding",
+          "entity",
+          "id",
+          "quantity",
+          "schema_version",
+          "scope",
+          "window"
+        ]
+      ],
+      "paths": [
+        "/circuit/requirements/0/behavior/output/observation",
+        "/library/refinements/0/output_contracts/0/product/observation"
+      ]
+    },
+    "biocompiler.circuit_product.v0.1": {
+      "field_sets": [
+        [
+          "id",
+          "kind",
+          "observation",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/circuit/requirements/0/behavior/output",
+        "/library/refinements/0/output_contracts/0/product"
+      ]
+    },
+    "biocompiler.circuit_profile_request.v0.1": {
+      "field_sets": [
+        [
+          "boundary",
+          "mode",
+          "molecular_form",
+          "purpose",
+          "recipient",
+          "schema_version",
+          "source_experiment",
+          "source_request",
+          "target"
+        ]
+      ],
+      "paths": [
+        "/circuit/profile"
+      ]
+    },
+    "biocompiler.circuit_request.v0.1": {
+      "field_sets": [
+        [
+          "deployment_id",
+          "fidelity_scope",
+          "profile",
+          "reference_lock",
+          "requested_form",
+          "requirements",
+          "schema_version",
+          "selected_realization"
+        ]
+      ],
+      "paths": [
+        "/circuit"
+      ]
+    },
+    "biocompiler.circuit_requirement.v0.1": {
+      "field_sets": [
+        [
+          "behavior",
+          "id",
+          "input_bindings",
+          "role_id",
+          "schema_version",
+          "source_location",
+          "source_node_ids"
+        ]
+      ],
+      "paths": [
+        "/circuit/requirements/0"
+      ]
+    },
+    "biocompiler.component_identity.v0.1": {
+      "field_sets": [
+        [
+          "content_fingerprint",
+          "id",
+          "kind",
+          "schema_version",
+          "version"
+        ]
+      ],
+      "paths": [
+        "/library/refinements/0/components/0/identities/0",
+        "/library/refinements/0/templates/0/sources/0/molecule/assembly/0/provenance/authority/0",
+        "/library/refinements/0/templates/0/sources/0/molecule/features/0/provenance/authority/0",
+        "/library/refinements/0/templates/0/sources/0/molecule/chemistry/cap/provenance/authority/0",
+        "/library/refinements/0/templates/0/sources/0/molecule/chemistry/start_end/provenance/authority/0",
+        "/library/refinements/0/templates/0/sources/0/molecule/chemistry/finish_end/provenance/authority/0",
+        "/library/refinements/0/templates/0/sources/0/molecule/chemistry/modification_inventory_provenance/authority/0",
+        "/library/refinements/0/templates/0/sources/0/molecule/chemistry/terminal_tail/provenance/authority/0",
+        "/library/refinements/0/templates/0/sources/0/molecule/provenance/authority/0",
+        "/library/refinements/0/templates/0/sources/0/provenance/authority/0",
+        "/library/refinements/0/templates/0/output_members/0/provenance/authority/0",
+        "/library/refinements/0/templates/0/payload_structures/0/provenance/authority/0"
+      ]
+    },
+    "biocompiler.component_operating_domain.v0.1": {
+      "field_sets": [
+        [
+          "constraints",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/library/refinements/0/components/0/supported_domain"
+      ]
+    },
+    "biocompiler.component_port.v0.2": {
+      "field_sets": [
+        [
+          "compartment",
+          "direction",
+          "domain",
+          "dtype",
+          "id",
+          "initialization",
+          "meaning",
+          "role",
+          "schema_version",
+          "scope",
+          "timing",
+          "unit"
+        ]
+      ],
+      "paths": [
+        "/library/refinements/0/components/0/ports/0"
+      ]
+    },
+    "biocompiler.component_record.v0.2": {
+      "field_sets": [
+        [
+          "assumptions",
+          "capabilities",
+          "classification",
+          "dependencies",
+          "evidence",
+          "guarantees",
+          "id",
+          "identities",
+          "implementation_role",
+          "parameters",
+          "ports",
+          "reference_metadata",
+          "resources",
+          "schema_version",
+          "supported_domain",
+          "supported_targets",
+          "synthetic_model",
+          "version"
+        ]
+      ],
+      "paths": [
+        "/library/refinements/0/components/0"
+      ]
+    },
+    "biocompiler.component_value_domain.v0.1": {
+      "field_sets": [
+        [
+          "dtype",
+          "kind",
+          "lower",
+          "reason",
+          "schema_version",
+          "unit",
+          "upper",
+          "values"
+        ]
+      ],
+      "paths": [
+        "/circuit/profile/target/human_target/operating_conditions/0/domain",
+        "/circuit/profile/source_request/target/human_target/operating_conditions/0/domain",
+        "/library/refinements/0/components/0/ports/0/initialization",
+        "/library/refinements/0/components/0/ports/0/domain"
+      ]
+    },
+    "biocompiler.construction_member_requirement.v0.1": {
+      "field_sets": [
+        [
+          "category",
+          "external_fingerprint",
+          "external_id",
+          "id",
+          "member_id",
+          "roles",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/library/refinements/0/templates/0/requirements/0"
+      ]
+    },
+    "biocompiler.construction_output_member.v0.1": {
+      "field_sets": [
+        [
+          "coding_status",
+          "form",
+          "id",
+          "provenance",
+          "schema_version",
+          "sequence_extent",
+          "space_id",
+          "value"
+        ]
+      ],
+      "paths": [
+        "/library/refinements/0/templates/0/output_members/0"
+      ]
+    },
+    "biocompiler.construction_role_declaration.v0.1": {
+      "field_sets": [
+        [
+          "compartment",
+          "id",
+          "purpose",
+          "role",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/library/refinements/0/templates/0/requirements/0/roles/0"
+      ]
+    },
+    "biocompiler.construction_root_source.v0.1": {
+      "field_sets": [
+        [
+          "id",
+          "molecule",
+          "provenance",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/library/refinements/0/templates/0/sources/0"
+      ]
+    },
+    "biocompiler.construction_value_ref.v0.1": {
+      "field_sets": [
+        [
+          "id",
+          "kind",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/library/refinements/0/templates/0/output_members/0/value"
+      ]
+    },
+    "biocompiler.elaboration_provenance.v0.1": {
+      "field_sets": [
+        [
+          "dependency_identities",
+          "external_inputs",
+          "locations",
+          "recorded_at",
+          "schema_version",
+          "source_identities"
+        ]
+      ],
+      "paths": [
+        "/circuit/profile/source_request/provenance"
+      ]
+    },
+    "biocompiler.human_host_dependency.v0.1": {
+      "field_sets": [
+        [
+          "capability",
+          "compartment",
+          "id",
+          "schema_version",
+          "support"
+        ]
+      ],
+      "paths": [
+        "/circuit/profile/target/human_target/host_dependencies/0",
+        "/circuit/profile/source_request/target/human_target/host_dependencies/0"
+      ]
+    },
+    "biocompiler.human_operating_condition.v0.1": {
+      "field_sets": [
+        [
+          "compartment",
+          "domain",
+          "id",
+          "observable",
+          "schema_version",
+          "support"
+        ]
+      ],
+      "paths": [
+        "/circuit/profile/target/human_target/operating_conditions/0",
+        "/circuit/profile/source_request/target/human_target/operating_conditions/0"
+      ]
+    },
+    "biocompiler.human_target_context.v0.1": {
+      "field_sets": [
+        [
+          "capabilities",
+          "compartments",
+          "context_id",
+          "context_version",
+          "human_target",
+          "payload_format",
+          "resources",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/circuit/profile/target",
+        "/circuit/profile/source_request/target"
+      ]
+    },
+    "biocompiler.human_target_contract.v0.1": {
+      "field_sets": [
+        [
+          "cell_state",
+          "cell_subtype",
+          "disease_context",
+          "engineering",
+          "evidence",
+          "host_dependencies",
+          "operating_conditions",
+          "population_exclusion",
+          "population_inclusion",
+          "recipient_taxon_id",
+          "schema_version",
+          "tissue_context"
+        ]
+      ],
+      "paths": [
+        "/circuit/profile/target/human_target",
+        "/circuit/profile/source_request/target/human_target"
+      ]
+    },
+    "biocompiler.immune_recipient_identity.v0.1": {
+      "field_sets": [
+        [
+          "cell_subtype_claim_fingerprint",
+          "eligibility_basis",
+          "empirical_support",
+          "lineage",
+          "schema_version",
+          "target_fingerprint"
+        ]
+      ],
+      "paths": [
+        "/circuit/profile/recipient"
+      ]
+    },
+    "biocompiler.intent.v0.1": {
+      "field_sets": [
+        [
+          "name",
+          "nodes",
+          "roots",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/circuit/profile/source_request/intent"
+      ]
+    },
+    "biocompiler.molecular_declaration_provenance.v0.1": {
+      "field_sets": [
+        [
+          "authority",
+          "locator",
+          "reason",
+          "schema_version",
+          "status"
+        ]
+      ],
+      "paths": [
+        "/library/refinements/0/templates/0/sources/0/molecule/assembly/0/provenance",
+        "/library/refinements/0/templates/0/sources/0/molecule/features/0/provenance",
+        "/library/refinements/0/templates/0/sources/0/molecule/chemistry/cap/provenance",
+        "/library/refinements/0/templates/0/sources/0/molecule/chemistry/start_end/provenance",
+        "/library/refinements/0/templates/0/sources/0/molecule/chemistry/finish_end/provenance",
+        "/library/refinements/0/templates/0/sources/0/molecule/chemistry/modification_inventory_provenance",
+        "/library/refinements/0/templates/0/sources/0/molecule/chemistry/terminal_tail/provenance",
+        "/library/refinements/0/templates/0/sources/0/molecule/provenance",
+        "/library/refinements/0/templates/0/sources/0/provenance",
+        "/library/refinements/0/templates/0/output_members/0/provenance",
+        "/library/refinements/0/templates/0/payload_structures/0/provenance"
+      ]
+    },
+    "biocompiler.molecule_chemistry.v0.1": {
+      "field_sets": [
+        [
+          "cap",
+          "finish_end",
+          "modification_inventory_provenance",
+          "modification_inventory_status",
+          "modifications",
+          "schema_version",
+          "start_end",
+          "terminal_tail"
+        ]
+      ],
+      "paths": [
+        "/library/refinements/0/templates/0/sources/0/molecule/chemistry"
+      ]
+    },
+    "biocompiler.molecule_coordinate_path.v0.1": {
+      "field_sets": [
+        [
+          "schema_version",
+          "space_id",
+          "spans",
+          "strand"
+        ]
+      ],
+      "paths": [
+        "/library/refinements/0/templates/0/sources/0/molecule/assembly/0/destination",
+        "/library/refinements/0/templates/0/sources/0/molecule/assembly/0/source_path",
+        "/library/refinements/0/templates/0/sources/0/molecule/features/0/path"
+      ]
+    },
+    "biocompiler.molecule_coordinate_space.v0.1": {
+      "field_sets": [
+        [
+          "alphabet",
+          "axis",
+          "id",
+          "length",
+          "schema_version",
+          "topology"
+        ]
+      ],
+      "paths": [
+        "/library/refinements/0/templates/0/sources/0/molecule/space",
+        "/library/refinements/0/templates/0/sources/0/molecule/assembly/0/source_space"
+      ]
+    },
+    "biocompiler.molecule_feature.v0.1": {
+      "field_sets": [
+        [
+          "id",
+          "kind",
+          "path",
+          "provenance",
+          "reading_frame",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/library/refinements/0/templates/0/sources/0/molecule/features/0"
+      ]
+    },
+    "biocompiler.molecule_index_span.v0.1": {
+      "field_sets": [
+        [
+          "end",
+          "schema_version",
+          "start"
+        ]
+      ],
+      "paths": [
+        "/library/refinements/0/templates/0/sources/0/molecule/assembly/0/destination/spans/0",
+        "/library/refinements/0/templates/0/sources/0/molecule/assembly/0/source_path/spans/0",
+        "/library/refinements/0/templates/0/sources/0/molecule/features/0/path/spans/0"
+      ]
+    },
+    "biocompiler.observation_encoding.v0.1": {
+      "field_sets": [
+        [
+          "allowed_range",
+          "high",
+          "low",
+          "mode",
+          "schema_version",
+          "unit"
+        ]
+      ],
+      "paths": [
+        "/circuit/requirements/0/behavior/output/observation/encoding",
+        "/library/refinements/0/output_contracts/0/product/observation/encoding"
+      ]
+    },
+    "biocompiler.observation_entity.v0.1": {
+      "field_sets": [
+        [
+          "accession",
+          "isoform",
+          "namespace",
+          "schema_version",
+          "version"
+        ]
+      ],
+      "paths": [
+        "/circuit/requirements/0/behavior/output/observation/entity",
+        "/library/refinements/0/output_contracts/0/product/observation/entity"
+      ]
+    },
+    "biocompiler.observation_window.v0.1": {
+      "field_sets": [
+        [
+          "aggregation",
+          "end",
+          "reference",
+          "schema_version",
+          "start",
+          "unit"
+        ]
+      ],
+      "paths": [
+        "/circuit/requirements/0/behavior/output/observation/window",
+        "/library/refinements/0/output_contracts/0/product/observation/window"
+      ]
+    },
+    "biocompiler.payload_architecture_library.v0.1": {
+      "field_sets": [
+        [
+          "assumptions",
+          "id",
+          "refinements",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/library"
+      ]
+    },
+    "biocompiler.payload_architecture_refinement.v0.2": {
+      "field_sets": [
+        [
+          "assumptions",
+          "availability",
+          "behavior",
+          "bindings",
+          "channels",
+          "components",
+          "connections",
+          "controls",
+          "helpers",
+          "id",
+          "match_policy",
+          "output_contracts",
+          "owned_node_ids",
+          "placements",
+          "schema_version",
+          "source_bindings",
+          "templates",
+          "version"
+        ]
+      ],
+      "paths": [
+        "/library/refinements/0"
+      ]
+    },
+    "biocompiler.payload_architecture_request.v0.1": {
+      "field_sets": [
+        [
+          "circuit",
+          "constraints",
+          "id",
+          "library",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/"
+      ]
+    },
+    "biocompiler.payload_structure_contract.v0.1": {
+      "field_sets": [
+        [
+          "form",
+          "member_id",
+          "provenance",
+          "regions",
+          "schema_version",
+          "topology"
+        ]
+      ],
+      "paths": [
+        "/library/refinements/0/templates/0/payload_structures/0"
+      ]
+    },
+    "biocompiler.payload_template.v0.1": {
+      "field_sets": [
+        [
+          "amounts",
+          "complex_members",
+          "id",
+          "output_members",
+          "payload_structures",
+          "requirements",
+          "schema_version",
+          "sources",
+          "steps"
+        ]
+      ],
+      "paths": [
+        "/library/refinements/0/templates/0"
+      ]
+    },
+    "biocompiler.recipient_delivery_group.v0.1": {
+      "field_sets": [
+        [
+          "assumptions",
+          "exact_count",
+          "id",
+          "max_count",
+          "max_total_bases",
+          "mode",
+          "recipient_roles",
+          "same_recipient",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/constraints/delivery_groups/0"
+      ]
+    },
+    "biocompiler.required_payload_region.v0.1": {
+      "field_sets": [
+        [
+          "feature_id",
+          "kind",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/library/refinements/0/templates/0/payload_structures/0/regions/0"
+      ]
+    },
+    "biocompiler.rna_architecture_constraints.v0.2": {
+      "field_sets": [
+        [
+          "control_requirements",
+          "delivery_groups",
+          "deployment_requirements",
+          "exact_count",
+          "max_combinations",
+          "max_count",
+          "max_match_instances",
+          "max_match_states",
+          "max_member_bases",
+          "max_total_bases",
+          "preferred_refinement_ids",
+          "require_complete",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/constraints"
+      ]
+    },
+    "biocompiler.tail_declaration.v0.1": {
+      "field_sets": [
+        [
+          "length",
+          "path",
+          "placement",
+          "provenance",
+          "schema_version",
+          "status"
+        ]
+      ],
+      "paths": [
+        "/library/refinements/0/templates/0/sources/0/molecule/chemistry/terminal_tail"
+      ]
+    },
+    "biocompiler.tail_length.v0.1": {
+      "field_sets": [
+        [
+          "exact",
+          "lower",
+          "mode",
+          "schema_version",
+          "upper"
+        ]
+      ],
+      "paths": [
+        "/library/refinements/0/templates/0/sources/0/molecule/chemistry/terminal_tail/length"
+      ]
+    },
+    "biocompiler.target_claim.v0.1": {
+      "field_sets": [
+        [
+          "basis",
+          "description",
+          "evidence_ids",
+          "limitations",
+          "schema_version"
+        ]
+      ],
+      "paths": [
+        "/circuit/profile/target/human_target/cell_subtype",
+        "/circuit/profile/target/human_target/cell_state",
+        "/circuit/profile/target/human_target/tissue_context",
+        "/circuit/profile/target/human_target/disease_context",
+        "/circuit/profile/target/human_target/population_inclusion",
+        "/circuit/profile/target/human_target/population_exclusion",
+        "/circuit/profile/target/human_target/host_dependencies/0/support",
+        "/circuit/profile/target/human_target/operating_conditions/0/support",
+        "/circuit/profile/source_request/target/human_target/cell_subtype",
+        "/circuit/profile/source_request/target/human_target/cell_state",
+        "/circuit/profile/source_request/target/human_target/tissue_context",
+        "/circuit/profile/source_request/target/human_target/disease_context",
+        "/circuit/profile/source_request/target/human_target/population_inclusion",
+        "/circuit/profile/source_request/target/human_target/population_exclusion",
+        "/circuit/profile/source_request/target/human_target/host_dependencies/0/support",
+        "/circuit/profile/source_request/target/human_target/operating_conditions/0/support"
+      ]
+    }
+  }
+}

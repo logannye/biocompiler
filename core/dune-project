@@ -1,0 +1,8 @@
+(lang dune 3.20)
+(name biocompiler_core)
+(generate_opam_files false)
+(implicit_transitive_deps false)
+
+(package
+ (name biocompiler_core)
+ (synopsis "Biocompiler typed semantic core and independent checker"))

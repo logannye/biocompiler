@@ -44,13 +44,16 @@ remain distinct revision boundaries.
 | `circuit-integration` | Both Python versions exercise source metadata, infrastructure, review bundles, construction, molecules, intent and human circuit profiles. |
 | `integration-examples` | Both Python versions retain all remaining audit, molecular, synthetic, human, authoring and CLI examples. |
 | `studio-browser` | Installed Python 3.11 package, Node 22 and the pinned Playwright/Chromium setup run guided workspace, construction inspection and review suites. |
+| `studio-typescript` | Pinned strict TypeScript checks, unchanged generated release assets, runtime response decoding and current migration inventory. |
+| `ocaml-core` | Linux x86_64 and macOS arm64 native builds, native tests, independent-library boundaries and exact Python/OCaml conformance. |
 | `executable-rna-reproducibility` | Depends only on `installed-executable`; compares complete relative-file SHA-256 inventories from both Python versions. |
 | `payload-architecture-reproducibility` | Depends only on `installed-architecture`; requires all 13 case outputs and compares every relative file across versions. |
 | `circuit-reproducibility` | Depends only on `circuit-integration`; compares the complete infrastructure/source/review artifact inventories. |
-| `validation` | Final gate requires successful unit accounting, every installed/integration/browser job and all three reproducibility jobs. |
+| `validation` | Final gate requires successful unit accounting, every installed/integration/browser job, TypeScript, both native platforms and all three reproducibility jobs. |
 
 Reproducibility no longer waits behind the full unit suite. The intended steady
-work comprises ten unit runners, eight producer runners and one browser runner;
+work comprises ten unit runners, eight producer runners, one browser runner,
+one TypeScript runner and two OCaml runners;
 planning and accounting are shorter phases. Actual overlap depends on the hosted
 concurrency allowance. The final gate runs even when a dependency fails so that
 failure, cancellation, missing artifacts and unexpected skipped jobs cannot
@@ -182,14 +185,22 @@ current validation evidence.
 Editing, formatting, documentation checks and suitable focused pure-Python tests
 can remain local. Native compilation, executable native tests, extension rebuilds
 and packaging that could trigger native builds run on hosted CI or an already
-authorized remote environment by default. Local Rust compilation remains opt-in,
+authorized remote environment by default. Local Rust and OCaml compilation remain opt-in,
 including implicit builds through package managers. Do not install or rebuild a
 native package just to run a lightweight static check.
 
 Compatible already-installed native libraries can support Python-only edits;
-they cannot validate changed Rust source. Preserve required validation gates and
+they cannot validate changed native source. Preserve required validation gates and
 record their tested revision/platform. If remote execution is unavailable,
 continue safe local work and report what remains unvalidated rather than silently
 falling back to native compilation. Keep disposable build/download artifacts
 bounded and clean only identified task-owned outputs, preserving useful failure
 records and user data.
+
+The initial OCaml foundation pins the setup action and opam repository commit,
+then records the complete solved dependency lock per platform. CI retains both
+executable digests, platform identity and conformance evidence. The
+[official runner labels](https://docs.github.com/en/actions/reference/runners/github-hosted-runners)
+select `ubuntu-24.04` for Linux x86_64 and `macos-14` for macOS arm64; each job
+asserts the actual system/architecture before building. These are experimental
+native validation targets, not a claim that release packaging is complete.

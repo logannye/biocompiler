@@ -1,0 +1,17 @@
+opam-version: "2.0"
+synopsis: "Biocompiler typed semantic core and independent checker"
+maintainer: "Biocompiler maintainers"
+authors: ["Biocompiler contributors"]
+license: "MIT"
+homepage: "https://github.com/logannye/biocompiler"
+bug-reports: "https://github.com/logannye/biocompiler/issues"
+depends: [
+  "ocaml" {= "5.4.0"}
+  "dune" {= "3.20.2"}
+  "digestif" {= "1.3.0"}
+  "zarith" {= "1.14"}
+]
+build: [
+  ["dune" "build" "-p" name "-j" jobs]
+  ["dune" "runtest" "-p" name "-j" jobs] {with-test}
+]

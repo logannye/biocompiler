@@ -23,10 +23,12 @@ import time
 PYTHONS = ("3.11", "3.14")
 PRODUCERS = ("installed-executable", "installed-architecture", "circuit-integration", "integration-examples")
 REPRODUCIBILITY = ("executable-rna-reproducibility", "payload-architecture-reproducibility", "circuit-reproducibility")
+CORE_PLATFORMS = {"linux-x86_64": ("Linux", "x86_64"), "macos-arm64": ("Darwin", "arm64")}
 REQUIRED_NEEDS = frozenset((*PRODUCERS, *REPRODUCIBILITY, "studio-browser",
-                            "unit-plan", "unit-tests", "unit-accounting"))
+                            "unit-plan", "unit-tests", "unit-accounting", "ocaml-core", "studio-typescript"))
 EXPECTED_RECEIPTS = frozenset((job, version) for job in PRODUCERS for version in PYTHONS) | {
     ("studio-browser", "3.11"), *((job, "cross-python") for job in REPRODUCIBILITY),
+    ("studio-typescript", "3.11"), *(("ocaml-core", variant) for variant in CORE_PLATFORMS),
 }
 
 
@@ -68,8 +70,11 @@ def start_job(job, variant, expected):
     actual_python = platform.python_version()
     if variant in PYTHONS and ".".join(actual_python.split(".")[:2]) != variant:
         raise ValueError("Job Python differs from required variant")
+    if job == "ocaml-core" and (platform.system(), platform.machine()) != CORE_PLATFORMS[variant]:
+        raise ValueError("Core build platform differs from required variant")
     return {"schema_version": "biocompiler.ci_job_start.v0.1", **expected,
             "job": job, "variant": variant, "python_version": actual_python,
+            "system": platform.system(), "machine": platform.machine(),
             "platform": platform.platform(), "started_at": datetime.now(timezone.utc).isoformat(),
             "started_monotonic": time.monotonic()}
 
@@ -138,6 +143,8 @@ def validate(needs, receipts, accounting, expected):
             problems.append("stale_job_receipt:" + str(key))
         if key[1] in PYTHONS and ".".join(str(receipt.get("python_version", "")).split(".")[:2]) != key[1]:
             problems.append("wrong_job_python:" + str(key))
+        if key[0] == "ocaml-core" and (receipt.get("system"), receipt.get("machine")) != CORE_PLATFORMS.get(key[1]):
+            problems.append("wrong_core_platform:" + str(key))
     if set(found) != EXPECTED_RECEIPTS:
         problems.append("incomplete_job_variant_coverage")
     versions = {}

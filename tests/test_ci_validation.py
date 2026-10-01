@@ -16,6 +16,8 @@ class ValidationGateTests(unittest.TestCase):
         needs = {job: {"result": "success"} for job in ci.REQUIRED_NEEDS}
         receipts = [{"schema_version": "biocompiler.ci_job_receipt.v0.1", **expected,
                      "job": job, "variant": variant, "status": "success",
+                     "system": ci.CORE_PLATFORMS.get(variant, ("Linux", "x86_64"))[0],
+                     "machine": ci.CORE_PLATFORMS.get(variant, ("Linux", "x86_64"))[1],
                      "python_version": variant + ".7" if variant in ci.PYTHONS else "3.12.1"}
                     for job, variant in sorted(ci.EXPECTED_RECEIPTS)]
         accounting = [{"schema": "biocompiler.unittest_shard_accounting.v1",
@@ -135,6 +137,17 @@ class ValidationGateTests(unittest.TestCase):
         args[1].append([])
         args[2].append(None)
         self.assertEqual(ci.validate(*args)["status"], "fail")
+
+    def test_native_platform_must_match_its_registered_variant(self):
+        args = self.fixture()
+        native = next(item for item in args[1] if item["variant"] == "macos-arm64")
+        native["machine"] = "x86_64"
+        self.assertIn("wrong_core_platform:('ocaml-core', 'macos-arm64')", ci.validate(*args)["problems"])
+        with patch.dict("os.environ", {"GITHUB_JOB": "ocaml-core"}), \
+             patch.object(ci.platform, "system", return_value="Darwin"), \
+             patch.object(ci.platform, "machine", return_value="x86_64"):
+            with self.assertRaises(ValueError):
+                ci.start_job("ocaml-core", "macos-arm64", args[3])
 
 
 if __name__ == "__main__":
