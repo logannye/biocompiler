@@ -10,7 +10,8 @@ controlled cutover. The validated foundation is merged: Studio builds from stric
 TypeScript, and the experimental OCaml core provides bounded canonicalization and
 structural intent validation. Production compilation and acceptance remain Python.
 
-Continue with B1's typed domain declarations, independent source execution and
+B1's typed BuildRequest, Behavior and coordinate domains are validated. Continue
+with circuit wrappers, independent source correspondence and execution, then
 candidate reconstruction against the retained case B authority. The product capabilities and remaining biological
 obligations below remain authoritative; language migration does not complete
 them or expand their claims.

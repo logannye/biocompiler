@@ -8,6 +8,14 @@ type target_kind = Legacy_target | Human_target
 type binding_category = User_selected | Compiler_selected | Measured | Uncertain
 type binding_metadata
 
+module Target : sig
+  type t
+  val of_json : ?path:string -> Bioc_wire.Json.t -> t
+  val to_json : t -> Bioc_wire.Json.t
+  val kind : t -> target_kind
+  val fingerprint : t -> string
+end
+
 val schema_version : string
 val validation_scope : string
 val of_json : Bioc_wire.Json.t -> t

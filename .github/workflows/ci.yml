@@ -865,7 +865,9 @@ jobs:
           core/_build/default/test/test_build_request.exe "$GITHUB_WORKSPACE/tests/conformance/case-b" | tee generated/core/build-request-domain.txt
           core/_build/default/test/test_behavior.exe "$GITHUB_WORKSPACE/tests/conformance/case-b" "$GITHUB_WORKSPACE/tests/conformance/behavior-domains-v1.json" | tee generated/core/behavior-domain.txt
           core/_build/default/test/test_molecule_coordinates.exe "$GITHUB_WORKSPACE/tests/conformance/molecule-coordinates-v1.json" | tee generated/core/molecule-coordinates-domain.txt
-      - name: Check exact cross-language bytes and structural intent parity
+          core/_build/default/test/test_circuit_request.exe "$GITHUB_WORKSPACE/tests/conformance/request-domains-v1.json" | tee generated/core/circuit-request-domain.txt
+          core/_build/default/test/test_lowering_check.exe "$GITHUB_WORKSPACE/tests/conformance/case-b" "$GITHUB_WORKSPACE/tests/conformance/request-domains-v1.json" | tee generated/core/lowering-check.txt
+      - name: Check cross-language bytes, structural intent and independent lowering correspondence
         env:
           GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
         run: |

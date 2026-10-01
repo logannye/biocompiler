@@ -28,13 +28,122 @@ from biocompiler.core_client import (
     _exchange, decode_json,
 )
 from biocompiler.ir.intent import IntentProgram
+from biocompiler.compiler.request import BuildRequest
+from biocompiler.ir.behavior import BehaviorProgram
 
 
 ROOT = Path(__file__).resolve().parents[1]
 CORPUS = ROOT / "tests/conformance/core-json-v1.json"
 SCOPE = "intent-structure-types-bindings-v1"
+LOWERING_SCOPE = "source-to-behavior-correspondence-v1"
+LOWERING_CLAIM = "Exact frozen source-to-Behavior correspondence only; no source execution, molecular realization, empirical component function, human therapeutic admission, or complete architecture acceptance."
 OBLIGATIONS = ["behavior-lowering", "behavior-execution", "molecular-realization",
                "independent-translation-checking", "human-therapeutic-admission"]
+
+
+def lowering_cases(root=ROOT):
+    """Keep expected source authority separate from supplied Behavior artifacts.
+
+    The broad cases author fresh source only; they do not lower it to manufacture
+    the Behavior being checked. Supplied graphs come from retained corpus bytes.
+    """
+    root = Path(root)
+    cases = []
+    for name in ("base", "parameter-default", "parameter-override"):
+        request = json.loads((root / "tests/conformance/case-b" / name / "request.json").read_text())
+        candidate = json.loads((root / "tests/conformance/case-b" / name / "candidate.json").read_text())
+        cases.append(("case-b/" + name,
+                      request["circuit"]["profile"]["source_request"], candidate["execution"]["behavior"]))
+    specification = importlib.util.spec_from_file_location(
+        "lowering_conformance_authoring", root / "tools/freeze_behavior_domains.py")
+    require(specification is not None and specification.loader is not None, "Missing source authoring fixtures")
+    authoring = importlib.util.module_from_spec(specification)
+    specification.loader.exec_module(authoring)
+    retained = json.loads((root / "tests/conformance/behavior-domains-v1.json").read_text())
+    authoring.check_corpus(retained)
+    builders = {"algebra": authoring.algebra, "temporal_memory": authoring.temporal_memory,
+                "actions_state_signature": authoring.actions_state_signature,
+                "sampled_multirole": authoring.sampled_multirole}
+    for case in retained["cases"]:
+        family = case["id"].rsplit("_", 1)[0]
+        source = IntentProgram.from_dict(builders[family]().freeze().to_dict(include_source=False))
+        constraints = {} if family != "sampled_multirole" else {
+            "execution": {"integral_step": authoring.bc.Duration(1).to_dict()}}
+        request = BuildRequest.freeze(source, behavior_profile=case["behavior"]["schema_version"],
+                                      implementation_constraints=constraints)
+        require(request.intent.fingerprint == case["source_fingerprint"], "Retained source authority drifted")
+        cases.append(("broad/" + case["id"], request.to_dict(), case["behavior"]))
+    require(len(cases) == 10 and len({name for name, _, _ in cases}) == 10,
+            "Incomplete or duplicate lowering corpus")
+    return cases
+
+
+def lowering_expectation(request_document, behavior_document):
+    request = BuildRequest.from_dict(request_document)
+    behavior = BehaviorProgram.from_dict(behavior_document)
+    properties = ["execution_profile", "source_identity", "complete_graph", "parameter_inventory",
+                  "authoritative_bindings"]
+    for node in request.intent.nodes:
+        properties.extend(["operation:" + node.id, "semantics:" + node.id, "source:" + node.id])
+    properties.extend(["requirements_and_lineage", "identity_binding"])
+    obligations = ["source_behavior_execution", "molecular_realization", "source_to_candidate_preservation",
+                   "candidate_acceptance", "empirical_component_function", "human_therapeutic_admission"]
+    constraints = dict(request.implementation_constraints)
+    if request.behavior_profile == "biocompiler.behavior.v0.2":
+        constraints.pop("execution", None)
+    if constraints:
+        obligations.append("implementation_constraint_enforcement")
+    if request.preferences:
+        obligations.append("preference_evaluation")
+    if request.target is not None:
+        obligations.extend(["target_assumption_validation", "biological_evidence_admission"])
+    return {
+        "schema_version": "biocompiler.lowering_verification.v0.1",
+        "checker_version": "biocompiler.ocaml.lowering_check.v0.1",
+        "validation_scope": LOWERING_SCOPE, "claim_scope": LOWERING_CLAIM, "passed": True,
+        "request_fingerprint": request.fingerprint, "request_artifact_fingerprint": request.artifact_fingerprint,
+        "source_fingerprint": request.intent.fingerprint, "behavior_fingerprint": behavior.fingerprint,
+        "behavior_artifact_fingerprint": digest(canonical(behavior.to_dict())),
+        "behavior_profile": request.behavior_profile, "check_properties": properties,
+        "unimplemented_obligations": obligations,
+    }
+
+
+def lowering_mutations(cases):
+    """Structurally valid candidates must fail the intended preservation check."""
+    _, request, behavior = cases[0]
+    changed = deepcopy(behavior)
+    changed["name"] += "_different_source"
+    result = [("different-source-name", "lowering_source_identity", request, changed)]
+    changed = deepcopy(behavior)
+    next(node for node in changed["nodes"] if node["kind"] == "and")["kind"] = "or"
+    result.append(("changed-operator", "lowering_operation", request, changed))
+    changed = deepcopy(behavior)
+    node = next(node for node in changed["nodes"] if node["kind"] == "and" and len(node["inputs"]) >= 2)
+    node["inputs"] = list(reversed(node["inputs"]))
+    result.append(("changed-ordered-edges", "lowering_operation", request, changed))
+    changed = deepcopy(behavior)
+    literal = next(node for node in changed["nodes"] if node["kind"] == "literal")
+    literal["attributes"]["value"]["value"] *= 2
+    literal["attributes"]["value"]["canonical_value"] *= 2
+    result.append(("changed-time-constant", "lowering_semantics", request, changed))
+    changed = deepcopy(behavior)
+    literal = next(node for node in changed["nodes"] if node["kind"] == "literal")
+    literal["source"] = {"file": "changed.py", "line": 99, "function": "changed"}
+    result.append(("changed-source-location", "lowering_source_location", request, changed))
+    for name, request, behavior in cases:
+        if name == "broad/sampled_multirole_v2":
+            changed = deepcopy(behavior)
+            # The sampling quantity is a closed policy, independently supplied
+            # by the frozen request's execution constraint.
+            changed["policies"]["integral_step"]["value"] = 2
+            changed["policies"]["integral_step"]["canonical_value"] = 2
+            result.append(("changed-sampling-policy", "lowering_execution_profile", request, changed))
+    require(len(result) == 6, "Lowering mutation inventory incomplete")
+    for name, _, request, behavior in result:
+        BuildRequest.from_dict(request)
+        BehaviorProgram.from_dict(behavior)
+    return result
 
 
 def canonical(value):
@@ -283,6 +392,37 @@ class Campaign:
         require(result["summary"] == expected, name + ": native intent summary/fingerprint differs from original authority")
         self.passed(client, "intent", name, fingerprint=expected["fingerprint"])
 
+    def lowering(self, client, name, request, behavior):
+        expected = lowering_expectation(request, behavior)
+        result = client.verify_lowering(expected_request=request, behavior=behavior).result
+        expected_keys = set(expected) - {"check_properties"} | {"checks"}
+        require(type(result) is dict and set(result) == expected_keys, name + ": invalid lowering report")
+        for key, value in expected.items():
+            if key != "check_properties":
+                require(canonical(result[key]) == canonical(value), name + ": incorrect lowering " + key)
+        checks = result["checks"]
+        require(type(checks) is list and all(type(check) is dict and set(check) == {"property", "passed", "detail"}
+                and check["passed"] is True and type(check["detail"]) is str and bool(check["detail"])
+                for check in checks), name + ": incomplete or failed preservation checks")
+        require([check["property"] for check in checks] == expected["check_properties"], name + ": preservation census differs")
+        self.passed(client, "lowering", name, request_fingerprint=expected["request_fingerprint"],
+                    request_artifact_fingerprint=expected["request_artifact_fingerprint"],
+                    behavior_fingerprint=expected["behavior_fingerprint"],
+                    behavior_artifact_fingerprint=expected["behavior_artifact_fingerprint"],
+                    preservation_checks=len(checks))
+
+    def lowering_rejection(self, client, name, request, behavior, code):
+        try:
+            client.verify_lowering(expected_request=request, behavior=behavior)
+        except CoreRejected as error:
+            require(error.response.status == "error" and error.response.result is None,
+                    name + ": mismatch confused with unsupported or success")
+            require([value.code for value in error.response.diagnostics] == [code],
+                    name + ": wrong preservation rejection signature")
+            self.passed(client, "lowering_rejection", name, error_code=code)
+        else:
+            raise AssertionError(name + ": changed lowering accepted")
+
 
 def run_campaign(clients, corpus, receipt, programs):
     campaign = Campaign(receipt)
@@ -296,13 +436,15 @@ def run_campaign(clients, corpus, receipt, programs):
         "bits_sha256": digest(b"".join(struct.pack(">d", value) for value in binary_boundaries)),
     }
     mutations = intent_mutations(programs)
+    lowering = lowering_cases()
+    lowering_changes = lowering_mutations(lowering)
     for client in clients:
         capabilities = client.capabilities().result
         require(type(capabilities) is dict, "Missing capabilities")
-        require(sorted(capabilities["operations"]) == ["canonicalize", "capabilities", "validate-intent"], "Missing or untested advertised operation")
+        require(sorted(capabilities["operations"]) == ["canonicalize", "capabilities", "validate-intent", "verify-lowering"], "Missing or untested advertised operation")
         require(capabilities["canonicalization"] == "python-json-v1" and capabilities["intent_schemas"] == ["biocompiler.intent.v0.1"]
-                and capabilities["validation_scopes"] == [SCOPE] and capabilities["limits"] == LIMITS, "Capability contract differs")
-        require("Structural intent validation only" in capabilities["claim_scope"], "Capabilities lost limited claim scope")
+                and capabilities["validation_scopes"] == [SCOPE, LOWERING_SCOPE] and capabilities["limits"] == LIMITS, "Capability contract differs")
+        require(capabilities["claim_scope"] == "Structural intent validation and exact frozen source-to-Behavior correspondence only; no execution, architecture acceptance, molecular correctness, empirical function or human-use admission.", "Capabilities lost limited claim scope")
         campaign.passed(client, "capabilities", "complete-advertised-contract")
         for vector in corpus["literal_vectors"]:
             campaign.codec(client, vector["id"], None, vector["canonical_json"], vector["input_json"], "independent_literal")
@@ -353,6 +495,34 @@ def run_campaign(clients, corpus, receipt, programs):
                 campaign.passed(client, "intent_rejection", name, error_code=code)
             else:
                 raise AssertionError(name + ": invalid intent was accepted")
+        for name, request, behavior in lowering:
+            campaign.lowering(client, name, request, behavior)
+        for name, code, request, behavior in lowering_changes:
+            campaign.lowering_rejection(client, name, request, behavior, code)
+        unsupported_source = deepcopy(lowering[0][1])
+        unsupported_source["intent"]["nodes"].append({"id": "future-operation", "kind": "future.operation",
+                                                     "inputs": [], "attributes": {}, "data_type": None,
+                                                     "role": None})
+        try:
+            client.verify_lowering(expected_request=unsupported_source, behavior=lowering[0][2])
+        except CoreUnsupported as error:
+            require([value.code for value in error.response.diagnostics] == ["unsupported_lowering_operation"],
+                    "Unsupported source lost its explicit capability diagnostic")
+            campaign.passed(client, "lowering_unsupported", "unknown-source-operation",
+                            error_code="unsupported_lowering_operation")
+        else:
+            raise AssertionError("Unsupported source was accepted or silently ignored")
+        payload = {"expected_request": lowering[0][1], "behavior": lowering[0][2]}
+        for name, altered, code in (("extra-authority", {**payload, "accepted": True}, "unknown_field"),
+                                    ("missing-independent-authority", {"behavior": lowering[0][2]}, "missing_field")):
+            try:
+                client.call("verify-lowering", altered)
+            except CoreRejected as error:
+                require(error.response.status == "error" and [value.code for value in error.response.diagnostics] == [code],
+                        name + ": wrong lowering payload rejection")
+                campaign.passed(client, "lowering_rejection", name, error_code=code)
+            else:
+                raise AssertionError(name + ": malformed lowering payload accepted")
         try:
             client.call("unimplemented-test-operation", {})
         except CoreUnsupported as error:

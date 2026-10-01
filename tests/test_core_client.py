@@ -117,6 +117,17 @@ class CoreProcessTests(unittest.TestCase):
         digest = hashlib.sha256(self.path.read_bytes()).hexdigest()
         self.assertEqual(CoreClient(self.path, expected_sha256=digest).capabilities().status, "ok")
 
+    def test_lowering_keeps_independent_request_and_candidate_authority(self):
+        request = {"source": "separately frozen", "binding": 2**100}
+        behavior = {"source": "candidate claim", "binding": -0.0}
+        result = self.client().verify_lowering(expected_request=request, behavior=behavior)
+        self.assertEqual(result.operation, "verify-lowering")
+        self.assertEqual(encode_json(result.result), encode_json({"echo": {
+            "expected_request": request, "behavior": behavior}}))
+        with self.assertRaises(CoreUnavailable):
+            CoreClient(self.path.parent / "absent-core").verify_lowering(
+                expected_request=request, behavior=behavior)
+
     def test_bad_timeout_configuration(self):
         for timeout in (True, 0, -1, float("inf"), float("nan")):
             with self.subTest(timeout=timeout), self.assertRaises(ValueError):

@@ -387,3 +387,13 @@ class CoreClient:
 
     def validate_intent(self, intent: JsonValue) -> CoreResponse:
         return self.call("validate-intent", intent)
+
+    def verify_lowering(self, *, expected_request: JsonValue, behavior: JsonValue) -> CoreResponse:
+        """Check supplied Behavior against independently supplied frozen source.
+
+        The scoped result does not establish execution, molecular realization or
+        architecture acceptance. This adapter transports both authorities without
+        lowering, reconstructing a candidate or falling back to Python checking.
+        """
+        return self.call("verify-lowering", {"expected_request": expected_request,
+                                             "behavior": behavior})
