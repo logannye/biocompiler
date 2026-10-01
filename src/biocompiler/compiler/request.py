@@ -17,7 +17,7 @@ from biocompiler.errors import (
     TypeMismatchError,
     UnsupportedBehaviorError,
 )
-from biocompiler.ir.behavior import BehaviorProgram, SCHEMA_VERSION as BEHAVIOR_PROFILE
+from biocompiler.ir.behavior import BehaviorProgram, BEHAVIOR_V2, SCHEMA_VERSION as BEHAVIOR_PROFILE
 from biocompiler.ir.intent import IntentProgram, freeze_json, thaw_json
 from biocompiler.ir.serialization import (
     JsonArtifact,
@@ -271,7 +271,7 @@ class BuildRequest(JsonArtifact):
             "BuildRequest requires a frozen IntentProgram.",
         )
         require(
-            self.behavior_profile == BEHAVIOR_PROFILE,
+            self.behavior_profile in {BEHAVIOR_PROFILE, BEHAVIOR_V2},
             "Unsupported Behavior execution profile.",
         )
         require(
@@ -399,7 +399,7 @@ class BuildRequest(JsonArtifact):
 
     @property
     def runtime_observations(self):
-        return tuple(node.id for node in self.intent.find(kind="signal"))
+        return tuple(node.id for node in self.intent.nodes if node.kind in {"signal", "channel_observation"})
 
     def to_dict(self, *, include_provenance=True):
         return {

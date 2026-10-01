@@ -1,8 +1,15 @@
 # biocompiler intent API: v0.1
 
-**Status:** implemented authoring API, 2026-09-29, package `0.1.0.dev2`. Authoring, typed intent/behavior graphs, JSON inspection, parameter-binding reports, and abstract behavior execution are available. Molecular realization and DNA/RNA emission are not implemented. This API version is independent of the package version.
+**Status:** implemented authoring API, current package `0.1.0.dev28`. Typed intent,
+versioned Behavior execution and bounded supplied-contract RNA architecture
+compilation are connected. The current product is human immune cells engineered
+in vivo with RNA payload output. The [architecture profile](payload-architecture-v0.1.md)
+supports full source/model correspondence, composite implementations, RNA
+partitions, recipient delivery and exact molecule construction under explicit
+contracts. Empirical function remains unestablished. This authoring API version
+is independent of the package and execution-profile versions.
 
-biocompiler lets an immune-cell engineer describe an evolving therapeutic behavior and refine it into DNA or RNA payload specifications for engineering cells **in vivo**. The author describes participating cell roles, what they perceive, how they respond, what they remember, and how they work together.
+biocompiler lets an immune-cell engineer describe an evolving therapeutic behavior and refine it into RNA payload specifications for engineering human immune cells **in vivo**. The author describes participating cell roles, what they perceive, how they respond, what they remember, and how they work together.
 
 The primary authoring sentence is:
 
@@ -391,7 +398,7 @@ profile = bc.BuildProfile(
 )
 ```
 
-This identifier is illustrative, not a supplied biological context. A context snapshot must describe the roles used by the program. A build profile selects DNA or RNA before mechanism selection; modality can therefore guide refinement while the behavioral source stays recognizable. The first profile describes one modality for a build, including a build with multiple same-modality payloads. Mixed-modality packages are a future profile extension.
+This identifier is illustrative, not a supplied biological context. A context snapshot must describe the roles used by the program. The current therapeutic profile requires RNA before architecture selection, including designs with multiple RNA payloads. Existing generic DNA/reference contexts remain shared infrastructure outside this product target. Recipient-role assignments and same-recipient co-delivery are explicit architecture contracts.
 
 The molecular workflow exposes three stages; the first two return inspectable records. Behavior lowering and reference execution are a separate, target-independent path described in the [behavior semantics](behavior-semantics-v0.1.md):
 
@@ -400,12 +407,12 @@ The molecular workflow exposes three stages; the first two return inspectable re
 program = therapy.freeze()                 # Immutable IntentProgram.
 design = bc.plan(program, profile=profile)  # RealizationPlan.
 try:
-    artifact = bc.compile(design)          # Future molecular compiler boundary.
+    artifact = bc.compile(design)          # A bare plan lacks supplied implementation authority.
 except bc.CompilationUnavailableError as exc:
     print(exc)
 ```
 
-`freeze()` preserves the authored intent and symbolic parameters. `plan()` validates supplied parameter bindings, retains defaults, and reports unbound parameters and other unresolved design choices. It does not select molecular mechanisms or parts. `compile()` currently raises `CompilationUnavailableError`; future molecular compilation will emit sequences and molecular specifications. Physical formulation and manufacture remain outside this interface.
+`freeze()` preserves the authored intent and symbolic parameters. `plan()` validates supplied parameter bindings, retains defaults, and reports unbound parameters and other unresolved design choices. It does not select molecular mechanisms or parts. `compile(design)` for this bare plan raises `CompilationUnavailableError` because no implementation library is supplied. `bc.compile(PayloadArchitectureRequest(...))` connects the same original source to supplied composite models, components, RNA partitions and exact molecule templates, then emits independently checked RNA and complete metadata. Physical formulation and manufacture remain outside this interface.
 
 A profile can supply typed values without changing the authored snapshot:
 
@@ -490,7 +497,9 @@ bc.at_least(count: int, *conditions: Condition) -> Condition
 bc.signature(function: Callable[..., Condition]) -> Signature
 BuildProfile(target: TargetContext, parameters: Mapping[str, Any] = ...) -> BuildProfile
 bc.plan(program: IntentProgram, *, profile: BuildProfile) -> RealizationPlan
-bc.compile(design: RealizationPlan) -> raises CompilationUnavailableError (future PayloadArtifact)
+bc.compile(design: RealizationPlan) -> raises CompilationUnavailableError (no supplied realization)
+bc.compile(request: PayloadArchitectureRequest) -> PayloadArchitectureBuild
+bc.export_payload_architecture(build, *, expected_request) -> PayloadArchitectureExport
 ```
 
 Action constructors return inert specifications. `do()` installs a rule, while `engineer()`, `memory()`, `state()`, `secretion()`, and `regulate()` declare named program entities. Unattached expressions and action specifications do not change cellular behavior. Re-declaring a named entity with a different definition is not an implicit update.
@@ -504,7 +513,7 @@ flowchart LR
     PY["Python authoring"] --> INTENT["Intent graph<br/>Roles, observations, behavior"]
     INTENT --> BEHAVIOR["Behavioral IR<br/>Dynamics and interaction"]
     BEHAVIOR --> MOLECULES["Molecular realization"]
-    MOLECULES --> PAYLOAD["DNA/RNA payload bundle"]
+    MOLECULES --> PAYLOAD["RNA payload set + complete manifest"]
 ```
 
 Every node retains an identity within the authored graph and a source location. `program.nodes` and nested metadata are immutable; `to_dict()` returns an independent mutable copy. `IntentProgram.from_json(program.to_json())` restores the snapshot, including its sources. The loader checks schema, references, structural cycles, and typed records; it does not simulate the program.
@@ -525,6 +534,24 @@ These are the bridge from readable therapeutic intent to molecular implementatio
 
 The v0.1 release implements the complete authoring vocabulary in this reference: roles, scopes, signals, types, parameters, signatures, conditions, events, memory, state, actions, outputs, feedback specifications, and channels. Six [executable example programs](../examples/intent_programs.py) cover the main combinations. Tests check ownership, units, temporal metadata, named definitions, immutable serialization, and planning bindings.
 
-The graphs retain the broad authoring vocabulary. `lower_to_behavior()` implements the executable subset defined in the [behavior semantics](behavior-semantics-v0.1.md); `evaluate()` runs its abstract specification against supplied histories. This is not a biological time-course simulator. Controllers, spatial/multicell transport and other unsupported operators receive explicit lowering diagnostics. Named biological concepts are not automatically assigned sensors or effectors. The next molecular work is a modeled realization path governed by the [toolchain contracts](toolchain-contracts.md).
+The graphs retain the broad authoring vocabulary. `lower_to_behavior()` implements the executable subset defined in the [behavior semantics](behavior-semantics-v0.1.md); `evaluate()` runs its abstract specification against supplied histories. This is not a biological time-course simulator. Controllers, arbitrary spatial/population models and other unsupported operators receive explicit lowering diagnostics. Named biological concepts are not automatically assigned sensors or effectors.
+
+Select `behavior_profile="biocompiler.behavior.v0.2"` on the frozen `BuildRequest`
+for numeric channel emissions/receiver observations and restricted rolling
+integration. Integration requires an explicit typed `execution.integral_step`
+constraint stored as, for example, `bc.Duration(1).to_dict()`; direct nonnegative
+cell-local signal or channel-observation area is accumulated exactly within its
+positive constant window, while guards consume it on the declared sample grid and input/timer
+events. This is not a continuous exposure guarantee. Coupled architecture
+execution uses declared positive grid-aligned channel latency, persistence,
+aggregation and failure assumptions.
+
+The [A–F architecture examples](../examples/payload_architectures.py) connect
+state/reset/timeout, mutually exclusive clamped rate branches, sampled budgets,
+communication, control independence and alternative RNA partitions to exact
+supplied sequence output. Their models are independently authored artificial
+contracts; code checks do not require biological evidence. See the
+[architecture profile](payload-architecture-v0.1.md) and
+[toolchain contracts](toolchain-contracts.md) for supported limits.
 
 See [architecture](architecture.md) for compiler stages and [roadmap](roadmap.md) for implementation sequencing.

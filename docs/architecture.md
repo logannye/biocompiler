@@ -1,6 +1,17 @@
 # Architecture
 
-biocompiler is an experimental compiler working toward translating high-level therapeutic intent into an exact, complete DNA or RNA payload specification for in vivo immune cell therapies. Python is the implemented authoring language; natural-language authoring is a future frontend to the same explicit requirements. Its organizing principle is **preservation of a behavioral contract through explicit intermediate representations (IRs)**. Each molecular choice should remain traceable to the intended response, its deployment context and the evidence supporting it.
+The current product interface is **therapeutic program design → corresponding
+payload RNA sequences for human immune cells engineered in vivo**. The
+[RNA architecture profile](payload-architecture-v0.1.md) connects complete source
+Behavior programs, supplied composite component contracts, bounded architecture
+and RNA-partition selection, recipient roles and the existing construction engine.
+Its independent checker reconstructs source meaning and selected templates before
+RNA export. This contract-conditional code path requires no biological evidence;
+whether the supplied parts fulfill their contracts remains unresolved. The
+broader DNA utilities and earlier milestones described below are infrastructure
+and historical context, not an additional current product target.
+
+biocompiler translates supported high-level therapeutic intent into exact RNA payload specifications for human immune cells engineered in vivo, conditional on supplied executable component contracts and sequence templates. Python is the implemented authoring language; natural-language authoring is a future frontend to the same explicit requirements. Its organizing principle is **preservation of a behavioral contract through explicit intermediate representations (IRs)**. Each molecular choice remains traceable to the intended response, its deployment context, declared assumptions and any separately supplied evidence.
 
 **Human in-vivo immune-cell deployment is the sole product target.** Non-human
 organism compilation, sequencing and general cell-engineering workflows are out
@@ -9,7 +20,7 @@ cell and assay context; that context never substitutes for the deployment target
 Component origin is separate from recipient biology and requires its own
 provenance and human-context applicability assessment.
 
-The current repository implements the Python intent frontend, immutable intent and behavior graphs, checked intent-to-behavior lowering, an abstract reference evaluator, planning inspection, frozen build/realization requests, a checked pass manager, automatic combinational and temporal synthetic generation with locked operations, finite-trace realization checking against independent synthetic models, reproducible synthetic workflow packages, immutable typed component contracts, deterministic offline selection, and composition linking with provider/resource checks, independently checked whole-CDS reference construct assembly, and exact-reference DNA/RNA emission. A separate software molecular-design pipeline constructs and independently checks multi-region structural RNA specifications. The intent-candidate pipeline connects one authored product requirement to supplied CDS/architecture selection and automatic RNA assembly, retaining all unimplemented behavior. The checked molecular-implementation pipeline adds full requirement analysis, declared precursor/processing relationships, explicit providers and composite coding-segment construction under the separate `secreted_precursor_structure` scope. General molecular mechanism selection, biological simulation, characterized component libraries and human therapeutic-payload generation are not implemented. Physical manufacture, administration, and execution in a recipient cell are outside the compiler boundary.
+The current repository implements the Python intent frontend, immutable intent and behavior graphs, checked intent-to-behavior lowering, an abstract reference evaluator, planning inspection, frozen build/realization requests, a checked pass manager, automatic combinational and temporal synthetic generation with locked operations, finite-trace realization checking against independent synthetic models, reproducible synthetic workflow packages, immutable typed component contracts, deterministic offline selection, and composition linking with provider/resource checks, independently checked whole-CDS reference construct assembly, and exact-reference DNA/RNA emission. A separate software molecular-design pipeline constructs and independently checks multi-region structural RNA specifications. The intent-candidate pipeline connects one authored product requirement to supplied CDS/architecture selection and automatic RNA assembly, retaining all unimplemented behavior. The checked molecular-implementation pipeline adds full requirement analysis, declared precursor/processing relationships, explicit providers and composite coding-segment construction under the separate `secreted_precursor_structure` scope. The executable RNA payload profile connects source activation and action semantics to bounded selection of supplied contracts, complete molecule-set construction and independent source/component/sequence checking. Unrestricted molecular mechanism discovery, biological simulation, characterized component libraries and empirically supported therapeutic function remain open. Physical manufacture, administration, and execution in a recipient cell are outside the compiler boundary.
 
 The [v0.1 intent API](intent-api-v0.1.md) implements the authoring vocabulary: cell roles, scoped observations, expressions, actions, state, outputs, controllers, and communication. Python constructs an inspectable intent graph; molecular realization remains a later stage.
 
@@ -30,7 +41,9 @@ unresolved goals into the legacy Behavior IR. `check_secretion_trace` evaluates
 the requested ranges and deadlines on supplied piecewise-constant observations;
 it provides neither a biological model nor evidence of therapeutic efficacy.
 The runtime input must be cell-accessible; the output assay remains an external
-evaluation readout. General payload compilation remains unavailable.
+evaluation readout. This observation profile alone supplies no molecular
+implementation; the separate executable RNA profile requires supplied component
+contracts and sequence templates.
 
 M10.3 adds a [frozen deployment contract](deployment-contract-v0.1.md) around that
 behavior request. It retains delivery-platform identity, exact human recipient
@@ -54,6 +67,41 @@ No actuator, biological model or human payload admission is supplied.
 The development-version rename uses the `biocompiler.*` schema namespace and
 requires fresh builds and checks; see [migration notes](biocompiler-migration.md).
 Historical validation records keep their original revision and evidence scope.
+
+## Current composite RNA architecture path
+
+`PayloadArchitectureRequest` retains the original human circuit/source request,
+independently supplied composite Behavior contracts and hard architecture
+constraints. `SourceExecutionManifest` preserves every source node and installed
+rule/action, including state, memory, numerical rates and role/channel boundaries.
+`ExecutableCircuitBehavior` carries full temporal/stateful source semantics for
+supplementary readouts instead of approximating them with a stateless table.
+
+`ArchitectureBinding` connects model nodes, locked components, exact templates and
+specific member placements many-to-many. One component can require several RNAs;
+several components can share one explicitly supplied RNA. Refinement selection,
+RNA partitions, helper placement and recipient/co-delivery assignments are solved
+together. Distinct refinement instances are namespaced, with no deduplication by
+sequence equality. Component models pin the full supplied composite Behavior;
+sequence-only records and unrelated intrinsic operators cannot discharge runtime
+meaning. The independent checker reconstructs source/model correspondence and
+construction authority from the original request.
+
+Source-side control requirements distinguish activation, production adjustment,
+activity control, memory reset, shutdown, physical separation and dependency
+disjointness. Declared control domains and causal inputs are checked independently
+of RNA count. Helper capabilities, initialization, capacity, sharing, compartment
+and explicit same-recipient delivery determine availability. All delivered helper
+RNAs contribute to count/size constraints and export.
+
+Behavior v0.2 provides restricted sampled rolling integration and typed channel
+observations/emissions. Coupled execution reuses the original per-role evaluator
+under supplied finite-grid latency, persistence, aggregation and failure policies.
+These are executable language assumptions, not biological kinetics. Sampled
+budgets do not prove continuous exposure bounds; production cessation does not
+prove effector clearance. Unbound external helpers and nonempty unmapped component
+resource/domain contracts remain unsupported. See the
+[complete profile and A–F examples](payload-architecture-v0.1.md).
 
 ## Compilation layers
 
@@ -97,6 +145,14 @@ Software, reviewed reference correspondence and human applicability have separat
 acceptance tracks. R1 and R5–R13 remain open; source-backed reconstruction, family
 semantics and human admission are not established.
 
+[Portable circuit review bundles](circuit-review-bundles-v0.1.md) retain those
+artifacts as bounded canonical archives. A schema-neutral ZIP codec is shared
+with existing packages so the review checker never imports producer-dependent
+profile dispatch. External complete authority and a pinned historical evidence
+receipt are required for fresh replay. Run metadata stays outside the canonical
+identity. Studio uses the existing independent checkers for source gaps, nominal
+bindings and evidence freshness; it never supplies a second compiler.
+
 | Layer | Representation | Preservation obligation |
 | --- | --- | --- |
 | Python frontend | Declarative biological operations authored through the typed Python DSL | Separate design-time Python control flow from intended biological control flow. |
@@ -122,7 +178,7 @@ An exact sequence does not establish exact cellular behavior. Artifact identity 
 | `verification` | Independently check structural and behavioral obligations; retain unknown or failed outcomes. |
 | `registry` | Versioned component interfaces, models, context applicability, and evidence references. |
 | `models` | Quantitative model adapters and uncertainty representations. |
-| `backends/dna`, `backends/rna` | Target capabilities, modality-specific lowering, and molecular specification emission. |
+| `backends/dna`, `backends/rna` | Distinct reference/construction alphabets and emission rules; therapeutic payload output is restricted to RNA. |
 | `artifacts` | Deterministic serialization, manifests, provenance, and source maps. |
 | `interop` | Future import/export adapters for external representations, such as SBOL and SBML. |
 
@@ -270,7 +326,7 @@ Some properties admit exact checks, such as referential integrity or corresponde
 
 ## Target selection and revalidation
 
-DNA and RNA are distinct targets with different available mechanisms. Select the target before choosing mechanisms; emit target-specific molecular details later. A backend must reject an unsupported mechanism rather than approximate it without an explicit contract change.
+The therapeutic product target is human in-vivo immune-cell RNA. Shared reference and construction infrastructure preserves distinct DNA and RNA alphabets, coordinate systems and explicit conversion rules; DNA roots or intermediates do not authorize a delivered DNA payload. Select the RNA target and its context before choosing implementations. A backend must reject an unsupported mechanism rather than approximate it without an explicit contract change.
 
 Sequence optimization may preserve a protein sequence while changing modeled expression or stability. Therefore a later sequence change can invalidate higher-level analyses. Track these dependencies so the compiler reruns affected checks instead of equating sequence-level compatibility with behavioral equivalence.
 
@@ -284,7 +340,7 @@ See the [roadmap](roadmap.md) for implementation order and the [initial architec
 
 ## Executable semantic foundation
 
-The [behavior semantics](behavior-semantics-v0.1.md) define an execution profile independently of molecular implementations. `lower_to_behavior` normalizes supported intent, binds scalar design parameters, records source/requirement lineage and explicit runtime policies, and rejects unsupported semantics. `verify_lowering` checks correspondence. Behavior IR is immutable and serializable; its reference evaluator runs one engineered cell against supplied input histories, including same-time state propagation and internal deadlines.
+The [behavior semantics](behavior-semantics-v0.1.md) define an execution profile independently of molecular implementations. `lower_to_behavior` normalizes supported intent, binds scalar design parameters, records source/requirement lineage and explicit runtime policies, and rejects unsupported semantics. `verify_lowering` checks correspondence. Behavior IR is immutable and serializable; its reference evaluator runs one engineered cell against supplied input histories, including same-time state propagation and internal deadlines. The architecture executor couples these per-role executions through explicitly supplied, bounded sampled transport; v0.2 integral policies remain pinned in frozen source authority.
 
 The [toolchain contracts](toolchain-contracts.md) are design obligations for every later layer: target capabilities, observation mappings, required responses, independent synthesis/checking, composed resource models, host linking, construct partitioning, encoding invalidation and complete molecular artifacts. Future module docstrings point to these obligations. The reference evaluator is an oracle for language semantics; biological model adapters belong to `models`.
 
@@ -298,7 +354,7 @@ This profile tests the preservation machinery without claiming a molecular mecha
 
 ## Implemented request and pipeline boundary
 
-The [frozen request design](build-requests-v0.1.md) makes explicit bindings authoritative and separates source/behavior identity from the later contract/domain phase. The [pass manager](pass-manager-v0.1.md) admits only independently checked, fresh stage outputs. The [combinational synthetic profile](synthetic-profile-v0.1.md) has an automatic generator and a small versioned operation catalog. Separately [curated reference records](reference-benchmarks.md) establish exact CDS expectations; they are not molecular implementations of the synthetic graphs. The [component contracts](component-contracts-v0.1.md) and [offline linker](component-linking-v0.1.md) now support checked synthetic Mechanism → Components lowering. Interface meaning and domain inclusion, explicit providers, assumption cycles, shared capacities and dependency locks are checked independently. `run_component_pipeline` preserves source lineage and finite-history evidence in a `synthetic_components` scope. A [frozen construct request](construct-ir-v0.1.md) now fixes selected membership, reference ranges and expected layout before generation. The [independent construct checker](construct-checking-v0.1.md) validates a single whole DNA or RNA CDS and retains unknown delivered-molecule context. The [exact-CDS pipeline](exact-cds-pipeline-v0.1.md) now emits that selected reference spelling through a separate DNA or RNA backend and independently verifies nucleotide identity, linked-reference consistency, translation and source correspondence. Multi-molecule assembly, general molecular realization and human therapeutic-payload generation remain future work. The separate structural molecular-design profile below supports explicitly supplied RNA fragment/layout authority.
+The [frozen request design](build-requests-v0.1.md) makes explicit bindings authoritative and separates source/behavior identity from the later contract/domain phase. The [pass manager](pass-manager-v0.1.md) admits only independently checked, fresh stage outputs. The [combinational synthetic profile](synthetic-profile-v0.1.md) has an automatic generator and a small versioned operation catalog. Separately [curated reference records](reference-benchmarks.md) establish exact CDS expectations; they are not molecular implementations of the synthetic graphs. The [component contracts](component-contracts-v0.1.md) and [offline linker](component-linking-v0.1.md) now support checked synthetic Mechanism → Components lowering. Interface meaning and domain inclusion, explicit providers, assumption cycles, shared capacities and dependency locks are checked independently. `run_component_pipeline` preserves source lineage and finite-history evidence in a `synthetic_components` scope. A [frozen construct request](construct-ir-v0.1.md) now fixes selected membership, reference ranges and expected layout before generation. The [independent construct checker](construct-checking-v0.1.md) validates a single whole DNA or RNA CDS and retains unknown delivered-molecule context. The [exact-CDS pipeline](exact-cds-pipeline-v0.1.md) now emits that selected reference spelling through a separate DNA or RNA backend and independently verifies nucleotide identity, linked-reference consistency, translation and source correspondence. This exact-reference path retains its single-CDS scope. Complete multi-member construction and bounded source-to-RNA translation are implemented by the separate supplied-construction and executable payload profiles; unrestricted molecular realization and empirical therapeutic function remain open. The structural molecular-design profile below supports explicitly supplied RNA fragment/layout authority.
 
 ## Temporal synthetic builds
 
@@ -335,7 +391,7 @@ history/time grid/suffix/horizon, mode and budgets. Fresh replay reexecutes curr
 checks against that authority. Historical reports, observed failures and incomplete
 coverage cannot become accepted compilation merely by parsing or rehashing them.
 
-These interfaces support the intended future source-to-molecular workflow: a
+These interfaces support the current bounded source-to-RNA workflow and its extensions: a
 selected implementation must preserve required behavior and carry its evidence
 and unresolved obligations downstream. Digital operator equivalence and software
 costs supply no characterization of a molecular component or biological efficiency.
@@ -398,11 +454,11 @@ The [molecular implementation contract](molecular-behavior-v0.1.md) freezes requ
 
 [Whole-molecule readiness](payload-profiles-v0.1.md) has separate immutable molecule/reference records for narrow mature linear RNA, linear DNA and circular-plasmid profiles. The checker requires a separately supplied authority fingerprint, exact retained source/review bytes, independent sequence extraction, whole-molecule feature coverage and explicit topology/chemistry. These results do not enter the exact-CDS pipeline or authorize a complete-payload build. The example records are nonfunctional software fixtures; no complete biological reference is promoted.
 
-Planning and general therapeutic compilation report source-linked missing obligations for quantitative curves, continuous integration, interval-valued intent, population communication, spatial behavior and feedback. They preserve these authored requests without silently assigning an approximate execution model. The partial intent-candidate and declared precursor profiles retain such obligations while implementing only their supported structural scopes. The [M9 evidence review](m9-evidence-review.md) identifies the scientific and source inputs needed for subsequent adapter and reference-promotion work.
+Planning and unsupported general compilation retain missing obligations for arbitrary quantitative curves, continuous integration, interval-valued intent, population/spatial behavior and feedback. The composite architecture profile separately implements explicit rate branches, sampled rolling integration and declared numeric channels within its documented bounds. They preserve these authored requests without silently assigning an approximate execution model. The partial intent-candidate and declared precursor profiles retain such obligations while implementing only their supported structural scopes. The [M9 evidence review](m9-evidence-review.md) identifies the scientific and source inputs needed for subsequent adapter and reference-promotion work.
 
 ## Human-profile use admission
 
-The [M10.5 admission policy](human-admission-v0.1.md) is shared by planning, registry selection, fresh implementation verification and export. Its immutable request binds target, intended use, boundary and selected component records; the assessment preserves declared evidence categories and limitations. The current policy admits no human therapeutic profiles. Generic targets can request labeled software workflows only; human contexts cannot bypass admission by requesting software use. The partial product-cassette and declared precursor workflows retain human requirements and admission refusal while emitting structurally checked research candidates; they grant no therapeutic implementation eligibility. Supplied human-contract observations may pass their finite checks without granting implementation eligibility.
+The [M10.5 admission policy](human-admission-v0.1.md) is shared by planning, registry selection, fresh implementation verification and export. Its immutable request binds target, intended use, boundary and selected component records; the assessment preserves declared evidence categories and limitations. The current policy admits no human therapeutic profiles. Generic targets can request labeled software workflows only; human contexts cannot bypass admission by requesting software use. The partial product-cassette and declared precursor workflows retain human requirements and admission refusal while emitting structurally checked research candidates; they grant no therapeutic implementation eligibility. Supplied human-contract observations may pass their finite checks without granting implementation eligibility. The composite architecture path separately checks conditional software translation in the original human context without biological-evidence gating or human-use admission.
 
 Independent composition, construct and molecular checks rerun admission even for exact manually supplied locks. Synthetic generation and direct realization checks reject human targets. Reference export and archive reconstruction check use before accepting a build. Molecular/synthetic artifacts, reference manifests and summaries carry fixed software-use labels; FASTA carries equivalent header fields. Policy identities enter verification, pass-manager and package dependencies. Matching saved hashes or PASS labels cannot replace fresh current checks.
 

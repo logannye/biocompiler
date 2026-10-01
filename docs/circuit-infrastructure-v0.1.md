@@ -4,6 +4,10 @@ Version `0.1.0.dev25` adds a bounded software increment supporting R1, R5,
 R11, R12 and R13. It does not complete those milestones. The sole product target
 remains DNA/RNA payloads for in-vivo immune-cell deployment in humans.
 
+The subsequent [portable review increment](circuit-review-bundles-v0.1.md) packages
+these existing records for independent offline replay and exposes source,
+binding and evidence diagnostics in Studio. All acceptance boundaries below remain.
+
 ## Three independent acceptance tracks
 
 | Track | What can pass here | What remains open |

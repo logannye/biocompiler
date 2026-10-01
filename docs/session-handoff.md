@@ -1,6 +1,112 @@
 # Session handoff and current resumption point
 
-## Current continuation — circuit authority infrastructure
+## Current continuation — composite therapeutic architecture to complete RNA
+
+The product invariant is therapeutic program design as input and the complete
+corresponding RNA payload set as output, for human immune cells engineered in
+vivo. Branch `codex/contract-payload-compiler`, package `0.1.0.dev28`, extends the
+earlier node-contract checkpoint with the
+[composite architecture profile](payload-architecture-v0.1.md). PR33 remains
+separate and unmerged; this branch is stacked on its head.
+
+The connected compiler now retains full source execution and a requirement
+ledger, selects supplied Behavior subgraphs and many-to-many component/RNA/role
+bindings, derives complete construction, independently reconstructs the selected
+contracts and molecules, and exports FASTA with its full companion manifest.
+Hard count/size/control requirements precede preferences. Helper initialization,
+capacity, dependencies and same-recipient co-delivery are explicit. Independent
+shutdown does not imply separate RNA, and production shutdown does not establish
+effector inactivation. Unowned state stores cannot be shared implicitly.
+
+Checker policy `biocompiler.payload_architecture_checker.v0.2` requires an
+explicit source Boolean veto proof for requested activation and shutdown
+properties. It checks every installation of the target action and conservatively
+retains unsupported control meanings. Independence follows dynamic state writers
+and declared intercellular channels, including pulse senders and feedback.
+
+Artificial A–F examples exercise two outputs and alternative RNA partitions;
+prime/act/recover state, timeout, reset and shutdown; clamped quantitative output
+and sampled activity budget; delayed communication between human immune roles;
+alternative component groupings; and the combined state/quantitative/channel
+case. Behavior v0.2 adds explicit sampled integration and channel execution while
+preserving v0.1. Public `compile(...)`, `architecture-build`,
+`architecture-verify`, `architecture-export` and the bounded coupled executor
+connect these cases to precise supplied sequence authority.
+
+Unsupported external helper bindings, operating-domain/resource mappings,
+wrapped source obligations and unsupported source operations remain explicit.
+Search optimality is not independently certified. Biological function and human
+admission remain separate, unresolved claims; this sprint collected no biological
+evidence and performed no local native builds or package installs.
+
+The integrated architecture acceptance tests passed locally before this
+checkpoint, alongside source/executor, IR and adversarial checker tests. Full
+exact-revision hosted gates for this version remain pending until the external
+validation receipt records their result. CI retains all existing gates and adds
+installed A–F compilation/replay/paired exports outside the checkout, plus
+cross-Python artifact equality. The preceding `dev27` hosted run completed
+1,803 Python 3.11 tests with one stale review-package version pin failure; its
+installed RNA smoke and browser gate passed. The pin is corrected in `dev28`.
+
+## Previous continuation — per-operator RNA under supplied contracts
+
+The user clarified on 2026-09-30 that the product input is therapeutic program
+design and the output is corresponding RNA payload sequences for human immune
+cells engineered in vivo. This code-only sprint implements the
+[executable RNA payload profile](executable-rna-payload-v0.1.md), version
+`0.1.0.dev27`, on branch `codex/contract-payload-compiler`, based on PR33 head
+`d99df63154054e66b215edbc5156bb6e110f5466`. PR33 remains separate and unmerged.
+
+Implemented source-derived activation/action/product requirements, contradictory
+circuit-map rejection, executable component-to-template contracts, compatible
+bounded selection and dependency grounding, derived complete RNA/helper
+construction, fresh independent source/component/molecule checks, public
+`compile(...)`, JSON inspection and `payload-build`, `payload-verify` and
+`payload-fasta` CLI operations. Multiple outputs, dwell, pulses, memory/reset and
+explicit shutdown are exercised using artificial six-symbol sequence fixtures.
+No biological evidence or experimental validation is required for these checks.
+
+The original source/target and unsupported obligations remain retained. Goal
+refinement, quantitative rate/resource/domain implementation, wider finite-state
+operators and scoped retention targets remain unsupported. Temporal source
+graphs compile under their exact contracts, while the old supplementary stateless
+circuit table remains an explicitly unresolved mapping. Strict completeness
+refuses unresolved designs. Search optimality/exhaustion is not independently
+certified; receipts state `search_verified=False`. Biological function and human
+admission remain separate from software translation correctness.
+
+Focused pure-Python tests, independent producer-isolation checks, RNA/helper
+construction/export and CLI reconstruction have passed during implementation.
+The full regression suite and hosted exact-revision release gates are pending at
+this source checkpoint; do not report those gates complete from this paragraph.
+Hosted CI now checks installed-package RNA workflows outside the checkout and
+cross-Python byte-identical RNA/contract artifacts, alongside all prior gates.
+No local native compilation or package installation occurred. Validation receipts
+are retained in the surrounding workspace's `work/executable-payload-*` records.
+
+## Previous continuation — portable circuit review
+
+PR32 is merged as `6be159fa43dd7d0fe247669fe4230503c4dc64ff`, version
+`0.1.0.dev25`. Its final head and PR-merge trees matched; all required final
+push/PR package, browser and cross-version gates passed, including 1,675 tests
+on Python 3.11.16/3.14.7. The subsequent main browser run reported an editor-fill
+timeout; this increment replaces large JSON editor setup with file imports and
+retains actual keyboard-edit invalidation coverage.
+
+The user authorized the next [portable review increment](circuit-review-bundles-v0.1.md).
+Branch `codex/circuit-review-bundles`, version `0.1.0.dev26`, adds canonical
+retained-record bundles, external complete authority plus historical receipt
+pins, independent replay and Studio source/binding/evidence views. Builds and
+installed validation remain hosted. Exact-revision gates must pass before merge;
+the PR and parent-workspace receipt retain the tested revisions and platforms.
+
+R1 and R5–R13 remain open. No admissible complete R6a case has been supplied,
+reviewed or reconstructed. The source-reconstruction restriction remains in
+force; no alternate route is attempted. All new controls are artificial software
+fixtures. Independent reference correspondence and human applicability remain
+separate from software implementation, and human admission is not granted.
+
+## Historical continuation — circuit authority infrastructure
 
 R4 is merged as [PR31](https://github.com/logannye/biocompiler/pull/31), merge
 `2815497a06740731db03d0010b7429f85318909e`. Final head

@@ -29,9 +29,39 @@ from biocompiler.semantics.types import (
     EVENT,
     PRODUCTION_RATE,
     TypeSpec,
+    decode_binding,
 )
 
 SCHEMA_VERSION = "biocompiler.behavior.v0.1"
+BEHAVIOR_V2 = "biocompiler.behavior.v0.2"
+EXTENSION_KINDS = frozenset({"integrated", "channel", "channel_observation", "action.emit"})
+MAX_INTEGRAL_SAMPLES = 10_000
+
+
+def execution_policies(profile=SCHEMA_VERSION, integral_step=None):
+    """Closed versioned language policy; a sampled grid is explicit authority."""
+    if profile == SCHEMA_VERSION:
+        if integral_step is not None:
+            raise SerializationError("Legacy behavior has no integral sampling policy.")
+        return EXECUTION_POLICIES
+    if profile != BEHAVIOR_V2:
+        raise SerializationError("Unsupported behavior schema.")
+    if integral_step is not None:
+        value = decode_binding(integral_step, DURATION)
+        if value.canonical_value <= 0:
+            raise SerializationError("Integral sampling step must be positive.")
+        integral_step = value.to_dict()
+    return freeze_json({
+        **thaw_json(EXECUTION_POLICIES),
+        "profile": "abstract_multirole_sampled.v0.2",
+        "channel_observations": "explicit_receiver_local_snapshots_no_implicit_transport",
+        "channel_emissions": "abstract_channel_value_requests_no_input_side_effects",
+        "integrated": "exact_rolling_area_of_nonnegative_cell_signal",
+        "integral_observation_times": "declared_grid_plus_input_and_timer_events",
+        "integral_threshold_claim": "sampled_events_only_not_continuous_threshold_detection",
+        "integral_step": integral_step,
+        "integral_sample_limit": MAX_INTEGRAL_SAMPLES,
+    })
 SUPPORTED_KINDS = frozenset(
     {
         "role",
@@ -262,7 +292,7 @@ def _validate_operation(node: BehaviorNode, nodes: Mapping[str, BehaviorNode]) -
     """Validate exact arity, attributes, ownership and semantic types per opcode."""
     k, a, refs = node.kind, node.attributes, node.inputs
     _require(
-        k in SUPPORTED_KINDS, f"Unsupported behavior operation {k!r} at {node.id}."
+        k in SUPPORTED_KINDS | EXTENSION_KINDS, f"Unsupported behavior operation {k!r} at {node.id}."
     )
     inputs = [nodes[ref] for ref in refs]
     dtype = TypeSpec.from_dict(node.data_type) if node.data_type else None
@@ -332,6 +362,13 @@ def _validate_operation(node: BehaviorNode, nodes: Mapping[str, BehaviorNode]) -
             "Invalid role declaration.",
         )
         return
+    if k == "channel":
+        fields(("name", "scope"))
+        arity(0)
+        returns("scalar")
+        check(node.role is None and _named(a["name"]) and _named(a["scope"]),
+              "Invalid shared channel declaration.")
+        return
     if k in {"literal", "parameter"}:
         arity(0)
         returns("scalar")
@@ -392,15 +429,34 @@ def _validate_operation(node: BehaviorNode, nodes: Mapping[str, BehaviorNode]) -
             and a["scope"] == "contact",
             "Invalid observation kind.",
         )
+    elif k == "channel_observation":
+        fields(("scope", "delivery"))
+        arity(2)
+        returns("scalar")
+        check(inputs[0].kind == "scope" and inputs[0].attributes["scope"] == "environment"
+              and inputs[1].kind == "channel" and a["scope"] == "receiver_local"
+              and a["delivery"] == "biological_signal", "Invalid receiver-local channel observation.")
+        typed(1, dtype)
     elif k == "qualitative":
         fields(("band",))
         arity(1)
         returns(BOOLEAN)
         typed(0, "scalar")
         check(
-            inputs[0].kind == "signal" and a["band"] in {"present", "high", "low"},
+            inputs[0].kind in {"signal", "channel_observation"} and a["band"] in {"present", "high", "low"},
             "Invalid qualitative observation.",
         )
+    elif k == "integrated":
+        fields(("window", "history"))
+        arity(2)
+        signal_type = typed(0, "scalar")
+        typed(1, DURATION)
+        returns(signal_type * DURATION)
+        check(inputs[0].kind in {"signal", "channel_observation"}
+              and not inputs[0].contact_bound,
+              "Rolling integration requires a direct cell-local numeric observation.")
+        check(a["window"] == "rolling" and a["history"] == "since_initialization",
+              "Unsupported integration history or window policy.")
     elif k in {"and", "or", "not", "at_least"}:
         fields(("count",) if k == "at_least" else ())
         if k == "at_least":
@@ -654,6 +710,16 @@ def _validate_operation(node: BehaviorNode, nodes: Mapping[str, BehaviorNode]) -
             a["ongoing"] is True and a["retrigger"] == "extend_from_latest_trigger",
             "Unsupported pulse policy.",
         )
+    elif k == "action.emit":
+        fields(("ongoing", "value"))
+        check(a["ongoing"] is True and a["value"] in {"unspecified", "expression"},
+              "Invalid channel emission policy.")
+        arity(2 if a["value"] == "unspecified" else 3)
+        returns(None)
+        owner()
+        check(inputs[1].kind == "channel", "Emission must identify a shared source channel.")
+        if len(refs) == 3:
+            typed(2, TypeSpec.from_dict(inputs[1].data_type))
     elif k == "action.secrete":
         fields(("ongoing", "rate"))
         returns(None)
@@ -711,7 +777,7 @@ class BehaviorProgram:
     schema_version: str = SCHEMA_VERSION
 
     def __post_init__(self) -> None:
-        _require(self.schema_version == SCHEMA_VERSION, "Unsupported behavior schema.")
+        _require(self.schema_version in {SCHEMA_VERSION, BEHAVIOR_V2}, "Unsupported behavior schema.")
         _require(
             isinstance(self.nodes, (tuple, list))
             and all(isinstance(node, BehaviorNode) for node in self.nodes),
@@ -748,7 +814,7 @@ class BehaviorProgram:
         )
         object.__setattr__(self, "policies", freeze_json(self.policies))
         _require(
-            _exact(self.policies, EXECUTION_POLICIES),
+            _exact(self.policies, execution_policies(self.schema_version, self.policies.get("integral_step"))),
             "Unknown or modified execution policies.",
         )
         _require(
@@ -782,8 +848,13 @@ class BehaviorProgram:
 
     def _validate(self) -> None:
         nodes = {node.id: node for node in self.nodes}
+        allowed = SUPPORTED_KINDS | (EXTENSION_KINDS if self.schema_version == BEHAVIOR_V2 else frozenset())
         for node in self.nodes:
+            _require(node.kind in allowed, f"Operation {node.kind!r} requires behavior v0.2 at {node.id}.")
             _validate_operation(node, nodes)
+        _require(not any(node.kind == "integrated" for node in self.nodes)
+                 or self.policies.get("integral_step") is not None,
+                 "Integrated source requires an explicitly pinned integral sampling step.")
         bindings = contact_bindings(nodes)
         for node in self.nodes:
             _require(
@@ -805,7 +876,7 @@ class BehaviorProgram:
                     f"Non-finite constant at {node.id}.",
                 )
             duration_ref = None
-            if node.kind in {"held_for", "recently", "action.pulse"}:
+            if node.kind in {"held_for", "recently", "action.pulse", "integrated"}:
                 duration_ref = node.inputs[1]
             elif node.kind == "followed_by":
                 duration_ref = node.inputs[2]
@@ -823,7 +894,7 @@ class BehaviorProgram:
             node.id
             for node in self.nodes
             if node.kind
-            in {"role", "parameter", "memory", "state", "secretion", "rule"}
+            in {"role", "parameter", "memory", "state", "secretion", "rule", "channel"}
         }
         _require(
             set(self.roots) == declarations,
