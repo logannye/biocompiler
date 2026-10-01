@@ -6,11 +6,12 @@ The 2026-10-01 [language migration roadmap](language-migration-roadmap.md) is th
 session execution plan for the accepted TypeScript/Python/OCaml architecture in
 [ADR 0007](decisions/0007-language-boundaries-and-ocaml-core.md). It covers all
 eleven layers, compatibility, independent verification, hosted validation and
-controlled cutover. Its implementation tasks are queued; the compiler remains
-Python and Studio remains JavaScript at this planning checkpoint.
+controlled cutover. The validated foundation is merged: Studio builds from strict
+TypeScript, and the experimental OCaml core provides bounded canonicalization and
+structural intent validation. Production compilation and acceptance remain Python.
 
-Begin with LM-00's current-revision inventory and LM-02's wire/canonical
-compatibility contracts. The product capabilities and remaining biological
+Continue with B1's typed domain declarations, independent source execution and
+candidate reconstruction against the retained case B authority. The product capabilities and remaining biological
 obligations below remain authoritative; language migration does not complete
 them or expand their claims.
 

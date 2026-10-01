@@ -33,6 +33,10 @@ TESTS = {
     "test_wire": {"bioc_wire", "zarith"},
     "test_intent": {"bioc_wire", "bioc_domain", "bioc_checker"},
     "test_protocol": {"bioc_wire", "bioc_service"},
+    "test_domain": {"bioc_wire", "bioc_domain"},
+    "test_build_request": {"bioc_wire", "bioc_domain", "zarith"},
+    "test_behavior": {"bioc_wire", "bioc_domain", "zarith"},
+    "test_molecule_coordinates": {"bioc_wire", "bioc_domain", "zarith"},
 }
 PRODUCER_ROLES = frozenset({"compiler", "matcher", "selection", "emitter", "assembler", "producer"})
 TOKEN = re.compile(r'\s+|;[^\n]*(?:\n|$)|\(|\)|"(?:\\.|[^"\\])*"|[^\s();"]+')

@@ -156,3 +156,46 @@ let rec validate_binding ?(path = "") ~expected value =
       require ~path (List.mem interpolation ["linear"; "step"]) "invalid_curve" "Unsupported curve interpolation.";
       require ~path (List.mem extrapolation ["clamp"; "error"]) "invalid_curve" "Unsupported curve extrapolation."
   | Condition | Event -> assert false
+
+let normalize_binding ?(path = "") ~expected value =
+  (* Validation deliberately precedes reconstruction. In particular, a wrong
+     supplied canonical value is rejected, never silently repaired. *)
+  validate_binding ~path ~expected value;
+  let rec normalize ~path value =
+    let fields = Json.object_fields ~path value in
+    let field name = Json.field ~path name fields in
+    let actual = of_json ~path:(path_child path "type") (field "type") in
+    let common = ["kind", Json.String (kind_name actual.kind); "type", to_json actual] in
+    match actual.kind with
+    | Scalar ->
+        let canonical = match registered_units actual with
+          | None -> field "canonical_value"
+          | Some units ->
+              let unit = Json.string ~path (field "unit") in
+              let factor = List.assoc unit units in
+              finite_number ~path (multiply (field "value") factor)
+        in
+        Json.Object (common @ [
+            "value", field "value"; "unit", field "unit";
+            "canonical_value", canonical])
+    | Interval ->
+        Json.Object (common @ [
+            "lower", normalize ~path:(path_child path "lower") (field "lower");
+            "upper", normalize ~path:(path_child path "upper") (field "upper")])
+    | Curve ->
+        let points = Json.array ~path (field "points")
+          |> List.mapi (fun index point ->
+              let point_path = path_child path ("points/" ^ string_of_int index) in
+              match Json.array ~path:point_path point with
+              | [input; output] -> Json.Array [
+                  normalize ~path:(path_child point_path "0") input;
+                  normalize ~path:(path_child point_path "1") output]
+              | _ -> assert false)
+        in
+        Json.Object (common @ [
+            "points", Json.Array points;
+            "interpolation", field "interpolation";
+            "extrapolation", field "extrapolation"])
+    | Condition | Event -> assert false
+  in
+  normalize ~path value
