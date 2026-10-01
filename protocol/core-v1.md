@@ -120,7 +120,7 @@ reference execution and exact decimal interval arithmetic are separate obligatio
 The availability checker's `Fraction(str(value))` boundary still requires its own
 port and conformance vectors before authority moves.
 
-## Initial operations
+## Implemented operations
 
 `capabilities` takes exactly `{}`. It returns supported operations, Intent schema
 versions, `canonicalization: "python-json-v1"`, validation scopes, all limits above
@@ -144,6 +144,47 @@ does not mean their behavior is supported; semantic lowering must reject every
 unimplemented operation. Full target-context admission, requirement coverage and
 all subsequent compiler layers remain later migration gates.
 
+`verify-lowering` takes exactly two fields: `expected_request`, a complete
+`biocompiler.build_request.v0.1`, and `behavior`, a supplied
+`biocompiler.behavior.v0.1` or `.v0.2`. The caller supplies original request
+authority independently of the candidate. The checker does not create the
+expected request from candidate metadata, invoke a producer, or accept an
+imported verification report.
+
+The checker compares complete ordered operations and input edges, resolved
+parameters, role/type/source correspondence, the permitted state/rule/parameter
+normalizations, execution policy, requirements, ancestor lineage and contact
+identity. Every retained source operation is accounted for. Unknown source
+operations and unsupported source policies return `unsupported` with a specific
+`unsupported_lowering_*` diagnostic; changed correspondence returns `error` with
+a specific `lowering_*` diagnostic. Malformed request or Behavior declarations
+retain their schema diagnostics. All unsuccessful responses contain no result.
+
+The result is a `biocompiler.lowering_verification.v0.1` report with exactly:
+
+- `checker_version: "biocompiler.ocaml.lowering_check.v0.1"`,
+  `validation_scope: "source-to-behavior-correspondence-v1"`, a fixed limited
+  `claim_scope`, and `passed: true`.
+- `request_fingerprint`, `request_artifact_fingerprint`, `source_fingerprint`,
+  `behavior_fingerprint`, `behavior_artifact_fingerprint` and `behavior_profile`,
+  recomputed from the separately decoded inputs. Artifact fingerprints include
+  source locations and provenance; semantic fingerprints use each existing
+  schema's location/provenance exclusions.
+- Ordered `checks`, each containing `property`, `passed` and `detail`: five
+  request/graph/binding checks, three checks per source node, then complete
+  requirement/lineage and identity checks. Resource limits apply to this report
+  as well as the source graph; an over-budget report cannot be accepted.
+- `unimplemented_obligations`: source execution, molecular realization,
+  source-to-candidate preservation, candidate acceptance, empirical component
+  function and human admission. Retained implementation constraints, preferences
+  and target/evidence assumptions add their corresponding unresolved obligations.
+  Only the declared v0.2 sampling policy is interpreted at this stage.
+
+This operation is independently runnable through both executable roles and the
+explicit `CoreClient.verify_lowering` adapter. Production compiler routing remains
+unchanged. A successful graph-preservation result does not execute the source or
+candidate, accept a molecular architecture, or authorize an export.
+
 ## Evidence
 
 `tests/conformance/core-json-v1.json` retains independent literal examples and
@@ -151,6 +192,9 @@ separately identified Python-oracle vectors. `tools/check_core_conformance.py`
 executes both native entry points, compares actual bytes/digests, exercises source
 location invariance, validates authored examples and sends malformed raw byte
 requests directly to the core. Skipped or absent executables are failures.
+The same campaign checks independently supplied source/Behavior pairs through
+both entry points, verifies full report identities and preservation census, and
+requires intended rejection codes for structurally valid semantic mutations.
 
 `tests/test_core_client.py` exercises subprocess failure, output bounds,
 cancellation, request/role/version mismatches and malformed responses with Python

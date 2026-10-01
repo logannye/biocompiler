@@ -32,3 +32,13 @@
  (name test_molecule_coordinates)
  (modules test_molecule_coordinates)
  (libraries bioc_wire bioc_domain zarith))
+
+(test
+ (name test_circuit_request)
+ (modules test_circuit_request)
+ (libraries bioc_wire bioc_domain zarith))
+
+(test
+ (name test_lowering_check)
+ (modules test_lowering_check)
+ (libraries bioc_wire bioc_domain bioc_checker zarith))

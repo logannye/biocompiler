@@ -2,7 +2,7 @@
 
 This is the first native migration increment. It implements bounded strict JSON,
 legacy Python-compatible canonical fingerprints and structural intent/type/literal
-validation. It does not yet implement compilation, behavioral execution,
+validation, plus independent frozen source-to-Behavior correspondence. It does not yet implement compilation, behavioral execution,
 molecular verification, export acceptance or human-use admission. Capabilities
 are explicit; unimplemented operations return `unsupported` without fallback.
 
@@ -57,7 +57,7 @@ becomes a translation certificate.
 
 ## Domain migration
 
-The next internal domain modules prepare the stateful architecture checker:
+The internal domain and checker modules prepare the stateful architecture checker:
 
 - `Build_request` freezes independently resolved parameters, target declarations,
   source provenance, constraints and preferences. Semantic identity excludes
@@ -72,9 +72,19 @@ The next internal domain modules prepare the stateful architecture checker:
   preserves segment order and strand. It does not emit or transform symbols.
 - `Type_spec.normalize_binding` reconstructs valid serialized bindings using
   the existing unit conventions, preserving integer/float and signed-zero forms.
+- `Circuit_request` preserves circuit/profile/recipient and executable-output
+  declarations with their complete source authority. Deferred human behavior,
+  deployment and acceptance wrappers yield explicit unsupported coverage; their
+  nested BuildRequest is never substituted for the original wrapper.
+- `Lowering_check` independently compares a supplied Behavior with a separately
+  frozen BuildRequest, accounting for every operation, binding, requirement and
+  source correspondence. Its abstract report binds full and semantic identities
+  and carries all remaining execution, realization and acceptance obligations.
 
-These are internal library APIs, with no additional wire capability or change
-to public Python routing. Their hosted tests use the retained case B requests
+Request/coordinate declarations are internal library APIs. The explicitly scoped
+`verify-lowering` operation exposes source-to-Behavior checking through both
+executables and the opt-in Python process adapter; production Python routing
+remains unchanged. Their hosted tests use the retained case B requests
 and behaviors plus independent coordinate fixtures, in addition to literal and
 mutation tests. Seven artificial Behavior documents cover all 38 legacy and four
 extension operation kinds, with exact document/fingerprint and census checks.
@@ -86,6 +96,8 @@ After `dune runtest`, the required CI job invokes:
 core/_build/default/test/test_build_request.exe "$GITHUB_WORKSPACE/tests/conformance/case-b"
 core/_build/default/test/test_behavior.exe "$GITHUB_WORKSPACE/tests/conformance/case-b" "$GITHUB_WORKSPACE/tests/conformance/behavior-domains-v1.json"
 core/_build/default/test/test_molecule_coordinates.exe "$GITHUB_WORKSPACE/tests/conformance/molecule-coordinates-v1.json"
+core/_build/default/test/test_circuit_request.exe "$GITHUB_WORKSPACE/tests/conformance/request-domains-v1.json"
+core/_build/default/test/test_lowering_check.exe "$GITHUB_WORKSPACE/tests/conformance/case-b" "$GITHUB_WORKSPACE/tests/conformance/request-domains-v1.json"
 ```
 
 The case B architecture checker, source interpreter, independent candidate

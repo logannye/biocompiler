@@ -225,6 +225,14 @@ let decode_target path value =
         replace "human_target" (human_contract (child path "human_target") ~compartments (field path "human_target" fields)) fields in
   kind, Json.Object fields
 
+module Target = struct
+  type t = target_kind * Json.t
+  let of_json ?(path = "") value = decode_target path value
+  let to_json = snd
+  let kind = fst
+  let fingerprint value = Canonical.fingerprint (to_json value)
+end
+
 let decode_provenance path value =
   let fields = schema path "biocompiler.elaboration_provenance.v0.1"
       ["source_identities"; "dependency_identities"; "external_inputs"; "locations"; "recorded_at"] value in

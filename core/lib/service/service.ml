@@ -1,12 +1,13 @@
 open Bioc_wire
 
 let capabilities = Json.Object [
-    "operations", Json.Array (List.map (fun value -> Json.String value) ["capabilities"; "canonicalize"; "validate-intent"]);
+    "operations", Json.Array (List.map (fun value -> Json.String value) ["capabilities"; "canonicalize"; "validate-intent"; "verify-lowering"]);
     "intent_schemas", Json.Array [Json.String Bioc_domain.Intent.schema_version];
     "canonicalization", Json.String "python-json-v1";
-    "validation_scopes", Json.Array [Json.String Bioc_domain.Intent.validation_scope];
+    "validation_scopes", Json.Array [Json.String Bioc_domain.Intent.validation_scope;
+                                     Json.String Bioc_checker.Lowering_check.validation_scope];
     "limits", Protocol.limits;
-    "claim_scope", Json.String Bioc_checker.Intent_check.claim_scope
+    "claim_scope", Json.String "Structural intent validation and exact frozen source-to-Behavior correspondence only; no execution, architecture acceptance, molecular correctness, empirical function or human-use admission."
   ]
 
 let handle _executable (request : Protocol.request) =
@@ -21,6 +22,16 @@ let handle _executable (request : Protocol.request) =
           "canonical_json", Json.String canonical_json;
           "sha256", Json.String (Canonical.sha256 canonical_json)]), []
   | "validate-intent" -> Protocol.Ok, Some (Bioc_checker.Intent_check.check request.payload), []
+  | "verify-lowering" ->
+      let fields = Json.object_fields request.payload in
+      Json.exact_fields ["expected_request"; "behavior"] fields;
+      let expected_request = Bioc_domain.Build_request.of_json (Json.field "expected_request" fields) in
+      let behavior = Bioc_domain.Behavior.of_json (Json.field "behavior" fields) in
+      (try
+         let report = Bioc_checker.Lowering_check.check ~expected_request ~behavior in
+         Protocol.Ok, Some (Bioc_checker.Lowering_check.to_json report), []
+       with Diagnostic.Error diagnostic when String.starts_with ~prefix:"unsupported_lowering_" diagnostic.code ->
+         Protocol.Unsupported, None, [diagnostic])
   | _ -> Protocol.Unsupported, None, [{
       Diagnostic.code = "unsupported_operation";
       message = "This executable does not implement the requested operation; no fallback or acceptance is granted.";

@@ -6,8 +6,8 @@ map for roadmap batch B1, followed by the same slice's producer in B2. It record
 implementation preparation, not completed OCaml architecture validation.
 
 The foundation passed all hosted gates and was merged in PR37. The subsequent
-domain batch implements internal OCaml BuildRequest, Behavior and molecular
-coordinate decoders. Its retained-request tests compare full/semantic identities
+domain batch passed every hosted gate and was merged in PR38. It implements
+internal OCaml BuildRequest, Behavior and molecular coordinate decoders. Its retained-request tests compare full/semantic identities
 and reject altered declarations. These checks do not execute the case B timeline,
 reconstruct candidate behavior or certify its sequence and architecture. The
 remaining acceptance responsibilities below still apply in full.
@@ -201,7 +201,8 @@ separate required gate.
 | B1.06 Component, refinement, output, binding, placement and constraint validators | `bioc_domain.Architecture`, `Component` | B1.02/B1.03 |
 | B1.07 Molecular schemas, coordinate/chemistry checks and direct-root reconstruction | `bioc_domain.Molecule`, `Construction`; `bioc_checker.Construction_check` | Strict schemas plus primitive identities; can run alongside B1.04/05 |
 | B1.08 Source-manifest/ledger and architecture reconstruction | `bioc_checker.Source_check`, `Architecture_check` | B1.04/B1.06/B1.07 |
-| B1.09 Fresh acceptance and protocol exposure for the implemented capability | `bioc_checker.Acceptance`; producer-free service entry point | Every preceding pilot acceptance obligation and negative gate |
+| B1.08a Optional finite-trace candidate execution | Separate `bioc_candidate_runtime` | Reconstructed candidate authority, B1.05 literal timelines; required before claiming independent candidate execution, not implied by graph correspondence |
+| B1.09 Fresh acceptance and protocol exposure for the implemented capability | `bioc_checker.Acceptance`; producer-free service entry point | Every required pilot acceptance obligation and negative gate; B1.08a only if execution is claimed |
 | B2.01 Producer, deterministic selection and namespacing for the same capability | Separate `bioc_compiler` modules | B1 checker accepted and unchanged by producer implementation |
 | B2.02 Fresh paired RNA/manifest export | Canonical artifact content + Python atomic storage adapter | B2.01 and B1.09 |
 
@@ -211,7 +212,7 @@ Do not move its acceptance bookkeeping into an untyped Python convenience
 wrapper. The full existing PassManager migration remains a separate cross-profile
 obligation; the pilot must not claim that every public pass API is migrated.
 
-The architecture checker currently establishes exact supplied composite graph
+The existing Python architecture checker establishes exact supplied composite graph
 correspondence, not an independently executed biological model. Preserve that
 claim. Reference execution parity is required to port the language correctly;
 it does not turn exact graph correspondence into empirical evidence. If finite

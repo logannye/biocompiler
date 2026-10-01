@@ -135,6 +135,75 @@ class CoreConformanceTests(unittest.TestCase):
                 runner.rejection(client, "duplicate", b"invalid", "duplicate_key")
         self.assertEqual(runner.receipt["checks"], [])
 
+    def test_lowering_authorities_cover_both_profiles_and_every_operation(self):
+        from biocompiler.compiler.behavior import verify_lowering
+        from biocompiler.ir.behavior import SUPPORTED_KINDS, EXTENSION_KINDS
+
+        cases = campaign.lowering_cases()
+        kinds = set()
+        profiles = set()
+        for _, request, behavior in cases:
+            source = campaign.BuildRequest.from_dict(request)
+            candidate = campaign.BehaviorProgram.from_dict(behavior)
+            self.assertTrue(verify_lowering(source, candidate).passed)
+            kinds.update(node.kind for node in candidate.nodes)
+            profiles.add(candidate.schema_version)
+        self.assertEqual(kinds, SUPPORTED_KINDS | EXTENSION_KINDS)
+        self.assertEqual(profiles, {"biocompiler.behavior.v0.1", "biocompiler.behavior.v0.2"})
+        self.assertEqual(len(cases), 10)
+
+    def test_lowering_mutants_reach_preservation_not_schema_failure(self):
+        from biocompiler.compiler.behavior import verify_lowering
+        from biocompiler.errors import LoweringVerificationError
+
+        cases = campaign.lowering_mutations(campaign.lowering_cases())
+        for name, code, request, behavior in cases:
+            with self.subTest(case=name):
+                source = campaign.BuildRequest.from_dict(request)
+                candidate = campaign.BehaviorProgram.from_dict(behavior)
+                self.assertTrue(code.startswith("lowering_"))
+                with self.assertRaises(LoweringVerificationError):
+                    verify_lowering(source, candidate)
+
+    def test_lowering_report_cannot_drop_identity_obligations_or_checks(self):
+        _, request, behavior = campaign.lowering_cases()[0]
+        expected = campaign.lowering_expectation(request, behavior)
+        properties = expected.pop("check_properties")
+        correct = {**expected, "checks": [{"property": name, "passed": True, "detail": "Checked"}
+                                         for name in properties]}
+        client = SimpleNamespace(role="verify", verify_lowering=lambda **_: SimpleNamespace(result=correct))
+        runner = campaign.Campaign({"checks": []})
+        runner.lowering(client, "positive", request, behavior)
+        self.assertEqual(len(runner.receipt["checks"]), 1)
+        alterations = (
+            ("request_fingerprint", "0" * 64), ("request_artifact_fingerprint", "0" * 64),
+            ("behavior_fingerprint", "0" * 64), ("behavior_artifact_fingerprint", "0" * 64),
+            ("unimplemented_obligations", []), ("validation_scope", "architecture-accepted"),
+            ("passed", 1), ("checks", correct["checks"][:-1]),
+            ("checks", [{"property": "source_identity", "passed": False, "detail": "Failed"}]),
+        )
+        for key, value in alterations:
+            client.verify_lowering = lambda result={**correct, key: value}, **_: SimpleNamespace(result=result)
+            with self.subTest(field=key), self.assertRaises(AssertionError):
+                runner.lowering(client, "forged", request, behavior)
+        self.assertEqual(len(runner.receipt["checks"]), 1)
+
+    def test_lowering_crash_or_unsupported_cannot_count_as_mutant_detection(self):
+        from biocompiler.core_client import CoreRejected, CoreUnsupported, Diagnostic
+
+        runner = campaign.Campaign({"checks": []})
+        client = SimpleNamespace(role="verify")
+        for status, code, exception in (("error", "internal_error", CoreRejected),
+                                        ("unsupported", "lowering_operation", CoreUnsupported)):
+            response = SimpleNamespace(status=status, result=None,
+                                       diagnostics=(Diagnostic(code, "Failure", None),))
+            def reject(**_):
+                raise exception(response)
+            client.verify_lowering = reject
+            with self.assertRaises(AssertionError):
+                runner.lowering_rejection(client, "changed-operator", {}, {}, "lowering_operation")
+        self.assertEqual(runner.receipt["checks"], [])
+
 
 if __name__ == "__main__":
     unittest.main()
