@@ -15,10 +15,10 @@ from types import MappingProxyType
 from typing import Any
 
 from biocompiler.errors import EvaluationError, NonConvergenceError, StateConflictError
-from biocompiler.ir.behavior import BehaviorProgram
+from biocompiler.ir.behavior import BehaviorProgram, MAX_INTEGRAL_SAMPLES
 from biocompiler.ir.intent import SourceLocation, freeze_json, thaw_json
 
-REFERENCE_EVALUATOR_VERSION = "biocompiler.behavior.evaluator.v0.1"
+REFERENCE_EVALUATOR_VERSION = "biocompiler.behavior.evaluator.v0.2"
 
 
 def _finite(value: Any, label: str) -> int | float:
@@ -285,6 +285,7 @@ class _Session:
         self.cache: dict[tuple[str, str | None], Any] = {}
         self.events: list[EventOccurrence] = []
         self.required = self._required_observations()
+        self.integral_history = {node.inputs[0]: [] for node in self.local if node.kind == "integrated"}
 
     def _ordered_memories(self, memories: tuple) -> tuple:
         """Resolve causal memory dependencies before consuming their controls."""
@@ -339,7 +340,7 @@ class _Session:
                 required.setdefault(node.inputs[0], set()).add(node.attributes["band"])
             elif node.kind not in {"signature", "scope", "role"}:
                 for ref in node.inputs:
-                    if self.nodes[ref].kind == "signal":
+                    if self.nodes[ref].kind in {"signal", "channel_observation"}:
                         required.setdefault(ref, set()).add("value")
         return required
 
@@ -356,7 +357,7 @@ class _Session:
         for identity, samples in ((None, frame.signals), *frame.contacts.items()):
             for ref in samples:
                 node = self.nodes.get(ref)
-                if node is None or node.kind != "signal" or node.role != self.role:
+                if node is None or node.kind not in {"signal", "channel_observation"} or node.role != self.role:
                     raise EvaluationError(
                         f"Unknown signal {ref!r} for the selected role."
                     )
@@ -379,6 +380,11 @@ class _Session:
                             node,
                             f"Missing explicit {name} observation for contact {identity!r}",
                         )
+        for ref, history in self.integral_history.items():
+            sample = frame.signals.get(ref)
+            if sample is None or sample.value is None or sample.value < 0:
+                raise self._error(self.nodes[ref], "Rolling integration requires a nonnegative numeric observation")
+            history.append((frame.time, sample.value))
         self.input = frame
 
     def bindings(self, node: Any) -> tuple[str | None, ...]:
@@ -416,7 +422,7 @@ class _Session:
             value = attrs["value" if kind == "literal" else "default"][
                 "canonical_value"
             ]
-        elif kind == "signal":
+        elif kind in {"signal", "channel_observation"}:
             samples = (
                 self.input.contacts[binding]
                 if binding is not None
@@ -426,6 +432,20 @@ class _Session:
             if sample is None or sample.value is None:
                 raise self._error(node, "Missing numeric observation")
             value = sample.value
+        elif kind == "integrated":
+            duration = self.value(node.inputs[1], binding)
+            left = max(0, self.time - duration)
+            history = self.integral_history[node.inputs[0]]
+            areas = []
+            for index, (start, amount) in enumerate(history):
+                end = history[index + 1][0] if index + 1 < len(history) else self.time
+                interval = min(end, self.time) - max(start, left)
+                if interval > 0:
+                    areas.append(interval * amount)
+            try:
+                value = _finite(math.fsum(areas), f"Rolling integral at {node.id}")
+            except OverflowError as error:
+                raise self._error(node, "Non-finite rolling integral") from error
         elif kind == "qualitative":
             samples = (
                 self.input.contacts[binding]
@@ -597,6 +617,12 @@ class _Session:
             attrs["secretion_id"] = secretion.id
             if len(action.inputs) > 1:
                 values["rate"] = self.value(action.inputs[1], binding)
+        elif action.kind == "action.emit":
+            channel = self.nodes[action.inputs[1]]
+            attrs["channel_id"] = channel.id
+            attrs["channel_name"] = channel.attributes["name"]
+            if len(action.inputs) == 3:
+                values["value"] = self.value(action.inputs[2], binding)
         requirements = tuple(
             sorted(set(rule.requirement_ids) | set(action.requirement_ids))
         )
@@ -803,9 +829,19 @@ def evaluate(
         raise EvaluationError("Evaluation horizon must be nonnegative.")
     session = _Session(program, selected, max_microsteps)
     results = []
+    integral_step = (program.policies["integral_step"]["canonical_value"]
+                     if session.integral_history else None)
+    grid_index = 1
+    next_grid = integral_step
+    if integral_step is not None:
+        count = horizon / integral_step
+        if not math.isfinite(count) or count > MAX_INTEGRAL_SAMPLES - 1 or len(frames) > MAX_INTEGRAL_SAMPLES:
+            raise EvaluationError("Declared integration observation grid exceeds its 10000-sample bound.")
     index = 0
     time: float | int = 0
     while True:
+        if integral_step is not None and len(results) >= MAX_INTEGRAL_SAMPLES:
+            raise EvaluationError("Integral input/timer/grid observations exceed the 10000-sample bound.")
         if index < len(frames) and frames[index].time == time:
             session.update_input(frames[index])
             index += 1
@@ -813,6 +849,12 @@ def evaluate(
         if time == horizon:
             break
         candidates = [horizon]
+        if integral_step is not None:
+            if time == next_grid:
+                grid_index += 1
+                next_grid = _finite(grid_index * integral_step, "Integration grid time")
+            if time < next_grid <= horizon:
+                candidates.append(next_grid)
         if index < len(frames) and frames[index].time <= horizon:
             candidates.append(frames[index].time)
         candidates.extend(

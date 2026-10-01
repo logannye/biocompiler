@@ -44,6 +44,19 @@ jobs:
           path: generated/executable-rna-payload-ci/
           if-no-files-found: error
           retention-days: 7
+      - name: Compile and independently replay A–F RNA architectures outside the checkout
+        working-directory: ${{ runner.temp }}
+        env:
+          ARCHITECTURE_OUTPUT: ${{ github.workspace }}/generated/payload-architecture-ci
+        run: python "$GITHUB_WORKSPACE/tools/check_payload_architecture_install.py" --output "$ARCHITECTURE_OUTPUT"
+      - name: Retain complete RNA architecture and paired export evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: payload-architecture-py${{ matrix.python-version }}
+          path: generated/payload-architecture-ci/
+          if-no-files-found: error
+          retention-days: 7
       - name: Test authoring, behavior, and realization contracts
         run: python -m unittest discover -s tests -v
       - name: Run authoring examples
@@ -406,6 +419,36 @@ jobs:
           assert manifests[0] == manifests[1], 'Cross-Python RNA artifacts differ'
           for name, digest in sorted(manifests[0].items()):
               print(digest, name)
+          PY
+
+  payload-architecture-reproducibility:
+    needs: package-smoke
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: payload-architecture-py3.11
+          path: artifacts/python311
+      - uses: actions/download-artifact@v4
+        with:
+          name: payload-architecture-py3.14
+          path: artifacts/python314
+      - name: Compare complete A–F source, model, RNA and manifest artifacts across Python versions
+        run: |
+          python3 - <<'PY'
+          import hashlib
+          from pathlib import Path
+          roots = [Path('artifacts/python311'), Path('artifacts/python314')]
+          manifests = [{str(p.relative_to(root)): hashlib.sha256(p.read_bytes()).hexdigest()
+                        for p in root.rglob('*') if p.is_file()} for root in roots]
+          required = {f'{case}/{name}' for case in 'abcdef'
+                      for name in ('request.json', 'build.json', 'payloads.fasta', 'manifest.json',
+                                   'cli.build.json', 'cli.export.json', 'cli.verification.json')}
+          assert required <= manifests[0].keys(), 'Missing complete A–F architecture artifacts'
+          assert manifests[0] == manifests[1], 'Cross-Python architecture artifacts differ'
+          for name, digest in sorted(manifests[0].items()):
+              print(digest, name)
+          print('Identical artifacts:', len(manifests[0]))
           PY
 
   circuit-reproducibility:

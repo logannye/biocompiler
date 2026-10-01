@@ -7,8 +7,10 @@ Existing DNA/reference construction utilities remain shared infrastructure;
 they are not new product backends. Check translation under explicit supplied
 component contracts without requiring biological evidence. Keep whether those
 contracts hold in human cells as a separate unresolved empirical question.
-Follow `docs/executable-rna-payload-v0.1.md` for source preservation, executable
-component selection, complete RNA construction and independent verification.
+Follow `docs/payload-architecture-v0.1.md` for the current composite architecture
+profile and `docs/executable-rna-payload-v0.1.md` for the earlier per-operator path.
+Package `0.1.0.dev28` keeps behavioral meaning, implementation components, RNA
+partitioning and recipient roles separate with explicit many-to-many bindings.
 
 The sole product purpose is to translate high-level Python and eventually natural-language therapeutic intent into exact, complete RNA payload specifications for immune cells engineered in vivo in humans. Prioritize work that connects source requirements to selected molecular implementations and emitted bases. Quantitative execution and evaluation should support those selected implementations, with explicit observation maps, assumptions and separately assessed evidence, rather than become a disconnected simulator. Bounded compilation under supplied executable component contracts is implemented; natural-language authoring, unrestricted molecular realization and empirical therapeutic validation remain open.
 
@@ -40,7 +42,7 @@ behavior occurs in human cells.
 
 ## Current implementation and engineering rules
 
-biocompiler implements Python intent authoring, immutable build/realization requests and intent/behavior graphs, authoritative lowering, checked passes, automatic combinational/temporal synthetic generation and bounded digital implementation selection, abstract reference execution, finite-trace checking against independent synthetic models, typed component contracts, offline composition linking with executable digital assembly reconstruction, reusable JSON verification workflows, single-CDS reference construct assembly and independently checked exact-reference DNA/RNA emission with reproducible offline reference packaging. A separate software molecular-design profile assembles and independently checks multi-region RNA specifications from supplied fragment/layout authority. The partial intent-candidate compiler selects a supplied product CDS and RNA architecture from source requirements, derives the layout and emits an independently checked structural cassette. The executable RNA payload profile additionally preserves source activation and action semantics, selects compatible supplied executable contracts, constructs complete RNA member sets and independently checks source/component/sequence correspondence. Exact CDS references, artificial molecular fixtures and conditional behavior claims remain distinct. Unrestricted molecular mechanism discovery, biological simulation and empirical therapeutic validation remain unimplemented.
+biocompiler implements Python intent authoring, immutable build/realization requests and intent/behavior graphs, authoritative lowering, checked passes, automatic combinational/temporal synthetic generation and bounded digital implementation selection, abstract reference execution, finite-trace checking against independent synthetic models, typed component contracts, offline composition linking with executable digital assembly reconstruction, reusable JSON verification workflows, single-CDS reference construct assembly and independently checked exact-reference DNA/RNA emission with reproducible offline reference packaging. A separate software molecular-design profile assembles and independently checks multi-region RNA specifications from supplied fragment/layout authority. The partial intent-candidate compiler selects a supplied product CDS and RNA architecture from source requirements, derives the layout and emits an independently checked structural cassette. The executable RNA payload profile additionally preserves source activation and action semantics, selects compatible supplied executable contracts, constructs complete RNA member sets and independently checks source/component/sequence correspondence. The composite architecture profile extends that same toolchain to supplied full Behavior subgraphs, finite state, quantitative branches, sampled integration and declared channels, many-to-many material bindings, independent control domains, helper initialization/capacity and explicit recipient/co-delivery assignments. Exact CDS references, artificial molecular fixtures and conditional behavior claims remain distinct. Unrestricted molecular mechanism discovery, biological simulation and empirical therapeutic validation remain unimplemented.
 
 - Preserve the distinction between exact artifact identity, model-conditional claims, and empirical evidence. Never label an unresolved biological claim as verified.
 - Python authoring will construct typed descriptions. Python control flow must not silently stand in for cellular runtime behavior.
@@ -84,3 +86,17 @@ The initial implementation is Python-only. If Rust is introduced, keep editing a
 - For full-source implementation analysis and declared precursor construction, follow `docs/molecular-implementation-v0.1.md` and decision `0004`. Preserve every node and wrapped contract; classify unsupported semantics, missing refinements and known contradictions separately. A declared processing graph is not a dynamic or biological model. Product identities must preserve mature-protein identity across architecture alternatives. Check composite translation, junctions, cleavage coordinates, nominal chemistry and every base against independent authority. Match provider scope, compartment and target declarations without promoting supplied provenance to functional evidence. The `secreted_precursor_structure` profile remains partial therapeutic implementation; strict completeness emits no molecule. Keep the GUI's older candidate profile explicit until it is deliberately integrated.
 
 - For supplied circuit constructions, follow `docs/circuit-construction-v0.1.md` and decision `0006`. Preserve complete independent root/operation authority and the original human request. Keep producer and reconstruction checker independent, preflight order deterministic, cumulative work bounded and multi-output steps atomic. Strict structural handoff requires every declared member, chemistry and payload-region obligation; it never establishes a molecular mechanism, reviewed publication fidelity or human admission. Artificial controls cannot close R1 or source-dependent R5–R13 gates.
+
+- For composite RNA architecture work, follow `docs/payload-architecture-v0.1.md`.
+  Preserve original source and every model operation/edge/parameter under explicit
+  correspondence; execution-bearing component model pins must identify the
+  supplied composite Behavior. Retain exact component/member placements and
+  constituent wiring. Never equate independent shutdown, production control,
+  effector activity control, RNA separation or dependency disjointness. Check
+  helper bootstrap, sharing/capacity and same-recipient assumptions, counting
+  every delivered helper RNA. Keep source v0.2 sampled integration and declared
+  transport policies explicit; do not claim continuous budget safety or infer
+  transport from bases. Unbound external helpers and unmapped component resource
+  or operating-domain contracts remain unsupported. Fresh export retains both
+  FASTA and complete manifest; search optimality and empirical function remain
+  separate from independently checked translation.

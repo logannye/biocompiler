@@ -1,6 +1,48 @@
 # Session handoff and current resumption point
 
-## Current continuation — therapeutic program to RNA under supplied contracts
+## Current continuation — composite therapeutic architecture to complete RNA
+
+The product invariant is therapeutic program design as input and the complete
+corresponding RNA payload set as output, for human immune cells engineered in
+vivo. Branch `codex/contract-payload-compiler`, package `0.1.0.dev28`, extends the
+earlier node-contract checkpoint with the
+[composite architecture profile](payload-architecture-v0.1.md). PR33 remains
+separate and unmerged; this branch is stacked on its head.
+
+The connected compiler now retains full source execution and a requirement
+ledger, selects supplied Behavior subgraphs and many-to-many component/RNA/role
+bindings, derives complete construction, independently reconstructs the selected
+contracts and molecules, and exports FASTA with its full companion manifest.
+Hard count/size/control requirements precede preferences. Helper initialization,
+capacity, dependencies and same-recipient co-delivery are explicit. Independent
+shutdown does not imply separate RNA, and production shutdown does not establish
+effector inactivation. Unowned state stores cannot be shared implicitly.
+
+Artificial A–F examples exercise two outputs and alternative RNA partitions;
+prime/act/recover state, timeout, reset and shutdown; clamped quantitative output
+and sampled activity budget; delayed communication between human immune roles;
+alternative component groupings; and the combined state/quantitative/channel
+case. Behavior v0.2 adds explicit sampled integration and channel execution while
+preserving v0.1. Public `compile(...)`, `architecture-build`,
+`architecture-verify`, `architecture-export` and the bounded coupled executor
+connect these cases to precise supplied sequence authority.
+
+Unsupported external helper bindings, operating-domain/resource mappings,
+wrapped source obligations and unsupported source operations remain explicit.
+Search optimality is not independently certified. Biological function and human
+admission remain separate, unresolved claims; this sprint collected no biological
+evidence and performed no local native builds or package installs.
+
+The twelve integrated architecture acceptance tests passed locally before this
+checkpoint, alongside source/executor, IR and adversarial checker tests. Full
+exact-revision hosted gates for this version remain pending until the external
+validation receipt records their result. CI retains all existing gates and adds
+installed A–F compilation/replay/paired exports outside the checkout, plus
+cross-Python artifact equality. The preceding `dev27` hosted run completed
+1,803 Python 3.11 tests with one stale review-package version pin failure; its
+installed RNA smoke and browser gate passed. The pin is corrected in `dev28`.
+
+## Previous continuation — per-operator RNA under supplied contracts
 
 The user clarified on 2026-09-30 that the product input is therapeutic program
 design and the output is corresponding RNA payload sequences for human immune

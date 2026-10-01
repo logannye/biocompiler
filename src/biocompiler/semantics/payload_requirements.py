@@ -211,6 +211,8 @@ def _output_requirements(build):
                 product = nodes[primitive.inputs[0]].attributes.get("product")
             trigger = rule.attributes.get("trigger")
             activation = ("explicit_duration" if action.kind == "action.pulse" else
+                          "event" if primitive.kind == "action.state_set" and trigger == "event" else
+                          "level" if primitive.kind == "action.state_set" else
                           "level" if primitive.attributes.get("ongoing") else
                           "event" if trigger == "event" else "onset")
             outputs.append(PayloadOutputRequirement(

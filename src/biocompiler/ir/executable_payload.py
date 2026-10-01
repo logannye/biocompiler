@@ -13,7 +13,7 @@ from typing import ClassVar, TYPE_CHECKING
 
 from biocompiler.artifacts.circuit_construction_build import CircuitConstructionBuild
 from biocompiler.artifacts.manifest import _hash
-from biocompiler.ir.circuit_intent import CircuitRequest
+from biocompiler.ir.circuit_intent import CircuitRequest, ExecutableCircuitBehavior
 from biocompiler.ir.mechanism import MechanismProgram
 from biocompiler.ir.molecule_records import _MoleculeRecord, _text
 from biocompiler.ir.serialization import names, require
@@ -97,6 +97,8 @@ class PayloadCompilationRequest(_MoleculeRecord):
                 self.circuit.profile.target.payload_format is PayloadFormat.RNA,
                 "Executable payload compilation targets human in-vivo immune-cell RNA only.")
         require(isinstance(self.library, PayloadContractLibrary), "Expected supplied payload contracts.")
+        require(not any(isinstance(item.behavior, ExecutableCircuitBehavior) for item in self.circuit.requirements),
+                "Full executable circuit behavior requires PayloadArchitectureRequest and composite contracts.")
         require(isinstance(self.constraints, PayloadSelectionConstraints), "Expected typed selection constraints.")
         require(isinstance(self.circuit_bindings, (tuple, list)) and
                 len(self.circuit_bindings) <= 32 and

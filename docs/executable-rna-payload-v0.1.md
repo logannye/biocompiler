@@ -1,12 +1,22 @@
 # Therapeutic program to RNA under supplied contracts
 
+This document specifies the earlier **per-operator** `PayloadCompilationRequest`
+profile. Package `0.1.0.dev28` also implements the
+[composite RNA architecture profile](payload-architecture-v0.1.md), which uses the
+same source language and construction engine with full Behavior subgraphs,
+many-to-many component/RNA/recipient bindings, state, quantitative branches,
+sampled integration, channels and coupled execution. Its
+`PayloadArchitectureRequest` and paired FASTA/manifest export are the current
+architecture-selection path. The narrower limits below apply to this earlier
+profile, not to the compiler as a whole.
+
 The executable payload profile connects original therapeutic source meaning to
 selected component contracts and precise RNA sequences. Its product target is
 **human immune cells engineered in vivo, with RNA payloads**. It does not require
 biological evidence to check translation. A declaration that supplied molecules
 fulfill an executable contract remains an explicit assumption.
 
-`compile(PayloadCompilationRequest(...))` now performs one connected operation:
+`compile(PayloadCompilationRequest(...))` performs one connected operation:
 
 1. Retain the full original source and derive its installed actions, products,
    guards and executable activation graph. Preserve every unsupported source
@@ -70,17 +80,22 @@ shutdown guards. It reuses the current digital execution semantics, including
 per-contact aggregation and timer/reset precedence. An external shutdown
 requirement never silently overrides the source program.
 
-Quantitative rate implementation, arbitrary finite-state machines, unsupported
-temporal operators, source goals without executable refinements, resource
-accounting and physiological operating-domain refinements remain explicit
-unsupported requirements. Existing human deployment/acceptance wrappers remain
+In this per-operator profile, quantitative rate implementation, arbitrary
+finite-state machines, unsupported temporal operators, source goals without
+executable refinements, resource accounting and physiological operating-domain
+refinements remain explicit unsupported requirements. The composite architecture
+profile supports finite state, typed rate branches and its bounded v0.2 operators
+through independently supplied full Behavior contracts. Existing human deployment/acceptance wrappers remain
 retained and unresolved. This profile does not infer sensors, transport mechanisms,
 processing performance, intracellular concentrations or clinical thresholds.
 
-The old supplementary `CircuitBehavior` schema carries a stateless table. If a
+The original supplementary `CircuitBehavior` schema carries a stateless table. If a
 source guard is temporal, its exact temporal graph is checked, and the inability
 to reconcile that supplementary table is retained separately. Such a build is
-partial even when its selected executable graph and complete RNA set check.
+partial even when its selected executable graph and complete RNA set check. The
+architecture profile uses `ExecutableCircuitBehavior` with the complete source
+Behavior and action identities, so state/temporal meaning need not become a
+stateless projection.
 
 `require_complete=True` refuses sequence emission while source or circuit
 refinements remain unresolved. Without that flag, supported partial construction

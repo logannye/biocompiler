@@ -11,21 +11,24 @@ An engineer should be able to describe which cells to engineer, what those cells
 
 The central idea is to keep three things connected: **what a cell should do**, **how a proposed implementation is described**, and **what experimental evidence supports**. Typed descriptions and independent checks make those relationships inspectable throughout a design.
 
-The current [executable RNA payload profile](docs/executable-rna-payload-v0.1.md)
-connects source-derived guards and actions to compatible supplied executable
-component contracts, complete RNA construction and independent verification.
-It supports multiple outputs, temporal conditions, memory, reset and explicit
-shutdown. Translation correctness is checked under the supplied contracts;
-whether those components fulfill their contracts in human cells is a separate
-empirical question.
+The current [RNA architecture compiler](docs/payload-architecture-v0.1.md), in
+`0.1.0.dev28`, connects full source behavior to supplied composite implementations,
+RNA partitions, recipient assignments and exact complete molecule sets. Behavior,
+components, RNAs and cell roles have explicit many-to-many correspondence. It
+supports finite state, temporal control, quantitative rate branches, sampled
+activity budgets and coupled roles under declared transport contracts. Independent
+checks establish translation under those contracts; biological function remains
+a separate empirical question. The earlier
+[per-operator payload profile](docs/executable-rna-payload-v0.1.md) remains available.
 
 ## What works today
 
 | Workflow | What it provides |
 | --- | --- |
+| Select a complete RNA architecture | `bc.compile(PayloadArchitectureRequest(...))` selects supplied composite behavior contracts and RNA partitions, checks control independence, helpers, recipient delivery and channels, and emits freshly verified RNA plus a complete manifest. |
 | Compile a contract-based RNA program | `bc.compile(PayloadCompilationRequest(...))` preserves source semantics, selects and connects supplied executable contracts, constructs every required RNA member, and independently checks source/component/sequence correspondence. |
 | Author intent and context | Typed Python descriptions of recognition, actions, timing and goals, with frozen human target, behavior, deployment and prohibited-outcome contracts. |
-| Check circuit scope | Human immune-recipient declarations bound to the exact target, separate human study context, and fresh checking against retained request authority; molecular compilation remains unsupported. |
+| Check circuit scope | Human immune-recipient declarations bound to the exact target, separate human study context, and fresh checking against retained request authority; scope checking alone supplies no molecular implementation. |
 | Start in a guided workspace | A local browser GUI explains the example, lets you choose product and architecture constraints, and runs the real compiler with verified downloads. |
 | Analyze implementation requirements | Retain the complete source and human contracts, classify sensing, control, product, timing and deployment obligations, and identify missing refinements or contradictions. |
 | Compile a declared precursor implementation | `bc.compile(ImplementationRequest(...))` selects a supplied signal-prefix/product architecture, checks declared host dependencies and processing relationships, derives a composite CDS and emits exact RNA with base-level correspondence. |
@@ -64,7 +67,7 @@ The [circuit authority infrastructure](docs/circuit-infrastructure-v0.1.md) adds
 
 [Portable review bundles](docs/circuit-review-bundles-v0.1.md) retain existing construction, source metadata, nominal binding and evidence records for offline replay against separately supplied authority. Studio's saved-construction view shows source gaps, binding diagnostics and evidence freshness. These software checks do not establish a biological mechanism, reviewed publication fidelity or human applicability.
 
-The next compiler capabilities extend the supplied-contract path to more source requirements, quantitative rates, resource constraints and implementation families. Quantitative models and observation mappings should evaluate those selected implementations under explicit assumptions. Translation correctness and exact RNA construction can be checked without biological evidence. Establishing therapeutic function and deployment compatibility requires independently supported human biology; those empirical claims remain open and are not established by the software fixtures.
+The next compiler capabilities extend the supplied-contract path to additional implementation families, mapped resource/operating-domain contracts and broader quantitative models. Finite-state behavior, typed rate expressions, sampled integral budgets and explicitly coupled roles already connect to selected RNA architectures. Quantitative models and observation mappings should evaluate those selected implementations under explicit assumptions. Translation correctness and exact RNA construction can be checked without biological evidence. Establishing therapeutic function and deployment compatibility requires independently supported human biology; those empirical claims remain open and are not established by the software fixtures.
 
 The [roadmap](docs/roadmap.md) tracks that path. biocompiler keeps exact artifact identity, structural consistency, model-conditional behavior and experimental evidence separate. A passing check applies only to its stated scope and dependencies. Physical manufacture, administration and clinical authorization remain external activities; their constraints must inform the eventual compiler.
 
@@ -113,6 +116,23 @@ print(program.summary())
 
 This builds an inspectable program description. Names such as `A` and `disease_context` are symbolic requirements; Python does not execute the cellular response. See the [intent API](docs/intent-api-v0.1.md) for the authoring vocabulary.
 
+### Compile a complete supplied RNA architecture
+
+```sh
+PYTHONPATH=src python3 -m examples.payload_architectures --case all --output generated/architectures
+PYTHONPATH=src python3 -m biocompiler architecture-verify generated/architectures/a/build.json --expected-request generated/architectures/a/request.json
+PYTHONPATH=src python3 -m biocompiler architecture-export generated/architectures/a/build.json --expected-request generated/architectures/a/request.json --output generated/architectures/a/export.json
+```
+
+The six artificial examples cover shared activation and independent shutdown,
+state/reset/timeout, clamped rate branches with sampled budgets, coupled roles,
+alternative RNA partitions and their combination. The example writes paired RNA
+FASTA and manifest files. CLI export returns both in one JSON artifact; keep the
+independent request as verification authority. See the
+[architecture profile](docs/payload-architecture-v0.1.md) for supported bounds and
+Python APIs. Production shutdown does not imply effector inactivation, and
+sampled budget checks do not imply a continuous physiological ceiling.
+
 ### Compile a declared molecular implementation
 
 This example retains a complete human source request, selects between two artificial precursor architectures and demonstrates rejected strict, size-limited and missing-provider cases:
@@ -146,6 +166,7 @@ The [example guide](examples/README.md) provides runnable commands and explains 
 
 | Example | Purpose |
 | --- | --- |
+| [RNA architecture designs](examples/payload_architectures.py) | Compile and export A–F supplied-contract examples with independently authored models, exact RNA partitions, helpers and recipient/channel assignments. |
 | [Synthetic design loop](examples/synthetic_design.py) | Select a bounded digital implementation, reconstruct its component assembly and check supplied histories. See [selection](docs/synthetic-selection-v0.1.md) and [verification](docs/synthetic-verification-v0.1.md). |
 | [Molecular design](examples/molecular_design.py) | Assemble supplied RNA fragments under explicit layout authority and independently check a complete structural specification. See the [design profile](docs/molecular-design-v0.1.md). |
 | [Reference builds](examples/reference_build.py) | Reproduce independently pinned DNA/RNA coding sequences and verify portable `.bcb` packages. See [reference-build commands](docs/reference-build-v0.1.md). |

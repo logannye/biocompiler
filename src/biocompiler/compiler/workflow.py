@@ -10,6 +10,7 @@ from types import MappingProxyType
 from typing import Any, TYPE_CHECKING
 
 if TYPE_CHECKING:
+    from biocompiler.ir.architecture_build import PayloadArchitectureRequest, PayloadArchitectureBuild
     from biocompiler.ir.executable_payload import PayloadCompilationRequest, PayloadBuild
     from biocompiler.ir.circuit_construction import CircuitConstructionRequest
     from biocompiler.artifacts.circuit_construction_build import CircuitConstructionBuild
@@ -399,9 +400,14 @@ def compile(
     | CircuitMoleculeSet
     | CircuitMoleculeRecord
     | CircuitConstructionRequest
-    | PayloadCompilationRequest,
-) -> CandidateCompilation | ImplementationCompilation | CircuitConstructionBuild | PayloadBuild:
-    """Compile explicit research candidates; reject unimplemented human realization."""
+    | PayloadCompilationRequest
+    | PayloadArchitectureRequest,
+) -> CandidateCompilation | ImplementationCompilation | CircuitConstructionBuild | PayloadBuild | PayloadArchitectureBuild:
+    """Compile supplied implementations while preserving source and claim boundaries."""
+    from biocompiler.ir.architecture_build import PayloadArchitectureRequest
+    if isinstance(design, PayloadArchitectureRequest):
+        from biocompiler.compiler.payload_architecture import compile_payload_architecture
+        return compile_payload_architecture(design)
     from biocompiler.ir.circuit_construction import CircuitConstructionRequest
     from biocompiler.ir.executable_payload import PayloadCompilationRequest
     if isinstance(design, PayloadCompilationRequest):

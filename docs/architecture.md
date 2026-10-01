@@ -2,9 +2,9 @@
 
 The current product interface is **therapeutic program design → corresponding
 payload RNA sequences for human immune cells engineered in vivo**. The
-[executable RNA payload profile](executable-rna-payload-v0.1.md) connects source
-activation/action semantics, supplied executable component contracts, bounded
-implementation selection and the existing complete-molecule construction engine.
+[RNA architecture profile](payload-architecture-v0.1.md) connects complete source
+Behavior programs, supplied composite component contracts, bounded architecture
+and RNA-partition selection, recipient roles and the existing construction engine.
 Its independent checker reconstructs source meaning and selected templates before
 RNA export. This contract-conditional code path requires no biological evidence;
 whether the supplied parts fulfill their contracts remains unresolved. The
@@ -67,6 +67,41 @@ No actuator, biological model or human payload admission is supplied.
 The development-version rename uses the `biocompiler.*` schema namespace and
 requires fresh builds and checks; see [migration notes](biocompiler-migration.md).
 Historical validation records keep their original revision and evidence scope.
+
+## Current composite RNA architecture path
+
+`PayloadArchitectureRequest` retains the original human circuit/source request,
+independently supplied composite Behavior contracts and hard architecture
+constraints. `SourceExecutionManifest` preserves every source node and installed
+rule/action, including state, memory, numerical rates and role/channel boundaries.
+`ExecutableCircuitBehavior` carries full temporal/stateful source semantics for
+supplementary readouts instead of approximating them with a stateless table.
+
+`ArchitectureBinding` connects model nodes, locked components, exact templates and
+specific member placements many-to-many. One component can require several RNAs;
+several components can share one explicitly supplied RNA. Refinement selection,
+RNA partitions, helper placement and recipient/co-delivery assignments are solved
+together. Distinct refinement instances are namespaced, with no deduplication by
+sequence equality. Component models pin the full supplied composite Behavior;
+sequence-only records and unrelated intrinsic operators cannot discharge runtime
+meaning. The independent checker reconstructs source/model correspondence and
+construction authority from the original request.
+
+Source-side control requirements distinguish activation, production adjustment,
+activity control, memory reset, shutdown, physical separation and dependency
+disjointness. Declared control domains and causal inputs are checked independently
+of RNA count. Helper capabilities, initialization, capacity, sharing, compartment
+and explicit same-recipient delivery determine availability. All delivered helper
+RNAs contribute to count/size constraints and export.
+
+Behavior v0.2 provides restricted sampled rolling integration and typed channel
+observations/emissions. Coupled execution reuses the original per-role evaluator
+under supplied finite-grid latency, persistence, aggregation and failure policies.
+These are executable language assumptions, not biological kinetics. Sampled
+budgets do not prove continuous exposure bounds; production cessation does not
+prove effector clearance. Unbound external helpers and nonempty unmapped component
+resource/domain contracts remain unsupported. See the
+[complete profile and A–F examples](payload-architecture-v0.1.md).
 
 ## Compilation layers
 
@@ -305,7 +340,7 @@ See the [roadmap](roadmap.md) for implementation order and the [initial architec
 
 ## Executable semantic foundation
 
-The [behavior semantics](behavior-semantics-v0.1.md) define an execution profile independently of molecular implementations. `lower_to_behavior` normalizes supported intent, binds scalar design parameters, records source/requirement lineage and explicit runtime policies, and rejects unsupported semantics. `verify_lowering` checks correspondence. Behavior IR is immutable and serializable; its reference evaluator runs one engineered cell against supplied input histories, including same-time state propagation and internal deadlines.
+The [behavior semantics](behavior-semantics-v0.1.md) define an execution profile independently of molecular implementations. `lower_to_behavior` normalizes supported intent, binds scalar design parameters, records source/requirement lineage and explicit runtime policies, and rejects unsupported semantics. `verify_lowering` checks correspondence. Behavior IR is immutable and serializable; its reference evaluator runs one engineered cell against supplied input histories, including same-time state propagation and internal deadlines. The architecture executor couples these per-role executions through explicitly supplied, bounded sampled transport; v0.2 integral policies remain pinned in frozen source authority.
 
 The [toolchain contracts](toolchain-contracts.md) are design obligations for every later layer: target capabilities, observation mappings, required responses, independent synthesis/checking, composed resource models, host linking, construct partitioning, encoding invalidation and complete molecular artifacts. Future module docstrings point to these obligations. The reference evaluator is an oracle for language semantics; biological model adapters belong to `models`.
 
@@ -419,11 +454,11 @@ The [molecular implementation contract](molecular-behavior-v0.1.md) freezes requ
 
 [Whole-molecule readiness](payload-profiles-v0.1.md) has separate immutable molecule/reference records for narrow mature linear RNA, linear DNA and circular-plasmid profiles. The checker requires a separately supplied authority fingerprint, exact retained source/review bytes, independent sequence extraction, whole-molecule feature coverage and explicit topology/chemistry. These results do not enter the exact-CDS pipeline or authorize a complete-payload build. The example records are nonfunctional software fixtures; no complete biological reference is promoted.
 
-Planning and general therapeutic compilation report source-linked missing obligations for quantitative curves, continuous integration, interval-valued intent, population communication, spatial behavior and feedback. They preserve these authored requests without silently assigning an approximate execution model. The partial intent-candidate and declared precursor profiles retain such obligations while implementing only their supported structural scopes. The [M9 evidence review](m9-evidence-review.md) identifies the scientific and source inputs needed for subsequent adapter and reference-promotion work.
+Planning and unsupported general compilation retain missing obligations for arbitrary quantitative curves, continuous integration, interval-valued intent, population/spatial behavior and feedback. The composite architecture profile separately implements explicit rate branches, sampled rolling integration and declared numeric channels within its documented bounds. They preserve these authored requests without silently assigning an approximate execution model. The partial intent-candidate and declared precursor profiles retain such obligations while implementing only their supported structural scopes. The [M9 evidence review](m9-evidence-review.md) identifies the scientific and source inputs needed for subsequent adapter and reference-promotion work.
 
 ## Human-profile use admission
 
-The [M10.5 admission policy](human-admission-v0.1.md) is shared by planning, registry selection, fresh implementation verification and export. Its immutable request binds target, intended use, boundary and selected component records; the assessment preserves declared evidence categories and limitations. The current policy admits no human therapeutic profiles. Generic targets can request labeled software workflows only; human contexts cannot bypass admission by requesting software use. The partial product-cassette and declared precursor workflows retain human requirements and admission refusal while emitting structurally checked research candidates; they grant no therapeutic implementation eligibility. Supplied human-contract observations may pass their finite checks without granting implementation eligibility.
+The [M10.5 admission policy](human-admission-v0.1.md) is shared by planning, registry selection, fresh implementation verification and export. Its immutable request binds target, intended use, boundary and selected component records; the assessment preserves declared evidence categories and limitations. The current policy admits no human therapeutic profiles. Generic targets can request labeled software workflows only; human contexts cannot bypass admission by requesting software use. The partial product-cassette and declared precursor workflows retain human requirements and admission refusal while emitting structurally checked research candidates; they grant no therapeutic implementation eligibility. Supplied human-contract observations may pass their finite checks without granting implementation eligibility. The composite architecture path separately checks conditional software translation in the original human context without biological-evidence gating or human-use admission.
 
 Independent composition, construct and molecular checks rerun admission even for exact manually supplied locks. Synthetic generation and direct realization checks reject human targets. Reference export and archive reconstruction check use before accepting a build. Molecular/synthetic artifacts, reference manifests and summaries carry fixed software-use labels; FASTA carries equivalent header fields. Policy identities enter verification, pass-manager and package dependencies. Matching saved hashes or PASS labels cannot replace fresh current checks.
 

@@ -1,6 +1,28 @@
 """Author inspectable therapeutic programs for in-vivo immune-cell engineering."""
 
-__version__ = "0.1.0.dev27"
+__version__ = "0.1.0.dev28"
+
+from biocompiler.ir.architecture_build import (
+    ArchitectureGap, RequirementRealization, ArchitectureAlternative,
+    PayloadArchitectureRequest, PayloadArchitecturePlan, PayloadArchitectureBuild,
+    PayloadArchitectureExport,
+)
+from biocompiler.ir.payload_architecture import (
+    ArchitectureBinding, ArchitectureConnection, ArchitecturePlacement,
+    ArchitectureControl, ControlRequirement, ArchitectureHelper, ArchitectureChannel,
+    ArchitectureOutputBinding, RecipientDeliveryGroup, RNAArchitectureConstraints,
+    PayloadArchitectureRefinement, PayloadArchitectureLibrary,
+)
+from biocompiler.ir.circuit_intent import ExecutableCircuitBehavior
+from biocompiler.ir.behavior import BEHAVIOR_V2
+from biocompiler.semantics.payload_execution import SourceExecutionManifest, derive_source_execution
+from biocompiler.semantics.architecture_execution import (
+    ArchitectureExecutionResult, evaluate_payload_architecture,
+)
+from biocompiler.compiler.payload_architecture import compile_payload_architecture, export_payload_architecture
+from biocompiler.verification.payload_architecture import (
+    PayloadArchitectureVerification, check_payload_architecture, verify_payload_architecture,
+)
 
 from biocompiler.ir.executable_payload import (
     PayloadCompilationRequest, PayloadSelectionConstraints, PayloadCircuitBinding,
@@ -505,6 +527,15 @@ from biocompiler.verification.realization import (
 )
 
 __all__ = [
+    "ArchitectureExecutionResult", "evaluate_payload_architecture",
+    "ArchitectureGap", "RequirementRealization", "ArchitectureAlternative",
+    "PayloadArchitectureRequest", "PayloadArchitecturePlan", "PayloadArchitectureBuild", "PayloadArchitectureExport",
+    "ArchitectureBinding", "ArchitectureConnection", "ArchitecturePlacement", "ArchitectureControl", "ControlRequirement",
+    "ArchitectureHelper", "ArchitectureChannel", "ArchitectureOutputBinding", "RecipientDeliveryGroup",
+    "RNAArchitectureConstraints", "PayloadArchitectureRefinement", "PayloadArchitectureLibrary",
+    "ExecutableCircuitBehavior", "BEHAVIOR_V2", "SourceExecutionManifest", "derive_source_execution",
+    "compile_payload_architecture", "export_payload_architecture",
+    "PayloadArchitectureVerification", "check_payload_architecture", "verify_payload_architecture",
     "PayloadCompilationRequest", "PayloadSelectionConstraints", "PayloadCircuitBinding",
     "PayloadAlternative", "PayloadBuild", "PayloadTemplate", "PayloadPortBinding",
     "PayloadCapabilityBinding", "PayloadComponentContract", "PayloadContractLibrary",

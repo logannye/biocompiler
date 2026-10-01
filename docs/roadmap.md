@@ -2,21 +2,30 @@
 
 ## Current code-only RNA translation sprint
 
-The current product scope is therapeutic program input and corresponding RNA
-payload sequence output for human immune cells engineered in vivo. The
-[executable RNA profile](executable-rna-payload-v0.1.md) implements source-derived
-guard/action preservation, supplied executable realization contracts, bounded
-compatible component selection, derived complete molecule construction and
-independent source/component/molecule replay. Multiple outputs, dwell conditions,
-pulses, memory, reset and explicit shutdown use the existing execution semantics.
-These software translation checks do not wait for biological evidence and do
-not close reference-review or biological-applicability milestones.
+The product scope is therapeutic program input and exact RNA payload output for
+human immune cells engineered in vivo. In `0.1.0.dev28`, the
+[composite architecture profile](payload-architecture-v0.1.md) extends the
+[earlier executable RNA profile](executable-rna-payload-v0.1.md) through full
+source Behavior contracts, exact source/model correspondence and many-to-many
+behavior/component/RNA/recipient bindings. Bounded architecture selection chooses
+supplied partitions, checks controls, helper initialization/capacity and explicit
+same-recipient delivery, constructs all members and independently verifies export.
 
-Remaining code work includes wider temporal/state operators, explicit quantitative
-rate and resource contracts, operating-domain refinements, a native temporal
-supplementary circuit schema, and broader biological component contract adapters.
-Unsupported requirements remain in artifacts; they are not replaced with invented
-behavior or sequences. Validation for this sprint is recorded in the session handoff.
+Runnable A–F slices cover shared activation with independently controlled outputs,
+finite state/reset/timeout, typed rate branches with sampled activity budgets,
+coupled sender/receiver roles and helpers, alternative functional groupings/RNA
+partitions, and their combined execution. `ExecutableCircuitBehavior` retains the
+full temporal/stateful program for supplementary outputs. Behavior v0.2 explicitly
+versions sampled integration and channel semantics. These software checks require
+no biological evidence and do not close reference-review or applicability gates.
+
+Remaining work includes general refinement discovery, additional implementation
+families, mapped component resource/operating-domain contracts, external helper
+observation bindings, continuous/stochastic physiology and broader deployment
+obligations. Search optimality is not independently certified. Sampled numerical
+budgets do not establish continuous exposure ceilings; stopping production does
+not establish effector inactivation. Validation receipts remain in the session
+handoff; historical milestone receipts below retain their original scopes.
 
 For the current resumption point and prior milestones, read the [session handoff](session-handoff.md).
 The broader human immune-payload development plan is the [RNA-circuit plan](rna-circuit-reproduction-plan.md):
@@ -102,11 +111,13 @@ Historical infrastructure baseline: merged revision `6806abda3697bae50c042baac5e
 | --- | --- | --- |
 | Python → Intent | Typed authoring, frozen requests, source provenance, human targets, source-linked secretion observations, deployment declarations, conjunctive acceptance, use admission and integrated profile cases | M11 evidence for biological identities, delivery and bounds |
 | Intent → Behavior | Request-authoritative lowering/verification, Behavior IR and reference execution; partial candidate product requirements and full typed implementation-obligation analysis | M10/M12: physical observations, supported tolerances and realizability obligations |
-| Behavior → Mechanism | Source-derived activation graphs, exact action/readout contracts and bounded supplied-library selection; separate synthetic and declared-precursor profiles | M12: independently evaluated biological dynamics and functional mechanism selection |
-| Mechanism → Components | Supplied executable contracts bound to exact templates, compatible interfaces and dependencies; existing offline locks, synthetic assembly and separate reference components | M11/M12: characterized human implementations with applicable evidence |
-| Components → Construct | Derived complete RNA molecule sets, helpers, processing relationships and chemistry; existing exact-CDS, multi-region and precursor construction | M13: complete supported therapeutic layouts and applicable dependency evidence |
+| Behavior → Mechanism | Full source/model graph correspondence, finite state/rates/sampled budgets/channels and bounded supplied composite architecture selection; separate synthetic and declared-precursor profiles | M12: independently evaluated biological dynamics and functional mechanism selection |
+| Mechanism → Components | Composite model-pinned contracts, many-to-many material bindings, control domains, exact placements and helper initialization/capacity; existing offline locks, synthetic assembly and separate reference components | M11/M12: characterized human implementations with applicable evidence |
+| Components → Construct | Supplied RNA partitions, complete member/helper sets, explicit recipient/co-delivery assignments, processing and chemistry; existing exact-CDS, multi-region and precursor construction | M13: complete supported therapeutic layouts and applicable dependency evidence |
 | Construct → Molecular specification | Independently reconstructed RNA payload sequences under supplied contracts; legacy exact-reference DNA/RNA and structural emitters/checkers | M13: complete target-specific therapeutic sequences, chemistry and candidate checks |
 | Molecular specification → Package | Strict reference/design archives and nominal handoff; separately verified product-cassette and precursor JSON records with scoped FASTA | M14/M15: complete therapeutic builds, separate evidence dimensions and evaluation feedback |
+
+`compile(PayloadArchitectureRequest)` runs the full composite Behavior → architecture/partition selection → complete RNA workflow. Fresh export retains RNA FASTA and its complete manifest; independent source/component/material authority remains separate.
 
 `compile(PayloadCompilationRequest)` runs the bounded source → executable contracts → complete RNA molecule-set workflow and independently verifies translation under supplied authority. Unsupported requirements remain explicit; this code-only path grants no empirical therapeutic or clinical-use claim.
 
@@ -119,7 +130,7 @@ Four tracks share build identities, pass contracts and artifact infrastructure:
 1. **Semantic correctness:** automatically lower a small Behavior profile into versioned synthetic components and check it independently against abstract histories.
 2. **Molecular reference fidelity:** resolve an explicitly selected published implementation and reproduce its exact CDS through component, construct, molecular and packaging stages.
 3. **Source-driven molecular construction:** analyze implementation requirements, select supplied CDS or declared precursor architectures, resolve their declared dependencies and automatically assemble exact RNA while preserving all unimplemented therapeutic obligations.
-4. **Executable RNA payload translation:** preserve source activation and output meaning, select supplied executable contracts and templates, derive complete RNA molecule sets and independently check every supported correspondence under explicit assumptions.
+4. **Executable RNA architecture translation:** preserve full source behavior and output meaning, select supplied composite contracts and RNA partitions, bind components/material/recipient roles many-to-many, check controls/helpers/channels and independently reconstruct complete RNA sets under explicit assumptions.
 
 A synthetic signal graph is not a molecular implementation of a CAR. The executable RNA profile connects the tracks through explicit implementation contracts and observation mappings; separate semantic or structural success alone does not supply that connection or establish biological function.
 
@@ -327,7 +338,7 @@ Implemented M8 profile: 25 literal semantic timelines and five metamorphic invar
 
 For M9.3, separate [payload readiness profiles](payload-profiles-v0.1.md) check supplied mature linear RNA, linear DNA and circular-plasmid specifications against independently pinned expectations and retained source/review bytes. Explicitly artificial fixtures exercise positive structural checks and mutation failures. Structural PASS never admits a complete-payload compiler build or promotes a biological reference. The accepted complete-payload reference inventory remains empty.
 
-M9.2 and actual M9.3 reference promotion remain evidence-dependent. The [M9 source review](m9-evidence-review.md) records the missing compatible calibration/validation dataset, the FAP experimental composite/material gap, and unresolved full-molecule candidate listings/versions. M9.4 now has source-linked planning/compilation diagnostics for quantitative, continuous, uncertainty, spatial, population and feedback extensions; their executable semantic/model profiles remain unimplemented. M9.5 remains deferred until a concrete supported use case can preserve these obligations. **M9 as a whole is not complete.**
+M9.2 and actual M9.3 reference promotion remain evidence-dependent. The [M9 source review](m9-evidence-review.md) records the missing compatible calibration/validation dataset, the FAP experimental composite/material gap, and unresolved full-molecule candidate listings/versions. M9.4 retains source-linked diagnostics for continuous, uncertain, spatial, population and feedback extensions. The later architecture profile implements bounded typed rate branches, sampled integration and declared numeric role communication; continuous physiology and unrestricted models remain unimplemented. M9.5 remains deferred until a concrete supported use case can preserve these obligations. **M9 as a whole is not complete.**
 
 ### Execution mapping for the remaining M9 scope
 

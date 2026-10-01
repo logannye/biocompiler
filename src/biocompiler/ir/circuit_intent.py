@@ -13,6 +13,7 @@ from typing import ClassVar
 from biocompiler.compiler.acceptance import HumanAcceptanceRequest
 from biocompiler.compiler.deployment import HumanDeploymentRequest
 from biocompiler.compiler.request import BuildRequest
+from biocompiler.ir.behavior import BehaviorProgram
 from biocompiler.ir.circuit_logic import BooleanSpec, MAX_BOOLEAN_INPUTS
 from biocompiler.ir.circuit_observations import (
     CircuitObservation,
@@ -182,6 +183,12 @@ class CircuitBehavior(_ProfileRecord):
         "dependencies": _decode_records(CircuitProviderRequirement, MAX_PROVIDERS),
     }
 
+    @classmethod
+    def from_dict(cls, data):
+        if cls is CircuitBehavior and data.get("schema_version") == ExecutableCircuitBehavior.schema_version:
+            return ExecutableCircuitBehavior.from_dict(data)
+        return super().from_dict(data)
+
     def __post_init__(self):
         object.__setattr__(
             self,
@@ -240,6 +247,48 @@ class CircuitBehavior(_ProfileRecord):
             self.output.observation.id not in {item.id for item in self.inputs},
             "Feedback cannot be represented as a combinational observation alias.",
         )
+        self._check_resources()
+
+
+@dataclass(frozen=True)
+class ExecutableCircuitBehavior(CircuitBehavior):
+    """Full source execution authority for temporal, stateful and numeric outputs.
+
+    The response uses the existing Behavior IR and its versioned execution
+    policies. It is checked against the original source independently; it is
+    never a stateless approximation of a stateful program.
+    """
+
+    response: BehaviorProgram
+    action_ids: tuple[str, ...] = ()
+    schema_version: ClassVar[str] = "biocompiler.circuit_executable_behavior.v0.1"
+    _decoders: ClassVar[dict] = {
+        **CircuitBehavior._decoders,
+        "response": BehaviorProgram.from_dict,
+        "action_ids": tuple,
+    }
+
+    def __post_init__(self):
+        object.__setattr__(self, "inputs", _records(
+            self.inputs, CircuitObservation, MAX_BOOLEAN_INPUTS, "observations"))
+        require(isinstance(self.response, BehaviorProgram), "Expected complete executable behavior authority.")
+        object.__setattr__(self, "response", BehaviorProgram.from_dict(self.response.to_dict()))
+        require(isinstance(self.output, CircuitProduct) and isinstance(self.lifecycle, CircuitLifecycle),
+                "Executable outputs require typed product and lifecycle authority.")
+        object.__setattr__(self, "dependencies", _records(
+            self.dependencies, CircuitProviderRequirement, MAX_PROVIDERS, "providers"))
+        require(isinstance(self.action_ids, (tuple, list)) and 0 < len(self.action_ids) <= 128
+                and len(set(self.action_ids)) == len(self.action_ids), "Invalid executable output action inventory.")
+        nodes = {node.id: node for node in self.response.nodes}
+        require(all(ref in nodes and nodes[ref].kind.startswith("action.") for ref in self.action_ids),
+                "Executable output actions must exist in the supplied behavior.")
+        object.__setattr__(self, "action_ids", tuple(sorted(self.action_ids)))
+        require(all(item.scope is ObservationScope.CELL_ACCESSIBLE for item in self.inputs),
+                "Executable circuit inputs must be cell-accessible observations.")
+        modes = {"protein_expression": "production_control", "rna_product": "production_control",
+                 "mature_protein_quantity": "abundance_control", "biological_activity": "activity_control",
+                 "reporter_fluorescence": "readout"}
+        require(self.lifecycle.mode == modes[self.output.kind], "Output product and lifecycle mode disagree.")
         self._check_resources()
 
 
