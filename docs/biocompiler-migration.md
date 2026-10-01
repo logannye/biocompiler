@@ -1,5 +1,20 @@
 # Rename to biocompiler
 
+## Circuit review bundles in 0.1.0.dev26
+
+The [review bundle profile](circuit-review-bundles-v0.1.md) is additive. Existing
+construction, source, binding and evidence artifacts retain their schemas and
+claims. Existing reference/synthetic/molecular-design archive formats are unchanged;
+their byte-container checks now use a shared schema-neutral implementation.
+Review verification requires the current package/checker pins and separately
+retained complete authority. Imported historical results never migrate themselves
+into current acceptance. A historical review with outdated tool pins may be
+inspected, but fresh verification refuses it; retain the original and explicitly
+recheck its independently trusted inputs with current tools before creating a
+new review. Neither operation grants biological or human-use acceptance.
+
+## Historical namespace change
+
 Version `0.1.0.dev11` renames the project, distribution, Python package, command,
 repository and artifact namespace to **biocompiler**. This is an intentional
 development-version compatibility break.

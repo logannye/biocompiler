@@ -28,7 +28,7 @@ from biocompiler.semantics.admission import ADMISSION_POLICY_VERSION
 from biocompiler.verification.admission import admission_for_target
 from biocompiler.verification.evidence import CheckOutcome, FreshnessReport
 
-CHECKER_VERSION = "biocompiler.component_linker.v0.2"
+CHECKER_VERSION = "biocompiler.component_linker.v0.3"
 CLAIM_SCOPE = (
     "Structural component compatibility under the locked records and declared "
     "target, provider, lifecycle, model and resource assumptions only. This is "
@@ -145,7 +145,7 @@ class CompositionResult(JsonArtifact):
     resolved_dependencies: tuple[ResolvedDependency, ...] = ()
     resource_usage: tuple[ResourceUsage, ...] = ()
     claim_scope: str = CLAIM_SCOPE
-    schema_version: ClassVar[str] = "biocompiler.component_link_result.v0.2"
+    schema_version: ClassVar[str] = "biocompiler.component_link_result.v0.3"
 
     def __post_init__(self):
         require(isinstance(self.outcome, CheckOutcome), "Invalid composition outcome.")
@@ -366,6 +366,20 @@ def check_composition(
     target = request.target.payload_format.value
     invalid_providers = set()
     for instance_id, record in records.items():
+        if record.synthetic_model is not None and any(
+            check.status == "unknown" for check in record.synthetic_model.domain_checks(
+                record.ports, record.supported_domain
+            )
+        ):
+            diagnostic("unknown", "unknown_executable_domain",
+                       "Executable output guarantees cannot be established from unknown domains.",
+                       instance_id)
+        if any(port.timing.startswith("atomic_discrete_event_") for port in record.ports) and record.synthetic_model is None:
+            diagnostic(
+                "unknown", "missing_transition_model",
+                "Discrete-event interfaces require an explicit executable transition model.",
+                instance_id,
+            )
         if target not in record.supported_targets:
             diagnostic(
                 "fail",

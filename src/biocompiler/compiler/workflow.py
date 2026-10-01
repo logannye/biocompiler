@@ -7,7 +7,21 @@ from dataclasses import dataclass, field, replace
 import json
 import math
 from types import MappingProxyType
-from typing import Any
+from typing import Any, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from biocompiler.ir.architecture_build import PayloadArchitectureRequest, PayloadArchitectureBuild
+    from biocompiler.ir.executable_payload import PayloadCompilationRequest, PayloadBuild
+    from biocompiler.ir.circuit_construction import CircuitConstructionRequest
+    from biocompiler.artifacts.circuit_construction_build import CircuitConstructionBuild
+    from biocompiler.ir.circuit_molecules import CircuitMoleculeSet
+    from biocompiler.artifacts.circuit_molecules import CircuitMoleculeRecord
+    from biocompiler.ir.circuit_intent import CircuitRequest
+    from biocompiler.ir.circuit_profile import CircuitProfileRequest
+    from biocompiler.ir.candidate import CandidateRequest
+    from biocompiler.compiler.candidate import CandidateCompilation
+    from biocompiler.ir.implementation import ImplementationRequest
+    from biocompiler.compiler.implementation import ImplementationCompilation
 
 from biocompiler.verification.admission import admission_for_target
 from biocompiler.compiler.request import BuildRequest, RealizationRequest
@@ -378,9 +392,63 @@ def compile(
     | RealizationRequest
     | HumanBehaviorRequest
     | HumanDeploymentRequest
-    | HumanAcceptanceRequest,
-) -> None:
-    """Reject unsupported general intent compilation; reference CDS uses its own API."""
+    | HumanAcceptanceRequest
+    | CandidateRequest
+    | ImplementationRequest
+    | CircuitProfileRequest
+    | CircuitRequest
+    | CircuitMoleculeSet
+    | CircuitMoleculeRecord
+    | CircuitConstructionRequest
+    | PayloadCompilationRequest
+    | PayloadArchitectureRequest,
+) -> CandidateCompilation | ImplementationCompilation | CircuitConstructionBuild | PayloadBuild | PayloadArchitectureBuild:
+    """Compile supplied implementations while preserving source and claim boundaries."""
+    from biocompiler.ir.architecture_build import PayloadArchitectureRequest
+    if isinstance(design, PayloadArchitectureRequest):
+        from biocompiler.compiler.payload_architecture import compile_payload_architecture
+        return compile_payload_architecture(design)
+    from biocompiler.ir.circuit_construction import CircuitConstructionRequest
+    from biocompiler.ir.executable_payload import PayloadCompilationRequest
+    if isinstance(design, PayloadCompilationRequest):
+        from biocompiler.compiler.executable_payload import compile_payload
+        return compile_payload(design)
+    from biocompiler.compiler.circuit_construction import build_circuit_construction
+    from biocompiler.ir.circuit_molecules import CircuitMoleculeSet
+    from biocompiler.artifacts.circuit_molecules import CircuitMoleculeRecord
+    from biocompiler.ir.circuit_intent import CircuitRequest
+    from biocompiler.ir.circuit_profile import CircuitProfileRequest
+    from biocompiler.ir.candidate import CandidateRequest
+    from biocompiler.ir.implementation import ImplementationRequest
+    if isinstance(design, CircuitConstructionRequest):
+        return build_circuit_construction(design)
+    if isinstance(design, (CircuitMoleculeSet, CircuitMoleculeRecord)):
+        raise CompilationUnavailableError(
+            "Molecular declarations require a complete supplied construction request for independent construction checks.",
+            diagnostics=("declared_assembly_unverified", "source_correspondence_unverified", "functional_implementation_unestablished", "human_therapeutic_use_not_admitted"),
+        )
+    if isinstance(design, CircuitRequest):
+        from biocompiler.verification.circuit_intent import check_circuit_intent
+
+        assessment = check_circuit_intent(design)
+        raise CompilationUnavailableError(
+            "Circuit intent is recorded; molecular circuit generation is not implemented.",
+            diagnostics=assessment.diagnostics,
+        )
+    if isinstance(design, CircuitProfileRequest):
+        from biocompiler.verification.circuit_profile import check_circuit_profile
+
+        assessment = check_circuit_profile(design)
+        raise CompilationUnavailableError(
+            "Human circuit scope is recorded; molecular circuit generation is not implemented.",
+            diagnostics=assessment.diagnostics,
+        )
+    if isinstance(design, ImplementationRequest):
+        from biocompiler.compiler.implementation import compile_implementation
+        return compile_implementation(design)
+    if isinstance(design, CandidateRequest):
+        from biocompiler.compiler.candidate import compile_candidate
+        return compile_candidate(design)
     if not isinstance(
         design,
         (

@@ -1,5 +1,48 @@
 # Examples
 
+[circuit_profile.py](circuit_profile.py) exercises the human immune target and
+separate illustrative human-reference context across all five scope boundaries.
+Run `PYTHONPATH=src python examples/circuit_profile.py --output generated/circuit-profile`.
+It retains complete source wrappers and demonstrates independent request replay,
+unsupported circuit generation and absent therapeutic admission. The reference
+is a software fixture, not experimental evidence. See the
+[profile guide](../docs/human-circuit-profile-v0.1.md) for the check/verify CLI.
+
+[molecular_implementation.py](molecular_implementation.py) connects complete source
+analysis to declared precursor architectures, selected sequence authorities,
+composite coding/processing maps and exact RNA. Run
+`PYTHONPATH=src python examples/molecular_implementation.py --output generated/molecular-implementation`.
+Two artificial architectures demonstrate different encoded prefixes for the same
+mature product. Strict completeness, impossible length and absent providers retain
+explained empty searches. Saved request/build JSON and verified FASTA retain
+`secreted_precursor_structure` scope, partial therapeutic implementation and
+unestablished physical function. The [implementation guide](../docs/molecular-implementation-v0.1.md)
+documents Python and installed `implementation-analyze/build/verify/fasta` commands.
+The GUI still uses the earlier candidate example below.
+
+[intent_candidate.py](intent_candidate.py) connects authored product requirements
+to exact RNA cassette candidates through supplied parts and architectures. Run
+`PYTHONPATH=src python examples/intent_candidate.py --output generated/intent-candidate`.
+Two artificial products and two architectures demonstrate that a source product
+edit or an architecture constraint changes the emitted sequence; a length bound
+produces an explained empty search. The original human target, conditional rule,
+deployment and prohibited-behavior contracts remain in every request. Sensing,
+regulation, secretion and therapeutic function remain unimplemented.
+
+The example saves complete request/build JSON and verified FASTA. Repeat a build
+and independently verify it with the installed CLI:
+
+```sh
+biocompiler candidate-build --request generated/intent-candidate/product_a.request.json --output generated/intent-candidate/cli.build.json
+biocompiler candidate-verify generated/intent-candidate/cli.build.json --expected-request generated/intent-candidate/product_a.request.json
+biocompiler candidate-fasta generated/intent-candidate/cli.build.json --expected-request generated/intent-candidate/product_a.request.json
+```
+
+These records have `product_cassette_structure` scope and retain partial
+therapeutic implementation and absent human admission. They are JSON records,
+not `.bcb` packages. All fragments and protein strings are nonfunctional software
+fixtures. See the [intent-candidate profile](../docs/intent-candidate-v0.1.md).
+
 [human_acceptance.py](human_acceptance.py) combines required secretion and prohibited
 observations in one request. Run `PYTHONPATH=src python examples/human_acceptance.py --output generated/acceptance`
 for artificial pass/fail/unknown/unsupported cases covering healthy-context activity,
@@ -50,11 +93,52 @@ meaning.
 
 [checked_pipeline.py](checked_pipeline.py) freezes build authority, runs two checked passes, checks a generated candidate and demonstrates automatic transitive invalidation. Run `PYTHONPATH=src python examples/checked_pipeline.py`. Its completion scope is a synthetic finite history; molecular obligations remain unresolved.
 
+[temporal_pipeline.py](temporal_pipeline.py) generates sustained qualification,
+cell/contact pulses and bounded resettable memory under an explicit temporal
+profile. Run `PYTHONPATH=src python examples/temporal_pipeline.py`. Internal
+timers execute between snapshots, and the independent checker preserves
+contact episodes, trigger scope and exact deadline precedence.
+
+[synthetic_build.py](synthetic_build.py) freezes the temporal request, input
+history, horizon and generator configuration, builds a portable software-model
+archive and reconstructs it against independent authority. Run
+`PYTHONPATH=src python examples/synthetic_build.py --output generated/synthetic`.
+See the [synthetic build/verify CLI](../docs/synthetic-build-v0.1.md).
+
+[synthetic_design.py](synthetic_design.py) runs the integrated offline design loop:
+author an operator constraint, select a passing alternate graph, reconstruct a
+temporal component package and check 100 mixed cell/contact histories. Run
+`PYTHONPATH=src python examples/synthetic_design.py --output generated/design`.
+The retained request, selected implementation, package and campaign can be
+rechecked with installed `synthetic-select`, `synthetic-build`, `synthetic-verify`,
+`synthetic-explore` and `synthetic-replay` commands.
+
+[synthetic_selection.py](synthetic_selection.py) demonstrates native versus
+De Morgan conjunction, a constraint forcing the alternate implementation and
+bounded search exhaustion. Gate counts are software costs, not molecular costs.
+
+[synthetic_verification.py](synthetic_verification.py) retains passing checks,
+bounded mixed-input exploration and a wrong-reset diagnostic failure reduced from
+five to three frames. Run `PYTHONPATH=src python examples/synthetic_verification.py --output generated/verification`.
+All records include complete independent operation requests for fresh replay;
+failed and unknown reports remain separate from accepted packages.
+
 [component_linking.py](component_linking.py) extends the synthetic pipeline to locked component contracts and separately inspects a pinned FAP RNA-CDS reference. Run `PYTHONPATH=src python examples/component_linking.py`. It preserves finite-history evidence and CDS-only scope; no molecular sequence is emitted.
 
 [reference_construct.py](reference_construct.py) independently selects DNA and RNA CDS records and runs checked single-component construct assembly for each. Run `PYTHONPATH=src python examples/reference_construct.py`. The complete reference layout retains unknown payload context and unresolved emission/biological obligations.
 
 [reference_sequences.py](reference_sequences.py) runs the exact-CDS pipeline separately for DNA and RNA, prints scoped identities and checks FASTA/JSON exports. Run `PYTHONPATH=src python examples/reference_sequences.py`. It emits each selected reference spelling without optimization or complete-payload/biological claims.
+
+[molecular_design.py](molecular_design.py) freezes four artificial RNA fragments,
+assembles and independently checks a complete 17-base structural specification,
+packages its provenance/chemistry/handoff, and reconstructs it offline. It also
+builds an explicitly authorized synonymous alternative and retains rejection of
+that same edit under the original authority. Run
+`PYTHONPATH=src python examples/molecular_design.py --output generated/molecular-design`.
+Use installed `molecular-design-build`, `molecular-design-inspect` and
+`molecular-design-verify` to repeat the [workflow](../docs/molecular-design-v0.1.md).
+Region names are annotations of nonfunctional test fragments. No upstream
+behavioral implementation, biological reference or human admission is claimed.
 
 - `reference_build.py`: build DNA/RNA `.bcb` packages, publish atomically and independently reconstruct offline. See [reference builds](../docs/reference-build-v0.1.md).
 

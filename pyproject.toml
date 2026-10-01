@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "biocompiler"
-version = "0.1.0.dev13"
-description = "A compiler architecture for translating cellular intent into traceable nucleic-acid payload specifications."
+version = "0.1.0.dev28"
+description = "An experimental compiler translating therapeutic programs into supplied-contract RNA payload specifications for human immune cells engineered in vivo."
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = []
@@ -20,9 +20,12 @@ biocompiler = "biocompiler.cli:main"
 
 [project.urls]
 Repository = "https://github.com/logannye/biocompiler"
+Documentation = "https://github.com/logannye/biocompiler/blob/main/README.md"
+Roadmap = "https://github.com/logannye/biocompiler/blob/main/docs/roadmap.md"
+Issues = "https://github.com/logannye/biocompiler/issues"
 
 [tool.setuptools.packages.find]
 where = ["src"]
 
 [tool.setuptools.package-data]
-biocompiler = ["py.typed"]
+biocompiler = ["py.typed", "studio/static/*", "studio/data/*.json"]

@@ -1,4 +1,4 @@
-"""The small offline catalog used by the combinational synthetic generator."""
+"""Offline digital operator catalogs with explicit combinational/temporal scope."""
 
 from __future__ import annotations
 
@@ -12,7 +12,8 @@ from biocompiler.ir.serialization import JsonArtifact, fields, require
 from biocompiler.models.synthetic import MODEL_RUNNER_VERSION
 
 SYNTHETIC_PROFILE_VERSION = "biocompiler.synthetic.combinational.v0.1"
-CATALOG_VERSION = "biocompiler.synthetic.catalog.v0.1"
+TEMPORAL_PROFILE_VERSION = "biocompiler.synthetic.temporal.v0.1"
+CATALOG_VERSION = "biocompiler.synthetic.catalog.v0.2"
 
 
 @dataclass(frozen=True)
@@ -89,24 +90,52 @@ _INTERFACES = {
     "output": "One port -> identical type and exact declared observable endpoint.",
 }
 
-SYNTHETIC_CATALOG = SyntheticCatalog(
-    tuple(
-        SyntheticComponent(
-            id=f"synthetic.{operation}",
-            version="1",
-            operation=operation,
-            interface=interface,
-            model_version=MODEL_RUNNER_VERSION,
-            assumptions=(
-                "Complete atomic snapshots with explicit contact identities and canonical units.",
-                "One role and one abstract compartment; no cross-role or compartment transport.",
-            ),
-            guarantees=(
-                "Stateless right-continuous digital evaluation, including the initial snapshot.",
-                "No quantitative biological guarantee or empirical evidence is supplied.",
-            ),
-            supported_profile=SYNTHETIC_PROFILE_VERSION,
+_TEMPORAL_INTERFACES = {
+    "held_for": "Boolean input -> true after uninterrupted positive duration; false immediately on input loss; no prehistory.",
+    "onset": "Boolean input -> event on false-to-true transition, including initially true; per binding and contact episode.",
+    "pulse": "Event trigger -> true until exclusive expiry; every trigger refreshes expiry, including at the old deadline.",
+    "memory": "Cell event-set and level-reset -> initially false latch; reset dominates set/expiry, set wins expiry; optional duration.",
+}
+
+
+def _catalog(profile, interfaces):
+    return SyntheticCatalog(
+        tuple(
+            SyntheticComponent(
+                id=f"synthetic.{operation}",
+                version="2",
+                operation=operation,
+                interface=interface,
+                model_version=MODEL_RUNNER_VERSION,
+                assumptions=(
+                    "Complete atomic snapshots with explicit contact identities and canonical units.",
+                    "One role and one abstract compartment; no cross-role or compartment transport.",
+                ),
+                guarantees=(
+                    "Atomic right-continuous digital evaluation, including startup and internal deadlines; external changes precede due timers."
+                    if profile == TEMPORAL_PROFILE_VERSION
+                    else "Stateless right-continuous digital evaluation, including the initial snapshot.",
+                    "No quantitative biological guarantee or empirical evidence is supplied.",
+                ),
+                supported_profile=profile,
+            )
+            for operation, interface in interfaces.items()
         )
-        for operation, interface in _INTERFACES.items()
     )
+
+
+SYNTHETIC_CATALOG = _catalog(SYNTHETIC_PROFILE_VERSION, _INTERFACES)
+TEMPORAL_CATALOG = _catalog(
+    TEMPORAL_PROFILE_VERSION, {**_INTERFACES, **_TEMPORAL_INTERFACES}
 )
+
+
+def catalog_for_profile(profile):
+    require(
+        isinstance(profile, str)
+        and profile in {SYNTHETIC_PROFILE_VERSION, TEMPORAL_PROFILE_VERSION},
+        "Unsupported synthetic generation profile.",
+    )
+    return (
+        TEMPORAL_CATALOG if profile == TEMPORAL_PROFILE_VERSION else SYNTHETIC_CATALOG
+    )

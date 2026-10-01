@@ -78,12 +78,13 @@ initial values ⊆ consumer accepted initial values. Equal port IDs or numeric
 ranges alone are insufficient. A contact-scoped signal retains its contacted
 object binding; a cell-scoped port cannot implicitly aggregate it.
 
-The sole known timing profile is `atomic_snapshot_stateless.v0.1`: outputs settle
-from the complete atomic snapshot, including initialization. `unknown` timing
-cannot establish a compatible connection. Other timing profiles require an
-explicit language extension. Cyclic wiring is unsupported: matching output
-domains cannot establish the existence of a stateless feedback solution.
-Temporal biological dynamics are outside v0.1.
+The stateless timing profile is `atomic_snapshot_stateless.v0.1`: outputs settle
+from the complete atomic snapshot, including initialization. The explicit
+[synthetic temporal extension](temporal-components-v0.1.md) adds separate
+discrete-event level and instantaneous-event interfaces with closed executable
+operator contracts. `unknown` timing cannot establish a compatible connection.
+Cyclic wiring remains unsupported; matching output domains do not establish a
+feedback solution. Temporal biological dynamics remain outside this profile.
 
 ## Declared obligations and composition
 

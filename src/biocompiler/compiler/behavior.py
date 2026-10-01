@@ -22,6 +22,10 @@ from biocompiler.ir.behavior import (
     BehaviorNode,
     BehaviorProgram,
     SUPPORTED_KINDS,
+    BEHAVIOR_V2,
+    EXTENSION_KINDS,
+    SCHEMA_VERSION,
+    execution_policies,
     contact_bindings,
     constant_value,
     lineage_for,
@@ -39,10 +43,10 @@ def _unsupported(node: IntentNode, message: str) -> None:
     raise UnsupportedBehaviorError(message, node_id=node.id, source=node.source)
 
 
-def _check_source_profile(program: IntentProgram) -> None:
+def _check_source_profile(program: IntentProgram, profile=SCHEMA_VERSION) -> None:
     nodes = {node.id: node for node in program.nodes}
     for node in program.nodes:
-        if node.kind not in SUPPORTED_KINDS:
+        if node.kind not in (SUPPORTED_KINDS | (EXTENSION_KINDS if profile == BEHAVIOR_V2 else frozenset())):
             _unsupported(
                 node,
                 f"Operation {node.kind!r} needs an additional execution profile or semantic refinement.",
@@ -63,6 +67,12 @@ def _check_source_profile(program: IntentProgram) -> None:
                 _unsupported(
                     node, "Unknown source state-read or arbitration semantics."
                 )
+        elif node.kind == "integrated":
+            if len(node.inputs) != 2 or nodes[node.inputs[0]].kind not in {"signal", "channel_observation"}:
+                _unsupported(node, "Rolling integration supports a direct cell-local numeric observation only.")
+            observed = nodes[node.inputs[0]]
+            if observed.kind == "signal" and nodes[observed.inputs[0]].attributes.get("scope") == "contact":
+                _unsupported(node, "Contact-scoped integration needs an explicit identity/history profile.")
         elif node.kind == "rule":
             attrs = node.attributes
             if (
@@ -138,6 +148,19 @@ def _normalized_attributes(node: IntentNode, bindings: Mapping[str, Any]) -> dic
     return attrs
 
 
+def _execution_policies(authority):
+    if authority.behavior_profile != BEHAVIOR_V2:
+        return execution_policies(authority.behavior_profile)
+    specification = authority.implementation_constraints.get("execution", {})
+    if not isinstance(specification, Mapping) or set(specification) - {"integral_step"}:
+        raise SerializationError("Unknown frozen behavior execution policy fields.")
+    step = specification.get("integral_step")
+    if authority.intent.find(kind="integrated") and step is None:
+        node = authority.intent.find(kind="integrated")[0]
+        _unsupported(node, "Rolling integration requires explicit execution.integral_step authority.")
+    return execution_policies(authority.behavior_profile, step)
+
+
 def lower_to_behavior(
     program: IntentProgram | BuildRequest,
     *,
@@ -151,7 +174,7 @@ def lower_to_behavior(
     """
     authority = _authority(program, parameters)
     program = authority.intent
-    _check_source_profile(program)
+    _check_source_profile(program, authority.behavior_profile)
     bindings = authority.resolved_bindings
     source_nodes = {node.id: node for node in program.nodes}
     links = {node.id: lineage_for(source_nodes, node.id) for node in program.nodes}
@@ -186,7 +209,7 @@ def lower_to_behavior(
         for node in nodes:
             duration_ref = None
             if (
-                node.kind in {"held_for", "recently", "action.pulse"}
+                node.kind in {"held_for", "recently", "action.pulse", "integrated"}
                 and len(node.inputs) == 2
             ):
                 duration_ref = node.inputs[1]
@@ -214,6 +237,8 @@ def lower_to_behavior(
             requirements,
             links,
             parameter_bindings=bindings,
+            schema_version=authority.behavior_profile,
+            policies=_execution_policies(authority),
         )
     except (KeyError, IndexError) as exc:
         raise SerializationError(
@@ -246,7 +271,10 @@ def verify_lowering(
         if not passed:
             raise LoweringVerificationError(f"{name}: {detail}")
 
-    _check_source_profile(intent)
+    _check_source_profile(intent, authority.behavior_profile)
+    check("execution_profile", behavior.schema_version == authority.behavior_profile
+          and behavior.policies == _execution_policies(authority),
+          "Execution profile and sampled-integration policy must match frozen source authority.")
     check(
         "source_identity",
         behavior.source_fingerprint == intent.fingerprint

@@ -27,18 +27,237 @@ jobs:
         run: python -m pip install .
       - name: Reconstruct reviewed partial material evidence
         run: python tools/check_material_reconciliation.py
+      - name: Compile and independently replay executable RNA payloads outside the checkout
+        working-directory: ${{ runner.temp }}
+        env:
+          PAYLOAD_OUTPUT: ${{ github.workspace }}/generated/executable-rna-payload-ci
+        run: |
+          python "$GITHUB_WORKSPACE/examples/executable_payload.py" --output "$PAYLOAD_OUTPUT"
+          biocompiler payload-build --request "$PAYLOAD_OUTPUT/request.json" --output "$PAYLOAD_OUTPUT/cli.build.json"
+          biocompiler payload-verify "$PAYLOAD_OUTPUT/cli.build.json" --expected-request "$PAYLOAD_OUTPUT/request.json" > "$PAYLOAD_OUTPUT/verification.json"
+          biocompiler payload-fasta "$PAYLOAD_OUTPUT/cli.build.json" --expected-request "$PAYLOAD_OUTPUT/request.json" > "$PAYLOAD_OUTPUT/cli.fasta"
+          biocompiler inspect "$PAYLOAD_OUTPUT/cli.build.json" > "$PAYLOAD_OUTPUT/inspection.json"
+          python -c "import os, pathlib; p = pathlib.Path(os.environ['PAYLOAD_OUTPUT']); assert (p / 'build.json').read_bytes() == (p / 'cli.build.json').read_bytes(); assert (p / 'payloads.fasta').read_bytes() == (p / 'cli.fasta').read_bytes()"
+      - name: Retain executable RNA payload evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: executable-rna-payload-py${{ matrix.python-version }}
+          path: generated/executable-rna-payload-ci/
+          if-no-files-found: error
+          retention-days: 7
+      - name: Compile and independently replay A–F RNA architectures outside the checkout
+        working-directory: ${{ runner.temp }}
+        env:
+          ARCHITECTURE_OUTPUT: ${{ github.workspace }}/generated/payload-architecture-ci
+        run: python "$GITHUB_WORKSPACE/tools/check_payload_architecture_install.py" --output "$ARCHITECTURE_OUTPUT"
+      - name: Retain complete RNA architecture and paired export evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: payload-architecture-py${{ matrix.python-version }}
+          path: generated/payload-architecture-ci/
+          if-no-files-found: error
+          retention-days: 7
       - name: Test authoring, behavior, and realization contracts
         run: python -m unittest discover -s tests -v
       - name: Run authoring examples
         run: python examples/intent_programs.py
+      - name: Check source metadata and circuit infrastructure outside the checkout
+        working-directory: ${{ runner.temp }}
+        env:
+          INFRA_OUTPUT: ${{ github.workspace }}/generated/circuit-infrastructure-ci
+          SOURCE_OUTPUT: ${{ github.workspace }}/generated/circuit-sources-ci
+          REVIEW_OUTPUT: ${{ github.workspace }}/generated/circuit-review-ci
+        run: |
+          python "$GITHUB_WORKSPACE/examples/circuit_sources.py" --output "$SOURCE_OUTPUT"
+          biocompiler circuit-sources-check --inventory "$SOURCE_OUTPUT/inventory.json" --output "$SOURCE_OUTPUT/cli.assessment.json"
+          biocompiler circuit-sources-verify "$SOURCE_OUTPUT/cli.assessment.json" --expected-inventory "$SOURCE_OUTPUT/inventory.json"
+          biocompiler circuit-sources-readiness "$SOURCE_OUTPUT/inventory.json" --output "$SOURCE_OUTPUT/cli.readiness.json"
+          python "$GITHUB_WORKSPACE/examples/circuit_infrastructure.py" --output "$INFRA_OUTPUT"
+          biocompiler circuit-bindings-check "$INFRA_OUTPUT/candidate.json" --expected-request "$INFRA_OUTPUT/binding-request.json" --output "$INFRA_OUTPUT/cli.binding-assessment.json"
+          biocompiler circuit-bindings-verify "$INFRA_OUTPUT/cli.binding-assessment.json" --candidate "$INFRA_OUTPUT/candidate.json" --expected-request "$INFRA_OUTPUT/binding-request.json"
+          biocompiler circuit-evidence-capture "$INFRA_OUTPUT/build.json" --expected-request "$INFRA_OUTPUT/evidence-request.json" --output "$INFRA_OUTPUT/cli.evidence-receipt.json"
+          biocompiler circuit-evidence-check "$INFRA_OUTPUT/cli.evidence-receipt.json" --build "$INFRA_OUTPUT/build.json" --expected-request "$INFRA_OUTPUT/evidence-request.json" --output "$INFRA_OUTPUT/cli.evidence-assessment.json"
+          biocompiler circuit-evidence-verify "$INFRA_OUTPUT/cli.evidence-assessment.json" --receipt "$INFRA_OUTPUT/cli.evidence-receipt.json" --build "$INFRA_OUTPUT/build.json" --expected-request "$INFRA_OUTPUT/evidence-request.json"
+          biocompiler circuit-inspect "$INFRA_OUTPUT/build.json" --expected-request "$INFRA_OUTPUT/request.json" --output "$INFRA_OUTPUT/cli.inspection.json"
+          biocompiler circuit-diff "$INFRA_OUTPUT/build.json" "$INFRA_OUTPUT/build.json" --expected-before "$INFRA_OUTPUT/request.json" --expected-after "$INFRA_OUTPUT/request.json" --output "$INFRA_OUTPUT/cli.diff.json"
+          python "$GITHUB_WORKSPACE/examples/circuit_review.py" --output "$REVIEW_OUTPUT"
+          biocompiler circuit-review-create "$REVIEW_OUTPUT/build.json" --expected-authority "$REVIEW_OUTPUT/authority.json" --source-assessment "$REVIEW_OUTPUT/source-assessment.json" --binding-assessment "$REVIEW_OUTPUT/binding-assessment.json" --evidence-receipt "$REVIEW_OUTPUT/evidence-receipt.json" --evidence-assessment "$REVIEW_OUTPUT/evidence-assessment.json" --output "$REVIEW_OUTPUT/cli.review.bcb"
+          biocompiler circuit-review-inspect "$REVIEW_OUTPUT/cli.review.bcb" --output "$REVIEW_OUTPUT/inspection.json"
+          biocompiler circuit-review-verify "$REVIEW_OUTPUT/cli.review.bcb" --expected-authority "$REVIEW_OUTPUT/authority.json" --output "$REVIEW_OUTPUT/cli.verification.json"
+          biocompiler inspect "$REVIEW_OUTPUT/authority.json"
+          python -c "import os, pathlib; p = pathlib.Path(os.environ['REVIEW_OUTPUT']); assert (p / 'review.bcb').read_bytes() == (p / 'cli.review.bcb').read_bytes(); assert (p / 'verification.json').read_bytes() == (p / 'cli.verification.json').read_bytes()"
+      - name: Retain infrastructure contract evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: circuit-infrastructure-evidence-py${{ matrix.python-version }}
+          path: |
+            generated/circuit-infrastructure-ci/
+            generated/circuit-sources-ci/
+            generated/circuit-review-ci/
+          if-no-files-found: ignore
+          retention-days: 7
+      - name: Build and replay supplied circuit constructions outside the checkout
+        working-directory: ${{ runner.temp }}
+        env:
+          CIRCUIT_OUTPUT: ${{ github.workspace }}/generated/circuit-construction-ci
+        run: |
+          python "$GITHUB_WORKSPACE/examples/circuit_construction.py" --output "$CIRCUIT_OUTPUT"
+          biocompiler circuit-build --request "$CIRCUIT_OUTPUT/request.json" --output "$CIRCUIT_OUTPUT/cli.build.json"
+          biocompiler circuit-verify "$CIRCUIT_OUTPUT/cli.build.json" --expected-request "$CIRCUIT_OUTPUT/request.json"
+          biocompiler circuit-export "$CIRCUIT_OUTPUT/cli.build.json" --expected-request "$CIRCUIT_OUTPUT/request.json" --output "$CIRCUIT_OUTPUT/export.json"
+          biocompiler circuit-verify "$CIRCUIT_OUTPUT/export.json" --expected-request "$CIRCUIT_OUTPUT/request.json"
+          biocompiler inspect "$CIRCUIT_OUTPUT/request.json"
+          biocompiler inspect "$CIRCUIT_OUTPUT/candidate.json"
+          biocompiler inspect "$CIRCUIT_OUTPUT/assessment.json"
+          biocompiler inspect "$CIRCUIT_OUTPUT/export.json"
+          python -c "import json, os, pathlib; p = pathlib.Path(os.environ['CIRCUIT_OUTPUT']); assert json.loads((p / 'build.json').read_text()) == json.loads((p / 'cli.build.json').read_text()) == json.loads((p / 'export.json').read_text())"
+      - name: Retain supplied circuit construction evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: circuit-construction-evidence-py${{ matrix.python-version }}
+          path: generated/circuit-construction-ci/
+          if-no-files-found: ignore
+          retention-days: 7
+      - name: Inspect structured circuit molecule declarations
+        run: |
+          python examples/circuit_molecules.py --output generated/circuit-molecules-ci
+          biocompiler inspect generated/circuit-molecules-ci/bundle.json
+          biocompiler inspect generated/circuit-molecules-ci/record.json
+      - name: Retain declared molecule identity evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: circuit-molecule-declarations-py${{ matrix.python-version }}
+          path: generated/circuit-molecules-ci/
+      - name: Check circuit intent authoring and independent replay
+        run: |
+          python examples/circuit_intent.py --output generated/circuit-intent-ci
+          biocompiler circuit-intent-check --request generated/circuit-intent-ci/product.request.json --output generated/circuit-intent-ci/cli.assessment.json
+          biocompiler circuit-intent-verify generated/circuit-intent-ci/cli.assessment.json --expected-request generated/circuit-intent-ci/product.request.json
+          biocompiler inspect generated/circuit-intent-ci/reference.request.json
+          biocompiler inspect generated/circuit-intent-ci/cli.assessment.json
+      - name: Retain circuit intent evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: circuit-intent-evidence-py${{ matrix.python-version }}
+          path: generated/circuit-intent-ci/
+      - name: Check human circuit profile scope and independent authority
+        run: |
+          python examples/circuit_profile.py --output generated/circuit-profile-ci
+          biocompiler circuit-profile-check --request generated/circuit-profile-ci/product.request.json --output generated/circuit-profile-ci/cli.assessment.json
+          biocompiler circuit-profile-verify generated/circuit-profile-ci/cli.assessment.json --expected-request generated/circuit-profile-ci/product.request.json
+          biocompiler inspect generated/circuit-profile-ci/reference.request.json
+          biocompiler inspect generated/circuit-profile-ci/cli.assessment.json
+      - name: Retain circuit profile evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: circuit-profile-evidence-py${{ matrix.python-version }}
+          path: generated/circuit-profile-ci/
+          if-no-files-found: ignore
+          retention-days: 7
+      - name: Compile and independently verify intent-directed molecular candidates
+        run: |
+          python examples/intent_candidate.py --output generated/intent-candidate-ci
+          biocompiler candidate-build --request generated/intent-candidate-ci/product_a.request.json --output generated/intent-candidate-ci/cli.build.json
+          biocompiler candidate-verify generated/intent-candidate-ci/cli.build.json --expected-request generated/intent-candidate-ci/product_a.request.json
+          biocompiler candidate-fasta generated/intent-candidate-ci/cli.build.json --expected-request generated/intent-candidate-ci/product_a.request.json > generated/intent-candidate-ci/cli.fasta
+      - name: Retain intent-directed molecular candidate evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: intent-candidate-evidence-py${{ matrix.python-version }}
+          path: generated/intent-candidate-ci
       - name: Run behavior trace example
         run: python examples/behavior_trace.py
+      - name: Analyze requirements and compile declared molecular implementations
+        run: |
+          python examples/molecular_implementation.py --output generated/molecular-implementation-ci
+          biocompiler implementation-analyze --request generated/molecular-implementation-ci/source.json --output generated/molecular-implementation-ci/requirements-cli.json
+          biocompiler implementation-build --request generated/molecular-implementation-ci/compact.request.json --output generated/molecular-implementation-ci/cli.build.json
+          biocompiler implementation-verify generated/molecular-implementation-ci/cli.build.json --expected-request generated/molecular-implementation-ci/compact.request.json
+          biocompiler implementation-fasta generated/molecular-implementation-ci/cli.build.json --expected-request generated/molecular-implementation-ci/compact.request.json > generated/molecular-implementation-ci/cli.fasta
+          biocompiler inspect generated/molecular-implementation-ci/requirements-cli.json
+          biocompiler inspect generated/molecular-implementation-ci/cli.build.json
+          python -c "import subprocess; result = subprocess.run(['biocompiler', 'implementation-build', '--request', 'generated/molecular-implementation-ci/strict.request.json', '--output', 'generated/molecular-implementation-ci/strict-cli.build.json']); assert result.returncode == 1, result.returncode"
+      - name: Retain molecular implementation evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: molecular-implementation-evidence-py${{ matrix.python-version }}
+          path: generated/molecular-implementation-ci/
+          if-no-files-found: ignore
+          retention-days: 7
       - name: Run independent realization checks
         run: python examples/realization_check.py
       - name: Run checked request-to-synthetic pipeline
         run: python examples/checked_pipeline.py
+      - name: Run checked temporal generation
+        run: python examples/temporal_pipeline.py
+      - name: Build and reconstruct portable temporal synthetic packages
+        run: |
+          python examples/synthetic_build.py --output generated/synthetic-ci
+          biocompiler synthetic-build --request generated/synthetic-ci/request.json --output generated/synthetic-ci/cli.bcb > generated/synthetic-ci/build.json
+          biocompiler synthetic-inspect generated/synthetic-ci/cli.bcb > generated/synthetic-ci/inspect.json
+          biocompiler synthetic-verify generated/synthetic-ci/cli.bcb --expected-request generated/synthetic-ci/request.json > generated/synthetic-ci/verify.json
+      - name: Retain synthetic workflow evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: synthetic-workflow-python-${{ matrix.python-version }}
+          path: generated/synthetic-ci/
+          if-no-files-found: ignore
+          retention-days: 7
+      - name: Select, compose and reconstruct a bounded digital design
+        run: |
+          python examples/synthetic_selection.py
+          python examples/synthetic_design.py --output generated/synthetic-design-ci
+          biocompiler synthetic-select --request generated/synthetic-design-ci/request.json --output generated/synthetic-design-ci/selection-cli.json > generated/synthetic-design-ci/selection-summary.json
+          biocompiler synthetic-build --request generated/synthetic-design-ci/request.json --output generated/synthetic-design-ci/design-cli.bcb > generated/synthetic-design-ci/build-summary.json
+          biocompiler synthetic-inspect generated/synthetic-design-ci/design-cli.bcb > generated/synthetic-design-ci/inspect.json
+          biocompiler synthetic-verify generated/synthetic-design-ci/design-cli.bcb --expected-request generated/synthetic-design-ci/request.json > generated/synthetic-design-ci/verify.json
+          biocompiler synthetic-explore --request generated/synthetic-design-ci/campaign-request.json --output generated/synthetic-design-ci/campaign-cli-record.json > generated/synthetic-design-ci/campaign-summary.json
+          biocompiler synthetic-replay generated/synthetic-design-ci/campaign-cli-record.json --expected-request generated/synthetic-design-ci/campaign-request.json > generated/synthetic-design-ci/replay.json
+      - name: Retain and replay failed temporal verification evidence
+        run: |
+          python examples/synthetic_verification.py --output generated/synthetic-verification-ci
+          biocompiler synthetic-check --request generated/synthetic-verification-ci/check-request.json --output generated/synthetic-verification-ci/check-cli-record.json > generated/synthetic-verification-ci/check-summary.json
+          python -c "import subprocess; result = subprocess.run(['biocompiler', 'synthetic-check', '--request', 'generated/synthetic-verification-ci/wrong-reset-request.json', '--output', 'generated/synthetic-verification-ci/wrong-reset-cli-record.json']); assert result.returncode == 1, result.returncode" > generated/synthetic-verification-ci/wrong-reset-summary.json
+          biocompiler synthetic-reduce --request generated/synthetic-verification-ci/reduction-request.json --output generated/synthetic-verification-ci/reduction-cli-record.json > generated/synthetic-verification-ci/reduction-summary.json
+          biocompiler synthetic-replay generated/synthetic-verification-ci/reduction-cli-record.json --expected-request generated/synthetic-verification-ci/reduction-request.json > generated/synthetic-verification-ci/replay.json
+          biocompiler inspect generated/synthetic-verification-ci/wrong-reset-cli-record.json > generated/synthetic-verification-ci/inspection.json
+      - name: Retain design selection and verification workflow evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: synthetic-design-python-${{ matrix.python-version }}
+          path: |
+            generated/synthetic-design-ci/
+            generated/synthetic-verification-ci/
+          if-no-files-found: ignore
+          retention-days: 7
       - name: Run checked component linking and reference selection
         run: python examples/component_linking.py
+      - name: Assemble and reconstruct complete structural RNA designs
+        run: |
+          python examples/molecular_design.py --output generated/molecular-design-ci
+          biocompiler molecular-design-build --request generated/molecular-design-ci/request.json --output generated/molecular-design-ci/cli.bcb > generated/molecular-design-ci/build-summary.json
+          biocompiler molecular-design-inspect generated/molecular-design-ci/cli.bcb > generated/molecular-design-ci/inspection.json
+          biocompiler molecular-design-verify generated/molecular-design-ci/cli.bcb --expected-request generated/molecular-design-ci/request.json > generated/molecular-design-ci/verification.json
+          biocompiler inspect generated/molecular-design-ci/handoff.json > generated/molecular-design-ci/handoff-inspection.json
+          biocompiler inspect generated/molecular-design-ci/substitution-failure.json > generated/molecular-design-ci/failure-inspection.json
+      - name: Retain molecular design and candidate-checking evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: molecular-design-python-${{ matrix.python-version }}
+          path: generated/molecular-design-ci/
+          if-no-files-found: ignore
+          retention-days: 7
       - name: Run checked DNA and RNA reference construct assembly
         run: python examples/reference_construct.py
       - name: Emit, check and export exact DNA and RNA reference CDSs
@@ -177,3 +396,139 @@ jobs:
       - name: Import scaffold interfaces
         run: |
           python -c "from biocompiler.compiler.passes import CompilerPass, PassResult; from biocompiler.semantics.context import TargetContext; from biocompiler.verification.evidence import Obligation"
+
+  executable-rna-reproducibility:
+    needs: package-smoke
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: executable-rna-payload-py3.11
+          path: artifacts/python311
+      - uses: actions/download-artifact@v4
+        with:
+          name: executable-rna-payload-py3.14
+          path: artifacts/python314
+      - name: Compare exact RNA and contract artifacts across Python versions
+        run: |
+          python3 - <<'PY'
+          import hashlib
+          from pathlib import Path
+          roots = [Path('artifacts/python311'), Path('artifacts/python314')]
+          manifests = [{str(p.relative_to(root)): hashlib.sha256(p.read_bytes()).hexdigest()
+                        for p in root.rglob('*') if p.is_file()} for root in roots]
+          assert manifests[0], 'Missing executable RNA artifacts'
+          assert manifests[0] == manifests[1], 'Cross-Python RNA artifacts differ'
+          for name, digest in sorted(manifests[0].items()):
+              print(digest, name)
+          PY
+
+  payload-architecture-reproducibility:
+    needs: package-smoke
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: payload-architecture-py3.11
+          path: artifacts/python311
+      - uses: actions/download-artifact@v4
+        with:
+          name: payload-architecture-py3.14
+          path: artifacts/python314
+      - name: Compare complete A–F source, model, RNA and manifest artifacts across Python versions
+        run: |
+          python3 - <<'PY'
+          import hashlib
+          from pathlib import Path
+          roots = [Path('artifacts/python311'), Path('artifacts/python314')]
+          manifests = [{str(p.relative_to(root)): hashlib.sha256(p.read_bytes()).hexdigest()
+                        for p in root.rglob('*') if p.is_file()} for root in roots]
+          required = {f'{case}/{name}' for case in 'abcdef'
+                      for name in ('request.json', 'build.json', 'payloads.fasta', 'manifest.json',
+                                   'cli.build.json', 'cli.export.json', 'cli.verification.json')}
+          assert required <= manifests[0].keys(), 'Missing complete A–F architecture artifacts'
+          assert manifests[0] == manifests[1], 'Cross-Python architecture artifacts differ'
+          for name, digest in sorted(manifests[0].items()):
+              print(digest, name)
+          print('Identical artifacts:', len(manifests[0]))
+          PY
+
+  circuit-reproducibility:
+    needs: package-smoke
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: circuit-infrastructure-evidence-py3.11
+          path: artifacts/python311
+      - uses: actions/download-artifact@v4
+        with:
+          name: circuit-infrastructure-evidence-py3.14
+          path: artifacts/python314
+      - name: Compare complete deterministic infrastructure artifacts across Python versions
+        run: |
+          python3 - <<'PY'
+          import hashlib
+          from pathlib import Path
+          roots = [Path('artifacts/python311'), Path('artifacts/python314')]
+          manifests = [{str(p.relative_to(root)): hashlib.sha256(p.read_bytes()).hexdigest()
+                        for p in root.rglob('*') if p.is_file()} for root in roots]
+          assert manifests[0], 'Missing infrastructure artifacts'
+          assert manifests[0] == manifests[1], 'Cross-Python infrastructure artifacts differ'
+          for name, digest in sorted(manifests[0].items()):
+              print(digest, name)
+          print('Identical artifacts:', len(manifests[0]))
+          PY
+
+  studio-browser:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Record tested revision and platform
+        run: |
+          python -c "import os, platform; print('Revision:', os.environ['GITHUB_SHA']); print('Platform:', platform.platform()); print('Python:', platform.python_version())"
+          node --version
+      - name: Install package and browser test tools
+        run: |
+          python -m pip install .
+          npm install --prefix generated/browser-tools --no-save --ignore-scripts playwright@1.62.1
+          node generated/browser-tools/node_modules/playwright/cli.js install --with-deps chromium
+      - name: Exercise the installed guided workspace in a browser
+        env:
+          NODE_PATH: ${{ github.workspace }}/generated/browser-tools/node_modules
+          STUDIO_TEST_OUTPUT: ${{ github.workspace }}/generated/studio-browser-ci
+        run: node tests/browser/studio.cjs
+      - name: Exercise retained construction inspection and lossless save in a browser
+        env:
+          NODE_PATH: ${{ github.workspace }}/generated/browser-tools/node_modules
+          STUDIO_TEST_OUTPUT: ${{ github.workspace }}/generated/studio-browser-ci
+          CIRCUIT_INFRASTRUCTURE_OUTPUT: ${{ github.workspace }}/generated/circuit-infrastructure-ci
+          CIRCUIT_SOURCES_OUTPUT: ${{ github.workspace }}/generated/circuit-sources-ci
+          CONSTRUCTION_BROWSER_SUITE: inspection
+        run: |
+          cd "$RUNNER_TEMP"
+          python "$GITHUB_WORKSPACE/examples/circuit_infrastructure.py" --output "$CIRCUIT_INFRASTRUCTURE_OUTPUT"
+          python "$GITHUB_WORKSPACE/examples/circuit_sources.py" --output "$CIRCUIT_SOURCES_OUTPUT"
+          node "$GITHUB_WORKSPACE/tests/browser/construction.cjs"
+      - name: Exercise current source binding and evidence review in a browser
+        env:
+          NODE_PATH: ${{ github.workspace }}/generated/browser-tools/node_modules
+          STUDIO_TEST_OUTPUT: ${{ github.workspace }}/generated/studio-browser-ci
+          CIRCUIT_INFRASTRUCTURE_OUTPUT: ${{ github.workspace }}/generated/circuit-infrastructure-ci
+          CIRCUIT_SOURCES_OUTPUT: ${{ github.workspace }}/generated/circuit-sources-ci
+          CONSTRUCTION_BROWSER_SUITE: review
+        run: node tests/browser/construction.cjs
+      - name: Retain GUI screenshots and verification evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: studio-browser-evidence
+          path: generated/studio-browser-ci/
+          if-no-files-found: ignore
+          retention-days: 7

@@ -30,8 +30,11 @@ cover all installed actions. Observation maps cover exactly the domain's runtime
 input fields. Other action classes and dynamic requested output laws are outside
 this generation profile.
 
-There is one deterministic implementation per supported operation. Nonempty
-implementation constraints or preferences are rejected until a resolver exists.
+Generation proposes one explicitly configured deterministic implementation.
+[Bounded selection](synthetic-selection-v0.1.md) can choose between native and
+De Morgan conjunction strategies under authored operator/gate-count constraints,
+checking every eligible candidate before ranking. Unknown constraints or
+preferences remain unsupported; this is not arbitrary implementation search.
 The profile also rejects arithmetic, threshold-count conditions, temporal and
 state operations, pulses, events, multi-role execution and cross-compartment
 transport. Unsupported nodes retain their source identity and location in the
@@ -88,9 +91,10 @@ locked to its component version and content hash. Its concrete typed ports carry
 meaning, units, role, contact scope and compartment, and Mechanism IR validates
 the graph's edges. The catalog deliberately has no delay component.
 
-This is the synthetic subset of component work. General producer/consumer domain
-inclusion, external providers, biological capacities, shared resources and
-sequence-reference components require later M4 work. Unmeasured biological
+This is the synthetic operator catalog. The separate [component linker](component-linking-v0.1.md)
+now checks declared domains, providers and shared resources, and keeps
+sequence-reference records distinct. [Executable composition](temporal-components-v0.1.md)
+reconstructs digital assemblies for independent checking. Unmeasured biological
 capacity is not encoded as an unlimited resource.
 
 Generation does not accept the candidate. Acceptance first validates the request's

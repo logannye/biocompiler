@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>biocompiler · Candidate studio</title>
+  <link rel="stylesheet" href="/app.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#workspace">Skip to workspace</a>
+  <header class="site-header">
+    <a class="brand" href="/" aria-label="biocompiler studio home"><span class="brand-mark" aria-hidden="true">b<span>c</span></span>biocompiler<span class="brand-subtitle">/ studio</span></a>
+    <span class="local-label"><span aria-hidden="true"></span>Local workspace</span>
+  </header>
+
+  <main id="workspace">
+    <section class="introduction" aria-labelledby="page-title">
+      <div class="eyebrow">FROM INTENT TO AN EXACT RNA CANDIDATE</div>
+      <h1 id="page-title">Make your first molecular build.</h1>
+      <p>Choose a product, set assembly constraints, and inspect the exact RNA the compiler produces. Start with the guided example below; no code or outside data is needed.</p>
+      <div class="scope-note"><span id="context-badge" class="badge">Artificial example</span><span id="context-description">These short parts test the compiler. A checked cassette does not implement sensing, secretion or a therapy.</span></div>
+    </section>
+
+    <nav class="step-guide" aria-label="Build workflow">
+      <a href="#intent-section"><span>1</span><div>Describe intent<small>Which product?</small></div></a>
+      <a href="#architecture-section"><span>2</span><div>Set constraints<small>Which assembly choices?</small></div></a>
+      <a href="#result-section"><span>3</span><div>Inspect the result<small>What was built and checked?</small></div></a>
+    </nav>
+
+    <div id="connection-message" class="connection-message" role="status">Connecting to your local compiler…</div>
+    <section id="error-panel" class="error-panel" role="alert" hidden>
+      <div><strong id="error-title">The build needs attention</strong><p id="error-message"></p><details id="error-details" hidden><summary>Technical details</summary><pre id="error-detail-text"></pre></details></div>
+      <button type="button" id="dismiss-error" class="icon-button" aria-label="Dismiss error">×</button>
+    </section>
+
+    <div class="workspace-grid">
+      <aside class="input-column" aria-label="Build inputs">
+        <form id="build-form" novalidate>
+          <section id="intent-section" class="panel input-panel" aria-labelledby="intent-title">
+            <div class="section-heading"><span class="step-number">1</span><h2 id="intent-title">Your intent</h2><span id="mode-badge" class="small-badge">Guided example</span></div>
+            <p id="intent-description" class="section-description">Select the product this RNA should encode.</p>
+            <fieldset id="product-controls" disabled><legend class="visually-hidden">Product to encode</legend><div id="product-options" class="choice-list"></div></fieldset>
+            <div id="imported-product" class="read-only-block" hidden><span class="field-label">Authored product</span><strong id="imported-product-name"></strong><p>Read-only · preserved from your imported request.</p></div>
+            <div class="requested-behavior">
+              <div class="field-label">Requested cellular behavior</div>
+              <div class="behavior-flow"><span id="cue-label">Cue is high</span><span class="flow-arrow" aria-hidden="true">→</span><span id="response-label">Secrete the product</span></div>
+              <p><span class="status-dot pending" aria-hidden="true"></span>Behavior remains unimplemented. This build checks product encoding and RNA structure.</p>
+            </div>
+            <details class="help-details"><summary>What do these inputs mean?</summary><p>The product identifies a supplied coding sequence (CDS), the region that encodes a protein. Selecting it does not establish that a cell will produce or secrete the protein. The cue and response remain requirements in the build.</p><p id="intent-source-summary"></p><dl class="compact-metadata"><dt>Cell type</dt><dd id="cell-type">—</dd><dt>Target</dt><dd id="target-name">—</dd></dl></details>
+          </section>
+
+          <section id="architecture-section" class="panel input-panel" aria-labelledby="architecture-title">
+            <div class="section-heading"><span class="step-number">2</span><h2 id="architecture-title">Assembly constraints</h2></div>
+            <fieldset id="architecture-controls" disabled>
+              <legend class="field-label">RNA architecture</legend>
+              <div class="architecture-options">
+                <label class="architecture-choice"><input type="radio" name="architecture" value="auto" checked><span>Automatic<small>Shortest eligible</small></span></label>
+                <label class="architecture-choice"><input type="radio" name="architecture" value="compact"><span>Compact<small>Short 5′ region</small></span></label>
+                <label class="architecture-choice"><input type="radio" name="architecture" value="extended"><span>Extended<small>Longer 5′ region</small></span></label>
+              </div>
+              <label for="max-length" class="field-label length-label">Maximum length <span class="optional">optional</span></label>
+              <div class="number-field"><input id="max-length" name="max_length" type="number" min="0" step="1" inputmode="numeric" placeholder="No limit" aria-describedby="length-help"><span>nt</span></div>
+              <p id="length-help" class="field-help">Nucleotides, or RNA letters. Leave blank to allow any length in this library.</p>
+            </fieldset>
+            <div id="imported-constraints" class="read-only-block" hidden><span class="field-label">Authored constraints</span><pre id="imported-constraints-text"></pre><p>Imported source and settings are compiled exactly as authored.</p></div>
+            <details class="help-details"><summary>What does the compiler choose?</summary><p>It considers every matching product and architecture in the supplied library, applies your constraints, then selects an eligible option by the declared preference. The guided example prefers the shortest cassette. This is a bounded structural choice, not biological optimization.</p><p id="library-label"></p></details>
+            <button type="submit" id="compile-button" class="button primary compile-button" disabled><span id="compile-label">Compile RNA candidate</span><span aria-hidden="true">→</span></button>
+            <p id="build-status" class="build-status" role="status">Preparing the guided example…</p>
+          </section>
+        </form>
+
+        <details id="import-panel" class="panel import-panel">
+          <summary>Bring your own request <span class="optional">advanced</span></summary>
+          <p>Import a complete <code>CandidateRequest</code> JSON. This preserves its source, library and constraints; guided settings do not override it.</p>
+          <label for="request-file" class="field-label">Choose a JSON file</label><input id="request-file" type="file" accept=".json,application/json" disabled>
+          <label for="request-json" class="field-label import-text-label">Or paste request JSON</label><textarea id="request-json" rows="5" spellcheck="false" placeholder="Paste your complete CandidateRequest here" aria-describedby="import-help" disabled></textarea>
+          <p id="import-help" class="field-help">Import the request, not a build record. Maximum 1 MiB; the encoded operation must fit within 2 MiB. Validation does not grant biological support.</p>
+          <div class="import-actions"><button type="button" id="import-button" class="button secondary" disabled>Use imported request</button><button type="button" id="example-button" class="text-button" disabled>Return to guided example</button></div>
+        </details>
+      </aside>
+
+      <section id="result-section" class="panel result-panel" aria-labelledby="result-title" aria-busy="false">
+        <div class="section-heading result-heading"><span class="step-number">3</span><h2 id="result-title">Your molecular build</h2><span id="result-badge" class="small-badge">Ready when you are</span></div>
+        <div id="empty-result" class="empty-result">
+          <div class="empty-molecule" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+          <h3 id="empty-title">A precise sequence, with its reasoning.</h3>
+          <p id="empty-description">Compile the guided example to see the selected parts, every RNA letter and the checks behind the result.</p>
+          <div class="empty-steps"><span>Source requirement</span><span aria-hidden="true">→</span><span>Selected parts</span><span aria-hidden="true">→</span><span>Exact RNA</span></div>
+        </div>
+
+        <div id="result-content" hidden>
+          <div id="result-outcome" class="result-outcome"><div><div id="outcome-eyebrow" class="eyebrow">STRUCTURAL CANDIDATE</div><h3 id="outcome-title"></h3><p id="outcome-description"></p></div><div id="length-metric" class="length-metric"><strong id="result-length"></strong><span>nucleotides</span></div></div>
+          <div id="no-candidate-help" class="recovery-note" hidden><strong>No supplied option was eligible.</strong><p id="no-candidate-description">Review the reasons below. In the guided example, try removing the length bound or allowing an automatic architecture.</p></div>
+
+          <section id="molecule-section" class="result-block" aria-labelledby="molecule-title">
+            <div class="block-heading"><h3 id="molecule-title">RNA architecture</h3><span id="architecture-name" class="metadata-label"></span></div>
+            <div class="molecule-direction"><span>5′</span><span>3′</span></div><div id="molecule-track" class="molecule-track" role="img"></div>
+            <ul id="part-legend" class="part-legend"></ul>
+            <details class="help-details"><summary>Reading this molecule</summary><p>Widths are proportional to nucleotide length. The 5′ and 3′ untranslated regions (UTRs) surround the coding sequence (CDS). An optional poly(A) tail is an exact supplied run of A bases. Region names in artificial examples are structural annotations, not functional evidence.</p><div class="table-scroll"><table><caption class="visually-hidden">Selected part identities and nucleotide positions</caption><thead><tr><th scope="col">Part</th><th scope="col">Region</th><th scope="col">Positions</th></tr></thead><tbody id="parts-table"></tbody></table></div><p>Displayed positions start at 1 and include both ends. JSON source maps use zero-based ranges that exclude the end position.</p></details>
+          </section>
+
+          <section id="sequence-section" class="result-block" aria-labelledby="sequence-title">
+            <div class="block-heading"><h3 id="sequence-title">Exact RNA sequence</h3><button type="button" id="copy-sequence" class="text-button">Copy sequence</button></div>
+            <pre id="sequence" class="sequence" tabindex="0" aria-label="Exact RNA sequence"></pre>
+            <div class="translation"><span class="field-label">Encoded protein</span><code id="protein-sequence"></code><span class="field-help">* marks a stop codon. Translation consistency is a structural check.</span></div>
+          </section>
+
+          <section class="result-block" aria-labelledby="checks-title"><div class="block-heading"><h3 id="checks-title">What was checked</h3><span class="metadata-label">Independent validation</span></div><ul id="checks-list" class="checks-list"></ul></section>
+
+          <details class="result-details" id="alternatives-details"><summary><span>Selection and alternatives</span><span id="alternatives-count" class="detail-count"></span></summary><p id="selection-explanation"></p><div id="alternatives-list" class="alternatives-list"></div></details>
+          <details class="result-details obligations-details"><summary><span>What remains unresolved</span><span id="unresolved-count" class="detail-count"></span></summary><p>The authored therapy is still partial. These requirements remain in the build; structural checks do not establish them.</p><ul id="unresolved-list" class="obligations-list"></ul></details>
+          <details class="result-details"><summary>Build identity and provenance</summary><dl class="provenance"><dt>Build fingerprint</dt><dd id="build-fingerprint" class="hash"></dd><dt>Completion scope</dt><dd id="completion-scope"></dd><dt>Therapeutic implementation</dt><dd id="therapeutic-status"></dd><dt>Human therapeutic admission</dt><dd id="admission-status"></dd><dt>Source</dt><dd id="source-summary"></dd></dl></details>
+
+          <div class="scope-footer"><span class="status-dot pending" aria-hidden="true"></span><p><strong>Structural result only.</strong> Therapeutic behavior and human applicability remain unestablished. Keep the structured build with the sequence.</p></div>
+          <section class="download-section" aria-labelledby="download-title"><h3 id="download-title">Keep your verified build</h3><p>Each download is freshly checked against the current request.</p><div class="download-actions"><button type="button" class="button primary" data-export="fasta" disabled>RNA FASTA <span aria-hidden="true">↓</span></button><button type="button" class="button secondary" data-export="build" disabled>Build JSON</button><button type="button" class="button secondary" data-export="request" disabled>Request JSON</button></div><p id="download-status" class="field-help" role="status"></p></section>
+        </div>
+      </section>
+    </div>
+  </main>
+  <footer class="site-footer"><span>biocompiler <span id="app-version"></span></span><a href="/construction">Inspect a saved circuit construction</a><span>High-level intent → precise molecular specifications</span></footer>
+  <noscript><p class="error-panel">This local studio needs JavaScript. The biocompiler command-line tools are also available.</p></noscript>
+</body>
+</html>

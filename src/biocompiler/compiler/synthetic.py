@@ -7,6 +7,7 @@ It does not activate molecular compile() or claim biological implementation.
 from __future__ import annotations
 
 from dataclasses import dataclass
+from typing import TYPE_CHECKING
 
 from biocompiler.artifacts.provenance import SourceLink
 from biocompiler.compiler.behavior import lower_to_behavior, verify_lowering
@@ -27,7 +28,7 @@ from biocompiler.semantics.admission import ADMISSION_POLICY_VERSION
 from biocompiler.ir.serialization import fingerprint
 from biocompiler.ir.stages import Stage
 from biocompiler.models.synthetic import MODEL_RUNNER_VERSION
-from biocompiler.registry.synthetic import SYNTHETIC_CATALOG, SYNTHETIC_PROFILE_VERSION
+from biocompiler.registry.synthetic import catalog_for_profile
 from biocompiler.semantics.evaluator import REFERENCE_EVALUATOR_VERSION
 from biocompiler.synthesis.synthetic import (
     GENERATOR_VERSION,
@@ -40,12 +41,16 @@ from biocompiler.synthesis.synthetic import (
 from biocompiler.verification.evidence import CheckOutcome, EvidenceKind
 from biocompiler.verification.realization import CHECKER_VERSION
 
+if TYPE_CHECKING:
+    from biocompiler.synthesis.selection import SyntheticSelectionResult
+
 
 @dataclass(frozen=True)
 class SyntheticBuild:
     candidate: SyntheticCandidate
     result: PipelineResult
     manager: PassManager
+    selection_result: SyntheticSelectionResult | None = None
 
 
 def run_synthetic_pipeline(
@@ -71,14 +76,32 @@ def run_synthetic_pipeline(
     if not isinstance(config, SyntheticGeneratorConfig):
         raise TypeError("Expected a SyntheticGeneratorConfig.")
     frames = tuple(history)
+    requested_config = config
+    selection = None
+    if (
+        request.build_request.implementation_constraints
+        or request.build_request.preferences
+    ):
+        from biocompiler.synthesis.selection import SELECTION_VERSION, select_synthetic
+
+        selection = select_synthetic(request, frames, until=until, config=config)
+        if selection.candidate is None:
+            raise PipelineError(
+                f"Bounded synthetic selection returned {selection.outcome}; "
+                "no independently passing candidate was selected. Inspect select_synthetic "
+                "for exact alternatives and rejection reasons; this is not general infeasibility."
+            )
+        config = selection.candidate.generator_config
+    catalog = catalog_for_profile(config.profile_version)
     dependencies = {
         "human_admission_policy": fingerprint(ADMISSION_POLICY_VERSION),
         "request": request.build_request.fingerprint,
         "request_artifact": request.build_request.artifact_fingerprint,
         "realization_request": request.fingerprint,
         "realization_artifact": request.artifact_fingerprint,
-        "catalog": SYNTHETIC_CATALOG.fingerprint,
+        "catalog": catalog.fingerprint,
         "generator": fingerprint(config.to_dict()),
+        "requested_generator": requested_config.fingerprint,
         "model": fingerprint(MODEL_RUNNER_VERSION),
         "checker": fingerprint(CHECKER_VERSION),
         "synthetic_acceptance": fingerprint(SYNTHETIC_CHECKER_VERSION),
@@ -86,6 +109,11 @@ def run_synthetic_pipeline(
         "history": fingerprint([frame.to_dict() for frame in frames]),
         "horizon": fingerprint(until),
     }
+    if selection is not None:
+        dependencies.update(
+            synthetic_selection=selection.fingerprint,
+            selection_policy=fingerprint(SELECTION_VERSION),
+        )
     preservation = ScopedObligation(
         "behavior_preservation",
         "synthetic_realization",
@@ -168,9 +196,9 @@ def run_synthetic_pipeline(
         Stage.MECHANISM,
         SCHEMA_VERSION,
         SyntheticCandidate.schema_version,
-        "synthetic_combinational",
-        SYNTHETIC_PROFILE_VERSION,
-        tuple(item.operation for item in SYNTHETIC_CATALOG.components),
+        "synthetic_digital",
+        config.profile_version,
+        tuple(item.operation for item in catalog.components),
         (CheckSpec("finite_history", EvidenceKind.MODEL_CONDITIONAL, (response.id,)),),
         dependency_keys=(
             "realization_request",
@@ -195,6 +223,13 @@ def run_synthetic_pipeline(
             request.build_request, behavior, request.contract, request.domain
         )
         candidate = generate_synthetic(bound, config=config)
+        if (
+            selection is not None
+            and candidate.fingerprint != selection.candidate.fingerprint
+        ):
+            raise PipelineError(
+                "Selected implementation changed during checked generation."
+            )
         links = tuple(
             SourceLink(requirement_id, source, node_id, generation.id)
             for node_id, origins in candidate.source_map.items()
@@ -219,4 +254,6 @@ def run_synthetic_pipeline(
         generation.id, "behavior", "mechanism", configuration=config.to_dict()
     )
     result = manager.result("mechanism", scope="synthetic_realization")
-    return SyntheticBuild(SyntheticCandidate.from_dict(record.payload), result, manager)
+    return SyntheticBuild(
+        SyntheticCandidate.from_dict(record.payload), result, manager, selection
+    )

@@ -2,10 +2,14 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass, fields as dataclass_fields
-from typing import ClassVar
+from collections.abc import Mapping
+from dataclasses import dataclass, field, fields as dataclass_fields
+from typing import Any, ClassVar
 
+from biocompiler.ir.intent import freeze_json
+from biocompiler.ir.mechanism import MechanismNode
 from biocompiler.ir.serialization import JsonArtifact, fields, name, names, require
+from biocompiler.semantics.realization import Observable
 from biocompiler.semantics.component_contracts import (
     OperatingDomain,
     PortContract,
@@ -13,6 +17,9 @@ from biocompiler.semantics.component_contracts import (
     contract_type,
     decode_type,
     finite_number,
+    canonical_synthetic_unit,
+    synthetic_output_domain, domain_subset,
+    STATELESS_TIMING, TEMPORAL_LEVEL_TIMING, TEMPORAL_EVENT_TIMING,
 )
 from biocompiler.semantics.types import LEVEL, TypeSpec
 
@@ -54,6 +61,8 @@ class _Record(JsonArtifact):
                 return value.to_dict()
             if isinstance(value, tuple):
                 return [encode(item) for item in value]
+            if isinstance(value, Mapping):
+                return {key: encode(item) for key, item in value.items()}
             return value
 
         return {
@@ -63,6 +72,136 @@ class _Record(JsonArtifact):
                 for item in dataclass_fields(self)
             },
         }
+
+
+SYNTHETIC_TRANSITION_POLICY = "biocompiler.synthetic_component_dynamics.v0.1"
+
+
+@dataclass(frozen=True)
+class SyntheticOperatorModel(_Record):
+    """Closed executable software contract, never arbitrary code or a model URL.
+
+    The policy fixes initial internal state, no prehistory, event ordering and
+    contact lifecycle. Port initialization describes *settled* startup outputs.
+    """
+
+    operation: str
+    attributes: Mapping[str, Any] = field(default_factory=dict)
+    input_ports: tuple[str, ...] = ()
+    output_port: str = "out"
+    policy: str = SYNTHETIC_TRANSITION_POLICY
+    schema_version: ClassVar[str] = "biocompiler.synthetic_operator_model.v0.1"
+
+    def __post_init__(self):
+        require(isinstance(self.operation, str) and self.operation in {
+            "input", "constant", "and", "or", "not", "compare", "select",
+            "any_contact", "output", "held_for", "onset", "pulse", "memory",
+        }, "Unsupported synthetic component operation.")
+        require(isinstance(self.attributes, Mapping), "Operator attributes must be an object.")
+        expected = ({"value"} if self.operation == "constant" else
+                    {"operator"} if self.operation == "compare" else
+                    {"duration"} if self.operation in {"held_for", "pulse", "memory"} else set())
+        require(set(self.attributes) == expected, "Unexpected executable operator attributes.")
+        object.__setattr__(self, "attributes", freeze_json(dict(self.attributes)))
+        object.__setattr__(self, "input_ports", names(self.input_ports, "Operator inputs"))
+        name(self.output_port, "Operator output")
+        require(self.output_port not in self.input_ports, "Operator ports must be distinct.")
+        require(self.policy == SYNTHETIC_TRANSITION_POLICY,
+                "Unsupported synthetic transition policy.")
+
+    @classmethod
+    def from_dict(cls, data):
+        return cls(**_read(data, cls))
+
+    def domain_checks(self, ports, supported_domain):
+        by_id = {port.id: port for port in ports}
+        output = by_id[self.output_port]
+        contacts = supported_domain.constraints.get("concurrent_contacts")
+        maximum = contacts.upper if contacts is not None and contacts.kind == "scalar_interval" else None
+        result = []
+        for attribute in ("domain", "initialization"):
+            inferred = synthetic_output_domain(
+                self.operation, self.attributes,
+                [getattr(by_id[ref], attribute) for ref in self.input_ports],
+                output.dtype, initialization=attribute == "initialization", max_contacts=maximum,
+            )
+            if inferred is not None:
+                result.append(domain_subset(inferred, getattr(output, attribute)))
+        return tuple(result)
+
+    def validate_ports(self, ports, supported_domain):
+        by_id = {port.id: port for port in ports}
+        require(all(port.unit == canonical_synthetic_unit(port.dtype) for port in ports),
+                "Executable synthetic ports require canonical units; unit conversion is unsupported.")
+        require(set(by_id) == {*self.input_ports, self.output_port},
+                "Executable operator must cover exactly its declared ports.")
+        output = by_id[self.output_port]
+        require(output.direction == "output" and all(
+            by_id[ref].direction == "input" for ref in self.input_ports
+        ), "Executable operator port directions disagree.")
+        # Reuse strict literal/attribute typing, without inventing a graph or
+        # taking any operation parameters from a source candidate.
+        validated = MechanismNode(
+            "operator", self.operation,
+            Observable(output.meaning, output.dtype, output.role,
+                       output.scope, output.compartment),
+            self.input_ports, self.attributes,
+        )
+        require(validated.attributes == self.attributes,
+                "Executable operator attributes must use canonical typed literals.")
+        incoming = [by_id[ref] for ref in self.input_ports]
+        count = {"input": 0, "constant": 0, "not": 1, "output": 1,
+                 "held_for": 1, "onset": 1, "pulse": 1, "memory": 2,
+                 "any_contact": 1, "compare": 2, "select": 3}.get(self.operation)
+        require(len(incoming) >= 2 if count is None else len(incoming) == count,
+                "Executable operator has the wrong input count.")
+        for port in incoming:
+            require(port.role == output.role and port.compartment == output.compartment,
+                    "Executable operators cannot cross roles or compartments.")
+            require(not (port.scope == "contact" and output.scope == "cell")
+                    or self.operation == "any_contact",
+                    "Contact-to-cell execution requires explicit aggregation.")
+        if self.operation in {"and", "or", "not", "held_for", "onset", "pulse", "memory", "any_contact"}:
+            require(output.dtype.kind == "condition" and all(
+                port.dtype.kind == "condition" for port in incoming
+            ), "Executable logical/temporal operators require Boolean ports.")
+        if self.operation == "memory":
+            require(output.scope == "cell", "Executable memory requires cell scope.")
+        if self.operation == "any_contact":
+            require(output.scope == "cell" and incoming[0].scope == "contact",
+                    "Executable aggregation requires a contact input and cell output.")
+        if self.operation == "compare":
+            require(output.dtype.kind == "condition"
+                    and all(port.dtype.kind == "scalar" for port in incoming)
+                    and incoming[0].dtype.compatible(incoming[1].dtype),
+                    "Executable comparison port types disagree.")
+        if self.operation == "select":
+            require(incoming[0].dtype.kind == "condition" and all(
+                output.dtype.compatible(port.dtype) for port in incoming[1:]
+            ), "Executable selection port types disagree.")
+        if self.operation == "output":
+            require(output.dtype.compatible(incoming[0].dtype),
+                    "Executable output port types disagree.")
+        event_output = self.operation == "onset" or (
+            self.operation == "any_contact" and incoming[0].timing == TEMPORAL_EVENT_TIMING
+        )
+        temporal = output.timing != STATELESS_TIMING
+        require(output.timing == (TEMPORAL_EVENT_TIMING if event_output else
+                TEMPORAL_LEVEL_TIMING if temporal else STATELESS_TIMING),
+                "Executable output event/level timing is inconsistent.")
+        for index, port in enumerate(incoming):
+            expects_event = (self.operation in {"pulse", "memory"} and index == 0) or (
+                self.operation == "any_contact" and event_output
+            )
+            expected = TEMPORAL_EVENT_TIMING if expects_event else (
+                TEMPORAL_LEVEL_TIMING if temporal else STATELESS_TIMING
+            )
+            require(port.timing == expected,
+                    "Executable input event/level timing is inconsistent.")
+        if self.operation in {"held_for", "onset", "pulse", "memory"}:
+            require(temporal, "Stateful operators require the discrete-event timing profile.")
+        require(all(check.status != "fail" for check in self.domain_checks(ports, supported_domain)),
+                "Executable output runtime/initialization guarantees exclude possible operator values.")
 
 
 @dataclass(frozen=True)
@@ -253,7 +392,8 @@ class ComponentRecord(_Record):
     capabilities: tuple[ProvidedCapability, ...] = ()
     resources: tuple[ResourceReservation, ...] = ()
     reference_metadata: SequenceReferenceMetadata | None = None
-    schema_version: ClassVar[str] = "biocompiler.component_record.v0.1"
+    synthetic_model: SyntheticOperatorModel | None = None
+    schema_version: ClassVar[str] = "biocompiler.component_record.v0.2"
 
     def __post_init__(self):
         for key in ("id", "version", "implementation_role"):
@@ -285,6 +425,13 @@ class ComponentRecord(_Record):
         ):
             object.__setattr__(self, key, _array(getattr(self, key), cls, key))
         identity_kinds = {item.kind for item in self.identities}
+        if self.synthetic_model is not None:
+            require(isinstance(self.synthetic_model, SyntheticOperatorModel)
+                    and self.classification == "synthetic_model",
+                    "Executable synthetic models require synthetic_model classification.")
+            require(self.implementation_role == self.synthetic_model.operation,
+                    "Implementation role disagrees with executable operation.")
+            self.synthetic_model.validate_ports(self.ports, self.supported_domain)
         if self.classification == "sequence_reference":
             require(
                 "reference" in identity_kinds,
@@ -328,6 +475,8 @@ class ComponentRecord(_Record):
             values["reference_metadata"] = SequenceReferenceMetadata.from_dict(
                 values["reference_metadata"]
             )
+        if values["synthetic_model"] is not None:
+            values["synthetic_model"] = SyntheticOperatorModel.from_dict(values["synthetic_model"])
         for key, item_cls in (
             ("ports", PortContract),
             ("identities", PinnedIdentity),
