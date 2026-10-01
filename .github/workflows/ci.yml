@@ -849,7 +849,7 @@ jobs:
           opam install core/biocompiler_core.opam --deps-only --with-test --yes
           opam lock core/biocompiler_core.opam
           mkdir -p generated/core
-          cp core/biocompiler_core.opam.locked generated/core/dependencies.opam.locked
+          cp biocompiler_core.opam.locked generated/core/dependencies.opam.locked
           opam switch export generated/core/switch.export
           opam list --installed --columns=name,version > generated/core/packages.txt
       - name: Install Python package and check compiler/checker dependency separation
