@@ -1,6 +1,43 @@
 # Session handoff and current resumption point
 
-## Current resumption point — R3 declared molecular identities
+## Current continuation — R4 supplied construction
+
+The user resumed the saved R4 checkpoint on 2026-09-30 and authorized milestone
+push/merge only after exact-revision hosted gates. R2 PR29 and R3 PR30 remain
+merged; the active branch is `codex/r4-checked-transformations` from checkpoint
+`0f6569c40e4f8f338203ecd92cdca69b0c0267ee`.
+
+R4 `0.1.0.dev24` now includes the producer/checker preflight fixes, public
+workflow/atomic-publication regressions, [construction guide](circuit-construction-v0.1.md)
+and installed-package hosted CI workflow outside the checkout. All **1,528 local
+pure-Python tests (232 new)** pass on Python 3.14.6, macOS arm64; Ruff, the frozen
+benchmark audit, 325 documentation links and the source CLI smoke outside the
+checkout also pass. [PR #31](https://github.com/logannye/biocompiler/pull/31)
+records exact-head hosted Python 3.11/3.14 package/example/CLI and installed
+browser validation. Before merging, require every final-revision gate to pass,
+retain the tested head/PR merge/platform receipt outside the repository, and
+verify the merged tree matches. No local native build or package installation
+is used.
+
+The retained [checkpoint](r4-work-in-progress.md) is historical. Its former stop
+instruction has been superseded by the user's explicit resumption. Human-only
+scope, independent verification and source-reconstruction restrictions remain.
+R1 is an incomplete, unmerged metadata draft; artificial fixtures never establish
+published evidence. The [continuation boundary](r5-r13-continuation-boundary.md)
+records the R5–R13 dependencies and unresolved source-backed acceptance.
+
+## Historical stop — completed R2/R3, unfinished R4 checkpoint
+
+R2 [PR #29](https://github.com/logannye/biocompiler/pull/29) and R3
+[PR #30](https://github.com/logannye/biocompiler/pull/30) are merged. The user
+requested a fresh session after those merges had completed. Development is
+stopped. `codex/r4-checked-transformations` preserves unfinished R4 work and
+known failing edge cases; it must not be merged or reported complete yet.
+Read [the R4 checkpoint](r4-work-in-progress.md) for final baseline receipts,
+saved modules, known failures, test scope and the ordered resumption checklist.
+The historical continuation directions below do not override this stop request.
+
+## Historical baseline — R3 declared molecular identities
 
 Scope clarification, 2026-09-30: the sole product target is human DNA/RNA
 payloads for in-vivo immune-cell deployment. The plan and repository instructions

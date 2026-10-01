@@ -9,6 +9,13 @@ import sys
 import tempfile
 
 from biocompiler import __version__
+from biocompiler.ir.circuit_construction import CircuitConstructionRequest
+from biocompiler.artifacts.circuit_construction import ConstructionCandidate
+from biocompiler.artifacts.circuit_construction_build import CircuitConstructionBuild
+from biocompiler.verification.circuit_construction import CircuitConstructionAssessment
+from biocompiler.compiler.circuit_construction import (
+    build_circuit_construction, verify_circuit_construction, verified_circuit_molecules,
+)
 from biocompiler.ir.circuit_molecules import CircuitMolecule, CircuitMoleculeSet
 from biocompiler.artifacts.circuit_molecules import CircuitMoleculeRecord
 from biocompiler.ir.circuit_intent import CircuitRequest
@@ -193,6 +200,7 @@ def _read_artifact(document):
         {
             cls.schema_version: cls
             for cls in (
+                CircuitConstructionRequest, ConstructionCandidate, CircuitConstructionBuild, CircuitConstructionAssessment,
                 CircuitMolecule,
                 CircuitMoleculeSet,
                 CircuitMoleculeRecord,
@@ -314,6 +322,7 @@ def _read_artifact(document):
     if not isinstance(schema, str) or schema not in types:
         raise SerializationError(f"Unknown or missing artifact schema: {schema!r}.")
     if types[schema] in (
+        CircuitConstructionRequest, ConstructionCandidate, CircuitConstructionBuild, CircuitConstructionAssessment,
         CircuitMolecule,
         CircuitMoleculeSet,
         CircuitMoleculeRecord,
@@ -365,6 +374,17 @@ def _summary(artifact):
             )
             if isinstance(artifact, CircuitMoleculeRecord):
                 summary.update(experimental_specification_identity=artifact.experimental_specification_identity)
+    if isinstance(artifact, (CircuitConstructionRequest, ConstructionCandidate, CircuitConstructionBuild, CircuitConstructionAssessment)):
+        summary.update(scope="supplied_construction_correspondence", source_fidelity="unestablished",
+                       biological_function="unestablished", human_therapeutic_admission="not_admitted",
+                       inspection="Historical or proposed record; fresh verification requires independent complete construction authority.")
+        if isinstance(artifact, CircuitConstructionRequest):
+            summary.update(steps=len(artifact.steps), required_members=len(artifact.requirements), mode=artifact.mode)
+        elif isinstance(artifact, ConstructionCandidate):
+            summary.update(constructed_values=len(artifact.values), missing_members=list(artifact.missing_members), diagnostics=list(artifact.diagnostics))
+        else:
+            assessment = artifact.assessment if isinstance(artifact, CircuitConstructionBuild) else artifact
+            summary.update(outcome=assessment.outcome.value, complete_supplied_construction=assessment.complete, diagnostics=list(assessment.diagnostics))
     if isinstance(artifact, CircuitRequest):
         summary.update(
             purpose=artifact.profile.purpose, mode=artifact.profile.mode,
@@ -599,6 +619,15 @@ def main(argv: Sequence[str] | None = None) -> int:
         "--version", action="version", version=f"biocompiler {__version__}"
     )
     commands = parser.add_subparsers(dest="command", required=True)
+    construction_build = commands.add_parser("circuit-build", help="Build and independently check an explicit supplied construction")
+    construction_build.add_argument("--request", type=Path, required=True)
+    construction_build.add_argument("--output", type=Path, required=True)
+    for operation in ("verify", "export"):
+        command = commands.add_parser("circuit-" + operation, help="Freshly verify supplied construction" if operation == "verify" else "Publish the freshly verified complete set and its construction authority")
+        command.add_argument("path", type=Path)
+        command.add_argument("--expected-request", type=Path, required=True)
+        if operation == "export":
+            command.add_argument("--output", type=Path, required=True)
     intent_check = commands.add_parser(
         "circuit-intent-check",
         help="Check complete typed circuit intent without molecular generation",
@@ -797,6 +826,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         command.add_argument("path", type=Path)
         command.add_argument("--expected-request", type=Path, required=True)
     args = parser.parse_args(argv)
+    if args.command in {"circuit-build", "circuit-verify", "circuit-export"}:
+        return _circuit_construction_command(args)
     if args.command.startswith("circuit-intent-"):
         return _circuit_intent_command(args)
     if args.command.startswith("circuit-profile-"):
@@ -965,6 +996,30 @@ def main(argv: Sequence[str] | None = None) -> int:
             program.to_json() if args.json else json.dumps(_summary(program), indent=2)
         )
     return 0
+
+
+def _circuit_construction_command(args):
+    try:
+        if args.command == "circuit-build":
+            request = CircuitConstructionRequest.from_json(_bounded_text(args.request, 4_000_000))
+            build = build_circuit_construction(request)
+            verify_circuit_construction(build, expected_request=request)
+            _publish_report(build, args.output, inputs=(args.request,))
+            assessment = build.assessment
+        else:
+            request = CircuitConstructionRequest.from_json(_bounded_text(args.expected_request, 4_000_000))
+            build = CircuitConstructionBuild.from_json(_bounded_text(args.path, 4_000_000))
+            assessment = verify_circuit_construction(build, expected_request=request)
+            if args.command == "circuit-export":
+                verified_circuit_molecules(build, expected_request=request)
+                # Preserve all roots, operations, chemistry, amounts and receipts.
+                # A standalone base-only file would lose required construction authority.
+                _publish_report(build, args.output, inputs=(args.path, args.expected_request))
+        print(json.dumps(_summary(assessment), sort_keys=True, indent=2))
+        return 0 if assessment.passed else 1
+    except (BiocompilerError, OSError, ValueError, TypeError) as error:
+        print(str(error), file=sys.stderr)
+        return 2
 
 
 def _circuit_intent_command(args):

@@ -1,6 +1,29 @@
 """Author inspectable therapeutic programs for in-vivo immune-cell engineering."""
 
-__version__ = "0.1.0.dev23"
+__version__ = "0.1.0.dev24"
+
+from biocompiler.ir.circuit_construction import (
+    RootSource, ValueRef, ValueSelection, ProductPort, SliceOperation, ConcatenateOperation, OrientationOperation, TranscriptionOperation, ProcessingProduct, RNACleavageOperation, RNASplicingOperation, ProteinCleavageOperation, ProteinSplicingOperation, CircularizationOperation, BaseEditingOperation, TranslationOperation, TranslationProduct, MultiORFTranslationOperation, TranslationBranch, ConditionalTranslationOperation, PeptideProduct, RibosomalSkippingOperation, TransformStep, OutputMember, RoleDeclaration, MemberRequirement, ComplexMemberConstituent, ComplexMemberPlan, AmountDeclaration, CircuitConstructionRequest
+)
+from biocompiler.ir.circuit_recoding import (
+    CanonicalBaseEdit, ChemicalBaseEdit, CodonRecoding,
+    TranslationPolicy as CircuitTranslationPolicy,
+)
+from biocompiler.ir.circuit_transitions import (
+    ChemistryDisposition, ChemistryTransition, FeatureDisposition, FeatureTransition,
+)
+from biocompiler.ir.circuit_payloads import RequiredPayloadRegion, PayloadStructureContract
+from biocompiler.artifacts.circuit_construction import (
+    DerivedSegment, ConsumedSegment, ConstructedValue, ConstructionCandidate,
+)
+from biocompiler.artifacts.circuit_construction_build import CircuitConstructionBuild
+from biocompiler.compiler.circuit_construction import (
+    build_circuit_construction, verify_circuit_construction, verified_circuit_molecules,
+)
+from biocompiler.verification.circuit_construction import (
+    CircuitConstructionAssessment, check_circuit_construction,
+    verify_circuit_construction_assessment,
+)
 
 from biocompiler.ir.molecule_records import DeclarationProvenance
 from biocompiler.semantics.molecule_coordinates import CoordinateSpace, IndexSpan, CoordinatePath
@@ -434,6 +457,58 @@ from biocompiler.verification.realization import (
 )
 
 __all__ = [
+    "RootSource",
+    "ValueRef",
+    "ValueSelection",
+    "ProductPort",
+    "SliceOperation",
+    "ConcatenateOperation",
+    "OrientationOperation",
+    "TranscriptionOperation",
+    "ProcessingProduct",
+    "RNACleavageOperation",
+    "RNASplicingOperation",
+    "ProteinCleavageOperation",
+    "ProteinSplicingOperation",
+    "CircularizationOperation",
+    "BaseEditingOperation",
+    "TranslationOperation",
+    "TranslationProduct",
+    "MultiORFTranslationOperation",
+    "TranslationBranch",
+    "ConditionalTranslationOperation",
+    "PeptideProduct",
+    "RibosomalSkippingOperation",
+    "TransformStep",
+    "OutputMember",
+    "RoleDeclaration",
+    "MemberRequirement",
+    "ComplexMemberConstituent",
+    "ComplexMemberPlan",
+    "AmountDeclaration",
+    "CircuitConstructionRequest",
+    "CanonicalBaseEdit",
+    "ChemicalBaseEdit",
+    "CodonRecoding",
+    "CircuitTranslationPolicy",
+    "ChemistryDisposition",
+    "ChemistryTransition",
+    "FeatureDisposition",
+    "FeatureTransition",
+    "RequiredPayloadRegion",
+    "PayloadStructureContract",
+    "DerivedSegment",
+    "ConsumedSegment",
+    "ConstructedValue",
+    "ConstructionCandidate",
+    "CircuitConstructionBuild",
+    "build_circuit_construction",
+    "verify_circuit_construction",
+    "verified_circuit_molecules",
+    "CircuitConstructionAssessment",
+    "check_circuit_construction",
+    "verify_circuit_construction_assessment",
+
     "DeclarationProvenance",
     "CoordinateSpace",
     "IndexSpan",

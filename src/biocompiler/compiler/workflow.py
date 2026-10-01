@@ -10,6 +10,8 @@ from types import MappingProxyType
 from typing import Any, TYPE_CHECKING
 
 if TYPE_CHECKING:
+    from biocompiler.ir.circuit_construction import CircuitConstructionRequest
+    from biocompiler.artifacts.circuit_construction_build import CircuitConstructionBuild
     from biocompiler.ir.circuit_molecules import CircuitMoleculeSet
     from biocompiler.artifacts.circuit_molecules import CircuitMoleculeRecord
     from biocompiler.ir.circuit_intent import CircuitRequest
@@ -394,18 +396,23 @@ def compile(
     | CircuitProfileRequest
     | CircuitRequest
     | CircuitMoleculeSet
-    | CircuitMoleculeRecord,
-) -> CandidateCompilation | ImplementationCompilation:
+    | CircuitMoleculeRecord
+    | CircuitConstructionRequest,
+) -> CandidateCompilation | ImplementationCompilation | CircuitConstructionBuild:
     """Compile explicit research candidates; reject unimplemented human realization."""
+    from biocompiler.ir.circuit_construction import CircuitConstructionRequest
+    from biocompiler.compiler.circuit_construction import build_circuit_construction
     from biocompiler.ir.circuit_molecules import CircuitMoleculeSet
     from biocompiler.artifacts.circuit_molecules import CircuitMoleculeRecord
     from biocompiler.ir.circuit_intent import CircuitRequest
     from biocompiler.ir.circuit_profile import CircuitProfileRequest
     from biocompiler.ir.candidate import CandidateRequest
     from biocompiler.ir.implementation import ImplementationRequest
+    if isinstance(design, CircuitConstructionRequest):
+        return build_circuit_construction(design)
     if isinstance(design, (CircuitMoleculeSet, CircuitMoleculeRecord)):
         raise CompilationUnavailableError(
-            "Molecular declarations are recorded; checked circuit construction is not implemented.",
+            "Molecular declarations require a complete supplied construction request for independent construction checks.",
             diagnostics=("declared_assembly_unverified", "source_correspondence_unverified", "functional_implementation_unestablished", "human_therapeutic_use_not_admitted"),
         )
     if isinstance(design, CircuitRequest):

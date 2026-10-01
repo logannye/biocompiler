@@ -3,7 +3,8 @@
 Date: 2026-09-30. Baseline: `0.1.0.dev19`, merged revision
 `0dbae3ca0e0821b64a3579f61a83aa15ee41be52`.
 
-**Status: R0 complete within its scope/claim contract. R1–R13 remain open.**
+**Status: R0, R2, R3 and R4 software scopes are implemented. R1 and R5–R13 remain
+open. Each milestone merge requires its exact-revision hosted acceptance.**
 R0 adds the scope and claim contracts documented in the
 [profile guide](human-circuit-profile-v0.1.md). No literature record is promoted
 to a verified molecular reference.
@@ -419,35 +420,35 @@ changes affect the correct identity; irrelevant run metadata does not.
 Primary areas: `compiler/`, `backends/molecular_design.py`,
 `verification/molecular_design.py`, `verification/construct.py`, `artifacts/`.
 
-- [ ] Implement independently checked primitives for source slicing,
+- [x] Implement independently checked primitives for source slicing,
   concatenation, orientation, explicit DNA-to-RNA transcription and declared
   RNA processing. No implicit T→U conversion or guessed transcription start/end.
-- [ ] Support RNA cleavage/splicing, circularization and base editing as distinct
+- [x] Support RNA cleavage/splicing, circularization and base editing as distinct
   typed transformations; separately support translation, protein cleavage and
   protein splicing, noncovalent complementation and ribosomal skipping such as
   2A-associated product formation. Skipping is not proteolytic cleavage; retain
   the actual residues of every product. Every edge declares substrates, products,
   coordinates, assumptions and authority. These records describe specified processing, not
   a claim that every cellular molecule follows it.
-- [ ] Add per-family structural translation checks, including conditional
+- [x] Add per-family structural translation checks, including conditional
   translation and multi-ORF constructs. Preserve the existing ordinary-CDS
   validator's start/frame/terminal-stop requirements in its current profile.
-- [ ] Extend exact assembly to multiple named molecules, internal poly(A) and
+- [x] Extend exact assembly to multiple named molecules, internal poly(A) and
   post-tail sequence. Replace global fixed-region assumptions only in the new
   profile. Build source maps for every output base and transformed feature.
-- [ ] Extend target-aware whole-molecule assembly/checking for the declared
+- [x] Extend target-aware whole-molecule assembly/checking for the declared
   human DNA and RNA payload profiles. Retain the required regulatory regions,
   topology and delivery-form authority for each. Publish an explicit modality
   capability map; unsupported DNA/RNA forms fail rather than silently returning
   a template, a coding region or the opposite alphabet.
-- [ ] Write primitive and molecule-set checkers before admitting family emitters.
+- [x] Write primitive and molecule-set checkers before admitting family emitters.
   Checkers consume frozen authority and reconstruct independently; they must
   not import the assembler, generator or emitted expected values.
-- [ ] Retain all required circuit members and distinguish delivered components,
+- [x] Retain all required circuit members and distinguish delivered components,
   encoded products, host-provided dependencies, experimental inputs, controls
   and assay references. Ratios/amounts belong in the experimental manifest when
   known; they do not modify the nominal sequence identity.
-- [ ] Support strict complete-set output and explicitly scoped partial diagnostic
+- [x] Support strict complete-set output and explicitly scoped partial diagnostic
   inspection. A missing member cannot yield a complete circuit or a misleading
   successful synthesis/export handoff.
 
@@ -456,6 +457,20 @@ duplicates, duplicate IDs, wrong orientation, off-by-one coordinates, incorrect
 junctions and invalid chemistry.
 All bases have complete provenance. Fresh reconstruction catches tampering even
 when an attacker updates the package's self-reported hashes.
+
+**Implementation:** `0.1.0.dev24` implements the bounded supplied-construction
+profile described in the [R4 guide](circuit-construction-v0.1.md). Checked boxes
+record the primitive software scope; [PR #31](https://github.com/logannye/biocompiler/pull/31)
+records the exact-revision hosted acceptance required before milestone merge.
+All 1,528 local Python tests, Ruff and frozen benchmark audit pass. Complete
+external root/operation authority is replayed
+independently; strict complete-set JSON export retains all authority. No-product
+conditional branches, alternative translation initiation and nonincreasing
+splicing paths remain explicit unsupported cases. Later family authority must
+supply functional refinements; declared complexes/regions do not prove binding
+or regulatory function. All new fixtures are artificial controls. R1's unmerged
+metadata draft, R5 family semantics and the source-backed R6 vertical slice stay
+open. R4 export is not the R12 complete export system.
 
 ### R5 — Connect requirements to executable molecular-family semantics
 
