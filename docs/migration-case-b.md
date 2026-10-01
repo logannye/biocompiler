@@ -16,7 +16,7 @@ including both original-source and supplied-model case B pairs. Its
 [receipt](../protocol/migration-source-correspondence-validation.json) binds the
 exact source, tested merge, native platforms and integrated main validation.
 
-The current B1.05 batch implements the full per-role reference evaluator, extending
+The pending PR40 B1.05 batch implements the full per-role reference evaluator, extending
 beyond case B to all 38 v0.1 and four v0.2 operation kinds. The retained corpus
 contains 66 programs, 86 complete traces, 23 intended evaluator failures and 16
 parser failures, including all 24 case B timeline/parameter combinations. Three
@@ -27,7 +27,7 @@ the corpus is frozen; exclusions are explicit. The separate numeric corpus adds
 in [PR40](https://github.com/logannye/biocompiler/pull/40), but the full
 [run 36932812950](https://github.com/logannye/biocompiler/actions/runs/36932812950)
 failed because retained source locations depended on the Python version. The
-fixture correction still requires complete CI and integration validation; B1.05
+fixture correction `e4846f0` has [fresh CI run 36935066451](https://github.com/logannye/biocompiler/actions/runs/36935066451) in progress and awaits integration validation; B1.05
 is not complete. These checks do not reconstruct candidate execution, transport
 channels or accept RNA.
 
@@ -38,11 +38,29 @@ Reread this map with the [roadmap checklist](language-migration-roadmap.md#scope
 - [x] PR37 foundation: merged, full CI and integrated main validated; [receipt](../protocol/migration-foundation-validation.json).
 - [x] PR38 BuildRequest/target, Behavior declarations and coordinates: merged, full CI and integrated main validated; [receipt](../protocol/migration-domain-validation.json).
 - [x] PR39 circuit declarations and independent source correspondence: merged, full CI and integrated main validated; [receipt](../protocol/migration-source-correspondence-validation.json). Human deployment/acceptance wrappers remain unsupported.
-- [ ] PR40 B1.05 reference execution: implemented and both native jobs passed; complete CI pending the fixture correction.
-- [ ] Next lowering/domain batch `53a722d`, saved on `codex/ocaml-lowering-contract-domains`: prepared, hosted validation pending.
+- [ ] PR40 B1.05 reference execution: implemented and both native jobs passed on the earlier revision; fresh CI run `36935066451` for correction `e4846f0` is in progress; integration validation remains pending.
+- [ ] Fresh `bioc_compiler.Lowering`: implemented on `codex/ocaml-lowering-contract-domains`, rebased onto `e4846f0`; 31 positive/32 negative cases await hosted validation.
+- [ ] B1.06 prerequisites `Pinned_identity`, `Component_contract` and `Diagnostic_text`: implemented; 30 records/35 rejections/77 algebra cases plus three Unicode-profile witnesses await hosted validation.
+- [ ] B1.07 prerequisites `Molecular_record.Provenance` and `Molecule_chemistry`: implemented; 47 records/82 decode rejections/29 coordinate-sequence cases plus 10 text and 50 serialization-size cases await hosted validation.
 - [ ] Remaining B1.02 wrapped authority, full B1.06 component/architecture domains and full B1.07 molecular reconstruction.
 - [ ] B1.08 manifest/ledger/architecture reconstruction, B1.08a independent candidate execution if claimed, and B1.09 acceptance/protocol exposure.
 - [ ] B2 complete producer and paired RNA/manifest export, followed by the remaining product migration gates.
+
+The new domain batch checks exact explicit-unit contracts and nominal chemistry;
+it does not yet provide complete component models, refinement templates, molecular
+construction records or architecture reconstruction. A supplied pin or provenance
+record remains a declaration. Imported domain-check claims cannot become fresh
+local assessments. Lowering derives its own output and requires the independent
+source checker before returning; it is not the architecture producer.
+
+`Diagnostic_text` deliberately fixes missing-coordinate reasons to
+`python_repr_unicode14.v1`, with a checksum-pinned official Unicode 14 table and
+retained license. Newly assigned characters can change diagnostic text and fresh
+assessment hashes relative to newer Python repr; raw authority and semantic
+statuses are preserved. This is an explicit diagnostic exception, not a general
+canonicalization normalization. The [core guide](../core/README.md#domain-migration)
+lists the hosted direct commands, all 17 configured native suites and corpus
+counts. Complete hosted results remain required before promotion.
 
 The language decision is fixed. The immediate objective is to accept or reject an
 existing Python-produced stateful RNA architecture candidate against separately
@@ -233,12 +251,12 @@ the packaging boundary; each new batch needs complete hosted validation.
 | B1.03 Closed Behavior operation variants, including the positive typed-parameter variant, policy/profile validator, constant/type/binding checks and lineage | `bioc_domain.Behavior` | B1.02 and exact numeric conventions |
 | B1.04 Source/Behavior correspondence checker | `bioc_checker.Lowering_check` | B1.03; independent expected parameter bindings and permitted normalizations |
 | B1.05 Per-role reference execution for all 42 supported operation kinds | `bioc_semantics.Reference` | B1.03; independent literal timelines |
-| B1.06 Component, refinement, output, binding, placement and constraint validators | `bioc_domain.Architecture`, `Component` | B1.02/B1.03 |
-| B1.07 Molecular schemas, coordinate/chemistry checks and direct-root reconstruction | `bioc_domain.Molecule`, `Construction`; `bioc_checker.Construction_check` | Strict schemas plus primitive identities; can run alongside B1.04/05 |
+| B1.06 Component, refinement, output, binding, placement and constraint validators | Implemented prerequisites: `Pinned_identity`, `Component_contract`, `Diagnostic_text`; remaining `Architecture`, `Component` | B1.02/B1.03 and B1.07 template leaf types |
+| B1.07 Molecular schemas, coordinate/chemistry checks and direct-root reconstruction | Validated `Molecule_coordinates`; pending `Molecular_record`, `Molecule_chemistry`; remaining `Molecule`, `Construction`, `Construction_check` | Strict schemas plus primitive identities; can run alongside B1.04/05 |
 | B1.08 Source-manifest/ledger and architecture reconstruction | `bioc_checker.Source_check`, `Architecture_check` | B1.04/B1.06/B1.07 |
 | B1.08a Optional finite-trace candidate execution | Separate `bioc_candidate_runtime` | Reconstructed candidate authority, B1.05 literal timelines; required before claiming independent candidate execution, not implied by graph correspondence |
 | B1.09 Fresh acceptance and protocol exposure for the implemented capability | `bioc_checker.Acceptance`; producer-free service entry point | Every required pilot acceptance obligation and negative gate; B1.08a only if execution is claimed |
-| B2.01 Producer, deterministic selection and namespacing for the same capability | Separate `bioc_compiler` modules | B1 checker accepted and unchanged by producer implementation |
+| B2.01 Producer, deterministic selection and namespacing for the same capability | Internal `bioc_compiler.Lowering` implemented/pending validation; architecture producer still remaining | B1 checker accepted and unchanged by producer implementation |
 | B2.02 Fresh paired RNA/manifest export | Canonical artifact content + Python atomic storage adapter | B2.01 and B1.09 |
 
 Keep stage/schema/target requirements, scoped obligations and dependency
