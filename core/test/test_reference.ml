@@ -13,6 +13,25 @@ let strings value = arr (List.map str value)
 let field key value = Json.field key (Json.object_fields value)
 let integer value = Json.integer value |> Z.to_int
 let zero_fingerprint = String.make 64 '0'
+let expect_json label actual expected =
+  if not (Json.equal actual expected) then (
+    let rec difference path actual expected =
+      match actual, expected with
+      | Json.Object actual, Json.Object expected ->
+          let keys = List.map fst actual @ List.map fst expected |> List.sort_uniq String.compare in
+          let key = List.find (fun key ->
+              match List.assoc_opt key actual, List.assoc_opt key expected with
+              | Some a, Some b -> not (Json.equal a b) | None, None -> false | _ -> true) keys in
+          (match List.assoc_opt key actual, List.assoc_opt key expected with
+           | Some a, Some b -> difference (path ^ "/" ^ key) a b
+           | _ -> path ^ "/" ^ key ^ ": missing or unexpected object field")
+      | Json.Array actual, Json.Array expected when List.length actual = List.length expected ->
+          let pairs = List.combine actual expected |> List.mapi (fun index pair -> index, pair) in
+          let index, (a, b) = List.find (fun (_, (a, b)) -> not (Json.equal a b)) pairs in
+          difference (path ^ "/" ^ string_of_int index) a b
+      | _ -> path ^ ": expected " ^ Canonical.encode expected ^ ", got " ^ Canonical.encode actual
+    in
+    failwith (label ^ ": " ^ difference "" actual expected))
 let literal_program () =
   let condition = Json.parse {|{"kind":"condition","name":"Condition","dimensions":{},"arguments":[]}|} in
   let level = Json.parse {|{"kind":"scalar","name":"Level","dimensions":{},"arguments":[]}|} in
@@ -70,7 +89,8 @@ let unit_tests () =
   require (Json.equal result (R.evaluate program history |> D.Result.to_json)) "Reference reused session state across calls";
   require (Json.equal result (R.evaluate ~role:"selected" program history |> D.Result.to_json)) "Role-name selection changed trace";
   let truncated = R.evaluate ~until:N.zero program history |> D.Result.to_json in
-  require (field "frames" truncated = arr [frame 0 [reaction 0]]) "Explicit horizon did not truncate later supplied history";
+  expect_json "Explicit horizon did not truncate later supplied history"
+    (field "frames" truncated) (arr [frame 0 [reaction 0]]);
   rejected "evaluation_role" (fun () -> R.evaluate ~role:"missing" program history);
   rejected "evaluation_history" (fun () -> R.evaluate program []);
   rejected "evaluation_history" (fun () -> R.evaluate program [input 1 true]);
@@ -168,8 +188,8 @@ let corpus_tests path =
       let result = run_case program history role until max_microsteps in
       let json = D.Result.to_json result in
       Hashtbl.add traces (Json.string (field "id" case)) json;
-      require (Json.equal json (field "expected_trace" case))
-        (Json.string (field "id" case) ^ ": complete reference trace differs");
+      expect_json (Json.string (field "id" case) ^ ": complete reference trace differs")
+        json (field "expected_trace" case);
       require (str (Canonical.fingerprint json) = field "trace_fingerprint" case)
         (Json.string (field "id" case) ^ ": trace hash differs");
       require (Json.equal json (run_case program history role until max_microsteps |> D.Result.to_json))
