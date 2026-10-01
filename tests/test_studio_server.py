@@ -165,6 +165,27 @@ class StudioServerTests(unittest.TestCase):
             finally:
                 connection.close()
 
+    def test_construction_routes_retain_session_guards_and_static_policy(self):
+        for path in ("/construction", "/construction.css", "/construction.js"):
+            status, headers, content = self.request(path=path)
+            self.assertEqual(status, 200)
+            self.assertTrue(content)
+            self.assertIn("default-src 'none'", headers["Content-Security-Policy"])
+        for path in ("/api/construction/inspect", "/api/construction/save"):
+            for override in (
+                {"Origin": "https://evil.invalid"},
+                {"X-Biocompiler-Token": "wrong"},
+                {"Host": "example.org"},
+            ):
+                status, _, content = self.request(
+                    "POST", path, "{}", self.headers() | override
+                )
+                self.assertEqual(status, 403)
+                self.assertFalse(json.loads(content)["ok"])
+            status, _, content = self.request("POST", path, "{}", self.headers())
+            self.assertEqual(status, 400)
+            self.assertNotIn("Traceback", json.loads(content)["error"]["message"])
+
 
 if __name__ == "__main__":
     unittest.main()

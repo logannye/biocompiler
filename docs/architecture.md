@@ -86,8 +86,16 @@ ports, complete residue maps, chemistry/feature dispositions and required-member
 inventories. Payload contracts check declared linear/circular DNA/RNA regions;
 they do not establish regulatory function. Strict JSON export freshly verifies
 the complete external request and retains its full derivation authority.
-R1 and R5–R13 remain open; no source-backed reconstruction, derived molecular
-mechanism or human admission is established.
+[Circuit authority infrastructure](circuit-infrastructure-v0.1.md) layers strict
+source metadata, nominal requirement/role/observation bindings and evidence
+dependency receipts over those artifacts. Binding and evidence checkers re-run
+independent construction verification and import no producer. Observation, model
+and reference metadata have distinct uses; current identities grant no predictions.
+Read-only inspection separates stored assessments from fresh external-authority
+replay; its browser saves the exact original JSON and rejects late results.
+Software, reviewed reference correspondence and human applicability have separate
+acceptance tracks. R1 and R5–R13 remain open; source-backed reconstruction, family
+semantics and human admission are not established.
 
 | Layer | Representation | Preservation obligation |
 | --- | --- | --- |

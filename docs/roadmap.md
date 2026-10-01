@@ -17,9 +17,13 @@ until R6. [R3 molecular declarations](circuit-molecules-v0.1.md) represent named
 sets, coordinate frames, chemistry and uncertainty in `0.1.0.dev23`, with no
 checked transformations or molecular-function claim. [R4 supplied construction](circuit-construction-v0.1.md)
 in `0.1.0.dev24` adds explicit transformations, independent replay, full member
-inventories and declared payload-region checks. Exact-revision hosted gates are
-required before its milestone merge. R1 and R5–R13 remain open. No source-derived
-molecular mechanism or therapeutic admission is added.
+inventories and declared payload-region checks; R4 merged as PR31 after all
+exact-revision hosted gates passed. [Authority infrastructure](circuit-infrastructure-v0.1.md)
+in `0.1.0.dev25` advances R1 metadata/readiness, R5 nominal bindings, R11 evidence
+invalidation, R12 inspection/save/reopen and R13 independence/release gates.
+This is a scoped software increment. Reviewed reference correspondence and human
+biological applicability remain separate; R1 and R5–R13 remain open. No
+source-derived molecular mechanism or therapeutic admission is added.
 
 The [M11.1 audit](m11-human-benchmark-audit.md) records the current candidate
 comparison and explicit therapeutic-benchmark deferral. M11.1 is complete within

@@ -29,6 +29,34 @@ jobs:
         run: python -m unittest discover -s tests -v
       - name: Run authoring examples
         run: python examples/intent_programs.py
+      - name: Check source metadata and circuit infrastructure outside the checkout
+        working-directory: ${{ runner.temp }}
+        env:
+          INFRA_OUTPUT: ${{ github.workspace }}/generated/circuit-infrastructure-ci
+          SOURCE_OUTPUT: ${{ github.workspace }}/generated/circuit-sources-ci
+        run: |
+          python "$GITHUB_WORKSPACE/examples/circuit_sources.py" --output "$SOURCE_OUTPUT"
+          biocompiler circuit-sources-check --inventory "$SOURCE_OUTPUT/inventory.json" --output "$SOURCE_OUTPUT/cli.assessment.json"
+          biocompiler circuit-sources-verify "$SOURCE_OUTPUT/cli.assessment.json" --expected-inventory "$SOURCE_OUTPUT/inventory.json"
+          biocompiler circuit-sources-readiness "$SOURCE_OUTPUT/inventory.json" --output "$SOURCE_OUTPUT/cli.readiness.json"
+          python "$GITHUB_WORKSPACE/examples/circuit_infrastructure.py" --output "$INFRA_OUTPUT"
+          biocompiler circuit-bindings-check "$INFRA_OUTPUT/candidate.json" --expected-request "$INFRA_OUTPUT/binding-request.json" --output "$INFRA_OUTPUT/cli.binding-assessment.json"
+          biocompiler circuit-bindings-verify "$INFRA_OUTPUT/cli.binding-assessment.json" --candidate "$INFRA_OUTPUT/candidate.json" --expected-request "$INFRA_OUTPUT/binding-request.json"
+          biocompiler circuit-evidence-capture "$INFRA_OUTPUT/build.json" --expected-request "$INFRA_OUTPUT/evidence-request.json" --output "$INFRA_OUTPUT/cli.evidence-receipt.json"
+          biocompiler circuit-evidence-check "$INFRA_OUTPUT/cli.evidence-receipt.json" --build "$INFRA_OUTPUT/build.json" --expected-request "$INFRA_OUTPUT/evidence-request.json" --output "$INFRA_OUTPUT/cli.evidence-assessment.json"
+          biocompiler circuit-evidence-verify "$INFRA_OUTPUT/cli.evidence-assessment.json" --receipt "$INFRA_OUTPUT/cli.evidence-receipt.json" --build "$INFRA_OUTPUT/build.json" --expected-request "$INFRA_OUTPUT/evidence-request.json"
+          biocompiler circuit-inspect "$INFRA_OUTPUT/build.json" --expected-request "$INFRA_OUTPUT/request.json" --output "$INFRA_OUTPUT/cli.inspection.json"
+          biocompiler circuit-diff "$INFRA_OUTPUT/build.json" "$INFRA_OUTPUT/build.json" --expected-before "$INFRA_OUTPUT/request.json" --expected-after "$INFRA_OUTPUT/request.json" --output "$INFRA_OUTPUT/cli.diff.json"
+      - name: Retain infrastructure contract evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: circuit-infrastructure-evidence-py${{ matrix.python-version }}
+          path: |
+            generated/circuit-infrastructure-ci/
+            generated/circuit-sources-ci/
+          if-no-files-found: ignore
+          retention-days: 7
       - name: Build and replay supplied circuit constructions outside the checkout
         working-directory: ${{ runner.temp }}
         env:
@@ -327,6 +355,33 @@ jobs:
         run: |
           python -c "from biocompiler.compiler.passes import CompilerPass, PassResult; from biocompiler.semantics.context import TargetContext; from biocompiler.verification.evidence import Obligation"
 
+  circuit-reproducibility:
+    needs: package-smoke
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: circuit-infrastructure-evidence-py3.11
+          path: artifacts/python311
+      - uses: actions/download-artifact@v4
+        with:
+          name: circuit-infrastructure-evidence-py3.14
+          path: artifacts/python314
+      - name: Compare complete deterministic infrastructure artifacts across Python versions
+        run: |
+          python3 - <<'PY'
+          import hashlib
+          from pathlib import Path
+          roots = [Path('artifacts/python311'), Path('artifacts/python314')]
+          manifests = [{str(p.relative_to(root)): hashlib.sha256(p.read_bytes()).hexdigest()
+                        for p in root.rglob('*.json')} for root in roots]
+          assert manifests[0], 'Missing infrastructure artifacts'
+          assert manifests[0] == manifests[1], 'Cross-Python infrastructure artifacts differ'
+          for name, digest in sorted(manifests[0].items()):
+              print(digest, name)
+          print('Identical artifacts:', len(manifests[0]))
+          PY
+
   studio-browser:
     runs-on: ubuntu-latest
     steps:
@@ -351,6 +406,15 @@ jobs:
           NODE_PATH: ${{ github.workspace }}/generated/browser-tools/node_modules
           STUDIO_TEST_OUTPUT: ${{ github.workspace }}/generated/studio-browser-ci
         run: node tests/browser/studio.cjs
+      - name: Exercise retained construction inspection and lossless save in a browser
+        env:
+          NODE_PATH: ${{ github.workspace }}/generated/browser-tools/node_modules
+          STUDIO_TEST_OUTPUT: ${{ github.workspace }}/generated/studio-browser-ci
+          CIRCUIT_INFRASTRUCTURE_OUTPUT: ${{ github.workspace }}/generated/circuit-infrastructure-ci
+        run: |
+          cd "$RUNNER_TEMP"
+          python "$GITHUB_WORKSPACE/examples/circuit_infrastructure.py" --output "$CIRCUIT_INFRASTRUCTURE_OUTPUT"
+          node "$GITHUB_WORKSPACE/tests/browser/construction.cjs"
       - name: Retain GUI screenshots and verification evidence
         if: always()
         uses: actions/upload-artifact@v4

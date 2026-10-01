@@ -103,3 +103,21 @@ rejected. Structural and sequence-reference success also establish no biological
 refinement. Generated, metamorphic and bounded-exhaustive campaigns extend the
 software evidence within their recorded bounds; none changes its category to
 empirical evidence or a universal biological claim.
+
+
+## Circuit authority infrastructure
+
+The supplied-construction reconstruction checker is independent of its producer.
+The nominal binding and evidence-identity checkers use that fresh reconstruction,
+then independently resolve requested bindings or compare current dependencies.
+They import no assembler, compiler entry point or model runner. Shared immutable
+schemas and canonical fingerprints are not additional independent evidence.
+Source metadata checks establish relationships and review freshness only.
+
+`tests/test_circuit_checker_independence.py` audits transitive checker imports;
+focused binding/evidence/inspection tests disable producers while replaying current
+authority. Adversarial tests retain valid parses where possible so changed roles,
+contexts, amounts, source records and forged assessments reach their intended
+rejection. Source-derived family response tests and the cross-family scientific
+case matrix remain open under R6a. The hosted release gates retain package/CLI
+replay outside the checkout and browser late-response/save refusal checks.

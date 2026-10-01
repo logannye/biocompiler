@@ -106,3 +106,16 @@ The hosted browser workflow installs the package, starts the CLI from outside th
 repository, exercises the guided/import/error/download flows and checks responsive
 layout. Existing package, source, example and reconstruction gates remain required.
 No new human therapeutic admission or biological validation is claimed by the GUI.
+
+
+## Inspect a retained circuit construction
+
+The **Inspect a saved circuit construction** link opens `/construction`, a
+separate read-only view over the existing supplied-construction artifact. Open
+build JSON and optionally its independently retained full construction request.
+The view separates the stored historical assessment from fresh structural replay,
+and exposes members, chemistry, features, derivation maps, required roles and
+missing obligations. Save preserves the original JSON exactly, including numeric
+spellings; editing any input invalidates results and pending downloads. This is
+artifact preservation, not complete family export or human admission. See the
+[circuit infrastructure guide](circuit-infrastructure-v0.1.md) for bounds and scope.

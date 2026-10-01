@@ -9,6 +9,28 @@ import sys
 import tempfile
 
 from biocompiler import __version__
+from biocompiler.ir.circuit_bindings import CircuitBindingRequest, CircuitEntityBinding
+from biocompiler.verification.circuit_bindings import (
+    CircuitBindingAssessment, check_circuit_bindings, verify_circuit_binding_assessment,
+)
+from biocompiler.ir.circuit_evidence import (
+    CircuitEvidenceObservationBinding, CircuitEvidenceSource, CircuitEvidenceRequest,
+    CircuitEvidenceSourceReceipt, CircuitEvidenceReceipt,
+)
+from biocompiler.verification.circuit_evidence import (
+    CircuitEvidenceDependencyStatus, CircuitEvidenceAssessment,
+    capture_circuit_evidence, check_circuit_evidence, verify_circuit_evidence_assessment,
+)
+from biocompiler.ir.circuit_sources import (
+    SourceDocument, SourceGap, CircuitSourceCase, SourceReview, CircuitSourceInventory,
+)
+from biocompiler.verification.circuit_sources import (
+    CircuitSourcesAssessment, check_circuit_sources, verify_circuit_sources,
+    inspect_circuit_source_readiness,
+)
+from biocompiler.artifacts.circuit_inspection import (
+    inspect_circuit_construction, diff_circuit_constructions,
+)
 from biocompiler.ir.circuit_construction import CircuitConstructionRequest
 from biocompiler.artifacts.circuit_construction import ConstructionCandidate
 from biocompiler.artifacts.circuit_construction_build import CircuitConstructionBuild
@@ -190,6 +212,16 @@ from biocompiler.verification.exploration import (
 )
 
 
+_CIRCUIT_INFRASTRUCTURE_TYPES = (
+    CircuitBindingRequest, CircuitEntityBinding, CircuitBindingAssessment,
+    CircuitEvidenceObservationBinding, CircuitEvidenceSource, CircuitEvidenceRequest,
+    CircuitEvidenceSourceReceipt, CircuitEvidenceReceipt,
+    CircuitEvidenceDependencyStatus, CircuitEvidenceAssessment,
+    SourceDocument, SourceGap, CircuitSourceCase, SourceReview, CircuitSourceInventory,
+    CircuitSourcesAssessment,
+)
+
+
 def _read_artifact(document):
     # Parse strictly before dispatch: duplicate schema keys must not select a
     # different parser or weaken an artifact's validation boundary.
@@ -200,6 +232,7 @@ def _read_artifact(document):
         {
             cls.schema_version: cls
             for cls in (
+                *_CIRCUIT_INFRASTRUCTURE_TYPES,
                 CircuitConstructionRequest, ConstructionCandidate, CircuitConstructionBuild, CircuitConstructionAssessment,
                 CircuitMolecule,
                 CircuitMoleculeSet,
@@ -322,6 +355,7 @@ def _read_artifact(document):
     if not isinstance(schema, str) or schema not in types:
         raise SerializationError(f"Unknown or missing artifact schema: {schema!r}.")
     if types[schema] in (
+        *_CIRCUIT_INFRASTRUCTURE_TYPES,
         CircuitConstructionRequest, ConstructionCandidate, CircuitConstructionBuild, CircuitConstructionAssessment,
         CircuitMolecule,
         CircuitMoleculeSet,
@@ -346,6 +380,62 @@ def _summary(artifact):
         "schema_version": artifact.schema_version,
         "fingerprint": artifact.fingerprint,
     }
+    if isinstance(artifact, (SourceDocument, SourceGap, CircuitSourceCase, SourceReview, CircuitSourceInventory, CircuitSourcesAssessment)):
+        summary.update(
+            scope="source_metadata_only", source_bytes="not_checked",
+            molecular_readiness="unassessed", empirical_validation="unknown",
+            human_admission="not_admitted",
+        )
+        if isinstance(artifact, CircuitSourceInventory):
+            summary.update(sources=len(artifact.sources), cases=len(artifact.cases), reviews=len(artifact.reviews))
+        elif isinstance(artifact, CircuitSourcesAssessment):
+            summary.update(outcome=artifact.outcome.value, claim_scope=artifact.claim_scope,
+                           diagnostics=list(artifact.diagnostics))
+        elif isinstance(artifact, SourceDocument):
+            summary.update(id=artifact.id, access_status=artifact.access_status,
+                           reuse_status=artifact.reuse_status, correction_status=artifact.correction_status)
+        elif isinstance(artifact, SourceGap):
+            summary.update(field=artifact.field, availability=artifact.status)
+        elif isinstance(artifact, CircuitSourceCase):
+            summary.update(id=artifact.id, family_id=artifact.family_id,
+                           missing_field_count=sum(item.status != "provided" for item in artifact.coverage))
+        elif isinstance(artifact, SourceReview):
+            summary.update(id=artifact.id, subject_kind=artifact.subject_kind,
+                           disposition=artifact.disposition)
+    if isinstance(artifact, (CircuitBindingRequest, CircuitEntityBinding, CircuitBindingAssessment)):
+        summary.update(scope="supplied_nominal_binding_correspondence",
+                       independent_entity_identity="unestablished", molecular_implementation="unimplemented",
+                       biological_function="unestablished", empirical_validation="unknown",
+                       human_therapeutic_admission="not_admitted")
+        if isinstance(artifact, CircuitBindingRequest):
+            summary.update(bindings=len(artifact.bindings), assumptions=list(artifact.assumptions))
+        elif isinstance(artifact, CircuitEntityBinding):
+            summary.update(id=artifact.id, requirement_id=artifact.requirement_id,
+                           source_kind=artifact.source_kind, source_id=artifact.source_id,
+                           role_id=artifact.role_id, subject_kind=artifact.subject_kind)
+        elif isinstance(artifact, CircuitBindingAssessment):
+            summary.update(outcome=artifact.outcome.value, complete_nominal_bindings=artifact.complete,
+                           assumptions=list(artifact.assumptions), diagnostics=list(artifact.diagnostics),
+                           provider_availability=artifact.provider_availability,
+                           provider_colocation=artifact.provider_colocation)
+    if isinstance(artifact, (CircuitEvidenceObservationBinding, CircuitEvidenceSource, CircuitEvidenceRequest,
+                             CircuitEvidenceSourceReceipt, CircuitEvidenceReceipt,
+                             CircuitEvidenceDependencyStatus, CircuitEvidenceAssessment)):
+        summary.update(scope="declared_evidence_dependencies_only", prediction="unsupported",
+                       empirical_validation="unknown", evidence_applicability="unassessed",
+                       human_therapeutic_admission="not_admitted")
+        if isinstance(artifact, CircuitEvidenceAssessment):
+            summary.update(freshness=artifact.freshness, construction_status=artifact.construction_status,
+                           missing_evidence=artifact.missing_evidence,
+                           dependencies=[dict(item.to_dict(), status=item.status) for item in artifact.dependencies])
+        elif isinstance(artifact, (CircuitEvidenceRequest, CircuitEvidenceReceipt)):
+            summary.update(sources=len(artifact.sources))
+        elif isinstance(artifact, CircuitEvidenceSource):
+            summary.update(id=artifact.id, kind=artifact.kind, use=artifact.use,
+                           version=artifact.version, population_scope=artifact.population_scope,
+                           observation_bindings=len(artifact.observations))
+        elif isinstance(artifact, CircuitEvidenceDependencyStatus):
+            summary.update(id=artifact.id, dependency_status=artifact.status)
     if isinstance(artifact, (CircuitMolecule, CircuitMoleculeSet, CircuitMoleculeRecord)):
         summary.update(
             scope="declared_molecular_identity",
@@ -619,6 +709,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         "--version", action="version", version=f"biocompiler {__version__}"
     )
     commands = parser.add_subparsers(dest="command", required=True)
+    _register_circuit_infrastructure_commands(commands)
     construction_build = commands.add_parser("circuit-build", help="Build and independently check an explicit supplied construction")
     construction_build.add_argument("--request", type=Path, required=True)
     construction_build.add_argument("--output", type=Path, required=True)
@@ -826,6 +917,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         command.add_argument("path", type=Path)
         command.add_argument("--expected-request", type=Path, required=True)
     args = parser.parse_args(argv)
+    if args.command in _CIRCUIT_INFRASTRUCTURE_COMMANDS:
+        return _circuit_infrastructure_command(args)
     if args.command in {"circuit-build", "circuit-verify", "circuit-export"}:
         return _circuit_construction_command(args)
     if args.command.startswith("circuit-intent-"):
@@ -996,6 +1089,132 @@ def main(argv: Sequence[str] | None = None) -> int:
             program.to_json() if args.json else json.dumps(_summary(program), indent=2)
         )
     return 0
+
+
+_CIRCUIT_INFRASTRUCTURE_COMMANDS = frozenset({
+    "circuit-inspect", "circuit-diff", "circuit-sources-check", "circuit-sources-verify",
+    "circuit-sources-readiness", "circuit-bindings-check", "circuit-bindings-verify",
+    "circuit-evidence-capture", "circuit-evidence-check", "circuit-evidence-verify",
+})
+
+
+def _register_circuit_infrastructure_commands(commands):
+    command = commands.add_parser("circuit-inspect", help="Inspect a retained construction without inferring biological function")
+    command.add_argument("path", type=Path)
+    command.add_argument("--expected-request", type=Path)
+    command.add_argument("--output", type=Path)
+    command = commands.add_parser("circuit-diff", help="Compare retained construction records and exact identities")
+    command.add_argument("before", type=Path)
+    command.add_argument("after", type=Path)
+    command.add_argument("--expected-before", type=Path)
+    command.add_argument("--expected-after", type=Path)
+    command.add_argument("--max-changes", type=int, default=256)
+    command.add_argument("--output", type=Path)
+    command = commands.add_parser("circuit-sources-check", help="Check declared source metadata relationships")
+    command.add_argument("--inventory", type=Path, required=True)
+    command.add_argument("--output", type=Path, required=True)
+    command = commands.add_parser("circuit-sources-verify", help="Replay a source metadata assessment against independent inventory")
+    command.add_argument("path", type=Path)
+    command.add_argument("--expected-inventory", type=Path, required=True)
+    command = commands.add_parser("circuit-sources-readiness", help="Inspect missing source fields without granting case acceptance")
+    command.add_argument("path", type=Path)
+    command.add_argument("--case-id")
+    command.add_argument("--output", type=Path)
+    for operation in ("check", "verify"):
+        command = commands.add_parser("circuit-bindings-" + operation, help="Check supplied nominal bindings against fresh construction replay")
+        command.add_argument("path", type=Path)
+        command.add_argument("--expected-request", type=Path, required=True)
+        if operation == "check":
+            command.add_argument("--output", type=Path, required=True)
+        else:
+            command.add_argument("--candidate", type=Path, required=True)
+    for operation in ("capture", "check", "verify"):
+        command = commands.add_parser("circuit-evidence-" + operation, help="Capture or replay evidence dependency metadata without biological validation")
+        command.add_argument("path", type=Path)
+        command.add_argument("--expected-request", type=Path, required=True)
+        if operation != "capture":
+            command.add_argument("--build", type=Path, required=True)
+        if operation == "verify":
+            command.add_argument("--receipt", type=Path, required=True)
+        else:
+            command.add_argument("--output", type=Path, required=True)
+
+
+class _InspectionReport:
+    """Publication wrapper for bounded display data, never verification authority."""
+
+    def __init__(self, document):
+        self.document = document
+
+    def to_json(self):
+        return json.dumps(self.document, indent=2, sort_keys=True, ensure_ascii=False, allow_nan=False)
+
+
+def _circuit_infrastructure_command(args):
+    def read(cls, path, limit=4_000_000):
+        return cls.from_json(_bounded_text(path, limit))
+
+    try:
+        if args.command == "circuit-inspect":
+            request = None if args.expected_request is None else read(CircuitConstructionRequest, args.expected_request)
+            document = inspect_circuit_construction(read(CircuitConstructionBuild, args.path), expected_request=request)
+            report, summary, code = _InspectionReport(document), document, 0
+        elif args.command == "circuit-diff":
+            before = None if args.expected_before is None else read(CircuitConstructionRequest, args.expected_before)
+            after = None if args.expected_after is None else read(CircuitConstructionRequest, args.expected_after)
+            document = diff_circuit_constructions(
+                read(CircuitConstructionBuild, args.before), read(CircuitConstructionBuild, args.after),
+                expected_before=before, expected_after=after, max_changes=args.max_changes,
+            )
+            report, summary, code = _InspectionReport(document), document, 0
+        elif args.command == "circuit-sources-readiness":
+            document = inspect_circuit_source_readiness(read(CircuitSourceInventory, args.path), case_id=args.case_id)
+            report, summary = _InspectionReport(document), document
+            code = 0 if document["metadata_consistency"] == "pass" else 1
+        elif args.command == "circuit-sources-check":
+            report = check_circuit_sources(read(CircuitSourceInventory, args.inventory))
+            summary, code = _summary(report), 0 if report.outcome.value == "pass" else 1
+        elif args.command == "circuit-sources-verify":
+            report = verify_circuit_sources(
+                read(CircuitSourcesAssessment, args.path, 12_000_000),
+                expected_inventory=read(CircuitSourceInventory, args.expected_inventory),
+            )
+            summary, code = _summary(report), 0 if report.outcome.value == "pass" else 1
+        elif args.command.startswith("circuit-bindings-"):
+            request = read(CircuitBindingRequest, args.expected_request)
+            candidate_path = args.path if args.command == "circuit-bindings-check" else args.candidate
+            candidate = read(ConstructionCandidate, candidate_path)
+            if args.command == "circuit-bindings-check":
+                report = check_circuit_bindings(candidate, expected_request=request)
+            else:
+                report = verify_circuit_binding_assessment(read(CircuitBindingAssessment, args.path), candidate, expected_request=request)
+            summary, code = _summary(report), 0 if report.passed else 1
+        else:
+            request = read(CircuitEvidenceRequest, args.expected_request)
+            build_path = args.path if args.command == "circuit-evidence-capture" else args.build
+            build = read(CircuitConstructionBuild, build_path)
+            if args.command == "circuit-evidence-capture":
+                report = capture_circuit_evidence(build, expected_request=request)
+                code = 0
+            else:
+                receipt_path = args.path if args.command == "circuit-evidence-check" else args.receipt
+                receipt = read(CircuitEvidenceReceipt, receipt_path)
+                if args.command == "circuit-evidence-check":
+                    report = check_circuit_evidence(receipt, build, expected_request=request)
+                else:
+                    report = verify_circuit_evidence_assessment(read(CircuitEvidenceAssessment, args.path), receipt, build, expected_request=request)
+                code = 0 if report.freshness == "current" else 1
+            summary = _summary(report)
+        destination = getattr(args, "output", None)
+        # Preserve every independent input, including aliases resolved through
+        # symbolic links. The destination itself is not an input authority.
+        protected = tuple(value for key, value in vars(args).items() if key != "output" and isinstance(value, Path))
+        _publish_report(report, destination, inputs=protected)
+        print(json.dumps(summary, sort_keys=True, indent=2))
+        return code
+    except (BiocompilerError, OSError, ValueError, TypeError, RecursionError) as error:
+        print(str(error), file=sys.stderr)
+        return 2
 
 
 def _circuit_construction_command(args):

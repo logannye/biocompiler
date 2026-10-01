@@ -1,6 +1,29 @@
 """Author inspectable therapeutic programs for in-vivo immune-cell engineering."""
 
-__version__ = "0.1.0.dev24"
+__version__ = "0.1.0.dev25"
+
+from biocompiler.ir.circuit_bindings import CircuitBindingRequest, CircuitEntityBinding
+from biocompiler.verification.circuit_bindings import (
+    CircuitBindingAssessment, check_circuit_bindings, verify_circuit_binding_assessment,
+)
+from biocompiler.ir.circuit_evidence import (
+    CircuitEvidenceObservationBinding, CircuitEvidenceSource, CircuitEvidenceRequest,
+    CircuitEvidenceSourceReceipt, CircuitEvidenceReceipt,
+)
+from biocompiler.verification.circuit_evidence import (
+    CircuitEvidenceDependencyStatus, CircuitEvidenceAssessment,
+    capture_circuit_evidence, check_circuit_evidence, verify_circuit_evidence_assessment,
+)
+from biocompiler.ir.circuit_sources import (
+    SourceDocument, SourceGap, CircuitSourceCase, SourceReview, CircuitSourceInventory,
+)
+from biocompiler.verification.circuit_sources import (
+    CircuitSourcesAssessment, check_circuit_sources, verify_circuit_sources,
+    inspect_circuit_source_readiness,
+)
+from biocompiler.artifacts.circuit_inspection import (
+    inspect_circuit_construction, diff_circuit_constructions,
+)
 
 from biocompiler.ir.circuit_construction import (
     RootSource, ValueRef, ValueSelection, ProductPort, SliceOperation, ConcatenateOperation, OrientationOperation, TranscriptionOperation, ProcessingProduct, RNACleavageOperation, RNASplicingOperation, ProteinCleavageOperation, ProteinSplicingOperation, CircularizationOperation, BaseEditingOperation, TranslationOperation, TranslationProduct, MultiORFTranslationOperation, TranslationBranch, ConditionalTranslationOperation, PeptideProduct, RibosomalSkippingOperation, TransformStep, OutputMember, RoleDeclaration, MemberRequirement, ComplexMemberConstituent, ComplexMemberPlan, AmountDeclaration, CircuitConstructionRequest
@@ -457,6 +480,15 @@ from biocompiler.verification.realization import (
 )
 
 __all__ = [
+    "CircuitBindingRequest", "CircuitEntityBinding", "CircuitBindingAssessment",
+    "check_circuit_bindings", "verify_circuit_binding_assessment",
+    "CircuitEvidenceObservationBinding", "CircuitEvidenceSource", "CircuitEvidenceRequest",
+    "CircuitEvidenceSourceReceipt", "CircuitEvidenceReceipt",
+    "CircuitEvidenceDependencyStatus", "CircuitEvidenceAssessment",
+    "capture_circuit_evidence", "check_circuit_evidence", "verify_circuit_evidence_assessment",
+    "SourceDocument", "SourceGap", "CircuitSourceCase", "SourceReview", "CircuitSourceInventory",
+    "CircuitSourcesAssessment", "check_circuit_sources", "verify_circuit_sources",
+    "inspect_circuit_source_readiness", "inspect_circuit_construction", "diff_circuit_constructions",
     "RootSource",
     "ValueRef",
     "ValueSelection",
