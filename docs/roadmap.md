@@ -1,5 +1,23 @@
 # Development roadmap
 
+## Current code-only RNA translation sprint
+
+The current product scope is therapeutic program input and corresponding RNA
+payload sequence output for human immune cells engineered in vivo. The
+[executable RNA profile](executable-rna-payload-v0.1.md) implements source-derived
+guard/action preservation, supplied executable realization contracts, bounded
+compatible component selection, derived complete molecule construction and
+independent source/component/molecule replay. Multiple outputs, dwell conditions,
+pulses, memory, reset and explicit shutdown use the existing execution semantics.
+These software translation checks do not wait for biological evidence and do
+not close reference-review or biological-applicability milestones.
+
+Remaining code work includes wider temporal/state operators, explicit quantitative
+rate and resource contracts, operating-domain refinements, a native temporal
+supplementary circuit schema, and broader biological component contract adapters.
+Unsupported requirements remain in artifacts; they are not replaced with invented
+behavior or sequences. Validation for this sprint is recorded in the session handoff.
+
 For the current resumption point and prior milestones, read the [session handoff](session-handoff.md).
 The next human immune-payload development track is the [RNA-circuit plan](rna-circuit-reproduction-plan.md):
 R0–R13 cover precise Python authoring, independently curated publication authority,

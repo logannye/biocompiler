@@ -9,6 +9,10 @@ import sys
 import tempfile
 
 from biocompiler import __version__
+from biocompiler.ir.executable_payload import PayloadCompilationRequest, PayloadBuild
+from biocompiler.ir.payload_contracts import PayloadContractLibrary
+from biocompiler.semantics.payload_requirements import PayloadRequirements
+from biocompiler.verification.executable_payload import PayloadVerification
 from biocompiler.artifacts.circuit_review import CircuitReviewAuthority, CircuitReviewManifest, MAX_AUTHORITY_BYTES
 from biocompiler.artifacts.circuit_review_bundle import (
     create_circuit_review_bundle, publish_circuit_review_bundle,
@@ -357,6 +361,11 @@ def _read_artifact(document):
                 MolecularDesignBuildManifest,
                 MolecularDesignHandoff,
                 MolecularDesignResult,
+                PayloadCompilationRequest,
+                PayloadBuild,
+                PayloadContractLibrary,
+                PayloadRequirements,
+                PayloadVerification,
             )
         }
     )
@@ -388,6 +397,16 @@ def _summary(artifact):
         "schema_version": artifact.schema_version,
         "fingerprint": artifact.fingerprint,
     }
+    if isinstance(artifact, (PayloadBuild, PayloadCompilationRequest, PayloadContractLibrary,
+                             PayloadRequirements, PayloadVerification)):
+        summary.update(scope="contract_conditional_human_immune_rna",
+                       verification="not_replayed", empirical_validation="unknown",
+                       human_therapeutic_admission="not_admitted")
+        if isinstance(artifact, PayloadBuild):
+            summary.update(status=artifact.status, selected=dict(artifact.selected),
+                           diagnostics=list(artifact.diagnostics), assumptions=list(artifact.assumptions),
+                           rna_members=[] if artifact.molecules is None else
+                           [item.id for item in artifact.molecules.molecules if item.space.alphabet == "RNA"])
     if isinstance(artifact, (CircuitReviewAuthority, CircuitReviewManifest)):
         summary.update(
             scope="retained_circuit_review", verification="not_replayed",
@@ -724,6 +743,13 @@ def main(argv: Sequence[str] | None = None) -> int:
     )
     commands = parser.add_subparsers(dest="command", required=True)
     _register_circuit_infrastructure_commands(commands)
+    payload_build = commands.add_parser("payload-build", help="Compile therapeutic intent to RNA under supplied executable contracts")
+    payload_build.add_argument("--request", type=Path, required=True)
+    payload_build.add_argument("--output", type=Path, required=True)
+    for operation in ("verify", "fasta"):
+        command = commands.add_parser("payload-" + operation, help="Independently reconstruct payload translation and RNA")
+        command.add_argument("path", type=Path)
+        command.add_argument("--expected-request", type=Path, required=True)
     construction_build = commands.add_parser("circuit-build", help="Build and independently check an explicit supplied construction")
     construction_build.add_argument("--request", type=Path, required=True)
     construction_build.add_argument("--output", type=Path, required=True)
@@ -931,6 +957,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         command.add_argument("path", type=Path)
         command.add_argument("--expected-request", type=Path, required=True)
     args = parser.parse_args(argv)
+    if args.command in {"payload-build", "payload-verify", "payload-fasta"}:
+        return _payload_command(args)
     if args.command in _CIRCUIT_INFRASTRUCTURE_COMMANDS:
         return _circuit_infrastructure_command(args)
     if args.command in {"circuit-build", "circuit-verify", "circuit-export"}:
@@ -1376,6 +1404,30 @@ def _implementation_summary(record):
         selection_diagnostics=list(record.selection.diagnostics),
         alternatives=[item.to_dict() for item in record.selection.alternatives],
     )
+
+
+def _payload_command(args):
+    from biocompiler.compiler.executable_payload import compile_payload, export_payload_fasta
+    from biocompiler.verification.executable_payload import check_payload_build
+    try:
+        if args.command == "payload-build":
+            request = PayloadCompilationRequest.from_json(_bounded_text(args.request))
+            build = compile_payload(request)
+            _publish_report(build, args.output, inputs=(args.request,))
+        else:
+            request = PayloadCompilationRequest.from_json(_bounded_text(args.expected_request))
+            build = PayloadBuild.from_json(_bounded_text(args.path))
+        assessment = check_payload_build(build, expected_request=request)
+        if args.command == "payload-fasta":
+            print(export_payload_fasta(build, expected_request=request), end="")
+            return 0
+        print(json.dumps({"status": build.status, "verification": assessment.to_dict(),
+                          "diagnostics": list(build.diagnostics),
+                          "human_therapeutic_admission": "not_admitted"}, sort_keys=True, indent=2))
+        return 0 if assessment.outcome == "pass" and build.construction is not None else 1
+    except (BiocompilerError, OSError, ValueError, TypeError) as error:
+        print(str(error), file=sys.stderr)
+        return 2
 
 
 def _implementation_command(args):

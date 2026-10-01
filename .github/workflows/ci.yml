@@ -25,6 +25,25 @@ jobs:
         run: python tools/check_human_benchmark_audit.py
       - name: Install package
         run: python -m pip install .
+      - name: Compile and independently replay executable RNA payloads outside the checkout
+        working-directory: ${{ runner.temp }}
+        env:
+          PAYLOAD_OUTPUT: ${{ github.workspace }}/generated/executable-rna-payload-ci
+        run: |
+          python "$GITHUB_WORKSPACE/examples/executable_payload.py" --output "$PAYLOAD_OUTPUT"
+          biocompiler payload-build --request "$PAYLOAD_OUTPUT/request.json" --output "$PAYLOAD_OUTPUT/cli.build.json"
+          biocompiler payload-verify "$PAYLOAD_OUTPUT/cli.build.json" --expected-request "$PAYLOAD_OUTPUT/request.json" > "$PAYLOAD_OUTPUT/verification.json"
+          biocompiler payload-fasta "$PAYLOAD_OUTPUT/cli.build.json" --expected-request "$PAYLOAD_OUTPUT/request.json" > "$PAYLOAD_OUTPUT/cli.fasta"
+          biocompiler inspect "$PAYLOAD_OUTPUT/cli.build.json" > "$PAYLOAD_OUTPUT/inspection.json"
+          python -c "import os, pathlib; p = pathlib.Path(os.environ['PAYLOAD_OUTPUT']); assert (p / 'build.json').read_bytes() == (p / 'cli.build.json').read_bytes(); assert (p / 'payloads.fasta').read_bytes() == (p / 'cli.fasta').read_bytes()"
+      - name: Retain executable RNA payload evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: executable-rna-payload-py${{ matrix.python-version }}
+          path: generated/executable-rna-payload-ci/
+          if-no-files-found: error
+          retention-days: 7
       - name: Test authoring, behavior, and realization contracts
         run: python -m unittest discover -s tests -v
       - name: Run authoring examples
@@ -362,6 +381,32 @@ jobs:
       - name: Import scaffold interfaces
         run: |
           python -c "from biocompiler.compiler.passes import CompilerPass, PassResult; from biocompiler.semantics.context import TargetContext; from biocompiler.verification.evidence import Obligation"
+
+  executable-rna-reproducibility:
+    needs: package-smoke
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: executable-rna-payload-py3.11
+          path: artifacts/python311
+      - uses: actions/download-artifact@v4
+        with:
+          name: executable-rna-payload-py3.14
+          path: artifacts/python314
+      - name: Compare exact RNA and contract artifacts across Python versions
+        run: |
+          python3 - <<'PY'
+          import hashlib
+          from pathlib import Path
+          roots = [Path('artifacts/python311'), Path('artifacts/python314')]
+          manifests = [{str(p.relative_to(root)): hashlib.sha256(p.read_bytes()).hexdigest()
+                        for p in root.rglob('*') if p.is_file()} for root in roots]
+          assert manifests[0], 'Missing executable RNA artifacts'
+          assert manifests[0] == manifests[1], 'Cross-Python RNA artifacts differ'
+          for name, digest in sorted(manifests[0].items()):
+              print(digest, name)
+          PY
 
   circuit-reproducibility:
     needs: package-smoke

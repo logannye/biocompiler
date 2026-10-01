@@ -1,5 +1,12 @@
 # Toolchain contracts and future obligations
 
+The [executable RNA payload profile](executable-rna-payload-v0.1.md) provides a
+connected contract-conditional path from therapeutic source to exact RNA sets for
+human immune cells engineered in vivo. Software translation is checked against
+original source and supplied component/template authority independently of
+biological evidence. Component function and clinical applicability remain
+separate obligations; unsupported source requirements remain explicit.
+
 biocompiler progressively refines authored behavior into a physical implementation. Compiler transformations preserve meaning; synthesis proposes implementations. A precise nucleotide artifact does not establish a precise cellular outcome. This document records cross-layer requirements and distinguishes implemented checks from future molecular capabilities.
 
 Implementation order, stable task IDs and acceptance gates are tracked in the [development roadmap](roadmap.md). Its first molecular milestones use [exact CDS reference benchmarks](reference-benchmarks.md), with completeness judged against an explicit requested artifact scope. CDS identity, synthetic-model correctness and molecular behavioral refinement remain separate checks.

@@ -1,6 +1,42 @@
 # Session handoff and current resumption point
 
-## Current continuation — portable circuit review
+## Current continuation — therapeutic program to RNA under supplied contracts
+
+The user clarified on 2026-09-30 that the product input is therapeutic program
+design and the output is corresponding RNA payload sequences for human immune
+cells engineered in vivo. This code-only sprint implements the
+[executable RNA payload profile](executable-rna-payload-v0.1.md), version
+`0.1.0.dev27`, on branch `codex/contract-payload-compiler`, based on PR33 head
+`d99df63154054e66b215edbc5156bb6e110f5466`. PR33 remains separate and unmerged.
+
+Implemented source-derived activation/action/product requirements, contradictory
+circuit-map rejection, executable component-to-template contracts, compatible
+bounded selection and dependency grounding, derived complete RNA/helper
+construction, fresh independent source/component/molecule checks, public
+`compile(...)`, JSON inspection and `payload-build`, `payload-verify` and
+`payload-fasta` CLI operations. Multiple outputs, dwell, pulses, memory/reset and
+explicit shutdown are exercised using artificial six-symbol sequence fixtures.
+No biological evidence or experimental validation is required for these checks.
+
+The original source/target and unsupported obligations remain retained. Goal
+refinement, quantitative rate/resource/domain implementation, wider finite-state
+operators and scoped retention targets remain unsupported. Temporal source
+graphs compile under their exact contracts, while the old supplementary stateless
+circuit table remains an explicitly unresolved mapping. Strict completeness
+refuses unresolved designs. Search optimality/exhaustion is not independently
+certified; receipts state `search_verified=False`. Biological function and human
+admission remain separate from software translation correctness.
+
+Focused pure-Python tests, independent producer-isolation checks, RNA/helper
+construction/export and CLI reconstruction have passed during implementation.
+The full regression suite and hosted exact-revision release gates are pending at
+this source checkpoint; do not report those gates complete from this paragraph.
+Hosted CI now checks installed-package RNA workflows outside the checkout and
+cross-Python byte-identical RNA/contract artifacts, alongside all prior gates.
+No local native compilation or package installation occurred. Validation receipts
+are retained in the surrounding workspace's `work/executable-payload-*` records.
+
+## Previous continuation — portable circuit review
 
 PR32 is merged as `6be159fa43dd7d0fe247669fe4230503c4dc64ff`, version
 `0.1.0.dev25`. Its final head and PR-merge trees matched; all required final

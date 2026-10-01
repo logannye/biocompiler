@@ -1,5 +1,16 @@
 # Architecture
 
+The current product interface is **therapeutic program design → corresponding
+payload RNA sequences for human immune cells engineered in vivo**. The
+[executable RNA payload profile](executable-rna-payload-v0.1.md) connects source
+activation/action semantics, supplied executable component contracts, bounded
+implementation selection and the existing complete-molecule construction engine.
+Its independent checker reconstructs source meaning and selected templates before
+RNA export. This contract-conditional code path requires no biological evidence;
+whether the supplied parts fulfill their contracts remains unresolved. The
+broader DNA utilities and earlier milestones described below are infrastructure
+and historical context, not an additional current product target.
+
 biocompiler is an experimental compiler working toward translating high-level therapeutic intent into an exact, complete DNA or RNA payload specification for in vivo immune cell therapies. Python is the implemented authoring language; natural-language authoring is a future frontend to the same explicit requirements. Its organizing principle is **preservation of a behavioral contract through explicit intermediate representations (IRs)**. Each molecular choice should remain traceable to the intended response, its deployment context and the evidence supporting it.
 
 **Human in-vivo immune-cell deployment is the sole product target.** Non-human

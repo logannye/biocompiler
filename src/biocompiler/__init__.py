@@ -1,6 +1,23 @@
 """Author inspectable therapeutic programs for in-vivo immune-cell engineering."""
 
-__version__ = "0.1.0.dev26"
+__version__ = "0.1.0.dev27"
+
+from biocompiler.ir.executable_payload import (
+    PayloadCompilationRequest, PayloadSelectionConstraints, PayloadCircuitBinding,
+    PayloadAlternative, PayloadBuild,
+)
+from biocompiler.ir.payload_contracts import (
+    PayloadTemplate, PayloadPortBinding, PayloadCapabilityBinding,
+    PayloadComponentContract, PayloadContractLibrary,
+)
+from biocompiler.semantics.payload_requirements import (
+    PayloadRequirements, PayloadOutputRequirement, PayloadDiagnostic as PayloadSourceDiagnostic,
+    extract_payload_requirements, derive_boolean_response, validate_boolean_mapping,
+)
+from biocompiler.compiler.executable_payload import compile_payload, export_payload_fasta
+from biocompiler.verification.executable_payload import (
+    PayloadVerification, check_payload_build, verify_payload_build,
+)
 
 from biocompiler.artifacts.circuit_review import CircuitReviewAuthority, CircuitReviewManifest
 from biocompiler.artifacts.circuit_review_bundle import (
@@ -488,6 +505,13 @@ from biocompiler.verification.realization import (
 )
 
 __all__ = [
+    "PayloadCompilationRequest", "PayloadSelectionConstraints", "PayloadCircuitBinding",
+    "PayloadAlternative", "PayloadBuild", "PayloadTemplate", "PayloadPortBinding",
+    "PayloadCapabilityBinding", "PayloadComponentContract", "PayloadContractLibrary",
+    "PayloadRequirements", "PayloadOutputRequirement", "PayloadSourceDiagnostic",
+    "extract_payload_requirements", "derive_boolean_response", "validate_boolean_mapping",
+    "compile_payload", "export_payload_fasta",
+    "PayloadVerification", "check_payload_build", "verify_payload_build",
     "CircuitReviewAuthority", "CircuitReviewManifest", "CircuitReviewBundle",
     "create_circuit_review_bundle", "publish_circuit_review_bundle",
     "inspect_circuit_review_bundle", "verify_circuit_review_bundle",

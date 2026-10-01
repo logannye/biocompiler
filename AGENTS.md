@@ -1,5 +1,15 @@
 # Working on biocompiler
 
+Current product clarification, 2026-09-30: therapeutic program design is the
+input and corresponding payload RNA sequences are the output. New product work
+targets human immune cells engineered in vivo and RNA genetic payloads only.
+Existing DNA/reference construction utilities remain shared infrastructure;
+they are not new product backends. Check translation under explicit supplied
+component contracts without requiring biological evidence. Keep whether those
+contracts hold in human cells as a separate unresolved empirical question.
+Follow `docs/executable-rna-payload-v0.1.md` for source preservation, executable
+component selection, complete RNA construction and independent verification.
+
 The sole product purpose is to translate high-level Python and eventually natural-language therapeutic intent into exact, complete DNA/RNA specifications for immune cells engineered in vivo in humans. Prioritize work that connects source requirements to selected molecular implementations and emitted bases. Quantitative execution and evaluation should support those selected implementations, with explicit observation maps and evidence, rather than become a disconnected simulator. Natural-language authoring and complete therapeutic compilation are not yet implemented.
 
 ## Human-only product scope

@@ -1,6 +1,6 @@
 # biocompiler
 
-biocompiler is an experimental compiler project with a long-term goal: **turn high-level therapeutic intent into a precise, complete DNA or RNA payload specification for in vivo immune-cell therapy in humans**.
+biocompiler translates **therapeutic program design into corresponding RNA payload specifications for human immune cells engineered in vivo**. Exact sequences come from supplied component templates and assembly rules.
 
 This is its **only product target**. Human-cell studies provide supporting
 reference benchmarks; they do not create a general cell-culture or non-human
@@ -11,12 +11,19 @@ An engineer should be able to describe which cells to engineer, what those cells
 
 The central idea is to keep three things connected: **what a cell should do**, **how a proposed implementation is described**, and **what experimental evidence supports**. Typed descriptions and independent checks make those relationships inspectable throughout a design.
 
-The current milestone connects therapeutic requirement analysis to a declared molecular implementation, selected sequence parts and an exact RNA precursor construct. Complete functional therapeutic compilation remains future work.
+The current [executable RNA payload profile](docs/executable-rna-payload-v0.1.md)
+connects source-derived guards and actions to compatible supplied executable
+component contracts, complete RNA construction and independent verification.
+It supports multiple outputs, temporal conditions, memory, reset and explicit
+shutdown. Translation correctness is checked under the supplied contracts;
+whether those components fulfill their contracts in human cells is a separate
+empirical question.
 
 ## What works today
 
 | Workflow | What it provides |
 | --- | --- |
+| Compile a contract-based RNA program | `bc.compile(PayloadCompilationRequest(...))` preserves source semantics, selects and connects supplied executable contracts, constructs every required RNA member, and independently checks source/component/sequence correspondence. |
 | Author intent and context | Typed Python descriptions of recognition, actions, timing and goals, with frozen human target, behavior, deployment and prohibited-outcome contracts. |
 | Check circuit scope | Human immune-recipient declarations bound to the exact target, separate human study context, and fresh checking against retained request authority; molecular compilation remains unsupported. |
 | Start in a guided workspace | A local browser GUI explains the example, lets you choose product and architecture constraints, and runs the real compiler with verified downloads. |
