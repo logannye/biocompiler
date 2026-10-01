@@ -8,7 +8,7 @@ a conditional language claim; it is not evidence of behavior in a patient.
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from itertools import product
 from typing import ClassVar
 
@@ -24,11 +24,11 @@ from biocompiler.verification.circuit_construction import check_circuit_construc
 from biocompiler.verification.evidence import CheckOutcome
 
 
-CHECKER_VERSION = "biocompiler.payload_architecture_checker.v0.2"
+CHECKER_VERSION = "biocompiler.payload_architecture_checker.v0.3"
 CLAIM_SCOPE = (
     "Exact source and supplied composite execution-contract correspondence, "
-    "explicit functional requirements under the asserted Boolean control profile, "
-    "declared physical composition and complete RNA construction only. "
+    "explicit functional requirements under bounded control proof profiles, "
+    "declared RNA availability intervals, physical composition and complete RNA construction only. "
     "No empirical component function or human therapeutic admission is established."
 )
 
@@ -194,6 +194,8 @@ def _model_correspondence(model, node_map, source_behavior):
         problems.append("model_mapping_not_injective")
     if set(node_map.values()) - set(expected):
         problems.append("model_mapping_unknown_source")
+    if model.schema_version != source_behavior.schema_version:
+        problems.append("model_execution_profile")
     if fingerprint(model.policies) != fingerprint(source_behavior.policies):
         problems.append("model_execution_policies")
     for identity, node in actual.items():
@@ -224,6 +226,54 @@ def _model_correspondence(model, node_map, source_behavior):
         if fingerprint(emitted) != fingerprint(authority):
             problems.append("model_operation_mismatch:" + identity + ":" + target.id)
     return problems
+
+
+def _selected_instances(build, request):
+    """Reconstruct selected matches from independent library authority.
+
+    A match ID is only a reproducible name. Check all anchors, complete mapping
+    authority and the actual operations separately; never import or replay the
+    producer's graph matcher to establish correctness. The remaining search
+    census and alternative ranking are retained diagnostics, not certified
+    completeness or optimality claims.
+    """
+    failures, selected = [], []
+    library = {item.id: item for item in request.library.refinements}
+    instances = {item.id: item for item in build.plan.instances}
+    if set(instances) != set(build.plan.selected_refinement_ids):
+        failures.append("selected_instance_inventory")
+    census = {item.id: item for item in build.match_instances}
+    for identity in build.plan.selected_refinement_ids:
+        instance = instances.get(identity)
+        if instance is None:
+            continue
+        original = library.get(instance.refinement_id)
+        if original is None:
+            failures.append("selected_refinement_authority:" + identity)
+            continue
+        if identity not in census or instance.fingerprint != census[identity].fingerprint:
+            failures.append("selected_instance_census:" + identity)
+        mapping = instance.source_bindings
+        if set(mapping) != {node.id for node in original.behavior.nodes}:
+            failures.append("selected_instance_mapping_inventory:" + identity)
+            continue
+        if len(set(mapping.values())) != len(mapping):
+            failures.append("selected_instance_mapping_not_injective:" + identity)
+            continue
+        if any(mapping.get(key) != value for key, value in original.source_bindings.items()):
+            failures.append("selected_instance_anchor_authority:" + identity)
+        if original.match_policy is None:
+            expected_id = original.id
+            if fingerprint(mapping) != fingerprint(original.source_bindings):
+                failures.append("explicit_instance_mapping_authority:" + identity)
+        else:
+            expected_id = original.id + ".match." + fingerprint({
+                "refinement": original.fingerprint, "source_bindings": mapping,
+            })
+        if identity != expected_id:
+            failures.append("selected_instance_identity:" + identity)
+        selected.append(replace(original, id=identity, source_bindings=mapping, match_policy=None))
+    return tuple(selected), failures
 
 
 def _namespace_template(template, prefix):
@@ -269,7 +319,7 @@ def _namespace_template(template, prefix):
 
 
 def _inventories(selected):
-    result = {key: [] for key in ("placements", "helpers", "channels", "control_domains")}
+    result = {key: [] for key in ("placements", "helpers", "channels", "control_domains", "availability")}
     templates = []
     for index, refinement in enumerate(sorted(selected, key=lambda item: item.id)):
         prefix = f"a{index:03d}_"
@@ -314,6 +364,10 @@ def _inventories(selected):
                          controlling_node_ids=[remap[item] for item in original.controlling_node_ids],
                          component_ids=[prefix + item for item in original.component_ids])
             result["control_domains"].append(value)
+        for original in refinement.availability:
+            value = original.to_dict()
+            value.update(id=prefix + original.id, placement_id=prefix + original.placement_id)
+            result["availability"].append(value)
     return result, templates
 
 
@@ -401,6 +455,9 @@ def _expected_ledger(request, source_ledger, source_nodes, selected, assumptions
     for group in request.constraints.delivery_groups:
         ledger.append(RequirementRealization("constraint:delivery:" + group.id,
                       group.recipient_roles, tuple(item.id for item in selected), "implemented", assumptions))
+    for requirement in request.constraints.deployment_requirements:
+        ledger.append(RequirementRealization("constraint:deployment:" + requirement.id,
+                      (requirement.recipient_role,), tuple(item.id for item in selected), "implemented", assumptions))
     return ledger, owners
 
 
@@ -584,6 +641,15 @@ def _supplementary_checks(request, selected):
                 failures.append("supplementary_source_product:" + requirement.id)
             elif primitive.kind == "action.present" and primitive.attributes["antigen"] != binding.product.id:
                 failures.append("supplementary_source_product:" + requirement.id)
+            elif (primitive.kind in {"action.eliminate", "action.engulf", "action.rest"}
+                  and isinstance(requirement.behavior, ExecutableCircuitBehavior)
+                  and binding.product.kind == "biological_activity"
+                  and binding.lifecycle.mode == "activity_control"):
+                # The independently supplied complete source response and exact
+                # action IDs establish which abstract activity is requested.
+                # This binds the action, not a biological outcome or clearance
+                # of effectors produced by a separate secretion action.
+                pass
             elif primitive.kind not in {"action.secrete", "action.present"}:
                 unresolved.append("source_output_product_mapping:" + requirement.id + ":" + identity)
         if isinstance(requirement.behavior, ExecutableCircuitBehavior):
@@ -820,20 +886,40 @@ def _control_checks(request, inventories, selected):
         if any(not value for value in matching.values()):
             failures.append("control_requirement_unbound:" + requirement.id)
             continue
+        proof_targets = {ref: (ref,) for ref in refs}
+        if requirement.kind in {"memory_reset", "production_adjustment", "activity_control"}:
+            from biocompiler.verification.architecture_controls import extended_control_targets
+            proof_targets = {ref: extended_control_targets(nodes, ref, requirement.kind) for ref in refs}
         for ref, declarations in matching.items():
             for control in declarations:
-                reason = _functional_control_proof(nodes, ref, control, requirement.kind)
+                if (requirement.kind == "production_adjustment"
+                    and not set(proof_targets[ref]) <= set(control["behavior_node_ids"])):
+                    failures.append("control_production_aggregate_unbound:" + requirement.id + ":" + ref)
+                if requirement.kind in {"memory_reset", "production_adjustment", "activity_control"}:
+                    from biocompiler.verification.architecture_controls import prove_extended_control
+                    reason = prove_extended_control(nodes, ref, control, requirement.kind,
+                                                    parameter_bindings=source.resolved_bindings)
+                else:
+                    reason = _functional_control_proof(nodes, ref, control, requirement.kind)
                 if reason is not None:
                     failures.append("unsupported_functional_control_requirement:" + requirement.id
                                     + ":" + ref + ":" + reason)
         domains = [{item["domain_id"] for item in matching[ref]} for ref in refs]
         components = [{identity for item in matching[ref] for identity in item["component_ids"]}
                       for ref in refs]
+        # Functional declarations may identify a dedicated controller, but
+        # aggregate production independence must also cover every implementing
+        # action's material owners. A hidden branch cannot share another
+        # product's implementation behind distinct controller labels.
+        effect_components = [set().union(*(source_components.get(target, set())
+                              for target in proof_targets[ref])) for ref in refs]
+        if requirement.kind == "production_adjustment":
+            components = [declared | effects for declared, effects in zip(components, effect_components)]
         input_meanings = [{ancestor for item in matching[ref] for identity in item["controlling_node_ids"]
                            for ancestor in lineage_for(nodes, identity)
                            if nodes[ancestor].kind in {"signal", "channel_observation", "state", "memory"}}
                           for ref in refs]
-        influence = [_causal_nodes(nodes, (ref,)) for ref in refs]
+        influence = [_causal_nodes(nodes, proof_targets[ref]) for ref in refs]
         if requirement.relation == "shared":
             if not set.intersection(*domains):
                 failures.append("shared_control_missing:" + requirement.id)
@@ -855,8 +941,8 @@ def _control_checks(request, inventories, selected):
                     if requirement.forbidden_shared_dependencies:
                         restricted = {supply_identity(helper) for helper in helper_records.values()
                                       if helper["capability"] in requirement.forbidden_shared_dependencies}
-                        left_dependencies = dependencies(source_components.get(refs[left], set()))
-                        right_dependencies = dependencies(source_components.get(refs[right], set()))
+                        left_dependencies = dependencies(effect_components[left] | components[left])
+                        right_dependencies = dependencies(effect_components[right] | components[right])
                         if left_dependencies.intersection(right_dependencies, restricted):
                             failures.append("forbidden_shared_dependency:" + requirement.id)
     return failures
@@ -1007,9 +1093,12 @@ def _assumptions(request, selected):
     values = set(request.library.assumptions)
     for group in request.constraints.delivery_groups:
         values.update(group.assumptions)
+    for requirement in request.constraints.deployment_requirements:
+        values.update(requirement.assumptions)
     for refinement in selected:
         values.update(refinement.assumptions)
-        for item in (*refinement.components, *refinement.controls, *refinement.helpers, *refinement.channels):
+        for item in (*refinement.components, *refinement.controls, *refinement.helpers,
+                     *refinement.channels, *refinement.availability):
             values.update(item.assumptions)
     return tuple(sorted(values))
 
@@ -1039,11 +1128,8 @@ def check_payload_architecture(build, *, expected_request):
             if build.construction is not None:
                 failures.append("construction_without_selected_architecture")
         else:
-            library = {item.id: item for item in expected_request.library.refinements}
-            unknown = set(build.plan.selected_refinement_ids) - library.keys()
-            if unknown:
-                failures.append("selected_refinement_authority")
-            selected = tuple(library[identity] for identity in build.plan.selected_refinement_ids if identity in library)
+            selected, instance_failures = _selected_instances(build, expected_request)
+            failures.extend(instance_failures)
             assumptions = _assumptions(expected_request, selected)
             if tuple(build.plan.assumptions) != assumptions:
                 failures.append("plan_assumptions")
@@ -1073,6 +1159,8 @@ def check_payload_architecture(build, *, expected_request):
             failures.extend(_control_checks(expected_request, inventories, selected))
             failures.extend(_channel_checks(expected_request, inventories, authority["channels"]))
             failures.extend(_delivery_dependency_checks(expected_request, inventories, selected))
+            from biocompiler.verification.architecture_deployment import check_deployment_requirements
+            failures.extend(check_deployment_requirements(expected_request, inventories))
             expected_construction = _expected_construction(expected_request, documents)
             if build.construction is None:
                 unresolved.append("complete_construction_missing")

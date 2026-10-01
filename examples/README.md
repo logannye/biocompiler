@@ -1,5 +1,38 @@
 # Examples
 
+The current RNA architecture profile in `0.1.0.dev29` connects the following
+examples to complete exact RNA output under independently supplied contracts:
+
+- [payload_architectures.py](payload_architectures.py) covers A–F designs with
+  multiple outputs, finite state, sampled budgets, coupled roles, explicit helper
+  RNAs and alternative physical partitions.
+- [architecture_control_designs.py](architecture_control_designs.py) provides
+  `memory_reset`, `state_reset`, `production_adjustment` and `activity_control`
+  cases with separate source and supplier programs. Additional adversarial cases
+  reject false functional labels, omitted production branches and coupled
+  controls. Reset, production and effector activity retain different meanings.
+- [architecture_automation.py](architecture_automation.py) changes source node
+  IDs without modifying the independently supplied models. Exact graph matching
+  supplies the correspondence; declared RNA availability rejects a preferred
+  helper architecture whose onset misses the required common execution window.
+
+```sh
+PYTHONPATH=src python3 -m examples.payload_architectures --case all --output generated/architectures
+PYTHONPATH=src python3 -m examples.architecture_control_designs --case all --output generated/controls
+PYTHONPATH=src python3 -m examples.architecture_automation
+PYTHONPATH=src python3 -m biocompiler architecture-verify generated/controls/memory_reset/build.json --expected-request generated/controls/memory_reset/request.json
+PYTHONPATH=src python3 -m biocompiler architecture-export generated/controls/memory_reset/build.json --expected-request generated/controls/memory_reset/request.json --output generated/controls/memory_reset/export.json
+```
+
+The first two commands retain request/build JSON and paired FASTA/manifest files;
+the automatic matching example checks its selected build and prints RNA FASTA.
+The Python factories `make_control_request(case)` and
+`make_automation_request()` return complete public architecture requests.
+All sequence and timing values are artificial software fixtures. Source/model
+correspondence, control proofs and interval containment are conditional language
+claims; they do not establish human-cell function or therapeutic admission. See
+the [architecture profile](../docs/payload-architecture-v0.1.md) for precise bounds.
+
 [circuit_profile.py](circuit_profile.py) exercises the human immune target and
 separate illustrative human-reference context across all five scope boundaries.
 Run `PYTHONPATH=src python examples/circuit_profile.py --output generated/circuit-profile`.
@@ -144,7 +177,7 @@ behavioral implementation, biological reference or human admission is claimed.
 
 - `verification_campaign.py`: bounded exhaustive presence-aware contact histories, seeded adversarial cases and failure-preserving deletion reduction; optional JSON evidence output. These are software-model checks, not universal or empirical claims.
 
-- [molecular_contract.py](molecular_contract.py): bind a requested FAP contact response to the selected CDS, independently recheck its correspondence and retain biological UNKNOWN. The illustrative response bands/deadlines are design obligations, not calibrated measurements. General complete-payload compilation remains unavailable. Use `--output DIRECTORY` to save the contract, authoritative realization request and result.
+- [molecular_contract.py](molecular_contract.py): bind a requested FAP contact response to the selected CDS, independently recheck its correspondence and retain biological UNKNOWN. The illustrative response bands/deadlines are design obligations, not calibrated measurements. This earlier profile retains its limited single-product contract scope; complete supplied-contract RNA examples are listed above. Use `--output DIRECTORY` to save the contract, authoritative realization request and result.
 
 - [payload_readiness.py](payload_readiness.py): exercise structural RNA/DNA molecule profiles with explicitly artificial software fixtures, independent retained source/review bytes and sequence mutations. A structural PASS grants neither biological reference promotion nor compiler admission. Use `--output DIRECTORY` to retain inspectable evidence.
 

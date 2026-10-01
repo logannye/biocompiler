@@ -289,8 +289,8 @@ class PayloadArchitectureVerificationTests(unittest.TestCase):
         from biocompiler.errors import SerializationError
         request, build = fixture()
         receipt = check_payload_architecture(build, expected_request=request).to_dict()
-        self.assertEqual(receipt["checker_version"], "biocompiler.payload_architecture_checker.v0.2")
-        receipt["checker_version"] = "biocompiler.payload_architecture_checker.v0.1"
+        self.assertEqual(receipt["checker_version"], "biocompiler.payload_architecture_checker.v0.3")
+        receipt["checker_version"] = "biocompiler.payload_architecture_checker.v0.2"
         with self.assertRaises(SerializationError):
             PayloadArchitectureVerification.from_dict(receipt)
 

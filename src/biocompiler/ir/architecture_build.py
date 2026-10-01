@@ -12,7 +12,8 @@ from biocompiler.ir.circuit_intent import CircuitRequest
 from biocompiler.ir.intent import freeze_json
 from biocompiler.ir.molecule_records import _MoleculeRecord, _decode_records, _text
 from biocompiler.ir.payload_architecture import (
-    MAX_ARCHITECTURE_RECORDS, PayloadArchitectureLibrary, RNAArchitectureConstraints, _names,
+    MAX_ARCHITECTURE_RECORDS, ArchitectureRefinementInstance, PayloadArchitectureLibrary,
+    RNAArchitectureConstraints, _names,
 )
 from biocompiler.ir.serialization import require
 
@@ -78,8 +79,13 @@ class PayloadArchitecturePlan(_MoleculeRecord):
     channels: tuple[Mapping, ...]
     control_domains: tuple[Mapping, ...]
     assumptions: tuple[str, ...]
-    schema_version: ClassVar[str] = "biocompiler.payload_architecture_plan.v0.1"
-    _decoders: ClassVar[dict] = {"ledger": _decode_records(RequirementRealization, 8192)}
+    instances: tuple[ArchitectureRefinementInstance, ...] = ()
+    availability: tuple[Mapping, ...] = ()
+    schema_version: ClassVar[str] = "biocompiler.payload_architecture_plan.v0.2"
+    _decoders: ClassVar[dict] = {
+        "ledger": _decode_records(RequirementRealization, 8192),
+        "instances": _decode_records(ArchitectureRefinementInstance, MAX_ARCHITECTURE_RECORDS),
+    }
 
     def __post_init__(self):
         object.__setattr__(self, "selected_refinement_ids", _names(
@@ -89,9 +95,17 @@ class PayloadArchitecturePlan(_MoleculeRecord):
                 "Invalid architecture requirement ledger.")
         require(len({item.id for item in self.ledger}) == len(self.ledger), "Duplicate ledger requirements.")
         object.__setattr__(self, "ledger", tuple(self.ledger))
-        for key in ("placements", "helpers", "channels", "control_domains"):
+        for key in ("placements", "helpers", "channels", "control_domains", "availability"):
             object.__setattr__(self, key, _json_records(getattr(self, key), key))
         object.__setattr__(self, "assumptions", _names(self.assumptions, "architecture assumptions"))
+        require(isinstance(self.instances, (tuple, list)) and len(self.instances) <= MAX_ARCHITECTURE_RECORDS
+                and all(isinstance(item, ArchitectureRefinementInstance) for item in self.instances),
+                "Invalid architecture instance inventory.")
+        object.__setattr__(self, "instances", tuple(sorted(self.instances, key=lambda item: item.id)))
+        require(len({item.id for item in self.instances}) == len(self.instances), "Duplicate architecture instance identities.")
+        if self.instances:
+            require({item.id for item in self.instances} == set(self.selected_refinement_ids),
+                    "Selected architecture instances and refinement identities disagree.")
 
 
 @dataclass(frozen=True)
@@ -158,13 +172,15 @@ class PayloadArchitectureBuild(_MoleculeRecord):
     alternatives: tuple[ArchitectureAlternative, ...]
     diagnostics: tuple[ArchitectureGap, ...]
     status: str
-    schema_version: ClassVar[str] = "biocompiler.payload_architecture_build.v0.1"
+    match_instances: tuple[ArchitectureRefinementInstance, ...] = ()
+    schema_version: ClassVar[str] = "biocompiler.payload_architecture_build.v0.2"
     _decoders: ClassVar[dict] = {
         "execution": _execution,
         "plan": lambda data: PayloadArchitecturePlan.from_dict(data) if data is not None else None,
         "construction": lambda data: CircuitConstructionBuild.from_dict(data) if data is not None else None,
         "alternatives": _decode_records(ArchitectureAlternative, MAX_ARCHITECTURE_ALTERNATIVES),
         "diagnostics": _decode_records(ArchitectureGap, 4096),
+        "match_instances": _decode_records(ArchitectureRefinementInstance, MAX_ARCHITECTURE_RECORDS),
     }
 
     def __post_init__(self):
@@ -183,6 +199,13 @@ class PayloadArchitectureBuild(_MoleculeRecord):
                 "Unknown architecture build status.")
         require((self.status in {"compiled", "partial"}) == (self.plan is not None and self.construction is not None),
                 "Architecture status and retained construction disagree.")
+        require(isinstance(self.match_instances, (tuple, list))
+                and len(self.match_instances) <= MAX_ARCHITECTURE_RECORDS
+                and all(isinstance(item, ArchitectureRefinementInstance) for item in self.match_instances),
+                "Invalid retained matching census.")
+        object.__setattr__(self, "match_instances", tuple(sorted(self.match_instances, key=lambda item: item.id)))
+        require(len({item.id for item in self.match_instances}) == len(self.match_instances),
+                "Duplicate retained matching instances.")
 
     @property
     def molecules(self):

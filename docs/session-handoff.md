@@ -1,5 +1,42 @@
 # Session handoff and current resumption point
 
+## Current code-only automation increment
+
+Branch `codex/automatic-architecture-refinement`, package `0.1.0.dev29`, extends
+therapeutic program-to-RNA compilation with exact semantic subgraph matching of
+independently supplied Behavior contracts. Empty or partial anchors replace
+mandatory hand-authored total source maps when `ArchitectureMatchPolicy` is
+enabled. Complete matched instances and bounded search receipts survive JSON,
+independent checking and export; selected matches are rechecked against original
+source/library authority without importing the producer's matcher. This does
+not discover new molecular mechanisms, choose unspecified biological parameters
+or infer nucleotide sequences.
+
+Independent bounded proofs cover reset-priority memory, finite-state reset,
+complete role/product production adjustment, and explicit ongoing activity
+gating. Aggregate causal and component ownership checks prevent hidden production
+branches from bypassing independence. Declared RNA availability intervals are
+checked against required execution windows and optional unavailability deadlines
+for every applicable placement, including helpers. Delivery and expression are
+supplied assumptions; empirical performance and effector clearance stay open.
+
+Architecture refinement, constraints, plan and build records now use v0.2;
+checker policy is `biocompiler.payload_architecture_checker.v0.3`. Regenerate old
+builds rather than silently dropping match/availability authority. The installed
+API/CLI smoke and cross-Python artifact comparison cover 13 cases: original A–F,
+automatic B/F, automatic matching with helper timing selection, and four control
+proof examples. All sequences in these cases are artificial software fixtures.
+
+Validation gates include focused Python/static checks and full Linux Python 3.11
+and 3.14 hosted package, test, installed-example, reproducibility and browser
+checks. The final source revision and results belong in the integrating PR's
+validation receipt; earlier baseline runs do not validate this increment.
+No local native build or biological evidence collection is authorized or needed. Remaining software
+work includes generic mechanism/parameter synthesis, richer quantitative control
+proofs, mapped resource/domain contracts, external helper observations, wrapped
+human deployment/acceptance obligations, certified search optimality and complete
+architecture authoring in Studio.
+
 ## Current PR reconciliation — preserve the RNA compiler and earlier source records
 
 [PR34](https://github.com/logannye/biocompiler/pull/34) merged the complete

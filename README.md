@@ -12,11 +12,14 @@ An engineer should be able to describe which cells to engineer, what those cells
 The central idea is to keep three things connected: **what a cell should do**, **how a proposed implementation is described**, and **what experimental evidence supports**. Typed descriptions and independent checks make those relationships inspectable throughout a design.
 
 The current [RNA architecture compiler](docs/payload-architecture-v0.1.md), in
-`0.1.0.dev28`, connects full source behavior to supplied composite implementations,
+`0.1.0.dev29`, connects full source behavior to supplied composite implementations,
 RNA partitions, recipient assignments and exact complete molecule sets. Behavior,
 components, RNAs and cell roles have explicit many-to-many correspondence. It
 supports finite state, temporal control, quantitative rate branches, sampled
-activity budgets and coupled roles under declared transport contracts. Independent
+activity budgets and coupled roles under declared transport contracts. Reusable
+supplied graphs can be matched automatically, with exact source correspondence
+retained. Bounded independent proofs distinguish memory/state reset, production
+adjustment and effector activity, and check declared RNA availability windows. Independent
 checks establish translation under those contracts; biological function remains
 a separate empirical question. The earlier
 [per-operator payload profile](docs/executable-rna-payload-v0.1.md) remains available.
@@ -25,7 +28,7 @@ a separate empirical question. The earlier
 
 | Workflow | What it provides |
 | --- | --- |
-| Select a complete RNA architecture | `bc.compile(PayloadArchitectureRequest(...))` selects supplied composite behavior contracts and RNA partitions, checks control independence, helpers, recipient delivery and channels, and emits freshly verified RNA plus a complete manifest. |
+| Select a complete RNA architecture | `bc.compile(PayloadArchitectureRequest(...))` matches supplied composite behavior contracts and RNA partitions, checks functional controls, independence, helpers, declared deployment windows and channels, and emits freshly verified RNA plus a complete manifest. |
 | Compile a contract-based RNA program | `bc.compile(PayloadCompilationRequest(...))` preserves source semantics, selects and connects supplied executable contracts, constructs every required RNA member, and independently checks source/component/sequence correspondence. |
 | Author intent and context | Typed Python descriptions of recognition, actions, timing and goals, with frozen human target, behavior, deployment and prohibited-outcome contracts. |
 | Check circuit scope | Human immune-recipient declarations bound to the exact target, separate human study context, and fresh checking against retained request authority; scope checking alone supplies no molecular implementation. |
@@ -133,6 +136,21 @@ independent request as verification authority. See the
 Python APIs. Production shutdown does not imply effector inactivation, and
 sampled budget checks do not imply a continuous physiological ceiling.
 
+The connected control examples add independently checked memory reset,
+finite-state reset, production adjustment and effector activity. Automatic
+matching also works when source node IDs differ from the supplied model; the
+deployment example rejects a preferred helper whose declared availability
+misses the requested execution window:
+
+```sh
+PYTHONPATH=src python3 -m examples.architecture_control_designs --case all --output generated/controls
+PYTHONPATH=src python3 -m biocompiler architecture-verify generated/controls/production_adjustment/build.json --expected-request generated/controls/production_adjustment/request.json
+PYTHONPATH=src python3 -m examples.architecture_automation
+```
+
+These checks use exact supplied graph and timing contracts. They establish
+neither unrestricted mechanism discovery nor empirical delivery or expression.
+
 ### Compile a declared molecular implementation
 
 This example retains a complete human source request, selects between two artificial precursor architectures and demonstrates rejected strict, size-limited and missing-provider cases:
@@ -167,6 +185,8 @@ The [example guide](examples/README.md) provides runnable commands and explains 
 | Example | Purpose |
 | --- | --- |
 | [RNA architecture designs](examples/payload_architectures.py) | Compile and export A–F supplied-contract examples with independently authored models, exact RNA partitions, helpers and recipient/channel assignments. |
+| [Distinct functional controls](examples/architecture_control_designs.py) | Compile memory reset, finite-state reset, production adjustment and explicitly modeled activity through independent control proofs and complete RNA export. |
+| [Automatic architecture matching](examples/architecture_automation.py) | Reuse supplied models without source-node anchors and reject an alternative whose helper misses a declared deployment window. |
 | [Synthetic design loop](examples/synthetic_design.py) | Select a bounded digital implementation, reconstruct its component assembly and check supplied histories. See [selection](docs/synthetic-selection-v0.1.md) and [verification](docs/synthetic-verification-v0.1.md). |
 | [Molecular design](examples/molecular_design.py) | Assemble supplied RNA fragments under explicit layout authority and independently check a complete structural specification. See the [design profile](docs/molecular-design-v0.1.md). |
 | [Reference builds](examples/reference_build.py) | Reproduce independently pinned DNA/RNA coding sequences and verify portable `.bcb` packages. See [reference-build commands](docs/reference-build-v0.1.md). |

@@ -4,6 +4,9 @@ from itertools import combinations, islice
 import json
 
 from biocompiler.compiler.circuit_construction import build_circuit_construction
+from biocompiler.compiler.architecture_matching import (
+    instantiate_architecture_refinement, match_architecture_refinement,
+)
 from biocompiler.errors import BiocompilerError, SerializationError
 from biocompiler.ir.architecture_build import (
     ArchitectureAlternative, ArchitectureGap, PayloadArchitectureBuild,
@@ -13,6 +16,7 @@ from biocompiler.ir.architecture_build import (
 from biocompiler.ir.intent import thaw_json
 from biocompiler.ir.molecule_records import MAX_MOLECULE_ITEMS, MAX_MOLECULE_JSON_BYTES
 from biocompiler.ir.payload_contracts import PayloadTemplate, merge_payload_templates, namespace_payload_template
+from biocompiler.ir.payload_architecture import ArchitectureRefinementInstance
 from biocompiler.ir.serialization import fingerprint, require
 from biocompiler.semantics.payload_execution import derive_source_execution
 
@@ -89,17 +93,24 @@ def _coverage_gaps(selected, execution):
     return gaps
 
 
-def _plan(selected, execution, request):
-    placements, helpers, channels, controls = [], [], [], []
+def _plan(selected, execution, request, instances=()):
+    placements, helpers, channels, controls, availability = [], [], [], [], []
     assumptions = set(request.library.assumptions)
     for group in request.constraints.delivery_groups:
         assumptions.update(group.assumptions)
+    for requirement in request.constraints.deployment_requirements:
+        assumptions.update(requirement.assumptions)
     for index, refinement in enumerate(selected):
         prefix = f"a{index:03d}_"
         mapping = refinement.source_bindings
         template_prefixes = {template.id: prefix + f"t{number:03d}_"
                              for number, template in enumerate(sorted(refinement.templates, key=lambda item: item.id))}
         assumptions.update(refinement.assumptions)
+        for contract in refinement.availability:
+            record = contract.to_dict()
+            record.update(id=prefix + contract.id, placement_id=prefix + contract.placement_id)
+            availability.append(record)
+            assumptions.update(contract.assumptions)
         for component in refinement.components:
             assumptions.update(component.assumptions)
         for placement in refinement.placements:
@@ -162,8 +173,12 @@ def _plan(selected, execution, request):
     for group in request.constraints.delivery_groups:
         ledger.append(RequirementRealization("constraint:delivery:" + group.id, group.recipient_roles,
                       tuple(ref.id for ref in selected), "implemented", all_assumptions))
+    for requirement in request.constraints.deployment_requirements:
+        ledger.append(RequirementRealization("constraint:deployment:" + requirement.id, (requirement.recipient_role,),
+                      tuple(ref.id for ref in selected), "implemented", all_assumptions))
     return PayloadArchitecturePlan(tuple(ref.id for ref in selected), tuple(ledger), tuple(placements),
-                                   tuple(helpers), tuple(channels), tuple(controls), all_assumptions)
+                                   tuple(helpers), tuple(channels), tuple(controls), all_assumptions,
+                                   instances=tuple(instances), availability=tuple(availability))
 
 
 def _construct(selected, request):
@@ -214,6 +229,9 @@ def _candidate_gaps(receipt, selected, request):
         for group in request.constraints.delivery_groups:
             if group.id in code:
                 implicated.add("constraint:delivery:" + group.id)
+        for requirement in request.constraints.deployment_requirements:
+            if requirement.id in code:
+                implicated.add("constraint:deployment:" + requirement.id)
         for refinement in selected:
             for local, original in refinement.source_bindings.items():
                 if code.endswith(":" + local) or code.endswith(":" + original):
@@ -245,8 +263,8 @@ def compile_payload_architecture(request):
     diagnostics = tuple(_gap("unsupported_semantics" if item.category != "contradiction" else "contradictory_requirements",
                              item.code, tuple("source:" + ref for ref in item.source_node_ids), (), item.message)
                         for item in execution.diagnostics)
-    alternatives = []
-    prefiltered = explored = retained_items = retained_bytes = 0
+    alternatives, match_instances = [], []
+    prefiltered = explored = retained_items = retained_bytes = match_states = 0
     baseline = PayloadArchitectureBuild(request.fingerprint, execution, None, None, (), diagnostics, "search_exhausted")
     # A source ledger which cannot itself fit cannot be made reviewable by
     # truncating candidate explanations. Preserve the existing strict boundary.
@@ -257,7 +275,8 @@ def compile_payload_architecture(request):
 
     def finish(status, plan=None, construction=None, extra=()):
         build = PayloadArchitectureBuild(request.fingerprint, execution, plan, construction,
-                                         tuple(alternatives), (*diagnostics, *extra), status)
+                                         tuple(alternatives), (*diagnostics, *extra), status,
+                                         match_instances=tuple(match_instances))
         try:
             build.to_json()
         except SerializationError as error:
@@ -270,7 +289,8 @@ def compile_payload_architecture(request):
                 "The selected construction exceeds the bounded reviewable output; retained candidate records remain available. "
                 + str(error))
             build = PayloadArchitectureBuild(request.fingerprint, execution, None, None,
-                tuple(alternatives), (*diagnostics, budget_gap), "search_exhausted")
+                tuple(alternatives), (*diagnostics, budget_gap), "search_exhausted",
+                match_instances=tuple(match_instances))
             build.to_json()
         from biocompiler.verification.payload_architecture import check_payload_architecture
         receipt = check_payload_architecture(build, expected_request=request)
@@ -287,6 +307,16 @@ def compile_payload_architecture(request):
         retained_bytes += size
         return True
 
+    def retain_instance(instance):
+        nonlocal retained_items, retained_bytes
+        items, size = _receipt_cost(instance.to_dict(), nested=True)
+        if retained_items + items > item_budget or retained_bytes + size > byte_budget:
+            return False
+        match_instances.append(instance)
+        retained_items += items
+        retained_bytes += size
+        return True
+
     def retention_exhausted(candidate_ids):
         return finish("search_exhausted", extra=(_gap("search_budget_exhausted", "architecture_record_budget_exhausted", (),
             candidate_ids,
@@ -299,12 +329,45 @@ def compile_payload_architecture(request):
     choices = []
     for refinement in request.library.refinements:
         prefiltered += 1
-        gaps = _pattern_gaps(refinement, execution)
+        exhausted = False
+        if refinement.match_policy is None:
+            gaps = _pattern_gaps(refinement, execution)
+            instances = () if gaps else (ArchitectureRefinementInstance(
+                refinement.id, refinement.id, refinement.source_bindings),)
+        else:
+            result = match_architecture_refinement(refinement, execution.behavior, circuit=request.circuit,
+                max_states=request.constraints.max_match_states - match_states,
+                max_instances=request.constraints.max_match_instances - len(match_instances))
+            match_states += result.states_examined
+            instances, exhausted = result.instances, result.exhausted
+            gaps = [_gap("missing_implementation", code, (), (refinement.id,))
+                    for code in result.diagnostics if not exhausted]
+        for instance in instances:
+            if any(item.id == instance.id for item in match_instances):
+                return finish("unsupported", extra=(_gap("contradictory_requirements",
+                    "architecture_instance_identity_collision", (), (instance.id,),
+                    "Two supplied correspondences produce the same architecture instance identity; "
+                    "the library cannot be searched without ambiguity. No selected payload is emitted."),))
+            if len(match_instances) >= request.constraints.max_match_instances:
+                return finish("search_exhausted", extra=(_gap("search_budget_exhausted",
+                    "architecture_matching_instance_budget_exhausted", (), (refinement.id,),
+                    f"Retained {len(match_instances)} complete instances; the request-wide instance bound prevents another candidate."),))
+            if not retain_instance(instance):
+                return finish("search_exhausted", extra=(_gap("search_budget_exhausted",
+                    "architecture_matching_record_budget_exhausted", (), (instance.id,),
+                    f"Retained {len(match_instances)} complete mappings after {match_states} node-pair checks; "
+                    "the next mapping exceeds the bounded matching/alternative receipt. No selected payload is emitted."),))
+            choices.append(instantiate_architecture_refinement(refinement, instance))
+        if exhausted:
+            return finish("search_exhausted", extra=tuple(_gap("search_budget_exhausted", code, (), (refinement.id,),
+                f"Examined {match_states} node-pair constraints across {prefiltered} supplied refinements; "
+                f"retained {len(match_instances)} complete mappings. Matching is incomplete and no selected payload is emitted.")
+                for code in result.diagnostics))
         if gaps:
             if not retain(ArchitectureAlternative((refinement.id,), tuple(gaps))):
                 return retention_exhausted((refinement.id,))
-        else:
-            choices.append(refinement)
+    choices.sort(key=lambda item: item.id)
+    instances_by_id = {item.id: item for item in match_instances}
     total = (1 << len(choices)) - 1
     candidates = (selected for size in range(1, len(choices) + 1) for selected in combinations(choices, size))
     winner = None
@@ -315,7 +378,8 @@ def compile_payload_architecture(request):
         plan = construction = None
         if not gaps:
             try:
-                plan = _plan(selected, execution, request)
+                plan = _plan(selected, execution, request,
+                             instances=tuple(instances_by_id[ref.id] for ref in selected))
                 construction = _construct(selected, request)
                 if not construction.assessment.passed or not construction.assessment.complete:
                     gaps.append(_gap("missing_sequence_authority", "incomplete_construction", (), identifiers,
@@ -323,7 +387,7 @@ def compile_payload_architecture(request):
                 else:
                     from biocompiler.verification.payload_architecture import check_payload_architecture
                     trial = PayloadArchitectureBuild(request.fingerprint, execution, plan, construction, (), diagnostics,
-                                                     "partial")
+                                                     "partial", match_instances=tuple(match_instances))
                     receipt = check_payload_architecture(trial, expected_request=request)
                     if not receipt.passed:
                         gaps.extend(_candidate_gaps(receipt, selected, request))
@@ -338,7 +402,8 @@ def compile_payload_architecture(request):
         if not gaps:
             preference = request.constraints.preferred_refinement_ids
             delivered = _delivered(construction)
-            score = (sum(preference.index(ref.id) if ref.id in preference else len(preference) for ref in selected),
+            origins = tuple(instances_by_id[ref.id].refinement_id for ref in selected)
+            score = (sum(preference.index(identity) if identity in preference else len(preference) for identity in origins),
                      len(delivered), sum(len(member.sequence) for member in delivered), identifiers)
             if winner is None or score < winner[0]:
                 winner = (score, plan, construction, receipt)
