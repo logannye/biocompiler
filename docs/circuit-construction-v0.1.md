@@ -47,7 +47,7 @@ reused after request, candidate, checker or profile changes.
 | Transcription | Explicit coding-strand DNA-to-RNA mapping over a supported path; no inferred transcript ends. |
 | RNA or protein cleavage | Explicit products and boundaries in the correct alphabet; all outputs of a step publish together. |
 | RNA or protein splicing | Explicit ordered forward source spans; current execution requires increasing, nonoverlapping spans within each source and complete allocation across declared products. Reordered or repeated spans are rejected, not silently sorted. |
-| Circularization | Declared junction, topology and coordinate correspondence; the nominated source origin is preserved. |
+| Circularization | Linear RNA to circular RNA with declared junction, origin and coordinate correspondence; no silent origin rotation. |
 | Base editing | Canonical substitutions and chemical changes are separate. A chemical inosine declaration retains its canonical parent A; it does not silently emit G. |
 | Ordinary translation | Forward contiguous RNA region, literal AUG, standard code, frame and terminal stop; no alternative initiation inferred. |
 | Conditional translation | Explicit codon outcomes bound to declared assumptions; these are conditional structural checks, not a derived sensor mechanism. No-product branch semantics remain unsupported. |
@@ -60,18 +60,22 @@ The public translation policy is `CircuitTranslationPolicy`; the older
 translation and absence semantics require later mechanism authority. R4 provides
 the bounded primitives, not a biological family implementation.
 
-Chemistry inheritance is allowed only for unchanged complete declarations with
-identity correspondence. Other transformations explicitly dispose of every
-incoming chemistry facet and feature. A declared replacement specifies product
+Exact whole-value chemistry inheritance requires unchanged complete declarations
+with identity correspondence. Checked `mapped_copy` dispositions can retain
+chemistry through declared coordinate transformations. Other transformations
+explicitly dispose of every incoming chemistry facet and feature. A declared replacement specifies product
 chemistry; it does not prove the material's biochemical fate. Unknown chemistry
 cannot acquire a complete nominal identity from matching bases alone.
 
 ## Payload forms and completeness
 
-| Requested form | Topology | Required alphabet |
+| Final covalent member form | Topology | Required alphabet |
 | --- | --- | --- |
 | `delivered_rna` | linear or circular | RNA |
 | `delivered_dna` | linear or circular | DNA |
+
+The circuit request's `circular_rna` alias binds the `delivered_rna` member form
+with circular topology. The member keeps these form and topology fields separate.
 
 Each distinct covalent requested payload needs its own
 `PayloadStructureContract`, with explicit required feature identities/kinds and

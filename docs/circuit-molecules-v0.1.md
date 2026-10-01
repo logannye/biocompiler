@@ -65,8 +65,9 @@ Assembly is an ordered partition of the supplied spelling. Each `AssemblyOrigin`
 has one nonempty forward contiguous destination span, a complete source frame,
 an oriented source path and provenance. Destinations cover `[0,length)` exactly
 once, with no gaps or duplication. Source and destination counts and alphabets
-must agree. The origin is still a declared relationship; R4 must independently
-check actual source bytes and transformations.
+must agree. The origin is still a declared relationship; the separate
+[R4 construction workflow](circuit-construction-v0.1.md) independently checks
+actual supplied source bytes and transformations.
 
 `MoleculeFeature` is independent of this partition. Repeated motifs retain
 separate occurrence IDs; CDS, regulatory and structural annotations may overlap.

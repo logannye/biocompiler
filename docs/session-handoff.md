@@ -9,9 +9,15 @@ merged; the active branch is `codex/r4-checked-transformations` from checkpoint
 
 R4 `0.1.0.dev24` now includes the producer/checker preflight fixes, public
 workflow/atomic-publication regressions, [construction guide](circuit-construction-v0.1.md)
-and installed-package hosted CI workflow outside the checkout. The full local
-pure-Python suite and exact-revision hosted gates are pending. Do not merge until
-all required checks pass. No local native build or package installation is used.
+and installed-package hosted CI workflow outside the checkout. All **1,528 local
+pure-Python tests (232 new)** pass on Python 3.14.6, macOS arm64; Ruff, the frozen
+benchmark audit, 325 documentation links and the source CLI smoke outside the
+checkout also pass. [PR #31](https://github.com/logannye/biocompiler/pull/31)
+records exact-head hosted Python 3.11/3.14 package/example/CLI and installed
+browser validation. Before merging, require every final-revision gate to pass,
+retain the tested head/PR merge/platform receipt outside the repository, and
+verify the merged tree matches. No local native build or package installation
+is used.
 
 The retained [checkpoint](r4-work-in-progress.md) is historical. Its former stop
 instruction has been superseded by the user's explicit resumption. Human-only

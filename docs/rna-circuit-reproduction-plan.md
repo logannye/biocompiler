@@ -3,8 +3,8 @@
 Date: 2026-09-30. Baseline: `0.1.0.dev19`, merged revision
 `0dbae3ca0e0821b64a3579f61a83aa15ee41be52`.
 
-**Status: R0, R2 and R3 complete within their scope/claim contracts. R4 software
-implementation awaits final hosted acceptance; R1 and R5–R13 remain open.**
+**Status: R0, R2, R3 and R4 software scopes are implemented. R1 and R5–R13 remain
+open. Each milestone merge requires its exact-revision hosted acceptance.**
 R0 adds the scope and claim contracts documented in the
 [profile guide](human-circuit-profile-v0.1.md). No literature record is promoted
 to a verified molecular reference.
@@ -460,8 +460,10 @@ when an attacker updates the package's self-reported hashes.
 
 **Implementation:** `0.1.0.dev24` implements the bounded supplied-construction
 profile described in the [R4 guide](circuit-construction-v0.1.md). Checked boxes
-record the primitive software scope, pending exact-revision hosted acceptance
-before milestone merge. Complete external root/operation authority is replayed
+record the primitive software scope; [PR #31](https://github.com/logannye/biocompiler/pull/31)
+records the exact-revision hosted acceptance required before milestone merge.
+All 1,528 local Python tests, Ruff and frozen benchmark audit pass. Complete
+external root/operation authority is replayed
 independently; strict complete-set JSON export retains all authority. No-product
 conditional branches, alternative translation initiation and nonincreasing
 splicing paths remain explicit unsupported cases. Later family authority must
