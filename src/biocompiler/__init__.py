@@ -1,6 +1,14 @@
 """Author inspectable therapeutic programs for in-vivo immune-cell engineering."""
 
-__version__ = "0.1.0.dev25"
+__version__ = "0.1.0.dev26"
+
+from biocompiler.artifacts.circuit_review import CircuitReviewAuthority, CircuitReviewManifest
+from biocompiler.artifacts.circuit_review_bundle import (
+    CircuitReviewBundle, create_circuit_review_bundle, publish_circuit_review_bundle,
+)
+from biocompiler.verification.circuit_review import (
+    inspect_circuit_review_bundle, verify_circuit_review_bundle,
+)
 
 from biocompiler.ir.circuit_bindings import CircuitBindingRequest, CircuitEntityBinding
 from biocompiler.verification.circuit_bindings import (
@@ -480,6 +488,9 @@ from biocompiler.verification.realization import (
 )
 
 __all__ = [
+    "CircuitReviewAuthority", "CircuitReviewManifest", "CircuitReviewBundle",
+    "create_circuit_review_bundle", "publish_circuit_review_bundle",
+    "inspect_circuit_review_bundle", "verify_circuit_review_bundle",
     "CircuitBindingRequest", "CircuitEntityBinding", "CircuitBindingAssessment",
     "check_circuit_bindings", "verify_circuit_binding_assessment",
     "CircuitEvidenceObservationBinding", "CircuitEvidenceSource", "CircuitEvidenceRequest",

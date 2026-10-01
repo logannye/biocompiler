@@ -97,6 +97,14 @@ Software, reviewed reference correspondence and human applicability have separat
 acceptance tracks. R1 and R5–R13 remain open; source-backed reconstruction, family
 semantics and human admission are not established.
 
+[Portable circuit review bundles](circuit-review-bundles-v0.1.md) retain those
+artifacts as bounded canonical archives. A schema-neutral ZIP codec is shared
+with existing packages so the review checker never imports producer-dependent
+profile dispatch. External complete authority and a pinned historical evidence
+receipt are required for fresh replay. Run metadata stays outside the canonical
+identity. Studio uses the existing independent checkers for source gaps, nominal
+bindings and evidence freshness; it never supplies a second compiler.
+
 | Layer | Representation | Preservation obligation |
 | --- | --- | --- |
 | Python frontend | Declarative biological operations authored through the typed Python DSL | Separate design-time Python control flow from intended biological control flow. |

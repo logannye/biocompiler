@@ -34,6 +34,7 @@ jobs:
         env:
           INFRA_OUTPUT: ${{ github.workspace }}/generated/circuit-infrastructure-ci
           SOURCE_OUTPUT: ${{ github.workspace }}/generated/circuit-sources-ci
+          REVIEW_OUTPUT: ${{ github.workspace }}/generated/circuit-review-ci
         run: |
           python "$GITHUB_WORKSPACE/examples/circuit_sources.py" --output "$SOURCE_OUTPUT"
           biocompiler circuit-sources-check --inventory "$SOURCE_OUTPUT/inventory.json" --output "$SOURCE_OUTPUT/cli.assessment.json"
@@ -47,6 +48,12 @@ jobs:
           biocompiler circuit-evidence-verify "$INFRA_OUTPUT/cli.evidence-assessment.json" --receipt "$INFRA_OUTPUT/cli.evidence-receipt.json" --build "$INFRA_OUTPUT/build.json" --expected-request "$INFRA_OUTPUT/evidence-request.json"
           biocompiler circuit-inspect "$INFRA_OUTPUT/build.json" --expected-request "$INFRA_OUTPUT/request.json" --output "$INFRA_OUTPUT/cli.inspection.json"
           biocompiler circuit-diff "$INFRA_OUTPUT/build.json" "$INFRA_OUTPUT/build.json" --expected-before "$INFRA_OUTPUT/request.json" --expected-after "$INFRA_OUTPUT/request.json" --output "$INFRA_OUTPUT/cli.diff.json"
+          python "$GITHUB_WORKSPACE/examples/circuit_review.py" --output "$REVIEW_OUTPUT"
+          biocompiler circuit-review-create "$REVIEW_OUTPUT/build.json" --expected-authority "$REVIEW_OUTPUT/authority.json" --source-assessment "$REVIEW_OUTPUT/source-assessment.json" --binding-assessment "$REVIEW_OUTPUT/binding-assessment.json" --evidence-receipt "$REVIEW_OUTPUT/evidence-receipt.json" --evidence-assessment "$REVIEW_OUTPUT/evidence-assessment.json" --output "$REVIEW_OUTPUT/cli.review.bcb"
+          biocompiler circuit-review-inspect "$REVIEW_OUTPUT/cli.review.bcb" --output "$REVIEW_OUTPUT/inspection.json"
+          biocompiler circuit-review-verify "$REVIEW_OUTPUT/cli.review.bcb" --expected-authority "$REVIEW_OUTPUT/authority.json" --output "$REVIEW_OUTPUT/cli.verification.json"
+          biocompiler inspect "$REVIEW_OUTPUT/authority.json"
+          python -c "import os, pathlib; p = pathlib.Path(os.environ['REVIEW_OUTPUT']); assert (p / 'review.bcb').read_bytes() == (p / 'cli.review.bcb').read_bytes(); assert (p / 'verification.json').read_bytes() == (p / 'cli.verification.json').read_bytes()"
       - name: Retain infrastructure contract evidence
         if: always()
         uses: actions/upload-artifact@v4
@@ -55,6 +62,7 @@ jobs:
           path: |
             generated/circuit-infrastructure-ci/
             generated/circuit-sources-ci/
+            generated/circuit-review-ci/
           if-no-files-found: ignore
           retention-days: 7
       - name: Build and replay supplied circuit constructions outside the checkout
@@ -374,7 +382,7 @@ jobs:
           from pathlib import Path
           roots = [Path('artifacts/python311'), Path('artifacts/python314')]
           manifests = [{str(p.relative_to(root)): hashlib.sha256(p.read_bytes()).hexdigest()
-                        for p in root.rglob('*.json')} for root in roots]
+                        for p in root.rglob('*') if p.is_file()} for root in roots]
           assert manifests[0], 'Missing infrastructure artifacts'
           assert manifests[0] == manifests[1], 'Cross-Python infrastructure artifacts differ'
           for name, digest in sorted(manifests[0].items()):
@@ -411,10 +419,21 @@ jobs:
           NODE_PATH: ${{ github.workspace }}/generated/browser-tools/node_modules
           STUDIO_TEST_OUTPUT: ${{ github.workspace }}/generated/studio-browser-ci
           CIRCUIT_INFRASTRUCTURE_OUTPUT: ${{ github.workspace }}/generated/circuit-infrastructure-ci
+          CIRCUIT_SOURCES_OUTPUT: ${{ github.workspace }}/generated/circuit-sources-ci
+          CONSTRUCTION_BROWSER_SUITE: inspection
         run: |
           cd "$RUNNER_TEMP"
           python "$GITHUB_WORKSPACE/examples/circuit_infrastructure.py" --output "$CIRCUIT_INFRASTRUCTURE_OUTPUT"
+          python "$GITHUB_WORKSPACE/examples/circuit_sources.py" --output "$CIRCUIT_SOURCES_OUTPUT"
           node "$GITHUB_WORKSPACE/tests/browser/construction.cjs"
+      - name: Exercise current source binding and evidence review in a browser
+        env:
+          NODE_PATH: ${{ github.workspace }}/generated/browser-tools/node_modules
+          STUDIO_TEST_OUTPUT: ${{ github.workspace }}/generated/studio-browser-ci
+          CIRCUIT_INFRASTRUCTURE_OUTPUT: ${{ github.workspace }}/generated/circuit-infrastructure-ci
+          CIRCUIT_SOURCES_OUTPUT: ${{ github.workspace }}/generated/circuit-sources-ci
+          CONSTRUCTION_BROWSER_SUITE: review
+        run: node tests/browser/construction.cjs
       - name: Retain GUI screenshots and verification evidence
         if: always()
         uses: actions/upload-artifact@v4

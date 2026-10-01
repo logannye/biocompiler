@@ -679,6 +679,12 @@ checks, model predictions and empirical support remain separately inspectable.
 Primary areas: `compiler/workflow.py`, `__init__.py`, CLI, `artifacts/`, studio,
 `examples/` and user documentation.
 
+**Independent support increment:** [portable review bundles](circuit-review-bundles-v0.1.md)
+in `0.1.0.dev26` package existing construction and metadata records, replay them
+against separately retained authority, and expose source gaps, nominal bindings
+and evidence freshness in Studio. This provisional software profile does not
+complete the family archive, integrated authoring workflow or R6a dependency.
+
 - [ ] Add the frozen circuit request to public `bc.compile(...)` dispatch and
   expose one consistent build/inspect/verify/export workflow in Python and CLI.
   Return field/source-linked diagnostics for every unsupported obligation.

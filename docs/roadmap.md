@@ -25,6 +25,12 @@ This is a scoped software increment. Reviewed reference correspondence and human
 biological applicability remain separate; R1 and R5–R13 remain open. No
 source-derived molecular mechanism or therapeutic admission is added.
 
+[Portable review bundles](circuit-review-bundles-v0.1.md) in `0.1.0.dev26`
+continue R1/R12/R13 support: deterministic retained-record packages, external
+authority replay, and source/binding/evidence views in Studio. The first complete
+admissible source case remains missing. Integrated family semantics and exports
+still follow R6a; this increment closes neither their implementation nor evidence gates.
+
 The [M11.1 audit](m11-human-benchmark-audit.md) records the current candidate
 comparison and explicit therapeutic-benchmark deferral. M11.1 is complete within
 that audit scope; M11.2–M11.6 remain open. A separate code-only track adds

@@ -9,6 +9,13 @@ import sys
 import tempfile
 
 from biocompiler import __version__
+from biocompiler.artifacts.circuit_review import CircuitReviewAuthority, CircuitReviewManifest, MAX_AUTHORITY_BYTES
+from biocompiler.artifacts.circuit_review_bundle import (
+    create_circuit_review_bundle, publish_circuit_review_bundle,
+)
+from biocompiler.verification.circuit_review import (
+    inspect_circuit_review_bundle, verify_circuit_review_bundle,
+)
 from biocompiler.ir.circuit_bindings import CircuitBindingRequest, CircuitEntityBinding
 from biocompiler.verification.circuit_bindings import (
     CircuitBindingAssessment, check_circuit_bindings, verify_circuit_binding_assessment,
@@ -213,6 +220,7 @@ from biocompiler.verification.exploration import (
 
 
 _CIRCUIT_INFRASTRUCTURE_TYPES = (
+    CircuitReviewAuthority, CircuitReviewManifest,
     CircuitBindingRequest, CircuitEntityBinding, CircuitBindingAssessment,
     CircuitEvidenceObservationBinding, CircuitEvidenceSource, CircuitEvidenceRequest,
     CircuitEvidenceSourceReceipt, CircuitEvidenceReceipt,
@@ -380,6 +388,12 @@ def _summary(artifact):
         "schema_version": artifact.schema_version,
         "fingerprint": artifact.fingerprint,
     }
+    if isinstance(artifact, (CircuitReviewAuthority, CircuitReviewManifest)):
+        summary.update(
+            scope="retained_circuit_review", verification="not_replayed",
+            reviewed_reference_correspondence="not_established",
+            human_biological_applicability="unassessed", human_admission="not_admitted",
+        )
     if isinstance(artifact, (SourceDocument, SourceGap, CircuitSourceCase, SourceReview, CircuitSourceInventory, CircuitSourcesAssessment)):
         summary.update(
             scope="source_metadata_only", source_bytes="not_checked",
@@ -1092,6 +1106,7 @@ def main(argv: Sequence[str] | None = None) -> int:
 
 
 _CIRCUIT_INFRASTRUCTURE_COMMANDS = frozenset({
+    "circuit-review-create", "circuit-review-inspect", "circuit-review-verify",
     "circuit-inspect", "circuit-diff", "circuit-sources-check", "circuit-sources-verify",
     "circuit-sources-readiness", "circuit-bindings-check", "circuit-bindings-verify",
     "circuit-evidence-capture", "circuit-evidence-check", "circuit-evidence-verify",
@@ -1099,6 +1114,21 @@ _CIRCUIT_INFRASTRUCTURE_COMMANDS = frozenset({
 
 
 def _register_circuit_infrastructure_commands(commands):
+    for operation in ("create", "inspect", "verify"):
+        command = commands.add_parser(
+            "circuit-review-" + operation,
+            help="Package or review retained circuit records without granting biological acceptance",
+        )
+        command.add_argument("path", type=Path, help="Retained build JSON for create; review .bcb archive otherwise")
+        command.add_argument("--output", type=Path, required=operation == "create")
+        if operation != "inspect":
+            command.add_argument("--expected-authority", type=Path, required=True,
+                                 help="Separately retained complete CircuitReviewAuthority JSON")
+        if operation == "create":
+            command.add_argument("--source-assessment", type=Path)
+            command.add_argument("--binding-assessment", type=Path)
+            command.add_argument("--evidence-receipt", type=Path)
+            command.add_argument("--evidence-assessment", type=Path)
     command = commands.add_parser("circuit-inspect", help="Inspect a retained construction without inferring biological function")
     command.add_argument("path", type=Path)
     command.add_argument("--expected-request", type=Path)
@@ -1151,6 +1181,8 @@ class _InspectionReport:
 
 
 def _circuit_infrastructure_command(args):
+    if args.command.startswith("circuit-review-"):
+        return _circuit_review_command(args)
     def read(cls, path, limit=4_000_000):
         return cls.from_json(_bounded_text(path, limit))
 
@@ -1212,6 +1244,55 @@ def _circuit_infrastructure_command(args):
         _publish_report(report, destination, inputs=protected)
         print(json.dumps(summary, sort_keys=True, indent=2))
         return code
+    except (BiocompilerError, OSError, ValueError, TypeError, RecursionError) as error:
+        print(str(error), file=sys.stderr)
+        return 2
+
+
+def _circuit_review_command(args):
+    """Offline review archives require external authority even after relocation."""
+    def read(cls, path):
+        limit = MAX_AUTHORITY_BYTES if cls is CircuitReviewAuthority else 16 * 1024 * 1024
+        return cls.from_json(_bounded_text(path, limit))
+
+    try:
+        inputs = tuple(value for key, value in vars(args).items()
+                       if key != "output" and isinstance(value, Path))
+        if args.output is not None and args.output.resolve() in {p.resolve() for p in inputs}:
+            raise SerializationError("A review output cannot overwrite its independent input authority.")
+        if args.command == "circuit-review-create":
+            authority = read(CircuitReviewAuthority, args.expected_authority)
+            records = {}
+            for name, cls in (
+                ("source_assessment", CircuitSourcesAssessment),
+                ("binding_assessment", CircuitBindingAssessment),
+                ("evidence_receipt", CircuitEvidenceReceipt),
+                ("evidence_assessment", CircuitEvidenceAssessment),
+            ):
+                path = getattr(args, name)
+                records[name] = None if path is None else read(cls, path)
+            bundle = create_circuit_review_bundle(
+                read(CircuitConstructionBuild, args.path),
+                expected_authority=authority, **records,
+            )
+            publish_circuit_review_bundle(bundle, args.output, expected_authority=authority)
+            summary = verify_circuit_review_bundle(bundle.data, expected_authority=authority)
+        else:
+            with args.path.open("rb") as source:
+                data = source.read(64 * 1024 * 1024 + 1)
+            if len(data) > 64 * 1024 * 1024:
+                raise SerializationError("Circuit review archive exceeds the size limit.")
+            if args.command == "circuit-review-inspect":
+                summary = inspect_circuit_review_bundle(data)
+            else:
+                summary = verify_circuit_review_bundle(
+                    data, expected_authority=read(CircuitReviewAuthority, args.expected_authority),
+                )
+            _publish_report(_InspectionReport(summary), args.output, inputs=inputs)
+        print(json.dumps(summary, sort_keys=True, indent=2))
+        # Successful replay describes agreement, including honest failures and
+        # unsupported claims. Inspect individual tracks for scientific status.
+        return 0
     except (BiocompilerError, OSError, ValueError, TypeError, RecursionError) as error:
         print(str(error), file=sys.stderr)
         return 2

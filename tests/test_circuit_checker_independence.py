@@ -14,6 +14,7 @@ import unittest
 
 SOURCE_ROOT = Path(__file__).resolve().parents[1] / "src"
 CHECKERS = (
+    "biocompiler.verification.circuit_review",
     "biocompiler.verification.circuit_sources",
     "biocompiler.verification.circuit_bindings",
     "biocompiler.verification.circuit_evidence",

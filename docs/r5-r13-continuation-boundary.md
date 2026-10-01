@@ -15,6 +15,12 @@ lossless save/reopen, and R13 adversarial/independence/hosted gates. These are
 scoped engineering deliverables, not completion of the source-dependent milestones.
 Artificial fixtures test the software contracts only.
 
+The [portable review increment](circuit-review-bundles-v0.1.md) in `0.1.0.dev26`
+packages existing records with separate external authority, independent offline
+replay and deterministic container validation. Studio exposes source gaps,
+nominal bindings and evidence freshness. This support work does not freeze the
+R12 family archive interface or close any reviewed-reference or human-applicability gate.
+
 R5's nominal binding layer can proceed from R2/R4. Actual family semantics and
 integrated family workflows still require the R6a reviewed case and their own
 evidence. The [first-case readiness record](r6a-reference-readiness.md) lists the

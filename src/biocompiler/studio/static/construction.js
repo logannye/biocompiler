@@ -6,7 +6,8 @@
   let token = null, revision = 0, inspected = null, controller = null;
   const rawFiles = new Map();
   const fileReads = new Map();
-  const inputs = ['build-json', 'authority-json', 'build-file', 'authority-file'];
+  const records = ['build', 'authority', 'source-inventory', 'binding-request', 'evidence-request', 'evidence-receipt'];
+  const inputs = records.flatMap(id => [id + '-json', id + '-file']);
   function invalidate(message = 'Inputs changed. Inspect again before saving.') {
     revision += 1;
     controller?.abort(); controller = null; inspected = null;
@@ -21,11 +22,14 @@
       const raw = rawFiles.get(id), value = $(id).value;
       return raw && raw.view === value ? raw.text : value;
     };
-    const build = original('build-json'), authority = original('authority-json');
-    for (const text of [build, authority]) {
+    const documents = Object.fromEntries(records.map(id => [id, original(id + '-json')]));
+    for (const text of Object.values(documents)) {
       if (new TextEncoder().encode(text).length > maxBytes) throw new Error('Each input must be at most 1 MiB.');
     }
-    return { build_json: build, expected_request_json: authority.trim() ? authority : null };
+    const optional = id => documents[id].trim() ? documents[id] : null;
+    return { build_json: documents.build, expected_request_json: optional('authority'),
+      review: Object.fromEntries(records.slice(2).map(id => [id.replaceAll('-', '_') + '_json', optional(id)])),
+    };
   }
   async function post(route, body, signal) {
     const document = JSON.stringify(body);
@@ -46,6 +50,32 @@
     }
     $(id).replaceChildren(fragment);
   }
+  function list(id, values, fallback) {
+    $(id).replaceChildren(...(values.length ? values : [fallback]).map(text => {
+      const item = document.createElement('li'); item.textContent = text; return item;
+    }));
+  }
+  function renderReview(review) {
+    const source = review.sources, bindings = review.bindings, evidence = review.evidence;
+    $('software-track').textContent = 'See each current structural, metadata and nominal check below.';
+    $('reference-track').textContent = 'Not established';
+    $('human-track').textContent = 'Unassessed; human therapeutic admission is not granted.';
+    $('prediction-track').textContent = 'Unsupported';
+    const readiness = source.readiness;
+    $('source-status').textContent = readiness ? 'Metadata consistency: ' + readiness.metadata_consistency + '. Reference case readiness: not established.' : 'Not checked — current source inventory is missing.';
+    list('source-diagnostics', readiness?.diagnostics || [], readiness ? 'No metadata consistency diagnostics. Scientific acceptance remains unresolved.' : 'Supply an inventory to inspect its metadata and missing fields.');
+    rows('source-gaps', (readiness?.cases || []).flatMap(c => c.fields.map(f => [c.case_id, f.field, f.availability + ' (unverified)', f.note])));
+    $('source-details').textContent = JSON.stringify(readiness || { status: source.status }, null, 2);
+    $('binding-status').textContent = bindings.assessment ? 'Nominal correspondence: ' + bindings.assessment.outcome + '.' : 'Not checked — independent binding authority is missing.';
+    rows('binding-rows', bindings.bindings.map(b => [b.requirement_id, b.source_kind + ': ' + b.source_id, b.construction_requirement_id, b.role_id]));
+    list('binding-diagnostics', bindings.assessment?.diagnostics || [], bindings.assessment ? 'No nominal binding diagnostics.' : 'Supply the complete binding request to check requirement and role correspondence.');
+    $('binding-details').textContent = JSON.stringify(bindings, null, 2);
+    const missing = { missing_authority: 'Not checked — current independent evidence authority is missing.', missing_receipt: 'Not checked — historical evidence receipt is missing.' };
+    $('evidence-status').textContent = missing[evidence.status] || 'Dependency freshness: ' + evidence.status + '. Model prediction: unsupported.';
+    rows('evidence-dependencies', (evidence.dependencies || []).map(d => [d.id, d.status]));
+    rows('evidence-sources', evidence.sources.map(s => [s.id, s.kind, s.use, s.observations.map(o => o.requirement_id + ': ' + o.observation_id).join('; ') || 'None declared']));
+    $('evidence-details').textContent = JSON.stringify(evidence, null, 2);
+  }
   function render(report) {
     $('identity').textContent = report.build_fingerprint;
     $('stored-outcome').textContent = report.stored_assessment.outcome + ' (historical)';
@@ -58,10 +88,11 @@
     $('diagnostics').replaceChildren(...(diagnostics.length ? diagnostics : ['No structural diagnostics recorded. Biological function and human admission remain unresolved.']).map(text => { const item = document.createElement('li'); item.textContent = text; return item; }));
     $('maps').textContent = JSON.stringify({roots: report.roots, steps: report.steps, values: report.values, molecules: report.molecules, complexes: report.complexes, amounts: report.amounts}, null, 2);
     $('authority-view').textContent = JSON.stringify({request: report.request, claims: report.claims}, null, 2);
+    renderReview(report.review);
     $('empty').hidden = true; $('result').hidden = false;
   }
-  for (const id of ['build-json', 'authority-json']) $(id).addEventListener('input', () => { fileReads.delete(id); rawFiles.delete(id); invalidate(); });
-  for (const [fileId, textId] of [['build-file', 'build-json'], ['authority-file', 'authority-json']]) {
+  for (const id of records.map(name => name + '-json')) $(id).addEventListener('input', () => { fileReads.delete(id); rawFiles.delete(id); invalidate(); });
+  for (const [fileId, textId] of records.map(name => [name + '-file', name + '-json'])) {
     $(fileId).addEventListener('change', async () => {
       const readId = {}, file = $(fileId).files[0];
       rawFiles.delete(textId); fileReads.delete(textId); $(textId).value = '';

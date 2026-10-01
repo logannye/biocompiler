@@ -279,7 +279,7 @@ class BuildArchiveTests(unittest.TestCase):
             MAX_MEMBER_BYTES + 1,
         )
         with patch(
-            "biocompiler.artifacts.archive.zipfile.ZipFile.read",
+            "biocompiler.artifacts.archive_container.zipfile.ZipFile.read",
             side_effect=AssertionError("payload read before bound"),
         ):
             with self.assertRaisesRegex(SerializationError, "size limit"):
@@ -300,7 +300,7 @@ class BuildArchiveTests(unittest.TestCase):
             changed = bytearray(encoded)
             struct.pack_into("<HH", changed, len(changed) - 22 + 8, count, count)
             with patch(
-                "biocompiler.artifacts.archive.zipfile.ZipFile",
+                "biocompiler.artifacts.archive_container.zipfile.ZipFile",
                 side_effect=AssertionError("ZipFile opened before count validation"),
             ):
                 with self.subTest(count=count), self.assertRaises(SerializationError):
@@ -309,16 +309,16 @@ class BuildArchiveTests(unittest.TestCase):
     def test_member_archive_metadata_and_path_limits_are_bounded(self):
         manifest, files = archive_fixture()
         encoded = assemble_archive(manifest, files)
-        with patch("biocompiler.artifacts.archive.MAX_ARCHIVE_BYTES", len(encoded) - 1):
+        with patch("biocompiler.artifacts.archive_container.MAX_ARCHIVE_BYTES", len(encoded) - 1):
             with self.assertRaises(SerializationError):
                 read_archive(encoded)
-        with patch("biocompiler.artifacts.archive.MAX_METADATA_BYTES", 1):
+        with patch("biocompiler.artifacts.archive_container.MAX_METADATA_BYTES", 1):
             with self.assertRaises(SerializationError):
                 assemble_archive(manifest, files)
-        with patch("biocompiler.artifacts.archive.MAX_MEMBER_BYTES", 1):
+        with patch("biocompiler.artifacts.archive_container.MAX_MEMBER_BYTES", 1):
             with self.assertRaises(SerializationError):
                 assemble_archive(manifest, files)
-        with patch("biocompiler.artifacts.archive.MAX_ENTRIES", 1):
+        with patch("biocompiler.artifacts.archive_container.MAX_ENTRIES", 1):
             with self.assertRaises(SerializationError):
                 assemble_archive(manifest, files)
         with self.assertRaises(SerializationError):
@@ -351,7 +351,7 @@ class ArchivePublicationTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "reference.bcb"
             path.write_bytes(self.original)
-            with patch("biocompiler.artifacts.archive.tempfile.mkstemp") as temporary:
+            with patch("biocompiler.artifacts.archive_container.tempfile.mkstemp") as temporary:
                 with self.assertRaises(SerializationError):
                     write_archive_atomic(path, self.updated + b"invalid")
                 temporary.assert_not_called()
@@ -372,7 +372,7 @@ class ArchivePublicationTests(unittest.TestCase):
                 path = Path(directory) / "reference.bcb"
                 path.write_bytes(self.original)
                 with patch(
-                    "biocompiler.artifacts.archive." + operation, side_effect=error
+                    "biocompiler.artifacts.archive_container." + operation, side_effect=error
                 ):
                     with self.assertRaises(type(error)):
                         write_archive_atomic(path, self.updated)
@@ -398,7 +398,7 @@ class ArchivePublicationTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "reference.bcb"
             path.write_bytes(self.original)
-            with patch("biocompiler.artifacts.archive.os.fdopen", PartialWriter):
+            with patch("biocompiler.artifacts.archive_container.os.fdopen", PartialWriter):
                 with self.assertRaisesRegex(OSError, "Incomplete"):
                     write_archive_atomic(path, self.updated)
             self.assertEqual(path.read_bytes(), self.original)
@@ -410,7 +410,7 @@ class ArchivePublicationTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "reference.bcb"
             with patch(
-                "biocompiler.artifacts.archive.os.replace",
+                "biocompiler.artifacts.archive_container.os.replace",
                 side_effect=OSError("failed"),
             ):
                 with self.assertRaises(OSError):

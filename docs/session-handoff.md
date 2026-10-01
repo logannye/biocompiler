@@ -1,6 +1,28 @@
 # Session handoff and current resumption point
 
-## Current continuation — circuit authority infrastructure
+## Current continuation — portable circuit review
+
+PR32 is merged as `6be159fa43dd7d0fe247669fe4230503c4dc64ff`, version
+`0.1.0.dev25`. Its final head and PR-merge trees matched; all required final
+push/PR package, browser and cross-version gates passed, including 1,675 tests
+on Python 3.11.16/3.14.7. The subsequent main browser run reported an editor-fill
+timeout; this increment replaces large JSON editor setup with file imports and
+retains actual keyboard-edit invalidation coverage.
+
+The user authorized the next [portable review increment](circuit-review-bundles-v0.1.md).
+Branch `codex/circuit-review-bundles`, version `0.1.0.dev26`, adds canonical
+retained-record bundles, external complete authority plus historical receipt
+pins, independent replay and Studio source/binding/evidence views. Builds and
+installed validation remain hosted. Exact-revision gates must pass before merge;
+the PR and parent-workspace receipt retain the tested revisions and platforms.
+
+R1 and R5–R13 remain open. No admissible complete R6a case has been supplied,
+reviewed or reconstructed. The source-reconstruction restriction remains in
+force; no alternate route is attempted. All new controls are artificial software
+fixtures. Independent reference correspondence and human applicability remain
+separate from software implementation, and human admission is not granted.
+
+## Historical continuation — circuit authority infrastructure
 
 R4 is merged as [PR31](https://github.com/logannye/biocompiler/pull/31), merge
 `2815497a06740731db03d0010b7429f85318909e`. Final head
