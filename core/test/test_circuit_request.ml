@@ -112,7 +112,7 @@ let corpus path =
   let document = read_json path in
   check (get "schema_version" document = str "biocompiler.request_domains_conformance.v1") "Wrong request corpus schema";
   let cases = Json.array (get "cases" document) and rejections = Json.array (get "rejections" document) in
-  check (List.length cases >= 46 && List.length rejections >= 65) "Incomplete request conformance corpus";
+  check (List.length cases >= 49 && List.length rejections >= 62) "Incomplete request conformance corpus";
   let coverage = get "coverage" document in
   let kinds = List.map (fun item -> Json.string (get "record_kind" item)) cases |> List.sort_uniq String.compare in
   let declared key = Json.array (get key coverage) |> List.map Json.string |> List.sort String.compare in
@@ -120,11 +120,12 @@ let corpus path =
   check (kinds = supported && declared "supported_record_kinds" = supported && declared "covered_record_kinds" = kinds)
     "Request corpus omits or misstates a supported record kind";
   let unsupported_cases = List.filter (fun item -> get "expected_outcome" item = str "unsupported") rejections in
-  let unsupported_schemas = List.map (fun item -> get "input" item |> get "source_request" |> get "schema_version" |> Json.string) unsupported_cases
+  let wrapped_cases = List.filter (fun item -> String.starts_with ~prefix:"wrapped_" (Json.string (get "id" item))) cases in
+  let wrapped_schemas = List.map (fun item -> get "input" item |> get "source_request" |> get "schema_version" |> Json.string) wrapped_cases
     |> List.sort_uniq String.compare in
   let required_wrappers = ["biocompiler.human_acceptance_request.v0.1"; "biocompiler.human_behavior_request.v0.1"; "biocompiler.human_deployment_request.v0.1"] in
-  check (unsupported_schemas = required_wrappers && declared "deferred_source_schemas" = required_wrappers)
-    "Request corpus omits a deferred source wrapper";
+  check (unsupported_cases = [] && wrapped_schemas = required_wrappers && declared "wrapped_source_schemas" = required_wrappers)
+    "Request corpus omits a typed complete source wrapper";
   let variants = get "variants" coverage in
   let count key actual = check (Z.equal (Json.integer (get key variants)) (Z.of_int actual)) ("Incorrect corpus census: " ^ key) in
   count "positive_cases" (List.length cases);

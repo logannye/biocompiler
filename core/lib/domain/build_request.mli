@@ -14,6 +14,16 @@ module Target : sig
   val to_json : t -> Bioc_wire.Json.t
   val kind : t -> target_kind
   val fingerprint : t -> string
+  val compartments : t -> string list
+  val payload_format : t -> string
+end
+
+module Target_claim : sig
+  type t
+  val of_json : ?path:string -> Bioc_wire.Json.t -> t
+  val to_json : t -> Bioc_wire.Json.t
+  val evidence_ids : t -> string list
+  val fingerprint : t -> string
 end
 
 val schema_version : string

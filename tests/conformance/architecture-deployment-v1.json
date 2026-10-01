@@ -1,0 +1,2372 @@
+{
+  "case_ids_sha256": "c2a7f64b484d3208d2608131f860b0d8d2a0edeaffbe573e252b619aa460cd1d",
+  "claim_scope": "structural declarations and exact decimal intervals only; no deployment assessment or empirical claim",
+  "decimals": [
+    {
+      "denominator": 1,
+      "id": "decimal/0",
+      "input": 0,
+      "numerator": 0
+    },
+    {
+      "denominator": 1,
+      "id": "decimal/1",
+      "input": -0.0,
+      "numerator": 0
+    },
+    {
+      "denominator": 1,
+      "id": "decimal/2",
+      "input": 0.0,
+      "numerator": 0
+    },
+    {
+      "denominator": 1,
+      "id": "decimal/3",
+      "input": 1,
+      "numerator": 1
+    },
+    {
+      "denominator": 1,
+      "id": "decimal/4",
+      "input": 1.0,
+      "numerator": 1
+    },
+    {
+      "denominator": 10,
+      "id": "decimal/5",
+      "input": 0.1,
+      "numerator": 1
+    },
+    {
+      "denominator": 5,
+      "id": "decimal/6",
+      "input": 0.2,
+      "numerator": 1
+    },
+    {
+      "denominator": 10,
+      "id": "decimal/7",
+      "input": 0.3,
+      "numerator": 3
+    },
+    {
+      "denominator": 10,
+      "id": "decimal/8",
+      "input": 0.7,
+      "numerator": 7
+    },
+    {
+      "denominator": 5,
+      "id": "decimal/9",
+      "input": 0.8,
+      "numerator": 4
+    },
+    {
+      "denominator": 100000,
+      "id": "decimal/10",
+      "input": 1e-05,
+      "numerator": 1
+    },
+    {
+      "denominator": 10000,
+      "id": "decimal/11",
+      "input": 0.0001,
+      "numerator": 1
+    },
+    {
+      "denominator": 200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000,
+      "id": "decimal/12",
+      "input": 5e-324,
+      "numerator": 1
+    },
+    {
+      "denominator": 500000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000,
+      "id": "decimal/13",
+      "input": 2.2250738585072014e-308,
+      "numerator": 11125369292536007
+    },
+    {
+      "denominator": 1,
+      "id": "decimal/14",
+      "input": 31536000,
+      "numerator": 31536000
+    },
+    {
+      "denominator": 10,
+      "id": "decimal/15",
+      "input": 31535999.9,
+      "numerator": 315359999
+    },
+    {
+      "denominator": 100000000000000000,
+      "id": "decimal/16",
+      "input": 0.29999999999999993,
+      "numerator": 29999999999999993
+    },
+    {
+      "denominator": 25000000000000000,
+      "id": "decimal/17",
+      "input": 0.30000000000000004,
+      "numerator": 7500000000000001
+    }
+  ],
+  "records": [
+    {
+      "fingerprint": "0a91a1f61aa162142d267430472fb707c19144b66752131dbca1550a3130f305",
+      "id": "availability/base",
+      "input": {
+        "assumptions": [
+          "declared"
+        ],
+        "clock": "declared_exposure_start",
+        "duration_max_seconds": 0.3,
+        "duration_min_seconds": 0.2,
+        "id": "a",
+        "onset_max_seconds": 0.1,
+        "onset_min_seconds": 0,
+        "placement_id": "member",
+        "schema_version": "biocompiler.rna_availability_contract.v0.1"
+      },
+      "kind": "availability",
+      "normalized": {
+        "assumptions": [
+          "declared"
+        ],
+        "clock": "declared_exposure_start",
+        "duration_max_seconds": 0.3,
+        "duration_min_seconds": 0.2,
+        "id": "a",
+        "onset_max_seconds": 0.1,
+        "onset_min_seconds": 0,
+        "placement_id": "member",
+        "schema_version": "biocompiler.rna_availability_contract.v0.1"
+      }
+    },
+    {
+      "fingerprint": "fe2bdf54e3f7edf0f699d086becb901d629c9effc68f3b8e71de146d9926cc4b",
+      "id": "requirement/base",
+      "input": {
+        "assumptions": [
+          "declared"
+        ],
+        "clock": "declared_exposure_start",
+        "compartment": "cytosol",
+        "delivery_group_id": "group",
+        "id": "r",
+        "recipient_role": "role",
+        "require_same_recipient": true,
+        "required_from_seconds": 0.1,
+        "required_until_seconds": 0.3,
+        "schema_version": "biocompiler.rna_deployment_requirement.v0.1",
+        "unavailable_after_seconds": null
+      },
+      "kind": "requirement",
+      "normalized": {
+        "assumptions": [
+          "declared"
+        ],
+        "clock": "declared_exposure_start",
+        "compartment": "cytosol",
+        "delivery_group_id": "group",
+        "id": "r",
+        "recipient_role": "role",
+        "require_same_recipient": true,
+        "required_from_seconds": 0.1,
+        "required_until_seconds": 0.3,
+        "schema_version": "biocompiler.rna_deployment_requirement.v0.1",
+        "unavailable_after_seconds": null
+      }
+    },
+    {
+      "fingerprint": "2f8d762bb2e74990e708bc466f817f9901a630f34abc590dfe39151e1aa12a9c",
+      "id": "availability/empty_common_window",
+      "input": {
+        "assumptions": [
+          "declared"
+        ],
+        "clock": "declared_exposure_start",
+        "duration_max_seconds": 2,
+        "duration_min_seconds": 1,
+        "id": "a",
+        "onset_max_seconds": 9,
+        "onset_min_seconds": 0,
+        "placement_id": "member",
+        "schema_version": "biocompiler.rna_availability_contract.v0.1"
+      },
+      "kind": "availability",
+      "normalized": {
+        "assumptions": [
+          "declared"
+        ],
+        "clock": "declared_exposure_start",
+        "duration_max_seconds": 2,
+        "duration_min_seconds": 1,
+        "id": "a",
+        "onset_max_seconds": 9,
+        "onset_min_seconds": 0,
+        "placement_id": "member",
+        "schema_version": "biocompiler.rna_availability_contract.v0.1"
+      }
+    },
+    {
+      "fingerprint": "1da18b7690f2f290c5faaf5419562517f43b18b95e613fe691f4b2bab230226d",
+      "id": "availability/exact_decimal_cap",
+      "input": {
+        "assumptions": [
+          "declared"
+        ],
+        "clock": "declared_exposure_start",
+        "duration_max_seconds": 31535999.9,
+        "duration_min_seconds": 0.2,
+        "id": "a",
+        "onset_max_seconds": 0.1,
+        "onset_min_seconds": 0.1,
+        "placement_id": "member",
+        "schema_version": "biocompiler.rna_availability_contract.v0.1"
+      },
+      "kind": "availability",
+      "normalized": {
+        "assumptions": [
+          "declared"
+        ],
+        "clock": "declared_exposure_start",
+        "duration_max_seconds": 31535999.9,
+        "duration_min_seconds": 0.2,
+        "id": "a",
+        "onset_max_seconds": 0.1,
+        "onset_min_seconds": 0.1,
+        "placement_id": "member",
+        "schema_version": "biocompiler.rna_availability_contract.v0.1"
+      }
+    },
+    {
+      "fingerprint": "e81aaf7999d6116d73cc9b783140979dd1681e5af62cfb947d8c72eaf80b1993",
+      "id": "availability/negative_zero",
+      "input": {
+        "assumptions": [
+          "declared"
+        ],
+        "clock": "declared_exposure_start",
+        "duration_max_seconds": 0.3,
+        "duration_min_seconds": 0.2,
+        "id": "a",
+        "onset_max_seconds": 0,
+        "onset_min_seconds": -0.0,
+        "placement_id": "member",
+        "schema_version": "biocompiler.rna_availability_contract.v0.1"
+      },
+      "kind": "availability",
+      "normalized": {
+        "assumptions": [
+          "declared"
+        ],
+        "clock": "declared_exposure_start",
+        "duration_max_seconds": 0.3,
+        "duration_min_seconds": 0.2,
+        "id": "a",
+        "onset_max_seconds": 0,
+        "onset_min_seconds": -0.0,
+        "placement_id": "member",
+        "schema_version": "biocompiler.rna_availability_contract.v0.1"
+      }
+    },
+    {
+      "fingerprint": "8626d981b4287b9bef3f245f965b7f3e8ed8440ee1c0fb5f6fb320d44e468186",
+      "id": "availability/smallest_duration",
+      "input": {
+        "assumptions": [
+          "declared"
+        ],
+        "clock": "declared_exposure_start",
+        "duration_max_seconds": 5e-324,
+        "duration_min_seconds": 5e-324,
+        "id": "a",
+        "onset_max_seconds": 0,
+        "onset_min_seconds": 0,
+        "placement_id": "member",
+        "schema_version": "biocompiler.rna_availability_contract.v0.1"
+      },
+      "kind": "availability",
+      "normalized": {
+        "assumptions": [
+          "declared"
+        ],
+        "clock": "declared_exposure_start",
+        "duration_max_seconds": 5e-324,
+        "duration_min_seconds": 5e-324,
+        "id": "a",
+        "onset_max_seconds": 0,
+        "onset_min_seconds": 0,
+        "placement_id": "member",
+        "schema_version": "biocompiler.rna_availability_contract.v0.1"
+      }
+    },
+    {
+      "fingerprint": "f64ca3568afc93a350a2fff139f06f61b8008b49b88c9723d2dd4e089257f43e",
+      "id": "availability/sorted_assumptions",
+      "input": {
+        "assumptions": [
+          "z",
+          "a",
+          "🧬"
+        ],
+        "clock": "declared_exposure_start",
+        "duration_max_seconds": 0.3,
+        "duration_min_seconds": 0.2,
+        "id": "a",
+        "onset_max_seconds": 0.1,
+        "onset_min_seconds": 0,
+        "placement_id": "member",
+        "schema_version": "biocompiler.rna_availability_contract.v0.1"
+      },
+      "kind": "availability",
+      "normalized": {
+        "assumptions": [
+          "a",
+          "z",
+          "🧬"
+        ],
+        "clock": "declared_exposure_start",
+        "duration_max_seconds": 0.3,
+        "duration_min_seconds": 0.2,
+        "id": "a",
+        "onset_max_seconds": 0.1,
+        "onset_min_seconds": 0,
+        "placement_id": "member",
+        "schema_version": "biocompiler.rna_availability_contract.v0.1"
+      }
+    },
+    {
+      "fingerprint": "be45765433b94c5847d1519b1bc1e134e37cffd95d586d17316e733fd1b08219",
+      "id": "availability/maximum_assumptions",
+      "input": {
+        "assumptions": [
+          "assumption0",
+          "assumption1",
+          "assumption2",
+          "assumption3",
+          "assumption4",
+          "assumption5",
+          "assumption6",
+          "assumption7",
+          "assumption8",
+          "assumption9",
+          "assumption10",
+          "assumption11",
+          "assumption12",
+          "assumption13",
+          "assumption14",
+          "assumption15",
+          "assumption16",
+          "assumption17",
+          "assumption18",
+          "assumption19",
+          "assumption20",
+          "assumption21",
+          "assumption22",
+          "assumption23",
+          "assumption24",
+          "assumption25",
+          "assumption26",
+          "assumption27",
+          "assumption28",
+          "assumption29",
+          "assumption30",
+          "assumption31",
+          "assumption32",
+          "assumption33",
+          "assumption34",
+          "assumption35",
+          "assumption36",
+          "assumption37",
+          "assumption38",
+          "assumption39",
+          "assumption40",
+          "assumption41",
+          "assumption42",
+          "assumption43",
+          "assumption44",
+          "assumption45",
+          "assumption46",
+          "assumption47",
+          "assumption48",
+          "assumption49",
+          "assumption50",
+          "assumption51",
+          "assumption52",
+          "assumption53",
+          "assumption54",
+          "assumption55",
+          "assumption56",
+          "assumption57",
+          "assumption58",
+          "assumption59",
+          "assumption60",
+          "assumption61",
+          "assumption62",
+          "assumption63"
+        ],
+        "clock": "declared_exposure_start",
+        "duration_max_seconds": 0.3,
+        "duration_min_seconds": 0.2,
+        "id": "a",
+        "onset_max_seconds": 0.1,
+        "onset_min_seconds": 0,
+        "placement_id": "member",
+        "schema_version": "biocompiler.rna_availability_contract.v0.1"
+      },
+      "kind": "availability",
+      "normalized": {
+        "assumptions": [
+          "assumption0",
+          "assumption1",
+          "assumption10",
+          "assumption11",
+          "assumption12",
+          "assumption13",
+          "assumption14",
+          "assumption15",
+          "assumption16",
+          "assumption17",
+          "assumption18",
+          "assumption19",
+          "assumption2",
+          "assumption20",
+          "assumption21",
+          "assumption22",
+          "assumption23",
+          "assumption24",
+          "assumption25",
+          "assumption26",
+          "assumption27",
+          "assumption28",
+          "assumption29",
+          "assumption3",
+          "assumption30",
+          "assumption31",
+          "assumption32",
+          "assumption33",
+          "assumption34",
+          "assumption35",
+          "assumption36",
+          "assumption37",
+          "assumption38",
+          "assumption39",
+          "assumption4",
+          "assumption40",
+          "assumption41",
+          "assumption42",
+          "assumption43",
+          "assumption44",
+          "assumption45",
+          "assumption46",
+          "assumption47",
+          "assumption48",
+          "assumption49",
+          "assumption5",
+          "assumption50",
+          "assumption51",
+          "assumption52",
+          "assumption53",
+          "assumption54",
+          "assumption55",
+          "assumption56",
+          "assumption57",
+          "assumption58",
+          "assumption59",
+          "assumption6",
+          "assumption60",
+          "assumption61",
+          "assumption62",
+          "assumption63",
+          "assumption7",
+          "assumption8",
+          "assumption9"
+        ],
+        "clock": "declared_exposure_start",
+        "duration_max_seconds": 0.3,
+        "duration_min_seconds": 0.2,
+        "id": "a",
+        "onset_max_seconds": 0.1,
+        "onset_min_seconds": 0,
+        "placement_id": "member",
+        "schema_version": "biocompiler.rna_availability_contract.v0.1"
+      }
+    },
+    {
+      "fingerprint": "166f89e8ea98236c56bf05a87aac53ef884f843d673ca4643b769212efc3161b",
+      "id": "requirement/same_recipient_false",
+      "input": {
+        "assumptions": [
+          "declared"
+        ],
+        "clock": "declared_exposure_start",
+        "compartment": "cytosol",
+        "delivery_group_id": "group",
+        "id": "r",
+        "recipient_role": "role",
+        "require_same_recipient": false,
+        "required_from_seconds": 0.1,
+        "required_until_seconds": 0.3,
+        "schema_version": "biocompiler.rna_deployment_requirement.v0.1",
+        "unavailable_after_seconds": null
+      },
+      "kind": "requirement",
+      "normalized": {
+        "assumptions": [
+          "declared"
+        ],
+        "clock": "declared_exposure_start",
+        "compartment": "cytosol",
+        "delivery_group_id": "group",
+        "id": "r",
+        "recipient_role": "role",
+        "require_same_recipient": false,
+        "required_from_seconds": 0.1,
+        "required_until_seconds": 0.3,
+        "schema_version": "biocompiler.rna_deployment_requirement.v0.1",
+        "unavailable_after_seconds": null
+      }
+    },
+    {
+      "fingerprint": "68b653e3d8580b4823e5f8e6b81fe100b8a7737a429443a440f77d865a5a71cf",
+      "id": "requirement/unavailability_equal",
+      "input": {
+        "assumptions": [
+          "declared"
+        ],
+        "clock": "declared_exposure_start",
+        "compartment": "cytosol",
+        "delivery_group_id": "group",
+        "id": "r",
+        "recipient_role": "role",
+        "require_same_recipient": true,
+        "required_from_seconds": 0.1,
+        "required_until_seconds": 0.3,
+        "schema_version": "biocompiler.rna_deployment_requirement.v0.1",
+        "unavailable_after_seconds": 0.3
+      },
+      "kind": "requirement",
+      "normalized": {
+        "assumptions": [
+          "declared"
+        ],
+        "clock": "declared_exposure_start",
+        "compartment": "cytosol",
+        "delivery_group_id": "group",
+        "id": "r",
+        "recipient_role": "role",
+        "require_same_recipient": true,
+        "required_from_seconds": 0.1,
+        "required_until_seconds": 0.3,
+        "schema_version": "biocompiler.rna_deployment_requirement.v0.1",
+        "unavailable_after_seconds": 0.3
+      }
+    },
+    {
+      "fingerprint": "c5f8523fe874984f4835399169fbde5b150134d921ca9a3e9055cce58b8a02fa",
+      "id": "requirement/unavailability_later",
+      "input": {
+        "assumptions": [
+          "declared"
+        ],
+        "clock": "declared_exposure_start",
+        "compartment": "cytosol",
+        "delivery_group_id": "group",
+        "id": "r",
+        "recipient_role": "role",
+        "require_same_recipient": true,
+        "required_from_seconds": 0.1,
+        "required_until_seconds": 0.3,
+        "schema_version": "biocompiler.rna_deployment_requirement.v0.1",
+        "unavailable_after_seconds": 1
+      },
+      "kind": "requirement",
+      "normalized": {
+        "assumptions": [
+          "declared"
+        ],
+        "clock": "declared_exposure_start",
+        "compartment": "cytosol",
+        "delivery_group_id": "group",
+        "id": "r",
+        "recipient_role": "role",
+        "require_same_recipient": true,
+        "required_from_seconds": 0.1,
+        "required_until_seconds": 0.3,
+        "schema_version": "biocompiler.rna_deployment_requirement.v0.1",
+        "unavailable_after_seconds": 1
+      }
+    },
+    {
+      "fingerprint": "1f15808ab08c3da544b1b4c665b8cb4150b4570a82cddfa9ed422db4b088e668",
+      "id": "requirement/negative_zero",
+      "input": {
+        "assumptions": [
+          "declared"
+        ],
+        "clock": "declared_exposure_start",
+        "compartment": "cytosol",
+        "delivery_group_id": "group",
+        "id": "r",
+        "recipient_role": "role",
+        "require_same_recipient": true,
+        "required_from_seconds": -0.0,
+        "required_until_seconds": 0.3,
+        "schema_version": "biocompiler.rna_deployment_requirement.v0.1",
+        "unavailable_after_seconds": null
+      },
+      "kind": "requirement",
+      "normalized": {
+        "assumptions": [
+          "declared"
+        ],
+        "clock": "declared_exposure_start",
+        "compartment": "cytosol",
+        "delivery_group_id": "group",
+        "id": "r",
+        "recipient_role": "role",
+        "require_same_recipient": true,
+        "required_from_seconds": -0.0,
+        "required_until_seconds": 0.3,
+        "schema_version": "biocompiler.rna_deployment_requirement.v0.1",
+        "unavailable_after_seconds": null
+      }
+    },
+    {
+      "fingerprint": "fcfb45734818786a86c9463400b745a791a0827ef6bc0ca9f0e36d4d08319111",
+      "id": "requirement/sorted_assumptions",
+      "input": {
+        "assumptions": [
+          "z",
+          "a"
+        ],
+        "clock": "declared_exposure_start",
+        "compartment": "cytosol",
+        "delivery_group_id": "group",
+        "id": "r",
+        "recipient_role": "role",
+        "require_same_recipient": true,
+        "required_from_seconds": 0.1,
+        "required_until_seconds": 0.3,
+        "schema_version": "biocompiler.rna_deployment_requirement.v0.1",
+        "unavailable_after_seconds": null
+      },
+      "kind": "requirement",
+      "normalized": {
+        "assumptions": [
+          "a",
+          "z"
+        ],
+        "clock": "declared_exposure_start",
+        "compartment": "cytosol",
+        "delivery_group_id": "group",
+        "id": "r",
+        "recipient_role": "role",
+        "require_same_recipient": true,
+        "required_from_seconds": 0.1,
+        "required_until_seconds": 0.3,
+        "schema_version": "biocompiler.rna_deployment_requirement.v0.1",
+        "unavailable_after_seconds": null
+      }
+    },
+    {
+      "fingerprint": "a4c2485dcfe2c0559da974d2f11c72fa4e59d11c8840a4d72f8fed4c0344bd94",
+      "id": "requirement/abstract_compartment",
+      "input": {
+        "assumptions": [
+          "declared"
+        ],
+        "clock": "declared_exposure_start",
+        "compartment": "abstract",
+        "delivery_group_id": "group",
+        "id": "r",
+        "recipient_role": "role",
+        "require_same_recipient": true,
+        "required_from_seconds": 0.1,
+        "required_until_seconds": 0.3,
+        "schema_version": "biocompiler.rna_deployment_requirement.v0.1",
+        "unavailable_after_seconds": null
+      },
+      "kind": "requirement",
+      "normalized": {
+        "assumptions": [
+          "declared"
+        ],
+        "clock": "declared_exposure_start",
+        "compartment": "abstract",
+        "delivery_group_id": "group",
+        "id": "r",
+        "recipient_role": "role",
+        "require_same_recipient": true,
+        "required_from_seconds": 0.1,
+        "required_until_seconds": 0.3,
+        "schema_version": "biocompiler.rna_deployment_requirement.v0.1",
+        "unavailable_after_seconds": null
+      }
+    },
+    {
+      "fingerprint": "8e11ae5e4f83bad506d139a3913dd7dbd544b2d3f97220472eb6143a9b343941",
+      "id": "requirement/full_bound",
+      "input": {
+        "assumptions": [
+          "declared"
+        ],
+        "clock": "declared_exposure_start",
+        "compartment": "cytosol",
+        "delivery_group_id": "group",
+        "id": "r",
+        "recipient_role": "role",
+        "require_same_recipient": true,
+        "required_from_seconds": 0,
+        "required_until_seconds": 31536000,
+        "schema_version": "biocompiler.rna_deployment_requirement.v0.1",
+        "unavailable_after_seconds": null
+      },
+      "kind": "requirement",
+      "normalized": {
+        "assumptions": [
+          "declared"
+        ],
+        "clock": "declared_exposure_start",
+        "compartment": "cytosol",
+        "delivery_group_id": "group",
+        "id": "r",
+        "recipient_role": "role",
+        "require_same_recipient": true,
+        "required_from_seconds": 0,
+        "required_until_seconds": 31536000,
+        "schema_version": "biocompiler.rna_deployment_requirement.v0.1",
+        "unavailable_after_seconds": null
+      }
+    }
+  ],
+  "rejections": [
+    {
+      "expected_code": "missing_field",
+      "id": "availability/missing/schema_version",
+      "input": {
+        "assumptions": [
+          "declared"
+        ],
+        "clock": "declared_exposure_start",
+        "duration_max_seconds": 0.3,
+        "duration_min_seconds": 0.2,
+        "id": "a",
+        "onset_max_seconds": 0.1,
+        "onset_min_seconds": 0,
+        "placement_id": "member"
+      },
+      "kind": "availability"
+    },
+    {
+      "expected_code": "missing_field",
+      "id": "availability/missing/id",
+      "input": {
+        "assumptions": [
+          "declared"
+        ],
+        "clock": "declared_exposure_start",
+        "duration_max_seconds": 0.3,
+        "duration_min_seconds": 0.2,
+        "onset_max_seconds": 0.1,
+        "onset_min_seconds": 0,
+        "placement_id": "member",
+        "schema_version": "biocompiler.rna_availability_contract.v0.1"
+      },
+      "kind": "availability"
+    },
+    {
+      "expected_code": "missing_field",
+      "id": "availability/missing/placement_id",
+      "input": {
+        "assumptions": [
+          "declared"
+        ],
+        "clock": "declared_exposure_start",
+        "duration_max_seconds": 0.3,
+        "duration_min_seconds": 0.2,
+        "id": "a",
+        "onset_max_seconds": 0.1,
+        "onset_min_seconds": 0,
+        "schema_version": "biocompiler.rna_availability_contract.v0.1"
+      },
+      "kind": "availability"
+    },
+    {
+      "expected_code": "missing_field",
+      "id": "availability/missing/onset_min_seconds",
+      "input": {
+        "assumptions": [
+          "declared"
+        ],
+        "clock": "declared_exposure_start",
+        "duration_max_seconds": 0.3,
+        "duration_min_seconds": 0.2,
+        "id": "a",
+        "onset_max_seconds": 0.1,
+        "placement_id": "member",
+        "schema_version": "biocompiler.rna_availability_contract.v0.1"
+      },
+      "kind": "availability"
+    },
+    {
+      "expected_code": "missing_field",
+      "id": "availability/missing/onset_max_seconds",
+      "input": {
+        "assumptions": [
+          "declared"
+        ],
+        "clock": "declared_exposure_start",
+        "duration_max_seconds": 0.3,
+        "duration_min_seconds": 0.2,
+        "id": "a",
+        "onset_min_seconds": 0,
+        "placement_id": "member",
+        "schema_version": "biocompiler.rna_availability_contract.v0.1"
+      },
+      "kind": "availability"
+    },
+    {
+      "expected_code": "missing_field",
+      "id": "availability/missing/duration_min_seconds",
+      "input": {
+        "assumptions": [
+          "declared"
+        ],
+        "clock": "declared_exposure_start",
+        "duration_max_seconds": 0.3,
+        "id": "a",
+        "onset_max_seconds": 0.1,
+        "onset_min_seconds": 0,
+        "placement_id": "member",
+        "schema_version": "biocompiler.rna_availability_contract.v0.1"
+      },
+      "kind": "availability"
+    },
+    {
+      "expected_code": "missing_field",
+      "id": "availability/missing/duration_max_seconds",
+      "input": {
+        "assumptions": [
+          "declared"
+        ],
+        "clock": "declared_exposure_start",
+        "duration_min_seconds": 0.2,
+        "id": "a",
+        "onset_max_seconds": 0.1,
+        "onset_min_seconds": 0,
+        "placement_id": "member",
+        "schema_version": "biocompiler.rna_availability_contract.v0.1"
+      },
+      "kind": "availability"
+    },
+    {
+      "expected_code": "missing_field",
+      "id": "availability/missing/assumptions",
+      "input": {
+        "clock": "declared_exposure_start",
+        "duration_max_seconds": 0.3,
+        "duration_min_seconds": 0.2,
+        "id": "a",
+        "onset_max_seconds": 0.1,
+        "onset_min_seconds": 0,
+        "placement_id": "member",
+        "schema_version": "biocompiler.rna_availability_contract.v0.1"
+      },
+      "kind": "availability"
+    },
+    {
+      "expected_code": "missing_field",
+      "id": "availability/missing/clock",
+      "input": {
+        "assumptions": [
+          "declared"
+        ],
+        "duration_max_seconds": 0.3,
+        "duration_min_seconds": 0.2,
+        "id": "a",
+        "onset_max_seconds": 0.1,
+        "onset_min_seconds": 0,
+        "placement_id": "member",
+        "schema_version": "biocompiler.rna_availability_contract.v0.1"
+      },
+      "kind": "availability"
+    },
+    {
+      "expected_code": "unsupported_schema",
+      "id": "availability/future_schema",
+      "input": {
+        "assumptions": [
+          "declared"
+        ],
+        "clock": "declared_exposure_start",
+        "duration_max_seconds": 0.3,
+        "duration_min_seconds": 0.2,
+        "id": "a",
+        "onset_max_seconds": 0.1,
+        "onset_min_seconds": 0,
+        "placement_id": "member",
+        "schema_version": "future"
+      },
+      "kind": "availability"
+    },
+    {
+      "expected_code": "unknown_field",
+      "id": "availability/extra_authority",
+      "input": {
+        "accepted": true,
+        "assumptions": [
+          "declared"
+        ],
+        "clock": "declared_exposure_start",
+        "duration_max_seconds": 0.3,
+        "duration_min_seconds": 0.2,
+        "id": "a",
+        "onset_max_seconds": 0.1,
+        "onset_min_seconds": 0,
+        "placement_id": "member",
+        "schema_version": "biocompiler.rna_availability_contract.v0.1"
+      },
+      "kind": "availability"
+    },
+    {
+      "expected_code": "invalid_deployment",
+      "id": "availability/bad_clock",
+      "input": {
+        "assumptions": [
+          "declared"
+        ],
+        "clock": "absolute_time",
+        "duration_max_seconds": 0.3,
+        "duration_min_seconds": 0.2,
+        "id": "a",
+        "onset_max_seconds": 0.1,
+        "onset_min_seconds": 0,
+        "placement_id": "member",
+        "schema_version": "biocompiler.rna_availability_contract.v0.1"
+      },
+      "kind": "availability"
+    },
+    {
+      "expected_code": "invalid_deployment",
+      "id": "availability/empty_assumptions",
+      "input": {
+        "assumptions": [],
+        "clock": "declared_exposure_start",
+        "duration_max_seconds": 0.3,
+        "duration_min_seconds": 0.2,
+        "id": "a",
+        "onset_max_seconds": 0.1,
+        "onset_min_seconds": 0,
+        "placement_id": "member",
+        "schema_version": "biocompiler.rna_availability_contract.v0.1"
+      },
+      "kind": "availability"
+    },
+    {
+      "expected_code": "invalid_deployment",
+      "id": "availability/duplicate_assumptions",
+      "input": {
+        "assumptions": [
+          "a",
+          "a"
+        ],
+        "clock": "declared_exposure_start",
+        "duration_max_seconds": 0.3,
+        "duration_min_seconds": 0.2,
+        "id": "a",
+        "onset_max_seconds": 0.1,
+        "onset_min_seconds": 0,
+        "placement_id": "member",
+        "schema_version": "biocompiler.rna_availability_contract.v0.1"
+      },
+      "kind": "availability"
+    },
+    {
+      "expected_code": "molecular_resource_limit",
+      "id": "availability/too_many_assumptions",
+      "input": {
+        "assumptions": [
+          "0",
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6",
+          "7",
+          "8",
+          "9",
+          "10",
+          "11",
+          "12",
+          "13",
+          "14",
+          "15",
+          "16",
+          "17",
+          "18",
+          "19",
+          "20",
+          "21",
+          "22",
+          "23",
+          "24",
+          "25",
+          "26",
+          "27",
+          "28",
+          "29",
+          "30",
+          "31",
+          "32",
+          "33",
+          "34",
+          "35",
+          "36",
+          "37",
+          "38",
+          "39",
+          "40",
+          "41",
+          "42",
+          "43",
+          "44",
+          "45",
+          "46",
+          "47",
+          "48",
+          "49",
+          "50",
+          "51",
+          "52",
+          "53",
+          "54",
+          "55",
+          "56",
+          "57",
+          "58",
+          "59",
+          "60",
+          "61",
+          "62",
+          "63",
+          "64"
+        ],
+        "clock": "declared_exposure_start",
+        "duration_max_seconds": 0.3,
+        "duration_min_seconds": 0.2,
+        "id": "a",
+        "onset_max_seconds": 0.1,
+        "onset_min_seconds": 0,
+        "placement_id": "member",
+        "schema_version": "biocompiler.rna_availability_contract.v0.1"
+      },
+      "kind": "availability"
+    },
+    {
+      "expected_code": "invalid_molecular_text",
+      "id": "availability/assumption_control",
+      "input": {
+        "assumptions": [
+          "a\nb"
+        ],
+        "clock": "declared_exposure_start",
+        "duration_max_seconds": 0.3,
+        "duration_min_seconds": 0.2,
+        "id": "a",
+        "onset_max_seconds": 0.1,
+        "onset_min_seconds": 0,
+        "placement_id": "member",
+        "schema_version": "biocompiler.rna_availability_contract.v0.1"
+      },
+      "kind": "availability"
+    },
+    {
+      "expected_code": "invalid_molecular_text",
+      "id": "availability/assumption_trim",
+      "input": {
+        "assumptions": [
+          " a"
+        ],
+        "clock": "declared_exposure_start",
+        "duration_max_seconds": 0.3,
+        "duration_min_seconds": 0.2,
+        "id": "a",
+        "onset_max_seconds": 0.1,
+        "onset_min_seconds": 0,
+        "placement_id": "member",
+        "schema_version": "biocompiler.rna_availability_contract.v0.1"
+      },
+      "kind": "availability"
+    },
+    {
+      "expected_code": "invalid_molecular_text",
+      "id": "availability/blank_id",
+      "input": {
+        "assumptions": [
+          "declared"
+        ],
+        "clock": "declared_exposure_start",
+        "duration_max_seconds": 0.3,
+        "duration_min_seconds": 0.2,
+        "id": "",
+        "onset_max_seconds": 0.1,
+        "onset_min_seconds": 0,
+        "placement_id": "member",
+        "schema_version": "biocompiler.rna_availability_contract.v0.1"
+      },
+      "kind": "availability"
+    },
+    {
+      "expected_code": "missing_field",
+      "id": "requirement/missing/schema_version",
+      "input": {
+        "assumptions": [
+          "declared"
+        ],
+        "clock": "declared_exposure_start",
+        "compartment": "cytosol",
+        "delivery_group_id": "group",
+        "id": "r",
+        "recipient_role": "role",
+        "require_same_recipient": true,
+        "required_from_seconds": 0.1,
+        "required_until_seconds": 0.3,
+        "unavailable_after_seconds": null
+      },
+      "kind": "requirement"
+    },
+    {
+      "expected_code": "missing_field",
+      "id": "requirement/missing/id",
+      "input": {
+        "assumptions": [
+          "declared"
+        ],
+        "clock": "declared_exposure_start",
+        "compartment": "cytosol",
+        "delivery_group_id": "group",
+        "recipient_role": "role",
+        "require_same_recipient": true,
+        "required_from_seconds": 0.1,
+        "required_until_seconds": 0.3,
+        "schema_version": "biocompiler.rna_deployment_requirement.v0.1",
+        "unavailable_after_seconds": null
+      },
+      "kind": "requirement"
+    },
+    {
+      "expected_code": "missing_field",
+      "id": "requirement/missing/delivery_group_id",
+      "input": {
+        "assumptions": [
+          "declared"
+        ],
+        "clock": "declared_exposure_start",
+        "compartment": "cytosol",
+        "id": "r",
+        "recipient_role": "role",
+        "require_same_recipient": true,
+        "required_from_seconds": 0.1,
+        "required_until_seconds": 0.3,
+        "schema_version": "biocompiler.rna_deployment_requirement.v0.1",
+        "unavailable_after_seconds": null
+      },
+      "kind": "requirement"
+    },
+    {
+      "expected_code": "missing_field",
+      "id": "requirement/missing/recipient_role",
+      "input": {
+        "assumptions": [
+          "declared"
+        ],
+        "clock": "declared_exposure_start",
+        "compartment": "cytosol",
+        "delivery_group_id": "group",
+        "id": "r",
+        "require_same_recipient": true,
+        "required_from_seconds": 0.1,
+        "required_until_seconds": 0.3,
+        "schema_version": "biocompiler.rna_deployment_requirement.v0.1",
+        "unavailable_after_seconds": null
+      },
+      "kind": "requirement"
+    },
+    {
+      "expected_code": "missing_field",
+      "id": "requirement/missing/compartment",
+      "input": {
+        "assumptions": [
+          "declared"
+        ],
+        "clock": "declared_exposure_start",
+        "delivery_group_id": "group",
+        "id": "r",
+        "recipient_role": "role",
+        "require_same_recipient": true,
+        "required_from_seconds": 0.1,
+        "required_until_seconds": 0.3,
+        "schema_version": "biocompiler.rna_deployment_requirement.v0.1",
+        "unavailable_after_seconds": null
+      },
+      "kind": "requirement"
+    },
+    {
+      "expected_code": "missing_field",
+      "id": "requirement/missing/required_from_seconds",
+      "input": {
+        "assumptions": [
+          "declared"
+        ],
+        "clock": "declared_exposure_start",
+        "compartment": "cytosol",
+        "delivery_group_id": "group",
+        "id": "r",
+        "recipient_role": "role",
+        "require_same_recipient": true,
+        "required_until_seconds": 0.3,
+        "schema_version": "biocompiler.rna_deployment_requirement.v0.1",
+        "unavailable_after_seconds": null
+      },
+      "kind": "requirement"
+    },
+    {
+      "expected_code": "missing_field",
+      "id": "requirement/missing/required_until_seconds",
+      "input": {
+        "assumptions": [
+          "declared"
+        ],
+        "clock": "declared_exposure_start",
+        "compartment": "cytosol",
+        "delivery_group_id": "group",
+        "id": "r",
+        "recipient_role": "role",
+        "require_same_recipient": true,
+        "required_from_seconds": 0.1,
+        "schema_version": "biocompiler.rna_deployment_requirement.v0.1",
+        "unavailable_after_seconds": null
+      },
+      "kind": "requirement"
+    },
+    {
+      "expected_code": "missing_field",
+      "id": "requirement/missing/assumptions",
+      "input": {
+        "clock": "declared_exposure_start",
+        "compartment": "cytosol",
+        "delivery_group_id": "group",
+        "id": "r",
+        "recipient_role": "role",
+        "require_same_recipient": true,
+        "required_from_seconds": 0.1,
+        "required_until_seconds": 0.3,
+        "schema_version": "biocompiler.rna_deployment_requirement.v0.1",
+        "unavailable_after_seconds": null
+      },
+      "kind": "requirement"
+    },
+    {
+      "expected_code": "missing_field",
+      "id": "requirement/missing/unavailable_after_seconds",
+      "input": {
+        "assumptions": [
+          "declared"
+        ],
+        "clock": "declared_exposure_start",
+        "compartment": "cytosol",
+        "delivery_group_id": "group",
+        "id": "r",
+        "recipient_role": "role",
+        "require_same_recipient": true,
+        "required_from_seconds": 0.1,
+        "required_until_seconds": 0.3,
+        "schema_version": "biocompiler.rna_deployment_requirement.v0.1"
+      },
+      "kind": "requirement"
+    },
+    {
+      "expected_code": "missing_field",
+      "id": "requirement/missing/require_same_recipient",
+      "input": {
+        "assumptions": [
+          "declared"
+        ],
+        "clock": "declared_exposure_start",
+        "compartment": "cytosol",
+        "delivery_group_id": "group",
+        "id": "r",
+        "recipient_role": "role",
+        "required_from_seconds": 0.1,
+        "required_until_seconds": 0.3,
+        "schema_version": "biocompiler.rna_deployment_requirement.v0.1",
+        "unavailable_after_seconds": null
+      },
+      "kind": "requirement"
+    },
+    {
+      "expected_code": "missing_field",
+      "id": "requirement/missing/clock",
+      "input": {
+        "assumptions": [
+          "declared"
+        ],
+        "compartment": "cytosol",
+        "delivery_group_id": "group",
+        "id": "r",
+        "recipient_role": "role",
+        "require_same_recipient": true,
+        "required_from_seconds": 0.1,
+        "required_until_seconds": 0.3,
+        "schema_version": "biocompiler.rna_deployment_requirement.v0.1",
+        "unavailable_after_seconds": null
+      },
+      "kind": "requirement"
+    },
+    {
+      "expected_code": "unsupported_schema",
+      "id": "requirement/future_schema",
+      "input": {
+        "assumptions": [
+          "declared"
+        ],
+        "clock": "declared_exposure_start",
+        "compartment": "cytosol",
+        "delivery_group_id": "group",
+        "id": "r",
+        "recipient_role": "role",
+        "require_same_recipient": true,
+        "required_from_seconds": 0.1,
+        "required_until_seconds": 0.3,
+        "schema_version": "future",
+        "unavailable_after_seconds": null
+      },
+      "kind": "requirement"
+    },
+    {
+      "expected_code": "unknown_field",
+      "id": "requirement/extra_authority",
+      "input": {
+        "accepted": true,
+        "assumptions": [
+          "declared"
+        ],
+        "clock": "declared_exposure_start",
+        "compartment": "cytosol",
+        "delivery_group_id": "group",
+        "id": "r",
+        "recipient_role": "role",
+        "require_same_recipient": true,
+        "required_from_seconds": 0.1,
+        "required_until_seconds": 0.3,
+        "schema_version": "biocompiler.rna_deployment_requirement.v0.1",
+        "unavailable_after_seconds": null
+      },
+      "kind": "requirement"
+    },
+    {
+      "expected_code": "invalid_deployment",
+      "id": "requirement/bad_clock",
+      "input": {
+        "assumptions": [
+          "declared"
+        ],
+        "clock": "absolute_time",
+        "compartment": "cytosol",
+        "delivery_group_id": "group",
+        "id": "r",
+        "recipient_role": "role",
+        "require_same_recipient": true,
+        "required_from_seconds": 0.1,
+        "required_until_seconds": 0.3,
+        "schema_version": "biocompiler.rna_deployment_requirement.v0.1",
+        "unavailable_after_seconds": null
+      },
+      "kind": "requirement"
+    },
+    {
+      "expected_code": "invalid_deployment",
+      "id": "requirement/empty_assumptions",
+      "input": {
+        "assumptions": [],
+        "clock": "declared_exposure_start",
+        "compartment": "cytosol",
+        "delivery_group_id": "group",
+        "id": "r",
+        "recipient_role": "role",
+        "require_same_recipient": true,
+        "required_from_seconds": 0.1,
+        "required_until_seconds": 0.3,
+        "schema_version": "biocompiler.rna_deployment_requirement.v0.1",
+        "unavailable_after_seconds": null
+      },
+      "kind": "requirement"
+    },
+    {
+      "expected_code": "invalid_deployment",
+      "id": "requirement/duplicate_assumptions",
+      "input": {
+        "assumptions": [
+          "a",
+          "a"
+        ],
+        "clock": "declared_exposure_start",
+        "compartment": "cytosol",
+        "delivery_group_id": "group",
+        "id": "r",
+        "recipient_role": "role",
+        "require_same_recipient": true,
+        "required_from_seconds": 0.1,
+        "required_until_seconds": 0.3,
+        "schema_version": "biocompiler.rna_deployment_requirement.v0.1",
+        "unavailable_after_seconds": null
+      },
+      "kind": "requirement"
+    },
+    {
+      "expected_code": "molecular_resource_limit",
+      "id": "requirement/too_many_assumptions",
+      "input": {
+        "assumptions": [
+          "0",
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6",
+          "7",
+          "8",
+          "9",
+          "10",
+          "11",
+          "12",
+          "13",
+          "14",
+          "15",
+          "16",
+          "17",
+          "18",
+          "19",
+          "20",
+          "21",
+          "22",
+          "23",
+          "24",
+          "25",
+          "26",
+          "27",
+          "28",
+          "29",
+          "30",
+          "31",
+          "32",
+          "33",
+          "34",
+          "35",
+          "36",
+          "37",
+          "38",
+          "39",
+          "40",
+          "41",
+          "42",
+          "43",
+          "44",
+          "45",
+          "46",
+          "47",
+          "48",
+          "49",
+          "50",
+          "51",
+          "52",
+          "53",
+          "54",
+          "55",
+          "56",
+          "57",
+          "58",
+          "59",
+          "60",
+          "61",
+          "62",
+          "63",
+          "64"
+        ],
+        "clock": "declared_exposure_start",
+        "compartment": "cytosol",
+        "delivery_group_id": "group",
+        "id": "r",
+        "recipient_role": "role",
+        "require_same_recipient": true,
+        "required_from_seconds": 0.1,
+        "required_until_seconds": 0.3,
+        "schema_version": "biocompiler.rna_deployment_requirement.v0.1",
+        "unavailable_after_seconds": null
+      },
+      "kind": "requirement"
+    },
+    {
+      "expected_code": "invalid_molecular_text",
+      "id": "requirement/assumption_control",
+      "input": {
+        "assumptions": [
+          "a\nb"
+        ],
+        "clock": "declared_exposure_start",
+        "compartment": "cytosol",
+        "delivery_group_id": "group",
+        "id": "r",
+        "recipient_role": "role",
+        "require_same_recipient": true,
+        "required_from_seconds": 0.1,
+        "required_until_seconds": 0.3,
+        "schema_version": "biocompiler.rna_deployment_requirement.v0.1",
+        "unavailable_after_seconds": null
+      },
+      "kind": "requirement"
+    },
+    {
+      "expected_code": "invalid_molecular_text",
+      "id": "requirement/assumption_trim",
+      "input": {
+        "assumptions": [
+          " a"
+        ],
+        "clock": "declared_exposure_start",
+        "compartment": "cytosol",
+        "delivery_group_id": "group",
+        "id": "r",
+        "recipient_role": "role",
+        "require_same_recipient": true,
+        "required_from_seconds": 0.1,
+        "required_until_seconds": 0.3,
+        "schema_version": "biocompiler.rna_deployment_requirement.v0.1",
+        "unavailable_after_seconds": null
+      },
+      "kind": "requirement"
+    },
+    {
+      "expected_code": "invalid_molecular_text",
+      "id": "requirement/blank_id",
+      "input": {
+        "assumptions": [
+          "declared"
+        ],
+        "clock": "declared_exposure_start",
+        "compartment": "cytosol",
+        "delivery_group_id": "group",
+        "id": "",
+        "recipient_role": "role",
+        "require_same_recipient": true,
+        "required_from_seconds": 0.1,
+        "required_until_seconds": 0.3,
+        "schema_version": "biocompiler.rna_deployment_requirement.v0.1",
+        "unavailable_after_seconds": null
+      },
+      "kind": "requirement"
+    },
+    {
+      "expected_code": "invalid_deployment_time",
+      "id": "availability/onset_min_seconds/negative",
+      "input": {
+        "assumptions": [
+          "declared"
+        ],
+        "clock": "declared_exposure_start",
+        "duration_max_seconds": 0.3,
+        "duration_min_seconds": 0.2,
+        "id": "a",
+        "onset_max_seconds": 0.1,
+        "onset_min_seconds": -1,
+        "placement_id": "member",
+        "schema_version": "biocompiler.rna_availability_contract.v0.1"
+      },
+      "kind": "availability"
+    },
+    {
+      "expected_code": "invalid_deployment_time",
+      "id": "availability/onset_min_seconds/boolean",
+      "input": {
+        "assumptions": [
+          "declared"
+        ],
+        "clock": "declared_exposure_start",
+        "duration_max_seconds": 0.3,
+        "duration_min_seconds": 0.2,
+        "id": "a",
+        "onset_max_seconds": 0.1,
+        "onset_min_seconds": true,
+        "placement_id": "member",
+        "schema_version": "biocompiler.rna_availability_contract.v0.1"
+      },
+      "kind": "availability"
+    },
+    {
+      "expected_code": "invalid_deployment_time",
+      "id": "availability/onset_min_seconds/text",
+      "input": {
+        "assumptions": [
+          "declared"
+        ],
+        "clock": "declared_exposure_start",
+        "duration_max_seconds": 0.3,
+        "duration_min_seconds": 0.2,
+        "id": "a",
+        "onset_max_seconds": 0.1,
+        "onset_min_seconds": "0.1",
+        "placement_id": "member",
+        "schema_version": "biocompiler.rna_availability_contract.v0.1"
+      },
+      "kind": "availability"
+    },
+    {
+      "expected_code": "invalid_deployment_time",
+      "id": "availability/onset_min_seconds/null",
+      "input": {
+        "assumptions": [
+          "declared"
+        ],
+        "clock": "declared_exposure_start",
+        "duration_max_seconds": 0.3,
+        "duration_min_seconds": 0.2,
+        "id": "a",
+        "onset_max_seconds": 0.1,
+        "onset_min_seconds": null,
+        "placement_id": "member",
+        "schema_version": "biocompiler.rna_availability_contract.v0.1"
+      },
+      "kind": "availability"
+    },
+    {
+      "expected_code": "invalid_deployment_time",
+      "id": "availability/onset_min_seconds/over_cap",
+      "input": {
+        "assumptions": [
+          "declared"
+        ],
+        "clock": "declared_exposure_start",
+        "duration_max_seconds": 0.3,
+        "duration_min_seconds": 0.2,
+        "id": "a",
+        "onset_max_seconds": 0.1,
+        "onset_min_seconds": 31536001,
+        "placement_id": "member",
+        "schema_version": "biocompiler.rna_availability_contract.v0.1"
+      },
+      "kind": "availability"
+    },
+    {
+      "expected_code": "invalid_deployment_time",
+      "id": "availability/onset_max_seconds/negative",
+      "input": {
+        "assumptions": [
+          "declared"
+        ],
+        "clock": "declared_exposure_start",
+        "duration_max_seconds": 0.3,
+        "duration_min_seconds": 0.2,
+        "id": "a",
+        "onset_max_seconds": -1,
+        "onset_min_seconds": 0,
+        "placement_id": "member",
+        "schema_version": "biocompiler.rna_availability_contract.v0.1"
+      },
+      "kind": "availability"
+    },
+    {
+      "expected_code": "invalid_deployment_time",
+      "id": "availability/onset_max_seconds/boolean",
+      "input": {
+        "assumptions": [
+          "declared"
+        ],
+        "clock": "declared_exposure_start",
+        "duration_max_seconds": 0.3,
+        "duration_min_seconds": 0.2,
+        "id": "a",
+        "onset_max_seconds": true,
+        "onset_min_seconds": 0,
+        "placement_id": "member",
+        "schema_version": "biocompiler.rna_availability_contract.v0.1"
+      },
+      "kind": "availability"
+    },
+    {
+      "expected_code": "invalid_deployment_time",
+      "id": "availability/onset_max_seconds/text",
+      "input": {
+        "assumptions": [
+          "declared"
+        ],
+        "clock": "declared_exposure_start",
+        "duration_max_seconds": 0.3,
+        "duration_min_seconds": 0.2,
+        "id": "a",
+        "onset_max_seconds": "0.1",
+        "onset_min_seconds": 0,
+        "placement_id": "member",
+        "schema_version": "biocompiler.rna_availability_contract.v0.1"
+      },
+      "kind": "availability"
+    },
+    {
+      "expected_code": "invalid_deployment_time",
+      "id": "availability/onset_max_seconds/null",
+      "input": {
+        "assumptions": [
+          "declared"
+        ],
+        "clock": "declared_exposure_start",
+        "duration_max_seconds": 0.3,
+        "duration_min_seconds": 0.2,
+        "id": "a",
+        "onset_max_seconds": null,
+        "onset_min_seconds": 0,
+        "placement_id": "member",
+        "schema_version": "biocompiler.rna_availability_contract.v0.1"
+      },
+      "kind": "availability"
+    },
+    {
+      "expected_code": "invalid_deployment_time",
+      "id": "availability/onset_max_seconds/over_cap",
+      "input": {
+        "assumptions": [
+          "declared"
+        ],
+        "clock": "declared_exposure_start",
+        "duration_max_seconds": 0.3,
+        "duration_min_seconds": 0.2,
+        "id": "a",
+        "onset_max_seconds": 31536001,
+        "onset_min_seconds": 0,
+        "placement_id": "member",
+        "schema_version": "biocompiler.rna_availability_contract.v0.1"
+      },
+      "kind": "availability"
+    },
+    {
+      "expected_code": "invalid_deployment_time",
+      "id": "availability/duration_min_seconds/negative",
+      "input": {
+        "assumptions": [
+          "declared"
+        ],
+        "clock": "declared_exposure_start",
+        "duration_max_seconds": 0.3,
+        "duration_min_seconds": -1,
+        "id": "a",
+        "onset_max_seconds": 0.1,
+        "onset_min_seconds": 0,
+        "placement_id": "member",
+        "schema_version": "biocompiler.rna_availability_contract.v0.1"
+      },
+      "kind": "availability"
+    },
+    {
+      "expected_code": "invalid_deployment_time",
+      "id": "availability/duration_min_seconds/boolean",
+      "input": {
+        "assumptions": [
+          "declared"
+        ],
+        "clock": "declared_exposure_start",
+        "duration_max_seconds": 0.3,
+        "duration_min_seconds": true,
+        "id": "a",
+        "onset_max_seconds": 0.1,
+        "onset_min_seconds": 0,
+        "placement_id": "member",
+        "schema_version": "biocompiler.rna_availability_contract.v0.1"
+      },
+      "kind": "availability"
+    },
+    {
+      "expected_code": "invalid_deployment_time",
+      "id": "availability/duration_min_seconds/text",
+      "input": {
+        "assumptions": [
+          "declared"
+        ],
+        "clock": "declared_exposure_start",
+        "duration_max_seconds": 0.3,
+        "duration_min_seconds": "0.1",
+        "id": "a",
+        "onset_max_seconds": 0.1,
+        "onset_min_seconds": 0,
+        "placement_id": "member",
+        "schema_version": "biocompiler.rna_availability_contract.v0.1"
+      },
+      "kind": "availability"
+    },
+    {
+      "expected_code": "invalid_deployment_time",
+      "id": "availability/duration_min_seconds/null",
+      "input": {
+        "assumptions": [
+          "declared"
+        ],
+        "clock": "declared_exposure_start",
+        "duration_max_seconds": 0.3,
+        "duration_min_seconds": null,
+        "id": "a",
+        "onset_max_seconds": 0.1,
+        "onset_min_seconds": 0,
+        "placement_id": "member",
+        "schema_version": "biocompiler.rna_availability_contract.v0.1"
+      },
+      "kind": "availability"
+    },
+    {
+      "expected_code": "invalid_deployment_time",
+      "id": "availability/duration_min_seconds/over_cap",
+      "input": {
+        "assumptions": [
+          "declared"
+        ],
+        "clock": "declared_exposure_start",
+        "duration_max_seconds": 0.3,
+        "duration_min_seconds": 31536001,
+        "id": "a",
+        "onset_max_seconds": 0.1,
+        "onset_min_seconds": 0,
+        "placement_id": "member",
+        "schema_version": "biocompiler.rna_availability_contract.v0.1"
+      },
+      "kind": "availability"
+    },
+    {
+      "expected_code": "invalid_deployment_time",
+      "id": "availability/duration_max_seconds/negative",
+      "input": {
+        "assumptions": [
+          "declared"
+        ],
+        "clock": "declared_exposure_start",
+        "duration_max_seconds": -1,
+        "duration_min_seconds": 0.2,
+        "id": "a",
+        "onset_max_seconds": 0.1,
+        "onset_min_seconds": 0,
+        "placement_id": "member",
+        "schema_version": "biocompiler.rna_availability_contract.v0.1"
+      },
+      "kind": "availability"
+    },
+    {
+      "expected_code": "invalid_deployment_time",
+      "id": "availability/duration_max_seconds/boolean",
+      "input": {
+        "assumptions": [
+          "declared"
+        ],
+        "clock": "declared_exposure_start",
+        "duration_max_seconds": true,
+        "duration_min_seconds": 0.2,
+        "id": "a",
+        "onset_max_seconds": 0.1,
+        "onset_min_seconds": 0,
+        "placement_id": "member",
+        "schema_version": "biocompiler.rna_availability_contract.v0.1"
+      },
+      "kind": "availability"
+    },
+    {
+      "expected_code": "invalid_deployment_time",
+      "id": "availability/duration_max_seconds/text",
+      "input": {
+        "assumptions": [
+          "declared"
+        ],
+        "clock": "declared_exposure_start",
+        "duration_max_seconds": "0.1",
+        "duration_min_seconds": 0.2,
+        "id": "a",
+        "onset_max_seconds": 0.1,
+        "onset_min_seconds": 0,
+        "placement_id": "member",
+        "schema_version": "biocompiler.rna_availability_contract.v0.1"
+      },
+      "kind": "availability"
+    },
+    {
+      "expected_code": "invalid_deployment_time",
+      "id": "availability/duration_max_seconds/null",
+      "input": {
+        "assumptions": [
+          "declared"
+        ],
+        "clock": "declared_exposure_start",
+        "duration_max_seconds": null,
+        "duration_min_seconds": 0.2,
+        "id": "a",
+        "onset_max_seconds": 0.1,
+        "onset_min_seconds": 0,
+        "placement_id": "member",
+        "schema_version": "biocompiler.rna_availability_contract.v0.1"
+      },
+      "kind": "availability"
+    },
+    {
+      "expected_code": "invalid_deployment_time",
+      "id": "availability/duration_max_seconds/over_cap",
+      "input": {
+        "assumptions": [
+          "declared"
+        ],
+        "clock": "declared_exposure_start",
+        "duration_max_seconds": 31536001,
+        "duration_min_seconds": 0.2,
+        "id": "a",
+        "onset_max_seconds": 0.1,
+        "onset_min_seconds": 0,
+        "placement_id": "member",
+        "schema_version": "biocompiler.rna_availability_contract.v0.1"
+      },
+      "kind": "availability"
+    },
+    {
+      "expected_code": "invalid_deployment_time",
+      "id": "requirement/required_from_seconds/negative",
+      "input": {
+        "assumptions": [
+          "declared"
+        ],
+        "clock": "declared_exposure_start",
+        "compartment": "cytosol",
+        "delivery_group_id": "group",
+        "id": "r",
+        "recipient_role": "role",
+        "require_same_recipient": true,
+        "required_from_seconds": -1,
+        "required_until_seconds": 0.3,
+        "schema_version": "biocompiler.rna_deployment_requirement.v0.1",
+        "unavailable_after_seconds": null
+      },
+      "kind": "requirement"
+    },
+    {
+      "expected_code": "invalid_deployment_time",
+      "id": "requirement/required_from_seconds/boolean",
+      "input": {
+        "assumptions": [
+          "declared"
+        ],
+        "clock": "declared_exposure_start",
+        "compartment": "cytosol",
+        "delivery_group_id": "group",
+        "id": "r",
+        "recipient_role": "role",
+        "require_same_recipient": true,
+        "required_from_seconds": false,
+        "required_until_seconds": 0.3,
+        "schema_version": "biocompiler.rna_deployment_requirement.v0.1",
+        "unavailable_after_seconds": null
+      },
+      "kind": "requirement"
+    },
+    {
+      "expected_code": "invalid_deployment_time",
+      "id": "requirement/required_from_seconds/text",
+      "input": {
+        "assumptions": [
+          "declared"
+        ],
+        "clock": "declared_exposure_start",
+        "compartment": "cytosol",
+        "delivery_group_id": "group",
+        "id": "r",
+        "recipient_role": "role",
+        "require_same_recipient": true,
+        "required_from_seconds": "0.1",
+        "required_until_seconds": 0.3,
+        "schema_version": "biocompiler.rna_deployment_requirement.v0.1",
+        "unavailable_after_seconds": null
+      },
+      "kind": "requirement"
+    },
+    {
+      "expected_code": "invalid_deployment_time",
+      "id": "requirement/required_from_seconds/over_cap",
+      "input": {
+        "assumptions": [
+          "declared"
+        ],
+        "clock": "declared_exposure_start",
+        "compartment": "cytosol",
+        "delivery_group_id": "group",
+        "id": "r",
+        "recipient_role": "role",
+        "require_same_recipient": true,
+        "required_from_seconds": 31536001,
+        "required_until_seconds": 0.3,
+        "schema_version": "biocompiler.rna_deployment_requirement.v0.1",
+        "unavailable_after_seconds": null
+      },
+      "kind": "requirement"
+    },
+    {
+      "expected_code": "invalid_deployment_time",
+      "id": "requirement/required_until_seconds/negative",
+      "input": {
+        "assumptions": [
+          "declared"
+        ],
+        "clock": "declared_exposure_start",
+        "compartment": "cytosol",
+        "delivery_group_id": "group",
+        "id": "r",
+        "recipient_role": "role",
+        "require_same_recipient": true,
+        "required_from_seconds": 0.1,
+        "required_until_seconds": -1,
+        "schema_version": "biocompiler.rna_deployment_requirement.v0.1",
+        "unavailable_after_seconds": null
+      },
+      "kind": "requirement"
+    },
+    {
+      "expected_code": "invalid_deployment_time",
+      "id": "requirement/required_until_seconds/boolean",
+      "input": {
+        "assumptions": [
+          "declared"
+        ],
+        "clock": "declared_exposure_start",
+        "compartment": "cytosol",
+        "delivery_group_id": "group",
+        "id": "r",
+        "recipient_role": "role",
+        "require_same_recipient": true,
+        "required_from_seconds": 0.1,
+        "required_until_seconds": false,
+        "schema_version": "biocompiler.rna_deployment_requirement.v0.1",
+        "unavailable_after_seconds": null
+      },
+      "kind": "requirement"
+    },
+    {
+      "expected_code": "invalid_deployment_time",
+      "id": "requirement/required_until_seconds/text",
+      "input": {
+        "assumptions": [
+          "declared"
+        ],
+        "clock": "declared_exposure_start",
+        "compartment": "cytosol",
+        "delivery_group_id": "group",
+        "id": "r",
+        "recipient_role": "role",
+        "require_same_recipient": true,
+        "required_from_seconds": 0.1,
+        "required_until_seconds": "0.1",
+        "schema_version": "biocompiler.rna_deployment_requirement.v0.1",
+        "unavailable_after_seconds": null
+      },
+      "kind": "requirement"
+    },
+    {
+      "expected_code": "invalid_deployment_time",
+      "id": "requirement/required_until_seconds/over_cap",
+      "input": {
+        "assumptions": [
+          "declared"
+        ],
+        "clock": "declared_exposure_start",
+        "compartment": "cytosol",
+        "delivery_group_id": "group",
+        "id": "r",
+        "recipient_role": "role",
+        "require_same_recipient": true,
+        "required_from_seconds": 0.1,
+        "required_until_seconds": 31536001,
+        "schema_version": "biocompiler.rna_deployment_requirement.v0.1",
+        "unavailable_after_seconds": null
+      },
+      "kind": "requirement"
+    },
+    {
+      "expected_code": "invalid_deployment_time",
+      "id": "requirement/unavailable_after_seconds/negative",
+      "input": {
+        "assumptions": [
+          "declared"
+        ],
+        "clock": "declared_exposure_start",
+        "compartment": "cytosol",
+        "delivery_group_id": "group",
+        "id": "r",
+        "recipient_role": "role",
+        "require_same_recipient": true,
+        "required_from_seconds": 0.1,
+        "required_until_seconds": 0.3,
+        "schema_version": "biocompiler.rna_deployment_requirement.v0.1",
+        "unavailable_after_seconds": -1
+      },
+      "kind": "requirement"
+    },
+    {
+      "expected_code": "invalid_deployment_time",
+      "id": "requirement/unavailable_after_seconds/boolean",
+      "input": {
+        "assumptions": [
+          "declared"
+        ],
+        "clock": "declared_exposure_start",
+        "compartment": "cytosol",
+        "delivery_group_id": "group",
+        "id": "r",
+        "recipient_role": "role",
+        "require_same_recipient": true,
+        "required_from_seconds": 0.1,
+        "required_until_seconds": 0.3,
+        "schema_version": "biocompiler.rna_deployment_requirement.v0.1",
+        "unavailable_after_seconds": false
+      },
+      "kind": "requirement"
+    },
+    {
+      "expected_code": "invalid_deployment_time",
+      "id": "requirement/unavailable_after_seconds/text",
+      "input": {
+        "assumptions": [
+          "declared"
+        ],
+        "clock": "declared_exposure_start",
+        "compartment": "cytosol",
+        "delivery_group_id": "group",
+        "id": "r",
+        "recipient_role": "role",
+        "require_same_recipient": true,
+        "required_from_seconds": 0.1,
+        "required_until_seconds": 0.3,
+        "schema_version": "biocompiler.rna_deployment_requirement.v0.1",
+        "unavailable_after_seconds": "0.1"
+      },
+      "kind": "requirement"
+    },
+    {
+      "expected_code": "invalid_deployment_time",
+      "id": "requirement/unavailable_after_seconds/over_cap",
+      "input": {
+        "assumptions": [
+          "declared"
+        ],
+        "clock": "declared_exposure_start",
+        "compartment": "cytosol",
+        "delivery_group_id": "group",
+        "id": "r",
+        "recipient_role": "role",
+        "require_same_recipient": true,
+        "required_from_seconds": 0.1,
+        "required_until_seconds": 0.3,
+        "schema_version": "biocompiler.rna_deployment_requirement.v0.1",
+        "unavailable_after_seconds": 31536001
+      },
+      "kind": "requirement"
+    },
+    {
+      "expected_code": "invalid_deployment",
+      "id": "availability/reversed_onset",
+      "input": {
+        "assumptions": [
+          "declared"
+        ],
+        "clock": "declared_exposure_start",
+        "duration_max_seconds": 0.3,
+        "duration_min_seconds": 0.2,
+        "id": "a",
+        "onset_max_seconds": 0.1,
+        "onset_min_seconds": 1,
+        "placement_id": "member",
+        "schema_version": "biocompiler.rna_availability_contract.v0.1"
+      },
+      "kind": "availability"
+    },
+    {
+      "expected_code": "invalid_deployment",
+      "id": "availability/zero_duration",
+      "input": {
+        "assumptions": [
+          "declared"
+        ],
+        "clock": "declared_exposure_start",
+        "duration_max_seconds": 0.3,
+        "duration_min_seconds": 0,
+        "id": "a",
+        "onset_max_seconds": 0.1,
+        "onset_min_seconds": 0,
+        "placement_id": "member",
+        "schema_version": "biocompiler.rna_availability_contract.v0.1"
+      },
+      "kind": "availability"
+    },
+    {
+      "expected_code": "invalid_deployment",
+      "id": "availability/reversed_duration",
+      "input": {
+        "assumptions": [
+          "declared"
+        ],
+        "clock": "declared_exposure_start",
+        "duration_max_seconds": 0.3,
+        "duration_min_seconds": 1,
+        "id": "a",
+        "onset_max_seconds": 0.1,
+        "onset_min_seconds": 0,
+        "placement_id": "member",
+        "schema_version": "biocompiler.rna_availability_contract.v0.1"
+      },
+      "kind": "availability"
+    },
+    {
+      "expected_code": "invalid_deployment",
+      "id": "availability/sum_over_cap",
+      "input": {
+        "assumptions": [
+          "declared"
+        ],
+        "clock": "declared_exposure_start",
+        "duration_max_seconds": 31536000,
+        "duration_min_seconds": 0.2,
+        "id": "a",
+        "onset_max_seconds": 0.1,
+        "onset_min_seconds": 0,
+        "placement_id": "member",
+        "schema_version": "biocompiler.rna_availability_contract.v0.1"
+      },
+      "kind": "availability"
+    },
+    {
+      "expected_code": "invalid_deployment",
+      "id": "requirement/empty_window",
+      "input": {
+        "assumptions": [
+          "declared"
+        ],
+        "clock": "declared_exposure_start",
+        "compartment": "cytosol",
+        "delivery_group_id": "group",
+        "id": "r",
+        "recipient_role": "role",
+        "require_same_recipient": true,
+        "required_from_seconds": 0.1,
+        "required_until_seconds": 0.1,
+        "schema_version": "biocompiler.rna_deployment_requirement.v0.1",
+        "unavailable_after_seconds": null
+      },
+      "kind": "requirement"
+    },
+    {
+      "expected_code": "invalid_deployment",
+      "id": "requirement/reversed_window",
+      "input": {
+        "assumptions": [
+          "declared"
+        ],
+        "clock": "declared_exposure_start",
+        "compartment": "cytosol",
+        "delivery_group_id": "group",
+        "id": "r",
+        "recipient_role": "role",
+        "require_same_recipient": true,
+        "required_from_seconds": 0.1,
+        "required_until_seconds": 0,
+        "schema_version": "biocompiler.rna_deployment_requirement.v0.1",
+        "unavailable_after_seconds": null
+      },
+      "kind": "requirement"
+    },
+    {
+      "expected_code": "invalid_deployment",
+      "id": "requirement/unavailable_early",
+      "input": {
+        "assumptions": [
+          "declared"
+        ],
+        "clock": "declared_exposure_start",
+        "compartment": "cytosol",
+        "delivery_group_id": "group",
+        "id": "r",
+        "recipient_role": "role",
+        "require_same_recipient": true,
+        "required_from_seconds": 0.1,
+        "required_until_seconds": 0.3,
+        "schema_version": "biocompiler.rna_deployment_requirement.v0.1",
+        "unavailable_after_seconds": 0.2
+      },
+      "kind": "requirement"
+    },
+    {
+      "expected_code": "invalid_type",
+      "id": "requirement/numeric_boolean",
+      "input": {
+        "assumptions": [
+          "declared"
+        ],
+        "clock": "declared_exposure_start",
+        "compartment": "cytosol",
+        "delivery_group_id": "group",
+        "id": "r",
+        "recipient_role": "role",
+        "require_same_recipient": 1,
+        "required_from_seconds": 0.1,
+        "required_until_seconds": 0.3,
+        "schema_version": "biocompiler.rna_deployment_requirement.v0.1",
+        "unavailable_after_seconds": null
+      },
+      "kind": "requirement"
+    }
+  ],
+  "schema_version": "biocompiler.architecture_deployment_conformance.v1",
+  "sums": [
+    {
+      "bound": 0.3,
+      "expected": 0,
+      "id": "sum/tenths",
+      "left": 0.1,
+      "right": 0.2
+    },
+    {
+      "bound": 0.8,
+      "expected": 0,
+      "id": "sum/eighths",
+      "left": 0.7,
+      "right": 0.1
+    },
+    {
+      "bound": 0.30000000000000004,
+      "expected": -1,
+      "id": "sum/below",
+      "left": 0.1,
+      "right": 0.2
+    },
+    {
+      "bound": 0.29999999999999993,
+      "expected": 1,
+      "id": "sum/above",
+      "left": 0.1,
+      "right": 0.2
+    },
+    {
+      "bound": 31536000,
+      "expected": 0,
+      "id": "sum/cap",
+      "left": 0.1,
+      "right": 31535999.9
+    },
+    {
+      "bound": 1e-323,
+      "expected": 0,
+      "id": "sum/tiny",
+      "left": 5e-324,
+      "right": 5e-324
+    }
+  ]
+}

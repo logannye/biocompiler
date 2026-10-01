@@ -58,6 +58,7 @@ let profile_budget = { code = "profile_resource_limit"; items = 20_000; depth = 
 let observation_budget = { code = "observation_resource_limit"; items = 512; depth = 12; text_bytes = 512; bytes = 64_000; observation = true }
 let boolean_budget = { code = "boolean_resource_limit"; items = 2_048; depth = 8; text_bytes = 256; bytes = 16_384; observation = false }
 let bounded budget value =
+  Measurement_contract.preflight value;
   let insist condition = Diagnostic.require condition budget.code "Circuit record exceeds its declared resource budget." in
   let pending = ref [value, 0] and count = ref 0 and text_total = ref 0 in
   while !pending <> [] do
@@ -286,30 +287,12 @@ module Experiment = struct
   let fingerprint = Canonical.fingerprint
 end
 
-(* Inspect known wrapper envelopes to retain their whole authority and reject
-   malformed envelopes. Their contracts are deliberately NOT imported as checked
-   domain values here. Even a valid inner BuildRequest cannot discharge them. *)
-let rec source_request value =
-  match Json.string (get "schema_version" value) with
-  | "biocompiler.build_request.v0.1" -> Build_request.of_json value, false
-  | "biocompiler.human_behavior_request.v0.1" ->
-      ignore (schema "biocompiler.human_behavior_request.v0.1" ["build_request"; "contract"] value);
-      ignore (obj (get "contract" value));
-      Build_request.of_json (get "build_request" value), true
-  | "biocompiler.human_deployment_request.v0.1" ->
-      ignore (schema "biocompiler.human_deployment_request.v0.1" ["behavior_request"; "deployment"] value);
-      ignore (obj (get "deployment" value));
-      require (get "schema_version" (get "behavior_request" value) = str "biocompiler.human_behavior_request.v0.1") "Deployment wrapper requires human behavior authority.";
-      let source, _ = source_request (get "behavior_request" value) in source, true
-  | "biocompiler.human_acceptance_request.v0.1" ->
-      ignore (schema "biocompiler.human_acceptance_request.v0.1" ["deployment_request"; "acceptance"] value);
-      ignore (obj (get "acceptance" value));
-      require (get "schema_version" (get "deployment_request" value) = str "biocompiler.human_deployment_request.v0.1") "Acceptance wrapper requires deployment authority.";
-      let source, _ = source_request (get "deployment_request" value) in source, true
-  | _ -> Diagnostic.fail "unsupported_schema" "Unsupported source request schema."
+(* Complete typed authority remains nested through circuit import. A projection
+   is used only for source lookup, never as a replacement serialized request. *)
+let source_request = Human_request.of_json
 
 module Profile = struct
-  type t = { json : Json.t; target_value : Build_request.Target.t option; source_value : Build_request.t option }
+  type t = { json : Json.t; target_value : Build_request.Target.t option; source_value : Human_request.t option }
   let of_json value =
     let fields = record profile_budget "biocompiler.circuit_profile_request.v0.1"
         ["purpose"; "mode"; "molecular_form"; "boundary"; "target"; "recipient"; "source_experiment"; "source_request"] value in
@@ -334,29 +317,25 @@ module Profile = struct
           require (get "target_fingerprint" recipient_json = str (Build_request.Target.fingerprint target)) "Stale recipient target pin.";
           require (get "cell_subtype_claim_fingerprint" recipient_json = str (Canonical.fingerprint (get "cell_subtype" (get "human_target" target_json))))
             "Stale recipient subtype claim pin.";
-          Option.iter (fun (source, _) ->
-              match Build_request.target source with
+          Option.iter (fun source ->
+              match Build_request.target (Human_request.build_request source) with
               | None -> require false "Circuit source requires the original target."
               | Some source_target -> require (structural_equal source_target target_json) "Circuit target must preserve the complete original source target.") source
       | _ -> require false "Product profiles require original human target and typed immune recipient authority.");
-    match source with
-    | Some (_, true) ->
-        ignore (checked profile_budget value);
-        Unsupported { authority = value; reasons = ["wrapped_source_obligations"] }
-    | _ ->
-        let source_value = Option.map fst source in
-        let json = finish profile_budget (fields
-          |> set "target" (option_map_json Build_request.Target.to_json target_value)
-          |> set "recipient" (option_map_json Recipient.to_json recipient)
-          |> set "source_experiment" (option_map_json Experiment.to_json experiment)
-          |> set "source_request" (option_map_json Build_request.to_json source_value)) in
-        Decoded { json; target_value; source_value }
+    let source_value = source in
+    let json = finish profile_budget (fields
+      |> set "target" (option_map_json Build_request.Target.to_json target_value)
+      |> set "recipient" (option_map_json Recipient.to_json recipient)
+      |> set "source_experiment" (option_map_json Experiment.to_json experiment)
+      |> set "source_request" (option_map_json Human_request.to_json source_value)) in
+    Decoded { json; target_value; source_value }
   let to_json value = value.json
   let fingerprint value = Canonical.fingerprint value.json
   let purpose value = Json.string (get "purpose" value.json)
   let mode value = Json.string (get "mode" value.json)
   let target value = value.target_value
   let source_request value = value.source_value
+  let source_build_request value = Option.map Human_request.build_request value.source_value
   let unimplemented_obligations value =
     ["biological_evidence_admission"]
     @ (if Option.is_some value.target_value then ["target_assumption_validation"] else [])
@@ -364,9 +343,13 @@ module Profile = struct
     @ (if purpose value = "human_reference" then ["historical_reference_scope"] else [])
     @ (if purpose value = "human_immune_payload" && get "molecular_form" value.json <> str "RNA" then ["non_rna_product"] else [])
     @ (match value.source_value with None -> [] | Some source ->
+      let original = source in
+      let source = Human_request.build_request source in
       ["source_behavior_correspondence"]
       @ (if List.remove_assoc "execution" (Build_request.implementation_constraints source) = [] then [] else ["uninterpreted_implementation_constraints"])
-      @ (if Build_request.preferences source = [] then [] else ["uninterpreted_source_preferences"]))
+      @ (if Build_request.preferences source = [] then [] else ["uninterpreted_source_preferences"])
+      @ (if Human_request.kind original = Human_request.Build then [] else
+          "wrapped_source_obligations" :: Human_request.unimplemented_obligations original))
 end
 
 type circuit_behavior = { behavior_json : Json.t; executable : Behavior.t option; actions : Identity.Node.t list }
@@ -487,7 +470,7 @@ let reference_lock value =
 
 type t = { json : Json.t; profile_value : Profile.t; requirement_values : Requirement.t list }
 let schema_version = "biocompiler.circuit_request.v0.1"
-let validation_scope = "circuit-request-declarations-authority-bindings-v1"
+let validation_scope = "circuit-request-complete-source-wrapper-declarations-authority-bindings-v2"
 let of_json value =
   let fields = record profile_budget schema_version
       ["profile"; "requirements"; "requested_form"; "fidelity_scope"; "deployment_id"; "selected_realization"; "reference_lock"] value in
@@ -522,15 +505,22 @@ let of_json value =
       and lock = optional reference_lock (Json.field "reference_lock" fields) in
       if Profile.purpose profile_value = "human_immune_payload" then (
         ignore (profile_text (Json.field "deployment_id" fields));
-        let source = match Profile.source_request profile_value with
+        let original = match Profile.source_request profile_value with
           | Some source -> source
           | None -> Diagnostic.fail "invalid_circuit_record" "Circuit products require the complete original frozen source request." in
+        let source = Human_request.build_request original in
+        let deployment = Human_request.deployment original in
+        Option.iter (fun deployment ->
+            require (Json.field "deployment_id" fields = get "id" (Human_contract.Deployment.to_json deployment))
+              "Circuit deployment identity must retain original deployment authority.") deployment;
         let nodes = values (get "nodes" (Intent.to_json (Build_request.intent source)))
           |> List.to_seq |> Seq.map (fun node -> Json.string (get "id" node), node) |> Records.of_seq in
         let target = match Profile.target profile_value with Some value -> value | None -> assert false in
         let compartments = values (get "compartments" (Build_request.Target.to_json target)) |> List.map Json.string |> Names.of_list in
         List.iter (fun requirement ->
             let role = match Requirement.role requirement with Some role -> Identity.Role.to_string role | None -> "" in
+            Option.iter (fun deployment -> require (role = Human_contract.Deployment.recipient_role deployment)
+                "Circuit role must preserve original deployment recipient.") deployment;
             let original_role = Records.find_opt role nodes in
             require (match original_role with Some node -> get "kind" node = str "role" && List.assoc_opt "engineering" (obj (get "attributes" node)) = Some (str "in_vivo") | None -> false)
               "Product requirements must bind an original in-vivo engineered role.";
@@ -569,6 +559,7 @@ let to_json value = value.json
 let fingerprint value = Canonical.fingerprint value.json
 let profile value = value.profile_value
 let requirements value = value.requirement_values
+let requested_form value = Json.string (get "requested_form" value.json)
 let unimplemented_obligations value =
   ["source_execution"; "component_material_correspondence"; "architecture_acceptance"; "molecular_reconstruction"]
   @ Profile.unimplemented_obligations value.profile_value

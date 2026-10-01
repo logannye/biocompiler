@@ -231,6 +231,18 @@ module Target = struct
   let to_json = snd
   let kind = fst
   let fingerprint value = Canonical.fingerprint (to_json value)
+  let compartments value = Json.array (Json.field "compartments" (Json.object_fields (to_json value))) |> List.map Json.string
+  let payload_format value = Json.string (Json.field "payload_format" (Json.object_fields (to_json value)))
+end
+
+module Target_claim = struct
+  type t = Json.t * string list
+  let of_json ?(path = "") value =
+    Measurement_contract.preflight ~path value;
+    target_claim path value
+  let to_json = fst
+  let evidence_ids = snd
+  let fingerprint value = Canonical.fingerprint (to_json value)
 end
 
 let decode_provenance path value =

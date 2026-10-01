@@ -3,8 +3,10 @@
 The native migration implements bounded strict JSON, Python-compatible canonical
 fingerprints, checked domains and independent frozen source-to-Behavior
 correspondence. Internal libraries add per-role reference execution and fresh
-Intent-to-Behavior lowering. The current domain batch adds shared content pins,
-component contract algebra, molecular provenance and nominal chemistry. The
+Intent-to-Behavior lowering. Validated domains include shared content pins, component contract algebra,
+molecular provenance and nominal chemistry. The current batch adds complete
+component records, human source wrappers, molecular sets and supplied deployment
+windows; those additions still require hosted validation. The
 public protocol does not yet implement compilation, behavioral execution,
 molecular verification, export acceptance or human-use admission. Capabilities
 are explicit; unimplemented operations return `unsupported` without fallback.
@@ -23,11 +25,7 @@ also remains separate. The shared JSON codec, canonicalizer, numeric conventions
 and domain validators are part of the common trusted base, not independent
 execution evidence.
 
-PR37–39 are merged and fully validated. PR40 reference execution still awaits its
-fresh complete [CI run 36935066451](https://github.com/logannye/biocompiler/actions/runs/36935066451) after the cross-Python fixture correction `e4846f0`. The current
-`codex/ocaml-lowering-contract-domains` batch is rebased onto that correction;
-its implementation and test wiring are present, with hosted validation pending.
-No new production routing or public protocol operation is enabled by this batch.
+PR37–40 are merged after complete required validation. PR40 source `e4846f0` passed [run 36935066451](https://github.com/logannye/biocompiler/actions/runs/36935066451), including 12 native suites, 936 protocol checks and 2,095 tests on each Python version. Its separate [post-merge main run](https://github.com/logannye/biocompiler/actions/runs/36936774523) also passed every required gate. PR41's lowering and domain batch is merged after all 17 native suites, 2,122 tests on each Python version and every required product gate passed. Its separate integrated-main run 36937189850 remains pending. No production routing or public protocol operation is enabled by these internal domain increments.
 
 ## Hosted validation
 
@@ -85,9 +83,10 @@ The internal domain and checker modules prepare the stateful architecture checke
 - `Type_spec.normalize_binding` reconstructs valid serialized bindings using
   the existing unit conventions, preserving integer/float and signed-zero forms.
 - `Circuit_request` preserves circuit/profile/recipient and executable-output
-  declarations with their complete source authority. Deferred human behavior,
-  deployment and acceptance wrappers yield explicit unsupported coverage; their
-  nested BuildRequest is never substituted for the original wrapper.
+  declarations with their complete source authority. The current structural increment preserves typed human behavior, deployment
+  and acceptance wrappers in full, including their source/target/contract pins;
+  downstream implementation and empirical obligations remain explicit. A
+  projected nested BuildRequest never replaces complete wrapper authority.
 - `Lowering_check` independently compares a supplied Behavior with a separately
   frozen BuildRequest, accounting for every operation, binding, requirement and
   source correspondence. Its abstract report binds full and semantic identities
@@ -104,8 +103,8 @@ The internal domain and checker modules prepare the stateful architecture checke
   operating domains and ports. Its Boolean/closed-interval/unknown algebra uses
   exact types and explicit units, checks initialization separately from runtime
   inclusion, and covers all 13 synthetic domain operations. Imported claims
-  cannot construct the abstract fresh-assessment type. The full component-model
-  and architecture records remain separate unfinished work.
+  cannot construct the abstract fresh-assessment type. Complete component records are added in the current pending batch; architecture
+  refinement/template reconstruction remains unfinished.
 - `Diagnostic_text` fixes missing-coordinate diagnostic spelling to
   `python_repr_unicode14.v1`. See the deliberate compatibility exception below.
 - `Molecular_record` applies molecular resource/text/serialization bounds and
@@ -132,6 +131,44 @@ The internal domain and checker modules prepare the stateful architecture checke
   has no producer or candidate-runtime dependency and is not exposed by the
   service or standalone verifier. Declared channels remain supplied per-role
   observation/action endpoints; coupled transport is a later architecture layer.
+
+The current pending batch adds these structural APIs:
+
+- `Measurement_contract`, `Human_contract` and `Human_request` validate normalized
+  measurements, complete behavior/deployment/acceptance declarations, their exact
+  nested source correspondence and separate semantic/artifact identities. Circuit
+  decoding preserves the whole typed source and checks original deployment and
+  recipient identities. Structural validity does not implement an actuator,
+  assess empirical evidence or make a symbolic human profile executable.
+- `Component` retains all eight record families and the shared pin type. Complete
+  synthetic models validate port census, role/scope, event timing, literal types
+  and output-domain compatibility. Imported component declarations remain distinct
+  from fresh local assessments and full architecture acceptance.
+- `Molecule` checks covalent molecules, complete assembly partitions, features,
+  complex constituents and role/form declarations. `Molecule_set` binds every
+  member, coordinate frame, source request and role to its exact authority. Its
+  nominal species/bundle identities preserve chemistry and role multiplicity;
+  artifact metadata remains separate from experimental specification identity.
+  These APIs inspect supplied records; construction and emitted-base checking
+  remain later responsibilities.
+- `Architecture_deployment.Time` preserves original numeric authority while
+  comparing exact decimal seconds like `Fraction(str(value))` in the existing
+  checker. Availability and requirement records retain unknown contextual
+  outcomes such as empty common overlap. Their structural import is not a fresh
+  deployment assessment.
+
+The pending corpora retain 40 human-wrapper records, 244 staged rejections and four independent literals; 60 component records, 112 rejections and 42 fresh domain assessments; and 109 molecular records, 136 rejections and 16 identity relations. Deployment coverage adds 15 records, 78 rejections, 18 exact decimal ratios and six independent sum boundaries. The original wrapped eight-member molecular example and all nine case B root/set/final occurrences remain intact.
+
+The pending gate expands to 22 native suites. In addition to the validated
+commands below, hosted CI must execute these complete new corpora:
+
+```sh
+core/_build/default/test/test_component.exe "$GITHUB_WORKSPACE/tests/conformance/components-v1.json"
+core/_build/default/test/test_human_wrappers.exe "$GITHUB_WORKSPACE/tests/conformance/human-wrappers-v1.json"
+core/_build/default/test/test_molecule.exe "$GITHUB_WORKSPACE/tests/conformance/molecules-v1.json"
+core/_build/default/test/test_molecule_set.exe "$GITHUB_WORKSPACE/tests/conformance/molecules-v1.json"
+core/_build/default/test/test_architecture_deployment.exe "$GITHUB_WORKSPACE/tests/conformance/architecture-deployment-v1.json"
+```
 
 The diagnostic profile is an intentional compatibility exception. Python repr
 uses the host Unicode database; native missing-coordinate reasons use a complete,

@@ -888,6 +888,23 @@ jobs:
       - name: Check molecular chemistry and nominal identity
         if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
         run: core/_build/default/test/test_molecule_chemistry.exe "$GITHUB_WORKSPACE/tests/conformance/molecule-chemistry-v1.json" | tee generated/core/molecule-chemistry.txt
+      - name: Check supplied deployment windows and exact decimal interval boundaries
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: |
+          core/_build/default/test/test_architecture_deployment.exe "$GITHUB_WORKSPACE/tests/conformance/architecture-deployment-v1.json" | tee generated/core/test_architecture_deployment.txt
+      - name: Check complete component declarations and contextual model contracts
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: |
+          core/_build/default/test/test_component.exe "$GITHUB_WORKSPACE/tests/conformance/components-v1.json" | tee generated/core/test_component.txt
+      - name: Check full human source wrapper authority and circuit correspondence
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: |
+          core/_build/default/test/test_human_wrappers.exe "$GITHUB_WORKSPACE/tests/conformance/human-wrappers-v1.json" | tee generated/core/test_human_wrappers.txt
+      - name: Check molecular inventories, nominal identities and complete request authority
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: |
+          core/_build/default/test/test_molecule.exe "$GITHUB_WORKSPACE/tests/conformance/molecules-v1.json" | tee generated/core/test_molecule.txt
+          core/_build/default/test/test_molecule_set.exe "$GITHUB_WORKSPACE/tests/conformance/molecules-v1.json" | tee generated/core/test_molecule_set.txt
       - name: Check cross-language bytes, structural intent and independent lowering correspondence
         if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
         env:

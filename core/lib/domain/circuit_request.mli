@@ -1,6 +1,6 @@
 (** Structural circuit authority, not source correspondence, candidate acceptance
-    or biological admission. Unsupported source wrappers retain the complete
-    original input and cannot construct a validated circuit or profile. *)
+    or biological admission. Typed human wrappers retain complete nested source
+    authority and all unimplemented assessment/implementation obligations. *)
 type unsupported
 val unsupported_authority : unsupported -> Bioc_wire.Json.t
 val unsupported_reasons : unsupported -> string list
@@ -27,7 +27,8 @@ module Profile : sig
   val purpose : t -> string
   val mode : t -> string
   val target : t -> Build_request.Target.t option
-  val source_request : t -> Build_request.t option
+  val source_request : t -> Human_request.t option
+  val source_build_request : t -> Build_request.t option
   val unimplemented_obligations : t -> string list
 end
 module Requirement : sig
@@ -52,4 +53,5 @@ val to_json : t -> Bioc_wire.Json.t
 val fingerprint : t -> string
 val profile : t -> Profile.t
 val requirements : t -> Requirement.t list
+val requested_form : t -> string
 val unimplemented_obligations : t -> string list

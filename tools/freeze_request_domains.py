@@ -33,7 +33,7 @@ SCHEMA = "biocompiler.request_domains_conformance.v1"
 PARSERS = {"recipient": ImmuneRecipientIdentity, "experiment": HumanExperimentContext,
            "profile": CircuitProfileRequest, "requirement": CircuitRequirement,
            "circuit_request": CircuitRequest}
-DEFERRED = sorted("biocompiler." + name + "_request.v0.1" for name in
+WRAPPER_SCHEMAS = sorted("biocompiler." + name + "_request.v0.1" for name in
                   ("human_behavior", "human_deployment", "human_acceptance"))
 
 
@@ -282,15 +282,14 @@ def domain_cases():
     reject("reference_changed_boolean", "circuit_request", reference, lambda d: d["requirements"][0]["behavior"]["response"].update(outputs=[False, False, False, True]))
     for profile in wrapper_profiles():
         source_schema = profile.source_request.schema_version
-        rejections.append(dict(id="deferred_" + source_schema, record_kind="profile", input=profile.to_dict(),
-                               expected_outcome="unsupported", expected_code="wrapped_source_obligations"))
+        add("wrapped_" + source_schema, "profile", profile)
     return cases, rejections
 
 
 def coverage_for(cases, rejections):
     return {"supported_record_kinds": sorted(PARSERS),
             "covered_record_kinds": sorted({case["record_kind"] for case in cases}),
-            "deferred_source_schemas": DEFERRED,
+            "wrapped_source_schemas": WRAPPER_SCHEMAS,
             "variants": {"positive_cases": len(cases), "invalid_cases": sum(r["expected_outcome"] == "invalid" for r in rejections),
                          "unsupported_cases": sum(r["expected_outcome"] == "unsupported" for r in rejections),
                          "immune_lineages": sorted(item.value for item in bc.ImmuneLineage),
@@ -485,7 +484,7 @@ def check_corpus(document):
     for case in document["rejections"]:
         if case["expected_outcome"] == "unsupported":
             restored = PARSERS[case["record_kind"]].from_dict(case["input"])
-            require(restored.source_request.schema_version in DEFERRED, "Unsupported case is not a valid deferred wrapper")
+            require(restored.source_request.schema_version in WRAPPER_SCHEMAS, "Unsupported case is not a valid deferred wrapper")
         else:
             try:
                 PARSERS[case["record_kind"]].from_dict(case["input"])
