@@ -3,8 +3,10 @@
 The accepted target implementation uses TypeScript for Studio, Python for
 authoring/orchestration/scientific exploration, and OCaml for the compiler,
 independent checking and canonical emission. See [ADR 0007](decisions/0007-language-boundaries-and-ocaml-core.md)
-and the [session migration roadmap](language-migration-roadmap.md). This is a
-planned migration: the current compiler is Python and Studio is JavaScript.
+and the [session migration roadmap](language-migration-roadmap.md). Studio now
+builds from strict TypeScript. Production compiler and acceptance paths remain
+Python; the experimental OCaml core provides canonicalization and structural
+intent validation while internal typed domain layers prepare independent checking.
 The domain layers and preservation obligations below continue to govern both.
 
 The current product interface is **therapeutic program design → corresponding

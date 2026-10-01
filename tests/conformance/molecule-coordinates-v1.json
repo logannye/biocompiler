@@ -1,0 +1,2895 @@
+{
+  "claim_scope": "Coordinate consistency and canonical identity only; no emitted symbols, processing mechanism, or empirical claim.",
+  "positions": [
+    {
+      "id": "ordinary-half-open",
+      "limit": null,
+      "path": {
+        "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+        "space_id": "frame",
+        "spans": [
+          {
+            "end": 5,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 2
+          }
+        ],
+        "strand": "+"
+      },
+      "positions": [
+        2,
+        3,
+        4
+      ],
+      "space": {
+        "alphabet": "RNA",
+        "axis": "5prime_to_3prime",
+        "id": "frame",
+        "length": 10,
+        "schema_version": "biocompiler.molecule_coordinate_space.v0.1",
+        "topology": "linear"
+      }
+    },
+    {
+      "id": "supplied-order-forward",
+      "limit": null,
+      "path": {
+        "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+        "space_id": "frame",
+        "spans": [
+          {
+            "end": 8,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 6
+          },
+          {
+            "end": 3,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 1
+          },
+          {
+            "end": 5,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 4
+          }
+        ],
+        "strand": "+"
+      },
+      "positions": [
+        6,
+        7,
+        1,
+        2,
+        4
+      ],
+      "space": {
+        "alphabet": "RNA",
+        "axis": "5prime_to_3prime",
+        "id": "frame",
+        "length": 10,
+        "schema_version": "biocompiler.molecule_coordinate_space.v0.1",
+        "topology": "linear"
+      }
+    },
+    {
+      "id": "reverse-keeps-segment-order",
+      "limit": null,
+      "path": {
+        "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+        "space_id": "frame",
+        "spans": [
+          {
+            "end": 2,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 0
+          },
+          {
+            "end": 7,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 5
+          }
+        ],
+        "strand": "-"
+      },
+      "positions": [
+        1,
+        0,
+        6,
+        5
+      ],
+      "space": {
+        "alphabet": "RNA",
+        "axis": "5prime_to_3prime",
+        "id": "frame",
+        "length": 10,
+        "schema_version": "biocompiler.molecule_coordinate_space.v0.1",
+        "topology": "linear"
+      }
+    },
+    {
+      "id": "reverse-reordered-is-distinct",
+      "limit": null,
+      "path": {
+        "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+        "space_id": "frame",
+        "spans": [
+          {
+            "end": 7,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 5
+          },
+          {
+            "end": 2,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 0
+          }
+        ],
+        "strand": "-"
+      },
+      "positions": [
+        6,
+        5,
+        1,
+        0
+      ],
+      "space": {
+        "alphabet": "RNA",
+        "axis": "5prime_to_3prime",
+        "id": "frame",
+        "length": 10,
+        "schema_version": "biocompiler.molecule_coordinate_space.v0.1",
+        "topology": "linear"
+      }
+    },
+    {
+      "id": "circular-origin-forward",
+      "limit": null,
+      "path": {
+        "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+        "space_id": "frame",
+        "spans": [
+          {
+            "end": 10,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 8
+          },
+          {
+            "end": 3,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 0
+          }
+        ],
+        "strand": "+"
+      },
+      "positions": [
+        8,
+        9,
+        0,
+        1,
+        2
+      ],
+      "space": {
+        "alphabet": "RNA",
+        "axis": "5prime_to_3prime",
+        "id": "frame",
+        "length": 10,
+        "schema_version": "biocompiler.molecule_coordinate_space.v0.1",
+        "topology": "circular"
+      }
+    },
+    {
+      "id": "circular-origin-reverse",
+      "limit": null,
+      "path": {
+        "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+        "space_id": "frame",
+        "spans": [
+          {
+            "end": 3,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 0
+          },
+          {
+            "end": 10,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 8
+          }
+        ],
+        "strand": "-"
+      },
+      "positions": [
+        2,
+        1,
+        0,
+        9,
+        8
+      ],
+      "space": {
+        "alphabet": "RNA",
+        "axis": "5prime_to_3prime",
+        "id": "frame",
+        "length": 10,
+        "schema_version": "biocompiler.molecule_coordinate_space.v0.1",
+        "topology": "circular"
+      }
+    },
+    {
+      "id": "linear-discontinuous-is-not-wrap-inference",
+      "limit": null,
+      "path": {
+        "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+        "space_id": "frame",
+        "spans": [
+          {
+            "end": 10,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 8
+          },
+          {
+            "end": 3,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 0
+          }
+        ],
+        "strand": "+"
+      },
+      "positions": [
+        8,
+        9,
+        0,
+        1,
+        2
+      ],
+      "space": {
+        "alphabet": "RNA",
+        "axis": "5prime_to_3prime",
+        "id": "frame",
+        "length": 10,
+        "schema_version": "biocompiler.molecule_coordinate_space.v0.1",
+        "topology": "linear"
+      }
+    },
+    {
+      "id": "adjacent-out-of-order",
+      "limit": null,
+      "path": {
+        "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+        "space_id": "frame",
+        "spans": [
+          {
+            "end": 4,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 2
+          },
+          {
+            "end": 2,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 0
+          },
+          {
+            "end": 6,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 4
+          }
+        ],
+        "strand": "+"
+      },
+      "positions": [
+        2,
+        3,
+        0,
+        1,
+        4,
+        5
+      ],
+      "space": {
+        "alphabet": "RNA",
+        "axis": "5prime_to_3prime",
+        "id": "frame",
+        "length": 10,
+        "schema_version": "biocompiler.molecule_coordinate_space.v0.1",
+        "topology": "linear"
+      }
+    },
+    {
+      "id": "protein-forward",
+      "limit": null,
+      "path": {
+        "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+        "space_id": "frame",
+        "spans": [
+          {
+            "end": 5,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 2
+          }
+        ],
+        "strand": "+"
+      },
+      "positions": [
+        2,
+        3,
+        4
+      ],
+      "space": {
+        "alphabet": "protein",
+        "axis": "N_to_C",
+        "id": "frame",
+        "length": 10,
+        "schema_version": "biocompiler.molecule_coordinate_space.v0.1",
+        "topology": "linear"
+      }
+    },
+    {
+      "id": "empty-boundary-0-+",
+      "limit": 0,
+      "path": {
+        "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+        "space_id": "frame",
+        "spans": [
+          {
+            "end": 0,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 0
+          }
+        ],
+        "strand": "+"
+      },
+      "positions": [],
+      "space": {
+        "alphabet": "RNA",
+        "axis": "5prime_to_3prime",
+        "id": "frame",
+        "length": 10,
+        "schema_version": "biocompiler.molecule_coordinate_space.v0.1",
+        "topology": "circular"
+      }
+    },
+    {
+      "id": "empty-boundary-0--",
+      "limit": 0,
+      "path": {
+        "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+        "space_id": "frame",
+        "spans": [
+          {
+            "end": 0,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 0
+          }
+        ],
+        "strand": "-"
+      },
+      "positions": [],
+      "space": {
+        "alphabet": "RNA",
+        "axis": "5prime_to_3prime",
+        "id": "frame",
+        "length": 10,
+        "schema_version": "biocompiler.molecule_coordinate_space.v0.1",
+        "topology": "circular"
+      }
+    },
+    {
+      "id": "empty-boundary-10-+",
+      "limit": 0,
+      "path": {
+        "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+        "space_id": "frame",
+        "spans": [
+          {
+            "end": 10,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 10
+          }
+        ],
+        "strand": "+"
+      },
+      "positions": [],
+      "space": {
+        "alphabet": "RNA",
+        "axis": "5prime_to_3prime",
+        "id": "frame",
+        "length": 10,
+        "schema_version": "biocompiler.molecule_coordinate_space.v0.1",
+        "topology": "circular"
+      }
+    },
+    {
+      "id": "empty-boundary-10--",
+      "limit": 0,
+      "path": {
+        "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+        "space_id": "frame",
+        "spans": [
+          {
+            "end": 10,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 10
+          }
+        ],
+        "strand": "-"
+      },
+      "positions": [],
+      "space": {
+        "alphabet": "RNA",
+        "axis": "5prime_to_3prime",
+        "id": "frame",
+        "length": 10,
+        "schema_version": "biocompiler.molecule_coordinate_space.v0.1",
+        "topology": "circular"
+      }
+    },
+    {
+      "id": "exact-explicit-limit",
+      "limit": 3,
+      "path": {
+        "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+        "space_id": "frame",
+        "spans": [
+          {
+            "end": 5,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 2
+          }
+        ],
+        "strand": "+"
+      },
+      "positions": [
+        2,
+        3,
+        4
+      ],
+      "space": {
+        "alphabet": "RNA",
+        "axis": "5prime_to_3prime",
+        "id": "frame",
+        "length": 10,
+        "schema_version": "biocompiler.molecule_coordinate_space.v0.1",
+        "topology": "linear"
+      }
+    }
+  ],
+  "records": [
+    {
+      "canonical_json": "{\"alphabet\":\"RNA\",\"axis\":\"5prime_to_3prime\",\"id\":\"frame\",\"length\":10,\"schema_version\":\"biocompiler.molecule_coordinate_space.v0.1\",\"topology\":\"linear\"}",
+      "id": "rna-linear",
+      "kind": "space",
+      "sha256": "12c18490911e1d1e08453aa44fb0623db629af00d6439787721cf1498e106dc5",
+      "value": {
+        "alphabet": "RNA",
+        "axis": "5prime_to_3prime",
+        "id": "frame",
+        "length": 10,
+        "schema_version": "biocompiler.molecule_coordinate_space.v0.1",
+        "topology": "linear"
+      }
+    },
+    {
+      "canonical_json": "{\"alphabet\":\"DNA\",\"axis\":\"5prime_to_3prime\",\"id\":\"frame\",\"length\":10,\"schema_version\":\"biocompiler.molecule_coordinate_space.v0.1\",\"topology\":\"circular\"}",
+      "id": "dna-circle",
+      "kind": "space",
+      "sha256": "7da245e5da3bbe7f7911256862b71a286049ad94d3ddeda2af75cc327c0d96e7",
+      "value": {
+        "alphabet": "DNA",
+        "axis": "5prime_to_3prime",
+        "id": "frame",
+        "length": 10,
+        "schema_version": "biocompiler.molecule_coordinate_space.v0.1",
+        "topology": "circular"
+      }
+    },
+    {
+      "canonical_json": "{\"alphabet\":\"protein\",\"axis\":\"N_to_C\",\"id\":\"frame\",\"length\":10,\"schema_version\":\"biocompiler.molecule_coordinate_space.v0.1\",\"topology\":\"linear\"}",
+      "id": "protein",
+      "kind": "space",
+      "sha256": "bbb5d75a339160e32a1dd20832856ee9987effaee0d529984e4468f38d5890cb",
+      "value": {
+        "alphabet": "protein",
+        "axis": "N_to_C",
+        "id": "frame",
+        "length": 10,
+        "schema_version": "biocompiler.molecule_coordinate_space.v0.1",
+        "topology": "linear"
+      }
+    },
+    {
+      "canonical_json": "{\"alphabet\":\"RNA\",\"axis\":\"5prime_to_3prime\",\"id\":\"frame A\",\"length\":10,\"schema_version\":\"biocompiler.molecule_coordinate_space.v0.1\",\"topology\":\"linear\"}",
+      "id": "unicode-interior-space",
+      "kind": "space",
+      "sha256": "3c1011e56ef7e5781ae58d0dae5fcb22c0597e5b6ba4a6638bcb83f5922c5b82",
+      "value": {
+        "alphabet": "RNA",
+        "axis": "5prime_to_3prime",
+        "id": "frame A",
+        "length": 10,
+        "schema_version": "biocompiler.molecule_coordinate_space.v0.1",
+        "topology": "linear"
+      }
+    },
+    {
+      "canonical_json": "{\"alphabet\":\"RNA\",\"axis\":\"5prime_to_3prime\",\"id\":\"﻿frame​\",\"length\":10,\"schema_version\":\"biocompiler.molecule_coordinate_space.v0.1\",\"topology\":\"linear\"}",
+      "id": "unicode-nonstrip-boundary",
+      "kind": "space",
+      "sha256": "66bdc5598446fff825fcf11d04369b139a26f2b4082d6e66487d8607963cf960",
+      "value": {
+        "alphabet": "RNA",
+        "axis": "5prime_to_3prime",
+        "id": "﻿frame​",
+        "length": 10,
+        "schema_version": "biocompiler.molecule_coordinate_space.v0.1",
+        "topology": "linear"
+      }
+    },
+    {
+      "canonical_json": "{\"alphabet\":\"RNA\",\"axis\":\"5prime_to_3prime\",\"id\":\"µµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµ\",\"length\":10,\"schema_version\":\"biocompiler.molecule_coordinate_space.v0.1\",\"topology\":\"linear\"}",
+      "id": "unicode-byte-boundary",
+      "kind": "space",
+      "sha256": "b1ffec4ec55e59b08f9571ff57cf7c9b39a219d195d6e9ee2ce8fd75994791e4",
+      "value": {
+        "alphabet": "RNA",
+        "axis": "5prime_to_3prime",
+        "id": "µµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµ",
+        "length": 10,
+        "schema_version": "biocompiler.molecule_coordinate_space.v0.1",
+        "topology": "linear"
+      }
+    },
+    {
+      "canonical_json": "{\"alphabet\":\"RNA\",\"axis\":\"5prime_to_3prime\",\"id\":\"frame\",\"length\":1000000,\"schema_version\":\"biocompiler.molecule_coordinate_space.v0.1\",\"topology\":\"linear\"}",
+      "id": "maximum-length",
+      "kind": "space",
+      "sha256": "19061b62ab4a7dad4f37d4f5c2bd70706dd66016dc24e9edc5ad67739a1ac4c7",
+      "value": {
+        "alphabet": "RNA",
+        "axis": "5prime_to_3prime",
+        "id": "frame",
+        "length": 1000000,
+        "schema_version": "biocompiler.molecule_coordinate_space.v0.1",
+        "topology": "linear"
+      }
+    },
+    {
+      "canonical_json": "{\"alphabet\":\"RNA\",\"axis\":\"5prime_to_3prime\",\"id\":\"frame\",\"length\":9,\"schema_version\":\"biocompiler.molecule_coordinate_space.v0.1\",\"topology\":\"linear\"}",
+      "id": "same-id-other-length",
+      "kind": "space",
+      "sha256": "fad0963d3fe7da1e19708841cdcae8afadeaea5228a79e4cb3c429e806ffb66f",
+      "value": {
+        "alphabet": "RNA",
+        "axis": "5prime_to_3prime",
+        "id": "frame",
+        "length": 9,
+        "schema_version": "biocompiler.molecule_coordinate_space.v0.1",
+        "topology": "linear"
+      }
+    },
+    {
+      "canonical_json": "{\"end\":0,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":0}",
+      "id": "empty-origin",
+      "kind": "span",
+      "sha256": "32c37db368dd795bba095317040d7e6a9a212d1a0b5fd820a0cb36aeb91313ea",
+      "value": {
+        "end": 0,
+        "schema_version": "biocompiler.molecule_index_span.v0.1",
+        "start": 0
+      }
+    },
+    {
+      "canonical_json": "{\"end\":1000000,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":1000000}",
+      "id": "empty-last-boundary",
+      "kind": "span",
+      "sha256": "89cb81d7880f3a58367e54c63566442ef62a8b2f4bf608e5545a67869fb66171",
+      "value": {
+        "end": 1000000,
+        "schema_version": "biocompiler.molecule_index_span.v0.1",
+        "start": 1000000
+      }
+    },
+    {
+      "canonical_json": "{\"end\":1000000,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":0}",
+      "id": "full-residue-range",
+      "kind": "span",
+      "sha256": "b3969be7ec5805348ef293f85a70e1223a4affe680946b20ada3e0d9362e848a",
+      "value": {
+        "end": 1000000,
+        "schema_version": "biocompiler.molecule_index_span.v0.1",
+        "start": 0
+      }
+    },
+    {
+      "canonical_json": "{\"end\":5,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":2}",
+      "id": "ordinary-span",
+      "kind": "span",
+      "sha256": "ba9ffbfd76f5997a0ca8b1f5f9b99d2228b326cccd4341511ef14d5f65692b82",
+      "value": {
+        "end": 5,
+        "schema_version": "biocompiler.molecule_index_span.v0.1",
+        "start": 2
+      }
+    },
+    {
+      "canonical_json": "{\"schema_version\":\"biocompiler.molecule_coordinate_path.v0.1\",\"space_id\":\"frame\",\"spans\":[{\"end\":8,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":6},{\"end\":3,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":1},{\"end\":5,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":4}],\"strand\":\"+\"}",
+      "id": "forward-discontinuous",
+      "kind": "path",
+      "sha256": "520347ecb2a50390c949cc14e66b20a46227e26a5c2a7fd71e813ce4795aec77",
+      "value": {
+        "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+        "space_id": "frame",
+        "spans": [
+          {
+            "end": 8,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 6
+          },
+          {
+            "end": 3,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 1
+          },
+          {
+            "end": 5,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 4
+          }
+        ],
+        "strand": "+"
+      }
+    },
+    {
+      "canonical_json": "{\"schema_version\":\"biocompiler.molecule_coordinate_path.v0.1\",\"space_id\":\"frame\",\"spans\":[{\"end\":2,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":0},{\"end\":7,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":5}],\"strand\":\"-\"}",
+      "id": "reverse-discontinuous",
+      "kind": "path",
+      "sha256": "b1b32ad660963747f26f6ae6edc42bb0144ef35580c6a4ab9e0d13d23d693746",
+      "value": {
+        "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+        "space_id": "frame",
+        "spans": [
+          {
+            "end": 2,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 0
+          },
+          {
+            "end": 7,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 5
+          }
+        ],
+        "strand": "-"
+      }
+    },
+    {
+      "canonical_json": "{\"schema_version\":\"biocompiler.molecule_coordinate_path.v0.1\",\"space_id\":\"frame\",\"spans\":[{\"end\":7,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":5},{\"end\":2,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":0}],\"strand\":\"-\"}",
+      "id": "reverse-reordered",
+      "kind": "path",
+      "sha256": "17eacce8664b6365cad8337d5ccdee18440c348136525f196d1ff2210b6fe2b0",
+      "value": {
+        "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+        "space_id": "frame",
+        "spans": [
+          {
+            "end": 7,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 5
+          },
+          {
+            "end": 2,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 0
+          }
+        ],
+        "strand": "-"
+      }
+    },
+    {
+      "canonical_json": "{\"schema_version\":\"biocompiler.molecule_coordinate_path.v0.1\",\"space_id\":\"frame\",\"spans\":[{\"end\":10,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":8},{\"end\":3,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":0}],\"strand\":\"+\"}",
+      "id": "origin-crossing",
+      "kind": "path",
+      "sha256": "0441be35fc772af421cfb301c6d456e129144123ae67a4b7a87c4c9aec81f1cc",
+      "value": {
+        "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+        "space_id": "frame",
+        "spans": [
+          {
+            "end": 10,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 8
+          },
+          {
+            "end": 3,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 0
+          }
+        ],
+        "strand": "+"
+      }
+    },
+    {
+      "canonical_json": "{\"schema_version\":\"biocompiler.molecule_coordinate_path.v0.1\",\"space_id\":\"frame\",\"spans\":[{\"end\":10,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":10}],\"strand\":\"+\"}",
+      "id": "boundary-last",
+      "kind": "path",
+      "sha256": "244312aa336f8bf21e043d32e0dd70d6ff8696546ccd91e3b82281fa98b773b9",
+      "value": {
+        "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+        "space_id": "frame",
+        "spans": [
+          {
+            "end": 10,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 10
+          }
+        ],
+        "strand": "+"
+      }
+    },
+    {
+      "canonical_json": "{\"schema_version\":\"biocompiler.molecule_coordinate_path.v0.1\",\"space_id\":\"frame\",\"spans\":[{\"end\":1,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":0},{\"end\":2,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":1},{\"end\":3,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":2},{\"end\":4,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":3},{\"end\":5,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":4},{\"end\":6,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":5},{\"end\":7,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":6},{\"end\":8,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":7},{\"end\":9,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":8},{\"end\":10,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":9},{\"end\":11,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":10},{\"end\":12,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":11},{\"end\":13,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":12},{\"end\":14,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":13},{\"end\":15,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":14},{\"end\":16,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":15},{\"end\":17,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":16},{\"end\":18,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":17},{\"end\":19,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":18},{\"end\":20,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":19},{\"end\":21,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":20},{\"end\":22,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":21},{\"end\":23,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":22},{\"end\":24,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":23},{\"end\":25,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":24},{\"end\":26,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":25},{\"end\":27,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":26},{\"end\":28,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":27},{\"end\":29,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":28},{\"end\":30,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":29},{\"end\":31,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":30},{\"end\":32,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":31},{\"end\":33,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":32},{\"end\":34,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":33},{\"end\":35,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":34},{\"end\":36,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":35},{\"end\":37,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":36},{\"end\":38,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":37},{\"end\":39,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":38},{\"end\":40,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":39},{\"end\":41,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":40},{\"end\":42,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":41},{\"end\":43,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":42},{\"end\":44,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":43},{\"end\":45,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":44},{\"end\":46,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":45},{\"end\":47,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":46},{\"end\":48,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":47},{\"end\":49,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":48},{\"end\":50,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":49},{\"end\":51,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":50},{\"end\":52,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":51},{\"end\":53,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":52},{\"end\":54,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":53},{\"end\":55,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":54},{\"end\":56,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":55},{\"end\":57,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":56},{\"end\":58,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":57},{\"end\":59,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":58},{\"end\":60,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":59},{\"end\":61,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":60},{\"end\":62,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":61},{\"end\":63,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":62},{\"end\":64,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":63},{\"end\":65,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":64},{\"end\":66,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":65},{\"end\":67,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":66},{\"end\":68,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":67},{\"end\":69,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":68},{\"end\":70,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":69},{\"end\":71,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":70},{\"end\":72,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":71},{\"end\":73,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":72},{\"end\":74,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":73},{\"end\":75,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":74},{\"end\":76,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":75},{\"end\":77,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":76},{\"end\":78,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":77},{\"end\":79,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":78},{\"end\":80,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":79},{\"end\":81,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":80},{\"end\":82,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":81},{\"end\":83,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":82},{\"end\":84,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":83},{\"end\":85,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":84},{\"end\":86,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":85},{\"end\":87,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":86},{\"end\":88,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":87},{\"end\":89,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":88},{\"end\":90,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":89},{\"end\":91,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":90},{\"end\":92,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":91},{\"end\":93,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":92},{\"end\":94,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":93},{\"end\":95,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":94},{\"end\":96,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":95},{\"end\":97,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":96},{\"end\":98,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":97},{\"end\":99,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":98},{\"end\":100,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":99},{\"end\":101,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":100},{\"end\":102,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":101},{\"end\":103,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":102},{\"end\":104,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":103},{\"end\":105,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":104},{\"end\":106,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":105},{\"end\":107,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":106},{\"end\":108,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":107},{\"end\":109,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":108},{\"end\":110,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":109},{\"end\":111,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":110},{\"end\":112,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":111},{\"end\":113,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":112},{\"end\":114,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":113},{\"end\":115,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":114},{\"end\":116,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":115},{\"end\":117,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":116},{\"end\":118,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":117},{\"end\":119,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":118},{\"end\":120,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":119},{\"end\":121,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":120},{\"end\":122,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":121},{\"end\":123,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":122},{\"end\":124,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":123},{\"end\":125,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":124},{\"end\":126,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":125},{\"end\":127,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":126},{\"end\":128,\"schema_version\":\"biocompiler.molecule_index_span.v0.1\",\"start\":127}],\"strand\":\"+\"}",
+      "id": "maximum-span-inventory",
+      "kind": "path",
+      "sha256": "9a3f02b6ae8b420b987ab2b27a6abdc448d1d3e9a4bce3d0054a365e47c8a284",
+      "value": {
+        "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+        "space_id": "frame",
+        "spans": [
+          {
+            "end": 1,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 0
+          },
+          {
+            "end": 2,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 1
+          },
+          {
+            "end": 3,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 2
+          },
+          {
+            "end": 4,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 3
+          },
+          {
+            "end": 5,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 4
+          },
+          {
+            "end": 6,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 5
+          },
+          {
+            "end": 7,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 6
+          },
+          {
+            "end": 8,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 7
+          },
+          {
+            "end": 9,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 8
+          },
+          {
+            "end": 10,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 9
+          },
+          {
+            "end": 11,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 10
+          },
+          {
+            "end": 12,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 11
+          },
+          {
+            "end": 13,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 12
+          },
+          {
+            "end": 14,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 13
+          },
+          {
+            "end": 15,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 14
+          },
+          {
+            "end": 16,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 15
+          },
+          {
+            "end": 17,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 16
+          },
+          {
+            "end": 18,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 17
+          },
+          {
+            "end": 19,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 18
+          },
+          {
+            "end": 20,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 19
+          },
+          {
+            "end": 21,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 20
+          },
+          {
+            "end": 22,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 21
+          },
+          {
+            "end": 23,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 22
+          },
+          {
+            "end": 24,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 23
+          },
+          {
+            "end": 25,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 24
+          },
+          {
+            "end": 26,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 25
+          },
+          {
+            "end": 27,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 26
+          },
+          {
+            "end": 28,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 27
+          },
+          {
+            "end": 29,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 28
+          },
+          {
+            "end": 30,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 29
+          },
+          {
+            "end": 31,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 30
+          },
+          {
+            "end": 32,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 31
+          },
+          {
+            "end": 33,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 32
+          },
+          {
+            "end": 34,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 33
+          },
+          {
+            "end": 35,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 34
+          },
+          {
+            "end": 36,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 35
+          },
+          {
+            "end": 37,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 36
+          },
+          {
+            "end": 38,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 37
+          },
+          {
+            "end": 39,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 38
+          },
+          {
+            "end": 40,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 39
+          },
+          {
+            "end": 41,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 40
+          },
+          {
+            "end": 42,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 41
+          },
+          {
+            "end": 43,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 42
+          },
+          {
+            "end": 44,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 43
+          },
+          {
+            "end": 45,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 44
+          },
+          {
+            "end": 46,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 45
+          },
+          {
+            "end": 47,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 46
+          },
+          {
+            "end": 48,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 47
+          },
+          {
+            "end": 49,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 48
+          },
+          {
+            "end": 50,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 49
+          },
+          {
+            "end": 51,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 50
+          },
+          {
+            "end": 52,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 51
+          },
+          {
+            "end": 53,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 52
+          },
+          {
+            "end": 54,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 53
+          },
+          {
+            "end": 55,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 54
+          },
+          {
+            "end": 56,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 55
+          },
+          {
+            "end": 57,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 56
+          },
+          {
+            "end": 58,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 57
+          },
+          {
+            "end": 59,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 58
+          },
+          {
+            "end": 60,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 59
+          },
+          {
+            "end": 61,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 60
+          },
+          {
+            "end": 62,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 61
+          },
+          {
+            "end": 63,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 62
+          },
+          {
+            "end": 64,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 63
+          },
+          {
+            "end": 65,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 64
+          },
+          {
+            "end": 66,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 65
+          },
+          {
+            "end": 67,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 66
+          },
+          {
+            "end": 68,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 67
+          },
+          {
+            "end": 69,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 68
+          },
+          {
+            "end": 70,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 69
+          },
+          {
+            "end": 71,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 70
+          },
+          {
+            "end": 72,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 71
+          },
+          {
+            "end": 73,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 72
+          },
+          {
+            "end": 74,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 73
+          },
+          {
+            "end": 75,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 74
+          },
+          {
+            "end": 76,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 75
+          },
+          {
+            "end": 77,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 76
+          },
+          {
+            "end": 78,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 77
+          },
+          {
+            "end": 79,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 78
+          },
+          {
+            "end": 80,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 79
+          },
+          {
+            "end": 81,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 80
+          },
+          {
+            "end": 82,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 81
+          },
+          {
+            "end": 83,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 82
+          },
+          {
+            "end": 84,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 83
+          },
+          {
+            "end": 85,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 84
+          },
+          {
+            "end": 86,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 85
+          },
+          {
+            "end": 87,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 86
+          },
+          {
+            "end": 88,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 87
+          },
+          {
+            "end": 89,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 88
+          },
+          {
+            "end": 90,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 89
+          },
+          {
+            "end": 91,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 90
+          },
+          {
+            "end": 92,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 91
+          },
+          {
+            "end": 93,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 92
+          },
+          {
+            "end": 94,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 93
+          },
+          {
+            "end": 95,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 94
+          },
+          {
+            "end": 96,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 95
+          },
+          {
+            "end": 97,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 96
+          },
+          {
+            "end": 98,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 97
+          },
+          {
+            "end": 99,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 98
+          },
+          {
+            "end": 100,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 99
+          },
+          {
+            "end": 101,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 100
+          },
+          {
+            "end": 102,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 101
+          },
+          {
+            "end": 103,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 102
+          },
+          {
+            "end": 104,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 103
+          },
+          {
+            "end": 105,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 104
+          },
+          {
+            "end": 106,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 105
+          },
+          {
+            "end": 107,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 106
+          },
+          {
+            "end": 108,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 107
+          },
+          {
+            "end": 109,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 108
+          },
+          {
+            "end": 110,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 109
+          },
+          {
+            "end": 111,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 110
+          },
+          {
+            "end": 112,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 111
+          },
+          {
+            "end": 113,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 112
+          },
+          {
+            "end": 114,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 113
+          },
+          {
+            "end": 115,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 114
+          },
+          {
+            "end": 116,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 115
+          },
+          {
+            "end": 117,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 116
+          },
+          {
+            "end": 118,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 117
+          },
+          {
+            "end": 119,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 118
+          },
+          {
+            "end": 120,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 119
+          },
+          {
+            "end": 121,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 120
+          },
+          {
+            "end": 122,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 121
+          },
+          {
+            "end": 123,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 122
+          },
+          {
+            "end": 124,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 123
+          },
+          {
+            "end": 125,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 124
+          },
+          {
+            "end": 126,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 125
+          },
+          {
+            "end": 127,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 126
+          },
+          {
+            "end": 128,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 127
+          }
+        ],
+        "strand": "+"
+      }
+    }
+  ],
+  "rejections": [
+    {
+      "code": "invalid_coordinate_text",
+      "id": "text-empty",
+      "operation": "space",
+      "value": {
+        "alphabet": "RNA",
+        "axis": "5prime_to_3prime",
+        "id": "",
+        "length": 10,
+        "schema_version": "biocompiler.molecule_coordinate_space.v0.1",
+        "topology": "linear"
+      }
+    },
+    {
+      "code": "invalid_coordinate_text",
+      "id": "text-leading-space",
+      "operation": "space",
+      "value": {
+        "alphabet": "RNA",
+        "axis": "5prime_to_3prime",
+        "id": " frame",
+        "length": 10,
+        "schema_version": "biocompiler.molecule_coordinate_space.v0.1",
+        "topology": "linear"
+      }
+    },
+    {
+      "code": "invalid_coordinate_text",
+      "id": "text-trailing-space",
+      "operation": "space",
+      "value": {
+        "alphabet": "RNA",
+        "axis": "5prime_to_3prime",
+        "id": "frame ",
+        "length": 10,
+        "schema_version": "biocompiler.molecule_coordinate_space.v0.1",
+        "topology": "linear"
+      }
+    },
+    {
+      "code": "invalid_coordinate_text",
+      "id": "text-leading-nbsp",
+      "operation": "space",
+      "value": {
+        "alphabet": "RNA",
+        "axis": "5prime_to_3prime",
+        "id": " frame",
+        "length": 10,
+        "schema_version": "biocompiler.molecule_coordinate_space.v0.1",
+        "topology": "linear"
+      }
+    },
+    {
+      "code": "invalid_coordinate_text",
+      "id": "text-trailing-ideographic",
+      "operation": "space",
+      "value": {
+        "alphabet": "RNA",
+        "axis": "5prime_to_3prime",
+        "id": "frame　",
+        "length": 10,
+        "schema_version": "biocompiler.molecule_coordinate_space.v0.1",
+        "topology": "linear"
+      }
+    },
+    {
+      "code": "invalid_coordinate_text",
+      "id": "text-leading-nel",
+      "operation": "space",
+      "value": {
+        "alphabet": "RNA",
+        "axis": "5prime_to_3prime",
+        "id": "frame",
+        "length": 10,
+        "schema_version": "biocompiler.molecule_coordinate_space.v0.1",
+        "topology": "linear"
+      }
+    },
+    {
+      "code": "invalid_coordinate_text",
+      "id": "text-leading-em-space",
+      "operation": "space",
+      "value": {
+        "alphabet": "RNA",
+        "axis": "5prime_to_3prime",
+        "id": " frame",
+        "length": 10,
+        "schema_version": "biocompiler.molecule_coordinate_space.v0.1",
+        "topology": "linear"
+      }
+    },
+    {
+      "code": "invalid_coordinate_text",
+      "id": "text-embedded-control",
+      "operation": "space",
+      "value": {
+        "alphabet": "RNA",
+        "axis": "5prime_to_3prime",
+        "id": "fra\u001fme",
+        "length": 10,
+        "schema_version": "biocompiler.molecule_coordinate_space.v0.1",
+        "topology": "linear"
+      }
+    },
+    {
+      "code": "invalid_coordinate_text",
+      "id": "text-embedded-del",
+      "operation": "space",
+      "value": {
+        "alphabet": "RNA",
+        "axis": "5prime_to_3prime",
+        "id": "frame",
+        "length": 10,
+        "schema_version": "biocompiler.molecule_coordinate_space.v0.1",
+        "topology": "linear"
+      }
+    },
+    {
+      "code": "invalid_coordinate_text",
+      "id": "text-embedded-tab",
+      "operation": "space",
+      "value": {
+        "alphabet": "RNA",
+        "axis": "5prime_to_3prime",
+        "id": "fra\tme",
+        "length": 10,
+        "schema_version": "biocompiler.molecule_coordinate_space.v0.1",
+        "topology": "linear"
+      }
+    },
+    {
+      "code": "invalid_coordinate_text",
+      "id": "text-ascii-byte-overflow",
+      "operation": "space",
+      "value": {
+        "alphabet": "RNA",
+        "axis": "5prime_to_3prime",
+        "id": "fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+        "length": 10,
+        "schema_version": "biocompiler.molecule_coordinate_space.v0.1",
+        "topology": "linear"
+      }
+    },
+    {
+      "code": "invalid_coordinate_text",
+      "id": "text-unicode-byte-overflow",
+      "operation": "space",
+      "value": {
+        "alphabet": "RNA",
+        "axis": "5prime_to_3prime",
+        "id": "µµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµµ",
+        "length": 10,
+        "schema_version": "biocompiler.molecule_coordinate_space.v0.1",
+        "topology": "linear"
+      }
+    },
+    {
+      "code": "invalid_type",
+      "id": "length-bool",
+      "operation": "space",
+      "value": {
+        "alphabet": "RNA",
+        "axis": "5prime_to_3prime",
+        "id": "frame",
+        "length": true,
+        "schema_version": "biocompiler.molecule_coordinate_space.v0.1",
+        "topology": "linear"
+      }
+    },
+    {
+      "code": "invalid_type",
+      "id": "length-float",
+      "operation": "space",
+      "value": {
+        "alphabet": "RNA",
+        "axis": "5prime_to_3prime",
+        "id": "frame",
+        "length": 1.0,
+        "schema_version": "biocompiler.molecule_coordinate_space.v0.1",
+        "topology": "linear"
+      }
+    },
+    {
+      "code": "coordinate_limit",
+      "id": "length-zero",
+      "operation": "space",
+      "value": {
+        "alphabet": "RNA",
+        "axis": "5prime_to_3prime",
+        "id": "frame",
+        "length": 0,
+        "schema_version": "biocompiler.molecule_coordinate_space.v0.1",
+        "topology": "linear"
+      }
+    },
+    {
+      "code": "coordinate_limit",
+      "id": "length-negative",
+      "operation": "space",
+      "value": {
+        "alphabet": "RNA",
+        "axis": "5prime_to_3prime",
+        "id": "frame",
+        "length": -1,
+        "schema_version": "biocompiler.molecule_coordinate_space.v0.1",
+        "topology": "linear"
+      }
+    },
+    {
+      "code": "coordinate_limit",
+      "id": "length-over-limit",
+      "operation": "space",
+      "value": {
+        "alphabet": "RNA",
+        "axis": "5prime_to_3prime",
+        "id": "frame",
+        "length": 1000001,
+        "schema_version": "biocompiler.molecule_coordinate_space.v0.1",
+        "topology": "linear"
+      }
+    },
+    {
+      "code": "coordinate_limit",
+      "id": "length-huge-int",
+      "operation": "space",
+      "value": {
+        "alphabet": "RNA",
+        "axis": "5prime_to_3prime",
+        "id": "frame",
+        "length": 1044388881413152506691752710716624382579964249047383780384233483283953907971557456848826811934997558340890106714439262837987573438185793607263236087851365277945956976543709998340361590134383718314428070011855946226376318839397712745672334684344586617496807908705803704071284048740118609114467977783598029006686938976881787785946905630190260940599579453432823469303026696443059025015972399867714215541693835559885291486318237914434496734087811872639496475100189041349008417061675093668333850551032972088269550769983616369411933015213796825837188091833656751221318492846368125550225998300412344784862595674492194617023806505913245610825731835380087608622102834270197698202313169017678006675195485079921636419370285375124784014907159135459982790513399611551794271106831134090584272884279791554849782954323534517065223269061394905987693002122963395687782878948440616007412945674919823050571642377154816321380631045902916136926708342856440730447899971901781465763473223850267253059899795996090799469201774624817718449867455659250178329070473119433165550807568221846571746373296884912819520317457002440926616910874148385078411929804522981857338977648103126085903001302413467189726673216491511131602920781738033436090243804708340403154190336,
+        "schema_version": "biocompiler.molecule_coordinate_space.v0.1",
+        "topology": "linear"
+      }
+    },
+    {
+      "code": "invalid_type",
+      "id": "span-bool-start",
+      "operation": "span",
+      "value": {
+        "end": 5,
+        "schema_version": "biocompiler.molecule_index_span.v0.1",
+        "start": true
+      }
+    },
+    {
+      "code": "invalid_type",
+      "id": "span-float-start",
+      "operation": "span",
+      "value": {
+        "end": 5,
+        "schema_version": "biocompiler.molecule_index_span.v0.1",
+        "start": 1.0
+      }
+    },
+    {
+      "code": "invalid_type",
+      "id": "span-bool-end",
+      "operation": "span",
+      "value": {
+        "end": false,
+        "schema_version": "biocompiler.molecule_index_span.v0.1",
+        "start": 2
+      }
+    },
+    {
+      "code": "invalid_type",
+      "id": "span-float-end",
+      "operation": "span",
+      "value": {
+        "end": 5.0,
+        "schema_version": "biocompiler.molecule_index_span.v0.1",
+        "start": 2
+      }
+    },
+    {
+      "code": "coordinate_limit",
+      "id": "span-negative-start",
+      "operation": "span",
+      "value": {
+        "end": 5,
+        "schema_version": "biocompiler.molecule_index_span.v0.1",
+        "start": -1
+      }
+    },
+    {
+      "code": "coordinate_limit",
+      "id": "span-reversed-start",
+      "operation": "span",
+      "value": {
+        "end": 5,
+        "schema_version": "biocompiler.molecule_index_span.v0.1",
+        "start": 6
+      }
+    },
+    {
+      "code": "coordinate_limit",
+      "id": "span-over-end",
+      "operation": "span",
+      "value": {
+        "end": 1000001,
+        "schema_version": "biocompiler.molecule_index_span.v0.1",
+        "start": 2
+      }
+    },
+    {
+      "code": "invalid_alphabet",
+      "id": "unknown-alphabet",
+      "operation": "space",
+      "value": {
+        "alphabet": "rna",
+        "axis": "5prime_to_3prime",
+        "id": "frame",
+        "length": 10,
+        "schema_version": "biocompiler.molecule_coordinate_space.v0.1",
+        "topology": "linear"
+      }
+    },
+    {
+      "code": "invalid_topology",
+      "id": "unknown-topology",
+      "operation": "space",
+      "value": {
+        "alphabet": "RNA",
+        "axis": "5prime_to_3prime",
+        "id": "frame",
+        "length": 10,
+        "schema_version": "biocompiler.molecule_coordinate_space.v0.1",
+        "topology": "circle"
+      }
+    },
+    {
+      "code": "invalid_axis",
+      "id": "unknown-axis",
+      "operation": "space",
+      "value": {
+        "alphabet": "RNA",
+        "axis": "forward",
+        "id": "frame",
+        "length": 10,
+        "schema_version": "biocompiler.molecule_coordinate_space.v0.1",
+        "topology": "linear"
+      }
+    },
+    {
+      "code": "invalid_axis",
+      "id": "rna-axis-mismatch",
+      "operation": "space",
+      "value": {
+        "alphabet": "RNA",
+        "axis": "N_to_C",
+        "id": "frame",
+        "length": 10,
+        "schema_version": "biocompiler.molecule_coordinate_space.v0.1",
+        "topology": "linear"
+      }
+    },
+    {
+      "code": "invalid_axis",
+      "id": "protein-axis-mismatch",
+      "operation": "space",
+      "value": {
+        "alphabet": "protein",
+        "axis": "5prime_to_3prime",
+        "id": "frame",
+        "length": 10,
+        "schema_version": "biocompiler.molecule_coordinate_space.v0.1",
+        "topology": "linear"
+      }
+    },
+    {
+      "code": "invalid_strand",
+      "id": "unknown-strand",
+      "operation": "path",
+      "value": {
+        "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+        "space_id": "frame",
+        "spans": [
+          {
+            "end": 5,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 2
+          }
+        ],
+        "strand": "forward"
+      }
+    },
+    {
+      "code": "coordinate_span_limit",
+      "id": "no-spans",
+      "operation": "path",
+      "value": {
+        "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+        "space_id": "frame",
+        "spans": [],
+        "strand": "+"
+      }
+    },
+    {
+      "code": "coordinate_span_limit",
+      "id": "too-many-spans",
+      "operation": "path",
+      "value": {
+        "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+        "space_id": "frame",
+        "spans": [
+          {
+            "end": 1,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 0
+          },
+          {
+            "end": 2,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 1
+          },
+          {
+            "end": 3,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 2
+          },
+          {
+            "end": 4,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 3
+          },
+          {
+            "end": 5,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 4
+          },
+          {
+            "end": 6,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 5
+          },
+          {
+            "end": 7,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 6
+          },
+          {
+            "end": 8,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 7
+          },
+          {
+            "end": 9,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 8
+          },
+          {
+            "end": 10,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 9
+          },
+          {
+            "end": 11,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 10
+          },
+          {
+            "end": 12,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 11
+          },
+          {
+            "end": 13,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 12
+          },
+          {
+            "end": 14,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 13
+          },
+          {
+            "end": 15,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 14
+          },
+          {
+            "end": 16,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 15
+          },
+          {
+            "end": 17,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 16
+          },
+          {
+            "end": 18,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 17
+          },
+          {
+            "end": 19,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 18
+          },
+          {
+            "end": 20,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 19
+          },
+          {
+            "end": 21,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 20
+          },
+          {
+            "end": 22,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 21
+          },
+          {
+            "end": 23,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 22
+          },
+          {
+            "end": 24,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 23
+          },
+          {
+            "end": 25,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 24
+          },
+          {
+            "end": 26,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 25
+          },
+          {
+            "end": 27,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 26
+          },
+          {
+            "end": 28,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 27
+          },
+          {
+            "end": 29,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 28
+          },
+          {
+            "end": 30,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 29
+          },
+          {
+            "end": 31,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 30
+          },
+          {
+            "end": 32,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 31
+          },
+          {
+            "end": 33,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 32
+          },
+          {
+            "end": 34,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 33
+          },
+          {
+            "end": 35,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 34
+          },
+          {
+            "end": 36,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 35
+          },
+          {
+            "end": 37,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 36
+          },
+          {
+            "end": 38,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 37
+          },
+          {
+            "end": 39,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 38
+          },
+          {
+            "end": 40,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 39
+          },
+          {
+            "end": 41,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 40
+          },
+          {
+            "end": 42,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 41
+          },
+          {
+            "end": 43,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 42
+          },
+          {
+            "end": 44,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 43
+          },
+          {
+            "end": 45,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 44
+          },
+          {
+            "end": 46,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 45
+          },
+          {
+            "end": 47,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 46
+          },
+          {
+            "end": 48,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 47
+          },
+          {
+            "end": 49,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 48
+          },
+          {
+            "end": 50,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 49
+          },
+          {
+            "end": 51,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 50
+          },
+          {
+            "end": 52,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 51
+          },
+          {
+            "end": 53,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 52
+          },
+          {
+            "end": 54,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 53
+          },
+          {
+            "end": 55,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 54
+          },
+          {
+            "end": 56,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 55
+          },
+          {
+            "end": 57,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 56
+          },
+          {
+            "end": 58,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 57
+          },
+          {
+            "end": 59,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 58
+          },
+          {
+            "end": 60,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 59
+          },
+          {
+            "end": 61,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 60
+          },
+          {
+            "end": 62,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 61
+          },
+          {
+            "end": 63,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 62
+          },
+          {
+            "end": 64,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 63
+          },
+          {
+            "end": 65,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 64
+          },
+          {
+            "end": 66,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 65
+          },
+          {
+            "end": 67,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 66
+          },
+          {
+            "end": 68,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 67
+          },
+          {
+            "end": 69,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 68
+          },
+          {
+            "end": 70,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 69
+          },
+          {
+            "end": 71,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 70
+          },
+          {
+            "end": 72,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 71
+          },
+          {
+            "end": 73,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 72
+          },
+          {
+            "end": 74,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 73
+          },
+          {
+            "end": 75,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 74
+          },
+          {
+            "end": 76,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 75
+          },
+          {
+            "end": 77,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 76
+          },
+          {
+            "end": 78,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 77
+          },
+          {
+            "end": 79,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 78
+          },
+          {
+            "end": 80,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 79
+          },
+          {
+            "end": 81,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 80
+          },
+          {
+            "end": 82,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 81
+          },
+          {
+            "end": 83,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 82
+          },
+          {
+            "end": 84,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 83
+          },
+          {
+            "end": 85,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 84
+          },
+          {
+            "end": 86,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 85
+          },
+          {
+            "end": 87,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 86
+          },
+          {
+            "end": 88,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 87
+          },
+          {
+            "end": 89,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 88
+          },
+          {
+            "end": 90,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 89
+          },
+          {
+            "end": 91,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 90
+          },
+          {
+            "end": 92,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 91
+          },
+          {
+            "end": 93,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 92
+          },
+          {
+            "end": 94,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 93
+          },
+          {
+            "end": 95,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 94
+          },
+          {
+            "end": 96,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 95
+          },
+          {
+            "end": 97,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 96
+          },
+          {
+            "end": 98,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 97
+          },
+          {
+            "end": 99,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 98
+          },
+          {
+            "end": 100,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 99
+          },
+          {
+            "end": 101,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 100
+          },
+          {
+            "end": 102,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 101
+          },
+          {
+            "end": 103,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 102
+          },
+          {
+            "end": 104,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 103
+          },
+          {
+            "end": 105,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 104
+          },
+          {
+            "end": 106,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 105
+          },
+          {
+            "end": 107,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 106
+          },
+          {
+            "end": 108,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 107
+          },
+          {
+            "end": 109,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 108
+          },
+          {
+            "end": 110,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 109
+          },
+          {
+            "end": 111,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 110
+          },
+          {
+            "end": 112,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 111
+          },
+          {
+            "end": 113,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 112
+          },
+          {
+            "end": 114,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 113
+          },
+          {
+            "end": 115,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 114
+          },
+          {
+            "end": 116,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 115
+          },
+          {
+            "end": 117,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 116
+          },
+          {
+            "end": 118,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 117
+          },
+          {
+            "end": 119,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 118
+          },
+          {
+            "end": 120,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 119
+          },
+          {
+            "end": 121,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 120
+          },
+          {
+            "end": 122,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 121
+          },
+          {
+            "end": 123,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 122
+          },
+          {
+            "end": 124,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 123
+          },
+          {
+            "end": 125,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 124
+          },
+          {
+            "end": 126,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 125
+          },
+          {
+            "end": 127,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 126
+          },
+          {
+            "end": 128,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 127
+          },
+          {
+            "end": 129,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 128
+          }
+        ],
+        "strand": "+"
+      }
+    },
+    {
+      "code": "mixed_boundary_path",
+      "id": "mixed-empty-span",
+      "operation": "path",
+      "value": {
+        "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+        "space_id": "frame",
+        "spans": [
+          {
+            "end": 0,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 0
+          },
+          {
+            "end": 2,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 1
+          }
+        ],
+        "strand": "+"
+      }
+    },
+    {
+      "code": "mixed_boundary_path",
+      "id": "two-empty-spans",
+      "operation": "path",
+      "value": {
+        "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+        "space_id": "frame",
+        "spans": [
+          {
+            "end": 0,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 0
+          },
+          {
+            "end": 1,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 1
+          }
+        ],
+        "strand": "+"
+      }
+    },
+    {
+      "code": "coordinate_overlap",
+      "id": "partial-overlap",
+      "operation": "path",
+      "value": {
+        "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+        "space_id": "frame",
+        "spans": [
+          {
+            "end": 4,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 1
+          },
+          {
+            "end": 5,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 3
+          }
+        ],
+        "strand": "+"
+      }
+    },
+    {
+      "code": "coordinate_overlap",
+      "id": "nested-overlap",
+      "operation": "path",
+      "value": {
+        "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+        "space_id": "frame",
+        "spans": [
+          {
+            "end": 8,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 0
+          },
+          {
+            "end": 3,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 2
+          }
+        ],
+        "strand": "+"
+      }
+    },
+    {
+      "code": "coordinate_overlap",
+      "id": "duplicate-span",
+      "operation": "path",
+      "value": {
+        "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+        "space_id": "frame",
+        "spans": [
+          {
+            "end": 4,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 2
+          },
+          {
+            "end": 4,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 2
+          }
+        ],
+        "strand": "+"
+      }
+    },
+    {
+      "code": "unknown_field",
+      "id": "space-extra-field",
+      "operation": "space",
+      "value": {
+        "alphabet": "RNA",
+        "axis": "5prime_to_3prime",
+        "extra": 1,
+        "id": "frame",
+        "length": 10,
+        "schema_version": "biocompiler.molecule_coordinate_space.v0.1",
+        "topology": "linear"
+      }
+    },
+    {
+      "code": "missing_field",
+      "id": "space-missing-schema",
+      "operation": "space",
+      "value": {
+        "alphabet": "RNA",
+        "axis": "5prime_to_3prime",
+        "id": "frame",
+        "length": 10,
+        "topology": "linear"
+      }
+    },
+    {
+      "code": "unsupported_schema",
+      "id": "space-unknown-schema",
+      "operation": "space",
+      "value": {
+        "alphabet": "RNA",
+        "axis": "5prime_to_3prime",
+        "id": "frame",
+        "length": 10,
+        "schema_version": "unsupported",
+        "topology": "linear"
+      }
+    },
+    {
+      "code": "unknown_field",
+      "id": "span-extra-field",
+      "operation": "span",
+      "value": {
+        "end": 5,
+        "extra": 1,
+        "schema_version": "biocompiler.molecule_index_span.v0.1",
+        "start": 2
+      }
+    },
+    {
+      "code": "missing_field",
+      "id": "span-missing-schema",
+      "operation": "span",
+      "value": {
+        "end": 5,
+        "start": 2
+      }
+    },
+    {
+      "code": "unsupported_schema",
+      "id": "span-unknown-schema",
+      "operation": "span",
+      "value": {
+        "end": 5,
+        "schema_version": "unsupported",
+        "start": 2
+      }
+    },
+    {
+      "code": "unknown_field",
+      "id": "path-extra-field",
+      "operation": "path",
+      "value": {
+        "extra": 1,
+        "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+        "space_id": "frame",
+        "spans": [
+          {
+            "end": 5,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 2
+          }
+        ],
+        "strand": "+"
+      }
+    },
+    {
+      "code": "missing_field",
+      "id": "path-missing-schema",
+      "operation": "path",
+      "value": {
+        "space_id": "frame",
+        "spans": [
+          {
+            "end": 5,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 2
+          }
+        ],
+        "strand": "+"
+      }
+    },
+    {
+      "code": "unsupported_schema",
+      "id": "path-unknown-schema",
+      "operation": "path",
+      "value": {
+        "schema_version": "unsupported",
+        "space_id": "frame",
+        "spans": [
+          {
+            "end": 5,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 2
+          }
+        ],
+        "strand": "+"
+      }
+    },
+    {
+      "code": "coordinate_space_mismatch",
+      "id": "nominal-space-mismatch",
+      "operation": "validate",
+      "path": {
+        "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+        "space_id": "frame",
+        "spans": [
+          {
+            "end": 5,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 2
+          }
+        ],
+        "strand": "+"
+      },
+      "space": {
+        "alphabet": "RNA",
+        "axis": "5prime_to_3prime",
+        "id": "other",
+        "length": 10,
+        "schema_version": "biocompiler.molecule_coordinate_space.v0.1",
+        "topology": "linear"
+      }
+    },
+    {
+      "code": "coordinate_bounds",
+      "id": "residue-outside-space",
+      "operation": "validate",
+      "path": {
+        "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+        "space_id": "frame",
+        "spans": [
+          {
+            "end": 11,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 9
+          }
+        ],
+        "strand": "+"
+      },
+      "space": {
+        "alphabet": "RNA",
+        "axis": "5prime_to_3prime",
+        "id": "frame",
+        "length": 10,
+        "schema_version": "biocompiler.molecule_coordinate_space.v0.1",
+        "topology": "linear"
+      }
+    },
+    {
+      "code": "coordinate_bounds",
+      "id": "boundary-outside-space",
+      "operation": "validate",
+      "path": {
+        "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+        "space_id": "frame",
+        "spans": [
+          {
+            "end": 11,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 11
+          }
+        ],
+        "strand": "+"
+      },
+      "space": {
+        "alphabet": "RNA",
+        "axis": "5prime_to_3prime",
+        "id": "frame",
+        "length": 10,
+        "schema_version": "biocompiler.molecule_coordinate_space.v0.1",
+        "topology": "linear"
+      }
+    },
+    {
+      "code": "protein_orientation",
+      "id": "protein-reverse",
+      "operation": "validate",
+      "path": {
+        "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+        "space_id": "frame",
+        "spans": [
+          {
+            "end": 5,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 2
+          }
+        ],
+        "strand": "-"
+      },
+      "space": {
+        "alphabet": "protein",
+        "axis": "N_to_C",
+        "id": "frame",
+        "length": 10,
+        "schema_version": "biocompiler.molecule_coordinate_space.v0.1",
+        "topology": "linear"
+      }
+    },
+    {
+      "code": "protein_orientation",
+      "id": "protein-reverse-boundary",
+      "operation": "validate",
+      "path": {
+        "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+        "space_id": "frame",
+        "spans": [
+          {
+            "end": 0,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 0
+          }
+        ],
+        "strand": "-"
+      },
+      "space": {
+        "alphabet": "protein",
+        "axis": "N_to_C",
+        "id": "frame",
+        "length": 10,
+        "schema_version": "biocompiler.molecule_coordinate_space.v0.1",
+        "topology": "linear"
+      }
+    },
+    {
+      "code": "position_limit",
+      "id": "position-limit-negative",
+      "limit": -1,
+      "operation": "positions",
+      "path": {
+        "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+        "space_id": "frame",
+        "spans": [
+          {
+            "end": 5,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 2
+          }
+        ],
+        "strand": "+"
+      },
+      "space": {
+        "alphabet": "RNA",
+        "axis": "5prime_to_3prime",
+        "id": "frame",
+        "length": 10,
+        "schema_version": "biocompiler.molecule_coordinate_space.v0.1",
+        "topology": "linear"
+      }
+    },
+    {
+      "code": "position_limit",
+      "id": "position-limit-over-maximum",
+      "limit": 100001,
+      "operation": "positions",
+      "path": {
+        "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+        "space_id": "frame",
+        "spans": [
+          {
+            "end": 5,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 2
+          }
+        ],
+        "strand": "+"
+      },
+      "space": {
+        "alphabet": "RNA",
+        "axis": "5prime_to_3prime",
+        "id": "frame",
+        "length": 10,
+        "schema_version": "biocompiler.molecule_coordinate_space.v0.1",
+        "topology": "linear"
+      }
+    },
+    {
+      "code": "position_limit",
+      "id": "position-limit-insufficient",
+      "limit": 2,
+      "operation": "positions",
+      "path": {
+        "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+        "space_id": "frame",
+        "spans": [
+          {
+            "end": 5,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 2
+          }
+        ],
+        "strand": "+"
+      },
+      "space": {
+        "alphabet": "RNA",
+        "axis": "5prime_to_3prime",
+        "id": "frame",
+        "length": 10,
+        "schema_version": "biocompiler.molecule_coordinate_space.v0.1",
+        "topology": "linear"
+      }
+    },
+    {
+      "code": "position_limit",
+      "id": "position-work-bounded-before-materialization",
+      "limit": 100000,
+      "operation": "positions",
+      "path": {
+        "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+        "space_id": "frame",
+        "spans": [
+          {
+            "end": 1000000,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 0
+          }
+        ],
+        "strand": "+"
+      },
+      "space": {
+        "alphabet": "RNA",
+        "axis": "5prime_to_3prime",
+        "id": "frame",
+        "length": 1000000,
+        "schema_version": "biocompiler.molecule_coordinate_space.v0.1",
+        "topology": "linear"
+      }
+    }
+  ],
+  "schema_version": "biocompiler.molecule_coordinates_conformance.v1"
+}

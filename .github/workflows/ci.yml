@@ -860,6 +860,11 @@ jobs:
         run: |
           opam exec -- dune build --root core @all
           opam exec -- dune runtest --root core
+      - name: Check retained request, behavior and coordinate domain corpora
+        run: |
+          core/_build/default/test/test_build_request.exe "$GITHUB_WORKSPACE/tests/conformance/case-b" | tee generated/core/build-request-domain.txt
+          core/_build/default/test/test_behavior.exe "$GITHUB_WORKSPACE/tests/conformance/case-b" "$GITHUB_WORKSPACE/tests/conformance/behavior-domains-v1.json" | tee generated/core/behavior-domain.txt
+          core/_build/default/test/test_molecule_coordinates.exe "$GITHUB_WORKSPACE/tests/conformance/molecule-coordinates-v1.json" | tee generated/core/molecule-coordinates-domain.txt
       - name: Check exact cross-language bytes and structural intent parity
         env:
           GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}

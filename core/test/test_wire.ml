@@ -64,6 +64,11 @@ let () =
   require (not (Json.equal (Json.Bool true) (Json.int 1))) "Boolean conflated with integer";
   require (not (Json.equal (Json.int 1) (Json.Float 1.))) "Integer conflated with float";
   require (Json.number_compare (Json.parse "9007199254740993") (Json.Float 9007199254740992.) > 0) "Large integer numeric comparison lost precision";
+  (match Json.exact_fields ~path:"/native-record" ["id"] ["id", Json.String "first"; "id", Json.String "second"] with
+   | () -> failwith "Native record decoder accepted conflicting duplicate fields"
+   | exception Diagnostic.Error diagnostic ->
+       require (diagnostic.code = "duplicate_key" && diagnostic.path = Some "/native-record")
+         "Native record duplicate did not retain its diagnostic/path");
   (* Deterministic broad IEEE-bit sample checks roundtrip; Python differential
      fixtures additionally check the chosen shortest spelling. *)
   let state = ref 0x5eeda11ce5eedL in

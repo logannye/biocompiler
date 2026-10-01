@@ -211,6 +211,12 @@ let field ?path key fields =
   | None -> fail ?path "missing_field" ("Missing required field: " ^ key)
 
 let allowed_fields ?path ~required ~optional fields =
+  (* Parsed JSON has unique keys, but native callers can also construct [t].
+     Hidden domain constructors must not accept conflicting authority through
+     such values and then erase the duplicate during normalization. *)
+  let keys = List.map fst fields in
+  require ?path (List.length keys = List.length (List.sort_uniq String.compare keys))
+    "duplicate_key" "Duplicate object key in a decoded record.";
   List.iter (fun key -> ignore (field ?path key fields)) required;
   List.iter (fun (key, _) ->
     require ?path (List.mem key required || List.mem key optional) "unknown_field" ("Unknown field: " ^ key)) fields

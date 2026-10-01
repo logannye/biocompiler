@@ -12,3 +12,23 @@
  (name test_protocol)
  (modules test_protocol)
  (libraries bioc_wire bioc_service))
+
+(test
+ (name test_domain)
+ (modules test_domain)
+ (libraries bioc_wire bioc_domain))
+
+(test
+ (name test_build_request)
+ (modules test_build_request)
+ (libraries bioc_wire bioc_domain zarith))
+
+(test
+ (name test_behavior)
+ (modules test_behavior)
+ (libraries bioc_wire bioc_domain zarith))
+
+(test
+ (name test_molecule_coordinates)
+ (modules test_molecule_coordinates)
+ (libraries bioc_wire bioc_domain zarith))

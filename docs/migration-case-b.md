@@ -5,6 +5,13 @@ and the uncommitted language-foundation work. This is the dependency and accepta
 map for roadmap batch B1, followed by the same slice's producer in B2. It records
 implementation preparation, not completed OCaml architecture validation.
 
+The foundation passed all hosted gates and was merged in PR37. The subsequent
+domain batch implements internal OCaml BuildRequest, Behavior and molecular
+coordinate decoders. Its retained-request tests compare full/semantic identities
+and reject altered declarations. These checks do not execute the case B timeline,
+reconstruct candidate behavior or certify its sequence and architecture. The
+remaining acceptance responsibilities below still apply in full.
+
 The language decision is fixed. The immediate objective is to accept or reject an
 existing Python-produced stateful RNA architecture candidate against separately
 supplied complete authority using a standalone OCaml checker. No Python compiler,

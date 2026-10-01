@@ -4,7 +4,7 @@ Created: 2026-10-01, America/Los_Angeles.
 
 **Decision:** TypeScript for Studio; Python for authoring, orchestration and scientific exploration; OCaml for the semantic compiler, independent checking and canonical emission.
 
-**Status:** implementation underway on `codex/language-migration`. The baseline passed hosted validation; B0 foundations and the TypeScript source port are implemented. Native compilation and the initial conformance suite passed on both validation platforms at source revision `82b08c1`; the corrected canonicalizer and expanded rounding corpus still require their own hosted result. Installed Studio browser parity passed at source revision `d553395`. These earlier results do not certify the latest integrated revision. This document tracks execution, not a claim that the migration has occurred. The language choices are accepted; the first vertical slice establishes the migration method and release readiness rather than reopening the language comparison.
+**Status:** the foundation is merged in [PR37](https://github.com/logannye/biocompiler/pull/37), main revision `3952f09a5b47e3ec5452523124481d5d660573aa`. All required gates passed for source `d1f2286107f2edc1c1520b5e3c227d021d74c94e`, tested merge `46f19318747d279b455062b7e5818900f5d5f980`, in [run 36918163034](https://github.com/logannye/biocompiler/actions/runs/36918163034). Both native platforms passed all three OCaml suites and 898 conformance checks; each Python version passed all 2,066 discovered tests. Installed workflows, browser parity, TypeScript checks and cross-Python reproducibility passed. The [foundation receipt](../protocol/migration-foundation-validation.json) records the exact scope; post-merge [run 36920464058](https://github.com/logannye/biocompiler/actions/runs/36920464058) also passed on the integrated main revision. Work continues on `codex/ocaml-domain-models` with typed request, Behavior and molecular-coordinate declarations. These new decoders require their own hosted validation. Production semantic authority remains Python; architecture checking, execution and cutover are incomplete.
 
 **Validated baseline:** package 0.1.0.dev29, commit 6156ed2841fd3308df833f1afe0e3f6af5d12bf6. [Hosted run 36900639059](https://github.com/logannye/biocompiler/actions/runs/36900639059), attempt 2, passed all required gates and exactly 2,001 discovered tests on each Python version (3.11.16 and 3.14.7). The first attempt lost a hosted runner; the retry passed. [Pinned baseline receipt](../protocol/migration-baseline.json) retains revision, tree, receipts and shard/job timings. New revisions rediscover their own tests; this count is not the migration acceptance target.
 
@@ -115,10 +115,10 @@ The largest risks are semantic drift, canonical identity drift, a checker that a
 Depends on LM-00.
 
 - [ ] Pin OCaml, Dune and dependencies with a reproducible lock strategy; add formatting, warnings-as-errors and bounded test execution. Pin versions in the implementation batch rather than inventing untested version combinations in this plan.
-- [ ] Create the core library dependency graph and two real executable entry points. Add a dependency test that fails when the verifier links producer libraries.
-- [ ] Add TypeScript strict configuration, a package lock and deterministic build into the existing installed static asset locations. Avoid a new UI framework or redesign unless separately needed.
-- [ ] Produce an initial hosted binary for Linux x86_64 and macOS arm64, and test its protocol startup on those platforms. Inventory other current distribution targets before claiming they are supported.
-- [ ] Extend the CI registry and aggregate gate alongside workflow changes. Keep every existing job and receipt requirement.
+- [x] Create the core library dependency graph and two real executable entry points. Add a dependency test that fails when the verifier links producer libraries.
+- [x] Add TypeScript strict configuration, a package lock and deterministic build into the existing installed static asset locations. Avoid a new UI framework or redesign unless separately needed.
+- [x] Produce an initial hosted binary for Linux x86_64 and macOS arm64, and test its protocol startup on those platforms. Inventory other current distribution targets before claiming they are supported.
+- [x] Extend the CI registry and aggregate gate alongside workflow changes. Keep every existing job and receipt requirement.
 
 **Exit:** hosted builds produce revision-bound binaries and packaged Studio assets; a separately executable verifier starts without producer libraries. Skeleton success is foundation completion only.
 
@@ -126,13 +126,13 @@ Depends on LM-00.
 
 Depends on LM-00; implementation uses LM-01.
 
-- [ ] Specify strict decoding, unknown-field/version rejection, exact field types, duplicate-key rejection, null versus absence, Unicode validity and cumulative input/work limits.
-- [ ] Freeze fingerprint behavior from [serialization.py](../src/biocompiler/ir/serialization.py). It is SHA-256 over Python's compact sorted-key UTF-8 JSON, not an assumed generic canonical-JSON standard.
-- [ ] Test arbitrary-size integers, the JavaScript safe-integer boundary, bool versus int, int versus float, exponent spelling, negative zero, finite float roundtrips, invalid Unicode and object-key ordering. Do not truncate Python integers to OCaml machine integers.
+- [x] Specify strict decoding, unknown-field/version rejection, exact field types, duplicate-key rejection, null versus absence, Unicode validity and cumulative input/work limits.
+- [x] Freeze fingerprint behavior from [serialization.py](../src/biocompiler/ir/serialization.py). It is SHA-256 over Python's compact sorted-key UTF-8 JSON, not an assumed generic canonical-JSON standard.
+- [x] Test arbitrary-size integers, the JavaScript safe-integer boundary, bool versus int, int versus float, exponent spelling, negative zero, finite float roundtrips, invalid Unicode and object-key ordering. Do not truncate Python integers to OCaml machine integers.
 - [ ] Preserve exact decimal interval semantics where already used, and existing floating-point behavior where specified. In particular, the availability checker uses Fraction(str(value)); reproduce its decimal-to-rational boundary behavior rather than replacing it with binary floats. Numeric-model improvements require a separately versioned semantic change.
-- [ ] Preserve raw authoritative JSON through browser and adapter workflows; parsed JavaScript objects are display/editing aids and must not silently reserialize imported authority.
+- [x] Preserve raw authoritative JSON through browser and adapter workflows; parsed JavaScript objects are display/editing aids and must not silently reserialize imported authority.
 - [ ] Separate semantic fingerprints from run timestamps, local paths and packaging metadata. Document canonical binary/text encodings and archive determinism.
-- [ ] Implement protocol errors, crash/timeout/cancellation handling and executable compatibility checks. Reject incomplete responses and ambiguous outputs.
+- [x] Implement protocol errors, crash/timeout/cancellation handling and executable compatibility checks. Reject incomplete responses and ambiguous outputs.
 
 **Exit:** Python and OCaml agree on the retained canonical vectors and rejection cases; TypeScript roundtrips original authority without numeric or text loss. Any necessary format break is explicit, versioned and accompanied by a conversion/reverification policy.
 
@@ -154,11 +154,11 @@ Implement coherent batches; update this table after each verified checkpoint. Pa
 
 | Batch | Work | Completion gate | Status |
 | --- | --- | --- | --- |
-| B0 | LM-00 inventory; LM-01 skeleton; LM-02 protocol/canonical vectors | Baseline and executable interface are pinned; canonical compatibility is established | In progress; native conformance pending |
-| B1 | First checker-led vertical slice: LM-20/21/22/24/25 subset, LM-23 records/decoders, Python adapter in shadow mode | Existing case B request and Python candidate are independently checked in OCaml; targeted temporal/authority/sequence mutants fail correctly | Retained source/candidate corpus and acceptance map prepared; OCaml checker not implemented |
+| B0 | LM-00 inventory; LM-01 skeleton; LM-02 protocol/canonical vectors | Baseline and executable interface are pinned; canonical compatibility is established | Native protocol/canonical foundation validated; broader corpus, performance, formatting and distribution-plan obligations remain |
+| B1 | First checker-led vertical slice: LM-20/21/22/24/25 subset, LM-23 records/decoders, Python adapter in shadow mode | Existing case B request and Python candidate are independently checked in OCaml; targeted temporal/authority/sequence mutants fail correctly | Retained source/candidate corpus and acceptance map prepared; typed request/Behavior/coordinate declarations underway; OCaml architecture checker not implemented |
 | B2 | Port producer for that same slice; extend LM-23/24/26 | Python authoring → OCaml compilation → independent OCaml check → paired RNA/manifest export works outside checkout | Queued |
 | B3 | Expand all behavior/architecture/control profiles and historical public coverage | Complete capability ledger and all 13 current architecture cases pass with fresh identity and mutation evidence | Queued |
-| B4 | LM-10 TypeScript parity; LM-12 installed SDK/CLI parity; deliberate architecture UI integration | Existing browser and installed workflows pass; migrated paths visibly use compatible OCaml core | TypeScript parity implemented; hosted/browser and architecture integration pending |
+| B4 | LM-10 TypeScript parity; LM-12 installed SDK/CLI parity; deliberate architecture UI integration | Existing browser and installed workflows pass; migrated paths visibly use compatible OCaml core | TypeScript parity and installed browser checks passed; architecture integration and installed SDK cutover pending |
 | B5 | LM-11 conversational draft/review flow and LM-27 scope enforcement | Draft → explicit reviewed intent → existing validated pipeline; ambiguity and unsupported claims remain visible | Queued |
 | B6 | LM-30 release/cutover and legacy retirement | All required gates pass at the integrated revision; supported-platform installations and rollback are verified | Queued |
 
@@ -343,11 +343,11 @@ Depends on LM-01 onward; implement packaging early and expand required gates wit
 
 **Distribution plan**
 
-- [ ] Build OCaml binaries on hosted runners; record source revision, toolchain/lock identity, OS/architecture and artifact digest. Prefer one reusable build workspace per runner/job and bounded caches.
+- [x] Build OCaml binaries on hosted runners; record source revision, toolchain/lock identity, OS/architecture and artifact digest. Prefer one reusable build workspace per runner/job and bounded caches.
 - [ ] Package a matching core distribution for each declared platform, selected through an explicit Python installation dependency or bundled platform package strategy fixed at B0. Test the actual strategy on Linux x86_64 and macOS arm64 before expanding it.
 - [ ] End-user installation must use prebuilt supported artifacts. No silent opam, Dune, Rust, C, npm or other native build at Python import or compiler execution. Unsupported platforms receive a clear documented outcome.
-- [ ] Verify package/core protocol and release compatibility at startup. Do not execute an unrelated binary found implicitly on PATH.
-- [ ] Include compiled Studio assets in wheels and source-release build workflows; do not require Node on end-user machines.
+- [x] Verify package/core protocol and release compatibility at startup. Do not execute an unrelated binary found implicitly on PATH.
+- [x] Include compiled Studio assets in wheels and source-release build workflows; do not require Node on end-user machines.
 - [ ] Test fresh installation, offline runtime, missing/wrong binaries, cancellation, uninstall/upgrade behavior and standalone verification outside the repository.
 
 **Existing gates that remain required**

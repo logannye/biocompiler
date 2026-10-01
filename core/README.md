@@ -54,3 +54,40 @@ curves, source locations and registered unit conversions. Unknown operation name
 remain descriptions just as in the existing `IntentProgram`; this operation does
 not validate their behavioral meaning. A successful structural report never
 becomes a translation certificate.
+
+## Domain migration
+
+The next internal domain modules prepare the stateful architecture checker:
+
+- `Build_request` freezes independently resolved parameters, target declarations,
+  source provenance, constraints and preferences. Semantic identity excludes
+  source locations and archival timestamps; artifact identity includes them.
+  Target declarations and evidence references do not establish admission.
+- `Behavior` represents v0.1/v0.2 operations as closed variants with hidden
+  constructors. Import checks operation types, ownership, policies, constant
+  expressions, contact binding and complete requirement/source lineage. It does
+  not lower intent, execute a timeline or compare a molecular candidate.
+- `Molecule_coordinates` validates nominal frames, alphabets, axes, topology,
+  half-open spans and disjoint ordered paths. Bounded position enumeration
+  preserves segment order and strand. It does not emit or transform symbols.
+- `Type_spec.normalize_binding` reconstructs valid serialized bindings using
+  the existing unit conventions, preserving integer/float and signed-zero forms.
+
+These are internal library APIs, with no additional wire capability or change
+to public Python routing. Their hosted tests use the retained case B requests
+and behaviors plus independent coordinate fixtures, in addition to literal and
+mutation tests. Seven artificial Behavior documents cover all 38 legacy and four
+extension operation kinds, with exact document/fingerprint and census checks.
+The deterministic corpus can be checked with
+`PYTHONPATH=src python3 tools/freeze_behavior_domains.py` (a source check only).
+After `dune runtest`, the required CI job invokes:
+
+```sh
+core/_build/default/test/test_build_request.exe "$GITHUB_WORKSPACE/tests/conformance/case-b"
+core/_build/default/test/test_behavior.exe "$GITHUB_WORKSPACE/tests/conformance/case-b" "$GITHUB_WORKSPACE/tests/conformance/behavior-domains-v1.json"
+core/_build/default/test/test_molecule_coordinates.exe "$GITHUB_WORKSPACE/tests/conformance/molecule-coordinates-v1.json"
+```
+
+The case B architecture checker, source interpreter, independent candidate
+runtime, construction reconstruction and exact export acceptance remain to be
+implemented before any production semantic authority can move to OCaml.
