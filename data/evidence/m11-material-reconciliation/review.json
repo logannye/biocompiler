@@ -1,0 +1,19 @@
+{
+  "schema": "biocompiler.material_reconciliation_review.v1",
+  "authority_sha256": "2af4089d368f9144d8f6876f46d3bcd37fedf05e2bfb2184411f3089725748e9",
+  "raw_sha256": {
+    "raw/allen-gal4uas.txt": "994f9026229e1f06fd71399917dbd8a15f057ca5a56d483492204984e37558ea",
+    "raw/allen-human-il2.txt": "cc6d5c03ec6ddbf4ef9df4ca16ea2e5caf07c64d42ed67f98758b580175f4d10"
+  },
+  "expected_sequence_sha256": {
+    "allen-gal4uas": "3b3a17e28bdfdc37d1d6457fdc67c5175a1316d7db852b49f77ac2ff3dce96d8",
+    "allen-human-il2": "e667127c8e1b5595f8cdcba9c81b3a15ee9c5eb1a5db018c3e84839b66318365"
+  },
+  "review_scope": "2026-09-29 source-literal extraction and contextual correspondence only. Root transcribed sequence columns with pdftotext -layout; delivery_leads_reaudit independently inspected rendered original PDF pages, checked fresh pdftotext -raw values and verified source/raw/normalized hashes, Table S1 association and p4 assay scope. secretion_benchmark_audit separately reviewed material and claim boundaries. All are software agents, not human reviewers or experimental validators. The trusted authority is this reviewed checkout; hashes alone do not authenticate external sources. Original PDF must be supplied separately to repeat its visual extraction.",
+  "reviewers": [
+    "Codex root: extraction author",
+    "Codex delivery_leads_reaudit: independent original-source and sequence review",
+    "Codex secretion_benchmark_audit: independent evidence-boundary review"
+  ],
+  "status": "source_literal_extraction_reviewed"
+}

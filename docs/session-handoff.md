@@ -1,6 +1,35 @@
 # Session handoff and current resumption point
 
-## Current continuation — composite therapeutic architecture to complete RNA
+## Current PR reconciliation — preserve the RNA compiler and earlier source records
+
+[PR34](https://github.com/logannye/biocompiler/pull/34) merged the complete
+`0.1.0.dev28` supplied-contract RNA compiler and portable review work, including
+PR33, at main `c6ca8c5cf74efa07a7a23905f2c3289ccd44ba9c`. Its source-head,
+PR and post-merge hosted workflows passed all six jobs. The tested source head
+`996870dffe9f9a3b7ebddf3a0710817b07612628` passed 1,895 tests on each of
+Python 3.11.16 and 3.14.7, Linux x86_64. The [post-merge run](https://github.com/logannye/biocompiler/actions/runs/36821572507)
+checks that merged baseline; older pending/stacked notes below are historical.
+
+[PR20](https://github.com/logannye/biocompiler/pull/20) adds previously unmerged
+[partial source-reconciliation records](m11-material-reconciliation.md), a
+bounded offline reconstruction checker and 13 regression tests. Its reviewed
+authority, transcriptions, candidates and review pins are unchanged. Resolving
+its conflicts preserves the current RNA-only product scope and every current
+hosted compiler gate, with the existing material check added after installation.
+The merged baseline's validation does not validate this integration revision;
+fresh hosted validation is required before merging it.
+
+[PR28](https://github.com/logannye/biocompiler/pull/28)'s reusable metadata
+implementation is already integrated and extended in
+[PR32](https://github.com/logannye/biocompiler/pull/32). This integration also
+retains the one omitted nested import-budget regression and documents the current
+metadata bounds before closing PR28 as superseded. R1 source curation remains
+incomplete; the old draft does not represent additional compiler completion.
+No new source acquisition, biological validation or local native build is part
+of this PR reconciliation. Continue code-only therapeutic program-to-RNA work
+under the current [architecture profile](payload-architecture-v0.1.md).
+
+## Historical continuation — composite therapeutic architecture to complete RNA
 
 The product invariant is therapeutic program design as input and the complete
 corresponding RNA payload set as output, for human immune cells engineered in

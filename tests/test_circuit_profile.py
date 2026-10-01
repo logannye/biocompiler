@@ -1,10 +1,13 @@
 """Circuit scope authority survives imports without promoting biological claims."""
 
+from collections.abc import Mapping
 from dataclasses import FrozenInstanceError, replace
 import json
 import unittest
+from unittest.mock import patch
 
 from biocompiler.errors import SerializationError
+from biocompiler.ir import circuit_profile as profile_ir
 from biocompiler.ir.circuit_profile import (
     BOUNDARIES,
     MAX_ASSAY_CONDITIONS,
@@ -393,6 +396,30 @@ class CircuitProfileTests(unittest.TestCase):
             CircuitProfileRequest.from_dict({"many": [None] * (MAX_PROFILE_ITEMS + 1)})
         with self.assertRaisesRegex(SerializationError, "UTF-8"):
             CircuitProfileRequest.from_dict({"text": "\ud800"})
+
+    def test_pending_items_are_budgeted_before_nested_container_expansion(self):
+        class MappingTrap(Mapping):
+            def __len__(self):
+                return 2
+
+            def __iter__(self):
+                raise AssertionError("Oversized mapping must not be expanded.")
+
+            def __getitem__(self, key):
+                raise AssertionError("Oversized mapping must not be read.")
+
+        class SequenceTrap(list):
+            def __iter__(self):
+                raise AssertionError("Oversized sequence must not be expanded.")
+
+        with patch.object(profile_ir, "MAX_PROFILE_ITEMS", 12):
+            # The exact-budget ordinary tree remains valid. Seven pending
+            # siblings leave only three child slots for either nested trap.
+            profile_ir._bounded_tree([None] * 11)
+            for nested in (MappingTrap(), SequenceTrap([None] * 4)):
+                with self.subTest(container=type(nested).__name__):
+                    with self.assertRaisesRegex(SerializationError, "item limit"):
+                        CircuitProfileRequest.from_dict([None] * 7 + [nested])
 
     def test_near_limit_pretty_experiment_roundtrip_includes_publication_newline(self):
         data = source_context().to_dict()

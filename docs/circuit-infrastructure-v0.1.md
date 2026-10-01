@@ -30,6 +30,14 @@ and resource-limit violations. `check_circuit_sources` checks relationships and
 review freshness; `verify_circuit_sources` freshly replays against an independent
 inventory. Review labels do not authenticate reviewers or fetch source bytes.
 
+Source metadata is bounded to 4,000,000 UTF-8 bytes including the publication
+newline, nesting depth 64 and 100,000 tree items, with at most 128 source
+documents, 256 cases and 256 reviews. Assessments have a separate 12,000,000-byte
+budget and at most 4,096 diagnostics of 512 UTF-8 bytes each. Diagnostic overflow
+retains FAIL with an explicit omitted-occurrence marker; the complete inventory
+remains independent authority. Serialization limits fail closed rather than
+publishing a truncated passing record.
+
 `inspect_circuit_source_readiness` produces a bounded gap report for all cases or
 one case. Missing fields, declaration-only coverage, receipt/reuse/correction gaps,
 review status and source-context limitations remain explicit. Even an all-provided
@@ -44,9 +52,12 @@ biocompiler circuit-sources-verify generated/circuit-sources/checked.json --expe
 biocompiler circuit-sources-readiness generated/circuit-sources/inventory.json
 ```
 
-These examples are artificial metadata controls. The incomplete R1 draft PR28
-remains unmerged; this increment selectively integrates its reusable metadata
-software. See the [first-case readiness record](r6a-reference-readiness.md).
+These examples are artificial metadata controls. PR32 supersedes PR28's reusable
+metadata software and adds readiness inspection and stronger import/export
+bounds. The nested pending-item regression omitted during that integration is
+also retained in `tests/test_circuit_profile.py`; the older draft adds no remaining
+runtime functionality. This does not complete R1's reviewed-source acceptance
+work. See the [first-case readiness record](r6a-reference-readiness.md).
 
 ## R5 support: supplied nominal bindings
 
