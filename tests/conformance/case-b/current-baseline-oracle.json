@@ -1,0 +1,597 @@
+{
+  "acceptance_authority": false,
+  "biocompiler_version": "0.1.0.dev29",
+  "cases": {
+    "base": {
+      "behavior_fingerprint": "c065e54650b218dfcebe4129c7012c45ca056b13aa618184ddf46eec623eff9e",
+      "candidate_fingerprint": "ea8eee2f85893b4c6c2c3a5338771e0ea08b35f0fa0ff0b2e28b94642895f2d7",
+      "complete_partial_label_positive": {
+        "candidate_fingerprint": "4f9005d7ae479e1b947a862176ba4aed3ac4a8428d84adbce5b07035c406e0e8",
+        "python_verification": {
+          "assumptions": [
+            "All RNA members in this role's group are assumed present in the same recipient cell.",
+            "The supplied artificial material conditionally implements the complete declared executable model; empirical function is unknown."
+          ],
+          "build_fingerprint": "4f9005d7ae479e1b947a862176ba4aed3ac4a8428d84adbce5b07035c406e0e8",
+          "checker_version": "biocompiler.payload_architecture_checker.v0.3",
+          "claim_scope": "Exact source and supplied composite execution-contract correspondence, explicit functional requirements under bounded control proof profiles, declared RNA availability intervals, physical composition and complete RNA construction only. No empirical component function or human therapeutic admission is established.",
+          "construction_complete": true,
+          "diagnostics": [],
+          "empirical_validation": "unknown",
+          "human_therapeutic_admission": "not_admitted",
+          "outcome": "pass",
+          "request_fingerprint": "396d4e797f4af3fc81a71b9de4d483c147dd992b919ce03ffe5e8bf6ecda15b4",
+          "schema_version": "biocompiler.payload_architecture_verification.v0.1",
+          "search_verified": false,
+          "translation_complete": true,
+          "unresolved": []
+        },
+        "transformation": {
+          "field": "/status",
+          "value": "partial"
+        }
+      },
+      "intent_fingerprint": "07d7e859c0e6c291a1b93dc37244fdea270328e69a47d057b2c5cea9c720f9ff",
+      "literal_structure_matched": {
+        "channel_count": 0,
+        "intent_kinds": {
+          "action.secrete": 1,
+          "action.state_set": 4,
+          "and": 6,
+          "held_for": 1,
+          "literal": 1,
+          "not": 3,
+          "qualitative": 3,
+          "role": 1,
+          "rule": 5,
+          "scope": 1,
+          "secretion": 1,
+          "signal": 3,
+          "state": 1,
+          "state.is": 2
+        },
+        "intent_node_count": 33,
+        "outputs": [
+          {
+            "action_kind": "action.state_set",
+            "activation": "level",
+            "assigned_value": "act",
+            "ongoing": false,
+            "product": null,
+            "rate": null,
+            "trigger": "condition"
+          },
+          {
+            "action_kind": "action.state_set",
+            "activation": "level",
+            "assigned_value": "recover",
+            "ongoing": false,
+            "product": null,
+            "rate": null,
+            "trigger": "condition"
+          },
+          {
+            "action_kind": "action.state_set",
+            "activation": "level",
+            "assigned_value": "prime",
+            "ongoing": false,
+            "product": null,
+            "rate": null,
+            "trigger": "condition"
+          },
+          {
+            "action_kind": "action.state_set",
+            "activation": "level",
+            "assigned_value": "recover",
+            "ongoing": false,
+            "product": null,
+            "rate": null,
+            "trigger": "condition"
+          },
+          {
+            "action_kind": "action.secrete",
+            "activation": "level",
+            "assigned_value": null,
+            "ongoing": true,
+            "product": "artificial_alpha",
+            "rate": "unspecified",
+            "trigger": "condition"
+          }
+        ],
+        "requested_control_requirements": 0,
+        "require_complete": false,
+        "rna_count": 1,
+        "rna_sequences": [
+          "ACGUAC"
+        ],
+        "role_count": 1,
+        "runtime_node_count": 11,
+        "state_declarations": [
+          {
+            "arbitration": "unspecified",
+            "assignment_values": [
+              "act",
+              "recover",
+              "prime",
+              "recover"
+            ],
+            "initial": "prime",
+            "observation": "prior_state",
+            "values": [
+              "prime",
+              "act",
+              "recover"
+            ]
+          }
+        ],
+        "supplier_control_kinds": [
+          "activation",
+          "shutdown"
+        ]
+      },
+      "literal_timelines_matched": {
+        "context_loss_does_not_veto_act": [
+          {
+            "secretion_count": 1,
+            "state": "act",
+            "time": 0
+          },
+          {
+            "secretion_count": 1,
+            "state": "act",
+            "time": 1
+          },
+          {
+            "secretion_count": 0,
+            "state": "recover",
+            "time": 2
+          }
+        ],
+        "explicit_horizon_before_deadline": [
+          {
+            "secretion_count": 1,
+            "state": "act",
+            "time": 0
+          },
+          {
+            "secretion_count": 1,
+            "state": "act",
+            "time": 1
+          }
+        ],
+        "initial_context_and_dwell": [
+          {
+            "secretion_count": 1,
+            "state": "act",
+            "time": 0
+          },
+          {
+            "secretion_count": 0,
+            "state": "recover",
+            "time": 2
+          }
+        ],
+        "no_context_stays_prime": [
+          {
+            "secretion_count": 0,
+            "state": "prime",
+            "time": 0
+          },
+          {
+            "secretion_count": 0,
+            "state": "prime",
+            "time": 3
+          }
+        ],
+        "reset_and_fresh_reentry": [
+          {
+            "secretion_count": 1,
+            "state": "act",
+            "time": 0
+          },
+          {
+            "secretion_count": 0,
+            "state": "prime",
+            "time": 1
+          },
+          {
+            "secretion_count": 1,
+            "state": "act",
+            "time": 1.5
+          },
+          {
+            "secretion_count": 0,
+            "state": "recover",
+            "time": 3.5
+          }
+        ],
+        "reset_at_deadline": [
+          {
+            "secretion_count": 1,
+            "state": "act",
+            "time": 0
+          },
+          {
+            "secretion_count": 0,
+            "state": "prime",
+            "time": 2
+          }
+        ],
+        "shutdown_disables_reset": [
+          {
+            "secretion_count": 1,
+            "state": "act",
+            "time": 0
+          },
+          {
+            "secretion_count": 0,
+            "state": "recover",
+            "time": 1
+          }
+        ]
+      },
+      "python_verification": {
+        "assumptions": [
+          "All RNA members in this role's group are assumed present in the same recipient cell.",
+          "The supplied artificial material conditionally implements the complete declared executable model; empirical function is unknown."
+        ],
+        "build_fingerprint": "ea8eee2f85893b4c6c2c3a5338771e0ea08b35f0fa0ff0b2e28b94642895f2d7",
+        "checker_version": "biocompiler.payload_architecture_checker.v0.3",
+        "claim_scope": "Exact source and supplied composite execution-contract correspondence, explicit functional requirements under bounded control proof profiles, declared RNA availability intervals, physical composition and complete RNA construction only. No empirical component function or human therapeutic admission is established.",
+        "construction_complete": true,
+        "diagnostics": [],
+        "empirical_validation": "unknown",
+        "human_therapeutic_admission": "not_admitted",
+        "outcome": "pass",
+        "request_fingerprint": "396d4e797f4af3fc81a71b9de4d483c147dd992b919ce03ffe5e8bf6ecda15b4",
+        "schema_version": "biocompiler.payload_architecture_verification.v0.1",
+        "search_verified": false,
+        "translation_complete": true,
+        "unresolved": []
+      },
+      "request_fingerprint": "396d4e797f4af3fc81a71b9de4d483c147dd992b919ce03ffe5e8bf6ecda15b4",
+      "source_request_artifact_fingerprint": "af41c69d24322157bf3481258630e7ac79d79aaf87052d19a6b8496946a19b83",
+      "source_request_fingerprint": "62b60682f30d34cce7efc5cb4c62f88eaeb619f992da8d1fa72160566ff7b46b",
+      "supplier_behavior_fingerprints": [
+        "c24f8cf630c7d8a519aae9876110541fd648cd8f96c93c8cc7de6a5d469602f5"
+      ]
+    },
+    "parameter-default": {
+      "behavior_fingerprint": "4c82efd3b175ed53ed8113378e172e68d4cd81720b0d25611934b15000046a23",
+      "candidate_fingerprint": "2484dabf3966cb1d887acc1ca0d29e7b565407ad716f20e6130ff23bc84a2556",
+      "intent_fingerprint": "00915b2c2d8c7ad59aa9d44a9456d2e356305ff8f8f858e059c6ade9fb1e78c5",
+      "literal_structure_matched": {
+        "channel_count": 0,
+        "intent_kinds": {
+          "action.secrete": 1,
+          "action.state_set": 4,
+          "and": 6,
+          "held_for": 1,
+          "not": 3,
+          "parameter": 1,
+          "qualitative": 3,
+          "role": 1,
+          "rule": 5,
+          "scope": 1,
+          "secretion": 1,
+          "signal": 3,
+          "state": 1,
+          "state.is": 2
+        },
+        "intent_node_count": 33,
+        "outputs": [
+          {
+            "action_kind": "action.state_set",
+            "activation": "level",
+            "assigned_value": "act",
+            "ongoing": false,
+            "product": null,
+            "rate": null,
+            "trigger": "condition"
+          },
+          {
+            "action_kind": "action.state_set",
+            "activation": "level",
+            "assigned_value": "recover",
+            "ongoing": false,
+            "product": null,
+            "rate": null,
+            "trigger": "condition"
+          },
+          {
+            "action_kind": "action.state_set",
+            "activation": "level",
+            "assigned_value": "prime",
+            "ongoing": false,
+            "product": null,
+            "rate": null,
+            "trigger": "condition"
+          },
+          {
+            "action_kind": "action.state_set",
+            "activation": "level",
+            "assigned_value": "recover",
+            "ongoing": false,
+            "product": null,
+            "rate": null,
+            "trigger": "condition"
+          },
+          {
+            "action_kind": "action.secrete",
+            "activation": "level",
+            "assigned_value": null,
+            "ongoing": true,
+            "product": "artificial_alpha",
+            "rate": "unspecified",
+            "trigger": "condition"
+          }
+        ],
+        "requested_control_requirements": 0,
+        "require_complete": false,
+        "rna_count": 1,
+        "rna_sequences": [
+          "ACGUAC"
+        ],
+        "role_count": 1,
+        "runtime_node_count": 11,
+        "state_declarations": [
+          {
+            "arbitration": "unspecified",
+            "assignment_values": [
+              "act",
+              "recover",
+              "prime",
+              "recover"
+            ],
+            "initial": "prime",
+            "observation": "prior_state",
+            "values": [
+              "prime",
+              "act",
+              "recover"
+            ]
+          }
+        ],
+        "supplier_control_kinds": [
+          "activation",
+          "shutdown"
+        ]
+      },
+      "literal_timelines_matched": {
+        "initial_context_and_dwell": [
+          {
+            "secretion_count": 1,
+            "state": "act",
+            "time": 0
+          },
+          {
+            "secretion_count": 0,
+            "state": "recover",
+            "time": 2
+          }
+        ]
+      },
+      "python_verification": {
+        "assumptions": [
+          "All RNA members in this role's group are assumed present in the same recipient cell.",
+          "The supplied artificial material conditionally implements the complete declared executable model; empirical function is unknown."
+        ],
+        "build_fingerprint": "2484dabf3966cb1d887acc1ca0d29e7b565407ad716f20e6130ff23bc84a2556",
+        "checker_version": "biocompiler.payload_architecture_checker.v0.3",
+        "claim_scope": "Exact source and supplied composite execution-contract correspondence, explicit functional requirements under bounded control proof profiles, declared RNA availability intervals, physical composition and complete RNA construction only. No empirical component function or human therapeutic admission is established.",
+        "construction_complete": true,
+        "diagnostics": [],
+        "empirical_validation": "unknown",
+        "human_therapeutic_admission": "not_admitted",
+        "outcome": "pass",
+        "request_fingerprint": "0bf1038ec8ce4e106a607cea42174a17eb68462c69a7b9d07c622e58596e0c4c",
+        "schema_version": "biocompiler.payload_architecture_verification.v0.1",
+        "search_verified": false,
+        "translation_complete": true,
+        "unresolved": []
+      },
+      "request_fingerprint": "0bf1038ec8ce4e106a607cea42174a17eb68462c69a7b9d07c622e58596e0c4c",
+      "source_request_artifact_fingerprint": "72071f8f3b8bfc204f625c0dd6053c486c8999de64b03b688f31bbfc45584fd4",
+      "source_request_fingerprint": "0e2a0bea915ba167a7913d56fcb685e934ac3a098ce8bcc497dd93c5c2036bac",
+      "supplier_behavior_fingerprints": [
+        "525469b84c46de4412834a3d0ce8eaa848520c1f06b2c2701817c966bae23b6e"
+      ]
+    },
+    "parameter-override": {
+      "behavior_fingerprint": "0c1da8a53210fc1e3a13fcfc39095e2a9d8bc1c8b5f85607cc85f62347a1d1fd",
+      "candidate_fingerprint": "0167adbd8a53a1031a6df436d34df6e027916dbc61c5b42d6b414549d413b171",
+      "intent_fingerprint": "00915b2c2d8c7ad59aa9d44a9456d2e356305ff8f8f858e059c6ade9fb1e78c5",
+      "literal_structure_matched": {
+        "channel_count": 0,
+        "intent_kinds": {
+          "action.secrete": 1,
+          "action.state_set": 4,
+          "and": 6,
+          "held_for": 1,
+          "not": 3,
+          "parameter": 1,
+          "qualitative": 3,
+          "role": 1,
+          "rule": 5,
+          "scope": 1,
+          "secretion": 1,
+          "signal": 3,
+          "state": 1,
+          "state.is": 2
+        },
+        "intent_node_count": 33,
+        "outputs": [
+          {
+            "action_kind": "action.state_set",
+            "activation": "level",
+            "assigned_value": "act",
+            "ongoing": false,
+            "product": null,
+            "rate": null,
+            "trigger": "condition"
+          },
+          {
+            "action_kind": "action.state_set",
+            "activation": "level",
+            "assigned_value": "recover",
+            "ongoing": false,
+            "product": null,
+            "rate": null,
+            "trigger": "condition"
+          },
+          {
+            "action_kind": "action.state_set",
+            "activation": "level",
+            "assigned_value": "prime",
+            "ongoing": false,
+            "product": null,
+            "rate": null,
+            "trigger": "condition"
+          },
+          {
+            "action_kind": "action.state_set",
+            "activation": "level",
+            "assigned_value": "recover",
+            "ongoing": false,
+            "product": null,
+            "rate": null,
+            "trigger": "condition"
+          },
+          {
+            "action_kind": "action.secrete",
+            "activation": "level",
+            "assigned_value": null,
+            "ongoing": true,
+            "product": "artificial_alpha",
+            "rate": "unspecified",
+            "trigger": "condition"
+          }
+        ],
+        "requested_control_requirements": 0,
+        "require_complete": false,
+        "rna_count": 1,
+        "rna_sequences": [
+          "ACGUAC"
+        ],
+        "role_count": 1,
+        "runtime_node_count": 11,
+        "state_declarations": [
+          {
+            "arbitration": "unspecified",
+            "assignment_values": [
+              "act",
+              "recover",
+              "prime",
+              "recover"
+            ],
+            "initial": "prime",
+            "observation": "prior_state",
+            "values": [
+              "prime",
+              "act",
+              "recover"
+            ]
+          }
+        ],
+        "supplier_control_kinds": [
+          "activation",
+          "shutdown"
+        ]
+      },
+      "literal_timelines_matched": {
+        "override_changes_deadline": [
+          {
+            "secretion_count": 1,
+            "state": "act",
+            "time": 0
+          },
+          {
+            "secretion_count": 1,
+            "state": "act",
+            "time": 2
+          },
+          {
+            "secretion_count": 0,
+            "state": "recover",
+            "time": 3
+          }
+        ]
+      },
+      "python_verification": {
+        "assumptions": [
+          "All RNA members in this role's group are assumed present in the same recipient cell.",
+          "The supplied artificial material conditionally implements the complete declared executable model; empirical function is unknown."
+        ],
+        "build_fingerprint": "0167adbd8a53a1031a6df436d34df6e027916dbc61c5b42d6b414549d413b171",
+        "checker_version": "biocompiler.payload_architecture_checker.v0.3",
+        "claim_scope": "Exact source and supplied composite execution-contract correspondence, explicit functional requirements under bounded control proof profiles, declared RNA availability intervals, physical composition and complete RNA construction only. No empirical component function or human therapeutic admission is established.",
+        "construction_complete": true,
+        "diagnostics": [],
+        "empirical_validation": "unknown",
+        "human_therapeutic_admission": "not_admitted",
+        "outcome": "pass",
+        "request_fingerprint": "6d1de37d951fa84cc6afc72a55ddf28586975a1757024638ba3c6e1d17e0f216",
+        "schema_version": "biocompiler.payload_architecture_verification.v0.1",
+        "search_verified": false,
+        "translation_complete": true,
+        "unresolved": []
+      },
+      "request_fingerprint": "6d1de37d951fa84cc6afc72a55ddf28586975a1757024638ba3c6e1d17e0f216",
+      "source_request_artifact_fingerprint": "f2ba27ce8ff97604c4ce70f4d53aa615d743c811807b60f08a3eb6cf52ea499d",
+      "source_request_fingerprint": "9d39ae28f2bd55b951fb9840e1b61603fdc1565efc7baaf9a0d7929a1e719baa",
+      "supplier_behavior_fingerprints": [
+        "3733699357721312124e4bfd75cc85b23b91b85637f6cd0b9910c7538367a828"
+      ]
+    }
+  },
+  "descriptor_count": 43,
+  "descriptor_execution": "Planned descriptors are not executed by this generator; only named literal timelines, three parameter/baseline variants and complete_partial_label_positive run here.",
+  "evaluator_version": "biocompiler.behavior.evaluator.v0.2",
+  "evidence_kind": "current_python_baseline_oracle",
+  "files": {
+    "base/candidate.json": {
+      "bytes": 361452,
+      "sha256": "a8130d41975559a346d26114f4f651da2668088b9fda23e0bf682205dbe41c29"
+    },
+    "base/request.json": {
+      "bytes": 146761,
+      "sha256": "0785e1a538248e32178252f5710ade5ab55de0b3faefcf3a183ec9e69c78a8e9"
+    },
+    "descriptors.json": {
+      "bytes": 15572,
+      "sha256": "98ba36fd54bc0a886d2ad29a01ab2950436ed6730911c5dbbe017a21584bd47d"
+    },
+    "expectations.json": {
+      "bytes": 6952,
+      "sha256": "8d798df2d92e802a236ad39e9953e25e4f1887a3d94d87020644c78a2a261f4b"
+    },
+    "parameter-default/candidate.json": {
+      "bytes": 367860,
+      "sha256": "e2256ab8ada895eb45de69722bc484f4078348d183906051985cdf6b58425aff"
+    },
+    "parameter-default/request.json": {
+      "bytes": 148860,
+      "sha256": "837447aadbf6766ddcfb93f63936ef52e804191cce2d9f9ee810059d05edcf7f"
+    },
+    "parameter-override/candidate.json": {
+      "bytes": 367860,
+      "sha256": "48d251be84ac5ac0174035d347f99ff1aaa11993783d7817f49b076a902c3f39"
+    },
+    "parameter-override/request.json": {
+      "bytes": 148860,
+      "sha256": "a9b4b81d38dfcc53f4e572659303c60b526223f6802099c8268fe9f5525f3aad"
+    },
+    "schema-census.json": {
+      "bytes": 174501,
+      "sha256": "99a49e01a6b7dd5ee88d94eecb03f92be007764a25e8684c65810e388d57e029"
+    },
+    "source-coordinates.json": {
+      "bytes": 78888,
+      "sha256": "f1e029c868a85b98a006e0ba8cb410392d82154a3637e10312fca22f4cf6acde"
+    }
+  },
+  "native_execution": "not_run",
+  "schema_version": "biocompiler.migration_case_b_baseline.v0.1",
+  "scope": "Retained artificial case B software baseline and fresh Python-only comparison to literal expectations; no OCaml validation, biological function or human admission.",
+  "tool_version": "biocompiler.freeze_migration_case_b.v0.1"
+}

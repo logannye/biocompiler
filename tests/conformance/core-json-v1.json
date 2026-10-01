@@ -3,6 +3,12 @@
   "literal_basis": "Expected canonical_json strings are independently authored literals. Their stored SHA-256 values hash these literal bytes, not core output or dynamically generated expectations.",
   "literal_vectors": [
     {
+      "id": "asymmetric-binary-rounding-interval",
+      "input_json": "[6.6174449004242214e-24,-6.6174449004242214e-24]",
+      "canonical_json": "[6.617444900424222e-24,-6.617444900424222e-24]",
+      "sha256": "0b7262d8ff8f3663ddb6f579a60ccab4859e9919bba3e376dbc47ceaa2f3d5f7"
+    },
+    {
       "id": "null",
       "input_json": "null",
       "canonical_json": "null",
@@ -79,7 +85,12 @@
     "basis": "Separate Python json.dumps reference comparison; agreement is not independent semantic proof. Seeded IEEE-754 patterns retain exact requested bit identities.",
     "seed": 20261001,
     "finite_float_count": 4096,
-    "batch_size": 128
+    "batch_size": 128,
+    "binary_boundaries": {
+      "minimum_exponent": -1074,
+      "maximum_exponent": 1023,
+      "ulps_each_side": 4
+    }
   },
   "raw_rejections": [
     {

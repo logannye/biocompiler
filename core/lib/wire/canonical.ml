@@ -31,18 +31,28 @@ let float_string value =
       let rounded =
         if comparison > 0 || (comparison = 0 && Z.testbit quotient 0) then Z.succ quotient else quotient
       in
-      let digits = Z.to_string rounded in
-      let actual_exponent = !exponent + String.length digits - precision in
-      let length = ref (String.length digits) in
-      while !length > 1 && digits.[!length - 1] = '0' do decr length done;
-      let digits = String.sub digits 0 !length in
-      let candidate =
-        String.sub digits 0 1 ^ "." ^ String.sub digits 1 (String.length digits - 1)
-        ^ "e" ^ string_of_int actual_exponent
+      let other = if Z.equal rounded quotient then Z.succ quotient else quotient in
+      let roundtrips decimal =
+        let digits = Z.to_string decimal in
+        let actual_exponent = !exponent + String.length digits - precision in
+        let length = ref (String.length digits) in
+        while !length > 1 && digits.[!length - 1] = '0' do decr length done;
+        let digits = String.sub digits 0 !length in
+        let candidate =
+          String.sub digits 0 1 ^ "." ^ String.sub digits 1 (String.length digits - 1)
+          ^ "e" ^ string_of_int actual_exponent
+        in
+        if Int64.equal (Int64.bits_of_float (float_of_string candidate)) (Int64.bits_of_float magnitude)
+        then Some (digits, actual_exponent)
+        else None
       in
-      if Int64.equal (Int64.bits_of_float (float_of_string candidate)) (Int64.bits_of_float magnitude)
-      then digits, actual_exponent
-      else shortest (precision + 1)
+      (* At powers of two the binary64 rounding interval is asymmetric: the
+         nearest decimal can fall outside its short side while the other
+         bracketing decimal still round-trips. Test both, nearest first; the
+         tie-to-even ordering above preserves Python's closest spelling. *)
+      match List.find_map roundtrips [rounded; other] with
+      | Some result -> result
+      | None -> shortest (precision + 1)
     in
     let digits, exponent = shortest 1 in
     let count = String.length digits in

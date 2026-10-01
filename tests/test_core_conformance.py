@@ -31,6 +31,8 @@ class CoreConformanceTests(unittest.TestCase):
         self.assertIn("-0.0", by_id["integer-and-float-spelling"]["canonical_json"])
         self.assertIn("9007199254740993", by_id["large-exact-integers"]["canonical_json"])
         self.assertIn("é", by_id["unicode-not-normalized"]["canonical_json"])
+        self.assertEqual(by_id["asymmetric-binary-rounding-interval"]["canonical_json"],
+                         "[6.617444900424222e-24,-6.617444900424222e-24]")
 
     def test_changed_expected_literal_cannot_be_repaired_by_core_output(self):
         corpus = deepcopy(self.corpus)
@@ -60,6 +62,22 @@ class CoreConformanceTests(unittest.TestCase):
         self.assertTrue(all(math.isfinite(value) for value in values))
         self.assertIn(struct.pack(">d", -0.0), [struct.pack(">d", value) for value in values])
         self.assertIn(5e-324, values)
+
+    def test_binary_boundaries_include_asymmetric_intervals_and_four_ulps(self):
+        values = campaign.binary_boundary_floats(**self.corpus["python_oracle"]["binary_boundaries"])
+        patterns = {int.from_bytes(struct.pack(">d", value), "big") for value in values}
+        self.assertEqual(len(values), len(patterns))
+        self.assertGreater(len(values), 37000)
+        self.assertTrue(all(math.isfinite(value) for value in values))
+        self.assertTrue({0, 1 << 63, 1, (1 << 63) | 1}.issubset(patterns))
+        for center in (0x0010000000000000, 0x3b20000000000000, 0x7fe0000000000000):
+            for offset in range(-4, 5):
+                self.assertIn(center + offset, patterns)
+                self.assertIn((center + offset) | (1 << 63), patterns)
+        # Literal decimal expected at 2**-77; the old nearest-only formatter
+        # incorrectly continued to 17 significant digits at this boundary.
+        self.assertEqual(campaign.canonical(math.ldexp(1.0, -77)), "6.617444900424222e-24")
+        self.assertEqual(float("6.6174449004242214e-24"), math.ldexp(1.0, -77))
 
     def test_every_authored_example_keeps_source_location_invariance(self):
         self.assertGreaterEqual(len(self.programs), 6)

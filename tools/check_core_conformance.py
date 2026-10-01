@@ -57,6 +57,9 @@ def load_corpus(path=CORPUS):
     require(len(corpus["literal_vectors"]) >= 10, "Literal corpus is incomplete")
     require(corpus["python_oracle"]["finite_float_count"] >= 2048, "Float coverage below minimum")
     require(1 <= corpus["python_oracle"]["batch_size"] <= 256, "Unbounded float batch")
+    require(corpus["python_oracle"].get("binary_boundaries") == {
+        "minimum_exponent": -1074, "maximum_exponent": 1023, "ulps_each_side": 4,
+    }, "Binary rounding-boundary coverage is incomplete")
     identifiers = []
     for vector in corpus["literal_vectors"]:
         identifiers.append(vector["id"])
@@ -90,6 +93,32 @@ def boundary_floats():
         for adjacent in (math.nextafter(value, 0.0), value, math.nextafter(value, math.inf)):
             if math.isfinite(adjacent):
                 values.extend((adjacent, -adjacent))
+    return values
+
+
+def binary_boundary_floats(*, minimum_exponent=-1074, maximum_exponent=1023, ulps_each_side=4):
+    """Exact powers of two and four adjacent representables on each side.
+
+    Powers of two have asymmetric decimal rounding intervals. A nearest decimal
+    that does not round-trip cannot justify ignoring the other adjacent decimal
+    at the same precision. Random patterns almost never hit these boundaries.
+    Enumerate finite binary64 bit patterns directly, including both signs, and
+    deduplicate the overlapping subnormal neighborhoods without collapsing -0.
+    """
+    require(-1074 <= minimum_exponent <= maximum_exponent <= 1023 and ulps_each_side == 4,
+            "Invalid binary boundary campaign")
+    seen, values = set(), []
+    for exponent in range(minimum_exponent, maximum_exponent + 1):
+        center = int.from_bytes(struct.pack(">d", math.ldexp(1.0, exponent)), "big")
+        for offset in range(-ulps_each_side, ulps_each_side + 1):
+            magnitude = center + offset
+            if not 0 <= magnitude < 0x7ff0000000000000:
+                continue
+            for sign in (0, 1 << 63):
+                bits = magnitude | sign
+                if bits not in seen:
+                    seen.add(bits)
+                    values.append(struct.unpack(">d", bits.to_bytes(8, "big"))[0])
     return values
 
 
@@ -261,6 +290,11 @@ def run_campaign(clients, corpus, receipt, programs):
     patterns = float_patterns(settings["seed"], settings["finite_float_count"])
     receipt["float_patterns"] = {**settings, "bits_sha256": digest(b"".join(bits.to_bytes(8, "big") for bits, _ in patterns))}
     boundaries = boundary_floats()
+    binary_boundaries = binary_boundary_floats(**settings["binary_boundaries"])
+    receipt["binary_boundaries"] = {
+        **settings["binary_boundaries"], "value_count": len(binary_boundaries),
+        "bits_sha256": digest(b"".join(struct.pack(">d", value) for value in binary_boundaries)),
+    }
     mutations = intent_mutations(programs)
     for client in clients:
         capabilities = client.capabilities().result
@@ -277,6 +311,8 @@ def run_campaign(clients, corpus, receipt, programs):
             campaign.codec(client, f"finite-binary64-{start}", values)
         for start in range(0, len(boundaries), settings["batch_size"]):
             campaign.codec(client, f"decimal-threshold-adjacent-{start}", boundaries[start:start + settings["batch_size"]])
+        for start in range(0, len(binary_boundaries), settings["batch_size"]):
+            campaign.codec(client, f"binary-power-adjacent-{start}", binary_boundaries[start:start + settings["batch_size"]])
         for name, token in (("positive-int-4300", "9" * 4300), ("negative-int-4300", "-" + "9" * 4299)):
             campaign.codec(client, name, None, token, token, "integer_boundary")
         for name, token in (("positive-int-4301", "9" * 4301), ("negative-int-4301", "-" + "9" * 4300)):

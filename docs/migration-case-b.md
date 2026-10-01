@@ -88,6 +88,16 @@ and same-recipient assumptions. Search limits are 256 combinations, 100,000 matc
 states and 256 match instances. Exact source bindings are supplied; automatic
 matching is not used, but the build still contains the explicit instance record.
 
+B1 must also support the deterministic nonnull material-limit fields:
+`constraints.exact_count`, `max_count`, `max_member_bases` and `max_total_bases`,
+plus each delivery group's `exact_count`, `max_count` and `max_total_bases`.
+Validate their exact integer/null types and consistency, then check them against
+the independently reconstructed delivered RNA identities and sequence lengths.
+Count each delivered member identity once even if bindings reference it more
+than once; group totals use actual placement/group membership. Do not count
+components, features or supplier declarations as molecules. The original case's
+null limits are not coverage of these checks.
+
 The supplier carries activation and shutdown **declarations**, while
 `constraints.control_requirements` is empty. Case B therefore does not exercise
 all bounded functional-control proofs. In particular, context is an initiation
@@ -95,6 +105,37 @@ condition: losing context while the state is already `act` does not immediately
 stop secretion. Do not turn the supplier's activation label into a claim that
 context is a continuously necessary gate. Explicit additional control
 requirements need their own implemented proofs or an unsupported result.
+
+Empty requested functional-control requirements do not disable validation of
+the supplied control declarations. Independently establish that each declared
+controlling node is causal for its controlled runtime nodes, following installed
+state-writer edges as well as expression dependencies. Its declared components
+must be bound to the controlled nodes and include a component pinned to the
+supplied executable model. Controls sharing a `(kind, domain_id)` must have the
+same controlling-node authority. These are always-on correspondence checks;
+they do not prove that context continuously gates secretion. Preserve the
+`control_input_not_causal`, `control_material_correspondence` and
+`shared_control_input_contradiction` rejection families from the existing checker.
+
+### Required positive parameter variant
+
+The original case B has no `parameter` nodes. Before counting binding-authority
+mutation coverage, retain a separate positive case B variant that replaces its
+literal dwell duration with a typed design-time `Duration` parameter. Include
+both a default-bound request and an explicitly overridden request with a
+correspondingly supplied independent component model. The supported pilot
+operation set therefore includes `parameter` in addition to the operations in
+the original fixture table. Validate parameter inventories, declared types,
+defaults, frozen overrides, resolved bindings and the permitted normalized
+Behavior attributes against the original request. A request-only override with
+an unchanged incompatible supplier model must fail model correspondence.
+
+Freeze literal timelines for both parameter values before executing either
+engine. Only after both positive variants pass may a mutant that changes both
+the candidate's reported parameter binding and its normalized node attributes
+count as the frozen-binding-authority test. An unsupported `parameter` rejection
+does not satisfy that test. These are required corpus descriptors until their
+retained inputs and native execution receipts exist.
 
 ## 2. Independent inputs and reconstructed outputs
 
@@ -147,7 +188,7 @@ separate required gate.
 | --- | --- | --- |
 | B1.01 Raw request/candidate schema census and retained corpus | Conformance harness | Passing foundation codec/protocol tests |
 | B1.02 BuildRequest, human target and circuit record validators | `bioc_domain.Build_request`, `Target`, `Circuit` | Existing intent/type/identity modules |
-| B1.03 Closed Behavior operation variants, policy/profile validator, constant/type checks and lineage | `bioc_domain.Behavior`, `Behavior_policy` | B1.02 and exact numeric conventions |
+| B1.03 Closed Behavior operation variants, including the positive typed-parameter variant, policy/profile validator, constant/type/binding checks and lineage | `bioc_domain.Behavior`, `Behavior_policy` | B1.02 and exact numeric conventions |
 | B1.04 Source/Behavior correspondence checker | `bioc_checker.Lowering_check` | B1.03; independent expected parameter bindings and permitted normalizations |
 | B1.05 Reference execution for the complete supported pilot operation set | `bioc_semantics.Reference` | B1.03; independent literal timelines |
 | B1.06 Component, refinement, output, binding, placement and constraint validators | `bioc_domain.Architecture`, `Component` | B1.02/B1.03 |
@@ -179,14 +220,38 @@ identities, values, graphs and independently supplied material.
 
 A first complete slice may support one role, explicit source correspondence,
 one selected composite refinement, the listed stateful Boolean/temporal
-operators, direct-root complete RNA construction and the specific supported
-constraint fields. A structurally valid request containing any unsupported
+operators plus typed design-time `parameter` binding, direct-root complete RNA
+construction and the count/size, delivery and completeness constraints described
+above. A structurally valid request containing any unsupported
 operation, nonempty helper/channel/availability contract, execution-bearing
 component operating-domain/resource requirement, requested
 functional proof, construction transform or additional obligation must yield
 explicit unsupported coverage and no accepted export. It cannot be made to
 pass by dropping the field, substituting a default or checking only the
 recognized subset.
+
+Before implementation, make this a closed field-level capability predicate,
+including the following existing obligation paths. A parsed but unsupported
+record remains attached to the complete caller authority and receives an
+explicit reason; it is not erased to create a supported request.
+
+| Additional authority | B1 disposition |
+| --- | --- |
+| A source wrapper carrying deployment, acceptance or other obligations beyond the plain `BuildRequest` | Unresolved/unsupported `wrapped_source_obligations`; unwrapping is not discharge |
+| Source implementation constraints other than the already interpreted v0.2 `execution` policy | Unresolved/unsupported `uninterpreted_implementation_constraints` |
+| Nonempty source `preferences` | Unresolved/unsupported `uninterpreted_source_preferences`; preserve the original request |
+| Nonempty `ExecutableCircuitBehavior.inputs` or `CircuitRequirement.input_bindings` | Unresolved/unsupported `executable_input_observation_mapping`; a valid observation record alone does not prove its source correspondence |
+| Supplementary behavior provider dependencies | Unresolved/unsupported `circuit_provider_mapping`, with each provider identity retained |
+| Nonempty component required dependencies without a supported provider/grounding proof | Unsupported dependency coverage or the existing ungrounded-dependency contradiction; empty `helpers` does not establish satisfaction |
+| Automatic match policy or unsupported constituent connections | Unsupported capability; selected explicit-instance verification does not replay matching or invent connection semantics |
+| Nonempty template transforms, complexes, experimental amounts or payload-structure obligations outside direct-root construction | Unsupported capability, including well-formed additional records |
+
+Keep source `preferences` distinct from architecture
+`constraints.preferred_refinement_ids`. The latter and the architecture search
+budgets remain validated and retained ranking/search authority; B1 verifies the
+selected instance and candidate, not search completeness or optimality, and
+keeps `search_verified=false`. A constraint-ledger record is not independent
+evidence that the producer exhausted a search or respected a ranking policy.
 
 The target's existing unestablished host-dependency and operating-condition
 descriptions are still present in case B. They are distinct from unsupported
@@ -207,20 +272,34 @@ For a complete accepted pilot, require all of the following:
   execution manifest, including state assignments.
 - Complete supplier-model correspondence, pinned component identities and
   exactly one owner for each installed runtime operation.
+- Causal and material correspondence of every supplied control declaration and
+  consistent shared control domains, even when no functional proof is requested.
 - Exact output product/quantity/lifecycle contracts and complete architecture
   inventories, placements, assumptions, delivery membership and constraint
   ledger.
 - Fresh independent direct-root construction, required regions, chemistry,
   metadata, every emitted base and every required member.
-- No stale source, contract, template or checker identity; candidate status and
-  stored construction assessment must agree with newly established results.
+- No stale source, contract, template or checker identity; compare the stored
+  construction assessment with fresh reconstruction under its declared schema
+  and the explicitly reviewed cross-implementation receipt comparison rule.
+- Derive completeness independently of the producer's build-status label. Keep
+  the existing rule that a `compiled` build without complete translation fails.
+  A structurally valid build labeled `partial` can still receive a fresh complete
+  result when every obligation is independently discharged; the Python checker
+  already permits this. Do not require `status == "compiled"` as acceptance
+  authority or silently tighten this behavior during migration.
 - Translation and construction complete, no unresolved translation obligation,
   `search_verified=false`, empirical validation `unknown`, human admission
   `not_admitted`.
 
 The caller may retain unsupported/partial diagnostic reports for review, but
-B1 does not treat them as complete pilot acceptance. A stored Python assessment
-is never imported as an OCaml certificate. Record fresh OCaml execution identity
+B1 does not treat a fresh unsupported/partial checker result as complete pilot
+acceptance. The producer's `partial` status alone is not such a result. Retain a
+positive complete candidate with only its producer status changed to `partial`,
+and require the same freshly derived completeness with its own candidate
+fingerprint. Search/alternative diagnostics remain outside the receipt's
+certified search scope. A stored Python assessment is never imported as an
+OCaml certificate. Record fresh OCaml execution identity
 and bind the new result to the exact candidate and expected authority. Any
 intentional version/receipt-field change needs an explicit comparison rule;
 do not remove substantive fields to force Python/OCaml byte equality.
@@ -230,6 +309,38 @@ do not remove substantive fields to force Python/OCaml byte equality.
 Reference timelines should be literal assertions, independently specified before
 running either implementation. All input frames supply context, reset and
 shutdown observations; horizons are explicit.
+
+Positive cases must demonstrate generality within the declared capability, not
+only recognition of the original fixture. In addition to the original,
+`require_complete=true`, typed-parameter default/override and complete candidates
+with producer status `partial`, retain both of these independently specified positives:
+
+- Alpha-rename the source and supplier node/role identities with a corresponding
+  explicit mapping, and consistently rename component, template, member,
+  coordinate, construction and ledger identities. Reconstruct source/Behavior
+  correspondence, runtime ownership and material namespaces from those
+  authorities; do not compare against the original IDs or fingerprints.
+- Change the independently supplied artificial RNA root to another valid
+  noncoding RNA spelling, retain its valid complete chemistry/coordinate/feature
+  contract, and provide the correctly reconstructed candidate. Check against
+  that separately supplied root. The original fixture's bases are neither an
+  acceptance allowlist nor a source from which the new expectation is derived.
+
+These positives add no empirical function or biological capability claim. Their
+literal identities/expected results and negative counterparts must be retained
+before native execution. A changed candidate with the original independent root
+still fails; changing only one side of an alpha correspondence still fails.
+
+For every supported global and delivery-group material limit, retain an
+exact-boundary positive and a violated-bound negative. The original single
+six-symbol member gives a count-one/length-six positive; derive these numbers
+from independent retained material authority in the parameterized harness.
+Count-conflict and one-below-length variants must reach the relevant material
+constraint rejection. Update the request-associated candidate and historical
+assessment identities consistently for these tests so a stale request hash
+cannot substitute for checking the constraint. Retain contradictory
+`exact_count > max_count` and Boolean-as-integer cases separately as schema
+rejections, with their own intended failure signatures.
 
 | Timeline | Literal expectation |
 | --- | --- |
@@ -249,12 +360,17 @@ semantic suite. Keep source and supplier edits separate in mutations.
 | Remove one retained state assignment | `source_manifest_states` correspondence, not only parse failure |
 | Change `and` to `or` and refresh candidate/model hashes | Actual model operation correspondence |
 | Change timer constant, reset/shutdown guard or ordered input edge | Independent original-source/model comparison and affected literal timeline |
-| Change both reported output parameter and candidate binding | Frozen caller binding authority |
+| Change both reported parameter binding and normalized candidate attributes after the default/override parameter variants pass | Frozen caller binding authority; unsupported `parameter` is not the intended rejection |
 | Pin component to another model hash | Complete composite model authority |
+| Relabel a control input as an unrelated source node | Always-on causal correspondence, including state-writer dependencies |
+| Bind a control to a component not implementing its controlled nodes | Always-on control/material correspondence |
+| Give controls the same kind/domain identity but conflicting input sets | Shared-control declaration contradiction, even with no requested functional proof |
 | Drop/duplicate runtime ownership, a placement or a ledger entry | Coverage and inventory reconstruction |
 | Change output product, quantity, encoding or lifecycle | Supplementary output authority |
 | Rehash modified emitted bases or feature coordinates | Independent root/template reconstruction |
 | Remove required member or alter chemistry/completeness | Complete construction and required-region checks |
+| Violate a global count/member-length/total-length limit with otherwise current authority | `exact_rna_count`, `maximum_rna_count`, `maximum_rna_member_length` or `maximum_rna_total_length`, as applicable |
+| Violate a delivery-group count/total-length limit with otherwise current authority | `delivery_group_exact_count`, `delivery_group_maximum_count` or `delivery_group_maximum_length`, as applicable |
 | Substitute a new request/library while keeping an old build | Request authority/freshness |
 | Attach unsupported helper/channel/transform/control requirements | Explicit unsupported capability; no partial acceptance |
 | Forge `compiled`, PASS or admission fields | Fresh complete acceptance and fixed claim scope |

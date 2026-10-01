@@ -4,7 +4,7 @@ Created: 2026-10-01, America/Los_Angeles.
 
 **Decision:** TypeScript for Studio; Python for authoring, orchestration and scientific exploration; OCaml for the semantic compiler, independent checking and canonical emission.
 
-**Status:** implementation underway on `codex/language-migration`. The baseline passed hosted validation; B0 foundations and the TypeScript source port are implemented locally and awaiting native/installed/browser validation. This document tracks execution, not a claim that the migration has occurred. The language choices are accepted; the first vertical slice establishes the migration method and release readiness rather than reopening the language comparison.
+**Status:** implementation underway on `codex/language-migration`. The baseline passed hosted validation; B0 foundations and the TypeScript source port are implemented. Native compilation and the initial conformance suite passed on both validation platforms at source revision `82b08c1`; the corrected canonicalizer and expanded rounding corpus still require their own hosted result. Installed Studio browser parity passed at source revision `d553395`. These earlier results do not certify the latest integrated revision. This document tracks execution, not a claim that the migration has occurred. The language choices are accepted; the first vertical slice establishes the migration method and release readiness rather than reopening the language comparison.
 
 **Validated baseline:** package 0.1.0.dev29, commit 6156ed2841fd3308df833f1afe0e3f6af5d12bf6. [Hosted run 36900639059](https://github.com/logannye/biocompiler/actions/runs/36900639059), attempt 2, passed all required gates and exactly 2,001 discovered tests on each Python version (3.11.16 and 3.14.7). The first attempt lost a hosted runner; the retry passed. [Pinned baseline receipt](../protocol/migration-baseline.json) retains revision, tree, receipts and shard/job timings. New revisions rediscover their own tests; this count is not the migration acceptance target.
 
@@ -101,8 +101,8 @@ The largest risks are semantic drift, canonical identity drift, a checker that a
 ### LM-00 — Freeze the capability and authority inventory
 
 - [x] Record starting commit/tree, package version, active branch and exact latest applicable CI receipts. Preserve unrelated work and use a dedicated codex/language-migration branch for implementation.
-- [ ] Inventory public exports, CLI commands, profiles, artifact schemas, serializers, example families, source/candidate execution paths and Studio endpoints.
-- [ ] For every entry point, record: current implementation; source of authority; target owner; dependent tasks; compatibility contract; test coverage; and migration state.
+- [x] Inventory public exports, CLI commands, profiles, artifact schemas, serializers, example families, source/candidate execution paths and Studio endpoints. See the reproducible [coverage ledger](migration-coverage.md).
+- [x] For every entry point, record: current implementation; source of authority; target owner; dependent tasks; compatibility contract; candidate static test references; and migration state. Static references are not executed coverage or parity; gaps remain visible in the ledger.
 - [x] Discover the current test suite using the existing accounting mechanism in the authorized validation environment. Do not copy an old test count into the new acceptance criteria.
 - [ ] Freeze representative positive, failed, unknown, unsupported, malformed and stale-authority inputs; retain literal expectations and current engine outputs separately.
 
@@ -155,16 +155,16 @@ Implement coherent batches; update this table after each verified checkpoint. Pa
 | Batch | Work | Completion gate | Status |
 | --- | --- | --- | --- |
 | B0 | LM-00 inventory; LM-01 skeleton; LM-02 protocol/canonical vectors | Baseline and executable interface are pinned; canonical compatibility is established | In progress; native conformance pending |
-| B1 | First checker-led vertical slice: LM-20/21/22/24/25 subset, LM-23 records/decoders, Python adapter in shadow mode | Existing case B request and Python candidate are independently checked in OCaml; targeted temporal/authority/sequence mutants fail correctly | Queued |
+| B1 | First checker-led vertical slice: LM-20/21/22/24/25 subset, LM-23 records/decoders, Python adapter in shadow mode | Existing case B request and Python candidate are independently checked in OCaml; targeted temporal/authority/sequence mutants fail correctly | Retained source/candidate corpus and acceptance map prepared; OCaml checker not implemented |
 | B2 | Port producer for that same slice; extend LM-23/24/26 | Python authoring → OCaml compilation → independent OCaml check → paired RNA/manifest export works outside checkout | Queued |
 | B3 | Expand all behavior/architecture/control profiles and historical public coverage | Complete capability ledger and all 13 current architecture cases pass with fresh identity and mutation evidence | Queued |
 | B4 | LM-10 TypeScript parity; LM-12 installed SDK/CLI parity; deliberate architecture UI integration | Existing browser and installed workflows pass; migrated paths visibly use compatible OCaml core | TypeScript parity implemented; hosted/browser and architecture integration pending |
 | B5 | LM-11 conversational draft/review flow and LM-27 scope enforcement | Draft → explicit reviewed intent → existing validated pipeline; ambiguity and unsupported claims remain visible | Queued |
 | B6 | LM-30 release/cutover and legacy retirement | All required gates pass at the integrated revision; supported-platform installations and rollback are verified | Queued |
 
-**First implementation action:** execute LM-00, then specify the LM-02 protocol/canonical vectors while LM-01 infrastructure is prepared.
+**Active foundation validation:** [PR #37](https://github.com/logannye/biocompiler/pull/37) tracks the implementation. [Protocol v1](../protocol/core-v1.md) defines the currently scoped interface. The native serializer correction must pass the expanded conformance suite before canonical parity is marked complete.
 
-**First vertical slice:** use the existing artificial architecture case B (prime/act/recover, timeout, reset and shutdown) with exact supplied source correspondence. Reuse its actual request/templates. The initial checker stage reads the existing Python-produced candidate and independently reconstructs it. Then port its producer. Do not replace this slice with an unrelated toy expression interpreter.
+**First vertical slice:** [the case B acceptance map](migration-case-b.md) and [retained corpus](../tests/conformance/case-b/README.md) now pin its real source/candidate and independent literal timelines. Native descriptors are explicitly unexecuted. Use the existing artificial architecture case B (prime/act/recover, timeout, reset and shutdown) with exact supplied source correspondence. Reuse its actual request/templates. The initial checker stage reads the existing Python-produced candidate and independently reconstructs it. Then port its producer. Do not replace this slice with an unrelated toy expression interpreter.
 
 Required pilot negatives: missing or extra source requirement; changed temporal boundary/reset priority; source/controller mismatch; stale independent request or component authority; modified emitted nucleotide; incomplete molecule inventory; malformed or exhausted input; missing or incompatible core executable. Every failure must retain the intended reason and emit no accepted export.
 
