@@ -254,7 +254,9 @@ let update_input session frame =
               | Some sample -> sample | None -> node_error node "evaluation_observation" "Missing required observation." in
             List.iter (fun field ->
                 if not (sample_has sample field) then node_error node "evaluation_observation" ("Missing explicit " ^ field ^ " observation.")) fields)) session.required) observations;
-  Hashtbl.iter (fun reference history ->
+  let retained_histories = Hashtbl.fold (fun reference history result ->
+      charge session 1; (reference, history) :: result) session.integral_history [] in
+  List.iter (fun (reference, history) ->
       charge session 1;
       let node = find session reference in
       let amount = match find_sample session reference (D.Input_frame.signals frame) with
@@ -265,7 +267,7 @@ let update_input session frame =
         node_error node "evaluation_integration" "Rolling integration requires nonnegative observations.";
       (* Reverse chronological retention makes insertion bounded; iteration
          below restores the original Python summation order. *)
-      Hashtbl.replace session.integral_history reference ((D.Input_frame.time frame, amount) :: history)) session.integral_history;
+      Hashtbl.replace session.integral_history reference ((D.Input_frame.time frame, amount) :: history)) retained_histories;
   session.input <- frame
 
 let normalize_binding node binding = if B.contact_bound node then binding else None

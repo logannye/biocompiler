@@ -29,7 +29,7 @@ module Input_frame : sig
   type t
   val make : time:number -> ?signals:(string * Sample.t) list ->
     ?contacts:(string * (string * Sample.t) list) list -> unit -> t
-  (** Exact time/signals/contacts fields. Samples use the full four-field shape;
+  (* Exact time/signals/contacts fields. Samples use the full four-field shape;
       a numeric shorthand is additionally normalized to Sample.make ~value. *)
   val of_json : ?path:string -> Bioc_wire.Json.t -> t
   val to_json : t -> Bioc_wire.Json.t
