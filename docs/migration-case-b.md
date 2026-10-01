@@ -1,9 +1,9 @@
 # Case B: checker-led OCaml migration slice
 
-Prepared 2026-10-01 from checkout `6156ed2841fd3308df833f1afe0e3f6af5d12bf6`
+Initially prepared 2026-10-01 from checkout `6156ed2841fd3308df833f1afe0e3f6af5d12bf6`
 and the uncommitted language-foundation work. This is the dependency and acceptance
 map for roadmap batch B1, followed by the same slice's producer in B2. It records
-implementation preparation, not completed OCaml architecture validation.
+validated internal checkpoints and remaining acceptance work, not completed OCaml architecture validation.
 
 The foundation passed all hosted gates and was merged in PR37. The subsequent
 domain batch passed every hosted gate and was merged in PR38. It implements
@@ -23,8 +23,26 @@ parser failures, including all 24 case B timeline/parameter combinations. Three
 complete traces and three numeric projections have independently authored literal
 expectations. Sixty-one existing source tests run their original assertions while
 the corpus is frozen; exclusions are explicit. The separate numeric corpus adds
-1,948 scalar witnesses. Hosted parity is a required gate for this batch; these
-checks do not reconstruct candidate execution, transport channels or accept RNA.
+1,948 scalar witnesses. Both native platforms passed at source revision `5a909`
+in [PR40](https://github.com/logannye/biocompiler/pull/40), but the full
+[run 36932812950](https://github.com/logannye/biocompiler/actions/runs/36932812950)
+failed because retained source locations depended on the Python version. The
+fixture correction still requires complete CI and integration validation; B1.05
+is not complete. These checks do not reconstruct candidate execution, transport
+channels or accept RNA.
+
+### Scoped checkpoint status
+
+Reread this map with the [roadmap checklist](language-migration-roadmap.md#scoped-implementation-checkpoints) before each batch; check only a validated scope.
+
+- [x] PR37 foundation: merged, full CI and integrated main validated; [receipt](../protocol/migration-foundation-validation.json).
+- [x] PR38 BuildRequest/target, Behavior declarations and coordinates: merged, full CI and integrated main validated; [receipt](../protocol/migration-domain-validation.json).
+- [x] PR39 circuit declarations and independent source correspondence: merged, full CI and integrated main validated; [receipt](../protocol/migration-source-correspondence-validation.json). Human deployment/acceptance wrappers remain unsupported.
+- [ ] PR40 B1.05 reference execution: implemented and both native jobs passed; complete CI pending the fixture correction.
+- [ ] Next lowering/domain batch `53a722d`, saved on `codex/ocaml-lowering-contract-domains`: prepared, hosted validation pending.
+- [ ] Remaining B1.02 wrapped authority, full B1.06 component/architecture domains and full B1.07 molecular reconstruction.
+- [ ] B1.08 manifest/ledger/architecture reconstruction, B1.08a independent candidate execution if claimed, and B1.09 acceptance/protocol exposure.
+- [ ] B2 complete producer and paired RNA/manifest export, followed by the remaining product migration gates.
 
 The language decision is fixed. The immediate objective is to accept or reject an
 existing Python-produced stateful RNA architecture candidate against separately
@@ -155,8 +173,10 @@ Freeze literal timelines for both parameter values before executing either
 engine. Only after both positive variants pass may a mutant that changes both
 the candidate's reported parameter binding and its normalized node attributes
 count as the frozen-binding-authority test. An unsupported `parameter` rejection
-does not satisfy that test. These are required corpus descriptors until their
-retained inputs and native execution receipts exist.
+does not satisfy that test. Retained default/override request and source-correspondence
+positives have PR38/39 native evidence; their reference timelines have PR40 native
+results but await complete batch validation. Architecture binding/model mutations
+remain unexecuted acceptance descriptors.
 
 ## 2. Independent inputs and reconstructed outputs
 
@@ -200,18 +220,19 @@ make the construction a hash-only check.
 
 ## 3. Internal modules and dependency order
 
-The following modules are proposed implementation targets, not current shipped
-capabilities. Foundation libraries `bioc_wire`, `bioc_domain`, `bioc_checker` and
-`bioc_service` already establish the packaging boundary; native conformance is a
-separate required gate.
+The table spans validated internal modules, the pending reference batch and
+planned acceptance modules. The checkpoint list above identifies their status;
+none establishes a shipped OCaml architecture acceptance capability. Foundation
+libraries `bioc_wire`, `bioc_domain`, `bioc_checker` and `bioc_service` establish
+the packaging boundary; each new batch needs complete hosted validation.
 
 | Work item | Proposed owner | Needed before it |
 | --- | --- | --- |
 | B1.01 Raw request/candidate schema census and retained corpus | Conformance harness | Passing foundation codec/protocol tests |
-| B1.02 BuildRequest, human target and circuit record validators | `bioc_domain.Build_request`, `Target`, `Circuit` | Existing intent/type/identity modules |
-| B1.03 Closed Behavior operation variants, including the positive typed-parameter variant, policy/profile validator, constant/type/binding checks and lineage | `bioc_domain.Behavior`, `Behavior_policy` | B1.02 and exact numeric conventions |
+| B1.02 BuildRequest, human target and circuit record validators | `bioc_domain.Build_request`, `Build_request.Target`, `Circuit_request` | Existing intent/type/identity modules |
+| B1.03 Closed Behavior operation variants, including the positive typed-parameter variant, policy/profile validator, constant/type/binding checks and lineage | `bioc_domain.Behavior` | B1.02 and exact numeric conventions |
 | B1.04 Source/Behavior correspondence checker | `bioc_checker.Lowering_check` | B1.03; independent expected parameter bindings and permitted normalizations |
-| B1.05 Reference execution for the complete supported pilot operation set | `bioc_semantics.Reference` | B1.03; independent literal timelines |
+| B1.05 Per-role reference execution for all 42 supported operation kinds | `bioc_semantics.Reference` | B1.03; independent literal timelines |
 | B1.06 Component, refinement, output, binding, placement and constraint validators | `bioc_domain.Architecture`, `Component` | B1.02/B1.03 |
 | B1.07 Molecular schemas, coordinate/chemistry checks and direct-root reconstruction | `bioc_domain.Molecule`, `Construction`; `bioc_checker.Construction_check` | Strict schemas plus primitive identities; can run alongside B1.04/05 |
 | B1.08 Source-manifest/ledger and architecture reconstruction | `bioc_checker.Source_check`, `Architecture_check` | B1.04/B1.06/B1.07 |
