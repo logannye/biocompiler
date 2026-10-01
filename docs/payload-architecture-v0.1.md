@@ -72,6 +72,24 @@ share a controller or helper. Switching production off does not establish
 clearance or inactivation of an already produced effector. Such lifecycle meaning
 requires its own supplied contract and source behavior.
 
+Checker policy `biocompiler.payload_architecture_checker.v0.2` additionally proves
+the functional meaning of explicitly requested activation and shutdown. One
+cell-local Boolean condition per control denotes assertion: shutdown assertion
+must force every installed ongoing rule for the target action off; activation
+deassertion must do the same. The original source guards supply this proof,
+independently of the control's label and component model pin. Active-low controls
+must name an explicit negated Boolean condition. Raw signal references are accepted
+only when exactly one source qualitative predicate declares their Boolean meaning.
+The bounded proof supports Boolean expressions over at most eight explicit
+qualitative observations and treats other guard expressions as unknown; an outer
+Boolean veto can therefore constrain a state, numeric or temporal guard without
+inventing its value. Both assertion states must be attainable. Ambiguous or
+contact-scoped controls, pulse/event persistence, and unproved gates remain
+unsupported. Explicit production-adjustment, effector-activity and memory-reset
+requirements also remain unsupported by this functional proof profile. Their
+source behavior and supplied descriptive control records are still preserved;
+a descriptive record alone does not certify a requested functional property.
+
 ## Helpers, recipients and complete material
 
 `ArchitectureHelper` declares its exact capability and consumers, placement,

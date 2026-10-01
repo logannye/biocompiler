@@ -9,6 +9,7 @@ a conditional language claim; it is not evidence of behavior in a patient.
 from __future__ import annotations
 
 from dataclasses import dataclass
+from itertools import product
 from typing import ClassVar
 
 from biocompiler.artifacts.manifest import _hash
@@ -23,9 +24,10 @@ from biocompiler.verification.circuit_construction import check_circuit_construc
 from biocompiler.verification.evidence import CheckOutcome
 
 
-CHECKER_VERSION = "biocompiler.payload_architecture_checker.v0.1"
+CHECKER_VERSION = "biocompiler.payload_architecture_checker.v0.2"
 CLAIM_SCOPE = (
     "Exact source and supplied composite execution-contract correspondence, "
+    "explicit functional requirements under the asserted Boolean control profile, "
     "declared physical composition and complete RNA construction only. "
     "No empirical component function or human therapeutic admission is established."
 )
@@ -330,23 +332,39 @@ def _runtime(node):
 
 
 def _causal_nodes(nodes, identities):
+    # Stores and transported observations have causal edges which are absent
+    # from the expression DAG. Keep every installed writer/sender as a possible
+    # influence; neither a current guard value nor a library label proves that
+    # a dynamic path cannot affect an output.
+    installations = {}
+    for rule in nodes.values():
+        if rule.kind != "rule":
+            continue
+        for identity in rule.inputs[2:]:
+            installations.setdefault(identity, set()).add(rule.id)
+            action = nodes[identity]
+            if action.kind == "action.pulse":
+                installations.setdefault(action.inputs[0], set()).add(rule.id)
     causal = set()
     for identity in identities:
         causal.update(lineage_for(nodes, identity))
-        for rule in nodes.values():
-            if rule.kind == "rule" and identity in rule.inputs[2:]:
-                causal.update(lineage_for(nodes, rule.id))
-    visited_states = set()
+        for rule_id in installations.get(identity, ()):
+            causal.update(lineage_for(nodes, rule_id))
+    visited_states, visited_channels = set(), set()
     while True:
         states = {identity for identity in causal if nodes[identity].kind == "state"} - visited_states
-        if not states:
+        channels = {nodes[identity].inputs[1] for identity in causal
+                    if nodes[identity].kind == "channel_observation"} - visited_channels
+        if not states and not channels:
             break
         visited_states.update(states)
-        writes = {node.id for node in nodes.values() if node.kind == "action.state_set"
-                  and node.inputs[0] in states}
-        for rule in nodes.values():
-            if rule.kind == "rule" and writes.intersection(rule.inputs[2:]):
-                causal.update(lineage_for(nodes, rule.id))
+        visited_channels.update(channels)
+        writers = {node.id for node in nodes.values()
+                   if node.kind == "action.state_set" and node.inputs[0] in states
+                   or node.kind == "action.emit" and node.inputs[1] in channels}
+        for writer in writers:
+            for rule_id in installations.get(writer, ()):
+                causal.update(lineage_for(nodes, rule_id))
     return causal
 
 
@@ -603,6 +621,115 @@ def _supplementary_checks(request, selected):
     return failures, unresolved
 
 
+def _functional_control_proof(nodes, target, control, kind):
+    """Prove a source gate, never infer a functional kind from its label.
+
+    Exactly one cell-local, explicitly Boolean condition denotes assertion.
+    Shutdown assertion or activation deassertion must veto every installation.
+    Pure control predicates have at most eight observation atoms; all other
+    guard subexpressions are opaque. Three-valued cofactors overapproximate
+    their possible values, so only a forced-false guard establishes the gate.
+    """
+    if kind not in {"activation", "shutdown"}:
+        return "kind_not_implemented"
+    refs = control["controlling_node_ids"]
+    if len(refs) != 1:
+        return "requires_one_boolean_condition"
+    identity = refs[0]
+    if nodes[identity].kind == "signal":
+        predicates = [node.id for node in nodes.values()
+                      if node.kind == "qualitative" and node.inputs == (identity,)]
+        if len(predicates) != 1:
+            return "ambiguous_signal_predicate"
+        identity = predicates[0]
+
+    def atom(node):
+        return (node.inputs[0], fingerprint(node.attributes))
+
+    atoms, pending, seen = set(), [identity], set()
+    while pending:
+        ref = pending.pop()
+        if ref in seen:
+            continue
+        seen.add(ref)
+        node = nodes[ref]
+        if node.data_type is None or node.data_type.get("kind") != "condition":
+            return "non_boolean_control"
+        if node.kind == "qualitative":
+            signal = nodes[node.inputs[0]]
+            if (signal.kind != "signal" or signal.attributes.get("scope") == "contact"
+                    or nodes[signal.inputs[0]].attributes.get("scope") == "contact"):
+                return "non_cell_local_control"
+            atoms.add(atom(node))
+        elif node.kind == "signature":
+            pending.append(node.inputs[0])
+        elif node.kind in {"not", "and", "or"}:
+            pending.extend(node.inputs)
+        else:
+            return "unsupported_control_expression"
+    if not atoms or len(atoms) > 8:
+        return "boolean_control_proof_bound"
+
+    actions = tuple(nodes[target].inputs[2:]) if nodes[target].kind == "rule" else (target,)
+    if not actions or any(not nodes[ref].kind.startswith("action.") for ref in actions):
+        return "target_not_installed_ongoing_action"
+    guards = []
+    for action_id in actions:
+        action = nodes[action_id]
+        if (action.kind in {"action.pulse", "action.state_set"}
+                or action.attributes.get("ongoing") is not True):
+            return "persistent_or_nonongoing_action"
+        uses = []
+        for rule in nodes.values():
+            if rule.kind != "rule":
+                continue
+            for installed_id in rule.inputs[2:]:
+                installed = nodes[installed_id]
+                primitive = installed
+                while primitive.kind == "action.pulse":
+                    primitive = nodes[primitive.inputs[0]]
+                if installed_id == action_id or primitive.id == action_id:
+                    uses.append((rule, installed))
+        if not uses:
+            return "target_not_installed_ongoing_action"
+        for rule, installed in uses:
+            if installed.kind == "action.pulse" or rule.attributes.get("trigger") != "condition":
+                return "persistent_or_event_installation"
+            guards.append(rule.inputs[1])
+
+    def cofactor(ref, values, cache):
+        if ref in cache:
+            return cache[ref]
+        node = nodes[ref]
+        value = None
+        if node.kind == "qualitative":
+            value = values.get(atom(node))
+        elif node.kind in {"not", "signature"}:
+            child = cofactor(node.inputs[0], values, cache)
+            value = (not child if node.kind == "not" else child) if child is not None else None
+        elif node.kind in {"and", "or"}:
+            children = [cofactor(child, values, cache) for child in node.inputs]
+            if node.kind == "and":
+                value = False if False in children else True if all(child is True for child in children) else None
+            else:
+                value = True if True in children else False if all(child is False for child in children) else None
+        cache[ref] = value
+        return value
+
+    # Both states must be attainable: an always-true/false purported controller
+    # cannot establish a non-vacuous assertion/deassertion contract.
+    observed_states = set()
+    required = kind == "shutdown"
+    for bits in product((False, True), repeat=len(atoms)):
+        values = dict(zip(sorted(atoms), bits))
+        cache = {}
+        asserted = cofactor(identity, values, cache)
+        observed_states.add(asserted)
+        if asserted is required and any(cofactor(guard, values, cache) is not False for guard in guards):
+            return "assertion_does_not_veto" if required else "deassertion_does_not_gate"
+    return None if observed_states == {False, True} else "vacuous_control_condition"
+
+
 def _control_checks(request, inventories, selected):
     failures = []
     controls = inventories["control_domains"]
@@ -693,6 +820,12 @@ def _control_checks(request, inventories, selected):
         if any(not value for value in matching.values()):
             failures.append("control_requirement_unbound:" + requirement.id)
             continue
+        for ref, declarations in matching.items():
+            for control in declarations:
+                reason = _functional_control_proof(nodes, ref, control, requirement.kind)
+                if reason is not None:
+                    failures.append("unsupported_functional_control_requirement:" + requirement.id
+                                    + ":" + ref + ":" + reason)
         domains = [{item["domain_id"] for item in matching[ref]} for ref in refs]
         components = [{identity for item in matching[ref] for identity in item["component_ids"]}
                       for ref in refs]

@@ -32,6 +32,33 @@ def changed_library(request, build, change):
     return request, replace(build, request_fingerprint=request.fingerprint)
 
 
+def coherent_control_program_change(request, transform, change_controls=lambda controls: controls):
+    """Edit source and independently authored supplier intent, with fresh pins."""
+    from biocompiler.compiler.behavior import lower_to_behavior
+    from examples.payload_architectures import _freeze, contract_program
+
+    source = replace(request.source, intent=transform(request.source.intent))
+    supplier = _freeze(transform(contract_program("A")), "A")
+    model = lower_to_behavior(supplier)
+    source_behavior = lower_to_behavior(source)
+    circuit = replace(request.circuit, profile=replace(request.circuit.profile, source_request=source),
+        requirements=tuple(replace(requirement,
+            source_node_ids=tuple(node.id for node in source.intent.nodes),
+            behavior=replace(requirement.behavior, response=source_behavior))
+            for requirement in request.circuit.requirements))
+    refinement = request.library.refinements[0]
+    owned = tuple(node.id for node in model.nodes
+                  if node.kind in {"rule", "state", "memory"} or node.kind.startswith("action."))
+    refinement = replace(refinement, behavior=model,
+        source_bindings={node.id: node.id for node in model.nodes}, owned_node_ids=owned,
+        components=tuple(replace(component, identities=tuple(
+            replace(pin, content_fingerprint=model.fingerprint) if pin.kind == "model" else pin
+            for pin in component.identities)) for component in refinement.components),
+        bindings=tuple(replace(binding, behavior_node_ids=owned) for binding in refinement.bindings),
+        controls=change_controls(refinement.controls))
+    return replace(request, circuit=circuit, library=replace(request.library, refinements=(refinement,)))
+
+
 def dependency_request():
     """Two separately supplied helper providers share one RNA, not one dependency."""
     from biocompiler.ir.component_contracts import DependencyRequirement
@@ -91,12 +118,181 @@ class PayloadArchitectureVerificationTests(unittest.TestCase):
         self.assertEqual(verify_payload_architecture(restored, build, expected_request=request), receipt)
 
     def test_roundtrip_full_general_state_and_multicell_artifacts(self):
-        for case in ("B", "F"):
+        for case in "ABCDEF":
             with self.subTest(case=case):
                 request, build = fixture(case)
                 restored = PayloadArchitectureBuild.from_dict(build.to_dict())
                 checked = check_payload_architecture(restored, expected_request=request)
                 self.assertTrue(checked.translation_complete, checked.diagnostics)
+
+    def test_coherent_or_guards_cannot_be_certified_as_shutdown(self):
+        from biocompiler.semantics.evaluator import InputFrame, SignalSample, evaluate
+        request = make_architecture_request("A", variants=("many_components_one_rna",), independent_shutdown=True)
+        request = coherent_control_program_change(request, lambda program: replace(program, nodes=tuple(
+            replace(node, kind="or") if node.kind == "and" else node for node in program.nodes)))
+        frame = InputFrame(0, {node.id: SignalSample(present=True) for node in request.source.intent.nodes
+                               if node.kind == "signal"})
+        trace = evaluate(request.circuit.requirements[0].behavior.response, (frame,))
+        self.assertEqual(len(trace.frames[0].actions), 2)
+        build = compile_payload_architecture(request)
+        self.assertEqual(build.status, "no_solution", build.alternatives)
+        gaps = [gap for alternative in build.alternatives for gap in alternative.gaps]
+        self.assertTrue(any("unsupported_functional_control_requirement:independent-output-shutdown"
+                            in gap.code and "assertion_does_not_veto" in gap.code for gap in gaps), gaps)
+        self.assertFalse(check_payload_architecture(build, expected_request=request).translation_complete)
+
+    def test_explicit_active_low_boolean_condition_is_a_shutdown_veto(self):
+        request = make_architecture_request("A", variants=("many_components_one_rna",), independent_shutdown=True)
+
+        def active_low(program):
+            nodes = {node.id: node for node in program.nodes}
+            result = []
+            for node in program.nodes:
+                if node.kind == "and":
+                    asserted = nodes[node.inputs[1]]
+                    gate = replace(asserted, id="gate." + asserted.id, inputs=(asserted.id,))
+                    result.append(gate)
+                    node = replace(node, inputs=(node.inputs[0], gate.id))
+                result.append(node)
+            return replace(program, nodes=tuple(result))
+
+        def controls(records):
+            predicates = {"n000005": "n000009", "n000007": "n000014"}
+            return tuple(replace(item, controlling_node_ids=(predicates[item.controlling_node_ids[0]],))
+                         if item.kind == "shutdown" else item for item in records)
+
+        request = coherent_control_program_change(request, active_low, controls)
+        build = compile_payload_architecture(request)
+        self.assertEqual(build.status, "compiled", build.alternatives)
+        self.assertTrue(check_payload_architecture(build, expected_request=request).translation_complete)
+
+    def test_shared_activation_is_a_necessary_source_gate(self):
+        from biocompiler.ir.payload_architecture import ControlRequirement
+        request = make_architecture_request("A", variants=("one_rna",))
+        actions = tuple(node.id for node in request.source.intent.nodes if node.kind == "action.secrete")
+        required = ControlRequirement("shared-activation", "activation", actions, "shared")
+        request = replace(request, constraints=replace(request.constraints, control_requirements=(required,)))
+        build = compile_payload_architecture(request)
+        self.assertEqual(build.status, "compiled", build.alternatives)
+        request = coherent_control_program_change(request, lambda program: replace(program, nodes=tuple(
+            replace(node, kind="or") if node.kind == "and" else node for node in program.nodes)))
+        rejected = compile_payload_architecture(request)
+        self.assertEqual(rejected.status, "no_solution")
+        self.assertTrue(any("shared-activation" in gap.code and "deassertion_does_not_gate" in gap.code
+                            for candidate in rejected.alternatives for gap in candidate.gaps))
+
+    def test_ambiguous_raw_signal_control_has_no_assumed_boolean_band(self):
+        request = make_architecture_request("A", variants=("many_components_one_rna",), independent_shutdown=True)
+
+        def extra_band(program):
+            original = next(node for node in program.nodes if node.id == "n000006")
+            return replace(program, nodes=(*program.nodes, replace(original, id="second.band",
+                                                                    attributes={"band": "high"})))
+
+        request = coherent_control_program_change(request, extra_band)
+        build = compile_payload_architecture(request)
+        self.assertEqual(build.status, "no_solution")
+        self.assertTrue(any("ambiguous_signal_predicate" in gap.code
+                            for candidate in build.alternatives for gap in candidate.gaps))
+
+    def test_shutdown_must_cover_every_installation_and_cannot_cancel_persistence(self):
+        import biocompiler as bc
+        from biocompiler.ir.intent import IntentNode
+
+        for mode in ("bypass", "pulse", "event"):
+            with self.subTest(mode=mode):
+                request = make_architecture_request("A", variants=("many_components_one_rna",), independent_shutdown=True)
+
+                def extra_use(program):
+                    rule = next(node for node in program.nodes if node.id == "n000013")
+                    additions = []
+                    if mode == "bypass":
+                        second = replace(rule, id="second.installation", inputs=(rule.inputs[0], "n000004", rule.inputs[2]))
+                    else:
+                        span = bc.Duration(2).to_dict()
+                        duration = IntentNode("pulse.duration", "literal", attributes={"value": span}, data_type=span["type"])
+                        pulse = IntentNode("persistent.action", "action.pulse", (rule.inputs[2], duration.id),
+                            {"ongoing": True, "retrigger": "extend_from_latest_trigger"}, role=rule.role)
+                        additions.extend((duration, pulse))
+                        second = replace(rule, id="second.installation", inputs=(*rule.inputs[:2], pulse.id))
+                    if mode == "event":
+                        event = IntentNode("event.trigger", "became_true", (rule.inputs[1],),
+                                           attributes={"initially_true_emits": True},
+                                           data_type={"kind": "event", "name": "Event", "dimensions": {}, "arguments": []},
+                                           role=rule.role)
+                        additions.append(event)
+                        second = replace(second, inputs=(rule.inputs[0], event.id, pulse.id),
+                            attributes={**rule.attributes, "trigger": "event", "ongoing_duration": "explicit_or_design_choice"})
+                    return replace(program, nodes=(*program.nodes, *additions, second),
+                                   roots=(*program.roots, second.id))
+
+                request = coherent_control_program_change(request, extra_use)
+                build = compile_payload_architecture(request)
+                self.assertEqual(build.status, "no_solution", build.alternatives)
+                reason = "assertion_does_not_veto" if mode == "bypass" else "persistent_or_event_installation"
+                self.assertTrue(any(reason in gap.code for candidate in build.alternatives for gap in candidate.gaps),
+                                build.alternatives)
+
+    def test_other_functional_control_kinds_remain_unsupported(self):
+        request = make_architecture_request("A", variants=("many_components_one_rna",), independent_shutdown=True)
+        required = replace(request.constraints.control_requirements[0], kind="production_adjustment")
+        refinement = request.library.refinements[0]
+        refinement = replace(refinement, controls=tuple(replace(item, kind="production_adjustment")
+            if item.kind == "shutdown" else item for item in refinement.controls))
+        request = replace(request, constraints=replace(request.constraints, control_requirements=(required,)),
+                          library=replace(request.library, refinements=(refinement,)))
+        build = compile_payload_architecture(request)
+        self.assertEqual(build.status, "no_solution")
+        self.assertTrue(any("kind_not_implemented" in gap.code
+                            for candidate in build.alternatives for gap in candidate.gaps))
+
+    def test_contact_predicate_assertion_has_no_implicit_universal_scope(self):
+        request = make_architecture_request("A", variants=("many_components_one_rna",), independent_shutdown=True)
+
+        def contact_scope(program):
+            return replace(program, nodes=tuple(replace(node, attributes={**node.attributes,
+                "scope": "contact", **({"name": "contact"} if node.kind == "scope" else {})})
+                if node.kind in {"scope", "signal"} else node for node in program.nodes))
+
+        request = coherent_control_program_change(request, contact_scope)
+        build = compile_payload_architecture(request)
+        self.assertEqual(build.status, "no_solution", build.alternatives)
+        self.assertTrue(any("non_cell_local_control" in gap.code
+                            for candidate in build.alternatives for gap in candidate.gaps))
+
+    def test_state_and_numeric_guards_can_have_boolean_veto_without_becoming_controls(self):
+        from biocompiler.ir.payload_architecture import ControlRequirement
+        for case, expression_kind in (("B", "state.is"), ("C", "compare")):
+            with self.subTest(case=case):
+                request = make_architecture_request(case, variants=("one_rna",))
+                refinement = request.library.refinements[0]
+                output = next(item for item in refinement.controls if item.kind == "shutdown")
+                required = ControlRequirement("declared-veto", "shutdown", output.behavior_node_ids, "shared")
+                request = replace(request, constraints=replace(request.constraints, control_requirements=(required,)))
+                build = compile_payload_architecture(request)
+                self.assertEqual(build.status, "compiled", build.alternatives)
+                self.assertTrue(check_payload_architecture(build, expected_request=request).translation_complete)
+                from biocompiler.verification.payload_architecture import _causal_nodes
+                nodes = {node.id: node for node in request.source.intent.nodes}
+                ancestry = _causal_nodes(nodes, output.behavior_node_ids)
+                expression = next(node.id for node in nodes.values()
+                                  if node.kind == expression_kind and node.id in ancestry)
+                refinement = replace(refinement, controls=tuple(replace(item, controlling_node_ids=(expression,))
+                    if item.id == output.id else item for item in refinement.controls))
+                request = replace(request, library=replace(request.library, refinements=(refinement,)))
+                rejected = compile_payload_architecture(request)
+                self.assertEqual(rejected.status, "no_solution")
+                self.assertTrue(any("unsupported_control_expression" in gap.code
+                                    for candidate in rejected.alternatives for gap in candidate.gaps))
+
+    def test_previous_checker_policy_receipt_is_not_current_authority(self):
+        from biocompiler.errors import SerializationError
+        request, build = fixture()
+        receipt = check_payload_architecture(build, expected_request=request).to_dict()
+        self.assertEqual(receipt["checker_version"], "biocompiler.payload_architecture_checker.v0.2")
+        receipt["checker_version"] = "biocompiler.payload_architecture_checker.v0.1"
+        with self.assertRaises(SerializationError):
+            PayloadArchitectureVerification.from_dict(receipt)
 
     def test_source_output_true_to_one_is_not_equal(self):
         request, build = fixture()

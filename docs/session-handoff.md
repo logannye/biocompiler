@@ -18,6 +18,12 @@ capacity, dependencies and same-recipient co-delivery are explicit. Independent
 shutdown does not imply separate RNA, and production shutdown does not establish
 effector inactivation. Unowned state stores cannot be shared implicitly.
 
+Checker policy `biocompiler.payload_architecture_checker.v0.2` requires an
+explicit source Boolean veto proof for requested activation and shutdown
+properties. It checks every installation of the target action and conservatively
+retains unsupported control meanings. Independence follows dynamic state writers
+and declared intercellular channels, including pulse senders and feedback.
+
 Artificial A–F examples exercise two outputs and alternative RNA partitions;
 prime/act/recover state, timeout, reset and shutdown; clamped quantitative output
 and sampled activity budget; delayed communication between human immune roles;
@@ -33,7 +39,7 @@ Search optimality is not independently certified. Biological function and human
 admission remain separate, unresolved claims; this sprint collected no biological
 evidence and performed no local native builds or package installs.
 
-The twelve integrated architecture acceptance tests passed locally before this
+The integrated architecture acceptance tests passed locally before this
 checkpoint, alongside source/executor, IR and adversarial checker tests. Full
 exact-revision hosted gates for this version remain pending until the external
 validation receipt records their result. CI retains all existing gates and adds
