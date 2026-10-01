@@ -21,7 +21,7 @@ let identity executable = Json.Object [
     "executable", Json.String (executable_name executable)
   ]
 
-let response ~executable ~request ~status ~result diagnostics =
+let response ~executable ~request ~(status : status) ~result diagnostics =
   Diagnostic.require
     (match status, result, diagnostics with
      | Ok, Some _, [] -> true

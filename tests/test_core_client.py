@@ -75,6 +75,15 @@ class CoreJsonTests(unittest.TestCase):
         with self.assertRaises(CoreProtocolError):
             encode_json(["\x00" * 100], limit=500)
 
+    def test_integer_budget_is_independent_of_notebook_global_settings(self):
+        previous = sys.get_int_max_str_digits()
+        try:
+            sys.set_int_max_str_digits(0)
+            with self.assertRaises(CoreProtocolError):
+                encode_json(1 << 1_000_000)
+        finally:
+            sys.set_int_max_str_digits(previous)
+
 
 @unittest.skipUnless(os.name == "posix", "Initial transport distribution targets POSIX")
 class CoreProcessTests(unittest.TestCase):

@@ -126,6 +126,10 @@ def validate_json(value: object, *, string_limit: int | None = None,
         if kind is str:
             account(_validate_string(item, string_limit) + 2)
         elif kind is int or kind is float:
+            # Do not rely on Python's process-global decimal conversion limit:
+            # an authoring notebook may have changed or disabled it.
+            if kind is int and item.bit_length() > math.ceil(LIMITS["max_number_chars"] * math.log2(10)):
+                raise CoreProtocolError("JSON number budget exceeded")
             try:
                 text = str(item)
             except ValueError as exc:
