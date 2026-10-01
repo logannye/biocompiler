@@ -26,6 +26,7 @@ The current milestone connects therapeutic requirement analysis to a declared mo
 | Explain and reproduce a build | Retained source requirements, alternatives, rejection reasons, part identities, molecular features and checks; JSON records and verified FASTA under independent request authority. |
 | Check abstract behavior | Bounded digital models, temporal execution, component linking, supplied-trace checks and reproducible failure analysis. |
 | Check molecular structure and references | Exact DNA/RNA coding-sequence reproduction, multi-region RNA construction and structural molecule checks, with separate reference/design packages. |
+| Check supplied molecule-set construction | Explicit bounded transformations from retained roots, independent coordinate/chemistry replay, required-member and payload-region checks, and strict structural JSON export. |
 
 The [molecular implementation compiler](docs/molecular-implementation-v0.1.md) is the newest executable path toward the vision. Its first family handles one conditionally requested secreted product using a finite, caller-supplied library. It retains the source guard as unresolved while checking the declared precursor, mature product, processing boundary, host dependencies and RNA structure. Changing a product or architecture constraint changes the sequence or produces an explained rejection. The compiler derives all nucleotide coordinates and independently verifies the proposed artifacts against the original request.
 
@@ -45,6 +46,11 @@ retains every source obligation. Neither layer reconstructs a published circuit
 or emits a circuit payload. The [R3 molecular declaration layer](docs/circuit-molecules-v0.1.md)
 represents named molecule sets, exact coordinate frames, overlapping annotations,
 chemistry and uncertainty without promoting them to checked assembly or biology.
+The [R4 construction workflow](docs/circuit-construction-v0.1.md) now constructs
+and independently checks explicit supplied operations and complete nominal sets.
+It preserves the original human request but does not derive a molecular mechanism
+from its truth table. Published-source curation, family correspondence and human
+admission remain open; its examples are artificial software controls.
 
 The next compiler capabilities must connect more source requirements to explicit molecular mechanisms, characterized components and supported implementation families. Quantitative models and observation mappings should evaluate those selected implementations, with separate evidence for their applicability. Complete therapeutic compilation also requires independently supported human biology, complete molecular identities and deployment compatibility. These are open engineering and scientific requirements, not capabilities established by the software fixtures.
 

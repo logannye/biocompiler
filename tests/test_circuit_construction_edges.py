@@ -8,6 +8,7 @@ from biocompiler.backends.circuit_construction import construct_circuit_candidat
 from biocompiler.backends.circuit_recoding import construct_recoding_step
 from biocompiler.ir.circuit_construction import (
     AmountDeclaration,
+    BaseEditingOperation,
     ComplexMemberConstituent,
     ComplexMemberPlan,
     MemberRequirement,
@@ -21,7 +22,11 @@ from biocompiler.ir.circuit_construction import (
     ValueSelection,
 )
 from biocompiler.ir.circuit_molecules import MoleculeFeature
-from biocompiler.ir.circuit_recoding import CodonRecoding, TranslationPolicy
+from biocompiler.ir.circuit_recoding import (
+    CanonicalBaseEdit,
+    CodonRecoding,
+    TranslationPolicy,
+)
 from biocompiler.semantics.molecule_coordinates import CoordinatePath, IndexSpan
 from biocompiler.verification.circuit_construction import reconstruct_for_check
 from examples.circuit_molecules import (
@@ -186,6 +191,98 @@ class CircuitConstructionEdgeTests(unittest.TestCase):
         )
         return translation_request(operation, port_ids=("first", "second"))
 
+    def test_editing_ports_precede_reservation_and_edit_materialization(self):
+        operation = BaseEditingOperation(
+            ValueSelection(ValueRef("root", "root")),
+            (CanonicalBaseEdit(0, "A", "G"),),
+            (),
+        )
+        request = fixture_request(operation)
+        original = request.steps[0]
+        for changes, code in (
+            ({"alphabet": "DNA"}, "unsupported_alphabet"),
+            ({"topology": "circular"}, "unsupported_topology"),
+        ):
+            with self.subTest(code=code):
+                step = replace(
+                    original, ports=(replace(original.ports[0], **changes),)
+                )
+                with patch(
+                    "biocompiler.backends.circuit_recoding._edited",
+                    side_effect=AssertionError("invalid port reached editing"),
+                ):
+                    result = construct_recoding_step(
+                        step, {"root": request.sources[0].molecule}, 0
+                    )
+                self.assertEqual(result, ((), 0, code))
+                changed = replace(request, steps=(step,))
+                self.assertEqual(
+                    construct_circuit_candidate(changed),
+                    reconstruct_for_check(changed),
+                )
+
+    def test_editing_chemistry_failure_retains_attempted_work(self):
+        operation = BaseEditingOperation(
+            ValueSelection(ValueRef("root", "root")),
+            (CanonicalBaseEdit(0, "A", "G"),),
+            (),
+        )
+        source = make_molecule("source", "ACGUAC")
+        source = replace(
+            source,
+            chemistry=replace(
+                source.chemistry, modification_inventory_status="unknown"
+            ),
+        )
+        request = fixture_request(operation, source=source)
+        step = request.steps[0]
+        self.assertEqual(
+            construct_recoding_step(step, {"root": source}, 0),
+            ((), 0, "residue_budget"),
+        )
+        self.assertEqual(
+            construct_recoding_step(step, {"root": source}, 6),
+            ((), 6, "unsupported_edit_chemistry"),
+        )
+        self.assertEqual(
+            construct_circuit_candidate(request), reconstruct_for_check(request)
+        )
+
+    def test_translation_topology_precedes_reservation_and_invalid_start(self):
+        request = translation_request(sequence="CCCGCUUAA")
+        original = request.steps[0]
+        step = replace(
+            original, ports=(replace(original.ports[0], topology="circular"),)
+        )
+        self.assertEqual(
+            construct_recoding_step(step, {"root": request.sources[0].molecule}, 0),
+            ((), 0, "unsupported_topology"),
+        )
+        changed = replace(request, steps=(step,))
+        self.assertEqual(
+            construct_circuit_candidate(changed), reconstruct_for_check(changed)
+        )
+
+    def test_all_translation_paths_preflight_before_start_validation(self):
+        request = self.multi_request()
+        step = request.steps[0]
+        first, second = step.operation.products
+        second = replace(
+            second,
+            input=replace(
+                second.input,
+                path=replace(second.input.path, spans=(IndexSpan(0, 12),)),
+            ),
+        )
+        step = replace(
+            step, operation=replace(step.operation, products=(first, second))
+        )
+        malformed_start = make_molecule("source", "CCCGCUUAA")
+        self.assertEqual(
+            construct_recoding_step(step, {"root": malformed_start}, 0),
+            ((), 0, "invalid_selection"),
+        )
+
     def test_translation_cheap_preconditions_precede_work_reservation(self):
         invalid_start = make_molecule("source", "CCCGCUUAA")
         unknown_chemistry = make_molecule("source", "AUGGCUUAA")
@@ -297,6 +394,26 @@ class CircuitConstructionEdgeTests(unittest.TestCase):
                 candidate = construct_circuit_candidate(explicit)
                 self.assertEqual(candidate, reconstruct_for_check(explicit))
                 self.assertEqual(candidate.values[0].sequence, "MA")
+
+    def test_all_recoding_expectations_precede_per_codon_chemistry(self):
+        source = with_inosine(make_molecule("source", "AUGACUUAA"), (3,))
+        operation = TranslationOperation(
+            ValueSelection(ValueRef("root", "root")),
+            TranslationPolicy(
+                "conditional_cds",
+                recodings=(CodonRecoding(2, "UGA", "*", "declared_readout"),),
+            ),
+        )
+        request = translation_request(
+            operation, source=source, assumptions=("declared_readout",)
+        )
+        candidate = construct_circuit_candidate(request)
+        self.assertEqual(candidate, reconstruct_for_check(request))
+        self.assertIn("step:step:invalid_translation", candidate.diagnostics)
+        self.assertEqual(
+            construct_recoding_step(request.steps[0], {"root": source}, 2),
+            ((), 2, "invalid_translation"),
+        )
 
     def test_skipping_source_maps_keep_offsets_and_explicit_terminal_stop(self):
         selection = ValueSelection(

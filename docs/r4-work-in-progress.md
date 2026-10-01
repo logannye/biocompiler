@@ -1,4 +1,10 @@
-# R4 checkpoint for the next session
+# Historical R4 checkpoint for the next session
+
+The user resumed this checkpoint on 2026-09-30. See the current
+[session handoff](session-handoff.md) and [R4 guide](circuit-construction-v0.1.md).
+The failures and stop instruction below describe the saved checkpoint, not the
+current implementation or current authorization. Final hosted validation remains
+required before milestone merge.
 
 The user requested stopping for a fresh session on 2026-09-30. R2 and R3 were
 already merged before that request. This branch is an unfinished checkpoint,

@@ -29,6 +29,29 @@ jobs:
         run: python -m unittest discover -s tests -v
       - name: Run authoring examples
         run: python examples/intent_programs.py
+      - name: Build and replay supplied circuit constructions outside the checkout
+        working-directory: ${{ runner.temp }}
+        env:
+          CIRCUIT_OUTPUT: ${{ github.workspace }}/generated/circuit-construction-ci
+        run: |
+          python "$GITHUB_WORKSPACE/examples/circuit_construction.py" --output "$CIRCUIT_OUTPUT"
+          biocompiler circuit-build --request "$CIRCUIT_OUTPUT/request.json" --output "$CIRCUIT_OUTPUT/cli.build.json"
+          biocompiler circuit-verify "$CIRCUIT_OUTPUT/cli.build.json" --expected-request "$CIRCUIT_OUTPUT/request.json"
+          biocompiler circuit-export "$CIRCUIT_OUTPUT/cli.build.json" --expected-request "$CIRCUIT_OUTPUT/request.json" --output "$CIRCUIT_OUTPUT/export.json"
+          biocompiler circuit-verify "$CIRCUIT_OUTPUT/export.json" --expected-request "$CIRCUIT_OUTPUT/request.json"
+          biocompiler inspect "$CIRCUIT_OUTPUT/request.json"
+          biocompiler inspect "$CIRCUIT_OUTPUT/candidate.json"
+          biocompiler inspect "$CIRCUIT_OUTPUT/assessment.json"
+          biocompiler inspect "$CIRCUIT_OUTPUT/export.json"
+          python -c "import json, os, pathlib; p = pathlib.Path(os.environ['CIRCUIT_OUTPUT']); assert json.loads((p / 'build.json').read_text()) == json.loads((p / 'cli.build.json').read_text()) == json.loads((p / 'export.json').read_text())"
+      - name: Retain supplied circuit construction evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: circuit-construction-evidence-py${{ matrix.python-version }}
+          path: generated/circuit-construction-ci/
+          if-no-files-found: ignore
+          retention-days: 7
       - name: Inspect structured circuit molecule declarations
         run: |
           python examples/circuit_molecules.py --output generated/circuit-molecules-ci

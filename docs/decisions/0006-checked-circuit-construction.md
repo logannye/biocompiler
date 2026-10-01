@@ -1,8 +1,9 @@
 # 0006 — Reconstruct circuit transformations from independent supplied authority
 
-Status: implementation in progress under R4. The public family interface remains
-provisional until R6. This decision does not close R4's processing, translation,
-whole-modality or complete export acceptance criteria.
+Status: implemented for the R4 supplied-construction software profile in
+`0.1.0.dev24`, subject to exact-revision validation before merge. The public
+family interface remains provisional until R6. Source-backed mechanism families
+and the R12 complete export system remain open.
 
 ## Problem
 
@@ -44,10 +45,32 @@ Mapped correspondence is checked against independently reconstructed coordinates
 a declared replacement specifies product chemistry without proving biochemical
 fate. Unknown or unsupported transitions cannot acquire strict success.
 
-The first core implements slicing, ordered concatenation, nucleotide orientation
-and explicit coding-strand DNA-to-RNA symbol mapping. Their capability is software
-correspondence only. RNA/protein processing, editing, translation variants,
-complex assembly and complete modality/export gates remain separate R4 work.
+The executor implements slicing, ordered concatenation, nucleotide orientation,
+explicit coding-strand DNA-to-RNA symbol mapping, declared RNA/protein cleavage
+and splicing, circularization, canonical/chemical edits, ordinary/conditional
+and multi-ORF translation, residue-preserving skipping and nominal complexes.
+All remain software correspondence to supplied authority. Splicing preserves
+declared path order but currently supports increasing spans within each source;
+it never silently sorts an unsupported path. Translation requires an explicit
+forward contiguous AUG-initiated region and terminal stop. Conditional no-product
+branches remain unsupported pending family-specific absence semantics.
+
+Final requested linear/circular DNA/RNA members require explicit payload-region
+contracts. Declared nucleotide complexes expand to their covalent constituents;
+missing chemistry, regions, members or stoichiometry blocks complete handoff.
+Contracts do not infer functional regulatory elements. Build/verify/export and
+`compile(CircuitConstructionRequest)` share one public path. Export replays the
+independent authority and atomically publishes the complete retained build JSON;
+it is not the later multi-format archive or human deployment export.
+
+Preflight order is deterministic in producer and checker. Common inputs and
+coordinates are checked first; port form precedes editing/translation allocation.
+Translation checks path/frame/AUG and known modification inventory before work
+reservation. Skipping allocation and codon interpretation follow reservation.
+Editing checks modification inventory and edit symbols after reservation.
+Attempted work stays consumed when materialization fails; sibling outputs remain
+atomic. Combined-defect and exhausted-budget cases exercise these phase rules.
+
 Existing ordinary-CDS, legacy molecular design and therapeutic admission checks
 remain unchanged. All development fixtures are explicitly artificial.
 

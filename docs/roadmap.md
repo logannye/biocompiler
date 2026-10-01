@@ -15,8 +15,11 @@ records the tested revision and platform.
 independent complete-authority replay in `0.1.0.dev22`; its API remains provisional
 until R6. [R3 molecular declarations](circuit-molecules-v0.1.md) represent named
 sets, coordinate frames, chemistry and uncertainty in `0.1.0.dev23`, with no
-checked transformations or molecular-function claim. R1 and R4–R13 remain open. No therapeutic admission or molecular circuit
-generation is added.
+checked transformations or molecular-function claim. [R4 supplied construction](circuit-construction-v0.1.md)
+in `0.1.0.dev24` adds explicit transformations, independent replay, full member
+inventories and declared payload-region checks. Exact-revision hosted gates are
+required before its milestone merge. R1 and R5–R13 remain open. No source-derived
+molecular mechanism or therapeutic admission is added.
 
 The [M11.1 audit](m11-human-benchmark-audit.md) records the current candidate
 comparison and explicit therapeutic-benchmark deferral. M11.1 is complete within

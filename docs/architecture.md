@@ -79,8 +79,15 @@ locks. The independent checker retains the complete original graph and wrappers;
 `compile(CircuitRequest)` also refuses molecular generation. [R3 molecular declarations](circuit-molecules-v0.1.md) add named strands/chains,
 nominal complexes, explicit coordinates/chemistry, separate assembly partitions
 and overlapping annotations, plus independent identity and experimental-amount
-layers. Their source bytes and transformations remain unverified. R1 and R4–R13
-remain open; no source-backed reconstruction is established.
+layers. R3 declarations alone leave source bytes and transformations unverified.
+[R4 checked construction](circuit-construction-v0.1.md) adds separate producer and
+reconstruction implementations over retained roots, sequence-free operation
+ports, complete residue maps, chemistry/feature dispositions and required-member
+inventories. Payload contracts check declared linear/circular DNA/RNA regions;
+they do not establish regulatory function. Strict JSON export freshly verifies
+the complete external request and retains its full derivation authority.
+R1 and R5–R13 remain open; no source-backed reconstruction, derived molecular
+mechanism or human admission is established.
 
 | Layer | Representation | Preservation obligation |
 | --- | --- | --- |

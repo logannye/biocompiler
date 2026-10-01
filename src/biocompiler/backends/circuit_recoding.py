@@ -18,6 +18,7 @@ from biocompiler.ir.circuit_construction import (
     MultiORFTranslationOperation,
     RibosomalSkippingOperation,
     TranslationOperation,
+    operation_selections,
 )
 from biocompiler.ir.circuit_recoding import STANDARD_RNA_CODON_TABLE
 from biocompiler.semantics.molecule_coordinates import (
@@ -174,28 +175,37 @@ def _translation_span(selection, source):
     _require(
         path.strand == "+" and len(path.spans) == 1, "unsupported_translation_path"
     )
-    _require(path.length >= 6 and path.length % 3 == 0, "invalid_translation")
-    return path.spans[0]
-
-
-def _translate(source, span, policy):
+    _require(
+        path.length >= 6
+        and path.length % 3 == 0
+        and source.sequence[path.spans[0].start : path.spans[0].start + 3] == "AUG",
+        "invalid_translation",
+    )
     _require(
         source.chemistry.modification_inventory_status == "declared",
         "unsupported_translation_chemistry",
     )
-    _require(
-        source.sequence[span.start : span.start + 3] == "AUG", "invalid_translation"
-    )
+    return path.spans[0]
+
+
+def _translate(source, span, policy):
     codon_count = span.length // 3
     overrides = {item.codon_index: item for item in policy.recodings}
-    _require(all(index < codon_count for index in overrides), "invalid_translation")
+    _require(
+        all(
+            index < codon_count
+            and source.sequence[span.start + 3 * index : span.start + 3 * index + 3]
+            == override.expected_triplet
+            for index, override in overrides.items()
+        ),
+        "invalid_translation",
+    )
     coverage = _modifications(source.chemistry)
     residues = []
     for index, start in enumerate(range(span.start, span.end, 3)):
         triplet = source.sequence[start : start + 3]
         override = overrides.get(index)
         if override is not None:
-            _require(triplet == override.expected_triplet, "invalid_translation")
             amino_acid = override.amino_acid
         else:
             _require(
@@ -219,14 +229,40 @@ def construct_recoding_step(step, available, remaining_budget):
     used = 0
     try:
         operation = step.operation
+        selections = operation_selections(operation)
+        _require(
+            all(selection.value.id in available for selection in selections),
+            "unavailable_input",
+        )
+        _require(
+            all(
+                available[selection.value.id].sequence_extent == "complete"
+                for selection in selections
+            ),
+            "incomplete_input",
+        )
+        for selection in selections:
+            _path(selection, available[selection.value.id])
         if isinstance(operation, BaseEditingOperation):
-            source = available.get(operation.input.value.id)
-            _require(source is not None, "unavailable_input")
-            _require(source.sequence_extent == "complete", "incomplete_input")
+            source = available[operation.input.value.id]
+            port = step.ports[0]
+            _require(
+                source.space.alphabet == port.alphabet == "RNA",
+                "unsupported_alphabet",
+            )
+            _require(port.topology == source.space.topology, "unsupported_topology")
             _require(source.space.length <= remaining_budget, "residue_budget")
             used = source.space.length
             return (_edited(step, source),), used, None
         ports = {port.id: port for port in step.ports}
+        _require(
+            all(port.alphabet == "protein" for port in step.ports),
+            "unsupported_alphabet",
+        )
+        _require(
+            all(port.topology == "linear" for port in step.ports),
+            "unsupported_topology",
+        )
         skipping = isinstance(operation, RibosomalSkippingOperation)
         if isinstance(operation, (TranslationOperation, RibosomalSkippingOperation)):
             jobs = [
@@ -242,44 +278,38 @@ def construct_recoding_step(step, available, remaining_budget):
                 for product in operation.products
             ]
         elif isinstance(operation, ConditionalTranslationOperation):
-            jobs = []
-            for branch in operation.branches:
-                source = available.get(branch.input.value.id)
-                _require(source is not None, "unavailable_input")
-                _require(source.sequence_extent == "complete", "incomplete_input")
-                _path(branch.input, source)
-                if branch.port_id is not None:
-                    jobs.append((branch.port_id, branch.input, branch.policy))
+            jobs = [
+                (branch.port_id, branch.input, branch.policy)
+                for branch in operation.branches
+                if branch.port_id is not None
+            ]
         else:
             raise _Problem("invalid_operation")
         planned = []
         for port_id, selection, policy in jobs:
-            source = available.get(selection.value.id)
-            _require(source is not None, "unavailable_input")
-            _require(source.sequence_extent == "complete", "incomplete_input")
+            source = available[selection.value.id]
             span = _translation_span(selection, source)
             planned.append((port_id, selection, policy, source, span))
         estimated = sum(span.length // 3 - 1 for _, _, _, _, span in planned)
         _require(estimated <= remaining_budget, "residue_budget")
         used = estimated
+        if skipping:
+            allocations = [
+                (product.port_id, product.residues) for product in operation.products
+            ]
+            ordered = sorted((part.start, part.end) for _, part in allocations)
+            cursor = 0
+            for begin, end in ordered:
+                _require(
+                    begin == cursor and end > begin and end <= estimated,
+                    "invalid_skipping_partition",
+                )
+                cursor = end
+            _require(cursor == estimated, "invalid_skipping_partition")
         values = []
         for port_id, selection, policy, source, span in planned:
             peptide = _translate(source, span, policy)
-            if skipping:
-                allocations = [
-                    (product.port_id, product.residues)
-                    for product in operation.products
-                ]
-                ordered = sorted((part.start, part.end) for _, part in allocations)
-                cursor = 0
-                for begin, end in ordered:
-                    _require(
-                        begin == cursor and end > begin and end <= len(peptide),
-                        "invalid_skipping_partition",
-                    )
-                    cursor = end
-                _require(cursor == len(peptide), "invalid_skipping_partition")
-            else:
+            if not skipping:
                 allocations = [(port_id, IndexSpan(0, len(peptide)))]
             for identity, part in allocations:
                 source_path = CoordinatePath(

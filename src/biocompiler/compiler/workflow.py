@@ -412,7 +412,7 @@ def compile(
         return build_circuit_construction(design)
     if isinstance(design, (CircuitMoleculeSet, CircuitMoleculeRecord)):
         raise CompilationUnavailableError(
-            "Molecular declarations are recorded; checked circuit construction is not implemented.",
+            "Molecular declarations require a complete supplied construction request for independent construction checks.",
             diagnostics=("declared_assembly_unverified", "source_correspondence_unverified", "functional_implementation_unestablished", "human_therapeutic_use_not_admitted"),
         )
     if isinstance(design, CircuitRequest):
