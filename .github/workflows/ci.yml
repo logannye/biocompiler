@@ -905,6 +905,24 @@ jobs:
         run: |
           core/_build/default/test/test_molecule.exe "$GITHUB_WORKSPACE/tests/conformance/molecules-v1.json" | tee generated/core/test_molecule.txt
           core/_build/default/test/test_molecule_set.exe "$GITHUB_WORKSPACE/tests/conformance/molecules-v1.json" | tee generated/core/test_molecule_set.txt
+      - name: Check supplied payload structure contracts and required region inventories
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_payload_structure.exe "$GITHUB_WORKSPACE/tests/conformance/payload-structure-v1.json" | tee generated/core/test_payload_structure.txt
+      - name: Check architecture bindings, controls, channels and source constraints
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_architecture_contract.exe "$GITHUB_WORKSPACE/tests/conformance/architecture-contracts-v1.json" | tee generated/core/test_architecture_contract.txt
+      - name: Check explicit molecular transitions, edits and translation policies
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_molecular_transitions.exe "$GITHUB_WORKSPACE/tests/conformance/molecular-transitions-v1.json" | tee generated/core/test_molecular_transitions.txt
+      - name: Check complete construction operation and request declarations
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_construction.exe "$GITHUB_WORKSPACE/tests/conformance/construction-v1.json" | tee generated/core/test_construction.txt
+      - name: Check unchecked construction artifacts and exact derivation inventories
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_construction_artifact.exe "$GITHUB_WORKSPACE/tests/conformance/construction-artifacts-v1.json" | tee generated/core/test_construction_artifact.txt
+      - name: Independently check required payload regions against supplied authority
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_payload_structure_check.exe "$GITHUB_WORKSPACE/tests/conformance/payload-structure-check-v1.json" | tee generated/core/test_payload_structure_check.txt
       - name: Check cross-language bytes, structural intent and independent lowering correspondence
         if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
         env:

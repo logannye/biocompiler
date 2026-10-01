@@ -107,3 +107,33 @@
  (name test_molecule_set)
  (modules test_molecule_set)
  (libraries bioc_wire bioc_domain zarith))
+
+(test
+ (name test_payload_structure)
+ (modules test_payload_structure)
+ (libraries bioc_wire bioc_domain))
+
+(test
+ (name test_architecture_contract)
+ (modules test_architecture_contract)
+ (libraries bioc_wire bioc_domain zarith))
+
+(test
+ (name test_molecular_transitions)
+ (modules test_molecular_transitions)
+ (libraries bioc_wire bioc_domain zarith))
+
+(test
+ (name test_construction)
+ (modules test_construction)
+ (libraries bioc_wire bioc_domain zarith))
+
+(test
+ (name test_construction_artifact)
+ (modules test_construction_artifact)
+ (libraries bioc_wire bioc_domain zarith))
+
+(test
+ (name test_payload_structure_check)
+ (modules test_payload_structure_check)
+ (libraries bioc_wire bioc_domain bioc_checker zarith))

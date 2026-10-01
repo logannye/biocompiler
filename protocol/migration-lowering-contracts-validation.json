@@ -299,9 +299,10 @@
   },
   "peak_memory": "not_measured",
   "post_merge_validation": {
+    "full_receipt_sha256": "eb534c7cd237757ae568b021cdef3fac56f3a9f21624e84a25b629f133916bd7",
     "revision": "e3d3cbcf1a7b05ccdbc34fdb69127c22e8ea8345",
     "run_url": "https://github.com/logannye/biocompiler/actions/runs/36937189850",
-    "status": "in_progress"
+    "status": "success"
   },
   "prerequisites": {
     "circuit-integration": "success",

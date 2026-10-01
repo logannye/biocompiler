@@ -54,6 +54,12 @@ TESTS = {
     "test_human_wrappers": {"bioc_wire", "bioc_domain", "zarith"},
     "test_molecule": {"bioc_wire", "bioc_domain", "zarith"},
     "test_molecule_set": {"bioc_wire", "bioc_domain", "zarith"},
+    "test_payload_structure": {"bioc_wire", "bioc_domain"},
+    "test_architecture_contract": {"bioc_wire", "bioc_domain", "zarith"},
+    "test_molecular_transitions": {"bioc_wire", "bioc_domain", "zarith"},
+    "test_construction": {"bioc_wire", "bioc_domain", "zarith"},
+    "test_construction_artifact": {"bioc_wire", "bioc_domain", "zarith"},
+    "test_payload_structure_check": {"bioc_wire", "bioc_domain", "bioc_checker", "zarith"},
 }
 PRODUCER_ROLES = frozenset({"compiler", "matcher", "selection", "emitter", "assembler", "producer"})
 TOKEN = re.compile(r'\s+|;[^\n]*(?:\n|$)|\(|\)|"(?:\\.|[^"\\])*"|[^\s();"]+')
