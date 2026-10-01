@@ -856,11 +856,14 @@ jobs:
         run: |
           python -m pip install .
           python tools/check_core_boundaries.py --output generated/core/boundaries.json
-      - name: Compile and test native core and standalone verifier
+      - name: Compile native core and standalone verifier
+        id: native_build
         run: |
           opam exec -- dune build --root core @all
-          opam exec -- dune runtest --root core
+      - name: Run every native literal and mutation suite
+        run: opam exec -- dune runtest --root core
       - name: Check retained request, behavior and coordinate domain corpora
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
         run: |
           core/_build/default/test/test_build_request.exe "$GITHUB_WORKSPACE/tests/conformance/case-b" | tee generated/core/build-request-domain.txt
           core/_build/default/test/test_behavior.exe "$GITHUB_WORKSPACE/tests/conformance/case-b" "$GITHUB_WORKSPACE/tests/conformance/behavior-domains-v1.json" | tee generated/core/behavior-domain.txt
@@ -868,11 +871,25 @@ jobs:
           core/_build/default/test/test_circuit_request.exe "$GITHUB_WORKSPACE/tests/conformance/request-domains-v1.json" | tee generated/core/circuit-request-domain.txt
           core/_build/default/test/test_lowering_check.exe "$GITHUB_WORKSPACE/tests/conformance/case-b" "$GITHUB_WORKSPACE/tests/conformance/request-domains-v1.json" | tee generated/core/lowering-check.txt
       - name: Check exact scalar arithmetic and complete per-role reference traces
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
         run: |
           core/_build/default/test/test_runtime_number.exe "$GITHUB_WORKSPACE/tests/conformance/runtime-numbers-v1.json" | tee generated/core/runtime-numbers.txt
           core/_build/default/test/test_execution_data.exe "$GITHUB_WORKSPACE/tests/conformance/reference-execution-v1.json" | tee generated/core/execution-data.txt
           core/_build/default/test/test_reference.exe "$GITHUB_WORKSPACE/tests/conformance/reference-execution-v1.json" | tee generated/core/reference-execution.txt
+      - name: Check fresh lowering against exact retained source authority
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_lowering.exe "$GITHUB_WORKSPACE/tests/conformance/lowering-v1.json" | tee generated/core/lowering-producer.txt
+      - name: Check component domains and fresh compatibility assessments
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_component_contract.exe "$GITHUB_WORKSPACE/tests/conformance/component-contracts-v1.json" | tee generated/core/component-contracts.txt
+      - name: Check bounded molecular declarations and serialization
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_molecular_record.exe "$GITHUB_WORKSPACE/tests/conformance/molecule-chemistry-v1.json" | tee generated/core/molecular-records.txt
+      - name: Check molecular chemistry and nominal identity
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_molecule_chemistry.exe "$GITHUB_WORKSPACE/tests/conformance/molecule-chemistry-v1.json" | tee generated/core/molecule-chemistry.txt
       - name: Check cross-language bytes, structural intent and independent lowering correspondence
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
         env:
           GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
         run: |
