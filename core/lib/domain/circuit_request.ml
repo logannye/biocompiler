@@ -193,6 +193,37 @@ let lifecycle value =
   let fields = record profile_budget "biocompiler.circuit_lifecycle.v0.1" ["mode"; "onset"; "cessation"; "clearance"] value in
   ignore (choice ["production_control"; "abundance_control"; "activity_control"; "readout"] (Json.field "mode" fields));
   finish profile_budget (List.fold_left (fun fields key -> set key (option_map_json Fun.id (optional window (Json.field key fields))) fields) fields ["onset"; "cessation"; "clearance"])
+let at_path path decode value =
+  try decode value with Diagnostic.Error diagnostic ->
+    (match path with
+     | None -> raise (Diagnostic.Error diagnostic)
+     | Some path -> raise (Diagnostic.Error {diagnostic with path = Some (path ^ Option.value ~default:"" diagnostic.path)}))
+module Product = struct
+  type t = {json : Json.t; id : string; kind : string; observation : Json.t}
+  let schema_version = "biocompiler.circuit_product.v0.1"
+  let of_json ?path value =
+    let json = at_path path product value in
+    {json; id = Json.string (get "id" json); kind = Json.string (get "kind" json); observation = get "observation" json}
+  let to_json (value : t) = value.json
+  let fingerprint value = Canonical.fingerprint (to_json value)
+  let id (value : t) = value.id
+  let kind (value : t) = value.kind
+  let observation (value : t) = value.observation
+end
+module Lifecycle = struct
+  type t = {json : Json.t; mode : string; onset : Json.t option; cessation : Json.t option; clearance : Json.t option}
+  let schema_version = "biocompiler.circuit_lifecycle.v0.1"
+  let of_json ?path value =
+    let json = at_path path lifecycle value in
+    {json; mode = Json.string (get "mode" json); onset = optional Fun.id (get "onset" json);
+     cessation = optional Fun.id (get "cessation" json); clearance = optional Fun.id (get "clearance" json)}
+  let to_json (value : t) = value.json
+  let fingerprint value = Canonical.fingerprint (to_json value)
+  let mode (value : t) = value.mode
+  let onset (value : t) = value.onset
+  let cessation (value : t) = value.cessation
+  let clearance (value : t) = value.clearance
+end
 let provider value =
   let fields = record profile_budget "biocompiler.circuit_provider_requirement.v0.1" ["id"; "entity"; "kind"; "compartment"; "colocation_group"; "availability"] value in
   List.iter (fun key -> ignore (profile_text (Json.field key fields))) ["id"; "compartment"; "colocation_group"];
@@ -200,6 +231,18 @@ let provider value =
   ignore (choice ["host"; "co_delivered"; "external_input"] (Json.field "kind" fields));
   ignore (choice ["unestablished"; "declared"] (Json.field "availability" fields));
   finish profile_budget (set "entity" (entity (Json.field "entity" fields)) fields)
+module Provider = struct
+  type t = {json : Json.t; id : string; kind : string; compartment : string}
+  let schema_version = "biocompiler.circuit_provider_requirement.v0.1"
+  let of_json ?path value =
+    let json = at_path path provider value in
+    {json; id = Json.string (get "id" json); kind = Json.string (get "kind" json); compartment = Json.string (get "compartment" json)}
+  let to_json (value : t) = value.json
+  let fingerprint value = Canonical.fingerprint (to_json value)
+  let id (value : t) = value.id
+  let kind (value : t) = value.kind
+  let compartment (value : t) = value.compartment
+end
 
 let signal value =
   let fields = record boolean_budget "biocompiler.circuit_signal.v0.1" ["id"; "observation_fingerprint"] value in
@@ -442,6 +485,7 @@ module Requirement = struct
   let source_nodes value = value.source_node_ids
   let executable_behavior value = value.behavior.executable
   let action_ids value = value.behavior.actions
+  let dependencies value = values (get "dependencies" value.behavior.behavior_json) |> List.map Provider.of_json
   let output value = get "output" value.behavior.behavior_json
   let input_bindings value = values (get "input_bindings" value.json)
     |> List.map (fun item -> Json.string (get "observation_id" item), Identity.Node.of_string (Json.string (get "source_node_id" item)))

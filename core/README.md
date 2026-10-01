@@ -4,9 +4,9 @@ The native migration implements bounded strict JSON, Python-compatible canonical
 fingerprints, checked domains and independent frozen source-to-Behavior
 correspondence. Internal libraries add per-role reference execution and fresh
 Intent-to-Behavior lowering. Validated domains include shared content pins, component contract algebra,
-molecular provenance and nominal chemistry. The current batch adds complete
+molecular provenance and nominal chemistry. PR42 also validated complete
 component records, human source wrappers, molecular sets and supplied deployment
-windows; those additions still require hosted validation. The
+windows. The current architecture/construction batch remains pending validation. The
 public protocol does not yet implement compilation, behavioral execution,
 molecular verification, export acceptance or human-use admission. Capabilities
 are explicit; unimplemented operations return `unsupported` without fallback.
@@ -25,7 +25,7 @@ also remains separate. The shared JSON codec, canonicalizer, numeric conventions
 and domain validators are part of the common trusted base, not independent
 execution evidence.
 
-PR37–40 are merged after complete required validation. PR40 source `e4846f0` passed [run 36935066451](https://github.com/logannye/biocompiler/actions/runs/36935066451), including 12 native suites, 936 protocol checks and 2,095 tests on each Python version. Its separate [post-merge main run](https://github.com/logannye/biocompiler/actions/runs/36936774523) also passed every required gate. PR41's lowering and domain batch is merged after all 17 native suites, 2,122 tests on each Python version and every required product gate passed. Its separate integrated-main run 36937189850 remains pending. No production routing or public protocol operation is enabled by these internal domain increments.
+PR37–40 are merged after complete required validation. PR40 source `e4846f0` passed [run 36935066451](https://github.com/logannye/biocompiler/actions/runs/36935066451), including 12 native suites, 936 protocol checks and 2,095 tests on each Python version. Its separate [post-merge main run](https://github.com/logannye/biocompiler/actions/runs/36936774523) also passed every required gate. PR41's lowering and domain batch is merged after all 17 native suites, 2,122 tests on each Python version and every required product gate passed. Its separate integrated-main run 36937189850 also passed every required gate. No production routing or public protocol operation is enabled by these internal domain increments.
 
 ## Hosted validation
 
@@ -103,7 +103,7 @@ The internal domain and checker modules prepare the stateful architecture checke
   operating domains and ports. Its Boolean/closed-interval/unknown algebra uses
   exact types and explicit units, checks initialization separately from runtime
   inclusion, and covers all 13 synthetic domain operations. Imported claims
-  cannot construct the abstract fresh-assessment type. Complete component records are added in the current pending batch; architecture
+  cannot construct the abstract fresh-assessment type. Complete component records passed PR42; architecture
   refinement/template reconstruction remains unfinished.
 - `Diagnostic_text` fixes missing-coordinate diagnostic spelling to
   `python_repr_unicode14.v1`. See the deliberate compatibility exception below.
@@ -132,7 +132,7 @@ The internal domain and checker modules prepare the stateful architecture checke
   service or standalone verifier. Declared channels remain supplied per-role
   observation/action endpoints; coupled transport is a later architecture layer.
 
-The current pending batch adds these structural APIs:
+PR42 validated these structural APIs:
 
 - `Measurement_contract`, `Human_contract` and `Human_request` validate normalized
   measurements, complete behavior/deployment/acceptance declarations, their exact
@@ -157,9 +157,9 @@ The current pending batch adds these structural APIs:
   outcomes such as empty common overlap. Their structural import is not a fresh
   deployment assessment.
 
-The pending corpora retain 40 human-wrapper records, 244 staged rejections and four independent literals; 60 component records, 112 rejections and 42 fresh domain assessments; and 109 molecular records, 136 rejections and 16 identity relations. Deployment coverage adds 15 records, 78 rejections, 18 exact decimal ratios and six independent sum boundaries. The original wrapped eight-member molecular example and all nine case B root/set/final occurrences remain intact.
+The validated PR42 corpora retain 40 human-wrapper records, 244 staged rejections and four independent literals; 60 component records, 112 rejections and 42 fresh domain assessments; and 109 molecular records, 136 rejections and 16 identity relations. Deployment coverage adds 15 records, 78 rejections, 18 exact decimal ratios and six independent sum boundaries. The original wrapped eight-member molecular example and all nine case B root/set/final occurrences remain intact.
 
-The pending gate expands to 22 native suites. In addition to the validated
+PR42 passed 22 native suites and 2,155 tests per Python version; [receipt](../protocol/migration-complete-domains-validation.json). Its separate integrated-main run 36940233185 also passed every required gate. In addition to the earlier
 commands below, hosted CI must execute these complete new corpora:
 
 ```sh
@@ -168,6 +168,36 @@ core/_build/default/test/test_human_wrappers.exe "$GITHUB_WORKSPACE/tests/confor
 core/_build/default/test/test_molecule.exe "$GITHUB_WORKSPACE/tests/conformance/molecules-v1.json"
 core/_build/default/test/test_molecule_set.exe "$GITHUB_WORKSPACE/tests/conformance/molecules-v1.json"
 core/_build/default/test/test_architecture_deployment.exe "$GITHUB_WORKSPACE/tests/conformance/architecture-deployment-v1.json"
+```
+
+The next pending batch adds `Architecture_contract` (12 structural record types),
+`Molecular_transition` and `Molecular_recoding` (eight closed declarations and
+64 immutable codons), `Payload_structure`, `Construction` (30 schemas and 14
+operation variants) and `Construction_artifact` (four unchecked record types).
+`Circuit_request.Product`, `Lifecycle`, `Provider` and complete requirement
+provider access expose the existing checked authority without narrowing it.
+Parents reserve aggregate child representation before retaining expanded lists.
+
+The independently implemented `bioc_checker.Payload_structure_check` compares
+complete molecule sets with separately supplied required-region contracts. It
+retains contradictions and unresolved obligations separately. Contract parsing,
+region correspondence, complete construction, source behavior and empirical
+acceptance remain different responsibilities. This checker imports no producer
+and exposes no public protocol operation yet. Full construction reconstruction
+and architecture acceptance remain open.
+
+Frozen corpora retain 88 architecture positives/345 rejections/four literals; 153 transition and recoding positives/199 rejections/six literals; 14 payload-structure positives/44 rejections; 72 construction positives/245 rejections; 36 candidate-artifact positives/70 rejections/four literals; and 99 required-region checks, including 27 source-preserving mutations. All three original case B requests, candidates and region contracts remain represented. Native validation is pending.
+
+The next hosted gate has 28 configured native suites, including these six
+required corpus replays in addition to all prior gates:
+
+```sh
+core/_build/default/test/test_architecture_contract.exe "$GITHUB_WORKSPACE/tests/conformance/architecture-contracts-v1.json"
+core/_build/default/test/test_molecular_transitions.exe "$GITHUB_WORKSPACE/tests/conformance/molecular-transitions-v1.json"
+core/_build/default/test/test_payload_structure.exe "$GITHUB_WORKSPACE/tests/conformance/payload-structure-v1.json"
+core/_build/default/test/test_construction.exe "$GITHUB_WORKSPACE/tests/conformance/construction-v1.json"
+core/_build/default/test/test_construction_artifact.exe "$GITHUB_WORKSPACE/tests/conformance/construction-artifacts-v1.json"
+core/_build/default/test/test_payload_structure_check.exe "$GITHUB_WORKSPACE/tests/conformance/payload-structure-check-v1.json"
 ```
 
 The diagnostic profile is an intentional compatibility exception. Python repr
