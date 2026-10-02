@@ -4,7 +4,7 @@ Created: 2026-10-01, America/Los_Angeles.
 
 **Decision:** TypeScript for Studio; Python for authoring, orchestration and scientific exploration; OCaml for the semantic compiler, independent checking and canonical emission.
 
-**Status:** the default remains Python; explicit architecture SDK/CLI selection uses the validated OCaml core. PR48–56 have completed their exact-revision gates and are integrated (PR52 through PR53). PR57–65 preserve realization protocol/routing, full workflow engines and services, public workflow routes, synthetic producers, installed SDK/CLI integration and rich native inspection; their complete current-revision gates remain pending. The current P2 checkpoint implements native checked-manager contracts and lifecycle authority, with complete original Python capture and hosted native validation pending. Distribution, remaining profiles, public native pipeline/package authority and default cutover remain open.
+**Status:** the default remains Python; explicit architecture SDK/CLI selection uses the validated OCaml core. PR48–56 have completed their exact-revision gates and are integrated (PR52 through PR53). PR57–65 preserve realization protocol/routing, full workflow engines and services, public workflow routes, synthetic producers, installed SDK/CLI integration and rich native inspection; their complete current-revision gates remain pending. The current P2 checkpoint implements native checked-manager contracts, lifecycle authority and fixed synthetic/component pipelines, with complete original Python captures retained and hosted native validation pending. Distribution, remaining profiles, public native pipeline/package authority and default cutover remain open.
 
 The validated foundation is merged in [PR37](https://github.com/logannye/biocompiler/pull/37), with the exact revision/platform results in the [foundation receipt](../protocol/migration-foundation-validation.json). Typed request, all 42 Behavior operations and molecular-coordinate domains are merged in [PR38](https://github.com/logannye/biocompiler/pull/38); the [domain receipt](../protocol/migration-domain-validation.json) records both native platforms and full Python/integration checks. Both integrated main revisions also passed their required gates.
 
@@ -745,8 +745,8 @@ record current parent heads; previous partial native passes are historical only.
 
 - [ ] **LM-03/25 P2 complete lifecycle conformance and integration:** retain and
   replay the complete original manager/callback/state cohort, validate native
-  contract and manager tests on both platforms, then implement fixed native
-  synthetic/component pipelines and the public mutable-manager contract.
+  contract, manager and fixed native pipeline tests on both platforms, then
+  complete the public mutable-manager contract.
   Historical records, script fixtures or a one-shot producer wrapper cannot
   satisfy full pipeline, package or fresh export acceptance.
 
@@ -759,6 +759,30 @@ record current parent heads; previous partial native passes are historical only.
   51 focused fixture/static checks and the 3,162-entry inventory pass. This checkbox records Python
   capture only; replay of real compiler callbacks, native execution and complete
   lifecycle integration remain pending above.
+
+- [x] **LM-25/R6 P2 fixed pipeline source checkpoint:** separate `bioc_pipeline`
+  modules connect actual native lowering, selection, synthetic generation and
+  component adaptation to independent checkers and the live manager. They retain
+  original ordered source links, partial failure state and one caller work
+  ancestor. Budget-aware lowering preserves the legacy entry point. This marks
+  implementation only; native execution and public session integration remain open.
+
+- [x] **LM-03 P2 complete fixed-pipeline capture checkpoint:** all 467 unchanged
+  original tests pass before and during narrow function tracing. The capture
+  retains 136 complete calls (124 returns, 12 errors), 445 documents and all
+  850 subsequent manager observations. Eight integrity/projection tests pass.
+  Separate bounded native indexes retain complete provider records externally;
+  neither the full capture nor existing corpora are reduced. See the
+  [pipeline scope and pins](migration-checked-pass-manager.md).
+
+- [ ] **LM-03/25 P2 fixed native pipeline validation:** the hosted driver must
+  execute 126 ordinary original calls (121 returns, five failures), 121 returned
+  manager rechecks and 563 subsequent commands with complete state/record/error
+  comparison. Six patched-callback calls, three Python-type inputs and one mocked
+  call remain explicitly pending, as do 254 callback-dependent commands and
+  24 prefix/nine suffix commands associated with patched calls. Both new suites
+  bring the native total to 96 per platform; all 36 exact-revision jobs remain
+  mandatory. Broader lifecycle, public sessions and package/export exits stay open.
 
 - [x] **LM-03 CI harness correction checkpoint:** the installed architecture
   guard now permits only the exact new parser-registration helpers while rejecting
