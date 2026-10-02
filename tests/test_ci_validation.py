@@ -238,6 +238,7 @@ class ValidationGateTests(unittest.TestCase):
         native = text.split("\n  ocaml-core:\n", 1)[1].split("\n  architecture-core-reproducibility:\n", 1)[0]
         for name in ("test_pipeline_contract", "test_pass_manager"):
             self.assertIn('core/_build/default/test/' + name + '.exe "$GITHUB_WORKSPACE/tests/conformance/pipeline-contract-literals-v1.json" | tee generated/core/' + name + '.txt', native)
+        self.assertIn('core/_build/default/test/test_checked_pipeline_corpus.exe "$GITHUB_WORKSPACE/tests/conformance/checked-pipeline-v1.json" | tee generated/core/test_checked_pipeline_corpus.txt', native)
 
     def test_checked_in_workflow_registers_cross_platform_architecture_gate(self):
         workflow = Path(__file__).resolve().parents[1] / ".github" / "workflows" / "ci.yml"

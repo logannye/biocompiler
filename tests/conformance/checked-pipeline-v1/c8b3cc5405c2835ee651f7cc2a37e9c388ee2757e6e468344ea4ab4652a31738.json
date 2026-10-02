@@ -1,0 +1,1 @@
+{"$type":"mapping","class":"builtins.dict","items":[["id","finite_history_response"],["scope","synthetic_realization"],["evidence_kind","model_conditional"],["description","Synthetic response meets authored contracts on the exercised finite history."]]}

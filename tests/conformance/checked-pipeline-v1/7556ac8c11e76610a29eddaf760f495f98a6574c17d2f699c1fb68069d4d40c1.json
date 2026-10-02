@@ -1,0 +1,1 @@
+{"$type":"dataclass","class":"biocompiler.compiler.pipeline.ScopedObligation","fields":{"description":"Source-linked product coding identity and exact RNA structure.","evidence_kind":{"$type":"enum","class":"biocompiler.verification.evidence.EvidenceKind","value":"exact"},"id":"candidate.structure","scope":"product_cassette_structure"}}

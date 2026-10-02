@@ -4,7 +4,7 @@ Created: 2026-10-01, America/Los_Angeles.
 
 **Decision:** TypeScript for Studio; Python for authoring, orchestration and scientific exploration; OCaml for the semantic compiler, independent checking and canonical emission.
 
-**Status:** the default remains Python; explicit architecture SDK/CLI selection uses the validated OCaml core. PR48–56 have completed their exact-revision gates and are integrated (PR52 through PR53). PR57–63 preserve realization protocol/routing, full workflow engines and services, public workflow routes, raw synthetic producers and explicit producer SDK routes; their complete current-revision gates remain pending. PR64 preserves the installed public SDK/CLI integration checkpoint. The Python 3.11 argparse difference now has an independently executed, byte-exact runtime counterpart; original baselines remain unchanged. The current batch implements installed producer SDK campaigns and explicit synthetic-select CLI routing, with scoped local Python capture/fixture checkpoints recorded and exact-revision hosted integration pending. Distribution, remaining profiles, native pipeline/package authority, rich helper compatibility and default cutover remain open.
+**Status:** the default remains Python; explicit architecture SDK/CLI selection uses the validated OCaml core. PR48–56 have completed their exact-revision gates and are integrated (PR52 through PR53). PR57–65 preserve realization protocol/routing, full workflow engines and services, public workflow routes, synthetic producers, installed SDK/CLI integration and rich native inspection; their complete current-revision gates remain pending. The current P2 checkpoint implements native checked-manager contracts and lifecycle authority, with complete original Python capture and hosted native validation pending. Distribution, remaining profiles, public native pipeline/package authority and default cutover remain open.
 
 The validated foundation is merged in [PR37](https://github.com/logannye/biocompiler/pull/37), with the exact revision/platform results in the [foundation receipt](../protocol/migration-foundation-validation.json). Typed request, all 42 Behavior operations and molecular-coordinate domains are merged in [PR38](https://github.com/logannye/biocompiler/pull/38); the [domain receipt](../protocol/migration-domain-validation.json) records both native platforms and full Python/integration checks. Both integrated main revisions also passed their required gates.
 
@@ -749,6 +749,16 @@ record current parent heads; previous partial native passes are historical only.
   synthetic/component pipelines and the public mutable-manager contract.
   Historical records, script fixtures or a one-shot producer wrapper cannot
   satisfy full pipeline, package or fresh export acceptance.
+
+- [x] **LM-03 P2 original lifecycle capture checkpoint:** all 467 unchanged
+  original tests pass before and during instrumentation, retaining both actual
+  child outputs, 91,566 events, 1,596 callbacks, 2,284 provider identities and
+  19,412 complete documents. The complete compressed ledger and bounded native
+  replay projection preserve separate scopes. Eight integrity tests verify every
+  document, exact projection and full original-capture reconstruction. Another
+  51 focused fixture/static checks and the 3,162-entry inventory pass. This checkbox records Python
+  capture only; replay of real compiler callbacks, native execution and complete
+  lifecycle integration remain pending above.
 
 - [x] **LM-03 CI harness correction checkpoint:** the installed architecture
   guard now permits only the exact new parser-registration helpers while rejecting

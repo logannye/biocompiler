@@ -1,0 +1,1 @@
+{"$type":"dataclass","class":"biocompiler.compiler.pipeline.CompletionProfile","fields":{"obligations":{"$type":"tuple","items":["identity","response"]},"schema":"components.v1","scope":"components","stage":{"$type":"enum","class":"biocompiler.ir.stages.Stage","value":"selected component IR"}}}

@@ -476,3 +476,9 @@
  (modules test_pass_manager)
  (libraries bioc_wire bioc_domain bioc_checker bioc_compiler zarith)
  (action (run %{test} %{env:BIOCOMPILER_PIPELINE_CONTRACT_LITERALS=missing})))
+
+(test
+ (name test_checked_pipeline_corpus)
+ (modules test_checked_pipeline_corpus)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_compiler zarith)
+ (action (run %{test} %{env:BIOCOMPILER_CHECKED_PIPELINE_CORPUS=missing})))

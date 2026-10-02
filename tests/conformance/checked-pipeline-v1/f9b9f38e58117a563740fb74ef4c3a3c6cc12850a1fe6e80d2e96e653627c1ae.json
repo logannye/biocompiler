@@ -1,0 +1,1 @@
+{"$type":"dataclass","class":"biocompiler.compiler.pipeline.ScopedObligation","fields":{"description":"Exercise the required response.","evidence_kind":{"$type":"enum","class":"biocompiler.verification.evidence.EvidenceKind","value":"model_conditional"},"id":"response","scope":"synthetic"}}

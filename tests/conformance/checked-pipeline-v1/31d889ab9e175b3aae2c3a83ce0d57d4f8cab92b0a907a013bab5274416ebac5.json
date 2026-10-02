@@ -1,0 +1,1 @@
+{"$type":"dataclass","class":"biocompiler.compiler.pipeline.ScopedObligation","fields":{"description":"Construct preserves exact selected membership, reference coordinates and source requirements.","evidence_kind":{"$type":"enum","class":"biocompiler.verification.evidence.EvidenceKind","value":"exact"},"id":"construct_layout","scope":"reference_construct"}}

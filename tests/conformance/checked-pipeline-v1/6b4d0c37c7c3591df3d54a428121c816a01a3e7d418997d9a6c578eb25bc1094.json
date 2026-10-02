@@ -1,0 +1,1 @@
+{"$type":"mapping","class":"builtins.dict","items":[["args",{"$type":"tuple","items":["molecular"]}],["kwargs",{"$type":"mapping","class":"builtins.dict","items":[["scope","exact_cds"]]}],["subject",{"$type":"manager","id":"manager/1840"}],["bound",{"$type":"mapping","class":"builtins.dict","items":[["identity","molecular"],["scope","exact_cds"]]}]]}

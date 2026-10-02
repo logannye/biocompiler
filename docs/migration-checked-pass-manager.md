@@ -54,13 +54,32 @@ budget; no public wire input can register code or fabricate a callback identity.
 ## Evidence and remaining work
 
 The prior synthetic corpora ran the 21 original pipeline tests but retained zero
-manager API observations. A separate capture now runs the complete inherited
-cohort plus all discovered manager consumers, including package and Studio
-callers. It retains constructor and property observations, ordered manager
-commands, callback bodies/identities/closures/contexts/effects, exact exceptions,
-and complete manager state before and after calls. Native replay must account
-for every captured context; unported real compiler callbacks remain explicit
-pending obligations rather than substituted acceptance results.
+manager API observations. A separate capture passed all 467 unchanged original
+tests both before instrumentation (37.358 seconds) and during instrumentation
+(329.474 seconds), including package and Studio consumers. Both actual child
+process outputs remained exact. It retains 91,566 events, 1,596 callbacks,
+2,284 provider identities and 19,412 complete documents, including constructors,
+properties, ordered commands, callback bodies/identities/closures/contexts/effects,
+exact exceptions and complete manager state before and after calls.
+
+The complete index uses deterministic gzip storage with independently pinned
+compressed and expanded identities; all complete documents remain content-addressed.
+The bounded native projection retains all 21 original manager-test contexts.
+Its driver implements the original callback bodies and compares complete state,
+results and errors. Other real compiler callback cohorts remain retained with
+explicit pending native parity obligations. No recorded acceptance result becomes
+a native action, and native execution remains pending hosted validation.
+
+Eight Python integrity tests pass, including byte-for-byte reconstruction of the
+578,996,698-byte original capture from the full ledger and every document. The
+[archive manifest](../tests/conformance/checked-pipeline-full-v1.json) pins full
+inventory `1b8ce09b5bb39e9bec43dae64c00291716a5971349eafd14c1f9f7e2a6bb6117`;
+the [native projection](../tests/conformance/checked-pipeline-v1.json) pins
+`1c9391db642c9375cc73cd2e28fc49cc6fb5966e0c30d6e430cfe49946e0dcb6`.
+Another 51 focused fixture, boundary, CI-registration and inventory tests pass.
+These checks ran on Python 3.14.6 / macOS arm64. Three new native suites bring
+the hosted inventory to 94 suites per platform; all 36 workflow jobs remain
+required for exact-revision integration.
 
 The focused fixtures independently execute original Python assertions and retain
 thirteen complete domain records, nineteen original constructor rejections, full

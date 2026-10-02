@@ -1,0 +1,1 @@
+{"$type":"dataclass","class":"biocompiler.compiler.pipeline.CompletionProfile","fields":{"obligations":{"$type":"tuple","items":["behavior_preservation","finite_history_response"]},"schema":"biocompiler.synthetic_candidate.v0.4","scope":"synthetic_realization","stage":{"$type":"enum","class":"biocompiler.ir.stages.Stage","value":"molecular mechanism IR"}}}
