@@ -149,10 +149,30 @@ let () =
   let exact = K.check ~until ~limits:(K.make_limits ~max_request_bytes:request_bytes ()) request assembly frames in
   require (E.Check_result.fingerprint exact = E.Check_result.fingerprint result) "Exact wrapper request byte boundary changed acceptance";
   rejected "realization_input_limit" (fun () -> K.check ~until ~limits:(K.make_limits ~max_request_bytes:(request_bytes-1) ()) request assembly frames);
-  let report_bytes = String.length (Legacy_ascii.encode (E.Check_result.to_json result)) + 1 in
-  let exact = K.check ~until ~limits:(K.make_limits ~max_report_bytes:report_bytes ()) request assembly frames in
-  require (E.Check_result.fingerprint exact = E.Check_result.fingerprint result) "Exact final ASCII report boundary changed acceptance";
-  rejected "realization_report_limit" (fun () -> K.check ~until ~limits:(K.make_limits ~max_report_bytes:(report_bytes-1) ()) request assembly frames);
+  let report_raw = E.Check_result.to_json result in
+  let report_bytes = String.length (Legacy_ascii.encode report_raw) + 1 in
+  require (report_bytes=2238 && E.Check_result.fingerprint result=
+      "366affc8689804a93a6370d72d82140588cc2b88a71842e4a6e7b596fc06cfca")
+    "Independent final ASCII report bytes or identity changed";
+  (* The generic linker first reserves its UNKNOWN skeleton inside one array:
+     original Python's 2795-byte PASS grows by three outcome bytes and two
+     framing bytes. Its 2800-byte reservation precedes the 2238-byte outer
+     report reservation. Every phase must receive the same selected reduction. *)
+  let exact = K.check ~until ~limits:(K.make_limits ~max_report_bytes:2800 ()) request assembly frames in
+  require (E.Check_result.fingerprint exact = E.Check_result.fingerprint result)
+    "Exact preceding generic-link byte boundary changed acceptance";
+  rejected "composition_report_limit" (fun () -> K.check ~until
+    ~limits:(K.make_limits ~max_report_bytes:2799 ()) request assembly frames);
+  rejected "composition_report_limit" (fun () -> K.check ~until
+    ~limits:(K.make_limits ~max_report_bytes:report_bytes ()) request assembly frames);
+  (* Verify the smaller outer publication's exact/one-under boundary separately;
+     a whole-operation assertion cannot skip the larger earlier linker phase. *)
+  let module Budget = Bioc_realization_checker.Realization_budget in
+  let publication maximum = Budget.create ~limits:(Budget.make_limits ~max_report_bytes:maximum ()) () in
+  let exact = publication report_bytes in
+  Budget.reserve_report exact report_raw;
+  require ((Budget.usage exact).report_bytes=report_bytes) "Exact outer publication accounting changed";
+  rejected "realization_report_limit" (fun () -> Budget.reserve_report (publication (report_bytes-1)) report_raw);
   let first = List.hd frames in
   let rec cyclic = first :: cyclic in
   rejected "realization_input_limit" (fun () -> K.check ~until request assembly cyclic);
