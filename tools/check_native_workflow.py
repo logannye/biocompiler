@@ -222,9 +222,12 @@ class Corpus:
         add("boundary/work-one", "run", "run-verification-workflow", base["request"], origin="resource",
             limits={**defaults, "max_work": 1}, error={"code": "workflow_work_limit", "message":
                 "Independent checker work limit exceeded under biocompiler.verification_workflow.resources.v1.", "path": None})
+        # The same reduced publication budget reaches the leaf checker first.
+        # Its cumulative evidence reservation fails before the outer report can
+        # be constructed; retain that exact earliest diagnostic and null path.
         add("boundary/output-one-under", "run", "run-verification-workflow", base["request"], origin="resource",
-            limits={**defaults, "max_report_bytes": len(canonical(base)) - 1}, error={"code": "verification_exploration_limit",
-                "message": "Verification workflow exceeds its native resource boundary.", "path": ""})
+            limits={**defaults, "max_report_bytes": len(canonical(base)) - 1}, error={"code": "realization_report_limit",
+                "message": "Cumulative ASCII evidence publication exceeds its byte budget.", "path": None})
         model = deepcopy(next(item["expected"]["request"] for item in self.supplement["cases"] if item["name"] == "model_pass"))
         model["realization"]["behavior"]["name"] = "forged"
         add("boundary/authority-before-malformed-record", "replay", "replay-verification-workflow", model,
