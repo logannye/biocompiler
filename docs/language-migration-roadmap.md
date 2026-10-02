@@ -640,9 +640,10 @@ record current parent heads; previous partial native passes are historical only.
   comparisons for all 47,901 producer observations. The exact three-function AST
   witness preserves old default bodies and every original corpus pin. The new native suite retains four complete result
   fixtures and 42 original malformed authority messages; native execution is
-  hosted-only and pending. Complete installed public SDK campaigns, CLI integration,
-  topology/freshness/general registry APIs, package acceptance and default cutover
-  remain unfinished. No full recapture or rich legacy API parity is claimed by
+  hosted-only and pending. Installed public SDK campaigns and explicit CLI routing
+  are implemented in the following checkpoints; rich helpers are implemented in
+  the inspection checkpoint below. Their hosted acceptance, package acceptance
+  and default cutover remain unfinished. No full recapture or rich legacy API parity is claimed by
   this bounded checkpoint. See [explicit producer routing](native-synthetic-producer-routing.md).
 
 - [x] **LM-03 exact CLI runtime counterpart checkpoint:** the archived pre-route
@@ -701,6 +702,35 @@ record current parent heads; previous partial native passes are historical only.
   distribution and default cutover remain open; no broader LM exit is completed.
   The [public integration checkpoint](../protocol/migration-synthetic-public-checkpoint.json)
   records exact source hashes, corrected parent commits and local-only evidence.
+
+- [x] **LM-12/R6 P1 rich helper implementation checkpoint:** eight Core-only
+  operations and strict Python transport now expose topology, registry
+  lock/resolve/select/verification, selection outcome, coverage identities and
+  dependency comparison/freshness through immutable native views. Historical
+  views require explicit core context; helper receipts do not grant production
+  acceptance or empirical claims. Separate protocol and 28 original-Python
+  supplemental fixtures are pinned. Shared-budget checks and the 91st native
+  suite are wired into the existing 36-gate workflow; native execution remains
+  pending. See [inspection protocol](../protocol/synthetic-inspection-v1.md).
+
+- [x] **LM-03 rich helper local evidence checkpoint:** 23 client/public-view
+  tests pass, as do 13 corpus/campaign tests and seven final campaign tests
+  against the frozen client (overlapping scopes). The campaign executes all 28
+  supplemental public calls, eight Verify rejections and Verify capabilities
+  through 65 actual Python fixture children. Static CI/boundary checks pass 35
+  tests; lineage/inventory checks pass 32 tests; strict mypy passes all 16
+  adapter modules. All 72 older selection CLI fixture children pass against
+  the frozen sources. The regenerated inventory retains 3,162 entries. These
+  results establish local fixture/static behavior only, not native acceptance.
+
+- [ ] **LM-12/R6 P1 rich helper hosted acceptance:** execute all 9,632 retained
+  original occurrences plus 28 supplemental cases through installed public
+  helpers on both platforms and Python versions. Retain complete authority,
+  original values/properties/errors and raw native artifacts; independently
+  rehash and compare all four campaigns. All eight producer operations must
+  remain unavailable to Verify. Local Python fixture/static evidence cannot
+  close this gate, whole-program freshness, large-result transport, package
+  acceptance or default cutover.
 
 - [x] **LM-03 CI harness correction checkpoint:** the installed architecture
   guard now permits only the exact new parser-registration helpers while rejecting

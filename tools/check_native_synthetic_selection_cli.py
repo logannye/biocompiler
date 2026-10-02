@@ -53,7 +53,8 @@ SOURCES = ("tools/check_native_synthetic_selection_cli.py", "tests/test_native_s
 canonical, require, digest = r.canonical, r.require, r.digest
 PLATFORMS, PYTHONS, ROLES = r.PLATFORMS, r.PYTHONS, r.ROLES
 TRANSPORT_MODULES = {"biocompiler.core_client", "biocompiler.core_synthetic_producer",
-    "biocompiler.core_synthetic_producer_public", "biocompiler.synthetic_producer_backend", "biocompiler.synthetic_producer_cli"}
+    "biocompiler.core_synthetic_producer_public", "biocompiler.synthetic_producer_backend", "biocompiler.synthetic_producer_cli",
+    "biocompiler.core_synthetic_inspection"}
 CLI_CALLS = {"main", "_selection_command", "_bounded_text", "_publish_report", "_workflow_core_arguments",
     "_register_circuit_infrastructure_commands", "_architecture_core_arguments", "_synthetic_producer_core_arguments"}
 

@@ -37,6 +37,7 @@ EXECUTABLES = {
     "biocompiler-verify": ("bin/verify/dune", {"bioc_wire", "bioc_service"}, "verifier"),
 }
 TESTS = {
+    "test_synthetic_inspection_protocol": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_realization_checker", "bioc_compiler", "bioc_producer_service", "zarith"},
     "test_verification_workflow_authority": {"bioc_wire", "bioc_service", "bioc_domain", "bioc_checker", "bioc_realization_checker", "zarith"},
     "test_artifact_io": {"bioc_wire", "bioc_service", "bioc_checker", "bioc_realization_checker", "unix", "zarith"},
     "test_verification_workflow_service": {"bioc_wire", "bioc_service", "bioc_domain", "bioc_checker", "bioc_realization_checker", "zarith"},
@@ -411,6 +412,10 @@ def check_boundaries(root: Path):
                 }
                 expected_actions = ([["action", ["run", "%{test}", fixture_variables[name]]]]
                                     if name in fixture_variables else [])
+                if name == "test_synthetic_inspection_protocol":
+                    expected_actions = [["action", ["run", "%{test}",
+                        "%{env:BIOCOMPILER_SYNTHETIC_INSPECTION_FIXTURES=missing}",
+                        "%{env:BIOCOMPILER_SYNTHETIC_INSPECTION_DECLARATION=missing}"]]]
                 if actions != expected_actions:
                     raise BoundaryError(f"Changed native test action: {name}")
                 if name in tests or dependencies != TESTS[name]:

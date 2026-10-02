@@ -94,8 +94,8 @@ class PublicSyntheticProducerTests(unittest.TestCase):
             result.source_map["changed"] = ()
         with self.assertRaises(KeyError):
             result.mechanism.get("not-present")
-        with self.assertRaisesRegex(UnsupportedBehaviorError, "topological"):
-            result.mechanism.topological_nodes()
+        with self.assertRaisesRegex(UnsupportedBehaviorError, "explicit core context"):
+            restored.mechanism.topological_nodes()
 
     def test_selection_uses_native_summary_without_recomputing_rank_status_or_counts(self):
         with self.exchange(), patch("biocompiler.synthesis.selection.gate_count", side_effect=AssertionError("Python ranking")), \
@@ -117,7 +117,7 @@ class PublicSyntheticProducerTests(unittest.TestCase):
         chosen = next(item for item in result.alternatives if item.strategy == result.selected_strategy)
         self.assertIs(result.candidate, chosen.candidate)
 
-    def test_adaptation_exposes_full_nested_records_and_only_attached_lock_inspection(self):
+    def test_adaptation_exposes_full_nested_records_and_explicit_native_lock_inspection(self):
         with self.exchange():
             result = self.call(OPERATIONS[2])
         _, original = fixture(OPERATIONS[2])
@@ -125,7 +125,20 @@ class PublicSyntheticProducerTests(unittest.TestCase):
         self.assertEqual(result.acceptance.outcome.value, "pass")
         self.assertEqual(result.acceptance.fingerprint, hashlib.sha256(json.dumps(original["acceptance"],
             sort_keys=True, separators=(",", ":"), ensure_ascii=True).encode()).hexdigest())
-        records = result.registry.resolve(result.composition.registry_lock)
+        from biocompiler.core_synthetic_inspection import capability_profile as helper_profile
+        from test_core_synthetic_inspection import capabilities as helper_capabilities, receipt as helper_receipt
+        known = {(item["id"], item["version"], hashlib.sha256(encoded(item)).hexdigest()): item
+                 for item in original["registry"]["components"]}
+        resolved = {item["node_id"]: known[item["component_id"], item["version"], item["content_fingerprint"]]
+                    for item in original["composition"]["registry_lock"]["components"]}
+        helper_case = {"operation": "resolve-synthetic-registry", "payload": {"profile": helper_profile()["profile"], "limits": None,
+            "registry": original["registry"], "lock": original["composition"]["registry_lock"]}, "expected_value": {"instances": resolved}}
+        def helper_exchange(_executable, raw, _timeout, _cancelled):
+            request = json.loads(raw)
+            value = helper_capabilities() if request["operation"] == "capabilities" else helper_receipt(helper_case)
+            return encoded(envelope(request, value)), 0
+        with patch("biocompiler.core_client._exchange", side_effect=helper_exchange):
+            records = result.registry.resolve(result.composition.registry_lock)
         self.assertEqual(set(records), {item.node_id for item in result.composition.registry_lock.components})
         for edge in result.composition.connections:
             producer = records[edge.producer_instance].port(edge.producer_port)
@@ -133,15 +146,15 @@ class PublicSyntheticProducerTests(unittest.TestCase):
             for name in ("meaning", "dtype", "unit", "scope", "role", "compartment", "domain", "initialization"):
                 self.assertEqual(getattr(producer, name), getattr(consumer, name))
         records.clear()
-        self.assertTrue(result.registry.resolve(result.composition.registry_lock))
-        bad_lock = result.composition.registry_lock.to_dict()
-        bad_lock["registry_fingerprint"] = "0" * 64
-        with self.assertRaisesRegex(UnsupportedBehaviorError, "exact attached"):
-            result.registry.resolve(bad_lock)
-        with self.assertRaisesRegex(UnsupportedBehaviorError, "freshness"):
-            result.acceptance.is_fresh(result.acceptance.dependencies)
-        with self.assertRaisesRegex(UnsupportedBehaviorError, "coverage"):
-            _ = result.acceptance.exercised_requirement_ids
+        with patch("biocompiler.core_client._exchange", side_effect=helper_exchange):
+            self.assertTrue(result.registry.resolve(result.composition.registry_lock))
+        historical = NativeSyntheticComposition.from_dict(result.to_dict())
+        with self.assertRaisesRegex(UnsupportedBehaviorError, "explicit core context"):
+            historical.registry.resolve(result.composition.registry_lock)
+        with self.assertRaisesRegex(UnsupportedBehaviorError, "explicit core context"):
+            historical.acceptance.is_fresh(result.acceptance.dependencies)
+        with self.assertRaisesRegex(UnsupportedBehaviorError, "explicit core context"):
+            _ = historical.acceptance.exercised_requirement_ids
 
     def test_authored_inputs_serialize_only_in_marked_input_phase(self):
         from biocompiler.compiler.request import RealizationRequest
