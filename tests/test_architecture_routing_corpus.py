@@ -4,11 +4,13 @@ from copy import deepcopy
 import sys
 from types import FunctionType
 import unittest
+from unittest.mock import patch
 
 import biocompiler as bc
 from tools.check_architecture_producer_protocol import Corpus, digest
 from tools.check_architecture_protocol import Corpus as CheckerCorpus
 from tools.check_architecture_routing import EXPECTED_CHECKS, _document, coherent_mutations, routed_execution
+from tools import check_architecture_routing as routing
 
 
 class ArchitectureRoutingCorpusTests(unittest.TestCase):
@@ -73,6 +75,78 @@ class ArchitectureRoutingCorpusTests(unittest.TestCase):
                 with routed_execution():
                     function()
             self.assertIs(sys.getprofile(), previous)
+
+    def test_guard_caches_code_policy_and_keeps_every_observation(self):
+        def allowed():
+            return True
+
+        code = allowed.__code__.replace(co_name="to_dict", co_qualname="BuildRequest.to_dict")
+        function = FunctionType(code, {"__name__": "biocompiler.compiler.request"})
+        with patch.object(routing, "_frame_policy", wraps=routing._frame_policy) as classify:
+            with routed_execution() as seen:
+                for _ in range(100):
+                    self.assertTrue(function())
+                self.assertEqual(seen, {"biocompiler.compiler.request.BuildRequest.to_dict"})
+                seen.clear()
+                function()
+            self.assertEqual(seen, {"biocompiler.compiler.request.BuildRequest.to_dict"})
+            self.assertEqual(classify.call_count, 1)
+            with routed_execution():
+                function()
+            self.assertEqual(classify.call_count, 2)
+
+    def test_cached_policy_rechecks_current_globals_and_shared_code_module(self):
+        def allowed():
+            return True
+
+        code = allowed.__code__.replace(co_name="to_dict", co_qualname="BuildRequest.to_dict")
+        namespace = {"__name__": "biocompiler.compiler.request"}
+        first = FunctionType(code, namespace)
+        other = FunctionType(code, {"__name__": "biocompiler.compiler.behavior"})
+        for mutate, forbidden in ((lambda: None, other),
+                                  (lambda: namespace.update(__name__="biocompiler.compiler.behavior"), first)):
+            namespace["__name__"] = "biocompiler.compiler.request"
+            previous = sys.getprofile()
+            with self.assertRaisesRegex(AssertionError, "Python semantic authority executed"):
+                with routed_execution():
+                    first()
+                    mutate()
+                    forbidden()
+            self.assertIs(sys.getprofile(), previous)
+
+    def test_cached_policy_does_not_authorize_replaced_function_code(self):
+        def function():
+            return True
+
+        allowed = function.__code__.replace(co_name="to_dict", co_qualname="BuildRequest.to_dict")
+        forbidden = function.__code__.replace(co_name="_resolve_authority", co_qualname="_resolve_authority")
+        target = FunctionType(allowed, {"__name__": "biocompiler.compiler.request"})
+        with self.assertRaisesRegex(AssertionError, "Python semantic authority executed"):
+            with routed_execution():
+                target()
+                target.__code__ = forbidden
+                target()
+
+    def test_generated_method_checks_current_self_and_mutable_type_identity(self):
+        namespace = {"__name__": "biocompiler.compiler.request"}
+        exec(compile("def __init__(self):\n    pass\n", "<string>", "exec"), namespace)
+        function = namespace["__init__"]
+        for change in ("self", "module", "qualname"):
+            allowed = type("BuildRequest", (), {"__module__": "biocompiler.compiler.request"})
+            instance = allowed()
+            bad = type("Unapproved", (), {"__module__": "biocompiler.compiler.request"})()
+            with self.subTest(change=change), self.assertRaisesRegex(AssertionError, "Python semantic authority executed"):
+                with routed_execution() as seen:
+                    function(instance)
+                    function(instance)
+                    self.assertEqual(seen, {"biocompiler.compiler.request.__init__"})
+                    if change == "self":
+                        instance = bad
+                    elif change == "module":
+                        allowed.__module__ = "biocompiler.compiler.behavior"
+                    else:
+                        allowed.__qualname__ = "Unapproved"
+                    function(instance)
 
 
 if __name__ == "__main__":
