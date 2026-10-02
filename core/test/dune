@@ -464,3 +464,21 @@
  (modules test_synthetic_inspection_protocol)
  (libraries bioc_wire bioc_domain bioc_checker bioc_realization_checker bioc_compiler bioc_producer_service zarith)
  (action (run %{test} %{env:BIOCOMPILER_SYNTHETIC_INSPECTION_FIXTURES=missing} %{env:BIOCOMPILER_SYNTHETIC_INSPECTION_DECLARATION=missing})))
+
+(test
+ (name test_pipeline_contract)
+ (modules test_pipeline_contract)
+ (libraries bioc_wire bioc_domain zarith)
+ (action (run %{test} %{env:BIOCOMPILER_PIPELINE_CONTRACT_LITERALS=missing})))
+
+(test
+ (name test_pass_manager)
+ (modules test_pass_manager)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_compiler zarith)
+ (action (run %{test} %{env:BIOCOMPILER_PIPELINE_CONTRACT_LITERALS=missing})))
+
+(test
+ (name test_checked_pipeline_corpus)
+ (modules test_checked_pipeline_corpus)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_compiler zarith)
+ (action (run %{test} %{env:BIOCOMPILER_CHECKED_PIPELINE_CORPUS=missing})))

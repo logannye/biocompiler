@@ -1,0 +1,1 @@
+{"$type":"dataclass","class":"biocompiler.compiler.passes.PassResult","fields":{"obligations":{"$type":"tuple","items":[]},"observation_map":{"$type":"mapping","class":"builtins.dict","items":[]},"output":null,"search_status":"no_candidate_found","source_links":{"$type":"tuple","items":[]}}}

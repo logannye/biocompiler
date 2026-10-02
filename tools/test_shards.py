@@ -29,6 +29,10 @@ PLAN_SCHEMA = "biocompiler.unittest_shard_plan.v1"
 RESULT_SCHEMA = "biocompiler.unittest_shard_result.v1"
 ACCOUNTING_SCHEMA = "biocompiler.unittest_shard_accounting.v1"
 SUCCESS = {"success", "skipped", "expected_failure"}
+JSON_MAX_BYTES = 20_000_000
+# Plans retain the complete tracked source/data inventory. Large conformance
+# corpora can exceed the result/weight bound without adding a single test.
+PLAN_MAX_BYTES = 64 * 1024 * 1024
 
 
 class ShardError(ValueError):
@@ -45,7 +49,7 @@ def digest(value):
                                      allow_nan=False).encode()).hexdigest()
 
 
-def read_json(path):
+def read_json(path, *, max_bytes=JSON_MAX_BYTES):
     def unique(pairs):
         result = {}
         for key, value in pairs:
@@ -56,20 +60,34 @@ def read_json(path):
     def nonfinite(value):
         raise ShardError("Nonfinite JSON number: " + value)
 
-    require(Path(path).stat().st_size <= 20_000_000, "Shard JSON input exceeds the 20 MB limit.")
-    return json.loads(Path(path).read_text(encoding="utf-8"), object_pairs_hook=unique,
+    require(type(max_bytes) is int and max_bytes > 0, "Invalid shard JSON byte limit.")
+    require(Path(path).stat().st_size <= max_bytes, f"Shard JSON input exceeds the {max_bytes}-byte limit.")
+    # Bound the actual read too: a file can grow after the initial size check.
+    with Path(path).open("rb") as stream:
+        payload = stream.read(max_bytes + 1)
+    require(len(payload) <= max_bytes, f"Shard JSON input exceeds the {max_bytes}-byte limit.")
+    return json.loads(payload.decode("utf-8"), object_pairs_hook=unique,
                       parse_constant=nonfinite)
 
 
-def write_json(path, value):
+def write_json(path, value, *, max_bytes=JSON_MAX_BYTES):
+    require(type(max_bytes) is int and max_bytes > 0, "Invalid shard JSON byte limit.")
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
-    payload = json.dumps(value, indent=2, sort_keys=True, allow_nan=False) + "\n"
-    with tempfile.NamedTemporaryFile(mode="w", encoding="utf-8", dir=path.parent,
+    encoder = json.JSONEncoder(indent=2, sort_keys=True, allow_nan=False)
+    with tempfile.NamedTemporaryFile(mode="wb", dir=path.parent,
                                      prefix="." + path.name, delete=False) as stream:
         temporary = Path(stream.name)
         try:
-            stream.write(payload)
+            written = 0
+            for chunk in encoder.iterencode(value):
+                raw = chunk.encode("utf-8")
+                written += len(raw)
+                # Reserve the final newline before committing any output.
+                require(written + 1 <= max_bytes,
+                        f"Shard JSON output exceeds the {max_bytes}-byte limit.")
+                stream.write(raw)
+            stream.write(b"\n")
             stream.flush()
             temporary.replace(path)
         finally:
@@ -442,9 +460,9 @@ def main(argv=None):
         if args.command == "plan":
             found = discover(args.root, args.start_directory, args.pattern)
             output = make_plan(found, env, args.shards, read_json(args.weights))
-            write_json(args.output, output)
+            write_json(args.output, output, max_bytes=PLAN_MAX_BYTES)
         else:
-            plan = read_json(args.plan)
+            plan = read_json(args.plan, max_bytes=PLAN_MAX_BYTES)
             found = discover(args.root, plan["discovery"]["start_directory"], plan["discovery"]["pattern"])
             if args.command == "run":
                 output = execute_shard(plan, found, env, args.shard, args.output)

@@ -1,0 +1,1 @@
+{"$type":"mapping","class":"builtins.dict","items":[["id","human_predicate_refinement"],["scope","therapeutic_implementation"],["evidence_kind","unresolved"],["description","The original refined predicate and typed threshold remain required without a supplied sensing implementation."]]}
