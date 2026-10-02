@@ -1,0 +1,120 @@
+{
+  "failed_channels": {},
+  "histories": {
+    "n000001": [
+      {
+        "contacts": {},
+        "signals": {
+          "n000005": {
+            "high": null,
+            "low": null,
+            "present": true,
+            "value": null
+          }
+        },
+        "time": 0
+      }
+    ],
+    "n000002": [
+      {
+        "contacts": {},
+        "signals": {
+          "n000012": {
+            "high": null,
+            "low": null,
+            "present": false,
+            "value": null
+          },
+          "n000018": {
+            "high": null,
+            "low": null,
+            "present": false,
+            "value": null
+          },
+          "n000022": {
+            "high": null,
+            "low": null,
+            "present": null,
+            "value": 3
+          }
+        },
+        "time": 0
+      },
+      {
+        "contacts": {},
+        "signals": {
+          "n000012": {
+            "high": null,
+            "low": null,
+            "present": false,
+            "value": null
+          },
+          "n000018": {
+            "high": null,
+            "low": null,
+            "present": true,
+            "value": null
+          },
+          "n000022": {
+            "high": null,
+            "low": null,
+            "present": null,
+            "value": 3
+          }
+        },
+        "time": 4
+      },
+      {
+        "contacts": {},
+        "signals": {
+          "n000012": {
+            "high": null,
+            "low": null,
+            "present": false,
+            "value": null
+          },
+          "n000018": {
+            "high": null,
+            "low": null,
+            "present": false,
+            "value": null
+          },
+          "n000022": {
+            "high": null,
+            "low": null,
+            "present": null,
+            "value": 3
+          }
+        },
+        "time": 5
+      },
+      {
+        "contacts": {},
+        "signals": {
+          "n000012": {
+            "high": null,
+            "low": null,
+            "present": true,
+            "value": null
+          },
+          "n000018": {
+            "high": null,
+            "low": null,
+            "present": false,
+            "value": null
+          },
+          "n000022": {
+            "high": null,
+            "low": null,
+            "present": null,
+            "value": 3
+          }
+        },
+        "time": 6
+      }
+    ]
+  },
+  "max_samples": 1000,
+  "step": 1,
+  "until": 7
+}

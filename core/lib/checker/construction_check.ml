@@ -29,10 +29,22 @@ let candidate_differences actual expected =
   if List.map Molecule_set.Amount.fingerprint (A.experimental_amounts actual) <> List.map Molecule_set.Amount.fingerprint (A.experimental_amounts expected) then add "fail:experimental_amount_authority";
   if A.fingerprint actual <> A.fingerprint expected && Inventory.elements diagnostics = [] then add "fail:complete_candidate_identity";
   diagnostics
-let check ~expected_request candidate =
+let resource_profile = "biocompiler.construction_check.resources.v1"
+let max_work = 50_000_000
+let make_budget ?parent ?(maximum=max_work) () =
+  Diagnostic.require (maximum>=0 && maximum<=max_work) "construction_resource_limit" "Construction check exceeds its fixed work ceiling.";
+  match parent with None -> Work_budget.create ~profile:resource_profile ~error_code:"construction_resource_limit" ~maximum ()
+  | Some parent -> Work_budget.nested ~parent ~profile:resource_profile ~error_code:"construction_resource_limit" ~maximum ()
+let check ?parent ?(maximum=max_work) ~expected_request candidate = Construction_reconstruction.protect (fun () ->
+  let budget=make_budget ?parent ~maximum () in
+  Work_budget.charge budget 1;
+  Construction_reconstruction.reserve_json budget (C.Request.to_json expected_request);
+  Construction_reconstruction.reserve_json budget (A.to_json candidate);
   let request = C.Request.of_json (C.Request.to_json expected_request) in
   let actual = A.of_json (A.to_json candidate) in
-  let expected,transitions = Construction_reconstruction.reconstruct request in
+  let expected,transitions = Construction_reconstruction.reconstruct ~budget request in
+  Construction_reconstruction.reserve_json budget (A.to_json actual);
+  Construction_reconstruction.reserve_json budget (A.to_json expected);
   let diagnostics = candidate_differences actual expected in
   let add = Inventory.add diagnostics in
   List.iter (fun step -> match C.Operation.specification (C.Transform_step.operation step) with
@@ -43,14 +55,14 @@ let check ~expected_request candidate =
       let last = match String.rindex_opt code ':' with None -> code | Some index -> String.sub code (index + 1) (String.length code - index - 1) in
       let status = if last = "nominal_incomplete" then "unknown" else if String.starts_with ~prefix:"invalid_" last then "fail" else "unsupported" in
       add (status ^ ":" ^ code)) (A.diagnostics expected);
-  let transition_budget = Transition_check.make_budget () in
+  let transition_budget = Transition_check.make_budget ~parent:budget () in
   List.iter (fun (transition : Construction_reconstruction.transition) ->
       let resolution = Transition_check.resolve ~budget:transition_budget (C.Product_port.chemistry_transition transition.port)
           (C.Product_port.feature_transition transition.port) ~inputs:transition.inputs ~output_sequence:(A.Value.sequence transition.product)
           ~output_space:(A.Value.space transition.product) ~derivation:(A.Value.segments transition.product) ~sequence_extent:(A.Value.sequence_extent transition.product) in
       List.iter (fun item -> add ("fail:step:" ^ C.Transform_step.id transition.step ^ ":" ^ item)) (Transition_check.diagnostics resolution);
       List.iter (fun item -> add ("unsupported:step:" ^ C.Transform_step.id transition.step ^ ":" ^ item)) (Transition_check.unsupported resolution)) transitions;
-  Option.iter (fun bundle -> let result = Payload_structure_check.check ~contracts:(C.Request.payload_structures request) ~bundle in
+  Option.iter (fun bundle -> let result = Payload_structure_check.check_with_parent ~parent:(Some budget) ~contracts:(C.Request.payload_structures request) ~bundle in
       List.iter (fun item -> add ("fail:" ^ item)) result.diagnostics;
       List.iter (fun item -> add ("unsupported:" ^ item)) result.unsupported) (A.bundle expected);
   if A.bundle expected = None && Inventory.elements diagnostics = [] then add "fail:missing_final_bundle";
@@ -59,9 +71,9 @@ let check ~expected_request candidate =
   let outcome = if List.mem "fail" statuses then E.Fail else if List.mem "unsupported" statuses then E.Unsupported
     else if List.mem "unknown" statuses then E.Unknown else E.Pass in
   E.make ~request_fingerprint:(C.Request.fingerprint request) ~candidate_fingerprint:(A.fingerprint actual)
-    ~reconstructed_fingerprint:(A.fingerprint expected) ~outcome ~complete:(outcome = E.Pass) ~diagnostics:values
-let replay ~expected_request ~candidate assessment =
+    ~reconstructed_fingerprint:(A.fingerprint expected) ~outcome ~complete:(outcome = E.Pass) ~diagnostics:values)
+let replay ?parent ?maximum ~expected_request ~candidate assessment =
   let saved = E.of_json (E.to_json assessment) in
-  let fresh = check ~expected_request candidate in
+  let fresh = check ?parent ?maximum ~expected_request candidate in
   Diagnostic.require (E.fingerprint saved = E.fingerprint fresh) "construction_assessment_mismatch" "Construction assessment differs from fresh complete replay.";
   fresh

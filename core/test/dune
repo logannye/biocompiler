@@ -14,6 +14,31 @@
  (libraries bioc_wire bioc_service))
 
 (test
+ (name test_source_transport)
+ (modules test_source_transport)
+ (libraries bioc_wire bioc_domain bioc_semantics bioc_checker bioc_source_adapter zarith))
+
+(test
+ (name test_construction_producer)
+ (modules test_construction_producer)
+ (libraries bioc_wire bioc_domain bioc_compiler bioc_checker zarith))
+
+(test
+ (name test_source_execution)
+ (modules test_source_execution)
+ (libraries bioc_wire bioc_domain bioc_compiler bioc_checker zarith))
+
+(test
+ (name test_architecture_matching)
+ (modules test_architecture_matching)
+ (libraries bioc_wire bioc_domain bioc_compiler bioc_checker zarith))
+
+(test
+ (name test_architecture_producer)
+ (modules test_architecture_producer)
+ (libraries bioc_wire bioc_domain bioc_compiler bioc_checker zarith))
+
+(test
  (name test_domain)
  (modules test_domain)
  (libraries bioc_wire bioc_domain))

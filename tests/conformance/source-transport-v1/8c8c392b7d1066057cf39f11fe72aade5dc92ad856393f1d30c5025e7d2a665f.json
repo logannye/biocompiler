@@ -1,0 +1,1017 @@
+{
+  "assumptions": [
+    "All RNA members in this role's group are assumed present in the same recipient cell.",
+    "Declared transport latency is one second; persistence is two seconds; loss clears receiver signal.",
+    "The helper RNA and payload RNA are assumed available in the same recipient from startup.",
+    "The supplied artificial material conditionally implements the complete declared executable model; empirical function is unknown."
+  ],
+  "build_fingerprint": "14706a826cd3c2952640dfd88e380de3256a105d132536c0987d6fbf541ccf44",
+  "channel_frames": [
+    {
+      "failed_channel_ids": [],
+      "receiver_values": {
+        "n000011": 0
+      },
+      "sent": {
+        "a000_transport.n000003": {
+          "delivery_time": 1,
+          "value": 1
+        }
+      },
+      "time": 0
+    },
+    {
+      "failed_channel_ids": [],
+      "receiver_values": {
+        "n000011": 1
+      },
+      "sent": {
+        "a000_transport.n000003": {
+          "delivery_time": 2,
+          "value": 1
+        }
+      },
+      "time": 1
+    },
+    {
+      "failed_channel_ids": [],
+      "receiver_values": {
+        "n000011": 1
+      },
+      "sent": {
+        "a000_transport.n000003": {
+          "delivery_time": 3,
+          "value": 1
+        }
+      },
+      "time": 2
+    },
+    {
+      "failed_channel_ids": [],
+      "receiver_values": {
+        "n000011": 1
+      },
+      "sent": {
+        "a000_transport.n000003": {
+          "delivery_time": 4,
+          "value": 1
+        }
+      },
+      "time": 3
+    },
+    {
+      "failed_channel_ids": [],
+      "receiver_values": {
+        "n000011": 1
+      },
+      "sent": {
+        "a000_transport.n000003": {
+          "delivery_time": 5,
+          "value": 1
+        }
+      },
+      "time": 4
+    },
+    {
+      "failed_channel_ids": [],
+      "receiver_values": {
+        "n000011": 1
+      },
+      "sent": {
+        "a000_transport.n000003": {
+          "delivery_time": 6,
+          "value": 1
+        }
+      },
+      "time": 5
+    },
+    {
+      "failed_channel_ids": [],
+      "receiver_values": {
+        "n000011": 1
+      },
+      "sent": {
+        "a000_transport.n000003": {
+          "delivery_time": 7,
+          "value": 1
+        }
+      },
+      "time": 6
+    },
+    {
+      "failed_channel_ids": [],
+      "receiver_values": {
+        "n000011": 1
+      },
+      "sent": {
+        "a000_transport.n000003": {
+          "delivery_time": 8,
+          "value": 1
+        }
+      },
+      "time": 7
+    }
+  ],
+  "channels": [
+    {
+      "aggregation": "single_sender",
+      "assumptions": [
+        "Declared transport latency is one second; persistence is two seconds; loss clears receiver signal."
+      ],
+      "failure_mode": "clear",
+      "id": "a000_transport.n000003",
+      "initial_value": {
+        "canonical_value": 0,
+        "kind": "scalar",
+        "type": {
+          "arguments": [],
+          "dimensions": {},
+          "kind": "scalar",
+          "name": "Level"
+        },
+        "unit": "1",
+        "value": 0
+      },
+      "latency_seconds": 1,
+      "persistence_seconds": 2,
+      "receiver_node_id": "n000011",
+      "receiver_role": "n000002",
+      "schema_version": "biocompiler.architecture_channel.v0.1",
+      "sender_node_id": "n000008",
+      "sender_role": "n000001",
+      "source_channel_id": "n000003"
+    }
+  ],
+  "failed_channels": {},
+  "histories": {
+    "n000001": [
+      {
+        "contacts": {},
+        "signals": {
+          "n000005": {
+            "high": null,
+            "low": null,
+            "present": true,
+            "value": null
+          }
+        },
+        "time": 0
+      },
+      {
+        "contacts": {},
+        "signals": {
+          "n000005": {
+            "high": null,
+            "low": null,
+            "present": true,
+            "value": null
+          }
+        },
+        "time": 1
+      },
+      {
+        "contacts": {},
+        "signals": {
+          "n000005": {
+            "high": null,
+            "low": null,
+            "present": true,
+            "value": null
+          }
+        },
+        "time": 2
+      },
+      {
+        "contacts": {},
+        "signals": {
+          "n000005": {
+            "high": null,
+            "low": null,
+            "present": true,
+            "value": null
+          }
+        },
+        "time": 3
+      },
+      {
+        "contacts": {},
+        "signals": {
+          "n000005": {
+            "high": null,
+            "low": null,
+            "present": true,
+            "value": null
+          }
+        },
+        "time": 4
+      },
+      {
+        "contacts": {},
+        "signals": {
+          "n000005": {
+            "high": null,
+            "low": null,
+            "present": true,
+            "value": null
+          }
+        },
+        "time": 5
+      },
+      {
+        "contacts": {},
+        "signals": {
+          "n000005": {
+            "high": null,
+            "low": null,
+            "present": true,
+            "value": null
+          }
+        },
+        "time": 6
+      },
+      {
+        "contacts": {},
+        "signals": {
+          "n000005": {
+            "high": null,
+            "low": null,
+            "present": true,
+            "value": null
+          }
+        },
+        "time": 7
+      }
+    ],
+    "n000002": [
+      {
+        "contacts": {},
+        "signals": {
+          "n000011": {
+            "high": null,
+            "low": null,
+            "present": null,
+            "value": 0
+          },
+          "n000012": {
+            "high": null,
+            "low": null,
+            "present": false,
+            "value": null
+          },
+          "n000018": {
+            "high": null,
+            "low": null,
+            "present": false,
+            "value": null
+          },
+          "n000022": {
+            "high": null,
+            "low": null,
+            "present": null,
+            "value": 3
+          }
+        },
+        "time": 0
+      },
+      {
+        "contacts": {},
+        "signals": {
+          "n000011": {
+            "high": null,
+            "low": null,
+            "present": null,
+            "value": 1
+          },
+          "n000012": {
+            "high": null,
+            "low": null,
+            "present": false,
+            "value": null
+          },
+          "n000018": {
+            "high": null,
+            "low": null,
+            "present": false,
+            "value": null
+          },
+          "n000022": {
+            "high": null,
+            "low": null,
+            "present": null,
+            "value": 3
+          }
+        },
+        "time": 1
+      },
+      {
+        "contacts": {},
+        "signals": {
+          "n000011": {
+            "high": null,
+            "low": null,
+            "present": null,
+            "value": 1
+          },
+          "n000012": {
+            "high": null,
+            "low": null,
+            "present": false,
+            "value": null
+          },
+          "n000018": {
+            "high": null,
+            "low": null,
+            "present": false,
+            "value": null
+          },
+          "n000022": {
+            "high": null,
+            "low": null,
+            "present": null,
+            "value": 3
+          }
+        },
+        "time": 2
+      },
+      {
+        "contacts": {},
+        "signals": {
+          "n000011": {
+            "high": null,
+            "low": null,
+            "present": null,
+            "value": 1
+          },
+          "n000012": {
+            "high": null,
+            "low": null,
+            "present": false,
+            "value": null
+          },
+          "n000018": {
+            "high": null,
+            "low": null,
+            "present": false,
+            "value": null
+          },
+          "n000022": {
+            "high": null,
+            "low": null,
+            "present": null,
+            "value": 3
+          }
+        },
+        "time": 3
+      },
+      {
+        "contacts": {},
+        "signals": {
+          "n000011": {
+            "high": null,
+            "low": null,
+            "present": null,
+            "value": 1
+          },
+          "n000012": {
+            "high": null,
+            "low": null,
+            "present": false,
+            "value": null
+          },
+          "n000018": {
+            "high": null,
+            "low": null,
+            "present": true,
+            "value": null
+          },
+          "n000022": {
+            "high": null,
+            "low": null,
+            "present": null,
+            "value": 3
+          }
+        },
+        "time": 4
+      },
+      {
+        "contacts": {},
+        "signals": {
+          "n000011": {
+            "high": null,
+            "low": null,
+            "present": null,
+            "value": 1
+          },
+          "n000012": {
+            "high": null,
+            "low": null,
+            "present": false,
+            "value": null
+          },
+          "n000018": {
+            "high": null,
+            "low": null,
+            "present": false,
+            "value": null
+          },
+          "n000022": {
+            "high": null,
+            "low": null,
+            "present": null,
+            "value": 3
+          }
+        },
+        "time": 5
+      },
+      {
+        "contacts": {},
+        "signals": {
+          "n000011": {
+            "high": null,
+            "low": null,
+            "present": null,
+            "value": 1
+          },
+          "n000012": {
+            "high": null,
+            "low": null,
+            "present": true,
+            "value": null
+          },
+          "n000018": {
+            "high": null,
+            "low": null,
+            "present": false,
+            "value": null
+          },
+          "n000022": {
+            "high": null,
+            "low": null,
+            "present": null,
+            "value": 3
+          }
+        },
+        "time": 6
+      },
+      {
+        "contacts": {},
+        "signals": {
+          "n000011": {
+            "high": null,
+            "low": null,
+            "present": null,
+            "value": 1
+          },
+          "n000012": {
+            "high": null,
+            "low": null,
+            "present": true,
+            "value": null
+          },
+          "n000018": {
+            "high": null,
+            "low": null,
+            "present": false,
+            "value": null
+          },
+          "n000022": {
+            "high": null,
+            "low": null,
+            "present": null,
+            "value": 3
+          }
+        },
+        "time": 7
+      }
+    ]
+  },
+  "horizon_seconds": 7,
+  "policies": {
+    "absent_signal": "declared_initial_value_when_no_active_sender_contribution",
+    "aggregation": "active_sender_contributions; single_sender_sum_or_max_as_declared",
+    "channel_sampling": "settled_action_requests_at_declared_grid_only",
+    "claim_scope": "sampled_abstract_execution_under_declared_contracts_no_physiological_prediction",
+    "delivery": "prior_queued_outputs_delivered_before_all_current_role_evaluations",
+    "failure": "delivery_tick; clear_discards_contribution; retain_last_freezes_for_failed_tick",
+    "latency": "strictly_positive_integer_grid_multiple",
+    "max_role_evaluations": 10000,
+    "max_samples": 1000,
+    "persistence": "since_latest_delivery_exclusive_expiry; None_means_indefinite",
+    "profile": "biocompiler.sampled_architecture_transport.v0.1",
+    "qualitative_encoding": "unsupported_without_explicit_encoding_contract"
+  },
+  "request_fingerprint": "f7b86fff929f05a555cf8d4990640f85c98cc94873e85be73d3b0d3fb2133f7e",
+  "results": {
+    "n000001": {
+      "behavior_fingerprint": "16226cc47f643a84f0efb5628f99535d1b1a095c83eb92b14476105989f77e8b",
+      "execution_profile": "abstract_multirole_sampled.v0.2",
+      "frames": [
+        {
+          "actions": [
+            {
+              "action_id": "n000008",
+              "attributes": {
+                "channel_id": "n000003",
+                "channel_name": "artificial_alert",
+                "ongoing": true,
+                "value": "expression"
+              },
+              "contact_id": null,
+              "expires_at": null,
+              "kind": "action.emit",
+              "requirement_ids": [
+                "requirement:n000009"
+              ],
+              "rule_id": "n000009",
+              "rule_source": {
+                "file": "examples/payload_architectures.py",
+                "function": "source_program",
+                "line": 75
+              },
+              "source": {
+                "file": "examples/payload_architectures.py",
+                "function": "source_program",
+                "line": 75
+              },
+              "specification_id": "n000008",
+              "specification_source": {
+                "file": "examples/payload_architectures.py",
+                "function": "source_program",
+                "line": 75
+              },
+              "started_at": null,
+              "values": {
+                "value": 1
+              }
+            }
+          ],
+          "events": [],
+          "memories": {},
+          "microsteps": 1,
+          "reactions": [],
+          "states": {},
+          "time": 0
+        },
+        {
+          "actions": [
+            {
+              "action_id": "n000008",
+              "attributes": {
+                "channel_id": "n000003",
+                "channel_name": "artificial_alert",
+                "ongoing": true,
+                "value": "expression"
+              },
+              "contact_id": null,
+              "expires_at": null,
+              "kind": "action.emit",
+              "requirement_ids": [
+                "requirement:n000009"
+              ],
+              "rule_id": "n000009",
+              "rule_source": {
+                "file": "examples/payload_architectures.py",
+                "function": "source_program",
+                "line": 75
+              },
+              "source": {
+                "file": "examples/payload_architectures.py",
+                "function": "source_program",
+                "line": 75
+              },
+              "specification_id": "n000008",
+              "specification_source": {
+                "file": "examples/payload_architectures.py",
+                "function": "source_program",
+                "line": 75
+              },
+              "started_at": null,
+              "values": {
+                "value": 1
+              }
+            }
+          ],
+          "events": [],
+          "memories": {},
+          "microsteps": 1,
+          "reactions": [],
+          "states": {},
+          "time": 1
+        },
+        {
+          "actions": [
+            {
+              "action_id": "n000008",
+              "attributes": {
+                "channel_id": "n000003",
+                "channel_name": "artificial_alert",
+                "ongoing": true,
+                "value": "expression"
+              },
+              "contact_id": null,
+              "expires_at": null,
+              "kind": "action.emit",
+              "requirement_ids": [
+                "requirement:n000009"
+              ],
+              "rule_id": "n000009",
+              "rule_source": {
+                "file": "examples/payload_architectures.py",
+                "function": "source_program",
+                "line": 75
+              },
+              "source": {
+                "file": "examples/payload_architectures.py",
+                "function": "source_program",
+                "line": 75
+              },
+              "specification_id": "n000008",
+              "specification_source": {
+                "file": "examples/payload_architectures.py",
+                "function": "source_program",
+                "line": 75
+              },
+              "started_at": null,
+              "values": {
+                "value": 1
+              }
+            }
+          ],
+          "events": [],
+          "memories": {},
+          "microsteps": 1,
+          "reactions": [],
+          "states": {},
+          "time": 2
+        },
+        {
+          "actions": [
+            {
+              "action_id": "n000008",
+              "attributes": {
+                "channel_id": "n000003",
+                "channel_name": "artificial_alert",
+                "ongoing": true,
+                "value": "expression"
+              },
+              "contact_id": null,
+              "expires_at": null,
+              "kind": "action.emit",
+              "requirement_ids": [
+                "requirement:n000009"
+              ],
+              "rule_id": "n000009",
+              "rule_source": {
+                "file": "examples/payload_architectures.py",
+                "function": "source_program",
+                "line": 75
+              },
+              "source": {
+                "file": "examples/payload_architectures.py",
+                "function": "source_program",
+                "line": 75
+              },
+              "specification_id": "n000008",
+              "specification_source": {
+                "file": "examples/payload_architectures.py",
+                "function": "source_program",
+                "line": 75
+              },
+              "started_at": null,
+              "values": {
+                "value": 1
+              }
+            }
+          ],
+          "events": [],
+          "memories": {},
+          "microsteps": 1,
+          "reactions": [],
+          "states": {},
+          "time": 3
+        },
+        {
+          "actions": [
+            {
+              "action_id": "n000008",
+              "attributes": {
+                "channel_id": "n000003",
+                "channel_name": "artificial_alert",
+                "ongoing": true,
+                "value": "expression"
+              },
+              "contact_id": null,
+              "expires_at": null,
+              "kind": "action.emit",
+              "requirement_ids": [
+                "requirement:n000009"
+              ],
+              "rule_id": "n000009",
+              "rule_source": {
+                "file": "examples/payload_architectures.py",
+                "function": "source_program",
+                "line": 75
+              },
+              "source": {
+                "file": "examples/payload_architectures.py",
+                "function": "source_program",
+                "line": 75
+              },
+              "specification_id": "n000008",
+              "specification_source": {
+                "file": "examples/payload_architectures.py",
+                "function": "source_program",
+                "line": 75
+              },
+              "started_at": null,
+              "values": {
+                "value": 1
+              }
+            }
+          ],
+          "events": [],
+          "memories": {},
+          "microsteps": 1,
+          "reactions": [],
+          "states": {},
+          "time": 4
+        },
+        {
+          "actions": [
+            {
+              "action_id": "n000008",
+              "attributes": {
+                "channel_id": "n000003",
+                "channel_name": "artificial_alert",
+                "ongoing": true,
+                "value": "expression"
+              },
+              "contact_id": null,
+              "expires_at": null,
+              "kind": "action.emit",
+              "requirement_ids": [
+                "requirement:n000009"
+              ],
+              "rule_id": "n000009",
+              "rule_source": {
+                "file": "examples/payload_architectures.py",
+                "function": "source_program",
+                "line": 75
+              },
+              "source": {
+                "file": "examples/payload_architectures.py",
+                "function": "source_program",
+                "line": 75
+              },
+              "specification_id": "n000008",
+              "specification_source": {
+                "file": "examples/payload_architectures.py",
+                "function": "source_program",
+                "line": 75
+              },
+              "started_at": null,
+              "values": {
+                "value": 1
+              }
+            }
+          ],
+          "events": [],
+          "memories": {},
+          "microsteps": 1,
+          "reactions": [],
+          "states": {},
+          "time": 5
+        },
+        {
+          "actions": [
+            {
+              "action_id": "n000008",
+              "attributes": {
+                "channel_id": "n000003",
+                "channel_name": "artificial_alert",
+                "ongoing": true,
+                "value": "expression"
+              },
+              "contact_id": null,
+              "expires_at": null,
+              "kind": "action.emit",
+              "requirement_ids": [
+                "requirement:n000009"
+              ],
+              "rule_id": "n000009",
+              "rule_source": {
+                "file": "examples/payload_architectures.py",
+                "function": "source_program",
+                "line": 75
+              },
+              "source": {
+                "file": "examples/payload_architectures.py",
+                "function": "source_program",
+                "line": 75
+              },
+              "specification_id": "n000008",
+              "specification_source": {
+                "file": "examples/payload_architectures.py",
+                "function": "source_program",
+                "line": 75
+              },
+              "started_at": null,
+              "values": {
+                "value": 1
+              }
+            }
+          ],
+          "events": [],
+          "memories": {},
+          "microsteps": 1,
+          "reactions": [],
+          "states": {},
+          "time": 6
+        },
+        {
+          "actions": [
+            {
+              "action_id": "n000008",
+              "attributes": {
+                "channel_id": "n000003",
+                "channel_name": "artificial_alert",
+                "ongoing": true,
+                "value": "expression"
+              },
+              "contact_id": null,
+              "expires_at": null,
+              "kind": "action.emit",
+              "requirement_ids": [
+                "requirement:n000009"
+              ],
+              "rule_id": "n000009",
+              "rule_source": {
+                "file": "examples/payload_architectures.py",
+                "function": "source_program",
+                "line": 75
+              },
+              "source": {
+                "file": "examples/payload_architectures.py",
+                "function": "source_program",
+                "line": 75
+              },
+              "specification_id": "n000008",
+              "specification_source": {
+                "file": "examples/payload_architectures.py",
+                "function": "source_program",
+                "line": 75
+              },
+              "started_at": null,
+              "values": {
+                "value": 1
+              }
+            }
+          ],
+          "events": [],
+          "memories": {},
+          "microsteps": 1,
+          "reactions": [],
+          "states": {},
+          "time": 7
+        }
+      ],
+      "horizon": 7,
+      "role": "n000001",
+      "source_fingerprint": "4b4e0f446552cd3be60e9815a7198a9ff3f0662e71338221f0692ccc81880247"
+    },
+    "n000002": {
+      "behavior_fingerprint": "16226cc47f643a84f0efb5628f99535d1b1a095c83eb92b14476105989f77e8b",
+      "execution_profile": "abstract_multirole_sampled.v0.2",
+      "frames": [
+        {
+          "actions": [],
+          "events": [],
+          "memories": {},
+          "microsteps": 1,
+          "reactions": [],
+          "states": {
+            "n000020": "prime"
+          },
+          "time": 0
+        },
+        {
+          "actions": [
+            {
+              "action_id": "n000051",
+              "attributes": {
+                "ongoing": true,
+                "product": "artificial_alpha",
+                "rate": "unspecified",
+                "secretion_id": "n000050"
+              },
+              "contact_id": null,
+              "expires_at": null,
+              "kind": "action.secrete",
+              "requirement_ids": [
+                "requirement:n000052"
+              ],
+              "rule_id": "n000052",
+              "rule_source": {
+                "file": "examples/payload_architectures.py",
+                "function": "source_program",
+                "line": 90
+              },
+              "source": {
+                "file": "examples/payload_architectures.py",
+                "function": "source_program",
+                "line": 90
+              },
+              "specification_id": "n000051",
+              "specification_source": {
+                "file": "examples/payload_architectures.py",
+                "function": "source_program",
+                "line": 90
+              },
+              "started_at": null,
+              "values": {}
+            }
+          ],
+          "events": [],
+          "memories": {},
+          "microsteps": 2,
+          "reactions": [],
+          "states": {
+            "n000020": "act"
+          },
+          "time": 1
+        },
+        {
+          "actions": [],
+          "events": [],
+          "memories": {},
+          "microsteps": 1,
+          "reactions": [],
+          "states": {
+            "n000020": "act"
+          },
+          "time": 2
+        },
+        {
+          "actions": [],
+          "events": [],
+          "memories": {},
+          "microsteps": 2,
+          "reactions": [],
+          "states": {
+            "n000020": "recover"
+          },
+          "time": 3
+        },
+        {
+          "actions": [],
+          "events": [],
+          "memories": {},
+          "microsteps": 2,
+          "reactions": [],
+          "states": {
+            "n000020": "prime"
+          },
+          "time": 4
+        },
+        {
+          "actions": [],
+          "events": [],
+          "memories": {},
+          "microsteps": 2,
+          "reactions": [],
+          "states": {
+            "n000020": "act"
+          },
+          "time": 5
+        },
+        {
+          "actions": [],
+          "events": [],
+          "memories": {},
+          "microsteps": 2,
+          "reactions": [],
+          "states": {
+            "n000020": "recover"
+          },
+          "time": 6
+        },
+        {
+          "actions": [],
+          "events": [],
+          "memories": {},
+          "microsteps": 1,
+          "reactions": [],
+          "states": {
+            "n000020": "recover"
+          },
+          "time": 7
+        }
+      ],
+      "horizon": 7,
+      "role": "n000002",
+      "source_fingerprint": "4b4e0f446552cd3be60e9815a7198a9ff3f0662e71338221f0692ccc81880247"
+    }
+  },
+  "schema_version": "biocompiler.architecture_execution_result.v0.1",
+  "step_seconds": 1
+}

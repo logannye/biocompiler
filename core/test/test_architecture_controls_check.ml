@@ -47,6 +47,9 @@ let literals () =
   rejected "standalone work bound" "architecture_control_limit" (fun () -> C.prove ~budget:tiny input);
   let parent = W.create ~profile:"independent test" ~error_code:"architecture_resource_limit" ~maximum:1 () in
   rejected "parent work bound" "architecture_resource_limit" (fun () -> C.prove ~budget:(C.make_budget ~parent ()) input);
+  let parent = W.create ~profile:"caller" ~error_code:"caller_stopped" ~maximum:1 () in
+  rejected "custom parent must not become unsupported theorem" "caller_stopped"
+    (fun () -> C.prove ~budget:(C.make_budget ~parent ()) input);
   let parent = W.create ~profile:"cumulative test" ~error_code:"architecture_resource_limit" ~maximum:active.work () in
   ignore (C.prove ~budget:(C.make_budget ~parent ()) input);
   rejected "cumulative parent cannot reset across calls" "architecture_resource_limit" (fun () -> C.prove ~budget:(C.make_budget ~parent ()) input);

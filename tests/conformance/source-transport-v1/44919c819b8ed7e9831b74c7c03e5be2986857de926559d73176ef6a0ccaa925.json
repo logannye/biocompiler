@@ -1,0 +1,1 @@
+{"base":"05f3b73be566310097068436f86b0c87c17b910c070407a5dce4b39460d83765","edits":[{"op":"set","path":["failed_channels","a000_transport.n000003"],"value":[2]}],"schema_version":"biocompiler.test_document_delta.v1"}

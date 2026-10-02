@@ -1,0 +1,431 @@
+{
+  "artifact_scope": "abstract_behavior",
+  "behavior_profile": "biocompiler.behavior.v0.2",
+  "explicit_overrides": {},
+  "implementation_constraints": {},
+  "intent": {
+    "name": "control_source_production_adjustment",
+    "nodes": [
+      {
+        "attributes": {
+          "cell_type": "human_T_cell",
+          "engineering": "in_vivo",
+          "name": "recipient"
+        },
+        "data_type": null,
+        "id": "n000001",
+        "inputs": [],
+        "kind": "role",
+        "role": null,
+        "source": {
+          "file": "examples/architecture_control_designs.py",
+          "function": "source_program",
+          "line": 33
+        }
+      },
+      {
+        "attributes": {
+          "name": "environment",
+          "scope": "environment"
+        },
+        "data_type": null,
+        "id": "n000002",
+        "inputs": [
+          "n000001"
+        ],
+        "kind": "scope",
+        "role": "n000001",
+        "source": {
+          "file": "examples/architecture_control_designs.py",
+          "function": "source_program",
+          "line": 48
+        }
+      },
+      {
+        "attributes": {
+          "name": "adjust",
+          "observation": "signal",
+          "scope": "environment"
+        },
+        "data_type": {
+          "arguments": [],
+          "dimensions": {},
+          "kind": "scalar",
+          "name": "Level"
+        },
+        "id": "n000003",
+        "inputs": [
+          "n000002"
+        ],
+        "kind": "signal",
+        "role": "n000001",
+        "source": {
+          "file": "examples/architecture_control_designs.py",
+          "function": "source_program",
+          "line": 48
+        }
+      },
+      {
+        "attributes": {
+          "band": "present"
+        },
+        "data_type": {
+          "arguments": [],
+          "dimensions": {},
+          "kind": "condition",
+          "name": "Condition"
+        },
+        "id": "n000004",
+        "inputs": [
+          "n000003"
+        ],
+        "kind": "qualitative",
+        "role": "n000001",
+        "source": {
+          "file": "examples/architecture_control_designs.py",
+          "function": "source_program",
+          "line": 48
+        }
+      },
+      {
+        "attributes": {
+          "activity": "requires_rule_or_controller",
+          "default": false,
+          "name": "basal",
+          "product": "artificial_alpha"
+        },
+        "data_type": null,
+        "id": "n000005",
+        "inputs": [
+          "n000001"
+        ],
+        "kind": "secretion",
+        "role": "n000001",
+        "source": {
+          "file": "examples/architecture_control_designs.py",
+          "function": "source_program",
+          "line": 49
+        }
+      },
+      {
+        "attributes": {
+          "activity": "requires_rule_or_controller",
+          "default": false,
+          "name": "boosted",
+          "product": "artificial_alpha"
+        },
+        "data_type": null,
+        "id": "n000006",
+        "inputs": [
+          "n000001"
+        ],
+        "kind": "secretion",
+        "role": "n000001",
+        "source": {
+          "file": "examples/architecture_control_designs.py",
+          "function": "source_program",
+          "line": 50
+        }
+      },
+      {
+        "attributes": {},
+        "data_type": {
+          "arguments": [],
+          "dimensions": {},
+          "kind": "condition",
+          "name": "Condition"
+        },
+        "id": "n000007",
+        "inputs": [
+          "n000004"
+        ],
+        "kind": "not",
+        "role": "n000001",
+        "source": {
+          "file": "examples/architecture_control_designs.py",
+          "function": "source_program",
+          "line": 51
+        }
+      },
+      {
+        "attributes": {
+          "value": {
+            "canonical_value": 1,
+            "kind": "scalar",
+            "type": {
+              "arguments": [],
+              "dimensions": {
+                "amount": 1,
+                "time": -1
+              },
+              "kind": "scalar",
+              "name": "ProductionRate"
+            },
+            "unit": "mol/s",
+            "value": 1
+          }
+        },
+        "data_type": {
+          "arguments": [],
+          "dimensions": {
+            "amount": 1,
+            "time": -1
+          },
+          "kind": "scalar",
+          "name": "ProductionRate"
+        },
+        "id": "n000008",
+        "inputs": [],
+        "kind": "literal",
+        "role": null,
+        "source": {
+          "file": "examples/architecture_control_designs.py",
+          "function": "source_program",
+          "line": 51
+        }
+      },
+      {
+        "attributes": {
+          "ongoing": true,
+          "rate": "expression"
+        },
+        "data_type": null,
+        "id": "n000009",
+        "inputs": [
+          "n000005",
+          "n000008"
+        ],
+        "kind": "action.secrete",
+        "role": "n000001",
+        "source": {
+          "file": "examples/architecture_control_designs.py",
+          "function": "source_program",
+          "line": 51
+        }
+      },
+      {
+        "attributes": {
+          "execution": "concurrent",
+          "priority": "unspecified",
+          "trigger": "condition"
+        },
+        "data_type": null,
+        "id": "n000010",
+        "inputs": [
+          "n000001",
+          "n000007",
+          "n000009"
+        ],
+        "kind": "rule",
+        "role": "n000001",
+        "source": {
+          "file": "examples/architecture_control_designs.py",
+          "function": "source_program",
+          "line": 51
+        }
+      },
+      {
+        "attributes": {
+          "value": {
+            "canonical_value": 3,
+            "kind": "scalar",
+            "type": {
+              "arguments": [],
+              "dimensions": {
+                "amount": 1,
+                "time": -1
+              },
+              "kind": "scalar",
+              "name": "ProductionRate"
+            },
+            "unit": "mol/s",
+            "value": 3
+          }
+        },
+        "data_type": {
+          "arguments": [],
+          "dimensions": {
+            "amount": 1,
+            "time": -1
+          },
+          "kind": "scalar",
+          "name": "ProductionRate"
+        },
+        "id": "n000011",
+        "inputs": [],
+        "kind": "literal",
+        "role": null,
+        "source": {
+          "file": "examples/architecture_control_designs.py",
+          "function": "source_program",
+          "line": 52
+        }
+      },
+      {
+        "attributes": {
+          "ongoing": true,
+          "rate": "expression"
+        },
+        "data_type": null,
+        "id": "n000012",
+        "inputs": [
+          "n000006",
+          "n000011"
+        ],
+        "kind": "action.secrete",
+        "role": "n000001",
+        "source": {
+          "file": "examples/architecture_control_designs.py",
+          "function": "source_program",
+          "line": 52
+        }
+      },
+      {
+        "attributes": {
+          "execution": "concurrent",
+          "priority": "unspecified",
+          "trigger": "condition"
+        },
+        "data_type": null,
+        "id": "n000013",
+        "inputs": [
+          "n000001",
+          "n000004",
+          "n000012"
+        ],
+        "kind": "rule",
+        "role": "n000001",
+        "source": {
+          "file": "examples/architecture_control_designs.py",
+          "function": "source_program",
+          "line": 52
+        }
+      }
+    ],
+    "roots": [
+      "n000001",
+      "n000005",
+      "n000006",
+      "n000010",
+      "n000013"
+    ],
+    "schema_version": "biocompiler.intent.v0.1"
+  },
+  "parameter_metadata": {},
+  "preferences": {},
+  "provenance": {
+    "dependency_identities": {},
+    "external_inputs": {},
+    "locations": {},
+    "recorded_at": null,
+    "schema_version": "biocompiler.elaboration_provenance.v0.1",
+    "source_identities": {}
+  },
+  "resolved_bindings": {},
+  "resolved_defaults": {},
+  "schema_version": "biocompiler.build_request.v0.1",
+  "target": {
+    "capabilities": [],
+    "compartments": [
+      "cytoplasm"
+    ],
+    "context_id": "illustrative_human_target",
+    "context_version": "1",
+    "human_target": {
+      "cell_state": {
+        "basis": "unestablished",
+        "description": "Required recipient activation/differentiation state remains unspecified.",
+        "evidence_ids": [],
+        "limitations": "Illustrative requirement only; applicable evidence has not been supplied.",
+        "schema_version": "biocompiler.target_claim.v0.1"
+      },
+      "cell_subtype": {
+        "basis": "unestablished",
+        "description": "Human CD8-positive T-cell recipients; subtype refinement remains open.",
+        "evidence_ids": [],
+        "limitations": "Illustrative requirement only; applicable evidence has not been supplied.",
+        "schema_version": "biocompiler.target_claim.v0.1"
+      },
+      "disease_context": {
+        "basis": "unestablished",
+        "description": "Intended disease context remains to be selected.",
+        "evidence_ids": [],
+        "limitations": "Illustrative requirement only; applicable evidence has not been supplied.",
+        "schema_version": "biocompiler.target_claim.v0.1"
+      },
+      "engineering": "in_vivo",
+      "evidence": [],
+      "host_dependencies": [
+        {
+          "capability": "host_translation",
+          "compartment": "cytoplasm",
+          "id": "translation",
+          "schema_version": "biocompiler.human_host_dependency.v0.1",
+          "support": {
+            "basis": "unestablished",
+            "description": "Host translation support requires context-matched evidence.",
+            "evidence_ids": [],
+            "limitations": "Illustrative requirement only; applicable evidence has not been supplied.",
+            "schema_version": "biocompiler.target_claim.v0.1"
+          }
+        }
+      ],
+      "operating_conditions": [
+        {
+          "compartment": "cytoplasm",
+          "domain": {
+            "dtype": {
+              "arguments": [],
+              "dimensions": {},
+              "kind": "scalar",
+              "name": "Level"
+            },
+            "kind": "unknown",
+            "lower": null,
+            "reason": "No supported resource operating range is established.",
+            "schema_version": "biocompiler.component_value_domain.v0.1",
+            "unit": "1",
+            "upper": null,
+            "values": []
+          },
+          "id": "resource_availability",
+          "observable": "available_translation_resources",
+          "schema_version": "biocompiler.human_operating_condition.v0.1",
+          "support": {
+            "basis": "unestablished",
+            "description": "Supported intracellular resource conditions remain unresolved.",
+            "evidence_ids": [],
+            "limitations": "Illustrative requirement only; applicable evidence has not been supplied.",
+            "schema_version": "biocompiler.target_claim.v0.1"
+          }
+        }
+      ],
+      "population_exclusion": {
+        "basis": "unestablished",
+        "description": "Population exclusions require an explicit applicability review.",
+        "evidence_ids": [],
+        "limitations": "Illustrative requirement only; applicable evidence has not been supplied.",
+        "schema_version": "biocompiler.target_claim.v0.1"
+      },
+      "population_inclusion": {
+        "basis": "unestablished",
+        "description": "Eligible human population and inclusion criteria remain unresolved.",
+        "evidence_ids": [],
+        "limitations": "Illustrative requirement only; applicable evidence has not been supplied.",
+        "schema_version": "biocompiler.target_claim.v0.1"
+      },
+      "recipient_taxon_id": 9606,
+      "schema_version": "biocompiler.human_target_contract.v0.1",
+      "tissue_context": {
+        "basis": "unestablished",
+        "description": "Intended human tissue context remains to be selected.",
+        "evidence_ids": [],
+        "limitations": "Illustrative requirement only; applicable evidence has not been supplied.",
+        "schema_version": "biocompiler.target_claim.v0.1"
+      }
+    },
+    "payload_format": "RNA",
+    "resources": {},
+    "schema_version": "biocompiler.human_target_context.v0.1"
+  }
+}

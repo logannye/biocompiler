@@ -1,0 +1,237 @@
+{
+  "assembly": [
+    {
+      "destination": {
+        "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+        "space_id": "source.space",
+        "spans": [
+          {
+            "end": 9,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 0
+          }
+        ],
+        "strand": "+"
+      },
+      "id": "source.origin",
+      "provenance": {
+        "authority": [
+          {
+            "content_fingerprint": "e695428008efd480c8e931ac8f4acf39ee2b9ca650bd26470f64b0437a3bd7db",
+            "id": "artificial-molecule-notice",
+            "kind": "source",
+            "schema_version": "biocompiler.component_identity.v0.1",
+            "version": "1"
+          }
+        ],
+        "locator": "examples/circuit_molecules.py:source",
+        "reason": "Artificial source-frame and annotation declarations only; the notice pin does not verify any bases or biology.",
+        "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+        "status": "declared"
+      },
+      "schema_version": "biocompiler.assembly_origin.v0.1",
+      "source_path": {
+        "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+        "space_id": "source.declared_source_space",
+        "spans": [
+          {
+            "end": 9,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 0
+          }
+        ],
+        "strand": "+"
+      },
+      "source_space": {
+        "alphabet": "RNA",
+        "axis": "5prime_to_3prime",
+        "id": "source.declared_source_space",
+        "length": 9,
+        "schema_version": "biocompiler.molecule_coordinate_space.v0.1",
+        "topology": "linear"
+      }
+    }
+  ],
+  "chemistry": {
+    "cap": {
+      "identity": null,
+      "provenance": {
+        "authority": [
+          {
+            "content_fingerprint": "e695428008efd480c8e931ac8f4acf39ee2b9ca650bd26470f64b0437a3bd7db",
+            "id": "artificial-molecule-notice",
+            "kind": "source",
+            "schema_version": "biocompiler.component_identity.v0.1",
+            "version": "1"
+          }
+        ],
+        "locator": "examples/circuit_molecules.py:chemistry",
+        "reason": "Artificial source-frame and annotation declarations only; the notice pin does not verify any bases or biology.",
+        "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+        "status": "declared"
+      },
+      "schema_version": "biocompiler.chemistry_claim.v0.1",
+      "status": "absent"
+    },
+    "finish_end": {
+      "identity": {
+        "accession": "hydroxyl",
+        "namespace": "software_fixture.chemical",
+        "schema_version": "biocompiler.chemical_identity.v0.1",
+        "version": "1"
+      },
+      "provenance": {
+        "authority": [
+          {
+            "content_fingerprint": "e695428008efd480c8e931ac8f4acf39ee2b9ca650bd26470f64b0437a3bd7db",
+            "id": "artificial-molecule-notice",
+            "kind": "source",
+            "schema_version": "biocompiler.component_identity.v0.1",
+            "version": "1"
+          }
+        ],
+        "locator": "examples/circuit_molecules.py:chemistry",
+        "reason": "Artificial source-frame and annotation declarations only; the notice pin does not verify any bases or biology.",
+        "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+        "status": "declared"
+      },
+      "schema_version": "biocompiler.chemistry_claim.v0.1",
+      "status": "declared"
+    },
+    "modification_inventory_provenance": {
+      "authority": [
+        {
+          "content_fingerprint": "e695428008efd480c8e931ac8f4acf39ee2b9ca650bd26470f64b0437a3bd7db",
+          "id": "artificial-molecule-notice",
+          "kind": "source",
+          "schema_version": "biocompiler.component_identity.v0.1",
+          "version": "1"
+        }
+      ],
+      "locator": "examples/circuit_molecules.py:chemistry",
+      "reason": "Artificial source-frame and annotation declarations only; the notice pin does not verify any bases or biology.",
+      "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+      "status": "declared"
+    },
+    "modification_inventory_status": "unknown",
+    "modifications": [],
+    "schema_version": "biocompiler.molecule_chemistry.v0.1",
+    "start_end": {
+      "identity": {
+        "accession": "hydroxyl",
+        "namespace": "software_fixture.chemical",
+        "schema_version": "biocompiler.chemical_identity.v0.1",
+        "version": "1"
+      },
+      "provenance": {
+        "authority": [
+          {
+            "content_fingerprint": "e695428008efd480c8e931ac8f4acf39ee2b9ca650bd26470f64b0437a3bd7db",
+            "id": "artificial-molecule-notice",
+            "kind": "source",
+            "schema_version": "biocompiler.component_identity.v0.1",
+            "version": "1"
+          }
+        ],
+        "locator": "examples/circuit_molecules.py:chemistry",
+        "reason": "Artificial source-frame and annotation declarations only; the notice pin does not verify any bases or biology.",
+        "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+        "status": "declared"
+      },
+      "schema_version": "biocompiler.chemistry_claim.v0.1",
+      "status": "declared"
+    },
+    "terminal_tail": {
+      "length": {
+        "exact": 0,
+        "lower": null,
+        "mode": "exact",
+        "schema_version": "biocompiler.tail_length.v0.1",
+        "upper": null
+      },
+      "path": null,
+      "placement": "absent",
+      "provenance": {
+        "authority": [
+          {
+            "content_fingerprint": "e695428008efd480c8e931ac8f4acf39ee2b9ca650bd26470f64b0437a3bd7db",
+            "id": "artificial-molecule-notice",
+            "kind": "source",
+            "schema_version": "biocompiler.component_identity.v0.1",
+            "version": "1"
+          }
+        ],
+        "locator": "examples/circuit_molecules.py:chemistry",
+        "reason": "Artificial source-frame and annotation declarations only; the notice pin does not verify any bases or biology.",
+        "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+        "status": "declared"
+      },
+      "schema_version": "biocompiler.tail_declaration.v0.1",
+      "status": "declared"
+    }
+  },
+  "coding_status": "coding",
+  "features": [
+    {
+      "id": "payload_region",
+      "kind": "nominal_test_region",
+      "path": {
+        "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+        "space_id": "source.space",
+        "spans": [
+          {
+            "end": 1,
+            "schema_version": "biocompiler.molecule_index_span.v0.1",
+            "start": 0
+          }
+        ],
+        "strand": "+"
+      },
+      "provenance": {
+        "authority": [
+          {
+            "content_fingerprint": "e695428008efd480c8e931ac8f4acf39ee2b9ca650bd26470f64b0437a3bd7db",
+            "id": "artificial-molecule-notice",
+            "kind": "source",
+            "schema_version": "biocompiler.component_identity.v0.1",
+            "version": "1"
+          }
+        ],
+        "locator": "examples/circuit_molecules.py:declared-region",
+        "reason": "Artificial source-frame and annotation declarations only; the notice pin does not verify any bases or biology.",
+        "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+        "status": "declared"
+      },
+      "reading_frame": null,
+      "schema_version": "biocompiler.molecule_feature.v0.1"
+    }
+  ],
+  "form": "delivered_rna",
+  "id": "source",
+  "provenance": {
+    "authority": [
+      {
+        "content_fingerprint": "e695428008efd480c8e931ac8f4acf39ee2b9ca650bd26470f64b0437a3bd7db",
+        "id": "artificial-molecule-notice",
+        "kind": "source",
+        "schema_version": "biocompiler.component_identity.v0.1",
+        "version": "1"
+      }
+    ],
+    "locator": "examples/circuit_molecules.py:source",
+    "reason": "Artificial source-frame and annotation declarations only; the notice pin does not verify any bases or biology.",
+    "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+    "status": "declared"
+  },
+  "schema_version": "biocompiler.circuit_molecule.v0.1",
+  "sequence": "AUGGCUUAA",
+  "sequence_extent": "complete",
+  "space": {
+    "alphabet": "RNA",
+    "axis": "5prime_to_3prime",
+    "id": "source.space",
+    "length": 9,
+    "schema_version": "biocompiler.molecule_coordinate_space.v0.1",
+    "topology": "linear"
+  }
+}

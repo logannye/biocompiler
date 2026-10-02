@@ -1,13 +1,16 @@
 open Bioc_wire
 
 let capabilities = Json.Object [
-    "operations", Json.Array (List.map (fun value -> Json.String value) ["capabilities"; "canonicalize"; "validate-intent"; "verify-lowering"]);
+    "schema_version", Json.String "biocompiler.core_capabilities.v1";
+    "operations", Json.Array (List.map (fun value -> Json.String value) ["capabilities"; "canonicalize"; "validate-intent"; "verify-lowering"; "verify-architecture"; "replay-architecture"]);
     "intent_schemas", Json.Array [Json.String Bioc_domain.Intent.schema_version];
     "canonicalization", Json.String "python-json-v1";
     "validation_scopes", Json.Array [Json.String Bioc_domain.Intent.validation_scope;
-                                     Json.String Bioc_checker.Lowering_check.validation_scope];
+                                     Json.String Bioc_checker.Lowering_check.validation_scope;
+                                     Json.String Architecture_service.validation_scope];
+    "profiles", Json.Object ["architecture", Architecture_service.profile];
     "limits", Protocol.limits;
-    "claim_scope", Json.String "Structural intent validation and exact frozen source-to-Behavior correspondence only; no execution, architecture acceptance, molecular correctness, empirical function or human-use admission."
+    "claim_scope", Json.String "Structural intent validation, frozen source-to-Behavior correspondence and supplied architecture contract checking only. No candidate execution, search completeness, empirical function or human-use admission."
   ]
 
 let handle _executable (request : Protocol.request) =
@@ -22,6 +25,8 @@ let handle _executable (request : Protocol.request) =
           "canonical_json", Json.String canonical_json;
           "sha256", Json.String (Canonical.sha256 canonical_json)]), []
   | "validate-intent" -> Protocol.Ok, Some (Bioc_checker.Intent_check.check request.payload), []
+  | "verify-architecture" -> Protocol.Ok, Some (Architecture_service.verify ~replay:false request.payload), []
+  | "replay-architecture" -> Protocol.Ok, Some (Architecture_service.verify ~replay:true request.payload), []
   | "verify-lowering" ->
       let fields = Json.object_fields request.payload in
       Json.exact_fields ["expected_request"; "behavior"] fields;

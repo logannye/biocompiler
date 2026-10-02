@@ -1,0 +1,367 @@
+{
+  "assumptions": [],
+  "id": "event",
+  "operation": {
+    "canonical_edits": [],
+    "chemical_edits": [
+      {
+        "after": {
+          "accession": "inosine",
+          "namespace": "biocompiler.chemical",
+          "schema_version": "biocompiler.chemical_identity.v0.1",
+          "version": "1"
+        },
+        "before": null,
+        "parent": "A",
+        "position": 1,
+        "schema_version": "biocompiler.chemical_base_edit.v0.1"
+      }
+    ],
+    "input": {
+      "path": null,
+      "schema_version": "biocompiler.construction_value_selection.v0.1",
+      "value": {
+        "id": "rna",
+        "kind": "root",
+        "schema_version": "biocompiler.construction_value_ref.v0.1"
+      }
+    },
+    "schema_version": "biocompiler.construction_base_editing.v0.1"
+  },
+  "ports": [
+    {
+      "alphabet": "RNA",
+      "chemistry_transition": {
+        "dispositions": [
+          {
+            "component": "cap",
+            "decision": "declared_replacement",
+            "destination_components": [
+              "cap"
+            ],
+            "provenance": {
+              "authority": [
+                {
+                  "content_fingerprint": "e695428008efd480c8e931ac8f4acf39ee2b9ca650bd26470f64b0437a3bd7db",
+                  "id": "artificial-molecule-notice",
+                  "kind": "source",
+                  "schema_version": "biocompiler.component_identity.v0.1",
+                  "version": "1"
+                }
+              ],
+              "locator": "examples/circuit_molecules.py:recoding-fixture",
+              "reason": "Artificial source-frame and annotation declarations only; the notice pin does not verify any bases or biology.",
+              "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+              "status": "declared"
+            },
+            "schema_version": "biocompiler.chemistry_disposition.v0.1",
+            "source_id": "rna"
+          },
+          {
+            "component": "finish_end",
+            "decision": "declared_replacement",
+            "destination_components": [
+              "finish_end"
+            ],
+            "provenance": {
+              "authority": [
+                {
+                  "content_fingerprint": "e695428008efd480c8e931ac8f4acf39ee2b9ca650bd26470f64b0437a3bd7db",
+                  "id": "artificial-molecule-notice",
+                  "kind": "source",
+                  "schema_version": "biocompiler.component_identity.v0.1",
+                  "version": "1"
+                }
+              ],
+              "locator": "examples/circuit_molecules.py:recoding-fixture",
+              "reason": "Artificial source-frame and annotation declarations only; the notice pin does not verify any bases or biology.",
+              "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+              "status": "declared"
+            },
+            "schema_version": "biocompiler.chemistry_disposition.v0.1",
+            "source_id": "rna"
+          },
+          {
+            "component": "modification_inventory",
+            "decision": "declared_replacement",
+            "destination_components": [
+              "modification:wrong-I",
+              "modification_inventory"
+            ],
+            "provenance": {
+              "authority": [
+                {
+                  "content_fingerprint": "e695428008efd480c8e931ac8f4acf39ee2b9ca650bd26470f64b0437a3bd7db",
+                  "id": "artificial-molecule-notice",
+                  "kind": "source",
+                  "schema_version": "biocompiler.component_identity.v0.1",
+                  "version": "1"
+                }
+              ],
+              "locator": "examples/circuit_molecules.py:recoding-fixture",
+              "reason": "Artificial source-frame and annotation declarations only; the notice pin does not verify any bases or biology.",
+              "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+              "status": "declared"
+            },
+            "schema_version": "biocompiler.chemistry_disposition.v0.1",
+            "source_id": "rna"
+          },
+          {
+            "component": "start_end",
+            "decision": "declared_replacement",
+            "destination_components": [
+              "start_end"
+            ],
+            "provenance": {
+              "authority": [
+                {
+                  "content_fingerprint": "e695428008efd480c8e931ac8f4acf39ee2b9ca650bd26470f64b0437a3bd7db",
+                  "id": "artificial-molecule-notice",
+                  "kind": "source",
+                  "schema_version": "biocompiler.component_identity.v0.1",
+                  "version": "1"
+                }
+              ],
+              "locator": "examples/circuit_molecules.py:recoding-fixture",
+              "reason": "Artificial source-frame and annotation declarations only; the notice pin does not verify any bases or biology.",
+              "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+              "status": "declared"
+            },
+            "schema_version": "biocompiler.chemistry_disposition.v0.1",
+            "source_id": "rna"
+          },
+          {
+            "component": "terminal_tail",
+            "decision": "declared_replacement",
+            "destination_components": [
+              "terminal_tail"
+            ],
+            "provenance": {
+              "authority": [
+                {
+                  "content_fingerprint": "e695428008efd480c8e931ac8f4acf39ee2b9ca650bd26470f64b0437a3bd7db",
+                  "id": "artificial-molecule-notice",
+                  "kind": "source",
+                  "schema_version": "biocompiler.component_identity.v0.1",
+                  "version": "1"
+                }
+              ],
+              "locator": "examples/circuit_molecules.py:recoding-fixture",
+              "reason": "Artificial source-frame and annotation declarations only; the notice pin does not verify any bases or biology.",
+              "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+              "status": "declared"
+            },
+            "schema_version": "biocompiler.chemistry_disposition.v0.1",
+            "source_id": "rna"
+          }
+        ],
+        "mode": "explicit_output",
+        "output": {
+          "cap": {
+            "identity": null,
+            "provenance": {
+              "authority": [
+                {
+                  "content_fingerprint": "e695428008efd480c8e931ac8f4acf39ee2b9ca650bd26470f64b0437a3bd7db",
+                  "id": "artificial-molecule-notice",
+                  "kind": "source",
+                  "schema_version": "biocompiler.component_identity.v0.1",
+                  "version": "1"
+                }
+              ],
+              "locator": "examples/circuit_molecules.py:chemistry",
+              "reason": "Artificial source-frame and annotation declarations only; the notice pin does not verify any bases or biology.",
+              "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+              "status": "declared"
+            },
+            "schema_version": "biocompiler.chemistry_claim.v0.1",
+            "status": "absent"
+          },
+          "finish_end": {
+            "identity": {
+              "accession": "hydroxyl",
+              "namespace": "software_fixture.chemical",
+              "schema_version": "biocompiler.chemical_identity.v0.1",
+              "version": "1"
+            },
+            "provenance": {
+              "authority": [
+                {
+                  "content_fingerprint": "e695428008efd480c8e931ac8f4acf39ee2b9ca650bd26470f64b0437a3bd7db",
+                  "id": "artificial-molecule-notice",
+                  "kind": "source",
+                  "schema_version": "biocompiler.component_identity.v0.1",
+                  "version": "1"
+                }
+              ],
+              "locator": "examples/circuit_molecules.py:chemistry",
+              "reason": "Artificial source-frame and annotation declarations only; the notice pin does not verify any bases or biology.",
+              "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+              "status": "declared"
+            },
+            "schema_version": "biocompiler.chemistry_claim.v0.1",
+            "status": "declared"
+          },
+          "modification_inventory_provenance": {
+            "authority": [
+              {
+                "content_fingerprint": "e695428008efd480c8e931ac8f4acf39ee2b9ca650bd26470f64b0437a3bd7db",
+                "id": "artificial-molecule-notice",
+                "kind": "source",
+                "schema_version": "biocompiler.component_identity.v0.1",
+                "version": "1"
+              }
+            ],
+            "locator": "examples/circuit_molecules.py:chemistry",
+            "reason": "Artificial source-frame and annotation declarations only; the notice pin does not verify any bases or biology.",
+            "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+            "status": "declared"
+          },
+          "modification_inventory_status": "declared",
+          "modifications": [
+            {
+              "canonical_base": "A",
+              "id": "wrong-I",
+              "identity": {
+                "accession": "inosine",
+                "namespace": "biocompiler.chemical",
+                "schema_version": "biocompiler.chemical_identity.v0.1",
+                "version": "1"
+              },
+              "positions": [
+                2
+              ],
+              "provenance": {
+                "authority": [
+                  {
+                    "content_fingerprint": "e695428008efd480c8e931ac8f4acf39ee2b9ca650bd26470f64b0437a3bd7db",
+                    "id": "artificial-molecule-notice",
+                    "kind": "source",
+                    "schema_version": "biocompiler.component_identity.v0.1",
+                    "version": "1"
+                  }
+                ],
+                "locator": "examples/circuit_molecules.py:recoding-fixture",
+                "reason": "Artificial source-frame and annotation declarations only; the notice pin does not verify any bases or biology.",
+                "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                "status": "declared"
+              },
+              "schema_version": "biocompiler.base_modification.v0.1",
+              "scope": "positions"
+            }
+          ],
+          "schema_version": "biocompiler.molecule_chemistry.v0.1",
+          "start_end": {
+            "identity": {
+              "accession": "hydroxyl",
+              "namespace": "software_fixture.chemical",
+              "schema_version": "biocompiler.chemical_identity.v0.1",
+              "version": "1"
+            },
+            "provenance": {
+              "authority": [
+                {
+                  "content_fingerprint": "e695428008efd480c8e931ac8f4acf39ee2b9ca650bd26470f64b0437a3bd7db",
+                  "id": "artificial-molecule-notice",
+                  "kind": "source",
+                  "schema_version": "biocompiler.component_identity.v0.1",
+                  "version": "1"
+                }
+              ],
+              "locator": "examples/circuit_molecules.py:chemistry",
+              "reason": "Artificial source-frame and annotation declarations only; the notice pin does not verify any bases or biology.",
+              "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+              "status": "declared"
+            },
+            "schema_version": "biocompiler.chemistry_claim.v0.1",
+            "status": "declared"
+          },
+          "terminal_tail": {
+            "length": {
+              "exact": 0,
+              "lower": null,
+              "mode": "exact",
+              "schema_version": "biocompiler.tail_length.v0.1",
+              "upper": null
+            },
+            "path": null,
+            "placement": "absent",
+            "provenance": {
+              "authority": [
+                {
+                  "content_fingerprint": "e695428008efd480c8e931ac8f4acf39ee2b9ca650bd26470f64b0437a3bd7db",
+                  "id": "artificial-molecule-notice",
+                  "kind": "source",
+                  "schema_version": "biocompiler.component_identity.v0.1",
+                  "version": "1"
+                }
+              ],
+              "locator": "examples/circuit_molecules.py:chemistry",
+              "reason": "Artificial source-frame and annotation declarations only; the notice pin does not verify any bases or biology.",
+              "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+              "status": "declared"
+            },
+            "schema_version": "biocompiler.tail_declaration.v0.1",
+            "status": "declared"
+          }
+        },
+        "provenance": {
+          "authority": [
+            {
+              "content_fingerprint": "e695428008efd480c8e931ac8f4acf39ee2b9ca650bd26470f64b0437a3bd7db",
+              "id": "artificial-molecule-notice",
+              "kind": "source",
+              "schema_version": "biocompiler.component_identity.v0.1",
+              "version": "1"
+            }
+          ],
+          "locator": "examples/circuit_molecules.py:recoding-fixture",
+          "reason": "Artificial source-frame and annotation declarations only; the notice pin does not verify any bases or biology.",
+          "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+          "status": "declared"
+        },
+        "schema_version": "biocompiler.chemistry_transition.v0.1"
+      },
+      "feature_transition": {
+        "added": [],
+        "dispositions": [],
+        "provenance": {
+          "authority": [
+            {
+              "content_fingerprint": "e695428008efd480c8e931ac8f4acf39ee2b9ca650bd26470f64b0437a3bd7db",
+              "id": "artificial-molecule-notice",
+              "kind": "source",
+              "schema_version": "biocompiler.component_identity.v0.1",
+              "version": "1"
+            }
+          ],
+          "locator": "examples/circuit_molecules.py:recoding-fixture",
+          "reason": "Artificial source-frame and annotation declarations only; the notice pin does not verify any bases or biology.",
+          "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+          "status": "declared"
+        },
+        "schema_version": "biocompiler.feature_transition.v0.1"
+      },
+      "id": "edited",
+      "schema_version": "biocompiler.construction_product_port.v0.1",
+      "space_id": "edited.frame",
+      "topology": "linear"
+    }
+  ],
+  "provenance": {
+    "authority": [
+      {
+        "content_fingerprint": "e695428008efd480c8e931ac8f4acf39ee2b9ca650bd26470f64b0437a3bd7db",
+        "id": "artificial-molecule-notice",
+        "kind": "source",
+        "schema_version": "biocompiler.component_identity.v0.1",
+        "version": "1"
+      }
+    ],
+    "locator": "examples/circuit_molecules.py:recoding-fixture",
+    "reason": "Artificial source-frame and annotation declarations only; the notice pin does not verify any bases or biology.",
+    "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+    "status": "declared"
+  },
+  "schema_version": "biocompiler.construction_transform_step.v0.1"
+}

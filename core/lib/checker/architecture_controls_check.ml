@@ -370,15 +370,15 @@ let simple c target refs theorem_kind =
               check_guards (value::checked) rest in
         check_guards [] guards)) (rows !atoms);
   require (List.mem (Some false) !observed && List.mem (Some true) !observed && not (List.mem None !observed)) "vacuous_control_condition"
-let guarded operation = try operation () with
+let guarded budget operation = try operation () with
   | Unsupported _ as error -> raise error
-  | Diagnostic.Error error when String.ends_with ~suffix:"_limit" error.code -> raise (Diagnostic.Error error)
+  | Diagnostic.Error error when Work_budget.is_exhaustion budget error || String.ends_with ~suffix:"_limit" error.code -> raise (Diagnostic.Error error)
   | Diagnostic.Error _ | Not_found | Invalid_argument _ | Failure _ -> malformed ()
-let extended_targets ?budget ~source ~target ~kind () = let c = context ?budget source in try guarded (fun () -> resolve c target kind) with Unsupported _ -> []
+let extended_targets ?budget ~source ~target ~kind () = let c = context ?budget source in try guarded c.work_budget (fun () -> resolve c target kind) with Unsupported _ -> []
 let prove ?budget (input:Input.t) =
   let c = context ?budget input.source in
-  let targets = try guarded (fun () -> resolve c input.target input.kind) with Unsupported _ -> [] in
-  let outcome = try guarded (fun () -> match input.kind with
+  let targets = try guarded c.work_budget (fun () -> resolve c input.target input.kind) with Unsupported _ -> [] in
+  let outcome = try guarded c.work_budget (fun () -> match input.kind with
       | A.Memory_reset -> memory_reset c input.target input.controllers input.bindings
       | A.Production_adjustment -> production c input.target input.controllers input.bindings
       | A.Activity_control -> activity c input.target input.controllers

@@ -6,4 +6,6 @@ type transition = {
   inputs : (string * Transition_check.Input.t) list;
   product : Bioc_domain.Construction_artifact.Value.t;
 }
-val reconstruct : Bioc_domain.Construction.Request.t -> Bioc_domain.Construction_artifact.t * transition list
+val reserve_json : Work_budget.t -> Bioc_wire.Json.t -> unit
+val protect : (unit -> 'a) -> 'a
+val reconstruct : budget:Work_budget.t -> Bioc_domain.Construction.Request.t -> Bioc_domain.Construction_artifact.t * transition list

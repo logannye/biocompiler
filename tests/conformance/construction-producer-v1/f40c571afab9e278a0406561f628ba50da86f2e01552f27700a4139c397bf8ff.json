@@ -1,0 +1,14 @@
+{
+  "bundle": null,
+  "diagnostics": [
+    "member:translated_member:unavailable_value",
+    "step:step:invalid_skipping_partition"
+  ],
+  "experimental_amounts": [],
+  "missing_members": [
+    "translated_member"
+  ],
+  "request_fingerprint": "b6cdb73af3e8a81c49b041196ff9c9ec2457747226baedd2f737cebc00cae700",
+  "schema_version": "biocompiler.circuit_construction_candidate.v0.1",
+  "values": []
+}

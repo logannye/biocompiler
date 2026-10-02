@@ -23,7 +23,8 @@ LIBRARIES = {
     "bioc_wire": ("lib/wire/dune", {"digestif", "zarith"}, "trusted_primitive"),
     "bioc_domain": ("lib/domain/dune", {"bioc_wire", "zarith", "digestif"}, "trusted_domain"),
     "bioc_semantics": ("lib/semantics/dune", {"bioc_wire", "bioc_domain", "zarith"}, "source_semantics"),
-    "bioc_compiler": ("lib/compiler/dune", {"bioc_wire", "bioc_domain", "bioc_checker"}, "compiler"),
+    "bioc_source_adapter": ("lib/source_adapter/dune", {"bioc_wire", "bioc_domain", "bioc_semantics", "bioc_checker", "zarith"}, "source_semantics"),
+    "bioc_compiler": ("lib/compiler/dune", {"bioc_wire", "bioc_domain", "bioc_checker", "zarith"}, "compiler"),
     "bioc_checker": ("lib/checker/dune", {"bioc_wire", "bioc_domain", "zarith"}, "checker"),
     "bioc_service": ("lib/service/dune", {"bioc_wire", "bioc_domain", "bioc_checker"}, "checker_service"),
 }
@@ -32,6 +33,11 @@ EXECUTABLES = {
     "biocompiler-verify": ("bin/verify/dune", {"bioc_wire", "bioc_service"}, "verifier"),
 }
 TESTS = {
+    "test_construction_producer": {"bioc_wire", "bioc_domain", "bioc_compiler", "bioc_checker", "zarith"},
+    "test_source_execution": {"bioc_wire", "bioc_domain", "bioc_compiler", "bioc_checker", "zarith"},
+    "test_architecture_matching": {"bioc_wire", "bioc_domain", "bioc_compiler", "bioc_checker", "zarith"},
+    "test_architecture_producer": {"bioc_wire", "bioc_domain", "bioc_compiler", "bioc_checker", "zarith"},
+    "test_source_transport": {"bioc_wire", "bioc_domain", "bioc_semantics", "bioc_checker", "bioc_source_adapter", "zarith"},
     "test_architecture_check": {"bioc_wire", "bioc_domain", "bioc_checker", "zarith"},
     "test_work_budget": {"bioc_wire", "bioc_checker", "zarith"},
     "test_architecture_build": {"bioc_wire", "bioc_domain", "zarith"},
@@ -238,7 +244,7 @@ def source_boundary(path, allowed_libraries, *, owner=None):
             raise BoundaryError(f"Unreviewed native/process/dynamic-code escape {token} in {path.name}")
         if token == "Sys":
             reviewed = {"argv"}
-            if owner == "test:test_architecture_check":
+            if owner in {"test:test_architecture_check", "test:test_source_transport", "test:test_architecture_producer", "test:test_construction_producer"}:
                 # The test-only document corpus must reject undeclared files.
                 # Production code gains no filesystem or process permission.
                 reviewed.add("readdir")

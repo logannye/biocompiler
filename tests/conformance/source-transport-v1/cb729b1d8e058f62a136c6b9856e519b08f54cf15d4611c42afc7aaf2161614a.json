@@ -1,0 +1,719 @@
+{
+  "assumptions": [
+    "All RNA members in this role's group are assumed present in the same recipient cell.",
+    "Declared transport latency is one second; persistence is two seconds; loss clears receiver signal.",
+    "The helper RNA and payload RNA are assumed available in the same recipient from startup.",
+    "The supplied artificial material conditionally implements the complete declared executable model; empirical function is unknown."
+  ],
+  "build_fingerprint": "60b9d017e1fd12b95f2e94ba8acb35f73d020541421d569506cbabe95e430b36",
+  "channel_frames": [
+    {
+      "failed_channel_ids": [],
+      "receiver_values": {
+        "n000014": 0
+      },
+      "sent": {
+        "a000_transport.0": {
+          "delivery_time": 1,
+          "value": 1
+        },
+        "a000_transport.1": {
+          "delivery_time": 1,
+          "value": 1.0
+        }
+      },
+      "time": 0
+    },
+    {
+      "failed_channel_ids": [],
+      "receiver_values": {
+        "n000014": 1
+      },
+      "sent": {
+        "a000_transport.0": {
+          "delivery_time": 2,
+          "value": 1
+        },
+        "a000_transport.1": {
+          "delivery_time": 2,
+          "value": 1.0
+        }
+      },
+      "time": 1
+    },
+    {
+      "failed_channel_ids": [],
+      "receiver_values": {
+        "n000014": 1
+      },
+      "sent": {},
+      "time": 2
+    },
+    {
+      "failed_channel_ids": [],
+      "receiver_values": {
+        "n000014": 1
+      },
+      "sent": {},
+      "time": 3
+    },
+    {
+      "failed_channel_ids": [],
+      "receiver_values": {
+        "n000014": 0
+      },
+      "sent": {},
+      "time": 4
+    },
+    {
+      "failed_channel_ids": [],
+      "receiver_values": {
+        "n000014": 0
+      },
+      "sent": {},
+      "time": 5
+    }
+  ],
+  "channels": [
+    {
+      "aggregation": "max",
+      "assumptions": [
+        "Declared transport latency is one second; persistence is two seconds; loss clears receiver signal."
+      ],
+      "failure_mode": "clear",
+      "id": "a000_transport.0",
+      "initial_value": {
+        "canonical_value": 0,
+        "kind": "scalar",
+        "type": {
+          "arguments": [],
+          "dimensions": {},
+          "kind": "scalar",
+          "name": "Level"
+        },
+        "unit": "1",
+        "value": 0
+      },
+      "latency_seconds": 1,
+      "persistence_seconds": 2,
+      "receiver_node_id": "n000014",
+      "receiver_role": "n000002",
+      "schema_version": "biocompiler.architecture_channel.v0.1",
+      "sender_node_id": "n000008",
+      "sender_role": "n000001",
+      "source_channel_id": "n000003"
+    },
+    {
+      "aggregation": "max",
+      "assumptions": [
+        "Declared transport latency is one second; persistence is two seconds; loss clears receiver signal."
+      ],
+      "failure_mode": "clear",
+      "id": "a000_transport.1",
+      "initial_value": {
+        "canonical_value": 0,
+        "kind": "scalar",
+        "type": {
+          "arguments": [],
+          "dimensions": {},
+          "kind": "scalar",
+          "name": "Level"
+        },
+        "unit": "1",
+        "value": 0
+      },
+      "latency_seconds": 1,
+      "persistence_seconds": 2,
+      "receiver_node_id": "n000014",
+      "receiver_role": "n000002",
+      "schema_version": "biocompiler.architecture_channel.v0.1",
+      "sender_node_id": "n000011",
+      "sender_role": "n000001",
+      "source_channel_id": "n000003"
+    }
+  ],
+  "failed_channels": {},
+  "histories": {
+    "n000001": [
+      {
+        "contacts": {},
+        "signals": {
+          "n000005": {
+            "high": null,
+            "low": null,
+            "present": true,
+            "value": null
+          }
+        },
+        "time": 0
+      },
+      {
+        "contacts": {},
+        "signals": {
+          "n000005": {
+            "high": null,
+            "low": null,
+            "present": true,
+            "value": null
+          }
+        },
+        "time": 1
+      },
+      {
+        "contacts": {},
+        "signals": {
+          "n000005": {
+            "high": null,
+            "low": null,
+            "present": false,
+            "value": null
+          }
+        },
+        "time": 2
+      },
+      {
+        "contacts": {},
+        "signals": {
+          "n000005": {
+            "high": null,
+            "low": null,
+            "present": false,
+            "value": null
+          }
+        },
+        "time": 3
+      },
+      {
+        "contacts": {},
+        "signals": {
+          "n000005": {
+            "high": null,
+            "low": null,
+            "present": false,
+            "value": null
+          }
+        },
+        "time": 4
+      },
+      {
+        "contacts": {},
+        "signals": {
+          "n000005": {
+            "high": null,
+            "low": null,
+            "present": false,
+            "value": null
+          }
+        },
+        "time": 5
+      }
+    ],
+    "n000002": [
+      {
+        "contacts": {},
+        "signals": {
+          "n000014": {
+            "high": null,
+            "low": null,
+            "present": null,
+            "value": 0
+          },
+          "n000015": {
+            "high": null,
+            "low": null,
+            "present": false,
+            "value": null
+          }
+        },
+        "time": 0
+      },
+      {
+        "contacts": {},
+        "signals": {
+          "n000014": {
+            "high": null,
+            "low": null,
+            "present": null,
+            "value": 1
+          },
+          "n000015": {
+            "high": null,
+            "low": null,
+            "present": false,
+            "value": null
+          }
+        },
+        "time": 1
+      },
+      {
+        "contacts": {},
+        "signals": {
+          "n000014": {
+            "high": null,
+            "low": null,
+            "present": null,
+            "value": 1
+          },
+          "n000015": {
+            "high": null,
+            "low": null,
+            "present": false,
+            "value": null
+          }
+        },
+        "time": 2
+      },
+      {
+        "contacts": {},
+        "signals": {
+          "n000014": {
+            "high": null,
+            "low": null,
+            "present": null,
+            "value": 1
+          },
+          "n000015": {
+            "high": null,
+            "low": null,
+            "present": false,
+            "value": null
+          }
+        },
+        "time": 3
+      },
+      {
+        "contacts": {},
+        "signals": {
+          "n000014": {
+            "high": null,
+            "low": null,
+            "present": null,
+            "value": 0
+          },
+          "n000015": {
+            "high": null,
+            "low": null,
+            "present": false,
+            "value": null
+          }
+        },
+        "time": 4
+      },
+      {
+        "contacts": {},
+        "signals": {
+          "n000014": {
+            "high": null,
+            "low": null,
+            "present": null,
+            "value": 0
+          },
+          "n000015": {
+            "high": null,
+            "low": null,
+            "present": false,
+            "value": null
+          }
+        },
+        "time": 5
+      }
+    ]
+  },
+  "horizon_seconds": 5,
+  "policies": {
+    "absent_signal": "declared_initial_value_when_no_active_sender_contribution",
+    "aggregation": "active_sender_contributions; single_sender_sum_or_max_as_declared",
+    "channel_sampling": "settled_action_requests_at_declared_grid_only",
+    "claim_scope": "sampled_abstract_execution_under_declared_contracts_no_physiological_prediction",
+    "delivery": "prior_queued_outputs_delivered_before_all_current_role_evaluations",
+    "failure": "delivery_tick; clear_discards_contribution; retain_last_freezes_for_failed_tick",
+    "latency": "strictly_positive_integer_grid_multiple",
+    "max_role_evaluations": 10000,
+    "max_samples": 1000,
+    "persistence": "since_latest_delivery_exclusive_expiry; None_means_indefinite",
+    "profile": "biocompiler.sampled_architecture_transport.v0.1",
+    "qualitative_encoding": "unsupported_without_explicit_encoding_contract"
+  },
+  "request_fingerprint": "69b9b682f75a7e98f984b9d70600c5385565de388e860daddb974515d64d0b0d",
+  "results": {
+    "n000001": {
+      "behavior_fingerprint": "b4ac8931088d1aeb0df1227f8f15afc512f712deb9d6f2ac746f3275dcde8bbb",
+      "execution_profile": "abstract_multirole_sampled.v0.2",
+      "frames": [
+        {
+          "actions": [
+            {
+              "action_id": "n000008",
+              "attributes": {
+                "channel_id": "n000003",
+                "channel_name": "artificial_alert",
+                "ongoing": true,
+                "value": "expression"
+              },
+              "contact_id": null,
+              "expires_at": null,
+              "kind": "action.emit",
+              "requirement_ids": [
+                "requirement:n000009"
+              ],
+              "rule_id": "n000009",
+              "rule_source": {
+                "file": "tools/freeze_source_transport.py",
+                "function": "custom_program",
+                "line": 77
+              },
+              "source": {
+                "file": "tools/freeze_source_transport.py",
+                "function": "custom_program",
+                "line": 73
+              },
+              "specification_id": "n000008",
+              "specification_source": {
+                "file": "tools/freeze_source_transport.py",
+                "function": "custom_program",
+                "line": 73
+              },
+              "started_at": null,
+              "values": {
+                "value": 1
+              }
+            },
+            {
+              "action_id": "n000011",
+              "attributes": {
+                "channel_id": "n000003",
+                "channel_name": "artificial_alert",
+                "ongoing": true,
+                "value": "expression"
+              },
+              "contact_id": null,
+              "expires_at": null,
+              "kind": "action.emit",
+              "requirement_ids": [
+                "requirement:n000012"
+              ],
+              "rule_id": "n000012",
+              "rule_source": {
+                "file": "tools/freeze_source_transport.py",
+                "function": "custom_program",
+                "line": 77
+              },
+              "source": {
+                "file": "tools/freeze_source_transport.py",
+                "function": "custom_program",
+                "line": 73
+              },
+              "specification_id": "n000011",
+              "specification_source": {
+                "file": "tools/freeze_source_transport.py",
+                "function": "custom_program",
+                "line": 73
+              },
+              "started_at": null,
+              "values": {
+                "value": 1.0
+              }
+            }
+          ],
+          "events": [],
+          "memories": {},
+          "microsteps": 1,
+          "reactions": [],
+          "states": {},
+          "time": 0
+        },
+        {
+          "actions": [
+            {
+              "action_id": "n000008",
+              "attributes": {
+                "channel_id": "n000003",
+                "channel_name": "artificial_alert",
+                "ongoing": true,
+                "value": "expression"
+              },
+              "contact_id": null,
+              "expires_at": null,
+              "kind": "action.emit",
+              "requirement_ids": [
+                "requirement:n000009"
+              ],
+              "rule_id": "n000009",
+              "rule_source": {
+                "file": "tools/freeze_source_transport.py",
+                "function": "custom_program",
+                "line": 77
+              },
+              "source": {
+                "file": "tools/freeze_source_transport.py",
+                "function": "custom_program",
+                "line": 73
+              },
+              "specification_id": "n000008",
+              "specification_source": {
+                "file": "tools/freeze_source_transport.py",
+                "function": "custom_program",
+                "line": 73
+              },
+              "started_at": null,
+              "values": {
+                "value": 1
+              }
+            },
+            {
+              "action_id": "n000011",
+              "attributes": {
+                "channel_id": "n000003",
+                "channel_name": "artificial_alert",
+                "ongoing": true,
+                "value": "expression"
+              },
+              "contact_id": null,
+              "expires_at": null,
+              "kind": "action.emit",
+              "requirement_ids": [
+                "requirement:n000012"
+              ],
+              "rule_id": "n000012",
+              "rule_source": {
+                "file": "tools/freeze_source_transport.py",
+                "function": "custom_program",
+                "line": 77
+              },
+              "source": {
+                "file": "tools/freeze_source_transport.py",
+                "function": "custom_program",
+                "line": 73
+              },
+              "specification_id": "n000011",
+              "specification_source": {
+                "file": "tools/freeze_source_transport.py",
+                "function": "custom_program",
+                "line": 73
+              },
+              "started_at": null,
+              "values": {
+                "value": 1.0
+              }
+            }
+          ],
+          "events": [],
+          "memories": {},
+          "microsteps": 1,
+          "reactions": [],
+          "states": {},
+          "time": 1
+        },
+        {
+          "actions": [],
+          "events": [],
+          "memories": {},
+          "microsteps": 1,
+          "reactions": [],
+          "states": {},
+          "time": 2
+        },
+        {
+          "actions": [],
+          "events": [],
+          "memories": {},
+          "microsteps": 1,
+          "reactions": [],
+          "states": {},
+          "time": 3
+        },
+        {
+          "actions": [],
+          "events": [],
+          "memories": {},
+          "microsteps": 1,
+          "reactions": [],
+          "states": {},
+          "time": 4
+        },
+        {
+          "actions": [],
+          "events": [],
+          "memories": {},
+          "microsteps": 1,
+          "reactions": [],
+          "states": {},
+          "time": 5
+        }
+      ],
+      "horizon": 5,
+      "role": "n000001",
+      "source_fingerprint": "315ce24ad1d689863e5400507acca292543837a6ab1e682f2dde5a7873e19d44"
+    },
+    "n000002": {
+      "behavior_fingerprint": "b4ac8931088d1aeb0df1227f8f15afc512f712deb9d6f2ac746f3275dcde8bbb",
+      "execution_profile": "abstract_multirole_sampled.v0.2",
+      "frames": [
+        {
+          "actions": [],
+          "events": [],
+          "memories": {},
+          "microsteps": 1,
+          "reactions": [],
+          "states": {},
+          "time": 0
+        },
+        {
+          "actions": [
+            {
+              "action_id": "n000022",
+              "attributes": {
+                "ongoing": true,
+                "product": "artificial_alpha",
+                "rate": "unspecified",
+                "secretion_id": "n000021"
+              },
+              "contact_id": null,
+              "expires_at": null,
+              "kind": "action.secrete",
+              "requirement_ids": [
+                "requirement:n000023"
+              ],
+              "rule_id": "n000023",
+              "rule_source": {
+                "file": "tools/freeze_source_transport.py",
+                "function": "custom_program",
+                "line": 81
+              },
+              "source": {
+                "file": "tools/freeze_source_transport.py",
+                "function": "custom_program",
+                "line": 81
+              },
+              "specification_id": "n000022",
+              "specification_source": {
+                "file": "tools/freeze_source_transport.py",
+                "function": "custom_program",
+                "line": 81
+              },
+              "started_at": null,
+              "values": {}
+            }
+          ],
+          "events": [],
+          "memories": {},
+          "microsteps": 1,
+          "reactions": [],
+          "states": {},
+          "time": 1
+        },
+        {
+          "actions": [
+            {
+              "action_id": "n000022",
+              "attributes": {
+                "ongoing": true,
+                "product": "artificial_alpha",
+                "rate": "unspecified",
+                "secretion_id": "n000021"
+              },
+              "contact_id": null,
+              "expires_at": null,
+              "kind": "action.secrete",
+              "requirement_ids": [
+                "requirement:n000023"
+              ],
+              "rule_id": "n000023",
+              "rule_source": {
+                "file": "tools/freeze_source_transport.py",
+                "function": "custom_program",
+                "line": 81
+              },
+              "source": {
+                "file": "tools/freeze_source_transport.py",
+                "function": "custom_program",
+                "line": 81
+              },
+              "specification_id": "n000022",
+              "specification_source": {
+                "file": "tools/freeze_source_transport.py",
+                "function": "custom_program",
+                "line": 81
+              },
+              "started_at": null,
+              "values": {}
+            }
+          ],
+          "events": [],
+          "memories": {},
+          "microsteps": 1,
+          "reactions": [],
+          "states": {},
+          "time": 2
+        },
+        {
+          "actions": [
+            {
+              "action_id": "n000022",
+              "attributes": {
+                "ongoing": true,
+                "product": "artificial_alpha",
+                "rate": "unspecified",
+                "secretion_id": "n000021"
+              },
+              "contact_id": null,
+              "expires_at": null,
+              "kind": "action.secrete",
+              "requirement_ids": [
+                "requirement:n000023"
+              ],
+              "rule_id": "n000023",
+              "rule_source": {
+                "file": "tools/freeze_source_transport.py",
+                "function": "custom_program",
+                "line": 81
+              },
+              "source": {
+                "file": "tools/freeze_source_transport.py",
+                "function": "custom_program",
+                "line": 81
+              },
+              "specification_id": "n000022",
+              "specification_source": {
+                "file": "tools/freeze_source_transport.py",
+                "function": "custom_program",
+                "line": 81
+              },
+              "started_at": null,
+              "values": {}
+            }
+          ],
+          "events": [],
+          "memories": {},
+          "microsteps": 1,
+          "reactions": [],
+          "states": {},
+          "time": 3
+        },
+        {
+          "actions": [],
+          "events": [],
+          "memories": {},
+          "microsteps": 1,
+          "reactions": [],
+          "states": {},
+          "time": 4
+        },
+        {
+          "actions": [],
+          "events": [],
+          "memories": {},
+          "microsteps": 1,
+          "reactions": [],
+          "states": {},
+          "time": 5
+        }
+      ],
+      "horizon": 5,
+      "role": "n000002",
+      "source_fingerprint": "315ce24ad1d689863e5400507acca292543837a6ab1e682f2dde5a7873e19d44"
+    }
+  },
+  "schema_version": "biocompiler.architecture_execution_result.v0.1",
+  "step_seconds": 1
+}

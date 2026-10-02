@@ -1,0 +1,15 @@
+{
+  "bundle": null,
+  "diagnostics": [
+    "bundle:residue_budget"
+  ],
+  "experimental_amounts": [],
+  "missing_members": [
+    "complex",
+    "helper",
+    "payload"
+  ],
+  "request_fingerprint": "ad6ecbcae7e40f991446945822ddbda587f3ef19b1187d3d8f57c65e849e4077",
+  "schema_version": "biocompiler.circuit_construction_candidate.v0.1",
+  "values": []
+}
