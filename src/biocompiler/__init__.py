@@ -26,6 +26,8 @@ from biocompiler.verification.payload_architecture import (
     PayloadArchitectureVerification, check_payload_architecture, verify_payload_architecture,
 )
 
+from biocompiler.architecture_backend import ArchitectureCoreError
+
 from biocompiler.ir.executable_payload import (
     PayloadCompilationRequest, PayloadSelectionConstraints, PayloadCircuitBinding,
     PayloadAlternative, PayloadBuild,
@@ -945,6 +947,7 @@ __all__ = [
     "ScopeError",
     "Secretion",
     "SerializationError",
+    "ArchitectureCoreError",
     "Signal",
     "Signature",
     "SourceLocation",

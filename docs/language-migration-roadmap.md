@@ -166,7 +166,7 @@ Reread this roadmap before each batch and update its scoped checkboxes and statu
 | --- | --- | --- | --- |
 | B0 | LM-00 inventory; LM-01 skeleton; LM-02 protocol/canonical vectors | Baseline and executable interface are pinned; canonical compatibility is established | Native protocol/canonical foundation validated; broader corpus, performance, formatting and distribution-plan obligations remain |
 | B1 | First checker-led vertical slice: LM-20/21/22/24/25 subset, LM-23 records/decoders, Python adapter in shadow mode | Existing case B request and Python candidate are independently checked in OCaml; targeted temporal/authority/sequence mutants fail correctly | BuildRequest/Behavior/coordinate and circuit declarations plus independent source correspondence validated in PR38/39; per-role reference execution and lowering/contract/chemistry prerequisites validated in PR40/41; complete human wrappers, component models, molecules/sets and decimal deployment declarations validated in PR42; architecture/construction declarations and independent required-region checking validated in PR43; full architecture request authority, construction reconstruction and source-manifest checking validated in PR44; complete architecture checker validated in PR45; installed protocol and independent candidate execution remain open |
-| B2 | Port producer for that same slice; extend LM-23/24/26 | Python authoring → OCaml compilation → independent OCaml check → paired RNA/manifest export works outside checkout | Queued |
+| B2 | Port producer for that same slice; extend LM-23/24/26 | Python authoring → OCaml compilation → independent OCaml check → paired RNA/manifest export works outside checkout | Producers validated in PR46; installed operations in PR47 validation; explicit public SDK/CLI routing implemented in the next batch, pending gates |
 | B3 | Expand all behavior/architecture/control profiles and historical public coverage | Complete capability ledger and all 13 current architecture cases pass with fresh identity and mutation evidence | Queued |
 | B4 | LM-10 TypeScript parity; LM-12 installed SDK/CLI parity; deliberate architecture UI integration | Existing browser and installed workflows pass; migrated paths visibly use compatible OCaml core | TypeScript parity and installed browser checks passed; architecture integration and installed SDK cutover pending |
 | B5 | LM-11 conversational draft/review flow and LM-27 scope enforcement | Draft → explicit reviewed intent → existing validated pipeline; ambiguity and unsupported claims remain visible | Queued |
@@ -209,41 +209,34 @@ These checkpoints record narrower validated work; they do not complete a broad L
 - [ ] **B1.08a independent candidate execution and coupled transport**, before any such execution claim.
 - [ ] **B1.09 fresh acceptance and protocol exposure**, followed by B2 producer/export and the remaining B3–B6 product gates.
 
-**Preservation checkpoint, 2026-10-01:** [PR45](https://github.com/logannye/biocompiler/pull/45)
-merged after complete [run 36952825986](https://github.com/logannye/biocompiler/actions/runs/36952825986)
-passed. Its separate integrated-main run also passed every required gate. The next batch is
-preserved in [draft PR46](https://github.com/logannye/biocompiler/pull/46), now
-based on main. Run 36954384587 passed the full retained producer/transport corpora
-and 108 installed architecture protocol checks on both native platforms, but
-failed the standalone source literal suite; the aggregate gate correctly failed.
-Review corrections preserve invalid-root contradictions, exact generated-identity
-diagnostics and shared work exhaustion, including failed transport replay.
-The expanded architecture corpus retains all original 175 cases unchanged and
-adds 18 complete calls for identity boundaries and source-root validity. These
-corrections require fresh full hosted validation. The remaining checkpoints stay open:
+**Validated producer checkpoint, 2026-10-01:** [PR46](https://github.com/logannye/biocompiler/pull/46)
+merged at `e4c6d8d4bea9975ac5e9c6c1bb342034a34a82c0` after complete
+[run 36956697449](https://github.com/logannye/biocompiler/actions/runs/36956697449)
+passed all 30 required jobs. Both native platforms passed 45 suites, all retained
+corpora and 108 installed architecture protocol checks; exactly 2,328 tests ran
+on each Python version. Source `95f18956e537845b15098206f255c6ac3074809c`, tested
+merge `972d0427c9b9608ecda3b4d0eb7d0026355ce80c` and integrated main share tree
+`6ea0da7870964526736c5e7de2c8bf5495e14448`.
+[Exact receipt](../protocol/migration-producer-validation.json).
 
-- [ ] **B2 producer checkpoint:** independent molecular/recoding/workflow producers,
+- [x] **B2 producer checkpoint:** independent molecular/recoding/workflow producers,
   source-manifest derivation, matching, architecture production and paired export
-  are implemented. Construction capture retains 61 construction, 37 recoding and
-  88 workflow calls; architecture capture retains 193 cases, 166 documents and all 13 installed
-  plus three original case B authorities. Ten construction and 15 expanded architecture Python integrity tests passed;
-  the corrected native revision still requires complete hosted validation.
-- [ ] **LM-21 coupled source checkpoint:** 51 source-transport cases retain 20 full
-  traces and 31 rejection signatures, all nine original test methods, and seven
-  independent timeline projections. Seven Python integrity tests and the retained native corpus passed. Failed-prefix
-  budget corrections require fresh validation; this is source execution, not the
-  independent candidate runtime still required by LM-22/25.
-- [ ] **LM-12/25 protocol checkpoint:** standalone architecture verify/replay,
-  strict capability negotiation and immutable typed Python results are implemented.
-  The 108-check installed protocol campaign and all broader native gates are wired
-  into CI. Both native platforms passed the installed protocol campaign; strict mypy
-  passes for both adapter modules. Full revision validation, distribution and
-  production routing remain open.
-
-Shared construction/checker parent budgets and cumulative producer publication
-reservations are included. Review added explicit exhaustion identity propagation
-for arbitrary caller diagnostic codes and failed source replay allowance forfeiture;
-those corrections require fresh hosted native validation. No new broad LM task or system-migration exit is marked complete.
+  passed full hosted validation. Construction capture retains 61 construction,
+  37 recoding and 88 workflow calls; architecture capture retains 193 cases,
+  166 documents, all 13 installed examples and three original case B authorities.
+  Generated identity diagnostics and arbitrary shared-parent exhaustion are covered.
+- [x] **LM-21 coupled source checkpoint:** 51 source-transport cases retain 20 full
+  traces, 31 rejection signatures, all nine original test methods and seven
+  independent timeline projections. Both platforms passed failed-prefix shared
+  allowance and replay-budget regressions. Independent candidate execution remains
+  separately required by LM-22/25.
+- [x] **LM-12/25 protocol checkpoint:** standalone architecture verify/replay,
+  strict capability negotiation and immutable typed Python results passed the
+  108-check installed campaign on both native platforms and complete required gates.
+  Public production routing and distribution remain open.
+- [ ] **PR46 integrated-main validation:** separate
+  [run 36958643394](https://github.com/logannye/biocompiler/actions/runs/36958643394)
+  is in progress at the integrated revision.
 
 - [ ] **B2 installed producer operations:** the next batch adds core-only
   `compile-architecture` and `export-architecture` operations, exact immutable
@@ -253,8 +246,19 @@ those corrections require fresh hosted native validation. No new broad LM task o
   marking this checkpoint complete. Public SDK/CLI routing, atomic publication
   and distribution remain separately open.
 
+- [ ] **B2 public architecture routing:** explicit `core=` SDK selection and
+  architecture CLI executable options preserve historical classes, raw request
+  authority, summaries, exit codes and atomic single-file paired JSON export.
+  The bridge checks complete native identities after historical codec hydration;
+  selected-core errors never fall back to Python semantics. All 13 installed
+  examples and three original case-B workflows require hosted routing validation
+  under Python 3.11 and 3.14 on Linux x86_64 and macOS arm64. The new required
+  reproducibility gate compares complete artifacts across all four executions;
+  175 routing checks per execution and all 31 required jobs must pass.
+  See [explicit core workflows](architecture-core-workflows.md).
 
-PR42 source `06da8b4bee4110597caed15fa2da4f2bb7724268`, tested merge `902cae85932dfc1202f68d7d9bc7502941eeb701` and integrated main share tree `06898b1f7ac5e51e692ef976d5834ec5976a495a`. Both complete PR and integrated-main gates passed. PR43 source `7fb3ec8983b038b03f0efa8f8233e4bef4e5a613`, tested merge `9f0c10ea218c4df49aa9f143718eb82d2daff842` and integrated main share tree `836da9375e1206d708194eecd48419f529ab5ff0`. Both complete PR and integrated-main gates passed. PR44 source `ae56d0c7e3dd8202aa015d7a7b769a75bd8ca037`, tested merge `8ff4d1911a6525c58be16e6db9d030b5fb670a91` and integrated main share tree `7ecc2c56f1370c0540f3c74c5795c6868d8e3841`; full PR and integrated-main gates passed. PR45 adds validated independent full architecture acceptance and its control/deployment/build prerequisites. PR46 adds experimental protocol and producer paths pending validation; production routing remains unchanged.
+
+PR42 source `06da8b4bee4110597caed15fa2da4f2bb7724268`, tested merge `902cae85932dfc1202f68d7d9bc7502941eeb701` and integrated main share tree `06898b1f7ac5e51e692ef976d5834ec5976a495a`. Both complete PR and integrated-main gates passed. PR43 source `7fb3ec8983b038b03f0efa8f8233e4bef4e5a613`, tested merge `9f0c10ea218c4df49aa9f143718eb82d2daff842` and integrated main share tree `836da9375e1206d708194eecd48419f529ab5ff0`. Both complete PR and integrated-main gates passed. PR44 source `ae56d0c7e3dd8202aa015d7a7b769a75bd8ca037`, tested merge `8ff4d1911a6525c58be16e6db9d030b5fb670a91` and integrated main share tree `7ecc2c56f1370c0540f3c74c5795c6868d8e3841`; full PR and integrated-main gates passed. PR45 adds validated independent full architecture acceptance and its control/deployment/build prerequisites. PR46 validates experimental verification protocol, producers and coupled source transport. PR47 adds installed producer operations pending validation; public routing and full cutover remain open.
 
 **First vertical slice:** [the case B acceptance map](migration-case-b.md) and [retained corpus](../tests/conformance/case-b/README.md) now pin its real source/candidate and independent literal timelines. Architecture acceptance/mutation descriptors remain unexecuted; domain and source-correspondence receipts are scoped above, and per-role reference execution has complete PR40 validation. Use the existing artificial architecture case B (prime/act/recover, timeout, reset and shutdown) with exact supplied source correspondence. Reuse its actual request/templates. The initial checker stage reads the existing Python-produced candidate and independently reconstructs it. Then port its producer. Do not replace this slice with an unrelated toy expression interpreter.
 
@@ -303,7 +307,7 @@ Starting points: [frontend](../src/biocompiler/frontend/api.py), [symbolic expre
 Depends on LM-02; individual operations route to OCaml only after their core parity gate.
 
 - [x] Add the thin typed core-process transport with explicit executable selection, timeouts, cancellation, digest/version checks and stable error mapping. `core_client.py` and its protocol/process tests passed PR37–44; current public compiler routing remains Python.
-- [ ] Add validated operation negotiation and production adapters for each migrated capability; the current `capabilities()` method exposes the foundation response without completing profile negotiation.
+- [ ] Add validated operation negotiation and production adapters for each migrated capability. Architecture verification negotiation passed PR46; producer operations and explicit public routing remain in validation.
 - [ ] Preserve Python symbolic construction and its ban on Python truth testing. Retain cross-program, role, type and unit diagnostics.
 - [ ] Keep public class/function names, return interfaces, JSON roundtrips and CLI behavior where specified. Inventory and test intentional changes rather than silently substituting dictionaries for public objects.
 - [ ] Add strict static checking for new adapters and touched public boundaries; expand by module with an explicit remaining ledger. Do not mask migrated paths with Any or blanket ignore rules.
@@ -336,7 +340,7 @@ Depends on LM-20 and LM-03.
 - [x] Implement behavior v0.1 timelines: same-contact conjunction, onset semantics, dwell/recent/followed-by boundaries, pulses, reset priority, initialization and bounded same-time settling.
 - [x] Preserve simultaneous state assignment, conflict rejection, ordering policies, missing observations, non-finite rejection and explicit horizons.
 - [x] Port per-role behavior v0.2 sampled integration and the four v0.2 operation variants. PR40 validates full source-reference traces and numeric boundaries.
-- [ ] Port coupled declared-channel latency, persistence, aggregation and failure policies. Preserve supplied finite-grid semantics rather than inventing continuous guarantees.
+- [x] Port coupled declared-channel latency, persistence, aggregation and failure policies. PR46 validates complete finite-grid source traces, failure policies and cumulative budgets on both platforms; it does not establish continuous guarantees.
 - [ ] Keep the source interpreter and independently reconstructed candidate runtime in different libraries. Shared primitive numeric definitions must be declared and covered by independent literal cases.
 - [x] Compare complete actions, reactions, state, event times and requirement traces, including boundary timestamps; summary PASS agreement is insufficient.
 
@@ -364,9 +368,9 @@ Depends on LM-20/21/22; checker ports proceed before producer replacement.
 
 - [x] Port component, provider/interface and architecture declaration domains, including complete source/model maps, material placements and recipient/delivery bindings. PR41–44 validate their full imports and rejection campaigns.
 - [x] Complete fresh contextual checking of those declarations against original source and selected architecture. PR45 validates complete independent architecture assessments and replay across 293 reports, all 13 installed cases and the original case B authorities.
-- [ ] Preserve many-to-many behavior/component/RNA relations and namespace refinement instances. Do not deduplicate functional instances by sequence equality.
-- [ ] Port exact semantic matching, partial anchors, ambiguity handling, cumulative search/match limits and deterministic tie-breaking.
-- [ ] Preserve hard-constraint rejection before preference ranking; exhaustion and no-candidate results cannot become infeasibility or certified optimality.
+- [x] Preserve many-to-many behavior/component/RNA relations and namespace refinement instances. PR46 validates complete producer outputs across all 13 installed cases, original case B variants and namespace boundaries without sequence-based instance deduplication.
+- [x] Port exact semantic matching, partial anchors, ambiguity handling, cumulative search/match limits and deterministic tie-breaking. PR46 retains all original matching assertions and full matching/producer results.
+- [x] Preserve hard-constraint rejection before preference ranking; exhaustion and no-candidate results cannot become infeasibility or certified optimality. PR46 validates complete retained alternatives and resource outcomes.
 - [x] Port helper bootstrap, sharing/capacity, compartment and same-recipient availability checks, counting every delivered helper RNA. PR45 validates the 30-case deployment corpus and complete architecture correspondence.
 - [x] Preserve activation, production adjustment, activity control, memory reset, shutdown, physical separation and dependency disjointness as separate contracts; port every bounded proof and its witnesses. PR45 validates 112 control-proof cases and their complete reports.
 - [ ] Python search may propose candidates through a versioned proposal interface. Every proposal undergoes the same OCaml acceptance; search has no power to weaken source authority.
@@ -382,7 +386,7 @@ Depends on LM-02 and the required domain types from LM-20/22/23.
 - [x] Port exact molecular alphabets, structured chemistry, topology, region/feature inventories, molecule membership and coordinate frames. Full domain and native conformance gates passed in PR38 and PR41–43.
 - [ ] Preserve source/destination residue maps, overlap rules, strand/orientation, junction/processing correspondence and protein identity checks where supported.
 - [x] Independently reconstruct all 14 supplied construction operations with deterministic order, cumulative bounds and atomic multi-output checking. PR44 validates 83 complete cases and independent resource/atomicity literals.
-- [ ] Port the separate construction producer with deterministic order, cumulative bounds, complete multi-output results and atomic candidate creation. The producer cannot reuse checker-private reconstruction.
+- [x] Port the separate construction producer with deterministic order, cumulative bounds, complete multi-output results and atomic candidate creation. PR46 validates all supplied operations and producer/checker separation across the complete construction campaign.
 - [ ] Retain distinct template/intermediate/delivered identities. Existing DNA reference utilities remain shared infrastructure; therapeutic delivered genetic members remain RNA.
 - [ ] Make producer emission deterministic, then independently verify every emitted base, required feature and member against external roots and operation authority.
 

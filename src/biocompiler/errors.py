@@ -1,5 +1,18 @@
 """Public errors for intent authoring and compilation."""
 
+from __future__ import annotations
+
+from collections.abc import Iterable
+from typing import Protocol
+
+
+class _SourceLocation(Protocol):
+    @property
+    def file(self) -> str: ...
+
+    @property
+    def line(self) -> int: ...
+
 
 class BiocompilerError(Exception):
     """Base biocompiler error."""
@@ -24,7 +37,7 @@ class SerializationError(BiocompilerError, ValueError):
 class CompilationUnavailableError(BiocompilerError, NotImplementedError):
     """Molecular realization is not implemented."""
 
-    def __init__(self, message, *, diagnostics=()):
+    def __init__(self, message: str, *, diagnostics: Iterable[object] = ()) -> None:
         self.diagnostics = tuple(diagnostics)
         super().__init__(message)
 
@@ -36,7 +49,7 @@ class BehaviorError(BiocompilerError, ValueError):
 class LoweringError(BehaviorError):
     """An intent graph cannot be lowered under the selected execution profile."""
 
-    def __init__(self, message, *, diagnostics=()):
+    def __init__(self, message: str, *, diagnostics: Iterable[object] = ()) -> None:
         self.diagnostics = tuple(diagnostics)
         super().__init__(message)
 
@@ -44,7 +57,8 @@ class LoweringError(BehaviorError):
 class UnsupportedBehaviorError(LoweringError):
     """A source construct needs an execution profile not implemented yet."""
 
-    def __init__(self, message, *, node_id=None, source=None):
+    def __init__(self, message: str, *, node_id: str | None = None,
+                 source: _SourceLocation | None = None) -> None:
         self.node_id = node_id
         self.source = source
         location = f" at {source.file}:{source.line}" if source is not None else ""

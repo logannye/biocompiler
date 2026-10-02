@@ -1108,13 +1108,16 @@ def _diagnostic(code, candidates=()):
                            "Independent architecture check rejected " + code + ".")
 
 
-def check_payload_architecture(build, *, expected_request):
+def check_payload_architecture(build, *, expected_request, core=None):
     """Freshly verify a retained plan against independent complete authority.
 
     The checker reconstructs selected material templates and exact source/model
     correspondence. Candidate ranking and claims about exhausting the search are
     explicitly outside this receipt's scope.
     """
+    if core is not None:
+        from biocompiler.architecture_backend import check_architecture
+        return check_architecture(build, expected_request=expected_request, core=core)[1]
     failures, unresolved, assumptions = [], [], ()
     construction_complete = False
     try:
@@ -1205,7 +1208,10 @@ def check_payload_architecture(build, *, expected_request):
 check_payload_architecture_build = check_payload_architecture
 
 
-def verify_payload_architecture(receipt, build, *, expected_request):
+def verify_payload_architecture(receipt, build, *, expected_request, core=None):
+    if core is not None:
+        from biocompiler.architecture_backend import replay_architecture
+        return replay_architecture(receipt, build, expected_request=expected_request, core=core)[1]
     fresh = check_payload_architecture(build, expected_request=expected_request)
     require(fingerprint(receipt.to_dict()) == fingerprint(fresh.to_dict()),
             "Stored architecture verification does not match fresh independent authority replay.")

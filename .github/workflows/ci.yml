@@ -822,7 +822,7 @@ jobs:
 
   ocaml-core:
     runs-on: ${{ matrix.runner }}
-    timeout-minutes: 35
+    timeout-minutes: 90
     strategy:
       fail-fast: false
       matrix:
@@ -991,6 +991,37 @@ jobs:
             --core "$GITHUB_WORKSPACE/core/_build/default/bin/core/main.exe" \
             --verify "$GITHUB_WORKSPACE/core/_build/default/bin/verify/main.exe" \
             --output "$GITHUB_WORKSPACE/generated/core/architecture-producer-protocol.json"
+      - name: Check installed public architecture SDK and CLI on Python 3.11
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        env:
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/architecture-routing-3.11"
+          cd "$RUNNER_TEMP/architecture-routing-3.11"
+          python "$GITHUB_WORKSPACE/tools/check_architecture_routing.py" \
+            --core "$GITHUB_WORKSPACE/core/_build/default/bin/core/main.exe" \
+            --verify "$GITHUB_WORKSPACE/core/_build/default/bin/verify/main.exe" \
+            --output "$GITHUB_WORKSPACE/generated/core/architecture-routing-3.11.json"
+      - name: Select Python 3.14 without changing the native job runtime
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        id: routing_python314
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+          update-environment: false
+      - name: Check installed public architecture SDK and CLI on Python 3.14
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' && steps.routing_python314.outcome == 'success' }}
+        env:
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+          ROUTING_PYTHON: ${{ steps.routing_python314.outputs.python-path }}
+        run: |
+          "$ROUTING_PYTHON" -m pip install .
+          mkdir -p "$RUNNER_TEMP/architecture-routing-3.14"
+          cd "$RUNNER_TEMP/architecture-routing-3.14"
+          "$ROUTING_PYTHON" "$GITHUB_WORKSPACE/tools/check_architecture_routing.py" \
+            --core "$GITHUB_WORKSPACE/core/_build/default/bin/core/main.exe" \
+            --verify "$GITHUB_WORKSPACE/core/_build/default/bin/verify/main.exe" \
+            --output "$GITHUB_WORKSPACE/generated/core/architecture-routing-3.14.json"
       - name: Compare complete construction producer and workflow artifacts
         if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
         run: core/_build/default/test/test_construction_producer.exe "$GITHUB_WORKSPACE/tests/conformance/construction-producer-v1.json" | tee generated/core/construction-producer.txt
@@ -1020,6 +1051,51 @@ jobs:
         with:
           name: ci-job-ocaml-core-${{ matrix.platform }}
           path: generated/ci/ocaml-core-${{ matrix.platform }}.json
+          if-no-files-found: error
+          overwrite: true
+          retention-days: 7
+
+  architecture-core-reproducibility:
+    needs: ocaml-core
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Record job authority and start time
+        run: python tools/ci_validation.py start --job architecture-core-reproducibility --variant cross-platform --output generated/ci/start.json
+      - uses: actions/download-artifact@v4
+        with:
+          name: core-linux-x86_64
+          path: artifacts/core/linux-x86_64
+      - uses: actions/download-artifact@v4
+        with:
+          name: core-macos-arm64
+          path: artifacts/core/macos-arm64
+      - name: Install Python package for retained artifact comparison
+        run: python -m pip install .
+      - name: Compare exact SDK and CLI artifacts across Python versions and native platforms
+        env:
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: python tools/check_architecture_routing_reproducibility.py --root artifacts/core --output generated/core-reproducibility/receipt.json
+      - name: Retain complete comparison receipt
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: architecture-core-reproducibility
+          path: generated/core-reproducibility/receipt.json
+          if-no-files-found: error
+          overwrite: true
+          retention-days: 7
+      - name: Record successful validation and runtime
+        run: python tools/ci_validation.py finish --start generated/ci/start.json --output generated/ci/architecture-core-reproducibility-cross-platform.json
+      - name: Retain required job receipt
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ci-job-architecture-core-reproducibility-cross-platform
+          path: generated/ci/architecture-core-reproducibility-cross-platform.json
           if-no-files-found: error
           overwrite: true
           retention-days: 7
@@ -1073,6 +1149,7 @@ jobs:
       - payload-architecture-reproducibility
       - circuit-reproducibility
       - ocaml-core
+      - architecture-core-reproducibility
       - studio-typescript
     runs-on: ubuntu-latest
     steps:

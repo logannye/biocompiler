@@ -756,6 +756,18 @@ def _summary(artifact):
     return summary
 
 
+def _architecture_core_arguments(command, verification):
+    executable = command.add_mutually_exclusive_group()
+    executable.add_argument("--core-executable", type=Path,
+                            help="Use the explicitly selected absolute-path OCaml core")
+    if verification:
+        executable.add_argument("--verifier-executable", type=Path,
+                                help="Use the absolute-path standalone OCaml verifier")
+    command.add_argument("--core-sha256", help="Require this SHA-256 for the selected executable")
+    command.add_argument("--core-timeout", type=float,
+                         help="Positive finite timeout in seconds (requires an executable)")
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
@@ -766,12 +778,14 @@ def main(argv: Sequence[str] | None = None) -> int:
     architecture_build = commands.add_parser("architecture-build", help="Select supplied implementations and complete RNA partitions")
     architecture_build.add_argument("--request", type=Path, required=True)
     architecture_build.add_argument("--output", type=Path, required=True)
+    _architecture_core_arguments(architecture_build, False)
     for operation in ("verify", "export"):
         command = commands.add_parser("architecture-" + operation, help="Independently verify RNA architecture or export FASTA with its manifest")
         command.add_argument("path", type=Path)
         command.add_argument("--expected-request", type=Path, required=True)
         if operation == "export":
             command.add_argument("--output", type=Path, required=True)
+        _architecture_core_arguments(command, operation == "verify")
     payload_build = commands.add_parser("payload-build", help="Compile therapeutic intent to RNA under supplied executable contracts")
     payload_build.add_argument("--request", type=Path, required=True)
     payload_build.add_argument("--output", type=Path, required=True)
@@ -1439,25 +1453,69 @@ def _implementation_summary(record):
     )
 
 
-def _architecture_command(args):
-    from biocompiler.compiler.payload_architecture import compile_payload_architecture, export_payload_architecture
-    from biocompiler.verification.payload_architecture import check_payload_architecture
-    try:
-        if args.command == "architecture-build":
-            request = PayloadArchitectureRequest.from_json(_bounded_text(args.request))
-            build = compile_payload_architecture(request)
-            _publish_report(build, args.output, inputs=(args.request,))
-        else:
-            request = PayloadArchitectureRequest.from_json(_bounded_text(args.expected_request))
-            build = PayloadArchitectureBuild.from_json(_bounded_text(args.path))
-        assessment = check_payload_architecture(build, expected_request=request)
+def _architecture_core_client(args):
+    from biocompiler.core_client import CoreClient
+
+    verifier = getattr(args, "verifier_executable", None)
+    executable = args.core_executable if args.core_executable is not None else verifier
+    if executable is None:
+        if args.core_sha256 is not None or args.core_timeout is not None:
+            raise SerializationError("Core timeout and digest options require an explicit executable.")
+        return None
+    return CoreClient(executable, role="verify" if verifier is not None else "core",
+                      expected_sha256=args.core_sha256,
+                      timeout_seconds=30.0 if args.core_timeout is None else args.core_timeout)
+
+
+def _architecture_core_command(args, core):
+    from biocompiler.architecture_backend import compile_document, check_document, export_document
+    from biocompiler.core_client import LIMITS, decode_json
+
+    def document(path):
+        # Preserve the supplied JSON before domain normalization; the native
+        # result separately binds supplied and normalized authority identities.
+        return decode_json(_bounded_text(path).encode("utf-8"), limit=LIMITS["max_request_bytes"])
+
+    if args.command == "architecture-build":
+        build, assessment, _ = compile_document(document(args.request), core=core)
+        _publish_report(build, args.output, inputs=(args.request,))
+    else:
+        request, candidate = document(args.expected_request), document(args.path)
         if args.command == "architecture-export":
-            bundle = export_payload_architecture(build, expected_request=request)
+            bundle, build, assessment, _ = export_document(
+                expected_request=request, build=candidate, core=core)
             _publish_report(bundle, args.output, inputs=(args.path, args.expected_request))
+        else:
+            build, assessment, _ = check_document(expected_request=request, build=candidate, core=core)
+    return build, assessment
+
+
+def _architecture_command(args):
+    from biocompiler.core_client import CoreError
+
+    try:
+        core = _architecture_core_client(args)
+        if core is not None:
+            build, assessment = _architecture_core_command(args, core)
+        else:
+            from biocompiler.compiler.payload_architecture import compile_payload_architecture, export_payload_architecture
+            from biocompiler.verification.payload_architecture import check_payload_architecture
+
+            if args.command == "architecture-build":
+                request = PayloadArchitectureRequest.from_json(_bounded_text(args.request))
+                build = compile_payload_architecture(request)
+                _publish_report(build, args.output, inputs=(args.request,))
+            else:
+                request = PayloadArchitectureRequest.from_json(_bounded_text(args.expected_request))
+                build = PayloadArchitectureBuild.from_json(_bounded_text(args.path))
+            assessment = check_payload_architecture(build, expected_request=request)
+            if args.command == "architecture-export":
+                bundle = export_payload_architecture(build, expected_request=request)
+                _publish_report(bundle, args.output, inputs=(args.path, args.expected_request))
         print(json.dumps({"status": build.status, "verification": assessment.to_dict(),
                           "diagnostics": [item.to_dict() for item in build.diagnostics]}, sort_keys=True, indent=2))
         return 0 if assessment.passed and build.construction is not None else 1
-    except (BiocompilerError, OSError, ValueError, TypeError) as error:
+    except (BiocompilerError, CoreError, OSError, ValueError, TypeError) as error:
         print(str(error), file=sys.stderr)
         return 2
 

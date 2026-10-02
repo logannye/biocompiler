@@ -255,8 +255,11 @@ def _candidate_gaps(receipt, selected, request):
     return result
 
 
-def compile_payload_architecture(request):
-    """Select complete supplied architectures; never infer sequence from intent."""
+def compile_payload_architecture(request, *, core=None):
+    """Select supplied architectures using the explicit engine, without fallback."""
+    if core is not None:
+        from biocompiler.architecture_backend import compile_architecture
+        return compile_architecture(request, core=core)[0]
     require(isinstance(request, PayloadArchitectureRequest), "Expected complete RNA architecture authority.")
     request = PayloadArchitectureRequest.from_dict(request.to_dict())
     execution = derive_source_execution(request.source)
@@ -420,8 +423,11 @@ def compile_payload_architecture(request):
     return finish("partial" if diagnostics or receipt.unresolved else "compiled", plan, construction)
 
 
-def export_payload_architecture(build, *, expected_request):
+def export_payload_architecture(build, *, expected_request, core=None):
     """Freshly check and export delivered RNA with its inseparable full manifest."""
+    if core is not None:
+        from biocompiler.architecture_backend import export_architecture
+        return export_architecture(build, expected_request=expected_request, core=core)[0]
     from biocompiler.verification.payload_architecture import check_payload_architecture
     receipt = check_payload_architecture(build, expected_request=expected_request)
     require(receipt.passed and receipt.construction_complete and build.construction is not None,
