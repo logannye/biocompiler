@@ -25,6 +25,13 @@ val reserve_request : t -> Bioc_wire.Json.t -> unit
 (* Retain/release live inventories; work is never refunded. *)
 val retain : t -> int -> unit
 val release : t -> int -> unit
+(* Incremental caller-owned lifetimes survive final publication transfer.
+   Successful reservations charge before mutation; release never refunds work.
+   A released scope cannot be retained into or released again. *)
+type scope
+val create_scope : t -> scope
+val retain_in_scope : scope -> int -> unit
+val release_scope : scope -> unit
 val with_retained : t -> int -> (unit -> 'a) -> 'a
 val with_workspace : t -> (unit -> 'a) -> 'a
 val history_size : t -> Bioc_domain.Execution_data.Input_frame.t list -> Bioc_domain.Verification_exploration.Codec.size

@@ -431,3 +431,13 @@
  (modules test_realization_workflow_corpus)
  (libraries bioc_wire bioc_domain bioc_checker bioc_realization_checker bioc_synthetic_producer zarith)
  (action (run %{test} %{env:BIOCOMPILER_REALIZATION_WORKFLOW_CORPUS=missing})))
+
+(test
+ (name test_artifact_io)
+ (modules test_artifact_io)
+ (libraries bioc_wire bioc_service bioc_checker bioc_realization_checker unix zarith))
+
+(test
+ (name test_verification_workflow_service)
+ (modules test_verification_workflow_service)
+ (libraries bioc_wire bioc_service bioc_domain bioc_checker bioc_realization_checker zarith))

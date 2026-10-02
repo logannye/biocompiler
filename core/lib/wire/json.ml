@@ -55,7 +55,7 @@ let add_codepoint buffer value =
     add (0xf0 lor (value lsr 18)); add (0x80 lor ((value lsr 12) land 0x3f));
     add (0x80 lor ((value lsr 6) land 0x3f)); add (0x80 lor (value land 0x3f)))
 
-let parse_with_limits ~max_bytes ~max_nodes text =
+let parse_with_limits ?(on_node=(fun () -> ())) ?(count_keys=false) ~max_bytes ~max_nodes text =
   let length = String.length text in
   require (length <= max_bytes) "request_too_large" "JSON exceeds the byte limit.";
   let position = ref 0 and nodes = ref 0 in
@@ -152,6 +152,7 @@ let parse_with_limits ~max_bytes ~max_nodes text =
     require (depth <= Limits.max_depth) "nesting_limit" "JSON exceeds the nesting limit.";
     incr nodes;
     require (!nodes <= max_nodes) "node_limit" "JSON exceeds the value count limit.";
+    on_node ();
     skip ();
     if !position >= length then error "Missing JSON value.";
     match text.[!position] with
@@ -179,6 +180,10 @@ let parse_with_limits ~max_bytes ~max_nodes text =
           let items = ref [] and seen = Hashtbl.create 16 and finished = ref false in
           while not !finished do
             skip ();
+            if count_keys then (
+              incr nodes;
+              require (!nodes <= max_nodes) "node_limit" "JSON exceeds the key and value count limit.";
+              on_node ());
             let key = read_string () in
             require (not (Hashtbl.mem seen key)) "duplicate_key" "Duplicate JSON object key.";
             Hashtbl.add seen key ();
@@ -208,6 +213,11 @@ let parse_bounded ~max_bytes ~max_nodes text =
   require (max_bytes >= 0 && max_bytes <= 64 * 1024 * 1024 && max_nodes > 0 && max_nodes <= 1_000_000)
     "invalid_json_limits" "Invalid bounded artifact JSON limits.";
   parse_with_limits ~max_bytes ~max_nodes text
+
+let parse_artifact ?on_node ~max_bytes ~max_nodes text =
+  require (max_bytes >= 0 && max_bytes <= 64 * 1024 * 1024 && max_nodes > 0 && max_nodes <= 1_000_000)
+    "invalid_json_limits" "Invalid bounded artifact JSON limits.";
+  parse_with_limits ?on_node ~count_keys:true ~max_bytes ~max_nodes text
 
 let object_fields ?path = function
   | Object fields -> fields

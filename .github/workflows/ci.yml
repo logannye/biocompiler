@@ -1220,6 +1220,22 @@ jobs:
             --core "$GITHUB_WORKSPACE/artifacts/native/biocompiler-core" \
             --verify "$GITHUB_WORKSPACE/artifacts/native/biocompiler-verify" \
             --output "$GITHUB_WORKSPACE/generated/realization/routing.json"
+      - name: Execute complete workflow artifacts with Python semantic authority blocked
+        env:
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/verification-workflow"
+          cd "$RUNNER_TEMP/verification-workflow"
+          BIOCOMPILER_WORKFLOW_CORE_SHA="$(python -c 'import json,os; from pathlib import Path; print(json.loads((Path(os.environ["GITHUB_WORKSPACE"])/"artifacts/native/binaries.json").read_text())["sha256"]["biocompiler-core"])')"
+          BIOCOMPILER_WORKFLOW_VERIFY_SHA="$(python -c 'import json,os; from pathlib import Path; print(json.loads((Path(os.environ["GITHUB_WORKSPACE"])/"artifacts/native/binaries.json").read_text())["sha256"]["biocompiler-verify"])')"
+          python "$GITHUB_WORKSPACE/tools/check_native_workflow.py" \
+            --core "$GITHUB_WORKSPACE/artifacts/native/biocompiler-core" \
+            --verify "$GITHUB_WORKSPACE/artifacts/native/biocompiler-verify" \
+            --core-sha256 "$BIOCOMPILER_WORKFLOW_CORE_SHA" \
+            --verify-sha256 "$BIOCOMPILER_WORKFLOW_VERIFY_SHA" \
+            --native-root "$GITHUB_WORKSPACE/artifacts/native" \
+            --platform ${{ matrix.platform }} \
+            --output "$GITHUB_WORKSPACE/generated/realization/workflow.json"
       - name: Retain complete protocol and SDK artifacts even on failure
         if: always()
         uses: actions/upload-artifact@v4
@@ -1267,12 +1283,16 @@ jobs:
         env:
           GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
         run: python tools/check_realization_reproducibility.py --root artifacts/realization --native-root artifacts/core --output generated/realization-reproducibility/receipt.json
+      - name: Require complete workflow artifacts and semantic receipts across all four runtimes
+        env:
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: python tools/check_workflow_reproducibility.py --root artifacts/realization --native-root artifacts/core --output generated/realization-reproducibility/workflow.json
       - name: Retain complete comparison receipt
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: realization-core-reproducibility
-          path: generated/realization-reproducibility/receipt.json
+          path: generated/realization-reproducibility/*.json
           if-no-files-found: error
           overwrite: true
           retention-days: 7

@@ -11,7 +11,7 @@ from unittest.mock import patch
 
 from biocompiler import core_artifacts as artifacts
 from biocompiler.core_client import (
-    LIMITS, CoreCancelled, CoreClient, CoreError, CoreProtocolError, CoreTimeout,
+    LIMITS, CoreCancelled, CoreClient, CoreError, CoreProtocolError, CoreRejected, CoreTimeout,
     CoreTransportError, CoreUnavailable, encode_json,
 )
 
@@ -49,6 +49,9 @@ if MODE=='stall':time.sleep(10)
 if MODE=='flood-stdout':sys.stdout.write('x'*70000);sys.exit(0)
 if MODE=='flood-stderr':sys.stderr.write('x'*1100000);sys.exit(0)
 if MODE=='flood-artifact':os.write(output_fd,b'x'*1000);sys.exit(0)
+if MODE=='authority-error':
+ response.update(status='error',result=None,diagnostics=[{'code':'invalid_authority','message':'Independent request rejected','path':None}])
+ print(json.dumps(response));sys.exit(2)
 raw=record if record is not None else authority
 raw=json.dumps(json.loads(raw),sort_keys=True,separators=(',',':'),ensure_ascii=False).encode()
 if MODE=='noncanonical':raw=b' '+raw
@@ -118,6 +121,12 @@ class ArtifactProcessTests(unittest.TestCase):
         self.assertEqual(result.response.request_id,'finite-request')
         self.assertEqual(result.response.result['authority'],artifacts._descriptor(b'{"source":1}'))
         self.assertEqual(self.call().artifact,b'{"source":1}')
+
+    def test_native_authority_error_precedes_malformed_retained_record(self):
+        with self.assertRaises(CoreRejected) as caught:
+            artifacts.call_artifact(self.client('authority-error'), 'replay-verification-workflow', {},
+                                    authority=b'{"source":1}', retained_record=b'{')
+        self.assertEqual(caught.exception.response.diagnostics[0].code, 'invalid_authority')
 
     def test_control_freezes_before_capability_negotiation(self):
         client=self.client();payload={'nested':[1]};negotiate=CoreClient.negotiate

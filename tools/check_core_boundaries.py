@@ -17,7 +17,7 @@ import sys
 
 
 ROOT = Path(__file__).resolve().parents[1]
-EXTERNAL_LIBRARIES = frozenset({"digestif", "zarith"})
+EXTERNAL_LIBRARIES = frozenset({"digestif", "zarith", "unix"})
 # New libraries/dependencies require deliberate policy review, even when harmless.
 LIBRARIES = {
     "bioc_synthetic_producer": ("lib/synthetic_producer/dune", {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_realization_checker", "zarith"}, "producer"),
@@ -30,13 +30,15 @@ LIBRARIES = {
     "bioc_source_adapter": ("lib/source_adapter/dune", {"bioc_wire", "bioc_domain", "bioc_semantics", "bioc_checker", "zarith"}, "source_semantics"),
     "bioc_compiler": ("lib/compiler/dune", {"bioc_wire", "bioc_domain", "bioc_checker", "zarith"}, "compiler"),
     "bioc_checker": ("lib/checker/dune", {"bioc_wire", "bioc_domain", "zarith"}, "checker"),
-    "bioc_service": ("lib/service/dune", {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_realization_checker", "zarith"}, "checker_service"),
+    "bioc_service": ("lib/service/dune", {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_realization_checker", "zarith", "unix"}, "checker_service"),
 }
 EXECUTABLES = {
     "biocompiler-core": ("bin/core/dune", {"bioc_wire", "bioc_service", "bioc_producer_service"}, "core_entrypoint"),
     "biocompiler-verify": ("bin/verify/dune", {"bioc_wire", "bioc_service"}, "verifier"),
 }
 TESTS = {
+    "test_artifact_io": {"bioc_wire", "bioc_service", "bioc_checker", "bioc_realization_checker", "unix", "zarith"},
+    "test_verification_workflow_service": {"bioc_wire", "bioc_service", "bioc_domain", "bioc_checker", "bioc_realization_checker", "zarith"},
     "test_synthetic_generator": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_realization_checker", "bioc_synthetic_producer", "zarith"},
     "test_synthetic_selection": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_realization_checker", "bioc_synthetic_producer", "zarith"},
     "test_synthetic_components": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_realization_checker", "bioc_synthetic_producer", "zarith"},
@@ -126,6 +128,16 @@ TESTS = {
     'test_source_manifest': {'bioc_wire', 'bioc_domain', 'zarith'},
     'test_source_check': {'bioc_wire', 'bioc_domain', 'bioc_checker', 'zarith'},
 }
+# One reviewed POSIX primitive duplicates inherited descriptors and verifies
+# their original access flags. No paths, processes or dynamic code are exposed.
+ARTIFACT_STUB = "core/lib/service/artifact_fd_stubs.c"
+ARTIFACT_STUB_SHA256 = "e03ea4cf89ec58e218a67948c30559197f71856d4d7f882effb9311d2b067a2d"
+ARTIFACT_EXTERNAL = 'external duplicate_checked : int -> int -> bool -> Unix.file_descr = "bioc_artifact_duplicate_checked"'
+ARTIFACT_UNIX = frozenset({"file_descr", "Unix_error", "close", "fstat", "S_REG", "st_kind", "st_size",
+                          "st_dev", "st_ino", "lseek", "SEEK_SET", "read", "single_write_substring"})
+ARTIFACT_TEST_UNIX = ARTIFACT_UNIX | frozenset({"openfile", "O_RDONLY", "O_WRONLY", "O_RDWR", "O_CREAT",
+    "O_TRUNC", "O_APPEND", "O_CLOEXEC", "O_NONBLOCK", "write", "stat", "unlink", "pipe", "link"})
+
 PRODUCER_ROLES = frozenset({"compiler", "matcher", "selection", "emitter", "assembler", "producer"})
 # Reconstruction is an independent checker's implementation detail. Consumers
 # can request assessment/replay, but cannot obtain an expected candidate to emit.
@@ -280,7 +292,8 @@ def ocaml_tokens(text):
 
 
 def source_boundary(path, allowed_libraries, *, owner=None):
-    tokens = ocaml_tokens(path.read_text(encoding="utf-8"))
+    source = path.read_text(encoding="utf-8")
+    tokens = ocaml_tokens(source)
     referenced = set()
     for index, token in enumerate(tokens):
         for library, modules in PRIVATE_MODULES.items():
@@ -290,8 +303,19 @@ def source_boundary(path, allowed_libraries, *, owner=None):
                     raise BoundaryError(f"Private checker reconstruction referenced outside {library} in {path.name}")
                 if token == public_spelling and path.suffix == ".mli" and path.stem not in modules:
                     raise BoundaryError(f"Private checker reconstruction leaked through public interface {path.name}")
-        if token == "external" or token in {"Unix", "Dynlink", "Obj", "Marshal"}:
+        if token == "external":
+            if (owner != "bioc_service" or path.name != "artifact_io.ml" or tokens.count("external") != 1
+                    or re.findall(r"(?ms)^external .*?(?=^let |^module |^type |\Z)", source)
+                    != [ARTIFACT_EXTERNAL + "\n"]):
+                raise BoundaryError(f"Unreviewed native/process/dynamic-code escape {token} in {path.name}")
+        if token in {"Dynlink", "Obj", "Marshal"}:
             raise BoundaryError(f"Unreviewed native/process/dynamic-code escape {token} in {path.name}")
+        if token == "Unix":
+            members = (ARTIFACT_UNIX if owner == "bioc_service" and path.name == "artifact_io.ml"
+                       else ARTIFACT_TEST_UNIX if owner == "test:test_artifact_io" else frozenset())
+            if (tokens[index:index + 2] != ["Unix", "."] or index + 2 >= len(tokens)
+                    or tokens[index + 2] not in members):
+                raise BoundaryError(f"Unreviewed native/process/dynamic-code escape Unix in {path.name}")
         if token == "Sys":
             reviewed = {"argv"}
             if owner in {"test:test_architecture_check", "test:test_source_transport", "test:test_architecture_producer", "test:test_construction_producer", "test:test_candidate_runtime_corpus", "test:test_component_runtime_corpus", "test:test_realization_foundation_corpus", "test:test_realization_checks_corpus", "test:test_component_acceptance_corpus", "test:test_synthetic_authority_corpus", "test:test_synthetic_acceptance_corpus", "test:test_synthetic_producers_corpus", "test:test_realization_workflow_corpus"}:
@@ -339,6 +363,11 @@ def check_boundaries(root: Path):
                 actions = [field for field in stanza[1:]
                            if isinstance(field, list) and field and field[0] == "action"]
                 stanza = [stanza[0], *(field for field in stanza[1:] if field not in actions)]
+            if kind == "library" and relative == "lib/service/dune":
+                stubs = [field for field in stanza[1:] if isinstance(field, list) and field and field[0] == "foreign_stubs"]
+                if stubs != [["foreign_stubs", ["language", "c"], ["names", "artifact_fd_stubs"]]]:
+                    raise BoundaryError("Changed reviewed artifact descriptor primitive")
+                stanza = [stanza[0], *(field for field in stanza[1:] if field not in stubs)]
             values = fields(stanza, allowed)
             dependencies = values.get("libraries", [])
             if len(dependencies) != len(set(dependencies)):
@@ -387,6 +416,14 @@ def check_boundaries(root: Path):
     if set(graph) != expected_nodes or set(tests) != set(TESTS):
         raise BoundaryError("Missing reviewed libraries, executables or native tests")
     closure = validate_graph(graph, roles)
+    native_files = [path for path in core.rglob("*") if "_build" not in path.relative_to(core).parts
+                    and path.suffix in {".c", ".h", ".cc", ".cpp", ".S", ".s"}]
+    if [path.relative_to(root).as_posix() for path in native_files] != [ARTIFACT_STUB]:
+        raise BoundaryError("Unreviewed native artifact primitive source inventory")
+    stub_digest = hashlib.sha256(native_files[0].read_bytes()).hexdigest()
+    if stub_digest != ARTIFACT_STUB_SHA256:
+        raise BoundaryError("Changed reviewed artifact descriptor primitive source")
+    source_files[ARTIFACT_STUB] = stub_digest
     references = {}
     for path in sorted(core.rglob("*")):
         if "_build" in path.relative_to(core).parts or path.suffix not in {".ml", ".mli"}:

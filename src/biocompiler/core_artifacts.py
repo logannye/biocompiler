@@ -284,8 +284,9 @@ def call_artifact(core: CoreClient, operation: str, payload: JsonValue, *,
             or type(operation) is not str or operation not in ARTIFACT_OPERATIONS):
         raise CoreProtocolError("Invalid artifact operation or output limit")
     decode_artifact(authority, authority=True)
-    if retained_record is not None:
-        decode_artifact(retained_record)
+    if retained_record is not None and (type(retained_record) is not bytes
+            or not retained_record or len(retained_record) > MAX_ARTIFACT_BYTES):
+        raise CoreProtocolError("Artifact byte budget exceeded or input is empty")
     authority_descriptor = _descriptor(authority)
     record_descriptor = None if retained_record is None else _descriptor(retained_record)
     identifier = str(uuid4()) if request_id is None else request_id
@@ -316,6 +317,12 @@ def call_artifact(core: CoreClient, operation: str, payload: JsonValue, *,
             raise CoreUnsupported(response)
         if response.status == "error":
             raise CoreRejected(response)
+        # Authority-first replay diagnostics belong to the core. Decode retained
+        # input only after success, so malformed retained JSON cannot hide a
+        # failure in the independent source request. Size/type were bounded
+        # before transport; the native reader bounds nodes before allocation.
+        if retained_record is not None:
+            decode_artifact(retained_record)
         receipt = _object(response.result, {"schema_version", "transport", "authority",
             "retained_record", "artifact", "result"}, "Artifact receipt")
         if (receipt["schema_version"] != "biocompiler.core.artifact_response.v1"

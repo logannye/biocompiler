@@ -495,9 +495,23 @@ These checkpoints record narrower validated work; they do not complete a broad L
   is documented in the native plan and still requires executable validation.
   The Python [artifact transport](../protocol/artifact-transport-v1.md) passes
   real subprocess tests including a complete 36 MiB report, strict byte binding,
-  cancellation and corruption rejection. Native descriptor handling, workflow
-  endpoints, SDK/CLI routing and complete installed gates remain unfinished.
-  No workflow capability is advertised and no default route is changed.
+  cancellation and corruption rejection. A subsequent service batch implements
+  native descriptor handling, both executable roles, and a strict immutable Python
+  workflow SDK for all six operation/mode pairs. It uses a narrowly pinned POSIX
+  descriptor primitive, scoped raw-input retention and authority-first replay.
+  Local transport/client tests pass (37 tests); native compilation and the new
+  full installed campaign/comparison require fresh hosted validation. All existing
+  required CI jobs remain, with workflow evidence added to the four installed
+  variants and their comparison. The installed campaign covers 112 calls per role
+  (224 per runtime), retaining every original top-level workflow occurrence,
+  full artifacts/receipts/errors, supplemental operation/mode pairs and boundary
+  failures; its 13 projection/comparator unit tests pass locally. Legacy public
+  workflow/CLI routing and R6 remain
+  unfinished; no default route is changed. The batch adds two native suites
+  (87 total) and preserves the complete 85-suite predecessor run separately.
+  At `683c6a23d3ddbecc514c614cd55506df46437057`, hosted Linux compilation and
+  the complete 85-suite step passed in run `36981094835`; macOS and the full
+  36-job gate were still pending. That result does not validate this service batch.
   See the [native implementation plan](migration-realization-workflow-native-plan.md),
   [public workflow audit](migration-realization-workflow-public-plan.md) and
   [complete capture audit](migration-realization-workflow-conformance-plan.md).

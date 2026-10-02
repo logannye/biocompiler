@@ -1,10 +1,19 @@
 # Bounded workflow artifact channel
 
-Implementation status: the Python transport and subprocess tests are implemented.
-Native descriptor handling, workflow service dispatch, profile-specific result
-validation, public SDK/CLI routing and installed campaigns remain open. Existing
-native executables do not advertise this channel. Transport binding alone is
+Implementation checkpoint: Python transport and immutable workflow SDK, native
+inherited-descriptor handling, and both native service roles are implemented.
+Fresh hosted validation of this revision and installed campaigns remain pending;
+legacy public workflow/CLI cutover is still open. Transport binding alone is
 neither a checker result nor fresh acceptance.
+
+A small isolated POSIX C primitive duplicates inherited descriptors above every
+supplied descriptor number and checks their actual access flags with `F_GETFL`.
+This avoids the differing Linux/macOS `/dev/fd` reopen behavior and rejects
+writable input descriptors. OCaml owns regular-file checks, alias detection,
+bounds, JSON parsing, semantic execution and publication. The boundary gate pins
+the exact primitive source and complete external declaration, prohibits new
+native sources and permits only reviewed Unix members in the transport module.
+All native compilation and tests run on hosted CI.
 
 The existing `biocompiler.core.v1` request/response and its 16/32 MiB defaults stay
 unchanged. Whole workflow reports require a separate channel because historical
@@ -26,14 +35,21 @@ The two workflow operations are `run-verification-workflow` and
 `replay-verification-workflow`. The former supplies the complete workflow request;
 the latter independently supplies that same request and the complete retained
 record. Check, explore and reduce remain operations inside the workflow request.
-Their native semantic profile is a separate contract and remains unfinished.
+Their exact native semantic profile is `biocompiler.core.verification_workflow.v1`.
+The `verification_workflow` capability binds schemas, versions, all six
+operation/mode pairs and the complete aggregate/leaf resource trees. The control
+`operation_payload` contains exactly `profile` and `limits` (null defaults or
+all five positive integer reductions).
 
 The standard JSON control request has at most 65,536 bytes. Its payload contains
 exactly `transport`, `authority`, `retained_record`, `output_limit` and
 `operation_payload`. Each input descriptor is `{bytes, sha256}`; absent retained
 records use null. `operation_payload` belongs to the separately checked workflow
 profile. Input bytes and the complete control request are frozen before running
-capability negotiation.
+capability negotiation. Retained bytes are size/type bounded before transport;
+the core validates independent request semantics before parsing retained JSON.
+Python verifies retained JSON after successful native completion so its parser
+cannot hide a source-authority rejection.
 
 | Channel | Maximum bytes | Maximum JSON keys and values |
 | --- | ---: | ---: |
@@ -90,3 +106,17 @@ a complete 36 MiB report roundtrip, read-only input descriptors, frozen mutable
 control, exact output boundaries, changed authority, corrupt/partial records,
 flooding, cancellation, timeouts and executable-pin failure. These tests validate
 transport mechanics only; they are not native workflow conformance evidence.
+
+The semantic result binds executable role, transport request identity, operation,
+workflow operation/mode, profile and implementation/workflow versions, complete
+canonical raw request identity, normalized typed request identity, retained record
+identity and actual emitted record identity. Effective aggregate and leaf limits
+must match the selected reductions. Replay freshly reconstructs and compares the
+complete retained record. The Python SDK returns immutable exact record bytes
+and defensive structural views without calling historical semantic constructors.
+
+Raw parsed input nodes reserve scoped shared-budget inventory before each key or
+value allocation. Final publication cannot release those reservations; descriptor
+scope cleanup releases them exactly once, including failure paths, without
+refunding work. The conservative reviewed live peak is 7.75 million items within
+the 8 million profile. See the [transport audit](../docs/migration-realization-workflow-transport-audit.md).

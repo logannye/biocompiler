@@ -393,11 +393,11 @@ unchanged actual children. The omitted campaign retains all 625 results. All
 874 new domain/kernel observations independently replay their full Python
 results, properties, exceptions and callback chronology.
 
-All 14 capture/integrity tests pass (96.643 seconds), including an independent
+All 14 capture/integrity tests pass after the two transport additions (96.266 seconds), including an independent
 complete 376-method baseline and instrumented recapture, all 874 new Python
 replays and every-document byte comparison. Python source compilation checks
 also pass. The validation receipt is
-`generated/migration-next/realization-workflow-native-preflight-tests.log`.
+`generated/migration-next/workflow-service-baseline-tests.log`.
 
 `tests/conformance/realization-workflow-v1.json` is pinned to
 `2f5e7636977f559e046776c1bb92bebf67c8f0e733ca463927f8d3a1aee3d77b`.
@@ -408,12 +408,17 @@ occurrence and reconstruct the complete original capture with fingerprint
 Fixtures retain the source hashes captured at freezing time. Subsequent captures
 retain actual current source metadata in their raw capture and receipt.
 
-The separately reviewed addition `src/biocompiler/core_artifacts.py` is pinned to
-`e4f6888609f9ffdab1d7f2e641072f3545a15c0e41ea6a3ddd85d50477708a68`.
+The separately reviewed transport additions are pinned individually:
+`src/biocompiler/core_artifacts.py` at
+`9cf24948c12d617dc783317b4f16330e1be69feba64cfec70767288556011e4e`, and
+`src/biocompiler/core_workflow.py` at
+`c2e1a16518756f89f6bb84437e2f77634be2983986376e837b548d51047df9d0`.
+These additions preserve authority-first error ordering while the baseline
+capture forbids importing either module.
 `tools/check_realization_workflow_corpus.py` verifies that every historical source
 file remains byte-identical, rejects unreviewed additions, and records both full
-source inventories. Baseline and instrumented capture assert that this added
-module is absent and block its import. Only after that guard succeeds may the
+source inventories. Baseline and instrumented capture assert that these added
+modules are absent and block their imports. Only after that guard succeeds may the
 comparison project the source inventory to the historical inventory; every
 observation and artifact must still compare exactly. Current full metadata is
 explicitly not claimed byte-identical to historical metadata. Focused captures
@@ -450,3 +455,29 @@ Recheck these if implementation starts after source changes:
 | tests/test_synthetic_verification_workflow.py | 77f20911b8eddff90f0294137dfadd9a57fe14a3cc0402bc7875e890c40f1124 |
 | tests/test_synthetic_design_workflows.py | c00c25121d5437f1d5c9419d5be9e2286d5f7e8abac4e29213dea6a521dd1322 |
 | tests/test_temporal_generation.py | 365d84c37be73619f1a7d099e4e1b405b623d27bd5fe360f9699a1dfe204ba0d |
+
+
+## Artifact-channel installed campaign checkpoint
+
+`tools/check_native_workflow.py` preserves all 52 original top-level run/replay
+observations, every original occurrence and source context, fresh replay of all
+35 successful runs, exact historical checker-version witnesses, nine separately
+Python-replayed supplemental records, normalization witnesses and resource/error
+precedence cases: 112 operations per role, 224 per installed runtime. This is
+additional evidence to the complete 69,236-call native corpus, not a replacement.
+
+The supplemental `verification-workflow-service-v1.json` inventory is pinned to
+`b396f27f2acfb7bb2b5eee4f57ae69eef5028d6ee34d9c7288761bc322a93cdc`.
+The campaign verifies both same-run native binaries before invoking the installed
+immutable Python workflow SDK under import and execution guards against Python
+semantic authority. It retains complete request, historical, expected, emitted,
+semantic-receipt, protocol-envelope and error bytes in content-addressed files.
+Its scope explicitly excludes the still-unmigrated public CLI and pipelines.
+
+`tools/check_workflow_reproducibility.py` independently rereads and rehashes every
+body across Linux/macOS and Python 3.11/3.14, validates complete expected contents,
+resources, guards, original occurrence inventory, exact revision/run/platform
+metadata, and both downloaded executable identities. Both commands are mandatory
+in the existing installed matrix/comparison jobs; all 36 required jobs remain.
+Local projection/comparator tests pass (13 tests, 31.366 seconds). Full native
+execution and fourway receipts remain pending hosted validation.
