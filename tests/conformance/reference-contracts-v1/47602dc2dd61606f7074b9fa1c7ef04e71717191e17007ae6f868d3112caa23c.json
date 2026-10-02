@@ -1,0 +1,1 @@
+{"genetic_code":1,"protein_length_includes_stop":true,"schema_version":"biocompiler.translation_policy.v0.1","start_codon":"ATG/AUG","stop_convention":"exactly-one-terminal-star-retained"}

@@ -1,0 +1,1 @@
+[{"code":"reference_inventory","instance_id":null,"message":"Every selected component requires exactly one independently pinned reference selection.","molecule_id":null,"requirement_ids":["exact_reference"],"source":null,"status":"fail"}]

@@ -1,0 +1,1 @@
+[{"code":"exact_coverage","instance_id":"cds","message":"The whole selected CDS must cover source and molecule exactly from zero to the exclusive reference length, without gaps, clipping or unexplained bases.","molecule_id":"payload","requirement_ids":["exact_reference"],"source":{"file":"reference_build.py","function":"<module>","line":12},"status":"fail"}]

@@ -1,0 +1,1 @@
+"{\n  \"feature\": \"domain-feature-coordinates\",\n  \"reason\": \"The reviewed reference does not establish this feature.\",\n  \"schema_version\": \"biocompiler.molecular_feature_status.v0.1\",\n  \"scope\": \"cds_record\",\n  \"status\": \"unknown\",\n  \"value\": null\n}"

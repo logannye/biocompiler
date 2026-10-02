@@ -32,15 +32,15 @@ superseded result is treated as acceptance.
 
 **Current work toward LM-CUTOFF-1:** the combined source checkpoint is
 [PR75](https://github.com/logannye/biocompiler/pull/75), source
-`d56e814ef70439eab5b227fe227e0d2cd1ba087a`, with exact-head
-[run 37075992379](https://github.com/logannye/biocompiler/actions/runs/37075992379).
+`10edf3b397c1def9f5afef6983767745e1e7859f`, with exact-head
+[run 37079154938](https://github.com/logannye/biocompiler/actions/runs/37079154938).
 It preserves all 39 eligible retained-manager chains and their 566 original
 operations, with complete public build identities. The source-backed
 [CLI assertion correction](../protocol/migration-cli-source-inventory-correction.json)
 also addresses the two stale inventory assertions observed in PR74. Hosted native
-and complete integration acceptance remain pending. This run exposed native
-framed-inspection order assertions and three original-source baseline assertions
-that need correction. Local Python controls and test discovery do not close
+and complete integration acceptance remain pending. The preceding `d56e814`
+run exposed native framed-inspection order assertions and three original-source
+baseline assertions, now corrected. Local Python controls and test discovery do not close
 those gates; no failed checkpoint confers acceptance. The
 [regression-harness correction](../protocol/migration-manager-regression-harness-correction.json)
 preserves the immutable corpus, exact manager-source witness and original test
@@ -1172,6 +1172,27 @@ record current parent heads; previous partial native passes are historical only.
   invalid-input boundaries and one mocked boundary explicitly classified. Require
   complete installed execution, independently reconstructed receipts and every
   preceding manager/continuation gate before checking this item.
+
+- [x] **LM-03/24/25 exact-reference source and baseline checkpoint:** implement
+  the distinct historical reference/component/construct/molecular types,
+  preparation and emission, and separate construct/molecular checkers. Freeze
+  all 22,584 observations from 72 unchanged original tests and 4,000 complete
+  documents. Eight capture/integrity controls and 43 CI/boundary controls pass
+  on both local Python versions; static peer review is complete. This marks
+  source and original-Python evidence only. See the
+  [foundation design](migration-reference-domain-foundation.md).
+- [ ] **LM-24/25 exact-reference native acceptance:** pass all five new native
+  suites, including complete corpus values, identities, raw JSON observations,
+  rejection order, fresh independent assessments and cumulative resource limits,
+  on both supported platforms. Resolve general malformed-text diagnostics and
+  overflowing-exponent precedence before unrestricted raw-text frontend parity
+  is claimed. Preserve all original fixtures and every existing release gate.
+- [ ] **LM-12/24/25 exact-reference manager integration:** connect the accepted
+  native foundation to actual public managers and typed return objects, preserving
+  registration hooks, generator/emitter overrides, source correspondence,
+  callable identity, ordered dependency writes and retained rejection state.
+  Require complete installed original-workflow replay and four-runtime receipts;
+  separate domain/library acceptance does not close this item.
 
 - [x] **LM-03 CI harness correction checkpoint:** the installed architecture
   guard now permits only the exact new parser-registration helpers while rejecting

@@ -1,0 +1,1 @@
+[{"code":"reference_assumptions","instance_id":null,"message":"The layout must retain exactly the reference component's conditional and unknown-feature assumptions.","molecule_id":null,"requirement_ids":["exact_reference"],"source":null,"status":"fail"}]

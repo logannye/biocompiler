@@ -33,6 +33,9 @@ class CoreBoundaryTests(unittest.TestCase):
                                             "bioc_realization_checker", "bioc_semantics",
                                             "bioc_candidate_runtime", "digestif", "zarith", "unix"})
         self.assertEqual(receipt["roles"]["bioc_checker"], "checker")
+        self.assertEqual(receipt["private_modules"]["bioc_checker"],
+                         ["construction_reconstruction", "architecture_reconstruction", "reference_check_support"])
+        self.assertEqual(len(receipt["native_tests"]), 107)
         self.assertEqual(receipt["roles"]["bioc_semantics"], "source_semantics")
         self.assertEqual(receipt["roles"]["bioc_source_adapter"], "source_semantics")
         self.assertEqual(receipt["roles"]["bioc_compiler"], "compiler")
@@ -72,6 +75,33 @@ class CoreBoundaryTests(unittest.TestCase):
         self.assertEqual(receipt["shared_trusted_base"], ["bioc_wire", "bioc_domain"])
         self.assertIn("core/lib/checker/intent_check.ml", receipt["source_sha256"])
         self.assertEqual(receipt["native_build_and_semantic_independence"], "separate_hosted_validation_required")
+
+    def test_reference_foundation_test_dependencies_and_private_support_are_exact(self):
+        expected = {
+            "test_legacy_json": {"bioc_wire"},
+            "test_reference_domains": {"bioc_wire", "bioc_domain", "zarith"},
+            "test_reference_checkers": {"bioc_wire", "bioc_domain", "bioc_checker", "zarith"},
+            "test_reference_contracts_corpus": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "zarith"},
+            "test_reference_producer_budget": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "zarith"},
+        }
+        receipt = boundaries.check_boundaries(boundaries.ROOT)
+        for name, dependencies in expected.items():
+            self.assertEqual(set(receipt["native_tests"][name]), dependencies)
+            root = self.copy_core()
+            path = root / "core/test/dune"
+            source = path.read_text()
+            start = source.index("(test\n (name " + name + ")")
+            end = source.find("\n\n", start)
+            end = len(source) if end < 0 else end
+            stanza = source[start:end]
+            path.write_text(source[:start] + stanza.replace("(libraries ", "(libraries bioc_service ", 1) + source[end:])
+            with self.subTest(suite=name), self.assertRaisesRegex(boundaries.BoundaryError, "native test dependencies"):
+                boundaries.check_boundaries(root)
+        root = self.copy_core()
+        self.change(root, "lib/checker/dune", " architecture_reconstruction reference_check_support)",
+                    " architecture_reconstruction)")
+        with self.assertRaisesRegex(boundaries.BoundaryError, "private module boundary"):
+            boundaries.check_boundaries(root)
 
     def test_descriptor_primitive_cannot_expand_native_or_process_access(self):
         root = self.copy_core()
@@ -158,7 +188,8 @@ class CoreBoundaryTests(unittest.TestCase):
     def test_candidate_corpus_action_requires_the_complete_external_fixture(self):
         for variable in ("BIOCOMPILER_CANDIDATE_RUNTIME_CORPUS", "BIOCOMPILER_COMPONENT_RUNTIME_CORPUS",
                          "BIOCOMPILER_REALIZATION_FOUNDATION_CORPUS", "BIOCOMPILER_REALIZATION_CHECKS_CORPUS",
-                         "BIOCOMPILER_COMPONENT_ACCEPTANCE_CORPUS"):
+                         "BIOCOMPILER_COMPONENT_ACCEPTANCE_CORPUS", "BIOCOMPILER_REFERENCE_CONTRACTS_DOCUMENTS",
+                         "BIOCOMPILER_REFERENCE_CONTRACTS_CORPUS"):
             action = "(action (run %{test} %{env:" + variable + "=missing}))"
             for replacement in ("", "(action (run true))", action + "\n " + action):
                 root = self.copy_core()
@@ -214,6 +245,8 @@ class CoreBoundaryTests(unittest.TestCase):
             ("lib/checker/intent_check.mli", "val hidden : Construction_reconstruction.t"),
             ("lib/compiler/lowering.ml", "module Hidden = Bioc_checker.Architecture_reconstruction"),
             ("lib/checker/intent_check.mli", "val hidden : Architecture_reconstruction.graph"),
+            ("lib/compiler/lowering.ml", "module Hidden = Bioc_checker.Reference_check_support"),
+            ("lib/checker/intent_check.mli", "val hidden : Reference_check_support.t"),
             ("test/test_synthetic_candidate_check.ml", "module Hidden = Bioc_realization_checker.Synthetic_provenance"),
             ("test/test_synthetic_candidate_check.ml", "module Hidden = Bioc_realization_checker.Synthetic_component_authority"),
             ("lib/realization_checker/synthetic_candidate_check.mli", "val hidden : Synthetic_provenance.t"),
@@ -237,6 +270,9 @@ class CoreBoundaryTests(unittest.TestCase):
             ("test/test_source_transport.ml", "module Hidden = Sys"),
             ("test/test_realization_foundation_corpus.ml", 'let hidden = Sys.command "python3 checker.py"'),
             ("test/test_realization_foundation_corpus.ml", "module Hidden = Sys"),
+            ("test/test_reference_contracts_corpus.ml", 'let hidden = Sys.command "python3 checker.py"'),
+            ("test/test_reference_contracts_corpus.ml", "module Hidden = Sys"),
+            ("lib/checker/reference_check_support.ml", 'let hidden = Sys.readdir "."'),
         ):
             root = self.copy_core()
             source = root / "core" / relative
@@ -248,7 +284,7 @@ class CoreBoundaryTests(unittest.TestCase):
         for replacement in ("", "(private_modules construction_reconstruction intent_check)",
                             "(private_modules intent_check)"):
             root = self.copy_core()
-            self.change(root, "lib/checker/dune", "(private_modules construction_reconstruction architecture_reconstruction)", replacement)
+            self.change(root, "lib/checker/dune", "(private_modules construction_reconstruction architecture_reconstruction reference_check_support)", replacement)
             with self.subTest(replacement=replacement), self.assertRaisesRegex(boundaries.BoundaryError, "private module boundary"):
                 boundaries.check_boundaries(root)
         for removed in ("synthetic_provenance", "synthetic_component_authority"):

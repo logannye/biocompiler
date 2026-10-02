@@ -1,0 +1,1 @@
+{"after_sequence_sha256":"04738ea1bec87847cce856152550621551af9d4f73a3e0bbeb929cb89dcbc643","before_sequence_sha256":"04738ea1bec87847cce856152550621551af9d4f73a3e0bbeb929cb89dcbc643","changed_properties":["sequence"],"id":"optimization","preservation_claims":["protein"],"reason":"Proposed future recoding","record_id":"payload","schema_version":"biocompiler.encoding_change.v0.1"}

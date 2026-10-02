@@ -1,0 +1,1 @@
+{"feature":"regulatory-context","reason":"An exact CDS spelling does not specify a delivered molecule.","schema_version":"biocompiler.molecular_feature_status.v0.1","scope":"cds_record","status":"inapplicable","value":null}

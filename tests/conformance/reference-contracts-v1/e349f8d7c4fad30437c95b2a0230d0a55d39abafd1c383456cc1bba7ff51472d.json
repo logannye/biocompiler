@@ -1,0 +1,1 @@
+[{"code":"component_order","instance_id":"cds","message":"The reference molecule must contain precisely its selected whole-CDS instance in order.","molecule_id":"payload","requirement_ids":["exact_reference"],"source":{"file":"reference_build.py","function":"<module>","line":12},"status":"fail"}]
