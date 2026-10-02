@@ -80,13 +80,16 @@ def _output_domains(request, candidate, *, initialization=False):
 
 
 def adapt_synthetic_components(
-    request, candidate, history, *, until=None
+    request, candidate, history, *, until=None, core=None
 ) -> SyntheticComposition:
     """Recheck exact request/candidate/history, then preserve every node and edge.
 
     This requires independently checked finite-trace acceptance. Composition
     linking does not upgrade that result into universal or biological evidence.
     """
+    if core is not None:
+        from biocompiler.synthetic_producer_backend import adapt_record
+        return adapt_record(request, candidate, history, until=until, core=core)
     profile = candidate.generator_config.profile_version
     catalog = catalog_for_profile(profile)
     acceptance = check_synthetic_candidate(

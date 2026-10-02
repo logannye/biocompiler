@@ -1,6 +1,59 @@
 {
   "overall_migration_complete": false,
   "pull_requests": {
+    "52": {
+      "aggregate_receipt_bytes": 609594,
+      "aggregate_receipt_sha256": "42ef7e01f25fd902b82c1ebd05ee7fc4505fbc888a05c3d43cea039e9f91fe47",
+      "checks_per_python_platform": 175,
+      "exact_artifacts_per_python_platform": 219,
+      "four_way_reproducibility_receipt_sha256": "b20763e2ffb49fc5983ca8bcd3fd06ae3e6209fb302bac3acd5c760f5b643f99",
+      "fresh_local_rehash_comparison": "complete_receipt_identical; no binaries executed",
+      "full_aggregate_recreation": "identical",
+      "inclusion_proof": "PR52 corrections identical in PR53; PR52-to-PR53 source delta contains only the independently validated component acceptance additions. The exact complete PR53 tree was integrated.",
+      "integrated_revision": "18a141e85a425cd801d5e831c8cf36d021692138",
+      "integrated_tree": "c2bdf731cd784fef6d5c782e3249d43af8099f10",
+      "integration_pull_request": 53,
+      "integration_status": "included_in_merged_pr53_then_closed_as_superseded",
+      "local_native_execution": false,
+      "platform_binaries": {
+        "linux-x86_64": {
+          "machine": "x86_64",
+          "manifest_sha256": "2f4808f2b820de11a9db861c5622d488747b99655652df798d559f80df6a24fa",
+          "revision": "9ef2f19e3fd1a6c0589a3709016358084f46803d",
+          "sha256": {
+            "biocompiler-core": "6d6d513c1291d68e93013f5788573ba7c28630e64b98077d585a78f9ae85af61",
+            "biocompiler-verify": "4e1da85e4862c484a730eabf92857ea9d985d93c347ba4ca97f4bfa21b27f3c7"
+          },
+          "system": "Linux"
+        },
+        "macos-arm64": {
+          "machine": "arm64",
+          "manifest_sha256": "76aded07c647c84bd8ac2d8ec092587ecbed6ce88be97631086c4fd255aab2d7",
+          "revision": "9ef2f19e3fd1a6c0589a3709016358084f46803d",
+          "sha256": {
+            "biocompiler-core": "31e1f264e473ffb62c4017c12d075bf4b76d5884c0b0fc60afe7e3815c38ffa2",
+            "biocompiler-verify": "fc12df3d7fee588ab1e9dbec9579a47f58743144a7a4ea44d47153dddc7ebb2c"
+          },
+          "system": "Darwin"
+        }
+      },
+      "pull_request": 52,
+      "pull_request_url": "https://github.com/logannye/biocompiler/pull/52",
+      "python_tests": {
+        "3.11.16": 2435,
+        "3.14.7": 2435
+      },
+      "reviewed_merge_tree": "0ac84b69ed0b6a8eaa7dd08757309d9e2f5e3417",
+      "run_attempt": "1",
+      "run_id": "36980274253",
+      "run_url": "https://github.com/logannye/biocompiler/actions/runs/36980274253",
+      "source_revision": "23b142b42a263227a8565403fb4f62cc8a1d638c",
+      "source_tree": "0ac84b69ed0b6a8eaa7dd08757309d9e2f5e3417",
+      "status": "pass",
+      "successful_jobs": 31,
+      "tested_revision": "9ef2f19e3fd1a6c0589a3709016358084f46803d",
+      "tested_tree": "0ac84b69ed0b6a8eaa7dd08757309d9e2f5e3417"
+    },
     "53": {
       "aggregate_receipt_bytes": 611313,
       "aggregate_receipt_sha256": "d51b62e7335b6caa3bc0aba78c3563b8b4b8018a056b0318ddb8934d3c3077de",
@@ -9,7 +62,9 @@
       "four_way_reproducibility_receipt_sha256": "fa840851c2fe495a5e9da23b0297d09afa08e2730814f5ee3bb3fb9f1e729a46",
       "fresh_local_rehash_comparison": "complete_receipt_identical; no binaries executed",
       "full_aggregate_recreation": "identical",
-      "integration_status": "pending_dependency_order_merge",
+      "integrated_revision": "18a141e85a425cd801d5e831c8cf36d021692138",
+      "integrated_tree": "c2bdf731cd784fef6d5c782e3249d43af8099f10",
+      "integration_status": "merged",
       "local_native_execution": false,
       "platform_binaries": {
         "linux-x86_64": {
@@ -32,6 +87,12 @@
           },
           "system": "Darwin"
         }
+      },
+      "post_merge_main_run": {
+        "run_id": "36989967751",
+        "status": "queued",
+        "url": "https://github.com/logannye/biocompiler/actions/runs/36989967751",
+        "validation_claimed": false
       },
       "pull_request": 53,
       "pull_request_url": "https://github.com/logannye/biocompiler/pull/53",
@@ -58,7 +119,9 @@
       "four_way_reproducibility_receipt_sha256": "130b868053d6dfbcdade65e99d0db85de1f8b215d135ddde3943891818f024ef",
       "fresh_local_rehash_comparison": "complete_receipt_identical; no binaries executed",
       "full_aggregate_recreation": "identical",
-      "integration_status": "pending_dependency_order_merge",
+      "integrated_revision": "fb0217324a0550717fc369501de601ed2be22e82",
+      "integrated_tree": "bd166aa5e3736ece176c580ee44b130b0712d364",
+      "integration_status": "merged",
       "local_native_execution": false,
       "platform_binaries": {
         "linux-x86_64": {
@@ -82,6 +145,12 @@
           "system": "Darwin"
         }
       },
+      "post_merge_main_run": {
+        "run_id": "36990033845",
+        "status": "queued",
+        "url": "https://github.com/logannye/biocompiler/actions/runs/36990033845",
+        "validation_claimed": false
+      },
       "pull_request": 54,
       "pull_request_url": "https://github.com/logannye/biocompiler/pull/54",
       "python_tests": {
@@ -98,6 +167,108 @@
       "successful_jobs": 31,
       "tested_revision": "40e6a342f213731cb0168a46960e480a4939b536",
       "tested_tree": "bd166aa5e3736ece176c580ee44b130b0712d364"
+    },
+    "55": {
+      "aggregate_receipt_bytes": 615036,
+      "aggregate_receipt_sha256": "fee8ee63f02e052ec05d4868f1408811e0397b33f4528a071d4909a01a414a26",
+      "checks_per_python_platform": 175,
+      "exact_artifacts_per_python_platform": 219,
+      "four_way_reproducibility_receipt_sha256": "2a74bf089c547446f974fa78aeb98bbbd45e97548100d17b3cb70c1b94052512",
+      "fresh_local_rehash_comparison": "complete_receipt_identical; no binaries executed",
+      "full_aggregate_recreation": "identical",
+      "integrated_revision": "c0b32b668c328ee88c5320886d13b91ea3e24038",
+      "integrated_tree": "a31eecd024ac9ef6c2c3ecd64bd11c05a752a545",
+      "integration_status": "merged_into_main",
+      "local_native_execution": false,
+      "platform_binaries": {
+        "linux-x86_64": {
+          "machine": "x86_64",
+          "manifest_sha256": "165b6331492e3093e3b8e7e6bbecd1ed0d93fa39ce9257e0295c11bae1d1b1c8",
+          "revision": "0af3a68dc345730555fe9d49996cd719f13f70c6",
+          "sha256": {
+            "biocompiler-core": "02ea823b65ef0f7ddc2d530caa084f46d62a4a9f52d688a05d4c4ad12ce45ae7",
+            "biocompiler-verify": "09cc1ff95c7307792a73dce4137fefb07ef6921e4da82e652da3cb37b2adf076"
+          },
+          "system": "Linux"
+        },
+        "macos-arm64": {
+          "machine": "arm64",
+          "manifest_sha256": "8f8b7f865c7fe4eb2229ad67a71f7f6d3603aefc3525991afa081ad6174d236a",
+          "revision": "0af3a68dc345730555fe9d49996cd719f13f70c6",
+          "sha256": {
+            "biocompiler-core": "d03b8e7e2d6d3aa0612cc7ad1dca2961bd21aff2ce79320e45c0833dbac50da5",
+            "biocompiler-verify": "3d728c29907a880c2a5374c3b2908b98d37e31cbb66eff08cecb3c9a1e4960bb"
+          },
+          "system": "Darwin"
+        }
+      },
+      "pull_request": 55,
+      "pull_request_url": "https://github.com/logannye/biocompiler/pull/55",
+      "python_tests": {
+        "3.11.16": 2454,
+        "3.14.7": 2454
+      },
+      "reviewed_merge_tree": "a31eecd024ac9ef6c2c3ecd64bd11c05a752a545",
+      "run_attempt": "1",
+      "run_id": "36980282550",
+      "run_url": "https://github.com/logannye/biocompiler/actions/runs/36980282550",
+      "source_revision": "d59af59488344812b5d8895b339c37e852411d54",
+      "source_tree": "a31eecd024ac9ef6c2c3ecd64bd11c05a752a545",
+      "status": "pass",
+      "successful_jobs": 31,
+      "tested_revision": "0af3a68dc345730555fe9d49996cd719f13f70c6",
+      "tested_tree": "a31eecd024ac9ef6c2c3ecd64bd11c05a752a545"
+    },
+    "56": {
+      "aggregate_receipt_bytes": 617570,
+      "aggregate_receipt_sha256": "6680bab7c99c6cb6ec3cab43b92da06e01384fbf6ecc86a2d4de24472844450b",
+      "checks_per_python_platform": 175,
+      "exact_artifacts_per_python_platform": 219,
+      "four_way_reproducibility_receipt_sha256": "be746e17b01c4f12526a347cd7d4785bf8050999a2e3db7102dbeb5c1fda886a",
+      "fresh_local_rehash_comparison": "complete_receipt_identical; no binaries executed",
+      "full_aggregate_recreation": "identical",
+      "integrated_revision": "01c211dfe0be459c6e272c87efdec6aa9bc2e405",
+      "integrated_tree": "cde6e9a14252e35dee14ddd0943f2463bdd4e60e",
+      "integration_status": "merged_into_main",
+      "local_native_execution": false,
+      "platform_binaries": {
+        "linux-x86_64": {
+          "machine": "x86_64",
+          "manifest_sha256": "b86ee530b16c7f02ad9f57354af7979a785b291a515e1840cbf329bb21cb1d90",
+          "revision": "be9c41fb3098b6b927b81bc2284c0f346c9e94a5",
+          "sha256": {
+            "biocompiler-core": "69b612b258b2371005de1111ccfb34ad0301fae5fa303495a8587f73f5132099",
+            "biocompiler-verify": "cebf998d097fa050152db930c17d0303fb8749fe8b75dba130f41746fd05bb87"
+          },
+          "system": "Linux"
+        },
+        "macos-arm64": {
+          "machine": "arm64",
+          "manifest_sha256": "c8cdd2865156274232f3417abde8582971a51a7e694319e0976045a0b0d30ea8",
+          "revision": "be9c41fb3098b6b927b81bc2284c0f346c9e94a5",
+          "sha256": {
+            "biocompiler-core": "d415ec535bcefaafb55da8e1eb41b8933dc2b42fed1e3f32f873edf6f08bc21d",
+            "biocompiler-verify": "bf4774cdc4d2685ab83b48f0bf021a292bcc13a6a50ac0958916b672b2e76790"
+          },
+          "system": "Darwin"
+        }
+      },
+      "pull_request": 56,
+      "pull_request_url": "https://github.com/logannye/biocompiler/pull/56",
+      "python_tests": {
+        "3.11.16": 2463,
+        "3.14.7": 2463
+      },
+      "reviewed_merge_tree": "cde6e9a14252e35dee14ddd0943f2463bdd4e60e",
+      "run_attempt": "1",
+      "run_id": "36980326616",
+      "run_url": "https://github.com/logannye/biocompiler/actions/runs/36980326616",
+      "source_revision": "2024d8fdd2a9a8c300ef2dc0980623b820f1997c",
+      "source_tree": "cde6e9a14252e35dee14ddd0943f2463bdd4e60e",
+      "status": "pass",
+      "successful_jobs": 31,
+      "tested_revision": "be9c41fb3098b6b927b81bc2284c0f346c9e94a5",
+      "tested_tree": "cde6e9a14252e35dee14ddd0943f2463bdd4e60e"
     }
   },
   "schema_version": "biocompiler.migration_stack_validation.v1"

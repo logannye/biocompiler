@@ -225,6 +225,11 @@ class ValidationGateTests(unittest.TestCase):
             self.assertLess(comparison.index(command), comparison.index("Record successful complete comparison"))
         self.assertIn("generated/realization-reproducibility/*.json", comparison)
 
+    def test_public_synthetic_authority_suite_is_a_hosted_native_gate(self):
+        text = (Path(__file__).resolve().parents[1] / ".github/workflows/ci.yml").read_text()
+        native = text.split("\n  ocaml-core:\n", 1)[1].split("\n  architecture-core-reproducibility:\n", 1)[0]
+        self.assertIn("core/_build/default/test/test_synthetic_producer_public_protocol.exe | tee generated/core/test_synthetic_producer_public_protocol.txt", native)
+
     def test_checked_in_workflow_registers_cross_platform_architecture_gate(self):
         workflow = Path(__file__).resolve().parents[1] / ".github" / "workflows" / "ci.yml"
         self.assertEqual(ci.workflow_jobs(workflow), ci.REQUIRED_NEEDS | {"validation"})

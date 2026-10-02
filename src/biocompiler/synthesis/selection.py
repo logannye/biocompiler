@@ -351,13 +351,16 @@ class SyntheticSelectionResult(JsonArtifact):
         return result
 
 
-def select_synthetic(request, history, *, until=None, config=None):
+def select_synthetic(request, history, *, until=None, config=None, core=None):
     """Generate both strategies, enforce hard constraints, check all eligible, rank.
 
     The sole enumerated configuration axis is conjunction_strategy. All other
     configuration fields remain fixed. Equal graphs without AND are retained as
     two strategy records; this never counts as exploring other graph families.
     """
+    if core is not None:
+        from biocompiler.synthetic_producer_backend import select_record
+        return select_record(request, history, until=until, config=config, core=core)
     config = SyntheticGeneratorConfig() if config is None else config
     require(_valid_horizon(until), "Invalid selection horizon.")
     require(

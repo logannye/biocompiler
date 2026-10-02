@@ -408,6 +408,12 @@
    bioc_synthetic_producer bioc_producer_service bioc_service zarith))
 
 (test
+ (name test_synthetic_producer_public_protocol)
+ (modules test_synthetic_producer_public_protocol)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_realization_checker
+   bioc_producer_service bioc_service zarith))
+
+(test
  (name test_realization_protocol)
  (modules test_realization_protocol)
  (libraries bioc_service bioc_wire bioc_checker zarith))

@@ -187,8 +187,19 @@ def check_capability_fields(capabilities, scopes, profiles):
     }
     for field, value in expected.items():
         require(capabilities[field] == value, "Capability contract differs: " + field)
-    require(capabilities["profiles"] == profiles,
+    require(canonical(capabilities["profiles"]) == canonical(profiles),
             "Capability contract differs: profiles")
+
+
+def synthetic_public_profile():
+    """Read the pinned declaration for the preparatory native-only operation."""
+    raw = (ROOT / "protocol/synthetic-producer-public-v1.json").read_bytes()
+    require(digest(raw) == "5b7d0ffc4f015a46b6432fbdbad824e989683f74abedbe128368012a5a5b4f03",
+            "Synthetic public producer declaration changed")
+    profile = json.loads(raw)
+    require(raw == (canonical(profile) + "\n").encode("utf-8"),
+            "Synthetic public producer declaration is not canonical")
+    return profile
 
 
 def load_corpus(path=CORPUS):
@@ -489,6 +500,10 @@ def run_campaign(clients, corpus, receipt, programs):
             operations += list(SYNTHETIC_PRODUCER_OPERATIONS)
             scopes += synthetic_producer_scopes()
             profiles.update(SYNTHETIC_PRODUCER_PROFILES)
+            public_producer = synthetic_public_profile()
+            operations += public_producer["operations"]
+            scopes.append(public_producer["validation_scope"])
+            profiles["synthetic_producer_public"] = public_producer
             claim = "Supplied-contract architecture production, independent checking, exact RNA/manifest export and separately scoped finite-history model checks. No search completeness, empirical function or human-use admission is established."
         require(sorted(capabilities["operations"]) == sorted(operations), "Missing or untested advertised operation")
         check_capability_fields(capabilities, scopes, profiles)

@@ -56,10 +56,12 @@ let literals () =
   let capabilities=success "capabilities" (obj []) in
   require (Json.array (field "operations" capabilities)=Json.array (field "operations" base) @
     [str "compile-architecture";str "export-architecture"] @
-    List.map str Bioc_producer_service.Synthetic_producer_service.operations)
+    List.map str Bioc_producer_service.Synthetic_producer_service.operations @
+    List.map str Bioc_producer_service.Synthetic_producer_public_service.operations)
     "Core operation census changed";
   require (Json.array (field "validation_scopes" capabilities)=Json.array (field "validation_scopes" base) @
-    [str Service.validation_scope] @ List.map str Bioc_producer_service.Synthetic_producer_service.validation_scopes)
+    [str Service.validation_scope] @ List.map str Bioc_producer_service.Synthetic_producer_service.validation_scopes @
+    List.map str Bioc_producer_service.Synthetic_producer_public_service.validation_scopes)
     "Producer scope was not appended to the existing checking scopes";
   let profiles=field "profiles" capabilities in
   require (Json.equal (field "architecture" profiles) (field "architecture" (field "profiles" base)) &&

@@ -44,6 +44,7 @@ TESTS = {
     "test_synthetic_selection": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_realization_checker", "bioc_synthetic_producer", "zarith"},
     "test_synthetic_components": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_realization_checker", "bioc_synthetic_producer", "zarith"},
     "test_synthetic_producers_corpus": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_realization_checker", "bioc_synthetic_producer", "zarith"},
+    "test_synthetic_producer_public_protocol": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_realization_checker", "bioc_producer_service", "bioc_service", "zarith"},
     "test_synthetic_producer_protocol": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_realization_checker", "bioc_synthetic_producer", "bioc_producer_service", "bioc_service", "zarith"},
 
     "test_synthetic_candidate_check": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_realization_checker", "zarith"},

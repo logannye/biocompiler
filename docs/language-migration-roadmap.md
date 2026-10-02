@@ -281,7 +281,8 @@ These checkpoints record narrower validated work; they do not complete a broad L
   `b866ee680f8110080c6c837a9762dd914dcb1d43`; integrated revision is
   `652e2aa0aa24bf563412483827d07c4bc027a4e0`.
   [Validation receipt](../protocol/migration-realization-foundation-validation.json).
-  The separate integrated-main run remains pending; broader LM-22/25 exits
+  The separate integrated-main run 36972688727 also passed and its complete
+  receipts were independently verified; broader LM-22/25 exits
   remain open for their remaining operations and public routes.
   The complete 324-method capture now retains 70,019 observations, including
   both actual subprocesses; fresh recapture and four integrity/replay checks
@@ -291,16 +292,18 @@ These checkpoints record narrower validated work; they do not complete a broad L
   mandatory in Dune and a separate hosted campaign (60 native suites total).
   An initial ambiguous record-field warning was corrected before the complete
   successful validation above.
-- [ ] **B1.09b fresh admission, generic linking and selection:** reproduce complete
+- [x] **B1.09b fresh admission, generic linking and selection:** reproduce complete
   policy assessments, provider grounding, lifetime/resource accounting and ranked
   alternatives. Retained decisions and identity-only freshness cannot grant use.
-  The next batch implements complete composition reports, independent generic
+  The implementation includes complete composition reports, independent generic
   linking with exact rational resource accounting, deterministic selection and
   fresh actual-component behavior checking. The original 373-method capture
   retains all 4,539 calls, including 415 link checks, 35 selections, eight fresh
   selection replays and 85 component behavior checks. The 52 source-correspondence
-  calls remain explicitly deferred. New native and complete hosted gates remain
-  pending; this item is not yet validated. Fresh full recapture is byte-identical;
+  calls remain explicitly deferred to B1.09d. PR53 passed all 69 native suites
+  per platform and all 31 hosted jobs, including 2,441 tests on each Python
+  version. The integrated tree exactly matches the tested tree; the separate
+  main run remains pending. Fresh full recapture is byte-identical;
   the corpus retains 5,394 documents / 30,453,450 bytes under pin
   `9eb76b8f697b00be207e6bb2e1cccdfd46ee974b09a3525d21eb4f32634ee116`.
   Three exact original admission-policy version mutations have test-only
@@ -314,8 +317,10 @@ These checkpoints record narrower validated work; they do not complete a broad L
   Its first hosted build caught two ambiguous status constructors and one
   partially applied test limit constructor. Explicit type annotations and the
   missing unit argument correct those errors; strict warnings and all required
-  gates remain enabled. Fresh hosted validation is required before completion.
-- [ ] **B1.09c independent realization acceptance:** combine independently executed
+  gates remain enabled. Corrected source `7449f71c89966b9123752a6ed69d6c4d0ae4710b`
+  passed run 36980275430 and merged as `18a141e85a425cd801d5e831c8cf36d021692138`.
+  [Complete validation and integration receipt](../protocol/migration-realization-stack-validation.json).
+- [x] **B1.09c independent realization acceptance:** combine independently executed
   source and actual candidate traces, preserving active/inactive nonvacuity,
   deadline transitions, cancelled and incomplete episodes, failure precedence,
   counterexamples and exact bounded claims. Bound preparation, both executions,
@@ -333,23 +338,27 @@ These checkpoints record narrower validated work; they do not complete a broad L
   freshness result; production APIs expose no version override. All 137 generic
   component-acceptance observations remain deferred. Four new suites bring the
   native total to 64, with the complete corpus mandatory in both hosted campaigns.
-  Full product gates remain pending; this item and the broader LM checkboxes
-  stay open until their complete exit criteria pass.
-  Update: [PR52](https://github.com/logannye/biocompiler/pull/52), source
-  `d55d660f700d3da4368e6755e60a76efa1a45447`, now passes all 64 native suites
-  on both hosted platforms. Its full product workflows remain pending.
+  Corrected PR52 source `23b142b42a263227a8565403fb4f62cc8a1d638c` passed all
+  31 product gates in run 36980274253, with 2,435 tests per Python version.
+  PR53 independently validated and integrated all of this implementation and
+  its corrections; PR52 was then closed as superseded, preserving its branch
+  and complete receipts. Broader public-routing and default-cutover exits remain
+  open. [Validation and inclusion evidence](../protocol/migration-realization-stack-validation.json).
+  Earlier [PR52](https://github.com/logannye/biocompiler/pull/52) source
+  `d55d660f700d3da4368e6755e60a76efa1a45447` had passed all 64 native suites
+  on both hosted platforms while full product workflows were still pending.
   Hosted Python 3.11 replay exposed six version-specific mappingproxy error
   messages. Correction `097e9789b30742b45afa16fcc11def083325a644` pins exactly
   those counterparts without changing capture inputs, errors or native codes;
-  all six source replay/integrity tests pass. Its fresh complete hosted gates
-  remain required; the earlier native PASS is not transferred to the new revision.
+  all six source replay/integrity tests pass. Fresh complete hosted gates were
+  required; the earlier native PASS was not transferred to the new revision.
   The later Python 3.11 campaign exposed six additional list/dict set-membership
   messages in the same retained corpus. The correction pins all twelve exact
   version-specific rejection identities, messages and native codes without
   altering source inputs or corpus expectations. All six source replay/integrity
-  tests pass; the correction is propagated to PR52/53/54 and each requires fresh
-  complete hosted validation. No prior native PASS is transferred.
-- [ ] **B1.09d component correspondence and fresh replay:** independently reconstruct
+  tests pass; the correction was propagated to PR52/53/54 and each subsequently
+  passed its fresh complete hosted validation. No prior native PASS was transferred.
+- [x] **B1.09d component correspondence and fresh replay:** independently reconstruct
   the expected source/assembly correspondence without importing its adapter or
   producer; require complete generic linking before behavior acceptance.
   The [independent acceptance implementation plan](migration-synthetic-acceptance-plan.md)
@@ -374,7 +383,12 @@ These checkpoints record narrower validated work; they do not complete a broad L
   [PR54](https://github.com/logannye/biocompiler/pull/54) preserves this declaration
   batch. Its first hosted build caught two ambiguous documentation comments;
   correcting those annotations preserves strict warnings and leaves the full
-  replacement native/product gates required.
+  replacement native/product gates required. Corrected source `7098c102ba02fc42f0dad25632cd81fc0fb5886f`
+  subsequently passed all 71 native suites per platform and all 31 jobs, with
+  2,447 tests per Python version, in run 36980279079. Its integrated revision
+  `fb0217324a0550717fc369501de601ed2be22e82` has the exact tested tree.
+  The separate main run remains pending, and this declaration checkpoint does
+  not close B1.09d's later acceptance implementation.
   The next acceptance batch now implements private independent source provenance
   and actual-candidate-derived component authority, plus public fresh synthetic
   and assembly checkers. Expected declarations remain private, actual candidate
@@ -390,9 +404,16 @@ These checkpoints record narrower validated work; they do not complete a broad L
   12 complete assembly reports and 14 exact assembly rejections, with shared
   resource limits and failure isolation. Static private-boundary mutations and
   all 41 boundary/CI/inventory checks pass. Four new native suites bring the
-  required total to 75; native compilation and full product validation remain
-  hosted and pending. This item and its broader LM exits remain unchecked.
-- [ ] **B2 direct synthetic production and selection:** the next implementation
+  required total to 75. Corrected source `d59af59488344812b5d8895b339c37e852411d54`
+  passed all 31 jobs in [run 36980282550](https://github.com/logannye/biocompiler/actions/runs/36980282550),
+  including all 75 native suites on Linux and macOS and 2,454 tests per Python
+  version. Independent receipt reconstruction and rehashing reproduced all four
+  sets of 175 observations and 219 artifacts. [PR55](https://github.com/logannye/biocompiler/pull/55)
+  merged as `c0b32b668c328ee88c5320886d13b91ea3e24038`; its tree exactly matches
+  the tested tree. The [stack validation record](../protocol/migration-realization-stack-validation.json)
+  retains this evidence. This scoped checkpoint is complete; broader LM exits
+  remain open.
+- [x] **B2 direct synthetic production and selection:** the next implementation
   independently ports generation/proposal, both-strategy selection and full
   component adaptation, with complete Alternative/Result domain records. The
   producer library calls public fresh checkers and cannot import their private
@@ -405,9 +426,13 @@ These checkpoints record narrower validated work; they do not complete a broad L
   retains 5,192 documents / 114,234,914 bytes. Nine complete Python integrity and
   replay checks and independent byte-identical recapture pass. Independent full
   producer/domain literals and exact resource-boundary cases supplement this
-  capture. Four mandatory suites bring the native total to 79; hosted native
-  compilation and all 31 product gates remain required before this checkbox can
-  close. Public routing, checked pipelines, packaging and default cutover remain
+  capture. Four mandatory suites bring the native total to 79. Corrected source
+  `2024d8fdd2a9a8c300ef2dc0980623b820f1997c` passed all 31 jobs in
+  [run 36980326616](https://github.com/logannye/biocompiler/actions/runs/36980326616),
+  with all 79 native suites on both hosted platforms and 2,463 tests per Python
+  version. Complete aggregate reconstruction and four-runtime artifact rehashing
+  match the retained receipts. PR56 merged as
+  `01c211dfe0be459c6e272c87efdec6aa9bc2e405`, with the exact tested tree. Public routing, checked pipelines, packaging and default cutover remain
   separate unfinished work. The [producer implementation audit](migration-synthetic-producer-plan.md)
   and [next public-routing plan](migration-realization-routing-plan.md) retain
   the exact source responsibilities and remaining exit criteria.
@@ -563,13 +588,15 @@ These checkpoints record narrower validated work; they do not complete a broad L
   completion or default cutover. See [native workflow routing](native-workflow-routing.md).
 
 **Credit-limit preservation, 2026-10-02:** implementation through
-[PR61](https://github.com/logannye/biocompiler/pull/61) is committed and pushed at
-`6a31e1d2aef25aab06841b5343f9c5c4f8d243fd`, with fresh
-[run 36988173318](https://github.com/logannye/biocompiler/actions/runs/36988173318)
-pending at preservation. Producer-service work proceeds on the separate
-`codex/ocaml-synthetic-producer-service` branch so PR61 validation stays intact.
-PR52–61 require their complete exact-revision gates; no pending merge or
-automatic merge is enabled. The PR57–59 source-lineage correction retains every
+[PR62](https://github.com/logannye/biocompiler/pull/62) is committed and pushed at
+`b5d5aa69f4fbf54a6c484245d82552c7d71dd6cb`, with fresh
+[run 36989978642](https://github.com/logannye/biocompiler/actions/runs/36989978642)
+queued at preservation. This subsequent documentation checkpoint is on
+`codex/ocaml-producer-routing-checkpoint`, preserving PR62's running revision.
+PR53, PR54, PR55 and PR56 are merged after their full exact-revision gates and independent
+receipt/tree checks; PR52 is included through PR53 and closed as superseded
+after its own 31-job gate also passed. PR57–62 still require complete gates;
+no pending or automatic merge is enabled. The PR57–59 source-lineage correction retains every
 original corpus pin and reviewed whole-file AST witness. Earlier partial native
 success remains historical only. All unfinished layer checkboxes remain unchecked.
 
@@ -588,7 +615,8 @@ record current parent heads; previous partial native passes are historical only.
   native validation is pending. The installed campaign covers all 1,226 original
   public occurrences and three verifier rejections per runtime, retaining the
   1,146 private/injected producer occurrences explicitly as native-library coverage.
-  Existing public synthesis functions and CLI remain on their original route.
+  The public synthesis functions retain their original default route; the following
+  checkpoint adds explicit native routes. The CLI remains on its original route.
   Public routing, native manager freshness, canonical packages and default
   cutover remain separate unfinished work.
 
@@ -601,6 +629,21 @@ record current parent heads; previous partial native passes are historical only.
   remain unchanged. These checks validate transport and the evidence harness;
   the 23 complete native literals and all hosted native campaigns still require
   execution at the new revision.
+
+- [ ] **LM-12/R6 P1 explicit public producer routing checkpoint:** the current
+  `codex/ocaml-public-synthetic-producers` branch adds three optional `core=` SDK
+  routes, complete immutable native inspection views and a separate native full
+  build-request selection operation. Eight public SDK fixtures, strict typing for
+  thirteen adapter modules, source-lineage checks and static dependency checks
+  pass locally. The lineage/default suite passes 66 focused tests and preserves
+  all 2,132 source entries across nine corpora plus complete original argument
+  comparisons for all 47,901 producer observations. The exact three-function AST
+  witness preserves old default bodies and every original corpus pin. The new native suite retains four complete result
+  fixtures and 42 original malformed authority messages; native execution is
+  hosted-only and pending. Complete installed public SDK campaigns, CLI integration,
+  topology/freshness/general registry APIs, package acceptance and default cutover
+  remain unfinished. No full recapture or rich legacy API parity is claimed by
+  this bounded checkpoint. See [explicit producer routing](native-synthetic-producer-routing.md).
 
 The integrated PR51 main revision `652e2aa0aa24bf563412483827d07c4bc027a4e0`
 passed all 31 jobs in [run 36972688727](https://github.com/logannye/biocompiler/actions/runs/36972688727).

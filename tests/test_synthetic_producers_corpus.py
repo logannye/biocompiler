@@ -246,6 +246,13 @@ class SyntheticProducersCorpusTests(unittest.TestCase):
                     if api in {"realization_dependencies", "check_realization", "check_synthetic_candidate", "check_component_behavior", "check_component_assembly"} and bound.arguments.get("core") is None:
                         bound.arguments.pop("core", None)
                     expected = plain(dict(bound.arguments))
+                    if api in {"generate_synthetic", "select_synthetic", "adapt_synthetic_components"}:
+                        from tools.check_synthetic_producer_routed_recapture import project_binding
+                        expected, lineage = project_binding(
+                            {**call, "id": context["id"] + "/api/" + str(number)},
+                            {call["input"]: {"value": self.docs[call["input"]]}}, expected, plain)
+                        self.assertEqual(lineage["actual_bound_arguments"], plain(dict(bound.arguments)))
+                        self.assertEqual(lineage["historical_bound_arguments"], expected)
                 else:
                     name, method = api.split(".")
                     if method in ("__init__", "freeze"):

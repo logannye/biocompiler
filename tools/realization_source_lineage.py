@@ -87,6 +87,9 @@ def verify_captured_source(root: Path, entry):
     if sha256(current) == entry["sha256"]:
         return {"path": entry["path"], "historical_sha256": entry["sha256"],
                 "current_sha256": entry["sha256"], "kind": "identical_bytes"}
+    from tools.synthetic_producer_source_lineage import HISTORICAL as PRODUCERS, verify_source as verify_producer
+    if entry["path"] in PRODUCERS:
+        return verify_producer(root, entry["path"], entry["sha256"])
     witness = load_witness().get(entry["path"])
     if witness is None:
         from tools.workflow_source_lineage import HISTORICAL, verify_source
