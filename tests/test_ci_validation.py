@@ -238,7 +238,7 @@ class ValidationGateTests(unittest.TestCase):
         native = text.split("\n  ocaml-core:\n", 1)[1].split("\n  architecture-core-reproducibility:\n", 1)[0]
         self.assertIn('core/_build/default/test/test_pipeline_session.exe "$GITHUB_WORKSPACE/protocol/pipeline-session-v1.json" "$GITHUB_WORKSPACE/tests/conformance/fixed-pipeline-native-v1.json" | tee generated/core/test_pipeline_session.txt', native)
         self.assertIn("core/_build/default/test/test_pipeline_host_bridge.exe | tee generated/core/test_pipeline_host_bridge.txt", native)
-        self.assertIn('core/_build/default/test/test_pipeline_callback_manager.exe "$GITHUB_WORKSPACE/protocol/pipeline-callback-manager-v1.json" "$GITHUB_WORKSPACE/tests/conformance/pipeline-contract-literals-v1.json" | tee generated/core/test_pipeline_callback_manager.txt', native)
+        self.assertIn('core/_build/default/test/test_pipeline_callback_manager.exe "$GITHUB_WORKSPACE/protocol/pipeline-callback-manager-v1.json" "$GITHUB_WORKSPACE/tests/conformance/pipeline-contract-literals-v1.json" "$GITHUB_WORKSPACE/tests/conformance/fixed-pipeline-literals-v1.json" | tee generated/core/test_pipeline_callback_manager.txt', native)
         self.assertIn('core/_build/default/test/test_deferred_pass_manager.exe "$GITHUB_WORKSPACE/tests/conformance/pipeline-contract-literals-v1.json" | tee generated/core/test_deferred_pass_manager.txt', native)
         self.assertIn('core/_build/default/test/test_pipeline_callback_channel.exe "$GITHUB_WORKSPACE/protocol/pipeline-callback-channel-v1.json" | tee generated/core/test_pipeline_callback_channel.txt', native)
         for name in ("test_pipeline_contract", "test_pass_manager"):
@@ -257,6 +257,22 @@ class ValidationGateTests(unittest.TestCase):
                         installed.index("Record successful complete conformance"))
         comparison = text.split("\n  realization-core-reproducibility:\n", 1)[1].split("\n  validation:\n", 1)[0]
         command = "python tools/check_pipeline_manager_install.py --compare --root artifacts/realization --native-root artifacts/core --output generated/realization-reproducibility/pipeline-manager.json"
+        self.assertIn(command, comparison)
+        self.assertLess(comparison.index(command), comparison.index("Record successful complete comparison"))
+
+    def test_fixed_provider_campaign_requires_all_installed_runtimes_and_comparison(self):
+        text = (Path(__file__).resolve().parents[1] / ".github/workflows/ci.yml").read_text()
+        installed = text.split("\n  realization-conformance:\n", 1)[1].split("\n  realization-core-reproducibility:\n", 1)[0]
+        start = installed.index('python "$GITHUB_WORKSPACE/tools/check_pipeline_fixed_provider_install.py"')
+        end = installed.index('python "$GITHUB_WORKSPACE/tools/check_pipeline_session_install.py"', start)
+        command = installed[start:end]
+        for binding in ('--core ', '--verify ', '--core-sha256 ', '--verify-sha256 ',
+                        '--native-root ', '--platform ${{ matrix.platform }}',
+                        '"$GITHUB_WORKSPACE/generated/realization/pipeline-fixed-providers.json"'):
+            self.assertIn(binding, command)
+        self.assertLess(start, installed.index("Record successful complete conformance"))
+        comparison = text.split("\n  realization-core-reproducibility:\n", 1)[1].split("\n  validation:\n", 1)[0]
+        command = "python tools/check_pipeline_fixed_provider_install.py --compare --root artifacts/realization --native-root artifacts/core --output generated/realization-reproducibility/pipeline-fixed-providers.json"
         self.assertIn(command, comparison)
         self.assertLess(comparison.index(command), comparison.index("Record successful complete comparison"))
 

@@ -16,9 +16,14 @@ from biocompiler.core_pipeline_callback_session import CallbackRejected
 from biocompiler.core_pipeline_manager import CorePassManager, ManagerInspection, _ordered, capability_profile
 from biocompiler.core_pipeline_session import decode_document, encode_document
 from biocompiler.ir.intent import freeze_json
+from biocompiler.ir.behavior import BehaviorProgram
 from biocompiler.ir.stages import Stage
 from biocompiler.verification.evidence import CheckOutcome
 from tests import test_pipeline as pipeline_fixtures
+
+
+def provider_result(kind, value, role):
+    return {'kind': kind, 'value': value, 'view': {'role': role, 'tree': _ordered(value), 'bindings': {}, 'aliases': []}}
 
 
 class FixtureSession:
@@ -35,7 +40,7 @@ class FixtureSession:
         self.requests.append((operation, arguments))
         if operation.startswith('initialize-'):
             value = {'kind': operation.removeprefix('initialize-'), 'manager': True, 'artifacts': [],
-                'target': {'value': arguments.get('target'),
+                'target': {'value': arguments.get('target', arguments.get('request', {}).get('build_request', {}).get('target')),
                            'binding': {'kind': 'host', 'object': arguments['target_object']}}}
         else:
             value = self.results.get(operation)
@@ -299,18 +304,50 @@ class CorePipelineManagerTests(unittest.TestCase):
         args = self.context(identity='context/test', payload=freeze_json({}), requirements=(),
             dependencies=freeze_json({}), configuration=freeze_json({}))
         context = self.hydrate(args)
-        first = self.manager._objects.resolve(self.manager._invoke('native-provider', {'provider_id': 'provider/native'}).value)
-        second = self.manager._objects.resolve(self.manager._invoke('native-provider', {'provider_id': 'provider/native'}).value)
+        first = self.manager._objects.resolve(self.manager._invoke('native-provider', {'provider_id': 'provider/native', 'role': 'intent_to_behavior.validator'}).value)
+        second = self.manager._objects.resolve(self.manager._invoke('native-provider', {'provider_id': 'provider/native', 'role': 'intent_to_behavior.validator'}).value)
         self.assertIs(first, second)
         reference = self.manager._invoke('provider-reference', {'object': self.manager._objects.retain(first)})
         self.assertEqual(reference.value, {'kind': 'native', 'provider_id': 'provider/native'})
-        self.session.results['call-native-provider'] = {'kind': 'decision', 'value': {'outcome': 'pass', 'detail': 'Native fixture', 'evidence': {}}}
+        self.session.results['call-native-provider'] = provider_result('decision', {'outcome': 'pass', 'detail': 'Native fixture', 'evidence': {}}, 'intent_to_behavior.validator')
         decision = first(context)
         self.assertIs(type(decision), CheckDecision)
         self.assertIs(decision.outcome, CheckOutcome.PASS)
         self.assertEqual(self.session.requests[-1], ('call-native-provider', {'provider_id': 'provider/native', 'context_id': 'context/test'}))
         with self.assertRaises(CoreProtocolError):
             first(PassContext({}, None, self.fixture.target, {}, {}, ()))
+
+    def test_native_proxy_role_cannot_be_rebound_or_inferred_from_reply(self):
+        self.manager._invoke('native-provider', {'provider_id': 'provider/native', 'role': 'intent_to_behavior.producer'})
+        with self.assertRaisesRegex(CoreProtocolError, 'role was rebound'):
+            self.manager._invoke('native-provider', {'provider_id': 'provider/native', 'role': 'behavior_to_synthetic.producer'})
+        with self.assertRaisesRegex(CoreProtocolError, 'closure role'):
+            self.manager._invoke('native-provider', {'provider_id': 'provider/other', 'role': 'caller_selected.constructor'})
+        value = provider_result('decision', {'outcome': 'pass', 'detail': 'valid fields', 'evidence': {}}, 'intent_to_behavior.validator')
+        with self.assertRaises(CoreProtocolError):
+            self.manager._native_return(value, role='intent_to_behavior.producer')
+        self.assertTrue(self.session.invalidated)
+
+    def test_fixed_initializer_retains_actual_request_and_config_once(self):
+        from tools.capture_pipeline_fixed_provider_semantics import authority
+        request, history, until, config = authority('static:requested')
+        original = config.to_dict
+        original_request = request.to_dict
+        with patch.object(type(config), 'to_dict', autospec=True, side_effect=lambda value: original()) as serialize, \
+                patch.object(type(request), 'to_dict', autospec=True, side_effect=lambda value: original_request()) as serialize_request:
+            manager = CorePassManager.from_components(self.core, request, history, until=until, config=config)
+        self.addCleanup(manager.close)
+        self.assertEqual(serialize.call_count, 1)
+        self.assertEqual(serialize_request.call_count, 1)
+        operation, arguments = manager.session.requests[0]
+        self.assertEqual(operation, 'initialize-components')
+        self.assertIs(manager._objects.resolve(arguments['config_object']), config)
+        self.assertIs(manager._objects.resolve(arguments['request_object']), request)
+        self.assertEqual(arguments['request_tree'], _ordered(arguments['request']))
+        self.assertIs(manager.target, request.target)
+        completion = manager._invoke('origin-reference', {'root': 'request', 'path': ['domain', 'inputs', 0, 'observable']})
+        self.assertIs(manager._objects.resolve(completion.value), request.domain.inputs[0].observable)
+        self.assertEqual(manager._provider_target_document, request.target.to_dict())
 
     def test_expected_native_exceptions_use_closed_classes_and_complete_attributes(self):
         value = {'module': 'biocompiler.compiler.pipeline', 'type': 'NoCandidateFound', 'message': 'Native complete message',
@@ -536,12 +573,13 @@ class CorePipelineManagerTests(unittest.TestCase):
         self.assertFalse(self.session.invalidated)
 
     def test_native_proposal_view_has_typed_wrapper_without_python_acceptance(self):
-        value = {'kind': 'proposal', 'value': {'output': {'schema_version': 'behavior.v1', 'nodes': []},
+        value = provider_result('proposal', {'output': {'schema_version': 'biocompiler.behavior.v0.1', 'name': 'native',
+            'nodes': [], 'roots': [], 'source_fingerprint': 'a' * 64, 'requirements': [], 'source_links': {}, 'policies': {}, 'parameter_bindings': {}},
             'obligations': [], 'source_links': [{'requirement_id': 'r', 'source_node_id': 's',
-                'target_node_id': 't', 'pass_name': 'p'}], 'observation_map': {}, 'search_status': 'candidate'}}
-        result = self.manager._native_return(value)
+                'target_node_id': 't', 'pass_name': 'p'}], 'observation_map': {}, 'search_status': 'candidate'}, 'intent_to_behavior.producer')
+        result = self.manager._native_return(value, role='intent_to_behavior.producer')
         self.assertIs(type(result), PassResult)
-        self.assertIs(type(result.output), MappingProxyType)
+        self.assertIs(type(result.output), BehaviorProgram)
         self.assertIs(type(result.source_links[0]), SourceLink)
         self.assertEqual(result.search_status, 'candidate')
 
@@ -595,7 +633,7 @@ class CorePipelineManagerTests(unittest.TestCase):
         self.assertTrue(self.session.invalidated)
         self.session.invalidated = False
         with self.assertRaises(CoreProtocolError):
-            self.manager._native_return({'kind': 'decision', 'value': {'outcome': 'undeclared-outcome', 'detail': 'x', 'evidence': {}}})
+            self.manager._native_return(provider_result('decision', {'outcome': 'undeclared-outcome', 'detail': 'x', 'evidence': {}}, 'intent_to_behavior.validator'), role='intent_to_behavior.validator')
         self.assertTrue(self.session.invalidated)
         self.session.invalidated = False
         self.session.results['inspect'] = {'records': None}
@@ -692,7 +730,7 @@ class CorePipelineManagerTests(unittest.TestCase):
         self.assertTrue(self.session.invalidated)
 
     def test_inspection_resolves_existing_native_proxy_without_copying_it(self):
-        completion = self.manager._invoke('native-provider', {'provider_id': 'provider/producer'})
+        completion = self.manager._invoke('native-provider', {'provider_id': 'provider/producer', 'role': 'intent_to_behavior.producer'})
         proxy = self.manager._objects.resolve(completion.value)
         self.session.results['inspect-ordered'] = self.inspection(proxy, lambda context: context)
         self.assertIs(self.manager.inspect_ordered().providers['provider/producer'], proxy)

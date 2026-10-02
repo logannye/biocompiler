@@ -8,7 +8,8 @@ module H = Host_bridge
 module S = Bioc_pipeline.Synthetic_pipeline
 module P = Bioc_pipeline.Component_pipeline
 module G = Bioc_synthetic_producer.Generator
-let declaration=Json.parse {declaration|{"acceptance":"native_manager_checks_and_freshness_only;inspection_and_host_sidecars_cannot_import_accepted_records","actions":{"hydrate-context":{"fields":["context_id","document","bindings"],"result":"object_reference"},"native-provider":{"fields":["provider_id"],"result":"object_reference"},"ordered-json":{"fields":["object"],"result":"ordered_tree"},"provider-reference":{"fields":["object"],"result":"host_or_native_provider_reference"},"set-equal":{"fields":["object","values"],"result":"boolean"},"source-link-set-equal":{"fields":["objects","expected"],"result":"boolean"}},"argument":"--pipeline-callback-session-v1","authoring_boundary":"canonical_typed_contract_target_profile_fields;opaque_payload_configuration_provider_and_validator_objects_are_read_at_native_requested_points","bindings":{"host":["kind","object"],"native":["kind","identity","tree"]},"broker_actions":{"attr":{"fields":["object","name"],"result":"object_reference"},"attr-default":{"fields":["object","name","default"],"result":"object_reference"},"bind-provider":{"fields":["provider_id","object"],"result":"null"},"call":{"fields":["callable","args","kwargs"],"result":"object_reference"},"call-provider":{"fields":["provider_id","context"],"result":"object_reference"},"callable":{"fields":["object"],"result":"boolean"},"compare":{"fields":["left","right","operator"],"result":"boolean"},"contains":{"fields":["container","item"],"result":"boolean"},"dict":{"fields":["object"],"result":"object_reference"},"document":{"fields":["object"],"result":"object_reference"},"enum":{"fields":["type","value"],"result":"object_reference"},"freeze-json":{"fields":["object"],"result":"object_reference"},"get-item":{"fields":["object","key"],"result":"object_reference"},"is-instance":{"fields":["object","type"],"result":"boolean"},"is-none":{"fields":["object"],"result":"boolean"},"iter":{"fields":["object"],"result":"object_reference"},"json":{"fields":["object"],"result":"json"},"len":{"fields":["object"],"result":"integer"},"list":{"fields":["object"],"result":"object_reference"},"literal":{"fields":["kind","value"],"result":"object_reference"},"lookup":{"fields":["object","entries"],"result":"object_reference"},"mapping-items":{"fields":["object"],"result":"object_reference"},"mapping-keys":{"fields":["object"],"result":"object_reference"},"mapping-values":{"fields":["object"],"result":"object_reference"},"merge":{"fields":["object","before","after"],"result":"object_reference"},"next":{"fields":["object"],"result":"iterator_step"},"release":{"fields":["handles"],"result":"null"},"set-attribute-equal":{"fields":["objects","name","values"],"result":"boolean"},"truth":{"fields":["object"],"result":"boolean"},"tuple":{"fields":["object"],"result":"object_reference"},"vars":{"fields":["object"],"result":"object_reference"}},"channel":"biocompiler.pipeline_callback_channel.v1","claim_scope":"software_contract_conditional_translation_and_scoped_completion;no_empirical_or_human_use_acceptance","comparison_operators":["eq","ne","is","is-not"],"compatibility_pending":["complete_original_installed_replay","fixed_public_registration_interception","arbitrary_authoring_subclass_and_scalar_operator_semantics","default_cutover"],"context_bindings":["input","output","target","configuration","dependencies","requirements","source_links","observation_map"],"context_identity":"actual_native_context_physical_identity;distinct_producer_and_validation_contexts;one_validation_context_shared_by_its_validators","dependencies_encoding":"ordered_unique_string_identity_pairs","enum_types":["EvidenceKind","CheckOutcome","Stage","ArtifactStatus","PayloadFormat"],"executable":"core","expected_rejection_attributes":"fresh_ordered_tree_with_exact_canonical_attributes_projection;no_cached_binding_or_context_container_reuse;NoCandidateFound_retains_pass_configuration_and_dependency_order","expected_rejection_fields":["module","type","message","attributes","attributes_tree"],"failure":"expected_logical_rejection_and_opaque_host_exception_preserve_actual_partial_manager;malformed_resource_internal_or_uncertain_io_failure_closes_authority","host_execution":"trusted_host_code_cpu_and_opaque_captures_outside_native_work_and_json_memory_bounds","inspection_order":{"combined_provider_history":"actual_successful_insertion_order;pass_fingerprint_string_or_component_input_tag_and_fingerprint_pair;replacements_preserve_position","fields":["dependencies","passes","component_inputs","provider_history","component_input_history","records","profiles","combined_provider_history","validators"],"mapping_order":"unique_complete_snapshot_key_arrays","provider_fields":["provider_id","object"],"providers":"exact_reachable_snapshot_provider_token_census;stable_bijection_to_actual_retained_callable_identity;no_user_equality_or_hash","scope":"manager_mapping_and_validator_order_only;nested_unobserved_json_order_not_generalized;historical_observation_cannot_grant_acceptance","validator_maps":["passes","component_inputs","provider_history","component_input_history"],"validators":"four_exact_registration_maps_of_unique_complete_validator_key_arrays"},"iterator_step_fields":["exhausted","object"],"lifecycle":"one_initialization_attempt_per_channel;existing_channel_close_is_top_level_only;no_reconnect_retry_or_state_import","limits":"all_native_framing_application_import_callback_and_publication_work_uses_one_channel_lifetime_ancestor;retention_is_cumulative_no_refund","literal_kinds":["json","tuple","set"],"manager_limits":"initialization_once;null_defaults_or_complete_positive_integer_reductions","native_provider_context":"only_exact_retained_context_from_this_live_manager;no_external_context_import","native_provider_result_kinds":["proposal","decision","invalid"],"object_reference":{"fields":["handle"],"scope":"one_live_trusted_host_broker_physical_identity"},"obligation_objects":"array_of_actual_host_references_matching_canonical_obligation_slots;whole_tuple_sidecar_preserves_add_input_and_admission_collection_identity;run_allocates_a_new_tuple_reusing_elements;sidecars_do_not_grant_acceptance","operations":{"add-input":{"fields":["identity","stage","requirements","obligations","obligation_objects","payload","obligations_object"],"result":"record"},"admit-component-input":{"fields":["contract_id","identity","payload"],"result":"record"},"artifact":{"fields":["name"],"result":"canonical_immutable_build_artifact"},"call-native-provider":{"fields":["provider_id","context_id"],"result":"native_provider_result"},"get":{"fields":["identity"],"result":"record"},"initialize-components":{"fields":["request","history","until","config","manager_limits","target_object"],"result":"initialization"},"initialize-empty":{"fields":["target","dependencies","completion_profiles","manager_limits","target_object"],"result":"initialization"},"initialize-synthetic":{"fields":["request","history","until","config","manager_limits","target_object"],"result":"initialization"},"inspect":{"fields":[],"result":"historical_observation_only"},"inspect-ordered":{"fields":[],"result":"ordered_historical_observation_only"},"register":{"fields":["contract","producer","validators","obligation_objects"],"result":"null"},"register-completion-profile":{"fields":["profile"],"result":"null"},"register-component-input":{"fields":["contract","validators","obligation_objects","obligations_object","requirements_object"],"result":"null"},"result":{"fields":["identity","scope"],"result":"pipeline_result"},"run":{"fields":["pass_id","input_id","output_id","configuration"],"result":"record"},"set-dependency":{"fields":["key","identity"],"result":"null"},"target":{"fields":[],"result":"target"}},"ordered_tree":{"array":["array","ordered_trees"],"object":["object","ordered_unique_key_tree_pairs"],"scalar":["scalar","json_scalar"]},"profile":"biocompiler.core.pipeline_callback_manager.v1","provider_reference":{"host":["kind","object"],"native":["kind","provider_id"]},"record_bindings":["record_id","payload","dependencies","requirements","obligations","obligation_objects","checks","provenance"],"record_identity":"one_token_per_actual_native_record_physical_identity_including_rejected_and_stored_before_error_records;not_content_hash_or_import","results":{"initialization":["kind","manager","artifacts","target"],"native_provider_result":["kind","value"],"ordered_historical_observation_only":["snapshot","order","providers"],"pipeline_result":["value","artifact"],"record":["value","bindings"],"target":["value","binding"]},"schema_version":"biocompiler.pipeline_callback_manager_declaration.v1","source_links_binding":"null_for_native_context_default_or_complete_host_or_native_collection_binding;tuple_identity_and_element_identity_preserved"}|declaration}
+module V = Fixed_provider_views
+let declaration=Json.parse {declaration|{"acceptance":"native_manager_checks_and_freshness_only;inspection_and_host_sidecars_cannot_import_accepted_records","actions":{"hydrate-context":{"fields":["context_id","document","bindings"],"result":"object_reference"},"native-provider":{"fields":["provider_id","role"],"result":"object_reference"},"ordered-json":{"fields":["object"],"result":"ordered_tree"},"origin-reference":{"fields":["root","path"],"result":"object_reference"},"provider-reference":{"fields":["object"],"result":"host_or_native_provider_reference"},"set-equal":{"fields":["object","values"],"result":"boolean"},"source-link-set-equal":{"fields":["objects","expected"],"result":"boolean"}},"argument":"--pipeline-callback-session-v1","authoring_boundary":"canonical_typed_contract_target_profile_fields;opaque_payload_configuration_provider_and_validator_objects_are_read_at_native_requested_points","bindings":{"host":["kind","object"],"native":["kind","identity","tree"]},"broker_actions":{"attr":{"fields":["object","name"],"result":"object_reference"},"attr-default":{"fields":["object","name","default"],"result":"object_reference"},"bind-provider":{"fields":["provider_id","object"],"result":"null"},"call":{"fields":["callable","args","kwargs"],"result":"object_reference"},"call-provider":{"fields":["provider_id","context"],"result":"object_reference"},"callable":{"fields":["object"],"result":"boolean"},"compare":{"fields":["left","right","operator"],"result":"boolean"},"contains":{"fields":["container","item"],"result":"boolean"},"dict":{"fields":["object"],"result":"object_reference"},"document":{"fields":["object"],"result":"object_reference"},"enum":{"fields":["type","value"],"result":"object_reference"},"freeze-json":{"fields":["object"],"result":"object_reference"},"get-item":{"fields":["object","key"],"result":"object_reference"},"is-instance":{"fields":["object","type"],"result":"boolean"},"is-none":{"fields":["object"],"result":"boolean"},"iter":{"fields":["object"],"result":"object_reference"},"json":{"fields":["object"],"result":"json"},"len":{"fields":["object"],"result":"integer"},"list":{"fields":["object"],"result":"object_reference"},"literal":{"fields":["kind","value"],"result":"object_reference"},"lookup":{"fields":["object","entries"],"result":"object_reference"},"mapping-items":{"fields":["object"],"result":"object_reference"},"mapping-keys":{"fields":["object"],"result":"object_reference"},"mapping-values":{"fields":["object"],"result":"object_reference"},"merge":{"fields":["object","before","after"],"result":"object_reference"},"next":{"fields":["object"],"result":"iterator_step"},"release":{"fields":["handles"],"result":"null"},"set-attribute-equal":{"fields":["objects","name","values"],"result":"boolean"},"truth":{"fields":["object"],"result":"boolean"},"tuple":{"fields":["object"],"result":"object_reference"},"vars":{"fields":["object"],"result":"object_reference"}},"channel":"biocompiler.pipeline_callback_channel.v1","claim_scope":"software_contract_conditional_translation_and_scoped_completion;no_empirical_or_human_use_acceptance","comparison_operators":["eq","ne","is","is-not"],"compatibility_pending":["complete_original_installed_replay","fixed_public_registration_interception","arbitrary_authoring_subclass_and_scalar_operator_semantics","default_cutover"],"context_bindings":["input","output","target","configuration","dependencies","requirements","source_links","observation_map"],"context_identity":"actual_native_context_physical_identity;distinct_producer_and_validation_contexts;one_validation_context_shared_by_its_validators","dependencies_encoding":"ordered_unique_string_identity_pairs","enum_types":["EvidenceKind","CheckOutcome","Stage","ArtifactStatus","PayloadFormat"],"executable":"core","expected_rejection_attributes":"fresh_ordered_tree_with_exact_canonical_attributes_projection;no_cached_binding_or_context_container_reuse;NoCandidateFound_retains_pass_configuration_and_dependency_order","expected_rejection_fields":["module","type","message","attributes","attributes_tree"],"failure":"expected_logical_rejection_and_opaque_host_exception_preserve_actual_partial_manager;malformed_resource_internal_or_uncertain_io_failure_closes_authority","fixed_request_tree":"ordered_tree_from_same_authoring_serialization_as_request;exact_canonical_projection_required_before_native_import;retained_order_is_not_acceptance","host_execution":"trusted_host_code_cpu_and_opaque_captures_outside_native_work_and_json_memory_bounds","inspection_order":{"combined_provider_history":"actual_successful_insertion_order;pass_fingerprint_string_or_component_input_tag_and_fingerprint_pair;replacements_preserve_position","fields":["dependencies","passes","component_inputs","provider_history","component_input_history","records","profiles","combined_provider_history","validators"],"mapping_order":"unique_complete_snapshot_key_arrays","provider_fields":["provider_id","object"],"providers":"exact_reachable_snapshot_provider_token_census;stable_bijection_to_actual_retained_callable_identity;no_user_equality_or_hash","scope":"manager_mapping_and_validator_order_only;nested_unobserved_json_order_not_generalized;historical_observation_cannot_grant_acceptance","validator_maps":["passes","component_inputs","provider_history","component_input_history"],"validators":"four_exact_registration_maps_of_unique_complete_validator_key_arrays"},"iterator_step_fields":["exhausted","object"],"lifecycle":"one_initialization_attempt_per_channel;existing_channel_close_is_top_level_only;no_reconnect_retry_or_state_import","limits":"all_native_framing_application_import_callback_and_publication_work_uses_one_channel_lifetime_ancestor;retention_is_cumulative_no_refund","literal_kinds":["json","tuple","set"],"manager_limits":"initialization_once;null_defaults_or_complete_positive_integer_reductions","native_provider_context":"only_exact_retained_context_from_this_live_manager;no_external_context_import","native_provider_result_kinds":["proposal","decision","invalid"],"native_provider_view":{"alias_fields":["kind","paths","binding"],"alias_kinds":["biocompiler.ir.intent.SourceLocation","biocompiler.semantics.types.TypeSpec","biocompiler.semantics.realization.Observable","biocompiler.semantics.component_contracts.OperatingDomain","biocompiler.semantics.component_contracts.ValueDomain","biocompiler.ir.component_contracts.PinnedIdentity","biocompiler.ir.components.ComponentLock","biocompiler.ir.composition.LifecycleInterval"],"alias_paths":"unique_closed_typed_field_and_nonnegative_array_index_paths_relative_to_complete_value;exact_class_and_shape;slot_overlap_requires_identical_binding","bindings_by_role":{"behavior_to_synthetic.producer":["generator_config"],"behavior_to_synthetic.validator":[],"intent_to_behavior.producer":[],"intent_to_behavior.validator":[],"synthetic_to_components.producer":["registry","composition","composition_target"],"synthetic_to_components.validator":[]},"fields":["role","tree","bindings","aliases"],"identity":"explicit_actual_host_objects_or_retained_native_constructor_origins;strong_lifetime_retention;never_equal_content_interning;charged_to_channel_limits","invalid":"view_is_null_only_for_invalid_result","role_authority":"actual_fixed_native_closure_and_manager_owner;immutable_provider_registration_binding","roles":["intent_to_behavior.producer","intent_to_behavior.validator","behavior_to_synthetic.producer","behavior_to_synthetic.validator","synthetic_to_components.producer","synthetic_to_components.validator"],"scope":"closed_structural_public_views_only;no_semantic_parsers_or_acceptance;fresh_proposal_and_output_roots","tree":"complete_value_ordered_tree;canonical_projection_matches_value"},"object_reference":{"fields":["handle"],"scope":"one_live_trusted_host_broker_physical_identity"},"obligation_objects":"array_of_actual_host_references_matching_canonical_obligation_slots;whole_tuple_sidecar_preserves_add_input_and_admission_collection_identity;run_allocates_a_new_tuple_reusing_elements;sidecars_do_not_grant_acceptance","operations":{"add-input":{"fields":["identity","stage","requirements","obligations","obligation_objects","payload","obligations_object"],"result":"record"},"admit-component-input":{"fields":["contract_id","identity","payload"],"result":"record"},"artifact":{"fields":["name"],"result":"canonical_immutable_build_artifact"},"call-native-provider":{"fields":["provider_id","context_id"],"result":"native_provider_result"},"get":{"fields":["identity"],"result":"record"},"initialize-components":{"fields":["request","request_tree","history","until","config","manager_limits","target_object","request_object","config_object"],"result":"initialization"},"initialize-empty":{"fields":["target","dependencies","completion_profiles","manager_limits","target_object"],"result":"initialization"},"initialize-synthetic":{"fields":["request","request_tree","history","until","config","manager_limits","target_object","request_object","config_object"],"result":"initialization"},"inspect":{"fields":[],"result":"historical_observation_only"},"inspect-ordered":{"fields":[],"result":"ordered_historical_observation_only"},"register":{"fields":["contract","producer","validators","obligation_objects"],"result":"null"},"register-completion-profile":{"fields":["profile"],"result":"null"},"register-component-input":{"fields":["contract","validators","obligation_objects","obligations_object","requirements_object"],"result":"null"},"result":{"fields":["identity","scope"],"result":"pipeline_result"},"run":{"fields":["pass_id","input_id","output_id","configuration"],"result":"record"},"set-dependency":{"fields":["key","identity"],"result":"null"},"target":{"fields":[],"result":"target"}},"ordered_tree":{"array":["array","ordered_trees"],"object":["object","ordered_unique_key_tree_pairs"],"scalar":["scalar","json_scalar"]},"origin_reference":{"authority":"exact_retained_regular_authoring_objects_and_closed_stored_fields;no_dynamic_attribute_or_property_lookup;representation_only","constant_paths":"empty_only","observable_suffix":"optional_dtype_followed_by_zero_or_more_arguments_nonnegative_integer_pairs","request_paths":[["domain","inputs","nonnegative_integer","observable"],["contract","requirements","nonnegative_integer","observable"],["behavior","nodes","nonnegative_integer","source"]],"roots":["request","BOOLEAN","DURATION","LEVEL","defaultLifecycle"]},"profile":"biocompiler.core.pipeline_callback_manager.v1","provider_reference":{"host":["kind","object"],"native":["kind","provider_id"]},"record_bindings":["record_id","payload","dependencies","requirements","obligations","obligation_objects","checks","provenance"],"record_identity":"one_token_per_actual_native_record_physical_identity_including_rejected_and_stored_before_error_records;not_content_hash_or_import","results":{"initialization":["kind","manager","artifacts","target"],"native_provider_result":["kind","value","view"],"ordered_historical_observation_only":["snapshot","order","providers"],"pipeline_result":["value","artifact"],"record":["value","bindings"],"target":["value","binding"]},"schema_version":"biocompiler.pipeline_callback_manager_declaration.v1","source_links_binding":"null_for_native_context_default_or_complete_host_or_native_collection_binding;tuple_identity_and_element_identity_preserved"}|declaration}
 let str value=Json.String value
 let obj fields=Json.Object fields
 let get key raw=Json.field key (Json.object_fields raw)
@@ -22,10 +23,15 @@ type sidecar={elements:Json.t list;whole:Json.t option;requirements:Json.t optio
 type record_view={record:C.Stage_record.t;bindings:Json.t}
 type context_view={context:C.Pass_context.t;context_id:string;
   context_requirements:Json.t;context_dependencies:Json.t;mutable hydrated:Json.t option;mutable host_links:M.host_value list option}
-type provider_view={provider:M.provider;provider_id:string;host:Json.t option;mutable proxy:Json.t option}
+type fixed_provider={owner:M.t;role:S.provider_role;candidate:Json.t option;
+  mutable view_bindings:(string*(Json.t*Json.t)) list}
+type provider_view={provider:M.provider;provider_id:string;host:Json.t option;
+  mutable proxy:Json.t option;mutable fixed:fixed_provider option}
 type t={mutable channel:Ch.t option;mutable bridge:H.t option;mutable initialized:bool;
   mutable live:M.t option;mutable manager_limits:M.limits;mutable manager_json:Json.t;
   mutable target_binding:Json.t option;mutable artifacts:(string*Json.t) list;
+  mutable requested_config:(Json.t*Json.t) option;
+  mutable fixed_request:Json.t option;mutable origins:(string*Json.t) list;
   mutable providers:provider_view list;mutable contexts:context_view list;
   mutable records:record_view list;mutable bindings:(Json.t*Json.t) list;
   mutable frozen:(Json.t*Json.t) list;mutable executions:(int*(Json.t*Json.t)) list;
@@ -181,11 +187,125 @@ let hydrate (state:t) context=
   ignore(host state value);retain state value;entry.hydrated<-Some value;value
 let provider_entry (state:t) provider=match find state(fun value->value.provider==provider) state.providers with
   | Some value->value | None->
-      let value={provider;provider_id=identity state "provider";host=None;proxy=None} in
+      Ch.retain_bytes(channel state)128;
+      let value={provider;provider_id=identity state "provider";host=None;proxy=None;fixed=None} in
       state.providers<-value::state.providers;value
+let role_name=function
+  | S.Intent_to_behavior_producer->"intent_to_behavior.producer"
+  | S.Intent_to_behavior_validator->"intent_to_behavior.validator"
+  | S.Behavior_to_synthetic_producer _->"behavior_to_synthetic.producer"
+  | S.Behavior_to_synthetic_validator->"behavior_to_synthetic.validator"
+  | S.Synthetic_to_components_producer _->"synthetic_to_components.producer"
+  | S.Synthetic_to_components_validator->"synthetic_to_components.validator"
+let observe_provider (state:t) supplied owner provider role=
+  require(supplied==work state) "Fixed provider metadata received a foreign lifetime budget.";
+  Ch.retain_bytes(channel state)128;
+  let entry=provider_entry state provider in
+  require(entry.host=None && entry.fixed=None && entry.proxy=None) "Fixed provider metadata was rebound.";
+  let candidate=match role with S.Synthetic_to_components_producer value->
+    let size=Synthetic_authority.Candidate.canonical_size value.candidate in
+    W.charge(work state)(128*(size+1));Ch.retain_bytes(channel state)(8*size+256);
+    Some(Synthetic_authority.Candidate.to_json value.candidate)
+    | _->None in
+  entry.fixed<-Some {owner;role;candidate;view_bindings=[]}
+let fixed_provider (entry:provider_view)=match entry.fixed with
+  | Some value->value | None->fail "Native provider lacks a fixed closure role."
+let equivalent_json (state:t) left right=
+  C.Codec.encode ~limits:(codec state) left=C.Codec.encode ~limits:(codec state) right
+let fixed_binding (state:t) (fixed:fixed_provider) key raw=
+  match find state(fun(previous,_)->
+    W.charge(work state)(String.length previous+String.length key+1);previous=key) fixed.view_bindings with
+  | Some(_, (prior,value))->
+      require(equivalent_json state prior raw) "A retained provider origin was rebound to different fields.";value
+  | None->
+      Ch.retain_bytes(channel state)(String.length key+128);
+      let value=fresh_native_binding state raw in
+      fixed.view_bindings<-(key,(raw,value))::fixed.view_bindings;value
+let origin_binding (state:t) root path=
+  Ch.retain_bytes(channel state)256;
+  let arguments=obj["root",str root;"path",Json.Array path] in
+  let size=C.Codec.measure ~limits:(codec state) arguments in
+  Ch.retain_bytes(channel state)(size.bytes+128);
+  let key=C.Codec.encode ~limits:(codec state) arguments in
+  match find state(fun(previous,_)->
+    W.charge(work state)(String.length previous+String.length key+1);previous=key) state.origins with
+  | Some(_,value)->value
+  | None->
+      let reference=invoke state "origin-reference" arguments in
+      let value=host_binding state reference in
+      retain state reference;state.origins<-(key,value)::state.origins;value
+let provider_view (state:t) (entry:provider_view) kind value=
+  let fixed=fixed_provider entry in
+  require(fixed.owner==live state) "Fixed provider belongs to another manager incarnation.";
+  let producer=match fixed.role with
+    | S.Intent_to_behavior_producer | S.Behavior_to_synthetic_producer _ | S.Synthetic_to_components_producer _->true
+    | S.Intent_to_behavior_validator | S.Behavior_to_synthetic_validator | S.Synthetic_to_components_validator->false in
+  require((kind="proposal")=producer) "Fixed provider returned a result inconsistent with its observed role.";
+  (* Source volume is measured before constructing paths, tables or ordered
+     trees. Each metadata allocation is additionally prepaid by its builder;
+     there is no new allowance or refund outside the lifetime channel budget. *)
+  ignore(C.Codec.measure ~limits:(codec state) value);
+  let bindings=if not producer then obj[] else
+    let output=get "output" value in
+    match fixed.role with
+    | S.Behavior_to_synthetic_producer config->
+        let raw=get "generator_config" output in
+        let actual=match config.config_origin with
+          | S.Requested->
+              let expected,binding=match state.requested_config with Some value->value
+                | None->fail "Fixed config lacks its authored origin." in
+              require(equivalent_json state expected raw) "Fixed config differs from its authored origin.";binding
+          | S.Selected->fixed_binding state fixed "selected-config" raw in
+        obj["generator_config",actual]
+    | S.Synthetic_to_components_producer _->
+        obj["registry",fixed_binding state fixed "registry"(get "registry" output);
+          "composition",fixed_binding state fixed "composition"(get "composition" output);
+          "composition_target",Option.get state.target_binding]
+    | S.Intent_to_behavior_producer->obj[]
+    | S.Intent_to_behavior_validator | S.Behavior_to_synthetic_validator | S.Synthetic_to_components_validator->
+        fail "Validator entered a producer view." in
+  let aliases=if not producer then [] else
+    let request=match state.fixed_request with Some value->value | None->fail "Fixed provider has no retained request." in
+    let sites=V.aliases ~charge:(W.charge(work state)) ~reserve:(Ch.retain_bytes(channel state))
+      ~request ~candidate:fixed.candidate ~role:fixed.role value in
+    let fresh=ref [] and grouped=ref [] in
+    List.iter(fun (site:V.site)->charge state;
+      let actual=match site.origin with
+        | V.Host(root,path)->origin_binding state root path
+        | V.Retained key->
+            W.charge(work state)(String.length key+8);Ch.retain_bytes(channel state)(String.length key+32);
+            fixed_binding state fixed ("alias/"^key) site.value
+        | V.Fresh key->
+            (match find state(fun(previous,_)->
+              W.charge(work state)(String.length previous+String.length key+1);previous=key) !fresh with
+             | Some(_, (prior,binding))->
+                 require(equivalent_json state prior site.value) "A fresh constructor origin has inconsistent fields.";binding
+             | None->
+                 Ch.retain_bytes(channel state)(String.length key+128);
+                 let binding=fresh_native_binding state site.value in
+                 fresh:=(key,(site.value,binding))::!fresh;binding) in
+      Ch.retain_bytes(channel state)256;
+      let key=match text "kind" actual with
+        | "native"->"native/"^text "identity" actual
+        | "host"->"host/"^text "handle"(get "object" actual)
+        | _->fail "Malformed typed origin binding." in
+      match find state(fun(previous,_,_,_,_)->
+        W.charge(work state)(String.length previous+String.length key+1);previous=key) !grouped with
+      | Some(_,kind,prior,_,paths)->
+          require(kind=site.kind && equivalent_json state prior site.value) "One typed object acquired inconsistent class or fields.";
+          Ch.retain_bytes(channel state)32;paths:=site.path::!paths
+      | None->
+          Ch.retain_bytes(channel state)(String.length key+192);
+          grouped:=(key,site.kind,site.value,actual,ref[site.path])::!grouped)sites;
+    map state(fun(_,kind,_,binding,paths)->obj["kind",str kind;
+      "paths",Json.Array(map state(fun path->Json.Array path)(List.rev !paths));"binding",binding])
+      (List.rev !grouped) in
+  obj["role",str(role_name fixed.role);"tree",fresh_ordered state value;
+    "bindings",bindings;"aliases",Json.Array aliases]
 let provider_reference (state:t) entry=match entry.host,entry.proxy with
   | Some value,_ | None,Some value->value
-  | None,None->let value=invoke state "native-provider" (obj["provider_id",str entry.provider_id]) in
+  | None,None->let role=role_name(fixed_provider entry).role in
+      let value=invoke state "native-provider" (obj["provider_id",str entry.provider_id;"role",str role]) in
       ignore(host state value);retain state value;entry.proxy<-Some value;value
 let intern_provider (state:t) raw=
   ignore(host state raw);
@@ -210,7 +330,7 @@ let intern_provider (state:t) raw=
              host state(invoke state "call-provider" (obj["provider_id",str provider_id;"context",context])) in
            let provider=M.bind_host_provider(live state) callback in
            retain state raw;
-           let entry={provider;provider_id;host=Some raw;proxy=None} in
+           let entry={provider;provider_id;host=Some raw;proxy=None;fixed=None} in
            state.providers<-entry::state.providers;
            let result=invoke state "bind-provider" (obj["provider_id",str provider_id;"object",raw]) in
            require(result=Json.Null) "Provider binding returned a value.";provider)
@@ -288,6 +408,7 @@ let initialize (state:t) kind payload=
   state.initialized<-true;retain state payload;set_limits state(get "manager_limits" payload);
   state.target_binding<-Some(host_binding state(get "target_object" payload));
   let budget=work state and observer=observe state and validator_equivalent=equivalent state in
+  let provider_observer=observe_provider state in
   if kind="empty" then (
     let target=imported state(fun raw->Build_request.Target.of_json raw)(get "target" payload) in
     let dependencies=map state(function Json.Array[Json.String key;Json.String value]->key,value
@@ -299,24 +420,37 @@ let initialize (state:t) kind payload=
     state.live<-Some(M.create ~budget ~limits:state.manager_limits ~observer ~validator_equivalent
       ~target ~dependencies ~completion_profiles ()))
   else (
-    let request=imported state(fun raw->Realization_request.of_json raw)(get "request" payload) in
+    let tree=get "request_tree" payload in
+    let size=C.Codec.measure ~limits:(codec state) tree in
+    (* Removing ordered-tree tags allocates at most the encoded input tree's
+       volume; reserve this new document before reconstructing its maps. *)
+    Ch.retain_bytes(channel state)(size.bytes+64);
+    let request_raw=unordered state 0 tree in
+    require(equivalent_json state request_raw(get "request" payload))
+      "Ordered request differs from the canonical initialization authority.";
+    let request=imported state(fun raw->Realization_request.of_json raw)request_raw in
     let frames=map state(fun raw->imported state(fun raw->Execution_data.Input_frame.of_json raw) raw)(Json.array(get "history" payload)) in
     let until=match get "until" payload with Json.Null->None | raw->Some(Runtime_number.of_json raw) in
-    let config=match get "config" payload with Json.Null->None
-      | raw->Some(imported state(fun raw->Synthetic_authority.Config.of_json raw) raw) in
+    let raw_config=get "config" payload in
+    require(raw_config<>Json.Null) "Fixed initialization requires its explicit authored configuration.";
+    let config=Some(imported state(fun raw->Synthetic_authority.Config.of_json raw) raw_config) in
+    let config_binding=host_binding state(get "config_object" payload) in
+    state.requested_config<-Some(raw_config,config_binding);
+    ignore(host state(get "request_object" payload));
+    state.fixed_request<-Some request_raw;
     map state(fun value->retain state(Execution_data.Input_frame.to_json value)) frames |> ignore;
     retain_fixed state(kind="components") request config until;
     let artifact name raw=retain state raw;state.artifacts<-state.artifacts@[name,raw] in
     let selection=function None->Json.Null | Some value->Synthetic_selection.Result.to_json value in
     if kind="synthetic" then match S.attempt ~budget ~manager_limits:state.manager_limits
-      ~observer ~validator_equivalent ?until ?config request frames with
+      ~observer ~provider_observer ~validator_equivalent ?until ?config request frames with
       | S.Failed failure->state.live<-failure.manager;raise failure.error
       | S.Completed value->state.live<-Some(S.manager value);
           artifact "candidate"(Synthetic_authority.Candidate.to_json(S.candidate value));
           artifact "pipeline_result"(C.Pipeline_result.to_json(S.result value));
           artifact "selection_result"(selection(S.selection_result value))
     else match P.attempt ~budget ~manager_limits:state.manager_limits
-      ~observer ~validator_equivalent ?until ?config request frames with
+      ~observer ~provider_observer ~validator_equivalent ?until ?config request frames with
       | P.Failed failure->state.live<-failure.manager;raise failure.error
       | P.Completed value->state.live<-Some(P.manager value);
           artifact "candidate"(Synthetic_authority.Candidate.to_json(P.candidate value));
@@ -409,15 +543,17 @@ let dispatch_value (state:t) operation payload=
       | Some value->value | None->fail "No such completed build artifact.")
   | "call-native-provider"->
       let provider=match find state(fun value->value.provider_id=name "provider_id" && value.host=None) state.providers with
-        | Some value->value.provider | None->fail "Unknown native provider capability." in
+        | Some value->value | None->fail "Unknown native provider capability." in
+      require((fixed_provider provider).owner==live state) "Fixed provider belongs to another manager incarnation.";
       let context=match find state(fun value->value.context_id=name "context_id") state.contexts with
         | Some value->value | None->fail "Unknown native context capability." in
-      let kind,value=match M.invoke_provider(live state) ~host_links:context.host_links provider context.context with
+      let kind,value=match M.invoke_provider(live state) ~host_links:context.host_links provider.provider context.context with
         | M.Proposal value->"proposal",C.Pass_result.to_json value
         | M.Decision value->"decision",C.Check_decision.to_json value
         | M.Invalid_return value->"invalid",value
         | M.Host_return _->fail "Native provider returned a foreign host result." in
-      obj["kind",str kind;"value",value]
+      let view=if kind="invalid" then Json.Null else provider_view state provider kind value in
+      obj["kind",str kind;"value",value;"view",view]
   | _->fail "Unsupported manager operation."
 let exception_json (state:t) owner kind message attributes=
   retain state(str message);
@@ -448,13 +584,13 @@ let dispatch (state:t) _ (command:Ch.command)=
   with cause->match reject state cause with Some value->Ch.Rejected value | None->raise cause
 let create ~io ()=
   let state={channel=None;bridge=None;initialized=false;live=None;manager_limits=M.default_limits;
-    manager_json=defaults;target_binding=None;artifacts=[];providers=[];contexts=[];records=[];
+    manager_json=defaults;target_binding=None;requested_config=None;fixed_request=None;origins=[];artifacts=[];providers=[];contexts=[];records=[];
     bindings=[];frozen=[];executions=[];pass_sidecars=[];admission_sidecars=[];
     input_sidecar=None;next_identity=0} in
   let value=Ch.create ~io ~application:declaration ~dispatch:(dispatch state) () in
   state.channel<-Some value;state
 let release (state:t)=
-  Option.iter H.close state.bridge;state.bridge<-None;state.live<-None;state.target_binding<-None;
+  Option.iter H.close state.bridge;state.bridge<-None;state.live<-None;state.target_binding<-None;state.requested_config<-None;state.fixed_request<-None;state.origins<-[];
   state.artifacts<-[];state.providers<-[];state.contexts<-[];state.records<-[];state.bindings<-[];
   state.frozen<-[];state.executions<-[];state.pass_sidecars<-[];state.admission_sidecars<-[];state.input_sidecar<-None
 let run (state:t)=Fun.protect ~finally:(fun()->release state)(fun()->Ch.run(channel state))

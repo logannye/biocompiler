@@ -10,7 +10,9 @@ from __future__ import annotations
 import argparse
 import builtins
 from contextlib import contextmanager
+from functools import lru_cache
 from copy import deepcopy
+from dataclasses import field, make_dataclass
 import gzip
 import hashlib
 import importlib
@@ -25,7 +27,7 @@ import signal
 import subprocess
 import sys
 import time
-from types import MappingProxyType
+from types import CodeType, FunctionType, MappingProxyType
 from types import SimpleNamespace
 from uuid import UUID, uuid4
 
@@ -52,10 +54,97 @@ ORACLES = {
     "full": ("checked-pipeline-full-v1.json", "8c9702c131e19af9a9950402c06a554cb531d81789cd83f51a23f0e5ba0fac44"),
 }
 TRANSPORT_MODULES = {"biocompiler.core_client", "biocompiler.core_pipeline_session",
-    "biocompiler.core_pipeline_callback_session", "biocompiler.pipeline_callback_objects", "biocompiler.core_pipeline_manager"}
+    "biocompiler.core_pipeline_callback_session", "biocompiler.pipeline_callback_objects", "biocompiler.core_pipeline_manager",
+    "biocompiler.core_pipeline_provider_views"}
 LITERAL_MODULES = {"biocompiler.compiler.pipeline", "biocompiler.compiler.passes", "biocompiler.ir.intent",
     "biocompiler.ir.serialization", "biocompiler.ir.stages", "biocompiler.errors", "biocompiler.artifacts.provenance",
     "biocompiler.semantics.context", "biocompiler.verification.evidence"}
+# These modules retain their semantic implementations, so they are never literal
+# modules. Only the listed serialization roots and their actual nested code are
+# available to the installed adapter. The source receipts include every module.
+SERIALIZER_ROOTS = {
+    "biocompiler.compiler.request": ("BuildRequest.to_dict", "ElaborationProvenance.to_dict",
+        "RealizationRequest.target", "RealizationRequest.to_dict"),
+    "biocompiler.ir.behavior": ("BehaviorNode.to_dict", "BehaviorProgram.to_dict"),
+    "biocompiler.ir.component_assembly": ("ComponentAssembly.to_dict",),
+    "biocompiler.ir.component_contracts": ("_Record.to_dict",),
+    "biocompiler.ir.components": ("ComponentLock.to_dict",),
+    "biocompiler.ir.composition": ("CompositionRequest.to_dict", "_Record.to_dict"),
+    "biocompiler.ir.mechanism": ("MechanismNode.to_dict", "MechanismProgram.to_dict"),
+    "biocompiler.registry.components": ("ComponentRegistry.to_dict", "RegistryLock.to_dict"),
+    "biocompiler.semantics.component_contracts": ("OperatingDomain.to_dict", "PortContract.to_dict", "ValueDomain.to_dict"),
+    "biocompiler.semantics.contracts": ("BehaviorRequirement.to_dict",),
+    "biocompiler.semantics.evaluator": ("InputFrame.to_dict", "SignalSample.to_dict"),
+    "biocompiler.semantics.realization": ("BehaviorContract.to_dict", "InputDomain.to_dict", "Observable.to_dict",
+        "OperatingDomain.to_dict", "ResponseRequirement.to_dict"),
+    "biocompiler.semantics.types": ("Interval.to_dict", "ScalarLiteral.to_dict", "TypeSpec.to_dict"),
+    "biocompiler.synthesis.synthetic": ("SyntheticCandidate.to_dict", "SyntheticGeneratorConfig.to_dict"),
+    "biocompiler.verification.realization": ("InputBinding.to_dict", "ObservationMap.to_dict", "OutputBinding.to_dict"),
+}
+# BehaviorNode.to_dict constructs an IntentNode in the unchanged public model.
+# Its incidental type validation is permitted ONLY on that exact conversion
+# stack, never as an independently callable Python semantic backend.
+CONVERSION_ROOTS = {"biocompiler.semantics.types": (
+    "TypeSpec.__post_init__", "TypeSpec.from_dict", "TypeSpec.compatible", "TypeSpec.__init__", "TypeSpec.__eq__",
+    "ScalarLiteral.__init__", "_ScalarType.__new__", "_number", "decode_binding", "to_type_spec")}
+# Python 3.11 emits these exact comprehension frames; 3.14 inlines them.
+# This finite census correspondence is data-only. Live execution still needs
+# the actual runtime code object, module globals, and conversion ancestry.
+SERIALIZER_CENSUS_COMPREHENSIONS = {
+    'biocompiler.compiler.request': (
+        'BuildRequest.to_dict.<locals>.<dictcomp>',
+    ),
+    'biocompiler.ir.behavior': (
+        'BehaviorProgram.to_dict.<locals>.<listcomp>',
+    ),
+    'biocompiler.ir.component_assembly': (
+        'ComponentAssembly.to_dict.<locals>.<dictcomp>',
+        'ComponentAssembly.to_dict.<locals>.<listcomp>',
+    ),
+    'biocompiler.ir.component_contracts': (
+        '_Record.to_dict.<locals>.<dictcomp>',
+        '_Record.to_dict.<locals>.encode.<locals>.<dictcomp>',
+        '_Record.to_dict.<locals>.encode.<locals>.<listcomp>',
+    ),
+    'biocompiler.ir.composition': (
+        'CompositionRequest.to_dict.<locals>.<dictcomp>',
+        'CompositionRequest.to_dict.<locals>.<dictcomp>.<listcomp>',
+        '_Record.to_dict.<locals>.<listcomp>',
+    ),
+    'biocompiler.ir.mechanism': (
+        'MechanismProgram.to_dict.<locals>.<listcomp>',
+    ),
+    'biocompiler.registry.components': (
+        'ComponentRegistry.to_dict.<locals>.<listcomp>',
+        'RegistryLock.to_dict.<locals>.<listcomp>',
+    ),
+    'biocompiler.semantics.component_contracts': (
+        'OperatingDomain.to_dict.<locals>.<dictcomp>',
+        'PortContract.to_dict.<locals>.<dictcomp>',
+    ),
+    'biocompiler.semantics.evaluator': (
+        'InputFrame.to_dict.<locals>.<dictcomp>',
+        'InputFrame.to_dict.<locals>.<dictcomp>.<dictcomp>',
+        'SignalSample.to_dict.<locals>.<dictcomp>',
+    ),
+    'biocompiler.semantics.realization': (
+        'BehaviorContract.to_dict.<locals>.<listcomp>',
+        'OperatingDomain.to_dict.<locals>.<listcomp>',
+    ),
+    'biocompiler.semantics.types': (
+        'TypeSpec.to_dict.<locals>.<listcomp>',
+        'decode_binding.<locals>.<listcomp>',
+    ),
+    'biocompiler.synthesis.synthetic': (
+        'SyntheticCandidate.to_dict.<locals>.<listcomp>',
+    ),
+    'biocompiler.verification.realization': (
+        'ObservationMap.to_dict.<locals>.<listcomp>',
+    ),
+}
+REVIEWED_MODULES = TRANSPORT_MODULES | LITERAL_MODULES | set(SERIALIZER_ROOTS)
+
+
 SOURCES = ("tools/check_pipeline_manager_install.py", "tests/test_pipeline_manager_campaign.py",
     "tools/check_pipeline_manager_trace.py", "tests/test_pipeline_manager_trace.py",
     "tools/check_pipeline_session_install.py", "tools/check_workflow_reproducibility.py", "tools/check_realization_binaries.py",
@@ -152,19 +241,139 @@ def metadata(corpus):
             "declarations": r.source_pins((CHANNEL_PATH, APPLICATION_PATH))}
 
 
+def _nested_codes(code):
+    yield code
+    for value in code.co_consts:
+        if type(value) is CodeType:
+            yield from _nested_codes(value)
+
+
+@lru_cache(maxsize=1)
+def _serialization_policy():
+    # Bind live installed functions to their source, not merely a claimed module
+    # or qualname. Generated dataclass methods have closed class/method slots;
+    # their live code identity and actual module namespace are retained too.
+    entries, roots, compiled = {}, {}, {}
+    # Generate only inert reference classes to verify the runtime-generated
+    # dataclass method bodies/closures; no product constructor is executed.
+    reference_types = {
+        "TypeSpec": make_dataclass("TypeSpec", ("kind", "name", "dimensions", "arguments"), frozen=True,
+            namespace={"__post_init__": lambda self: None}),
+        "ScalarLiteral": make_dataclass("ScalarLiteral", ("value", "dtype", "unit", "canonical_value"), frozen=True),
+        "IntentNode": make_dataclass("IntentNode", (("id", object), ("kind", object),
+            ("inputs", object, field(default=())), ("attributes", object, field(default_factory=dict)),
+            ("data_type", object, field(default=None)), ("role", object, field(default=None)),
+            ("source", object, field(default=None))), frozen=True, namespace={"__post_init__": lambda self: None}),
+    }
+    def bind(module_name, path, category):
+        module = importlib.import_module(module_name)
+        value = module
+        for part in path.split("."):
+            value = vars(value)[part]
+            if isinstance(value, (classmethod, staticmethod)):
+                value = value.__func__
+            elif isinstance(value, property):
+                value = value.fget
+        require(type(value) is FunctionType and value.__globals__ is vars(module),
+            "Serializer function has foreign globals: " + module_name + "." + path)
+        code = value.__code__
+        if path in ("TypeSpec.__init__", "TypeSpec.__eq__", "ScalarLiteral.__init__", "IntentNode.__init__"):
+            class_name, method = path.split(".")
+            reference = vars(reference_types[class_name])[method]
+            closure = tuple(cell.cell_contents for cell in value.__closure__ or ())
+            expected_closure = tuple(cell.cell_contents for cell in reference.__closure__ or ())
+            require(code == reference.__code__ and len(closure) == len(expected_closure)
+                and all(actual is expected for actual, expected in zip(closure, expected_closure)),
+                "Serializer generated method differs from its closed dataclass: " + module_name + "." + path)
+        else:
+            if module_name not in compiled:
+                source = Path(module.__file__).resolve()
+                compiled[module_name] = tuple(_nested_codes(compile(source.read_bytes(), str(source), "exec", dont_inherit=True)))
+            require(code.co_qualname == path and any(code == expected for expected in compiled[module_name])
+                and Path(code.co_filename).resolve() == Path(module.__file__).resolve(),
+                "Serializer function differs from installed source: " + module_name + "." + path)
+        roots[(module_name, path)] = code
+        for nested in _nested_codes(code):
+            entries[id(nested)] = (nested, vars(module), category)
+    for module_name, paths in SERIALIZER_ROOTS.items():
+        for path in paths:
+            bind(module_name, path, "serializer")
+    for module_name, paths in CONVERSION_ROOTS.items():
+        for path in paths:
+            bind(module_name, path, "conversion")
+    for module_name, paths in {
+        "biocompiler.ir.intent": ("IntentNode.__init__", "IntentNode.__post_init__"),
+        "biocompiler.pipeline_callback_objects": ("CallbackObjects._evaluate", "CallbackObjects.execute"),
+        "biocompiler.core_pipeline_manager": ("CorePassManager._fixed",),
+    }.items():
+        for path in paths:
+            bind(module_name, path, "boundary")
+    return entries, roots
+
+
 def permitted(module, qualname):
     if module in TRANSPORT_MODULES:
         return True
-    if module not in LITERAL_MODULES:
+    if module in LITERAL_MODULES:
+        # Every method/property of the original Python acceptance manager is
+        # forbidden while an actual adapter operation is active.
+        return not (module == "biocompiler.compiler.pipeline" and qualname.startswith("PassManager."))
+    if qualname in SERIALIZER_CENSUS_COMPREHENSIONS.get(module, ()):
+        return True
+    entries, _ = _serialization_policy()
+    return any(namespace.get("__name__") == module and code.co_qualname == qualname
+        and category in ("serializer", "conversion") for code, namespace, category in entries.values())
+
+
+def _reviewed_frame(frame, entries):
+    entry = entries.get(id(frame.f_code))
+    return entry is not None and entry[0] is frame.f_code and entry[1] is frame.f_globals
+
+
+def _conversion_ancestry(frame, entries, roots):
+    # No arbitrary callback, property, mapping hook, or forged same-name frame
+    # may bridge a semantic call to the reviewed serializer ancestor.
+    node = roots[("biocompiler.ir.behavior", "BehaviorNode.to_dict")]
+    cursor = frame
+    while cursor is not None and cursor.f_code is not node:
+        if not _reviewed_frame(cursor, entries):
+            return False
+        if entries[id(cursor.f_code)][2] not in ("conversion", "boundary"):
+            return False
+        cursor = cursor.f_back
+    if cursor is None or not _reviewed_frame(cursor, entries):
         return False
-    # Literal dataclasses and explicitly native-requested host serialization are
-    # allowed. Every method/property of the original Python acceptance manager
-    # is forbidden while an actual adapter operation is active.
-    return not (module == "biocompiler.compiler.pipeline" and qualname.startswith("PassManager."))
+    behavior_module = sys.modules["biocompiler.ir.behavior"]
+    if type(cursor.f_locals.get("self")) is not behavior_module.BehaviorNode:
+        return False
+    cursor = cursor.f_back
+    while cursor is not None and _reviewed_frame(cursor, entries):
+        if cursor.f_code is roots[("biocompiler.core_pipeline_manager", "CorePassManager._fixed")]:
+            return True
+        if cursor.f_code is roots[("biocompiler.pipeline_callback_objects", "CallbackObjects._evaluate")]:
+            caller = cursor.f_back
+            return (cursor.f_locals.get("action") == "document" and caller is not None
+                and _reviewed_frame(caller, entries)
+                and caller.f_code is roots[("biocompiler.pipeline_callback_objects", "CallbackObjects.execute")])
+        if entries[id(cursor.f_code)][2] != "serializer":
+            return False
+        cursor = cursor.f_back
+    return False
+
+
+def _permitted_frame(frame, entries, roots):
+    module, name = frame.f_globals.get("__name__", ""), frame.f_code.co_qualname
+    if module in TRANSPORT_MODULES | LITERAL_MODULES:
+        return permitted(module, name)
+    if not _reviewed_frame(frame, entries):
+        return False
+    category = entries[id(frame.f_code)][2]
+    return category == "serializer" or category == "conversion" and _conversion_ancestry(frame, entries, roots)
 
 
 @contextmanager
 def guarded_execution(seen, observer=None):
+    entries, roots = _serialization_policy()
     previous, original_import = sys.getprofile(), builtins.__import__
     external_profile = getattr(previous, "_manager_external_profile", previous)
     profile_failure = None
@@ -174,7 +383,7 @@ def guarded_execution(seen, observer=None):
             module = frame.f_globals.get("__name__", "")
             if event == "call" and module.startswith("biocompiler"):
                 name = frame.f_code.co_qualname
-                require(permitted(module, name), "Python manager semantic authority is forbidden: " + module + "." + name)
+                require(_permitted_frame(frame, entries, roots), "Python manager semantic authority is forbidden: " + module + "." + name)
                 seen.add((module, name))
             if observer is not None:
                 observer(frame, event, result)
@@ -186,7 +395,7 @@ def guarded_execution(seen, observer=None):
     calls._manager_external_profile = external_profile
     def imports(name, *args, **kwargs):
         if name.startswith("biocompiler"):
-            require(name in TRANSPORT_MODULES | LITERAL_MODULES, "Unreviewed manager import: " + name)
+            require(name in REVIEWED_MODULES, "Unreviewed manager import: " + name)
         return original_import(name, *args, **kwargs)
     builtins.__import__ = imports
     sys.setprofile(calls)
@@ -202,13 +411,19 @@ def guarded_execution(seen, observer=None):
             builtins.__import__ = original_import
 
 
-def check_guard(entries):
+def check_guard(entries, *, initializer="initialize-empty"):
+    require(type(initializer) is str and initializer in ("initialize-empty", "initialize-synthetic", "initialize-components"),
+        "Unknown closed manager guard initializer")
     require(type(entries) is list and entries == sorted(entries) and len({tuple(item) for item in entries}) == len(entries)
         and all(type(item) is list and len(item) == 2 and all(type(value) is str for value in item) for item in entries),
         "Invalid complete manager guard census")
     require(all(permitted(*item) for item in entries), "Forbidden Python acceptance execution in guard census")
-    for required in (("biocompiler.core_pipeline_manager", "CorePassManager.__init__"),
-            ("biocompiler.core_pipeline_callback_session", "CorePipelineCallbackSession.__init__"),
+    initializers = ("CorePassManager.__init__",) if initializer == "initialize-empty" else (
+        "CorePassManager._fixed", "CorePassManager.from_" + initializer.removeprefix("initialize-"))
+    for name in initializers:
+        require(["biocompiler.core_pipeline_manager", name] in entries,
+            "Missing actual native manager initializer: " + name)
+    for required in (("biocompiler.core_pipeline_callback_session", "CorePipelineCallbackSession.__init__"),
             ("biocompiler.core_pipeline_callback_session", "CorePipelineCallbackSession.call"),
             ("biocompiler.pipeline_callback_objects", "CallbackObjects.execute")):
         require(list(required) in entries, "Missing actual native manager/broker execution: " + required[1])
@@ -229,7 +444,7 @@ def load_oracle(*, installed=True, comparison=False, deferred=False):
     # Import every product dependency before the unchanged oracle temporarily
     # prepends checkout/src. Only pinned test helpers are intentionally loaded
     # from the checkout. Restore the exact path even if fixture loading fails.
-    for name in sorted(TRANSPORT_MODULES | LITERAL_MODULES):
+    for name in sorted(REVIEWED_MODULES):
         importlib.import_module(name)
     if installed:
         installed_modules()
@@ -1494,7 +1709,10 @@ def json_nodes(value):
     return 1
 
 
-def validate_frames(rows, artifacts, channel, application, *, sessions=None, details=None, provider_calls=True):
+def validate_frames(rows, artifacts, channel, application, *, sessions=None, details=None, provider_calls=True,
+                    initializer="initialize-empty"):
+    require(type(initializer) is str and initializer in ("initialize-empty", "initialize-synthetic", "initialize-components"),
+        "Unknown closed manager initializer")
     require(type(rows) is list and rows, "Missing exact live-manager frames")
     sequence = event = commands_count = input_bytes = output_bytes = nodes = 0
     commands, invocations, sent, normalized = [], [], {}, []
@@ -1671,8 +1889,10 @@ def validate_frames(rows, artifacts, channel, application, *, sessions=None, det
             <= limits["max_total_bytes"], "Channel consumed reserved terminal capacity")
         normalized.append({"direction": row["direction"], "value": projected})
     require(closed and not commands and not invocations, "Incomplete native command or continuation stack")
-    require(operations and operations[0] == "initialize-empty" and operations.count("initialize-empty") == 1,
-            "A real manager was not initialized exactly once")
+    initializers = {"initialize-empty", "initialize-synthetic", "initialize-components"}
+    require(operations and operations[0] == initializer
+        and sum(operation in initializers for operation in operations) == 1,
+        "A real manager was not initialized exactly once with the declared initializer")
     if provider_calls:
         require("call-provider" in actions or "call" in actions, "Real original provider callbacks were not executed")
     return {"operations": operations, "actions": actions, "frames_sha256": r.digest(normalized), "frames": len(rows)}
@@ -2099,7 +2319,7 @@ def validate_checks(receipt, corpus, artifacts):
 
 
 def python_sources():
-    return r.source_pins("src/" + name.replace(".", "/") + ".py" for name in sorted(TRANSPORT_MODULES | LITERAL_MODULES))
+    return r.source_pins("src/" + name.replace(".", "/") + ".py" for name in sorted(REVIEWED_MODULES))
 
 
 def compare(root, native_root, *, revision, source_revision, run_id):
@@ -2161,7 +2381,7 @@ def campaign_main(argv):
     args = parser.parse_args(argv)
     import biocompiler
     from biocompiler.core_client import CoreClient
-    for name in sorted(TRANSPORT_MODULES | LITERAL_MODULES):
+    for name in sorted(REVIEWED_MODULES):
         importlib.import_module(name)
     corpus, directory = Corpus(), args.output.with_name(ARTIFACT_DIRECTORY)
     directory.mkdir(parents=True, exist_ok=True)
@@ -2187,7 +2407,7 @@ def campaign_main(argv):
                 and not path.is_symlink() and os.access(path, os.X_OK) and pin == native["sha256"][path.name], "Unbound manager binary")
             receipt["executables"][role] = str(path)
         receipt["python_sources"] = python_sources()
-        for name in sorted(TRANSPORT_MODULES | LITERAL_MODULES):
+        for name in sorted(REVIEWED_MODULES):
             relative = "src/" + name.replace(".", "/") + ".py"
             require(sha(r.raw_file(Path(sys.modules[name].__file__))) == receipt["python_sources"][relative],
                     "Installed manager source differs: " + name)

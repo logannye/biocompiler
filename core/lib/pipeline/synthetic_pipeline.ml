@@ -28,6 +28,15 @@ let resource_limits = obj ["profile",str resource_profile;
   "checker",K.limits_json K.default_limits]
 type t = {candidate_value:A.Candidate.t;result_value:C.Pipeline_result.t;
   manager_value:M.t;selection_value:Synthetic_selection.Result.t option}
+type config_origin = Requested | Selected
+type provider_role =
+  | Intent_to_behavior_producer
+  | Intent_to_behavior_validator
+  | Behavior_to_synthetic_producer of {requested_config:A.Config.t;selected_config:A.Config.t;config_origin:config_origin}
+  | Behavior_to_synthetic_validator
+  | Synthetic_to_components_producer of {registry:Component_registry.t;composition:Composition.t;candidate:A.Candidate.t}
+  | Synthetic_to_components_validator
+type provider_observer = W.t -> M.t -> M.provider -> provider_role -> unit
 type failure = {error:exn;manager:M.t option}
 type attempt = Completed of t | Failed of failure
 let candidate value = value.candidate_value
@@ -123,7 +132,7 @@ let supported_behavior = List.sort String.compare [
   "signature";"secretion";"rule";"action.state_set";"action.report";"action.pulse";
   "action.eliminate";"action.engulf";"action.secrete";"action.present";"action.retain";
   "action.expand";"action.rest";"action.differentiate"]
-let run_internal manager_state ~budget ?manager_limits ?validator_equivalent ?observer ?until ?config request frames =
+let run_internal manager_state ~budget ?manager_limits ?validator_equivalent ?observer ?provider_observer ?until ?config request frames =
   charge budget 1;
   let build_request=R.build_request request in
   if Build_request.artifact_scope build_request<>Build_request.Synthetic_realization then
@@ -209,6 +218,9 @@ let run_internal manager_state ~budget ?manager_limits ?validator_equivalent ?ob
       ~detail:"Authoritative request and complete source correspondence verified."
       ~evidence:(obj ["input_request",str (Build_request.fingerprint build_request);
         "behavior",field "behavior_fingerprint" (Bioc_checker.Lowering_check.to_json report)]) ()) in
+  Option.iter(fun observe_provider->
+    observe_provider budget manager lower Intent_to_behavior_producer;
+    observe_provider budget manager verify Intent_to_behavior_validator) provider_observer;
   M.register manager lowering ~producer:lower ~validators:["preservation",verify];
   M.allow_host_source_links manager verify;
   ignore (M.run manager ~pass_id:(C.Pass_contract.id lowering) ~input_id:"request" ~output_id:"behavior" ());
@@ -241,6 +253,10 @@ let run_internal manager_state ~budget ?manager_limits ?validator_equivalent ?ob
     let raw=E.Check_result.to_json result in
     M.Decision (C.Check_decision.make ~limits:(codec work) ~outcome:(E.Check_result.outcome result)
       ~detail:(Json.string (field "claim_scope" raw)) ~evidence:raw ()) in
+  Option.iter(fun observe_provider->
+    observe_provider budget manager generate (Behavior_to_synthetic_producer {
+      requested_config;selected_config=config;config_origin=(match selection with None->Requested | Some _->Selected)});
+    observe_provider budget manager check Behavior_to_synthetic_validator) provider_observer;
   M.register manager generation ~producer:generate ~validators:["finite_history",check];
   M.allow_host_source_links manager check;
   let record=M.run manager ~pass_id:(C.Pass_contract.id generation) ~input_id:"behavior" ~output_id:"mechanism"
@@ -248,12 +264,12 @@ let run_internal manager_state ~budget ?manager_limits ?validator_equivalent ?ob
   let result=M.result manager ~identity:"mechanism" ~scope:"synthetic_realization" in
   let candidate=imported budget A.Candidate.of_json (C.Stage_record.payload record) in
   {candidate_value=candidate;result_value=result;manager_value=manager;selection_value=selection}
-let attempt ~budget ?manager_limits ?validator_equivalent ?observer ?until ?config request frames =
+let attempt ~budget ?manager_limits ?validator_equivalent ?observer ?provider_observer ?until ?config request frames =
   let manager_state=ref None in
-  try Completed (run_internal manager_state ~budget ?manager_limits ?validator_equivalent ?observer ?until ?config request frames) with
+  try Completed (run_internal manager_state ~budget ?manager_limits ?validator_equivalent ?observer ?provider_observer ?until ?config request frames) with
   | (Diagnostic.Error _ | G.Unsupported _ | M.No_candidate_found _) as error ->
       Failed {error;manager= !manager_state}
-let run ~budget ?manager_limits ?validator_equivalent ?observer ?until ?config request frames =
-  match attempt ~budget ?manager_limits ?validator_equivalent ?observer ?until ?config request frames with
+let run ~budget ?manager_limits ?validator_equivalent ?observer ?provider_observer ?until ?config request frames =
+  match attempt ~budget ?manager_limits ?validator_equivalent ?observer ?provider_observer ?until ?config request frames with
   | Completed value -> value
   | Failed failure -> raise failure.error

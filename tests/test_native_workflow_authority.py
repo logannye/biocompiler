@@ -34,6 +34,33 @@ class WorkflowAuthorityTests(unittest.TestCase):
                                                 for mode in ("candidate", "model")})
         self.assertTrue(all(case["retained"] is None for case in self.cases))
 
+    def test_one_report_node_preserves_the_earliest_unpathed_length_rejection(self):
+        case = next(case for case in self.cases if case['id'] == 'resources/max_report_nodes')
+        original = next(case for case in self.cases if case['id'] == 'original/candidate_pass')
+        self.assertEqual(case['authority'], original['authority'])
+        self.assertEqual(len(r.decode(case['authority'])), 10)
+        self.assertEqual(case['limits']['max_report_nodes'], 1)
+        self.assertEqual(case['error'], {'code': 'verification_exploration_limit',
+            'message': 'Verification workflow exceeds its native resource boundary.', 'path': None})
+        # Source-backed control, not a claim of native execution: publication
+        # passes the complete validated request to the report codec. Its root
+        # object has more than one field, so length's unpathed limit fails on
+        # the second cell before inspect's subsequent ~path check can run.
+        authority = (r.ROOT / 'core/lib/service/verification_workflow_authority.ml').read_text()
+        self.assertIn('let raw_request = V.Request.to_json request in\n  B.publish budget raw_request;', authority)
+        budget = (r.ROOT / 'core/lib/realization_checker/verification_workflow_budget.ml').read_text()
+        self.assertIn('let report_codec value = codec value.limits.max_report_bytes value.limits.max_report_nodes value.work', budget)
+        self.assertIn('let publish value raw =\n  let size = with_workspace value (fun () -> X.Codec.measure ~limits:(report_codec value) raw)', budget)
+        codec = (r.ROOT / 'core/lib/domain/verification_exploration.ml').read_text()
+        length = codec.split('  let length limits values =', 1)[1].split('  let sort_work', 1)[0]
+        self.assertIn('limit (count < limits.max_nodes); loop (count+1) rest', length)
+        self.assertNotIn('~path', length)
+        self.assertIn('let count = length limits fields in limit ~path (count <= (limits.max_nodes - !nodes - !queued)/2)', codec)
+        byte_case = next(case for case in self.cases if case['id'] == 'resources/max_report_bytes')
+        self.assertEqual(byte_case['authority'], original['authority'])
+        self.assertEqual(byte_case['limits']['max_report_bytes'], 1)
+        self.assertEqual(byte_case['error']['path'], '')
+
     def small(self):
         # All23 cases remain in every comparator mutation fixture.
         return self.full

@@ -98,7 +98,16 @@ let profile_sources charge profile map nodes =
 
 let rewritten charge bindings node =
   charge (1 + List.length node.attrs);
-  let put key value fields = (key, value) :: List.remove_assoc key fields in
+  (* Python's original dict.update replaces a present field in place and
+     appends a new field. Attribute order is observable in typed provider
+     views, even though canonical identities intentionally sort object keys. *)
+  let put key value fields =
+    let rec update = function
+      | [] -> [key,value]
+      | (name,previous)::rest ->
+          charge (String.length key + String.length name + 1);
+          if name=key then (name,value)::rest else (name,previous)::update rest in
+    update fields in
   match node.kind with
   | "parameter" ->
       let name = Json.string (attribute node "name") in

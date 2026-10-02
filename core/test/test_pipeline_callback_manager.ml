@@ -315,9 +315,155 @@ let protocol_test baseline=
  let limits=set "max_retained_bytes"(Json.int 1) limits in
  let result=exercise ~limits p [] in
  require(text "kind"(List.hd(List.rev result.events))="fatal") "Retention exhaustion revived authority"
+module C = Bioc_domain.Pipeline_contract
+module M = Bioc_compiler.Pass_manager
+module W = Bioc_checker.Work_budget
+module S = Bioc_pipeline.Synthetic_pipeline
+module P = Bioc_pipeline.Component_pipeline
+module V = Bioc_pipeline_service.Fixed_provider_views
+let rec at_path raw=function
+ | []->raw
+ | Json.String key::rest->at_path(get key raw)rest
+ | Json.Int index::rest->at_path(List.nth(Json.array raw)(Z.to_int index))rest
+ | _->failwith "Invalid typed alias path"
+let fixed_provider_tests path=
+ let index=read path in
+ require(text "document_directory" index="fixed-pipeline-literals-v1") "Fixed authority directory changed";
+ let run case_id=
+  let case=List.find(fun value->text "id" value=case_id)(Json.array(get "cases" index)) in
+  require(text "api" case="run_component_pipeline" && text "outcome" case="returned")
+    "Typed provider authority is not an original component call";
+  let identity=text "authority" case in
+  let authority=read(Filename.concat(Filename.concat(Filename.dirname path)"fixed-pipeline-literals-v1")(identity^".json")) in
+  require(Canonical.sha256(encode authority)=identity) "Original fixed authority changed";
+  let request_raw=get "request" authority in
+  (* Deliberately noncanonical source map order reaches the native constructor
+     through an ordered document. Values and original request identities stay
+     unchanged; this detects accidental key sorting and prepend-on-update. *)
+  let build=get "build_request" request_raw in
+  let intent=get "intent" build in
+  let authored_nodes=List.map(fun node->set "attributes"
+      (obj(List.rev(Json.object_fields(get "attributes" node)))) node)(Json.array(get "nodes" intent)) in
+  let request_raw=set "build_request"(set "intent"(set "nodes"(Json.Array authored_nodes)intent)build)request_raw in
+  let request=Bioc_domain.Realization_request.of_json request_raw in
+  let history=List.map(fun raw->Bioc_domain.Execution_data.Input_frame.of_json raw)(Json.array(get "history" authority)) in
+  let config=match get "config" authority with Json.Null->None
+    | value->Some(Bioc_domain.Synthetic_authority.Config.of_json value) in
+  let until=match get "until" authority with Json.Null->None | value->Some(Bioc_domain.Runtime_number.of_json value) in
+  if case_id="tests/test_component_pipeline.py::fixture.setUpClass/event/0" then (
+    let initialization peer=
+      let config=match config with Some value->value | None->Bioc_domain.Synthetic_authority.Config.make () in
+      let config=Bioc_domain.Synthetic_authority.Config.to_json config in
+      let target=Option.get(Bioc_domain.Realization_request.target request) in
+      obj["request",request_raw;"request_tree",ordered request_raw;"history",get "history" authority;
+        "until",get "until" authority;"config",config;"manager_limits",Json.Null;
+        "target_object",reference peer(Data(Bioc_domain.Build_request.Target.to_json target));
+        "config_object",reference peer(Data config);"request_object",reference peer(Data request_raw)] in
+    let p=peer () in
+    let completed=exercise p["initialize-synthetic",initialization p;"artifact",obj["name",str "candidate"]] in
+    ignore(success(nth completed 1));ignore(success(nth completed 2));
+    let p=peer () in
+    let rejected=exercise p["initialize-synthetic",set "request_tree"(ordered Json.Null)(initialization p)] in
+    require(text "kind"(List.hd(List.rev rejected.events))="fatal")
+      "A differently ordered-tree projection replaced fixed request authority");
+  let budget=W.create ~profile:"fixed_provider_views" ~error_code:"fixed_provider_views_limit" ~maximum:1_000_000_000_000 () in
+  let providers=ref [] and contexts=ref [] in
+  let observer supplied=function
+   | M.Context_created(_,M.Pass_origin(_,contract),context)->
+       require(supplied==budget) "Context metadata lost its lifetime budget";
+       contexts:=(C.Pass_contract.id contract,context)::!contexts
+   | M.Context_created _ | M.Record_stored _->() in
+  let provider_observer supplied owner provider role=
+   require(supplied==budget) "Fixed metadata lost its lifetime budget";
+   providers:=(owner,provider,role)::!providers in
+  let completed=match P.attempt ~budget ~observer ~provider_observer ?config ?until request history with
+   | P.Completed value->value | P.Failed failure->raise failure.error in
+  let manager=P.manager completed in
+  let producers=List.filter_map(fun(owner,provider,role)->
+   require(owner==manager) "Provider metadata points to a different manager";
+   match role with
+   | S.Intent_to_behavior_producer->Some("intent_to_behavior",provider,role,None)
+   | S.Behavior_to_synthetic_producer _->Some("behavior_to_synthetic",provider,role,None)
+   | S.Synthetic_to_components_producer value->Some("synthetic_to_components",provider,role,
+       Some(Bioc_domain.Synthetic_authority.Candidate.to_json value.candidate))
+   | S.Intent_to_behavior_validator | S.Behavior_to_synthetic_validator | S.Synthetic_to_components_validator->None) !providers in
+  require(List.length producers=3 && List.length !providers=6) "Closed fixed provider census differs";
+  List.iter(fun(pass,provider,role,candidate)->
+   let _,context=List.find(fun(id,context)->id=pass && C.Pass_context.output context=None) !contexts in
+   let produce ()=match M.invoke_provider manager ~host_links:None provider context with
+    | M.Proposal proposal->C.Pass_result.to_json proposal
+    | M.Decision _ | M.Invalid_return _ | M.Host_return _->failwith "Fixed producer returned another role" in
+   let first=produce () and second=produce () in
+   require(same first second) "Repeated fixed provider calls changed their immutable values";
+   let retained=ref 0 in
+   let sites=V.aliases ~charge:(W.charge budget) ~reserve:(fun count->retained:= !retained+count)
+     ~request:request_raw ~candidate ~role first in
+   require(sites<>[] && !retained>0) "Fixed provider emitted no origin metadata or retention charge";
+   let paths=List.map(fun(site:V.site)->encode(Json.Array site.path))sites in
+   require(List.length paths=List.length(List.sort_uniq String.compare paths)) "A typed path acquired duplicate origins";
+   List.iter(fun(site:V.site)->
+    require(same site.value(at_path first site.path)) "Alias value differs from its actual provider field";
+    match site.origin with
+    | V.Host("request",path)->require(same site.value(at_path request_raw path)) "Authored origin differs from its native field"
+    | V.Host(("BOOLEAN"|"LEVEL"|"DURATION"|"defaultLifecycle"),[])->()
+    | V.Host _->failwith "Unknown fixed host origin grammar"
+    | V.Fresh _ | V.Retained _->())sites;
+   let same_origin (left:V.site) (right:V.site)=left.origin=right.origin in
+   List.iter(fun(left:V.site)->List.iter(fun(right:V.site)->if same_origin left right then
+    require(left.kind=right.kind && same left.value right.value) "One constructor origin acquired different typed fields")sites)sites;
+   (match role with
+    | S.Intent_to_behavior_producer->
+        require(List.for_all(fun(site:V.site)->match site.origin with V.Fresh _->true | _->false)sites)
+          "Lowered source identity escaped its invocation";
+        List.iter(fun node->
+          let source=List.find(fun source->text "id" source=text "id" node)authored_nodes in
+          let original=List.map fst(Json.object_fields(get "attributes" source)) in
+          let updates=match text "kind" source with
+            | "parameter"->["bound";"default"] | "state"->["observation";"arbitration"]
+            | "rule"->["priority";"ongoing_activation";"impulse_activation";"state_assignment"] @
+                (if text "trigger"(get "attributes" source)="event" then ["ongoing_duration"] else [])
+            | _->[] in
+          let expected=original@List.filter(fun key->not(List.mem key original))updates in
+          require(List.map fst(Json.object_fields(get "attributes" node))=expected)
+            "Native lower attributes differ from original dict.update ordering")
+          (Json.array(get "nodes"(get "output" first)))
+    | S.Behavior_to_synthetic_producer _->
+        require(List.exists(fun(site:V.site)->site.origin=V.Host("BOOLEAN",[]))sites)
+          "Synthetic control lost the shared Boolean type"
+    | S.Synthetic_to_components_producer _->
+        let output=get "output" first in
+        let components=Json.array(get "components"(get "registry" output)) in
+        let instances=Json.array(get "instances"(get "composition" output)) in
+        let domains=List.filter(fun(site:V.site)->site.origin=V.Retained "required-domain")sites in
+        require(List.length domains=List.length components+List.length instances)
+          "Required operating domain is not shared by every record and instance";
+        List.iteri(fun instance_index instance->
+          let path=[str "output";str "composition";str "instances";Json.int instance_index;str "component"] in
+          let selected=List.find(fun(site:V.site)->site.path=path)sites in
+          let matches=List.filter(same_origin selected)sites in
+          require(List.length matches=2) "Composition lock is not exactly the registry lock object";
+          require(text "node_id" selected.value=text "id" instance) "Composition lock origin references another instance")instances
+    | S.Intent_to_behavior_validator | S.Behavior_to_synthetic_validator | S.Synthetic_to_components_validator->assert false);
+   (* Compute actual deterministic metadata cost, then prove both exact limits
+      succeed and a one-unit reduction fails before completing construction. *)
+   let metadata_work=ref 0 and metadata_retained=ref 0 in
+   ignore(V.aliases ~charge:(fun count->metadata_work:= !metadata_work+count)
+     ~reserve:(fun count->metadata_retained:= !metadata_retained+count) ~request:request_raw ~candidate ~role first);
+   let bounded maximum_work maximum_retained=
+    let work=ref 0 and retained=ref 0 in
+    let spend total maximum count=if count>maximum- !total then raise Exit else total:= !total+count in
+    try ignore(V.aliases ~charge:(spend work maximum_work) ~reserve:(spend retained maximum_retained)
+      ~request:request_raw ~candidate ~role first);true with Exit->false in
+   require(bounded !metadata_work !metadata_retained) "Exact metadata resource cost failed";
+   require(not(bounded(!metadata_work-1) !metadata_retained)) "Metadata work exhaustion returned a partial alias graph";
+   require(not(bounded !metadata_work(!metadata_retained-1))) "Metadata retention exhaustion returned a partial alias graph")producers in
+ List.iter run ["tests/test_component_pipeline.py::fixture.setUpClass/event/0";
+   "tests/test_temporal_components.py::fixture.setUpClass/event/0";
+   "tests/test_synthetic_design_workflows.py::fixture.setUpClass/event/0"]
 let ()=
- require(Array.length Sys.argv=3) "Expected declaration and original literal corpus paths";
+ require(Array.length Sys.argv=4) "Expected declaration, original contract and fixed authority corpus paths";
  require(same(read Sys.argv.(1)) A.declaration) "Application declaration differs across languages";
  let baseline=get "manager_baseline"(read Sys.argv.(2)) in
  baseline_test baseline;negative_validator_test baseline;failure_test baseline;no_candidate_test baseline;protocol_test baseline;
- print_endline "callback manager application: framed baseline, negative validator, ordered identities and errors, freshness, host exception and resource closure passed"
+ fixed_provider_tests Sys.argv.(3);
+ print_endline "callback manager application: framed state/errors and 18 actual fixed producer returns with typed construction origins and exact metadata resource bounds passed"

@@ -8,6 +8,27 @@ val implementation_version : string
 val resource_profile : string
 val resource_limits : Bioc_wire.Json.t
 type t
+type config_origin = Requested | Selected
+type provider_role =
+  | Intent_to_behavior_producer
+  | Intent_to_behavior_validator
+  | Behavior_to_synthetic_producer of {
+      requested_config:Bioc_domain.Synthetic_authority.Config.t;
+      selected_config:Bioc_domain.Synthetic_authority.Config.t;
+      config_origin:config_origin}
+  | Behavior_to_synthetic_validator
+  | Synthetic_to_components_producer of {
+      registry:Bioc_domain.Component_registry.t;composition:Bioc_domain.Composition.t;
+      candidate:Bioc_domain.Synthetic_authority.Candidate.t}
+  | Synthetic_to_components_validator
+type provider_observer = Bioc_checker.Work_budget.t -> Bioc_compiler.Pass_manager.t ->
+  Bioc_compiler.Pass_manager.provider -> provider_role -> unit
+(* Trusted read-only metadata for actual fixed closures, emitted once before
+   registration. Captured object/origin identity is authoritative for views;
+   equal serialized documents do not confer identity or a provider role. The
+   observer uses the supplied lifetime budget and must not execute host code,
+   register providers, alter the manager, or import acceptance. Omission keeps
+   the ordinary fixed pipeline's metadata allocation and behavior unchanged. *)
 type failure = {error:exn;manager:Bioc_compiler.Pass_manager.t option}
 type attempt = Completed of t | Failed of failure
 
@@ -19,6 +40,7 @@ val attempt : budget:Bioc_checker.Work_budget.t ->
   ?manager_limits:Bioc_compiler.Pass_manager.limits ->
   ?validator_equivalent:Bioc_compiler.Pass_manager.validator_equivalent ->
   ?observer:Bioc_compiler.Pass_manager.observer ->
+  ?provider_observer:provider_observer ->
   ?until:Bioc_domain.Runtime_number.t ->
   ?config:Bioc_domain.Synthetic_authority.Config.t ->
   Bioc_domain.Realization_request.t ->
@@ -27,6 +49,7 @@ val run : budget:Bioc_checker.Work_budget.t ->
   ?manager_limits:Bioc_compiler.Pass_manager.limits ->
   ?validator_equivalent:Bioc_compiler.Pass_manager.validator_equivalent ->
   ?observer:Bioc_compiler.Pass_manager.observer ->
+  ?provider_observer:provider_observer ->
   ?until:Bioc_domain.Runtime_number.t ->
   ?config:Bioc_domain.Synthetic_authority.Config.t ->
   Bioc_domain.Realization_request.t ->

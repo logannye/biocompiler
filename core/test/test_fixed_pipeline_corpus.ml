@@ -185,19 +185,59 @@ let execute authority api =
   let config=match get "config" authority with Json.Null -> None | value -> Some (Synthetic_authority.Config.of_json value) in
   let until=match get "until" authority with Json.Null -> None | value -> Some (Runtime_number.of_json value) in
   let labels={values=[]} in
+  let observed=ref [] in
+  let provider_observer supplied owner provider role=
+    require(supplied==budget) "Fixed role observer received a foreign budget";
+    require(not(List.exists(fun(_,previous,_)->previous==provider) !observed))
+      "One physical fixed closure acquired repeated metadata";
+    (match role with
+     | S.Behavior_to_synthetic_producer value->
+         (match config with None->() | Some authored->
+           require(value.requested_config==authored) "Fixed metadata lost its actual authored native config");
+         let build=Realization_request.build_request request in
+         let selected=Build_request.implementation_constraints build<>[] || Build_request.preferences build<>[] in
+         require((value.config_origin=S.Selected)=selected) "Config identity origin was inferred from equal values";
+         require((value.requested_config==value.selected_config)=not selected)
+           "Selected and requested config physical identity differs"
+     | S.Intent_to_behavior_producer | S.Intent_to_behavior_validator
+     | S.Behavior_to_synthetic_validator | S.Synthetic_to_components_producer _
+     | S.Synthetic_to_components_validator->());
+    observed:=(owner,provider,role)::!observed in
+  let check_metadata manager=
+    let name provider=match List.find_opt(fun(_,actual,_)->actual==provider) !observed with
+      | None->failwith "Registered fixed provider lacks actual closure metadata"
+      | Some(owner,_,role)->
+        require(owner==manager) "Fixed closure metadata belongs to another manager";
+        match role with
+        | S.Intent_to_behavior_producer->"intent_to_behavior.producer"
+        | S.Intent_to_behavior_validator->"intent_to_behavior.validator"
+        | S.Behavior_to_synthetic_producer _->"behavior_to_synthetic.producer"
+        | S.Behavior_to_synthetic_validator->"behavior_to_synthetic.validator"
+        | S.Synthetic_to_components_producer _->"synthetic_to_components.producer"
+        | S.Synthetic_to_components_validator->"synthetic_to_components.validator" in
+    let snapshot=M.inspect manager ~provider_identity:name in
+    List.iter(fun(id,entry)->
+      require(text "producer" entry=id^".producer") "Fixed producer role differs from its actual registration";
+      List.iter(fun(_,value)->require(Json.string value=id^".validator")
+        "Fixed validator role differs from its actual registration") (Json.object_fields(get "validators" entry)))
+      (Json.object_fields(get "passes" snapshot));
+    let role_count=2*List.length(Json.object_fields(get "passes" snapshot)) in
+    require(List.length !observed=role_count) "Fixed metadata census differs from actual retained registrations" in
   match api with
-  | "run_synthetic_pipeline" -> (match S.attempt ~budget ?until ?config request frames with
-    | S.Failed failure -> Failed (failure.error,failure.manager)
+  | "run_synthetic_pipeline" -> (match S.attempt ~budget ~provider_observer ?until ?config request frames with
+    | S.Failed failure -> Option.iter check_metadata failure.manager;Failed (failure.error,failure.manager)
     | S.Completed value ->
       let manager=S.manager value in
+      check_metadata manager;
       Completed {manager;result=S.result value;records=obj [
         "candidate",Synthetic_authority.Candidate.to_json (S.candidate value);
         "selection_result",selection_json (S.selection_result value);
         "stages",stage_records labels manager]})
-  | "run_component_pipeline" -> (match P.attempt ~budget ?until ?config request frames with
-    | P.Failed failure -> Failed (failure.error,failure.manager)
+  | "run_component_pipeline" -> (match P.attempt ~budget ~provider_observer ?until ?config request frames with
+    | P.Failed failure -> Option.iter check_metadata failure.manager;Failed (failure.error,failure.manager)
     | P.Completed value ->
       let manager=P.manager value in
+      check_metadata manager;
       Completed {manager;result=P.result value;records=obj [
         "candidate",Synthetic_authority.Candidate.to_json (P.candidate value);
         "assembly",Component_assembly.to_json (P.assembly value);

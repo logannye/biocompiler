@@ -39,7 +39,7 @@ EXECUTABLES = {
     "biocompiler-verify": ("bin/verify/dune", {"bioc_wire", "bioc_service"}, "verifier"),
 }
 TESTS = {
-    "test_pipeline_callback_manager": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_pipeline_service", "zarith"},
+    "test_pipeline_callback_manager": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_pipeline_service", "bioc_pipeline", "zarith"},
     "test_deferred_pass_manager": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "zarith"},
     "test_pipeline_callback_channel": {"bioc_wire", "bioc_checker", "bioc_pipeline_service", "zarith"},
     "test_pipeline_host_bridge": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_pipeline_service", "zarith"},
@@ -443,7 +443,8 @@ def check_boundaries(root: Path):
                 if name == "test_pipeline_callback_manager":
                     expected_actions = [["action", ["run", "%{test}",
                         "%{env:BIOCOMPILER_PIPELINE_CALLBACK_MANAGER_DECLARATION=missing}",
-                        "%{env:BIOCOMPILER_PIPELINE_CONTRACT_LITERALS=missing}"]]]
+                        "%{env:BIOCOMPILER_PIPELINE_CONTRACT_LITERALS=missing}",
+                        "%{env:BIOCOMPILER_FIXED_PIPELINE_LITERALS=missing}"]]]
                 if name == "test_pipeline_session":
                     expected_actions = [["action", ["run", "%{test}",
                         "%{env:BIOCOMPILER_PIPELINE_SESSION_DECLARATION=missing}",

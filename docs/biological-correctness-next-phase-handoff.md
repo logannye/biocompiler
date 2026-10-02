@@ -8,6 +8,15 @@ The user has no wet lab. Improve the biological grounding of compiler outputs
 using existing public experiments, exact material records, reproducible analyses,
 and appropriately evaluated models.
 
+Current user-directed cutoff: the migration session must finish existing manager
+and fixed-provider compatibility and supported workflow families; SDK/CLI/Studio
+routing and canonical package/export ownership; prebuilt distributions and fresh
+installations; then validated-profile OCaml cutover, Python semantic retirement
+and complete integration/release gates. These are LM-CUTOFF-1 through
+LM-CUTOFF-4 in the migration roadmap. It must then pause for the user's decision.
+Conversational authoring and expanded Studio are deferred; this preparation does
+not start BC work or create the next session automatically.
+
 ## 1. Instructions to the next session
 
 Read this document and the repository instructions, establish the actual final

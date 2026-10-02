@@ -98,7 +98,10 @@ class Corpus:
             "max_monitor_items": rejection("workflow_retention_limit", "Live workflow inventory exceeds its declared bound."),
             "max_request_bytes": rejection("artifact_transport", "Complete raw input artifacts and control exceed the operation byte limit."),
             "max_report_bytes": rejection("verification_exploration_limit", "Verification workflow exceeds its native resource boundary.", ""),
-            "max_report_nodes": rejection("verification_exploration_limit", "Verification workflow exceeds its native resource boundary.", ""),
+            # Publication measures the complete ten-field request. At one node,
+            # Codec.length rejects its second root field without a path before
+            # inspect can reach its path-aware object-size checks.
+            "max_report_nodes": rejection("verification_exploration_limit", "Verification workflow exceeds its native resource boundary."),
         }
         for key, error in errors.items():
             selected = {field: 1 if field == key else defaults[field] for field in c.LIMIT_FIELDS}

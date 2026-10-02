@@ -4,6 +4,32 @@ Created: 2026-10-01, America/Los_Angeles.
 
 **Decision:** TypeScript for Studio; Python for authoring, orchestration and scientific exploration; OCaml for the semantic compiler, independent checking and canonical emission.
 
+**User-directed session cutoff, 2026-10-02:** continue until the four gates below
+are complete, then pause for a decision about the next session. Conversational
+authoring (LM-11) and expanded Studio functionality remain future roadmap work;
+existing Studio routing and all supported compiler workflows remain in scope.
+Biological quality/correctness work has not begun.
+
+- [ ] **LM-CUTOFF-1:** finish manager compatibility, fixed-producer typed returns
+  and all remaining supported workflow families, preserving public behavior.
+- [ ] **LM-CUTOFF-2:** complete existing SDK/CLI/Studio routing and OCaml ownership
+  of canonical package content and export acceptance.
+- [ ] **LM-CUTOFF-3:** ship prebuilt core distributions and validate fresh
+  installations on supported platforms.
+- [ ] **LM-CUTOFF-4:** switch validated profiles to OCaml, retire their production
+  Python semantic paths and pass the complete integration/release gates for the
+  exact integrated revision. Record evidence before pausing.
+
+**Combined validation checkpoint:** PR61 run `37032666946` exposed a shared
+resource-diagnostic expectation error present in PR60–73. The source-backed
+[correction](../protocol/migration-authority-limit-correction.json) preserves the
+original request and native code. The fixed-provider checkpoint carries that
+correction and the complete accumulated workflow/manager changes for one combined
+hosted validation against the PR59 workflow-service base. Every existing native,
+unit, installed, browser, reproducibility and release gate remains required.
+Historical draft PRs and their evidence remain available; no pending, failed or
+superseded result is treated as acceptance.
+
 **Resumed migration checkpoint, 2026-10-02:** PR57 and PR58 passed all 36
 exact-head jobs and are merged. Independent aggregate reconstruction, both
 platform binary manifests and all four full artifact comparisons reproduce their
@@ -76,6 +102,11 @@ exact traceback segments, exception-object retention and complete fingerprint
 reference chains are implemented. The final focused batch passes 46 tests on
 each local Python version; native execution and complete hosted acceptance are
 pending. See the [source checkpoint](../protocol/migration-deferred-manager-checkpoint.json).
+This source is pushed in [draft PR73](https://github.com/logannye/biocompiler/pull/73)
+at `6a482db5ca6038126a859b6eea87186500afbd89`; its
+[hosted run](https://github.com/logannye/biocompiler/actions/runs/37059378799)
+is pending. The next source batch restores fixed-producer public return classes
+and explicit shared-object identities; the default remains Python.
 
 - [x] **LM-03/12 realization protocol hosted checkpoint (PR57):** run
   `36987943622`, source `41ab0f99375d7293a4b86c28da1cd5408b7376c0`,
@@ -1032,6 +1063,22 @@ record current parent heads; previous partial native passes are historical only.
   native executables on both platforms and Python versions. Keep all original
   callback and fixed-pipeline compatibility gates above open until their complete
   live replay passes; an additive adapter is not the default cutover.
+- [x] **LM-12/25 P2 fixed-provider view source checkpoint:** implement six actual
+  closure roles, complete ordered typed proposals, eight closed source-backed
+  alias kinds and stable roots; preserve same-call ordered request authority and
+  original lowering insertion order. Add a complete three-case/nine-context/
+  18-return original witness and installed four-runtime replay gate. The 77
+  manager/adapter/view controls and 23 witness/campaign controls pass on local Python
+  3.11 and 3.14. Native execution remains pending. See the
+  [source implementation](migration-fixed-provider-views.md).
+- [ ] **LM-12/25 P2 fixed-producer typed return compatibility:** return actual
+  `BehaviorProgram`, `SyntheticCandidate` and `ComponentAssembly` views from
+  native fixed providers. Preserve fresh proposal/output roots, ordered mutable
+  versus immutable collections, actual requested/selected configuration identity,
+  and source-backed shared registry, composition, target and nested objects.
+  Bind the view role to the actual native closure; hydrate only closed structural
+  representations without Python semantic parsing or acceptance. Require a full
+  original identity witness and installed four-runtime replay before acceptance.
 
 - [x] **LM-03 CI harness correction checkpoint:** the installed architecture
   guard now permits only the exact new parser-registration helpers while rejecting

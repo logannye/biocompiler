@@ -1098,5 +1098,183 @@ class PipelineManagerCampaignTests(unittest.TestCase):
                 campaign.compare(root/"realization", root/"native", revision="a"*40, source_revision="b"*40, run_id="")
 
 
+
+class FixedSerializationGuardTests(unittest.TestCase):
+    """Actual Python conversion stacks; these controls establish no native parity."""
+    @classmethod
+    def setUpClass(cls):
+        from tools import capture_pipeline_fixed_provider_semantics as original
+        cls.authored, cls.outputs = [], []
+        for case in original.CASES:
+            def factory(request, history, *, until, config):
+                cls.authored.append((request, history, until, config))
+                return original.original_factory(request, history, until=until, config=config)
+            def observe(stage, manager, pass_id, ordinal, context, proposal):
+                if stage == "after":
+                    cls.outputs.append((proposal.output, proposal.output.to_dict()))
+            original.run_case(case, manager_factory=factory, observe=observe)
+        campaign._serialization_policy()
+
+    def broker(self, value):
+        from biocompiler.pipeline_callback_objects import CallbackObjects
+        broker = CallbackObjects()
+        self.addCleanup(broker.close)
+        return broker, broker.retain(value)
+
+    def test_all_original_fixed_outputs_serialize_only_through_actual_document_action(self):
+        self.assertEqual(len(self.outputs), 18)
+        seen = set()
+        for output, expected in self.outputs:
+            broker, reference = self.broker(output)
+            with campaign.guarded_execution(seen):
+                completion = broker.execute("document", {"object": reference})
+            self.assertEqual(completion.status, "ok")
+            self.assertEqual(broker.resolve(completion.value), expected)
+        self.assertIn(("biocompiler.semantics.types", "TypeSpec.from_dict"), seen)
+        self.assertIn(("biocompiler.semantics.types", "decode_binding"), seen)
+        self.assertIn(("biocompiler.ir.behavior", "BehaviorNode.to_dict"), seen)
+        self.assertTrue(all(campaign.permitted(*entry) for entry in seen))
+
+    def test_actual_fixed_initializer_serialization_preserves_single_authored_request(self):
+        from biocompiler.core_client import CoreClient
+        from biocompiler.core_pipeline_manager import CorePassManager, _ordered
+        from tests.test_core_pipeline_manager import FixtureSession
+        core = CoreClient(Path("/fixture/core"))
+        seen = set()
+        with patch("biocompiler.core_pipeline_manager.CorePipelineCallbackSession", FixtureSession):
+            for request, history, until, config in self.authored:
+                expected = request.to_dict()
+                with campaign.guarded_execution(seen):
+                    manager = CorePassManager.from_components(core, request, history, until=until, config=config)
+                self.addCleanup(manager.close)
+                operation, arguments = manager.session.requests[0]
+                self.assertEqual(operation, "initialize-components")
+                self.assertEqual(arguments["request_tree"], _ordered(expected))
+                self.assertIs(manager._objects.resolve(arguments["request_object"]), request)
+        self.assertIn(("biocompiler.core_pipeline_manager", "CorePassManager._fixed"), seen)
+        self.assertIn(("biocompiler.semantics.types", "TypeSpec.from_dict"), seen)
+        self.assertIn("biocompiler.core_pipeline_provider_views", campaign.TRANSPORT_MODULES)
+        self.assertTrue(set(campaign.SERIALIZER_ROOTS).isdisjoint(campaign.LITERAL_MODULES))
+
+    def test_standalone_type_semantics_and_other_broker_actions_remain_forbidden(self):
+        from biocompiler.semantics.types import LEVEL, TypeSpec, decode_binding, Level
+        data, literal = LEVEL.to_dict(), Level(1).to_dict()
+        output = self.outputs[0][0]
+        for action in (lambda: TypeSpec.from_dict(data), lambda: LEVEL.compatible(LEVEL),
+                lambda: decode_binding(literal, LEVEL), lambda: TypeSpec("scalar", "Level"), output.to_dict):
+            with self.subTest(action=action):
+                with self.assertRaisesRegex(AssertionError, "semantic authority"):
+                    with campaign.guarded_execution(set()):
+                        action()
+                self.assertIsNone(sys.getprofile())
+        # The same reviewed serializer code cannot gain semantic permission
+        # from a generic callable invocation instead of native document conversion.
+        broker, callable_ref = self.broker(output.to_dict)
+        with self.assertRaisesRegex(AssertionError, "semantic authority"):
+            with campaign.guarded_execution(set()):
+                broker.execute("call", {"callable": callable_ref, "args": [], "kwargs": {}})
+        class Impostor:
+            def to_dict(self):
+                return TypeSpec.from_dict(data)
+        broker, reference = self.broker(Impostor())
+        with self.assertRaisesRegex(AssertionError, "semantic authority"):
+            with campaign.guarded_execution(set()):
+                broker.execute("document", {"object": reference})
+
+    def test_reviewed_modules_do_not_allow_parsers_evaluators_generators_or_acceptance(self):
+        from biocompiler.ir.behavior import BehaviorProgram
+        from biocompiler.semantics.evaluator import evaluate
+        from biocompiler.synthesis.synthetic import generate_synthetic, check_synthetic_candidate
+        from biocompiler.verification.realization import check_realization, ObservationMap
+        from biocompiler.compiler.pipeline import PassManager
+        calls = (lambda: BehaviorProgram.from_dict({}), lambda: ObservationMap.from_dict({}),
+            lambda: evaluate(None, ()), lambda: generate_synthetic(None),
+            lambda: check_synthetic_candidate(None, None, ()), lambda: check_realization(None, None, None, None, None, None, ()),
+            lambda: PassManager.get(None, "forbidden"))
+        for action in calls:
+            with self.subTest(action=action):
+                with self.assertRaisesRegex(AssertionError, "semantic authority"):
+                    with campaign.guarded_execution(set()):
+                        action()
+        with self.assertRaisesRegex(AssertionError, "Unreviewed manager import"):
+            with campaign.guarded_execution(set()):
+                __import__("biocompiler.synthesis.generator")
+        self.assertFalse(campaign.permitted("biocompiler.ir.behavior", "BehaviorNode.to_dict.evil"))
+
+    def test_forged_serializer_names_and_copied_globals_do_not_gain_permission(self):
+        from types import FunctionType, MethodType
+        from biocompiler.ir.behavior import BehaviorNode, BehaviorProgram
+        actual = BehaviorNode.to_dict
+        # Same compiled body in a different namespace is not the installed serializer.
+        copied = FunctionType(actual.__code__, dict(actual.__globals__))
+        copied.__kwdefaults__ = actual.__kwdefaults__
+        def unrelated(self):
+            return {}
+        spoofed = FunctionType(unrelated.__code__.replace(co_name=actual.__code__.co_name,
+            co_qualname=actual.__code__.co_qualname), actual.__globals__)
+        for function in (copied, spoofed):
+            subject = SimpleNamespace()
+            subject.to_dict = MethodType(function, subject)
+            broker, reference = self.broker(subject)
+            with self.assertRaisesRegex(AssertionError, "semantic authority"):
+                with campaign.guarded_execution(set()):
+                    broker.execute("document", {"object": reference})
+        # A replacement made before policy initialization must also match source.
+        campaign._serialization_policy.cache_clear()
+        try:
+            for replacement in (spoofed, BehaviorProgram.from_dict.__func__):
+                with patch.object(BehaviorNode, "to_dict", replacement):
+                    with self.assertRaisesRegex(AssertionError, "differs from installed source"):
+                        campaign._serialization_policy()
+        finally:
+            campaign._serialization_policy.cache_clear()
+            campaign._serialization_policy()
+
+    def test_offline_comprehension_census_does_not_grant_live_execution_permission(self):
+        from types import FunctionType
+        entries, _ = campaign._serialization_policy()
+        for code, namespace, category in entries.values():
+            if category in ("serializer", "conversion"):
+                self.assertTrue(campaign.permitted(namespace["__name__"], code.co_qualname))
+        self.assertEqual(sum(map(len, campaign.SERIALIZER_CENSUS_COMPREHENSIONS.values())), 24)
+        for module, names in campaign.SERIALIZER_CENSUS_COMPREHENSIONS.items():
+            for name in names:
+                self.assertTrue(campaign.permitted(module, name))
+                self.assertFalse(campaign.permitted(module, name + ".unreviewed"))
+        module = "biocompiler.ir.composition"
+        name = "CompositionRequest.to_dict.<locals>.<dictcomp>.<listcomp>"
+        self.assertTrue(campaign.permitted(module, name))
+        def unrelated():
+            return None
+        forged = FunctionType(unrelated.__code__.replace(co_name="<listcomp>", co_qualname=name),
+            vars(sys.modules[module]))
+        with self.assertRaisesRegex(AssertionError, "semantic authority"):
+            with campaign.guarded_execution(set()):
+                forged()
+
+    def test_user_mapping_hook_cannot_borrow_ancestor_serialization_permission(self):
+        from collections.abc import Mapping
+        from biocompiler.ir.behavior import BehaviorNode
+        from biocompiler.semantics.types import LEVEL, TypeSpec
+        data = LEVEL.to_dict()
+        class Hook(Mapping):
+            def __getitem__(self, key):
+                return data[key]
+            def __len__(self):
+                return len(data)
+            def __iter__(self):
+                # A real BehaviorNode serializer exists deeper on this stack,
+                # but this arbitrary host callback breaks the closed ancestry.
+                TypeSpec.from_dict(data)
+                return iter(data)
+        node = object.__new__(BehaviorNode)
+        for key, value in vars(self.outputs[0][0].nodes[0]).items():
+            object.__setattr__(node, key, value)
+        object.__setattr__(node, "data_type", Hook())
+        broker, reference = self.broker(node)
+        with self.assertRaisesRegex(AssertionError, "semantic authority"):
+            with campaign.guarded_execution(set()):
+                broker.execute("document", {"object": reference})
+
 if __name__ == "__main__":
     unittest.main()
