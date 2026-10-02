@@ -122,6 +122,23 @@ let release value amount =
   Diagnostic.require (amount>=0 && amount<=value.retained-value.scoped) "workflow_limits"
     "Cannot release workflow inventory that is not retained.";
   value.retained <- value.retained-amount
+type scope = { owner:t; mutable amount:int; mutable closed:bool }
+let create_scope owner =
+  charge owner 1;
+  {owner;amount=0;closed=false}
+let retain_in_scope scope amount =
+  Diagnostic.require (not scope.closed) "workflow_limits" "Cannot retain inventory in a closed workflow scope.";
+  (* [retain] validates and charges before changing any counters. A failed
+     prospective reservation leaves this scope and its owner unchanged. *)
+  retain scope.owner amount;
+  scope.owner.scoped <- scope.owner.scoped+amount;
+  scope.amount <- scope.amount+amount
+let release_scope scope =
+  Diagnostic.require (not scope.closed) "workflow_limits" "Cannot release a workflow scope more than once.";
+  scope.closed <- true;
+  scope.owner.scoped <- scope.owner.scoped-scope.amount;
+  release scope.owner scope.amount;
+  scope.amount <- 0
 let with_retained value amount action =
   retain value amount;
   value.scoped <- value.scoped+amount;

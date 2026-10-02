@@ -26,6 +26,11 @@ let () =
   List.iter (fun (bytes,nodes) -> rejected "invalid_json_limits"
     (fun () -> Json.parse_bounded ~max_bytes:bytes ~max_nodes:nodes "null"))
     [-1,1;maximum+1,1;4,0;4,1_000_001];
+  require (Json.equal (Json.parse_artifact ~max_bytes:7 ~max_nodes:3 "{\"x\":0}")
+      (Json.parse "{\"x\":0}")) "Artifact key/value exact limit differs";
+  rejected "node_limit" (fun () -> Json.parse_artifact ~max_bytes:7 ~max_nodes:2 "{\"x\":0}");
+  require (Json.equal (Json.parse_bounded ~max_bytes:7 ~max_nodes:2 "{\"x\":0}")
+      (Json.parse "{\"x\":0}")) "Historical value-only parser limit changed";
   let chunk = String.make (3*1024*1024) 'x' in
   let document = Json.Array (List.init 12 (fun _ -> Json.String chunk)) in
   let encoded = Canonical.encode_bounded ~max_bytes:37748773 document in

@@ -15,9 +15,12 @@ The initial commit `002344cdfeca2dc599c1e21ff291b9858258c227` passed all
 full-corpus suite require fresh hosted validation. The initial aggregate
 encoding-work allowance and transient allocation/retention accounting required
 review; the refinement and explicit bounds below replace that provisional
-arithmetic and await validation at the corrected revision. Workflow transport, public SDK and
-CLI routing remain incomplete; this checkpoint exposes no new public workflow
-capability and does not close R5 or R6. The source audit below describes the
+arithmetic and await validation at the corrected revision. A following service
+batch implements the bounded native artifact channel, both executable roles,
+and an immutable raw-program Python SDK, with 37 passing transport/client tests.
+Its two additional native suites (87 total), full installed campaign and fourway
+comparison require hosted execution. Legacy public workflow/CLI cutover remains
+incomplete; this checkpoint does not close R5 or R6. The source audit below describes the
 starting point and remains the implementation inventory, with this checkpoint
 qualifying statements about modules that were absent during that audit.
 

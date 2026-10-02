@@ -31,7 +31,7 @@ class CoreBoundaryTests(unittest.TestCase):
         dependencies = receipt["transitive_dependencies"]["executable:biocompiler-verify"]
         self.assertEqual(set(dependencies), {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_service",
                                             "bioc_realization_checker", "bioc_semantics",
-                                            "bioc_candidate_runtime", "digestif", "zarith"})
+                                            "bioc_candidate_runtime", "digestif", "zarith", "unix"})
         self.assertEqual(receipt["roles"]["bioc_checker"], "checker")
         self.assertEqual(receipt["roles"]["bioc_semantics"], "source_semantics")
         self.assertEqual(receipt["roles"]["bioc_source_adapter"], "source_semantics")
@@ -62,6 +62,29 @@ class CoreBoundaryTests(unittest.TestCase):
         self.assertEqual(receipt["shared_trusted_base"], ["bioc_wire", "bioc_domain"])
         self.assertIn("core/lib/checker/intent_check.ml", receipt["source_sha256"])
         self.assertEqual(receipt["native_build_and_semantic_independence"], "separate_hosted_validation_required")
+
+    def test_descriptor_primitive_cannot_expand_native_or_process_access(self):
+        root = self.copy_core()
+        self.change(root, "lib/service/artifact_fd_stubs.c", "F_GETFL", "F_GETFD")
+        with self.assertRaisesRegex(boundaries.BoundaryError, "primitive source"):
+            boundaries.check_boundaries(root)
+        root = self.copy_core()
+        self.change(root, "lib/service/artifact_io.ml", "Unix.fstat", "Unix.system")
+        with self.assertRaisesRegex(boundaries.BoundaryError, "Unreviewed.*Unix"):
+            boundaries.check_boundaries(root)
+        root = self.copy_core()
+        self.change(root, "lib/service/artifact_io.ml", "external duplicate_checked", "external unchecked")
+        with self.assertRaisesRegex(boundaries.BoundaryError, "Unreviewed.*external"):
+            boundaries.check_boundaries(root)
+        root = self.copy_core()
+        self.change(root, "lib/service/artifact_io.ml", boundaries.ARTIFACT_EXTERNAL,
+                    boundaries.ARTIFACT_EXTERNAL + '\n "unreviewed_native_symbol"')
+        with self.assertRaisesRegex(boundaries.BoundaryError, "Unreviewed.*external"):
+            boundaries.check_boundaries(root)
+        root = self.copy_core()
+        (root / "core/lib/service/unreviewed.c").write_text("int unexpected;\n")
+        with self.assertRaisesRegex(boundaries.BoundaryError, "source inventory"):
+            boundaries.check_boundaries(root)
 
     def test_transitive_producer_dependency_fails_even_through_neutral_module_names(self):
         graph = {"verify": ["adapter"], "adapter": ["worker"], "worker": []}

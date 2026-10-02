@@ -15,6 +15,9 @@ val parse : string -> t
     numeric and nesting limits are unchanged. Object keys are not value nodes;
     artifact callers additionally enforce their complete key/value budgets. *)
 val parse_bounded : max_bytes:int -> max_nodes:int -> string -> t
+(* Descriptor artifact decoding counts object keys before allocating them, in
+   addition to values. Original parse/parse_bounded node semantics stay intact. *)
+val parse_artifact : ?on_node:(unit -> unit) -> max_bytes:int -> max_nodes:int -> string -> t
 val validate_utf8 : string -> unit
 val object_fields : ?path:string -> t -> (string * t) list
 val field : ?path:string -> string -> (string * t) list -> t

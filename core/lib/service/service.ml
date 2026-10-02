@@ -2,13 +2,14 @@ open Bioc_wire
 
 let capabilities = Json.Object [
     "schema_version", Json.String "biocompiler.core_capabilities.v1";
-    "operations", Json.Array (List.map (fun value -> Json.String value) (["capabilities"; "canonicalize"; "validate-intent"; "verify-lowering"; "verify-architecture"; "replay-architecture"] @ Realization_service.operations));
+    "operations", Json.Array (List.map (fun value -> Json.String value) (["capabilities"; "canonicalize"; "validate-intent"; "verify-lowering"; "verify-architecture"; "replay-architecture"] @ Realization_service.operations @ Verification_workflow_service.operations));
     "intent_schemas", Json.Array [Json.String Bioc_domain.Intent.schema_version];
     "canonicalization", Json.String "python-json-v1";
     "validation_scopes", Json.Array (List.map (fun value -> Json.String value)
       ([Bioc_domain.Intent.validation_scope; Bioc_checker.Lowering_check.validation_scope;
-        Architecture_service.validation_scope] @ Realization_service.validation_scopes));
-    "profiles", Json.Object (("architecture", Architecture_service.profile) :: Realization_service.profiles);
+        Architecture_service.validation_scope] @ Realization_service.validation_scopes @ Verification_workflow_service.validation_scopes));
+    "profiles", Json.Object (("architecture", Architecture_service.profile) :: ("artifact_transport", Artifact_io.profile) ::
+      Realization_service.profiles @ Verification_workflow_service.profiles);
     "limits", Protocol.limits;
     "claim_scope", Json.String "Structural intent validation, frozen source-to-Behavior correspondence, supplied architecture contracts and independently executed finite-history model checks. No search completeness, empirical function or human-use admission."
   ]
@@ -45,14 +46,64 @@ let handle executable (request : Protocol.request) =
       message = "This executable does not implement the requested operation; no fallback or acceptance is granted.";
       path = Some "/operation" }]
 
+let artifact_request ~budget ~control_bytes ~executable (request:Protocol.request) =
+  let fields=Json.object_fields request.payload in
+  Json.exact_fields ["transport";"authority";"retained_record";"output_limit";"operation_payload"] fields;
+  Diagnostic.require (Json.string (Json.field "transport" fields)="biocompiler.core.artifact_transport.v1")
+    "artifact_transport" "Unsupported artifact transport profile.";
+  Diagnostic.require (List.mem request.operation Verification_workflow_service.operations)
+    "unsupported_operation" "This operation is unavailable through the artifact channel.";
+  let authority=Artifact_io.descriptor_of_json ~max_bytes:Limits.max_request_bytes (Json.field "authority" fields) in
+  let retained_record=match Json.field "retained_record" fields with
+    | Json.Null -> None
+    | raw -> Some (Artifact_io.descriptor_of_json ~max_bytes:(64*1024*1024) raw) in
+  Diagnostic.require ((request.operation="replay-verification-workflow") = Option.is_some retained_record)
+    "workflow_protocol_record" "Replay requires a retained record; fresh execution requires none.";
+  Diagnostic.require ((Sys.argv.(3)="-") = Option.is_none retained_record)
+    "artifact_transport" "Retained descriptor argument presence differs from the control message.";
+  let limit=Json.integer (Json.field "output_limit" fields) in
+  Diagnostic.require (Z.sign limit>0 && Z.compare limit (Z.of_int (64*1024*1024))<=0)
+    "artifact_transport" "Invalid artifact output byte limit.";
+  let limit=Z.to_int limit in
+  Artifact_io.with_fds ~authority:Sys.argv.(2) ~retained_record:Sys.argv.(3) ~output:Sys.argv.(4) (fun files ->
+    Artifact_io.charge_control files ~budget control_bytes;
+    let raw_authority=Artifact_io.read_authority files ~budget authority in
+    let load_retained_record=Option.map (fun descriptor () ->
+      match Artifact_io.read_record files ~budget (Some descriptor) with
+      | Some raw -> raw
+      | None -> Diagnostic.fail "artifact_transport" "Retained record descriptor is missing.") retained_record in
+    let response=Verification_workflow_service.handle_in ~budget ~executable
+      ~request_id:request.request_id ~operation:request.operation
+      ~payload:(Json.field "operation_payload" fields) ~authority:raw_authority ?load_retained_record () in
+    let artifact=Artifact_io.write_output files ~budget ~limit response.artifact in
+    Protocol.Ok,Some (Json.Object [
+      "schema_version",Json.String "biocompiler.core.artifact_response.v1";
+      "transport",Json.String "biocompiler.core.artifact_transport.v1";
+      "authority",Artifact_io.descriptor_json authority;
+      "retained_record",Option.fold ~none:Json.Null ~some:Artifact_io.descriptor_json retained_record;
+      "artifact",Artifact_io.descriptor_json artifact;
+      "result",response.result]),[])
+
 let run ?(handler=handle) executable =
-  let current_request = ref None in
+  let current_request = ref None and current_budget = ref None in
+  let artifact_channel = Array.length Sys.argv <> 1 in
   let response, code =
     try
-      Diagnostic.require (Array.length Sys.argv = 1) "unexpected_arguments" "Core reads one JSON request on standard input; command arguments are unsupported.";
-      let request = Protocol.decode_request (Json.parse (Protocol.read_stdin ())) in
+      Diagnostic.require (not artifact_channel ||
+        (Array.length Sys.argv=5 && Sys.argv.(1)="--artifact-fds-v1"))
+        "unexpected_arguments" "Expected standard JSON input or the exact inherited artifact descriptor arguments.";
+      let raw = if artifact_channel then Artifact_io.read_control () else Protocol.read_stdin () in
+      let request = Protocol.decode_request (if artifact_channel then
+          Json.parse_artifact ~max_bytes:Artifact_io.max_control_bytes ~max_nodes:Limits.max_json_nodes raw
+        else Json.parse raw) in
       current_request := Some request;
-      let status, result, diagnostics = handler executable request in
+      let status, result, diagnostics = if artifact_channel then (
+        let payload=Json.field "operation_payload" (Json.object_fields request.payload) in
+        let limits=Verification_workflow_service.limits_of_payload payload in
+        let budget=Bioc_realization_checker.Verification_workflow_budget.create ~limits () in
+        current_budget:=Some budget;
+        artifact_request ~budget ~control_bytes:(String.length raw) ~executable request)
+        else handler executable request in
       Protocol.response ~executable ~request:!current_request ~status ~result diagnostics,
       (match status with Protocol.Ok -> 0 | Protocol.Error -> 2 | Protocol.Unsupported -> 3)
     with
@@ -69,8 +120,12 @@ let run ?(handler=handle) executable =
   in
   let encoded, code =
     try
-      let encoded = Canonical.encode response in
-      Diagnostic.require (String.length encoded < Limits.max_response_bytes)
+      if code=0 then Option.iter (fun budget ->
+        Bioc_realization_checker.Verification_workflow_budget.charge budget
+          (16*Artifact_io.max_control_bytes+8*Limits.max_json_nodes)) !current_budget;
+      let maximum=if artifact_channel then Artifact_io.max_control_bytes else Limits.max_response_bytes in
+      let encoded = Canonical.encode_bounded ~max_bytes:maximum response in
+      Diagnostic.require (String.length encoded < maximum)
         "response_too_large" "Core response exceeds its byte limit.";
       encoded, code
     with Diagnostic.Error diagnostic ->

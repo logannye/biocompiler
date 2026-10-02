@@ -8,8 +8,11 @@ macOS. The corrected accounting, allocation checks and complete corpus runner
 at the corrected revision; the earlier passes do not validate these changes.
 The reviewed aggregate work ceiling is `8,500,125,714,074,944`, derived from the
 bounded traversals documented below while preserving each checker's full
-50,000,000-unit allowance. Python artifact transport is implemented with 27
-passing tests. Native workflow endpoints and SDK/CLI routing remain pending.
+50,000,000-unit allowance. The next batch adds native descriptor handling,
+workflow endpoints in both executables, a strict immutable Python SDK, and two
+more native suites (87 total). Python transport/client tests pass (37 tests).
+The corrected native source and complete installed campaign still require hosted
+validation. Legacy public workflow/CLI routing remains pending.
 No native compilation or execution has been performed locally.
 
 
@@ -18,7 +21,8 @@ plan, not a native validation receipt or a completed roadmap item. The audit
 changed only this document, executed no native code, and performed no Git or
 network operations. Read together with `language-migration-roadmap.md`,
 `migration-realization-routing-plan.md` R5, and the nine-operation protocol
-contract. The direct service does not yet migrate the operations below.
+contract. The historical audit below predates the new artifact-channel service;
+its remaining public workflow/CLI and hosted-validation obligations still apply.
 
 ## Outcome and ownership
 
