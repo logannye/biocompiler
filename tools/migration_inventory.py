@@ -321,7 +321,7 @@ def ownership(module, category):
         return "Python", ["LM-03", "LM-11"], "retain_example_with_core_routing"
     if module.startswith("biocompiler.frontend") or module in {"biocompiler.errors", "biocompiler", "biocompiler.__main__"}:
         return "Python", ["LM-11"], "retain_python_authoring_or_compatibility_adapter"
-    if module in {"biocompiler.cli", "biocompiler.core_client", "biocompiler.core_architecture", "biocompiler.interop"} or module.startswith("biocompiler.studio"):
+    if module in {"biocompiler.cli", "biocompiler.core_client", "biocompiler.core_architecture", "biocompiler.core_architecture_producer", "biocompiler.interop"} or module.startswith("biocompiler.studio"):
         return "Python", ["LM-10", "LM-11", "LM-25"], "retain_transport_route_semantic_authority_to_ocaml"
     section = module.split(".")[1] if "." in module else ""
     tasks = {"ir": ["LM-02", "LM-20"], "semantics": ["LM-20", "LM-21"],

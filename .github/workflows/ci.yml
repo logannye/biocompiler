@@ -977,6 +977,20 @@ jobs:
             --core "$GITHUB_WORKSPACE/core/_build/default/bin/core/main.exe" \
             --verify "$GITHUB_WORKSPACE/core/_build/default/bin/verify/main.exe" \
             --output generated/core/architecture-protocol.json
+      - name: Check native producer protocol with original case B authority
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_producer_protocol.exe "$GITHUB_WORKSPACE/tests/conformance/case-b" | tee generated/core/producer-protocol.txt
+      - name: Check installed architecture compilation and paired export
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        env:
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/architecture-producer-protocol"
+          cd "$RUNNER_TEMP/architecture-producer-protocol"
+          python "$GITHUB_WORKSPACE/tools/check_architecture_producer_protocol.py" \
+            --core "$GITHUB_WORKSPACE/core/_build/default/bin/core/main.exe" \
+            --verify "$GITHUB_WORKSPACE/core/_build/default/bin/verify/main.exe" \
+            --output "$GITHUB_WORKSPACE/generated/core/architecture-producer-protocol.json"
       - name: Compare complete construction producer and workflow artifacts
         if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
         run: core/_build/default/test/test_construction_producer.exe "$GITHUB_WORKSPACE/tests/conformance/construction-producer-v1.json" | tee generated/core/construction-producer.txt
