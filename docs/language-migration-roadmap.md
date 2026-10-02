@@ -234,9 +234,10 @@ merge `972d0427c9b9608ecda3b4d0eb7d0026355ce80c` and integrated main share tree
   strict capability negotiation and immutable typed Python results passed the
   108-check installed campaign on both native platforms and complete required gates.
   Public production routing and distribution remain open.
-- [ ] **PR46 integrated-main validation:** separate
+- [x] **PR46 integrated-main validation:** separate
   [run 36958643394](https://github.com/logannye/biocompiler/actions/runs/36958643394)
-  is in progress at the integrated revision.
+  passed all 30 required jobs at the integrated revision, with exactly 2,328 tests
+  on each Python version. The retained receipt binds its full aggregate digest.
 
 - [ ] **B2 installed producer operations:** the next batch adds core-only
   `compile-architecture` and `export-architecture` operations, exact immutable
