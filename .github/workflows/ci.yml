@@ -883,6 +883,7 @@ jobs:
           BIOCOMPILER_SYNTHETIC_AUTHORITY_CORPUS="$GITHUB_WORKSPACE/tests/conformance/synthetic-authority-v1.json" \
           BIOCOMPILER_SYNTHETIC_ACCEPTANCE_CORPUS="$GITHUB_WORKSPACE/tests/conformance/synthetic-acceptance-v1.json" \
           BIOCOMPILER_SYNTHETIC_PRODUCERS_CORPUS="$GITHUB_WORKSPACE/tests/conformance/synthetic-producers-v1.json" \
+          BIOCOMPILER_REALIZATION_WORKFLOW_CORPUS="$GITHUB_WORKSPACE/tests/conformance/realization-workflow-v1.json" \
             opam exec -- dune runtest --root core 2>&1 | tee generated/core/native-tests.txt
       - name: Retain native suite diagnostics before longer installed campaigns
         if: always()
@@ -997,6 +998,11 @@ jobs:
       - name: Check complete synthetic generation, bounded selection and component adaptation corpus
         if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
         run: core/_build/default/test/test_synthetic_producers_corpus.exe "$GITHUB_WORKSPACE/tests/conformance/synthetic-producers-v1.json" | tee generated/core/test_synthetic_producers_corpus.txt
+      - name: Check every original workflow, exploration, reduction and callback observation
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: |
+          set -o pipefail
+          core/_build/default/test/test_realization_workflow_corpus.exe "$GITHUB_WORKSPACE/tests/conformance/realization-workflow-v1.json" | tee generated/core/test_realization_workflow_corpus.txt
       - name: Check cross-language bytes, structural intent and independent lowering correspondence
         if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
         env:

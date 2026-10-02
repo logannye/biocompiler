@@ -70,10 +70,10 @@ let float_string value =
     in
     sign ^ result)
 
-let encode value =
+let encode_with_limit ~max_bytes value =
   let buffer = Buffer.create 256 in
   let append text =
-    Diagnostic.require (Buffer.length buffer + String.length text <= Limits.max_response_bytes)
+    Diagnostic.require (Buffer.length buffer + String.length text <= max_bytes)
       "response_too_large" "Canonical JSON exceeds the response limit.";
     Buffer.add_string buffer text
   in
@@ -119,6 +119,13 @@ let encode value =
   in
   write 0 value;
   Buffer.contents buffer
+
+let encode value = encode_with_limit ~max_bytes:Limits.max_response_bytes value
+
+let encode_bounded ~max_bytes value =
+  Diagnostic.require (max_bytes >= 0 && max_bytes <= 64 * 1024 * 1024)
+    "invalid_json_limits" "Invalid bounded artifact JSON limits.";
+  encode_with_limit ~max_bytes value
 
 let sha256 text = Digestif.SHA256.(to_hex (digest_string text))
 let fingerprint value = sha256 (encode value)

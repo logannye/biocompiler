@@ -77,6 +77,9 @@ module Check_result : sig
   val schema_version : string
   val of_json : ?path:string -> Bioc_wire.Json.t -> t
   val to_json : t -> Bioc_wire.Json.t
+  (* Replace already validated historical dependencies, preserving the complete
+     validated body and recomputing its bounded inventory. No freshness claim. *)
+  val with_dependencies : t -> Dependency_snapshot.t -> t
   (* Python's text serializer: default indent=2; [None] uses spaced separators.
       Fingerprints always use the compact ASCII profile. *)
   val to_json_text : ?indent:int option -> t -> string

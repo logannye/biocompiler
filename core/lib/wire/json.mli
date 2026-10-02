@@ -10,6 +10,11 @@ type t =
   | Object of (string * t) list
 
 val parse : string -> t
+(* Explicit large-artifact parser. The original [parse] retains v1 limits.
+    Bytes may be at most 64 MiB and value nodes at most 1,000,000. String,
+    numeric and nesting limits are unchanged. Object keys are not value nodes;
+    artifact callers additionally enforce their complete key/value budgets. *)
+val parse_bounded : max_bytes:int -> max_nodes:int -> string -> t
 val validate_utf8 : string -> unit
 val object_fields : ?path:string -> t -> (string * t) list
 val field : ?path:string -> string -> (string * t) list -> t

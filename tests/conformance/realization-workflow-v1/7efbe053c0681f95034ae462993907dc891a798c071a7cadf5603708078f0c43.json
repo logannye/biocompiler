@@ -1,0 +1,1 @@
+[{"path":["args"],"type":"builtins.tuple"},{"path":["kwargs","realization"],"type":"biocompiler.compiler.request.RealizationRequest"},{"path":["kwargs","candidate"],"type":"biocompiler.synthesis.synthetic.SyntheticCandidate"},{"path":["kwargs","history"],"type":"builtins.tuple"},{"path":["kwargs","bounds"],"type":"biocompiler.verification.exploration.BooleanInputConfig"}]

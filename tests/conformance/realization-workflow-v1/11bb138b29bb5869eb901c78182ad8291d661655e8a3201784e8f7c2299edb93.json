@@ -1,0 +1,1 @@
+[{"path":["args"],"type":"builtins.tuple"},{"path":["args",0],"type":"biocompiler.compiler.verification_workflow.SyntheticVerificationRecord"},{"path":["kwargs","expected_request"],"type":"biocompiler.compiler.request.RealizationRequest"}]

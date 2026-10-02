@@ -1,0 +1,1 @@
+"{\"args\":[[{\"contacts\":{\"\\u7d30\\u80de\":{\"signal\":{\"high\":null,\"low\":null,\"present\":false,\"value\":null}}},\"signals\":{},\"time\":0},{\"contacts\":{\"\\u7d30\\u80de\":{\"signal\":{\"high\":null,\"low\":null,\"present\":true,\"value\":null}}},\"signals\":{},\"time\":1}]],\"kwargs\":{\"until\":3}}"
