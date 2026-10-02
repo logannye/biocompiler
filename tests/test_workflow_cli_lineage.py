@@ -62,8 +62,11 @@ class WorkflowCliLineageTests(unittest.TestCase):
         self.assertEqual(receipt["projected_inventory_fingerprint"], lineage.CORPUS_PIN)
         self.assertEqual([row["path"] for row in receipt["source_changes"]], [
             "src/biocompiler/cli.py", "src/biocompiler/compiler/verification_workflow.py",
-            "src/biocompiler/core_artifacts.py", "src/biocompiler/core_workflow_authority.py",
-            "src/biocompiler/workflow_backend.py", "src/biocompiler/workflow_cli.py"])
+            "src/biocompiler/core_artifacts.py", "src/biocompiler/core_synthetic_producer.py",
+            "src/biocompiler/core_workflow_authority.py", "src/biocompiler/synthesis/components.py",
+            "src/biocompiler/synthesis/selection.py", "src/biocompiler/synthesis/synthetic.py",
+            "src/biocompiler/synthetic_producer_backend.py", "src/biocompiler/workflow_backend.py",
+            "src/biocompiler/workflow_cli.py"])
         self.assertEqual(receipt["schema_version"], "biocompiler.workflow_cli_source_lineage.v2")
         self.assertEqual(receipt["actual_capture"], before)
         self.assertEqual(receipt["reviewed_routes"], scope["reviewed_routes"])

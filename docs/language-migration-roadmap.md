@@ -358,7 +358,7 @@ These checkpoints record narrower validated work; they do not complete a broad L
   altering source inputs or corpus expectations. All six source replay/integrity
   tests pass; the correction was propagated to PR52/53/54 and each subsequently
   passed its fresh complete hosted validation. No prior native PASS was transferred.
-- [ ] **B1.09d component correspondence and fresh replay:** independently reconstruct
+- [x] **B1.09d component correspondence and fresh replay:** independently reconstruct
   the expected source/assembly correspondence without importing its adapter or
   producer; require complete generic linking before behavior acceptance.
   The [independent acceptance implementation plan](migration-synthetic-acceptance-plan.md)
@@ -404,9 +404,16 @@ These checkpoints record narrower validated work; they do not complete a broad L
   12 complete assembly reports and 14 exact assembly rejections, with shared
   resource limits and failure isolation. Static private-boundary mutations and
   all 41 boundary/CI/inventory checks pass. Four new native suites bring the
-  required total to 75; native compilation and full product validation remain
-  hosted and pending. This item and its broader LM exits remain unchecked.
-- [ ] **B2 direct synthetic production and selection:** the next implementation
+  required total to 75. Corrected source `d59af59488344812b5d8895b339c37e852411d54`
+  passed all 31 jobs in [run 36980282550](https://github.com/logannye/biocompiler/actions/runs/36980282550),
+  including all 75 native suites on Linux and macOS and 2,454 tests per Python
+  version. Independent receipt reconstruction and rehashing reproduced all four
+  sets of 175 observations and 219 artifacts. [PR55](https://github.com/logannye/biocompiler/pull/55)
+  merged as `c0b32b668c328ee88c5320886d13b91ea3e24038`; its tree exactly matches
+  the tested tree. The [stack validation record](../protocol/migration-realization-stack-validation.json)
+  retains this evidence. This scoped checkpoint is complete; broader LM exits
+  remain open.
+- [x] **B2 direct synthetic production and selection:** the next implementation
   independently ports generation/proposal, both-strategy selection and full
   component adaptation, with complete Alternative/Result domain records. The
   producer library calls public fresh checkers and cannot import their private
@@ -419,9 +426,13 @@ These checkpoints record narrower validated work; they do not complete a broad L
   retains 5,192 documents / 114,234,914 bytes. Nine complete Python integrity and
   replay checks and independent byte-identical recapture pass. Independent full
   producer/domain literals and exact resource-boundary cases supplement this
-  capture. Four mandatory suites bring the native total to 79; hosted native
-  compilation and all 31 product gates remain required before this checkbox can
-  close. Public routing, checked pipelines, packaging and default cutover remain
+  capture. Four mandatory suites bring the native total to 79. Corrected source
+  `2024d8fdd2a9a8c300ef2dc0980623b820f1997c` passed all 31 jobs in
+  [run 36980326616](https://github.com/logannye/biocompiler/actions/runs/36980326616),
+  with all 79 native suites on both hosted platforms and 2,463 tests per Python
+  version. Complete aggregate reconstruction and four-runtime artifact rehashing
+  match the retained receipts. PR56 merged as
+  `01c211dfe0be459c6e272c87efdec6aa9bc2e405`, with the exact tested tree. Public routing, checked pipelines, packaging and default cutover remain
   separate unfinished work. The [producer implementation audit](migration-synthetic-producer-plan.md)
   and [next public-routing plan](migration-realization-routing-plan.md) retain
   the exact source responsibilities and remaining exit criteria.
@@ -582,9 +593,9 @@ These checkpoints record narrower validated work; they do not complete a broad L
 [run 36989978642](https://github.com/logannye/biocompiler/actions/runs/36989978642)
 queued at preservation. This subsequent documentation checkpoint is on
 `codex/ocaml-producer-routing-checkpoint`, preserving PR62's running revision.
-PR53 and PR54 are merged after their full exact-revision gates and independent
+PR53, PR54, PR55 and PR56 are merged after their full exact-revision gates and independent
 receipt/tree checks; PR52 is included through PR53 and closed as superseded
-after its own 31-job gate also passed. PR55–62 still require complete gates;
+after its own 31-job gate also passed. PR57–62 still require complete gates;
 no pending or automatic merge is enabled. The PR57–59 source-lineage correction retains every
 original corpus pin and reviewed whole-file AST witness. Earlier partial native
 success remains historical only. All unfinished layer checkboxes remain unchecked.
@@ -604,7 +615,8 @@ record current parent heads; previous partial native passes are historical only.
   native validation is pending. The installed campaign covers all 1,226 original
   public occurrences and three verifier rejections per runtime, retaining the
   1,146 private/injected producer occurrences explicitly as native-library coverage.
-  Existing public synthesis functions and CLI remain on their original route.
+  The public synthesis functions retain their original default route; the following
+  checkpoint adds explicit native routes. The CLI remains on its original route.
   Public routing, native manager freshness, canonical packages and default
   cutover remain separate unfinished work.
 
@@ -617,6 +629,21 @@ record current parent heads; previous partial native passes are historical only.
   remain unchanged. These checks validate transport and the evidence harness;
   the 23 complete native literals and all hosted native campaigns still require
   execution at the new revision.
+
+- [ ] **LM-12/R6 P1 explicit public producer routing checkpoint:** the current
+  `codex/ocaml-public-synthetic-producers` branch adds three optional `core=` SDK
+  routes, complete immutable native inspection views and a separate native full
+  build-request selection operation. Eight public SDK fixtures, strict typing for
+  thirteen adapter modules, source-lineage checks and static dependency checks
+  pass locally. The lineage/default suite passes 66 focused tests and preserves
+  all 2,132 source entries across nine corpora plus complete original argument
+  comparisons for all 47,901 producer observations. The exact three-function AST
+  witness preserves old default bodies and every original corpus pin. The new native suite retains four complete result
+  fixtures and 42 original malformed authority messages; native execution is
+  hosted-only and pending. Complete installed public SDK campaigns, CLI integration,
+  topology/freshness/general registry APIs, package acceptance and default cutover
+  remain unfinished. No full recapture or rich legacy API parity is claimed by
+  this bounded checkpoint. See [explicit producer routing](native-synthetic-producer-routing.md).
 
 The integrated PR51 main revision `652e2aa0aa24bf563412483827d07c4bc027a4e0`
 passed all 31 jobs in [run 36972688727](https://github.com/logannye/biocompiler/actions/runs/36972688727).

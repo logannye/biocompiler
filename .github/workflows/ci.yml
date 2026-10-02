@@ -1001,6 +1001,9 @@ jobs:
       - name: Check producer-only protocol, complete receipts and resource boundaries
         if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
         run: core/_build/default/test/test_synthetic_producer_protocol.exe | tee generated/core/test_synthetic_producer_protocol.txt
+      - name: Check complete public synthetic build authority and selection receipts
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_synthetic_producer_public_protocol.exe | tee generated/core/test_synthetic_producer_public_protocol.txt
       - name: Check every original workflow, exploration, reduction and callback observation
         if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
         run: |

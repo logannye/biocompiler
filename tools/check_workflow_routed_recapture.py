@@ -81,7 +81,9 @@ def check(document, frozen):
 
     # This changes only the freezer's derived binding projection. It does not
     # replace a product function, its signature, source, execution or result.
-    with patch.object(frozen, "bind_operation", bind):
+    from tools.check_synthetic_producer_routed_recapture import producer_bindings
+    from tools import synthetic_producer_source_lineage as producer_lineage
+    with producer_bindings(frozen.previous) as producer_evidence, patch.object(frozen, "bind_operation", bind):
         index = frozen.freeze(document, check=True)
     lineage.require(bindings and len({item["call_id"] for item in bindings}) == len(bindings),
                     "Missing or duplicate workflow signature evidence")
@@ -93,6 +95,8 @@ def check(document, frozen):
         "actual_source_scope": scope, "baseline_inventory_fingerprint": index["inventory_fingerprint"],
         "raw_observations_results_assertions_callbacks_and_documents": "exact_immutable_baseline",
         "actual_bindings": bindings,
+        "producer_actual_bindings": producer_evidence,
+        "producer_witness_sha256": producer_lineage.WITNESS_SHA256,
     }
 
 

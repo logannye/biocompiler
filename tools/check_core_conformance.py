@@ -169,6 +169,17 @@ def require(condition, message):
         raise AssertionError(message)
 
 
+def synthetic_public_profile():
+    """Read the pinned declaration for the preparatory native-only operation."""
+    raw = (ROOT / "protocol/synthetic-producer-public-v1.json").read_bytes()
+    require(digest(raw) == "5b7d0ffc4f015a46b6432fbdbad824e989683f74abedbe128368012a5a5b4f03",
+            "Synthetic public producer declaration changed")
+    profile = json.loads(raw)
+    require(raw == (canonical(profile) + "\n").encode("utf-8"),
+            "Synthetic public producer declaration is not canonical")
+    return profile
+
+
 def load_corpus(path=CORPUS):
     corpus = json.loads(Path(path).read_text(encoding="utf-8"))
     require(corpus["schema_version"] == "biocompiler.core_json_conformance.v0.1", "Unknown corpus")
@@ -467,12 +478,16 @@ def run_campaign(clients, corpus, receipt, programs):
             operations += list(SYNTHETIC_PRODUCER_OPERATIONS)
             scopes += list(SYNTHETIC_PRODUCER_SCOPES)
             profiles.update(SYNTHETIC_PRODUCER_PROFILES)
+            public_producer = synthetic_public_profile()
+            operations += public_producer["operations"]
+            scopes.append(public_producer["validation_scope"])
+            profiles["synthetic_producer_public"] = public_producer
             claim = "Supplied-contract architecture production, independent checking, exact RNA/manifest export and separately scoped finite-history model checks. No search completeness, empirical function or human-use admission is established."
         require(sorted(capabilities["operations"]) == sorted(operations), "Missing or untested advertised operation")
         require(capabilities["canonicalization"] == "python-json-v1" and capabilities["intent_schemas"] == ["biocompiler.intent.v0.1"]
                 and capabilities["validation_scopes"] == scopes and capabilities["limits"] == LIMITS
                 and capabilities["schema_version"] == "biocompiler.core_capabilities.v1"
-                and capabilities["profiles"] == profiles, "Capability contract differs")
+                and canonical(capabilities["profiles"]) == canonical(profiles), "Capability contract differs")
         require(capabilities["claim_scope"] == claim, "Capabilities lost limited claim scope")
         campaign.passed(client, "capabilities", "complete-advertised-contract")
         for vector in corpus["literal_vectors"]:
