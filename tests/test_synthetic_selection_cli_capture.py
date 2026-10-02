@@ -87,6 +87,46 @@ class SyntheticSelectionCliCaptureTests(unittest.TestCase):
         with patch.object(c,'COUNTERPART_SHA256','0'*64),self.assertRaisesRegex(AssertionError,'counterpart bytes changed'):
             c.verify_recapture(actual,blobs,python_version='3.11')
 
+    def test_additive_sources_require_individual_pins_and_cannot_enter_children(self):
+        actual,blobs=self.fixture('3.11')
+        receipt=c.verify_recapture(actual,blobs,python_version='3.11')
+        additions=receipt['reviewed_unused_source_additions']
+        self.assertTrue(additions)
+        before=c.inventory(self.original['source_scope']['actual_sources'])
+        current=c.inventory(actual['source_scope']['actual_sources'])
+        self.assertEqual({row['path'] for row in additions},set(current)-set(before))
+        for row in additions:
+            self.assertEqual(c.sha(row['source'].encode()),row['sha256'])
+            with patch.dict(c.REVIEWED_ADDITIONS,{row['path']:'0'*64}):
+                with self.assertRaisesRegex(AssertionError,'Unreviewed selection CLI source addition'):
+                    c.verify_recapture(actual,blobs,python_version='3.11')
+            changed=deepcopy(actual)
+            changed['cases'][0]['import_audit']['modules'][row['path'][4:-3].replace('/','.')]=dict(
+                path=row['path'],sha256=row['sha256'])
+            self.rehash(changed)
+            with self.assertRaisesRegex(AssertionError,'imported unpinned source'):
+                c.verify_recapture(changed,blobs,python_version='3.11')
+        unused=receipt['reviewed_unused_source_change']
+        self.assertEqual(c.sha(unused['historical_source'].encode()),before[unused['path']])
+        self.assertEqual(c.sha(unused['current_source'].encode()),current[unused['path']])
+        with patch.object(c,'UNUSED_SOURCE_SHA256','0'*64):
+            with self.assertRaisesRegex(AssertionError,'Unused transport lineage bytes changed'):
+                c.verify_recapture(actual,blobs,python_version='3.11')
+        with patch.dict(c.REVIEWED_ADDITIONS,{unused['path']:'0'*64}):
+            with self.assertRaisesRegex(AssertionError,'Unused transport source lineage differs'):
+                c.verify_recapture(actual,blobs,python_version='3.11')
+        with patch.dict(c.REVIEWED_ADDITIONS,{},clear=True):
+            with self.assertRaisesRegex(AssertionError,'Unreviewed selection CLI source addition'):
+                c.verify_recapture(actual,blobs,python_version='3.11')
+        for mode in ('extra','deleted'):
+            changed=deepcopy(actual);scope=changed['source_scope'];rows=scope['actual_sources']
+            if mode=='extra':rows.append({'path':'src/biocompiler/unreviewed.py','sha256':'f'*64})
+            else:rows[:]=[row for row in rows if row['path']!=c.routes.CLI]
+            rows.sort(key=lambda row:row['path']);scope['source_inventory_sha256']=c.digest(rows)
+            self.rehash(changed)
+            with patch.object(c.frozen,'source_scope',return_value=scope),self.assertRaises(AssertionError):
+                c.verify_recapture(changed,blobs,python_version='3.11')
+
     def test_independent_complete_seventy_two_child_recapture_is_byte_exact(self):
         actual,blobs=c.frozen.capture()
         receipt=c.verify_recapture(actual,blobs)
