@@ -1,3 +1,4 @@
 (library
  (name bioc_checker)
+ (private_modules construction_reconstruction)
  (libraries bioc_wire bioc_domain))

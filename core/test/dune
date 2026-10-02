@@ -137,3 +137,33 @@
  (name test_payload_structure_check)
  (modules test_payload_structure_check)
  (libraries bioc_wire bioc_domain bioc_checker zarith))
+
+(test
+ (name test_architecture_domains)
+ (modules test_architecture_domains)
+ (libraries bioc_wire bioc_domain zarith))
+
+(test
+ (name test_transition_check)
+ (modules test_transition_check)
+ (libraries bioc_wire bioc_domain bioc_checker zarith))
+
+(test
+ (name test_construction_assessment)
+ (modules test_construction_assessment)
+ (libraries bioc_wire bioc_domain))
+
+(test
+ (name test_construction_check)
+ (modules test_construction_check)
+ (libraries bioc_wire bioc_domain bioc_checker zarith))
+
+(test
+ (name test_source_manifest)
+ (modules test_source_manifest)
+ (libraries bioc_wire bioc_domain zarith))
+
+(test
+ (name test_source_check)
+ (modules test_source_check)
+ (libraries bioc_wire bioc_domain bioc_checker zarith))

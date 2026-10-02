@@ -117,6 +117,31 @@ class CoreBoundaryTests(unittest.TestCase):
             with self.subTest(mutant=mutant), self.assertRaises(boundaries.BoundaryError):
                 boundaries.check_boundaries(root)
 
+    def test_private_reconstruction_stays_inside_checker_and_out_of_public_interfaces(self):
+        for relative, mutant in (
+            ("lib/compiler/lowering.ml", "module Hidden = Bioc_checker.Construction_reconstruction"),
+            ("lib/compiler/lowering.ml", "open Bioc_checker\nmodule Hidden = Construction_reconstruction"),
+            ("lib/checker/intent_check.mli", "module Hidden = Construction_reconstruction"),
+            ("lib/checker/intent_check.mli", "val hidden : Construction_reconstruction.t"),
+        ):
+            root = self.copy_core()
+            source = root / "core" / relative
+            source.write_text(source.read_text() + "\n" + mutant + "\n")
+            with self.subTest(path=relative, mutant=mutant), self.assertRaisesRegex(boundaries.BoundaryError, "Private checker reconstruction"):
+                boundaries.check_boundaries(root)
+
+    def test_private_module_declaration_cannot_be_removed_or_expanded(self):
+        for replacement in ("", "(private_modules construction_reconstruction intent_check)",
+                            "(private_modules intent_check)"):
+            root = self.copy_core()
+            self.change(root, "lib/checker/dune", "(private_modules construction_reconstruction)", replacement)
+            with self.subTest(replacement=replacement), self.assertRaisesRegex(boundaries.BoundaryError, "private module boundary"):
+                boundaries.check_boundaries(root)
+        root = self.copy_core()
+        (root / "core/lib/checker/construction_reconstruction.mli").unlink()
+        with self.assertRaisesRegex(boundaries.BoundaryError, "explicit implementation and interface"):
+            boundaries.check_boundaries(root)
+
     def test_comments_strings_and_character_literals_do_not_create_false_dependencies(self):
         root = self.copy_core()
         source = root / "core/lib/checker/intent_check.ml"

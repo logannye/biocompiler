@@ -1,0 +1,2480 @@
+{
+  "assessment_rejections": [
+    {
+      "edits": [
+        {
+          "op": "remove",
+          "path": [
+            "schema_version"
+          ]
+        }
+      ],
+      "expected_code": "missing_field",
+      "id": "assessment/missing/schema_version",
+      "source": "d89931e4158ff2a84a591161586314dc1e1c46f809dfcec5fdcc31cef694970a"
+    },
+    {
+      "edits": [
+        {
+          "op": "remove",
+          "path": [
+            "request_fingerprint"
+          ]
+        }
+      ],
+      "expected_code": "missing_field",
+      "id": "assessment/missing/request_fingerprint",
+      "source": "d89931e4158ff2a84a591161586314dc1e1c46f809dfcec5fdcc31cef694970a"
+    },
+    {
+      "edits": [
+        {
+          "op": "remove",
+          "path": [
+            "candidate_fingerprint"
+          ]
+        }
+      ],
+      "expected_code": "missing_field",
+      "id": "assessment/missing/candidate_fingerprint",
+      "source": "d89931e4158ff2a84a591161586314dc1e1c46f809dfcec5fdcc31cef694970a"
+    },
+    {
+      "edits": [
+        {
+          "op": "remove",
+          "path": [
+            "reconstructed_fingerprint"
+          ]
+        }
+      ],
+      "expected_code": "missing_field",
+      "id": "assessment/missing/reconstructed_fingerprint",
+      "source": "d89931e4158ff2a84a591161586314dc1e1c46f809dfcec5fdcc31cef694970a"
+    },
+    {
+      "edits": [
+        {
+          "op": "remove",
+          "path": [
+            "outcome"
+          ]
+        }
+      ],
+      "expected_code": "missing_field",
+      "id": "assessment/missing/outcome",
+      "source": "d89931e4158ff2a84a591161586314dc1e1c46f809dfcec5fdcc31cef694970a"
+    },
+    {
+      "edits": [
+        {
+          "op": "remove",
+          "path": [
+            "complete"
+          ]
+        }
+      ],
+      "expected_code": "missing_field",
+      "id": "assessment/missing/complete",
+      "source": "d89931e4158ff2a84a591161586314dc1e1c46f809dfcec5fdcc31cef694970a"
+    },
+    {
+      "edits": [
+        {
+          "op": "remove",
+          "path": [
+            "diagnostics"
+          ]
+        }
+      ],
+      "expected_code": "missing_field",
+      "id": "assessment/missing/diagnostics",
+      "source": "d89931e4158ff2a84a591161586314dc1e1c46f809dfcec5fdcc31cef694970a"
+    },
+    {
+      "edits": [
+        {
+          "op": "remove",
+          "path": [
+            "checker_version"
+          ]
+        }
+      ],
+      "expected_code": "missing_field",
+      "id": "assessment/missing/checker_version",
+      "source": "d89931e4158ff2a84a591161586314dc1e1c46f809dfcec5fdcc31cef694970a"
+    },
+    {
+      "edits": [
+        {
+          "op": "remove",
+          "path": [
+            "capability_version"
+          ]
+        }
+      ],
+      "expected_code": "missing_field",
+      "id": "assessment/missing/capability_version",
+      "source": "d89931e4158ff2a84a591161586314dc1e1c46f809dfcec5fdcc31cef694970a"
+    },
+    {
+      "edits": [
+        {
+          "op": "remove",
+          "path": [
+            "construction_profile"
+          ]
+        }
+      ],
+      "expected_code": "missing_field",
+      "id": "assessment/missing/construction_profile",
+      "source": "d89931e4158ff2a84a591161586314dc1e1c46f809dfcec5fdcc31cef694970a"
+    },
+    {
+      "edits": [
+        {
+          "op": "remove",
+          "path": [
+            "admission_policy"
+          ]
+        }
+      ],
+      "expected_code": "missing_field",
+      "id": "assessment/missing/admission_policy",
+      "source": "d89931e4158ff2a84a591161586314dc1e1c46f809dfcec5fdcc31cef694970a"
+    },
+    {
+      "edits": [
+        {
+          "op": "remove",
+          "path": [
+            "claim_scope"
+          ]
+        }
+      ],
+      "expected_code": "missing_field",
+      "id": "assessment/missing/claim_scope",
+      "source": "d89931e4158ff2a84a591161586314dc1e1c46f809dfcec5fdcc31cef694970a"
+    },
+    {
+      "edits": [
+        {
+          "op": "remove",
+          "path": [
+            "biological_function"
+          ]
+        }
+      ],
+      "expected_code": "missing_field",
+      "id": "assessment/missing/biological_function",
+      "source": "d89931e4158ff2a84a591161586314dc1e1c46f809dfcec5fdcc31cef694970a"
+    },
+    {
+      "edits": [
+        {
+          "op": "remove",
+          "path": [
+            "empirical_validation"
+          ]
+        }
+      ],
+      "expected_code": "missing_field",
+      "id": "assessment/missing/empirical_validation",
+      "source": "d89931e4158ff2a84a591161586314dc1e1c46f809dfcec5fdcc31cef694970a"
+    },
+    {
+      "edits": [
+        {
+          "op": "remove",
+          "path": [
+            "human_therapeutic_admission"
+          ]
+        }
+      ],
+      "expected_code": "missing_field",
+      "id": "assessment/missing/human_therapeutic_admission",
+      "source": "d89931e4158ff2a84a591161586314dc1e1c46f809dfcec5fdcc31cef694970a"
+    },
+    {
+      "edits": [
+        {
+          "op": "set",
+          "path": [
+            "outcome"
+          ],
+          "value": "accepted"
+        }
+      ],
+      "expected_code": "invalid_construction_assessment",
+      "id": "assessment/change/outcome",
+      "source": "d89931e4158ff2a84a591161586314dc1e1c46f809dfcec5fdcc31cef694970a"
+    },
+    {
+      "edits": [
+        {
+          "op": "set",
+          "path": [
+            "complete"
+          ],
+          "value": 1
+        }
+      ],
+      "expected_code": "invalid_type",
+      "id": "assessment/change/complete",
+      "source": "d89931e4158ff2a84a591161586314dc1e1c46f809dfcec5fdcc31cef694970a"
+    },
+    {
+      "edits": [
+        {
+          "op": "set",
+          "path": [
+            "complete"
+          ],
+          "value": false
+        }
+      ],
+      "expected_code": "invalid_construction_assessment",
+      "id": "assessment/change/complete",
+      "source": "d89931e4158ff2a84a591161586314dc1e1c46f809dfcec5fdcc31cef694970a"
+    },
+    {
+      "edits": [
+        {
+          "op": "set",
+          "path": [
+            "diagnostics"
+          ],
+          "value": [
+            "fail:forged"
+          ]
+        }
+      ],
+      "expected_code": "invalid_construction_assessment",
+      "id": "assessment/change/diagnostics",
+      "source": "d89931e4158ff2a84a591161586314dc1e1c46f809dfcec5fdcc31cef694970a"
+    },
+    {
+      "edits": [
+        {
+          "op": "set",
+          "path": [
+            "checker_version"
+          ],
+          "value": "old"
+        }
+      ],
+      "expected_code": "invalid_construction_assessment",
+      "id": "assessment/change/checker_version",
+      "source": "d89931e4158ff2a84a591161586314dc1e1c46f809dfcec5fdcc31cef694970a"
+    },
+    {
+      "edits": [
+        {
+          "op": "set",
+          "path": [
+            "capability_version"
+          ],
+          "value": "old"
+        }
+      ],
+      "expected_code": "invalid_construction_assessment",
+      "id": "assessment/change/capability_version",
+      "source": "d89931e4158ff2a84a591161586314dc1e1c46f809dfcec5fdcc31cef694970a"
+    },
+    {
+      "edits": [
+        {
+          "op": "set",
+          "path": [
+            "construction_profile"
+          ],
+          "value": "old"
+        }
+      ],
+      "expected_code": "invalid_construction_assessment",
+      "id": "assessment/change/construction_profile",
+      "source": "d89931e4158ff2a84a591161586314dc1e1c46f809dfcec5fdcc31cef694970a"
+    },
+    {
+      "edits": [
+        {
+          "op": "set",
+          "path": [
+            "admission_policy"
+          ],
+          "value": "old"
+        }
+      ],
+      "expected_code": "invalid_construction_assessment",
+      "id": "assessment/change/admission_policy",
+      "source": "d89931e4158ff2a84a591161586314dc1e1c46f809dfcec5fdcc31cef694970a"
+    },
+    {
+      "edits": [
+        {
+          "op": "set",
+          "path": [
+            "claim_scope"
+          ],
+          "value": "empirical"
+        }
+      ],
+      "expected_code": "invalid_construction_assessment",
+      "id": "assessment/change/claim_scope",
+      "source": "d89931e4158ff2a84a591161586314dc1e1c46f809dfcec5fdcc31cef694970a"
+    },
+    {
+      "edits": [
+        {
+          "op": "set",
+          "path": [
+            "biological_function"
+          ],
+          "value": "verified"
+        }
+      ],
+      "expected_code": "invalid_construction_assessment",
+      "id": "assessment/change/biological_function",
+      "source": "d89931e4158ff2a84a591161586314dc1e1c46f809dfcec5fdcc31cef694970a"
+    },
+    {
+      "edits": [
+        {
+          "op": "set",
+          "path": [
+            "empirical_validation"
+          ],
+          "value": "verified"
+        }
+      ],
+      "expected_code": "invalid_construction_assessment",
+      "id": "assessment/change/empirical_validation",
+      "source": "d89931e4158ff2a84a591161586314dc1e1c46f809dfcec5fdcc31cef694970a"
+    },
+    {
+      "edits": [
+        {
+          "op": "set",
+          "path": [
+            "human_therapeutic_admission"
+          ],
+          "value": "admitted"
+        }
+      ],
+      "expected_code": "invalid_construction_assessment",
+      "id": "assessment/change/human_therapeutic_admission",
+      "source": "d89931e4158ff2a84a591161586314dc1e1c46f809dfcec5fdcc31cef694970a"
+    },
+    {
+      "edits": [
+        {
+          "op": "set",
+          "path": [
+            "candidate_fingerprint"
+          ],
+          "value": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+        }
+      ],
+      "expected_code": "invalid_construction_assessment",
+      "id": "assessment/change/candidate_fingerprint",
+      "source": "d89931e4158ff2a84a591161586314dc1e1c46f809dfcec5fdcc31cef694970a"
+    }
+  ],
+  "cases": [
+    {
+      "assessment": "e5d84683dd3f1f266a43d93086407f0adf1f4455ce5fd130d5e8b612c9533e30",
+      "candidate": "77a8af338946704e7a3caabd601e333815f3595d8de3637ef1856702bf3bc5d2",
+      "id": "test_a_missing_released_product_cannot_be_a_complete_processing_recipe/0",
+      "origin": "existing_python_assertion",
+      "reconstructed": "77a8af338946704e7a3caabd601e333815f3595d8de3637ef1856702bf3bc5d2",
+      "request": "de8f2f1159de2240f6bc5e9c64a319b286e2edbf6a5f63baff5801fd65ea82c2"
+    },
+    {
+      "assessment": "072f3d3f3f79684c9a72d0295969dc6c9d50b94312e21c9f9c189fff589778d1",
+      "candidate": "6a19515614ad9b499f0093b207c76c288c9fd7171c1825347fb26de8fa1e1bf0",
+      "id": "test_amount_replay_binds_actual_subject_pins_preparations_and_unknown_quantity/0",
+      "origin": "existing_python_assertion",
+      "reconstructed": "6a19515614ad9b499f0093b207c76c288c9fd7171c1825347fb26de8fa1e1bf0",
+      "request": "25cda094028b40de470c5f99b0c0742ae6cd3a347cb8524ad5ed545921563e92"
+    },
+    {
+      "assessment": "96bd9424bc718ee868f5598dd224067943512e83970d47883db07e1f9df52453",
+      "candidate": "8a54f89920b4c6d3f7685f31e5b306847046dbe7d0ea8b83429b4e92ebdb0b8c",
+      "id": "test_amount_replay_binds_actual_subject_pins_preparations_and_unknown_quantity/1",
+      "origin": "existing_python_assertion",
+      "reconstructed": "6a19515614ad9b499f0093b207c76c288c9fd7171c1825347fb26de8fa1e1bf0",
+      "request": "25cda094028b40de470c5f99b0c0742ae6cd3a347cb8524ad5ed545921563e92"
+    },
+    {
+      "assessment": "9773b15dc482ef6f3d589912d2190b4defd459670ad7e58a8f96e2a3bb184092",
+      "candidate": "b6d0389653aae88db84400fdaeb718d04d1234fe535b7b2746517635de678eba",
+      "id": "test_amount_replay_binds_actual_subject_pins_preparations_and_unknown_quantity/2",
+      "origin": "existing_python_assertion",
+      "reconstructed": "6a19515614ad9b499f0093b207c76c288c9fd7171c1825347fb26de8fa1e1bf0",
+      "request": "25cda094028b40de470c5f99b0c0742ae6cd3a347cb8524ad5ed545921563e92"
+    },
+    {
+      "assessment": "14c5e64754e5dce8c0da8c4d33e226a0e2a723e1ab836b2607d01fab60662f53",
+      "candidate": "7da3a33d059a403433ab66f9a4221f20c299f5ea349bff0af95bce4a42a0236d",
+      "id": "test_amount_replay_binds_actual_subject_pins_preparations_and_unknown_quantity/3",
+      "origin": "existing_python_assertion",
+      "reconstructed": "7da3a33d059a403433ab66f9a4221f20c299f5ea349bff0af95bce4a42a0236d",
+      "request": "1b1529864fd64dda61b2ed500ae987bb65a0fa5b3ebf768f8699ff6cc2625ce5"
+    },
+    {
+      "assessment": "369788cab742acc6e602e6525326877a8a4c4b22a693bb75e7a54e5f39a4af4c",
+      "candidate": "db9076c201176580ec68ade66c40697e7f02d21fcab896bec52827e894c5b718",
+      "id": "test_amount_replay_binds_actual_subject_pins_preparations_and_unknown_quantity/4",
+      "origin": "existing_python_assertion",
+      "reconstructed": "7da3a33d059a403433ab66f9a4221f20c299f5ea349bff0af95bce4a42a0236d",
+      "request": "1b1529864fd64dda61b2ed500ae987bb65a0fa5b3ebf768f8699ff6cc2625ce5"
+    },
+    {
+      "assessment": "b81f8179bd6da1d27e4cf98cb9b048fa565799144d8f0dc391ce5ded96899e9d",
+      "candidate": "a56e1c123713e3e74dbbddb4d5a08058d65efa3d47d0298724483dcf9fba422f",
+      "id": "test_amount_replay_binds_actual_subject_pins_preparations_and_unknown_quantity/5",
+      "origin": "existing_python_assertion",
+      "reconstructed": "7da3a33d059a403433ab66f9a4221f20c299f5ea349bff0af95bce4a42a0236d",
+      "request": "1b1529864fd64dda61b2ed500ae987bb65a0fa5b3ebf768f8699ff6cc2625ce5"
+    },
+    {
+      "assessment": "6038e8e90c6469b2da014fa6faa233774d13a8a26fe082c7fb2e8d085dca2c96",
+      "candidate": "7700d05b6f4f945a9f5b456d200be1d1a41b82679cc6e45fce1a2c8e322e7bce",
+      "id": "test_amount_replay_binds_actual_subject_pins_preparations_and_unknown_quantity/6",
+      "origin": "existing_python_assertion",
+      "reconstructed": "7700d05b6f4f945a9f5b456d200be1d1a41b82679cc6e45fce1a2c8e322e7bce",
+      "request": "f6fe4ec4c86704cbc8b3d54c8913f0d212a897dba8eb2f6dd437d37ee93d2c27"
+    },
+    {
+      "assessment": "226184f498926fec9f8ee608311cf5cc978afd3be7f739b49fc5428da7710298",
+      "candidate": "464843690e4d8149cc4b7a99371ca09deba1a527b7814174683bda8cef4b3c04",
+      "id": "test_amount_replay_binds_actual_subject_pins_preparations_and_unknown_quantity/7",
+      "origin": "existing_python_assertion",
+      "reconstructed": "7700d05b6f4f945a9f5b456d200be1d1a41b82679cc6e45fce1a2c8e322e7bce",
+      "request": "f6fe4ec4c86704cbc8b3d54c8913f0d212a897dba8eb2f6dd437d37ee93d2c27"
+    },
+    {
+      "assessment": "6efa3409ff039367b94bbe371b34569a8f1d1af36e69e5f3309fc0c9a0d6388d",
+      "candidate": "ba759571b13ca7f332a730f5bfcb60adfd70e52483b27c12f85aecef6c797671",
+      "id": "test_amount_replay_binds_actual_subject_pins_preparations_and_unknown_quantity/8",
+      "origin": "existing_python_assertion",
+      "reconstructed": "7700d05b6f4f945a9f5b456d200be1d1a41b82679cc6e45fce1a2c8e322e7bce",
+      "request": "f6fe4ec4c86704cbc8b3d54c8913f0d212a897dba8eb2f6dd437d37ee93d2c27"
+    },
+    {
+      "assessment": "065b9359aac67a73d5e37824c854bee9d91f1d7cf899529942e8b0e58fe15e6a",
+      "candidate": "ab794d59386c54dd56e299cb7b585be249b0a2b61162dfdc2e7719c7a32473cc",
+      "id": "test_canonical_edit_changes_only_the_declared_unmodified_base/0",
+      "origin": "existing_python_assertion",
+      "reconstructed": "ab794d59386c54dd56e299cb7b585be249b0a2b61162dfdc2e7719c7a32473cc",
+      "request": "76c5fcbc6164b204b5b10498c161c77abb7663226765e626a190e48a5b3dfeee"
+    },
+    {
+      "assessment": "006bb9aeadccae2dddad64fbc247ad5b2bdcabe47b2336b5900db37b3e830576",
+      "candidate": "0dc95d8880f7e0daea442aa674837420cb97ad5c36a3b111a284e65b921c87ea",
+      "id": "test_changed_base_with_recomputed_identity_fails_sequence_comparison/0",
+      "origin": "existing_python_assertion",
+      "reconstructed": "0dc95d8880f7e0daea442aa674837420cb97ad5c36a3b111a284e65b921c87ea",
+      "request": "6c6b2dbd9caa10ae8ad6984d26372b6beb6b9f90f6a99656d29bf93b544b9fa6"
+    },
+    {
+      "assessment": "73005197d53f603ef9d7fbbc1dd64093dc45fa3341e3ca829054d011261a59c5",
+      "candidate": "72717d98b97e3c7278303cb7674f5f817bd45e22b00efc1870d4b0923a500514",
+      "id": "test_changed_base_with_recomputed_identity_fails_sequence_comparison/1",
+      "origin": "existing_python_assertion",
+      "reconstructed": "0dc95d8880f7e0daea442aa674837420cb97ad5c36a3b111a284e65b921c87ea",
+      "request": "6c6b2dbd9caa10ae8ad6984d26372b6beb6b9f90f6a99656d29bf93b544b9fa6"
+    },
+    {
+      "assessment": "006bb9aeadccae2dddad64fbc247ad5b2bdcabe47b2336b5900db37b3e830576",
+      "candidate": "0dc95d8880f7e0daea442aa674837420cb97ad5c36a3b111a284e65b921c87ea",
+      "id": "test_checker_works_with_disabled_producer/0",
+      "origin": "existing_python_assertion",
+      "reconstructed": "0dc95d8880f7e0daea442aa674837420cb97ad5c36a3b111a284e65b921c87ea",
+      "request": "6c6b2dbd9caa10ae8ad6984d26372b6beb6b9f90f6a99656d29bf93b544b9fa6"
+    },
+    {
+      "assessment": "006bb9aeadccae2dddad64fbc247ad5b2bdcabe47b2336b5900db37b3e830576",
+      "candidate": "0dc95d8880f7e0daea442aa674837420cb97ad5c36a3b111a284e65b921c87ea",
+      "id": "test_checker_works_with_disabled_producer/1",
+      "origin": "existing_python_assertion",
+      "reconstructed": "0dc95d8880f7e0daea442aa674837420cb97ad5c36a3b111a284e65b921c87ea",
+      "request": "6c6b2dbd9caa10ae8ad6984d26372b6beb6b9f90f6a99656d29bf93b544b9fa6"
+    },
+    {
+      "assessment": "9573eadff931989e2eb548bcd8f82633617c9e933a120ca071db2555bca95a46",
+      "candidate": "4fd9c0ce26bad2965bbb501b20c8b0ff01ebd1a655db52116e58b3595e7a2e65",
+      "id": "test_chemical_edit_retains_canonical_a_and_exact_inosine_identity/0",
+      "origin": "existing_python_assertion",
+      "reconstructed": "4fd9c0ce26bad2965bbb501b20c8b0ff01ebd1a655db52116e58b3595e7a2e65",
+      "request": "5a94365273546b0600866d3717c8ac21af31a21c4a6db91810a6552372d0e916"
+    },
+    {
+      "assessment": "c778b4e8e261fb783b335ce97dece1f76615ebe728ec14ae51516633a361c8ed",
+      "candidate": "687de42e939c351c560eeffe264ffa163155045cc2e4e7620aced83cf74b2c83",
+      "id": "test_circularization_does_not_normalize_an_out_of_bounds_origin/0",
+      "origin": "existing_python_assertion",
+      "reconstructed": "687de42e939c351c560eeffe264ffa163155045cc2e4e7620aced83cf74b2c83",
+      "request": "0ec2593aa510364fe35dacb631490634ef3cbe73c47403f3e2188bb636844ae2"
+    },
+    {
+      "assessment": "fa891010975ec857e1f28913027b23cb76e3055be5c0722b409ee54131b27c2a",
+      "candidate": "d73116630753b140e766b2a5c5705f87165a90fe4694ab3105b35f9acc66b1c0",
+      "id": "test_circularization_preserves_the_explicit_origin_and_source_path/0",
+      "origin": "existing_python_assertion",
+      "reconstructed": "d73116630753b140e766b2a5c5705f87165a90fe4694ab3105b35f9acc66b1c0",
+      "request": "f929ca3005e45d2138507fdd6d007ffdfd2e5e41d0646e716e3afe0a2b75bbea"
+    },
+    {
+      "assessment": "f45e301ecc1e80aaa7ec1d14eaa3a502270d87f623ec0c84b923c75aba000a8e",
+      "candidate": "c417277295dbcbf61e4cc9baaa728f675a633b4a3c98d5010a26d50ff3c5d88d",
+      "id": "test_circularization_preserves_the_explicit_origin_and_source_path/1",
+      "origin": "existing_python_assertion",
+      "reconstructed": "c417277295dbcbf61e4cc9baaa728f675a633b4a3c98d5010a26d50ff3c5d88d",
+      "request": "8e5cb15734579cf036f7241756812bf065e2081e81d2b9e0c94e491e4394a74a"
+    },
+    {
+      "assessment": "6240cc2c97fcba764201fad19cfedb91e3d5eb91e00afec048e41498bdaf321d",
+      "candidate": "208a2722022c5232f8ddcff3f56a83ed9069864ee9c25256cbcd0a024fdf737a",
+      "id": "test_complex_is_separately_pinned_membership_without_covalent_concatenation/0",
+      "origin": "existing_python_assertion",
+      "reconstructed": "208a2722022c5232f8ddcff3f56a83ed9069864ee9c25256cbcd0a024fdf737a",
+      "request": "6effca57ce72f489be9d2cf3a2c4f79f7d6f91c0a92657578898107303dc7be9"
+    },
+    {
+      "assessment": "7bdc37ebf3a3e020aa9ae5526ffc381e85dd83afd3ea730a60d6a59e57b64425",
+      "candidate": "208a2722022c5232f8ddcff3f56a83ed9069864ee9c25256cbcd0a024fdf737a",
+      "id": "test_complex_is_separately_pinned_membership_without_covalent_concatenation/1",
+      "origin": "existing_python_assertion",
+      "reconstructed": "0bce0af1ec7a34698c41fb33a1eea6df573ed901ae3a88998e5f540028798c0b",
+      "request": "634c9f392e17d9f5d235ce74d85167d8628f5d17e6e818ba01aed373389e003c"
+    },
+    {
+      "assessment": "54232ce05020dc7babc4105734c8e9fceb75957ed816df5d34ed306eb75e53d6",
+      "candidate": "a7b011b0122d32f3523661dea66947e8676f2c756d84b52a6f4fb9bce629279d",
+      "id": "test_conditional_codon_policy_uses_exact_declared_triplet_and_assumption/0",
+      "origin": "existing_python_assertion",
+      "reconstructed": "a7b011b0122d32f3523661dea66947e8676f2c756d84b52a6f4fb9bce629279d",
+      "request": "82010c467e9a07d2ad7258ddc7753d4d7cd973e6a06ff9a7f034be7f1e062832"
+    },
+    {
+      "assessment": "8b804fa9c66264e28653196b9edf949ad02a81afb9cb75e2a5ab44be7afa3361",
+      "candidate": "378f87ca4c4543199da2828c3522ed018c76ba75d6de85d7cd7722945b2f5bb0",
+      "id": "test_conditional_codon_policy_uses_exact_declared_triplet_and_assumption/1",
+      "origin": "existing_python_assertion",
+      "reconstructed": "378f87ca4c4543199da2828c3522ed018c76ba75d6de85d7cd7722945b2f5bb0",
+      "request": "413ccf29d74d82b096307517f08d3497894734fd5e01afb54072de2df6a16151"
+    },
+    {
+      "assessment": "023e69958c1f6520b99c4bb9154453402fb1a223c630d6d1f61aad4997c76cc0",
+      "candidate": "d87540ffc11025def61a7e6874a487e01b36e0e688932c237b466a08426221dc",
+      "id": "test_declared_no_product_branch_does_not_establish_biological_absence/0",
+      "origin": "existing_python_assertion",
+      "reconstructed": "d87540ffc11025def61a7e6874a487e01b36e0e688932c237b466a08426221dc",
+      "request": "cabafb7b980f855a51589aaacd4c2384bcdd3437d41dbe8f12e4b0b37a396700"
+    },
+    {
+      "assessment": "fdc93e84feb734697f4210cebae384bfa7b4bfe423150b834fcf96ec5bfeffb5",
+      "candidate": "baa58db8d7e62bb123c833e65de4ac15c253eccdf516b1aab18a1c256744f5a4",
+      "id": "test_edit_rejects_undeclared_chemical_changes_and_changed_cap/0",
+      "origin": "existing_python_assertion",
+      "reconstructed": "baa58db8d7e62bb123c833e65de4ac15c253eccdf516b1aab18a1c256744f5a4",
+      "request": "15e4fe163ac58ce2cc5e4b3aa2c785652aebde656e15f0ccbcef5e8c40807d4f"
+    },
+    {
+      "assessment": "a03c953bfa2a65fc5f7c12ac04af5393135f070ead3916e79fb954b507ffdaae",
+      "candidate": "2ffa0f41b288e011ea839e593dfb62a0c3fa46c2794144275b8183ccf1f1dc7e",
+      "id": "test_edit_rejects_undeclared_chemical_changes_and_changed_cap/1",
+      "origin": "existing_python_assertion",
+      "reconstructed": "2ffa0f41b288e011ea839e593dfb62a0c3fa46c2794144275b8183ccf1f1dc7e",
+      "request": "88d10044877364d4ab925215c5167ee77e7d184ccc9e82baea922cd11cd8c850"
+    },
+    {
+      "assessment": "754b9253c2ffe69b3ab59a7e5746a3912ef8fdb87c88d42210837ae1ae574dcc",
+      "candidate": "a3c1156e16d1b69883831f48a430d96fccd2acffb25d9cd5295204e0c5efc7d7",
+      "id": "test_edit_rejects_wrong_expected_symbol_and_modified_canonical_site/0",
+      "origin": "existing_python_assertion",
+      "reconstructed": "a3c1156e16d1b69883831f48a430d96fccd2acffb25d9cd5295204e0c5efc7d7",
+      "request": "eec274a87f0a8f36a3d4bc3da66e21bfdca6b503300fcb04e6ce9286e1e2ff8d"
+    },
+    {
+      "assessment": "216d373a6eecfc173971b8ddcacf7032fbdc22d2ed6f026983fb3b35d4402473",
+      "candidate": "e65f7856a92c4bd74c8bcf63d753241bb19f7173f9c5158e871625e986ab03c4",
+      "id": "test_edit_rejects_wrong_expected_symbol_and_modified_canonical_site/1",
+      "origin": "existing_python_assertion",
+      "reconstructed": "e65f7856a92c4bd74c8bcf63d753241bb19f7173f9c5158e871625e986ab03c4",
+      "request": "ff18ce38a2018b2196ec8f6e7c37f2bb5ee0cc89859375c8cc54bf08f4988aaf"
+    },
+    {
+      "assessment": "36929e69ed7ccda16b9876059cf8fd762d78afa23e8fc34c96243297232fd2da",
+      "candidate": "5f90f386c228665dfa5bb86ac509ba8df3e77d9077983bd862e8301007cd734c",
+      "id": "test_edit_unknown_modification_inventory_is_unsupported/0",
+      "origin": "existing_python_assertion",
+      "reconstructed": "5f90f386c228665dfa5bb86ac509ba8df3e77d9077983bd862e8301007cd734c",
+      "request": "0f021bbbda683ea2b3798883229ee15a3617e02c31acb34b9d59b1720eee0dda"
+    },
+    {
+      "assessment": "006bb9aeadccae2dddad64fbc247ad5b2bdcabe47b2336b5900db37b3e830576",
+      "candidate": "0dc95d8880f7e0daea442aa674837420cb97ad5c36a3b111a284e65b921c87ea",
+      "id": "test_forged_source_traversal_fails_derivation_comparison/0",
+      "origin": "existing_python_assertion",
+      "reconstructed": "0dc95d8880f7e0daea442aa674837420cb97ad5c36a3b111a284e65b921c87ea",
+      "request": "6c6b2dbd9caa10ae8ad6984d26372b6beb6b9f90f6a99656d29bf93b544b9fa6"
+    },
+    {
+      "assessment": "b9b3894327c26ea62bcb38c918136748d46837c381e32efdc1f8c2f421a6f9e8",
+      "candidate": "7433161c2288ceb8ff4757bc38acc540cf7236d1e3a8e100456710dff23d6dd0",
+      "id": "test_forged_source_traversal_fails_derivation_comparison/1",
+      "origin": "existing_python_assertion",
+      "reconstructed": "0dc95d8880f7e0daea442aa674837420cb97ad5c36a3b111a284e65b921c87ea",
+      "request": "6c6b2dbd9caa10ae8ad6984d26372b6beb6b9f90f6a99656d29bf93b544b9fa6"
+    },
+    {
+      "assessment": "15aaadce9c3561f87f429f196c467d0b5323b3364a8a5575bd6926a091287138",
+      "candidate": "28247cefd6cad76ac84b1c0742608a392465cb25cbbf68f25f62c08cde59ae05",
+      "id": "test_literal_concatenation_retains_each_occurrence_and_junction/0",
+      "origin": "existing_python_assertion",
+      "reconstructed": "28247cefd6cad76ac84b1c0742608a392465cb25cbbf68f25f62c08cde59ae05",
+      "request": "773cc8b72752e50a7646c499ab807021b3e2ebc2162ea02769f145ee067edf99"
+    },
+    {
+      "assessment": "f54f4c4ad9435efdc9c255697de361e934d567336277b9d54c8f946e45d4394b",
+      "candidate": "5b451ff992f790e2e3db0cc488a4e7647819763fc51e0badf7ec61115750f50a",
+      "id": "test_literal_disjoint_slice_keeps_declared_segment_order/0",
+      "origin": "existing_python_assertion",
+      "reconstructed": "5b451ff992f790e2e3db0cc488a4e7647819763fc51e0badf7ec61115750f50a",
+      "request": "44d476ffac08b77d8f089ce6ee7382c145df17338a9e8217324632cc53ad5b2f"
+    },
+    {
+      "assessment": "1ca2ebd30f660fce96a0aecbc5f70562599d1dec97fc54bb8d3517a27d026295",
+      "candidate": "d45147063c40d3253affb529cac25c12283d126f6d9b8b06e66985dfcf346653",
+      "id": "test_literal_explicit_coding_strand_transcription/0",
+      "origin": "existing_python_assertion",
+      "reconstructed": "d45147063c40d3253affb529cac25c12283d126f6d9b8b06e66985dfcf346653",
+      "request": "283680412ddc92fb7302cd74e06b5cac6a0c52e77d580b4bdad517ffcd202137"
+    },
+    {
+      "assessment": "53a77c2cea40423f645782772184050da9f18150f6f614cb5f5b7b767ff18712",
+      "candidate": "ef8b46d3edef1cdfb983b7598e0e0de8babe034c037f0b82f6b14ab312c730ee",
+      "id": "test_literal_reverse_and_reverse_complement_are_distinct/0",
+      "origin": "existing_python_assertion",
+      "reconstructed": "ef8b46d3edef1cdfb983b7598e0e0de8babe034c037f0b82f6b14ab312c730ee",
+      "request": "24e19f29369a913912bb327566e552b21841c7b5a928600400c7e5e0d6f676c9"
+    },
+    {
+      "assessment": "b6f1d2be53b688b2e3e2d3dd6262662ad0bd3229c583846b5d539a54bedec6f3",
+      "candidate": "014eca42c8623dd6ca52e673ef01ee692affce3dde9aa39e8d4619e71e9cab20",
+      "id": "test_literal_reverse_and_reverse_complement_are_distinct/1",
+      "origin": "existing_python_assertion",
+      "reconstructed": "014eca42c8623dd6ca52e673ef01ee692affce3dde9aa39e8d4619e71e9cab20",
+      "request": "07beff258c26e65716988195301dc167b40c008aa5d8bad659309503f87e5c9e"
+    },
+    {
+      "assessment": "d89931e4158ff2a84a591161586314dc1e1c46f809dfcec5fdcc31cef694970a",
+      "candidate": "aac1a807570f8c9cb06f13f97a48332bb2e6e392672c613f5bd0b108fe15b0b0",
+      "id": "test_literal_whole_copy_preserves_source_request_and_checked_derivation/0",
+      "origin": "existing_python_assertion",
+      "reconstructed": "aac1a807570f8c9cb06f13f97a48332bb2e6e392672c613f5bd0b108fe15b0b0",
+      "request": "4e5950b8f2f7ad252f8c472517557605bdb45083fd56e23cb8fc943a0104ce76"
+    },
+    {
+      "assessment": "006bb9aeadccae2dddad64fbc247ad5b2bdcabe47b2336b5900db37b3e830576",
+      "candidate": "0dc95d8880f7e0daea442aa674837420cb97ad5c36a3b111a284e65b921c87ea",
+      "id": "test_missing_generated_value_cannot_hide_behind_a_complete_bundle/0",
+      "origin": "existing_python_assertion",
+      "reconstructed": "0dc95d8880f7e0daea442aa674837420cb97ad5c36a3b111a284e65b921c87ea",
+      "request": "6c6b2dbd9caa10ae8ad6984d26372b6beb6b9f90f6a99656d29bf93b544b9fa6"
+    },
+    {
+      "assessment": "54cc839c17b99033dac69a40b3425c964bc4ce3cfa48161b93394292e95fcf8b",
+      "candidate": "58be317a26fa49c2b5fcd43aba6f7f93c66a417803f181f28ae829c7c43feec6",
+      "id": "test_missing_generated_value_cannot_hide_behind_a_complete_bundle/1",
+      "origin": "existing_python_assertion",
+      "reconstructed": "0dc95d8880f7e0daea442aa674837420cb97ad5c36a3b111a284e65b921c87ea",
+      "request": "6c6b2dbd9caa10ae8ad6984d26372b6beb6b9f90f6a99656d29bf93b544b9fa6"
+    },
+    {
+      "assessment": "06063a6fd1a7b362bcdc4941740c34e646832b204b83fe699b3d9c894c1e6159",
+      "candidate": "0693ab9b7eb0f127d9998bbac13260cbe995561a7dfc9c186166893557936590",
+      "id": "test_modified_codon_requires_explicit_readout_without_i_to_g_inference/0",
+      "origin": "existing_python_assertion",
+      "reconstructed": "0693ab9b7eb0f127d9998bbac13260cbe995561a7dfc9c186166893557936590",
+      "request": "25fa43bc92abed20b7412f2019c3d38df097c3c4e3d2bfd6ba9f1bdd375139dd"
+    },
+    {
+      "assessment": "f18013d25349695215ef446514a755bfdd26fc42abb18a7affeec6b4a724a299",
+      "candidate": "b7036ee7f6da6fedab8e69be43bebfd652e43c86ec22c61d58e62aece8f9ab53",
+      "id": "test_modified_codon_requires_explicit_readout_without_i_to_g_inference/1",
+      "origin": "existing_python_assertion",
+      "reconstructed": "b7036ee7f6da6fedab8e69be43bebfd652e43c86ec22c61d58e62aece8f9ab53",
+      "request": "b67c358a58b51b442c65677849a41cc816be95269d89d4d8cca67c22424a4dfe"
+    },
+    {
+      "assessment": "60a0fe5b424e50ae840508aae018b8a1f88c14fb14dd839d1ac8dff85e9ebe6c",
+      "candidate": "3aa04b7187723f39269cb73ec712bf5e7916c8c97de3232702c31699597e3780",
+      "id": "test_multiple_orfs_reconstruct_each_named_product_from_its_own_path/0",
+      "origin": "existing_python_assertion",
+      "reconstructed": "3aa04b7187723f39269cb73ec712bf5e7916c8c97de3232702c31699597e3780",
+      "request": "e937d2dca096588913f9c578da78f806ef2efc02861a2c6600db6fdae9a822d8"
+    },
+    {
+      "assessment": "0723b64a09f907bb555846905f73671ba330b796fd4ca37e40e9dad4f72f2ca8",
+      "candidate": "483acb96790f3d445414373aae45b84d208f3b004fd689e6289bbc4013319907",
+      "id": "test_nominal_alias_amount_conflict_drops_final_bundle_and_amounts_atomically/0",
+      "origin": "existing_python_assertion",
+      "reconstructed": "483acb96790f3d445414373aae45b84d208f3b004fd689e6289bbc4013319907",
+      "request": "c34bb97e7512185adef48dcc6198b1911554fa8cce53d09577e87c11546f34b2"
+    },
+    {
+      "assessment": "300d22d669f9d52cb939888a795854fe2d3ea4bd0436ff522319a60d3cef93ab",
+      "candidate": "dcc831b2039e01f6a1be781a78b7af2b6674b7184e081f2c45fee76213a3d959",
+      "id": "test_nominal_alias_amount_conflict_drops_final_bundle_and_amounts_atomically/1",
+      "origin": "existing_python_assertion",
+      "reconstructed": "dcc831b2039e01f6a1be781a78b7af2b6674b7184e081f2c45fee76213a3d959",
+      "request": "37daf0c1378967739b7f602353804fa576b81ba424b4e0bc8201e2638bf30f79"
+    },
+    {
+      "assessment": "4e0be2e4159abf2d2cc620a507c0e239cd4da2d42b659a0f48cb89c137e835dd",
+      "candidate": "0d1d74dfb61a2ee8abcae3a173ce8e7af93421a79a618a46207c57e5409106bc",
+      "id": "test_omitted_required_helper_cannot_leave_a_complete_payload_claim/0",
+      "origin": "existing_python_assertion",
+      "reconstructed": "0d1d74dfb61a2ee8abcae3a173ce8e7af93421a79a618a46207c57e5409106bc",
+      "request": "db3b288ce72907dd110ea840ec45395a8bba0c574bd628b0aa4f4c2bef5dd798"
+    },
+    {
+      "assessment": "0c0e6d935686a54c1bdf0b1e20ca86bdcec368a2637eae6ddf44c8795722b4c2",
+      "candidate": "e8a6d29696a69037a5b730fc0194ef57c8353ba760558f59fe6bead7f34ac1fb",
+      "id": "test_omitted_required_helper_cannot_leave_a_complete_payload_claim/1",
+      "origin": "existing_python_assertion",
+      "reconstructed": "0d1d74dfb61a2ee8abcae3a173ce8e7af93421a79a618a46207c57e5409106bc",
+      "request": "db3b288ce72907dd110ea840ec45395a8bba0c574bd628b0aa4f4c2bef5dd798"
+    },
+    {
+      "assessment": "3b3f02084da04f92b39aa3a04a8d153b16068efbc07bcb50b6616cce977927c1",
+      "candidate": "d71d2e5d7a11842325a1acb12bda8a54ea5e55697c790602b3aca3fce5bb12e5",
+      "id": "test_ordered_intermediate_reconstruction_keeps_every_step_and_root/0",
+      "origin": "existing_python_assertion",
+      "reconstructed": "d71d2e5d7a11842325a1acb12bda8a54ea5e55697c790602b3aca3fce5bb12e5",
+      "request": "b8323b53f3aa6853cc3a5150646c4315ac0ab4ffb937ccab8d688dcb563bfd45"
+    },
+    {
+      "assessment": "ec3e14da8583474ef08f44c2a8faf28be2ef0d2b81c5f58875e41cecb3c2b539",
+      "candidate": "aef027ffa56954fb9bc2c0d52e075cdc1f07488ec3db3ab0be0c421d8f606cba",
+      "id": "test_ordinary_translation_keeps_terminal_stop_out_of_the_protein/0",
+      "origin": "existing_python_assertion",
+      "reconstructed": "aef027ffa56954fb9bc2c0d52e075cdc1f07488ec3db3ab0be0c421d8f606cba",
+      "request": "dbf059b6364681ebc34c7314b22a3fd91911c5c665ddd3f98082d579394d34f7"
+    },
+    {
+      "assessment": "4d883e886dc0c00de862a8dd4faadcef268baf93041ad42c97d19584c1eb9eaf",
+      "candidate": "9168e5841643a18a8ab7ea564381a4654d0d094f8b2102e60f13f4cdbf11aa4f",
+      "id": "test_payload_contract_authority_is_required_and_replayed/0",
+      "origin": "existing_python_assertion",
+      "reconstructed": "9168e5841643a18a8ab7ea564381a4654d0d094f8b2102e60f13f4cdbf11aa4f",
+      "request": "045e946fac168f8167172dfb4aa3185c6d9db8fb408857d89a3cf46e9dd012b0"
+    },
+    {
+      "assessment": "483791ae93f309f542dc84524d5a6886a6755fa0756bf89f296a0bc8a38283ee",
+      "candidate": "c7b0c198c8d2a93ca65a0a8078da0b0bdc9fca2fa480a27c88ea935cfffd0d38",
+      "id": "test_payload_contract_authority_is_required_and_replayed/1",
+      "origin": "existing_python_assertion",
+      "reconstructed": "c7b0c198c8d2a93ca65a0a8078da0b0bdc9fca2fa480a27c88ea935cfffd0d38",
+      "request": "225b60aa59aea20e3ce9c808c5883e1b8700950396c952d4fc2f784d72031a12"
+    },
+    {
+      "assessment": "17cf2b9074483bfe5351018e98c76497c8f6af57f3c9a3d1e04002a7243e8f94",
+      "candidate": "caff7e2de0c87994d51bd284db29b1ebec5b976178d3658b624e62e7a0ec0960",
+      "id": "test_processing_nominal_failure_is_atomic_across_product_ports/0",
+      "origin": "existing_python_assertion",
+      "reconstructed": "caff7e2de0c87994d51bd284db29b1ebec5b976178d3658b624e62e7a0ec0960",
+      "request": "e5ccd6b98b7d7e1d6529ff7499cbb35b88e9744947e39e22b034392bd2b2bc18"
+    },
+    {
+      "assessment": "7f43898286638b4bbea66d5b00f0dbca326d466fa03f0c8017b348bbd63eb38e",
+      "candidate": "bafbd7018113e2348da790b6787b427dcb808a6f01d1c82b4e74c085139c5116",
+      "id": "test_processing_rejects_gaps_overlap_and_reordered_splice_segments/0",
+      "origin": "existing_python_assertion",
+      "reconstructed": "bafbd7018113e2348da790b6787b427dcb808a6f01d1c82b4e74c085139c5116",
+      "request": "f04a59a94c724b7705ff70e9c6c566b623198614c877b050a9a1a45b7ac018c8"
+    },
+    {
+      "assessment": "f807decef7a21a7fa2bd545d5fba729672feedaf7dff9ee78e039a403c7779b4",
+      "candidate": "49460a05a055d21d698e8d2d0ace2b8390b9095e756421a4e2118a8e3eae3ad9",
+      "id": "test_processing_rejects_gaps_overlap_and_reordered_splice_segments/1",
+      "origin": "existing_python_assertion",
+      "reconstructed": "49460a05a055d21d698e8d2d0ace2b8390b9095e756421a4e2118a8e3eae3ad9",
+      "request": "b991f64a57cddfd3242ce65545128bcc41da640bdc554c6a66c173de3dd35c74"
+    },
+    {
+      "assessment": "16f2757c6a1a7949bc7e85b4d5dacd5926efbdd56ec199973a4cf48c96c7cc99",
+      "candidate": "4593b9925d3acb17e7d2722fc06e2386614f487215471417384451fd539001c8",
+      "id": "test_processing_rejects_gaps_overlap_and_reordered_splice_segments/2",
+      "origin": "existing_python_assertion",
+      "reconstructed": "4593b9925d3acb17e7d2722fc06e2386614f487215471417384451fd539001c8",
+      "request": "9aba18812805524fe56968a2783dd4f73985331b207781f98e5f82b1c4924332"
+    },
+    {
+      "assessment": "fbece1b32946d58fce6610838494b70052107ee5f2871e11c28ca91a18e82a69",
+      "candidate": "807023db8cb4fd89e708c923e029265d9b5e360f6f103d0c49743f3c0daca9c8",
+      "id": "test_protein_cleavage_and_splicing_preserve_literal_residues/0",
+      "origin": "existing_python_assertion",
+      "reconstructed": "807023db8cb4fd89e708c923e029265d9b5e360f6f103d0c49743f3c0daca9c8",
+      "request": "169351458889f357d00d5fc7b9c8bd5f718c72959467eed9a24f0dbe47ace036"
+    },
+    {
+      "assessment": "636464d892d12e9513b2ff19f3a5cd874aa9a42a51cb3cd7b423b04a0c1021ff",
+      "candidate": "69a1d2e273e56e5001fed825eedcb5e80914ec7b81a38bfca37e7cab5d35cc1c",
+      "id": "test_protein_cleavage_and_splicing_preserve_literal_residues/1",
+      "origin": "existing_python_assertion",
+      "reconstructed": "69a1d2e273e56e5001fed825eedcb5e80914ec7b81a38bfca37e7cab5d35cc1c",
+      "request": "cf00d6734f8505170681bc5631b3848aa0f4e542b93f0fd2a2e40d678674ae86"
+    },
+    {
+      "assessment": "006bb9aeadccae2dddad64fbc247ad5b2bdcabe47b2336b5900db37b3e830576",
+      "candidate": "0dc95d8880f7e0daea442aa674837420cb97ad5c36a3b111a284e65b921c87ea",
+      "id": "test_replay_requires_complete_independent_request_and_assessment_identity/0",
+      "origin": "existing_python_assertion",
+      "reconstructed": "0dc95d8880f7e0daea442aa674837420cb97ad5c36a3b111a284e65b921c87ea",
+      "request": "6c6b2dbd9caa10ae8ad6984d26372b6beb6b9f90f6a99656d29bf93b544b9fa6"
+    },
+    {
+      "assessment": "d2cbced81561d0c644c900c699c92882b0760ac02619b02891a5e7ff080a266c",
+      "candidate": "0dc95d8880f7e0daea442aa674837420cb97ad5c36a3b111a284e65b921c87ea",
+      "id": "test_replay_requires_complete_independent_request_and_assessment_identity/1",
+      "origin": "existing_python_assertion",
+      "reconstructed": "70e2533bd2fead8811d505ddc0c3ce5a490eb758fad4b1c9ccdd49ff5fad556c",
+      "request": "3a58672dad473c78a8fb56d3f9616167881803cbf5535738f0d42bc063e373f3"
+    },
+    {
+      "assessment": "b0018d8d3aeba289abf4f62b041d142edbf36c13baa93d7a707d8fbaf2eb6efa",
+      "candidate": "edad4fc1cb61f58f203eb71b95c9bd9cb48fc7e48ffeaef4f119990a3468bcd0",
+      "id": "test_ribosomal_skipping_retains_product_residues_without_a_precursor/0",
+      "origin": "existing_python_assertion",
+      "reconstructed": "edad4fc1cb61f58f203eb71b95c9bd9cb48fc7e48ffeaef4f119990a3468bcd0",
+      "request": "9bb0d7e9d9608ef50c98945a554da6e615a31922322a7ad53c4835a73730d66d"
+    },
+    {
+      "assessment": "5f2c14e2097dae77593eb9df837898e065e8c41a38d69e94d2a1cdc0b2337b28",
+      "candidate": "1ac1720b054c4a8e0520bc9a1ec79b75af31898a79a0cc0c037c05cbc06ec170",
+      "id": "test_rna_cleavage_preserves_all_literal_products/0",
+      "origin": "existing_python_assertion",
+      "reconstructed": "1ac1720b054c4a8e0520bc9a1ec79b75af31898a79a0cc0c037c05cbc06ec170",
+      "request": "0309bede2c0b2f168f65ae6fe9c5afc9ff093424ee34b5ceb821bc803ee75972"
+    },
+    {
+      "assessment": "e5b5ec40dc8ce3153b05d7bcd5bb7578f5039cc605aad8ff5efa1e74e29d9bbe",
+      "candidate": "8337214659a94dcc0bbcad2bfa3089efa227dee96ce3c3fdfd706c96011db5f0",
+      "id": "test_rna_splicing_preserves_removed_sequence_as_an_explicit_product/0",
+      "origin": "existing_python_assertion",
+      "reconstructed": "8337214659a94dcc0bbcad2bfa3089efa227dee96ce3c3fdfd706c96011db5f0",
+      "request": "b7a6e5a889fd7999191a663047f2f5727e91a8cec72f8f144083554e73d22e51"
+    },
+    {
+      "assessment": "1ea37feaa3812a5bd1aa233de3cb122bd58c2309edc92427872eff3dc2aeef20",
+      "candidate": "89226c7db613e89b94514a169e1b6475246dfdc56578d645a7bb2cf49b8c0963",
+      "id": "test_saved_diagnostics_cannot_be_removed_to_promote_unsupported_output/0",
+      "origin": "existing_python_assertion",
+      "reconstructed": "8bf1b36d655338afbc76ef938a00aad9e29c2fd009e9295067a2c62233883826",
+      "request": "a3b7b97ea28eb23228a61c83f7df133f6fa88d00ac76f1c74a1d70745b8bd35f"
+    },
+    {
+      "assessment": "006bb9aeadccae2dddad64fbc247ad5b2bdcabe47b2336b5900db37b3e830576",
+      "candidate": "0dc95d8880f7e0daea442aa674837420cb97ad5c36a3b111a284e65b921c87ea",
+      "id": "test_schema_bypass_is_reparsed_before_acceptance/0",
+      "origin": "existing_python_assertion",
+      "reconstructed": "0dc95d8880f7e0daea442aa674837420cb97ad5c36a3b111a284e65b921c87ea",
+      "request": "6c6b2dbd9caa10ae8ad6984d26372b6beb6b9f90f6a99656d29bf93b544b9fa6"
+    },
+    {
+      "assessment": "2fe5b417ee4134b9880d67405b8b4e80f25007c3d868d236a577d35792decc16",
+      "candidate": "c04219cbd38c8a114af91cd709347e5592daf902d01d39d9879a86b4371517a2",
+      "id": "test_skipping_cannot_omit_or_duplicate_a_translated_residue/0",
+      "origin": "existing_python_assertion",
+      "reconstructed": "c04219cbd38c8a114af91cd709347e5592daf902d01d39d9879a86b4371517a2",
+      "request": "f268d13c3f233e12805f5f86b7f1d46c1148755758186fae311d46cb72af5472"
+    },
+    {
+      "assessment": "c9a9f071e52e6677eb4d434fdceb4162d1134088e032af8943aaee2afe64e948",
+      "candidate": "b5874c057201493959c78e0addca6243aaf57f9ad6fbdd42cb9dd139e6755f50",
+      "id": "test_skipping_cannot_omit_or_duplicate_a_translated_residue/1",
+      "origin": "existing_python_assertion",
+      "reconstructed": "b5874c057201493959c78e0addca6243aaf57f9ad6fbdd42cb9dd139e6755f50",
+      "request": "b5874d079462b0cacd963789eb605ddb0db8d661eac43ea935d493ac3b01e13d"
+    },
+    {
+      "assessment": "ab437b39c0250a781174754bb2747726bffde6dc440ca8683dc2c2906018a756",
+      "candidate": "2e9dec48c5f1811aabe8cb6c4e326c2cfc445e4fef15fbbc68e10ffc6d3491fe",
+      "id": "test_supplied_root_can_be_finalized_without_fabricating_a_step/0",
+      "origin": "existing_python_assertion",
+      "reconstructed": "2e9dec48c5f1811aabe8cb6c4e326c2cfc445e4fef15fbbc68e10ffc6d3491fe",
+      "request": "20180e7376f51148c5dc8f5a151f7f1aaf43c9e366d10c933c8a800b9b0b7942"
+    },
+    {
+      "assessment": "b0d866ac8b802185a1d74a4e93076cedc3edb0db1b0f91b96d9813045e17f8d5",
+      "candidate": "b7f030c71dcd7e7b93aab425d1d8d2d34a06291aba2c1ef2d2d0111743ff9084",
+      "id": "test_transcription_rejects_reverse_and_disjoint_coding_paths/0",
+      "origin": "existing_python_assertion",
+      "reconstructed": "b7f030c71dcd7e7b93aab425d1d8d2d34a06291aba2c1ef2d2d0111743ff9084",
+      "request": "f4877df6b4d6b37bb17b3e631838957324e3064f0fa51f49f7826048a22acd9b"
+    },
+    {
+      "assessment": "2cc51f0e9a23de04e06e82b86164d1a76d20756f8ae510f952132df978b74a53",
+      "candidate": "2b6f2a4d37bfa3ea1ab5163c4840cabaccb4bbd737ae310de18c8841e777ea55",
+      "id": "test_transcription_rejects_reverse_and_disjoint_coding_paths/1",
+      "origin": "existing_python_assertion",
+      "reconstructed": "2b6f2a4d37bfa3ea1ab5163c4840cabaccb4bbd737ae310de18c8841e777ea55",
+      "request": "505ecdb91ccc0cf24b546ad4804c76975d8fabe3c5fbea00e386fb95e7b25a3a"
+    },
+    {
+      "assessment": "d91cb28b1c530107602691e1ab06fe619159e37fea89cd7d5d0f5758dfcecf86",
+      "candidate": "805933555a12fd36e80da4b000c81c2aae5c2dcee808f404bb0a1ff98bf30e9f",
+      "id": "test_translation_rejects_frame_start_terminal_and_internal_stop_changes/0",
+      "origin": "existing_python_assertion",
+      "reconstructed": "805933555a12fd36e80da4b000c81c2aae5c2dcee808f404bb0a1ff98bf30e9f",
+      "request": "079073e8dde7489a973934dd5802b63b72a4c322b03233e31d5720611d872b4e"
+    },
+    {
+      "assessment": "eb9194157493ad228eb03281d3b3a638e409a33bd6973be1cac1938bca8cdac0",
+      "candidate": "a1e33be5698235a27f2956e6b6dba4e8ff244471b5e64686fc9ed558fb1c6574",
+      "id": "test_translation_rejects_frame_start_terminal_and_internal_stop_changes/1",
+      "origin": "existing_python_assertion",
+      "reconstructed": "a1e33be5698235a27f2956e6b6dba4e8ff244471b5e64686fc9ed558fb1c6574",
+      "request": "7fb7fdb22acb6668bffc2b2fd4e61b8d1e546c140920649e83bd819a8a383e70"
+    },
+    {
+      "assessment": "839beb28e088f4ed1fe8016dd9770c5588dc60e227d65df8cbd8823788128caf",
+      "candidate": "45aa73fc298e328ac30a49ed222436aa32d1a7817833933d9324c8af5a2822ff",
+      "id": "test_translation_rejects_frame_start_terminal_and_internal_stop_changes/2",
+      "origin": "existing_python_assertion",
+      "reconstructed": "45aa73fc298e328ac30a49ed222436aa32d1a7817833933d9324c8af5a2822ff",
+      "request": "8d9719d26e5b8861da9a743cec126a6e23ef8af17fd5b2f8b49f64499e938d03"
+    },
+    {
+      "assessment": "a1be478332aa0745aa104490593daeb9e26fd81c4ad5c2902cae5e7ecb029115",
+      "candidate": "ea51a2f357a0bce18cf710a3c9fd78b47731787d78635357fe244227a334ef27",
+      "id": "test_translation_rejects_frame_start_terminal_and_internal_stop_changes/3",
+      "origin": "existing_python_assertion",
+      "reconstructed": "ea51a2f357a0bce18cf710a3c9fd78b47731787d78635357fe244227a334ef27",
+      "request": "6d71740bb2d2dca46c1c6576216ecdd6173e10dfbd390bec7f46ccb1bca6e765"
+    },
+    {
+      "assessment": "ec3e14da8583474ef08f44c2a8faf28be2ef0d2b81c5f58875e41cecb3c2b539",
+      "candidate": "aef027ffa56954fb9bc2c0d52e075cdc1f07488ec3db3ab0be0c421d8f606cba",
+      "id": "test_translation_stop_correspondence_cannot_be_removed/0",
+      "origin": "existing_python_assertion",
+      "reconstructed": "aef027ffa56954fb9bc2c0d52e075cdc1f07488ec3db3ab0be0c421d8f606cba",
+      "request": "dbf059b6364681ebc34c7314b22a3fd91911c5c665ddd3f98082d579394d34f7"
+    },
+    {
+      "assessment": "e80352485ebe0261c22df123e33f9569d2262af3c2a33c3e9aa7b53e975872d5",
+      "candidate": "a03e57722f33a97390545531b1edcab49cceb30ef172c5eb0ce980bac1e7d4e2",
+      "id": "test_translation_stop_correspondence_cannot_be_removed/1",
+      "origin": "existing_python_assertion",
+      "reconstructed": "aef027ffa56954fb9bc2c0d52e075cdc1f07488ec3db3ab0be0c421d8f606cba",
+      "request": "dbf059b6364681ebc34c7314b22a3fd91911c5c665ddd3f98082d579394d34f7"
+    },
+    {
+      "assessment": "cd0209afd94abed668325c9c9bb0afbe44e6385f504d5042336ee4181baf7bd3",
+      "candidate": "e91471c7fadfc2e06d35fe7146a6e79b9db9042149ab9a78476a4bff189946c2",
+      "id": "test_unavailable_constituent_marks_complex_missing_as_well/0",
+      "origin": "existing_python_assertion",
+      "reconstructed": "e91471c7fadfc2e06d35fe7146a6e79b9db9042149ab9a78476a4bff189946c2",
+      "request": "152cb7c00900439fe3d6834740592558d3ba39695dac5f3b571ccbc4f50105f8"
+    },
+    {
+      "assessment": "dc4a09f13ca707286791b03227d083ab725afbf385dde6aac21679fe29e9a6b7",
+      "candidate": "e54a6e7db41629fcc0a4d0189e3904f4ad26a9d62a591e7a370c6719aa357d55",
+      "id": "test_unknown_cap_cannot_gain_complete_nominal_handoff/0",
+      "origin": "existing_python_assertion",
+      "reconstructed": "e54a6e7db41629fcc0a4d0189e3904f4ad26a9d62a591e7a370c6719aa357d55",
+      "request": "9f63c4a623d6b12a4ad135eb8d6e326ec3c863c9145e577a9b94ed73a4ba09a1"
+    },
+    {
+      "assessment": "0e0dfb712aaa4ffd9534e961e2b79e31beba16e564aaae006bddb7621b06af13",
+      "candidate": "82069215ae904335db836fdc7ceeeb0acd692f9251e690c07b4cd95d472093ca",
+      "id": "test_unknown_complex_stoichiometry_is_retained_and_not_complete/0",
+      "origin": "existing_python_assertion",
+      "reconstructed": "82069215ae904335db836fdc7ceeeb0acd692f9251e690c07b4cd95d472093ca",
+      "request": "0a260818d28dc56c4fb17866e02bfc4f211804b92d0aab96f1e578bbed7dfd5f"
+    },
+    {
+      "assessment": "00ae29543434a942e121bae1361c6ed8a77ad4c68b14c5b579f8600b800735bf",
+      "candidate": "896ad687de613612429c2114891f16aff83b768b9b30541a4228906f38eec744",
+      "id": "test_whole_circle_preserves_topology_and_explicit_slice_is_linear/0",
+      "origin": "existing_python_assertion",
+      "reconstructed": "896ad687de613612429c2114891f16aff83b768b9b30541a4228906f38eec744",
+      "request": "e74c54c142e1a5982ce2ba2162a0513c3b4fbcc432793d06e22b80eeb7b0f3b8"
+    },
+    {
+      "assessment": "0db351a8e2da6233979d444492102497be9fff0157f239ef5d246a3b0fd8d5ad",
+      "candidate": "de79bb6f9b9c286b836e78da4371a816d704810bbc22dc2dd80b35073488f00c",
+      "id": "test_whole_circle_preserves_topology_and_explicit_slice_is_linear/1",
+      "origin": "existing_python_assertion",
+      "reconstructed": "de79bb6f9b9c286b836e78da4371a816d704810bbc22dc2dd80b35073488f00c",
+      "request": "38f74895d7a52216cd1ddaa39f57bd0fe60e929dee2cec617fc6740a9fa05563"
+    },
+    {
+      "assessment": "a964857b06dc1e757e89c34cd78c7124be5da68155b016469d2c41cacb60dafb",
+      "candidate": "8bf1b36d655338afbc76ef938a00aad9e29c2fd009e9295067a2c62233883826",
+      "id": "test_wrong_alphabet_is_explicitly_unsupported_and_missing/0",
+      "origin": "existing_python_assertion",
+      "reconstructed": "8bf1b36d655338afbc76ef938a00aad9e29c2fd009e9295067a2c62233883826",
+      "request": "a3b7b97ea28eb23228a61c83f7df133f6fa88d00ac76f1c74a1d70745b8bd35f"
+    },
+    {
+      "assessment": "4300a6d67cecddcb8dbf155a4f76c98c76d397dfe3c5cc530a2b5d7f9db6d7c7",
+      "candidate": "941ecc48a7d541652c8ce10272ff9516d3de338c0a5dddb8c1895762562069af",
+      "id": "case_b/base",
+      "origin": "complete_retained_case_b",
+      "reconstructed": "941ecc48a7d541652c8ce10272ff9516d3de338c0a5dddb8c1895762562069af",
+      "request": "7bed1d124d0eccfec3c20ac74fdeeaff231d3d95365995a08db82e77e1e82ae7"
+    },
+    {
+      "assessment": "e6a3c14436b9804d6b0a1a8f569adc8913987a3d99f867ab51c7c3b73d0e8b10",
+      "candidate": "e73da6997775596231aff1d1fba86e341581cc116b052f366598b31cb5869656",
+      "id": "case_b/parameter-default",
+      "origin": "complete_retained_case_b",
+      "reconstructed": "e73da6997775596231aff1d1fba86e341581cc116b052f366598b31cb5869656",
+      "request": "0a8684c7792ff45a88dbcbfb920545b4452d1cc1b63a39e64f8f22162c94f584"
+    },
+    {
+      "assessment": "2e11cfe91ec1437be7f93754715a863eca19b16274421f16cd91b506504f3ffb",
+      "candidate": "14f3a72e806359bf39309ca5c2a933b999e37cd59021498a926d52e3e6f83e4f",
+      "id": "case_b/parameter-override",
+      "origin": "complete_retained_case_b",
+      "reconstructed": "14f3a72e806359bf39309ca5c2a933b999e37cd59021498a926d52e3e6f83e4f",
+      "request": "d90dd8f55644cccdc0b102089b57c8d82f79cadd75a9671dab75365f607d58d1"
+    }
+  ],
+  "claim_scope": "Independent exact software construction correspondence only; no biological or human admission claim.",
+  "coverage": {
+    "assessment_rejections": 28,
+    "case_b": [
+      {
+        "id": "case_b/base",
+        "path": [
+          "construction"
+        ],
+        "variant": "base"
+      },
+      {
+        "id": "case_b/parameter-default",
+        "path": [
+          "construction"
+        ],
+        "variant": "parameter-default"
+      },
+      {
+        "id": "case_b/parameter-override",
+        "path": [
+          "construction"
+        ],
+        "variant": "parameter-override"
+      }
+    ],
+    "cases": 83,
+    "documents": 219,
+    "methods": [
+      {
+        "method": "test_a_missing_released_product_cannot_be_a_complete_processing_recipe",
+        "retained_calls": 1,
+        "status": "source_assertions_executed"
+      },
+      {
+        "method": "test_amount_replay_binds_actual_subject_pins_preparations_and_unknown_quantity",
+        "retained_calls": 9,
+        "status": "source_assertions_executed"
+      },
+      {
+        "method": "test_assessment_diagnostic_byte_limit_rejects_large_reports_before_encoding",
+        "reason": "Monkeypatches reporting limits and the payload checker result; native bounded reporting needs separate literal coverage.",
+        "retained_calls": 0,
+        "status": "separate_budget_literal"
+      },
+      {
+        "method": "test_assessment_diagnostic_limit_preserves_omitted_failure_severity",
+        "reason": "Monkeypatches reporting limits and the payload checker result; native bounded reporting needs separate literal coverage.",
+        "retained_calls": 0,
+        "status": "separate_budget_literal"
+      },
+      {
+        "method": "test_canonical_edit_changes_only_the_declared_unmodified_base",
+        "retained_calls": 1,
+        "status": "source_assertions_executed"
+      },
+      {
+        "method": "test_changed_base_with_recomputed_identity_fails_sequence_comparison",
+        "retained_calls": 2,
+        "status": "source_assertions_executed"
+      },
+      {
+        "method": "test_checker_works_with_disabled_producer",
+        "retained_calls": 2,
+        "status": "source_assertions_executed"
+      },
+      {
+        "method": "test_chemical_edit_retains_canonical_a_and_exact_inosine_identity",
+        "retained_calls": 1,
+        "status": "source_assertions_executed"
+      },
+      {
+        "method": "test_circularization_does_not_normalize_an_out_of_bounds_origin",
+        "retained_calls": 1,
+        "status": "source_assertions_executed"
+      },
+      {
+        "method": "test_circularization_preserves_the_explicit_origin_and_source_path",
+        "retained_calls": 2,
+        "status": "source_assertions_executed"
+      },
+      {
+        "method": "test_complex_is_separately_pinned_membership_without_covalent_concatenation",
+        "retained_calls": 2,
+        "status": "source_assertions_executed"
+      },
+      {
+        "method": "test_conditional_codon_policy_uses_exact_declared_triplet_and_assumption",
+        "retained_calls": 2,
+        "status": "source_assertions_executed"
+      },
+      {
+        "method": "test_declared_no_product_branch_does_not_establish_biological_absence",
+        "retained_calls": 1,
+        "status": "source_assertions_executed"
+      },
+      {
+        "method": "test_edit_rejects_undeclared_chemical_changes_and_changed_cap",
+        "retained_calls": 2,
+        "status": "source_assertions_executed"
+      },
+      {
+        "method": "test_edit_rejects_wrong_expected_symbol_and_modified_canonical_site",
+        "retained_calls": 2,
+        "status": "source_assertions_executed"
+      },
+      {
+        "method": "test_edit_unknown_modification_inventory_is_unsupported",
+        "retained_calls": 1,
+        "status": "source_assertions_executed"
+      },
+      {
+        "method": "test_forged_source_traversal_fails_derivation_comparison",
+        "retained_calls": 2,
+        "status": "source_assertions_executed"
+      },
+      {
+        "method": "test_literal_concatenation_retains_each_occurrence_and_junction",
+        "retained_calls": 1,
+        "status": "source_assertions_executed"
+      },
+      {
+        "method": "test_literal_disjoint_slice_keeps_declared_segment_order",
+        "retained_calls": 1,
+        "status": "source_assertions_executed"
+      },
+      {
+        "method": "test_literal_explicit_coding_strand_transcription",
+        "retained_calls": 1,
+        "status": "source_assertions_executed"
+      },
+      {
+        "method": "test_literal_reverse_and_reverse_complement_are_distinct",
+        "retained_calls": 2,
+        "status": "source_assertions_executed"
+      },
+      {
+        "method": "test_literal_whole_copy_preserves_source_request_and_checked_derivation",
+        "retained_calls": 1,
+        "status": "source_assertions_executed"
+      },
+      {
+        "method": "test_missing_generated_value_cannot_hide_behind_a_complete_bundle",
+        "retained_calls": 2,
+        "status": "source_assertions_executed"
+      },
+      {
+        "method": "test_modified_codon_requires_explicit_readout_without_i_to_g_inference",
+        "retained_calls": 2,
+        "status": "source_assertions_executed"
+      },
+      {
+        "method": "test_multiple_orfs_reconstruct_each_named_product_from_its_own_path",
+        "retained_calls": 1,
+        "status": "source_assertions_executed"
+      },
+      {
+        "method": "test_nominal_alias_amount_conflict_drops_final_bundle_and_amounts_atomically",
+        "retained_calls": 2,
+        "status": "source_assertions_executed"
+      },
+      {
+        "method": "test_omitted_required_helper_cannot_leave_a_complete_payload_claim",
+        "retained_calls": 2,
+        "status": "source_assertions_executed"
+      },
+      {
+        "method": "test_ordered_intermediate_reconstruction_keeps_every_step_and_root",
+        "retained_calls": 1,
+        "status": "source_assertions_executed"
+      },
+      {
+        "method": "test_ordinary_translation_keeps_terminal_stop_out_of_the_protein",
+        "retained_calls": 1,
+        "status": "source_assertions_executed"
+      },
+      {
+        "method": "test_output_budget_is_checked_before_any_residue_reconstruction",
+        "reason": "Monkeypatches a private Python residue budget and allocation helper; retained native default-budget preflight literals cover this obligation.",
+        "retained_calls": 0,
+        "status": "separate_budget_literal"
+      },
+      {
+        "method": "test_payload_contract_authority_is_required_and_replayed",
+        "retained_calls": 2,
+        "status": "source_assertions_executed"
+      },
+      {
+        "method": "test_processing_budget_counts_all_products_before_reconstruction",
+        "reason": "Monkeypatches a private Python residue budget; retained native default-budget atomicity literals cover this obligation.",
+        "retained_calls": 0,
+        "status": "separate_budget_literal"
+      },
+      {
+        "method": "test_processing_nominal_failure_is_atomic_across_product_ports",
+        "retained_calls": 1,
+        "status": "source_assertions_executed"
+      },
+      {
+        "method": "test_processing_rejects_gaps_overlap_and_reordered_splice_segments",
+        "retained_calls": 3,
+        "status": "source_assertions_executed"
+      },
+      {
+        "method": "test_protein_cleavage_and_splicing_preserve_literal_residues",
+        "retained_calls": 2,
+        "status": "source_assertions_executed"
+      },
+      {
+        "method": "test_replay_requires_complete_independent_request_and_assessment_identity",
+        "retained_calls": 2,
+        "status": "source_assertions_executed"
+      },
+      {
+        "method": "test_ribosomal_skipping_retains_product_residues_without_a_precursor",
+        "retained_calls": 1,
+        "status": "source_assertions_executed"
+      },
+      {
+        "method": "test_rna_cleavage_preserves_all_literal_products",
+        "retained_calls": 1,
+        "status": "source_assertions_executed"
+      },
+      {
+        "method": "test_rna_splicing_preserves_removed_sequence_as_an_explicit_product",
+        "retained_calls": 1,
+        "status": "source_assertions_executed"
+      },
+      {
+        "method": "test_saved_diagnostics_cannot_be_removed_to_promote_unsupported_output",
+        "retained_calls": 1,
+        "status": "source_assertions_executed"
+      },
+      {
+        "method": "test_schema_bypass_is_reparsed_before_acceptance",
+        "retained_calls": 1,
+        "status": "source_assertions_executed"
+      },
+      {
+        "method": "test_skipping_cannot_omit_or_duplicate_a_translated_residue",
+        "retained_calls": 2,
+        "status": "source_assertions_executed"
+      },
+      {
+        "method": "test_supplied_root_can_be_finalized_without_fabricating_a_step",
+        "retained_calls": 1,
+        "status": "source_assertions_executed"
+      },
+      {
+        "method": "test_transcription_rejects_reverse_and_disjoint_coding_paths",
+        "retained_calls": 2,
+        "status": "source_assertions_executed"
+      },
+      {
+        "method": "test_translation_rejects_frame_start_terminal_and_internal_stop_changes",
+        "retained_calls": 4,
+        "status": "source_assertions_executed"
+      },
+      {
+        "method": "test_translation_stop_correspondence_cannot_be_removed",
+        "retained_calls": 2,
+        "status": "source_assertions_executed"
+      },
+      {
+        "method": "test_unavailable_constituent_marks_complex_missing_as_well",
+        "retained_calls": 1,
+        "status": "source_assertions_executed"
+      },
+      {
+        "method": "test_unknown_cap_cannot_gain_complete_nominal_handoff",
+        "retained_calls": 1,
+        "status": "source_assertions_executed"
+      },
+      {
+        "method": "test_unknown_complex_stoichiometry_is_retained_and_not_complete",
+        "retained_calls": 1,
+        "status": "source_assertions_executed"
+      },
+      {
+        "method": "test_whole_circle_preserves_topology_and_explicit_slice_is_linear",
+        "retained_calls": 2,
+        "status": "source_assertions_executed"
+      },
+      {
+        "method": "test_wrong_alphabet_is_explicitly_unsupported_and_missing",
+        "retained_calls": 1,
+        "status": "source_assertions_executed"
+      }
+    ],
+    "operations": [
+      "biocompiler.construction_base_editing.v0.1",
+      "biocompiler.construction_circularization.v0.1",
+      "biocompiler.construction_concatenate.v0.1",
+      "biocompiler.construction_conditional_translation.v0.1",
+      "biocompiler.construction_multi_orf_translation.v0.1",
+      "biocompiler.construction_orientation.v0.1",
+      "biocompiler.construction_protein_cleavage.v0.1",
+      "biocompiler.construction_protein_splicing.v0.1",
+      "biocompiler.construction_ribosomal_skipping.v0.1",
+      "biocompiler.construction_rna_cleavage.v0.1",
+      "biocompiler.construction_rna_splicing.v0.1",
+      "biocompiler.construction_slice.v0.1",
+      "biocompiler.construction_transcription.v0.1",
+      "biocompiler.construction_translation.v0.1"
+    ],
+    "outcomes": {
+      "fail": 34,
+      "pass": 40,
+      "unknown": 1,
+      "unsupported": 8
+    },
+    "replay_rejections": 3
+  },
+  "documents": [
+    {
+      "bytes": 1105,
+      "id": "006bb9aeadccae2dddad64fbc247ad5b2bdcabe47b2336b5900db37b3e830576",
+      "kind": "assessment"
+    },
+    {
+      "bytes": 1105,
+      "id": "00ae29543434a942e121bae1361c6ed8a77ad4c68b14c5b579f8600b800735bf",
+      "kind": "assessment"
+    },
+    {
+      "bytes": 78799,
+      "id": "014eca42c8623dd6ca52e673ef01ee692affce3dde9aa39e8d4619e71e9cab20",
+      "kind": "candidate"
+    },
+    {
+      "bytes": 1183,
+      "id": "023e69958c1f6520b99c4bb9154453402fb1a223c630d6d1f61aad4997c76cc0",
+      "kind": "assessment"
+    },
+    {
+      "bytes": 104072,
+      "id": "0309bede2c0b2f168f65ae6fe9c5afc9ff093424ee34b5ceb821bc803ee75972",
+      "kind": "request"
+    },
+    {
+      "bytes": 85068,
+      "id": "045e946fac168f8167172dfb4aa3185c6d9db8fb408857d89a3cf46e9dd012b0",
+      "kind": "request"
+    },
+    {
+      "bytes": 1240,
+      "id": "06063a6fd1a7b362bcdc4941740c34e646832b204b83fe699b3d9c894c1e6159",
+      "kind": "assessment"
+    },
+    {
+      "bytes": 1105,
+      "id": "065b9359aac67a73d5e37824c854bee9d91f1d7cf899529942e8b0e58fe15e6a",
+      "kind": "assessment"
+    },
+    {
+      "bytes": 407,
+      "id": "0693ab9b7eb0f127d9998bbac13260cbe995561a7dfc9c186166893557936590",
+      "kind": "candidate"
+    },
+    {
+      "bytes": 1145,
+      "id": "0723b64a09f907bb555846905f73671ba330b796fd4ca37e40e9dad4f72f2ca8",
+      "kind": "assessment"
+    },
+    {
+      "bytes": 1105,
+      "id": "072f3d3f3f79684c9a72d0295969dc6c9d50b94312e21c9f9c189fff589778d1",
+      "kind": "assessment"
+    },
+    {
+      "bytes": 90250,
+      "id": "079073e8dde7489a973934dd5802b63b72a4c322b03233e31d5720611d872b4e",
+      "kind": "request"
+    },
+    {
+      "bytes": 86680,
+      "id": "07beff258c26e65716988195301dc167b40c008aa5d8bad659309503f87e5c9e",
+      "kind": "request"
+    },
+    {
+      "bytes": 92521,
+      "id": "0a260818d28dc56c4fb17866e02bfc4f211804b92d0aab96f1e578bbed7dfd5f",
+      "kind": "request"
+    },
+    {
+      "bytes": 93839,
+      "id": "0a8684c7792ff45a88dbcbfb920545b4452d1cc1b63a39e64f8f22162c94f584",
+      "kind": "request"
+    },
+    {
+      "bytes": 91465,
+      "id": "0bce0af1ec7a34698c41fb33a1eea6df573ed901ae3a88998e5f540028798c0b",
+      "kind": "candidate"
+    },
+    {
+      "bytes": 1158,
+      "id": "0c0e6d935686a54c1bdf0b1e20ca86bdcec368a2637eae6ddf44c8795722b4c2",
+      "kind": "assessment"
+    },
+    {
+      "bytes": 88902,
+      "id": "0d1d74dfb61a2ee8abcae3a173ce8e7af93421a79a618a46207c57e5409106bc",
+      "kind": "candidate"
+    },
+    {
+      "bytes": 1105,
+      "id": "0db351a8e2da6233979d444492102497be9fff0157f239ef5d246a3b0fd8d5ad",
+      "kind": "assessment"
+    },
+    {
+      "bytes": 78635,
+      "id": "0dc95d8880f7e0daea442aa674837420cb97ad5c36a3b111a284e65b921c87ea",
+      "kind": "candidate"
+    },
+    {
+      "bytes": 1160,
+      "id": "0e0dfb712aaa4ffd9534e961e2b79e31beba16e564aaae006bddb7621b06af13",
+      "kind": "assessment"
+    },
+    {
+      "bytes": 85513,
+      "id": "0ec2593aa510364fe35dacb631490634ef3cbe73c47403f3e2188bb636844ae2",
+      "kind": "request"
+    },
+    {
+      "bytes": 86381,
+      "id": "0f021bbbda683ea2b3798883229ee15a3617e02c31acb34b9d59b1720eee0dda",
+      "kind": "request"
+    },
+    {
+      "bytes": 1105,
+      "id": "14c5e64754e5dce8c0da8c4d33e226a0e2a723e1ab836b2607d01fab60662f53",
+      "kind": "assessment"
+    },
+    {
+      "bytes": 95835,
+      "id": "14f3a72e806359bf39309ca5c2a933b999e37cd59021498a926d52e3e6f83e4f",
+      "kind": "candidate"
+    },
+    {
+      "bytes": 92515,
+      "id": "152cb7c00900439fe3d6834740592558d3ba39695dac5f3b571ccbc4f50105f8",
+      "kind": "request"
+    },
+    {
+      "bytes": 1105,
+      "id": "15aaadce9c3561f87f429f196c467d0b5323b3364a8a5575bd6926a091287138",
+      "kind": "assessment"
+    },
+    {
+      "bytes": 88115,
+      "id": "15e4fe163ac58ce2cc5e4b3aa2c785652aebde656e15f0ccbcef5e8c40807d4f",
+      "kind": "request"
+    },
+    {
+      "bytes": 115945,
+      "id": "169351458889f357d00d5fc7b9c8bd5f718c72959467eed9a24f0dbe47ace036",
+      "kind": "request"
+    },
+    {
+      "bytes": 1275,
+      "id": "16f2757c6a1a7949bc7e85b4d5dacd5926efbdd56ec199973a4cf48c96c7cc99",
+      "kind": "assessment"
+    },
+    {
+      "bytes": 1264,
+      "id": "17cf2b9074483bfe5351018e98c76497c8f6af57f3c9a3d1e04002a7243e8f94",
+      "kind": "assessment"
+    },
+    {
+      "bytes": 96508,
+      "id": "1ac1720b054c4a8e0520bc9a1ec79b75af31898a79a0cc0c037c05cbc06ec170",
+      "kind": "candidate"
+    },
+    {
+      "bytes": 93488,
+      "id": "1b1529864fd64dda61b2ed500ae987bb65a0fa5b3ebf768f8699ff6cc2625ce5",
+      "kind": "request"
+    },
+    {
+      "bytes": 1105,
+      "id": "1ca2ebd30f660fce96a0aecbc5f70562599d1dec97fc54bb8d3517a27d026295",
+      "kind": "assessment"
+    },
+    {
+      "bytes": 1256,
+      "id": "1ea37feaa3812a5bd1aa233de3cb122bd58c2309edc92427872eff3dc2aeef20",
+      "kind": "assessment"
+    },
+    {
+      "bytes": 71033,
+      "id": "20180e7376f51148c5dc8f5a151f7f1aaf43c9e366d10c933c8a800b9b0b7942",
+      "kind": "request"
+    },
+    {
+      "bytes": 91465,
+      "id": "208a2722022c5232f8ddcff3f56a83ed9069864ee9c25256cbcd0a024fdf737a",
+      "kind": "candidate"
+    },
+    {
+      "bytes": 1195,
+      "id": "216d373a6eecfc173971b8ddcacf7032fbdc22d2ed6f026983fb3b35d4402473",
+      "kind": "assessment"
+    },
+    {
+      "bytes": 86120,
+      "id": "225b60aa59aea20e3ce9c808c5883e1b8700950396c952d4fc2f784d72031a12",
+      "kind": "request"
+    },
+    {
+      "bytes": 1150,
+      "id": "226184f498926fec9f8ee608311cf5cc978afd3be7f739b49fc5428da7710298",
+      "kind": "assessment"
+    },
+    {
+      "bytes": 86669,
+      "id": "24e19f29369a913912bb327566e552b21841c7b5a928600400c7e5e0d6f676c9",
+      "kind": "request"
+    },
+    {
+      "bytes": 93491,
+      "id": "25cda094028b40de470c5f99b0c0742ae6cd3a347cb8524ad5ed545921563e92",
+      "kind": "request"
+    },
+    {
+      "bytes": 92689,
+      "id": "25fa43bc92abed20b7412f2019c3d38df097c3c4e3d2bfd6ba9f1bdd375139dd",
+      "kind": "request"
+    },
+    {
+      "bytes": 79315,
+      "id": "28247cefd6cad76ac84b1c0742608a392465cb25cbbf68f25f62c08cde59ae05",
+      "kind": "candidate"
+    },
+    {
+      "bytes": 86000,
+      "id": "283680412ddc92fb7302cd74e06b5cac6a0c52e77d580b4bdad517ffcd202137",
+      "kind": "request"
+    },
+    {
+      "bytes": 384,
+      "id": "2b6f2a4d37bfa3ea1ab5163c4840cabaccb4bbd737ae310de18c8841e777ea55",
+      "kind": "candidate"
+    },
+    {
+      "bytes": 1227,
+      "id": "2cc51f0e9a23de04e06e82b86164d1a76d20756f8ae510f952132df978b74a53",
+      "kind": "assessment"
+    },
+    {
+      "bytes": 1105,
+      "id": "2e11cfe91ec1437be7f93754715a863eca19b16274421f16cd91b506504f3ffb",
+      "kind": "assessment"
+    },
+    {
+      "bytes": 71068,
+      "id": "2e9dec48c5f1811aabe8cb6c4e326c2cfc445e4fef15fbbc68e10ffc6d3491fe",
+      "kind": "candidate"
+    },
+    {
+      "bytes": 1272,
+      "id": "2fe5b417ee4134b9880d67405b8b4e80f25007c3d868d236a577d35792decc16",
+      "kind": "assessment"
+    },
+    {
+      "bytes": 366,
+      "id": "2ffa0f41b288e011ea839e593dfb62a0c3fa46c2794144275b8183ccf1f1dc7e",
+      "kind": "candidate"
+    },
+    {
+      "bytes": 1105,
+      "id": "300d22d669f9d52cb939888a795854fe2d3ea4bd0436ff522319a60d3cef93ab",
+      "kind": "assessment"
+    },
+    {
+      "bytes": 1223,
+      "id": "36929e69ed7ccda16b9876059cf8fd762d78afa23e8fc34c96243297232fd2da",
+      "kind": "assessment"
+    },
+    {
+      "bytes": 1150,
+      "id": "369788cab742acc6e602e6525326877a8a4c4b22a693bb75e7a54e5f39a4af4c",
+      "kind": "assessment"
+    },
+    {
+      "bytes": 393,
+      "id": "378f87ca4c4543199da2828c3522ed018c76ba75d6de85d7cd7722945b2f5bb0",
+      "kind": "candidate"
+    },
+    {
+      "bytes": 89640,
+      "id": "37daf0c1378967739b7f602353804fa576b81ba424b4e0bc8201e2638bf30f79",
+      "kind": "request"
+    },
+    {
+      "bytes": 86048,
+      "id": "38f74895d7a52216cd1ddaa39f57bd0fe60e929dee2cec617fc6740a9fa05563",
+      "kind": "request"
+    },
+    {
+      "bytes": 86131,
+      "id": "3a58672dad473c78a8fb56d3f9616167881803cbf5535738f0d42bc063e373f3",
+      "kind": "request"
+    },
+    {
+      "bytes": 107221,
+      "id": "3aa04b7187723f39269cb73ec712bf5e7916c8c97de3232702c31699597e3780",
+      "kind": "candidate"
+    },
+    {
+      "bytes": 1105,
+      "id": "3b3f02084da04f92b39aa3a04a8d153b16068efbc07bcb50b6616cce977927c1",
+      "kind": "assessment"
+    },
+    {
+      "bytes": 90554,
+      "id": "413ccf29d74d82b096307517f08d3497894734fd5e01afb54072de2df6a16151",
+      "kind": "request"
+    },
+    {
+      "bytes": 1105,
+      "id": "4300a6d67cecddcb8dbf155a4f76c98c76d397dfe3c5cc530a2b5d7f9db6d7c7",
+      "kind": "assessment"
+    },
+    {
+      "bytes": 86634,
+      "id": "44d476ffac08b77d8f089ce6ee7382c145df17338a9e8217324632cc53ad5b2f",
+      "kind": "request"
+    },
+    {
+      "bytes": 461,
+      "id": "4593b9925d3acb17e7d2722fc06e2386614f487215471417384451fd539001c8",
+      "kind": "candidate"
+    },
+    {
+      "bytes": 393,
+      "id": "45aa73fc298e328ac30a49ed222436aa32d1a7817833933d9324c8af5a2822ff",
+      "kind": "candidate"
+    },
+    {
+      "bytes": 91465,
+      "id": "464843690e4d8149cc4b7a99371ca09deba1a527b7814174683bda8cef4b3c04",
+      "kind": "candidate"
+    },
+    {
+      "bytes": 1159,
+      "id": "483791ae93f309f542dc84524d5a6886a6755fa0756bf89f296a0bc8a38283ee",
+      "kind": "assessment"
+    },
+    {
+      "bytes": 7871,
+      "id": "483acb96790f3d445414373aae45b84d208f3b004fd689e6289bbc4013319907",
+      "kind": "candidate"
+    },
+    {
+      "bytes": 461,
+      "id": "49460a05a055d21d698e8d2d0ace2b8390b9095e756421a4e2118a8e3eae3ad9",
+      "kind": "candidate"
+    },
+    {
+      "bytes": 1213,
+      "id": "4d883e886dc0c00de862a8dd4faadcef268baf93041ad42c97d19584c1eb9eaf",
+      "kind": "assessment"
+    },
+    {
+      "bytes": 1105,
+      "id": "4e0be2e4159abf2d2cc620a507c0e239cd4da2d42b659a0f48cb89c137e835dd",
+      "kind": "assessment"
+    },
+    {
+      "bytes": 74554,
+      "id": "4e5950b8f2f7ad252f8c472517557605bdb45083fd56e23cb8fc943a0104ce76",
+      "kind": "request"
+    },
+    {
+      "bytes": 81215,
+      "id": "4fd9c0ce26bad2965bbb501b20c8b0ff01ebd1a655db52116e58b3595e7a2e65",
+      "kind": "candidate"
+    },
+    {
+      "bytes": 86507,
+      "id": "505ecdb91ccc0cf24b546ad4804c76975d8fabe3c5fbea00e386fb95e7b25a3a",
+      "kind": "request"
+    },
+    {
+      "bytes": 1105,
+      "id": "53a77c2cea40423f645782772184050da9f18150f6f614cb5f5b7b767ff18712",
+      "kind": "assessment"
+    },
+    {
+      "bytes": 1105,
+      "id": "54232ce05020dc7babc4105734c8e9fceb75957ed816df5d34ed306eb75e53d6",
+      "kind": "assessment"
+    },
+    {
+      "bytes": 1148,
+      "id": "54cc839c17b99033dac69a40b3425c964bc4ce3cfa48161b93394292e95fcf8b",
+      "kind": "assessment"
+    },
+    {
+      "bytes": 71075,
+      "id": "58be317a26fa49c2b5fcd43aba6f7f93c66a417803f181f28ae829c7c43feec6",
+      "kind": "candidate"
+    },
+    {
+      "bytes": 88092,
+      "id": "5a94365273546b0600866d3717c8ac21af31a21c4a6db91810a6552372d0e916",
+      "kind": "request"
+    },
+    {
+      "bytes": 78791,
+      "id": "5b451ff992f790e2e3db0cc488a4e7647819763fc51e0badf7ec61115750f50a",
+      "kind": "candidate"
+    },
+    {
+      "bytes": 1105,
+      "id": "5f2c14e2097dae77593eb9df837898e065e8c41a38d69e94d2a1cdc0b2337b28",
+      "kind": "assessment"
+    },
+    {
+      "bytes": 380,
+      "id": "5f90f386c228665dfa5bb86ac509ba8df3e77d9077983bd862e8301007cd734c",
+      "kind": "candidate"
+    },
+    {
+      "bytes": 1105,
+      "id": "6038e8e90c6469b2da014fa6faa233774d13a8a26fe082c7fb2e8d085dca2c96",
+      "kind": "assessment"
+    },
+    {
+      "bytes": 1105,
+      "id": "60a0fe5b424e50ae840508aae018b8a1f88c14fb14dd839d1ac8dff85e9ebe6c",
+      "kind": "assessment"
+    },
+    {
+      "bytes": 1105,
+      "id": "6240cc2c97fcba764201fad19cfedb91e3d5eb91e00afec048e41498bdaf321d",
+      "kind": "assessment"
+    },
+    {
+      "bytes": 92518,
+      "id": "634c9f392e17d9f5d235ce74d85167d8628f5d17e6e818ba01aed373389e003c",
+      "kind": "request"
+    },
+    {
+      "bytes": 1105,
+      "id": "636464d892d12e9513b2ff19f3a5cd874aa9a42a51cb3cd7b423b04a0c1021ff",
+      "kind": "assessment"
+    },
+    {
+      "bytes": 371,
+      "id": "687de42e939c351c560eeffe264ffa163155045cc2e4e7620aced83cf74b2c83",
+      "kind": "candidate"
+    },
+    {
+      "bytes": 106284,
+      "id": "69a1d2e273e56e5001fed825eedcb5e80914ec7b81a38bfca37e7cab5d35cc1c",
+      "kind": "candidate"
+    },
+    {
+      "bytes": 92533,
+      "id": "6a19515614ad9b499f0093b207c76c288c9fd7171c1825347fb26de8fa1e1bf0",
+      "kind": "candidate"
+    },
+    {
+      "bytes": 86127,
+      "id": "6c6b2dbd9caa10ae8ad6984d26372b6beb6b9f90f6a99656d29bf93b544b9fa6",
+      "kind": "request"
+    },
+    {
+      "bytes": 90251,
+      "id": "6d71740bb2d2dca46c1c6576216ecdd6173e10dfbd390bec7f46ccb1bca6e765",
+      "kind": "request"
+    },
+    {
+      "bytes": 1105,
+      "id": "6dafdae1656ed872d2f61c76d7e3a827c7fa71e10b9a52303b27eb3bc8955771",
+      "kind": "assessment"
+    },
+    {
+      "bytes": 1150,
+      "id": "6efa3409ff039367b94bbe371b34569a8f1d1af36e69e5f3309fc0c9a0d6388d",
+      "kind": "assessment"
+    },
+    {
+      "bytes": 92518,
+      "id": "6effca57ce72f489be9d2cf3a2c4f79f7d6f91c0a92657578898107303dc7be9",
+      "kind": "request"
+    },
+    {
+      "bytes": 78635,
+      "id": "70e2533bd2fead8811d505ddc0c3ce5a490eb758fad4b1c9ccdd49ff5fad556c",
+      "kind": "candidate"
+    },
+    {
+      "bytes": 78635,
+      "id": "72717d98b97e3c7278303cb7674f5f817bd45e22b00efc1870d4b0923a500514",
+      "kind": "candidate"
+    },
+    {
+      "bytes": 1143,
+      "id": "73005197d53f603ef9d7fbbc1dd64093dc45fa3341e3ca829054d011261a59c5",
+      "kind": "assessment"
+    },
+    {
+      "bytes": 78635,
+      "id": "7433161c2288ceb8ff4757bc38acc540cf7236d1e3a8e100456710dff23d6dd0",
+      "kind": "candidate"
+    },
+    {
+      "bytes": 1195,
+      "id": "754b9253c2ffe69b3ab59a7e5746a3912ef8fdb87c88d42210837ae1ae574dcc",
+      "kind": "assessment"
+    },
+    {
+      "bytes": 86385,
+      "id": "76c5fcbc6164b204b5b10498c161c77abb7663226765e626a190e48a5b3dfeee",
+      "kind": "request"
+    },
+    {
+      "bytes": 92533,
+      "id": "7700d05b6f4f945a9f5b456d200be1d1a41b82679cc6e45fce1a2c8e322e7bce",
+      "kind": "candidate"
+    },
+    {
+      "bytes": 87209,
+      "id": "773cc8b72752e50a7646c499ab807021b3e2ebc2162ea02769f145ee067edf99",
+      "kind": "request"
+    },
+    {
+      "bytes": 390,
+      "id": "77a8af338946704e7a3caabd601e333815f3595d8de3637ef1856702bf3bc5d2",
+      "kind": "candidate"
+    },
+    {
+      "bytes": 1105,
+      "id": "7949089c34bf814204f800ce3834a4b1cd13b8b85aceed59b736126271acee4e",
+      "kind": "assessment"
+    },
+    {
+      "bytes": 1198,
+      "id": "7bdc37ebf3a3e020aa9ae5526ffc381e85dd83afd3ea730a60d6a59e57b64425",
+      "kind": "assessment"
+    },
+    {
+      "bytes": 92239,
+      "id": "7bed1d124d0eccfec3c20ac74fdeeaff231d3d95365995a08db82e77e1e82ae7",
+      "kind": "request"
+    },
+    {
+      "bytes": 92530,
+      "id": "7da3a33d059a403433ab66f9a4221f20c299f5ea349bff0af95bce4a42a0236d",
+      "kind": "candidate"
+    },
+    {
+      "bytes": 1275,
+      "id": "7f43898286638b4bbea66d5b00f0dbca326d466fa03f0c8017b348bbd63eb38e",
+      "kind": "assessment"
+    },
+    {
+      "bytes": 90251,
+      "id": "7fb7fdb22acb6668bffc2b2fd4e61b8d1e546c140920649e83bd819a8a383e70",
+      "kind": "request"
+    },
+    {
+      "bytes": 393,
+      "id": "805933555a12fd36e80da4b000c81c2aae5c2dcee808f404bb0a1ff98bf30e9f",
+      "kind": "candidate"
+    },
+    {
+      "bytes": 106124,
+      "id": "807023db8cb4fd89e708c923e029265d9b5e360f6f103d0c49743f3c0daca9c8",
+      "kind": "candidate"
+    },
+    {
+      "bytes": 90554,
+      "id": "82010c467e9a07d2ad7258ddc7753d4d7cd973e6a06ff9a7f034be7f1e062832",
+      "kind": "request"
+    },
+    {
+      "bytes": 91511,
+      "id": "82069215ae904335db836fdc7ceeeb0acd692f9251e690c07b4cd95d472093ca",
+      "kind": "candidate"
+    },
+    {
+      "bytes": 96668,
+      "id": "8337214659a94dcc0bbcad2bfa3089efa227dee96ce3c3fdfd706c96011db5f0",
+      "kind": "candidate"
+    },
+    {
+      "bytes": 1212,
+      "id": "839beb28e088f4ed1fe8016dd9770c5588dc60e227d65df8cbd8823788128caf",
+      "kind": "assessment"
+    },
+    {
+      "bytes": 88311,
+      "id": "88d10044877364d4ab925215c5167ee77e7d184ccc9e82baea922cd11cd8c850",
+      "kind": "request"
+    },
+    {
+      "bytes": 294,
+      "id": "89226c7db613e89b94514a169e1b6475246dfdc56578d645a7bb2cf49b8c0963",
+      "kind": "candidate"
+    },
+    {
+      "bytes": 77503,
+      "id": "896ad687de613612429c2114891f16aff83b768b9b30541a4228906f38eec744",
+      "kind": "candidate"
+    },
+    {
+      "bytes": 91465,
+      "id": "8a54f89920b4c6d3f7685f31e5b306847046dbe7d0ea8b83429b4e92ebdb0b8c",
+      "kind": "candidate"
+    },
+    {
+      "bytes": 1212,
+      "id": "8b804fa9c66264e28653196b9edf949ad02a81afb9cb75e2a5ab44be7afa3361",
+      "kind": "assessment"
+    },
+    {
+      "bytes": 374,
+      "id": "8bf1b36d655338afbc76ef938a00aad9e29c2fd009e9295067a2c62233883826",
+      "kind": "candidate"
+    },
+    {
+      "bytes": 90251,
+      "id": "8d9719d26e5b8861da9a743cec126a6e23ef8af17fd5b2f8b49f64499e938d03",
+      "kind": "request"
+    },
+    {
+      "bytes": 85513,
+      "id": "8e5cb15734579cf036f7241756812bf065e2081e81d2b9e0c94e491e4394a74a",
+      "kind": "request"
+    },
+    {
+      "bytes": 78635,
+      "id": "9168e5841643a18a8ab7ea564381a4654d0d094f8b2102e60f13f4cdbf11aa4f",
+      "kind": "candidate"
+    },
+    {
+      "bytes": 94119,
+      "id": "941ecc48a7d541652c8ce10272ff9516d3de338c0a5dddb8c1895762562069af",
+      "kind": "candidate"
+    },
+    {
+      "bytes": 1105,
+      "id": "9573eadff931989e2eb548bcd8f82633617c9e933a120ca071db2555bca95a46",
+      "kind": "assessment"
+    },
+    {
+      "bytes": 1150,
+      "id": "96bd9424bc718ee868f5598dd224067943512e83970d47883db07e1f9df52453",
+      "kind": "assessment"
+    },
+    {
+      "bytes": 1150,
+      "id": "9773b15dc482ef6f3d589912d2190b4defd459670ad7e58a8f96e2a3bb184092",
+      "kind": "assessment"
+    },
+    {
+      "bytes": 104242,
+      "id": "9aba18812805524fe56968a2783dd4f73985331b207781f98e5f82b1c4924332",
+      "kind": "request"
+    },
+    {
+      "bytes": 108664,
+      "id": "9bb0d7e9d9608ef50c98945a554da6e615a31922322a7ad53c4835a73730d66d",
+      "kind": "request"
+    },
+    {
+      "bytes": 86130,
+      "id": "9f63c4a623d6b12a4ad135eb8d6e326ec3c863c9145e577a9b94ed73a4ba09a1",
+      "kind": "request"
+    },
+    {
+      "bytes": 1195,
+      "id": "a03c953bfa2a65fc5f7c12ac04af5393135f070ead3916e79fb954b507ffdaae",
+      "kind": "assessment"
+    },
+    {
+      "bytes": 88651,
+      "id": "a03e57722f33a97390545531b1edcab49cceb30ef172c5eb0ce980bac1e7d4e2",
+      "kind": "candidate"
+    },
+    {
+      "bytes": 1212,
+      "id": "a1be478332aa0745aa104490593daeb9e26fd81c4ad5c2902cae5e7ecb029115",
+      "kind": "assessment"
+    },
+    {
+      "bytes": 393,
+      "id": "a1e33be5698235a27f2956e6b6dba4e8ff244471b5e64686fc9ed558fb1c6574",
+      "kind": "candidate"
+    },
+    {
+      "bytes": 86186,
+      "id": "a3b7b97ea28eb23228a61c83f7df133f6fa88d00ac76f1c74a1d70745b8bd35f",
+      "kind": "request"
+    },
+    {
+      "bytes": 366,
+      "id": "a3c1156e16d1b69883831f48a430d96fccd2acffb25d9cd5295204e0c5efc7d7",
+      "kind": "candidate"
+    },
+    {
+      "bytes": 92526,
+      "id": "a56e1c123713e3e74dbbddb4d5a08058d65efa3d47d0298724483dcf9fba422f",
+      "kind": "candidate"
+    },
+    {
+      "bytes": 89196,
+      "id": "a7b011b0122d32f3523661dea66947e8676f2c756d84b52a6f4fb9bce629279d",
+      "kind": "candidate"
+    },
+    {
+      "bytes": 1217,
+      "id": "a964857b06dc1e757e89c34cd78c7124be5da68155b016469d2c41cacb60dafb",
+      "kind": "assessment"
+    },
+    {
+      "bytes": 78635,
+      "id": "aac1a807570f8c9cb06f13f97a48332bb2e6e392672c613f5bd0b108fe15b0b0",
+      "kind": "candidate"
+    },
+    {
+      "bytes": 1105,
+      "id": "ab437b39c0250a781174754bb2747726bffde6dc440ca8683dc2c2906018a756",
+      "kind": "assessment"
+    },
+    {
+      "bytes": 78645,
+      "id": "ab794d59386c54dd56e299cb7b585be249b0a2b61162dfdc2e7719c7a32473cc",
+      "kind": "candidate"
+    },
+    {
+      "bytes": 89196,
+      "id": "aef027ffa56954fb9bc2c0d52e075cdc1f07488ec3db3ab0be0c421d8f606cba",
+      "kind": "candidate"
+    },
+    {
+      "bytes": 1105,
+      "id": "b0018d8d3aeba289abf4f62b041d142edbf36c13baa93d7a707d8fbaf2eb6efa",
+      "kind": "assessment"
+    },
+    {
+      "bytes": 1227,
+      "id": "b0d866ac8b802185a1d74a4e93076cedc3edb0db1b0f91b96d9813045e17f8d5",
+      "kind": "assessment"
+    },
+    {
+      "bytes": 457,
+      "id": "b5874c057201493959c78e0addca6243aaf57f9ad6fbdd42cb9dd139e6755f50",
+      "kind": "candidate"
+    },
+    {
+      "bytes": 108664,
+      "id": "b5874d079462b0cacd963789eb605ddb0db8d661eac43ea935d493ac3b01e13d",
+      "kind": "request"
+    },
+    {
+      "bytes": 92984,
+      "id": "b67c358a58b51b442c65677849a41cc816be95269d89d4d8cca67c22424a4dfe",
+      "kind": "request"
+    },
+    {
+      "bytes": 92529,
+      "id": "b6d0389653aae88db84400fdaeb718d04d1234fe535b7b2746517635de678eba",
+      "kind": "candidate"
+    },
+    {
+      "bytes": 1105,
+      "id": "b6f1d2be53b688b2e3e2d3dd6262662ad0bd3229c583846b5d539a54bedec6f3",
+      "kind": "assessment"
+    },
+    {
+      "bytes": 90512,
+      "id": "b7036ee7f6da6fedab8e69be43bebfd652e43c86ec22c61d58e62aece8f9ab53",
+      "kind": "candidate"
+    },
+    {
+      "bytes": 104242,
+      "id": "b7a6e5a889fd7999191a663047f2f5727e91a8cec72f8f144083554e73d22e51",
+      "kind": "request"
+    },
+    {
+      "bytes": 384,
+      "id": "b7f030c71dcd7e7b93aab425d1d8d2d34a06291aba2c1ef2d2d0111743ff9084",
+      "kind": "candidate"
+    },
+    {
+      "bytes": 1150,
+      "id": "b81f8179bd6da1d27e4cf98cb9b048fa565799144d8f0dc391ce5ded96899e9d",
+      "kind": "assessment"
+    },
+    {
+      "bytes": 103647,
+      "id": "b8323b53f3aa6853cc3a5150646c4315ac0ab4ffb937ccab8d688dcb563bfd45",
+      "kind": "request"
+    },
+    {
+      "bytes": 104072,
+      "id": "b991f64a57cddfd3242ce65545128bcc41da640bdc554c6a66c173de3dd35c74",
+      "kind": "request"
+    },
+    {
+      "bytes": 1143,
+      "id": "b9b3894327c26ea62bcb38c918136748d46837c381e32efdc1f8c2f421a6f9e8",
+      "kind": "assessment"
+    },
+    {
+      "bytes": 92529,
+      "id": "ba759571b13ca7f332a730f5bfcb60adfd70e52483b27c12f85aecef6c797671",
+      "kind": "candidate"
+    },
+    {
+      "bytes": 366,
+      "id": "baa58db8d7e62bb123c833e65de4ac15c253eccdf516b1aab18a1c256744f5a4",
+      "kind": "candidate"
+    },
+    {
+      "bytes": 461,
+      "id": "bafbd7018113e2348da790b6787b427dcb808a6f01d1c82b4e74c085139c5116",
+      "kind": "candidate"
+    },
+    {
+      "bytes": 457,
+      "id": "c04219cbd38c8a114af91cd709347e5592daf902d01d39d9879a86b4371517a2",
+      "kind": "candidate"
+    },
+    {
+      "bytes": 89637,
+      "id": "c34bb97e7512185adef48dcc6198b1911554fa8cce53d09577e87c11546f34b2",
+      "kind": "request"
+    },
+    {
+      "bytes": 77663,
+      "id": "c417277295dbcbf61e4cc9baaa728f675a633b4a3c98d5010a26d50ff3c5d88d",
+      "kind": "candidate"
+    },
+    {
+      "bytes": 1200,
+      "id": "c778b4e8e261fb783b335ce97dece1f76615ebe728ec14ae51516633a361c8ed",
+      "kind": "assessment"
+    },
+    {
+      "bytes": 78635,
+      "id": "c7b0c198c8d2a93ca65a0a8078da0b0bdc9fca2fa480a27c88ea935cfffd0d38",
+      "kind": "candidate"
+    },
+    {
+      "bytes": 1272,
+      "id": "c9a9f071e52e6677eb4d434fdceb4162d1134088e032af8943aaee2afe64e948",
+      "kind": "assessment"
+    },
+    {
+      "bytes": 91148,
+      "id": "cabafb7b980f855a51589aaacd4c2384bcdd3437d41dbe8f12e4b0b37a396700",
+      "kind": "request"
+    },
+    {
+      "bytes": 450,
+      "id": "caff7e2de0c87994d51bd284db29b1ebec5b976178d3658b624e62e7a0ec0960",
+      "kind": "candidate"
+    },
+    {
+      "bytes": 1264,
+      "id": "cd0209afd94abed668325c9c9bb0afbe44e6385f504d5042336ee4181baf7bd3",
+      "kind": "assessment"
+    },
+    {
+      "bytes": 116115,
+      "id": "cf00d6734f8505170681bc5631b3848aa0f4e542b93f0fd2a2e40d678674ae86",
+      "kind": "request"
+    },
+    {
+      "bytes": 1148,
+      "id": "d2cbced81561d0c644c900c699c92882b0760ac02619b02891a5e7ff080a266c",
+      "kind": "assessment"
+    },
+    {
+      "bytes": 78651,
+      "id": "d45147063c40d3253affb529cac25c12283d126f6d9b8b06e66985dfcf346653",
+      "kind": "candidate"
+    },
+    {
+      "bytes": 86236,
+      "id": "d71d2e5d7a11842325a1acb12bda8a54ea5e55697c790602b3aca3fce5bb12e5",
+      "kind": "candidate"
+    },
+    {
+      "bytes": 77503,
+      "id": "d73116630753b140e766b2a5c5705f87165a90fe4694ab3105b35f9acc66b1c0",
+      "kind": "candidate"
+    },
+    {
+      "bytes": 89196,
+      "id": "d87540ffc11025def61a7e6874a487e01b36e0e688932c237b466a08426221dc",
+      "kind": "candidate"
+    },
+    {
+      "bytes": 1105,
+      "id": "d89931e4158ff2a84a591161586314dc1e1c46f809dfcec5fdcc31cef694970a",
+      "kind": "assessment"
+    },
+    {
+      "bytes": 93839,
+      "id": "d90dd8f55644cccdc0b102089b57c8d82f79cadd75a9671dab75365f607d58d1",
+      "kind": "request"
+    },
+    {
+      "bytes": 1212,
+      "id": "d91cb28b1c530107602691e1ab06fe619159e37fea89cd7d5d0f5758dfcecf86",
+      "kind": "assessment"
+    },
+    {
+      "bytes": 87698,
+      "id": "db3b288ce72907dd110ea840ec45395a8bba0c574bd628b0aa4f4c2bef5dd798",
+      "kind": "request"
+    },
+    {
+      "bytes": 91465,
+      "id": "db9076c201176580ec68ade66c40697e7f02d21fcab896bec52827e894c5b718",
+      "kind": "candidate"
+    },
+    {
+      "bytes": 90251,
+      "id": "dbf059b6364681ebc34c7314b22a3fd91911c5c665ddd3f98082d579394d34f7",
+      "kind": "request"
+    },
+    {
+      "bytes": 1312,
+      "id": "dc4a09f13ca707286791b03227d083ab725afbf385dde6aac21679fe29e9a6b7",
+      "kind": "assessment"
+    },
+    {
+      "bytes": 91034,
+      "id": "dcc831b2039e01f6a1be781a78b7af2b6674b7184e081f2c45fee76213a3d959",
+      "kind": "candidate"
+    },
+    {
+      "bytes": 78791,
+      "id": "de79bb6f9b9c286b836e78da4371a816d704810bbc22dc2dd80b35073488f00c",
+      "kind": "candidate"
+    },
+    {
+      "bytes": 86692,
+      "id": "de8f2f1159de2240f6bc5e9c64a319b286e2edbf6a5f63baff5801fd65ea82c2",
+      "kind": "request"
+    },
+    {
+      "bytes": 78684,
+      "id": "e54a6e7db41629fcc0a4d0189e3904f4ad26a9d62a591e7a370c6719aa357d55",
+      "kind": "candidate"
+    },
+    {
+      "bytes": 1105,
+      "id": "e5b5ec40dc8ce3153b05d7bcd5bb7578f5039cc605aad8ff5efa1e74e29d9bbe",
+      "kind": "assessment"
+    },
+    {
+      "bytes": 103423,
+      "id": "e5ccd6b98b7d7e1d6529ff7499cbb35b88e9744947e39e22b034392bd2b2bc18",
+      "kind": "request"
+    },
+    {
+      "bytes": 1215,
+      "id": "e5d84683dd3f1f266a43d93086407f0adf1f4455ce5fd130d5e8b612c9533e30",
+      "kind": "assessment"
+    },
+    {
+      "bytes": 366,
+      "id": "e65f7856a92c4bd74c8bcf63d753241bb19f7173f9c5158e871625e986ab03c4",
+      "kind": "candidate"
+    },
+    {
+      "bytes": 1105,
+      "id": "e6a3c14436b9804d6b0a1a8f569adc8913987a3d99f867ab51c7c3b73d0e8b10",
+      "kind": "assessment"
+    },
+    {
+      "bytes": 95835,
+      "id": "e73da6997775596231aff1d1fba86e341581cc116b052f366598b31cb5869656",
+      "kind": "candidate"
+    },
+    {
+      "bytes": 73972,
+      "id": "e74c54c142e1a5982ce2ba2162a0513c3b4fbcc432793d06e22b80eeb7b0f3b8",
+      "kind": "request"
+    },
+    {
+      "bytes": 1146,
+      "id": "e80352485ebe0261c22df123e33f9569d2262af3c2a33c3e9aa7b53e975872d5",
+      "kind": "assessment"
+    },
+    {
+      "bytes": 78635,
+      "id": "e8a6d29696a69037a5b730fc0194ef57c8353ba760558f59fe6bead7f34ac1fb",
+      "kind": "candidate"
+    },
+    {
+      "bytes": 448,
+      "id": "e91471c7fadfc2e06d35fe7146a6e79b9db9042149ab9a78476a4bff189946c2",
+      "kind": "candidate"
+    },
+    {
+      "bytes": 109681,
+      "id": "e937d2dca096588913f9c578da78f806ef2efc02861a2c6600db6fdae9a822d8",
+      "kind": "request"
+    },
+    {
+      "bytes": 393,
+      "id": "ea51a2f357a0bce18cf710a3c9fd78b47731787d78635357fe244227a334ef27",
+      "kind": "candidate"
+    },
+    {
+      "bytes": 1212,
+      "id": "eb9194157493ad228eb03281d3b3a638e409a33bd6973be1cac1938bca8cdac0",
+      "kind": "assessment"
+    },
+    {
+      "bytes": 1105,
+      "id": "ec3e14da8583474ef08f44c2a8faf28be2ef0d2b81c5f58875e41cecb3c2b539",
+      "kind": "assessment"
+    },
+    {
+      "bytes": 107212,
+      "id": "edad4fc1cb61f58f203eb71b95c9bd9cb48fc7e48ffeaef4f119990a3468bcd0",
+      "kind": "candidate"
+    },
+    {
+      "bytes": 86382,
+      "id": "eec274a87f0a8f36a3d4bc3da66e21bfdca6b503300fcb04e6ce9286e1e2ff8d",
+      "kind": "request"
+    },
+    {
+      "bytes": 78793,
+      "id": "ef8b46d3edef1cdfb983b7598e0e0de8babe034c037f0b82f6b14ab312c730ee",
+      "kind": "candidate"
+    },
+    {
+      "bytes": 104072,
+      "id": "f04a59a94c724b7705ff70e9c6c566b623198614c877b050a9a1a45b7ac018c8",
+      "kind": "request"
+    },
+    {
+      "bytes": 1105,
+      "id": "f18013d25349695215ef446514a755bfdd26fc42abb18a7affeec6b4a724a299",
+      "kind": "assessment"
+    },
+    {
+      "bytes": 108664,
+      "id": "f268d13c3f233e12805f5f86b7f1d46c1148755758186fae311d46cb72af5472",
+      "kind": "request"
+    },
+    {
+      "bytes": 1105,
+      "id": "f45e301ecc1e80aaa7ec1d14eaa3a502270d87f623ec0c84b923c75aba000a8e",
+      "kind": "assessment"
+    },
+    {
+      "bytes": 86347,
+      "id": "f4877df6b4d6b37bb17b3e631838957324e3064f0fa51f49f7826048a22acd9b",
+      "kind": "request"
+    },
+    {
+      "bytes": 1105,
+      "id": "f54f4c4ad9435efdc9c255697de361e934d567336277b9d54c8f946e45d4394b",
+      "kind": "assessment"
+    },
+    {
+      "bytes": 93491,
+      "id": "f6fe4ec4c86704cbc8b3d54c8913f0d212a897dba8eb2f6dd437d37ee93d2c27",
+      "kind": "request"
+    },
+    {
+      "bytes": 1275,
+      "id": "f807decef7a21a7fa2bd545d5fba729672feedaf7dff9ee78e039a403c7779b4",
+      "kind": "assessment"
+    },
+    {
+      "bytes": 85513,
+      "id": "f929ca3005e45d2138507fdd6d007ffdfd2e5e41d0646e716e3afe0a2b75bbea",
+      "kind": "request"
+    },
+    {
+      "bytes": 1105,
+      "id": "fa891010975ec857e1f28913027b23cb76e3055be5c0722b409ee54131b27c2a",
+      "kind": "assessment"
+    },
+    {
+      "bytes": 1105,
+      "id": "fbe0d406559e19f337cc24346d87a8ea4cb7f6ee124675bf4410ee301fa05bde",
+      "kind": "assessment"
+    },
+    {
+      "bytes": 1105,
+      "id": "fbece1b32946d58fce6610838494b70052107ee5f2871e11c28ca91a18e82a69",
+      "kind": "assessment"
+    },
+    {
+      "bytes": 1195,
+      "id": "fdc93e84feb734697f4210cebae384bfa7b4bfe423150b834fcf96ec5bfeffb5",
+      "kind": "assessment"
+    },
+    {
+      "bytes": 88820,
+      "id": "ff18ce38a2018b2196ec8f6e7c37f2bb5ee0cc89859375c8cc54bf08f4988aaf",
+      "kind": "request"
+    }
+  ],
+  "replay_rejections": [
+    {
+      "assessment": "6dafdae1656ed872d2f61c76d7e3a827c7fa71e10b9a52303b27eb3bc8955771",
+      "expected_code": "construction_assessment_mismatch",
+      "id": "replay/request_fingerprint",
+      "source": "test_literal_whole_copy_preserves_source_request_and_checked_derivation/0"
+    },
+    {
+      "assessment": "fbe0d406559e19f337cc24346d87a8ea4cb7f6ee124675bf4410ee301fa05bde",
+      "expected_code": "construction_assessment_mismatch",
+      "id": "replay/candidate_fingerprint",
+      "source": "test_literal_whole_copy_preserves_source_request_and_checked_derivation/0"
+    },
+    {
+      "assessment": "7949089c34bf814204f800ce3834a4b1cd13b8b85aceed59b736126271acee4e",
+      "expected_code": "construction_assessment_mismatch",
+      "id": "replay/reconstructed_fingerprint",
+      "source": "test_literal_whole_copy_preserves_source_request_and_checked_derivation/0"
+    }
+  ],
+  "schema_version": "biocompiler.construction_check_conformance.v1"
+}

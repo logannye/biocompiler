@@ -1,0 +1,2115 @@
+{
+  "amounts": [],
+  "circuit": {
+    "deployment_id": "human_deployment_fixture",
+    "fidelity_scope": "complete_nominal",
+    "profile": {
+      "boundary": "planning",
+      "mode": "candidate_design",
+      "molecular_form": "RNA",
+      "purpose": "human_immune_payload",
+      "recipient": {
+        "cell_subtype_claim_fingerprint": "28fca1bc6ea489b70d192cd51f746cd9a0c2b1ae8077a2872c80c777614f7a6c",
+        "eligibility_basis": "declared",
+        "empirical_support": "unestablished",
+        "lineage": "t_cell",
+        "schema_version": "biocompiler.immune_recipient_identity.v0.1",
+        "target_fingerprint": "84d97a355b7989b53d77659d284c63fc672e460021de2eb638b5890ccd7fc472"
+      },
+      "schema_version": "biocompiler.circuit_profile_request.v0.1",
+      "source_experiment": null,
+      "source_request": {
+        "acceptance": {
+          "background_ceiling": {
+            "canonical_value": 1.6605390671738466e-25,
+            "kind": "scalar",
+            "type": {
+              "arguments": [],
+              "dimensions": {
+                "amount": 1,
+                "time": -1
+              },
+              "kind": "scalar",
+              "name": "ProductionRate"
+            },
+            "unit": "molecules/s",
+            "value": 0.1
+          },
+          "behavior_fingerprint": "1c4a9846fff8d79c035ba831b7ca8251747f21d23b8ca335acee20616a9e21ac",
+          "bounds_support": {
+            "basis": "unestablished",
+            "description": "All ceilings, classifications and durations are invented software-test values, not clinical limits.",
+            "evidence_ids": [],
+            "limitations": "Software specification only; applicable delivery evidence is not supplied.",
+            "schema_version": "biocompiler.target_claim.v0.1"
+          },
+          "combination": "conjunction_no_priority_override",
+          "context_domain": {
+            "kind": "interval",
+            "lower": {
+              "canonical_value": 0,
+              "kind": "scalar",
+              "type": {
+                "arguments": [],
+                "dimensions": {},
+                "kind": "scalar",
+                "name": "Level"
+              },
+              "unit": "1",
+              "value": 0
+            },
+            "type": {
+              "arguments": [
+                {
+                  "arguments": [],
+                  "dimensions": {},
+                  "kind": "scalar",
+                  "name": "Level"
+                }
+              ],
+              "dimensions": {},
+              "kind": "interval",
+              "name": "Interval[Level]"
+            },
+            "upper": {
+              "canonical_value": 1,
+              "kind": "scalar",
+              "type": {
+                "arguments": [],
+                "dimensions": {},
+                "kind": "scalar",
+                "name": "Level"
+              },
+              "unit": "1",
+              "value": 1
+            }
+          },
+          "healthy_inactivity": "immediate_background_bound",
+          "healthy_measurement": {
+            "access": "external_evaluator",
+            "meaning": "Artificial context label: zero denotes a healthy-context test case, one a challenge case.",
+            "method": "Asserted fixture classification; no clinical classifier is supplied.",
+            "observable": {
+              "compartment": "extracellular",
+              "dtype": {
+                "arguments": [],
+                "dimensions": {},
+                "kind": "scalar",
+                "name": "Level"
+              },
+              "id": "context_classification",
+              "role": "n000001",
+              "schema_version": "biocompiler.observable.v0.1",
+              "scope": "cell"
+            },
+            "schema_version": "biocompiler.measurement_spec.v0.1",
+            "support": {
+              "basis": "unestablished",
+              "description": "A real healthy-context definition and context-specific assay require evidence.",
+              "evidence_ids": [],
+              "limitations": "Software specification only; applicable delivery evidence is not supplied.",
+              "schema_version": "biocompiler.target_claim.v0.1"
+            }
+          },
+          "healthy_range": {
+            "kind": "interval",
+            "lower": {
+              "canonical_value": 0,
+              "kind": "scalar",
+              "type": {
+                "arguments": [],
+                "dimensions": {},
+                "kind": "scalar",
+                "name": "Level"
+              },
+              "unit": "1",
+              "value": 0
+            },
+            "type": {
+              "arguments": [
+                {
+                  "arguments": [],
+                  "dimensions": {},
+                  "kind": "scalar",
+                  "name": "Level"
+                }
+              ],
+              "dimensions": {},
+              "kind": "interval",
+              "name": "Interval[Level]"
+            },
+            "upper": {
+              "canonical_value": 0.4,
+              "kind": "scalar",
+              "type": {
+                "arguments": [],
+                "dimensions": {},
+                "kind": "scalar",
+                "name": "Level"
+              },
+              "unit": "1",
+              "value": 0.4
+            }
+          },
+          "id": "conditional_secretion_acceptance_fixture",
+          "input_availability": {
+            "controllability": {
+              "basis": "unestablished",
+              "description": "Requested recovery after access loss has no established implementation.",
+              "evidence_ids": [],
+              "limitations": "Software specification only; applicable delivery evidence is not supplied.",
+              "schema_version": "biocompiler.target_claim.v0.1"
+            },
+            "id": "cell_input_access",
+            "implementation": "unestablished",
+            "loss_requirement": "background_after_deadline_while_cell_access_unavailable",
+            "observability": {
+              "basis": "unestablished",
+              "description": "Cell access failure detection has no established assay or cellular signal.",
+              "evidence_ids": [],
+              "limitations": "Software specification only; applicable delivery evidence is not supplied.",
+              "schema_version": "biocompiler.target_claim.v0.1"
+            },
+            "observation_method": "Fixture asserts whether cell access is available; evaluator missingness is a separate state.",
+            "reacquisition": "restart_predicate_timing_without_inferred_prehistory",
+            "response_delay": {
+              "canonical_value": 1,
+              "kind": "scalar",
+              "type": {
+                "arguments": [],
+                "dimensions": {
+                  "time": 1
+                },
+                "kind": "scalar",
+                "name": "Duration"
+              },
+              "unit": "s",
+              "value": 1
+            },
+            "schema_version": "biocompiler.input_availability_spec.v0.1"
+          },
+          "max_response_duration": {
+            "canonical_value": 4,
+            "kind": "scalar",
+            "type": {
+              "arguments": [],
+              "dimensions": {
+                "time": 1
+              },
+              "kind": "scalar",
+              "name": "Duration"
+            },
+            "unit": "s",
+            "value": 4
+          },
+          "peak_ceiling": {
+            "canonical_value": 6.642156268695386e-24,
+            "kind": "scalar",
+            "type": {
+              "arguments": [],
+              "dimensions": {
+                "amount": 1,
+                "time": -1
+              },
+              "kind": "scalar",
+              "name": "ProductionRate"
+            },
+            "unit": "molecules/s",
+            "value": 4
+          },
+          "peak_scope": "all_observed_times_including_transition_grace",
+          "response_duration": "continuous_bout_strictly_above_background_ceiling",
+          "schema_version": "biocompiler.human_acceptance_contract.v0.1",
+          "scope": "single_recipient_cell_finite_horizon",
+          "shutdown": {
+            "actuator_support": "unimplemented",
+            "controllability": {
+              "basis": "unestablished",
+              "description": "No shutdown actuator is supported; a passing readout does not prove causal controllability.",
+              "evidence_ids": [],
+              "limitations": "Software specification only; applicable delivery evidence is not supplied.",
+              "schema_version": "biocompiler.target_claim.v0.1"
+            },
+            "id": "external_shutdown",
+            "observability": {
+              "basis": "unestablished",
+              "description": "Request delivery and observation need applicable evidence.",
+              "evidence_ids": [],
+              "limitations": "Software specification only; applicable delivery evidence is not supplied.",
+              "schema_version": "biocompiler.target_claim.v0.1"
+            },
+            "observation_method": "Fixture event log; no route, drug, controller or actuator is supplied.",
+            "overrides_source_guard": false,
+            "persistence": "latched_for_remaining_horizon",
+            "request_access": "external_evaluator",
+            "request_definition": "An externally recorded stop request, latched through the finite horizon.",
+            "requirement": "background_after_deadline",
+            "response_delay": {
+              "canonical_value": 1,
+              "kind": "scalar",
+              "type": {
+                "arguments": [],
+                "dimensions": {
+                  "time": 1
+                },
+                "kind": "scalar",
+                "name": "Duration"
+              },
+              "unit": "s",
+              "value": 1
+            },
+            "schema_version": "biocompiler.external_shutdown_spec.v0.1"
+          }
+        },
+        "deployment_request": {
+          "behavior_request": {
+            "build_request": {
+              "artifact_scope": "complete_payload",
+              "behavior_profile": "biocompiler.behavior.v0.1",
+              "explicit_overrides": {},
+              "implementation_constraints": {},
+              "intent": {
+                "name": "conditional_secretion_specification",
+                "nodes": [
+                  {
+                    "attributes": {
+                      "cell_type": "human_T_cell",
+                      "engineering": "in_vivo",
+                      "name": "recipient"
+                    },
+                    "data_type": null,
+                    "id": "n000001",
+                    "inputs": [],
+                    "kind": "role",
+                    "role": null,
+                    "source": {
+                      "file": "examples/human_behavior.py",
+                      "function": "make_human_behavior",
+                      "line": 26
+                    }
+                  },
+                  {
+                    "attributes": {
+                      "description": "Secrete a declared product while a qualifying cue is present, then return to baseline.",
+                      "name": "conditional_therapeutic_secretion"
+                    },
+                    "data_type": null,
+                    "id": "n000002",
+                    "inputs": [],
+                    "kind": "goal",
+                    "role": null,
+                    "source": {
+                      "file": "examples/human_behavior.py",
+                      "function": "make_human_behavior",
+                      "line": 27
+                    }
+                  },
+                  {
+                    "attributes": {
+                      "name": "external",
+                      "scope": "external"
+                    },
+                    "data_type": null,
+                    "id": "n000003",
+                    "inputs": [
+                      "n000001"
+                    ],
+                    "kind": "scope",
+                    "role": "n000001",
+                    "source": {
+                      "file": "examples/human_behavior.py",
+                      "function": "make_human_behavior",
+                      "line": 31
+                    }
+                  },
+                  {
+                    "attributes": {
+                      "name": "declared_cue",
+                      "observation": "signal",
+                      "scope": "external"
+                    },
+                    "data_type": {
+                      "arguments": [],
+                      "dimensions": {
+                        "amount": 1,
+                        "length": -3
+                      },
+                      "kind": "scalar",
+                      "name": "Concentration"
+                    },
+                    "id": "n000004",
+                    "inputs": [
+                      "n000003"
+                    ],
+                    "kind": "signal",
+                    "role": "n000001",
+                    "source": {
+                      "file": "examples/human_behavior.py",
+                      "function": "make_human_behavior",
+                      "line": 31
+                    }
+                  },
+                  {
+                    "attributes": {
+                      "band": "high"
+                    },
+                    "data_type": {
+                      "arguments": [],
+                      "dimensions": {},
+                      "kind": "condition",
+                      "name": "Condition"
+                    },
+                    "id": "n000005",
+                    "inputs": [
+                      "n000004"
+                    ],
+                    "kind": "qualitative",
+                    "role": "n000001",
+                    "source": {
+                      "file": "examples/human_behavior.py",
+                      "function": "make_human_behavior",
+                      "line": 32
+                    }
+                  },
+                  {
+                    "attributes": {
+                      "activity": "requires_rule_or_controller",
+                      "default": true,
+                      "name": "declared_product",
+                      "product": "declared_product"
+                    },
+                    "data_type": null,
+                    "id": "n000006",
+                    "inputs": [
+                      "n000001"
+                    ],
+                    "kind": "secretion",
+                    "role": "n000001",
+                    "source": {
+                      "file": "examples/human_behavior.py",
+                      "function": "make_human_behavior",
+                      "line": 33
+                    }
+                  },
+                  {
+                    "attributes": {
+                      "ongoing": true,
+                      "rate": "unspecified"
+                    },
+                    "data_type": null,
+                    "id": "n000007",
+                    "inputs": [
+                      "n000006"
+                    ],
+                    "kind": "action.secrete",
+                    "role": "n000001",
+                    "source": {
+                      "file": "examples/human_behavior.py",
+                      "function": "make_human_behavior",
+                      "line": 33
+                    }
+                  },
+                  {
+                    "attributes": {
+                      "execution": "concurrent",
+                      "priority": "unspecified",
+                      "trigger": "condition"
+                    },
+                    "data_type": null,
+                    "id": "n000008",
+                    "inputs": [
+                      "n000001",
+                      "n000005",
+                      "n000007"
+                    ],
+                    "kind": "rule",
+                    "role": "n000001",
+                    "source": {
+                      "file": "examples/human_behavior.py",
+                      "function": "make_human_behavior",
+                      "line": 34
+                    }
+                  }
+                ],
+                "roots": [
+                  "n000001",
+                  "n000002",
+                  "n000006",
+                  "n000008"
+                ],
+                "schema_version": "biocompiler.intent.v0.1"
+              },
+              "parameter_metadata": {},
+              "preferences": {},
+              "provenance": {
+                "dependency_identities": {},
+                "external_inputs": {},
+                "locations": {},
+                "recorded_at": null,
+                "schema_version": "biocompiler.elaboration_provenance.v0.1",
+                "source_identities": {}
+              },
+              "resolved_bindings": {},
+              "resolved_defaults": {},
+              "schema_version": "biocompiler.build_request.v0.1",
+              "target": {
+                "capabilities": [],
+                "compartments": [
+                  "cytoplasm",
+                  "extracellular"
+                ],
+                "context_id": "illustrative_human_target",
+                "context_version": "1",
+                "human_target": {
+                  "cell_state": {
+                    "basis": "unestablished",
+                    "description": "Required recipient activation/differentiation state remains unspecified.",
+                    "evidence_ids": [],
+                    "limitations": "Illustrative requirement only; applicable evidence has not been supplied.",
+                    "schema_version": "biocompiler.target_claim.v0.1"
+                  },
+                  "cell_subtype": {
+                    "basis": "unestablished",
+                    "description": "Human CD8-positive T-cell recipients; subtype refinement remains open.",
+                    "evidence_ids": [],
+                    "limitations": "Illustrative requirement only; applicable evidence has not been supplied.",
+                    "schema_version": "biocompiler.target_claim.v0.1"
+                  },
+                  "disease_context": {
+                    "basis": "unestablished",
+                    "description": "Intended disease context remains to be selected.",
+                    "evidence_ids": [],
+                    "limitations": "Illustrative requirement only; applicable evidence has not been supplied.",
+                    "schema_version": "biocompiler.target_claim.v0.1"
+                  },
+                  "engineering": "in_vivo",
+                  "evidence": [],
+                  "host_dependencies": [
+                    {
+                      "capability": "host_translation",
+                      "compartment": "cytoplasm",
+                      "id": "translation",
+                      "schema_version": "biocompiler.human_host_dependency.v0.1",
+                      "support": {
+                        "basis": "unestablished",
+                        "description": "Host translation support requires context-matched evidence.",
+                        "evidence_ids": [],
+                        "limitations": "Illustrative requirement only; applicable evidence has not been supplied.",
+                        "schema_version": "biocompiler.target_claim.v0.1"
+                      }
+                    }
+                  ],
+                  "operating_conditions": [
+                    {
+                      "compartment": "cytoplasm",
+                      "domain": {
+                        "dtype": {
+                          "arguments": [],
+                          "dimensions": {},
+                          "kind": "scalar",
+                          "name": "Level"
+                        },
+                        "kind": "unknown",
+                        "lower": null,
+                        "reason": "No supported resource operating range is established.",
+                        "schema_version": "biocompiler.component_value_domain.v0.1",
+                        "unit": "1",
+                        "upper": null,
+                        "values": []
+                      },
+                      "id": "resource_availability",
+                      "observable": "available_translation_resources",
+                      "schema_version": "biocompiler.human_operating_condition.v0.1",
+                      "support": {
+                        "basis": "unestablished",
+                        "description": "Supported intracellular resource conditions remain unresolved.",
+                        "evidence_ids": [],
+                        "limitations": "Illustrative requirement only; applicable evidence has not been supplied.",
+                        "schema_version": "biocompiler.target_claim.v0.1"
+                      }
+                    }
+                  ],
+                  "population_exclusion": {
+                    "basis": "unestablished",
+                    "description": "Population exclusions require an explicit applicability review.",
+                    "evidence_ids": [],
+                    "limitations": "Illustrative requirement only; applicable evidence has not been supplied.",
+                    "schema_version": "biocompiler.target_claim.v0.1"
+                  },
+                  "population_inclusion": {
+                    "basis": "unestablished",
+                    "description": "Eligible human population and inclusion criteria remain unresolved.",
+                    "evidence_ids": [],
+                    "limitations": "Illustrative requirement only; applicable evidence has not been supplied.",
+                    "schema_version": "biocompiler.target_claim.v0.1"
+                  },
+                  "recipient_taxon_id": 9606,
+                  "schema_version": "biocompiler.human_target_contract.v0.1",
+                  "tissue_context": {
+                    "basis": "unestablished",
+                    "description": "Intended human tissue context remains to be selected.",
+                    "evidence_ids": [],
+                    "limitations": "Illustrative requirement only; applicable evidence has not been supplied.",
+                    "schema_version": "biocompiler.target_claim.v0.1"
+                  }
+                },
+                "payload_format": "RNA",
+                "resources": {},
+                "schema_version": "biocompiler.human_target_context.v0.1"
+              }
+            },
+            "contract": {
+              "goal_id": "n000002",
+              "goal_refinement": {
+                "basis": "assumed",
+                "description": "The source goal is refined to secretion of the same declared product under the same cue; this readout does not establish clinical benefit.",
+                "evidence_ids": [],
+                "limitations": "Artificial software fixture only. No assay, sensor, product, clinical threshold or timing is validated.",
+                "schema_version": "biocompiler.target_claim.v0.1"
+              },
+              "horizon": {
+                "canonical_value": 16,
+                "kind": "scalar",
+                "type": {
+                  "arguments": [],
+                  "dimensions": {
+                    "time": 1
+                  },
+                  "kind": "scalar",
+                  "name": "Duration"
+                },
+                "unit": "s",
+                "value": 16
+              },
+              "id": "conditional_secretion_fixture",
+              "initial_range": {
+                "kind": "interval",
+                "lower": {
+                  "canonical_value": 0.0,
+                  "kind": "scalar",
+                  "type": {
+                    "arguments": [],
+                    "dimensions": {
+                      "amount": 1,
+                      "time": -1
+                    },
+                    "kind": "scalar",
+                    "name": "ProductionRate"
+                  },
+                  "unit": "molecules/s",
+                  "value": 0
+                },
+                "type": {
+                  "arguments": [
+                    {
+                      "arguments": [],
+                      "dimensions": {
+                        "amount": 1,
+                        "time": -1
+                      },
+                      "kind": "scalar",
+                      "name": "ProductionRate"
+                    }
+                  ],
+                  "dimensions": {},
+                  "kind": "interval",
+                  "name": "Interval[ProductionRate]"
+                },
+                "upper": {
+                  "canonical_value": 8.302695335869233e-26,
+                  "kind": "scalar",
+                  "type": {
+                    "arguments": [],
+                    "dimensions": {
+                      "amount": 1,
+                      "time": -1
+                    },
+                    "kind": "scalar",
+                    "name": "ProductionRate"
+                  },
+                  "unit": "molecules/s",
+                  "value": 0.05
+                }
+              },
+              "initialization": "inactive_input_and_output_at_zero_no_prehistory",
+              "input_measurement": {
+                "access": "cell",
+                "meaning": "Local concentration of the declared extracellular cue at the recipient cell.",
+                "method": "A context-matched sensing/readout relationship must be supplied; no receptor is selected.",
+                "observable": {
+                  "compartment": "extracellular",
+                  "dtype": {
+                    "arguments": [],
+                    "dimensions": {
+                      "amount": 1,
+                      "length": -3
+                    },
+                    "kind": "scalar",
+                    "name": "Concentration"
+                  },
+                  "id": "local_cue_concentration",
+                  "role": "n000001",
+                  "schema_version": "biocompiler.observable.v0.1",
+                  "scope": "cell"
+                },
+                "schema_version": "biocompiler.measurement_spec.v0.1",
+                "support": {
+                  "basis": "assumed",
+                  "description": "Runtime accessibility and readout correspondence are requested, not established.",
+                  "evidence_ids": [],
+                  "limitations": "Artificial software fixture only. No assay, sensor, product, clinical threshold or timing is validated.",
+                  "schema_version": "biocompiler.target_claim.v0.1"
+                }
+              },
+              "input_range": {
+                "kind": "interval",
+                "lower": {
+                  "canonical_value": 0.0,
+                  "kind": "scalar",
+                  "type": {
+                    "arguments": [],
+                    "dimensions": {
+                      "amount": 1,
+                      "length": -3
+                    },
+                    "kind": "scalar",
+                    "name": "Concentration"
+                  },
+                  "unit": "nM",
+                  "value": 0
+                },
+                "type": {
+                  "arguments": [
+                    {
+                      "arguments": [],
+                      "dimensions": {
+                        "amount": 1,
+                        "length": -3
+                      },
+                      "kind": "scalar",
+                      "name": "Concentration"
+                    }
+                  ],
+                  "dimensions": {},
+                  "kind": "interval",
+                  "name": "Interval[Concentration]"
+                },
+                "upper": {
+                  "canonical_value": 9.999999999999999e-06,
+                  "kind": "scalar",
+                  "type": {
+                    "arguments": [],
+                    "dimensions": {
+                      "amount": 1,
+                      "length": -3
+                    },
+                    "kind": "scalar",
+                    "name": "Concentration"
+                  },
+                  "unit": "nM",
+                  "value": 10
+                }
+              },
+              "input_signal_id": "n000004",
+              "output_measurement": {
+                "access": "external_evaluator",
+                "meaning": "Exported declared product amount per unit time from this one recipient cell.",
+                "method": "Requires a calibrated per-cell secretion-rate measurement, not accumulated bulk concentration.",
+                "observable": {
+                  "compartment": "extracellular",
+                  "dtype": {
+                    "arguments": [],
+                    "dimensions": {
+                      "amount": 1,
+                      "time": -1
+                    },
+                    "kind": "scalar",
+                    "name": "ProductionRate"
+                  },
+                  "id": "product_secretion_rate_per_cell",
+                  "role": "n000001",
+                  "schema_version": "biocompiler.observable.v0.1",
+                  "scope": "cell"
+                },
+                "schema_version": "biocompiler.measurement_spec.v0.1",
+                "support": {
+                  "basis": "assumed",
+                  "description": "The output is a required measurement; no assay or conversion has been validated.",
+                  "evidence_ids": [],
+                  "limitations": "Artificial software fixture only. No assay, sensor, product, clinical threshold or timing is validated.",
+                  "schema_version": "biocompiler.target_claim.v0.1"
+                }
+              },
+              "persistence": "active_range_after_deadline_while_input_qualifies",
+              "predicate": {
+                "operator": ">=",
+                "predicate_id": "n000005",
+                "schema_version": "biocompiler.predicate_refinement.v0.1",
+                "support": {
+                  "basis": "assumed",
+                  "description": "A software-only threshold refines the source high predicate.",
+                  "evidence_ids": [],
+                  "limitations": "Artificial software fixture only. No assay, sensor, product, clinical threshold or timing is validated.",
+                  "schema_version": "biocompiler.target_claim.v0.1"
+                },
+                "threshold": {
+                  "canonical_value": 4.9999999999999996e-06,
+                  "kind": "scalar",
+                  "type": {
+                    "arguments": [],
+                    "dimensions": {
+                      "amount": 1,
+                      "length": -3
+                    },
+                    "kind": "scalar",
+                    "name": "Concentration"
+                  },
+                  "unit": "nM",
+                  "value": 5
+                }
+              },
+              "product": "declared_product",
+              "profile": "human_conditional_secretion.v0.1",
+              "response": {
+                "active_range": {
+                  "kind": "interval",
+                  "lower": {
+                    "canonical_value": 3.321078134347693e-24,
+                    "kind": "scalar",
+                    "type": {
+                      "arguments": [],
+                      "dimensions": {
+                        "amount": 1,
+                        "time": -1
+                      },
+                      "kind": "scalar",
+                      "name": "ProductionRate"
+                    },
+                    "unit": "molecules/s",
+                    "value": 2
+                  },
+                  "type": {
+                    "arguments": [
+                      {
+                        "arguments": [],
+                        "dimensions": {
+                          "amount": 1,
+                          "time": -1
+                        },
+                        "kind": "scalar",
+                        "name": "ProductionRate"
+                      }
+                    ],
+                    "dimensions": {},
+                    "kind": "interval",
+                    "name": "Interval[ProductionRate]"
+                  },
+                  "upper": {
+                    "canonical_value": 4.98161720152154e-24,
+                    "kind": "scalar",
+                    "type": {
+                      "arguments": [],
+                      "dimensions": {
+                        "amount": 1,
+                        "time": -1
+                      },
+                      "kind": "scalar",
+                      "name": "ProductionRate"
+                    },
+                    "unit": "molecules/s",
+                    "value": 3
+                  }
+                },
+                "id": "response.secretion",
+                "inactive_range": {
+                  "kind": "interval",
+                  "lower": {
+                    "canonical_value": 0.0,
+                    "kind": "scalar",
+                    "type": {
+                      "arguments": [],
+                      "dimensions": {
+                        "amount": 1,
+                        "time": -1
+                      },
+                      "kind": "scalar",
+                      "name": "ProductionRate"
+                    },
+                    "unit": "molecules/s",
+                    "value": 0
+                  },
+                  "type": {
+                    "arguments": [
+                      {
+                        "arguments": [],
+                        "dimensions": {
+                          "amount": 1,
+                          "time": -1
+                        },
+                        "kind": "scalar",
+                        "name": "ProductionRate"
+                      }
+                    ],
+                    "dimensions": {},
+                    "kind": "interval",
+                    "name": "Interval[ProductionRate]"
+                  },
+                  "upper": {
+                    "canonical_value": 1.6605390671738466e-25,
+                    "kind": "scalar",
+                    "type": {
+                      "arguments": [],
+                      "dimensions": {
+                        "amount": 1,
+                        "time": -1
+                      },
+                      "kind": "scalar",
+                      "name": "ProductionRate"
+                    },
+                    "unit": "molecules/s",
+                    "value": 0.1
+                  }
+                },
+                "max_activation_delay": {
+                  "canonical_value": 2,
+                  "kind": "scalar",
+                  "type": {
+                    "arguments": [],
+                    "dimensions": {
+                      "time": 1
+                    },
+                    "kind": "scalar",
+                    "name": "Duration"
+                  },
+                  "unit": "s",
+                  "value": 2
+                },
+                "max_deactivation_delay": {
+                  "canonical_value": 1,
+                  "kind": "scalar",
+                  "type": {
+                    "arguments": [],
+                    "dimensions": {
+                      "time": 1
+                    },
+                    "kind": "scalar",
+                    "name": "Duration"
+                  },
+                  "unit": "s",
+                  "value": 1
+                },
+                "observable": {
+                  "compartment": "extracellular",
+                  "dtype": {
+                    "arguments": [],
+                    "dimensions": {
+                      "amount": 1,
+                      "time": -1
+                    },
+                    "kind": "scalar",
+                    "name": "ProductionRate"
+                  },
+                  "id": "product_secretion_rate_per_cell",
+                  "role": "n000001",
+                  "schema_version": "biocompiler.observable.v0.1",
+                  "scope": "cell"
+                },
+                "rule_id": "n000008",
+                "schema_version": "biocompiler.response_requirement.v0.1",
+                "specification_id": "n000007"
+              },
+              "response_support": {
+                "basis": "assumed",
+                "description": "All numeric ranges, delays and the horizon are invented test values, not recommended biological requirements.",
+                "evidence_ids": [],
+                "limitations": "Artificial software fixture only. No assay, sensor, product, clinical threshold or timing is validated.",
+                "schema_version": "biocompiler.target_claim.v0.1"
+              },
+              "retrigger": "latest_input_transition_replaces_pending_deadline",
+              "schema_version": "biocompiler.conditional_secretion_contract.v0.1",
+              "termination": "inactive_range_after_recovery_deadline"
+            },
+            "schema_version": "biocompiler.human_behavior_request.v0.1"
+          },
+          "deployment": {
+            "co_payloads": [],
+            "delivery_targeting_is_disease_recognition": false,
+            "excluded_population": {
+              "basis": "unestablished",
+              "description": "Population exclusions require an explicit applicability review.",
+              "evidence_ids": [],
+              "limitations": "Illustrative requirement only; applicable evidence has not been supplied.",
+              "schema_version": "biocompiler.target_claim.v0.1"
+            },
+            "exposure_window": {
+              "kind": "interval",
+              "lower": {
+                "canonical_value": 0,
+                "kind": "scalar",
+                "type": {
+                  "arguments": [],
+                  "dimensions": {
+                    "time": 1
+                  },
+                  "kind": "scalar",
+                  "name": "Duration"
+                },
+                "unit": "s",
+                "value": 0
+              },
+              "type": {
+                "arguments": [
+                  {
+                    "arguments": [],
+                    "dimensions": {
+                      "time": 1
+                    },
+                    "kind": "scalar",
+                    "name": "Duration"
+                  }
+                ],
+                "dimensions": {},
+                "kind": "interval",
+                "name": "Interval[Duration]"
+              },
+              "upper": {
+                "canonical_value": 1,
+                "kind": "scalar",
+                "type": {
+                  "arguments": [],
+                  "dimensions": {
+                    "time": 1
+                  },
+                  "kind": "scalar",
+                  "name": "Duration"
+                },
+                "unit": "s",
+                "value": 1
+              }
+            },
+            "exposures": [
+              {
+                "compartment": "extracellular",
+                "domain": {
+                  "dtype": {
+                    "arguments": [],
+                    "dimensions": {},
+                    "kind": "scalar",
+                    "name": "Level"
+                  },
+                  "kind": "scalar_interval",
+                  "lower": 0,
+                  "reason": null,
+                  "schema_version": "biocompiler.component_value_domain.v0.1",
+                  "unit": "1",
+                  "upper": 1,
+                  "values": []
+                },
+                "id": "local_payload",
+                "observable": "Normalized local intact-payload availability in an artificial software scenario.",
+                "schema_version": "biocompiler.exposure_assumption.v0.1",
+                "support": {
+                  "basis": "assumed",
+                  "description": "Exposure must be characterized separately from uptake, intracellular release and expression.",
+                  "evidence_ids": [],
+                  "limitations": "Software specification only; applicable delivery evidence is not supplied.",
+                  "schema_version": "biocompiler.target_claim.v0.1"
+                }
+              }
+            ],
+            "id": "human_deployment_fixture",
+            "intended_population": {
+              "basis": "unestablished",
+              "description": "Eligible human population and inclusion criteria remain unresolved.",
+              "evidence_ids": [],
+              "limitations": "Illustrative requirement only; applicable evidence has not been supplied.",
+              "schema_version": "biocompiler.target_claim.v0.1"
+            },
+            "intracellular_destination": "cytoplasm",
+            "platform": {
+              "administration_context": {
+                "basis": "unestablished",
+                "description": "Administration route, setting and exposure conditions remain to be selected.",
+                "evidence_ids": [],
+                "limitations": "Software specification only; applicable delivery evidence is not supplied.",
+                "schema_version": "biocompiler.target_claim.v0.1"
+              },
+              "identity": {
+                "content_fingerprint": "5b556a3e6d017b27e7612aa3fb09377da4aebb575b40ec7bfeb240716a377fe2",
+                "id": "unselected_delivery_fixture",
+                "kind": "source",
+                "schema_version": "biocompiler.component_identity.v0.1",
+                "version": "1"
+              },
+              "payload_format": "RNA",
+              "recipient_targeting": {
+                "basis": "unestablished",
+                "description": "Delivery must reach the intended human recipients independently of the cellular disease-recognition cue; targeting is unestablished.",
+                "evidence_ids": [],
+                "limitations": "Software specification only; applicable delivery evidence is not supplied.",
+                "schema_version": "biocompiler.target_claim.v0.1"
+              },
+              "schema_version": "biocompiler.delivery_platform_spec.v0.1",
+              "support": {
+                "basis": "unestablished",
+                "description": "This pin identifies an artificial specification, not a characterized delivery platform.",
+                "evidence_ids": [],
+                "limitations": "Software specification only; applicable delivery evidence is not supplied.",
+                "schema_version": "biocompiler.target_claim.v0.1"
+              }
+            },
+            "recipient_role": "n000001",
+            "schema_version": "biocompiler.deployment_contract.v0.1",
+            "target_fingerprint": "84d97a355b7989b53d77659d284c63fc672e460021de2eb638b5890ccd7fc472",
+            "time_origin": "start_of_declared_exposure",
+            "timing": {
+              "availability": "closed_window_from_onset_through_onset_plus_duration",
+              "behavior_start": {
+                "canonical_value": 2,
+                "kind": "scalar",
+                "type": {
+                  "arguments": [],
+                  "dimensions": {
+                    "time": 1
+                  },
+                  "kind": "scalar",
+                  "name": "Duration"
+                },
+                "unit": "s",
+                "value": 2
+              },
+              "clock": "start_of_declared_exposure",
+              "duration": {
+                "kind": "interval",
+                "lower": {
+                  "canonical_value": 20,
+                  "kind": "scalar",
+                  "type": {
+                    "arguments": [],
+                    "dimensions": {
+                      "time": 1
+                    },
+                    "kind": "scalar",
+                    "name": "Duration"
+                  },
+                  "unit": "s",
+                  "value": 20
+                },
+                "type": {
+                  "arguments": [
+                    {
+                      "arguments": [],
+                      "dimensions": {
+                        "time": 1
+                      },
+                      "kind": "scalar",
+                      "name": "Duration"
+                    }
+                  ],
+                  "dimensions": {},
+                  "kind": "interval",
+                  "name": "Interval[Duration]"
+                },
+                "upper": {
+                  "canonical_value": 22,
+                  "kind": "scalar",
+                  "type": {
+                    "arguments": [],
+                    "dimensions": {
+                      "time": 1
+                    },
+                    "kind": "scalar",
+                    "name": "Duration"
+                  },
+                  "unit": "s",
+                  "value": 22
+                }
+              },
+              "onset": {
+                "kind": "interval",
+                "lower": {
+                  "canonical_value": 1,
+                  "kind": "scalar",
+                  "type": {
+                    "arguments": [],
+                    "dimensions": {
+                      "time": 1
+                    },
+                    "kind": "scalar",
+                    "name": "Duration"
+                  },
+                  "unit": "s",
+                  "value": 1
+                },
+                "type": {
+                  "arguments": [
+                    {
+                      "arguments": [],
+                      "dimensions": {
+                        "time": 1
+                      },
+                      "kind": "scalar",
+                      "name": "Duration"
+                    }
+                  ],
+                  "dimensions": {},
+                  "kind": "interval",
+                  "name": "Interval[Duration]"
+                },
+                "upper": {
+                  "canonical_value": 2,
+                  "kind": "scalar",
+                  "type": {
+                    "arguments": [],
+                    "dimensions": {
+                      "time": 1
+                    },
+                    "kind": "scalar",
+                    "name": "Duration"
+                  },
+                  "unit": "s",
+                  "value": 2
+                }
+              },
+              "schema_version": "biocompiler.expression_timing.v0.1",
+              "support": {
+                "basis": "assumed",
+                "description": "Artificial interval values used solely to test conservative window arithmetic.",
+                "evidence_ids": [],
+                "limitations": "Software specification only; applicable delivery evidence is not supplied.",
+                "schema_version": "biocompiler.target_claim.v0.1"
+              },
+              "unknown_reason": null
+            },
+            "unintended_recipients": {
+              "basis": "unestablished",
+              "description": "Other human recipient cells and tissues may be exposed; their identities, exposure and consequences require characterization. Absence is not asserted.",
+              "evidence_ids": [],
+              "limitations": "Software specification only; applicable delivery evidence is not supplied.",
+              "schema_version": "biocompiler.target_claim.v0.1"
+            }
+          },
+          "schema_version": "biocompiler.human_deployment_request.v0.1"
+        },
+        "schema_version": "biocompiler.human_acceptance_request.v0.1"
+      },
+      "target": {
+        "capabilities": [],
+        "compartments": [
+          "cytoplasm",
+          "extracellular"
+        ],
+        "context_id": "illustrative_human_target",
+        "context_version": "1",
+        "human_target": {
+          "cell_state": {
+            "basis": "unestablished",
+            "description": "Required recipient activation/differentiation state remains unspecified.",
+            "evidence_ids": [],
+            "limitations": "Illustrative requirement only; applicable evidence has not been supplied.",
+            "schema_version": "biocompiler.target_claim.v0.1"
+          },
+          "cell_subtype": {
+            "basis": "unestablished",
+            "description": "Human CD8-positive T-cell recipients; subtype refinement remains open.",
+            "evidence_ids": [],
+            "limitations": "Illustrative requirement only; applicable evidence has not been supplied.",
+            "schema_version": "biocompiler.target_claim.v0.1"
+          },
+          "disease_context": {
+            "basis": "unestablished",
+            "description": "Intended disease context remains to be selected.",
+            "evidence_ids": [],
+            "limitations": "Illustrative requirement only; applicable evidence has not been supplied.",
+            "schema_version": "biocompiler.target_claim.v0.1"
+          },
+          "engineering": "in_vivo",
+          "evidence": [],
+          "host_dependencies": [
+            {
+              "capability": "host_translation",
+              "compartment": "cytoplasm",
+              "id": "translation",
+              "schema_version": "biocompiler.human_host_dependency.v0.1",
+              "support": {
+                "basis": "unestablished",
+                "description": "Host translation support requires context-matched evidence.",
+                "evidence_ids": [],
+                "limitations": "Illustrative requirement only; applicable evidence has not been supplied.",
+                "schema_version": "biocompiler.target_claim.v0.1"
+              }
+            }
+          ],
+          "operating_conditions": [
+            {
+              "compartment": "cytoplasm",
+              "domain": {
+                "dtype": {
+                  "arguments": [],
+                  "dimensions": {},
+                  "kind": "scalar",
+                  "name": "Level"
+                },
+                "kind": "unknown",
+                "lower": null,
+                "reason": "No supported resource operating range is established.",
+                "schema_version": "biocompiler.component_value_domain.v0.1",
+                "unit": "1",
+                "upper": null,
+                "values": []
+              },
+              "id": "resource_availability",
+              "observable": "available_translation_resources",
+              "schema_version": "biocompiler.human_operating_condition.v0.1",
+              "support": {
+                "basis": "unestablished",
+                "description": "Supported intracellular resource conditions remain unresolved.",
+                "evidence_ids": [],
+                "limitations": "Illustrative requirement only; applicable evidence has not been supplied.",
+                "schema_version": "biocompiler.target_claim.v0.1"
+              }
+            }
+          ],
+          "population_exclusion": {
+            "basis": "unestablished",
+            "description": "Population exclusions require an explicit applicability review.",
+            "evidence_ids": [],
+            "limitations": "Illustrative requirement only; applicable evidence has not been supplied.",
+            "schema_version": "biocompiler.target_claim.v0.1"
+          },
+          "population_inclusion": {
+            "basis": "unestablished",
+            "description": "Eligible human population and inclusion criteria remain unresolved.",
+            "evidence_ids": [],
+            "limitations": "Illustrative requirement only; applicable evidence has not been supplied.",
+            "schema_version": "biocompiler.target_claim.v0.1"
+          },
+          "recipient_taxon_id": 9606,
+          "schema_version": "biocompiler.human_target_contract.v0.1",
+          "tissue_context": {
+            "basis": "unestablished",
+            "description": "Intended human tissue context remains to be selected.",
+            "evidence_ids": [],
+            "limitations": "Illustrative requirement only; applicable evidence has not been supplied.",
+            "schema_version": "biocompiler.target_claim.v0.1"
+          }
+        },
+        "payload_format": "RNA",
+        "resources": {},
+        "schema_version": "biocompiler.human_target_context.v0.1"
+      }
+    },
+    "reference_lock": null,
+    "requested_form": "delivered_rna",
+    "requirements": [
+      {
+        "behavior": {
+          "dependencies": [],
+          "inputs": [
+            {
+              "compartment": "cytoplasm",
+              "encoding": {
+                "allowed_range": null,
+                "high": null,
+                "low": null,
+                "mode": "qualitative",
+                "schema_version": "biocompiler.observation_encoding.v0.1",
+                "unit": "qualitative"
+              },
+              "entity": {
+                "accession": "A",
+                "isoform": "unknown",
+                "namespace": "software_fixture",
+                "schema_version": "biocompiler.observation_entity.v0.1",
+                "version": "1"
+              },
+              "id": "A",
+              "quantity": "mirna_activity",
+              "schema_version": "biocompiler.circuit_observation.v0.1",
+              "scope": "cell_accessible",
+              "window": {
+                "aggregation": "unknown",
+                "end": null,
+                "reference": "unknown",
+                "schema_version": "biocompiler.observation_window.v0.1",
+                "start": null,
+                "unit": "unknown"
+              }
+            },
+            {
+              "compartment": "cytoplasm",
+              "encoding": {
+                "allowed_range": null,
+                "high": null,
+                "low": null,
+                "mode": "qualitative",
+                "schema_version": "biocompiler.observation_encoding.v0.1",
+                "unit": "qualitative"
+              },
+              "entity": {
+                "accession": "B",
+                "isoform": "unknown",
+                "namespace": "software_fixture",
+                "schema_version": "biocompiler.observation_entity.v0.1",
+                "version": "1"
+              },
+              "id": "B",
+              "quantity": "mirna_activity",
+              "schema_version": "biocompiler.circuit_observation.v0.1",
+              "scope": "cell_accessible",
+              "window": {
+                "aggregation": "unknown",
+                "end": null,
+                "reference": "unknown",
+                "schema_version": "biocompiler.observation_window.v0.1",
+                "start": null,
+                "unit": "unknown"
+              }
+            }
+          ],
+          "lifecycle": {
+            "cessation": null,
+            "clearance": null,
+            "mode": "readout",
+            "onset": null,
+            "schema_version": "biocompiler.circuit_lifecycle.v0.1"
+          },
+          "output": {
+            "id": "reporter",
+            "kind": "reporter_fluorescence",
+            "observation": {
+              "compartment": "cytoplasm",
+              "encoding": {
+                "allowed_range": null,
+                "high": null,
+                "low": null,
+                "mode": "qualitative",
+                "schema_version": "biocompiler.observation_encoding.v0.1",
+                "unit": "qualitative"
+              },
+              "entity": {
+                "accession": "reporter_readout",
+                "isoform": "unknown",
+                "namespace": "software_fixture",
+                "schema_version": "biocompiler.observation_entity.v0.1",
+                "version": "1"
+              },
+              "id": "reporter_readout",
+              "quantity": "fluorescence",
+              "schema_version": "biocompiler.circuit_observation.v0.1",
+              "scope": "evaluator",
+              "window": {
+                "aggregation": "unknown",
+                "end": null,
+                "reference": "unknown",
+                "schema_version": "biocompiler.observation_window.v0.1",
+                "start": null,
+                "unit": "unknown"
+              }
+            },
+            "schema_version": "biocompiler.circuit_product.v0.1"
+          },
+          "response": {
+            "inputs": [
+              {
+                "id": "A",
+                "observation_fingerprint": "0e5e8f66901999c170872439097abffda155e69f7d2fed251dd1f0deabbfdc5a",
+                "schema_version": "biocompiler.circuit_signal.v0.1"
+              },
+              {
+                "id": "B",
+                "observation_fingerprint": "415806c3e3acb3ff3689f9afba3515286e0fe7b6e9d4a6c14c7bd53b6dc3efdc",
+                "schema_version": "biocompiler.circuit_signal.v0.1"
+              }
+            ],
+            "outputs": [
+              false,
+              false,
+              false,
+              true
+            ],
+            "schema_version": "biocompiler.boolean_spec.v0.1"
+          },
+          "schema_version": "biocompiler.circuit_behavior.v0.1"
+        },
+        "id": "response",
+        "input_bindings": [],
+        "role_id": "n000001",
+        "schema_version": "biocompiler.circuit_requirement.v0.1",
+        "source_location": {
+          "file": "examples/circuit_intent.py",
+          "function": "make_circuit_requests",
+          "line": 54
+        },
+        "source_node_ids": [
+          "n000001"
+        ]
+      }
+    ],
+    "schema_version": "biocompiler.circuit_request.v0.1",
+    "selected_realization": null
+  },
+  "complex_members": [],
+  "id": "artificial_construction",
+  "mode": "strict",
+  "output_members": [
+    {
+      "coding_status": "noncoding",
+      "form": "delivered_rna",
+      "id": "payload",
+      "provenance": {
+        "authority": [
+          {
+            "content_fingerprint": "e695428008efd480c8e931ac8f4acf39ee2b9ca650bd26470f64b0437a3bd7db",
+            "id": "artificial-molecule-notice",
+            "kind": "source",
+            "schema_version": "biocompiler.component_identity.v0.1",
+            "version": "1"
+          }
+        ],
+        "locator": "examples/circuit_molecules.py:construction-checker",
+        "reason": "Artificial source-frame and annotation declarations only; the notice pin does not verify any bases or biology.",
+        "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+        "status": "declared"
+      },
+      "schema_version": "biocompiler.construction_output_member.v0.1",
+      "sequence_extent": "complete",
+      "space_id": "payload.space",
+      "value": {
+        "id": "derived",
+        "kind": "product",
+        "schema_version": "biocompiler.construction_value_ref.v0.1"
+      }
+    }
+  ],
+  "payload_structures": [
+    {
+      "form": "delivered_rna",
+      "member_id": "payload",
+      "provenance": {
+        "authority": [
+          {
+            "content_fingerprint": "e695428008efd480c8e931ac8f4acf39ee2b9ca650bd26470f64b0437a3bd7db",
+            "id": "artificial-molecule-notice",
+            "kind": "source",
+            "schema_version": "biocompiler.component_identity.v0.1",
+            "version": "1"
+          }
+        ],
+        "locator": "examples/circuit_molecules.py:required-region-contract",
+        "reason": "Artificial source-frame and annotation declarations only; the notice pin does not verify any bases or biology.",
+        "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+        "status": "declared"
+      },
+      "regions": [
+        {
+          "feature_id": "missing",
+          "kind": "nominal_test_region",
+          "schema_version": "biocompiler.required_payload_region.v0.1"
+        }
+      ],
+      "schema_version": "biocompiler.payload_structure_contract.v0.1",
+      "topology": "linear"
+    }
+  ],
+  "requirements": [
+    {
+      "category": "payload",
+      "external_fingerprint": null,
+      "external_id": null,
+      "id": "payload_requirement",
+      "member_id": "payload",
+      "roles": [
+        {
+          "compartment": "cytoplasm",
+          "id": "payload_role",
+          "purpose": "requested_payload",
+          "role": "payload",
+          "schema_version": "biocompiler.construction_role_declaration.v0.1"
+        }
+      ],
+      "schema_version": "biocompiler.construction_member_requirement.v0.1"
+    }
+  ],
+  "schema_version": "biocompiler.circuit_construction_request.v0.1",
+  "sources": [
+    {
+      "id": "root",
+      "molecule": {
+        "assembly": [
+          {
+            "destination": {
+              "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+              "space_id": "source.space",
+              "spans": [
+                {
+                  "end": 6,
+                  "schema_version": "biocompiler.molecule_index_span.v0.1",
+                  "start": 0
+                }
+              ],
+              "strand": "+"
+            },
+            "id": "source.origin",
+            "provenance": {
+              "authority": [
+                {
+                  "content_fingerprint": "e695428008efd480c8e931ac8f4acf39ee2b9ca650bd26470f64b0437a3bd7db",
+                  "id": "artificial-molecule-notice",
+                  "kind": "source",
+                  "schema_version": "biocompiler.component_identity.v0.1",
+                  "version": "1"
+                }
+              ],
+              "locator": "examples/circuit_molecules.py:source",
+              "reason": "Artificial source-frame and annotation declarations only; the notice pin does not verify any bases or biology.",
+              "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+              "status": "declared"
+            },
+            "schema_version": "biocompiler.assembly_origin.v0.1",
+            "source_path": {
+              "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+              "space_id": "source.declared_source_space",
+              "spans": [
+                {
+                  "end": 6,
+                  "schema_version": "biocompiler.molecule_index_span.v0.1",
+                  "start": 0
+                }
+              ],
+              "strand": "+"
+            },
+            "source_space": {
+              "alphabet": "RNA",
+              "axis": "5prime_to_3prime",
+              "id": "source.declared_source_space",
+              "length": 6,
+              "schema_version": "biocompiler.molecule_coordinate_space.v0.1",
+              "topology": "linear"
+            }
+          }
+        ],
+        "chemistry": {
+          "cap": {
+            "identity": null,
+            "provenance": {
+              "authority": [
+                {
+                  "content_fingerprint": "e695428008efd480c8e931ac8f4acf39ee2b9ca650bd26470f64b0437a3bd7db",
+                  "id": "artificial-molecule-notice",
+                  "kind": "source",
+                  "schema_version": "biocompiler.component_identity.v0.1",
+                  "version": "1"
+                }
+              ],
+              "locator": "examples/circuit_molecules.py:chemistry",
+              "reason": "Artificial source-frame and annotation declarations only; the notice pin does not verify any bases or biology.",
+              "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+              "status": "declared"
+            },
+            "schema_version": "biocompiler.chemistry_claim.v0.1",
+            "status": "absent"
+          },
+          "finish_end": {
+            "identity": {
+              "accession": "hydroxyl",
+              "namespace": "software_fixture.chemical",
+              "schema_version": "biocompiler.chemical_identity.v0.1",
+              "version": "1"
+            },
+            "provenance": {
+              "authority": [
+                {
+                  "content_fingerprint": "e695428008efd480c8e931ac8f4acf39ee2b9ca650bd26470f64b0437a3bd7db",
+                  "id": "artificial-molecule-notice",
+                  "kind": "source",
+                  "schema_version": "biocompiler.component_identity.v0.1",
+                  "version": "1"
+                }
+              ],
+              "locator": "examples/circuit_molecules.py:chemistry",
+              "reason": "Artificial source-frame and annotation declarations only; the notice pin does not verify any bases or biology.",
+              "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+              "status": "declared"
+            },
+            "schema_version": "biocompiler.chemistry_claim.v0.1",
+            "status": "declared"
+          },
+          "modification_inventory_provenance": {
+            "authority": [
+              {
+                "content_fingerprint": "e695428008efd480c8e931ac8f4acf39ee2b9ca650bd26470f64b0437a3bd7db",
+                "id": "artificial-molecule-notice",
+                "kind": "source",
+                "schema_version": "biocompiler.component_identity.v0.1",
+                "version": "1"
+              }
+            ],
+            "locator": "examples/circuit_molecules.py:chemistry",
+            "reason": "Artificial source-frame and annotation declarations only; the notice pin does not verify any bases or biology.",
+            "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+            "status": "declared"
+          },
+          "modification_inventory_status": "declared",
+          "modifications": [],
+          "schema_version": "biocompiler.molecule_chemistry.v0.1",
+          "start_end": {
+            "identity": {
+              "accession": "hydroxyl",
+              "namespace": "software_fixture.chemical",
+              "schema_version": "biocompiler.chemical_identity.v0.1",
+              "version": "1"
+            },
+            "provenance": {
+              "authority": [
+                {
+                  "content_fingerprint": "e695428008efd480c8e931ac8f4acf39ee2b9ca650bd26470f64b0437a3bd7db",
+                  "id": "artificial-molecule-notice",
+                  "kind": "source",
+                  "schema_version": "biocompiler.component_identity.v0.1",
+                  "version": "1"
+                }
+              ],
+              "locator": "examples/circuit_molecules.py:chemistry",
+              "reason": "Artificial source-frame and annotation declarations only; the notice pin does not verify any bases or biology.",
+              "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+              "status": "declared"
+            },
+            "schema_version": "biocompiler.chemistry_claim.v0.1",
+            "status": "declared"
+          },
+          "terminal_tail": {
+            "length": {
+              "exact": 0,
+              "lower": null,
+              "mode": "exact",
+              "schema_version": "biocompiler.tail_length.v0.1",
+              "upper": null
+            },
+            "path": null,
+            "placement": "absent",
+            "provenance": {
+              "authority": [
+                {
+                  "content_fingerprint": "e695428008efd480c8e931ac8f4acf39ee2b9ca650bd26470f64b0437a3bd7db",
+                  "id": "artificial-molecule-notice",
+                  "kind": "source",
+                  "schema_version": "biocompiler.component_identity.v0.1",
+                  "version": "1"
+                }
+              ],
+              "locator": "examples/circuit_molecules.py:chemistry",
+              "reason": "Artificial source-frame and annotation declarations only; the notice pin does not verify any bases or biology.",
+              "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+              "status": "declared"
+            },
+            "schema_version": "biocompiler.tail_declaration.v0.1",
+            "status": "declared"
+          }
+        },
+        "coding_status": "noncoding",
+        "features": [],
+        "form": "delivered_rna",
+        "id": "source",
+        "provenance": {
+          "authority": [
+            {
+              "content_fingerprint": "e695428008efd480c8e931ac8f4acf39ee2b9ca650bd26470f64b0437a3bd7db",
+              "id": "artificial-molecule-notice",
+              "kind": "source",
+              "schema_version": "biocompiler.component_identity.v0.1",
+              "version": "1"
+            }
+          ],
+          "locator": "examples/circuit_molecules.py:source",
+          "reason": "Artificial source-frame and annotation declarations only; the notice pin does not verify any bases or biology.",
+          "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+          "status": "declared"
+        },
+        "schema_version": "biocompiler.circuit_molecule.v0.1",
+        "sequence": "ACGUAC",
+        "sequence_extent": "complete",
+        "space": {
+          "alphabet": "RNA",
+          "axis": "5prime_to_3prime",
+          "id": "source.space",
+          "length": 6,
+          "schema_version": "biocompiler.molecule_coordinate_space.v0.1",
+          "topology": "linear"
+        }
+      },
+      "provenance": {
+        "authority": [
+          {
+            "content_fingerprint": "e695428008efd480c8e931ac8f4acf39ee2b9ca650bd26470f64b0437a3bd7db",
+            "id": "artificial-molecule-notice",
+            "kind": "source",
+            "schema_version": "biocompiler.component_identity.v0.1",
+            "version": "1"
+          }
+        ],
+        "locator": "examples/circuit_molecules.py:construction-checker",
+        "reason": "Artificial source-frame and annotation declarations only; the notice pin does not verify any bases or biology.",
+        "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+        "status": "declared"
+      },
+      "schema_version": "biocompiler.construction_root_source.v0.1"
+    }
+  ],
+  "steps": [
+    {
+      "assumptions": [],
+      "id": "step",
+      "operation": {
+        "input": {
+          "path": null,
+          "schema_version": "biocompiler.construction_value_selection.v0.1",
+          "value": {
+            "id": "root",
+            "kind": "root",
+            "schema_version": "biocompiler.construction_value_ref.v0.1"
+          }
+        },
+        "schema_version": "biocompiler.construction_slice.v0.1"
+      },
+      "ports": [
+        {
+          "alphabet": "RNA",
+          "chemistry_transition": {
+            "dispositions": [
+              {
+                "component": "cap",
+                "decision": "declared_replacement",
+                "destination_components": [
+                  "cap"
+                ],
+                "provenance": {
+                  "authority": [
+                    {
+                      "content_fingerprint": "e695428008efd480c8e931ac8f4acf39ee2b9ca650bd26470f64b0437a3bd7db",
+                      "id": "artificial-molecule-notice",
+                      "kind": "source",
+                      "schema_version": "biocompiler.component_identity.v0.1",
+                      "version": "1"
+                    }
+                  ],
+                  "locator": "examples/circuit_molecules.py:construction-checker",
+                  "reason": "Artificial source-frame and annotation declarations only; the notice pin does not verify any bases or biology.",
+                  "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                  "status": "declared"
+                },
+                "schema_version": "biocompiler.chemistry_disposition.v0.1",
+                "source_id": "root"
+              },
+              {
+                "component": "finish_end",
+                "decision": "declared_replacement",
+                "destination_components": [
+                  "finish_end"
+                ],
+                "provenance": {
+                  "authority": [
+                    {
+                      "content_fingerprint": "e695428008efd480c8e931ac8f4acf39ee2b9ca650bd26470f64b0437a3bd7db",
+                      "id": "artificial-molecule-notice",
+                      "kind": "source",
+                      "schema_version": "biocompiler.component_identity.v0.1",
+                      "version": "1"
+                    }
+                  ],
+                  "locator": "examples/circuit_molecules.py:construction-checker",
+                  "reason": "Artificial source-frame and annotation declarations only; the notice pin does not verify any bases or biology.",
+                  "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                  "status": "declared"
+                },
+                "schema_version": "biocompiler.chemistry_disposition.v0.1",
+                "source_id": "root"
+              },
+              {
+                "component": "modification_inventory",
+                "decision": "declared_replacement",
+                "destination_components": [
+                  "modification_inventory"
+                ],
+                "provenance": {
+                  "authority": [
+                    {
+                      "content_fingerprint": "e695428008efd480c8e931ac8f4acf39ee2b9ca650bd26470f64b0437a3bd7db",
+                      "id": "artificial-molecule-notice",
+                      "kind": "source",
+                      "schema_version": "biocompiler.component_identity.v0.1",
+                      "version": "1"
+                    }
+                  ],
+                  "locator": "examples/circuit_molecules.py:construction-checker",
+                  "reason": "Artificial source-frame and annotation declarations only; the notice pin does not verify any bases or biology.",
+                  "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                  "status": "declared"
+                },
+                "schema_version": "biocompiler.chemistry_disposition.v0.1",
+                "source_id": "root"
+              },
+              {
+                "component": "start_end",
+                "decision": "declared_replacement",
+                "destination_components": [
+                  "start_end"
+                ],
+                "provenance": {
+                  "authority": [
+                    {
+                      "content_fingerprint": "e695428008efd480c8e931ac8f4acf39ee2b9ca650bd26470f64b0437a3bd7db",
+                      "id": "artificial-molecule-notice",
+                      "kind": "source",
+                      "schema_version": "biocompiler.component_identity.v0.1",
+                      "version": "1"
+                    }
+                  ],
+                  "locator": "examples/circuit_molecules.py:construction-checker",
+                  "reason": "Artificial source-frame and annotation declarations only; the notice pin does not verify any bases or biology.",
+                  "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                  "status": "declared"
+                },
+                "schema_version": "biocompiler.chemistry_disposition.v0.1",
+                "source_id": "root"
+              },
+              {
+                "component": "terminal_tail",
+                "decision": "declared_replacement",
+                "destination_components": [
+                  "terminal_tail"
+                ],
+                "provenance": {
+                  "authority": [
+                    {
+                      "content_fingerprint": "e695428008efd480c8e931ac8f4acf39ee2b9ca650bd26470f64b0437a3bd7db",
+                      "id": "artificial-molecule-notice",
+                      "kind": "source",
+                      "schema_version": "biocompiler.component_identity.v0.1",
+                      "version": "1"
+                    }
+                  ],
+                  "locator": "examples/circuit_molecules.py:construction-checker",
+                  "reason": "Artificial source-frame and annotation declarations only; the notice pin does not verify any bases or biology.",
+                  "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                  "status": "declared"
+                },
+                "schema_version": "biocompiler.chemistry_disposition.v0.1",
+                "source_id": "root"
+              }
+            ],
+            "mode": "explicit_output",
+            "output": {
+              "cap": {
+                "identity": null,
+                "provenance": {
+                  "authority": [
+                    {
+                      "content_fingerprint": "e695428008efd480c8e931ac8f4acf39ee2b9ca650bd26470f64b0437a3bd7db",
+                      "id": "artificial-molecule-notice",
+                      "kind": "source",
+                      "schema_version": "biocompiler.component_identity.v0.1",
+                      "version": "1"
+                    }
+                  ],
+                  "locator": "examples/circuit_molecules.py:chemistry",
+                  "reason": "Artificial source-frame and annotation declarations only; the notice pin does not verify any bases or biology.",
+                  "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                  "status": "declared"
+                },
+                "schema_version": "biocompiler.chemistry_claim.v0.1",
+                "status": "absent"
+              },
+              "finish_end": {
+                "identity": {
+                  "accession": "hydroxyl",
+                  "namespace": "software_fixture.chemical",
+                  "schema_version": "biocompiler.chemical_identity.v0.1",
+                  "version": "1"
+                },
+                "provenance": {
+                  "authority": [
+                    {
+                      "content_fingerprint": "e695428008efd480c8e931ac8f4acf39ee2b9ca650bd26470f64b0437a3bd7db",
+                      "id": "artificial-molecule-notice",
+                      "kind": "source",
+                      "schema_version": "biocompiler.component_identity.v0.1",
+                      "version": "1"
+                    }
+                  ],
+                  "locator": "examples/circuit_molecules.py:chemistry",
+                  "reason": "Artificial source-frame and annotation declarations only; the notice pin does not verify any bases or biology.",
+                  "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                  "status": "declared"
+                },
+                "schema_version": "biocompiler.chemistry_claim.v0.1",
+                "status": "declared"
+              },
+              "modification_inventory_provenance": {
+                "authority": [
+                  {
+                    "content_fingerprint": "e695428008efd480c8e931ac8f4acf39ee2b9ca650bd26470f64b0437a3bd7db",
+                    "id": "artificial-molecule-notice",
+                    "kind": "source",
+                    "schema_version": "biocompiler.component_identity.v0.1",
+                    "version": "1"
+                  }
+                ],
+                "locator": "examples/circuit_molecules.py:chemistry",
+                "reason": "Artificial source-frame and annotation declarations only; the notice pin does not verify any bases or biology.",
+                "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                "status": "declared"
+              },
+              "modification_inventory_status": "declared",
+              "modifications": [],
+              "schema_version": "biocompiler.molecule_chemistry.v0.1",
+              "start_end": {
+                "identity": {
+                  "accession": "hydroxyl",
+                  "namespace": "software_fixture.chemical",
+                  "schema_version": "biocompiler.chemical_identity.v0.1",
+                  "version": "1"
+                },
+                "provenance": {
+                  "authority": [
+                    {
+                      "content_fingerprint": "e695428008efd480c8e931ac8f4acf39ee2b9ca650bd26470f64b0437a3bd7db",
+                      "id": "artificial-molecule-notice",
+                      "kind": "source",
+                      "schema_version": "biocompiler.component_identity.v0.1",
+                      "version": "1"
+                    }
+                  ],
+                  "locator": "examples/circuit_molecules.py:chemistry",
+                  "reason": "Artificial source-frame and annotation declarations only; the notice pin does not verify any bases or biology.",
+                  "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                  "status": "declared"
+                },
+                "schema_version": "biocompiler.chemistry_claim.v0.1",
+                "status": "declared"
+              },
+              "terminal_tail": {
+                "length": {
+                  "exact": 0,
+                  "lower": null,
+                  "mode": "exact",
+                  "schema_version": "biocompiler.tail_length.v0.1",
+                  "upper": null
+                },
+                "path": null,
+                "placement": "absent",
+                "provenance": {
+                  "authority": [
+                    {
+                      "content_fingerprint": "e695428008efd480c8e931ac8f4acf39ee2b9ca650bd26470f64b0437a3bd7db",
+                      "id": "artificial-molecule-notice",
+                      "kind": "source",
+                      "schema_version": "biocompiler.component_identity.v0.1",
+                      "version": "1"
+                    }
+                  ],
+                  "locator": "examples/circuit_molecules.py:chemistry",
+                  "reason": "Artificial source-frame and annotation declarations only; the notice pin does not verify any bases or biology.",
+                  "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                  "status": "declared"
+                },
+                "schema_version": "biocompiler.tail_declaration.v0.1",
+                "status": "declared"
+              }
+            },
+            "provenance": {
+              "authority": [
+                {
+                  "content_fingerprint": "e695428008efd480c8e931ac8f4acf39ee2b9ca650bd26470f64b0437a3bd7db",
+                  "id": "artificial-molecule-notice",
+                  "kind": "source",
+                  "schema_version": "biocompiler.component_identity.v0.1",
+                  "version": "1"
+                }
+              ],
+              "locator": "examples/circuit_molecules.py:construction-checker",
+              "reason": "Artificial source-frame and annotation declarations only; the notice pin does not verify any bases or biology.",
+              "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+              "status": "declared"
+            },
+            "schema_version": "biocompiler.chemistry_transition.v0.1"
+          },
+          "feature_transition": {
+            "added": [
+              {
+                "id": "payload_region",
+                "kind": "nominal_test_region",
+                "path": {
+                  "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+                  "space_id": "derived.space",
+                  "spans": [
+                    {
+                      "end": 1,
+                      "schema_version": "biocompiler.molecule_index_span.v0.1",
+                      "start": 0
+                    }
+                  ],
+                  "strand": "+"
+                },
+                "provenance": {
+                  "authority": [
+                    {
+                      "content_fingerprint": "e695428008efd480c8e931ac8f4acf39ee2b9ca650bd26470f64b0437a3bd7db",
+                      "id": "artificial-molecule-notice",
+                      "kind": "source",
+                      "schema_version": "biocompiler.component_identity.v0.1",
+                      "version": "1"
+                    }
+                  ],
+                  "locator": "examples/circuit_molecules.py:construction-checker",
+                  "reason": "Artificial source-frame and annotation declarations only; the notice pin does not verify any bases or biology.",
+                  "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                  "status": "declared"
+                },
+                "reading_frame": null,
+                "schema_version": "biocompiler.molecule_feature.v0.1"
+              }
+            ],
+            "dispositions": [],
+            "provenance": {
+              "authority": [
+                {
+                  "content_fingerprint": "e695428008efd480c8e931ac8f4acf39ee2b9ca650bd26470f64b0437a3bd7db",
+                  "id": "artificial-molecule-notice",
+                  "kind": "source",
+                  "schema_version": "biocompiler.component_identity.v0.1",
+                  "version": "1"
+                }
+              ],
+              "locator": "examples/circuit_molecules.py:construction-checker",
+              "reason": "Artificial source-frame and annotation declarations only; the notice pin does not verify any bases or biology.",
+              "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+              "status": "declared"
+            },
+            "schema_version": "biocompiler.feature_transition.v0.1"
+          },
+          "id": "derived",
+          "schema_version": "biocompiler.construction_product_port.v0.1",
+          "space_id": "derived.space",
+          "topology": "linear"
+        }
+      ],
+      "provenance": {
+        "authority": [
+          {
+            "content_fingerprint": "e695428008efd480c8e931ac8f4acf39ee2b9ca650bd26470f64b0437a3bd7db",
+            "id": "artificial-molecule-notice",
+            "kind": "source",
+            "schema_version": "biocompiler.component_identity.v0.1",
+            "version": "1"
+          }
+        ],
+        "locator": "examples/circuit_molecules.py:construction-checker",
+        "reason": "Artificial source-frame and annotation declarations only; the notice pin does not verify any bases or biology.",
+        "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+        "status": "declared"
+      },
+      "schema_version": "biocompiler.construction_transform_step.v0.1"
+    }
+  ]
+}

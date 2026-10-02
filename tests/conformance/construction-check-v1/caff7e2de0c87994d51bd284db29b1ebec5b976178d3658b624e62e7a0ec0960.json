@@ -1,0 +1,16 @@
+{
+  "bundle": null,
+  "diagnostics": [
+    "member:main_member:unavailable_value",
+    "member:released_member:unavailable_value",
+    "step:step:invalid_operation"
+  ],
+  "experimental_amounts": [],
+  "missing_members": [
+    "main_member",
+    "released_member"
+  ],
+  "request_fingerprint": "e5ccd6b98b7d7e1d6529ff7499cbb35b88e9744947e39e22b034392bd2b2bc18",
+  "schema_version": "biocompiler.circuit_construction_candidate.v0.1",
+  "values": []
+}

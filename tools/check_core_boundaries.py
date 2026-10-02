@@ -60,8 +60,17 @@ TESTS = {
     "test_construction": {"bioc_wire", "bioc_domain", "zarith"},
     "test_construction_artifact": {"bioc_wire", "bioc_domain", "zarith"},
     "test_payload_structure_check": {"bioc_wire", "bioc_domain", "bioc_checker", "zarith"},
+    'test_architecture_domains': {'bioc_wire', 'bioc_domain', 'zarith'},
+    'test_transition_check': {'bioc_wire', 'bioc_domain', 'bioc_checker', 'zarith'},
+    'test_construction_assessment': {'bioc_wire', 'bioc_domain'},
+    'test_construction_check': {'bioc_wire', 'bioc_domain', 'bioc_checker', 'zarith'},
+    'test_source_manifest': {'bioc_wire', 'bioc_domain', 'zarith'},
+    'test_source_check': {'bioc_wire', 'bioc_domain', 'bioc_checker', 'zarith'},
 }
 PRODUCER_ROLES = frozenset({"compiler", "matcher", "selection", "emitter", "assembler", "producer"})
+# Reconstruction is an independent checker's implementation detail. Consumers
+# can request assessment/replay, but cannot obtain an expected candidate to emit.
+PRIVATE_MODULES = {"bioc_checker": ["construction_reconstruction"]}
 TOKEN = re.compile(r'\s+|;[^\n]*(?:\n|$)|\(|\)|"(?:\\.|[^"\\])*"|[^\s();"]+')
 IDENTIFIER = re.compile(r"[A-Za-z_][A-Za-z0-9_']*|\.")
 
@@ -208,10 +217,17 @@ def ocaml_tokens(text):
     return result
 
 
-def source_boundary(path, allowed_libraries):
+def source_boundary(path, allowed_libraries, *, owner=None):
     tokens = ocaml_tokens(path.read_text(encoding="utf-8"))
     referenced = set()
     for index, token in enumerate(tokens):
+        for library, modules in PRIVATE_MODULES.items():
+            for module in modules:
+                public_spelling = module[:1].upper() + module[1:]
+                if token == public_spelling and owner != library:
+                    raise BoundaryError(f"Private checker reconstruction referenced outside {library} in {path.name}")
+                if token == public_spelling and path.suffix == ".mli" and path.stem not in modules:
+                    raise BoundaryError(f"Private checker reconstruction leaked through public interface {path.name}")
         if token == "external" or token in {"Unix", "Dynlink", "Obj", "Marshal"}:
             raise BoundaryError(f"Unreviewed native/process/dynamic-code escape {token} in {path.name}")
         if token == "Sys" and tokens[index:index + 3] != ["Sys", ".", "argv"]:
@@ -249,7 +265,7 @@ def check_boundaries(root: Path):
                 continue
             if kind not in {"library", "executable", "test"}:
                 raise BoundaryError(f"Unreviewed Dune stanza {kind} in {relative}")
-            allowed = {"name", "libraries"} if kind == "library" else {"name", "public_name", "package", "libraries"} if kind == "executable" else {"name", "modules", "libraries"}
+            allowed = {"name", "libraries", "private_modules"} if kind == "library" else {"name", "public_name", "package", "libraries"} if kind == "executable" else {"name", "modules", "libraries"}
             values = fields(stanza, allowed)
             dependencies = values.get("libraries", [])
             if len(dependencies) != len(set(dependencies)):
@@ -260,6 +276,8 @@ def check_boundaries(root: Path):
                 if name not in LIBRARIES:
                     raise BoundaryError(f"Unreviewed Dune library: {name}")
                 expected_path, expected_dependencies, role = LIBRARIES[name]
+                if values.get("private_modules", []) != PRIVATE_MODULES.get(name, []):
+                    raise BoundaryError(f"Changed private module boundary for {name}")
                 key = name
             elif kind == "executable":
                 public_name = one(values, "public_name")
@@ -294,13 +312,19 @@ def check_boundaries(root: Path):
             allowed = set(tests[path.stem])
         else:
             raise BoundaryError(f"OCaml source has no reviewed Dune owner: {relative}")
-        references[relative] = source_boundary(path, allowed)
+        references[relative] = source_boundary(path, allowed, owner=owner)
+    for library, modules in PRIVATE_MODULES.items():
+        directory = core / Path(LIBRARIES[library][0]).parent
+        for module in modules:
+            if any(not (directory / (module + suffix)).is_file() for suffix in (".ml", ".mli")):
+                raise BoundaryError(f"Private module needs an explicit implementation and interface: {module}")
     return {"schema_version": "biocompiler.core_boundaries.v0.1", "status": "pass",
             "claim_scope": "static_declared_link_graph_and_source_escape_policy_only",
             "native_build_and_semantic_independence": "separate_hosted_validation_required",
             "libraries_and_executables": graph, "roles": roles, "transitive_dependencies": closure,
             "external_trusted_dependencies": sorted(EXTERNAL_LIBRARIES),
             "shared_trusted_base": ["bioc_wire", "bioc_domain"],
+            "private_modules": PRIVATE_MODULES,
             "native_tests": tests, "source_module_references": references,
             "source_sha256": dict(sorted(source_files.items()))}
 
