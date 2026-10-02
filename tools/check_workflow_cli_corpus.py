@@ -4,10 +4,8 @@ The frozen capture tool and all observations stay unchanged. This bridge checks
 current reviewed source inventories independently, retains their actual metadata,
 and projects only source identities covered by exact route witnesses. Full
 actual import audits, retained source bytes and metadata remain in the receipt;
-observations, output content, environments and all other sources stay exact.
-
 An independently pinned argparse runtime counterpart retains its complete actual
-bytes; all other observations and source checks remain exact.
+bytes. All other observations, environments and sources stay exact.
 """
 from __future__ import annotations
 
@@ -21,14 +19,13 @@ import sys
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from tools import workflow_source_lineage as routes
 from tools import synthetic_producer_source_lineage as producers
+from tools import cli_runtime_counterparts as runtime
 from tools.realization_source_lineage import verify_captured_source
 
 if __package__:
-    from . import cli_runtime_counterparts as runtime
     from . import freeze_workflow_cli as frozen
     from . import check_realization_workflow_corpus as source
 else:
-    import cli_runtime_counterparts as runtime
     import freeze_workflow_cli as frozen
     import check_realization_workflow_corpus as source
 

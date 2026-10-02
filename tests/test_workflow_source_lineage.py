@@ -23,6 +23,19 @@ class WorkflowSourceLineageTests(unittest.TestCase):
         from tools.realization_source_lineage import verify_captured_source
         for path, entry in self.witness.items():
             raw = (lineage.ROOT / path).read_bytes()
+            if path == lineage.CLI:
+                from tools import synthetic_selection_cli_source_lineage as later
+                parent = later.load_witness()["historical_source"].encode()
+                self.assertEqual(parent, entry["routed_source"].encode())
+                checked = lineage.verify_extension(entry, parent, entry["historical_sha256"])
+                current = verify_captured_source(lineage.ROOT, {"path": path, "sha256": entry["historical_sha256"]})
+                self.assertEqual(current["lineage"][0], checked)
+                self.assertEqual(current["current_sha256"], lineage.sha(raw))
+                self.assertEqual(current["lineage"][1]["historical_sha256"], entry["routed_sha256"])
+                self.assertEqual(checked["current_sha256"], entry["routed_sha256"])
+                self.assertEqual(checked["witness_sha256"], lineage.WITNESS_SHA256)
+                self.assertEqual(lineage.sha(entry["historical_source"].encode()), lineage.HISTORICAL[path])
+                continue
             self.assertEqual(raw, entry["routed_source"].encode())
             self.assertEqual(lineage.sha(entry["historical_source"].encode()), lineage.HISTORICAL[path])
             checked = lineage.verify_source(lineage.ROOT, path, entry["historical_sha256"])

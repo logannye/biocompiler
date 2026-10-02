@@ -87,6 +87,25 @@ def literal(node, resolve):
     } and len(node.args) == 1 and not node.keywords:
         value = literal(node.args[0], resolve)
         return set(value) if node.func.id in {"set", "frozenset"} else value
+    if (isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute)
+            and isinstance(node.func.value, ast.Name) and node.func.value.id == "json"
+            and node.func.attr == "loads" and len(node.args) == 1 and not node.keywords):
+        document = literal(node.args[0], resolve)
+        if type(document) is not str:
+            raise InventoryError("Static JSON declarations require literal text")
+        def no_constant(value):
+            raise InventoryError("Non-finite static JSON declaration: " + value)
+        def unique_fields(items):
+            result = {}
+            for key, value in items:
+                if key in result:
+                    raise InventoryError("Duplicate static JSON declaration field: " + key)
+                result[key] = value
+            return result
+        try:
+            return json.loads(document, parse_constant=no_constant, object_pairs_hook=unique_fields)
+        except json.JSONDecodeError as exc:
+            raise InventoryError("Malformed static JSON declaration") from exc
     if isinstance(node, ast.BinOp):
         left, right = literal(node.left, resolve), literal(node.right, resolve)
         if isinstance(node.op, ast.Add):
@@ -329,7 +348,7 @@ def ownership(module, category):
         return "Python", ["LM-03", "LM-11"], "retain_example_with_core_routing"
     if module.startswith("biocompiler.frontend") or module in {"biocompiler.errors", "biocompiler", "biocompiler.__main__"}:
         return "Python", ["LM-11"], "retain_python_authoring_or_compatibility_adapter"
-    if module in {"biocompiler.cli", "biocompiler.core_client", "biocompiler.core_architecture", "biocompiler.core_architecture_producer", "biocompiler.architecture_backend", "biocompiler.core_realization", "biocompiler.core_synthetic_producer", "biocompiler.synthetic_producer_backend", "biocompiler.realization_backend", "biocompiler.core_artifacts", "biocompiler.core_workflow", "biocompiler.core_workflow_authority", "biocompiler.workflow_backend", "biocompiler.workflow_cli", "biocompiler.interop"} or module.startswith("biocompiler.studio"):
+    if module in {"biocompiler.cli", "biocompiler.core_client", "biocompiler.core_architecture", "biocompiler.core_architecture_producer", "biocompiler.architecture_backend", "biocompiler.core_realization", "biocompiler.core_synthetic_producer", "biocompiler.synthetic_producer_backend", "biocompiler.core_synthetic_producer_public", "biocompiler.synthetic_producer_cli", "biocompiler.realization_backend", "biocompiler.core_artifacts", "biocompiler.core_workflow", "biocompiler.core_workflow_authority", "biocompiler.workflow_backend", "biocompiler.workflow_cli", "biocompiler.interop"} or module.startswith("biocompiler.studio"):
         return "Python", ["LM-10", "LM-11", "LM-25"], "retain_transport_route_semantic_authority_to_ocaml"
     section = module.split(".")[1] if "." in module else ""
     tasks = {"ir": ["LM-02", "LM-20"], "semantics": ["LM-20", "LM-21"],

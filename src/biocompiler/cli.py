@@ -776,6 +776,12 @@ def _workflow_core_arguments(command):
     command.add_argument("--core-timeout", type=float, help=argparse.SUPPRESS)
 
 
+def _synthetic_producer_core_arguments(command):
+    command.add_argument("--core-executable", type=Path, help=argparse.SUPPRESS)
+    command.add_argument("--core-sha256", help=argparse.SUPPRESS)
+    command.add_argument("--core-timeout", type=float, help=argparse.SUPPRESS)
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
@@ -958,6 +964,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     selection.add_argument(
         "--output", type=Path, help="Atomic selection report destination"
     )
+    _synthetic_producer_core_arguments(selection)
     molecular_build = commands.add_parser(
         "molecular-design-build",
         help="Assemble, independently check and package one software RNA design",
@@ -1748,6 +1755,9 @@ def _verification_command(args):
 
 
 def _selection_command(args):
+    if any(getattr(args, name, None) is not None for name in ("core_executable", "core_sha256", "core_timeout")):
+        from biocompiler.synthetic_producer_cli import selection_command
+        return selection_command(args, bounded_text=_bounded_text, publish_report=_publish_report)
     try:
         request = SyntheticBuildRequest.from_json(_bounded_text(args.request))
         result = select_synthetic(

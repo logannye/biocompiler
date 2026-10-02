@@ -211,7 +211,8 @@ class ValidationGateTests(unittest.TestCase):
         commands = ["tools/check_realization_protocol.py", "tools/check_realization_routing.py",
                     "tools/check_native_workflow.py", "tools/check_native_workflow_presentation.py",
                     "tools/check_native_workflow_authority.py", "tools/check_native_workflow_public_sdk.py", "tools/check_native_workflow_cli.py",
-                    "tools/check_native_synthetic_producer.py"]
+                    "tools/check_native_synthetic_producer.py", "tools/check_native_synthetic_public_sdk.py",
+                    "tools/check_native_synthetic_selection_cli.py"]
         for command in commands:
             self.assertIn(command, matrix)
             self.assertLess(matrix.index(command), matrix.index("Record successful complete conformance"))
@@ -220,7 +221,8 @@ class ValidationGateTests(unittest.TestCase):
         comparison = text.split("\n  realization-core-reproducibility:\n", 1)[1].split("\n  studio-typescript:", 1)[0]
         for command in ("tools/check_realization_reproducibility.py", "tools/check_workflow_reproducibility.py",
                         "tools/check_native_workflow_presentation.py --compare", "tools/check_native_workflow_authority.py --compare", "tools/check_native_workflow_public_sdk.py --compare", "tools/check_native_workflow_cli.py --compare",
-                        "tools/check_native_synthetic_producer.py --compare"):
+                        "tools/check_native_synthetic_producer.py --compare", "tools/check_native_synthetic_public_sdk.py --compare",
+                        "tools/check_native_synthetic_selection_cli.py --compare"):
             self.assertIn(command, comparison)
             self.assertLess(comparison.index(command), comparison.index("Record successful complete comparison"))
         self.assertIn("generated/realization-reproducibility/*.json", comparison)

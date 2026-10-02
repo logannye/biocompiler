@@ -20,6 +20,8 @@ CORPUS_PIN = "2f5e7636977f559e046776c1bb92bebf67c8f0e733ca463927f8d3a1aee3d77b"
 # Each addition requires a fresh explicit review and hash. Wildcards and amended
 # hashes for historical source files are deliberately unsupported.
 REVIEWED_ADDITIONS = {
+    "src/biocompiler/core_synthetic_producer_public.py": "15db52841e774d4fdf42ed937dfe173ca844cae920fb6419bbc54eec70c31082",
+    "src/biocompiler/synthetic_producer_cli.py": "4e500dd094e41841fa15635b1be6a805a0b3b992de574dda888f4d91fa881221",
     "src/biocompiler/core_synthetic_producer.py": "233ae7ffd5a10e7158b1ac833194aa4b5b05de5334e73adf77aad9d081fb1917",
     "src/biocompiler/synthetic_producer_backend.py": "bd3a775c89bec0643d39b64222dcb2787f5d3ac246748f13d6e93430803bbe8f",
     "src/biocompiler/core_workflow.py": "43b57b87a2d89db200463d8aed8b7eea7e262cf1c4ea02c772843598dbda90df",
