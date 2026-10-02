@@ -1,0 +1,183 @@
+{
+  "deferred_by_user": [
+    "conversational_authoring",
+    "expanded_Studio"
+  ],
+  "hosted_requirements": {
+    "independent_compare": "tools/check_pipeline_fixed_continuation_install.py --compare",
+    "native_execution": "not_run_locally",
+    "native_test_suites": 102,
+    "new_receipt": "pipeline-fixed-continuations.json",
+    "platforms": [
+      "linux-x86_64",
+      "macos-arm64"
+    ],
+    "python_versions": [
+      "3.11",
+      "3.14"
+    ],
+    "required_jobs": 36
+  },
+  "local_validation": {
+    "adapters": {
+      "python3.11.15": {
+        "seconds": 17.608,
+        "tests": 64
+      },
+      "python3.14.6": {
+        "seconds": 19.072,
+        "tests": 64
+      }
+    },
+    "all_39_framed_controls": {
+      "events": 566,
+      "largest_authority": "selected_temporal",
+      "maxima": {
+        "memory_reset": 156917,
+        "memory_retain": 156917,
+        "selected_temporal": 740823,
+        "startup": 169332,
+        "static": 173730,
+        "temporal": 463838
+      },
+      "maximum_json_nodes": 740823,
+      "scope": "fabricated_protocol_peer_plus_complete_original_semantic_observations_not_native_execution",
+      "unchanged_json_node_ceiling": 1000000
+    },
+    "continuation_and_provider_receipts": {
+      "python3.11.15": {
+        "seconds": 131.193,
+        "tests": 23
+      },
+      "python3.14.6": {
+        "continuation_seconds": [
+          88.293,
+          14.898
+        ],
+        "continuation_tests": 12,
+        "provider_seconds": 20.884,
+        "provider_tests": 11
+      }
+    },
+    "direct_provider_graphs": {
+      "python3.11.15": {
+        "seconds": 40.901,
+        "tests": 6
+      },
+      "python3.14.6": {
+        "seconds": 38.324,
+        "tests": 6
+      },
+      "repaired_semantic_mutants": 14
+    },
+    "independent_repaired_frame_probes": [
+      "valid_provider_role_permutation",
+      "original_event_chronology_reordering",
+      "late_host_origin_publication",
+      "intervening_command_between_reused_snapshot_and_operation",
+      "duplicate_record_definition",
+      "accepted_direct_record_pass_identity"
+    ],
+    "inventory_entries": 3258,
+    "original_build_witness": {
+      "tests_each_python": 9
+    },
+    "prior_source_capture_and_cli_lineage": "55tests_python3.14.6_125.896s_before_compact_addition;8CLIlineage_tests_python3.11.15_13.376s",
+    "root_boundaries_ci_inventory_cli_lineage": {
+      "python3.14.6": {
+        "seconds": 35.925,
+        "tests": 60
+      }
+    },
+    "strict_mypy_modules": 22
+  },
+  "operations": [
+    "build-result",
+    "prepare-components",
+    "component-profile",
+    "component-registration",
+    "finish-components",
+    "inspect-ordered-references"
+  ],
+  "original_build_witness": {
+    "authorities": 6,
+    "byte_equality": "Python3.11.15_and3.14.6",
+    "graph_nodes": 25130,
+    "producer_returns": 18,
+    "public_builds": 12,
+    "sha256": "b423e1d60fbe688090bd44787ccb372a10847681cd8a011fd897cface9b9e28e"
+  },
+  "original_coverage": {
+    "eligible_chains": 39,
+    "excluded_boundaries": 10,
+    "excluded_prefix_operations": 24,
+    "excluded_suffix_operations": 9,
+    "fixed_boundaries": 136,
+    "manager_contexts": 476,
+    "original_contexts": 17,
+    "original_fixtures": 4,
+    "original_methods": 13,
+    "prefix_operations": 312,
+    "suffix_operations": 254,
+    "suffix_rejections": 21,
+    "suffix_returns": 233
+  },
+  "parent_source": "918025389036f8878156b265a8652d467ad7ba59",
+  "pending": [
+    "complete_corrected_hosted_acceptance",
+    "fixed_initial_registration_interception_and_original_mutations",
+    "remaining_supported_workflow_families",
+    "existing_SDK_CLI_Studio_routing",
+    "canonical_package_export_ownership",
+    "prebuilt_core_distribution_and_fresh_installation",
+    "validated_profile_OCaml_cutover_and_Python_semantic_retirement",
+    "full_integrated_release_gates"
+  ],
+  "roadmap": [
+    "LM-03",
+    "LM-12",
+    "LM-25",
+    "LM-CUTOFF-1"
+  ],
+  "schema_version": "biocompiler.migration_fixed_workflow_continuations_checkpoint.v1",
+  "source_files": {
+    ".github/workflows/ci.yml": "95c522e5d442b1ca0b92a9e9b80e87d95edd39b0a5c7effe51a8fb1273456cc8",
+    "core/lib/pipeline/component_pipeline.ml": "1759231be2ffe140bb0bfbe07394bf41fbb46222a05bdc1b5352feb689425f08",
+    "core/lib/pipeline/component_pipeline.mli": "b2acdc64e4e62af97306f7a7194f3b9f7344c63717ce3842327d2fedcc49a354",
+    "core/lib/pipeline/synthetic_pipeline.ml": "86bbb859ec7fd6db7e0a4a010460def00522de2efed091f8297aa63d48b29031",
+    "core/lib/pipeline/synthetic_pipeline.mli": "f898e8e5691bf80ee79137814b7fb8a1ef412c08d970cda4eee1e59a9f5146b3",
+    "core/lib/pipeline_service/callback_manager.ml": "3299e6001ab8c01fbb6e25d7068f650b13d918833b792062a9a615f738112466",
+    "core/lib/pipeline_service/fixed_provider_views.ml": "cfbf9969e80483a879960df2b0e52eaf080fe9d996f3aab28e8d0c83c2ae377a",
+    "core/lib/pipeline_service/fixed_provider_views.mli": "a43a65d5d66c043d8e7333bc522d98ada283f1ddd34c26184a419b10ea783528",
+    "core/test/test_fixed_pipeline_corpus.ml": "4730cd14dc06d820409b50d98777f6ca1397f69709fe79aba687843d50d98b13",
+    "core/test/test_pipeline_callback_manager.ml": "206fc3749027b6b853829221c454b97c50793d2031e86ee3f0ee6eb3c0766456",
+    "docs/language-migration-roadmap.md": "cd315674ddf3e2564e2f7eb2b572d0087064de4a60a3af10a5a0b72953e78d61",
+    "docs/migration-coverage.md": "ceffafe82218be134775e8729a5ef519dcb65eb8799d639b001c317d7b331c05",
+    "docs/migration-fixed-workflow-continuations.md": "dc795234bd60785214989a27f544336fec9c028fa3163f31f8285136fb85b1a8",
+    "protocol/migration-cli-source-inventory-correction.json": "415052fe294fd3e88dc1492a62aed287d3eb4e66ec558066ec4f61f4bb3d3a0e",
+    "protocol/migration-inventory.json": "9a1db2a8cfbb7fd468dd0722e0ec710b6662292d6c76cbc5752a50874c6e0bc7",
+    "protocol/pipeline-callback-manager-v1.json": "783ad21e0936063a03c09ceb4a4ae3147578d1aaa08dbf4f3d357572d67d3d81",
+    "src/biocompiler/core_pipeline_build_views.py": "85492c4f77b3104af2dae9d9180a0518bfd4fb61c9d6143880e6e58e10a77382",
+    "src/biocompiler/core_pipeline_manager.py": "d431da1763810ee8841f0d1f8819dae2f66280d6bee236bbbecf7d78c6371500",
+    "src/biocompiler/core_pipeline_provider_views.py": "ea18d951f8170b1e1da4fbe6636d40e83f54ebda2ebdce187b0e08cf257b9c35",
+    "tests/conformance/pipeline-fixed-build-semantics-v1.json": "b423e1d60fbe688090bd44787ccb372a10847681cd8a011fd897cface9b9e28e",
+    "tests/test_ci_validation.py": "a287cbf776ec129013607408b43764d5acec088e24d7147e6fc87b31a0573dc7",
+    "tests/test_core_pipeline_build_views.py": "7bdfbd644b75277e9af04086f5f231e0376354bbfbfe5f8e461d680376412431",
+    "tests/test_core_pipeline_manager.py": "6b52abb2da774171538976e3560d459d57ade9f4a1ace893a44fbe3e3ea03b3d",
+    "tests/test_core_pipeline_provider_views.py": "a74dd8e0be54130183c7777aeaae15211ca6570d9be1288a6b2aa4a944ead05a",
+    "tests/test_pipeline_fixed_build_semantics.py": "a657f690cdb4e346f018859e2a5e6b0d621a0256f364645ff0ca66a7bff0fdad",
+    "tests/test_pipeline_fixed_continuation_campaign.py": "9f16a532148e7dadee28de6632628ad21c7eb8e47eb859f72e2767d15b5597b3",
+    "tests/test_pipeline_fixed_direct_controls.py": "f9ee7669a52a827ad742c36e9bc5a76672e93395a21b84a51c02409cb64f62c1",
+    "tests/test_pipeline_fixed_provider_campaign.py": "60c163af33f35cc4ec28f6fed0dd7c9c6af481b094f0b3d7d573ad53973477ae",
+    "tests/test_workflow_cli_lineage.py": "bcc69e1b5f2511baa16886bf982c3843838118349dccd5471f06c05f93fc85d9",
+    "tools/capture_pipeline_fixed_build_semantics.py": "4b8b0d0f059cd7230193a53c122357ce50fd636018924d8fe2c533a2d3317495",
+    "tools/check_pipeline_fixed_continuation_install.py": "6847f72b5b2ec49ad1006dbccba421b6581bfbb2b3638da92d0bad958a5d0a90",
+    "tools/check_pipeline_fixed_provider_install.py": "f77e1d80c1f4fe4cf89f969555cdd5e0bdbbd189809e6c989382506d2b28ead2",
+    "tools/check_pipeline_manager_install.py": "24d54738bc003b65ff305386d004b6be9df7081e4adf7aceaa68238fbdfd9174",
+    "tools/check_realization_workflow_corpus.py": "d90f89737cd4ccbda05b58a96f8d75c0c22e07cc8ea88b71252981b74a66aa1c",
+    "tools/migration_inventory.py": "a9147818dc4905bc4ef7cf5fdb918cf4faf1057edf7d49159878795d980974f0",
+    "tools/mypy-core.ini": "1f653bb5f6f5c4e0935ab559b90bd62b2b9d0c1da6deb6af8db8b0acd15506b1",
+    "tools/pipeline_fixed_direct_controls.py": "e913bc71c5e60e1b174dde9f4265d4f4005235b42608ae3041a8cddf27bfa23c"
+  },
+  "status": "source_implementation_and_local_controls_complete_hosted_native_acceptance_pending"
+}

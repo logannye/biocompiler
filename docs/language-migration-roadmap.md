@@ -30,6 +30,21 @@ unit, installed, browser, reproducibility and release gate remains required.
 Historical draft PRs and their evidence remain available; no pending, failed or
 superseded result is treated as acceptance.
 
+**Current work toward LM-CUTOFF-1:** the combined source checkpoint is
+[PR74](https://github.com/logannye/biocompiler/pull/74), source
+`918025389036f8878156b265a8652d467ad7ba59`, with exact-head
+[run 37064648129](https://github.com/logannye/biocompiler/actions/runs/37064648129).
+The run exposed an outdated explicit CLI source-change list that omitted the
+structural provider-view module; the source-backed
+[assertion correction](../protocol/migration-cli-source-inventory-correction.json)
+is in the continuation batch.
+The other results remain evidence for that exact source only. The next batch
+retains the original synthetic-to-component boundary, exposes native preparation
+in its original order, and preserves the actual public manager calls and returned
+build objects. It does not switch production defaults. All four cutoff gates
+above remain open. The [continuation design and evidence](migration-fixed-workflow-continuations.md)
+record the current phase boundary, object identities and remaining acceptance.
+
 **Resumed migration checkpoint, 2026-10-02:** PR57 and PR58 passed all 36
 exact-head jobs and are merged. Independent aggregate reconstruction, both
 platform binary manifests and all four full artifact comparisons reproduce their
@@ -1079,6 +1094,30 @@ record current parent heads; previous partial native passes are historical only.
   Bind the view role to the actual native closure; hydrate only closed structural
   representations without Python semantic parsing or acceptance. Require a full
   original identity witness and installed four-runtime replay before acceptance.
+- [x] **LM-03 P2 original build-object witness:** capture six unchanged original
+  authorities covering all 39 eligible retained-manager continuations, with 12
+  public builds, 18 original producer returns and 25,130 typed/container graph
+  nodes. The complete witness is byte-identical on local Python 3.11 and 3.14;
+  nine witness controls pass on each. Frozen bytes remain independent expected
+  data, never native state imported as acceptance.
+- [x] **LM-12/25 P2 staged manager and public build source checkpoint:** implement
+  ordered native component phases, retained run/result capabilities and closed
+  structural build views. Add exact record-definition inspection so full state
+  observations retain existing channel limits. All 64 adapter/view controls pass
+  on local Python 3.11 and 3.14; strict checking passes all 22 adapter modules.
+  Native source review and independent repaired-frame rejection probes are
+  complete. Installed native execution and complete hosted acceptance remain
+  required by the next item.
+- [ ] **LM-12/25 P2 retained fixed-workflow continuations:** preserve all 39
+  nested synthetic managers, 312 dependency updates and 254 suffix operations
+  across the exact 17-context closure (13 unchanged methods and four fixtures).
+  Native adaptation, profile construction, registration, run and finish must
+  preserve the original order and partial state; public build views must retain
+  actual result wrappers, parsed source tuple identities, selection origins and
+  component type origins. Require installed native execution and complete
+  four-runtime receipts before checking this item. Keep all 136 original fixed
+  boundaries, 476 original manager contexts and ten excluded boundaries visible;
+  registration interception and its pending observations remain separate work.
 
 - [x] **LM-03 CI harness correction checkpoint:** the installed architecture
   guard now permits only the exact new parser-registration helpers while rejecting

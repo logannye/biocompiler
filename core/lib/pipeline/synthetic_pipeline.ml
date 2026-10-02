@@ -26,7 +26,7 @@ let resource_limits = obj ["profile",str resource_profile;
   "generator",G.limits_json G.default_limits;
   "selection",S.limits_json S.default_limits;
   "checker",K.limits_json K.default_limits]
-type t = {candidate_value:A.Candidate.t;result_value:C.Pipeline_result.t;
+type t = {candidate_value:A.Candidate.t;result_value:C.Pipeline_result.t;record_value:C.Stage_record.t;
   manager_value:M.t;selection_value:Synthetic_selection.Result.t option}
 type config_origin = Requested | Selected
 type provider_role =
@@ -41,6 +41,7 @@ type failure = {error:exn;manager:M.t option}
 type attempt = Completed of t | Failed of failure
 let candidate value = value.candidate_value
 let result value = value.result_value
+let record value = value.record_value
 let manager value = value.manager_value
 let selection_result value = value.selection_value
 let fail message = Diagnostic.fail "pipeline_error" message
@@ -263,7 +264,7 @@ let run_internal manager_state ~budget ?manager_limits ?validator_equivalent ?ob
       ~configuration:(A.Config.to_json config) () in
   let result=M.result manager ~identity:"mechanism" ~scope:"synthetic_realization" in
   let candidate=imported budget A.Candidate.of_json (C.Stage_record.payload record) in
-  {candidate_value=candidate;result_value=result;manager_value=manager;selection_value=selection}
+  {candidate_value=candidate;result_value=result;record_value=record;manager_value=manager;selection_value=selection}
 let attempt ~budget ?manager_limits ?validator_equivalent ?observer ?provider_observer ?until ?config request frames =
   let manager_state=ref None in
   try Completed (run_internal manager_state ~budget ?manager_limits ?validator_equivalent ?observer ?provider_observer ?until ?config request frames) with

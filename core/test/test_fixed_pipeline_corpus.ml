@@ -228,6 +228,10 @@ let execute authority api =
     | S.Failed failure -> Option.iter check_metadata failure.manager;Failed (failure.error,failure.manager)
     | S.Completed value ->
       let manager=S.manager value in
+      require(S.record value==M.get manager "mechanism")
+        "Synthetic build lost its actual stored record incarnation";
+      equal "Synthetic historical result record" (C.Stage_record.to_json(S.record value))
+        (C.Stage_record.to_json(C.Pipeline_result.artifact(S.result value)));
       check_metadata manager;
       Completed {manager;result=S.result value;records=obj [
         "candidate",Synthetic_authority.Candidate.to_json (S.candidate value);
@@ -237,6 +241,14 @@ let execute authority api =
     | P.Failed failure -> Option.iter check_metadata failure.manager;Failed (failure.error,failure.manager)
     | P.Completed value ->
       let manager=P.manager value in
+      require(P.record value==M.get manager "components")
+        "Component build lost its actual stored record incarnation";
+      require(S.manager(P.upstream value)==manager && S.candidate(P.upstream value)==P.candidate value)
+        "Component build replaced its actual upstream build or manager";
+      require(S.record(P.upstream value)==M.get manager "mechanism")
+        "Component build lost the actual upstream mechanism record";
+      equal "Component historical result record" (C.Stage_record.to_json(P.record value))
+        (C.Stage_record.to_json(C.Pipeline_result.artifact(P.result value)));
       check_metadata manager;
       Completed {manager;result=P.result value;records=obj [
         "candidate",Synthetic_authority.Candidate.to_json (P.candidate value);

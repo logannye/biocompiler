@@ -17,14 +17,20 @@ let rec ordered=function
  | Json.Object fields->Json.Array[str "object";Json.Array(List.map(fun(key,value)->Json.Array[str key;ordered value]) fields)]
  | Json.Array values->Json.Array[str "array";Json.Array(List.map ordered values)]
  | value->Json.Array[str "scalar";value]
+let rec unordered=function
+ | Json.Array[Json.String "scalar";value]->value
+ | Json.Array[Json.String "array";Json.Array values]->Json.Array(List.map unordered values)
+ | Json.Array[Json.String "object";Json.Array values]->obj(List.map(function
+     Json.Array[Json.String key;value]->key,unordered value | _->failwith "Invalid ordered object")values)
+ | _->failwith "Invalid ordered binding"
 type value=Data of Json.t | Mapping of (string*value) list | Sequence of value list
  | Instance of string*(string*value) list | Function of (value list->value)
- | Cursor of value list ref
+ | Cursor of value list ref | Native of string
 let rec json=function
  | Data raw->raw | Mapping fields->obj(List.map(fun(key,value)->key,json value)fields)
  | Sequence values->Json.Array(List.map json values)
  | Instance(_,fields)->obj(List.map(fun(key,value)->key,json value)fields)
- | Function _ | Cursor _->failwith "Attempted to serialize a callable or iterator"
+ | Function _ | Cursor _ | Native _->failwith "Attempted to serialize a callable or iterator"
 let collection=function
  | Sequence values->values | Data(Json.Array values)->List.map(fun value->Data value)values
  | Mapping fields->List.map(fun(key,_)->Data(str key))fields
@@ -42,8 +48,10 @@ let attribute value name=match value,name with
  | Data(Json.String value),"strip"->Function(function []->Data(str(String.trim value)) | _->failwith "strip arguments")
  | _->failwith("Missing authored attribute "^name)
 type peer={mutable objects:(string*value) list;mutable next_object:int;mutable providers:(string*value) list;
- mutable actions:string list;mutable contexts:Json.t list;mutable raise_producer:bool}
-let peer ()={objects=[];next_object=0;providers=[];actions=[];contexts=[];raise_producer=false}
+ mutable actions:string list;mutable contexts:Json.t list;mutable raise_producer:bool;
+ mutable request_document:Json.t option;mutable origins:(string*Json.t) list}
+let peer ()={objects=[];next_object=0;providers=[];actions=[];contexts=[];raise_producer=false;
+ request_document=None;origins=[]}
 let reference peer value=
  match List.find_opt(fun(_,previous)->previous==value)peer.objects with
  | Some(key,_)->obj["handle",str key]
@@ -69,7 +77,7 @@ let action peer name args=
    | (Sequence values),Json.Int index->List.nth values(Z.to_int index)
    | source,Json.String key when is_mapping source->List.assoc key(mapping source)
    | _->failwith "get-item type" in boxed actual
- | "callable"->Json.Bool(match value "object" with Function _->true | _->false)
+ | "callable"->Json.Bool(match value "object" with Function _ | Native _->true | _->false)
  | "is-instance"->let actual=value "object" in Json.Bool(match text "type" args with
    | "Mapping"->is_mapping actual | "str"->(match actual with Data(Json.String _)->true | _->false)
    | kind->(match actual with Instance(name,_)->kind=name | _->false))
@@ -93,7 +101,27 @@ let action peer name args=
  | "next"->(match value "object" with Cursor values->(match !values with
    | []->obj["exhausted",Json.Bool true;"object",Json.Null]
    | head::tail->values:=tail;obj["exhausted",Json.Bool false;"object",boxed head]) | _->failwith "Not a cursor")
- | "provider-reference"->obj["kind",str "host";"object",get "object" args]
+ | "provider-reference"->(match value "object" with Native token->obj["kind",str "native";"provider_id",str token]
+    | _->obj["kind",str "host";"object",get "object" args])
+ | "native-provider"->boxed(Native(text "provider_id" args))
+ | "origin-reference"->
+    let key=encode args in
+    (match List.assoc_opt key peer.origins with Some value->value | None->
+      let root=text "root" args and path=Json.array(get "path" args) in
+      let type_value kind name dimensions=obj["kind",str kind;"name",str name;
+        "dimensions",Json.Array dimensions;"arguments",Json.Array[]] in
+      let rec at raw=function []->raw | Json.String key::rest->at(get key raw)rest
+       | Json.Int index::rest->at(List.nth(Json.array raw)(Z.to_int index))rest
+       | _->failwith "Invalid source origin path" in
+      let raw=match root with
+       | "request"->at(Option.get peer.request_document)path
+       | "BOOLEAN"->type_value "condition" "Condition" []
+       | "LEVEL"->type_value "scalar" "Level" []
+       | "DURATION"->type_value "scalar" "Duration" [Json.Array[str "time";Json.int 1]]
+       | "defaultLifecycle"->obj["start",Json.int 0;"end",Json.Null;"unit",str "s"]
+       | "syntheticCapabilities"->Json.Array[str "synthetic_signal_graph"]
+       | _->failwith "Unknown source origin root" in
+      let result=boxed(Data raw) in peer.origins<-(key,result)::peer.origins;result)
  | "bind-provider"->peer.providers<-(text "provider_id" args,value "object")::peer.providers;Json.Null
  | "call-provider"->if peer.raise_producer then raise Exit else
    boxed(apply(List.assoc(text "provider_id" args)peer.providers)[value "context"])
@@ -111,7 +139,7 @@ let uuid="01234567-89ab-cdef-0123-456789abcdef"
 let common kind sequence=["protocol",str Ch.protocol;"profile",str Ch.profile;
  "session_id",str uuid;"kind",str kind;"sequence",Json.int sequence]
 type result={replies:(string*Json.t) list;events:Json.t list;closed:bool}
-let exercise ?(limits=Json.Null) peer commands=
+let exercise ?(limits=Json.Null) ?(on_reply=(fun _ _->[])) peer commands=
  let input=ref "" and events=ref [] and replies=ref [] and pending=ref commands and sequence=ref 0 in
  let active=ref "hello" and peer_error=ref None in
  let enqueue raw=let body=encode raw in input:= !input^Printf.sprintf "%08x\n%s"(String.length body)body in
@@ -131,6 +159,7 @@ let exercise ?(limits=Json.Null) peer commands=
          "invocation_sha256",str(Canonical.sha256 body);"outcome",outcome]
      | "reply"->
        replies:= !replies@[!active,get "outcome" event];
+       pending:= !pending@on_reply !active event;
        if not(Json.boolean(get "closed" event)) then (match !pending with
        | []->active:="close";send "close"["parent_invocation",Json.Null]
        | (operation,arguments)::tail->pending:=tail;active:=operation;
@@ -229,6 +258,49 @@ let baseline_test baseline=
  require(same(get "combined_provider_history" order)(Json.Array identities)) "Provider history chronology changed";
  require(List.length(Json.array(get "providers" ordered))=4 && List.length p.providers=5)
    "Ordered inspection included an uncommitted provider or lost a reachable provider"
+let compact_inspection_test baseline=
+ let p=peer () in
+ let compact="inspect-ordered-references",obj[] and full="inspect-ordered",obj[] in
+ let result=exercise p["initialize-empty",initialize baseline p;"add-input",payload baseline p;
+   "register",registration baseline p "first";run "lower" "input" "behavior" Json.Null;
+   "register",registration baseline p "second";
+   run "generate" "behavior" "mechanism"(reference p(Data(obj["seed",Json.int 7;"tie_break",str "id"])));
+   compact;compact;full;run "lower" "input" "behavior_next" Json.Null;
+   compact;compact;full;
+   "set-dependency",obj["key",str "registry";"identity",str(Canonical.sha256 "compact inspection stays historical")];
+   compact;full] in
+ require(result.closed && List.for_all(fun event->text "kind" event<>"fatal")result.events)
+   "Compact historical inspection terminated fatally";
+ let compact_values=List.filter_map(fun(operation,outcome)->
+   if operation="inspect-ordered-references" then Some(success outcome) else None)result.replies in
+ let full_values=List.filter_map(fun(operation,outcome)->
+   if operation="inspect-ordered" then Some(success outcome) else None)result.replies in
+ require(List.map(fun raw->List.length(Json.array(get "record_definitions" raw)))compact_values=[3;0;1;0;0])
+   "Compact inspection repeated definitions or omitted a new record incarnation";
+ require(List.map(fun envelope->text "id"(get "value" envelope))
+   (Json.array(get "record_definitions"(List.hd compact_values)))=["input";"behavior";"mechanism"])
+   "Initial compact definitions changed manager record order";
+ require(text "id"(get "value"(List.hd(Json.array(get "record_definitions"(List.nth compact_values 2)))))="behavior_next")
+   "A newly stored record reused a previous compact definition";
+ let definitions=ref [] in
+ let expand raw=
+   List.iter(fun envelope->let token=text "record_id"(get "bindings" envelope) in
+     require(not(List.mem_assoc token !definitions)) "A compact incarnation was defined twice";
+     definitions:=(token,envelope)::!definitions)(Json.array(get "record_definitions" raw));
+   let snapshot=get "snapshot" raw in
+   let records=List.map(fun(name,reference)->
+     require(List.map fst(Json.object_fields reference)=["record_id"]) "Compact record contains authority beyond its incarnation";
+     let envelope=List.assoc(text "record_id" reference)!definitions in
+     require(text "id"(get "value" envelope)=name) "Compact record reference names another artifact";
+     name,envelope)(Json.object_fields(get "records" snapshot)) in
+   obj["snapshot",set "records"(obj records)snapshot;"order",get "order" raw;"providers",get "providers" raw] in
+ let expanded=List.map expand compact_values in
+ require(same(List.nth expanded 0)(List.nth expanded 1) && same(List.nth expanded 1)(List.nth full_values 0))
+   "Initial compact expansion differs from complete historical inspection";
+ require(same(List.nth expanded 2)(List.nth expanded 3) && same(List.nth expanded 3)(List.nth full_values 1))
+   "New-record compact expansion differs from complete historical inspection";
+ require(same(List.nth expanded 4)(List.nth full_values 2))
+   "Stale compact inspection changed historical records or acquired fresh acceptance"
 let negative_validator_test baseline=
  let p=peer () in
  let result=exercise p ["initialize-empty",initialize baseline p;"add-input",payload baseline p;
@@ -326,6 +398,135 @@ let rec at_path raw=function
  | Json.String key::rest->at_path(get key raw)rest
  | Json.Int index::rest->at_path(List.nth(Json.array raw)(Z.to_int index))rest
  | _->failwith "Invalid typed alias path"
+let phased_component_test request history config until=
+ let budget=W.create ~profile:"phased_component_pipeline" ~error_code:"phased_component_pipeline_limit"
+   ~maximum:1_000_000_000_000 () in
+ let upstream=S.run ~budget ?config ?until request history in
+ let manager=S.manager upstream in
+ let original_record=S.record upstream and original_result=S.result upstream in
+ let historical=encode(C.Pipeline_result.to_json original_result) in
+ let snapshot ()=M.inspect manager ~provider_identity:(fun _->"native-closure") in
+ let initial=snapshot () in
+ let prepared=P.prepare ~budget ?until request history upstream in
+ require(same initial(snapshot ())) "Component adaptation mutated its live upstream manager";
+ let dependencies=P.dependencies prepared in
+ require(List.length dependencies=8) "Component preparation changed its dependency census";
+ List.iter(fun(key,value)->M.set_dependency manager key value)dependencies;
+ let after_dependencies=snapshot () in
+ let foreign=W.create ~profile:"foreign_component_phase" ~error_code:"foreign_component_phase_limit"
+   ~maximum:1_000_000 () in
+ (try ignore(P.prepare_profile ~budget:foreign prepared);
+    failwith "A component phase accepted a foreign lifetime budget"
+  with Diagnostic.Error value->require(value.code="component_pipeline_budget") "Wrong foreign-budget rejection");
+ let profiled=P.prepare_profile ~budget prepared in
+ require(same after_dependencies(snapshot ())) "Profile construction registered or mutated state early";
+ M.register_completion_profile manager(P.completion_profile profiled);
+ let after_profile=snapshot () in
+ let registration=P.prepare_registration ~budget profiled in
+ require(same after_profile(snapshot ())) "Provider construction registered or mutated state early";
+ M.register manager(P.contract registration) ~producer:(P.producer registration) ~validators:(P.validators registration);
+ P.allow_host_source_links registration;
+ let record=M.run manager ~pass_id:(C.Pass_contract.id(P.contract registration))
+   ~input_id:"mechanism" ~output_id:"components" () in
+ let result=M.result manager ~identity:"components" ~scope:"synthetic_components" in
+ let before_finish=snapshot () in
+ let completed=P.finish ~budget registration ~record ~result in
+ require(same before_finish(snapshot ())) "Final component checks changed the manager";
+ require(P.manager completed==manager && P.upstream completed==upstream && P.record completed==record
+   && P.result completed==result) "Component finish replaced an actual retained capability";
+ require(S.record(P.upstream completed)==original_record && S.result(P.upstream completed)==original_result)
+   "Component continuation replaced the earlier synthetic result";
+ require(List.mem_assoc "request"(C.Stage_record.dependencies original_record)) "Mechanism lacks its request dependency";
+ M.set_dependency manager "request"(Canonical.sha256 "phased historical result is stale");
+ (try ignore(M.get manager "mechanism");failwith "A changed dependency retained fresh mechanism acceptance"
+  with Diagnostic.Error value->require(value.code="pipeline_error") "Wrong stale-record rejection");
+ require(S.record upstream==original_record && encode(C.Pipeline_result.to_json(S.result upstream))=historical)
+   "Dependency mutation rewrote the cached historical synthetic build"
+let framed_component_test initialization mode=
+ let p=peer () in
+ let preparation=ref Json.Null and record_id=ref Json.Null and run_sequence=ref Json.Null in
+ let synthetic=ref None and components=ref None and changed=ref false in
+ let candidate_aliases value=List.filter(fun entry->List.exists(function
+    Json.Array(Json.String "candidate"::_)->true | _->false)(Json.array(get "paths" entry)))
+    (Json.array(get "aliases"(get "view" value))) in
+ let check_candidate_aliases value=
+  let candidate=get "value"(get "candidate"(get "artifacts" value)) in
+  let nodes=Json.array(get "nodes"(get "mechanism" candidate)) in
+  let aliases=candidate_aliases value in
+  require(List.length aliases=List.length nodes) "Build candidate lacks the exact parsed node type origin census";
+  let identities=List.mapi(fun index node->
+    let path=Json.Array[str "candidate";str "mechanism";str "nodes";Json.int index;str "output";str "dtype"] in
+    let alias=List.find(fun entry->get "paths" entry=Json.Array[path])aliases in
+    require(text "kind" alias="biocompiler.semantics.types.TypeSpec") "Build node origin changed its closed class";
+    let binding=get "binding" alias in
+    require(text "kind" binding="native" && same(unordered(get "tree" binding))(get "dtype"(get "output" node)))
+      "Build node type binding differs from its parsed candidate source";
+    text "identity" binding)nodes in
+  require(List.length identities=List.length(List.sort_uniq String.compare identities))
+    "Equal-valued parsed node types were incorrectly interned" in
+ let build kind="build-result",obj["kind",str kind] in
+ let phase operation=operation,obj["preparation_id",!preparation] in
+ let on_reply operation event=
+  if operation="hello" || operation="close" then [] else
+  let outcome=get "outcome" event in
+  if operation="get" then (
+    let rejected=rejection outcome in
+    require(text "type" rejected="PipelineError") "Dependency mutation produced another exception";
+    [build "synthetic"])
+  else let value=success outcome in match operation with
+  | "initialize-synthetic"->[build "synthetic"]
+  | "build-result" when text "kind" value="synthetic"->
+      (match !synthetic with None->check_candidate_aliases value;synthetic:=Some value;["prepare-components",obj[]]
+       | Some previous->require(same previous value) "A later operation replaced the historical synthetic envelope";
+           [build "components"])
+  | "build-result"->
+      check_candidate_aliases value;
+      require(same(Json.Array(candidate_aliases(Option.get !synthetic)))(Json.Array(candidate_aliases value)))
+        "Component build replaced its actual upstream parsed type origins";
+      require(same(Option.get !components)value) "A later operation replaced the historical component envelope";
+      require(same(get "candidate"(get "artifacts"(Option.get !synthetic)))(get "candidate"(get "artifacts" value)))
+        "Component build lost its actual upstream candidate identity";
+      require(same(get "selection_result"(get "artifacts"(Option.get !synthetic)))(get "selection_result"(get "artifacts" value)))
+        "Component build lost its actual upstream selection identity";
+      require(same(get "candidate"(get "sources"(Option.get !synthetic)))(get "candidate"(get "sources" value)))
+        "Component parser lost the original mechanism record incarnation";
+      if !changed then [] else (changed:=true;
+        ["set-dependency",obj["key",str "request";"identity",str(Canonical.sha256 "framed build is historical")];
+         "get",obj["identity",str "mechanism"]])
+  | "prepare-components"->
+      preparation:=get "preparation_id" value;
+      if mode="phase" then [phase "component-profile"] else
+      List.map(function Json.Array[key;identity]->"set-dependency",obj["key",key;"identity",identity]
+        | _->failwith "Malformed native dependency declaration")(Json.array(get "dependencies" value))@
+        [phase "component-profile"]
+  | "set-dependency"->[]
+  | "component-profile"->["register-completion-profile",obj["profile",value];phase "component-registration"]
+  | "register-completion-profile"->[]
+  | "component-registration"->
+      let validators=Mapping(List.map(function Json.Array[Json.String key;reference]->key,dereference p reference
+        | _->failwith "Malformed native validator declaration")(Json.array(get "validators" value))) in
+      let obligations=List.map(fun binding->require(text "kind" binding="native") "Prepared obligation lacks its native origin";
+        reference p(Data(unordered(get "tree" binding))))(Json.array(get "obligation_objects" value)) in
+      ["register",obj["contract",get "contract" value;"producer",get "producer" value;
+        "validators",reference p validators;"obligation_objects",Json.Array obligations]]
+  | "register"->["run",obj["pass_id",str "synthetic_to_components";"input_id",str "mechanism";
+      "output_id",str "components";"configuration",Json.Null]]
+  | "run"->record_id:=get "record_id"(get "bindings" value);run_sequence:=get "sequence" event;
+      ["result",obj["identity",str "components";"scope",str "synthetic_components"]]
+  | "result"->
+      let actual_record=if mode="record" then
+          get "record_id"(get "bindings"(get "candidate"(get "sources"(Option.get !synthetic)))) else !record_id in
+      let sequence=if mode="result" then !run_sequence else get "sequence" event in
+      ["finish-components",obj["preparation_id",!preparation;"record_id",actual_record;"result_sequence",sequence]]
+  | "finish-components"->components:=Some value;[build "synthetic"]
+  | _->failwith("Unexpected phased workflow operation "^operation) in
+ let result=exercise ~on_reply p["initialize-synthetic",initialization p] in
+ require(result.closed) "Phased workflow left its channel open";
+ if mode="complete" then (
+   require(!components<>None && !changed) "Complete phased workflow did not reach stale historical reads";
+   require(text "kind"(List.hd(List.rev result.events))="reply") "Valid staged continuation closed fatally")
+ else require(!components=None && text "kind"(List.hd(List.rev result.events))="fatal")
+   "An invalid phase or unrelated result capability completed the build"
 let fixed_provider_tests path=
  let index=read path in
  require(text "document_directory" index="fixed-pipeline-literals-v1") "Fixed authority directory changed";
@@ -351,7 +552,9 @@ let fixed_provider_tests path=
     | value->Some(Bioc_domain.Synthetic_authority.Config.of_json value) in
   let until=match get "until" authority with Json.Null->None | value->Some(Bioc_domain.Runtime_number.of_json value) in
   if case_id="tests/test_component_pipeline.py::fixture.setUpClass/event/0" then (
+    phased_component_test request history config until;
     let initialization peer=
+      peer.request_document<-Some request_raw;
       let config=match config with Some value->value | None->Bioc_domain.Synthetic_authority.Config.make () in
       let config=Bioc_domain.Synthetic_authority.Config.to_json config in
       let target=Option.get(Bioc_domain.Realization_request.target request) in
@@ -365,7 +568,8 @@ let fixed_provider_tests path=
     let p=peer () in
     let rejected=exercise p["initialize-synthetic",set "request_tree"(ordered Json.Null)(initialization p)] in
     require(text "kind"(List.hd(List.rev rejected.events))="fatal")
-      "A differently ordered-tree projection replaced fixed request authority");
+      "A differently ordered-tree projection replaced fixed request authority";
+    List.iter(framed_component_test initialization)["complete";"record";"result";"phase"]);
   let budget=W.create ~profile:"fixed_provider_views" ~error_code:"fixed_provider_views_limit" ~maximum:1_000_000_000_000 () in
   let providers=ref [] and contexts=ref [] in
   let observer supplied=function
@@ -384,7 +588,10 @@ let fixed_provider_tests path=
    match role with
    | S.Intent_to_behavior_producer->Some("intent_to_behavior",provider,role,None)
    | S.Behavior_to_synthetic_producer _->Some("behavior_to_synthetic",provider,role,None)
-   | S.Synthetic_to_components_producer value->Some("synthetic_to_components",provider,role,
+   | S.Synthetic_to_components_producer value->
+       require(value.candidate==P.candidate completed && value.candidate==S.candidate(P.upstream completed))
+         "Component provider captured a different upstream candidate incarnation";
+       Some("synthetic_to_components",provider,role,
        Some(Bioc_domain.Synthetic_authority.Candidate.to_json value.candidate))
    | S.Intent_to_behavior_validator | S.Behavior_to_synthetic_validator | S.Synthetic_to_components_validator->None) !providers in
   require(List.length producers=3 && List.length !providers=6) "Closed fixed provider census differs";
@@ -407,6 +614,12 @@ let fixed_provider_tests path=
     | V.Host("request",path)->require(same site.value(at_path request_raw path)) "Authored origin differs from its native field"
     | V.Host(("BOOLEAN"|"LEVEL"|"DURATION"|"defaultLifecycle"),[])->()
     | V.Host _->failwith "Unknown fixed host origin grammar"
+    | V.Upstream_type(node,indices)->
+        let upstream=Option.get candidate in
+        let source=List.find(fun value->text "id" value=node)(Json.array(get "nodes"(get "mechanism" upstream))) in
+        let path=List.concat_map(fun index->[str "arguments";Json.int index])indices in
+        require(same site.value(at_path(get "dtype"(get "output" source))path))
+          "Component type origin differs from its actual parsed upstream node"
     | V.Fresh _ | V.Retained _->())sites;
    let same_origin (left:V.site) (right:V.site)=left.origin=right.origin in
    List.iter(fun(left:V.site)->List.iter(fun(right:V.site)->if same_origin left right then
@@ -431,6 +644,12 @@ let fixed_provider_tests path=
         require(List.exists(fun(site:V.site)->site.origin=V.Host("BOOLEAN",[]))sites)
           "Synthetic control lost the shared Boolean type"
     | S.Synthetic_to_components_producer _->
+        let upstream_nodes=Json.array(get "nodes"(get "mechanism"(Option.get candidate))) in
+        let type_origins=List.filter_map(fun(site:V.site)->match site.origin with
+          | V.Upstream_type(node,[])->Some node | _->None)sites in
+        require(List.sort_uniq String.compare type_origins=
+          List.sort_uniq String.compare(List.map(text "id")upstream_nodes))
+          "Component provider omitted an actual upstream parsed node type origin";
         let output=get "output" first in
         let components=Json.array(get "components"(get "registry" output)) in
         let instances=Json.array(get "instances"(get "composition" output)) in
@@ -463,7 +682,10 @@ let fixed_provider_tests path=
 let ()=
  require(Array.length Sys.argv=4) "Expected declaration, original contract and fixed authority corpus paths";
  require(same(read Sys.argv.(1)) A.declaration) "Application declaration differs across languages";
+ require(same(get "default_generator_config" A.declaration)
+   (Bioc_domain.Synthetic_authority.Config.to_json(Bioc_domain.Synthetic_authority.Config.make ())))
+   "Negotiated default generator configuration differs from the actual native constructor";
  let baseline=get "manager_baseline"(read Sys.argv.(2)) in
- baseline_test baseline;negative_validator_test baseline;failure_test baseline;no_candidate_test baseline;protocol_test baseline;
+ baseline_test baseline;compact_inspection_test baseline;negative_validator_test baseline;failure_test baseline;no_candidate_test baseline;protocol_test baseline;
  fixed_provider_tests Sys.argv.(3);
  print_endline "callback manager application: framed state/errors and 18 actual fixed producer returns with typed construction origins and exact metadata resource bounds passed"

@@ -1,6 +1,7 @@
 open Bioc_wire
 module S = Bioc_pipeline.Synthetic_pipeline
 type origin = Host of string * Json.t list | Fresh of string | Retained of string
+  | Upstream_type of string * int list
 type site = {kind:string;path:Json.t list;origin:origin;value:Json.t}
 let str value=Json.String value
 let fail message=Diagnostic.fail "pipeline_callback_manager_protocol" message
@@ -55,7 +56,10 @@ let aliases ~charge ~reserve ~request ~candidate ~role proposal=
       let child=match origin with
         | Host(root,origin_path)->Host(root,append origin_path parts)
         | Fresh name->Fresh(key name(string_of_int index))
-        | Retained name->Retained(key name(string_of_int index)) in
+        | Retained name->Retained(key name(string_of_int index))
+        | Upstream_type(node,indices)->
+            charge(List.length indices+1);reserve(32*(List.length indices+1));
+            Upstream_type(node,indices@[index]) in
       dtype(append path parts)child item)(array "arguments" value) in
   let observable path origin_path value=
     emit observable_kind path(Host("request",origin_path))value;
@@ -139,7 +143,7 @@ let aliases ~charge ~reserve ~request ~candidate ~role proposal=
         if text "kind" value="boolean" then global_type dtype_path "BOOLEAN"(get "dtype" value)
         else match origin with
           | `Input index->dtype dtype_path(Host("request",append(input_path index)[str "dtype"]))(get "dtype" value)
-          | `Node source->dtype dtype_path(Retained(key "port-type" source))(get "dtype" value) in
+          | `Node source->dtype dtype_path(Upstream_type(source,[]))(get "dtype" value) in
       let required path value=
         emit operating_kind path(Retained "required-domain")value;
         List.iter(fun(name,item)->charge 1;
@@ -188,7 +192,7 @@ let aliases ~charge ~reserve ~request ~candidate ~role proposal=
             let index=match find(fun(index,_)->equal_text port_id("in:"^string_of_int index))(indexed inputs) with
               | Some(index,_)->index | None->fail "Input port has no original operand slot." in
             Json.string(List.nth inputs index) in
-          dtype(append port_path[str "dtype"])(Retained(key "port-type" source))(get "dtype" port);
+          dtype(append port_path[str "dtype"])(Upstream_type(source,[]))(get "dtype" port);
           domain false source(append port_path[str "domain"])(get "domain" port);
           domain true source(append port_path[str "initialization"])(get "initialization" port))
           (array "ports" component);

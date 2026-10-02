@@ -87,7 +87,8 @@ def fixture(receipt, expected, retained, helper):
     source = retained['request']; config = retained['config']
     refs = {name: objects.retain(value) for name, value in (('target', source.target), ('config', config), ('request', source))}
     envelopes = list(helper.envelopes(retained, objects))
-    roots = {'target': source.target, 'config': config, 'request': source, **dict(original.source_origins(source))}
+    roots = {'target': source.target, 'config': config, 'request': source, **dict(original.source_origins(source)),
+        'constant:synthetic_capabilities': origin_reference(source, 'syntheticCapabilities', [])}
     evidence = {'calls': [], 'inspection': None, 'objects': {}, 'providers': {}, 'arguments': {}}
     for handle, value in objects._objects.items():
         names = [name for name, root in roots.items() if value is root]
@@ -135,7 +136,7 @@ def fixture(receipt, expected, retained, helper):
             'obligation_objects':[binding(item) for item in value['obligations']]}
     # Resolve each source-root object through a legitimate origin action, with
     # physical identity (including repeated BOOLEAN paths) rather than equality.
-    origin_specs = [(root, []) for root in ('BOOLEAN', 'LEVEL', 'DURATION', 'defaultLifecycle')]
+    origin_specs = [(root, []) for root in ('BOOLEAN', 'LEVEL', 'DURATION', 'defaultLifecycle', 'syntheticCapabilities')]
     for collection, name, values in (('domain', 'inputs', source.domain.inputs), ('contract', 'requirements', source.contract.requirements)):
         for i in range(len(values)):
             path = [collection, name, i, 'observable']

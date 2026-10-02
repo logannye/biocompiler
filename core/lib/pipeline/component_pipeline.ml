@@ -27,15 +27,17 @@ let resource_limits = obj [
   "record_codecs",C.resource_limits;
   "structural_import_full_traversals",Json.int 128;
   "structural_conversion",str "complete_document_preflight_and_precharged_legacy_decoding" ]
-type t = {candidate_value:S.t;assembly_value:A.t;link_value:L.Result.t;
-  result_value:C.Pipeline_result.t;manager_value:M.t;
+type t = {upstream_value:Synthetic_pipeline.t;candidate_value:S.t;assembly_value:A.t;link_value:L.Result.t;
+  result_value:C.Pipeline_result.t;record_value:C.Stage_record.t;manager_value:M.t;
   behavior_value:E.Check_result.t;selection_value:Synthetic_selection.Result.t option}
 type failure = {error:exn;manager:M.t option}
 type attempt = Completed of t | Failed of failure
 let candidate value = value.candidate_value
+let upstream value = value.upstream_value
 let assembly value = value.assembly_value
 let link_result value = value.link_value
 let result value = value.result_value
+let record value = value.record_value
 let manager value = value.manager_value
 let behavior_result value = value.behavior_value
 let selection_result value = value.selection_value
@@ -119,12 +121,13 @@ let check_behavior ?until ~budget request assembly frames =
   try Behavior_check.check ?until ~parent:budget request assembly frames with
   | Diagnostic.Error error when error.code="component_behavior" -> fail error.message
 
-let run_internal manager_state ~budget ?(manager_limits=M.default_limits) ?validator_equivalent ?observer ?provider_observer ?until ?config request frames =
-  let upstream=match Synthetic_pipeline.attempt ~budget ~manager_limits ?validator_equivalent ?observer ?provider_observer ?until ?config request frames with
-    | Synthetic_pipeline.Completed value -> value
-    | Synthetic_pipeline.Failed failure -> manager_state:=failure.manager;raise failure.error in
-  let manager_value=Synthetic_pipeline.manager upstream in
-  manager_state:=Some manager_value;
+type prepared = {upstream:Synthetic_pipeline.t;request:Realization_request.t;
+  frames:Execution_data.Input_frame.t list;until:Runtime_number.t option;
+  budget:W.t;manager_limits:M.limits;adapted:Adapter.t;dependencies_value:(string*string) list}
+type profiled = {prepared:prepared;linkage:C.Scoped_obligation.t;completion:C.Completion_profile.t}
+type registration = {profiled:profiled;contract_value:C.Pass_contract.t;
+  generate:M.provider;verify:M.provider}
+let prepare ~budget ?(manager_limits=M.default_limits) ?until request frames upstream =
   let candidate_value=Synthetic_pipeline.candidate upstream in
   let adapted=Adapter.adapt ?until ~parent:budget request candidate_value frames in
   let limits=codec budget manager_limits in
@@ -139,13 +142,30 @@ let run_internal manager_state ~budget ?(manager_limits=M.default_limits) ?valid
     "component_registry_policy",fingerprint (str Component_registry.schema_version);
     "component_checker",fingerprint (str Link_check.checker_version);
     "component_model",fingerprint (str Bioc_candidate_runtime.Components.reconstruction_version)] in
-  List.iter (fun (key,value) -> M.set_dependency manager_value key value) dependencies;
+  {upstream;request;frames;until;budget;manager_limits;adapted;dependencies_value=dependencies}
+let dependencies (value:prepared) = value.dependencies_value
+let phase_budget budget (prepared:prepared) =
+  Diagnostic.require (budget==prepared.budget) "component_pipeline_budget"
+    "Component preparation received a foreign lifetime budget."
+let prepare_profile ~budget (prepared:prepared) =
+  phase_budget budget prepared;
+  let limits=codec budget prepared.manager_limits in
   let linkage=C.Scoped_obligation.make ~limits ~id:"component_linkage"
       ~scope:"synthetic_components" ~evidence_kind:E.Model_conditional
       ~description:"Locked components preserve the accepted synthetic graph and satisfy declared composition contracts." () in
   let completion=C.Completion_profile.make ~limits ~scope:"synthetic_components" ~stage:C.Components
       ~schema:A.schema_version ~obligations:["behavior_preservation";"finite_history_response";C.Scoped_obligation.id linkage] () in
-  M.register_completion_profile manager_value completion;
+  {prepared;linkage;completion}
+let completion_profile (value:profiled) = value.completion
+let prepare_registration ~budget ?provider_observer (profiled:profiled) =
+  let prepared=profiled.prepared in
+  phase_budget budget prepared;
+  let request=prepared.request and frames=prepared.frames and until=prepared.until in
+  let adapted=prepared.adapted and manager_limits=prepared.manager_limits in
+  let manager_value=Synthetic_pipeline.manager prepared.upstream in
+  let candidate_value=Synthetic_pipeline.candidate prepared.upstream in
+  let dependencies=prepared.dependencies_value and linkage=profiled.linkage in
+  let limits=codec budget manager_limits in
   let requirements=List.map (fun item ->
     let id=Identity.Requirement.to_string (Behavior.requirement_id item) in
     W.charge budget (String.length id+1);id) (Behavior.requirements (Realization_request.behavior request)) in
@@ -190,17 +210,44 @@ let run_internal manager_state ~budget ?(manager_limits=M.default_limits) ?valid
     observe_provider budget manager_value generate (Synthetic_pipeline.Synthetic_to_components_producer {
       registry=Adapter.registry adapted;composition=Adapter.composition adapted;candidate=candidate_value});
     observe_provider budget manager_value verify Synthetic_pipeline.Synthetic_to_components_validator) provider_observer;
-  M.register manager_value contract ~producer:generate ~validators:["composition",verify];
-  M.allow_host_source_links manager_value verify;
-  let record=M.run manager_value ~pass_id:(C.Pass_contract.id contract)
-      ~input_id:"mechanism" ~output_id:"components" () in
-  let result_value=M.result manager_value ~identity:"components" ~scope:"synthetic_components" in
+  {profiled;contract_value=contract;generate;verify}
+let contract (value:registration) = value.contract_value
+let producer (value:registration) = value.generate
+let validators (value:registration) = ["composition",value.verify]
+let allow_host_source_links (value:registration) =
+  M.allow_host_source_links(Synthetic_pipeline.manager value.profiled.prepared.upstream)value.verify
+let finish ~budget (registration:registration) ~record ~result =
+  let prepared=registration.profiled.prepared in
+  phase_budget budget prepared;
+  let upstream=prepared.upstream in
+  let request=prepared.request and frames=prepared.frames and until=prepared.until in
+  let manager_value=Synthetic_pipeline.manager upstream in
+  let candidate_value=Synthetic_pipeline.candidate upstream in
+  let limits=codec budget prepared.manager_limits in
+  let result_value=result in
   let assembly_value=decode budget limits (fun raw -> A.of_json raw) (C.Stage_record.payload record) in
   let link_value=Link_check.check ~parent:budget ~request:(A.composition assembly_value)
       ~registry:(A.registry assembly_value) () in
   let behavior_value=check_behavior ?until ~budget request assembly_value frames in
-  {candidate_value;assembly_value;link_value;result_value;manager_value;behavior_value;
+  {upstream_value=upstream;candidate_value;assembly_value;link_value;result_value;record_value=record;manager_value;behavior_value;
    selection_value=Synthetic_pipeline.selection_result upstream}
+let run_internal manager_state ~budget ?(manager_limits=M.default_limits) ?validator_equivalent ?observer ?provider_observer ?until ?config request frames =
+  let upstream=match Synthetic_pipeline.attempt ~budget ~manager_limits ?validator_equivalent ?observer ?provider_observer ?until ?config request frames with
+    | Synthetic_pipeline.Completed value -> value
+    | Synthetic_pipeline.Failed failure -> manager_state:=failure.manager;raise failure.error in
+  let manager_value=Synthetic_pipeline.manager upstream in
+  manager_state:=Some manager_value;
+  let prepared=prepare ~budget ~manager_limits ?until request frames upstream in
+  List.iter(fun(key,value)->M.set_dependency manager_value key value)(dependencies prepared);
+  let profiled=prepare_profile ~budget prepared in
+  M.register_completion_profile manager_value(completion_profile profiled);
+  let registration=prepare_registration ~budget ?provider_observer profiled in
+  M.register manager_value (contract registration) ~producer:(producer registration) ~validators:(validators registration);
+  allow_host_source_links registration;
+  let record=M.run manager_value ~pass_id:(C.Pass_contract.id(contract registration))
+      ~input_id:"mechanism" ~output_id:"components" () in
+  let result=M.result manager_value ~identity:"components" ~scope:"synthetic_components" in
+  finish ~budget registration ~record ~result
 let attempt ~budget ?manager_limits ?validator_equivalent ?observer ?provider_observer ?until ?config request frames =
   let manager_state=ref None in
   try Completed (run_internal manager_state ~budget ?manager_limits ?validator_equivalent ?observer ?provider_observer ?until ?config request frames) with

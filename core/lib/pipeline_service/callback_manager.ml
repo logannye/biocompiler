@@ -9,7 +9,7 @@ module S = Bioc_pipeline.Synthetic_pipeline
 module P = Bioc_pipeline.Component_pipeline
 module G = Bioc_synthetic_producer.Generator
 module V = Fixed_provider_views
-let declaration=Json.parse {declaration|{"acceptance":"native_manager_checks_and_freshness_only;inspection_and_host_sidecars_cannot_import_accepted_records","actions":{"hydrate-context":{"fields":["context_id","document","bindings"],"result":"object_reference"},"native-provider":{"fields":["provider_id","role"],"result":"object_reference"},"ordered-json":{"fields":["object"],"result":"ordered_tree"},"origin-reference":{"fields":["root","path"],"result":"object_reference"},"provider-reference":{"fields":["object"],"result":"host_or_native_provider_reference"},"set-equal":{"fields":["object","values"],"result":"boolean"},"source-link-set-equal":{"fields":["objects","expected"],"result":"boolean"}},"argument":"--pipeline-callback-session-v1","authoring_boundary":"canonical_typed_contract_target_profile_fields;opaque_payload_configuration_provider_and_validator_objects_are_read_at_native_requested_points","bindings":{"host":["kind","object"],"native":["kind","identity","tree"]},"broker_actions":{"attr":{"fields":["object","name"],"result":"object_reference"},"attr-default":{"fields":["object","name","default"],"result":"object_reference"},"bind-provider":{"fields":["provider_id","object"],"result":"null"},"call":{"fields":["callable","args","kwargs"],"result":"object_reference"},"call-provider":{"fields":["provider_id","context"],"result":"object_reference"},"callable":{"fields":["object"],"result":"boolean"},"compare":{"fields":["left","right","operator"],"result":"boolean"},"contains":{"fields":["container","item"],"result":"boolean"},"dict":{"fields":["object"],"result":"object_reference"},"document":{"fields":["object"],"result":"object_reference"},"enum":{"fields":["type","value"],"result":"object_reference"},"freeze-json":{"fields":["object"],"result":"object_reference"},"get-item":{"fields":["object","key"],"result":"object_reference"},"is-instance":{"fields":["object","type"],"result":"boolean"},"is-none":{"fields":["object"],"result":"boolean"},"iter":{"fields":["object"],"result":"object_reference"},"json":{"fields":["object"],"result":"json"},"len":{"fields":["object"],"result":"integer"},"list":{"fields":["object"],"result":"object_reference"},"literal":{"fields":["kind","value"],"result":"object_reference"},"lookup":{"fields":["object","entries"],"result":"object_reference"},"mapping-items":{"fields":["object"],"result":"object_reference"},"mapping-keys":{"fields":["object"],"result":"object_reference"},"mapping-values":{"fields":["object"],"result":"object_reference"},"merge":{"fields":["object","before","after"],"result":"object_reference"},"next":{"fields":["object"],"result":"iterator_step"},"release":{"fields":["handles"],"result":"null"},"set-attribute-equal":{"fields":["objects","name","values"],"result":"boolean"},"truth":{"fields":["object"],"result":"boolean"},"tuple":{"fields":["object"],"result":"object_reference"},"vars":{"fields":["object"],"result":"object_reference"}},"channel":"biocompiler.pipeline_callback_channel.v1","claim_scope":"software_contract_conditional_translation_and_scoped_completion;no_empirical_or_human_use_acceptance","comparison_operators":["eq","ne","is","is-not"],"compatibility_pending":["complete_original_installed_replay","fixed_public_registration_interception","arbitrary_authoring_subclass_and_scalar_operator_semantics","default_cutover"],"context_bindings":["input","output","target","configuration","dependencies","requirements","source_links","observation_map"],"context_identity":"actual_native_context_physical_identity;distinct_producer_and_validation_contexts;one_validation_context_shared_by_its_validators","dependencies_encoding":"ordered_unique_string_identity_pairs","enum_types":["EvidenceKind","CheckOutcome","Stage","ArtifactStatus","PayloadFormat"],"executable":"core","expected_rejection_attributes":"fresh_ordered_tree_with_exact_canonical_attributes_projection;no_cached_binding_or_context_container_reuse;NoCandidateFound_retains_pass_configuration_and_dependency_order","expected_rejection_fields":["module","type","message","attributes","attributes_tree"],"failure":"expected_logical_rejection_and_opaque_host_exception_preserve_actual_partial_manager;malformed_resource_internal_or_uncertain_io_failure_closes_authority","fixed_request_tree":"ordered_tree_from_same_authoring_serialization_as_request;exact_canonical_projection_required_before_native_import;retained_order_is_not_acceptance","host_execution":"trusted_host_code_cpu_and_opaque_captures_outside_native_work_and_json_memory_bounds","inspection_order":{"combined_provider_history":"actual_successful_insertion_order;pass_fingerprint_string_or_component_input_tag_and_fingerprint_pair;replacements_preserve_position","fields":["dependencies","passes","component_inputs","provider_history","component_input_history","records","profiles","combined_provider_history","validators"],"mapping_order":"unique_complete_snapshot_key_arrays","provider_fields":["provider_id","object"],"providers":"exact_reachable_snapshot_provider_token_census;stable_bijection_to_actual_retained_callable_identity;no_user_equality_or_hash","scope":"manager_mapping_and_validator_order_only;nested_unobserved_json_order_not_generalized;historical_observation_cannot_grant_acceptance","validator_maps":["passes","component_inputs","provider_history","component_input_history"],"validators":"four_exact_registration_maps_of_unique_complete_validator_key_arrays"},"iterator_step_fields":["exhausted","object"],"lifecycle":"one_initialization_attempt_per_channel;existing_channel_close_is_top_level_only;no_reconnect_retry_or_state_import","limits":"all_native_framing_application_import_callback_and_publication_work_uses_one_channel_lifetime_ancestor;retention_is_cumulative_no_refund","literal_kinds":["json","tuple","set"],"manager_limits":"initialization_once;null_defaults_or_complete_positive_integer_reductions","native_provider_context":"only_exact_retained_context_from_this_live_manager;no_external_context_import","native_provider_result_kinds":["proposal","decision","invalid"],"native_provider_view":{"alias_fields":["kind","paths","binding"],"alias_kinds":["biocompiler.ir.intent.SourceLocation","biocompiler.semantics.types.TypeSpec","biocompiler.semantics.realization.Observable","biocompiler.semantics.component_contracts.OperatingDomain","biocompiler.semantics.component_contracts.ValueDomain","biocompiler.ir.component_contracts.PinnedIdentity","biocompiler.ir.components.ComponentLock","biocompiler.ir.composition.LifecycleInterval"],"alias_paths":"unique_closed_typed_field_and_nonnegative_array_index_paths_relative_to_complete_value;exact_class_and_shape;slot_overlap_requires_identical_binding","bindings_by_role":{"behavior_to_synthetic.producer":["generator_config"],"behavior_to_synthetic.validator":[],"intent_to_behavior.producer":[],"intent_to_behavior.validator":[],"synthetic_to_components.producer":["registry","composition","composition_target"],"synthetic_to_components.validator":[]},"fields":["role","tree","bindings","aliases"],"identity":"explicit_actual_host_objects_or_retained_native_constructor_origins;strong_lifetime_retention;never_equal_content_interning;charged_to_channel_limits","invalid":"view_is_null_only_for_invalid_result","role_authority":"actual_fixed_native_closure_and_manager_owner;immutable_provider_registration_binding","roles":["intent_to_behavior.producer","intent_to_behavior.validator","behavior_to_synthetic.producer","behavior_to_synthetic.validator","synthetic_to_components.producer","synthetic_to_components.validator"],"scope":"closed_structural_public_views_only;no_semantic_parsers_or_acceptance;fresh_proposal_and_output_roots","tree":"complete_value_ordered_tree;canonical_projection_matches_value"},"object_reference":{"fields":["handle"],"scope":"one_live_trusted_host_broker_physical_identity"},"obligation_objects":"array_of_actual_host_references_matching_canonical_obligation_slots;whole_tuple_sidecar_preserves_add_input_and_admission_collection_identity;run_allocates_a_new_tuple_reusing_elements;sidecars_do_not_grant_acceptance","operations":{"add-input":{"fields":["identity","stage","requirements","obligations","obligation_objects","payload","obligations_object"],"result":"record"},"admit-component-input":{"fields":["contract_id","identity","payload"],"result":"record"},"artifact":{"fields":["name"],"result":"canonical_immutable_build_artifact"},"call-native-provider":{"fields":["provider_id","context_id"],"result":"native_provider_result"},"get":{"fields":["identity"],"result":"record"},"initialize-components":{"fields":["request","request_tree","history","until","config","manager_limits","target_object","request_object","config_object"],"result":"initialization"},"initialize-empty":{"fields":["target","dependencies","completion_profiles","manager_limits","target_object"],"result":"initialization"},"initialize-synthetic":{"fields":["request","request_tree","history","until","config","manager_limits","target_object","request_object","config_object"],"result":"initialization"},"inspect":{"fields":[],"result":"historical_observation_only"},"inspect-ordered":{"fields":[],"result":"ordered_historical_observation_only"},"register":{"fields":["contract","producer","validators","obligation_objects"],"result":"null"},"register-completion-profile":{"fields":["profile"],"result":"null"},"register-component-input":{"fields":["contract","validators","obligation_objects","obligations_object","requirements_object"],"result":"null"},"result":{"fields":["identity","scope"],"result":"pipeline_result"},"run":{"fields":["pass_id","input_id","output_id","configuration"],"result":"record"},"set-dependency":{"fields":["key","identity"],"result":"null"},"target":{"fields":[],"result":"target"}},"ordered_tree":{"array":["array","ordered_trees"],"object":["object","ordered_unique_key_tree_pairs"],"scalar":["scalar","json_scalar"]},"origin_reference":{"authority":"exact_retained_regular_authoring_objects_and_closed_stored_fields;no_dynamic_attribute_or_property_lookup;representation_only","constant_paths":"empty_only","observable_suffix":"optional_dtype_followed_by_zero_or_more_arguments_nonnegative_integer_pairs","request_paths":[["domain","inputs","nonnegative_integer","observable"],["contract","requirements","nonnegative_integer","observable"],["behavior","nodes","nonnegative_integer","source"]],"roots":["request","BOOLEAN","DURATION","LEVEL","defaultLifecycle"]},"profile":"biocompiler.core.pipeline_callback_manager.v1","provider_reference":{"host":["kind","object"],"native":["kind","provider_id"]},"record_bindings":["record_id","payload","dependencies","requirements","obligations","obligation_objects","checks","provenance"],"record_identity":"one_token_per_actual_native_record_physical_identity_including_rejected_and_stored_before_error_records;not_content_hash_or_import","results":{"initialization":["kind","manager","artifacts","target"],"native_provider_result":["kind","value","view"],"ordered_historical_observation_only":["snapshot","order","providers"],"pipeline_result":["value","artifact"],"record":["value","bindings"],"target":["value","binding"]},"schema_version":"biocompiler.pipeline_callback_manager_declaration.v1","source_links_binding":"null_for_native_context_default_or_complete_host_or_native_collection_binding;tuple_identity_and_element_identity_preserved"}|declaration}
+let declaration=Json.parse {declaration|{"acceptance":"native_manager_checks_and_freshness_only;inspection_and_host_sidecars_cannot_import_accepted_records","actions":{"hydrate-context":{"fields":["context_id","document","bindings"],"result":"object_reference"},"native-provider":{"fields":["provider_id","role"],"result":"object_reference"},"ordered-json":{"fields":["object"],"result":"ordered_tree"},"origin-reference":{"fields":["root","path"],"result":"object_reference"},"provider-reference":{"fields":["object"],"result":"host_or_native_provider_reference"},"set-equal":{"fields":["object","values"],"result":"boolean"},"source-link-set-equal":{"fields":["objects","expected"],"result":"boolean"}},"argument":"--pipeline-callback-session-v1","authoring_boundary":"canonical_typed_contract_target_profile_fields;opaque_payload_configuration_provider_and_validator_objects_are_read_at_native_requested_points","bindings":{"host":["kind","object"],"native":["kind","identity","tree"]},"broker_actions":{"attr":{"fields":["object","name"],"result":"object_reference"},"attr-default":{"fields":["object","name","default"],"result":"object_reference"},"bind-provider":{"fields":["provider_id","object"],"result":"null"},"call":{"fields":["callable","args","kwargs"],"result":"object_reference"},"call-provider":{"fields":["provider_id","context"],"result":"object_reference"},"callable":{"fields":["object"],"result":"boolean"},"compare":{"fields":["left","right","operator"],"result":"boolean"},"contains":{"fields":["container","item"],"result":"boolean"},"dict":{"fields":["object"],"result":"object_reference"},"document":{"fields":["object"],"result":"object_reference"},"enum":{"fields":["type","value"],"result":"object_reference"},"freeze-json":{"fields":["object"],"result":"object_reference"},"get-item":{"fields":["object","key"],"result":"object_reference"},"is-instance":{"fields":["object","type"],"result":"boolean"},"is-none":{"fields":["object"],"result":"boolean"},"iter":{"fields":["object"],"result":"object_reference"},"json":{"fields":["object"],"result":"json"},"len":{"fields":["object"],"result":"integer"},"list":{"fields":["object"],"result":"object_reference"},"literal":{"fields":["kind","value"],"result":"object_reference"},"lookup":{"fields":["object","entries"],"result":"object_reference"},"mapping-items":{"fields":["object"],"result":"object_reference"},"mapping-keys":{"fields":["object"],"result":"object_reference"},"mapping-values":{"fields":["object"],"result":"object_reference"},"merge":{"fields":["object","before","after"],"result":"object_reference"},"next":{"fields":["object"],"result":"iterator_step"},"release":{"fields":["handles"],"result":"null"},"set-attribute-equal":{"fields":["objects","name","values"],"result":"boolean"},"truth":{"fields":["object"],"result":"boolean"},"tuple":{"fields":["object"],"result":"object_reference"},"vars":{"fields":["object"],"result":"object_reference"}},"channel":"biocompiler.pipeline_callback_channel.v1","claim_scope":"software_contract_conditional_translation_and_scoped_completion;no_empirical_or_human_use_acceptance","comparison_operators":["eq","ne","is","is-not"],"compatibility_pending":["complete_original_installed_replay","fixed_public_registration_interception","arbitrary_authoring_subclass_and_scalar_operator_semantics","default_cutover"],"component_continuation":{"failure":"actual_partial_manager_and_previous_successful_mutations_preserved_on_logical_or_host_failure;fatal_channel_failures_close_authority","finish":"exact_retained_actual_run_record_incarnation_and_matching_actual_result_command_sequence_owner_stage_scope;no_recomputation_or_import_of_accepted_result","limits":"all_preparations_origins_build_views_and_retained_result_receipts_charged_to_channel_lifetime_work_and_retention","obligation_objects":"ordered_native_binding_descriptors_matching_contract_introduces_slots;structural_host_views_returned_as_strong_host_references_during_actual_register;native_validation_remains_authoritative","order":["prepare-components","ordered_actual_set-dependency_calls","component-profile","actual_register-completion-profile","component-registration","actual_register","actual_run","actual_result","finish-components"],"owner":"same_live_manager_and_actual_retained_synthetic_build;one_preparation_attempt;preparation_id_is_channel_scoped_native_capability","preparation":"native_adaptation_and_ordered_dependencies_only;profile_and_registration_constructors_remain_after_prior_actual_mutations","registration":"actual_native_contract_and_physical_fixed_producer_and_validator_closures;ordered_validator_name_and_host_reference_pairs"},"context_bindings":["input","output","target","configuration","dependencies","requirements","source_links","observation_map"],"context_identity":"actual_native_context_physical_identity;distinct_producer_and_validation_contexts;one_validation_context_shared_by_its_validators","default_generator_config":{"catalog_fingerprint":"f2a4b4c1625b4794028fcd1d0e08785724f957023966a29faafe9374cca77343","conjunction_strategy":"native","generator_version":"biocompiler.synthetic.generator.v0.4","profile_version":"biocompiler.synthetic.combinational.v0.1","schema_version":"biocompiler.synthetic_generator_config.v0.3","witness_selection":"closed_band_lower_endpoint"},"default_generator_config_authority":"exact_negotiated_native_Config_make_default;fresh_closed_Python_representation_before_initialization;native_import_and_catalog_validation_remain_authoritative","dependencies_encoding":"ordered_unique_string_identity_pairs","enum_types":["EvidenceKind","CheckOutcome","Stage","ArtifactStatus","PayloadFormat"],"executable":"core","expected_rejection_attributes":"fresh_ordered_tree_with_exact_canonical_attributes_projection;no_cached_binding_or_context_container_reuse;NoCandidateFound_retains_pass_configuration_and_dependency_order","expected_rejection_fields":["module","type","message","attributes","attributes_tree"],"failure":"expected_logical_rejection_and_opaque_host_exception_preserve_actual_partial_manager;malformed_resource_internal_or_uncertain_io_failure_closes_authority","fixed_build_view":{"absent_selection":"value_and_binding_null;selection_config_and_required_capabilities_null;alternative_configs_empty_and_no_selection_aliases;candidate_type_aliases_remain_required","aliases":"selection_paths_start_selection_result_alternatives_nonnegative_index_candidate_then_closed_typed_candidate_path_with_same_eight_provider_alias_tags;candidate_paths_only_TypeSpec_at_candidate_mechanism_nodes_nonnegative_index_output_dtype;no_assembly_or_report_aliases","alternative_configs":"ordered_candidate_slots;null_only_without_candidate;native_constructor_origin_bindings;selected_slot_reuses_actual_fixed_provider_selected_config_origin","artifact_fields":["value","binding"],"artifact_identity":"dedicated_retained_actual_build_artifact_origins;never_manager_frozen_json_or_provider_output_roots;upstream_candidate_and_selection_shared_only_from_actual_retained_synthetic_build","artifacts":{"components":["candidate","selection_result","assembly","link_result","behavior_result"],"synthetic":["candidate","selection_result"]},"candidate_source":"actual_historical_upstream_mechanism_record_envelope;parsed_node_inputs_and_requirement_ids_and_program_outputs_and_required_capabilities_retain_source_tuple_identity","candidate_type_origins":"one_retained_actual_parsed_type_origin_per_upstream_candidate_physical_identity_node_and_argument_path;distinct_even_when_fields_equal;same_origin_used_by_actual_component_provider_registry_descendants","fields":["selection_config","alternative_configs","required_capabilities","aliases"],"fresh_roots":"parsed_candidate_and_assembly_are_fresh_from_original_frozen_payload;assembly_composition_target_is_fresh_and_not_manager_target","kinds":["synthetic","components"],"required_capabilities":"null_without_selection_candidates;otherwise_actual_syntheticCapabilities_constant_host_binding;only_generated_selection_and_provider_candidates_share_this_tuple","result":"actual_historical_pipeline_result_and_record_envelope;finish_reuses_exact_public_result_wrapper_from_result_sequence;historical_views_do_not_grant_fresh_acceptance","selection_config":"actual_requested_host_configuration","sources":["candidate"]},"fixed_request_tree":"ordered_tree_from_same_authoring_serialization_as_request;exact_canonical_projection_required_before_native_import;retained_order_is_not_acceptance","host_execution":"trusted_host_code_cpu_and_opaque_captures_outside_native_work_and_json_memory_bounds","inspection_order":{"combined_provider_history":"actual_successful_insertion_order;pass_fingerprint_string_or_component_input_tag_and_fingerprint_pair;replacements_preserve_position","fields":["dependencies","passes","component_inputs","provider_history","component_input_history","records","profiles","combined_provider_history","validators"],"mapping_order":"unique_complete_snapshot_key_arrays","provider_fields":["provider_id","object"],"providers":"exact_reachable_snapshot_provider_token_census;stable_bijection_to_actual_retained_callable_identity;no_user_equality_or_hash","scope":"manager_mapping_and_validator_order_only;nested_unobserved_json_order_not_generalized;historical_observation_cannot_grant_acceptance","validator_maps":["passes","component_inputs","provider_history","component_input_history"],"validators":"four_exact_registration_maps_of_unique_complete_validator_key_arrays"},"inspection_references":{"authority":"inspection_only;references_cannot_import_records_or_grant_fresh_acceptance;existing_inspect_ordered_unchanged","definitions":"ordered_complete_record_envelopes_exactly_for_first_compact_publication_of_each_actual_record_incarnation_in_order_records;no_duplicates_unused_definitions_or_rebinding","record_reference_fields":["record_id"],"resolution":"same_channel_earlier_or_current_definitions_only;exact_record_name_and_incarnation_bijection;checked_immutable_full_envelope_expansion_without_get_result_or_acceptance_query","retention":"strong_actual_record_identity_and_definition_publication_census_charged_to_existing_channel_lifetime;publication_marked_only_after_complete_response_assembly","snapshot":"same_complete_historical_state_as_inspect_ordered_with_records_replaced_by_incarnation_references;all_other_fields_and_orders_unchanged"},"iterator_step_fields":["exhausted","object"],"lifecycle":"one_initialization_attempt_per_channel;existing_channel_close_is_top_level_only;no_reconnect_retry_or_state_import","limits":"all_native_framing_application_import_callback_and_publication_work_uses_one_channel_lifetime_ancestor;retention_is_cumulative_no_refund","literal_kinds":["json","tuple","set"],"manager_limits":"initialization_once;null_defaults_or_complete_positive_integer_reductions","native_provider_context":"only_exact_retained_context_from_this_live_manager;no_external_context_import","native_provider_result_kinds":["proposal","decision","invalid"],"native_provider_view":{"alias_fields":["kind","paths","binding"],"alias_kinds":["biocompiler.ir.intent.SourceLocation","biocompiler.semantics.types.TypeSpec","biocompiler.semantics.realization.Observable","biocompiler.semantics.component_contracts.OperatingDomain","biocompiler.semantics.component_contracts.ValueDomain","biocompiler.ir.component_contracts.PinnedIdentity","biocompiler.ir.components.ComponentLock","biocompiler.ir.composition.LifecycleInterval"],"alias_paths":"unique_closed_typed_field_and_nonnegative_array_index_paths_relative_to_complete_value;exact_class_and_shape;slot_overlap_requires_identical_binding","bindings_by_role":{"behavior_to_synthetic.producer":["generator_config","required_capabilities"],"behavior_to_synthetic.validator":[],"intent_to_behavior.producer":[],"intent_to_behavior.validator":[],"synthetic_to_components.producer":["registry","composition","composition_target"],"synthetic_to_components.validator":[]},"fields":["role","tree","bindings","aliases"],"identity":"explicit_actual_host_objects_or_retained_native_constructor_origins;strong_lifetime_retention;never_equal_content_interning;charged_to_channel_limits","invalid":"view_is_null_only_for_invalid_result","lower_context_tuples":"intent_to_behavior_producer_only;BehaviorNode_inputs_and_BehaviorProgram_roots_reuse_exact_actual_owner_context_input_intent_tuples_after_source_node_identity_and_complete_slot_value_checks;no_extra_manager_calls_or_semantic_parser","role_authority":"actual_fixed_native_closure_and_manager_owner;immutable_provider_registration_binding","roles":["intent_to_behavior.producer","intent_to_behavior.validator","behavior_to_synthetic.producer","behavior_to_synthetic.validator","synthetic_to_components.producer","synthetic_to_components.validator"],"scope":"closed_structural_public_views_only;no_semantic_parsers_or_acceptance;fresh_proposal_and_output_roots","tree":"complete_value_ordered_tree;canonical_projection_matches_value"},"object_reference":{"fields":["handle"],"scope":"one_live_trusted_host_broker_physical_identity"},"obligation_objects":"array_of_actual_host_references_matching_canonical_obligation_slots;whole_tuple_sidecar_preserves_add_input_and_admission_collection_identity;run_allocates_a_new_tuple_reusing_elements;sidecars_do_not_grant_acceptance","operations":{"add-input":{"fields":["identity","stage","requirements","obligations","obligation_objects","payload","obligations_object"],"result":"record"},"admit-component-input":{"fields":["contract_id","identity","payload"],"result":"record"},"artifact":{"fields":["name"],"result":"canonical_immutable_build_artifact"},"build-result":{"fields":["kind"],"result":"fixed_build"},"call-native-provider":{"fields":["provider_id","context_id"],"result":"native_provider_result"},"component-profile":{"fields":["preparation_id"],"result":"completion_profile"},"component-registration":{"fields":["preparation_id"],"result":"component_registration"},"finish-components":{"fields":["preparation_id","record_id","result_sequence"],"result":"fixed_build"},"get":{"fields":["identity"],"result":"record"},"initialize-components":{"fields":["request","request_tree","history","until","config","manager_limits","target_object","request_object","config_object"],"result":"initialization"},"initialize-empty":{"fields":["target","dependencies","completion_profiles","manager_limits","target_object"],"result":"initialization"},"initialize-synthetic":{"fields":["request","request_tree","history","until","config","manager_limits","target_object","request_object","config_object"],"result":"initialization"},"inspect":{"fields":[],"result":"historical_observation_only"},"inspect-ordered":{"fields":[],"result":"ordered_historical_observation_only"},"inspect-ordered-references":{"fields":[],"result":"referenced_historical_observation_only"},"prepare-components":{"fields":[],"result":"component_preparation"},"register":{"fields":["contract","producer","validators","obligation_objects"],"result":"null"},"register-completion-profile":{"fields":["profile"],"result":"null"},"register-component-input":{"fields":["contract","validators","obligation_objects","obligations_object","requirements_object"],"result":"null"},"result":{"fields":["identity","scope"],"result":"pipeline_result"},"run":{"fields":["pass_id","input_id","output_id","configuration"],"result":"record"},"set-dependency":{"fields":["key","identity"],"result":"null"},"target":{"fields":[],"result":"target"}},"ordered_tree":{"array":["array","ordered_trees"],"object":["object","ordered_unique_key_tree_pairs"],"scalar":["scalar","json_scalar"]},"origin_reference":{"authority":"exact_retained_regular_authoring_objects_and_closed_stored_fields;no_dynamic_attribute_or_property_lookup;representation_only","constant_paths":"empty_only","observable_suffix":"optional_dtype_followed_by_zero_or_more_arguments_nonnegative_integer_pairs","request_paths":[["domain","inputs","nonnegative_integer","observable"],["contract","requirements","nonnegative_integer","observable"],["behavior","nodes","nonnegative_integer","source"]],"roots":["request","BOOLEAN","DURATION","LEVEL","defaultLifecycle","syntheticCapabilities"],"synthetic_capabilities":"empty_path_only;exact_unique_tuple_code_constant_of_audited_original_generate_synthetic;closed_structural_reference_only;never_execute_generator"},"profile":"biocompiler.core.pipeline_callback_manager.v1","provider_reference":{"host":["kind","object"],"native":["kind","provider_id"]},"record_bindings":["record_id","payload","dependencies","requirements","obligations","obligation_objects","checks","provenance"],"record_identity":"one_token_per_actual_native_record_physical_identity_including_rejected_and_stored_before_error_records;not_content_hash_or_import","results":{"component_preparation":["preparation_id","dependencies"],"component_registration":["contract","producer","validators","obligation_objects"],"fixed_build":["kind","identity","result","artifacts","sources","view"],"initialization":["kind","manager","artifacts","target"],"native_provider_result":["kind","value","view"],"ordered_historical_observation_only":["snapshot","order","providers"],"pipeline_result":["value","artifact"],"record":["value","bindings"],"referenced_historical_observation_only":["snapshot","order","providers","record_definitions"],"target":["value","binding"]},"schema_version":"biocompiler.pipeline_callback_manager_declaration.v1","source_links_binding":"null_for_native_context_default_or_complete_host_or_native_collection_binding;tuple_identity_and_element_identity_preserved"}|declaration}
 let str value=Json.String value
 let obj fields=Json.Object fields
 let get key raw=Json.field key (Json.object_fields raw)
@@ -27,13 +27,35 @@ type fixed_provider={owner:M.t;role:S.provider_role;candidate:Json.t option;
   mutable view_bindings:(string*(Json.t*Json.t)) list}
 type provider_view={provider:M.provider;provider_id:string;host:Json.t option;
   mutable proxy:Json.t option;mutable fixed:fixed_provider option}
+type fixed_authority={request:Realization_request.t;frames:Execution_data.Input_frame.t list;
+  until:Runtime_number.t option}
+type component_phase=
+  | Updating_dependencies of (string*string) list
+  | Profile_available of P.profiled
+  | Profile_registered of P.profiled
+  | Registration_available of P.registration
+  | Registration_installed of P.registration
+  | Component_ran of P.registration*C.Stage_record.t
+  | Component_result of P.registration*C.Stage_record.t*int*C.Pipeline_result.t
+  | Component_finished
+type component_workflow={preparation_id:string;owner:M.t;prepared:P.prepared;mutable phase:component_phase}
+type completed_build=Synthetic_build of S.t | Component_build of P.t
+type build_view={build:completed_build;build_id:string;mutable build_envelope:Json.t option}
+type build_artifact=Build_candidate of Synthetic_authority.Candidate.t
+  | Build_selection of Synthetic_selection.Result.t | Build_assembly of Component_assembly.t
+  | Build_link of Composition_evidence.Result.t | Build_behavior of Realization_evidence.Check_result.t
 type t={mutable channel:Ch.t option;mutable bridge:H.t option;mutable initialized:bool;
   mutable live:M.t option;mutable manager_limits:M.limits;mutable manager_json:Json.t;
   mutable target_binding:Json.t option;mutable artifacts:(string*Json.t) list;
   mutable requested_config:(Json.t*Json.t) option;
   mutable fixed_request:Json.t option;mutable origins:(string*Json.t) list;
+  mutable authority:fixed_authority option;mutable upstream:S.t option;
+  mutable component_attempted:bool;mutable component_workflow:component_workflow option;mutable builds:(string*build_view) list;
+  mutable build_artifacts:(build_artifact*Json.t) list;
+  mutable selection_views:(Synthetic_selection.Result.t*Json.t) list;
+  mutable candidate_types:(Synthetic_authority.Candidate.t*string*int list*Json.t*Json.t) list;
   mutable providers:provider_view list;mutable contexts:context_view list;
-  mutable records:record_view list;mutable bindings:(Json.t*Json.t) list;
+  mutable records:record_view list;mutable compact_records:C.Stage_record.t list;mutable bindings:(Json.t*Json.t) list;
   mutable frozen:(Json.t*Json.t) list;mutable executions:(int*(Json.t*Json.t)) list;
   mutable pass_sidecars:(C.Pass_contract.t*sidecar) list;
   mutable admission_sidecars:(C.Component_input_contract.t*sidecar) list;
@@ -234,6 +256,37 @@ let origin_binding (state:t) root path=
       let reference=invoke state "origin-reference" arguments in
       let value=host_binding state reference in
       retain state reference;state.origins<-(key,value)::state.origins;value
+let candidate_type_binding (state:t) candidate node_id indices raw=
+  let nodes=Json.array(get "nodes"(get "mechanism"(Synthetic_authority.Candidate.to_json candidate))) in
+  let node=match find state(fun node->let actual=text "id" node in
+    W.charge(work state)(String.length actual+String.length node_id+1);actual=node_id)nodes with
+    | Some value->value | None->fail "A parsed type origin names no upstream candidate node." in
+  let rec descend value=function
+    | []->value
+    | index::rest->charge state;require(index>=0) "A parsed type origin has a negative argument index.";
+        let rec nth remaining=function
+          | []->fail "A parsed type origin names no upstream type argument."
+          | value::tail->charge state;if remaining=0 then value else nth(remaining-1)tail in
+        descend(nth index(Json.array(get "arguments" value)))rest in
+  let expected=descend(get "dtype"(get "output" node))indices in
+  require(equivalent_json state expected raw) "A parsed type origin differs from its actual upstream fields.";
+  match find state(fun(previous,name,path,_,_)->
+    W.charge(work state)(String.length name+String.length node_id+List.length path+List.length indices+1);
+    previous==candidate && name=node_id && path=indices)state.candidate_types with
+  | Some(_,_,_,prior,binding)->
+      require(equivalent_json state prior raw) "A retained parsed type origin was rebound.";binding
+  | None->
+      Ch.retain_bytes(channel state)(String.length node_id+32*List.length indices+192);
+      let binding=fresh_native_binding state raw in
+      state.candidate_types<-(candidate,node_id,indices,raw,binding)::state.candidate_types;binding
+let candidate_type_aliases (state:t) candidate=
+  List.mapi(fun index node->charge state;Ch.retain_bytes(channel state)512;
+    let raw=get "dtype"(get "output" node) in
+    let binding=candidate_type_binding state candidate(text "id" node)[] raw in
+    obj["kind",str "biocompiler.semantics.types.TypeSpec";
+      "paths",Json.Array[Json.Array[str "candidate";str "mechanism";str "nodes";Json.int index;str "output";str "dtype"]];
+      "binding",binding])
+    (Json.array(get "nodes"(get "mechanism"(Synthetic_authority.Candidate.to_json candidate))))
 let provider_view (state:t) (entry:provider_view) kind value=
   let fixed=fixed_provider entry in
   require(fixed.owner==live state) "Fixed provider belongs to another manager incarnation.";
@@ -256,7 +309,7 @@ let provider_view (state:t) (entry:provider_view) kind value=
                 | None->fail "Fixed config lacks its authored origin." in
               require(equivalent_json state expected raw) "Fixed config differs from its authored origin.";binding
           | S.Selected->fixed_binding state fixed "selected-config" raw in
-        obj["generator_config",actual]
+        obj["generator_config",actual;"required_capabilities",origin_binding state "syntheticCapabilities" []]
     | S.Synthetic_to_components_producer _->
         obj["registry",fixed_binding state fixed "registry"(get "registry" output);
           "composition",fixed_binding state fixed "composition"(get "composition" output);
@@ -272,6 +325,10 @@ let provider_view (state:t) (entry:provider_view) kind value=
     List.iter(fun (site:V.site)->charge state;
       let actual=match site.origin with
         | V.Host(root,path)->origin_binding state root path
+        | V.Upstream_type(node,indices)->
+            (match fixed.role with
+             | S.Synthetic_to_components_producer origin->candidate_type_binding state origin.candidate node indices site.value
+             | _->fail "A parsed upstream type origin escaped its component provider.")
         | V.Retained key->
             W.charge(work state)(String.length key+8);Ch.retain_bytes(channel state)(String.length key+32);
             fixed_binding state fixed ("alias/"^key) site.value
@@ -307,6 +364,170 @@ let provider_reference (state:t) entry=match entry.host,entry.proxy with
   | None,None->let role=role_name(fixed_provider entry).role in
       let value=invoke state "native-provider" (obj["provider_id",str entry.provider_id;"role",str role]) in
       ignore(host state value);retain state value;entry.proxy<-Some value;value
+let remember_build (state:t) kind build=
+  require(not(List.mem_assoc kind state.builds)) "A completed build snapshot cannot be replaced.";
+  Ch.retain_bytes(channel state)256;
+  let view={build;build_id=identity state "build";build_envelope=None} in
+  state.builds<-state.builds@[kind,view]
+let save_synthetic_build (state:t) value=
+  match state.upstream with
+  | Some previous->require(previous==value) "Component continuation changed its actual upstream build."
+  | None->state.upstream<-Some value;remember_build state "synthetic"(Synthetic_build value)
+let save_component_build (state:t) value=
+  save_synthetic_build state(P.upstream value);
+  remember_build state "components"(Component_build value)
+let same_build_artifact left right=match left,right with
+  | Build_candidate left,Build_candidate right->left==right
+  | Build_selection left,Build_selection right->left==right
+  | Build_assembly left,Build_assembly right->left==right
+  | Build_link left,Build_link right->left==right
+  | Build_behavior left,Build_behavior right->left==right
+  | _->false
+let build_artifact (state:t) origin raw=
+  let binding=match find state(fun(previous,_)->same_build_artifact previous origin)state.build_artifacts with
+    | Some(_,value)->value
+    | None->Ch.retain_bytes(channel state)128;
+        let value=fresh_native_binding state raw in
+        state.build_artifacts<-(origin,value)::state.build_artifacts;value in
+  Ch.retain_bytes(channel state)128;
+  obj["value",raw;"binding",binding]
+let selection_view (state:t) selection=
+  match selection with
+  | None->obj["selection_config",Json.Null;"alternative_configs",Json.Array[];
+      "required_capabilities",Json.Null;"aliases",Json.Array[]]
+  | Some selection->
+    (match find state(fun(previous,_)->previous==selection)state.selection_views with
+     | Some(_,value)->value
+     | None->
+       Ch.retain_bytes(channel state)512;
+       let requested_config=Synthetic_selection.Result.config selection in
+       let requested_raw=Synthetic_authority.Config.to_json requested_config in
+       let original,selection_config=match state.requested_config with Some value->value
+         | None->fail "Selection lacks its actual requested configuration." in
+       require(equivalent_json state original requested_raw) "Selection changed its original requested configuration.";
+       let grouped=ref [] and any_candidate=ref false in
+       let aliases index candidate actual_config=
+         Ch.retain_bytes(channel state)256;
+         let raw=Synthetic_authority.Candidate.to_json candidate in
+         let role=S.Behavior_to_synthetic_producer {requested_config;selected_config=actual_config;config_origin=S.Selected} in
+         (* Both source implementations use the same generator constructor for
+            each alternative. This is its explicit origin recipe, not a new
+            provider capability or a proposal submitted for acceptance. *)
+         let sites=V.aliases ~charge:(W.charge(work state)) ~reserve:(Ch.retain_bytes(channel state))
+           ~request:(Option.get state.fixed_request) ~candidate:None ~role(obj["output",raw]) in
+         List.iter(fun(site:V.site)->charge state;
+           let binding=match site.origin with V.Host(root,path)->origin_binding state root path
+             | V.Fresh _ | V.Retained _ | V.Upstream_type _->fail "Selection generator acquired an undeclared shared construction origin." in
+           let suffix=match site.path with Json.String "output"::rest->rest
+             | _->fail "Selection generator origin escaped its candidate." in
+           Ch.retain_bytes(channel state)(256+32*List.length suffix);
+           let path=str "selection_result"::str "alternatives"::Json.int index::str "candidate"::suffix in
+           let key=text "handle"(get "object" binding) in
+           match find state(fun(previous,_,_,_,_)->
+             W.charge(work state)(String.length previous+String.length key+1);previous=key) !grouped with
+           | Some(_,kind,prior,_,paths)->
+               require(kind=site.kind && equivalent_json state prior site.value) "Selection source identity changed typed fields.";
+               paths:=path::!paths
+           | None->Ch.retain_bytes(channel state)(String.length key+192);
+               grouped:=(key,site.kind,site.value,binding,ref[path])::!grouped)sites in
+       let alternatives=Synthetic_selection.Result.alternatives selection in
+       let configs=List.mapi(fun index alternative->charge state;Ch.retain_bytes(channel state)64;
+         match Synthetic_selection.Alternative.candidate alternative with
+         | None->Json.Null
+         | Some candidate->
+           any_candidate:=true;
+           let actual=Synthetic_authority.Candidate.generator_config candidate in
+           let raw=Synthetic_authority.Config.to_json actual in
+           let selected=find state(fun entry->match entry.fixed with
+             | Some {role=S.Behavior_to_synthetic_producer config;owner;_}->
+                 owner==live state && config.config_origin=S.Selected && config.selected_config==actual
+             | _->false)state.providers in
+           let binding=match selected with
+             | Some entry->fixed_binding state(fixed_provider entry)"selected-config" raw
+             | None->fresh_native_binding state raw in
+           aliases index candidate actual;binding)alternatives in
+       let aliases=map state(fun(_,kind,_,binding,paths)->obj["kind",str kind;
+         "paths",Json.Array(map state(fun path->Json.Array path)(List.rev !paths));"binding",binding])
+         (List.rev !grouped) in
+       let value=obj["selection_config",selection_config;"alternative_configs",Json.Array configs;
+         "required_capabilities",(if !any_candidate then origin_binding state "syntheticCapabilities" [] else Json.Null);
+         "aliases",Json.Array aliases] in
+       retain state value;state.selection_views<-(selection,value)::state.selection_views;value)
+let build_result (state:t) kind=
+  require(List.mem kind["synthetic";"components"]) "Unknown completed build kind.";
+  let entry=match List.assoc_opt kind state.builds with Some value->value
+    | None->fail "No such completed historical build." in
+  match entry.build_envelope with Some value->value | None->
+  Ch.retain_bytes(channel state)1024;
+  let upstream,record,result,extra=match entry.build with
+    | Synthetic_build value->value,S.record value,S.result value,[]
+    | Component_build value->P.upstream value,P.record value,P.result value,
+        ["assembly",build_artifact state(Build_assembly(P.assembly value))(Component_assembly.to_json(P.assembly value));
+         "link_result",build_artifact state(Build_link(P.link_result value))(Composition_evidence.Result.to_json(P.link_result value));
+         "behavior_result",build_artifact state(Build_behavior(P.behavior_result value))(Realization_evidence.Check_result.to_json(P.behavior_result value))] in
+  let candidate=S.candidate upstream and selection=S.selection_result upstream in
+  let candidate_aliases=candidate_type_aliases state candidate in
+  let candidate=build_artifact state(Build_candidate candidate)(Synthetic_authority.Candidate.to_json candidate) in
+  let selected_view=selection_view state selection in
+  let selected_aliases=Json.array(get "aliases" selected_view) in
+  W.charge(work state)(List.length candidate_aliases+1);
+  Ch.retain_bytes(channel state)(32*List.length candidate_aliases+256);
+  let view=obj(List.map(fun(key,value)->if key="aliases" then key,Json.Array(candidate_aliases@selected_aliases)
+    else key,value)(Json.object_fields selected_view)) in
+  let selected=match selection with None->obj["value",Json.Null;"binding",Json.Null]
+    | Some value->build_artifact state(Build_selection value)(Synthetic_selection.Result.to_json value) in
+  let value=obj["kind",str kind;"identity",str entry.build_id;
+    "result",obj["value",C.Pipeline_result.to_json result;"artifact",record_envelope state record];
+    "artifacts",obj(["candidate",candidate;"selection_result",selected]@extra);
+    "sources",obj["candidate",record_envelope state(S.record upstream)];
+    "view",view] in
+  retain state value;entry.build_envelope<-Some value;value
+let workflow (state:t) identity=
+  match state.component_workflow with
+  | Some value when value.preparation_id=identity && value.owner==live state->value
+  | _->fail "Unknown component preparation capability."
+let prepare_components (state:t)=
+  require(not state.component_attempted && not(List.mem_assoc "components" state.builds))
+    "Component continuation has already been attempted.";
+  state.component_attempted<-true;
+  let upstream=match state.upstream with Some value->value | None->fail "No completed synthetic build is available." in
+  let authority=match state.authority with Some value->value | None->fail "No retained fixed authoring authority." in
+  (* The adapter's existing cumulative publication bound covers its captured
+     registry/composition. Reserve it before starting the actual adaptation. *)
+  Ch.retain_bytes(channel state)(number(get "max_report_bytes"(get "shared"
+    (Bioc_synthetic_producer.Components.limits_json Bioc_synthetic_producer.Components.default_limits))));
+  Ch.retain_bytes(channel state)512;
+  let prepared=P.prepare ~budget:(work state) ~manager_limits:state.manager_limits ?until:authority.until
+    authority.request authority.frames upstream in
+  let dependencies=P.dependencies prepared in
+  List.iter(fun(key,value)->charge state;
+    Ch.retain_bytes(channel state)(6*(String.length key+String.length value)+128))dependencies;
+  let encoded=Json.Array(map state(fun(key,value)->Json.Array[str key;str value])dependencies) in
+  retain state encoded;
+  let preparation_id=identity state "component-preparation" in
+  state.component_workflow<-Some {preparation_id;owner=live state;prepared;phase=Updating_dependencies dependencies};
+  obj["preparation_id",str preparation_id;"dependencies",encoded]
+let component_profile (state:t) preparation_id=
+  let workflow=workflow state preparation_id in
+  (match workflow.phase with Updating_dependencies []->() | _->fail "Component dependencies are not complete.");
+  let value=P.prepare_profile ~budget:(work state) workflow.prepared in
+  let raw=C.Completion_profile.to_json(P.completion_profile value) in
+  retain state raw;workflow.phase<-Profile_available value;raw
+let component_registration (state:t) preparation_id=
+  let workflow=workflow state preparation_id in
+  let profile=match workflow.phase with Profile_registered value->value
+    | _->fail "Component completion profile has not been registered." in
+  let value=P.prepare_registration ~budget:(work state) ~provider_observer:(observe_provider state) profile in
+  let contract=P.contract value in
+  let contract_json=C.Pass_contract.to_json contract in
+  retain state contract_json;
+  let producer=provider_reference state(provider_entry state(P.producer value)) in
+  let validators=map state(fun(key,provider)->Json.Array[str key;provider_reference state(provider_entry state provider)])
+    (P.validators value) in
+  let obligations=(native_sidecar state(C.Pass_contract.introduces contract)).elements in
+  let raw=obj["contract",contract_json;"producer",producer;"validators",Json.Array validators;
+    "obligation_objects",Json.Array obligations] in
+  retain state raw;workflow.phase<-Registration_available value;raw
 let intern_provider (state:t) raw=
   ignore(host state raw);
   let descriptor=invoke state "provider-reference" (obj["object",raw]) in
@@ -438,6 +659,8 @@ let initialize (state:t) kind payload=
     state.requested_config<-Some(raw_config,config_binding);
     ignore(host state(get "request_object" payload));
     state.fixed_request<-Some request_raw;
+    Ch.retain_bytes(channel state)256;
+    state.authority<-Some {request;frames;until};
     map state(fun value->retain state(Execution_data.Input_frame.to_json value)) frames |> ignore;
     retain_fixed state(kind="components") request config until;
     let artifact name raw=retain state raw;state.artifacts<-state.artifacts@[name,raw] in
@@ -446,6 +669,7 @@ let initialize (state:t) kind payload=
       ~observer ~provider_observer ~validator_equivalent ?until ?config request frames with
       | S.Failed failure->state.live<-failure.manager;raise failure.error
       | S.Completed value->state.live<-Some(S.manager value);
+          save_synthetic_build state value;
           artifact "candidate"(Synthetic_authority.Candidate.to_json(S.candidate value));
           artifact "pipeline_result"(C.Pipeline_result.to_json(S.result value));
           artifact "selection_result"(selection(S.selection_result value))
@@ -453,6 +677,7 @@ let initialize (state:t) kind payload=
       ~observer ~provider_observer ~validator_equivalent ?until ?config request frames with
       | P.Failed failure->state.live<-failure.manager;raise failure.error
       | P.Completed value->state.live<-Some(P.manager value);
+          save_component_build state value;
           artifact "candidate"(Synthetic_authority.Candidate.to_json(P.candidate value));
           artifact "pipeline_result"(C.Pipeline_result.to_json(P.result value));
           artifact "selection_result"(selection(P.selection_result value));
@@ -491,7 +716,53 @@ let inspect_ordered (state:t)=
   let providers=map state(fun entry->obj["provider_id",str entry.provider_id;
     "object",provider_reference state entry])(List.rev !reachable) in
   obj["snapshot",snapshot;"order",order;"providers",Json.Array providers]
-let dispatch_value (state:t) operation payload=
+let inspect_ordered_references (state:t)=
+  (* Definitions are already retained actual records. This operation allocates
+     only reference/envelope cells and a delivered-identity census; it never
+     performs freshness checks, reconstructs a manager or imports acceptance. *)
+  Ch.retain_bytes(channel state)1024;
+  let reachable=ref [] in
+  let provider_identity provider=
+    let entry=provider_entry state provider in
+    if not(List.exists(fun previous->charge state;previous==entry) !reachable) then (
+      Ch.retain_bytes(channel state)96;reachable:=entry::!reachable);
+    entry.provider_id in
+  let raw=M.inspect(live state) ~provider_identity in
+  let order=M.inspection_order(live state) in
+  let providers=map state(fun entry->Ch.retain_bytes(channel state)256;
+    obj["provider_id",str entry.provider_id;"object",provider_reference state entry])(List.rev !reachable) in
+  (* Resolve any first-use host proxies before reading the publication census.
+     A nested inspection during that continuation may itself deliver records. *)
+  let published=ref state.compact_records and definitions=ref [] in
+  let records=map state(fun(name,document)->
+    (* M.inspect uses Stage_record.to_json's retained immutable document, so
+       physical document identity names its exact incarnation even if a nested
+       command has since stored another record with the same public name. *)
+    let entry=match find state(fun value->C.Stage_record.to_json value.record==document)state.records with
+      | Some value->value | None->fail "Compact inspection lacks its actual historical record." in
+    let actual=C.Stage_record.id entry.record in
+    W.charge(work state)(String.length actual+String.length name+1);
+    require(actual=name) "Compact inspection record metadata differs from its actual manager state.";
+    Ch.retain_bytes(channel state)256;
+    if not(List.exists(fun previous->charge state;previous==entry.record) !published) then (
+      (* Prepay new list/envelope cells. The immutable document and binding
+         trees are shared with the strongly retained original record view. *)
+      Ch.retain_bytes(channel state)256;
+      definitions:=record_envelope state entry.record::!definitions;
+      published:=entry.record::!published);
+    name,obj["record_id",get "record_id" entry.bindings])
+    (Json.object_fields(get "records" raw)) in
+  let snapshot=obj(map state(fun(key,value)->key,if key="records" then obj records else value)(Json.object_fields raw)) in
+  W.charge(work state)(List.length !definitions+1);
+  Ch.retain_bytes(channel state)(32*List.length !definitions+256);
+  let result=obj["snapshot",snapshot;"order",order;"providers",Json.Array providers;
+    "record_definitions",Json.Array(List.rev !definitions)] in
+  (* Do not consume definition publication after a failed assembly/preflight.
+     A subsequent uncertain write closes the channel, so no retry can observe
+     an undelivered census on another live authority. *)
+  ignore(C.Codec.measure ~limits:(codec state) result);
+  state.compact_records<- !published;result
+let dispatch_value (state:t) ~sequence operation payload=
   let declared=try get operation(get "operations" declaration) with Diagnostic.Error _->fail "Unknown manager operation." in
   Json.exact_fields(List.map Json.string(Json.array(get "fields" declared)))(Json.object_fields payload);
   let field key=get key payload and name key=text key payload in
@@ -499,18 +770,52 @@ let dispatch_value (state:t) operation payload=
   | "initialize-empty"->initialize state "empty" payload
   | "initialize-synthetic"->initialize state "synthetic" payload
   | "initialize-components"->initialize state "components" payload
+  | "build-result"->build_result state(name "kind")
+  | "prepare-components"->prepare_components state
+  | "component-profile"->component_profile state(name "preparation_id")
+  | "component-registration"->component_registration state(name "preparation_id")
+  | "finish-components"->
+      let workflow=workflow state(name "preparation_id") in
+      let registration,record,result=match workflow.phase with
+        | Component_result(registration,record,result_sequence,result)
+          when result_sequence=number(field "result_sequence") &&
+            text "record_id"(record_view state record).bindings=name "record_id"->registration,record,result
+        | _->fail "Component finish lacks its actual matching run/result capabilities." in
+      let value=P.finish ~budget:(work state) registration ~record ~result in
+      save_component_build state value;workflow.phase<-Component_finished;
+      build_result state "components"
   | "target"->target_envelope state
   | "inspect"->inspect state
   | "inspect-ordered"->inspect_ordered state
+  | "inspect-ordered-references"->inspect_ordered_references state
   | "get"->record_envelope state(M.get(live state)(name "identity"))
   | "result"->let manager=live state in
       let value=M.result manager ~identity:(name "identity") ~scope:(name "scope") in
+      let record=M.get manager(name "identity") in
+      (match state.component_workflow with
+       | Some ({phase=Component_ran(registration,previous);_} as workflow)
+         when workflow.owner==manager && record==previous && name "identity"="components" && name "scope"="synthetic_components"->
+           retain state(C.Pipeline_result.to_json value);
+           workflow.phase<-Component_result(registration,record,sequence,value)
+       | _->());
       obj["value",C.Pipeline_result.to_json value;
-        "artifact",record_envelope state(M.get manager(name "identity"))]
-  | "set-dependency"->M.set_dependency(live state)(name "key")(name "identity");Json.Null
+        "artifact",record_envelope state record]
+  | "set-dependency"->
+      let key=name "key" and value=name "identity" in
+      M.set_dependency(live state)key value;
+      (match state.component_workflow with
+       | Some ({phase=Updating_dependencies((expected_key,expected_value)::rest);_} as workflow)->
+           W.charge(work state)(String.length key+String.length value+String.length expected_key+String.length expected_value+1);
+           if key=expected_key && value=expected_value then workflow.phase<-Updating_dependencies rest
+       | _->());Json.Null
   | "register-completion-profile"->let manager=live state in
       let profile=C.Completion_profile.of_json ~limits:(manager_codec state)(field "profile") in
-      M.register_completion_profile manager profile;Json.Null
+      M.register_completion_profile manager profile;
+      (match state.component_workflow with
+       | Some ({phase=Profile_available value;_} as workflow) when workflow.owner==manager->
+           if equivalent_json state(C.Completion_profile.to_json profile)(C.Completion_profile.to_json(P.completion_profile value)) then
+             workflow.phase<-Profile_registered value
+       | _->());Json.Null
   | "add-input"->let manager=live state in
       let stage=C.stage_of_json(field "stage") in
       let requirements=List.map Json.string(Json.array(field "requirements")) in
@@ -524,16 +829,35 @@ let dispatch_value (state:t) operation payload=
   | "admit-component-input"->record_envelope state(M.admit_host_component_input(live state)
       ~contract_id:(name "contract_id") ~identity:(name "identity")(host state(field "payload")))
   | "run"->let configuration=match field "configuration" with Json.Null->None | raw->Some(host state raw) in
-      record_envelope state(M.run_host(live state) ~pass_id:(name "pass_id") ~input_id:(name "input_id")
-        ~output_id:(name "output_id") ?configuration ())
+      let record=M.run_host(live state) ~pass_id:(name "pass_id") ~input_id:(name "input_id")
+        ~output_id:(name "output_id") ?configuration () in
+      (match state.component_workflow with
+       | Some ({phase=Registration_installed value;_} as workflow)
+         when name "pass_id"=C.Pass_contract.id(P.contract value) && name "input_id"="mechanism" &&
+           name "output_id"="components" && configuration=None->workflow.phase<-Component_ran(value,record)
+       | _->());record_envelope state record
   | "register"->let manager=live state in
       let contract=C.Pass_contract.of_json ~limits:(manager_codec state)(field "contract") in
       let sidecar=authored_sidecar state(C.Pass_contract.introduces contract) payload ~whole:false ~requirements:false in
       let producer=field "producer" and validators=field "validators" in
       let deferred=deferred_validators state ~producer validators in
-      M.register_deferred manager contract ~producer:(fun _->intern_provider state producer)
-        ~self_certifying:(self_certifying state producer validators) deferred;
-      retain state(field "contract");state.pass_sidecars<-(contract,sidecar)::state.pass_sidecars;Json.Null
+      let actual_producer=ref None and actual_validators=ref [] in
+      let captured={deferred with M.snapshot=(fun budget->
+        let values=deferred.M.snapshot budget in actual_validators:=values;values)} in
+      M.register_deferred manager contract ~producer:(fun _->
+        let value=intern_provider state producer in actual_producer:=Some value;value)
+        ~self_certifying:(self_certifying state producer validators) captured;
+      retain state(field "contract");state.pass_sidecars<-(contract,sidecar)::state.pass_sidecars;
+      (match state.component_workflow with
+       | Some ({phase=Registration_available value;_} as workflow) when workflow.owner==manager->
+           let same_validators left right=List.length left=List.length right &&
+             List.for_all2(fun(left_key,left_value)(right_key,right_value)->charge state;
+               left_key=right_key && left_value==right_value)left right in
+           if (match !actual_producer with Some provider->provider==P.producer value | None->false) &&
+             same_validators !actual_validators(P.validators value) &&
+             equivalent_json state(C.Pass_contract.to_json contract)(C.Pass_contract.to_json(P.contract value)) then (
+             P.allow_host_source_links value;workflow.phase<-Registration_installed value)
+       | _->());Json.Null
   | "register-component-input"->let manager=live state in
       let contract=C.Component_input_contract.of_json ~limits:(manager_codec state)(field "contract") in
       let sidecar=authored_sidecar state(C.Component_input_contract.obligations contract) payload ~whole:true ~requirements:true in
@@ -580,18 +904,21 @@ let reject (state:t)=function
   | G.Unsupported value->Some(exception_json state "biocompiler.errors" "UnsupportedBehaviorError"(G.format_error value)(obj[]))
   | _->None
 let dispatch (state:t) _ (command:Ch.command)=
-  try Ch.Success(dispatch_value state command.operation command.arguments)
+  try Ch.Success(dispatch_value state ~sequence:command.sequence command.operation command.arguments)
   with cause->match reject state cause with Some value->Ch.Rejected value | None->raise cause
 let create ~io ()=
   let state={channel=None;bridge=None;initialized=false;live=None;manager_limits=M.default_limits;
-    manager_json=defaults;target_binding=None;requested_config=None;fixed_request=None;origins=[];artifacts=[];providers=[];contexts=[];records=[];
+    manager_json=defaults;target_binding=None;requested_config=None;fixed_request=None;origins=[];artifacts=[];providers=[];contexts=[];records=[];compact_records=[];
+    authority=None;upstream=None;component_attempted=false;component_workflow=None;builds=[];build_artifacts=[];selection_views=[];candidate_types=[];
     bindings=[];frozen=[];executions=[];pass_sidecars=[];admission_sidecars=[];
     input_sidecar=None;next_identity=0} in
   let value=Ch.create ~io ~application:declaration ~dispatch:(dispatch state) () in
   state.channel<-Some value;state
 let release (state:t)=
   Option.iter H.close state.bridge;state.bridge<-None;state.live<-None;state.target_binding<-None;state.requested_config<-None;state.fixed_request<-None;state.origins<-[];
-  state.artifacts<-[];state.providers<-[];state.contexts<-[];state.records<-[];state.bindings<-[];
+  state.artifacts<-[];state.providers<-[];state.contexts<-[];state.records<-[];state.compact_records<-[];state.bindings<-[];
+  state.authority<-None;state.upstream<-None;state.component_workflow<-None;state.builds<-[];
+  state.build_artifacts<-[];state.selection_views<-[];state.candidate_types<-[];
   state.frozen<-[];state.executions<-[];state.pass_sidecars<-[];state.admission_sidecars<-[];state.input_sidecar<-None
 let run (state:t)=Fun.protect ~finally:(fun()->release state)(fun()->Ch.run(channel state))
 let is_closed (state:t)=Ch.is_closed(channel state)

@@ -39,7 +39,7 @@ from biocompiler.semantics.realization import (
     BehaviorContract, InputDomain, Observable, OperatingDomain as RequestDomain, ResponseRequirement,
 )
 from biocompiler.semantics.types import BOOLEAN, DURATION, LEVEL, TypeSpec
-from biocompiler.synthesis.synthetic import SyntheticCandidate, SyntheticGeneratorConfig
+from biocompiler.synthesis.synthetic import SyntheticCandidate, SyntheticGeneratorConfig, _generate_synthetic
 from biocompiler.verification.realization import InputBinding, ObservationMap, OutputBinding
 from biocompiler.verification.evidence import CheckOutcome, EvidenceKind, Obligation
 
@@ -560,6 +560,9 @@ def origin_reference(request: object, root: str, path: JsonValue) -> object:
         'BOOLEAN': BOOLEAN, 'DURATION': DURATION, 'LEVEL': LEVEL,
         'defaultLifecycle': CompositionInstance.__dataclass_fields__['lifetime'].default,
     }
+    if root == 'syntheticCapabilities':
+        require(not parts, 'Named provider origins require an empty path')
+        return synthetic_capabilities()
     if root in constants:
         require(not parts, 'Named provider origins require an empty path')
         return constants[root]
@@ -592,6 +595,15 @@ def origin_reference(request: object, root: str, path: JsonValue) -> object:
         result = _raw_index(_raw_field(result, TypeSpec, 'arguments'), parts[index + 1])
     require(type(result) is TypeSpec, 'Provider dtype origin has a custom class')
     return result
+
+
+def synthetic_capabilities() -> tuple[str, ...]:
+    """The reviewed generator's actual tuple constant, without executing it."""
+    values = [value for value in _generate_synthetic.__code__.co_consts
+        if type(value) is tuple and len(value) == 1
+        and type(value[0]) is str and value[0] == 'synthetic_signal_graph']
+    require(len(values) == 1, 'Fixed generator capability origin differs')
+    return cast(tuple[str, ...], values[0])
 
 
 @dataclass(frozen=True)
@@ -631,6 +643,14 @@ class ProviderViewStore:
         self.native: dict[str, _RetainedView] = {}
         self.identity_taken = identity_taken
 
+    def capabilities(self, binding: JsonValue, document: JsonValue) -> tuple[str, ...]:
+        raw = fields(binding, 'kind object')
+        require(raw['kind'] == 'host', 'Generator capabilities must bind their actual source constant')
+        result = self.resolve(raw['object'])
+        require(result is synthetic_capabilities() and result == strings(document),
+            'Generator capabilities differ from their actual source constant')
+        return cast(tuple[str, ...], result)
+
     def bind(self, cls: type[T], binding: JsonValue, document: JsonValue, values: Mapping[str, object]) -> T:
         raw = mapping(binding)
         if raw.get('kind') == 'host':
@@ -661,7 +681,8 @@ class ProviderViewStore:
         return result
 
     def decode(self, envelope: JsonValue, *, role: str, target: TargetContext,
-               target_document: JsonValue, requested_config: SyntheticGeneratorConfig | None = None) -> PassResult[ProviderOutput] | CheckDecision | FrozenJson:
+               target_document: JsonValue, requested_config: SyntheticGeneratorConfig | None = None,
+               input_payload: FrozenJson = None) -> PassResult[ProviderOutput] | CheckDecision | FrozenJson:
         raw = fields(envelope, 'kind value view')
         require(role in PROVIDER_ROLES, 'Unknown native provider capability role')
         if raw['kind'] == 'invalid':
@@ -679,14 +700,17 @@ class ProviderViewStore:
             require(raw['kind'] == 'proposal', 'Unknown typed native provider result kind')
             if role == 'intent_to_behavior.producer':
                 require(not bindings, 'Behavior provider cannot bind captured output roots')
+                factory.lower_source(input_payload, _at(value, ('output',)))
             elif role == 'behavior_to_synthetic.producer':
-                fields(view['bindings'], 'generator_config')
+                fields(view['bindings'], 'generator_config required_capabilities')
                 config_binding = mapping(bindings['generator_config'])
                 if config_binding.get('kind') == 'host':
                     fields(bindings['generator_config'], 'kind object')
                     require(requested_config is not None and self.resolve(config_binding['object']) is requested_config,
                         'Synthetic provider did not retain its actual authored configuration')
                 factory.add(SyntheticGeneratorConfig, ('output', 'generator_config'), bindings['generator_config'])
+                factory.capabilities[('output', 'mechanism')] = self.capabilities(bindings['required_capabilities'],
+                    _at(value, ('output', 'mechanism', 'required_capabilities')))
             else:
                 require(role == 'synthetic_to_components.producer', 'Proposal role is not a fixed producer')
                 fields(view['bindings'], 'registry composition composition_target')
@@ -708,6 +732,8 @@ class _AliasFactory:
         self.bindings: dict[ViewPath, tuple[type[object], JsonValue]] = {}
         self.visited: set[ViewPath] = set()
         self.objects: dict[ViewPath, object] = {}
+        self.capabilities: dict[ViewPath, tuple[str, ...]] = {}
+        self.lower_tuples: dict[ViewPath, tuple[str, ...]] = {}
         for group in array(aliases):
             raw = fields(group, 'kind paths binding')
             tag = text(raw['kind'])
@@ -716,6 +742,36 @@ class _AliasFactory:
             require(bool(paths), 'Typed alias group has no paths')
             for path in paths:
                 self.add(ALIAS_TAGS[tag], _path(path), raw['binding'], overlap=False)
+
+    def lower_source(self, source: FrozenJson, output: JsonValue) -> None:
+        require(type(source) in (dict, MappingProxyType), 'Lower provider requires its actual context input')
+        intent = cast(Mapping[str, FrozenJson], source).get('intent')
+        require(type(intent) in (dict, MappingProxyType), 'Lower provider context has no frozen intent')
+        intent = cast(Mapping[str, FrozenJson], intent)
+        nodes = intent.get('nodes')
+        require(type(nodes) is tuple, 'Lower provider source nodes are not frozen')
+        originals: dict[str, Mapping[str, FrozenJson]] = {}
+        for node in cast(tuple[FrozenJson, ...], nodes):
+            require(type(node) in (dict, MappingProxyType), 'Lower provider source node has another representation')
+            item = cast(Mapping[str, FrozenJson], node)
+            identity = item.get('id')
+            require(type(identity) is str and identity not in originals, 'Lower provider source node identity differs')
+            originals[cast(str, identity)] = item
+        document = mapping(output)
+        emitted = array(document['nodes'])
+        require(len(emitted) == len(originals), 'Lower provider source node census differs')
+        seen: set[str] = set()
+        def retained(actual: FrozenJson, raw: JsonValue) -> tuple[str, ...]:
+            require(type(actual) is tuple and all(type(item) is str for item in cast(tuple[object, ...], actual))
+                and actual == strings(raw), 'Lower provider tuple differs from its exact context source')
+            return cast(tuple[str, ...], actual)
+        for index, emitted_node in enumerate(emitted):
+            emitted_item = mapping(emitted_node)
+            emitted_identity = text(emitted_item['id'])
+            require(emitted_identity in originals and emitted_identity not in seen, 'Lower provider emitted a different node identity')
+            seen.add(emitted_identity)
+            self.lower_tuples[('output', 'nodes', index, 'inputs')] = retained(originals[emitted_identity].get('inputs'), emitted_item['inputs'])
+        self.lower_tuples[('output', 'roots')] = retained(intent.get('roots'), document['roots'])
 
     def add(self, cls: type[object], path: ViewPath, binding: JsonValue, *, overlap: bool = True) -> None:
         require(cls in CLASS_FIELDS, 'Typed binding requires a closed view class')
@@ -726,6 +782,12 @@ class _AliasFactory:
         self.bindings[path] = cls, binding
 
     def __call__(self, cls: type[T], path: ViewPath, document: JsonValue, values: Mapping[str, object]) -> T:
+        lower_name = 'inputs' if cls is BehaviorNode else 'roots' if cls is BehaviorProgram else None
+        if lower_name is not None and (*path, lower_name) in self.lower_tuples:
+            values = {**values, lower_name: self.lower_tuples[(*path, lower_name)]}
+        if path in self.capabilities:
+            require(cls is MechanismProgram, 'Generator capability slot has a different class')
+            values = {**values, 'required_capabilities': self.capabilities[path]}
         binding = self.bindings.get(path)
         if binding is None:
             return allocate(cls, values)
@@ -750,3 +812,20 @@ class _AliasFactory:
                     require(type(part) is str and part in CLASS_FIELDS.get(cls, ()), 'Typed returned alias left its closed schema')
                     value = _raw_field(value, cls, cast(str, part))
             require(value is expected, 'Typed alias differs from the actual returned object identity')
+        for path, expected_tuple in self.lower_tuples.items():
+            value = result
+            for part in path:
+                if type(value) is tuple:
+                    value = _raw_index(value, part)
+                else:
+                    require(type(part) is str and part in CLASS_FIELDS.get(type(value), ()),
+                        'Lower source tuple left its closed returned path')
+                    value = _raw_field(value, type(value), cast(str, part))
+            require(value is expected_tuple, 'Lower source tuple changed returned identity')
+        for path, expected in self.capabilities.items():
+            value = result
+            for part in (*path, 'required_capabilities'):
+                require(type(part) is str and part in CLASS_FIELDS.get(type(value), ()),
+                    'Generator capabilities left their closed returned path')
+                value = _raw_field(value, type(value), cast(str, part))
+            require(value is expected, 'Generator capabilities changed actual returned identity')

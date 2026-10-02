@@ -56,5 +56,8 @@ val run : budget:Bioc_checker.Work_budget.t ->
   Bioc_domain.Execution_data.Input_frame.t list -> t
 val candidate : t -> Bioc_domain.Synthetic_authority.Candidate.t
 val result : t -> Bioc_domain.Pipeline_contract.Pipeline_result.t
+(* Actual record returned by the initialized manager, retained without a fresh
+   query or a clone through the historical result codec. *)
+val record : t -> Bioc_domain.Pipeline_contract.Stage_record.t
 val manager : t -> Bioc_compiler.Pass_manager.t
 val selection_result : t -> Bioc_domain.Synthetic_selection.Result.t option

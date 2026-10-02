@@ -13,7 +13,7 @@ from biocompiler.compiler.pipeline import (
 )
 from biocompiler.core_client import CoreClient, CoreProtocolError
 from biocompiler.core_pipeline_callback_session import CallbackRejected
-from biocompiler.core_pipeline_manager import CorePassManager, ManagerInspection, _ordered, capability_profile
+from biocompiler.core_pipeline_manager import CorePassManager, ComponentPreparation, ManagerInspection, _ordered, capability_profile
 from biocompiler.core_pipeline_session import decode_document, encode_document
 from biocompiler.ir.intent import freeze_json
 from biocompiler.ir.behavior import BehaviorProgram
@@ -34,6 +34,7 @@ class FixtureSession:
         self.core, self.application, self.objects, self.handler = core, application, objects, invocation_handler
         self.requests, self.results = [], {}
         self.closed = self.invalidated = False
+        self.last_response = None
         self.instances.append(self)
 
     def call(self, operation, arguments):
@@ -48,7 +49,8 @@ class FixtureSession:
                 raise value
             if callable(value):
                 value = value(arguments)
-        return SimpleNamespace(result=value)
+        self.last_response = SimpleNamespace(result=value, sequence=len(self.requests))
+        return self.last_response
 
     def close(self):
         self.closed = True
@@ -349,6 +351,23 @@ class CorePipelineManagerTests(unittest.TestCase):
         self.assertIs(manager._objects.resolve(completion.value), request.domain.inputs[0].observable)
         self.assertEqual(manager._provider_target_document, request.target.to_dict())
 
+    def test_default_fixed_configuration_is_structural_and_fresh(self):
+        from tools.capture_pipeline_fixed_provider_semantics import authority
+        from biocompiler.synthesis.synthetic import SyntheticGeneratorConfig
+        request, history, until, _ = authority('static:requested')
+        expected = SyntheticGeneratorConfig().to_dict()
+        with patch.object(SyntheticGeneratorConfig, '__init__', side_effect=AssertionError('Legacy config constructor')), \
+                patch('biocompiler.synthesis.synthetic.catalog_for_profile', side_effect=AssertionError('Legacy catalog resolution')):
+            first = CorePassManager.from_components(self.core, request, history, until=until)
+            second = CorePassManager.from_synthetic(self.core, request, history, until=until)
+        self.addCleanup(first.close)
+        self.addCleanup(second.close)
+        for manager in (first, second):
+            self.assertEqual(manager.session.requests[0][1]['config'], expected)
+            self.assertEqual(manager._provider_config.to_dict(), expected)
+            self.assertIs(type(manager._provider_config), SyntheticGeneratorConfig)
+        self.assertIsNot(first._provider_config, second._provider_config)
+
     def test_expected_native_exceptions_use_closed_classes_and_complete_attributes(self):
         value = {'module': 'biocompiler.compiler.pipeline', 'type': 'NoCandidateFound', 'message': 'Native complete message',
             'attributes': {'pass_id': 'pass', 'configuration': {'zeta': 1}, 'dependencies': {'request': 'a' * 64}}}
@@ -577,7 +596,8 @@ class CorePipelineManagerTests(unittest.TestCase):
             'nodes': [], 'roots': [], 'source_fingerprint': 'a' * 64, 'requirements': [], 'source_links': {}, 'policies': {}, 'parameter_bindings': {}},
             'obligations': [], 'source_links': [{'requirement_id': 'r', 'source_node_id': 's',
                 'target_node_id': 't', 'pass_name': 'p'}], 'observation_map': {}, 'search_status': 'candidate'}, 'intent_to_behavior.producer')
-        result = self.manager._native_return(value, role='intent_to_behavior.producer')
+        result = self.manager._native_return(value, role='intent_to_behavior.producer',
+            input_payload=freeze_json({'intent': {'nodes': [], 'roots': []}}))
         self.assertIs(type(result), PassResult)
         self.assertIs(type(result.output), BehaviorProgram)
         self.assertIs(type(result.source_links[0]), SourceLink)
@@ -686,6 +706,87 @@ class CorePipelineManagerTests(unittest.TestCase):
         self.assertIs(observed.providers['provider/producer'], left)
         self.assertIs(observed.providers['provider/validator'], right)
 
+    def referenced_inspection(self, full, *, definitions=True):
+        result = deepcopy(full)
+        records = result['snapshot']['records']
+        result['record_definitions'] = [records[name] for name in result['order']['records']] if definitions else []
+        result['snapshot']['records'] = {name: {'record_id': value['bindings']['record_id']}
+            for name, value in records.items()}
+        return result
+
+    def test_referenced_inspection_preserves_complete_state_without_extra_native_queries(self):
+        full = self.inspection(lambda context: context, lambda context: context)
+        self.session.results['inspect-ordered'] = full
+        ordinary = self.manager.inspect_ordered()
+        record = self.manager._records['input']
+        first = self.referenced_inspection(full)
+        self.session.results['inspect-ordered-references'] = first
+        before = len(self.session.requests)
+        compact = self.manager.inspect_ordered_references()
+        self.assertEqual(compact.snapshot, ordinary.snapshot)
+        self.assertEqual(compact.order, ordinary.order)
+        self.assertIs(self.manager._records['input'], record)
+        self.assertIs(compact.providers['provider/producer'], ordinary.providers['provider/producer'])
+        # Mutating a detached transport fixture cannot alter the stored envelope.
+        first['record_definitions'][0]['value']['accepted'] = False
+        self.session.results['inspect-ordered-references'] = self.referenced_inspection(full, definitions=False)
+        repeated = self.manager.inspect_ordered_references()
+        self.assertEqual(repeated.snapshot, ordinary.snapshot)
+        self.assertIs(self.manager._records['input'], record)
+        self.assertEqual(self.session.requests[before:], [('inspect-ordered-references', {}),
+            ('inspect-ordered-references', {})])
+
+    def test_referenced_inspection_rejects_unknown_incarnations_even_if_full_view_was_seen(self):
+        full = self.inspection(lambda context: context, lambda context: context)
+        self.session.results['inspect-ordered'] = full
+        self.manager.inspect_ordered()
+        self.session.results['inspect-ordered-references'] = self.referenced_inspection(full, definitions=False)
+        with self.assertRaises(CoreProtocolError) as rejected:
+            self.manager.inspect_ordered_references()
+        self.assertIn('record definitions', str(rejected.exception.__cause__))
+        self.assertTrue(self.session.invalidated)
+
+    def test_referenced_inspection_rejects_redefinition_and_foreign_record_names(self):
+        full = self.inspection(lambda context: context, lambda context: context)
+        initial = self.referenced_inspection(full)
+        self.session.results['inspect-ordered-references'] = initial
+        self.manager.inspect_ordered_references()
+        variants = []
+        variants.append(deepcopy(initial))  # Even identical definitions cannot be introduced twice.
+        changed = self.referenced_inspection(full, definitions=False)
+        changed['snapshot']['records']['input']['record_id'] = 'record/foreign'
+        variants.append(changed)
+        renamed = self.referenced_inspection(full, definitions=False)
+        renamed['snapshot']['records']['other'] = renamed['snapshot']['records'].pop('input')
+        renamed['order']['records'] = ['other']
+        variants.append(renamed)
+        duplicated = self.referenced_inspection(full, definitions=False)
+        duplicated['snapshot']['records']['other'] = deepcopy(duplicated['snapshot']['records']['input'])
+        duplicated['order']['records'].append('other')
+        variants.append(duplicated)
+        for index, raw in enumerate(variants):
+            with self.subTest(index=index):
+                # This fabricated session allows repeated malformed views solely
+                # to exercise decoder rejection; real invalidation is terminal.
+                self.session.invalidated = False
+                self.session.results['inspect-ordered-references'] = raw
+                with self.assertRaises(CoreProtocolError):
+                    self.manager.inspect_ordered_references()
+                self.assertTrue(self.session.invalidated)
+
+    def test_referenced_inspection_binds_definition_order_before_hydration(self):
+        full = self.inspection(lambda context: context, lambda context: context)
+        full['snapshot']['records']['second'] = self.record(identity='second')
+        full['order']['records'].append('second')
+        raw = self.referenced_inspection(full)
+        raw['record_definitions'].reverse()
+        self.session.results['inspect-ordered-references'] = raw
+        with self.assertRaises(CoreProtocolError) as rejected:
+            self.manager.inspect_ordered_references()
+        self.assertIn('first-reference order', str(rejected.exception.__cause__))
+        self.assertEqual(self.manager._inspection_record_ids, {})
+        self.assertTrue(self.session.invalidated)
+
     def test_ordered_inspection_rejects_incomplete_orders_and_provider_census(self):
         producer, validator = lambda context: context, lambda context: context
         original = self.inspection(producer, validator)
@@ -734,6 +835,88 @@ class CorePipelineManagerTests(unittest.TestCase):
         proxy = self.manager._objects.resolve(completion.value)
         self.session.results['inspect-ordered'] = self.inspection(proxy, lambda context: context)
         self.assertIs(self.manager.inspect_ordered().providers['provider/producer'], proxy)
+
+    def test_owned_component_preparation_preserves_order_and_native_registration_objects(self):
+        # The fixture contract is original authoring data; every operation below
+        # is an adapter request against inert scripted responses.
+        self.session.results['prepare-components'] = {'preparation_id': 'prep/1',
+            'dependencies': [['zeta', 'a' * 64], ['alpha', 'b' * 64]]}
+        prepared = self.manager.prepare_components()
+        self.assertEqual(prepared.dependencies, (('zeta', 'a' * 64), ('alpha', 'b' * 64)))
+        self.session.results['component-profile'] = {'scope': 'component_realization', 'stage': Stage.COMPONENTS.value,
+            'schema': 'assembly.v1', 'obligations': ['model']}
+        profile = self.manager.component_profile(prepared)
+        self.assertIs(type(profile), CompletionProfile)
+        count = len(self.session.requests)
+        with self.assertRaisesRegex(CoreProtocolError, 'does not belong'):
+            self.manager.component_profile(ComponentPreparation('prep/1', prepared.dependencies))
+        self.assertEqual(len(self.session.requests), count)
+        contract = self.fixture.first
+        producer = self.manager._invoke('native-provider', {'provider_id': 'provider/staged-producer',
+            'role': 'synthetic_to_components.producer'}).value
+        validator = self.manager._invoke('native-provider', {'provider_id': 'provider/staged-validator',
+            'role': 'synthetic_to_components.validator'}).value
+        self.session.results['component-registration'] = {'contract': contract.to_dict(), 'producer': producer,
+            'validators': [[check.id, validator] for check in contract.checks],
+            'obligation_objects': [self.native(item.to_dict()) for item in contract.introduces]}
+        registration = self.manager.component_registration(prepared)
+        self.assertEqual(registration.contract.to_dict(), contract.to_dict())
+        self.assertIs(registration.producer, self.manager._objects.resolve(producer))
+        self.assertEqual(tuple(registration.validators), tuple(check.id for check in contract.checks))
+        self.manager.register_completion_profile(profile)
+        self.manager.register(registration.contract, registration.producer, registration.validators)
+        args = self.session.requests[-1][1]
+        for reference, item in zip(args['obligation_objects'], registration.contract.introduces):
+            self.assertIs(self.manager._objects.resolve(reference), item)
+
+    def test_finish_requires_exact_owned_public_result_and_no_extra_result_lookup(self):
+        self.session.results['prepare-components'] = {'preparation_id': 'prep/1', 'dependencies': []}
+        prepared = self.manager.prepare_components()
+        envelope = self.record(identity='components')
+        record = self.manager._record(envelope)
+        result_raw = {'value': {'status': 'complete', 'artifact': envelope['value'],
+            'scope': 'component_realization', 'unresolved': []}, 'artifact': envelope}
+        self.session.results['result'] = result_raw
+        result = self.manager.result('components', scope='component_realization')
+        sequence = self.session.last_response.sequence
+        clone = PipelineResult(result.status, result.artifact, result.scope, result.unresolved)
+        count = len(self.session.requests)
+        with self.assertRaisesRegex(CoreProtocolError, 'actual public result wrapper'):
+            self.manager.finish_components(prepared, clone)
+        self.assertEqual(len(self.session.requests), count)
+        # Decode hook here observes exact arguments and result resolver; the
+        # independent full6authority store suite checks actual build hydration.
+        from biocompiler.compiler.components import ComponentBuild
+        built = object.__new__(ComponentBuild)
+        object.__setattr__(built, 'result', result)
+        self.session.results['finish-components'] = {'fixture': 'complete'}
+        def decode(raw, **options):
+            self.assertIs(options['result'](result_raw), result)
+            return built
+        with patch.object(self.manager._build_views, 'decode', side_effect=decode):
+            self.assertIs(self.manager.finish_components(prepared, result), built)
+        self.assertEqual(self.session.requests[-1], ('finish-components', {'preparation_id': 'prep/1',
+            'record_id': 'record/components', 'result_sequence': sequence}))
+        self.assertEqual(len(self.session.requests), count + 1)
+        def altered(raw, **options):
+            changed = deepcopy(result_raw)
+            changed['value']['scope'] = 'other'
+            return options['result'](changed)
+        with patch.object(self.manager._build_views, 'decode', side_effect=altered):
+            with self.assertRaises(CoreProtocolError):
+                self.manager.finish_components(prepared, result)
+        self.assertTrue(self.session.invalidated)
+
+    def test_interrupted_build_hydration_invalidates_without_retry_or_semantic_fallback(self):
+        error = KeyboardInterrupt()
+        self.session.results['build-result'] = {'fixture': 'completed'}
+        count = len(self.session.requests)
+        with patch.object(self.manager._build_views, 'decode', side_effect=error):
+            with self.assertRaises(KeyboardInterrupt) as caught:
+                self.manager.build_result('synthetic')
+        self.assertIs(caught.exception, error)
+        self.assertTrue(self.session.invalidated)
+        self.assertEqual(self.session.requests[count:], [('build-result', {'kind': 'synthetic'})])
 
 
 if __name__ == '__main__':

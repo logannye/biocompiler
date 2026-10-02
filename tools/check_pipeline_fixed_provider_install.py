@@ -137,10 +137,12 @@ class Witness:
         return state['_passes']
 
     def evidence(self, oracle):
+        from biocompiler.core_pipeline_provider_views import origin_reference
         require(self.pending is None and self.manager is not None, 'Incomplete fixed producer witness')
         live = self.manager
         roots = [('target', self.request.target), ('config', self.config), ('request', self.request),
-            *oracle.source_origins(self.request)]
+            *oracle.source_origins(self.request),
+            ('constant:synthetic_capabilities', origin_reference(self.request, 'syntheticCapabilities', []))]
         objects, providers = {}, {}
         for handle, value in live._objects._objects.items():
             names = [name for name, root in roots if value is root]
@@ -368,7 +370,8 @@ def validate_case(expected, actual, evidence, details, oracle):
     equal({'request': request.to_dict(), 'history': [item.to_dict() for item in history], 'until': until, 'config': config.to_dict()},
         expected['authority'], 'Fresh original source authoring differs')
     equal(args['request_tree'], _ordered(request.to_dict()), 'Fixed initialization changed authored request insertion order')
-    source_values = {'target': request.target, 'config': config, 'request': request, **dict(oracle.source_origins(request))}
+    source_values = {'target': request.target, 'config': config, 'request': request, **dict(oracle.source_origins(request)),
+        'constant:synthetic_capabilities': origin_reference(request, 'syntheticCapabilities', [])}
     objects = evidence['objects']
     require(type(objects) is dict and type(evidence['providers']) is dict and type(evidence['arguments']) is dict,
         'Malformed fixed-provider source identity tables')
@@ -536,6 +539,15 @@ def validate_case(expected, actual, evidence, details, oracle):
             'Producer context differs from actual preceding native state and original call')
         equal(context['bindings']['target'], {'kind': 'host', 'object': args['target_object']}, 'Producer context lost target identity')
         equal(ledger.ref(request.target), event['context_target'], 'Producer target observation changed')
+        input_payload = None
+        if pass_id == 'intent_to_behavior':
+            from biocompiler.core_pipeline_manager import _unordered
+            require(context['bindings']['input']['kind'] == 'native',
+                'Original fixed lowering input is not its native request record binding')
+            # The same checked context binding is materialized exactly once for
+            # both calls, preserving its immutable tuple identities. Its tree
+            # and document projection were already checked by BindingCensus.
+            input_payload = _unordered(context['bindings']['input']['tree'])
         for ordinal, command in enumerate((first, second)):
             link = calls[2*index+ordinal]
             require(type(link) is dict and set(link) == {'pass_id', 'ordinal', 'before_frames', 'after_frames', 'sequence', 'returned_object'}
@@ -550,7 +562,7 @@ def validate_case(expected, actual, evidence, details, oracle):
             envelope = succeeded(command)
             require(envelope['kind'] == 'proposal', 'Fixed producer did not return a proposal')
             proposal = store.decode(envelope, role=roles[command['arguments']['provider_id']], target=request.target,
-                target_document=request.target.to_dict(), requested_config=config)
+                target_document=request.target.to_dict(), requested_config=config, input_payload=input_payload)
             ledger.semantics(proposal, ['calls', pass_id, ordinal])
             equal(ledger.proposal(proposal), event['calls'][ordinal], 'Native reply typed fields or physical aliases differ from actual observation')
             if ordinal == 0:

@@ -27,7 +27,7 @@ class StructuralProviderViewsTests(unittest.TestCase):
         cls.examples = []
         cls.proposals = {}
         for case in original.CASES:
-            retained = {'calls': []}
+            retained = {'calls': [], 'contexts': {}}
             cls.proposals[case] = retained
             def factory(request, history, *, until, config):
                 retained.update(request=request, config=config)
@@ -35,6 +35,7 @@ class StructuralProviderViewsTests(unittest.TestCase):
             def observe(stage, manager, pass_id, ordinal, context, proposal):
                 if stage == 'after':
                     retained['calls'].append((pass_id, proposal))
+                    retained['contexts'][pass_id] = context
                     if ordinal == 0:
                         cls.examples.append((case, pass_id, proposal.output, proposal.output.to_dict(), context.target))
             original.run_case(case, observe=observe, manager_factory=factory)
@@ -191,7 +192,8 @@ class StructuralProviderViewsTests(unittest.TestCase):
                 visit(link, document['source_links'][index], ['source_links', index])
             bindings = {}
             if pass_id == 'behavior_to_synthetic':
-                bindings = {'generator_config': binding(proposal.output.generator_config, document['output']['generator_config'])}
+                bindings = {'generator_config': binding(proposal.output.generator_config, document['output']['generator_config']),
+                    'required_capabilities': {'kind': 'host', 'object': objects.retain(proposal.output.mechanism.required_capabilities)}}
             elif pass_id == 'synthetic_to_components':
                 bindings = {name: binding(getattr(proposal.output, name), document['output'][name]) for name in ('registry', 'composition')}
                 bindings['composition_target'] = {'kind': 'host', 'object': objects.retain(request.target)}
@@ -211,7 +213,9 @@ class StructuralProviderViewsTests(unittest.TestCase):
                     for name, value in original.source_origins(request):
                         ledger.semantics(value, ['source_origins', name])
                 for index, (pass_id, actual, envelope) in enumerate(self.envelopes(fixture, objects)):
-                    result = store.decode(envelope, role=pass_id + '.producer', target=request.target, target_document=request.target.to_dict(), requested_config=fixture['config'])
+                    result = store.decode(envelope, role=pass_id + '.producer', target=request.target,
+                        target_document=request.target.to_dict(), requested_config=fixture['config'],
+                        input_payload=fixture['contexts'][pass_id].input)
                     self.assertEqual(original.plain(result), original.plain(actual))
                     before.semantics(actual, [index])
                     after.semantics(result, [index])
@@ -245,7 +249,8 @@ class StructuralProviderViewsTests(unittest.TestCase):
         pass_id, _, envelope = next(self.envelopes(fixture, objects))
         def decode(value, store=None):
             return (store or ProviderViewStore(objects.resolve)).decode(value, role=pass_id + '.producer',
-                target=fixture['request'].target, target_document=fixture['request'].target.to_dict())
+                target=fixture['request'].target, target_document=fixture['request'].target.to_dict(),
+                input_payload=fixture['contexts'][pass_id].input)
         changed = copy.deepcopy(envelope)
         changed['view']['role'] = 'behavior_to_synthetic.producer'
         with self.assertRaisesRegex(CoreProtocolError, 'role'):
@@ -262,6 +267,30 @@ class StructuralProviderViewsTests(unittest.TestCase):
             decode(envelope, ProviderViewStore(objects.resolve, max_objects=0))
         with self.assertRaisesRegex(CoreProtocolError, 'retention limit'):
             decode(envelope, ProviderViewStore(objects.resolve, max_retained_bytes=0))
+
+    def test_lower_retains_only_exact_context_input_and_root_tuples(self):
+        fixture = self.proposals['static:requested']
+        objects = CallbackObjects()
+        pass_id, _, envelope = next(self.envelopes(fixture, objects))
+        source = fixture['contexts'][pass_id].input
+        def decode(value, payload):
+            return ProviderViewStore(objects.resolve).decode(value, role=pass_id + '.producer',
+                target=fixture['request'].target, target_document=fixture['request'].target.to_dict(), input_payload=payload)
+        result = decode(envelope, source)
+        sources = {node['id']: node for node in source['intent']['nodes']}
+        for node in result.output.nodes:
+            self.assertIs(node.inputs, sources[node.id]['inputs'])
+        self.assertIs(result.output.roots, source['intent']['roots'])
+        with self.assertRaisesRegex(CoreProtocolError, 'actual context input'):
+            decode(envelope, None)
+        for alter in (lambda x: x['output']['nodes'][1].update(inputs=['forged']),
+                lambda x: x['output'].update(roots=['forged']),
+                lambda x: x['output']['nodes'][1].update(id='forged')):
+            changed = copy.deepcopy(envelope)
+            alter(changed['value'])
+            changed['view']['tree'] = _ordered(changed['value'])
+            with self.assertRaisesRegex(CoreProtocolError, 'tuple differs|node identity'):
+                decode(changed, source)
 
     def test_equal_new_child_token_cannot_hide_beneath_reused_root(self):
         fixture = self.proposals['static:requested']

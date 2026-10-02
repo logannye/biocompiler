@@ -1,0 +1,33 @@
+{
+  "affected_jobs": [
+    {
+      "failures": 1,
+      "job_id": 111029541827,
+      "python_version": "3.11.16",
+      "tests_executed": 592
+    },
+    {
+      "failures": 1,
+      "job_id": 111029541702,
+      "python_version": "3.14.7",
+      "tests_executed": 592
+    }
+  ],
+  "correction": "Retain exact complete source_changes assertion; include the reviewed provider view and new build view modules. Original source scopes, frozen inventories, runtime artifacts and native code are not changed by this assertion correction.",
+  "failed_head": "918025389036f8878156b265a8652d467ad7ba59",
+  "failed_tested_revision": "c08cbfbd17beea66d2f0dfc4d5f40ef0070c9901",
+  "job_id": 111029541827,
+  "local_correction_evidence": {
+    "python3.11.15": "8 CLI source-lineage controls passed in13.376s",
+    "python3.14.6": "55 CI/inventory/workflow/CLI source-lineage controls passed in125.896s",
+    "scope": "Local assertion/source integrity only; corrected hosted gates pending"
+  },
+  "native_acceptance": "pending_full_corrected_revision_gates",
+  "original_failure": "test_only_source_scope_and_index_identity_change_and_actual_metadata_is_retained expected source_changes list omitted src/biocompiler/core_pipeline_provider_views.py",
+  "original_test_file_sha256": "c679a3cde95800aff60f645a95fec47576526f1f364d61781283898b644b14d9",
+  "platform": "ubuntu-24.04",
+  "python_version": "3.11.16",
+  "required_evidence": "Complete original source-lineage and mutation tests, source pins, and fresh full hosted validation at the corrected revision. Failed or partial prior results do not establish acceptance.",
+  "run_id": 37064648129,
+  "schema_version": "biocompiler.migration_cli_source_inventory_correction.v1"
+}

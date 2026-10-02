@@ -55,7 +55,7 @@ ORACLES = {
 }
 TRANSPORT_MODULES = {"biocompiler.core_client", "biocompiler.core_pipeline_session",
     "biocompiler.core_pipeline_callback_session", "biocompiler.pipeline_callback_objects", "biocompiler.core_pipeline_manager",
-    "biocompiler.core_pipeline_provider_views"}
+    "biocompiler.core_pipeline_provider_views", "biocompiler.core_pipeline_build_views"}
 LITERAL_MODULES = {"biocompiler.compiler.pipeline", "biocompiler.compiler.passes", "biocompiler.ir.intent",
     "biocompiler.ir.serialization", "biocompiler.ir.stages", "biocompiler.errors", "biocompiler.artifacts.provenance",
     "biocompiler.semantics.context", "biocompiler.verification.evidence"}

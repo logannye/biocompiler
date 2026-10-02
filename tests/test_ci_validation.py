@@ -276,6 +276,22 @@ class ValidationGateTests(unittest.TestCase):
         self.assertIn(command, comparison)
         self.assertLess(comparison.index(command), comparison.index("Record successful complete comparison"))
 
+    def test_fixed_continuation_campaign_is_bound_before_installed_and_comparison_success(self):
+        text = (Path(__file__).resolve().parents[1] / ".github/workflows/ci.yml").read_text()
+        installed = text.split("\n  realization-conformance:\n", 1)[1].split("\n  realization-core-reproducibility:\n", 1)[0]
+        start = installed.index('python "$GITHUB_WORKSPACE/tools/check_pipeline_fixed_continuation_install.py"')
+        end = installed.index('python "$GITHUB_WORKSPACE/tools/check_pipeline_session_install.py"', start)
+        command = installed[start:end]
+        for binding in ('--core ', '--verify ', '--core-sha256 ', '--verify-sha256 ',
+                        '--native-root ', '--platform ${{ matrix.platform }}',
+                        '"$GITHUB_WORKSPACE/generated/realization/pipeline-fixed-continuations.json"'):
+            self.assertIn(binding, command)
+        self.assertLess(start, installed.index("Record successful complete conformance"))
+        comparison = text.split("\n  realization-core-reproducibility:\n", 1)[1].split("\n  validation:\n", 1)[0]
+        command = "python tools/check_pipeline_fixed_continuation_install.py --compare --root artifacts/realization --native-root artifacts/core --output generated/realization-reproducibility/pipeline-fixed-continuations.json"
+        self.assertIn(command, comparison)
+        self.assertLess(comparison.index(command), comparison.index("Record successful complete comparison"))
+
     def test_checked_in_workflow_registers_cross_platform_architecture_gate(self):
         workflow = Path(__file__).resolve().parents[1] / ".github" / "workflows" / "ci.yml"
         self.assertEqual(ci.workflow_jobs(workflow), ci.REQUIRED_NEEDS | {"validation"})
