@@ -784,6 +784,29 @@ record current parent heads; previous partial native passes are historical only.
   bring the native total to 96 per platform; all 36 exact-revision jobs remain
   mandatory. Broader lifecycle, public sessions and package/export exits stay open.
 
+- [x] **LM-03 P2 original validator comparison capture:** 34 supplemental
+  original-Python cases retain complete state, ordered comparisons and errors,
+  including distinct equal bound methods, producer identity, self-certification,
+  short-circuit order, reflected equality, mutation and reentrancy. Six integrity
+  tests pass; existing lifecycle and fixed-pipeline captures are unchanged.
+
+- [x] **LM-25 P2 validator comparison source checkpoint:** the native manager
+  accepts a trusted comparison function for distinct validator objects while
+  preserving physical producer identity, self-certification checks and provider
+  retention. The function receives the same work ancestor; comparison order,
+  exceptions and reentrant mutations remain observable. A source-reviewed native
+  driver covers all 34 original cases and 106 nested events, plus default,
+  retention, recursion and exact/one-short budget controls. Native execution is
+  pending; this 97th hosted suite does not implement public sessions.
+
+- [ ] **LM-25 P2 validator comparison and public sessions:** validate the additive
+  trusted native comparison hook and its complete original-observation replay on
+  both platforms, then implement the persistent transport, callback continuations,
+  deferred object conversion and public proxy described in the
+  [session design](migration-pipeline-sessions.md). Preserve producer identity,
+  fresh native manager authority and all original public workflows. The hook
+  alone does not close generic callback compatibility or session integration.
+
 - [x] **LM-03 CI harness correction checkpoint:** the installed architecture
   guard now permits only the exact new parser-registration helpers while rejecting
   semantic handlers and similar names; ten focused tests pass. The macOS artifact
@@ -804,7 +827,8 @@ The campaign now derives the exact expected array from reviewed family order,
 keeps strict ordering and complete field checks, and identifies mismatched fields.
 Seventeen focused Python conformance tests pass, including ordering and field
 mutants. Corrected revisions still require every hosted gate; this does not close
-any native acceptance checkbox.
+any native acceptance checkbox. Exact parent corrections and local proof scope
+are recorded in the [correction receipt](../protocol/migration-capability-order-corrections.json).
 
 The integrated PR51 main revision `652e2aa0aa24bf563412483827d07c4bc027a4e0`
 passed all 31 jobs in [run 36972688727](https://github.com/logannye/biocompiler/actions/runs/36972688727).
