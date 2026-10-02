@@ -295,7 +295,7 @@ class RealizationWorkflowCorpusTests(unittest.TestCase):
         with tempfile.TemporaryDirectory(prefix="workflow-independent-recapture-") as directory:
             log = Path(directory) / "recapture.log"
             with log.open("w") as output:
-                result = subprocess.run([sys.executable, str(ROOT / "tools/freeze_realization_workflow.py"), "--check"],
+                result = subprocess.run([sys.executable, str(ROOT / "tools/check_workflow_routed_recapture.py"), "--check"],
                     cwd=ROOT, env={**os.environ, "PYTHONPATH": str(ROOT / "src"), "PYTHONHASHSEED": "0"},
                     stdout=output, stderr=subprocess.STDOUT, timeout=600)
             self.assertEqual(result.returncode, 0, log.read_text()[-4000:])

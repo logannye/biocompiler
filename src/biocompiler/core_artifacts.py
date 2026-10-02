@@ -50,6 +50,13 @@ TRANSPORT_PROFILE: dict[str, JsonValue] = {
     "identity": "complete_bytes_sha256_and_length",
 }
 _PROFILE_BYTES = encode_json(TRANSPORT_PROFILE)
+AUTHORITY_OPERATION = "validate-verification-workflow-authority"
+AUTHORITY_TRANSPORT_PROFILE: dict[str, JsonValue] = {
+    **TRANSPORT_PROFILE,
+    "profile": "biocompiler.core.artifact_transport.authority.v1",
+    "operations": [AUTHORITY_OPERATION],
+}
+_AUTHORITY_PROFILE_BYTES = encode_json(AUTHORITY_TRANSPORT_PROFILE)
 _TOKEN = re.compile(
     rb'[ \t\r\n]+|-?(?:0|[1-9][0-9]*)(?:\.[0-9]+)?(?:[eE][+-]?[0-9]+)?'
     rb'|true|false|null|[{}\[\],:]')
@@ -281,8 +288,13 @@ def call_artifact(core: CoreClient, operation: str, payload: JsonValue, *,
                   cancelled: Callable[[], bool] | None = None) -> ArtifactResponse:
     """Freeze bytes before negotiation, reject partial output, return full bytes."""
     if (type(output_limit) is not int or not 0 < output_limit <= MAX_ARTIFACT_BYTES
-            or type(operation) is not str or operation not in ARTIFACT_OPERATIONS):
+            or type(operation) is not str or operation not in (*ARTIFACT_OPERATIONS, AUTHORITY_OPERATION)):
         raise CoreProtocolError("Invalid artifact operation or output limit")
+    authority_only = operation == AUTHORITY_OPERATION
+    transport = ("biocompiler.core.artifact_transport.authority.v1" if authority_only
+                 else "biocompiler.core.artifact_transport.v1")
+    if authority_only and retained_record is not None:
+        raise CoreProtocolError("Authority validation does not accept a retained record")
     decode_artifact(authority, authority=True)
     if retained_record is not None and (type(retained_record) is not bytes
             or not retained_record or len(retained_record) > MAX_ARTIFACT_BYTES):
@@ -295,13 +307,13 @@ def call_artifact(core: CoreClient, operation: str, payload: JsonValue, *,
     # Freeze the caller's mutable control graph before running the executable.
     control: JsonValue = {"protocol": PROTOCOL, "request_id": identifier,
         "operation": operation, "payload": {
-            "transport": "biocompiler.core.artifact_transport.v1",
+            "transport": transport,
             "authority": authority_descriptor, "retained_record": record_descriptor,
             "output_limit": output_limit, "operation_payload": payload}}
     request = encode_json(control, limit=MAX_CONTROL_BYTES)
     capabilities = core.negotiate(operation, cancelled=cancelled)
-    advertised = capabilities.profiles.get("artifact_transport")
-    if encode_json(advertised) != _PROFILE_BYTES:
+    advertised = capabilities.profiles.get("artifact_transport_authority" if authority_only else "artifact_transport")
+    if encode_json(advertised) != (_AUTHORITY_PROFILE_BYTES if authority_only else _PROFILE_BYTES):
         raise CoreProtocolError("Incompatible artifact transport profile")
     with ExitStack() as stack:
         source = stack.enter_context(_input_file(authority))
@@ -326,7 +338,7 @@ def call_artifact(core: CoreClient, operation: str, payload: JsonValue, *,
         receipt = _object(response.result, {"schema_version", "transport", "authority",
             "retained_record", "artifact", "result"}, "Artifact receipt")
         if (receipt["schema_version"] != "biocompiler.core.artifact_response.v1"
-                or receipt["transport"] != "biocompiler.core.artifact_transport.v1"
+                or receipt["transport"] != transport
                 or encode_json(receipt["authority"]) != encode_json(authority_descriptor)
                 or encode_json(receipt["retained_record"]) != encode_json(record_descriptor)):
             raise CoreProtocolError("Artifact receipt authority binding differs")

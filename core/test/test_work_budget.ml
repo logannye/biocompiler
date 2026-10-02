@@ -8,13 +8,19 @@ let child parent maximum = B.nested ~parent ~profile:"literal.child.v1" ~error_c
 let literals () =
   let root = create 10 in
   let first = child root 6 and second = child root 20 in
+  require (not (B.exhausted root) && not (B.exhausted first) && not (B.exhausted second))
+    "Fresh scopes inherited an unrelated exhaustion";
   require (B.remaining root=10 && B.remaining first=6 && B.remaining second=10)
     "Unused allowance must include every ancestor";
   B.charge first 6;
   require (B.remaining root=4 && B.remaining first=0 && B.remaining second=4)
     "Shared ancestor charges must update the available allowance";
   rejected "child_limit" (fun () -> B.charge first 1);
+  require (B.exhausted root && B.exhausted first && B.exhausted second)
+    "A caught descendant exhaustion must remain visible through the shared ancestor";
   B.charge second 4;
+  require (B.exhausted root && B.exhausted second)
+    "A later successful charge cleared the exhaustion observation";
   rejected "root_limit" (fun () -> B.charge second 1);
   B.charge root 0;
   let custom = B.create ~profile:"caller" ~error_code:"arbitrary_caller_stop" ~maximum:3 () in
@@ -34,6 +40,7 @@ let literals () =
        require (diagnostic.code="child_stop" && B.is_exhaustion custom diagnostic)
          "Outer operation must recognize the actual descendant exhaustion");
   let root = create 3 in let leaf = child root 4 in
+  require (not (B.exhausted root)) "An independent lifetime inherited old exhaustion";
   rejected "root_limit" (fun () -> B.charge leaf 4);
   require (B.remaining root=3 && B.remaining leaf=3)
     "Failed atomic charge changed the reported remaining allowance";

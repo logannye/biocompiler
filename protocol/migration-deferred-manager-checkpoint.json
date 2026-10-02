@@ -1,0 +1,170 @@
+{
+  "schema_version": "biocompiler.deferred_manager_implementation_checkpoint.v1",
+  "status": "source_and_python_controls_complete_hosted_native_replay_pending",
+  "base_revision": "b28ce4cef6786212bda97abc33cd075a619c506b",
+  "local_recovery_checkpoint": "f01559df3ec2a5a792a326abf8e8fee73f79b9db",
+  "local_correction_merge": "08ed698a3f762ff4808307c6762cc17374964f88",
+  "files": {
+    ".github/workflows/ci.yml": {
+      "sha256": "81c217ed980412832d2b32fff52d035e55730d933321e409a937e8be87ca12d7",
+      "bytes": 99711
+    },
+    "core/lib/pipeline_service/callback_manager.ml": {
+      "sha256": "b519927c4df81ed0da83ae61de41c955e7c103e68f72bfd6b577896b260510f3",
+      "bytes": 40946
+    },
+    "core/lib/pipeline_service/callback_manager.mli": {
+      "sha256": "829c41dc1cb0c62f538f68927439f847ad32c31f5a50e575e6878d0fc0994c7d",
+      "bytes": 592
+    },
+    "core/test/test_pipeline_callback_manager.ml": {
+      "sha256": "3c34412a268c0e5155a12fe6a27c979913b9dd1693664442be5fc6845e89d360",
+      "bytes": 23943
+    },
+    "docs/language-migration-roadmap.md": {
+      "sha256": "2d7884696d6770b7d52c54258c1dc6c79b9185b2327a28e26acf7d8b1cea1970",
+      "bytes": 135242
+    },
+    "docs/migration-pipeline-manager.md": {
+      "sha256": "3c44b80ab5c71c4a806705fd6e8160bc0a7a8fd22cd4b7fcb381d8f151256ef7",
+      "bytes": 10682
+    },
+    "protocol/migration-inventory.json": {
+      "sha256": "4c6399b84dadfe52084c1b1f2f92ab44301b1ca036e50fb6fcbc23ae2ea2586d",
+      "bytes": 1454915
+    },
+    "protocol/pipeline-callback-manager-v1.json": {
+      "sha256": "f23d11cdd9862193574650d309541a43240daf781e88929b924cf5fb26ffffae",
+      "bytes": 8740
+    },
+    "src/biocompiler/core_pipeline_manager.py": {
+      "sha256": "e35305bb971f2eff82d36d0f65e6e570b0982405c486f5041ece823c59e4f381",
+      "bytes": 56147
+    },
+    "tests/test_core_pipeline_manager.py": {
+      "sha256": "1f58e9552a1b2037a1fda70cdf7acfd42326e70971cb5cb04eabae68b7041644",
+      "bytes": 43301
+    },
+    "tests/test_pipeline_deferred_runtime_receipt.py": {
+      "sha256": "aa708c9e742acb4b80f5b0af3ee90bc71f2377e764ead20dc09dafa4ef1af0c0",
+      "bytes": 8517
+    },
+    "tests/test_pipeline_manager_campaign.py": {
+      "sha256": "3ae8b876174b868872a04dfe03c9e39d2579ea79316e0d224e24bf922203e026",
+      "bytes": 70253
+    },
+    "tests/test_pipeline_manager_trace.py": {
+      "sha256": "2e5271536c5919838a94a8984300fdf16a6baac82f88068e84551862263e7979",
+      "bytes": 15026
+    },
+    "tools/check_pipeline_deferred_runtime_receipt.py": {
+      "sha256": "f4238655e4e48555fa096eaa613fd9a3f24b5161264b8a31fcd05ee6f2343092",
+      "bytes": 23149
+    },
+    "tools/check_pipeline_manager_install.py": {
+      "sha256": "0f4e42c76f0d80c355dabb5f246b648fac97c3e46d778bab24079b9b73deb58b",
+      "bytes": 148756
+    },
+    "tools/check_pipeline_manager_trace.py": {
+      "sha256": "63eb5f8b0d21c3a2dbe35ee4fd24508d33b87062f54f4bf697b2501082081b62",
+      "bytes": 19586
+    },
+    "tools/check_realization_workflow_corpus.py": {
+      "sha256": "ff174a04bc80158463667219ff54086dbfcd381640f3657f4d5296256c1d0d07",
+      "bytes": 7624
+    }
+  },
+  "scope": {
+    "identity_cases": 5,
+    "comparison_cases": 34,
+    "deferred_cases": 47,
+    "total_cases": 86,
+    "deferred_events": 157,
+    "deferred_accesses": 290,
+    "deferred_raised_events": 45,
+    "deferred_nested_events": 21,
+    "deferred_marker_exceptions": 19,
+    "deferred_processes": 53,
+    "deferred_state_inspections": 414,
+    "all_original_case_bodies_unchanged": true
+  },
+  "local_validation": {
+    "platform": "Darwin-25.2.0-arm64-arm-64bit-Mach-O",
+    "adapter": {
+      "python": "3.14.6",
+      "tests": 31,
+      "status": "pass"
+    },
+    "campaign_trace_runtime_and_receipt": {
+      "tests_per_runtime": 46,
+      "campaign_tests": 24,
+      "trace_tests": 8,
+      "runtime_tests": 8,
+      "receipt_tests": 6,
+      "runtimes": {
+        "3.11.15": {
+          "status": "pass",
+          "seconds": 51.08
+        },
+        "3.14.6": {
+          "status": "pass",
+          "seconds": 47.85
+        }
+      }
+    },
+    "boundary_ci_source_lineage": {
+      "tests": 45,
+      "status": "pass"
+    },
+    "final_ci_controls": {
+      "tests": 18,
+      "status": "pass"
+    },
+    "inventory": {
+      "tests": 13,
+      "entries": 3196,
+      "status": "pass"
+    },
+    "mypy_modules": 20,
+    "unit_discovery": {
+      "tests": 2967,
+      "classes": 287,
+      "execution": false
+    },
+    "native_execution": false
+  },
+  "hosted_required": {
+    "jobs": 36,
+    "native_suites": 102,
+    "platforms": [
+      "linux-x86_64",
+      "macos-arm64"
+    ],
+    "pythons": [
+      "3.11",
+      "3.14"
+    ],
+    "complete_four_runtime_replay": true,
+    "merge_requires": "all exact-head jobs, complete receipt/artifact/binary reconstruction, identical source/tested/prospective/integrated trees"
+  },
+  "boundaries": {
+    "default_engine": "python",
+    "core_manager_opt_in": true,
+    "native_manager_authority": true,
+    "inspection_cannot_import_accepted_state": true,
+    "expected_errors_fresh_ordered_snapshots": true,
+    "complete_raw_original_and_native_captures": true,
+    "exact_trace_segments_with_command_and_primitive_binding": true,
+    "original_frames_not_synthesized": true,
+    "foreign_runtime_code_and_source_pins": "closed311_and314_sites_require_hosted_patch_confirmation",
+    "runtime_execution_authority": "pinned_hosted_producer_and_run;offline_rehash_and_projection_reconstruction_are_separate"
+  },
+  "pending": [
+    "hosted native compilation and complete installed86-case replay",
+    "full original476 contexts and remaining native workflow families",
+    "fixed registration interception and287 dependent observations",
+    "fixed producer typed returns and explicit shared identities",
+    "authoring subclass and scalar-operator compatibility boundary",
+    "distribution, remaining public SDK/CLI/Studio routing, default cutover and retirement"
+  ]
+}

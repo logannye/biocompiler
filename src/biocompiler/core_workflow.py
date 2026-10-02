@@ -44,6 +44,15 @@ def capability_profile() -> dict[str, Any]:
     return cast(dict[str, Any], json.loads(_PROFILE_JSON))
 
 
+def presentation_capability_profile() -> dict[str, Any]:
+    """The opt-in public presentation contract; raw v1 remains unchanged."""
+    profile = capability_profile()
+    profile.update(profile="biocompiler.core.verification_workflow.v2",
+                   implementation_version="biocompiler.ocaml.verification_workflow_service.v0.2",
+                   presentation_profile="biocompiler.core.verification_workflow.presentation.v1")
+    return profile
+
+
 def default_limits() -> dict[str, int]:
     workflow = capability_profile()["resources"]["workflow"]
     return {key: cast(int, workflow[key]) for key in _LIMIT_FIELDS}
@@ -98,14 +107,41 @@ def _mapping(value: JsonValue, label: str) -> dict[str, Any]:
 class _WorkflowCore(CoreClient):
     """Check the semantic and artifact contracts in the same negotiation."""
 
+    def _profile(self) -> tuple[str, dict[str, Any]]:
+        return "verification_workflow", capability_profile()
+
     def negotiate(self, operation: str, *, cancelled: Callable[[], bool] | None = None) -> CoreCapabilities:
         capabilities = super().negotiate(operation, cancelled=cancelled)
-        expected = capability_profile()
-        if (not _same(capabilities.profiles.get("verification_workflow"), expected)
+        key, expected = self._profile()
+        if (not _same(capabilities.profiles.get(key), expected)
                 or any(name not in capabilities.operations for name in OPERATIONS)
                 or expected["validation_scope"] not in capabilities.validation_scopes):
             raise CoreProtocolError("Incompatible workflow operations, schema, resources or validation scope")
         return capabilities
+
+
+class _PublicWorkflowCore(_WorkflowCore):
+    def _profile(self) -> tuple[str, dict[str, Any]]:
+        return "verification_workflow_presentation", presentation_capability_profile()
+
+
+def _presentation(value: JsonValue, *, action: str, replay: bool) -> dict[str, Any]:
+    """Validate native presentation shape without deriving result semantics."""
+    fields = _object(value, {"profile", "command_exit_code", "original_frames", "reduced_frames"},
+                     "Workflow presentation")
+    if (fields["profile"] != presentation_capability_profile()["presentation_profile"]
+            or type(fields["command_exit_code"]) is not int
+            or fields["command_exit_code"] not in (0, 1)
+            or replay and fields["command_exit_code"] != 0):
+        raise CoreProtocolError("Invalid native workflow presentation")
+    for name in ("original_frames", "reduced_frames"):
+        count = fields[name]
+        if action == "reduce":
+            if type(count) is not int or not 0 <= count <= 1_000_000:
+                raise CoreProtocolError("Invalid native workflow frame count")
+        elif count is not None:
+            raise CoreProtocolError("Unexpected native workflow frame count")
+    return cast(dict[str, Any], fields)
 
 
 @dataclass(frozen=True)
@@ -148,18 +184,24 @@ class WorkflowClient:
 
     def _call(self, operation: str, request: bytes, record: bytes | None, *,
               limits: JsonValue, request_id: str | None,
-              cancelled: Callable[[], bool] | None) -> WorkflowResult:
+              cancelled: Callable[[], bool] | None, public: bool = False,
+              command: str | None = None) -> WorkflowResult:
+        if command is not None and type(command) is not str:
+            raise CoreProtocolError("Workflow command must be a string or null")
         # All mutable controls are copied before invoking negotiation. Raw
         # artifacts are exact bytes; the transport rejects mutable byte arrays.
         reduced = _limits(limits)
         frozen_limits: JsonValue = None if limits is None else cast(JsonValue, dict(reduced))
         authority = decode_artifact(request, authority=True)
         canonical_authority = _canonical(authority, MAX_ARTIFACT_BYTES)
-        profile = capability_profile()
-        core = _WorkflowCore(self.core.executable, self.core.role,
-                             self.core.timeout_seconds, self.core.expected_sha256)
-        result = call_artifact(core, operation,
-            {"profile": profile["profile"], "limits": frozen_limits}, authority=request,
+        profile = presentation_capability_profile() if public else capability_profile()
+        core_type = _PublicWorkflowCore if public else _WorkflowCore
+        core = core_type(self.core.executable, self.core.role,
+                         self.core.timeout_seconds, self.core.expected_sha256)
+        payload: dict[str, JsonValue] = {"profile": profile["profile"], "limits": frozen_limits}
+        if public:
+            payload["command"] = command
+        result = call_artifact(core, operation, payload, authority=request,
             retained_record=record, output_limit=reduced["max_report_bytes"],
             request_id=request_id, cancelled=cancelled)
         # Native replay checks independent source authority before decoding the
@@ -167,7 +209,8 @@ class WorkflowClient:
         # malformed record cannot hide the authoritative native rejection.
         retained = None if record is None else _canonical(decode_artifact(record), MAX_ARTIFACT_BYTES)
         envelope = _mapping(result.response.result, "Artifact envelope")
-        receipt = _object(envelope["result"], _RECEIPT_FIELDS, "Workflow receipt")
+        fields = _RECEIPT_FIELDS | {"command", "presentation"} if public else _RECEIPT_FIELDS
+        receipt = _object(envelope["result"], fields, "Workflow receipt")
         _preflight_bytes(result.artifact, limit=reduced["max_report_bytes"], nodes=reduced["max_report_nodes"])
         document = _object(decode_artifact(result.artifact), _RECORD_FIELDS, "Workflow record")
         supplied = _mapping(authority, "Independent workflow request")
@@ -187,8 +230,9 @@ class WorkflowClient:
             raise CoreProtocolError("Workflow record schema, operation, mode or claim differs")
         actual = _sha(result.artifact)
         normalized_identity = _sha(_canonical(normalized, MAX_ARTIFACT_BYTES))
-        expected: JsonValue = {
-            "schema_version": "biocompiler.core.verification_workflow_result.v1",
+        expected: dict[str, JsonValue] = {
+            "schema_version": ("biocompiler.core.verification_workflow_result.v2" if public
+                               else "biocompiler.core.verification_workflow_result.v1"),
             "profile": profile["profile"], "operation": operation,
             "executable": self.core.role, "request_id": result.response.request_id,
             "validation_scope": profile["validation_scope"],
@@ -200,6 +244,10 @@ class WorkflowClient:
             "retained_record_fingerprint": None if retained is None else _sha(retained),
             "record_fingerprint": actual, "resources": effective_resources(frozen_limits),
         }
+        if public:
+            expected["command"] = command
+            expected["presentation"] = _presentation(receipt["presentation"], action=action,
+                                                     replay=operation == OPERATIONS[1])
         if not _same(receipt, expected):
             raise CoreProtocolError("Workflow receipt differs from complete independent authority or effective resources")
         if retained is not None and result.artifact != retained:
@@ -216,3 +264,18 @@ class WorkflowClient:
     def replay(self, request: bytes, record: bytes, *, limits: JsonValue = None,
                request_id: str | None = None, cancelled: Callable[[], bool] | None = None) -> WorkflowResult:
         return self._call(OPERATIONS[1], request, record, limits=limits, request_id=request_id, cancelled=cancelled)
+
+
+    def run_public(self, request: bytes, *, command: str | None = None,
+                   limits: JsonValue = None, request_id: str | None = None,
+                   cancelled: Callable[[], bool] | None = None) -> WorkflowResult:
+        """Run with separately negotiated native CLI/view presentation metadata."""
+        return self._call(OPERATIONS[0], request, None, limits=limits, request_id=request_id,
+                          cancelled=cancelled, public=True, command=command)
+
+    def replay_public(self, request: bytes, record: bytes, *, command: str | None = None,
+                      limits: JsonValue = None, request_id: str | None = None,
+                      cancelled: Callable[[], bool] | None = None) -> WorkflowResult:
+        """Fresh replay with native exit policy, including retained failures."""
+        return self._call(OPERATIONS[1], request, record, limits=limits, request_id=request_id,
+                          cancelled=cancelled, public=True, command=command)

@@ -1,6 +1,7 @@
 """Missing or non-successful CI work must never produce a green merge gate."""
 
 from copy import deepcopy
+import hashlib
 import json
 from pathlib import Path
 import tempfile
@@ -11,6 +12,45 @@ from tools import ci_validation as ci
 
 
 class ValidationGateTests(unittest.TestCase):
+    def test_callback_manager_compact_corpus_preserves_exact_original_authorities(self):
+        root = Path(__file__).resolve().parents[1]
+        full_path = root / 'tests/conformance/fixed-pipeline-literals-v1.json'
+        full_raw = full_path.read_bytes()
+        full = json.loads(full_raw)
+        compact = json.loads((root / 'tests/conformance/fixed-pipeline-native-v1.json').read_bytes())
+        self.assertEqual(compact['full_corpus']['sha256'], hashlib.sha256(full_raw).hexdigest())
+        self.assertEqual(compact['full_corpus']['inventory_fingerprint'], full['inventory_fingerprint'])
+        self.assertEqual(compact['document_directory'], full['document_directory'])
+        ids = ('tests/test_component_pipeline.py::fixture.setUpClass/event/0',
+            'tests/test_temporal_components.py::fixture.setUpClass/event/0',
+            'tests/test_synthetic_design_workflows.py::fixture.setUpClass/event/0')
+        for identity in ids:
+            with self.subTest(case=identity):
+                original = [row for row in full['cases'] if row['id'] == identity]
+                selected = [row for row in compact['cases'] if row['id'] == identity]
+                self.assertEqual(len(original), 1)
+                self.assertEqual(selected, original)
+                source = root / 'tests/conformance' / compact['document_directory'] / (selected[0]['authority']+'.json')
+                value = json.loads(source.read_bytes())
+                canonical = json.dumps(value, sort_keys=True, separators=(',', ':'), ensure_ascii=False).encode()
+                self.assertEqual(hashlib.sha256(canonical).hexdigest(), selected[0]['authority'])
+        def nodes(value):
+            pending, total = [value], 0
+            while pending:
+                item = pending.pop()
+                total += 1
+                if isinstance(item, dict):
+                    total += len(item)
+                    pending.extend(item.values())
+                elif isinstance(item, list):
+                    pending.extend(item)
+            return total
+        self.assertEqual(nodes(full), 2_023_131)
+        self.assertEqual(nodes(compact), 83_007)
+        self.assertLess(nodes(compact), 1_000_000)
+        source = (root / 'core/test/test_pipeline_callback_manager.ml').read_text()
+        self.assertIn('Json.parse_artifact ~max_bytes:33_554_432 ~max_nodes:1_000_000', source)
+
     def fixture(self):
         expected = {"revision": "a" * 40, "run_id": "123", "run_attempt": "2"}
         needs = {job: {"result": "success"} for job in ci.REQUIRED_NEEDS}
@@ -208,18 +248,105 @@ class ValidationGateTests(unittest.TestCase):
     def test_complete_workflow_campaign_is_required_before_matrix_receipts(self):
         text = (Path(__file__).resolve().parents[1] / ".github/workflows/ci.yml").read_text()
         matrix = text.split("\n  realization-conformance:\n", 1)[1].split("\n  realization-core-reproducibility:", 1)[0]
-        commands = ["tools/check_realization_protocol.py", "tools/check_realization_routing.py",
-                    "tools/check_native_workflow.py"]
+        commands = ["tools/check_pipeline_session_install.py", "tools/check_realization_protocol.py", "tools/check_realization_routing.py",
+                    "tools/check_native_workflow.py", "tools/check_native_workflow_presentation.py",
+                    "tools/check_native_workflow_authority.py", "tools/check_native_workflow_public_sdk.py", "tools/check_native_workflow_cli.py",
+                    "tools/check_native_synthetic_producer.py", "tools/check_native_synthetic_public_sdk.py",
+                    "tools/check_native_synthetic_selection_cli.py", "tools/check_native_synthetic_inspection.py"]
         for command in commands:
             self.assertIn(command, matrix)
             self.assertLess(matrix.index(command), matrix.index("Record successful complete conformance"))
         for binding in ("--core-sha256", "--verify-sha256", "--native-root", "--platform ${{ matrix.platform }}"):
             self.assertIn(binding, matrix)
         comparison = text.split("\n  realization-core-reproducibility:\n", 1)[1].split("\n  studio-typescript:", 1)[0]
-        for command in ("tools/check_realization_reproducibility.py", "tools/check_workflow_reproducibility.py"):
+        for command in ("tools/check_pipeline_session_install.py --compare", "tools/check_realization_reproducibility.py", "tools/check_workflow_reproducibility.py",
+                        "tools/check_native_workflow_presentation.py --compare", "tools/check_native_workflow_authority.py --compare", "tools/check_native_workflow_public_sdk.py --compare", "tools/check_native_workflow_cli.py --compare",
+                        "tools/check_native_synthetic_producer.py --compare", "tools/check_native_synthetic_public_sdk.py --compare",
+                        "tools/check_native_synthetic_selection_cli.py --compare", "tools/check_native_synthetic_inspection.py --compare"):
             self.assertIn(command, comparison)
             self.assertLess(comparison.index(command), comparison.index("Record successful complete comparison"))
         self.assertIn("generated/realization-reproducibility/*.json", comparison)
+
+    def test_public_synthetic_authority_suite_is_a_hosted_native_gate(self):
+        text = (Path(__file__).resolve().parents[1] / ".github/workflows/ci.yml").read_text()
+        native = text.split("\n  ocaml-core:\n", 1)[1].split("\n  architecture-core-reproducibility:\n", 1)[0]
+        self.assertIn("core/_build/default/test/test_synthetic_producer_public_protocol.exe | tee generated/core/test_synthetic_producer_public_protocol.txt", native)
+        self.assertIn('core/_build/default/test/test_synthetic_inspection_protocol.exe "$GITHUB_WORKSPACE/tests/conformance/synthetic-inspection-supplemental-v1.json" "$GITHUB_WORKSPACE/protocol/synthetic-inspection-v1.json" | tee generated/core/test_synthetic_inspection_protocol.txt', native)
+
+    def test_checked_manager_and_contract_suites_are_hosted_gates(self):
+        text = (Path(__file__).resolve().parents[1] / ".github/workflows/ci.yml").read_text()
+        native = text.split("\n  ocaml-core:\n", 1)[1].split("\n  architecture-core-reproducibility:\n", 1)[0]
+        self.assertIn('core/_build/default/test/test_pipeline_session.exe "$GITHUB_WORKSPACE/protocol/pipeline-session-v1.json" "$GITHUB_WORKSPACE/tests/conformance/fixed-pipeline-native-v1.json" | tee generated/core/test_pipeline_session.txt', native)
+        self.assertIn("core/_build/default/test/test_pipeline_host_bridge.exe | tee generated/core/test_pipeline_host_bridge.txt", native)
+        self.assertIn('core/_build/default/test/test_pipeline_callback_manager.exe "$GITHUB_WORKSPACE/protocol/pipeline-callback-manager-v1.json" "$GITHUB_WORKSPACE/tests/conformance/pipeline-contract-literals-v1.json" "$GITHUB_WORKSPACE/tests/conformance/fixed-pipeline-native-v1.json" | tee generated/core/test_pipeline_callback_manager.txt', native)
+        self.assertIn('core/_build/default/test/test_deferred_pass_manager.exe "$GITHUB_WORKSPACE/tests/conformance/pipeline-contract-literals-v1.json" | tee generated/core/test_deferred_pass_manager.txt', native)
+        self.assertIn('core/_build/default/test/test_pipeline_callback_channel.exe "$GITHUB_WORKSPACE/protocol/pipeline-callback-channel-v1.json" | tee generated/core/test_pipeline_callback_channel.txt', native)
+        for name in ("test_pipeline_contract", "test_pass_manager"):
+            self.assertIn('core/_build/default/test/' + name + '.exe "$GITHUB_WORKSPACE/tests/conformance/pipeline-contract-literals-v1.json" | tee generated/core/' + name + '.txt', native)
+        self.assertIn('core/_build/default/test/test_checked_pipeline_corpus.exe "$GITHUB_WORKSPACE/tests/conformance/checked-pipeline-v1.json" | tee generated/core/test_checked_pipeline_corpus.txt', native)
+        self.assertIn('core/_build/default/test/test_lowering_budget.exe "$GITHUB_WORKSPACE/tests/conformance/lowering-v1.json" | tee generated/core/test_lowering_budget.txt', native)
+        self.assertIn('core/_build/default/test/test_provider_comparison.exe "$GITHUB_WORKSPACE/tests/conformance/pipeline-callback-semantics-v1.json" | tee generated/core/test_provider_comparison.txt', native)
+        self.assertIn('core/_build/default/test/test_fixed_pipeline_corpus.exe "$GITHUB_WORKSPACE/tests/conformance/fixed-pipeline-native-v1.json" "$GITHUB_WORKSPACE/tests/conformance/fixed-pipeline-continuations-native-v1.json" | tee generated/core/test_fixed_pipeline_corpus.txt', native)
+
+    def test_live_manager_campaign_requires_all_installed_runtimes_and_comparison(self):
+        text = (Path(__file__).resolve().parents[1] / ".github/workflows/ci.yml").read_text()
+        installed = text.split("\n  realization-conformance:\n", 1)[1].split("\n  realization-core-reproducibility:\n", 1)[0]
+        self.assertIn('python "$GITHUB_WORKSPACE/tools/check_pipeline_manager_install.py"', installed)
+        self.assertIn('"$GITHUB_WORKSPACE/generated/realization/pipeline-manager.json"', installed)
+        self.assertLess(installed.index("tools/check_pipeline_manager_install.py"),
+                        installed.index("Record successful complete conformance"))
+        comparison = text.split("\n  realization-core-reproducibility:\n", 1)[1].split("\n  validation:\n", 1)[0]
+        command = "python tools/check_pipeline_manager_install.py --compare --root artifacts/realization --native-root artifacts/core --output generated/realization-reproducibility/pipeline-manager.json"
+        self.assertIn(command, comparison)
+        self.assertLess(comparison.index(command), comparison.index("Record successful complete comparison"))
+
+    def test_fixed_provider_campaign_requires_all_installed_runtimes_and_comparison(self):
+        text = (Path(__file__).resolve().parents[1] / ".github/workflows/ci.yml").read_text()
+        installed = text.split("\n  realization-conformance:\n", 1)[1].split("\n  realization-core-reproducibility:\n", 1)[0]
+        start = installed.index('python "$GITHUB_WORKSPACE/tools/check_pipeline_fixed_provider_install.py"')
+        end = installed.index('python "$GITHUB_WORKSPACE/tools/check_pipeline_session_install.py"', start)
+        command = installed[start:end]
+        for binding in ('--core ', '--verify ', '--core-sha256 ', '--verify-sha256 ',
+                        '--native-root ', '--platform ${{ matrix.platform }}',
+                        '"$GITHUB_WORKSPACE/generated/realization/pipeline-fixed-providers.json"'):
+            self.assertIn(binding, command)
+        self.assertLess(start, installed.index("Record successful complete conformance"))
+        comparison = text.split("\n  realization-core-reproducibility:\n", 1)[1].split("\n  validation:\n", 1)[0]
+        command = "python tools/check_pipeline_fixed_provider_install.py --compare --root artifacts/realization --native-root artifacts/core --output generated/realization-reproducibility/pipeline-fixed-providers.json"
+        self.assertIn(command, comparison)
+        self.assertLess(comparison.index(command), comparison.index("Record successful complete comparison"))
+
+    def test_fixed_continuation_campaign_is_bound_before_installed_and_comparison_success(self):
+        text = (Path(__file__).resolve().parents[1] / ".github/workflows/ci.yml").read_text()
+        installed = text.split("\n  realization-conformance:\n", 1)[1].split("\n  realization-core-reproducibility:\n", 1)[0]
+        start = installed.index('python "$GITHUB_WORKSPACE/tools/check_pipeline_fixed_continuation_install.py"')
+        end = installed.index('python "$GITHUB_WORKSPACE/tools/check_pipeline_session_install.py"', start)
+        command = installed[start:end]
+        for binding in ('--core ', '--verify ', '--core-sha256 ', '--verify-sha256 ',
+                        '--native-root ', '--platform ${{ matrix.platform }}',
+                        '"$GITHUB_WORKSPACE/generated/realization/pipeline-fixed-continuations.json"'):
+            self.assertIn(binding, command)
+        self.assertLess(start, installed.index("Record successful complete conformance"))
+        comparison = text.split("\n  realization-core-reproducibility:\n", 1)[1].split("\n  validation:\n", 1)[0]
+        command = "python tools/check_pipeline_fixed_continuation_install.py --compare --root artifacts/realization --native-root artifacts/core --output generated/realization-reproducibility/pipeline-fixed-continuations.json"
+        self.assertIn(command, comparison)
+        self.assertLess(comparison.index(command), comparison.index("Record successful complete comparison"))
+
+    def test_fixed_registration_campaign_is_bound_before_installed_and_comparison_success(self):
+        text = (Path(__file__).resolve().parents[1] / ".github/workflows/ci.yml").read_text()
+        installed = text.split("\n  realization-conformance:\n", 1)[1].split("\n  realization-core-reproducibility:\n", 1)[0]
+        start = installed.index('python "$GITHUB_WORKSPACE/tools/check_pipeline_fixed_registration_install.py"')
+        end = installed.index('python "$GITHUB_WORKSPACE/tools/check_pipeline_session_install.py"', start)
+        command = installed[start:end]
+        for binding in ('--core ', '--verify ', '--core-sha256 ', '--verify-sha256 ',
+                        '--native-root ', '--platform ${{ matrix.platform }}',
+                        '"$GITHUB_WORKSPACE/generated/realization/pipeline-fixed-registration.json"'):
+            self.assertIn(binding, command)
+        self.assertLess(start, installed.index("Record successful complete conformance"))
+        comparison = text.split("\n  realization-core-reproducibility:\n", 1)[1].split("\n  validation:\n", 1)[0]
+        command = "python tools/check_pipeline_fixed_registration_install.py --compare --root artifacts/realization --native-root artifacts/core --output generated/realization-reproducibility/pipeline-fixed-registration.json"
+        self.assertIn(command, comparison)
+        self.assertLess(comparison.index(command), comparison.index("Record successful complete comparison"))
 
     def test_checked_in_workflow_registers_cross_platform_architecture_gate(self):
         workflow = Path(__file__).resolve().parents[1] / ".github" / "workflows" / "ci.yml"

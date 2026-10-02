@@ -714,12 +714,15 @@ def _generate_synthetic(
     )
 
 
-def generate_synthetic(request, *, config: SyntheticGeneratorConfig | None = None):
+def generate_synthetic(request, *, config: SyntheticGeneratorConfig | None = None, core=None):
     """Propose one deterministic graph; no history or selection claim is used.
 
     Hard constraints apply to the actual graph. Preferences are interpreted only
     by ``select_synthetic``, which checks both bounded alternatives before ranking.
     """
+    if core is not None:
+        from biocompiler.synthetic_producer_backend import generate_record
+        return generate_record(request, config=config, core=core)
     candidate = _generate_synthetic(request, config=config)
     violations = policy_for_request(
         request, candidate.generator_config.profile_version

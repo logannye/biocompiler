@@ -26,9 +26,9 @@ response={'protocol':'biocompiler.core.v1','request_id':request['request_id'],
 if request['operation']=='capabilities':
  assert len(sys.argv)==1
  response['result']={'schema_version':'biocompiler.core_capabilities.v1',
-  'operations':['capabilities','run-verification-workflow','replay-verification-workflow'],'intent_schemas':[],
+  'operations':['capabilities','run-verification-workflow','replay-verification-workflow','validate-verification-workflow-authority'],'intent_schemas':[],
   'canonicalization':'python-json-v1','validation_scopes':[],
-  'profiles':{} if MODE=='missing-profile' else {'artifact_transport':PROFILE},
+  'profiles':{} if MODE=='missing-profile' else {'artifact_transport':PROFILE, **({} if MODE=='missing-authority-profile' else {'artifact_transport_authority':AUTHORITY_PROFILE})},
   'limits':LIMITS,'claim_scope':'Transport fixture only.'}
  print(json.dumps(response));sys.exit(0)
 assert sys.argv[1]=='--artifact-fds-v1' and len(sys.argv)==5
@@ -59,9 +59,10 @@ if MODE=='invalid-json':raw=b'{"x":1,"x":2}'
 with os.fdopen(os.dup(output_fd),'wb') as output:output.write(raw[:-1] if MODE=='partial' else raw)
 if MODE=='fail-after-write':sys.exit(9)
 response['result']={'schema_version':'biocompiler.core.artifact_response.v1',
- 'transport':'biocompiler.core.artifact_transport.v1','authority':descriptor(authority),
+ 'transport':payload['transport'],'authority':descriptor(authority),
  'retained_record':None if record is None else descriptor(record),
  'artifact':descriptor(raw),'result':{'operation_payload':payload['operation_payload']}}
+if MODE=='wrong-authority-transport':response['result']['transport']='biocompiler.core.artifact_transport.v1'
 if MODE=='wrong-hash':response['result']['artifact']['sha256']='0'*64
 if MODE=='wrong-authority':response['result']['authority']['sha256']='0'*64
 if MODE=='bool-size':response['result']['artifact']['bytes']=True
@@ -106,7 +107,7 @@ class ArtifactProcessTests(unittest.TestCase):
 
     def client(self,mode='valid',**kwargs):
         text=(f'#!{sys.executable}\nMODE={mode!r}\nPROFILE={artifacts.TRANSPORT_PROFILE!r}\n'
-              f'LIMITS={LIMITS!r}\n'+CHILD)
+              f'AUTHORITY_PROFILE={artifacts.AUTHORITY_TRANSPORT_PROFILE!r}\nLIMITS={LIMITS!r}\n'+CHILD)
         self.path.write_text(text);self.path.chmod(0o755)
         return CoreClient(self.path,**kwargs)
 
@@ -121,6 +122,22 @@ class ArtifactProcessTests(unittest.TestCase):
         self.assertEqual(result.response.request_id,'finite-request')
         self.assertEqual(result.response.result['authority'],artifacts._descriptor(b'{"source":1}'))
         self.assertEqual(self.call().artifact,b'{"source":1}')
+
+    def test_separate_authority_profile_preserves_original_v1_and_binds_transport(self):
+        self.assertEqual(artifacts.TRANSPORT_PROFILE["operations"],
+                         ["run-verification-workflow", "replay-verification-workflow"])
+        result = artifacts.call_artifact(self.client(), artifacts.AUTHORITY_OPERATION, {},
+                                         authority=b'{"source":1}')
+        self.assertEqual(result.artifact, b'{"source":1}')
+        self.assertEqual(result.response.result["transport"], "biocompiler.core.artifact_transport.authority.v1")
+        for mode in ("missing-authority-profile", "wrong-authority-transport"):
+            with self.subTest(mode=mode), self.assertRaises(CoreProtocolError):
+                artifacts.call_artifact(self.client(mode), artifacts.AUTHORITY_OPERATION, {}, authority=b'{}')
+        self.call(self.client("missing-authority-profile"))
+        with patch("biocompiler.core_client._exchange") as exchange, self.assertRaises(CoreProtocolError):
+            artifacts.call_artifact(self.client(), artifacts.AUTHORITY_OPERATION, {},
+                                    authority=b'{}', retained_record=b'{}')
+        exchange.assert_not_called()
 
     def test_native_authority_error_precedes_malformed_retained_record(self):
         with self.assertRaises(CoreRejected) as caught:

@@ -5,9 +5,13 @@ module R = Bioc_realization_checker.Realization_check
 module S = Bioc_realization_checker.Synthetic_candidate_check
 module X = Bioc_domain.Verification_exploration
 module V = Bioc_domain.Verification_workflow
+module E = Bioc_domain.Realization_evidence
 
 let implementation_version = "biocompiler.ocaml.verification_workflow_service.v0.1"
 let profile_version = "biocompiler.core.verification_workflow.v1"
+let presentation_implementation_version = "biocompiler.ocaml.verification_workflow_service.v0.2"
+let presentation_profile_version = "biocompiler.core.verification_workflow.v2"
+let presentation_version = "biocompiler.core.verification_workflow.presentation.v1"
 let operations = ["run-verification-workflow"; "replay-verification-workflow"]
 let validation_scope = "complete_fresh_verification_workflow"
 let validation_scopes = [validation_scope]
@@ -40,16 +44,26 @@ let profile = Json.Object [
   "operations",strings operations; "workflow_operations",strings ["check";"explore";"reduce"];
   "modes",strings ["candidate";"model"]; "validation_scope",string validation_scope;
   "artifact_encoding",string "python-json-v1"; "resources",profile_resources]
-let profiles = ["verification_workflow",profile]
+let presentation_profile = Json.Object (List.map (fun (key,value) -> key,
+  (if key="profile" then string presentation_profile_version
+   else if key="implementation_version" then string presentation_implementation_version
+   else value)) (Json.object_fields profile) @ ["presentation_profile",string presentation_version])
+let profiles = ["verification_workflow",profile;"verification_workflow_presentation",presentation_profile]
 
 let control_codec ?charge () = X.Codec.make_limits ~max_bytes:65_536 ~max_nodes:4096 ?charge ()
+type controls = { limits:B.limits; presentation:bool; command:string option }
 let decode_controls payload =
   let fields = Json.object_fields ~path:"payload.operation_payload" payload in
-  Json.exact_fields ~path:"payload.operation_payload" ["profile";"limits"] fields;
+  (* Select the new shape only on its exact version. Every other payload follows
+     the original v1 shape/profile rejection order, including malformed v1. *)
+  let presentation = List.assoc_opt "profile" fields = Some (string presentation_profile_version) in
+  Json.exact_fields ~path:"payload.operation_payload"
+    (if presentation then ["profile";"limits";"command"] else ["profile";"limits"]) fields;
   Diagnostic.require
-    (Json.string ~path:"payload.operation_payload.profile" (Json.field "profile" fields) = profile_version)
+    (Json.string ~path:"payload.operation_payload.profile" (Json.field "profile" fields) =
+      (if presentation then presentation_profile_version else profile_version))
     "workflow_protocol_profile" "Unsupported verification workflow profile.";
-  match Json.field "limits" fields with
+  let limits = match Json.field "limits" fields with
   | Json.Null -> B.default_limits
   | Json.Object limits ->
       Json.exact_fields ~path:"payload.operation_payload.limits" control_fields limits;
@@ -65,10 +79,14 @@ let decode_controls payload =
       let max_report_nodes = value "max_report_nodes" in
       B.make_limits ~max_work ~max_monitor_items ~max_request_bytes ~max_report_bytes ~max_report_nodes ()
   | _ -> Diagnostic.fail ~path:"payload.operation_payload.limits" "workflow_limits"
-      "Workflow limits must be null or an exact object of five integer reductions."
+      "Workflow limits must be null or an exact object of five integer reductions." in
+  let command = if not presentation then None else match Json.field "command" fields with
+    | Json.Null -> None
+    | value -> Some (Json.string ~path:"payload.operation_payload.command" value) in
+  {limits;presentation;command}
 let limits_of_payload payload =
   X.Codec.preflight ~limits:(control_codec ()) payload;
-  decode_controls payload
+  (decode_controls payload).limits
 
 type result = { artifact : string; result : Json.t }
 let workflow_operation = function V.Check -> "check" | V.Explore -> "explore" | V.Reduce -> "reduce"
@@ -78,6 +96,21 @@ let resources budget = Json.Object ["workflow",B.limits_json (B.limits budget);
   "synthetic",S.limits_json (B.synthetic_limits budget)]
 let fingerprint budget raw = B.with_workspace budget (fun () ->
   X.Codec.fingerprint ~limits:(B.input_codec budget) raw)
+let presentation budget ~replay current =
+  let passed,original_frames,reduced_frames = match V.Record.result current with
+    | V.Checked result -> E.Check_result.passed result,Json.Null,Json.Null
+    | V.Explored result -> X.Report.all_passed result,Json.Null,Json.Null
+    | V.Reduced result ->
+        (* The cached complete encoding bounds both list spines. Charge before
+           traversing either; no history reconstruction or duplicate report is
+           allocated for these two compact native-derived counts. *)
+        B.charge budget (X.Reduction.canonical_size result + 1);
+        let original_frames = List.length (X.Reduction.original_history result) in
+        let reduced_frames = List.length (X.Reduction.history result) in
+        X.Reduction.one_minimal result,Json.int original_frames,Json.int reduced_frames in
+  Json.Object ["profile",string presentation_version;
+    "command_exit_code",Json.int (if replay || passed then 0 else 1);
+    "original_frames",original_frames;"reduced_frames",reduced_frames]
 
 let handle_in ~budget ~executable ~request_id ~operation ~payload ~authority ?retained_record ?load_retained_record () =
   let control_limits = control_codec ~charge:(B.charge budget) () in
@@ -91,7 +124,7 @@ let handle_in ~budget ~executable ~request_id ~operation ~payload ~authority ?re
     | _ -> Diagnostic.fail "workflow_protocol_operation" "Unknown verification workflow operation." in
   let selected = decode_controls payload in
   B.charge budget 1024;
-  Diagnostic.require (Json.equal (B.limits_json selected) (B.limits_json (B.limits budget)))
+  Diagnostic.require (Json.equal (B.limits_json selected.limits) (B.limits_json (B.limits budget)))
     "workflow_limits" "Workflow controls differ from the shared operation budget.";
   Diagnostic.require (not (Option.is_some retained_record && Option.is_some load_retained_record))
     "workflow_protocol_record" "Supply one retained record source only.";
@@ -100,6 +133,14 @@ let handle_in ~budget ~executable ~request_id ~operation ~payload ~authority ?re
   B.reserve_request budget authority;
   let authority_fingerprint = fingerprint budget authority in
   let request = K.decode_request_in ~budget ~path:"authority" authority in
+  (match selected.command with
+   | None -> ()
+   | Some command ->
+       B.charge budget (String.length command + 64);
+       let expected = if replay then "synthetic-replay"
+         else "synthetic-" ^ workflow_operation (V.Request.operation request) in
+       Diagnostic.require (command=expected) "workflow_protocol_command"
+         "Command and frozen verification operation disagree.");
   let retained_record = match load_retained_record with None -> retained_record | Some load -> Some (load ()) in
   let retained_record_fingerprint,current = match retained_record with
     | None -> Json.Null,K.run_in ~budget request
@@ -116,18 +157,25 @@ let handle_in ~budget ~executable ~request_id ~operation ~payload ~authority ?re
   Diagnostic.require (record_fingerprint = V.Record.fingerprint current) "workflow_protocol_identity"
     "Complete workflow encoding differs from its validated record identity.";
   B.charge budget 4096;
-  let result = Json.Object [
-    "schema_version",string "biocompiler.core.verification_workflow_result.v1";
-    "profile",string profile_version; "operation",string operation;
+  let presentation_fields = if selected.presentation then
+      ["command",(match selected.command with None->Json.Null|Some command->string command);
+       "presentation",presentation budget ~replay current]
+    else [] in
+  let result = Json.Object ([
+    "schema_version",string (if selected.presentation then "biocompiler.core.verification_workflow_result.v2"
+      else "biocompiler.core.verification_workflow_result.v1");
+    "profile",string (if selected.presentation then presentation_profile_version else profile_version);
+    "operation",string operation;
     "executable",string (Protocol.executable_name executable); "request_id",string request_id;
-    "validation_scope",string validation_scope; "implementation_version",string implementation_version;
+    "validation_scope",string validation_scope;
+    "implementation_version",string (if selected.presentation then presentation_implementation_version else implementation_version);
     "workflow_version",string V.workflow_version;
     "workflow_operation",string (workflow_operation (V.Request.operation request));
     "mode",string (mode (V.Request.mode request));
     "authority_fingerprint",string authority_fingerprint;
     "request_fingerprint",string (V.Request.fingerprint request);
     "retained_record_fingerprint",retained_record_fingerprint;
-    "record_fingerprint",string record_fingerprint; "resources",resources budget] in
+    "record_fingerprint",string record_fingerprint; "resources",resources budget] @ presentation_fields) in
   (* Prepay a complete compact receipt serialization and enforce its independent
      control envelope before returning anything to the descriptor writer. *)
   ignore (X.Codec.encode ~limits:control_limits result);

@@ -203,6 +203,10 @@ let produce budget checked config =
   List.iter (fun item -> if O.compartment (R.observable item) <> "abstract" then
       reject "Synthetic components support only the abstract compartment.") requirements;
   let generated = index () and sources = index () and requirement_map = index () in
+  (* Mapping order becomes observable when the checked pipeline emits ordered
+     SourceLink records. Canonical JSON still sorts keys, but retain the Python
+     producer's first-insertion order in both in-memory correspondence maps. *)
+  let source_order_rev = ref [] in
   let input_map = index () and domain_inputs = index () and cache = index () and responses = index () in
   List.iter (fun item -> put budget domain_inputs
       (pair (C.Input_domain.signal_id item) (C.Input_domain.field_name item)) item)
@@ -230,6 +234,9 @@ let produce budget checked config =
       "inputs",array budget str inputs;"attributes",attributes;"requirement_ids",array budget str response_ids] in
     B.reserve_report budget raw;
     let node = M.Node.of_json raw in
+    if lookup budget sources ref = None then (
+      B.retain_monitor budget 1; B.charge budget 1;
+      source_order_rev := ref :: !source_order_rev);
     put budget generated ref node; put budget sources ref lineage; put budget requirement_map ref behavior_ids; ref in
   let emitted id = get budget generated id in
   let aggregate ref output ids = if M.Node.scope (emitted ref) = O.Cell then ref else
@@ -410,7 +417,9 @@ let produce budget checked config =
         "node_id",str (M.Node.id node);"component_id",str (A.Component.id component);
         "version",str (A.Component.version component);"content_fingerprint",str (A.Component.fingerprint component)] in
       B.reserve_report budget raw; raw) nodes in
-  let encode_map table = Json.Object (map budget (fun (key, values) -> key, array budget str values) (bindings budget table)) in
+  let source_order = List.rev (reserve_list budget !source_order_rev) in
+  let encode_map table = Json.Object (map budget (fun key ->
+      key, array budget str (get budget table key)) source_order) in
   let candidate_raw = Json.Object ["schema_version",str A.Candidate.schema_version;
     "intended_use",str "software_test";"human_therapeutic_admission",str "not_admitted";
     "request_fingerprint",str (Checked.fingerprint checked);"mechanism",M.to_json mechanism;

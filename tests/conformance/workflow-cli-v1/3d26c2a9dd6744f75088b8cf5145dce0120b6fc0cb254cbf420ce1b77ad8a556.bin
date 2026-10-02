@@ -1,0 +1,5 @@
+{
+  "schema_version": "biocompiler.boolean_exploration_report.v0.1",
+  "fingerprint": "9c6db20113664e4a349c8a68888a805b7e9de343549ca5a56f610170748f695c",
+  "inspection": "Historical content inspection only; recompute acceptance and freshness against current authoritative inputs before reuse."
+}

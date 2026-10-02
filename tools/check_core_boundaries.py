@@ -20,10 +20,12 @@ ROOT = Path(__file__).resolve().parents[1]
 EXTERNAL_LIBRARIES = frozenset({"digestif", "zarith", "unix"})
 # New libraries/dependencies require deliberate policy review, even when harmless.
 LIBRARIES = {
+    "bioc_pipeline_service": ("lib/pipeline_service/dune", {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_pipeline", "bioc_synthetic_producer", "zarith"}, "producer"),
+    "bioc_pipeline": ("lib/pipeline/dune", {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_realization_checker", "bioc_synthetic_producer", "bioc_candidate_runtime", "zarith"}, "compiler"),
     "bioc_synthetic_producer": ("lib/synthetic_producer/dune", {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_realization_checker", "zarith"}, "producer"),
     "bioc_realization_checker": ("lib/realization_checker/dune", {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_semantics", "bioc_candidate_runtime", "zarith"}, "checker"),
     "bioc_candidate_runtime": ("lib/candidate_runtime/dune", {"bioc_wire", "bioc_domain", "zarith"}, "candidate_runtime"),
-    "bioc_producer_service": ("lib/producer_service/dune", {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_service"}, "producer"),
+    "bioc_producer_service": ("lib/producer_service/dune", {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_service", "bioc_realization_checker", "bioc_synthetic_producer", "zarith"}, "producer"),
     "bioc_wire": ("lib/wire/dune", {"digestif", "zarith"}, "trusted_primitive"),
     "bioc_domain": ("lib/domain/dune", {"bioc_wire", "zarith", "digestif"}, "trusted_domain"),
     "bioc_semantics": ("lib/semantics/dune", {"bioc_wire", "bioc_domain", "zarith"}, "source_semantics"),
@@ -33,16 +35,31 @@ LIBRARIES = {
     "bioc_service": ("lib/service/dune", {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_realization_checker", "zarith", "unix"}, "checker_service"),
 }
 EXECUTABLES = {
-    "biocompiler-core": ("bin/core/dune", {"bioc_wire", "bioc_service", "bioc_producer_service"}, "core_entrypoint"),
+    "biocompiler-core": ("bin/core/dune", {"bioc_wire", "bioc_service", "bioc_producer_service", "bioc_pipeline_service"}, "core_entrypoint"),
     "biocompiler-verify": ("bin/verify/dune", {"bioc_wire", "bioc_service"}, "verifier"),
 }
 TESTS = {
+    "test_pipeline_callback_manager": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_pipeline_service", "bioc_pipeline", "zarith"},
+    "test_deferred_pass_manager": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "zarith"},
+    "test_pipeline_callback_channel": {"bioc_wire", "bioc_checker", "bioc_pipeline_service", "zarith"},
+    "test_pipeline_host_bridge": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_pipeline_service", "zarith"},
+    'test_pipeline_session': {'bioc_wire', 'bioc_domain', 'bioc_checker', 'bioc_compiler', 'bioc_pipeline_service', 'zarith'},
+    'test_provider_comparison': {'bioc_wire', 'bioc_domain', 'bioc_checker', 'bioc_compiler', 'zarith'},
+    'test_fixed_pipeline_corpus': {'bioc_wire', 'bioc_domain', 'bioc_checker', 'bioc_compiler', 'bioc_pipeline', 'bioc_synthetic_producer', 'zarith'},
+    'test_lowering_budget': {'bioc_domain', 'bioc_wire', 'bioc_compiler', 'bioc_checker'},
+    'test_checked_pipeline_corpus': {'bioc_domain', 'bioc_wire', 'bioc_compiler', 'zarith', 'bioc_checker'},
+    'test_pass_manager': {'bioc_domain', 'bioc_wire', 'bioc_compiler', 'zarith', 'bioc_checker'},
+    'test_pipeline_contract': {'bioc_wire', 'zarith', 'bioc_domain'},
+    "test_synthetic_inspection_protocol": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_realization_checker", "bioc_compiler", "bioc_producer_service", "zarith"},
+    "test_verification_workflow_authority": {"bioc_wire", "bioc_service", "bioc_domain", "bioc_checker", "bioc_realization_checker", "zarith"},
     "test_artifact_io": {"bioc_wire", "bioc_service", "bioc_checker", "bioc_realization_checker", "unix", "zarith"},
     "test_verification_workflow_service": {"bioc_wire", "bioc_service", "bioc_domain", "bioc_checker", "bioc_realization_checker", "zarith"},
     "test_synthetic_generator": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_realization_checker", "bioc_synthetic_producer", "zarith"},
     "test_synthetic_selection": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_realization_checker", "bioc_synthetic_producer", "zarith"},
     "test_synthetic_components": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_realization_checker", "bioc_synthetic_producer", "zarith"},
     "test_synthetic_producers_corpus": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_realization_checker", "bioc_synthetic_producer", "zarith"},
+    "test_synthetic_producer_public_protocol": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_realization_checker", "bioc_producer_service", "bioc_service", "zarith"},
+    "test_synthetic_producer_protocol": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_realization_checker", "bioc_synthetic_producer", "bioc_producer_service", "bioc_service", "zarith"},
 
     "test_synthetic_candidate_check": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_realization_checker", "zarith"},
     "test_synthetic_provenance": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_realization_checker", "zarith"},
@@ -396,6 +413,13 @@ def check_boundaries(root: Path):
                 if relative != "test/dune" or name not in TESTS or values.get("modules") != [name]:
                     raise BoundaryError(f"Unreviewed native test stanza: {name}")
                 fixture_variables = {
+                    "test_deferred_pass_manager": "%{env:BIOCOMPILER_PIPELINE_CONTRACT_LITERALS=missing}",
+                    "test_pipeline_callback_channel": "%{env:BIOCOMPILER_PIPELINE_CALLBACK_DECLARATION=missing}",
+                    'test_provider_comparison': "%{env:BIOCOMPILER_PIPELINE_CALLBACK_SEMANTICS=missing}",
+                    'test_lowering_budget': "%{env:BIOCOMPILER_LOWERING_CORPUS=missing}",
+                    'test_checked_pipeline_corpus': "%{env:BIOCOMPILER_CHECKED_PIPELINE_CORPUS=missing}",
+                    'test_pass_manager': "%{env:BIOCOMPILER_PIPELINE_CONTRACT_LITERALS=missing}",
+                    'test_pipeline_contract': "%{env:BIOCOMPILER_PIPELINE_CONTRACT_LITERALS=missing}",
                     "test_candidate_runtime_corpus": "%{env:BIOCOMPILER_CANDIDATE_RUNTIME_CORPUS=missing}",
                     "test_component_runtime_corpus": "%{env:BIOCOMPILER_COMPONENT_RUNTIME_CORPUS=missing}",
                     "test_realization_foundation_corpus": "%{env:BIOCOMPILER_REALIZATION_FOUNDATION_CORPUS=missing}",
@@ -408,6 +432,23 @@ def check_boundaries(root: Path):
                 }
                 expected_actions = ([["action", ["run", "%{test}", fixture_variables[name]]]]
                                     if name in fixture_variables else [])
+                if name == "test_synthetic_inspection_protocol":
+                    expected_actions = [["action", ["run", "%{test}",
+                        "%{env:BIOCOMPILER_SYNTHETIC_INSPECTION_FIXTURES=missing}",
+                        "%{env:BIOCOMPILER_SYNTHETIC_INSPECTION_DECLARATION=missing}"]]]
+                if name == "test_fixed_pipeline_corpus":
+                    expected_actions = [["action", ["run", "%{test}",
+                        "%{env:BIOCOMPILER_FIXED_PIPELINE_CORPUS=missing}",
+                        "%{env:BIOCOMPILER_FIXED_PIPELINE_CONTINUATIONS=missing}"]]]
+                if name == "test_pipeline_callback_manager":
+                    expected_actions = [["action", ["run", "%{test}",
+                        "%{env:BIOCOMPILER_PIPELINE_CALLBACK_MANAGER_DECLARATION=missing}",
+                        "%{env:BIOCOMPILER_PIPELINE_CONTRACT_LITERALS=missing}",
+                        "%{env:BIOCOMPILER_FIXED_PIPELINE_CORPUS=missing}"]]]
+                if name == "test_pipeline_session":
+                    expected_actions = [["action", ["run", "%{test}",
+                        "%{env:BIOCOMPILER_PIPELINE_SESSION_DECLARATION=missing}",
+                        "%{env:BIOCOMPILER_FIXED_PIPELINE_CORPUS=missing}"]]]
                 if actions != expected_actions:
                     raise BoundaryError(f"Changed native test action: {name}")
                 if name in tests or dependencies != TESTS[name]:

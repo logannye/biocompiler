@@ -1,0 +1,1 @@
+{"$type":"mapping","class":"builtins.dict","items":[["id","emitted_sequence_identity"],["scope","exact_cds"],["evidence_kind","exact"],["description","Emit the selected nucleotide spelling and independently verify its exact reference identity."]]}

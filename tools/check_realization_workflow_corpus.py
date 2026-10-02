@@ -2,8 +2,8 @@
 """Explicit source-addition lineage for the immutable whole-workflow corpus.
 
 This is a capture-only scope witness. It grants no product authority and never
-relabels current source metadata as historical metadata. Existing source files
-must retain every pinned byte; only separately reviewed additions are allowed.
+relabels current source metadata as historical metadata. Historical bytes stay
+pinned; two exactly witnessed routes preserve the complete original default AST.
 """
 from __future__ import annotations
 
@@ -20,8 +20,22 @@ CORPUS_PIN = "2f5e7636977f559e046776c1bb92bebf67c8f0e733ca463927f8d3a1aee3d77b"
 # Each addition requires a fresh explicit review and hash. Wildcards and amended
 # hashes for historical source files are deliberately unsupported.
 REVIEWED_ADDITIONS = {
-    "src/biocompiler/core_workflow.py": "c2e1a16518756f89f6bb84437e2f77634be2983986376e837b548d51047df9d0",
-    "src/biocompiler/core_artifacts.py": "9cf24948c12d617dc783317b4f16330e1be69feba64cfec70767288556011e4e",
+    "src/biocompiler/core_pipeline_build_views.py": "85492c4f77b3104af2dae9d9180a0518bfd4fb61c9d6143880e6e58e10a77382",
+    "src/biocompiler/core_pipeline_provider_views.py": "ea18d951f8170b1e1da4fbe6636d40e83f54ebda2ebdce187b0e08cf257b9c35",
+    "src/biocompiler/core_pipeline_manager.py": "40a08477c97a97159372d9723267df3cacf8335a59d6b00ada34bb56470e31f3",
+    "src/biocompiler/core_pipeline_callback_session.py": "0ff388509eb9c123b87cf5decc1f35cf5eaca61a02d84a756beba7150de17018",
+    "src/biocompiler/pipeline_callback_objects.py": "ac5198795c3e80cff511e0fe372dc578a983d8be947e41dd9debd9f719da9eec",
+    "src/biocompiler/core_pipeline_session.py": "b0c744d8f3a38b1681805250ccf93884ba866678527cf366bcf08ff326da080d",
+    "src/biocompiler/core_synthetic_inspection.py": "5ab68d6f1dac300af1e0d7431f5ba45aa2df493c1f446a8ccd67b56ae831178f",
+    "src/biocompiler/core_synthetic_producer_public.py": "15db52841e774d4fdf42ed937dfe173ca844cae920fb6419bbc54eec70c31082",
+    "src/biocompiler/synthetic_producer_cli.py": "4e500dd094e41841fa15635b1be6a805a0b3b992de574dda888f4d91fa881221",
+    "src/biocompiler/core_synthetic_producer.py": "233ae7ffd5a10e7158b1ac833194aa4b5b05de5334e73adf77aad9d081fb1917",
+    "src/biocompiler/synthetic_producer_backend.py": "99584aaa6be87849ebf1cc5eea0ba0821b86f4ca03abc190b0261a8903647db3",
+    "src/biocompiler/core_workflow.py": "43b57b87a2d89db200463d8aed8b7eea7e262cf1c4ea02c772843598dbda90df",
+    "src/biocompiler/core_artifacts.py": "77cf4dc31efb782c7fbb44fe8e79714a60e2e20374f9e7569fdce8f70d8ec59a",
+    "src/biocompiler/workflow_backend.py": "81958a4fc1147b2ea10eae7c7bac15a68338b1cb21b738805ae04538c7bdc1db",
+    "src/biocompiler/core_workflow_authority.py": "ded29c7cd4c16241812bd7f677b0c962d185a724fef1cd7294c7e899c7c32d66",
+    "src/biocompiler/workflow_cli.py": "641cf7f6451e52c5dd4a09a28c75c89329191aa373aed36cc9dc92c573207bd5",
 }
 
 
@@ -55,8 +69,20 @@ def source_scope(actual, *, allow_missing_tests=False):
     missing = set(before) - set(current)
     require(not missing or allow_missing_tests and all(path.startswith("tests/") for path in missing),
             "Historical workflow authority source is missing")
-    for path in set(before) & set(current):
-        require(before[path] == current[path], "Historical workflow source bytes changed: " + path)
+    routes = []
+    for path in sorted(set(before) & set(current)):
+        if before[path] != current[path]:
+            from tools.workflow_source_lineage import HISTORICAL
+            from tools.synthetic_producer_source_lineage import HISTORICAL as PRODUCERS
+            from tools.manager_registration_source_lineage import HISTORICAL as MANAGERS
+            from tools.realization_source_lineage import verify_captured_source
+            require(path in HISTORICAL or path in PRODUCERS or path in MANAGERS, "Historical workflow source bytes changed: " + path)
+            try:
+                route = verify_captured_source(ROOT, {"path": path, "sha256": before[path]})
+            except ValueError as error:
+                raise AssertionError("Historical workflow source bytes changed: " + path) from error
+            require(route["current_sha256"] == current[path], "Historical workflow source bytes changed: " + path)
+            routes.append(route)
     additions = {path: current[path] for path in sorted(set(current) - set(before))}
     for path, sha in additions.items():
         require(REVIEWED_ADDITIONS.get(path) == sha, "Unreviewed workflow source addition: " + path)
@@ -65,8 +91,8 @@ def source_scope(actual, *, allow_missing_tests=False):
     for path in additions:
         require(path.startswith("src/") and path.endswith(".py"), "Unreviewed addition import shape")
         modules.append(path[4:-3].replace("/", "."))
-    return {
-        "schema_version": "biocompiler.realization_workflow_source_scope.v1",
+    result = {
+        "schema_version": "biocompiler.realization_workflow_source_scope.v2" if routes else "biocompiler.realization_workflow_source_scope.v1",
         "historical_corpus_pin": CORPUS_PIN,
         "historical_sources": historical,
         "actual_sources": actual,
@@ -77,6 +103,9 @@ def source_scope(actual, *, allow_missing_tests=False):
         "omitted_tests_for_focused_instrumentation": sorted(missing),
         "comparison": "exact_original_observations_and_documents_after_explicit_historical_source_projection_only",
     }
+    if routes:
+        result["reviewed_routes"] = routes
+    return result
 
 
 @contextmanager

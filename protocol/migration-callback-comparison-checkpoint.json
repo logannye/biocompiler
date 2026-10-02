@@ -1,0 +1,158 @@
+{
+  "schema_version": "biocompiler.callback_comparison_implementation_checkpoint.v1",
+  "status": "source_and_python_controls_complete_hosted_replay_pending",
+  "base_revision": "5568a0f7135efc042e95a0a25a67e77e678bb659",
+  "files": {
+    ".github/workflows/ci.yml": {
+      "sha256": "aa7d60a5348db4e06d5e68b1aa16f613e99a5653846cf626f817594395a036ac",
+      "bytes": 99704
+    },
+    "core/lib/compiler/pass_manager.ml": {
+      "sha256": "18eafdc65eda41a1224ca73d21a08e094ae4f78252332a01c2bfaa69fe2baf2e",
+      "bytes": 50429
+    },
+    "core/lib/compiler/pass_manager.mli": {
+      "sha256": "42b50e4bc99e9e87ead863f94b4c1276b6cc2a2e116c0e61c7c5cd3ab03fed77",
+      "bytes": 9091
+    },
+    "core/lib/pipeline_service/callback_manager.ml": {
+      "sha256": "8f86b51ea9710b76c8c7f1e5f4dfa573b90775a40dacbf3151c288688e6e6831",
+      "bytes": 39848
+    },
+    "core/test/test_deferred_pass_manager.ml": {
+      "sha256": "1805761c39f6f8e371fca2d89a83017da19c3799f54694e9dfe1a17a42353e02",
+      "bytes": 22931
+    },
+    "core/test/test_pipeline_callback_manager.ml": {
+      "sha256": "4ffc4f0115d9f117da5990a0b119ce1addcebab8fe4e9ff157a19cd7e4db84d8",
+      "bytes": 19544
+    },
+    "docs/language-migration-roadmap.md": {
+      "sha256": "e9d7ebefb574063292220daeb623741d39c1ea33917c2f4d6048ae16b105a583",
+      "bytes": 130622
+    },
+    "docs/migration-coverage.md": {
+      "sha256": "1bc9aa1abe68d02a29ba5a8e580cec2df68cb8fb7dbcc863b89e3d6f27b9b0e0",
+      "bytes": 7706
+    },
+    "docs/migration-pipeline-manager.md": {
+      "sha256": "639e5ba94bf7a7aa1c5e4e8f79971612115d9bd17f9405e1d3aa8123b8a8a5fb",
+      "bytes": 8120
+    },
+    "protocol/migration-inventory.json": {
+      "sha256": "3f5dde586ff8a4e2d98e646e3e98a1557af61d456efdb2f9600472655a65198f",
+      "bytes": 1454365
+    },
+    "protocol/pipeline-callback-manager-v1.json": {
+      "sha256": "58c094621fc68e7e9e18e32626374513332a3071f5cf7d0b89f6a7cf68caff00",
+      "bytes": 8516
+    },
+    "src/biocompiler/core_pipeline_manager.py": {
+      "sha256": "686c44466219b09cd3a31751f894e91687f62edc3539d0cd2c7f89ab7ca7ade0",
+      "bytes": 49934
+    },
+    "tests/test_core_pipeline_manager.py": {
+      "sha256": "005ff418d09ea670b6c2df02a6c41f7fd648ceccc05c0d788030db9f7640d0eb",
+      "bytes": 32363
+    },
+    "tests/test_pipeline_manager_campaign.py": {
+      "sha256": "34230433a760012f771cbecb2d4750542cbdaed7d2042093ad0ba6ba69669ec4",
+      "bytes": 46750
+    },
+    "tools/check_pipeline_manager_install.py": {
+      "sha256": "fe131a212542281e431cfa1de74a12c3f15ff8f617ec3d48dfdd2adb4c8a9e2b",
+      "bytes": 86012
+    },
+    "tools/check_realization_workflow_corpus.py": {
+      "sha256": "cca7d96b3bc7b0bfbfbf7cd815651498a1946d70f52be801cd30c542e0a3b6f3",
+      "bytes": 7624
+    }
+  },
+  "scope": {
+    "identity_cases": 5,
+    "comparison_cases": 34,
+    "comparison_manager_events": 78,
+    "comparison_events": 28,
+    "raised_events": 18,
+    "state_inspections": 280,
+    "all_original_case_bodies_unchanged": true
+  },
+  "local_validation": {
+    "platform": "Darwin-25.2.0-arm64-arm-64bit-Mach-O",
+    "python": "3.14.6",
+    "groups": [
+      {
+        "scope": "adapter",
+        "tests": 26,
+        "status": "pass"
+      },
+      {
+        "scope": "comparison_campaign_and_rehashed_semantic_mutations",
+        "tests": 18,
+        "status": "pass",
+        "seconds": 28.868
+      },
+      {
+        "scope": "boundaries_ci_inventory",
+        "tests": 50,
+        "status": "pass",
+        "seconds": 18.045
+      },
+      {
+        "scope": "original_cli_source_lineage",
+        "tests": 8,
+        "status": "pass",
+        "seconds": 13.721
+      }
+    ],
+    "mypy_modules": 20,
+    "inventory_entries": 3196,
+    "unit_discovery": {
+      "tests": 2934,
+      "classes": 284,
+      "execution": false
+    },
+    "native_execution": false
+  },
+  "hosted_required": {
+    "jobs": 36,
+    "native_suites": 102,
+    "platforms": [
+      "linux-x86_64",
+      "macos-arm64"
+    ],
+    "pythons": [
+      "3.11",
+      "3.14"
+    ],
+    "complete_four_runtime_replay": true,
+    "merge_requires": "all exact-head jobs, complete receipt/artifact/binary reconstruction, identical source/tested/prospective/integrated trees"
+  },
+  "independence": {
+    "native_manager_authority": true,
+    "inspect_cannot_import_accepted_state": true,
+    "host_callbacks_are_actual_objects": true,
+    "original_internal_frames_not_synthesized": true,
+    "legacy_manager_resource_accounting_preserved": true
+  },
+  "pending": [
+    "hosted native and installed comparison replay",
+    "full original 476 contexts and remaining native workflow families",
+    "47 deferred cases with complete state/access/exception correspondence",
+    "fixed registration interception and 287 dependent observations",
+    "NoCandidate ordered fresh snapshots and fixed producer domain models",
+    "distribution, public SDK/CLI/Studio routing and default cutover"
+  ],
+  "prior_hosted_partial": {
+    "pr": 71,
+    "source_revision": "5568a0f7135efc042e95a0a25a67e77e678bb659",
+    "run_id": 37046612682,
+    "job_id": 110969508717,
+    "platform": "linux-x86_64",
+    "successful_steps": [
+      "Compile native core and standalone verifier",
+      "Run every native literal and mutation suite"
+    ],
+    "complete_acceptance": false
+  }
+}

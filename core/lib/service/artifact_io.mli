@@ -4,6 +4,7 @@ type descriptor = { bytes:int; sha256:string }
 type t
 val operations : string list
 val profile : Bioc_wire.Json.t
+val authority_profile : Bioc_wire.Json.t
 val max_control_bytes : int
 val descriptor_of_json : max_bytes:int -> Bioc_wire.Json.t -> descriptor
 val descriptor_json : descriptor -> Bioc_wire.Json.t

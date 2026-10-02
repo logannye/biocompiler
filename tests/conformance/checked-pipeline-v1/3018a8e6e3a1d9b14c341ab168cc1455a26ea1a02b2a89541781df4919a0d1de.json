@@ -1,0 +1,1 @@
+{"$type":"mapping","class":"builtins.dict","items":[["id","human_input_observation"],["scope","therapeutic_implementation"],["evidence_kind","unresolved"],["description","The complete human input measurement and cell-access requirements remain unimplemented."]]}

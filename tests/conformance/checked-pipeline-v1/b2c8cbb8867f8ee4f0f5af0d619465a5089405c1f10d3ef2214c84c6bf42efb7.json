@@ -1,0 +1,1 @@
+{"$type":"mapping","class":"builtins.dict","items":[["id","response_check"],["evidence_kind","model_conditional"],["discharges",{"$type":"list","items":["response"]}]]}

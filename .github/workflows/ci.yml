@@ -884,6 +884,17 @@ jobs:
           BIOCOMPILER_SYNTHETIC_ACCEPTANCE_CORPUS="$GITHUB_WORKSPACE/tests/conformance/synthetic-acceptance-v1.json" \
           BIOCOMPILER_SYNTHETIC_PRODUCERS_CORPUS="$GITHUB_WORKSPACE/tests/conformance/synthetic-producers-v1.json" \
           BIOCOMPILER_REALIZATION_WORKFLOW_CORPUS="$GITHUB_WORKSPACE/tests/conformance/realization-workflow-v1.json" \
+          BIOCOMPILER_CHECKED_PIPELINE_CORPUS="$GITHUB_WORKSPACE/tests/conformance/checked-pipeline-v1.json" \
+          BIOCOMPILER_FIXED_PIPELINE_CONTINUATIONS="$GITHUB_WORKSPACE/tests/conformance/fixed-pipeline-continuations-native-v1.json" \
+          BIOCOMPILER_FIXED_PIPELINE_CORPUS="$GITHUB_WORKSPACE/tests/conformance/fixed-pipeline-native-v1.json" \
+          BIOCOMPILER_LOWERING_CORPUS="$GITHUB_WORKSPACE/tests/conformance/lowering-v1.json" \
+          BIOCOMPILER_PIPELINE_CALLBACK_SEMANTICS="$GITHUB_WORKSPACE/tests/conformance/pipeline-callback-semantics-v1.json" \
+          BIOCOMPILER_PIPELINE_CALLBACK_DECLARATION="$GITHUB_WORKSPACE/protocol/pipeline-callback-channel-v1.json" \
+          BIOCOMPILER_PIPELINE_CALLBACK_MANAGER_DECLARATION="$GITHUB_WORKSPACE/protocol/pipeline-callback-manager-v1.json" \
+          BIOCOMPILER_PIPELINE_SESSION_DECLARATION="$GITHUB_WORKSPACE/protocol/pipeline-session-v1.json" \
+          BIOCOMPILER_PIPELINE_CONTRACT_LITERALS="$GITHUB_WORKSPACE/tests/conformance/pipeline-contract-literals-v1.json" \
+          BIOCOMPILER_SYNTHETIC_INSPECTION_DECLARATION="$GITHUB_WORKSPACE/protocol/synthetic-inspection-v1.json" \
+          BIOCOMPILER_SYNTHETIC_INSPECTION_FIXTURES="$GITHUB_WORKSPACE/tests/conformance/synthetic-inspection-supplemental-v1.json" \
             opam exec -- dune runtest --root core 2>&1 | tee generated/core/native-tests.txt
       - name: Retain native suite diagnostics before longer installed campaigns
         if: always()
@@ -998,6 +1009,48 @@ jobs:
       - name: Check complete synthetic generation, bounded selection and component adaptation corpus
         if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
         run: core/_build/default/test/test_synthetic_producers_corpus.exe "$GITHUB_WORKSPACE/tests/conformance/synthetic-producers-v1.json" | tee generated/core/test_synthetic_producers_corpus.txt
+      - name: Check producer-only protocol, complete receipts and resource boundaries
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_synthetic_producer_protocol.exe | tee generated/core/test_synthetic_producer_protocol.txt
+      - name: Check complete public synthetic build authority and selection receipts
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_synthetic_producer_public_protocol.exe | tee generated/core/test_synthetic_producer_public_protocol.txt
+      - name: Check native helper authority, exact structural queries and registry replay
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_synthetic_inspection_protocol.exe "$GITHUB_WORKSPACE/tests/conformance/synthetic-inspection-supplemental-v1.json" "$GITHUB_WORKSPACE/protocol/synthetic-inspection-v1.json" | tee generated/core/test_synthetic_inspection_protocol.txt
+      - name: Check deferred manager access and reentrant callback mutations
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_deferred_pass_manager.exe "$GITHUB_WORKSPACE/tests/conformance/pipeline-contract-literals-v1.json" | tee generated/core/test_deferred_pass_manager.txt
+      - name: Check nested callback framing and cumulative channel authority
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_pipeline_callback_channel.exe "$GITHUB_WORKSPACE/protocol/pipeline-callback-channel-v1.json" | tee generated/core/test_pipeline_callback_channel.txt
+      - name: Check deferred host capability envelopes and lifetime authority
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_pipeline_host_bridge.exe | tee generated/core/test_pipeline_host_bridge.txt
+      - name: Check live callback manager dispatch and native acceptance authority
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_pipeline_callback_manager.exe "$GITHUB_WORKSPACE/protocol/pipeline-callback-manager-v1.json" "$GITHUB_WORKSPACE/tests/conformance/pipeline-contract-literals-v1.json" "$GITHUB_WORKSPACE/tests/conformance/fixed-pipeline-native-v1.json" | tee generated/core/test_pipeline_callback_manager.txt
+      - name: Check persistent manager state and cumulative session resource bounds
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_pipeline_session.exe "$GITHUB_WORKSPACE/protocol/pipeline-session-v1.json" "$GITHUB_WORKSPACE/tests/conformance/fixed-pipeline-native-v1.json" | tee generated/core/test_pipeline_session.txt
+      - name: Check complete pipeline contract records and original constructor rejections
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_pipeline_contract.exe "$GITHUB_WORKSPACE/tests/conformance/pipeline-contract-literals-v1.json" | tee generated/core/test_pipeline_contract.txt
+      - name: Check native stage acceptance, scoped completion and transitive freshness
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_pass_manager.exe "$GITHUB_WORKSPACE/tests/conformance/pipeline-contract-literals-v1.json" | tee generated/core/test_pass_manager.txt
+      - name: Preserve original validator comparison order, identity and callback mutations
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_provider_comparison.exe "$GITHUB_WORKSPACE/tests/conformance/pipeline-callback-semantics-v1.json" | tee generated/core/test_provider_comparison.txt
+      - name: Replay original manager commands, callback bodies and complete state changes
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_checked_pipeline_corpus.exe "$GITHUB_WORKSPACE/tests/conformance/checked-pipeline-v1.json" | tee generated/core/test_checked_pipeline_corpus.txt
+      - name: Check lowering and independent preservation share the caller work ancestor
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_lowering_budget.exe "$GITHUB_WORKSPACE/tests/conformance/lowering-v1.json" | tee generated/core/test_lowering_budget.txt
+      - name: Replay fixed native pipelines and original post-return manager observations
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_fixed_pipeline_corpus.exe "$GITHUB_WORKSPACE/tests/conformance/fixed-pipeline-native-v1.json" "$GITHUB_WORKSPACE/tests/conformance/fixed-pipeline-continuations-native-v1.json" | tee generated/core/test_fixed_pipeline_corpus.txt
       - name: Check every original workflow, exploration, reduction and callback observation
         if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
         run: |
@@ -1228,6 +1281,46 @@ jobs:
           cd "$RUNNER_TEMP/verification-workflow"
           BIOCOMPILER_WORKFLOW_CORE_SHA="$(python -c 'import json,os; from pathlib import Path; print(json.loads((Path(os.environ["GITHUB_WORKSPACE"])/"artifacts/native/binaries.json").read_text())["sha256"]["biocompiler-core"])')"
           BIOCOMPILER_WORKFLOW_VERIFY_SHA="$(python -c 'import json,os; from pathlib import Path; print(json.loads((Path(os.environ["GITHUB_WORKSPACE"])/"artifacts/native/binaries.json").read_text())["sha256"]["biocompiler-verify"])')"
+          python "$GITHUB_WORKSPACE/tools/check_pipeline_manager_install.py" \
+            --core "$GITHUB_WORKSPACE/artifacts/native/biocompiler-core" \
+            --verify "$GITHUB_WORKSPACE/artifacts/native/biocompiler-verify" \
+            --core-sha256 "$BIOCOMPILER_WORKFLOW_CORE_SHA" \
+            --verify-sha256 "$BIOCOMPILER_WORKFLOW_VERIFY_SHA" \
+            --native-root "$GITHUB_WORKSPACE/artifacts/native" \
+            --platform ${{ matrix.platform }} \
+            --output "$GITHUB_WORKSPACE/generated/realization/pipeline-manager.json"
+          python "$GITHUB_WORKSPACE/tools/check_pipeline_fixed_provider_install.py" \
+            --core "$GITHUB_WORKSPACE/artifacts/native/biocompiler-core" \
+            --verify "$GITHUB_WORKSPACE/artifacts/native/biocompiler-verify" \
+            --core-sha256 "$BIOCOMPILER_WORKFLOW_CORE_SHA" \
+            --verify-sha256 "$BIOCOMPILER_WORKFLOW_VERIFY_SHA" \
+            --native-root "$GITHUB_WORKSPACE/artifacts/native" \
+            --platform ${{ matrix.platform }} \
+            --output "$GITHUB_WORKSPACE/generated/realization/pipeline-fixed-providers.json"
+          python "$GITHUB_WORKSPACE/tools/check_pipeline_fixed_continuation_install.py" \
+            --core "$GITHUB_WORKSPACE/artifacts/native/biocompiler-core" \
+            --verify "$GITHUB_WORKSPACE/artifacts/native/biocompiler-verify" \
+            --core-sha256 "$BIOCOMPILER_WORKFLOW_CORE_SHA" \
+            --verify-sha256 "$BIOCOMPILER_WORKFLOW_VERIFY_SHA" \
+            --native-root "$GITHUB_WORKSPACE/artifacts/native" \
+            --platform ${{ matrix.platform }} \
+            --output "$GITHUB_WORKSPACE/generated/realization/pipeline-fixed-continuations.json"
+          python "$GITHUB_WORKSPACE/tools/check_pipeline_fixed_registration_install.py" \
+            --core "$GITHUB_WORKSPACE/artifacts/native/biocompiler-core" \
+            --verify "$GITHUB_WORKSPACE/artifacts/native/biocompiler-verify" \
+            --core-sha256 "$BIOCOMPILER_WORKFLOW_CORE_SHA" \
+            --verify-sha256 "$BIOCOMPILER_WORKFLOW_VERIFY_SHA" \
+            --native-root "$GITHUB_WORKSPACE/artifacts/native" \
+            --platform ${{ matrix.platform }} \
+            --output "$GITHUB_WORKSPACE/generated/realization/pipeline-fixed-registration.json"
+          python "$GITHUB_WORKSPACE/tools/check_pipeline_session_install.py" \
+            --core "$GITHUB_WORKSPACE/artifacts/native/biocompiler-core" \
+            --verify "$GITHUB_WORKSPACE/artifacts/native/biocompiler-verify" \
+            --core-sha256 "$BIOCOMPILER_WORKFLOW_CORE_SHA" \
+            --verify-sha256 "$BIOCOMPILER_WORKFLOW_VERIFY_SHA" \
+            --native-root "$GITHUB_WORKSPACE/artifacts/native" \
+            --platform ${{ matrix.platform }} \
+            --output "$GITHUB_WORKSPACE/generated/realization/pipeline-session.json"
           python "$GITHUB_WORKSPACE/tools/check_native_workflow.py" \
             --core "$GITHUB_WORKSPACE/artifacts/native/biocompiler-core" \
             --verify "$GITHUB_WORKSPACE/artifacts/native/biocompiler-verify" \
@@ -1236,6 +1329,70 @@ jobs:
             --native-root "$GITHUB_WORKSPACE/artifacts/native" \
             --platform ${{ matrix.platform }} \
             --output "$GITHUB_WORKSPACE/generated/realization/workflow.json"
+          python "$GITHUB_WORKSPACE/tools/check_native_workflow_presentation.py" \
+            --core "$GITHUB_WORKSPACE/artifacts/native/biocompiler-core" \
+            --verify "$GITHUB_WORKSPACE/artifacts/native/biocompiler-verify" \
+            --core-sha256 "$BIOCOMPILER_WORKFLOW_CORE_SHA" \
+            --verify-sha256 "$BIOCOMPILER_WORKFLOW_VERIFY_SHA" \
+            --native-root "$GITHUB_WORKSPACE/artifacts/native" \
+            --platform ${{ matrix.platform }} \
+            --output "$GITHUB_WORKSPACE/generated/realization/workflow-presentation.json"
+          python "$GITHUB_WORKSPACE/tools/check_native_workflow_authority.py" \
+            --core "$GITHUB_WORKSPACE/artifacts/native/biocompiler-core" \
+            --verify "$GITHUB_WORKSPACE/artifacts/native/biocompiler-verify" \
+            --core-sha256 "$BIOCOMPILER_WORKFLOW_CORE_SHA" \
+            --verify-sha256 "$BIOCOMPILER_WORKFLOW_VERIFY_SHA" \
+            --native-root "$GITHUB_WORKSPACE/artifacts/native" \
+            --platform ${{ matrix.platform }} \
+            --output "$GITHUB_WORKSPACE/generated/realization/workflow-authority.json"
+          python "$GITHUB_WORKSPACE/tools/check_native_workflow_public_sdk.py" \
+            --core "$GITHUB_WORKSPACE/artifacts/native/biocompiler-core" \
+            --verify "$GITHUB_WORKSPACE/artifacts/native/biocompiler-verify" \
+            --core-sha256 "$BIOCOMPILER_WORKFLOW_CORE_SHA" \
+            --verify-sha256 "$BIOCOMPILER_WORKFLOW_VERIFY_SHA" \
+            --native-root "$GITHUB_WORKSPACE/artifacts/native" \
+            --platform ${{ matrix.platform }} \
+            --output "$GITHUB_WORKSPACE/generated/realization/workflow-public-sdk.json"
+          python "$GITHUB_WORKSPACE/tools/check_native_workflow_cli.py" \
+            --core "$GITHUB_WORKSPACE/artifacts/native/biocompiler-core" \
+            --verify "$GITHUB_WORKSPACE/artifacts/native/biocompiler-verify" \
+            --core-sha256 "$BIOCOMPILER_WORKFLOW_CORE_SHA" \
+            --verify-sha256 "$BIOCOMPILER_WORKFLOW_VERIFY_SHA" \
+            --native-root "$GITHUB_WORKSPACE/artifacts/native" \
+            --platform ${{ matrix.platform }} \
+            --output "$GITHUB_WORKSPACE/generated/realization/workflow-cli.json"
+          python "$GITHUB_WORKSPACE/tools/check_native_synthetic_producer.py" \
+            --core "$GITHUB_WORKSPACE/artifacts/native/biocompiler-core" \
+            --verify "$GITHUB_WORKSPACE/artifacts/native/biocompiler-verify" \
+            --core-sha256 "$BIOCOMPILER_WORKFLOW_CORE_SHA" \
+            --verify-sha256 "$BIOCOMPILER_WORKFLOW_VERIFY_SHA" \
+            --native-root "$GITHUB_WORKSPACE/artifacts/native" \
+            --platform ${{ matrix.platform }} \
+            --output "$GITHUB_WORKSPACE/generated/realization/synthetic-producer.json"
+          python "$GITHUB_WORKSPACE/tools/check_native_synthetic_public_sdk.py" \
+            --core "$GITHUB_WORKSPACE/artifacts/native/biocompiler-core" \
+            --verify "$GITHUB_WORKSPACE/artifacts/native/biocompiler-verify" \
+            --core-sha256 "$BIOCOMPILER_WORKFLOW_CORE_SHA" \
+            --verify-sha256 "$BIOCOMPILER_WORKFLOW_VERIFY_SHA" \
+            --native-root "$GITHUB_WORKSPACE/artifacts/native" \
+            --platform ${{ matrix.platform }} \
+            --output "$GITHUB_WORKSPACE/generated/realization/synthetic-public-sdk.json"
+          python "$GITHUB_WORKSPACE/tools/check_native_synthetic_selection_cli.py" \
+            --core "$GITHUB_WORKSPACE/artifacts/native/biocompiler-core" \
+            --verify "$GITHUB_WORKSPACE/artifacts/native/biocompiler-verify" \
+            --core-sha256 "$BIOCOMPILER_WORKFLOW_CORE_SHA" \
+            --verify-sha256 "$BIOCOMPILER_WORKFLOW_VERIFY_SHA" \
+            --native-root "$GITHUB_WORKSPACE/artifacts/native" \
+            --platform ${{ matrix.platform }} \
+            --output "$GITHUB_WORKSPACE/generated/realization/synthetic-selection-cli.json"
+          python "$GITHUB_WORKSPACE/tools/check_native_synthetic_inspection.py" \
+            --core "$GITHUB_WORKSPACE/artifacts/native/biocompiler-core" \
+            --verify "$GITHUB_WORKSPACE/artifacts/native/biocompiler-verify" \
+            --core-sha256 "$BIOCOMPILER_WORKFLOW_CORE_SHA" \
+            --verify-sha256 "$BIOCOMPILER_WORKFLOW_VERIFY_SHA" \
+            --native-root "$GITHUB_WORKSPACE/artifacts/native" \
+            --platform ${{ matrix.platform }} \
+            --output "$GITHUB_WORKSPACE/generated/realization/synthetic-inspection.json"
       - name: Retain complete protocol and SDK artifacts even on failure
         if: always()
         uses: actions/upload-artifact@v4
@@ -1287,6 +1444,58 @@ jobs:
         env:
           GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
         run: python tools/check_workflow_reproducibility.py --root artifacts/realization --native-root artifacts/core --output generated/realization-reproducibility/workflow.json
+      - name: Require complete native presentation evidence across all four runtimes
+        env:
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: python tools/check_native_workflow_presentation.py --compare --root artifacts/realization --native-root artifacts/core --output generated/realization-reproducibility/workflow-presentation.json
+      - name: Require complete source-authority preflight evidence across all four runtimes
+        env:
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: python tools/check_native_workflow_authority.py --compare --root artifacts/realization --native-root artifacts/core --output generated/realization-reproducibility/workflow-authority.json
+      - name: Require complete public SDK workflow views across all four runtimes
+        env:
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: python tools/check_native_workflow_public_sdk.py --compare --root artifacts/realization --native-root artifacts/core --output generated/realization-reproducibility/workflow-public-sdk.json
+      - name: Require complete actual installed workflow CLI children across all four runtimes
+        env:
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: python tools/check_native_workflow_cli.py --compare --root artifacts/realization --native-root artifacts/core --output generated/realization-reproducibility/workflow-cli.json
+      - name: Require complete native producer evidence across all four runtimes
+        env:
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: python tools/check_native_synthetic_producer.py --compare --root artifacts/realization --native-root artifacts/core --output generated/realization-reproducibility/synthetic-producer.json
+      - name: Require complete public synthetic SDK observations across all four runtimes
+        env:
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: python tools/check_native_synthetic_public_sdk.py --compare --root artifacts/realization --native-root artifacts/core --output generated/realization-reproducibility/synthetic-public-sdk.json
+      - name: Require complete synthetic selection CLI observations across all four runtimes
+        env:
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: python tools/check_native_synthetic_selection_cli.py --compare --root artifacts/realization --native-root artifacts/core --output generated/realization-reproducibility/synthetic-selection-cli.json
+      - name: Require every original synthetic helper observation across all four runtimes
+        env:
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: python tools/check_native_synthetic_inspection.py --compare --root artifacts/realization --native-root artifacts/core --output generated/realization-reproducibility/synthetic-inspection.json
+      - name: Require complete live pipeline sessions across all four runtimes
+        env:
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: python tools/check_pipeline_session_install.py --compare --root artifacts/realization --native-root artifacts/core --output generated/realization-reproducibility/pipeline-session.json
+      - name: Require complete live manager identity, comparison and deferred-access replay
+        env:
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: python tools/check_pipeline_manager_install.py --compare --root artifacts/realization --native-root artifacts/core --output generated/realization-reproducibility/pipeline-manager.json
+      - name: Require complete fixed-provider typed returns and source identities across all four runtimes
+        env:
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: python tools/check_pipeline_fixed_provider_install.py --compare --root artifacts/realization --native-root artifacts/core --output generated/realization-reproducibility/pipeline-fixed-providers.json
+      - name: Require original retained-manager continuations and complete public build identities across all four runtimes
+        env:
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: python tools/check_pipeline_fixed_continuation_install.py --compare --root artifacts/realization --native-root artifacts/core --output generated/realization-reproducibility/pipeline-fixed-continuations.json
+      - name: Require original fixed registration interception and retained rejection state across all four runtimes
+        env:
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: python tools/check_pipeline_fixed_registration_install.py --compare --root artifacts/realization --native-root artifacts/core --output generated/realization-reproducibility/pipeline-fixed-registration.json
       - name: Retain complete comparison receipt
         if: always()
         uses: actions/upload-artifact@v4

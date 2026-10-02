@@ -88,6 +88,21 @@ def main(argv=None):
             static_flags = {flag for argument in actual[name]["arguments"] for flag in argument["flags"]}
             self.assertEqual(expected_flags, static_flags, name)
 
+    def test_static_json_profile_metadata_is_parsed_without_executing_code(self):
+        def resolve(name):
+            self.assertEqual(name, "_PROFILE_JSON")
+            return '{"profile":"fixture.profile.v1","size":9007199254740993}'
+        expression = ast.parse("json.loads(_PROFILE_JSON)", mode="eval").body
+        self.assertEqual(inventory.literal(expression, resolve),
+                         {"profile": "fixture.profile.v1", "size": 9007199254740993})
+        for text in ('{"x":1,"x":2}', '{"x":NaN}', '{broken'):
+            with self.assertRaises(inventory.InventoryError):
+                inventory.literal(expression, lambda _: text)
+        for expression in ("json.loads(dynamic())", "json.loads(9)",
+                           "json.loads('{}', object_hook=execute)", "other.loads('{}')"):
+            with self.assertRaises(inventory.InventoryError):
+                inventory.literal(ast.parse(expression, mode="eval").body, resolve)
+
     def test_real_schema_and_module_declarations_cannot_disappear(self):
         modules = {source["path"] for source in self.actual["sources"].values() if source["path"].endswith(".py") and source["path"].startswith("src/")}
         expected_modules = {path.relative_to(inventory.ROOT).as_posix() for path in (inventory.ROOT / "src/biocompiler").rglob("*.py")}

@@ -9,6 +9,11 @@ val charge : t -> int -> unit
     ancestor, or a participating descendant. Caller-defined diagnostic codes
     need no naming convention; equal but unrelated diagnostics do not match. *)
 val is_exhaustion : t -> Bioc_wire.Diagnostic.t -> bool
+(* Whether any participating scope has ever observed a failed charge. This
+   sticky observation lets a live authority boundary reject publication even
+   when a trusted callback caught the exception. It does not change existing
+   atomic-charge or sibling-budget behavior, and cannot be reset. *)
+val exhausted : t -> bool
 (* Minimum unused allowance across the scope and every ancestor. *)
 val remaining : t -> int
 (* Incremental aggregate publication reservation. Keys count as nodes; bytes

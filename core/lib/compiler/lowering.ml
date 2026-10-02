@@ -2,8 +2,11 @@ open Bioc_wire
 open Bioc_domain
 module Names = Map.Make (String)
 module Ids = Set.Make (String)
+module Work = Bioc_checker.Work_budget
+module Codec = Verification_exploration.Codec
 
 let producer_version = "biocompiler.ocaml.lowering.v0.1"
+let resource_profile = "biocompiler.ocaml.lowering.resources.v1"
 let str value = Json.String value
 let strings values = Json.Array (List.map str values)
 let require = Diagnostic.require
@@ -51,8 +54,9 @@ let truthy = function
 
 (* Producer-local policy interpretation. The checker independently reconstructs
    its expectations; none of these helpers is exported or shared with it. *)
-let profile_sources profile map nodes =
+let profile_sources charge profile map nodes =
   List.iter (fun node ->
+      charge (1 + String.length node.id + List.length node.inputs + List.length node.attrs);
       if not (Ids.mem node.kind supported || profile = Build_request.V2 && Ids.mem node.kind extension) then
         error node "unsupported_lowering_operation" "Operation requires another execution profile or a semantic refinement.";
       if List.mem node.kind ["literal"; "parameter"] && Type_spec.kind (Type_spec.of_json node.dtype) <> Type_spec.Scalar then
@@ -71,7 +75,7 @@ let profile_sources profile map nodes =
           let allowed = if event then (
               if attribute node "ongoing_duration" <> str "explicit_or_design_choice" then
                 error node "unsupported_lowering_event_duration" "Unknown source event-duration policy.";
-              List.iteri (fun index reference -> if index >= 2 then (
+              List.iteri (fun index reference -> charge (1 + String.length reference); if index >= 2 then (
                   let action = lookup map reference in
                   if truthy (attribute action "ongoing") && action.kind <> "action.pulse" then
                     error node "unsupported_lowering_event_duration" "Event-triggered ongoing actions require an explicit pulse.")) node.inputs;
@@ -92,8 +96,18 @@ let profile_sources profile map nodes =
            | _ -> ())
       | _ -> ()) nodes
 
-let rewritten bindings node =
-  let put key value fields = (key, value) :: List.remove_assoc key fields in
+let rewritten charge bindings node =
+  charge (1 + List.length node.attrs);
+  (* Python's original dict.update replaces a present field in place and
+     appends a new field. Attribute order is observable in typed provider
+     views, even though canonical identities intentionally sort object keys. *)
+  let put key value fields =
+    let rec update = function
+      | [] -> [key,value]
+      | (name,previous)::rest ->
+          charge (String.length key + String.length name + 1);
+          if name=key then (name,value)::rest else (name,previous)::update rest in
+    update fields in
   match node.kind with
   | "parameter" ->
       let name = Json.string (attribute node "name") in
@@ -112,7 +126,8 @@ let rewritten bindings node =
       if event then put "ongoing_duration" (str "explicit") attrs else attrs
   | _ -> node.attrs
 
-let policies request nodes =
+let policies charge request nodes =
+  charge (1 + List.length nodes);
   match Build_request.behavior_profile request with
   | Build_request.V1 -> Behavior.execution_policies Behavior.V0_1
   | Build_request.V2 ->
@@ -139,15 +154,19 @@ let policies request nodes =
       Behavior.execution_policies ~integral_step Behavior.V0_2
 
 let dependencies node = match node.role with None -> node.inputs | Some role -> role :: node.inputs
-let derive map nodes =
+let derive charge map nodes =
   let pending = ref (List.map (fun node -> node.id, false) nodes) and seen = ref Ids.empty in
   let ancestry = ref Names.empty and contacts = ref Names.empty and constants = ref Names.empty in
   let retained = ref 0 in
   while !pending <> [] do
     let identity, closing = List.hd !pending in pending := List.tl !pending;
+    charge (1 + String.length identity);
     let node = lookup map identity in
     if closing then (
-      let lineage = List.fold_left (fun result reference -> Ids.union result (Names.find reference !ancestry))
+      let lineage = List.fold_left (fun result reference ->
+          let inherited = Names.find reference !ancestry in
+          charge (1 + String.length reference + Ids.cardinal result + Ids.cardinal inherited);
+          Ids.union result inherited)
           (Ids.singleton identity) (dependencies node) in
       retained := !retained + Ids.cardinal lineage;
       require (!retained <= Limits.max_json_nodes) "lowering_lineage_limit" "Complete retained source ancestry exceeds the JSON budget.";
@@ -171,12 +190,14 @@ let derive map nodes =
       constants := Names.add identity constant !constants)
     else if not (Ids.mem identity !seen) then (
       seen := Ids.add identity !seen;
-      pending := List.map (fun reference -> reference, false) (dependencies node) @ ((identity, true) :: !pending))
+      pending := List.map (fun reference -> charge (1 + String.length reference); reference, false)
+        (dependencies node) @ ((identity, true) :: !pending))
   done;
   !ancestry, !contacts, !constants
 
-let constant_durations constants nodes =
+let constant_durations charge constants nodes =
   List.iter (fun node ->
+      charge (1 + List.length node.inputs);
       let reference = match node.kind, node.inputs with
         | ("held_for" | "recently" | "action.pulse" | "integrated"), [_; duration] -> Some duration
         | "followed_by", [_; _; duration] -> Some duration
@@ -192,62 +213,83 @@ let constant_durations constants nodes =
       Option.iter (fun reference -> if not (Names.find reference constants) then
           error node "unsupported_lowering_dynamic_duration" "A temporal duration must be a bound design-time constant.") reference) nodes
 
-let bound_document value =
+let bound_document ~encode charge value =
   (* Count keys too at this native construction boundary. All ancestry and
      membership expansion is already cumulatively bounded before construction. *)
   let pending = ref [value, 0] and count = ref 0 in
   while !pending <> [] do
     let value, depth = List.hd !pending in pending := List.tl !pending;
+    charge 1;
     incr count;
     require (!count <= Limits.max_json_nodes && depth <= Limits.max_depth)
       "lowering_output_limit" "Complete lowered document exceeds the JSON value/depth budget.";
     (match value with
-     | Json.Array values -> pending := List.map (fun value -> value, depth + 1) values @ !pending
+     | Json.Array values -> charge (List.length values);
+         pending := List.map (fun value -> value, depth + 1) values @ !pending
      | Json.Object fields ->
          require (List.length fields <= Limits.max_json_nodes - !count)
            "lowering_output_limit" "Complete lowered document exceeds the JSON key/value budget.";
-         List.iter (fun (key, _) -> require (String.length key <= Limits.max_string_bytes)
+         List.iter (fun (key, _) -> charge (1 + String.length key); require (String.length key <= Limits.max_string_bytes)
              "lowering_output_limit" "Lowered object key exceeds the wire string budget.") fields;
          count := !count + List.length fields;
          pending := List.map (fun (_, value) -> value, depth + 1) fields @ !pending
      | Json.String value ->
+         charge (String.length value);
          require (String.length value <= Limits.max_string_bytes)
            "lowering_output_limit" "Lowered string exceeds the wire string budget."
+     | Json.Int value -> charge (1 + Z.numbits value / 3)
      | _ -> ())
   done;
-  ignore (Canonical.encode value)
+  if encode then ignore (Canonical.encode value)
 
-let lower request =
+let reserve_import charge value =
+  (* Account for actual scalar spelling and sorting instead of pretending every
+     value is a worst-case binary64 number. The structural decoder has no work
+     callback; reserve its bounded nested traversals before entering it. *)
+  let used = ref 0 in
+  let counted amount = charge amount; used := !used + amount in
+  ignore (Codec.encode ~limits:(Codec.make_limits ~charge:counted ()) value);
+  charge (127 * !used)
+
+let lower_in ?parent ~charge request =
   let original = Build_request.intent request in
   let source = Intent.to_json original in
-  let nodes = Json.array (field "nodes" source) |> List.map read_node in
+  (* Typed input is already structurally bounded. Charge complete materialization
+     and scalar content before running the producer's graph transformations. *)
+  Option.iter (fun _ -> ignore (Codec.fingerprint ~limits:(Codec.make_limits ~charge ())
+      (Build_request.to_json request))) parent;
+  let nodes = Json.array (field "nodes" source) |> List.map (fun raw -> charge 1; read_node raw) in
   require (7 + 3 * List.length nodes <= (Limits.max_json_nodes - 256) / 4)
     "lowering_report_limit" "Independent complete preservation report would exceed its JSON budget.";
-  let map = List.fold_left (fun result node -> Names.add node.id node result) Names.empty nodes in
-  profile_sources (Build_request.behavior_profile request) map nodes;
+  let map = List.fold_left (fun result node -> charge (1 + String.length node.id); Names.add node.id node result) Names.empty nodes in
+  profile_sources charge (Build_request.behavior_profile request) map nodes;
   let bindings = Build_request.resolved_bindings request in
-  let by_name = List.fold_left (fun map (name, value) -> Names.add name value map) Names.empty bindings in
-  let normalized = List.map (fun node -> { node with attrs = rewritten by_name node }) nodes in
-  let normalized_map = List.fold_left (fun result node -> Names.add node.id node result) Names.empty normalized in
-  let ancestry, contacts, constants = derive normalized_map normalized in
-  constant_durations constants normalized;
-  let requirements = List.filter (fun node -> List.mem node.kind ["rule"; "state"; "memory"]) nodes in
+  let by_name = List.fold_left (fun map (name, value) -> charge (1 + String.length name); Names.add name value map) Names.empty bindings in
+  let normalized = List.map (fun node -> { node with attrs = rewritten charge by_name node }) nodes in
+  let normalized_map = List.fold_left (fun result node -> charge (1 + String.length node.id); Names.add node.id node result) Names.empty normalized in
+  let ancestry, contacts, constants = derive charge normalized_map normalized in
+  constant_durations charge constants normalized;
+  let requirements = List.filter (fun node -> charge 1; List.mem node.kind ["rule"; "state"; "memory"]) nodes in
   let memberships = Hashtbl.create (List.length nodes) in
   (* Insert reversed, then reverse each membership once to preserve declaration
      order without a quadratic scan over all nodes and all requirements. *)
   List.iter (fun node ->
       Ids.iter (fun ancestor ->
+          charge (1 + String.length ancestor + String.length node.id);
           let old = Option.value ~default:[] (Hashtbl.find_opt memberships ancestor) in
           Hashtbl.replace memberships ancestor (("requirement:" ^ node.id) :: old))
         (Names.find node.id ancestry)) requirements;
   let emitted = List.map (fun node ->
+      charge (1 + List.length node.inputs + List.length node.attrs);
       let memberships = Option.value ~default:[] (Hashtbl.find_opt memberships node.id) |> List.rev in
+      charge (List.length memberships);
       Json.Object ["id", str node.id; "kind", str node.kind; "inputs", strings node.inputs;
         "attributes", Json.Object node.attrs; "data_type", node.dtype;
         "role", (match node.role with None -> Json.Null | Some role -> str role);
         "source", node.source; "contact_bound", Json.Bool (Names.find node.id contacts);
         "requirement_ids", strings memberships]) normalized in
-  let requirements = List.map (fun node -> Json.Object [
+  let requirements = List.map (fun node ->
+      charge (1 + Ids.cardinal (Names.find node.id ancestry)); Json.Object [
       "id", str ("requirement:" ^ node.id); "kind", str node.kind; "source_node_id", str node.id;
       "lineage", strings (Ids.elements (Names.find node.id ancestry)); "source", node.source]) requirements in
   let profile = match Build_request.behavior_profile request with
@@ -256,9 +298,18 @@ let lower request =
       "schema_version", str (Behavior.schema_version profile); "name", field "name" source;
       "nodes", Json.Array emitted; "roots", field "roots" source; "source_fingerprint", str (Intent.fingerprint original);
       "requirements", Json.Array requirements;
-      "source_links", Json.Object (Names.bindings ancestry |> List.map (fun (identity, values) -> identity, strings (Ids.elements values)));
-      "policies", policies request nodes; "parameter_bindings", Json.Object bindings] in
-  bound_document document;
+      "source_links", Json.Object (Names.bindings ancestry |> List.map (fun (identity, values) ->
+          charge (1 + String.length identity + Ids.cardinal values); identity, strings (Ids.elements values)));
+      "policies", policies charge request nodes; "parameter_bindings", Json.Object bindings] in
+  bound_document ~encode:(Option.is_none parent) charge document;
+  (* The domain decoder retains its independent structural/semantic limits.
+     Its complete document import is charged before decoding, as are the
+     independent checker's own traversals through the same ancestor below. *)
+  Option.iter (fun _ -> reserve_import charge document) parent;
   let behavior = Behavior.of_json document in
-  ignore (Bioc_checker.Lowering_check.check ~expected_request:request ~behavior);
+  ignore (Bioc_checker.Lowering_check.check_with_budget ?parent ~expected_request:request ~behavior ());
   behavior
+
+let lower request = lower_in ~charge:(fun _ -> ()) request
+let lower_with_budget ~parent request =
+  lower_in ~parent ~charge:(Work.charge parent) request

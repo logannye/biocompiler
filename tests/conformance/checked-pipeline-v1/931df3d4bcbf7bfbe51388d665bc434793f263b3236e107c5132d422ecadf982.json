@@ -1,0 +1,1 @@
+{"$type":"dataclass","class":"biocompiler.compiler.pipeline.ScopedObligation","fields":{"description":"Locked components preserve the accepted synthetic graph and satisfy declared composition contracts.","evidence_kind":{"$type":"enum","class":"biocompiler.verification.evidence.EvidenceKind","value":"model_conditional"},"id":"component_linkage","scope":"synthetic_components"}}

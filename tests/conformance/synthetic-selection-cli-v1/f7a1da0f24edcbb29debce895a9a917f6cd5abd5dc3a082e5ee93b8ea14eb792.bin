@@ -1,0 +1,2 @@
+usage: biocompiler synthetic-select [-h] --request REQUEST [--output OUTPUT]
+biocompiler synthetic-select: error: the following arguments are required: --request

@@ -1,0 +1,1 @@
+{"$type":"dataclass","class":"biocompiler.compiler.pipeline.ScopedObligation","fields":{"description":"signal","evidence_kind":{"$type":"enum","class":"biocompiler.verification.evidence.EvidenceKind","value":"unresolved"},"id":"source:n000004","scope":"therapeutic_implementation"}}

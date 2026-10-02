@@ -1,0 +1,1 @@
+{"$type":"dataclass","class":"biocompiler.compiler.pipeline.ScopedObligation","fields":{"description":"Unestablished by software fixture assembly: biological component function.","evidence_kind":{"$type":"enum","class":"biocompiler.verification.evidence.EvidenceKind","value":"empirical"},"id":"biological_component_function","scope":"human_complete_payload"}}

@@ -1,0 +1,26 @@
+{
+  "record_fingerprint": "7e1b1d9c8e176be41d96b78a75df2f82b7236b029700756c6a174a07739ba06f",
+  "request_fingerprint": "6e35edd46e79b69ae91b0857390f9bddcefbda71686a19ad0ababd311fc23329",
+  "operation": "check",
+  "mode": "candidate",
+  "intended_use": "software_test",
+  "human_therapeutic_admission": "not_admitted",
+  "claim_scope": "Historical finite-history software-model verification record; fresh replay requires independent complete operation authority. No universal, biological or human therapeutic claim.",
+  "outcome": "unsupported",
+  "diagnostics": [
+    {
+      "code": "unsupported_generation_profile",
+      "message": "Operation 'recently' is unsupported by biocompiler.synthetic.temporal.v0.1; temporal/state semantics are never approximated. [n000009] at /Users/logannye/Documents/ChatGPT/GeneMedicineCompiler/work/m11-human-evidence/tests/test_synthetic_generation.py:30",
+      "requirement_id": null,
+      "node_id": "n000009",
+      "source": {
+        "file": "/Users/logannye/Documents/ChatGPT/GeneMedicineCompiler/work/m11-human-evidence/tests/test_synthetic_generation.py",
+        "line": 30,
+        "function": "fixture"
+      }
+    }
+  ],
+  "counterexamples": [],
+  "coverage": [],
+  "output": "/tmp/biocompiler-workflow-cli-v1/cases/candidate_unsupported-run/output.json"
+}

@@ -1,0 +1,4 @@
+(library
+ (name bioc_pipeline)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_compiler
+   bioc_realization_checker bioc_synthetic_producer bioc_candidate_runtime zarith))

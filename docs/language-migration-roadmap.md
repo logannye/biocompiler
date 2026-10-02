@@ -4,7 +4,188 @@ Created: 2026-10-01, America/Los_Angeles.
 
 **Decision:** TypeScript for Studio; Python for authoring, orchestration and scientific exploration; OCaml for the semantic compiler, independent checking and canonical emission.
 
-**Status:** the default remains Python; explicit architecture SDK/CLI selection uses the validated OCaml core. PR48–51 passed all required PR gates and are merged, covering installed architecture routing, independent candidate/component execution and realization evidence. PR52–56 preserve independent realization/component acceptance and synthetic production; their complete current-revision gates remain pending. The next implementation exposes nine experimental realization operations and five optional Python SDK routes. Whole workflows, distribution, remaining public profiles and default cutover remain open.
+**User-directed session cutoff, 2026-10-02:** continue until the four gates below
+are complete, then pause for a decision about the next session. Conversational
+authoring (LM-11) and expanded Studio functionality remain future roadmap work;
+existing Studio routing and all supported compiler workflows remain in scope.
+Biological quality/correctness work has not begun.
+
+- [ ] **LM-CUTOFF-1:** finish manager compatibility, fixed-producer typed returns
+  and all remaining supported workflow families, preserving public behavior.
+- [ ] **LM-CUTOFF-2:** complete existing SDK/CLI/Studio routing and OCaml ownership
+  of canonical package content and export acceptance.
+- [ ] **LM-CUTOFF-3:** ship prebuilt core distributions and validate fresh
+  installations on supported platforms.
+- [ ] **LM-CUTOFF-4:** switch validated profiles to OCaml, retire their production
+  Python semantic paths and pass the complete integration/release gates for the
+  exact integrated revision. Record evidence before pausing.
+
+**Combined validation checkpoint:** PR61 run `37032666946` exposed a shared
+resource-diagnostic expectation error present in PR60–73. The source-backed
+[correction](../protocol/migration-authority-limit-correction.json) preserves the
+original request and native code. The fixed-provider checkpoint carries that
+correction and the complete accumulated workflow/manager changes for one combined
+hosted validation against the PR59 workflow-service base. Every existing native,
+unit, installed, browser, reproducibility and release gate remains required.
+Historical draft PRs and their evidence remain available; no pending, failed or
+superseded result is treated as acceptance.
+
+**Current work toward LM-CUTOFF-1:** the combined source checkpoint is
+[PR75](https://github.com/logannye/biocompiler/pull/75), source
+`d56e814ef70439eab5b227fe227e0d2cd1ba087a`, with exact-head
+[run 37075992379](https://github.com/logannye/biocompiler/actions/runs/37075992379).
+It preserves all 39 eligible retained-manager chains and their 566 original
+operations, with complete public build identities. The source-backed
+[CLI assertion correction](../protocol/migration-cli-source-inventory-correction.json)
+also addresses the two stale inventory assertions observed in PR74. Hosted native
+and complete integration acceptance remain pending. This run exposed native
+framed-inspection order assertions and three original-source baseline assertions
+that need correction. Local Python controls and test discovery do not close
+those gates; no failed checkpoint confers acceptance. The
+[regression-harness correction](../protocol/migration-manager-regression-harness-correction.json)
+preserves the immutable corpus, exact manager-source witness and original test
+bodies. All 25 affected and lineage controls pass on each local Python version;
+the corrected native and complete integration gates remain required.
+
+The native callback test in PR74 and PR75 failed because its third argument
+selected a full capture exceeding the existing parser's node allowance. The
+[source-backed correction](../protocol/migration-callback-corpus-selection-correction.json)
+uses the existing compact index with byte-identical selected cases and authority
+identities, preserving the parser limits and original corpus. Corrected native
+execution now reaches the callback behavior assertions. Its next failure compared
+canonical JSON object-member order to manager insertion order; the correction
+uses the existing explicit `inspect-ordered` arrays and still verifies their
+complete, duplicate-free mapping membership. Full corrected execution remains
+required.
+
+The combined batch implements the original public registration interception and
+three provenance-rejection recipes; the
+[registration design](migration-fixed-registration-interception.md) records its
+source and execution boundaries. Its narrow base-method delegation must retain
+the complete original source counterpart and prove that native execution never
+enters the Python semantic body. All four cutoff gates above remain open; Python
+remains the production default. The
+[continuation design and evidence](migration-fixed-workflow-continuations.md)
+record the implemented phase boundary, object identities and remaining acceptance.
+
+**Resumed migration checkpoint, 2026-10-02:** PR57 and PR58 passed all 36
+exact-head jobs and are merged. Independent aggregate reconstruction, both
+platform binary manifests and all four full artifact comparisons reproduce their
+hosted receipts. Source, tested and integrated trees are identical; see the
+[protocol/workflow validation record](../protocol/migration-realization-protocol-workflow-validation.json).
+PR59 has now passed all 36 jobs and merged with independently reconstructed
+receipts and identical source, tested, prospective and integrated trees; see the
+[workflow-service validation record](../protocol/migration-workflow-service-validation.json).
+Its separate integrated-main run remains pending. Later checkpoints still require
+successful corrected gates. The resumed session
+implementation is additive source work with Python process tests; native
+compilation, installed replay and full public-manager integration remain pending.
+The [archived scaffold](migration-pipeline-session-scaffold.md) records the earlier
+credit-limit draft, not the current implementation status.
+
+**Callback foundation checkpoint:** deferred native manager operations, retained
+Python object capabilities, nested framed continuations and a typed Python
+transport are now implemented as additive libraries. Three new hosted native
+suites bring the required inventory to 101. The standalone verifier remains
+separate. A manager application dispatcher, public typed adapters, complete
+installed callback replay and default cutover remain open. The PR69 compilation
+warning was corrected at `85dfc8ca114ea629ad1f65eb010d0a635f71d556`;
+its replacement [hosted run](https://github.com/logannye/biocompiler/actions/runs/37036025402)
+is pending. Neither the correction nor the new libraries is a native PASS.
+PR70 also required a documentation-spacing correction after warning 50 in
+`callback_channel.mli`; corrected source `6c31b59a789a0b5a8d8b8edc6fea93d586292d78`
+is awaiting [replacement hosted validation](https://github.com/logannye/biocompiler/actions/runs/37041405310).
+The [callback source checkpoint](../protocol/migration-pipeline-callback-checkpoint.json)
+pins the implemented files, 134 passing local Python checks, strict typing across
+19 modules and the unresolved native/public integration gates.
+
+**Live manager source checkpoint:** the Core-only application dispatcher, typed
+Python adapter and installed identity campaign are implemented. Native suite 102
+and a complete four-runtime comparison are wired into existing hosted gates.
+The default remains Python. See the [manager implementation](migration-pipeline-manager.md)
+and [source checkpoint](../protocol/migration-pipeline-manager-checkpoint.json).
+PR70's exact source-list test also needed the two reviewed callback additions;
+corrected source `40fad81c5124f540c56914816f4bf21c077ac059` now awaits
+[replacement validation](https://github.com/logannye/biocompiler/actions/runs/37046030719).
+The earlier PR70 runs are superseded, not acceptance evidence.
+
+PR71 source `5568a0f7135efc042e95a0a25a67e77e678bb659` is now pushed as a
+[draft checkpoint](https://github.com/logannye/biocompiler/pull/71). In
+[run 37046612682](https://github.com/logannye/biocompiler/actions/runs/37046612682),
+Linux job `110969508717` has completed compilation and the complete native literal
+and mutation-suite step successfully. The rest of that job, macOS and installed
+replay remain pending; this is partial hosted evidence, not final acceptance.
+The next branch implements ordered inspection and complete live comparison replay.
+
+The [next-phase biological handoff](biological-correctness-next-phase-handoff.md)
+is preserved as future-session context. Its BC checklist remains unexecuted;
+finish the LM release and cutover gates before that separate development phase.
+
+**Installed-fixture correction:** subsequent PR71/72 unit runs exposed assumptions
+about checkout traceback filenames and the origin of an already installed
+package. The frozen deferred oracle, all 47 case bodies and the production import
+guard remain unchanged. An additive checker retains complete raw observations,
+binds loaded functions to their source and module namespace, and checks two exact
+interpreter-frame correspondences against independently executed primitives.
+All 17 focused tests pass on local Python 3.11.15 and 3.14.6; four source/installed
+origin controls also pass. The [correction record](../protocol/migration-deferred-runtime-correction.json)
+is pushed in PR70 `c7f91226f260b64c52556fc8cda87e533ea0ccac`
+([run](https://github.com/logannye/biocompiler/actions/runs/37055359931)),
+PR71 `76349a197a937ca9d3653600396851054298509a`
+([run](https://github.com/logannye/biocompiler/actions/runs/37055362599)), and
+PR72 `b28ce4cef6786212bda97abc33cd075a619c506b`
+([run](https://github.com/logannye/biocompiler/actions/runs/37055359590)).
+These replacement runs remain pending; earlier runs are superseded for acceptance.
+
+**Deferred compatibility source checkpoint:** the installed manager campaign now
+requires all 47 original deferred cases alongside the existing five identity and
+34 comparison cases. Ordered rejection snapshots, typed historical state views,
+exact traceback segments, exception-object retention and complete fingerprint
+reference chains are implemented. The final focused batch passes 46 tests on
+each local Python version; native execution and complete hosted acceptance are
+pending. See the [source checkpoint](../protocol/migration-deferred-manager-checkpoint.json).
+This source is pushed in [draft PR73](https://github.com/logannye/biocompiler/pull/73)
+at `6a482db5ca6038126a859b6eea87186500afbd89`; its
+[hosted run](https://github.com/logannye/biocompiler/actions/runs/37059378799)
+is pending. The next source batch restores fixed-producer public return classes
+and explicit shared-object identities; the default remains Python.
+
+- [x] **LM-03/12 realization protocol hosted checkpoint (PR57):** run
+  `36987943622`, source `41ab0f99375d7293a4b86c28da1cd5408b7376c0`,
+  integrated `71c56d2fc2eecbdb9efbb3da1e9d82a25c8b4e22`: all 36 jobs,
+  2,505 tests per Python version, 6,719 protocol and 4,157 SDK checks per role,
+  complete four-runtime equality and rehashed native executable authority.
+- [x] **LM-03/25 workflow engine hosted checkpoint (PR58):** run
+  `36987950690`, source `241bd423b3b1b877d03c2a556b325994ffe8633b`,
+  integrated `15c58934619909d5a8b97e1aa1f3cc556b010c3d`: all 36 jobs,
+  2,528 tests per Python version and the complete native workflow engine corpus.
+  Descriptor service, installed public routing and export integration remain open.
+- [ ] **LM-03 PR57/58 separate integrated-main runs:** their merge trees equal
+  the tested trees, but the new main push runs remain a separate pending gate.
+
+- [x] **LM-03 CI native fixture wiring:** bind every registered Dune fixture in
+  the complete native-suite step and add an exhaustive source regression.
+- [x] **LM-03 complete unit-plan transport:** use matching bounded 64 MiB plan
+  readers/writers while retaining 20 MB limits for other shard JSON. The focused
+  campaign passes 33 tests, including a complete plan exceeding 20 MB, exact
+  byte boundaries, atomic writer failure and full plan/run/accounting traversal.
+- [x] **LM-03 resumed gate corrections:** the exact earliest leaf diagnostic,
+  complete eight-operation inspection census and individually pinned unused CLI
+  transport source lineage are corrected and pushed across PR59–68. All original
+  CLI children and full source/artifact comparisons remain required.
+  [Exact corrected heads](../protocol/migration-resume-gate-corrections.json).
+- [x] **LM-03/12/25 PR59 bounded workflow service integration:** all 36 jobs
+  passed at `65f38969673337de3b6378a8486c26c7f6f72c78`, with exactly 2,554 tests
+  on Python 3.11.16 and 3.14.7. Independent aggregate and three complete artifact
+  comparisons reproduce the hosted receipts, including both native binary
+  manifests and all four installed runtime slots. Merge
+  `d2f65c59aba3a4af97dbcabd59e8142961e12c4a` has the exact source/tested tree.
+  See the [validation record](../protocol/migration-workflow-service-validation.json).
+  Separate integrated-main validation and later public-manager gates remain open.
+- [ ] **LM-03 corrected hosted acceptance:** require all 36 jobs on the corrected
+  heads, including full unit accounting and both native platforms, before merge.
+
+**Status:** the default remains Python; explicit architecture SDK/CLI selection uses the validated OCaml core. PR48–59 have completed their exact-revision gates and are integrated (PR52 through PR53). PR59 now adds the validated bounded workflow service and immutable SDK; its separate main run remains pending. Later checkpoints preserve public workflow routes, synthetic producers, installed SDK/CLI integration and rich native inspection; their complete corrected-revision gates remain pending. The current P2 checkpoint implements native checked-manager contracts, lifecycle authority and fixed synthetic/component pipelines, with complete original Python captures retained and hosted native validation pending. Distribution, remaining profiles, public native pipeline/package authority and default cutover remain open.
 
 The validated foundation is merged in [PR37](https://github.com/logannye/biocompiler/pull/37), with the exact revision/platform results in the [foundation receipt](../protocol/migration-foundation-validation.json). Typed request, all 42 Behavior operations and molecular-coordinate domains are merged in [PR38](https://github.com/logannye/biocompiler/pull/38); the [domain receipt](../protocol/migration-domain-validation.json) records both native platforms and full Python/integration checks. Both integrated main revisions also passed their required gates.
 
@@ -281,7 +462,8 @@ These checkpoints record narrower validated work; they do not complete a broad L
   `b866ee680f8110080c6c837a9762dd914dcb1d43`; integrated revision is
   `652e2aa0aa24bf563412483827d07c4bc027a4e0`.
   [Validation receipt](../protocol/migration-realization-foundation-validation.json).
-  The separate integrated-main run remains pending; broader LM-22/25 exits
+  The separate integrated-main run 36972688727 also passed and its complete
+  receipts were independently verified; broader LM-22/25 exits
   remain open for their remaining operations and public routes.
   The complete 324-method capture now retains 70,019 observations, including
   both actual subprocesses; fresh recapture and four integrity/replay checks
@@ -291,16 +473,18 @@ These checkpoints record narrower validated work; they do not complete a broad L
   mandatory in Dune and a separate hosted campaign (60 native suites total).
   An initial ambiguous record-field warning was corrected before the complete
   successful validation above.
-- [ ] **B1.09b fresh admission, generic linking and selection:** reproduce complete
+- [x] **B1.09b fresh admission, generic linking and selection:** reproduce complete
   policy assessments, provider grounding, lifetime/resource accounting and ranked
   alternatives. Retained decisions and identity-only freshness cannot grant use.
-  The next batch implements complete composition reports, independent generic
+  The implementation includes complete composition reports, independent generic
   linking with exact rational resource accounting, deterministic selection and
   fresh actual-component behavior checking. The original 373-method capture
   retains all 4,539 calls, including 415 link checks, 35 selections, eight fresh
   selection replays and 85 component behavior checks. The 52 source-correspondence
-  calls remain explicitly deferred. New native and complete hosted gates remain
-  pending; this item is not yet validated. Fresh full recapture is byte-identical;
+  calls remain explicitly deferred to B1.09d. PR53 passed all 69 native suites
+  per platform and all 31 hosted jobs, including 2,441 tests on each Python
+  version. The integrated tree exactly matches the tested tree; the separate
+  main run remains pending. Fresh full recapture is byte-identical;
   the corpus retains 5,394 documents / 30,453,450 bytes under pin
   `9eb76b8f697b00be207e6bb2e1cccdfd46ee974b09a3525d21eb4f32634ee116`.
   Three exact original admission-policy version mutations have test-only
@@ -314,8 +498,10 @@ These checkpoints record narrower validated work; they do not complete a broad L
   Its first hosted build caught two ambiguous status constructors and one
   partially applied test limit constructor. Explicit type annotations and the
   missing unit argument correct those errors; strict warnings and all required
-  gates remain enabled. Fresh hosted validation is required before completion.
-- [ ] **B1.09c independent realization acceptance:** combine independently executed
+  gates remain enabled. Corrected source `7449f71c89966b9123752a6ed69d6c4d0ae4710b`
+  passed run 36980275430 and merged as `18a141e85a425cd801d5e831c8cf36d021692138`.
+  [Complete validation and integration receipt](../protocol/migration-realization-stack-validation.json).
+- [x] **B1.09c independent realization acceptance:** combine independently executed
   source and actual candidate traces, preserving active/inactive nonvacuity,
   deadline transitions, cancelled and incomplete episodes, failure precedence,
   counterexamples and exact bounded claims. Bound preparation, both executions,
@@ -333,23 +519,27 @@ These checkpoints record narrower validated work; they do not complete a broad L
   freshness result; production APIs expose no version override. All 137 generic
   component-acceptance observations remain deferred. Four new suites bring the
   native total to 64, with the complete corpus mandatory in both hosted campaigns.
-  Full product gates remain pending; this item and the broader LM checkboxes
-  stay open until their complete exit criteria pass.
-  Update: [PR52](https://github.com/logannye/biocompiler/pull/52), source
-  `d55d660f700d3da4368e6755e60a76efa1a45447`, now passes all 64 native suites
-  on both hosted platforms. Its full product workflows remain pending.
+  Corrected PR52 source `23b142b42a263227a8565403fb4f62cc8a1d638c` passed all
+  31 product gates in run 36980274253, with 2,435 tests per Python version.
+  PR53 independently validated and integrated all of this implementation and
+  its corrections; PR52 was then closed as superseded, preserving its branch
+  and complete receipts. Broader public-routing and default-cutover exits remain
+  open. [Validation and inclusion evidence](../protocol/migration-realization-stack-validation.json).
+  Earlier [PR52](https://github.com/logannye/biocompiler/pull/52) source
+  `d55d660f700d3da4368e6755e60a76efa1a45447` had passed all 64 native suites
+  on both hosted platforms while full product workflows were still pending.
   Hosted Python 3.11 replay exposed six version-specific mappingproxy error
   messages. Correction `097e9789b30742b45afa16fcc11def083325a644` pins exactly
   those counterparts without changing capture inputs, errors or native codes;
-  all six source replay/integrity tests pass. Its fresh complete hosted gates
-  remain required; the earlier native PASS is not transferred to the new revision.
+  all six source replay/integrity tests pass. Fresh complete hosted gates were
+  required; the earlier native PASS was not transferred to the new revision.
   The later Python 3.11 campaign exposed six additional list/dict set-membership
   messages in the same retained corpus. The correction pins all twelve exact
   version-specific rejection identities, messages and native codes without
   altering source inputs or corpus expectations. All six source replay/integrity
-  tests pass; the correction is propagated to PR52/53/54 and each requires fresh
-  complete hosted validation. No prior native PASS is transferred.
-- [ ] **B1.09d component correspondence and fresh replay:** independently reconstruct
+  tests pass; the correction was propagated to PR52/53/54 and each subsequently
+  passed its fresh complete hosted validation. No prior native PASS was transferred.
+- [x] **B1.09d component correspondence and fresh replay:** independently reconstruct
   the expected source/assembly correspondence without importing its adapter or
   producer; require complete generic linking before behavior acceptance.
   The [independent acceptance implementation plan](migration-synthetic-acceptance-plan.md)
@@ -374,7 +564,12 @@ These checkpoints record narrower validated work; they do not complete a broad L
   [PR54](https://github.com/logannye/biocompiler/pull/54) preserves this declaration
   batch. Its first hosted build caught two ambiguous documentation comments;
   correcting those annotations preserves strict warnings and leaves the full
-  replacement native/product gates required.
+  replacement native/product gates required. Corrected source `7098c102ba02fc42f0dad25632cd81fc0fb5886f`
+  subsequently passed all 71 native suites per platform and all 31 jobs, with
+  2,447 tests per Python version, in run 36980279079. Its integrated revision
+  `fb0217324a0550717fc369501de601ed2be22e82` has the exact tested tree.
+  The separate main run remains pending, and this declaration checkpoint does
+  not close B1.09d's later acceptance implementation.
   The next acceptance batch now implements private independent source provenance
   and actual-candidate-derived component authority, plus public fresh synthetic
   and assembly checkers. Expected declarations remain private, actual candidate
@@ -390,9 +585,16 @@ These checkpoints record narrower validated work; they do not complete a broad L
   12 complete assembly reports and 14 exact assembly rejections, with shared
   resource limits and failure isolation. Static private-boundary mutations and
   all 41 boundary/CI/inventory checks pass. Four new native suites bring the
-  required total to 75; native compilation and full product validation remain
-  hosted and pending. This item and its broader LM exits remain unchecked.
-- [ ] **B2 direct synthetic production and selection:** the next implementation
+  required total to 75. Corrected source `d59af59488344812b5d8895b339c37e852411d54`
+  passed all 31 jobs in [run 36980282550](https://github.com/logannye/biocompiler/actions/runs/36980282550),
+  including all 75 native suites on Linux and macOS and 2,454 tests per Python
+  version. Independent receipt reconstruction and rehashing reproduced all four
+  sets of 175 observations and 219 artifacts. [PR55](https://github.com/logannye/biocompiler/pull/55)
+  merged as `c0b32b668c328ee88c5320886d13b91ea3e24038`; its tree exactly matches
+  the tested tree. The [stack validation record](../protocol/migration-realization-stack-validation.json)
+  retains this evidence. This scoped checkpoint is complete; broader LM exits
+  remain open.
+- [x] **B2 direct synthetic production and selection:** the next implementation
   independently ports generation/proposal, both-strategy selection and full
   component adaptation, with complete Alternative/Result domain records. The
   producer library calls public fresh checkers and cannot import their private
@@ -405,9 +607,13 @@ These checkpoints record narrower validated work; they do not complete a broad L
   retains 5,192 documents / 114,234,914 bytes. Nine complete Python integrity and
   replay checks and independent byte-identical recapture pass. Independent full
   producer/domain literals and exact resource-boundary cases supplement this
-  capture. Four mandatory suites bring the native total to 79; hosted native
-  compilation and all 31 product gates remain required before this checkbox can
-  close. Public routing, checked pipelines, packaging and default cutover remain
+  capture. Four mandatory suites bring the native total to 79. Corrected source
+  `2024d8fdd2a9a8c300ef2dc0980623b820f1997c` passed all 31 jobs in
+  [run 36980326616](https://github.com/logannye/biocompiler/actions/runs/36980326616),
+  with all 79 native suites on both hosted platforms and 2,463 tests per Python
+  version. Complete aggregate reconstruction and four-runtime artifact rehashing
+  match the retained receipts. PR56 merged as
+  `01c211dfe0be459c6e272c87efdec6aa9bc2e405`, with the exact tested tree. Public routing, checked pipelines, packaging and default cutover remain
   separate unfinished work. The [producer implementation audit](migration-synthetic-producer-plan.md)
   and [next public-routing plan](migration-realization-routing-plan.md) retain
   the exact source responsibilities and remaining exit criteria.
@@ -515,6 +721,488 @@ These checkpoints record narrower validated work; they do not complete a broad L
   See the [native implementation plan](migration-realization-workflow-native-plan.md),
   [public workflow audit](migration-realization-workflow-public-plan.md) and
   [complete capture audit](migration-realization-workflow-conformance-plan.md).
+
+- [x] **LM-03 actual CLI capture checkpoint:** all 70 actual child processes were
+  independently repeated with exact stdout, stderr, exits and complete filesystem
+  bytes. The 16 original CLI observations and four original test methods remain
+  intact; 66 console invocations and four module invocations retain all operation
+  and mode pairs, nonpassing replay, publication failures, ordering and size
+  boundaries. Eleven integrity/recapture tests pass. The complete inventory pin
+  is `a67edb95f75aa011ed5c059fe8cbe578fbe118d056931e3992f73775e8951da7`;
+  114 content documents retain 5,200,804 bytes. This proves the original Python
+  CLI baseline, not migrated native CLI execution.
+- [ ] **LM-12/R5 native public-workflow preparation:** compatible presentation v2
+  now retains v1 while adding native exit policy, reduction frame counts and
+  command validation after source validation. Separate native source preflight
+  preserves the future replay route's source-before-file-error order. Immutable
+  Python views preserve complete records and formatting through audited output
+  leaf codecs; legacy input serialization remains untrusted input only. Local
+  focused transport/view checks pass; the 88 native suites, installed campaigns
+  and full 36-job gate require hosted validation. The original public workflow
+  functions and CLI remained unchanged at this PR60 preparation checkpoint. The
+  subsequent explicit-routing work is recorded below; hosted installed view/CLI
+  conformance, R6 and distribution/cutover remain required.
+  See [contracts and evidence scope](../protocol/workflow-public-contracts-v1.md).
+
+- [x] **LM-03 public-route default preservation checkpoint:** the two complete
+  historical source files are retained in a separately pinned exact source/AST
+  witness. All fourteen workflow recapture tests pass (102.329 seconds), and all
+  70 original CLI children reproduce unchanged outputs, exits and filesystem
+  bytes. Actual source/import metadata and the added implicit `core=None` binding
+  remain in retained evidence; only explicitly proved source and derived-signature
+  metadata are projected for baseline comparison. Eighteen lineage mutation tests
+  and all eight earlier source-census tests pass; 2,132 entries across nine source
+  inventories were independently checked. No original freezer or golden was edited.
+- [ ] **LM-12/R5 explicit public workflow routing:** the two public workflow
+  functions now accept optional `core=` and delegate to immutable native views.
+  The four workflow CLI commands accept explicit core/verifier paths, digest and
+  timeout controls while preserving default argparse text. Native preflight
+  precedes replay historical-file I/O, and fresh replay rechecks the same frozen
+  source bytes. Native presentation supplies exit policy and reduction counts.
+  Nine SDK and twelve actual-child Python fixture tests pass; strict typing covers
+  eleven adapter modules. The public SDK campaign retains 164 observations per
+  executable role, including every original workflow occurrence and all supported
+  input forms. The CLI campaign retains all 70 children per role, exact publication
+  bytes and full native wire responses. Their four-runtime comparators rehash
+  complete evidence. Python protocol fixtures pass; installed native execution on
+  both platforms and the complete hosted gate remain required for this revision. This is implementation progress, not R5
+  completion or default cutover. See [native workflow routing](native-workflow-routing.md).
+
+**Credit-limit preservation, 2026-10-02:** implementation through
+[PR62](https://github.com/logannye/biocompiler/pull/62) is committed and pushed at
+`b5d5aa69f4fbf54a6c484245d82552c7d71dd6cb`, with fresh
+[run 36989978642](https://github.com/logannye/biocompiler/actions/runs/36989978642)
+queued at preservation. This subsequent documentation checkpoint is on
+`codex/ocaml-producer-routing-checkpoint`, preserving PR62's running revision.
+PR53, PR54, PR55 and PR56 are merged after their full exact-revision gates and independent
+receipt/tree checks; PR52 is included through PR53 and closed as superseded
+after its own 31-job gate also passed. PR57–62 still require complete gates;
+no pending or automatic merge is enabled. The PR57–59 source-lineage correction retains every
+original corpus pin and reviewed whole-file AST witness. Earlier partial native
+success remains historical only. All unfinished layer checkboxes remain unchecked.
+
+A subsequent source-census audit found the remaining candidate-runtime direct-hash
+assertion. Its one-test correction is pushed to PR57–60 with byte-identical
+inventories and unchanged goldens. [Exact corrections and replacement runs](../protocol/candidate-source-census-corrections.json)
+record current parent heads; previous partial native passes are historical only.
+
+- [ ] **LM-12/R6 P1 producer service:** expose the existing OCaml generator,
+  complete two-strategy selector and freshly checked component adapter through
+  producer-only operations and a strict raw-document SDK. Preserve complete
+  candidates, alternatives, rejections, configuration and finite-history result
+  identities under one bounded operation budget. Installed campaigns must retain
+  every applicable original producer occurrence and compare full results across
+  both native platforms and Python versions. Service and raw SDK are implemented;
+  native validation is pending. The installed campaign covers all 1,226 original
+  public occurrences and three verifier rejections per runtime, retaining the
+  1,146 private/injected producer occurrences explicitly as native-library coverage.
+  The public synthesis functions retain their original default route; the following
+  checkpoints add explicit SDK and CLI native routes while preserving the default.
+  Hosted public routing, native manager integration, canonical packages and default
+  cutover remain separate unfinished work.
+
+- [x] **LM-03 producer-service Python fixture checkpoint:** ten strict client
+  tests and six installed-campaign/comparator fixture tests pass, including actual
+  Python protocol child processes, full original occurrence accounting and
+  rehashed content forgeries. Strict typing passes for all twelve adapter modules;
+  33 CI and native dependency-boundary tests pass. Native/Python declaration
+  metadata matches exactly. Existing public source, corpus and freezer files
+  remain unchanged. These checks validate transport and the evidence harness;
+  the 23 complete native literals and all hosted native campaigns still require
+  execution at the new revision.
+
+- [ ] **LM-12/R6 P1 explicit public producer routing checkpoint:** the current
+  `codex/ocaml-public-synthetic-producers` branch adds three optional `core=` SDK
+  routes, complete immutable native inspection views and a separate native full
+  build-request selection operation. Eight public SDK fixtures, strict typing for
+  thirteen adapter modules, source-lineage checks and static dependency checks
+  pass locally. The lineage/default suite passes 66 focused tests and preserves
+  all 2,132 source entries across nine corpora plus complete original argument
+  comparisons for all 47,901 producer observations. The exact three-function AST
+  witness preserves old default bodies and every original corpus pin. The new native suite retains four complete result
+  fixtures and 42 original malformed authority messages; native execution is
+  hosted-only and pending. Installed public SDK campaigns and explicit CLI routing
+  are implemented in the following checkpoints; rich helpers are implemented in
+  the inspection checkpoint below. Their hosted acceptance, package acceptance
+  and default cutover remain unfinished. No full recapture or rich legacy API parity is claimed by
+  this bounded checkpoint. See [explicit producer routing](native-synthetic-producer-routing.md).
+
+- [x] **LM-03 exact CLI runtime counterpart checkpoint:** the archived pre-route
+  CLI at `e8c640b74e34c1ac3db094b776e5478da67ce69e` was independently executed
+  under Python 3.11.15. Its complete `unknown-flag` diagnostic matches the
+  separately pinned 3.11 counterpart; the original 3.14 baseline remains intact.
+  The strict comparator selects only declared Python 3.11/3.14 runtime families,
+  rejects unknown runtimes, checks the entire original case and full byte pins,
+  and retains actual observations before the explicit comparison projection.
+  This corrects the confirmed PR60/PR61 hosted capture failure without changing
+  a freezer or golden. Eleven runtime/lineage tests pass on Python 3.11; the
+  complete 70-child workflow recapture passes again after the selection route.
+  Exact corrections are pushed and remotely verified for PR60–63 at
+  `946ff8eb`, `8f3eacc2`, `246d15ab` and `79eeedfd`; fresh parent hosted gates
+  remain required.
+
+- [x] **LM-03 synthetic-select capture and default preservation checkpoint:** the
+  unchanged original test method and all 72 actual CLI children are retained:
+  68 console calls, four module calls, eight complete reference-authority cases,
+  42 original malformed-authority messages and publication/argument boundaries.
+  The baseline inventory is
+  `69556f367752be3076513d96e63c933fb250eaf7d9736f9e39baac1dec47e5d9`, with
+  113 content documents retaining 2,252,596 bytes. All 72 children pass fresh
+  default-route recapture on Python 3.11 and 3.14. A new whole-file source witness
+  removes exactly the hidden-option helper, registration and early branch to
+  recover the complete previous CLI AST, then chains through the unchanged
+  workflow witness. Twenty-seven capture/lineage tests pass on Python 3.14,
+  including all 2,132 historical source identities across nine corpora. Complete
+  stdout, stderr, exits, files and actual import/source metadata remain retained;
+  only the exact source witness and separately pinned argparse counterpart are
+  projected. No original corpus, freezer or prior witness was edited.
+
+- [x] **LM-03 current public CLI Python fixture checkpoint:** all 72 selection
+  invocations also execute successfully with Python protocol child fixtures.
+  Six workflow CLI campaign/comparator tests pass on Python 3.11, including four
+  actual fixture children and the complete 140-observation, four-runtime
+  comparison with content-forgery checks. These are transport and evidence-harness
+  checks; Python protocol fixtures establish no native execution result. Final
+  local validation also passes 62 focused tests (33.184 seconds),
+  strict typing for 15 adapter modules and the complete 3,135-entry inventory check.
+
+- [ ] **LM-12/R6 P1 installed public SDK and selection CLI hosted integration:**
+  the current `codex/ocaml-synthetic-public-integration` batch adds explicit
+  `synthetic-select` core path/digest/timeout selection and native full build-request
+  handling while preserving the default Python route. The installed SDK campaign
+  covers all 1,226 original public producer occurrences plus nine supported input
+  forms, with separate verifier rejection evidence. The installed CLI campaign
+  retains all 72 complete baseline observations, native wire/receipt bytes,
+  publication behavior and execution guards. Both campaigns and their strict
+  four-runtime comparators require fresh installed native execution on Linux
+  x86_64/macOS arm64 with Python 3.11/3.14, exact source/binary/run identities and
+  the complete required hosted gate before this item can be checked. This batch
+  is preserved in [PR64](https://github.com/logannye/biocompiler/pull/64) at
+  `acdf2383e60c785edbeb2d63755686a9045636af`, with run 36994062954 pending.
+  Rich helpers are preserved in [PR65](https://github.com/logannye/biocompiler/pull/65)
+  at `c6382d62da14fbd5f15534a46ffcf932b2266051`, run 36995989631 pending.
+  Their hosted compatibility, native manager integration, canonical package acceptance,
+  distribution and default cutover remain open; no broader LM exit is completed.
+  The [public integration checkpoint](../protocol/migration-synthetic-public-checkpoint.json)
+  records exact source hashes, corrected parent commits and local-only evidence.
+
+- [x] **LM-12/R6 P1 rich helper implementation checkpoint:** eight Core-only
+  operations and strict Python transport now expose topology, registry
+  lock/resolve/select/verification, selection outcome, coverage identities and
+  dependency comparison/freshness through immutable native views. Historical
+  views require explicit core context; helper receipts do not grant production
+  acceptance or empirical claims. Separate protocol and 28 original-Python
+  supplemental fixtures are pinned. Shared-budget checks and the 91st native
+  suite are wired into the existing 36-gate workflow; native execution remains
+  pending. See [inspection protocol](../protocol/synthetic-inspection-v1.md).
+
+- [x] **LM-03 rich helper local evidence checkpoint:** 23 client/public-view
+  tests pass, as do 13 corpus/campaign tests and seven final campaign tests
+  against the frozen client (overlapping scopes). The campaign executes all 28
+  supplemental public calls, eight Verify rejections and Verify capabilities
+  through 65 actual Python fixture children. Static CI/boundary checks pass 35
+  tests; lineage/inventory checks pass 32 tests; strict mypy passes all 16
+  adapter modules. All 72 older selection CLI fixture children pass against
+  the frozen sources. The regenerated inventory retains 3,162 entries. These
+  results establish local fixture/static behavior only, not native acceptance.
+
+- [ ] **LM-12/R6 P1 rich helper hosted acceptance:** execute all 9,632 retained
+  original occurrences plus 28 supplemental cases through installed public
+  helpers on both platforms and Python versions. Retain complete authority,
+  original values/properties/errors and raw native artifacts; independently
+  rehash and compare all four campaigns. All eight producer operations must
+  remain unavailable to Verify. Local Python fixture/static evidence cannot
+  close this gate, whole-program freshness, large-result transport, package
+  acceptance or default cutover.
+
+- [x] **LM-25/R6 P2 native manager implementation checkpoint:** twelve immutable
+  contract/record modules and an opaque in-memory checked pass manager now own
+  registration/provider identity, controlled roots, acceptance, obligation
+  invalidation, recursive freshness and scoped completion. No serialized record
+  imports acceptance. Callback-time mutations share a lifetime work ancestor;
+  retained bytes/items and graph/callback depth are bounded. This checks the
+  source implementation only; all native execution and broader P2 exits remain
+  pending. See [manager migration scope](migration-checked-pass-manager.md).
+
+- [ ] **LM-03/25 P2 complete lifecycle conformance and integration:** retain and
+  replay the complete original manager/callback/state cohort, validate native
+  contract, manager and fixed native pipeline tests on both platforms, then
+  complete the public mutable-manager contract.
+  Historical records, script fixtures or a one-shot producer wrapper cannot
+  satisfy full pipeline, package or fresh export acceptance.
+
+- [x] **LM-03 P2 original lifecycle capture checkpoint:** all 467 unchanged
+  original tests pass before and during instrumentation, retaining both actual
+  child outputs, 91,566 events, 1,596 callbacks, 2,284 provider identities and
+  19,412 complete documents. The complete compressed ledger and bounded native
+  replay projection preserve separate scopes. Eight integrity tests verify every
+  document, exact projection and full original-capture reconstruction. Another
+  51 focused fixture/static checks and the 3,162-entry inventory pass. This checkbox records Python
+  capture only; replay of real compiler callbacks, native execution and complete
+  lifecycle integration remain pending above.
+
+- [x] **LM-25/R6 P2 fixed pipeline source checkpoint:** separate `bioc_pipeline`
+  modules connect actual native lowering, selection, synthetic generation and
+  component adaptation to independent checkers and the live manager. They retain
+  original ordered source links, partial failure state and one caller work
+  ancestor. Budget-aware lowering preserves the legacy entry point. This marks
+  implementation only; native execution and public session integration remain open.
+
+- [x] **LM-03 P2 complete fixed-pipeline capture checkpoint:** all 467 unchanged
+  original tests pass before and during narrow function tracing. The capture
+  retains 136 complete calls (124 returns, 12 errors), 445 documents and all
+  850 subsequent manager observations. Eight integrity/projection tests pass.
+  Separate bounded native indexes retain complete provider records externally;
+  neither the full capture nor existing corpora are reduced. See the
+  [pipeline scope and pins](migration-checked-pass-manager.md).
+
+- [ ] **LM-03/25 P2 fixed native pipeline validation:** the hosted driver must
+  execute 126 ordinary original calls (121 returns, five failures), 121 returned
+  manager rechecks and 563 subsequent commands with complete state/record/error
+  comparison. Six patched-callback calls, three Python-type inputs and one mocked
+  call remain explicitly pending, as do 254 callback-dependent commands and
+  24 prefix/nine suffix commands associated with patched calls. Both new suites
+  bring the native total to 96 per platform; all 36 exact-revision jobs remain
+  mandatory. Broader lifecycle, public sessions and package/export exits stay open.
+
+- [x] **LM-03 P2 original validator comparison capture:** 34 supplemental
+  original-Python cases retain complete state, ordered comparisons and errors,
+  including distinct equal bound methods, producer identity, self-certification,
+  short-circuit order, reflected equality, mutation and reentrancy. Six integrity
+  tests pass; existing lifecycle and fixed-pipeline captures are unchanged.
+
+- [x] **LM-25 P2 validator comparison source checkpoint:** the native manager
+  accepts a trusted comparison function for distinct validator objects while
+  preserving physical producer identity, self-certification checks and provider
+  retention. The function receives the same work ancestor; comparison order,
+  exceptions and reentrant mutations remain observable. A source-reviewed native
+  driver covers all 34 original cases and 106 nested events, plus default,
+  retention, recursion and exact/one-short budget controls. Native execution is
+  pending; this 97th hosted suite does not implement public sessions.
+
+- [x] **LM-03/25 P2 installed comparison campaign source checkpoint:** add
+  ordered native inspection and retained callable identity bindings; execute the
+  unchanged 34 original comparison case bodies through the installed adapter.
+  The campaign requires all 78 manager events, 28 comparison events, 18 raised
+  events and 280 actual state inspections, together with the existing five
+  identity cases. Command arguments, outcomes, nested timing and original host
+  exceptions bind to complete wire evidence. Rehashed semantic mutations must
+  fail for their intended diagnostic. Local validation totals 102 focused checks
+  and strict typing across 20 modules. Hosted replay remains pending; see the
+  [source checkpoint](../protocol/migration-callback-comparison-checkpoint.json).
+- [ ] **LM-25 P2 validator comparison and public sessions:** validate the additive
+  trusted native comparison hook and its complete original-observation replay on
+  both platforms, then implement the persistent transport, callback continuations,
+  deferred object conversion and public proxy described in the
+  [session design](migration-pipeline-sessions.md). Preserve producer identity,
+  fresh native manager authority and all original public workflows. The hook
+  alone does not close generic callback compatibility or session integration.
+
+- [x] **LM-25 P2 persistent-session source checkpoint:** Core-only framed
+  service retains one real native manager, partial logical-error state, immutable
+  build artifacts and stable process-local provider identities. Exact hello,
+  sequence and request-byte binding share one lifetime work/byte/retention
+  budget. Reduced limits include already-consumed hello work and prepaid terminal
+  capacity. Malformed frames, identity failures, resource exhaustion and internal
+  errors close authority. Separate Verify remains free of session/producer linkage.
+- [x] **LM-12 P2 Python session transport checkpoint:** 27 new real Python
+  subprocess/codec tests plus all 18 direct-client tests pass; strict typing
+  passes for all 17 adapter modules. Tests cover partial I/O, process ownership
+  after fork, cancellation/reaping, immutable byte receipts, logical-error
+  continuation and cumulative limits. These are Python subprocess fixtures,
+  not native execution or original public API compatibility.
+- [x] **LM-03 P2 complete session campaign harness:** 11 Python integrity,
+  mutation and subprocess tests pass. The hosted driver retains 1,493 complete
+  manager-state observations, 17 malformed/framing/lifecycle process probes and
+  actual Verify rejection, alongside all original fixed calls and continuations.
+  The four-runtime comparator rehashes every frame and full artifact against
+  current source/run/executable authority. [Source checkpoint and pending gates](../protocol/migration-pipeline-session-checkpoint.json).
+- [ ] **LM-03/25 P2 session hosted acceptance:** the 98th native suite and
+  four installed campaigns must compile and pass on both hosted platforms.
+  Reexecute all 126 eligible original fixed calls, 121 boundary rechecks and
+  563 supported continuations against actual live managers, retaining every
+  complete artifact/state/error and process identity. Original source/corpus
+  bytes stay pinned; ten excluded calls and 287 callback-dependent observations
+  remain explicit pending coverage. Full public typed manager routes, generic
+  callback continuations, 64 MiB artifacts and default cutover remain open.
+
+- [x] **LM-03 P2 deferred callback oracle checkpoint:** 47 additional cases
+  execute the unchanged original Python manager and retain all 157 manager
+  events, 290 user accesses, 21 nested events and 19 original exception-object
+  propagations. Nine focused Python tests pass. Observation avoids invoking
+  user conversion, equality, iteration or descriptors. The frozen Python 3.14
+  bytes remain exact; one explicitly named exception-text difference requires a
+  fresh same-runtime original-manager and primitive counterpart. This is an
+  additive oracle, not native callback parity. Original corpora remain intact.
+- [x] **LM-12 P2 retained host object broker checkpoint:** the additive Python
+  broker preserves physical callable identity, original exception objects,
+  deferred Mapping conversion, rich comparisons and short-circuit iterator
+  primitives. All 23 new broker tests and 27 existing fixed-session tests pass;
+  the fixed-session implementation and protocol remain unchanged. This broker
+  performs native-requested authoring actions and grants no acceptance.
+- [x] **LM-25 P2 deferred native library source checkpoint:** ordered host
+  capabilities preserve deferred input, configuration, registration and proposal
+  evaluation. Native manager tests cover original result equality, short-circuit
+  checks, reentrant state and original exception identity. The bridge retains
+  physical object identities; the generic channel binds exact nested frame bytes
+  and one lifetime budget. Sticky work exhaustion prevents a caught resource
+  error from later authorizing success. All three new native suites are registered
+  for hosted validation; only static review has run locally.
+- [ ] **LM-25 P2 deferred callback implementation and public compatibility:**
+  implement native deferred access, bounded nested continuations and typed public
+  adapters under the [callback contract](migration-pipeline-callback-contract.md).
+  Replay complete original and supplemental observations on both native platforms
+  and both Python versions. Preserve mixed native/host provider behavior, fixed
+  registration interception, exception identity and post-error mutations. A
+  callback object broker or generic framing library alone does not close this gate.
+
+- [x] **LM-12/25 P2 ordered exception source checkpoint:** logical native
+  rejections carry both canonical attributes and a fresh ordered attribute tree.
+  The adapter requires their exact agreement and reconstructs independent frozen
+  `NoCandidateFound` snapshots without reusing context containers. Native resource
+  reservations precede tree construction; a failed publication closes the
+  session. Python controls and native test sources cover nested order, repeated
+  errors and exhausted publication. Native execution remains a hosted gate.
+- [x] **LM-03 P2 original runtime preservation correction:** retain all frozen
+  deferred observations and all raw current captures while explicitly proving
+  installed source-path and Python 3.11/3.14 frame correspondence. Require actual
+  source-bound functions in their original module namespaces, fresh independent
+  capture and primitive execution. The installed-origin negative control now
+  injects its forbidden source path explicitly in both source and installed
+  environments. This is a Python fixture correction, not native compatibility.
+- [x] **LM-03 P2 foreign-runtime receipt source checkpoint:** retain exact
+  original source bytes, selected code and instruction-position tables under
+  closed Python 3.11/3.14 pins. Reconstruct the complete correspondence offline
+  and reject rehashed source, code, projection and user-observation changes.
+  Six focused tests pass on each local runtime; cross-version reconstruction
+  passes in both directions. Hosted patch versions, complete installed replay
+  and the source/run/executable receipt chain remain separate required gates.
+- [x] **LM-03/12/25 P2 complete deferred campaign source checkpoint:** wire all
+  47 unchanged original case bodies through actual installed native managers,
+  retaining all 53 process lifetimes and 414 inspections. Check each event's
+  own arguments, results and state, complete access order, original exception
+  identities and retained tails, exact source/command/primitive trace segments,
+  and the full payload-to-fingerprint reference chain. All 32 campaign/trace
+  controls pass on local Python 3.11 and 3.14, including repaired semantic
+  mutations. These controls establish checker behavior; hosted native replay
+  remains required for compatibility acceptance.
+- [ ] **LM-03 P2 deferred installed replay and runtime correspondence:** require
+  every original case, access, nested mutation and exception observation through
+  the installed native manager. Retain raw installed tracebacks and check exact,
+  source-bound correspondences for installation paths and Python-version frame
+  differences. PR71's original deferred-fixture comparison exposed this missing
+  runtime handling; the frozen oracle and complete observation census remain
+  unchanged. This gate also requires complete four-runtime receipts and all
+  existing identity and comparison cases.
+
+- [x] **LM-03 P2 original identity and ordering oracle:** five additional
+  original-manager cases retain 34 complete observations and ten records,
+  including shared contexts, records, target and obligation objects, mapping
+  insertion order, nested exceptions and records stored before freshness errors.
+  Eight Python tests pass. Adversarial copies and reordered mappings fail these
+  comparisons even when their values agree. Original frozen corpora are unchanged.
+- [x] **LM-12/25 P2 live manager source implementation:** retain an actual OCaml
+  manager behind bounded callbacks; add explicit Python typed views with ordered
+  values, shared object bindings, fresh access checks and fail-closed sessions.
+  Add a real framed native suite and installed five-case identity campaign with
+  full frame/artifact receipts, independent Verify rejection and four-runtime
+  comparison. Local Python/static checks are separate from native acceptance.
+- [ ] **LM-12/25 P2 live typed manager integration:** connect the callback
+  application to Core and the explicit Python manager adapter, preserve retained
+  object identity and order, and replay the identity oracle through installed
+  native executables on both platforms and Python versions. Keep all original
+  callback and fixed-pipeline compatibility gates above open until their complete
+  live replay passes; an additive adapter is not the default cutover.
+- [x] **LM-12/25 P2 fixed-provider view source checkpoint:** implement six actual
+  closure roles, complete ordered typed proposals, eight closed source-backed
+  alias kinds and stable roots; preserve same-call ordered request authority and
+  original lowering insertion order. Add a complete three-case/nine-context/
+  18-return original witness and installed four-runtime replay gate. The 77
+  manager/adapter/view controls and 23 witness/campaign controls pass on local Python
+  3.11 and 3.14. Native execution remains pending. See the
+  [source implementation](migration-fixed-provider-views.md).
+- [ ] **LM-12/25 P2 fixed-producer typed return compatibility:** return actual
+  `BehaviorProgram`, `SyntheticCandidate` and `ComponentAssembly` views from
+  native fixed providers. Preserve fresh proposal/output roots, ordered mutable
+  versus immutable collections, actual requested/selected configuration identity,
+  and source-backed shared registry, composition, target and nested objects.
+  Bind the view role to the actual native closure; hydrate only closed structural
+  representations without Python semantic parsing or acceptance. Require a full
+  original identity witness and installed four-runtime replay before acceptance.
+- [x] **LM-03 P2 original build-object witness:** capture six unchanged original
+  authorities covering all 39 eligible retained-manager continuations, with 12
+  public builds, 18 original producer returns and 25,130 typed/container graph
+  nodes. The complete witness is byte-identical on local Python 3.11 and 3.14;
+  nine witness controls pass on each. Frozen bytes remain independent expected
+  data, never native state imported as acceptance.
+- [x] **LM-12/25 P2 staged manager and public build source checkpoint:** implement
+  ordered native component phases, retained run/result capabilities and closed
+  structural build views. Add exact record-definition inspection so full state
+  observations retain existing channel limits. All 64 adapter/view controls pass
+  on local Python 3.11 and 3.14; strict checking passes all 22 adapter modules.
+  Native source review and independent repaired-frame rejection probes are
+  complete. Installed native execution and complete hosted acceptance remain
+  required by the next item.
+- [ ] **LM-12/25 P2 retained fixed-workflow continuations:** preserve all 39
+  nested synthetic managers, 312 dependency updates and 254 suffix operations
+  across the exact 17-context closure (13 unchanged methods and four fixtures).
+  Native adaptation, profile construction, registration, run and finish must
+  preserve the original order and partial state; public build views must retain
+  actual result wrappers, parsed source tuple identities, selection origins and
+  component type origins. Require installed native execution and complete
+  four-runtime receipts before checking this item. Keep all 136 original fixed
+  boundaries, 476 original manager contexts and ten excluded boundaries visible;
+  registration interception and its pending observations remain separate work.
+- [x] **LM-12/25 P2 registration source and local proof checkpoint:** implement
+  actual manager publication, public registration interception, native producer
+  wrapping and original validator retention. Preserve the entire old manager and
+  separately pinned session-checker source through finite witnesses; keep all
+  original test instances, classes, IDs and outcome categories. All 112 affected
+  Python controls and seven complete-frame receipt groups pass on Python 3.11
+  and 3.14. This marks source/local proof only; the installed native gate below
+  remains open and Python remains the default.
+- [ ] **LM-12/25 P2 original registration interception:** preserve the three
+  unchanged component provenance-rejection methods, six fixed boundaries, three
+  actual managers, 24 dependency updates and nine suffix operations. Publish the
+  actual manager before its first input; enter the current public registration
+  slot and preserve its captured base-method call, wrapped native producer,
+  original native validator and retained state after rejection. Prove the exact
+  finite source addition against the unchanged original module and bind native
+  delegation to its actual code, receiver and command. Keep the remaining three
+  invalid-input boundaries and one mocked boundary explicitly classified. Require
+  complete installed execution, independently reconstructed receipts and every
+  preceding manager/continuation gate before checking this item.
+
+- [x] **LM-03 CI harness correction checkpoint:** the installed architecture
+  guard now permits only the exact new parser-registration helpers while rejecting
+  semantic handlers and similar names; ten focused tests pass. The macOS artifact
+  test obtains the actual supported POSIX descriptor number instead of comparing
+  devfs inode identities. Every original artifact test body remains byte-identical,
+  and the boundary checker pins the one test-only representation conversion.
+  Forty-eight boundary/inventory/CI tests and each affected parent's static graph
+  pass. The [correction receipt](../protocol/migration-ci-harness-corrections.json)
+  records exact affected revisions; native execution and all hosted gates remain
+  pending, so this does not close the native acceptance checkpoint.
+
+**Hosted corrections, 2026-10-02:** PR67's native build exposed an ambiguous
+OCaml interface documentation comment; comments were disambiguated without
+changing signatures or disabling warnings. PR64's conformance run exposed an
+expected-scope ordering error inherited by PR62–67: native declaration order is
+generation, selection, components, while canonical JSON object iteration differs.
+The campaign now derives the exact expected array from reviewed family order,
+keeps strict ordering and complete field checks, and identifies mismatched fields.
+Seventeen focused Python conformance tests pass, including ordering and field
+mutants. Corrected revisions still require every hosted gate; this does not close
+any native acceptance checkbox. Exact parent corrections and local proof scope
+are recorded in the [correction receipt](../protocol/migration-capability-order-corrections.json).
+
+The integrated PR51 main revision `652e2aa0aa24bf563412483827d07c4bc027a4e0`
+passed all 31 jobs in [run 36972688727](https://github.com/logannye/biocompiler/actions/runs/36972688727).
+Its aggregate was independently reconstructed, both platform binaries rehashed,
+and all four sets of 175 architecture observations and 219 exact artifacts
+compared with the retained receipt. Both Python versions accounted for all
+2,429 tests. The [foundation validation receipt](../protocol/migration-realization-foundation-validation.json)
+records this main-branch evidence; it does not validate later revisions.
 
 These stages precede the remaining B2 producer/export and B3–B6 product gates.
 
