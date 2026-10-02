@@ -20,6 +20,7 @@ ROOT = Path(__file__).resolve().parents[1]
 EXTERNAL_LIBRARIES = frozenset({"digestif", "zarith"})
 # New libraries/dependencies require deliberate policy review, even when harmless.
 LIBRARIES = {
+    "bioc_producer_service": ("lib/producer_service/dune", {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_service"}, "producer"),
     "bioc_wire": ("lib/wire/dune", {"digestif", "zarith"}, "trusted_primitive"),
     "bioc_domain": ("lib/domain/dune", {"bioc_wire", "zarith", "digestif"}, "trusted_domain"),
     "bioc_semantics": ("lib/semantics/dune", {"bioc_wire", "bioc_domain", "zarith"}, "source_semantics"),
@@ -29,10 +30,11 @@ LIBRARIES = {
     "bioc_service": ("lib/service/dune", {"bioc_wire", "bioc_domain", "bioc_checker"}, "checker_service"),
 }
 EXECUTABLES = {
-    "biocompiler-core": ("bin/core/dune", {"bioc_wire", "bioc_service"}, "core_entrypoint"),
+    "biocompiler-core": ("bin/core/dune", {"bioc_wire", "bioc_service", "bioc_producer_service"}, "core_entrypoint"),
     "biocompiler-verify": ("bin/verify/dune", {"bioc_wire", "bioc_service"}, "verifier"),
 }
 TESTS = {
+    "test_producer_protocol": {"bioc_wire", "bioc_domain", "bioc_service", "bioc_producer_service"},
     "test_construction_producer": {"bioc_wire", "bioc_domain", "bioc_compiler", "bioc_checker", "zarith"},
     "test_source_execution": {"bioc_wire", "bioc_domain", "bioc_compiler", "bioc_checker", "zarith"},
     "test_architecture_matching": {"bioc_wire", "bioc_domain", "bioc_compiler", "bioc_checker", "zarith"},

@@ -258,3 +258,63 @@ It calls no Python semantic producer or checker. The broader 293-report native
 campaign remains separately required. Strict mypy checking covers both migrated
 Python adapter modules using the hash-pinned pure-Python tools and configuration
 in `tools/typecheck-requirements.txt` and `tools/mypy-core.ini`.
+
+## Architecture production and paired export
+
+The core executable additionally advertises `compile-architecture` and
+`export-architecture` in a distinct `architecture_producer` profile. The standalone
+verifier advertises neither operation and links no producer service. The existing
+`architecture` verification profile remains unchanged. Production profile fields
+are exactly `operations`, `request_schema`, `build_schema`, `export_schema`,
+`assessment_schema`, `implementation`, `resource_profile`, `checker_implementation`,
+`checker_resource_profile` and `validation_scope`. These pin existing domain schemas,
+`biocompiler.ocaml.architecture_producer.v0.1`,
+`biocompiler.architecture_producer.resources.v1`, the existing architecture checker
+identities, and `supplied-architecture-production-v1`.
+
+`compile-architecture` accepts exactly `{"request": <complete architecture request>}`.
+Its result fields are exactly `schema_version`, `implementation`, `resource_profile`,
+`validation_scope`, `supplied_request_fingerprint`, `request_fingerprint`,
+`build_fingerprint`, `build_json` and `verification`. The result schema is
+`biocompiler.core.architecture_build.v1`. `build_json` contains the entire normalized
+historical build encoded as canonical UTF-8 JSON without a terminal newline;
+its SHA-256 is `build_fingerprint`. The source wire fingerprint remains separate
+from the normalized request fingerprint. `verification` is the same complete
+assessment envelope returned by `verify-architecture`, produced by the final fresh
+independent check within the compilation budget. It binds the supplied request
+and the returned complete build.
+
+Successful transport can carry any supported build status: `compiled`, `partial`,
+`unsupported`, `no_solution` or `search_exhausted`. A consistent incomplete build
+can pass its checker while retaining unresolved obligations. Neither a successful
+protocol exchange nor a valid receipt upgrades translation completeness, proves
+search optimality, establishes empirical behavior or grants human-use admission.
+
+`export-architecture` accepts exactly `{"expected_request": <original request>,
+"build": <complete candidate>}`. It accepts no old assessment as authority. Fresh
+independent checking must establish the existing export predicate: a passing
+assessment, complete construction and an actual construction result. The predicate
+preserves existing partial translation scope instead of silently strengthening or
+weakening the public export contract.
+
+Its result fields are exactly `schema_version`, `implementation`, `resource_profile`,
+`validation_scope`, `supplied_request_fingerprint`, `supplied_build_fingerprint`,
+`request_fingerprint`, `build_fingerprint`, `export_fingerprint`, `fasta`,
+`fasta_sha256`, `manifest_json`, `manifest_sha256` and `verification`. The schema is
+`biocompiler.core.architecture_export.v1`. FASTA preserves exact member order, RNA
+bases, headers and line endings. `manifest_json` is the complete native canonical
+manifest with no terminal newline. Each byte digest binds its returned content;
+`export_fingerprint` binds the existing domain export record containing both the
+FASTA and decoded manifest. The manifest retains the complete build, fresh
+assessment, delivered member inventory and instruction to retain independent
+request authority. The separate verification envelope binds the exact supplied
+request and candidate, even if decoding normalizes their inventories.
+
+Outputs are immutable process results; oversized or failed operations return no
+accepted partial output. Python transport freezes inputs before negotiation,
+validates the negotiated profile and all exact output identities, and retains
+canonical output bytes. Decoded properties return defensive copies. This protocol
+does not itself publish filesystem paths or make a reconstructed result object
+fresh authority. Atomic publication, public SDK/CLI routing and distribution
+remain separately tracked migration obligations. No failure retries through Python
+semantic execution.

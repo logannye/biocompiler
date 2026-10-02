@@ -7,8 +7,10 @@ Intent-to-Behavior lowering. Validated domains include shared content pins, comp
 molecular provenance and nominal chemistry. PR42 also validated complete
 component records, human source wrappers, molecular sets and supplied deployment
 windows. PR43 declarations and required-region checks and PR44 independent reconstruction/source checks passed complete PR validation; full architecture acceptance passed complete PR45 and integrated-main validation. The
-public protocol does not yet implement compilation, behavioral execution,
-molecular verification, export acceptance or human-use admission. Capabilities
+experimental core additionally exposes supplied-architecture compilation and
+freshly checked paired export; these producer operations are absent from the
+standalone verifier. Behavioral execution and human-use admission remain outside
+this protocol. Capabilities
 are explicit; unimplemented operations return `unsupported` without fallback.
 
 The protocol is one UTF-8 request on stdin and one response on stdout. Both
@@ -333,3 +335,14 @@ The expanded producer corpus retains 193 cases and 166 documents with no
 diagnostic exceptions. The corrected revision requires fresh full hosted validation. Production SDK/CLI authority remains Python, and coupled source
 execution does not implement the independent candidate runtime. See the detailed
 [roadmap checkpoint](../docs/language-migration-roadmap.md) and [protocol](../protocol/core-v1.md).
+
+
+The producer service is a separate `bioc_producer_service` library selected only
+by the core entrypoint. `bioc_service` retains the shared bounded process runner
+and checker-only dispatch; its optional handler hook does not introduce producer
+linkage. Compilation and export return the same fresh assessment created inside
+the producer's shared work budget. The transport retains canonical output strings,
+byte fingerprints and original supplied-authority pins. The installed producer
+campaign compares complete frozen builds and paired exports and independently
+checks returned builds using the standalone verifier. These new operations remain
+pending their own hosted gates and public routing/distribution work.

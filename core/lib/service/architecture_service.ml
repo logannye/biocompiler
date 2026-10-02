@@ -14,17 +14,7 @@ let profile = Json.Object [
     "validation_scope", str validation_scope
   ]
 
-let verify ~replay payload =
-  let fields = Json.object_fields payload in
-  Json.exact_fields (if replay then ["expected_request"; "build"; "assessment"] else ["expected_request"; "build"]) fields;
-  let raw_request = Json.field "expected_request" fields and raw_build = Json.field "build" fields in
-  let expected_request = Architecture_request.of_json ~path:"/payload/expected_request" raw_request in
-  let build = Architecture_build.of_json ~path:"/payload/build" raw_build in
-  let assessment =
-    if replay then
-      Checker.replay ~expected_request ~build
-        (Architecture_assessment.of_json ~path:"/payload/assessment" (Json.field "assessment" fields))
-    else Checker.check ~expected_request build in
+let wrap ~raw_request ~raw_build assessment =
   Json.Object [
     "schema_version", str "biocompiler.core.architecture_assessment.v1";
     "implementation", str Checker.implementation_version;
@@ -38,3 +28,16 @@ let verify ~replay payload =
     "assessment_fingerprint", str (Architecture_assessment.fingerprint assessment);
     "assessment", Architecture_assessment.to_json assessment
   ]
+
+let verify ~replay payload =
+  let fields = Json.object_fields payload in
+  Json.exact_fields (if replay then ["expected_request"; "build"; "assessment"] else ["expected_request"; "build"]) fields;
+  let raw_request = Json.field "expected_request" fields and raw_build = Json.field "build" fields in
+  let expected_request = Architecture_request.of_json ~path:"/payload/expected_request" raw_request in
+  let build = Architecture_build.of_json ~path:"/payload/build" raw_build in
+  let assessment =
+    if replay then
+      Checker.replay ~expected_request ~build
+        (Architecture_assessment.of_json ~path:"/payload/assessment" (Json.field "assessment" fields))
+    else Checker.check ~expected_request build in
+  wrap ~raw_request ~raw_build assessment

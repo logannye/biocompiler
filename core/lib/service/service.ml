@@ -42,14 +42,14 @@ let handle _executable (request : Protocol.request) =
       message = "This executable does not implement the requested operation; no fallback or acceptance is granted.";
       path = Some "/operation" }]
 
-let run executable =
+let run ?(handler=handle) executable =
   let current_request = ref None in
   let response, code =
     try
       Diagnostic.require (Array.length Sys.argv = 1) "unexpected_arguments" "Core reads one JSON request on standard input; command arguments are unsupported.";
       let request = Protocol.decode_request (Json.parse (Protocol.read_stdin ())) in
       current_request := Some request;
-      let status, result, diagnostics = handle executable request in
+      let status, result, diagnostics = handler executable request in
       Protocol.response ~executable ~request:!current_request ~status ~result diagnostics,
       (match status with Protocol.Ok -> 0 | Protocol.Error -> 2 | Protocol.Unsupported -> 3)
     with

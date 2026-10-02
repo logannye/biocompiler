@@ -222,3 +222,8 @@
  (name test_architecture_deployment_check)
  (modules test_architecture_deployment_check)
  (libraries bioc_wire bioc_domain bioc_checker zarith))
+
+(test
+ (name test_producer_protocol)
+ (modules test_producer_protocol)
+ (libraries bioc_wire bioc_domain bioc_service bioc_producer_service))

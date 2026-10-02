@@ -116,8 +116,8 @@ let producer_resource budget (error : Diagnostic.t) =
 let construction_rejection_message (error : Diagnostic.t) =
   if error.code = "architecture_synthesized_identity" then error.message
   else error.code ^ ": " ^ error.message
-exception Finished of B.t
-let compile ?budget request =
+exception Finished of (B.t * Architecture_assessment.t)
+let compile_checked ?budget request =
   let budget = create_budget budget in
   let request = Architecture_request.of_json (Architecture_request.to_json request) in
   let constraints = Architecture_request.constraints request in
@@ -143,7 +143,7 @@ let compile ?budget request =
           build ~status:B.Search_exhausted ~plan:None ~construction:None ~extra:[gap ~candidates:selected ~message B.Gap.Search_budget_exhausted "architecture_selected_output_budget_exhausted"] in
     let receipt = Check.check ~budget ~expected_request:request candidate in
     Diagnostic.require (Architecture_assessment.passed receipt) "architecture_producer_verification" "Independent architecture verification rejected the produced candidate.";
-    candidate in
+    candidate, receipt in
   let retain_raw raw =
     let items, bytes = receipt_cost ~nested:true raw in
     if !retained_items + items > item_budget || !retained_bytes + bytes > byte_budget then false
@@ -258,7 +258,9 @@ let compile ?budget request =
         finish ~plan:(Some plan) ~construction:(Some construction) (if diagnostics <> [] || Architecture_assessment.unresolved receipt <> [] then B.Partial else B.Compiled)
   with Finished candidate -> candidate
 
-let export ?budget ~expected_request build =
+let compile ?budget request = fst (compile_checked ?budget request)
+
+let export_checked ?budget ~expected_request build =
   let budget = create_budget budget in
   let receipt = Check.check ~budget ~expected_request build in
   Diagnostic.require (Architecture_assessment.passed receipt && Architecture_assessment.construction_complete receipt && B.construction build <> None)
@@ -279,4 +281,6 @@ let export ?budget ~expected_request build =
   let manifest = Json.Object ["request_fingerprint", str (Architecture_request.fingerprint expected_request);
       "build", B.to_json build; "verification", Architecture_assessment.to_json receipt;
       "delivered_member_ids", strings (List.map Molecule.id delivered); "source_authority", str "Retain the independently supplied request separately."] in
-  B.Export.make ~fasta:(Buffer.contents output) ~manifest
+  B.Export.make ~fasta:(Buffer.contents output) ~manifest, receipt
+
+let export ?budget ~expected_request build = fst (export_checked ?budget ~expected_request build)

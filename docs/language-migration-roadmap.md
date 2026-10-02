@@ -245,6 +245,15 @@ reservations are included. Review added explicit exhaustion identity propagation
 for arbitrary caller diagnostic codes and failed source replay allowance forfeiture;
 those corrections require fresh hosted native validation. No new broad LM task or system-migration exit is marked complete.
 
+- [ ] **B2 installed producer operations:** the next batch adds core-only
+  `compile-architecture` and `export-architecture` operations, exact immutable
+  build/FASTA/manifest transport and fresh assessment binding. The verifier's
+  producer-free link graph remains enforced. Complete installed examples,
+  mutation rejection, native tests and full hosted validation are required before
+  marking this checkpoint complete. Public SDK/CLI routing, atomic publication
+  and distribution remain separately open.
+
+
 PR42 source `06da8b4bee4110597caed15fa2da4f2bb7724268`, tested merge `902cae85932dfc1202f68d7d9bc7502941eeb701` and integrated main share tree `06898b1f7ac5e51e692ef976d5834ec5976a495a`. Both complete PR and integrated-main gates passed. PR43 source `7fb3ec8983b038b03f0efa8f8233e4bef4e5a613`, tested merge `9f0c10ea218c4df49aa9f143718eb82d2daff842` and integrated main share tree `836da9375e1206d708194eecd48419f529ab5ff0`. Both complete PR and integrated-main gates passed. PR44 source `ae56d0c7e3dd8202aa015d7a7b769a75bd8ca037`, tested merge `8ff4d1911a6525c58be16e6db9d030b5fb670a91` and integrated main share tree `7ecc2c56f1370c0540f3c74c5795c6868d8e3841`; full PR and integrated-main gates passed. PR45 adds validated independent full architecture acceptance and its control/deployment/build prerequisites. PR46 adds experimental protocol and producer paths pending validation; production routing remains unchanged.
 
 **First vertical slice:** [the case B acceptance map](migration-case-b.md) and [retained corpus](../tests/conformance/case-b/README.md) now pin its real source/candidate and independent literal timelines. Architecture acceptance/mutation descriptors remain unexecuted; domain and source-correspondence receipts are scoped above, and per-role reference execution has complete PR40 validation. Use the existing artificial architecture case B (prime/act/recover, timeout, reset and shutdown) with exact supplied source correspondence. Reuse its actual request/templates. The initial checker stage reads the existing Python-produced candidate and independently reconstructs it. Then port its producer. Do not replace this slice with an unrelated toy expression interpreter.

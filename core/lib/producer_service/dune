@@ -1,0 +1,3 @@
+(library
+ (name bioc_producer_service)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_compiler bioc_service))
