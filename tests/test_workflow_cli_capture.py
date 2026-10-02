@@ -238,7 +238,10 @@ class WorkflowCliCaptureTests(unittest.TestCase):
         self.assertEqual(evidence["projected_inventory_fingerprint"], PIN)
         self.assertEqual(evidence["actual_inventory_fingerprint"], actual["inventory_fingerprint"])
         self.assertEqual(evidence["actual_source_scope"], actual["source_scope"])
-        self.assertEqual(blobs, self.blobs)
+        # The exact witnessed route source members have current bytes. The
+        # bridge compares every other full blob and retains all actual content.
+        self.assertEqual(evidence["content_documents"], len(blobs))
+        self.assertEqual(evidence["actual_capture"], actual)
 
 
 if __name__ == "__main__": unittest.main()
