@@ -90,6 +90,7 @@ TESTS = {
     "test_verification_workflow_records": {"bioc_wire", "bioc_domain", "zarith"},
     "test_verification_exploration": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_realization_checker", "zarith"},
     "test_synthetic_verification_workflow": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_realization_checker", "zarith"},
+    "test_realization_workflow_corpus": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_realization_checker", "bioc_synthetic_producer", "zarith"},
     "test_intent": {"bioc_wire", "bioc_domain", "bioc_checker"},
     "test_protocol": {"bioc_wire", "bioc_service"},
     "test_realization_protocol": {"bioc_service", "bioc_wire", "bioc_checker", "zarith"},
@@ -293,7 +294,7 @@ def source_boundary(path, allowed_libraries, *, owner=None):
             raise BoundaryError(f"Unreviewed native/process/dynamic-code escape {token} in {path.name}")
         if token == "Sys":
             reviewed = {"argv"}
-            if owner in {"test:test_architecture_check", "test:test_source_transport", "test:test_architecture_producer", "test:test_construction_producer", "test:test_candidate_runtime_corpus", "test:test_component_runtime_corpus", "test:test_realization_foundation_corpus", "test:test_realization_checks_corpus", "test:test_component_acceptance_corpus", "test:test_synthetic_authority_corpus", "test:test_synthetic_acceptance_corpus", "test:test_synthetic_producers_corpus"}:
+            if owner in {"test:test_architecture_check", "test:test_source_transport", "test:test_architecture_producer", "test:test_construction_producer", "test:test_candidate_runtime_corpus", "test:test_component_runtime_corpus", "test:test_realization_foundation_corpus", "test:test_realization_checks_corpus", "test:test_component_acceptance_corpus", "test:test_synthetic_authority_corpus", "test:test_synthetic_acceptance_corpus", "test:test_synthetic_producers_corpus", "test:test_realization_workflow_corpus"}:
                 # The test-only document corpus must reject undeclared files.
                 # Production code gains no filesystem or process permission.
                 reviewed.add("readdir")
@@ -369,6 +370,7 @@ def check_boundaries(root: Path):
                     "test_synthetic_authority_corpus": "%{env:BIOCOMPILER_SYNTHETIC_AUTHORITY_CORPUS=missing}",
                     "test_synthetic_acceptance_corpus": "%{env:BIOCOMPILER_SYNTHETIC_ACCEPTANCE_CORPUS=missing}",
                     "test_synthetic_producers_corpus": "%{env:BIOCOMPILER_SYNTHETIC_PRODUCERS_CORPUS=missing}",
+                    "test_realization_workflow_corpus": "%{env:BIOCOMPILER_REALIZATION_WORKFLOW_CORPUS=missing}",
                 }
                 expected_actions = ([["action", ["run", "%{test}", fixture_variables[name]]]]
                                     if name in fixture_variables else [])

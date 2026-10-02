@@ -9,6 +9,14 @@ to remove tests, supported Python versions, artifacts or verification gates.
 
 ## Work in coherent batches
 
+All run steps explicitly select Bash so a failed checker piped into `tee`
+fails its step. GitHub's unspecified non-Windows shell does not provide that
+same pipeline guarantee; see the [official shell behavior](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#defaultsrun).
+Native jobs now allow 150 minutes after complete Linux runs exceeded the former
+90-minute limit during their last corpus replay. Every original check remains
+required. This is a job allowance, not a measured runtime target or permission
+to treat cancelled jobs or incomplete reports as successful validation.
+
 Commit useful local checkpoints freely. Push a coherent batch when it is ready
 for review and remote validation, rather than pushing every small edit solely
 to obtain another CI run. Run appropriate focused checks while editing. A green

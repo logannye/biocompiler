@@ -148,7 +148,27 @@ class Tee:
     def __getattr__(self, name): return getattr(self.target, name)
 
 
+LAST_SOURCE_SCOPE = None
+
+
 def capture(child_script=None, child_context=None):
+    """Retain actual current metadata while proving excluded additions unused."""
+    global LAST_SOURCE_SCOPE
+    from tools.check_realization_workflow_corpus import source_scope, deny_added_modules
+    scope = source_scope(source_inventory(), allow_missing_tests=True)
+    with deny_added_modules(scope):
+        document = _capture(child_script, child_context)
+    LAST_SOURCE_SCOPE = {**scope, "import_guard": "passed_before_during_and_after_original_cohort"}
+    if child_script is None:
+        receipt_path = OUT / "receipt.json"
+        receipt = json.loads(receipt_path.read_bytes())
+        receipt["source_scope"] = LAST_SOURCE_SCOPE
+        receipt["historical_metadata_byte_identity"] = not bool(scope["reviewed_additions"])
+        receipt_path.write_text(json.dumps(receipt, sort_keys=True, indent=2) + "\n")
+    return document
+
+
+def _capture(child_script=None, child_context=None):
     require(child_script is not None or os.environ.get("PYTHONHASHSEED") == "0",
             "Set PYTHONHASHSEED=0 for reproducible parent capture")
     OUT.mkdir(parents=True, exist_ok=True)
@@ -685,6 +705,15 @@ def bind_operation(call, documents):
 def freeze(document, *, check=False):
     require(document["schema_version"] == "biocompiler.realization_workflow_baseline_capture.v1", "Wrong workflow capture schema")
     require(document["source_files"] == source_inventory(), "Workflow captured sources changed")
+    if check:
+        from tools.check_realization_workflow_corpus import source_scope, historical_projection
+        scope = source_scope(document["source_files"])
+        if scope["reviewed_additions"]:
+            require(LAST_SOURCE_SCOPE == {**scope, "import_guard": "passed_before_during_and_after_original_cohort"},
+                "Reviewed source additions require an attested original-cohort import-denial capture")
+            # This is the sole historical projection. Actual current metadata
+            # and its distinct capture hash remain in capture.json/receipt.json.
+            document = historical_projection(document, scope)
     matched = verify_prior_projection(document)
     store = Store()
     for identity, item in document["documents"].items():
@@ -786,12 +815,20 @@ def freeze(document, *, check=False):
 
 
 def main():
+    global LAST_SOURCE_SCOPE
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--capture-only", action="store_true")
     parser.add_argument("--captured", type=Path)
     parser.add_argument("--check", action="store_true")
     args = parser.parse_args()
-    if args.captured: document = json.loads(args.captured.read_bytes())
+    if args.captured:
+        payload = args.captured.read_bytes()
+        document = json.loads(payload)
+        if args.check:
+            receipt_path = args.captured.with_name("receipt.json")
+            receipt = json.loads(receipt_path.read_bytes())
+            require(receipt["capture_sha256"] == digest(payload), "Source-scope receipt does not bind captured bytes")
+            LAST_SOURCE_SCOPE = receipt.get("source_scope")
     else:
         with portable_sources(): document = capture()
     if not args.capture_only: freeze(document, check=args.check)

@@ -29,7 +29,8 @@ let until_value path=function Json.Int value->N.Integer value|Json.Float value->
 let budget_value path=function Json.Int value when Z.compare value Z.one>=0 && Z.compare value(Z.of_int 100000)<=0->Z.to_int value
   |_->Diagnostic.fail ~path "verification_exploration" "Invalid reduction evaluation budget."
 type packed={json:Json.t;fingerprint:string;size:int}
-let pack limits json=let text=C.encode ~limits json in {json;fingerprint=Canonical.sha256 text;size=String.length text}
+let pack limits json=let text=C.encode ~limits json in C.charge limits(String.length text);
+  {json;fingerprint=Canonical.sha256 text;size=String.length text}
 module Request=struct
   type t={packed:packed;realization:Realization_request.t;candidate:A.Candidate.t;operation:operation;mode:mode;
     history:Execution_data.Input_frame.t list;until:N.t option;bounds:X.Bounds.t option;
@@ -102,7 +103,7 @@ let result_of_json ?(limits=C.default_limits) ?(path="") raw =
   let fields=match raw with Json.Object fields->fields|_->Diagnostic.fail ~path "verification_workflow" "Verification result must be an object." in
   let schema=match List.assoc_opt "schema_version" fields with Some(Json.String value)->value
     |_->Diagnostic.fail ~path "verification_workflow" "Verification result schema must be text." in
-  if schema=E.Check_result.schema_version then Checked(E.Check_result.of_json ~path raw)
+  if schema=E.Check_result.schema_version then Checked(X.check_of_json ~limits ~path raw)
   else if schema="biocompiler.boolean_exploration_report.v0.1" then Explored(X.Report.contact_of_json ~limits ~path raw)
   else if schema="biocompiler.boolean_input_exploration_report.v0.1" then Explored(X.Report.input_of_json ~limits ~path raw)
   else if schema=X.Reduction.schema_version then Reduced(X.Reduction.of_json ~limits ~path raw)

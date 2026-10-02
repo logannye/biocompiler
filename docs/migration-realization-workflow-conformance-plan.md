@@ -393,10 +393,11 @@ unchanged actual children. The omitted campaign retains all 625 results. All
 874 new domain/kernel observations independently replay their full Python
 results, properties, exceptions and callback chronology.
 
-All 11 capture/integrity tests pass (97.712 seconds), including an independent
-complete 376-method baseline and instrumented recapture followed by exact index
-and every-document byte comparison. Python source compilation checks also pass.
-The validation receipt is `generated/migration-next/realization-workflow-tests.log`.
+All 14 capture/integrity tests pass (96.643 seconds), including an independent
+complete 376-method baseline and instrumented recapture, all 874 new Python
+replays and every-document byte comparison. Python source compilation checks
+also pass. The validation receipt is
+`generated/migration-next/realization-workflow-native-preflight-tests.log`.
 
 `tests/conformance/realization-workflow-v1.json` is pinned to
 `2f5e7636977f559e046776c1bb92bebf67c8f0e733ca463927f8d3a1aee3d77b`.
@@ -404,7 +405,30 @@ Its 11,522 documents and index total 188,830,976 bytes; the largest document is
 12,430,473 bytes. Context-local call/source/type references preserve every
 occurrence and reconstruct the complete original capture with fingerprint
 `5e7b74bd456a554dd3b1e3661f25ec42ff00a719b114d19cdd474d9c014b1015`.
-Fixtures retain current source hashes and never relabel them as historical pins.
+Fixtures retain the source hashes captured at freezing time. Subsequent captures
+retain actual current source metadata in their raw capture and receipt.
+
+The separately reviewed addition `src/biocompiler/core_artifacts.py` is pinned to
+`e4f6888609f9ffdab1d7f2e641072f3545a15c0e41ea6a3ddd85d50477708a68`.
+`tools/check_realization_workflow_corpus.py` verifies that every historical source
+file remains byte-identical, rejects unreviewed additions, and records both full
+source inventories. Baseline and instrumented capture assert that this added
+module is absent and block its import. Only after that guard succeeds may the
+comparison project the source inventory to the historical inventory; every
+observation and artifact must still compare exactly. Current full metadata is
+explicitly not claimed byte-identical to historical metadata. Focused captures
+cannot authorize a whole-corpus projection.
+
+`core/test/test_realization_workflow_corpus.ml` implements full native replay of
+all 47,901 retained prerequisite occurrences, 19,415 newly reached prerequisite
+occurrences and 874 new domain/kernel observations. It consumes all 1,030 exact
+callback transcripts and 24 enumerators, checks every derived property and
+reviewed rejection, and executes the complete 625-case campaign. Original
+checker-version mutations compare a fresh fixed-current complete counterpart
+before reproducing the exact historical mutation or rejecting stale replay.
+The runner also checks the 16 retained CLI observation records and publication
+bytes; those records do not establish installed CLI routing. Static peer review
+has been performed; the runner has not been compiled or executed locally.
 
 Capture chooses an exclusively owned `/tmp/biocompiler-workflow-conformance-v1`
 directory and deterministic child paths before baseline and instrumented runs.
@@ -412,7 +436,7 @@ It preserves actual CLI stdout/stderr, file bytes, publication failures and
 cleanup assertions without output normalization. The manifest records this
 capture-only environment intervention. Collisions fail without modifying existing
 contents. Original CLI calls remain in-process evidence; installed guarded CLI
-children, native full-corpus replay and hosted validation remain pending. This
+children, execution of the native full-corpus runner and hosted validation remain pending. This
 checkpoint does not close R5 or any whole-migration LM item.
 
 Recheck these if implementation starts after source changes:

@@ -1,14 +1,16 @@
 # R5: complete native realization workflows
 
-Draft implementation checkpoint, 2026-10-02: the domain records, callback engines,
-fixed candidate/model workflows and independent literal tests are now saved.
-No native compilation or execution has been performed locally. The complete
-native corpus runner, artifact transport and installed SDK/CLI gates remain
-unfinished. The aggregate work policy is provisional: `Codec.encode` charges
-up to 8,192 units per key/value node, so the proposed `32 * 64 MiB` overhead is
-not sufficient to guarantee every maximum-size final traversal after maximum
-leaf work. Derive the final allowance from actual bounded traversals and finish
-transient-allocation accounting before freezing or advertising this profile.
+Implementation checkpoint, 2026-10-02: the domain records, callback engines,
+fixed candidate/model workflows and independent literal tests are implemented.
+The original revision `002344cd` passed all 84 native suites on hosted Linux and
+macOS. The corrected accounting, allocation checks and complete corpus runner
+(the 85th native suite) are now implemented and require fresh hosted validation
+at the corrected revision; the earlier passes do not validate these changes.
+The reviewed aggregate work ceiling is `8,500,125,714,074,944`, derived from the
+bounded traversals documented below while preserving each checker's full
+50,000,000-unit allowance. Python artifact transport is implemented with 27
+passing tests. Native workflow endpoints and SDK/CLI routing remain pending.
+No native compilation or execution has been performed locally.
 
 
 Audited 2026-10-02 against the current shared checkout. This is an implementation
@@ -40,7 +42,11 @@ including stale results, switched dependencies, wrong requirements and different
 failures. Do not expose callbacks, code paths, serialized functions, a checker
 version override or a saved PASS as authority on the production protocol.
 
-## Current seams and missing implementation
+## Historical audit: original seams and missing implementation
+
+The inventory in this section records the original pre-implementation audit.
+Its “missing” entries describe that historical starting point, not the current
+checkpoint above; implemented runtime details and accounting appear below.
 
 Available: structural `Realization_request`, fresh `Checked_request`, complete
 `Synthetic_authority.Candidate`, reference/candidate execution, all
@@ -622,3 +628,192 @@ Suggested implementation-order checkpoints are complete domains, complete
 callback-parametric engine plus fixed wholeworkflow delegates, then one service/
 SDK/CLI batch exposing all three operations. Each checkpoint retains explicit
 unimplemented scope until the final wholeworkflow hosted conformance passes.
+
+## R5 runtime accounting derivation and staged ownership (2026-10-02)
+
+This section supersedes the provisional `100000 * 50M + 32 * 64MiB` work
+allowance. The original checker retains its complete 50,000,000-unit child
+allowance for every evaluation. History generation, workflow settings,
+structural result validation, aggregation, historical import, replay comparison
+and output encoding charge the same operation ancestor, outside that child.
+Semantic `max_histories` / `max_evaluations` remain unchanged (maximum 100,000).
+Exhaustion remains a resource exception, never a shortened successful campaign
+or a minimality claim. Native compilation/execution of this correction remains
+hosted validation work; the initial PR58 revision's passing suites do not test it.
+
+The domain codec exposes `Codec.work_bounds`. Its conservative successful-pass
+bounds, with UTF-8 canonical bytes `b` and key-plus-value occurrences `n`, are:
+
+- `M(b,n) = 88b + 4608n + 1` for measuring/preflighting.
+- `F(b,n) = 181b + 9216n + 3` for full canonical fingerprinting.
+- `H(b,n) = 320b + 14000n + 8` for the streamed legacy ASCII history identity.
+- `G(b,n) = M(b,n) + 256b + 128n + 131072` for a generated bounded history.
+  The generation bound measures the at-most-sixteen-frame prefix, caches the
+  validated fixed-suffix census, and charges only actual emitted declarations.
+  It does not charge an entire large suffix separately for every variable frame.
+
+These are upper envelopes, not fixed charges: the codec charges actual scalar
+kinds, byte lengths, list walks and per-object key sorting. In particular,
+non-numeric nodes no longer incur two hypothetical binary64 conversions.
+The domain audit and tests document these bounds in the public workflow plan.
+
+Use `A=67,108,864`, `N=1,000,000`, `L=33,554,432`, `J=500,000`.
+`J` deliberately preserves the historical CheckResult boundary: its legacy
+250,000-node limit counts values only, so typed callback/historical results may
+approach 500,000 key-plus-value nodes. Native checker output still has its
+existing 250,000 key-plus-value-node ceiling, 32MiB byte ceiling and 100,000
+monitor-item ceiling. No historical result is rejected merely to fit the
+smaller native checker node convention.
+
+A selected-signature scan is bounded by
+`S = 160L + 1024J + A + 16384`. Every generated signature has nine fixed fields;
+its total byte volume is at most eight times the source diagnostics or
+counterexamples, and each source record consumes at least eleven nodes.
+The selected signature's own bytes are separately included. This is tighter
+than multiplying the generic worst-case numeric encoder cost by every
+string/null-only signature.
+
+The runtime declares these per-trial envelopes:
+
+| Phase | Derived bound | Exact units |
+| --- | --- | ---: |
+| Reduction trial `R` | `H(A,N) + 4M(L,J) + 2F(L,J) + S + 32L + 8N + 16000000` | 84,910,277,138 |
+| Exploration trial `E` | `G(A,N) + H(A,N) + 5M(L,J) + 2F(L,J) + 32L + 8N + 16000000` | 112,040,813,076 |
+| Retained report validation `V` | `G(A,N) + H(A,N) + M(L,J) + 2F(L,J) + 16L + 8N + 8000000` | 90,468,782,096 |
+
+`R` includes result/settings validation, complete history identity, two stable
+metadata fingerprints, selected-failure scanning, accepted-result sizing, and
+list/persistent-inventory charges. `E` replaces signature scanning with bounded
+history construction and includes both incremental fragment reservation and
+complete result sizing. `V` reconstructs each required prefix history and
+rechecks its full dependency/horizon/inventory claims without invoking a
+checker. Extra byte/node terms cover cached-volume precharges, constant wrapper
+fields, list copying, and prospective workspace reservations. The typed
+CheckResult dependency replacement preserves the already-validated unchanged
+body; it does not repeatedly reimport all diagnostics/counterexamples in each
+trial. Newly supplied historical results still undergo complete charged import.
+The fixed native dependency envelope has at most twenty settings, fewer than
+8192 bytes and at most 128 nodes (controlled version/enumeration strings and
+64-hex identities, with finite horizons). Its explicit preflight plus three
+inherited dependency measurements fit the per-trial 16M scaffold allowance.
+The complete updated report is measured once and the typed helper's inherited
+ASCII measure is prepaid once; result validation and accepted-result sizing
+supply the other two full-result measurements in `R`. Generic callbacks do not
+perform this fixed-checker settings extension.
+
+A structurally valid complete CheckResult consumes at least 51 key-plus-value
+nodes: nineteen outer nodes including the dependency placeholder and at least
+thirty-two further dependency nodes. Thus a retained complete report has at
+most `K=floor(1000000/51)=19607` results. One further callback may run before
+incremental retention rejects its result. This bound does not change the
+100,000 semantic cap; it follows from the separately declared 1M-node artifact
+capacity. Historical import and final report validation each perform at most
+`K` history reconstructions. Discarded reduction trials are separately allowed
+up to the full 100,000 evaluations; their result bytes are never accumulated
+into the retained 64MiB report quota.
+
+The fixed import/final/replay/publication allowance is:
+
+`Z = 128F(A,N) + 128M(A,N) + 256A + 256N + 400000000`
+`  = 4,098,000,274,944`.
+
+The constructor census behind this allowance includes three independent Bounds
+imports during exploration replay: the independent request, the historical
+embedded request, and the historical report's configuration. Constructor-order
+validation and nested observation/frame decoding bound each import by
+`6M + 6F + 8192b + 1024n + 2000000`, at most `24(M+F)` at the declared maxima.
+Those three imports account for at most 72 paired passes. The remaining 56
+paired passes cover complete request/record and result dispatch preflights,
+whole historical CheckResult imports (at most thirteen measuring passes over
+their cumulative retained volume), final domain construction, derived-field
+identity checks, complete record fingerprints, raw replay comparison and the
+final charged output encoding. The extra linear terms cover reads, hashes,
+framing, list inventories, source-authority staging and fixed constructors.
+Repeated per-result history validation is in `V`, not hidden in this fixed
+allowance. No final 64MiB serialization allowance is multiplied by 100,000.
+
+The default is the maximum of the full operation bounds:
+
+- Reduction: `100000 * (50000000 + R) + Z = 8,500,125,714,074,944`.
+- Exploration: `(K+1) * (50000000 + E) + 2K*V + Z = 5,749,617,484,181,696`.
+- Adversarial generation has at most 1005 cases (four named, at most 1000 seeded,
+  one incomplete), and is below both preceding bounds even when each case is
+  conservatively charged at the full history/artifact envelope.
+
+The profile therefore declares **8,500,125,714,074,944** maximum work units. This
+is below `2^53-1 = 9,007,199,254,740,991`, fits the supported native integer, and
+remains an exact JSON integer for Python and prospective TypeScript consumers.
+Both profile initialization and native tests assert the ceiling. The integer
+is computed from named terms in the implementation, not rounded to a decimal
+power or chosen by truncating accepted histories.
+
+### Live inventory and allocation order
+
+Per-artifact ceilings remain 64MiB and 1M key-plus-value nodes. Aggregate
+independent-authority plus historical-record input is separately bounded at
+80MiB plus 64KiB framing and 2M nodes. The selected request byte reduction
+applies to that aggregate; each fragment also passes its own artifact bound.
+The service separately enforces the existing 16MiB independent request limit.
+
+The runtime live-inventory ceiling is **8,000,000 bookkeeping slots**, distinct
+from the 1M-node publication limit. Its concurrent inventories are explicitly
+bounded: at most 1M retained report occurrences, up to 500k prospective callback
+result occurrences, up to three 1M-scale original/current/trial or reconstruction
+inventories, and up to 4M slots for two nested domain-import workspaces. The
+extrema are not all simultaneously allocated: native frame prefixes have at
+most sixteen snapshots/eight contacts/eight observations per scope, reduction
+trials copy list spines while sharing sealed frame values, and import workspaces
+finish before evaluation. Eight million covers the reachable combinations
+without reducing a valid 1M-node historical artifact. Each native checker
+retains its separately declared bounded internal monitor profile.
+
+Before constructing a generated prefix, the runtime reserves three copies of
+its explicit worst-case node inventory (raw prefix, hydrated frames and
+reconstruction scratch). Reduction reserves the entire reverse-prefix and
+trial-list inventories before cons/reverse operations. An accepted trial
+transfers its reservation to the retained current history; discarded trials
+release theirs. Replacements reserve the new result before releasing the old
+one. Exception cleanup releases scoped inventories and never refunds work.
+
+Domain construction, import, raw comparison and final encoding reserve bounded
+2M-slot workspaces before traversal/allocation. Nested record/request decoding
+therefore reserves 4M slots on the same budget. History preflight counts sealed
+frame contents before constructing per-frame JSON and rejects cumulative
+byte/node overflow before building an aggregate history value. Final
+publication reserves the full new retained census before transferring the old
+child inventories; it preserves any enclosing scoped workspace reservations.
+No output buffer is treated as authority, and each encoded buffer retains its
+own fixed 64MiB (workflow) or inherited per-frame ASCII ceiling.
+
+### Replay equality and service composition
+
+Fresh replay first compares the independently retained complete request
+fingerprint, reruns the entire operation, and compares complete canonical record
+fingerprints. When raw historical JSON is supplied, both raw and rebuilt trees
+receive strict charged preflight and an exact `Json.equal` comparison. The
+implementation of that equality was inspected: integer and float variants stay
+distinct; finite floats compare exact bits, preserving negative zero; UTF-8
+strings compare exact decoded contents; objects compare sorted unique keys;
+array order is retained. These are the existing canonical serialization's
+identity distinctions. Cycles, duplicate keys and nonfinite/invalid scalars are
+rejected before recursive comparison. This avoids simultaneous full 64MiB
+canonical string allocations while preserving the complete canonical identity
+check; it does not substitute an outcome comparison or normalized subset.
+
+Service composition uses exactly one caller-owned budget:
+
+1. `Verification_workflow_budget.create ?limits ?parent ()`.
+2. Pass `B.charge budget` to bounded descriptor-read, parse and hash work.
+3. `B.reserve_request budget raw` exactly once for every complete incoming
+   independent-authority/historical artifact fragment.
+4. `Synthetic_verification.decode_request_in` / `decode_record_in ~budget`.
+5. `run_in ~budget` or `replay_in ~budget ~raw_record ~expected_request`.
+6. `B.encode_report budget (Record.to_json result)` for final artifact emission.
+
+The `_in` entry points do not create a fresh operation budget. Their staged
+imports use the checked-source decoder seam, preserving original header,
+source-lowering, candidate and remaining-field rejection order. The transport
+must not create a new budget for output encoding. Native tests cover exact and
+one-under work/ancestor boundaries, the full 50M callback allowance, typed
+historical capacity, scoped cleanup/no-refund, signed-zero/numeric-kind replay,
+raw-cycle rejection, and full staged decode/replay/publication accounting.

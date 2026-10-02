@@ -11,6 +11,10 @@ module Codec : sig
   val preflight : ?limits:limits -> ?path:string -> Bioc_wire.Json.t -> unit
   val encode : ?limits:limits -> Bioc_wire.Json.t -> string
   val fingerprint : ?limits:limits -> Bioc_wire.Json.t -> string
+  type work_bounds = { measure:int; encode:int; fingerprint:int }
+  (* Conservative charge bounds for a successful individual traversal. Sizes
+     count canonical UTF-8 bytes and every value/object-key occurrence. *)
+  val work_bounds : size -> work_bounds
 end
 type number = Runtime_number.t
 type frame = Execution_data.Input_frame.t
@@ -20,6 +24,9 @@ val input_exploration_version : string
 val claim_scope : string
 val input_claim_scope : string
 val frames_of_json : ?limits:Codec.limits -> ?path:string -> Bioc_wire.Json.t -> frame list
+(* Historical leaf import with its existing structural rules and precharged
+   decoder traversals. This does not run a checker or confer acceptance. *)
+val check_of_json : ?limits:Codec.limits -> ?path:string -> Bioc_wire.Json.t -> check
 val history_json : frame list -> Bioc_wire.Json.t
 val history_fingerprint : ?limits:Codec.limits -> frame list -> string
 val validate_history : ?limits:Codec.limits -> ?initial:bool -> frame list -> number -> unit

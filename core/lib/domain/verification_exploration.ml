@@ -29,13 +29,14 @@ module Codec = struct
   let length limits values =
     let rec loop count = function [] -> count | _ :: rest ->
       charge limits 1; limit (count < limits.max_nodes); loop (count+1) rest in loop 0 values
-  let sort_cost limits count key_bytes =
+  let sort_work count key_bytes =
     let rec height n result = if n <= 1 then result else height (n/2) (result+1) in
-    charge limits ((count+key_bytes+1) * (4 * height count 1))
+    (count+key_bytes+1) * (4 * height count 1)
+  let sort_cost limits count key_bytes = charge limits (sort_work count key_bytes)
   let utf8 text = try Json.validate_utf8 text with Diagnostic.Error error when error.code="invalid_utf8" ->
     Diagnostic.fail "verification_exploration" "Exploration text must be valid UTF-8."
   let quoted_size limits text =
-    charge limits (String.length text + 1);
+    charge limits (4*(String.length text+1));
     limit (String.length text <= Limits.max_string_bytes); utf8 text;
     let bytes = ref 2 in
     String.iter (fun value -> bytes := !bytes + match value with
@@ -43,10 +44,19 @@ module Codec = struct
       | value when Char.code value < 32 -> 6 | _ -> 1) text;
     !bytes
   type visit = Enter of Json.t * int | Leave of Json.t
-  let measure ?(limits=default_limits) ?(path="") value =
+  type inspection = {size:size;measure_work:int;writer_work:int}
+  (* The pass charges itself before visiting data and accumulates only the
+     additional writer cost. Scalar types and per-object key volumes determine
+     that cost; nonnumeric nodes no longer pay for two binary64 conversions. *)
+  let inspect ?(limits=default_limits) ?(path="") value =
+    let measure_work=ref 0 and writer_work=ref 0 in
+    let original=limits in
+    let limits={limits with charge_work=(fun amount->charge original amount; measure_work:= !measure_work+amount)} in
     let bytes = ref 0 and nodes = ref 0 and queued = ref 1 and pending = ref [Enter(value,0)] and active = ref [] in
     let add amount = limit ~path (amount >= 0 && amount <= limits.max_bytes - !bytes); bytes := !bytes+amount in
-    let node () = charge limits 1; limit ~path (!nodes < limits.max_nodes); incr nodes in
+    let writer amount=writer_work:= !writer_work+amount in
+    let node () = charge limits 1; limit ~path (!nodes < limits.max_nodes); incr nodes; writer 1 in
+    let quoted text=writer(4*(String.length text+1)); quoted_size limits text in
     while !pending <> [] do
       charge limits (Limits.max_depth+1);
       let next = List.hd !pending in pending := List.tl !pending;
@@ -63,34 +73,46 @@ module Codec = struct
             List.iter (fun child -> pending := Enter(child,depth+1) :: !pending) children in
           (match value with
           | Json.Null -> add 4 | Json.Bool value -> add (if value then 4 else 5)
-          | Json.String text -> add (quoted_size limits text)
+          | Json.String text -> add (quoted text)
           | Json.Int value ->
-              charge limits (Z.numbits value+1); limit ~path (Z.numbits value <= 4*Limits.max_number_chars);
+              let cost=Z.numbits value+1 in charge limits cost; writer cost;
+              limit ~path (Z.numbits value <= 4*Limits.max_number_chars);
               let text = Z.to_string value in limit ~path (String.length text <= Limits.max_number_chars); add (String.length text)
-          | Json.Float value -> charge limits 4096; add (String.length (Canonical.float_string value))
+          | Json.Float value -> charge limits 4096; writer 4096; add (String.length (Canonical.float_string value))
           | Json.Array values ->
               let count = length limits values in limit ~path (count <= limits.max_nodes - !nodes - !queued);
-              add (2+max 0 (count-1)); enter count values
+              writer count; add (2+max 0 (count-1)); enter count values
           | Json.Object fields ->
               let count = length limits fields in limit ~path (count <= (limits.max_nodes - !nodes - !queued)/2);
               add (2+max 0 (count-1)+count);
-              let key_bytes = List.fold_left (fun total (key,_) -> node (); let size = quoted_size limits key in
+              let key_bytes = List.fold_left (fun total (key,_) -> node (); let size = quoted key in
                 add size; total+String.length key) 0 fields in
-              sort_cost limits count key_bytes;
+              let sorting=sort_work count key_bytes in charge limits sorting; writer(sorting+4*count);
               let sorted = List.sort (fun (a,_) (b,_) -> String.compare a b) fields in
               let previous = ref None in
               List.iter (fun (key,_) -> Diagnostic.require ~path (!previous<>Some key) "duplicate_key"
                 "Duplicate workflow JSON object key."; previous:=Some key) sorted;
               enter count (List.rev_map snd fields))
-    done; {bytes = !bytes; nodes = !nodes}
+    done; {size={bytes = !bytes; nodes = !nodes};measure_work= !measure_work;writer_work= !writer_work}
+  let measure ?limits ?path raw=(inspect ?limits ?path raw).size
   let preflight ?limits ?path raw = ignore (measure ?limits ?path raw)
   let encode ?(limits=default_limits) raw =
-    let size = measure ~limits raw in
-    sort_cost limits size.nodes size.bytes;
-    charge limits (3*size.bytes+8192*size.nodes);
+    let inspected=inspect ~limits raw in
+    charge limits(inspected.writer_work+3*inspected.size.bytes);
     let encoded = Canonical.encode_bounded ~max_bytes:limits.max_bytes raw in
-    limit (String.length encoded=size.bytes); encoded
-  let fingerprint ?limits raw = Canonical.sha256 (encode ?limits raw)
+    limit (String.length encoded=inspected.size.bytes); encoded
+  let fingerprint ?(limits=default_limits) raw =
+    let encoded=encode ~limits raw in charge limits(String.length encoded); Canonical.sha256 encoded
+  type work_bounds={measure:int;encode:int;fingerprint:int}
+  let work_bounds (size:size) =
+    limit(size.bytes>=0 && size.bytes<=67_108_864 && size.nodes>=0 && size.nodes<=1_000_000);
+    (* At most 20 merge-sort levels and 129 active-ancestor comparisons.
+       Number conversion uses at most four units per decimal character for
+       integers, or 4096 per binary64. See the public plan for the pass census. *)
+    {measure=88*size.bytes+4608*size.nodes+1;
+     encode=180*size.bytes+9216*size.nodes+2;
+     fingerprint=181*size.bytes+9216*size.nodes+3}
+
 end
 type number = N.t
 type frame = D.Input_frame.t
@@ -101,19 +123,25 @@ let claim_scope = "Only the declared Boolean contact states on the variable time
 let input_claim_scope = "Only the declared Boolean cell and contact states on the variable time lattice with the exact fixed suffix and finite horizon are enumerated. Completion means enumeration coverage, not whole-profile, temporal or biological refinement."
 type packed = {json:Json.t;fingerprint:string;size:int}
 let pack limits json = let canonical = Codec.encode ~limits json in
+  Codec.charge limits(String.length canonical);
   {json;fingerprint=Canonical.sha256 canonical;size=String.length canonical}
 let bounded limits values = ignore (Codec.length limits values); values
-let reserve_records limits encode values =
+let records_size limits encode values =
+  limit(Codec.maximum_bytes limits>=2);
   let remaining_bytes = ref (Codec.maximum_bytes limits-2) and remaining_nodes = ref (Codec.maximum_nodes limits-1) and separator=ref 0 in
   List.iter (fun value -> let size = Codec.measure ~limits (encode value) in
     limit (size.bytes + !separator <= !remaining_bytes && size.nodes <= !remaining_nodes);
-    remaining_bytes:= !remaining_bytes-size.bytes - !separator; separator:=1; remaining_nodes:= !remaining_nodes-size.nodes) (bounded limits values)
-let record limits path label keys raw =
-  Codec.preflight ~limits ~path raw;
+    remaining_bytes:= !remaining_bytes-size.bytes - !separator; separator:=1; remaining_nodes:= !remaining_nodes-size.nodes) (bounded limits values);
+  {Codec.bytes=Codec.maximum_bytes limits - !remaining_bytes;nodes=Codec.maximum_nodes limits - !remaining_nodes}
+let reserve_records limits encode values=ignore(records_size limits encode values)
+
+let record_inspected limits path label keys raw =
+  let inspected=Codec.inspect ~limits ~path raw in
   match raw with Json.Object values ->
     Codec.sort_cost limits (List.length values) (List.fold_left (fun n (key,_) -> n+String.length key) 0 values);
-    require ~path (List.sort String.compare (List.map fst values)=List.sort String.compare keys) ("Invalid fields in "^label^"."); values
+    require ~path (List.sort String.compare (List.map fst values)=List.sort String.compare keys) ("Invalid fields in "^label^"."); values,inspected
   | _ -> Diagnostic.fail ~path "verification_exploration" ("Invalid fields in "^label^".")
+let record limits path label keys raw=fst(record_inspected limits path label keys raw)
 let get path fields key = Json.field ~path:(path^"/"^key) key fields
 let optional parse = function Json.Null -> None | value -> Some(parse value)
 let text limits label raw = match raw with
@@ -144,7 +172,7 @@ let frames_of_json ?(limits=Codec.default_limits) ?(path="") raw =
     Diagnostic.fail ~path "verification_exploration" "History must be an array." in
   List.mapi (fun index raw ->
     let path = path^"/"^string_of_int index in
-    let fields = record limits path "InputFrame" ["time";"signals";"contacts"] raw in
+    let fields,inspected = record_inspected limits path "InputFrame" ["time";"signals";"contacts"] raw in
     let samples raw = match raw with Json.Object fields ->
       List.iter (fun (_,raw) -> ignore(record limits path "SignalSample" ["value";"present";"high";"low"] raw)) fields
       | _ -> Diagnostic.fail ~path "verification_exploration" "Samples must be a mapping." in
@@ -152,18 +180,37 @@ let frames_of_json ?(limits=Codec.default_limits) ?(path="") raw =
       |_->Diagnostic.fail ~path "verification_exploration" "Contacts must be a mapping." in
     samples (get path fields "signals");
     List.iter(fun(_,values)->samples values)contacts;
+    (* Existing typed leaf decoders have fixed nested preflights, but no charge
+       callback. Pay their complete bounded pass envelope before invoking them. *)
+    Codec.charge limits(8*inspected.measure_work+64*inspected.size.bytes+64*inspected.size.nodes);
     D.Input_frame.of_json ~path raw) frames
+let check_of_json ?(limits=Codec.default_limits) ?(path="") raw =
+  let inspected=Codec.inspect ~limits ~path raw in
+  (* CheckResult -> dependency/horizon, diagnostic/source, counterexample/
+     expected/interval/source, and coverage. Each layer measures on entry and
+     packing; twelve complete-volume traversals cover every nested path. *)
+  Codec.charge limits(12*inspected.measure_work+64*inspected.size.bytes+64*inspected.size.nodes);
+  E.Check_result.of_json ~path raw
 let history_fingerprint ?(limits=Codec.default_limits) values =
-  reserve_records limits D.Input_frame.to_json values;
-  (* History uses ASCII identity. Per-frame legacy bounds remain unchanged; a
-     larger aggregate is encoded incrementally without a 32 MiB aggregate cap. *)
+  ignore(bounded limits values); limit(Codec.maximum_bytes limits>=2);
+  let remaining_bytes=ref(Codec.maximum_bytes limits-2) and remaining_nodes=ref(Codec.maximum_nodes limits-1) in
+  (* The ASCII history identity is streamed one frame at a time. Its complete
+     UTF-8 inventory is checked incrementally; no growing prefix is rescanned.
+     Before the inherited two-pass ASCII encoder, pay the measured traversal
+     and writer costs plus the at-most-sixfold escaped scalar expansion. *)
   let hash = ref Digestif.SHA256.empty in
   let feed text = Codec.charge limits (String.length text+1); hash:=Digestif.SHA256.feed_string !hash text in
-  feed "["; let first=ref true in
-  List.iter(fun frame -> if !first then first:=false else feed ",";
-    let raw=D.Input_frame.to_json frame in let size=Codec.measure ~limits raw in Codec.charge limits (12*size.bytes+size.nodes);
-    feed(Legacy_ascii.encode raw)) values;
+  feed "["; let separator=ref 0 in
+  List.iter(fun frame ->
+    let raw=D.Input_frame.to_json frame in let inspected=Codec.inspect ~limits raw in
+    let size=inspected.size in
+    limit(size.bytes + !separator <= !remaining_bytes && size.nodes <= !remaining_nodes);
+    remaining_bytes:= !remaining_bytes-size.bytes - !separator; remaining_nodes:= !remaining_nodes-size.nodes;
+    Codec.charge limits(inspected.measure_work+inspected.writer_work+42*size.bytes+8*size.nodes+1);
+    if !separator=1 then feed "," else separator:=1;
+    feed(Legacy_ascii.encode raw))values;
   feed "]"; Digestif.SHA256.to_hex(Digestif.SHA256.get !hash)
+
 let validate_history ?(limits=Codec.default_limits) ?(initial=true) values until =
   reserve_records limits D.Input_frame.to_json values; ignore(time until);
   require (not initial || (match values with first::_ -> N.equal (D.Input_frame.time first) N.zero | [] -> false))
@@ -208,7 +255,7 @@ module Bounds = struct
   type kind = Contact | Mixed
   type t = {packed:packed;kind:kind;contact_ids:string list;observations:Observation.t list;
     cell_observations:Observation.t list;variable_times:number list;until:number;fixed_suffix:frame list;
-    max_histories:int;state_count:Z.t;possible_histories:Z.t}
+    max_histories:int;state_count:Z.t;possible_histories:Z.t;fixed_suffix_size:Codec.size}
   let schema = function Contact->"biocompiler.boolean_contact_config.v0.1"|Mixed->"biocompiler.boolean_input_config.v0.1"
   let observations_unique limits message values =
     let seen=ref Strings.empty in List.iter(fun item ->
@@ -227,7 +274,7 @@ module Bounds = struct
         require (if declared then match value with Json.Bool _->true|_->false else value=Json.Null)
           "Snapshot observations differ from the declared Boolean bounds.") (Json.object_fields(D.Sample.to_json sample))) samples
   let complete_snapshot limits contact_ids observations cell_observations frame =
-    Codec.charge limits(64*(List.fold_left(fun n id->n+String.length id)0 contact_ids+1));
+    List.iter(fun(key,_)->Codec.charge limits(64*(String.length key+1)))(D.Input_frame.contacts frame);
     require(List.for_all(fun(key,_)->List.mem key contact_ids)(D.Input_frame.contacts frame))
       "Snapshot contains contacts outside the Boolean bounds.";
     complete_samples limits (D.Input_frame.signals frame) cell_observations;
@@ -236,7 +283,7 @@ module Bounds = struct
       ?(fixed_suffix=[]) ?(max_histories=10000) ?(cell_observations=[]) () =
     ignore(bounded limits contact_ids); reserve_records limits Observation.to_json observations;
     reserve_records limits Observation.to_json cell_observations; ignore(bounded limits variable_times);
-    reserve_records limits D.Input_frame.to_json fixed_suffix;
+    let fixed_suffix_size=records_size limits D.Input_frame.to_json fixed_suffix in
     (* Python's mixed subclass validates cell declarations before its base. *)
     if kind=Mixed then (
       require(List.length cell_observations<=8) "Mixed exploration supports at most eight Boolean cell observations.";
@@ -279,7 +326,8 @@ module Bounds = struct
       "until",N.to_json until;"fixed_suffix",history_json fixed_suffix;"max_histories",Json.int max_histories] in
     let fields=if kind=Mixed then fields@["cell_observations",arr(List.map Observation.to_json cell_observations)] else fields in
     let packed=pack limits(obj fields) in
-    {packed;kind;contact_ids;observations;cell_observations;variable_times;until;fixed_suffix;max_histories;state_count;possible_histories}
+    {packed;kind;contact_ids;observations;cell_observations;variable_times;until;fixed_suffix;max_histories;state_count;possible_histories;
+      fixed_suffix_size}
   let decode ?(limits=Codec.default_limits) ?(path="") kind raw =
     let label=if kind=Contact then "BooleanContactConfig" else "BooleanInputConfig" in
     let keys=["schema_version";"contact_ids";"observations";"variable_times";"until";"fixed_suffix";"max_histories"] in
@@ -346,7 +394,8 @@ module Bounds = struct
   let state_count value=value.state_count
   let possible_histories value=value.possible_histories
   let boolean_samples limits observations code =
-    let samples=List.mapi(fun index observation -> Codec.charge limits 64;
+    let samples=List.mapi(fun index observation ->
+      Codec.charge limits(64*(String.length(Observation.signal_id observation)+String.length(Observation.field observation)+1));
       Observation.signal_id observation,Observation.field observation,Z.testbit code index)observations in
     let values=List.fold_left(fun result (signal,field,value) ->
       let previous=match List.assoc_opt signal result with None->[]|Some value->value in
@@ -354,7 +403,7 @@ module Bounds = struct
     List.map(fun(signal,fields) -> signal,D.Sample.make ?present:(List.assoc_opt "present" fields)
       ?high:(List.assoc_opt "high" fields) ?low:(List.assoc_opt "low" fields)())values
   let snapshot_raw limits value ~time:at ~code =
-    Codec.charge limits (Z.numbits code+64*value.packed.size+4096);
+    Codec.charge limits (Z.numbits code+4096);
     require(Z.sign code>=0 && Z.compare code value.state_count<0) "Boolean snapshot index exceeds its declared state space.";
     let remaining,cell=Z.ediv_rem code(Z.shift_left Z.one(List.length value.cell_observations)) in
     let signals=boolean_samples limits value.cell_observations cell in
@@ -372,7 +421,6 @@ module Bounds = struct
   let history_at ?(limits=Codec.default_limits) value index =
     Codec.charge limits (Z.numbits index+8192);
     require(Z.sign index>=0 && Z.compare index value.possible_histories<0) "Boolean history index exceeds its declared lattice.";
-    reserve_records limits D.Input_frame.to_json value.fixed_suffix;
     let _,codes=List.fold_left(fun(index,values)_ -> let next,code=Z.ediv_rem index value.state_count in next,code::values)
       (index,[])value.variable_times in
     let raw_prefix=List.map2(fun at code->snapshot_raw limits value ~time:at ~code)value.variable_times codes in
@@ -381,7 +429,13 @@ module Bounds = struct
       limit(size.bytes + !separator <= !remaining_bytes && size.nodes <= !remaining_nodes);
       remaining_bytes:= !remaining_bytes-size.bytes - !separator; separator:=1; remaining_nodes:= !remaining_nodes-size.nodes;
       Codec.charge limits(64*size.bytes+64*size.nodes+1) in
-    List.iter reserve raw_prefix; List.iter(fun frame->reserve(D.Input_frame.to_json frame))value.fixed_suffix;
+    List.iter reserve raw_prefix;
+    (* Bounds constructors validated and froze the suffix. Reuse its exact
+       occurrence census instead of traversing that immutable suffix twice per
+       lattice point. The only new list spine is the <=16-frame prefix. *)
+    let suffix=value.fixed_suffix_size in
+    if suffix.nodes>1 then (
+      limit(suffix.bytes-2 + !separator <= !remaining_bytes && suffix.nodes-1 <= !remaining_nodes));
     let prefix=List.map D.Input_frame.of_json raw_prefix in
     Codec.charge limits(List.length prefix); prefix@value.fixed_suffix
 end
@@ -452,7 +506,7 @@ module Report = struct
     let get=get path fields in schema_check path (schema kind)(get "schema_version");
     let config=(match kind with Bounds.Contact->Bounds.contact_of_json|Bounds.Mixed->Bounds.input_of_json)
       ~limits ~path:(path^"/config")(get "config") in
-    let results=decode_array(fun index raw->E.Check_result.of_json ~path:(path^"/results/"^string_of_int index)raw)(get "results") in
+    let results=decode_array(fun index raw->check_of_json ~limits ~path:(path^"/results/"^string_of_int index)raw)(get "results") in
     let result=make ~limits ~kind ~config ~results ~explorer_version:(string_or_empty(get "explorer_version"))
       ~claim_scope:(string_or_empty(get "claim_scope")) () in
     let actual=Json.object_fields result.packed.json in
@@ -590,8 +644,8 @@ module Reduction = struct
     let original_history=frames_of_json ~limits ~path:(path^"/original_history")(get "original_history") in
     let history=frames_of_json ~limits ~path:(path^"/history")(get "history") in
     let signature=Failure_signature.of_json ~limits ~path:(path^"/signature")(get "signature") in
-    let original_result=E.Check_result.of_json ~path:(path^"/original_result")(get "original_result") in
-    let result=E.Check_result.of_json ~path:(path^"/result")(get "result") in
+    let original_result=check_of_json ~limits ~path:(path^"/original_result")(get "original_result") in
+    let result=check_of_json ~limits ~path:(path^"/result")(get "result") in
     let until=raw_time(get "until") in validate_history ~limits original_history until; validate_history ~limits history until;
     let evaluations=integer "reduction evaluation count" 1 100000 (get "evaluations") in
     let one_minimal=match get "one_minimal" with Json.Bool value->value|_->Diagnostic.fail ~path "verification_exploration" "Minimality marker must be Boolean." in

@@ -13,14 +13,24 @@ val work : t -> Bioc_checker.Work_budget.t
 val charge : t -> int -> unit
 val input_codec : t -> Bioc_domain.Verification_exploration.Codec.limits
 val report_codec : t -> Bioc_domain.Verification_exploration.Codec.limits
+(* Structural workflow work always charges the operation ancestor; the supplied
+   evaluator child retains its complete independent 50M allowance. *)
 val evaluation_codec : t -> Bioc_checker.Work_budget.t -> Bioc_domain.Verification_exploration.Codec.limits
 val evaluation : t -> Bioc_checker.Work_budget.t
 val realization_limits : t -> Realization_check.limits
 val synthetic_limits : t -> Synthetic_candidate_check.limits
+(* Reserve each complete raw incoming artifact exactly once before staged import.
+   Transport reads/parsing/hash passes charge [charge] on this same budget. *)
 val reserve_request : t -> Bioc_wire.Json.t -> unit
 (* Retain/release live inventories; work is never refunded. *)
 val retain : t -> int -> unit
 val release : t -> int -> unit
+val with_retained : t -> int -> (unit -> 'a) -> 'a
+val with_workspace : t -> (unit -> 'a) -> 'a
+val history_size : t -> Bioc_domain.Execution_data.Input_frame.t list -> Bioc_domain.Verification_exploration.Codec.size
+val equal_json : t -> Bioc_wire.Json.t -> Bioc_wire.Json.t -> bool
+(* Final artifact encoding under the same budget, including prospective workspace. *)
+val encode_report : t -> Bioc_wire.Json.t -> string
 (* Incremental child records transfer into the final report; final validation
    does not charge their publication capacity a second time. *)
 val reserve_report_fragment : t -> Bioc_wire.Json.t -> unit

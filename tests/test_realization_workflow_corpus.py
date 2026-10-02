@@ -16,17 +16,29 @@ class RealizationWorkflowInstrumentationTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         from tools import freeze_realization_workflow as capture
+        import os
+        import subprocess
+        import sys
         cls.capture = capture
         cls.scratch = tempfile.TemporaryDirectory(prefix="workflow-instrumentation-test-")
         cls.addClassCleanup(cls.scratch.cleanup)
         cls.observations = []
         for number in range(2):
-            with patch.dict("os.environ", {"PYTHONHASHSEED": "0"}), \
-                    patch.object(capture, "FILES", ("tests/test_verification_exploration.py",)), \
-                    patch.object(capture, "METHOD_COUNTS", [14]), \
-                    patch.object(capture, "OUT", Path(cls.scratch.name) / str(number)), \
-                    redirect_stdout(io.StringIO()), capture.portable_sources():
-                cls.observations.append(capture.capture())
+            output = Path(cls.scratch.name) / str(number)
+            script = (
+                "from pathlib import Path\n"
+                "from tools import freeze_realization_workflow as f\n"
+                "f.FILES=('tests/test_verification_exploration.py',)\n"
+                "f.METHOD_COUNTS=[14]\n"
+                f"f.OUT=Path({str(output)!r})\n"
+                "with f.portable_sources(): f.capture()\n"
+            )
+            result = subprocess.run([sys.executable, "-c", script], cwd=ROOT,
+                env={**os.environ, "PYTHONPATH": str(ROOT / "src"), "PYTHONHASHSEED": "0"},
+                text=True, capture_output=True, timeout=60)
+            if result.returncode:
+                raise AssertionError(result.stderr[-4000:] + result.stdout[-4000:])
+            cls.observations.append(json.loads((output / "capture.json").read_bytes()))
         cls.document = cls.observations[0]
         cls.calls = {item["id"]: item for item in cls.document["api_calls"]}
 
@@ -91,6 +103,33 @@ class RealizationWorkflowInstrumentationTests(unittest.TestCase):
                     with self.capture.portable_temporary_directories():
                         self.fail("Collision must reject before changing the directory")
             self.assertEqual(sentinel.read_bytes(), b"preserve")
+
+    def test_reviewed_addition_scope_rejects_changed_originals_and_unreviewed_additions(self):
+        from copy import deepcopy
+        from tools.check_realization_workflow_corpus import source_scope
+        actual = self.capture.source_inventory()
+        scope = source_scope(actual)
+        self.assertEqual(scope["actual_sources"], actual)
+        changed = deepcopy(actual)
+        changed[0]["sha256"] = "0" * 64
+        with self.assertRaisesRegex(AssertionError, "source bytes changed"):
+            source_scope(changed)
+        with self.assertRaisesRegex(AssertionError, "Unreviewed workflow source addition"):
+            source_scope([*actual, {"path": "src/biocompiler/unreviewed.py", "sha256": "1" * 64}])
+
+    def test_added_module_import_guard_denies_execution_and_preloaded_modules(self):
+        import importlib
+        import sys
+        from tools.check_realization_workflow_corpus import deny_added_modules
+        name = "_biocompiler_workflow_source_addition_guard_test"
+        scope = {"denied_modules": [name]}
+        with deny_added_modules(scope):
+            with self.assertRaisesRegex(AssertionError, "tried to import"):
+                importlib.import_module(name)
+        with patch.dict(sys.modules, {name: object()}):
+            with self.assertRaisesRegex(AssertionError, "imported before"):
+                with deny_added_modules(scope):
+                    self.fail("Preloaded excluded module must reject")
 
 
 
@@ -180,7 +219,10 @@ class RealizationWorkflowCorpusTests(unittest.TestCase):
         self.assertEqual(Counter(row["api"] for row in self.capture["api_calls"]), coverage["api_census"])
         self.assertEqual(Counter(row["outcome"] for row in self.capture["api_calls"]),
             {"iterator": 24, "raised": 166, "returned": 69046})
-        self.assertEqual(self.index["source_files"], f.source_inventory())
+        from tools.check_realization_workflow_corpus import source_scope
+        scope = source_scope(f.source_inventory())
+        self.assertEqual(scope["historical_sources"], self.index["source_files"])
+        self.assertEqual(scope["actual_sources"], f.source_inventory())
 
     def test_every_immutable_prior_observation_survives_in_order(self):
         from tools import freeze_realization_workflow as f
@@ -223,6 +265,28 @@ class RealizationWorkflowCorpusTests(unittest.TestCase):
         for row in rows:
             for key in ("stdout", "stderr", "files_before", "files_after"): self.assertIn(row[key], self.docs)
             self.assertIn(self.docs[row["result"]], (0,1,2))
+
+    def test_fixed_current_wholeworkflow_and_exact_original_version_mutants(self):
+        from tools import freeze_realization_workflow as f
+        calls = {row["id"]: row for row in self.capture["api_calls"]}
+        prefix = f.previous.VERSION_MUTATION_CONTEXT
+        run = calls[prefix + "/api/135"]
+        replay = calls[prefix + "/api/134"]
+        self.assertEqual(run["policy_override"], {"checker_version": "changed.v999"})
+        raw = f.hydrate_arguments(run, self.capture["documents"])
+        current = f.workflow.run_synthetic_verification(*raw["args"], **raw["kwargs"])
+        actual = current.to_dict()
+        historical_mutant = self.docs[run["result"]]
+        expected = {**historical_mutant, "result": {**historical_mutant["result"],
+            "dependencies": {**historical_mutant["result"]["dependencies"],
+                             "checker": f.previous.CHECKER_VERSION}}}
+        self.assertEqual(f.canonical(actual), f.canonical(expected))
+        replay_args = f.hydrate_arguments(replay, self.capture["documents"])
+        unchanged = f.workflow.replay_synthetic_verification(*replay_args["args"], **replay_args["kwargs"])
+        self.assertEqual(unchanged.to_dict(), actual)
+        stale = f.workflow.SyntheticVerificationRecord.from_dict(historical_mutant)
+        with self.assertRaisesRegex(f.exploration.SerializationError, "stale, altered"):
+            f.workflow.replay_synthetic_verification(stale, expected_request=current.request)
 
     def test_complete_independent_capture_matches_frozen_bytes(self):
         import os

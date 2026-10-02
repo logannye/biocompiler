@@ -51,6 +51,12 @@ def literal(node, resolve):
         return resolve(node.id)
     if isinstance(node, ast.Attribute):
         return resolve(ast.unparse(node))
+    if isinstance(node, ast.Subscript):
+        value, key = literal(node.value, resolve), literal(node.slice, resolve)
+        if ((type(value) is dict and type(key) in (str, int))
+                or (type(value) in (tuple, list) and type(key) is int)):
+            return value[key]
+        raise InventoryError("Only literal mapping/sequence lookups may appear in static declarations")
     if isinstance(node, (ast.List, ast.Tuple, ast.Set)):
         values = []
         for item in node.elts:
@@ -87,6 +93,8 @@ def literal(node, resolve):
             return left + right
         if isinstance(node.op, ast.BitOr):
             return left | right
+        if isinstance(node.op, ast.Mult) and type(left) is int and type(right) is int:
+            return left * right
     if isinstance(node, ast.JoinedStr):
         return "".join(str(literal(item.value, resolve)) if isinstance(item, ast.FormattedValue)
                        else str(item.value) for item in node.values)
@@ -321,7 +329,7 @@ def ownership(module, category):
         return "Python", ["LM-03", "LM-11"], "retain_example_with_core_routing"
     if module.startswith("biocompiler.frontend") or module in {"biocompiler.errors", "biocompiler", "biocompiler.__main__"}:
         return "Python", ["LM-11"], "retain_python_authoring_or_compatibility_adapter"
-    if module in {"biocompiler.cli", "biocompiler.core_client", "biocompiler.core_architecture", "biocompiler.core_architecture_producer", "biocompiler.architecture_backend", "biocompiler.core_realization", "biocompiler.realization_backend", "biocompiler.interop"} or module.startswith("biocompiler.studio"):
+    if module in {"biocompiler.cli", "biocompiler.core_client", "biocompiler.core_architecture", "biocompiler.core_architecture_producer", "biocompiler.architecture_backend", "biocompiler.core_realization", "biocompiler.realization_backend", "biocompiler.core_artifacts", "biocompiler.interop"} or module.startswith("biocompiler.studio"):
         return "Python", ["LM-10", "LM-11", "LM-25"], "retain_transport_route_semantic_authority_to_ocaml"
     section = module.split(".")[1] if "." in module else ""
     tasks = {"ir": ["LM-02", "LM-20"], "semantics": ["LM-20", "LM-21"],

@@ -134,3 +134,96 @@ let ()=
   let larger_size=X.Codec.measure larger in
   require(larger_size.bytes>Limits.max_response_bytes) "Workflow aggregate retained the legacy 32 MiB ceiling";
   print_endline "verification workflow records: 11 full Python literals, 16 exact rejections and bounded codec tests passed"
+
+let charged run =
+  let work=ref 0 in
+  let limits=X.Codec.make_limits ~charge:(fun amount->work:= !work+amount)() in
+  let value=run limits in value,!work
+let () =
+  let number_cases=Json.Array[Json.Float 0.;Json.Float (-0.);Json.Float 5e-324;Json.Float 1.7976931348623157e308;
+    Json.Float 0.1;Json.Int(Z.pow(Z.of_int 10)4299)] in
+  let wide=Json.Object(List.init 257(fun i->Printf.sprintf "key-%04d-é\n" i,Json.String(String.make(i mod 17)'x'))) in
+  let deep=let rec nest n value=if n=0 then value else nest(n-1)(Json.Array[value]) in nest 128 Json.Null in
+  let dense=Json.Array(List.init 10000(fun _->Json.Null)) in
+  let check raw =
+    let size,measured=charged(fun limits->X.Codec.measure ~limits raw) in
+    let bound=X.Codec.work_bounds size in
+    let text,encoded=charged(fun limits->X.Codec.encode ~limits raw) in
+    let fingerprint,fingerprinted=charged(fun limits->X.Codec.fingerprint ~limits raw) in
+    require(measured<=bound.measure && encoded<=bound.encode && fingerprinted<=bound.fingerprint)
+      "Published individual traversal bound undercounts charged work";
+    require(fingerprint=Canonical.sha256 text) "Accounting changed canonical identity";
+    encoded,size in
+  List.iter(fun raw->ignore(check raw))[number_cases;wide;deep];
+  let encoded,size=check dense in
+  require(encoded<512*size.nodes+16*size.bytes)
+    "Nonnumeric dense records still pay blanket floating-point conversion work";
+  let frame time=Bioc_domain.Execution_data.Input_frame.make ~time:(Bioc_domain.Runtime_number.Integer(Z.of_int time))() in
+  let observation=X.Observation.make ~signal_id:"signal"() in
+  let bounds count=X.Bounds.make ~kind:X.Bounds.Contact ~contact_ids:["object"] ~observations:[observation]
+    ~variable_times:[Bioc_domain.Runtime_number.zero] ~until:(Bioc_domain.Runtime_number.Integer(Z.of_int 2000))
+    ~fixed_suffix:(List.init count(fun index->frame(index+1)))() in
+  let short=bounds 1 and long=bounds 1000 in
+  let short_history,short_work=charged(fun limits->X.Bounds.history_at ~limits short Z.zero) in
+  let long_history,long_work=charged(fun limits->X.Bounds.history_at ~limits long Z.zero) in
+  require(List.length short_history=2 && List.length long_history=1001) "Cached suffix changed emitted inventory";
+  require(short_work=long_work) "History generation rescans immutable fixed suffix";
+  let expected=Canonical.sha256(Legacy_ascii.encode(X.history_json long_history)) in
+  let actual,hash_work=charged(fun limits->X.history_fingerprint ~limits long_history) in
+  let history_size=X.Codec.measure(X.history_json long_history) in
+  require(actual=expected) "Streaming history hash differs from complete ASCII identity";
+  require(hash_work<=320*history_size.bytes+14000*history_size.nodes+8) "History hash bound undercounts work";
+  expect_code "verification_exploration_limit" (fun()->ignore(X.history_fingerprint ~limits:(X.Codec.make_limits ~max_bytes:1())[]));
+  expect_code "verification_exploration_limit" (fun()->ignore(X.Bounds.history_at ~limits:(X.Codec.make_limits ~max_bytes:100())long Z.zero));
+  print_endline "workflow resource accounting: typed writer costs, traversal bounds and immutable suffix reuse passed"
+
+let () =
+  let report_text=List.find_map(fun(_,text,_)->
+    let raw=Json.parse text in
+    if Json.string(Json.field "schema_version"(Json.object_fields raw))="biocompiler.boolean_exploration_report.v0.1"
+    then Some raw else None)accepted |> Option.get in
+  let raw=List.hd(Json.array(Json.field "results"(Json.object_fields report_text))) in
+  let size=X.Codec.measure raw in
+  let imported,work=charged(fun limits->X.check_of_json ~limits raw) in
+  require(Json.equal(Bioc_domain.Realization_evidence.Check_result.to_json imported)raw) "Precharged leaf import changed evidence";
+  let bound=X.Codec.work_bounds size in
+  require(work<=13*bound.measure+64*size.bytes+64*size.nodes) "Leaf import traversal envelope undercounts work";
+  let _,inspection_work=charged(fun limits->X.Codec.measure ~limits raw) in
+  let used=ref 0 in
+  let limits=X.Codec.make_limits ~charge:(fun amount->used:= !used+amount;
+    if !used>inspection_work then Diagnostic.fail "leaf_precharge" "stop before leaf decoder")() in
+  expect_code "leaf_precharge" (fun()->ignore(X.check_of_json ~limits raw));
+  print_endline "workflow leaf imports: delegated bounded traversals are precharged"
+
+(* The complete settings-extended report was captured from original Python.
+   Original Python replace(CheckResult, dependencies=...) independently confirms
+   the baseline-to-report pair and this exact legacy ASCII fingerprint. *)
+let dependency_baseline={document|{"checked_requirement_ids":["response"],"claim_scope":"Only the listed contract requirements, supplied input history, operating domain, and finite evaluation horizon were checked; this is not whole-program or universal biological refinement.","counterexamples":[],"coverage":[],"dependencies":{"behavior":"b25374681e9376e63560a850ba04bae99f8c2a17f49d4711b6426c41937b4ea8","behavior_artifact":"f67682b507116aca46603ac9cd0ef10121c52260a0a42b77283cc25e989f8a45","checker":"biocompiler.realization_checker.v0.3","contract":"d87d319586e1e4fec71ce92881f02edffc9c52db3114af0e4026c7f7b89bb7f8","domain":"2dcc4ae8910f4610998c0c983e2129e5ee82d4cedd96141005c3bc5bb4b38faf","history":"7df5168ba11840f12553d1e62c1b58ea1442926752489ab44b8a418c553231c0","horizon":{"effective":7,"until":7},"mechanism":"2adc4e3c068c3940120195e063d19218be03fd65969c91ef53277f694b935ca9","model_runner":"biocompiler.synthetic.runner.v0.2","observation_map":"3d237feac7238a5289b0d1c981660c19fc54480c3d5d52513fecf0b11bd384e7","reference_evaluator":"biocompiler.behavior.evaluator.v0.2","settings":{"catalog":"e92e5a0e0d0fbfe86eb3e6b122c77ce436f3983e1b00ed658a8c40aa0ae77c6c","contact_loss":"cancel_contact_scoped_obligations","coverage":"all_selected_role_ongoing_outputs","generator_configuration":"e785e023e15015ad5f1b45d70b22a9886b948e0519750ad636774276c7e5bf14","human_admission_policy":"biocompiler.human_admission_policy.v0.1","intended_use":"software_test","max_microsteps":1000,"nonvacuity":"checked_active_and_inactive_deadlines_for_every_response_and_complete_uncancelled_episodes","realization_request":"c31ebf0cee62180eaa4e2de4be09c9f2804e2429fc40d688b7696af1ba81b4d2","required_coverage":"active_and_inactive_deadlines_for_every_response","response":"active_inactive_bands_after_transition_deadlines","scope":"supplied_contracts_and_finite_history","synthetic_acceptance":"biocompiler.synthetic.acceptance.v0.5","synthetic_candidate":"6ffcedac42aa4981faa02210945c22a7cf343c82dc97c87aab6b536edbe39415","synthetic_profile":"biocompiler.synthetic.temporal.v0.1","time":"right_continuous_piecewise_constant"},"target":"8a77f4a2108456b899b62c0fb1cf11c76890897fd268973f9874af76b70ca4ea"},"diagnostics":[{"code":"unsupported_generation_profile","message":"Operation 'recently' is unsupported by biocompiler.synthetic.temporal.v0.1; temporal/state semantics are never approximated. [n000009] at /__biocompiler_capture__/tests/test_synthetic_generation.py:30","node_id":"n000009","requirement_id":null,"source":{"file":"/__biocompiler_capture__/tests/test_synthetic_generation.py","function":"fixture","line":30}}],"evidence_kind":"model_conditional","outcome":"unsupported","schema_version":"biocompiler.realization_check.v0.1"}|document}
+let dependency_expected={document|{"checked_requirement_ids":["response"],"claim_scope":"Only the listed contract requirements, supplied input history, operating domain, and finite evaluation horizon were checked; this is not whole-program or universal biological refinement.","counterexamples":[],"coverage":[],"dependencies":{"behavior":"b25374681e9376e63560a850ba04bae99f8c2a17f49d4711b6426c41937b4ea8","behavior_artifact":"f67682b507116aca46603ac9cd0ef10121c52260a0a42b77283cc25e989f8a45","checker":"biocompiler.realization_checker.v0.3","contract":"d87d319586e1e4fec71ce92881f02edffc9c52db3114af0e4026c7f7b89bb7f8","domain":"2dcc4ae8910f4610998c0c983e2129e5ee82d4cedd96141005c3bc5bb4b38faf","history":"7df5168ba11840f12553d1e62c1b58ea1442926752489ab44b8a418c553231c0","horizon":{"effective":7,"until":7},"mechanism":"2adc4e3c068c3940120195e063d19218be03fd65969c91ef53277f694b935ca9","model_runner":"biocompiler.synthetic.runner.v0.2","observation_map":"3d237feac7238a5289b0d1c981660c19fc54480c3d5d52513fecf0b11bd384e7","reference_evaluator":"biocompiler.behavior.evaluator.v0.2","settings":{"catalog":"e92e5a0e0d0fbfe86eb3e6b122c77ce436f3983e1b00ed658a8c40aa0ae77c6c","contact_loss":"cancel_contact_scoped_obligations","coverage":"all_selected_role_ongoing_outputs","generator_configuration":"e785e023e15015ad5f1b45d70b22a9886b948e0519750ad636774276c7e5bf14","human_admission_policy":"biocompiler.human_admission_policy.v0.1","intended_use":"software_test","max_microsteps":1000,"nonvacuity":"checked_active_and_inactive_deadlines_for_every_response_and_complete_uncancelled_episodes","realization_request":"c31ebf0cee62180eaa4e2de4be09c9f2804e2429fc40d688b7696af1ba81b4d2","required_coverage":"active_and_inactive_deadlines_for_every_response","response":"active_inactive_bands_after_transition_deadlines","scope":"supplied_contracts_and_finite_history","synthetic_acceptance":"biocompiler.synthetic.acceptance.v0.5","synthetic_candidate":"6ffcedac42aa4981faa02210945c22a7cf343c82dc97c87aab6b536edbe39415","synthetic_profile":"biocompiler.synthetic.temporal.v0.1","time":"right_continuous_piecewise_constant","verification_candidate":"6ffcedac42aa4981faa02210945c22a7cf343c82dc97c87aab6b536edbe39415","verification_mode":"candidate","verification_realization":"c74b7f2d856556d06a7dc7f5e0e3cf1bacb6f7b1880eb5a3a4765ee1b7e2a054","verification_workflow":"biocompiler.synthetic_verification_workflow.v0.1"},"target":"8a77f4a2108456b899b62c0fb1cf11c76890897fd268973f9874af76b70ca4ea"},"diagnostics":[{"code":"unsupported_generation_profile","message":"Operation 'recently' is unsupported by biocompiler.synthetic.temporal.v0.1; temporal/state semantics are never approximated. [n000009] at /__biocompiler_capture__/tests/test_synthetic_generation.py:30","node_id":"n000009","requirement_id":null,"source":{"file":"/__biocompiler_capture__/tests/test_synthetic_generation.py","function":"fixture","line":30}}],"evidence_kind":"model_conditional","outcome":"unsupported","schema_version":"biocompiler.realization_check.v0.1"}|document}
+let dependency_identity="c1cf0b6dce4032249e1e73920403950bb30f0a37792795d5024c76ef2b63f2c7"
+let () =
+  let module E=Bioc_domain.Realization_evidence in
+  let baseline=E.Check_result.of_json(Json.parse dependency_baseline) in
+  let expected=Json.parse dependency_expected in
+  let dependencies=E.Dependency_snapshot.of_json(Json.field "dependencies"(Json.object_fields expected)) in
+  let actual=E.Check_result.with_dependencies baseline dependencies in
+  require(X.Codec.encode(E.Check_result.to_json actual)=dependency_expected) "Typed dependency replacement differs from full original report";
+  require(E.Check_result.fingerprint actual=dependency_identity) "Typed dependency replacement changed ASCII identity";
+  require(E.Check_result.canonical_size actual=(Legacy_ascii.measure expected).bytes) "Typed dependency replacement cached a stale size";
+  let unchanged=E.Check_result.with_dependencies actual dependencies in
+  require(Json.equal(E.Check_result.to_json unchanged)expected) "Repeated dependency replacement changed the validated body";
+  (* A standalone dependency can fit while the complete updated check does not.
+     Exact cached deltas reject it before allocating a containing report. *)
+  let fields=Json.object_fields(E.Dependency_snapshot.to_json dependencies) in
+  let empty=Json.Object(("settings",Json.Object(List.init 8(fun index->"padding"^string_of_int index,Json.String "")))::
+    List.remove_assoc "settings" fields) in
+  let overhead=(Legacy_ascii.measure empty).bytes in
+  let remaining=ref(Limits.max_response_bytes-1-overhead) in
+  let block=String.make Limits.max_string_bytes 'x' in
+  let padding=List.init 8(fun index->
+    let size=min Limits.max_string_bytes !remaining in remaining:= !remaining-size;
+    "padding"^string_of_int index,Json.String(if size=Limits.max_string_bytes then block else String.sub block 0 size)) in
+  require(!remaining=0) "Dependency boundary fixture did not fill its declared budget";
+  let replacement=E.Dependency_snapshot.of_json(Json.Object(("settings",Json.Object padding)::List.remove_assoc "settings" fields)) in
+  expect_code "realization_evidence_limit" (fun()->ignore(E.Check_result.with_dependencies baseline replacement));
+  print_endline "typed dependency replacement: complete Python report/identity and prospective boundary passed"

@@ -251,6 +251,19 @@ module Check_result = struct
         "A passing result requires exercised active and inactive deadlines and complete response coverage.");
     let json = obj (fields |> Measurement_contract.replace "counterexamples" (arr (List.map Counterexample.to_json counterexamples))) in
     {packed = pack ~path json; outcome; dependencies; checked; diagnostics; counterexamples; coverage}
+  let with_dependencies value dependencies =
+    (* Both arguments are already structurally validated immutable records.
+       CheckResult has no cross-dependency body invariant: replacing this one
+       field is equivalent to reimporting the complete historical record, not
+       a fresh check. Reserve the exact changed inventory before allocating the
+       containing object, then remeasure to check its complete nesting bound. *)
+    let previous=value.dependencies.size in
+    let replacement=dependencies.size in
+    let body_bytes=value.packed.size.bytes-previous.bytes and body_nodes=value.packed.size.nodes-previous.nodes in
+    limit(replacement.bytes<=Limits.max_response_bytes-body_bytes && replacement.nodes<=Limits.max_json_nodes-body_nodes);
+    let json=obj(Measurement_contract.replace "dependencies" (Dependency_snapshot.to_json dependencies)
+      (Json.object_fields value.packed.json)) in
+    {value with packed=pack json;dependencies}
   let to_json value = value.packed.json
   let to_json_text ?(indent = Some 2) value =
     let layout = match indent with None -> Legacy_ascii.Spaced | Some width -> Legacy_ascii.Indented (max 0 width) in

@@ -466,30 +466,50 @@ These checkpoints record narrower validated work; they do not complete a broad L
   checks pass locally; original corpus pins and observations are unchanged.
   The corrected revision still requires fresh complete hosted validation.
 
-- [x] **LM-03 workflow capture checkpoint:** all eleven integrity/replay tests
-  pass, including independent byte-identical recapture of all 376 original
-  methods, complete prior-call projection, callbacks and CLI publication bytes.
+- [x] **LM-03 workflow capture checkpoint:** all fourteen integrity/replay tests
+  pass, including independent reproduction of all 376 original methods, complete
+  prior-call projection, callbacks and CLI publication bytes. The new transport
+  module has a separately pinned addition witness and is forbidden from loading
+  during the original cohort. Actual current source metadata is retained
+  separately; only the historical source inventory is projected for comparison.
+  Original observation/document bytes and all golden pins remain unchanged.
   This records Python baseline evidence; native conformance remains open below.
 - [ ] **B1.09f complete verification workflows:** draft OCaml domain records and
   engines now cover check/explore/reduce, candidate/model modes, complete fresh
   replay, deterministic adversarial histories and shared operation budgets.
-  Four added native suites bring the registered total to 84, including bounded
-  64 MiB codec hooks that preserve existing protocol defaults. The retained R5
+  The initial 84 native suites passed on Linux and macOS at draft source
+  `002344cdfeca2dc599c1e21ff291b9858258c227`; its broader hosted gates were still
+  running. The complete 69,236-observation native runner is now registered as
+  the 85th suite and as a separately logged mandatory corpus campaign. It
+  includes every original callback, yield and prerequisite observation, with
+  bounded 64 MiB codec hooks preserving existing protocol defaults. The retained R5
   corpus contains all 376 unchanged original methods, 385 contexts, 69,236
   calls, 1,030 evaluator invocations and the full 625-history campaign; its pin is
   `2f5e7636977f559e046776c1bb92bebf67c8f0e733ca463927f8d3a1aee3d77b`.
   The complete 47,901-observation prior projection is preserved. This is an
-  implementation/capture checkpoint: hosted native compilation, the complete
-  native corpus runner, installed workflow transport, SDK/CLI routing and all
-  required gates remain unfinished. The resource profile is provisional:
-  aggregate encoding-work overhead and transient-allocation accounting still
-  require reconciliation with the domain codec's actual charges. No workflow
-  capability is advertised and no default route is changed by this checkpoint.
+  implementation/capture checkpoint: the new runner and accounting changes
+  require fresh hosted native validation. The reviewed accounting derivation
+  preserves each checker's 50-million-unit allowance, charges added workflow
+  work to one ancestor, bounds live retention explicitly, and keeps its total
+  integer allowance below the exact binary64 integer boundary. That arithmetic
+  is documented in the native plan and still requires executable validation.
+  The Python [artifact transport](../protocol/artifact-transport-v1.md) passes
+  real subprocess tests including a complete 36 MiB report, strict byte binding,
+  cancellation and corruption rejection. Native descriptor handling, workflow
+  endpoints, SDK/CLI routing and complete installed gates remain unfinished.
+  No workflow capability is advertised and no default route is changed.
   See the [native implementation plan](migration-realization-workflow-native-plan.md),
   [public workflow audit](migration-realization-workflow-public-plan.md) and
   [complete capture audit](migration-realization-workflow-conformance-plan.md).
 
 These stages precede the remaining B2 producer/export and B3–B6 product gates.
+
+**Hosted validation correction, 2026-10-02:** PR52–55 Linux native jobs exceeded
+their 90-minute limit during final corpus work. Their full gates did not pass.
+The pending stack now uses a 150-minute allowance and explicitly selects Bash
+so a failed command piped through `tee` cannot be hidden. All existing commands,
+assertions and required jobs remain. Corrected revisions need fresh validation;
+no earlier partial success is transferred. The complete migration remains open.
 
 **Validated producer checkpoint, 2026-10-01:** [PR46](https://github.com/logannye/biocompiler/pull/46)
 merged at `e4c6d8d4bea9975ac5e9c6c1bb342034a34a82c0` after complete

@@ -425,3 +425,9 @@
  (name test_synthetic_verification_workflow)
  (modules test_synthetic_verification_workflow)
  (libraries bioc_wire bioc_domain bioc_checker bioc_realization_checker zarith))
+
+(test
+ (name test_realization_workflow_corpus)
+ (modules test_realization_workflow_corpus)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_realization_checker bioc_synthetic_producer zarith)
+ (action (run %{test} %{env:BIOCOMPILER_REALIZATION_WORKFLOW_CORPUS=missing})))

@@ -37,6 +37,12 @@ let run_reduce raw =
   finish(); require (same (X.Reduction.to_json result) (get "expected" raw)) "Complete reduction or minimality changed"
 let () =
   require (Canonical.fingerprint literals=literal_hash) "Independent original literal inventory changed";
+  let profile=B.limits_json B.default_limits in
+  require (Json.integer(get "max_work" profile)=Z.of_string "8500125714074944" &&
+    Z.compare (Json.integer(get "max_work" profile)) (Z.pred(Z.shift_left Z.one 53))<=0)
+    "Workflow profile lost its derived exact integer ceiling";
+  require (integer(get "max_monitor_items" profile)=8_000_000 && integer(get "max_callback_report_nodes" profile)=500_000)
+    "Historical callback or live workspace capacities were narrowed";
   List.iter (fun raw -> ignore(run_explore raw)) (Json.array(get "explores" literals));
   List.iter run_reduce (Json.array(get "reductions" literals));
   List.iter (fun raw ->
@@ -80,5 +86,25 @@ let () =
   let signature=X.Failure_signature.of_json(get "signature" reduction) in
   semantic "History must start at time zero." (fun () -> K.reduce ~history:[] ~until:(N.of_int 6)
     ~signature ~max_evaluations:0 ~evaluate:(fun ~parent:_ ~until:_ _ -> failwith "must not evaluate") ());
+  let single_config=X.Bounds.of_json(change "max_histories" (Json.int 1) (get "config" raw)) in
+  let first=E.Check_result.of_json(get "result" (List.hd calls)) in
+  ignore(K.explore single_config ~evaluate:(fun ~parent ~until:_ _ ->
+    W.charge parent 50_000_000; require(W.remaining parent=0) "Missing full independent evaluator allowance"; first));
+  error "workflow_evaluation_work_limit" (fun () -> K.explore single_config ~evaluate:(fun ~parent ~until:_ _ ->
+    W.charge parent 50_000_001; first));
+  let budget=B.create ~limits:(B.make_limits ~max_monitor_items:2_000_000 ()) () in
+  (try B.with_workspace budget (fun () -> failwith "scoped failure") with Failure message -> require(message="scoped failure") message);
+  B.with_workspace budget (fun () -> ());
+  require((B.usage budget).work_charged=4_000_000) "Scoped release refunded work or leaked inventory";
+  let budget=B.create () in
+  require(not(B.equal_json budget (Json.Float(-0.)) (Json.Float 0.))) "Raw replay erased signed zero";
+  require(not(B.equal_json budget (Json.int 9) (Json.Float 9.))) "Raw replay erased numeric kind";
+  require(B.equal_json budget (Json.Object["β",Json.String "細胞";"a",Json.int 1])
+    (Json.Object["a",Json.int 1;"β",Json.String "細胞"])) "Canonical object/UTF-8 equality changed";
+  let rec cyclic=Json.Array[cyclic] in
+  error "verification_exploration_cycle" (fun () -> B.equal_json budget cyclic Json.Null);
+  let budget=B.create () in
+  B.with_retained budget 3 (fun () -> B.publish budget (Json.Array[Json.int 1]));
+  B.with_workspace budget (fun () -> ());
   ignore(run_explore raw);
   Printf.printf "Native verification exploration: 4 complete campaigns, 4 reductions, 2 adversarial inventories, transcript and resource controls passed\n"

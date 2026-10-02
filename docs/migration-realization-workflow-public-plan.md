@@ -10,11 +10,12 @@ typed constructor round trips, and bounded-codec cases. Independent execution of
 the original Python imports confirmed all eleven literals and sixteen rejection
 messages. This confirms the fixtures; it does **not** validate the OCaml implementation.
 
-Native compilation, strict-warning checks, executable tests, and the complete
-captured conformance campaign remain pending hosted validation. The aggregate
-encoding-work allowance and transient allocation/retention accounting still need
-a quantitative review: the provisional overhead allowance must not be treated as
-a proven bound for every maximum-size record. Workflow transport, public SDK and
+The initial commit `002344cdfeca2dc599c1e21ff291b9858258c227` passed all
+84 native suites on hosted Linux and macOS. The corrected source and new 85th
+full-corpus suite require fresh hosted validation. The initial aggregate
+encoding-work allowance and transient allocation/retention accounting required
+review; the refinement and explicit bounds below replace that provisional
+arithmetic and await validation at the corrected revision. Workflow transport, public SDK and
 CLI routing remain incomplete; this checkpoint exposes no new public workflow
 capability and does not close R5 or R6. The source audit below describes the
 starting point and remains the implementation inventory, with this checkpoint
@@ -28,6 +29,138 @@ changing its nine-operation contract or the
 [language migration roadmap](language-migration-roadmap.md).
 The original audit was read-only. The draft implementation checkpoint above records
 the subsequent source additions; no local native compilation or execution was used.
+
+## Domain resource accounting refinement
+
+The accounting refinement after the initial PR #58 checkpoint preserves the
+64 MiB artifact, 1,000,000 key/value node, depth-128, 4 MiB string, and
+4,300-character number limits. It does not change semantic schemas, canonical
+bytes, historical import rules, or the existing checker's 50,000,000 work units.
+The original checkpoint compiled on hosted Linux and macOS; the refinements
+below require a new hosted run. No native execution was performed locally.
+
+`Codec.inspect` now records actual writer work while performing the bounded
+inspection. Only floats pay the binary64 conversion charge. Only object keys
+contribute to sorting work. Before calling the encoder, it charges the recorded
+writer work plus three output-byte passes for buffer growth/copying. SHA-256 is
+charged separately. No global sort of all content bytes or blanket `8192 * nodes`
+charge remains. Ancestor-cycle detection, bounded/cyclic list-spine handling,
+queued-child accounting, escaped-key sizes, and duplicate-key rejection remain.
+
+For canonical UTF-8 byte count `b` and **key plus value** occurrence count `n`,
+`Codec.work_bounds` exposes the following conservative individual-pass bounds:
+
+| Operation | Work-unit upper bound |
+| --- | --- |
+| `M(b,n)`, inspect/measure | `88*b + 4608*n + 1` |
+| `E(b,n)`, complete encode including inspection | `180*b + 9216*n + 2` |
+| `F(b,n)`, fingerprint including encode | `181*b + 9216*n + 3` |
+| `H(b,n)`, streamed ASCII history fingerprint | `320*b + 14000*n + 8` |
+| `G(b,n)`, lattice history construction | `M(b,n) + 256*b + 128*n + 131072` |
+
+These are charge bounds, not elapsed-time estimates. The inspection census has
+at most `n` enters and `n` container exits, each charged 129 units for bounded
+ancestor work; node and spine visits are linear. Each quoted byte is charged
+four units. Integer conversion is bounded by four times its decimal character
+count plus one, and each float conversion by 4,096 units. Object sorting uses
+`4*height*(entries + key_bytes + 1)`, with `height <= 20`. Summing over objects
+bounds sort work by `80*(b + 2*n)`. The writer repeats scalar conversion and
+per-object sorting, but does not repeat cycle detection. The displayed formulas
+round the sums upward. At the artifact ceiling, `M=10,513,580,033`,
+`E=21,295,595,522`, and `F=21,362,704,387`.
+
+ASCII history hashing inspects each frame once and checks cumulative bytes and
+nodes before passing that frame to the inherited ASCII encoder. It precharges
+the encoder's measure/writer passes and up to sixfold escaping, then feeds SHA-256
+incrementally. It neither serializes nor rescans a growing history prefix.
+`Bounds` caches the exact inventory of its validated immutable fixed suffix.
+Each generated history measures only its at-most-sixteen-frame new prefix and
+combines the cached suffix inventory before hydration/concatenation. Signal-name
+work is charged for emitted observations; absent contacts do not pay to traverse
+unused declarations. The bound `G` includes numeric indexing, sample construction,
+the prefix inspection and inherited typed-frame hydration.
+
+For a checked result `c`, history `h`, and selected signature byte size `s`, use:
+
+- `V(c,h) = M(c) + H(h) + 2*F(c) + 16*c.bytes + 128*c.nodes + 65536` for
+  `validate_result`, including stable dependencies when supplied.
+- `S(c,s) = 160*c.bytes + 1024*c.nodes + s + 16384` for selected-failure matching.
+  Each generated signature has nine fields and only strings/nulls; its fingerprint
+  costs at most `12*signature_bytes + 8192`. The source diagnostic/counterexample
+  has at least eleven nodes, and the sum of generated signature bytes is at most
+  eight times the complete result's bytes. This is tighter than pretending each
+  signature contains a maximal population of floats.
+
+The following constructor census uses `p` for the complete emitted artifact,
+`h0/h1` for original/reduced histories, and `c0/c1` for original/final results.
+Bounds are deliberately rounded upward; optional absent subrecords contribute
+no traversal. They include final canonical identity creation and do not run a
+checker or an evaluator callback.
+
+| Typed constructor | Conservative envelope beyond already constructed children |
+| --- | --- |
+| Observation | `F(p) + 8*p.bytes + 64*p.nodes + 1024` |
+| Failure signature | `F(p) + 16*p.bytes + 128*p.nodes + 8192` |
+| Contact or mixed bounds | `3*M(p) + 3*F(p) + 4096*p.bytes + 512*p.nodes + 1000000` |
+| Adversarial configuration | `F(p) + 8192` |
+| History case | `F(p) + M(h) + 8*p.bytes + 64*p.nodes + 4096` |
+| Contact or mixed report | `M(p) + F(p) + 4096*p.bytes + 1024*p.nodes + 1000000`, plus `G(h_i)+V(c_i,h_i)` for every retained result |
+| Reduction | `F(p) + 4*M(h0) + 4*M(h1) + V(c0,h0) + V(c1,h1) + S(c0,s) + S(c1,s) + 32*p.bytes + 256*p.nodes + 1000000` |
+| Workflow request | `F(p) + M(h) + 8*p.bytes + 64*p.nodes + 4096` |
+| Workflow record | `4*F(p) + 16*p.bytes + 128*p.nodes + 65536`, plus `V(c,h)` for a check record |
+
+Imports additionally validate nested artifacts before applying constructor
+invariants. The inherited `Input_frame` decoder is precharged eight measured
+frame passes plus `64*b+64*n`; `Check_result` import is precharged twelve measured
+result passes plus the same linear term. The latter covers result packing,
+dependency/horizon, diagnostic/source, counterexample/expected/interval/source,
+and coverage paths. `check_of_json` only adds this work accounting to the existing
+historical codec. Complete-snapshot validation is repeated in bounds import to
+preserve original constructor-error precedence. A conservative bounds-import
+census is `24*M(p)+6*F(p)+8192*p.bytes+2048*p.nodes+2000000`.
+Production workflow settings extension now uses
+`Check_result.with_dependencies`: both typed arguments have already passed their
+structural constructors; the helper preserves every validated body field, reserves
+the exact changed byte/node inventory using cached dependency sizes before building
+the enclosing object, then remeasures the whole record to check nesting and refresh
+its size. It makes no freshness or acceptance claim. This avoids reimporting every
+unchanged diagnostic/counterexample on every trial. The independent test pair
+contains the complete original Python settings-extended report and checks the
+pinned ASCII fingerprint `c1cf0b6dce4032249e1e73920403950bb30f0a37792795d5024c76ef2b63f2c7`;
+a separate boundary case verifies that a dependency fitting alone cannot make the
+complete report exceed 32 MiB. Production dependency settings have at most twenty
+entries (nine base, seven candidate, four workflow), only pinned versions/enums and
+64-character identities, plus a finite horizon. Their conservative envelope is
+8,192 bytes and 128 key/value nodes (the current schema uses at most 71 nodes).
+This small production-only dependency decoder belongs in the fixed per-trial
+scaffold allowance; arbitrary historical/generic callback settings retain the
+full import/validation bounds above.
+
+Report imports also compare all eight supplied derived fields, adding at most
+two fingerprints of their aggregate volume; they still reconstruct and validate
+every expected history. No trusted-construction shortcut replaces these checks.
+
+The runtime allowance must therefore distinguish per-trial history work from
+final retained-document passes. A valid `Check_result` needs at least **51**
+key/value nodes (19 outer nodes, including a dependency placeholder, plus 32
+additional dependency nodes). A retained report can contain at most 19,607
+results under the existing million-node ceiling; one additional prospective
+trial may fail publication. Generic callback/historical results allow up to
+500,000 key/value nodes because the inherited leaf codec counts 250,000 values;
+the production checker's stricter 250,000-node report limit is unchanged.
+The runtime derivation is recorded separately in
+[the native workflow plan](migration-realization-workflow-native-plan.md).
+Independent authority and historical-record input volumes remain separately
+bounded at 16 MiB and 64 MiB; shared nested subrecords are counted at every
+serialized occurrence. Fixed import/publication allowances cannot be charged as
+though every trial serializes a fresh maximum-size final report.
+
+New native test source checks the published pass bounds on dense, wide, deep,
+Unicode, binary64 and large-integer values; verifies that nonnumeric nodes avoid
+float charges; compares one-frame and thousand-frame fixed-suffix generation
+work; verifies streamed ASCII identity; and verifies delegated leaf precharging.
+A separate pure Python structural census confirms the formulas cover the 28
+complete embedded literal documents. Hosted execution remains required.
 
 ## Starting point and recommended next batch
 

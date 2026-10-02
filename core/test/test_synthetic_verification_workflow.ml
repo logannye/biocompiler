@@ -57,6 +57,33 @@ let () =
   let budget=B.create () in
   semantic "Verification evidence is stale, altered or unsupported by current tools." (fun()->
     K.replay_in ~budget ~raw_record:(replace "extra" Json.Null (get "expected" raw)) ~expected_request:authority record);
+  let budget=B.create () in
+  B.reserve_request budget (get "request" raw);
+  B.reserve_request budget (get "expected" raw);
+  let expected_request=K.decode_request_in ~budget (get "request" raw) in
+  let imported=K.decode_record_in ~budget (get "expected" raw) in
+  let rebuilt=K.replay_in ~budget ~raw_record:(get "expected" raw) ~expected_request imported in
+  let before_encoding=(B.usage budget).work_charged in
+  let encoded=B.encode_report budget (V.Record.to_json rebuilt) in
+  require(encoded=X.Codec.encode(get "expected" raw) && (B.usage budget).work_charged>before_encoding)
+    "Staged replay encoding escaped its operation ancestor";
+  let staged_usage=B.usage budget in
+  let parent=W.create ~profile:"staged-workflow-test" ~error_code:"staged_parent_limit" ~maximum:staged_usage.work_charged () in
+  let exact=B.create ~parent () in
+  B.reserve_request exact(get "request" raw); B.reserve_request exact(get "expected" raw);
+  let expected_request=K.decode_request_in ~budget:exact(get "request" raw) in
+  let historical=K.decode_record_in ~budget:exact(get "expected" raw) in
+  let rebuilt=K.replay_in ~budget:exact ~raw_record:(get "expected" raw) ~expected_request historical in
+  ignore(B.encode_report exact(V.Record.to_json rebuilt)); require(W.remaining parent=0) "Staged publication did not charge exact parent";
+  let parent=W.create ~profile:"staged-workflow-test" ~error_code:"staged_parent_limit"
+      ~maximum:(staged_usage.work_charged-1) () in
+  error "staged_parent_limit" (fun () ->
+    let under=B.create ~parent () in
+    B.reserve_request under(get "request" raw); B.reserve_request under(get "expected" raw);
+    let expected_request=K.decode_request_in ~budget:under(get "request" raw) in
+    let historical=K.decode_record_in ~budget:under(get "expected" raw) in
+    let rebuilt=K.replay_in ~budget:under ~raw_record:(get "expected" raw) ~expected_request historical in
+    B.encode_report under(V.Record.to_json rebuilt));
   let _,replay_usage=K.replay_with_usage ~expected_request:authority record in
   require(replay_usage.evaluations=1 && replay_usage.request_bytes>usage.request_bytes) "Replay failed to account historical and independent inputs";
   check raw(K.run authority);
