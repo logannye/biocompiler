@@ -302,6 +302,11 @@ These checkpoints record narrower validated work; they do not complete a broad L
   Neither change normalizes the original corpus's complete reports. The full
   capture/replay, 41 boundary/CI/inventory tests, independent report literals and
   peer resource reviews precede 69 hosted native suites and all product gates.
+  [PR53](https://github.com/logannye/biocompiler/pull/53) preserves this batch.
+  Its first hosted build caught two ambiguous status constructors and one
+  partially applied test limit constructor. Explicit type annotations and the
+  missing unit argument correct those errors; strict warnings and all required
+  gates remain enabled. Fresh hosted validation is required before completion.
 - [ ] **B1.09c independent realization acceptance:** combine independently executed
   source and actual candidate traces, preserving active/inactive nonvacuity,
   deadline transitions, cancelled and incomplete episodes, failure precedence,

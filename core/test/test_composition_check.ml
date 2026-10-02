@@ -59,7 +59,7 @@ let () =
   rejected "literal_composition_parent" (fun () -> K.replay ~parent:(parent (replay_work - 1)) ~expected_request:request ~registry actual ());
   require (K.replay ~limits:(K.make_limits ~max_work:replay_work ()) ~expected_request:request ~registry actual ())
     "Replay exact local work boundary changed";
-  rejected "composition_work_limit" (fun () -> K.replay ~limits:(K.make_limits ~max_work:(replay_work - 1)) ~expected_request:request ~registry actual ());
+  rejected "composition_work_limit" (fun () -> K.replay ~limits:(K.make_limits ~max_work:(replay_work - 1) ()) ~expected_request:request ~registry actual ());
   equal "exact item bound" (E.Result.to_json actual)
     (E.Result.to_json (K.check ~limits:(K.make_limits ~max_items:usage.retained_items ()) ~request ~registry ()));
   rejected "composition_item_limit" (fun () -> K.check ~limits:(K.make_limits ~max_items:(usage.retained_items - 1) ()) ~request ~registry ());

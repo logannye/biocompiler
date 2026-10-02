@@ -121,10 +121,11 @@ module Link_diagnostic = struct
   type status = Fail | Unknown | Unsupported
   type t = { packed : packed; status : status; code : string; message : string;
     instance : string option; requirements : string list }
-  let name_status = function Fail -> "fail" | Unknown -> "unknown" | Unsupported -> "unsupported"
+  let name_status (value : status) = match value with
+    | Fail -> "fail" | Unknown -> "unknown" | Unsupported -> "unsupported"
   let of_json ?(path = "") raw =
     let fields = record ~path ["status"; "code"; "message"; "instance_id"; "requirement_ids"] raw in
-    let status = match get path "status" fields with
+    let status : status = match get path "status" fields with
       | Json.String "fail" -> Fail | Json.String "unknown" -> Unknown | Json.String "unsupported" -> Unsupported
       | _ -> Diagnostic.fail ~path "composition_evidence" "Invalid link diagnostic status." in
     let code = name path "code" fields and message = name path "message" fields in
