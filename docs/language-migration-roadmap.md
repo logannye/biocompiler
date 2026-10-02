@@ -458,6 +458,13 @@ These checkpoints record narrower validated work; they do not complete a broad L
   remain required. This item and the broader LM-12/22/25 exits stay unchecked.
   Full workflow, exploration/reduction, archive, CLI and export routing are
   separate unfinished obligations in the [routing plan](migration-realization-routing-plan.md).
+  PR57's first Python run exposed historical source-hash assertions after the
+  intentional optional routing changes. A separately pinned source-lineage
+  witness now retains all original source bytes and hashes, pins current bytes,
+  and verifies whole-file AST preservation after removing only those five
+  reviewed routes. All six original corpus census checks and five mutation
+  checks pass locally; original corpus pins and observations are unchanged.
+  The corrected revision still requires fresh complete hosted validation.
 
 These stages precede the remaining B2 producer/export and B3–B6 product gates.
 
@@ -525,6 +532,23 @@ merge `972d0427c9b9608ecda3b4d0eb7d0026355ce80c` and integrated main share tree
 
 
 PR42 source `06da8b4bee4110597caed15fa2da4f2bb7724268`, tested merge `902cae85932dfc1202f68d7d9bc7502941eeb701` and integrated main share tree `06898b1f7ac5e51e692ef976d5834ec5976a495a`. Both complete PR and integrated-main gates passed. PR43 source `7fb3ec8983b038b03f0efa8f8233e4bef4e5a613`, tested merge `9f0c10ea218c4df49aa9f143718eb82d2daff842` and integrated main share tree `836da9375e1206d708194eecd48419f529ab5ff0`. Both complete PR and integrated-main gates passed. PR44 source `ae56d0c7e3dd8202aa015d7a7b769a75bd8ca037`, tested merge `8ff4d1911a6525c58be16e6db9d030b5fb670a91` and integrated main share tree `7ecc2c56f1370c0540f3c74c5795c6868d8e3841`; full PR and integrated-main gates passed. PR45 adds validated independent full architecture acceptance and its control/deployment/build prerequisites. PR46 validates experimental verification protocol, producers and coupled source transport. PR47 validates installed producer operations and is merged with full integrated-main validation; public routing and full cutover remain open.
+
+
+- [x] **PR48 integrated-main validation:** [run 36968652116](https://github.com/logannye/biocompiler/actions/runs/36968652116)
+  passed all 31 jobs at `0921a0b7c6506c1b1282ae0d8f209b4561497a5e`, with
+  2,410 tests on each Python version. The [routing receipt](../protocol/migration-architecture-routing-validation.json)
+  records exact aggregate reconstruction and fresh rehashing of both native
+  binaries and all four 175-check / 219-artifact installed campaigns.
+- [x] **PR49 integrated-main validation:** [run 36968854701](https://github.com/logannye/biocompiler/actions/runs/36968854701)
+  passed all 31 jobs at `0347211f987b11639881675e308ecef2def06032`, with
+  2,419 tests on each Python version. The [candidate-runtime receipt](../protocol/migration-candidate-runtime-validation.json)
+  binds the complete aggregate and rehashed four-way artifacts to that revision.
+- [x] **PR50 integrated-main validation:** [run 36970818826](https://github.com/logannye/biocompiler/actions/runs/36970818826)
+  passed all 31 jobs at `1b1ffa182e05ba688c6d309f80980adac87a6f3e`, with
+  2,425 tests on each Python version. The [component-runtime receipt](../protocol/migration-locked-component-validation.json)
+  binds the complete aggregate and rehashed four-way artifacts to that revision.
+  These receipt checks read artifact bytes without executing native code. Later
+  pending revisions must pass their own complete gates.
 
 **First vertical slice:** [the case B acceptance map](migration-case-b.md) and [retained corpus](../tests/conformance/case-b/README.md) now pin its real source/candidate and independent literal timelines. Architecture acceptance/mutation descriptors remain unexecuted; domain and source-correspondence receipts are scoped above, and per-role reference execution has complete PR40 validation. Use the existing artificial architecture case B (prime/act/recover, timeout, reset and shutdown) with exact supplied source correspondence. Reuse its actual request/templates. The initial checker stage reads the existing Python-produced candidate and independently reconstructs it. Then port its producer. Do not replace this slice with an unrelated toy expression interpreter.
 

@@ -1,48 +1,54 @@
 # B1.09e: realization protocol and public routing next plan
 
-Implementation checkpoint, 2026-10-02: The direct synthetic producer batch now supplies internal generation, selection and adaptation APIs. The public service/routing work below remains unimplemented. Re-read the current interfaces and language migration roadmap before beginning; this audit grants no validation or cutover claim.
+Implementation checkpoint, 2026-10-02: [PR57](https://github.com/logannye/biocompiler/pull/57)
+implements the nine direct/dependency/replay operations, strict transport and five
+optional SDK routes. Its complete 36-job hosted gate remains pending. The direct
+synthetic producer batch in PR56 supplies generation, selection and adaptation;
+its latest correction also requires fresh full validation. Whole workflow,
+exploration/reduction, pipeline, archive and CLI routing remain unfinished.
 
-Read-only audit of the PR55 working tree, 2026-10-02. This is an implementation
-roadmap, not a validation receipt. No production code, CI, roadmap checkbox or
-native executable was changed or executed for this audit. Reconfirm hosted PR55
-and integrated-main results before treating its internal checkers as validated.
-
-The subsequent [native protocol audit](migration-realization-protocol-native-plan.md)
+The original PR55 audit below records source responsibilities and the complete
+caller boundary. Line references describe that audited snapshot, not necessarily
+current line numbers. The [native protocol audit](migration-realization-protocol-native-plan.md)
 and [complete conformance audit](migration-realization-protocol-conformance-plan.md)
-freeze the proposed nine-operation payloads, explicit reduction controls, exact
-capability records and full original-call/replay inventory. Their
-[profile fixture](migration-realization-protocol-profiles.json) is a design
-artifact, not an advertised or validated capability. They also identify the
-required additional Unicode witnesses and distinguish keys from JSON values in
-resource accounting.
+were implemented by PR57; `protocol/core-v1.md` and the exact four-family
+[profile fixture](migration-realization-protocol-profiles.json) now define its
+experimental contract. An implemented capability is not yet a validated cutover.
+
+The historical capture source hashes remain unchanged. The separately pinned
+`tests/conformance/realization-routing-source-lineage-v1.json` archives the exact
+three pre-routing Python files and identifies the current routed bytes.
+`tools/realization_source_lineage.py` verifies both hashes and compares the whole
+original AST with the current AST after removing only the five reviewed
+`core=None` parameters and their exact top-level optional-route guards. All
+other source files still require byte identity. This explicitly documents the
+source change without treating current files as historical bytes or replacing
+the original observation/replay gates. Mutation tests reject unrelated body,
+import, signature, guard, inventory and witness changes.
 
 ## Starting state and completion boundary
 
-`docs/language-migration-roadmap.md:392` leaves B1.09e open: accept complete external
-authority, freshly recompute complete results, preserve every existing caller and
-export gate. PR55 supplies internal checkers; it does not satisfy this public
-boundary. `core/lib/service/service.ml` currently advertises only `capabilities`,
-`canonicalize`, `validate-intent`, `verify-lowering`, `verify-architecture` and
-`replay-architecture`. Producer service additionally exposes the existing
-architecture production/export profile. No realization operation is dispatched.
+B1.09e remains open: accept complete external authority, freshly recompute complete
+results and preserve every existing caller and export gate. Both executable roles
+now dispatch the nine realization operations in addition to the existing structural,
+lowering and architecture operations. Producer service also exposes architecture
+production and export.
 
-`bioc_service` currently links `bioc_wire bioc_domain bioc_checker`.
-`biocompiler-verify` transitively excludes `bioc_realization_checker`,
-`bioc_semantics` and `bioc_candidate_runtime`; exact assertions enforce those
-exclusions in `tests/test_core_boundaries.py:32-55`. Exposing realization checking
-requires a deliberate dependency and documented trust-boundary update. It must
-continue to exclude `bioc_compiler` and `bioc_producer_service`. Candidate execution
-must still exclude source semantics; private provenance/assembly authority modules
-must stay private and unavailable as generation endpoints.
+`bioc_service` now links `bioc_wire bioc_domain bioc_checker
+bioc_realization_checker zarith`. The standalone verifier consequently includes the
+independent reference and candidate runtimes. It still excludes `bioc_compiler`,
+`bioc_synthetic_producer`, `bioc_source_adapter` and `bioc_producer_service`, and its
+private reconstruction/provenance witnesses remain inaccessible. Boundary tests
+pin that complete closure; candidate execution still excludes source semantics.
 
 Explicit native architecture SDK/CLI routing provides the transport pattern.
-`compiler/workflow.py:415` rejects `compile(..., core=...)` for every other profile.
-Keep that rejection until the corresponding producer contract exists. A working
-native acceptance endpoint alone cannot authorize native generation, selection,
-component adaptation, pipeline completion or archive publication.
+`compiler/workflow.py` still rejects `compile(..., core=...)` for every other
+profile. Preserve that rejection until complete corresponding native producer and
+pipeline contracts exist. Direct native checking alone does not authorize pipeline
+completion or archive publication.
 
 Product scope remains human immune cells engineered in vivo and exact RNA
-payloads. These historical synthetic profiles remain software regression support;
+payloads. Historical synthetic profiles remain software regression support;
 finite-history model acceptance does not establish empirical behavior or human
 therapeutic admission.
 
@@ -68,13 +74,14 @@ Assembly's CompositionResult does not itself contain the full history/candidate
 identity needed to bind the public operation: the outer result must bind those
 complete inputs too.
 
-## Proposed wire operations (new, not currently implemented)
+## Frozen experimental wire operations (implemented; hosted gates pending)
 
-Use separate versioned profiles so callers cannot confuse their claim boundaries.
-Freeze names and exact fields in `protocol/core-v1.md` before implementation;
-the following is the proposed operation inventory, not existing capabilities.
+The implementation uses separate versioned profiles for distinct claim boundaries.
+The semantic fields below additionally require explicit `profile` and `limits` in
+every payload, as specified in `protocol/core-v1.md`. The later design discussion
+records the decisions and review obligations that produced this contract.
 
-| Proposed operation | Exact semantic payload fields | Native delegate |
+| Operation | Exact semantic payload fields | Native delegate |
 | --- | --- | --- |
 | `realization-dependencies` | `behavior`, `contract`, `domain`, `target`, `mechanism`, `observation_map`, `history`, `until` | `Realization_check.dependencies` |
 | `verify-realization` | Same eight fields | `Realization_check.check` |
@@ -318,7 +325,7 @@ resource errors and known version-specific Python exception witnesses precisely;
 do not broadly normalize messages to conceal mismatches.
 
 Build `tools/check_realization_protocol.py` and
-`tools/check_realization_routing.py` (proposed names) following the installed
+`tools/check_realization_routing.py` following the installed
 architecture campaigns. Both executable roles must run from installed packages
 outside the checkout, without PYTHONPATH/source leakage. Run Python 3.11 and 3.14,
 Linux and macOS with exact census receipts. The routing execution guard must block

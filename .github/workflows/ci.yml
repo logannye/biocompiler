@@ -868,6 +868,7 @@ jobs:
           opam exec -- dune build --root core @all
       - name: Run every native literal and mutation suite
         run: |
+          set -o pipefail
           BIOCOMPILER_CANDIDATE_RUNTIME_CORPUS="$GITHUB_WORKSPACE/tests/conformance/candidate-runtime-v1.json" \
           BIOCOMPILER_COMPONENT_RUNTIME_CORPUS="$GITHUB_WORKSPACE/tests/conformance/component-runtime-v1.json" \
           BIOCOMPILER_REALIZATION_FOUNDATION_CORPUS="$GITHUB_WORKSPACE/tests/conformance/realization-foundation-v1.json" \
@@ -876,7 +877,16 @@ jobs:
           BIOCOMPILER_SYNTHETIC_AUTHORITY_CORPUS="$GITHUB_WORKSPACE/tests/conformance/synthetic-authority-v1.json" \
           BIOCOMPILER_SYNTHETIC_ACCEPTANCE_CORPUS="$GITHUB_WORKSPACE/tests/conformance/synthetic-acceptance-v1.json" \
           BIOCOMPILER_SYNTHETIC_PRODUCERS_CORPUS="$GITHUB_WORKSPACE/tests/conformance/synthetic-producers-v1.json" \
-            opam exec -- dune runtest --root core
+            opam exec -- dune runtest --root core 2>&1 | tee generated/core/native-tests.txt
+      - name: Retain native suite diagnostics before longer installed campaigns
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: core-native-tests-${{ matrix.platform }}
+          path: generated/core/native-tests.txt
+          if-no-files-found: ignore
+          overwrite: true
+          retention-days: 7
       - name: Check retained request, behavior and coordinate domain corpora
         if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
         run: |

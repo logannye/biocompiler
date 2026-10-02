@@ -34,10 +34,48 @@
     }
   },
   "post_merge_main_run": {
+    "aggregate_receipt_bytes": 606704,
+    "aggregate_receipt_sha256": "5c7db5c64f578031aacd8579141d8a9220945ade57e503ee2651c5b9e68aa7a4",
+    "checks_per_python_platform": 175,
+    "exact_artifacts_per_python_platform": 219,
+    "four_way_reproducibility_receipt_sha256": "bad40579e5df01d1c01b646fe068a749cc56409aef029fdc38b0f60f172f3921",
+    "fresh_local_rehash_comparison": "complete_receipt_identical; no binaries executed",
+    "full_aggregate_recreation": "identical",
+    "local_native_execution": false,
+    "platform_binaries": {
+      "linux-x86_64": {
+        "machine": "x86_64",
+        "manifest_sha256": "8bfa35e0f01138c544a3dc0eb2854a98010c58f8559d4415a3ee67bc7c972d18",
+        "revision": "1b1ffa182e05ba688c6d309f80980adac87a6f3e",
+        "sha256": {
+          "biocompiler-core": "cee39d9ddd7932c6523c8b8069b14626c03174fe753f8f7798b7a264ebc173e2",
+          "biocompiler-verify": "c074a1577ae670de7d5a18218ed1cc5c290141b68d7485a5f48aa06e47b382e3"
+        },
+        "system": "Linux"
+      },
+      "macos-arm64": {
+        "machine": "arm64",
+        "manifest_sha256": "eecb87e7a7a6cf75303126746f7efbfe4e91ff7b0151f41f54e0936e3a2bc8bd",
+        "revision": "1b1ffa182e05ba688c6d309f80980adac87a6f3e",
+        "sha256": {
+          "biocompiler-core": "1725c83eec06ec08bc873ae82cd51b66fae70d240b13196686446b163e6dd52e",
+          "biocompiler-verify": "0dcf64675b794a5f019b5e9a24433641349c70e9f47114bd4c1fdfa4ba96e45e"
+        },
+        "system": "Darwin"
+      }
+    },
+    "python_tests": {
+      "3.11.16": 2425,
+      "3.14.7": 2425
+    },
     "run_id": "36970818826",
-    "status": "pending",
+    "source_revision": "1b1ffa182e05ba688c6d309f80980adac87a6f3e",
+    "status": "pass",
+    "successful_jobs": 31,
+    "tested_revision": "1b1ffa182e05ba688c6d309f80980adac87a6f3e",
+    "tested_tree": "0adfb93b4c032f47d143a9b903e306619d16d94d",
     "url": "https://github.com/logannye/biocompiler/actions/runs/36970818826",
-    "validation_claimed": false
+    "validation_claimed": true
   },
   "pull_request": 50,
   "pull_request_url": "https://github.com/logannye/biocompiler/pull/50",

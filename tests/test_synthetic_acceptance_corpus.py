@@ -9,6 +9,8 @@ import json
 from pathlib import Path
 import unittest
 
+from tools.realization_source_lineage import verify_captured_source
+
 ROOT = Path(__file__).resolve().parents[1]
 CORPUS = ROOT / "tests/conformance/synthetic-acceptance-v1.json"
 PIN = "d32009a03f0af00de4da60f0244c210ba15b9ff89e828ea56c82b5f9e4a73331"
@@ -113,7 +115,7 @@ class SyntheticAcceptanceCorpusTests(unittest.TestCase):
         self.assertEqual(Counter(c["native"]["native_stage"] for c in self.calls.values()), EXPECTED_STAGES)
         self.assertEqual(coverage["unclassified_observations"], 0)
         for entry in self.index["source_files"]:
-            self.assertEqual(hashlib.sha256((ROOT / entry["path"]).read_bytes()).hexdigest(), entry["sha256"], entry["path"])
+            verify_captured_source(ROOT, entry)
         self.assertEqual(len(self.index["subprocesses"]), 2)
         self.assertEqual({item["invocation"]["hash_seed"] for item in self.index["subprocesses"]}, {"1", "37"})
         for child in self.index["subprocesses"]:

@@ -9,6 +9,8 @@ import json
 from pathlib import Path
 import unittest
 
+from tools.realization_source_lineage import verify_captured_source
+
 ROOT = Path(__file__).resolve().parents[1]
 CORPUS = ROOT / "tests/conformance/realization-foundation-v1.json"
 PIN = "ac1499688ec6f0eca41398134b9421de9f95ffe9405422332c2bf43b04db32f8"
@@ -102,7 +104,7 @@ class RealizationFoundationCorpusTests(unittest.TestCase):
             "python_type_boundary": 1, "python_wire_boundary": 3, "deferred_acceptance": 3198})
         self.assertEqual(coverage["unclassified_observations"], 0)
         for entry in self.index["source_files"]:
-            self.assertEqual(hashlib.sha256((ROOT / entry["path"]).read_bytes()).hexdigest(), entry["sha256"], entry["path"])
+            verify_captured_source(ROOT, entry)
         self.assertEqual(len(self.index["subprocesses"]), 2)
         self.assertEqual({item["invocation"]["hash_seed"] for item in self.index["subprocesses"]}, {"1", "37"})
         for child in self.index["subprocesses"]:
