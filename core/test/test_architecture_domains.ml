@@ -17,7 +17,6 @@ let str value = Json.String value
 let obj value = Json.Object value
 let arr value = Json.Array value
 let field key value = Json.field key (Json.object_fields value)
-let set key replacement value = obj ((key,replacement) :: List.remove_assoc key (Json.object_fields value))
 let rejected label code operation =
   incr checks;
   match operation () with
