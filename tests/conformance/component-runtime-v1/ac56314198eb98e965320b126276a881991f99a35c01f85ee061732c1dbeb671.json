@@ -1,0 +1,1 @@
+{"inputs":[{"field":"present","mechanism_input_id":"input:n000003:present","signal_id":"n000003"},{"field":"present","mechanism_input_id":"input:n000005:present","signal_id":"n000005"}],"outputs":[{"mechanism_output_id":"output:remembered","requirement_id":"remembered"}],"schema_version":"biocompiler.observation_map.v0.1"}

@@ -1,0 +1,1 @@
+[{"path":["args"],"type":"builtins.tuple"},{"path":["args",0],"type":"biocompiler.registry.components.ComponentRegistry"},{"path":["args",1,"a"],"type":"biocompiler.ir.component_contracts.ComponentRecord"},{"path":["args",1,"b"],"type":"biocompiler.ir.component_contracts.ComponentRecord"}]

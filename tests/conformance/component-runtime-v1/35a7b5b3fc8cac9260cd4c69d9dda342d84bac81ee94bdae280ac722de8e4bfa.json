@@ -1,0 +1,1 @@
+"{\"args\":[],\"kwargs\":{\"capabilities\":[{\"compartment\":\"abstract\",\"id\":\"supply\",\"role\":\"cell\",\"schema_version\":\"biocompiler.component_capability.v0.1\",\"scope\":\"contact\"}],\"depends_on\":[],\"evidence_refs\":[],\"id\":\"external\",\"kind\":\"external\",\"supported_targets\":[\"RNA\"]}}"

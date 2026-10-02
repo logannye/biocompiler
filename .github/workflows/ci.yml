@@ -869,6 +869,7 @@ jobs:
       - name: Run every native literal and mutation suite
         run: |
           BIOCOMPILER_CANDIDATE_RUNTIME_CORPUS="$GITHUB_WORKSPACE/tests/conformance/candidate-runtime-v1.json" \
+          BIOCOMPILER_COMPONENT_RUNTIME_CORPUS="$GITHUB_WORKSPACE/tests/conformance/component-runtime-v1.json" \
             opam exec -- dune runtest --root core
       - name: Check retained request, behavior and coordinate domain corpora
         if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
@@ -1037,6 +1038,9 @@ jobs:
       - name: Compare every captured independent candidate model trace and rejection
         if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
         run: core/_build/default/test/test_candidate_runtime_corpus.exe "$GITHUB_WORKSPACE/tests/conformance/candidate-runtime-v1.json" | tee generated/core/candidate-runtime.txt
+      - name: Compare complete locked registry, assembly reconstruction and component execution
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_component_runtime_corpus.exe "$GITHUB_WORKSPACE/tests/conformance/component-runtime-v1.json" | tee generated/core/component-runtime.txt
       - name: Retain revision-bound native executables
         run: |
           cp core/_build/default/bin/core/main.exe generated/core/biocompiler-core

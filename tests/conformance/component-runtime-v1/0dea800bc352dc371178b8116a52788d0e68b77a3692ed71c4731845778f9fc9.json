@@ -1,0 +1,1 @@
+"{\"args\":[],\"kwargs\":{\"consumer_instance\":\"select:response\",\"consumer_port\":\"in:0\",\"producer_instance\":\"aggregate:response\",\"producer_port\":\"out\"}}"

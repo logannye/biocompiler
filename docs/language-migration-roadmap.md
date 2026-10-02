@@ -232,9 +232,52 @@ These checkpoints record narrower validated work; they do not complete a broad L
   Draft [PR49](https://github.com/logannye/biocompiler/pull/49) preserves this
   implementation. Its first hosted run compiled and passed the domain/runtime
   literals, but Dune omitted the corpus argument; the invocation is corrected
-  and full native corpus validation remains pending.
+  and the complete native corpus now passes on both platforms. All remaining
+  product gates must pass before this batch is complete.
 
-- [ ] **B1.09 fresh acceptance and protocol exposure**, followed by B2 producer/export and the remaining B3–B6 product gates.
+- [ ] **B1.08b locked-component reconstruction and execution:** in progress on
+  `codex/ocaml-locked-component-execution`. Full registry/lock, composition,
+  observation-map and assembly containers retain complete authority. The runner
+  derives operations, parameters and ordered inputs from actual selected records
+  and wiring. The unchanged 163-method baseline retains all 52,476 calls and
+  exact domains, reconstructed graphs and full traces. Six source integrity/replay
+  tests pass; 56 native suites, the full mandatory corpus and all product gates
+  remain required on both hosted platforms. The corpus pin is
+  `aea8309d6efa172777f550d4a91cd3ebb7b40c301234fc7e90636fb4f466fcbf`
+  (4,934 documents, 64,530,645 bytes). Draft
+  [PR50](https://github.com/logannye/biocompiler/pull/50) preserves this batch.
+  The initial Linux run compiled all targets but exposed a malformed-inventory
+  diagnostic mismatch in the full corpus. That branch is corrected without
+  changing retained expectations. A source audit also corrected kind-specific
+  ValueDomain rejection precedence, with 26 new literal assertions. The reader
+  now reports all case failures
+  before failing its aggregate gate. Fresh complete hosted validation remains
+  required. Generic composition acceptance, realization checking, scientific
+  adapters and empirical validity are separate unfinished obligations.
+
+- [ ] **B1.09a realization contracts and complete evidence:** port InputDomain,
+  OperatingDomain, BehaviorContract and all finite-history evidence records.
+  Preserve the historical ASCII-escaped evidence/dependency identities separately
+  from canonical UTF-8 artifact identities, full history and explicit horizon.
+- [ ] **B1.09b fresh admission, generic linking and selection:** reproduce complete
+  policy assessments, provider grounding, lifetime/resource accounting and ranked
+  alternatives. Retained decisions and identity-only freshness cannot grant use.
+- [ ] **B1.09c independent realization acceptance:** combine independently executed
+  source and actual candidate traces, preserving active/inactive nonvacuity,
+  deadline transitions, cancelled and incomplete episodes, failure precedence,
+  counterexamples and exact bounded claims. Bound preparation, both executions,
+  monitoring and result publication; budget exhaustion cannot become acceptance.
+- [ ] **B1.09d component correspondence and fresh replay:** independently reconstruct
+  the expected source/assembly correspondence without importing its adapter or
+  producer; require complete generic linking before behavior acceptance.
+- [ ] **B1.09e protocol exposure and public routing:** accept full external authority,
+  freshly recompute complete results, and preserve every existing caller and
+  export gate. The audited realization baseline contains 324 methods across 23
+  existing modules; capture actual calls, complete artifacts and original
+  assertions, including nested and subprocess consumers. Source-only direct
+  contract/checker tests do not establish native or full-workflow parity.
+
+These stages precede the remaining B2 producer/export and B3–B6 product gates.
 
 **Validated producer checkpoint, 2026-10-01:** [PR46](https://github.com/logannye/biocompiler/pull/46)
 merged at `e4c6d8d4bea9975ac5e9c6c1bb342034a34a82c0` after complete
@@ -278,9 +321,10 @@ merge `972d0427c9b9608ecda3b4d0eb7d0026355ce80c` and integrated main share tree
   merge `03936f8` and integrated main share tree
   `64e2732d72b07468b4a7e89ddddf0f7805416f36`. Public routing and distribution
   remain separate checkpoints.
-- [ ] **PR47 integrated-main validation:** separate
+- [x] **PR47 integrated-main validation:** separate
   [run 36961812619](https://github.com/logannye/biocompiler/actions/runs/36961812619)
-  is running at the integrated revision. Do not transfer the PR result to it.
+  passed all 30 required jobs at the integrated revision, including exactly 2,351
+  tests on each Python version. The pinned receipt records the full aggregate digest.
 
 - [ ] **B2 public architecture routing:** explicit `core=` SDK selection and
   architecture CLI executable options preserve historical classes, raw request
@@ -294,7 +338,7 @@ merge `972d0427c9b9608ecda3b4d0eb7d0026355ce80c` and integrated main share tree
   See [explicit core workflows](architecture-core-workflows.md).
 
 
-PR42 source `06da8b4bee4110597caed15fa2da4f2bb7724268`, tested merge `902cae85932dfc1202f68d7d9bc7502941eeb701` and integrated main share tree `06898b1f7ac5e51e692ef976d5834ec5976a495a`. Both complete PR and integrated-main gates passed. PR43 source `7fb3ec8983b038b03f0efa8f8233e4bef4e5a613`, tested merge `9f0c10ea218c4df49aa9f143718eb82d2daff842` and integrated main share tree `836da9375e1206d708194eecd48419f529ab5ff0`. Both complete PR and integrated-main gates passed. PR44 source `ae56d0c7e3dd8202aa015d7a7b769a75bd8ca037`, tested merge `8ff4d1911a6525c58be16e6db9d030b5fb670a91` and integrated main share tree `7ecc2c56f1370c0540f3c74c5795c6868d8e3841`; full PR and integrated-main gates passed. PR45 adds validated independent full architecture acceptance and its control/deployment/build prerequisites. PR46 validates experimental verification protocol, producers and coupled source transport. PR47 validates installed producer operations and is merged; its separate main run, public routing and full cutover remain open.
+PR42 source `06da8b4bee4110597caed15fa2da4f2bb7724268`, tested merge `902cae85932dfc1202f68d7d9bc7502941eeb701` and integrated main share tree `06898b1f7ac5e51e692ef976d5834ec5976a495a`. Both complete PR and integrated-main gates passed. PR43 source `7fb3ec8983b038b03f0efa8f8233e4bef4e5a613`, tested merge `9f0c10ea218c4df49aa9f143718eb82d2daff842` and integrated main share tree `836da9375e1206d708194eecd48419f529ab5ff0`. Both complete PR and integrated-main gates passed. PR44 source `ae56d0c7e3dd8202aa015d7a7b769a75bd8ca037`, tested merge `8ff4d1911a6525c58be16e6db9d030b5fb670a91` and integrated main share tree `7ecc2c56f1370c0540f3c74c5795c6868d8e3841`; full PR and integrated-main gates passed. PR45 adds validated independent full architecture acceptance and its control/deployment/build prerequisites. PR46 validates experimental verification protocol, producers and coupled source transport. PR47 validates installed producer operations and is merged with full integrated-main validation; public routing and full cutover remain open.
 
 **First vertical slice:** [the case B acceptance map](migration-case-b.md) and [retained corpus](../tests/conformance/case-b/README.md) now pin its real source/candidate and independent literal timelines. Architecture acceptance/mutation descriptors remain unexecuted; domain and source-correspondence receipts are scoped above, and per-role reference execution has complete PR40 validation. Use the existing artificial architecture case B (prime/act/recover, timeout, reset and shutdown) with exact supplied source correspondence. Reuse its actual request/templates. The initial checker stage reads the existing Python-produced candidate and independently reconstructs it. Then port its producer. Do not replace this slice with an unrelated toy expression interpreter.
 
@@ -402,7 +446,8 @@ Starting points: [component contracts](../src/biocompiler/ir/component_contracts
 
 Depends on LM-20/21/22; checker ports proceed before producer replacement.
 
-- [x] Port component, provider/interface and architecture declaration domains, including complete source/model maps, material placements and recipient/delivery bindings. PR41–44 validate their full imports and rejection campaigns.
+- [x] Port component contracts and RNA architecture provider/interface declarations, including complete source/model maps, material placements and recipient/delivery bindings. PR41–44 validate these imports and rejection campaigns.
+- [ ] Complete generic registry/composition declarations and their distinct contextual linker, selection and admission paths. PR50 implements locked containers and execution; generic provider grounding, lifetime/resource acceptance, complete ranked alternatives and fresh policy replay remain open. Architecture-profile validation does not discharge these existing generic-profile obligations.
 - [x] Complete fresh contextual checking of those declarations against original source and selected architecture. PR45 validates complete independent architecture assessments and replay across 293 reports, all 13 installed cases and the original case B authorities.
 - [x] Preserve many-to-many behavior/component/RNA relations and namespace refinement instances. PR46 validates complete producer outputs across all 13 installed cases, original case B variants and namespace boundaries without sequence-based instance deduplication.
 - [x] Port exact semantic matching, partial anchors, ambiguity handling, cumulative search/match limits and deterministic tie-breaking. PR46 retains all original matching assertions and full matching/producer results.

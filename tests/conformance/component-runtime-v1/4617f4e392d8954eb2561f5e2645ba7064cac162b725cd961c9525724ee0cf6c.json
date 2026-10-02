@@ -1,0 +1,1 @@
+"{\"args\":[{\"consumer_instance\":\"select:local_pulse\",\"consumer_port\":\"in:1\",\"producer_instance\":\"active:local_pulse\",\"producer_port\":\"out\"}],\"kwargs\":{}}"

@@ -1,0 +1,1 @@
+{"attributes":{"operator":"eq"},"input_ports":["in0","in1"],"operation":"delay","output_port":"out","policy":"biocompiler.synthetic_component_dynamics.v0.1","schema_version":"biocompiler.synthetic_operator_model.v0.1"}

@@ -1,0 +1,1 @@
+{"capabilities":[{"compartment":"abstract","id":"anchor","role":"cell","schema_version":"biocompiler.component_capability.v0.1","scope":"cell"}],"depends_on":["circular"],"evidence_refs":[],"id":"circular","kind":"external","supported_targets":["RNA"]}

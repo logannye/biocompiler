@@ -1,0 +1,1 @@
+{"consumer_instance":"select:contact_pulse","consumer_port":"in:1","producer_instance":"active:contact_pulse","producer_port":"out"}

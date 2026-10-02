@@ -248,3 +248,34 @@
  (modules test_candidate_runtime_corpus)
  (libraries bioc_wire bioc_domain bioc_candidate_runtime zarith)
  (action (run %{test} %{env:BIOCOMPILER_CANDIDATE_RUNTIME_CORPUS=missing})))
+
+(test
+ (name test_component_registry)
+ (modules test_component_registry)
+ (libraries bioc_wire bioc_domain zarith))
+
+(test
+ (name test_observation_map)
+ (modules test_observation_map)
+ (libraries bioc_wire bioc_domain))
+
+(test
+ (name test_composition)
+ (modules test_composition)
+ (libraries bioc_wire bioc_domain zarith))
+
+(test
+ (name test_component_assembly)
+ (modules test_component_assembly)
+ (libraries bioc_wire bioc_domain))
+
+(test
+ (name test_component_execution)
+ (modules test_component_execution)
+ (libraries bioc_wire bioc_domain bioc_candidate_runtime))
+
+(test
+ (name test_component_runtime_corpus)
+ (modules test_component_runtime_corpus)
+ (libraries bioc_wire bioc_domain bioc_candidate_runtime zarith)
+ (action (run %{test} %{env:BIOCOMPILER_COMPONENT_RUNTIME_CORPUS=missing})))

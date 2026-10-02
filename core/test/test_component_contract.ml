@@ -110,6 +110,21 @@ let text_literals () =
 
 let raw_boundary_tests () =
   let json = V.to_json both in
+  let scalar = V.to_json (interval (number 0) (number 10)) in
+  let unknown = V.to_json unknown in
+  (* Forbidden fields are rejected by their domain kind before their leaf type
+     is decoded; an unknown domain instead requires a concrete reason string. *)
+  List.iter (fun reason ->
+      reject "component_contract" (fun () -> V.of_json (set "reason" reason scalar));
+      reject "component_contract" (fun () -> V.of_json (set "reason" reason json)))
+    [arr []; obj []; Json.Bool false; Json.int 0; str "unexpected"];
+  List.iter (fun reason -> reject "invalid_type" (fun () -> V.of_json (set "reason" reason unknown)))
+    [Json.Null; arr []; obj []; Json.Bool false; Json.int 0];
+  reject "invalid_name" (fun () -> V.of_json (set "reason" (str " ") unknown));
+  List.iter (fun bound ->
+      reject "component_contract" (fun () -> V.of_json (set "lower" bound unknown));
+      reject "component_contract" (fun () -> V.of_json (set "upper" bound json)))
+    [arr []; obj []; Json.Bool false; Json.int 0; str "unexpected"];
   reject "missing_field" (fun () -> V.of_json (obj (List.remove_assoc "reason" (Json.object_fields json))));
   reject "unknown_field" (fun () -> V.of_json (set "verified" (Json.Bool true) json));
   reject "duplicate_key" (fun () -> V.of_json (obj (("values", arr []) :: Json.object_fields json)));

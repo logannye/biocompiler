@@ -50,10 +50,19 @@
     }
   ],
   "post_merge_main_run": {
+    "aggregate_artifact_id": 11208917680,
+    "aggregate_receipt_bytes": 586227,
+    "aggregate_receipt_sha256": "94c283a1471f72db6cd7e0de7c311c9228357470d0db1b847ab4bccd8c6c8416",
+    "python_tests": {
+      "3.11.16": 2351,
+      "3.14.7": 2351
+    },
+    "revision": "4415d59acd83750dd824218a1c8ab1500d8fc749",
     "run_id": "36961812619",
-    "status": "in_progress",
+    "status": "pass",
+    "successful_jobs": 30,
     "url": "https://github.com/logannye/biocompiler/actions/runs/36961812619",
-    "validation_claimed": false
+    "validation_claimed": true
   },
   "pull_request": 47,
   "pull_request_url": "https://github.com/logannye/biocompiler/pull/47",

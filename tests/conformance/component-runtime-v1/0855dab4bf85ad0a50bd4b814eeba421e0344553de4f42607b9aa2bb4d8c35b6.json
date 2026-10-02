@@ -1,0 +1,1 @@
+{"capabilities":[{"compartment":"abstract","id":"energy","role":"cell","schema_version":"biocompiler.component_capability.v0.1","scope":"contact"}],"depends_on":[],"evidence_refs":[],"id":"supply","kind":"external","supported_targets":["RNA"]}

@@ -1,0 +1,1 @@
+[{"path":["args"],"type":"builtins.tuple"},{"path":["args",3],"type":"builtins.tuple"},{"path":["args",3,0],"type":"biocompiler.ir.components.ComponentLock"},{"path":["args",4],"type":"builtins.tuple"},{"path":["args",4,0],"type":"biocompiler.ir.component_contracts.PinnedIdentity"}]

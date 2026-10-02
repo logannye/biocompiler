@@ -1,0 +1,1 @@
+[{"path":["args"],"type":"builtins.tuple"},{"path":["kwargs","capabilities"],"type":"builtins.tuple"},{"path":["kwargs","supported_targets"],"type":"builtins.tuple"},{"path":["kwargs","depends_on"],"type":"builtins.tuple"},{"path":["kwargs","evidence_refs"],"type":"builtins.tuple"}]
