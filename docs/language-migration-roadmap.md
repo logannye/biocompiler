@@ -12,7 +12,7 @@ Circuit declarations and independent source-to-Behavior correspondence are merge
 
 [PR41](https://github.com/logannye/biocompiler/pull/41) is merged at `e3d3cbcf1a7b05ccdbc34fdb69127c22e8ea8345`. Its [lowering/domain receipt](../protocol/migration-lowering-contracts-validation.json) records source `569b430`, tested merge `2f70984`, all 17 native suites on both platforms and all 2,122 tests on each Python version in successful [run 36935530782](https://github.com/logannye/biocompiler/actions/runs/36935530782). All installed, browser and reproducibility gates passed; the integrated tree is identical to the validated source. Separate [main run 36937189850](https://github.com/logannye/biocompiler/actions/runs/36937189850) passed every required gate.
 
-[PR42](https://github.com/logannye/biocompiler/pull/42) is merged at `f278ce01336c537d250df4f90219903a25174ae0`. Complete component records, intact human source wrappers, molecular inventories/sets and exact decimal deployment declarations passed all PR and integrated-main gates; the [receipt](../protocol/migration-complete-domains-validation.json) records 22 native suites on both platforms, 2,155 tests on each Python version and all product gates. [PR43](https://github.com/logannye/biocompiler/pull/43) validated architecture leaves, transition/recoding and construction records plus independent required-region checking: all 28 native suites on both platforms, 2,207 tests per Python version and every product gate passed. Its [receipt](../protocol/migration-construction-domains-validation.json) pins the source, tested merge and identical integrated tree. [PR44](https://github.com/logannye/biocompiler/pull/44) is merged at `e24ef03261ab46689a2c2cb8434aa24280eab028`: complete refinements/templates, independent construction reconstruction and source-manifest checking passed all required PR gates, with 34 native suites on both platforms and exactly 2,244 tests on each Python version; [receipt](../protocol/migration-reconstruction-validation.json). Its separate integrated-main run passed every required gate at the merged revision. The next batch adds complete architecture build records, independent controls/deployment proofs and architecture acceptance. Architecture reconstruction, coupled transport, construction/emission, export acceptance and installed cutover remain incomplete.
+[PR42](https://github.com/logannye/biocompiler/pull/42) is merged at `f278ce01336c537d250df4f90219903a25174ae0`. Complete component records, intact human source wrappers, molecular inventories/sets and exact decimal deployment declarations passed all PR and integrated-main gates; the [receipt](../protocol/migration-complete-domains-validation.json) records 22 native suites on both platforms, 2,155 tests on each Python version and all product gates. [PR43](https://github.com/logannye/biocompiler/pull/43) validated architecture leaves, transition/recoding and construction records plus independent required-region checking: all 28 native suites on both platforms, 2,207 tests per Python version and every product gate passed. Its [receipt](../protocol/migration-construction-domains-validation.json) pins the source, tested merge and identical integrated tree. [PR44](https://github.com/logannye/biocompiler/pull/44) is merged at `e24ef03261ab46689a2c2cb8434aa24280eab028`: complete refinements/templates, independent construction reconstruction and source-manifest checking passed all required PR gates, with 34 native suites on both platforms and exactly 2,244 tests on each Python version; [receipt](../protocol/migration-reconstruction-validation.json). Its separate integrated-main run passed every required gate at the merged revision. [PR45](https://github.com/logannye/biocompiler/pull/45) validates complete architecture records, independent controls/deployment proofs and fresh architecture acceptance; full PR and integrated-main validation passed. Coupled transport, producer/construction emission, installed export acceptance and cutover remain incomplete.
 
 **Validated baseline:** package 0.1.0.dev29, commit 6156ed2841fd3308df833f1afe0e3f6af5d12bf6. [Hosted run 36900639059](https://github.com/logannye/biocompiler/actions/runs/36900639059), attempt 2, passed all required gates and exactly 2,001 discovered tests on each Python version (3.11.16 and 3.14.7). The first attempt lost a hosted runner; the retry passed. [Pinned baseline receipt](../protocol/migration-baseline.json) retains revision, tree, receipts and shard/job timings. New revisions rediscover their own tests; this count is not the migration acceptance target.
 
@@ -205,38 +205,45 @@ These checkpoints record narrower validated work; they do not complete a broad L
 - [x] **B1.08 historical build and proof prerequisites:** complete build/assessment records (48 records, 117 import rejections), 53 supplementary circuit checks, 112 control-proof cases and 30 deployment cases passed full PR45 validation. Prefix-only fixture normalization preserves every case and diagnostic; binding pin `e2fc5cdebb0867269483d3f3da58433221d681f6b9a0585d8eb45a5d0281852a` is portable across checkouts.
 - [x] **B1.08 complete ledger and architecture reconstruction:** 293 fresh reports from all 78 named source-test methods, all 13 installed architecture examples and all three original case B authorities passed full PR45 validation. All 463 document identities, two finite diagnostic replacements and one narrowly scoped ordering difference remain pinned; [exact receipt](../protocol/migration-architecture-validation.json).
 - [x] **PR45 complete PR validation and merge:** all 30 required jobs passed, including 2,283 tests per Python version, 40 native suites on both platforms and 936 protocol checks. Source `99914ca274745ca65a9005f918ed15fc569141f2`, tested merge `40cf9525ec9b3f19a10e9e789b6651dbf68ec69d` and integrated commit `83ce68cecc1634f1b143f67e198ff083df425af5` share tree `5d963c11f618ae4fec2ac341c35f296d35fdeeaf`.
-- [ ] **PR45 integrated-main validation:** separate [run 36954221531](https://github.com/logannye/biocompiler/actions/runs/36954221531) is pending; the passing PR receipt does not substitute for its result.
+- [x] **PR45 integrated-main validation:** separate [run 36954221531](https://github.com/logannye/biocompiler/actions/runs/36954221531) passed all 30 required jobs at `83ce68cecc1634f1b143f67e198ff083df425af5`, with 2,283 tests on each Python version; the retained receipt records its full aggregate digest.
 - [ ] **B1.08a independent candidate execution and coupled transport**, before any such execution claim.
 - [ ] **B1.09 fresh acceptance and protocol exposure**, followed by B2 producer/export and the remaining B3–B6 product gates.
 
 **Preservation checkpoint, 2026-10-01:** [PR45](https://github.com/logannye/biocompiler/pull/45)
 merged after complete [run 36952825986](https://github.com/logannye/biocompiler/actions/runs/36952825986)
-passed. Its separate integrated-main run remains pending. The next batch is
+passed. Its separate integrated-main run also passed every required gate. The next batch is
 preserved in [draft PR46](https://github.com/logannye/biocompiler/pull/46), now
-based on main. Hosted compilation found an ambiguous record field and unused
-test helpers; the explicit type annotation and helper removals preserve strict
-warnings and require fresh hosted validation. The remaining checkpoints stay open:
+based on main. Run 36954384587 passed the full retained producer/transport corpora
+and 108 installed architecture protocol checks on both native platforms, but
+failed the standalone source literal suite; the aggregate gate correctly failed.
+Review corrections preserve invalid-root contradictions, exact generated-identity
+diagnostics and shared work exhaustion, including failed transport replay.
+The expanded architecture corpus retains all original 175 cases unchanged and
+adds 18 complete calls for identity boundaries and source-root validity. These
+corrections require fresh full hosted validation. The remaining checkpoints stay open:
 
 - [ ] **B2 producer checkpoint:** independent molecular/recoding/workflow producers,
   source-manifest derivation, matching, architecture production and paired export
   are implemented. Construction capture retains 61 construction, 37 recoding and
-  88 workflow calls; architecture capture retains 175 cases and all 13 installed
-  plus three original case B authorities. Ten construction and 12 architecture
-  Python integrity tests passed; native compilation/parity remain pending.
+  88 workflow calls; architecture capture retains 193 cases, 166 documents and all 13 installed
+  plus three original case B authorities. Ten construction and 15 expanded architecture Python integrity tests passed;
+  the corrected native revision still requires complete hosted validation.
 - [ ] **LM-21 coupled source checkpoint:** 51 source-transport cases retain 20 full
   traces and 31 rejection signatures, all nine original test methods, and seven
-  independent timeline projections. Seven Python integrity tests passed. Native
-  validation and peer review remain pending; this is source execution, not the
+  independent timeline projections. Seven Python integrity tests and the retained native corpus passed. Failed-prefix
+  budget corrections require fresh validation; this is source execution, not the
   independent candidate runtime still required by LM-22/25.
 - [ ] **LM-12/25 protocol checkpoint:** standalone architecture verify/replay,
   strict capability negotiation and immutable typed Python results are implemented.
   The 108-check installed protocol campaign and all broader native gates are wired
-  into CI. Strict mypy passes for both adapter modules; hosted protocol execution,
-  distribution and production routing remain open.
+  into CI. Both native platforms passed the installed protocol campaign; strict mypy
+  passes for both adapter modules. Full revision validation, distribution and
+  production routing remain open.
 
 Shared construction/checker parent budgets and cumulative producer publication
-reservations are included in the next checkpoint, but have not yet had hosted
-native validation. No new broad LM task or system-migration exit is marked complete.
+reservations are included. Review added explicit exhaustion identity propagation
+for arbitrary caller diagnostic codes and failed source replay allowance forfeiture;
+those corrections require fresh hosted native validation. No new broad LM task or system-migration exit is marked complete.
 
 PR42 source `06da8b4bee4110597caed15fa2da4f2bb7724268`, tested merge `902cae85932dfc1202f68d7d9bc7502941eeb701` and integrated main share tree `06898b1f7ac5e51e692ef976d5834ec5976a495a`. Both complete PR and integrated-main gates passed. PR43 source `7fb3ec8983b038b03f0efa8f8233e4bef4e5a613`, tested merge `9f0c10ea218c4df49aa9f143718eb82d2daff842` and integrated main share tree `836da9375e1206d708194eecd48419f529ab5ff0`. Both complete PR and integrated-main gates passed. PR44 source `ae56d0c7e3dd8202aa015d7a7b769a75bd8ca037`, tested merge `8ff4d1911a6525c58be16e6db9d030b5fb670a91` and integrated main share tree `7ecc2c56f1370c0540f3c74c5795c6868d8e3841`; full PR and integrated-main gates passed. PR45 adds validated independent full architecture acceptance and its control/deployment/build prerequisites. PR46 adds experimental protocol and producer paths pending validation; production routing remains unchanged.
 

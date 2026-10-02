@@ -6,7 +6,7 @@ correspondence. Internal libraries add per-role reference execution and fresh
 Intent-to-Behavior lowering. Validated domains include shared content pins, component contract algebra,
 molecular provenance and nominal chemistry. PR42 also validated complete
 component records, human source wrappers, molecular sets and supplied deployment
-windows. PR43 declarations and required-region checks and PR44 independent reconstruction/source checks passed complete PR validation; full architecture acceptance remains pending validation. The
+windows. PR43 declarations and required-region checks and PR44 independent reconstruction/source checks passed complete PR validation; full architecture acceptance passed complete PR45 and integrated-main validation. The
 public protocol does not yet implement compilation, behavioral execution,
 molecular verification, export acceptance or human-use admission. Capabilities
 are explicit; unimplemented operations return `unsupported` without fallback.
@@ -275,10 +275,10 @@ implemented before any production semantic authority can move to OCaml.
 
 PR44 validated checker-private construction reconstruction, fresh assessments/replay, complete architecture refinements/templates and source-manifest checking. All 34 native suites passed on both platforms, with exactly 2,244 Python tests per version and every required product gate in both PR run36945426505 and integrated-main run36946981717; [receipt](../protocol/migration-reconstruction-validation.json). Dune hides reconstruction modules; static guards reject producer imports and public interface leaks. Production routing remains Python.
 
-The new source-manifest checker retains 34 historical records, 56 intended import rejections and 35 full source/manifest comparisons, including 17 candidate mutations. Native lowering discrepancies explicitly use `source_behavior:<native code>` under `biocompiler.ocaml.source_manifest_check.v0.1`; two corresponding Python-prose cases are retained separately. Other scoped diagnostic keys are unchanged. Transition checks preserve legacy projection limits and use the explicit native `biocompiler.transition_check.resources.v1` shared work budget; exhaustion yields no partial semantic report. Historical construction reports retain their policy/schema identity, while fresh native execution has a distinct implementation identity. These scopes passed complete PR44 validation. The next batch adds complete historical build/assessment imports, supplementary circuit correspondence, bounded control proofs, exact deployment interval checks and full architecture reconstruction. The checker explicitly links the already-pinned Zarith primitive for exact rational arithmetic; producer library dependencies remain prohibited.
+The new source-manifest checker retains 34 historical records, 56 intended import rejections and 35 full source/manifest comparisons, including 17 candidate mutations. Native lowering discrepancies explicitly use `source_behavior:<native code>` under `biocompiler.ocaml.source_manifest_check.v0.1`; two corresponding Python-prose cases are retained separately. Other scoped diagnostic keys are unchanged. Transition checks preserve legacy projection limits and use the explicit native `biocompiler.transition_check.resources.v1` shared work budget; exhaustion yields no partial semantic report. Historical construction reports retain their policy/schema identity, while fresh native execution has a distinct implementation identity. These scopes passed complete PR44 validation. PR45 adds validated complete historical build/assessment imports, supplementary circuit correspondence, bounded control proofs, exact deployment interval checks and full architecture reconstruction. The checker explicitly links the already-pinned Zarith primitive for exact rational arithmetic; producer library dependencies remain prohibited.
 
 
-The pending architecture batch keeps historical `Construction_build`,
+The validated architecture batch keeps historical `Construction_build`,
 `Architecture_build` and `Architecture_assessment` imports distinct from fresh
 checking. Their corpus retains all three original case B builds, 48 complete
 records and 117 intended import rejections. The supplementary circuit binding
@@ -286,7 +286,7 @@ campaign retains 53 complete source checks and 31 malformed imports. Controls
 retain the existing bounded theorem profiles, explicit default versus frozen
 parameter bindings, 112 complete cases and native expression-depth/source/controller ceilings; deployment checks retain 30 complete cases, use
 exact decimal rationals and retain explicit recipient/clock/interval witnesses.
-These new scopes remain pending full hosted validation.
+These scopes passed complete PR45 and integrated-main validation.
 
 Shared checker work budgets retain both local and ancestor limits. Resource
 exhaustion returns no partial semantic report. Output reservations count JSON
@@ -306,7 +306,8 @@ canonical JSON to keep the stored campaign within 16 MiB. Every delta resolves
 against a complete same-kind baseline and is checked against the original full
 document fingerprint and size. Delta chains, substituted or unused documents,
 missing cases and unclassified diagnostic changes are rejected. This storage
-format is confined to tests. Hosted validation of this campaign remains pending.
+format is confined to tests. Full PR45 and integrated-main validation passed;
+see [the exact validation receipt](../protocol/migration-architecture-validation.json).
 
 Two cases explicitly retain changed native diagnostic spelling: an empty
 implemented-realization declaration uses `malformed_architecture:invalid_architecture_build`,
@@ -322,9 +323,13 @@ diagnostic multiplicity, outcomes and completeness claims remain exact.
 Branch `codex/ocaml-producers-transport` contains the next draft slice: independent
 construction/recoding/workflow and architecture producers, coupled source transport,
 and experimental `verify-architecture`/`replay-architecture` service operations.
-It extends the native registry to45 suites and adds108 installed architecture
-protocol checks. Source-only tests and strict checking of both Python transport
-modules pass; hosted native validation and cumulative-budget peer review remain
-required. Production SDK/CLI authority remains Python, and coupled source
+It extends the native registry to 45 suites and adds 108 installed architecture
+protocol checks. The retained corpora and installed protocol checks passed on both
+native platforms in run 36954384587, but its source literal suite failed. Review
+corrections preserve explicit invalid-root contradictions, generated identity
+diagnostics, and arbitrary parent-budget exhaustion. Failed source-prefix replay
+forfeits its reserved remaining allowance before propagating the original error.
+The expanded producer corpus retains 193 cases and 166 documents with no
+diagnostic exceptions. The corrected revision requires fresh full hosted validation. Production SDK/CLI authority remains Python, and coupled source
 execution does not implement the independent candidate runtime. See the detailed
 [roadmap checkpoint](../docs/language-migration-roadmap.md) and [protocol](../protocol/core-v1.md).

@@ -112,6 +112,8 @@ let derive source =
         let message = match field "source" node with Json.Null -> message
           | location -> message ^ " at " ^ text "file" location ^ ":" ^ Canonical.encode (field "line" location) in
         diagnostic "source_execution_profile_unsupported" Manifest.Diagnostic_record.Unsupported_semantics [text "id" node] message; None
+    | Diagnostic.Error error when error.code = "behavior_roots" ->
+        diagnostic "invalid_source_execution_semantics" Manifest.Diagnostic_record.Contradiction [] error.message; None
     | Diagnostic.Error error when error.code = "invalid_lowering_execution_policy" ->
         let message = if error.message = "Integral sampling step must be positive." then error.message
           else "Unknown frozen behavior execution policy fields." in

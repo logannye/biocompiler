@@ -8,6 +8,7 @@ import argparse
 from collections import Counter
 from contextlib import ExitStack
 from copy import deepcopy
+from dataclasses import replace
 import importlib
 import json
 import os
@@ -162,7 +163,55 @@ def build_corpus():
             current[0]='case_b/'+variant;build=compile(request)
             require(canonical(build.to_dict())==canonical(original_build),'Complete original case-B producer drift')
             export(build,expected_request=request);force_full.update((retain('request',request),retain('build',build)));case_b.append(current[0])
-    original=dict(documents=originals,kinds=kinds,cases=cases,ledger=ledger,installed=installed_ids,case_b=case_b,force_full=sorted(force_full))
+        supplementary=[]
+        base=make_architecture_request('A',variants=('one_rna',))
+        for name,identity in (('construction_id_exact','r'*4067),('construction_id_one_over','r'*4068),
+                              ('construction_id_request_maximum','r'*4080),('construction_id_utf8_over','é'*2034)):
+            current[0]='supplementary/'+name
+            build=compile(replace(base,id=identity))
+            expected='compiled' if name=='construction_id_exact' else 'no_solution'
+            require(build.status==expected,'Derived construction identity boundary changed')
+            if expected=='no_solution':
+                require([(gap.code,gap.message) for alternative in build.alternatives for gap in alternative.gaps]==[
+                    ('construction_authority_rejected','Circuit construction identity exceeds its byte limit.' if name=='construction_id_utf8_over' else
+                     'Invalid or excessive Circuit construction identity text.')],
+                    'Construction identity rejection text changed')
+            supplementary.append(current[0])
+        raw_base=base.to_dict()
+        template_id=raw_base['library']['refinements'][0]['templates'][0]['id']
+        def renamed(raw,identity):
+            if isinstance(raw,str):return identity if raw==template_id else raw
+            if isinstance(raw,list):return [renamed(value,identity) for value in raw]
+            if isinstance(raw,dict):return {key:renamed(value,identity) for key,value in raw.items()}
+            return raw
+        for name,identity in (('template_id_exact','t'*4086),('template_id_one_over','t'*4087),
+                              ('template_id_maximum','t'*4096),('template_id_utf8_over','é'*2044)):
+            current[0]='supplementary/'+name
+            build=compile(PayloadArchitectureRequest.from_dict(renamed(raw_base,identity)))
+            expected='compiled' if name=='template_id_exact' else 'no_solution'
+            require(build.status==expected,'Namespaced template identity boundary changed')
+            if expected=='no_solution':
+                require([(gap.code,gap.message) for alternative in build.alternatives for gap in alternative.gaps]==[
+                    ('construction_authority_rejected','Payload template identity exceeds its byte limit.' if name=='template_id_utf8_over' else
+                     'Invalid or excessive Payload template identity text.')],
+                    'Namespaced template rejection text changed')
+            supplementary.append(current[0])
+        for name,invalid in (('source_roots_valid',False),('source_roots_invalid',True)):
+            current[0]='supplementary/'+name
+            raw=base.source.to_dict()
+            raw_build=raw
+            while 'intent' not in raw_build:
+                raw_build=raw_build[next(key for key in ('deployment_request','behavior_request','build_request') if key in raw_build)]
+            node=next(node for node in raw_build['intent']['nodes'] if node['kind']=='qualitative')
+            if invalid:raw_build['intent']['roots'].append(node['id'])
+            result=source(source_request_from_dict(raw))
+            require((result.behavior is None)==invalid,'Literal root validity changed')
+            if invalid:
+                require(any(item.code=='invalid_source_execution_semantics' and
+                    item.message=='Behavior roots must include exactly all executable declarations.' for item in result.diagnostics),
+                    'Invalid source root lost its exact contradiction')
+            supplementary.append(current[0])
+    original=dict(documents=originals,kinds=kinds,cases=cases,ledger=ledger,installed=installed_ids,case_b=case_b,supplementary=supplementary,force_full=sorted(force_full))
     checkpoint=ROOT/'generated/migration-next/architecture-producer-originals.json'
     checkpoint.parent.mkdir(parents=True,exist_ok=True);checkpoint.write_bytes(encoded(original))
     return pack_corpus(original)
@@ -187,7 +236,7 @@ def pack_corpus(original):
             require(canonical(apply_edits(raw_documents[base],stored['edits']))==canonical(raw),'Delta changed complete original')
         documents[identity]=stored
         metadata.append(dict(id=identity,kind=kind,format=format_,stored_fingerprint=fingerprint(stored),bytes=len(stored_encoded(stored,format_)),resolved_bytes=size,base=base))
-    coverage=dict(methods=original['ledger'],installed=original['installed'],case_b=original['case_b'],cases=len(original['cases']),
+    coverage=dict(methods=original['ledger'],installed=original['installed'],case_b=original['case_b'],supplementary=original['supplementary'],cases=len(original['cases']),
       documents=len(documents),operations=dict(sorted(Counter(case['operation'] for case in original['cases']).items())),
       document_kinds=dict(sorted(Counter(kinds.values()).items())),stored_bytes=sum(item['bytes'] for item in metadata),
       resolved_bytes=sum(item['resolved_bytes'] for item in metadata),diagnostic_exceptions=[],
@@ -210,15 +259,23 @@ def load(path=CORPUS):
 def check_corpus(index,documents,*,fresh=False):
     require(index['schema_version']==SCHEMA and index['inventory_fingerprint']==inventory(index),'Producer corpus identity')
     metadata=index['documents'];cases=index['cases'];coverage=index['coverage']
-    require(len(cases)==175 and len({case['id'] for case in cases})==len(cases),'Case census')
-    require(len(metadata)==148 and len(metadata)==len({item['id'] for item in metadata})==len(documents) and {item['id'] for item in metadata}==set(documents),'Document census')
+    require(len(cases)==193 and len({case['id'] for case in cases})==len(cases),'Case census')
+    require(len(metadata)==166 and len(metadata)==len({item['id'] for item in metadata})==len(documents) and {item['id'] for item in metadata}==set(documents),'Document census')
     require(coverage['cases']==len(cases) and coverage['documents']==len(metadata),'Coverage census')
-    require(coverage['operations']==dict(sorted(Counter(case['operation'] for case in cases).items()))=={'source':57,'match':40,'compile':48,'export':30},'Operation census')
+    require(coverage['operations']==dict(sorted(Counter(case['operation'] for case in cases).items()))=={'source':67,'match':40,'compile':56,'export':30},'Operation census')
     require([item['method'] for item in coverage['methods']]==method_inventory(),'Exact original assertion inventory')
     require(all(item['status']=='source_assertions_executed' and item['retained_calls']==sum(case['id'].startswith(item['method']+'/') for case in cases) for item in coverage['methods']),'Assertion execution ledger')
     require(coverage['installed']==['installed/'+name for name in ['A','B','C','D','E','F','automatic_timing','automatic_b','automatic_f','memory_reset','state_reset','production_adjustment','activity_control']] and coverage['case_b']==['case_b/base','case_b/parameter-default','case_b/parameter-override'],'Installed complete inventory')
     for prefix in coverage['installed']+coverage['case_b']:
         require(sum(case['id'].startswith(prefix+'/compile/') for case in cases)==1 and sum(case['id'].startswith(prefix+'/export/') for case in cases)==1,'Missing complete installed producer/export')
+    require(coverage['supplementary']==['supplementary/'+name for name in ('construction_id_exact',
+      'construction_id_one_over','construction_id_request_maximum','construction_id_utf8_over',
+      'template_id_exact','template_id_one_over','template_id_maximum','template_id_utf8_over',
+      'source_roots_valid','source_roots_invalid')],
+      'Missing construction identity boundary inventory')
+    for prefix in coverage['supplementary']:
+        require(sum(case['id'].startswith(prefix+'/compile/') for case in cases)==(0 if '/source_roots_' in prefix else 1) and
+                sum(case['id'].startswith(prefix+'/source/') for case in cases)==1,'Missing boundary source/compile pair')
     require(coverage['diagnostic_exceptions']==[],'Undeclared producer diagnostic exception')
     references=set()
     for case in cases:

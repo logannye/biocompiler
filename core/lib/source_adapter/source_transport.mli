@@ -1,7 +1,9 @@
 (** Coupled SOURCE execution under declared sampled transport. Every role replays
     the original complete Behavior prefix. This is neither independent candidate
     execution nor a physiological prediction. Fresh architecture checking is
-    mandatory; exhaustion returns no partial receipt. *)
+    mandatory; exhaustion returns no partial receipt. A failed reference-prefix
+    replay forfeits the remaining shared work allowance before propagating the
+    original error; failed attempts cannot reuse uncharged work. *)
 val implementation_version : string
 val resource_profile : string
 val max_work : int

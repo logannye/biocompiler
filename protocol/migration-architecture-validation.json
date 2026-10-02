@@ -262,9 +262,10 @@
     "suites": 40
   },
   "post_merge_validation": {
+    "full_receipt_sha256": "000f5c43e98b809df9b3337dc5da14d5da8ea23e897a13fbff70b48f626bf226",
     "revision": "83ce68cecc1634f1b143f67e198ff083df425af5",
     "run_url": "https://github.com/logannye/biocompiler/actions/runs/36954221531",
-    "status": "pending"
+    "status": "pass"
   },
   "prerequisites": {
     "circuit-integration": {

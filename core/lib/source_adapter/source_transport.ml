@@ -221,7 +221,15 @@ let evaluate ?budget ~expected_request build input=
       let allowance=R.make_budget ~max_work:(remaining_work budget)
         ~max_frames:(min 10000 (max_replayed_frames-budget.frames))
         ~max_trace_items:(min 100000 (max_replayed_trace_items-budget.trace_items)) () in
-      let result,usage=R.evaluate_with_usage ~role ~until:(N.Integer time) ~budget:allowance behavior history in
+      let result,usage =
+        match R.evaluate_with_usage ~role ~until:(N.Integer time) ~budget:allowance behavior history with
+        | value -> value
+        | exception error ->
+            (* Failed reference execution publishes no usage or partial trace.
+               Retire its entire reserved remainder so a shared caller cannot
+               repeat expensive failures without consuming the parent limit. *)
+            spend budget (remaining_work budget);
+            raise error in
       spend budget usage.work;budget.frames<-budget.frames+usage.frames;budget.trace_items<-budget.trace_items+usage.trace_items;
       let next_results=Names.add role result !results in held_check next_results !trace;results:=next_results) roles;
     let sent=ref [] in

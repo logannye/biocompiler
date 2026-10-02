@@ -151,7 +151,19 @@ let retained path=
        require (Json.equal raw (D.Result.to_json (T.evaluate ~budget:(T.make_budget ~maximum:consumed ()) ~expected_request:request build input)))
         "Exact cumulative replay budget failed";
        rejected "one below complete coupled replay" "source_transport_work_limit" (fun ()->T.evaluate ~budget:(T.make_budget ~maximum:(consumed-1) ()) ~expected_request:request build input);
-       rejected "exhausted reused coupled budget" "source_transport_work_limit" (fun ()->T.evaluate ~budget:(T.make_budget ~maximum:0 ()) ~expected_request:request build input))) cases;
+       rejected "exhausted reused coupled budget" "source_transport_work_limit" (fun ()->T.evaluate ~budget:(T.make_budget ~maximum:0 ()) ~expected_request:request build input);
+       let histories=D.Input.histories input |> List.map (fun (role,frames)->role,List.mapi (fun index frame->
+         if index=0 then frame else E.Input_frame.make ~time:(E.Input_frame.time frame) ~contacts:(E.Input_frame.contacts frame) ()) frames) in
+       let failing=D.Input.make ~histories ~until:(D.Input.until input) ~step:(D.Input.step input)
+         ~max_samples:(D.Input.max_samples input) ~failed_channels:(D.Input.failed_channels input) () in
+       let parent=W.create ~profile:"literal.failed_prefix" ~error_code:"caller_stopped" ~maximum:T.max_work () in
+       let failed_budget=T.make_budget ~parent () in
+       rejected "late prefix missing observation" "evaluation_observation"
+         (fun ()->T.evaluate ~budget:failed_budget ~expected_request:request build failing);
+       require (T.remaining_work failed_budget=0 && W.remaining parent=0)
+         "Failed reference prefix left its reserved parent allowance reusable";
+       rejected "failed reference cannot repeat without new allowance" "source_transport_work_limit"
+         (fun ()->T.evaluate ~budget:failed_budget ~expected_request:request build failing))) cases;
  List.iter (fun assertion->
   let id=text "case_id" assertion in let trace=match Hashtbl.find_opt traces id with Some value->value|None->failwith "Missing independent literal trace" in
   let frames=Json.array (field "channel_frames" trace) in

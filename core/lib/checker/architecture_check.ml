@@ -211,7 +211,7 @@ let supplementary_checks ~budget request graph selected =
                | Some behavior ->
                    if mapped_actions <> (Circuit_request.Requirement.action_ids requirement |> List.map Identity.Node.to_string |> List.sort String.compare) then fail ("supplementary_action_identity:" ^ id);
                    (try ignore (Lowering_check.check ~expected_request:(Human_request.build_request source) ~behavior)
-                    with Diagnostic.Error error -> if String.ends_with ~suffix:"_limit" error.code then raise (Diagnostic.Error error)
+                    with Diagnostic.Error error -> if Work_budget.is_exhaustion budget error || String.ends_with ~suffix:"_limit" error.code then raise (Diagnostic.Error error)
                       else fail ("supplementary_source_behavior:" ^ id ^ ":" ^ error.code));
                    let raw_behavior = Circuit_request.Requirement.to_json requirement |> field "behavior" in
                    if Json.array (field "inputs" raw_behavior) <> [] || Circuit_request.Requirement.input_bindings requirement <> [] then unknown ("executable_input_observation_mapping:" ^ id)
@@ -341,7 +341,7 @@ let channel_checks ~budget request graph (inventories:R.inventories) = failures 
         | Some declaration,Some sender,Some receiver when declaration.kind = "channel" && sender.kind = "action.emit" && receiver.kind = "channel_observation" &&
             R.input sender 1 = declaration.id && R.input receiver 1 = declaration.id && sender.role = Some (text "sender_role" channel) && receiver.role = Some (text "receiver_role" channel) ->
             (try ignore (Type_spec.normalize_binding ~expected:(Type_spec.of_json declaration.data_type) (field "initial_value" channel))
-             with Diagnostic.Error error -> if String.ends_with ~suffix:"_limit" error.code then raise (Diagnostic.Error error) else fail ("channel_initial_value:" ^ identity));
+             with Diagnostic.Error error -> if Work_budget.is_exhaustion budget error || String.ends_with ~suffix:"_limit" error.code then raise (Diagnostic.Error error) else fail ("channel_initial_value:" ^ identity));
             let edge = Canonical.encode (strings [declaration.id;text "sender_node_id" channel;receiver.id]) in
             if Ids.mem edge !observed then fail ("duplicate_channel_transport_edge:" ^ identity);
             observed := Ids.add edge !observed;
@@ -498,7 +498,7 @@ let check ?budget ~expected_request build =
                        construction_complete := Construction_assessment.passed assessment && Construction_assessment.complete assessment && molecule_failures = []));
              if C.Constraints.require_complete (Architecture_request.constraints request) && !unresolved <> [] then fail "strict_completeness_violated")
       with
-      | Diagnostic.Error error -> if String.ends_with ~suffix:"_limit" error.code then raise (Diagnostic.Error error)
+      | Diagnostic.Error error -> if Work_budget.is_exhaustion budget error || String.ends_with ~suffix:"_limit" error.code then raise (Diagnostic.Error error)
           else fail ("malformed_architecture:" ^ error.code)
       | Not_found -> fail "malformed_architecture:missing_reference") in
   let unresolved = unique (List.rev !unresolved) in

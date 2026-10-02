@@ -11,7 +11,7 @@ sys.path.insert(0,str(ROOT/'tools'))
 import freeze_architecture_producer as fixture
 from biocompiler.ir.serialization import fingerprint
 
-PIN='be2b4345f836cfc9c3b0cee16a22a0c58bb3036b8e5c59da1d98306fb03f0969'
+PIN='269e64293c36d52a5ad797c5c2808e52b0072e520992ade9bfa9f5de97dff90a'
 class ArchitectureProducerCorpusTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):cls.index,cls.documents=fixture.load()
@@ -101,6 +101,51 @@ class ArchitectureProducerCorpusTests(unittest.TestCase):
             circuit=fixture.decode('circuit',fixture.resolve(self.index,self.documents,case['circuit'])) if case['circuit'] else None
             result=match_architecture_refinement(refinement,behavior,circuit=circuit,max_states=case['max_states'],max_instances=case['max_instances'])
             self.assertEqual(fixture.canonical(fixture.match_document(result)),fixture.canonical(case['expected']))
+    def test_derived_construction_identity_boundaries_preserve_complete_results(self):
+        from biocompiler.compiler.payload_architecture import compile_payload_architecture
+        counts={}
+        for case in self.index['cases']:
+            if case['operation']!='compile' or not case['id'].startswith('supplementary/construction_id_'):continue
+            request=fixture.decode('request',fixture.resolve(self.index,self.documents,case['request']))
+            actual=compile_payload_architecture(request)
+            expected=fixture.resolve(self.index,self.documents,case['build'])
+            self.assertEqual(fixture.canonical(actual.to_dict()),fixture.canonical(expected))
+            name=case['id'].split('/')[1];counts[name]=len(request.id.encode('utf-8'))
+            if name=='construction_id_exact':self.assertEqual(actual.status,'compiled')
+            else:
+                self.assertEqual(actual.status,'no_solution')
+                self.assertEqual([(gap.code,gap.message) for alternative in actual.alternatives for gap in alternative.gaps],
+                    [('construction_authority_rejected','Circuit construction identity exceeds its byte limit.' if name=='construction_id_utf8_over' else
+                      'Invalid or excessive Circuit construction identity text.')])
+        self.assertEqual(counts,{'construction_id_exact':4067,'construction_id_one_over':4068,
+            'construction_id_request_maximum':4080,'construction_id_utf8_over':4068})
+    def test_namespaced_template_identity_boundaries_preserve_complete_results(self):
+        from biocompiler.compiler.payload_architecture import compile_payload_architecture
+        seen=[]
+        for case in self.index['cases']:
+            if case['operation']!='compile' or not case['id'].startswith('supplementary/template_id_'):continue
+            request=fixture.decode('request',fixture.resolve(self.index,self.documents,case['request']))
+            actual=compile_payload_architecture(request)
+            self.assertEqual(fixture.canonical(actual.to_dict()),fixture.canonical(fixture.resolve(self.index,self.documents,case['build'])))
+            name=case['id'].split('/')[1];seen.append(name)
+            if name=='template_id_exact':self.assertEqual(actual.status,'compiled')
+            else:
+                self.assertEqual(actual.status,'no_solution')
+                message='Payload template identity exceeds its byte limit.' if name=='template_id_utf8_over' else 'Invalid or excessive Payload template identity text.'
+                self.assertEqual([(gap.code,gap.message) for alternative in actual.alternatives for gap in alternative.gaps],
+                    [('construction_authority_rejected',message)])
+        self.assertEqual(seen,['template_id_exact','template_id_one_over','template_id_maximum','template_id_utf8_over'])
+    def test_nonexecutable_source_root_preserves_explicit_contradiction(self):
+        from biocompiler.semantics.payload_execution import derive_source_execution
+        for name in ('source_roots_valid','source_roots_invalid'):
+            case=next(case for case in self.index['cases'] if case['id']=='supplementary/'+name+'/source/0')
+            source=fixture.decode('source',fixture.resolve(self.index,self.documents,case['source']))
+            actual=derive_source_execution(source)
+            self.assertEqual(fixture.canonical(actual.to_dict()),fixture.canonical(fixture.resolve(self.index,self.documents,case['manifest'])))
+            self.assertEqual(actual.behavior is None,name=='source_roots_invalid')
+            if name=='source_roots_invalid':
+                self.assertIn(('invalid_source_execution_semantics','Behavior roots must include exactly all executable declarations.'),
+                    [(item.code,item.message) for item in actual.diagnostics])
     def test_source_and_small_installed_build_fresh(self):
         from biocompiler.compiler.payload_architecture import compile_payload_architecture,export_payload_architecture
         case=next(case for case in self.index['cases'] if case['id']=='installed/B/compile/0')

@@ -104,7 +104,18 @@ let candidate_gaps receipt selected request =
       let requirements = Ids.elements !implicated in
       gap ~requirements ~candidates:(List.map R.id selected) ~message:(B.Gap.message diagnostic) ~conflict_set:requirements category code)
 let tuple_repr values = "(" ^ String.concat ", " (List.map Diagnostic_text.repr values) ^ (if List.length values = 1 then "," else "") ^ ")"
-let producer_resource code = String.ends_with ~suffix:"_limit" code && code <> "molecular_resource_limit"
+let producer_resource budget (error : Diagnostic.t) =
+  Work.is_exhaustion budget error || List.mem error.code
+    ["architecture_material_output_limit"; "construction_producer_output_limit";
+     "construction_producer_limit"; "construction_resource_limit";
+     "transition_resource_limit"; "payload_structure_resource_limit";
+     "architecture_output_limit"; "architecture_report_limit";
+     "source_manifest_limit"; "lowering_lineage_limit"; "lowering_report_limit";
+     "architecture_control_limit"; "architecture_deployment_limit";
+     "circuit_binding_output_limit"]
+let construction_rejection_message (error : Diagnostic.t) =
+  if error.code = "architecture_synthesized_identity" then error.message
+  else error.code ^ ": " ^ error.message
 exception Finished of B.t
 let compile ?budget request =
   let budget = create_budget budget in
@@ -206,8 +217,8 @@ let compile ?budget request =
               gaps := [gap ~candidates:identifiers ~message:(String.concat "; " (Architecture_assessment.unresolved receipt)) B.Gap.Unsupported_semantics "unresolved_architecture_obligations"];
             if !gaps = [] then eligible := Some (plan, construction, receipt))
         with
-        | Diagnostic.Error error when not (producer_resource error.code) ->
-            gaps := !gaps @ [gap ~candidates:identifiers ~message:(error.code ^ ": " ^ error.message) B.Gap.Missing_sequence_authority "construction_authority_rejected"]);
+        | Diagnostic.Error error when not (producer_resource budget error) ->
+            gaps := !gaps @ [gap ~candidates:identifiers ~message:(construction_rejection_message error) B.Gap.Missing_sequence_authority "construction_authority_rejected"]);
       if not (retain (B.Alternative.make ~refinement_ids:identifiers ~gaps:!gaps)) then raise (Finished (retention_exhausted identifiers));
       match !eligible with
       | None -> ()

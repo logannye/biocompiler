@@ -12,18 +12,18 @@ let scalar value=obj ["kind",str "scalar";"value",value;"unit",str "1";"canonica
 let location=Json.parse {|{"file":"literal/source.py","line":7,"function":"author"}|}
 let node=obj ["id",str "value";"kind",str "literal";"inputs",arr [];"attributes",obj ["value",scalar (Json.Float (-0.0))];
   "data_type",dtype;"role",Json.Null;"source",location]
-let intent=obj ["schema_version",str Intent.schema_version;"name",str "literal source";"nodes",arr [node];"roots",arr [str "value"]]
+let intent=obj ["schema_version",str Intent.schema_version;"name",str "literal source";"nodes",arr [node];"roots",arr []]
 let provenance=Json.parse {|{"schema_version":"biocompiler.elaboration_provenance.v0.1","source_identities":{},"dependency_identities":{},"external_inputs":{},"locations":{},"recorded_at":null}|}
 let original=obj ["schema_version",str Build_request.schema_version;"intent",intent;"explicit_overrides",obj [];"resolved_defaults",obj [];"resolved_bindings",obj [];
   "target",Json.Null;"artifact_scope",str "abstract_behavior";"behavior_profile",str "biocompiler.behavior.v0.1";
   "implementation_constraints",obj [];"preferences",obj [];"parameter_metadata",obj [];"provenance",provenance]
-let () =
+let literals () =
   require (Array.length Sys.argv=1) "Source literal suite accepts no arguments; broad corpus runs in test_architecture_producer";
   let source=Human_request.of_json original in
   let result=P.derive source in
   let behavior=obj ["schema_version",str "biocompiler.behavior.v0.1";"name",str "literal source";
     "nodes",arr [node |> replace "contact_bound" (Json.Bool false) |> replace "requirement_ids" (arr [])];
-    "roots",arr [str "value"];"source_fingerprint",str (Intent.fingerprint (Intent.of_json intent));
+    "roots",arr [];"source_fingerprint",str (Intent.fingerprint (Intent.of_json intent));
     "requirements",arr [];"source_links",obj ["value",arr [str "value"]];"policies",Behavior.execution_policies Behavior.V0_1;"parameter_bindings",obj []] in
   let semantics=obj (List.remove_assoc "source" (Json.object_fields node)) in
   let expected=obj ["schema_version",str E.schema_version;"claim_scope",str E.claim_scope;"source",Human_request.to_json source;
@@ -34,6 +34,11 @@ let () =
   require (Json.equal (E.to_json result) expected && E.complete result) "Complete source manifest differs from independent signed-zero literal";
   let report=Bioc_checker.Source_check.check ~expected_source:source ~manifest:result in
   require (report.failures=[] && report.unresolved=[]) "Independent checker rejected produced literal";
+  let invalid_roots=replace "intent" (replace "roots" (arr [str "value"]) intent) original |> Human_request.of_json |> P.derive in
+  require (not (E.complete invalid_roots) && E.behavior invalid_roots=None &&
+    List.map (fun diagnostic -> E.Diagnostic_record.code diagnostic,E.Diagnostic_record.message diagnostic) (E.diagnostics invalid_roots)=
+      ["invalid_source_execution_semantics","Behavior roots must include exactly all executable declarations."])
+    "A non-executable source root must retain the explicit Python contradiction";
   let unknown=replace "kind" (str "future.operation") node |> replace "attributes" (obj []) in
   let unknown_source=replace "intent" (replace "nodes" (arr [unknown]) intent) original |> Human_request.of_json in
   let unsupported=P.derive unknown_source in
@@ -46,3 +51,6 @@ let () =
   require (List.map E.Diagnostic_record.code (E.diagnostics constrained)=["uninterpreted_implementation_constraints";"uninterpreted_source_preferences"] &&
     E.Diagnostic_record.message (List.hd (E.diagnostics constrained))="Retained implementation constraints require interpretation: a, z") "Constraint or preference authority lost or reordered";
   print_endline "source execution literals: full authority, signed zero, exact unsupported location, constraints and preferences passed"
+
+let () = try literals () with Diagnostic.Error error ->
+  failwith (error.code ^ (match error.path with None -> "" | Some path -> " at " ^ path) ^ ": " ^ error.message)

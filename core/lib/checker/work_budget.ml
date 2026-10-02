@@ -1,5 +1,6 @@
 open Bioc_wire
-type counter = { profile : string; error_code : string; mutable remaining : int }
+type counter = { profile : string; error_code : string; mutable remaining : int;
+  mutable exhaustion : Diagnostic.t option }
 type t = counter list
 let max_scopes = 16
 let counter ~profile ~error_code ~maximum =
@@ -8,16 +9,24 @@ let counter ~profile ~error_code ~maximum =
                       String.length error_code > 0 && String.length error_code <= 128)
     "invalid_work_budget" "A work scope requires bounded profile and error identities.";
   Json.validate_utf8 profile; Json.validate_utf8 error_code;
-  {profile;error_code;remaining=maximum}
+  {profile;error_code;remaining=maximum;exhaustion=None}
 let create ~profile ~error_code ~maximum () = [counter ~profile ~error_code ~maximum]
 let nested ~parent ~profile ~error_code ~maximum () =
   Diagnostic.require (List.length parent < max_scopes) "invalid_work_budget" "Nested work scope limit exceeded.";
   counter ~profile ~error_code ~maximum :: parent
 let charge budget amount =
   Diagnostic.require (amount >= 0) "invalid_work_budget" "Work charges cannot be negative.";
-  List.iter (fun scope -> Diagnostic.require (amount <= scope.remaining) scope.error_code
-      ("Independent checker work limit exceeded under " ^ scope.profile ^ ".")) budget;
+  List.iter (fun scope -> if amount > scope.remaining then (
+      let diagnostic = { Diagnostic.code=scope.error_code;
+        message="Independent checker work limit exceeded under " ^ scope.profile ^ "."; path=None } in
+      (* Retain the actual exception identity on every participating scope. This
+         lets outer callers recognize descendant exhaustion without interpreting
+         user-selected diagnostic strings or swallowing it as semantic failure. *)
+      List.iter (fun scope -> scope.exhaustion <- Some diagnostic) budget;
+      raise (Diagnostic.Error diagnostic))) budget;
   List.iter (fun scope -> scope.remaining <- scope.remaining - amount) budget
+let is_exhaustion budget diagnostic = List.exists (fun scope ->
+    match scope.exhaustion with Some previous -> previous == diagnostic | None -> false) budget
 let remaining budget = List.fold_left (fun available scope -> min available scope.remaining) max_int budget
 type output = { bytes : t; nodes : t; error_code : string; maximum_bytes : int }
 let create_output ~profile ~error_code ~max_bytes ~max_nodes () =

@@ -14,6 +14,84 @@ let runtime node = let kind = Behavior.kind_name (Behavior.operation node) in Li
 let sorted_templates refinement = List.sort (fun left right -> String.compare (Payload_template.id left) (Payload_template.id right)) (R.templates refinement)
 let output_budget () = Bioc_checker.Work_budget.create_output ~profile:"biocompiler.architecture_material.resources.v1"
     ~error_code:"architecture_material_output_limit" ~max_bytes:(16 * 1024 * 1024) ~max_nodes:250_000 ()
+let identity_bound ?(maximum=4096) label identity =
+  let characters = String.fold_left (fun count value ->
+      if Char.code value land 0xc0 <> 0x80 then count + 1 else count) 0 identity in
+  Diagnostic.require (characters <= maximum) "architecture_synthesized_identity"
+    ("Invalid or excessive " ^ label ^ " text.");
+  Diagnostic.require (String.length identity <= maximum) "architecture_synthesized_identity"
+    (label ^ " exceeds its byte limit.")
+(* Original templates are already typed and valid. Prefix expansion alone can
+   invalidate these identities. Preserve producer rejection text in the same
+   order as Python's typed child decoding followed by record construction; this
+   does not normalize unrelated import, resource or semantic diagnostics. *)
+let namespace_identity_bounds raw =
+  let rec visit = function
+    | Json.Array values -> List.iter visit values
+    | Json.Object fields as raw ->
+        let schema = match List.assoc_opt "schema_version" fields with
+          | Some (Json.String value) -> value | _ -> "" in
+        let name = if String.starts_with ~prefix:"biocompiler." schema && String.ends_with ~suffix:".v0.1" schema
+          then String.sub schema 12 (String.length schema - 17) else "" in
+        let children = match name with
+          | "payload_template" -> ["sources";"steps";"output_members";"requirements";"complex_members";"amounts";"payload_structures"]
+          | "construction_root_source" -> ["molecule"]
+          | "circuit_molecule" -> ["space";"assembly";"features";"chemistry"]
+          | "assembly_origin" -> ["destination";"source_space";"source_path"]
+          | "molecule_feature" -> ["path"]
+          | "molecule_chemistry" -> ["terminal_tail"]
+          | "tail_declaration" -> ["path"]
+          | "construction_transform_step" -> ["operation";"ports"]
+          | "construction_value_selection" -> ["value";"path"]
+          | "construction_product_port" -> ["chemistry_transition";"feature_transition"]
+          | "chemistry_transition" -> ["output";"dispositions"]
+          | "feature_transition" -> ["dispositions";"added"]
+          | "feature_disposition" -> ["outputs"]
+          | "construction_slice" | "construction_orientation" | "construction_transcription"
+          | "construction_circularization" | "construction_base_editing" | "construction_translation" -> ["input"]
+          | "construction_concatenate" -> ["inputs"]
+          | "construction_rna_cleavage" | "construction_rna_splicing"
+          | "construction_protein_cleavage" | "construction_protein_splicing"
+          | "construction_ribosomal_skipping" -> ["input";"products"]
+          | "construction_processing_product" -> ["path"]
+          | "construction_translation_product" | "construction_translation_branch" -> ["input"]
+          | "construction_multi_orf_translation" -> ["products"]
+          | "construction_conditional_translation" -> ["branches"]
+          | "construction_output_member" -> ["value"]
+          | "construction_member_requirement" -> ["roles"]
+          | "construction_complex_member" -> ["constituents"]
+          | _ -> [] in
+        List.iter (fun key -> visit (field key raw)) children;
+        let text ?(maximum=4096) key label = match List.assoc_opt key fields with
+          | None | Some Json.Null -> ()
+          | Some value -> identity_bound ~maximum label (Json.string value) in
+        (match name with
+         | "payload_template" -> text "id" "Payload template identity"
+         | "construction_root_source" -> text "id" "Construction root identity"
+         | "circuit_molecule" -> text "id" "Molecule record identity"
+         | "molecule_coordinate_space" -> text "id" "Coordinate space identity"
+         | "molecule_coordinate_path" -> text "space_id" "Path coordinate-space identity"
+         | "construction_transform_step" -> text "id" "Construction step identity"
+         | "construction_product_port" -> text "id" "Construction product identity"; text "space_id" "Product coordinate-space identity"
+         | "construction_value_ref" -> text "id" "Construction value identity"
+         | "construction_output_member" -> text ~maximum:4080 "id" "Output member identity"; text "space_id" "Final output coordinate-space identity"
+         | "construction_member_requirement" -> text "id" "Required construction member identity"; text "member_id" "Required output member reference"
+         | "construction_role_declaration" -> text "id" "id"
+         | "construction_complex_member" -> text "id" "Complex member identity"
+         | "construction_complex_constituent" -> text "member_id" "Complex covalent member identity"
+         | "construction_amount_declaration" ->
+             List.iter (fun key -> text key key) ["id";"subject_id";"preparation_id"];
+             List.iter (fun value -> identity_bound "Amount role identity" (Json.string value)) (Json.array (field "role_instance_ids" raw))
+         | "construction_processing_product" -> text "port_id" "Processing product port identity"
+         | "construction_translation_product" -> text "port_id" "Translation product port identity"
+         | "construction_translation_branch" -> text "port_id" "Translation branch product port identity"
+         | "construction_peptide_product" -> text "port_id" "Peptide product port identity"
+         | "chemistry_disposition" -> text "source_id" "Chemistry source identity"
+         | "feature_disposition" -> text "source_id" "Feature source identity"
+         | "payload_structure_contract" -> text "member_id" "Required payload member identity"
+         | _ -> ())
+    | _ -> () in
+  visit raw
 let namespace_template template prefix =
   ignore (Molecular_record.text ~maximum:64 (str prefix));
   let frames = List.map (fun source -> Construction.Root_source.molecule source |> Molecule.space |> Molecule_coordinates.Space.id |> Molecule_coordinates.Space_id.to_string) (Payload_template.sources template)
@@ -45,7 +123,7 @@ let namespace_template template prefix =
           Json.Object emitted)
     | value -> value in
   let result = rename (Payload_template.to_json template) in
-  ignore (retain result); Payload_template.of_json result
+  ignore (retain result); namespace_identity_bounds result; Payload_template.of_json result
 let construction_request selected request =
   let budget = output_budget () in
   let templates = List.mapi (fun index refinement ->
@@ -61,7 +139,11 @@ let construction_request selected request =
           let result = namespace_template template (Printf.sprintf "a%03d_t%03d_" index number) in
           Bioc_checker.Work_budget.reserve_json budget (Payload_template.to_json result); result) (sorted_templates refinement)) selected |> List.concat in
   Diagnostic.require (List.length templates <= 256) "invalid_architecture_templates" "Invalid selected template inventory.";
-  Construction.Request.make ~id:(Architecture_request.id request ^ ".construction") ~circuit:(Architecture_request.circuit request)
+  let identity = Architecture_request.id request ^ ".construction" in
+  (* This is a producer rejection retained in the complete architecture build.
+     Preserve its public spelling at the exact construction-request boundary. *)
+  identity_bound ~maximum:4080 "Circuit construction identity" identity;
+  Construction.Request.make ~id:identity ~circuit:(Architecture_request.circuit request)
     ~sources:(List.concat_map Payload_template.sources templates) ~steps:(List.concat_map Payload_template.steps templates)
     ~output_members:(List.concat_map Payload_template.output_members templates) ~requirements:(List.concat_map Payload_template.requirements templates)
     ~complex_members:(List.concat_map Payload_template.complex_members templates) ~amounts:(List.concat_map Payload_template.amounts templates)
