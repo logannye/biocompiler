@@ -1,0 +1,21 @@
+{
+  "admission_policy": "biocompiler.human_admission_policy.v0.1",
+  "biological_function": "unestablished",
+  "candidate_fingerprint": "caff7e2de0c87994d51bd284db29b1ebec5b976178d3658b624e62e7a0ec0960",
+  "capability_version": "biocompiler.circuit_transform_capabilities.v0.1",
+  "checker_version": "biocompiler.circuit_construction_checker.v0.1",
+  "claim_scope": "Exact correspondence of supplied sources, declared software operations, derived coordinates, chemistry and annotations; no biological processing, circuit implementation, independently reviewed source fidelity or human therapeutic admission is established.",
+  "complete": false,
+  "construction_profile": "biocompiler.circuit_construction.v0.1",
+  "diagnostics": [
+    "fail:step:step:invalid_operation",
+    "unsupported:member:main_member:unavailable_value",
+    "unsupported:member:released_member:unavailable_value"
+  ],
+  "empirical_validation": "unknown",
+  "human_therapeutic_admission": "not_admitted",
+  "outcome": "fail",
+  "reconstructed_fingerprint": "caff7e2de0c87994d51bd284db29b1ebec5b976178d3658b624e62e7a0ec0960",
+  "request_fingerprint": "e5ccd6b98b7d7e1d6529ff7499cbb35b88e9744947e39e22b034392bd2b2bc18",
+  "schema_version": "biocompiler.circuit_construction_assessment.v0.1"
+}

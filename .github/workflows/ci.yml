@@ -923,6 +923,23 @@ jobs:
       - name: Independently check required payload regions against supplied authority
         if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
         run: core/_build/default/test/test_payload_structure_check.exe "$GITHUB_WORKSPACE/tests/conformance/payload-structure-check-v1.json" | tee generated/core/test_payload_structure_check.txt
+      - name: Check complete payload templates and architecture refinement authority
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: |
+          core/_build/default/test/test_architecture_domains.exe "$GITHUB_WORKSPACE/tests/conformance/payload-templates-v1.json" "$GITHUB_WORKSPACE/tests/conformance/architecture-domains-v1.json" | tee generated/core/test_architecture_domains.txt
+      - name: Independently check declared molecular chemistry and feature transitions
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: |
+          core/_build/default/test/test_transition_check.exe "$GITHUB_WORKSPACE/tests/conformance/transition-check-v1.json" | tee generated/core/test_transition_check.txt
+      - name: Independently reconstruct complete construction candidates and replay acceptance
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: |
+          core/_build/default/test/test_construction_check.exe "$GITHUB_WORKSPACE/tests/conformance/construction-check-v1.json" | tee generated/core/test_construction_check.txt
+      - name: Check historical source manifests and independently reconstruct source inventories
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: |
+          core/_build/default/test/test_source_manifest.exe "$GITHUB_WORKSPACE/tests/conformance/source-manifest-v1.json" | tee generated/core/test_source_manifest.txt
+          core/_build/default/test/test_source_check.exe "$GITHUB_WORKSPACE/tests/conformance/source-manifest-v1.json" | tee generated/core/test_source_check.txt
       - name: Check cross-language bytes, structural intent and independent lowering correspondence
         if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
         env:

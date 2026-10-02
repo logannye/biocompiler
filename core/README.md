@@ -6,7 +6,7 @@ correspondence. Internal libraries add per-role reference execution and fresh
 Intent-to-Behavior lowering. Validated domains include shared content pins, component contract algebra,
 molecular provenance and nominal chemistry. PR42 also validated complete
 component records, human source wrappers, molecular sets and supplied deployment
-windows. The current architecture/construction batch remains pending validation. The
+windows. PR43 architecture/construction declarations and required-region checking passed complete PR validation; the subsequent reconstruction/full-architecture batch remains pending validation. The
 public protocol does not yet implement compilation, behavioral execution,
 molecular verification, export acceptance or human-use admission. Capabilities
 are explicit; unimplemented operations return `unsupported` without fallback.
@@ -170,7 +170,7 @@ core/_build/default/test/test_molecule_set.exe "$GITHUB_WORKSPACE/tests/conforma
 core/_build/default/test/test_architecture_deployment.exe "$GITHUB_WORKSPACE/tests/conformance/architecture-deployment-v1.json"
 ```
 
-The next pending batch adds `Architecture_contract` (12 structural record types),
+The validated PR43 batch adds `Architecture_contract` (12 structural record types),
 `Molecular_transition` and `Molecular_recoding` (eight closed declarations and
 64 immutable codons), `Payload_structure`, `Construction` (30 schemas and 14
 operation variants) and `Construction_artifact` (four unchecked record types).
@@ -186,9 +186,9 @@ acceptance remain different responsibilities. This checker imports no producer
 and exposes no public protocol operation yet. Full construction reconstruction
 and architecture acceptance remain open.
 
-Frozen corpora retain 88 architecture positives/345 rejections/four literals; 153 transition and recoding positives/199 rejections/six literals; 14 payload-structure positives/44 rejections; 72 construction positives/245 rejections; 36 candidate-artifact positives/70 rejections/four literals; and 99 required-region checks, including 27 source-preserving mutations. All three original case B requests, candidates and region contracts remain represented. Native validation is pending.
+Frozen corpora retain 88 architecture positives/345 rejections/four literals; 153 transition and recoding positives/199 rejections/six literals; 14 payload-structure positives/44 rejections; 72 construction positives/245 rejections; 36 candidate-artifact positives/70 rejections/four literals; and 99 required-region checks, including 27 source-preserving mutations. All three original case B requests, candidates and region contracts remain represented. All 28 native suites and every required product gate passed in PR43, with 2,207 tests per Python version; [receipt](../protocol/migration-construction-domains-validation.json). Separate main run 36943390725 also passed every required gate.
 
-The next hosted gate has 28 configured native suites, including these six
+That hosted gate includes 28 native suites, including these six
 required corpus replays in addition to all prior gates:
 
 ```sh
@@ -272,3 +272,7 @@ without any native build.
 The case B architecture checker, coupled source execution, independent candidate
 runtime, construction reconstruction and exact export acceptance remain to be
 implemented before any production semantic authority can move to OCaml.
+
+The next batch adds checker-private construction reconstruction, fresh assessments/replay, complete architecture refinements/templates and source-manifest checking. Dune hides the reconstruction module; static guards reject producer imports and public interface leaks. Six new native suites bring the pending hosted gate to 34; production routing remains Python.
+
+The new source-manifest checker retains 34 historical records, 56 intended import rejections and 35 full source/manifest comparisons, including 17 candidate mutations. Native lowering discrepancies explicitly use `source_behavior:<native code>` under `biocompiler.ocaml.source_manifest_check.v0.1`; two corresponding Python-prose cases are retained separately. Other scoped diagnostic keys are unchanged. Transition checks preserve legacy projection limits and use the explicit native `biocompiler.transition_check.resources.v1` shared work budget; exhaustion yields no partial semantic report. Historical construction reports retain their policy/schema identity, while fresh native execution has a distinct implementation identity. These scopes remain pending hosted validation.
