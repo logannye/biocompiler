@@ -63,6 +63,7 @@ class WorkflowCliLineageTests(unittest.TestCase):
         self.assertEqual([row["path"] for row in receipt["source_changes"]], [
             "src/biocompiler/cli.py", "src/biocompiler/compiler/verification_workflow.py",
             "src/biocompiler/core_artifacts.py", "src/biocompiler/core_pipeline_callback_session.py",
+            "src/biocompiler/core_pipeline_manager.py",
             "src/biocompiler/core_pipeline_session.py", "src/biocompiler/core_synthetic_inspection.py",
             "src/biocompiler/core_synthetic_producer.py",
             "src/biocompiler/core_synthetic_producer_public.py", "src/biocompiler/core_workflow_authority.py",

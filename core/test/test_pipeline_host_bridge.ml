@@ -67,13 +67,17 @@ let ()=
     "next",obj["object",reference 2],obj["exhausted",Json.Bool true;"object",Json.Null];
     "set-attribute-equal",obj["objects",Json.Array[reference 3;reference 3];"name",str "requirement_id";
       "values",Json.Array[str "r1"]],Json.Bool true;
+    "source-link-set-equal",obj["objects",Json.Array[reference 3;reference 3];"expected",Json.Array[]],Json.Bool false;
     "lookup",obj["object",reference 3;"entries",Json.Array[Json.Array[str "r1";Json.int 7]]],reference 4;
     "json",obj["object",reference 4],Json.int 7] in
   let bridge=H.create ~budget:work ~invoke () in
   let value=H.of_reference bridge(reference 0) in
   let items=value.tuple work in
+  require (same (H.reference bridge (Option.get(H.tuple_origin bridge items))) (reference 1))
+    "Tuple sidecar lost its original host collection identity";
   (match items with [left;right]->require(left==right) "Tuple repeated reference lost identity"|_->failwith "Tuple inventory changed");
   require(value.attribute_set_equal work items ~attribute:"requirement_id" (M.Json_set[str "r1"])) "Attribute set changed";
+  require(not(value.source_link_set_equal work items [])) "Mixed source-link host comparison changed";
   require(same((List.hd items).lookup work ["r1",Json.int 7])(Json.int 7)) "Lookup changed";
   finished ();
   let token=ref "original" in

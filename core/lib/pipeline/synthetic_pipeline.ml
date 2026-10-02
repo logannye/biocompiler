@@ -123,7 +123,7 @@ let supported_behavior = List.sort String.compare [
   "signature";"secretion";"rule";"action.state_set";"action.report";"action.pulse";
   "action.eliminate";"action.engulf";"action.secrete";"action.present";"action.retain";
   "action.expand";"action.rest";"action.differentiate"]
-let run_internal manager_state ~budget ?manager_limits ?validator_equivalent ?until ?config request frames =
+let run_internal manager_state ~budget ?manager_limits ?validator_equivalent ?observer ?until ?config request frames =
   charge budget 1;
   let build_request=R.build_request request in
   if Build_request.artifact_scope build_request<>Build_request.Synthetic_realization then
@@ -175,7 +175,7 @@ let run_internal manager_state ~budget ?manager_limits ?validator_equivalent ?un
       "Synthetic response meets authored contracts on the exercised finite history." in
   let biology=obligation "molecular_behavior" "complete_payload" E.Empirical
       "A molecular implementation and biological applicability remain unestablished." in
-  let manager=M.create ~budget ?limits:manager_limits ?validator_equivalent ~target:(Q.target checked) ~dependencies
+  let manager=M.create ~budget ?limits:manager_limits ?validator_equivalent ?observer ~target:(Q.target checked) ~dependencies
       ~completion_profiles:[C.Completion_profile.make ~limits ~scope:"synthetic_realization"
         ~stage:C.Mechanism ~schema:A.Candidate.schema_version
         ~obligations:[C.Scoped_obligation.id preservation;C.Scoped_obligation.id response] ()] () in
@@ -210,6 +210,7 @@ let run_internal manager_state ~budget ?manager_limits ?validator_equivalent ?un
       ~evidence:(obj ["input_request",str (Build_request.fingerprint build_request);
         "behavior",field "behavior_fingerprint" (Bioc_checker.Lowering_check.to_json report)]) ()) in
   M.register manager lowering ~producer:lower ~validators:["preservation",verify];
+  M.allow_host_source_links manager verify;
   ignore (M.run manager ~pass_id:(C.Pass_contract.id lowering) ~input_id:"request" ~output_id:"behavior" ());
   let generation=C.Pass_contract.make ~limits ~id:"behavior_to_synthetic" ~version:A.generator_version
       ~input_stage:C.Behavior ~output_stage:C.Mechanism ~input_schema:(Behavior.schema_version Behavior.V0_1)
@@ -241,17 +242,18 @@ let run_internal manager_state ~budget ?manager_limits ?validator_equivalent ?un
     M.Decision (C.Check_decision.make ~limits:(codec work) ~outcome:(E.Check_result.outcome result)
       ~detail:(Json.string (field "claim_scope" raw)) ~evidence:raw ()) in
   M.register manager generation ~producer:generate ~validators:["finite_history",check];
+  M.allow_host_source_links manager check;
   let record=M.run manager ~pass_id:(C.Pass_contract.id generation) ~input_id:"behavior" ~output_id:"mechanism"
       ~configuration:(A.Config.to_json config) () in
   let result=M.result manager ~identity:"mechanism" ~scope:"synthetic_realization" in
   let candidate=imported budget A.Candidate.of_json (C.Stage_record.payload record) in
   {candidate_value=candidate;result_value=result;manager_value=manager;selection_value=selection}
-let attempt ~budget ?manager_limits ?validator_equivalent ?until ?config request frames =
+let attempt ~budget ?manager_limits ?validator_equivalent ?observer ?until ?config request frames =
   let manager_state=ref None in
-  try Completed (run_internal manager_state ~budget ?manager_limits ?validator_equivalent ?until ?config request frames) with
+  try Completed (run_internal manager_state ~budget ?manager_limits ?validator_equivalent ?observer ?until ?config request frames) with
   | (Diagnostic.Error _ | G.Unsupported _ | M.No_candidate_found _) as error ->
       Failed {error;manager= !manager_state}
-let run ~budget ?manager_limits ?validator_equivalent ?until ?config request frames =
-  match attempt ~budget ?manager_limits ?validator_equivalent ?until ?config request frames with
+let run ~budget ?manager_limits ?validator_equivalent ?observer ?until ?config request frames =
+  match attempt ~budget ?manager_limits ?validator_equivalent ?observer ?until ?config request frames with
   | Completed value -> value
   | Failed failure -> raise failure.error

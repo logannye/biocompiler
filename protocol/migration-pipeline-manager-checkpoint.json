@@ -1,0 +1,223 @@
+{
+  "schema_version": "biocompiler.pipeline_manager_implementation_checkpoint.v1",
+  "status": "additive_source_implemented_hosted_acceptance_and_full_compatibility_pending",
+  "base_revision": "40fad81c5124f540c56914816f4bf21c077ac059",
+  "files": {
+    ".github/workflows/ci.yml": {
+      "sha256": "f7f20b9d8bf99139b4153d7187373c6facb5629c20da45ae366dd0ad45e01142",
+      "bytes": 99707
+    },
+    "core/bin/core/main.ml": {
+      "sha256": "c2b74123b24c1c8fe476729b476a59a9f57daacf521379d4c80a6a0d79f5e924",
+      "bytes": 391
+    },
+    "core/lib/compiler/pass_manager.ml": {
+      "sha256": "29c02ed0944ea9526c2a1c092ab4c5e6a7297d25cf909e68347c6b92943ca7df",
+      "bytes": 48099
+    },
+    "core/lib/compiler/pass_manager.mli": {
+      "sha256": "3ccd3876e7a593b98269d569849acbcec864ae75f60de188360e4d4d55bb5168",
+      "bytes": 8649
+    },
+    "core/lib/pipeline/component_pipeline.ml": {
+      "sha256": "659271b27797fc4ec9b1a87dbe8e7378f443b752a74fe30c5e66828a8dc31c04",
+      "bytes": 13391
+    },
+    "core/lib/pipeline/component_pipeline.mli": {
+      "sha256": "17b814862bcfc2df0ae8af83e89fb564b7101a6c1cb7c521616062728ee4d809",
+      "bytes": 2248
+    },
+    "core/lib/pipeline/synthetic_pipeline.ml": {
+      "sha256": "2c4e48238ba2079252ba5c68a411116911b3f3079996bddc3d909f2e37ab8532",
+      "bytes": 17406
+    },
+    "core/lib/pipeline/synthetic_pipeline.mli": {
+      "sha256": "d910952dfa9f08fbe105453a752aecace8377e15cedc063ca1850a8b047df151",
+      "bytes": 2113
+    },
+    "core/lib/pipeline_service/callback_manager.ml": {
+      "sha256": "d8b491ac4e2f2a4937ee41041176af4e93486309c665933a246b2b8e82feac55",
+      "bytes": 37840
+    },
+    "core/lib/pipeline_service/callback_manager.mli": {
+      "sha256": "42dffb1f01de6ac6bc2af8743dfb81bf375dc33cb724a676dbc465b543516007",
+      "bytes": 375
+    },
+    "core/lib/pipeline_service/callback_manager_io.ml": {
+      "sha256": "16db62248afd732f4bc90a6deccdca0a3fd3b9e830121b4ee30dcdb85316ee6e",
+      "bytes": 664
+    },
+    "core/lib/pipeline_service/callback_manager_io.mli": {
+      "sha256": "24e3f42ee713622f31648d9d5042e761532a2a668e52773b7cc1244d89b55332",
+      "bytes": 175
+    },
+    "core/lib/pipeline_service/host_bridge.ml": {
+      "sha256": "1541144f828faa878626617871817f429b4b283d2959850826f908114ebb9e48",
+      "bytes": 9888
+    },
+    "core/lib/pipeline_service/host_bridge.mli": {
+      "sha256": "bbcc30b68905e62986924da91ea071c69d625cc3756908dd1a8effdbcfdadb4f",
+      "bytes": 1107
+    },
+    "core/test/dune": {
+      "sha256": "29e586a278578123bdaf2f48075251614042de4cbc059116b24591c926b2257b",
+      "bytes": 15833
+    },
+    "core/test/test_deferred_pass_manager.ml": {
+      "sha256": "5facb26381effef903588d8fec404704bee1ea712fa5e7fb6585e61d0fb228be",
+      "bytes": 19875
+    },
+    "core/test/test_pipeline_callback_manager.ml": {
+      "sha256": "c5cae7802e66770ee10ea3e2cc748af80d9c494146091aa5de7ced90270d3bbc",
+      "bytes": 16777
+    },
+    "core/test/test_pipeline_host_bridge.ml": {
+      "sha256": "0e6ffcae812dcfdab0b03969c06362ffefefb916f049aa225d7046a68158d5d5",
+      "bytes": 8581
+    },
+    "docs/biological-correctness-next-phase-handoff.md": {
+      "sha256": "f9627bcbbb8f96f4eb5def95e0c84542191182096b155eed89dafc26aef6006a",
+      "bytes": 32339
+    },
+    "docs/language-migration-roadmap.md": {
+      "sha256": "b50bdbe4d0f77902e0de820477053e4870cef96b31d400d4ba4cf1c50d59c130",
+      "bytes": 129280
+    },
+    "docs/migration-coverage.md": {
+      "sha256": "83f2c1ca59ad5b91cdbd75da27337de54038013d20602653c849b083ad03850e",
+      "bytes": 7706
+    },
+    "docs/migration-pipeline-manager.md": {
+      "sha256": "cff43524c1024f3af3b7368a14a3081f878b69cc80f965f4ca0b88df63d794fa",
+      "bytes": 5364
+    },
+    "protocol/migration-inventory.json": {
+      "sha256": "1ee4cf7b0a3a558cdc2055be1640107a55cfae61b8a083011ea698befba8f58c",
+      "bytes": 1453901
+    },
+    "protocol/pipeline-callback-manager-v1.json": {
+      "sha256": "75741e98e3158d6d51e61db22076d9b163fee3424bf530a817df3bc42b641d38",
+      "bytes": 7465
+    },
+    "src/biocompiler/core_pipeline_manager.py": {
+      "sha256": "0add1b9594c4632b90e7333eabf89af3f174a3faabcdaec255430380d369ff73",
+      "bytes": 42812
+    },
+    "tests/conformance/pipeline-identity-semantics-v1.json": {
+      "sha256": "7088dd2f6ad6db60f30e2541f770b73691ff0b0d98950839ef7c4c4ed1d50896",
+      "bytes": 84571
+    },
+    "tests/test_ci_validation.py": {
+      "sha256": "d665cc0c6e8c66188ff0228a1267270b9ae447fdae24f0c7dcad4559a401912d",
+      "bytes": 21820
+    },
+    "tests/test_core_pipeline_manager.py": {
+      "sha256": "fd8c546ae5c66f7e9b0dfcff8f4189d49f4ebee733276423a2bd1cdb7fa261d7",
+      "bytes": 25228
+    },
+    "tests/test_pipeline_identity_semantics.py": {
+      "sha256": "73b64ecf6cd62ee7455f2b62b4ad156db49788ca8dc5ee001d555783b2646624",
+      "bytes": 7089
+    },
+    "tests/test_pipeline_manager_campaign.py": {
+      "sha256": "582d261ca0313a707783a8646578f7d35dc26e2dc75ff1349bfae81adf1fc5ae",
+      "bytes": 18879
+    },
+    "tests/test_workflow_cli_lineage.py": {
+      "sha256": "c679a3cde95800aff60f645a95fec47576526f1f364d61781283898b644b14d9",
+      "bytes": 14275
+    },
+    "tools/capture_pipeline_identity_semantics.py": {
+      "sha256": "3fb1cb51848aa14014f459717a401aeb09bf38085d59c8caf9e4809ea8debcf2",
+      "bytes": 17980
+    },
+    "tools/check_core_boundaries.py": {
+      "sha256": "2265ed144ad4fd748f50cdb7ac8c91544930982a7864898bdd35211d7be37778",
+      "bytes": 34704
+    },
+    "tools/check_pipeline_manager_install.py": {
+      "sha256": "f826a521cbe77ec9d56e7d0f2d861d45399986c624fd33e0ae794dea7d15fad7",
+      "bytes": 42626
+    },
+    "tools/check_realization_workflow_corpus.py": {
+      "sha256": "b7d0e8409e3570302b67155c11c679dc79583581bcf14ad55c4f1b1b665d22c6",
+      "bytes": 7624
+    },
+    "tools/migration_inventory.py": {
+      "sha256": "49ec264bf8aa58ce417c0f084d32b469d0e8c5df5fb33b69eafa2a601e1c66d8",
+      "bytes": 43120
+    },
+    "tools/mypy-core.ini": {
+      "sha256": "023f071a2c350babd8be2b8c0647b69d9ec1c82be0ddad5dc1dfccac317cf954",
+      "bytes": 1159
+    }
+  },
+  "local_validation": {
+    "platform": "Darwin-25.2.0-arm64-arm-64bit-Mach-O",
+    "python": "3.14.6",
+    "tests": [
+      {
+        "scope": "manager_adapter_campaign_identity_broker_callback_transport_fixed_transport_inventory",
+        "tests": 124,
+        "status": "pass",
+        "seconds": 26.414
+      },
+      {
+        "scope": "original_workflow_instrumentation_and_cli_capture_lineage",
+        "tests": 26,
+        "status": "pass",
+        "seconds": 33.803
+      },
+      {
+        "scope": "native_boundaries_and_ci_wiring",
+        "tests": 37,
+        "status": "pass",
+        "seconds": 15.636
+      }
+    ],
+    "strict_mypy_modules": 20,
+    "inventory_entries": 3195,
+    "unit_discovery": {
+      "tests": 2922,
+      "classes": 284,
+      "execution": false
+    },
+    "native_compilation_or_execution": false
+  },
+  "identity_oracle": {
+    "cases": 5,
+    "events": 34,
+    "records": 10,
+    "sha256": "7088dd2f6ad6db60f30e2541f770b73691ff0b0d98950839ef7c4c4ed1d50896"
+  },
+  "hosted_required": {
+    "jobs": 36,
+    "native_suites": 102,
+    "platforms": [
+      "linux-x86_64",
+      "macos-arm64"
+    ],
+    "python_versions": [
+      "3.11",
+      "3.14"
+    ],
+    "new_native_suite": "test_pipeline_callback_manager",
+    "installed_campaign": "tools/check_pipeline_manager_install.py",
+    "complete_original_gates_preserved": true,
+    "merge_requires": "exact-head success, complete receipt/artifact/binary reconstruction and source/tested/prospective/integrated tree equality"
+  },
+  "pending": [
+    "hosted compilation and installed five-case identity replay on four runtimes",
+    "all 34 validator comparison cases and 47 deferred-access cases through installed native service",
+    "all original 476 contexts and native workflow/provider families",
+    "fixed registration interception and all 287 callback-dependent observations",
+    "arbitrary authoring/scalar subclass behavior and obligation-list mutation timing",
+    "fixed producer domain model return reconstruction and ordered fresh NoCandidate snapshots",
+    "installed public SDK/CLI/Studio routing, distribution and default cutover"
+  ],
+  "future_handoff": {
+    "path": "docs/biological-correctness-next-phase-handoff.md",
+    "unchecked_tasks": 31,
+    "executed": false
+  }
+}

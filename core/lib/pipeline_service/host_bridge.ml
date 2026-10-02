@@ -4,7 +4,8 @@ module W = Bioc_checker.Work_budget
 module C = Bioc_domain.Pipeline_contract
 type t = {budget:W.t;invoke:action:string -> arguments:Json.t -> Json.t;
   max_handles:int;max_actions:int;max_retained_bytes:int;
-  mutable values:(string * M.host_value) list;mutable handles:int;mutable actions:int;
+  mutable values:(string * M.host_value) list;mutable tuples:(M.host_value list * M.host_value) list;
+  mutable handles:int;mutable tuple_count:int;mutable actions:int;
   mutable retained_bytes:int;mutable closed:bool}
 let obj fields=Json.Object fields
 let str value=Json.String value
@@ -26,8 +27,8 @@ let create ~budget ?(max_handles=100_000) ?(max_actions=1_000_000)
     ?(max_retained_bytes=134_217_728) ~invoke ()=
   require (max_handles>0 && max_handles<=100_000 && max_actions>0 && max_actions<=1_000_000 &&
     max_retained_bytes>0 && max_retained_bytes<=134_217_728) "Invalid host bridge limits.";
-  {budget;invoke;max_handles;max_actions;max_retained_bytes;values=[];handles=0;actions=0;retained_bytes=0;closed=false}
-let close (state:t)=state.closed<-true;state.values<-[]
+  {budget;invoke;max_handles;max_actions;max_retained_bytes;values=[];tuples=[];handles=0;tuple_count=0;actions=0;retained_bytes=0;closed=false}
+let close (state:t)=state.closed<-true;state.values<-[];state.tuples<-[]
 let execute (state:t) work action fields=
   ensure state work;
   guard state (fun ()->require (state.actions<state.max_actions) "Host bridge action limit exhausted.");
@@ -101,6 +102,10 @@ let rec of_reference (state:t) raw=
           | _->guard state (fun ()->Diagnostic.fail "pipeline_host_bridge_limit" "Host attribute-set comparison requires a literal set.") in
         boolean state(execute state work "set-attribute-equal"
           ["objects",Json.Array(map_bounded state (reference state) values);"name",str attribute;"values",Json.Array members]));
+      source_link_set_equal=(fun work values expected->ensure state work;
+        boolean state(execute state work "source-link-set-equal"
+          ["objects",Json.Array(map_bounded state (reference state) values);
+           "expected",Json.Array(map_bounded state C.Source_link.to_json expected)]));
       lookup=(fun work entries->ensure state work;
         let entries=map_bounded state (fun (key,value)->Json.Array[str key;value]) entries in
         to_json work (boxed work "lookup" ["entries",Json.Array entries]));
@@ -110,12 +115,16 @@ let rec of_reference (state:t) raw=
         let method_value=boxed work "attr" ["name",str "get"] in
         let key=literal state (M.Json_value(str name)) in method_value.call work [key]);
       tuple=(fun work->
-        let tuple=action work "tuple" [] in ignore(of_reference state tuple);
+        let tuple=action work "tuple" [] in let tuple_value=of_reference state tuple in
         let cursor=iterator work tuple in
         let rec collect count acc=match cursor.next work with
           | None->List.rev acc
           | Some value->guard state (fun ()->require (count<state.max_handles) "Host tuple item limit exhausted.");
-            collect (count+1) (value::acc) in collect 0 []);
+            collect (count+1) (value::acc) in
+        let values=collect 0 [] in
+        measure state (Json.Array(map_bounded state (reference state) values));
+        guard state (fun ()->require (state.tuple_count<state.max_actions) "Host tuple retention limit exhausted.");
+        state.tuple_count<-state.tuple_count+1;state.tuples<-(values,tuple_value)::state.tuples;values);
       iter=(fun work->iterator work raw);
       call=(fun work values->ensure state work;of_reference state(execute state work "call"
         ["callable",raw;"args",Json.Array(map_bounded state (reference state) values);"kwargs",obj []]));
@@ -134,3 +143,9 @@ and literal (state:t) constant=
 let counts (state:t)=ensure state state.budget;
   obj["handles",Json.int state.handles;"actions",Json.int state.actions;
     "retained_bytes",Json.int state.retained_bytes]
+
+let tuple_origin (state:t) values=
+  ensure state state.budget;
+  let rec find=function []->None | (items,tuple)::tail->
+    W.charge state.budget 1;if items==values then Some tuple else find tail in
+  guard state (fun ()->find state.tuples)
