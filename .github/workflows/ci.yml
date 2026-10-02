@@ -822,8 +822,9 @@ jobs:
 
   ocaml-core:
     runs-on: ${{ matrix.runner }}
-    # Includes both installed Python routing campaigns and every native corpus.
-    timeout-minutes: 90
+    # Complete installed campaigns and every corpus exceeded 90 minutes on Linux.
+    # Preserve every check; this allowance is not a measured runtime target.
+    timeout-minutes: 150
     strategy:
       fail-fast: false
       matrix:
