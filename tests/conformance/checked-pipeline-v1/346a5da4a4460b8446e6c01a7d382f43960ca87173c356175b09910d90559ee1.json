@@ -1,0 +1,1 @@
+{"$type":"dataclass","class":"biocompiler.compiler.pipeline.ScopedObligation","fields":{"description":"Synthetic response meets authored contracts on the exercised finite history.","evidence_kind":{"$type":"enum","class":"biocompiler.verification.evidence.EvidenceKind","value":"model_conditional"},"id":"finite_history_response","scope":"synthetic_realization"}}

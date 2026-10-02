@@ -27,6 +27,7 @@ let charge budget amount =
   List.iter (fun scope -> scope.remaining <- scope.remaining - amount) budget
 let is_exhaustion budget diagnostic = List.exists (fun scope ->
     match scope.exhaustion with Some previous -> previous == diagnostic | None -> false) budget
+let exhausted budget = List.exists (fun scope -> Option.is_some scope.exhaustion) budget
 let remaining budget = List.fold_left (fun available scope -> min available scope.remaining) max_int budget
 type output = { bytes : t; nodes : t; error_code : string; maximum_bytes : int }
 let create_output ~profile ~error_code ~max_bytes ~max_nodes () =

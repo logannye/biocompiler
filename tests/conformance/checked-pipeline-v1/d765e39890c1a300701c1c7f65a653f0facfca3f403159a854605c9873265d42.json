@@ -1,0 +1,1 @@
+{"$type":"mapping","class":"builtins.dict","items":[["id","human_external_shutdown"],["scope","therapeutic_implementation"],["evidence_kind","unresolved"],["description","The retained shutdown request, latching and deadline have no implemented actuator or priority override."]]}

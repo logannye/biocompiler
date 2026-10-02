@@ -1,0 +1,43 @@
+{
+  "schema_version": "biocompiler.workflow_authority_limit_correction.v1",
+  "status": "source_and_python_controls_complete_hosted_revalidation_pending",
+  "observed_run": "37032666946",
+  "observed_source": "076893a723d7e3d51b74f96984af3042b01895d0",
+  "observed_failure": "resources/max_report_nodes/validate expected empty diagnostic path; actual path null on all four runtime variants",
+  "cause": "The frozen authority request has ten root fields. With max_report_nodes=1 the unpathed Codec.length guard fails before inspect reaches its path-aware node/accounting checks.",
+  "correction": "Only max_report_nodes expected diagnostic path changes to null; max_report_bytes keeps the empty-string path. Native code and original authority/corpus bytes remain unchanged.",
+  "local_validation": {
+    "tests.test_native_workflow_authority": {
+      "python_versions": [
+        "3.11.15",
+        "3.14.6"
+      ],
+      "tests_per_version": 9,
+      "result": "pass",
+      "native_executed": false
+    }
+  },
+  "files": {
+    "tools/check_native_workflow_authority.py": {
+      "sha256": "001a98e030b15e1cd0dfb17149e34549e38f5a9d92b6a023c62dfb5aebb3b194",
+      "bytes": 27690
+    },
+    "tests/test_native_workflow_authority.py": {
+      "sha256": "8ba6024cab4ca8f98606423618ac19cb6c6ba8a35497093c576ed4c14bcaf9bb",
+      "bytes": 25165
+    },
+    "core/lib/service/verification_workflow_authority.ml": {
+      "sha256": "08c8165b80840d6629de9de3adde0c09a5e171e49dca1fa29a6acff3efa8df68",
+      "bytes": 6254
+    },
+    "core/lib/realization_checker/verification_workflow_budget.ml": {
+      "sha256": "220ce2b65becea085bf2c22ace4d3c846e80f2ed2e142c187dc52af71fdac018",
+      "bytes": 13425
+    },
+    "core/lib/domain/verification_exploration.ml": {
+      "sha256": "9188ec9ef6b875481f9deb7c042235eaa4f4c1b3a263db6799878ff6270ee714",
+      "bytes": 54968
+    }
+  },
+  "acceptance": "Requires fresh complete exact-revision hosted gates; the failed run is not acceptance evidence."
+}

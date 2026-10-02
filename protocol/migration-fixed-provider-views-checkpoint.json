@@ -1,0 +1,206 @@
+{
+  "schema_version": "biocompiler.fixed_provider_views_implementation_checkpoint.v1",
+  "status": "source_and_python_controls_complete_hosted_native_replay_pending",
+  "prior_source_revision": "6a482db5ca6038126a859b6eea87186500afbd89",
+  "combined_validation_base": "65f38969673337de3b6378a8486c26c7f6f72c78",
+  "files": {
+    ".github/workflows/ci.yml": {
+      "sha256": "f43d346956643189ce9501a56c749624b71f42247a627359c580b3de18b9476e",
+      "bytes": 100886
+    },
+    "core/lib/compiler/lowering.ml": {
+      "sha256": "077891c1f57ed5ff55c0ff83e85cff62b59dc19dafb63fa6dd1f8625936bb15b",
+      "bytes": 19796
+    },
+    "core/lib/pipeline/component_pipeline.ml": {
+      "sha256": "b8a97a1eac52d6ee0bff23e6c3d99a09b9dbdda6ae357680f8be8fe50d0c3fa6",
+      "bytes": 13879
+    },
+    "core/lib/pipeline/component_pipeline.mli": {
+      "sha256": "911d164b448b10ac7812a729ca64c122fc0e30a492996877dd9e5791d27a880e",
+      "bytes": 2370
+    },
+    "core/lib/pipeline/synthetic_pipeline.ml": {
+      "sha256": "6d36baaaa8dfd5c1726ea304d7038194dbec3ffc6bbefe33107be60f888da4b7",
+      "bytes": 18554
+    },
+    "core/lib/pipeline/synthetic_pipeline.mli": {
+      "sha256": "b3f5800d10a9b37260e6f80319b4c31e8687e8d8db062ccc207e81aa09f83160",
+      "bytes": 3411
+    },
+    "core/lib/pipeline_service/callback_manager.ml": {
+      "sha256": "ec5b1949a2e63d93c37d080dc05d860134a28175774222b2039dd45873d7beee",
+      "bytes": 52381
+    },
+    "core/lib/pipeline_service/fixed_provider_views.ml": {
+      "sha256": "e44254a0009660895806937569b72dcd6ebb4b3510facd9ba249ff55090bf510",
+      "bytes": 16789
+    },
+    "core/lib/pipeline_service/fixed_provider_views.mli": {
+      "sha256": "cdb557baf629cacf60f119de2ae070aa37d54e73d69f6a51efbb13b6e01dbf0d",
+      "bytes": 710
+    },
+    "core/test/dune": {
+      "sha256": "ecb3b987b25fe7229b6321a9a6ce795397c21ac584077d258c1900dcda877044",
+      "bytes": 15898
+    },
+    "core/test/test_fixed_pipeline_corpus.ml": {
+      "sha256": "361f5cd7f76e64b8178407052db8d4cceb7507a991e9b92509544380cd02e58e",
+      "bytes": 28417
+    },
+    "core/test/test_pipeline_callback_manager.ml": {
+      "sha256": "39fced714f8111ee9a15b10194e5122ff8f3105a285b2e0a773dbb06705b1a1d",
+      "bytes": 34704
+    },
+    "docs/biological-correctness-next-phase-handoff.md": {
+      "sha256": "3a22f6231e24f080925c443ee5147ae11c075e287bef58f5f9eb48cb299b0d10",
+      "bytes": 32956
+    },
+    "docs/language-migration-roadmap.md": {
+      "sha256": "b4db7b7107b2640a13a2181220a9856486609f872bc763b867330061a4e2372c",
+      "bytes": 138531
+    },
+    "docs/migration-coverage.md": {
+      "sha256": "78de484d4b6ba7e7b808154725239915de72921b7d77f9daf797f30d995a5176",
+      "bytes": 7706
+    },
+    "docs/migration-fixed-provider-views.md": {
+      "sha256": "d1abce1645b71bb3c96624903e2ea89e29b29e2f83e2b94657ab93c39c67f9bd",
+      "bytes": 4548
+    },
+    "protocol/migration-authority-limit-correction.json": {
+      "sha256": "43debf10ef406d1caa5c66d1fa7e1816064c935542543b7f968518254bbac4fe",
+      "bytes": 1988
+    },
+    "protocol/migration-inventory.json": {
+      "sha256": "b0ec1ce4c8c1cdd40e69634c55be12bbc5d8fd2e7b7f518662f5ce8afd5ce109",
+      "bytes": 1480809
+    },
+    "protocol/pipeline-callback-manager-v1.json": {
+      "sha256": "6bb0909891682ad422b9777fc84aa52cb20025cef0f5f07e74b6ac94c4414696",
+      "bytes": 11327
+    },
+    "src/biocompiler/core_pipeline_manager.py": {
+      "sha256": "741c837ebd87b33fcf0996f2edfb83e287868672fd678731954c6c8e12311aff",
+      "bytes": 59769
+    },
+    "src/biocompiler/core_pipeline_provider_views.py": {
+      "sha256": "bd4c9bf0ae33bb3a4b7b72813ec04e7158dfca38ae57952da3eb47b29f99adf8",
+      "bytes": 47956
+    },
+    "tests/conformance/pipeline-fixed-provider-semantics-v1.json": {
+      "sha256": "1f25d16d8fa9688ea34b4937f1d4a2c10fdf44d862daf8990168247758a019e7",
+      "bytes": 3714983
+    },
+    "tests/test_ci_validation.py": {
+      "sha256": "088d91417f6959f85a4a7c434fa111f3fd13ac25230a988834fee5306138746a",
+      "bytes": 23342
+    },
+    "tests/test_core_pipeline_manager.py": {
+      "sha256": "440a646340c44d352df7fb72f0c1af3ed9c27ed00f2046bbd923d8e04e7f3a47",
+      "bytes": 46530
+    },
+    "tests/test_core_pipeline_provider_views.py": {
+      "sha256": "3e9d39925c7dd5edc5aea2d2dae7f8bf700d3e716c213e83f333b5166e9b9a77",
+      "bytes": 18138
+    },
+    "tests/test_native_workflow_authority.py": {
+      "sha256": "8ba6024cab4ca8f98606423618ac19cb6c6ba8a35497093c576ed4c14bcaf9bb",
+      "bytes": 25165
+    },
+    "tests/test_pipeline_fixed_provider_campaign.py": {
+      "sha256": "d8252f4de99869921c659742895959b51ec467192d792e615e949b2fd81e1b09",
+      "bytes": 36444
+    },
+    "tests/test_pipeline_fixed_provider_semantics.py": {
+      "sha256": "7caec6b92bf966661a73bf64482682f73fe546fb78b5149cc1eb21b50a45e76b",
+      "bytes": 11065
+    },
+    "tests/test_pipeline_manager_campaign.py": {
+      "sha256": "cd94403a64f5692cf01e4b58ca26abc491f43534b1dd47a677de3a31d8c66aa7",
+      "bytes": 80658
+    },
+    "tools/capture_pipeline_fixed_provider_semantics.py": {
+      "sha256": "c260107754b8fec20b2089c3f863c89d7c5099d1e6b245c8f2c2c43111d4066b",
+      "bytes": 15023
+    },
+    "tools/check_core_boundaries.py": {
+      "sha256": "4c94d20fca34fcbdb6cb7a915be2cf25e3c6014268befa51a6e543486429b405",
+      "bytes": 34799
+    },
+    "tools/check_native_workflow_authority.py": {
+      "sha256": "001a98e030b15e1cd0dfb17149e34549e38f5a9d92b6a023c62dfb5aebb3b194",
+      "bytes": 27690
+    },
+    "tools/check_pipeline_fixed_provider_install.py": {
+      "sha256": "1aa4c4be36775d7bc143c18b29f90dc62ed66c827368cfd12f1a8e6e33710e5f",
+      "bytes": 50309
+    },
+    "tools/check_pipeline_manager_install.py": {
+      "sha256": "1f6edb0415688069dc03c03bb93460f4eb5b7192c418305e84371e0bf1a6c32f",
+      "bytes": 160659
+    },
+    "tools/check_realization_workflow_corpus.py": {
+      "sha256": "9907fcef8015903239101abef1dbdefefe79eff602ccb5287fa652f3047c04c8",
+      "bytes": 7747
+    },
+    "tools/migration_inventory.py": {
+      "sha256": "e2600a791d84565385b7c38ea32b7eeeead411a23fc356fd30572d4af0ba187b",
+      "bytes": 43293
+    },
+    "tools/mypy-core.ini": {
+      "sha256": "d34c022d709d2ffde04f89d04704d900c5ebc5385f159ad8a5f0c959942200d6",
+      "bytes": 1208
+    }
+  },
+  "scope": {
+    "actual_closure_roles": 6,
+    "explicit_alias_kinds": 8,
+    "typed_structural_class_universe": 37,
+    "original_cases": 3,
+    "original_provider_contexts": 9,
+    "original_returns": 18,
+    "original_alias_groups": [
+      107,
+      107,
+      306
+    ]
+  },
+  "local_validation": {
+    "python_versions": [
+      "3.11.15",
+      "3.14.6"
+    ],
+    "manager_adapter_provider_tests_per_version": 77,
+    "original_witness_tests_per_version": 12,
+    "fixed_campaign_tests_per_version": 11,
+    "final_changed_path_controls_per_version": 2,
+    "authority_correction_tests_per_version": 9,
+    "strict_mypy_modules": 21,
+    "native_execution": false,
+    "independent_repaired_evidence_review": "all_three_reported_mutants_rejected_after_valid_framing",
+    "boundary_CI_inventory_tests": 51,
+    "workflow_lineage_tests": 14,
+    "inventory_entries": 3243
+  },
+  "preserved_original_gates": {
+    "identity_cases": 5,
+    "comparison_cases": 34,
+    "deferred_cases": 47,
+    "full_contexts": 476,
+    "outstanding_fixed_observations": 287,
+    "native_suites": 102,
+    "hosted_jobs": 36
+  },
+  "required_remaining": [
+    "complete_exact_revision_hosted_native_and_installed_validation",
+    "all_original_manager_and_fixed_continuation_replay",
+    "fixed_registration_interception_and_public_build_views",
+    "remaining_supported_workflow_families",
+    "existing_SDK_CLI_Studio_and_canonical_package_export_routing",
+    "prebuilt_distributions_and_fresh_installs",
+    "validated_profile_cutover_and_Python_semantic_retirement",
+    "complete_integrated_release_gates"
+  ],
+  "session_stop": "After LM-CUTOFF-1 through LM-CUTOFF-4 are fully verified, pause for user decision. Conversational authoring and expanded Studio are deferred."
+}

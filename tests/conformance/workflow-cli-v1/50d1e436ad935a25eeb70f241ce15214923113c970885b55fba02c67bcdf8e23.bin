@@ -1,0 +1,26 @@
+{
+  "record_fingerprint": "17f3b23ed36d68856407c84c3672879d4579f365288d6055aad8af8e5e90124c",
+  "request_fingerprint": "a761add44647ba0d5415a1622293cfec43cf70b57cccb6d45294d20515b48d0a",
+  "operation": "reduce",
+  "mode": "model",
+  "intended_use": "software_test",
+  "human_therapeutic_admission": "not_admitted",
+  "claim_scope": "Historical finite-history software-model verification record; fresh replay requires independent complete operation authority. No universal, biological or human therapeutic claim.",
+  "outcome": "fail",
+  "one_minimal": false,
+  "evaluations": 1,
+  "original_frames": 5,
+  "reduced_frames": 5,
+  "selected_failure": {
+    "schema_version": "biocompiler.failure_signature.v0.1",
+    "kind": "response",
+    "requirement_id": "memory_readout",
+    "code": null,
+    "rule_id": "n000023",
+    "specification_id": "n000020",
+    "contact_id": null,
+    "state": "inactive",
+    "node_id": null
+  },
+  "output": "/tmp/biocompiler-workflow-cli-v1/cases/nonminimal-run/output.json"
+}

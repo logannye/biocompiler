@@ -38,6 +38,10 @@ class CoreBoundaryTests(unittest.TestCase):
         self.assertEqual(receipt["roles"]["bioc_compiler"], "compiler")
         self.assertNotIn("bioc_compiler", dependencies)
         self.assertNotIn("bioc_producer_service", dependencies)
+        self.assertNotIn("bioc_pipeline_service", dependencies)
+        self.assertEqual(receipt["roles"]["bioc_pipeline_service"], "producer")
+        self.assertIn("bioc_pipeline_service", receipt["transitive_dependencies"]["executable:biocompiler-core"])
+        self.assertIn("bioc_pipeline", receipt["transitive_dependencies"]["bioc_pipeline_service"])
         self.assertEqual(receipt["roles"]["bioc_producer_service"], "producer")
         self.assertIn("bioc_compiler", receipt["transitive_dependencies"]["executable:biocompiler-core"])
         self.assertIn("bioc_checker", receipt["transitive_dependencies"]["bioc_compiler"])
@@ -59,6 +63,12 @@ class CoreBoundaryTests(unittest.TestCase):
         self.assertNotIn("bioc_synthetic_producer", dependencies)
         self.assertIn("bioc_realization_checker", receipt["transitive_dependencies"]["bioc_synthetic_producer"])
         self.assertNotIn("bioc_synthetic_producer", receipt["transitive_dependencies"]["bioc_realization_checker"])
+        self.assertEqual(receipt["roles"]["bioc_pipeline"], "compiler")
+        self.assertNotIn("bioc_pipeline", dependencies)
+        self.assertNotIn("bioc_pipeline", receipt["transitive_dependencies"]["bioc_compiler"])
+        self.assertIn("bioc_compiler", receipt["transitive_dependencies"]["bioc_pipeline"])
+        self.assertIn("bioc_synthetic_producer", receipt["transitive_dependencies"]["bioc_pipeline"])
+        self.assertIn("bioc_realization_checker", receipt["transitive_dependencies"]["bioc_pipeline"])
         self.assertEqual(receipt["shared_trusted_base"], ["bioc_wire", "bioc_domain"])
         self.assertIn("core/lib/checker/intent_check.ml", receipt["source_sha256"])
         self.assertEqual(receipt["native_build_and_semantic_independence"], "separate_hosted_validation_required")
@@ -84,6 +94,22 @@ class CoreBoundaryTests(unittest.TestCase):
         root = self.copy_core()
         (root / "core/lib/service/unreviewed.c").write_text("int unexpected;\n")
         with self.assertRaisesRegex(boundaries.BoundaryError, "source inventory"):
+            boundaries.check_boundaries(root)
+
+    def test_descriptor_test_conversion_is_exact_and_does_not_grant_production_access(self):
+        declaration = boundaries.ARTIFACT_TEST_EXTERNAL
+        for replacement in (declaration.replace("%identity", "unreviewed_symbol"),
+                            declaration.replace("raw_fd_number", "other_number"),
+                            declaration + '\nexternal another : unit -> int = "unreviewed"'):
+            root = self.copy_core()
+            self.change(root, "test/test_artifact_io.ml", declaration, replacement)
+            with self.subTest(replacement=replacement), self.assertRaisesRegex(
+                    boundaries.BoundaryError, "Unreviewed.*external"):
+                boundaries.check_boundaries(root)
+        root = self.copy_core()
+        source = root / "core/lib/checker/intent_check.ml"
+        source.write_text(source.read_text() + "\n" + declaration + "\n")
+        with self.assertRaisesRegex(boundaries.BoundaryError, "Unreviewed.*external"):
             boundaries.check_boundaries(root)
 
     def test_transitive_producer_dependency_fails_even_through_neutral_module_names(self):

@@ -1,0 +1,1 @@
+{"$type":"dataclass","class":"biocompiler.compiler.pipeline.CheckDecision","fields":{"detail":"Unestablished selection.","evidence":{"$type":"mapping","class":"builtins.mappingproxy","items":[]},"outcome":{"$type":"enum","class":"biocompiler.verification.evidence.CheckOutcome","value":"fail"}}}

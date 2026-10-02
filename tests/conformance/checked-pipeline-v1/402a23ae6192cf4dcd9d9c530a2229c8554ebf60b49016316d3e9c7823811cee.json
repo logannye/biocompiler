@@ -1,0 +1,1 @@
+{"$type":"mapping","class":"builtins.dict","items":[["id","human_response_contract"],["scope","therapeutic_implementation"],["evidence_kind","unresolved"],["description","All human active/inactive ranges, initialization, activation/recovery deadlines, persistence and horizon remain required."]]}

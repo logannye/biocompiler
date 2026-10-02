@@ -1,0 +1,161 @@
+{
+  "record_fingerprint": "db68cc8fb08d3116c032cb679fea607be7cf1ddfe27e3b03157b0d02071722b9",
+  "request_fingerprint": "976c0f225066c09e95ab93d589953897d72ad062227a430fcad8aebeeb9e6013",
+  "operation": "explore",
+  "mode": "candidate",
+  "intended_use": "software_test",
+  "human_therapeutic_admission": "not_admitted",
+  "claim_scope": "Historical finite-history software-model verification record; fresh replay requires independent complete operation authority. No universal, biological or human therapeutic claim.",
+  "complete": false,
+  "all_passed": false,
+  "evaluated_histories": 2,
+  "possible_histories": 100,
+  "outcome_counts": {
+    "pass": 2,
+    "fail": 0,
+    "unknown": 0,
+    "unsupported": 0
+  },
+  "bounds": {
+    "schema_version": "biocompiler.boolean_input_config.v0.1",
+    "contact_ids": [
+      "x"
+    ],
+    "observations": [
+      {
+        "schema_version": "biocompiler.boolean_observation.v0.1",
+        "signal_id": "n000003",
+        "field": "present"
+      },
+      {
+        "schema_version": "biocompiler.boolean_observation.v0.1",
+        "signal_id": "n000004",
+        "field": "present"
+      }
+    ],
+    "variable_times": [
+      0,
+      1
+    ],
+    "until": 10,
+    "fixed_suffix": [
+      {
+        "time": 2,
+        "signals": {
+          "n000006": {
+            "value": null,
+            "present": false,
+            "high": null,
+            "low": null
+          }
+        },
+        "contacts": {
+          "x": {
+            "n000003": {
+              "value": null,
+              "present": true,
+              "high": null,
+              "low": null
+            },
+            "n000004": {
+              "value": null,
+              "present": true,
+              "high": null,
+              "low": null
+            }
+          }
+        }
+      },
+      {
+        "time": 5,
+        "signals": {
+          "n000006": {
+            "value": null,
+            "present": false,
+            "high": null,
+            "low": null
+          }
+        },
+        "contacts": {
+          "x": {
+            "n000003": {
+              "value": null,
+              "present": false,
+              "high": null,
+              "low": null
+            },
+            "n000004": {
+              "value": null,
+              "present": false,
+              "high": null,
+              "low": null
+            }
+          }
+        }
+      },
+      {
+        "time": 6,
+        "signals": {
+          "n000006": {
+            "value": null,
+            "present": true,
+            "high": null,
+            "low": null
+          }
+        },
+        "contacts": {
+          "x": {
+            "n000003": {
+              "value": null,
+              "present": false,
+              "high": null,
+              "low": null
+            },
+            "n000004": {
+              "value": null,
+              "present": false,
+              "high": null,
+              "low": null
+            }
+          }
+        }
+      },
+      {
+        "time": 8,
+        "signals": {
+          "n000006": {
+            "value": null,
+            "present": false,
+            "high": null,
+            "low": null
+          }
+        },
+        "contacts": {
+          "x": {
+            "n000003": {
+              "value": null,
+              "present": false,
+              "high": null,
+              "low": null
+            },
+            "n000004": {
+              "value": null,
+              "present": false,
+              "high": null,
+              "low": null
+            }
+          }
+        }
+      }
+    ],
+    "max_histories": 2,
+    "cell_observations": [
+      {
+        "schema_version": "biocompiler.boolean_observation.v0.1",
+        "signal_id": "n000006",
+        "field": "present"
+      }
+    ]
+  },
+  "output": "/tmp/biocompiler-workflow-conformance-v1/tmpworkflow-000006/report.json"
+}
