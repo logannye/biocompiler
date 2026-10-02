@@ -1,7 +1,7 @@
 # Live native manager and typed Python views
 
-Status: the live manager and ordered views are implemented as source; complete
-deferred-callback receipt validation is in progress. Hosted acceptance and public
+Status: the live manager, ordered views and complete deferred-callback receipt
+validation are implemented as source. Hosted acceptance and public
 default cutover are incomplete. The exact application is declared in
 [pipeline-callback-manager-v1.json](../protocol/pipeline-callback-manager-v1.json).
 It runs only in Core through `--pipeline-callback-session-v1`, over the existing
@@ -107,7 +107,7 @@ events. Source implementation is still subject to hosted compilation and complet
 four-runtime replay; deferred access, fixed registration, remaining native workflow
 families, distribution and default-engine gates remain open.
 
-For the later 47-case deferred-access campaign, preserve all 157 events, 290
+The 47-case deferred-access campaign preserves all 157 events, 290
 access observations and 45 raised events. The original capture observes seven
 private manager fields and complete traceback frames. A native implementation
 must supply an explicit checked correspondence for these implementation views,
@@ -148,9 +148,20 @@ must fail even when an artifact's hashes are recomputed. Fingerprint evidence
 must connect the actual payload document, freezing operation, ordered JSON,
 computed hash and default attribute lookup through their retained references.
 
-The comparison source checkpoint passes 26 adapter tests, 18 campaign tests,
+The earlier PR72 comparison source checkpoint passed 26 adapter tests, 18 campaign tests,
 50 boundary/CI/inventory checks and eight source-lineage checks. Strict typing
 passes for 20 modules. The current inventory contains 3,196 entries; complete
 unit discovery finds 2,934 tests in 284 classes. These are local Python/static
 results and a discovery count, not hosted acceptance or full unit execution.
 The 102-suite native inventory is unchanged. Original frozen corpora are intact.
+
+The current deferred source checkpoint passes 31 adapter tests. The combined
+campaign, strict-trace and runtime-receipt batch passes 46 tests on each of
+Python 3.11.15 and 3.14.6. Thirteen inventory checks pass; the ledger remains 3,196 entries and
+fresh full discovery finds 2,967 tests in 287 classes. Strict typing still covers
+20 transport/view modules. The installed gate requires all 86 original cases,
+including 53 deferred manager processes and 414 deferred state inspections.
+Source and local controls are recorded in the
+[deferred checkpoint](../protocol/migration-deferred-manager-checkpoint.json);
+native compilation, four-runtime replay and exact-revision hosted acceptance
+remain pending.

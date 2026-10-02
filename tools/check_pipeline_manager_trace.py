@@ -24,6 +24,25 @@ SITES = {
     "admit_component_input": {550}, "get": {662, 669}, "register": {452},
     "run": {730, 732, 733, 734, 739, 742, 744, 745, 747, 757, 764, 767, 772, 804, 805, 817, 824, 852, 893},
 }
+HOST_SEGMENTS = {
+    (("run", 730),): {"call", "call-provider"},
+    (("run", 733),): {"contains"},
+    (("run", 745),): {"attr"},
+    (("run", 745), ("_document", 47)): {"document"},
+    (("run", 767),): {"tuple"},
+    (("run", 805),): {"freeze-json"},
+    (("run", 817), ("<genexpr>", 817)): {"next"},
+    (("run", 817), ("<genexpr>", 822)): {"next"},
+    (("run", 852),): {"call", "call-provider"},
+    (("add_input", 613), ("_document", 47)): {"document"},
+    (("add_input", 615),): {"attr-default"},
+    (("admit_component_input", 550),): {"call", "call-provider"},
+    (("register", 452),): {"compare"},
+}
+REJECTED_SEGMENTS = {(("run", line),) for line in (732, 734, 739, 742, 744, 747, 757, 764, 772, 804, 824)} | {
+    (("run", 893), ("get", 662)), (("run", 893), ("get", 669)),
+    (("get", 662),), (("get", 669),), (("add_input", 618),),
+}
 
 
 def require(condition, message):
@@ -128,19 +147,22 @@ def projection(actual, expected, evidence, details):
         aliases = {"pipeline.py": ORIGINAL, "intent.py": "src/biocompiler/ir/intent.py"}
         return [{**item, "file": aliases.get(item["file"], item["file"])} for item in value]
 
-    def site(item, source, qualname, expression):
+    def site(item, source, qualname, expression, action=None):
         require(item["source"] == source and item["qualname"] == qualname,
             "Bridge segment has missing, duplicated or reordered frames")
         candidates = sources[source][qualname]
+        if action is not None:
+            candidates = [node for root in candidates for node in ast.walk(root)
+                if isinstance(node, ast.If) and ast.unparse(node.test) == "action == " + repr(action)]
         matches = [node for root in candidates for node in ast.walk(root)
             if isinstance(node, (ast.Call, ast.Raise, ast.Compare)) and ast.unparse(node) == expression]
         require(matches and any(node.lineno <= item["line"] <= node.end_lineno for node in matches),
             "Bridge frame is not its exact source call/raise site")
 
-    def take(chain, cursor, source, qualname, expression, binding=None):
+    def take(chain, cursor, source, qualname, expression, binding=None, action=None):
         require(cursor < len(chain), "Bridge segment was omitted or truncated")
         item = chain[cursor]
-        site(item, source, qualname, expression)
+        site(item, source, qualname, expression, action)
         equal(item["binding"], binding, "Bridge frame belongs to another command/invocation/token")
         return cursor + 1
 
@@ -165,6 +187,9 @@ def projection(actual, expected, evidence, details):
             cursor = take(chain, cursor, MANAGER, "CorePassManager._unit", "self._call(operation, arguments)")
         outcome = command["outcome"]
         require(outcome["status"] in ("raise", "rejected"), "Exception bridge is bound to a successful command")
+        original_sites = tuple((value["function"], value["line"]) for value in original)
+        require(original_sites in (REJECTED_SEGMENTS if outcome["status"] == "rejected" else HOST_SEGMENTS),
+            "Original manager segment has another native exception responsibility")
         owner = {"manager": index, "sequence": sequence, "invocation": None, "token": None}
         cursor = take(chain, cursor, MANAGER, "CorePassManager._call",
             "raise error" if outcome["status"] == "rejected" else "self._session.call(operation, arguments)", owner)
@@ -184,6 +209,7 @@ def projection(actual, expected, evidence, details):
             "raise BaseException.with_traceback(exception, state.traceback)", {**callback, "token": token})
         cursor = take(chain, cursor, BROKER, "CallbackObjects.execute", "self._evaluate(action, arguments)", callback)
         action = invocation["action"]
+        require(action in HOST_SEGMENTS[original_sites], "Bridge action differs from its original manager source segment")
         expressions = {"document": "value.to_dict()", "attr": "getattr(value, name)",
             "attr-default": "getattr(value, name, self.resolve(args['default']))", "tuple": "tuple(value)",
             "iter": "iter(value)", "next": "next(value)", "freeze-json": "freeze_json(value)",
@@ -195,7 +221,9 @@ def projection(actual, expected, evidence, details):
         else:
             require(action in expressions, "Unreviewed exceptional broker action")
             expression = expressions[action]
-        return take(chain, cursor, BROKER, "CallbackObjects._evaluate", expression, callback)
+        # attr and attr-default intentionally share one original getattr branch.
+        return take(chain, cursor, BROKER, "CallbackObjects._evaluate", expression, callback,
+            None if action in ("attr", "attr-default") else action)
 
     for event in projected["events"]:
         if event["outcome"] != "raised":
@@ -247,11 +275,8 @@ def projection(actual, expected, evidence, details):
                 old = prior[0]
                 # The prior full chain is validated separately, including its
                 # own command, rather than reassigning it to the current run.
-                if required >= cursor:
-                    locations[required] = position + locations.get(required, 0)
-                    equal(normalized(event["exception"]["required_user_traceback_tail"]),
-                        normalized(expected["events"][identity]["exception"]["required_user_traceback_tail"]),
-                        "Reused user tail changed")
+                require(required < cursor and required in locations,
+                    "Reused exception lacks its current original user frame")
                 segments.append({"prior_event": old, "actual": [cursor, len(chain)]})
                 cursor, position = len(chain), len(original)
         require(cursor == len(chain), "Bridge segment contains extra or reordered frames")

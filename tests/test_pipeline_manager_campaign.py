@@ -699,47 +699,6 @@ class PipelineManagerCampaignTests(unittest.TestCase):
         with self.assertRaisesRegex(AssertionError, "moved relative"):
             campaign.deferred_fingerprint_projection(actual, changed, details)
 
-    def test_deferred_trace_correspondence_retains_exact_user_frames(self):
-        oracle = campaign.load_oracle(installed=False, deferred=True)
-        expected = oracle.proposal_case("unknown_status")
-        with tempfile.TemporaryDirectory() as directory:
-            receipt, row, evidence = deferred_rejection_fixture(Path(directory), expected)
-            details = {}
-            channel, application = campaign.declarations()
-            campaign.validate_frames(row["frames"], campaign.Artifacts(Path(receipt["_artifact_directory"]), receipt["artifacts"]),
-                channel, application, details=details, provider_calls=False)
-            actual = deepcopy(expected)
-            error = actual["events"][1]["exception"]
-            original_frames = [value for value in error["original_traceback"] if value["file"] != "src/biocompiler/compiler/pipeline.py"]
-            source = "src/biocompiler/core_pipeline_manager.py"
-            lines = (campaign.ROOT/source).read_text().splitlines()
-            bridge_line = next(index for index, value in enumerate(lines, 1) if value.strip() == "raise error")
-            actual_frames = [*original_frames, {"file": source, "function": "_call", "line": bridge_line}]
-            error["original_traceback"] = actual_frames
-            nodes = []
-            for index, frame in enumerate(actual_frames):
-                sites = campaign.source_code_sites(frame["file"])
-                candidates = [name for name, values in sites.items() if name.split(".")[-1] == frame["function"] and frame["line"] in values]
-                self.assertEqual(len(candidates), 1)
-                nodes.append({"node": "traceback/"+str(index), "source": frame["file"], "function": frame["function"],
-                    "qualname": candidates[0], "line": frame["line"], "source_sha256": campaign.sha((campaign.ROOT/frame["file"]).read_bytes())})
-            evidence["errors"] = [{"manager": 0, "event": 1, "identity": error["identity"], "traceback": nodes,
-                "required_index": len(nodes)}]
-            compared, correspondence = campaign.deferred_trace_projection(actual, expected, evidence, [details])
-            self.assertEqual(compared, expected)
-            self.assertEqual(len(correspondence), 2)
-            changed, proof = deepcopy(actual), deepcopy(evidence)
-            changed["events"][1]["exception"]["original_traceback"].pop(0)
-            proof["errors"][0]["traceback"].pop(0)
-            proof["errors"][0]["required_index"] -= 1
-            with self.assertRaisesRegex(AssertionError, "user/leaf traceback frames"):
-                campaign.deferred_trace_projection(changed, expected, proof, [details])
-            changed, proof = deepcopy(actual), deepcopy(evidence)
-            changed["events"][1]["exception"]["original_traceback"][-1]["line"] = 1
-            proof["errors"][0]["traceback"][-1]["line"] = 1
-            with self.assertRaisesRegex(AssertionError, "executable site"):
-                campaign.deferred_trace_projection(changed, expected, proof, [details])
-
     def test_deferred_observer_retains_live_tail_nodes_and_exception_relationships(self):
         from biocompiler.pipeline_callback_objects import CallbackObjects
         oracle = campaign.load_oracle(installed=False, deferred=True)

@@ -2,13 +2,12 @@
 
 Only fresh native sessions decide registration, freshness and acceptance. The
 unchanged original case functions execute real host callbacks; saved outcomes
-are comparison data only. This additive gate does not close the older full
-manager, callback, deferred-access or fixed-registration-interception inventory.
+are comparison data only. This additive gate does not close the complete
+original manager-context or fixed-registration-interception inventory.
 """
 from __future__ import annotations
 
 import argparse
-import ast
 import builtins
 from contextlib import contextmanager
 from copy import deepcopy
@@ -28,15 +27,16 @@ import sys
 import time
 from types import MappingProxyType
 from types import SimpleNamespace
-from types import CodeType
 from uuid import UUID, uuid4
 
 if __package__:
     from . import check_workflow_reproducibility as r
     from . import check_pipeline_session_install as fixed
+    from . import check_pipeline_manager_trace as trace
 else:
     import check_workflow_reproducibility as r
     import check_pipeline_session_install as fixed
+    import check_pipeline_manager_trace as trace
 
 ROOT = Path(__file__).resolve().parents[1]
 SCHEMA = "biocompiler.installed_pipeline_manager_conformance.v1"
@@ -57,6 +57,7 @@ LITERAL_MODULES = {"biocompiler.compiler.pipeline", "biocompiler.compiler.passes
     "biocompiler.ir.serialization", "biocompiler.ir.stages", "biocompiler.errors", "biocompiler.artifacts.provenance",
     "biocompiler.semantics.context", "biocompiler.verification.evidence"}
 SOURCES = ("tools/check_pipeline_manager_install.py", "tests/test_pipeline_manager_campaign.py",
+    "tools/check_pipeline_manager_trace.py", "tests/test_pipeline_manager_trace.py",
     "tools/check_pipeline_session_install.py", "tools/check_workflow_reproducibility.py", "tools/check_realization_binaries.py",
     "tools/capture_pipeline_identity_semantics.py", "tests/test_pipeline_identity_semantics.py",
     "tools/capture_pipeline_callback_semantics.py", "tests/test_pipeline_callback_semantics.py",
@@ -130,7 +131,7 @@ class Corpus:
         original_fixed = fixed.Corpus()
         self.original_sources.update(original_fixed.original_sources)
         self.pending = {
-            "status": "mandatory_separate_unfinished_gate_not_replayed_by_this_identity_campaign",
+            "status": "mandatory_separate_unfinished_full_context_and_fixed_continuation_gates",
             "original_contexts": [entry["id"] for entry in complete["contexts"]],
             "original_context_count": 476, "original_event_count": 91566,
             "fixed_pending": original_fixed.pending(), "fixed_census": original_fixed.census,
@@ -1061,150 +1062,8 @@ def deferred_fingerprint_projection(actual, evidence, details):
     return projected
 
 
-DEFERRED_BRIDGE_CODES = {
-    "tools/check_pipeline_manager_install.py": {"GuardedManager.__getattr__.<locals>.invoke",
-        "native_deferred_capture.<locals>.NativeCapture.invoke",
-        "native_deferred_capture.<locals>.NativeCapture.invoke.<locals>.observed_action"},
-    "src/biocompiler/core_pipeline_manager.py": {"CorePassManager." + name for name in
-        ("register", "register_component_input", "run", "get", "add_input", "admit_component_input", "result", "_call", "_unit")},
-    "src/biocompiler/core_pipeline_callback_session.py": {"CorePipelineCallbackSession.call", "CorePipelineCallbackSession._request"},
-    "src/biocompiler/pipeline_callback_objects.py": {"CallbackObjects.execute", "CallbackObjects._evaluate", "CallbackObjects.rethrow"},
-}
-# Exact frozen source sites whose control responsibilities move to the native
-# manager. Other original frames (including all oracle/user and freeze/iterator
-# frames) remain in order and must match the fresh original runtime exactly.
-DEFERRED_ORIGINAL_SITES = {
-    "<genexpr>": {817, 822}, "_document": {47}, "add_input": {613, 615, 618},
-    "admit_component_input": {550}, "get": {662, 669}, "register": {452},
-    "run": {730, 732, 733, 734, 739, 742, 744, 745, 747, 757, 764, 767, 772, 804, 805, 817, 824, 852, 893},
-}
-
-
-def source_code_sites(path):
-    raw = r.raw_file(ROOT / path)
-    result = {}
-    # AST structural source ranges are interpreter-independent. Compiling on
-    # Python 3.14 cannot enumerate the dict-comprehension frame that 3.11 emits.
-    # The complete frame segment grammar below supplies count/order/adjacency;
-    # this map separately pins every named frame to its actual source construct.
-    def visit(node, scope="", function=False):
-        name = None
-        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
-            name = node.name
-        elif isinstance(node, ast.Lambda):
-            name = "<lambda>"
-        elif isinstance(node, (ast.ListComp, ast.SetComp, ast.DictComp, ast.GeneratorExp)):
-            name = {ast.ListComp: "<listcomp>", ast.SetComp: "<setcomp>", ast.DictComp: "<dictcomp>", ast.GeneratorExp: "<genexpr>"}[type(node)]
-        if name is not None:
-            scope = (scope + (".<locals>." if function else ".") if scope else "") + name
-            function = not isinstance(node, ast.ClassDef)
-            result.setdefault(scope, set()).update(range(node.lineno, node.end_lineno + 1))
-        for child in ast.iter_child_nodes(node):
-            visit(child, scope, function)
-    visit(ast.parse(raw, filename=path))
-    return result
-
-
 def deferred_trace_projection(actual, expected, evidence, details):
-    projected = deepcopy(actual)
-    errors = {entry["event"]: entry for entry in evidence["errors"]}
-    require(len(errors) == len(evidence["errors"]) and set(errors) ==
-        {event["id"] for event in actual["events"] if event["outcome"] == "raised"}, "Deferred exception traceback census differs")
-    nodes, code_sites, correspondences = {}, {}, []
-    def frames(chain):
-        require(type(chain) is list, "Missing full retained traceback chain")
-        result = []
-        for item in chain:
-            require(type(item) is dict and set(item) == {"node", "source", "function", "qualname", "line", "source_sha256"}
-                and type(item["node"]) is str and re.fullmatch(r"traceback/[0-9]+", item["node"])
-                and type(item["line"]) is int, "Malformed actual traceback node")
-            descriptor = {key: value for key, value in item.items() if key != "node"}
-            require(item["node"] not in nodes or nodes[item["node"]] == descriptor, "Actual traceback node was rebound")
-            nodes[item["node"]] = descriptor
-            source = item["source"]
-            if source.startswith(("src/", "tools/")):
-                require(not Path(source).is_absolute() and ".." not in Path(source).parts
-                    and item["source_sha256"] == sha(r.raw_file(ROOT / source)), "Traceback source bytes changed")
-                if source not in code_sites:
-                    code_sites[source] = source_code_sites(source)
-                require(item["qualname"] in code_sites[source] and item["line"] in code_sites[source][item["qualname"]],
-                    "Actual traceback frame is not an executable site in its pinned source")
-            else:
-                require(source == "<frozen _collections_abc>" and item["function"] == "__iter__"
-                    and item["source_sha256"] is None, "Unreviewed runtime traceback source")
-            result.append({"file": source, "function": item["function"], "line": item["line"]})
-        return result
-    def original_frames(value):
-        result = []
-        for item in value:
-            source = item["file"]
-            if source in ("pipeline.py", "intent.py"):
-                source = "src/biocompiler/" + ("compiler/" if source == "pipeline.py" else "ir/") + source
-            result.append({**item, "file": source})
-        return result
-    for event in projected["events"]:
-        if event["outcome"] != "raised":
-            continue
-        identity = event["id"]
-        row, link = errors[identity], evidence["events"][identity]
-        require(set(row) == {"manager", "event", "identity", "traceback", "required_index"}
-            and row["manager"] == link["manager"] and row["identity"] == event["exception"]["identity"],
-            "Actual error trace was detached from its original event/object")
-        actual_frames = frames(row["traceback"])
-        equal(actual_frames, original_frames(event["exception"]["original_traceback"]), "Raw actual traceback differs from retained nodes")
-        require(type(row["required_index"]) is int and 0 <= row["required_index"] <= len(actual_frames),
-            "Invalid retained user traceback start")
-        equal(actual_frames[row["required_index"]:], original_frames(event["exception"]["required_user_traceback_tail"]),
-            "Required original user traceback tail was truncated or rebound")
-        native = details[link["manager"]]
-        require(link["sequence"] in native["requests"] or event["operation"] == "context_mutation",
-            "Implementation trace lacks its actual native command")
-        for field, start in (("original_traceback", 0), ("required_user_traceback_tail", row["required_index"])):
-            original = original_frames(expected["events"][identity]["exception"][field])
-            retained_original = []
-            replaced = []
-            for index, frame_value in enumerate(original):
-                if frame_value["file"] == "src/biocompiler/compiler/pipeline.py":
-                    require(frame_value["line"] in DEFERRED_ORIGINAL_SITES.get(frame_value["function"], set()),
-                        "Unreviewed original manager traceback site")
-                    replaced.append(index)
-                else:
-                    retained_original.append(frame_value)
-            retained_actual, bridge = [], []
-            for index, (frame_value, item) in enumerate(zip(actual_frames[start:], row["traceback"][start:]), start):
-                if item["source"] in DEFERRED_BRIDGE_CODES:
-                    require(item["qualname"] in DEFERRED_BRIDGE_CODES[item["source"]], "Unreviewed native bridge traceback function")
-                    bridge.append(index)
-                else:
-                    retained_actual.append(frame_value)
-            equal(retained_actual, retained_original, "Original user/leaf traceback frames changed, disappeared or reordered")
-            correspondences.append({"event": identity, "field": field, "manager": link["manager"],
-                "sequence": link["sequence"], "invocation": link["invocation"],
-                "original_manager_frame_indices": replaced, "actual_bridge_frame_indices": bridge})
-            # The full originals and actuals remain separately retained. Only
-            # this explicitly witnessed comparison view has a shared stack.
-            event["exception"][field] = deepcopy(expected["events"][identity]["exception"][field])
-    for entry in evidence["host_exceptions"]:
-        require(set(entry) == {"manager", "token", "invocation", "rethrows", "identity", "cause", "context",
-            "suppress_context", "traceback", "events"}, "Incomplete captured original exception evidence")
-        frames(entry["traceback"])
-        require(len(entry["rethrows"]) == 1 and entry["traceback"], "Original exception was retried, discarded or lost its tail")
-        native = details[entry["manager"]]
-        invocation = native["invocations"][entry["invocation"]]
-        equal(invocation["outcome"], {"status": "raise", "token": entry["token"]}, "Captured original exception lost its native continuation")
-        command = next(item for item in native["commands"] if item["sequence"] == entry["rethrows"][0])
-        equal(command["outcome"], {"status": "raise", "token": entry["token"]}, "Original exception was translated instead of rethrown")
-        require(command["sequence"] == invocation["command_sequence"], "Exception token was reassigned to another command")
-        matches = [row for row in evidence["events"] if row["manager"] == entry["manager"] and row["sequence"] == command["sequence"]]
-        require(len(matches) == 1 and matches[0]["event"] in errors, "Actual rethrow has no original observed exception")
-        error = actual["events"][matches[0]["event"]]["exception"]
-        equal({key: error[key] for key in ("identity", "cause", "context", "suppress_context")},
-            {key: entry[key] for key in ("identity", "cause", "context", "suppress_context")},
-            "Rethrow changed actual original exception/cause/context identity")
-        tail = [item["node"] for item in entry["traceback"]]
-        chain = [item["node"] for item in errors[matches[0]["event"]]["traceback"]]
-        require(len(chain) >= len(tail) and chain[-len(tail):] == tail, "Original traceback tail nodes were replaced during rethrow")
-    return projected, correspondences
+    return trace.projection(actual, expected, evidence, details)
 
 
 def validate_deferred_events(actual, evidence, details, bootstrap):
@@ -1404,6 +1263,7 @@ def validate_deferred_events(actual, evidence, details, bootstrap):
 def validate_deferred_accesses(actual, evidence, details):
     require(len(evidence["accesses"]) == len(actual["access_log"]), "Deferred hook/access census differs")
     previous_offsets = {}
+    observed_invocations = set()
     def label(index, reference):
         require(type(reference) is dict and set(reference) == {"handle"}, "Deferred callback object reference differs")
         return evidence["objects"][index].get(reference["handle"])
@@ -1415,6 +1275,7 @@ def validate_deferred_accesses(actual, evidence, details):
         native = details[index]
         require(identity in native["invocations"], "Deferred accessor lacks its actual live callback")
         invocation = native["invocations"][identity]
+        observed_invocations.add((index, identity))
         require(type(link["frame_offset"]) is int and invocation["start_frame"] < link["frame_offset"] <= invocation["end_frame"]
             and link["frame_offset"] >= previous_offsets.get(index, 0), "Deferred hooks changed actual execution order")
         previous_offsets[index] = link["frame_offset"]
@@ -1445,13 +1306,13 @@ def validate_deferred_accesses(actual, evidence, details):
             require(action == "tuple" and label(index, args["object"]) == "iterator/links",
                 "Source links were not fully materialized through their actual original iterator")
         elif name.startswith("obligations."):
-            if name == "obligations.iter":
-                require(action == "iter" and label(index, args["object"]) == "iterator/obligations", "Deferred obligation iteration changed")
-            else:
-                require(action == "next" and any(item["action"] == "iter"
-                    and label(index, item["arguments"]["object"]) == "iterator/obligations"
-                    and item["outcome"] == {"status": "return", "value": args["object"]} for item in prior),
-                    "Deferred obligation consumption was eager or detached from the original iterator")
+            # Items.__iter__ is a generator: its first body instruction and
+            # its 'iter' log run on the first next(), not while iter() merely
+            # creates that generator object.
+            require(action == "next" and any(item["action"] == "iter"
+                and label(index, item["arguments"]["object"]) == "iterator/obligations"
+                and item["outcome"] == {"status": "return", "value": args["object"]} for item in prior),
+                "Deferred obligation consumption was eager or detached from the original iterator")
         elif name.startswith("obligation."):
             require(action == "attr" and args["name"] == name.split(".", 1)[1]
                 and label(index, args["object"]) == "obligation", "Deferred obligation getter or short circuit changed")
@@ -1487,6 +1348,21 @@ def validate_deferred_accesses(actual, evidence, details):
                 and item["outcome"] == {"status": "return", "value": context}]
             require(contexts, "Original callback context lacks its actual native hydration")
             equal(contexts[-1]["arguments"]["document"], values["context"], "Deferred callback read a context different from native authority")
+    for index, native in enumerate(details):
+        for identity, invocation in native["invocations"].items():
+            action, args = invocation["action"], invocation["arguments"]
+            tracked = False
+            if action in ("attr", "attr-default", "document", "tuple", "freeze-json"):
+                source = label(index, args["object"])
+                tracked = ((action == "attr" and source in ("proposal", "obligation"))
+                    or action == "attr-default" and source == "payload/input"
+                    or action == "document" and source in ("payload/input", "payload/output")
+                    or action == "tuple" and source == "iterator/links"
+                    or action == "freeze-json" and source == "mapping")
+            elif action == "compare":
+                tracked = label(index, args["left"]) == "provider/old" and label(index, args["right"]) == "provider/new"
+            if tracked:
+                require((index, identity) in observed_invocations, "Native tracked accessor executed without its original hook observation")
     tokens = {(row["manager"], row["token"]): row for row in evidence["host_exceptions"]}
     require(len(tokens) == len(evidence["host_exceptions"]) and set(tokens) == {(index, item["outcome"]["token"])
         for index, native in enumerate(details) for item in native["invocations"].values() if item["outcome"]["status"] == "raise"},
