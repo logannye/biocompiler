@@ -18,6 +18,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from tools import freeze_synthetic_selection_cli as frozen
 from tools import synthetic_selection_cli_source_lineage as routes
+from tools import manager_registration_source_lineage as managers
 from tools import cli_runtime_counterparts as runtime
 from tools.check_realization_workflow_corpus import REVIEWED_ADDITIONS
 
@@ -40,7 +41,9 @@ def load_baseline():
             original['coverage']['original_occurrences'] == 1, 'Immutable complete selection CLI baseline changed')
     parent = routes.load_witness()['historical_source'].encode()
     for name, reference in original['retained_source_bytes'].items():
-        expected = parent if name == routes.CLI else (ROOT / name).read_bytes()
+        expected = parent if name == routes.CLI else managers.original_source() if name == managers.PATH else (ROOT / name).read_bytes()
+        if name == managers.PATH:
+            managers.verify_source(ROOT, name, managers.HISTORICAL[name])
         require(frozen.f.restore(reference, blobs) == expected, 'Archived selection CLI source bytes changed: ' + name)
     return original, blobs
 
@@ -96,6 +99,7 @@ def verify_recapture(actual, blobs, *, python_version=None):
             and scope['schema_version'] == original['source_scope']['schema_version'] and
             scope['source_inventory_sha256'] == digest(scope['actual_sources']), 'Selection CLI scope metadata changed')
     proof = routes.verify_source(ROOT, before[routes.CLI])
+    manager_proof = managers.verify_source(ROOT, managers.PATH, before[managers.PATH])
     unused = unused_source_change(before,current)
     unused_name = unused['path']
     unused_module = unused_name[4:-3].replace('/','.')
@@ -104,7 +108,7 @@ def verify_recapture(actual, blobs, *, python_version=None):
     for name, pin in before.items():
         path = ROOT / name
         require(path.is_file() and not path.is_symlink() and sha(path.read_bytes()) == current[name] and
-                (name in (routes.CLI,unused_name) or current[name] == pin), 'Unreviewed selection CLI source bytes changed: ' + name)
+                (name in (routes.CLI,unused_name,managers.PATH) or current[name] == pin), 'Unreviewed selection CLI source bytes changed: ' + name)
     projected, projected_blobs = deepcopy(actual), dict(blobs)
     for row in projected['cases']:
         audit = row['import_audit']
@@ -116,18 +120,20 @@ def verify_recapture(actual, blobs, *, python_version=None):
                     (module == 'biocompiler' or module.startswith('biocompiler.')) and
                     item['path'] in before and item['sha256'] == current[item['path']],
                     'Actual selection CLI imported unpinned source')
-            if item['path'] == routes.CLI: item['sha256'] = before[routes.CLI]
+            if item['path'] in (routes.CLI,managers.PATH): item['sha256'] = before[item['path']]
     require(set(actual['retained_source_bytes']) == set(original['retained_source_bytes']),
             'Complete retained selection CLI source inventory differs')
     for name, reference in actual['retained_source_bytes'].items():
         raw = (ROOT / name).read_bytes()
         require(reference == {'kind':'blob','bytes':len(raw),'sha256':sha(raw)} and
                 frozen.f.restore(reference, blobs) == raw, 'Actual retained selection CLI source bytes differ')
-    current_ref, old_ref = actual['retained_source_bytes'][routes.CLI], original['retained_source_bytes'][routes.CLI]
-    if current_ref != old_ref:
-        del projected_blobs[current_ref['sha256']]
-        projected_blobs[old_ref['sha256']] = old_blobs[old_ref['sha256']]
-        projected['retained_source_bytes'][routes.CLI] = deepcopy(old_ref)
+    retained_routes = {routes.CLI} | ({managers.PATH} & set(actual['retained_source_bytes']))
+    for name in sorted(retained_routes):
+        current_ref, old_ref = actual['retained_source_bytes'][name], original['retained_source_bytes'][name]
+        if current_ref != old_ref:
+            del projected_blobs[current_ref['sha256']]
+            projected_blobs[old_ref['sha256']] = old_blobs[old_ref['sha256']]
+            projected['retained_source_bytes'][name] = deepcopy(old_ref)
     projected['source_scope'] = deepcopy(original['source_scope'])
     minor, declared, changes = runtime.runtime_minor(python_version), counterparts(), []
     for old in original['cases']:
@@ -157,12 +163,14 @@ def verify_recapture(actual, blobs, *, python_version=None):
         'baseline_inventory_fingerprint':CORPUS_PIN,'actual_inventory_fingerprint':actual['inventory_fingerprint'],
         'projected_inventory_fingerprint':projected['inventory_fingerprint'],'actual_capture':deepcopy(actual),
         'actual_retained_route_source':(ROOT/routes.CLI).read_text(),'reviewed_route':proof,
+        'reviewed_manager_registration_prefix':manager_proof,
+        'actual_retained_manager_source':(ROOT/managers.PATH).read_text(),
         'reviewed_unused_source_additions':additions,'reviewed_unused_source_change':unused,
         'runtime_counterpart':{'declaration_sha256':declared.pin,'python_minor':minor,
             'validated_cases':sorted(declared.cases),'changes':changes},'coverage':deepcopy(actual['coverage']),
         'content_documents':len(blobs),'content_bytes':sum(map(len,blobs.values())),
         'actual_content_inventory':[{'sha256':name,'bytes':len(raw)} for name,raw in sorted(blobs.items())],
-        'projection':'exact_additive_selection_CLI_source_individually_pinned_unimported_additions_exact_archived_unused_backend_and_declared_argparse_runtime_counterpart_only; actual_bytes_retained'}
+        'projection':'exact_additive_selection_CLI_source_individually_pinned_unimported_additions_exact_archived_unused_backend_exact_manager_registration_prefix_and_declared_argparse_runtime_counterpart_only; actual_bytes_retained'}
 
 
 def main(argv=None):

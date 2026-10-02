@@ -194,6 +194,13 @@ def framed_fixture(receipt, corpus, expected, objects):
     authority = corpus.fixed.document('fixed',expected['authority'])
     sequence=script.command('initialize-synthetic',{**authority,'config':config.to_dict(),'request_tree':_ordered(source.to_dict()),
         'manager_limits':None,**{key+'_object':value for key,value in refs.items()}})
+    from tests.pipeline_fixed_initializer_fixture import emit, records as initializer_records
+    hooks = emit(script, sequence,
+        {'value': source.target.to_dict(), 'binding': {'kind': 'host', 'object': refs['target']}},
+        {key: entry['contract'] for key, entry in campaign.fixed.snapshot(corpus.fixed.document('fixed',expected['manager_state']))['passes'].items()},
+        [(token, roles[token], ref) for token, ref in providers.values()], count=2)
+    minted.update(hooks['minted'])
+    initializer_records(hooks, record_envelopes.values())
     script.reply(sequence,{'kind':'synthetic','manager':True,'artifacts':['candidate','pipeline_result','selection_result'],
         'target':{'value':source.target.to_dict(),'binding':{'kind':'host','object':refs['target']}}})
     def result_envelope(value):

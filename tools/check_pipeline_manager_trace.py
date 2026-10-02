@@ -81,7 +81,9 @@ def source_nodes(path):
 
 
 def projection(actual, expected, evidence, details):
-    require(sha((ROOT / ORIGINAL).read_bytes()) == PIPELINE_PIN, "Original manager trace source changed")
+    from tools import manager_registration_source_lineage as lineage
+    lineage.verify_source(ROOT, ORIGINAL, PIPELINE_PIN)
+    require(sha(lineage.original_source()) == PIPELINE_PIN, "Original manager trace source changed")
     projected = deepcopy(actual)
     errors = {entry["event"]: entry for entry in evidence["errors"]}
     require(len(errors) == len(evidence["errors"]) and set(errors) ==
@@ -182,7 +184,15 @@ def projection(actual, expected, evidence, details):
         cursor = take(chain, cursor, CAMPAIGN, "GuardedManager.__getattr__.<locals>.invoke", "value(*args, **kwargs)")
         qualname = "CorePassManager." + method
         target = "self._unit" if method in ("register", "register_component_input", "set_dependency", "register_completion_profile") else "self._call"
-        cursor = take(chain, cursor, MANAGER, qualname, call_expression(MANAGER, qualname, target))
+        owner = {"manager": index, "sequence": sequence, "invocation": None, "token": None}
+        if method == 'register':
+            cursor = take(chain, cursor, MANAGER, qualname, 'PassManager.register(self, contract, producer, validators)')
+            cursor = take(chain, cursor, ORIGINAL, 'PassManager.register',
+                'native_type._native_register(self, contract, producer, validators)', owner)
+            qualname = 'CorePassManager._native_register'
+            cursor = take(chain, cursor, MANAGER, qualname, call_expression(MANAGER, qualname, target), owner)
+        else:
+            cursor = take(chain, cursor, MANAGER, qualname, call_expression(MANAGER, qualname, target))
         if target == "self._unit":
             cursor = take(chain, cursor, MANAGER, "CorePassManager._unit", "self._call(operation, arguments)")
         outcome = command["outcome"]

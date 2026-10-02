@@ -231,8 +231,8 @@ let finish ~budget (registration:registration) ~record ~result =
   let behavior_value=check_behavior ?until ~budget request assembly_value frames in
   {upstream_value=upstream;candidate_value;assembly_value;link_value;result_value;record_value=record;manager_value;behavior_value;
    selection_value=Synthetic_pipeline.selection_result upstream}
-let run_internal manager_state ~budget ?(manager_limits=M.default_limits) ?validator_equivalent ?observer ?provider_observer ?until ?config request frames =
-  let upstream=match Synthetic_pipeline.attempt ~budget ~manager_limits ?validator_equivalent ?observer ?provider_observer ?until ?config request frames with
+let run_internal manager_state ~budget ?(manager_limits=M.default_limits) ?validator_equivalent ?observer ?provider_observer ?manager_created ?register_fixed ?until ?config request frames =
+  let upstream=match Synthetic_pipeline.attempt ~budget ~manager_limits ?validator_equivalent ?observer ?provider_observer ?manager_created ?register_fixed ?until ?config request frames with
     | Synthetic_pipeline.Completed value -> value
     | Synthetic_pipeline.Failed failure -> manager_state:=failure.manager;raise failure.error in
   let manager_value=Synthetic_pipeline.manager upstream in
@@ -242,18 +242,21 @@ let run_internal manager_state ~budget ?(manager_limits=M.default_limits) ?valid
   let profiled=prepare_profile ~budget prepared in
   M.register_completion_profile manager_value(completion_profile profiled);
   let registration=prepare_registration ~budget ?provider_observer profiled in
-  M.register manager_value (contract registration) ~producer:(producer registration) ~validators:(validators registration);
+  (match register_fixed with
+   | None->M.register manager_value (contract registration) ~producer:(producer registration) ~validators:(validators registration)
+   | Some register->register budget manager_value (contract registration)
+       ~producer:(producer registration) ~validators:(validators registration));
   allow_host_source_links registration;
   let record=M.run manager_value ~pass_id:(C.Pass_contract.id(contract registration))
       ~input_id:"mechanism" ~output_id:"components" () in
   let result=M.result manager_value ~identity:"components" ~scope:"synthetic_components" in
   finish ~budget registration ~record ~result
-let attempt ~budget ?manager_limits ?validator_equivalent ?observer ?provider_observer ?until ?config request frames =
+let attempt ~budget ?manager_limits ?validator_equivalent ?observer ?provider_observer ?manager_created ?register_fixed ?until ?config request frames =
   let manager_state=ref None in
-  try Completed (run_internal manager_state ~budget ?manager_limits ?validator_equivalent ?observer ?provider_observer ?until ?config request frames) with
+  try Completed (run_internal manager_state ~budget ?manager_limits ?validator_equivalent ?observer ?provider_observer ?manager_created ?register_fixed ?until ?config request frames) with
   | (Diagnostic.Error _ | Bioc_synthetic_producer.Generator.Unsupported _ | M.No_candidate_found _) as error ->
       Failed {error;manager= !manager_state}
-let run ~budget ?manager_limits ?validator_equivalent ?observer ?provider_observer ?until ?config request frames =
-  match attempt ~budget ?manager_limits ?validator_equivalent ?observer ?provider_observer ?until ?config request frames with
+let run ~budget ?manager_limits ?validator_equivalent ?observer ?provider_observer ?manager_created ?register_fixed ?until ?config request frames =
+  match attempt ~budget ?manager_limits ?validator_equivalent ?observer ?provider_observer ?manager_created ?register_fixed ?until ?config request frames with
   | Completed value -> value
   | Failed failure -> raise failure.error

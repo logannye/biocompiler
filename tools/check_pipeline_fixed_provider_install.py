@@ -19,8 +19,10 @@ from types import FunctionType
 
 if __package__:
     from . import check_pipeline_manager_install as manager
+    from . import pipeline_fixed_initializer_receipts as initializers
 else:
     import check_pipeline_manager_install as manager
+    import pipeline_fixed_initializer_receipts as initializers
 
 r = manager.r
 ROOT = manager.ROOT
@@ -34,6 +36,10 @@ ORACLE_PATH = 'tests/conformance/pipeline-fixed-provider-semantics-v1.json'
 ORACLE_TOOL = 'tools/capture_pipeline_fixed_provider_semantics.py'
 VIEW_MODULE = 'biocompiler.core_pipeline_provider_views'
 SOURCES = (ORACLE_TOOL, 'tests/test_pipeline_fixed_provider_semantics.py',
+    'tools/pipeline_fixed_initializer_receipts.py', 'tests/pipeline_fixed_initializer_fixture.py',
+    'tools/pipeline_original_counterpart.py', 'tools/manager_registration_source_lineage.py',
+    'tests/test_pipeline_fixed_initializer_receipts.py',
+    'tests/test_pipeline_fixed_registration_campaign.py', 'tools/check_pipeline_fixed_registration_install.py',
     'tools/check_pipeline_fixed_provider_install.py', 'tests/test_pipeline_fixed_provider_campaign.py',
     'src/biocompiler/core_pipeline_provider_views.py', 'tests/test_core_pipeline_provider_views.py', *manager.SOURCES)
 CASES = ('static:requested', 'static:selected_equal', 'temporal:requested')
@@ -157,8 +163,11 @@ class Witness:
                 objects[handle] = {'kind': 'wrapper', 'pass_id': value.__defaults__[2]}
         require(set(providers) == set(self.providers), 'Fixed provider host-reference census changed')
         arguments = {}
+        fixed_hooks = {}
         for entry in live.session.traffic:
             document = manager.frame_body(entry.frame)
+            if document['kind'] == 'invoke' and document['action'] == 'register-fixed':
+                fixed_hooks[document['invocation_id']] = document['arguments']
             if document['kind'] != 'command':
                 continue
             operation, args = document['operation'], document['arguments']
@@ -172,9 +181,22 @@ class Witness:
                     items.append([key, tokens[0]])
                 arguments[args['validators']['handle']] = {'kind': 'validators', 'items': items}
                 pass_id = args['contract']['id']
+                hook = fixed_hooks.get(document['parent_invocation'])
+                if hook is not None:
+                    equal(hook['contract'], args['contract'], 'Initializer register changed its actual native contract')
+                    require(len(hook['obligation_objects']) == len(args['obligation_objects']),
+                        'Initializer registration omitted an obligation origin')
                 for index, ref in enumerate(args['obligation_objects']):
                     value = live._objects.resolve(ref)
-                    require(value is self.contracts[pass_id].introduces[index], 'Introduced obligation lost inspected contract object identity')
+                    if hook is None:
+                        require(value is self.contracts[pass_id].introduces[index],
+                            'Introduced obligation lost inspected contract object identity')
+                    else:
+                        binding = hook['obligation_objects'][index]
+                        retained = live._bindings.get(binding['identity'])
+                        require(retained is not None and retained.flavor == 'obligation'
+                            and retained.document == canonical(binding['tree']) and retained.value is value,
+                            'Initializer introduced obligation lost its actual native-root object identity')
                     arguments[ref['handle']] = {'kind': 'contract_obligation', 'pass_id': pass_id, 'index': index,
                         'value': {name: object.__getattribute__(value, name) for name in ('id', 'scope', 'description')} |
                             {'evidence_kind': object.__getattribute__(value, 'evidence_kind').value}}
@@ -191,13 +213,48 @@ class Witness:
             'arguments': arguments}
 
 
+def tool(name):
+    """Load a source-bound helper during an external-cwd CLI invocation."""
+    paths=list(sys.path)
+    try:
+        sys.path.insert(0,str(ROOT))
+        module=importlib.import_module('tools.'+name)
+        require(Path(module.__file__).resolve()==ROOT/'tools'/(name+'.py'),'Campaign helper source was shadowed')
+        return module
+    finally:
+        sys.path[:]=paths
+
+
+def capture_counterpart(receipt, current, task, expected):
+    counterpart=tool('pipeline_original_counterpart')
+    original = counterpart.run(task)
+    equal(counterpart.validate(original), expected, 'Complete fresh original counterpart differs from frozen authority')
+    proof = counterpart.metadata_correspondence(current, original)
+    receipt['fresh_original'] = artifact(receipt, canonical(expected))
+    receipt['current_original'] = artifact(receipt, canonical(current))
+    receipt['original_counterpart'] = artifact(receipt, canonical(original))
+    receipt['original_correspondence'] = artifact(receipt, canonical(proof))
+
+
+def validate_counterpart(receipt, artifacts, task, expected):
+    counterpart=tool('pipeline_original_counterpart')
+    equal(artifacts.json(receipt['fresh_original'], r.MAX_ARTIFACT_BYTES), expected,
+        'Complete fresh original authority differs')
+    original = artifacts.json(receipt['original_counterpart'], r.MAX_ARTIFACT_BYTES)
+    current = artifacts.json(receipt['current_original'], r.MAX_ARTIFACT_BYTES)
+    require(original['manifest']['task'] == task, 'Wrong exact original counterpart task')
+    equal(counterpart.validate(original), expected, 'Complete original child differs from frozen authority')
+    equal(artifacts.json(receipt['original_correspondence'], r.MAX_ARTIFACT_BYTES),
+        counterpart.metadata_correspondence(current, original), 'Explicit original/current source correspondence differs')
+    return current, original
+
+
 def campaign(core, corpus, receipt):
     from biocompiler.core_pipeline_manager import CorePassManager
     from biocompiler.core_client import CoreProtocolError
     oracle = load_oracle()
     fresh = oracle.capture()
-    equal(fresh, corpus.value, 'Fresh original fixed-provider behavior changed')
-    receipt['fresh_original'] = artifact(receipt, canonical(fresh))
+    capture_counterpart(receipt, fresh, 'fixed-provider-original', corpus.value)
     for expected in corpus.cases:
         witness, seen = Witness(), set()
         row = {'id': expected['id']}
@@ -256,6 +313,7 @@ class BindingCensus:
         from biocompiler.core_pipeline_provider_views import checked_ordered
         self.checked_ordered = checked_ordered
         self.native, self.records, self.record_ids = {}, {}, {}
+        self.introduced = {}
         self.contexts, self.context_objects = set(), set()
         self.host = {handle: [positioned] for handle, positioned in source_documents.items()}
         for invocation in details['invocations'].values():
@@ -317,7 +375,23 @@ class BindingCensus:
             and len(bindings['obligation_objects']) == len(value['obligations']), 'Native obligation element binding census differs')
         self.binding(bindings['obligations'], value['obligations'], frame, flavor='obligations')
         for binding, obligation in zip(bindings['obligation_objects'], value['obligations']):
+            if obligation['id'] in self.introduced:
+                origin, document = self.introduced[obligation['id']]
+                equal(obligation, document, 'Fixed introduced obligation declaration changed in a descendant')
+                equal(binding, {'kind': 'host', 'object': {'handle': origin}},
+                    'Fixed introduced obligation lost its actual registration object origin')
             self.binding(binding, obligation, frame, flavor='obligation')
+
+    def initialization(self, hooks):
+        self.introduced = {value['id']: (handle, value) for handle, (_, value) in hooks['host_documents'].items()}
+        require(len(self.introduced) == len(hooks['host_documents']), 'Distinct initialized obligations reused one declaration ID')
+
+    def registration(self, contract, references, frame):
+        require(len(contract['introduces']) == len(references), 'Registered obligation origin census differs')
+        for value, ref in zip(contract['introduces'], references):
+            handle = reference(ref)
+            self.binding({'kind': 'host', 'object': ref}, value, frame, flavor='obligation')
+            self.introduced[value['id']] = (handle, value)
 
     def context(self, invocation):
         args = invocation['arguments']; document, bindings = args['document'], args['bindings']
@@ -348,6 +422,10 @@ def validate_case(expected, actual, evidence, details, oracle):
         'Incomplete fixed-provider evidence')
     commands = {item['sequence']: item for item in details['commands']}
     requests = sorted(commands.values(), key=lambda item: item['start_frame'])
+    initialization = requests[0]
+    initializer_commands = {item['sequence'] for item in requests
+        if initialization['start_frame'] < item['start_frame'] < initialization['end_frame']}
+    requests = [item for item in requests if item['sequence'] not in initializer_commands]
     expected_operations = ['initialize-components', 'inspect-ordered']
     for _ in expected['events']:
         expected_operations.extend(['register', 'run', 'call-native-provider', 'call-native-provider'])
@@ -415,13 +493,21 @@ def validate_case(expected, actual, evidence, details, oracle):
     source_documents = {reference(args['target_object']): (0, request.target.to_dict())}
     for handle, entry in evidence['arguments'].items():
         if entry['kind'] == 'contract_obligation':
-            positions = [command['start_frame'] for command in requests if command['operation'] == 'register'
+            positions = [command['start_frame'] for command in commands.values() if command['operation'] == 'register'
                 and {'handle': handle} in command['arguments']['obligation_objects']]
             require(positions, 'Introduced obligation has no actual authoring command')
             source_documents[handle] = (min(positions), entry['value'])
     bindings = BindingCensus(details, source_documents)
     providers = evidence['providers']
     raw_inspection = succeeded(inspection)
+    hooks = initializers.validate(details, initialization,
+        contracts={key: entry['contract'] for key, entry in raw_inspection['snapshot']['passes'].items()})
+    equal(sorted(initializer_commands), sorted(hooks['commands']), 'Unclaimed fixed initializer nested command')
+    for handle, value in hooks['arguments'].items():
+        equal(evidence['arguments'].get(handle), value, 'Fixed initializer authoring object observation differs')
+    source_documents.update(hooks['host_documents'])
+    bindings = BindingCensus(details, source_documents)
+    bindings.initialization(hooks)
     inspected = manager.comparison_snapshot(raw_inspection, {token: token for token in providers})
     for envelope in raw_inspection['snapshot']['records'].values():
         bindings.record(envelope, inspection['end_frame'])
@@ -432,8 +518,9 @@ def validate_case(expected, actual, evidence, details, oracle):
         if invocation['action'] == 'native-provider':
             params = invocation['arguments']
             token, handle = params['provider_id'], reference(returned(invocation))
-            require(token not in minted and invocation['command_sequence'] == inspection['sequence'],
-                'Fixed provider proxy was duplicated or minted outside inspection')
+            require(token not in minted and token in hooks['minted']
+                and invocation['command_sequence'] == initialization['sequence'],
+                'Fixed provider proxy was duplicated or minted outside its initializer hook')
             minted[token] = (handle, params['role'])
     require(set(minted) == set(providers), 'Fixed native proxy census differs')
     for token, entry in providers.items():
@@ -467,7 +554,7 @@ def validate_case(expected, actual, evidence, details, oracle):
     store = ProviderViewStore(resolve)
     calls = evidence['calls']
     require(type(calls) is list and len(calls) == 6, 'Original repeated provider call census changed')
-    used_arguments, used_callbacks = set(), set()
+    used_arguments, used_callbacks = set(hooks['arguments']), set()
     for index, event in enumerate(actual['events']):
         pass_id = event['pass_id']
         register, run, first, second = requests[2+4*index:6+4*index]
@@ -486,6 +573,7 @@ def validate_case(expected, actual, evidence, details, oracle):
             handle = reference(ref); used_arguments.add(handle)
             equal(evidence['arguments'].get(handle), {'kind': 'contract_obligation', 'pass_id': pass_id, 'index': offset, 'value': wanted},
                 'Registration changed actual inspected obligation slot or value')
+        bindings.registration(event['contract'], obligations, register['end_frame'])
         validator_ref = reference(register['arguments']['validators']); used_arguments.add(validator_ref)
         wanted_validators = [[key, inspected['state']['passes'][pass_id]['validators'][key]]
             for key in raw_inspection['order']['validators']['passes'][pass_id]]
@@ -585,11 +673,11 @@ def validate_checks(receipt, corpus, artifacts):
     require(type(receipt.get('completed_checks')) is int and receipt['completed_checks'] == 3
         and type(receipt.get('checks')) is list and len(receipt['checks']) == 3,
         'Incomplete installed fixed-provider campaign')
-    equal(artifacts.json(receipt['fresh_original'], r.MAX_ARTIFACT_BYTES), corpus.value,
-        'Fresh original fixed-provider authority changed')
+    current, _ = validate_counterpart(receipt, artifacts, 'fixed-provider-original', corpus.value)
     channel, application = manager.declarations()
     manager.validate_verify(receipt, artifacts, channel, application)
     oracle = load_oracle(installed=False)
+    equal(oracle.capture(), current, 'Independent current provider observation differs')
     sessions, pids, projected = set(), set(), []
     for expected, row in zip(corpus.cases, receipt['checks']):
         require(type(row) is dict and set(row) == {'id', 'actual', 'evidence', 'pid', 'returncode', 'closed', 'invalidated',
@@ -605,7 +693,7 @@ def validate_checks(receipt, corpus, artifacts):
             'message': 'Callback session is closed; it cannot reconnect', 'traffic_unchanged': True, 'pid_unchanged': True},
             'Closed fixed-provider manager resumed')
         guard = artifacts.json(row['guard'], r.MAX_ARTIFACT_BYTES)
-        manager.check_guard(guard, initializer='initialize-components')
+        manager.check_guard(guard, initializer='initialize-components', frames=row['frames'], artifacts=artifacts)
         for name in ('CorePassManager.inspection_state', 'CorePassManager._call_native', 'CorePassManager._native_return'):
             require(['biocompiler.core_pipeline_manager', name] in guard, 'Missing actual typed native-provider execution: '+name)
         details = {}

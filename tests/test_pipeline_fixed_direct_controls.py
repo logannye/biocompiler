@@ -9,7 +9,7 @@ from tools import check_pipeline_fixed_continuation_install as continuation
 from tools import capture_pipeline_fixed_build_semantics as oracle
 from tests.test_pipeline_fixed_provider_campaign import Script
 from tests.test_core_pipeline_build_views import BuildEnvelopeFixture
-from tests.test_pipeline_manager_campaign import reframe
+from tests.test_pipeline_manager_campaign import reframe, guard_with_routes
 
 manager = direct.manager
 
@@ -100,6 +100,14 @@ def fixture(receipt, expected, original, *, late_origin=False):
     script = Script(receipt)
     sequence = script.command('initialize-components', {**expected['authority'], 'config': config.to_dict(),
         'request_tree': _ordered(request.to_dict()), 'manager_limits': None, **{key+'_object': value for key, value in refs.items()}})
+    from tests.pipeline_fixed_initializer_fixture import emit, records as initializer_records
+    hooks = emit(script, sequence,
+        {'value': request.target.to_dict(), 'binding': {'kind': 'host', 'object': refs['target']}},
+        {key: entry['contract'] for key, entry in inspection['snapshot']['passes'].items()},
+        [(token, roles[token], reference) for token, reference in slots.values()], count=3)
+    evidence['arguments'].update(hooks['arguments'])
+    initializer_records(hooks, (envelopes[key] for key in records))
+    introduced = {item['id']: handle for handle, item in hooks['host_documents'].items()}
     script.reply(sequence, {'kind': 'components', 'manager': True,
         'artifacts': ['candidate', 'pipeline_result', 'selection_result', 'assembly', 'link_result', 'behavior_result'],
         'target': {'value': request.target.to_dict(), 'binding': {'kind': 'host', 'object': refs['target']}}})
@@ -119,8 +127,6 @@ def fixture(receipt, expected, original, *, late_origin=False):
                 script.invoke(sequence, 'origin-reference', {'root': root, 'path': path}, reference); anchored.add(reference['handle'])
         script.reply(sequence, envelope)
     sequence = script.command('inspect-ordered', {}); evidence['inspection'] = sequence
-    for token, reference in slots.values():
-        script.invoke(sequence, 'native-provider', {'provider_id': token, 'role': roles[token]}, reference)
     script.reply(sequence, inspection)
     source_id = 'request'
     for index, (pass_id, output_id) in enumerate(zip(direct.ROLES, direct.OUTPUTS)):
@@ -130,7 +136,12 @@ def fixture(receipt, expected, original, *, late_origin=False):
         evidence['arguments'][mapping['handle']] = {'kind': 'validators', 'items': [[key, slots[pass_id, key][0]] for key in validators]}
         obligations = []
         for offset, value in enumerate(contract.introduces):
-            reference = objects.retain(value); obligations.append(reference)
+            # Actual inspection_state yields fresh typed contract objects, so
+            # these wrappers must not reuse initialization's equal obligations.
+            from biocompiler.core_pipeline_manager import _obligation
+            reference = objects.retain(_obligation(value.to_dict()))
+            obligations.append(reference)
+            introduced[value.id] = reference['handle']
             evidence['arguments'][reference['handle']] = {'kind': 'contract_obligation', 'pass_id': pass_id,
                 'index': offset, 'value': value.to_dict()}
         sequence = script.command('register', {'contract': raw_contract, 'producer': wrapper, 'validators': mapping, 'obligation_objects': obligations})
@@ -161,6 +172,11 @@ def fixture(receipt, expected, original, *, late_origin=False):
         evidence['calls'].append({'pass_id': pass_id, 'ordinal': 0, 'before_frames': start, 'after_frames': len(script.rows),
             'sequence': nested, 'returned_object': proposal_ref['handle']})
         script.end(callback, proposal_ref)
+        output = envelopes[output_id]
+        for offset, obligation in enumerate(output['value']['obligations']):
+            if obligation['id'] in introduced:
+                output['bindings']['obligation_objects'][offset] = {
+                    'kind': 'host', 'object': {'handle': introduced[obligation['id']]}}
         script.reply(sequence, envelopes[output_id])
         source_id = output_id
     script.close()
@@ -212,6 +228,8 @@ class DirectControlTests(unittest.TestCase):
             'source-record': 'historical parser source',
             'candidate-alias': 'Candidate parsed type origin census',
             'candidate-alias-collision': 'Candidate parsed types reused a node origin',
+            'stale-obligation-origin': 'actual registration object origin',
+            'inherited-obligation-origin': 'actual registration object origin',
             **{key: 'Complete accepted direct record' for key in ('pass-identity', 'stage', 'discharged', 'provenance', 'check')},
         }
         for change, diagnostic in changes.items():
@@ -243,6 +261,17 @@ class DirectControlTests(unittest.TestCase):
                     elif change == 'candidate-alias-collision':
                         aliases = [value for value in build['view']['aliases'] if value['paths'][0][0] == 'candidate']
                         aliases[1]['binding']['identity'] = aliases[0]['binding']['identity']
+                    elif change in ('stale-obligation-origin', 'inherited-obligation-origin'):
+                        initial = next(value for value in commands if value['operation'] == 'register'
+                            and value['parent_invocation'] is not None and value['arguments']['obligation_objects'])
+                        declaration = initial['arguments']['contract']['introduces'][0]
+                        runs = [value for value in commands if value['operation'] == 'run']
+                        owner = runs[1 if change == 'stale-obligation-origin' else 2]
+                        record = replies[owner['sequence']]['outcome']['value']
+                        offset = next(index for index, item in enumerate(record['value']['obligations'])
+                            if item['id'] == declaration['id'])
+                        record['bindings']['obligation_objects'][offset] = {
+                            'kind': 'host', 'object': deepcopy(initial['arguments']['obligation_objects'][0])}
                     elif change in ('pass-identity', 'stage', 'discharged', 'provenance', 'check'):
                         accepted = replies[first_run['sequence']]['outcome']['value']
                         if change == 'pass-identity': accepted['value']['pass_identity'] = '0'*64
@@ -299,7 +328,7 @@ class DirectControlTests(unittest.TestCase):
                 receipt['direct_checks'].append({'id': expected['id'], 'frames': frames,
                     'actual': put(actual), 'evidence': put(evidence), 'pid': 500+index, 'returncode': 0,
                     'closed': True, 'invalidated': False, 'executable_sha256': 'a'*64,
-                    'stderr': put({'hex': ''}), 'guard': put(guard), 'after_close': put({
+                    'stderr': put({'hex': ''}), 'guard': put(guard_with_routes(receipt, guard, frames)), 'after_close': put({
                         'type': 'CoreProtocolError', 'message': 'Callback session is closed; it cannot reconnect',
                         'traffic_unchanged': True, 'pid_unchanged': True})})
             artifacts = manager.Artifacts(Path(directory), receipt['artifacts'])

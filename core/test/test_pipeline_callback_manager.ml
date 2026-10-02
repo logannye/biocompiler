@@ -8,6 +8,7 @@ let str value=Json.String value
 let get key value=Json.field key(Json.object_fields value)
 let text key value=Json.string(get key value)
 let require value message=if not value then failwith message
+let phase=ref "declaration and fixture loading"
 let encode=Canonical.encode
 let same left right=encode left=encode right
 let set key value raw=obj((key,value)::List.remove_assoc key(Json.object_fields raw))
@@ -139,32 +140,60 @@ let uuid="01234567-89ab-cdef-0123-456789abcdef"
 let common kind sequence=["protocol",str Ch.protocol;"profile",str Ch.profile;
  "session_id",str uuid;"kind",str kind;"sequence",Json.int sequence]
 type result={replies:(string*Json.t) list;events:Json.t list;closed:bool}
-let exercise ?(limits=Json.Null) ?(on_reply=(fun _ _->[])) peer commands=
+(* Test peer supports real nested commands during a suspended invocation. *)
+type invocation_plan = Peer_return of Json.t | Peer_raise of string
+ | Peer_command of string * Json.t * (Json.t -> invocation_plan)
+let fixed_registration_arguments peer arguments=
+ let validators=Mapping(List.map(function Json.Array[Json.String key;reference]->key,dereference peer reference
+   | _->failwith "Malformed fixed validator declaration")(Json.array(get "validators" arguments))) in
+ let obligations=List.map(fun binding->require(text "kind" binding="native") "Fixed obligation lacks its native origin";
+   reference peer(Data(unordered(get "tree" binding))))(Json.array(get "obligation_objects" arguments)) in
+ obj["contract",get "contract" arguments;"producer",get "producer" arguments;
+   "validators",reference peer validators;"obligation_objects",Json.Array obligations]
+let default_invocation peer name arguments=match name with
+ | "manager-created"->Peer_return Json.Null
+ | "register-fixed"->Peer_command("register",fixed_registration_arguments peer arguments,
+     (fun event->require(text "status"(get "outcome" event)="ok") "Native fixed registration failed";Peer_return Json.Null))
+ | _->Peer_return(action peer name arguments)
+let exercise ?(limits=Json.Null) ?(on_reply=(fun _ _->[])) ?(on_invoke=default_invocation) peer commands=
  let input=ref "" and events=ref [] and replies=ref [] and pending=ref commands and sequence=ref 0 in
- let active=ref "hello" and peer_error=ref None in
+ let active=ref "hello" and peer_error=ref None and nested=ref [] in
  let enqueue raw=let body=encode raw in input:= !input^Printf.sprintf "%08x\n%s"(String.length body)body in
  let send kind fields=enqueue(obj(common kind !sequence@fields));incr sequence in
  send "hello"["declaration",Ch.declaration;"application",A.declaration;"limits",limits];
  let consume n=let n=min n(String.length !input) in let value=String.sub !input 0 n in
    input:=String.sub !input n(String.length !input-n);value in
+ let rec continue invocation body=function
+  | Peer_return value->complete invocation body(obj["status",str "return";"value",value])
+  | Peer_raise token->complete invocation body(obj["status",str "raise";"token",str token])
+  | Peer_command(operation,arguments,resume)->
+      let client_sequence= !sequence in
+      nested:=(client_sequence,(fun event->continue invocation body(resume event)))::!nested;
+      send "command"["parent_invocation",get "invocation_id" invocation;"operation",str operation;"arguments",arguments]
+ and complete invocation body outcome=
+   send "continue"["invocation_id",get "invocation_id" invocation;
+     "invocation_sha256",str(Canonical.sha256 body);"outcome",outcome] in
  let io:Ch.io={read_header=(fun()->if !input="" then None else Some(consume 9));read_body=consume;
    write=(fun framed->let body=String.sub framed 9(String.length framed-9) in
      let event=Json.parse_artifact ~max_bytes:33_554_432 ~max_nodes:1_000_000 body in
      events:= !events@[event];
-     match text "kind" event with
-     | "invoke"->let outcome=try obj["status",str "return";"value",action peer(text "action" event)(get "arguments" event)]
-        with Exit->obj["status",str "raise";"token",str "same-original-exception"]
-        | cause->peer_error:=Some cause;raise cause in
-       send "continue"["invocation_id",get "invocation_id" event;
-         "invocation_sha256",str(Canonical.sha256 body);"outcome",outcome]
+     try match text "kind" event with
+     | "invoke"->let plan=try on_invoke peer(text "action" event)(get "arguments" event)
+         with Exit->Peer_raise "same-original-exception" in
+       continue event body plan
      | "reply"->
-       replies:= !replies@[!active,get "outcome" event];
-       pending:= !pending@on_reply !active event;
-       if not(Json.boolean(get "closed" event)) then (match !pending with
-       | []->active:="close";send "close"["parent_invocation",Json.Null]
-       | (operation,arguments)::tail->pending:=tail;active:=operation;
-         send "command"["parent_invocation",Json.Null;"operation",str operation;"arguments",arguments])
-     | "fatal"->() | _->failwith "Unknown channel event") } in
+       let client_sequence=Z.to_int(Json.integer(get "sequence" event)) in
+       (match List.assoc_opt client_sequence !nested with
+        | Some resume->nested:=List.remove_assoc client_sequence !nested;resume event
+        | None->
+          replies:= !replies@[!active,get "outcome" event];
+          pending:= !pending@on_reply !active event;
+          if not(Json.boolean(get "closed" event)) then (match !pending with
+          | []->active:="close";send "close"["parent_invocation",Json.Null]
+          | (operation,arguments)::tail->pending:=tail;active:=operation;
+            send "command"["parent_invocation",Json.Null;"operation",str operation;"arguments",arguments]))
+     | "fatal"->() | _->failwith "Unknown channel event"
+     with cause->peer_error:=Some cause;raise cause) } in
  let service=A.create ~io () in A.run service;
  Option.iter raise !peer_error;
  {replies= !replies;events= !events;closed=A.is_closed service}
@@ -398,6 +427,265 @@ let rec at_path raw=function
  | Json.String key::rest->at_path(get key raw)rest
  | Json.Int index::rest->at_path(List.nth(Json.array raw)(Z.to_int index))rest
  | _->failwith "Invalid typed alias path"
+(* All proposals below are returned by actual native providers in this run. *)
+let interception_budget ()=W.create ~profile:"fixed_registration_hooks"
+  ~error_code:"fixed_registration_hook_limit" ~maximum:1_000_000_000_000 ()
+let historical manager=M.inspect manager ~provider_identity:(fun _->"actual-native-provider")
+let keys key raw=List.map fst(Json.object_fields(get key raw))
+let no_fixed_scope request=
+ let raw=Bioc_domain.Realization_request.to_json request in
+ Bioc_domain.Realization_request.of_json(set "build_request"
+   (set "artifact_scope"(str "abstract_behavior")(get "build_request" raw))raw)
+let mutate_fixed_proposal mode context raw=
+ let links=Json.array(get "source_links" raw) in
+ match mode with
+ | "observation"->set "observation_map"(obj["forged",str "endpoint"])raw
+ | "wrong-source"->
+     let nodes=Json.array(get "nodes"(get "mechanism"(C.Pass_context.input context))) in
+     let replacement=get "id"(List.hd(List.rev nodes)) in
+     let changed=List.map(set "source_node_id" replacement)links in
+     require(not(same(Json.Array links)(Json.Array changed))) "Wrong-source recipe made no real change";
+     set "source_links"(Json.Array changed)raw
+ | "duplicate"->require(links<>[]) "Duplicate recipe lacks an actual source link";
+     set "source_links"(Json.Array(links@[List.hd links]))raw
+ | _->raw
+let fixed_registration_library_tests request history config until=
+ let budget=interception_budget () and published=ref None and calls=ref [] and observed=ref [] in
+ let manager_created work manager=
+   require(work==budget && !published=None) "Fixed creation published another lifetime or manager";
+   let state=historical manager in
+   require(keys "records" state=[] && keys "passes" state=[]) "Manager publication ran after input or pass storage";
+   published:=Some manager in
+ let provider_observer work owner provider _=
+   require(work==budget && (match !published with Some actual->actual==owner | None->false))
+     "Fixed closure role arrived before its actual owner was published";
+   observed:=provider::!observed in
+ let register_fixed work manager contract ~producer ~validators=
+   require(work==budget && (match !published with Some actual->actual==manager | None->false))
+     "Registration hook received another manager or work ancestor";
+   require(List.exists(fun value->value==producer)!observed &&
+     List.for_all(fun(_,provider)->List.exists(fun value->value==provider)!observed)validators)
+     "Registration hook arrived before actual closure role publication";
+   let id=C.Pass_contract.id contract and before=historical manager in
+   let prior,records=match id with
+    | "intent_to_behavior"->[],["request"]
+    | "behavior_to_synthetic"->["intent_to_behavior"],["request";"behavior"]
+    | "synthetic_to_components"->["intent_to_behavior";"behavior_to_synthetic"],["request";"behavior";"mechanism"]
+    | _->failwith "Unexpected fixed registration" in
+   require(keys "passes" before=prior && keys "records" before=records)
+     "Fixed registration moved ahead of its original partial state";
+   calls:= !calls@[id];M.register manager contract ~producer ~validators in
+ let completed=P.run ~budget ~manager_created ~provider_observer ~register_fixed ?until ?config request history in
+ require(!calls=["intent_to_behavior";"behavior_to_synthetic";"synthetic_to_components"])
+   "Fixed registration hook was skipped or invoked twice";
+ require((match !published with Some actual->actual==P.manager completed | None->false))
+   "Completed build substituted another published manager";
+ let unchanged=P.run ~budget:(interception_budget ()) ?until ?config request history in
+ require(same(C.Pipeline_result.to_json(P.result completed))(C.Pipeline_result.to_json(P.result unchanged)))
+   "Delegating fixed hooks changed the ordinary native result";
+ let publication=ref None and budget=interception_budget () in
+ let captured=Failure "same original fixed hook exception" in
+ let manager_created work manager=require(work==budget) "Publication budget changed";publication:=Some manager in
+ let register_fixed _ manager contract ~producer ~validators=
+   if C.Pass_contract.id contract="behavior_to_synthetic" then (
+     M.set_dependency manager "hook_marker"(Canonical.sha256 "retained nested mutation");raise captured)
+   else M.register manager contract ~producer ~validators in
+ (try ignore(P.attempt ~budget ~manager_created ~register_fixed ?until ?config request history);
+    failwith "Unexpected hook exception was converted into a completed or logical result"
+  with error->require(error==captured) "Fixed hook replaced its original exception value");
+ let manager=Option.get !publication in
+ let retained=historical manager in
+ require(keys "records" retained=["request";"behavior"] && keys "passes" retained=["intent_to_behavior"])
+   "A later host hook failure discarded or advanced partial state";
+ require(text "hook_marker"(get "dependencies" retained)=Canonical.sha256 "retained nested mutation")
+   "Hook failure rolled back its completed nested mutation";
+ ignore(M.get manager "request");
+ let budget=interception_budget () and publication=ref None in
+ let manager_created _ manager=publication:=Some manager in
+ let skipped _ _ _ ~producer:_ ~validators:_=() in
+ (match S.attempt ~budget ~manager_created ~register_fixed:skipped ?until ?config request history with
+  | S.Completed _->failwith "Skipped registration acquired a fallback provider"
+  | S.Failed failure->require((match failure.manager,!publication with Some a,Some b->a==b | _->false))
+      "Logical registration failure lost the published owner";
+      require(keys "passes"(historical(Option.get failure.manager))=[] &&
+        keys "records"(historical(Option.get failure.manager))=["request"])
+        "Skipped hook installed a pass or rolled back the actual input");
+ let created=ref None and publication_error=Failure "same publication exception" in
+ (try ignore(S.attempt ~budget:(interception_budget ())
+    ~manager_created:(fun _ manager->created:=Some manager;raise publication_error)
+    ?until ?config request history);failwith "Publication exception was hidden"
+  with error->require(error==publication_error) "Publication replaced its original exception value");
+ let published_state=historical(Option.get !created) in
+ require(keys "records" published_state=[] && keys "passes" published_state=[])
+   "Failed publication advanced or discarded the actual empty owner";
+ let early=ref false in
+ (match S.attempt ~budget:(interception_budget ()) ~manager_created:(fun _ _->early:=true)
+    ?until ?config(no_fixed_scope request)history with
+  | S.Completed _->failwith "Non-synthetic request reached fixed registration"
+  | S.Failed failure->require(failure.manager=None && not !early) "Pre-manager failure published fabricated state");
+ List.iter(fun mode->
+   let budget=interception_budget () and publication=ref None and before_run=ref None in
+   let manager_created _ manager=publication:=Some manager in
+   let register_fixed _ manager contract ~producer ~validators=
+     let producer=if C.Pass_contract.id contract<>"synthetic_to_components" then producer else
+       (fun work context->before_run:=Some(historical manager);
+         match producer work context with
+         | M.Proposal proposal->M.Proposal(C.Pass_result.of_json(mutate_fixed_proposal mode context(C.Pass_result.to_json proposal)))
+         | M.Decision _ | M.Invalid_return _ | M.Host_return _->failwith "Fixed producer did not return its native proposal") in
+     M.register manager contract ~producer ~validators in
+   match P.attempt ~budget ~manager_created ~register_fixed ?until ?config request history with
+   | P.Completed _->failwith("Forged fixed provenance was accepted: "^mode)
+   | P.Failed failure->
+       (match failure.error with Diagnostic.Error diagnostic->
+          require(diagnostic.code="pipeline_error" && diagnostic.message=
+            "Component pass provenance changed authoritative source links or observations.")
+            "Native fixed validator rejected at another semantic branch"
+        | _->failwith "Provenance mutation changed exception type");
+       let manager=Option.get failure.manager in
+       require((match !publication with Some actual->actual==manager | None->false))
+         "Provenance failure lost its actual manager";
+       require(same(Option.get !before_run)(historical manager)) "Rejected component proposal changed historical manager state";
+       require(keys "records"(historical manager)=["request";"behavior";"mechanism"])
+         "Rejected component proposal stored an output") ["observation";"wrong-source";"duplicate"]
+
+(* Framed registration tests exercise the same live native hooks. *)
+let proposal_object raw=
+ let objects kind values=Sequence(List.map(fun value->Instance(kind,
+   List.map(fun(key,value)->key,Data value)(Json.object_fields value)))values) in
+ Instance("PassResult",["search_status",Data(get "search_status" raw);"output",Data(get "output" raw);
+   "source_links",objects "SourceLink"(Json.array(get "source_links" raw));
+   "obligations",objects "ProducerObligation"(Json.array(get "obligations" raw));
+   "observation_map",Data(get "observation_map" raw)])
+let interception_peer peer mode=
+ let published=ref false and registrations=ref [] and contexts=ref [] and wrappers=ref [] in
+ let before_component=ref None in
+ let wrap_registration arguments=
+   let arguments=fixed_registration_arguments peer arguments in
+   if text "id"(get "contract" arguments)<>"synthetic_to_components" then arguments else
+   let producer=dereference peer(get "producer" arguments) in
+   let token=match producer with Native value->value | _->failwith "Fixed source is not the actual native proxy" in
+   let wrapper=Function(fun _->failwith "Wrapped native provider escaped its live continuation") in
+   wrappers:=(wrapper,token)::!wrappers;set "producer"(reference peer wrapper)arguments in
+ let on_invoke peer name arguments=match name with
+ | "manager-created"->
+     require(not !published) "The fixed initializer published two managers";published:=true;
+     if mode="bad-publication" then Peer_return(str "replacement-manager") else
+     Peer_command("inspect",obj[],fun event->let state=success(get "outcome" event) in
+       require(keys "records" state=[] && keys "passes" state=[]) "Framed publication followed input storage";
+       Peer_return Json.Null)
+ | "register-fixed"->
+     require !published "Fixed registration ran before manager publication";
+     let id=text "id"(get "contract" arguments) in registrations:= !registrations@[id];
+     if mode="skip" && id="intent_to_behavior" then Peer_return Json.Null
+     else if mode="raise" && id="behavior_to_synthetic" then
+       Peer_command("set-dependency",obj["key",str "hook_marker";"identity",str(Canonical.sha256 "retained framed mutation")],
+         fun event->ignore(success(get "outcome" event));Peer_raise "same-original-exception")
+     else Peer_command("register",wrap_registration arguments,fun event->ignore(success(get "outcome" event));Peer_return Json.Null)
+ | "hydrate-context"->
+     let reference=action peer name arguments in
+     contexts:=(text "handle" reference,arguments)::!contexts;Peer_return reference
+ | "call-provider"->
+     let provider=List.assoc(text "provider_id" arguments)peer.providers in
+     (match List.find_opt(fun(value,_)->value==provider)!wrappers with
+      | None->default_invocation peer name arguments
+      | Some(_,token)->
+          let context=List.assoc(text "handle"(get "context" arguments))!contexts in
+          Peer_command("inspect",obj[],fun event->before_component:=Some(success(get "outcome" event));
+            Peer_command("call-native-provider",obj["provider_id",str token;"context_id",get "context_id" context],
+              fun event->let returned=success(get "outcome" event) in
+                require(text "kind" returned="proposal") "Wrapped source did not execute its actual native producer";
+                let context=C.Pass_context.of_json(get "document" context) in
+                let raw=mutate_fixed_proposal mode context(get "value" returned) in
+                let proposal=proposal_object raw in
+                (* The original duplicate recipe appends the actual first SourceLink
+                   object, retaining its physical identity. *)
+                let proposal=if mode<>"duplicate" then proposal else match proposal with
+                  | Instance(kind,fields)->let actual=match List.assoc "source_links" fields with
+                     | Sequence values->values | _->failwith "Source links are not a tuple" in
+                    let unique=List.rev(List.tl(List.rev actual)) in
+                    Instance(kind,("source_links",Sequence(unique@[List.hd unique]))::List.remove_assoc "source_links" fields)
+                  | _->failwith "Native proposal did not hydrate as PassResult" in
+                Peer_return(reference peer proposal))))
+ | "source-link-set-equal"->
+     let actual=List.map(fun reference->encode(json(dereference peer reference)))(Json.array(get "objects" arguments)) in
+     let expected=List.map encode(Json.array(get "expected" arguments)) in
+     Peer_return(Json.Bool(List.sort_uniq String.compare actual=List.sort_uniq String.compare expected))
+ | _->default_invocation peer name arguments in
+ on_invoke,wrap_registration,published,registrations,before_component
+let framed_fixed_interception_tests initialization=
+ List.iter(fun mode->
+   let peer=peer () in
+   let on_invoke,_,published,registrations,before_component=interception_peer peer mode in
+   let args=initialization peer in
+   let initial_body=encode(obj(common "command" 1@["parent_invocation",Json.Null;
+     "operation",str "initialize-components";"arguments",args])) in
+   let result=exercise ~on_invoke peer["initialize-components",args;"inspect",obj[];"target",obj[]] in
+   require !published "Fixed initialization never published its actual owner";
+   if mode="bad-publication" then (
+     let terminal=List.hd(List.rev result.events) in
+     require(text "kind" terminal="fatal" && result.closed) "Malformed publication kept authority open";
+     let invocation=List.find(fun event->text "kind" event="invoke" && text "action" event="manager-created")result.events in
+     let continuation=encode(obj(common "continue" 2@[
+       "invocation_id",get "invocation_id" invocation;"invocation_sha256",str(Canonical.sha256(encode invocation));
+       "outcome",obj["status",str "return";"value",str "replacement-manager"]])) in
+     require(get "sequence" terminal=Json.int 2 && text "request_sha256" terminal=Canonical.sha256 continuation)
+       "Publication protocol failure lost its last validated continuation binding")
+   else (
+     let initialization=nth result 1 in
+     require(List.for_all(fun event->text "kind" event<>"fatal")result.events && result.closed)
+       "Logical/host fixed failure closed before historical observation";
+     let state=success(nth result 2) in
+     ignore(success(nth result 3));
+     if mode="raise" then (
+       require(text "status" initialization="raise" && text "token" initialization="same-original-exception")
+         "Outer initialization lost its original opaque callback exception";
+       require(keys "records" state=["request";"behavior"] && keys "passes" state=["intent_to_behavior"])
+         "Host registration exception discarded or advanced partial state";
+       require(text "hook_marker"(get "dependencies" state)=Canonical.sha256 "retained framed mutation")
+         "Host registration exception lost its nested mutation")
+     else if mode="skip" then (
+       ignore(rejection initialization);
+       require(keys "records" state=["request"] && keys "passes" state=[])
+         "Skipped fixed hook acquired a fallback registration")
+     else if mode="passthrough" then (
+       ignore(success initialization);
+       require(keys "records" state=["request";"behavior";"mechanism";"components"])
+         "Actual wrapped native producer failed to retain its complete records")
+     else (
+       let error=rejection initialization in
+       require(text "type" error="PipelineError" && text "message" error=
+         "Component pass provenance changed authoritative source links or observations.")
+         "Mixed native validator rejected before checking actual source provenance";
+       require(same(Option.get !before_component)state) "Rejected wrapper changed its manager's historical state";
+       require(keys "records" state=["request";"behavior";"mechanism"])
+         "Rejected wrapper stored an accepted component output");
+     if List.mem mode["passthrough";"observation";"wrong-source";"duplicate"] then (
+       let comparisons=List.filter(fun event->text "kind" event="invoke" &&
+         text "action" event="source-link-set-equal")result.events in
+       require(List.length comparisons=(if mode="duplicate" then 0 else 1))
+         "Deferred source correspondence changed its length/set short circuit");
+     let outer=List.find(fun event->text "kind" event="reply" && get "sequence" event=Json.int 1)result.events in
+     require(text "request_sha256" outer=Canonical.sha256 initial_body)
+       "Nested registration replaced the original initialization request binding";
+     require(!registrations=(if mode="skip" then ["intent_to_behavior"] else if mode="raise" then
+       ["intent_to_behavior";"behavior_to_synthetic"] else
+       ["intent_to_behavior";"behavior_to_synthetic";"synthetic_to_components"]))
+       "Actual fixed registration was omitted or duplicated"))
+   ["passthrough";"observation";"wrong-source";"duplicate";"raise";"skip";"bad-publication"];
+ let peer=peer () in
+ let arguments=initialization peer in
+ let raw=get "request" arguments in
+ let raw=set "build_request"(set "artifact_scope"(str "abstract_behavior")(get "build_request" raw))raw in
+ let arguments=set "request" raw(set "request_tree"(ordered raw)arguments) in
+ let result=exercise peer["initialize-synthetic",arguments] in
+ let error=rejection(nth result 1) in
+ require(text "type" error="PipelineError" && text "message" error=
+   "The request must explicitly select synthetic_realization scope.") "Early fixed failure changed its native error";
+ require(not(List.exists(fun event->text "kind" event="invoke" && text "action" event="manager-created")result.events))
+   "A failure before construction published a fabricated manager";
+ require(result.closed && List.for_all(fun event->text "kind" event<>"fatal")result.events)
+   "Expected pre-manager rejection was converted into a protocol failure"
+
 let phased_component_test request history config until=
  let budget=W.create ~profile:"phased_component_pipeline" ~error_code:"phased_component_pipeline_limit"
    ~maximum:1_000_000_000_000 () in
@@ -444,6 +732,7 @@ let phased_component_test request history config until=
    "Dependency mutation rewrote the cached historical synthetic build"
 let framed_component_test initialization mode=
  let p=peer () in
+ let on_invoke,wrap_registration,_,_,_=interception_peer p "passthrough" in
  let preparation=ref Json.Null and record_id=ref Json.Null and run_sequence=ref Json.Null in
  let synthetic=ref None and components=ref None and changed=ref false in
  let candidate_aliases value=List.filter(fun entry->List.exists(function
@@ -503,12 +792,7 @@ let framed_component_test initialization mode=
   | "component-profile"->["register-completion-profile",obj["profile",value];phase "component-registration"]
   | "register-completion-profile"->[]
   | "component-registration"->
-      let validators=Mapping(List.map(function Json.Array[Json.String key;reference]->key,dereference p reference
-        | _->failwith "Malformed native validator declaration")(Json.array(get "validators" value))) in
-      let obligations=List.map(fun binding->require(text "kind" binding="native") "Prepared obligation lacks its native origin";
-        reference p(Data(unordered(get "tree" binding))))(Json.array(get "obligation_objects" value)) in
-      ["register",obj["contract",get "contract" value;"producer",get "producer" value;
-        "validators",reference p validators;"obligation_objects",Json.Array obligations]]
+      ["register",(if mode="wrapped" then wrap_registration value else fixed_registration_arguments p value)]
   | "register"->["run",obj["pass_id",str "synthetic_to_components";"input_id",str "mechanism";
       "output_id",str "components";"configuration",Json.Null]]
   | "run"->record_id:=get "record_id"(get "bindings" value);run_sequence:=get "sequence" event;
@@ -520,17 +804,19 @@ let framed_component_test initialization mode=
       ["finish-components",obj["preparation_id",!preparation;"record_id",actual_record;"result_sequence",sequence]]
   | "finish-components"->components:=Some value;[build "synthetic"]
   | _->failwith("Unexpected phased workflow operation "^operation) in
- let result=exercise ~on_reply p["initialize-synthetic",initialization p] in
+ let result=exercise ~on_reply ~on_invoke p["initialize-synthetic",initialization p] in
  require(result.closed) "Phased workflow left its channel open";
- if mode="complete" then (
+ if mode="complete" || mode="wrapped" then (
    require(!components<>None && !changed) "Complete phased workflow did not reach stale historical reads";
    require(text "kind"(List.hd(List.rev result.events))="reply") "Valid staged continuation closed fatally")
  else require(!components=None && text "kind"(List.hd(List.rev result.events))="fatal")
    "An invalid phase or unrelated result capability completed the build"
 let fixed_provider_tests path=
+ phase:="fixed provider authority index: "^path;
  let index=read path in
  require(text "document_directory" index="fixed-pipeline-literals-v1") "Fixed authority directory changed";
  let run case_id=
+  phase:="fixed provider case: "^case_id;
   let case=List.find(fun value->text "id" value=case_id)(Json.array(get "cases" index)) in
   require(text "api" case="run_component_pipeline" && text "outcome" case="returned")
     "Typed provider authority is not an original component call";
@@ -552,6 +838,7 @@ let fixed_provider_tests path=
     | value->Some(Bioc_domain.Synthetic_authority.Config.of_json value) in
   let until=match get "until" authority with Json.Null->None | value->Some(Bioc_domain.Runtime_number.of_json value) in
   if case_id="tests/test_component_pipeline.py::fixture.setUpClass/event/0" then (
+    fixed_registration_library_tests request history config until;
     phased_component_test request history config until;
     let initialization peer=
       peer.request_document<-Some request_raw;
@@ -569,7 +856,8 @@ let fixed_provider_tests path=
     let rejected=exercise p["initialize-synthetic",set "request_tree"(ordered Json.Null)(initialization p)] in
     require(text "kind"(List.hd(List.rev rejected.events))="fatal")
       "A differently ordered-tree projection replaced fixed request authority";
-    List.iter(framed_component_test initialization)["complete";"record";"result";"phase"]);
+    framed_fixed_interception_tests initialization;
+    List.iter(framed_component_test initialization)["complete";"wrapped";"record";"result";"phase"]);
   let budget=W.create ~profile:"fixed_provider_views" ~error_code:"fixed_provider_views_limit" ~maximum:1_000_000_000_000 () in
   let providers=ref [] and contexts=ref [] in
   let observer supplied=function
@@ -679,13 +967,26 @@ let fixed_provider_tests path=
  List.iter run ["tests/test_component_pipeline.py::fixture.setUpClass/event/0";
    "tests/test_temporal_components.py::fixture.setUpClass/event/0";
    "tests/test_synthetic_design_workflows.py::fixture.setUpClass/event/0"]
-let ()=
+let main ()=
  require(Array.length Sys.argv=4) "Expected declaration, original contract and fixed authority corpus paths";
  require(same(read Sys.argv.(1)) A.declaration) "Application declaration differs across languages";
  require(same(get "default_generator_config" A.declaration)
    (Bioc_domain.Synthetic_authority.Config.to_json(Bioc_domain.Synthetic_authority.Config.make ())))
    "Negotiated default generator configuration differs from the actual native constructor";
  let baseline=get "manager_baseline"(read Sys.argv.(2)) in
- baseline_test baseline;compact_inspection_test baseline;negative_validator_test baseline;failure_test baseline;no_candidate_test baseline;protocol_test baseline;
+ List.iter(fun(name,test)->phase:=name;test baseline)
+  ["baseline",baseline_test;"compact inspection",compact_inspection_test;
+   "negative validator",negative_validator_test;"callback failure",failure_test;
+   "no candidate",no_candidate_test;"protocol",protocol_test];
  fixed_provider_tests Sys.argv.(3);
  print_endline "callback manager application: framed state/errors and 18 actual fixed producer returns with typed construction origins and exact metadata resource bounds passed"
+let ()=
+ Printexc.record_backtrace true;
+ try main () with error->
+  let backtrace=Printexc.get_raw_backtrace () in
+  let detail=match error with
+   | Diagnostic.Error value->value.code^": "^value.message^
+       (match value.path with None->"" | Some path->" at "^path)
+   | _->Printexc.to_string error in
+  Printf.eprintf "Callback manager test failed during %s: %s\n%!" !phase detail;
+  Printexc.raise_with_backtrace error backtrace

@@ -20,7 +20,8 @@ from tools import check_pipeline_manager_trace as trace
 class PipelineManagerTraceTests(unittest.TestCase):
     def test_all_47_fresh_original_cases_have_closed_manager_segment_recipes(self):
         oracle = campaign.load_oracle(installed=False, deferred=True)
-        fresh = oracle.capture()
+        from tools.pipeline_original_counterpart import run
+        fresh = run('deferred')['value']['capture']
         self.assertEqual(len(fresh['cases']), 47)
         segments = 0
         for case in fresh['cases']:
@@ -160,6 +161,40 @@ class PipelineManagerTraceTests(unittest.TestCase):
         node['binding']['sequence'] = nested['sequence']
         with self.assertRaisesRegex(AssertionError, 'Bridge frame belongs to another command'):
             trace.projection(actual, expected, evidence, details)
+
+    def test_repaired_public_delegation_frames_are_exact_and_command_bound(self):
+        baseline = self.fixture(host=True, comparison=True)
+        self.assertEqual(trace.projection(*baseline)[0], baseline[1])
+        receipt, row, directory = self.last_transport
+        # These are complete actual subprocess frames. Keep their valid raw
+        # hashes/counters while repairing every raw traceback counterpart.
+        campaign.validate_frames(row['frames'], campaign.Artifacts(directory, receipt['artifacts']),
+            *campaign.declarations(), provider_calls=False)
+        for method in ('PassManager.register', 'CorePassManager._native_register'):
+            for mutation in ('omit', 'duplicate', 'reorder', 'prior-command', 'nested-command'):
+                actual, expected, evidence, details = deepcopy(baseline)
+                chain = evidence['errors'][0]['traceback']
+                offset = next(index for index, item in enumerate(chain) if item['qualname'] == method)
+                if mutation == 'omit':
+                    chain.pop(offset)
+                elif mutation == 'duplicate':
+                    copied = deepcopy(chain[offset]); copied['node'] = 'traceback/999'
+                    chain.insert(offset, copied)
+                elif mutation == 'reorder':
+                    chain[offset], chain[offset+1] = chain[offset+1], chain[offset]
+                else:
+                    owner = next(item for item in details[0]['commands'] if item['operation'] ==
+                        ('initialize-empty' if mutation == 'prior-command' else 'set-dependency'))
+                    chain[offset]['binding']['sequence'] = owner['sequence']
+                error = actual['events'][0]['exception']
+                error['original_traceback'] = [{'file': item['source'], 'function': item['function'],
+                    'line': item['line']} for item in chain]
+                required = next(index for index, item in enumerate(chain)
+                    if item['source'] == trace.ORACLE and item['function'] == 'raise_marker')
+                evidence['errors'][0]['required_index'] = required
+                error['required_user_traceback_tail'] = error['original_traceback'][required:]
+                with self.subTest(method=method, mutation=mutation), self.assertRaisesRegex(AssertionError, 'Bridge'):
+                    trace.projection(actual, expected, evidence, details)
 
     def test_rehashed_action_and_valid_source_site_substitution_is_rejected(self):
         for contains in (False, True):

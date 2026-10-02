@@ -228,6 +228,22 @@ def fake_frames(receipt, *, admission=False, comparison=None):
     return rows
 
 
+
+def guard_with_routes(receipt, guard, frames):
+    # Fabricated comparator evidence only, never a claim of actual execution.
+    from tools.pipeline_registration_guard import TAG, BASE, proof, canonical
+    directory = Path(receipt['_artifact_directory'])
+    values = [campaign.frame_body((directory/(row['frame']+'.bin')).read_bytes()) for row in frames]
+    result = [row for row in guard if row[0] != TAG and tuple(row) != BASE]
+    for request in values:
+        if request['kind'] == 'command' and request['operation'] == 'register':
+            reply = next(row for row in values if row['kind'] == 'reply' and row['sequence'] == request['sequence'])
+            result.append([TAG, canonical(proof(request, reply)).decode()])
+    if len(result) != len(guard) or any(row[0] == TAG for row in result):
+        if any(row[0] == TAG for row in result): result.append(list(BASE))
+    return sorted(result)
+
+
 def fixture(directory, corpus):
     path = directory / campaign.ARTIFACT_DIRECTORY
     path.mkdir(parents=True)
@@ -265,7 +281,27 @@ def fixture(directory, corpus):
                 "traffic_unchanged": True, "pid_unchanged": True}), "frames": frames, "inspections": put(inspections),
             "events": put(events), "host_exceptions": put(exceptions), "source_bindings": put(source)})
     receipt["pending"] = put(corpus.pending)
+    from tools.pipeline_original_counterpart import run
+    from functools import lru_cache
+    counterpart = _comparison_original()
+    receipt['package_path'] = counterpart['manifest']['package_root'] + '/__init__.py'
+    receipt['comparison_original_counterpart'] = put(counterpart)
+    for row in [*receipt['checks'], *receipt['comparison_checks']]:
+        previous = json.loads((path/(row['guard']+'.bin')).read_bytes())
+        row['guard'] = put(guard_with_routes(receipt, previous, row['frames']))
+    control = campaign.canonical({key: value for key, value in receipt.items() if key not in ('artifacts','_artifact_directory')}).decode()
+    for identity in list(receipt['artifacts']):
+        if identity not in control:
+            del receipt['artifacts'][identity]
+            (path/(identity+'.bin')).unlink()
     return receipt
+
+
+from functools import lru_cache
+@lru_cache(maxsize=1)
+def _comparison_original():
+    from tools.pipeline_original_counterpart import run
+    return run('callbacks')
 
 
 def validate(receipt, corpus):
@@ -329,6 +365,9 @@ def reframe(receipt, row, mutate):
         new_rows.append({"direction": "client" if incoming else "server",
             "index": value["sequence"] if incoming else value["event_id"], "frame": campaign.artifact(receipt, raw)})
     row["frames"] = new_rows
+    if 'guard' in row:
+        previous = json.loads((directory/(row['guard']+'.bin')).read_bytes())
+        row['guard'] = campaign.artifact(receipt, campaign.canonical(guard_with_routes(receipt, previous, new_rows)))
     control = campaign.canonical({key: value for key, value in receipt.items() if key not in ("artifacts", "_artifact_directory")}).decode()
     for identity in list(receipt["artifacts"]):
         if identity not in control:
@@ -484,6 +523,15 @@ def matrix_fixture(root, corpus):
                 artifact_directory=campaign.ARTIFACT_DIRECTORY, native_inputs=native,
                 python_sources=campaign.python_sources(), campaign_sources=campaign.r.source_pins(campaign.SOURCES),
                 package_path="/installed/site-packages/biocompiler/__init__.py", **campaign.metadata(corpus))
+            old_counterpart = receipt['comparison_original_counterpart']
+            counterpart = json.loads((Path(receipt['_artifact_directory'])/(old_counterpart+'.bin')).read_bytes())
+            counterpart['manifest']['package_root'] = '/installed/site-packages/biocompiler'
+            for origin in counterpart['manifest']['sources']:
+                if origin['logical'].startswith('src/'):
+                    origin['origin'] = '/installed/site-packages/' + origin['logical'].removeprefix('src/')
+            receipt['comparison_original_counterpart'] = campaign.artifact(receipt, campaign.canonical(counterpart))
+            del receipt['artifacts'][old_counterpart]
+            (Path(receipt['_artifact_directory'])/(old_counterpart+'.bin')).unlink()
             receipt["executables"] = {role: str(native_path/("biocompiler-"+role)) for role in ("core", "verify")}
             receipt["verify_rejection"]["argv"][0] = receipt["executables"]["verify"]
             receipt["verify_rejection"]["executable_sha256"] = pins["biocompiler-verify"]
@@ -548,7 +596,8 @@ class PipelineManagerCampaignTests(unittest.TestCase):
             self.assertEqual(len(observed), 2*len(expected["events"])+2)
             count += len(observed)
         self.assertEqual(count, 280)
-        self.assertEqual(oracle.capture(), self.corpus.oracles["callbacks"])
+        from tools.pipeline_original_counterpart import metadata_correspondence
+        metadata_correspondence(oracle.capture(), _comparison_original())
 
     def test_deferred_original_bodies_and_replacement_constructors_are_preserved(self):
         """Original Python managers exercise observation glue, never native parity."""

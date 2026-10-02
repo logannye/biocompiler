@@ -19,6 +19,7 @@ import sys
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from tools import workflow_source_lineage as routes
 from tools import synthetic_producer_source_lineage as producers
+from tools import manager_registration_source_lineage as managers
 from tools import cli_runtime_counterparts as runtime
 from tools.realization_source_lineage import verify_captured_source
 
@@ -84,10 +85,12 @@ def load_baseline():
         path = ROOT / name
         raw = frozen.restore(reference, blobs)
         require(path.is_file() and not path.is_symlink(), "Archived CLI source bytes changed: " + name)
-        if name in routes.HISTORICAL or name in producers.HISTORICAL:
+        if name in routes.HISTORICAL or name in producers.HISTORICAL or name in managers.HISTORICAL:
             if name in routes.HISTORICAL:
                 entry = routes.load_witness()[name]
                 require(raw == entry["historical_source"].encode(), "Archived CLI source bytes changed: " + name)
+            elif name in managers.HISTORICAL:
+                require(raw == managers.original_source(), "Archived CLI source bytes changed: " + name)
             else:
                 entry = producers.load_witness()[name]
                 require(raw == entry["historical_source"].encode(), "Archived CLI source bytes changed: " + name)
@@ -129,7 +132,7 @@ def _project(actual, baseline):
         require(path.is_file() and not path.is_symlink() and frozen.sha(path.read_bytes()) == current[name],
                 "Historical CLI filesystem bytes changed: " + name)
         if current[name] != pin:
-            require(name in routes.HISTORICAL or name in producers.HISTORICAL, "Unreviewed historical CLI source change")
+            require(name in routes.HISTORICAL or name in producers.HISTORICAL or name in managers.HISTORICAL, "Unreviewed historical CLI source change")
             try:
                 reviewed_routes.append(verify_captured_source(ROOT, {"path": name, "sha256": pin}))
             except ValueError as error:
@@ -150,7 +153,7 @@ def _project(actual, baseline):
             require(module == "biocompiler" or module.startswith("biocompiler."), "Unrecognized CLI import audit module")
             require(item["path"] in historical and item["sha256"] == current[item["path"]],
                     "Actual CLI child import source is not historical or exactly witnessed")
-            if item["path"] in routes.HISTORICAL or item["path"] in producers.HISTORICAL:
+            if item["path"] in routes.HISTORICAL or item["path"] in producers.HISTORICAL or item["path"] in managers.HISTORICAL:
                 projected_row["import_audit"]["modules"][module]["sha256"] = historical[item["path"]]
     require(set(actual["retained_source_bytes"]) == set(baseline["retained_source_bytes"]),
             "Actual retained CLI source inventory differs")
@@ -159,7 +162,7 @@ def _project(actual, baseline):
         raw = (ROOT / name).read_bytes()
         require(reference == {"kind": "blob", "bytes": len(raw), "sha256": frozen.sha(raw)},
                 "Actual retained CLI source byte identity differs: " + name)
-        if name in routes.HISTORICAL:
+        if name in routes.HISTORICAL or name in managers.HISTORICAL:
             retained_actual[name] = raw.decode("utf-8")
             projected["retained_source_bytes"][name] = deepcopy(baseline["retained_source_bytes"][name])
     projected["source_scope"] = deepcopy(baseline["source_scope"])
@@ -191,7 +194,8 @@ def verify_recapture(actual, blobs, *, python_version=None):
     baseline, old_blobs = load_baseline()
     projected, evidence = _project(actual, baseline)
     projected_blobs = dict(blobs)
-    for name in routes.HISTORICAL:
+    retained_routes = set(routes.HISTORICAL) | (set(managers.HISTORICAL) & set(actual["retained_source_bytes"]))
+    for name in sorted(retained_routes):
         current_ref = actual["retained_source_bytes"][name]
         old_ref = baseline["retained_source_bytes"][name]
         raw = (ROOT / name).read_bytes()

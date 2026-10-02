@@ -175,5 +175,10 @@ class PipelineFixedProviderSemanticsTests(unittest.TestCase):
         self.assertIsNotNone(config["class_schema"])
 
 
+def load_tests(loader, tests, pattern):
+    from tools.pipeline_original_counterpart import original_test_suite
+    return original_test_suite(loader, tests, pattern, __name__)
+
+
 if __name__ == "__main__":
     unittest.main()

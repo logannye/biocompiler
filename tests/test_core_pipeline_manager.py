@@ -49,7 +49,9 @@ class FixtureSession:
                 raise value
             if callable(value):
                 value = value(arguments)
-        self.last_response = SimpleNamespace(result=value, sequence=len(self.requests))
+        if operation in ('initialize-synthetic', 'initialize-components'):
+            self.handler('manager-created', {'target': value['target']})
+        self.last_response = SimpleNamespace(result=value, sequence=len(self.requests), operation=operation, status='ok')
         return self.last_response
 
     def close(self):
@@ -851,7 +853,8 @@ class CorePipelineManagerTests(unittest.TestCase):
         with self.assertRaisesRegex(CoreProtocolError, 'does not belong'):
             self.manager.component_profile(ComponentPreparation('prep/1', prepared.dependencies))
         self.assertEqual(len(self.session.requests), count)
-        contract = self.fixture.first
+        from dataclasses import replace
+        contract = replace(self.fixture.first, id="synthetic_to_components")
         producer = self.manager._invoke('native-provider', {'provider_id': 'provider/staged-producer',
             'role': 'synthetic_to_components.producer'}).value
         validator = self.manager._invoke('native-provider', {'provider_id': 'provider/staged-validator',

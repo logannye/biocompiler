@@ -432,6 +432,11 @@ class PassManager:
         producer: Callable,
         validators: Mapping[str, Callable],
     ):
+        from sys import modules
+        native_module = modules.get("biocompiler.core_pipeline_manager")
+        native_type = vars(native_module).get("CorePassManager") if native_module is not None else None
+        if isinstance(native_type, type) and issubclass(type(self), native_type):
+            return native_type._native_register(self, contract, producer, validators)
         require(isinstance(contract, PassContract), "Invalid pass contract.")
         if contract.id in self._component_inputs:
             raise PipelineError("Pass ID collides with a component admission policy.")

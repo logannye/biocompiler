@@ -53,6 +53,21 @@ PLATFORMS, PYTHONS = r.PLATFORMS, r.PYTHONS
 sha = lambda raw: hashlib.sha256(raw).hexdigest()
 
 
+def source_tool(name):
+    """Load finite checkout proof tools without replacing installed products."""
+    require(name in ('realization_source_lineage', 'manager_registration_source_lineage',
+        'pipeline_registration_guard', 'pipeline_original_counterpart'), 'Unreviewed source proof tool')
+    paths = list(sys.path)
+    try:
+        sys.path.insert(0, str(ROOT))
+        module = importlib.import_module('tools.' + name)
+    finally:
+        sys.path[:] = paths
+    require(Path(module.__file__).resolve() == ROOT / 'tools' / (name + '.py'),
+        'Source proof tool origin differs')
+    return module
+
+
 def declaration():
     value, pin = r.read(ROOT / "protocol/pipeline-session-v1.json")
     require(pin == DECLARATION_PIN, "Session protocol declaration changed")
@@ -233,8 +248,9 @@ class Corpus:
         for path, pin in index["source_files"].items():
             require(path.startswith(("src/", "tests/", "examples/")) and ".." not in Path(path).parts and r.pin(pin),
                     "Invalid original source authority")
+            source_tool("realization_source_lineage").verify_captured_source(ROOT, {"path": path, "sha256": pin})
             if path not in self.original_sources:
-                self.original_sources[path] = sha(r.raw_file(ROOT / path))
+                self.original_sources[path] = pin
             require(self.original_sources[path] == pin, "Original source changed: " + path)
         full = index["full_corpus"]
         require(Path(full["path"]).name == full["path"] and

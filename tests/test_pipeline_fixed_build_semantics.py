@@ -141,5 +141,10 @@ class PipelineFixedBuildSemanticsTests(unittest.TestCase):
         self.assertEqual(calls, ["call", "return"])
 
 
+def load_tests(loader, tests, pattern):
+    from tools.pipeline_original_counterpart import original_test_suite
+    return original_test_suite(loader, tests, pattern, __name__)
+
+
 if __name__ == "__main__":
     unittest.main()

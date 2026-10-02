@@ -444,7 +444,7 @@ def check_boundaries(root: Path):
                     expected_actions = [["action", ["run", "%{test}",
                         "%{env:BIOCOMPILER_PIPELINE_CALLBACK_MANAGER_DECLARATION=missing}",
                         "%{env:BIOCOMPILER_PIPELINE_CONTRACT_LITERALS=missing}",
-                        "%{env:BIOCOMPILER_FIXED_PIPELINE_LITERALS=missing}"]]]
+                        "%{env:BIOCOMPILER_FIXED_PIPELINE_CORPUS=missing}"]]]
                 if name == "test_pipeline_session":
                     expected_actions = [["action", ["run", "%{test}",
                         "%{env:BIOCOMPILER_PIPELINE_SESSION_DECLARATION=missing}",

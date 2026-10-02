@@ -147,6 +147,12 @@ REVIEWED_MODULES = TRANSPORT_MODULES | LITERAL_MODULES | set(SERIALIZER_ROOTS)
 
 SOURCES = ("tools/check_pipeline_manager_install.py", "tests/test_pipeline_manager_campaign.py",
     "tools/check_pipeline_manager_trace.py", "tests/test_pipeline_manager_trace.py",
+    "tools/manager_registration_source_lineage.py", "tools/pipeline_original_counterpart.py",
+    "tools/pipeline_registration_guard.py", "tests/test_manager_registration_source_lineage.py",
+    "tests/test_core_pipeline_registration_interception.py",
+    "tests/conformance/manager-registration-runtime-sites-v1.json",
+    "tests/conformance/manager-registration-tool-lineage-v1.json",
+    "tests/conformance/manager-registration-source-lineage-v1.json",
     "tools/check_pipeline_session_install.py", "tools/check_workflow_reproducibility.py", "tools/check_realization_binaries.py",
     "tools/capture_pipeline_identity_semantics.py", "tests/test_pipeline_identity_semantics.py",
     "tools/capture_pipeline_callback_semantics.py", "tests/test_pipeline_callback_semantics.py",
@@ -193,7 +199,7 @@ class Corpus:
                 for path, identity in value["source_files"].items():
                     require(not Path(path).is_absolute() and ".." not in Path(path).parts and r.pin(identity),
                             "Unsafe original oracle source")
-                    require(sha(r.raw_file(ROOT / path)) == identity, "Original oracle source changed: " + path)
+                    fixed.source_tool("realization_source_lineage").verify_captured_source(ROOT, {"path": path, "sha256": identity})
                     self.original_sources[path] = identity
             self.oracles[label], self.pins[label] = value, {"path": "tests/conformance/" + name, "sha256": actual,
                 "inventory_fingerprint": value["inventory_fingerprint"]}
@@ -374,16 +380,19 @@ def _permitted_frame(frame, entries, roots):
 @contextmanager
 def guarded_execution(seen, observer=None):
     entries, roots = _serialization_policy()
+    Recorder = fixed.source_tool("pipeline_registration_guard").Recorder
+    delegation = Recorder(seen)
     previous, original_import = sys.getprofile(), builtins.__import__
     external_profile = getattr(previous, "_manager_external_profile", previous)
     profile_failure = None
     def calls(frame, event, result):
         nonlocal profile_failure
         try:
+            delegated = delegation.observe(frame, event)
             module = frame.f_globals.get("__name__", "")
             if event == "call" and module.startswith("biocompiler"):
                 name = frame.f_code.co_qualname
-                require(_permitted_frame(frame, entries, roots), "Python manager semantic authority is forbidden: " + module + "." + name)
+                require(delegated or _permitted_frame(frame, entries, roots), "Python manager semantic authority is forbidden: " + module + "." + name)
                 seen.add((module, name))
             if observer is not None:
                 observer(frame, event, result)
@@ -406,18 +415,21 @@ def guarded_execution(seen, observer=None):
             if profile_failure is not None:
                 raise profile_failure
             require(sys.getprofile() is calls and builtins.__import__ is imports, "Manager execution guard was disabled")
+            delegation.complete()
         finally:
             sys.setprofile(previous)
             builtins.__import__ = original_import
 
 
-def check_guard(entries, *, initializer="initialize-empty"):
+def check_guard(entries, *, initializer="initialize-empty", frames=None, artifacts=None):
     require(type(initializer) is str and initializer in ("initialize-empty", "initialize-synthetic", "initialize-components"),
         "Unknown closed manager guard initializer")
     require(type(entries) is list and entries == sorted(entries) and len({tuple(item) for item in entries}) == len(entries)
         and all(type(item) is list and len(item) == 2 and all(type(value) is str for value in item) for item in entries),
         "Invalid complete manager guard census")
-    require(all(permitted(*item) for item in entries), "Forbidden Python acceptance execution in guard census")
+    validate_delegation = fixed.source_tool("pipeline_registration_guard").validate
+    filtered = validate_delegation(entries, frames, artifacts)
+    require(all(permitted(*item) for item in filtered), "Forbidden Python acceptance execution in guard census")
     initializers = ("CorePassManager.__init__",) if initializer == "initialize-empty" else (
         "CorePassManager._fixed", "CorePassManager.from_" + initializer.removeprefix("initialize-"))
     for name in initializers:
@@ -971,7 +983,8 @@ class DeferredWitness:
     def observe(self, frame, event, result):
         module = frame.f_globals.get("__name__")
         name = frame.f_code.co_qualname
-        if module == "biocompiler.core_pipeline_manager" and name == "CorePassManager._call" and event == "return":
+        if ((module == "biocompiler.core_pipeline_manager" and name in ("CorePassManager._call", "CorePassManager._native_register"))
+            or (module == "biocompiler.compiler.pipeline" and name == "PassManager.register")) and event == "return":
             manager = frame.f_locals["self"]
             if any(actual is manager for actual in self.managers):
                 response = manager.session.last_response
@@ -1124,9 +1137,10 @@ def deferred_campaign(core, corpus, receipt):
     from biocompiler.core_client import CoreProtocolError
     oracle = load_oracle(deferred=True)
     runtime, retained_runtime = runtime_helpers()
-    fresh = oracle.capture()
-    proof = runtime.compare_current(corpus.oracles["deferred"], fresh, oracle=oracle)
-    proof["capture_authority"] = retained_runtime.capture_authority(oracle=oracle)
+    original_counterpart = fixed.source_tool("pipeline_original_counterpart").run
+    counterpart = original_counterpart('deferred')
+    fresh, proof = counterpart['value']['capture'], counterpart['value']['proof']
+    receipt['deferred_original_counterpart'] = artifact(receipt, canonical(counterpart))
     receipt["fresh_deferred_original"] = artifact(receipt, canonical(fresh))
     receipt["deferred_runtime_authority"] = artifact(receipt, canonical(proof))
     for expected in fresh["cases"]:
@@ -1596,7 +1610,10 @@ def comparison_campaign(core, corpus, receipt):
     from biocompiler.core_pipeline_manager import CorePassManager
     from biocompiler.core_client import CoreProtocolError
     oracle = load_oracle(comparison=True)
-    fresh = oracle.capture()
+    original_counterpart = fixed.source_tool("pipeline_original_counterpart").run
+    counterpart = original_counterpart('callbacks')
+    fresh = counterpart['value']
+    receipt['comparison_original_counterpart'] = artifact(receipt, canonical(counterpart))
     equal(fresh, corpus.oracles["callbacks"], "Fresh unchanged original comparison oracle differs")
     receipt["fresh_comparison_original"] = artifact(receipt, canonical(fresh))
     for expected in corpus.comparisons:
@@ -2178,7 +2195,7 @@ def validate_existing_checks(receipt, corpus, artifacts, *, sessions=None):
             and row["executable_sha256"] == receipt["native_inputs"]["sha256"]["biocompiler-core"],
             "Real native manager process identity or lifecycle differs")
         equal(artifacts.json(row["stderr"]), {"hex": ""}, "Native manager wrote stderr")
-        check_guard(artifacts.json(row["guard"], r.MAX_ARTIFACT_BYTES))
+        check_guard(artifacts.json(row["guard"], r.MAX_ARTIFACT_BYTES), frames=row["frames"], artifacts=artifacts)
         equal(artifacts.json(row["after_close"]), {"type": "CoreProtocolError",
             "message": "Callback session is closed; it cannot reconnect", "traffic_unchanged": True, "pid_unchanged": True},
             "Closed manager resumed, retried or changed its rejection")
@@ -2191,6 +2208,11 @@ def validate_existing_checks(receipt, corpus, artifacts, *, sessions=None):
         "Incomplete 34-case original comparison campaign")
     equal(artifacts.json(receipt["fresh_comparison_original"], r.MAX_ARTIFACT_BYTES), corpus.oracles["callbacks"],
         "Complete fresh original comparison counterpart differs")
+    validate_counterpart = fixed.source_tool("pipeline_original_counterpart").validate
+    counterpart = artifacts.json(receipt['comparison_original_counterpart'], r.MAX_ARTIFACT_BYTES)
+    equal(validate_counterpart(counterpart), corpus.oracles['callbacks'], 'Fresh comparison lost original canonical execution')
+    require(counterpart['manifest']['package_root'] == str(Path(receipt['package_path']).parent),
+        'Comparison original counterpart source package differs')
     for expected, row in zip(corpus.comparisons, receipt["comparison_checks"]):
         require(type(row) is dict and set(row) == {"id", "original", "actual", "frames", "pid", "returncode", "closed",
             "invalidated", "executable_sha256", "stderr", "guard", "after_close", "inspections", "events", "host_exceptions", "source_bindings"}
@@ -2203,7 +2225,7 @@ def validate_existing_checks(receipt, corpus, artifacts, *, sessions=None):
             "Actual comparison process identity or lifecycle differs")
         equal(artifacts.json(row["stderr"]), {"hex": ""}, "Comparison native process wrote stderr")
         guard = artifacts.json(row["guard"], r.MAX_ARTIFACT_BYTES)
-        check_guard(guard)
+        check_guard(guard, frames=row["frames"], artifacts=artifacts)
         require(["biocompiler.core_pipeline_manager", "CorePassManager.inspect_ordered"] in guard,
             "Comparison did not inspect actual native manager state")
         equal(artifacts.json(row["after_close"]), {"type": "CoreProtocolError",
@@ -2252,14 +2274,18 @@ def validate_deferred_checks(receipt, corpus, artifacts, *, sessions=None):
     fresh = artifacts.json(receipt["fresh_deferred_original"], r.MAX_ARTIFACT_BYTES)
     proof = artifacts.json(receipt["deferred_runtime_authority"], r.MAX_ARTIFACT_BYTES)
     runtime.validate_retained(corpus.oracles["deferred"], fresh, proof, python_version=receipt["python_version"])
-    package = Path(receipt["package_path"]).parent
-    require(not package.is_relative_to(Path(proof["capture_authority"]["root"])),
-        "Deferred original counterpart loaded source-tree product code")
+    validate_counterpart = fixed.source_tool("pipeline_original_counterpart").validate
+    counterpart = artifacts.json(receipt['deferred_original_counterpart'], r.MAX_ARTIFACT_BYTES)
+    value = validate_counterpart(counterpart)
+    equal(value, {'capture': fresh, 'proof': proof}, 'Deferred original proof detached from canonical child execution')
+    require(counterpart['manifest']['package_root'] == str(Path(receipt['package_path']).parent),
+        'Original counterpart is detached from installed package source')
     for logical in ("src/biocompiler/compiler/pipeline.py", "src/biocompiler/ir/intent.py"):
         source = proof["capture_authority"]["sources"][logical]
-        require(Path(source["path"]) == package / Path(logical).relative_to("src/biocompiler")
-            and source["sha256"] == receipt["python_sources"][logical],
-            "Deferred original runtime proof is detached from the installed package")
+        row = next(item for item in counterpart['manifest']['sources'] if item['logical'] == logical)
+        require(source['path'] == row['path'] and source['sha256'] == row['sha256']
+            and row['origin_sha256'] == receipt['python_sources'][logical],
+            'Deferred original runtime proof lost exact original/current source distinction')
     channel, application = declarations()
     sessions = set() if sessions is None else sessions
     projected = []
@@ -2292,7 +2318,7 @@ def validate_deferred_checks(receipt, corpus, artifacts, *, sessions=None):
             traffic.append(validate_frames(process["frames"], artifacts, channel, application,
                 sessions=sessions, details=details[-1], provider_calls=False))
         guard = artifacts.json(row["guard"], r.MAX_ARTIFACT_BYTES)
-        check_guard(guard)
+        check_guard(guard, frames=[process["frames"] for process in row["processes"]], artifacts=artifacts)
         require(["biocompiler.core_pipeline_manager", "CorePassManager.inspection_state"] in guard,
             "Deferred snapshot did not use the checked native historical view")
         validate_deferred_events(actual, evidence, details, bootstrap)

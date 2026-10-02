@@ -93,6 +93,9 @@ def verify_captured_source(root: Path, entry):
     from tools.synthetic_producer_source_lineage import HISTORICAL as PRODUCERS, verify_source as verify_producer
     if entry["path"] in PRODUCERS:
         return verify_producer(root, entry["path"], entry["sha256"])
+    from tools.manager_registration_source_lineage import HISTORICAL as MANAGERS, verify_source as verify_manager
+    if entry["path"] in MANAGERS:
+        return verify_manager(root, entry["path"], entry["sha256"])
     witness = load_witness().get(entry["path"])
     if witness is None:
         from tools.workflow_source_lineage import HISTORICAL, verify_source

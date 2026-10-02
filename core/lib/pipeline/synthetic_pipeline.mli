@@ -1,7 +1,8 @@
 (** Fixed checked BuildRequest -> Behavior -> synthetic candidate compilation.
-    The supplied request is freshly checked; no imported accepted record or
-    caller-supplied provider can authorize a stage. Every operation consumes the
-    same caller-owned lifetime work ancestor. Results are historical records;
+    The supplied request is freshly checked; accepted records cannot be
+    imported. Trusted process-local registration hooks operate on the actual
+    manager, whose validation and freshness checks remain authoritative. Every
+    operation consumes the same caller-owned lifetime work ancestor. Results are historical records;
     the retained live manager must be queried again before reusing completion.
     Finite-history completion leaves empirical molecular behavior unresolved. *)
 val implementation_version : string
@@ -29,6 +30,15 @@ type provider_observer = Bioc_checker.Work_budget.t -> Bioc_compiler.Pass_manage
    observer uses the supplied lifetime budget and must not execute host code,
    register providers, alter the manager, or import acceptance. Omission keeps
    the ordinary fixed pipeline's metadata allocation and behavior unchanged. *)
+type manager_created = Bioc_checker.Work_budget.t -> Bioc_compiler.Pass_manager.t -> unit
+type registration_hook = Bioc_checker.Work_budget.t -> Bioc_compiler.Pass_manager.t ->
+  Bioc_domain.Pipeline_contract.Pass_contract.t -> producer:Bioc_compiler.Pass_manager.provider ->
+  validators:(string * Bioc_compiler.Pass_manager.provider) list -> unit
+(* Optional fixed-authoring control seams. Publish the actual manager after its
+   constructor and before add-input. A registration hook replaces exactly one
+   real register call; it may invoke the live manager, and its return is ignored.
+   Neither hook supplies a replacement owner or imports acceptance. Omitted
+   hooks retain the ordinary native path and its resource behavior. *)
 type failure = {error:exn;manager:Bioc_compiler.Pass_manager.t option}
 type attempt = Completed of t | Failed of failure
 
@@ -41,6 +51,7 @@ val attempt : budget:Bioc_checker.Work_budget.t ->
   ?validator_equivalent:Bioc_compiler.Pass_manager.validator_equivalent ->
   ?observer:Bioc_compiler.Pass_manager.observer ->
   ?provider_observer:provider_observer ->
+  ?manager_created:manager_created -> ?register_fixed:registration_hook ->
   ?until:Bioc_domain.Runtime_number.t ->
   ?config:Bioc_domain.Synthetic_authority.Config.t ->
   Bioc_domain.Realization_request.t ->
@@ -50,6 +61,7 @@ val run : budget:Bioc_checker.Work_budget.t ->
   ?validator_equivalent:Bioc_compiler.Pass_manager.validator_equivalent ->
   ?observer:Bioc_compiler.Pass_manager.observer ->
   ?provider_observer:provider_observer ->
+  ?manager_created:manager_created -> ?register_fixed:registration_hook ->
   ?until:Bioc_domain.Runtime_number.t ->
   ?config:Bioc_domain.Synthetic_authority.Config.t ->
   Bioc_domain.Realization_request.t ->

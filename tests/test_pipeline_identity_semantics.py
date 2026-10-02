@@ -118,5 +118,10 @@ class PipelineIdentitySemanticsTests(unittest.TestCase):
         self.assertNotEqual(value, CAPTURE.capture())
 
 
+def load_tests(loader, tests, pattern):
+    from tools.pipeline_original_counterpart import original_test_suite
+    return original_test_suite(loader, tests, pattern, 'test_pipeline_identity_semantics')
+
+
 if __name__ == "__main__":
     unittest.main()

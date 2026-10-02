@@ -1,0 +1,62 @@
+{
+  "schema_version": "biocompiler.callback_manager_corpus_selection_correction.v1",
+  "status": "source_correction_hosted_validation_pending",
+  "failure": {
+    "pr74_head": "918025389036f8878156b265a8652d467ad7ba59",
+    "pr74_run": 37064648129,
+    "completed_macos_job": 111029299850,
+    "pr75_head": "b8120bfb1bb20ef89e8f722a7a425d8ae8a90a25",
+    "pr75_run": 37070525064,
+    "pr75_observation": "both native jobs have failed literal/mutation and callback manager steps while jobs continue",
+    "exception": "Bioc_wire.Diagnostic.Error(_)",
+    "cause": "Test third argument selected full capture with2023131key/value nodes; test artifact parser permits1000000nodes."
+  },
+  "correction": "Pass existing fixed-pipeline-native-v1.json projection to callback test in Dune and explicit CI command; preserve parser limits, complete original corpus and selected case/authority bytes. Add diagnostic phase/code/message/path/backtrace on failure.",
+  "corpus": {
+    "original": {
+      "path": "tests/conformance/fixed-pipeline-literals-v1.json",
+      "sha256": "87b16c82bbbb99392f3754d5f8104373f3f692346c70c94e487a364c6fe6fae6",
+      "bytes": 25546578,
+      "nodes": 2023131
+    },
+    "selected": {
+      "path": "tests/conformance/fixed-pipeline-native-v1.json",
+      "sha256": "48074fcd906c50a82f9b54e409f30df12887ceeab240544be66ab3ebd84a6454",
+      "bytes": 5858341,
+      "nodes": 83007
+    },
+    "selected_full_corpus_pin": {
+      "inventory_fingerprint": "28d8befb9fad240a80edf341ad64f822517f6e65f43c611966c9d0b7ff43d652",
+      "path": "fixed-pipeline-literals-v1.json",
+      "sha256": "87b16c82bbbb99392f3754d5f8104373f3f692346c70c94e487a364c6fe6fae6"
+    },
+    "cases": [
+      {
+        "id": "tests/test_component_pipeline.py::fixture.setUpClass/event/0",
+        "authority": "3d10de0854e20199e2d3b2dbf7c6b48e8f0e2b65e0c453fef8e7644595309754",
+        "complete_case_equal": true
+      },
+      {
+        "id": "tests/test_temporal_components.py::fixture.setUpClass/event/0",
+        "authority": "47873f1d4eec67ef875cf9e8c0ef8ad1b23d6383c3c693ea30307b628cc49da4",
+        "complete_case_equal": true
+      },
+      {
+        "id": "tests/test_synthetic_design_workflows.py::fixture.setUpClass/event/0",
+        "authority": "6d3f940c69969b630d0645435654ce627aa38225d2c856c7036933022cbdc951",
+        "complete_case_equal": true
+      }
+    ]
+  },
+  "native_parser_limits": {
+    "max_bytes": 33554432,
+    "max_nodes": 1000000,
+    "unchanged": true
+  },
+  "validation": {
+    "python_fixture_and_CI_boundary_checks": "113 boundary/CI/inventory/CLI/runtime/core-manager controls passed each Python3.14.6 and3.11.15; native hosted replay pending",
+    "native_local_execution": false,
+    "native_revalidation": "required_on_corrected_revision"
+  },
+  "no_acceptance_from_failed_runs": true
+}

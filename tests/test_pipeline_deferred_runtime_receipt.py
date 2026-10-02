@@ -141,5 +141,10 @@ assert sys.path == before
             self.check(current=current, proof=proof)
 
 
+def load_tests(loader, tests, pattern):
+    from tools.pipeline_original_counterpart import original_test_suite
+    return original_test_suite(loader, tests, pattern, 'test_pipeline_deferred_runtime_receipt')
+
+
 if __name__ == "__main__":
     unittest.main()

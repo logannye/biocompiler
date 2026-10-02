@@ -74,8 +74,14 @@ class Corpus:
         equal(self.build['inventory_fingerprint'], sha(canonical({key: value for key, value in self.build.items()
             if key != 'inventory_fingerprint'})), 'Original public build inventory differs')
         for path, identity in self.build['source_files'].items():
-            require(not Path(path).is_absolute() and '..' not in Path(path).parts and r.pin(identity)
-                and sha(r.raw_file(ROOT / path)) == identity, 'Original public build source changed: '+path)
+            require(not Path(path).is_absolute() and '..' not in Path(path).parts and r.pin(identity),
+                'Invalid original public build source: '+path)
+            if path == 'src/biocompiler/compiler/pipeline.py':
+                fixed.source_tool('manager_registration_source_lineage').verify_source(ROOT, path, identity)
+            elif path == 'tools/check_pipeline_session_install.py':
+                fixed.source_tool('manager_registration_source_lineage').verify_tool_source(r.raw_file(ROOT / path), identity)
+            else:
+                require(sha(r.raw_file(ROOT / path)) == identity, 'Original public build source changed: '+path)
         self.authorities = {case['authority_sha256']: case for case in self.build['cases']}
         require(len(self.cases) == 39 and len(self.authorities) == 6, 'Original continuation cohort was narrowed')
         require({case['authority'] for case in self.cases} == set(self.authorities), 'Original continuation authority coverage differs')
@@ -499,8 +505,7 @@ def campaign(core, corpus, receipt):
         import pipeline_fixed_direct_controls as direct
     oracle, originals = load_oracle(), []
     fresh = oracle.capture(retain=originals)
-    equal(fresh, corpus.build, 'Fresh complete original build authority differs')
-    receipt['fresh_original'] = manager.artifact(receipt, canonical(fresh))
+    providers.capture_counterpart(receipt, fresh, 'fixed-build-original', corpus.build)
     modules = load_body_modules()
     providers.installed_modules()
     witness = NativeWitness(core, corpus, oracle)
@@ -633,8 +638,7 @@ def validate_case(corpus, expected, actual, evidence, details, oracle, authority
     expected_graph = public_graph(corpus.authorities[expected['authority']])
     equal(actual, expected_graph, 'Complete public build graph differs from original')
     commands = {item['sequence']: item for item in details['commands']}
-    require(len(commands) == len(details['commands']) and all(item['parent_invocation'] is None for item in commands.values()),
-        'Fixed continuation unexpectedly dispatched nested native commands')
+    require(len(commands) == len(details['commands']), 'Fixed continuation repeated a native command')
     ordered = sorted(commands.values(), key=lambda item: item['start_frame'])
     require(ordered[0]['operation'] == 'initialize-synthetic', 'Original retained chain has another initializer')
     init = ordered[0]; args = init['arguments']; source = authority_objects
@@ -666,16 +670,28 @@ def validate_case(corpus, expected, actual, evidence, details, oracle, authority
         'target': {'value': request.target.to_dict(), 'binding': {'kind': 'host', 'object': args['target_object']}}},
         'Native initialization omitted its complete actual result')
     views.value._initialization(initial, 'synthetic')
-    minted = {}
+    expanded = expand_inspections(ordered)
+    hooks = providers.initializers.validate(details, init,
+        contracts={key: value['contract'] for key, value in expanded[evidence['initial']]['snapshot']['passes'].items()}, views=views)
+    require(all(item['parent_invocation'] is None or item['sequence'] in hooks['commands'] for item in commands.values()),
+        'Fixed continuation unexpectedly dispatched an unclaimed nested command')
+    document_sources.update(hooks['host_documents'])
+    bindings = providers.BindingCensus(details, document_sources)
+    bindings.initialization(hooks)
+    minted = dict(hooks['minted'])
     for invocation in sorted(details['invocations'].values(), key=lambda item: item['start_frame']):
         action, arguments = invocation['action'], invocation['arguments']
         if action == 'native-provider':
             token, role = arguments['provider_id'], arguments['role']
             reference = providers.returned(invocation)
+            if invocation['command_sequence'] == init['sequence']:
+                equal(minted.get(token), (reference, role, invocation['end_frame']),
+                    'Initializer proxy differs from its exact source-ordered hook')
+                continue
             require(token not in minted and role in {key+suffix for key in ('intent_to_behavior', 'behavior_to_synthetic',
                 'synthetic_to_components') for suffix in ('.producer', '.validator')}, 'Unknown or repeated original native provider')
-            require(invocation['command_sequence'] in (evidence['initial'], evidence['registration_sequence']),
-                'Native fixed proxy was minted outside its actual initial inspection/registration')
+            require(invocation['command_sequence'] == evidence['registration_sequence'],
+                'Native fixed proxy was minted outside its actual initialization/registration')
             views.provider(token, role, reference)
             minted[token] = (reference, role, invocation['end_frame'])
         elif action == 'origin-reference':
@@ -694,9 +710,8 @@ def validate_case(corpus, expected, actual, evidence, details, oracle, authority
     source_handles.update(providers.reference(providers.returned(item)) for item in details['invocations'].values()
         if item['action'] == 'origin-reference')
     require(set(evidence['sources']) == source_handles, 'Unclaimed actual source handle evidence')
-    expanded = expand_inspections(ordered)
     aliases, physical = fixed.Providers(), {}
-    used, inspection_order = {init['sequence']}, []
+    used, inspection_order = {init['sequence'], *hooks['commands']}, []
     def inspect(sequence, original, family='continuation'):
         require(sequence in commands and commands[sequence]['operation'] == 'inspect-ordered-references', 'Missing actual inspection')
         command = commands[sequence]
@@ -866,7 +881,8 @@ def validate_process(row, receipt, artifacts, pids, *, initializer):
     equal(artifacts.json(row['after_close']), {'type': 'CoreProtocolError',
         'message': 'Callback session is closed; it cannot reconnect', 'traffic_unchanged': True, 'pid_unchanged': True},
         'Closed retained manager resumed')
-    manager.check_guard(artifacts.json(row['guard'], r.MAX_ARTIFACT_BYTES), initializer=initializer)
+    manager.check_guard(artifacts.json(row['guard'], r.MAX_ARTIFACT_BYTES), initializer=initializer,
+        frames=row['frames'], artifacts=artifacts)
 
 
 def validate_checks(receipt, corpus, artifacts):
@@ -877,8 +893,7 @@ def validate_checks(receipt, corpus, artifacts):
     require(type(receipt.get('completed_checks')) is int and receipt['completed_checks'] == 39
         and type(receipt.get('checks')) is list and len(receipt['checks']) == 39,
         'Incomplete installed retained-manager workflow campaign')
-    equal(artifacts.json(receipt['fresh_original'], r.MAX_ARTIFACT_BYTES), corpus.build,
-        'Complete fresh original build capture differs')
+    current, counterpart = providers.validate_counterpart(receipt, artifacts, 'fixed-build-original', corpus.build)
     execution = artifacts.json(receipt['original_execution'])
     equal(execution['contexts'], [item for path, (name, methods) in METHODS.items()
         for item in (path+'::fixture.setUpClass', *(path+'::'+name+'.'+method for method in methods))],
@@ -892,7 +907,7 @@ def validate_checks(receipt, corpus, artifacts):
     oracle, originals = load_oracle(installed=False), []
     # Independently rebuild source-owned authoring roots. No accepted original
     # record is ever consumed by the native request or the receipt view reader.
-    equal(oracle.capture(retain=originals), corpus.build, 'Independent original authority is not reproducible')
+    equal(oracle.capture(retain=originals), current, 'Independent original authority is not reproducible')
     authorities = {case['authority_sha256']: objects['authority_objects']
         for case, objects in zip(corpus.build['cases'], originals)}
     sessions, pids, projected = set(), set(), []

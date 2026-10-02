@@ -22,7 +22,7 @@ CORPUS_PIN = "2f5e7636977f559e046776c1bb92bebf67c8f0e733ca463927f8d3a1aee3d77b"
 REVIEWED_ADDITIONS = {
     "src/biocompiler/core_pipeline_build_views.py": "85492c4f77b3104af2dae9d9180a0518bfd4fb61c9d6143880e6e58e10a77382",
     "src/biocompiler/core_pipeline_provider_views.py": "ea18d951f8170b1e1da4fbe6636d40e83f54ebda2ebdce187b0e08cf257b9c35",
-    "src/biocompiler/core_pipeline_manager.py": "d431da1763810ee8841f0d1f8819dae2f66280d6bee236bbbecf7d78c6371500",
+    "src/biocompiler/core_pipeline_manager.py": "40a08477c97a97159372d9723267df3cacf8335a59d6b00ada34bb56470e31f3",
     "src/biocompiler/core_pipeline_callback_session.py": "0ff388509eb9c123b87cf5decc1f35cf5eaca61a02d84a756beba7150de17018",
     "src/biocompiler/pipeline_callback_objects.py": "ac5198795c3e80cff511e0fe372dc578a983d8be947e41dd9debd9f719da9eec",
     "src/biocompiler/core_pipeline_session.py": "b0c744d8f3a38b1681805250ccf93884ba866678527cf366bcf08ff326da080d",
@@ -74,8 +74,9 @@ def source_scope(actual, *, allow_missing_tests=False):
         if before[path] != current[path]:
             from tools.workflow_source_lineage import HISTORICAL
             from tools.synthetic_producer_source_lineage import HISTORICAL as PRODUCERS
+            from tools.manager_registration_source_lineage import HISTORICAL as MANAGERS
             from tools.realization_source_lineage import verify_captured_source
-            require(path in HISTORICAL or path in PRODUCERS, "Historical workflow source bytes changed: " + path)
+            require(path in HISTORICAL or path in PRODUCERS or path in MANAGERS, "Historical workflow source bytes changed: " + path)
             try:
                 route = verify_captured_source(ROOT, {"path": path, "sha256": before[path]})
             except ValueError as error:

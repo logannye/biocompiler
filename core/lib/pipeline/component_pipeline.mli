@@ -1,7 +1,8 @@
 (** Fixed checked Intent -> Behavior -> Mechanism -> Components compilation.
     Every producer, independent checker, structural conversion and manager call
-    consumes the supplied lifetime work ancestor. There is no provider hook or
-    receipt import route. The returned reports are historical observations;
+    consumes the supplied lifetime work ancestor. Optional trusted registration
+    hooks act on the live manager; there is no receipt import route. The returned
+    reports are historical observations;
     only a fresh query of the retained live manager establishes current scoped
     completion. Declared contracts and finite histories confer no empirical or
     human-use acceptance. *)
@@ -52,6 +53,8 @@ val attempt : budget:Bioc_checker.Work_budget.t ->
   ?validator_equivalent:Bioc_compiler.Pass_manager.validator_equivalent ->
   ?observer:Bioc_compiler.Pass_manager.observer ->
   ?provider_observer:Synthetic_pipeline.provider_observer ->
+  ?manager_created:Synthetic_pipeline.manager_created ->
+  ?register_fixed:Synthetic_pipeline.registration_hook ->
   ?until:Bioc_domain.Runtime_number.t ->
   ?config:Bioc_domain.Synthetic_authority.Config.t ->
   Bioc_domain.Realization_request.t ->
@@ -61,6 +64,8 @@ val run : budget:Bioc_checker.Work_budget.t ->
   ?validator_equivalent:Bioc_compiler.Pass_manager.validator_equivalent ->
   ?observer:Bioc_compiler.Pass_manager.observer ->
   ?provider_observer:Synthetic_pipeline.provider_observer ->
+  ?manager_created:Synthetic_pipeline.manager_created ->
+  ?register_fixed:Synthetic_pipeline.registration_hook ->
   ?until:Bioc_domain.Runtime_number.t ->
   ?config:Bioc_domain.Synthetic_authority.Config.t ->
   Bioc_domain.Realization_request.t ->

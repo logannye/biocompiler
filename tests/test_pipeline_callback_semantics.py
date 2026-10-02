@@ -145,5 +145,10 @@ class PipelineCallbackSemanticsTests(unittest.TestCase):
                 validate(forged)
 
 
+def load_tests(loader, tests, pattern):
+    from tools.pipeline_original_counterpart import original_test_suite
+    return original_test_suite(loader, tests, pattern, 'test_pipeline_callback_semantics')
+
+
 if __name__ == '__main__':
     unittest.main()

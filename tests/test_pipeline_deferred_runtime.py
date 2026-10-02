@@ -168,5 +168,10 @@ print(json.dumps({'cases':len(current['cases']),'paths':len(paths),'runtime':lis
             self.assertEqual(report["paths"], 55 if sys.version_info[:2] == (3, 11) else 54)
 
 
+def load_tests(loader, tests, pattern):
+    from tools.pipeline_original_counterpart import original_test_suite
+    return original_test_suite(loader, tests, pattern, 'test_pipeline_deferred_runtime')
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -4,7 +4,7 @@ from pathlib import Path
 import tempfile
 import unittest
 
-from tests.test_pipeline_manager_campaign import fake_frames, reframe
+from tests.test_pipeline_manager_campaign import fake_frames, reframe, guard_with_routes
 from tools import check_pipeline_manager_install as manager
 from tools import check_pipeline_fixed_provider_install as fixed
 from tools import capture_pipeline_fixed_provider_semantics as original
@@ -117,12 +117,16 @@ def fixture(receipt, expected, retained, helper):
     script = Script(receipt)
     sequence = script.command('initialize-components', {**expected['authority'], 'request_tree': _ordered(source.to_dict()), 'manager_limits': None,
         **{name+'_object': value for name, value in refs.items()}})
+    from tests.pipeline_fixed_initializer_fixture import emit
+    hooks = emit(script, sequence,
+        {'value': source.target.to_dict(), 'binding': {'kind': 'host', 'object': refs['target']}},
+        {key: entry['contract'] for key, entry in passes.items()},
+        [(token, roles[token], {'handle': item['object']}) for token, item in evidence['providers'].items()], count=3)
+    evidence['arguments'].update(hooks['arguments'])
     script.reply(sequence, {'kind': 'components', 'manager': True,
         'artifacts': ['candidate', 'pipeline_result', 'selection_result', 'assembly', 'link_result', 'behavior_result'],
         'target': {'value': source.target.to_dict(), 'binding': {'kind': 'host', 'object': refs['target']}}})
     sequence = script.command('inspect-ordered', {}); evidence['inspection'] = sequence
-    for token, item in evidence['providers'].items():
-        script.invoke(sequence, 'native-provider', {'provider_id': token, 'role': roles[token]}, {'handle': item['object']})
     script.reply(sequence, inspection)
     anchored = set()
     next_binding = 0
@@ -130,10 +134,12 @@ def fixture(receipt, expected, retained, helper):
         nonlocal next_binding
         token='value/'+str(next_binding);next_binding+=1
         return {'kind':'native','identity':token,'tree':_ordered(value)}
+    introduced = {item['id']: handle for handle, item in hooks['host_documents'].items()}
     def record_bindings(value, index):
         return {'record_id':'record/'+str(index), **{name:binding(value[name]) for name in
             ('payload','dependencies','requirements','checks','provenance','obligations')},
-            'obligation_objects':[binding(item) for item in value['obligations']]}
+            'obligation_objects':[{'kind': 'host', 'object': {'handle': introduced[item['id']]}}
+                if item['id'] in introduced else binding(item) for item in value['obligations']]}
     # Resolve each source-root object through a legitimate origin action, with
     # physical identity (including repeated BOOLEAN paths) rather than equality.
     origin_specs = [(root, []) for root in ('BOOLEAN', 'LEVEL', 'DURATION', 'defaultLifecycle', 'syntheticCapabilities')]
@@ -149,7 +155,12 @@ def fixture(receipt, expected, retained, helper):
         evidence['arguments'][mapping['handle']] = {'kind': 'validators', 'items': list(map(list, registration['validators'].items()))}
         obligations = []
         for offset, value in enumerate(event['contract']['introduces']):
-            ref = objects.retain(object()); obligations.append(ref)
+            # inspection_state creates fresh typed contract/obligation views.
+            # Their equal declarations do not reuse initializer host objects.
+            from biocompiler.core_pipeline_manager import _obligation
+            ref = objects.retain(_obligation(value))
+            obligations.append(ref)
+            introduced[value['id']] = ref['handle']
             evidence['arguments'][ref['handle']] = {'kind': 'contract_obligation', 'pass_id': pid, 'index': offset, 'value': value}
         sequence = script.command('register', {'contract': event['contract'], 'producer': wrappers[pid],
             'validators': mapping, 'obligation_objects': obligations})
@@ -207,7 +218,7 @@ def complete_receipt(directory, corpus, helper):
         'native_inputs':{'sha256':{'biocompiler-core':'a'*64,'biocompiler-verify':'b'*64}},
         'executables':{'core':'/native/biocompiler-core','verify':'/native/biocompiler-verify'}}
     put=lambda value: manager.artifact(receipt, manager.canonical(value))
-    receipt['fresh_original']=put(corpus.value)
+    fixed.capture_counterpart(receipt, original.capture(), 'fixed-provider-original', corpus.value)
     channel,application=manager.declarations()
     stdout={'protocol':'biocompiler.core.v1','request_id':None,'operation':None,'status':'error','result':None,
         'diagnostics':[{'code':'unexpected_arguments','message':'Expected standard JSON input or the exact inherited artifact descriptor arguments.','path':None}],
@@ -224,7 +235,7 @@ def complete_receipt(directory, corpus, helper):
         row=fixture(receipt,expected,helper.proposals[expected['id']],helper)
         row.update(id=expected['id'],actual=put(row.pop('actual_value')),evidence=put(row.pop('evidence_value')),
             pid=500+index,returncode=0,closed=True,invalidated=False,executable_sha256='a'*64,
-            stderr=put({'hex':''}),guard=put(guard),after_close=put({'type':'CoreProtocolError',
+            stderr=put({'hex':''}),guard=put(guard_with_routes(receipt,guard,row['frames'])),after_close=put({'type':'CoreProtocolError',
             'message':'Callback session is closed; it cannot reconnect','traffic_unchanged':True,'pid_unchanged':True}))
         receipt['checks'].append(row)
     return receipt
@@ -283,6 +294,16 @@ class PipelineFixedProviderCampaignTests(unittest.TestCase):
 
     def validate(self, receipt, row, expected, directory):
         return fixed.validate_case(expected, row['actual_value'], row['evidence_value'], self.details(receipt,row,directory), original)
+
+    @staticmethod
+    def outer_registration_arguments(receipt, row, *, obligations=False):
+        artifacts=manager.Artifacts(Path(receipt['_artifact_directory']),receipt['artifacts'])
+        for frame in row['frames']:
+            value=manager.frame_body(artifacts.raw(frame['frame']))
+            if (value.get('operation')=='register' and value['parent_invocation'] is None
+                    and (not obligations or value['arguments']['obligation_objects'])):
+                return value['arguments']
+        raise AssertionError('Missing actual wrapper registration in test fixture')
 
     def test_all_original_return_graphs_reconstruct_from_complete_native_reply_shapes(self):
         for index in range(3):
@@ -370,9 +391,11 @@ class PipelineFixedProviderCampaignTests(unittest.TestCase):
                 elif change=='providers':
                     keys=list(evidence['providers']); evidence['providers'][keys[1]]['object']=evidence['providers'][keys[0]]['object']
                 elif change=='obligation':
-                    next(value for value in evidence['arguments'].values() if value['kind']=='contract_obligation')['index']=1
+                    args = self.outer_registration_arguments(receipt, row, obligations=True)
+                    evidence['arguments'][args['obligation_objects'][0]['handle']]['index']=1
                 elif change=='validator':
-                    next(value for value in evidence['arguments'].values() if value['kind']=='validators')['items'][0][1]='provider/999'
+                    args = self.outer_registration_arguments(receipt, row)
+                    evidence['arguments'][args['validators']['handle']]['items'][0][1]='provider/999'
                 else:
                     evidence['arguments']['object/999999']={'kind':'configuration','value':None}
                 with self.assertRaisesRegex(AssertionError,message):
@@ -404,10 +427,14 @@ class PipelineFixedProviderCampaignTests(unittest.TestCase):
                             next(value for value in frames if value['kind']=='continue' and value['invocation_id']==context['invocation_id'])['outcome']['value']=first
                             next(value for value in frames if value['kind']=='invoke' and value['command_sequence']==owner and value['action']=='call-provider')['arguments']['context']=first
                     elif change=='host-payload':
-                        invocation=next(value for value in frames if value['kind']=='invoke' and value['action']=='ordered-json')
+                        owners={value['sequence'] for value in frames if value.get('operation')=='run'}
+                        invocation=next(value for value in frames if value['kind']=='invoke' and value['action']=='ordered-json'
+                            and value['command_sequence'] in owners)
                         next(value for value in frames if value['kind']=='continue' and value['invocation_id']==invocation['invocation_id'])['outcome']['value']=['scalar',False]
                     elif change=='future-host':
-                        invocations=[value for value in frames if value['kind']=='invoke' and value['action']=='ordered-json']
+                        owners={value['sequence'] for value in frames if value.get('operation')=='run'}
+                        invocations=[value for value in frames if value['kind']=='invoke' and value['action']=='ordered-json'
+                            and value['command_sequence'] in owners]
                         contexts[1]['arguments']['bindings']['input']={'kind':'host','object':invocations[1]['arguments']['object']}
                     elif change=='shared-view':
                         contexts[0]['arguments']['bindings']['configuration']['identity']=contexts[0]['arguments']['bindings']['input']['identity']
@@ -473,6 +500,8 @@ class PipelineFixedProviderCampaignTests(unittest.TestCase):
         self.assertEqual(sys.path,before)
 
     def test_guard_requires_the_exact_closed_initializer_and_transport(self):
+        directory=self.enterContext(tempfile.TemporaryDirectory())
+        artifacts=manager.Artifacts(Path(directory),{})
         base = [['biocompiler.core_pipeline_callback_session','CorePipelineCallbackSession.__init__'],
             ['biocompiler.core_pipeline_callback_session','CorePipelineCallbackSession.call'],
             ['biocompiler.pipeline_callback_objects','CallbackObjects.execute']]
@@ -480,10 +509,11 @@ class PipelineFixedProviderCampaignTests(unittest.TestCase):
             names = ['CorePassManager.__init__'] if initializer=='initialize-empty' else ['CorePassManager._fixed',
                 'CorePassManager.from_'+initializer.removeprefix('initialize-')]
             entries = sorted(base+[['biocompiler.core_pipeline_manager',name] for name in names])
-            manager.check_guard(entries,initializer=initializer)
+            manager.check_guard(entries,initializer=initializer,frames=[],artifacts=artifacts)
             for missing in entries:
                 with self.assertRaisesRegex(AssertionError,'Missing actual native'):
-                    manager.check_guard([item for item in entries if item is not missing],initializer=initializer)
+                    manager.check_guard([item for item in entries if item is not missing],initializer=initializer,
+                        frames=[],artifacts=artifacts)
         with self.assertRaisesRegex(AssertionError,'Unknown closed manager guard initializer'):
             manager.check_guard([],initializer='other')
 

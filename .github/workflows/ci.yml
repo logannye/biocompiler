@@ -887,7 +887,6 @@ jobs:
           BIOCOMPILER_CHECKED_PIPELINE_CORPUS="$GITHUB_WORKSPACE/tests/conformance/checked-pipeline-v1.json" \
           BIOCOMPILER_FIXED_PIPELINE_CONTINUATIONS="$GITHUB_WORKSPACE/tests/conformance/fixed-pipeline-continuations-native-v1.json" \
           BIOCOMPILER_FIXED_PIPELINE_CORPUS="$GITHUB_WORKSPACE/tests/conformance/fixed-pipeline-native-v1.json" \
-          BIOCOMPILER_FIXED_PIPELINE_LITERALS="$GITHUB_WORKSPACE/tests/conformance/fixed-pipeline-literals-v1.json" \
           BIOCOMPILER_LOWERING_CORPUS="$GITHUB_WORKSPACE/tests/conformance/lowering-v1.json" \
           BIOCOMPILER_PIPELINE_CALLBACK_SEMANTICS="$GITHUB_WORKSPACE/tests/conformance/pipeline-callback-semantics-v1.json" \
           BIOCOMPILER_PIPELINE_CALLBACK_DECLARATION="$GITHUB_WORKSPACE/protocol/pipeline-callback-channel-v1.json" \
@@ -1030,7 +1029,7 @@ jobs:
         run: core/_build/default/test/test_pipeline_host_bridge.exe | tee generated/core/test_pipeline_host_bridge.txt
       - name: Check live callback manager dispatch and native acceptance authority
         if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
-        run: core/_build/default/test/test_pipeline_callback_manager.exe "$GITHUB_WORKSPACE/protocol/pipeline-callback-manager-v1.json" "$GITHUB_WORKSPACE/tests/conformance/pipeline-contract-literals-v1.json" "$GITHUB_WORKSPACE/tests/conformance/fixed-pipeline-literals-v1.json" | tee generated/core/test_pipeline_callback_manager.txt
+        run: core/_build/default/test/test_pipeline_callback_manager.exe "$GITHUB_WORKSPACE/protocol/pipeline-callback-manager-v1.json" "$GITHUB_WORKSPACE/tests/conformance/pipeline-contract-literals-v1.json" "$GITHUB_WORKSPACE/tests/conformance/fixed-pipeline-native-v1.json" | tee generated/core/test_pipeline_callback_manager.txt
       - name: Check persistent manager state and cumulative session resource bounds
         if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
         run: core/_build/default/test/test_pipeline_session.exe "$GITHUB_WORKSPACE/protocol/pipeline-session-v1.json" "$GITHUB_WORKSPACE/tests/conformance/fixed-pipeline-native-v1.json" | tee generated/core/test_pipeline_session.txt
@@ -1306,6 +1305,14 @@ jobs:
             --native-root "$GITHUB_WORKSPACE/artifacts/native" \
             --platform ${{ matrix.platform }} \
             --output "$GITHUB_WORKSPACE/generated/realization/pipeline-fixed-continuations.json"
+          python "$GITHUB_WORKSPACE/tools/check_pipeline_fixed_registration_install.py" \
+            --core "$GITHUB_WORKSPACE/artifacts/native/biocompiler-core" \
+            --verify "$GITHUB_WORKSPACE/artifacts/native/biocompiler-verify" \
+            --core-sha256 "$BIOCOMPILER_WORKFLOW_CORE_SHA" \
+            --verify-sha256 "$BIOCOMPILER_WORKFLOW_VERIFY_SHA" \
+            --native-root "$GITHUB_WORKSPACE/artifacts/native" \
+            --platform ${{ matrix.platform }} \
+            --output "$GITHUB_WORKSPACE/generated/realization/pipeline-fixed-registration.json"
           python "$GITHUB_WORKSPACE/tools/check_pipeline_session_install.py" \
             --core "$GITHUB_WORKSPACE/artifacts/native/biocompiler-core" \
             --verify "$GITHUB_WORKSPACE/artifacts/native/biocompiler-verify" \
@@ -1485,6 +1492,10 @@ jobs:
         env:
           GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
         run: python tools/check_pipeline_fixed_continuation_install.py --compare --root artifacts/realization --native-root artifacts/core --output generated/realization-reproducibility/pipeline-fixed-continuations.json
+      - name: Require original fixed registration interception and retained rejection state across all four runtimes
+        env:
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: python tools/check_pipeline_fixed_registration_install.py --compare --root artifacts/realization --native-root artifacts/core --output generated/realization-reproducibility/pipeline-fixed-registration.json
       - name: Retain complete comparison receipt
         if: always()
         uses: actions/upload-artifact@v4

@@ -122,6 +122,9 @@ def validate_case(expected, actual, evidence, details, oracle, original, applica
     require(type(evidence) is dict and set(evidence) == {'inspection', 'calls', 'objects', 'providers', 'arguments', 'build_sequences'},
         'Incomplete direct control evidence')
     commands = sorted(details['commands'], key=lambda item: item['start_frame'])
+    init = commands[0]
+    initializer_commands = {item['sequence'] for item in commands if init['start_frame'] < item['start_frame'] < init['end_frame']}
+    commands = [item for item in commands if item['sequence'] not in initializer_commands]
     expected_operations = ['initialize-components', 'build-result', 'build-result', 'inspect-ordered']
     for _ in ROLES:
         expected_operations.extend(('register', 'run', 'call-native-provider'))
@@ -172,9 +175,16 @@ def validate_case(expected, actual, evidence, details, oracle, original, applica
         'target': {'value': request.target.to_dict(), 'binding': {'kind': 'host', 'object': args['target_object']}}},
         'Direct initialization did not produce its actual complete native state')
     views.value._initialization(initial, 'components')
+    hooks = providers.initializers.validate(details, init,
+        contracts={key: value['contract'] for key, value in providers.succeeded(inspection)['snapshot']['passes'].items()}, views=views)
+    equal(sorted(initializer_commands), sorted(hooks['commands']), 'Direct initializer nested-command census differs')
+    for handle, value in hooks['arguments'].items():
+        equal(evidence['arguments'].get(handle), value, 'Direct initializer argument observation differs')
     source_documents = {providers.reference(args['target_object']): (-1, request.target.to_dict()),
         providers.reference(args['config_object']): (-1, config.to_dict())}
+    source_documents.update(hooks['host_documents'])
     bindings = providers.BindingCensus(details, source_documents)
+    bindings.initialization(hooks)
     invocations = details['invocations']
     anchored = {providers.reference(args[name+'_object']) for name in ('target', 'config', 'request')}
     origin_positions = {handle: -1 for handle in anchored}
@@ -190,12 +200,13 @@ def validate_case(expected, actual, evidence, details, oracle, original, applica
             anchored.add(handle)
             origin_positions.setdefault(handle, invocation['end_frame'])
         elif action == 'native-provider':
-            require(invocation['command_sequence'] == inspection['sequence'], 'Direct native proxy minted outside actual inspection')
+            require(invocation['command_sequence'] == init['sequence'], 'Direct native proxy minted outside actual initialization')
             token, role = arguments['provider_id'], arguments['role']
             require(token not in minted and role in {name+suffix for name in ROLES for suffix in ('.producer', '.validator')},
                 'Unknown or repeated direct native provider')
             reference = providers.returned(invocation)
-            views.provider(token, role, reference); minted[token] = (reference, role)
+            equal(hooks['minted'][token][:2], (reference, role), 'Direct initialization lost its actual native proxy')
+            minted[token] = (reference, role)
     require(anchored == source_handles, 'Direct source witness has no owning native origin request')
     require(len(minted) == 6, 'Direct six native proxy census differs')
     def preceding_origins(value, frame):
@@ -246,7 +257,7 @@ def validate_case(expected, actual, evidence, details, oracle, original, applica
         equal(raw_inspection['order']['validators'][field], {key: list(value[2]) for key, value in getattr(source_manager, '_'+field).items()},
             'Direct initial validator order differs')
     require(type(evidence['calls']) is list and len(evidence['calls']) == 3, 'Direct producer call observation census differs')
-    proposals, used_arguments, used_callbacks = [], set(), set()
+    proposals, used_arguments, used_callbacks = [], set(hooks['arguments']), set()
     inputs = ('request', OUTPUTS[0], OUTPUTS[1])
     for index, (pass_id, name, output_id, input_id) in enumerate(zip(ROLES, NAMES, OUTPUTS, inputs)):
         register, run_command, direct = commands[4+3*index:7+3*index]
@@ -271,6 +282,7 @@ def validate_case(expected, actual, evidence, details, oracle, original, applica
             equal(evidence['arguments'][handle], {'kind': 'contract_obligation', 'pass_id': pass_id,
                 'index': offset, 'value': document}, 'Direct introduced object differs from actual inspected slot')
             views.bind(reference, item); bindings.host[handle] = [(register['start_frame']-1, document)]
+        bindings.registration(wanted_contract, refs, register['end_frame'])
         observed_validators = set()
         for invocation in invocations.values():
             if invocation['command_sequence'] == register['sequence'] and invocation['action'] == 'provider-reference':
@@ -400,7 +412,7 @@ def validate(receipt, corpus, oracle, artifacts, sessions, pids, *, originals=No
             'message': 'Callback session is closed; it cannot reconnect', 'traffic_unchanged': True, 'pid_unchanged': True},
             'Closed direct manager resumed')
         guard = artifacts.json(row['guard'], r.MAX_ARTIFACT_BYTES)
-        manager.check_guard(guard, initializer='initialize-components')
+        manager.check_guard(guard, initializer='initialize-components', frames=row['frames'], artifacts=artifacts)
         for method in ('CorePassManager.build_result', 'CorePassManager.inspection_state', 'CorePassManager._native_return'):
             require(['biocompiler.core_pipeline_manager', method] in guard, 'Direct control omitted actual '+method)
         details = {}

@@ -37,6 +37,9 @@ type provider_role =
   | Synthetic_to_components_producer of {registry:Component_registry.t;composition:Composition.t;candidate:A.Candidate.t}
   | Synthetic_to_components_validator
 type provider_observer = W.t -> M.t -> M.provider -> provider_role -> unit
+type manager_created = W.t -> M.t -> unit
+type registration_hook = W.t -> M.t -> C.Pass_contract.t ->
+  producer:M.provider -> validators:(string*M.provider) list -> unit
 type failure = {error:exn;manager:M.t option}
 type attempt = Completed of t | Failed of failure
 let candidate value = value.candidate_value
@@ -133,7 +136,7 @@ let supported_behavior = List.sort String.compare [
   "signature";"secretion";"rule";"action.state_set";"action.report";"action.pulse";
   "action.eliminate";"action.engulf";"action.secrete";"action.present";"action.retain";
   "action.expand";"action.rest";"action.differentiate"]
-let run_internal manager_state ~budget ?manager_limits ?validator_equivalent ?observer ?provider_observer ?until ?config request frames =
+let run_internal manager_state ~budget ?manager_limits ?validator_equivalent ?observer ?provider_observer ?manager_created ?register_fixed ?until ?config request frames =
   charge budget 1;
   let build_request=R.build_request request in
   if Build_request.artifact_scope build_request<>Build_request.Synthetic_realization then
@@ -190,6 +193,7 @@ let run_internal manager_state ~budget ?manager_limits ?validator_equivalent ?ob
         ~stage:C.Mechanism ~schema:A.Candidate.schema_version
         ~obligations:[C.Scoped_obligation.id preservation;C.Scoped_obligation.id response] ()] () in
   manager_state:=Some manager;
+  Option.iter(fun publish->publish budget manager)manager_created;
   let requirements=map budget (fun item -> Identity.Requirement.to_string (Behavior.requirement_id item))
       (Behavior.requirements (R.behavior request)) in
   ignore (M.add_build_request manager ~identity:"request" ~requirements ~obligations:[preservation;biology] build_request);
@@ -222,7 +226,9 @@ let run_internal manager_state ~budget ?manager_limits ?validator_equivalent ?ob
   Option.iter(fun observe_provider->
     observe_provider budget manager lower Intent_to_behavior_producer;
     observe_provider budget manager verify Intent_to_behavior_validator) provider_observer;
-  M.register manager lowering ~producer:lower ~validators:["preservation",verify];
+  (match register_fixed with
+   | None->M.register manager lowering ~producer:lower ~validators:["preservation",verify]
+   | Some register->register budget manager lowering ~producer:lower ~validators:["preservation",verify]);
   M.allow_host_source_links manager verify;
   ignore (M.run manager ~pass_id:(C.Pass_contract.id lowering) ~input_id:"request" ~output_id:"behavior" ());
   let generation=C.Pass_contract.make ~limits ~id:"behavior_to_synthetic" ~version:A.generator_version
@@ -258,19 +264,21 @@ let run_internal manager_state ~budget ?manager_limits ?validator_equivalent ?ob
     observe_provider budget manager generate (Behavior_to_synthetic_producer {
       requested_config;selected_config=config;config_origin=(match selection with None->Requested | Some _->Selected)});
     observe_provider budget manager check Behavior_to_synthetic_validator) provider_observer;
-  M.register manager generation ~producer:generate ~validators:["finite_history",check];
+  (match register_fixed with
+   | None->M.register manager generation ~producer:generate ~validators:["finite_history",check]
+   | Some register->register budget manager generation ~producer:generate ~validators:["finite_history",check]);
   M.allow_host_source_links manager check;
   let record=M.run manager ~pass_id:(C.Pass_contract.id generation) ~input_id:"behavior" ~output_id:"mechanism"
       ~configuration:(A.Config.to_json config) () in
   let result=M.result manager ~identity:"mechanism" ~scope:"synthetic_realization" in
   let candidate=imported budget A.Candidate.of_json (C.Stage_record.payload record) in
   {candidate_value=candidate;result_value=result;record_value=record;manager_value=manager;selection_value=selection}
-let attempt ~budget ?manager_limits ?validator_equivalent ?observer ?provider_observer ?until ?config request frames =
+let attempt ~budget ?manager_limits ?validator_equivalent ?observer ?provider_observer ?manager_created ?register_fixed ?until ?config request frames =
   let manager_state=ref None in
-  try Completed (run_internal manager_state ~budget ?manager_limits ?validator_equivalent ?observer ?provider_observer ?until ?config request frames) with
+  try Completed (run_internal manager_state ~budget ?manager_limits ?validator_equivalent ?observer ?provider_observer ?manager_created ?register_fixed ?until ?config request frames) with
   | (Diagnostic.Error _ | G.Unsupported _ | M.No_candidate_found _) as error ->
       Failed {error;manager= !manager_state}
-let run ~budget ?manager_limits ?validator_equivalent ?observer ?provider_observer ?until ?config request frames =
-  match attempt ~budget ?manager_limits ?validator_equivalent ?observer ?provider_observer ?until ?config request frames with
+let run ~budget ?manager_limits ?validator_equivalent ?observer ?provider_observer ?manager_created ?register_fixed ?until ?config request frames =
+  match attempt ~budget ?manager_limits ?validator_equivalent ?observer ?provider_observer ?manager_created ?register_fixed ?until ?config request frames with
   | Completed value -> value
   | Failed failure -> raise failure.error
