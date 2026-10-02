@@ -1,8 +1,11 @@
 # Public checked-pipeline session design
 
-Status: design requirements; persistent transport and public proxy are not yet implemented.
+Status: the fixed-provider persistent transport, native engine and client are
+implemented in source with Python subprocess tests; hosted native validation is
+pending. The complete public proxy and generic callback continuations below
+remain design requirements.
 
-The next public integration needs a persistent Core session containing the actual
+The public integration uses a persistent Core session containing the actual
 native `Pass_manager.t`. The current process-per-request transport closes stdin
 and waits for exit (`src/biocompiler/core_client.py:317`); it cannot return a usable
 live manager. Reconstructing that manager from serialized accepted stage records

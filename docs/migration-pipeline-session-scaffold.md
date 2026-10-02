@@ -1,12 +1,14 @@
 # Persistent pipeline session scaffold — incomplete draft
 
-**NONEXECUTABLE, INCOMPLETE DESIGN DRAFT.** This document preserves unfinished
-work paused to prioritize the GitHub checkpoint. It is not an implemented
-protocol, advertised capability, validated native service, or public SDK route.
-No session engine (`session.ml`), native session tests, Python session client,
-Dune registration, executable dispatch, or installed campaign was completed.
-The four task-created source drafts below were removed from the build tree only
-after their exact UTF-8 bytes were checked against this document.
+**ARCHIVED NONEXECUTABLE DESIGN DRAFT.** This document preserves the exact
+unfinished interface/framing bytes saved at the earlier credit-limit pause.
+The resumed work now implements a native engine, Core entry point, Python
+persistent transport, native suite and installed campaign in source. Those
+files supersede these archived drafts; native hosted validation and public
+manager compatibility remain pending. See the current
+[roadmap checkpoints](language-migration-roadmap.md) and
+[session design](migration-pipeline-sessions.md). The fenced bytes below are
+historical evidence only and must not be copied over the current implementation.
 
 The proposed service keeps one actual native manager and fixed build in one
 persistent Core process. One lifetime work ancestor covers framing, parsing,
@@ -15,7 +17,7 @@ unchanged. Serialized accepted records, validator decisions, and provider
 identities cannot establish authority. Remote callback transport and full generic
 manager integration remain separate, unfinished work.
 
-## Continue from this checkpoint
+## Original continuation plan (historical)
 
 1. Review and freeze the proposed declaration against the actual native and
    Python implementations. The proposed 1,000,000-key/value parser limit requires

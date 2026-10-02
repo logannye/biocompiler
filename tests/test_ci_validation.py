@@ -208,7 +208,7 @@ class ValidationGateTests(unittest.TestCase):
     def test_complete_workflow_campaign_is_required_before_matrix_receipts(self):
         text = (Path(__file__).resolve().parents[1] / ".github/workflows/ci.yml").read_text()
         matrix = text.split("\n  realization-conformance:\n", 1)[1].split("\n  realization-core-reproducibility:", 1)[0]
-        commands = ["tools/check_realization_protocol.py", "tools/check_realization_routing.py",
+        commands = ["tools/check_pipeline_session_install.py", "tools/check_realization_protocol.py", "tools/check_realization_routing.py",
                     "tools/check_native_workflow.py", "tools/check_native_workflow_presentation.py",
                     "tools/check_native_workflow_authority.py", "tools/check_native_workflow_public_sdk.py", "tools/check_native_workflow_cli.py",
                     "tools/check_native_synthetic_producer.py", "tools/check_native_synthetic_public_sdk.py",
@@ -219,7 +219,7 @@ class ValidationGateTests(unittest.TestCase):
         for binding in ("--core-sha256", "--verify-sha256", "--native-root", "--platform ${{ matrix.platform }}"):
             self.assertIn(binding, matrix)
         comparison = text.split("\n  realization-core-reproducibility:\n", 1)[1].split("\n  studio-typescript:", 1)[0]
-        for command in ("tools/check_realization_reproducibility.py", "tools/check_workflow_reproducibility.py",
+        for command in ("tools/check_pipeline_session_install.py --compare", "tools/check_realization_reproducibility.py", "tools/check_workflow_reproducibility.py",
                         "tools/check_native_workflow_presentation.py --compare", "tools/check_native_workflow_authority.py --compare", "tools/check_native_workflow_public_sdk.py --compare", "tools/check_native_workflow_cli.py --compare",
                         "tools/check_native_synthetic_producer.py --compare", "tools/check_native_synthetic_public_sdk.py --compare",
                         "tools/check_native_synthetic_selection_cli.py --compare", "tools/check_native_synthetic_inspection.py --compare"):
@@ -236,6 +236,7 @@ class ValidationGateTests(unittest.TestCase):
     def test_checked_manager_and_contract_suites_are_hosted_gates(self):
         text = (Path(__file__).resolve().parents[1] / ".github/workflows/ci.yml").read_text()
         native = text.split("\n  ocaml-core:\n", 1)[1].split("\n  architecture-core-reproducibility:\n", 1)[0]
+        self.assertIn('core/_build/default/test/test_pipeline_session.exe "$GITHUB_WORKSPACE/protocol/pipeline-session-v1.json" "$GITHUB_WORKSPACE/tests/conformance/fixed-pipeline-native-v1.json" | tee generated/core/test_pipeline_session.txt', native)
         for name in ("test_pipeline_contract", "test_pass_manager"):
             self.assertIn('core/_build/default/test/' + name + '.exe "$GITHUB_WORKSPACE/tests/conformance/pipeline-contract-literals-v1.json" | tee generated/core/' + name + '.txt', native)
         self.assertIn('core/_build/default/test/test_checked_pipeline_corpus.exe "$GITHUB_WORKSPACE/tests/conformance/checked-pipeline-v1.json" | tee generated/core/test_checked_pipeline_corpus.txt', native)

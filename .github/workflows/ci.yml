@@ -889,6 +889,7 @@ jobs:
           BIOCOMPILER_FIXED_PIPELINE_CORPUS="$GITHUB_WORKSPACE/tests/conformance/fixed-pipeline-native-v1.json" \
           BIOCOMPILER_LOWERING_CORPUS="$GITHUB_WORKSPACE/tests/conformance/lowering-v1.json" \
           BIOCOMPILER_PIPELINE_CALLBACK_SEMANTICS="$GITHUB_WORKSPACE/tests/conformance/pipeline-callback-semantics-v1.json" \
+          BIOCOMPILER_PIPELINE_SESSION_DECLARATION="$GITHUB_WORKSPACE/protocol/pipeline-session-v1.json" \
           BIOCOMPILER_PIPELINE_CONTRACT_LITERALS="$GITHUB_WORKSPACE/tests/conformance/pipeline-contract-literals-v1.json" \
           BIOCOMPILER_SYNTHETIC_INSPECTION_DECLARATION="$GITHUB_WORKSPACE/protocol/synthetic-inspection-v1.json" \
           BIOCOMPILER_SYNTHETIC_INSPECTION_FIXTURES="$GITHUB_WORKSPACE/tests/conformance/synthetic-inspection-supplemental-v1.json" \
@@ -1015,6 +1016,9 @@ jobs:
       - name: Check native helper authority, exact structural queries and registry replay
         if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
         run: core/_build/default/test/test_synthetic_inspection_protocol.exe "$GITHUB_WORKSPACE/tests/conformance/synthetic-inspection-supplemental-v1.json" "$GITHUB_WORKSPACE/protocol/synthetic-inspection-v1.json" | tee generated/core/test_synthetic_inspection_protocol.txt
+      - name: Check persistent manager state and cumulative session resource bounds
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_pipeline_session.exe "$GITHUB_WORKSPACE/protocol/pipeline-session-v1.json" "$GITHUB_WORKSPACE/tests/conformance/fixed-pipeline-native-v1.json" | tee generated/core/test_pipeline_session.txt
       - name: Check complete pipeline contract records and original constructor rejections
         if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
         run: core/_build/default/test/test_pipeline_contract.exe "$GITHUB_WORKSPACE/tests/conformance/pipeline-contract-literals-v1.json" | tee generated/core/test_pipeline_contract.txt
@@ -1263,6 +1267,14 @@ jobs:
           cd "$RUNNER_TEMP/verification-workflow"
           BIOCOMPILER_WORKFLOW_CORE_SHA="$(python -c 'import json,os; from pathlib import Path; print(json.loads((Path(os.environ["GITHUB_WORKSPACE"])/"artifacts/native/binaries.json").read_text())["sha256"]["biocompiler-core"])')"
           BIOCOMPILER_WORKFLOW_VERIFY_SHA="$(python -c 'import json,os; from pathlib import Path; print(json.loads((Path(os.environ["GITHUB_WORKSPACE"])/"artifacts/native/binaries.json").read_text())["sha256"]["biocompiler-verify"])')"
+          python "$GITHUB_WORKSPACE/tools/check_pipeline_session_install.py" \
+            --core "$GITHUB_WORKSPACE/artifacts/native/biocompiler-core" \
+            --verify "$GITHUB_WORKSPACE/artifacts/native/biocompiler-verify" \
+            --core-sha256 "$BIOCOMPILER_WORKFLOW_CORE_SHA" \
+            --verify-sha256 "$BIOCOMPILER_WORKFLOW_VERIFY_SHA" \
+            --native-root "$GITHUB_WORKSPACE/artifacts/native" \
+            --platform ${{ matrix.platform }} \
+            --output "$GITHUB_WORKSPACE/generated/realization/pipeline-session.json"
           python "$GITHUB_WORKSPACE/tools/check_native_workflow.py" \
             --core "$GITHUB_WORKSPACE/artifacts/native/biocompiler-core" \
             --verify "$GITHUB_WORKSPACE/artifacts/native/biocompiler-verify" \
@@ -1418,6 +1430,10 @@ jobs:
         env:
           GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
         run: python tools/check_native_synthetic_inspection.py --compare --root artifacts/realization --native-root artifacts/core --output generated/realization-reproducibility/synthetic-inspection.json
+      - name: Require complete live pipeline sessions across all four runtimes
+        env:
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: python tools/check_pipeline_session_install.py --compare --root artifacts/realization --native-root artifacts/core --output generated/realization-reproducibility/pipeline-session.json
       - name: Retain complete comparison receipt
         if: always()
         uses: actions/upload-artifact@v4

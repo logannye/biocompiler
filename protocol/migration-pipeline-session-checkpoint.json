@@ -1,0 +1,118 @@
+{
+  "schema_version": "biocompiler.pipeline_session_implementation_checkpoint.v1",
+  "status": "source_implemented_hosted_native_validation_pending",
+  "base_revision": "f322d8030a819bae7a9ebfd59c06511ac9042152",
+  "files": {
+    "protocol/pipeline-session-v1.json": {
+      "sha256": "0efb75e507d8aa72c0ef74077096634d07c6cfcdb81a557072ea536675450feb",
+      "bytes": 3920
+    },
+    "core/lib/pipeline_service/dune": {
+      "sha256": "ebc958d8f9c39930f5e4d8e01f90966b93edfc090b0335f45dfa9a331726e054",
+      "bytes": 150
+    },
+    "core/lib/pipeline_service/session.ml": {
+      "sha256": "5190d7095310b1c887b51e0b79746730339f2d61b7392aed2d75330fc0e4704b",
+      "bytes": 29620
+    },
+    "core/lib/pipeline_service/session.mli": {
+      "sha256": "70e79f2a0d4c2320325b0871cba17cd82063344da7b76ea754a47f2b7b57e2cb",
+      "bytes": 724
+    },
+    "core/lib/pipeline_service/session_io.ml": {
+      "sha256": "564e8a095edbff8d730224c19e9e4f45472e6782ce20f33ef5d608943b0b5378",
+      "bytes": 1894
+    },
+    "core/lib/pipeline_service/session_io.mli": {
+      "sha256": "0c7793cf424260c2b6dbe3eac8e133dda4f67d8e2fc578a4caf404f31f2631cb",
+      "bytes": 181
+    },
+    "core/test/test_pipeline_session.ml": {
+      "sha256": "bae16e4264b922362cde969750a99422c427987d58841140f9eae6f9be618305",
+      "bytes": 18904
+    },
+    "src/biocompiler/core_pipeline_session.py": {
+      "sha256": "b0c744d8f3a38b1681805250ccf93884ba866678527cf366bcf08ff326da080d",
+      "bytes": 33907
+    },
+    "tests/test_core_pipeline_session.py": {
+      "sha256": "96a37e99ba84b9cb97a19884250c12f2cf646984e56fd45f72408cbe2427f770",
+      "bytes": 28184
+    },
+    "tools/check_pipeline_session_install.py": {
+      "sha256": "d6ef07ae02b60130dafd0226be68631ef3f4003296e359849f444e44810271cd",
+      "bytes": 56769
+    },
+    "tests/test_pipeline_session_campaign.py": {
+      "sha256": "710624a13c28bf1ed2d6da21971cf9c3235122879fadc44f08d4eb3f257dcb6a",
+      "bytes": 29523
+    }
+  },
+  "native_local_execution": false,
+  "python_validation": {
+    "session_and_legacy_transport": {
+      "tests": 45,
+      "seconds": 10.752,
+      "status": "pass"
+    },
+    "installed_campaign_harness": {
+      "tests": 11,
+      "seconds": 35.219,
+      "status": "pass",
+      "native_execution": false
+    },
+    "boundaries_ci_fixture_workflow": {
+      "tests": 47,
+      "seconds": 46.794,
+      "status": "pass"
+    },
+    "selection_cli_recapture": {
+      "tests": 5,
+      "seconds": 20.943,
+      "status": "pass",
+      "original_children": 72
+    },
+    "strict_mypy": {
+      "modules": 17,
+      "status": "pass",
+      "command": "PYTHONPATH=generated/mypy-static/site python3 -m mypy --config-file tools/mypy-core.ini"
+    },
+    "migration_inventory": {
+      "entries": 3176,
+      "tests": 13,
+      "seconds": 2.721,
+      "status": "pass"
+    }
+  },
+  "hosted_required": {
+    "native_platforms": [
+      "linux-x86_64",
+      "macos-arm64"
+    ],
+    "python_versions": [
+      "3.11",
+      "3.14"
+    ],
+    "total_required_jobs": 36,
+    "native_suites": 98,
+    "eligible_original_fixed_calls": 126,
+    "return_boundary_rechecks": 121,
+    "supported_continuations": 563,
+    "complete_manager_state_observations": 1493,
+    "protocol_probes": 17,
+    "verify_session_rejection": true,
+    "full_artifact_cross_runtime_comparison": true
+  },
+  "pending": {
+    "excluded_original_calls": 10,
+    "callback_dependent_observations": 287,
+    "requirements": [
+      "native compilation and executable validation",
+      "complete public typed manager compatibility",
+      "generic trusted callback continuations",
+      "staged authoring and exact public input validation order",
+      "64 MiB artifact integration",
+      "default cutover and distribution"
+    ]
+  }
+}
