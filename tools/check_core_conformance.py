@@ -29,7 +29,7 @@ from biocompiler.core_client import (
 )
 from biocompiler.core_architecture import PROFILE as ARCHITECTURE_PROFILE, VALIDATION_SCOPE as ARCHITECTURE_SCOPE
 from biocompiler.core_architecture_producer import PROFILE as PRODUCER_PROFILE, VALIDATION_SCOPE as PRODUCER_SCOPE
-from biocompiler.core_synthetic_producer import PROFILES as SYNTHETIC_PRODUCER_PROFILES, OPERATIONS as SYNTHETIC_PRODUCER_OPERATIONS, VALIDATION_SCOPES as SYNTHETIC_PRODUCER_SCOPES
+from biocompiler.core_synthetic_producer import PROFILES as SYNTHETIC_PRODUCER_PROFILES, OPERATIONS as SYNTHETIC_PRODUCER_OPERATIONS
 from biocompiler.core_realization import PROFILES as REALIZATION_PROFILES, OPERATIONS as REALIZATION_OPERATIONS, VALIDATION_SCOPES as REALIZATION_SCOPES
 from biocompiler.core_artifacts import (TRANSPORT_PROFILE as ARTIFACT_PROFILE,
     AUTHORITY_TRANSPORT_PROFILE as AUTHORITY_ARTIFACT_PROFILE)
@@ -167,6 +167,28 @@ def digest(value):
 def require(condition, message):
     if not condition:
         raise AssertionError(message)
+
+
+def synthetic_producer_scopes():
+    # The native service advertises families in operation order. Canonical JSON
+    # object iteration instead starts with components; it is not array order.
+    return [SYNTHETIC_PRODUCER_PROFILES[family]["validation_scope"] for family in (
+        "synthetic_generation", "synthetic_selection", "synthetic_components",
+    )]
+
+
+def check_capability_fields(capabilities, scopes, profiles):
+    expected = {
+        "canonicalization": "python-json-v1",
+        "intent_schemas": ["biocompiler.intent.v0.1"],
+        "validation_scopes": scopes,
+        "limits": LIMITS,
+        "schema_version": "biocompiler.core_capabilities.v1",
+    }
+    for field, value in expected.items():
+        require(capabilities[field] == value, "Capability contract differs: " + field)
+    require(capabilities["profiles"] == profiles,
+            "Capability contract differs: profiles")
 
 
 def load_corpus(path=CORPUS):
@@ -465,14 +487,11 @@ def run_campaign(clients, corpus, receipt, programs):
             scopes.append(PRODUCER_SCOPE)
             profiles["architecture_producer"] = PRODUCER_PROFILE
             operations += list(SYNTHETIC_PRODUCER_OPERATIONS)
-            scopes += list(SYNTHETIC_PRODUCER_SCOPES)
+            scopes += synthetic_producer_scopes()
             profiles.update(SYNTHETIC_PRODUCER_PROFILES)
             claim = "Supplied-contract architecture production, independent checking, exact RNA/manifest export and separately scoped finite-history model checks. No search completeness, empirical function or human-use admission is established."
         require(sorted(capabilities["operations"]) == sorted(operations), "Missing or untested advertised operation")
-        require(capabilities["canonicalization"] == "python-json-v1" and capabilities["intent_schemas"] == ["biocompiler.intent.v0.1"]
-                and capabilities["validation_scopes"] == scopes and capabilities["limits"] == LIMITS
-                and capabilities["schema_version"] == "biocompiler.core_capabilities.v1"
-                and capabilities["profiles"] == profiles, "Capability contract differs")
+        check_capability_fields(capabilities, scopes, profiles)
         require(capabilities["claim_scope"] == claim, "Capabilities lost limited claim scope")
         campaign.passed(client, "capabilities", "complete-advertised-contract")
         for vector in corpus["literal_vectors"]:
