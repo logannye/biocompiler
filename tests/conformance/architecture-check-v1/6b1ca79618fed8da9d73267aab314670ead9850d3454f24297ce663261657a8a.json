@@ -1,0 +1,44 @@
+{
+  "assumptions": [
+    "All RNA members in this role's group are assumed present in the same recipient cell.",
+    "Artificial exposure-clock window; human expression kinetics remain unestablished.",
+    "The helper RNA and payload RNA are assumed available in the same recipient from startup.",
+    "The supplied artificial material conditionally implements the complete declared executable model; empirical function is unknown."
+  ],
+  "build_fingerprint": "bdc6016b1b54993f1606171463dd350670d71e96072bd42e64be2ad264ec0366",
+  "checker_version": "biocompiler.payload_architecture_checker.v0.3",
+  "claim_scope": "Exact source and supplied composite execution-contract correspondence, explicit functional requirements under bounded control proof profiles, declared RNA availability intervals, physical composition and complete RNA construction only. No empirical component function or human therapeutic admission is established.",
+  "construction_complete": false,
+  "diagnostics": [
+    {
+      "candidate_ids": [
+        "a.one_rna_helper.match.be59b3431632b55f9e270439e26d8119fb42a6540f91bc636c3e0ca741f6871b"
+      ],
+      "category": "independent_verification_failure",
+      "code": "deployment_onset_deadline:execution.delivery.n000001:a000_role0.rna0.helper.delivery",
+      "conflict_set": [],
+      "message": "Independent architecture check rejected deployment_onset_deadline:execution.delivery.n000001:a000_role0.rna0.helper.delivery.",
+      "requirement_ids": [],
+      "schema_version": "biocompiler.architecture_gap.v0.1"
+    },
+    {
+      "candidate_ids": [
+        "a.one_rna_helper.match.be59b3431632b55f9e270439e26d8119fb42a6540f91bc636c3e0ca741f6871b"
+      ],
+      "category": "independent_verification_failure",
+      "code": "deployment_unavailability_deadline:execution.delivery.n000001:a000_role0.rna0.helper.delivery",
+      "conflict_set": [],
+      "message": "Independent architecture check rejected deployment_unavailability_deadline:execution.delivery.n000001:a000_role0.rna0.helper.delivery.",
+      "requirement_ids": [],
+      "schema_version": "biocompiler.architecture_gap.v0.1"
+    }
+  ],
+  "empirical_validation": "unknown",
+  "human_therapeutic_admission": "not_admitted",
+  "outcome": "fail",
+  "request_fingerprint": "fd964ef5d743fec101e4865725e77db2e3103f3dd733da46e53dc8b0c5e3f90d",
+  "schema_version": "biocompiler.payload_architecture_verification.v0.1",
+  "search_verified": false,
+  "translation_complete": false,
+  "unresolved": []
+}

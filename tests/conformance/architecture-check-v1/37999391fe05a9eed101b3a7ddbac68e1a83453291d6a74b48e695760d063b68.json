@@ -1,0 +1,44 @@
+{
+  "assumptions": [
+    "All RNA members in this role's group are assumed present in the same recipient cell.",
+    "Artificial timing authority; no claim about expression in human cells.",
+    "The helper RNA and payload RNA are assumed available in the same recipient from startup.",
+    "The supplied artificial material conditionally implements the complete declared executable model; empirical function is unknown."
+  ],
+  "build_fingerprint": "729f28a019634869ec8be1ff7a26f9c2e47324896af1ebeedbd908f120f9cf0d",
+  "checker_version": "biocompiler.payload_architecture_checker.v0.3",
+  "claim_scope": "Exact source and supplied composite execution-contract correspondence, explicit functional requirements under bounded control proof profiles, declared RNA availability intervals, physical composition and complete RNA construction only. No empirical component function or human therapeutic admission is established.",
+  "construction_complete": false,
+  "diagnostics": [
+    {
+      "candidate_ids": [
+        "a.one_rna_helper"
+      ],
+      "category": "independent_verification_failure",
+      "code": "deployment_onset_deadline:execute-window:a000_role0.rna0.helper.delivery",
+      "conflict_set": [],
+      "message": "Independent architecture check rejected deployment_onset_deadline:execute-window:a000_role0.rna0.helper.delivery.",
+      "requirement_ids": [],
+      "schema_version": "biocompiler.architecture_gap.v0.1"
+    },
+    {
+      "candidate_ids": [
+        "a.one_rna_helper"
+      ],
+      "category": "independent_verification_failure",
+      "code": "deployment_onset_deadline:execute-window:a000_role0.rna0.payload.delivery",
+      "conflict_set": [],
+      "message": "Independent architecture check rejected deployment_onset_deadline:execute-window:a000_role0.rna0.payload.delivery.",
+      "requirement_ids": [],
+      "schema_version": "biocompiler.architecture_gap.v0.1"
+    }
+  ],
+  "empirical_validation": "unknown",
+  "human_therapeutic_admission": "not_admitted",
+  "outcome": "fail",
+  "request_fingerprint": "eea1adff4f83ff28ac669b4f23902eb953a9bcbd190ccfb7a9fa44741629b040",
+  "schema_version": "biocompiler.payload_architecture_verification.v0.1",
+  "search_verified": false,
+  "translation_complete": false,
+  "unresolved": []
+}

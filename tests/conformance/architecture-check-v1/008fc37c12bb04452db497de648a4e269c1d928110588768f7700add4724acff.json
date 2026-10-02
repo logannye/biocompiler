@@ -1,0 +1,66 @@
+{
+  "assumptions": [
+    "All RNA members in this role's group are assumed present in the same recipient cell.",
+    "Declared transport latency is one second; persistence is two seconds; loss clears receiver signal.",
+    "The helper RNA and payload RNA are assumed available in the same recipient from startup.",
+    "The supplied artificial material conditionally implements the complete declared executable model; empirical function is unknown."
+  ],
+  "build_fingerprint": "12d693bc09b7f0c4b73c422479fa59d8caba4d59d1fb18e93af3d331640ff955",
+  "checker_version": "biocompiler.payload_architecture_checker.v0.3",
+  "claim_scope": "Exact source and supplied composite execution-contract correspondence, explicit functional requirements under bounded control proof profiles, declared RNA availability intervals, physical composition and complete RNA construction only. No empirical component function or human therapeutic admission is established.",
+  "construction_complete": false,
+  "diagnostics": [
+    {
+      "candidate_ids": [
+        "d.one_rna"
+      ],
+      "category": "independent_verification_failure",
+      "code": "plan_channels",
+      "conflict_set": [],
+      "message": "Independent architecture check rejected plan_channels.",
+      "requirement_ids": [],
+      "schema_version": "biocompiler.architecture_gap.v0.1"
+    },
+    {
+      "candidate_ids": [
+        "d.one_rna"
+      ],
+      "category": "independent_verification_failure",
+      "code": "channel_source_correspondence:a000_transport.n000003",
+      "conflict_set": [],
+      "message": "Independent architecture check rejected channel_source_correspondence:a000_transport.n000003.",
+      "requirement_ids": [],
+      "schema_version": "biocompiler.architecture_gap.v0.1"
+    },
+    {
+      "candidate_ids": [
+        "d.one_rna"
+      ],
+      "category": "independent_verification_failure",
+      "code": "channel_link_inventory",
+      "conflict_set": [],
+      "message": "Independent architecture check rejected channel_link_inventory.",
+      "requirement_ids": [],
+      "schema_version": "biocompiler.architecture_gap.v0.1"
+    },
+    {
+      "candidate_ids": [
+        "d.one_rna"
+      ],
+      "category": "independent_verification_failure",
+      "code": "compiled_status_without_complete_translation",
+      "conflict_set": [],
+      "message": "Independent architecture check rejected compiled_status_without_complete_translation.",
+      "requirement_ids": [],
+      "schema_version": "biocompiler.architecture_gap.v0.1"
+    }
+  ],
+  "empirical_validation": "unknown",
+  "human_therapeutic_admission": "not_admitted",
+  "outcome": "fail",
+  "request_fingerprint": "07348884c83fc007f089f96abd5499f15d08cac7135205ae31acc6457092551c",
+  "schema_version": "biocompiler.payload_architecture_verification.v0.1",
+  "search_verified": false,
+  "translation_complete": false,
+  "unresolved": []
+}

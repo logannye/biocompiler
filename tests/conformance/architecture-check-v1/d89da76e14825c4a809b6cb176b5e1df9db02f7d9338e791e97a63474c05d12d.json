@@ -1,0 +1,1 @@
+{"base":"1a191b2eb38db25909f6a2d9361bfa7162dcfdee539865c8bf8bd3ca1bc7ef0a","edits":[{"op":"set","path":["plan","control_domains",1,"controlling_node_ids",0],"value":"n000006"},{"op":"set","path":["request_fingerprint"],"value":"0b96e0848025a75918f57766b7a64d134dea3fd8c2203f62b3e46c8eb39bce06"}],"schema_version":"biocompiler.test_document_delta.v1"}

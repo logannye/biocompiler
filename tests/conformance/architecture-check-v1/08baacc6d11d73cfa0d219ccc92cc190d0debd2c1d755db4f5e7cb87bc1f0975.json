@@ -1,0 +1,18 @@
+{
+  "assumptions": [],
+  "build_fingerprint": "ee1688232b52f030249f17cde0da580bfcf0e58efde08aa66204cc90b1b64861",
+  "checker_version": "biocompiler.payload_architecture_checker.v0.3",
+  "claim_scope": "Exact source and supplied composite execution-contract correspondence, explicit functional requirements under bounded control proof profiles, declared RNA availability intervals, physical composition and complete RNA construction only. No empirical component function or human therapeutic admission is established.",
+  "construction_complete": false,
+  "diagnostics": [],
+  "empirical_validation": "unknown",
+  "human_therapeutic_admission": "not_admitted",
+  "outcome": "pass",
+  "request_fingerprint": "c97078c61b68b2ce1ace91e60211aff7048784f9b9275c78a270ba864f995b01",
+  "schema_version": "biocompiler.payload_architecture_verification.v0.1",
+  "search_verified": false,
+  "translation_complete": false,
+  "unresolved": [
+    "search_outcome_not_independently_replayed"
+  ]
+}

@@ -34,13 +34,14 @@ Reread this map with the [roadmap checklist](language-migration-roadmap.md#scope
 - [x] PR42 separate integrated-main run 36940233185 passed every required gate.
 - [x] PR43 architecture leaf/construction declarations and independent required-region checker passed complete PR validation; [receipt](../protocol/migration-construction-domains-validation.json).
 - [x] PR43 integrated-main validation, run 36943390725, passed every required gate.
-- [ ] Remaining full B1.06 architecture authority, full B1.07 independent reconstruction and B1.08 source-manifest checking are implemented in the next batch, pending hosted validation.
+- [x] Full B1.06 architecture request authority, B1.07 independent reconstruction and B1.08 source-manifest checking passed complete PR44 validation: 34 native suites on both platforms, 2,244 tests per Python version and all product gates; [receipt](../protocol/migration-reconstruction-validation.json).
+- [x] Separate PR44 integrated-main run 36946981717 passed every required gate at `e24ef03261ab46689a2c2cb8434aa24280eab028`.
 - [ ] B1.08 manifest/ledger/architecture reconstruction, B1.08a independent candidate execution if claimed, and B1.09 acceptance/protocol exposure.
 - [ ] B2 complete producer and paired RNA/manifest export, followed by the remaining product migration gates.
 
 The validated domain batch checks explicit-unit contracts and nominal chemistry.
-PR42 validated complete component models, human source wrappers and molecular records/sets through all required PR gates. PR43 validated architecture leaves, transitions, construction records and required-region checking. Refinement templates,
-construction operations and architecture reconstruction remain open. A supplied pin or provenance
+PR42 validated complete component models, human source wrappers and molecular records/sets through all required PR gates. PR43 validated architecture leaves, transitions, construction records and required-region checking. Refinement templates
+and independent construction operations passed PR44 validation; full architecture reconstruction remains open. A supplied pin or provenance
 record remains a declaration. Imported domain-check claims cannot become fresh
 local assessments. Lowering derives its own output and requires the independent
 source checker before returning; it is not the architecture producer.
@@ -229,7 +230,7 @@ make the construction a hash-only check.
 
 ## 3. Internal modules and dependency order
 
-The table spans validated internal modules, the pending construction/architecture-leaf batch and
+The table spans validated internal modules, the pending full architecture-checker batch and
 planned acceptance modules. The checkpoint list above identifies their status;
 none establishes a shipped OCaml architecture acceptance capability. Foundation
 libraries `bioc_wire`, `bioc_domain`, `bioc_checker` and `bioc_service` establish
@@ -242,9 +243,9 @@ the packaging boundary; each new batch needs complete hosted validation.
 | B1.03 Closed Behavior operation variants, including the positive typed-parameter variant, policy/profile validator, constant/type/binding checks and lineage | `bioc_domain.Behavior` | B1.02 and exact numeric conventions |
 | B1.04 Source/Behavior correspondence checker | `bioc_checker.Lowering_check` | B1.03; independent expected parameter bindings and permitted normalizations |
 | B1.05 Per-role reference execution for all 42 supported operation kinds | `bioc_semantics.Reference` | B1.03; independent literal timelines |
-| B1.06 Component, refinement, output, binding, placement and constraint validators | Validated `Pinned_identity`, `Component_contract`, `Diagnostic_text`, `Component`, `Architecture_deployment`; validated `Architecture_contract`; pending validation: complete refinements/templates/library/request | B1.02/B1.03 and B1.07 template leaf types |
-| B1.07 Molecular schemas, coordinate/chemistry checks and direct-root reconstruction | Validated `Molecule_coordinates`, `Molecular_record`, `Molecule_chemistry`, `Molecule`, `Molecule_set`; validated transition/recoding, `Payload_structure`, `Construction`, `Construction_artifact`, required-region checker; pending validation: `Construction_check` | Strict schemas plus primitive identities; can run alongside B1.04/05 |
-| B1.08 Source-manifest/ledger and architecture reconstruction | `bioc_checker.Source_check`, `Architecture_check` | B1.04/B1.06/B1.07 |
+| B1.06 Component, refinement, output, binding, placement and constraint validators | Validated `Pinned_identity`, `Component_contract`, `Diagnostic_text`, `Component`, `Architecture_deployment`, `Architecture_contract`, complete refinements/templates/library/request | B1.02/B1.03 and B1.07 template leaf types |
+| B1.07 Molecular schemas, coordinate/chemistry checks and reconstruction | Validated `Molecule_coordinates`, `Molecular_record`, `Molecule_chemistry`, `Molecule`, `Molecule_set`, transition/recoding, `Payload_structure`, `Construction`, `Construction_artifact`, required-region checker and `Construction_check` | Strict schemas plus primitive identities; can run alongside B1.04/05 |
+| B1.08 Source-manifest/ledger and architecture reconstruction | Validated `bioc_checker.Source_check`; `Architecture_check` and its historical build/proof prerequisites await hosted validation | B1.04/B1.06/B1.07 |
 | B1.08a Optional finite-trace candidate execution | Separate `bioc_candidate_runtime` | Reconstructed candidate authority, B1.05 literal timelines; required before claiming independent candidate execution, not implied by graph correspondence |
 | B1.09 Fresh acceptance and protocol exposure for the implemented capability | `bioc_checker.Acceptance`; producer-free service entry point | Every required pilot acceptance obligation and negative gate; B1.08a only if execution is claimed |
 | B2.01 Producer, deterministic selection and namespacing for the same capability | Internal `bioc_compiler.Lowering` validated; architecture producer still remaining | B1 checker accepted and unchanged by producer implementation |

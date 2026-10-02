@@ -1,0 +1,65 @@
+{
+  "assumptions": [
+    "All RNA members in this role's group are assumed present in the same recipient cell.",
+    "The helper RNA and payload RNA are assumed available in the same recipient from startup.",
+    "The supplied artificial material conditionally implements the complete declared executable model; empirical function is unknown."
+  ],
+  "build_fingerprint": "cfe965970c6d76d892a9447cec581d88dc4a90269da3d8f171eb2bb7f6c85e62",
+  "checker_version": "biocompiler.payload_architecture_checker.v0.3",
+  "claim_scope": "Exact source and supplied composite execution-contract correspondence, explicit functional requirements under bounded control proof profiles, declared RNA availability intervals, physical composition and complete RNA construction only. No empirical component function or human therapeutic admission is established.",
+  "construction_complete": false,
+  "diagnostics": [
+    {
+      "candidate_ids": [
+        "a.one_rna_helper"
+      ],
+      "category": "independent_verification_failure",
+      "code": "a.one_rna_helper:helper_initialization_ungrounded:a.one_rna_helper.role0.helper",
+      "conflict_set": [],
+      "message": "Independent architecture check rejected a.one_rna_helper:helper_initialization_ungrounded:a.one_rna_helper.role0.helper.",
+      "requirement_ids": [],
+      "schema_version": "biocompiler.architecture_gap.v0.1"
+    },
+    {
+      "candidate_ids": [
+        "a.one_rna_helper"
+      ],
+      "category": "independent_verification_failure",
+      "code": "a.one_rna_helper:helper_initialization_ungrounded:second_helper",
+      "conflict_set": [],
+      "message": "Independent architecture check rejected a.one_rna_helper:helper_initialization_ungrounded:second_helper.",
+      "requirement_ids": [],
+      "schema_version": "biocompiler.architecture_gap.v0.1"
+    },
+    {
+      "candidate_ids": [
+        "a.one_rna_helper"
+      ],
+      "category": "independent_verification_failure",
+      "code": "a.one_rna_helper:component_dependency_ungrounded:a.one_rna_helper.role0.composite",
+      "conflict_set": [],
+      "message": "Independent architecture check rejected a.one_rna_helper:component_dependency_ungrounded:a.one_rna_helper.role0.composite.",
+      "requirement_ids": [],
+      "schema_version": "biocompiler.architecture_gap.v0.1"
+    },
+    {
+      "candidate_ids": [
+        "a.one_rna_helper"
+      ],
+      "category": "independent_verification_failure",
+      "code": "a.one_rna_helper:component_dependency_ungrounded:a.one_rna_helper.role0.helper",
+      "conflict_set": [],
+      "message": "Independent architecture check rejected a.one_rna_helper:component_dependency_ungrounded:a.one_rna_helper.role0.helper.",
+      "requirement_ids": [],
+      "schema_version": "biocompiler.architecture_gap.v0.1"
+    }
+  ],
+  "empirical_validation": "unknown",
+  "human_therapeutic_admission": "not_admitted",
+  "outcome": "fail",
+  "request_fingerprint": "3d14d2c25eace9ba6e899e539aa572d4e26bc586245a92f5657f0db77d57e292",
+  "schema_version": "biocompiler.payload_architecture_verification.v0.1",
+  "search_verified": false,
+  "translation_complete": false,
+  "unresolved": []
+}

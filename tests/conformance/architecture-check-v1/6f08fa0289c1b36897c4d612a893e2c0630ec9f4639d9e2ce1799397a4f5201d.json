@@ -1,0 +1,42 @@
+{
+  "assumptions": [
+    "All RNA members in this role's group are assumed present in the same recipient cell.",
+    "The supplied artificial material conditionally implements the complete declared executable model; empirical function is unknown."
+  ],
+  "build_fingerprint": "4273cd449e9dc89acf685d5783f721b129042c0875f6ea38671b7da266c68650",
+  "checker_version": "biocompiler.payload_architecture_checker.v0.3",
+  "claim_scope": "Exact source and supplied composite execution-contract correspondence, explicit functional requirements under bounded control proof profiles, declared RNA availability intervals, physical composition and complete RNA construction only. No empirical component function or human therapeutic admission is established.",
+  "construction_complete": false,
+  "diagnostics": [
+    {
+      "candidate_ids": [
+        "a.many_components_one_rna"
+      ],
+      "category": "independent_verification_failure",
+      "code": "unsupported_functional_control_requirement:independent-output-shutdown:n000012:assertion_does_not_veto",
+      "conflict_set": [],
+      "message": "Independent architecture check rejected unsupported_functional_control_requirement:independent-output-shutdown:n000012:assertion_does_not_veto.",
+      "requirement_ids": [],
+      "schema_version": "biocompiler.architecture_gap.v0.1"
+    },
+    {
+      "candidate_ids": [
+        "a.many_components_one_rna"
+      ],
+      "category": "independent_verification_failure",
+      "code": "unsupported_functional_control_requirement:independent-output-shutdown:n000017:assertion_does_not_veto",
+      "conflict_set": [],
+      "message": "Independent architecture check rejected unsupported_functional_control_requirement:independent-output-shutdown:n000017:assertion_does_not_veto.",
+      "requirement_ids": [],
+      "schema_version": "biocompiler.architecture_gap.v0.1"
+    }
+  ],
+  "empirical_validation": "unknown",
+  "human_therapeutic_admission": "not_admitted",
+  "outcome": "fail",
+  "request_fingerprint": "2c07a36078fac545f74756e38323f6b95dc25b52903f604c65aee9cf1c06da58",
+  "schema_version": "biocompiler.payload_architecture_verification.v0.1",
+  "search_verified": false,
+  "translation_complete": false,
+  "unresolved": []
+}

@@ -940,6 +940,20 @@ jobs:
         run: |
           core/_build/default/test/test_source_manifest.exe "$GITHUB_WORKSPACE/tests/conformance/source-manifest-v1.json" | tee generated/core/test_source_manifest.txt
           core/_build/default/test/test_source_check.exe "$GITHUB_WORKSPACE/tests/conformance/source-manifest-v1.json" | tee generated/core/test_source_check.txt
+      - name: Check complete historical architecture builds and assessment scope
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_architecture_build.exe "$GITHUB_WORKSPACE/tests/conformance/architecture-build-v1.json" | tee generated/core/test_architecture_build.txt
+      - name: Independently check supplementary circuit bindings against original source
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_circuit_bindings.exe "$GITHUB_WORKSPACE/tests/conformance/circuit-bindings-v1.json" | tee generated/core/test_circuit_bindings.txt
+      - name: Independently prove bounded source controls and exact deployment intervals
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: |
+          core/_build/default/test/test_architecture_controls_check.exe "$GITHUB_WORKSPACE/tests/conformance/architecture-controls-check-v1.json" | tee generated/core/test_architecture_controls_check.txt
+          core/_build/default/test/test_architecture_deployment_check.exe "$GITHUB_WORKSPACE/tests/conformance/architecture-deployment-check-v1.json" | tee generated/core/test_architecture_deployment_check.txt
+      - name: Independently reconstruct complete architecture acceptance and replay
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_architecture_check.exe "$GITHUB_WORKSPACE/tests/conformance/architecture-check-v1.json" | tee generated/core/test_architecture_check.txt
       - name: Check cross-language bytes, structural intent and independent lowering correspondence
         if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
         env:

@@ -487,6 +487,13 @@ module Requirement = struct
   let action_ids value = value.behavior.actions
   let dependencies value = values (get "dependencies" value.behavior.behavior_json) |> List.map Provider.of_json
   let output value = get "output" value.behavior.behavior_json
+  let product value = Product.of_json (output value)
+  let lifecycle value = Lifecycle.of_json (get "lifecycle" value.behavior.behavior_json)
+  let boolean_response value = match value.behavior.executable with
+    | Some _ -> None
+    | None -> let response = get "response" value.behavior.behavior_json in
+        Some (List.map (fun item -> Json.string (get "id" item)) (values (get "inputs" response)),
+              List.map Json.boolean (values (get "outputs" response)))
   let input_bindings value = values (get "input_bindings" value.json)
     |> List.map (fun item -> Json.string (get "observation_id" item), Identity.Node.of_string (Json.string (get "source_node_id" item)))
   let unimplemented_obligations value =
