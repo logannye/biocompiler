@@ -55,9 +55,9 @@ let add_codepoint buffer value =
     add (0xf0 lor (value lsr 18)); add (0x80 lor ((value lsr 12) land 0x3f));
     add (0x80 lor ((value lsr 6) land 0x3f)); add (0x80 lor (value land 0x3f)))
 
-let parse text =
+let parse_with_limits ~max_bytes ~max_nodes text =
   let length = String.length text in
-  require (length <= Limits.max_request_bytes) "request_too_large" "JSON exceeds the byte limit.";
+  require (length <= max_bytes) "request_too_large" "JSON exceeds the byte limit.";
   let position = ref 0 and nodes = ref 0 in
   let error message = fail ~path:("byte:" ^ string_of_int !position) "invalid_json" message in
   let skip () =
@@ -151,7 +151,7 @@ let parse text =
   let rec value depth =
     require (depth <= Limits.max_depth) "nesting_limit" "JSON exceeds the nesting limit.";
     incr nodes;
-    require (!nodes <= Limits.max_json_nodes) "node_limit" "JSON exceeds the value count limit.";
+    require (!nodes <= max_nodes) "node_limit" "JSON exceeds the value count limit.";
     skip ();
     if !position >= length then error "Missing JSON value.";
     match text.[!position] with
@@ -200,6 +200,14 @@ let parse text =
   skip ();
   if !position <> length then error "Trailing content after JSON value.";
   result
+
+let parse text = parse_with_limits ~max_bytes:Limits.max_request_bytes
+    ~max_nodes:Limits.max_json_nodes text
+
+let parse_bounded ~max_bytes ~max_nodes text =
+  require (max_bytes >= 0 && max_bytes <= 64 * 1024 * 1024 && max_nodes > 0 && max_nodes <= 1_000_000)
+    "invalid_json_limits" "Invalid bounded artifact JSON limits.";
+  parse_with_limits ~max_bytes ~max_nodes text
 
 let object_fields ?path = function
   | Object fields -> fields

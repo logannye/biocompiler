@@ -1,0 +1,1 @@
+"{\"cell_observations\":[{\"field\":\"present\",\"schema_version\":\"biocompiler.boolean_observation.v0.1\",\"signal_id\":\"reset\"}],\"contact_ids\":[],\"fixed_suffix\":[{\"contacts\":{},\"signals\":{},\"time\":2}],\"max_histories\":10000,\"observations\":[],\"until\":2,\"variable_times\":[0,1]}"

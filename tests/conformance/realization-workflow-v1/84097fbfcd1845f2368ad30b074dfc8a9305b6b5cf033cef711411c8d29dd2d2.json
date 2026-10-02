@@ -1,0 +1,1 @@
+"{\"args\":[{\"cell_observations\":[{\"field\":\"present\",\"schema_version\":\"biocompiler.boolean_observation.v0.1\",\"signal_id\":\"reset\"}],\"contact_ids\":[],\"fixed_suffix\":[],\"max_histories\":10000,\"observations\":[],\"schema_version\":\"biocompiler.boolean_input_config.v0.1\",\"until\":2,\"variable_times\":[0,1]}],\"kwargs\":{}}"

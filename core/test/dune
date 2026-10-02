@@ -405,3 +405,23 @@
  (name test_realization_protocol)
  (modules test_realization_protocol)
  (libraries bioc_service bioc_wire bioc_checker zarith))
+
+(test
+ (name test_workflow_wire)
+ (modules test_workflow_wire)
+ (libraries bioc_wire))
+
+(test
+ (name test_verification_workflow_records)
+ (modules test_verification_workflow_records)
+ (libraries bioc_wire bioc_domain zarith))
+
+(test
+ (name test_verification_exploration)
+ (modules test_verification_exploration)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_realization_checker zarith))
+
+(test
+ (name test_synthetic_verification_workflow)
+ (modules test_synthetic_verification_workflow)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_realization_checker zarith))

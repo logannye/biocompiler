@@ -1,0 +1,1 @@
+[{"path":["args"],"type":"builtins.tuple"},{"path":["args",0],"type":"builtins.tuple"},{"path":["args",1],"type":"builtins.tuple"},{"path":["args",2],"type":"builtins.tuple"},{"path":["kwargs","cell_observations"],"type":"builtins.tuple"},{"path":["kwargs","cell_observations",0],"type":"biocompiler.verification.exploration.BooleanObservation"}]

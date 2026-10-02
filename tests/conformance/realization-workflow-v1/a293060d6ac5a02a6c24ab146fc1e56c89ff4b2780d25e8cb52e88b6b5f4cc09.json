@@ -1,0 +1,1 @@
+"{\"args\":[],\"kwargs\":{\"contact_ids\":[\"object\"],\"fixed_suffix\":[],\"max_histories\":10000,\"observations\":[{\"field\":\"present\",\"schema_version\":\"biocompiler.boolean_observation.v0.1\",\"signal_id\":\"signal\"}],\"until\":3,\"variable_times\":[0,0.25,0.5,1]}}"

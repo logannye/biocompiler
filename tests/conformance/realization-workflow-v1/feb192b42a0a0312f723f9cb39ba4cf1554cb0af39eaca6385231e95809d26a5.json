@@ -1,0 +1,1 @@
+"{\"contact_ids\":[\"x\",\"y\"],\"fixed_suffix\":[],\"max_histories\":7,\"observations\":[{\"field\":\"present\",\"schema_version\":\"biocompiler.boolean_observation.v0.1\",\"signal_id\":\"a\"},{\"field\":\"present\",\"schema_version\":\"biocompiler.boolean_observation.v0.1\",\"signal_id\":\"b\"}],\"until\":6,\"variable_times\":[0,1,2,3,4,5]}"

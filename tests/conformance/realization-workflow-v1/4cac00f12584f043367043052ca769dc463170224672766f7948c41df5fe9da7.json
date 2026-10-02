@@ -1,0 +1,1 @@
+[{"path":["args"],"type":"builtins.tuple"},{"path":["kwargs","observations"],"type":"builtins.tuple"},{"path":["kwargs","observations",0],"type":"biocompiler.verification.exploration.BooleanObservation"},{"path":["kwargs","observations",1],"type":"biocompiler.verification.exploration.BooleanObservation"},{"path":["kwargs","fixed_suffix"],"type":"builtins.tuple"}]
