@@ -50,6 +50,7 @@ type host_value = {
   (* Is this value a member of the supplied literal container? *)
   contains : W.t -> host_constant -> bool;
   attribute_set_equal : W.t -> host_value list -> attribute:string -> host_constant -> bool;
+  source_link_set_equal : W.t -> host_value list -> C.Source_link.t list -> bool;
   lookup : W.t -> (string * Json.t) list -> Json.t;
   get_item : W.t -> host_constant -> host_value;
   get : W.t -> string -> host_value;
@@ -66,11 +67,16 @@ type callback_result = Proposal of PR.t | Decision of CD.t
   | Invalid_return of Json.t | Host_return of host_value
 type provider=W.t -> C.Pass_context.t -> callback_result
 type validator_equivalent=W.t -> provider -> provider -> bool
+type origin = Input_origin | Admission_origin of C.Component_input_contract.t
+  | Pass_origin of C.Stage_record.t * C.Pass_contract.t
+type observation = Context_created of int * origin * C.Pass_context.t
+  | Record_stored of int * origin * C.Stage_record.t
+type observer = W.t -> observation -> unit
 type no_candidate={pass_id:string;configuration:Json.t;dependencies:(string*string) list;message:string}
 exception No_candidate_found of no_candidate
 type registration={contract:PC.t;producer:provider;validators:(string*provider) list}
 type admission={admission_contract:IC.t;admission_validators:(string*provider) list}
-type t={budget:W.t;limits:limits;validator_equivalent:validator_equivalent;
+type t={budget:W.t;limits:limits;validator_equivalent:validator_equivalent;observer:observer option;mutable next_execution:int;
   mutable callback_links:host_value list option;mutable host_providers:provider list;
   target_value:Build_request.Target.t;target_identity:string;
   mutable dependencies:(string*string) list;mutable passes:(string*registration) list;
@@ -148,11 +154,11 @@ let set_dependency t key identity=with_call t (fun ()->
     fail "Target dependency must match the pipeline context; create a new manager.";
   retain_json t (obj [key,str identity]);t.dependencies<-replace t key identity t.dependencies)
 let create ~budget ?(limits=default_limits) ?(validator_equivalent=(fun _ left right->left==right))
-    ~target ~dependencies ?(completion_profiles=[]) ()=
+    ?observer ~target ~dependencies ?(completion_profiles=[]) ()=
   let input=X.make_limits ~max_bytes:limits.max_document_bytes ~max_nodes:limits.max_document_nodes
     ~charge:(W.charge budget) () in
   let target_identity=X.fingerprint ~limits:input (Build_request.Target.to_json target) in
-  let t={budget;limits;validator_equivalent;callback_links=None;host_providers=[];target_value=target;target_identity;dependencies=[];passes=[];admissions=[];
+  let t={budget;limits;validator_equivalent;observer;next_execution=0;callback_links=None;host_providers=[];target_value=target;target_identity;dependencies=[];passes=[];admissions=[];
     provider_history=[];admission_history=[];providers=[];records=[];profiles=[];retained=0;retained_bytes=0;calls=0} in
   retain_json t (Build_request.Target.to_json target);
   List.iter (register_completion_profile t) (bounded t completion_profiles);
@@ -168,6 +174,18 @@ let remember_provider t provider=
 let bind_host_provider t callback=with_call t (fun ()->
   let provider work context=Host_return(callback work context) in
   remember_provider t provider;t.host_providers<-provider::t.host_providers;provider)
+let allow_host_source_links t provider=with_call t (fun ()->
+  remember_provider t provider;
+  if not(List.exists(fun value->charge t 1;value==provider) t.host_providers) then
+    t.host_providers<-provider::t.host_providers)
+let host_source_links_equal t ~expected=with_call t (fun ()->match t.callback_links with
+  | None->None
+  | Some values->
+      let values=bounded t values and expected=bounded t expected in
+      if List.length values<>List.length expected then Some false
+      else match values with
+      | []->Some true
+      | first::_->charge t 1;Some(first.source_link_set_equal t.budget values expected))
 let provider_map t validators=
   let keys=List.map fst (bounded t validators) in
   List.iter (text t) keys;
@@ -267,10 +285,16 @@ let register_component_input_deferred t contract validators=with_call t (fun ()-
   let admission={admission_contract=contract;admission_validators=validators} in
   t.admissions<-replace t id admission t.admissions;
   t.admission_history<-replace t identity admission t.admission_history)
-let store_record t identity record=
+let execution t=match t.observer with None->0 | Some _->
+  charge t 1;
+  Diagnostic.require (t.next_execution<max_int) "pipeline_execution_limit" "Pipeline execution identity exhausted.";
+  let identity=t.next_execution in t.next_execution<-identity+1;identity
+let observe t event=match t.observer with None->() | Some callback->charge t 1;callback t.budget event
+let store_record t ~execution ~origin identity record=
   Diagnostic.require (contains t identity t.records || List.length t.records<t.limits.max_records)
     "pipeline_record_limit" "Pipeline stage records exceed their native inventory limit.";
-  retain_json t (SR.to_json record);t.records<-replace t identity record t.records
+  retain_json t (SR.to_json record);t.records<-replace t identity record t.records;
+  observe t (Record_stored(execution,origin,record))
 let current_dependency t key=Option.value ~default:"" (lookup t key t.dependencies)
 let rec get_in t visited identity=
   text t identity;charge t 1;
@@ -331,7 +355,8 @@ let add_input_in t ~identity ~stage ~requirements ~obligations ~source_matches m
   let record=SR.make ~limits:(codec t) ~id:identity ~stage ~payload:document ~requirements ~obligations ~discharged:[]
     ~dependencies:t.dependencies ~parent:None ~pass_id:None ~pass_identity:None ~checks:(obj [])
     ~provenance:(obj ["authority",str "frozen_input"]) ~accepted:true () in
-  store_record t identity record;record
+  let execution=execution t in
+  store_record t ~execution ~origin:Input_origin identity record;record
 let add_input t ~identity ?(stage=C.Intent) ?(requirements=[]) ?(obligations=[]) payload=with_call t (fun ()->
   add_input_in t ~identity ~stage ~requirements ~obligations
     ~source_matches:(fun raw->same_text t (fingerprint t raw) (current_dependency t "request"))
@@ -372,6 +397,7 @@ let callback t ?host_links provider context=
    | Decision value->ignore (measure t (CD.to_json value))
    | Invalid_return value->ignore (measure t value)
    | Host_return _->());value
+let invoke_provider t ~host_links provider context=with_call t (fun ()->callback t ?host_links provider context)
 let decision_json t spec decision document dependencies=
   let spec_fields=Json.object_fields (CS.to_json spec) and decision_fields=Json.object_fields (CD.to_json decision) in
   obj (spec_fields@decision_fields@["subject",str (fingerprint t document);"dependencies",assoc_json dependencies])
@@ -397,9 +423,10 @@ let accepted t checks=List.for_all (fun (_,value)->charge t 1;match value with
       host_compare t outcome Eq (Json_value(str "pass"))) (bounded t checks)
 let checks_json t checks=obj(List.map(fun(key,value)->key,match value with
   | Native_check raw->raw | Hosted_check raw->freeze_host t raw) checks)
-let context t ~input ~output ~configuration ~dependencies ~requirements ?(source_links=[]) ?(observation_map=obj []) ()=
-  C.Pass_context.make ~limits:(codec t) ~input ~output ~target:t.target_value ~configuration ~dependencies
-    ~requirements ~source_links ~observation_map ()
+let context t ~execution ~origin ~input ~output ~configuration ~dependencies ~requirements ?(source_links=[]) ?(observation_map=obj []) ()=
+  let value=C.Pass_context.make ~limits:(codec t) ~input ~output ~target:t.target_value ~configuration ~dependencies
+    ~requirements ~source_links ~observation_map () in
+  observe t (Context_created(execution,origin,value));value
 let admit_component_input_in t ~contract_id ~identity materialize=
   name t "Input artifact id" identity;
   if t.records<>[] then fail "Component admission requires a new pipeline with no existing records.";
@@ -427,7 +454,8 @@ let admit_component_input_in t ~contract_id ~identity materialize=
   if not valid || List.length (unique t ids)<>List.length ids then
     fail "Component admission requires a unique component inventory.";
   let dependencies=t.dependencies in
-  let context=context t ~input:document ~output:None ~configuration:(obj []) ~dependencies
+  let execution=execution t and origin=Admission_origin contract in
+  let context=context t ~execution ~origin ~input:document ~output:None ~configuration:(obj []) ~dependencies
     ~requirements:(IC.requirements contract) () in
   let checks,discharged=List.fold_left (fun (checks,discharged) spec->
     let provider=match lookup t (CS.id spec) validators with Some value->value|None->assert false in
@@ -442,7 +470,7 @@ let admit_component_input_in t ~contract_id ~identity materialize=
     ~pass_id:(Some (IC.id contract)) ~pass_identity:(Some (IC.fingerprint contract)) ~checks:(checks_json t checks)
     ~provenance:(obj ["authority",str "independently_checked_component_input";"contract",IC.to_json contract])
     ~accepted:is_accepted () in
-  store_record t identity record;if is_accepted then ignore (get_in t [] identity);record
+  store_record t ~execution ~origin identity record;if is_accepted then ignore (get_in t [] identity);record
 let admit_component_input t ~contract_id ~identity payload=with_call t (fun ()->
   admit_component_input_in t ~contract_id ~identity (fun ()->document t payload))
 let admit_host_component_input t ~contract_id ~identity payload=with_call t (fun ()->
@@ -478,7 +506,8 @@ let run_in t ~pass_id ~input_id ~output_id materialize_configuration=
   ignore (measure t configuration);
   require (match configuration with Json.Object _->true|_->false) "Pass configuration must be an object.";
   let dependencies=t.dependencies in
-  let before=context t ~input:(SR.payload source) ~output:None ~configuration ~dependencies ~requirements:(SR.requirements source) () in
+  let execution=execution t and origin=Pass_origin(source,contract) in
+  let before=context t ~execution ~origin ~input:(SR.payload source) ~output:None ~configuration ~dependencies ~requirements:(SR.requirements source) () in
   let proposal=callback t producer before in
   let document=match proposal with
     | Proposal value->
@@ -615,7 +644,7 @@ let run_in t ~pass_id ~input_id ~output_id materialize_configuration=
         visit 0
     | _->assert false in
   if altered then fail "Candidate changed an authoritative obligation or supplied self-certifying evidence.";
-  let context=context t ~input:(SR.payload source) ~output:(Some document) ~configuration ~dependencies
+  let context=context t ~execution ~origin ~input:(SR.payload source) ~output:(Some document) ~configuration ~dependencies
     ~requirements:required ~source_links:links ~observation_map () in
   let invalidated=PC.invalidated_analyses contract in
   if not (subset t invalidated (List.map fst obligations)) then fail "Invalidation names an unknown obligation.";
@@ -644,7 +673,7 @@ let run_in t ~pass_id ~input_id ~output_id materialize_configuration=
     ~provenance:(obj ["contract",PC.to_json contract;"configuration",configuration;
       "source_links",links_json;"observation_map",observation_map;
       "search",str "deterministic; no inference of infeasibility"]) ~accepted:is_accepted () in
-  store_record t output_id record;if is_accepted then ignore (get_in t [] output_id);record
+  store_record t ~execution ~origin output_id record;if is_accepted then ignore (get_in t [] output_id);record
 let run t ~pass_id ~input_id ~output_id ?(configuration=obj []) ()=with_call t (fun ()->
   run_in t ~pass_id ~input_id ~output_id (fun ()->if configuration=Json.Null then obj [] else configuration))
 let run_host t ~pass_id ~input_id ~output_id ?configuration ()=with_call t (fun ()->

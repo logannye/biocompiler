@@ -119,8 +119,8 @@ let check_behavior ?until ~budget request assembly frames =
   try Behavior_check.check ?until ~parent:budget request assembly frames with
   | Diagnostic.Error error when error.code="component_behavior" -> fail error.message
 
-let run_internal manager_state ~budget ?(manager_limits=M.default_limits) ?validator_equivalent ?until ?config request frames =
-  let upstream=match Synthetic_pipeline.attempt ~budget ~manager_limits ?validator_equivalent ?until ?config request frames with
+let run_internal manager_state ~budget ?(manager_limits=M.default_limits) ?validator_equivalent ?observer ?until ?config request frames =
+  let upstream=match Synthetic_pipeline.attempt ~budget ~manager_limits ?validator_equivalent ?observer ?until ?config request frames with
     | Synthetic_pipeline.Completed value -> value
     | Synthetic_pipeline.Failed failure -> manager_state:=failure.manager;raise failure.error in
   let manager_value=Synthetic_pipeline.manager upstream in
@@ -171,8 +171,11 @@ let run_internal manager_state ~budget ?(manager_limits=M.default_limits) ?valid
     let source=decode work limits (fun raw -> S.of_json raw) (C.Pass_context.input context) in
     let expected_links=source_links limits source (C.Pass_contract.id contract) in
     let actual_links=C.Pass_context.source_links context in
-    if List.length actual_links<>List.length expected_links ||
-       link_set work limits actual_links<>link_set work limits expected_links ||
+    let links_match=match M.host_source_links_equal manager_value ~expected:expected_links with
+      | Some value->value
+      | None->List.length actual_links=List.length expected_links &&
+          link_set work limits actual_links=link_set work limits expected_links in
+    if not links_match ||
        C.Codec.fingerprint ~limits (C.Pass_context.observation_map context)<>
        C.Codec.fingerprint ~limits (Observation_map.to_json (S.observation_map source)) then
       fail "Component pass provenance changed authoritative source links or observations.";
@@ -184,6 +187,7 @@ let run_internal manager_state ~budget ?(manager_limits=M.default_limits) ?valid
       ~detail:"Declared component contracts checked; finite-history scope retained."
       ~evidence:(L.Result.to_json checked) ()) in
   M.register manager_value contract ~producer:generate ~validators:["composition",verify];
+  M.allow_host_source_links manager_value verify;
   let record=M.run manager_value ~pass_id:(C.Pass_contract.id contract)
       ~input_id:"mechanism" ~output_id:"components" () in
   let result_value=M.result manager_value ~identity:"components" ~scope:"synthetic_components" in
@@ -193,12 +197,12 @@ let run_internal manager_state ~budget ?(manager_limits=M.default_limits) ?valid
   let behavior_value=check_behavior ?until ~budget request assembly_value frames in
   {candidate_value;assembly_value;link_value;result_value;manager_value;behavior_value;
    selection_value=Synthetic_pipeline.selection_result upstream}
-let attempt ~budget ?manager_limits ?validator_equivalent ?until ?config request frames =
+let attempt ~budget ?manager_limits ?validator_equivalent ?observer ?until ?config request frames =
   let manager_state=ref None in
-  try Completed (run_internal manager_state ~budget ?manager_limits ?validator_equivalent ?until ?config request frames) with
+  try Completed (run_internal manager_state ~budget ?manager_limits ?validator_equivalent ?observer ?until ?config request frames) with
   | (Diagnostic.Error _ | Bioc_synthetic_producer.Generator.Unsupported _ | M.No_candidate_found _) as error ->
       Failed {error;manager= !manager_state}
-let run ~budget ?manager_limits ?validator_equivalent ?until ?config request frames =
-  match attempt ~budget ?manager_limits ?validator_equivalent ?until ?config request frames with
+let run ~budget ?manager_limits ?validator_equivalent ?observer ?until ?config request frames =
+  match attempt ~budget ?manager_limits ?validator_equivalent ?observer ?until ?config request frames with
   | Completed value -> value
   | Failed failure -> raise failure.error

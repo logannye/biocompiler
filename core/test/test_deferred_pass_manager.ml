@@ -47,6 +47,11 @@ let rec box ?(classes=[]) ?(fields=[]) ?(event=(fun _->())) raw =
       let expected=Json.array(literal expected) in
       List.for_all(fun value->List.exists(Json.equal value) expected) actual &&
       List.for_all(fun value->List.exists(Json.equal value) actual) expected);
+    source_link_set_equal=(fun work values expected->
+      let actual=List.map(fun value->value.M.freeze work) values in
+      let expected=List.map C.Source_link.to_json expected in
+      List.for_all(fun value->List.exists(Json.equal value) expected) actual &&
+      List.for_all(fun value->List.exists(Json.equal value) actual) expected);
     lookup=(fun _ entries->List.assoc(Json.string raw) entries);
     get_item=(fun _ key->event "get_item";box(get (Json.string(literal key)) raw));
     get=(fun _ key->event("get:"^key);box(match raw with
@@ -171,6 +176,25 @@ let ()=
   rejected "cannot yet consume" (fun()->run manager);
   require(not !native_called) "Native checker consumed an empty stand-in for actual host links";
   rejected "Missing artifact" (fun()->M.get manager "behavior");
+  let events=ref [] in let manager=setup baseline in
+  let producer=M.bind_host_provider manager(fun _ _->proposal events baseline ()) in
+  let expected=C.Source_link.make ~requirement_id:"r" ~source_node_id:"n" ~target_node_id:"n" ~pass_name:"lower" () in
+  let saved=ref None in
+  let validator _ context=
+    let links=M.callback_source_links manager in saved:=Some(context,links);
+    require(M.host_source_links_equal manager ~expected:[expected]=Some true)
+      "Opted-in native checker did not compare actual deferred source links";
+    require(M.host_source_links_equal manager ~expected:[]=Some false)
+      "Mixed source-link length short circuit lost the original inventory";
+    M.Decision(C.Check_decision.make ~outcome:E.Pass ~detail:"Compared original host source links." ()) in
+  M.allow_host_source_links manager validator;
+  register manager contract producer validator;
+  require(C.Stage_record.accepted(run manager)) "Reviewed mixed validator could not acquire native acceptance";
+  let context,host_links=Option.get !saved in
+  require(M.callback_source_links manager=None) "Completed mixed callback leaked sidecar";
+  (match M.invoke_provider manager ~host_links validator context with
+   | M.Decision _->() | _->failwith "Retained native provider returned a different result kind");
+  require(M.callback_source_links manager=None) "Saved context invocation leaked sidecar";
   let events=ref [] in let manager=setup baseline in
   let producer,validator=hosted manager events (proposal events baseline ()) (decision ~actual:E.Fail baseline) in
   register manager contract producer validator;

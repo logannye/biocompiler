@@ -33,6 +33,7 @@ type host_value = {
   (* Is this value a member of the supplied literal container? *)
   contains : W.t -> host_constant -> bool;
   attribute_set_equal : W.t -> host_value list -> attribute:string -> host_constant -> bool;
+  source_link_set_equal : W.t -> host_value list -> C.Source_link.t list -> bool;
   lookup : W.t -> (string * Bioc_wire.Json.t) list -> Bioc_wire.Json.t;
   get_item : W.t -> host_constant -> host_value;
   get : W.t -> string -> host_value;
@@ -58,21 +59,39 @@ type provider = W.t -> C.Pass_context.t -> callback_result
    exceptions and mutations are retained. This does not compare producers,
    alter self-certification checks, merge provider identities or import trust. *)
 type validator_equivalent = W.t -> provider -> provider -> bool
+(* Trusted read-only identity metadata, using the same lifetime budget. One
+   execution id relates producer/validator contexts and the stored record.
+   Record_stored runs after the real mutation and before final freshness checks.
+   The observer must not execute authoring callbacks or change native authority. *)
+type origin = Input_origin | Admission_origin of C.Component_input_contract.t
+  | Pass_origin of C.Stage_record.t * C.Pass_contract.t
+type observation = Context_created of int * origin * C.Pass_context.t
+  | Record_stored of int * origin * C.Stage_record.t
+type observer = W.t -> observation -> unit
 type no_candidate = {pass_id:string; configuration:Bioc_wire.Json.t;
   dependencies:(string * string) list; message:string}
 exception No_candidate_found of no_candidate
 type t
-val create : budget:W.t -> ?limits:limits -> ?validator_equivalent:validator_equivalent ->
+val create : budget:W.t -> ?limits:limits -> ?validator_equivalent:validator_equivalent -> ?observer:observer ->
   target:Bioc_domain.Build_request.Target.t ->
   dependencies:(string * string) list -> ?completion_profiles:C.Completion_profile.t list -> unit -> t
 (* Creates and marks a real trusted host wrapper, retaining its physical identity.
-   Native providers cannot consume a host-only SourceLink sidecar; that mixed
-   adaptation remains explicitly unsupported rather than validating empty links. *)
+   Native providers consume host-only SourceLink sidecars only after the explicit
+   reviewed opt-in below; unmarked providers fail closed before invocation. *)
 val bind_host_provider : t -> (W.t -> C.Pass_context.t -> host_value) -> provider
 val target : t -> Bioc_domain.Build_request.Target.t
 (* Original host SourceLink objects for the active callback only. Nested calls
    restore the previous sidecar; None is the unchanged native-provider path. *)
 val callback_source_links : t -> host_value list option
+(* Trusted native providers opt in only when they either ignore host links or
+   compare them through the exact host set operation below. No wire mutation
+   grants this capability. *)
+val allow_host_source_links : t -> provider -> unit
+val host_source_links_equal : t -> expected:C.Source_link.t list -> bool option
+(* Invoke an already retained trusted provider with the retained context's
+   original sidecar. The ordinary native callback checks, lifetime budget and
+   dynamically scoped restoration apply; no caller data imports acceptance. *)
+val invoke_provider : t -> host_links:host_value list option -> provider -> C.Pass_context.t -> callback_result
 val register_completion_profile : t -> C.Completion_profile.t -> unit
 val set_dependency : t -> string -> string -> unit
 (* Host mapping traversals occur only at these requested stages, including two

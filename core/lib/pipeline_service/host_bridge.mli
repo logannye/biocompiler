@@ -14,3 +14,7 @@ val of_reference : t -> Bioc_wire.Json.t -> M.host_value
 val reference : t -> M.host_value -> Bioc_wire.Json.t
 val literal : t -> M.host_constant -> M.host_value
 val counts : t -> Bioc_wire.Json.t
+
+(** The exact host tuple retained by a successful tuple materialization. This
+    read-only identity sidecar cannot authorize a stage or change native checks. *)
+val tuple_origin : t -> M.host_value list -> M.host_value option

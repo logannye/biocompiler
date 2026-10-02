@@ -24,9 +24,26 @@ installed callback replay and default cutover remain open. The PR69 compilation
 warning was corrected at `85dfc8ca114ea629ad1f65eb010d0a635f71d556`;
 its replacement [hosted run](https://github.com/logannye/biocompiler/actions/runs/37036025402)
 is pending. Neither the correction nor the new libraries is a native PASS.
+PR70 also required a documentation-spacing correction after warning 50 in
+`callback_channel.mli`; corrected source `6c31b59a789a0b5a8d8b8edc6fea93d586292d78`
+is awaiting [replacement hosted validation](https://github.com/logannye/biocompiler/actions/runs/37041405310).
 The [callback source checkpoint](../protocol/migration-pipeline-callback-checkpoint.json)
 pins the implemented files, 134 passing local Python checks, strict typing across
 19 modules and the unresolved native/public integration gates.
+
+**Live manager source checkpoint:** the Core-only application dispatcher, typed
+Python adapter and installed identity campaign are implemented. Native suite 102
+and a complete four-runtime comparison are wired into existing hosted gates.
+The default remains Python. See the [manager implementation](migration-pipeline-manager.md)
+and [source checkpoint](../protocol/migration-pipeline-manager-checkpoint.json).
+PR70's exact source-list test also needed the two reviewed callback additions;
+corrected source `40fad81c5124f540c56914816f4bf21c077ac059` now awaits
+[replacement validation](https://github.com/logannye/biocompiler/actions/runs/37046030719).
+The earlier PR70 runs are superseded, not acceptance evidence.
+
+The [next-phase biological handoff](biological-correctness-next-phase-handoff.md)
+is preserved as future-session context. Its BC checklist remains unexecuted;
+finish the LM release and cutover gates before that separate development phase.
 
 - [x] **LM-03/12 realization protocol hosted checkpoint (PR57):** run
   `36987943622`, source `41ab0f99375d7293a4b86c28da1cd5408b7376c0`,
@@ -915,6 +932,25 @@ record current parent heads; previous partial native passes are historical only.
   and both Python versions. Preserve mixed native/host provider behavior, fixed
   registration interception, exception identity and post-error mutations. A
   callback object broker or generic framing library alone does not close this gate.
+
+- [x] **LM-03 P2 original identity and ordering oracle:** five additional
+  original-manager cases retain 34 complete observations and ten records,
+  including shared contexts, records, target and obligation objects, mapping
+  insertion order, nested exceptions and records stored before freshness errors.
+  Eight Python tests pass. Adversarial copies and reordered mappings fail these
+  comparisons even when their values agree. Original frozen corpora are unchanged.
+- [x] **LM-12/25 P2 live manager source implementation:** retain an actual OCaml
+  manager behind bounded callbacks; add explicit Python typed views with ordered
+  values, shared object bindings, fresh access checks and fail-closed sessions.
+  Add a real framed native suite and installed five-case identity campaign with
+  full frame/artifact receipts, independent Verify rejection and four-runtime
+  comparison. Local Python/static checks are separate from native acceptance.
+- [ ] **LM-12/25 P2 live typed manager integration:** connect the callback
+  application to Core and the explicit Python manager adapter, preserve retained
+  object identity and order, and replay the identity oracle through installed
+  native executables on both platforms and Python versions. Keep all original
+  callback and fixed-pipeline compatibility gates above open until their complete
+  live replay passes; an additive adapter is not the default cutover.
 
 - [x] **LM-03 CI harness correction checkpoint:** the installed architecture
   guard now permits only the exact new parser-registration helpers while rejecting
