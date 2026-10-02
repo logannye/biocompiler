@@ -1,7 +1,8 @@
 """Run every frozen CLI child against both installed native executable roles.
 
 Complete stdout, stderr, exit status and filesystem observations must equal the
-original Python baseline. Native selection flags and source/guard audit metadata
+original Python baseline or its single independently pinned argparse runtime
+counterpart. Native selection flags and source/guard audit metadata
 are explicit additional evidence, never normalized output. Six historical
 inspection commands retain their original non-accepting inspection scope.
 """
@@ -22,10 +23,12 @@ import time
 from uuid import UUID
 
 if __package__:
+    from . import cli_runtime_counterparts as runtime
     from . import freeze_workflow_cli as f
     from . import check_workflow_reproducibility as r
     from . import check_native_workflow_public_sdk as policy
 else:
+    import cli_runtime_counterparts as runtime
     import freeze_workflow_cli as f
     import check_workflow_reproducibility as r
     import check_native_workflow_public_sdk as policy
@@ -37,7 +40,8 @@ RECEIPT_FILE = "workflow-cli.json"
 ARTIFACT_DIRECTORY = "workflow-cli-artifacts"
 BASELINE_PIN = "a67edb95f75aa011ed5c059fe8cbe578fbe118d056931e3992f73775e8951da7"
 SOURCES = ("tools/check_native_workflow_cli.py", "tools/check_native_workflow_public_sdk.py",
-           "tools/freeze_workflow_cli.py", "tests/test_native_workflow_cli_campaign.py")
+           "tools/freeze_workflow_cli.py", "tests/test_native_workflow_cli_campaign.py",
+           "tools/cli_runtime_counterparts.py", "tests/conformance/workflow-cli-runtime-counterparts-v1.json")
 canonical, require, digest = r.canonical, r.require, r.digest
 PLATFORMS, PYTHONS, ROLES = r.PLATFORMS, r.PYTHONS, r.ROLES
 OPERATIONS = {"validate-verification-workflow-authority", "run-verification-workflow", "replay-verification-workflow"}
@@ -320,10 +324,13 @@ def run_case(case, role, executable, executable_pin, store):
         "console_path": console, "python_executable": sys.executable}
 
 
-def equal_observations(actual, original, blobs, old_blobs):
-    require(actual["exit_code"] == original["exit_code"], "CLI exit differs: " + actual["id"])
+def equal_observations(actual, original, blobs, old_blobs, *, python_version=None):
+    expected = runtime.workflow().expected(original, {"exit_code": original["exit_code"],
+        **{field: f.restore(original[field], old_blobs) for field in ("stdout", "stderr")}}, python_version)
+    require(type(actual["exit_code"]) is int and actual["exit_code"] == expected["exit_code"],
+            "CLI exit differs: " + actual["id"])
     for field in ("stdout", "stderr"):
-        require(f.restore(actual[field], blobs) == f.restore(original[field], old_blobs),
+        require(f.restore(actual[field], blobs) == expected[field],
                 "Complete CLI " + field + " differs: " + actual["id"])
     for field in ("files_before", "files_after"):
         left, right = actual[field], original[field]
@@ -454,12 +461,13 @@ def validate(receipt, blobs, original, old_blobs, *, oracle=None):
             receipt["executables"][row["role"]], "--core-sha256", receipt["native_inputs"]["sha256"]["biocompiler-" + row["role"]],
             "--core-timeout", "300"]
         require(row["argv"] == [old["argv"][0], *selected, *old["argv"][1:]], "Explicit CLI native selection changed")
-        equal_observations(row, old, blobs, old_blobs)
+        equal_observations(row, old, blobs, old_blobs, python_version=receipt["python_version"])
         audit = r.decode(f.restore(row["audit"], blobs))
         require(canonical(audit) == f.restore(row["audit"], blobs), "Noncanonical complete CLI audit")
         validate_audit(row, audit, blobs, receipt["product_sources"], oracle)
         # Runtime paths and UUIDs remain in retained full evidence. Only validated
-        # process metadata is projected for cross-runtime comparison.
+        # process metadata and the separately validated exact argparse runtime
+        # counterpart are projected for cross-runtime comparison.
         projected = deepcopy(audit["responses"])
         projected_wires = []
         for position, envelope in enumerate(projected):
@@ -474,7 +482,8 @@ def validate(receipt, blobs, original, old_blobs, *, oracle=None):
         projection.append({"role": row["role"], "id": row["id"], "responses": projected,
             "wire_responses": projected_wires,
             "native_artifacts": sorted({value["sha256"] for value in audit["native_artifacts"].values()}),
-            "stdout": row["stdout"], "stderr": row["stderr"],
+            "stdout": old["stdout"] if row["id"] in runtime.workflow().cases else row["stdout"],
+            "stderr": old["stderr"] if row["id"] in runtime.workflow().cases else row["stderr"],
             "exit_code": row["exit_code"], "files_before": row["files_before"], "files_after": row["files_after"]})
     require(seen == set(expected) and receipt["completed_checks"] == 140, "Complete 140-child native CLI matrix narrowed")
     used = set()
@@ -523,7 +532,7 @@ def campaign_main(argv):
                     row = run_case(case, role, executable, pin, store)
                     receipt["checks"].append(row)
                     old = next(value for value in original["cases"] if value["id"] == case["id"])
-                    equal_observations(row, old, store.blobs, old_blobs)
+                    equal_observations(row, old, store.blobs, old_blobs, python_version=receipt["python_version"])
         receipt.update(status="success", completed_checks=len(receipt["checks"]))
         validate(receipt, store.blobs, original, old_blobs); code = 0
     except Exception as error:
@@ -573,7 +582,8 @@ def compare(root, native_root, *, revision, source_revision, run_id):
     return {"schema_version": "biocompiler.workflow_cli_reproducibility.v1", "status": "success",
         "revision": revision, "source_revision": source_revision, "run_id": run_id,
         "baseline_pin": BASELINE_PIN, "receipts": receipts, "children_per_runtime": 140,
-        "projection": "validated_actual_request_ids_and_runtime_paths_only; complete_cli_and_artifact_bytes_unchanged",
+        "runtime_counterpart_sha256": runtime.workflow().pin,
+        "projection": "validated_actual_request_ids_runtime_paths_and_exact_pinned_argparse_runtime_counterpart_only; complete_actual_bytes_retained",
         "observation_sha256": f.sha(reference)}
 
 
