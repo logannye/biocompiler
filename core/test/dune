@@ -458,3 +458,9 @@
  (name test_verification_workflow_authority)
  (modules test_verification_workflow_authority)
  (libraries bioc_wire bioc_service bioc_domain bioc_checker bioc_realization_checker zarith))
+
+(test
+ (name test_synthetic_inspection_protocol)
+ (modules test_synthetic_inspection_protocol)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_realization_checker bioc_compiler bioc_producer_service zarith)
+ (action (run %{test} %{env:BIOCOMPILER_SYNTHETIC_INSPECTION_FIXTURES=missing} %{env:BIOCOMPILER_SYNTHETIC_INSPECTION_DECLARATION=missing})))

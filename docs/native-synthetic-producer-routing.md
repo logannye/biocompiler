@@ -23,13 +23,21 @@ requires a fresh native operation. `from_dict()` and `from_json()` create
 historical inspection views without a native receipt. They do not establish
 fresh acceptance.
 
-The following compatibility work remains unfinished: mechanism topological
-ordering, general registry selection or lock verification, derived exercised
-requirements, dependency comparison and check freshness. Those methods fail
-explicitly with Unsupported errors. Legacy `isinstance` and `dataclasses.replace`
-compatibility is not provided by these distinct views. Explicit SDK and CLI routes
-are implemented; complete installed native conformance remains pending. Native
-pipeline freshness, package acceptance and default cutover remain open roadmap items.
+Views carrying an explicit `CoreClient` now delegate mechanism topological
+ordering, general registry lock/resolve/select/verification, exercised requirement
+identities, dependency comparison and check freshness to eight Core-only
+operations in the [inspection contract](../protocol/synthetic-inspection-v1.md).
+Historical constructors accept an optional `core=` context for these calls;
+without it, semantic helpers still fail explicitly. Attaching that context does
+not grant a production receipt or fresh acceptance. Each helper retains its full
+supplied authority and native inspection receipt. Check freshness compares the
+complete supplied dependency snapshots; it does not establish whole-program
+acceptance under current external authority.
+
+Legacy `isinstance` and `dataclasses.replace` compatibility is not provided by
+these distinct views. Explicit SDK, CLI and helper routes are implemented;
+complete installed native conformance remains pending. Native pipeline lifecycle,
+package acceptance and default cutover remain open roadmap items.
 
 The separate `select-synthetic-build-request` native operation imports complete
 portable build authority and returns a nested selection receipt. Its exact
@@ -70,10 +78,19 @@ its explicit SDK route, as well as the complete CLI baseline, and retain raw
 native responses and all artifact bytes across both platforms and Python
 versions. Their passing Python protocol fixtures do not establish hosted native
 validation. The migration remains incomplete until those gates and the remaining
-pipeline/package/helper obligations pass at the integrated revision.
+pipeline/package obligations pass at the integrated revision.
 
 The current producer transport uses the direct bounded JSON profile (16 MiB input,
 32 MiB complete response). The historical CLI publication ceiling is 64 MiB.
 Serialized-length fault fixtures test publication handling; they do not prove
 that every valid large semantic result fits this transport. Full large-result
 compatibility needs an artifact-channel profile before default cutover.
+
+The helper campaign retains all 9,632 applicable original observations without
+sampling or deduplication and 28 separately captured supplemental cases. It
+executes the public views under an import/execution guard, retains complete raw
+wire, authority, values, properties and errors, and checks all eight operations
+are absent from Verify capabilities and rejected by Verify dispatch. Mandatory
+four-runtime comparison rehashes every retained artifact. Native protocol tests
+also exercise reduced resource boundaries and shared ancestor budgets. These
+checks are wired into CI; Python fixture passes are not native validation.

@@ -1,0 +1,166 @@
+{
+  "authority_encoding": "python-json-v1",
+  "check_result_queries": [
+    "coverage",
+    "freshness"
+  ],
+  "claim_scope": "Fresh structural import and named helper computation over complete supplied historical authority only. Dependency freshness means equality of supplied snapshots; registry selection is freshly recomputed. No current whole-program acceptance, package/export acceptance, empirical function or human-use admission.",
+  "default_limits": {
+    "max_monitor_items": 100000,
+    "max_report_bytes": 33554432,
+    "max_report_nodes": 250000,
+    "max_request_bytes": 16777216,
+    "max_work": 50000000
+  },
+  "fingerprints": "sha256_complete_canonical_utf8_payload_each_supplied_input_and_value_no_omissions",
+  "freshness_fields": [
+    "changed_dependencies",
+    "fresh",
+    "status"
+  ],
+  "implementation": "biocompiler.ocaml.synthetic_inspection_service.v0.1",
+  "limits_fields": [
+    "max_monitor_items",
+    "max_report_bytes",
+    "max_report_nodes",
+    "max_request_bytes",
+    "max_work"
+  ],
+  "operations": [
+    "inspect-synthetic-mechanism",
+    "inspect-synthetic-check-result",
+    "compare-synthetic-dependencies",
+    "lock-synthetic-registry",
+    "resolve-synthetic-registry",
+    "select-synthetic-registry",
+    "verify-synthetic-registry-selection",
+    "inspect-synthetic-registry-selection"
+  ],
+  "payload_fields": {
+    "compare-synthetic-dependencies": [
+      "profile",
+      "limits",
+      "previous",
+      "current"
+    ],
+    "inspect-synthetic-check-result": [
+      "profile",
+      "limits",
+      "record",
+      "query",
+      "current"
+    ],
+    "inspect-synthetic-mechanism": [
+      "profile",
+      "limits",
+      "mechanism"
+    ],
+    "inspect-synthetic-registry-selection": [
+      "profile",
+      "limits",
+      "selection"
+    ],
+    "lock-synthetic-registry": [
+      "profile",
+      "limits",
+      "registry",
+      "instances"
+    ],
+    "resolve-synthetic-registry": [
+      "profile",
+      "limits",
+      "registry",
+      "lock"
+    ],
+    "select-synthetic-registry": [
+      "profile",
+      "limits",
+      "registry",
+      "request"
+    ],
+    "verify-synthetic-registry-selection": [
+      "profile",
+      "limits",
+      "registry",
+      "request",
+      "selection"
+    ]
+  },
+  "profile": "biocompiler.core.synthetic_inspection.v1",
+  "resources": {
+    "protocol": {
+      "max_depth": 128,
+      "max_monitor_items": 100000,
+      "max_number_chars": 4300,
+      "max_report_bytes": 33554432,
+      "max_report_nodes": 250000,
+      "max_request_bytes": 16777216,
+      "max_request_nodes": 250000,
+      "max_string_bytes": 4194304,
+      "max_work": 50000000,
+      "node_accounting": "values_and_object_keys",
+      "profile": "biocompiler.core.synthetic_inspection.resources.v1",
+      "report_encoding": "compact_ensure_ascii_true_conservative_outer_reservation_then_utf8_wire",
+      "report_scope": "complete_value_complete_result_and_final_protocol_response",
+      "request_encoding": "compact_utf8_plus_one_separator",
+      "request_scope": "complete_inspection_payload",
+      "work_accounting": "one_ancestor_for_framing_bounded_import_helpers_replay_hashes_and_final_publication"
+    },
+    "selection": {
+      "ancestor": "same_inspection_request_ancestor",
+      "max_components": 10000,
+      "profile": "biocompiler.component_selection_producer.resources.v1"
+    },
+    "structural_import": {
+      "comparison_accounting": "complete_import_bytes_plus_bounded_pairwise_identifier_bytes",
+      "precharged_byte_multiplier": 128,
+      "retention": "all_supplied_json_values_and_object_keys_plus_resolved_component_occurrences"
+    }
+  },
+  "result_fields": [
+    "schema_version",
+    "profile",
+    "service_implementation",
+    "operation",
+    "resources",
+    "validation_scope",
+    "claim_scope",
+    "supplied_authority_fingerprint",
+    "input_fingerprints",
+    "value",
+    "value_fingerprint"
+  ],
+  "result_schema": "biocompiler.core.synthetic_inspection_result.v1",
+  "role": "bioc-core",
+  "validation_scope": "supplied-synthetic-authority-helper-inspection-only-v1",
+  "value_fields": {
+    "compare-synthetic-dependencies": [
+      "changed_dependencies"
+    ],
+    "inspect-synthetic-check-result": [
+      "exercised_requirement_ids",
+      "freshness"
+    ],
+    "inspect-synthetic-mechanism": [
+      "nodes"
+    ],
+    "inspect-synthetic-registry-selection": [
+      "outcome"
+    ],
+    "lock-synthetic-registry": [
+      "lock"
+    ],
+    "resolve-synthetic-registry": [
+      "instances"
+    ],
+    "select-synthetic-registry": [
+      "selection",
+      "outcome"
+    ],
+    "verify-synthetic-registry-selection": [
+      "valid"
+    ]
+  },
+  "verify_selection_null": "false_after_structural_registry_and_request_import_without_selection_replay",
+  "wire_encoding": "python-json-v1"
+}

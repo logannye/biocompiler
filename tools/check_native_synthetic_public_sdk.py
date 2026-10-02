@@ -42,7 +42,8 @@ sha = base.sha
 ROUTES = {"generate-synthetic": ("biocompiler.synthesis.synthetic", "generate_synthetic"),
           "select-synthetic": ("biocompiler.synthesis.selection", "select_synthetic"),
           "adapt-synthetic-components": ("biocompiler.synthesis.components", "adapt_synthetic_components")}
-TRANSPORT_MODULES = base.TRANSPORT_MODULES | {"biocompiler.synthetic_producer_backend"}
+REQUIRED_TRANSPORT_MODULES = base.TRANSPORT_MODULES | {"biocompiler.synthetic_producer_backend"}
+TRANSPORT_MODULES = REQUIRED_TRANSPORT_MODULES | {"biocompiler.core_synthetic_inspection"}
 INPUT_MODULES = {"biocompiler.compiler.request", "biocompiler.ir.behavior", "biocompiler.ir.components",
     "biocompiler.ir.intent", "biocompiler.ir.mechanism", "biocompiler.ir.serialization",
     "biocompiler.semantics.context", "biocompiler.semantics.contracts", "biocompiler.semantics.evaluator",
@@ -54,6 +55,8 @@ SOURCES = ("tools/check_native_synthetic_public_sdk.py", "tests/test_native_synt
     "tools/check_native_workflow_public_sdk.py",
     "tools/check_native_workflow.py", "tools/check_native_workflow_presentation.py",
     "tools/check_workflow_reproducibility.py", "tools/check_realization_binaries.py", "protocol/synthetic-producer-v1.json")
+# Hosted acceptance for these helpers is tracked by the separate inspection campaign.
+# This producer campaign itself establishes no helper acceptance.
 PENDING_HELPERS = ["authoritative_mechanism_topological_order", "general_registry_lock_selection_verification",
                    "derived_coverage_summaries", "freshness_decisions"]
 
@@ -131,7 +134,7 @@ def check_guard(entries,case,role):
     if role == "verify":
         require(modules=={"biocompiler.core_client"}, "Verifier transport guard differs")
     else:
-        require(TRANSPORT_MODULES <= modules and any(item[:3]==[*ROUTES[case["operation"]],"output"] for item in entries),
+        require(REQUIRED_TRANSPORT_MODULES <= modules and any(item[:3]==[*ROUTES[case["operation"]],"output"] for item in entries),
                 "Missing actual public producer route or native transport")
         if case["input_kind"]=="typed":
             require(any(item[2]=="input" for item in entries), "Typed input bypassed audited serializer phase")

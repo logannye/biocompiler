@@ -20,6 +20,7 @@ from biocompiler.core_client import (
     JsonValue, decode_json, encode_json,
 )
 from biocompiler.core_synthetic_producer import NativeSyntheticProduction, SyntheticProducerClient
+from biocompiler.core_synthetic_inspection import NativeSyntheticInspection, SyntheticInspectionClient
 from biocompiler.errors import SerializationError, UnsupportedBehaviorError
 
 _INPUT_SERIALIZATION: ContextVar[bool] = ContextVar("synthetic_producer_input_serialization", default=False)
@@ -97,6 +98,9 @@ class NativeProducerDocument:
     _native: NativeSyntheticProduction | None = None
     _extras: Mapping[str, Any] = field(default_factory=lambda: MappingProxyType({}))
 
+    _core: CoreClient | None = None
+    _inspection: NativeSyntheticInspection | None = None
+
     def __getattr__(self, name: str) -> Any:
         if name in self._extras:
             return self._extras[name]
@@ -124,25 +128,47 @@ class NativeProducerDocument:
     def native_result(self) -> NativeSyntheticProduction | None:
         return self._native
 
+    @property
+    def native_inspection(self) -> NativeSyntheticInspection | None:
+        return self._inspection
+
+    def _inspect(self, operation: str, **authority: JsonValue) -> NativeSyntheticInspection:
+        if self._core is None:
+            raise UnsupportedBehaviorError("Native " + operation + " inspection requires an explicit core context; historical bytes grant no fresh acceptance.")
+        try:
+            return SyntheticInspectionClient(self._core).call(operation, **cast(Any, authority))
+        except CoreRejected as error:
+            if error.response.status == "error" and len(error.response.diagnostics) == 1:
+                diagnostic = error.response.diagnostics[0]
+                original: Exception = (TypeError(diagnostic.message) if diagnostic.code == "synthetic_inspection_type"
+                                       else SerializationError(diagnostic.message))
+                setattr(original, "core_error", error)
+                setattr(original, "diagnostics", error.response.diagnostics)
+                setattr(original, "operation", operation)
+                raise original from error
+            raise SyntheticProducerCoreError(operation, error) from error
+        except CoreError as error:
+            raise SyntheticProducerCoreError(operation, error) from error
+
     @classmethod
-    def from_dict(cls, document: Mapping[str, Any]) -> NativeProducerDocument:
+    def from_dict(cls, document: Mapping[str, Any], *, core: CoreClient | None = None) -> NativeProducerDocument:
         # Historical views carry no core receipt and no fresh authority.
         raw = decode_json(_bytes(_thaw(document)))
         if type(raw) is not dict:
             raise CoreProtocolError("Native producer view requires a complete object")
-        view = _view(raw)
+        view = _view(raw, field="dependencies" if cls is NativeDependencies else "", core=core)
         if cls is not NativeProducerDocument and type(view) is not cls:
             raise CoreProtocolError("Historical producer view schema differs from the selected class")
         return view
 
     @classmethod
-    def from_json(cls, text: str) -> NativeProducerDocument:
+    def from_json(cls, text: str, *, core: CoreClient | None = None) -> NativeProducerDocument:
         if type(text) is not str:
             raise CoreProtocolError("Native producer JSON must be text")
         raw = decode_json(text.encode("utf-8"))
         if type(raw) is not dict:
             raise CoreProtocolError("Native producer JSON must be an object")
-        return cls.from_dict(raw)
+        return cls.from_dict(raw, core=core)
 
     def __eq__(self, other: object) -> bool:
         return type(self) is type(other) and self._canonical_json == cast(NativeProducerDocument, other)._canonical_json
@@ -195,7 +221,8 @@ class NativeMechanismProgram(NativeProducerDocument):
         return tuple(node for node in self._data["nodes"] if node.kind == kind)
 
     def topological_nodes(self) -> tuple[NativeProducerDocument, ...]:
-        raise UnsupportedBehaviorError("Native producer views do not yet expose authoritative topological ordering; inspect nodes or retain the default Python API.")
+        result = self._inspect("inspect-synthetic-mechanism", mechanism=self.to_dict())
+        return tuple(_view(node, core=self._core, inspection=result) for node in result.value["nodes"])
 
 
 class NativeComponentRecord(NativeProducerDocument):
@@ -212,24 +239,40 @@ class NativeComponentRegistry(NativeProducerDocument):
     __slots__ = ()
 
     def resolve(self, lock: Any) -> dict[str, NativeComponentRecord]:
-        """Inspect only the exact lock attached to this native adaptation.
+        result = self._inspect("resolve-synthetic-registry", registry=self.to_dict(), lock=_inspection_input(lock, kind="registry_lock"))
+        return {key: cast(NativeComponentRecord, _view(raw, core=self._core, inspection=result))
+                for key, raw in result.value["instances"].items()}
 
-        Arbitrary lock verification and registry selection are separate native
-        operations. Returning these records conveys no linking acceptance.
-        """
-        expected = self._extras.get("attached_lock_json")
-        if expected is None or _bytes(_input(lock, kind="candidate")) != expected:
-            raise UnsupportedBehaviorError("Native registry inspection requires its exact attached composition lock; arbitrary lock verification is not yet exposed.")
-        return dict(self._extras["attached_records"])
+    def lock(self, instances: Any) -> NativeProducerDocument:
+        supplied = ({key: _inspection_input(item, kind="component") for key, item in instances.items()}
+                    if isinstance(instances, Mapping) else _inspection_input(instances, kind="component"))
+        result = self._inspect("lock-synthetic-registry", registry=self.to_dict(), instances=supplied)
+        return _view(result.value["lock"], core=self._core, inspection=result)
 
-    def lock(self, instances: Any) -> Any:
-        raise UnsupportedBehaviorError("Native producer views do not expose registry lock construction; use the attached composition lock.")
+    def select(self, request: Any) -> NativeComponentSelectionResult:
+        result = self._inspect("select-synthetic-registry", registry=self.to_dict(), request=_inspection_input(request, kind="selection_request"))
+        return cast(NativeComponentSelectionResult, _view(result.value["selection"], core=self._core, inspection=result,
+                    presentation={"outcome": result.value["outcome"]}))
 
-    def select(self, request: Any) -> Any:
-        raise UnsupportedBehaviorError("Native producer views do not expose general component registry selection.")
+    def verify_selection(self, request: Any, result: Any) -> bool:
+        inspected = self._inspect("verify-synthetic-registry-selection", registry=self.to_dict(),
+            request=_inspection_input(request, kind="selection_request"), selection=_inspection_input(result, kind="selection"))
+        return cast(bool, inspected.value["valid"])
 
-    def verify_selection(self, *args: Any, **kwargs: Any) -> Any:
-        raise UnsupportedBehaviorError("Native producer views do not expose general component selection verification.")
+
+class NativeComponentSelectionResult(NativeProducerDocument):
+    __slots__ = ()
+
+    @property
+    def outcome(self) -> str:
+        if "outcome" in self._extras:
+            return cast(str, self._extras["outcome"])
+        result = self._inspect("inspect-synthetic-registry-selection", selection=self.to_dict())
+        return cast(str, result.value["outcome"])
+
+
+class NativeFreshnessReport(NativeProducerDocument):
+    __slots__ = ()
 
 
 class NativeCheckResult(NativeProducerDocument):
@@ -242,13 +285,18 @@ class NativeCheckResult(NativeProducerDocument):
 
     @property
     def exercised_requirement_ids(self) -> tuple[str, ...]:
-        raise UnsupportedBehaviorError("Native producer views retain complete coverage; derived coverage summaries are not yet exposed.")
+        result = self._inspect("inspect-synthetic-check-result", record=self.to_dict(), query="coverage", current=None)
+        return tuple(result.value["exercised_requirement_ids"])
 
-    def freshness(self, current: Any) -> Any:
-        raise UnsupportedBehaviorError("Retained native producer evidence grants no current freshness; run a fresh native checker.")
+    def freshness(self, current: Any) -> NativeFreshnessReport:
+        result = self._inspect("inspect-synthetic-check-result", record=self.to_dict(), query="freshness", current=_inspection_input(current, kind="dependencies"))
+        freshness = result.value["freshness"]
+        return cast(NativeFreshnessReport, _view({"changed_dependencies": freshness["changed_dependencies"]},
+            core=self._core, inspection=result, field="freshness",
+            presentation={"fresh": freshness["fresh"], "status": freshness["status"]}))
 
     def is_fresh(self, current: Any) -> bool:
-        return cast(bool, self.freshness(current))
+        return cast(bool, self.freshness(current).fresh)
 
 
 class NativeDependencies(NativeProducerDocument):
@@ -259,7 +307,8 @@ class NativeDependencies(NativeProducerDocument):
         return self._data
 
     def changed(self, current: Any) -> tuple[str, ...]:
-        raise UnsupportedBehaviorError("Native producer dependency views do not perform freshness decisions; run a fresh native checker.")
+        result = self._inspect("compare-synthetic-dependencies", previous=self.to_dict(), current=_inspection_input(current, kind="dependencies"))
+        return tuple(result.value["changed_dependencies"])
 
 
 class NativeSourceLocation(NativeProducerDocument):
@@ -275,6 +324,7 @@ _SCHEMAS: dict[str, type[NativeProducerDocument]] = {
     "biocompiler.component_record.v0.2": NativeComponentRecord,
     "biocompiler.component_registry.v0.2": NativeComponentRegistry,
     "biocompiler.realization_check.v0.1": NativeCheckResult,
+    "biocompiler.component_selection_result.v0.2": NativeComponentSelectionResult,
 }
 _MAPPINGS = {"attributes", "source_map", "behavior_requirement_ids", "constraints", "expected", "actual", "settings"}
 
@@ -287,28 +337,33 @@ def _plain(value: Any) -> Any:
     return value
 
 
-def _freeze(value: Any, *, field: str = "", native: NativeSyntheticProduction | None = None) -> Any:
+def _freeze(value: Any, *, field: str = "", native: NativeSyntheticProduction | None = None,
+            core: CoreClient | None = None, inspection: NativeSyntheticInspection | None = None) -> Any:
     if type(value) is dict:
         if field in _MAPPINGS:
             if field == "constraints":
-                return MappingProxyType({key: _freeze(item, native=native) for key, item in value.items()})
+                return MappingProxyType({key: _freeze(item, native=native, core=core, inspection=inspection) for key, item in value.items()})
             return _plain(value)
-        return _view(value, field=field, native=native)
+        return _view(value, field=field, native=native, core=core, inspection=inspection)
     if type(value) is list:
-        return tuple(_freeze(item, native=native) for item in value)
+        return tuple(_freeze(item, native=native, core=core, inspection=inspection) for item in value)
     return value
 
 
-def _view(raw: dict[str, Any], *, field: str = "", native: NativeSyntheticProduction | None = None) -> NativeProducerDocument:
+def _view(raw: dict[str, Any], *, field: str = "", native: NativeSyntheticProduction | None = None,
+          core: CoreClient | None = None, inspection: NativeSyntheticInspection | None = None,
+          presentation: Mapping[str, Any] | None = None) -> NativeProducerDocument:
     cls = _SCHEMAS.get(raw.get("schema_version", ""), NativeProducerDocument)
     if set(raw) == {"registry", "composition", "acceptance"}:
         cls = NativeSyntheticComposition
     elif field == "dependencies" and "checker" in raw:
         cls = NativeDependencies
+    elif field == "freshness":
+        cls = NativeFreshnessReport
     elif set(raw) == {"file", "line", "function"}:
         cls = NativeSourceLocation
-    values = {key: _freeze(value, field=key, native=native) for key, value in raw.items()}
-    extras: dict[str, Any] = {}
+    values = {key: _freeze(value, field=key, native=native, core=core, inspection=inspection) for key, value in raw.items()}
+    extras: dict[str, Any] = {} if presentation is None else dict(presentation)
     if cls is NativeDependencies:
         values = {key: _plain(value) for key, value in raw.items()}
     if cls is NativeCheckResult:
@@ -322,19 +377,7 @@ def _view(raw: dict[str, Any], *, field: str = "", native: NativeSyntheticProduc
         extras["data_type"] = _freeze(raw["output"]["dtype"], field="attributes")
     if set(raw) == {"kind", "name", "dimensions", "arguments"}:
         extras["dimensions"] = tuple(raw["dimensions"].items())
-    if cls is NativeSyntheticComposition and native is not None:
-        registry = cast(NativeComponentRegistry, values["registry"])
-        known = {(item.id, item.version, item.fingerprint): item for item in registry.components}
-        resolved: dict[str, NativeComponentRecord] = {}
-        for selection in values["composition"].registry_lock.components:
-            identity = (selection.component_id, selection.version, selection.content_fingerprint)
-            if identity not in known or selection.node_id in resolved:
-                raise CoreProtocolError("Native adaptation contains an unresolved or duplicate attached registry selection")
-            resolved[selection.node_id] = known[identity]
-        attached = {"attached_lock_json": _bytes(raw["composition"]["registry_lock"]),
-                    "attached_records": MappingProxyType(resolved)}
-        values["registry"] = NativeComponentRegistry(registry._data, registry.canonical_json, native, MappingProxyType(attached))
-    return cls(MappingProxyType(values), _bytes(raw), native, MappingProxyType(extras))
+    return cls(MappingProxyType(values), _bytes(raw), native, MappingProxyType(extras), core, inspection)
 
 
 def _input(value: Any, *, kind: str) -> JsonValue:
@@ -351,6 +394,11 @@ def _input(value: Any, *, kind: str) -> JsonValue:
         "candidate": ("biocompiler.synthesis.synthetic", "SyntheticCandidate"),
         "config": ("biocompiler.synthesis.synthetic", "SyntheticGeneratorConfig"),
         "frame": ("biocompiler.semantics.evaluator", "InputFrame"),
+        "registry_lock": ("biocompiler.registry.components", "RegistryLock"),
+        "component": ("biocompiler.ir.component_contracts", "ComponentRecord"),
+        "selection_request": ("biocompiler.registry.components", "SelectionRequest"),
+        "selection": ("biocompiler.registry.components", "SelectionResult"),
+        "dependencies": ("biocompiler.verification.evidence", "DependencySnapshot"),
     }[kind]
     if (type(value).__module__, type(value).__name__) != expected:
         raise CoreProtocolError("Expected an authored " + kind + ", raw JSON bytes, mapping or native view")
@@ -359,6 +407,12 @@ def _input(value: Any, *, kind: str) -> JsonValue:
         return cast(JsonValue, cast(_TypedInput, value).to_dict())
     finally:
         _INPUT_SERIALIZATION.reset(token)
+
+
+def _inspection_input(value: Any, *, kind: str) -> JsonValue:
+    if type(value) in (str, int, float, bool, list, tuple):
+        return cast(JsonValue, _thaw(value))
+    return _input(value, kind=kind)
 
 
 def _history(value: Any) -> JsonValue:
@@ -374,7 +428,7 @@ def _history(value: Any) -> JsonValue:
     return result
 
 
-def view_result(native: NativeSyntheticProduction) -> NativeProducerDocument:
+def view_result(native: NativeSyntheticProduction, *, core: CoreClient | None = None) -> NativeProducerDocument:
     if native.outcome == "unsupported":
         detail = native.generation_error
         if detail is None:
@@ -387,7 +441,7 @@ def view_result(native: NativeSyntheticProduction) -> NativeProducerDocument:
     raw = native.record
     if raw is None:
         raise CoreProtocolError("Missing complete native producer record")
-    view = _view(raw, native=native)
+    view = _view(raw, native=native, core=core)
     if view.canonical_json != native.record_json:
         raise CoreProtocolError("Public native producer view changed the complete record")
     return view
@@ -399,7 +453,7 @@ def _run(operation: str, core: CoreClient, invoke: Callable[[SyntheticProducerCl
             raise CoreProtocolError("An explicit CoreClient is required for native production")
         if core.role != "core":
             raise CoreProtocolError("Synthetic production requires the core executable role")
-        return view_result(invoke(SyntheticProducerClient(core)))
+        return view_result(invoke(SyntheticProducerClient(core)), core=core)
     except CoreError as error:
         raise SyntheticProducerCoreError(operation, error) from error
 

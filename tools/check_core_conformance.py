@@ -202,6 +202,13 @@ def synthetic_public_profile():
     return profile
 
 
+def synthetic_inspection_profile():
+    """Read the separately pinned complete producer-only helper contract."""
+    raw = (ROOT / "protocol/synthetic-inspection-v1.json").read_bytes()
+    require(digest(raw) == "64256b32c001d6b836a0c94c6cf4afcafb6a96a7062d463bcb06dd4f5c6cb603", "Synthetic inspection declaration changed")
+    return json.loads(raw)
+
+
 def load_corpus(path=CORPUS):
     corpus = json.loads(Path(path).read_text(encoding="utf-8"))
     require(corpus["schema_version"] == "biocompiler.core_json_conformance.v0.1", "Unknown corpus")
@@ -504,6 +511,10 @@ def run_campaign(clients, corpus, receipt, programs):
             operations += public_producer["operations"]
             scopes.append(public_producer["validation_scope"])
             profiles["synthetic_producer_public"] = public_producer
+            inspection = synthetic_inspection_profile()
+            operations += inspection["operations"]
+            scopes.append(inspection["validation_scope"])
+            profiles["synthetic_inspection"] = inspection
             claim = "Supplied-contract architecture production, independent checking, exact RNA/manifest export and separately scoped finite-history model checks. No search completeness, empirical function or human-use admission is established."
         require(sorted(capabilities["operations"]) == sorted(operations), "Missing or untested advertised operation")
         check_capability_fields(capabilities, scopes, profiles)
