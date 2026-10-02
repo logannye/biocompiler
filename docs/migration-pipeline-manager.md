@@ -76,14 +76,53 @@ fixtures, static checks or typing does not establish native acceptance. Conditio
 software translation remains distinct from empirical biological function and
 human-use admission.
 
-The source checkpoint registers 102 native suites in total and discovers 2,922
-Python tests in 284 classes for the complete hosted unit plan. Discovery is not
+The PR71 source checkpoint registers 102 native suites in total and discovers
+2,922 Python tests in 284 classes for the complete hosted unit plan. Discovery is not
 execution. Strict typing covers 20 transport/view modules. Original workflow
 capture tests and the complete CLI lineage checks remain in place, including
 all literal source-addition assertions and unchanged frozen observations.
 
-The next compatibility increment is the 34-case original validator-comparison
-campaign. It requires ordered inspection of manager state and exact retained
-provider identity before the complete original case bodies can run against the
-installed manager. This does not close deferred access, fixed registration,
-remaining native workflow families, distribution or default-engine gates.
+The next compatibility increment adds the complete 34-case original validator
+comparison campaign to the existing five identity cases. The new `inspect-ordered`
+operation carries the complete historical snapshot, exact manager-map and nested
+validator order, actual combined registration history, and a complete inventory
+of reachable native tokens bound to retained callable objects. The adapter checks
+a stable bijection using object identity, without invoking user equality or hashes.
+The sidecar covers these declared manager-map orders; it does not generalize the
+ordering of arbitrary nested JSON values.
+
+Combined registration history is recorded at successful native mutations. Only
+callback-enabled managers retain this extra history; earlier service modes keep
+their existing resource accounting. Inspection cannot import accepted state.
+The installed campaign executes unchanged original case bodies, including rich
+comparison reflection, bound methods, exceptions, mutation and reentry. All 78
+manager events and 28 rich-comparison events remain required, including 18 raised
+events. Source implementation is still subject to hosted compilation and complete
+four-runtime replay; deferred access, fixed registration, remaining native workflow
+families, distribution and default-engine gates remain open.
+
+For the later 47-case deferred-access campaign, preserve all 157 events, 290
+access observations and 45 raised events. The original capture observes seven
+private manager fields and complete traceback frames. A native implementation
+must supply an explicit checked correspondence for these implementation views,
+retain both complete raw observations, and preserve actual user exception objects,
+causes, contexts and traceback-tail node identity. A blanket removal of traceback
+frames or replacement of native state with expected fixtures is not compatibility
+proof. Reused exceptions can retain earlier implementation frames in their tails;
+those need source-pinned correspondence, not claimed byte equality.
+
+Six deferred input cases construct a second manager directly through the original
+case module. Installed replay must intercept that local constructor without
+changing the frozen case bodies, then account for and close every actual native
+process. Native input fingerprinting already has a framed default-value/getter
+witness; verify its document/hash/order linkage without pretending that an OCaml
+call produced the original Python profiler frame. No-candidate exceptions still
+need fresh recursive ordered configuration/dependency snapshots, rather than
+sharing the context snapshot or accepting sorted attribute objects as equivalent.
+
+The comparison source checkpoint passes 26 adapter tests, 18 campaign tests,
+50 boundary/CI/inventory checks and eight source-lineage checks. Strict typing
+passes for 20 modules. The current inventory contains 3,196 entries; complete
+unit discovery finds 2,934 tests in 284 classes. These are local Python/static
+results and a discovery count, not hosted acceptance or full unit execution.
+The 102-suite native inventory is unchanged. Original frozen corpora are intact.

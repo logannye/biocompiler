@@ -33,7 +33,7 @@ from biocompiler.semantics.evaluator import InputFrame
 from biocompiler.synthesis.synthetic import SyntheticGeneratorConfig
 from biocompiler.verification.evidence import CheckOutcome, EvidenceKind, Obligation
 
-_APPLICATION_JSON = "{\"acceptance\":\"native_manager_checks_and_freshness_only;inspection_and_host_sidecars_cannot_import_accepted_records\",\"actions\":{\"hydrate-context\":{\"fields\":[\"context_id\",\"document\",\"bindings\"],\"result\":\"object_reference\"},\"native-provider\":{\"fields\":[\"provider_id\"],\"result\":\"object_reference\"},\"ordered-json\":{\"fields\":[\"object\"],\"result\":\"ordered_tree\"},\"provider-reference\":{\"fields\":[\"object\"],\"result\":\"host_or_native_provider_reference\"},\"set-equal\":{\"fields\":[\"object\",\"values\"],\"result\":\"boolean\"},\"source-link-set-equal\":{\"fields\":[\"objects\",\"expected\"],\"result\":\"boolean\"}},\"argument\":\"--pipeline-callback-session-v1\",\"authoring_boundary\":\"canonical_typed_contract_target_profile_fields;opaque_payload_configuration_provider_and_validator_objects_are_read_at_native_requested_points\",\"bindings\":{\"host\":[\"kind\",\"object\"],\"native\":[\"kind\",\"identity\",\"tree\"]},\"broker_actions\":{\"attr\":{\"fields\":[\"object\",\"name\"],\"result\":\"object_reference\"},\"attr-default\":{\"fields\":[\"object\",\"name\",\"default\"],\"result\":\"object_reference\"},\"bind-provider\":{\"fields\":[\"provider_id\",\"object\"],\"result\":\"null\"},\"call\":{\"fields\":[\"callable\",\"args\",\"kwargs\"],\"result\":\"object_reference\"},\"call-provider\":{\"fields\":[\"provider_id\",\"context\"],\"result\":\"object_reference\"},\"callable\":{\"fields\":[\"object\"],\"result\":\"boolean\"},\"compare\":{\"fields\":[\"left\",\"right\",\"operator\"],\"result\":\"boolean\"},\"contains\":{\"fields\":[\"container\",\"item\"],\"result\":\"boolean\"},\"dict\":{\"fields\":[\"object\"],\"result\":\"object_reference\"},\"document\":{\"fields\":[\"object\"],\"result\":\"object_reference\"},\"enum\":{\"fields\":[\"type\",\"value\"],\"result\":\"object_reference\"},\"freeze-json\":{\"fields\":[\"object\"],\"result\":\"object_reference\"},\"get-item\":{\"fields\":[\"object\",\"key\"],\"result\":\"object_reference\"},\"is-instance\":{\"fields\":[\"object\",\"type\"],\"result\":\"boolean\"},\"is-none\":{\"fields\":[\"object\"],\"result\":\"boolean\"},\"iter\":{\"fields\":[\"object\"],\"result\":\"object_reference\"},\"json\":{\"fields\":[\"object\"],\"result\":\"json\"},\"len\":{\"fields\":[\"object\"],\"result\":\"integer\"},\"list\":{\"fields\":[\"object\"],\"result\":\"object_reference\"},\"literal\":{\"fields\":[\"kind\",\"value\"],\"result\":\"object_reference\"},\"lookup\":{\"fields\":[\"object\",\"entries\"],\"result\":\"object_reference\"},\"mapping-items\":{\"fields\":[\"object\"],\"result\":\"object_reference\"},\"mapping-keys\":{\"fields\":[\"object\"],\"result\":\"object_reference\"},\"mapping-values\":{\"fields\":[\"object\"],\"result\":\"object_reference\"},\"merge\":{\"fields\":[\"object\",\"before\",\"after\"],\"result\":\"object_reference\"},\"next\":{\"fields\":[\"object\"],\"result\":\"iterator_step\"},\"release\":{\"fields\":[\"handles\"],\"result\":\"null\"},\"set-attribute-equal\":{\"fields\":[\"objects\",\"name\",\"values\"],\"result\":\"boolean\"},\"truth\":{\"fields\":[\"object\"],\"result\":\"boolean\"},\"tuple\":{\"fields\":[\"object\"],\"result\":\"object_reference\"},\"vars\":{\"fields\":[\"object\"],\"result\":\"object_reference\"}},\"channel\":\"biocompiler.pipeline_callback_channel.v1\",\"claim_scope\":\"software_contract_conditional_translation_and_scoped_completion;no_empirical_or_human_use_acceptance\",\"comparison_operators\":[\"eq\",\"ne\",\"is\",\"is-not\"],\"compatibility_pending\":[\"complete_original_installed_replay\",\"fixed_public_registration_interception\",\"arbitrary_authoring_subclass_and_scalar_operator_semantics\",\"default_cutover\"],\"context_bindings\":[\"input\",\"output\",\"target\",\"configuration\",\"dependencies\",\"requirements\",\"source_links\",\"observation_map\"],\"context_identity\":\"actual_native_context_physical_identity;distinct_producer_and_validation_contexts;one_validation_context_shared_by_its_validators\",\"dependencies_encoding\":\"ordered_unique_string_identity_pairs\",\"enum_types\":[\"EvidenceKind\",\"CheckOutcome\",\"Stage\",\"ArtifactStatus\",\"PayloadFormat\"],\"executable\":\"core\",\"expected_rejection_fields\":[\"module\",\"type\",\"message\",\"attributes\"],\"failure\":\"expected_logical_rejection_and_opaque_host_exception_preserve_actual_partial_manager;malformed_resource_internal_or_uncertain_io_failure_closes_authority\",\"host_execution\":\"trusted_host_code_cpu_and_opaque_captures_outside_native_work_and_json_memory_bounds\",\"iterator_step_fields\":[\"exhausted\",\"object\"],\"lifecycle\":\"one_initialization_attempt_per_channel;existing_channel_close_is_top_level_only;no_reconnect_retry_or_state_import\",\"limits\":\"all_native_framing_application_import_callback_and_publication_work_uses_one_channel_lifetime_ancestor;retention_is_cumulative_no_refund\",\"literal_kinds\":[\"json\",\"tuple\",\"set\"],\"manager_limits\":\"initialization_once;null_defaults_or_complete_positive_integer_reductions\",\"native_provider_context\":\"only_exact_retained_context_from_this_live_manager;no_external_context_import\",\"native_provider_result_kinds\":[\"proposal\",\"decision\",\"invalid\"],\"object_reference\":{\"fields\":[\"handle\"],\"scope\":\"one_live_trusted_host_broker_physical_identity\"},\"obligation_objects\":\"array_of_actual_host_references_matching_canonical_obligation_slots;whole_tuple_sidecar_preserves_add_input_and_admission_collection_identity;run_allocates_a_new_tuple_reusing_elements;sidecars_do_not_grant_acceptance\",\"operations\":{\"add-input\":{\"fields\":[\"identity\",\"stage\",\"requirements\",\"obligations\",\"obligation_objects\",\"payload\",\"obligations_object\"],\"result\":\"record\"},\"admit-component-input\":{\"fields\":[\"contract_id\",\"identity\",\"payload\"],\"result\":\"record\"},\"artifact\":{\"fields\":[\"name\"],\"result\":\"canonical_immutable_build_artifact\"},\"call-native-provider\":{\"fields\":[\"provider_id\",\"context_id\"],\"result\":\"native_provider_result\"},\"get\":{\"fields\":[\"identity\"],\"result\":\"record\"},\"initialize-components\":{\"fields\":[\"request\",\"history\",\"until\",\"config\",\"manager_limits\",\"target_object\"],\"result\":\"initialization\"},\"initialize-empty\":{\"fields\":[\"target\",\"dependencies\",\"completion_profiles\",\"manager_limits\",\"target_object\"],\"result\":\"initialization\"},\"initialize-synthetic\":{\"fields\":[\"request\",\"history\",\"until\",\"config\",\"manager_limits\",\"target_object\"],\"result\":\"initialization\"},\"inspect\":{\"fields\":[],\"result\":\"historical_observation_only\"},\"register\":{\"fields\":[\"contract\",\"producer\",\"validators\",\"obligation_objects\"],\"result\":\"null\"},\"register-completion-profile\":{\"fields\":[\"profile\"],\"result\":\"null\"},\"register-component-input\":{\"fields\":[\"contract\",\"validators\",\"obligation_objects\",\"obligations_object\",\"requirements_object\"],\"result\":\"null\"},\"result\":{\"fields\":[\"identity\",\"scope\"],\"result\":\"pipeline_result\"},\"run\":{\"fields\":[\"pass_id\",\"input_id\",\"output_id\",\"configuration\"],\"result\":\"record\"},\"set-dependency\":{\"fields\":[\"key\",\"identity\"],\"result\":\"null\"},\"target\":{\"fields\":[],\"result\":\"target\"}},\"ordered_tree\":{\"array\":[\"array\",\"ordered_trees\"],\"object\":[\"object\",\"ordered_unique_key_tree_pairs\"],\"scalar\":[\"scalar\",\"json_scalar\"]},\"profile\":\"biocompiler.core.pipeline_callback_manager.v1\",\"provider_reference\":{\"host\":[\"kind\",\"object\"],\"native\":[\"kind\",\"provider_id\"]},\"record_bindings\":[\"record_id\",\"payload\",\"dependencies\",\"requirements\",\"obligations\",\"obligation_objects\",\"checks\",\"provenance\"],\"record_identity\":\"one_token_per_actual_native_record_physical_identity_including_rejected_and_stored_before_error_records;not_content_hash_or_import\",\"results\":{\"initialization\":[\"kind\",\"manager\",\"artifacts\",\"target\"],\"native_provider_result\":[\"kind\",\"value\"],\"pipeline_result\":[\"value\",\"artifact\"],\"record\":[\"value\",\"bindings\"],\"target\":[\"value\",\"binding\"]},\"schema_version\":\"biocompiler.pipeline_callback_manager_declaration.v1\",\"source_links_binding\":\"null_for_native_context_default_or_complete_host_or_native_collection_binding;tuple_identity_and_element_identity_preserved\"}"
+_APPLICATION_JSON = "{\"acceptance\":\"native_manager_checks_and_freshness_only;inspection_and_host_sidecars_cannot_import_accepted_records\",\"actions\":{\"hydrate-context\":{\"fields\":[\"context_id\",\"document\",\"bindings\"],\"result\":\"object_reference\"},\"native-provider\":{\"fields\":[\"provider_id\"],\"result\":\"object_reference\"},\"ordered-json\":{\"fields\":[\"object\"],\"result\":\"ordered_tree\"},\"provider-reference\":{\"fields\":[\"object\"],\"result\":\"host_or_native_provider_reference\"},\"set-equal\":{\"fields\":[\"object\",\"values\"],\"result\":\"boolean\"},\"source-link-set-equal\":{\"fields\":[\"objects\",\"expected\"],\"result\":\"boolean\"}},\"argument\":\"--pipeline-callback-session-v1\",\"authoring_boundary\":\"canonical_typed_contract_target_profile_fields;opaque_payload_configuration_provider_and_validator_objects_are_read_at_native_requested_points\",\"bindings\":{\"host\":[\"kind\",\"object\"],\"native\":[\"kind\",\"identity\",\"tree\"]},\"broker_actions\":{\"attr\":{\"fields\":[\"object\",\"name\"],\"result\":\"object_reference\"},\"attr-default\":{\"fields\":[\"object\",\"name\",\"default\"],\"result\":\"object_reference\"},\"bind-provider\":{\"fields\":[\"provider_id\",\"object\"],\"result\":\"null\"},\"call\":{\"fields\":[\"callable\",\"args\",\"kwargs\"],\"result\":\"object_reference\"},\"call-provider\":{\"fields\":[\"provider_id\",\"context\"],\"result\":\"object_reference\"},\"callable\":{\"fields\":[\"object\"],\"result\":\"boolean\"},\"compare\":{\"fields\":[\"left\",\"right\",\"operator\"],\"result\":\"boolean\"},\"contains\":{\"fields\":[\"container\",\"item\"],\"result\":\"boolean\"},\"dict\":{\"fields\":[\"object\"],\"result\":\"object_reference\"},\"document\":{\"fields\":[\"object\"],\"result\":\"object_reference\"},\"enum\":{\"fields\":[\"type\",\"value\"],\"result\":\"object_reference\"},\"freeze-json\":{\"fields\":[\"object\"],\"result\":\"object_reference\"},\"get-item\":{\"fields\":[\"object\",\"key\"],\"result\":\"object_reference\"},\"is-instance\":{\"fields\":[\"object\",\"type\"],\"result\":\"boolean\"},\"is-none\":{\"fields\":[\"object\"],\"result\":\"boolean\"},\"iter\":{\"fields\":[\"object\"],\"result\":\"object_reference\"},\"json\":{\"fields\":[\"object\"],\"result\":\"json\"},\"len\":{\"fields\":[\"object\"],\"result\":\"integer\"},\"list\":{\"fields\":[\"object\"],\"result\":\"object_reference\"},\"literal\":{\"fields\":[\"kind\",\"value\"],\"result\":\"object_reference\"},\"lookup\":{\"fields\":[\"object\",\"entries\"],\"result\":\"object_reference\"},\"mapping-items\":{\"fields\":[\"object\"],\"result\":\"object_reference\"},\"mapping-keys\":{\"fields\":[\"object\"],\"result\":\"object_reference\"},\"mapping-values\":{\"fields\":[\"object\"],\"result\":\"object_reference\"},\"merge\":{\"fields\":[\"object\",\"before\",\"after\"],\"result\":\"object_reference\"},\"next\":{\"fields\":[\"object\"],\"result\":\"iterator_step\"},\"release\":{\"fields\":[\"handles\"],\"result\":\"null\"},\"set-attribute-equal\":{\"fields\":[\"objects\",\"name\",\"values\"],\"result\":\"boolean\"},\"truth\":{\"fields\":[\"object\"],\"result\":\"boolean\"},\"tuple\":{\"fields\":[\"object\"],\"result\":\"object_reference\"},\"vars\":{\"fields\":[\"object\"],\"result\":\"object_reference\"}},\"channel\":\"biocompiler.pipeline_callback_channel.v1\",\"claim_scope\":\"software_contract_conditional_translation_and_scoped_completion;no_empirical_or_human_use_acceptance\",\"comparison_operators\":[\"eq\",\"ne\",\"is\",\"is-not\"],\"compatibility_pending\":[\"complete_original_installed_replay\",\"fixed_public_registration_interception\",\"arbitrary_authoring_subclass_and_scalar_operator_semantics\",\"default_cutover\"],\"context_bindings\":[\"input\",\"output\",\"target\",\"configuration\",\"dependencies\",\"requirements\",\"source_links\",\"observation_map\"],\"context_identity\":\"actual_native_context_physical_identity;distinct_producer_and_validation_contexts;one_validation_context_shared_by_its_validators\",\"dependencies_encoding\":\"ordered_unique_string_identity_pairs\",\"enum_types\":[\"EvidenceKind\",\"CheckOutcome\",\"Stage\",\"ArtifactStatus\",\"PayloadFormat\"],\"executable\":\"core\",\"expected_rejection_fields\":[\"module\",\"type\",\"message\",\"attributes\"],\"failure\":\"expected_logical_rejection_and_opaque_host_exception_preserve_actual_partial_manager;malformed_resource_internal_or_uncertain_io_failure_closes_authority\",\"host_execution\":\"trusted_host_code_cpu_and_opaque_captures_outside_native_work_and_json_memory_bounds\",\"inspection_order\":{\"combined_provider_history\":\"actual_successful_insertion_order;pass_fingerprint_string_or_component_input_tag_and_fingerprint_pair;replacements_preserve_position\",\"fields\":[\"dependencies\",\"passes\",\"component_inputs\",\"provider_history\",\"component_input_history\",\"records\",\"profiles\",\"combined_provider_history\",\"validators\"],\"mapping_order\":\"unique_complete_snapshot_key_arrays\",\"provider_fields\":[\"provider_id\",\"object\"],\"providers\":\"exact_reachable_snapshot_provider_token_census;stable_bijection_to_actual_retained_callable_identity;no_user_equality_or_hash\",\"scope\":\"manager_mapping_and_validator_order_only;nested_unobserved_json_order_not_generalized;historical_observation_cannot_grant_acceptance\",\"validator_maps\":[\"passes\",\"component_inputs\",\"provider_history\",\"component_input_history\"],\"validators\":\"four_exact_registration_maps_of_unique_complete_validator_key_arrays\"},\"iterator_step_fields\":[\"exhausted\",\"object\"],\"lifecycle\":\"one_initialization_attempt_per_channel;existing_channel_close_is_top_level_only;no_reconnect_retry_or_state_import\",\"limits\":\"all_native_framing_application_import_callback_and_publication_work_uses_one_channel_lifetime_ancestor;retention_is_cumulative_no_refund\",\"literal_kinds\":[\"json\",\"tuple\",\"set\"],\"manager_limits\":\"initialization_once;null_defaults_or_complete_positive_integer_reductions\",\"native_provider_context\":\"only_exact_retained_context_from_this_live_manager;no_external_context_import\",\"native_provider_result_kinds\":[\"proposal\",\"decision\",\"invalid\"],\"object_reference\":{\"fields\":[\"handle\"],\"scope\":\"one_live_trusted_host_broker_physical_identity\"},\"obligation_objects\":\"array_of_actual_host_references_matching_canonical_obligation_slots;whole_tuple_sidecar_preserves_add_input_and_admission_collection_identity;run_allocates_a_new_tuple_reusing_elements;sidecars_do_not_grant_acceptance\",\"operations\":{\"add-input\":{\"fields\":[\"identity\",\"stage\",\"requirements\",\"obligations\",\"obligation_objects\",\"payload\",\"obligations_object\"],\"result\":\"record\"},\"admit-component-input\":{\"fields\":[\"contract_id\",\"identity\",\"payload\"],\"result\":\"record\"},\"artifact\":{\"fields\":[\"name\"],\"result\":\"canonical_immutable_build_artifact\"},\"call-native-provider\":{\"fields\":[\"provider_id\",\"context_id\"],\"result\":\"native_provider_result\"},\"get\":{\"fields\":[\"identity\"],\"result\":\"record\"},\"initialize-components\":{\"fields\":[\"request\",\"history\",\"until\",\"config\",\"manager_limits\",\"target_object\"],\"result\":\"initialization\"},\"initialize-empty\":{\"fields\":[\"target\",\"dependencies\",\"completion_profiles\",\"manager_limits\",\"target_object\"],\"result\":\"initialization\"},\"initialize-synthetic\":{\"fields\":[\"request\",\"history\",\"until\",\"config\",\"manager_limits\",\"target_object\"],\"result\":\"initialization\"},\"inspect\":{\"fields\":[],\"result\":\"historical_observation_only\"},\"inspect-ordered\":{\"fields\":[],\"result\":\"ordered_historical_observation_only\"},\"register\":{\"fields\":[\"contract\",\"producer\",\"validators\",\"obligation_objects\"],\"result\":\"null\"},\"register-completion-profile\":{\"fields\":[\"profile\"],\"result\":\"null\"},\"register-component-input\":{\"fields\":[\"contract\",\"validators\",\"obligation_objects\",\"obligations_object\",\"requirements_object\"],\"result\":\"null\"},\"result\":{\"fields\":[\"identity\",\"scope\"],\"result\":\"pipeline_result\"},\"run\":{\"fields\":[\"pass_id\",\"input_id\",\"output_id\",\"configuration\"],\"result\":\"record\"},\"set-dependency\":{\"fields\":[\"key\",\"identity\"],\"result\":\"null\"},\"target\":{\"fields\":[],\"result\":\"target\"}},\"ordered_tree\":{\"array\":[\"array\",\"ordered_trees\"],\"object\":[\"object\",\"ordered_unique_key_tree_pairs\"],\"scalar\":[\"scalar\",\"json_scalar\"]},\"profile\":\"biocompiler.core.pipeline_callback_manager.v1\",\"provider_reference\":{\"host\":[\"kind\",\"object\"],\"native\":[\"kind\",\"provider_id\"]},\"record_bindings\":[\"record_id\",\"payload\",\"dependencies\",\"requirements\",\"obligations\",\"obligation_objects\",\"checks\",\"provenance\"],\"record_identity\":\"one_token_per_actual_native_record_physical_identity_including_rejected_and_stored_before_error_records;not_content_hash_or_import\",\"results\":{\"initialization\":[\"kind\",\"manager\",\"artifacts\",\"target\"],\"native_provider_result\":[\"kind\",\"value\"],\"ordered_historical_observation_only\":[\"snapshot\",\"order\",\"providers\"],\"pipeline_result\":[\"value\",\"artifact\"],\"record\":[\"value\",\"bindings\"],\"target\":[\"value\",\"binding\"]},\"schema_version\":\"biocompiler.pipeline_callback_manager_declaration.v1\",\"source_links_binding\":\"null_for_native_context_default_or_complete_host_or_native_collection_binding;tuple_identity_and_element_identity_preserved\"}"
 
 
 def capability_profile() -> dict[str, Any]:
@@ -110,6 +110,19 @@ class _Binding:
     document: bytes
     flavor: str
     value: Any
+
+
+@dataclass(frozen=True)
+class ManagerInspection:
+    """Historical state and the explicitly observed Python dictionary orders.
+
+    Provider values are actual retained local callables. Neither this view nor
+    its record envelopes can be imported as current manager acceptance. Nested
+    JSON order outside the declared manager and validator maps is not inferred.
+    """
+    snapshot: Mapping[str, Any]
+    order: Mapping[str, Any]
+    providers: Mapping[str, Any]
 
 
 class _NativeProvider:
@@ -311,6 +324,90 @@ class CorePassManager(PassManager):  # type: ignore[misc]
     def inspect(self) -> JsonValue:
         return self._call('inspect', {})
 
+    def inspect_ordered(self) -> ManagerInspection:
+        raw = self._call('inspect-ordered', {})
+        return cast(ManagerInspection, self._view(self._ordered_inspection, raw, 'ordered manager inspection'))
+
+    def _ordered_inspection(self, raw: JsonValue) -> ManagerInspection:
+        envelope = _object(raw, {'snapshot', 'order', 'providers'}, 'Ordered manager inspection')
+        maps = ('dependencies', 'passes', 'component_inputs', 'provider_history',
+                'component_input_history', 'records', 'profiles')
+        registrations = {'passes', 'component_inputs', 'provider_history', 'component_input_history'}
+        snapshot = _object(envelope['snapshot'], set(maps) | {'target'}, 'Manager inspection snapshot')
+        order = _object(envelope['order'], set(maps) | {'validators', 'combined_provider_history'}, 'Manager inspection order')
+        validator_order = _object(order['validators'], registrations, 'Validator map orders')
+        _require(type(snapshot['target']) is dict, 'Manager inspection target must be an object')
+
+        def ordered_keys(keys: Any, values: Any, label: str) -> None:
+            _require(type(values) is dict and type(keys) is list
+                and all(type(key) is str for key in keys)
+                and len(keys) == len(values) and set(keys) == set(values),
+                'Incomplete or repeated ' + label + ' order')
+
+        referenced: set[str] = set()
+        observed: dict[str, Any] = {'target': snapshot['target']}
+        for name in maps:
+            values, keys = snapshot[name], order[name]
+            ordered_keys(keys, values, name)
+            observed[name] = {key: values[key] for key in keys}
+            if name not in registrations:
+                continue
+            orders = _object(validator_order[name], set(values), name + ' validator orders')
+            for key, registration in observed[name].items():
+                fields = {'contract', 'validators'}
+                if name in ('passes', 'provider_history'):
+                    fields.add('producer')
+                row = _object(registration, fields, 'Inspected registration')
+                _require(type(row['contract']) is dict, 'Inspected contract must be an object')
+                ordered_keys(orders[key], row['validators'], 'validator')
+                row = {**row, 'validators': {item: row['validators'][item] for item in orders[key]}}
+                observed[name][key] = row
+                if 'producer' in row:
+                    referenced.add(_identity(row['producer']))
+                referenced.update(_identity(provider) for provider in row['validators'].values())
+        for key, record in observed['records'].items():
+            _require(self._record(record).id == key, 'Inspection record key differs from its actual incarnation')
+
+        combined = order['combined_provider_history']
+        _require(type(combined) is list, 'Combined provider history must be an array')
+        passes: list[str] = []
+        admissions: list[str] = []
+        for entry in combined:
+            if type(entry) is str:
+                passes.append(entry)
+            else:
+                _require(type(entry) is list and len(entry) == 2
+                    and entry[0] == 'component_input' and type(entry[1]) is str,
+                    'Malformed combined provider history key')
+                admissions.append(entry[1])
+        _require(passes == order['provider_history'] and admissions == order['component_input_history'],
+            'Combined provider history omits, repeats or reorders a registration')
+
+        _require(type(envelope['providers']) is list, 'Provider bindings must be an array')
+        providers: dict[str, Any] = {}
+        physical: dict[int, str] = {}
+        for entry in envelope['providers']:
+            entry = _object(entry, {'provider_id', 'object'}, 'Inspected provider binding')
+            identity = _identity(entry['provider_id'])
+            _require(identity in referenced and identity not in providers, 'Extra or repeated inspected provider token')
+            actual = self._objects.resolve(entry['object'])
+            _require(callable(actual), 'Inspected provider is not an actual callable')
+            other = physical.get(id(actual), self._inspection_provider_ids.get(id(actual)))
+            _require(other is None or other == identity, 'Actual callable was rebound to another native provider token')
+            previous = self._inspection_providers.get(identity)
+            _require(previous is None or previous is actual, 'Native provider token was rebound to another callable')
+            if type(actual) is _NativeProvider:
+                _require(actual._manager is self and actual._identity == identity
+                    and self._native_providers.get(identity) is actual, 'Foreign or forged inspected native provider')
+            providers[identity] = actual
+            physical[id(actual)] = identity
+        _require(set(providers) == referenced, 'Inspection omitted a reachable actual provider')
+        _require(len(set(self._inspection_providers) | referenced) <= self._objects.limits.max_providers,
+            'Inspected provider identity limit exceeded')
+        self._inspection_providers.update(providers)
+        self._inspection_provider_ids.update(physical)
+        return ManagerInspection(_frozen(observed), _frozen(order), MappingProxyType(providers))
+
     def historical(self, identity: str) -> Any:
         snapshot = self.inspect()
         if type(snapshot) is not dict or type(snapshot.get('records')) is not dict:
@@ -404,6 +501,8 @@ class CorePassManager(PassManager):  # type: ignore[misc]
         self._contexts: dict[str, tuple[bytes, Any]] = {}
         self._context_ids: dict[int, str] = {}
         self._native_providers: dict[str, _NativeProvider] = {}
+        self._inspection_providers: dict[str, Any] = {}
+        self._inspection_provider_ids: dict[int, str] = {}
         self._records: dict[str, Any] = {}
         self._record_bindings: dict[str, tuple[str, bytes]] = {}
         self._record_envelopes: dict[str, bytes] = {}

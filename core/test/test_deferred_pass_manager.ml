@@ -83,12 +83,12 @@ let rejected fragment action=match action () with
       require(has 0)("Wrong rejection: "^error.message)
 let work ()=W.create ~profile:"pipeline.deferred.test" ~error_code:"deferred_test_limit" ~maximum:1_000_000_000 ()
 let dependencies raw=List.map(fun key->key,Json.string(get key raw))["request";"registry"]
-let make_manager baseline=M.create ~budget:(work ())
+let make_manager ?observer baseline=M.create ~budget:(work ()) ?observer
   ~target:(Bioc_domain.Build_request.Target.of_json(get "target" baseline))
   ~dependencies:(dependencies(get "initial_dependencies" baseline)) ()
 let add_root manager baseline=ignore(M.add_input manager ~identity:"input" ~requirements:["r"]
   ~obligations:(List.map C.Scoped_obligation.of_json(Json.array(get "initial_obligations" baseline))) (get "input" baseline))
-let setup baseline=let manager=make_manager baseline in add_root manager baseline;manager
+let setup ?observer baseline=let manager=make_manager ?observer baseline in add_root manager baseline;manager
 let run manager=M.run manager ~pass_id:"lower" ~input_id:"input" ~output_id:"behavior" ()
 let register manager contract producer validator=M.register manager contract ~producer ~validators:["identity_check",validator]
 let logged events prefix action=events:= !events@[prefix^action]
@@ -274,6 +274,41 @@ let ()=
     ~self_certifying:(fun _->events:= !events@["self"];false) deferred;
   require(!events=["validate";"keys";"self";"producer";"snapshot";"snapshot"])
     "Registration collapsed the original comparison and final mapping snapshots";
+  (* Every registration path contributes to one actual chronology. Native
+     inspection must not reconstruct cross-kind order from two sorted tables. *)
+  let manager=setup ~observer:(fun _ _->()) baseline in let events=ref [] in
+  let producer,validator=hosted manager events (proposal events baseline ()) (decision baseline) in
+  let admission=C.Component_input_contract.of_json(get "contract"(get "admission_baseline" fixture)) in
+  let second_pass=C.Pass_contract.of_json(set "version"(str "2")(C.Pass_contract.to_json contract)) in
+  let second_admission=C.Component_input_contract.of_json(set "version"(str "2")(C.Component_input_contract.to_json admission)) in
+  let pass_checks : M.deferred_validators={validate=(fun _->true);keys_match=(fun _ names->names=["identity_check"]);
+    snapshot=(fun _->["identity_check",validator])} in
+  let admission_checks : M.deferred_validators={validate=(fun _->true);keys_match=(fun _ names->names=["selection"]);
+    snapshot=(fun _->["selection",validator])} in
+  register manager contract producer validator;
+  M.register_component_input manager admission ~validators:["selection",validator];
+  M.register_deferred manager second_pass ~producer:(fun _->producer) ~self_certifying:(fun _->false) pass_checks;
+  M.register_component_input_deferred manager second_admission admission_checks;
+  let chronology=Json.Array[str(C.Pass_contract.fingerprint contract);
+    Json.Array[str "component_input";str(C.Component_input_contract.fingerprint admission)];
+    str(C.Pass_contract.fingerprint second_pass);
+    Json.Array[str "component_input";str(C.Component_input_contract.fingerprint second_admission)]] in
+  let order=M.inspection_order manager in
+  require(same(get "combined_provider_history" order)chronology) "Combined native history lost interleaved registration order";
+  register manager contract producer validator;
+  M.register_component_input_deferred manager admission admission_checks;
+  require(same(M.inspection_order manager)order) "Replacing a historical contract moved its insertion position";
+  let different=M.bind_host_provider manager(fun _ _->proposal events baseline ()) in
+  rejected "increment the contract version" (fun()->M.register_deferred manager contract
+    ~producer:(fun _->different) ~self_certifying:(fun _->false) pass_checks);
+  require(same(M.inspection_order manager)order) "Failed registration appended an original history entry";
+  let reverse_contract=C.Pass_contract.of_json(set "id"(str "reverse")
+    (set "checks"(Json.Array[obj["id",str "a";"evidence_kind",str "exact";"discharges",Json.Array[]];
+      obj["id",str "z";"evidence_kind",str "exact";"discharges",Json.Array[]]])(C.Pass_contract.to_json contract))) in
+  M.register manager reverse_contract ~producer ~validators:["z",validator;"a",validator];
+  let order=M.inspection_order manager in
+  require(same(get "reverse"(get "passes"(get "validators" order)))(Json.Array[str "z";str "a"]))
+    "Validator insertion order was replaced by key or contract order";
   let manager=setup baseline in let events=ref [] in
   let producer=M.bind_host_provider manager(fun work _->
     W.charge work (W.remaining work);proposal events baseline ()) in

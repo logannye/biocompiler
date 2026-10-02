@@ -152,9 +152,12 @@ let initialize baseline peer=obj["target",get "target" baseline;
  "dependencies",Json.Array(List.map(fun(key,value)->Json.Array[str key;value])(Json.object_fields(get "initial_dependencies" baseline)));
  "completion_profiles",Json.Array[get "completion" baseline];"manager_limits",Json.Null;
  "target_object",reference peer(Data(get "target" baseline))]
-let registration baseline peer field=
+let registration ?(candidate_value=1) baseline peer field=
  let contract=get field baseline in let pass_id=text "id" contract in
- let output=set "schema_version"(get "output_schema" contract)(get "input" baseline) in
+ let input=get "input" baseline in
+ let nodes=Json.array(get "nodes" input) in
+ let output=set "schema_version"(get "output_schema" contract)
+   (set "nodes"(Json.Array(List.map(set "value"(Json.int candidate_value))nodes))input) in
  let source=Instance("SourceLink",["requirement_id",Data(str "r");"source_node_id",Data(str "n");
    "target_node_id",Data(str "n");"pass_name",Data(str pass_id)]) in
  let obligations=List.map(fun raw->Instance("ProducerObligation",[
@@ -163,8 +166,16 @@ let registration baseline peer field=
  let proposal=Instance("PassResult",["search_status",Data(str "candidate");"output",Data output;
    "source_links",Sequence[source];"observation_map",Data(obj["output",str "n"]);"obligations",Sequence obligations]) in
  let producer=Function(fun _->proposal) in
- let decision=obj["outcome",str "pass";"detail",str "Independently matched the expected value.";"evidence",obj[]] in
- let validator=Function(fun _->Instance("CheckDecision",["to_dict",Function(fun _->Data decision);"outcome",Data(str "pass")])) in
+ let validator=Function(function [context]->
+   let context=json context in
+   let value document=get "value"(List.hd(Json.array(get "nodes" document))) in
+   let expected=value input in
+   let passed=same(value(get "input" context))expected && same(value(get "output" context))expected in
+   let outcome=if passed then "pass" else "fail" in
+   let detail=if passed then "Independently matched the expected value." else "Candidate value differs from source expectation." in
+   let decision=obj["outcome",str outcome;"detail",str detail;"evidence",obj[]] in
+   Instance("CheckDecision",["to_dict",Function(fun _->Data decision);"outcome",Data(str outcome)])
+   | _->failwith "Validator context inventory changed") in
  let validators=Mapping(List.map(fun raw->text "id" raw,validator)(Json.array(get "checks" contract))) in
  obj["contract",contract;"producer",reference peer producer;"validators",reference peer validators;
    "obligation_objects",Json.Array(List.map(fun raw->reference peer(Data raw))(Json.array(get "introduces" contract)))]
@@ -179,7 +190,8 @@ let baseline_test baseline=
    "result",obj["identity",str "mechanism";"scope",str "synthetic"];
    "inspect",obj[];"target",obj[];
    "set-dependency",obj["key",str "registry";"identity",str(Canonical.sha256 "changed")];
-   "get",obj["identity",str "mechanism"];"inspect",obj[]] in
+   "get",obj["identity",str "mechanism"];"inspect",obj[];
+   "register",registration baseline p "first";"inspect-ordered",obj[];"inspect-ordered",obj[]] in
  let result=exercise p commands in
  require(result.closed && List.for_all(fun value->text "kind" value<>"fatal")result.events) "Baseline terminated fatally";
  let input=success(nth result 2) and behavior=success(nth result 4) and repeated=success(nth result 5)
@@ -199,7 +211,30 @@ let baseline_test baseline=
  let before=List.nth p.contexts 0 and validation=List.nth p.contexts 1 in
  List.iter(fun key->require(same(get key(get "bindings" before))(get key(get "bindings" validation)))
    ("Context field identity changed: "^key))["input";"target";"configuration";"dependencies";"requirements"];
- require(get "source_links"(get "bindings" validation)<>Json.Null) "Hosted source link tuple identity absent"
+ require(get "source_links"(get "bindings" validation)<>Json.Null) "Hosted source link tuple identity absent";
+ require(text "status"(nth result 14)="rejected") "Changed producer retained its prior contract version";
+ let ordered=success(nth result 15) and repeated_ordered=success(nth result 16) in
+ require(same ordered repeated_ordered) "Repeated ordered inspection changed identities or historical order";
+ require(same(get "snapshot" ordered)after) "Ordered inspection changed the historical snapshot";
+ let order=get "order" ordered in
+ require(same(get "passes" order)(Json.Array[str "lower";str "generate"])) "Pass insertion order was sorted";
+ let identities=List.map(fun name->get "pass_identity"(get "value"(get name(get "records" after))))["behavior";"mechanism"] in
+ require(same(get "combined_provider_history" order)(Json.Array identities)) "Provider history chronology changed";
+ require(List.length(Json.array(get "providers" ordered))=4 && List.length p.providers=5)
+   "Ordered inspection included an uncommitted provider or lost a reachable provider"
+let negative_validator_test baseline=
+ let p=peer () in
+ let result=exercise p ["initialize-empty",initialize baseline p;"add-input",payload baseline p;
+   "register",registration ~candidate_value:2 baseline p "first";run "lower" "input" "behavior" Json.Null;
+   "get",obj["identity",str "behavior"];"inspect-ordered",obj[]] in
+ let record=success(nth result 4) in
+ require(get "accepted"(get "value" record)=Json.Bool false) "Changed candidate was accepted by its independent validator";
+ require(get "discharged"(get "value" record)=Json.Array[]) "Failed decision discharged a source obligation";
+ require(text "outcome"(get "identity_check"(get "checks"(get "value" record)))="fail")
+   "Independent failed outcome was replaced by producer success";
+ require(text "status"(nth result 5)="rejected") "Fresh read accepted the failed output";
+ let snapshot=get "snapshot"(success(nth result 6)) in
+ require(same(get "behavior"(get "records" snapshot))record) "Failed validation record was not retained historically"
 let failure_test baseline=
  let p=peer () in p.raise_producer<-true;
  let result=exercise p ["initialize-empty",initialize baseline p;"add-input",payload baseline p;
@@ -225,5 +260,5 @@ let ()=
  require(Array.length Sys.argv=3) "Expected declaration and original literal corpus paths";
  require(same(read Sys.argv.(1)) A.declaration) "Application declaration differs across languages";
  let baseline=get "manager_baseline"(read Sys.argv.(2)) in
- baseline_test baseline;failure_test baseline;protocol_test baseline;
- print_endline "callback manager application: framed baseline, identities, freshness, host exception and resource closure passed"
+ baseline_test baseline;negative_validator_test baseline;failure_test baseline;protocol_test baseline;
+ print_endline "callback manager application: framed baseline, negative validator, ordered identities, freshness, host exception and resource closure passed"

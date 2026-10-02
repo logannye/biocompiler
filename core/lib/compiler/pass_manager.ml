@@ -76,12 +76,13 @@ type no_candidate={pass_id:string;configuration:Json.t;dependencies:(string*stri
 exception No_candidate_found of no_candidate
 type registration={contract:PC.t;producer:provider;validators:(string*provider) list}
 type admission={admission_contract:IC.t;admission_validators:(string*provider) list}
+type history_key=Pass_history of string | Admission_history of string
 type t={budget:W.t;limits:limits;validator_equivalent:validator_equivalent;observer:observer option;mutable next_execution:int;
   mutable callback_links:host_value list option;mutable host_providers:provider list;
   target_value:Build_request.Target.t;target_identity:string;
   mutable dependencies:(string*string) list;mutable passes:(string*registration) list;
   mutable admissions:(string*admission) list;mutable provider_history:(string*registration) list;
-  mutable admission_history:(string*admission) list;mutable providers:provider list;
+  mutable admission_history:(string*admission) list;mutable history_order:history_key list;mutable providers:provider list;
   mutable records:(string*SR.t) list;mutable profiles:(string*CP.t) list;
   mutable retained:int;mutable retained_bytes:int;mutable calls:int}
 let fail message=Diagnostic.fail "pipeline_error" message
@@ -159,7 +160,7 @@ let create ~budget ?(limits=default_limits) ?(validator_equivalent=(fun _ left r
     ~charge:(W.charge budget) () in
   let target_identity=X.fingerprint ~limits:input (Build_request.Target.to_json target) in
   let t={budget;limits;validator_equivalent;observer;next_execution=0;callback_links=None;host_providers=[];target_value=target;target_identity;dependencies=[];passes=[];admissions=[];
-    provider_history=[];admission_history=[];providers=[];records=[];profiles=[];retained=0;retained_bytes=0;calls=0} in
+    provider_history=[];admission_history=[];history_order=[];providers=[];records=[];profiles=[];retained=0;retained_bytes=0;calls=0} in
   retain_json t (Build_request.Target.to_json target);
   List.iter (register_completion_profile t) (bounded t completion_profiles);
   List.iter (fun (key,value)->set_dependency t key value) (bounded t dependencies);
@@ -194,6 +195,15 @@ let same_providers t left right=
   List.length left=List.length right && List.for_all (fun (key,provider)->
     match lookup t key right with None->false|Some other->
       charge t 1;provider==other || t.validator_equivalent t.budget provider other) (bounded t left)
+let history_key_json=function Pass_history identity->str identity
+  | Admission_history identity->Json.Array[str "component_input";str identity]
+let history_with t key=match t.observer with None->t.history_order | Some _->
+  let same previous=match key,previous with
+    | Pass_history left,Pass_history right | Admission_history left,Admission_history right->same_text t left right
+    | _->charge t 1;false in
+  let current=bounded t t.history_order in
+  if List.exists same current then current
+  else (retain_json t(history_key_json key);charge t(List.length current+1);current@[key])
 let register t contract ~producer ~validators=with_call t (fun ()->
   ignore (measure t (PC.to_json contract));let id=PC.id contract in
   if contains t id t.admissions then fail "Pass ID collides with a component admission policy.";
@@ -212,8 +222,10 @@ let register t contract ~producer ~validators=with_call t (fun ()->
   retain_json t (Json.Array(List.map (fun (key,_)->str key) validators));remember_provider t producer;
   List.iter (fun (_,provider)->remember_provider t provider) validators;
   let registration={contract;producer;validators} in
+  let history_order=history_with t(Pass_history identity) in
   t.passes<-replace t id registration t.passes;
-  t.provider_history<-replace t identity registration t.provider_history)
+  t.provider_history<-replace t identity registration t.provider_history;
+  t.history_order<-history_order)
 let register_component_input t contract ~validators=with_call t (fun ()->
   ignore (measure t (IC.to_json contract));let validators=provider_map t validators in
   let id=IC.id contract in
@@ -230,8 +242,10 @@ let register_component_input t contract ~validators=with_call t (fun ()->
   retain_json t (Json.Array(List.map (fun (key,_)->str key) validators));
   List.iter (fun (_,provider)->remember_provider t provider) validators;
   let admission={admission_contract=contract;admission_validators=validators} in
+  let history_order=history_with t(Admission_history identity) in
   t.admissions<-replace t id admission t.admissions;
-  t.admission_history<-replace t identity admission t.admission_history)
+  t.admission_history<-replace t identity admission t.admission_history;
+  t.history_order<-history_order)
 type deferred_validators = {
   validate : W.t -> bool;
   keys_match : W.t -> string list -> bool;
@@ -262,8 +276,10 @@ let register_deferred t contract ~producer ~self_certifying validators=with_call
   retain_json t (Json.Array(List.map(fun(key,_)->str key) validators));
   remember_provider t producer;List.iter(fun(_,provider)->remember_provider t provider) validators;
   let registration={contract;producer;validators} in
+  let history_order=history_with t(Pass_history identity) in
   t.passes<-replace t id registration t.passes;
-  t.provider_history<-replace t identity registration t.provider_history)
+  t.provider_history<-replace t identity registration t.provider_history;
+  t.history_order<-history_order)
 let register_component_input_deferred t contract validators=with_call t (fun ()->
   ignore(measure t (IC.to_json contract));
   require (deferred t validators.validate) "Invalid component admission validators.";
@@ -283,8 +299,10 @@ let register_component_input_deferred t contract validators=with_call t (fun ()-
   retain_json t (Json.Array(List.map(fun(key,_)->str key) validators));
   List.iter(fun(_,provider)->remember_provider t provider) validators;
   let admission={admission_contract=contract;admission_validators=validators} in
+  let history_order=history_with t(Admission_history identity) in
   t.admissions<-replace t id admission t.admissions;
-  t.admission_history<-replace t identity admission t.admission_history)
+  t.admission_history<-replace t identity admission t.admission_history;
+  t.history_order<-history_order)
 let execution t=match t.observer with None->0 | Some _->
   charge t 1;
   Diagnostic.require (t.next_execution<max_int) "pipeline_execution_limit" "Pipeline execution identity exhausted.";
@@ -701,3 +719,20 @@ let inspect t ~provider_identity=with_call t (fun ()->
     "provider_history",map registration t.provider_history;"component_input_history",map admission t.admission_history;
     "records",map SR.to_json t.records;"profiles",map CP.to_json t.profiles] in
   ignore (measure t raw);raw)
+
+let inspection_order t=with_call t (fun ()->
+  Diagnostic.require (Option.is_some t.observer) "pipeline_inspection_unavailable"
+    "Ordered inspection requires an observer-enabled manager.";
+  let keys values=Json.Array(List.map(fun(key,_)->text t key;str key)(bounded t values)) in
+  let validator_orders providers values=obj(List.map(fun(key,value)->
+    text t key;key,keys(providers value))(bounded t values)) in
+  let raw=obj["dependencies",keys t.dependencies;"passes",keys t.passes;
+    "component_inputs",keys t.admissions;"provider_history",keys t.provider_history;
+    "component_input_history",keys t.admission_history;"records",keys t.records;"profiles",keys t.profiles;
+    "combined_provider_history",Json.Array(List.map(fun key->charge t 1;history_key_json key)(bounded t t.history_order));
+    "validators",obj[
+      "passes",validator_orders(fun value->value.validators)t.passes;
+      "component_inputs",validator_orders(fun value->value.admission_validators)t.admissions;
+      "provider_history",validator_orders(fun value->value.validators)t.provider_history;
+      "component_input_history",validator_orders(fun value->value.admission_validators)t.admission_history]] in
+  ignore(measure t raw);raw)

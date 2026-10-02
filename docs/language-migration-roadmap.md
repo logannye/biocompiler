@@ -41,6 +41,14 @@ corrected source `40fad81c5124f540c56914816f4bf21c077ac059` now awaits
 [replacement validation](https://github.com/logannye/biocompiler/actions/runs/37046030719).
 The earlier PR70 runs are superseded, not acceptance evidence.
 
+PR71 source `5568a0f7135efc042e95a0a25a67e77e678bb659` is now pushed as a
+[draft checkpoint](https://github.com/logannye/biocompiler/pull/71). In
+[run 37046612682](https://github.com/logannye/biocompiler/actions/runs/37046612682),
+Linux job `110969508717` has completed compilation and the complete native literal
+and mutation-suite step successfully. The rest of that job, macOS and installed
+replay remain pending; this is partial hosted evidence, not final acceptance.
+The next branch implements ordered inspection and complete live comparison replay.
+
 The [next-phase biological handoff](biological-correctness-next-phase-handoff.md)
 is preserved as future-session context. Its BC checklist remains unexecuted;
 finish the LM release and cutover gates before that separate development phase.
@@ -867,6 +875,16 @@ record current parent heads; previous partial native passes are historical only.
   retention, recursion and exact/one-short budget controls. Native execution is
   pending; this 97th hosted suite does not implement public sessions.
 
+- [x] **LM-03/25 P2 installed comparison campaign source checkpoint:** add
+  ordered native inspection and retained callable identity bindings; execute the
+  unchanged 34 original comparison case bodies through the installed adapter.
+  The campaign requires all 78 manager events, 28 comparison events, 18 raised
+  events and 280 actual state inspections, together with the existing five
+  identity cases. Command arguments, outcomes, nested timing and original host
+  exceptions bind to complete wire evidence. Rehashed semantic mutations must
+  fail for their intended diagnostic. Local validation totals 102 focused checks
+  and strict typing across 20 modules. Hosted replay remains pending; see the
+  [source checkpoint](../protocol/migration-callback-comparison-checkpoint.json).
 - [ ] **LM-25 P2 validator comparison and public sessions:** validate the additive
   trusted native comparison hook and its complete original-observation replay on
   both platforms, then implement the persistent transport, callback continuations,
