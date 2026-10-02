@@ -1,7 +1,8 @@
 """Check all72 default selection CLI children against the immutable full baseline.
 
-Only the exact additive CLI route source and independently captured argparse
-runtime counterpart may be projected. Complete actual source, import, stream,
+Only the exact additive CLI route source, individually pinned unused transport
+additions, the archived unused backend replacement and independently captured
+argparse runtime counterpart may be projected. Complete actual source, import, stream,
 filesystem and content evidence remains retained without output normalization.
 """
 from __future__ import annotations
@@ -18,9 +19,12 @@ sys.path.insert(0, str(ROOT))
 from tools import freeze_synthetic_selection_cli as frozen
 from tools import synthetic_selection_cli_source_lineage as routes
 from tools import cli_runtime_counterparts as runtime
+from tools.check_realization_workflow_corpus import REVIEWED_ADDITIONS
 
 CORPUS_PIN = '69556f367752be3076513d96e63c933fb250eaf7d9736f9e39baac1dec47e5d9'
 COUNTERPART = ROOT / 'tests/conformance/synthetic-selection-cli-runtime-counterparts-v1.json'
+UNUSED_SOURCE = ROOT / "protocol/synthetic-selection-unused-transport-lineage-v1.json"
+UNUSED_SOURCE_SHA256 = "1f21dfe3896f79e3f21865cc0119b7e30633027b85d766f4013b616f29d086de"
 COUNTERPART_SHA256 = 'f9af4b5dedcdb12243209b862d0808866f1ae62355aca291465be75c7f00824b'
 canonical, digest, sha, require = frozen.canonical, frozen.digest, frozen.sha, frozen.require
 
@@ -56,6 +60,21 @@ def inventory(rows):
     return result
 
 
+def unused_source_change(before, current):
+    raw = UNUSED_SOURCE.read_bytes()
+    require(sha(raw) == UNUSED_SOURCE_SHA256, 'Unused transport lineage bytes changed')
+    witness = json.loads(raw)
+    name = 'src/biocompiler/synthetic_producer_backend.py'
+    require(witness['schema_version'] == 'biocompiler.unused_transport_source_lineage.v1' and
+            witness['path'] == name and witness['historical_sha256'] == before[name] and
+            witness['current_sha256'] == current[name] == REVIEWED_ADDITIONS.get(name) and
+            sha(witness['historical_source'].encode()) == before[name] and
+            sha(witness['current_source'].encode()) == current[name] and
+            (ROOT / name).read_bytes() == witness['current_source'].encode(),
+            'Unused transport source lineage differs')
+    return witness
+
+
 def verify_recapture(actual, blobs, *, python_version=None):
     original, old_blobs = load_baseline()
     require(type(actual) is dict and set(actual) == set(original) and actual['inventory_fingerprint'] ==
@@ -64,15 +83,28 @@ def verify_recapture(actual, blobs, *, python_version=None):
     scope = actual['source_scope']
     require(canonical(scope) == canonical(frozen.source_scope()), 'Actual selection CLI scope differs from current source bytes')
     before, current = inventory(original['source_scope']['actual_sources']), inventory(scope['actual_sources'])
-    require(set(current) == set(before), 'Selection CLI complete source membership changed')
+    require(set(before) <= set(current), 'Selection CLI historical source membership changed')
+    additions = []
+    for name in sorted(set(current) - set(before)):
+        path = ROOT / name
+        require(name.startswith('src/biocompiler/') and name.endswith('.py') and
+                REVIEWED_ADDITIONS.get(name) == current[name] and path.is_file() and
+                not path.is_symlink() and sha(path.read_bytes()) == current[name],
+                'Unreviewed selection CLI source addition: ' + name)
+        additions.append({'path':name,'sha256':current[name],'source':path.read_text()})
     require(set(scope) == set(original['source_scope']) and scope['denied_modules'] == original['source_scope']['denied_modules']
             and scope['schema_version'] == original['source_scope']['schema_version'] and
             scope['source_inventory_sha256'] == digest(scope['actual_sources']), 'Selection CLI scope metadata changed')
     proof = routes.verify_source(ROOT, before[routes.CLI])
+    unused = unused_source_change(before,current)
+    unused_name = unused['path']
+    unused_module = unused_name[4:-3].replace('/','.')
+    require(unused_module in scope['denied_modules'] and all(unused_module not in row['import_audit']['modules']
+            for row in original['cases']), 'Original selection CLI imported changed native transport')
     for name, pin in before.items():
         path = ROOT / name
         require(path.is_file() and not path.is_symlink() and sha(path.read_bytes()) == current[name] and
-                (name == routes.CLI or current[name] == pin), 'Unreviewed selection CLI source bytes changed: ' + name)
+                (name in (routes.CLI,unused_name) or current[name] == pin), 'Unreviewed selection CLI source bytes changed: ' + name)
     projected, projected_blobs = deepcopy(actual), dict(blobs)
     for row in projected['cases']:
         audit = row['import_audit']
@@ -125,11 +157,12 @@ def verify_recapture(actual, blobs, *, python_version=None):
         'baseline_inventory_fingerprint':CORPUS_PIN,'actual_inventory_fingerprint':actual['inventory_fingerprint'],
         'projected_inventory_fingerprint':projected['inventory_fingerprint'],'actual_capture':deepcopy(actual),
         'actual_retained_route_source':(ROOT/routes.CLI).read_text(),'reviewed_route':proof,
+        'reviewed_unused_source_additions':additions,'reviewed_unused_source_change':unused,
         'runtime_counterpart':{'declaration_sha256':declared.pin,'python_minor':minor,
             'validated_cases':sorted(declared.cases),'changes':changes},'coverage':deepcopy(actual['coverage']),
         'content_documents':len(blobs),'content_bytes':sum(map(len,blobs.values())),
         'actual_content_inventory':[{'sha256':name,'bytes':len(raw)} for name,raw in sorted(blobs.items())],
-        'projection':'exact_additive_selection_CLI_source_and_declared_argparse_runtime_counterpart_only; actual_bytes_retained'}
+        'projection':'exact_additive_selection_CLI_source_individually_pinned_unimported_additions_exact_archived_unused_backend_and_declared_argparse_runtime_counterpart_only; actual_bytes_retained'}
 
 
 def main(argv=None):
