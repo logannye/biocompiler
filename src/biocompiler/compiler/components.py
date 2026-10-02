@@ -51,7 +51,7 @@ class ComponentBuild:
     selection_result: object | None = None
 
 
-def check_component_behavior(request, assembly, history, *, until=None):
+def check_component_behavior(request, assembly, history, *, until=None, core=None):
     """Check the actual assembly model against authored behavior and observations.
 
     This function never calls the adapter or consults a source mechanism graph.
@@ -59,6 +59,10 @@ def check_component_behavior(request, assembly, history, *, until=None):
     """
     if not isinstance(request, RealizationRequest) or not isinstance(assembly, ComponentAssembly):
         raise TypeError("Expected a RealizationRequest and ComponentAssembly.")
+    if core is not None:
+        from biocompiler.realization_backend import check_records
+        return check_records(operation="verify-component-behavior", core=core,
+                             expected_request=request, assembly=assembly, history=history, until=until)
     if (assembly.request_fingerprint != request.fingerprint
             or assembly.composition.target != request.target):
         raise PipelineError("Component behavior authority or target differs from the assembly.")
@@ -90,7 +94,7 @@ def check_component_behavior(request, assembly, history, *, until=None):
     }))
 
 
-def check_component_assembly(request, candidate, assembly, history, *, until=None):
+def check_component_assembly(request, candidate, assembly, history, *, until=None, core=None):
     """Recompute source correspondence and check contracts; never import success.
 
     Linking a compatible graph alone cannot prove it implements the selected
@@ -100,6 +104,17 @@ def check_component_assembly(request, candidate, assembly, history, *, until=Non
     if not isinstance(assembly, ComponentAssembly):
         raise TypeError("Expected a ComponentAssembly.")
     history = tuple(history)
+    if core is not None:
+        # The historical adapter reads this nominal attribute before checking
+        # request/candidate classes; preserve that AttributeError precedence.
+        candidate.generator_config.profile_version
+        if not isinstance(request, RealizationRequest):
+            raise TypeError("Synthetic generation requires a frozen RealizationRequest.")
+        if not isinstance(candidate, SyntheticCandidate):
+            raise TypeError("Expected a SyntheticCandidate.")
+        from biocompiler.realization_backend import check_records
+        return check_records(operation="verify-component-assembly", core=core,
+                             expected_request=request, candidate=candidate, assembly=assembly, history=history, until=until)
     expected = adapt_synthetic_components(request, candidate, history, until=until)
     if (
         assembly.request_fingerprint != request.fingerprint

@@ -376,6 +376,10 @@ def observation_input(call, documents):
     if "." not in api:
         function = next(value for value in FUNCTIONS if value.__name__ == api)
         bound = inspect.signature(function).bind(*raw["args"], **raw["kwargs"]); bound.apply_defaults()
+        # Explicit transport selection was added after this historical semantic
+        # capture. Its absent/None default is not part of original authority.
+        if api in {"realization_dependencies", "check_realization", "check_synthetic_candidate", "check_component_behavior", "check_component_assembly"} and bound.arguments.get("core") is None:
+            bound.arguments.pop("core", None)
         return api, plain(dict(bound.arguments)), "admission"
     name, method = api.split(".")
     if method == "__init__": return name, constructor_document(name, raw), "constructor"

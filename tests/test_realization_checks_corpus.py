@@ -10,6 +10,8 @@ from pathlib import Path
 import sys
 import unittest
 
+from tools.realization_source_lineage import verify_captured_source
+
 ROOT = Path(__file__).resolve().parents[1]
 CORPUS = ROOT / "tests/conformance/realization-checks-v1.json"
 PIN = "8ddc5a929f90e8364e3ffb53c6902ff23bd5dec2524897a8d463f543b887d80a"
@@ -166,7 +168,7 @@ class RealizationChecksCorpusTests(unittest.TestCase):
         self.assertEqual(Counter(c["native"]["native_stage"] for c in self.calls.values()), EXPECTED_STAGES)
         self.assertEqual(coverage["unclassified_observations"], 0)
         for entry in self.index["source_files"]:
-            self.assertEqual(hashlib.sha256((ROOT / entry["path"]).read_bytes()).hexdigest(), entry["sha256"], entry["path"])
+            verify_captured_source(ROOT, entry)
         self.assertEqual(len(self.index["subprocesses"]), 2)
         self.assertEqual({item["invocation"]["hash_seed"] for item in self.index["subprocesses"]}, {"1", "37"})
         for child in self.index["subprocesses"]:
@@ -200,6 +202,9 @@ class RealizationChecksCorpusTests(unittest.TestCase):
                     continue
                 if "." not in api:
                     bound = inspect.signature(functions[api]).bind(*raw["args"], **raw["kwargs"]); bound.apply_defaults()
+                    # The later opt-in transport default is absent from this original semantic capture.
+                    if api in {"realization_dependencies", "check_realization", "check_synthetic_candidate", "check_component_behavior", "check_component_assembly"} and bound.arguments.get("core") is None:
+                        bound.arguments.pop("core", None)
                     expected = plain(dict(bound.arguments))
                 else:
                     name, method = api.split(".")

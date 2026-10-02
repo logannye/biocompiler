@@ -14,7 +14,8 @@ let () =
   let fields = Json.object_fields (Option.get result) in
   require (Json.string (Json.field "schema_version" fields) = "biocompiler.core_capabilities.v1") "Capability schema missing";
   require (Json.array (Json.field "operations" fields) |> List.map Json.string =
-    ["capabilities";"canonicalize";"validate-intent";"verify-lowering";"verify-architecture";"replay-architecture"])
+    (["capabilities";"canonicalize";"validate-intent";"verify-lowering";"verify-architecture";"replay-architecture"] @
+     Bioc_service.Realization_service.operations))
     "Advertised operation census differs";
   let architecture = Json.field "architecture" (Json.object_fields (Json.field "profiles" fields)) in
   require (Json.equal architecture Bioc_service.Architecture_service.profile) "Architecture profile differs";
@@ -24,6 +25,10 @@ let () =
       | _ -> failwith "Standalone architecture checking accepted missing original authority"
       | exception Diagnostic.Error diagnostic -> require (diagnostic.code = "missing_field") "Unexpected architecture envelope diagnostic")
     ["verify-architecture";"replay-architecture"];
+  List.iter (fun (name, expected) ->
+      let actual = Json.field name (Json.object_fields (Json.field "profiles" fields)) in
+      require (Json.equal actual expected) ("Realization profile differs: " ^ name))
+    Bioc_service.Realization_service.profiles;
   let response = Protocol.response ~executable:Protocol.Verify ~request:(Some decoded) ~status ~result diagnostics in
   let identity = Json.field "core" (Json.object_fields response) |> Json.object_fields in
   require (Json.string (Json.field "executable" identity) = "verify") "Verifier identity missing";

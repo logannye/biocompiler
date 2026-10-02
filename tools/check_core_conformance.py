@@ -29,6 +29,7 @@ from biocompiler.core_client import (
 )
 from biocompiler.core_architecture import PROFILE as ARCHITECTURE_PROFILE, VALIDATION_SCOPE as ARCHITECTURE_SCOPE
 from biocompiler.core_architecture_producer import PROFILE as PRODUCER_PROFILE, VALIDATION_SCOPE as PRODUCER_SCOPE
+from biocompiler.core_realization import PROFILES as REALIZATION_PROFILES, OPERATIONS as REALIZATION_OPERATIONS, VALIDATION_SCOPES as REALIZATION_SCOPES
 from biocompiler.ir.intent import IntentProgram
 from biocompiler.compiler.request import BuildRequest
 from biocompiler.ir.behavior import BehaviorProgram
@@ -444,14 +445,15 @@ def run_campaign(clients, corpus, receipt, programs):
         capabilities = client.capabilities().result
         require(type(capabilities) is dict, "Missing capabilities")
         operations = ["canonicalize", "capabilities", "replay-architecture", "validate-intent", "verify-architecture", "verify-lowering"]
-        scopes = [SCOPE, LOWERING_SCOPE, ARCHITECTURE_SCOPE]
-        profiles = {"architecture": ARCHITECTURE_PROFILE}
-        claim = "Structural intent validation, frozen source-to-Behavior correspondence and supplied architecture contract checking only. No candidate execution, search completeness, empirical function or human-use admission."
+        operations += list(REALIZATION_OPERATIONS)
+        scopes = [SCOPE, LOWERING_SCOPE, ARCHITECTURE_SCOPE] + list(REALIZATION_SCOPES)
+        profiles = {"architecture": ARCHITECTURE_PROFILE, **REALIZATION_PROFILES}
+        claim = "Structural intent validation, frozen source-to-Behavior correspondence, supplied architecture contracts and independently executed finite-history model checks. No search completeness, empirical function or human-use admission."
         if client.role == "core":
             operations += ["compile-architecture", "export-architecture"]
             scopes.append(PRODUCER_SCOPE)
             profiles["architecture_producer"] = PRODUCER_PROFILE
-            claim = "Supplied-contract architecture production, independent checking and exact RNA/manifest export. No candidate execution, search completeness, empirical function or human-use admission is established."
+            claim = "Supplied-contract architecture production, independent checking, exact RNA/manifest export and separately scoped finite-history model checks. No search completeness, empirical function or human-use admission is established."
         require(sorted(capabilities["operations"]) == sorted(operations), "Missing or untested advertised operation")
         require(capabilities["canonicalization"] == "python-json-v1" and capabilities["intent_schemas"] == ["biocompiler.intent.v0.1"]
                 and capabilities["validation_scopes"] == scopes and capabilities["limits"] == LIMITS

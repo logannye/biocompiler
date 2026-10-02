@@ -400,3 +400,8 @@
  (modules test_synthetic_producers_corpus)
  (libraries bioc_wire bioc_domain bioc_checker bioc_realization_checker bioc_synthetic_producer zarith)
  (action (run %{test} %{env:BIOCOMPILER_SYNTHETIC_PRODUCERS_CORPUS=missing})))
+
+(test
+ (name test_realization_protocol)
+ (modules test_realization_protocol)
+ (libraries bioc_service bioc_wire bioc_checker zarith))

@@ -69,7 +69,7 @@ let capabilities executable request =
           | "operations" -> Json.Array (Json.array value @ List.map str operations)
           | "validation_scopes" -> Json.Array (Json.array value @ [str validation_scope])
           | "profiles" -> obj (Json.object_fields value @ ["architecture_producer", profile])
-          | "claim_scope" -> str "Supplied-contract architecture production, independent checking and exact RNA/manifest export. No candidate execution, search completeness, empirical function or human-use admission is established."
+          | "claim_scope" -> str "Supplied-contract architecture production, independent checking, exact RNA/manifest export and separately scoped finite-history model checks. No search completeness, empirical function or human-use admission is established."
           | _ -> value) in
       Protocol.Ok, Some (obj changed), []
   | _ -> status, result, diagnostics
