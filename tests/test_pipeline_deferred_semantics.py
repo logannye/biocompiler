@@ -5,6 +5,7 @@ import sys
 import unittest
 
 from tools import capture_pipeline_deferred_semantics as oracle
+from tools import check_pipeline_deferred_runtime as runtime
 
 PIN = "21ff92c3b384a0be705733e768abfc510acc58f529065eff06af63bc77fce444"
 
@@ -54,11 +55,13 @@ class PipelineDeferredSemanticsTests(unittest.TestCase):
         self.assertEqual(len(self.cases), 47)
         for path, pin in self.value["source_files"].items():
             self.assertEqual(oracle.sha((oracle.ROOT / path).read_bytes()), pin, path)
-        proof = oracle.compare_current(self.value, self.current)
+        proof = runtime.compare_current(self.value, self.current)
         self.assertEqual(proof["complete_current_case"], proof["independent_original_manager_case"])
         self.assertEqual(proof["exact_paths"]["paths"], ["exception.message", "exception.args.items.0"])
         self.assertEqual(proof["complete_captured_case"], self.cases["proposal:unhashable_status"])
-        if self.value["capture_runtime"] == self.current["capture_runtime"]:
+        self.assertEqual(oracle.canonical(proof["comparison_capture"]), oracle.canonical(proof["expected_capture"]))
+        self.assertEqual(proof["complete_raw_current"], self.current)
+        if self.value["capture_runtime"] == self.current["capture_runtime"] and not proof["frame_correspondences"]:
             self.assertEqual(oracle.canonical(self.current), oracle.canonical(self.value))
         for case in self.cases.values():
             self.assertEqual([event["id"] for event in case["events"]], list(range(len(case["events"]))))
@@ -191,7 +194,7 @@ class PipelineDeferredSemanticsTests(unittest.TestCase):
                 forged["runtime_counterparts"][0]["paths"].append("exception.class")
             resign(forged)
             with self.subTest(mutation=mutation), self.assertRaises(AssertionError):
-                oracle.compare_current(self.value, forged)
+                runtime.compare_current(self.value, forged)
             with self.assertRaisesRegex(AssertionError, "Immutable original"):
                 validate(forged)
 
