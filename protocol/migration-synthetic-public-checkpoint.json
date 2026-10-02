@@ -91,6 +91,7 @@
       "tree": "cf76fe798828f11d1551950b84c2600148ac0051"
     }
   ],
+  "followup_harness_corrections": "migration-ci-harness-corrections.json",
   "hosted_validation": {
     "native_platforms": [
       "linux-x86_64",
@@ -120,6 +121,8 @@
       ],
       "seconds": 33.184
     },
+    "followup_architecture_guard_tests": 10,
+    "followup_boundary_inventory_ci_tests": 48,
     "lineage_capture_tests": 27,
     "migration_inventory_entries": 3135,
     "native_build_or_execution": false,

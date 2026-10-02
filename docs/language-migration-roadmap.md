@@ -4,7 +4,7 @@ Created: 2026-10-01, America/Los_Angeles.
 
 **Decision:** TypeScript for Studio; Python for authoring, orchestration and scientific exploration; OCaml for the semantic compiler, independent checking and canonical emission.
 
-**Status:** the default remains Python; explicit architecture SDK/CLI selection uses the validated OCaml core. PR48–56 have completed their exact-revision gates and are integrated (PR52 through PR53). PR57–63 preserve realization protocol/routing, full workflow engines and services, public workflow routes, raw synthetic producers and explicit producer SDK routes; their complete current-revision gates remain pending. The Python 3.11 argparse difference now has an independently executed, byte-exact runtime counterpart; original baselines remain unchanged. The current batch implements installed producer SDK campaigns and explicit synthetic-select CLI routing, with scoped local Python capture/fixture checkpoints recorded and exact-revision hosted integration pending. Distribution, remaining profiles, native pipeline/package authority, rich helper compatibility and default cutover remain open.
+**Status:** the default remains Python; explicit architecture SDK/CLI selection uses the validated OCaml core. PR48–56 have completed their exact-revision gates and are integrated (PR52 through PR53). PR57–63 preserve realization protocol/routing, full workflow engines and services, public workflow routes, raw synthetic producers and explicit producer SDK routes; their complete current-revision gates remain pending. PR64 preserves the installed public SDK/CLI integration checkpoint. The Python 3.11 argparse difference now has an independently executed, byte-exact runtime counterpart; original baselines remain unchanged. The current batch implements installed producer SDK campaigns and explicit synthetic-select CLI routing, with scoped local Python capture/fixture checkpoints recorded and exact-revision hosted integration pending. Distribution, remaining profiles, native pipeline/package authority, rich helper compatibility and default cutover remain open.
 
 The validated foundation is merged in [PR37](https://github.com/logannye/biocompiler/pull/37), with the exact revision/platform results in the [foundation receipt](../protocol/migration-foundation-validation.json). Typed request, all 42 Behavior operations and molecular-coordinate domains are merged in [PR38](https://github.com/logannye/biocompiler/pull/38); the [domain receipt](../protocol/migration-domain-validation.json) records both native platforms and full Python/integration checks. Both integrated main revisions also passed their required gates.
 
@@ -701,6 +701,17 @@ record current parent heads; previous partial native passes are historical only.
   distribution and default cutover remain open; no broader LM exit is completed.
   The [public integration checkpoint](../protocol/migration-synthetic-public-checkpoint.json)
   records exact source hashes, corrected parent commits and local-only evidence.
+
+- [x] **LM-03 CI harness correction checkpoint:** the installed architecture
+  guard now permits only the exact new parser-registration helpers while rejecting
+  semantic handlers and similar names; ten focused tests pass. The macOS artifact
+  test obtains the actual supported POSIX descriptor number instead of comparing
+  devfs inode identities. Every original artifact test body remains byte-identical,
+  and the boundary checker pins the one test-only representation conversion.
+  Forty-eight boundary/inventory/CI tests and each affected parent's static graph
+  pass. The [correction receipt](../protocol/migration-ci-harness-corrections.json)
+  records exact affected revisions; native execution and all hosted gates remain
+  pending, so this does not close the native acceptance checkpoint.
 
 The integrated PR51 main revision `652e2aa0aa24bf563412483827d07c4bc027a4e0`
 passed all 31 jobs in [run 36972688727](https://github.com/logannye/biocompiler/actions/runs/36972688727).
