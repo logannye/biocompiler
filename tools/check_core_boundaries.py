@@ -37,6 +37,8 @@ EXECUTABLES = {
     "biocompiler-verify": ("bin/verify/dune", {"bioc_wire", "bioc_service"}, "verifier"),
 }
 TESTS = {
+    'test_pass_manager': {'bioc_domain', 'bioc_wire', 'bioc_compiler', 'zarith', 'bioc_checker'},
+    'test_pipeline_contract': {'bioc_wire', 'zarith', 'bioc_domain'},
     "test_synthetic_inspection_protocol": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_realization_checker", "bioc_compiler", "bioc_producer_service", "zarith"},
     "test_verification_workflow_authority": {"bioc_wire", "bioc_service", "bioc_domain", "bioc_checker", "bioc_realization_checker", "zarith"},
     "test_artifact_io": {"bioc_wire", "bioc_service", "bioc_checker", "bioc_realization_checker", "unix", "zarith"},
@@ -400,6 +402,8 @@ def check_boundaries(root: Path):
                 if relative != "test/dune" or name not in TESTS or values.get("modules") != [name]:
                     raise BoundaryError(f"Unreviewed native test stanza: {name}")
                 fixture_variables = {
+                    'test_pass_manager': "%{env:BIOCOMPILER_PIPELINE_CONTRACT_LITERALS=missing}",
+                    'test_pipeline_contract': "%{env:BIOCOMPILER_PIPELINE_CONTRACT_LITERALS=missing}",
                     "test_candidate_runtime_corpus": "%{env:BIOCOMPILER_CANDIDATE_RUNTIME_CORPUS=missing}",
                     "test_component_runtime_corpus": "%{env:BIOCOMPILER_COMPONENT_RUNTIME_CORPUS=missing}",
                     "test_realization_foundation_corpus": "%{env:BIOCOMPILER_REALIZATION_FOUNDATION_CORPUS=missing}",

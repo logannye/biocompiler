@@ -616,8 +616,8 @@ record current parent heads; previous partial native passes are historical only.
   public occurrences and three verifier rejections per runtime, retaining the
   1,146 private/injected producer occurrences explicitly as native-library coverage.
   The public synthesis functions retain their original default route; the following
-  checkpoint adds explicit native routes. The CLI remains on its original route.
-  Public routing, native manager freshness, canonical packages and default
+  checkpoints add explicit SDK and CLI native routes while preserving the default.
+  Hosted public routing, native manager integration, canonical packages and default
   cutover remain separate unfinished work.
 
 - [x] **LM-03 producer-service Python fixture checkpoint:** ten strict client
@@ -696,9 +696,11 @@ record current parent heads; previous partial native passes are historical only.
   four-runtime comparators require fresh installed native execution on Linux
   x86_64/macOS arm64 with Python 3.11/3.14, exact source/binary/run identities and
   the complete required hosted gate before this item can be checked. This batch
-  is pending GitHub preservation at this documentation checkpoint; the integrating
-  owner will record its final commit, PR and run after pushing. Rich helper
-  compatibility, native manager freshness, canonical package acceptance,
+  is preserved in [PR64](https://github.com/logannye/biocompiler/pull/64) at
+  `acdf2383e60c785edbeb2d63755686a9045636af`, with run 36994062954 pending.
+  Rich helpers are preserved in [PR65](https://github.com/logannye/biocompiler/pull/65)
+  at `c6382d62da14fbd5f15534a46ffcf932b2266051`, run 36995989631 pending.
+  Their hosted compatibility, native manager integration, canonical package acceptance,
   distribution and default cutover remain open; no broader LM exit is completed.
   The [public integration checkpoint](../protocol/migration-synthetic-public-checkpoint.json)
   records exact source hashes, corrected parent commits and local-only evidence.
@@ -731,6 +733,22 @@ record current parent heads; previous partial native passes are historical only.
   remain unavailable to Verify. Local Python fixture/static evidence cannot
   close this gate, whole-program freshness, large-result transport, package
   acceptance or default cutover.
+
+- [x] **LM-25/R6 P2 native manager implementation checkpoint:** twelve immutable
+  contract/record modules and an opaque in-memory checked pass manager now own
+  registration/provider identity, controlled roots, acceptance, obligation
+  invalidation, recursive freshness and scoped completion. No serialized record
+  imports acceptance. Callback-time mutations share a lifetime work ancestor;
+  retained bytes/items and graph/callback depth are bounded. This checks the
+  source implementation only; all native execution and broader P2 exits remain
+  pending. See [manager migration scope](migration-checked-pass-manager.md).
+
+- [ ] **LM-03/25 P2 complete lifecycle conformance and integration:** retain and
+  replay the complete original manager/callback/state cohort, validate native
+  contract and manager tests on both platforms, then implement fixed native
+  synthetic/component pipelines and the public mutable-manager contract.
+  Historical records, script fixtures or a one-shot producer wrapper cannot
+  satisfy full pipeline, package or fresh export acceptance.
 
 - [x] **LM-03 CI harness correction checkpoint:** the installed architecture
   guard now permits only the exact new parser-registration helpers while rejecting

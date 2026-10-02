@@ -233,6 +233,12 @@ class ValidationGateTests(unittest.TestCase):
         self.assertIn("core/_build/default/test/test_synthetic_producer_public_protocol.exe | tee generated/core/test_synthetic_producer_public_protocol.txt", native)
         self.assertIn('core/_build/default/test/test_synthetic_inspection_protocol.exe "$GITHUB_WORKSPACE/tests/conformance/synthetic-inspection-supplemental-v1.json" "$GITHUB_WORKSPACE/protocol/synthetic-inspection-v1.json" | tee generated/core/test_synthetic_inspection_protocol.txt', native)
 
+    def test_checked_manager_and_contract_suites_are_hosted_gates(self):
+        text = (Path(__file__).resolve().parents[1] / ".github/workflows/ci.yml").read_text()
+        native = text.split("\n  ocaml-core:\n", 1)[1].split("\n  architecture-core-reproducibility:\n", 1)[0]
+        for name in ("test_pipeline_contract", "test_pass_manager"):
+            self.assertIn('core/_build/default/test/' + name + '.exe "$GITHUB_WORKSPACE/tests/conformance/pipeline-contract-literals-v1.json" | tee generated/core/' + name + '.txt', native)
+
     def test_checked_in_workflow_registers_cross_platform_architecture_gate(self):
         workflow = Path(__file__).resolve().parents[1] / ".github" / "workflows" / "ci.yml"
         self.assertEqual(ci.workflow_jobs(workflow), ci.REQUIRED_NEEDS | {"validation"})
