@@ -305,6 +305,7 @@ let callback_json = function
   | M.Proposal value -> C.Pass_result.to_json value
   | M.Decision value -> C.Check_decision.to_json value
   | M.Invalid_return value -> value
+  | M.Host_return _ -> failwith "Deferred host objects are not native fixture callback recipes"
 let dependencies raw = List.map (fun (key,value) -> key,Json.string value) (Json.object_fields raw)
 let string_list raw = List.map Json.string (Json.array raw)
 let context_parameter locals = match List.assoc_opt "context" (List.map (fun (key,value) -> Json.string key,value) (tagged_mapping locals)) with

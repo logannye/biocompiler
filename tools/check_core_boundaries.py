@@ -39,6 +39,9 @@ EXECUTABLES = {
     "biocompiler-verify": ("bin/verify/dune", {"bioc_wire", "bioc_service"}, "verifier"),
 }
 TESTS = {
+    "test_deferred_pass_manager": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "zarith"},
+    "test_pipeline_callback_channel": {"bioc_wire", "bioc_checker", "bioc_pipeline_service", "zarith"},
+    "test_pipeline_host_bridge": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_pipeline_service", "zarith"},
     'test_pipeline_session': {'bioc_wire', 'bioc_domain', 'bioc_checker', 'bioc_compiler', 'bioc_pipeline_service', 'zarith'},
     'test_provider_comparison': {'bioc_wire', 'bioc_domain', 'bioc_checker', 'bioc_compiler', 'zarith'},
     'test_fixed_pipeline_corpus': {'bioc_wire', 'bioc_domain', 'bioc_checker', 'bioc_compiler', 'bioc_pipeline', 'bioc_synthetic_producer', 'zarith'},
@@ -409,6 +412,8 @@ def check_boundaries(root: Path):
                 if relative != "test/dune" or name not in TESTS or values.get("modules") != [name]:
                     raise BoundaryError(f"Unreviewed native test stanza: {name}")
                 fixture_variables = {
+                    "test_deferred_pass_manager": "%{env:BIOCOMPILER_PIPELINE_CONTRACT_LITERALS=missing}",
+                    "test_pipeline_callback_channel": "%{env:BIOCOMPILER_PIPELINE_CALLBACK_DECLARATION=missing}",
                     'test_provider_comparison': "%{env:BIOCOMPILER_PIPELINE_CALLBACK_SEMANTICS=missing}",
                     'test_lowering_budget': "%{env:BIOCOMPILER_LOWERING_CORPUS=missing}",
                     'test_checked_pipeline_corpus': "%{env:BIOCOMPILER_CHECKED_PIPELINE_CORPUS=missing}",

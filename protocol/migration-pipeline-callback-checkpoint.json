@@ -1,0 +1,196 @@
+{
+  "schema_version": "biocompiler.pipeline_callback_implementation_checkpoint.v1",
+  "status": "additive_libraries_implemented_hosted_native_and_public_integration_pending",
+  "base_revision": "85dfc8ca114ea629ad1f65eb010d0a635f71d556",
+  "files": {
+    ".github/workflows/ci.yml": {
+      "sha256": "2877d4ac62b976808455caf73363fd43b81e3ca2fa7354827ac8dea28ed04605",
+      "bytes": 98221
+    },
+    "core/lib/checker/work_budget.ml": {
+      "sha256": "e8e8cddb0f54719aa2c93398b46201ff81edf9e593a17613415cba55e1aa9289",
+      "bytes": 4283
+    },
+    "core/lib/checker/work_budget.mli": {
+      "sha256": "f2d4c5345168e9d9859dc717db80a21bdadbb7a1eb4443e2a335218fd815363a",
+      "bytes": 1564
+    },
+    "core/lib/compiler/pass_manager.ml": {
+      "sha256": "1d08f2b2a0db1202f21d645446090408214c4d9d6f9a38e0526ec487c250e443",
+      "bytes": 46067
+    },
+    "core/lib/compiler/pass_manager.mli": {
+      "sha256": "53d6fe1ce01ca0fb600fe4364c5b5ae29a7a1a945958ffb42549f51abb75f690",
+      "bytes": 7269
+    },
+    "core/lib/pipeline/component_pipeline.ml": {
+      "sha256": "cc3e9957f9401c8b639416faf05947df33459b35d2c6da943ce7476243a20fe7",
+      "bytes": 13125
+    },
+    "core/lib/pipeline/component_pipeline.mli": {
+      "sha256": "bca8cf7c65799b7022ec4f4077de97e5bf3c6b042d9cbcac7df2e5c2320f073b",
+      "bytes": 2146
+    },
+    "core/lib/pipeline/synthetic_pipeline.ml": {
+      "sha256": "176be0b13d7de78c4a68a31c99e42e71edb4e26924661976b4940b97ad7b6460",
+      "bytes": 17259
+    },
+    "core/lib/pipeline/synthetic_pipeline.mli": {
+      "sha256": "c56b9ba3727c34c9ef16e68e02ac18fb620ffc0b0ad486f224883f2afc0c10ac",
+      "bytes": 2011
+    },
+    "core/lib/pipeline_service/callback_channel.ml": {
+      "sha256": "dd8c5e4e359a487af0f09937f00faad37958d16905ea432bcfb63425b5e3d535",
+      "bytes": 22624
+    },
+    "core/lib/pipeline_service/callback_channel.mli": {
+      "sha256": "3103352e82f8b9095206c05dc959be33cf43e79a6621c03f373d7c9352fe1bbc",
+      "bytes": 2073
+    },
+    "core/lib/pipeline_service/host_bridge.ml": {
+      "sha256": "70c712b0a9737c0bd30e1d4da154212d73c757b33a4d9bbba47138c25e74eaa2",
+      "bytes": 8887
+    },
+    "core/lib/pipeline_service/host_bridge.mli": {
+      "sha256": "77da931c4a9d1d3f1a828da09a43b968a4b36e84884a6da7f61a41bb5cc08981",
+      "bytes": 879
+    },
+    "core/test/dune": {
+      "sha256": "0b29ef208a142cf344968495a71f90489238d4085ff937e409bb324159bb8810",
+      "bytes": 15510
+    },
+    "core/test/test_checked_pipeline_corpus.ml": {
+      "sha256": "82b2bcfc51fbdd9bfec50c4d96aa34ffb0b260ada8eee5c07383b8b3e30a5359",
+      "bytes": 35296
+    },
+    "core/test/test_deferred_pass_manager.ml": {
+      "sha256": "5eb2be3d78930e66b37acf85841b67fa509971d0f9b56a074381eb660bc2dcca",
+      "bytes": 18134
+    },
+    "core/test/test_pipeline_callback_channel.ml": {
+      "sha256": "ce4b36496e2f977e5372d0d9241d4ffe363134f18d5af89eea5a5096a9758064",
+      "bytes": 21913
+    },
+    "core/test/test_pipeline_host_bridge.ml": {
+      "sha256": "a4e802697b305c521a9def7444f2228511f6ed78d28e75734dd3639269f217bd",
+      "bytes": 8200
+    },
+    "core/test/test_work_budget.ml": {
+      "sha256": "d66ea8a76e71f5a0ba6a5e4e6006303719f1308d9c57379a3c118d6a87d2caa7",
+      "bytes": 4876
+    },
+    "protocol/pipeline-callback-channel-v1.json": {
+      "sha256": "bc4dfa1c49d6a31132ecd59c256802cc81155731c605a202f2a38a5538b47808",
+      "bytes": 3739
+    },
+    "src/biocompiler/core_pipeline_callback_session.py": {
+      "sha256": "0ff388509eb9c123b87cf5decc1f35cf5eaca61a02d84a756beba7150de17018",
+      "bytes": 32312
+    },
+    "src/biocompiler/pipeline_callback_objects.py": {
+      "sha256": "ac5198795c3e80cff511e0fe372dc578a983d8be947e41dd9debd9f719da9eec",
+      "bytes": 21041
+    },
+    "tests/conformance/pipeline-deferred-semantics-v1.json": {
+      "sha256": "df12526c636cf2b3a51856494558080156c45c58573d7dbc2241daed54275129",
+      "bytes": 2685874
+    },
+    "tests/test_ci_validation.py": {
+      "sha256": "7861fc63c1d4fb6b5e3a05d0af26f67c7c4454b966b31b029ae73e187fe8c39c",
+      "bytes": 20384
+    },
+    "tests/test_core_pipeline_callback_session.py": {
+      "sha256": "35f88557e4aab8ce30e05455a3c401f657896010169ebdf3a8fd23f628ac5fd7",
+      "bytes": 25461
+    },
+    "tests/test_pipeline_callback_objects.py": {
+      "sha256": "bacfacee67837314d6d67dfd9ae7b3c62c2b180c5e0db4df13935fcb3703256e",
+      "bytes": 22836
+    },
+    "tests/test_pipeline_deferred_semantics.py": {
+      "sha256": "55850ce5f9bf537a59702be74df005dfaa8032099305f4b9ab19c2c9682d129b",
+      "bytes": 12986
+    },
+    "tools/capture_pipeline_deferred_semantics.py": {
+      "sha256": "c287fe14a54bd692bbdb71e613f07bc4181537ec9eb649d932e0ce59b3b023d1",
+      "bytes": 31801
+    },
+    "tools/check_core_boundaries.py": {
+      "sha256": "b1d3f55e8f071843f9b48404ac3d22736987e3191a4df3db43b7df228447d8d9",
+      "bytes": 34262
+    },
+    "tools/check_realization_workflow_corpus.py": {
+      "sha256": "c568b4194cc67e3105e206394089eb49f3de431d1f6b02b47186d94dedf5f033",
+      "bytes": 7508
+    },
+    "tools/migration_inventory.py": {
+      "sha256": "4e09e986260b88118279a2b22ab6d059cc14c599d58dcbd203675f5cc48ded9a",
+      "bytes": 43083
+    },
+    "tools/mypy-core.ini": {
+      "sha256": "931cacabfccd7149fcd1661620740d5cdefa84383875eca601554c8ad5b53fc7",
+      "bytes": 1117
+    }
+  },
+  "native_local_execution": false,
+  "python_validation": {
+    "transport_broker_original_oracle_inventory_and_72_cli_children": {
+      "tests": 98,
+      "seconds": 37.561,
+      "status": "pass"
+    },
+    "boundary_and_ci_regressions": {
+      "tests": 36,
+      "seconds": 15.296,
+      "status": "pass"
+    },
+    "strict_mypy": {
+      "modules": 19,
+      "status": "pass"
+    },
+    "migration_inventory": {
+      "entries": 3191,
+      "status": "pass"
+    }
+  },
+  "original_deferred_oracle": {
+    "inventory_fingerprint": "21ff92c3b384a0be705733e768abfc510acc58f529065eff06af63bc77fce444",
+    "cases": 47,
+    "events": 157,
+    "user_accesses": 290,
+    "nested_events": 21,
+    "marker_exceptions": 19,
+    "claim": "unchanged original Python observations only; one exact runtime exception text counterpart independently replayed; no native parity"
+  },
+  "hosted_required": {
+    "jobs": 36,
+    "native_suites": 101,
+    "native_platforms": [
+      "linux-x86_64",
+      "macos-arm64"
+    ],
+    "python_versions": [
+      "3.11",
+      "3.14"
+    ],
+    "new_native_suites": [
+      "test_deferred_pass_manager",
+      "test_pipeline_host_bridge",
+      "test_pipeline_callback_channel"
+    ],
+    "callback_channel_groups": 16,
+    "full_existing_corpora_preserved": true
+  },
+  "pending": [
+    "Core application dispatcher and entry-point wiring",
+    "typed public manager and fixed-pipeline adapters",
+    "mixed host/native source-link adaptation",
+    "callback context mapping order and physical object sharing",
+    "post-freeze scalar-subclass semantics or intentional versioned declarative restriction",
+    "six fixed registration interception cases and four Python boundary/mock cases",
+    "all 287 callback-dependent observations and complete supplemental installed replay",
+    "both hosted native builds and every required exact-revision gate",
+    "four-runtime full artifacts and exact executable/run/source bindings",
+    "default cutover and supported-platform distribution"
+  ]
+}

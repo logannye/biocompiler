@@ -889,6 +889,7 @@ jobs:
           BIOCOMPILER_FIXED_PIPELINE_CORPUS="$GITHUB_WORKSPACE/tests/conformance/fixed-pipeline-native-v1.json" \
           BIOCOMPILER_LOWERING_CORPUS="$GITHUB_WORKSPACE/tests/conformance/lowering-v1.json" \
           BIOCOMPILER_PIPELINE_CALLBACK_SEMANTICS="$GITHUB_WORKSPACE/tests/conformance/pipeline-callback-semantics-v1.json" \
+          BIOCOMPILER_PIPELINE_CALLBACK_DECLARATION="$GITHUB_WORKSPACE/protocol/pipeline-callback-channel-v1.json" \
           BIOCOMPILER_PIPELINE_SESSION_DECLARATION="$GITHUB_WORKSPACE/protocol/pipeline-session-v1.json" \
           BIOCOMPILER_PIPELINE_CONTRACT_LITERALS="$GITHUB_WORKSPACE/tests/conformance/pipeline-contract-literals-v1.json" \
           BIOCOMPILER_SYNTHETIC_INSPECTION_DECLARATION="$GITHUB_WORKSPACE/protocol/synthetic-inspection-v1.json" \
@@ -1016,6 +1017,15 @@ jobs:
       - name: Check native helper authority, exact structural queries and registry replay
         if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
         run: core/_build/default/test/test_synthetic_inspection_protocol.exe "$GITHUB_WORKSPACE/tests/conformance/synthetic-inspection-supplemental-v1.json" "$GITHUB_WORKSPACE/protocol/synthetic-inspection-v1.json" | tee generated/core/test_synthetic_inspection_protocol.txt
+      - name: Check deferred manager access and reentrant callback mutations
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_deferred_pass_manager.exe "$GITHUB_WORKSPACE/tests/conformance/pipeline-contract-literals-v1.json" | tee generated/core/test_deferred_pass_manager.txt
+      - name: Check nested callback framing and cumulative channel authority
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_pipeline_callback_channel.exe "$GITHUB_WORKSPACE/protocol/pipeline-callback-channel-v1.json" | tee generated/core/test_pipeline_callback_channel.txt
+      - name: Check deferred host capability envelopes and lifetime authority
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_pipeline_host_bridge.exe | tee generated/core/test_pipeline_host_bridge.txt
       - name: Check persistent manager state and cumulative session resource bounds
         if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
         run: core/_build/default/test/test_pipeline_session.exe "$GITHUB_WORKSPACE/protocol/pipeline-session-v1.json" "$GITHUB_WORKSPACE/tests/conformance/fixed-pipeline-native-v1.json" | tee generated/core/test_pipeline_session.txt

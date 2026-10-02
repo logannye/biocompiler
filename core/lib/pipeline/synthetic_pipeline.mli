@@ -17,12 +17,14 @@ type attempt = Completed of t | Failed of failure
     This diagnostic result neither imports records nor grants acceptance. *)
 val attempt : budget:Bioc_checker.Work_budget.t ->
   ?manager_limits:Bioc_compiler.Pass_manager.limits ->
+  ?validator_equivalent:Bioc_compiler.Pass_manager.validator_equivalent ->
   ?until:Bioc_domain.Runtime_number.t ->
   ?config:Bioc_domain.Synthetic_authority.Config.t ->
   Bioc_domain.Realization_request.t ->
   Bioc_domain.Execution_data.Input_frame.t list -> attempt
 val run : budget:Bioc_checker.Work_budget.t ->
   ?manager_limits:Bioc_compiler.Pass_manager.limits ->
+  ?validator_equivalent:Bioc_compiler.Pass_manager.validator_equivalent ->
   ?until:Bioc_domain.Runtime_number.t ->
   ?config:Bioc_domain.Synthetic_authority.Config.t ->
   Bioc_domain.Realization_request.t ->
