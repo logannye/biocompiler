@@ -24,7 +24,7 @@ LIBRARIES = {
     "bioc_domain": ("lib/domain/dune", {"bioc_wire", "zarith", "digestif"}, "trusted_domain"),
     "bioc_semantics": ("lib/semantics/dune", {"bioc_wire", "bioc_domain", "zarith"}, "source_semantics"),
     "bioc_compiler": ("lib/compiler/dune", {"bioc_wire", "bioc_domain", "bioc_checker"}, "compiler"),
-    "bioc_checker": ("lib/checker/dune", {"bioc_wire", "bioc_domain"}, "checker"),
+    "bioc_checker": ("lib/checker/dune", {"bioc_wire", "bioc_domain", "zarith"}, "checker"),
     "bioc_service": ("lib/service/dune", {"bioc_wire", "bioc_domain", "bioc_checker"}, "checker_service"),
 }
 EXECUTABLES = {
@@ -32,6 +32,12 @@ EXECUTABLES = {
     "biocompiler-verify": ("bin/verify/dune", {"bioc_wire", "bioc_service"}, "verifier"),
 }
 TESTS = {
+    "test_architecture_check": {"bioc_wire", "bioc_domain", "bioc_checker", "zarith"},
+    "test_work_budget": {"bioc_wire", "bioc_checker", "zarith"},
+    "test_architecture_build": {"bioc_wire", "bioc_domain", "zarith"},
+    "test_circuit_bindings": {"bioc_wire", "bioc_domain", "bioc_checker", "zarith"},
+    "test_architecture_controls_check": {"bioc_wire", "bioc_domain", "bioc_checker", "zarith"},
+    "test_architecture_deployment_check": {"bioc_wire", "bioc_domain", "bioc_checker", "zarith"},
     "test_wire": {"bioc_wire", "zarith"},
     "test_intent": {"bioc_wire", "bioc_domain", "bioc_checker"},
     "test_protocol": {"bioc_wire", "bioc_service"},
@@ -70,7 +76,7 @@ TESTS = {
 PRODUCER_ROLES = frozenset({"compiler", "matcher", "selection", "emitter", "assembler", "producer"})
 # Reconstruction is an independent checker's implementation detail. Consumers
 # can request assessment/replay, but cannot obtain an expected candidate to emit.
-PRIVATE_MODULES = {"bioc_checker": ["construction_reconstruction"]}
+PRIVATE_MODULES = {"bioc_checker": ["construction_reconstruction", "architecture_reconstruction"]}
 TOKEN = re.compile(r'\s+|;[^\n]*(?:\n|$)|\(|\)|"(?:\\.|[^"\\])*"|[^\s();"]+')
 IDENTIFIER = re.compile(r"[A-Za-z_][A-Za-z0-9_']*|\.")
 
@@ -230,8 +236,14 @@ def source_boundary(path, allowed_libraries, *, owner=None):
                     raise BoundaryError(f"Private checker reconstruction leaked through public interface {path.name}")
         if token == "external" or token in {"Unix", "Dynlink", "Obj", "Marshal"}:
             raise BoundaryError(f"Unreviewed native/process/dynamic-code escape {token} in {path.name}")
-        if token == "Sys" and tokens[index:index + 3] != ["Sys", ".", "argv"]:
-            raise BoundaryError(f"Unreviewed Sys access in {path.name}; only argv is allowed")
+        if token == "Sys":
+            reviewed = {"argv"}
+            if owner == "test:test_architecture_check":
+                # The test-only document corpus must reject undeclared files.
+                # Production code gains no filesystem or process permission.
+                reviewed.add("readdir")
+            if tokens[index:index + 2] != ["Sys", "."] or index + 2 >= len(tokens) or tokens[index + 2] not in reviewed:
+                raise BoundaryError(f"Unreviewed Sys access in {path.name}")
         if token.startswith("Bioc_"):
             library = token[:1].lower() + token[1:]
             if library not in allowed_libraries:
@@ -310,6 +322,7 @@ def check_boundaries(root: Path):
             allowed = set(graph[owner]) | ({owner} if owner in LIBRARIES else set())
         elif path.parent == core / "test" and path.stem in tests:
             allowed = set(tests[path.stem])
+            owner = "test:" + path.stem
         else:
             raise BoundaryError(f"OCaml source has no reviewed Dune owner: {relative}")
         references[relative] = source_boundary(path, allowed, owner=owner)

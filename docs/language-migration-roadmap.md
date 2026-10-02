@@ -12,7 +12,7 @@ Circuit declarations and independent source-to-Behavior correspondence are merge
 
 [PR41](https://github.com/logannye/biocompiler/pull/41) is merged at `e3d3cbcf1a7b05ccdbc34fdb69127c22e8ea8345`. Its [lowering/domain receipt](../protocol/migration-lowering-contracts-validation.json) records source `569b430`, tested merge `2f70984`, all 17 native suites on both platforms and all 2,122 tests on each Python version in successful [run 36935530782](https://github.com/logannye/biocompiler/actions/runs/36935530782). All installed, browser and reproducibility gates passed; the integrated tree is identical to the validated source. Separate [main run 36937189850](https://github.com/logannye/biocompiler/actions/runs/36937189850) passed every required gate.
 
-[PR42](https://github.com/logannye/biocompiler/pull/42) is merged at `f278ce01336c537d250df4f90219903a25174ae0`. Complete component records, intact human source wrappers, molecular inventories/sets and exact decimal deployment declarations passed all PR and integrated-main gates; the [receipt](../protocol/migration-complete-domains-validation.json) records 22 native suites on both platforms, 2,155 tests on each Python version and all product gates. [PR43](https://github.com/logannye/biocompiler/pull/43) validated architecture leaves, transition/recoding and construction records plus independent required-region checking: all 28 native suites on both platforms, 2,207 tests per Python version and every product gate passed. Its [receipt](../protocol/migration-construction-domains-validation.json) pins the source, tested merge and identical integrated tree. The next batch implements complete refinements/templates, independent construction reconstruction and source-manifest checking; validation remains pending. Architecture reconstruction, coupled transport, construction/emission, export acceptance and installed cutover remain incomplete.
+[PR42](https://github.com/logannye/biocompiler/pull/42) is merged at `f278ce01336c537d250df4f90219903a25174ae0`. Complete component records, intact human source wrappers, molecular inventories/sets and exact decimal deployment declarations passed all PR and integrated-main gates; the [receipt](../protocol/migration-complete-domains-validation.json) records 22 native suites on both platforms, 2,155 tests on each Python version and all product gates. [PR43](https://github.com/logannye/biocompiler/pull/43) validated architecture leaves, transition/recoding and construction records plus independent required-region checking: all 28 native suites on both platforms, 2,207 tests per Python version and every product gate passed. Its [receipt](../protocol/migration-construction-domains-validation.json) pins the source, tested merge and identical integrated tree. [PR44](https://github.com/logannye/biocompiler/pull/44) is merged at `e24ef03261ab46689a2c2cb8434aa24280eab028`: complete refinements/templates, independent construction reconstruction and source-manifest checking passed all required PR gates, with 34 native suites on both platforms and exactly 2,244 tests on each Python version; [receipt](../protocol/migration-reconstruction-validation.json). Its separate integrated-main run passed every required gate at the merged revision. The next batch adds complete architecture build records, independent controls/deployment proofs and architecture acceptance. Architecture reconstruction, coupled transport, construction/emission, export acceptance and installed cutover remain incomplete.
 
 **Validated baseline:** package 0.1.0.dev29, commit 6156ed2841fd3308df833f1afe0e3f6af5d12bf6. [Hosted run 36900639059](https://github.com/logannye/biocompiler/actions/runs/36900639059), attempt 2, passed all required gates and exactly 2,001 discovered tests on each Python version (3.11.16 and 3.14.7). The first attempt lost a hosted runner; the retry passed. [Pinned baseline receipt](../protocol/migration-baseline.json) retains revision, tree, receipts and shard/job timings. New revisions rediscover their own tests; this count is not the migration acceptance target.
 
@@ -122,7 +122,8 @@ The largest risks are semantic drift, canonical identity drift, a checker that a
 
 Depends on LM-00.
 
-- [ ] Pin OCaml, Dune and dependencies with a reproducible lock strategy; add formatting, warnings-as-errors and bounded test execution. Pin versions in the implementation batch rather than inventing untested version combinations in this plan.
+- [x] Pin OCaml, Dune and dependencies with a reproducible lock strategy, warnings-as-errors and bounded hosted test execution. PR37–44 retain the exact toolchain, solved platform dependencies and required test receipts.
+- [ ] Add and validate the OCaml formatting gate; preserve the pinned build and warning policy.
 - [x] Create the core library dependency graph and two real executable entry points. Add a dependency test that fails when the verifier links producer libraries.
 - [x] Add TypeScript strict configuration, a package lock and deterministic build into the existing installed static asset locations. Avoid a new UI framework or redesign unless separately needed.
 - [x] Produce an initial hosted binary for Linux x86_64 and macOS arm64, and test its protocol startup on those platforms. Inventory other current distribution targets before claiming they are supported.
@@ -137,7 +138,8 @@ Depends on LM-00; implementation uses LM-01.
 - [x] Specify strict decoding, unknown-field/version rejection, exact field types, duplicate-key rejection, null versus absence, Unicode validity and cumulative input/work limits.
 - [x] Freeze fingerprint behavior from [serialization.py](../src/biocompiler/ir/serialization.py). It is SHA-256 over Python's compact sorted-key UTF-8 JSON, not an assumed generic canonical-JSON standard.
 - [x] Test arbitrary-size integers, the JavaScript safe-integer boundary, bool versus int, int versus float, exponent spelling, negative zero, finite float roundtrips, invalid Unicode and object-key ordering. Do not truncate Python integers to OCaml machine integers.
-- [ ] Preserve exact decimal interval semantics where already used, and existing floating-point behavior where specified. In particular, the availability checker uses Fraction(str(value)); reproduce its decimal-to-rational boundary behavior rather than replacing it with binary floats. Numeric-model improvements require a separately versioned semantic change.
+- [x] Preserve the exact decimal-to-rational primitive and existing reference floating-point behavior. PR40 validates the reference numeric corpus; PR42 validates `Fraction(str(value))` compatibility, 18 exact ratios and six literal decimal-sum boundaries.
+- [ ] Validate exact decimal interval semantics in the complete availability checker. The current architecture batch implements this contextual check but awaits hosted validation. Numeric-model improvements require a separately versioned semantic change.
 - [x] Preserve raw authoritative JSON through browser and adapter workflows; parsed JavaScript objects are display/editing aids and must not silently reserialize imported authority.
 - [ ] Separate semantic fingerprints from run timestamps, local paths and packaging metadata. Document canonical binary/text encodings and archive determinism.
 - [x] Implement protocol errors, crash/timeout/cancellation handling and executable compatibility checks. Reject incomplete responses and ambiguous outputs.
@@ -149,10 +151,10 @@ Depends on LM-00; implementation uses LM-01.
 Depends on LM-00 and LM-02; grows throughout implementation.
 
 - [ ] Establish Python-to-OCaml and OCaml-to-Python import/replay checks where the profile is compatible.
-- [ ] Compare against both the baseline implementation and independent literal expectations. Agreement between two implementations is not proof that either is correct.
-- [ ] Retain the intended failure signature for each mutation; a crash or unrelated rejection is not successful detection.
+- [x] Compare implemented modules against both baseline outputs and independent literal expectations. PR37–44 exercise the growing conformance harness on both native platforms; each later profile must extend it before promotion. Agreement between two implementations is not proof that either is correct.
+- [x] Require and retain intended failure signatures in the implemented conformance campaigns. Native tests compare exact diagnostic codes or complete reports; a crash or unrelated rejection is not successful detection. New profiles must retain this gate.
 - [ ] Record wall time, peak memory, serialized size and protocol overhead for representative small and composite programs on the same platform.
-- [ ] Require explicit case accounting: skipped, missing, unsupported-by-the-new-engine and timed-out migrated cases cannot count as parity.
+- [x] Require explicit case accounting in the conformance harness and exact discovered Python-test accounting. Pinned native case inventories, expected outcomes and required jobs fail closed; every new profile must extend those inventories. Skipped, missing, unsupported-by-the-new-engine and timed-out migrated cases cannot count as parity.
 
 **Exit:** the harness exposes structured mismatches and cannot promote a partially tested profile.
 
@@ -163,7 +165,7 @@ Reread this roadmap before each batch and update its scoped checkboxes and statu
 | Batch | Work | Completion gate | Status |
 | --- | --- | --- | --- |
 | B0 | LM-00 inventory; LM-01 skeleton; LM-02 protocol/canonical vectors | Baseline and executable interface are pinned; canonical compatibility is established | Native protocol/canonical foundation validated; broader corpus, performance, formatting and distribution-plan obligations remain |
-| B1 | First checker-led vertical slice: LM-20/21/22/24/25 subset, LM-23 records/decoders, Python adapter in shadow mode | Existing case B request and Python candidate are independently checked in OCaml; targeted temporal/authority/sequence mutants fail correctly | BuildRequest/Behavior/coordinate and circuit declarations plus independent source correspondence validated in PR38/39; per-role reference execution and lowering/contract/chemistry prerequisites validated in PR40/41; complete human wrappers, component models, molecules/sets and decimal deployment declarations validated in PR42; architecture/construction declarations and independent required-region checking validated in PR43; full architecture authority, construction reconstruction and source-manifest checking pending validation; complete architecture checker remains open |
+| B1 | First checker-led vertical slice: LM-20/21/22/24/25 subset, LM-23 records/decoders, Python adapter in shadow mode | Existing case B request and Python candidate are independently checked in OCaml; targeted temporal/authority/sequence mutants fail correctly | BuildRequest/Behavior/coordinate and circuit declarations plus independent source correspondence validated in PR38/39; per-role reference execution and lowering/contract/chemistry prerequisites validated in PR40/41; complete human wrappers, component models, molecules/sets and decimal deployment declarations validated in PR42; architecture/construction declarations and independent required-region checking validated in PR43; full architecture request authority, construction reconstruction and source-manifest checking validated in PR44; complete architecture checker remains open |
 | B2 | Port producer for that same slice; extend LM-23/24/26 | Python authoring → OCaml compilation → independent OCaml check → paired RNA/manifest export works outside checkout | Queued |
 | B3 | Expand all behavior/architecture/control profiles and historical public coverage | Complete capability ledger and all 13 current architecture cases pass with fresh identity and mutation evidence | Queued |
 | B4 | LM-10 TypeScript parity; LM-12 installed SDK/CLI parity; deliberate architecture UI integration | Existing browser and installed workflows pass; migrated paths visibly use compatible OCaml core | TypeScript parity and installed browser checks passed; architecture integration and installed SDK cutover pending |
@@ -187,22 +189,25 @@ These checkpoints record narrower validated work; they do not complete a broad L
 - [x] **PR41 integrated-main validation:** separate [run 36937189850](https://github.com/logannye/biocompiler/actions/runs/36937189850) passed every required gate at `e3d3cbcf1a7b05ccdbc34fdb69127c22e8ea8345`.
 - [x] **B1.06 component record subset:** all eight record families, contextual synthetic-model checks, 60 records, 112 rejections and 42 fresh assessments passed full PR42 validation.
 - [x] **B1.06 architecture leaf subset:** 12 output, binding, placement and constraint types, with 88 positives, 345 rejections and four independent literals, passed complete PR43 validation.
-- [ ] **B1.06 complete architecture domains:** full refinements, templates, library and request validation are implemented in the next batch; hosted validation remains pending.
+- [x] **B1.06 complete architecture request domains:** full refinements, templates, library and request validation passed complete PR44 validation: 65 positive records, 192 rejections and 25 actual construction-request conversions.
 - [x] **B1.07 molecule/set/artifact subset:** 109 records, 136 rejections and 16 identity relations passed full PR42 validation, preserving the original wrapped eight-member example and all nine case B occurrences.
 - [x] **B1.07 complete construction declaration subset:** transition/recoding, required-region, all 30 construction schemas/14 operations and unchecked candidate-artifact records passed complete PR43 validation, including the original three case B candidates.
-- [ ] **B1.07 independent construction reconstruction:** all operations, fresh assessment/replay and scoped transition checks are implemented in the next batch, pending hosted validation.
+- [x] **B1.07 independent construction reconstruction:** all 14 operations, complete assessment/replay and scoped transition checks passed full PR44 validation: 83 complete construction cases, 125 transition reports, all three original case B candidates and independent resource/atomicity literals.
 - [x] **LM-02/B1.06 decimal deployment prerequisites:** 15 records, 78 rejections, 18 exact ratios and six literal sum boundaries passed full PR42 validation. The contextual checker remains open.
 - [x] **PR42 complete PR validation:** [run 36938602636](https://github.com/logannye/biocompiler/actions/runs/36938602636) passed all 30 jobs, 2,155 tests on each Python version, 22 native suites on both platforms and 936 protocol checks; [receipt](../protocol/migration-complete-domains-validation.json). Merged as `f278ce01336c537d250df4f90219903a25174ae0`.
 - [x] **PR42 integrated-main validation:** [run 36940233185](https://github.com/logannye/biocompiler/actions/runs/36940233185) passed every required gate at `f278ce01336c537d250df4f90219903a25174ae0`.
 - [x] **M09 required-region checker subset:** independent comparison with complete molecule sets passed full PR43 validation: 99 cases, 55 typed/serialized checks, 44 import cases and 27 source-preserving mutations. Contradictions and unresolved obligations remain separate. This does not complete construction or architecture acceptance.
 - [x] **PR43 complete PR validation:** [run 36941895831](https://github.com/logannye/biocompiler/actions/runs/36941895831) passed every required gate at source `7fb3ec8`, tested merge `9f0c10e`, integrated as `aa62bdceec57eda5a4a1949af17c8b729486ed0d`; [receipt](../protocol/migration-construction-domains-validation.json).
 - [x] **PR43 integrated-main validation:** separate [run 36943390725](https://github.com/logannye/biocompiler/actions/runs/36943390725) passed every required gate, with exactly 2,207 tests on each Python version.
-- [ ] **B1.08 source-manifest subset:** historical manifest records and independent original-source inventory reconstruction are implemented in the next batch; native validation remains pending.
-- [ ] **B1.08 source-manifest, ledger and architecture reconstruction.**
+- [x] **B1.08 source-manifest subset:** historical records and independent original-source reconstruction passed full PR44 validation: 34 records, 56 import rejections and 35 exact source pairs, including 17 meaningful candidate mutations.
+- [x] **PR44 complete PR validation:** [run 36945426505](https://github.com/logannye/biocompiler/actions/runs/36945426505) passed every required gate; [receipt](../protocol/migration-reconstruction-validation.json).
+- [x] **PR44 integrated-main validation:** [run 36946981717](https://github.com/logannye/biocompiler/actions/runs/36946981717) passed every required gate at `e24ef03261ab46689a2c2cb8434aa24280eab028`; the receipt retains its full aggregate digest.
+- [ ] **B1.08 historical build and proof prerequisites:** implemented complete build/assessment records (48 records, 117 import rejections), 53 supplementary circuit checks, 112 control-proof cases and 30 deployment cases; 62 focused source tests pass across this batch. Both native platforms passed run36951232633 after type corrections. Its Python gate exposed checkout-specific requirement source paths in the binding fixture. Prefix-only fixture normalization preserves every case and diagnostic; pin `e2fc5cdebb0867269483d3f3da58433221d681f6b9a0585d8eb45a5d0281852a` passes focused regeneration, and the corrected full hosted run remains required.
+- [ ] **B1.08 complete ledger and architecture reconstruction:** implemented and frozen against 293 fresh reports from all 78 named source-test methods, all 13 installed architecture examples and all three original case B authorities. The 463 complete document identities, two finite diagnostic replacements and one narrowly scoped ordering difference are retained in `architecture-check-v1`; native validation remains required before checking this item.
 - [ ] **B1.08a independent candidate execution and coupled transport**, before any such execution claim.
 - [ ] **B1.09 fresh acceptance and protocol exposure**, followed by B2 producer/export and the remaining B3–B6 product gates.
 
-PR42 source `06da8b4bee4110597caed15fa2da4f2bb7724268`, tested merge `902cae85932dfc1202f68d7d9bc7502941eeb701` and integrated main share tree `06898b1f7ac5e51e692ef976d5834ec5976a495a`. Both complete PR and integrated-main gates passed. PR43 source `7fb3ec8983b038b03f0efa8f8233e4bef4e5a613`, tested merge `9f0c10ea218c4df49aa9f143718eb82d2daff842` and integrated main share tree `836da9375e1206d708194eecd48419f529ab5ff0`. Both complete PR and integrated-main gates passed. The next batch adds checker-private reconstruction and fresh replay, complete architecture authority and source-manifest checking. No new public protocol operation or production routing is enabled.
+PR42 source `06da8b4bee4110597caed15fa2da4f2bb7724268`, tested merge `902cae85932dfc1202f68d7d9bc7502941eeb701` and integrated main share tree `06898b1f7ac5e51e692ef976d5834ec5976a495a`. Both complete PR and integrated-main gates passed. PR43 source `7fb3ec8983b038b03f0efa8f8233e4bef4e5a613`, tested merge `9f0c10ea218c4df49aa9f143718eb82d2daff842` and integrated main share tree `836da9375e1206d708194eecd48419f529ab5ff0`. Both complete PR and integrated-main gates passed. PR44 source `ae56d0c7e3dd8202aa015d7a7b769a75bd8ca037`, tested merge `8ff4d1911a6525c58be16e6db9d030b5fb670a91` and integrated main share tree `7ecc2c56f1370c0540f3c74c5795c6868d8e3841`; full PR and integrated-main gates passed. The next batch adds independent full architecture acceptance and its control/deployment/build prerequisites. No new public protocol operation or production routing is enabled.
 
 **First vertical slice:** [the case B acceptance map](migration-case-b.md) and [retained corpus](../tests/conformance/case-b/README.md) now pin its real source/candidate and independent literal timelines. Architecture acceptance/mutation descriptors remain unexecuted; domain and source-correspondence receipts are scoped above, and per-role reference execution has complete PR40 validation. Use the existing artificial architecture case B (prime/act/recover, timeout, reset and shutdown) with exact supplied source correspondence. Reuse its actual request/templates. The initial checker stage reads the existing Python-produced candidate and independently reconstructs it. Then port its producer. Do not replace this slice with an unrelated toy expression interpreter.
 
@@ -250,7 +255,8 @@ Starting points: [frontend](../src/biocompiler/frontend/api.py), [symbolic expre
 
 Depends on LM-02; individual operations route to OCaml only after their core parity gate.
 
-- [ ] Add a thin typed core-process adapter with operation negotiation, explicit executable discovery, timeouts, cancellation and stable error mapping.
+- [x] Add the thin typed core-process transport with explicit executable selection, timeouts, cancellation, digest/version checks and stable error mapping. `core_client.py` and its protocol/process tests passed PR37–44; current public compiler routing remains Python.
+- [ ] Add validated operation negotiation and production adapters for each migrated capability; the current `capabilities()` method exposes the foundation response without completing profile negotiation.
 - [ ] Preserve Python symbolic construction and its ban on Python truth testing. Retain cross-program, role, type and unit diagnostics.
 - [ ] Keep public class/function names, return interfaces, JSON roundtrips and CLI behavior where specified. Inventory and test intentional changes rather than silently substituting dictionaries for public objects.
 - [ ] Add strict static checking for new adapters and touched public boundaries; expand by module with an explicit remaining ledger. Do not mask migrated paths with Any or blanket ignore rules.
@@ -265,9 +271,9 @@ Starting points: [intent IR](../src/biocompiler/ir/intent.py), [types](../src/bi
 
 Depends on LM-02.
 
-- [ ] Define nominal node, requirement, role, observation, product, component and molecule IDs, plus units and typed values. Keep domain identity distinct from identical sequence content.
-- [ ] Decode into raw wire structures, then resolve graph references, ownership, types, dimensions, bounds and human target/deployment/acceptance wrappers.
-- [ ] Produce abstract validated intent types through controlled constructors; prevent downstream code from bypassing validation.
+- [x] Define nominal node, requirement, role, observation, product, component and molecule IDs, plus units and typed values. Keep domain identity distinct from identical sequence content. `Identity` and `Type_spec` are covered by the validated domain foundation; later construction campaigns preserve distinct member identities.
+- [x] Decode and validate existing Intent/BuildRequest/Behavior graph references, ownership, types, dimensions and bounds, retaining complete human target/deployment/acceptance wrappers. PR38–42 validate these domains and PR44 exercises complete wrapped architecture request authority. Downstream policy acceptance remains in LM-25.
+- [x] Produce abstract validated intent types through controlled constructors; prevent downstream code from bypassing validation. `Intent.t` is abstract and its constructor validates structure and typed literals; independent lowering checks supply the separate semantic correspondence gate.
 - [ ] Preserve original requirements, source locations, assumptions, hard constraints versus preferences, and unsupported meanings.
 - [ ] Port strict import limits and rejection behavior; test duplicate IDs, missing references, invalid scalar types and scope mixing.
 
@@ -282,7 +288,8 @@ Depends on LM-20 and LM-03.
 - [x] Port closed typed operation variants and Intent-to-Behavior lowering with source correspondence, bindings and obligations.
 - [x] Implement behavior v0.1 timelines: same-contact conjunction, onset semantics, dwell/recent/followed-by boundaries, pulses, reset priority, initialization and bounded same-time settling.
 - [x] Preserve simultaneous state assignment, conflict rejection, ordering policies, missing observations, non-finite rejection and explicit horizons.
-- [ ] Port behavior v0.2 sampled integrals and declared channel latency, persistence, aggregation and failure policies. Preserve supplied finite-grid semantics rather than inventing continuous guarantees.
+- [x] Port per-role behavior v0.2 sampled integration and the four v0.2 operation variants. PR40 validates full source-reference traces and numeric boundaries.
+- [ ] Port coupled declared-channel latency, persistence, aggregation and failure policies. Preserve supplied finite-grid semantics rather than inventing continuous guarantees.
 - [ ] Keep the source interpreter and independently reconstructed candidate runtime in different libraries. Shared primitive numeric definitions must be declared and covered by independent literal cases.
 - [x] Compare complete actions, reactions, state, event times and requirement traces, including boundary timestamps; summary PASS agreement is insufficient.
 
@@ -308,7 +315,8 @@ Starting points: [component contracts](../src/biocompiler/ir/component_contracts
 
 Depends on LM-20/21/22; checker ports proceed before producer replacement.
 
-- [ ] Port component identities, interface contracts, providers, complete source/model maps, material placements and recipient/delivery bindings.
+- [x] Port component, provider/interface and architecture declaration domains, including complete source/model maps, material placements and recipient/delivery bindings. PR41–44 validate their full imports and rejection campaigns.
+- [ ] Complete fresh contextual checking of those declarations against original source and selected architecture; the independent architecture checker awaits hosted validation.
 - [ ] Preserve many-to-many behavior/component/RNA relations and namespace refinement instances. Do not deduplicate functional instances by sequence equality.
 - [ ] Port exact semantic matching, partial anchors, ambiguity handling, cumulative search/match limits and deterministic tie-breaking.
 - [ ] Preserve hard-constraint rejection before preference ranking; exhaustion and no-candidate results cannot become infeasibility or certified optimality.
@@ -324,9 +332,10 @@ Starting points: [molecular records](../src/biocompiler/ir/molecule_records.py),
 
 Depends on LM-02 and the required domain types from LM-20/22/23.
 
-- [ ] Port exact molecular alphabets, structured chemistry, topology, region/feature inventories, molecule membership and coordinate frames.
+- [x] Port exact molecular alphabets, structured chemistry, topology, region/feature inventories, molecule membership and coordinate frames. Full domain and native conformance gates passed in PR38 and PR41–43.
 - [ ] Preserve source/destination residue maps, overlap rules, strand/orientation, junction/processing correspondence and protein identity checks where supported.
-- [ ] Port supplied construction operations with deterministic order, cumulative bounds, complete multi-output results and atomic candidate creation.
+- [x] Independently reconstruct all 14 supplied construction operations with deterministic order, cumulative bounds and atomic multi-output checking. PR44 validates 83 complete cases and independent resource/atomicity literals.
+- [ ] Port the separate construction producer with deterministic order, cumulative bounds, complete multi-output results and atomic candidate creation. The producer cannot reuse checker-private reconstruction.
 - [ ] Retain distinct template/intermediate/delivered identities. Existing DNA reference utilities remain shared infrastructure; therapeutic delivered genetic members remain RNA.
 - [ ] Make producer emission deterministic, then independently verify every emitted base, required feature and member against external roots and operation authority.
 
@@ -338,8 +347,9 @@ Starting points: [architecture checker](../src/biocompiler/verification/payload_
 
 Begins immediately after LM-02/20 with existing Python-produced candidates; expands with LM-21–24.
 
-- [ ] Define the trusted-base/dependency inventory and separate OCaml checker executable before producer migration.
-- [ ] Port independent request/source/model correspondence, actual candidate execution, construction reconstruction and result freshness checks.
+- [x] Define the trusted-base/dependency inventory and separate OCaml checker executable before producer migration. Both platform builds and negative dependency tests enforce the documented separation; each new checker batch extends the reviewed static policy.
+- [x] Port independent source-to-Behavior and source-manifest correspondence, complete construction reconstruction and fresh construction-assessment replay. PR39 and PR44 validate full authority comparisons and mutation rejection.
+- [ ] Complete architecture/model correspondence and fresh architecture-assessment replay, then independent candidate execution for each supported runtime profile. The architecture batch is implemented but awaits hosted validation; candidate execution remains open.
 - [ ] Port the authoritative checked pass manager from [pipeline.py](../src/biocompiler/compiler/pipeline.py) and [passes.py](../src/biocompiler/compiler/passes.py): stage order/schema/target validation, controlled Components-root admission, scoped completion, obligation invalidation, ancestor freshness and dependency changes during execution. Require [pipeline regressions](../tests/test_pipeline.py); these decisions must not remain in Python workflow orchestration.
 - [ ] Require full external expected authority for fresh verification and reject altered claims even when candidate hashes are recomputed.
 - [ ] Preserve PASS/FAIL/UNKNOWN/UNSUPPORTED, translation completeness, structural completeness, empirical support and admission as separate dimensions.

@@ -75,6 +75,9 @@ module Requirement : sig
   val action_ids : t -> Identity.Node.t list
   val dependencies : t -> Provider.t list
   val output : t -> Bioc_wire.Json.t
+  val product : t -> Product.t
+  val lifecycle : t -> Lifecycle.t
+  val boolean_response : t -> (string list * bool list) option
   val input_bindings : t -> (string * Identity.Node.t) list
   val unimplemented_obligations : t -> string list
 end

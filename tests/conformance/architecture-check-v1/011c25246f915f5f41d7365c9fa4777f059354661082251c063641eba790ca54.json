@@ -1,0 +1,19 @@
+{
+  "assumptions": [
+    "All RNA members in this role's group are assumed present in the same recipient cell.",
+    "The supplied artificial material conditionally implements the complete declared executable model; empirical function is unknown."
+  ],
+  "build_fingerprint": "1631c5361607cb42630e748731f003670a256eeee7bfbffa1e3deb8131aa38bf",
+  "checker_version": "biocompiler.payload_architecture_checker.v0.3",
+  "claim_scope": "Exact source and supplied composite execution-contract correspondence, explicit functional requirements under bounded control proof profiles, declared RNA availability intervals, physical composition and complete RNA construction only. No empirical component function or human therapeutic admission is established.",
+  "construction_complete": true,
+  "diagnostics": [],
+  "empirical_validation": "unknown",
+  "human_therapeutic_admission": "not_admitted",
+  "outcome": "pass",
+  "request_fingerprint": "047c5ab39cae0ead51efbba0e369a859aa4113165af2311a7b3560d116870ea4",
+  "schema_version": "biocompiler.payload_architecture_verification.v0.1",
+  "search_verified": false,
+  "translation_complete": true,
+  "unresolved": []
+}

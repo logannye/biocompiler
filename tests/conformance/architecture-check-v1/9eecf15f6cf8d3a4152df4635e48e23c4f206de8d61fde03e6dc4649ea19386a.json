@@ -1,0 +1,119 @@
+{
+  "assumptions": [
+    "All RNA members in this role's group are assumed present in the same recipient cell.",
+    "The supplied artificial material conditionally implements the complete declared executable model; empirical function is unknown."
+  ],
+  "build_fingerprint": "b0d4eee77fb81a946cb021506226748de98614126bc2f0302ede936cb656110c",
+  "checker_version": "biocompiler.payload_architecture_checker.v0.3",
+  "claim_scope": "Exact source and supplied composite execution-contract correspondence, explicit functional requirements under bounded control proof profiles, declared RNA availability intervals, physical composition and complete RNA construction only. No empirical component function or human therapeutic admission is established.",
+  "construction_complete": false,
+  "diagnostics": [
+    {
+      "candidate_ids": [
+        "a.one_rna"
+      ],
+      "category": "independent_verification_failure",
+      "code": "a.one_rna:component_model_authority:a.one_rna.role0.composite",
+      "conflict_set": [],
+      "message": "Independent architecture check rejected a.one_rna:component_model_authority:a.one_rna.role0.composite.",
+      "requirement_ids": [],
+      "schema_version": "biocompiler.architecture_gap.v0.1"
+    },
+    {
+      "candidate_ids": [
+        "a.one_rna"
+      ],
+      "category": "independent_verification_failure",
+      "code": "a.one_rna:executable_material_model_missing:n000012",
+      "conflict_set": [],
+      "message": "Independent architecture check rejected a.one_rna:executable_material_model_missing:n000012.",
+      "requirement_ids": [],
+      "schema_version": "biocompiler.architecture_gap.v0.1"
+    },
+    {
+      "candidate_ids": [
+        "a.one_rna"
+      ],
+      "category": "independent_verification_failure",
+      "code": "a.one_rna:executable_material_model_missing:n000013",
+      "conflict_set": [],
+      "message": "Independent architecture check rejected a.one_rna:executable_material_model_missing:n000013.",
+      "requirement_ids": [],
+      "schema_version": "biocompiler.architecture_gap.v0.1"
+    },
+    {
+      "candidate_ids": [
+        "a.one_rna"
+      ],
+      "category": "independent_verification_failure",
+      "code": "a.one_rna:executable_material_model_missing:n000018",
+      "conflict_set": [],
+      "message": "Independent architecture check rejected a.one_rna:executable_material_model_missing:n000018.",
+      "requirement_ids": [],
+      "schema_version": "biocompiler.architecture_gap.v0.1"
+    },
+    {
+      "candidate_ids": [
+        "a.one_rna"
+      ],
+      "category": "independent_verification_failure",
+      "code": "a.one_rna:executable_material_model_missing:n000017",
+      "conflict_set": [],
+      "message": "Independent architecture check rejected a.one_rna:executable_material_model_missing:n000017.",
+      "requirement_ids": [],
+      "schema_version": "biocompiler.architecture_gap.v0.1"
+    },
+    {
+      "candidate_ids": [
+        "a.one_rna"
+      ],
+      "category": "independent_verification_failure",
+      "code": "a.one_rna:control_material_correspondence:role0.activation",
+      "conflict_set": [],
+      "message": "Independent architecture check rejected a.one_rna:control_material_correspondence:role0.activation.",
+      "requirement_ids": [],
+      "schema_version": "biocompiler.architecture_gap.v0.1"
+    },
+    {
+      "candidate_ids": [
+        "a.one_rna"
+      ],
+      "category": "independent_verification_failure",
+      "code": "a.one_rna:control_material_correspondence:role0.shutdown-0",
+      "conflict_set": [],
+      "message": "Independent architecture check rejected a.one_rna:control_material_correspondence:role0.shutdown-0.",
+      "requirement_ids": [],
+      "schema_version": "biocompiler.architecture_gap.v0.1"
+    },
+    {
+      "candidate_ids": [
+        "a.one_rna"
+      ],
+      "category": "independent_verification_failure",
+      "code": "a.one_rna:control_material_correspondence:role0.shutdown-1",
+      "conflict_set": [],
+      "message": "Independent architecture check rejected a.one_rna:control_material_correspondence:role0.shutdown-1.",
+      "requirement_ids": [],
+      "schema_version": "biocompiler.architecture_gap.v0.1"
+    },
+    {
+      "candidate_ids": [
+        "a.one_rna"
+      ],
+      "category": "independent_verification_failure",
+      "code": "compiled_status_without_complete_translation",
+      "conflict_set": [],
+      "message": "Independent architecture check rejected compiled_status_without_complete_translation.",
+      "requirement_ids": [],
+      "schema_version": "biocompiler.architecture_gap.v0.1"
+    }
+  ],
+  "empirical_validation": "unknown",
+  "human_therapeutic_admission": "not_admitted",
+  "outcome": "fail",
+  "request_fingerprint": "8d81463f350b4a606f4af40d0f3e6836ba64f5e1caf71bfc59d0b53ae26890d3",
+  "schema_version": "biocompiler.payload_architecture_verification.v0.1",
+  "search_verified": false,
+  "translation_complete": false,
+  "unresolved": []
+}

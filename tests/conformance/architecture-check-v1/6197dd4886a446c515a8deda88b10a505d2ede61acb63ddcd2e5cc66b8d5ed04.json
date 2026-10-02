@@ -1,0 +1,190 @@
+{
+  "assumptions": [
+    "All declared RNA members are assumed present in the same recipient cell.",
+    "The supplied artificial material conditionally implements the complete declared executable model; empirical function is unknown."
+  ],
+  "build_fingerprint": "2f746d6d7d439f572effc9a98539dbac7516d90410abf1d5a9a5a1f06eb25bf5",
+  "checker_version": "biocompiler.payload_architecture_checker.v0.3",
+  "claim_scope": "Exact source and supplied composite execution-contract correspondence, explicit functional requirements under bounded control proof profiles, declared RNA availability intervals, physical composition and complete RNA construction only. No empirical component function or human therapeutic admission is established.",
+  "construction_complete": false,
+  "diagnostics": [
+    {
+      "candidate_ids": [
+        "supplied-memory_reset"
+      ],
+      "category": "independent_verification_failure",
+      "code": "request_authority",
+      "conflict_set": [],
+      "message": "Independent architecture check rejected request_authority.",
+      "requirement_ids": [],
+      "schema_version": "biocompiler.architecture_gap.v0.1"
+    },
+    {
+      "candidate_ids": [
+        "supplied-memory_reset"
+      ],
+      "category": "independent_verification_failure",
+      "code": "source_authority",
+      "conflict_set": [],
+      "message": "Independent architecture check rejected source_authority.",
+      "requirement_ids": [],
+      "schema_version": "biocompiler.architecture_gap.v0.1"
+    },
+    {
+      "candidate_ids": [
+        "supplied-memory_reset"
+      ],
+      "category": "independent_verification_failure",
+      "code": "source_manifest_outputs",
+      "conflict_set": [],
+      "message": "Independent architecture check rejected source_manifest_outputs.",
+      "requirement_ids": [],
+      "schema_version": "biocompiler.architecture_gap.v0.1"
+    },
+    {
+      "candidate_ids": [
+        "supplied-memory_reset"
+      ],
+      "category": "independent_verification_failure",
+      "code": "source_manifest_ledger",
+      "conflict_set": [],
+      "message": "Independent architecture check rejected source_manifest_ledger.",
+      "requirement_ids": [],
+      "schema_version": "biocompiler.architecture_gap.v0.1"
+    },
+    {
+      "candidate_ids": [
+        "supplied-memory_reset"
+      ],
+      "category": "independent_verification_failure",
+      "code": "source_manifest_role_nodes",
+      "conflict_set": [],
+      "message": "Independent architecture check rejected source_manifest_role_nodes.",
+      "requirement_ids": [],
+      "schema_version": "biocompiler.architecture_gap.v0.1"
+    },
+    {
+      "candidate_ids": [
+        "supplied-memory_reset"
+      ],
+      "category": "independent_verification_failure",
+      "code": "source_behavior:source_identity: The source fingerprint and program identity must match.",
+      "conflict_set": [],
+      "message": "Independent architecture check rejected source_behavior:source_identity: The source fingerprint and program identity must match..",
+      "requirement_ids": [],
+      "schema_version": "biocompiler.architecture_gap.v0.1"
+    },
+    {
+      "candidate_ids": [
+        "supplied-memory_reset"
+      ],
+      "category": "independent_verification_failure",
+      "code": "plan_requirement_ledger",
+      "conflict_set": [],
+      "message": "Independent architecture check rejected plan_requirement_ledger.",
+      "requirement_ids": [],
+      "schema_version": "biocompiler.architecture_gap.v0.1"
+    },
+    {
+      "candidate_ids": [
+        "supplied-memory_reset"
+      ],
+      "category": "independent_verification_failure",
+      "code": "supplementary_output_not_installed:response.0",
+      "conflict_set": [],
+      "message": "Independent architecture check rejected supplementary_output_not_installed:response.0.",
+      "requirement_ids": [],
+      "schema_version": "biocompiler.architecture_gap.v0.1"
+    },
+    {
+      "candidate_ids": [
+        "supplied-memory_reset"
+      ],
+      "category": "independent_verification_failure",
+      "code": "supplementary_source_role_or_lineage:response.0",
+      "conflict_set": [],
+      "message": "Independent architecture check rejected supplementary_source_role_or_lineage:response.0.",
+      "requirement_ids": [],
+      "schema_version": "biocompiler.architecture_gap.v0.1"
+    },
+    {
+      "candidate_ids": [
+        "supplied-memory_reset"
+      ],
+      "category": "independent_verification_failure",
+      "code": "supplementary_action_identity:response.0",
+      "conflict_set": [],
+      "message": "Independent architecture check rejected supplementary_action_identity:response.0.",
+      "requirement_ids": [],
+      "schema_version": "biocompiler.architecture_gap.v0.1"
+    },
+    {
+      "candidate_ids": [
+        "supplied-memory_reset"
+      ],
+      "category": "independent_verification_failure",
+      "code": "control_requirement_unbound:source-control-memory_reset",
+      "conflict_set": [],
+      "message": "Independent architecture check rejected control_requirement_unbound:source-control-memory_reset.",
+      "requirement_ids": [],
+      "schema_version": "biocompiler.architecture_gap.v0.1"
+    },
+    {
+      "candidate_ids": [
+        "supplied-memory_reset"
+      ],
+      "category": "independent_verification_failure",
+      "code": "construction_template_authority",
+      "conflict_set": [],
+      "message": "Independent architecture check rejected construction_template_authority.",
+      "requirement_ids": [],
+      "schema_version": "biocompiler.architecture_gap.v0.1"
+    },
+    {
+      "candidate_ids": [
+        "supplied-memory_reset"
+      ],
+      "category": "independent_verification_failure",
+      "code": "construction_assessment_replay",
+      "conflict_set": [],
+      "message": "Independent architecture check rejected construction_assessment_replay.",
+      "requirement_ids": [],
+      "schema_version": "biocompiler.architecture_gap.v0.1"
+    },
+    {
+      "candidate_ids": [
+        "supplied-memory_reset"
+      ],
+      "category": "independent_verification_failure",
+      "code": "exact_construction_reconstruction",
+      "conflict_set": [],
+      "message": "Independent architecture check rejected exact_construction_reconstruction.",
+      "requirement_ids": [],
+      "schema_version": "biocompiler.architecture_gap.v0.1"
+    },
+    {
+      "candidate_ids": [
+        "supplied-memory_reset"
+      ],
+      "category": "independent_verification_failure",
+      "code": "compiled_status_without_complete_translation",
+      "conflict_set": [],
+      "message": "Independent architecture check rejected compiled_status_without_complete_translation.",
+      "requirement_ids": [],
+      "schema_version": "biocompiler.architecture_gap.v0.1"
+    }
+  ],
+  "empirical_validation": "unknown",
+  "human_therapeutic_admission": "not_admitted",
+  "outcome": "fail",
+  "request_fingerprint": "83d0e6985d969eaee80ac1e8ed094ac259130f536d35aa4204f88e1abfc5bc2b",
+  "schema_version": "biocompiler.payload_architecture_verification.v0.1",
+  "search_verified": false,
+  "translation_complete": false,
+  "unresolved": [
+    "source:n000008",
+    "source:n000012",
+    "source:complete_authority",
+    "source_output_product_mapping:response.0:n000010"
+  ]
+}

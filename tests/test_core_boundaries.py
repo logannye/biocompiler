@@ -123,6 +123,8 @@ class CoreBoundaryTests(unittest.TestCase):
             ("lib/compiler/lowering.ml", "open Bioc_checker\nmodule Hidden = Construction_reconstruction"),
             ("lib/checker/intent_check.mli", "module Hidden = Construction_reconstruction"),
             ("lib/checker/intent_check.mli", "val hidden : Construction_reconstruction.t"),
+            ("lib/compiler/lowering.ml", "module Hidden = Bioc_checker.Architecture_reconstruction"),
+            ("lib/checker/intent_check.mli", "val hidden : Architecture_reconstruction.graph"),
         ):
             root = self.copy_core()
             source = root / "core" / relative
@@ -130,11 +132,23 @@ class CoreBoundaryTests(unittest.TestCase):
             with self.subTest(path=relative, mutant=mutant), self.assertRaisesRegex(boundaries.BoundaryError, "Private checker reconstruction"):
                 boundaries.check_boundaries(root)
 
+    def test_corpus_directory_inventory_does_not_grant_production_sys_access(self):
+        for relative, mutant in (
+            ("lib/checker/intent_check.ml", 'let hidden = Sys.readdir "."'),
+            ("test/test_architecture_check.ml", 'let hidden = Sys.command "python3 checker.py"'),
+            ("test/test_architecture_check.ml", "module Hidden = Sys"),
+        ):
+            root = self.copy_core()
+            source = root / "core" / relative
+            source.write_text(source.read_text() + "\n" + mutant + "\n")
+            with self.subTest(path=relative, mutant=mutant), self.assertRaisesRegex(boundaries.BoundaryError, "Unreviewed Sys access"):
+                boundaries.check_boundaries(root)
+
     def test_private_module_declaration_cannot_be_removed_or_expanded(self):
         for replacement in ("", "(private_modules construction_reconstruction intent_check)",
                             "(private_modules intent_check)"):
             root = self.copy_core()
-            self.change(root, "lib/checker/dune", "(private_modules construction_reconstruction)", replacement)
+            self.change(root, "lib/checker/dune", "(private_modules construction_reconstruction architecture_reconstruction)", replacement)
             with self.subTest(replacement=replacement), self.assertRaisesRegex(boundaries.BoundaryError, "private module boundary"):
                 boundaries.check_boundaries(root)
         root = self.copy_core()

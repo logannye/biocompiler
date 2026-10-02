@@ -99,7 +99,9 @@ let check ~expected_source ~manifest =
   | None -> unknown "source_execution_unavailable"
   | Some behavior ->
       (try ignore (Lowering_check.check ~expected_request:original ~behavior)
-       with Diagnostic.Error error -> fail ("source_behavior:" ^ error.code)));
+       with Diagnostic.Error error ->
+         if String.ends_with ~suffix:"_limit" error.code then raise (Diagnostic.Error error)
+         else fail ("source_behavior:" ^ error.code)));
   let constraints = Build_request.implementation_constraints original |> List.map fst in
   let constraints = match Build_request.behavior_profile original with Build_request.V1 -> constraints
     | Build_request.V2 -> List.filter (fun key -> key <> "execution") constraints in

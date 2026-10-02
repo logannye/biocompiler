@@ -1,0 +1,42 @@
+{
+  "assumptions": [
+    "All RNA members in this role's group are assumed present in the same recipient cell.",
+    "The supplied artificial material conditionally implements the complete declared executable model; empirical function is unknown."
+  ],
+  "build_fingerprint": "8e372b831676620416f64363166d1ea4689ef291651f9acadc1bcb881962a329",
+  "checker_version": "biocompiler.payload_architecture_checker.v0.3",
+  "claim_scope": "Exact source and supplied composite execution-contract correspondence, explicit functional requirements under bounded control proof profiles, declared RNA availability intervals, physical composition and complete RNA construction only. No empirical component function or human therapeutic admission is established.",
+  "construction_complete": false,
+  "diagnostics": [
+    {
+      "candidate_ids": [
+        "a.one_rna"
+      ],
+      "category": "independent_verification_failure",
+      "code": "a.one_rna:model_operation_mismatch:n000010:n000010",
+      "conflict_set": [],
+      "message": "Independent architecture check rejected a.one_rna:model_operation_mismatch:n000010:n000010.",
+      "requirement_ids": [],
+      "schema_version": "biocompiler.architecture_gap.v0.1"
+    },
+    {
+      "candidate_ids": [
+        "a.one_rna"
+      ],
+      "category": "independent_verification_failure",
+      "code": "compiled_status_without_complete_translation",
+      "conflict_set": [],
+      "message": "Independent architecture check rejected compiled_status_without_complete_translation.",
+      "requirement_ids": [],
+      "schema_version": "biocompiler.architecture_gap.v0.1"
+    }
+  ],
+  "empirical_validation": "unknown",
+  "human_therapeutic_admission": "not_admitted",
+  "outcome": "fail",
+  "request_fingerprint": "4a3cca7aa63341ac6f778c7de307ee1617960a2561f86b2a22398f405504ea49",
+  "schema_version": "biocompiler.payload_architecture_verification.v0.1",
+  "search_verified": false,
+  "translation_complete": false,
+  "unresolved": []
+}

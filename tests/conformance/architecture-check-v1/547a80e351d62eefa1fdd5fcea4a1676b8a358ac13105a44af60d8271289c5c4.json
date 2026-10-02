@@ -1,0 +1,64 @@
+{
+  "assumptions": [
+    "All RNA members in this role's group are assumed present in the same recipient cell.",
+    "The supplied artificial material conditionally implements the complete declared executable model; empirical function is unknown."
+  ],
+  "build_fingerprint": "81f5779ad81dde259d288c277d23ec0b51f62f28c38f03a6154a2a482219dd11",
+  "checker_version": "biocompiler.payload_architecture_checker.v0.3",
+  "claim_scope": "Exact source and supplied composite execution-contract correspondence, explicit functional requirements under bounded control proof profiles, declared RNA availability intervals, physical composition and complete RNA construction only. No empirical component function or human therapeutic admission is established.",
+  "construction_complete": false,
+  "diagnostics": [
+    {
+      "candidate_ids": [
+        "a.one_rna"
+      ],
+      "category": "independent_verification_failure",
+      "code": "construction_template_authority",
+      "conflict_set": [],
+      "message": "Independent architecture check rejected construction_template_authority.",
+      "requirement_ids": [],
+      "schema_version": "biocompiler.architecture_gap.v0.1"
+    },
+    {
+      "candidate_ids": [
+        "a.one_rna"
+      ],
+      "category": "independent_verification_failure",
+      "code": "construction_assessment_replay",
+      "conflict_set": [],
+      "message": "Independent architecture check rejected construction_assessment_replay.",
+      "requirement_ids": [],
+      "schema_version": "biocompiler.architecture_gap.v0.1"
+    },
+    {
+      "candidate_ids": [
+        "a.one_rna"
+      ],
+      "category": "independent_verification_failure",
+      "code": "exact_construction_reconstruction",
+      "conflict_set": [],
+      "message": "Independent architecture check rejected exact_construction_reconstruction.",
+      "requirement_ids": [],
+      "schema_version": "biocompiler.architecture_gap.v0.1"
+    },
+    {
+      "candidate_ids": [
+        "a.one_rna"
+      ],
+      "category": "independent_verification_failure",
+      "code": "compiled_status_without_complete_translation",
+      "conflict_set": [],
+      "message": "Independent architecture check rejected compiled_status_without_complete_translation.",
+      "requirement_ids": [],
+      "schema_version": "biocompiler.architecture_gap.v0.1"
+    }
+  ],
+  "empirical_validation": "unknown",
+  "human_therapeutic_admission": "not_admitted",
+  "outcome": "fail",
+  "request_fingerprint": "d5eb2d1410e474e78e4ac31a0c01f590be6a9ef5ca990d0c9e72c78ee3350a7c",
+  "schema_version": "biocompiler.payload_architecture_verification.v0.1",
+  "search_verified": false,
+  "translation_complete": false,
+  "unresolved": []
+}

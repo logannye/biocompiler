@@ -1,0 +1,86 @@
+{
+  "assumptions": [
+    "All RNA members in this role's group are assumed present in the same recipient cell.",
+    "The supplied artificial material conditionally implements the complete declared executable model; empirical function is unknown."
+  ],
+  "build_fingerprint": "4ced3dfda248e56392b5bf7a27a80dac666a5169f4fa0fac1ba0f0446fb00515",
+  "checker_version": "biocompiler.payload_architecture_checker.v0.3",
+  "claim_scope": "Exact source and supplied composite execution-contract correspondence, explicit functional requirements under bounded control proof profiles, declared RNA availability intervals, physical composition and complete RNA construction only. No empirical component function or human therapeutic admission is established.",
+  "construction_complete": false,
+  "diagnostics": [
+    {
+      "candidate_ids": [
+        "a.many_components_one_rna"
+      ],
+      "category": "independent_verification_failure",
+      "code": "plan_control_domains",
+      "conflict_set": [],
+      "message": "Independent architecture check rejected plan_control_domains.",
+      "requirement_ids": [],
+      "schema_version": "biocompiler.architecture_gap.v0.1"
+    },
+    {
+      "candidate_ids": [
+        "a.many_components_one_rna"
+      ],
+      "category": "independent_verification_failure",
+      "code": "unsupported_functional_control_requirement:independent-output-shutdown:n000012:assertion_does_not_veto",
+      "conflict_set": [],
+      "message": "Independent architecture check rejected unsupported_functional_control_requirement:independent-output-shutdown:n000012:assertion_does_not_veto.",
+      "requirement_ids": [],
+      "schema_version": "biocompiler.architecture_gap.v0.1"
+    },
+    {
+      "candidate_ids": [
+        "a.many_components_one_rna"
+      ],
+      "category": "independent_verification_failure",
+      "code": "unsupported_functional_control_requirement:independent-output-shutdown:n000017:assertion_does_not_veto",
+      "conflict_set": [],
+      "message": "Independent architecture check rejected unsupported_functional_control_requirement:independent-output-shutdown:n000017:assertion_does_not_veto.",
+      "requirement_ids": [],
+      "schema_version": "biocompiler.architecture_gap.v0.1"
+    },
+    {
+      "candidate_ids": [
+        "a.many_components_one_rna"
+      ],
+      "category": "independent_verification_failure",
+      "code": "independent_control_inputs_coupled:independent-output-shutdown",
+      "conflict_set": [],
+      "message": "Independent architecture check rejected independent_control_inputs_coupled:independent-output-shutdown.",
+      "requirement_ids": [],
+      "schema_version": "biocompiler.architecture_gap.v0.1"
+    },
+    {
+      "candidate_ids": [
+        "a.many_components_one_rna"
+      ],
+      "category": "independent_verification_failure",
+      "code": "independent_control_cross_influence:independent-output-shutdown",
+      "conflict_set": [],
+      "message": "Independent architecture check rejected independent_control_cross_influence:independent-output-shutdown.",
+      "requirement_ids": [],
+      "schema_version": "biocompiler.architecture_gap.v0.1"
+    },
+    {
+      "candidate_ids": [
+        "a.many_components_one_rna"
+      ],
+      "category": "independent_verification_failure",
+      "code": "compiled_status_without_complete_translation",
+      "conflict_set": [],
+      "message": "Independent architecture check rejected compiled_status_without_complete_translation.",
+      "requirement_ids": [],
+      "schema_version": "biocompiler.architecture_gap.v0.1"
+    }
+  ],
+  "empirical_validation": "unknown",
+  "human_therapeutic_admission": "not_admitted",
+  "outcome": "fail",
+  "request_fingerprint": "9ca417de3dea3e3b379becd04a1323e1d693d30c67655af387e2efe0c85a3781",
+  "schema_version": "biocompiler.payload_architecture_verification.v0.1",
+  "search_verified": false,
+  "translation_complete": false,
+  "unresolved": []
+}

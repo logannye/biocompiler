@@ -1,4 +1,4 @@
 (library
  (name bioc_checker)
- (private_modules construction_reconstruction)
- (libraries bioc_wire bioc_domain))
+ (private_modules construction_reconstruction architecture_reconstruction)
+ (libraries bioc_wire bioc_domain zarith))

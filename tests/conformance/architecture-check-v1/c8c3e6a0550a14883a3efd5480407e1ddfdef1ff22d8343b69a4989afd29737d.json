@@ -1,0 +1,53 @@
+{
+  "assumptions": [
+    "All RNA members in this role's group are assumed present in the same recipient cell.",
+    "The supplied artificial material conditionally implements the complete declared executable model; empirical function is unknown."
+  ],
+  "build_fingerprint": "ec22a343f2c8321d8dd1b0e8702b4078fef7f7306edcb3a98738e7ad89addd90",
+  "checker_version": "biocompiler.payload_architecture_checker.v0.3",
+  "claim_scope": "Exact source and supplied composite execution-contract correspondence, explicit functional requirements under bounded control proof profiles, declared RNA availability intervals, physical composition and complete RNA construction only. No empirical component function or human therapeutic admission is established.",
+  "construction_complete": false,
+  "diagnostics": [
+    {
+      "candidate_ids": [
+        "a.many_components_one_rna"
+      ],
+      "category": "independent_verification_failure",
+      "code": "unsupported_functional_control_requirement:independent-production:n000012:unspecified_production_rate",
+      "conflict_set": [],
+      "message": "Independent architecture check rejected unsupported_functional_control_requirement:independent-production:n000012:unspecified_production_rate.",
+      "requirement_ids": [],
+      "schema_version": "biocompiler.architecture_gap.v0.1"
+    },
+    {
+      "candidate_ids": [
+        "a.many_components_one_rna"
+      ],
+      "category": "independent_verification_failure",
+      "code": "unsupported_functional_control_requirement:independent-production:n000017:unspecified_production_rate",
+      "conflict_set": [],
+      "message": "Independent architecture check rejected unsupported_functional_control_requirement:independent-production:n000017:unspecified_production_rate.",
+      "requirement_ids": [],
+      "schema_version": "biocompiler.architecture_gap.v0.1"
+    },
+    {
+      "candidate_ids": [
+        "a.many_components_one_rna"
+      ],
+      "category": "independent_verification_failure",
+      "code": "independent_control_coupled:independent-production",
+      "conflict_set": [],
+      "message": "Independent architecture check rejected independent_control_coupled:independent-production.",
+      "requirement_ids": [],
+      "schema_version": "biocompiler.architecture_gap.v0.1"
+    }
+  ],
+  "empirical_validation": "unknown",
+  "human_therapeutic_admission": "not_admitted",
+  "outcome": "fail",
+  "request_fingerprint": "779cbaa5f0db15503d3321bc991ac7f17bde4d3960dd0507570ff41f2f4c8cf1",
+  "schema_version": "biocompiler.payload_architecture_verification.v0.1",
+  "search_verified": false,
+  "translation_complete": false,
+  "unresolved": []
+}

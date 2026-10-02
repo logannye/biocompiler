@@ -1,0 +1,1 @@
+{"base":"07348884c83fc007f089f96abd5499f15d08cac7135205ae31acc6457092551c","edits":[{"op":"set","path":["library","refinements",0,"channels",0,"initial_value"],"value":true},{"op":"set","path":["library","refinements",0,"channels",0,"sender_node_id"],"value":"n000008"}],"schema_version":"biocompiler.test_document_delta.v1"}

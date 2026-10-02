@@ -1,0 +1,21 @@
+{
+  "assumptions": [
+    "All RNA members in this role's group are assumed present in the same recipient cell.",
+    "Artificial timing authority; no claim about expression in human cells.",
+    "The helper RNA and payload RNA are assumed available in the same recipient from startup.",
+    "The supplied artificial material conditionally implements the complete declared executable model; empirical function is unknown."
+  ],
+  "build_fingerprint": "61df35da72f98dda95ada7d6a2b361d4c799d1c2181d988f66c23682eff68a0e",
+  "checker_version": "biocompiler.payload_architecture_checker.v0.3",
+  "claim_scope": "Exact source and supplied composite execution-contract correspondence, explicit functional requirements under bounded control proof profiles, declared RNA availability intervals, physical composition and complete RNA construction only. No empirical component function or human therapeutic admission is established.",
+  "construction_complete": true,
+  "diagnostics": [],
+  "empirical_validation": "unknown",
+  "human_therapeutic_admission": "not_admitted",
+  "outcome": "pass",
+  "request_fingerprint": "c7df7aa49ff5e5636249aed88dffee9cedd673b95ad0fa44b656cb72cb96bc58",
+  "schema_version": "biocompiler.payload_architecture_verification.v0.1",
+  "search_verified": false,
+  "translation_complete": true,
+  "unresolved": []
+}

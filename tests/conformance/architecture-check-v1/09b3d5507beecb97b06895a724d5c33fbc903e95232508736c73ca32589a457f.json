@@ -1,0 +1,1 @@
+{"base":"08baacc6d11d73cfa0d219ccc92cc190d0debd2c1d755db4f5e7cb87bc1f0975","edits":[{"op":"set","path":["build_fingerprint"],"value":"7da085dbdbe569c2303cfa97e847e897f77fc3e976f20bad6ba4125dd76d6f35"},{"op":"set","path":["request_fingerprint"],"value":"2e8c7c1c468047af7635cf1514b25e6bb00f1e46a5e6388464058ac49ac483dd"}],"schema_version":"biocompiler.test_document_delta.v1"}

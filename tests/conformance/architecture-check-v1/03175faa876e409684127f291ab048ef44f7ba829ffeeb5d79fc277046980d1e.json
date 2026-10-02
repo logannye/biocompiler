@@ -1,0 +1,44 @@
+{
+  "assumptions": [
+    "All declared RNA members are assumed present in the same recipient cell.",
+    "The supplied artificial material conditionally implements the complete declared executable model; empirical function is unknown."
+  ],
+  "build_fingerprint": "60b0c950ddfe1bbf73f45fe2e983f04751d4aed4130bc26afe88e90196f97df3",
+  "checker_version": "biocompiler.payload_architecture_checker.v0.3",
+  "claim_scope": "Exact source and supplied composite execution-contract correspondence, explicit functional requirements under bounded control proof profiles, declared RNA availability intervals, physical composition and complete RNA construction only. No empirical component function or human therapeutic admission is established.",
+  "construction_complete": false,
+  "diagnostics": [
+    {
+      "candidate_ids": [
+        "supplied-activity_control"
+      ],
+      "category": "independent_verification_failure",
+      "code": "supplied-activity_control:activity_control_not_realized:control.0",
+      "conflict_set": [],
+      "message": "Independent architecture check rejected supplied-activity_control:activity_control_not_realized:control.0.",
+      "requirement_ids": [],
+      "schema_version": "biocompiler.architecture_gap.v0.1"
+    },
+    {
+      "candidate_ids": [
+        "supplied-activity_control"
+      ],
+      "category": "independent_verification_failure",
+      "code": "supplementary_output_authority:response.0",
+      "conflict_set": [],
+      "message": "Independent architecture check rejected supplementary_output_authority:response.0.",
+      "requirement_ids": [],
+      "schema_version": "biocompiler.architecture_gap.v0.1"
+    }
+  ],
+  "empirical_validation": "unknown",
+  "human_therapeutic_admission": "not_admitted",
+  "outcome": "fail",
+  "request_fingerprint": "0674a0054cfd73f89b38b25dd4ee71e4a44ae5b57e17e217bcb9714c17a14164",
+  "schema_version": "biocompiler.payload_architecture_verification.v0.1",
+  "search_verified": false,
+  "translation_complete": false,
+  "unresolved": [
+    "source_output_product_mapping:response.0:n000008"
+  ]
+}

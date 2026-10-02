@@ -1,0 +1,55 @@
+{
+  "assumptions": [
+    "All RNA members in this role's group are assumed present in the same recipient cell.",
+    "Declared transport latency is one second; persistence is two seconds; loss clears receiver signal.",
+    "The helper RNA and payload RNA are assumed available in the same recipient from startup.",
+    "The supplied artificial material conditionally implements the complete declared executable model; empirical function is unknown."
+  ],
+  "build_fingerprint": "4b0ffe385bb18ee938fbd419e1ab6d5d6dac6754619aac43273ac1c27526596f",
+  "checker_version": "biocompiler.payload_architecture_checker.v0.3",
+  "claim_scope": "Exact source and supplied composite execution-contract correspondence, explicit functional requirements under bounded control proof profiles, declared RNA availability intervals, physical composition and complete RNA construction only. No empirical component function or human therapeutic admission is established.",
+  "construction_complete": false,
+  "diagnostics": [
+    {
+      "candidate_ids": [
+        "d.one_rna"
+      ],
+      "category": "independent_verification_failure",
+      "code": "helper_co_delivery_missing:a000_d.one_rna.role0.helper",
+      "conflict_set": [],
+      "message": "Independent architecture check rejected helper_co_delivery_missing:a000_d.one_rna.role0.helper.",
+      "requirement_ids": [],
+      "schema_version": "biocompiler.architecture_gap.v0.1"
+    },
+    {
+      "candidate_ids": [
+        "d.one_rna"
+      ],
+      "category": "independent_verification_failure",
+      "code": "helper_co_delivery_missing:a000_d.one_rna.role1.helper",
+      "conflict_set": [],
+      "message": "Independent architecture check rejected helper_co_delivery_missing:a000_d.one_rna.role1.helper.",
+      "requirement_ids": [],
+      "schema_version": "biocompiler.architecture_gap.v0.1"
+    },
+    {
+      "candidate_ids": [
+        "d.one_rna"
+      ],
+      "category": "independent_verification_failure",
+      "code": "compiled_status_without_complete_translation",
+      "conflict_set": [],
+      "message": "Independent architecture check rejected compiled_status_without_complete_translation.",
+      "requirement_ids": [],
+      "schema_version": "biocompiler.architecture_gap.v0.1"
+    }
+  ],
+  "empirical_validation": "unknown",
+  "human_therapeutic_admission": "not_admitted",
+  "outcome": "fail",
+  "request_fingerprint": "ab81e3c87de42ddf8cbb631f2fe132ede8793aee1e47b905b43a97e4f2ebf86a",
+  "schema_version": "biocompiler.payload_architecture_verification.v0.1",
+  "search_verified": false,
+  "translation_complete": false,
+  "unresolved": []
+}

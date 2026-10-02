@@ -6,7 +6,7 @@ correspondence. Internal libraries add per-role reference execution and fresh
 Intent-to-Behavior lowering. Validated domains include shared content pins, component contract algebra,
 molecular provenance and nominal chemistry. PR42 also validated complete
 component records, human source wrappers, molecular sets and supplied deployment
-windows. PR43 architecture/construction declarations and required-region checking passed complete PR validation; the subsequent reconstruction/full-architecture batch remains pending validation. The
+windows. PR43 declarations and required-region checks and PR44 independent reconstruction/source checks passed complete PR validation; full architecture acceptance remains pending validation. The
 public protocol does not yet implement compilation, behavioral execution,
 molecular verification, export acceptance or human-use admission. Capabilities
 are explicit; unimplemented operations return `unsupported` without fallback.
@@ -16,8 +16,8 @@ executables use `biocompiler.core.v1` and identify their distinct executable rol
 Nonzero exit codes accompany structured errors (2) and unsupported operations (3).
 There is no Python semantic execution or runtime network request in either binary.
 
-Libraries have explicit dependencies. `bioc_checker` only depends on immutable
-domain/wire modules. `bioc_service` exposes that checker; the standalone verifier
+Libraries have explicit dependencies. `bioc_checker` depends on immutable
+domain/wire modules and the pinned Zarith numeric primitive. `bioc_service` exposes that checker; the standalone verifier
 has no dependency on a compiler, selector, matcher, assembler or emitter.
 The producer library `bioc_compiler` depends on the checker for its final
 correspondence check; the checker has no reverse dependency. Reference execution
@@ -270,9 +270,48 @@ platform before this batch is considered validated. Source fixture checks run
 without any native build.
 
 The case B architecture checker, coupled source execution, independent candidate
-runtime, construction reconstruction and exact export acceptance remain to be
+runtime and exact export acceptance remain to be
 implemented before any production semantic authority can move to OCaml.
 
-The next batch adds checker-private construction reconstruction, fresh assessments/replay, complete architecture refinements/templates and source-manifest checking. Dune hides the reconstruction module; static guards reject producer imports and public interface leaks. Six new native suites bring the pending hosted gate to 34; production routing remains Python.
+PR44 validated checker-private construction reconstruction, fresh assessments/replay, complete architecture refinements/templates and source-manifest checking. All 34 native suites passed on both platforms, with exactly 2,244 Python tests per version and every required product gate in both PR run36945426505 and integrated-main run36946981717; [receipt](../protocol/migration-reconstruction-validation.json). Dune hides reconstruction modules; static guards reject producer imports and public interface leaks. Production routing remains Python.
 
-The new source-manifest checker retains 34 historical records, 56 intended import rejections and 35 full source/manifest comparisons, including 17 candidate mutations. Native lowering discrepancies explicitly use `source_behavior:<native code>` under `biocompiler.ocaml.source_manifest_check.v0.1`; two corresponding Python-prose cases are retained separately. Other scoped diagnostic keys are unchanged. Transition checks preserve legacy projection limits and use the explicit native `biocompiler.transition_check.resources.v1` shared work budget; exhaustion yields no partial semantic report. Historical construction reports retain their policy/schema identity, while fresh native execution has a distinct implementation identity. These scopes remain pending hosted validation.
+The new source-manifest checker retains 34 historical records, 56 intended import rejections and 35 full source/manifest comparisons, including 17 candidate mutations. Native lowering discrepancies explicitly use `source_behavior:<native code>` under `biocompiler.ocaml.source_manifest_check.v0.1`; two corresponding Python-prose cases are retained separately. Other scoped diagnostic keys are unchanged. Transition checks preserve legacy projection limits and use the explicit native `biocompiler.transition_check.resources.v1` shared work budget; exhaustion yields no partial semantic report. Historical construction reports retain their policy/schema identity, while fresh native execution has a distinct implementation identity. These scopes passed complete PR44 validation. The next batch adds complete historical build/assessment imports, supplementary circuit correspondence, bounded control proofs, exact deployment interval checks and full architecture reconstruction. The checker explicitly links the already-pinned Zarith primitive for exact rational arithmetic; producer library dependencies remain prohibited.
+
+
+The pending architecture batch keeps historical `Construction_build`,
+`Architecture_build` and `Architecture_assessment` imports distinct from fresh
+checking. Their corpus retains all three original case B builds, 48 complete
+records and 117 intended import rejections. The supplementary circuit binding
+campaign retains 53 complete source checks and 31 malformed imports. Controls
+retain the existing bounded theorem profiles, explicit default versus frozen
+parameter bindings, 112 complete cases and native expression-depth/source/controller ceilings; deployment checks retain 30 complete cases, use
+exact decimal rationals and retain explicit recipient/clock/interval witnesses.
+These new scopes remain pending full hosted validation.
+
+Shared checker work budgets retain both local and ancestor limits. Resource
+exhaustion returns no partial semantic report. Output reservations count JSON
+keys, UTF-8 bytes and escaping before retaining expanded inventories or witnesses.
+The architecture checker keeps namespace, ledger and construction reconstruction
+private, with separate original request and candidate inputs. Python set-derived
+diagnostic iteration will use explicitly documented deterministic native order;
+unchanged field values and multiplicity remain part of conformance. No producer,
+matcher or source evaluator is linked into the verifier.
+
+The architecture campaign captures 293 complete fresh reports (217 PASS and
+76 FAIL) from all 78 original methods in six checker-related test modules,
+the 13 installed architecture examples and the three original case B builds.
+Its 463 distinct documents retain complete resolved content identities. Full
+baselines remain readable JSON; test-only, one-level delta files use compact
+canonical JSON to keep the stored campaign within 16 MiB. Every delta resolves
+against a complete same-kind baseline and is checked against the original full
+document fingerprint and size. Delta chains, substituted or unused documents,
+missing cases and unclassified diagnostic changes are rejected. This storage
+format is confined to tests. Hosted validation of this campaign remains pending.
+
+Two cases explicitly retain changed native diagnostic spelling: an empty
+implemented-realization declaration uses `malformed_architecture:invalid_architecture_build`,
+and a stale source uses `source_behavior:lowering_source_identity`. Their full
+historical messages remain in the fixture. One model-pin mutation compares
+set-derived missing-material diagnostics within its declared loop; a separate
+literal requires the exact deterministic native order. Other report fields,
+diagnostic multiplicity, outcomes and completeness claims remain exact.
