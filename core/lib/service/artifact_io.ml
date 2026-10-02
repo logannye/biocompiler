@@ -22,6 +22,10 @@ let profile = Json.Object [
   "artifact_encoding",Json.String "python-json-v1";
   "node_accounting",Json.String "values_and_object_keys";
   "identity",Json.String "complete_bytes_sha256_and_length"]
+let authority_profile = Json.Object (List.map (fun (key,value) -> key,
+  (if key="profile" then Json.String "biocompiler.core.artifact_transport.authority.v1"
+   else if key="operations" then Json.Array [Json.String "validate-verification-workflow-authority"]
+   else value)) (Json.object_fields profile))
 type descriptor = { bytes:int; sha256:string }
 type input_file = { fd:Unix.file_descr; mutable consumed:bool }
 type t = { authority:input_file; record:input_file option; output:Unix.file_descr;

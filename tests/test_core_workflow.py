@@ -23,7 +23,7 @@ from biocompiler.core_client import (
     CoreProtocolError, CoreRejected, CoreUnsupported, encode_json,
 )
 from biocompiler.core_workflow import (
-    OPERATIONS, WorkflowClient, capability_profile, default_limits, effective_resources,
+    OPERATIONS, WorkflowClient, capability_profile, presentation_capability_profile, default_limits, effective_resources,
 )
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -82,14 +82,19 @@ def capabilities():
         "intent_schemas": [], "canonicalization": "python-json-v1",
         "validation_scopes": [capability_profile()["validation_scope"]],
         "profiles": {"artifact_transport": deepcopy(artifacts.TRANSPORT_PROFILE),
-                     "verification_workflow": capability_profile()},
+                     "verification_workflow": capability_profile(),
+                     "verification_workflow_presentation": presentation_capability_profile()},
         "limits": dict(LIMITS), "claim_scope": "Transport fixture only."}
 
 
 def receipt_for(control, authority, retained, record, role):
-    profile = capability_profile()
-    request, normalized = json.loads(authority), json.loads(record)["request"]
-    return {"schema_version": "biocompiler.core.verification_workflow_result.v1",
+    payload = control["payload"]["operation_payload"]
+    public = payload["profile"] == presentation_capability_profile()["profile"]
+    profile = presentation_capability_profile() if public else capability_profile()
+    document = json.loads(record)
+    request, normalized = json.loads(authority), document["request"]
+    result = {"schema_version": ("biocompiler.core.verification_workflow_result.v2" if public
+                                 else "biocompiler.core.verification_workflow_result.v1"),
         "profile": profile["profile"], "operation": control["operation"], "executable": role,
         "request_id": control["request_id"], "validation_scope": profile["validation_scope"],
         "implementation_version": profile["implementation_version"], "workflow_version": profile["workflow_version"],
@@ -97,7 +102,20 @@ def receipt_for(control, authority, retained, record, role):
         "authority_fingerprint": sha(canonical(request)), "request_fingerprint": sha(canonical(normalized)),
         "retained_record_fingerprint": None if retained is None else sha(canonical(json.loads(retained))),
         "record_fingerprint": sha(record),
-        "resources": effective_resources(control["payload"]["operation_payload"]["limits"])}
+        "resources": effective_resources(payload["limits"])}
+    if public:
+        value = document["result"]
+        action = request["operation"]
+        # Fixture-only oracle for the mocked native receipt. Product transport
+        # validates metadata shape and never derives this exit policy.
+        passed = (value["outcome"] == "pass" if action == "check" else
+                  value["all_passed"] if action == "explore" else value["one_minimal"])
+        result.update(command=payload["command"], presentation={
+            "profile": profile["presentation_profile"],
+            "command_exit_code": 0 if control["operation"] == OPERATIONS[1] or passed else 1,
+            "original_frames": len(value["original_history"]) if action == "reduce" else None,
+            "reduced_frames": len(value["history"]) if action == "reduce" else None})
+    return result
 
 
 @contextmanager
@@ -192,6 +210,60 @@ class WorkflowTransportTests(unittest.TestCase):
         self.assertEqual(len(self.calls), 24)
         self.assertEqual({(x["request"]["operation"], x["request"]["mode"]) for x in self.records},
                          {(op, mode) for op in ("check", "explore", "reduce") for mode in ("candidate", "model")})
+
+    def test_public_profile_all_modes_preserves_full_records_and_replay_exit(self):
+        for value in self.records:
+            self.record = value
+            action = value["request"]["operation"]
+            for replay in (False, True):
+                command = "synthetic-replay" if replay else "synthetic-" + action
+                with self.subTest(action=action, mode=value["request"]["mode"], replay=replay), self.exchange():
+                    result = (self.client.replay_public(canonical(value["request"]), canonical(value), command=command)
+                              if replay else self.client.run_public(canonical(value["request"]), command=command))
+                    self.assertEqual(result.record_json, canonical(value))
+                    self.assertEqual(result.receipt["command"], command)
+                    self.assertEqual(result.receipt["profile"], presentation_capability_profile()["profile"])
+                    if replay:
+                        self.assertEqual(result.receipt["presentation"]["command_exit_code"], 0)
+                    self.assertEqual(self.calls[-1]["payload"]["operation_payload"]["command"], command)
+
+    def test_public_profile_fails_closed_without_matching_new_capability(self):
+        self.assertEqual(sha(canonical(presentation_capability_profile())),
+                         "a15cfc3423bc7adc739e37ca81f9ecccde284cb22d666a4b3d0bbd768762d01c")
+        for mutation in (
+                lambda c: c["profiles"].pop("verification_workflow_presentation"),
+                lambda c: c["profiles"]["verification_workflow_presentation"].update(presentation_profile="changed")):
+            self.calls.clear()
+            with self.exchange(capability_mutation=mutation), self.assertRaises(CoreProtocolError):
+                self.client.run_public(canonical(self.record["request"]))
+            self.assertEqual(len(self.calls), 1)
+        with self.exchange(capability_mutation=lambda c: c["profiles"].pop("verification_workflow_presentation")):
+            self.call()  # Old v1 callers never require the optional new capability.
+
+    def test_public_receipt_command_and_presentation_are_strict(self):
+        changes = [lambda r: r.update(command="synthetic-explore"),
+                   lambda r: r["presentation"].update(command_exit_code=True),
+                   lambda r: r["presentation"].update(command_exit_code=2),
+                   lambda r: r["presentation"].update(profile="changed"),
+                   lambda r: r["presentation"].update(original_frames=0),
+                   lambda r: r["presentation"].update(extra=None),
+                   lambda r: r.pop("presentation")]
+        for change in changes:
+            with self.subTest(change=change), self.exchange(mutate=change), self.assertRaises(CoreProtocolError):
+                self.client.run_public(canonical(self.record["request"]), command="synthetic-check")
+        with self.exchange(mutate=lambda r: r["presentation"].update(command_exit_code=1)), self.assertRaises(CoreProtocolError):
+            self.client.replay_public(canonical(self.record["request"]), canonical(self.record))
+        self.record = self.records[3]
+        for bad in (None, True, -1, 1_000_001, 1.0):
+            with self.subTest(count=bad), self.exchange(mutate=lambda r: r["presentation"].update(reduced_frames=bad)), self.assertRaises(CoreProtocolError):
+                self.client.run_public(canonical(self.record["request"]))
+
+    def test_public_output_metadata_is_copied_without_python_acceptance_recomputation(self):
+        with self.exchange(mutate=lambda r: r["presentation"].update(command_exit_code=1)):
+            result = self.client.run_public(canonical(self.record["request"]))
+        self.assertEqual(result.receipt["presentation"]["command_exit_code"], 1)
+        with self.assertRaises(CoreProtocolError):
+            self.client.run_public(canonical(self.record["request"]), command=3)
 
     def test_exact_profile_mutations_fail_during_same_negotiation(self):
         self.assertEqual(sha(canonical(capability_profile())),

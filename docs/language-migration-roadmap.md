@@ -4,7 +4,7 @@ Created: 2026-10-01, America/Los_Angeles.
 
 **Decision:** TypeScript for Studio; Python for authoring, orchestration and scientific exploration; OCaml for the semantic compiler, independent checking and canonical emission.
 
-**Status:** the default remains Python; explicit architecture SDK/CLI selection uses the validated OCaml core. PR48–51 passed all required PR gates and are merged, covering installed architecture routing, independent candidate/component execution and realization evidence. PR52–56 preserve independent realization/component acceptance and synthetic production; their complete current-revision gates remain pending. The next implementation exposes nine experimental realization operations and five optional Python SDK routes. Whole workflows, distribution, remaining public profiles and default cutover remain open.
+**Status:** the default remains Python; explicit architecture SDK/CLI selection uses the validated OCaml core. PR48–51 passed all required PR gates and are merged. Draft PR52–59 preserve independent realization/component acceptance, synthetic production, nine realization protocol operations, optional SDK routes, complete native workflow engines and the bounded workflow service. None has completed its full current-revision gate. The PR58 Python shard exposed one stale source-hash assertion; its narrowly tested correction is pushed to PR57–59, which now require fresh full validation. Earlier PR59 Linux compilation success remains historical evidence only. Public workflow/CLI routing, distribution, remaining profiles and default cutover remain open.
 
 The validated foundation is merged in [PR37](https://github.com/logannye/biocompiler/pull/37), with the exact revision/platform results in the [foundation receipt](../protocol/migration-foundation-validation.json). Typed request, all 42 Behavior operations and molecular-coordinate domains are merged in [PR38](https://github.com/logannye/biocompiler/pull/38); the [domain receipt](../protocol/migration-domain-validation.json) records both native platforms and full Python/integration checks. Both integrated main revisions also passed their required gates.
 
@@ -515,6 +515,39 @@ These checkpoints record narrower validated work; they do not complete a broad L
   See the [native implementation plan](migration-realization-workflow-native-plan.md),
   [public workflow audit](migration-realization-workflow-public-plan.md) and
   [complete capture audit](migration-realization-workflow-conformance-plan.md).
+
+- [x] **LM-03 actual CLI capture checkpoint:** all 70 actual child processes were
+  independently repeated with exact stdout, stderr, exits and complete filesystem
+  bytes. The 16 original CLI observations and four original test methods remain
+  intact; 66 console invocations and four module invocations retain all operation
+  and mode pairs, nonpassing replay, publication failures, ordering and size
+  boundaries. Eleven integrity/recapture tests pass. The complete inventory pin
+  is `a67edb95f75aa011ed5c059fe8cbe578fbe118d056931e3992f73775e8951da7`;
+  114 content documents retain 5,200,804 bytes. This proves the original Python
+  CLI baseline, not migrated native CLI execution.
+- [ ] **LM-12/R5 native public-workflow preparation:** compatible presentation v2
+  now retains v1 while adding native exit policy, reduction frame counts and
+  command validation after source validation. Separate native source preflight
+  preserves the future replay route's source-before-file-error order. Immutable
+  Python views preserve complete records and formatting through audited output
+  leaf codecs; legacy input serialization remains untrusted input only. Local
+  focused transport/view checks pass; the 88 native suites, installed campaigns
+  and full 36-job gate require hosted validation. The original public workflow
+  functions and CLI remain unchanged. Native public routing and complete installed
+  view/CLI conformance are still required, followed by R6 and distribution/cutover.
+  See [contracts and evidence scope](../protocol/workflow-public-contracts-v1.md).
+
+**Credit-limit preservation, 2026-10-02:** implementation through
+[PR59](https://github.com/logannye/biocompiler/pull/59) is committed and pushed at
+`f7b81a1da0236f2b4187e24b1352d49d788296d4`. The source-lineage correction
+uses the existing exact historical/current hashes and whole-file AST proof for
+the remaining locked-component corpus assertion. All six focused census/lineage
+tests pass locally; no corpus pin or product behavior changed. Fresh full
+[run 36984201005](https://github.com/logannye/biocompiler/actions/runs/36984201005)
+is pending. The earlier Linux compilation result is historical only; 87 native
+suites and the complete 36-job gate remain required. PR52–58 also remain unmerged. No pending merge or automatic merge is enabled. The next-work checkpoint
+is separate so it does not restart the existing validation runs. All unfinished
+layer checkboxes remain unchecked.
 
 These stages precede the remaining B2 producer/export and B3–B6 product gates.
 

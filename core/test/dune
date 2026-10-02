@@ -441,3 +441,8 @@
  (name test_verification_workflow_service)
  (modules test_verification_workflow_service)
  (libraries bioc_wire bioc_service bioc_domain bioc_checker bioc_realization_checker zarith))
+
+(test
+ (name test_verification_workflow_authority)
+ (modules test_verification_workflow_authority)
+ (libraries bioc_wire bioc_service bioc_domain bioc_checker bioc_realization_checker zarith))

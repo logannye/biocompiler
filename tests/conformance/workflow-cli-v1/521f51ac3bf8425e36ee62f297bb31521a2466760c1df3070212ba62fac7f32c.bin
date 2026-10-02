@@ -1,0 +1,35 @@
+{
+  "record_fingerprint": "897cecc35c9714960b9b99970f7d86f18661316ecf2bd0881efd59f7cf5e6343",
+  "request_fingerprint": "dc6748140813ac6b5fbd759d886fb253089166871a906c6a472ba0c110113159",
+  "operation": "check",
+  "mode": "candidate",
+  "intended_use": "software_test",
+  "human_therapeutic_admission": "not_admitted",
+  "claim_scope": "Historical finite-history software-model verification record; fresh replay requires independent complete operation authority. No universal, biological or human therapeutic claim.",
+  "outcome": "pass",
+  "diagnostics": [],
+  "counterexamples": [],
+  "coverage": [
+    {
+      "requirement_id": "contact_pulse",
+      "activation_deadlines_checked": 1,
+      "inactive_deadlines_checked": 3,
+      "incomplete_episode_count": 0,
+      "cancelled_episode_count": 0
+    },
+    {
+      "requirement_id": "local_pulse",
+      "activation_deadlines_checked": 1,
+      "inactive_deadlines_checked": 2,
+      "incomplete_episode_count": 0,
+      "cancelled_episode_count": 0
+    },
+    {
+      "requirement_id": "memory_readout",
+      "activation_deadlines_checked": 1,
+      "inactive_deadlines_checked": 2,
+      "incomplete_episode_count": 0,
+      "cancelled_episode_count": 0
+    }
+  ]
+}
