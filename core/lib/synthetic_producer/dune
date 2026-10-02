@@ -1,0 +1,3 @@
+(library
+ (name bioc_synthetic_producer)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_realization_checker zarith))

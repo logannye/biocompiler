@@ -1,0 +1,66 @@
+{
+  "aggregate_receipt_bytes": 607910,
+  "aggregate_receipt_sha256": "6a993ac63eb57665725788db92fc07ce02c5f8ac2880191c81aae4b4f7487604",
+  "checks_per_python_platform": 175,
+  "exact_artifacts_per_python_platform": 219,
+  "foundation_corpus_pin": "ac1499688ec6f0eca41398134b9421de9f95ffe9405422332c2bf43b04db32f8",
+  "four_way_reproducibility_receipt_sha256": "039fdbd91ca57e16b0565bedef31cc938a5f9b72ea84082a366face1ec1a7af2",
+  "full_aggregate_recreation": "identical",
+  "integrated_revision": "652e2aa0aa24bf563412483827d07c4bc027a4e0",
+  "integrated_tree": "b866ee680f8110080c6c837a9762dd914dcb1d43",
+  "local_native_execution": false,
+  "native_suites_per_platform": 60,
+  "overall_migration_complete": false,
+  "platform_binaries": {
+    "linux-x86_64": {
+      "machine": "x86_64",
+      "manifest_sha256": "9c21e048bab74311ffb34da766479f1d5bf896cbfce5741e7027b7cd03b6097e",
+      "revision": "66e186d02c2b1096ee29603b88a31ab9b9e0aebf",
+      "sha256": {
+        "biocompiler-core": "db6f3538b6b67dd067725951cba6781bb7bbef3929ad3b0297ed914eb8343d4d",
+        "biocompiler-verify": "f062514fd2bf87536be60901066fda2be1af1613529e0cd749880f7c65ddc620"
+      },
+      "system": "Linux"
+    },
+    "macos-arm64": {
+      "machine": "arm64",
+      "manifest_sha256": "0983e4de0e73744e44625424cad143f2e7e42f0e003e97045c0957b2a5a0a01f",
+      "revision": "66e186d02c2b1096ee29603b88a31ab9b9e0aebf",
+      "sha256": {
+        "biocompiler-core": "e20f4658ac4bf04ac430fbd724d391907c4094a2cd18ed3a7446e4ec65074ef2",
+        "biocompiler-verify": "a4ab236f45f0a0c1cb4b6834eeb167e34c13576753a87876e7f85340222fe80a"
+      },
+      "system": "Darwin"
+    }
+  },
+  "post_merge_main_run": {
+    "run_id": "36972688727",
+    "status": "pending",
+    "url": "https://github.com/logannye/biocompiler/actions/runs/36972688727",
+    "validation_claimed": false
+  },
+  "pull_request": 51,
+  "pull_request_url": "https://github.com/logannye/biocompiler/pull/51",
+  "python_tests": {
+    "3.11.16": 2429,
+    "3.14.7": 2429
+  },
+  "run_attempt": "1",
+  "run_id": "36966315057",
+  "run_url": "https://github.com/logannye/biocompiler/actions/runs/36966315057",
+  "schema_version": "biocompiler.migration_checkpoint_validation.v1",
+  "scope": "realization-foundation",
+  "source_revision": "8e8e191cce34182a85b3ea7765a01cc650b7711c",
+  "source_tree": "b866ee680f8110080c6c837a9762dd914dcb1d43",
+  "status": "pass",
+  "successful_jobs": 31,
+  "tested_revision": "66e186d02c2b1096ee29603b88a31ab9b9e0aebf",
+  "tested_tree": "b866ee680f8110080c6c837a9762dd914dcb1d43",
+  "verified_shards_per_python": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ]
+}

@@ -1,0 +1,1 @@
+[{"path":["args"],"type":"builtins.tuple"},{"path":["args",1],"type":"biocompiler.synthesis.synthetic.SyntheticCandidate"},{"path":["args",2],"type":"builtins.tuple"},{"path":["args",3],"type":"biocompiler.verification.evidence.CheckResult"}]

@@ -53,6 +53,10 @@ class CoreBoundaryTests(unittest.TestCase):
                           "bioc_candidate_runtime", "digestif", "zarith"})
         self.assertEqual(receipt["private_modules"]["bioc_realization_checker"], ["realization_monitor", "synthetic_provenance", "synthetic_component_authority"])
         self.assertNotIn("bioc_realization_checker", dependencies)
+        self.assertEqual(receipt["roles"]["bioc_synthetic_producer"], "producer")
+        self.assertNotIn("bioc_synthetic_producer", dependencies)
+        self.assertIn("bioc_realization_checker", receipt["transitive_dependencies"]["bioc_synthetic_producer"])
+        self.assertNotIn("bioc_synthetic_producer", receipt["transitive_dependencies"]["bioc_realization_checker"])
         self.assertEqual(receipt["shared_trusted_base"], ["bioc_wire", "bioc_domain"])
         self.assertIn("core/lib/checker/intent_check.ml", receipt["source_sha256"])
         self.assertEqual(receipt["native_build_and_semantic_independence"], "separate_hosted_validation_required")
@@ -163,6 +167,8 @@ class CoreBoundaryTests(unittest.TestCase):
             ("test/test_synthetic_candidate_check.ml", "module Hidden = Bioc_realization_checker.Synthetic_component_authority"),
             ("lib/realization_checker/synthetic_candidate_check.mli", "val hidden : Synthetic_provenance.t"),
             ("lib/realization_checker/component_assembly_check.mli", "val hidden : Synthetic_component_authority.t"),
+            ("lib/synthetic_producer/generator.ml", "module Hidden = Bioc_realization_checker.Synthetic_provenance"),
+            ("lib/synthetic_producer/components.ml", "module Hidden = Bioc_realization_checker.Synthetic_component_authority"),
         ):
             root = self.copy_core()
             source = root / "core" / relative
