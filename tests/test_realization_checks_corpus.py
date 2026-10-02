@@ -7,6 +7,7 @@ import hashlib
 import inspect
 import json
 from pathlib import Path
+import sys
 import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -15,6 +16,21 @@ PIN = "8ddc5a929f90e8364e3ffb53c6902ff23bd5dec2524897a8d463f543b887d80a"
 CAPTURE_PIN = "05d24d0ff4450fc072ba2db4af4a608f6a929aa0f3a6680c2cb9cf29082f046e"
 DEFERRED = {"check_component_behavior", "check_component_assembly"}
 EXPECTED_STAGES = {'admission': 5790, 'checked_request': 4300, 'checker_version_mutation': 4, 'deferred_acceptance': 137, 'dependencies': 1993, 'domain': 61419, 'method': 63, 'python_type_boundary': 1, 'python_wire_boundary': 3, 'realization': 1079, 'wire': 14}
+
+# CPython 3.11 mappingproxy is itself unhashable; 3.14 delegates hashing to the
+# wrapped dict and reports its set-membership context. Retain the complete 3.14
+# capture unchanged and identify only these six original malformed requests.
+MAPPINGPROXY_CONTEXT = "tests/test_build_request.py::RealizationRequestTests.test_recursive_field_type_mutations_never_leak_python_exceptions"
+MAPPINGPROXY_CASES = {MAPPINGPROXY_CONTEXT + "/api/" + str(number): (prefix, code)
+    for number, prefix, code in (
+        (2548, "Invalid RealizationRequest: ", "unsupported_lowering_rule_policy"),
+        (2561, "Invalid RealizationRequest: ", "unsupported_lowering_rule_policy"),
+        (4161, "Invalid behavior operation: ", "behavior_operation"),
+        (4466, "Invalid behavior operation: ", "behavior_operation"),
+        (4832, "Invalid behavior operation: ", "behavior_operation"),
+        (4963, "Invalid behavior operation: ", "behavior_operation"))}
+MAPPINGPROXY_314 = "cannot use 'mappingproxy' as a set element (unhashable type: 'dict')"
+MAPPINGPROXY_311 = "unhashable type: 'mappingproxy'"
 
 
 def canonical(value):
@@ -92,6 +108,19 @@ class RealizationChecksCorpusTests(unittest.TestCase):
         self.assertEqual(sum(foundation.METHOD_COUNTS), 340)
         self.assertEqual(before, (original.FILES, tuple(original.METHOD_COUNTS), original.CLASSES,
                                 original.PROPERTY_NAMES, original.CORPUS))
+
+    def test_python311_diagnostic_counterparts_are_exactly_six_retained_rejections(self):
+        observed = {identity for identity, call in self.calls.items()
+            if "mappingproxy" in call.get("serialized_error", call.get("error", {})).get("message", "")}
+        self.assertEqual(observed, set(MAPPINGPROXY_CASES))
+        for identity, (prefix, code) in MAPPINGPROXY_CASES.items():
+            call = self.calls[identity]
+            self.assertEqual(call["outcome"], "raised")
+            self.assertEqual(call["native"]["operation"], "RealizationRequest")
+            self.assertEqual(call["native"]["expected_code"], code)
+            self.assertEqual(call.get("serialized_error", call["error"]), {
+                "module": "biocompiler.errors", "type": "SerializationError",
+                "message": prefix + MAPPINGPROXY_314})
 
     def test_complete_source_assertion_call_and_stage_census(self):
         from tools.freeze_realization_checks import foundation
@@ -231,6 +260,12 @@ class RealizationChecksCorpusTests(unittest.TestCase):
                 self.assertEqual(call["outcome"], "raised")
                 self.assertNotEqual(call["serialized_error"], call["error"])
                 expected = {**call, "error": call["serialized_error"]}
+            if sys.version_info[:2] == (3, 11) and identity in MAPPINGPROXY_CASES:
+                prefix, code = MAPPINGPROXY_CASES[identity]
+                self.assertEqual(native["expected_code"], code)
+                self.assertEqual(expected["error"], {"module": "biocompiler.errors",
+                    "type": "SerializationError", "message": prefix + MAPPINGPROXY_314})
+                expected = {**expected, "error": {**expected["error"], "message": prefix + MAPPINGPROXY_311}}
             try: result = python_decode(native["operation"], strict_json(raw))
             except Exception as error:
                 self.assertEqual(expected["outcome"], "raised", identity)
