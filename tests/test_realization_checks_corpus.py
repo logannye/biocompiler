@@ -31,6 +31,18 @@ MAPPINGPROXY_CASES = {MAPPINGPROXY_CONTEXT + "/api/" + str(number): (prefix, cod
         (4963, "Invalid behavior operation: ", "behavior_operation"))}
 MAPPINGPROXY_314 = "cannot use 'mappingproxy' as a set element (unhashable type: 'dict')"
 MAPPINGPROXY_311 = "unhashable type: 'mappingproxy'"
+# The same CPython 3.14 set-context diagnostic also occurs for exactly these
+# six plain list/dict mutations. Keep their original full messages, native
+# rejections and input identities pinned; only 3.11's diagnostic counterpart
+# differs. The hosted 3.11 traceback first exposes the list case at api/3214.
+SET_ELEMENT_CASES = {MAPPINGPROXY_CONTEXT + "/api/" + str(number): (prefix, kind, code)
+    for number, prefix, kind, code in (
+        (3214, "Invalid BuildRequest: ", "list", "invalid_type"),
+        (3215, "Invalid BuildRequest: ", "dict", "invalid_type"),
+        (3551, "Invalid RealizationRequest: ", "list", "unsupported_behavior_profile"),
+        (3552, "Invalid RealizationRequest: ", "dict", "unsupported_behavior_profile"),
+        (5110, "Invalid RealizationRequest: ", "list", "behavior_requirements"),
+        (5111, "Invalid RealizationRequest: ", "dict", "behavior_requirements"))}
 
 
 def canonical(value):
@@ -121,6 +133,18 @@ class RealizationChecksCorpusTests(unittest.TestCase):
             self.assertEqual(call.get("serialized_error", call["error"]), {
                 "module": "biocompiler.errors", "type": "SerializationError",
                 "message": prefix + MAPPINGPROXY_314})
+        observed_set_context = {identity for identity, call in self.calls.items()
+            if " as a set element (unhashable type: " in
+                call.get("serialized_error", call.get("error", {})).get("message", "")}
+        self.assertEqual(observed_set_context, set(MAPPINGPROXY_CASES) | set(SET_ELEMENT_CASES))
+        for identity, (prefix, kind, code) in SET_ELEMENT_CASES.items():
+            call = self.calls[identity]
+            self.assertEqual(call["outcome"], "raised")
+            self.assertEqual(call["native"]["operation"], "RealizationRequest")
+            self.assertEqual(call["native"]["expected_code"], code)
+            self.assertEqual(call.get("serialized_error", call["error"]), {
+                "module": "biocompiler.errors", "type": "SerializationError",
+                "message": prefix + f"cannot use '{kind}' as a set element (unhashable type: '{kind}')"})
 
     def test_complete_source_assertion_call_and_stage_census(self):
         from tools.freeze_realization_checks import foundation
@@ -266,6 +290,14 @@ class RealizationChecksCorpusTests(unittest.TestCase):
                 self.assertEqual(expected["error"], {"module": "biocompiler.errors",
                     "type": "SerializationError", "message": prefix + MAPPINGPROXY_314})
                 expected = {**expected, "error": {**expected["error"], "message": prefix + MAPPINGPROXY_311}}
+            if sys.version_info[:2] == (3, 11) and identity in SET_ELEMENT_CASES:
+                prefix, kind, code = SET_ELEMENT_CASES[identity]
+                self.assertEqual(native["expected_code"], code)
+                self.assertEqual(expected["error"], {"module": "biocompiler.errors",
+                    "type": "SerializationError", "message": prefix +
+                    f"cannot use '{kind}' as a set element (unhashable type: '{kind}')"})
+                expected = {**expected, "error": {**expected["error"],
+                    "message": prefix + f"unhashable type: '{kind}'"}}
             try: result = python_decode(native["operation"], strict_json(raw))
             except Exception as error:
                 self.assertEqual(expected["outcome"], "raised", identity)
