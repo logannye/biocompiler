@@ -81,7 +81,7 @@ let charge session amount =
   require (amount >= 0 && amount <= session.budget.max_work - session.work)
     "evaluation_work_limit" "Cumulative reference execution work budget exhausted.";
   session.work <- session.work + amount
-let trace_item session =
+let trace_item (session : session) =
   require (session.trace_items < session.budget.max_trace_items)
     "evaluation_output_limit" "Cumulative action/event allocation budget exhausted.";
   session.trace_items <- session.trace_items + 1

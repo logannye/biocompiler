@@ -6,7 +6,6 @@ let require condition message = if not condition then failwith message
 let str value = Json.String value
 let obj value = Json.Object value
 let arr value = Json.Array value
-let field key raw = Json.field key (Json.object_fields raw)
 let replace key value raw = obj ((key,value) :: List.remove_assoc key (Json.object_fields raw))
 let dtype=Json.parse {|{"kind":"scalar","name":"Level","dimensions":{},"arguments":[]}|}
 let scalar value=obj ["kind",str "scalar";"value",value;"unit",str "1";"canonical_value",value;"type",dtype]

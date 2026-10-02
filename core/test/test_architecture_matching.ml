@@ -4,7 +4,6 @@ module K = Bioc_compiler.Architecture_matching
 module A = Architecture_contract
 let require condition message = if not condition then failwith message
 let str value = Json.String value
-let field key raw = Json.field key (Json.object_fields raw)
 let replace key value raw = Json.Object ((key,value) :: List.remove_assoc key (Json.object_fields raw))
 let rejected code action = match action () with
   | _ -> failwith ("Expected " ^ code)
