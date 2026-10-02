@@ -8,17 +8,16 @@ let rejected label action = match action () with
   | _ -> failwith ("Artifact transport accepted " ^ label)
   | exception Diagnostic.Error _ -> ()
 let descriptor text : A.descriptor = {bytes=String.length text;sha256=Canonical.sha256 text}
-let same_file left right = left.Unix.st_dev=right.Unix.st_dev && left.Unix.st_ino=right.Unix.st_ino
+(* Test-only representation conversion for the supported POSIX runtimes
+   (Linux and macOS), where Unix.file_descr is an OCaml integer. Reading the
+   actual descriptor preserves alias tests without relying on /dev/fd stat
+   identities, which differ between Linux procfs and macOS devfs. *)
+external raw_fd_number : Unix.file_descr -> int = "%identity"
 let number_of_fd ?(excluded=[]) fd =
-  let identity=Unix.fstat fd in
-  let rec find number =
-    if number>4096 then failwith "Test descriptor was outside the bounded discovery interval";
-    if List.mem number excluded then find (number+1) else
-    match Unix.stat ("/dev/fd/" ^ string_of_int number) with
-    | actual when same_file identity actual -> number
-    | _ -> find (number+1)
-    | exception Unix.Unix_error _ -> find (number+1)
-  in find 3
+  let number=raw_fd_number fd in
+  require (number>2) "Test artifact descriptor used a standard stream";
+  require (not (List.mem number excluded)) "Test artifact descriptors were not distinct";
+  number
 let write_all fd text =
   let bytes=Bytes.of_string text in
   let rec write offset = if offset<Bytes.length bytes then (
