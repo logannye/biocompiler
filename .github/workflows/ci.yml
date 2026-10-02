@@ -1282,6 +1282,22 @@ jobs:
             --native-root "$GITHUB_WORKSPACE/artifacts/native" \
             --platform ${{ matrix.platform }} \
             --output "$GITHUB_WORKSPACE/generated/realization/synthetic-producer.json"
+          python "$GITHUB_WORKSPACE/tools/check_native_synthetic_public_sdk.py" \
+            --core "$GITHUB_WORKSPACE/artifacts/native/biocompiler-core" \
+            --verify "$GITHUB_WORKSPACE/artifacts/native/biocompiler-verify" \
+            --core-sha256 "$BIOCOMPILER_WORKFLOW_CORE_SHA" \
+            --verify-sha256 "$BIOCOMPILER_WORKFLOW_VERIFY_SHA" \
+            --native-root "$GITHUB_WORKSPACE/artifacts/native" \
+            --platform ${{ matrix.platform }} \
+            --output "$GITHUB_WORKSPACE/generated/realization/synthetic-public-sdk.json"
+          python "$GITHUB_WORKSPACE/tools/check_native_synthetic_selection_cli.py" \
+            --core "$GITHUB_WORKSPACE/artifacts/native/biocompiler-core" \
+            --verify "$GITHUB_WORKSPACE/artifacts/native/biocompiler-verify" \
+            --core-sha256 "$BIOCOMPILER_WORKFLOW_CORE_SHA" \
+            --verify-sha256 "$BIOCOMPILER_WORKFLOW_VERIFY_SHA" \
+            --native-root "$GITHUB_WORKSPACE/artifacts/native" \
+            --platform ${{ matrix.platform }} \
+            --output "$GITHUB_WORKSPACE/generated/realization/synthetic-selection-cli.json"
       - name: Retain complete protocol and SDK artifacts even on failure
         if: always()
         uses: actions/upload-artifact@v4
@@ -1353,6 +1369,14 @@ jobs:
         env:
           GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
         run: python tools/check_native_synthetic_producer.py --compare --root artifacts/realization --native-root artifacts/core --output generated/realization-reproducibility/synthetic-producer.json
+      - name: Require complete public synthetic SDK observations across all four runtimes
+        env:
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: python tools/check_native_synthetic_public_sdk.py --compare --root artifacts/realization --native-root artifacts/core --output generated/realization-reproducibility/synthetic-public-sdk.json
+      - name: Require complete synthetic selection CLI observations across all four runtimes
+        env:
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: python tools/check_native_synthetic_selection_cli.py --compare --root artifacts/realization --native-root artifacts/core --output generated/realization-reproducibility/synthetic-selection-cli.json
       - name: Retain complete comparison receipt
         if: always()
         uses: actions/upload-artifact@v4

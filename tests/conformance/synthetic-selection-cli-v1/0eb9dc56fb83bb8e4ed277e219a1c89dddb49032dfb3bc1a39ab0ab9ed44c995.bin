@@ -1,0 +1,2 @@
+from biocompiler.cli import main
+raise SystemExit(main())

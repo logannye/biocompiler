@@ -4,7 +4,7 @@ Created: 2026-10-01, America/Los_Angeles.
 
 **Decision:** TypeScript for Studio; Python for authoring, orchestration and scientific exploration; OCaml for the semantic compiler, independent checking and canonical emission.
 
-**Status:** the default remains Python; explicit architecture SDK/CLI selection uses the validated OCaml core. PR48–51 passed all required PR gates and are merged. Draft PR52–59 preserve independent realization/component acceptance, synthetic production, nine realization protocol operations, optional SDK routes, complete native workflow engines and the bounded workflow service. None has completed its full current-revision gate. The PR58 Python shard exposed one stale source-hash assertion; its narrowly tested correction is pushed to PR57–59, which now require fresh full validation. Earlier PR59 Linux compilation success remains historical evidence only. Public workflow/CLI routing, distribution, remaining profiles and default cutover remain open.
+**Status:** the default remains Python; explicit architecture SDK/CLI selection uses the validated OCaml core. PR48–56 have completed their exact-revision gates and are integrated (PR52 through PR53). PR57–63 preserve realization protocol/routing, full workflow engines and services, public workflow routes, raw synthetic producers and explicit producer SDK routes; their complete current-revision gates remain pending. The Python 3.11 argparse difference now has an independently executed, byte-exact runtime counterpart; original baselines remain unchanged. The current batch implements installed producer SDK campaigns and explicit synthetic-select CLI routing, with scoped local Python capture/fixture checkpoints recorded and exact-revision hosted integration pending. Distribution, remaining profiles, native pipeline/package authority, rich helper compatibility and default cutover remain open.
 
 The validated foundation is merged in [PR37](https://github.com/logannye/biocompiler/pull/37), with the exact revision/platform results in the [foundation receipt](../protocol/migration-foundation-validation.json). Typed request, all 42 Behavior operations and molecular-coordinate domains are merged in [PR38](https://github.com/logannye/biocompiler/pull/38); the [domain receipt](../protocol/migration-domain-validation.json) records both native platforms and full Python/integration checks. Both integrated main revisions also passed their required gates.
 
@@ -644,6 +644,63 @@ record current parent heads; previous partial native passes are historical only.
   topology/freshness/general registry APIs, package acceptance and default cutover
   remain unfinished. No full recapture or rich legacy API parity is claimed by
   this bounded checkpoint. See [explicit producer routing](native-synthetic-producer-routing.md).
+
+- [x] **LM-03 exact CLI runtime counterpart checkpoint:** the archived pre-route
+  CLI at `e8c640b74e34c1ac3db094b776e5478da67ce69e` was independently executed
+  under Python 3.11.15. Its complete `unknown-flag` diagnostic matches the
+  separately pinned 3.11 counterpart; the original 3.14 baseline remains intact.
+  The strict comparator selects only declared Python 3.11/3.14 runtime families,
+  rejects unknown runtimes, checks the entire original case and full byte pins,
+  and retains actual observations before the explicit comparison projection.
+  This corrects the confirmed PR60/PR61 hosted capture failure without changing
+  a freezer or golden. Eleven runtime/lineage tests pass on Python 3.11; the
+  complete 70-child workflow recapture passes again after the selection route.
+  Exact corrections are pushed and remotely verified for PR60–63 at
+  `946ff8eb`, `8f3eacc2`, `246d15ab` and `79eeedfd`; fresh parent hosted gates
+  remain required.
+
+- [x] **LM-03 synthetic-select capture and default preservation checkpoint:** the
+  unchanged original test method and all 72 actual CLI children are retained:
+  68 console calls, four module calls, eight complete reference-authority cases,
+  42 original malformed-authority messages and publication/argument boundaries.
+  The baseline inventory is
+  `69556f367752be3076513d96e63c933fb250eaf7d9736f9e39baac1dec47e5d9`, with
+  113 content documents retaining 2,252,596 bytes. All 72 children pass fresh
+  default-route recapture on Python 3.11 and 3.14. A new whole-file source witness
+  removes exactly the hidden-option helper, registration and early branch to
+  recover the complete previous CLI AST, then chains through the unchanged
+  workflow witness. Twenty-seven capture/lineage tests pass on Python 3.14,
+  including all 2,132 historical source identities across nine corpora. Complete
+  stdout, stderr, exits, files and actual import/source metadata remain retained;
+  only the exact source witness and separately pinned argparse counterpart are
+  projected. No original corpus, freezer or prior witness was edited.
+
+- [x] **LM-03 current public CLI Python fixture checkpoint:** all 72 selection
+  invocations also execute successfully with Python protocol child fixtures.
+  Six workflow CLI campaign/comparator tests pass on Python 3.11, including four
+  actual fixture children and the complete 140-observation, four-runtime
+  comparison with content-forgery checks. These are transport and evidence-harness
+  checks; Python protocol fixtures establish no native execution result. Final
+  local validation also passes 62 focused tests (33.184 seconds),
+  strict typing for 15 adapter modules and the complete 3,135-entry inventory check.
+
+- [ ] **LM-12/R6 P1 installed public SDK and selection CLI hosted integration:**
+  the current `codex/ocaml-synthetic-public-integration` batch adds explicit
+  `synthetic-select` core path/digest/timeout selection and native full build-request
+  handling while preserving the default Python route. The installed SDK campaign
+  covers all 1,226 original public producer occurrences plus nine supported input
+  forms, with separate verifier rejection evidence. The installed CLI campaign
+  retains all 72 complete baseline observations, native wire/receipt bytes,
+  publication behavior and execution guards. Both campaigns and their strict
+  four-runtime comparators require fresh installed native execution on Linux
+  x86_64/macOS arm64 with Python 3.11/3.14, exact source/binary/run identities and
+  the complete required hosted gate before this item can be checked. This batch
+  is pending GitHub preservation at this documentation checkpoint; the integrating
+  owner will record its final commit, PR and run after pushing. Rich helper
+  compatibility, native manager freshness, canonical package acceptance,
+  distribution and default cutover remain open; no broader LM exit is completed.
+  The [public integration checkpoint](../protocol/migration-synthetic-public-checkpoint.json)
+  records exact source hashes, corrected parent commits and local-only evidence.
 
 The integrated PR51 main revision `652e2aa0aa24bf563412483827d07c4bc027a4e0`
 passed all 31 jobs in [run 36972688727](https://github.com/logannye/biocompiler/actions/runs/36972688727).

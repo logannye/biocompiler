@@ -84,7 +84,8 @@ if fault:
     else: raise AssertionError("Unknown publication fault")
 seen, responses, artifacts, wires = set(), [], {}, {}
 cli_calls = {"main", "_verification_command", "_bounded_text", "_publish_report",
-             "_workflow_core_arguments", "_register_circuit_infrastructure_commands", "_architecture_core_arguments"}
+             "_workflow_core_arguments", "_register_circuit_infrastructure_commands", "_architecture_core_arguments",
+             "_synthetic_producer_core_arguments"}
 def guard(frame, event, value):
     module, code = frame.f_globals.get("__name__", ""), frame.f_code
     if event == "call" and module.startswith("biocompiler"):
@@ -258,7 +259,7 @@ class Oracle:
 
 
 CLI_CALLS = {"main", "_verification_command", "_bounded_text", "_publish_report", "_workflow_core_arguments",
-             "_register_circuit_infrastructure_commands", "_architecture_core_arguments"}
+             "_register_circuit_infrastructure_commands", "_architecture_core_arguments", "_synthetic_producer_core_arguments"}
 
 
 def allowed_cli_call(module, name, phase, owner):

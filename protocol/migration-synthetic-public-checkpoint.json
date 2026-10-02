@@ -1,0 +1,182 @@
+{
+  "corrected_parent_prs": [
+    {
+      "branch": "codex/ocaml-workflow-public-checkpoint",
+      "files": [
+        "protocol/migration-inventory.json",
+        "tests/conformance/workflow-cli-runtime-counterparts-v1.json",
+        "tests/test_cli_runtime_counterparts.py",
+        "tests/test_workflow_cli_lineage.py",
+        "tools/check_workflow_cli_corpus.py",
+        "tools/cli_runtime_counterparts.py"
+      ],
+      "head": "946ff8ebce6e270511d51f383a9dc63827be3683",
+      "local_validation": "passed_python_only",
+      "native_validation": "pending",
+      "old_head": "e8c640b74e34c1ac3db094b776e5478da67ce69e",
+      "parents": [
+        "e8c640b74e34c1ac3db094b776e5478da67ce69e"
+      ],
+      "pr": 60,
+      "tree": "17ceb502cbeb0e989e9c89ac3cba74cce364da42"
+    },
+    {
+      "branch": "codex/ocaml-workflow-public-routing",
+      "files": [
+        "protocol/migration-inventory.json",
+        "tests/conformance/workflow-cli-runtime-counterparts-v1.json",
+        "tests/test_cli_runtime_counterparts.py",
+        "tests/test_native_workflow_cli_campaign.py",
+        "tests/test_workflow_cli_lineage.py",
+        "tools/check_native_workflow_cli.py",
+        "tools/check_workflow_cli_corpus.py",
+        "tools/cli_runtime_counterparts.py"
+      ],
+      "head": "8f3eacc2b8d05315ee86084666c222a5f00601dc",
+      "local_validation": "passed_python_only",
+      "native_validation": "pending",
+      "old_head": "6a31e1d2aef25aab06841b5343f9c5c4f8d243fd",
+      "parents": [
+        "6a31e1d2aef25aab06841b5343f9c5c4f8d243fd",
+        "946ff8ebce6e270511d51f383a9dc63827be3683"
+      ],
+      "pr": 61,
+      "tree": "d61103ab0dfc61c9c4b8e613c1884e685d4b94ad"
+    },
+    {
+      "branch": "codex/ocaml-synthetic-producer-service",
+      "files": [
+        "protocol/migration-inventory.json",
+        "tests/conformance/workflow-cli-runtime-counterparts-v1.json",
+        "tests/test_cli_runtime_counterparts.py",
+        "tests/test_native_workflow_cli_campaign.py",
+        "tests/test_workflow_cli_lineage.py",
+        "tools/check_native_workflow_cli.py",
+        "tools/check_realization_workflow_corpus.py",
+        "tools/check_workflow_cli_corpus.py",
+        "tools/cli_runtime_counterparts.py"
+      ],
+      "head": "246d15ab86b95e482a15cd505093e7416c33a6c4",
+      "local_validation": "passed_python_only",
+      "native_validation": "pending",
+      "old_head": "b5d5aa69f4fbf54a6c484245d82552c7d71dd6cb",
+      "parents": [
+        "b5d5aa69f4fbf54a6c484245d82552c7d71dd6cb",
+        "8f3eacc2b8d05315ee86084666c222a5f00601dc"
+      ],
+      "pr": 62,
+      "tree": "d89abbbcb02d31a1ebe95f5713f76ba84f8eb626"
+    },
+    {
+      "branch": "codex/ocaml-public-synthetic-producers",
+      "files": [
+        "protocol/migration-inventory.json",
+        "tests/conformance/workflow-cli-runtime-counterparts-v1.json",
+        "tests/test_cli_runtime_counterparts.py",
+        "tests/test_native_workflow_cli_campaign.py",
+        "tests/test_workflow_cli_lineage.py",
+        "tools/check_native_workflow_cli.py",
+        "tools/check_workflow_cli_corpus.py",
+        "tools/cli_runtime_counterparts.py"
+      ],
+      "head": "79eeedfd4236161f8e06206cf3ca897f5f1b5de0",
+      "local_validation": "passed_python_only",
+      "native_validation": "pending",
+      "old_head": "a7db48b10b1005e9a6c7cf8cca975ddc1bc82fde",
+      "parents": [
+        "a7db48b10b1005e9a6c7cf8cca975ddc1bc82fde",
+        "246d15ab86b95e482a15cd505093e7416c33a6c4"
+      ],
+      "pr": 63,
+      "tree": "cf76fe798828f11d1551950b84c2600148ac0051"
+    }
+  ],
+  "hosted_validation": {
+    "native_platforms": [
+      "linux-x86_64",
+      "macos-arm64"
+    ],
+    "python_versions": [
+      "3.11",
+      "3.14"
+    ],
+    "required_installed_campaigns": [
+      "synthetic-public-sdk",
+      "synthetic-selection-cli"
+    ],
+    "required_jobs": 36,
+    "status": "pending"
+  },
+  "local_validation": {
+    "focused_python_tests": {
+      "count": 62,
+      "modules": [
+        "test_migration_inventory",
+        "test_ci_validation",
+        "test_core_boundaries",
+        "test_core_synthetic_producer_public",
+        "test_synthetic_producer_cli",
+        "test_native_synthetic_public_sdk_campaign"
+      ],
+      "seconds": 33.184
+    },
+    "lineage_capture_tests": 27,
+    "migration_inventory_entries": 3135,
+    "native_build_or_execution": false,
+    "python311_original_selection_cli_children": 72,
+    "python311_original_workflow_cli_children": 70,
+    "python311_workflow_protocol_tests": 6,
+    "selection_cli_python_protocol_children": 72,
+    "selection_comparator_tests": 5,
+    "strict_mypy_modules": 15
+  },
+  "parent": "79eeedfd4236161f8e06206cf3ca897f5f1b5de0",
+  "remaining_obligations": [
+    "Exact-revision hosted native and full product gates",
+    "Rich topology, registry and freshness helpers",
+    "Large-result artifact transport",
+    "Native pipeline lifecycle and package/export acceptance",
+    "Distribution, remaining profiles and default cutover"
+  ],
+  "schema": "biocompiler.migration_checkpoint.v1",
+  "scope": "Explicit public synthetic producer SDK campaigns and full-build-request synthetic-select CLI integration",
+  "source_files": {
+    "src/biocompiler/cli.py": {
+      "bytes": 95161,
+      "sha256": "5ea4aa80d787105207a605604eec31d0bf2eab15baff57b585bd0633638dd5e7"
+    },
+    "src/biocompiler/core_synthetic_producer_public.py": {
+      "bytes": 12721,
+      "sha256": "15db52841e774d4fdf42ed937dfe173ca844cae920fb6419bbc54eec70c31082"
+    },
+    "src/biocompiler/synthetic_producer_cli.py": {
+      "bytes": 2120,
+      "sha256": "4e500dd094e41841fa15635b1be6a805a0b3b992de574dda888f4d91fa881221"
+    },
+    "tests/conformance/synthetic-selection-cli-runtime-counterparts-v1.json": {
+      "bytes": 5659,
+      "sha256": "f9af4b5dedcdb12243209b862d0808866f1ae62355aca291465be75c7f00824b"
+    },
+    "tests/conformance/synthetic-selection-cli-v1.json": {
+      "bytes": 2063944,
+      "sha256": "da12b62a69c8f3e2169d84846d7d4d8af6c026130135efe78dc125ec836e54a3"
+    },
+    "tests/conformance/workflow-cli-runtime-counterparts-v1.json": {
+      "bytes": 84972,
+      "sha256": "93d8ffeb4ec490839d7906151f92df7b3fb43d31c94f8f2fa983f93aeb6ac8db"
+    },
+    "tools/check_native_synthetic_public_sdk.py": {
+      "bytes": 30119,
+      "sha256": "478e866d091b811d5347c65276e4d27c5023c0c579da7f90a2a59d7ff8e54850"
+    },
+    "tools/check_native_synthetic_selection_cli.py": {
+      "bytes": 41405,
+      "sha256": "0305216333239d322b42b602717aa473723ffe12075ad577b9291b46732e7ac8"
+    },
+    "tools/freeze_synthetic_selection_cli.py": {
+      "bytes": 13289,
+      "sha256": "b181b47e592781a91966e90779f2c667b80f070cbc03cd0390406598b9870520"
+    }
+  },
+  "status": "local_python_and_static_checks_passed_hosted_native_pending"
+}

@@ -1,0 +1,900 @@
+{
+   "until": 7,
+   "schema_version": "biocompiler.synthetic_build_request.v0.2",
+   "realization": {
+      "schema_version": "biocompiler.realization_request.v0.1",
+      "domain": {
+         "version": "1",
+         "schema_version": "biocompiler.operating_domain.v0.1",
+         "role": "n000001",
+         "required_capabilities": [],
+         "minimum_horizon": {
+            "value": 7,
+            "unit": "s",
+            "type": {
+               "name": "Duration",
+               "kind": "scalar",
+               "dimensions": {
+                  "time": 1
+               },
+               "arguments": []
+            },
+            "kind": "scalar",
+            "canonical_value": 7
+         },
+         "max_contacts": 2,
+         "inputs": [
+            {
+               "signal_id": "n000003",
+               "schema_version": "biocompiler.input_domain.v0.1",
+               "observable": {
+                  "scope": "contact",
+                  "schema_version": "biocompiler.observable.v0.1",
+                  "role": "n000001",
+                  "id": "A",
+                  "dtype": {
+                     "name": "Condition",
+                     "kind": "condition",
+                     "dimensions": {},
+                     "arguments": []
+                  },
+                  "compartment": "abstract"
+               },
+               "field": "present",
+               "allowed": [
+                  false,
+                  true
+               ]
+            },
+            {
+               "signal_id": "n000004",
+               "schema_version": "biocompiler.input_domain.v0.1",
+               "observable": {
+                  "scope": "contact",
+                  "schema_version": "biocompiler.observable.v0.1",
+                  "role": "n000001",
+                  "id": "B",
+                  "dtype": {
+                     "name": "Condition",
+                     "kind": "condition",
+                     "dimensions": {},
+                     "arguments": []
+                  },
+                  "compartment": "abstract"
+               },
+               "field": "present",
+               "allowed": [
+                  false,
+                  true
+               ]
+            }
+         ],
+         "id": "two_objects"
+      },
+      "contract": {
+         "schema_version": "biocompiler.behavior_contract.v0.1",
+         "requirements": [
+            {
+               "specification_id": "n000005",
+               "schema_version": "biocompiler.response_requirement.v0.1",
+               "rule_id": "n000009",
+               "observable": {
+                  "scope": "cell",
+                  "schema_version": "biocompiler.observable.v0.1",
+                  "role": "n000001",
+                  "id": "rest_readout",
+                  "dtype": {
+                     "name": "Level",
+                     "kind": "scalar",
+                     "dimensions": {},
+                     "arguments": []
+                  },
+                  "compartment": "abstract"
+               },
+               "max_deactivation_delay": {
+                  "value": 0.5,
+                  "unit": "s",
+                  "type": {
+                     "name": "Duration",
+                     "kind": "scalar",
+                     "dimensions": {
+                        "time": 1
+                     },
+                     "arguments": []
+                  },
+                  "kind": "scalar",
+                  "canonical_value": 0.5
+               },
+               "max_activation_delay": {
+                  "value": 0.5,
+                  "unit": "s",
+                  "type": {
+                     "name": "Duration",
+                     "kind": "scalar",
+                     "dimensions": {
+                        "time": 1
+                     },
+                     "arguments": []
+                  },
+                  "kind": "scalar",
+                  "canonical_value": 0.5
+               },
+               "inactive_range": {
+                  "upper": {
+                     "value": 0.1,
+                     "unit": "1",
+                     "type": {
+                        "name": "Level",
+                        "kind": "scalar",
+                        "dimensions": {},
+                        "arguments": []
+                     },
+                     "kind": "scalar",
+                     "canonical_value": 0.1
+                  },
+                  "type": {
+                     "name": "Interval[Level]",
+                     "kind": "interval",
+                     "dimensions": {},
+                     "arguments": [
+                        {
+                           "name": "Level",
+                           "kind": "scalar",
+                           "dimensions": {},
+                           "arguments": []
+                        }
+                     ]
+                  },
+                  "lower": {
+                     "value": 0,
+                     "unit": "1",
+                     "type": {
+                        "name": "Level",
+                        "kind": "scalar",
+                        "dimensions": {},
+                        "arguments": []
+                     },
+                     "kind": "scalar",
+                     "canonical_value": 0
+                  },
+                  "kind": "interval"
+               },
+               "id": "response",
+               "active_range": {
+                  "upper": {
+                     "value": 1.1,
+                     "unit": "1",
+                     "type": {
+                        "name": "Level",
+                        "kind": "scalar",
+                        "dimensions": {},
+                        "arguments": []
+                     },
+                     "kind": "scalar",
+                     "canonical_value": 1.1
+                  },
+                  "type": {
+                     "name": "Interval[Level]",
+                     "kind": "interval",
+                     "dimensions": {},
+                     "arguments": [
+                        {
+                           "name": "Level",
+                           "kind": "scalar",
+                           "dimensions": {},
+                           "arguments": []
+                        }
+                     ]
+                  },
+                  "lower": {
+                     "value": 0.9,
+                     "unit": "1",
+                     "type": {
+                        "name": "Level",
+                        "kind": "scalar",
+                        "dimensions": {},
+                        "arguments": []
+                     },
+                     "kind": "scalar",
+                     "canonical_value": 0.9
+                  },
+                  "kind": "interval"
+               }
+            }
+         ],
+         "id": "rest",
+         "behavior_fingerprint": "e2e13ad9ba185bdb0854a3a73deb6e28e91ef914f90cc75d99339c10699069e4"
+      },
+      "build_request": {
+         "target": {
+            "schema_version": "biocompiler.target.v0.1",
+            "resources": {},
+            "payload_format": "RNA",
+            "context_version": "1",
+            "context_id": "synthetic",
+            "compartments": [
+               "abstract"
+            ],
+            "capabilities": [
+               "synthetic_signal_graph"
+            ]
+         },
+         "schema_version": "biocompiler.build_request.v0.1",
+         "resolved_defaults": {},
+         "resolved_bindings": {},
+         "provenance": {
+            "source_identities": {},
+            "schema_version": "biocompiler.elaboration_provenance.v0.1",
+            "recorded_at": null,
+            "locations": {},
+            "external_inputs": {},
+            "dependency_identities": {}
+         },
+         "preferences": {},
+         "parameter_metadata": {},
+         "intent": {
+            "schema_version": "biocompiler.intent.v0.1",
+            "roots": [
+               "n000001",
+               "n000009"
+            ],
+            "nodes": [
+               {
+                  "source": {
+                     "line": 15,
+                     "function": "build_request",
+                     "file": "examples/checked_pipeline.py"
+                  },
+                  "role": null,
+                  "kind": "role",
+                  "inputs": [],
+                  "id": "n000001",
+                  "data_type": null,
+                  "attributes": {
+                     "name": "observer",
+                     "engineering": "in_vivo",
+                     "cell_type": "abstract_cell"
+                  }
+               },
+               {
+                  "source": {
+                     "line": 16,
+                     "function": "build_request",
+                     "file": "examples/checked_pipeline.py"
+                  },
+                  "role": "n000001",
+                  "kind": "scope",
+                  "inputs": [
+                     "n000001"
+                  ],
+                  "id": "n000002",
+                  "data_type": null,
+                  "attributes": {
+                     "scope": "contact",
+                     "name": "contact"
+                  }
+               },
+               {
+                  "source": {
+                     "line": 16,
+                     "function": "build_request",
+                     "file": "examples/checked_pipeline.py"
+                  },
+                  "role": "n000001",
+                  "kind": "signal",
+                  "inputs": [
+                     "n000002"
+                  ],
+                  "id": "n000003",
+                  "data_type": {
+                     "name": "SurfaceDensity",
+                     "kind": "scalar",
+                     "dimensions": {
+                        "length": -2,
+                        "amount": 1
+                     },
+                     "arguments": []
+                  },
+                  "attributes": {
+                     "scope": "contact",
+                     "observation": "marker",
+                     "name": "A"
+                  }
+               },
+               {
+                  "source": {
+                     "line": 16,
+                     "function": "build_request",
+                     "file": "examples/checked_pipeline.py"
+                  },
+                  "role": "n000001",
+                  "kind": "signal",
+                  "inputs": [
+                     "n000002"
+                  ],
+                  "id": "n000004",
+                  "data_type": {
+                     "name": "SurfaceDensity",
+                     "kind": "scalar",
+                     "dimensions": {
+                        "length": -2,
+                        "amount": 1
+                     },
+                     "arguments": []
+                  },
+                  "attributes": {
+                     "scope": "contact",
+                     "observation": "marker",
+                     "name": "B"
+                  }
+               },
+               {
+                  "source": {
+                     "line": 17,
+                     "function": "build_request",
+                     "file": "examples/checked_pipeline.py"
+                  },
+                  "role": "n000001",
+                  "kind": "action.rest",
+                  "inputs": [
+                     "n000001"
+                  ],
+                  "id": "n000005",
+                  "data_type": null,
+                  "attributes": {
+                     "ongoing": true
+                  }
+               },
+               {
+                  "source": {
+                     "line": 18,
+                     "function": "build_request",
+                     "file": "examples/checked_pipeline.py"
+                  },
+                  "role": "n000001",
+                  "kind": "qualitative",
+                  "inputs": [
+                     "n000003"
+                  ],
+                  "id": "n000006",
+                  "data_type": {
+                     "name": "Condition",
+                     "kind": "condition",
+                     "dimensions": {},
+                     "arguments": []
+                  },
+                  "attributes": {
+                     "band": "present"
+                  }
+               },
+               {
+                  "source": {
+                     "line": 18,
+                     "function": "build_request",
+                     "file": "examples/checked_pipeline.py"
+                  },
+                  "role": "n000001",
+                  "kind": "qualitative",
+                  "inputs": [
+                     "n000004"
+                  ],
+                  "id": "n000007",
+                  "data_type": {
+                     "name": "Condition",
+                     "kind": "condition",
+                     "dimensions": {},
+                     "arguments": []
+                  },
+                  "attributes": {
+                     "band": "present"
+                  }
+               },
+               {
+                  "source": {
+                     "line": 18,
+                     "function": "build_request",
+                     "file": "examples/checked_pipeline.py"
+                  },
+                  "role": "n000001",
+                  "kind": "and",
+                  "inputs": [
+                     "n000006",
+                     "n000007"
+                  ],
+                  "id": "n000008",
+                  "data_type": {
+                     "name": "Condition",
+                     "kind": "condition",
+                     "dimensions": {},
+                     "arguments": []
+                  },
+                  "attributes": {}
+               },
+               {
+                  "source": {
+                     "line": 18,
+                     "function": "build_request",
+                     "file": "examples/checked_pipeline.py"
+                  },
+                  "role": "n000001",
+                  "kind": "rule",
+                  "inputs": [
+                     "n000001",
+                     "n000008",
+                     "n000005"
+                  ],
+                  "id": "n000009",
+                  "data_type": null,
+                  "attributes": {
+                     "trigger": "condition",
+                     "priority": "unspecified",
+                     "execution": "concurrent"
+                  }
+               }
+            ],
+            "name": "checked_combinational_pipeline"
+         },
+         "implementation_constraints": {},
+         "explicit_overrides": {},
+         "behavior_profile": "biocompiler.behavior.v0.1",
+         "artifact_scope": "synthetic_realization"
+      },
+      "behavior": {
+         "source_links": {
+            "n000009": [
+               "n000001",
+               "n000002",
+               "n000003",
+               "n000004",
+               "n000005",
+               "n000006",
+               "n000007",
+               "n000008",
+               "n000009"
+            ],
+            "n000008": [
+               "n000001",
+               "n000002",
+               "n000003",
+               "n000004",
+               "n000006",
+               "n000007",
+               "n000008"
+            ],
+            "n000007": [
+               "n000001",
+               "n000002",
+               "n000004",
+               "n000007"
+            ],
+            "n000006": [
+               "n000001",
+               "n000002",
+               "n000003",
+               "n000006"
+            ],
+            "n000005": [
+               "n000001",
+               "n000005"
+            ],
+            "n000004": [
+               "n000001",
+               "n000002",
+               "n000004"
+            ],
+            "n000003": [
+               "n000001",
+               "n000002",
+               "n000003"
+            ],
+            "n000002": [
+               "n000001",
+               "n000002"
+            ],
+            "n000001": [
+               "n000001"
+            ]
+         },
+         "source_fingerprint": "99e4fd0a81ab213e9ce92d872964a108791b249b08f13e8d3c2886e2f4d22d76",
+         "schema_version": "biocompiler.behavior.v0.1",
+         "roots": [
+            "n000001",
+            "n000009"
+         ],
+         "requirements": [
+            {
+               "source_node_id": "n000009",
+               "source": {
+                  "line": 18,
+                  "function": "build_request",
+                  "file": "examples/checked_pipeline.py"
+               },
+               "lineage": [
+                  "n000001",
+                  "n000002",
+                  "n000003",
+                  "n000004",
+                  "n000005",
+                  "n000006",
+                  "n000007",
+                  "n000008",
+                  "n000009"
+               ],
+               "kind": "rule",
+               "id": "requirement:n000009"
+            }
+         ],
+         "policies": {
+            "timer_input_precedence": "external_snapshot_before_due_timers",
+            "time": "nonnegative_seconds_piecewise_constant",
+            "targeted_action_binding": "per_contact_object",
+            "state_writes": "coalesce_identical_else_error",
+            "state_reads": "shared_pre_update_state",
+            "state_propagation": "atomic_microsteps_until_stable",
+            "simultaneous_inputs": "atomic_snapshot",
+            "recently": "includes_present_excludes_expiry",
+            "qualitative_observations": "explicit_boolean",
+            "pulse_retrigger": "extend_from_latest_trigger",
+            "pulse_interval": "closed_start_open_end",
+            "profile": "abstract_single_cell.v0.1",
+            "outputs": "abstract_requests_no_input_side_effects",
+            "observation_missing": "error",
+            "memory_visibility": "settled_controls_before_rule_effects",
+            "memory_setting": "onset_latest_refresh",
+            "memory_precedence": "reset_then_new_onset_then_expiry",
+            "memory_initial": false,
+            "memory_dependencies": "causal_topological_settlement",
+            "memory_binding": "any_contact_onset_sets_cell_local_memory",
+            "local_action_binding": "existential_aggregate_then_onset",
+            "initial_true": "rising_event",
+            "initial_time": 0,
+            "history": "since_initialization",
+            "held_for": "full_continuous_interval",
+            "followed_by": "strictly_later_inclusive_window_nonconsuming",
+            "event_ongoing": "explicit_duration_required",
+            "contact_disappearance": "clear_episode_history_and_contact_pulses",
+            "contact_binding": "same_object_before_existential_aggregation",
+            "condition_ongoing": "level",
+            "condition_impulses": "onset"
+         },
+         "parameter_bindings": {},
+         "nodes": [
+            {
+               "source": {
+                  "line": 15,
+                  "function": "build_request",
+                  "file": "examples/checked_pipeline.py"
+               },
+               "role": null,
+               "requirement_ids": [
+                  "requirement:n000009"
+               ],
+               "kind": "role",
+               "inputs": [],
+               "id": "n000001",
+               "data_type": null,
+               "contact_bound": false,
+               "attributes": {
+                  "name": "observer",
+                  "engineering": "in_vivo",
+                  "cell_type": "abstract_cell"
+               }
+            },
+            {
+               "source": {
+                  "line": 16,
+                  "function": "build_request",
+                  "file": "examples/checked_pipeline.py"
+               },
+               "role": "n000001",
+               "requirement_ids": [
+                  "requirement:n000009"
+               ],
+               "kind": "scope",
+               "inputs": [
+                  "n000001"
+               ],
+               "id": "n000002",
+               "data_type": null,
+               "contact_bound": true,
+               "attributes": {
+                  "scope": "contact",
+                  "name": "contact"
+               }
+            },
+            {
+               "source": {
+                  "line": 16,
+                  "function": "build_request",
+                  "file": "examples/checked_pipeline.py"
+               },
+               "role": "n000001",
+               "requirement_ids": [
+                  "requirement:n000009"
+               ],
+               "kind": "signal",
+               "inputs": [
+                  "n000002"
+               ],
+               "id": "n000003",
+               "data_type": {
+                  "name": "SurfaceDensity",
+                  "kind": "scalar",
+                  "dimensions": {
+                     "length": -2,
+                     "amount": 1
+                  },
+                  "arguments": []
+               },
+               "contact_bound": true,
+               "attributes": {
+                  "scope": "contact",
+                  "observation": "marker",
+                  "name": "A"
+               }
+            },
+            {
+               "source": {
+                  "line": 16,
+                  "function": "build_request",
+                  "file": "examples/checked_pipeline.py"
+               },
+               "role": "n000001",
+               "requirement_ids": [
+                  "requirement:n000009"
+               ],
+               "kind": "signal",
+               "inputs": [
+                  "n000002"
+               ],
+               "id": "n000004",
+               "data_type": {
+                  "name": "SurfaceDensity",
+                  "kind": "scalar",
+                  "dimensions": {
+                     "length": -2,
+                     "amount": 1
+                  },
+                  "arguments": []
+               },
+               "contact_bound": true,
+               "attributes": {
+                  "scope": "contact",
+                  "observation": "marker",
+                  "name": "B"
+               }
+            },
+            {
+               "source": {
+                  "line": 17,
+                  "function": "build_request",
+                  "file": "examples/checked_pipeline.py"
+               },
+               "role": "n000001",
+               "requirement_ids": [
+                  "requirement:n000009"
+               ],
+               "kind": "action.rest",
+               "inputs": [
+                  "n000001"
+               ],
+               "id": "n000005",
+               "data_type": null,
+               "contact_bound": false,
+               "attributes": {
+                  "ongoing": true
+               }
+            },
+            {
+               "source": {
+                  "line": 18,
+                  "function": "build_request",
+                  "file": "examples/checked_pipeline.py"
+               },
+               "role": "n000001",
+               "requirement_ids": [
+                  "requirement:n000009"
+               ],
+               "kind": "qualitative",
+               "inputs": [
+                  "n000003"
+               ],
+               "id": "n000006",
+               "data_type": {
+                  "name": "Condition",
+                  "kind": "condition",
+                  "dimensions": {},
+                  "arguments": []
+               },
+               "contact_bound": true,
+               "attributes": {
+                  "band": "present"
+               }
+            },
+            {
+               "source": {
+                  "line": 18,
+                  "function": "build_request",
+                  "file": "examples/checked_pipeline.py"
+               },
+               "role": "n000001",
+               "requirement_ids": [
+                  "requirement:n000009"
+               ],
+               "kind": "qualitative",
+               "inputs": [
+                  "n000004"
+               ],
+               "id": "n000007",
+               "data_type": {
+                  "name": "Condition",
+                  "kind": "condition",
+                  "dimensions": {},
+                  "arguments": []
+               },
+               "contact_bound": true,
+               "attributes": {
+                  "band": "present"
+               }
+            },
+            {
+               "source": {
+                  "line": 18,
+                  "function": "build_request",
+                  "file": "examples/checked_pipeline.py"
+               },
+               "role": "n000001",
+               "requirement_ids": [
+                  "requirement:n000009"
+               ],
+               "kind": "and",
+               "inputs": [
+                  "n000006",
+                  "n000007"
+               ],
+               "id": "n000008",
+               "data_type": {
+                  "name": "Condition",
+                  "kind": "condition",
+                  "dimensions": {},
+                  "arguments": []
+               },
+               "contact_bound": true,
+               "attributes": {}
+            },
+            {
+               "source": {
+                  "line": 18,
+                  "function": "build_request",
+                  "file": "examples/checked_pipeline.py"
+               },
+               "role": "n000001",
+               "requirement_ids": [
+                  "requirement:n000009"
+               ],
+               "kind": "rule",
+               "inputs": [
+                  "n000001",
+                  "n000008",
+                  "n000005"
+               ],
+               "id": "n000009",
+               "data_type": null,
+               "contact_bound": true,
+               "attributes": {
+                  "trigger": "condition",
+                  "state_assignment": "level",
+                  "priority": "none",
+                  "ongoing_activation": "level",
+                  "impulse_activation": "onset",
+                  "execution": "concurrent"
+               }
+            }
+         ],
+         "name": "checked_combinational_pipeline"
+      }
+   },
+   "profile": "synthetic_realization",
+   "intended_use": "software_test",
+   "history": {
+      "schema_version": "biocompiler.synthetic_history.v0.1",
+      "frames": [
+         {
+            "time": 0,
+            "signals": {},
+            "contacts": {
+               "y": {
+                  "n000004": {
+                     "value": null,
+                     "present": true,
+                     "low": null,
+                     "high": null
+                  },
+                  "n000003": {
+                     "value": null,
+                     "present": false,
+                     "low": null,
+                     "high": null
+                  }
+               },
+               "x": {
+                  "n000004": {
+                     "value": null,
+                     "present": false,
+                     "low": null,
+                     "high": null
+                  },
+                  "n000003": {
+                     "value": null,
+                     "present": true,
+                     "low": null,
+                     "high": null
+                  }
+               }
+            }
+         },
+         {
+            "time": 1,
+            "signals": {},
+            "contacts": {
+               "y": {
+                  "n000004": {
+                     "value": null,
+                     "present": true,
+                     "low": null,
+                     "high": null
+                  },
+                  "n000003": {
+                     "value": null,
+                     "present": false,
+                     "low": null,
+                     "high": null
+                  }
+               },
+               "x": {
+                  "n000004": {
+                     "value": null,
+                     "present": true,
+                     "low": null,
+                     "high": null
+                  },
+                  "n000003": {
+                     "value": null,
+                     "present": true,
+                     "low": null,
+                     "high": null
+                  }
+               }
+            }
+         },
+         {
+            "time": 5,
+            "signals": {},
+            "contacts": {
+               "x": {
+                  "n000004": {
+                     "value": null,
+                     "present": false,
+                     "low": null,
+                     "high": null
+                  },
+                  "n000003": {
+                     "value": null,
+                     "present": false,
+                     "low": null,
+                     "high": null
+                  }
+               }
+            }
+         }
+      ]
+   },
+   "config": {
+      "witness_selection": "closed_band_lower_endpoint",
+      "schema_version": "biocompiler.synthetic_generator_config.v0.3",
+      "profile_version": "biocompiler.synthetic.combinational.v0.1",
+      "generator_version": "biocompiler.synthetic.generator.v0.4",
+      "conjunction_strategy": "native",
+      "catalog_fingerprint": "f2a4b4c1625b4794028fcd1d0e08785724f957023966a29faafe9374cca77343"
+   }
+}
