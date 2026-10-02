@@ -44,8 +44,8 @@
       "bytes": 22624
     },
     "core/lib/pipeline_service/callback_channel.mli": {
-      "sha256": "3103352e82f8b9095206c05dc959be33cf43e79a6621c03f373d7c9352fe1bbc",
-      "bytes": 2073
+      "sha256": "1aa64c8a3226d93b336abe7f0dd816fd9ff8fc697a0799b65a4a732057401ce9",
+      "bytes": 2077
     },
     "core/lib/pipeline_service/host_bridge.ml": {
       "sha256": "70c712b0a9737c0bd30e1d4da154212d73c757b33a4d9bbba47138c25e74eaa2",
@@ -192,5 +192,13 @@
     "both hosted native builds and every required exact-revision gate",
     "four-runtime full artifacts and exact executable/run/source bindings",
     "default cutover and supported-platform distribution"
-  ]
+  ],
+  "hosted_compile_correction": {
+    "failed_source": "0b3ffcb941b80a662bc286c7031e550a048ad070",
+    "run_id": "37039980074",
+    "job_id": "110947431821",
+    "diagnostic": "warning 50 ambiguous documentation comments in callback_channel.mli",
+    "change": "Separate attached documentation comments from following declarations with blank lines; no signature or runtime changes.",
+    "validation": "replacement hosted run required; no local native compilation"
+  }
 }

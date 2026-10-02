@@ -25,6 +25,7 @@ type command = {
 type reply = Success of Bioc_wire.Json.t | Rejected of Bioc_wire.Json.t
 exception Host_exception of string
 (** An opaque host-owned exception token, returned without interpretation. *)
+
 exception Closed
 type t
 val create : io:io -> application:Bioc_wire.Json.t ->
@@ -34,12 +35,15 @@ val run : t -> unit
     Nested commands are dispatched only while [invoke] is awaiting its own top
     continuation. Unexpected exceptions close the channel, preserving mutations
     already performed by the application but never publishing them as success. *)
+
 val invoke : t -> action:string -> arguments:Bioc_wire.Json.t -> Bioc_wire.Json.t
 val is_closed : t -> bool
 val budget : t -> Bioc_checker.Work_budget.t
 (** One lifetime ancestor, including all nested dispatch and callback traffic. *)
+
 val retain_bytes : t -> int -> unit
 (** Reserve application-owned retained bytes before allocating/retaining them.
     Received bodies, application declaration, and callback arguments are charged
     conservatively and never refunded, including completed continuations. *)
+
 val usage : t -> Bioc_wire.Json.t
