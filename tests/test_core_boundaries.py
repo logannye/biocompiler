@@ -93,6 +93,15 @@ class CoreBoundaryTests(unittest.TestCase):
             with self.subTest(path=relative), self.assertRaises(boundaries.BoundaryError):
                 boundaries.check_boundaries(root)
 
+    def test_candidate_corpus_action_requires_the_complete_external_fixture(self):
+        action = "(action (run %{test} %{env:BIOCOMPILER_CANDIDATE_RUNTIME_CORPUS=missing}))"
+        for replacement in ("", "(action (run true))", action + "\n " + action):
+            root = self.copy_core()
+            self.change(root, "test/dune", action, replacement)
+            with self.subTest(replacement=replacement), self.assertRaisesRegex(
+                    boundaries.BoundaryError, "Changed native test action"):
+                boundaries.check_boundaries(root)
+
     def test_new_library_missing_checker_and_implicit_transitive_dependencies_fail(self):
         root = self.copy_core()
         added = root / "core/lib/hidden/dune"

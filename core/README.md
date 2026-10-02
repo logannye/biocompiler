@@ -38,7 +38,8 @@ With OCaml 5.4.0 and dependencies from `biocompiler_core.opam` installed:
 
 ```sh
 opam exec -- dune build --root core @all
-opam exec -- dune runtest --root core
+BIOCOMPILER_CANDIDATE_RUNTIME_CORPUS="$PWD/tests/conformance/candidate-runtime-v1.json" \
+  opam exec -- dune runtest --root core
 ```
 
 Build outputs are `core/_build/default/bin/core/main.exe` and

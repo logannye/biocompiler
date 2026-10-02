@@ -1,0 +1,82 @@
+{
+  "aggregate_artifact_id": 11208680049,
+  "aggregate_receipt_bytes": 586229,
+  "aggregate_receipt_sha256": "aba642b852c939afde500a1c28f1030b8a5ed5513ca82b83c2632a480ef1ee68",
+  "corpus_pin": "269e64293c36d52a5ad797c5c2808e52b0072e520992ade9bfa9f5de97dff90a",
+  "integrated_revision": "4415d59acd83750dd824218a1c8ab1500d8fc749",
+  "integrated_tree": "64e2732d72b07468b4a7e89ddddf0f7805416f36",
+  "platforms": [
+    {
+      "architecture_checker_checks": 108,
+      "architecture_producer_checks": 62,
+      "binary_pins_rehashed": true,
+      "binary_sha256": {
+        "biocompiler-core": "9a791b4e1a64589870a6b3e82b643cfc715a7163326bef4efdb1b4065236c510",
+        "biocompiler-verify": "3be629afccd24bf810a1e5bd9875c2186509fc897405f832f0be024d6dd746f2"
+      },
+      "foundation_checks": 936,
+      "machine": "x86_64",
+      "native_literal_suites": 46,
+      "native_log_sha256": "ee851570ab1e1d1eec52b6642fdcf8cfe131974175f3176e315af651005611e8",
+      "platform": "linux-x86_64",
+      "python_semantics_blocked": true,
+      "receipt_sha256": {
+        "architecture-producer-protocol.json": "f74baee86674b3cc4bf566267ddc1ffd109a2b6978edb9e89668f63d38c1cc69",
+        "architecture-protocol.json": "83c3ccb1b85e73816792d3f503149a8a1539d62f8c0310ca4c25156ad07a66a2",
+        "conformance.json": "74f41e1552a9fda69412c8b11347e9cc2996220fe25b092836adf49e6b29e987"
+      },
+      "system": "Linux"
+    },
+    {
+      "architecture_checker_checks": 108,
+      "architecture_producer_checks": 62,
+      "binary_pins_rehashed": true,
+      "binary_sha256": {
+        "biocompiler-core": "0f66b5c0369dca521e40057a1d077f2967e2420a88efc5e701f86cdbd8b42bac",
+        "biocompiler-verify": "483aa802ed6924f1523a2b061f5817bf631e0931c38cb71cf6fed17445d2558a"
+      },
+      "foundation_checks": 936,
+      "machine": "arm64",
+      "native_literal_suites": 46,
+      "native_log_sha256": "a784d02cfc4670a9827c4783fbc7863e4e3b58deed069eb6056c86b7c867363f",
+      "platform": "macos-arm64",
+      "python_semantics_blocked": true,
+      "receipt_sha256": {
+        "architecture-producer-protocol.json": "7ecf81acfe3440559bc1d5585ea1415d20f889312b9f68d46ddb2df643c0bb5f",
+        "architecture-protocol.json": "e6916799dcff77b54c2249fafec1a3bb39e510132c584a00fd88e328f46e148e",
+        "conformance.json": "4855024beb9e02663f04dc94d78a2a92da2b61c290aa7a4249558b63ccb9b138"
+      },
+      "system": "Darwin"
+    }
+  ],
+  "post_merge_main_run": {
+    "run_id": "36961812619",
+    "status": "in_progress",
+    "url": "https://github.com/logannye/biocompiler/actions/runs/36961812619",
+    "validation_claimed": false
+  },
+  "pull_request": 47,
+  "pull_request_url": "https://github.com/logannye/biocompiler/pull/47",
+  "python_tests": {
+    "3.11": 2351,
+    "3.14": 2351
+  },
+  "run_attempt": "1",
+  "run_id": "36959458593",
+  "run_url": "https://github.com/logannye/biocompiler/actions/runs/36959458593",
+  "schema_version": "biocompiler.installed_architecture_producer_validation.v1",
+  "scope": "Installed independent architecture producer and standalone verification under supplied contracts; no empirical biological validation or overall migration completion.",
+  "source_revision": "92cb2234d3eb5f2832eb99e7aa8c9b7a36aeafee",
+  "source_tree": "64e2732d72b07468b4a7e89ddddf0f7805416f36",
+  "status": "pass",
+  "successful_jobs": 30,
+  "tested_revision": "03936f8c6c917f7df9aa2f511f757747c620f9a2",
+  "tested_tree": "64e2732d72b07468b4a7e89ddddf0f7805416f36",
+  "verified_shards_per_python": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ]
+}

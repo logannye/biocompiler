@@ -86,37 +86,74 @@ def _allowed_name(name, allowed):
     return any(name == item or name.startswith(item + ".<locals>.") for item in allowed)
 
 
-def _allowed_frame(frame):
-    module = frame.f_globals.get("__name__", "")
+def _frame_policy(module, code):
+    """Classify immutable code metadata; None requires live instance checks."""
     if not module.startswith("biocompiler"):
         return True
     if module in _TRANSPORT or module == "biocompiler.errors" or module.startswith(("biocompiler.ir.", "biocompiler.artifacts.")):
         return True
-    code = frame.f_code
     allowed = _CODECS.get(module, ()) + _ROUTES.get(module, ())
     if _allowed_name(code.co_qualname, allowed):
         return True
     # Python versions give generated dataclass constructors different qualnames.
     # Permit only generated methods belonging to the explicitly named records.
     if code.co_filename == "<string>" and code.co_name in {"__init__", "__eq__", "__repr__"}:
-        record = type(frame.f_locals.get("self"))
-        return record.__module__ == module and any(name.startswith(record.__qualname__ + ".") for name in _CODECS.get(module, ()))
+        return None
     return False
+
+
+def _generated_record_allowed(frame, module, classified=None):
+    record = type(frame.f_locals.get("self"))
+    if record.__module__ != module:
+        return False
+    name = record.__qualname__
+    key = (module, name)
+    if classified is not None and key in classified:
+        return classified[key]
+    allowed = any(item.startswith(name + ".") for item in _CODECS.get(module, ()))
+    if classified is not None:
+        classified[key] = allowed
+    return allowed
+
+
+def _allowed_frame(frame):
+    module = frame.f_globals.get("__name__", "")
+    policy = _frame_policy(module, frame.f_code)
+    return _generated_record_allowed(frame, module) if policy is None else policy
 
 
 @contextmanager
 def routed_execution():
     previous = sys.getprofile()
     seen = set()
+    classified = {}
+    generated_names = {}
 
     def guard(frame, event, _argument):
         if event == "call":
-            if not _allowed_frame(frame):
-                raise AssertionError("Python semantic authority executed on the native route: "
-                                     + frame.f_globals.get("__name__", "") + "." + frame.f_code.co_qualname)
+            # Globals and generated-method self types are mutable: inspect them
+            # on every call. Only the code/module policy classification is cached.
             module = frame.f_globals.get("__name__", "")
-            if module in _CODECS or module in _ROUTES:
-                seen.add(module + "." + frame.f_code.co_qualname)
+            if (not module.startswith("biocompiler") or module in _TRANSPORT
+                    or module == "biocompiler.errors"
+                    or module.startswith(("biocompiler.ir.", "biocompiler.artifacts."))):
+                return
+            code = frame.f_code
+            key = (module, id(code))
+            entry = classified.get(key)
+            if entry is None:
+                policy = _frame_policy(module, code)
+                observed = module + "." + code.co_qualname if module in _CODECS or module in _ROUTES else None
+                # Keep the code alive so a reused object id cannot inherit a
+                # cached permission; avoid repeatedly hashing a complete code.
+                entry = (policy, observed, code)
+                classified[key] = entry
+            policy, observed, _code = entry
+            if policy is False or (policy is None and not _generated_record_allowed(frame, module, generated_names)):
+                raise AssertionError("Python semantic authority executed on the native route: "
+                                     + module + "." + code.co_qualname)
+            if observed is not None:
+                seen.add(observed)
 
     sys.setprofile(guard)
     try:

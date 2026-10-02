@@ -246,4 +246,5 @@
 (test
  (name test_candidate_runtime_corpus)
  (modules test_candidate_runtime_corpus)
- (libraries bioc_wire bioc_domain bioc_candidate_runtime zarith))
+ (libraries bioc_wire bioc_domain bioc_candidate_runtime zarith)
+ (action (run %{test} %{env:BIOCOMPILER_CANDIDATE_RUNTIME_CORPUS=missing})))

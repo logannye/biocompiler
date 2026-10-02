@@ -293,6 +293,11 @@ def check_boundaries(root: Path):
             if kind not in {"library", "executable", "test"}:
                 raise BoundaryError(f"Unreviewed Dune stanza {kind} in {relative}")
             allowed = {"name", "libraries", "private_modules"} if kind == "library" else {"name", "public_name", "package", "libraries"} if kind == "executable" else {"name", "modules", "libraries"}
+            actions = []
+            if kind == "test":
+                actions = [field for field in stanza[1:]
+                           if isinstance(field, list) and field and field[0] == "action"]
+                stanza = [stanza[0], *(field for field in stanza[1:] if field not in actions)]
             values = fields(stanza, allowed)
             dependencies = values.get("libraries", [])
             if len(dependencies) != len(set(dependencies)):
@@ -315,6 +320,11 @@ def check_boundaries(root: Path):
             else:
                 if relative != "test/dune" or name not in TESTS or values.get("modules") != [name]:
                     raise BoundaryError(f"Unreviewed native test stanza: {name}")
+                expected_actions = ([["action", ["run", "%{test}",
+                    "%{env:BIOCOMPILER_CANDIDATE_RUNTIME_CORPUS=missing}"]]]
+                    if name == "test_candidate_runtime_corpus" else [])
+                if actions != expected_actions:
+                    raise BoundaryError(f"Changed native test action: {name}")
                 if name in tests or dependencies != TESTS[name]:
                     raise BoundaryError(f"Duplicate or changed native test dependencies: {name}")
                 tests[name] = sorted(dependencies)

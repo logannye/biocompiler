@@ -823,7 +823,7 @@ jobs:
   ocaml-core:
     runs-on: ${{ matrix.runner }}
     # Includes both installed Python routing campaigns and every native corpus.
-    timeout-minutes: 60
+    timeout-minutes: 90
     strategy:
       fail-fast: false
       matrix:
@@ -867,7 +867,9 @@ jobs:
         run: |
           opam exec -- dune build --root core @all
       - name: Run every native literal and mutation suite
-        run: opam exec -- dune runtest --root core
+        run: |
+          BIOCOMPILER_CANDIDATE_RUNTIME_CORPUS="$GITHUB_WORKSPACE/tests/conformance/candidate-runtime-v1.json" \
+            opam exec -- dune runtest --root core
       - name: Check retained request, behavior and coordinate domain corpora
         if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
         run: |
