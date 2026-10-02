@@ -200,5 +200,10 @@
     "diagnostic": "warning 50 ambiguous documentation comments in callback_channel.mli",
     "change": "Separate attached documentation comments from following declarations with blank lines; no signature or runtime changes.",
     "validation": "replacement hosted run required; no local native compilation"
+  },
+  "source_lineage_test_correction": {
+    "diagnostic": "Focused local lineage test omitted the two reviewed callback additions from its literal expected source census.",
+    "change": "Include core_pipeline_callback_session.py and pipeline_callback_objects.py in the exact expected list; original source pins, frozen observations and import guards remain unchanged.",
+    "validation": "Replacement hosted exact-revision gates required; current descendant additionally requires its own manager module in this census."
   }
 }
