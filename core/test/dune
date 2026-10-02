@@ -494,3 +494,9 @@
  (modules test_fixed_pipeline_corpus)
  (libraries bioc_wire bioc_domain bioc_checker bioc_compiler bioc_pipeline bioc_synthetic_producer zarith)
  (action (run %{test} %{env:BIOCOMPILER_FIXED_PIPELINE_CORPUS=missing} %{env:BIOCOMPILER_FIXED_PIPELINE_CONTINUATIONS=missing})))
+
+(test
+ (name test_provider_comparison)
+ (modules test_provider_comparison)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_compiler zarith)
+ (action (run %{test} %{env:BIOCOMPILER_PIPELINE_CALLBACK_SEMANTICS=missing})))

@@ -888,6 +888,7 @@ jobs:
           BIOCOMPILER_FIXED_PIPELINE_CONTINUATIONS="$GITHUB_WORKSPACE/tests/conformance/fixed-pipeline-continuations-native-v1.json" \
           BIOCOMPILER_FIXED_PIPELINE_CORPUS="$GITHUB_WORKSPACE/tests/conformance/fixed-pipeline-native-v1.json" \
           BIOCOMPILER_LOWERING_CORPUS="$GITHUB_WORKSPACE/tests/conformance/lowering-v1.json" \
+          BIOCOMPILER_PIPELINE_CALLBACK_SEMANTICS="$GITHUB_WORKSPACE/tests/conformance/pipeline-callback-semantics-v1.json" \
           BIOCOMPILER_PIPELINE_CONTRACT_LITERALS="$GITHUB_WORKSPACE/tests/conformance/pipeline-contract-literals-v1.json" \
           BIOCOMPILER_SYNTHETIC_INSPECTION_DECLARATION="$GITHUB_WORKSPACE/protocol/synthetic-inspection-v1.json" \
           BIOCOMPILER_SYNTHETIC_INSPECTION_FIXTURES="$GITHUB_WORKSPACE/tests/conformance/synthetic-inspection-supplemental-v1.json" \
@@ -1020,6 +1021,9 @@ jobs:
       - name: Check native stage acceptance, scoped completion and transitive freshness
         if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
         run: core/_build/default/test/test_pass_manager.exe "$GITHUB_WORKSPACE/tests/conformance/pipeline-contract-literals-v1.json" | tee generated/core/test_pass_manager.txt
+      - name: Preserve original validator comparison order, identity and callback mutations
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_provider_comparison.exe "$GITHUB_WORKSPACE/tests/conformance/pipeline-callback-semantics-v1.json" | tee generated/core/test_provider_comparison.txt
       - name: Replay original manager commands, callback bodies and complete state changes
         if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
         run: core/_build/default/test/test_checked_pipeline_corpus.exe "$GITHUB_WORKSPACE/tests/conformance/checked-pipeline-v1.json" | tee generated/core/test_checked_pipeline_corpus.txt

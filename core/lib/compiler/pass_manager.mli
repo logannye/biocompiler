@@ -21,11 +21,19 @@ type callback_result = Proposal of C.Pass_result.t | Decision of C.Check_decisio
    A fresh closure is a new provider even when its implementation is identical.
    The same unified provider type allows detecting producer self-certification. *)
 type provider = W.t -> C.Pass_context.t -> callback_result
+(* Trusted native comparison of prior and replacement validator values; create
+   defaults to physical equality. Called
+   only when their physical identities differ, in the prior mapping's order.
+   It receives the manager's lifetime budget and may reenter the live manager;
+   exceptions and mutations are retained. This does not compare producers,
+   alter self-certification checks, merge provider identities or import trust. *)
+type validator_equivalent = W.t -> provider -> provider -> bool
 type no_candidate = {pass_id:string; configuration:Bioc_wire.Json.t;
   dependencies:(string * string) list; message:string}
 exception No_candidate_found of no_candidate
 type t
-val create : budget:W.t -> ?limits:limits -> target:Bioc_domain.Build_request.Target.t ->
+val create : budget:W.t -> ?limits:limits -> ?validator_equivalent:validator_equivalent ->
+  target:Bioc_domain.Build_request.Target.t ->
   dependencies:(string * string) list -> ?completion_profiles:C.Completion_profile.t list -> unit -> t
 val target : t -> Bioc_domain.Build_request.Target.t
 val register_completion_profile : t -> C.Completion_profile.t -> unit

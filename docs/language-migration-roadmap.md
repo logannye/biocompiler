@@ -4,6 +4,25 @@ Created: 2026-10-01, America/Los_Angeles.
 
 **Decision:** TypeScript for Studio; Python for authoring, orchestration and scientific exploration; OCaml for the semantic compiler, independent checking and canonical emission.
 
+**GitHub preservation checkpoint, 2026-10-02:** PR57–68 retain the current
+migration work. Their full exact-revision gates remain required before merging.
+The latest audit found missing fixture environment bindings in the complete
+native-suite invocation and a 21,423,948-byte unit plan exceeding its reader's
+20 MB limit. The corrections preserve every original suite and observation.
+Persistent sessions remain unimplemented; the initial interface/framing draft is
+preserved in [the nonexecutable scaffold](migration-pipeline-session-scaffold.md).
+Resume at LM-25 P2 after checking the current hosted runs; do not treat a pushed
+checkpoint or this saved draft as completed migration or release acceptance.
+
+- [x] **LM-03 CI native fixture wiring:** bind every registered Dune fixture in
+  the complete native-suite step and add an exhaustive source regression.
+- [x] **LM-03 complete unit-plan transport:** use matching bounded 64 MiB plan
+  readers/writers while retaining 20 MB limits for other shard JSON. The focused
+  campaign passes 33 tests, including a complete plan exceeding 20 MB, exact
+  byte boundaries, atomic writer failure and full plan/run/accounting traversal.
+- [ ] **LM-03 corrected hosted acceptance:** require all 36 jobs on the corrected
+  heads, including full unit accounting and both native platforms, before merge.
+
 **Status:** the default remains Python; explicit architecture SDK/CLI selection uses the validated OCaml core. PR48–56 have completed their exact-revision gates and are integrated (PR52 through PR53). PR57–65 preserve realization protocol/routing, full workflow engines and services, public workflow routes, synthetic producers, installed SDK/CLI integration and rich native inspection; their complete current-revision gates remain pending. The current P2 checkpoint implements native checked-manager contracts, lifecycle authority and fixed synthetic/component pipelines, with complete original Python captures retained and hosted native validation pending. Distribution, remaining profiles, public native pipeline/package authority and default cutover remain open.
 
 The validated foundation is merged in [PR37](https://github.com/logannye/biocompiler/pull/37), with the exact revision/platform results in the [foundation receipt](../protocol/migration-foundation-validation.json). Typed request, all 42 Behavior operations and molecular-coordinate domains are merged in [PR38](https://github.com/logannye/biocompiler/pull/38); the [domain receipt](../protocol/migration-domain-validation.json) records both native platforms and full Python/integration checks. Both integrated main revisions also passed their required gates.
@@ -784,6 +803,29 @@ record current parent heads; previous partial native passes are historical only.
   bring the native total to 96 per platform; all 36 exact-revision jobs remain
   mandatory. Broader lifecycle, public sessions and package/export exits stay open.
 
+- [x] **LM-03 P2 original validator comparison capture:** 34 supplemental
+  original-Python cases retain complete state, ordered comparisons and errors,
+  including distinct equal bound methods, producer identity, self-certification,
+  short-circuit order, reflected equality, mutation and reentrancy. Six integrity
+  tests pass; existing lifecycle and fixed-pipeline captures are unchanged.
+
+- [x] **LM-25 P2 validator comparison source checkpoint:** the native manager
+  accepts a trusted comparison function for distinct validator objects while
+  preserving physical producer identity, self-certification checks and provider
+  retention. The function receives the same work ancestor; comparison order,
+  exceptions and reentrant mutations remain observable. A source-reviewed native
+  driver covers all 34 original cases and 106 nested events, plus default,
+  retention, recursion and exact/one-short budget controls. Native execution is
+  pending; this 97th hosted suite does not implement public sessions.
+
+- [ ] **LM-25 P2 validator comparison and public sessions:** validate the additive
+  trusted native comparison hook and its complete original-observation replay on
+  both platforms, then implement the persistent transport, callback continuations,
+  deferred object conversion and public proxy described in the
+  [session design](migration-pipeline-sessions.md). Preserve producer identity,
+  fresh native manager authority and all original public workflows. The hook
+  alone does not close generic callback compatibility or session integration.
+
 - [x] **LM-03 CI harness correction checkpoint:** the installed architecture
   guard now permits only the exact new parser-registration helpers while rejecting
   semantic handlers and similar names; ten focused tests pass. The macOS artifact
@@ -804,7 +846,8 @@ The campaign now derives the exact expected array from reviewed family order,
 keeps strict ordering and complete field checks, and identifies mismatched fields.
 Seventeen focused Python conformance tests pass, including ordering and field
 mutants. Corrected revisions still require every hosted gate; this does not close
-any native acceptance checkbox.
+any native acceptance checkbox. Exact parent corrections and local proof scope
+are recorded in the [correction receipt](../protocol/migration-capability-order-corrections.json).
 
 The integrated PR51 main revision `652e2aa0aa24bf563412483827d07c4bc027a4e0`
 passed all 31 jobs in [run 36972688727](https://github.com/logannye/biocompiler/actions/runs/36972688727).

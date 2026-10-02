@@ -37,11 +37,13 @@ let limits_json x=obj ["profile",str resource_profile;"max_records",Json.int x.m
   "retention",str "conservative_cumulative_state_reservations_no_refund" ]
 type callback_result=Proposal of PR.t | Decision of CD.t | Invalid_return of Json.t
 type provider=W.t -> C.Pass_context.t -> callback_result
+type validator_equivalent=W.t -> provider -> provider -> bool
 type no_candidate={pass_id:string;configuration:Json.t;dependencies:(string*string) list;message:string}
 exception No_candidate_found of no_candidate
 type registration={contract:PC.t;producer:provider;validators:(string*provider) list}
 type admission={admission_contract:IC.t;admission_validators:(string*provider) list}
-type t={budget:W.t;limits:limits;target_value:Build_request.Target.t;target_identity:string;
+type t={budget:W.t;limits:limits;validator_equivalent:validator_equivalent;
+  target_value:Build_request.Target.t;target_identity:string;
   mutable dependencies:(string*string) list;mutable passes:(string*registration) list;
   mutable admissions:(string*admission) list;mutable provider_history:(string*registration) list;
   mutable admission_history:(string*admission) list;mutable providers:provider list;
@@ -115,11 +117,12 @@ let set_dependency t key identity=with_call t (fun ()->
   if key="target" && not (same_text t identity t.target_identity) then
     fail "Target dependency must match the pipeline context; create a new manager.";
   retain_json t (obj [key,str identity]);t.dependencies<-replace t key identity t.dependencies)
-let create ~budget ?(limits=default_limits) ~target ~dependencies ?(completion_profiles=[]) ()=
+let create ~budget ?(limits=default_limits) ?(validator_equivalent=(fun _ left right->left==right))
+    ~target ~dependencies ?(completion_profiles=[]) ()=
   let input=X.make_limits ~max_bytes:limits.max_document_bytes ~max_nodes:limits.max_document_nodes
     ~charge:(W.charge budget) () in
   let target_identity=X.fingerprint ~limits:input (Build_request.Target.to_json target) in
-  let t={budget;limits;target_value=target;target_identity;dependencies=[];passes=[];admissions=[];
+  let t={budget;limits;validator_equivalent;target_value=target;target_identity;dependencies=[];passes=[];admissions=[];
     provider_history=[];admission_history=[];providers=[];records=[];profiles=[];retained=0;retained_bytes=0;calls=0} in
   retain_json t (Build_request.Target.to_json target);
   List.iter (register_completion_profile t) (bounded t completion_profiles);
@@ -138,7 +141,8 @@ let provider_map t validators=
   require (List.length (unique t keys)=List.length keys) "Invalid pass providers.";validators
 let same_providers t left right=
   List.length left=List.length right && List.for_all (fun (key,provider)->
-    match lookup t key right with None->false|Some other->charge t 1;provider==other) (bounded t left)
+    match lookup t key right with None->false|Some other->
+      charge t 1;provider==other || t.validator_equivalent t.budget provider other) (bounded t left)
 let register t contract ~producer ~validators=with_call t (fun ()->
   ignore (measure t (PC.to_json contract));let id=PC.id contract in
   if contains t id t.admissions then fail "Pass ID collides with a component admission policy.";

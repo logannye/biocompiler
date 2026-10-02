@@ -130,6 +130,28 @@ These two suites raise the hosted total to 96; native compilation/execution and
 all 36 exact-revision jobs are still required. No public service/session cutover
 is included in this source checkpoint.
 
+## Validator comparison compatibility
+
+The original Python manager distinguishes physical producer identity from
+validator dictionary equality. Distinct bound-method objects can compare equal;
+comparison itself can raise, mutate dependencies or reenter the manager. The
+native manager now accepts an optional trusted `validator_equivalent` function.
+Its default preserves physical comparison. The function is invoked only after the
+physical-identity shortcut, in the previous mapping's insertion order, with the
+same lifetime work ancestor. Errors and completed mutations remain observable.
+Producer history, provider retention and self-certification still use physical
+identity. No serialized flag or claimed receipt supplies comparison authority.
+
+The supplemental original-Python oracle retains 34 cases, 78 actual manager
+events, 28 comparison events and 18 raised events, with complete before/after
+state and source pins. Inventory:
+`81462d7732ba6205791831030b21ebcbaa3f8d4c58837deb38d072b3e1025d45`.
+Six local integrity tests pass. The native replay is mandatory on both platforms;
+its execution remains pending. The hook is a prerequisite for a trusted live
+callback adapter, not an implemented Python session transport. Public generic
+callbacks, deferred object conversion and the remaining integration obligations
+are detailed in the [session design](migration-pipeline-sessions.md).
+
 ## Separate large-artifact obligation
 
 A producer file channel alone would not remove current semantic limits: direct
