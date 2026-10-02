@@ -5,6 +5,7 @@ import importlib.util
 import json
 import math
 from pathlib import Path
+import re
 import struct
 import tempfile
 from types import SimpleNamespace
@@ -23,6 +24,54 @@ class CoreConformanceTests(unittest.TestCase):
     def setUpClass(cls):
         cls.corpus = campaign.load_corpus()
         cls.programs = campaign.source_programs()
+
+    def test_producer_scope_order_matches_native_declaration_not_json_key_order(self):
+        source = (campaign.ROOT / "core/lib/producer_service/synthetic_producer_service.ml").read_text()
+        declaration = json.loads(re.search(r"\{profiles\|(.*?)\|profiles\}", source, re.S).group(1))
+        self.assertEqual(set(declaration), set(campaign.SYNTHETIC_PRODUCER_PROFILES))
+        for family, profile in declaration.items():
+            for field, value in profile.items():
+                self.assertEqual(campaign.SYNTHETIC_PRODUCER_PROFILES[family][field], value)
+        self.assertIn("let families = [Generation;Selection;Components]", source)
+        expected = [
+            "deterministic-synthetic-proposal-only-v1",
+            "two-strategy-synthetic-selection-finite-history-v1",
+            "fresh-synthetic-component-adaptation-only-v1",
+        ]
+        self.assertEqual(campaign.synthetic_producer_scopes(), expected)
+        json_key_order = [profile["validation_scope"] for profile in declaration.values()]
+        self.assertNotEqual(json_key_order, expected)
+        # Changes to JSON object insertion order cannot change the wire array.
+        with patch.object(campaign, "SYNTHETIC_PRODUCER_PROFILES", dict(reversed(list(declaration.items())))):
+            self.assertEqual(campaign.synthetic_producer_scopes(), expected)
+
+    def test_capability_fields_preserve_exact_scope_order_and_field_diagnostics(self):
+        scopes = campaign.synthetic_producer_scopes()
+        profiles = deepcopy(campaign.SYNTHETIC_PRODUCER_PROFILES)
+        actual = {
+            "canonicalization": "python-json-v1",
+            "intent_schemas": ["biocompiler.intent.v0.1"],
+            "validation_scopes": list(scopes),
+            "limits": deepcopy(campaign.LIMITS),
+            "schema_version": "biocompiler.core_capabilities.v1",
+            "profiles": deepcopy(profiles),
+        }
+        campaign.check_capability_fields(actual, scopes, profiles)
+        changed_profiles = deepcopy(profiles)
+        changed_profiles["synthetic_generation"]["claim_scope"] = "empirical function"
+        changes = (
+            ("canonicalization", "other-json"),
+            ("intent_schemas", []),
+            ("validation_scopes", scopes[1:] + scopes[:1]),
+            ("validation_scopes", scopes[:-1]),
+            ("limits", {}),
+            ("schema_version", "biocompiler.core_capabilities.v2"),
+            ("profiles", changed_profiles),
+        )
+        for field, value in changes:
+            with self.subTest(field=field, value=value), self.assertRaisesRegex(
+                    AssertionError, "Capability contract differs: " + field):
+                campaign.check_capability_fields({**actual, field: value}, scopes, profiles)
 
     def test_literal_expectations_retain_independent_bytes_and_digests(self):
         by_id = {value["id"]: value for value in self.corpus["literal_vectors"]}
