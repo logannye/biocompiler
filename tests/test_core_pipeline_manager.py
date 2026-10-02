@@ -8,13 +8,13 @@ from unittest.mock import patch
 from biocompiler.artifacts.provenance import SourceLink
 from biocompiler.compiler.passes import PassResult
 from biocompiler.compiler.pipeline import (
-    ArtifactStatus, CheckDecision, CompletionProfile, ComponentInputContract, NoCandidateFound, PassContext,
-    PassManager, PipelineError, PipelineResult, StageRecord,
+    ArtifactStatus, CheckDecision, CheckSpec, CompletionProfile, ComponentInputContract, NoCandidateFound, PassContext,
+    PassContract, PassManager, PipelineError, PipelineResult, ScopedObligation, StageRecord,
 )
 from biocompiler.core_client import CoreClient, CoreProtocolError
 from biocompiler.core_pipeline_callback_session import CallbackRejected
 from biocompiler.core_pipeline_manager import CorePassManager, ManagerInspection, _ordered, capability_profile
-from biocompiler.core_pipeline_session import encode_document
+from biocompiler.core_pipeline_session import decode_document, encode_document
 from biocompiler.ir.intent import freeze_json
 from biocompiler.ir.stages import Stage
 from biocompiler.verification.evidence import CheckOutcome
@@ -169,7 +169,7 @@ class CorePipelineManagerTests(unittest.TestCase):
                 raise AssertionError('premature iteration')
 
         error = CallbackRejected(SimpleNamespace(result={'module': 'biocompiler.compiler.pipeline', 'type': 'PipelineError',
-            'message': 'Earlier native precondition failed.', 'attributes': {}}))
+            'message': 'Earlier native precondition failed.', 'attributes': {}, 'attributes_tree': ['object', []]}))
         self.session.results.update({'add-input': error, 'run': error})
         payload, configuration = Deferred(), Deferred()
         with self.assertRaisesRegex(PipelineError, 'Earlier native precondition'):
@@ -192,7 +192,7 @@ class CorePipelineManagerTests(unittest.TestCase):
         self.assertEqual([operation for operation, _ in self.session.requests].count('get'), 2)
         self.session.results['get'] = CallbackRejected(SimpleNamespace(result={
             'module': 'biocompiler.compiler.pipeline', 'type': 'PipelineError',
-            'message': "Stale artifact 'input'; changed dependencies: request.", 'attributes': {}}))
+            'message': "Stale artifact 'input'; changed dependencies: request.", 'attributes': {}, 'attributes_tree': ['object', []]}))
         with self.assertRaisesRegex(PipelineError, 'Stale artifact'):
             self.manager.get('input')
         self.assertIs(self.manager._records['input'], first)
@@ -315,6 +315,7 @@ class CorePipelineManagerTests(unittest.TestCase):
     def test_expected_native_exceptions_use_closed_classes_and_complete_attributes(self):
         value = {'module': 'biocompiler.compiler.pipeline', 'type': 'NoCandidateFound', 'message': 'Native complete message',
             'attributes': {'pass_id': 'pass', 'configuration': {'zeta': 1}, 'dependencies': {'request': 'a' * 64}}}
+        value['attributes_tree'] = _ordered(value['attributes'])
         self.session.results['run'] = CallbackRejected(SimpleNamespace(result=value))
         with self.assertRaises(NoCandidateFound) as caught:
             self.manager.run('pass', 'input', 'output')
@@ -329,6 +330,88 @@ class CorePipelineManagerTests(unittest.TestCase):
             self.manager.run('pass', 'input', 'output')
         self.assertTrue(self.session.invalidated)
 
+    def test_no_candidate_snapshots_keep_order_kinds_and_independent_identity(self):
+        configuration = freeze_json({'zeta': [{'integer': 1, 'float': 1.0, 'boolean': True,
+            'nothing': None, 'text': 'a'}], 'alpha': {'last': 2, 'first': 3}})
+        dependencies = freeze_json({'request': 'a' * 64, 'registry': 'b' * 64, 'target': 'c' * 64})
+        context_configuration = self.manager._binding(self.native(configuration, 'snapshot/configuration'))
+        context_dependencies = self.manager._binding(self.native(dependencies, 'snapshot/dependencies'))
+        attributes = {'pass_id': 'pass', 'configuration': {'zeta': [{'integer': 1, 'float': 1.0,
+            'boolean': True, 'nothing': None, 'text': 'a'}], 'alpha': {'last': 2, 'first': 3}},
+            'dependencies': dict(dependencies)}
+        descriptor = {'module': 'biocompiler.compiler.pipeline', 'type': 'NoCandidateFound',
+            'message': 'Native complete message', 'attributes': decode_document(encode_document(attributes)),
+            'attributes_tree': _ordered(attributes)}
+        cache = dict(self.manager._bindings)
+        errors = []
+        for _ in range(2):
+            self.session.results['run'] = CallbackRejected(SimpleNamespace(result=descriptor))
+            with self.assertRaises(NoCandidateFound) as caught:
+                self.manager.run('pass', 'input', 'output')
+            errors.append(caught.exception)
+        first, second = errors
+        self.assertEqual(tuple(vars(first)), ('pass_id', 'configuration', 'dependencies'))
+        self.assertEqual(tuple(first.configuration), ('zeta', 'alpha'))
+        self.assertEqual(tuple(first.configuration['zeta'][0]), ('integer', 'float', 'boolean', 'nothing', 'text'))
+        self.assertEqual(tuple(first.configuration['alpha']), ('last', 'first'))
+        self.assertEqual(tuple(first.dependencies), ('request', 'registry', 'target'))
+        for name, kind in (('integer', int), ('float', float), ('boolean', bool), ('text', str)):
+            self.assertIs(type(first.configuration['zeta'][0][name]), kind)
+        self.assertIsNone(first.configuration['zeta'][0]['nothing'])
+        self.assertIsNot(first.configuration, context_configuration)
+        self.assertIsNot(first.dependencies, context_dependencies)
+        self.assertIsNot(first.configuration, second.configuration)
+        self.assertIsNot(first.dependencies, second.dependencies)
+        self.assertIsNot(first.configuration['zeta'], second.configuration['zeta'])
+        self.assertIsNot(first.configuration['zeta'][0], second.configuration['zeta'][0])
+        self.assertIsNot(first.configuration['alpha'], context_configuration['alpha'])
+        self.assertEqual(self.manager._bindings, cache)
+        with self.assertRaises(TypeError):
+            first.configuration['alpha']['last'] = 5
+        self.assertFalse(self.session.invalidated)
+
+    def test_native_exception_tree_rejects_shape_value_and_scalar_kind_disagreement(self):
+        attributes = {'pass_id': 'pass', 'configuration': {'value': 1}, 'dependencies': {'request': 'a' * 64}}
+        descriptor = {'module': 'biocompiler.compiler.pipeline', 'type': 'NoCandidateFound', 'message': 'Native message',
+            'attributes': attributes, 'attributes_tree': _ordered(attributes)}
+        def replace_attribute(value, key, item):
+            value['attributes'][key] = item
+            value['attributes_tree'] = _ordered(value['attributes'])
+        changes = [lambda value: value.pop('attributes_tree'), lambda value: value.update(extra=None),
+            lambda value: value['attributes'].update(extra=None),
+            lambda value: value.update(attributes_tree=['array', []]),
+            lambda value: value['attributes_tree'][1].reverse(),
+            lambda value: value['attributes_tree'][1].append(value['attributes_tree'][1][0]),
+            lambda value: replace_attribute(value, 'pass_id', 1),
+            lambda value: replace_attribute(value, 'configuration', []),
+            lambda value: replace_attribute(value, 'dependencies', {'request': 1}),
+            lambda value: value['attributes_tree'][1][1][1][1][0].__setitem__(1, ['scalar', True]),
+            lambda value: value['attributes_tree'][1][1][1][1][0].__setitem__(1, ['scalar', 1.0]),
+            lambda value: value['attributes_tree'][1][1][1][1][0].__setitem__(1, ['scalar', float('nan')]),
+            lambda value: value['attributes_tree'][1][1][1][1][0].__setitem__(1, ['scalar', {}])]
+        for change in changes:
+            with self.subTest(change=change):
+                value = deepcopy(descriptor)
+                change(value)
+                with self.assertRaises(CoreProtocolError):
+                    self.manager._exception(value)
+        changed = deepcopy(descriptor)
+        changed['attributes_tree'][1][1][1][1][0][1] = ['scalar', True]
+        self.session.results['run'] = CallbackRejected(SimpleNamespace(result=changed))
+        with self.assertRaisesRegex(CoreProtocolError, 'differ from their ordered tree'):
+            self.manager.run('pass', 'input', 'output')
+        self.assertTrue(self.session.invalidated)
+
+    def test_other_native_exceptions_require_empty_ordered_attributes(self):
+        value = {'module': 'biocompiler.compiler.pipeline', 'type': 'PipelineError',
+            'message': 'Native rejection', 'attributes': {}, 'attributes_tree': ['object', []]}
+        error = self.manager._exception(value)
+        self.assertIs(type(error), PipelineError)
+        self.assertEqual(vars(error), {})
+        for tree in (['array', []], ['object', [['extra', ['scalar', None]]]]):
+            with self.subTest(tree=tree), self.assertRaises(CoreProtocolError):
+                self.manager._exception({**value, 'attributes_tree': tree})
+
     def test_historical_view_does_not_reconstruct_acceptance_locally(self):
         envelope = self.record()
         envelope['value']['accepted'] = False
@@ -338,9 +421,80 @@ class CorePipelineManagerTests(unittest.TestCase):
         self.assertEqual(self.session.requests[-1], ('inspect', {}))
         self.session.results['get'] = CallbackRejected(SimpleNamespace(result={
             'module': 'biocompiler.compiler.pipeline', 'type': 'PipelineError',
-            'message': 'Record was rejected.', 'attributes': {}}))
+            'message': 'Record was rejected.', 'attributes': {}, 'attributes_tree': ['object', []]}))
         with self.assertRaisesRegex(PipelineError, 'Record was rejected'):
             self.manager.get('input')
+
+    def test_typed_inspection_state_preserves_shapes_order_and_actual_identities(self):
+        class ActualProvider:
+            def __call__(self, context):
+                raise AssertionError('Inspection called provider')
+            def __eq__(self, other):
+                raise AssertionError('Inspection compared provider')
+            def __hash__(self):
+                raise AssertionError('Inspection hashed provider')
+        producer, validator = ActualProvider(), ActualProvider()
+        raw = self.inspection(producer, validator)
+        admission = ComponentInputContract('admission', '1', 'components.v1', self.fixture.first.checks,
+            ('r',), (self.fixture.exact,), ('request',))
+        for name in ('component_inputs', 'component_input_history'):
+            for row in raw['snapshot'][name].values():
+                row['contract'] = admission.to_dict()
+        profile = CompletionProfile('synthetic', Stage.BEHAVIOR, 'behavior.v1', ('exact',))
+        raw['snapshot']['profiles']['synthetic'] = self.manager._profile_document(profile)
+        raw['order']['profiles'] = ['synthetic']
+        raw['snapshot']['records']['input']['value']['accepted'] = False
+        self.session.results['inspect-ordered'] = raw
+        before = len(self.session.requests)
+        with patch.object(PassManager, 'get', side_effect=AssertionError('Python freshness used')), \
+                patch.object(PassManager, '__init__', side_effect=AssertionError('Python manager used')), \
+                patch.object(PassContract, '__post_init__', side_effect=AssertionError('Python contract check used')), \
+                patch.object(ComponentInputContract, '__post_init__', side_effect=AssertionError('Python admission check used')), \
+                patch.object(CheckSpec, '__post_init__', side_effect=AssertionError('Python check validation used')), \
+                patch.object(ScopedObligation, '__post_init__', side_effect=AssertionError('Python obligation validation used')), \
+                patch.object(CompletionProfile, '__post_init__', side_effect=AssertionError('Python profile check used')):
+            state = self.manager.inspection_state()
+        self.assertEqual(self.session.requests[before:], [('inspect-ordered', {})])
+        self.assertEqual(tuple(state), ('_target', '_dependencies', '_passes', '_component_inputs',
+            '_provider_history', '_records', '_profiles'))
+        self.assertIs(state['_target'], self.fixture.target)
+        self.assertTrue(all(type(state[name]) is dict for name in tuple(state)[1:]))
+        self.assertEqual(tuple(state['_dependencies']), ('zeta', 'alpha'))
+        self.assertEqual(tuple(state['_passes']), ('z', 'a'))
+        self.assertEqual(tuple(state['_provider_history']), ('z-history', ('component_input', 'admission-history'), 'a-history'))
+        contract, actual_producer, checks = state['_passes']['z']
+        self.assertIs(type(state['_passes']['z']), tuple)
+        self.assertIs(type(contract), PassContract)
+        self.assertEqual(contract.to_dict(), self.fixture.first.to_dict())
+        self.assertIs(contract.input_stage, self.fixture.first.input_stage)
+        self.assertIs(type(contract.checks), tuple)
+        self.assertIs(type(contract.checks[0]), CheckSpec)
+        self.assertIs(type(contract.introduces), tuple)
+        self.assertIs(actual_producer, producer)
+        self.assertIs(type(checks), dict)
+        self.assertEqual(tuple(checks), ('zeta', 'alpha'))
+        self.assertIs(checks['zeta'], validator)
+        self.assertIs(state['_provider_history']['z-history'][1], producer)
+        self.assertIs(type(state['_component_inputs']['policy'][0]), ComponentInputContract)
+        self.assertIs(type(state['_component_inputs']['policy'][0].obligations[0]), ScopedObligation)
+        self.assertEqual(state['_component_inputs']['policy'][0].to_dict(), admission.to_dict())
+        self.assertIs(state['_records']['input'], self.manager._records['input'])
+        self.assertFalse(state['_records']['input'].accepted)
+        self.assertIs(type(state['_profiles']['synthetic']), CompletionProfile)
+        self.assertEqual(state['_profiles']['synthetic'], profile)
+        state['_dependencies']['new'] = 'value'
+        checks.clear()
+        second = self.manager.inspection_state()
+        self.assertEqual(tuple(second['_dependencies']), ('zeta', 'alpha'))
+        self.assertEqual(tuple(second['_passes']['z'][2]), ('zeta', 'alpha'))
+        self.assertIs(second['_records']['input'], state['_records']['input'])
+
+    def test_typed_inspection_fails_closed_for_malformed_native_contract_views(self):
+        raw = self.inspection(lambda context: context, lambda context: context)
+        self.session.results['inspect-ordered'] = raw
+        with self.assertRaisesRegex(CoreProtocolError, 'typed historical manager state'):
+            self.manager.inspection_state()
+        self.assertTrue(self.session.invalidated)
 
     def test_admission_keeps_original_contract_collection_handles(self):
         original = self.fixture.first

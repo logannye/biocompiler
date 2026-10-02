@@ -10,6 +10,7 @@ import sys
 import tempfile
 from types import SimpleNamespace
 import unittest
+from unittest.mock import patch
 from uuid import uuid4
 
 from tools import check_pipeline_manager_install as campaign
@@ -199,7 +200,7 @@ def fake_frames(receipt, *, admission=False, comparison=None):
                 elif token is not None:
                     outcome = {"status": "raise", "token": token}
                 else:
-                    outcome = {"status": "rejected", "value": {**original["error"], "attributes": {}}}
+                    outcome = {"status": "rejected", "value": {**original["error"], "attributes": {}, "attributes_tree": ["object", []]}}
                 reply(seq, outcome=outcome)
             events[identity] = {"event": identity, "kind": "manager", "sequence": seq, "invocation": enclosing,
                 "before_frames": start, "after_frames": len(rows), "exception_tokens": [] if token is None else [token]}
@@ -268,8 +269,10 @@ def fixture(directory, corpus):
 
 
 def validate(receipt, corpus):
-    return campaign.validate_checks(receipt, corpus,
-        campaign.Artifacts(Path(receipt["_artifact_directory"]), receipt["artifacts"]))
+    artifacts = campaign.Artifacts(Path(receipt["_artifact_directory"]), receipt["artifacts"])
+    result = campaign.validate_existing_checks(receipt, corpus, artifacts)
+    campaign.require(artifacts.used == set(artifacts.declared), "Unreferenced complete manager evidence")
+    return result
 
 
 def edit_artifact(receipt, row, field, mutate, *, framed=False):
@@ -341,6 +344,120 @@ def assert_valid_frames(receipt, row):
     channel, application = campaign.declarations()
     return campaign.validate_frames(row["frames"], campaign.Artifacts(Path(receipt["_artifact_directory"]), receipt["artifacts"]),
         channel, application, provider_calls=False)
+
+
+def deferred_rejection_fixture(directory, case):
+    """Handcrafted protocol controls only; never used by installed acceptance."""
+    path = directory / campaign.ARTIFACT_DIRECTORY
+    path.mkdir()
+    receipt = {"_artifact_directory": str(path), "artifacts": {}, "test_case": {"frames": []}}
+    row, frames = receipt["test_case"], []
+    channel, application = campaign.declarations()
+    nonce, sequence, event_id = str(uuid4()), 0, 0
+    evidence = {"inspections": [], "events": [], "accesses": [], "host_exceptions": [], "errors": [],
+        "fingerprints": [], "objects": [{}], "arguments": [{}]}
+    safe_map = lambda items: {"$mapping": "builtins.dict", "items": list(items)}
+    safe_tuple = lambda items: {"$sequence": "tuple", "items": list(items)}
+    def ref(number, value=None, label=None):
+        handle = "object/" + str(number)
+        if value is not None:
+            evidence["arguments"][0][handle] = value
+        if label is not None:
+            evidence["objects"][0][handle] = label
+        return {"handle": handle}
+    providers = {value["identity"]: {"$object": value["identity"], "class": value["class"]}
+        for value in case["objects"] if value["identity"].startswith("provider/")}
+    tokens = {name: "provider/" + str(index) for index, name in enumerate(providers)}
+    references = {name: ref(index, label=name) for index, name in enumerate(providers)}
+    def client(kind, **fields):
+        nonlocal sequence
+        value = {"protocol": channel["protocol"], "profile": channel["profile"], "session_id": nonce,
+            "kind": kind, "sequence": sequence, **fields}
+        frames.append(value)
+        sequence += 1
+        return sequence - 1
+    def server(kind, **fields):
+        nonlocal event_id
+        value = {"protocol": channel["protocol"], "profile": channel["profile"], "session_id": nonce,
+            "kind": kind, "event_id": event_id, **fields, "usage": {key: 0 for key in channel["usage_fields"]}}
+        frames.append(value)
+        event_id += 1
+        return value
+    def reply(seq, value=None, *, outcome=None, closed=False):
+        server("reply", sequence=seq, request_sha256="0"*64,
+            outcome={"status": "ok", "value": value} if outcome is None else outcome, closed=closed)
+    def command(operation, args):
+        return client("command", parent_invocation=None, operation=operation, arguments=args)
+    def invoke(seq, action, args, value, ordinal=None):
+        identifier = event_id
+        server("invoke", invocation_id=identifier, parent_invocation=None, command_sequence=seq,
+            command_sha256="0"*64, action=action, arguments=args)
+        if ordinal is not None:
+            evidence["accesses"].append({"manager": 0, "ordinal": ordinal, "invocation": identifier, "frame_offset": len(frames)})
+        client("continue", invocation_id=identifier, invocation_sha256="0"*64, outcome={"status": "return", "value": value})
+    def inspect(safe):
+        raw, aliases = fake_inspection(campaign.deferred_snapshot_projection(safe), tokens)
+        # fake_inspection's physical refs follow native tokens, as above.
+        seq = command("inspect-ordered", {})
+        reply(seq, raw)
+        evidence["inspections"].append({"manager": 0, "sequence": seq, "aliases": aliases, "state": safe})
+    seq = client("hello", declaration=channel, application=application, limits=None)
+    reply(seq, {"declaration": channel, "application": application, "limits": channel["limits"]})
+    initial = dict(case["initial_state"]["items"])
+    initial_plain = campaign.deferred_snapshot_projection(case["initial_state"])["state"]
+    target = ref(100, initial["_target"])
+    seq = command("initialize-empty", {"target": initial_plain["target"], "target_object": target,
+        "dependencies": [[key, value] for key, value in initial_plain["dependencies"].items() if key != "target"],
+        "completion_profiles": list(initial_plain["profiles"].values()), "manager_limits": None})
+    reply(seq, {"kind": "empty", "manager": True, "artifacts": [], "target": {"value": initial_plain["target"], "binding": {}}})
+    root_safe = dict(initial["_records"]["items"])["input"]["fields"]
+    root = initial_plain["records"]["input"]
+    seq = command("add-input", {"identity": "input", "stage": root["stage"], "requirements": root["requirements"],
+        "obligations": root["obligations"], "payload": ref(101, root_safe["payload"]),
+        "obligations_object": ref(102, root_safe["obligations"]),
+        "obligation_objects": [ref(103+i, value) for i, value in enumerate(root_safe["obligations"]["items"])]})
+    reply(seq, {"value": root, "bindings": {"record_id": "record/0"}})
+    inspect(case["initial_state"])
+    for original in case["events"]:
+        inspect(original["before"])
+        start = len(frames)
+        args = campaign.deferred_plain(original["arguments"])
+        op = original["operation"]
+        if op == "register":
+            producer, validator = "provider/producer", "provider/validator"
+            evidence["arguments"][0][references[producer]["handle"]] = providers[producer]
+            seq = command("register", {"contract": args["contract"], "producer": references[producer],
+                "validators": ref(200, safe_map([("identity_check", providers[validator])])), "obligation_objects": []})
+            for label, token in tokens.items():
+                invoke(seq, "bind-provider", {"provider_id": token, "object": references[label]}, None)
+            outcome = {"status": "ok", "value": None}
+        elif op == "run":
+            seq = command("run", {**args, "configuration": None})
+            context = campaign.deferred_plain(case["access_log"][0]["values"])["context"]
+            invoke(seq, "hydrate-context", {"context_id": "context/0", "document": context, "bindings": {}}, ref(300))
+            proposal = ref(301, label="proposal")
+            invoke(seq, "call-provider", {"provider_id": tokens["provider/producer"], "context": ref(300)}, proposal, 0)
+            invoke(seq, "attr", {"object": proposal, "name": "search_status"}, ref(302), 1)
+            error = original["exception"]
+            module, name = error["class"].rsplit(".", 1)
+            outcome = {"status": "rejected", "value": {"module": module, "type": name,
+                "message": error["message"], "attributes": {}, "attributes_tree": ["object", []]}}
+        else:
+            assert op == "get-input"
+            seq = command("get", args)
+            outcome = {"status": "ok", "value": {"value": campaign.deferred_plain(original["result"]), "bindings": {"record_id": "record/0"}}}
+        reply(seq, outcome=outcome)
+        evidence["events"].append({"manager": 0, "event": original["id"], "operation": op, "sequence": seq,
+            "invocation": None, "before_frames": start, "after_frames": len(frames), "exception_tokens": []})
+        inspect(original["after"])
+    inspect(case["final_state"])
+    seq = client("close", parent_invocation=None)
+    reply(seq, closed=True)
+    row["frames"] = [{"direction": "client" if value["kind"] in channel["client_fields"] else "server",
+        "index": value.get("sequence") if value["kind"] in channel["client_fields"] else value["event_id"],
+        "frame": campaign.artifact(receipt, campaign.frame(value))} for value in frames]
+    reframe(receipt, row, lambda values: None)
+    return receipt, row, evidence
 
 
 def matrix_fixture(root, corpus):
@@ -433,6 +550,243 @@ class PipelineManagerCampaignTests(unittest.TestCase):
         self.assertEqual(count, 280)
         self.assertEqual(oracle.capture(), self.corpus.oracles["callbacks"])
 
+    def test_deferred_original_bodies_and_replacement_constructors_are_preserved(self):
+        """Original Python managers exercise observation glue, never native parity."""
+        from biocompiler.compiler.pipeline import PassManager
+        oracle = campaign.load_oracle(installed=False, deferred=True)
+        comparison = campaign.load_oracle(installed=False, comparison=True)
+        original_capture, original_pipeline = oracle.Capture, oracle.pipeline
+        managers = []
+        class PythonView:
+            def __init__(self, **kwargs):
+                self.actual = PassManager(**kwargs)
+                self.values, self.observations = [], 0
+                self.session = SimpleNamespace(last_response=None)
+                managers.append(self)
+            def __getattr__(self, name):
+                return getattr(self.actual, name)
+            def label(self, value):
+                for index, previous in enumerate(self.values):
+                    if previous is value: return "provider/" + str(index)
+                self.values.append(value)
+                return "provider/" + str(len(self.values) - 1)
+            def inspection_state(self):
+                observed = comparison.Capture.snapshot(SimpleNamespace(manager=self.actual, label=self.label))
+                raw, _ = fake_inspection(observed, {"provider/" + str(index): "provider/" + str(index)
+                    for index in range(len(self.values))})
+                self.session.last_response = SimpleNamespace(operation="inspect-ordered", sequence=self.observations, result=raw)
+                self.observations += 1
+                return dict(vars(self.actual))
+        snapshots = 0
+        for frozen in self.corpus.deferred:
+            expected = campaign.run_deferred_case(oracle, frozen["id"])
+            observed = []
+            with campaign.native_deferred_capture(oracle, PythonView, lambda *args: observed.append(args)):
+                actual = campaign.run_deferred_case(oracle, frozen["id"])
+            self.assertIs(oracle.Capture, original_capture)
+            self.assertIs(oracle.pipeline, original_pipeline)
+            # The added observer call frames are verified separately by the
+            # traceback receipt checker; do not mistake this original-manager
+            # glue control for a native stack-equivalence assertion.
+            for value in (actual, expected):
+                for event in value["events"]:
+                    if event["outcome"] == "raised":
+                        event["exception"].pop("original_traceback")
+                        event["exception"].pop("required_user_traceback_tail")
+            self.assertEqual(actual, expected, frozen["id"])
+            wanted = campaign.original_snapshots(expected)
+            if frozen["id"].startswith("input:"):
+                self.assertEqual(observed[0][3], self.corpus.deferred[0]["initial_state"])
+                observed = observed[1:]
+            self.assertEqual([item[3] for item in observed], wanted)
+            snapshots += len(observed)
+            for manager, sequence, aliases, state in observed:
+                # All source dataclasses and nested container kinds remain in
+                # the full safe state, while its document view is closed.
+                projected = campaign.deferred_snapshot_projection(state)
+                self.assertEqual(set(projected), {"state", "order"})
+        self.assertEqual(len(managers), 53)
+        self.assertEqual(snapshots, 408)
+
+    def test_deferred_repaired_frames_still_reject_semantic_substitution(self):
+        case = next(item for item in self.corpus.deferred if item["id"] == "proposal:unknown_status")
+        def run(receipt, row, evidence):
+            details = {}
+            channel, application = campaign.declarations()
+            campaign.validate_frames(row["frames"], campaign.Artifacts(Path(receipt["_artifact_directory"]), receipt["artifacts"]),
+                channel, application, details=details, provider_calls=False)
+            campaign.validate_deferred_events(case, evidence, [details], case["initial_state"])
+            return details
+        with tempfile.TemporaryDirectory() as directory:
+            receipt, row, evidence = deferred_rejection_fixture(Path(directory), case)
+            run(receipt, row, evidence)
+        def altered_message(values):
+            next(value for value in values if value["kind"] == "reply" and value["outcome"]["status"] == "rejected")["outcome"]["value"]["message"] += " altered"
+        def altered_getter(values):
+            next(value for value in values if value["kind"] == "invoke" and value["action"] == "attr")["arguments"]["name"] = "output"
+        def altered_context(values):
+            next(value for value in values if value["kind"] == "invoke" and value["action"] == "hydrate-context")["arguments"]["document"]["requirements"] = []
+        def altered_provider(values):
+            next(value for value in values if value["kind"] == "invoke" and value["action"] == "call-provider")["arguments"]["provider_id"] = "provider/1"
+        def altered_attributes(values):
+            next(value for value in values if value["kind"] == "reply" and value["outcome"]["status"] == "rejected")["outcome"]["value"]["attributes_tree"] = ["array", []]
+        for mutate, diagnostic in ((altered_message, "exception descriptor"), (altered_getter, "proposal getter"),
+                (altered_context, "context different"), (altered_provider, "another actual callable"),
+                (altered_attributes, "attributes are not an ordered object")):
+            with self.subTest(diagnostic=diagnostic), tempfile.TemporaryDirectory() as directory:
+                receipt, row, evidence = deferred_rejection_fixture(Path(directory), case)
+                reframe(receipt, row, mutate)
+                assert_valid_frames(receipt, row)
+                with self.assertRaisesRegex(AssertionError, diagnostic):
+                    run(receipt, row, evidence)
+
+        for mutate, diagnostic in ((lambda value: value["events"][1].update(sequence=value["events"][2]["sequence"]), "command sequence"),
+                (lambda value: value["accesses"].reverse(), "accessor was reordered"),
+                (lambda value: value["inspections"].pop(), "inspection census"),
+                (lambda value: value["objects"][0].update({"object/0": "provider/validator"}), "physical bijection")):
+            with self.subTest(diagnostic=diagnostic), tempfile.TemporaryDirectory() as directory:
+                receipt, row, evidence = deferred_rejection_fixture(Path(directory), case)
+                mutate(evidence)
+                assert_valid_frames(receipt, row)
+                with self.assertRaisesRegex(AssertionError, diagnostic):
+                    run(receipt, row, evidence)
+
+    def test_deferred_native_fingerprint_witness_binds_full_object_chain_and_order(self):
+        expected = next(item for item in self.corpus.deferred if item["id"] == "input:valid")
+        actual = deepcopy(expected)
+        removed = next(item for item in actual["access_log"] if item["access"] == "input.default_fingerprint")
+        offset = removed["ordinal"]
+        actual["access_log"].remove(removed)
+        for ordinal, item in enumerate(actual["access_log"]):
+            item["ordinal"] = ordinal
+        for event in actual["events"]:
+            for key in ("access_start", "access_end"):
+                event[key] -= event[key] > offset
+        document = dict(removed["values"]["items"])["document"]
+        def tree(safe):
+            if type(safe) is dict and "$mapping" in safe:
+                return ["object", [[key, tree(value)] for key, value in safe["items"]]]
+            if type(safe) is dict and "$sequence" in safe:
+                return ["array", [tree(value) for value in safe["items"]]]
+            return ["scalar", safe]
+        ref = lambda number: {"handle": "object/" + str(number)}
+        actions = [("document", {"object": ref(1)}, ref(2)),
+            ("freeze-json", {"object": ref(2)}, ref(3)),
+            ("ordered-json", {"object": ref(3)}, tree(document)),
+            ("literal", {"kind": "json", "value": campaign.sha(campaign.canonical(campaign.deferred_plain(document)))}, ref(4)),
+            ("attr-default", {"object": ref(1), "name": "fingerprint", "default": ref(4)}, ref(5))]
+        invocations = {index: {"action": name, "arguments": args, "outcome": {"status": "return", "value": result},
+            "command_sequence": 1, "start_frame": 2+index*2, "end_frame": 3+index*2}
+            for index, (name, args, result) in enumerate(actions)}
+        details = [{"invocations": {}}, {"invocations": invocations,
+            "commands": [{"sequence": 1, "operation": "add-input", "arguments": {"payload": ref(1)}}]}]
+        evidence = {"fingerprints": [{"manager": 1, "invocation": 4, "access_offset": offset, "parent": 0}],
+            "events": [{"manager": 1, "event": 0, "sequence": 1, "before_frames": 1, "after_frames": 30},
+                {"manager": 1, "event": 1, "sequence": None, "before_frames": 32, "after_frames": 32}],
+            "accesses": [{"manager": 1, "ordinal": item["ordinal"], "frame_offset": 3 if item["ordinal"] < offset else 11}
+                for item in actual["access_log"]]}
+        self.assertEqual(campaign.deferred_fingerprint_projection(actual, evidence, details), expected)
+        for mutate, diagnostic in ((lambda value: value[1]["invocations"][2]["arguments"].update(object=ref(999)), "actual document and frozen"),
+                (lambda value: value[1]["invocations"][1]["arguments"].update(object=ref(999)), "actual document and frozen"),
+                (lambda value: value[1]["invocations"][0]["arguments"].update(object=ref(999)), "actual document and frozen"),
+                (lambda value: value[1]["invocations"][3]["arguments"].update(value="0"*64), "fingerprint value")):
+            changed = deepcopy(details)
+            mutate(changed)
+            with self.assertRaisesRegex(AssertionError, diagnostic):
+                campaign.deferred_fingerprint_projection(actual, evidence, changed)
+        changed = deepcopy(evidence)
+        changed["fingerprints"][0]["access_offset"] += 1
+        with self.assertRaisesRegex(AssertionError, "moved relative"):
+            campaign.deferred_fingerprint_projection(actual, changed, details)
+
+    def test_deferred_trace_correspondence_retains_exact_user_frames(self):
+        oracle = campaign.load_oracle(installed=False, deferred=True)
+        expected = oracle.proposal_case("unknown_status")
+        with tempfile.TemporaryDirectory() as directory:
+            receipt, row, evidence = deferred_rejection_fixture(Path(directory), expected)
+            details = {}
+            channel, application = campaign.declarations()
+            campaign.validate_frames(row["frames"], campaign.Artifacts(Path(receipt["_artifact_directory"]), receipt["artifacts"]),
+                channel, application, details=details, provider_calls=False)
+            actual = deepcopy(expected)
+            error = actual["events"][1]["exception"]
+            original_frames = [value for value in error["original_traceback"] if value["file"] != "src/biocompiler/compiler/pipeline.py"]
+            source = "src/biocompiler/core_pipeline_manager.py"
+            lines = (campaign.ROOT/source).read_text().splitlines()
+            bridge_line = next(index for index, value in enumerate(lines, 1) if value.strip() == "raise error")
+            actual_frames = [*original_frames, {"file": source, "function": "_call", "line": bridge_line}]
+            error["original_traceback"] = actual_frames
+            nodes = []
+            for index, frame in enumerate(actual_frames):
+                sites = campaign.source_code_sites(frame["file"])
+                candidates = [name for name, values in sites.items() if name.split(".")[-1] == frame["function"] and frame["line"] in values]
+                self.assertEqual(len(candidates), 1)
+                nodes.append({"node": "traceback/"+str(index), "source": frame["file"], "function": frame["function"],
+                    "qualname": candidates[0], "line": frame["line"], "source_sha256": campaign.sha((campaign.ROOT/frame["file"]).read_bytes())})
+            evidence["errors"] = [{"manager": 0, "event": 1, "identity": error["identity"], "traceback": nodes,
+                "required_index": len(nodes)}]
+            compared, correspondence = campaign.deferred_trace_projection(actual, expected, evidence, [details])
+            self.assertEqual(compared, expected)
+            self.assertEqual(len(correspondence), 2)
+            changed, proof = deepcopy(actual), deepcopy(evidence)
+            changed["events"][1]["exception"]["original_traceback"].pop(0)
+            proof["errors"][0]["traceback"].pop(0)
+            proof["errors"][0]["required_index"] -= 1
+            with self.assertRaisesRegex(AssertionError, "user/leaf traceback frames"):
+                campaign.deferred_trace_projection(changed, expected, proof, [details])
+            changed, proof = deepcopy(actual), deepcopy(evidence)
+            changed["events"][1]["exception"]["original_traceback"][-1]["line"] = 1
+            proof["errors"][0]["traceback"][-1]["line"] = 1
+            with self.assertRaisesRegex(AssertionError, "executable site"):
+                campaign.deferred_trace_projection(changed, expected, proof, [details])
+
+    def test_deferred_observer_retains_live_tail_nodes_and_exception_relationships(self):
+        from biocompiler.pipeline_callback_objects import CallbackObjects
+        oracle = campaign.load_oracle(installed=False, deferred=True)
+        capture = oracle.Capture("callback:exception_reused")
+        calls = []
+        class Unobservable(ValueError):
+            def __str__(self):
+                calls.append("str")
+                raise AssertionError("Extra exception hook executed")
+        original = capture.marker(kind=Unobservable)
+        def callback():
+            capture.raise_marker(chained=True, kind=Unobservable)
+        capture.provider("producer", callback)
+        broker = CallbackObjects()
+        session = SimpleNamespace(traffic=(SimpleNamespace(direction="server", value={"kind": "invoke", "invocation_id": 7, "command_sequence": 11}),),
+            last_response=SimpleNamespace(status="raise", sequence=11))
+        manager = SimpleNamespace(_objects=broker, session=session)
+        witness = campaign.DeferredWitness(oracle)
+        witness.managers.append(manager)
+        witness.captures.append(capture)
+        previous = sys.getprofile()
+        with campaign.guarded_execution(set(), witness.observe):
+            completion = broker.execute("call", {"callable": broker.retain(callback), "args": [], "kwargs": {}})
+            token = completion.value["exception_token"]
+            retained_tail = witness.exceptions[0, token]["traceback"]
+            try:
+                broker.rethrow(token)
+            except Unobservable as error:
+                self.assertIs(error, original)
+                descriptor = capture.exception(error)
+                witness.error(manager, 0, error, error.__traceback__, descriptor)
+                witness.event(manager, {"event": 0, "operation": "run", "sequence": 11, "invocation": None,
+                    "before_frames": 0, "after_frames": 1}, error, {})
+        self.assertIs(sys.getprofile(), previous)
+        evidence = witness.evidence()
+        host, observed = evidence["host_exceptions"][0], evidence["errors"][0]
+        self.assertIs(witness.exceptions[0, token]["traceback"], retained_tail)
+        self.assertEqual([item["node"] for item in observed["traceback"]][-len(host["traceback"]):],
+            [item["node"] for item in host["traceback"]])
+        self.assertEqual(host["rethrows"], [11])
+        self.assertEqual(host["identity"], "exception/marker")
+        self.assertEqual((host["cause"], host["context"]), ("exception/cause", "exception/context"))
+        self.assertTrue(host["suppress_context"])
+        self.assertNotIn(token, broker._exceptions)
+        self.assertEqual(calls, [])
+        broker.close()
+
     def test_profiler_retains_actual_consumed_exception_without_observation_hooks(self):
         from biocompiler.pipeline_callback_objects import CallbackObjects
         calls = []
@@ -461,6 +815,34 @@ class PipelineManagerCampaignTests(unittest.TestCase):
         self.assertNotIn(token, broker._exceptions)
         self.assertEqual(calls, [])
         broker.close()
+
+    def test_nested_guard_chains_external_profiler_once_and_checks_raised_exits(self):
+        import builtins
+        observed = []
+        def marker():
+            return None
+        def external(frame, event, result):
+            if event == "call" and frame.f_code is marker.__code__:
+                observed.append("marker")
+        previous, importer = sys.getprofile(), builtins.__import__
+        sys.setprofile(external)
+        try:
+            with self.assertRaisesRegex(ValueError, "original"):
+                with campaign.guarded_execution(set()):
+                    with campaign.guarded_execution(set()):
+                        marker()
+                        raise ValueError("original")
+            self.assertEqual(observed, ["marker"])
+            self.assertIs(sys.getprofile(), external)
+            self.assertIs(builtins.__import__, importer)
+            with self.assertRaisesRegex(AssertionError, "guard was disabled"):
+                with campaign.guarded_execution(set()):
+                    sys.setprofile(None)
+                    raise ValueError("must not hide disabled guard")
+            self.assertIs(sys.getprofile(), external)
+            self.assertIs(builtins.__import__, importer)
+        finally:
+            sys.setprofile(previous)
 
     def test_order_and_physical_provider_inventory_mutations_fail(self):
         case = next(value for value in self.corpus.comparisons if value["id"] == "pass:comparison_order")
@@ -556,7 +938,7 @@ class PipelineManagerCampaignTests(unittest.TestCase):
             manager = next(event for event in expected["events"] if event["kind"] == "manager" and event["outcome"] == "raised")
             def translated(values):
                 reply = next(value for value in values if value["kind"] == "reply" and value["outcome"]["status"] == "raise")
-                reply["outcome"] = {"status": "rejected", "value": {**manager["error"], "attributes": {}}}
+                reply["outcome"] = {"status": "rejected", "value": {**manager["error"], "attributes": {}, "attributes_tree": ["object", []]}}
             reframe(receipt, row, translated)
             edit_artifact(receipt, row, "events", lambda value: value[manager["id"]].update(exception_tokens=[]))
             edit_artifact(receipt, row, "host_exceptions", lambda value: value[0]["events"].remove(manager["id"]))
@@ -688,23 +1070,43 @@ class PipelineManagerCampaignTests(unittest.TestCase):
         self.assertIsNone(sys.getprofile())
 
     def test_frozen_oracle_loading_restores_import_path(self):
+        from unittest.mock import patch
         before = list(sys.path)
         oracle = campaign.load_oracle(installed=False)
         self.assertEqual(sys.path, before)
         self.assertEqual(oracle.capture()["cases"], self.corpus.cases)
-        with self.assertRaisesRegex(AssertionError, "Source-tree product"):
-            campaign.installed_modules()
+        # CI loads the installed package; local source checks load checkout/src.
+        # Arrange the forbidden origin explicitly in either environment.
+        name, package = next((name, module) for name, module in sys.modules.items()
+            if name == "biocompiler" or name.startswith("biocompiler."))
+        origin = package.__file__
+        with patch.object(package, "__file__", str(campaign.ROOT / "src/biocompiler/__init__.py")):
+            with self.assertRaises(AssertionError) as raised:
+                campaign.installed_modules()
+            self.assertEqual(str(raised.exception), "Source-tree product loaded: " + name)
+        self.assertEqual(package.__file__, origin)
 
     def test_complete_four_runtime_matrix_rehashes_receipts_and_binaries(self):
         with tempfile.TemporaryDirectory() as directory:
             runtime, native, authority = matrix_fixture(Path(directory), self.corpus)
-            result = campaign.compare(runtime, native, **authority)
+            # This unchanged 39-case frame fixture isolates shared matrix,
+            # source, executable and artifact-integrity machinery. The real
+            # gate requires deferred47; a separate control rejects omission.
+            with patch.object(campaign, "validate_deferred_checks", return_value=[]):
+                result = campaign.compare(runtime, native, **authority)
             self.assertEqual(result["status"], "success")
             self.assertEqual(len(result["receipts"]), 4)
             path = native/"linux-x86_64"/"biocompiler-core"
             path.write_bytes(path.read_bytes()+b" changed")
             with self.assertRaises(ValueError):
                 campaign.compare(runtime, native, **authority)
+
+    def test_complete_gate_requires_all_deferred_cases_in_addition_to_existing_39(self):
+        with tempfile.TemporaryDirectory() as directory:
+            receipt = fixture(Path(directory), self.corpus)
+            with self.assertRaisesRegex(AssertionError, "Incomplete 47-case"):
+                campaign.validate_checks(receipt, self.corpus,
+                    campaign.Artifacts(Path(receipt["_artifact_directory"]), receipt["artifacts"]))
         with tempfile.TemporaryDirectory() as directory:
             runtime, native, authority = matrix_fixture(Path(directory), self.corpus)
             path = runtime/"realization-macos-arm64-py3.14"/campaign.RECEIPT_FILE
@@ -712,7 +1114,8 @@ class PipelineManagerCampaignTests(unittest.TestCase):
             receipt["run_id"] = "older-run"
             path.write_bytes(campaign.canonical(receipt)+b"\n")
             with self.assertRaisesRegex(AssertionError, "mixed manager"):
-                campaign.compare(runtime, native, **authority)
+                with patch.object(campaign, "validate_deferred_checks", return_value=[]):
+                    campaign.compare(runtime, native, **authority)
 
     def test_python_only_role_probe_fixture_uses_actual_flag_and_bounded_io(self):
         with tempfile.TemporaryDirectory() as directory:

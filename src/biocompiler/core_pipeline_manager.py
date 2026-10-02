@@ -16,7 +16,7 @@ from biocompiler.artifacts.provenance import SourceLink
 from biocompiler.compiler.passes import PassResult
 from biocompiler.compiler.request import RealizationRequest
 from biocompiler.compiler.pipeline import (
-    ArtifactStatus, CheckDecision, CompletionProfile, ComponentInputContract,
+    ArtifactStatus, CheckDecision, CheckSpec, CompletionProfile, ComponentInputContract,
     NoCandidateFound, PassContext, PassContract, PassManager, PipelineError,
     PipelineResult, ScopedObligation, StageRecord,
 )
@@ -28,12 +28,12 @@ from biocompiler.core_pipeline_session import decode_document, encode_document
 from biocompiler.errors import SerializationError, UnsupportedBehaviorError
 from biocompiler.ir.stages import Stage
 from biocompiler.pipeline_callback_objects import CallbackObjects, HostCompletion
-from biocompiler.semantics.context import HumanTargetContext, TargetContext
+from biocompiler.semantics.context import HumanTargetContext, PayloadFormat, TargetContext
 from biocompiler.semantics.evaluator import InputFrame
 from biocompiler.synthesis.synthetic import SyntheticGeneratorConfig
 from biocompiler.verification.evidence import CheckOutcome, EvidenceKind, Obligation
 
-_APPLICATION_JSON = "{\"acceptance\":\"native_manager_checks_and_freshness_only;inspection_and_host_sidecars_cannot_import_accepted_records\",\"actions\":{\"hydrate-context\":{\"fields\":[\"context_id\",\"document\",\"bindings\"],\"result\":\"object_reference\"},\"native-provider\":{\"fields\":[\"provider_id\"],\"result\":\"object_reference\"},\"ordered-json\":{\"fields\":[\"object\"],\"result\":\"ordered_tree\"},\"provider-reference\":{\"fields\":[\"object\"],\"result\":\"host_or_native_provider_reference\"},\"set-equal\":{\"fields\":[\"object\",\"values\"],\"result\":\"boolean\"},\"source-link-set-equal\":{\"fields\":[\"objects\",\"expected\"],\"result\":\"boolean\"}},\"argument\":\"--pipeline-callback-session-v1\",\"authoring_boundary\":\"canonical_typed_contract_target_profile_fields;opaque_payload_configuration_provider_and_validator_objects_are_read_at_native_requested_points\",\"bindings\":{\"host\":[\"kind\",\"object\"],\"native\":[\"kind\",\"identity\",\"tree\"]},\"broker_actions\":{\"attr\":{\"fields\":[\"object\",\"name\"],\"result\":\"object_reference\"},\"attr-default\":{\"fields\":[\"object\",\"name\",\"default\"],\"result\":\"object_reference\"},\"bind-provider\":{\"fields\":[\"provider_id\",\"object\"],\"result\":\"null\"},\"call\":{\"fields\":[\"callable\",\"args\",\"kwargs\"],\"result\":\"object_reference\"},\"call-provider\":{\"fields\":[\"provider_id\",\"context\"],\"result\":\"object_reference\"},\"callable\":{\"fields\":[\"object\"],\"result\":\"boolean\"},\"compare\":{\"fields\":[\"left\",\"right\",\"operator\"],\"result\":\"boolean\"},\"contains\":{\"fields\":[\"container\",\"item\"],\"result\":\"boolean\"},\"dict\":{\"fields\":[\"object\"],\"result\":\"object_reference\"},\"document\":{\"fields\":[\"object\"],\"result\":\"object_reference\"},\"enum\":{\"fields\":[\"type\",\"value\"],\"result\":\"object_reference\"},\"freeze-json\":{\"fields\":[\"object\"],\"result\":\"object_reference\"},\"get-item\":{\"fields\":[\"object\",\"key\"],\"result\":\"object_reference\"},\"is-instance\":{\"fields\":[\"object\",\"type\"],\"result\":\"boolean\"},\"is-none\":{\"fields\":[\"object\"],\"result\":\"boolean\"},\"iter\":{\"fields\":[\"object\"],\"result\":\"object_reference\"},\"json\":{\"fields\":[\"object\"],\"result\":\"json\"},\"len\":{\"fields\":[\"object\"],\"result\":\"integer\"},\"list\":{\"fields\":[\"object\"],\"result\":\"object_reference\"},\"literal\":{\"fields\":[\"kind\",\"value\"],\"result\":\"object_reference\"},\"lookup\":{\"fields\":[\"object\",\"entries\"],\"result\":\"object_reference\"},\"mapping-items\":{\"fields\":[\"object\"],\"result\":\"object_reference\"},\"mapping-keys\":{\"fields\":[\"object\"],\"result\":\"object_reference\"},\"mapping-values\":{\"fields\":[\"object\"],\"result\":\"object_reference\"},\"merge\":{\"fields\":[\"object\",\"before\",\"after\"],\"result\":\"object_reference\"},\"next\":{\"fields\":[\"object\"],\"result\":\"iterator_step\"},\"release\":{\"fields\":[\"handles\"],\"result\":\"null\"},\"set-attribute-equal\":{\"fields\":[\"objects\",\"name\",\"values\"],\"result\":\"boolean\"},\"truth\":{\"fields\":[\"object\"],\"result\":\"boolean\"},\"tuple\":{\"fields\":[\"object\"],\"result\":\"object_reference\"},\"vars\":{\"fields\":[\"object\"],\"result\":\"object_reference\"}},\"channel\":\"biocompiler.pipeline_callback_channel.v1\",\"claim_scope\":\"software_contract_conditional_translation_and_scoped_completion;no_empirical_or_human_use_acceptance\",\"comparison_operators\":[\"eq\",\"ne\",\"is\",\"is-not\"],\"compatibility_pending\":[\"complete_original_installed_replay\",\"fixed_public_registration_interception\",\"arbitrary_authoring_subclass_and_scalar_operator_semantics\",\"default_cutover\"],\"context_bindings\":[\"input\",\"output\",\"target\",\"configuration\",\"dependencies\",\"requirements\",\"source_links\",\"observation_map\"],\"context_identity\":\"actual_native_context_physical_identity;distinct_producer_and_validation_contexts;one_validation_context_shared_by_its_validators\",\"dependencies_encoding\":\"ordered_unique_string_identity_pairs\",\"enum_types\":[\"EvidenceKind\",\"CheckOutcome\",\"Stage\",\"ArtifactStatus\",\"PayloadFormat\"],\"executable\":\"core\",\"expected_rejection_fields\":[\"module\",\"type\",\"message\",\"attributes\"],\"failure\":\"expected_logical_rejection_and_opaque_host_exception_preserve_actual_partial_manager;malformed_resource_internal_or_uncertain_io_failure_closes_authority\",\"host_execution\":\"trusted_host_code_cpu_and_opaque_captures_outside_native_work_and_json_memory_bounds\",\"inspection_order\":{\"combined_provider_history\":\"actual_successful_insertion_order;pass_fingerprint_string_or_component_input_tag_and_fingerprint_pair;replacements_preserve_position\",\"fields\":[\"dependencies\",\"passes\",\"component_inputs\",\"provider_history\",\"component_input_history\",\"records\",\"profiles\",\"combined_provider_history\",\"validators\"],\"mapping_order\":\"unique_complete_snapshot_key_arrays\",\"provider_fields\":[\"provider_id\",\"object\"],\"providers\":\"exact_reachable_snapshot_provider_token_census;stable_bijection_to_actual_retained_callable_identity;no_user_equality_or_hash\",\"scope\":\"manager_mapping_and_validator_order_only;nested_unobserved_json_order_not_generalized;historical_observation_cannot_grant_acceptance\",\"validator_maps\":[\"passes\",\"component_inputs\",\"provider_history\",\"component_input_history\"],\"validators\":\"four_exact_registration_maps_of_unique_complete_validator_key_arrays\"},\"iterator_step_fields\":[\"exhausted\",\"object\"],\"lifecycle\":\"one_initialization_attempt_per_channel;existing_channel_close_is_top_level_only;no_reconnect_retry_or_state_import\",\"limits\":\"all_native_framing_application_import_callback_and_publication_work_uses_one_channel_lifetime_ancestor;retention_is_cumulative_no_refund\",\"literal_kinds\":[\"json\",\"tuple\",\"set\"],\"manager_limits\":\"initialization_once;null_defaults_or_complete_positive_integer_reductions\",\"native_provider_context\":\"only_exact_retained_context_from_this_live_manager;no_external_context_import\",\"native_provider_result_kinds\":[\"proposal\",\"decision\",\"invalid\"],\"object_reference\":{\"fields\":[\"handle\"],\"scope\":\"one_live_trusted_host_broker_physical_identity\"},\"obligation_objects\":\"array_of_actual_host_references_matching_canonical_obligation_slots;whole_tuple_sidecar_preserves_add_input_and_admission_collection_identity;run_allocates_a_new_tuple_reusing_elements;sidecars_do_not_grant_acceptance\",\"operations\":{\"add-input\":{\"fields\":[\"identity\",\"stage\",\"requirements\",\"obligations\",\"obligation_objects\",\"payload\",\"obligations_object\"],\"result\":\"record\"},\"admit-component-input\":{\"fields\":[\"contract_id\",\"identity\",\"payload\"],\"result\":\"record\"},\"artifact\":{\"fields\":[\"name\"],\"result\":\"canonical_immutable_build_artifact\"},\"call-native-provider\":{\"fields\":[\"provider_id\",\"context_id\"],\"result\":\"native_provider_result\"},\"get\":{\"fields\":[\"identity\"],\"result\":\"record\"},\"initialize-components\":{\"fields\":[\"request\",\"history\",\"until\",\"config\",\"manager_limits\",\"target_object\"],\"result\":\"initialization\"},\"initialize-empty\":{\"fields\":[\"target\",\"dependencies\",\"completion_profiles\",\"manager_limits\",\"target_object\"],\"result\":\"initialization\"},\"initialize-synthetic\":{\"fields\":[\"request\",\"history\",\"until\",\"config\",\"manager_limits\",\"target_object\"],\"result\":\"initialization\"},\"inspect\":{\"fields\":[],\"result\":\"historical_observation_only\"},\"inspect-ordered\":{\"fields\":[],\"result\":\"ordered_historical_observation_only\"},\"register\":{\"fields\":[\"contract\",\"producer\",\"validators\",\"obligation_objects\"],\"result\":\"null\"},\"register-completion-profile\":{\"fields\":[\"profile\"],\"result\":\"null\"},\"register-component-input\":{\"fields\":[\"contract\",\"validators\",\"obligation_objects\",\"obligations_object\",\"requirements_object\"],\"result\":\"null\"},\"result\":{\"fields\":[\"identity\",\"scope\"],\"result\":\"pipeline_result\"},\"run\":{\"fields\":[\"pass_id\",\"input_id\",\"output_id\",\"configuration\"],\"result\":\"record\"},\"set-dependency\":{\"fields\":[\"key\",\"identity\"],\"result\":\"null\"},\"target\":{\"fields\":[],\"result\":\"target\"}},\"ordered_tree\":{\"array\":[\"array\",\"ordered_trees\"],\"object\":[\"object\",\"ordered_unique_key_tree_pairs\"],\"scalar\":[\"scalar\",\"json_scalar\"]},\"profile\":\"biocompiler.core.pipeline_callback_manager.v1\",\"provider_reference\":{\"host\":[\"kind\",\"object\"],\"native\":[\"kind\",\"provider_id\"]},\"record_bindings\":[\"record_id\",\"payload\",\"dependencies\",\"requirements\",\"obligations\",\"obligation_objects\",\"checks\",\"provenance\"],\"record_identity\":\"one_token_per_actual_native_record_physical_identity_including_rejected_and_stored_before_error_records;not_content_hash_or_import\",\"results\":{\"initialization\":[\"kind\",\"manager\",\"artifacts\",\"target\"],\"native_provider_result\":[\"kind\",\"value\"],\"ordered_historical_observation_only\":[\"snapshot\",\"order\",\"providers\"],\"pipeline_result\":[\"value\",\"artifact\"],\"record\":[\"value\",\"bindings\"],\"target\":[\"value\",\"binding\"]},\"schema_version\":\"biocompiler.pipeline_callback_manager_declaration.v1\",\"source_links_binding\":\"null_for_native_context_default_or_complete_host_or_native_collection_binding;tuple_identity_and_element_identity_preserved\"}"
+_APPLICATION_JSON = '{"acceptance":"native_manager_checks_and_freshness_only;inspection_and_host_sidecars_cannot_import_accepted_records","actions":{"hydrate-context":{"fields":["context_id","document","bindings"],"result":"object_reference"},"native-provider":{"fields":["provider_id"],"result":"object_reference"},"ordered-json":{"fields":["object"],"result":"ordered_tree"},"provider-reference":{"fields":["object"],"result":"host_or_native_provider_reference"},"set-equal":{"fields":["object","values"],"result":"boolean"},"source-link-set-equal":{"fields":["objects","expected"],"result":"boolean"}},"argument":"--pipeline-callback-session-v1","authoring_boundary":"canonical_typed_contract_target_profile_fields;opaque_payload_configuration_provider_and_validator_objects_are_read_at_native_requested_points","bindings":{"host":["kind","object"],"native":["kind","identity","tree"]},"broker_actions":{"attr":{"fields":["object","name"],"result":"object_reference"},"attr-default":{"fields":["object","name","default"],"result":"object_reference"},"bind-provider":{"fields":["provider_id","object"],"result":"null"},"call":{"fields":["callable","args","kwargs"],"result":"object_reference"},"call-provider":{"fields":["provider_id","context"],"result":"object_reference"},"callable":{"fields":["object"],"result":"boolean"},"compare":{"fields":["left","right","operator"],"result":"boolean"},"contains":{"fields":["container","item"],"result":"boolean"},"dict":{"fields":["object"],"result":"object_reference"},"document":{"fields":["object"],"result":"object_reference"},"enum":{"fields":["type","value"],"result":"object_reference"},"freeze-json":{"fields":["object"],"result":"object_reference"},"get-item":{"fields":["object","key"],"result":"object_reference"},"is-instance":{"fields":["object","type"],"result":"boolean"},"is-none":{"fields":["object"],"result":"boolean"},"iter":{"fields":["object"],"result":"object_reference"},"json":{"fields":["object"],"result":"json"},"len":{"fields":["object"],"result":"integer"},"list":{"fields":["object"],"result":"object_reference"},"literal":{"fields":["kind","value"],"result":"object_reference"},"lookup":{"fields":["object","entries"],"result":"object_reference"},"mapping-items":{"fields":["object"],"result":"object_reference"},"mapping-keys":{"fields":["object"],"result":"object_reference"},"mapping-values":{"fields":["object"],"result":"object_reference"},"merge":{"fields":["object","before","after"],"result":"object_reference"},"next":{"fields":["object"],"result":"iterator_step"},"release":{"fields":["handles"],"result":"null"},"set-attribute-equal":{"fields":["objects","name","values"],"result":"boolean"},"truth":{"fields":["object"],"result":"boolean"},"tuple":{"fields":["object"],"result":"object_reference"},"vars":{"fields":["object"],"result":"object_reference"}},"channel":"biocompiler.pipeline_callback_channel.v1","claim_scope":"software_contract_conditional_translation_and_scoped_completion;no_empirical_or_human_use_acceptance","comparison_operators":["eq","ne","is","is-not"],"compatibility_pending":["complete_original_installed_replay","fixed_public_registration_interception","arbitrary_authoring_subclass_and_scalar_operator_semantics","default_cutover"],"context_bindings":["input","output","target","configuration","dependencies","requirements","source_links","observation_map"],"context_identity":"actual_native_context_physical_identity;distinct_producer_and_validation_contexts;one_validation_context_shared_by_its_validators","dependencies_encoding":"ordered_unique_string_identity_pairs","enum_types":["EvidenceKind","CheckOutcome","Stage","ArtifactStatus","PayloadFormat"],"executable":"core","expected_rejection_attributes":"fresh_ordered_tree_with_exact_canonical_attributes_projection;no_cached_binding_or_context_container_reuse;NoCandidateFound_retains_pass_configuration_and_dependency_order","expected_rejection_fields":["module","type","message","attributes","attributes_tree"],"failure":"expected_logical_rejection_and_opaque_host_exception_preserve_actual_partial_manager;malformed_resource_internal_or_uncertain_io_failure_closes_authority","host_execution":"trusted_host_code_cpu_and_opaque_captures_outside_native_work_and_json_memory_bounds","inspection_order":{"combined_provider_history":"actual_successful_insertion_order;pass_fingerprint_string_or_component_input_tag_and_fingerprint_pair;replacements_preserve_position","fields":["dependencies","passes","component_inputs","provider_history","component_input_history","records","profiles","combined_provider_history","validators"],"mapping_order":"unique_complete_snapshot_key_arrays","provider_fields":["provider_id","object"],"providers":"exact_reachable_snapshot_provider_token_census;stable_bijection_to_actual_retained_callable_identity;no_user_equality_or_hash","scope":"manager_mapping_and_validator_order_only;nested_unobserved_json_order_not_generalized;historical_observation_cannot_grant_acceptance","validator_maps":["passes","component_inputs","provider_history","component_input_history"],"validators":"four_exact_registration_maps_of_unique_complete_validator_key_arrays"},"iterator_step_fields":["exhausted","object"],"lifecycle":"one_initialization_attempt_per_channel;existing_channel_close_is_top_level_only;no_reconnect_retry_or_state_import","limits":"all_native_framing_application_import_callback_and_publication_work_uses_one_channel_lifetime_ancestor;retention_is_cumulative_no_refund","literal_kinds":["json","tuple","set"],"manager_limits":"initialization_once;null_defaults_or_complete_positive_integer_reductions","native_provider_context":"only_exact_retained_context_from_this_live_manager;no_external_context_import","native_provider_result_kinds":["proposal","decision","invalid"],"object_reference":{"fields":["handle"],"scope":"one_live_trusted_host_broker_physical_identity"},"obligation_objects":"array_of_actual_host_references_matching_canonical_obligation_slots;whole_tuple_sidecar_preserves_add_input_and_admission_collection_identity;run_allocates_a_new_tuple_reusing_elements;sidecars_do_not_grant_acceptance","operations":{"add-input":{"fields":["identity","stage","requirements","obligations","obligation_objects","payload","obligations_object"],"result":"record"},"admit-component-input":{"fields":["contract_id","identity","payload"],"result":"record"},"artifact":{"fields":["name"],"result":"canonical_immutable_build_artifact"},"call-native-provider":{"fields":["provider_id","context_id"],"result":"native_provider_result"},"get":{"fields":["identity"],"result":"record"},"initialize-components":{"fields":["request","history","until","config","manager_limits","target_object"],"result":"initialization"},"initialize-empty":{"fields":["target","dependencies","completion_profiles","manager_limits","target_object"],"result":"initialization"},"initialize-synthetic":{"fields":["request","history","until","config","manager_limits","target_object"],"result":"initialization"},"inspect":{"fields":[],"result":"historical_observation_only"},"inspect-ordered":{"fields":[],"result":"ordered_historical_observation_only"},"register":{"fields":["contract","producer","validators","obligation_objects"],"result":"null"},"register-completion-profile":{"fields":["profile"],"result":"null"},"register-component-input":{"fields":["contract","validators","obligation_objects","obligations_object","requirements_object"],"result":"null"},"result":{"fields":["identity","scope"],"result":"pipeline_result"},"run":{"fields":["pass_id","input_id","output_id","configuration"],"result":"record"},"set-dependency":{"fields":["key","identity"],"result":"null"},"target":{"fields":[],"result":"target"}},"ordered_tree":{"array":["array","ordered_trees"],"object":["object","ordered_unique_key_tree_pairs"],"scalar":["scalar","json_scalar"]},"profile":"biocompiler.core.pipeline_callback_manager.v1","provider_reference":{"host":["kind","object"],"native":["kind","provider_id"]},"record_bindings":["record_id","payload","dependencies","requirements","obligations","obligation_objects","checks","provenance"],"record_identity":"one_token_per_actual_native_record_physical_identity_including_rejected_and_stored_before_error_records;not_content_hash_or_import","results":{"initialization":["kind","manager","artifacts","target"],"native_provider_result":["kind","value"],"ordered_historical_observation_only":["snapshot","order","providers"],"pipeline_result":["value","artifact"],"record":["value","bindings"],"target":["value","binding"]},"schema_version":"biocompiler.pipeline_callback_manager_declaration.v1","source_links_binding":"null_for_native_context_default_or_complete_host_or_native_collection_binding;tuple_identity_and_element_identity_preserved"}'
 
 
 def capability_profile() -> dict[str, Any]:
@@ -91,6 +91,16 @@ def _frozen(value: Any) -> Any:
     return value
 
 
+def _literal_json(value: Any) -> JsonValue:
+    """Project only a locally decoded ordered tree back to literal JSON."""
+    if type(value) is MappingProxyType:
+        return {key: _literal_json(item) for key, item in value.items()}
+    if type(value) is tuple:
+        return [_literal_json(item) for item in value]
+    _require(value is None or type(value) in (bool, int, float, str), 'Malformed native scalar')
+    return cast(JsonValue, value)
+
+
 def _raw_fields(cls: Any, values: Mapping[str, Any]) -> Any:
     """Hydrate a native-checked value without rerunning Python semantic checks."""
     result = object.__new__(cls)
@@ -103,6 +113,60 @@ def _obligation(value: Any) -> Any:
     _require(isinstance(value, Mapping) and set(value) == {'id', 'scope', 'evidence_kind', 'description'},
              'Malformed native obligation view')
     return _raw_fields(ScopedObligation, {**value, 'evidence_kind': EvidenceKind(value['evidence_kind'])})
+
+
+def _strings(value: Any) -> tuple[str, ...]:
+    _require(type(value) is list and all(type(item) is str for item in value), 'Malformed native string array')
+    return tuple(value)
+
+
+def _check_view(value: Any) -> Any:
+    value = _object(value, {'id', 'evidence_kind', 'discharges'}, 'Inspected check specification')
+    _require(type(value['id']) is str and type(value['evidence_kind']) is str, 'Malformed inspected check fields')
+    return _raw_fields(CheckSpec, {**value, 'evidence_kind': EvidenceKind(value['evidence_kind']),
+        'discharges': _strings(value['discharges'])})
+
+
+def _contract_view(raw: Any, *, admission: bool) -> Any:
+    texts: tuple[str, ...]
+    arrays: tuple[str, ...]
+    if admission:
+        texts = ('id', 'version', 'schema')
+        arrays = ('requirements', 'dependency_keys', 'operation_path')
+        extra = {'stage', 'checks', 'obligations'}
+    else:
+        texts = ('id', 'version', 'input_schema', 'output_schema', 'profile', 'profile_version')
+        arrays = ('supported_operations', 'dependency_keys', 'required_capabilities', 'consumes_requirements',
+            'assumptions', 'changed_properties', 'invalidated_analyses', 'operation_path')
+        extra = {'input_stage', 'output_stage', 'checks', 'targets', 'introduces',
+            'requires_source_map', 'requires_observation_map'}
+    value = _object(raw, set(texts) | set(arrays) | extra, 'Inspected contract')
+    _require(all(type(value[key]) is str for key in texts) and type(value['checks']) is list,
+        'Malformed inspected contract fields')
+    result = {key: value[key] for key in texts}
+    result.update({key: _strings(value[key]) for key in arrays})
+    result['checks'] = tuple(_check_view(item) for item in value['checks'])
+    key = 'obligations' if admission else 'introduces'
+    _require(type(value[key]) is list and all(type(item) is dict
+        and all(type(field) is str for field in item.values()) for item in value[key]),
+        'Malformed inspected contract obligations')
+    result[key] = tuple(_obligation(item) for item in value[key])
+    if admission:
+        _require(value['stage'] == Stage.COMPONENTS.value, 'Malformed inspected admission stage')
+        return _raw_fields(ComponentInputContract, result)
+    _require(type(value['input_stage']) is str and type(value['output_stage']) is str
+        and type(value['requires_source_map']) is bool and type(value['requires_observation_map']) is bool,
+        'Malformed inspected pass stage or mapping requirements')
+    result.update(input_stage=Stage(value['input_stage']), output_stage=Stage(value['output_stage']),
+        targets=tuple(PayloadFormat(item) for item in _strings(value['targets'])),
+        requires_source_map=value['requires_source_map'], requires_observation_map=value['requires_observation_map'])
+    return _raw_fields(PassContract, result)
+
+
+def _profile_view(raw: Any) -> Any:
+    value = _object(raw, {'scope', 'stage', 'schema', 'obligations'}, 'Inspected completion profile')
+    _require(all(type(value[key]) is str for key in ('scope', 'stage', 'schema')), 'Malformed inspected profile fields')
+    return _raw_fields(CompletionProfile, {**value, 'stage': Stage(value['stage']), 'obligations': _strings(value['obligations'])})
 
 
 @dataclass(frozen=True)
@@ -327,6 +391,40 @@ class CorePassManager(PassManager):  # type: ignore[misc]
     def inspect_ordered(self) -> ManagerInspection:
         raw = self._call('inspect-ordered', {})
         return cast(ManagerInspection, self._view(self._ordered_inspection, raw, 'ordered manager inspection'))
+
+    def inspection_state(self) -> dict[str, Any]:
+        """Observe typed historical state without invoking freshness or acceptance.
+
+        The returned dictionaries are detached mutable views, in original
+        insertion order. Callables, target and stored records retain their actual
+        identities. The complete native receipt remains ``session.last_response``.
+        """
+        inspected = self.inspect_ordered()
+        return cast(dict[str, Any], self._view(self._inspection_state, inspected, 'typed historical manager state'))
+
+    def _inspection_state(self, inspected: ManagerInspection) -> dict[str, Any]:
+        snapshot, providers = inspected.snapshot, inspected.providers
+        _require(encode_document(_literal_json(snapshot['target'])) == encode_document(self._target.to_dict()),
+            'Inspected target differs from the supplied target')
+        registrations: dict[str, dict[str, Any]] = {}
+        for name in ('passes', 'component_inputs', 'provider_history', 'component_input_history'):
+            admission = name in ('component_inputs', 'component_input_history')
+            values: dict[str, Any] = {}
+            for key, row in snapshot[name].items():
+                contract = _contract_view(_literal_json(row['contract']), admission=admission)
+                validators = {check: providers[token] for check, token in row['validators'].items()}
+                values[key] = (contract, validators) if admission else (contract, providers[row['producer']], validators)
+            registrations[name] = values
+        history: dict[Any, Any] = {}
+        for key in inspected.order['combined_provider_history']:
+            if type(key) is str:
+                history[key] = registrations['provider_history'][key]
+            else:
+                history[key] = registrations['component_input_history'][key[1]]
+        return {'_target': self._target, '_dependencies': dict(snapshot['dependencies']),
+            '_passes': registrations['passes'], '_component_inputs': registrations['component_inputs'],
+            '_provider_history': history, '_records': {key: self._records[key] for key in snapshot['records']},
+            '_profiles': {key: _profile_view(_literal_json(value)) for key, value in snapshot['profiles'].items()}}
 
     def _ordered_inspection(self, raw: JsonValue) -> ManagerInspection:
         envelope = _object(raw, {'snapshot', 'order', 'providers'}, 'Ordered manager inspection')
@@ -670,7 +768,7 @@ class CorePassManager(PassManager):  # type: ignore[misc]
         return response.result
 
     def _exception(self, raw: JsonValue) -> BaseException:
-        value = _object(raw, {'module', 'type', 'message', 'attributes'}, 'Native application exception')
+        value = _object(raw, {'module', 'type', 'message', 'attributes', 'attributes_tree'}, 'Native application exception')
         _require(all(type(value[key]) is str for key in ('module', 'type', 'message')) and type(value['attributes']) is dict,
                  'Malformed native exception descriptor')
         classes: dict[tuple[str, str], Any] = {
@@ -684,13 +782,25 @@ class CorePassManager(PassManager):  # type: ignore[misc]
         cls = classes.get((value['module'], value['type']))
         _require(cls is not None, 'Native application returned an undeclared exception class')
         assert cls is not None
-        attributes = value['attributes']
+        # Exception snapshots are independent recursive copies, not retained
+        # context bindings. Canonical bytes distinguish bool/int/float values
+        # that Python equality would otherwise conflate.
+        attributes = _unordered(value['attributes_tree'])
+        _require(type(attributes) is MappingProxyType, 'Native exception attributes must be an ordered object')
+        _require(encode_document(_literal_json(attributes)) == encode_document(value['attributes']),
+                 'Native exception attributes differ from their ordered tree')
         if cls is NoCandidateFound:
-            _object(attributes, {'pass_id', 'configuration', 'dependencies'}, 'No-candidate exception attributes')
+            _require(tuple(attributes) == ('pass_id', 'configuration', 'dependencies'),
+                     'No-candidate exception attributes have missing, unknown or misordered fields')
+            _require(type(attributes['pass_id']) is str
+                and type(attributes['configuration']) is MappingProxyType
+                and type(attributes['dependencies']) is MappingProxyType
+                and all(type(item) is str for item in attributes['dependencies'].values()),
+                'Malformed no-candidate exception attribute kinds')
             error: BaseException = cls.__new__(cls)
             BaseException.__init__(error, value['message'])
             for key, item in attributes.items():
-                object.__setattr__(error, key, _frozen(item))
+                object.__setattr__(error, key, item)
             return error
         _require(not attributes, 'Unexpected native exception attributes')
         return cast(BaseException, cls(value['message']))

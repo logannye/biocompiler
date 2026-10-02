@@ -1,7 +1,8 @@
 # Live native manager and typed Python views
 
-Status: source implementation complete for the declared additive profile; hosted
-acceptance and public default cutover are incomplete. The exact application is declared in
+Status: the live manager and ordered views are implemented as source; complete
+deferred-callback receipt validation is in progress. Hosted acceptance and public
+default cutover are incomplete. The exact application is declared in
 [pipeline-callback-manager-v1.json](../protocol/pipeline-callback-manager-v1.json).
 It runs only in Core through `--pipeline-callback-session-v1`, over the existing
 bounded callback channel. The standalone verifier has no producer or manager
@@ -23,7 +24,12 @@ dependency or failed check. Losing the process invalidates the session. Mutation
 are never retried or reconstructed from inspection output.
 
 Host exceptions retain their original objects through the callback broker.
-Expected native errors use a closed exception descriptor. Malformed frames,
+Expected native errors use a closed exception descriptor. Its canonical
+`attributes` and fresh `attributes_tree` must describe exactly the same values;
+the tree retains mapping insertion order. The adapter makes new recursively
+frozen error snapshots on each rejection, without borrowing context containers.
+The core reserves the ordered representation before constructing it, and a
+resource failure during error publication closes the session. Malformed frames,
 resource exhaustion, unexpected internal errors and uncertain writes terminate
 authority. Logical errors preserve mutations that already occurred, including a
 record stored before a final freshness check fails.
@@ -67,9 +73,9 @@ workflow routing, distribution and default cutover remain separate required
 gates. Arbitrary authoring subclasses and scalar operators are not established
 by the typed canonical boundary; they require complete coverage or an intentional
 versioned language restriction before cutover. Full compatibility also requires
-typed fixed-producer return objects and the original ordering and shared snapshot
-objects in no-candidate exceptions; decoding a closed exception descriptor alone
-does not establish those properties.
+typed fixed-producer return objects and hosted verification of the fresh ordered
+no-candidate snapshots; decoding a closed exception descriptor alone does not
+establish those properties.
 
 All native compilation and execution remain hosted. Passing local Python
 fixtures, static checks or typing does not establish native acceptance. Conditional
@@ -116,9 +122,31 @@ case module. Installed replay must intercept that local constructor without
 changing the frozen case bodies, then account for and close every actual native
 process. Native input fingerprinting already has a framed default-value/getter
 witness; verify its document/hash/order linkage without pretending that an OCaml
-call produced the original Python profiler frame. No-candidate exceptions still
-need fresh recursive ordered configuration/dependency snapshots, rather than
-sharing the context snapshot or accepting sorted attribute objects as equivalent.
+call produced the original Python profiler frame. Fresh recursive ordered
+configuration/dependency snapshots are implemented for no-candidate exceptions;
+hosted replay must establish their compatibility with the original manager.
+
+Installed Python capture exposed a separate fixture assumption: code loaded from
+an installed package has different traceback file labels from the source
+checkout. Python 3.11 also retains a comprehension frame absent in Python 3.14
+and reports two different source locations. These observations require explicit
+runtime correspondence checked against the original source and current runtime.
+The frozen capture and all actual raw tracebacks remain evidence; no general
+traceback normalization is permitted.
+
+Offline comparison also needs independent authority for a foreign Python
+version. Retain the original source bytes, selected code and instruction-position
+tables, and verify them against reviewed per-version pins before reconstructing
+the correspondence. Source and run receipts establish which hosted producer ran;
+hashes and a supplied PASS alone cannot establish execution. Local cross-version
+controls supplement, but cannot replace, the four installed hosted runs.
+
+Trace correspondence must validate complete frame segments, their order and
+cardinality, and their own native commands and broker invocations. A list of
+permitted function names is insufficient: deleting or repeating permitted frames
+must fail even when an artifact's hashes are recomputed. Fingerprint evidence
+must connect the actual payload document, freezing operation, ordered JSON,
+computed hash and default attribute lookup through their retained references.
 
 The comparison source checkpoint passes 26 adapter tests, 18 campaign tests,
 50 boundary/CI/inventory checks and eight source-lineage checks. Strict typing
