@@ -29,7 +29,7 @@ let names ~path ?(maximum=4096) ?(nonempty=false) raw =
   require ~path (List.length values = List.length sorted && (not nonempty || values <> [])) "Architecture names must be unique and meet inventory bounds.";
   sorted
 let records ~path ~maximum decode raw =
-  M.array ~path ~maximum raw |> List.mapi (fun i -> decode ~path:(path ^ "/" ^ string_of_int i))
+  M.array ~path ~maximum raw |> List.mapi (fun i -> decode ?path:(Some (path ^ "/" ^ string_of_int i)))
 let objects ~path raw =
   M.array ~path ~maximum:4096 raw |> List.map (fun raw -> ignore (Json.object_fields ~path raw); raw)
 let distinct ~path identity values =
@@ -40,7 +40,7 @@ let instances ~path raw =
   distinct ~path I.id values;
   List.sort (fun a b -> String.compare (I.id a) (I.id b)) values
 let optional encode = function None -> Json.Null | Some value -> encode value
-let nullable decode ~path = function Json.Null -> None | raw -> Some (decode ~path raw)
+let nullable decode ~path = function Json.Null -> None | raw -> Some (decode ?path:(Some path) raw)
 let hash ~path raw =
   let value = Json.string ~path raw in
   require ~path (String.length value = 64 && String.for_all (function '0'..'9' | 'a'..'f' -> true | _ -> false) value) "Expected lowercase SHA-256 architecture identity.";

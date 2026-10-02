@@ -181,7 +181,7 @@ let supplementary_checks ~budget request graph selected =
           Names.add id (Option.value ~default:[] (Names.find_opt id values) @ [refinement,binding]) values) values (F.output_contracts refinement)) Names.empty selected in
       let requirements = Circuit_request.requirements (Architecture_request.circuit request) in
       Ids.iter (fun id -> fail ("unknown_output_requirement:" ^ id)) (Ids.diff (Names.bindings declarations |> List.map fst |> set) (List.map Circuit_request.Requirement.id requirements |> set));
-      let installed = List.filter (fun (node:R.node) -> node.kind = "rule") nodes |> List.concat_map (fun node -> match node.inputs with _ :: _ :: values -> values | _ -> []) |> set in
+      let installed = List.filter (fun (node:R.node) -> node.kind = "rule") nodes |> List.concat_map (fun (node:R.node) -> match node.inputs with _ :: _ :: values -> values | _ -> []) |> set in
       let legacy = ref [] and legacy_bindings = ref [] in
       List.iter (fun requirement ->
           let id = Circuit_request.Requirement.id requirement in
@@ -404,7 +404,7 @@ let molecule_checks ~budget request construction bundle (inventories:R.inventori
     Option.iter (fun maximum -> if List.exists (fun (_,length) -> length > maximum) lengths then fail "maximum_rna_member_length") (C.Constraints.max_member_bases constraints);
     Option.iter (fun maximum -> if total > maximum then fail "maximum_rna_total_length") (C.Constraints.max_total_bases constraints);
     let groups = C.Constraints.delivery_groups constraints in
-    let roles = R.nodes graph |> List.filter (fun (node:R.node) -> node.kind = "role") |> List.map (fun node -> node.id) |> set in
+    let roles = R.nodes graph |> List.filter (fun (node:R.node) -> node.kind = "role") |> List.map (fun (node:R.node) -> node.id) |> set in
     let group_members = ref Names.empty and group_roles = ref Names.empty in
     List.iter (fun placement ->
         Work_budget.charge budget 1;
