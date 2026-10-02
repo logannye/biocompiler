@@ -34,6 +34,7 @@ module Observable : sig
   val of_json : ?path:string -> Bioc_wire.Json.t -> t
   val to_json : t -> Bioc_wire.Json.t
   val fingerprint : t -> string
+  val make : id:string -> dtype:Type_spec.t -> role:string -> ?scope:scope -> ?compartment:string -> unit -> t
   val id : t -> string
   val dtype : t -> Type_spec.t
   val role : t -> string
@@ -46,6 +47,10 @@ module Response : sig
   val of_json : ?path:string -> Bioc_wire.Json.t -> t
   val to_json : t -> Bioc_wire.Json.t
   val fingerprint : t -> string
+  val make : id:string -> rule_id:string -> specification_id:string -> observable:Observable.t ->
+    active_range:Interval.t -> inactive_range:Interval.t -> max_activation_delay:Scalar.t ->
+    max_deactivation_delay:Scalar.t -> t
+  val id : t -> string
   val observable : t -> Observable.t
   val active : t -> Interval.t
   val inactive : t -> Interval.t

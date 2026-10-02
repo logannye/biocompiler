@@ -1,0 +1,1 @@
+"{\"compartment\":\"surface\",\"dtype\":{\"arguments\":[],\"dimensions\":{},\"kind\":\"scalar\",\"name\":\"Level\"},\"id\":\"output_a\",\"role\":\"different_role\",\"schema_version\":\"biocompiler.observable.v0.1\",\"scope\":\"cell\"}"

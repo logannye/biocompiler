@@ -1,0 +1,1 @@
+"{\"args\":[],\"kwargs\":{\"id\":\"domain\",\"inputs\":[],\"minimum_horizon\":{\"canonical_value\":4,\"kind\":\"scalar\",\"type\":{\"arguments\":[],\"dimensions\":{\"time\":1},\"kind\":\"scalar\",\"name\":\"Duration\"},\"unit\":\"s\",\"value\":4},\"required_capabilities\":[\"synthetic_execution\"],\"role\":\"role\",\"version\":\"1\"}}"

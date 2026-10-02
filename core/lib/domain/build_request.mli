@@ -8,6 +8,26 @@ type target_kind = Legacy_target | Human_target
 type binding_category = User_selected | Compiler_selected | Measured | Uncertain
 type binding_metadata
 
+module Target_evidence : sig
+  type system = Human_in_vivo | Primary_human_cells | Human_cell_line | Nonhuman_in_vivo
+    | Nonhuman_cells | Cell_free | Software_fixture
+  type t
+  val schema_version : string
+  val system_name : system -> string
+  val of_json : ?path:string -> Bioc_wire.Json.t -> t
+  val make : id:string -> source:Pinned_identity.t -> taxon_id:Z.t option -> system:system ->
+    source_context:string -> locator:string -> limitations:string -> t
+  val to_json : t -> Bioc_wire.Json.t
+  val fingerprint : t -> string
+  val id : t -> string
+  val source : t -> Pinned_identity.t
+  val taxon_id : t -> Z.t option
+  val system : t -> system
+  val source_context : t -> string
+  val locator : t -> string
+  val limitations : t -> string
+end
+
 module Target : sig
   type t
   val of_json : ?path:string -> Bioc_wire.Json.t -> t
@@ -16,6 +36,9 @@ module Target : sig
   val fingerprint : t -> string
   val compartments : t -> string list
   val payload_format : t -> string
+  val capabilities : t -> string list
+  val resources : t -> (string * Measurement_contract.Scalar.t) list
+  val evidence : t -> Target_evidence.t list
 end
 
 module Target_claim : sig

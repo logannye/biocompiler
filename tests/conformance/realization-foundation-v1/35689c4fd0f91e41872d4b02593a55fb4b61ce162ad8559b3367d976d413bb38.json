@@ -1,0 +1,1 @@
+{"code":"input_endpoint","message":"Model input must match the domain's explicit endpoint identity, role, scope, compartment and type.","node_id":"n000003","requirement_id":null,"source":{"file":"/__biocompiler_capture__/examples/realization_check.py","function":"build_example","line":21}}
