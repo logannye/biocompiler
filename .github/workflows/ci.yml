@@ -875,6 +875,8 @@ jobs:
       - name: Run every native literal and mutation suite
         run: |
           set -o pipefail
+          BIOCOMPILER_REFERENCE_CONTRACTS_DOCUMENTS="$GITHUB_WORKSPACE/tests/conformance/reference-contracts-v1" \
+          BIOCOMPILER_REFERENCE_CONTRACTS_CORPUS="$GITHUB_WORKSPACE/tests/conformance/reference-contracts-v1.json" \
           BIOCOMPILER_CANDIDATE_RUNTIME_CORPUS="$GITHUB_WORKSPACE/tests/conformance/candidate-runtime-v1.json" \
           BIOCOMPILER_COMPONENT_RUNTIME_CORPUS="$GITHUB_WORKSPACE/tests/conformance/component-runtime-v1.json" \
           BIOCOMPILER_REALIZATION_FOUNDATION_CORPUS="$GITHUB_WORKSPACE/tests/conformance/realization-foundation-v1.json" \
@@ -905,6 +907,21 @@ jobs:
           if-no-files-found: ignore
           overwrite: true
           retention-days: 7
+      - name: Check historical JSON spelling, rejection order and parser bounds
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_legacy_json.exe | tee generated/core/test_legacy_json.txt
+      - name: Check typed historical reference, construct and molecular domains
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_reference_domains.exe | tee generated/core/test_reference_domains.txt
+      - name: Independently check exact reference layout, sequence and translation
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_reference_checkers.exe "$GITHUB_WORKSPACE/tests/conformance/reference-contracts-v1" | tee generated/core/test_reference_checkers.txt
+      - name: Check shared reference producer work and output bounds
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_reference_producer_budget.exe "$GITHUB_WORKSPACE/tests/conformance/reference-contracts-v1" | tee generated/core/test_reference_producer_budget.txt
+      - name: Replay every original reference domain, producer and checker observation
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_reference_contracts_corpus.exe "$GITHUB_WORKSPACE/tests/conformance/reference-contracts-v1.json" | tee generated/core/test_reference_contracts_corpus.txt
       - name: Check retained request, behavior and coordinate domain corpora
         if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
         run: |

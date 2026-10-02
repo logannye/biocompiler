@@ -1,0 +1,1 @@
+[{"code":"unknown_features","instance_id":"cds","message":"The construct must retain every unknown delivered-payload feature from the reference unchanged.","molecule_id":"payload","requirement_ids":["exact_reference"],"source":{"file":"reference_build.py","function":"<module>","line":12},"status":"fail"}]

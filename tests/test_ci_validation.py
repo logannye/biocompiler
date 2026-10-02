@@ -273,6 +273,41 @@ class ValidationGateTests(unittest.TestCase):
         self.assertIn("core/_build/default/test/test_synthetic_producer_public_protocol.exe | tee generated/core/test_synthetic_producer_public_protocol.txt", native)
         self.assertIn('core/_build/default/test/test_synthetic_inspection_protocol.exe "$GITHUB_WORKSPACE/tests/conformance/synthetic-inspection-supplemental-v1.json" "$GITHUB_WORKSPACE/protocol/synthetic-inspection-v1.json" | tee generated/core/test_synthetic_inspection_protocol.txt', native)
 
+    def test_reference_foundation_suites_are_required_on_both_native_platforms(self):
+        root = Path(__file__).resolve().parents[1]
+        text = (root / ".github/workflows/ci.yml").read_text()
+        native = text.split("\n  ocaml-core:\n", 1)[1].split("\n  architecture-core-reproducibility:\n", 1)[0]
+        self.assertEqual(ci.workflow_jobs(root / ".github/workflows/ci.yml"), ci.REQUIRED_NEEDS | {"validation"})
+        # Existing expanded topology: 35 required job instances plus final validation.
+        self.assertEqual(len(ci.EXPECTED_RECEIPTS) + 2 + 10 + 2 + 1, 36)
+        for platform in ci.CORE_PLATFORMS:
+            self.assertEqual(native.count("            platform: " + platform + "\n"), 1)
+        self.assertIn("runs-on: ${{ matrix.runner }}", native)
+        self.assertIn("      fail-fast: false", native)
+        runtest = native.split("      - name: Run every native literal and mutation suite\n", 1)[1].split("      - name:", 1)[0]
+        for variable, relative in (("BIOCOMPILER_REFERENCE_CONTRACTS_DOCUMENTS", "tests/conformance/reference-contracts-v1"),
+                                   ("BIOCOMPILER_REFERENCE_CONTRACTS_CORPUS", "tests/conformance/reference-contracts-v1.json")):
+            self.assertIn(variable + '="$GITHUB_WORKSPACE/' + relative + '" \\\n', runtest)
+        self.assertIn("opam exec -- dune runtest --root core 2>&1 | tee generated/core/native-tests.txt", runtest)
+        arguments = {
+            "test_legacy_json": "", "test_reference_domains": "",
+            "test_reference_producer_budget": ' "$GITHUB_WORKSPACE/tests/conformance/reference-contracts-v1"',
+            "test_reference_checkers": ' "$GITHUB_WORKSPACE/tests/conformance/reference-contracts-v1"',
+            "test_reference_contracts_corpus": ' "$GITHUB_WORKSPACE/tests/conformance/reference-contracts-v1.json"',
+        }
+        for name, argument in arguments.items():
+            command = "core/_build/default/test/" + name + ".exe" + argument + " | tee generated/core/" + name + ".txt"
+            with self.subTest(suite=name):
+                self.assertEqual(native.count(command), 1)
+                block = next(item for item in native.split("      - name: ") if command in item)
+                self.assertIn("if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}", block)
+                self.assertNotIn("continue-on-error", block)
+                self.assertLess(native.index(command), native.index("Record successful native validation"))
+        artifact = native.split("      - name: Retain native evidence even on failure\n", 1)[1].split("      - name:", 1)[0]
+        self.assertIn("if: always()", artifact)
+        self.assertIn("name: core-${{ matrix.platform }}", artifact)
+        self.assertIn("path: generated/core/", artifact)
+
     def test_checked_manager_and_contract_suites_are_hosted_gates(self):
         text = (Path(__file__).resolve().parents[1] / ".github/workflows/ci.yml").read_text()
         native = text.split("\n  ocaml-core:\n", 1)[1].split("\n  architecture-core-reproducibility:\n", 1)[0]

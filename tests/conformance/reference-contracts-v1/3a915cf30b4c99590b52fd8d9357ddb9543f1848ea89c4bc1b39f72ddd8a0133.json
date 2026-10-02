@@ -1,0 +1,1 @@
+[{"code":"co_payload_assembly","instance_id":null,"message":"Co-payload placement needs a separately supported assembly and coexistence rule.","molecule_id":null,"requirement_ids":["exact_reference"],"source":null,"status":"unsupported"}]

@@ -1,0 +1,1 @@
+[{"code":"source_request","instance_id":null,"message":"Reference construction lineage must identify its exact authoritative composition.","molecule_id":null,"requirement_ids":["exact_reference"],"source":null,"status":"fail"}]

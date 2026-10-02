@@ -1,0 +1,1 @@
+"{\n  \"invalidated_analyses\": [\n    \"construct\",\n    \"composition\",\n    \"molecular\",\n    \"structure\",\n    \"expression\",\n    \"behavior\"\n  ],\n  \"schema_version\": \"biocompiler.encoding_evidence_policy.v0.1\",\n  \"semantic_properties\": [\n    \"sequence\",\n    \"chemistry\",\n    \"end_features\",\n    \"topology\",\n    \"boundaries\"\n  ]\n}"

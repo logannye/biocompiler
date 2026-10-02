@@ -1,0 +1,1 @@
+"{\n  \"assumption\": \"Co-delivery would need separate evidence.\",\n  \"consumer_molecule\": \"payload\",\n  \"id\": \"coexistence\",\n  \"kind\": \"same_cell\",\n  \"provider_molecule\": \"co-payload\",\n  \"requirement_ids\": [],\n  \"schema_version\": \"biocompiler.construct_dependency.v0.1\"\n}"

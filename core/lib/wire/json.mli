@@ -18,6 +18,13 @@ val parse_bounded : max_bytes:int -> max_nodes:int -> string -> t
 (* Descriptor artifact decoding counts object keys before allocating them, in
    addition to values. Original parse/parse_bounded node semantics stay intact. *)
 val parse_artifact : ?on_node:(unit -> unit) -> max_bytes:int -> max_nodes:int -> string -> t
+(* Bounded legacy import hooks. Object-pair duplicate diagnostics run after its
+   nested values, matching a post-decoding object hook. Callbacks must reject;
+   returning from either callback still fails closed. Strict APIs above retain
+   their original token and diagnostic behavior. *)
+val parse_legacy_artifact : ?on_node:(unit -> unit) ->
+  on_duplicate_key:(string -> unit) -> on_nonfinite:(string -> unit) ->
+  max_bytes:int -> max_nodes:int -> string -> t
 val validate_utf8 : string -> unit
 val object_fields : ?path:string -> t -> (string * t) list
 val field : ?path:string -> string -> (string * t) list -> t

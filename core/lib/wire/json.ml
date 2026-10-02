@@ -55,7 +55,8 @@ let add_codepoint buffer value =
     add (0xf0 lor (value lsr 18)); add (0x80 lor ((value lsr 12) land 0x3f));
     add (0x80 lor ((value lsr 6) land 0x3f)); add (0x80 lor (value land 0x3f)))
 
-let parse_with_limits ?(on_node=(fun () -> ())) ?(count_keys=false) ~max_bytes ~max_nodes text =
+let parse_with_limits ?(on_node=(fun () -> ())) ?(count_keys=false)
+    ?on_duplicate_key ?on_nonfinite ~max_bytes ~max_nodes text =
   let length = String.length text in
   require (length <= max_bytes) "request_too_large" "JSON exceeds the byte limit.";
   let position = ref 0 and nodes = ref 0 in
@@ -157,6 +158,10 @@ let parse_with_limits ?(on_node=(fun () -> ())) ?(count_keys=false) ~max_bytes ~
     if !position >= length then error "Missing JSON value.";
     match text.[!position] with
     | '"' -> String (read_string ())
+    | 'N' when Option.is_some on_nonfinite -> nonfinite "NaN"
+    | 'I' when Option.is_some on_nonfinite -> nonfinite "Infinity"
+    | '-' when Option.is_some on_nonfinite && length- !position>=9 &&
+        String.sub text !position 9="-Infinity" -> nonfinite "-Infinity"
     | '-' | '0' .. '9' -> read_number ()
     | 'n' -> literal "null" Null
     | 't' -> literal "true" (Bool true)
@@ -185,21 +190,35 @@ let parse_with_limits ?(on_node=(fun () -> ())) ?(count_keys=false) ~max_bytes ~
               require (!nodes <= max_nodes) "node_limit" "JSON exceeds the key and value count limit.";
               on_node ());
             let key = read_string () in
-            require (not (Hashtbl.mem seen key)) "duplicate_key" "Duplicate JSON object key.";
-            Hashtbl.add seen key ();
+            (match on_duplicate_key with
+             | None ->
+                 require (not (Hashtbl.mem seen key)) "duplicate_key" "Duplicate JSON object key.";
+                 Hashtbl.add seen key ()
+             | Some _ -> ());
             skip (); expect ':';
             items := (key, value (depth + 1)) :: !items;
             skip ();
             if !position < length && text.[!position] = '}' then (incr position; finished := true)
             else expect ','
           done;
-          Object (List.rev !items))
+          let fields=List.rev !items in
+          (match on_duplicate_key with None -> () | Some reject ->
+             List.iter (fun (key,_) ->
+               if Hashtbl.mem seen key then (
+                 reject key;
+                 fail "duplicate_key" "Duplicate JSON object key.");
+               Hashtbl.add seen key ()) fields);
+          Object fields)
     | _ -> error "Unexpected JSON token."
   and literal word result =
     let count = String.length word in
     if !position + count > length || String.sub text !position count <> word then error "Invalid JSON literal.";
     position := !position + count;
     result
+  and nonfinite word =
+    ignore (literal word Null);
+    (match on_nonfinite with None -> () | Some reject -> reject word);
+    fail "nonfinite_number" "JSON numbers must be finite."
   in
   let result = value 0 in
   skip ();
@@ -218,6 +237,11 @@ let parse_artifact ?on_node ~max_bytes ~max_nodes text =
   require (max_bytes >= 0 && max_bytes <= 64 * 1024 * 1024 && max_nodes > 0 && max_nodes <= 1_000_000)
     "invalid_json_limits" "Invalid bounded artifact JSON limits.";
   parse_with_limits ?on_node ~count_keys:true ~max_bytes ~max_nodes text
+
+let parse_legacy_artifact ?on_node ~on_duplicate_key ~on_nonfinite ~max_bytes ~max_nodes text =
+  require (max_bytes >= 0 && max_bytes <= 64 * 1024 * 1024 && max_nodes > 0 && max_nodes <= 1_000_000)
+    "invalid_json_limits" "Invalid bounded artifact JSON limits.";
+  parse_with_limits ?on_node ~count_keys:true ~on_duplicate_key ~on_nonfinite ~max_bytes ~max_nodes text
 
 let object_fields ?path = function
   | Object fields -> fields

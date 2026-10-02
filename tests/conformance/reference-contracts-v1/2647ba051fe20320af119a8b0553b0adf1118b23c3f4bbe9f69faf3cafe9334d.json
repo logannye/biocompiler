@@ -1,0 +1,1 @@
+"{\n  \"genetic_code\": 2,\n  \"protein_length_includes_stop\": true,\n  \"schema_version\": \"biocompiler.translation_policy.v0.1\",\n  \"start_codon\": \"ATG/AUG\",\n  \"stop_convention\": \"exactly-one-terminal-star-retained\"\n}"

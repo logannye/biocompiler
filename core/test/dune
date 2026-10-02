@@ -528,3 +528,31 @@
  (modules test_pipeline_callback_manager)
  (libraries bioc_wire bioc_domain bioc_checker bioc_compiler bioc_pipeline_service bioc_pipeline zarith)
  (action (run %{test} %{env:BIOCOMPILER_PIPELINE_CALLBACK_MANAGER_DECLARATION=missing} %{env:BIOCOMPILER_PIPELINE_CONTRACT_LITERALS=missing} %{env:BIOCOMPILER_FIXED_PIPELINE_CORPUS=missing})))
+
+(test
+ (name test_legacy_json)
+ (modules test_legacy_json)
+ (libraries bioc_wire))
+
+(test
+ (name test_reference_domains)
+ (modules test_reference_domains)
+ (libraries bioc_wire bioc_domain zarith))
+
+(test
+ (name test_reference_checkers)
+ (modules test_reference_checkers)
+ (libraries bioc_wire bioc_domain bioc_checker zarith)
+ (action (run %{test} %{env:BIOCOMPILER_REFERENCE_CONTRACTS_DOCUMENTS=missing})))
+
+(test
+ (name test_reference_contracts_corpus)
+ (modules test_reference_contracts_corpus)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_compiler zarith)
+ (action (run %{test} %{env:BIOCOMPILER_REFERENCE_CONTRACTS_CORPUS=missing})))
+
+(test
+ (name test_reference_producer_budget)
+ (modules test_reference_producer_budget)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_compiler zarith)
+ (action (run %{test} %{env:BIOCOMPILER_REFERENCE_CONTRACTS_DOCUMENTS=missing})))

@@ -1,0 +1,1 @@
+{"feature":"canonical-sequence-sha256","reason":"Pinned CDS reference record and standard-code policy.","schema_version":"biocompiler.molecular_feature_status.v0.1","scope":"cds_record","status":"known","value":"90b1d6267fa865806bf73f384125d55d009207e65aac5328045ae7b8e0e4e9d6"}

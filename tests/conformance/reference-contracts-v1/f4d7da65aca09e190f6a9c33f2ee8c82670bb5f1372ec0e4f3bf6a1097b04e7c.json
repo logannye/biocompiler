@@ -1,0 +1,1 @@
+[{"code":"source_correspondence","instance_id":"cds","message":"Placement changed or omitted selected source/requirement correspondence.","molecule_id":"payload","requirement_ids":["exact_reference"],"source":{"file":"reference_build.py","function":"<module>","line":12},"status":"fail"}]
