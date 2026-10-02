@@ -1,0 +1,53 @@
+{
+  "failed_channels": {
+    "a000_transport.n000003": [
+      4,
+      2
+    ]
+  },
+  "histories": {
+    "n000001": [
+      {
+        "contacts": {},
+        "signals": {
+          "n000005": {
+            "high": null,
+            "low": null,
+            "present": true,
+            "value": null
+          }
+        },
+        "time": 0
+      },
+      {
+        "contacts": {},
+        "signals": {
+          "n000005": {
+            "high": null,
+            "low": null,
+            "present": false,
+            "value": null
+          }
+        },
+        "time": 2
+      }
+    ],
+    "n000002": [
+      {
+        "contacts": {},
+        "signals": {
+          "n000012": {
+            "high": null,
+            "low": null,
+            "present": false,
+            "value": null
+          }
+        },
+        "time": 0
+      }
+    ]
+  },
+  "max_samples": 1000,
+  "step": 1,
+  "until": 5
+}

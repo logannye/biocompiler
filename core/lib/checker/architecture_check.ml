@@ -486,7 +486,7 @@ let check ?budget ~expected_request build =
               | Some construction ->
                   if Construction.Request.fingerprint (Construction_build.request construction) <> Construction.Request.fingerprint expected_construction then fail "construction_template_authority";
                   let candidate = Construction_build.candidate construction in
-                  let assessment = Construction_check.check ~expected_request:expected_construction candidate in
+                  let assessment = Construction_check.check ~parent:budget ~expected_request:expected_construction candidate in
                   if Construction_assessment.fingerprint assessment <> Construction_assessment.fingerprint (Construction_build.assessment construction) then fail "construction_assessment_replay";
                   if not (Construction_assessment.passed assessment) then fail "exact_construction_reconstruction"
                   else if not (Construction_assessment.complete assessment) then unknown "complete_construction_missing";

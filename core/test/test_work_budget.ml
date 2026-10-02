@@ -8,13 +8,19 @@ let child parent maximum = B.nested ~parent ~profile:"literal.child.v1" ~error_c
 let literals () =
   let root = create 10 in
   let first = child root 6 and second = child root 20 in
+  require (B.remaining root=10 && B.remaining first=6 && B.remaining second=10)
+    "Unused allowance must include every ancestor";
   B.charge first 6;
+  require (B.remaining root=4 && B.remaining first=0 && B.remaining second=4)
+    "Shared ancestor charges must update the available allowance";
   rejected "child_limit" (fun () -> B.charge first 1);
   B.charge second 4;
   rejected "root_limit" (fun () -> B.charge second 1);
   B.charge root 0;
   let root = create 3 in let leaf = child root 4 in
   rejected "root_limit" (fun () -> B.charge leaf 4);
+  require (B.remaining root=3 && B.remaining leaf=3)
+    "Failed atomic charge changed the reported remaining allowance";
   B.charge leaf 3;
   rejected "root_limit" (fun () -> B.charge leaf 1);
   rejected "invalid_work_budget" (fun () -> B.charge root (-1));

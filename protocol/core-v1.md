@@ -122,10 +122,14 @@ port and conformance vectors before authority moves.
 
 ## Implemented operations
 
-`capabilities` takes exactly `{}`. It returns supported operations, Intent schema
-versions, `canonicalization: "python-json-v1"`, validation scopes, all limits above
-and an explicit limited claim scope. The verifier must advertise only its actual
+`capabilities` takes exactly `{}`. Its `biocompiler.core_capabilities.v1` result
+returns supported operations, Intent schema versions, `canonicalization:
+"python-json-v1"`, validation scopes, all limits above, versioned `profiles` and
+an explicit limited claim scope. The verifier must advertise only its actual
 operations; a standalone executable alone does not establish independent checking.
+`CoreClient.negotiate` validates this envelope, exact transport bounds and the
+requested operation. `ArchitectureClient` additionally requires its complete
+architecture profile before each call. No cached negotiation grants authority.
 
 `canonicalize` takes any valid bounded JSON value. Result fields are exactly
 `canonical_json` (string) and `sha256` (string). This is a codec operation, not an
@@ -185,6 +189,51 @@ explicit `CoreClient.verify_lowering` adapter. Production compiler routing remai
 unchanged. A successful graph-preservation result does not execute the source or
 candidate, accept a molecular architecture, or authorize an export.
 
+## Experimental architecture operations
+
+`verify-architecture` takes exactly `expected_request` (a complete
+`biocompiler.payload_architecture_request.v0.1`) and `build` (a supplied
+`biocompiler.payload_architecture_build.v0.2`). `replay-architecture` additionally
+requires a complete `biocompiler.payload_architecture_verification.v0.1`
+`assessment`. Replay reruns the independent checker with the original authority;
+an altered historical report returns `architecture_assessment_mismatch`.
+
+Both executable roles link only the public domain/checker service for these
+operations. The separate producer and reference evaluator are absent from the
+verifier's dependency graph. These calls do not perform candidate execution,
+certify exhaustive search, establish empirical function or grant human admission.
+Malformed authority and resource exhaustion return an error with no result.
+An executed semantic check returns `ok` even when its assessment says `fail`,
+`unknown` or `unsupported`; callers must inspect the scoped assessment outcome.
+An incomplete `pass` retains its unresolved obligations and completion flags.
+
+The result has exactly these fields:
+
+- `schema_version: "biocompiler.core.architecture_assessment.v1"`;
+  `implementation: "biocompiler.ocaml.architecture_check.v0.1"`;
+  `resource_profile: "biocompiler.architecture_check.resources.v1"`;
+  `validation_scope: "supplied-architecture-correspondence-v1"`.
+- `supplied_request_fingerprint` and `supplied_build_fingerprint`, SHA-256 over
+  canonical JSON of the exact supplied documents. These are separate from the
+  normalized domain fingerprints inside the assessment.
+- `assessment`, the complete freshly computed report, and its
+  `assessment_fingerprint`. The historical schema and checker policy remain
+  unchanged; the wrapper identifies the native implementation that executed it.
+
+The advertised `profiles.architecture` record has exactly `operations`,
+`request_schema`, `build_schema`, `assessment_schema`, `implementation`,
+`resource_profile` and `validation_scope`. Its operations are
+`verify-architecture` and `replay-architecture`; the other values match the
+identities above. The Python `ArchitectureClient` freezes caller-owned input
+containers before negotiation, verifies all result identities and returns an
+immutable `ArchitectureResult`. Reading its assessment creates a separate copy.
+The adapter checks protocol shape and integrity; it does not reimplement the
+semantic checker or treat its Python class as an unforgeable acceptance token.
+
+Current production SDK/CLI routing remains Python. The experimental typed
+adapter does not complete release distribution, runtime isolation of the legacy
+Python package initializer, export publication or default-engine cutover.
+
 ## Evidence
 
 `tests/conformance/core-json-v1.json` retains independent literal examples and
@@ -199,3 +248,13 @@ requires intended rejection codes for structurally valid semantic mutations.
 `tests/test_core_client.py` exercises subprocess failure, output bounds,
 cancellation, request/role/version mismatches and malformed responses with Python
 test children. These source tests do not substitute for hosted native validation.
+
+`tools/check_architecture_protocol.py` runs 108 installed process checks across
+both executable roles: complete verification and replay for all 13 installed
+architectures, the three original case B authorities and eight meaningful
+rejected candidates, plus forged-report and missing/extra-authority rejections.
+It resolves pinned test-only storage deltas into full documents before transport.
+It calls no Python semantic producer or checker. The broader 293-report native
+campaign remains separately required. Strict mypy checking covers both migrated
+Python adapter modules using the hash-pinned pure-Python tools and configuration
+in `tools/typecheck-requirements.txt` and `tools/mypy-core.ini`.

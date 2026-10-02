@@ -17,6 +17,7 @@ let budget_json value = Json.Object [
     "max_trace_items", Json.int value.max_trace_items;
     "max_json_values", Json.int Limits.max_json_nodes; "max_json_bytes", Json.int Limits.max_response_bytes]
 let evaluator_version = "biocompiler.ocaml.reference.v0.1"
+type usage = { work : int; frames : int; trace_items : int }
 let id node = Identity.Node.to_string (B.node_id node)
 let refs node = List.map Identity.Node.to_string (B.inputs node)
 let owner node = Option.map Identity.Role.to_string (B.role node)
@@ -576,7 +577,7 @@ let select_role program selected =
       match matches with [node] -> id node
         | _ -> fail "evaluation_role" "Unknown or ambiguous role identity/name."
 
-let evaluate ?role ?until ?(max_microsteps = 1000) ?(budget = default_budget) program history =
+let evaluate_with_usage ?role ?until ?(max_microsteps = 1000) ?(budget = default_budget) program history =
   require (max_microsteps > 0) "evaluation_microsteps" "max_microsteps must be a positive integer.";
   require (List.length (B.nodes program) <= budget.max_work && List.length history <= budget.max_work)
     "evaluation_work_limit" "Input graph or history exceeds the reference execution work budget.";
@@ -667,6 +668,10 @@ let evaluate ?role ?until ?(max_microsteps = 1000) ?(budget = default_budget) pr
       require (N.compare !next !time > 0) "evaluation_timer" "Scheduler must advance representable time.";
       time := !next)
   done;
-  output_record (fun () -> D.Result.make ~frames:(List.rev !results) ~role:selected ~horizon
+  let result=output_record (fun () -> D.Result.make ~frames:(List.rev !results) ~role:selected ~horizon
     ~behavior_fingerprint:(B.fingerprint program) ~source_fingerprint:(B.source_fingerprint program)
-    ~execution_profile:(Json.field "profile" (Json.object_fields (B.policies program)) |> Json.string))
+    ~execution_profile:(Json.field "profile" (Json.object_fields (B.policies program)) |> Json.string)) in
+  result,{work=session.work;frames= !result_count;trace_items=session.trace_items}
+
+let evaluate ?role ?until ?max_microsteps ?budget program history =
+  fst (evaluate_with_usage ?role ?until ?max_microsteps ?budget program history)

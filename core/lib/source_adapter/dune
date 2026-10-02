@@ -1,0 +1,3 @@
+(library
+ (name bioc_source_adapter)
+ (libraries bioc_wire bioc_domain bioc_semantics bioc_checker zarith))

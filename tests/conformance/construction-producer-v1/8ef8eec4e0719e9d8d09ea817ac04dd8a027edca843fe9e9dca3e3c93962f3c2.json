@@ -1,0 +1,14 @@
+{
+  "bundle": null,
+  "diagnostics": [
+    "member:peptide:unavailable_value",
+    "step:event:unsupported_translation_chemistry"
+  ],
+  "experimental_amounts": [],
+  "missing_members": [
+    "peptide"
+  ],
+  "request_fingerprint": "5c645e822a8a80504141ffc0c147105af5d45e22233999f91c453a908661705c",
+  "schema_version": "biocompiler.circuit_construction_candidate.v0.1",
+  "values": []
+}

@@ -27,6 +27,7 @@ from biocompiler.core_client import (
     CORE_VERSION, LIMITS, PROTOCOL, CoreClient, CoreRejected, CoreUnsupported,
     _exchange, decode_json,
 )
+from biocompiler.core_architecture import PROFILE as ARCHITECTURE_PROFILE, VALIDATION_SCOPE as ARCHITECTURE_SCOPE
 from biocompiler.ir.intent import IntentProgram
 from biocompiler.compiler.request import BuildRequest
 from biocompiler.ir.behavior import BehaviorProgram
@@ -441,10 +442,12 @@ def run_campaign(clients, corpus, receipt, programs):
     for client in clients:
         capabilities = client.capabilities().result
         require(type(capabilities) is dict, "Missing capabilities")
-        require(sorted(capabilities["operations"]) == ["canonicalize", "capabilities", "validate-intent", "verify-lowering"], "Missing or untested advertised operation")
+        require(sorted(capabilities["operations"]) == ["canonicalize", "capabilities", "replay-architecture", "validate-intent", "verify-architecture", "verify-lowering"], "Missing or untested advertised operation")
         require(capabilities["canonicalization"] == "python-json-v1" and capabilities["intent_schemas"] == ["biocompiler.intent.v0.1"]
-                and capabilities["validation_scopes"] == [SCOPE, LOWERING_SCOPE] and capabilities["limits"] == LIMITS, "Capability contract differs")
-        require(capabilities["claim_scope"] == "Structural intent validation and exact frozen source-to-Behavior correspondence only; no execution, architecture acceptance, molecular correctness, empirical function or human-use admission.", "Capabilities lost limited claim scope")
+                and capabilities["validation_scopes"] == [SCOPE, LOWERING_SCOPE, ARCHITECTURE_SCOPE] and capabilities["limits"] == LIMITS
+                and capabilities["schema_version"] == "biocompiler.core_capabilities.v1"
+                and capabilities["profiles"] == {"architecture": ARCHITECTURE_PROFILE}, "Capability contract differs")
+        require(capabilities["claim_scope"] == "Structural intent validation, frozen source-to-Behavior correspondence and supplied architecture contract checking only. No candidate execution, search completeness, empirical function or human-use admission.", "Capabilities lost limited claim scope")
         campaign.passed(client, "capabilities", "complete-advertised-contract")
         for vector in corpus["literal_vectors"]:
             campaign.codec(client, vector["id"], None, vector["canonical_json"], vector["input_json"], "independent_literal")

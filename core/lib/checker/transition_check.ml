@@ -28,13 +28,13 @@ let max_projected_residues = 100_000
 let max_derivation_segments = 4096
 (* This native execution budget is separate from the preserved legacy projection
    limits. Exhaustion returns no partial semantic resolution. *)
-type budget = { mutable remaining:int }
-let make_budget ?(max_work=default_max_work) () =
-  Diagnostic.require (max_work >= 0) "transition_resource_limit" "Transition work budget must be nonnegative.";
-  {remaining=max_work}
-let charge budget count =
-  Diagnostic.require (count >= 0 && count <= budget.remaining) "transition_resource_limit" "Transition correspondence work budget exhausted.";
-  budget.remaining <- budget.remaining - count
+type budget = Work_budget.t
+let make_budget ?parent ?(max_work=default_max_work) () =
+  Diagnostic.require (max_work >= 0 && max_work <= default_max_work) "transition_resource_limit" "Transition work budget exceeds its fixed ceiling.";
+  match parent with
+  | None -> Work_budget.create ~profile:resource_profile ~error_code:"transition_resource_limit" ~maximum:max_work ()
+  | Some parent -> Work_budget.nested ~parent ~profile:resource_profile ~error_code:"transition_resource_limit" ~maximum:max_work ()
+let charge = Work_budget.charge
 exception Invalid of string
 exception Projection_limit of string
 let require condition message = if not condition then raise (Invalid message)

@@ -315,3 +315,16 @@ historical messages remain in the fixture. One model-pin mutation compares
 set-derived missing-material diagnostics within its declared loop; a separate
 literal requires the exact deterministic native order. Other report fields,
 diagnostic multiplicity, outcomes and completeness claims remain exact.
+
+
+## Producer and transport preservation checkpoint
+
+Branch `codex/ocaml-producers-transport` contains the next draft slice: independent
+construction/recoding/workflow and architecture producers, coupled source transport,
+and experimental `verify-architecture`/`replay-architecture` service operations.
+It extends the native registry to45 suites and adds108 installed architecture
+protocol checks. Source-only tests and strict checking of both Python transport
+modules pass; hosted native validation and cumulative-budget peer review remain
+required. Production SDK/CLI authority remains Python, and coupled source
+execution does not implement the independent candidate runtime. See the detailed
+[roadmap checkpoint](../docs/language-migration-roadmap.md) and [protocol](../protocol/core-v1.md).

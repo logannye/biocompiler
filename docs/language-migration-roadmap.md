@@ -207,6 +207,34 @@ These checkpoints record narrower validated work; they do not complete a broad L
 - [ ] **B1.08a independent candidate execution and coupled transport**, before any such execution claim.
 - [ ] **B1.09 fresh acceptance and protocol exposure**, followed by B2 producer/export and the remaining B3–B6 product gates.
 
+**Preservation checkpoint, 2026-10-01:** PR45 source `99914ca274745ca65a9005f918ed15fc569141f2`
+is pushed and its complete [run36952825986](https://github.com/logannye/biocompiler/actions/runs/36952825986)
+is pending. The preceding revision passed both native platforms; its Python
+corpus portability failure was corrected without dropping cases. Merge only the
+exact fully passing revision, then retain separate integrated-main validation.
+The next batch is on `codex/ocaml-producers-transport` for a separate draft PR:
+
+- [ ] **B2 producer checkpoint:** independent molecular/recoding/workflow producers,
+  source-manifest derivation, matching, architecture production and paired export
+  are implemented. Construction capture retains 61 construction, 37 recoding and
+  88 workflow calls; architecture capture retains 175 cases and all 13 installed
+  plus three original case B authorities. Ten construction and 12 architecture
+  Python integrity tests passed; native compilation/parity remain pending.
+- [ ] **LM-21 coupled source checkpoint:** 51 source-transport cases retain 20 full
+  traces and 31 rejection signatures, all nine original test methods, and seven
+  independent timeline projections. Seven Python integrity tests passed. Native
+  validation and peer review remain pending; this is source execution, not the
+  independent candidate runtime still required by LM-22/25.
+- [ ] **LM-12/25 protocol checkpoint:** standalone architecture verify/replay,
+  strict capability negotiation and immutable typed Python results are implemented.
+  The 108-check installed protocol campaign and all broader native gates are wired
+  into CI. Strict mypy passes for both adapter modules; hosted protocol execution,
+  distribution and production routing remain open.
+
+Shared construction/checker parent budgets and cumulative producer publication
+reservations are included in the next checkpoint, but have not yet had hosted
+native validation. No new broad LM task or system-migration exit is marked complete.
+
 PR42 source `06da8b4bee4110597caed15fa2da4f2bb7724268`, tested merge `902cae85932dfc1202f68d7d9bc7502941eeb701` and integrated main share tree `06898b1f7ac5e51e692ef976d5834ec5976a495a`. Both complete PR and integrated-main gates passed. PR43 source `7fb3ec8983b038b03f0efa8f8233e4bef4e5a613`, tested merge `9f0c10ea218c4df49aa9f143718eb82d2daff842` and integrated main share tree `836da9375e1206d708194eecd48419f529ab5ff0`. Both complete PR and integrated-main gates passed. PR44 source `ae56d0c7e3dd8202aa015d7a7b769a75bd8ca037`, tested merge `8ff4d1911a6525c58be16e6db9d030b5fb670a91` and integrated main share tree `7ecc2c56f1370c0540f3c74c5795c6868d8e3841`; full PR and integrated-main gates passed. The next batch adds independent full architecture acceptance and its control/deployment/build prerequisites. No new public protocol operation or production routing is enabled.
 
 **First vertical slice:** [the case B acceptance map](migration-case-b.md) and [retained corpus](../tests/conformance/case-b/README.md) now pin its real source/candidate and independent literal timelines. Architecture acceptance/mutation descriptors remain unexecuted; domain and source-correspondence receipts are scoped above, and per-role reference execution has complete PR40 validation. Use the existing artificial architecture case B (prime/act/recover, timeout, reset and shutdown) with exact supplied source correspondence. Reuse its actual request/templates. The initial checker stage reads the existing Python-produced candidate and independently reconstructs it. Then port its producer. Do not replace this slice with an unrelated toy expression interpreter.

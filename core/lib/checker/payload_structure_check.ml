@@ -19,10 +19,19 @@ let inventory contracts =
     "invalid_payload_contract_inventory" "Duplicate member authority.";
   sorted
 let index identity values = List.fold_left (fun map value -> By_name.add (identity value) value map) By_name.empty values
-let inspect contracts bundle =
+let max_work = 10_000_000
+let make_budget ?parent () =
+  let profile="biocompiler.payload_structure_check.resources.v1" and error_code="payload_structure_resource_limit" in
+  match parent with None -> Work_budget.create ~profile ~error_code ~maximum:max_work ()
+  | Some parent -> Work_budget.nested ~parent ~profile ~error_code ~maximum:max_work ()
+let inspect budget contracts bundle =
   let diagnostics = ref [] and unsupported = ref [] in
-  let contradict value = diagnostics := value :: !diagnostics
-  and unresolved value = unsupported := value :: !unsupported in
+  let output=Work_budget.create_output ~profile:"biocompiler.payload_structure_check.resources.v1"
+      ~error_code:"payload_structure_resource_limit" ~max_bytes:M.max_json_bytes ~max_nodes:M.max_items () in
+  let emit items value = Work_budget.charge budget (String.length value+1);
+    Work_budget.reserve_json output (Json.String value);items := value :: !items in
+  let contradict value = emit diagnostics value and unresolved value = emit unsupported value in
+  Work_budget.charge budget (List.length contracts+List.length (S.molecules bundle)+List.length (S.complexes bundle)+List.length (S.role_instances bundle));
   if contracts = [] then unresolved "payload_authority_missing";
   let molecules = index N.id (S.molecules bundle) and complexes = index N.Complex.id (S.complexes bundle) in
   let subjects = List.fold_left (fun result role ->
@@ -30,6 +39,7 @@ let inspect contracts bundle =
       Names.empty (S.role_instances bundle) in
   let requested = ref Names.empty in
   Names.iter (fun identity ->
+      Work_budget.charge budget 1;
       if By_name.mem identity molecules then requested := Names.add identity !requested
       else
         let value = By_name.find identity complexes in
@@ -37,6 +47,7 @@ let inspect contracts bundle =
         | N.Complex.Protein_complex -> unresolved ("payload_complex_modality_unsupported:" ^ identity)
         | N.Complex.Dna_duplex | N.Complex.Rna_complex ->
             List.iter (fun constituent ->
+                Work_budget.charge budget 1;
                 let molecule_id = N.Constituent.molecule_id constituent in
                 requested := Names.add molecule_id !requested;
                 if N.Constituent.stoichiometry constituent = None then
@@ -47,6 +58,7 @@ let inspect contracts bundle =
   Names.iter (fun name -> unresolved ("payload_authority_missing:" ^ name)) (Names.diff !requested declared);
   Names.iter (fun name -> contradict ("payload_contract_extra:" ^ name)) (Names.diff declared !requested);
   Names.iter (fun identity ->
+      Work_budget.charge budget 1;
       let molecule = By_name.find identity molecules in
       let expected_alphabet = match N.form molecule with
         | N.Delivered_rna -> Some G.Rna | N.Delivered_dna -> Some G.Dna
@@ -64,8 +76,10 @@ let inspect contracts bundle =
           if P.form_name (P.form contract) <> N.form_name (N.form molecule) then contradict ("payload_form_mismatch:" ^ identity);
           if P.topology contract <> G.Space.topology (N.space molecule) then contradict ("payload_topology_mismatch:" ^ identity);
           if M.Provenance.status (P.provenance contract) <> M.Provenance.Declared then unresolved ("payload_authority_undeclared:" ^ identity);
+          Work_budget.charge budget (List.length (N.features molecule));
           let features = index N.Feature.id (N.features molecule) in
           List.iter (fun required ->
+              Work_budget.charge budget 1;
               let label = identity ^ "/" ^ P.Region.feature_id required in
               match By_name.find_opt (P.Region.feature_id required) features with
               | None -> contradict ("payload_region_missing:" ^ label)
@@ -77,15 +91,20 @@ let inspect contracts bundle =
                   | None -> unresolved ("payload_region_coordinates_unknown:" ^ label)
                   | Some path when G.Path.length path = 0 -> contradict ("payload_region_empty:" ^ label)
                   | Some path ->
+                      Work_budget.charge budget (List.length (G.Path.spans path));
                       (try G.Path.validate_for path (N.space molecule)
                        with Diagnostic.Error _ -> contradict ("payload_region_coordinates_invalid:" ^ label))) (P.regions contract)) !requested;
   { diagnostics = List.sort_uniq String.compare !diagnostics;
     unsupported = List.sort_uniq String.compare !unsupported }
-let check ~contracts ~bundle =
+let check_with_parent ~parent ~contracts ~bundle =
+  let budget=make_budget ?parent () in
+  Work_budget.charge budget 1;
   match inventory contracts with
-  | contracts -> inspect contracts bundle
+  | contracts -> inspect budget contracts bundle
   | exception Diagnostic.Error _ -> invalid_contracts
-let check_json ~contracts ~bundle =
+let check_json_with_parent ~parent ~contracts ~bundle =
+  let budget=make_budget ?parent () in
+  Work_budget.charge budget 1;
   let decode_contracts () =
     match contracts with
     | Json.Null -> []
@@ -95,5 +114,8 @@ let check_json ~contracts ~bundle =
   | exception Diagnostic.Error _ -> invalid_contracts
   | contracts ->
       match S.of_json bundle with
-      | bundle -> inspect contracts bundle
+      | bundle -> inspect budget contracts bundle
       | exception Diagnostic.Error _ -> invalid_bundle contracts
+
+let check ~contracts ~bundle = check_with_parent ~parent:None ~contracts ~bundle
+let check_json ~contracts ~bundle = check_json_with_parent ~parent:None ~contracts ~bundle

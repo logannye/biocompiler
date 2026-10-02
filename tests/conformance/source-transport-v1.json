@@ -1,0 +1,1476 @@
+{
+  "cases": [
+    {
+      "build": "424e43c91c3f9067d16dffa75571b83a1943f78c9098c46e8accc708383a166d",
+      "expected": "b3b245c9fa73d5ea5e11c794aaa1dcb12be05716582c6f7140447221f7de4a71",
+      "expected_code": null,
+      "id": "test_architecture_execution.CoupledArchitectureExecutionTests.test_clear_failure_discards_delivery_and_remaining_persistence/0",
+      "input": "44919c819b8ed7e9831b74c7c03e5be2986857de926559d73176ef6a0ccaa925",
+      "origin": "original_assertion",
+      "python_error": null,
+      "request": "9e6d4b58f13b274a866a3914e6ed4b92fa56e578426003e491aca315289a895d"
+    },
+    {
+      "build": "14706a826cd3c2952640dfd88e380de3256a105d132536c0987d6fbf541ccf44",
+      "expected": "8c8c392b7d1066057cf39f11fe72aade5dc92ad856393f1d30c5025e7d2a665f",
+      "expected_code": null,
+      "id": "test_architecture_execution.CoupledArchitectureExecutionTests.test_combined_state_channel_budget_and_shutdown_are_one_source_execution/0",
+      "input": "52cd6f41cd4eec658db24a4e119c83587c4346249e7830adf03cf9f486aa0724",
+      "origin": "original_assertion",
+      "python_error": null,
+      "request": "f7b86fff929f05a555cf8d4990640f85c98cc94873e85be73d3b0d3fb2133f7e"
+    },
+    {
+      "build": "424e43c91c3f9067d16dffa75571b83a1943f78c9098c46e8accc708383a166d",
+      "expected": null,
+      "expected_code": "source_transport_samples",
+      "id": "test_architecture_execution.CoupledArchitectureExecutionTests.test_explicit_execution_bounds_and_offgrid_failure_flags/0",
+      "input": "cf134ced4b4c5c96211f8c7b3464a8fd3d4a70d7673caa2bc3e8fde92b071f4b",
+      "origin": "original_assertion",
+      "python_error": "Transport grid exceeds declared max_samples.",
+      "request": "9e6d4b58f13b274a866a3914e6ed4b92fa56e578426003e491aca315289a895d"
+    },
+    {
+      "build": "424e43c91c3f9067d16dffa75571b83a1943f78c9098c46e8accc708383a166d",
+      "expected": null,
+      "expected_code": "source_transport_latency",
+      "id": "test_architecture_execution.CoupledArchitectureExecutionTests.test_explicit_execution_bounds_and_offgrid_failure_flags/1",
+      "input": "4b42b75a348467c451d7326f8d59c67a378d0fd4cff84744faaa043f1cc6748d",
+      "origin": "original_assertion",
+      "python_error": "Zero-delay feedback and off-grid channel latency are unsupported.",
+      "request": "9e6d4b58f13b274a866a3914e6ed4b92fa56e578426003e491aca315289a895d"
+    },
+    {
+      "build": "424e43c91c3f9067d16dffa75571b83a1943f78c9098c46e8accc708383a166d",
+      "expected": null,
+      "expected_code": "source_transport_seconds",
+      "id": "test_architecture_execution.CoupledArchitectureExecutionTests.test_explicit_execution_bounds_and_offgrid_failure_flags/2",
+      "input": "223485af9bb2fab4d57901f1f28469f3f9da49e81ede09b5d1a8d078bb111ea9",
+      "origin": "original_assertion",
+      "python_error": "Transport step must be an integer number of canonical seconds.",
+      "request": "9e6d4b58f13b274a866a3914e6ed4b92fa56e578426003e491aca315289a895d"
+    },
+    {
+      "build": "424e43c91c3f9067d16dffa75571b83a1943f78c9098c46e8accc708383a166d",
+      "expected": null,
+      "expected_code": "source_transport_failure",
+      "id": "test_architecture_execution.CoupledArchitectureExecutionTests.test_explicit_execution_bounds_and_offgrid_failure_flags/3",
+      "input": "cd35f6f3e0d0cfc0e08f816bc210be7a086cbe7b453c1be047d8b118f175429b",
+      "origin": "original_assertion",
+      "python_error": "Failure flags must identify selected channels.",
+      "request": "9e6d4b58f13b274a866a3914e6ed4b92fa56e578426003e491aca315289a895d"
+    },
+    {
+      "build": "424e43c91c3f9067d16dffa75571b83a1943f78c9098c46e8accc708383a166d",
+      "expected": null,
+      "expected_code": "source_transport_seconds",
+      "id": "test_architecture_execution.CoupledArchitectureExecutionTests.test_explicit_execution_bounds_and_offgrid_failure_flags/4",
+      "input": "aaf188b6e9a9fc0f46c056977fed63719809f2e4f5eb123cc712fa2a67106227",
+      "origin": "original_assertion",
+      "python_error": "Channel failure timestamp must be an integer number of canonical seconds.",
+      "request": "9e6d4b58f13b274a866a3914e6ed4b92fa56e578426003e491aca315289a895d"
+    },
+    {
+      "build": "e47754a429cb7bd148b01ad6e8e8216ec6466392e75687ad7272008e75b5e7b5",
+      "expected": null,
+      "expected_code": "source_transport_authority",
+      "id": "test_architecture_execution.CoupledArchitectureExecutionTests.test_fresh_authority_check_rejects_tampered_transport/0",
+      "input": "705c8bc5a13666accc8341c6e80f2f7258fcfe302d63bbeaeb4f182badf8b77d",
+      "origin": "original_assertion",
+      "python_error": "Coupled execution requires fresh complete independent architecture verification.",
+      "request": "9e6d4b58f13b274a866a3914e6ed4b92fa56e578426003e491aca315289a895d"
+    },
+    {
+      "build": "424e43c91c3f9067d16dffa75571b83a1943f78c9098c46e8accc708383a166d",
+      "expected": "0bd9ccff2ddd39254e7aae91374360a523b90fea85dc36d98e4d54f6056cb637",
+      "expected_code": null,
+      "id": "test_architecture_execution.CoupledArchitectureExecutionTests.test_numeric_emission_delay_persistence_and_expiry_drive_receiver_actions/0",
+      "input": "42013a6126a7895450a4702f6f5817ebe6cea6359f6a40fee15bf25347719137",
+      "origin": "original_assertion",
+      "python_error": null,
+      "request": "9e6d4b58f13b274a866a3914e6ed4b92fa56e578426003e491aca315289a895d"
+    },
+    {
+      "build": "424e43c91c3f9067d16dffa75571b83a1943f78c9098c46e8accc708383a166d",
+      "expected": null,
+      "expected_code": "source_transport_override",
+      "id": "test_architecture_execution.CoupledArchitectureExecutionTests.test_receiver_values_cannot_be_overridden_and_roles_must_be_complete/0",
+      "input": "9160fe1b3a8ecbfd8c3eff55be6a00e305febbe203c5e0470640bd565fbc6231",
+      "origin": "original_assertion",
+      "python_error": "External histories cannot override generated channel observations.",
+      "request": "9e6d4b58f13b274a866a3914e6ed4b92fa56e578426003e491aca315289a895d"
+    },
+    {
+      "build": "424e43c91c3f9067d16dffa75571b83a1943f78c9098c46e8accc708383a166d",
+      "expected": null,
+      "expected_code": "source_transport_history",
+      "id": "test_architecture_execution.CoupledArchitectureExecutionTests.test_receiver_values_cannot_be_overridden_and_roles_must_be_complete/1",
+      "input": "ba9a10713bc29d7ce813cf38363f859da1805ffdb1b879f7333b11ed15fe12f2",
+      "origin": "original_assertion",
+      "python_error": "Supply exactly one external history for every source role.",
+      "request": "9e6d4b58f13b274a866a3914e6ed4b92fa56e578426003e491aca315289a895d"
+    },
+    {
+      "build": "bd7f81cf4f60d28a2e1e5984b55935f222b6adbce4ee1ae118468169962285f9",
+      "expected": "e55db1efa79e9fe037de575a4181ab13ddd1f3e8133542081d19a52e6a39140a",
+      "expected_code": null,
+      "id": "test_architecture_execution.CoupledArchitectureExecutionTests.test_retain_last_failure_freezes_expiring_contribution_for_failed_tick/0",
+      "input": "d2357ecc29845054c2a41d5a8625400eeca3f5550bedb9bac7a91a98e95d536a",
+      "origin": "original_assertion",
+      "python_error": null,
+      "request": "e6a8ef8b4a750b9839212c4eb7c6f59f7ad11f9fc51fafcbd82bddf0ef0769cd"
+    },
+    {
+      "build": "424e43c91c3f9067d16dffa75571b83a1943f78c9098c46e8accc708383a166d",
+      "expected": "0bd9ccff2ddd39254e7aae91374360a523b90fea85dc36d98e4d54f6056cb637",
+      "expected_code": null,
+      "id": "test_architecture_execution.CoupledArchitectureExecutionTests.test_role_evaluation_order_cannot_turn_delayed_transport_into_same_tick/0",
+      "input": "705c8bc5a13666accc8341c6e80f2f7258fcfe302d63bbeaeb4f182badf8b77d",
+      "origin": "original_assertion",
+      "python_error": null,
+      "request": "9e6d4b58f13b274a866a3914e6ed4b92fa56e578426003e491aca315289a895d"
+    },
+    {
+      "build": "424e43c91c3f9067d16dffa75571b83a1943f78c9098c46e8accc708383a166d",
+      "expected": "0bd9ccff2ddd39254e7aae91374360a523b90fea85dc36d98e4d54f6056cb637",
+      "expected_code": null,
+      "id": "test_architecture_execution.CoupledArchitectureExecutionTests.test_role_evaluation_order_cannot_turn_delayed_transport_into_same_tick/1",
+      "input": "705c8bc5a13666accc8341c6e80f2f7258fcfe302d63bbeaeb4f182badf8b77d",
+      "origin": "original_assertion",
+      "python_error": null,
+      "request": "9e6d4b58f13b274a866a3914e6ed4b92fa56e578426003e491aca315289a895d"
+    },
+    {
+      "build": "5fc218649f0b3bcff96d75eaa24bbd07f4930a5000ae1952b52cc140c9628bf3",
+      "expected": null,
+      "expected_code": "source_transport_latency",
+      "id": "test_architecture_execution.CoupledArchitectureExecutionTests.test_zero_latency_is_rejected_even_when_declared_architecture_is_valid/0",
+      "input": "705c8bc5a13666accc8341c6e80f2f7258fcfe302d63bbeaeb4f182badf8b77d",
+      "origin": "original_assertion",
+      "python_error": "Zero-delay feedback and off-grid channel latency are unsupported.",
+      "request": "e85d81ed51db643bc453bd72f2fc46524584550d3803ec0d7fd589a0ea2e4762"
+    },
+    {
+      "build": "424e43c91c3f9067d16dffa75571b83a1943f78c9098c46e8accc708383a166d",
+      "expected": "0bd9ccff2ddd39254e7aae91374360a523b90fea85dc36d98e4d54f6056cb637",
+      "expected_code": null,
+      "id": "literal/baseline",
+      "input": "705c8bc5a13666accc8341c6e80f2f7258fcfe302d63bbeaeb4f182badf8b77d",
+      "origin": "independent_fixture",
+      "python_error": null,
+      "request": "9e6d4b58f13b274a866a3914e6ed4b92fa56e578426003e491aca315289a895d"
+    },
+    {
+      "build": "424e43c91c3f9067d16dffa75571b83a1943f78c9098c46e8accc708383a166d",
+      "expected": "3f778f6884d2ad05acf4bb86ad05469fd1b790bcc800bf610effb4f182248f3a",
+      "expected_code": null,
+      "id": "literal/horizon_zero",
+      "input": "336e704a312baf7bc4bf3ff51eb17b89609c99840c08d488a9a907baeb6ac9a7",
+      "origin": "independent_fixture",
+      "python_error": null,
+      "request": "9e6d4b58f13b274a866a3914e6ed4b92fa56e578426003e491aca315289a895d"
+    },
+    {
+      "build": "424e43c91c3f9067d16dffa75571b83a1943f78c9098c46e8accc708383a166d",
+      "expected": "0bd9ccff2ddd39254e7aae91374360a523b90fea85dc36d98e4d54f6056cb637",
+      "expected_code": null,
+      "id": "literal/role_names",
+      "input": "765d0893609a99dc6f0602c7dbc0540445a950254ec0c14deb580cebc18ebab1",
+      "origin": "independent_fixture",
+      "python_error": null,
+      "request": "9e6d4b58f13b274a866a3914e6ed4b92fa56e578426003e491aca315289a895d"
+    },
+    {
+      "build": "424e43c91c3f9067d16dffa75571b83a1943f78c9098c46e8accc708383a166d",
+      "expected": null,
+      "expected_code": "source_transport_history",
+      "id": "literal/duplicate_alias",
+      "input": "8f3ff5818598a20c2f81db8341daa046620b348a0ea906e6c16bb968f2a7c58b",
+      "origin": "independent_fixture",
+      "python_error": "Unknown or duplicate external role history.",
+      "request": "9e6d4b58f13b274a866a3914e6ed4b92fa56e578426003e491aca315289a895d"
+    },
+    {
+      "build": "424e43c91c3f9067d16dffa75571b83a1943f78c9098c46e8accc708383a166d",
+      "expected": null,
+      "expected_code": "source_transport_history",
+      "id": "literal/unknown_role",
+      "input": "4fd34e71e81c8c2425ccf8de44c5b15aec58fe4ec738f91c2fad6f5fef5d021c",
+      "origin": "independent_fixture",
+      "python_error": "Unknown or duplicate external role history.",
+      "request": "9e6d4b58f13b274a866a3914e6ed4b92fa56e578426003e491aca315289a895d"
+    },
+    {
+      "build": "424e43c91c3f9067d16dffa75571b83a1943f78c9098c46e8accc708383a166d",
+      "expected": null,
+      "expected_code": "source_transport_history",
+      "id": "literal/empty_history",
+      "input": "9ee6c56b3b3a577fd49f45455dd4e248816cab1058c504dd8555eb9bf85194b4",
+      "origin": "independent_fixture",
+      "python_error": "Each role needs bounded InputFrame snapshots.",
+      "request": "9e6d4b58f13b274a866a3914e6ed4b92fa56e578426003e491aca315289a895d"
+    },
+    {
+      "build": "424e43c91c3f9067d16dffa75571b83a1943f78c9098c46e8accc708383a166d",
+      "expected": null,
+      "expected_code": "source_transport_history",
+      "id": "literal/late_start",
+      "input": "4233b344a87fbec097dd19108074eb97e043ecf07bfb9a9ecf9d63f3b25b1991",
+      "origin": "independent_fixture",
+      "python_error": "External histories must start at zero and strictly increase.",
+      "request": "9e6d4b58f13b274a866a3914e6ed4b92fa56e578426003e491aca315289a895d"
+    },
+    {
+      "build": "424e43c91c3f9067d16dffa75571b83a1943f78c9098c46e8accc708383a166d",
+      "expected": null,
+      "expected_code": "source_transport_history",
+      "id": "literal/duplicate_time",
+      "input": "74d0d2362fe7287a5c14fda09d9336100b5c26e29c57b3f3ccc5ae49d8511e79",
+      "origin": "independent_fixture",
+      "python_error": "External histories must start at zero and strictly increase.",
+      "request": "9e6d4b58f13b274a866a3914e6ed4b92fa56e578426003e491aca315289a895d"
+    },
+    {
+      "build": "424e43c91c3f9067d16dffa75571b83a1943f78c9098c46e8accc708383a166d",
+      "expected": null,
+      "expected_code": "source_transport_grid",
+      "id": "literal/beyond_horizon",
+      "input": "3bb70661eaeb69b958f8940354fb4b4e2987eb52c3f12a69d98aaef4dba0e3c1",
+      "origin": "independent_fixture",
+      "python_error": "External observations must lie on the declared transport grid.",
+      "request": "9e6d4b58f13b274a866a3914e6ed4b92fa56e578426003e491aca315289a895d"
+    },
+    {
+      "build": "424e43c91c3f9067d16dffa75571b83a1943f78c9098c46e8accc708383a166d",
+      "expected": null,
+      "expected_code": "source_transport_grid",
+      "id": "literal/zero_step",
+      "input": "9c4c142d60c99e4d184e08c85f9920ecf176437dc1ceb2c8993c0ccd712c4694",
+      "origin": "independent_fixture",
+      "python_error": "Step must be positive and the horizon must lie on its grid.",
+      "request": "9e6d4b58f13b274a866a3914e6ed4b92fa56e578426003e491aca315289a895d"
+    },
+    {
+      "build": "424e43c91c3f9067d16dffa75571b83a1943f78c9098c46e8accc708383a166d",
+      "expected": null,
+      "expected_code": "source_transport_seconds",
+      "id": "literal/negative_horizon",
+      "input": "e0a77d2cdb86494c3196ec86be64f42b0e7f8851823b03f4264f7d1cbae15324",
+      "origin": "independent_fixture",
+      "python_error": "Execution horizon must be an integer number of canonical seconds.",
+      "request": "9e6d4b58f13b274a866a3914e6ed4b92fa56e578426003e491aca315289a895d"
+    },
+    {
+      "build": "424e43c91c3f9067d16dffa75571b83a1943f78c9098c46e8accc708383a166d",
+      "expected": null,
+      "expected_code": "source_transport_seconds",
+      "id": "literal/boolean_step",
+      "input": "10bfb8b311c34878bcb26a4956689b51f490f0c6f16ef0a13b9fe062a3b9de68",
+      "origin": "independent_fixture",
+      "python_error": "Transport step must be an integer number of canonical seconds.",
+      "request": "9e6d4b58f13b274a866a3914e6ed4b92fa56e578426003e491aca315289a895d"
+    },
+    {
+      "build": "424e43c91c3f9067d16dffa75571b83a1943f78c9098c46e8accc708383a166d",
+      "expected": "0bd9ccff2ddd39254e7aae91374360a523b90fea85dc36d98e4d54f6056cb637",
+      "expected_code": null,
+      "id": "literal/float_grid",
+      "input": "f685a389439d1236aa781db36fca7c37290d129ee14d6f8fc51e0475c2001c30",
+      "origin": "independent_fixture",
+      "python_error": null,
+      "request": "9e6d4b58f13b274a866a3914e6ed4b92fa56e578426003e491aca315289a895d"
+    },
+    {
+      "build": "424e43c91c3f9067d16dffa75571b83a1943f78c9098c46e8accc708383a166d",
+      "expected": "0bd9ccff2ddd39254e7aae91374360a523b90fea85dc36d98e4d54f6056cb637",
+      "expected_code": null,
+      "id": "literal/duration_minutes",
+      "input": "2d9b771cbe8d80dfe149bcd47faef0579a982166efbce59dc79017ec9f01bbc9",
+      "origin": "independent_fixture",
+      "python_error": null,
+      "request": "9e6d4b58f13b274a866a3914e6ed4b92fa56e578426003e491aca315289a895d"
+    },
+    {
+      "build": "424e43c91c3f9067d16dffa75571b83a1943f78c9098c46e8accc708383a166d",
+      "expected": null,
+      "expected_code": "source_transport_seconds",
+      "id": "literal/wrong_units",
+      "input": "c5b83abfcddfcc28a9de2e67e5ff45f5d8dca3fa34a2df7686628bff27aef9b0",
+      "origin": "independent_fixture",
+      "python_error": "Transport step must have duration units.",
+      "request": "9e6d4b58f13b274a866a3914e6ed4b92fa56e578426003e491aca315289a895d"
+    },
+    {
+      "build": "424e43c91c3f9067d16dffa75571b83a1943f78c9098c46e8accc708383a166d",
+      "expected": null,
+      "expected_code": "source_transport_samples",
+      "id": "literal/boolean_sample_limit",
+      "input": "56d7dbbf33eaa98c5c83dad22f196bd04c498cbe359d2a440bfa84a5f54e2647",
+      "origin": "independent_fixture",
+      "python_error": "max_samples must be an integer from 1 to 1000.",
+      "request": "9e6d4b58f13b274a866a3914e6ed4b92fa56e578426003e491aca315289a895d"
+    },
+    {
+      "build": "424e43c91c3f9067d16dffa75571b83a1943f78c9098c46e8accc708383a166d",
+      "expected": null,
+      "expected_code": "source_transport_samples",
+      "id": "literal/zero_sample_limit",
+      "input": "56441427c9937e8c46dbe5276288cd9bec12ab6a51a3e769a01a38b5a2433a16",
+      "origin": "independent_fixture",
+      "python_error": "max_samples must be an integer from 1 to 1000.",
+      "request": "9e6d4b58f13b274a866a3914e6ed4b92fa56e578426003e491aca315289a895d"
+    },
+    {
+      "build": "424e43c91c3f9067d16dffa75571b83a1943f78c9098c46e8accc708383a166d",
+      "expected": null,
+      "expected_code": "source_transport_samples",
+      "id": "literal/excess_sample_limit",
+      "input": "e5d0bd0f55ec1a4f97bf7c877ddfcfcfebeecdf72f1401f32ade1dde1a349348",
+      "origin": "independent_fixture",
+      "python_error": "max_samples must be an integer from 1 to 1000.",
+      "request": "9e6d4b58f13b274a866a3914e6ed4b92fa56e578426003e491aca315289a895d"
+    },
+    {
+      "build": "424e43c91c3f9067d16dffa75571b83a1943f78c9098c46e8accc708383a166d",
+      "expected": null,
+      "expected_code": "source_transport_failure",
+      "id": "literal/duplicate_failure",
+      "input": "5ecfede6afcc8073a7c0fa1437c4840a83acb58ab0178440e1be9c6a6b63bf05",
+      "origin": "independent_fixture",
+      "python_error": "Channel failure timestamps must be unique grid points within the horizon.",
+      "request": "9e6d4b58f13b274a866a3914e6ed4b92fa56e578426003e491aca315289a895d"
+    },
+    {
+      "build": "424e43c91c3f9067d16dffa75571b83a1943f78c9098c46e8accc708383a166d",
+      "expected": null,
+      "expected_code": "source_transport_failure",
+      "id": "literal/failure_beyond_horizon",
+      "input": "96f26a874eb361eab12113670b772ea53a7c594d22275f2210beb5a1ef1e4251",
+      "origin": "independent_fixture",
+      "python_error": "Channel failure timestamps must be unique grid points within the horizon.",
+      "request": "9e6d4b58f13b274a866a3914e6ed4b92fa56e578426003e491aca315289a895d"
+    },
+    {
+      "build": "424e43c91c3f9067d16dffa75571b83a1943f78c9098c46e8accc708383a166d",
+      "expected": "3054843bdbb1e559925a4258a552ca4ce12550e3d4a51f60b6797f00f3ccfb1e",
+      "expected_code": null,
+      "id": "literal/failure_unsorted",
+      "input": "05f3b73be566310097068436f86b0c87c17b910c070407a5dce4b39460d83765",
+      "origin": "independent_fixture",
+      "python_error": null,
+      "request": "9e6d4b58f13b274a866a3914e6ed4b92fa56e578426003e491aca315289a895d"
+    },
+    {
+      "build": "424e43c91c3f9067d16dffa75571b83a1943f78c9098c46e8accc708383a166d",
+      "expected": null,
+      "expected_code": "source_transport_override",
+      "id": "literal/contact_override",
+      "input": "9903497ced801e20f4a04e4433b6376115c24e37f38532ddbb3f8e5bb5a4e633",
+      "origin": "independent_fixture",
+      "python_error": "External histories cannot override generated channel observations.",
+      "request": "9e6d4b58f13b274a866a3914e6ed4b92fa56e578426003e491aca315289a895d"
+    },
+    {
+      "build": "424e43c91c3f9067d16dffa75571b83a1943f78c9098c46e8accc708383a166d",
+      "expected": null,
+      "expected_code": "source_transport_authority",
+      "id": "literal/source_location_authority",
+      "input": "705c8bc5a13666accc8341c6e80f2f7258fcfe302d63bbeaeb4f182badf8b77d",
+      "origin": "independent_fixture",
+      "python_error": "Coupled execution requires fresh complete independent architecture verification.",
+      "request": "05be5e8f4b3e9089121bb6d568fc09aa6612f1dc38444b3c89ed7e5c5cd95927"
+    },
+    {
+      "build": "a9fc06b894e762eb43d30ada6d55606af8bd3266a05e76176fa0946afb670d8f",
+      "expected": "c1d6dee2e67b98372b294282918fea03aecf82fbf98ea9a556941d0b627cd180",
+      "expected_code": null,
+      "id": "literal/indefinite",
+      "input": "705c8bc5a13666accc8341c6e80f2f7258fcfe302d63bbeaeb4f182badf8b77d",
+      "origin": "independent_fixture",
+      "python_error": null,
+      "request": "8c9028f671aacad8e7736aaae549e4335b3f6d78e1166214b1f39d741753ac12"
+    },
+    {
+      "build": "c4de097d6fbfc9874e6adb00653808005784caa52fdf531e32c0750618c9aeb8",
+      "expected": "757eb5b232efdd63ec241294d1a1c18702f81e1b34bf891c4b7172e18a134fe1",
+      "expected_code": null,
+      "id": "literal/delayed",
+      "input": "705c8bc5a13666accc8341c6e80f2f7258fcfe302d63bbeaeb4f182badf8b77d",
+      "origin": "independent_fixture",
+      "python_error": null,
+      "request": "525cfc0d9548030a6e78fb29558a60c0ed1fc9b4dca0b1686a892b919e3ebe3e"
+    },
+    {
+      "build": "893f3bc3ad68dfba3ce8ba2496716f385e13d664c64f8b699fb64f7a264819f5",
+      "expected": "ca4d057d1eeab20198cd36f4ef8cc6a9c59e9a3b207927be4f6befdad6e677d2",
+      "expected_code": null,
+      "id": "literal/sum",
+      "input": "705c8bc5a13666accc8341c6e80f2f7258fcfe302d63bbeaeb4f182badf8b77d",
+      "origin": "independent_fixture",
+      "python_error": null,
+      "request": "9f83c7cd01d8ed95a3a0020d25cd1432d7229cd3fc82bed41ec63334fb064e73"
+    },
+    {
+      "build": "f322448aa3af26d5632c60b723adbea05a478fc02391f708b775bcc4beec3f4a",
+      "expected": "863466d081456dfc16310c8b166c099a5c079df56bbfd218b8b623b90b049e42",
+      "expected_code": null,
+      "id": "literal/max",
+      "input": "705c8bc5a13666accc8341c6e80f2f7258fcfe302d63bbeaeb4f182badf8b77d",
+      "origin": "independent_fixture",
+      "python_error": null,
+      "request": "b35eb5e7838bb85ce24037fb004b58317c5b16ad7f1d0a9c5c70b1d7fc4885c0"
+    },
+    {
+      "build": "55eaffceeecb49dae2fc6d7aeda39578ba75bfdbde3c729ebcd2b40fb4007dfd",
+      "expected": null,
+      "expected_code": "source_transport_authority",
+      "id": "literal/unknown_failure",
+      "input": "44919c819b8ed7e9831b74c7c03e5be2986857de926559d73176ef6a0ccaa925",
+      "origin": "independent_fixture",
+      "python_error": "Coupled execution requires fresh complete independent architecture verification.",
+      "request": "1204d17da1086d72484e2187e0eeda4d5dd618c7ea4dd9807ef73c5bc6e66e9d"
+    },
+    {
+      "build": "93fbeb14157db657974dee4b0afade3f4564adf4cd30456ab6301dc5b4560849",
+      "expected": null,
+      "expected_code": "source_transport_seconds",
+      "id": "literal/offgrid_latency",
+      "input": "705c8bc5a13666accc8341c6e80f2f7258fcfe302d63bbeaeb4f182badf8b77d",
+      "origin": "independent_fixture",
+      "python_error": "Channel latency must be an integer number of canonical seconds.",
+      "request": "f1659be1e702afd50167b167001fded2219bbe1fa64f60922c9250b544ce1d55"
+    },
+    {
+      "build": "20db8ec88afe7c2a55a256d6f052d634c16bfe635b03eae72ec36be469f7a1fd",
+      "expected": null,
+      "expected_code": "source_transport_seconds",
+      "id": "literal/offgrid_persistence",
+      "input": "705c8bc5a13666accc8341c6e80f2f7258fcfe302d63bbeaeb4f182badf8b77d",
+      "origin": "independent_fixture",
+      "python_error": "Channel persistence must be an integer number of canonical seconds.",
+      "request": "c1749dc8ee65afaf7a61a313822d1e192f65b26f633cbd1561860745fe5a69e8"
+    },
+    {
+      "build": "1f1c78ed406c3b42125c7eb922de28ce39c4ad78d9d51ffcd6911ed7cc0f4ac8",
+      "expected": "b2ba04638fc9d71ae4075572c1aef078f8b36ee84d0fdb0d5bf184b12339a0c3",
+      "expected_code": null,
+      "id": "literal/custom_pulse",
+      "input": "f6c315f252b0bd756ffcd4176489bf40e579a62d36048b0112fa53356ffc78ae",
+      "origin": "independent_fixture",
+      "python_error": null,
+      "request": "af20c671f0384f316f00cf60739aca12064e53808f5f17f162cd64b74a6bdf09"
+    },
+    {
+      "build": "9b19fa22bbe847b3c973c303d2d6610cfbcc6eb68c10df641d6dc209f62e5589",
+      "expected": null,
+      "expected_code": "source_transport_authority",
+      "id": "literal/custom_duplicate",
+      "input": "15832facc5b0b7cf6a269be9c1e8142d7c6df007ccec01b8a44a831484bd2b19",
+      "origin": "independent_fixture",
+      "python_error": "Coupled execution requires fresh complete independent architecture verification.",
+      "request": "d7d4a4ac8317cf51d965419d57367947ae4bf30023244d4b4708fa3079c71a42"
+    },
+    {
+      "build": "32cc585aa2dfbed9b4eaf1ee160e9bffe6437906bce268ec7a8aba14302947eb",
+      "expected": "60ac49e9d2a141a99538bebdb0e1ca8134dcaa5abcb49c7373de4e2412dae1a6",
+      "expected_code": null,
+      "id": "literal/custom_contact",
+      "input": "48ede354d7ba90cdd3e4eb35d5e883f4e2ee509ebd01bcebb84c27f64b72895e",
+      "origin": "independent_fixture",
+      "python_error": null,
+      "request": "d8aa804c1de6f72ead78dbb0b4db2a308b50a671719832c465a74f8e1e07ae46"
+    },
+    {
+      "build": "4e081689cbc1d6f2d53006f0e0fad6352c51c25398f6c073aaa8db68c2630e15",
+      "expected": null,
+      "expected_code": "source_transport_encoding",
+      "id": "literal/custom_qualitative",
+      "input": "705c8bc5a13666accc8341c6e80f2f7258fcfe302d63bbeaeb4f182badf8b77d",
+      "origin": "independent_fixture",
+      "python_error": "Numeric channel transport cannot invent qualitative observation encoding.",
+      "request": "4af81691505ae75675201f38bff6d89eb5b73520f672d5504a07e32a1bb6cfff"
+    },
+    {
+      "build": "77c4d60209b49ee8d25d3720cb1a10c838955b8df2fc46a207795b77abcf098b",
+      "expected": "8706115ed1fd4be888b20b184089f7ffaeddc48aaf198a9d0fc0537f848b3040",
+      "expected_code": null,
+      "id": "literal/custom_sum",
+      "input": "9daffe0c72df19dfc6682898995fe4b76280380cc55146ede34732216a40fcae",
+      "origin": "independent_fixture",
+      "python_error": null,
+      "request": "83780805c70c34737db6b5f3dcc2fd23b8c3063b027a8c61983b434de6b39827"
+    },
+    {
+      "build": "60b9d017e1fd12b95f2e94ba8acb35f73d020541421d569506cbabe95e430b36",
+      "expected": "cb729b1d8e058f62a136c6b9856e519b08f54cf15d4611c42afc7aaf2161614a",
+      "expected_code": null,
+      "id": "literal/custom_max",
+      "input": "15832facc5b0b7cf6a269be9c1e8142d7c6df007ccec01b8a44a831484bd2b19",
+      "origin": "independent_fixture",
+      "python_error": null,
+      "request": "69b9b682f75a7e98f984b9d70600c5385565de388e860daddb974515d64d0b0d"
+    }
+  ],
+  "claim_scope": "source_prefix_execution_under_declared_contracts_only",
+  "compatibility": {
+    "earlier_fresh_authority_rejections": [
+      "unknown_failure",
+      "custom_duplicate"
+    ],
+    "max_output_bytes": 34603008,
+    "max_output_nodes": 250000,
+    "max_queued_deliveries": 100000,
+    "max_replayed_frames": 100000,
+    "max_replayed_trace_items": 1000000,
+    "max_work": 50000000,
+    "native_data": "biocompiler.native_source_transport_data.v0.1",
+    "native_resources": "biocompiler.source_transport.resources.v1",
+    "scope": "Cumulative native resource failures are explicit exceptions with no partial result; full Python traces retain original semantics."
+  },
+  "coverage": {
+    "cases": 51,
+    "documents": 87,
+    "methods": [
+      {
+        "method": "test_architecture_execution.CoupledArchitectureExecutionTests.test_clear_failure_discards_delivery_and_remaining_persistence",
+        "retained_calls": 1,
+        "status": "source_assertions_executed"
+      },
+      {
+        "method": "test_architecture_execution.CoupledArchitectureExecutionTests.test_combined_state_channel_budget_and_shutdown_are_one_source_execution",
+        "retained_calls": 1,
+        "status": "source_assertions_executed"
+      },
+      {
+        "method": "test_architecture_execution.CoupledArchitectureExecutionTests.test_explicit_execution_bounds_and_offgrid_failure_flags",
+        "retained_calls": 5,
+        "status": "source_assertions_executed"
+      },
+      {
+        "method": "test_architecture_execution.CoupledArchitectureExecutionTests.test_fresh_authority_check_rejects_tampered_transport",
+        "retained_calls": 1,
+        "status": "source_assertions_executed"
+      },
+      {
+        "method": "test_architecture_execution.CoupledArchitectureExecutionTests.test_numeric_emission_delay_persistence_and_expiry_drive_receiver_actions",
+        "retained_calls": 1,
+        "status": "source_assertions_executed"
+      },
+      {
+        "method": "test_architecture_execution.CoupledArchitectureExecutionTests.test_receiver_values_cannot_be_overridden_and_roles_must_be_complete",
+        "retained_calls": 2,
+        "status": "source_assertions_executed"
+      },
+      {
+        "method": "test_architecture_execution.CoupledArchitectureExecutionTests.test_retain_last_failure_freezes_expiring_contribution_for_failed_tick",
+        "retained_calls": 1,
+        "status": "source_assertions_executed"
+      },
+      {
+        "method": "test_architecture_execution.CoupledArchitectureExecutionTests.test_role_evaluation_order_cannot_turn_delayed_transport_into_same_tick",
+        "retained_calls": 2,
+        "status": "source_assertions_executed"
+      },
+      {
+        "method": "test_architecture_execution.CoupledArchitectureExecutionTests.test_zero_latency_is_rejected_even_when_declared_architecture_is_valid",
+        "retained_calls": 1,
+        "status": "source_assertions_executed"
+      }
+    ],
+    "negative": 31,
+    "original_calls": 15,
+    "positive": 20,
+    "rejection_codes": [
+      "source_transport_authority",
+      "source_transport_encoding",
+      "source_transport_failure",
+      "source_transport_grid",
+      "source_transport_history",
+      "source_transport_latency",
+      "source_transport_override",
+      "source_transport_samples",
+      "source_transport_seconds"
+    ]
+  },
+  "delta_schema": "biocompiler.test_document_delta.v1",
+  "documents": [
+    {
+      "base": null,
+      "bytes": 606047,
+      "format": "full",
+      "id": "14706a826cd3c2952640dfd88e380de3256a105d132536c0987d6fbf541ccf44",
+      "kind": "build",
+      "resolved_bytes": 606047,
+      "stored_fingerprint": "14706a826cd3c2952640dfd88e380de3256a105d132536c0987d6fbf541ccf44"
+    },
+    {
+      "base": "14706a826cd3c2952640dfd88e380de3256a105d132536c0987d6fbf541ccf44",
+      "bytes": 94028,
+      "format": "delta",
+      "id": "1f1c78ed406c3b42125c7eb922de28ce39c4ad78d9d51ffcd6911ed7cc0f4ac8",
+      "kind": "build",
+      "resolved_bytes": 345482,
+      "stored_fingerprint": "e779dde1a1370bc24096d2ac8012e3f0686c7aad53122ab1a71ee10f441c5e8e"
+    },
+    {
+      "base": "14706a826cd3c2952640dfd88e380de3256a105d132536c0987d6fbf541ccf44",
+      "bytes": 86250,
+      "format": "delta",
+      "id": "20db8ec88afe7c2a55a256d6f052d634c16bfe635b03eae72ec36be469f7a1fd",
+      "kind": "build",
+      "resolved_bytes": 327364,
+      "stored_fingerprint": "fdaf4ac77d56ffd4cdbfe38b1c043f00e62ee6e60e34edaa606912c8e0eaf026"
+    },
+    {
+      "base": "14706a826cd3c2952640dfd88e380de3256a105d132536c0987d6fbf541ccf44",
+      "bytes": 86193,
+      "format": "delta",
+      "id": "32cc585aa2dfbed9b4eaf1ee160e9bffe6437906bce268ec7a8aba14302947eb",
+      "kind": "build",
+      "resolved_bytes": 327805,
+      "stored_fingerprint": "90a7626a2275c27607295ec6ffb9967b43dcfc7c68a1e9ccddd9fb3a790a89ef"
+    },
+    {
+      "base": "14706a826cd3c2952640dfd88e380de3256a105d132536c0987d6fbf541ccf44",
+      "bytes": 86174,
+      "format": "delta",
+      "id": "424e43c91c3f9067d16dffa75571b83a1943f78c9098c46e8accc708383a166d",
+      "kind": "build",
+      "resolved_bytes": 327362,
+      "stored_fingerprint": "d6bc7f93aefeaa04a08b9c870caca5f33d86f09b36f17c5a189a40914e545a8d"
+    },
+    {
+      "base": "14706a826cd3c2952640dfd88e380de3256a105d132536c0987d6fbf541ccf44",
+      "bytes": 82189,
+      "format": "delta",
+      "id": "4e081689cbc1d6f2d53006f0e0fad6352c51c25398f6c073aaa8db68c2630e15",
+      "kind": "build",
+      "resolved_bytes": 317378,
+      "stored_fingerprint": "17c85b89432868bd4e66046ba174bab86d4c1dc5f180bcff691c94986872f8f7"
+    },
+    {
+      "base": null,
+      "bytes": 78571,
+      "format": "full",
+      "id": "55eaffceeecb49dae2fc6d7aeda39578ba75bfdbde3c729ebcd2b40fb4007dfd",
+      "kind": "build",
+      "resolved_bytes": 78571,
+      "stored_fingerprint": "55eaffceeecb49dae2fc6d7aeda39578ba75bfdbde3c729ebcd2b40fb4007dfd"
+    },
+    {
+      "base": "14706a826cd3c2952640dfd88e380de3256a105d132536c0987d6fbf541ccf44",
+      "bytes": 86244,
+      "format": "delta",
+      "id": "5fc218649f0b3bcff96d75eaa24bbd07f4930a5000ae1952b52cc140c9628bf3",
+      "kind": "build",
+      "resolved_bytes": 327362,
+      "stored_fingerprint": "c077d1b313300d079652b986142954b545dc79b23e019f421a06d0367fe7c557"
+    },
+    {
+      "base": "14706a826cd3c2952640dfd88e380de3256a105d132536c0987d6fbf541ccf44",
+      "bytes": 100154,
+      "format": "delta",
+      "id": "60b9d017e1fd12b95f2e94ba8acb35f73d020541421d569506cbabe95e430b36",
+      "kind": "build",
+      "resolved_bytes": 357571,
+      "stored_fingerprint": "ddcc4bcaa360b60983db3968a127a020dbb0be6bf38454deaa54ddeefe1e5f4d"
+    },
+    {
+      "base": "14706a826cd3c2952640dfd88e380de3256a105d132536c0987d6fbf541ccf44",
+      "bytes": 113451,
+      "format": "delta",
+      "id": "77c4d60209b49ee8d25d3720cb1a10c838955b8df2fc46a207795b77abcf098b",
+      "kind": "build",
+      "resolved_bytes": 388109,
+      "stored_fingerprint": "600f86c3e199526f25c6ceb766a5d0847729828343c3398b882651967326e778"
+    },
+    {
+      "base": "14706a826cd3c2952640dfd88e380de3256a105d132536c0987d6fbf541ccf44",
+      "bytes": 86244,
+      "format": "delta",
+      "id": "893f3bc3ad68dfba3ce8ba2496716f385e13d664c64f8b699fb64f7a264819f5",
+      "kind": "build",
+      "resolved_bytes": 327352,
+      "stored_fingerprint": "67f7a2fc7f93d131ce286f2893f47a2196021e25a1fbe8578566e875cbefada8"
+    },
+    {
+      "base": "14706a826cd3c2952640dfd88e380de3256a105d132536c0987d6fbf541ccf44",
+      "bytes": 86246,
+      "format": "delta",
+      "id": "93fbeb14157db657974dee4b0afade3f4564adf4cd30456ab6301dc5b4560849",
+      "kind": "build",
+      "resolved_bytes": 327364,
+      "stored_fingerprint": "d4b664dbaa3076e3cffc34db089f5721a6c5246239fc23ddf2ff419dd525e864"
+    },
+    {
+      "base": null,
+      "bytes": 90832,
+      "format": "full",
+      "id": "9b19fa22bbe847b3c973c303d2d6610cfbcc6eb68c10df641d6dc209f62e5589",
+      "kind": "build",
+      "resolved_bytes": 90832,
+      "stored_fingerprint": "9b19fa22bbe847b3c973c303d2d6610cfbcc6eb68c10df641d6dc209f62e5589"
+    },
+    {
+      "base": "14706a826cd3c2952640dfd88e380de3256a105d132536c0987d6fbf541ccf44",
+      "bytes": 86251,
+      "format": "delta",
+      "id": "a9fc06b894e762eb43d30ada6d55606af8bd3266a05e76176fa0946afb670d8f",
+      "kind": "build",
+      "resolved_bytes": 327365,
+      "stored_fingerprint": "f5683ebcb7cc0f318c3fba8273a244e7f20b46e22ef325e7a62e4d5b8da8137e"
+    },
+    {
+      "base": "14706a826cd3c2952640dfd88e380de3256a105d132536c0987d6fbf541ccf44",
+      "bytes": 86253,
+      "format": "delta",
+      "id": "bd7f81cf4f60d28a2e1e5984b55935f222b6adbce4ee1ae118468169962285f9",
+      "kind": "build",
+      "resolved_bytes": 327368,
+      "stored_fingerprint": "344011589d27bfed6bc51e06432be0da0eb4b348ec4e8f22d87f15e80a987ad2"
+    },
+    {
+      "base": "14706a826cd3c2952640dfd88e380de3256a105d132536c0987d6fbf541ccf44",
+      "bytes": 86244,
+      "format": "delta",
+      "id": "c4de097d6fbfc9874e6adb00653808005784caa52fdf531e32c0750618c9aeb8",
+      "kind": "build",
+      "resolved_bytes": 327362,
+      "stored_fingerprint": "4ed1d25079f5b040c104703d81ca57eb3fe06aa90e4ddd5a6359f77f5b3095cc"
+    },
+    {
+      "base": "14706a826cd3c2952640dfd88e380de3256a105d132536c0987d6fbf541ccf44",
+      "bytes": 86244,
+      "format": "delta",
+      "id": "e47754a429cb7bd148b01ad6e8e8216ec6466392e75687ad7272008e75b5e7b5",
+      "kind": "build",
+      "resolved_bytes": 327362,
+      "stored_fingerprint": "98a2c26907d9ddc421742c8c7e8b7caaacec846dd5297b9829d5f8da08ff39ee"
+    },
+    {
+      "base": "14706a826cd3c2952640dfd88e380de3256a105d132536c0987d6fbf541ccf44",
+      "bytes": 86244,
+      "format": "delta",
+      "id": "f322448aa3af26d5632c60b723adbea05a478fc02391f708b775bcc4beec3f4a",
+      "kind": "build",
+      "resolved_bytes": 327352,
+      "stored_fingerprint": "4054df5c184c06ff2747ffa462cb69e1edc3acec88e3bda5741e3063669e5ca5"
+    },
+    {
+      "base": null,
+      "bytes": 901,
+      "format": "full",
+      "id": "05f3b73be566310097068436f86b0c87c17b910c070407a5dce4b39460d83765",
+      "kind": "input",
+      "resolved_bytes": 901,
+      "stored_fingerprint": "05f3b73be566310097068436f86b0c87c17b910c070407a5dce4b39460d83765"
+    },
+    {
+      "base": "05f3b73be566310097068436f86b0c87c17b910c070407a5dce4b39460d83765",
+      "bytes": 250,
+      "format": "delta",
+      "id": "10bfb8b311c34878bcb26a4956689b51f490f0c6f16ef0a13b9fe062a3b9de68",
+      "kind": "input",
+      "resolved_bytes": 846,
+      "stored_fingerprint": "e3734f0a8f4753af7be45bb9bf725003b5b6444e8db235d60f8c99a42fc9b10c"
+    },
+    {
+      "base": "05f3b73be566310097068436f86b0c87c17b910c070407a5dce4b39460d83765",
+      "bytes": 338,
+      "format": "delta",
+      "id": "15832facc5b0b7cf6a269be9c1e8142d7c6df007ccec01b8a44a831484bd2b19",
+      "kind": "input",
+      "resolved_bytes": 843,
+      "stored_fingerprint": "43834ce31f521ad7c1f47583d9f833db8030aad1c44967d5b69aefd16f3f2256"
+    },
+    {
+      "base": "05f3b73be566310097068436f86b0c87c17b910c070407a5dce4b39460d83765",
+      "bytes": 249,
+      "format": "delta",
+      "id": "223485af9bb2fab4d57901f1f28469f3f9da49e81ede09b5d1a8d078bb111ea9",
+      "kind": "input",
+      "resolved_bytes": 845,
+      "stored_fingerprint": "3c185164637e798396ee5be21795bc6dfa1ad8cd046f27dcdedf7bddda09e463"
+    },
+    {
+      "base": "05f3b73be566310097068436f86b0c87c17b910c070407a5dce4b39460d83765",
+      "bytes": 409,
+      "format": "delta",
+      "id": "2d9b771cbe8d80dfe149bcd47faef0579a982166efbce59dc79017ec9f01bbc9",
+      "kind": "input",
+      "resolved_bytes": 1092,
+      "stored_fingerprint": "d24f968d3315a4373c0bbfa7f1195daff7668517faabe952db869ecd4840ffff"
+    },
+    {
+      "base": null,
+      "bytes": 610,
+      "format": "full",
+      "id": "336e704a312baf7bc4bf3ff51eb17b89609c99840c08d488a9a907baeb6ac9a7",
+      "kind": "input",
+      "resolved_bytes": 610,
+      "stored_fingerprint": "336e704a312baf7bc4bf3ff51eb17b89609c99840c08d488a9a907baeb6ac9a7"
+    },
+    {
+      "base": "05f3b73be566310097068436f86b0c87c17b910c070407a5dce4b39460d83765",
+      "bytes": 271,
+      "format": "delta",
+      "id": "3bb70661eaeb69b958f8940354fb4b4e2987eb52c3f12a69d98aaef4dba0e3c1",
+      "kind": "input",
+      "resolved_bytes": 843,
+      "stored_fingerprint": "5d33b788cdcad68a0012816e894d5cf44fbd41bc637d20c99a1b3e4b821f6c95"
+    },
+    {
+      "base": "05f3b73be566310097068436f86b0c87c17b910c070407a5dce4b39460d83765",
+      "bytes": 386,
+      "format": "delta",
+      "id": "42013a6126a7895450a4702f6f5817ebe6cea6359f6a40fee15bf25347719137",
+      "kind": "input",
+      "resolved_bytes": 1069,
+      "stored_fingerprint": "4839a63620acc60a270e6726759b71f5ac97f1ce9796267929a3d6f0cc328cd3"
+    },
+    {
+      "base": "336e704a312baf7bc4bf3ff51eb17b89609c99840c08d488a9a907baeb6ac9a7",
+      "bytes": 243,
+      "format": "delta",
+      "id": "4233b344a87fbec097dd19108074eb97e043ecf07bfb9a9ecf9d63f3b25b1991",
+      "kind": "input",
+      "resolved_bytes": 610,
+      "stored_fingerprint": "3d9befeed23b98ab7be15fc83acc0389cb4ef6e6a2923fc3526b7af37a39a5cd"
+    },
+    {
+      "base": "05f3b73be566310097068436f86b0c87c17b910c070407a5dce4b39460d83765",
+      "bytes": 217,
+      "format": "delta",
+      "id": "44919c819b8ed7e9831b74c7c03e5be2986857de926559d73176ef6a0ccaa925",
+      "kind": "input",
+      "resolved_bytes": 892,
+      "stored_fingerprint": "a510fef88f65bb2c3cdebe07bce95c75329a03cb9765fd0095da89e248bb25d7"
+    },
+    {
+      "base": null,
+      "bytes": 653,
+      "format": "full",
+      "id": "48ede354d7ba90cdd3e4eb35d5e883f4e2ee509ebd01bcebb84c27f64b72895e",
+      "kind": "input",
+      "resolved_bytes": 653,
+      "stored_fingerprint": "48ede354d7ba90cdd3e4eb35d5e883f4e2ee509ebd01bcebb84c27f64b72895e"
+    },
+    {
+      "base": "05f3b73be566310097068436f86b0c87c17b910c070407a5dce4b39460d83765",
+      "bytes": 287,
+      "format": "delta",
+      "id": "4b42b75a348467c451d7326f8d59c67a378d0fd4cff84744faaa043f1cc6748d",
+      "kind": "input",
+      "resolved_bytes": 843,
+      "stored_fingerprint": "13d62ac0420a8b17947fa950f981033f6c5ef40d078671f93f86a9389a5fbef3"
+    },
+    {
+      "base": "05f3b73be566310097068436f86b0c87c17b910c070407a5dce4b39460d83765",
+      "bytes": 463,
+      "format": "delta",
+      "id": "4fd34e71e81c8c2425ccf8de44c5b15aec58fe4ec738f91c2fad6f5fef5d021c",
+      "kind": "input",
+      "resolved_bytes": 1331,
+      "stored_fingerprint": "6dc8e8173dfed7b272add1209a1c72aed31478da9c060b30dfaafaf07383cf34"
+    },
+    {
+      "base": null,
+      "bytes": 2435,
+      "format": "full",
+      "id": "52cd6f41cd4eec658db24a4e119c83587c4346249e7830adf03cf9f486aa0724",
+      "kind": "input",
+      "resolved_bytes": 2435,
+      "stored_fingerprint": "52cd6f41cd4eec658db24a4e119c83587c4346249e7830adf03cf9f486aa0724"
+    },
+    {
+      "base": "05f3b73be566310097068436f86b0c87c17b910c070407a5dce4b39460d83765",
+      "bytes": 254,
+      "format": "delta",
+      "id": "56441427c9937e8c46dbe5276288cd9bec12ab6a51a3e769a01a38b5a2433a16",
+      "kind": "input",
+      "resolved_bytes": 840,
+      "stored_fingerprint": "407b0a5d5727e7b28e7b6741a1566802aefa2b8f43dc1d0b3ccafa76e01cc1af"
+    },
+    {
+      "base": "05f3b73be566310097068436f86b0c87c17b910c070407a5dce4b39460d83765",
+      "bytes": 257,
+      "format": "delta",
+      "id": "56d7dbbf33eaa98c5c83dad22f196bd04c498cbe359d2a440bfa84a5f54e2647",
+      "kind": "input",
+      "resolved_bytes": 843,
+      "stored_fingerprint": "a4331c55c26cfff8f5997fbf5b7a4f0d347f1e0acd41b02257950a6032011667"
+    },
+    {
+      "base": "05f3b73be566310097068436f86b0c87c17b910c070407a5dce4b39460d83765",
+      "bytes": 219,
+      "format": "delta",
+      "id": "5ecfede6afcc8073a7c0fa1437c4840a83acb58ab0178440e1be9c6a6b63bf05",
+      "kind": "input",
+      "resolved_bytes": 901,
+      "stored_fingerprint": "1bf496b8a2a17627f0198156f600b7d1d294e5d3b27e874f1bbd5118cede75ba"
+    },
+    {
+      "base": "05f3b73be566310097068436f86b0c87c17b910c070407a5dce4b39460d83765",
+      "bytes": 208,
+      "format": "delta",
+      "id": "705c8bc5a13666accc8341c6e80f2f7258fcfe302d63bbeaeb4f182badf8b77d",
+      "kind": "input",
+      "resolved_bytes": 843,
+      "stored_fingerprint": "df0a1cdf4ec126f572f1110b03aed83913c26f48835f0268b4e94721b70102b1"
+    },
+    {
+      "base": "05f3b73be566310097068436f86b0c87c17b910c070407a5dce4b39460d83765",
+      "bytes": 360,
+      "format": "delta",
+      "id": "74d0d2362fe7287a5c14fda09d9336100b5c26e29c57b3f3ccc5ae49d8511e79",
+      "kind": "input",
+      "resolved_bytes": 842,
+      "stored_fingerprint": "a0dc55a6e175edb9a5b32ffc9eae9abbac62e9cfa3d5002391d6f11e3ec2eeef"
+    },
+    {
+      "base": null,
+      "bytes": 843,
+      "format": "full",
+      "id": "765d0893609a99dc6f0602c7dbc0540445a950254ec0c14deb580cebc18ebab1",
+      "kind": "input",
+      "resolved_bytes": 843,
+      "stored_fingerprint": "765d0893609a99dc6f0602c7dbc0540445a950254ec0c14deb580cebc18ebab1"
+    },
+    {
+      "base": "05f3b73be566310097068436f86b0c87c17b910c070407a5dce4b39460d83765",
+      "bytes": 462,
+      "format": "delta",
+      "id": "8f3ff5818598a20c2f81db8341daa046620b348a0ea906e6c16bb968f2a7c58b",
+      "kind": "input",
+      "resolved_bytes": 1330,
+      "stored_fingerprint": "aec4f39ea8ffc5d84a8859be1783a9717f57877def8841c111fc946b26285571"
+    },
+    {
+      "base": "05f3b73be566310097068436f86b0c87c17b910c070407a5dce4b39460d83765",
+      "bytes": 334,
+      "format": "delta",
+      "id": "9160fe1b3a8ecbfd8c3eff55be6a00e305febbe203c5e0470640bd565fbc6231",
+      "kind": "input",
+      "resolved_bytes": 984,
+      "stored_fingerprint": "cb1571f3a244f87ff4d8b3acccaac9f4b2a4776c1fe1c8b8dbc5c4c563d2de2b"
+    },
+    {
+      "base": "05f3b73be566310097068436f86b0c87c17b910c070407a5dce4b39460d83765",
+      "bytes": 217,
+      "format": "delta",
+      "id": "96f26a874eb361eab12113670b772ea53a7c594d22275f2210beb5a1ef1e4251",
+      "kind": "input",
+      "resolved_bytes": 892,
+      "stored_fingerprint": "be95fe3b7b51e0c6553c1e6a83689b1f29c5280090cd296a6c04a7970573d957"
+    },
+    {
+      "base": "05f3b73be566310097068436f86b0c87c17b910c070407a5dce4b39460d83765",
+      "bytes": 345,
+      "format": "delta",
+      "id": "9903497ced801e20f4a04e4433b6376115c24e37f38532ddbb3f8e5bb5a4e633",
+      "kind": "input",
+      "resolved_bytes": 1037,
+      "stored_fingerprint": "8ce11f6ca177d740dc2d9159760397848b79bb7634bd9119e9ff948f66c5fb29"
+    },
+    {
+      "base": "05f3b73be566310097068436f86b0c87c17b910c070407a5dce4b39460d83765",
+      "bytes": 247,
+      "format": "delta",
+      "id": "9c4c142d60c99e4d184e08c85f9920ecf176437dc1ceb2c8993c0ccd712c4694",
+      "kind": "input",
+      "resolved_bytes": 843,
+      "stored_fingerprint": "81b911ecad0e95a00accd382edcdb3060d0cdff4a8c2c1ddbc36b7cc9ef700d4"
+    },
+    {
+      "base": "05f3b73be566310097068436f86b0c87c17b910c070407a5dce4b39460d83765",
+      "bytes": 338,
+      "format": "delta",
+      "id": "9daffe0c72df19dfc6682898995fe4b76280380cc55146ede34732216a40fcae",
+      "kind": "input",
+      "resolved_bytes": 843,
+      "stored_fingerprint": "b7e5ba7f5defaf9310425c793e151c543598d034bb8d2bbe112e9f4b7dba26d1"
+    },
+    {
+      "base": null,
+      "bytes": 374,
+      "format": "full",
+      "id": "9ee6c56b3b3a577fd49f45455dd4e248816cab1058c504dd8555eb9bf85194b4",
+      "kind": "input",
+      "resolved_bytes": 374,
+      "stored_fingerprint": "9ee6c56b3b3a577fd49f45455dd4e248816cab1058c504dd8555eb9bf85194b4"
+    },
+    {
+      "base": "05f3b73be566310097068436f86b0c87c17b910c070407a5dce4b39460d83765",
+      "bytes": 219,
+      "format": "delta",
+      "id": "aaf188b6e9a9fc0f46c056977fed63719809f2e4f5eb123cc712fa2a67106227",
+      "kind": "input",
+      "resolved_bytes": 894,
+      "stored_fingerprint": "6d8e78528934ba4a722006d8f8a06998534f52f3e1d51c617a8220821bff1e07"
+    },
+    {
+      "base": "48ede354d7ba90cdd3e4eb35d5e883f4e2ee509ebd01bcebb84c27f64b72895e",
+      "bytes": 187,
+      "format": "delta",
+      "id": "ba9a10713bc29d7ce813cf38363f859da1805ffdb1b879f7333b11ed15fe12f2",
+      "kind": "input",
+      "resolved_bytes": 355,
+      "stored_fingerprint": "44d2ba350b1f0f5524a74d671a03dfa140236b9bd0bb7068a6b9bd3dc4011103"
+    },
+    {
+      "base": "05f3b73be566310097068436f86b0c87c17b910c070407a5dce4b39460d83765",
+      "bytes": 375,
+      "format": "delta",
+      "id": "c5b83abfcddfcc28a9de2e67e5ff45f5d8dca3fa34a2df7686628bff27aef9b0",
+      "kind": "input",
+      "resolved_bytes": 1041,
+      "stored_fingerprint": "21dd7d6af837b0174145a3fccf6683a598537e962b5c150008256d8ea56e24b8"
+    },
+    {
+      "base": "05f3b73be566310097068436f86b0c87c17b910c070407a5dce4b39460d83765",
+      "bytes": 205,
+      "format": "delta",
+      "id": "cd35f6f3e0d0cfc0e08f816bc210be7a086cbe7b453c1be047d8b118f175429b",
+      "kind": "input",
+      "resolved_bytes": 878,
+      "stored_fingerprint": "fc2d46db482495177518cc77ae1220c19ff6e1f4f10c0b55c9e63c3b40d9d20e"
+    },
+    {
+      "base": "05f3b73be566310097068436f86b0c87c17b910c070407a5dce4b39460d83765",
+      "bytes": 254,
+      "format": "delta",
+      "id": "cf134ced4b4c5c96211f8c7b3464a8fd3d4a70d7673caa2bc3e8fde92b071f4b",
+      "kind": "input",
+      "resolved_bytes": 840,
+      "stored_fingerprint": "1ea85567322c4e6ab5d77958b216b9ffd8749cfc0550ca6ca02a7cfdb561ab44"
+    },
+    {
+      "base": "05f3b73be566310097068436f86b0c87c17b910c070407a5dce4b39460d83765",
+      "bytes": 217,
+      "format": "delta",
+      "id": "d2357ecc29845054c2a41d5a8625400eeca3f5550bedb9bac7a91a98e95d536a",
+      "kind": "input",
+      "resolved_bytes": 892,
+      "stored_fingerprint": "c2e852492003b12d2ef364a1c766f564848dc9cbb96d50ad2c550d447c27f993"
+    },
+    {
+      "base": "05f3b73be566310097068436f86b0c87c17b910c070407a5dce4b39460d83765",
+      "bytes": 249,
+      "format": "delta",
+      "id": "e0a77d2cdb86494c3196ec86be64f42b0e7f8851823b03f4264f7d1cbae15324",
+      "kind": "input",
+      "resolved_bytes": 844,
+      "stored_fingerprint": "45f1e759350d889f4440036a1416444415100c0dd7c170704ac2796baaac3e5e"
+    },
+    {
+      "base": "05f3b73be566310097068436f86b0c87c17b910c070407a5dce4b39460d83765",
+      "bytes": 257,
+      "format": "delta",
+      "id": "e5d0bd0f55ec1a4f97bf7c877ddfcfcfebeecdf72f1401f32ade1dde1a349348",
+      "kind": "input",
+      "resolved_bytes": 843,
+      "stored_fingerprint": "84c65f014ab9bacc4589d4ff86ce595a55c2153fac2d15ed051442b732e9f33d"
+    },
+    {
+      "base": "05f3b73be566310097068436f86b0c87c17b910c070407a5dce4b39460d83765",
+      "bytes": 291,
+      "format": "delta",
+      "id": "f685a389439d1236aa781db36fca7c37290d129ee14d6f8fc51e0475c2001c30",
+      "kind": "input",
+      "resolved_bytes": 847,
+      "stored_fingerprint": "412e9355f2fb79edcedcfb379a35d0b7504db51eb8ead2ae4d2f5cb4eb43b07d"
+    },
+    {
+      "base": null,
+      "bytes": 843,
+      "format": "full",
+      "id": "f6c315f252b0bd756ffcd4176489bf40e579a62d36048b0112fa53356ffc78ae",
+      "kind": "input",
+      "resolved_bytes": 843,
+      "stored_fingerprint": "f6c315f252b0bd756ffcd4176489bf40e579a62d36048b0112fa53356ffc78ae"
+    },
+    {
+      "base": null,
+      "bytes": 165115,
+      "format": "full",
+      "id": "05be5e8f4b3e9089121bb6d568fc09aa6612f1dc38444b3c89ed7e5c5cd95927",
+      "kind": "request",
+      "resolved_bytes": 165115,
+      "stored_fingerprint": "05be5e8f4b3e9089121bb6d568fc09aa6612f1dc38444b3c89ed7e5c5cd95927"
+    },
+    {
+      "base": "05be5e8f4b3e9089121bb6d568fc09aa6612f1dc38444b3c89ed7e5c5cd95927",
+      "bytes": 412,
+      "format": "delta",
+      "id": "1204d17da1086d72484e2187e0eeda4d5dd618c7ea4dd9807ef73c5bc6e66e9d",
+      "kind": "request",
+      "resolved_bytes": 165148,
+      "stored_fingerprint": "43a9e997a0d748dec7d764842626c141842c623f7236649d3a493b0761bdf48e"
+    },
+    {
+      "base": "05be5e8f4b3e9089121bb6d568fc09aa6612f1dc38444b3c89ed7e5c5cd95927",
+      "bytes": 25259,
+      "format": "delta",
+      "id": "4af81691505ae75675201f38bff6d89eb5b73520f672d5504a07e32a1bb6cfff",
+      "kind": "request",
+      "resolved_bytes": 161416,
+      "stored_fingerprint": "f79fced98139fd19154db3fceae86b5cf9dacfb12c543b2a1f3e27663c764a37"
+    },
+    {
+      "base": "05be5e8f4b3e9089121bb6d568fc09aa6612f1dc38444b3c89ed7e5c5cd95927",
+      "bytes": 407,
+      "format": "delta",
+      "id": "525cfc0d9548030a6e78fb29558a60c0ed1fc9b4dca0b1686a892b919e3ebe3e",
+      "kind": "request",
+      "resolved_bytes": 165146,
+      "stored_fingerprint": "ca768a2f4f7cd7e044ba3a9ed358a4b138e2dd9fb779b846d9ce5ffca03ff185"
+    },
+    {
+      "base": "05be5e8f4b3e9089121bb6d568fc09aa6612f1dc38444b3c89ed7e5c5cd95927",
+      "bytes": 32908,
+      "format": "delta",
+      "id": "69b9b682f75a7e98f984b9d70600c5385565de388e860daddb974515d64d0b0d",
+      "kind": "request",
+      "resolved_bytes": 176417,
+      "stored_fingerprint": "c816e2d53597ac92fe10d551abe397bf00a2f238b0809b5acc9077b44765c6c9"
+    },
+    {
+      "base": "05be5e8f4b3e9089121bb6d568fc09aa6612f1dc38444b3c89ed7e5c5cd95927",
+      "bytes": 38277,
+      "format": "delta",
+      "id": "83780805c70c34737db6b5f3dcc2fd23b8c3063b027a8c61983b434de6b39827",
+      "kind": "request",
+      "resolved_bytes": 187893,
+      "stored_fingerprint": "88ebf220b963da8db8ac77baa0da432289735474a27d4ce87953fb1d6b99a0ef"
+    },
+    {
+      "base": "05be5e8f4b3e9089121bb6d568fc09aa6612f1dc38444b3c89ed7e5c5cd95927",
+      "bytes": 414,
+      "format": "delta",
+      "id": "8c9028f671aacad8e7736aaae549e4335b3f6d78e1166214b1f39d741753ac12",
+      "kind": "request",
+      "resolved_bytes": 165149,
+      "stored_fingerprint": "9921eb756a126b7a6e3fbd773c4f65bc36e3ca3b9975f71ffc94bbd338c1f560"
+    },
+    {
+      "base": "05be5e8f4b3e9089121bb6d568fc09aa6612f1dc38444b3c89ed7e5c5cd95927",
+      "bytes": 318,
+      "format": "delta",
+      "id": "9e6d4b58f13b274a866a3914e6ed4b92fa56e578426003e491aca315289a895d",
+      "kind": "request",
+      "resolved_bytes": 165146,
+      "stored_fingerprint": "d017b3ca6f4cf8b6162c382c036fe72fc6e156de2041097e053aaa23e4730865"
+    },
+    {
+      "base": "05be5e8f4b3e9089121bb6d568fc09aa6612f1dc38444b3c89ed7e5c5cd95927",
+      "bytes": 407,
+      "format": "delta",
+      "id": "9f83c7cd01d8ed95a3a0020d25cd1432d7229cd3fc82bed41ec63334fb064e73",
+      "kind": "request",
+      "resolved_bytes": 165136,
+      "stored_fingerprint": "b8056d7b7a357133a79257854ca40e4a7f28fd30f3a45f1e1d8afa543a774161"
+    },
+    {
+      "base": "05be5e8f4b3e9089121bb6d568fc09aa6612f1dc38444b3c89ed7e5c5cd95927",
+      "bytes": 30006,
+      "format": "delta",
+      "id": "af20c671f0384f316f00cf60739aca12064e53808f5f17f162cd64b74a6bdf09",
+      "kind": "request",
+      "resolved_bytes": 171341,
+      "stored_fingerprint": "7e4f9afa40a6743c06fb0ab9bc76fa33b89061f1f37b86532e1d733c26afd8ba"
+    },
+    {
+      "base": "05be5e8f4b3e9089121bb6d568fc09aa6612f1dc38444b3c89ed7e5c5cd95927",
+      "bytes": 407,
+      "format": "delta",
+      "id": "b35eb5e7838bb85ce24037fb004b58317c5b16ad7f1d0a9c5c70b1d7fc4885c0",
+      "kind": "request",
+      "resolved_bytes": 165136,
+      "stored_fingerprint": "5d7745ab47543d100ff3733adcbec41b5219ec8b82d3abe6a456b2869b32a70b"
+    },
+    {
+      "base": "05be5e8f4b3e9089121bb6d568fc09aa6612f1dc38444b3c89ed7e5c5cd95927",
+      "bytes": 413,
+      "format": "delta",
+      "id": "c1749dc8ee65afaf7a61a313822d1e192f65b26f633cbd1561860745fe5a69e8",
+      "kind": "request",
+      "resolved_bytes": 165148,
+      "stored_fingerprint": "b7717457e7eeb67ad8e2d201373fc47e7a8e4e28cd3079d68999f53df8788049"
+    },
+    {
+      "base": "05be5e8f4b3e9089121bb6d568fc09aa6612f1dc38444b3c89ed7e5c5cd95927",
+      "bytes": 31827,
+      "format": "delta",
+      "id": "d7d4a4ac8317cf51d965419d57367947ae4bf30023244d4b4708fa3079c71a42",
+      "kind": "request",
+      "resolved_bytes": 175091,
+      "stored_fingerprint": "a1dad4ee987f223a08597f0b62f8071761e51207ff0dee78310fbeb840187e70"
+    },
+    {
+      "base": "05be5e8f4b3e9089121bb6d568fc09aa6612f1dc38444b3c89ed7e5c5cd95927",
+      "bytes": 14631,
+      "format": "delta",
+      "id": "d8aa804c1de6f72ead78dbb0b4db2a308b50a671719832c465a74f8e1e07ae46",
+      "kind": "request",
+      "resolved_bytes": 165219,
+      "stored_fingerprint": "3c73bf43687a109064348f9e589194c36aaa1a8c78adfc3da6fd9ecb0c8c8b8d"
+    },
+    {
+      "base": "05be5e8f4b3e9089121bb6d568fc09aa6612f1dc38444b3c89ed7e5c5cd95927",
+      "bytes": 416,
+      "format": "delta",
+      "id": "e6a8ef8b4a750b9839212c4eb7c6f59f7ad11f9fc51fafcbd82bddf0ef0769cd",
+      "kind": "request",
+      "resolved_bytes": 165152,
+      "stored_fingerprint": "9d0c361edb2a04384b2ec88bcebbde68e3f311e0dcdac5127d4f48236d9b3739"
+    },
+    {
+      "base": "05be5e8f4b3e9089121bb6d568fc09aa6612f1dc38444b3c89ed7e5c5cd95927",
+      "bytes": 407,
+      "format": "delta",
+      "id": "e85d81ed51db643bc453bd72f2fc46524584550d3803ec0d7fd589a0ea2e4762",
+      "kind": "request",
+      "resolved_bytes": 165146,
+      "stored_fingerprint": "b97b33e4d2d14d0cc27b79860c88f62095a4a1cb425d6a2a79b24ae4bf0fa8f0"
+    },
+    {
+      "base": "05be5e8f4b3e9089121bb6d568fc09aa6612f1dc38444b3c89ed7e5c5cd95927",
+      "bytes": 409,
+      "format": "delta",
+      "id": "f1659be1e702afd50167b167001fded2219bbe1fa64f60922c9250b544ce1d55",
+      "kind": "request",
+      "resolved_bytes": 165148,
+      "stored_fingerprint": "f616ba05d29fbb7db6477c73d7a41726ad12c46e850f5661493e0ea1f12fa9f5"
+    },
+    {
+      "base": "05be5e8f4b3e9089121bb6d568fc09aa6612f1dc38444b3c89ed7e5c5cd95927",
+      "bytes": 75005,
+      "format": "delta",
+      "id": "f7b86fff929f05a555cf8d4990640f85c98cc94873e85be73d3b0d3fb2133f7e",
+      "kind": "request",
+      "resolved_bytes": 271239,
+      "stored_fingerprint": "40081afe510b6db74cd9a538e6a1b71a73c1393be1c587b2a5892f02642f515d"
+    },
+    {
+      "base": null,
+      "bytes": 16275,
+      "format": "full",
+      "id": "0bd9ccff2ddd39254e7aae91374360a523b90fea85dc36d98e4d54f6056cb637",
+      "kind": "result",
+      "resolved_bytes": 16275,
+      "stored_fingerprint": "0bd9ccff2ddd39254e7aae91374360a523b90fea85dc36d98e4d54f6056cb637"
+    },
+    {
+      "base": "0bd9ccff2ddd39254e7aae91374360a523b90fea85dc36d98e4d54f6056cb637",
+      "bytes": 861,
+      "format": "delta",
+      "id": "3054843bdbb1e559925a4258a552ca4ce12550e3d4a51f60b6797f00f3ccfb1e",
+      "kind": "result",
+      "resolved_bytes": 14063,
+      "stored_fingerprint": "3d6e97da4de1e640f161b5ffdbccbd09727cdf09e6a9839936ec0a2bc0d9b1fd"
+    },
+    {
+      "base": "0bd9ccff2ddd39254e7aae91374360a523b90fea85dc36d98e4d54f6056cb637",
+      "bytes": 1742,
+      "format": "delta",
+      "id": "3f778f6884d2ad05acf4bb86ad05469fd1b790bcc800bf610effb4f182248f3a",
+      "kind": "result",
+      "resolved_bytes": 5785,
+      "stored_fingerprint": "14dde53dd1fc646af1991ebc8d6c20bf3a9a64899533a8546f510820236f7bdc"
+    },
+    {
+      "base": "0bd9ccff2ddd39254e7aae91374360a523b90fea85dc36d98e4d54f6056cb637",
+      "bytes": 9302,
+      "format": "delta",
+      "id": "60ac49e9d2a141a99538bebdb0e1ca8134dcaa5abcb49c7373de4e2412dae1a6",
+      "kind": "result",
+      "resolved_bytes": 24088,
+      "stored_fingerprint": "c6e5fc97de74098384b9763f29d910bb904b03a5f30a1e2889f45d9ce67e3973"
+    },
+    {
+      "base": "0bd9ccff2ddd39254e7aae91374360a523b90fea85dc36d98e4d54f6056cb637",
+      "bytes": 1715,
+      "format": "delta",
+      "id": "757eb5b232efdd63ec241294d1a1c18702f81e1b34bf891c4b7172e18a134fe1",
+      "kind": "result",
+      "resolved_bytes": 16275,
+      "stored_fingerprint": "23447f04ee764d7d56a108f075ad1feaca3a063ae1a331f4628be9160de13acd"
+    },
+    {
+      "base": "0bd9ccff2ddd39254e7aae91374360a523b90fea85dc36d98e4d54f6056cb637",
+      "bytes": 439,
+      "format": "delta",
+      "id": "863466d081456dfc16310c8b166c099a5c079df56bbfd218b8b623b90b049e42",
+      "kind": "result",
+      "resolved_bytes": 16265,
+      "stored_fingerprint": "96d6d74c08b5d9eb8dc94a6cc77e12afecb110c39515026904d40f874bddf962"
+    },
+    {
+      "base": null,
+      "bytes": 23090,
+      "format": "full",
+      "id": "8706115ed1fd4be888b20b184089f7ffaeddc48aaf198a9d0fc0537f848b3040",
+      "kind": "result",
+      "resolved_bytes": 23090,
+      "stored_fingerprint": "8706115ed1fd4be888b20b184089f7ffaeddc48aaf198a9d0fc0537f848b3040"
+    },
+    {
+      "base": null,
+      "bytes": 26692,
+      "format": "full",
+      "id": "8c8c392b7d1066057cf39f11fe72aade5dc92ad856393f1d30c5025e7d2a665f",
+      "kind": "result",
+      "resolved_bytes": 26692,
+      "stored_fingerprint": "8c8c392b7d1066057cf39f11fe72aade5dc92ad856393f1d30c5025e7d2a665f"
+    },
+    {
+      "base": "0bd9ccff2ddd39254e7aae91374360a523b90fea85dc36d98e4d54f6056cb637",
+      "bytes": 6424,
+      "format": "delta",
+      "id": "b2ba04638fc9d71ae4075572c1aef078f8b36ee84d0fdb0d5bf184b12339a0c3",
+      "kind": "result",
+      "resolved_bytes": 16231,
+      "stored_fingerprint": "46617af2a51ce852b2a357ef7e35fd389c77ed03c86278b33077580f26fa7467"
+    },
+    {
+      "base": "0bd9ccff2ddd39254e7aae91374360a523b90fea85dc36d98e4d54f6056cb637",
+      "bytes": 762,
+      "format": "delta",
+      "id": "b3b245c9fa73d5ea5e11c794aaa1dcb12be05716582c6f7140447221f7de4a71",
+      "kind": "result",
+      "resolved_bytes": 14014,
+      "stored_fingerprint": "c8fb1e3767fe29426d313eee583c9c77e29901ad728f46f86da4417d20578436"
+    },
+    {
+      "base": "0bd9ccff2ddd39254e7aae91374360a523b90fea85dc36d98e4d54f6056cb637",
+      "bytes": 2128,
+      "format": "delta",
+      "id": "c1d6dee2e67b98372b294282918fea03aecf82fbf98ea9a556941d0b627cd180",
+      "kind": "result",
+      "resolved_bytes": 18628,
+      "stored_fingerprint": "ea2cd083926571acfa3a81b637a49fb0999210bfed4da0a66b33cba085aa2a31"
+    },
+    {
+      "base": "0bd9ccff2ddd39254e7aae91374360a523b90fea85dc36d98e4d54f6056cb637",
+      "bytes": 940,
+      "format": "delta",
+      "id": "ca4d057d1eeab20198cd36f4ef8cc6a9c59e9a3b207927be4f6befdad6e677d2",
+      "kind": "result",
+      "resolved_bytes": 16277,
+      "stored_fingerprint": "bc038e0c52d7c7807a04ac4b41151896673681de927a380bf5c954b09b348a90"
+    },
+    {
+      "base": null,
+      "bytes": 19645,
+      "format": "full",
+      "id": "cb729b1d8e058f62a136c6b9856e519b08f54cf15d4611c42afc7aaf2161614a",
+      "kind": "result",
+      "resolved_bytes": 19645,
+      "stored_fingerprint": "cb729b1d8e058f62a136c6b9856e519b08f54cf15d4611c42afc7aaf2161614a"
+    },
+    {
+      "base": "0bd9ccff2ddd39254e7aae91374360a523b90fea85dc36d98e4d54f6056cb637",
+      "bytes": 1437,
+      "format": "delta",
+      "id": "e55db1efa79e9fe037de575a4181ab13ddd1f3e8133542081d19a52e6a39140a",
+      "kind": "result",
+      "resolved_bytes": 17545,
+      "stored_fingerprint": "dda64d536234837225d3dd60cb136f1ac6142125813d0f94658d0c1a387729a7"
+    }
+  ],
+  "inventory_fingerprint": "4da417dc6840da4d4ccdd60341996b72d4524a222e0c8763460d1e65dfaff3f5",
+  "literal_assertions": [
+    {
+      "case_id": "literal/baseline",
+      "expected": [
+        0,
+        1,
+        1,
+        1,
+        0,
+        0
+      ],
+      "projection": "receiver_values",
+      "receiver": "n000011"
+    },
+    {
+      "case_id": "literal/baseline",
+      "channel": "a000_transport.n000003",
+      "expected": [
+        1,
+        2,
+        null,
+        null,
+        null,
+        null
+      ],
+      "projection": "delivery_times"
+    },
+    {
+      "case_id": "literal/indefinite",
+      "expected": [
+        0,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "projection": "receiver_values",
+      "receiver": "n000011"
+    },
+    {
+      "case_id": "literal/delayed",
+      "expected": [
+        0,
+        0,
+        1,
+        1,
+        1,
+        0
+      ],
+      "projection": "receiver_values",
+      "receiver": "n000011"
+    },
+    {
+      "case_id": "literal/sum",
+      "expected": [
+        0,
+        1.0,
+        1.0,
+        1.0,
+        0,
+        0
+      ],
+      "projection": "receiver_values",
+      "receiver": "n000011"
+    },
+    {
+      "case_id": "literal/custom_pulse",
+      "expected": [
+        0,
+        1,
+        1,
+        1,
+        0,
+        0
+      ],
+      "projection": "receiver_values",
+      "receiver": "n000013"
+    },
+    {
+      "case_id": "literal/custom_sum",
+      "expected": [
+        0,
+        1.0,
+        1.0,
+        1.0,
+        0,
+        0
+      ],
+      "projection": "receiver_values",
+      "receiver": "n000017"
+    }
+  ],
+  "schema_version": "biocompiler.source_transport_conformance.v1"
+}

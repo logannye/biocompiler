@@ -856,6 +856,11 @@ jobs:
         run: |
           python -m pip install .
           python tools/check_core_boundaries.py --output generated/core/boundaries.json
+      - name: Strictly type-check the migrated Python transport boundary
+        run: |
+          python -m pip install --only-binary=:all: --platform any --require-hashes \
+            --target generated/typecheck -r tools/typecheck-requirements.txt
+          PYTHONPATH=generated/typecheck python -m mypy --config-file tools/mypy-core.ini | tee generated/core/python-types.txt
       - name: Compile native core and standalone verifier
         id: native_build
         run: |
@@ -963,6 +968,24 @@ jobs:
             --core "$GITHUB_WORKSPACE/core/_build/default/bin/core/main.exe" \
             --verify "$GITHUB_WORKSPACE/core/_build/default/bin/verify/main.exe" \
             --output generated/core/conformance.json
+      - name: Check installed standalone architecture verification and fresh replay
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        env:
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          python tools/check_architecture_protocol.py \
+            --core "$GITHUB_WORKSPACE/core/_build/default/bin/core/main.exe" \
+            --verify "$GITHUB_WORKSPACE/core/_build/default/bin/verify/main.exe" \
+            --output generated/core/architecture-protocol.json
+      - name: Compare complete construction producer and workflow artifacts
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_construction_producer.exe "$GITHUB_WORKSPACE/tests/conformance/construction-producer-v1.json" | tee generated/core/construction-producer.txt
+      - name: Compare source manifests, matching, architecture production and paired export
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_architecture_producer.exe "$GITHUB_WORKSPACE/tests/conformance/architecture-producer-v1.json" | tee generated/core/architecture-producer.txt
+      - name: Compare complete coupled source transport traces and rejection signatures
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_source_transport.exe "$GITHUB_WORKSPACE/tests/conformance/source-transport-v1.json" | tee generated/core/source-transport.txt
       - name: Retain revision-bound native executables
         run: |
           cp core/_build/default/bin/core/main.exe generated/core/biocompiler-core

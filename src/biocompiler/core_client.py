@@ -17,7 +17,7 @@ import selectors
 import signal
 import subprocess
 import time
-from typing import Callable, Literal, TypeAlias, cast
+from typing import BinaryIO, Callable, Literal, TypeAlias, cast
 from uuid import uuid4
 
 
@@ -35,6 +35,7 @@ LIMITS = {
     "max_graph_edges": 250_000,
 }
 MAX_STDERR_BYTES = 1_048_576
+CAPABILITIES_SCHEMA = "biocompiler.core_capabilities.v1"
 
 
 class CoreError(RuntimeError):
@@ -91,6 +92,59 @@ class CoreUnsupported(CoreRejected):
     """The selected core explicitly does not implement this operation."""
 
 
+@dataclass(frozen=True)
+class CoreCapabilities:
+    """Validated, immutable transport capabilities; never an acceptance token."""
+
+    operations: tuple[str, ...]
+    intent_schemas: tuple[str, ...]
+    validation_scopes: tuple[str, ...]
+    claim_scope: str
+    _profiles_json: bytes
+
+    @property
+    def profiles(self) -> dict[str, JsonValue]:
+        # Each read returns a separate document; callers cannot mutate a prior
+        # negotiation through a nested list or dictionary.
+        return cast(dict[str, JsonValue], decode_json(self._profiles_json))
+
+    def require_operation(self, operation: str) -> None:
+        if operation not in self.operations:
+            raise CoreProtocolError(f"Selected core does not advertise {operation}")
+
+
+def _names(value: JsonValue, label: str) -> tuple[str, ...]:
+    if (type(value) is not list or any(type(item) is not str or not item.strip() for item in value)
+            or len(set(cast(list[str], value))) != len(value)):
+        raise CoreProtocolError(f"{label} must contain distinct nonempty strings")
+    return tuple(cast(list[str], value))
+
+
+def _capabilities(value: JsonValue) -> CoreCapabilities:
+    fields = _object(value, {"schema_version", "operations", "intent_schemas", "canonicalization",
+                             "validation_scopes", "profiles", "limits", "claim_scope"}, "Capabilities")
+    if fields["schema_version"] != CAPABILITIES_SCHEMA or fields["canonicalization"] != "python-json-v1":
+        raise CoreProtocolError("Incompatible capability schema or canonicalization")
+    limits = _object(fields["limits"], set(LIMITS), "Core limits")
+    if any(type(limits[key]) is not int or limits[key] != expected for key, expected in LIMITS.items()):
+        raise CoreProtocolError("Incompatible core resource limits")
+    operations = _names(fields["operations"], "Operations")
+    if "capabilities" not in operations:
+        raise CoreProtocolError("Capabilities operation is missing")
+    schemas = _names(fields["intent_schemas"], "Intent schemas")
+    scopes = _names(fields["validation_scopes"], "Validation scopes")
+    profiles, claim = fields["profiles"], fields["claim_scope"]
+    if type(profiles) is not dict or type(claim) is not str or not claim.strip():
+        raise CoreProtocolError("Invalid capability profiles or claim scope")
+    for name, profile in profiles.items():
+        if not name.strip() or type(profile) is not dict:
+            raise CoreProtocolError("Invalid capability profile")
+        advertised = _names(profile.get("operations"), "Profile operations")
+        if not advertised or not set(advertised) <= set(operations):
+            raise CoreProtocolError("Profile operations disagree with advertised operations")
+    return CoreCapabilities(operations, schemas, scopes, claim, encode_json(profiles))
+
+
 def _validate_string(value: str, limit: int) -> int:
     try:
         length = len(value.encode("utf-8"))
@@ -123,12 +177,12 @@ def validate_json(value: object, *, string_limit: int | None = None,
         if nodes > LIMITS["max_json_nodes"] or depth > LIMITS["max_depth"]:
             raise CoreProtocolError("JSON node or depth budget exceeded")
         kind = type(item)
-        if kind is str:
+        if type(item) is str:
             account(_validate_string(item, string_limit) + 2)
         elif kind is int or kind is float:
             # Do not rely on Python's process-global decimal conversion limit:
             # an authoring notebook may have changed or disabled it.
-            if kind is int and item.bit_length() > math.ceil(LIMITS["max_number_chars"] * math.log2(10)):
+            if type(item) is int and item.bit_length() > math.ceil(LIMITS["max_number_chars"] * math.log2(10)):
                 raise CoreProtocolError("JSON number budget exceeded")
             try:
                 text = str(item)
@@ -137,14 +191,14 @@ def validate_json(value: object, *, string_limit: int | None = None,
             if len(text) > LIMITS["max_number_chars"]:
                 raise CoreProtocolError("JSON number budget exceeded")
             account(len(text))
-            if kind is float and not math.isfinite(item):
+            if type(item) is float and not math.isfinite(item):
                 raise CoreProtocolError("Nonfinite JSON numbers are forbidden")
-        elif kind is list:
+        elif type(item) is list:
             account(2 + max(0, len(item) - 1))
             if len(item) + len(stack) + nodes > LIMITS["max_json_nodes"]:
                 raise CoreProtocolError("JSON node budget exceeded")
             stack.extend((child, depth + 1) for child in item)
-        elif kind is dict:
+        elif type(item) is dict:
             account(2 + max(0, len(item) - 1))
             if len(item) + len(stack) + nodes > LIMITS["max_json_nodes"]:
                 raise CoreProtocolError("JSON node budget exceeded")
@@ -236,8 +290,7 @@ def _response(data: bytes, exit_code: int, request_id: str, operation: str,
                 or type(diag["message"]) is not str or not diag["message"]
                 or not (diag["path"] is None or type(diag["path"]) is str)):
             raise CoreProtocolError("Invalid diagnostic fields")
-        diagnostics.append(Diagnostic(cast(str, diag["code"]), cast(str, diag["message"]),
-                                      cast(str | None, diag["path"])))
+        diagnostics.append(Diagnostic(diag["code"], diag["message"], diag["path"]))
     if status == "ok":
         if diagnostics or value["result"] is None:
             raise CoreProtocolError("Successful response must have a result and no diagnostics")
@@ -306,7 +359,7 @@ def _exchange(executable: Path, request: bytes, timeout: float,
                         chunk = os.read(key.fd, 65_536)
                         if not chunk:
                             selector.unregister(key.fileobj)
-                            key.fileobj.close()
+                            cast(BinaryIO, key.fileobj).close()
                         elif key.data == "stdout":
                             if len(output) + len(chunk) > LIMITS["max_response_bytes"]:
                                 raise CoreTransportError("Core response byte budget exceeded")
@@ -381,6 +434,16 @@ class CoreClient:
 
     def capabilities(self) -> CoreResponse:
         return self.call("capabilities", {})
+
+    def negotiate(self, operation: str, *, cancelled: Callable[[], bool] | None = None) -> CoreCapabilities:
+        """Check current executable capabilities before a profile-specific call.
+
+        No cached negotiation authorizes a later executable or artifact. The
+        operation response still undergoes all identity and protocol checks.
+        """
+        capabilities = _capabilities(self.call("capabilities", {}, cancelled=cancelled).result)
+        capabilities.require_operation(operation)
+        return capabilities
 
     def canonicalize(self, value: JsonValue) -> CoreResponse:
         return self.call("canonicalize", value)

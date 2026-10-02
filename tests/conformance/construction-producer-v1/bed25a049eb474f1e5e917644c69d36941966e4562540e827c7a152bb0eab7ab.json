@@ -1,0 +1,14 @@
+{
+  "bundle": null,
+  "diagnostics": [
+    "member:translated_member:unavailable_value",
+    "step:step:invalid_translation"
+  ],
+  "experimental_amounts": [],
+  "missing_members": [
+    "translated_member"
+  ],
+  "request_fingerprint": "9613547461336f5964d9bc9728a1aba731cd8046d17c65fcba1c9568040cfcc2",
+  "schema_version": "biocompiler.circuit_construction_candidate.v0.1",
+  "values": []
+}

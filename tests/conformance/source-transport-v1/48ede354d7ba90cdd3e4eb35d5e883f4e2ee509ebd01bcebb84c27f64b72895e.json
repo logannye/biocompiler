@@ -1,0 +1,38 @@
+{
+  "failed_channels": {},
+  "histories": {
+    "n000001": [
+      {
+        "contacts": {
+          "one": {
+            "n000005": {
+              "high": null,
+              "low": null,
+              "present": true,
+              "value": null
+            }
+          }
+        },
+        "signals": {},
+        "time": 0
+      }
+    ],
+    "n000002": [
+      {
+        "contacts": {},
+        "signals": {
+          "n000012": {
+            "high": null,
+            "low": null,
+            "present": false,
+            "value": null
+          }
+        },
+        "time": 0
+      }
+    ]
+  },
+  "max_samples": 1000,
+  "step": 1,
+  "until": 5
+}

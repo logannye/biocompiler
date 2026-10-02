@@ -15,7 +15,7 @@ val default_max_work : int
 val max_projected_residues : int
 val max_derivation_segments : int
 type budget
-val make_budget : ?max_work:int -> unit -> budget
+val make_budget : ?parent:Work_budget.t -> ?max_work:int -> unit -> budget
 type result
 val chemistry : result -> Bioc_domain.Molecule_chemistry.t option
 val features : result -> Bioc_domain.Molecule.Feature.t list

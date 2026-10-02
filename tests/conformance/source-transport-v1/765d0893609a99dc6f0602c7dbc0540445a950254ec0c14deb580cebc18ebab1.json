@@ -1,0 +1,48 @@
+{
+  "failed_channels": {},
+  "histories": {
+    "receiver": [
+      {
+        "contacts": {},
+        "signals": {
+          "n000012": {
+            "high": null,
+            "low": null,
+            "present": false,
+            "value": null
+          }
+        },
+        "time": 0
+      }
+    ],
+    "sender": [
+      {
+        "contacts": {},
+        "signals": {
+          "n000005": {
+            "high": null,
+            "low": null,
+            "present": true,
+            "value": null
+          }
+        },
+        "time": 0
+      },
+      {
+        "contacts": {},
+        "signals": {
+          "n000005": {
+            "high": null,
+            "low": null,
+            "present": false,
+            "value": null
+          }
+        },
+        "time": 2
+      }
+    ]
+  },
+  "max_samples": 1000,
+  "step": 1,
+  "until": 5
+}

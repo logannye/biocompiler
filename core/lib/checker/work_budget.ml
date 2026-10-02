@@ -18,6 +18,7 @@ let charge budget amount =
   List.iter (fun scope -> Diagnostic.require (amount <= scope.remaining) scope.error_code
       ("Independent checker work limit exceeded under " ^ scope.profile ^ ".")) budget;
   List.iter (fun scope -> scope.remaining <- scope.remaining - amount) budget
+let remaining budget = List.fold_left (fun available scope -> min available scope.remaining) max_int budget
 type output = { bytes : t; nodes : t; error_code : string; maximum_bytes : int }
 let create_output ~profile ~error_code ~max_bytes ~max_nodes () =
   {bytes=create ~profile ~error_code ~maximum:max_bytes ();nodes=create ~profile ~error_code ~maximum:max_nodes ();

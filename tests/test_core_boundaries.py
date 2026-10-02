@@ -32,10 +32,12 @@ class CoreBoundaryTests(unittest.TestCase):
         self.assertEqual(set(dependencies), {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_service", "digestif", "zarith"})
         self.assertEqual(receipt["roles"]["bioc_checker"], "checker")
         self.assertEqual(receipt["roles"]["bioc_semantics"], "source_semantics")
+        self.assertEqual(receipt["roles"]["bioc_source_adapter"], "source_semantics")
         self.assertEqual(receipt["roles"]["bioc_compiler"], "compiler")
         self.assertNotIn("bioc_compiler", dependencies)
         self.assertIn("bioc_checker", receipt["transitive_dependencies"]["bioc_compiler"])
         self.assertNotIn("bioc_semantics", dependencies)
+        self.assertNotIn("bioc_source_adapter", dependencies)
         self.assertEqual(set(receipt["transitive_dependencies"]["bioc_semantics"]),
                          {"bioc_wire", "bioc_domain", "digestif", "zarith"})
         self.assertEqual(receipt["shared_trusted_base"], ["bioc_wire", "bioc_domain"])
@@ -137,6 +139,9 @@ class CoreBoundaryTests(unittest.TestCase):
             ("lib/checker/intent_check.ml", 'let hidden = Sys.readdir "."'),
             ("test/test_architecture_check.ml", 'let hidden = Sys.command "python3 checker.py"'),
             ("test/test_architecture_check.ml", "module Hidden = Sys"),
+            ("lib/source_adapter/source_transport.ml", 'let hidden = Sys.readdir "."'),
+            ("test/test_source_transport.ml", 'let hidden = Sys.command "python3 checker.py"'),
+            ("test/test_source_transport.ml", "module Hidden = Sys"),
         ):
             root = self.copy_core()
             source = root / "core" / relative
