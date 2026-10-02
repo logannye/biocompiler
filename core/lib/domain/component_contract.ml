@@ -13,7 +13,6 @@ let str value = Json.String value
 let obj value = Json.Object value
 let arr value = Json.Array value
 let option_json encode = function None -> Json.Null | Some value -> encode value
-let optional decode = function Json.Null -> None | value -> Some (decode value)
 
 (* Component JsonArtifact has no molecular-specific resource profile. This
    internal native boundary adds the wire limits, before projection/encoding.
@@ -92,21 +91,24 @@ module Value_domain = struct
     let values = Json.array ~path:(path ^ "/values") (field "values") |> List.map (Json.boolean ~path) in
     require ~path (List.length values = List.length (List.sort_uniq Bool.compare values)) "Boolean domain values must be unique.";
     let values = List.sort Bool.compare values in
-    let lower = optional (finite ~path:(path ^ "/lower")) (field "lower")
-    and upper = optional (finite ~path:(path ^ "/upper")) (field "upper")
-    and reason = optional (Json.name ~path:(path ^ "/reason")) (field "reason") in
     require ~path (Type_spec.kind dtype <> Type_spec.Condition || unit = "1") "Boolean domains use unit '1'.";
-    (match kind with
+    let lower, upper, reason = match kind with
      | Boolean ->
          require ~path (Type_spec.kind dtype = Type_spec.Condition && values <> []) "Boolean domains need a condition type and nonempty values.";
-         require ~path (lower = None && upper = None && reason = None) "Boolean domains cannot carry bounds or unknown reasons."
+         require ~path (field "lower" = Json.Null && field "upper" = Json.Null && field "reason" = Json.Null)
+           "Boolean domains cannot carry bounds or unknown reasons.";
+         None, None, None
      | Scalar_interval ->
-         require ~path (Type_spec.kind dtype = Type_spec.Scalar && values = [] && reason = None) "Scalar intervals need a scalar type and no Boolean values or unknown reason.";
-         (match lower, upper with
-          | Some lower, Some upper -> require ~path (N.compare lower upper <= 0) "Domain lower bound exceeds upper bound."
-          | _ -> require ~path false "Scalar intervals require both finite bounds.")
+         require ~path (Type_spec.kind dtype = Type_spec.Scalar && values = [] && field "reason" = Json.Null)
+           "Scalar intervals need a scalar type and no Boolean values or unknown reason.";
+         let lower = finite ~path:(path ^ "/lower") (field "lower") in
+         let upper = finite ~path:(path ^ "/upper") (field "upper") in
+         require ~path (N.compare lower upper <= 0) "Domain lower bound exceeds upper bound.";
+         Some lower, Some upper, None
      | Unknown_domain ->
-         require ~path (values = [] && lower = None && upper = None && reason <> None) "Unknown domains require a reason and no invented values or bounds.");
+         require ~path (values = [] && field "lower" = Json.Null && field "upper" = Json.Null)
+           "Unknown domains require a reason and no invented values or bounds.";
+         None, None, Some (Json.name ~path:(path ^ "/reason") (field "reason")) in
     { kind; dtype; unit; values; lower; upper; reason }
   let to_json value = obj ["schema_version", str schema_version;
     "kind", str (match value.kind with Boolean -> "boolean" | Scalar_interval -> "scalar_interval" | Unknown_domain -> "unknown");

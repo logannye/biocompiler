@@ -52,7 +52,9 @@ let () =
   rejected "component_assembly" (fun () -> make ["instance",[]]);
   rejected "component_assembly" (fun () -> make ["instance",["same";"same"]]);
   rejected "component_assembly" (fun () -> A.of_json (set "candidate_fingerprint" (str "short") raw));
-  rejected "component_assembly" (fun () -> A.of_json (set "nodes" (arr []) raw));
+  List.iter (fun invalid ->
+      rejected "component_assembly" (fun () -> A.of_json (set "nodes" invalid raw)))
+    [Json.Null; Json.Bool false; str "instance"; obj []; arr []];
   rejected "component_assembly" (fun () -> A.of_json (set "nodes"
       (arr [obj ["id",str "instance";"kind",str "accepted_component"]]) raw));
   rejected "component_registry" (fun () -> A.of_json (set "registry"

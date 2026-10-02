@@ -244,10 +244,40 @@ These checkpoints record narrower validated work; they do not complete a broad L
   tests pass; 56 native suites, the full mandatory corpus and all product gates
   remain required on both hosted platforms. The corpus pin is
   `aea8309d6efa172777f550d4a91cd3ebb7b40c301234fc7e90636fb4f466fcbf`
-  (4,934 documents, 64,530,645 bytes). Generic composition acceptance, realization checking, scientific
+  (4,934 documents, 64,530,645 bytes). Draft
+  [PR50](https://github.com/logannye/biocompiler/pull/50) preserves this batch.
+  The initial Linux run compiled all targets but exposed a malformed-inventory
+  diagnostic mismatch in the full corpus. That branch is corrected without
+  changing retained expectations. A source audit also corrected kind-specific
+  ValueDomain rejection precedence, with 26 new literal assertions. The reader
+  now reports all case failures
+  before failing its aggregate gate. Fresh complete hosted validation remains
+  required. Generic composition acceptance, realization checking, scientific
   adapters and empirical validity are separate unfinished obligations.
 
-- [ ] **B1.09 fresh acceptance and protocol exposure**, followed by B2 producer/export and the remaining B3–B6 product gates.
+- [ ] **B1.09a realization contracts and complete evidence:** port InputDomain,
+  OperatingDomain, BehaviorContract and all finite-history evidence records.
+  Preserve the historical ASCII-escaped evidence/dependency identities separately
+  from canonical UTF-8 artifact identities, full history and explicit horizon.
+- [ ] **B1.09b fresh admission, generic linking and selection:** reproduce complete
+  policy assessments, provider grounding, lifetime/resource accounting and ranked
+  alternatives. Retained decisions and identity-only freshness cannot grant use.
+- [ ] **B1.09c independent realization acceptance:** combine independently executed
+  source and actual candidate traces, preserving active/inactive nonvacuity,
+  deadline transitions, cancelled and incomplete episodes, failure precedence,
+  counterexamples and exact bounded claims. Bound preparation, both executions,
+  monitoring and result publication; budget exhaustion cannot become acceptance.
+- [ ] **B1.09d component correspondence and fresh replay:** independently reconstruct
+  the expected source/assembly correspondence without importing its adapter or
+  producer; require complete generic linking before behavior acceptance.
+- [ ] **B1.09e protocol exposure and public routing:** accept full external authority,
+  freshly recompute complete results, and preserve every existing caller and
+  export gate. The audited realization baseline contains 324 methods across 23
+  existing modules; capture actual calls, complete artifacts and original
+  assertions, including nested and subprocess consumers. Source-only direct
+  contract/checker tests do not establish native or full-workflow parity.
+
+These stages precede the remaining B2 producer/export and B3–B6 product gates.
 
 **Validated producer checkpoint, 2026-10-01:** [PR46](https://github.com/logannye/biocompiler/pull/46)
 merged at `e4c6d8d4bea9975ac5e9c6c1bb342034a34a82c0` after complete
@@ -416,7 +446,8 @@ Starting points: [component contracts](../src/biocompiler/ir/component_contracts
 
 Depends on LM-20/21/22; checker ports proceed before producer replacement.
 
-- [x] Port component, provider/interface and architecture declaration domains, including complete source/model maps, material placements and recipient/delivery bindings. PR41–44 validate their full imports and rejection campaigns.
+- [x] Port component contracts and RNA architecture provider/interface declarations, including complete source/model maps, material placements and recipient/delivery bindings. PR41–44 validate these imports and rejection campaigns.
+- [ ] Complete generic registry/composition declarations and their distinct contextual linker, selection and admission paths. PR50 implements locked containers and execution; generic provider grounding, lifetime/resource acceptance, complete ranked alternatives and fresh policy replay remain open. Architecture-profile validation does not discharge these existing generic-profile obligations.
 - [x] Complete fresh contextual checking of those declarations against original source and selected architecture. PR45 validates complete independent architecture assessments and replay across 293 reports, all 13 installed cases and the original case B authorities.
 - [x] Preserve many-to-many behavior/component/RNA relations and namespace refinement instances. PR46 validates complete producer outputs across all 13 installed cases, original case B variants and namespace boundaries without sequence-based instance deduplication.
 - [x] Port exact semantic matching, partial anchors, ambiguity handling, cumulative search/match limits and deterministic tie-breaking. PR46 retains all original matching assertions and full matching/producer results.

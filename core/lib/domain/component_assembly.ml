@@ -56,8 +56,10 @@ let of_json ?(path="") raw =
   require ~path (List.sort String.compare (List.map fst resolved) = ids instances)
     "The assembly lock must cover exactly its instances.";
   let nodes = inventory instances in
-  ignore (Json.array ~path:(path ^ "/nodes") (get "nodes"));
-  require ~path (Canonical.fingerprint (get "nodes") = Canonical.fingerprint nodes)
+  let supplied_nodes = get "nodes" in
+  require ~path (match supplied_nodes with
+      | Json.Array _ -> Canonical.fingerprint supplied_nodes = Canonical.fingerprint nodes
+      | _ -> false)
     "The component inventory must match the locked composition.";
   let json = obj ["schema_version",str schema_version; "registry",R.to_json registry;
       "composition",C.to_json composition; "request_fingerprint",str request;

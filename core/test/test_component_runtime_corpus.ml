@@ -109,6 +109,16 @@ let run path =
   let calls = Hashtbl.create 52500 and context_ids = Hashtbl.create 170 in
   let operations = Hashtbl.create 20 and stages = Hashtbl.create 5 and witnessed = Hashtbl.create 13 and executed_kinds = Hashtbl.create 13 in
   let returned = ref 0 and raised = ref 0 in
+  let failures = ref [] in
+  let check_case label execute =
+    try execute () with error ->
+      let detail = match error with
+        | Diagnostic.Error diagnostic -> diagnostic.code ^ ": " ^ diagnostic.message
+        | Failure message -> message
+        | _ -> Printexc.to_string error in
+      let message = label ^ ": " ^ detail in
+      failures := message :: !failures;
+      Printf.eprintf "component corpus failure: %s\n%!" message in
   let count table key = Hashtbl.replace table key (1 + Option.value (Hashtbl.find_opt table key) ~default:0) in
   let witness value =
     let mechanism = Mechanism.of_json value in
@@ -135,7 +145,10 @@ let run path =
           count operations operation; count stages stage;
           Hashtbl.add calls id call;
           let execute () = input native |> normalize operation in
-          if text "outcome" call = "returned" then begin
+          let succeeded = text "outcome" call = "returned" in
+          require (succeeded || text "outcome" call = "raised") "Unknown original component outcome";
+          if succeeded then incr returned else incr raised;
+          check_case id (fun () -> if succeeded then begin
             require (field "expected_code" native = Json.Null && stage <> "wire") "Successful component case has a rejection code/stage";
             let expected = use "record" (text "result" call) in
             equal id (execute ()) expected;
@@ -150,31 +163,29 @@ let run path =
               let program = field "subject" (input native) in
               require (Canonical.fingerprint program = text "result" linked && text "program_fingerprint" expected = text "result" linked) "Execution graph differs from actual locked reconstruction";
               List.iter (fun node -> Hashtbl.replace executed_kinds (text "kind" node) ()) (array "nodes" program)
-            end;
-            incr returned
+            end
           end else begin
-            require (text "outcome" call = "raised") "Unknown original component outcome";
             let code = text "expected_code" native in
             if stage = "wire" then reject id code (fun () -> input native)
             else begin
               ignore (input native);
               let message = if operation = "registry_resolve" || operation = "reconstruct" then Some (text "message" (field "error" call)) else None in
               reject id code ?message execute
-            end;
-            incr raised
-          end) ledger) contexts;
+            end
+          end)) ledger) contexts;
   require (Hashtbl.length calls = 52476 && !returned = 51495 && !raised = 981) "Complete original component outcome census differs";
   List.iter (fun (key, value) -> require (Hashtbl.find_opt operations key = Some (integer value)) ("Component operation census changed: " ^ key))
     (Json.object_fields (field "native_operations" coverage));
   require (Hashtbl.length operations = 20) "Unexpected component operation family";
   List.iter (fun (key, expected) -> require (Hashtbl.find_opt stages key = Some expected) ("Component stage census changed: " ^ key))
     ["domain",50597; "registry",1650; "reconstruction",134; "runtime",93; "wire",2];
-  require (Hashtbl.length witnessed = 12 && not (Hashtbl.mem witnessed "compare") && not (Hashtbl.mem witnessed "delay")) "Original component witness scope changed";
-  require (Hashtbl.length executed_kinds = 12 && Hashtbl.fold (fun kind () valid -> valid && Hashtbl.mem witnessed kind) executed_kinds true)
-    "Reconstruction-only observations cannot substitute for original full runtime witnesses";
+  check_case "original operation witnesses" (fun () ->
+      require (Hashtbl.length witnessed = 12 && not (Hashtbl.mem witnessed "compare") && not (Hashtbl.mem witnessed "delay")) "Original component witness scope changed";
+      require (Hashtbl.length executed_kinds = 12 && Hashtbl.fold (fun kind () valid -> valid && Hashtbl.mem witnessed kind) executed_kinds true)
+        "Reconstruction-only observations cannot substitute for original full runtime witnesses");
   let supplements = array "supplemental" index in
   require (List.length supplements = 1) "Missing supplemental comparison witness";
-  List.iter (fun case ->
+  List.iter (fun case -> check_case (text "id" case) (fun () ->
       require (text "origin" case = "explicit_new_literal_not_original_assertion") "New literal misclassified as original assertion";
       let assembly = use "record" (text "assembly" case) |> A.of_json in
       let mechanism = use "record" (text "mechanism" case) in
@@ -183,17 +194,18 @@ let run path =
       let history = array "history" request |> List.map D.Input_frame.of_json in
       let until = Runtime_number.of_json (field "until" request) in
       let expected = use "record" (text "trace" case) in
-      equal "comparison full trace" (E.run ~until assembly history |> D.Trace.to_json) expected) supplements;
+      equal "comparison full trace" (E.run ~until assembly history |> D.Trace.to_json) expected)) supplements;
   let rejections = array "supplemental_rejections" index in
   require (List.length rejections = 1) "Missing explicit excluded-delay case";
-  List.iter (fun case ->
+  List.iter (fun case -> check_case (text "id" case) (fun () ->
       let raw = use "record" (text "input" case) in
       require (text "operation" raw = "delay") "Excluded operation changed";
-      reject (text "id" case) (text "expected_code" case) (fun () -> Component.Synthetic_operator.of_json raw)) rejections;
+      reject (text "id" case) (text "expected_code" case) (fun () -> Component.Synthetic_operator.of_json raw))) rejections;
   let actual_kinds = Hashtbl.fold (fun kind () result -> kind :: result) witnessed [] |> List.sort String.compare in
   let expected_kinds = ["input";"constant";"and";"or";"not";"compare";"select";"any_contact";"output";"held_for";"onset";"pulse";"memory"] |> List.sort String.compare in
-  require (actual_kinds = expected_kinds) "Missing successful complete component-operation witness";
-  require (Hashtbl.length used = Hashtbl.length documents) "Unreachable retained component document";
+  check_case "complete operation witnesses" (fun () -> require (actual_kinds = expected_kinds) "Missing successful complete component-operation witness");
+  check_case "complete document reachability" (fun () -> require (Hashtbl.length used = Hashtbl.length documents) "Unreachable retained component document");
+  require (!failures = []) (Printf.sprintf "%d component-runtime conformance failures; every original and supplementary case was attempted (diagnostics above)" (List.length !failures));
   Printf.printf "component runtime corpus: 163 original methods, 52476 complete observations (51495 returned, 981 rejected), 134 reconstructions, 93 runtime calls, 4934 documents, all 13 component operations and excluded delay passed\n"
 let () =
   try
