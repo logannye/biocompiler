@@ -240,6 +240,9 @@ class SyntheticProducersCorpusTests(unittest.TestCase):
                     continue
                 if "." not in api:
                     bound = inspect.signature(functions[api]).bind(*raw["args"], **raw["kwargs"]); bound.apply_defaults()
+                    # The later opt-in transport default is absent from this original semantic capture.
+                    if api in {"realization_dependencies", "check_realization", "check_synthetic_candidate", "check_component_behavior", "check_component_assembly"} and bound.arguments.get("core") is None:
+                        bound.arguments.pop("core", None)
                     expected = plain(dict(bound.arguments))
                 else:
                     name, method = api.split(".")

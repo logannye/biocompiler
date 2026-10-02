@@ -732,7 +732,7 @@ def generate_synthetic(request, *, config: SyntheticGeneratorConfig | None = Non
 
 
 def check_synthetic_candidate(
-    request, candidate: SyntheticCandidate, history: Iterable[InputFrame], *, until=None
+    request, candidate: SyntheticCandidate, history: Iterable[InputFrame], *, until=None, core=None
 ) -> CheckResult:
     """Independently check this candidate over the supplied finite history.
 
@@ -746,6 +746,10 @@ def check_synthetic_candidate(
     if not isinstance(candidate, SyntheticCandidate):
         raise TypeError("Expected a SyntheticCandidate.")
     frames = tuple(history)
+    if core is not None:
+        from biocompiler.realization_backend import check_records
+        return check_records(operation="verify-synthetic-candidate", core=core,
+                             expected_request=request, candidate=candidate, history=frames, until=until)
     catalog = catalog_for_profile(candidate.generator_config.profile_version)
     dependencies = realization_dependencies(
         behavior,

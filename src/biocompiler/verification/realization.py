@@ -198,11 +198,17 @@ def realization_dependencies(
     history: Iterable[InputFrame],
     *,
     until: float | int | None = None,
+    core=None,
 ) -> DependencySnapshot:
     """Recompute the complete dependency identity without re-running the models."""
     frames = tuple(history)
     if any(not isinstance(frame, InputFrame) for frame in frames):
         raise TypeError("History must contain InputFrame objects.")
+    if core is not None:
+        from biocompiler.realization_backend import check_records
+        return check_records(operation="realization-dependencies", core=core,
+                             behavior=behavior, contract=contract, domain=domain, target=target,
+                             mechanism=mechanism, observation_map=observation_map, history=frames, until=until)
     return DependencySnapshot(
         {
             "behavior": behavior.fingerprint,
@@ -269,6 +275,7 @@ def check_realization(
     history: Iterable[InputFrame],
     *,
     until: float | int | None = None,
+    core=None,
 ) -> CheckResult:
     """Check active/inactive response envelopes on the supplied finite history.
 
@@ -291,6 +298,11 @@ def check_realization(
                 f"Expected {expected.__name__}, got {type(value).__name__}."
             )
     frames = tuple(history)
+    if core is not None:
+        from biocompiler.realization_backend import check_records
+        return check_records(operation="verify-realization", core=core,
+                             behavior=behavior, contract=contract, domain=domain, target=target,
+                             mechanism=mechanism, observation_map=observation_map, history=frames, until=until)
     deps = realization_dependencies(
         behavior,
         contract,

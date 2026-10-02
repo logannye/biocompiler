@@ -346,10 +346,14 @@ consumer census, then run the one complete capture needed for changed routing.
 
 ## Coherent implementation sequence and exit gates
 
-- [ ] **R1 protocol specification:** freeze operation/payload/result/profile schema,
+- [x] **R1 protocol specification:** freeze operation/payload/result/profile schema,
   complete input identities, outcome/error rules, limits and claims. Choose whether
   reduction controls are public. Record distinction between direct model and full
   source/candidate/assembly authority.
+  Frozen in `protocol/core-v1.md` and the exact four-family profile fixture;
+  all five public reduction controls and nine operation schemas are explicit.
+  R2–R4 are implemented in the protocol batch, with complete hosted execution
+  still required before their exit gates can be marked complete.
 - [ ] **R2 native service:** add the bounded realization service and dispatch;
   expose both verifier/core roles; keep producers/private witnesses inaccessible;
   fresh full-result replay and dependency-only nonacceptance; update exact boundary

@@ -16,9 +16,10 @@ class ValidationGateTests(unittest.TestCase):
         needs = {job: {"result": "success"} for job in ci.REQUIRED_NEEDS}
         receipts = [{"schema_version": "biocompiler.ci_job_receipt.v0.1", **expected,
                      "job": job, "variant": variant, "status": "success",
-                     "system": ci.CORE_PLATFORMS.get(variant, ("Linux", "x86_64"))[0],
-                     "machine": ci.CORE_PLATFORMS.get(variant, ("Linux", "x86_64"))[1],
-                     "python_version": variant + ".7" if variant in ci.PYTHONS else "3.12.1"}
+                     "system": ci.REALIZATION_VARIANTS.get(variant, ci.CORE_PLATFORMS.get(variant, ("Linux", "x86_64")))[0],
+                     "machine": ci.REALIZATION_VARIANTS.get(variant, ci.CORE_PLATFORMS.get(variant, ("Linux", "x86_64")))[1],
+                     "python_version": (ci.REALIZATION_VARIANTS[variant][2] + ".7" if variant in ci.REALIZATION_VARIANTS
+                                        else variant + ".7" if variant in ci.PYTHONS else "3.12.1")}
                     for job, variant in sorted(ci.EXPECTED_RECEIPTS)]
         accounting = [{"schema": "biocompiler.unittest_shard_accounting.v1",
                        "revision": expected["revision"], "python_version": version + ".7",
@@ -172,6 +173,27 @@ class ValidationGateTests(unittest.TestCase):
                     receipt["revision"] = "f" * 40
                 self.assertEqual(ci.validate(needs, receipts, accounts, authority)["status"], "fail")
 
+    def test_realization_matrix_requires_both_pythons_on_both_native_platforms(self):
+        expected = {f"{name}-py{version}" for name in ci.CORE_PLATFORMS for version in ci.PYTHONS}
+        self.assertEqual(set(ci.REALIZATION_VARIANTS), expected)
+        for variant in expected:
+            for field, invalid in (("system", "wrong"), ("machine", "wrong"), ("python_version", "3.10.9")):
+                with self.subTest(variant=variant, field=field):
+                    args = self.fixture()
+                    receipt = next(row for row in args[1] if row["job"] == "realization-conformance" and row["variant"] == variant)
+                    receipt[field] = invalid
+                    self.assertIn("wrong_realization_runtime:" + str(("realization-conformance", variant)),
+                                  ci.validate(*args)["problems"])
+        authority = self.fixture()[3]
+        with patch.dict("os.environ", {"GITHUB_JOB": "realization-conformance"}), \
+             patch.object(ci.platform, "system", return_value="Darwin"), \
+             patch.object(ci.platform, "machine", return_value="arm64"), \
+             patch.object(ci.platform, "python_version", return_value="3.11.7"):
+            self.assertEqual(ci.start_job("realization-conformance", "macos-arm64-py3.11", authority)["variant"],
+                             "macos-arm64-py3.11")
+            with self.assertRaisesRegex(ValueError, "runtime differs"):
+                ci.start_job("realization-conformance", "macos-arm64-py3.14", authority)
+
     def test_secondary_python_cannot_relabel_native_job_runtime(self):
         authority = self.fixture()[3]
         with patch.dict("os.environ", {"GITHUB_JOB": "ocaml-core"}), \
@@ -198,6 +220,30 @@ class ValidationGateTests(unittest.TestCase):
             self.assertIn("architecture-routing-" + version + ".json", native)
         self.assertIn("          update-environment: false\n", native)
         self.assertIn("${{ steps.routing_python314.outputs.python-path }}", native)
+
+
+    def test_realization_campaigns_are_required_on_every_runtime_and_compared_whole(self):
+        workflow = Path(__file__).resolve().parents[1] / ".github/workflows/ci.yml"
+        self.assertEqual(ci.workflow_jobs(workflow), ci.REQUIRED_NEEDS | {"validation"})
+        text = workflow.read_text()
+        matrix = text.split("\n  realization-conformance:\n", 1)[1].split("\n  realization-core-reproducibility:\n", 1)[0]
+        self.assertIn("    needs: ocaml-core\n", matrix)
+        for target in ci.CORE_PLATFORMS:
+            self.assertEqual(matrix.count("            platform: " + target + "\n"), 2)
+        for version in ci.PYTHONS:
+            self.assertEqual(matrix.count('            python-version: "' + version + '"\n'), 2)
+        for command in ("check_realization_binaries.py", "check_realization_protocol.py", "check_realization_routing.py"):
+            self.assertIn(command, matrix)
+        self.assertNotIn("--sample", matrix)
+        self.assertNotIn("continue-on-error", matrix)
+        self.assertIn("          fail-fast: false", matrix.replace("      fail-fast", "          fail-fast"))
+        gate = text.split("\n  validation:\n", 1)[1]
+        self.assertIn("      - realization-conformance\n", gate)
+        self.assertIn("      - realization-core-reproducibility\n", gate)
+        comparison = text.split("\n  realization-core-reproducibility:\n", 1)[1].split("\n  studio-typescript:\n", 1)[0]
+        self.assertIn("needs: [ocaml-core, realization-conformance]", comparison)
+        self.assertIn("check_realization_reproducibility.py", comparison)
+        self.assertIn("--native-root artifacts/core", comparison)
 
 
 if __name__ == "__main__":

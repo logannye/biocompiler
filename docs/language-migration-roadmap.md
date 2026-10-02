@@ -4,7 +4,7 @@ Created: 2026-10-01, America/Los_Angeles.
 
 **Decision:** TypeScript for Studio; Python for authoring, orchestration and scientific exploration; OCaml for the semantic compiler, independent checking and canonical emission.
 
-**Status:** the default remains Python; explicit architecture SDK/CLI selection now uses the validated OCaml core. PR48–50 passed all required PR gates and are merged, covering installed architecture routing, the independent candidate runtime and locked-component execution. Their separate integrated-main workflows remain pending. PR51–53 preserve realization evidence, independent realization checking and generic component acceptance; their full product gates remain pending. Synthetic candidate/catalog authority is the current implementation batch. Distribution, remaining public profiles and default cutover are still open.
+**Status:** the default remains Python; explicit architecture SDK/CLI selection uses the validated OCaml core. PR48–51 passed all required PR gates and are merged, covering installed architecture routing, independent candidate/component execution and realization evidence. PR52–56 preserve independent realization/component acceptance and synthetic production; their complete current-revision gates remain pending. The next implementation exposes nine experimental realization operations and five optional Python SDK routes. Whole workflows, distribution, remaining public profiles and default cutover remain open.
 
 The validated foundation is merged in [PR37](https://github.com/logannye/biocompiler/pull/37), with the exact revision/platform results in the [foundation receipt](../protocol/migration-foundation-validation.json). Typed request, all 42 Behavior operations and molecular-coordinate domains are merged in [PR38](https://github.com/logannye/biocompiler/pull/38); the [domain receipt](../protocol/migration-domain-validation.json) records both native platforms and full Python/integration checks. Both integrated main revisions also passed their required gates.
 
@@ -424,12 +424,40 @@ These checkpoints record narrower validated work; they do not complete a broad L
   subtract object keys as well as values, matching the enforcing report budget.
   These corrections require fresh hosted gates;
   the first failed run does not establish native validation.
+  The corrected Linux build compiles; its native suite then exposed one stale
+  test budget in `test_component_behavior_check`. Correction
+  `693a55157cdb4cd120e6fc1e1d7073aa74a61df2` preserves production enforcement and
+  tests the larger 2,800-byte generic-link reservation before the 2,238-byte
+  outer publication. [Replacement run 36976350244](https://github.com/logannye/biocompiler/actions/runs/36976350244)
+  must pass the complete gates; the superseded failed run was cancelled after
+  its replacement existed and its diagnostic log was retained locally.
 - [ ] **B1.09e protocol exposure and public routing:** accept full external authority,
   freshly recompute complete results, and preserve every existing caller and
   export gate. The audited realization baseline contains 324 methods across 23
   existing modules; capture actual calls, complete artifacts and original
   assertions, including nested and subprocess consumers. Source-only direct
   contract/checker tests do not establish native or full-workflow parity.
+  The protocol implementation now exposes dependency snapshots, four direct
+  checks and four fresh replays through both executable roles. Each operation
+  requires complete external authority, a negotiated family profile and explicit
+  limits; it preserves raw authority identity, report-family encoding and shared
+  bounded work. The five corresponding Python APIs accept optional `core=`;
+  their default behavior remains unchanged. Typed transport and output hydration
+  do not confer source correspondence or empirical acceptance.
+  The new corpus projects all 4,119 original direct calls and 2,112 original
+  replays without sampling, and retains the original 373 methods / 381 contexts
+  and actual-child lineage. Corpus pin
+  `9261f5fc259e6d79e56df6bf9cc5ee528e795aa5dd2ef8bc4dcc7b63dfd4d4bf`
+  adds 69 documents while reusing immutable original records. Current-policy
+  mutant counterparts, Unicode records
+  and boundary mutations are additional cases. The new native protocol suite is
+  registered as the 80th suite. Four separately required installed campaigns
+  cover both native platforms and Python 3.11/3.14, followed by a complete
+  artifact comparison. These add five jobs while preserving all previous 31.
+  Static Python checks are available; native execution and all 36 hosted gates
+  remain required. This item and the broader LM-12/22/25 exits stay unchecked.
+  Full workflow, exploration/reduction, archive, CLI and export routing are
+  separate unfinished obligations in the [routing plan](migration-realization-routing-plan.md).
 
 These stages precede the remaining B2 producer/export and B3–B6 product gates.
 

@@ -2,18 +2,18 @@ open Bioc_wire
 
 let capabilities = Json.Object [
     "schema_version", Json.String "biocompiler.core_capabilities.v1";
-    "operations", Json.Array (List.map (fun value -> Json.String value) ["capabilities"; "canonicalize"; "validate-intent"; "verify-lowering"; "verify-architecture"; "replay-architecture"]);
+    "operations", Json.Array (List.map (fun value -> Json.String value) (["capabilities"; "canonicalize"; "validate-intent"; "verify-lowering"; "verify-architecture"; "replay-architecture"] @ Realization_service.operations));
     "intent_schemas", Json.Array [Json.String Bioc_domain.Intent.schema_version];
     "canonicalization", Json.String "python-json-v1";
-    "validation_scopes", Json.Array [Json.String Bioc_domain.Intent.validation_scope;
-                                     Json.String Bioc_checker.Lowering_check.validation_scope;
-                                     Json.String Architecture_service.validation_scope];
-    "profiles", Json.Object ["architecture", Architecture_service.profile];
+    "validation_scopes", Json.Array (List.map (fun value -> Json.String value)
+      ([Bioc_domain.Intent.validation_scope; Bioc_checker.Lowering_check.validation_scope;
+        Architecture_service.validation_scope] @ Realization_service.validation_scopes));
+    "profiles", Json.Object (("architecture", Architecture_service.profile) :: Realization_service.profiles);
     "limits", Protocol.limits;
-    "claim_scope", Json.String "Structural intent validation, frozen source-to-Behavior correspondence and supplied architecture contract checking only. No candidate execution, search completeness, empirical function or human-use admission."
+    "claim_scope", Json.String "Structural intent validation, frozen source-to-Behavior correspondence, supplied architecture contracts and independently executed finite-history model checks. No search completeness, empirical function or human-use admission."
   ]
 
-let handle _executable (request : Protocol.request) =
+let handle executable (request : Protocol.request) =
   match request.operation with
   | "capabilities" ->
       let fields = Json.object_fields request.payload in
@@ -37,6 +37,9 @@ let handle _executable (request : Protocol.request) =
          Protocol.Ok, Some (Bioc_checker.Lowering_check.to_json report), []
        with Diagnostic.Error diagnostic when String.starts_with ~prefix:"unsupported_lowering_" diagnostic.code ->
          Protocol.Unsupported, None, [diagnostic])
+  | operation when List.mem operation Realization_service.operations ->
+      Protocol.Ok, Some (Realization_service.handle ~executable ~request_id:request.request_id
+          ~operation request.payload), []
   | _ -> Protocol.Unsupported, None, [{
       Diagnostic.code = "unsupported_operation";
       message = "This executable does not implement the requested operation; no fallback or acceptance is granted.";

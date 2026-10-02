@@ -50,7 +50,9 @@ remain distinct revision boundaries.
 | `payload-architecture-reproducibility` | Depends only on `installed-architecture`; requires all 13 case outputs and compares every relative file across versions. |
 | `circuit-reproducibility` | Depends only on `circuit-integration`; compares the complete infrastructure/source/review artifact inventories. |
 | `architecture-core-reproducibility` | Depends on both native platforms; rehashes complete SDK/CLI artifacts from Python 3.11 and 3.14 on each platform and requires exact four-way equality with current run and executable authority. |
-| `validation` | Final gate requires successful unit accounting, every installed/integration/browser job, TypeScript, both native platforms and all four reproducibility jobs. |
+| `realization-conformance` | Four installed campaigns: both native platforms × Python 3.11/3.14. Rehash the same-revision executables before running every retained direct, replay and SDK observation outside the checkout. SDK calls forbid Python semantic authority. |
+| `realization-core-reproducibility` | Rehash complete realization protocol and SDK reports, verify every original occurrence and all additional cases, require current run/source/binary authority and exact equality across all four campaigns. |
+| `validation` | Final gate requires all 36 jobs, including successful unit accounting, every installed/integration/browser job, TypeScript, both native platforms and all five reproducibility jobs. |
 
 Reproducibility no longer waits behind the full unit suite. The intended steady
 work comprises ten unit runners, eight producer runners, one browser runner,
@@ -205,3 +207,15 @@ executable digests, platform identity and conformance evidence. The
 select `ubuntu-24.04` for Linux x86_64 and `macos-14` for macOS arm64; each job
 asserts the actual system/architecture before building. These are experimental
 native validation targets, not a claim that release packaging is complete.
+
+Realization campaigns preserve all original calls, including expected errors and
+repeated authorities; content-addressed storage may share equal report files but
+cannot remove execution observations. Complete reports and error records accompany
+each receipt. Artifact paths must be safe downloaded siblings, and every byte is
+rehashed before comparison. Both binaries are downloaded from the same workflow
+revision and checked against their native platform manifest; the separate campaigns
+do not rebuild them. macOS installs only the GMP runtime if the runner lacks it.
+Their 180-minute job limit accommodates the complete initial campaign and does not
+establish a measured runtime target. Failed or incomplete campaigns cannot pass the
+aggregate gate. Historical 31-job receipts retain their original revision's gate;
+the new 36-job requirement applies to the realization protocol revision onward.

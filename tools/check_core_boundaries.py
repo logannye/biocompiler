@@ -30,7 +30,7 @@ LIBRARIES = {
     "bioc_source_adapter": ("lib/source_adapter/dune", {"bioc_wire", "bioc_domain", "bioc_semantics", "bioc_checker", "zarith"}, "source_semantics"),
     "bioc_compiler": ("lib/compiler/dune", {"bioc_wire", "bioc_domain", "bioc_checker", "zarith"}, "compiler"),
     "bioc_checker": ("lib/checker/dune", {"bioc_wire", "bioc_domain", "zarith"}, "checker"),
-    "bioc_service": ("lib/service/dune", {"bioc_wire", "bioc_domain", "bioc_checker"}, "checker_service"),
+    "bioc_service": ("lib/service/dune", {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_realization_checker", "zarith"}, "checker_service"),
 }
 EXECUTABLES = {
     "biocompiler-core": ("bin/core/dune", {"bioc_wire", "bioc_service", "bioc_producer_service"}, "core_entrypoint"),
@@ -88,6 +88,7 @@ TESTS = {
     "test_wire": {"bioc_wire", "zarith"},
     "test_intent": {"bioc_wire", "bioc_domain", "bioc_checker"},
     "test_protocol": {"bioc_wire", "bioc_service"},
+    "test_realization_protocol": {"bioc_service", "bioc_wire", "bioc_checker", "zarith"},
     "test_domain": {"bioc_wire", "bioc_domain"},
     "test_build_request": {"bioc_wire", "bioc_domain", "zarith"},
     "test_behavior": {"bioc_wire", "bioc_domain", "zarith"},

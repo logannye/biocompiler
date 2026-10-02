@@ -1,4 +1,4 @@
-(** Experimental standalone checking. No producer or source evaluator is linked.
+(** Experimental architecture checking. It invokes no producer or source evaluator.
     Successful protocol execution can return a failing or unresolved assessment. *)
 val validation_scope : string
 val profile : Bioc_wire.Json.t

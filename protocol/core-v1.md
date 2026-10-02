@@ -128,8 +128,9 @@ returns supported operations, Intent schema versions, `canonicalization:
 an explicit limited claim scope. The verifier must advertise only its actual
 operations; a standalone executable alone does not establish independent checking.
 `CoreClient.negotiate` validates this envelope, exact transport bounds and the
-requested operation. `ArchitectureClient` additionally requires its complete
-architecture profile before each call. No cached negotiation grants authority.
+requested operation. `ArchitectureClient` and `RealizationClient` additionally
+require their complete operation profiles before each call. No cached negotiation
+grants authority.
 
 `canonicalize` takes any valid bounded JSON value. Result fields are exactly
 `canonical_json` (string) and `sha256` (string). This is a codec operation, not an
@@ -199,8 +200,8 @@ requires a complete `biocompiler.payload_architecture_verification.v0.1`
 an altered historical report returns `architecture_assessment_mismatch`.
 
 Both executable roles link only the public domain/checker service for these
-operations. The separate producer and reference evaluator are absent from the
-verifier's dependency graph. These calls do not perform candidate execution,
+operations. The verifier excludes producers. Its realization operations link separate source
+and candidate runtimes; these architecture calls do not perform candidate execution,
 certify exhaustive search, establish empirical function or grant human admission.
 Malformed authority and resource exhaustion return an error with no result.
 An executed semantic check returns `ok` even when its assessment says `fail`,
@@ -318,3 +319,98 @@ does not itself publish filesystem paths or make a reconstructed result object
 fresh authority. Atomic publication, public SDK/CLI routing and distribution
 remain separately tracked migration obligations. No failure retries through Python
 semantic execution.
+
+
+## Experimental realization operations
+
+This extension is an explicit experimental selection. Native and installed
+conformance gates must pass before default engine cutover. Both executable roles
+expose all nine checking/dependency operations below. The standalone verifier
+links separate source-reference and actual-candidate execution libraries and the
+independent realization checkers; it still excludes compiler, synthetic producer,
+architecture producer service and source adapter libraries. Private provenance
+and component-authority witnesses are not public generation endpoints.
+
+Every payload is an object with exactly the named fields. `profile` and `limits`
+are always present, including replay. `profile` is the exact family identity
+below. `limits` is null for defaults or an object containing all five positive
+integer reductions: `max_work` (at most 50,000,000), `max_monitor_items` (100,000),
+`max_request_bytes` (16,777,216), `max_report_bytes` (33,554,432), and
+`max_report_nodes` (250,000). Booleans, floats, zero, unknown/missing keys and
+increases are rejected. Replay adds only `assessment`, the complete historical
+inner report, to the same original authority.
+
+| Family / exact profile | Operations | Authority fields beyond profile and limits |
+| --- | --- | --- |
+| `biocompiler.core.realization.v1` | `realization-dependencies`, `verify-realization`, `replay-realization` | `behavior`, `contract`, `domain`, `target`, `mechanism`, `observation_map`, `history`, `until` |
+| `biocompiler.core.synthetic_candidate.v1` | `verify-synthetic-candidate`, `replay-synthetic-candidate` | `expected_request`, `candidate`, `history`, `until` |
+| `biocompiler.core.component_behavior.v1` | `verify-component-behavior`, `replay-component-behavior` | `expected_request`, `assembly`, `history`, `until` |
+| `biocompiler.core.component_assembly.v1` | `verify-component-assembly`, `replay-component-assembly` | `expected_request`, `candidate`, `assembly`, `history`, `until` |
+
+`until` is explicit null or the exact integer/finite float supplied; no effective
+horizon substitution or integer/float coercion occurs. History contains complete
+InputFrame records (`time`, `signals`, `contacts`) using the existing sample
+codec (`value`, `present`, `high`, `low`, including supported numeric shorthand).
+Neither InputFrame nor DependencySnapshot has a `schema_version`. The original
+complete domain schemas are enumerated in the exact
+[capability profile records](../docs/migration-realization-protocol-profiles.json);
+no reduced replacement for request, candidate, assembly or history is accepted.
+
+`realization-dependencies` constructs complete dependency identity only; it does
+not execute either model or grant acceptance. Direct model verification executes
+the supplied Behavior and actual Mechanism over the finite history, without a
+source-lowering or synthetic-provenance claim. Synthetic checking additionally
+validates the full original source request and independent candidate provenance.
+Component-behavior checking reconstructs the actual locked assembly, checks
+linking and compares source/candidate behavior without asserting synthetic
+correspondence. Complete assembly checking additionally requires the supplied
+candidate's provenance and exact independently reconstructed component/source
+correspondence. None establishes search completeness, empirical behavior or human
+therapeutic admission.
+
+All report outcomes (PASS, FAIL, UNKNOWN, UNSUPPORTED) remain complete successful
+transport results when the checker returns them. Source-authority, structural,
+horizon, resource, assembly-precondition and replay-mismatch errors return no
+result. Replay runs the complete fresh check, then requires exact full historical
+report reproduction; a reproduced failure remains a failure. Imported PASS,
+matching dependency hashes, normalized omissions or self-supplied artifact pins
+cannot replace that calculation.
+
+`supplied_authority_fingerprint` binds core UTF-8 canonical bytes of every raw
+payload field except replay `assessment`, including profile, full source
+coordinates, actual history/horizon and supplied limits. Null limits and explicit
+default limits therefore have distinct raw authority identities. Normalized
+semantic/request/history identities remain separate in `authority_identities`.
+The outer wrapper binds all assembly authority even where its historical inner
+CompositionResult lacks history or candidate identity. Request ID, operation,
+role and implementation version remain bound by the process envelope.
+
+Realization CheckResult and DependencySnapshot use `python-json-ascii-v1`:
+compact sorted JSON with `ensure_ascii=True`, no newline, SHA-256 over ASCII
+bytes. CompositionResult and outer/wire identity retain `python-json-v1` UTF-8.
+Unicode normalization, integer/float distinctions, signed zero, ordered arrays,
+and complete diagnostics/coverage/counterexamples remain observable. Replay must
+also reject raw representation changes that a record importer could normalize
+away. Complete result field inventories and effective resource trees are frozen
+in the profile records above and checked during every client negotiation.
+
+One reduced ancestor work budget covers input checks, imports, all fresh checker
+phases, exact identity computation, replay comparison and publication. Reduced
+limits propagate into the corresponding nested checker scopes. Protocol framing
+retains its fixed transport bounds; operation payload and derived fragments have
+separate declared cumulative accounting. Checker report budgets count keys plus
+values and conservatively reserve ASCII publication, while wire node limits count
+values. Both the result and the complete outgoing protocol envelope must fit;
+a report that fits internally can still fail envelope publication. A report too
+large to replay inside a 16 MiB request is explicitly rejected.
+
+`RealizationClient` freezes caller containers before negotiation, validates exact
+profiles, effective resources, identities, report encoding and claims, and returns
+immutable complete report bytes. The five direct SDK APIs accept explicit `core=`
+selection while retaining their existing default behavior. Selected native calls
+do not run Python evaluators, acceptance, producer reruns or fallback. Raw-document
+backend entry points do not hydrate a Python RealizationRequest, whose current
+constructor performs Python lowering verification. Historical pure result views
+may be hydrated only with exact round-trip bytes and fingerprints. Full workflows,
+exploration/reduction, pipelines, archive/export authority and default cutover
+remain separate migration gates; these direct operations do not advertise them.

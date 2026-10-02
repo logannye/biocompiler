@@ -29,7 +29,9 @@ class CoreBoundaryTests(unittest.TestCase):
         receipt = boundaries.check_boundaries(boundaries.ROOT)
         self.assertEqual(receipt["status"], "pass")
         dependencies = receipt["transitive_dependencies"]["executable:biocompiler-verify"]
-        self.assertEqual(set(dependencies), {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_service", "digestif", "zarith"})
+        self.assertEqual(set(dependencies), {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_service",
+                                            "bioc_realization_checker", "bioc_semantics",
+                                            "bioc_candidate_runtime", "digestif", "zarith"})
         self.assertEqual(receipt["roles"]["bioc_checker"], "checker")
         self.assertEqual(receipt["roles"]["bioc_semantics"], "source_semantics")
         self.assertEqual(receipt["roles"]["bioc_source_adapter"], "source_semantics")
@@ -39,20 +41,20 @@ class CoreBoundaryTests(unittest.TestCase):
         self.assertEqual(receipt["roles"]["bioc_producer_service"], "producer")
         self.assertIn("bioc_compiler", receipt["transitive_dependencies"]["executable:biocompiler-core"])
         self.assertIn("bioc_checker", receipt["transitive_dependencies"]["bioc_compiler"])
-        self.assertNotIn("bioc_semantics", dependencies)
+        self.assertIn("bioc_semantics", dependencies)
         self.assertNotIn("bioc_source_adapter", dependencies)
         self.assertEqual(set(receipt["transitive_dependencies"]["bioc_semantics"]),
                          {"bioc_wire", "bioc_domain", "digestif", "zarith"})
         self.assertEqual(receipt["roles"]["bioc_candidate_runtime"], "candidate_runtime")
         self.assertEqual(set(receipt["transitive_dependencies"]["bioc_candidate_runtime"]),
                          {"bioc_wire", "bioc_domain", "digestif", "zarith"})
-        self.assertNotIn("bioc_candidate_runtime", dependencies)
+        self.assertIn("bioc_candidate_runtime", dependencies)
         self.assertEqual(receipt["roles"]["bioc_realization_checker"], "checker")
         self.assertEqual(set(receipt["transitive_dependencies"]["bioc_realization_checker"]),
                          {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_semantics",
                           "bioc_candidate_runtime", "digestif", "zarith"})
         self.assertEqual(receipt["private_modules"]["bioc_realization_checker"], ["realization_monitor", "synthetic_provenance", "synthetic_component_authority"])
-        self.assertNotIn("bioc_realization_checker", dependencies)
+        self.assertIn("bioc_realization_checker", dependencies)
         self.assertEqual(receipt["roles"]["bioc_synthetic_producer"], "producer")
         self.assertNotIn("bioc_synthetic_producer", dependencies)
         self.assertIn("bioc_realization_checker", receipt["transitive_dependencies"]["bioc_synthetic_producer"])

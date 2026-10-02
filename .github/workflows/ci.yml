@@ -1134,6 +1134,136 @@ jobs:
           overwrite: true
           retention-days: 7
 
+  realization-conformance:
+    needs: ocaml-core
+    runs-on: ${{ matrix.runner }}
+    # Both complete installed campaigns retain every original occurrence.
+    timeout-minutes: 180
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: ubuntu-24.04
+            platform: linux-x86_64
+            python-version: "3.11"
+          - runner: ubuntu-24.04
+            platform: linux-x86_64
+            python-version: "3.14"
+          - runner: macos-14
+            platform: macos-arm64
+            python-version: "3.11"
+          - runner: macos-14
+            platform: macos-arm64
+            python-version: "3.14"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Bind the required Python and native platform variant
+        run: python tools/ci_validation.py start --job realization-conformance --variant ${{ matrix.platform }}-py${{ matrix.python-version }} --output generated/ci/start.json
+      - uses: actions/download-artifact@v4
+        with:
+          name: core-${{ matrix.platform }}
+          path: artifacts/native
+      - name: Verify both exact-revision executables before restoring executable bits
+        env:
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: python tools/check_realization_binaries.py --root artifacts/native --platform ${{ matrix.platform }} --prepare --output generated/realization/native-inputs.json
+      - name: Provide the macOS GMP runtime required by the pinned native binaries
+        if: runner.os == 'macOS'
+        run: |
+          brew list --versions gmp >/dev/null 2>&1 || brew install gmp
+          otool -L artifacts/native/biocompiler-core
+          otool -L artifacts/native/biocompiler-verify
+      - name: Install the same-revision Python package
+        run: python -m pip install .
+      - name: Execute every retained direct and replay operation outside the checkout
+        env:
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/realization-protocol"
+          cd "$RUNNER_TEMP/realization-protocol"
+          python "$GITHUB_WORKSPACE/tools/check_realization_protocol.py" \
+            --core "$GITHUB_WORKSPACE/artifacts/native/biocompiler-core" \
+            --verify "$GITHUB_WORKSPACE/artifacts/native/biocompiler-verify" \
+            --output "$GITHUB_WORKSPACE/generated/realization/protocol.json"
+      - name: Exercise every direct SDK route with Python semantic authority blocked
+        env:
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/realization-routing"
+          cd "$RUNNER_TEMP/realization-routing"
+          python "$GITHUB_WORKSPACE/tools/check_realization_routing.py" \
+            --core "$GITHUB_WORKSPACE/artifacts/native/biocompiler-core" \
+            --verify "$GITHUB_WORKSPACE/artifacts/native/biocompiler-verify" \
+            --output "$GITHUB_WORKSPACE/generated/realization/routing.json"
+      - name: Retain complete protocol and SDK artifacts even on failure
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: realization-${{ matrix.platform }}-py${{ matrix.python-version }}
+          path: generated/realization/
+          if-no-files-found: error
+          overwrite: true
+          retention-days: 7
+      - name: Record successful complete conformance
+        run: python tools/ci_validation.py finish --start generated/ci/start.json --output generated/ci/realization-${{ matrix.platform }}-py${{ matrix.python-version }}.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ci-job-realization-${{ matrix.platform }}-py${{ matrix.python-version }}
+          path: generated/ci/realization-${{ matrix.platform }}-py${{ matrix.python-version }}.json
+          if-no-files-found: error
+          overwrite: true
+          retention-days: 7
+
+  realization-core-reproducibility:
+    needs: [ocaml-core, realization-conformance]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Record job authority and start time
+        run: python tools/ci_validation.py start --job realization-core-reproducibility --variant cross-platform --output generated/ci/start.json
+      - uses: actions/download-artifact@v4
+        with:
+          name: core-linux-x86_64
+          path: artifacts/core/linux-x86_64
+      - uses: actions/download-artifact@v4
+        with:
+          name: core-macos-arm64
+          path: artifacts/core/macos-arm64
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: realization-*
+          path: artifacts/realization
+      - name: Install package for complete frozen conformance expectations
+        run: python -m pip install .
+      - name: Require exact complete results across both Python versions and native platforms
+        env:
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: python tools/check_realization_reproducibility.py --root artifacts/realization --native-root artifacts/core --output generated/realization-reproducibility/receipt.json
+      - name: Retain complete comparison receipt
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: realization-core-reproducibility
+          path: generated/realization-reproducibility/receipt.json
+          if-no-files-found: error
+          overwrite: true
+          retention-days: 7
+      - name: Record successful complete comparison
+        run: python tools/ci_validation.py finish --start generated/ci/start.json --output generated/ci/realization-core-reproducibility-cross-platform.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ci-job-realization-core-reproducibility-cross-platform
+          path: generated/ci/realization-core-reproducibility-cross-platform.json
+          if-no-files-found: error
+          overwrite: true
+          retention-days: 7
+
   studio-typescript:
     runs-on: ubuntu-latest
     timeout-minutes: 15
@@ -1184,6 +1314,8 @@ jobs:
       - circuit-reproducibility
       - ocaml-core
       - architecture-core-reproducibility
+      - realization-conformance
+      - realization-core-reproducibility
       - studio-typescript
     runs-on: ubuntu-latest
     steps:
