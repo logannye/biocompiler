@@ -133,6 +133,8 @@ TESTS = {
 ARTIFACT_STUB = "core/lib/service/artifact_fd_stubs.c"
 ARTIFACT_STUB_SHA256 = "e03ea4cf89ec58e218a67948c30559197f71856d4d7f882effb9311d2b067a2d"
 ARTIFACT_EXTERNAL = 'external duplicate_checked : int -> int -> bool -> Unix.file_descr = "bioc_artifact_duplicate_checked"'
+# Only this test-owned POSIX descriptor representation conversion is reviewed.
+ARTIFACT_TEST_EXTERNAL = 'external raw_fd_number : Unix.file_descr -> int = "%identity"'
 ARTIFACT_UNIX = frozenset({"file_descr", "Unix_error", "close", "fstat", "S_REG", "st_kind", "st_size",
                           "st_dev", "st_ino", "lseek", "SEEK_SET", "read", "single_write_substring"})
 ARTIFACT_TEST_UNIX = ARTIFACT_UNIX | frozenset({"openfile", "O_RDONLY", "O_WRONLY", "O_RDWR", "O_CREAT",
@@ -304,9 +306,12 @@ def source_boundary(path, allowed_libraries, *, owner=None):
                 if token == public_spelling and path.suffix == ".mli" and path.stem not in modules:
                     raise BoundaryError(f"Private checker reconstruction leaked through public interface {path.name}")
         if token == "external":
-            if (owner != "bioc_service" or path.name != "artifact_io.ml" or tokens.count("external") != 1
+            reviewed = (ARTIFACT_EXTERNAL if owner == "bioc_service" and path.name == "artifact_io.ml"
+                        else ARTIFACT_TEST_EXTERNAL if owner == "test:test_artifact_io" and path.name == "test_artifact_io.ml"
+                        else None)
+            if (reviewed is None or tokens.count("external") != 1
                     or re.findall(r"(?ms)^external .*?(?=^let |^module |^type |\Z)", source)
-                    != [ARTIFACT_EXTERNAL + "\n"]):
+                    != [reviewed + "\n"]):
                 raise BoundaryError(f"Unreviewed native/process/dynamic-code escape {token} in {path.name}")
         if token in {"Dynlink", "Obj", "Marshal"}:
             raise BoundaryError(f"Unreviewed native/process/dynamic-code escape {token} in {path.name}")
