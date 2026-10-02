@@ -7,6 +7,15 @@ roadmap, not a validation receipt. No production code, CI, roadmap checkbox or
 native executable was changed or executed for this audit. Reconfirm hosted PR55
 and integrated-main results before treating its internal checkers as validated.
 
+The subsequent [native protocol audit](migration-realization-protocol-native-plan.md)
+and [complete conformance audit](migration-realization-protocol-conformance-plan.md)
+freeze the proposed nine-operation payloads, explicit reduction controls, exact
+capability records and full original-call/replay inventory. Their
+[profile fixture](migration-realization-protocol-profiles.json) is a design
+artifact, not an advertised or validated capability. They also identify the
+required additional Unicode witnesses and distinguish keys from JSON values in
+resource accounting.
+
 ## Starting state and completion boundary
 
 `docs/language-migration-roadmap.md:392` leaves B1.09e open: accept complete external

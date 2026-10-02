@@ -52,7 +52,7 @@ TESTS = {
     'test_composition_evidence': {'bioc_domain', 'zarith', 'bioc_wire'},
     'test_composition_check': {'bioc_domain', 'zarith', 'bioc_checker', 'bioc_wire'},
     'test_component_selection': {'bioc_domain', 'zarith', 'bioc_compiler', 'bioc_checker', 'bioc_wire'},
-    'test_component_behavior_check': {'bioc_domain', 'zarith', 'bioc_realization_checker', 'bioc_checker', 'bioc_wire'},
+    'test_component_behavior_check': {'bioc_domain', 'zarith', 'bioc_realization_checker', 'bioc_checker', 'bioc_wire', 'bioc_candidate_runtime'},
     'test_component_acceptance_corpus': {'bioc_domain', 'zarith', 'bioc_compiler', 'bioc_realization_checker', 'bioc_checker', 'bioc_wire'},
 
     "test_realization_request": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_realization_checker", "zarith"},

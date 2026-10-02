@@ -1,0 +1,155 @@
+{
+  "outcomes": [
+    {
+      "api": "check_component_assembly",
+      "outcome": "PipelineError",
+      "count": 9,
+      "unique_inputs": 9
+    },
+    {
+      "api": "check_component_assembly",
+      "outcome": "SerializationError",
+      "count": 2,
+      "unique_inputs": 2
+    },
+    {
+      "api": "check_component_assembly",
+      "outcome": "pass",
+      "count": 41,
+      "unique_inputs": 6
+    },
+    {
+      "api": "check_component_behavior",
+      "outcome": "fail",
+      "count": 4,
+      "unique_inputs": 4
+    },
+    {
+      "api": "check_component_behavior",
+      "outcome": "pass",
+      "count": 80,
+      "unique_inputs": 6
+    },
+    {
+      "api": "check_component_behavior",
+      "outcome": "unknown",
+      "count": 1,
+      "unique_inputs": 1
+    },
+    {
+      "api": "check_realization",
+      "outcome": "fail",
+      "count": 56,
+      "unique_inputs": 34
+    },
+    {
+      "api": "check_realization",
+      "outcome": "pass",
+      "count": 969,
+      "unique_inputs": 504
+    },
+    {
+      "api": "check_realization",
+      "outcome": "unknown",
+      "count": 54,
+      "unique_inputs": 40
+    },
+    {
+      "api": "check_realization",
+      "outcome": "unsupported",
+      "count": 1,
+      "unique_inputs": 1
+    },
+    {
+      "api": "check_synthetic_candidate",
+      "outcome": "fail",
+      "count": 13,
+      "unique_inputs": 10
+    },
+    {
+      "api": "check_synthetic_candidate",
+      "outcome": "pass",
+      "count": 860,
+      "unique_inputs": 498
+    },
+    {
+      "api": "check_synthetic_candidate",
+      "outcome": "unknown",
+      "count": 30,
+      "unique_inputs": 23
+    },
+    {
+      "api": "check_synthetic_candidate",
+      "outcome": "unsupported",
+      "count": 3,
+      "unique_inputs": 3
+    },
+    {
+      "api": "realization_dependencies",
+      "outcome": "dependencies",
+      "count": 1996,
+      "unique_inputs": 585
+    }
+  ],
+  "horizons": [
+    {
+      "api": "check_component_assembly",
+      "python_type": "float",
+      "count": 1
+    },
+    {
+      "api": "check_component_assembly",
+      "python_type": "int",
+      "count": 51
+    },
+    {
+      "api": "check_component_behavior",
+      "python_type": "int",
+      "count": 85
+    },
+    {
+      "api": "check_realization",
+      "python_type": "NoneType",
+      "count": 34
+    },
+    {
+      "api": "check_realization",
+      "python_type": "float",
+      "count": 10
+    },
+    {
+      "api": "check_realization",
+      "python_type": "int",
+      "count": 1036
+    },
+    {
+      "api": "check_synthetic_candidate",
+      "python_type": "float",
+      "count": 7
+    },
+    {
+      "api": "check_synthetic_candidate",
+      "python_type": "int",
+      "count": 899
+    },
+    {
+      "api": "realization_dependencies",
+      "python_type": "NoneType",
+      "count": 40
+    },
+    {
+      "api": "realization_dependencies",
+      "python_type": "float",
+      "count": 17
+    },
+    {
+      "api": "realization_dependencies",
+      "python_type": "int",
+      "count": 1939
+    }
+  ],
+  "null_examples": {
+    "check_realization": "tests/test_realization_checker.py::CheckArtifactTests.test_all_dependency_changes_invalidate_the_claim/api/0",
+    "realization_dependencies": "tests/test_realization_checker.py::CheckArtifactTests.test_all_dependency_changes_invalidate_the_claim/api/1"
+  }
+}

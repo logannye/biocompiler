@@ -12,9 +12,9 @@ let option_json encode = function None -> Json.Null | Some value -> encode value
 let require ?path condition message = Diagnostic.require ?path condition "synthetic_selection" message
 let limit ?path condition = Diagnostic.require ?path condition "synthetic_selection_limit"
     "Synthetic selection exceeds its native resource boundary."
-(* Preflight uses the same bounded, cycle-safe ASCII envelope as nested check
-   records (32 MiB / 250,000 key-value nodes). Identities remain compact UTF-8.
-   The conservative ASCII envelope also bounds UTF-8 and Unicode escaping. *)
+(* Preflight uses the bounded, cycle-safe ASCII wire envelope (32 MiB /
+   250,000 value nodes, excluding object keys). Identities remain compact UTF-8.
+   Checker publication separately counts keys as well as values. *)
 let measure ?path raw =
   try Legacy_ascii.measure ?path raw with
   | Diagnostic.Error error when error.code = "legacy_ascii_limit" ->

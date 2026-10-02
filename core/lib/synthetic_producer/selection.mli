@@ -26,5 +26,5 @@ end
 (* Native test seam for independently retained producer corruption cases. Only
    proposals can vary: policy, fresh acceptance, dependencies and ranking remain
    the production implementations. There is no wire callback/check override. *)
-module Make (Proposer:PROPOSER) : SELECTOR
+module Make (_:PROPOSER) : SELECTOR
 include SELECTOR

@@ -85,7 +85,16 @@ module Make (Proposer:PROPOSER) = struct
          several times. This charge precedes those scans and allocations. *)
       B.charge budget (16 * (cost+1));
       let size = Legacy_ascii.measure raw in
-      B.reserve_report budget raw; published_nodes := !published_nodes+size.nodes; retain size.nodes in
+      B.reserve_report budget raw;
+      (* The reservation above bounds depth/cycles and counts object keys too.
+         Remaining child publication capacity must use that same census;
+         retained JSON values keep their separate value-node accounting. *)
+      let rec nodes = function
+        | Json.Array values -> List.fold_left (fun total value -> total + nodes value) 1 values
+        | Json.Object fields -> List.fold_left (fun total (_,value) -> total + 1 + nodes value) 1 fields
+        | _ -> 1 in
+      published_nodes := !published_nodes + nodes raw;
+      retain size.nodes in
     let propose strategy =
       B.charge budget (8 * (A.Config.canonical_size config+1));
       let configuration = strategy_config config strategy in

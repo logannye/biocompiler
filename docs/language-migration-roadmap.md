@@ -411,6 +411,19 @@ These checkpoints record narrower validated work; they do not complete a broad L
   separate unfinished work. The [producer implementation audit](migration-synthetic-producer-plan.md)
   and [next public-routing plan](migration-realization-routing-plan.md) retain
   the exact source responsibilities and remaining exit criteria.
+  [PR56](https://github.com/logannye/biocompiler/pull/56) preserves this batch.
+  Its first hosted compiler run rejected an unused functor parameter in the
+  public interface; using an anonymous parameter preserves strict warnings and
+  the same proposal-only test seam. A reviewed unit fixture now sends the
+  ordinary constrained-selection case through the production selector; only the
+  two actual original selector mutations use injected proposals. All 123 full
+  Python selection/domain literals still reproduce their original results.
+  The follow-up resource audit also forwards all five component-behavior limit
+  reductions into generic linking and preserves ancestor exhaustion at the
+  exact reconstruction boundary. Selector child publication allowances now
+  subtract object keys as well as values, matching the enforcing report budget.
+  These corrections require fresh hosted gates;
+  the first failed run does not establish native validation.
 - [ ] **B1.09e protocol exposure and public routing:** accept full external authority,
   freshly recompute complete results, and preserve every existing caller and
   export gate. The audited realization baseline contains 324 methods across 23
