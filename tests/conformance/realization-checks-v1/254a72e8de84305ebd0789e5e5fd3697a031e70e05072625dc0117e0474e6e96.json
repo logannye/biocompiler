@@ -1,0 +1,1 @@
+"{\"args\":[],\"kwargs\":{\"compartment\":\"abstract\",\"dtype\":{\"arguments\":[],\"dimensions\":{\"time\":1},\"kind\":\"scalar\",\"name\":\"Duration\"},\"id\":\"fixture-output\",\"role\":\"n000001\",\"scope\":\"cell\"}}"

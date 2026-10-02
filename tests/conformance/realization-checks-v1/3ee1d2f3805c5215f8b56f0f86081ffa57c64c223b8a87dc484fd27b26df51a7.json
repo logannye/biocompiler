@@ -1,0 +1,1 @@
+"{\"args\":[{\"capabilities\":[\"synthetic_fixture\"],\"compartments\":[\"abstract\"],\"context_id\":\"fixture\",\"context_version\":\"1\",\"payload_format\":\"RNA\",\"resources\":{},\"schema_version\":\"biocompiler.target.v0.1\"}],\"kwargs\":{\"boundary\":\"verification\"}}"

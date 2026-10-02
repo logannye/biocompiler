@@ -40,6 +40,8 @@ With OCaml 5.4.0 and dependencies from `biocompiler_core.opam` installed:
 opam exec -- dune build --root core @all
 BIOCOMPILER_CANDIDATE_RUNTIME_CORPUS="$PWD/tests/conformance/candidate-runtime-v1.json" \
 BIOCOMPILER_COMPONENT_RUNTIME_CORPUS="$PWD/tests/conformance/component-runtime-v1.json" \
+BIOCOMPILER_REALIZATION_FOUNDATION_CORPUS="$PWD/tests/conformance/realization-foundation-v1.json" \
+BIOCOMPILER_REALIZATION_CHECKS_CORPUS="$PWD/tests/conformance/realization-checks-v1.json" \
   opam exec -- dune runtest --root core
 ```
 
@@ -402,3 +404,34 @@ in both Dune and a separate hosted invocation on each platform. Source-only
 integrity/replay and dependency checks precede hosted native validation; they do
 not establish native parity. Public protocol exposure, generic composition
 acceptance, realization checking and biological validity remain separate work.
+
+## Independent realization checking checkpoint
+
+Typed realization contracts and evidence records preserve complete histories,
+explicit horizons and historical ASCII evidence identities. Fresh admission
+re-evaluates current target and component authority. Their 60-suite foundation
+passes on hosted Linux and macOS at `8e8e191cce34182a85b3ea7765a01cc650b7711c`;
+the complete product workflow remains pending.
+
+The following internal batch adds structural `Realization_request` and a separate
+fresh `Checked_request` wrapper. The latter independently checks source lowering,
+target presence and contract/domain correspondence before exposing checked input.
+`bioc_realization_checker` coordinates the separate source and candidate engines;
+its private monitor compares complete traces without importing a producer.
+Preparation, both executions, translated history, monitoring and publication
+share bounded work. Exhaustion propagates as failure, and ordinary execution
+failure can publish only a bounded unknown result. Caller limits may only reduce
+the profile ceilings. Finite-history coverage remains conditional on supplied
+models and cannot establish empirical biological behavior.
+
+The 340-method capture retains all 74,803 calls, 348 contexts, original assertions
+and both actual subprocesses. Its 26,410 documents contain 201,611,674 bytes,
+pinned by `8ddc5a929f90e8364e3ffb53c6902ff23bd5dec2524897a8d463f543b887d80a`.
+Four narrowly identified checker-version monkeypatch observations have explicit
+test-only mutation handling after complete current-result verification. All 137
+generic component-acceptance calls remain deferred. Fresh recapture and all five
+source integrity/replay tests pass, and the previous foundation corpus remains
+byte-identical. Four new suites bring the native total to 64; their hosted
+compilation, complete corpus execution and full product gates remain required.
+Generic linking/selection, component acceptance, public realization protocol
+routing, distribution and default cutover remain open.

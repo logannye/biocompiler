@@ -1,0 +1,1 @@
+"{\"code\":\"missing_output_lineage\",\"message\":\"Mapped model output must retain its response requirement identity.\",\"node_id\":\"n000005\",\"requirement_id\":\"response\",\"source\":{\"file\":\"/__biocompiler_capture__/tests/test_realization_checker.py\",\"function\":\"fixture\",\"line\":56}}"

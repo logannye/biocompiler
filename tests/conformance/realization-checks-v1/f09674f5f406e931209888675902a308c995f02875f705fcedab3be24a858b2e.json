@@ -1,0 +1,1 @@
+"{\"args\":[\"input_semantics\",\"Input endpoint role, scope, or type differs from the authored observation.\",null,\"n000003\",{\"file\":\"/__biocompiler_capture__/tests/test_realization_checker.py\",\"function\":\"fixture\",\"line\":49}],\"kwargs\":{}}"

@@ -1,0 +1,1 @@
+"{\"code\":\"output_endpoint\",\"message\":\"Model output must match the response's exact endpoint identity, role, scope, compartment and type.\",\"node_id\":\"n000005\",\"requirement_id\":\"response\",\"source\":{\"file\":\"/__biocompiler_capture__/tests/test_realization_checker.py\",\"function\":\"fixture\",\"line\":56}}"

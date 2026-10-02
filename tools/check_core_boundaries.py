@@ -20,6 +20,7 @@ ROOT = Path(__file__).resolve().parents[1]
 EXTERNAL_LIBRARIES = frozenset({"digestif", "zarith"})
 # New libraries/dependencies require deliberate policy review, even when harmless.
 LIBRARIES = {
+    "bioc_realization_checker": ("lib/realization_checker/dune", {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_semantics", "bioc_candidate_runtime", "zarith"}, "checker"),
     "bioc_candidate_runtime": ("lib/candidate_runtime/dune", {"bioc_wire", "bioc_domain", "zarith"}, "candidate_runtime"),
     "bioc_producer_service": ("lib/producer_service/dune", {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_service"}, "producer"),
     "bioc_wire": ("lib/wire/dune", {"digestif", "zarith"}, "trusted_primitive"),
@@ -35,6 +36,10 @@ EXECUTABLES = {
     "biocompiler-verify": ("bin/verify/dune", {"bioc_wire", "bioc_service"}, "verifier"),
 }
 TESTS = {
+    "test_realization_request": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_realization_checker", "zarith"},
+    "test_realization_check": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_realization_checker", "zarith"},
+    "test_realization_monitor": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_realization_checker", "zarith"},
+    "test_realization_checks_corpus": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_realization_checker", "zarith"},
     "test_mechanism": {"bioc_wire", "bioc_domain", "zarith"},
     "test_model_execution_data": {"bioc_wire", "bioc_domain", "zarith"},
     "test_synthetic_model": {"bioc_wire", "bioc_domain", "bioc_candidate_runtime", "zarith"},
@@ -99,7 +104,8 @@ TESTS = {
 PRODUCER_ROLES = frozenset({"compiler", "matcher", "selection", "emitter", "assembler", "producer"})
 # Reconstruction is an independent checker's implementation detail. Consumers
 # can request assessment/replay, but cannot obtain an expected candidate to emit.
-PRIVATE_MODULES = {"bioc_checker": ["construction_reconstruction", "architecture_reconstruction"]}
+PRIVATE_MODULES = {"bioc_checker": ["construction_reconstruction", "architecture_reconstruction"],
+                   "bioc_realization_checker": ["realization_monitor"]}
 TOKEN = re.compile(r'\s+|;[^\n]*(?:\n|$)|\(|\)|"(?:\\.|[^"\\])*"|[^\s();"]+')
 IDENTIFIER = re.compile(r"[A-Za-z_][A-Za-z0-9_']*|\.")
 
@@ -263,7 +269,7 @@ def source_boundary(path, allowed_libraries, *, owner=None):
             raise BoundaryError(f"Unreviewed native/process/dynamic-code escape {token} in {path.name}")
         if token == "Sys":
             reviewed = {"argv"}
-            if owner in {"test:test_architecture_check", "test:test_source_transport", "test:test_architecture_producer", "test:test_construction_producer", "test:test_candidate_runtime_corpus", "test:test_component_runtime_corpus", "test:test_realization_foundation_corpus"}:
+            if owner in {"test:test_architecture_check", "test:test_source_transport", "test:test_architecture_producer", "test:test_construction_producer", "test:test_candidate_runtime_corpus", "test:test_component_runtime_corpus", "test:test_realization_foundation_corpus", "test:test_realization_checks_corpus"}:
                 # The test-only document corpus must reject undeclared files.
                 # Production code gains no filesystem or process permission.
                 reviewed.add("readdir")
@@ -334,6 +340,7 @@ def check_boundaries(root: Path):
                     "test_candidate_runtime_corpus": "%{env:BIOCOMPILER_CANDIDATE_RUNTIME_CORPUS=missing}",
                     "test_component_runtime_corpus": "%{env:BIOCOMPILER_COMPONENT_RUNTIME_CORPUS=missing}",
                     "test_realization_foundation_corpus": "%{env:BIOCOMPILER_REALIZATION_FOUNDATION_CORPUS=missing}",
+                    "test_realization_checks_corpus": "%{env:BIOCOMPILER_REALIZATION_CHECKS_CORPUS=missing}",
                 }
                 expected_actions = ([["action", ["run", "%{test}", fixture_variables[name]]]]
                                     if name in fixture_variables else [])

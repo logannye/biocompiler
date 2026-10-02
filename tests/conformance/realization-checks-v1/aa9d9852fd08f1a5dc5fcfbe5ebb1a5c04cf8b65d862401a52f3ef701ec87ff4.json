@@ -1,0 +1,1 @@
+"{\"compartment\":\"abstract\",\"dtype\":{\"arguments\":[],\"dimensions\":{\"time\":1},\"kind\":\"scalar\",\"name\":\"Duration\"},\"id\":\"clock\",\"role\":\"observer\",\"schema_version\":\"biocompiler.observable.v0.1\",\"scope\":\"cell\"}"

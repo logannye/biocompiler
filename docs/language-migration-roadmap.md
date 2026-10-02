@@ -263,8 +263,10 @@ These checkpoints record narrower validated work; they do not complete a broad L
   The typed contract/evidence/admission implementation is pushed in draft
   [PR51](https://github.com/logannye/biocompiler/pull/51), initially at
   `ffd5e05cd179cf29e45a6c214ef4a97f7e2ee534`. Independent domain reviews found no
-  concrete issue; 94 focused source checks passed. Native validation remains
-  pending, so this stage and the broader LM-22/25 exits remain unchecked.
+  concrete issue; 94 focused source checks passed. All 60 native suites now pass
+  on both hosted platforms at `8e8e191cce34182a85b3ea7765a01cc650b7711c`
+  in run `36966315057`. Full product validation remains pending, so this stage
+  and the broader LM-22/25 exits remain unchecked.
   The complete 324-method capture now retains 70,019 observations, including
   both actual subprocesses; fresh recapture and four integrity/replay checks
   pass. Corpus `ac1499688ec6f0eca41398134b9421de9f95ffe9405422332c2bf43b04db32f8`
@@ -272,8 +274,8 @@ These checkpoints record narrower validated work; they do not complete a broad L
   observations remain explicitly deferred. The full foundation corpus is
   mandatory in Dune and a separate hosted campaign (60 native suites total).
   Initial hosted compilation exposed an ambiguous record-field warning, now
-  corrected by an explicit type annotation; the replacement revision requires
-  fresh native and full product validation.
+  corrected by an explicit type annotation; full product validation of the
+  replacement revision is still required.
 - [ ] **B1.09b fresh admission, generic linking and selection:** reproduce complete
   policy assessments, provider grounding, lifetime/resource accounting and ranked
   alternatives. Retained decisions and identity-only freshness cannot grant use.
@@ -282,6 +284,21 @@ These checkpoints record narrower validated work; they do not complete a broad L
   deadline transitions, cancelled and incomplete episodes, failure precedence,
   counterexamples and exact bounded claims. Bound preparation, both executions,
   monitoring and result publication; budget exhaustion cannot become acceptance.
+  Typed RealizationRequest import and a separate fresh Checked_request wrapper
+  are now implemented, together with independent source/candidate execution,
+  finite-history monitoring, exact dependency identities and shared bounded work.
+  The new complete capture retains 74,803 calls from 340 unchanged original
+  methods, 348 contexts and both actual subprocesses. Fresh recapture is
+  byte-identical; all five integrity/replay tests and 29 boundary/CI tests pass.
+  Corpus `8ddc5a929f90e8364e3ffb53c6902ff23bd5dec2524897a8d463f543b887d80a`
+  contains 26,410 documents / 201,611,674 bytes. Four explicitly identified
+  checker-version mutation observations verify the complete current result,
+  then change only its version in test code and check the retained mutant and
+  freshness result; production APIs expose no version override. All 137 generic
+  component-acceptance observations remain deferred. Four new suites bring the
+  native total to 64, with the complete corpus mandatory in both hosted campaigns.
+  These new native checks and full product gates remain unvalidated; this item
+  and the broader LM checkboxes stay open until their complete exit criteria pass.
 - [ ] **B1.09d component correspondence and fresh replay:** independently reconstruct
   the expected source/assembly correspondence without importing its adapter or
   producer; require complete generic linking before behavior acceptance.

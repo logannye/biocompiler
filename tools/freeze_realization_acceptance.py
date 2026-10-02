@@ -54,6 +54,9 @@ CLASSES = (Observable, InputDomain, OperatingDomain, ResponseRequirement, Behavi
     CheckResult, AdmissionRequest, AdmissionAssessment)
 CLASS_BY_NAME = {cls.__name__: cls for cls in CLASSES}
 SIGNATURES = {cls.__name__: inspect.signature(cls) for cls in CLASSES}
+CLASS_IMPORT_METHODS = {}
+PROPERTY_NAMES = ("fingerprint", "passed", "exercised_requirement_ids", "fresh", "status")
+CHILD_MODULE = "tools.freeze_realization_acceptance"
 FUNCTIONS = (assess_admission, verify_admission, admission_for_target, require_software_use,
     realization_dependencies, check_realization, check_component_behavior, check_component_assembly)
 METHODS = {InputDomain: ("contains",), ResponseRequirement: ("accepts",),
@@ -62,6 +65,10 @@ METHODS = {InputDomain: ("contains",), ResponseRequirement: ("accepts",),
 MAX_DOCUMENT_BYTES = 16 * 1024 * 1024
 MAX_TOTAL_BYTES = 256 * 1024 * 1024
 CORPUS = ROOT / "tests/conformance/realization-foundation-v1.json"
+CORPUS_SCHEMA = "biocompiler.realization_foundation_conformance.v1"
+CLAIM_SCOPE = "realization_domain_evidence_identity_and_fresh_admission_only_no_finite_history_acceptance_or_biology"
+DEFERRED_OBLIGATION = "independent_complete_finite_history_acceptance_not_implemented_by_foundation"
+NATIVE_STAGE_BY_OPERATION = {}
 DEFERRED = {"realization_dependencies", "check_realization", "check_component_behavior", "check_component_assembly"}
 
 
@@ -160,13 +167,13 @@ def capture(child_script=None, child_context=None):
     log_path = OUT / "original-tests.log"
     if child_script is None:
         require([len(inventory(module)) for module in modules] == METHOD_COUNTS, "Original realization census drift")
-        require(len(expected) == len(set(expected)) == 324, "Missing or duplicate original realization test")
+        require(len(expected) == len(set(expected)) == sum(METHOD_COUNTS), "Missing or duplicate original realization test")
         with log_path.open("w") as logs:
             baseline = unittest.TextTestRunner(stream=logs, verbosity=2).run(unittest.TestSuite(
                 test for module in modules for test in inventory(module)))
-        require(baseline.wasSuccessful() and baseline.testsRun == 324 and not baseline.skipped,
+        require(baseline.wasSuccessful() and baseline.testsRun == sum(METHOD_COUNTS) and not baseline.skipped,
                 "Uninstrumented original assertions failed: " + str(log_path))
-        print("realization capture: all 324 uninstrumented original methods passed", flush=True)
+        print(f"realization capture: all {sum(METHOD_COUNTS)} uninstrumented original methods passed", flush=True)
     store, calls, ledger, fixtures, children = Store(), [], [], {}, []
     current = {"id": child_context["id"] if child_context else None, "api_calls": [],
                "assertion_status": "passed", "kind": "subprocess" if child_context else "original_method"}
@@ -215,7 +222,7 @@ def capture(child_script=None, child_context=None):
         entry.update(outcome="returned", result=identity, result_format=representation)
         if isinstance(value, CLASSES):
             properties = {}
-            for name in ("fingerprint", "passed", "exercised_requirement_ids", "fresh", "status"):
+            for name in PROPERTY_NAMES:
                 if hasattr(type(value), name):
                     properties[name] = plain(getattr(value, name))
             if properties: entry["properties"] = store.retain("record", properties)
@@ -276,7 +283,7 @@ def capture(child_script=None, child_context=None):
     with ExitStack() as patches:
         for cls in CLASSES:
             patches.enter_context(patch.object(cls, "__init__", constructor(cls)))
-            for method in ("from_dict", "from_json"):
+            for method in ("from_dict", "from_json", *CLASS_IMPORT_METHODS.get(cls, ())):
                 if hasattr(cls, method): patches.enter_context(patch.object(cls, method, importer(cls, method)))
             for method in METHODS.get(cls, ()):
                 patches.enter_context(patch.object(cls, method, function(cls.__name__ + "." + method, getattr(cls, method))))
@@ -294,7 +301,7 @@ def capture(child_script=None, child_context=None):
                 context = {"id": current["id"] + "/subprocess/" + str(len(children)), "source": callsite()}
                 with tempfile.TemporaryDirectory(prefix="realization-capture-") as directory:
                     output = Path(directory) / "capture.json"
-                    bootstrap = ("from tools.freeze_realization_acceptance import child_main; child_main(" +
+                    bootstrap = ("from " + CHILD_MODULE + " import child_main; child_main(" +
                                  repr(command[2]) + "," + repr(context) + "," + repr(str(output)) + ")")
                     result = original_subprocess([*command[:2], bootstrap], *args, **kwargs)
                     require(output.exists(), "Original child did not produce its complete capture")
@@ -311,7 +318,7 @@ def capture(child_script=None, child_context=None):
             with log_path.open("a") as logs:
                 observed = unittest.TextTestRunner(stream=logs, verbosity=2, resultclass=RecordedResult).run(
                     unittest.TestSuite(test for module in modules for test in inventory(module)))
-            require(observed.wasSuccessful() and observed.testsRun == 324 and not observed.skipped,
+            require(observed.wasSuccessful() and observed.testsRun == sum(METHOD_COUNTS) and not observed.skipped,
                     "Instrumented original assertions failed: " + str(log_path))
         else:
             exec(compile(child_script, "<string>", "exec"), {"__name__": "__main__"})
@@ -528,14 +535,15 @@ def freeze(document, *, check=False):
         operation, value, source_stage = observation_input(original, document["documents"])
         if source_stage == "deferred_acceptance":
             call["native"] = {"operation": operation, "source_stage": source_stage, "native_stage": "deferred_acceptance",
-                "obligation": "independent_complete_finite_history_acceptance_not_implemented_by_foundation"}
+                "obligation": DEFERRED_OBLIGATION}
         else:
             text = value if source_stage == "json_import" else json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=True, allow_nan=True)
             identity = digest(canonical(text))
             input_format = store.records.get(identity, {}).get("kind", "json_text")
             require(input_format in {"json_text", "python_json_text"}, "Unexpected text identity alias")
             identity = store.retain(input_format, text)
-            stage = "admission" if source_stage == "admission" else "method" if source_stage == "method" else "domain"
+            stage = NATIVE_STAGE_BY_OPERATION.get(operation,
+                "admission" if source_stage == "admission" else "method" if source_stage == "method" else "domain")
             try: parsed = strict_input(text)
             except ValueError as error:
                 code = str(error)
@@ -573,8 +581,8 @@ def freeze(document, *, check=False):
         require(original["api_calls"] == [original["id"] + "/api/" + str(i) for i in range(len(calls))], "Incomplete context ledger")
         contexts.append({**original, "api_calls": len(calls), "ledger": store.retain("api_ledger", {"observations": calls})})
     context_ids = {item["id"]: index for index, item in enumerate(contexts)}
-    index = {"schema_version": "biocompiler.realization_foundation_conformance.v1",
-        "claim_scope": "realization_domain_evidence_identity_and_fresh_admission_only_no_finite_history_acceptance_or_biology",
+    index = {"schema_version": CORPUS_SCHEMA,
+        "claim_scope": CLAIM_SCOPE,
         "source_files": document["source_files"], "source_ledger": static_ledger(), "contexts": contexts,
         "source_locations": locations, "capture_call_order": store.retain("call_order", [[context_ids[context], number] for context, number in order]),
         "subprocesses": document["subprocesses"], "original_documents": sorted(document["documents"]),
@@ -582,7 +590,7 @@ def freeze(document, *, check=False):
         "coverage": {**document["coverage"], "native_stages": dict(sorted(stages.items())),
             "native_operations": dict(sorted(operations.items())), "unclassified_observations": 0},
         "compatibility": {
-            "original_assertions": "all324originalmethods_run_unchanged_before_and_during_capture_no_skips",
+            "original_assertions": f"all{sum(METHOD_COUNTS)}originalmethods_run_unchanged_before_and_during_capture_no_skips",
             "source_locations": "absolute_checkout_prefix_mapped_before_construction_to_/__biocompiler_capture__/_relative_unchanged_temporal_pipeline_original_relative_policy_preserved",
             "python_types": "complete_raw_arguments_typed_records_scalar_classes_tuple_iterators_and_mapping_identities_retained",
             "hashes": "fixture_content_addresses_UTF8_canonical;_legacy_evidence_properties_compact_ensure_ascii_True",

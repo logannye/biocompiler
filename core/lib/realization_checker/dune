@@ -1,0 +1,4 @@
+(library
+ (name bioc_realization_checker)
+ (private_modules realization_monitor)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_semantics bioc_candidate_runtime zarith))

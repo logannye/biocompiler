@@ -1,0 +1,1 @@
+{"compartment":"abstract","dtype":{"arguments":[],"dimensions":{"amount":1,"length":-3},"kind":"scalar","name":"Concentration"},"id":"response_activity","role":"n000001","schema_version":"biocompiler.observable.v0.1","scope":"cell"}

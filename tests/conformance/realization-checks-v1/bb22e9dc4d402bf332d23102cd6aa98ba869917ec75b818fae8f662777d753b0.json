@@ -1,0 +1,1 @@
+"{\"args\":[],\"kwargs\":{\"boundary\":\"export\",\"components\":[],\"intended_use\":\"software_test\",\"target\":{\"capabilities\":[],\"compartments\":[\"abstract\"],\"context_id\":\"reference\",\"context_version\":\"1\",\"payload_format\":\"RNA\",\"resources\":{},\"schema_version\":\"biocompiler.target.v0.1\"}}}"
