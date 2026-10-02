@@ -13,7 +13,7 @@ from biocompiler.compiler.pipeline import (
 )
 from biocompiler.core_client import CoreClient, CoreProtocolError
 from biocompiler.core_pipeline_callback_session import CallbackRejected
-from biocompiler.core_pipeline_manager import CorePassManager, _ordered, capability_profile
+from biocompiler.core_pipeline_manager import CorePassManager, ManagerInspection, _ordered, capability_profile
 from biocompiler.core_pipeline_session import encode_document
 from biocompiler.ir.intent import freeze_json
 from biocompiler.ir.stages import Stage
@@ -108,6 +108,24 @@ class CorePipelineManagerTests(unittest.TestCase):
         completion = self.manager._invoke('hydrate-context', arguments)
         self.assertEqual(completion.status, 'ok')
         return self.manager._objects.resolve(completion.value)
+
+    def inspection(self, producer, validator, *, producer_id='provider/producer', validator_id='provider/validator'):
+        registration = {'contract': self.fixture.first.to_dict(), 'producer': producer_id,
+            'validators': {'alpha': validator_id, 'zeta': validator_id}}
+        admission = {'contract': {'id': 'admission'}, 'validators': {'alpha': validator_id, 'zeta': validator_id}}
+        snapshot = {'target': self.fixture.target.to_dict(), 'dependencies': {'alpha': 'a' * 64, 'zeta': 'b' * 64},
+            'passes': {'a': registration, 'z': registration}, 'component_inputs': {'policy': admission},
+            'provider_history': {'a-history': registration, 'z-history': registration},
+            'component_input_history': {'admission-history': admission}, 'records': {'input': self.record()},
+            'profiles': {}}
+        order = {key: list(value) for key, value in snapshot.items() if key != 'target'}
+        order.update(dependencies=['zeta', 'alpha'], passes=['z', 'a'], provider_history=['z-history', 'a-history'],
+            combined_provider_history=['z-history', ['component_input', 'admission-history'], 'a-history'],
+            validators={field: {key: ['zeta', 'alpha'] for key in snapshot[field]}
+                for field in ('passes', 'component_inputs', 'provider_history', 'component_input_history')})
+        return {'snapshot': snapshot, 'order': order, 'providers': [
+            {'provider_id': producer_id, 'object': self.manager._objects.retain(producer)},
+            {'provider_id': validator_id, 'object': self.manager._objects.retain(validator)}]}
 
     def test_exact_application_and_constructor_do_not_initialize_python_manager(self):
         path = Path(__file__).parents[1] / 'protocol/pipeline-callback-manager-v1.json'
@@ -430,6 +448,100 @@ class CorePipelineManagerTests(unittest.TestCase):
         with self.assertRaises(CoreProtocolError):
             self.manager.historical('input')
         self.assertTrue(self.session.invalidated)
+
+    def test_ordered_inspection_preserves_actual_provider_identity_and_declared_orders(self):
+        class Provider:
+            def __call__(self, context):
+                raise AssertionError('Inspection called the provider')
+
+            def __eq__(self, other):
+                raise AssertionError('Inspection compared provider values')
+
+            def __hash__(self):
+                raise AssertionError('Inspection hashed a provider')
+
+        producer, validator = Provider(), Provider()
+        raw = self.inspection(producer, validator)
+        self.session.results['inspect-ordered'] = raw
+        observed = self.manager.inspect_ordered()
+        self.assertIs(type(observed), ManagerInspection)
+        self.assertEqual(self.session.requests[-1], ('inspect-ordered', {}))
+        self.assertIs(observed.providers['provider/producer'], producer)
+        self.assertIs(observed.providers['provider/validator'], validator)
+        self.assertEqual(tuple(observed.snapshot['dependencies']), ('zeta', 'alpha'))
+        self.assertEqual(tuple(observed.snapshot['passes']), ('z', 'a'))
+        self.assertEqual(tuple(observed.snapshot['passes']['a']['validators']), ('zeta', 'alpha'))
+        self.assertEqual(observed.order['combined_provider_history'],
+            ('z-history', ('component_input', 'admission-history'), 'a-history'))
+        self.assertEqual(set(observed.snapshot['records']['input']), {'value', 'bindings'})
+        with self.assertRaises(TypeError):
+            observed.providers['provider/producer'] = validator
+        with self.assertRaises(TypeError):
+            observed.snapshot['dependencies']['zeta'] = 'changed'
+        self.assertIs(self.manager.inspect_ordered().providers['provider/producer'], producer)
+
+    def test_distinct_equal_bound_methods_keep_distinct_native_tokens(self):
+        class Owner:
+            def provider(self, context):
+                return context
+
+        owner = Owner()
+        left, right = owner.provider, owner.provider
+        self.assertIsNot(left, right)
+        self.assertEqual(left, right)
+        self.session.results['inspect-ordered'] = self.inspection(left, right)
+        observed = self.manager.inspect_ordered()
+        self.assertIs(observed.providers['provider/producer'], left)
+        self.assertIs(observed.providers['provider/validator'], right)
+
+    def test_ordered_inspection_rejects_incomplete_orders_and_provider_census(self):
+        producer, validator = lambda context: context, lambda context: context
+        original = self.inspection(producer, validator)
+        mutations = []
+        raw = deepcopy(original); raw['order']['dependencies'] = ['zeta', 'zeta']; mutations.append(raw)
+        raw = deepcopy(original); raw['order']['validators']['passes']['a'] = ['zeta']; mutations.append(raw)
+        raw = deepcopy(original); raw['order']['combined_provider_history'].reverse(); mutations.append(raw)
+        raw = deepcopy(original); raw['order']['combined_provider_history'][1][0] = 'component-input'; mutations.append(raw)
+        raw = deepcopy(original); raw['providers'].pop(); mutations.append(raw)
+        raw = deepcopy(original); raw['providers'].append(raw['providers'][0]); mutations.append(raw)
+        raw = deepcopy(original); raw['providers'][0]['provider_id'] = 'provider/extra'; mutations.append(raw)
+        raw = deepcopy(original); raw['providers'][1]['object'] = raw['providers'][0]['object']; mutations.append(raw)
+        raw = deepcopy(original); raw['snapshot']['records'] = {'wrong': raw['snapshot']['records']['input']}
+        raw['order']['records'] = ['wrong']; mutations.append(raw)
+        for raw in mutations:
+            with self.subTest(raw=raw):
+                self.session.invalidated = False
+                self.session.results['inspect-ordered'] = raw
+                with self.assertRaises(CoreProtocolError):
+                    self.manager.inspect_ordered()
+                self.assertTrue(self.session.invalidated)
+
+    def test_provider_bijection_survives_absence_and_rejects_rebinding(self):
+        producer, validator = lambda context: context, lambda context: context
+        original = self.inspection(producer, validator)
+        self.session.results['inspect-ordered'] = original
+        self.manager.inspect_ordered()
+        empty = deepcopy(original)
+        for name in ('passes', 'component_inputs', 'provider_history', 'component_input_history'):
+            empty['snapshot'][name] = {}
+            empty['order'][name] = []
+            empty['order']['validators'][name] = {}
+        empty['order']['combined_provider_history'] = []
+        empty['providers'] = []
+        self.session.results['inspect-ordered'] = empty
+        self.manager.inspect_ordered()
+        changed = deepcopy(original)
+        changed['providers'][0]['object'] = self.manager._objects.retain(lambda context: context)
+        self.session.results['inspect-ordered'] = changed
+        with self.assertRaises(CoreProtocolError):
+            self.manager.inspect_ordered()
+        self.assertTrue(self.session.invalidated)
+
+    def test_inspection_resolves_existing_native_proxy_without_copying_it(self):
+        completion = self.manager._invoke('native-provider', {'provider_id': 'provider/producer'})
+        proxy = self.manager._objects.resolve(completion.value)
+        self.session.results['inspect-ordered'] = self.inspection(proxy, lambda context: context)
+        self.assertIs(self.manager.inspect_ordered().providers['provider/producer'], proxy)
 
 
 if __name__ == '__main__':

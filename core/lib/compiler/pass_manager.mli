@@ -130,3 +130,11 @@ val result : t -> identity:string -> scope:string -> C.Pipeline_result.t
    grants no acceptance and has no inverse/import operation. Provider labels are
    supplied by trusted diagnostics/test code and never used for identity checks. *)
 val inspect : t -> provider_identity:(provider -> string) -> Bioc_wire.Json.t
+
+(* Exact historical order of the manager maps, their validator maps, and the
+   combined pass/admission history. This requires an observer-enabled manager;
+   ordinary managers retain their original resource accounting. New history
+   keys append only on successful
+   registration; replacement keeps its original position. This observation
+   neither registers providers nor imports records. *)
+val inspection_order : t -> Bioc_wire.Json.t

@@ -23,7 +23,7 @@ Unknown export bindings, dynamic export mutations, unresolved schema/profile dec
 | `export` | 536 |
 | `ir_operation` | 165 |
 | `module` | 188 |
-| `public_definition` | 814 |
+| `public_definition` | 815 |
 | `schema` | 327 |
 | `serializer` | 301 |
 | `studio_asset` | 8 |

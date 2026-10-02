@@ -3,17 +3,36 @@
 The fabricated frames below test a comparator, never acceptance or native
 parity. Actual pinned native execution is required separately in hosted CI.
 """
+from copy import deepcopy
 import json
 from pathlib import Path
 import sys
 import tempfile
+from types import SimpleNamespace
 import unittest
 from uuid import uuid4
 
 from tools import check_pipeline_manager_install as campaign
 
 
-def fake_frames(receipt, *, admission=False):
+def fake_inspection(original, tokens):
+    snapshot = deepcopy(original["state"])
+    reachable = set()
+    for group in campaign.REGISTRATION_MAPS:
+        for entry in snapshot[group].values():
+            if "producer" in entry:
+                entry["producer"] = tokens[entry["producer"]]
+                reachable.add(entry["producer"])
+            entry["validators"] = {key: tokens[label] for key, label in entry["validators"].items()}
+            reachable.update(entry["validators"].values())
+    snapshot["records"] = {key: {"value": value, "bindings": {"record_id": "record/"+str(index)}}
+        for index, (key, value) in enumerate(snapshot["records"].items())}
+    aliases = {token: label for label, token in tokens.items() if token in reachable}
+    providers = [{"provider_id": token, "object": {"handle": token.replace("provider/", "object/")}} for token in sorted(reachable)]
+    return {"snapshot": snapshot, "order": deepcopy(original["order"]), "providers": providers}, aliases
+
+
+def fake_frames(receipt, *, admission=False, comparison=None):
     channel, application = campaign.declarations()
     nonce = str(uuid4())
     rows, sequence, event = [], 0, 0
@@ -58,11 +77,140 @@ def fake_frames(receipt, *, admission=False):
         output_bytes += len(raw)
         event += 1
         return value, raw[9:]
-    def reply(sequence, value=None, *, closed=False):
+    def reply(sequence, value=None, *, closed=False, outcome=None):
         return server("reply", {"sequence": sequence, "request_sha256": campaign.sha(bodies[sequence]),
-            "outcome": {"status": "ok", "value": value}, "closed": closed})
+            "outcome": {"status": "ok", "value": value} if outcome is None else outcome, "closed": closed})
     seq = client("hello", {"declaration": channel, "application": application, "limits": None})
     reply(seq, {"declaration": channel, "application": application, "limits": channel["limits"]})
+    def invoke(seq, action, arguments, value):
+        invocation, body = server("invoke", {"invocation_id": event, "parent_invocation": None,
+            "command_sequence": seq, "command_sha256": campaign.sha(bodies[seq]), "action": action, "arguments": arguments})
+        client("continue", {"invocation_id": invocation["invocation_id"], "invocation_sha256": campaign.sha(body),
+            "outcome": {"status": "return", "value": value}})
+    if comparison is not None:
+        tokens = {label: "provider/"+str(index) for index, label in enumerate(comparison["providers"])}
+        handles = {label: token.replace("provider/", "object/") for label, token in tokens.items()}
+        source = {"arguments": {}, "providers": handles}
+        events, inspections, exceptions, live = [None]*len(comparison["events"]), [], {}, []
+        ref = lambda label: {"handle": handles[label]}
+        parent = lambda: live[-1] if live else None
+        def command(operation, args):
+            return client("command", {"parent_invocation": parent(), "operation": operation, "arguments": args})
+        def inspect(original):
+            value, aliases = fake_inspection(original, tokens)
+            seq = command("inspect-ordered", {})
+            reply(seq, value)
+            inspections.append({"sequence": seq, "aliases": aliases})
+        setup = comparison["setup"]
+        source["arguments"]["object/100000"] = {"kind": "target", "value": setup["target"]}
+        seq = command("initialize-empty", {"target": setup["target"], "dependencies": [[key, setup["dependencies"][key]]
+            for key in comparison["initial_state"]["order"]["dependencies"] if key in setup["dependencies"]],
+            "completion_profiles": setup["profiles"], "manager_limits": None, "target_object": {"handle": "object/100000"}})
+        reply(seq, {"kind": "empty", "manager": True, "artifacts": [], "target": {"value": setup["target"], "binding": {}}})
+        if comparison["mode"] == "pass":
+            source["arguments"]["object/100001"] = {"kind": "input", "value": setup["input"]}
+            seq = command("add-input", {"identity": "input", "stage": "typed intent and contracts", "requirements": setup["requirements"],
+                "obligations": setup["obligations"], "payload": {"handle": "object/100001"},
+                "obligations_object": {"handle": "object/100002"},
+                "obligation_objects": [{"handle": "object/"+str(100003+i)} for i in range(len(setup["obligations"]))]})
+            reply(seq, {"value": comparison["initial_state"]["state"]["records"]["input"], "bindings": {"record_id": "record/1"}})
+        bound = False
+        children = {}
+        for original in comparison["events"]:
+            children.setdefault(original["parent"], []).append(original)
+        def manager_event(original):
+            nonlocal bound
+            identity, recipe, enclosing = original["id"], original["recipe"], parent()
+            inspect(original["before"])
+            start = len(rows)
+            op = recipe["operation"]
+            seq = token = None
+            if op != "target":
+                if op in ("register", "register_component_input"):
+                    mapping_ref = "object/"+str(200000+identity)
+                    source["arguments"][mapping_ref] = {"kind": "validators", "items": recipe["validators"]}
+                    args = {"contract": setup["contracts"][recipe["contract"]], "validators": {"handle": mapping_ref}, "obligation_objects": []}
+                    if op == "register":
+                        args["producer"] = ref(recipe["producer"])
+                        source["arguments"][handles[recipe["producer"]]] = {"kind": "provider", "label": recipe["producer"]}
+                    else:
+                        args.update(obligations_object={"handle": "object/300000"}, requirements_object={"handle": "object/300001"})
+                elif op == "set_dependency":
+                    args = {"key": recipe["key"], "identity": recipe["identity"]}
+                else:
+                    args = {"identity": recipe["identity"]}
+                seq = command(op.replace("_", "-"), args)
+                if op in ("register", "register_component_input"):
+                    invocation, body = server("invoke", {"invocation_id": event, "parent_invocation": parent(),
+                        "command_sequence": seq, "command_sha256": campaign.sha(bodies[seq]),
+                        "action": "callable", "arguments": {"object": ref("producer")}})
+                    client("continue", {"invocation_id": invocation["invocation_id"], "invocation_sha256": campaign.sha(body),
+                        "outcome": {"status": "return", "value": True}})
+                    if not bound:
+                        for label, provider_token in tokens.items():
+                            invocation, body = server("invoke", {"invocation_id": event, "parent_invocation": parent(),
+                                "command_sequence": seq, "command_sha256": campaign.sha(bodies[seq]),
+                                "action": "bind-provider", "arguments": {"provider_id": provider_token, "object": ref(label)}})
+                            client("continue", {"invocation_id": invocation["invocation_id"], "invocation_sha256": campaign.sha(body),
+                                "outcome": {"status": "return", "value": None}})
+                        bound = True
+                nested = children.get(identity, [])
+                offset = 0
+                while offset < len(nested):
+                    first = nested[offset]
+                    assert first["kind"] == "comparison"
+                    group = [first]
+                    offset += 1
+                    while offset < len(nested) and sorted(nested[offset]["recipe"].values()) == sorted(first["recipe"].values()):
+                        group.append(nested[offset]); offset += 1
+                    contract = setup["contracts"][recipe["contract"]]
+                    history = "provider_history" if op == "register" else "component_input_history"
+                    previous = next(value for value in original["before"]["state"][history].values() if value["contract"] == contract)
+                    current = dict(recipe["validators"])
+                    left, right = next((value,current[key]) for key,value in previous["validators"].items()
+                        if sorted((value,current[key])) == sorted(first["recipe"].values()))
+                    invocation, body = server("invoke", {"invocation_id": event, "parent_invocation": parent(),
+                        "command_sequence": seq, "command_sha256": campaign.sha(bodies[seq]), "action": "compare",
+                        "arguments": {"left": ref(left), "right": ref(right), "operator": "eq"}})
+                    invocation_id = invocation["invocation_id"]
+                    live.append(invocation_id)
+                    for comparison_event in group:
+                        inspect(comparison_event["before"])
+                        begin = len(rows)
+                        for child in children.get(comparison_event["id"], []):
+                            manager_event(child)
+                        events[comparison_event["id"]] = {"event": comparison_event["id"], "kind": "comparison", "sequence": None,
+                            "invocation": invocation_id, "before_frames": begin, "after_frames": len(rows), "exception_tokens": []}
+                        inspect(comparison_event["after"])
+                    final = group[-1]
+                    if final["outcome"] == "raised":
+                        token = "exception/"+str(len(exceptions))
+                        exceptions[token] = {"token": token, "invocation": invocation_id, "events": [identity, final["id"]]}
+                        events[final["id"]]["exception_tokens"] = [token]
+                        outcome = {"status": "raise", "token": token}
+                    else:
+                        outcome = {"status": "return", "value": final["result"]}
+                    live.pop()
+                    client("continue", {"invocation_id": invocation_id, "invocation_sha256": campaign.sha(body), "outcome": outcome})
+                if original["outcome"] == "returned":
+                    result = original["result"]
+                    if op == "get": result = {"value": result, "bindings": {"record_id": "record/1"}}
+                    outcome = {"status": "ok", "value": result}
+                elif token is not None:
+                    outcome = {"status": "raise", "token": token}
+                else:
+                    outcome = {"status": "rejected", "value": {**original["error"], "attributes": {}}}
+                reply(seq, outcome=outcome)
+            events[identity] = {"event": identity, "kind": "manager", "sequence": seq, "invocation": enclosing,
+                "before_frames": start, "after_frames": len(rows), "exception_tokens": [] if token is None else [token]}
+            inspect(original["after"])
+        inspect(comparison["initial_state"])
+        for original in children[None]:
+            manager_event(original)
+        inspect(comparison["final_state"])
+        seq = client("close", {"parent_invocation": None})
+        reply(seq, closed=True)
+        return rows, inspections, events, list(exceptions.values()), source
     operations = ["initialize-empty", "register-component-input", "admit-component-input"] if admission else ["initialize-empty", "add-input", "register", "run"]
     for operation in operations:
         seq = client("command", {"parent_invocation": None, "operation": operation,
@@ -85,7 +233,7 @@ def fixture(directory, corpus):
     receipt = {"_artifact_directory": str(path), "artifacts": {}, "checks": [],
         "native_inputs": {"sha256": {"biocompiler-core": "a"*64, "biocompiler-verify": "b"*64}},
         "executables": {"core": "/native/biocompiler-core", "verify": "/native/biocompiler-verify"},
-        "completed_checks": 5}
+        "completed_checks": 5, "comparison_checks": [], "completed_comparison_checks": 34}
     put = lambda value: campaign.artifact(receipt, campaign.canonical(value))
     channel, application = campaign.declarations()
     stdout = {"protocol": "biocompiler.core.v1", "request_id": None, "operation": None, "status": "error", "result": None,
@@ -105,6 +253,16 @@ def fixture(directory, corpus):
             "after_close": put({"type": "CoreProtocolError", "message": "Callback session is closed; it cannot reconnect",
                 "traffic_unchanged": True, "pid_unchanged": True}),
             "frames": fake_frames(receipt, admission=case["case"].startswith("admission:"))})
+    comparison_guard = sorted([*guard, ["biocompiler.core_pipeline_manager", "CorePassManager.inspect_ordered"]])
+    receipt["fresh_comparison_original"] = put(corpus.oracles["callbacks"])
+    for case in corpus.comparisons:
+        frames, inspections, events, exceptions, source = fake_frames(receipt, comparison=case)
+        receipt["comparison_checks"].append({"id": case["id"], "original": put(case), "actual": put(case),
+            "pid": 124, "returncode": 0, "closed": True, "invalidated": False, "executable_sha256": "a"*64,
+            "stderr": put({"hex": ""}), "guard": put(comparison_guard),
+            "after_close": put({"type": "CoreProtocolError", "message": "Callback session is closed; it cannot reconnect",
+                "traffic_unchanged": True, "pid_unchanged": True}), "frames": frames, "inspections": put(inspections),
+            "events": put(events), "host_exceptions": put(exceptions), "source_bindings": put(source)})
     receipt["pending"] = put(corpus.pending)
     return receipt
 
@@ -126,6 +284,63 @@ def edit_artifact(receipt, row, field, mutate, *, framed=False):
     if old not in campaign.canonical(control).decode():
         del receipt["artifacts"][old]
         path.unlink()
+
+
+def reframe(receipt, row, mutate):
+    """Repair all byte/hash/resource envelopes after a semantic mutation."""
+    directory = Path(receipt["_artifact_directory"])
+    values = [campaign.frame_body((directory/(item["frame"]+".bin")).read_bytes()) for item in row["frames"]]
+    mutate(values)
+    channel, _ = campaign.declarations()
+    input_bytes = output_bytes = nodes = commands = pending = 0
+    requests, invocations, new_rows = {}, {}, []
+    for count, value in enumerate(values, 1):
+        incoming = "sequence" in value and value["kind"] in channel["client_fields"]
+        if incoming:
+            if value["kind"] == "continue":
+                value["invocation_sha256"] = campaign.sha(invocations[value["invocation_id"]])
+                pending -= 1
+            else:
+                commands += 1
+            raw = campaign.frame(value)
+            input_bytes += len(raw)
+            nodes += campaign.json_nodes(value)
+            requests[value["sequence"]] = raw[9:]
+        else:
+            if value["kind"] == "invoke":
+                value["command_sha256"] = campaign.sha(requests[value["command_sequence"]])
+                pending += 1
+            else:
+                value["request_sha256"] = campaign.sha(requests[value["sequence"]])
+            nodes += campaign.json_nodes(value)
+            value["usage"].update(input_bytes=input_bytes, output_bytes=output_bytes, frames=count,
+                commands=commands, json_nodes=nodes, pending_invocations=pending, retained_bytes=10_000+count,
+                work_charged=1_000_000+count*100, work_remaining=10**12-1_000_000-count*100)
+            while True:
+                raw = campaign.frame(value)
+                wanted = output_bytes + len(raw)
+                if value["usage"]["output_bytes"] == wanted: break
+                value["usage"]["output_bytes"] = wanted
+            output_bytes += len(raw)
+            if value["kind"] == "invoke": invocations[value["invocation_id"]] = raw[9:]
+        new_rows.append({"direction": "client" if incoming else "server",
+            "index": value["sequence"] if incoming else value["event_id"], "frame": campaign.artifact(receipt, raw)})
+    row["frames"] = new_rows
+    control = campaign.canonical({key: value for key, value in receipt.items() if key not in ("artifacts", "_artifact_directory")}).decode()
+    for identity in list(receipt["artifacts"]):
+        if identity not in control:
+            del receipt["artifacts"][identity]
+            (directory/(identity+".bin")).unlink()
+
+
+def case_row(receipt, identity):
+    return next(row for row in receipt["comparison_checks"] if row["id"] == identity)
+
+
+def assert_valid_frames(receipt, row):
+    channel, application = campaign.declarations()
+    return campaign.validate_frames(row["frames"], campaign.Artifacts(Path(receipt["_artifact_directory"]), receipt["artifacts"]),
+        channel, application, provider_calls=False)
 
 
 def matrix_fixture(root, corpus):
@@ -155,7 +370,7 @@ def matrix_fixture(root, corpus):
             receipt["executables"] = {role: str(native_path/("biocompiler-"+role)) for role in ("core", "verify")}
             receipt["verify_rejection"]["argv"][0] = receipt["executables"]["verify"]
             receipt["verify_rejection"]["executable_sha256"] = pins["biocompiler-verify"]
-            for row in receipt["checks"]:
+            for row in [*receipt["checks"], *receipt["comparison_checks"]]:
                 row["executable_sha256"] = pins["biocompiler-core"]
             del receipt["_artifact_directory"]
             (directory/campaign.RECEIPT_FILE).write_bytes(campaign.canonical(receipt)+b"\n")
@@ -178,12 +393,113 @@ class PipelineManagerCampaignTests(unittest.TestCase):
         self.assertEqual(pending["fixed_census"]["excluded_calls"], 10)
         self.assertEqual(len(pending["callback_cases"]), 34)
         self.assertEqual(len(pending["deferred_cases"]), 47)
+        self.assertEqual(tuple(case["id"] for case in self.corpus.comparisons), campaign.COMPARISON_CASES)
+        self.assertEqual(sum(len(campaign.original_snapshots(case)) for case in self.corpus.comparisons), 280)
+
+    def test_original_comparison_bodies_run_through_observational_swap(self):
+        """A Python-only view tests harness glue; it is not native acceptance."""
+        from biocompiler.compiler.pipeline import PassManager
+        oracle = campaign.load_oracle(installed=False, comparison=True)
+        original_capture = oracle.Capture
+        class PythonView:
+            def __init__(self, **kwargs):
+                self.actual = PassManager(**kwargs)
+                self.values, self.observations = [], 0
+                self.session = SimpleNamespace(last_response=None)
+            def __getattr__(self, name):
+                return getattr(self.actual, name)
+            def label(self, value):
+                for index, item in enumerate(self.values):
+                    if item is value: return "provider/"+str(index)
+                self.values.append(value)
+                return "provider/"+str(len(self.values)-1)
+            def inspect_ordered(self):
+                observed = original_capture.snapshot(SimpleNamespace(manager=self.actual, label=self.label))
+                tokens = {"provider/"+str(index): "provider/"+str(index) for index in range(len(self.values))}
+                raw, _ = fake_inspection(observed, tokens)
+                objects = {item["provider_id"]: self.values[int(item["provider_id"].split("/")[1])] for item in raw["providers"]}
+                self.session.last_response = SimpleNamespace(operation="inspect-ordered", sequence=self.observations, result=raw)
+                self.observations += 1
+                return SimpleNamespace(snapshot=raw["snapshot"], order=raw["order"], providers=objects)
+        count = 0
+        for expected in self.corpus.comparisons:
+            observed = []
+            with campaign.native_comparison_capture(oracle, PythonView, lambda *args: observed.append(args)):
+                actual = campaign.run_comparison_case(oracle, expected["id"])
+            self.assertIs(oracle.Capture, original_capture)
+            self.assertEqual(actual, expected)
+            self.assertEqual(len(observed), 2*len(expected["events"])+2)
+            count += len(observed)
+        self.assertEqual(count, 280)
+        self.assertEqual(oracle.capture(), self.corpus.oracles["callbacks"])
+
+    def test_profiler_retains_actual_consumed_exception_without_observation_hooks(self):
+        from biocompiler.pipeline_callback_objects import CallbackObjects
+        calls = []
+        class Unobservable(ValueError):
+            def __str__(self):
+                calls.append("str")
+                raise AssertionError("Observer called user exception formatting")
+        broker = CallbackObjects()
+        session = SimpleNamespace(traffic=(SimpleNamespace(direction="server", value={"kind": "invoke", "invocation_id": 7}),))
+        managers = [SimpleNamespace(_objects=broker, session=session)]
+        retained, seen = {}, set()
+        observer = lambda frame, event, result: campaign.observe_host_exception(frame, event, result, managers, retained)
+        original = Unobservable("original")
+        previous = sys.getprofile()
+        with campaign.guarded_execution(seen, observer):
+            with campaign.guarded_execution(seen, observer):
+                result = broker._capture(original)
+            token = campaign.r.decode(result.document)["exception_token"]
+            try:
+                broker.rethrow(token)
+            except Unobservable as error:
+                self.assertIs(error, original)
+        self.assertIs(sys.getprofile(), previous)
+        self.assertIs(retained[token]["object"], original)
+        self.assertEqual(retained[token]["invocation"], 7)
+        self.assertNotIn(token, broker._exceptions)
+        self.assertEqual(calls, [])
+        broker.close()
+
+    def test_order_and_physical_provider_inventory_mutations_fail(self):
+        case = next(value for value in self.corpus.comparisons if value["id"] == "pass:comparison_order")
+        tokens = {label: "provider/"+str(index) for index,label in enumerate(case["providers"])}
+        original = case["final_state"]
+        raw, aliases = fake_inspection(original, tokens)
+        self.assertEqual(campaign.comparison_snapshot(raw, aliases), original)
+        changed = deepcopy(raw)
+        changed["order"]["validators"]["passes"]["lower"].reverse()
+        self.assertNotEqual(campaign.comparison_snapshot(changed, aliases), original)
+        for mutate in (lambda value: value["providers"].pop(),
+                lambda value: value["providers"][1].update(object=value["providers"][0]["object"]),
+                lambda value: value["order"]["passes"].append("invented"),
+                lambda value: value["order"]["combined_provider_history"].clear()):
+            changed = deepcopy(raw); mutate(changed)
+            with self.assertRaises(AssertionError): campaign.comparison_snapshot(changed, aliases)
+        changed_aliases = dict(aliases)
+        changed_aliases[next(iter(changed_aliases))] = next(iter(list(changed_aliases.values())[1:]))
+        with self.assertRaisesRegex(AssertionError, "physical bijection"):
+            campaign.comparison_snapshot(raw, changed_aliases)
+        previous = {}
+        campaign.comparison_snapshot(raw, aliases, previous=previous)
+        changed = deepcopy(raw)
+        old = changed["providers"][0]["provider_id"]
+        fresh = "provider/99999"
+        changed["providers"][0]["provider_id"] = fresh
+        for group in campaign.REGISTRATION_MAPS:
+            for entry in changed["snapshot"][group].values():
+                if entry.get("producer") == old: entry["producer"] = fresh
+                entry["validators"] = {key: fresh if value == old else value for key,value in entry["validators"].items()}
+        renamed = {fresh if key == old else key: value for key,value in aliases.items()}
+        with self.assertRaisesRegex(AssertionError, "another native token"):
+            campaign.comparison_snapshot(changed, renamed, previous=previous)
 
     def test_complete_comparator_fixture_and_nonce_projection(self):
         with tempfile.TemporaryDirectory() as a, tempfile.TemporaryDirectory() as b:
             first, second = fixture(Path(a), self.corpus), fixture(Path(b), self.corpus)
             self.assertEqual(validate(first, self.corpus), validate(second, self.corpus))
-            self.assertEqual(len(validate(first, self.corpus)), 5)
+            self.assertEqual(len(validate(first, self.corpus)), 39)
 
     def test_complete_case_mutations_are_rejected_even_with_new_content_hash(self):
         mutations = [lambda value: value["events"][0].update(target_is_supplied=False),
@@ -195,6 +511,111 @@ class PipelineManagerCampaignTests(unittest.TestCase):
                 edit_artifact(receipt, receipt["checks"][0], "actual", mutation)
                 with self.assertRaises(AssertionError):
                     validate(receipt, self.corpus)
+
+    def test_rehashed_native_reply_and_comparison_semantics_cannot_detach(self):
+        def rejected_message(values):
+            reply = next(value for value in values if value["kind"] == "reply" and value["outcome"]["status"] == "rejected")
+            reply["outcome"]["value"]["message"] += " changed"
+        def rejection_class(values):
+            reply = next(value for value in values if value["kind"] == "reply" and value["outcome"]["status"] == "rejected")
+            reply["outcome"]["value"]["type"] = "ValueError"
+        def changed_get(values):
+            seq = next(value["sequence"] for value in values if value["kind"] == "command" and value["operation"] == "get")
+            reply = next(value for value in values if value["kind"] == "reply" and value["sequence"] == seq)
+            reply["outcome"]["value"]["value"]["payload"]["nodes"][0]["value"] = 999
+        def wrong_action(values):
+            invoke = next(value for value in values if value["kind"] == "invoke" and value["action"] == "compare")
+            invoke["action"] = "contains"
+            invoke["arguments"] = {"container": invoke["arguments"]["left"], "item": invoke["arguments"]["right"]}
+        def wrong_contract(values):
+            command = next(value for value in values if value["kind"] == "command" and value["operation"] == "register")
+            command["arguments"]["contract"]["version"] = "wrong"
+        def wrong_compare_value(values):
+            invoke = next(value for value in values if value["kind"] == "invoke" and value["action"] == "compare")
+            result = next(value for value in values if value["kind"] == "continue" and value["invocation_id"] == invoke["invocation_id"])
+            result["outcome"]["value"] = not result["outcome"]["value"]
+        controls = [("pass:unequal", rejected_message, "rejection descriptor"),
+            ("pass:unequal", rejection_class, "rejection descriptor"),
+            ("pass:reentrant_reads", changed_get, "returned value"),
+            ("pass:equal", wrong_action, "native equality invocation"),
+            ("pass:equal", wrong_contract, "another contract"),
+            ("pass:equal", wrong_compare_value, "comparison continuation differs")]
+        for case, mutation, diagnostic in controls:
+            with self.subTest(case=case, diagnostic=diagnostic), tempfile.TemporaryDirectory() as directory:
+                receipt = fixture(Path(directory), self.corpus)
+                row = case_row(receipt, case)
+                reframe(receipt, row, mutation)
+                assert_valid_frames(receipt, row)
+                with self.assertRaisesRegex(AssertionError, diagnostic): validate(receipt, self.corpus)
+
+    def test_rehashed_exception_translation_and_token_substitution_fail(self):
+        with tempfile.TemporaryDirectory() as directory:
+            receipt = fixture(Path(directory), self.corpus)
+            row = case_row(receipt, "pass:raises")
+            expected = next(case for case in self.corpus.comparisons if case["id"] == row["id"])
+            manager = next(event for event in expected["events"] if event["kind"] == "manager" and event["outcome"] == "raised")
+            def translated(values):
+                reply = next(value for value in values if value["kind"] == "reply" and value["outcome"]["status"] == "raise")
+                reply["outcome"] = {"status": "rejected", "value": {**manager["error"], "attributes": {}}}
+            reframe(receipt, row, translated)
+            edit_artifact(receipt, row, "events", lambda value: value[manager["id"]].update(exception_tokens=[]))
+            edit_artifact(receipt, row, "host_exceptions", lambda value: value[0]["events"].remove(manager["id"]))
+            assert_valid_frames(receipt, row)
+            with self.assertRaisesRegex(AssertionError, "translated the original host exception"):
+                validate(receipt, self.corpus)
+        with tempfile.TemporaryDirectory() as directory:
+            receipt = fixture(Path(directory), self.corpus)
+            row = case_row(receipt, "pass:raises")
+            def substituted(values):
+                for value in values:
+                    if value["kind"] in ("reply", "continue") and value["outcome"]["status"] == "raise":
+                        value["outcome"]["token"] = "exception/99999"
+            reframe(receipt, row, substituted)
+            assert_valid_frames(receipt, row)
+            with self.assertRaisesRegex(AssertionError, "detached from actual command token"):
+                validate(receipt, self.corpus)
+
+    def test_swapped_equal_actions_and_extra_commands_have_no_observation(self):
+        with tempfile.TemporaryDirectory() as directory:
+            receipt = fixture(Path(directory), self.corpus)
+            row = case_row(receipt, "pass:identity_shortcut")
+            def swap(values):
+                keys = ("sequence", "before_frames", "after_frames")
+                first, second = [{key: value[key] for key in keys} for value in values]
+                values[0].update(second); values[1].update(first)
+            edit_artifact(receipt, row, "events", swap)
+            assert_valid_frames(receipt, row)
+            with self.assertRaisesRegex(AssertionError, "its own before/after"):
+                validate(receipt, self.corpus)
+        with tempfile.TemporaryDirectory() as directory:
+            receipt = fixture(Path(directory), self.corpus)
+            row = case_row(receipt, "pass:identity_shortcut")
+            def extra(values):
+                close, reply = values[-2:]
+                command = {**close, "kind": "command", "operation": "target", "arguments": {}}
+                response = {**deepcopy(reply), "closed": False, "outcome": {"status": "ok", "value": None}}
+                close["sequence"] += 1
+                reply["sequence"] += 1
+                reply["event_id"] += 1
+                values[-2:] = [command, response, close, reply]
+            reframe(receipt, row, extra)
+            assert_valid_frames(receipt, row)
+            with self.assertRaisesRegex(AssertionError, "Unclaimed or missing actual comparison command"):
+                validate(receipt, self.corpus)
+
+    def test_comparison_case_event_and_inspection_census_cannot_shrink(self):
+        for mutate, diagnostic in ((lambda receipt: receipt["comparison_checks"].pop(), "34-case"),
+                (lambda receipt: receipt.update(completed_comparison_checks=33), "34-case"),
+                (lambda receipt: receipt["comparison_checks"].__setitem__(1, receipt["comparison_checks"][0]), "reordered original comparison")):
+            with tempfile.TemporaryDirectory() as directory:
+                receipt = fixture(Path(directory), self.corpus); mutate(receipt)
+                with self.assertRaisesRegex(AssertionError, diagnostic): validate(receipt, self.corpus)
+        with tempfile.TemporaryDirectory() as directory:
+            receipt = fixture(Path(directory), self.corpus)
+            row = case_row(receipt, "pass:equal")
+            edit_artifact(receipt, row, "inspections", lambda value: value.pop())
+            with self.assertRaisesRegex(AssertionError, "inspection census"):
+                validate(receipt, self.corpus)
 
     def test_session_binding_usage_and_lifo_mutations_are_rejected(self):
         changes = [("invoke", lambda value: value.update(command_sha256="0"*64)),

@@ -25,6 +25,7 @@ import signal
 import subprocess
 import sys
 import time
+from types import MappingProxyType
 from uuid import UUID, uuid4
 
 if __package__:
@@ -36,7 +37,7 @@ else:
 
 ROOT = Path(__file__).resolve().parents[1]
 SCHEMA = "biocompiler.installed_pipeline_manager_conformance.v1"
-SCOPE = "five_original_identity_order_cases_complete_records_and_callbacks_not_full_manager_cutover"
+SCOPE = "five_identity_cases_and_34_original_comparison_cases_complete_live_evidence_not_full_manager_cutover"
 RECEIPT_FILE, ARTIFACT_DIRECTORY = "pipeline-manager.json", "pipeline-manager-artifacts"
 ARGUMENT = "--pipeline-callback-session-v1"
 CHANNEL_PATH = "protocol/pipeline-callback-channel-v1.json"
@@ -54,10 +55,21 @@ LITERAL_MODULES = {"biocompiler.compiler.pipeline", "biocompiler.compiler.passes
     "biocompiler.semantics.context", "biocompiler.verification.evidence"}
 SOURCES = ("tools/check_pipeline_manager_install.py", "tests/test_pipeline_manager_campaign.py",
     "tools/check_pipeline_session_install.py", "tools/check_workflow_reproducibility.py", "tools/check_realization_binaries.py",
-    "tools/capture_pipeline_identity_semantics.py", "tests/test_pipeline_identity_semantics.py", CHANNEL_PATH, APPLICATION_PATH)
+    "tools/capture_pipeline_identity_semantics.py", "tests/test_pipeline_identity_semantics.py",
+    "tools/capture_pipeline_callback_semantics.py", "tests/test_pipeline_callback_semantics.py", CHANNEL_PATH, APPLICATION_PATH)
 CASES = ("run:sharing_and_order", "run:nested_returns", "run:nested_raises",
          "run:validator_mutates_snapshot", "admission:sharing_and_order")
 COVERAGE = {"cases": 5, "events": 34, "records": 10}
+COMPARISON_COVERAGE = {"cases": 34, "manager_events": 78, "comparison_events": 28, "raised_events": 18}
+COMPARISON_ORDINARY = ("identity_shortcut", "default_identity_distinct", "bound_method_equivalent",
+    "equal", "unequal", "raises", "reflected_not_implemented", "subclass_reflection", "mutation_true",
+    "mutation_raises", "reentrant_reads", "reentrant_registration", "history_restore")
+COMPARISON_PRODUCER = ("same_callable_cannot_self_certify", "distinct_callable_roles_skip_equality",
+    "distinct_equal_bound_method_roles", "bound_producer_identity_change")
+COMPARISON_CASES = tuple(mode + ":" + name for mode in ("pass", "admission") for name in
+    (*COMPARISON_ORDINARY, "comparison_order", "comparison_short_circuit")) + tuple("pass:" + name for name in COMPARISON_PRODUCER)
+STATE_MAPS = ("dependencies", "passes", "component_inputs", "provider_history", "component_input_history", "records", "profiles")
+REGISTRATION_MAPS = ("passes", "component_inputs", "provider_history", "component_input_history")
 canonical, require, equal = r.canonical, r.require, fixed.equal
 sha = lambda raw: hashlib.sha256(raw).hexdigest()
 artifact, Artifacts = fixed.artifact, r.Artifacts
@@ -88,10 +100,14 @@ class Corpus:
             self.oracles[label], self.pins[label] = value, {"path": "tests/conformance/" + name, "sha256": actual,
                 "inventory_fingerprint": value["inventory_fingerprint"]}
         self.cases = self.oracles["identity"]["cases"]
+        self.comparisons = self.oracles["callbacks"]["cases"]
         require(tuple(case["case"] for case in self.cases) == CASES and self.oracles["identity"]["coverage"] == COVERAGE,
                 "Original identity observations were narrowed")
         require(len(self.oracles["callbacks"]["cases"]) == 34 and len(self.oracles["deferred"]["cases"]) == 47,
                 "Broader callback observations were dropped")
+        require(tuple(case["id"] for case in self.comparisons) == COMPARISON_CASES
+            and self.oracles["callbacks"]["coverage"] == COMPARISON_COVERAGE,
+            "Original comparison observations were narrowed")
         full = self.oracles["full"]
         archived = r.raw_file(ROOT / "tests/conformance" / full["archive"]["path"])
         require(sha(archived) == full["archive"]["sha256"], "Complete original manager archive changed")
@@ -110,6 +126,7 @@ class Corpus:
             "fixed_pending": original_fixed.pending(), "fixed_census": original_fixed.census,
             "fixed_unreplayed_observations": 287,
             "callback_cases": [case["id"] for case in self.oracles["callbacks"]["cases"]],
+            "callback_case_status": "covered_only_when_all_34_live_comparison_receipts_validate;not_a_substitute_for_full_original_contexts",
             "deferred_cases": [case["id"] for case in self.oracles["deferred"]["cases"]],
             "deferred_runtime_counterparts": self.oracles["deferred"]["runtime_counterparts"],
             "external_native_provider_contexts": "pending_general_import;original_wrappers_use_exact_supplied_context",
@@ -119,7 +136,8 @@ class Corpus:
 
 def metadata(corpus):
     return {"oracle_pins": corpus.pins, "original_sources": corpus.original_sources,
-            "coverage": COVERAGE, "declarations": r.source_pins((CHANNEL_PATH, APPLICATION_PATH))}
+            "coverage": COVERAGE, "comparison_coverage": COMPARISON_COVERAGE,
+            "declarations": r.source_pins((CHANNEL_PATH, APPLICATION_PATH))}
 
 
 def permitted(module, qualname):
@@ -134,7 +152,7 @@ def permitted(module, qualname):
 
 
 @contextmanager
-def guarded_execution(seen):
+def guarded_execution(seen, observer=None):
     previous, original_import = sys.getprofile(), builtins.__import__
     def calls(frame, event, result):
         module = frame.f_globals.get("__name__", "")
@@ -142,6 +160,8 @@ def guarded_execution(seen):
             name = frame.f_code.co_qualname
             require(permitted(module, name), "Python manager semantic authority is forbidden: " + module + "." + name)
             seen.add((module, name))
+        if observer is not None:
+            observer(frame, event, result)
     def imports(name, *args, **kwargs):
         if name.startswith("biocompiler"):
             require(name in TRANSPORT_MODULES | LITERAL_MODULES, "Unreviewed manager import: " + name)
@@ -179,7 +199,7 @@ def installed_modules():
     return result
 
 
-def load_oracle(*, installed=True):
+def load_oracle(*, installed=True, comparison=False):
     # Import every product dependency before the unchanged oracle temporarily
     # prepends checkout/src. Only pinned test helpers are intentionally loaded
     # from the checkout. Restore the exact path even if fixture loading fails.
@@ -189,8 +209,9 @@ def load_oracle(*, installed=True):
         installed_modules()
     paths = list(sys.path)
     try:
-        spec = importlib.util.spec_from_file_location("_original_manager_identity_cases",
-            ROOT / "tools/capture_pipeline_identity_semantics.py")
+        name = "callback" if comparison else "identity"
+        spec = importlib.util.spec_from_file_location("_original_manager_" + name + "_cases",
+            ROOT / ("tools/capture_pipeline_" + name + "_semantics.py"))
         module = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(module)
     finally:
@@ -205,15 +226,15 @@ def load_oracle(*, installed=True):
 
 
 class GuardedManager:
-    def __init__(self, manager, seen):
-        self.manager, self.seen = manager, seen
+    def __init__(self, manager, seen, observer=None):
+        self.manager, self.seen, self.observer = manager, seen, observer
 
     def __getattr__(self, name):
-        with guarded_execution(self.seen):
+        with guarded_execution(self.seen, self.observer):
             value = getattr(self.manager, name)
         if callable(value):
             def invoke(*args, **kwargs):
-                with guarded_execution(self.seen):
+                with guarded_execution(self.seen, self.observer):
                     return value(*args, **kwargs)
             return invoke
         return value
@@ -282,6 +303,318 @@ def campaign(core, corpus, receipt):
     receipt["pending"] = artifact(receipt, canonical(corpus.pending))
 
 
+def inspection_plain(value):
+    """Copy only the adapter's immutable JSON views, never arbitrary objects."""
+    if type(value) in (dict, MappingProxyType):
+        require(all(type(key) is str for key in value), "Inspection has a non-string key")
+        return {key: inspection_plain(item) for key, item in value.items()}
+    if type(value) in (list, tuple):
+        return [inspection_plain(item) for item in value]
+    require(value is None or type(value) in (bool, str, int, float), "Inspection contains a host object")
+    return value
+
+
+def comparison_snapshot(raw, aliases, *, previous=None, bound=None):
+    """Validate actual native observation before projecting physical labels.
+
+    Aliases originate in the unchanged Capture.label's `is` comparisons with
+    real retained providers. The expected state is not an input to this view.
+    """
+    require(type(raw) is dict and set(raw) == {"snapshot", "order", "providers"}, "Invalid ordered inspection envelope")
+    snapshot, order, providers = raw["snapshot"], raw["order"], raw["providers"]
+    require(type(snapshot) is dict and set(snapshot) == {"target", *STATE_MAPS}
+        and all(type(snapshot[key]) is dict for key in STATE_MAPS), "Incomplete inspected native state")
+    require(type(order) is dict and set(order) == {*STATE_MAPS, "combined_provider_history", "validators"},
+            "Incomplete native mapping order")
+    def keys(actual, wanted):
+        require(type(actual) is list and all(type(key) is str for key in actual)
+            and len(actual) == len(set(actual)) and set(actual) == set(wanted), "Native order omitted, duplicated or invented a key")
+    for key in STATE_MAPS:
+        keys(order[key], snapshot[key])
+    validator_order = order["validators"]
+    require(type(validator_order) is dict and set(validator_order) == set(REGISTRATION_MAPS), "Incomplete validator order maps")
+    reachable = set()
+    for group in REGISTRATION_MAPS:
+        require(type(validator_order[group]) is dict and set(validator_order[group]) == set(snapshot[group]),
+                "Validator order omitted a registration")
+        for identity, entry in snapshot[group].items():
+            fields = {"contract", "validators", "producer"} if group in ("passes", "provider_history") else {"contract", "validators"}
+            require(type(entry) is dict and set(entry) == fields and type(entry["validators"]) is dict,
+                    "Malformed complete native registration")
+            keys(validator_order[group][identity], entry["validators"])
+            if "producer" in entry:
+                reachable.add(entry["producer"])
+            reachable.update(entry["validators"].values())
+    require(all(type(value) is str and re.fullmatch(r"provider/[0-9]+", value) for value in reachable),
+            "Native registration has an invalid provider token")
+    histories = order["combined_provider_history"]
+    require(type(histories) is list, "Missing actual provider-history chronology")
+    history_keys = []
+    for key in histories:
+        if type(key) is str:
+            require(key in snapshot["provider_history"], "Invented pass history entry")
+            history_keys.append(("pass", key))
+        else:
+            require(type(key) is list and len(key) == 2 and key[0] == "component_input"
+                and type(key[1]) is str and key[1] in snapshot["component_input_history"], "Invented admission history entry")
+            history_keys.append(tuple(key))
+    require(len(history_keys) == len(set(history_keys)) and set(history_keys) ==
+        {("pass", key) for key in snapshot["provider_history"]} |
+        {("component_input", key) for key in snapshot["component_input_history"]}, "Combined provider history is incomplete")
+    require([key for tag, key in history_keys if tag == "pass"] == order["provider_history"]
+        and [key for tag, key in history_keys if tag == "component_input"] == order["component_input_history"],
+        "Combined history contradicts actual history order")
+    require(type(providers) is list and type(aliases) is dict and set(aliases) == reachable
+        and all(type(label) is str for label in aliases.values()) and len(set(aliases.values())) == len(aliases),
+        "Provider aliases are not a complete physical bijection")
+    tokens, handles = set(), set()
+    for entry in providers:
+        require(type(entry) is dict and set(entry) == {"provider_id", "object"}
+            and type(entry["provider_id"]) is str and entry["provider_id"] in reachable, "Unknown inspected provider")
+        token, reference = entry["provider_id"], entry["object"]
+        require(type(reference) is dict and set(reference) == {"handle"} and type(reference["handle"]) is str
+            and re.fullmatch(r"object/[0-9]+", reference["handle"]), "Invalid actual provider reference")
+        require(token not in tokens and reference["handle"] not in handles, "Native provider identity is not physically bijective")
+        tokens.add(token); handles.add(reference["handle"])
+        if bound is not None:
+            require(bound.get(token) == reference, "Inspection provider was not bound to this exact actual host callable")
+        if previous is not None:
+            prior = previous.get(token)
+            require(prior is None or prior == (aliases[token], reference["handle"]), "Actual provider identity changed between observations")
+            require(all(old_token == token or value[0] != aliases[token] and value[1] != reference["handle"]
+                for old_token, value in previous.items()), "A retained callable was assigned another native token")
+            previous[token] = (aliases[token], reference["handle"])
+    require(tokens == reachable, "Reachable native provider inventory omitted")
+    state = deepcopy(snapshot)
+    for group in REGISTRATION_MAPS:
+        for entry in state[group].values():
+            if "producer" in entry:
+                entry["producer"] = aliases[entry["producer"]]
+            entry["validators"] = {key: aliases[value] for key, value in entry["validators"].items()}
+    for identity, envelope in snapshot["records"].items():
+        require(type(envelope) is dict and set(envelope) == {"value", "bindings"}
+            and type(envelope["value"]) is dict and envelope["value"].get("id") == identity
+            and type(envelope["bindings"]) is dict, "Incomplete historical record envelope")
+        state["records"][identity] = envelope["value"]
+    return {"state": state, "order": deepcopy(order)}
+
+
+def original_snapshots(case):
+    """Exact evaluation order of initial, before/after and final observations."""
+    events = case["events"]
+    require([event["id"] for event in events] == list(range(len(events))), "Original comparison event order changed")
+    children = {}
+    for event in events:
+        parent = event["parent"]
+        require(parent is None or type(parent) is int and 0 <= parent < event["id"], "Original comparison parent differs")
+        children.setdefault(parent, []).append(event)
+    result = [case["initial_state"]]
+    def visit(event):
+        result.append(event["before"])
+        for child in children.get(event["id"], ()):
+            visit(child)
+        result.append(event["after"])
+    for event in children.get(None, ()):
+        visit(event)
+    result.append(case["final_state"])
+    require(len(result) == 2 * len(events) + 2, "Incomplete original comparison observation traversal")
+    return result
+
+
+def run_comparison_case(oracle, identity):
+    mode, name = identity.split(":", 1)
+    require(identity in COMPARISON_CASES, "Unknown comparison case")
+    if name in COMPARISON_ORDINARY:
+        return oracle.ordinary_case(mode, name)
+    if name in ("comparison_order", "comparison_short_circuit"):
+        return oracle.ordered_case(mode, name == "comparison_short_circuit")
+    require(mode == "pass" and name in COMPARISON_PRODUCER, "Unknown original producer comparison case")
+    return oracle.producer_case(name)
+
+
+def live_invocation(session):
+    pending = []
+    for item in session.traffic:
+        value = item.value
+        if item.direction == "server" and value["kind"] == "invoke":
+            pending.append(value["invocation_id"])
+        elif item.direction == "client" and value["kind"] == "continue":
+            require(pending and pending.pop() == value["invocation_id"], "Live callback stack differs")
+    return pending[-1] if pending else None
+
+
+@contextmanager
+def native_comparison_capture(oracle, factory, retain_observation, retain_event=None, retain_capture=None):
+    """Swap only setup/observation; all original case and comparison code runs."""
+    from biocompiler.compiler.pipeline import CompletionProfile, ScopedObligation
+    from biocompiler.ir.stages import Stage
+    from biocompiler.verification.evidence import EvidenceKind
+    original = oracle.Capture
+    class NativeCapture(original):
+        def __init__(self, mode, name):
+            self.native_observer_ready = False
+            original.__init__(self, mode, name)
+            target, dependencies = self.manager.target, dict(self.setup["dependencies"])
+            profiles = tuple(CompletionProfile(scope=value["scope"], stage=Stage(value["stage"]),
+                schema=value["schema"], obligations=tuple(value["obligations"])) for value in self.setup["profiles"])
+            manager = factory(target=target, dependencies=dependencies, completion_profiles=profiles)
+            if mode == "pass":
+                # This is a fresh authoritative root insertion from fixture
+                # authoring fields. No helper accepted record is read/imported.
+                obligations = tuple(ScopedObligation(id=value["id"], scope=value["scope"],
+                    evidence_kind=EvidenceKind(value["evidence_kind"]), description=value["description"])
+                    for value in self.setup["obligations"])
+                manager.add_input("input", self.setup["input"], requirements=tuple(self.setup["requirements"]), obligations=obligations)
+            self.manager = manager
+            self.native_observer_ready = True
+            self.initial = self.snapshot()
+            if retain_capture is not None:
+                retain_capture(self)
+
+        def snapshot(self):
+            if not self.native_observer_ready:
+                return original.snapshot(self)
+            inspected = self.manager.inspect_ordered()
+            aliases = {token: self.label(value) for token, value in inspected.providers.items()}
+            response = self.manager.session.last_response
+            require(response is not None and response.operation == "inspect-ordered", "Native inspection receipt missing")
+            raw = response.result
+            equal(inspection_plain(inspected.snapshot), raw["snapshot"], "Adapter inspection changed complete native state")
+            equal(inspection_plain(inspected.order), raw["order"], "Adapter inspection changed actual native order")
+            projected = comparison_snapshot(raw, aliases)
+            retain_observation(response.sequence, aliases)
+            return projected
+        def observe(self, kind, recipe, action):
+            identity = len(self.events)
+            invocation = live_invocation(self.manager.session) if retain_event is not None else None
+            def observed_action():
+                before = len(self.manager.session.traffic) if retain_event is not None else 0
+                error = None
+                try:
+                    return action()
+                except BaseException as cause:
+                    error = cause
+                    raise
+                finally:
+                    if retain_event is not None:
+                        session = self.manager.session
+                        sequence = session.last_response.sequence if kind == "manager" and recipe["operation"] != "target" else None
+                        retain_event({"event": identity, "kind": kind, "sequence": sequence,
+                            "invocation": invocation, "before_frames": before, "after_frames": len(session.traffic)}, error)
+            return original.observe(self, kind, recipe, observed_action)
+    oracle.Capture = NativeCapture
+    try:
+        yield
+    finally:
+        oracle.Capture = original
+
+
+def observe_host_exception(frame, event, result, managers, exceptions):
+    if frame.f_globals.get("__name__") == "biocompiler.pipeline_callback_objects" and \
+            frame.f_code.co_qualname == "CallbackObjects._capture" and event == "return" and result is not None:
+        require(len(managers) == 1 and frame.f_locals["self"] is managers[0]._objects,
+            "Exception came from another host broker")
+        token = r.decode(result.document)["exception_token"]
+        require(token not in exceptions, "Host exception token reused")
+        exceptions[token] = {"object": frame.f_locals["exception"], "invocation": live_invocation(managers[0].session)}
+
+
+def comparison_campaign(core, corpus, receipt):
+    from biocompiler.core_pipeline_manager import CorePassManager
+    from biocompiler.core_client import CoreProtocolError
+    oracle = load_oracle(comparison=True)
+    fresh = oracle.capture()
+    equal(fresh, corpus.oracles["callbacks"], "Fresh unchanged original comparison oracle differs")
+    receipt["fresh_comparison_original"] = artifact(receipt, canonical(fresh))
+    for expected in corpus.comparisons:
+        seen, managers, observations, captures, events, exceptions = set(), [], [], [], [], {}
+        row = {"id": expected["id"], "original": artifact(receipt, canonical(expected)), "frames": []}
+        receipt["comparison_checks"].append(row)
+        def observer(frame, event, result):
+            observe_host_exception(frame, event, result, managers, exceptions)
+        def factory(**kwargs):
+            with guarded_execution(seen, observer):
+                manager = CorePassManager(core, **kwargs)
+            managers.append(manager)
+            return GuardedManager(manager, seen, observer)
+        def observed(sequence, aliases):
+            observations.append({"sequence": sequence, "aliases": dict(aliases)})
+        def observed_event(value, error):
+            events.append((value, error))
+        try:
+            with native_comparison_capture(oracle, factory, observed, observed_event, captures.append):
+                actual = run_comparison_case(oracle, expected["id"])
+            row["actual"] = artifact(receipt, canonical(actual))
+            equal(actual, expected, "Complete live comparison differs: " + expected["id"])
+        finally:
+            links = [{**value, "exception_tokens": sorted(token for token, entry in exceptions.items() if entry["object"] is error)}
+                for value, error in events]
+            links.sort(key=lambda item: item["event"])
+            row["events"] = artifact(receipt, canonical(links))
+            row["host_exceptions"] = artifact(receipt, canonical([{"token": token, "invocation": entry["invocation"],
+                "events": sorted(value["event"] for value, error in events if error is entry["object"])} for token, entry in exceptions.items()]))
+            row["inspections"] = artifact(receipt, canonical(observations))
+            require(len(managers) == 1, "Comparison case did not retain exactly one actual native manager")
+            manager = managers[0]
+            if captures:
+                require(len(captures) == 1, "Original comparison capture was replaced mid-case")
+                capture = captures[0]
+                bindings = {}
+                for item in manager.session.traffic:
+                    value = item.value
+                    if item.direction != "client" or value["kind"] != "command":
+                        continue
+                    args, operation = value["arguments"], value["operation"]
+                    if operation == "initialize-empty":
+                        ref = args["target_object"]
+                        actual_object = manager._objects.resolve(ref)
+                        require(actual_object is manager.target, "Original target object binding changed")
+                        bindings[ref["handle"]] = {"kind": "target", "value": oracle.plain(actual_object)}
+                    if operation == "add-input":
+                        ref = args["payload"]
+                        actual_object = manager._objects.resolve(ref)
+                        bindings[ref["handle"]] = {"kind": "input", "value": inspection_plain(actual_object)}
+                    if operation not in ("register", "register-component-input"):
+                        continue
+                    for field in (("producer", "validators") if operation == "register" else ("validators",)):
+                        ref = args[field]
+                        actual_object = manager._objects.resolve(ref)
+                        if field == "producer":
+                            descriptor = {"kind": "provider", "label": capture.label(actual_object)}
+                        else:
+                            require(type(actual_object) is dict, "Original comparison validator argument was not its authored plain dict")
+                            descriptor = {"kind": "validators", "items": [[key, capture.label(value)] for key, value in actual_object.items()]}
+                        previous = bindings.get(ref["handle"])
+                        require(previous is None or previous == descriptor, "Original source reference changed")
+                        bindings[ref["handle"]] = descriptor
+                provider_handles = {}
+                for value, label in capture.objects:
+                    handle = manager._objects._identities.get(id(value))
+                    if handle is not None:
+                        require(manager._objects.resolve({"handle": handle}) is value, "Retained source callable identity changed")
+                        provider_handles[label] = handle
+                row["source_bindings"] = artifact(receipt, canonical({"arguments": bindings, "providers": provider_handles}))
+            with guarded_execution(seen):
+                manager.close()
+            session = manager.session
+            row.update(pid=session.pid, returncode=session.returncode, closed=session.closed,
+                invalidated=session.invalidated, executable_sha256=session.executable_sha256,
+                stderr=artifact(receipt, canonical({"hex": session.stderr_bytes.hex()})))
+            row["frames"] = [{"direction": item.direction, "index": item.index,
+                "frame": artifact(receipt, item.frame)} for item in session.traffic]
+        before = len(session.traffic)
+        try:
+            with guarded_execution(seen):
+                manager.get("input")
+        except CoreProtocolError as error:
+            row["after_close"] = artifact(receipt, canonical({"type": type(error).__name__, "message": str(error),
+                "traffic_unchanged": len(session.traffic) == before, "pid_unchanged": session.pid == row["pid"]}))
+        else:
+            raise AssertionError("Closed comparison manager resumed")
+        row["guard"] = artifact(receipt, canonical([list(item) for item in sorted(seen)]))
+    installed_modules()
+
+
 def frame_body(raw):
     require(type(raw) is bytes and len(raw) >= 10 and re.fullmatch(rb"[0-9a-f]{8}\n", raw[:9])
         and int(raw[:8], 16) == len(raw) - 9, "Malformed complete callback frame")
@@ -303,7 +636,7 @@ def json_nodes(value):
     return 1
 
 
-def validate_frames(rows, artifacts, channel, application, *, sessions=None):
+def validate_frames(rows, artifacts, channel, application, *, sessions=None, details=None, provider_calls=True):
     require(type(rows) is list and rows, "Missing exact live-manager frames")
     sequence = event = commands_count = input_bytes = output_bytes = nodes = 0
     commands, invocations, sent, normalized = [], [], {}, []
@@ -311,6 +644,9 @@ def validate_frames(rows, artifacts, channel, application, *, sessions=None):
     previous = None
     closed = False
     operations, actions = [], []
+    host_bindings = {}
+    if details is not None:
+        details.update(inspections={}, commands=[], invocations={}, requests={})
     limits = channel["limits"]
     for number, row in enumerate(rows):
         require(type(row) is dict and set(row) == {"direction", "index", "frame"} and type(row["index"]) is int, "Unknown traffic entry fields")
@@ -368,7 +704,12 @@ def validate_frames(rows, artifacts, channel, application, *, sessions=None):
                             and set(value["arguments"]) == set(application["operations"][operation]["fields"]),
                             "Unknown manager operation or incomplete original authority fields")
                         operations.append(operation)
-                commands.append({"sequence": value["sequence"], "body": raw[9:], "kind": kind})
+                commands.append({"sequence": value["sequence"], "body": raw[9:], "kind": kind,
+                    "operation": value.get("operation"), "arguments": value.get("arguments"),
+                    "start_frame": number, "parent_invocation": value.get("parent_invocation")})
+                if details is not None and kind == "command":
+                    details["requests"][value["sequence"]] = {"operation": value["operation"], "arguments": value["arguments"],
+                        "parent_invocation": value["parent_invocation"], "start_frame": number}
             else:
                 require(kind == "continue" and commands and invocations, "Unsolicited callback completion")
                 invocation = invocations[-1]
@@ -382,7 +723,22 @@ def validate_frames(rows, artifacts, channel, application, *, sessions=None):
                 if outcome["status"] == "raise":
                     require(type(outcome["token"]) is str and 0 < len(outcome["token"].encode()) <= 128,
                             "Invalid opaque host exception token")
+                if invocation["action"] == "bind-provider" and outcome["status"] == "return":
+                    require(outcome["value"] is None, "Provider binding returned unexpected data")
+                    args = invocation["arguments"]
+                    token, reference = args["provider_id"], args["object"]
+                    require(type(token) is str and re.fullmatch(r"provider/[0-9]+", token)
+                        and type(reference) is dict and set(reference) == {"handle"}
+                        and type(reference["handle"]) is str and re.fullmatch(r"object/[0-9]+", reference["handle"]),
+                        "Malformed actual provider binding")
+                    require(token not in host_bindings or host_bindings[token] == reference,
+                            "Native provider was rebound to a different physical callable")
+                    require(all(old == token or item != reference for old, item in host_bindings.items()),
+                            "Same physical callable received different native tokens")
+                    host_bindings[token] = reference
                 invocations.pop()
+                if details is not None:
+                    details["invocations"][invocation["invocation_id"]].update(outcome=outcome, end_frame=number)
                 projected["invocation_sha256"] = "<validated-exact-invocation-body-sha256>"
         else:
             output_bytes += len(raw)
@@ -405,7 +761,10 @@ def validate_frames(rows, artifacts, channel, application, *, sessions=None):
                     "Unknown or malformed original host operation")
                 actions.append(value["action"])
                 invocations.append({"invocation_id": value["invocation_id"], "command_sequence": command["sequence"],
-                    "body_sha256": sha(raw[9:])})
+                    "body_sha256": sha(raw[9:]), "action": value["action"], "arguments": value["arguments"]})
+                if details is not None:
+                    details["invocations"][value["invocation_id"]] = {"action": value["action"], "arguments": value["arguments"],
+                        "command_sequence": command["sequence"], "parent_invocation": value["parent_invocation"], "start_frame": number}
                 require(len(invocations) <= limits["max_pending_invocations"], "Callback stack exceeded its bound")
                 projected["command_sha256"] = "<validated-exact-command-body-sha256>"
             else:
@@ -426,6 +785,13 @@ def validate_frames(rows, artifacts, channel, application, *, sessions=None):
                 if value["closed"]:
                     equal(outcome, {"status": "ok", "value": None}, "Close did not return successful null")
                     closed = True
+                if details is not None and command["kind"] == "command":
+                    details["commands"].append({"sequence": command["sequence"], "operation": command["operation"],
+                        "arguments": command["arguments"], "outcome": outcome, "start_frame": command["start_frame"],
+                        "end_frame": number, "parent_invocation": command["parent_invocation"]})
+                    if command["operation"] == "inspect-ordered":
+                        require(outcome["status"] == "ok", "Original comparison inspection failed")
+                        details["inspections"][command["sequence"]] = {"value": outcome["value"], "bound": deepcopy(host_bindings)}
                 commands.pop()
                 projected["request_sha256"] = "<validated-exact-request-body-sha256>"
             usage = value["usage"]
@@ -449,7 +815,8 @@ def validate_frames(rows, artifacts, channel, application, *, sessions=None):
     require(closed and not commands and not invocations, "Incomplete native command or continuation stack")
     require(operations and operations[0] == "initialize-empty" and operations.count("initialize-empty") == 1,
             "A real manager was not initialized exactly once")
-    require("call-provider" in actions or "call" in actions, "Real original provider callbacks were not executed")
+    if provider_calls:
+        require("call-provider" in actions or "call" in actions, "Real original provider callbacks were not executed")
     return {"operations": operations, "actions": actions, "frames_sha256": r.digest(normalized), "frames": len(rows)}
 
 
@@ -538,6 +905,182 @@ def validate_verify(receipt, artifacts, channel, application):
     equal(artifacts.json(row["stderr"]), {"hex": ""}, "Verify role probe wrote stderr")
 
 
+def validate_comparison_events(expected, links, source, exceptions, details, snapshots):
+    require(type(source) is dict and set(source) == {"arguments", "providers"}
+        and type(source["arguments"]) is dict and type(source["providers"]) is dict, "Missing original source object bindings")
+    handles = source["providers"]
+    require(all(label in expected["providers"] and type(handle) is str and re.fullmatch(r"object/[0-9]+", handle)
+        for label, handle in handles.items()) and len(set(handles.values())) == len(handles),
+        "Source providers are not physically distinct retained objects")
+    reverse = {handle: label for label, handle in handles.items()}
+    used_arguments = set()
+    def provider(reference):
+        require(type(reference) is dict and set(reference) == {"handle"} and reference["handle"] in reverse,
+                "Native operation references an unbound original callable")
+        return reverse[reference["handle"]]
+    def argument(reference, expected_value):
+        require(type(reference) is dict and set(reference) == {"handle"} and reference["handle"] in source["arguments"],
+                "Original argument lacks actual retained object evidence")
+        used_arguments.add(reference["handle"])
+        equal(source["arguments"][reference["handle"]], expected_value, "Actual command changed original authored callable arguments")
+    initialization = [item for item in details["commands"] if item["operation"] == "initialize-empty"]
+    require(len(initialization) == 1, "Comparison initialization authority omitted")
+    initial = initialization[0]["arguments"]
+    equal(initial["target"], expected["setup"]["target"], "Native initialization target differs from original authoring")
+    equal(initial["dependencies"], [[key, expected["setup"]["dependencies"][key]]
+        for key in expected["initial_state"]["order"]["dependencies"] if key in expected["setup"]["dependencies"]],
+        "Native initialization dependency authority/order differs")
+    equal(initial["completion_profiles"], expected["setup"]["profiles"], "Native initialization profiles differ")
+    require(initial["manager_limits"] is None and initialization[0]["outcome"]["status"] == "ok", "Original initialization failed or changed bounds")
+    argument(initial["target_object"], {"kind": "target", "value": expected["setup"]["target"]})
+    inputs = [item for item in details["commands"] if item["operation"] == "add-input"]
+    require(len(inputs) == (1 if expected["mode"] == "pass" else 0), "Original authoritative root insertion census differs")
+    if inputs:
+        args = inputs[0]["arguments"]
+        require(args["identity"] == expected["setup"]["input_id"] and args["stage"] == "typed intent and contracts",
+                "Native authoritative root identity or stage differs")
+        equal(args["requirements"], expected["setup"]["requirements"], "Native input requirements differ")
+        equal(args["obligations"], expected["setup"]["obligations"], "Native input obligations differ")
+        argument(args["payload"], {"kind": "input", "value": expected["setup"]["input"]})
+        require(inputs[0]["outcome"]["status"] == "ok", "Original root insertion failed")
+        equal(inputs[0]["outcome"]["value"]["value"], expected["initial_state"]["state"]["records"]["input"],
+            "Original authoritative root return differs")
+    require(type(links) is list and len(links) == len(expected["events"]), "Original operation I/O census omitted")
+    commands = {entry["sequence"]: entry for entry in details["commands"]}
+    children, slots, offset = {}, {}, 1
+    for event in expected["events"]:
+        children.setdefault(event["parent"], []).append(event)
+    def locate(event):
+        nonlocal offset
+        before = offset
+        offset += 1
+        for child in children.get(event["id"], ()):
+            locate(child)
+        slots[event["id"]] = (before, offset)
+        offset += 1
+    for event in children.get(None, ()):
+        locate(event)
+    require(type(snapshots) is list and len(snapshots) == offset + 1, "Original before/after inspection census differs")
+    event_commands, comparison_groups = {}, {}
+    for event, link in zip(expected["events"], links):
+        require(type(link) is dict and set(link) == {"event", "kind", "sequence", "invocation", "before_frames", "after_frames", "exception_tokens"}
+            and type(link["event"]) is int and link["event"] == event["id"] and link["kind"] == event["kind"]
+            and all(type(link[key]) is int and link[key] >= 0 for key in ("before_frames", "after_frames"))
+            and link["before_frames"] <= link["after_frames"]
+            and (link["invocation"] is None or type(link["invocation"]) is int)
+            and type(link["exception_tokens"]) is list and all(type(token) is str for token in link["exception_tokens"])
+            and link["exception_tokens"] == sorted(set(link["exception_tokens"])), "Invalid actual event/frame binding")
+        if event["outcome"] == "returned":
+            require(link["exception_tokens"] == [], "Successful original event was assigned an exception")
+        before_index, after_index = slots[event["id"]]
+        before_sequence, after_sequence = snapshots[before_index]["sequence"], snapshots[after_index]["sequence"]
+        require(before_sequence in commands and after_sequence in commands, "Original event inspections are missing")
+        before_inspection, after_inspection = commands[before_sequence], commands[after_sequence]
+        require(before_inspection["operation"] == after_inspection["operation"] == "inspect-ordered"
+            and before_inspection["end_frame"] + 1 == link["before_frames"]
+            and after_inspection["start_frame"] == link["after_frames"]
+            and before_inspection["parent_invocation"] == after_inspection["parent_invocation"] == link["invocation"],
+            "Original event action is detached from its own before/after native inspections")
+        recipe = event["recipe"]
+        if event["kind"] == "comparison":
+            require(link["sequence"] is None and link["invocation"] in details["invocations"], "Comparison has no live native invocation")
+            invocation = details["invocations"][link["invocation"]]
+            require(invocation["action"] == "compare" and invocation["arguments"]["operator"] == "eq"
+                and invocation["start_frame"] < link["before_frames"] <= link["after_frames"] < invocation["end_frame"],
+                "Original comparison was not executed inside its native equality invocation")
+            pair = [provider(invocation["arguments"][key]) for key in ("left", "right")]
+            require(sorted(pair) == sorted([recipe["left"], recipe["right"]]), "Native comparison used different actual callables")
+            comparison_groups.setdefault(link["invocation"], []).append(event)
+            continue
+        require(event["kind"] == "manager", "Unknown original event kind")
+        op = recipe["operation"]
+        if op == "target":
+            require(link["sequence"] is None and link["before_frames"] == link["after_frames"] and event["outcome"] == "returned",
+                    "Cached target observation unexpectedly performed I/O")
+            equal(event["result"], expected["setup"]["target"], "Cached target changed original authority")
+            continue
+        seq = link["sequence"]
+        require(type(seq) is int and seq in commands and seq not in event_commands, "Original manager action is detached from actual command")
+        event_commands[seq] = event
+        command = commands[seq]
+        require(command["operation"] == op.replace("_", "-") and command["start_frame"] == link["before_frames"]
+            and command["end_frame"] + 1 == link["after_frames"] and command["parent_invocation"] == link["invocation"],
+            "Original manager action is bound to a different command or callback stack")
+        args = command["arguments"]
+        if op in ("register", "register_component_input"):
+            equal(args["contract"], expected["setup"]["contracts"][recipe["contract"]], "Actual native registration used another contract")
+            argument(args["validators"], {"kind": "validators", "items": recipe["validators"]})
+            if op == "register":
+                argument(args["producer"], {"kind": "provider", "label": recipe["producer"]})
+                require(provider(args["producer"]) == recipe["producer"], "Producer argument identity differs")
+        elif op == "set_dependency":
+            equal(args, {"key": recipe["key"], "identity": recipe["identity"]}, "Actual dependency mutation differs")
+        else:
+            require(op == "get", "Unreviewed comparison manager operation")
+            equal(args, {"identity": recipe["identity"]}, "Actual get requested another artifact")
+        outcome = command["outcome"]
+        if event["outcome"] == "returned":
+            require(outcome["status"] == "ok", "Actual native command failed an original successful operation")
+            result = outcome["value"]
+            if op == "get":
+                require(type(result) is dict and set(result) == {"value", "bindings"}, "Native get omitted its full record")
+                result = result["value"]
+            equal(result, event["result"], "Actual native returned value differs from original observation")
+        elif outcome["status"] == "rejected":
+            descriptor = outcome["value"]
+            equal(descriptor, {**event["error"], "attributes": {}}, "Actual native rejection descriptor differs from original error")
+        else:
+            require(outcome["status"] == "raise" and outcome["token"] in link["exception_tokens"],
+                    "Original host exception is detached from actual command token")
+    require(used_arguments == set(source["arguments"]), "Unclaimed original source argument evidence")
+    wanted_commands = {entry["sequence"] for entry in details["commands"] if entry["operation"] not in ("initialize-empty", "add-input", "inspect-ordered")}
+    require(set(event_commands) == wanted_commands, "Unclaimed or missing actual comparison command")
+    tokens = {}
+    require(type(exceptions) is list, "Missing exact host exception identity evidence")
+    for entry in exceptions:
+        require(type(entry) is dict and set(entry) == {"token", "invocation", "events"} and type(entry["token"]) is str
+            and re.fullmatch(r"exception/[0-9]+", entry["token"]) and entry["token"] not in tokens
+            and type(entry["invocation"]) is int and entry["invocation"] in details["invocations"]
+            and type(entry["events"]) is list and entry["events"] == sorted(set(entry["events"]))
+            and entry["events"] and all(type(identity) is int and 0 <= identity < len(links) for identity in entry["events"]),
+            "Malformed retained original exception identity")
+        equal(details["invocations"][entry["invocation"]]["outcome"], {"status": "raise", "token": entry["token"]},
+            "Actual continuation lost its exact original exception token")
+        wanted_events = [link["event"] for link in links if entry["token"] in link["exception_tokens"]]
+        equal(entry["events"], wanted_events, "Original exception identity aliases differ")
+        descriptors = [expected["events"][identity]["error"] for identity in entry["events"]]
+        require(all(item == descriptors[0] for item in descriptors), "Same actual exception acquired different original descriptions")
+        tokens[entry["token"]] = entry
+    require(set(tokens) == {token for link in links for token in link["exception_tokens"]}, "Unaccounted original host exception")
+    require(set(tokens) == {item["outcome"]["token"] for item in details["invocations"].values() if item["outcome"]["status"] == "raise"},
+        "Native callback exception lacks actual source identity evidence")
+    for identity, events in comparison_groups.items():
+        invocation = details["invocations"][identity]
+        require(invocation["command_sequence"] in event_commands, "Native comparison was not requested by an original registration")
+        owner = event_commands[invocation["command_sequence"]]
+        require(owner["recipe"]["operation"] in ("register", "register_component_input"), "Unexpected comparison owner")
+        contract = expected["setup"]["contracts"][owner["recipe"]["contract"]]
+        group = "provider_history" if owner["recipe"]["operation"] == "register" else "component_input_history"
+        old = [entry for entry in owner["before"]["state"][group].values() if entry["contract"] == contract]
+        require(len(old) == 1, "Native equality was not against original provider history")
+        left, right = (provider(invocation["arguments"][key]) for key in ("left", "right"))
+        current = dict(owner["recipe"]["validators"])
+        require(any(value == left and current[key] == right for key, value in old[0]["validators"].items()),
+                "Native equality reversed or substituted original old/new providers")
+        final = events[-1]
+        if final["outcome"] == "returned":
+            require(type(final["result"]) is bool, "Original reflected comparison did not resolve to boolean")
+            equal(invocation["outcome"], {"status": "return", "value": final["result"]}, "Actual comparison continuation differs from original result")
+        else:
+            require(invocation["outcome"]["status"] == "raise" and invocation["outcome"]["token"] in links[final["id"]]["exception_tokens"],
+                    "Actual comparison continuation detached from original exception")
+            token = invocation["outcome"]["token"]
+            equal(commands[invocation["command_sequence"]]["outcome"], {"status": "raise", "token": token},
+                "Owning registration translated the original host exception instead of propagating its token")
+            require(token in links[owner["id"]]["exception_tokens"],
+                "Owning registration did not rethrow the same actual original exception object")
+
+
 def validate_checks(receipt, corpus, artifacts):
     channel, application = declarations()
     validate_verify(receipt, artifacts, channel, application)
@@ -564,6 +1107,61 @@ def validate_checks(receipt, corpus, artifacts):
         required = {"register-component-input", "admit-component-input"} if row["id"].startswith("admission:") else {"add-input", "register", "run"}
         require(required <= set(traffic["operations"]), "Original case did not execute native acceptance operations")
         projected.append({"id": row["id"], "complete_case_sha256": row["actual"], **traffic})
+    require(type(receipt.get("completed_comparison_checks")) is int and receipt["completed_comparison_checks"] == 34
+        and type(receipt.get("comparison_checks")) is list and len(receipt["comparison_checks"]) == 34,
+        "Incomplete 34-case original comparison campaign")
+    equal(artifacts.json(receipt["fresh_comparison_original"], r.MAX_ARTIFACT_BYTES), corpus.oracles["callbacks"],
+        "Complete fresh original comparison counterpart differs")
+    for expected, row in zip(corpus.comparisons, receipt["comparison_checks"]):
+        require(type(row) is dict and set(row) == {"id", "original", "actual", "frames", "pid", "returncode", "closed",
+            "invalidated", "executable_sha256", "stderr", "guard", "after_close", "inspections", "events", "host_exceptions", "source_bindings"}
+            and row["id"] == expected["id"], "Missing, duplicated or reordered original comparison case")
+        equal(artifacts.json(row["original"], r.MAX_ARTIFACT_BYTES), expected, "Original comparison case changed")
+        equal(artifacts.json(row["actual"], r.MAX_ARTIFACT_BYTES), expected, "Complete actual comparison case differs")
+        require(type(row["pid"]) is int and row["pid"] > 0 and type(row["returncode"]) is int and row["returncode"] == 0
+            and row["closed"] is True and row["invalidated"] is False
+            and row["executable_sha256"] == receipt["native_inputs"]["sha256"]["biocompiler-core"],
+            "Actual comparison process identity or lifecycle differs")
+        equal(artifacts.json(row["stderr"]), {"hex": ""}, "Comparison native process wrote stderr")
+        guard = artifacts.json(row["guard"], r.MAX_ARTIFACT_BYTES)
+        check_guard(guard)
+        require(["biocompiler.core_pipeline_manager", "CorePassManager.inspect_ordered"] in guard,
+            "Comparison did not inspect actual native manager state")
+        equal(artifacts.json(row["after_close"]), {"type": "CoreProtocolError",
+            "message": "Callback session is closed; it cannot reconnect", "traffic_unchanged": True, "pid_unchanged": True},
+            "Closed comparison manager resumed or changed its rejection")
+        details = {}
+        traffic = validate_frames(row["frames"], artifacts, channel, application, sessions=sessions,
+            details=details, provider_calls=False)
+        required = {"register-component-input"} if expected["mode"] == "admission" else {"add-input", "register"}
+        require(required <= set(traffic["operations"]) and "callable" in traffic["actions"],
+                "Original comparison did not execute live native registration and host callbacks")
+        snapshots = artifacts.json(row["inspections"], r.MAX_ARTIFACT_BYTES)
+        source = artifacts.json(row["source_bindings"], r.MAX_ARTIFACT_BYTES)
+        validate_comparison_events(expected, artifacts.json(row["events"], r.MAX_ARTIFACT_BYTES), source,
+            artifacts.json(row["host_exceptions"], r.MAX_ARTIFACT_BYTES), details, snapshots)
+        wanted = original_snapshots(expected)
+        require(type(snapshots) is list and len(snapshots) == len(wanted), "Original inspection census was narrowed")
+        sequences, aliases_seen = [], {}
+        for observation, original_state in zip(snapshots, wanted):
+            require(type(observation) is dict and set(observation) == {"sequence", "aliases"}
+                and type(observation["sequence"]) is int and observation["sequence"] in details["inspections"],
+                "Inspection was not bound to a complete native reply")
+            sequence, aliases = observation["sequence"], observation["aliases"]
+            require(type(aliases) is dict and all(label in expected["providers"] for label in aliases.values()),
+                    "Inspection introduced a provider outside the original source recipe")
+            sequences.append(sequence)
+            native = details["inspections"][sequence]
+            actual_state = comparison_snapshot(native["value"], aliases, previous=aliases_seen, bound=native["bound"])
+            require(all(source["providers"].get(aliases[item["provider_id"]]) == item["object"]["handle"]
+                for item in native["value"]["providers"]), "Native state aliases differ from actual source callable objects")
+            equal(actual_state, original_state, "Complete native comparison state/order differs at its original observation")
+        require(sequences == list(details["inspections"]) and len(set(sequences)) == len(sequences),
+                "Native inspection was duplicated, omitted or reordered")
+        projected.append({"id": row["id"], "complete_case_sha256": row["actual"],
+            "inspections_sha256": row["inspections"], "events_sha256": row["events"],
+            "source_bindings_sha256": row["source_bindings"], "host_exceptions_sha256": row["host_exceptions"],
+            "inspections": len(snapshots), **traffic})
     require(artifacts.used == set(artifacts.declared), "Unreferenced complete manager evidence")
     return projected
 
@@ -641,7 +1239,7 @@ def campaign_main(argv):
         "revision": os.environ.get("GITHUB_SHA"), "source_revision": os.environ.get("GITHUB_HEAD_SHA", os.environ.get("GITHUB_SHA")),
         "run_id": os.environ.get("GITHUB_RUN_ID"), "python_version": platform.python_version(), "system": platform.system(),
         "machine": platform.machine(), "native_platform": args.platform, "package_path": str(Path(biocompiler.__file__).resolve()),
-        "checks": [], "artifacts": {}, "artifact_directory": ARTIFACT_DIRECTORY, "_artifact_directory": str(directory)}
+        "checks": [], "comparison_checks": [], "artifacts": {}, "artifact_directory": ARTIFACT_DIRECTORY, "_artifact_directory": str(directory)}
     code = 1
     try:
         require(not Path.cwd().resolve().is_relative_to(ROOT), "Run installed manager campaign outside checkout")
@@ -665,6 +1263,8 @@ def campaign_main(argv):
         verify_rejection(args.verify, args.verify_sha256, receipt)
         campaign(client, corpus, receipt)
         receipt["completed_checks"] = len(receipt["checks"])
+        comparison_campaign(client, corpus, receipt)
+        receipt["completed_comparison_checks"] = len(receipt["comparison_checks"])
         validate_checks(receipt, corpus, Artifacts(directory, receipt["artifacts"]))
         equal(r.verify_binaries(args.native_root, receipt["revision"], args.platform), native, "Manager binaries changed during execution")
         receipt["status"], code = "success", 0
@@ -672,10 +1272,12 @@ def campaign_main(argv):
         receipt["status"], receipt["error"] = "failure", type(error).__name__ + ": " + str(error)
         print(receipt["error"], file=sys.stderr)
     receipt["completed_checks"], receipt["duration_seconds"] = len(receipt["checks"]), round(time.monotonic() - started, 6)
+    receipt["completed_comparison_checks"] = len(receipt["comparison_checks"])
     del receipt["_artifact_directory"]
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_bytes(canonical(receipt) + b"\n")
-    print("Installed pipeline manager:", receipt["status"], receipt["completed_checks"], "original identity cases")
+    print("Installed pipeline manager:", receipt["status"], receipt["completed_checks"], "original identity cases,",
+        receipt["completed_comparison_checks"], "original comparison cases")
     return code
 
 
