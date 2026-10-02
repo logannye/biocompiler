@@ -619,7 +619,7 @@ let framed_fixed_interception_tests initialization=
    let args=initialization peer in
    let initial_body=encode(obj(common "command" 1@["parent_invocation",Json.Null;
      "operation",str "initialize-components";"arguments",args])) in
-   let result=exercise ~on_invoke peer["initialize-components",args;"inspect",obj[];"target",obj[]] in
+   let result=exercise ~on_invoke peer["initialize-components",args;"inspect-ordered",obj[];"target",obj[]] in
    require !published "Fixed initialization never published its actual owner";
    if mode="bad-publication" then (
      let terminal=List.hd(List.rev result.events) in
@@ -634,22 +634,31 @@ let framed_fixed_interception_tests initialization=
      let initialization=nth result 1 in
      require(List.for_all(fun event->text "kind" event<>"fatal")result.events && result.closed)
        "Logical/host fixed failure closed before historical observation";
-     let state=success(nth result 2) in
+     let inspected=success(nth result 2) in
+     let state=get "snapshot" inspected in
+     (* Canonical framed objects sort their keys. Historical insertion order is
+        carried by the explicit order arrays, not JSON object member order. *)
+     let ordered_keys key=
+       let values=List.map Json.string(Json.array(get key(get "order" inspected))) in
+       require(List.sort_uniq String.compare values=List.sort String.compare(keys key state) &&
+         List.length values=List.length(keys key state))
+         "Ordered inspection does not cover its complete historical mapping";
+       values in
      ignore(success(nth result 3));
      if mode="raise" then (
        require(text "status" initialization="raise" && text "token" initialization="same-original-exception")
          "Outer initialization lost its original opaque callback exception";
-       require(keys "records" state=["request";"behavior"] && keys "passes" state=["intent_to_behavior"])
+       require(ordered_keys "records"=["request";"behavior"] && ordered_keys "passes"=["intent_to_behavior"])
          "Host registration exception discarded or advanced partial state";
        require(text "hook_marker"(get "dependencies" state)=Canonical.sha256 "retained framed mutation")
          "Host registration exception lost its nested mutation")
      else if mode="skip" then (
        ignore(rejection initialization);
-       require(keys "records" state=["request"] && keys "passes" state=[])
+       require(ordered_keys "records"=["request"] && ordered_keys "passes"=[])
          "Skipped fixed hook acquired a fallback registration")
      else if mode="passthrough" then (
        ignore(success initialization);
-       require(keys "records" state=["request";"behavior";"mechanism";"components"])
+       require(ordered_keys "records"=["request";"behavior";"mechanism";"components"])
          "Actual wrapped native producer failed to retain its complete records")
      else (
        let error=rejection initialization in
@@ -657,7 +666,7 @@ let framed_fixed_interception_tests initialization=
          "Component pass provenance changed authoritative source links or observations.")
          "Mixed native validator rejected before checking actual source provenance";
        require(same(Option.get !before_component)state) "Rejected wrapper changed its manager's historical state";
-       require(keys "records" state=["request";"behavior";"mechanism"])
+       require(ordered_keys "records"=["request";"behavior";"mechanism"])
          "Rejected wrapper stored an accepted component output");
      if List.mem mode["passthrough";"observation";"wrong-source";"duplicate"] then (
        let comparisons=List.filter(fun event->text "kind" event="invoke" &&

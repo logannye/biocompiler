@@ -32,23 +32,33 @@ superseded result is treated as acceptance.
 
 **Current work toward LM-CUTOFF-1:** the combined source checkpoint is
 [PR75](https://github.com/logannye/biocompiler/pull/75), source
-`b8120bfb1bb20ef89e8f722a7a425d8ae8a90a25`, with exact-head
-[run 37070525064](https://github.com/logannye/biocompiler/actions/runs/37070525064).
+`d56e814ef70439eab5b227fe227e0d2cd1ba087a`, with exact-head
+[run 37075992379](https://github.com/logannye/biocompiler/actions/runs/37075992379).
 It preserves all 39 eligible retained-manager chains and their 566 original
 operations, with complete public build identities. The source-backed
 [CLI assertion correction](../protocol/migration-cli-source-inventory-correction.json)
 also addresses the two stale inventory assertions observed in PR74. Hosted native
-and complete integration acceptance remain pending; local Python controls and
-test discovery do not close those gates.
+and complete integration acceptance remain pending. This run exposed native
+framed-inspection order assertions and three original-source baseline assertions
+that need correction. Local Python controls and test discovery do not close
+those gates; no failed checkpoint confers acceptance. The
+[regression-harness correction](../protocol/migration-manager-regression-harness-correction.json)
+preserves the immutable corpus, exact manager-source witness and original test
+bodies. All 25 affected and lineage controls pass on each local Python version;
+the corrected native and complete integration gates remain required.
 
 The native callback test in PR74 and PR75 failed because its third argument
 selected a full capture exceeding the existing parser's node allowance. The
 [source-backed correction](../protocol/migration-callback-corpus-selection-correction.json)
 uses the existing compact index with byte-identical selected cases and authority
 identities, preserving the parser limits and original corpus. Corrected native
-execution remains required; neither failing checkpoint confers acceptance.
+execution now reaches the callback behavior assertions. Its next failure compared
+canonical JSON object-member order to manager insertion order; the correction
+uses the existing explicit `inspect-ordered` arrays and still verifies their
+complete, duplicate-free mapping membership. Full corrected execution remains
+required.
 
-The next batch implements the original public registration interception and
+The combined batch implements the original public registration interception and
 three provenance-rejection recipes; the
 [registration design](migration-fixed-registration-interception.md) records its
 source and execution boundaries. Its narrow base-method delegation must retain

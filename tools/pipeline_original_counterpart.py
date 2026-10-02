@@ -37,7 +37,7 @@ DATA = ('tests/conformance/pipeline-callback-semantics-v1.json',
     'tests/conformance/pipeline-deferred-semantics-v1.json',
     'tests/conformance/manager-registration-source-lineage-v1.json')
 TEST_MODULES = ('test_pipeline_callback_semantics', 'test_pipeline_identity_semantics', 'test_pipeline_deferred_semantics', 'test_pipeline_deferred_runtime',
-    'test_pipeline_deferred_runtime_receipt', 'test_pipeline_fixed_provider_semantics', 'test_pipeline_fixed_build_semantics')
+    'test_pipeline_deferred_runtime_receipt', 'test_pipeline_fixed_provider_semantics', 'test_pipeline_fixed_build_semantics', 'test_pipeline_contract_literals')
 MAX_SOURCE_BYTES = 32 * 1024 * 1024
 MAX_OUTPUT_BYTES = 32 * 1024 * 1024
 TASKS = ('deferred', 'callbacks', 'identity', 'tests', 'fixed-registration-original', 'fixed-provider-original', 'fixed-build-original')
@@ -67,6 +67,8 @@ def task_files(task, test_module=None):
     task = closure_task(task, test_module)
     files=list(FILES)
     if original_task == 'tests': files.append('tests/' + test_module.removeprefix('tests.') + '.py')
+    if original_task == 'tests' and test_module.removeprefix('tests.') == 'test_pipeline_contract_literals':
+        files.append('tools/capture_pipeline_contract_literals.py')
     if task.startswith('fixed-'):
         from tools.check_pipeline_fixed_registration_install import overlay_files
         files.extend(overlay_files())
@@ -79,6 +81,8 @@ def task_files(task, test_module=None):
 def task_data(task, test_module=None):
     task = closure_task(task, test_module)
     files=list(DATA)
+    if task == 'tests' and test_module.removeprefix('tests.') == 'test_pipeline_contract_literals':
+        files.append('tests/conformance/pipeline-contract-literals-v1.json')
     if task.startswith('fixed-'):
         files.extend((lineage.TOOL_WITNESS, 'tests/conformance/pipeline-fixed-build-semantics-v1.json'))
     if task == 'fixed-provider-original': files.append('tests/conformance/pipeline-fixed-provider-semantics-v1.json')

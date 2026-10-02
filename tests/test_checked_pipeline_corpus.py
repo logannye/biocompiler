@@ -7,6 +7,8 @@ from pathlib import Path
 import tempfile
 import unittest
 
+from tools.pipeline_historical_source_integrity import verify_source_identity
+
 ROOT = Path(__file__).resolve().parents[1]
 INDEX = ROOT / "tests/conformance/checked-pipeline-v1.json"
 MANIFEST = INDEX.with_name("checked-pipeline-full-v1.json")
@@ -93,7 +95,8 @@ class CheckedPipelineCorpusTests(unittest.TestCase):
         for item in value["documents"]:
             read_document(self.directory, item)
         for path, pin in value["source_files"].items():
-            self.assertEqual(sha((ROOT / path).read_bytes()), pin, path)
+            proof = verify_source_identity(ROOT, path, pin)
+            self.assertEqual(proof["historical_sha256"], pin, path)
         self.assertEqual(sha((ROOT / value["capture_tool"]["path"]).read_bytes()), value["capture_tool"]["sha256"])
         packager = self.manifest["packager"]
         self.assertEqual(sha((ROOT / packager["path"]).read_bytes()), packager["sha256"])

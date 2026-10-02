@@ -7,6 +7,8 @@ from pathlib import Path
 import tempfile
 import unittest
 
+from tools.pipeline_historical_source_integrity import verify_source_identity
+
 ROOT = Path(__file__).resolve().parents[1]
 INDEX = ROOT / 'tests/conformance/fixed-pipeline-literals-v1.json'
 INVENTORY_PIN = '28d8befb9fad240a80edf341ad64f822517f6e65f43c611966c9d0b7ff43d652'
@@ -88,7 +90,8 @@ class FixedPipelineLiteralsTests(unittest.TestCase):
         for item in self.documents.values():
             read_document(self.directory, item)
         for path, pin in self.value['source_files'].items():
-            self.assertEqual(sha((ROOT / path).read_bytes()), pin, path)
+            proof = verify_source_identity(ROOT, path, pin)
+            self.assertEqual(proof["historical_sha256"], pin, path)
         for path, pin in self.value['capture_support'].items():
             self.assertEqual(sha((ROOT / path).read_bytes()), pin, path)
         tool = self.value['capture_tool']
