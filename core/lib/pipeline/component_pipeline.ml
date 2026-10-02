@@ -119,8 +119,8 @@ let check_behavior ?until ~budget request assembly frames =
   try Behavior_check.check ?until ~parent:budget request assembly frames with
   | Diagnostic.Error error when error.code="component_behavior" -> fail error.message
 
-let run_internal manager_state ~budget ?(manager_limits=M.default_limits) ?until ?config request frames =
-  let upstream=match Synthetic_pipeline.attempt ~budget ~manager_limits ?until ?config request frames with
+let run_internal manager_state ~budget ?(manager_limits=M.default_limits) ?validator_equivalent ?until ?config request frames =
+  let upstream=match Synthetic_pipeline.attempt ~budget ~manager_limits ?validator_equivalent ?until ?config request frames with
     | Synthetic_pipeline.Completed value -> value
     | Synthetic_pipeline.Failed failure -> manager_state:=failure.manager;raise failure.error in
   let manager_value=Synthetic_pipeline.manager upstream in
@@ -193,12 +193,12 @@ let run_internal manager_state ~budget ?(manager_limits=M.default_limits) ?until
   let behavior_value=check_behavior ?until ~budget request assembly_value frames in
   {candidate_value;assembly_value;link_value;result_value;manager_value;behavior_value;
    selection_value=Synthetic_pipeline.selection_result upstream}
-let attempt ~budget ?manager_limits ?until ?config request frames =
+let attempt ~budget ?manager_limits ?validator_equivalent ?until ?config request frames =
   let manager_state=ref None in
-  try Completed (run_internal manager_state ~budget ?manager_limits ?until ?config request frames) with
+  try Completed (run_internal manager_state ~budget ?manager_limits ?validator_equivalent ?until ?config request frames) with
   | (Diagnostic.Error _ | Bioc_synthetic_producer.Generator.Unsupported _ | M.No_candidate_found _) as error ->
       Failed {error;manager= !manager_state}
-let run ~budget ?manager_limits ?until ?config request frames =
-  match attempt ~budget ?manager_limits ?until ?config request frames with
+let run ~budget ?manager_limits ?validator_equivalent ?until ?config request frames =
+  match attempt ~budget ?manager_limits ?validator_equivalent ?until ?config request frames with
   | Completed value -> value
   | Failed failure -> raise failure.error

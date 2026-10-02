@@ -15,6 +15,19 @@ compilation, installed replay and full public-manager integration remain pending
 The [archived scaffold](migration-pipeline-session-scaffold.md) records the earlier
 credit-limit draft, not the current implementation status.
 
+**Callback foundation checkpoint:** deferred native manager operations, retained
+Python object capabilities, nested framed continuations and a typed Python
+transport are now implemented as additive libraries. Three new hosted native
+suites bring the required inventory to 101. The standalone verifier remains
+separate. A manager application dispatcher, public typed adapters, complete
+installed callback replay and default cutover remain open. The PR69 compilation
+warning was corrected at `85dfc8ca114ea629ad1f65eb010d0a635f71d556`;
+its replacement [hosted run](https://github.com/logannye/biocompiler/actions/runs/37036025402)
+is pending. Neither the correction nor the new libraries is a native PASS.
+The [callback source checkpoint](../protocol/migration-pipeline-callback-checkpoint.json)
+pins the implemented files, 134 passing local Python checks, strict typing across
+19 modules and the unresolved native/public integration gates.
+
 - [x] **LM-03/12 realization protocol hosted checkpoint (PR57):** run
   `36987943622`, source `41ab0f99375d7293a4b86c28da1cd5408b7376c0`,
   integrated `71c56d2fc2eecbdb9efbb3da1e9d82a25c8b4e22`: all 36 jobs,
@@ -872,6 +885,36 @@ record current parent heads; previous partial native passes are historical only.
   bytes stay pinned; ten excluded calls and 287 callback-dependent observations
   remain explicit pending coverage. Full public typed manager routes, generic
   callback continuations, 64 MiB artifacts and default cutover remain open.
+
+- [x] **LM-03 P2 deferred callback oracle checkpoint:** 47 additional cases
+  execute the unchanged original Python manager and retain all 157 manager
+  events, 290 user accesses, 21 nested events and 19 original exception-object
+  propagations. Nine focused Python tests pass. Observation avoids invoking
+  user conversion, equality, iteration or descriptors. The frozen Python 3.14
+  bytes remain exact; one explicitly named exception-text difference requires a
+  fresh same-runtime original-manager and primitive counterpart. This is an
+  additive oracle, not native callback parity. Original corpora remain intact.
+- [x] **LM-12 P2 retained host object broker checkpoint:** the additive Python
+  broker preserves physical callable identity, original exception objects,
+  deferred Mapping conversion, rich comparisons and short-circuit iterator
+  primitives. All 23 new broker tests and 27 existing fixed-session tests pass;
+  the fixed-session implementation and protocol remain unchanged. This broker
+  performs native-requested authoring actions and grants no acceptance.
+- [x] **LM-25 P2 deferred native library source checkpoint:** ordered host
+  capabilities preserve deferred input, configuration, registration and proposal
+  evaluation. Native manager tests cover original result equality, short-circuit
+  checks, reentrant state and original exception identity. The bridge retains
+  physical object identities; the generic channel binds exact nested frame bytes
+  and one lifetime budget. Sticky work exhaustion prevents a caught resource
+  error from later authorizing success. All three new native suites are registered
+  for hosted validation; only static review has run locally.
+- [ ] **LM-25 P2 deferred callback implementation and public compatibility:**
+  implement native deferred access, bounded nested continuations and typed public
+  adapters under the [callback contract](migration-pipeline-callback-contract.md).
+  Replay complete original and supplemental observations on both native platforms
+  and both Python versions. Preserve mixed native/host provider behavior, fixed
+  registration interception, exception identity and post-error mutations. A
+  callback object broker or generic framing library alone does not close this gate.
 
 - [x] **LM-03 CI harness correction checkpoint:** the installed architecture
   guard now permits only the exact new parser-registration helpers while rejecting

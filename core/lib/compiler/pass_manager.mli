@@ -1,4 +1,4 @@
-(** In-memory checked stage orchestration. Only trusted native registrations may
+(** In-memory checked stage orchestration. Only trusted process-local registrations may
     provide callbacks; serialized records cannot import manager acceptance.
     All calls, including reentrant callback mutations, consume the same caller-
     owned lifetime work ancestor. Limits below bound retained native state and
@@ -15,8 +15,38 @@ val make_limits : ?max_records:int -> ?max_providers:int -> ?max_retained_items:
   ?max_document_nodes:int -> unit -> limits
 val default_limits : limits
 val limits_json : limits -> Bioc_wire.Json.t
+(* Process-local host objects are trusted extension capabilities, never wire
+   records. Their primitive callbacks preserve host evaluation/exception order;
+   manager branches, dependency checks and record storage remain native. *)
+type host_class = Pass_result | Source_link | Check_decision | Mapping | String
+type host_comparison = Eq | Ne | Is
+type host_constant = Json_value of Bioc_wire.Json.t
+  | Json_set of Bioc_wire.Json.t list
+  | Evidence_kind of C.evidence_kind | Check_outcome of C.outcome
+type host_value = {
+  attribute : W.t -> string -> host_value;
+  attribute_default : W.t -> string -> host_constant -> host_value;
+  is_instance : W.t -> host_class -> bool;
+  is_none : W.t -> bool;
+  truth : W.t -> bool;
+  compare : W.t -> host_comparison -> host_constant -> bool;
+  (* Is this value a member of the supplied literal container? *)
+  contains : W.t -> host_constant -> bool;
+  attribute_set_equal : W.t -> host_value list -> attribute:string -> host_constant -> bool;
+  lookup : W.t -> (string * Bioc_wire.Json.t) list -> Bioc_wire.Json.t;
+  get_item : W.t -> host_constant -> host_value;
+  get : W.t -> string -> host_value;
+  tuple : W.t -> host_value list;
+  iter : W.t -> host_iterator;
+  call : W.t -> host_value list -> host_value;
+  merge : W.t -> before:Bioc_wire.Json.t -> after:Bioc_wire.Json.t -> host_value;
+  document : W.t -> host_value;
+  freeze : W.t -> Bioc_wire.Json.t;
+  vars : W.t -> host_value;
+}
+and host_iterator = { next : W.t -> host_value option }
 type callback_result = Proposal of C.Pass_result.t | Decision of C.Check_decision.t
-  | Invalid_return of Bioc_wire.Json.t
+  | Invalid_return of Bioc_wire.Json.t | Host_return of host_value
 (* The function value is the provider identity: physical equality is intentional.
    A fresh closure is a new provider even when its implementation is identical.
    The same unified provider type allows detecting producer self-certification. *)
@@ -35,11 +65,37 @@ type t
 val create : budget:W.t -> ?limits:limits -> ?validator_equivalent:validator_equivalent ->
   target:Bioc_domain.Build_request.Target.t ->
   dependencies:(string * string) list -> ?completion_profiles:C.Completion_profile.t list -> unit -> t
+(* Creates and marks a real trusted host wrapper, retaining its physical identity.
+   Native providers cannot consume a host-only SourceLink sidecar; that mixed
+   adaptation remains explicitly unsupported rather than validating empty links. *)
+val bind_host_provider : t -> (W.t -> C.Pass_context.t -> host_value) -> provider
 val target : t -> Bioc_domain.Build_request.Target.t
+(* Original host SourceLink objects for the active callback only. Nested calls
+   restore the previous sidecar; None is the unchanged native-provider path. *)
+val callback_source_links : t -> host_value list option
 val register_completion_profile : t -> C.Completion_profile.t -> unit
 val set_dependency : t -> string -> string -> unit
+(* Host mapping traversals occur only at these requested stages, including two
+   distinct snapshots when prior-validator equality is needed. validate checks
+   the producer as well for pass registration. All handles remain actual code. *)
+type deferred_validators = {
+  validate : W.t -> bool;
+  keys_match : W.t -> string list -> bool;
+  snapshot : W.t -> (string * provider) list;
+}
+val register_deferred : t -> C.Pass_contract.t -> producer:(W.t -> provider) ->
+  self_certifying:(W.t -> bool) -> deferred_validators -> unit
+val register_component_input_deferred : t -> C.Component_input_contract.t -> deferred_validators -> unit
 val register : t -> C.Pass_contract.t -> producer:provider -> validators:(string * provider) list -> unit
 val register_component_input : t -> C.Component_input_contract.t -> validators:(string * provider) list -> unit
+(* Deferred entry points run the ordinary native preconditions before invoking
+   authored-object conversion or configuration freeze. Host fingerprint lookup
+   occurs only after the checked document's default identity is computed. *)
+val admit_host_component_input : t -> contract_id:string -> identity:string -> host_value -> C.Stage_record.t
+val add_host_input : t -> identity:string -> ?stage:C.stage -> ?requirements:string list ->
+  ?obligations:C.Scoped_obligation.t list -> host_value -> C.Stage_record.t
+val run_host : t -> pass_id:string -> input_id:string -> output_id:string ->
+  ?configuration:host_value -> unit -> C.Stage_record.t
 val admit_component_input : t -> contract_id:string -> identity:string -> Bioc_wire.Json.t -> C.Stage_record.t
 val add_input : t -> identity:string -> ?stage:C.stage -> ?requirements:string list ->
   ?obligations:C.Scoped_obligation.t list -> Bioc_wire.Json.t -> C.Stage_record.t

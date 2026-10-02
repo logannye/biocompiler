@@ -237,6 +237,9 @@ class ValidationGateTests(unittest.TestCase):
         text = (Path(__file__).resolve().parents[1] / ".github/workflows/ci.yml").read_text()
         native = text.split("\n  ocaml-core:\n", 1)[1].split("\n  architecture-core-reproducibility:\n", 1)[0]
         self.assertIn('core/_build/default/test/test_pipeline_session.exe "$GITHUB_WORKSPACE/protocol/pipeline-session-v1.json" "$GITHUB_WORKSPACE/tests/conformance/fixed-pipeline-native-v1.json" | tee generated/core/test_pipeline_session.txt', native)
+        self.assertIn("core/_build/default/test/test_pipeline_host_bridge.exe | tee generated/core/test_pipeline_host_bridge.txt", native)
+        self.assertIn('core/_build/default/test/test_deferred_pass_manager.exe "$GITHUB_WORKSPACE/tests/conformance/pipeline-contract-literals-v1.json" | tee generated/core/test_deferred_pass_manager.txt', native)
+        self.assertIn('core/_build/default/test/test_pipeline_callback_channel.exe "$GITHUB_WORKSPACE/protocol/pipeline-callback-channel-v1.json" | tee generated/core/test_pipeline_callback_channel.txt', native)
         for name in ("test_pipeline_contract", "test_pass_manager"):
             self.assertIn('core/_build/default/test/' + name + '.exe "$GITHUB_WORKSPACE/tests/conformance/pipeline-contract-literals-v1.json" | tee generated/core/' + name + '.txt', native)
         self.assertIn('core/_build/default/test/test_checked_pipeline_corpus.exe "$GITHUB_WORKSPACE/tests/conformance/checked-pipeline-v1.json" | tee generated/core/test_checked_pipeline_corpus.txt', native)
