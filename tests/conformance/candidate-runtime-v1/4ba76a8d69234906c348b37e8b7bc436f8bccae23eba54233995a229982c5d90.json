@@ -1,0 +1,1 @@
+"{\"name\":\"synthetic_realization.synthetic\",\"nodes\":[],\"outputs\":[\"output:response.rest\"],\"required_capabilities\":[\"synthetic_signal_graph\"],\"schema_version\":\"biocompiler.mechanism.synthetic.v0.2\"}"

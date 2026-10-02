@@ -1,0 +1,1 @@
+{"frames":[{"contacts":{},"time":0,"values":{"output":false}},{"contacts":{},"time":2,"values":{"output":true}},{"contacts":{},"time":3,"values":{"output":true}}],"horizon":3,"model_version":"biocompiler.synthetic.runner.v0.2","program_fingerprint":"85e3c7b605e2280fb6bbc537b2ef38d0e0c54daaa24318486da2f7b613ba73db","schema_version":"biocompiler.synthetic.trace.v0.1"}

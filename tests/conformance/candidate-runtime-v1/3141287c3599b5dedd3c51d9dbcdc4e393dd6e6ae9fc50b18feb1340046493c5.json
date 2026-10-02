@@ -1,0 +1,1 @@
+"{\"attributes\":{},\"id\":\"aggregate\",\"inputs\":[\"event\"],\"kind\":\"any_contact\",\"output\":{\"compartment\":\"abstract\",\"dtype\":{\"arguments\":[],\"dimensions\":{},\"kind\":\"condition\",\"name\":\"Condition\"},\"id\":\"meaning:aggregate\",\"role\":\"observer\",\"schema_version\":\"biocompiler.observable.v0.1\",\"scope\":\"cell\"},\"requirement_ids\":[]}"

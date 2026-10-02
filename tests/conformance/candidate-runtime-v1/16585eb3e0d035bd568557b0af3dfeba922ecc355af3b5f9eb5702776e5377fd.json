@@ -1,0 +1,1 @@
+"{\"attributes\":{\"operator\":\"gt\"},\"id\":\"test\",\"inputs\":[\"a\",\"b\"],\"kind\":\"compare\",\"output\":{\"compartment\":\"abstract\",\"dtype\":{\"arguments\":[],\"dimensions\":{},\"kind\":\"condition\",\"name\":\"Condition\"},\"id\":\"meaning:test\",\"role\":\"responder\",\"schema_version\":\"biocompiler.observable.v0.1\",\"scope\":\"cell\"},\"requirement_ids\":[]}"

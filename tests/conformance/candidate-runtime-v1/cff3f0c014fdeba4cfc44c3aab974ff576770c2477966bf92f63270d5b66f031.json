@@ -1,0 +1,1 @@
+"{\"args\":[\"memory_onset:n000009\",\"onset\",{\"compartment\":\"abstract\",\"dtype\":{\"arguments\":[],\"dimensions\":{},\"kind\":\"condition\",\"name\":\"Condition\"},\"id\":\"synthetic.memory_onset:n000009\",\"role\":\"n000001\",\"schema_version\":\"biocompiler.observable.v0.1\",\"scope\":\"cell\"},[\"input:n000003:present\"],{},[\"consumer\",\"producer\"]],\"kwargs\":{}}"

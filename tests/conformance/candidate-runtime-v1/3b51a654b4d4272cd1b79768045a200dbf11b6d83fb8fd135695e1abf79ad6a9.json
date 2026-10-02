@@ -1,0 +1,1 @@
+{"attributes":{},"id":"any","inputs":["match"],"kind":"any_contact","output":{"compartment":"abstract","dtype":{"arguments":[],"dimensions":{},"kind":"condition","name":"Condition"},"id":"meaning:any","role":"responder","schema_version":"biocompiler.observable.v0.1","scope":"cell"},"requirement_ids":[]}

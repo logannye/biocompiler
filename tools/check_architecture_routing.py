@@ -286,6 +286,7 @@ def campaign(core, verify, corpus, artifacts, guards, receipt):
                 checks.append({"id": prefix, "operation": operation, "exit_code": 0})
             require(cli_build.read_bytes() == build_path.read_bytes()
                     and cli_export.read_bytes() == (directory / "api.export.json").read_bytes(), "Installed CLI changed complete SDK artifacts")
+            print(f"Architecture routing: completed {prefix} ({len(checks)}/{EXPECTED_CHECKS} checks)", flush=True)
             if prefix == "installed/B":
                 base = (request, build, checked, directory)
 

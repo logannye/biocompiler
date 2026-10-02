@@ -1,0 +1,1 @@
+{"attributes":{},"id":"invalid","inputs":["event","input","input"],"kind":"select","output":{"compartment":"abstract","dtype":{"arguments":[],"dimensions":{},"kind":"condition","name":"Condition"},"id":"meaning:invalid","role":"observer","schema_version":"biocompiler.observable.v0.1","scope":"cell"},"requirement_ids":[]}

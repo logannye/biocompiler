@@ -1,0 +1,1 @@
+"{\"args\":[\"aggregate\",\"any_contact\",{\"compartment\":\"abstract\",\"dtype\":{\"arguments\":[],\"dimensions\":{},\"kind\":\"condition\",\"name\":\"Condition\"},\"id\":\"meaning:aggregate\",\"role\":\"observer\",\"schema_version\":\"biocompiler.observable.v0.1\",\"scope\":\"cell\"},[\"event\"],{}],\"kwargs\":{}}"

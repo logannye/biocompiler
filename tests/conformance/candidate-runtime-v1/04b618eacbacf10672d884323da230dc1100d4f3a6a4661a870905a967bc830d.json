@@ -1,0 +1,1 @@
+{"attributes":{},"id":"input","inputs":[],"kind":"input","output":{"compartment":"abstract","dtype":{"arguments":[],"dimensions":{},"kind":"scalar","name":"Level"},"id":"meaning:input","role":"responder","schema_version":"biocompiler.observable.v0.1","scope":"cell"},"requirement_ids":[]}

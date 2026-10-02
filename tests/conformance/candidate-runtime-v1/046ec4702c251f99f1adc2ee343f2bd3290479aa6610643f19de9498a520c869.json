@@ -1,0 +1,1 @@
+{"attributes":{},"id":"output:n000012:n000011","inputs":["expression:n000008"],"kind":"output","output":{"compartment":"abstract","dtype":{"arguments":[],"dimensions":{},"kind":"condition","name":"Condition"},"id":"output:n000012:n000011","role":"n000001","schema_version":"biocompiler.observable.v0.1","scope":"cell"},"requirement_ids":["output:n000012:n000011"]}

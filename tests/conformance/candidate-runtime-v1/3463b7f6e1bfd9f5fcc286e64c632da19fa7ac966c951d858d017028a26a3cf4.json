@@ -1,0 +1,1 @@
+"{\"args\":[\"set_event\",\"onset\",{\"compartment\":\"abstract\",\"dtype\":{\"arguments\":[],\"dimensions\":{},\"kind\":\"condition\",\"name\":\"Condition\"},\"id\":\"meaning:set_event\",\"role\":\"observer\",\"schema_version\":\"biocompiler.observable.v0.1\",\"scope\":\"cell\"},[\"set\"],{}],\"kwargs\":{}}"

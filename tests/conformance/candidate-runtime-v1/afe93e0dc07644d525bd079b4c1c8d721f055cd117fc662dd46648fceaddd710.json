@@ -1,0 +1,1 @@
+{"attributes":{},"id":"select:response","inputs":["expression:n000007","active:response","inactive:response"],"kind":"select","output":{"compartment":"abstract","dtype":{"arguments":[],"dimensions":{},"kind":"scalar","name":"Level"},"id":"synthetic.select:response","role":"n000001","schema_version":"biocompiler.observable.v0.1","scope":"contact"},"requirement_ids":["response"]}

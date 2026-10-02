@@ -1,0 +1,1 @@
+"{\"args\":[\"operator\",\"onset\",{\"compartment\":\"abstract\",\"dtype\":{\"arguments\":[],\"dimensions\":{},\"kind\":\"condition\",\"name\":\"Condition\"},\"id\":\"synthetic.pulse_onset:contact_pulse\",\"role\":\"n000001\",\"schema_version\":\"biocompiler.observable.v0.1\",\"scope\":\"contact\"},[\"in:0\"],{}],\"kwargs\":{}}"

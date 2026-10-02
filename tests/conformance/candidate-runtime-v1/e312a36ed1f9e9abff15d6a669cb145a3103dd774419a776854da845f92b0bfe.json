@@ -1,0 +1,1 @@
+{"attributes":{},"id":"select:held","inputs":["expression:n000007","active:held","inactive:held"],"kind":"select","output":{"compartment":"abstract","dtype":{"arguments":[],"dimensions":{},"kind":"scalar","name":"Level"},"id":"synthetic.select:held","role":"n000001","schema_version":"biocompiler.observable.v0.1","scope":"contact"},"requirement_ids":["held"]}

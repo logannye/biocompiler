@@ -227,3 +227,23 @@
  (name test_producer_protocol)
  (modules test_producer_protocol)
  (libraries bioc_wire bioc_domain bioc_service bioc_producer_service))
+
+(test
+ (name test_mechanism)
+ (modules test_mechanism)
+ (libraries bioc_wire bioc_domain zarith))
+
+(test
+ (name test_model_execution_data)
+ (modules test_model_execution_data)
+ (libraries bioc_wire bioc_domain zarith))
+
+(test
+ (name test_synthetic_model)
+ (modules test_synthetic_model)
+ (libraries bioc_wire bioc_domain bioc_candidate_runtime zarith))
+
+(test
+ (name test_candidate_runtime_corpus)
+ (modules test_candidate_runtime_corpus)
+ (libraries bioc_wire bioc_domain bioc_candidate_runtime zarith))

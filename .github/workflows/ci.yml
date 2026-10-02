@@ -822,7 +822,8 @@ jobs:
 
   ocaml-core:
     runs-on: ${{ matrix.runner }}
-    timeout-minutes: 35
+    # Includes both installed Python routing campaigns and every native corpus.
+    timeout-minutes: 60
     strategy:
       fail-fast: false
       matrix:
@@ -1031,6 +1032,9 @@ jobs:
       - name: Compare complete coupled source transport traces and rejection signatures
         if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
         run: core/_build/default/test/test_source_transport.exe "$GITHUB_WORKSPACE/tests/conformance/source-transport-v1.json" | tee generated/core/source-transport.txt
+      - name: Compare every captured independent candidate model trace and rejection
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_candidate_runtime_corpus.exe "$GITHUB_WORKSPACE/tests/conformance/candidate-runtime-v1.json" | tee generated/core/candidate-runtime.txt
       - name: Retain revision-bound native executables
         run: |
           cp core/_build/default/bin/core/main.exe generated/core/biocompiler-core

@@ -207,6 +207,29 @@ These checkpoints record narrower validated work; they do not complete a broad L
 - [x] **PR45 complete PR validation and merge:** all 30 required jobs passed, including 2,283 tests per Python version, 40 native suites on both platforms and 936 protocol checks. Source `99914ca274745ca65a9005f918ed15fc569141f2`, tested merge `40cf9525ec9b3f19a10e9e789b6651dbf68ec69d` and integrated commit `83ce68cecc1634f1b143f67e198ff083df425af5` share tree `5d963c11f618ae4fec2ac341c35f296d35fdeeaf`.
 - [x] **PR45 integrated-main validation:** separate [run 36954221531](https://github.com/logannye/biocompiler/actions/runs/36954221531) passed all 30 required jobs at `83ce68cecc1634f1b143f67e198ff083df425af5`, with 2,283 tests on each Python version; the retained receipt records its full aggregate digest.
 - [ ] **B1.08a independent candidate execution and coupled transport**, before any such execution claim.
+  The next internal batch ports all 14 synthetic mechanism operations and
+  candidate-specific snapshots/traces into a separately linked runtime. Its
+  dependency policy permits only shared wire/domain/numeric primitives; source
+  execution, producers and acceptance libraries are prohibited. The initial
+  50-method Python baseline captures 55 executions (43 complete traces and 12
+  failures) and replays exactly. Expanded capture includes transitive callers;
+  complete operation coverage, independent timeline literals, resource boundaries
+  and both hosted native platforms remain required. Locked assembly reconstruction,
+  realization checking and molecular correspondence remain subsequent obligations.
+
+  **Implementation checkpoint (unvalidated natively):** the complete internal
+  mechanism domain, candidate frame/trace codecs and fresh-session scheduler are
+  implemented. The final corpus pins 155 original methods, one class fixture and
+  two observed subprocesses: 11,938 domain observations and 549 executions (537
+  full traces, 12 failures), 73 programs and all 14 operations. All 12,487 calls
+  are classified; five failures belong to the stricter wire boundary (four
+  nonfinite values and one duplicate-key document). The original 50-method,
+  55-execution, 727-call baseline is retained unchanged. Corpus pin
+  `e29da7150c3a80621967d332f8bb03065b07ebcb30b58b30fc8029e296393599`
+  covers 3,955 documents and 16,098,793 bytes. Seven integrity/replay tests and
+  fresh full recapture pass locally; native compilation, 50 native suites and
+  complete mandatory corpus execution remain required on both hosted platforms.
+
 - [ ] **B1.09 fresh acceptance and protocol exposure**, followed by B2 producer/export and the remaining B3–B6 product gates.
 
 **Validated producer checkpoint, 2026-10-01:** [PR46](https://github.com/logannye/biocompiler/pull/46)

@@ -1,0 +1,1 @@
+"{\"args\":[\"combine\",\"or\",{\"compartment\":\"abstract\",\"dtype\":{\"arguments\":[],\"dimensions\":{},\"kind\":\"condition\",\"name\":\"Condition\"},\"id\":\"combined\",\"role\":\"n000001\",\"schema_version\":\"biocompiler.observable.v0.1\",\"scope\":\"contact\"},[\"input0\",\"input1\"]],\"kwargs\":{}}"

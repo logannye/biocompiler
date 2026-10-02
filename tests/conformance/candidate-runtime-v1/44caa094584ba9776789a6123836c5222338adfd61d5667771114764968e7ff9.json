@@ -1,0 +1,1 @@
+"{\"args\":[\"memory\",\"memory\",{\"compartment\":\"abstract\",\"dtype\":{\"arguments\":[],\"dimensions\":{},\"kind\":\"condition\",\"name\":\"Condition\"},\"id\":\"meaning:memory\",\"role\":\"observer\",\"schema_version\":\"biocompiler.observable.v0.1\",\"scope\":\"cell\"},[\"event\",\"reset\"],{\"duration\":null}],\"kwargs\":{}}"

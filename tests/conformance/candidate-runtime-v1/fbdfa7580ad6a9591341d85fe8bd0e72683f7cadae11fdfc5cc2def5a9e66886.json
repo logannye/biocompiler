@@ -1,0 +1,1 @@
+"{\"args\":[\"b\",\"input\",{\"compartment\":\"abstract\",\"dtype\":{\"arguments\":[],\"dimensions\":{\"amount\":1,\"length\":-3},\"kind\":\"scalar\",\"name\":\"Concentration\"},\"id\":\"meaning:b\",\"role\":\"responder\",\"schema_version\":\"biocompiler.observable.v0.1\",\"scope\":\"cell\"},[],{},[]],\"kwargs\":{}}"

@@ -1,0 +1,1 @@
+{"attributes":{"duration":null},"id":"a_consumer","inputs":["consume_event","never"],"kind":"memory","output":{"compartment":"abstract","dtype":{"arguments":[],"dimensions":{},"kind":"condition","name":"Condition"},"id":"meaning:a_consumer","role":"observer","schema_version":"biocompiler.observable.v0.1","scope":"cell"},"requirement_ids":[]}

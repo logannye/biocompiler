@@ -1,0 +1,1 @@
+{"attributes":{},"id":"set_event","inputs":["set"],"kind":"onset","output":{"compartment":"abstract","dtype":{"arguments":[],"dimensions":{},"kind":"condition","name":"Condition"},"id":"meaning:set_event","role":"observer","schema_version":"biocompiler.observable.v0.1","scope":"cell"},"requirement_ids":[]}
