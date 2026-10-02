@@ -10,6 +10,8 @@ import json
 from pathlib import Path
 import unittest
 
+from tools.realization_source_lineage import verify_captured_source
+
 ROOT = Path(__file__).resolve().parents[1]
 CORPUS = ROOT / "tests/conformance/candidate-runtime-v1.json"
 EXPECTED_PIN = "e29da7150c3a80621967d332f8bb03065b07ebcb30b58b30fc8029e296393599"
@@ -95,7 +97,7 @@ class CandidateRuntimeCorpusTests(unittest.TestCase):
         actual = [c["id"] for c in self.index["contexts"] if c["kind"] == "original_method"]
         self.assertEqual(actual, expected)
         for record in self.index["source_files"]:
-            self.assertEqual(hashlib.sha256((ROOT / record["path"]).read_bytes()).hexdigest(), record["sha256"], record["path"])
+            verify_captured_source(ROOT, record)
 
     def test_complete_ledgers_are_reachable_and_runtime_arguments_are_identical(self):
         from biocompiler.ir.mechanism import MechanismNode, MechanismProgram
