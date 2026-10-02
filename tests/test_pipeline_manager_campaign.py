@@ -688,12 +688,21 @@ class PipelineManagerCampaignTests(unittest.TestCase):
         self.assertIsNone(sys.getprofile())
 
     def test_frozen_oracle_loading_restores_import_path(self):
+        from unittest.mock import patch
         before = list(sys.path)
         oracle = campaign.load_oracle(installed=False)
         self.assertEqual(sys.path, before)
         self.assertEqual(oracle.capture()["cases"], self.corpus.cases)
-        with self.assertRaisesRegex(AssertionError, "Source-tree product"):
-            campaign.installed_modules()
+        # CI loads the installed package; local source checks load checkout/src.
+        # Arrange the forbidden origin explicitly in either environment.
+        name, package = next((name, module) for name, module in sys.modules.items()
+            if name == "biocompiler" or name.startswith("biocompiler."))
+        origin = package.__file__
+        with patch.object(package, "__file__", str(campaign.ROOT / "src/biocompiler/__init__.py")):
+            with self.assertRaises(AssertionError) as raised:
+                campaign.installed_modules()
+            self.assertEqual(str(raised.exception), "Source-tree product loaded: " + name)
+        self.assertEqual(package.__file__, origin)
 
     def test_complete_four_runtime_matrix_rehashes_receipts_and_binaries(self):
         with tempfile.TemporaryDirectory() as directory:
