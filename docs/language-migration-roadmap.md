@@ -166,7 +166,7 @@ Reread this roadmap before each batch and update its scoped checkboxes and statu
 | --- | --- | --- | --- |
 | B0 | LM-00 inventory; LM-01 skeleton; LM-02 protocol/canonical vectors | Baseline and executable interface are pinned; canonical compatibility is established | Native protocol/canonical foundation validated; broader corpus, performance, formatting and distribution-plan obligations remain |
 | B1 | First checker-led vertical slice: LM-20/21/22/24/25 subset, LM-23 records/decoders, Python adapter in shadow mode | Existing case B request and Python candidate are independently checked in OCaml; targeted temporal/authority/sequence mutants fail correctly | BuildRequest/Behavior/coordinate and circuit declarations plus independent source correspondence validated in PR38/39; per-role reference execution and lowering/contract/chemistry prerequisites validated in PR40/41; complete human wrappers, component models, molecules/sets and decimal deployment declarations validated in PR42; architecture/construction declarations and independent required-region checking validated in PR43; full architecture request authority, construction reconstruction and source-manifest checking validated in PR44; complete architecture checker validated in PR45; installed protocol and independent candidate execution remain open |
-| B2 | Port producer for that same slice; extend LM-23/24/26 | Python authoring → OCaml compilation → independent OCaml check → paired RNA/manifest export works outside checkout | Producers validated in PR46; installed operations in PR47 validation; explicit public SDK/CLI routing implemented in the next batch, pending gates |
+| B2 | Port producer for that same slice; extend LM-23/24/26 | Python authoring → OCaml compilation → independent OCaml check → paired RNA/manifest export works outside checkout | Producers validated in PR46; installed operations validated and merged in PR47; public SDK/CLI routing in PR48 awaits complete gates |
 | B3 | Expand all behavior/architecture/control profiles and historical public coverage | Complete capability ledger and all 13 current architecture cases pass with fresh identity and mutation evidence | Queued |
 | B4 | LM-10 TypeScript parity; LM-12 installed SDK/CLI parity; deliberate architecture UI integration | Existing browser and installed workflows pass; migrated paths visibly use compatible OCaml core | TypeScript parity and installed browser checks passed; architecture integration and installed SDK cutover pending |
 | B5 | LM-11 conversational draft/review flow and LM-27 scope enforcement | Draft → explicit reviewed intent → existing validated pipeline; ambiguity and unsupported claims remain visible | Queued |
@@ -207,6 +207,33 @@ These checkpoints record narrower validated work; they do not complete a broad L
 - [x] **PR45 complete PR validation and merge:** all 30 required jobs passed, including 2,283 tests per Python version, 40 native suites on both platforms and 936 protocol checks. Source `99914ca274745ca65a9005f918ed15fc569141f2`, tested merge `40cf9525ec9b3f19a10e9e789b6651dbf68ec69d` and integrated commit `83ce68cecc1634f1b143f67e198ff083df425af5` share tree `5d963c11f618ae4fec2ac341c35f296d35fdeeaf`.
 - [x] **PR45 integrated-main validation:** separate [run 36954221531](https://github.com/logannye/biocompiler/actions/runs/36954221531) passed all 30 required jobs at `83ce68cecc1634f1b143f67e198ff083df425af5`, with 2,283 tests on each Python version; the retained receipt records its full aggregate digest.
 - [ ] **B1.08a independent candidate execution and coupled transport**, before any such execution claim.
+  The next internal batch ports all 14 synthetic mechanism operations and
+  candidate-specific snapshots/traces into a separately linked runtime. Its
+  dependency policy permits only shared wire/domain/numeric primitives; source
+  execution, producers and acceptance libraries are prohibited. The initial
+  50-method Python baseline captures 55 executions (43 complete traces and 12
+  failures) and replays exactly. Expanded capture includes transitive callers;
+  complete operation coverage, independent timeline literals, resource boundaries
+  and both hosted native platforms remain required. Locked assembly reconstruction,
+  realization checking and molecular correspondence remain subsequent obligations.
+
+  **Implementation checkpoint (unvalidated natively):** the complete internal
+  mechanism domain, candidate frame/trace codecs and fresh-session scheduler are
+  implemented. The final corpus pins 155 original methods, one class fixture and
+  two observed subprocesses: 11,938 domain observations and 549 executions (537
+  full traces, 12 failures), 73 programs and all 14 operations. All 12,487 calls
+  are classified; five failures belong to the stricter wire boundary (four
+  nonfinite values and one duplicate-key document). The original 50-method,
+  55-execution, 727-call baseline is retained unchanged. Corpus pin
+  `e29da7150c3a80621967d332f8bb03065b07ebcb30b58b30fc8029e296393599`
+  covers 3,955 documents and 16,098,793 bytes. Seven integrity/replay tests and
+  fresh full recapture pass locally; native compilation, 50 native suites and
+  complete mandatory corpus execution remain required on both hosted platforms.
+  Draft [PR49](https://github.com/logannye/biocompiler/pull/49) preserves this
+  implementation. Its first hosted run compiled and passed the domain/runtime
+  literals, but Dune omitted the corpus argument; the invocation is corrected
+  and full native corpus validation remains pending.
+
 - [ ] **B1.09 fresh acceptance and protocol exposure**, followed by B2 producer/export and the remaining B3–B6 product gates.
 
 **Validated producer checkpoint, 2026-10-01:** [PR46](https://github.com/logannye/biocompiler/pull/46)
@@ -234,17 +261,26 @@ merge `972d0427c9b9608ecda3b4d0eb7d0026355ce80c` and integrated main share tree
   strict capability negotiation and immutable typed Python results passed the
   108-check installed campaign on both native platforms and complete required gates.
   Public production routing and distribution remain open.
-- [ ] **PR46 integrated-main validation:** separate
+- [x] **PR46 integrated-main validation:** separate
   [run 36958643394](https://github.com/logannye/biocompiler/actions/runs/36958643394)
-  is in progress at the integrated revision.
+  passed all 30 required jobs at the integrated revision, with exactly 2,328 tests
+  on each Python version. The retained receipt binds its full aggregate digest.
 
-- [ ] **B2 installed producer operations:** the next batch adds core-only
-  `compile-architecture` and `export-architecture` operations, exact immutable
-  build/FASTA/manifest transport and fresh assessment binding. The verifier's
-  producer-free link graph remains enforced. Complete installed examples,
-  mutation rejection, native tests and full hosted validation are required before
-  marking this checkpoint complete. Public SDK/CLI routing, atomic publication
-  and distribution remain separately open.
+- [x] **B2 installed producer operations:** [PR47](https://github.com/logannye/biocompiler/pull/47)
+  passed all 30 required jobs in [run 36959458593](https://github.com/logannye/biocompiler/actions/runs/36959458593)
+  and merged at `4415d59acd83750dd824218a1c8ab1500d8fc749`.
+  Both platforms passed 46 native suites and 62 installed producer checks;
+  exactly 2,351 tests passed on each Python version.
+  [Pinned receipt](../protocol/migration-installed-producer-validation.json).
+  Core-only `compile-architecture` and `export-architecture` preserve exact
+  immutable build/FASTA/manifest transport and fresh assessment binding; the
+  verifier's producer-free link graph remains enforced. Source `92cb223`, tested
+  merge `03936f8` and integrated main share tree
+  `64e2732d72b07468b4a7e89ddddf0f7805416f36`. Public routing and distribution
+  remain separate checkpoints.
+- [ ] **PR47 integrated-main validation:** separate
+  [run 36961812619](https://github.com/logannye/biocompiler/actions/runs/36961812619)
+  is running at the integrated revision. Do not transfer the PR result to it.
 
 - [ ] **B2 public architecture routing:** explicit `core=` SDK selection and
   architecture CLI executable options preserve historical classes, raw request
@@ -258,7 +294,7 @@ merge `972d0427c9b9608ecda3b4d0eb7d0026355ce80c` and integrated main share tree
   See [explicit core workflows](architecture-core-workflows.md).
 
 
-PR42 source `06da8b4bee4110597caed15fa2da4f2bb7724268`, tested merge `902cae85932dfc1202f68d7d9bc7502941eeb701` and integrated main share tree `06898b1f7ac5e51e692ef976d5834ec5976a495a`. Both complete PR and integrated-main gates passed. PR43 source `7fb3ec8983b038b03f0efa8f8233e4bef4e5a613`, tested merge `9f0c10ea218c4df49aa9f143718eb82d2daff842` and integrated main share tree `836da9375e1206d708194eecd48419f529ab5ff0`. Both complete PR and integrated-main gates passed. PR44 source `ae56d0c7e3dd8202aa015d7a7b769a75bd8ca037`, tested merge `8ff4d1911a6525c58be16e6db9d030b5fb670a91` and integrated main share tree `7ecc2c56f1370c0540f3c74c5795c6868d8e3841`; full PR and integrated-main gates passed. PR45 adds validated independent full architecture acceptance and its control/deployment/build prerequisites. PR46 validates experimental verification protocol, producers and coupled source transport. PR47 adds installed producer operations pending validation; public routing and full cutover remain open.
+PR42 source `06da8b4bee4110597caed15fa2da4f2bb7724268`, tested merge `902cae85932dfc1202f68d7d9bc7502941eeb701` and integrated main share tree `06898b1f7ac5e51e692ef976d5834ec5976a495a`. Both complete PR and integrated-main gates passed. PR43 source `7fb3ec8983b038b03f0efa8f8233e4bef4e5a613`, tested merge `9f0c10ea218c4df49aa9f143718eb82d2daff842` and integrated main share tree `836da9375e1206d708194eecd48419f529ab5ff0`. Both complete PR and integrated-main gates passed. PR44 source `ae56d0c7e3dd8202aa015d7a7b769a75bd8ca037`, tested merge `8ff4d1911a6525c58be16e6db9d030b5fb670a91` and integrated main share tree `7ecc2c56f1370c0540f3c74c5795c6868d8e3841`; full PR and integrated-main gates passed. PR45 adds validated independent full architecture acceptance and its control/deployment/build prerequisites. PR46 validates experimental verification protocol, producers and coupled source transport. PR47 validates installed producer operations and is merged; its separate main run, public routing and full cutover remain open.
 
 **First vertical slice:** [the case B acceptance map](migration-case-b.md) and [retained corpus](../tests/conformance/case-b/README.md) now pin its real source/candidate and independent literal timelines. Architecture acceptance/mutation descriptors remain unexecuted; domain and source-correspondence receipts are scoped above, and per-role reference execution has complete PR40 validation. Use the existing artificial architecture case B (prime/act/recover, timeout, reset and shutdown) with exact supplied source correspondence. Reuse its actual request/templates. The initial checker stage reads the existing Python-produced candidate and independently reconstructs it. Then port its producer. Do not replace this slice with an unrelated toy expression interpreter.
 
@@ -307,7 +343,7 @@ Starting points: [frontend](../src/biocompiler/frontend/api.py), [symbolic expre
 Depends on LM-02; individual operations route to OCaml only after their core parity gate.
 
 - [x] Add the thin typed core-process transport with explicit executable selection, timeouts, cancellation, digest/version checks and stable error mapping. `core_client.py` and its protocol/process tests passed PR37–44; current public compiler routing remains Python.
-- [ ] Add validated operation negotiation and production adapters for each migrated capability. Architecture verification negotiation passed PR46; producer operations and explicit public routing remain in validation.
+- [ ] Add validated operation negotiation and production adapters for each migrated capability. Architecture verification negotiation passed PR46 and producer operations passed PR47; explicit public routing remains in validation.
 - [ ] Preserve Python symbolic construction and its ban on Python truth testing. Retain cross-program, role, type and unit diagnostics.
 - [ ] Keep public class/function names, return interfaces, JSON roundtrips and CLI behavior where specified. Inventory and test intentional changes rather than silently substituting dictionaries for public objects.
 - [ ] Add strict static checking for new adapters and touched public boundaries; expand by module with an explicit remaining ledger. Do not mask migrated paths with Any or blanket ignore rules.

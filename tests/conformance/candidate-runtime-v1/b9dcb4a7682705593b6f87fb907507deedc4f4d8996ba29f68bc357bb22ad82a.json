@@ -1,0 +1,1 @@
+"{\"attributes\":{},\"id\":\"operator\",\"inputs\":[\"in:0\",\"in:1\",\"in:2\"],\"kind\":\"select\",\"output\":{\"compartment\":\"abstract\",\"dtype\":{\"arguments\":[],\"dimensions\":{},\"kind\":\"scalar\",\"name\":\"Level\"},\"id\":\"synthetic.select:response\",\"role\":\"n000001\",\"schema_version\":\"biocompiler.observable.v0.1\",\"scope\":\"cell\"},\"requirement_ids\":[]}"

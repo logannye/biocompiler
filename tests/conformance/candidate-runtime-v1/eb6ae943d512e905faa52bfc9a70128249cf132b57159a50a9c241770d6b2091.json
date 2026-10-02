@@ -1,0 +1,1 @@
+{"attributes":{},"id":"input:n000006:present","inputs":[],"kind":"input","output":{"compartment":"abstract","dtype":{"arguments":[],"dimensions":{},"kind":"condition","name":"Condition"},"id":"reset","role":"n000001","schema_version":"biocompiler.observable.v0.1","scope":"cell"},"requirement_ids":["memory_readout"]}

@@ -1,0 +1,1 @@
+"{\"args\":[\"selected\",\"select\",{\"compartment\":\"abstract\",\"dtype\":{\"arguments\":[],\"dimensions\":{\"amount\":1,\"time\":-1},\"kind\":\"scalar\",\"name\":\"ProductionRate\"},\"id\":\"meaning:selected\",\"role\":\"responder\",\"schema_version\":\"biocompiler.observable.v0.1\",\"scope\":\"cell\"},[\"above\",\"high\",\"low\"],{},[]],\"kwargs\":{}}"

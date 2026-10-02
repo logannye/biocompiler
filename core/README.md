@@ -38,7 +38,8 @@ With OCaml 5.4.0 and dependencies from `biocompiler_core.opam` installed:
 
 ```sh
 opam exec -- dune build --root core @all
-opam exec -- dune runtest --root core
+BIOCOMPILER_CANDIDATE_RUNTIME_CORPUS="$PWD/tests/conformance/candidate-runtime-v1.json" \
+  opam exec -- dune runtest --root core
 ```
 
 Build outputs are `core/_build/default/bin/core/main.exe` and
@@ -347,3 +348,22 @@ Explicit Python SDK and CLI selection of a compatible core is implemented in the
 next routing batch; its installed four-way Python/platform campaign remains a
 required hosted gate. The default reference route stays Python until distribution
 and cutover are complete. See [explicit core workflows](../docs/architecture-core-workflows.md).
+
+
+The next internal candidate-runtime batch adds `bioc_candidate_runtime`, linked
+only to wire/domain/numeric primitives. Its 14-operation mechanism ADT and
+candidate-specific frame/trace records preserve the historical synthetic model
+profile; independent state stores and scheduling execute the selected mechanism.
+The source interpreter, producers and acceptance libraries are forbidden runtime
+dependencies. This internal runner is not yet a public protocol operation or a
+completed realization checker. Locked component reconstruction, realization
+acceptance and molecular correspondence remain open.
+
+The resource profile limits cumulative work to 50 million units, output frames to
+10,000, trace items and retained state to 100,000 each, and complete encoded traces
+to 32 MiB; callers may reduce these ceilings. Domain imports retain wire depth,
+value, UTF-8 string and numeric bounds. The complete corpus retains 12,487 observed
+calls, every original assertion and full returned artifacts or rejection stages;
+independent native literals cover scheduling, typing and exact resource boundaries.
+The batch adds four native suites (50 total). Source integrity/replay and static
+boundary checks have passed; hosted compilation and execution remain required.

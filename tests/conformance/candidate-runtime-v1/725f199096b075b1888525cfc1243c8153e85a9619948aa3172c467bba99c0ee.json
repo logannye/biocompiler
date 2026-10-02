@@ -1,0 +1,1 @@
+"{\"attributes\":{\"value\":5},\"id\":\"constant\",\"inputs\":[],\"kind\":\"constant\",\"output\":{\"compartment\":\"abstract\",\"dtype\":{\"arguments\":[],\"dimensions\":{\"time\":1},\"kind\":\"scalar\",\"name\":\"Duration\"},\"id\":\"meaning:constant\",\"role\":\"responder\",\"schema_version\":\"biocompiler.observable.v0.1\",\"scope\":\"cell\"},\"requirement_ids\":[]}"

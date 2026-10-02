@@ -43,6 +43,10 @@ class CoreBoundaryTests(unittest.TestCase):
         self.assertNotIn("bioc_source_adapter", dependencies)
         self.assertEqual(set(receipt["transitive_dependencies"]["bioc_semantics"]),
                          {"bioc_wire", "bioc_domain", "digestif", "zarith"})
+        self.assertEqual(receipt["roles"]["bioc_candidate_runtime"], "candidate_runtime")
+        self.assertEqual(set(receipt["transitive_dependencies"]["bioc_candidate_runtime"]),
+                         {"bioc_wire", "bioc_domain", "digestif", "zarith"})
+        self.assertNotIn("bioc_candidate_runtime", dependencies)
         self.assertEqual(receipt["shared_trusted_base"], ["bioc_wire", "bioc_domain"])
         self.assertIn("core/lib/checker/intent_check.ml", receipt["source_sha256"])
         self.assertEqual(receipt["native_build_and_semantic_independence"], "separate_hosted_validation_required")
@@ -65,6 +69,12 @@ class CoreBoundaryTests(unittest.TestCase):
         closure = boundaries.validate_graph(independent, {"candidate": "candidate_runtime", "source": "source_semantics", "primitive": "trusted_primitive"})
         self.assertEqual(closure["candidate"], ["primitive"])
 
+    def test_candidate_execution_cannot_reach_producers_or_acceptance_authority(self):
+        graph = {"candidate": ["adapter"], "adapter": ["authority"], "authority": []}
+        for role in sorted(boundaries.PRODUCER_ROLES | {"checker", "checker_service", "verifier", "core_entrypoint"}):
+            with self.subTest(role=role), self.assertRaisesRegex(boundaries.BoundaryError, "acceptance authority"):
+                boundaries.validate_graph(graph, {"candidate": "candidate_runtime", "adapter": "support", "authority": role})
+
     def test_cycles_missing_roles_and_unknown_external_libraries_fail(self):
         cases = [({"a": ["b"], "b": ["a"]}, {"a": "support", "b": "support"}),
                  ({"a": []}, {}), ({"a": ["unexpected"]}, {"a": "support"})]
@@ -81,6 +91,15 @@ class CoreBoundaryTests(unittest.TestCase):
             root = self.copy_core()
             self.change(root, relative, before, after)
             with self.subTest(path=relative), self.assertRaises(boundaries.BoundaryError):
+                boundaries.check_boundaries(root)
+
+    def test_candidate_corpus_action_requires_the_complete_external_fixture(self):
+        action = "(action (run %{test} %{env:BIOCOMPILER_CANDIDATE_RUNTIME_CORPUS=missing}))"
+        for replacement in ("", "(action (run true))", action + "\n " + action):
+            root = self.copy_core()
+            self.change(root, "test/dune", action, replacement)
+            with self.subTest(replacement=replacement), self.assertRaisesRegex(
+                    boundaries.BoundaryError, "Changed native test action"):
                 boundaries.check_boundaries(root)
 
     def test_new_library_missing_checker_and_implicit_transitive_dependencies_fail(self):

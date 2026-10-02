@@ -1,0 +1,1 @@
+"{\"args\":[\"pulse_onset:local_pulse\",\"onset\",{\"compartment\":\"abstract\",\"dtype\":{\"arguments\":[],\"dimensions\":{},\"kind\":\"condition\",\"name\":\"Condition\"},\"id\":\"synthetic.pulse_onset:local_pulse\",\"role\":\"n000001\",\"schema_version\":\"biocompiler.observable.v0.1\",\"scope\":\"cell\"},[\"aggregate:local_pulse\"],{},[]],\"kwargs\":{}}"

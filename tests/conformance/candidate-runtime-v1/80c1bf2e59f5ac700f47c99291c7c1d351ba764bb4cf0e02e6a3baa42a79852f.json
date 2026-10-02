@@ -1,0 +1,1 @@
+"{\"args\":[\"aggregate:local\",\"any_contact\",{\"compartment\":\"abstract\",\"dtype\":{\"arguments\":[],\"dimensions\":{},\"kind\":\"condition\",\"name\":\"Condition\"},\"id\":\"synthetic.aggregate:local\",\"role\":\"n000001\",\"schema_version\":\"biocompiler.observable.v0.1\",\"scope\":\"cell\"},[\"expression:n000009\"],{},[\"local\"]],\"kwargs\":{}}"

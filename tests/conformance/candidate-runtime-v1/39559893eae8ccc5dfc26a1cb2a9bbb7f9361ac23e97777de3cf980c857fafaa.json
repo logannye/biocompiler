@@ -1,0 +1,1 @@
+{"attributes":{},"id":"output","inputs":["input"],"kind":"output","output":{"compartment":"other_compartment","dtype":{"arguments":[],"dimensions":{},"kind":"condition","name":"Condition"},"id":"out","role":"responder","schema_version":"biocompiler.observable.v0.1","scope":"cell"},"requirement_ids":[]}

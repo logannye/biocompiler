@@ -1,0 +1,1 @@
+"{\"attributes\":{},\"id\":\"select\",\"inputs\":[\"input0\",\"high\",\"low\"],\"kind\":\"select\",\"output\":{\"compartment\":\"abstract\",\"dtype\":{\"arguments\":[],\"dimensions\":{},\"kind\":\"scalar\",\"name\":\"Level\"},\"id\":\"selected\",\"role\":\"n000001\",\"schema_version\":\"biocompiler.observable.v0.1\",\"scope\":\"cell\"},\"requirement_ids\":[]}"

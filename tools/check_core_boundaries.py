@@ -20,6 +20,7 @@ ROOT = Path(__file__).resolve().parents[1]
 EXTERNAL_LIBRARIES = frozenset({"digestif", "zarith"})
 # New libraries/dependencies require deliberate policy review, even when harmless.
 LIBRARIES = {
+    "bioc_candidate_runtime": ("lib/candidate_runtime/dune", {"bioc_wire", "bioc_domain", "zarith"}, "candidate_runtime"),
     "bioc_producer_service": ("lib/producer_service/dune", {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_service"}, "producer"),
     "bioc_wire": ("lib/wire/dune", {"digestif", "zarith"}, "trusted_primitive"),
     "bioc_domain": ("lib/domain/dune", {"bioc_wire", "zarith", "digestif"}, "trusted_domain"),
@@ -34,6 +35,10 @@ EXECUTABLES = {
     "biocompiler-verify": ("bin/verify/dune", {"bioc_wire", "bioc_service"}, "verifier"),
 }
 TESTS = {
+    "test_mechanism": {"bioc_wire", "bioc_domain", "zarith"},
+    "test_model_execution_data": {"bioc_wire", "bioc_domain", "zarith"},
+    "test_synthetic_model": {"bioc_wire", "bioc_domain", "bioc_candidate_runtime", "zarith"},
+    "test_candidate_runtime_corpus": {"bioc_wire", "bioc_domain", "bioc_candidate_runtime", "zarith"},
     "test_producer_protocol": {"bioc_wire", "bioc_domain", "bioc_service", "bioc_producer_service"},
     "test_construction_producer": {"bioc_wire", "bioc_domain", "bioc_compiler", "bioc_checker", "zarith"},
     "test_source_execution": {"bioc_wire", "bioc_domain", "bioc_compiler", "bioc_checker", "zarith"},
@@ -183,6 +188,8 @@ def validate_graph(graph, roles, external=EXTERNAL_LIBRARIES):
             raise BoundaryError(f"{name} transitively depends on a producer: {sorted(dependencies)}")
         if role == "candidate_runtime" and "source_semantics" in dependency_roles:
             raise BoundaryError(f"{name} depends on source reference execution")
+        if role == "candidate_runtime" and dependency_roles & (PRODUCER_ROLES | {"checker", "checker_service", "verifier", "core_entrypoint"}):
+            raise BoundaryError(f"{name} depends on producer or acceptance authority")
         if role == "source_semantics" and "candidate_runtime" in dependency_roles:
             raise BoundaryError(f"{name} depends on reconstructed candidate execution")
     return {name: sorted(dependencies) for name, dependencies in sorted(closure.items())}
@@ -246,7 +253,7 @@ def source_boundary(path, allowed_libraries, *, owner=None):
             raise BoundaryError(f"Unreviewed native/process/dynamic-code escape {token} in {path.name}")
         if token == "Sys":
             reviewed = {"argv"}
-            if owner in {"test:test_architecture_check", "test:test_source_transport", "test:test_architecture_producer", "test:test_construction_producer"}:
+            if owner in {"test:test_architecture_check", "test:test_source_transport", "test:test_architecture_producer", "test:test_construction_producer", "test:test_candidate_runtime_corpus"}:
                 # The test-only document corpus must reject undeclared files.
                 # Production code gains no filesystem or process permission.
                 reviewed.add("readdir")
@@ -286,6 +293,11 @@ def check_boundaries(root: Path):
             if kind not in {"library", "executable", "test"}:
                 raise BoundaryError(f"Unreviewed Dune stanza {kind} in {relative}")
             allowed = {"name", "libraries", "private_modules"} if kind == "library" else {"name", "public_name", "package", "libraries"} if kind == "executable" else {"name", "modules", "libraries"}
+            actions = []
+            if kind == "test":
+                actions = [field for field in stanza[1:]
+                           if isinstance(field, list) and field and field[0] == "action"]
+                stanza = [stanza[0], *(field for field in stanza[1:] if field not in actions)]
             values = fields(stanza, allowed)
             dependencies = values.get("libraries", [])
             if len(dependencies) != len(set(dependencies)):
@@ -308,6 +320,11 @@ def check_boundaries(root: Path):
             else:
                 if relative != "test/dune" or name not in TESTS or values.get("modules") != [name]:
                     raise BoundaryError(f"Unreviewed native test stanza: {name}")
+                expected_actions = ([["action", ["run", "%{test}",
+                    "%{env:BIOCOMPILER_CANDIDATE_RUNTIME_CORPUS=missing}"]]]
+                    if name == "test_candidate_runtime_corpus" else [])
+                if actions != expected_actions:
+                    raise BoundaryError(f"Changed native test action: {name}")
                 if name in tests or dependencies != TESTS[name]:
                     raise BoundaryError(f"Duplicate or changed native test dependencies: {name}")
                 tests[name] = sorted(dependencies)

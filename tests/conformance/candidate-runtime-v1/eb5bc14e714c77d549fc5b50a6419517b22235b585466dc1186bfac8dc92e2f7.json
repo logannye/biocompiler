@@ -1,0 +1,1 @@
+"{\"args\":[\"{\\\"schema_version\\\": \\\"biocompiler.mechanism.synthetic.v0.2\\\", \\\"name\\\": \\\"synthetic_realization.synthetic\\\", \\\"nodes\\\": \\\"unexpected\\\", \\\"outputs\\\": [\\\"output:response.rest\\\"], \\\"required_capabilities\\\": [\\\"synthetic_signal_graph\\\"]}\"],\"kwargs\":{}}"

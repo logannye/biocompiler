@@ -1,0 +1,1 @@
+"{\"attributes\":{},\"id\":\"a\",\"inputs\":[],\"kind\":\"input\",\"output\":{\"compartment\":\"abstract\",\"dtype\":{\"arguments\":[],\"dimensions\":{},\"kind\":\"condition\",\"name\":\"Condition\"},\"id\":\"meaning:a\",\"role\":\"responder\",\"schema_version\":\"biocompiler.observable.v0.1\",\"scope\":\"contact\"},\"requirement_ids\":[]}"

@@ -1,0 +1,3 @@
+(library
+ (name bioc_candidate_runtime)
+ (libraries bioc_wire bioc_domain zarith))

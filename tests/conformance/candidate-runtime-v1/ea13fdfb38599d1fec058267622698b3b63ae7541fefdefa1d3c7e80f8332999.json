@@ -1,0 +1,1 @@
+{"attributes":{},"id":"output:consumer","inputs":["select:consumer"],"kind":"output","output":{"compartment":"abstract","dtype":{"arguments":[],"dimensions":{},"kind":"scalar","name":"Level"},"id":"consumer","role":"n000001","schema_version":"biocompiler.observable.v0.1","scope":"cell"},"requirement_ids":["consumer"]}

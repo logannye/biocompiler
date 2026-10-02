@@ -1,0 +1,1 @@
+{"history":[{"contacts":{"one":{"a":true,"b":false},"two":{"a":false,"b":true}},"time":0,"values":{"gate":true}},{"contacts":{"one":{"a":true,"b":true}},"time":1,"values":{"gate":true}},{"contacts":{"one":{"a":true,"b":true}},"time":2,"values":{"gate":false}},{"contacts":{},"time":3,"values":{"gate":true}}],"until":null,"until_supplied":false}

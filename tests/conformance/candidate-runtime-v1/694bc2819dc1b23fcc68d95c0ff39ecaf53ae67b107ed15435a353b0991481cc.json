@@ -1,0 +1,1 @@
+{"attributes":{},"id":"memory_set:n000006","inputs":["memory_onset:n000006"],"kind":"any_contact","output":{"compartment":"abstract","dtype":{"arguments":[],"dimensions":{},"kind":"condition","name":"Condition"},"id":"memory_set:n000006","role":"n000001","schema_version":"biocompiler.observable.v0.1","scope":"cell"},"requirement_ids":["output:n000009:n000008"]}

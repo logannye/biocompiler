@@ -1,0 +1,1 @@
+"{\"args\":[\"output:memory_readout\",\"output\",{\"compartment\":\"abstract\",\"dtype\":{\"arguments\":[],\"dimensions\":{},\"kind\":\"scalar\",\"name\":\"Level\"},\"id\":\"memory_readout\",\"role\":\"n000001\",\"schema_version\":\"biocompiler.observable.v0.1\",\"scope\":\"cell\"},[\"select:memory_readout\"],{},[]],\"kwargs\":{}}"

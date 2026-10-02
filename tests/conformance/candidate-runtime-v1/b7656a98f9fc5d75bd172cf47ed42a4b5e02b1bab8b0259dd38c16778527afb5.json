@@ -1,0 +1,1 @@
+"{\"attributes\":{},\"id\":\"combined\",\"inputs\":[\"z_producer\",\"gate\"],\"kind\":\"and\",\"output\":{\"compartment\":\"abstract\",\"dtype\":{\"arguments\":[],\"dimensions\":{},\"kind\":\"condition\",\"name\":\"Condition\"},\"id\":\"meaning:combined\",\"role\":\"observer\",\"schema_version\":\"biocompiler.observable.v0.1\",\"scope\":\"cell\"},\"requirement_ids\":[]}"

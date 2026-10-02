@@ -1,0 +1,1 @@
+{"attributes":{},"id":"output","inputs":["aggregate"],"kind":"output","output":{"compartment":"abstract","dtype":{"arguments":[],"dimensions":{},"kind":"condition","name":"Condition"},"id":"meaning:output","role":"observer","schema_version":"biocompiler.observable.v0.1","scope":"cell"},"requirement_ids":[]}

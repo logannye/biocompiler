@@ -1,0 +1,1 @@
+"{\"args\":[\"match\",\"and\",{\"compartment\":\"abstract\",\"dtype\":{\"arguments\":[],\"dimensions\":{},\"kind\":\"condition\",\"name\":\"Condition\"},\"id\":\"meaning:match\",\"role\":\"responder\",\"schema_version\":\"biocompiler.observable.v0.1\",\"scope\":\"contact\"},[\"a\",\"b\",\"gate\"],{},[]],\"kwargs\":{}}"

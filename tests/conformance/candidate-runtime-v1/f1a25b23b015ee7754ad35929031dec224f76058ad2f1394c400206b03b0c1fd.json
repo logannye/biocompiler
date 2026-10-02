@@ -1,0 +1,1 @@
+{"attributes":{},"id":"memory_onset:n000008","inputs":["input:n000003:present"],"kind":"onset","output":{"compartment":"abstract","dtype":{"arguments":[],"dimensions":{},"kind":"condition","name":"Condition"},"id":"memory_onset:n000008","role":"n000001","schema_version":"biocompiler.observable.v0.1","scope":"cell"},"requirement_ids":["output:n000012:n000011"]}

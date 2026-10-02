@@ -1,0 +1,1 @@
+"{\"args\":[\"output:consumer\",\"output\",{\"compartment\":\"abstract\",\"dtype\":{\"arguments\":[],\"dimensions\":{},\"kind\":\"scalar\",\"name\":\"Level\"},\"id\":\"consumer\",\"role\":\"n000001\",\"schema_version\":\"biocompiler.observable.v0.1\",\"scope\":\"cell\"},[\"select:consumer\"],{},[\"consumer\"]],\"kwargs\":{}}"

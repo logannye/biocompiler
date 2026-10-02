@@ -1,0 +1,1 @@
+"{\"args\":[\"output:n000006:n000005\",\"output\",{\"compartment\":\"abstract\",\"dtype\":{\"arguments\":[],\"dimensions\":{},\"kind\":\"condition\",\"name\":\"Condition\"},\"id\":\"output:n000006:n000005\",\"role\":\"n000001\",\"schema_version\":\"biocompiler.observable.v0.1\",\"scope\":\"cell\"},[\"input:n000003:present\"],{},[\"output:n000006:n000005\"]],\"kwargs\":{}}"
