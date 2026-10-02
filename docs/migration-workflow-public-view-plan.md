@@ -1,5 +1,11 @@
 # R5 public workflow views: implementation checkpoint and remaining plan
 
+Subsequent routing checkpoint: optional public SDK and CLI selection is now
+implemented in the current working batch. See [native workflow routing](native-workflow-routing.md).
+The implementation checkpoint below describes the PR60 preparation boundary;
+its references to unfinished public routing are historical. Fresh installed
+campaigns and the full hosted gate still must validate the routing revision.
+
 Checkpoint, 2026-10-02. `src/biocompiler/workflow_backend.py` now implements the
 immutable native views and input adapters described below; its 18 focused Python
 tests pass. The strict workflow client also implements the compatible v2

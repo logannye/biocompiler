@@ -1,7 +1,9 @@
 # Native workflow presentation and source preflight
 
 Implementation checkpoint, 2026-10-02. These are experimental opt-in contracts.
-The existing public workflow functions and CLI still use Python. Hosted native,
+The default public workflow route still uses Python. An explicit `core=` SDK
+selection and native executable CLI flags now route through these contracts; see
+[the routing contract](../docs/native-workflow-routing.md). Hosted native,
 installed-package and complete four-runtime validation remain required before
 this implementation can be treated as validated migration evidence.
 
@@ -69,8 +71,8 @@ historical file only after success, and invokes ordinary fresh native replay
 against those same frozen source bytes. Replay revalidates the request; the
 preflight result cannot replace that check. Each operation has its own explicit
 budget. Neither an earlier successful preflight nor a stored receipt can grant
-subsequent workflow or export acceptance. This ordering is implemented as a
-protocol capability; CLI routing itself remains unfinished.
+subsequent workflow or export acceptance. The selected native CLI route implements this ordering. Its full installed
+conformance and hosted validation remain pending.
 
 ## Python output and input responsibilities
 
@@ -111,5 +113,5 @@ preflight campaigns within the four existing realization variants, followed by
 complete comparisons of every result and receipt plus native executable rehashing.
 Native tests include the separate source preflight suite (88 suites total).
 Source implementation and Python transport fixtures do not establish hosted
-native success. Public SDK/CLI routing, installed view/CLI conformance, pipelines,
-archives, exports, distribution and default cutover remain open on the roadmap.
+native success. Explicit public SDK/CLI routes are implemented; installed view/CLI conformance,
+pipelines, archives, exports, distribution and default cutover remain open on the roadmap.

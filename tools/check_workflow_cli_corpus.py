@@ -2,8 +2,9 @@
 
 The frozen capture tool and all observations stay unchanged. This bridge checks
 current reviewed source inventories independently, retains their actual metadata,
-and projects only source_scope for an exact comparison with the archived CLI
-baseline. Historical sources and retained source bytes cannot be normalized.
+and projects only source identities covered by exact route witnesses. Full
+actual import audits, retained source bytes and metadata remain in the receipt;
+observations, output content, environments and all other sources stay exact.
 """
 from __future__ import annotations
 
@@ -13,6 +14,9 @@ import json
 import os
 from pathlib import Path
 import sys
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from tools import workflow_source_lineage as routes
 
 if __package__:
     from . import freeze_workflow_cli as frozen
@@ -74,8 +78,17 @@ def load_baseline():
     for name, reference in document["retained_source_bytes"].items():
         _inventory([{"path": name, "sha256": reference["sha256"]}])
         path = ROOT / name
-        require(path.is_file() and not path.is_symlink() and
-                path.read_bytes() == frozen.restore(reference, blobs), "Archived CLI source bytes changed: " + name)
+        raw = frozen.restore(reference, blobs)
+        require(path.is_file() and not path.is_symlink(), "Archived CLI source bytes changed: " + name)
+        if name in routes.HISTORICAL:
+            entry = routes.load_witness()[name]
+            require(raw == entry["historical_source"].encode(), "Archived CLI source bytes changed: " + name)
+            try:
+                routes.verify_source(ROOT, name, frozen.sha(raw))
+            except ValueError as error:
+                raise AssertionError("Archived CLI source bytes changed: " + name) from error
+        else:
+            require(path.read_bytes() == raw, "Archived CLI source bytes changed: " + name)
     return document, blobs
 
 
@@ -101,40 +114,62 @@ def _project(actual, baseline):
     historical = _inventory(baseline["source_scope"]["historical_sources"])
     current = _inventory(actual_scope["actual_sources"])
     before = _inventory(baseline["source_scope"]["actual_sources"])
-    require(set(historical) <= set(current) and all(current[path] == pin for path, pin in historical.items()),
-            "Historical CLI source bytes changed")
+    require(set(historical) <= set(current), "Historical CLI source bytes missing")
+    reviewed_routes = []
     for name, pin in historical.items():
         path = ROOT / name
-        require(path.is_file() and not path.is_symlink() and frozen.sha(path.read_bytes()) == pin,
+        require(path.is_file() and not path.is_symlink() and frozen.sha(path.read_bytes()) == current[name],
                 "Historical CLI filesystem bytes changed: " + name)
+        if current[name] != pin:
+            require(name in routes.HISTORICAL, "Unreviewed historical CLI source change")
+            try:
+                reviewed_routes.append(routes.verify_source(ROOT, name, pin))
+            except ValueError as error:
+                raise AssertionError("Historical CLI source bytes changed: " + name) from error
+    require(actual_scope.get("reviewed_routes", []) == reviewed_routes, "CLI reviewed route inventory differs")
     additions = _inventory(actual_scope["reviewed_additions"])
     require(set(current) - set(historical) == set(additions) and all(current[name] == pin for name, pin in additions.items()),
             "Current CLI excluded source inventory differs")
     require(set(FROZEN_ADDITIONS) <= set(additions) and actual_scope["denied_modules"] ==
             [name[4:-3].replace("/", ".") for name in sorted(additions)], "Current CLI excluded imports are incomplete")
-    for row in actual["cases"]:
+    projected = deepcopy(actual)
+    for row, projected_row in zip(actual["cases"], projected["cases"]):
         audit = row["import_audit"]
         require(audit["guard_active"] is True and audit["denied_absent"] is True and
                 "biocompiler.cli" in audit["modules"] and
                 not (set(actual_scope["denied_modules"]) & set(audit["modules"])), "Actual CLI child imported excluded source")
         for module, item in audit["modules"].items():
             require(module == "biocompiler" or module.startswith("biocompiler."), "Unrecognized CLI import audit module")
-            require(item["path"] in historical and item["sha256"] == historical[item["path"]],
-                    "Actual CLI child import source is not historical")
-    projected = deepcopy(actual)
+            require(item["path"] in historical and item["sha256"] == current[item["path"]],
+                    "Actual CLI child import source is not historical or exactly witnessed")
+            if item["path"] in routes.HISTORICAL:
+                projected_row["import_audit"]["modules"][module]["sha256"] = historical[item["path"]]
+    require(set(actual["retained_source_bytes"]) == set(baseline["retained_source_bytes"]),
+            "Actual retained CLI source inventory differs")
+    retained_actual = {}
+    for name, reference in actual["retained_source_bytes"].items():
+        raw = (ROOT / name).read_bytes()
+        require(reference == {"kind": "blob", "bytes": len(raw), "sha256": frozen.sha(raw)},
+                "Actual retained CLI source byte identity differs: " + name)
+        if name in routes.HISTORICAL:
+            retained_actual[name] = raw.decode("utf-8")
+            projected["retained_source_bytes"][name] = deepcopy(baseline["retained_source_bytes"][name])
     projected["source_scope"] = deepcopy(baseline["source_scope"])
     projected["inventory_fingerprint"] = digest({key: value for key, value in projected.items() if key != "inventory_fingerprint"})
     evidence = {
-        "schema_version": "biocompiler.workflow_cli_source_lineage.v1",
+        "schema_version": "biocompiler.workflow_cli_source_lineage.v2",
         "status": "source_lineage_verified", "native_execution": False,
         "baseline_inventory_fingerprint": CORPUS_PIN, "baseline_source_scope_fingerprint": SCOPE_PIN,
         "actual_inventory_fingerprint": actual["inventory_fingerprint"],
         "projected_inventory_fingerprint": projected["inventory_fingerprint"],
         "actual_source_scope": deepcopy(actual_scope),
-        "source_changes": [{"path": name, "historical_excluded_sha256": before.get(name),
-                            "current_excluded_sha256": current.get(name)}
+        "actual_capture": deepcopy(actual),
+        "actual_retained_route_sources": retained_actual,
+        "reviewed_routes": reviewed_routes,
+        "source_changes": [{"path": name, "previous_sha256": before.get(name),
+                            "current_sha256": current.get(name)}
                            for name in sorted(set(before) | set(current)) if before.get(name) != current.get(name)],
-        "projection": "source_scope_only_then_recompute_inventory_fingerprint",
+        "projection": "exact_witnessed_source_scope_import_hashes_and_retained_source_references_only_then_recompute_inventory_fingerprint",
     }
     return projected, evidence
 
@@ -147,10 +182,24 @@ def historical_projection(actual):
 def verify_recapture(actual, blobs):
     baseline, old_blobs = load_baseline()
     projected, evidence = _project(actual, baseline)
-    require(blobs == old_blobs, "Complete actual CLI content differs from immutable baseline")
+    projected_blobs = dict(blobs)
+    for name in routes.HISTORICAL:
+        current_ref = actual["retained_source_bytes"][name]
+        old_ref = baseline["retained_source_bytes"][name]
+        raw = (ROOT / name).read_bytes()
+        require(frozen.restore(current_ref, blobs) == raw, "Actual retained route source content differs")
+        if current_ref["sha256"] != old_ref["sha256"]:
+            # A route source is projected only as the retained source member.
+            # If another observation references the same content, its unchanged
+            # reference is caught by the complete document comparison below.
+            del projected_blobs[current_ref["sha256"]]
+            projected_blobs[old_ref["sha256"]] = old_blobs[old_ref["sha256"]]
+    require(projected_blobs == old_blobs, "Complete actual CLI content differs from immutable baseline")
     require(canonical(projected) == canonical(baseline), "Complete actual CLI observations differ from immutable baseline")
     evidence.update(status="complete_original_cli_recapture_equal", coverage=deepcopy(actual["coverage"]),
-                    content_documents=len(blobs), content_bytes=sum(map(len, blobs.values())))
+                    content_documents=len(blobs), content_bytes=sum(map(len, blobs.values())),
+                    actual_content_inventory=[{"sha256": name, "bytes": len(body)}
+                                              for name, body in sorted(blobs.items())])
     return evidence
 
 
@@ -163,6 +212,11 @@ def main(argv=None):
     receipt["runtime"] = {"python": sys.version, "platform": sys.platform, "executable": sys.executable,
                           "revision": os.environ.get("GITHUB_SHA")}
     args.output.parent.mkdir(parents=True, exist_ok=True)
+    # Keep every current blob and full actual metadata, independently loadable
+    # by the immutable loader. The historical projection never overwrites it.
+    actual_path = args.output.with_name(args.output.stem + "-actual.json")
+    frozen.write(actual, blobs, actual_path)
+    receipt["actual_capture_path"] = actual_path.name
     args.output.write_bytes(canonical(receipt) + b"\n")
     print(json.dumps({"status": receipt["status"], "actual_inventory_fingerprint": receipt["actual_inventory_fingerprint"],
                       "baseline_inventory_fingerprint": CORPUS_PIN, "coverage": receipt["coverage"]}, sort_keys=True))

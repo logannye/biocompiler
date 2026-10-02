@@ -768,6 +768,14 @@ def _architecture_core_arguments(command, verification):
                          help="Positive finite timeout in seconds (requires an executable)")
 
 
+def _workflow_core_arguments(command):
+    executable = command.add_mutually_exclusive_group()
+    executable.add_argument("--core-executable", type=Path, help=argparse.SUPPRESS)
+    executable.add_argument("--verify-executable", type=Path, help=argparse.SUPPRESS)
+    command.add_argument("--core-sha256", help=argparse.SUPPRESS)
+    command.add_argument("--core-timeout", type=float, help=argparse.SUPPRESS)
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
@@ -928,6 +936,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         workflow.add_argument(
             "--output", type=Path, help="Atomic JSON report destination"
         )
+        _workflow_core_arguments(workflow)
     replay = commands.add_parser(
         "synthetic-replay",
         help="Reexecute a report with independent complete operation authority",
@@ -935,6 +944,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     replay.add_argument("path", type=Path)
     replay.add_argument("--expected-request", type=Path, required=True)
     replay.add_argument("--output", type=Path)
+    _workflow_core_arguments(replay)
     selection = commands.add_parser(
         "synthetic-select",
         help="Check two bounded digital implementations before ranking",
@@ -1688,6 +1698,11 @@ def _verification_summary(record):
 
 
 def _verification_command(args):
+    if any(getattr(args, name, None) is not None for name in
+           ("core_executable", "verify_executable", "core_sha256", "core_timeout")):
+        from biocompiler.workflow_cli import selected_core_command
+
+        return selected_core_command(args, bounded_text=_bounded_text, publish_report=_publish_report)
     try:
         if args.command == "synthetic-replay":
             authority = SyntheticVerificationRequest.from_json(

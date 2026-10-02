@@ -1,3 +1,37 @@
+# Public workflow routing checkpoint
+
+2026-10-02. The `codex/ocaml-workflow-public-routing` batch adds explicit public
+SDK/CLI routing, exact historical-source witnesses, and complete installed SDK
+and actual-child CLI campaigns with mandatory four-runtime comparisons. Parent
+PR60 validation is kept separate from this implementation batch.
+
+Local evidence: all fourteen original workflow recapture tests passed (102.329
+seconds); all 70 original CLI children reproduced exactly; 15 SDK/campaign tests
+passed including 328 real public calls against Python protocol fixtures; twelve
+CLI routing tests and five campaign/comparator tests passed. Groups overlap.
+Additional guard/UUID/path/source forgery checks passed. The static suite passed
+43 tests, strict typing covers eleven modules and the inventory has 3,078 entries.
+These are Python/static results; fresh installed native execution and all 36
+hosted gates remain required. No local native compilation or execution occurred.
+
+One remaining candidate-corpus census test directly hashed pre-routing source.
+The minimal assertion/import correction was independently checked against each
+parent inventory and pushed to PR57–60. Original golden/source witness bytes and
+every gate remain unchanged. Exact heads and replacement run identities are in
+[candidate-source-census-corrections.json](../protocol/candidate-source-census-corrections.json).
+The earlier PR60 Linux 88-suite step passed at `75c5c7af`; that is historical
+only and does not validate the corrected parents or new public-routing revision.
+
+The roadmap records default-route capture and source-lineage checkpoints as
+complete, while public native parity, R6 pipelines/archives/export, distribution,
+default cutover and broader language migration exits remain unchecked. See
+[native workflow routing](native-workflow-routing.md) for the actual public
+contract and remaining validation.
+
+---
+
+The following is the preceding preservation snapshot, retained as history.
+
 # Migration GitHub preservation checkpoint
 
 2026-10-02. The user requested push/merge before usage credits expire.

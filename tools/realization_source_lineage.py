@@ -89,5 +89,8 @@ def verify_captured_source(root: Path, entry):
                 "current_sha256": entry["sha256"], "kind": "identical_bytes"}
     witness = load_witness().get(entry["path"])
     if witness is None:
+        from tools.workflow_source_lineage import HISTORICAL, verify_source
+        if entry["path"] in HISTORICAL:
+            return verify_source(root, entry["path"], entry["sha256"])
         raise ValueError("Captured source bytes differ: " + entry["path"])
     return verify_route_extension(witness, current, entry["sha256"])

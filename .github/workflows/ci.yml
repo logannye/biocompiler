@@ -1252,6 +1252,22 @@ jobs:
             --native-root "$GITHUB_WORKSPACE/artifacts/native" \
             --platform ${{ matrix.platform }} \
             --output "$GITHUB_WORKSPACE/generated/realization/workflow-authority.json"
+          python "$GITHUB_WORKSPACE/tools/check_native_workflow_public_sdk.py" \
+            --core "$GITHUB_WORKSPACE/artifacts/native/biocompiler-core" \
+            --verify "$GITHUB_WORKSPACE/artifacts/native/biocompiler-verify" \
+            --core-sha256 "$BIOCOMPILER_WORKFLOW_CORE_SHA" \
+            --verify-sha256 "$BIOCOMPILER_WORKFLOW_VERIFY_SHA" \
+            --native-root "$GITHUB_WORKSPACE/artifacts/native" \
+            --platform ${{ matrix.platform }} \
+            --output "$GITHUB_WORKSPACE/generated/realization/workflow-public-sdk.json"
+          python "$GITHUB_WORKSPACE/tools/check_native_workflow_cli.py" \
+            --core "$GITHUB_WORKSPACE/artifacts/native/biocompiler-core" \
+            --verify "$GITHUB_WORKSPACE/artifacts/native/biocompiler-verify" \
+            --core-sha256 "$BIOCOMPILER_WORKFLOW_CORE_SHA" \
+            --verify-sha256 "$BIOCOMPILER_WORKFLOW_VERIFY_SHA" \
+            --native-root "$GITHUB_WORKSPACE/artifacts/native" \
+            --platform ${{ matrix.platform }} \
+            --output "$GITHUB_WORKSPACE/generated/realization/workflow-cli.json"
       - name: Retain complete protocol and SDK artifacts even on failure
         if: always()
         uses: actions/upload-artifact@v4
@@ -1311,6 +1327,14 @@ jobs:
         env:
           GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
         run: python tools/check_native_workflow_authority.py --compare --root artifacts/realization --native-root artifacts/core --output generated/realization-reproducibility/workflow-authority.json
+      - name: Require complete public SDK workflow views across all four runtimes
+        env:
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: python tools/check_native_workflow_public_sdk.py --compare --root artifacts/realization --native-root artifacts/core --output generated/realization-reproducibility/workflow-public-sdk.json
+      - name: Require complete actual installed workflow CLI children across all four runtimes
+        env:
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: python tools/check_native_workflow_cli.py --compare --root artifacts/realization --native-root artifacts/core --output generated/realization-reproducibility/workflow-cli.json
       - name: Retain complete comparison receipt
         if: always()
         uses: actions/upload-artifact@v4

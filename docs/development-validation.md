@@ -58,7 +58,7 @@ remain distinct revision boundaries.
 | `payload-architecture-reproducibility` | Depends only on `installed-architecture`; requires all 13 case outputs and compares every relative file across versions. |
 | `circuit-reproducibility` | Depends only on `circuit-integration`; compares the complete infrastructure/source/review artifact inventories. |
 | `architecture-core-reproducibility` | Depends on both native platforms; rehashes complete SDK/CLI artifacts from Python 3.11 and 3.14 on each platform and requires exact four-way equality with current run and executable authority. |
-| `realization-conformance` | Four installed campaigns: both native platforms × Python 3.11/3.14. Rehash the same-revision executables before running every retained direct, replay and SDK observation outside the checkout. SDK calls forbid Python semantic authority. |
+| `realization-conformance` | Four installed campaigns: both native platforms × Python 3.11/3.14. Rehash the same-revision executables before running every retained direct, replay and SDK observation outside the checkout. SDK calls forbid Python semantic authority. Whole-workflow public SDK and actual CLI child campaigns retain complete records, native receipts, stdout/stderr and publication bytes. |
 | `realization-core-reproducibility` | Rehash complete realization protocol and SDK reports, verify every original occurrence and all additional cases, require current run/source/binary authority and exact equality across all four campaigns. |
 | `validation` | Final gate requires all 36 jobs, including successful unit accounting, every installed/integration/browser job, TypeScript, both native platforms and all five reproducibility jobs. |
 

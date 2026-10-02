@@ -533,21 +533,50 @@ These checkpoints record narrower validated work; they do not complete a broad L
   leaf codecs; legacy input serialization remains untrusted input only. Local
   focused transport/view checks pass; the 88 native suites, installed campaigns
   and full 36-job gate require hosted validation. The original public workflow
-  functions and CLI remain unchanged. Native public routing and complete installed
-  view/CLI conformance are still required, followed by R6 and distribution/cutover.
+  functions and CLI remained unchanged at this PR60 preparation checkpoint. The
+  subsequent explicit-routing work is recorded below; hosted installed view/CLI
+  conformance, R6 and distribution/cutover remain required.
   See [contracts and evidence scope](../protocol/workflow-public-contracts-v1.md).
 
+- [x] **LM-03 public-route default preservation checkpoint:** the two complete
+  historical source files are retained in a separately pinned exact source/AST
+  witness. All fourteen workflow recapture tests pass (102.329 seconds), and all
+  70 original CLI children reproduce unchanged outputs, exits and filesystem
+  bytes. Actual source/import metadata and the added implicit `core=None` binding
+  remain in retained evidence; only explicitly proved source and derived-signature
+  metadata are projected for baseline comparison. Eighteen lineage mutation tests
+  and all eight earlier source-census tests pass; 2,132 entries across nine source
+  inventories were independently checked. No original freezer or golden was edited.
+- [ ] **LM-12/R5 explicit public workflow routing:** the two public workflow
+  functions now accept optional `core=` and delegate to immutable native views.
+  The four workflow CLI commands accept explicit core/verifier paths, digest and
+  timeout controls while preserving default argparse text. Native preflight
+  precedes replay historical-file I/O, and fresh replay rechecks the same frozen
+  source bytes. Native presentation supplies exit policy and reduction counts.
+  Nine SDK and twelve actual-child Python fixture tests pass; strict typing covers
+  eleven adapter modules. The public SDK campaign retains 164 observations per
+  executable role, including every original workflow occurrence and all supported
+  input forms. The CLI campaign retains all 70 children per role, exact publication
+  bytes and full native wire responses. Their four-runtime comparators rehash
+  complete evidence. Python protocol fixtures pass; installed native execution on
+  both platforms and the complete hosted gate remain required for this revision. This is implementation progress, not R5
+  completion or default cutover. See [native workflow routing](native-workflow-routing.md).
+
 **Credit-limit preservation, 2026-10-02:** implementation through
-[PR59](https://github.com/logannye/biocompiler/pull/59) is committed and pushed at
-`f7b81a1da0236f2b4187e24b1352d49d788296d4`. The source-lineage correction
-uses the existing exact historical/current hashes and whole-file AST proof for
-the remaining locked-component corpus assertion. All six focused census/lineage
-tests pass locally; no corpus pin or product behavior changed. Fresh full
-[run 36984201005](https://github.com/logannye/biocompiler/actions/runs/36984201005)
-is pending. The earlier Linux compilation result is historical only; 87 native
-suites and the complete 36-job gate remain required. PR52–58 also remain unmerged. No pending merge or automatic merge is enabled. The next-work checkpoint
-is separate so it does not restart the existing validation runs. All unfinished
-layer checkboxes remain unchecked.
+[PR60](https://github.com/logannye/biocompiler/pull/60) is committed and pushed at
+`75c5c7af0c425b77c2d9c27c66a24ed3943cf847`, with fresh
+[run 36986445839](https://github.com/logannye/biocompiler/actions/runs/36986445839)
+queued at preservation. Public routing proceeds on the separate
+`codex/ocaml-workflow-public-routing` branch so PR60 validation stays intact.
+PR52–60 still require their complete exact-revision gates; no pending merge or
+automatic merge is enabled. The PR57–59 source-lineage correction retains every
+original corpus pin and reviewed whole-file AST witness. Earlier partial native
+success remains historical only. All unfinished layer checkboxes remain unchecked.
+
+A subsequent source-census audit found the remaining candidate-runtime direct-hash
+assertion. Its one-test correction is pushed to PR57–60 with byte-identical
+inventories and unchanged goldens. [Exact corrections and replacement runs](../protocol/candidate-source-census-corrections.json)
+record current parent heads; previous partial native passes are historical only.
 
 These stages precede the remaining B2 producer/export and B3–B6 product gates.
 

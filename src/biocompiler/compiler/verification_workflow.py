@@ -228,8 +228,14 @@ def _checker(request):
 
 def run_synthetic_verification(
     request: SyntheticVerificationRequest,
+    *,
+    core=None,
 ) -> SyntheticVerificationRecord:
     """Execute the declared operation; retain FAIL/UNKNOWN/UNSUPPORTED outcomes."""
+    if core is not None:
+        from biocompiler.workflow_backend import run_record
+
+        return run_record(request, core=core)
     require(
         isinstance(request, SyntheticVerificationRequest),
         "Expected complete verification request.",
@@ -254,8 +260,13 @@ def replay_synthetic_verification(
     record: SyntheticVerificationRecord,
     *,
     expected_request: SyntheticVerificationRequest,
+    core=None,
 ) -> SyntheticVerificationRecord:
     """Recompute against current trusted code and exact independently retained inputs."""
+    if core is not None:
+        from biocompiler.workflow_backend import replay_record
+
+        return replay_record(record, expected_request=expected_request, core=core)
     require(
         isinstance(record, SyntheticVerificationRecord),
         "Expected historical verification record.",

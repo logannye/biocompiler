@@ -1,5 +1,11 @@
 # Native workflow presentation checkpoint and remaining integration
 
+Subsequent routing checkpoint: optional public SDK and CLI selection is now
+implemented in the current working batch. See [native workflow routing](native-workflow-routing.md).
+The implementation checkpoint below describes the PR60 preparation boundary;
+its references to unfinished public routing are historical. Fresh installed
+campaigns and the full hosted gate still must validate the routing revision.
+
 Implementation checkpoint, 2026-10-02. The native v2 presentation service, strict
 Python transport, immutable views and separate source-only preflight capability
 are implemented. Python fixture and campaign-tool checks pass; hosted native and
