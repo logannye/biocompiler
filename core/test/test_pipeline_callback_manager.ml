@@ -140,6 +140,13 @@ let exercise ?(limits=Json.Null) peer commands=
  Option.iter raise !peer_error;
  {replies= !replies;events= !events;closed=A.is_closed service}
 let success outcome=require(text "status" outcome="ok")("Expected success: "^encode outcome);get "value" outcome
+let rejection outcome=
+ require(text "status" outcome="rejected")("Expected rejection: "^encode outcome);
+ let value=get "value" outcome in
+ require(List.sort String.compare(List.map fst(Json.object_fields value))=
+   ["attributes";"attributes_tree";"message";"module";"type"])
+   "Rejection omitted its exact canonical and ordered attributes";
+ value
 let nth result index=snd(List.nth result.replies index)
 let payload baseline peer=
  let obligations=Json.array(get "initial_obligations" baseline) in
@@ -244,6 +251,58 @@ let failure_test baseline=
    "Original host exception token did not survive native stack";
  ignore(success(nth result 5));let history=success(nth result 6) in
  require(List.map fst(Json.object_fields(get "records" history))=["input"]) "Failed callback imported an output record"
+let no_candidate_test baseline=
+ let configuration=obj["z",Json.Array[obj["last",Json.int 1;"first",Json.int 2]];
+   "a",obj["right",Json.Bool true;"left",Json.Null];
+   "inventory",Json.Array(List.init 256(fun index->obj["z",Json.int index;"a",Json.int(index+1)]))] in
+ let dependencies=List.map(fun key->key,get key(get "initial_dependencies" baseline))["request";"registry"] in
+ let make ?(limits=Json.Null) ~repeat ()=
+   let p=peer () in
+   let initialization=set "dependencies"(Json.Array(List.map(fun(key,value)->Json.Array[str key;value])dependencies))
+     (initialize baseline p) in
+   let registration=registration baseline p "first" in
+   (* Access to any candidate-only attribute fails in this peer. A no-candidate
+      result must stop after checking status and absent output. *)
+   let proposal=Instance("PassResult",["search_status",Data(str "no_candidate_found");"output",Data Json.Null]) in
+   let registration=set "producer"(reference p(Function(fun _->proposal)))registration in
+   let config=reference p(Data configuration) in
+   let commands=["initialize-empty",initialization;"add-input",payload baseline p;"register",registration;
+     run "lower" "input" "absent" config] in
+   let commands=if repeat then commands@[run "lower" "input" "absent-again" config;
+     "get",obj["identity",str "input"];"get",obj["identity",str "missing"];"inspect",obj[]] else commands in
+   p,exercise ~limits p commands in
+ let p,result=make ~repeat:true () in
+ require(result.closed && List.for_all(fun event->text "kind" event<>"fatal")result.events)
+   "No-candidate failure closed the usable manager";
+ let expected_dependencies=obj(dependencies@["target",str(Canonical.sha256(encode(get "target" baseline)))]) in
+ let expected=obj["pass_id",str "lower";"configuration",configuration;"dependencies",expected_dependencies] in
+ List.iter(fun index->let error=rejection(nth result index) in
+   require(text "module" error="biocompiler.compiler.pipeline" && text "type" error="NoCandidateFound")
+     "No-candidate result changed its exception class";
+   require(same(get "attributes" error)expected) "No-candidate canonical attributes changed";
+   require(same(get "attributes_tree" error)(ordered expected)) "No-candidate attribute or nested mapping order changed") [4;5];
+ ignore(success(nth result 6));
+ let missing=rejection(nth result 7) in
+ require(same(get "attributes" missing)(obj[]) && same(get "attributes_tree" missing)(ordered(obj[])))
+   "Ordinary logical rejection omitted its empty ordered attributes";
+ require(List.map fst(Json.object_fields(get "records"(success(nth result 8))))=["input"])
+   "No-candidate failure stored an output record";
+ require(List.length p.contexts=2) "No-candidate result reached validation";
+ let limits=get "limits" Ch.declaration in
+ let _,baseline_result=make ~limits ~repeat:false () in
+ ignore(rejection(nth baseline_result 4));
+ let last_invocation=List.find(fun event->text "kind" event="invoke")(List.rev baseline_result.events) in
+ require(text "action" last_invocation="is-none") "No-candidate rejection moved before its final output check";
+ let retained=Z.to_int(Json.integer(get "retained_bytes"(get "usage" last_invocation))) in
+ (* The remaining continuation, message and three dependency wrappers fit well
+    within 8192 bytes. The 256 nested configuration objects require a larger
+    preflight reservation for the fresh error tree. Complete-limit hello size
+    changes by fewer than ten bytes when replacing this one integer. *)
+ let limits=set "max_retained_bytes"(Json.int(retained+8192))limits in
+ let reduced_peer,reduced=make ~limits ~repeat:false () in
+ require(List.hd(List.rev reduced_peer.actions)="is-none") "Reduced limit failed before the no-candidate result was read";
+ require(text "kind"(List.hd(List.rev reduced.events))="fatal") "Error-tree allocation exhaustion was treated as logical rejection";
+ require(List.length reduced.replies=4 && reduced.closed) "Exhausted error publication returned or revived the manager"
 let protocol_test baseline=
  let p=peer () in let initialization=initialize baseline p in
  let result=exercise p ["initialize-empty",initialization;"initialize-empty",initialization] in
@@ -260,5 +319,5 @@ let ()=
  require(Array.length Sys.argv=3) "Expected declaration and original literal corpus paths";
  require(same(read Sys.argv.(1)) A.declaration) "Application declaration differs across languages";
  let baseline=get "manager_baseline"(read Sys.argv.(2)) in
- baseline_test baseline;negative_validator_test baseline;failure_test baseline;protocol_test baseline;
- print_endline "callback manager application: framed baseline, negative validator, ordered identities, freshness, host exception and resource closure passed"
+ baseline_test baseline;negative_validator_test baseline;failure_test baseline;no_candidate_test baseline;protocol_test baseline;
+ print_endline "callback manager application: framed baseline, negative validator, ordered identities and errors, freshness, host exception and resource closure passed"

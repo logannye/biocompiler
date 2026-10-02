@@ -53,6 +53,30 @@ The [next-phase biological handoff](biological-correctness-next-phase-handoff.md
 is preserved as future-session context. Its BC checklist remains unexecuted;
 finish the LM release and cutover gates before that separate development phase.
 
+**Installed-fixture correction:** subsequent PR71/72 unit runs exposed assumptions
+about checkout traceback filenames and the origin of an already installed
+package. The frozen deferred oracle, all 47 case bodies and the production import
+guard remain unchanged. An additive checker retains complete raw observations,
+binds loaded functions to their source and module namespace, and checks two exact
+interpreter-frame correspondences against independently executed primitives.
+All 17 focused tests pass on local Python 3.11.15 and 3.14.6; four source/installed
+origin controls also pass. The [correction record](../protocol/migration-deferred-runtime-correction.json)
+is pushed in PR70 `c7f91226f260b64c52556fc8cda87e533ea0ccac`
+([run](https://github.com/logannye/biocompiler/actions/runs/37055359931)),
+PR71 `76349a197a937ca9d3653600396851054298509a`
+([run](https://github.com/logannye/biocompiler/actions/runs/37055362599)), and
+PR72 `b28ce4cef6786212bda97abc33cd075a619c506b`
+([run](https://github.com/logannye/biocompiler/actions/runs/37055359590)).
+These replacement runs remain pending; earlier runs are superseded for acceptance.
+
+**Deferred compatibility source checkpoint:** the installed manager campaign now
+requires all 47 original deferred cases alongside the existing five identity and
+34 comparison cases. Ordered rejection snapshots, typed historical state views,
+exact traceback segments, exception-object retention and complete fingerprint
+reference chains are implemented. The final focused batch passes 46 tests on
+each local Python version; native execution and complete hosted acceptance are
+pending. See the [source checkpoint](../protocol/migration-deferred-manager-checkpoint.json).
+
 - [x] **LM-03/12 realization protocol hosted checkpoint (PR57):** run
   `36987943622`, source `41ab0f99375d7293a4b86c28da1cd5408b7376c0`,
   integrated `71c56d2fc2eecbdb9efbb3da1e9d82a25c8b4e22`: all 36 jobs,
@@ -950,6 +974,45 @@ record current parent heads; previous partial native passes are historical only.
   and both Python versions. Preserve mixed native/host provider behavior, fixed
   registration interception, exception identity and post-error mutations. A
   callback object broker or generic framing library alone does not close this gate.
+
+- [x] **LM-12/25 P2 ordered exception source checkpoint:** logical native
+  rejections carry both canonical attributes and a fresh ordered attribute tree.
+  The adapter requires their exact agreement and reconstructs independent frozen
+  `NoCandidateFound` snapshots without reusing context containers. Native resource
+  reservations precede tree construction; a failed publication closes the
+  session. Python controls and native test sources cover nested order, repeated
+  errors and exhausted publication. Native execution remains a hosted gate.
+- [x] **LM-03 P2 original runtime preservation correction:** retain all frozen
+  deferred observations and all raw current captures while explicitly proving
+  installed source-path and Python 3.11/3.14 frame correspondence. Require actual
+  source-bound functions in their original module namespaces, fresh independent
+  capture and primitive execution. The installed-origin negative control now
+  injects its forbidden source path explicitly in both source and installed
+  environments. This is a Python fixture correction, not native compatibility.
+- [x] **LM-03 P2 foreign-runtime receipt source checkpoint:** retain exact
+  original source bytes, selected code and instruction-position tables under
+  closed Python 3.11/3.14 pins. Reconstruct the complete correspondence offline
+  and reject rehashed source, code, projection and user-observation changes.
+  Six focused tests pass on each local runtime; cross-version reconstruction
+  passes in both directions. Hosted patch versions, complete installed replay
+  and the source/run/executable receipt chain remain separate required gates.
+- [x] **LM-03/12/25 P2 complete deferred campaign source checkpoint:** wire all
+  47 unchanged original case bodies through actual installed native managers,
+  retaining all 53 process lifetimes and 414 inspections. Check each event's
+  own arguments, results and state, complete access order, original exception
+  identities and retained tails, exact source/command/primitive trace segments,
+  and the full payload-to-fingerprint reference chain. All 32 campaign/trace
+  controls pass on local Python 3.11 and 3.14, including repaired semantic
+  mutations. These controls establish checker behavior; hosted native replay
+  remains required for compatibility acceptance.
+- [ ] **LM-03 P2 deferred installed replay and runtime correspondence:** require
+  every original case, access, nested mutation and exception observation through
+  the installed native manager. Retain raw installed tracebacks and check exact,
+  source-bound correspondences for installation paths and Python-version frame
+  differences. PR71's original deferred-fixture comparison exposed this missing
+  runtime handling; the frozen oracle and complete observation census remain
+  unchanged. This gate also requires complete four-runtime receipts and all
+  existing identity and comparison cases.
 
 - [x] **LM-03 P2 original identity and ordering oracle:** five additional
   original-manager cases retain 34 complete observations and ten records,

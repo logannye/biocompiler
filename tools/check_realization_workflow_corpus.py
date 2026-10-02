@@ -20,7 +20,7 @@ CORPUS_PIN = "2f5e7636977f559e046776c1bb92bebf67c8f0e733ca463927f8d3a1aee3d77b"
 # Each addition requires a fresh explicit review and hash. Wildcards and amended
 # hashes for historical source files are deliberately unsupported.
 REVIEWED_ADDITIONS = {
-    "src/biocompiler/core_pipeline_manager.py": "686c44466219b09cd3a31751f894e91687f62edc3539d0cd2c7f89ab7ca7ade0",
+    "src/biocompiler/core_pipeline_manager.py": "e35305bb971f2eff82d36d0f65e6e570b0982405c486f5041ece823c59e4f381",
     "src/biocompiler/core_pipeline_callback_session.py": "0ff388509eb9c123b87cf5decc1f35cf5eaca61a02d84a756beba7150de17018",
     "src/biocompiler/pipeline_callback_objects.py": "ac5198795c3e80cff511e0fe372dc578a983d8be947e41dd9debd9f719da9eec",
     "src/biocompiler/core_pipeline_session.py": "b0c744d8f3a38b1681805250ccf93884ba866678527cf366bcf08ff326da080d",
