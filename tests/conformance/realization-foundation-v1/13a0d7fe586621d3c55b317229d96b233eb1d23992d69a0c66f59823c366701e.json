@@ -1,0 +1,1 @@
+"{\"boundary\":\"selection\",\"components\":[],\"intended_use\":\"software_test\",\"schema_version\":\"biocompiler.admission_request.v0.1\",\"target\":{\"capabilities\":[\"human_admitted\"],\"compartments\":[\"abstract\"],\"context_id\":\"human_in_vivo\",\"context_version\":\"1\",\"payload_format\":\"RNA\",\"resources\":{},\"schema_version\":\"biocompiler.target.v0.1\"}}"

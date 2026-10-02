@@ -94,7 +94,8 @@ class CoreBoundaryTests(unittest.TestCase):
                 boundaries.check_boundaries(root)
 
     def test_candidate_corpus_action_requires_the_complete_external_fixture(self):
-        for variable in ("BIOCOMPILER_CANDIDATE_RUNTIME_CORPUS", "BIOCOMPILER_COMPONENT_RUNTIME_CORPUS"):
+        for variable in ("BIOCOMPILER_CANDIDATE_RUNTIME_CORPUS", "BIOCOMPILER_COMPONENT_RUNTIME_CORPUS",
+                         "BIOCOMPILER_REALIZATION_FOUNDATION_CORPUS"):
             action = "(action (run %{test} %{env:" + variable + "=missing}))"
             for replacement in ("", "(action (run true))", action + "\n " + action):
                 root = self.copy_core()
@@ -165,6 +166,8 @@ class CoreBoundaryTests(unittest.TestCase):
             ("lib/source_adapter/source_transport.ml", 'let hidden = Sys.readdir "."'),
             ("test/test_source_transport.ml", 'let hidden = Sys.command "python3 checker.py"'),
             ("test/test_source_transport.ml", "module Hidden = Sys"),
+            ("test/test_realization_foundation_corpus.ml", 'let hidden = Sys.command "python3 checker.py"'),
+            ("test/test_realization_foundation_corpus.ml", "module Hidden = Sys"),
         ):
             root = self.copy_core()
             source = root / "core" / relative

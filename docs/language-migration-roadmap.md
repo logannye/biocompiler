@@ -260,8 +260,20 @@ These checkpoints record narrower validated work; they do not complete a broad L
   OperatingDomain, BehaviorContract and all finite-history evidence records.
   Preserve the historical ASCII-escaped evidence/dependency identities separately
   from canonical UTF-8 artifact identities, full history and explicit horizon.
-  Implementation is in progress on `codex/ocaml-realization-contracts`; its
-  contract/evidence/admission domains and native policy remain unvalidated.
+  The typed contract/evidence/admission implementation is pushed in draft
+  [PR51](https://github.com/logannye/biocompiler/pull/51), initially at
+  `ffd5e05cd179cf29e45a6c214ef4a97f7e2ee534`. Independent domain reviews found no
+  concrete issue; 94 focused source checks passed. Native validation remains
+  pending, so this stage and the broader LM-22/25 exits remain unchecked.
+  The complete 324-method capture now retains 70,019 observations, including
+  both actual subprocesses; fresh recapture and four integrity/replay checks
+  pass. Corpus `ac1499688ec6f0eca41398134b9421de9f95ffe9405422332c2bf43b04db32f8`
+  contains 19,458 documents / 103,174,628 bytes. All 3,198 future acceptance
+  observations remain explicitly deferred. The full foundation corpus is
+  mandatory in Dune and a separate hosted campaign (60 native suites total).
+  Initial hosted compilation exposed an ambiguous record-field warning, now
+  corrected by an explicit type annotation; the replacement revision requires
+  fresh native and full product validation.
 - [ ] **B1.09b fresh admission, generic linking and selection:** reproduce complete
   policy assessments, provider grounding, lifetime/resource accounting and ranked
   alternatives. Retained decisions and identity-only freshness cannot grant use.

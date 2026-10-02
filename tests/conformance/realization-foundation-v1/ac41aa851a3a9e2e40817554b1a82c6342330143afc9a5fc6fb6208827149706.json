@@ -1,0 +1,1 @@
+{"code":"input_semantics","message":"Input endpoint role, scope, or type differs from the authored observation.","node_id":"n000003","requirement_id":null,"source":{"file":"/__biocompiler_capture__/tests/test_realization_checker.py","function":"fixture","line":49}}

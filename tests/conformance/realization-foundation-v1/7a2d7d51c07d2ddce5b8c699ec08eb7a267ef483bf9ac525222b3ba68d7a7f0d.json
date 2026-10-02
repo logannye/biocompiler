@@ -1,0 +1,1 @@
+[{"path":["args"],"type":"builtins.tuple"},{"path":["kwargs","inputs"],"type":"builtins.tuple"},{"path":["kwargs","inputs",0],"type":"biocompiler.semantics.realization.InputDomain"},{"path":["kwargs","required_capabilities"],"type":"builtins.tuple"}]

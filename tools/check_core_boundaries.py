@@ -43,6 +43,7 @@ TESTS = {
     "test_realization_contract": {"bioc_wire", "bioc_domain", "zarith"},
     "test_realization_evidence": {"bioc_wire", "bioc_domain", "zarith"},
     "test_admission": {"bioc_wire", "bioc_domain", "bioc_checker", "zarith"},
+    "test_realization_foundation_corpus": {"bioc_wire", "bioc_domain", "bioc_checker", "zarith"},
     "test_observation_map": {"bioc_wire", "bioc_domain"},
     "test_composition": {"bioc_wire", "bioc_domain", "zarith"},
     "test_component_assembly": {"bioc_wire", "bioc_domain"},
@@ -262,7 +263,7 @@ def source_boundary(path, allowed_libraries, *, owner=None):
             raise BoundaryError(f"Unreviewed native/process/dynamic-code escape {token} in {path.name}")
         if token == "Sys":
             reviewed = {"argv"}
-            if owner in {"test:test_architecture_check", "test:test_source_transport", "test:test_architecture_producer", "test:test_construction_producer", "test:test_candidate_runtime_corpus", "test:test_component_runtime_corpus"}:
+            if owner in {"test:test_architecture_check", "test:test_source_transport", "test:test_architecture_producer", "test:test_construction_producer", "test:test_candidate_runtime_corpus", "test:test_component_runtime_corpus", "test:test_realization_foundation_corpus"}:
                 # The test-only document corpus must reject undeclared files.
                 # Production code gains no filesystem or process permission.
                 reviewed.add("readdir")
@@ -332,6 +333,7 @@ def check_boundaries(root: Path):
                 fixture_variables = {
                     "test_candidate_runtime_corpus": "%{env:BIOCOMPILER_CANDIDATE_RUNTIME_CORPUS=missing}",
                     "test_component_runtime_corpus": "%{env:BIOCOMPILER_COMPONENT_RUNTIME_CORPUS=missing}",
+                    "test_realization_foundation_corpus": "%{env:BIOCOMPILER_REALIZATION_FOUNDATION_CORPUS=missing}",
                 }
                 expected_actions = ([["action", ["run", "%{test}", fixture_variables[name]]]]
                                     if name in fixture_variables else [])

@@ -1,0 +1,1 @@
+"{\"args\":[\"domain\",\"1\",\"n000001\",[],{\"canonical_value\":4,\"kind\":\"scalar\",\"type\":{\"arguments\":[],\"dimensions\":{\"time\":1},\"kind\":\"scalar\",\"name\":\"Duration\"},\"unit\":\"s\",\"value\":4},null,[]],\"kwargs\":{}}"

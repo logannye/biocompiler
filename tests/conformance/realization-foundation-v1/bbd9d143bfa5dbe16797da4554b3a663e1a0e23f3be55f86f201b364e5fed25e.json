@@ -1,0 +1,1 @@
+"{\"compartment\":\"abstract\",\"dtype\":{\"arguments\":[],\"dimensions\":{\"amount\":1,\"length\":-2},\"kind\":\"scalar\",\"name\":\"SurfaceDensity\"},\"id\":\"A\",\"role\":\"n000001\",\"schema_version\":\"biocompiler.observable.v0.1\",\"scope\":\"contact\"}"

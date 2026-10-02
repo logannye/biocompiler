@@ -294,3 +294,9 @@
  (name test_admission)
  (modules test_admission)
  (libraries bioc_wire bioc_domain bioc_checker zarith))
+
+(test
+ (name test_realization_foundation_corpus)
+ (modules test_realization_foundation_corpus)
+ (libraries bioc_wire bioc_domain bioc_checker zarith)
+ (action (run %{test} %{env:BIOCOMPILER_REALIZATION_FOUNDATION_CORPUS=missing})))
