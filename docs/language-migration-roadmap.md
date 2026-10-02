@@ -340,6 +340,12 @@ These checkpoints record narrower validated work; they do not complete a broad L
   those counterparts without changing capture inputs, errors or native codes;
   all six source replay/integrity tests pass. Its fresh complete hosted gates
   remain required; the earlier native PASS is not transferred to the new revision.
+  The later Python 3.11 campaign exposed six additional list/dict set-membership
+  messages in the same retained corpus. The correction pins all twelve exact
+  version-specific rejection identities, messages and native codes without
+  altering source inputs or corpus expectations. All six source replay/integrity
+  tests pass; the correction is propagated to PR52/53/54 and each requires fresh
+  complete hosted validation. No prior native PASS is transferred.
 - [ ] **B1.09d component correspondence and fresh replay:** independently reconstruct
   the expected source/assembly correspondence without importing its adapter or
   producer; require complete generic linking before behavior acceptance.
@@ -366,6 +372,23 @@ These checkpoints record narrower validated work; they do not complete a broad L
   batch. Its first hosted build caught two ambiguous documentation comments;
   correcting those annotations preserves strict warnings and leaves the full
   replacement native/product gates required.
+  The next acceptance batch now implements private independent source provenance
+  and actual-candidate-derived component authority, plus public fresh synthetic
+  and assembly checkers. Expected declarations remain private, actual candidate
+  execution remains independent, and coherent in-band candidate changes can pass.
+  All 4,119 reached acceptance calls now have complete native expectations:
+  906 synthetic checks, 52 assembly checks, 1,080 realization checks, 1,996
+  dependency snapshots and 85 component behavior checks. Corpus pin
+  `d32009a03f0af00de4da60f0244c210ba15b9ff89e828ea56c82b5f9e4a73331`
+  retains 4,910 documents / 109,400,531 bytes from the same 373-method capture.
+  Only 2,372 producer, selection and adaptation observations remain deferred.
+  Seven Python corpus tests and byte-identical full recapture pass. Independent
+  native test inputs include 12 complete candidate reports, 62 provenance cases,
+  12 complete assembly reports and 14 exact assembly rejections, with shared
+  resource limits and failure isolation. Static private-boundary mutations and
+  all 41 boundary/CI/inventory checks pass. Four new native suites bring the
+  required total to 75; native compilation and full product validation remain
+  hosted and pending. This item and its broader LM exits remain unchecked.
 - [ ] **B1.09e protocol exposure and public routing:** accept full external authority,
   freshly recompute complete results, and preserve every existing caller and
   export gate. The audited realization baseline contains 324 methods across 23
