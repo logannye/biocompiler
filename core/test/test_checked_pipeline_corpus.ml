@@ -373,13 +373,13 @@ let provider replay tagged =
             let effects=List.filter (fun child -> get "parent" child=str (event_id event) &&
               String.starts_with ~prefix:"PassManager." (text "api" child)) replay.corpus.events in
             (match effects with
-             | [effect] ->
-               require (text "api" effect="PassManager.set_dependency" && get "manager" effect=str manager_id)
+             | [mutation] ->
+               require (text "api" mutation="PassManager.set_dependency" && get "manager" mutation=str manager_id)
                  "Dependency callback manager/effect differs";
                equal "Original callback dependency arguments"
                  (obj ["key",str "registry";"identity",str (Canonical.fingerprint (str "v2"))])
-                 (unpack (bound replay.corpus effect));
-               observe replay effect (fun () -> M.set_dependency (manager replay manager_id) "registry"
+                 (unpack (bound replay.corpus mutation));
+               observe replay mutation (fun () -> M.set_dependency (manager replay manager_id) "registry"
                  (Canonical.fingerprint (str "v2"));Json.Null);
                replay.effect_count<-replay.effect_count+1
              | _ -> failwith "Dependency callback must have exactly its original manager mutation");
