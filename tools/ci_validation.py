@@ -25,10 +25,12 @@ PRODUCERS = ("installed-executable", "installed-architecture", "circuit-integrat
 REPRODUCIBILITY = ("executable-rna-reproducibility", "payload-architecture-reproducibility", "circuit-reproducibility")
 CORE_PLATFORMS = {"linux-x86_64": ("Linux", "x86_64"), "macos-arm64": ("Darwin", "arm64")}
 REQUIRED_NEEDS = frozenset((*PRODUCERS, *REPRODUCIBILITY, "studio-browser",
-                            "unit-plan", "unit-tests", "unit-accounting", "ocaml-core", "studio-typescript"))
+                            "unit-plan", "unit-tests", "unit-accounting", "ocaml-core", "studio-typescript",
+                            "architecture-core-reproducibility"))
 EXPECTED_RECEIPTS = frozenset((job, version) for job in PRODUCERS for version in PYTHONS) | {
     ("studio-browser", "3.11"), *((job, "cross-python") for job in REPRODUCIBILITY),
     ("studio-typescript", "3.11"), *(("ocaml-core", variant) for variant in CORE_PLATFORMS),
+    ("architecture-core-reproducibility", "cross-platform"),
 }
 
 

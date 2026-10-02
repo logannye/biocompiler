@@ -49,7 +49,8 @@ remain distinct revision boundaries.
 | `executable-rna-reproducibility` | Depends only on `installed-executable`; compares complete relative-file SHA-256 inventories from both Python versions. |
 | `payload-architecture-reproducibility` | Depends only on `installed-architecture`; requires all 13 case outputs and compares every relative file across versions. |
 | `circuit-reproducibility` | Depends only on `circuit-integration`; compares the complete infrastructure/source/review artifact inventories. |
-| `validation` | Final gate requires successful unit accounting, every installed/integration/browser job, TypeScript, both native platforms and all three reproducibility jobs. |
+| `architecture-core-reproducibility` | Depends on both native platforms; rehashes complete SDK/CLI artifacts from Python 3.11 and 3.14 on each platform and requires exact four-way equality with current run and executable authority. |
+| `validation` | Final gate requires successful unit accounting, every installed/integration/browser job, TypeScript, both native platforms and all four reproducibility jobs. |
 
 Reproducibility no longer waits behind the full unit suite. The intended steady
 work comprises ten unit runners, eight producer runners, one browser runner,

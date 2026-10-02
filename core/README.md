@@ -322,19 +322,15 @@ diagnostic multiplicity, outcomes and completeness claims remain exact.
 
 ## Producer and transport preservation checkpoint
 
-Branch `codex/ocaml-producers-transport` contains the next draft slice: independent
-construction/recoding/workflow and architecture producers, coupled source transport,
-and experimental `verify-architecture`/`replay-architecture` service operations.
-It extends the native registry to 45 suites and adds 108 installed architecture
-protocol checks. The retained corpora and installed protocol checks passed on both
-native platforms in run 36954384587, but its source literal suite failed. Review
-corrections preserve explicit invalid-root contradictions, generated identity
-diagnostics, and arbitrary parent-budget exhaustion. Failed source-prefix replay
-forfeits its reserved remaining allowance before propagating the original error.
-The expanded producer corpus retains 193 cases and 166 documents with no
-diagnostic exceptions. The corrected revision requires fresh full hosted validation. Production SDK/CLI authority remains Python, and coupled source
-execution does not implement the independent candidate runtime. See the detailed
-[roadmap checkpoint](../docs/language-migration-roadmap.md) and [protocol](../protocol/core-v1.md).
+PR46 merged the independent construction/recoding/workflow and architecture
+producers, coupled source transport, and experimental architecture verification
+and replay operations after all 30 required hosted jobs passed. Both native
+platforms passed 45 suites, the complete retained corpora and 108 installed
+architecture protocol checks. The producer corpus retains 193 cases and 166
+documents with no diagnostic exceptions. See the exact
+[validation receipt](../protocol/migration-producer-validation.json) and
+[roadmap checkpoint](../docs/language-migration-roadmap.md). Coupled source
+execution does not implement the independent candidate runtime.
 
 
 The producer service is a separate `bioc_producer_service` library selected only
@@ -346,3 +342,8 @@ byte fingerprints and original supplied-authority pins. The installed producer
 campaign compares complete frozen builds and paired exports and independently
 checks returned builds using the standalone verifier. These new operations remain
 pending their own hosted gates and public routing/distribution work.
+
+Explicit Python SDK and CLI selection of a compatible core is implemented in the
+next routing batch; its installed four-way Python/platform campaign remains a
+required hosted gate. The default reference route stays Python until distribution
+and cutover are complete. See [explicit core workflows](../docs/architecture-core-workflows.md).

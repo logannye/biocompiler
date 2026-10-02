@@ -10,6 +10,7 @@ from types import MappingProxyType
 from typing import Any, TYPE_CHECKING
 
 if TYPE_CHECKING:
+    from biocompiler.core_client import CoreClient
     from biocompiler.ir.architecture_build import PayloadArchitectureRequest, PayloadArchitectureBuild
     from biocompiler.ir.executable_payload import PayloadCompilationRequest, PayloadBuild
     from biocompiler.ir.circuit_construction import CircuitConstructionRequest
@@ -402,12 +403,19 @@ def compile(
     | CircuitConstructionRequest
     | PayloadCompilationRequest
     | PayloadArchitectureRequest,
+    *, core: CoreClient | None = None,
 ) -> CandidateCompilation | ImplementationCompilation | CircuitConstructionBuild | PayloadBuild | PayloadArchitectureBuild:
     """Compile supplied implementations while preserving source and claim boundaries."""
     from biocompiler.ir.architecture_build import PayloadArchitectureRequest
     if isinstance(design, PayloadArchitectureRequest):
         from biocompiler.compiler.payload_architecture import compile_payload_architecture
+        if core is not None:
+            return compile_payload_architecture(design, core=core)
         return compile_payload_architecture(design)
+    if core is not None:
+        raise CompilationUnavailableError(
+            "The selected OCaml core does not implement compilation for this request profile.",
+        )
     from biocompiler.ir.circuit_construction import CircuitConstructionRequest
     from biocompiler.ir.executable_payload import PayloadCompilationRequest
     if isinstance(design, PayloadCompilationRequest):

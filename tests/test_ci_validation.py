@@ -149,6 +149,56 @@ class ValidationGateTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 ci.start_job("ocaml-core", "macos-arm64", args[3])
 
+    def test_architecture_core_comparison_requires_success_and_exact_receipt(self):
+        job = "architecture-core-reproducibility"
+        self.assertIn(job, ci.REQUIRED_NEEDS)
+        self.assertIn((job, "cross-platform"), ci.EXPECTED_RECEIPTS)
+        for mutation in ("missing_job", "failure", "skipped", "cancelled", "missing_receipt",
+                         "duplicate_receipt", "wrong_variant", "stale_revision"):
+            with self.subTest(mutation=mutation):
+                needs, receipts, accounts, authority = self.fixture()
+                receipt = next(item for item in receipts if item["job"] == job)
+                if mutation == "missing_job":
+                    needs.pop(job)
+                elif mutation in {"failure", "skipped", "cancelled"}:
+                    needs[job]["result"] = mutation
+                elif mutation == "missing_receipt":
+                    receipts.remove(receipt)
+                elif mutation == "duplicate_receipt":
+                    receipts.append(deepcopy(receipt))
+                elif mutation == "wrong_variant":
+                    receipt["variant"] = "cross-python"
+                else:
+                    receipt["revision"] = "f" * 40
+                self.assertEqual(ci.validate(needs, receipts, accounts, authority)["status"], "fail")
+
+    def test_secondary_python_cannot_relabel_native_job_runtime(self):
+        authority = self.fixture()[3]
+        with patch.dict("os.environ", {"GITHUB_JOB": "ocaml-core"}), \
+             patch.object(ci.platform, "system", return_value="Linux"), \
+             patch.object(ci.platform, "machine", return_value="x86_64"), \
+             patch.object(ci.platform, "python_version", return_value="3.11.7") as version:
+            start = ci.start_job("ocaml-core", "linux-x86_64", authority)
+            version.return_value = "3.14.0"
+            with self.assertRaisesRegex(ValueError, "runtime changed"):
+                ci.finish_job(start, authority)
+
+    def test_checked_in_workflow_registers_cross_platform_architecture_gate(self):
+        workflow = Path(__file__).resolve().parents[1] / ".github" / "workflows" / "ci.yml"
+        self.assertEqual(ci.workflow_jobs(workflow), ci.REQUIRED_NEEDS | {"validation"})
+        text = workflow.read_text(encoding="utf-8")
+        comparison = text.split("\n  architecture-core-reproducibility:\n", 1)[1].split("\n  studio-typescript:", 1)[0]
+        self.assertIn("    needs: ocaml-core\n", comparison)
+        for target in ("artifacts/core/linux-x86_64", "artifacts/core/macos-arm64",
+                       "--root artifacts/core --output generated/core-reproducibility/receipt.json"):
+            self.assertIn(target, comparison)
+        self.assertIn("      - architecture-core-reproducibility\n", text.split("\n  validation:\n", 1)[1])
+        native = text.split("\n  ocaml-core:\n", 1)[1].split("\n  architecture-core-reproducibility:\n", 1)[0]
+        for version in ci.PYTHONS:
+            self.assertIn("architecture-routing-" + version + ".json", native)
+        self.assertIn("          update-environment: false\n", native)
+        self.assertIn("${{ steps.routing_python314.outputs.python-path }}", native)
+
 
 if __name__ == "__main__":
     unittest.main()
