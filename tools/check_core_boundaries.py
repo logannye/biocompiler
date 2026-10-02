@@ -20,6 +20,7 @@ ROOT = Path(__file__).resolve().parents[1]
 EXTERNAL_LIBRARIES = frozenset({"digestif", "zarith", "unix"})
 # New libraries/dependencies require deliberate policy review, even when harmless.
 LIBRARIES = {
+    "bioc_pipeline": ("lib/pipeline/dune", {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_realization_checker", "bioc_synthetic_producer", "bioc_candidate_runtime", "zarith"}, "compiler"),
     "bioc_synthetic_producer": ("lib/synthetic_producer/dune", {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_realization_checker", "zarith"}, "producer"),
     "bioc_realization_checker": ("lib/realization_checker/dune", {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_semantics", "bioc_candidate_runtime", "zarith"}, "checker"),
     "bioc_candidate_runtime": ("lib/candidate_runtime/dune", {"bioc_wire", "bioc_domain", "zarith"}, "candidate_runtime"),
@@ -37,6 +38,8 @@ EXECUTABLES = {
     "biocompiler-verify": ("bin/verify/dune", {"bioc_wire", "bioc_service"}, "verifier"),
 }
 TESTS = {
+    'test_fixed_pipeline_corpus': {'bioc_wire', 'bioc_domain', 'bioc_checker', 'bioc_compiler', 'bioc_pipeline', 'bioc_synthetic_producer', 'zarith'},
+    'test_lowering_budget': {'bioc_domain', 'bioc_wire', 'bioc_compiler', 'bioc_checker'},
     'test_checked_pipeline_corpus': {'bioc_domain', 'bioc_wire', 'bioc_compiler', 'zarith', 'bioc_checker'},
     'test_pass_manager': {'bioc_domain', 'bioc_wire', 'bioc_compiler', 'zarith', 'bioc_checker'},
     'test_pipeline_contract': {'bioc_wire', 'zarith', 'bioc_domain'},
@@ -403,6 +406,7 @@ def check_boundaries(root: Path):
                 if relative != "test/dune" or name not in TESTS or values.get("modules") != [name]:
                     raise BoundaryError(f"Unreviewed native test stanza: {name}")
                 fixture_variables = {
+                    'test_lowering_budget': "%{env:BIOCOMPILER_LOWERING_CORPUS=missing}",
                     'test_checked_pipeline_corpus': "%{env:BIOCOMPILER_CHECKED_PIPELINE_CORPUS=missing}",
                     'test_pass_manager': "%{env:BIOCOMPILER_PIPELINE_CONTRACT_LITERALS=missing}",
                     'test_pipeline_contract': "%{env:BIOCOMPILER_PIPELINE_CONTRACT_LITERALS=missing}",
@@ -422,6 +426,10 @@ def check_boundaries(root: Path):
                     expected_actions = [["action", ["run", "%{test}",
                         "%{env:BIOCOMPILER_SYNTHETIC_INSPECTION_FIXTURES=missing}",
                         "%{env:BIOCOMPILER_SYNTHETIC_INSPECTION_DECLARATION=missing}"]]]
+                if name == "test_fixed_pipeline_corpus":
+                    expected_actions = [["action", ["run", "%{test}",
+                        "%{env:BIOCOMPILER_FIXED_PIPELINE_CORPUS=missing}",
+                        "%{env:BIOCOMPILER_FIXED_PIPELINE_CONTINUATIONS=missing}"]]]
                 if actions != expected_actions:
                     raise BoundaryError(f"Changed native test action: {name}")
                 if name in tests or dependencies != TESTS[name]:

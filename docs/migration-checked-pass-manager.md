@@ -97,6 +97,39 @@ public integration needs genuine native sessions or independently replayed
 history with explicit callback continuations. P3 canonical package/export work
 and default cutover remain dependent on that integration.
 
+## Fixed pipeline implementation checkpoint
+
+`bioc_pipeline` implements fixed synthetic and component pipelines through actual
+native producers and independent checkers. The foundational compiler and verifier
+keep their existing dependency boundaries. Results retain live manager authority,
+complete records, source correspondences, unresolved obligations and partial
+failure state. Ordered source-map insertion is preserved when forming source-link
+arrays. `Lowering.lower_with_budget` shares the caller ancestor through lowering
+and independent preservation checking; the legacy `lower` entry point is retained.
+Opaque legacy imports prepay a scalar-aware codec envelope before decoding.
+
+The supplemental capture reran all 467 original tests unchanged: baseline 38.717s,
+instrumented 194.196s. It retains 136 full calls, both actual child outputs (zero
+fixed calls), all 309 manager constructors, 445 documents / 104,594,191 bytes and
+850 post-return observations. Full fixed inventory:
+`28d8befb9fad240a80edf341ad64f822517f6e65f43c611966c9d0b7ff43d652`.
+Separate native companions keep complete provider objects in 841 content-addressed
+blobs / 34,695,681 bytes, below existing parser limits without altering full indexes:
+
+- Fixed native index: `ce976b30aa5e0a8f6477cc027d7bec4a780a31a567f19cfb0993b10839d58f6d`.
+- Continuation native index: `45c78ef53692cb71fe644ea98331c9ce8caa1bda3b1eab67a93061f30557a9eb`.
+
+Eight Python integrity tests passed in 7.093s. The new native driver executes
+126 eligible original calls and 563 actual manager commands; it compares complete
+results, state, errors and all 121 successful return boundaries. It explicitly
+retains ten Python mock/type-dependent calls and the callback-dependent remainder
+as pending coverage. Provider identity translation is diagnostic only. Expected
+records never establish native acceptance. The additional lowering budget suite
+checks exact and one-unit-short caller boundaries against original lowering cases.
+These two suites raise the hosted total to 96; native compilation/execution and
+all 36 exact-revision jobs are still required. No public service/session cutover
+is included in this source checkpoint.
+
 ## Separate large-artifact obligation
 
 A producer file channel alone would not remove current semantic limits: direct

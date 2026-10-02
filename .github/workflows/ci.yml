@@ -885,6 +885,9 @@ jobs:
           BIOCOMPILER_SYNTHETIC_PRODUCERS_CORPUS="$GITHUB_WORKSPACE/tests/conformance/synthetic-producers-v1.json" \
           BIOCOMPILER_REALIZATION_WORKFLOW_CORPUS="$GITHUB_WORKSPACE/tests/conformance/realization-workflow-v1.json" \
           BIOCOMPILER_CHECKED_PIPELINE_CORPUS="$GITHUB_WORKSPACE/tests/conformance/checked-pipeline-v1.json" \
+          BIOCOMPILER_FIXED_PIPELINE_CONTINUATIONS="$GITHUB_WORKSPACE/tests/conformance/fixed-pipeline-continuations-native-v1.json" \
+          BIOCOMPILER_FIXED_PIPELINE_CORPUS="$GITHUB_WORKSPACE/tests/conformance/fixed-pipeline-native-v1.json" \
+          BIOCOMPILER_LOWERING_CORPUS="$GITHUB_WORKSPACE/tests/conformance/lowering-v1.json" \
           BIOCOMPILER_PIPELINE_CONTRACT_LITERALS="$GITHUB_WORKSPACE/tests/conformance/pipeline-contract-literals-v1.json" \
           BIOCOMPILER_SYNTHETIC_INSPECTION_DECLARATION="$GITHUB_WORKSPACE/protocol/synthetic-inspection-v1.json" \
           BIOCOMPILER_SYNTHETIC_INSPECTION_FIXTURES="$GITHUB_WORKSPACE/tests/conformance/synthetic-inspection-supplemental-v1.json" \
@@ -1020,6 +1023,12 @@ jobs:
       - name: Replay original manager commands, callback bodies and complete state changes
         if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
         run: core/_build/default/test/test_checked_pipeline_corpus.exe "$GITHUB_WORKSPACE/tests/conformance/checked-pipeline-v1.json" | tee generated/core/test_checked_pipeline_corpus.txt
+      - name: Check lowering and independent preservation share the caller work ancestor
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_lowering_budget.exe "$GITHUB_WORKSPACE/tests/conformance/lowering-v1.json" | tee generated/core/test_lowering_budget.txt
+      - name: Replay fixed native pipelines and original post-return manager observations
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_fixed_pipeline_corpus.exe "$GITHUB_WORKSPACE/tests/conformance/fixed-pipeline-native-v1.json" "$GITHUB_WORKSPACE/tests/conformance/fixed-pipeline-continuations-native-v1.json" | tee generated/core/test_fixed_pipeline_corpus.txt
       - name: Check every original workflow, exploration, reduction and callback observation
         if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
         run: |
