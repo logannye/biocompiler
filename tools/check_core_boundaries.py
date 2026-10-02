@@ -23,7 +23,7 @@ LIBRARIES = {
     "bioc_synthetic_producer": ("lib/synthetic_producer/dune", {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_realization_checker", "zarith"}, "producer"),
     "bioc_realization_checker": ("lib/realization_checker/dune", {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_semantics", "bioc_candidate_runtime", "zarith"}, "checker"),
     "bioc_candidate_runtime": ("lib/candidate_runtime/dune", {"bioc_wire", "bioc_domain", "zarith"}, "candidate_runtime"),
-    "bioc_producer_service": ("lib/producer_service/dune", {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_service"}, "producer"),
+    "bioc_producer_service": ("lib/producer_service/dune", {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_service", "bioc_realization_checker", "bioc_synthetic_producer", "zarith"}, "producer"),
     "bioc_wire": ("lib/wire/dune", {"digestif", "zarith"}, "trusted_primitive"),
     "bioc_domain": ("lib/domain/dune", {"bioc_wire", "zarith", "digestif"}, "trusted_domain"),
     "bioc_semantics": ("lib/semantics/dune", {"bioc_wire", "bioc_domain", "zarith"}, "source_semantics"),
@@ -44,6 +44,7 @@ TESTS = {
     "test_synthetic_selection": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_realization_checker", "bioc_synthetic_producer", "zarith"},
     "test_synthetic_components": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_realization_checker", "bioc_synthetic_producer", "zarith"},
     "test_synthetic_producers_corpus": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_realization_checker", "bioc_synthetic_producer", "zarith"},
+    "test_synthetic_producer_protocol": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_realization_checker", "bioc_synthetic_producer", "bioc_producer_service", "bioc_service", "zarith"},
 
     "test_synthetic_candidate_check": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_realization_checker", "zarith"},
     "test_synthetic_provenance": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_realization_checker", "zarith"},

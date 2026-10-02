@@ -54,9 +54,12 @@ let literals () =
     | Protocol.Unsupported,None,[diagnostic] -> require (diagnostic.code="unsupported_operation") "Verifier returned wrong unsupported code"
     | _ -> failwith "Standalone verifier attempted a producer operation") ["compile-architecture";"export-architecture"];
   let capabilities=success "capabilities" (obj []) in
-  require (Json.array (field "operations" capabilities)=Json.array (field "operations" base) @ [str "compile-architecture";str "export-architecture"])
+  require (Json.array (field "operations" capabilities)=Json.array (field "operations" base) @
+    [str "compile-architecture";str "export-architecture"] @
+    List.map str Bioc_producer_service.Synthetic_producer_service.operations)
     "Core operation census changed";
-  require (Json.array (field "validation_scopes" capabilities)=Json.array (field "validation_scopes" base) @ [str Service.validation_scope])
+  require (Json.array (field "validation_scopes" capabilities)=Json.array (field "validation_scopes" base) @
+    [str Service.validation_scope] @ List.map str Bioc_producer_service.Synthetic_producer_service.validation_scopes)
     "Producer scope was not appended to the existing checking scopes";
   let profiles=field "profiles" capabilities in
   require (Json.equal (field "architecture" profiles) (field "architecture" (field "profiles" base)) &&

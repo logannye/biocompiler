@@ -29,6 +29,7 @@ from biocompiler.core_client import (
 )
 from biocompiler.core_architecture import PROFILE as ARCHITECTURE_PROFILE, VALIDATION_SCOPE as ARCHITECTURE_SCOPE
 from biocompiler.core_architecture_producer import PROFILE as PRODUCER_PROFILE, VALIDATION_SCOPE as PRODUCER_SCOPE
+from biocompiler.core_synthetic_producer import PROFILES as SYNTHETIC_PRODUCER_PROFILES, OPERATIONS as SYNTHETIC_PRODUCER_OPERATIONS, VALIDATION_SCOPES as SYNTHETIC_PRODUCER_SCOPES
 from biocompiler.core_realization import PROFILES as REALIZATION_PROFILES, OPERATIONS as REALIZATION_OPERATIONS, VALIDATION_SCOPES as REALIZATION_SCOPES
 from biocompiler.core_artifacts import (TRANSPORT_PROFILE as ARTIFACT_PROFILE,
     AUTHORITY_TRANSPORT_PROFILE as AUTHORITY_ARTIFACT_PROFILE)
@@ -463,6 +464,9 @@ def run_campaign(clients, corpus, receipt, programs):
             operations += ["compile-architecture", "export-architecture"]
             scopes.append(PRODUCER_SCOPE)
             profiles["architecture_producer"] = PRODUCER_PROFILE
+            operations += list(SYNTHETIC_PRODUCER_OPERATIONS)
+            scopes += list(SYNTHETIC_PRODUCER_SCOPES)
+            profiles.update(SYNTHETIC_PRODUCER_PROFILES)
             claim = "Supplied-contract architecture production, independent checking, exact RNA/manifest export and separately scoped finite-history model checks. No search completeness, empirical function or human-use admission is established."
         require(sorted(capabilities["operations"]) == sorted(operations), "Missing or untested advertised operation")
         require(capabilities["canonicalization"] == "python-json-v1" and capabilities["intent_schemas"] == ["biocompiler.intent.v0.1"]
