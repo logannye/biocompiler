@@ -4,7 +4,7 @@ Created: 2026-10-01, America/Los_Angeles.
 
 **Decision:** TypeScript for Studio; Python for authoring, orchestration and scientific exploration; OCaml for the semantic compiler, independent checking and canonical emission.
 
-**Status:** the default remains Python; explicit architecture SDK/CLI selection uses the validated OCaml core. PR48–51 passed all required PR gates and are merged. Draft PR52–59 preserve independent realization/component acceptance, synthetic production, nine realization protocol operations, optional SDK routes, complete native workflow engines and the bounded workflow service. None has completed its full current-revision gate. PR58 has a newly reported Python shard failure under investigation; PR59 Linux compilation passed, with native tests and broader validation still running. Public workflow/CLI routing, distribution, remaining profiles and default cutover remain open.
+**Status:** the default remains Python; explicit architecture SDK/CLI selection uses the validated OCaml core. PR48–51 passed all required PR gates and are merged. Draft PR52–59 preserve independent realization/component acceptance, synthetic production, nine realization protocol operations, optional SDK routes, complete native workflow engines and the bounded workflow service. None has completed its full current-revision gate. The PR58 Python shard exposed one stale source-hash assertion; its narrowly tested correction is pushed to PR57–59, which now require fresh full validation. Earlier PR59 Linux compilation success remains historical evidence only. Public workflow/CLI routing, distribution, remaining profiles and default cutover remain open.
 
 The validated foundation is merged in [PR37](https://github.com/logannye/biocompiler/pull/37), with the exact revision/platform results in the [foundation receipt](../protocol/migration-foundation-validation.json). Typed request, all 42 Behavior operations and molecular-coordinate domains are merged in [PR38](https://github.com/logannye/biocompiler/pull/38); the [domain receipt](../protocol/migration-domain-validation.json) records both native platforms and full Python/integration checks. Both integrated main revisions also passed their required gates.
 
@@ -528,10 +528,13 @@ These checkpoints record narrower validated work; they do not complete a broad L
 
 **Credit-limit preservation, 2026-10-02:** implementation through
 [PR59](https://github.com/logannye/biocompiler/pull/59) is committed and pushed at
-`4d14a08b4ebcc7de95b2ef28fd5de74c2760bb2b`. Its Linux compilation passed in
-[run 36983237687](https://github.com/logannye/biocompiler/actions/runs/36983237687);
-this is not completion of its 87 native suites or 36-job gate. PR52–58 also remain
-unmerged. No pending merge or automatic merge is enabled. The next-work checkpoint
+`f7b81a1da0236f2b4187e24b1352d49d788296d4`. The source-lineage correction
+uses the existing exact historical/current hashes and whole-file AST proof for
+the remaining locked-component corpus assertion. All six focused census/lineage
+tests pass locally; no corpus pin or product behavior changed. Fresh full
+[run 36984201005](https://github.com/logannye/biocompiler/actions/runs/36984201005)
+is pending. The earlier Linux compilation result is historical only; 87 native
+suites and the complete 36-job gate remain required. PR52–58 also remain unmerged. No pending merge or automatic merge is enabled. The next-work checkpoint
 is separate so it does not restart the existing validation runs. All unfinished
 layer checkboxes remain unchecked.
 
