@@ -1,0 +1,1 @@
+"{\"code\":\"target_compartment\",\"instance_id\":\"instance:0\",\"message\":\"A selected interface or dependency uses a compartment absent from the target.\",\"requirement_ids\":[],\"status\":\"fail\"}"

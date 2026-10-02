@@ -1,0 +1,1 @@
+{"code":"provider_compartment","instance_id":null,"message":"Provider 'external' uses an undeclared compartment.","requirement_ids":["intent"],"status":"fail"}

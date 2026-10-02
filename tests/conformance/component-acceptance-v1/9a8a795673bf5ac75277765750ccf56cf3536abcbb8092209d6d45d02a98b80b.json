@@ -1,0 +1,1 @@
+"{\"code\":\"unsupported_lifecycle\",\"instance_id\":\"0\",\"message\":\"Only explicit half-open lifecycle intervals in seconds are supported.\",\"requirement_ids\":[\"intent\"],\"status\":\"unsupported\"}"

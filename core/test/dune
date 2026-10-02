@@ -321,3 +321,29 @@
  (modules test_realization_checks_corpus)
  (libraries bioc_wire bioc_domain bioc_checker bioc_realization_checker zarith)
  (action (run %{test} %{env:BIOCOMPILER_REALIZATION_CHECKS_CORPUS=missing})))
+
+(test
+ (name test_composition_evidence)
+ (modules test_composition_evidence)
+ (libraries bioc_wire bioc_domain zarith))
+
+(test
+ (name test_composition_check)
+ (modules test_composition_check)
+ (libraries bioc_wire bioc_domain bioc_checker zarith))
+
+(test
+ (name test_component_selection)
+ (modules test_component_selection)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_compiler zarith))
+
+(test
+ (name test_component_behavior_check)
+ (modules test_component_behavior_check)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_realization_checker zarith))
+
+(test
+ (name test_component_acceptance_corpus)
+ (modules test_component_acceptance_corpus)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_compiler bioc_realization_checker zarith)
+ (action (run %{test} %{env:BIOCOMPILER_COMPONENT_ACCEPTANCE_CORPUS=missing})))

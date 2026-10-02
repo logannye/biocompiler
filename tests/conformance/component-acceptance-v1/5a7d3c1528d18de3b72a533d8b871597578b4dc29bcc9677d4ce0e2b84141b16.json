@@ -1,0 +1,1 @@
+"{\"code\":\"resource_overallocation\",\"instance_id\":null,\"message\":\"Pool 'shared' exceeds its declared shared capacity.\",\"requirement_ids\":[\"intent\"],\"status\":\"fail\"}"

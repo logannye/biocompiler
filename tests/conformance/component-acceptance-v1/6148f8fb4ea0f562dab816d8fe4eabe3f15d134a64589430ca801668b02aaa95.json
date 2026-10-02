@@ -1,0 +1,1 @@
+{"code":"unknown_host_capacity","instance_id":null,"message":"Target does not declare capacity for host resource 'supply'.","requirement_ids":["intent"],"status":"unknown"}

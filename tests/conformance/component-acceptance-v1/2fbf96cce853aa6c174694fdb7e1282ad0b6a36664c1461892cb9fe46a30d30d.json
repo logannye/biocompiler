@@ -1,0 +1,1 @@
+{"code":"missing_resource_pool","instance_id":"0","message":"Every reservation requires exactly one declared resource pool.","requirement_ids":["intent"],"status":"unknown"}

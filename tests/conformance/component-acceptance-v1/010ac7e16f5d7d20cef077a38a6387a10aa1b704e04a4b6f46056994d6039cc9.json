@@ -1,0 +1,1 @@
+{"code":"host_capability","instance_id":null,"message":"Provider 'external' claims a capability absent from the target.","requirement_ids":["intent"],"status":"fail"}

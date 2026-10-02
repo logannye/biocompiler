@@ -42,6 +42,7 @@ BIOCOMPILER_CANDIDATE_RUNTIME_CORPUS="$PWD/tests/conformance/candidate-runtime-v
 BIOCOMPILER_COMPONENT_RUNTIME_CORPUS="$PWD/tests/conformance/component-runtime-v1.json" \
 BIOCOMPILER_REALIZATION_FOUNDATION_CORPUS="$PWD/tests/conformance/realization-foundation-v1.json" \
 BIOCOMPILER_REALIZATION_CHECKS_CORPUS="$PWD/tests/conformance/realization-checks-v1.json" \
+BIOCOMPILER_COMPONENT_ACCEPTANCE_CORPUS="$PWD/tests/conformance/component-acceptance-v1.json" \
   opam exec -- dune runtest --root core
 ```
 
@@ -435,3 +436,55 @@ byte-identical. Four new suites bring the native total to 64; their hosted
 compilation, complete corpus execution and full product gates remain required.
 Generic linking/selection, component acceptance, public realization protocol
 routing, distribution and default cutover remain open.
+
+
+## Generic composition and selection checkpoint
+
+PR48's explicit architecture SDK/CLI route and PR49's independent candidate
+runtime are merged after all 31 required PR checks passed. Complete four-way
+routing receipts were independently reproduced from all 219 artifacts and both
+binaries on each platform. Their separate integrated-main validation is pending.
+PR52's 64 native suites passed on both platforms at its initial revision. A
+subsequent six-case Python 3.11 diagnostic-counterpart correction requires fresh
+complete hosted validation; its broader product gates remain pending.
+
+The next internal batch adds complete generic composition reports, independent
+linking and deterministic component selection. The linker checks locked records,
+full admission, interfaces, provider grounding, lifetimes and exact rational
+resource reservations. It preserves every alternative and dependency, all original
+severity precedence and complete reports. Fresh replay never trusts an imported
+PASS. Selection remains in the producer library; linking and actual-component
+behavior checking have no producer dependency.
+
+The component behavior checker freshly checks source lowering, reconstructs the
+actual locked assembly, invokes the independent source/candidate checker, then
+combines the complete generic link result. Source/configuration-to-component
+correspondence is still separate work. Target dataclass comparison preserves
+Python numeric equality without changing either target's exact artifact identity.
+All work, including failed reconstruction, shares the caller's bounded allowance;
+limits can only be reduced and exhaustion never produces acceptance.
+
+The new corpus retains 4,539 calls from 373 unchanged original methods and 380
+contexts, including both actual subprocesses (neither child invokes a selected
+component API). It contains 415 complete link reports, 35 selections, eight fresh
+selection replays and 85 actual component behavior results. All 52 independent
+source-correspondence calls remain explicitly deferred. Its 5,394 documents /
+30,453,450 bytes are pinned by
+`9eb76b8f697b00be207e6bb2e1cccdfd46ee974b09a3525d21eb4f32634ee116`.
+Fresh recapture is byte-identical and all six integrity/replay/ordering tests pass.
+Three exact admission-policy monkeypatch observations are handled only in tests:
+verify the full current dependencies, change only policy identity, then compare
+the complete retained mutant and freshness outcome. Production APIs have no
+policy-version override.
+
+Two original set-difference diagnostic groups have hash-seed-dependent order:
+`unknown_dependency_binding` and `unknown_resource_binding`. The native checker
+orders only those groups by instance/binding identity; full reports, multiplicity
+and all other diagnostic ordering remain intact. Independent source witnesses
+under seeds 0, 1 and 37 confirm that narrow distinction. Native literals pin the
+new deterministic order. No original corpus result needs normalization.
+
+Five new suites bring the total to 69. The full external corpus is mandatory in
+Dune and a separate hosted campaign; new native compilation/execution and all
+product gates remain pending. Generic source correspondence, scientific adapters,
+remaining public protocol/routing, distribution and default cutover remain open.

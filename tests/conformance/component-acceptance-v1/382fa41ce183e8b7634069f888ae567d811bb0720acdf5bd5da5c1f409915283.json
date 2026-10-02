@@ -1,0 +1,1 @@
+"{\"code\":\"provider_lifecycle\",\"instance_id\":\"a\",\"message\":\"The provider does not cover the required consumer lifetime.\",\"requirement_ids\":[\"intent\"],\"status\":\"fail\"}"

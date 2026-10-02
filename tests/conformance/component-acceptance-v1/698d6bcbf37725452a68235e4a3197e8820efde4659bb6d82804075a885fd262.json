@@ -1,0 +1,1 @@
+{"code":"aliased_resource_pool","instance_id":null,"message":"Multiple pool IDs alias one provider resource; explicit partitioning is unsupported.","requirement_ids":["intent"],"status":"unsupported"}

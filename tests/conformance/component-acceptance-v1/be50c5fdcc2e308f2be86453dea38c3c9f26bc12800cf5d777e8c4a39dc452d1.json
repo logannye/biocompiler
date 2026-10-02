@@ -1,0 +1,1 @@
+{"code":"stale_registry_lock","instance_id":null,"message":"Registry identity/version/content lock mismatch.","requirement_ids":["intent"],"status":"fail"}

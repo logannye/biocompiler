@@ -1,0 +1,1 @@
+[{"path":["args"],"type":"builtins.tuple"},{"path":["kwargs","selected"],"type":"biocompiler.ir.components.ComponentLock"},{"path":["kwargs","alternatives"],"type":"builtins.tuple"},{"path":["kwargs","admission"],"type":"biocompiler.semantics.admission.AdmissionAssessment"}]
