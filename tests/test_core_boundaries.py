@@ -51,7 +51,7 @@ class CoreBoundaryTests(unittest.TestCase):
         self.assertEqual(set(receipt["transitive_dependencies"]["bioc_realization_checker"]),
                          {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_semantics",
                           "bioc_candidate_runtime", "digestif", "zarith"})
-        self.assertEqual(receipt["private_modules"]["bioc_realization_checker"], ["realization_monitor"])
+        self.assertEqual(receipt["private_modules"]["bioc_realization_checker"], ["realization_monitor", "synthetic_provenance", "synthetic_component_authority"])
         self.assertNotIn("bioc_realization_checker", dependencies)
         self.assertEqual(receipt["shared_trusted_base"], ["bioc_wire", "bioc_domain"])
         self.assertIn("core/lib/checker/intent_check.ml", receipt["source_sha256"])
@@ -159,6 +159,10 @@ class CoreBoundaryTests(unittest.TestCase):
             ("lib/checker/intent_check.mli", "val hidden : Construction_reconstruction.t"),
             ("lib/compiler/lowering.ml", "module Hidden = Bioc_checker.Architecture_reconstruction"),
             ("lib/checker/intent_check.mli", "val hidden : Architecture_reconstruction.graph"),
+            ("test/test_synthetic_candidate_check.ml", "module Hidden = Bioc_realization_checker.Synthetic_provenance"),
+            ("test/test_synthetic_candidate_check.ml", "module Hidden = Bioc_realization_checker.Synthetic_component_authority"),
+            ("lib/realization_checker/synthetic_candidate_check.mli", "val hidden : Synthetic_provenance.t"),
+            ("lib/realization_checker/component_assembly_check.mli", "val hidden : Synthetic_component_authority.t"),
         ):
             root = self.copy_core()
             source = root / "core" / relative
@@ -189,6 +193,12 @@ class CoreBoundaryTests(unittest.TestCase):
             root = self.copy_core()
             self.change(root, "lib/checker/dune", "(private_modules construction_reconstruction architecture_reconstruction)", replacement)
             with self.subTest(replacement=replacement), self.assertRaisesRegex(boundaries.BoundaryError, "private module boundary"):
+                boundaries.check_boundaries(root)
+        for removed in ("synthetic_provenance", "synthetic_component_authority"):
+            root = self.copy_core()
+            declaration = "(private_modules realization_monitor synthetic_provenance synthetic_component_authority)"
+            self.change(root, "lib/realization_checker/dune", declaration, declaration.replace(" " + removed, ""))
+            with self.subTest(removed=removed), self.assertRaisesRegex(boundaries.BoundaryError, "private module boundary"):
                 boundaries.check_boundaries(root)
         root = self.copy_core()
         (root / "core/lib/checker/construction_reconstruction.mli").unlink()

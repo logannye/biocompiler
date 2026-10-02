@@ -36,6 +36,11 @@ EXECUTABLES = {
     "biocompiler-verify": ("bin/verify/dune", {"bioc_wire", "bioc_service"}, "verifier"),
 }
 TESTS = {
+    "test_synthetic_candidate_check": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_realization_checker", "zarith"},
+    "test_synthetic_provenance": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_realization_checker", "zarith"},
+    "test_component_assembly_check": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_realization_checker", "zarith"},
+    "test_synthetic_acceptance_corpus": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_realization_checker", "zarith"},
+
     'test_synthetic_authority': {'bioc_domain', 'zarith', 'bioc_wire'},
     'test_synthetic_authority_corpus': {'bioc_domain', 'zarith', 'bioc_wire'},
     'test_composition_evidence': {'bioc_domain', 'zarith', 'bioc_wire'},
@@ -113,7 +118,7 @@ PRODUCER_ROLES = frozenset({"compiler", "matcher", "selection", "emitter", "asse
 # Reconstruction is an independent checker's implementation detail. Consumers
 # can request assessment/replay, but cannot obtain an expected candidate to emit.
 PRIVATE_MODULES = {"bioc_checker": ["construction_reconstruction", "architecture_reconstruction"],
-                   "bioc_realization_checker": ["realization_monitor"]}
+                   "bioc_realization_checker": ["realization_monitor", "synthetic_provenance", "synthetic_component_authority"]}
 TOKEN = re.compile(r'\s+|;[^\n]*(?:\n|$)|\(|\)|"(?:\\.|[^"\\])*"|[^\s();"]+')
 IDENTIFIER = re.compile(r"[A-Za-z_][A-Za-z0-9_']*|\.")
 
@@ -277,7 +282,7 @@ def source_boundary(path, allowed_libraries, *, owner=None):
             raise BoundaryError(f"Unreviewed native/process/dynamic-code escape {token} in {path.name}")
         if token == "Sys":
             reviewed = {"argv"}
-            if owner in {"test:test_architecture_check", "test:test_source_transport", "test:test_architecture_producer", "test:test_construction_producer", "test:test_candidate_runtime_corpus", "test:test_component_runtime_corpus", "test:test_realization_foundation_corpus", "test:test_realization_checks_corpus", "test:test_component_acceptance_corpus", "test:test_synthetic_authority_corpus"}:
+            if owner in {"test:test_architecture_check", "test:test_source_transport", "test:test_architecture_producer", "test:test_construction_producer", "test:test_candidate_runtime_corpus", "test:test_component_runtime_corpus", "test:test_realization_foundation_corpus", "test:test_realization_checks_corpus", "test:test_component_acceptance_corpus", "test:test_synthetic_authority_corpus", "test:test_synthetic_acceptance_corpus"}:
                 # The test-only document corpus must reject undeclared files.
                 # Production code gains no filesystem or process permission.
                 reviewed.add("readdir")
@@ -351,6 +356,7 @@ def check_boundaries(root: Path):
                     "test_realization_checks_corpus": "%{env:BIOCOMPILER_REALIZATION_CHECKS_CORPUS=missing}",
                     "test_component_acceptance_corpus": "%{env:BIOCOMPILER_COMPONENT_ACCEPTANCE_CORPUS=missing}",
                     "test_synthetic_authority_corpus": "%{env:BIOCOMPILER_SYNTHETIC_AUTHORITY_CORPUS=missing}",
+                    "test_synthetic_acceptance_corpus": "%{env:BIOCOMPILER_SYNTHETIC_ACCEPTANCE_CORPUS=missing}",
                 }
                 expected_actions = ([["action", ["run", "%{test}", fixture_variables[name]]]]
                                     if name in fixture_variables else [])

@@ -880,6 +880,7 @@ jobs:
           BIOCOMPILER_REALIZATION_CHECKS_CORPUS="$GITHUB_WORKSPACE/tests/conformance/realization-checks-v1.json" \
           BIOCOMPILER_COMPONENT_ACCEPTANCE_CORPUS="$GITHUB_WORKSPACE/tests/conformance/component-acceptance-v1.json" \
           BIOCOMPILER_SYNTHETIC_AUTHORITY_CORPUS="$GITHUB_WORKSPACE/tests/conformance/synthetic-authority-v1.json" \
+          BIOCOMPILER_SYNTHETIC_ACCEPTANCE_CORPUS="$GITHUB_WORKSPACE/tests/conformance/synthetic-acceptance-v1.json" \
             opam exec -- dune runtest --root core
       - name: Check retained request, behavior and coordinate domain corpora
         if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
@@ -979,6 +980,9 @@ jobs:
       - name: Check complete synthetic candidate and catalog authority corpus
         if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
         run: core/_build/default/test/test_synthetic_authority_corpus.exe "$GITHUB_WORKSPACE/tests/conformance/synthetic-authority-v1.json" | tee generated/core/test_synthetic_authority_corpus.txt
+      - name: Independently check complete synthetic candidate and component assembly corpus
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_synthetic_acceptance_corpus.exe "$GITHUB_WORKSPACE/tests/conformance/synthetic-acceptance-v1.json" | tee generated/core/test_synthetic_acceptance_corpus.txt
       - name: Check cross-language bytes, structural intent and independent lowering correspondence
         if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
         env:

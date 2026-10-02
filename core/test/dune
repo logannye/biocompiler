@@ -358,3 +358,24 @@
  (modules test_synthetic_authority_corpus)
  (libraries bioc_wire bioc_domain zarith)
  (action (run %{test} %{env:BIOCOMPILER_SYNTHETIC_AUTHORITY_CORPUS=missing})))
+
+(test
+ (name test_synthetic_candidate_check)
+ (modules test_synthetic_candidate_check)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_realization_checker zarith))
+
+(test
+ (name test_synthetic_provenance)
+ (modules test_synthetic_provenance)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_realization_checker zarith))
+
+(test
+ (name test_component_assembly_check)
+ (modules test_component_assembly_check)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_realization_checker zarith))
+
+(test
+ (name test_synthetic_acceptance_corpus)
+ (modules test_synthetic_acceptance_corpus)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_realization_checker zarith)
+ (action (run %{test} %{env:BIOCOMPILER_SYNTHETIC_ACCEPTANCE_CORPUS=missing})))
