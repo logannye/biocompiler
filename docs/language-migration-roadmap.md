@@ -4,15 +4,29 @@ Created: 2026-10-01, America/Los_Angeles.
 
 **Decision:** TypeScript for Studio; Python for authoring, orchestration and scientific exploration; OCaml for the semantic compiler, independent checking and canonical emission.
 
-**GitHub preservation checkpoint, 2026-10-02:** PR57–68 retain the current
-migration work. Their full exact-revision gates remain required before merging.
-The latest audit found missing fixture environment bindings in the complete
-native-suite invocation and a 21,423,948-byte unit plan exceeding its reader's
-20 MB limit. The corrections preserve every original suite and observation.
-Persistent sessions remain unimplemented; the initial interface/framing draft is
-preserved in [the nonexecutable scaffold](migration-pipeline-session-scaffold.md).
-Resume at LM-25 P2 after checking the current hosted runs; do not treat a pushed
-checkpoint or this saved draft as completed migration or release acceptance.
+**Resumed migration checkpoint, 2026-10-02:** PR57 and PR58 passed all 36
+exact-head jobs and are merged. Independent aggregate reconstruction, both
+platform binary manifests and all four full artifact comparisons reproduce their
+hosted receipts. Source, tested and integrated trees are identical; see the
+[protocol/workflow validation record](../protocol/migration-realization-protocol-workflow-validation.json).
+Later PR59–68 still require successful corrected gates. The resumed session
+implementation is additive source work with Python process tests; native
+compilation, installed replay and full public-manager integration remain pending.
+The [archived scaffold](migration-pipeline-session-scaffold.md) records the earlier
+credit-limit draft, not the current implementation status.
+
+- [x] **LM-03/12 realization protocol hosted checkpoint (PR57):** run
+  `36987943622`, source `41ab0f99375d7293a4b86c28da1cd5408b7376c0`,
+  integrated `71c56d2fc2eecbdb9efbb3da1e9d82a25c8b4e22`: all 36 jobs,
+  2,505 tests per Python version, 6,719 protocol and 4,157 SDK checks per role,
+  complete four-runtime equality and rehashed native executable authority.
+- [x] **LM-03/25 workflow engine hosted checkpoint (PR58):** run
+  `36987950690`, source `241bd423b3b1b877d03c2a556b325994ffe8633b`,
+  integrated `15c58934619909d5a8b97e1aa1f3cc556b010c3d`: all 36 jobs,
+  2,528 tests per Python version and the complete native workflow engine corpus.
+  Descriptor service, installed public routing and export integration remain open.
+- [ ] **LM-03 PR57/58 separate integrated-main runs:** their merge trees equal
+  the tested trees, but the new main push runs remain a separate pending gate.
 
 - [x] **LM-03 CI native fixture wiring:** bind every registered Dune fixture in
   the complete native-suite step and add an exhaustive source regression.
@@ -20,10 +34,15 @@ checkpoint or this saved draft as completed migration or release acceptance.
   readers/writers while retaining 20 MB limits for other shard JSON. The focused
   campaign passes 33 tests, including a complete plan exceeding 20 MB, exact
   byte boundaries, atomic writer failure and full plan/run/accounting traversal.
+- [x] **LM-03 resumed gate corrections:** the exact earliest leaf diagnostic,
+  complete eight-operation inspection census and individually pinned unused CLI
+  transport source lineage are corrected and pushed across PR59–68. All original
+  CLI children and full source/artifact comparisons remain required.
+  [Exact corrected heads](../protocol/migration-resume-gate-corrections.json).
 - [ ] **LM-03 corrected hosted acceptance:** require all 36 jobs on the corrected
   heads, including full unit accounting and both native platforms, before merge.
 
-**Status:** the default remains Python; explicit architecture SDK/CLI selection uses the validated OCaml core. PR48–56 have completed their exact-revision gates and are integrated (PR52 through PR53). PR57–65 preserve realization protocol/routing, full workflow engines and services, public workflow routes, synthetic producers, installed SDK/CLI integration and rich native inspection; their complete current-revision gates remain pending. The current P2 checkpoint implements native checked-manager contracts, lifecycle authority and fixed synthetic/component pipelines, with complete original Python captures retained and hosted native validation pending. Distribution, remaining profiles, public native pipeline/package authority and default cutover remain open.
+**Status:** the default remains Python; explicit architecture SDK/CLI selection uses the validated OCaml core. PR48–58 have completed their exact-revision gates and are integrated (PR52 through PR53). PR59–65 preserve descriptor workflow services, public workflow routes, synthetic producers, installed SDK/CLI integration and rich native inspection; their complete corrected-revision gates remain pending. The current P2 checkpoint implements native checked-manager contracts, lifecycle authority and fixed synthetic/component pipelines, with complete original Python captures retained and hosted native validation pending. Distribution, remaining profiles, public native pipeline/package authority and default cutover remain open.
 
 The validated foundation is merged in [PR37](https://github.com/logannye/biocompiler/pull/37), with the exact revision/platform results in the [foundation receipt](../protocol/migration-foundation-validation.json). Typed request, all 42 Behavior operations and molecular-coordinate domains are merged in [PR38](https://github.com/logannye/biocompiler/pull/38); the [domain receipt](../protocol/migration-domain-validation.json) records both native platforms and full Python/integration checks. Both integrated main revisions also passed their required gates.
 
@@ -825,6 +844,34 @@ record current parent heads; previous partial native passes are historical only.
   [session design](migration-pipeline-sessions.md). Preserve producer identity,
   fresh native manager authority and all original public workflows. The hook
   alone does not close generic callback compatibility or session integration.
+
+- [x] **LM-25 P2 persistent-session source checkpoint:** Core-only framed
+  service retains one real native manager, partial logical-error state, immutable
+  build artifacts and stable process-local provider identities. Exact hello,
+  sequence and request-byte binding share one lifetime work/byte/retention
+  budget. Reduced limits include already-consumed hello work and prepaid terminal
+  capacity. Malformed frames, identity failures, resource exhaustion and internal
+  errors close authority. Separate Verify remains free of session/producer linkage.
+- [x] **LM-12 P2 Python session transport checkpoint:** 27 new real Python
+  subprocess/codec tests plus all 18 direct-client tests pass; strict typing
+  passes for all 17 adapter modules. Tests cover partial I/O, process ownership
+  after fork, cancellation/reaping, immutable byte receipts, logical-error
+  continuation and cumulative limits. These are Python subprocess fixtures,
+  not native execution or original public API compatibility.
+- [x] **LM-03 P2 complete session campaign harness:** 11 Python integrity,
+  mutation and subprocess tests pass. The hosted driver retains 1,493 complete
+  manager-state observations, 17 malformed/framing/lifecycle process probes and
+  actual Verify rejection, alongside all original fixed calls and continuations.
+  The four-runtime comparator rehashes every frame and full artifact against
+  current source/run/executable authority. [Source checkpoint and pending gates](../protocol/migration-pipeline-session-checkpoint.json).
+- [ ] **LM-03/25 P2 session hosted acceptance:** the 98th native suite and
+  four installed campaigns must compile and pass on both hosted platforms.
+  Reexecute all 126 eligible original fixed calls, 121 boundary rechecks and
+  563 supported continuations against actual live managers, retaining every
+  complete artifact/state/error and process identity. Original source/corpus
+  bytes stay pinned; ten excluded calls and 287 callback-dependent observations
+  remain explicit pending coverage. Full public typed manager routes, generic
+  callback continuations, 64 MiB artifacts and default cutover remain open.
 
 - [x] **LM-03 CI harness correction checkpoint:** the installed architecture
   guard now permits only the exact new parser-registration helpers while rejecting

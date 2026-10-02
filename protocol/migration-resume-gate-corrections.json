@@ -1,0 +1,253 @@
+{
+  "schema_version": "biocompiler.migration_gate_corrections.v1",
+  "status": "pushed_exact_corrected_revision_validation_pending",
+  "native_local_execution": false,
+  "original_corpus_and_freezers_changed": false,
+  "corrections": [
+    "Preserve exact earliest cumulative leaf output-budget diagnostic",
+    "Include all eight rich inspection operations and scopes in producer capability census",
+    "Permit only individually pinned unused source additions and exactly archived unused backend source replacement; preserve all72 full original CLI observations"
+  ],
+  "branches": [
+    {
+      "pr": 59,
+      "branch": "codex/ocaml-workflow-service",
+      "previous_head": "f0b7b602d09cc2441dfe466fe135658a005d7d83",
+      "merged_parent": null,
+      "source_head": "65f38969673337de3b6378a8486c26c7f6f72c78",
+      "tree": "4b979c8cb8e58b2d6f491cf4187bed29046d7c3f",
+      "proof_sha256": "491947fef2c7f16dfc4f3296e01ecc0a971feec8d0527fe6564b888531f31d1f",
+      "files": [
+        "tests/test_native_workflow_campaign.py",
+        "tools/check_native_workflow.py"
+      ],
+      "pushed": true,
+      "remote_ref_verified": true,
+      "pr_head_verified": true,
+      "github_state": {
+        "baseRefName": "codex/ocaml-realization-workflows",
+        "headRefOid": "65f38969673337de3b6378a8486c26c7f6f72c78",
+        "mergeable": "MERGEABLE",
+        "state": "OPEN"
+      }
+    },
+    {
+      "pr": 60,
+      "branch": "codex/ocaml-workflow-public-checkpoint",
+      "previous_head": "9f5a042badfc1f27ab40e5a180cd6b39764ca780",
+      "merged_parent": "65f38969673337de3b6378a8486c26c7f6f72c78",
+      "source_head": "5c55ce2c01edc878cae36b8124146b5ad350b7aa",
+      "tree": "4a292a5cf705a211d129077b7ceed3a1ae4eefc9",
+      "proof_sha256": "fb9650b165c9aea6e11fbbe04aca282c4cc1d9edb72ca342cddc3c382042c9c9",
+      "files": [
+        "tests/test_native_workflow_campaign.py",
+        "tools/check_native_workflow.py"
+      ],
+      "pushed": true,
+      "remote_ref_verified": true,
+      "pr_head_verified": true,
+      "github_state": {
+        "baseRefName": "codex/ocaml-workflow-service",
+        "headRefOid": "5c55ce2c01edc878cae36b8124146b5ad350b7aa",
+        "mergeable": "MERGEABLE",
+        "state": "OPEN"
+      }
+    },
+    {
+      "pr": 61,
+      "branch": "codex/ocaml-workflow-public-routing",
+      "previous_head": "b3f059c885bdf9cbd6e2693b9adf521c42b198e0",
+      "merged_parent": "5c55ce2c01edc878cae36b8124146b5ad350b7aa",
+      "source_head": "076893a723d7e3d51b74f96984af3042b01895d0",
+      "tree": "239c5856e7866110ad0d6b673a1e85bba48133e4",
+      "proof_sha256": "9716145df45349f3353480e75060e320b1929c0138d36387d32dc925ee4ac1b8",
+      "files": [
+        "tests/test_native_workflow_campaign.py",
+        "tools/check_native_workflow.py"
+      ],
+      "pushed": true,
+      "remote_ref_verified": true,
+      "pr_head_verified": true,
+      "github_state": {
+        "baseRefName": "codex/ocaml-workflow-public-checkpoint",
+        "headRefOid": "076893a723d7e3d51b74f96984af3042b01895d0",
+        "mergeable": "MERGEABLE",
+        "state": "OPEN"
+      }
+    },
+    {
+      "pr": 62,
+      "branch": "codex/ocaml-synthetic-producer-service",
+      "previous_head": "21a6e6f27316f3d1c83c64c7480c54d80e68be31",
+      "merged_parent": "076893a723d7e3d51b74f96984af3042b01895d0",
+      "source_head": "cfd1cffb1070a1538e6ef275b9809b55d3ffa4d5",
+      "tree": "1fd16680eb682234027773585c400d5ad53866fa",
+      "proof_sha256": "1bc392e8449ddc7885538075b3f52b68935995cc82bc0d4b3805800d2b2d2f46",
+      "files": [
+        "tests/test_native_workflow_campaign.py",
+        "tools/check_native_workflow.py"
+      ],
+      "pushed": true,
+      "remote_ref_verified": true,
+      "pr_head_verified": true,
+      "github_state": {
+        "baseRefName": "codex/ocaml-workflow-public-routing",
+        "headRefOid": "cfd1cffb1070a1538e6ef275b9809b55d3ffa4d5",
+        "mergeable": "MERGEABLE",
+        "state": "OPEN"
+      }
+    },
+    {
+      "pr": 63,
+      "branch": "codex/ocaml-public-synthetic-producers",
+      "previous_head": "8ea27c24e58a1e36200e6d1fdc2803166711bdcf",
+      "merged_parent": "cfd1cffb1070a1538e6ef275b9809b55d3ffa4d5",
+      "source_head": "961f503114f5389a20e444558e0bb833c494dc7b",
+      "tree": "ebdd81cea2c966ebde586ca47a8b0f637d87c585",
+      "proof_sha256": "6b59aa940ea3e5eca3c702de1a1c5a94e836fcb16b13d8bf942914723efa0be9",
+      "files": [
+        "tests/test_native_workflow_campaign.py",
+        "tools/check_native_workflow.py"
+      ],
+      "pushed": true,
+      "remote_ref_verified": true,
+      "pr_head_verified": true,
+      "github_state": {
+        "baseRefName": "codex/ocaml-synthetic-producer-service",
+        "headRefOid": "961f503114f5389a20e444558e0bb833c494dc7b",
+        "mergeable": "MERGEABLE",
+        "state": "OPEN"
+      }
+    },
+    {
+      "pr": 64,
+      "branch": "codex/ocaml-synthetic-public-integration",
+      "previous_head": "4bed86e7c3639b74b14cd88edfcc3120815f5a11",
+      "merged_parent": "961f503114f5389a20e444558e0bb833c494dc7b",
+      "source_head": "669f0a714898cd4279b7db5ebe926402d8c6792a",
+      "tree": "5cb39c06e782be401bb9de7b72f7f1d23a0c36c4",
+      "proof_sha256": "b757f8c7d4903eaef293ce0454ba0717da32c2b619f587e4e8bfd7d8889c3155",
+      "files": [
+        "tests/test_native_workflow_campaign.py",
+        "tools/check_native_workflow.py"
+      ],
+      "pushed": true,
+      "remote_ref_verified": true,
+      "pr_head_verified": true,
+      "github_state": {
+        "baseRefName": "codex/ocaml-public-synthetic-producers",
+        "headRefOid": "669f0a714898cd4279b7db5ebe926402d8c6792a",
+        "mergeable": "MERGEABLE",
+        "state": "OPEN"
+      }
+    },
+    {
+      "pr": 65,
+      "branch": "codex/ocaml-synthetic-inspection",
+      "previous_head": "6ebbc15b3938304db99b62cc10df4a702614cbed",
+      "merged_parent": "669f0a714898cd4279b7db5ebe926402d8c6792a",
+      "source_head": "4739702730623c9af7f872ef64c4e09cff16aafa",
+      "tree": "9d63cb18e81afdf2a2eb939bc3640e680b48bbbd",
+      "proof_sha256": "a6abfe5218c9dc55a01ffbf8f0e4c2f0d89e57997723f61ab5592715b2169612",
+      "files": [
+        "core/test/test_producer_protocol.ml",
+        "protocol/migration-inventory.json",
+        "protocol/synthetic-selection-unused-transport-lineage-v1.json",
+        "tests/test_native_workflow_campaign.py",
+        "tests/test_synthetic_selection_cli_capture.py",
+        "tools/check_native_workflow.py",
+        "tools/check_synthetic_selection_cli_corpus.py"
+      ],
+      "pushed": true,
+      "remote_ref_verified": true,
+      "pr_head_verified": true,
+      "github_state": {
+        "baseRefName": "codex/ocaml-synthetic-public-integration",
+        "headRefOid": "4739702730623c9af7f872ef64c4e09cff16aafa",
+        "mergeable": "MERGEABLE",
+        "state": "OPEN"
+      }
+    },
+    {
+      "pr": 66,
+      "branch": "codex/ocaml-checked-pass-manager",
+      "previous_head": "76044ec673f4bd9de4dc5f2345d864fecfdb1a86",
+      "merged_parent": "4739702730623c9af7f872ef64c4e09cff16aafa",
+      "source_head": "c135ec92ea5bb0b2bda388f2839a913f1f6ed7eb",
+      "tree": "955d1ac33b2b86e29235fe477eadb0f25246a0fc",
+      "proof_sha256": "81b74f4854633ebdbfc1b86e49817a4c530369e65adee6d3702f05928377d0e0",
+      "files": [
+        "core/test/test_producer_protocol.ml",
+        "protocol/migration-inventory.json",
+        "protocol/synthetic-selection-unused-transport-lineage-v1.json",
+        "tests/test_native_workflow_campaign.py",
+        "tests/test_synthetic_selection_cli_capture.py",
+        "tools/check_native_workflow.py",
+        "tools/check_synthetic_selection_cli_corpus.py"
+      ],
+      "pushed": true,
+      "remote_ref_verified": true,
+      "pr_head_verified": true,
+      "github_state": {
+        "baseRefName": "codex/ocaml-synthetic-inspection",
+        "headRefOid": "c135ec92ea5bb0b2bda388f2839a913f1f6ed7eb",
+        "mergeable": "MERGEABLE",
+        "state": "OPEN"
+      }
+    },
+    {
+      "pr": 67,
+      "branch": "codex/ocaml-fixed-checked-pipelines",
+      "previous_head": "86a77798445c4ba0fa0950356d7ff211c3f0753c",
+      "merged_parent": "c135ec92ea5bb0b2bda388f2839a913f1f6ed7eb",
+      "source_head": "947c709012cda0941bdc13cf94e0bf7910714d24",
+      "tree": "0fa78188173fc0cffb2414f4c17604e2034bafaf",
+      "proof_sha256": "e6eb747e37142e3284ef46e35106f9d57268223b2cdbb54408db6871a73511f1",
+      "files": [
+        "core/test/test_producer_protocol.ml",
+        "protocol/migration-inventory.json",
+        "protocol/synthetic-selection-unused-transport-lineage-v1.json",
+        "tests/test_native_workflow_campaign.py",
+        "tests/test_synthetic_selection_cli_capture.py",
+        "tools/check_native_workflow.py",
+        "tools/check_synthetic_selection_cli_corpus.py"
+      ],
+      "pushed": true,
+      "remote_ref_verified": true,
+      "pr_head_verified": true,
+      "github_state": {
+        "baseRefName": "codex/ocaml-checked-pass-manager",
+        "headRefOid": "947c709012cda0941bdc13cf94e0bf7910714d24",
+        "mergeable": "MERGEABLE",
+        "state": "OPEN"
+      }
+    },
+    {
+      "pr": 68,
+      "branch": "codex/ocaml-provider-comparison",
+      "previous_head": "addac55b3209b8cbce9dfe29d54b67a3e51b34ed",
+      "merged_parent": "947c709012cda0941bdc13cf94e0bf7910714d24",
+      "source_head": "f322d8030a819bae7a9ebfd59c06511ac9042152",
+      "tree": "49c1622da45f2fa81e595c40c6cda4282adc67b4",
+      "proof_sha256": "3510586b50fb9b9cf07ca2054a036bb3f6013e5c29d7146b66ab6a5daee5ddfe",
+      "files": [
+        "core/test/test_producer_protocol.ml",
+        "protocol/migration-inventory.json",
+        "protocol/synthetic-selection-unused-transport-lineage-v1.json",
+        "tests/test_native_workflow_campaign.py",
+        "tests/test_synthetic_selection_cli_capture.py",
+        "tools/check_native_workflow.py",
+        "tools/check_synthetic_selection_cli_corpus.py"
+      ],
+      "pushed": true,
+      "remote_ref_verified": true,
+      "pr_head_verified": true,
+      "github_state": {
+        "baseRefName": "codex/ocaml-fixed-checked-pipelines",
+        "headRefOid": "f322d8030a819bae7a9ebfd59c06511ac9042152",
+        "mergeable": "MERGEABLE",
+        "state": "OPEN"
+      }
+    }
+  ]
+}

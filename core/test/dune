@@ -500,3 +500,8 @@
  (modules test_provider_comparison)
  (libraries bioc_wire bioc_domain bioc_checker bioc_compiler zarith)
  (action (run %{test} %{env:BIOCOMPILER_PIPELINE_CALLBACK_SEMANTICS=missing})))
+(test
+ (name test_pipeline_session)
+ (modules test_pipeline_session)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_compiler bioc_pipeline_service zarith)
+ (action (run %{test} %{env:BIOCOMPILER_PIPELINE_SESSION_DECLARATION=missing} %{env:BIOCOMPILER_FIXED_PIPELINE_CORPUS=missing})))
