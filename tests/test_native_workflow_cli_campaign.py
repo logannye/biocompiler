@@ -51,7 +51,10 @@ class NativeWorkflowCliCampaignTests(unittest.TestCase):
                     "--verify-executable", "/installed/biocompiler-" + role, "--core-sha256",
                     native["sha256"]["biocompiler-" + role], "--core-timeout", "300"]
                 row = {key: copy_content(old[key]) for key in ("id", "entrypoint", "fault", "lineage",
-                    "files_before", "files_after", "exit_code", "stdout", "stderr")}
+                    "files_before", "files_after", "exit_code")}
+                observed = c.runtime.workflow().expected(old, {"exit_code": old["exit_code"],
+                    **{field: c.f.restore(old[field], self.old_blobs) for field in ("stdout", "stderr")}}, python)
+                row.update({field: store.retain(observed[field]) for field in ("stdout", "stderr")})
                 row.update(role=role, scope=scope, argv=[old["argv"][0], *flags, *old["argv"][1:]],
                     console_path="/installed/bin/biocompiler", python_executable="/installed/bin/python3",
                     native_artifacts={})
@@ -149,6 +152,32 @@ class NativeWorkflowCliCampaignTests(unittest.TestCase):
                        lambda value: value["product_sources"].update({"src/biocompiler/cli.py": "0" * 64})):
             value = deepcopy(receipt); mutate(value)
             with self.assertRaises(AssertionError): self.validate(value, blobs)
+
+    def test_runtime_counterpart_preserves_actual_bytes_and_rejects_rehashed_wrong_runtime(self):
+        projections = []
+        for python, other in (("3.11", "3.14"), ("3.14", "3.11")):
+            receipt, blobs = self.fixture_receipt(python=python)
+            before = deepcopy(receipt)
+            projections.append(self.validate(receipt, blobs))
+            self.assertEqual(receipt, before)
+            row = next(row for row in receipt["checks"] if row["id"] == "unknown-flag")
+            old = next(row for row in self.original["cases"] if row["id"] == "unknown-flag")
+            wrong = c.runtime.workflow().expected(old, {"exit_code": old["exit_code"],
+                **{field: c.f.restore(old[field], self.old_blobs) for field in ("stdout", "stderr")}}, other)
+            # Replace both role occurrences and remove the unused old blob so
+            # rejection must concern content, not an orphan artifact inventory.
+            changed, content = deepcopy(receipt), dict(blobs)
+            content.pop(row["stderr"]["sha256"])
+            store = c.f.Store(); replacement = store.retain(wrong["stderr"]); content.update(store.blobs)
+            for item in changed["checks"]:
+                if item["id"] == "unknown-flag": item["stderr"] = replacement
+            with self.assertRaisesRegex(AssertionError, "Complete CLI stderr differs"):
+                self.validate(changed, content)
+            for version in ("3.12.1", "3.13.1", "4.0.0", "3.11.invalid"):
+                changed = deepcopy(receipt); changed["python_version"] = version
+                with self.assertRaisesRegex(AssertionError, "CLI Python runtime"):
+                    self.validate(changed, blobs)
+        self.assertEqual(projections[0], projections[1])
 
     def test_all_four_variants_rehash_binaries_and_reject_stale_or_missing_receipts(self):
         with tempfile.TemporaryDirectory() as directory:
