@@ -64,6 +64,16 @@ def authored(count=2,kind='and',scope='environment',direct=False,parameter=False
     binding=PayloadCircuitBinding('r',rule.id,rule.inputs[2],{'i'+str(i):ref.node_id for i,ref in enumerate(refs)})
     return portable(source),(requirement,),(binding,)
 
+def portable_requirement(requirement):
+    raw=requirement.to_dict()
+    location=raw['source_location']
+    if location is not None:
+        location=dict(location)
+        path=Path(location['file'])
+        if path.is_absolute(): location['file']=path.resolve().relative_to(ROOT).as_posix()
+        raw=dict(raw,source_location=location)
+    return CircuitRequirement.from_dict(raw)
+
 def build_corpus():
     documents,records,rejections,checks,literals={},[],[],[],[]
     def doc(raw):
@@ -80,7 +90,7 @@ def build_corpus():
         rejections.append(dict(id=identity,document=doc(raw),expected_code=code))
     def check(identity,source,requirements,bindings,expected=None):
         source=portable(source)
-        requirements=tuple(CircuitRequirement.from_dict(x.to_dict()) for x in requirements)
+        requirements=tuple(portable_requirement(x) for x in requirements)
         bindings=tuple(PayloadCircuitBinding.from_dict(x.to_dict()) for x in bindings)
         result=_check_circuit_bindings(context(source,requirements,bindings))
         if expected is not None: assert result==expected,(identity,result,expected)

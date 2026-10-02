@@ -9,7 +9,7 @@ from biocompiler.ir.serialization import fingerprint
 PATH=Path(__file__).resolve().parents[1]/'tools/freeze_circuit_bindings.py'
 SPEC=importlib.util.spec_from_file_location('circuit_bindings_campaign',PATH)
 campaign=importlib.util.module_from_spec(SPEC);SPEC.loader.exec_module(campaign)
-EXPECTED='eb5f4d4693cd8c1f1d722a9d56b89d4ea5df9ec0588ac351112b98377a4f3e32'
+EXPECTED='e2fc5cdebb0867269483d3f3da58433221d681f6b9a0585d8eb45a5d0281852a'
 
 def validate(corpus):
     assert corpus['inventory_sha256']==campaign.inventory(corpus)==EXPECTED,'Binding inventory/signature drift'
@@ -103,12 +103,23 @@ class CircuitBindingsCorpusTests(unittest.TestCase):
         with self.assertRaises(AssertionError): validate(changed)
 
     def test_whole_fixture_bounded_including_keys_and_utf8(self):
-        pending=[(self.corpus,0)];count=0;depth_max=0
+        pending=[(self.corpus,0)];count=0;depth_max=0;locations=[]
         while pending:
             value,depth=pending.pop();count+=1;depth_max=max(depth_max,depth)
-            if isinstance(value,dict): pending.extend((item,depth+1) for pair in value.items() for item in pair)
+            if isinstance(value,dict):
+                if set(value)=={'file','line','function'}:
+                    self.assertFalse(Path(value['file']).is_absolute())
+                    locations.append(value)
+                pending.extend((item,depth+1) for pair in value.items() for item in pair)
             elif isinstance(value,list): pending.extend((item,depth+1) for item in value)
             elif isinstance(value,str): self.assertLessEqual(len(value.encode()),4*1024*1024)
         self.assertLess(count,250000);self.assertLessEqual(depth_max,128);self.assertLess(len(self.content),16*1024*1024)
+        self.assertIn({'file':'tools/freeze_circuit_bindings.py','line':62,'function':'authored'},locations)
+        self.assertIn({'file':'examples/executable_payload.py','line':157,'function':'make_payload_request'},locations)
+        original=self.corpus['documents'][self.checks['predicate/2/and']['requirements'][0]]
+        absolute=deepcopy(original)
+        absolute['source_location']['file']=str(campaign.ROOT/original['source_location']['file'])
+        rebuilt=campaign.portable_requirement(campaign.CircuitRequirement.from_dict(absolute)).to_dict()
+        self.assertEqual(rebuilt,original)  # Only the checkout prefix may change.
 
 if __name__=='__main__':unittest.main()

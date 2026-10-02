@@ -101,7 +101,7 @@ let retained path =
   and checks = Json.array (field "checks" corpus) in
   require (List.length records=5 && List.length failures=31 && List.length checks=53) "Circuit binding exact census drift";
   let inventory = obj (List.map (fun key -> key,field key corpus) ["records";"rejections";"checks";"literal_expectations";"compatibility"]) in
-  let expected = "eb5f4d4693cd8c1f1d722a9d56b89d4ea5df9ec0588ac351112b98377a4f3e32" in
+  let expected = "e2fc5cdebb0867269483d3f3da58433221d681f6b9a0585d8eb45a5d0281852a" in
   require (Canonical.fingerprint inventory = expected && field "inventory_sha256" corpus = str expected) "Binding full inventory or intended signatures drift";
   List.iter (fun rows -> let ids = List.map (fun item -> Json.string (field "id" item)) rows in
     require (List.length ids = List.length (List.sort_uniq String.compare ids)) "Duplicate binding fixture ID") [records;failures;checks];
