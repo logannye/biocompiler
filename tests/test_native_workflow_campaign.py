@@ -98,6 +98,25 @@ class WorkflowProjectionTests(unittest.TestCase):
         self.assertEqual(malformed["retained"], b'{"unfinished":')
         self.assertEqual(malformed["error"]["code"], "lowering_source_identity")
 
+    def test_reduced_output_budget_preserves_earliest_leaf_diagnostic(self):
+        case = next(case for case in self.cases if case["id"] == "boundary/output-one-under")
+        base = next(item["expected"] for item in self.corpus.supplement["cases"] if item["name"] == "candidate_pass")
+        self.assertEqual(case["limits"]["max_report_bytes"], len(campaign.canonical(base)) - 1)
+        self.assertEqual(case["error"], {"code": "realization_report_limit", "message":
+            "Cumulative ASCII evidence publication exceeds its byte budget.", "path": None})
+        # The nested provenance checker reserves these complete documents before
+        # outer publication. This lower bound excludes dependency envelopes,
+        # repeated map updates and extra separators, so it cannot overstate the
+        # actual cumulative reservation. Inputs are the unchanged frozen literal.
+        candidate = base["request"]["candidate"]
+        size = lambda value: len(json.dumps(value, ensure_ascii=True, sort_keys=True,
+            separators=(",", ":")).encode("ascii"))
+        lower_bound = sum(size(value) for value in (candidate, candidate["mechanism"],
+            candidate["observation_map"], candidate["source_map"], candidate["behavior_requirement_ids"]))
+        lower_bound += sum(size(value) + 1 for value in candidate["mechanism"]["nodes"])
+        lower_bound += sum(size(value) + 1 for value in candidate["component_locks"])
+        self.assertGreater(lower_bound, case["limits"]["max_report_bytes"])
+
     def test_inventory_profile_and_full_document_tampering_are_rejected(self):
         corpus = campaign.Corpus()
         row = next(context for context in corpus.index["contexts"] if context["api_calls"])
