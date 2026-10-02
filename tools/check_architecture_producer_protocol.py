@@ -30,7 +30,7 @@ CORPUS_PIN = "269e64293c36d52a5ad797c5c2808e52b0072e520992ade9bfa9f5de97dff90a"
 INSTALLED = ("A", "B", "C", "D", "E", "F", "automatic_timing", "automatic_b", "automatic_f",
              "memory_reset", "state_reset", "production_adjustment", "activity_control")
 ORIGINAL = ("base", "parameter-default", "parameter-override")
-EXPECTED_CHECKS = 60
+EXPECTED_CHECKS = 62
 TRANSPORT_MODULES = frozenset(("biocompiler.core_client", "biocompiler.core_architecture",
                                "biocompiler.core_architecture_producer"))
 
@@ -117,15 +117,27 @@ class Corpus:
         return selected
 
 
-def mutations(request, build):
-    """Keep well-formed candidates and original embedded PASS records untrusted."""
-    stale = deepcopy(request)
-    stale["library"]["assumptions"].append("Changed independently supplied architecture assumption.")
+def malformed_mutation(request, build):
+    """Retain the original stale-role-pin decoder rejection independently."""
     changed = deepcopy(build)
     molecule = changed["construction"]["candidate"]["bundle"]["molecules"][0]
     sequence = molecule["sequence"]
     require(sequence and set(sequence) <= set("ACGU"), "Mutation fixture must have exact RNA bases")
     molecule["sequence"] = ("A" if sequence[0] != "A" else "C") + sequence[1:]
+    return "malformed-emitted-base", deepcopy(request), changed
+
+
+def mutations(request, build):
+    """Rehash structural pins without granting authority to the retained PASS."""
+    stale = deepcopy(request)
+    stale["library"]["assumptions"].append("Changed independently supplied architecture assumption.")
+    _, _, changed = malformed_mutation(request, build)
+    candidate = changed["construction"]["candidate"]
+    molecule = candidate["bundle"]["molecules"][0]
+    for role in candidate["bundle"]["role_instances"]:
+        if role["subject_id"] == molecule["id"]:
+            role["subject_fingerprint"] = digest(molecule)
+    changed["construction"]["assessment"]["candidate_fingerprint"] = digest(candidate)
     return (("changed-original-authority", stale, deepcopy(build)),
             ("changed-emitted-base", deepcopy(request), changed))
 
@@ -233,6 +245,11 @@ def campaign(core, verify, corpus, receipt):
         _rejection(core, "export-architecture", {"expected_request": changed_request, "build": changed_build},
                    "architecture_export_rejected")
         checks.append({"role": "core", "id": name, "operation": "export-architecture", "error": "architecture_export_rejected"})
+
+    name, changed_request, changed_build = malformed_mutation(request, build)
+    for transport, operation in ((verify, "verify-architecture"), (core, "export-architecture")):
+        _rejection(transport, operation, {"expected_request": changed_request, "build": changed_build}, "invalid_molecule_set")
+        checks.append({"role": transport.role, "id": name, "operation": operation, "error": "invalid_molecule_set"})
 
     for operation, payload in (("compile-architecture", {"request": request}),
                                ("export-architecture", {"expected_request": request, "build": build})):

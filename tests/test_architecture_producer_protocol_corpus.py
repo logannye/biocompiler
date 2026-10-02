@@ -10,7 +10,7 @@ import unittest
 
 from tools.check_architecture_producer_protocol import (
     CORPUS, CORPUS_PIN, EXPECTED_CHECKS, INSTALLED, ORIGINAL, Corpus,
-    digest, mutations, require_installed, transport_only,
+    digest, malformed_mutation, mutations, require_installed, transport_only,
 )
 
 
@@ -20,7 +20,7 @@ class ArchitectureProducerProtocolCorpusTests(unittest.TestCase):
         self.assertEqual(len(selected), len(INSTALLED) + len(ORIGINAL))
         self.assertEqual([item[0] for item in selected],
                          ["installed/" + value for value in INSTALLED] + ["case_b/" + value for value in ORIGINAL])
-        self.assertEqual(EXPECTED_CHECKS, 2 + 16 * 3 + 2 * 2 + 2 + 4)
+        self.assertEqual(EXPECTED_CHECKS, 2 + 16 * 3 + 2 * 2 + 2 + 2 + 4)
         for _prefix, compiled, exported, request, build in selected:
             self.assertEqual(digest(request), compiled["request"])
             self.assertEqual(digest(build), compiled["build"])
@@ -68,10 +68,35 @@ class ArchitectureProducerProtocolCorpusTests(unittest.TestCase):
         expected = build["construction"]["candidate"]["bundle"]["molecules"][0]["sequence"]
         self.assertEqual(len(actual), len(expected))
         self.assertEqual(sum(a != b for a, b in zip(actual, expected)), 1)
-        self.assertEqual(changed[2]["construction"]["assessment"], build["construction"]["assessment"])
+        actual_assessment = changed[2]["construction"]["assessment"]
+        expected_assessment = build["construction"]["assessment"]
+        self.assertEqual({key: value for key, value in actual_assessment.items() if key != "candidate_fingerprint"},
+                         {key: value for key, value in expected_assessment.items() if key != "candidate_fingerprint"})
+        self.assertEqual(actual_assessment["candidate_fingerprint"], digest(changed[2]["construction"]["candidate"]))
         self.assertEqual((request, build), (original_request, original_build))
         stale[2]["execution"]["ledger"].clear()
         self.assertTrue(corpus.document(case["build"])["execution"]["ledger"])
+
+    def test_coherent_base_mutant_passes_historical_codec_but_malformed_mutant_does_not(self):
+        from biocompiler.errors import SerializationError
+        from biocompiler.ir.architecture_build import PayloadArchitectureBuild
+        corpus = Corpus()
+        case = corpus.cases["installed/B/compile/0"]
+        request, build = (corpus.document(case[key]) for key in ("request", "build"))
+        _name, _request, changed = mutations(request, build)[1]
+        decoded = PayloadArchitectureBuild.from_dict(changed)
+        self.assertNotEqual(decoded.fingerprint, case["build"])
+        self.assertEqual(decoded.fingerprint, digest(changed))
+        self.assertEqual(decoded.construction.candidate.fingerprint, decoded.construction.assessment.candidate_fingerprint)
+        malformed = malformed_mutation(request, build)[2]
+        with self.assertRaisesRegex(SerializationError, "Missing or stale molecular role subject"):
+            PayloadArchitectureBuild.from_dict(malformed)
+        # The old malformed candidate remains byte-for-byte different only at
+        # the emitted sequence; historical pins and all PASS claims are intact.
+        changed_sequence = malformed["construction"]["candidate"]["bundle"]["molecules"][0]["sequence"]
+        malformed["construction"]["candidate"]["bundle"]["molecules"][0]["sequence"] = build["construction"]["candidate"]["bundle"]["molecules"][0]["sequence"]
+        self.assertNotEqual(changed_sequence, malformed["construction"]["candidate"]["bundle"]["molecules"][0]["sequence"])
+        self.assertEqual(malformed, build)
 
     def test_execution_guard_blocks_preimported_python_authority_and_restores_profiler(self):
         def probe():
