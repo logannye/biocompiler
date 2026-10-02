@@ -362,6 +362,10 @@ These checkpoints record narrower validated work; they do not complete a broad L
   22 complete artifact/fingerprint/byte literals, 74 original rejection witnesses
   and three constructor-order cases. Two new suites bring the required native
   total to 71; native execution and complete hosted product gates remain pending.
+  [PR54](https://github.com/logannye/biocompiler/pull/54) preserves this declaration
+  batch. Its first hosted build caught two ambiguous documentation comments;
+  correcting those annotations preserves strict warnings and leaves the full
+  replacement native/product gates required.
 - [ ] **B1.09e protocol exposure and public routing:** accept full external authority,
   freshly recompute complete results, and preserve every existing caller and
   export gate. The audited realization baseline contains 324 methods across 23

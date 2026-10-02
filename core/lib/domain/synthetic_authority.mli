@@ -9,7 +9,7 @@ val catalog_version : string
 val generator_version : string
 val model_runner_version : string
 val checker_version : string
-(** UTF-8 canonical bytes and key/value nodes, with cycle and spine checks.
+(* UTF-8 canonical bytes and key/value nodes, with cycle and spine checks.
     Both imports and constructors have the 16 MiB / 250,000 node ceiling. *)
 val measure : ?path:string -> ?maximum:int -> Bioc_wire.Json.t -> int * int
 module Component : sig
@@ -42,7 +42,7 @@ module Catalog : sig
   val version : t -> string
   val components : t -> Component.t list
   val for_operation : t -> string -> Component.t option
-  (** Sorted by mechanism node ID. Missing providers reject with
+  (* Sorted by mechanism node ID. Missing providers reject with
       [synthetic_catalog_operation], the wire equivalent of Python KeyError. *)
   val lock : t -> Mechanism.t -> Component_registry.Component_lock.t list
 end
