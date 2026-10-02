@@ -884,6 +884,10 @@ jobs:
           BIOCOMPILER_SYNTHETIC_ACCEPTANCE_CORPUS="$GITHUB_WORKSPACE/tests/conformance/synthetic-acceptance-v1.json" \
           BIOCOMPILER_SYNTHETIC_PRODUCERS_CORPUS="$GITHUB_WORKSPACE/tests/conformance/synthetic-producers-v1.json" \
           BIOCOMPILER_REALIZATION_WORKFLOW_CORPUS="$GITHUB_WORKSPACE/tests/conformance/realization-workflow-v1.json" \
+          BIOCOMPILER_CHECKED_PIPELINE_CORPUS="$GITHUB_WORKSPACE/tests/conformance/checked-pipeline-v1.json" \
+          BIOCOMPILER_PIPELINE_CONTRACT_LITERALS="$GITHUB_WORKSPACE/tests/conformance/pipeline-contract-literals-v1.json" \
+          BIOCOMPILER_SYNTHETIC_INSPECTION_DECLARATION="$GITHUB_WORKSPACE/protocol/synthetic-inspection-v1.json" \
+          BIOCOMPILER_SYNTHETIC_INSPECTION_FIXTURES="$GITHUB_WORKSPACE/tests/conformance/synthetic-inspection-supplemental-v1.json" \
             opam exec -- dune runtest --root core 2>&1 | tee generated/core/native-tests.txt
       - name: Retain native suite diagnostics before longer installed campaigns
         if: always()

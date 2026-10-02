@@ -218,6 +218,79 @@ class TestShardAccountingTests(unittest.TestCase):
             with self.assertRaises(sharding.ShardError):
                 sharding.read_json(path)
 
+    def test_complete_large_source_plan_roundtrips_and_executes_without_dropping_inventory(self):
+        found = fixture([[passing]])
+        # Model the growing content-addressed corpus with complete path/hash
+        # entries, not padding or a smaller substitute test inventory.
+        found.manifest["source_files"] = {
+            f"tests/conformance/checked-pipeline-v1/{index:064x}.json": "b" * 64
+            for index in range(120_000)
+        }
+        found.manifest["digest"] = sharding.digest({
+            key: value for key, value in found.manifest.items() if key != "digest"})
+        plan_path = self.root / "large-plan.json"
+        weights_path = self.root / "weights.json"
+        weights_path.write_text("{}")
+        result_path = self.root / "result.json"
+        accounting_path = self.root / "accounting.json"
+        with patch.object(sharding, "environment", return_value=ENV), \
+             patch.object(sharding, "discover", return_value=found), \
+             patch("sys.stdout", io.StringIO()), patch("sys.stderr", io.StringIO()):
+            self.assertEqual(sharding.main(["plan", "--shards", "1", "--weights", str(weights_path),
+                                           "--output", str(plan_path)]), 0)
+            self.assertGreater(plan_path.stat().st_size, sharding.JSON_MAX_BYTES)
+            self.assertLessEqual(plan_path.stat().st_size, sharding.PLAN_MAX_BYTES)
+            with self.assertRaisesRegex(sharding.ShardError, "input exceeds"):
+                sharding.read_json(plan_path)
+            saved = sharding.read_json(plan_path, max_bytes=sharding.PLAN_MAX_BYTES)
+            self.assertEqual(saved["discovery"], found.manifest)
+            sharding.validate_plan(saved, found, ENV)
+            self.assertEqual(sharding.main(["run", "--plan", str(plan_path), "--shard", "0",
+                                           "--output", str(result_path)]), 0)
+            self.assertEqual(sharding.main(["verify", "--plan", str(plan_path), "--result", str(result_path),
+                                           "--output", str(accounting_path)]), 0)
+        accounting = sharding.read_json(accounting_path)
+        self.assertEqual(accounting["executed_ids"], sorted(found.tests))
+        self.assertEqual(accounting["discovery_digest"], found.manifest["digest"])
+
+    def test_json_reader_and_atomic_writer_agree_at_exact_byte_boundary(self):
+        path = self.root / "bounded.json"
+        value = {"unicode": "é😀", "number": 1.0}
+        expected = (json.dumps(value, indent=2, sort_keys=True, allow_nan=False) + "\n").encode("utf-8")
+        sharding.write_json(path, value, max_bytes=len(expected))
+        self.assertEqual(path.read_bytes(), expected)
+        self.assertEqual(sharding.read_json(path, max_bytes=len(expected)), value)
+        with self.assertRaisesRegex(sharding.ShardError, "input exceeds"):
+            sharding.read_json(path, max_bytes=len(expected) - 1)
+        # A stale small stat result cannot bypass the actual bounded read.
+        with patch.object(Path, "stat") as metadata:
+            metadata.return_value.st_size = 0
+            with self.assertRaisesRegex(sharding.ShardError, "input exceeds"):
+                sharding.read_json(path, max_bytes=len(expected) - 1)
+        with self.assertRaisesRegex(sharding.ShardError, "output exceeds"):
+            sharding.write_json(path, value, max_bytes=len(expected) - 1)
+        self.assertEqual(path.read_bytes(), expected)
+        self.assertEqual(list(self.root.iterdir()), [path])
+
+    def test_plan_writer_and_reader_reject_the_same_oversized_plan(self):
+        found = fixture()
+        plan_path = self.root / "plan.json"
+        weights_path = self.root / "weights.json"
+        weights_path.write_text("{}")
+        sharding.write_json(plan_path, sharding.make_plan(found, ENV, 1))
+        original_size = plan_path.stat().st_size
+        output = self.root / "failure.json"
+        with patch.object(sharding, "PLAN_MAX_BYTES", original_size - 1), \
+             patch.object(sharding, "environment", return_value=ENV), \
+             patch.object(sharding, "discover", return_value=found), \
+             patch("sys.stdout", io.StringIO()), patch("sys.stderr", io.StringIO()):
+            self.assertEqual(sharding.main(["plan", "--shards", "1", "--weights", str(weights_path),
+                                           "--output", str(output)]), 1)
+            self.assertIn("output exceeds", sharding.read_json(output)["errors"][0])
+            self.assertEqual(sharding.main(["run", "--plan", str(plan_path), "--shard", "0",
+                                           "--output", str(output)]), 1)
+            self.assertIn("input exceeds", sharding.read_json(output)["errors"][0])
+
     def test_cli_re_discovers_for_runner_and_aggregator_and_writes_failure_receipt(self):
         found = fixture()
         plan_path = self.root / "plan.json"
