@@ -4,6 +4,8 @@
     correspondence to a synthetic generator or empirical biological behavior. *)
 val implementation_version : string
 type limits
+(* Every reduction is propagated to execution and generic composition linking;
+   both phases and actual reconstruction consume the same ancestor work. *)
 val make_limits : ?max_work:int -> ?max_monitor_items:int -> ?max_request_bytes:int ->
   ?max_report_bytes:int -> ?max_report_nodes:int -> unit -> limits
 val default_limits : limits

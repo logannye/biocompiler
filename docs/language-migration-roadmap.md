@@ -268,26 +268,29 @@ These checkpoints record narrower validated work; they do not complete a broad L
   Generic composition acceptance, realization checking, scientific
   adapters and empirical validity are separate unfinished obligations.
 
-- [ ] **B1.09a realization contracts and complete evidence:** port InputDomain,
+- [x] **B1.09a realization contracts and complete evidence:** port InputDomain,
   OperatingDomain, BehaviorContract and all finite-history evidence records.
   Preserve the historical ASCII-escaped evidence/dependency identities separately
   from canonical UTF-8 artifact identities, full history and explicit horizon.
-  The typed contract/evidence/admission implementation is pushed in draft
-  [PR51](https://github.com/logannye/biocompiler/pull/51), initially at
-  `ffd5e05cd179cf29e45a6c214ef4a97f7e2ee534`. Independent domain reviews found no
-  concrete issue; 94 focused source checks passed. All 60 native suites now pass
-  on both hosted platforms at `8e8e191cce34182a85b3ea7765a01cc650b7711c`
-  in run `36966315057`. Full product validation remains pending, so this stage
-  and the broader LM-22/25 exits remain unchecked.
+  The typed contract/evidence/admission implementation in
+  [PR51](https://github.com/logannye/biocompiler/pull/51) passed all 31 required
+  jobs at source `8e8e191cce34182a85b3ea7765a01cc650b7711c` in run
+  `36966315057`: 2,429 tests on each Python version, 60 native suites on each
+  platform and exact four-way equality for 175 routing checks / 219 artifacts.
+  The source, tested and integrated trees match
+  `b866ee680f8110080c6c837a9762dd914dcb1d43`; integrated revision is
+  `652e2aa0aa24bf563412483827d07c4bc027a4e0`.
+  [Validation receipt](../protocol/migration-realization-foundation-validation.json).
+  The separate integrated-main run remains pending; broader LM-22/25 exits
+  remain open for their remaining operations and public routes.
   The complete 324-method capture now retains 70,019 observations, including
   both actual subprocesses; fresh recapture and four integrity/replay checks
   pass. Corpus `ac1499688ec6f0eca41398134b9421de9f95ffe9405422332c2bf43b04db32f8`
   contains 19,458 documents / 103,174,628 bytes. All 3,198 future acceptance
   observations remain explicitly deferred. The full foundation corpus is
   mandatory in Dune and a separate hosted campaign (60 native suites total).
-  Initial hosted compilation exposed an ambiguous record-field warning, now
-  corrected by an explicit type annotation; full product validation of the
-  replacement revision is still required.
+  An initial ambiguous record-field warning was corrected before the complete
+  successful validation above.
 - [ ] **B1.09b fresh admission, generic linking and selection:** reproduce complete
   policy assessments, provider grounding, lifetime/resource accounting and ranked
   alternatives. Retained decisions and identity-only freshness cannot grant use.
@@ -389,6 +392,38 @@ These checkpoints record narrower validated work; they do not complete a broad L
   all 41 boundary/CI/inventory checks pass. Four new native suites bring the
   required total to 75; native compilation and full product validation remain
   hosted and pending. This item and its broader LM exits remain unchecked.
+- [ ] **B2 direct synthetic production and selection:** the next implementation
+  independently ports generation/proposal, both-strategy selection and full
+  component adaptation, with complete Alternative/Result domain records. The
+  producer library calls public fresh checkers and cannot import their private
+  provenance or component-authority witnesses. The complete capture preserves
+  all earlier 47,758 observations and adds 143 selection-record observations:
+  47,901 total across the same 373 original methods / 381 contexts. All 2,372
+  formerly deferred producer calls now have native expectations, including the
+  exact original proposal mutations through a restricted test seam. Corpus pin
+  `2ed5860ac7143fe4a540c7b648eb5773c2fc52cd9bf43afd8913c3d99616566b`
+  retains 5,192 documents / 114,234,914 bytes. Nine complete Python integrity and
+  replay checks and independent byte-identical recapture pass. Independent full
+  producer/domain literals and exact resource-boundary cases supplement this
+  capture. Four mandatory suites bring the native total to 79; hosted native
+  compilation and all 31 product gates remain required before this checkbox can
+  close. Public routing, checked pipelines, packaging and default cutover remain
+  separate unfinished work. The [producer implementation audit](migration-synthetic-producer-plan.md)
+  and [next public-routing plan](migration-realization-routing-plan.md) retain
+  the exact source responsibilities and remaining exit criteria.
+  [PR56](https://github.com/logannye/biocompiler/pull/56) preserves this batch.
+  Its first hosted compiler run rejected an unused functor parameter in the
+  public interface; using an anonymous parameter preserves strict warnings and
+  the same proposal-only test seam. A reviewed unit fixture now sends the
+  ordinary constrained-selection case through the production selector; only the
+  two actual original selector mutations use injected proposals. All 123 full
+  Python selection/domain literals still reproduce their original results.
+  The follow-up resource audit also forwards all five component-behavior limit
+  reductions into generic linking and preserves ancestor exhaustion at the
+  exact reconstruction boundary. Selector child publication allowances now
+  subtract object keys as well as values, matching the enforcing report budget.
+  These corrections require fresh hosted gates;
+  the first failed run does not establish native validation.
 - [ ] **B1.09e protocol exposure and public routing:** accept full external authority,
   freshly recompute complete results, and preserve every existing caller and
   export gate. The audited realization baseline contains 324 methods across 23

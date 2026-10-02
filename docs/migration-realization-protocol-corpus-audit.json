@@ -1,0 +1,708 @@
+{
+  "realization-checks": {
+    "pin": "8ddc5a929f90e8364e3ffb53c6902ff23bd5dec2524897a8d463f543b887d80a",
+    "counts": [
+      {
+        "api": "check_component_assembly",
+        "outcome": "raised",
+        "stage": "deferred_acceptance",
+        "count": 11
+      },
+      {
+        "api": "check_component_assembly",
+        "outcome": "returned",
+        "stage": "deferred_acceptance",
+        "count": 41
+      },
+      {
+        "api": "check_component_behavior",
+        "outcome": "returned",
+        "stage": "deferred_acceptance",
+        "count": 85
+      },
+      {
+        "api": "check_realization",
+        "outcome": "returned",
+        "stage": "checker_version_mutation",
+        "count": 1
+      },
+      {
+        "api": "check_realization",
+        "outcome": "returned",
+        "stage": "realization",
+        "count": 1079
+      },
+      {
+        "api": "realization_dependencies",
+        "outcome": "returned",
+        "stage": "checker_version_mutation",
+        "count": 3
+      },
+      {
+        "api": "realization_dependencies",
+        "outcome": "returned",
+        "stage": "dependencies",
+        "count": 1993
+      }
+    ],
+    "unique_authorities": {
+      "check_realization": 579,
+      "realization_dependencies": 585
+    },
+    "examples": {
+      "check_realization": {
+        "pass": {
+          "id": "tests/test_realization_checker.py::CheckArtifactTests.test_all_dependency_changes_invalidate_the_claim/api/10",
+          "input": "25137cc3416ab934d00664c38a16e76e850cddd11bffe7953812ec85ea3ed529",
+          "result": "d54e329c1c800057d285c94def2de0fe7851964887c373b637bdb0a2eab84c9b",
+          "error": null,
+          "source": {
+            "file": "tests/test_realization_checker.py",
+            "function": "test_all_dependency_changes_invalidate_the_claim",
+            "line": 485
+          }
+        },
+        "fail": {
+          "id": "tests/test_realization_checker.py::CheckArtifactTests.test_artifacts_cannot_widen_claims_or_invent_exercised_coverage/api/39",
+          "input": "c9ae3f5c704fa4d281011f1cb6ad42d9013db2e7a9aa464eb9176cfe965bcdec",
+          "result": "afa8446eb300e4236ca1456ad748d5cc2ea540ea97fa87e83564284d001ddd22",
+          "error": null,
+          "source": {
+            "file": "tests/test_realization_checker.py",
+            "function": "test_artifacts_cannot_widen_claims_or_invent_exercised_coverage",
+            "line": 465
+          }
+        },
+        "unknown": {
+          "id": "tests/test_realization_checker.py::FiniteTraceCheckerTests.test_coverage_counts_actual_deadlines_and_incomplete_episodes/api/31",
+          "input": "f024cea417554249201dfb23a60dd38f30adecd6ea60ecd529c334397b07a465",
+          "result": "d53b7a959e058b3dfd108df76d9406c18a9905efeb1ad574b5f9ae79b4415ad9",
+          "error": null,
+          "source": {
+            "file": "tests/test_realization_checker.py",
+            "function": "test_coverage_counts_actual_deadlines_and_incomplete_episodes",
+            "line": 211
+          }
+        },
+        "unsupported": {
+          "id": "tests/test_human_admission.py::AdmissionBoundaryTests.test_synthetic_candidate_and_direct_checker_reject_reidentified_human_request/api/33",
+          "input": "759316fa054a2d68ae1103e19449cfa409f57dceea0889122f6edf1eded50e48",
+          "result": "b6f30fa9e2503dbb9a41076ffbdca73d3a6c7272ad04fc15e175317b2a68c219",
+          "error": null,
+          "source": {
+            "file": "tests/test_human_admission.py",
+            "function": "test_synthetic_candidate_and_direct_checker_reject_reidentified_human_request",
+            "line": 441
+          }
+        }
+      },
+      "realization_dependencies": {
+        "dependencies": {
+          "id": "tests/test_realization_checker.py::CheckArtifactTests.test_all_dependency_changes_invalidate_the_claim/api/11",
+          "input": "25137cc3416ab934d00664c38a16e76e850cddd11bffe7953812ec85ea3ed529",
+          "result": "19a7515d1ec740a26340c38eacb93433c3b7ea79fe934356c7daf43b2c03fd30",
+          "error": null,
+          "source": {
+            "file": "tests/test_realization_checker.py",
+            "function": "test_all_dependency_changes_invalidate_the_claim",
+            "line": 485
+          }
+        }
+      }
+    },
+    "version_mutations": [
+      "tests/test_realization_checker.py::CheckArtifactTests.test_public_dependency_helper_detects_context_parameter_and_history_changes/api/36",
+      "tests/test_synthetic_verification_workflow.py::SyntheticVerificationWorkflowTests.test_forged_results_and_stale_tool_dependencies_fail_fresh_replay/api/90",
+      "tests/test_synthetic_verification_workflow.py::SyntheticVerificationWorkflowTests.test_forged_results_and_stale_tool_dependencies_fail_fresh_replay/api/118",
+      "tests/test_synthetic_verification_workflow.py::SyntheticVerificationWorkflowTests.test_forged_results_and_stale_tool_dependencies_fail_fresh_replay/api/119"
+    ],
+    "unicode_count": 0,
+    "unicode_examples": []
+  },
+  "component-acceptance": {
+    "pin": "9eb76b8f697b00be207e6bb2e1cccdfd46ee974b09a3525d21eb4f32634ee116",
+    "counts": [
+      {
+        "api": "check_component_assembly",
+        "outcome": "raised",
+        "stage": "deferred_acceptance",
+        "count": 11
+      },
+      {
+        "api": "check_component_assembly",
+        "outcome": "returned",
+        "stage": "deferred_acceptance",
+        "count": 41
+      },
+      {
+        "api": "check_component_behavior",
+        "outcome": "returned",
+        "stage": "component_behavior",
+        "count": 85
+      }
+    ],
+    "unique_authorities": {
+      "check_component_behavior": 11
+    },
+    "examples": {
+      "check_component_behavior": {
+        "pass": {
+          "id": "tests/test_component_pipeline.py::ComponentPipelineTests.test_every_dependency_invalidates_components_transitively/api/8",
+          "input": "a83e4653d0b35b25345bf519eb039b1f0aa3ecadc8c590f35c98806731b6ff2c",
+          "result": "b98dd8a2c13578cf93c7508d7c1e5658cda5ed1fe8c8994664846da5486a7b8a",
+          "error": null,
+          "source": {
+            "file": "tests/test_component_pipeline.py",
+            "function": "test_every_dependency_invalidates_components_transitively",
+            "line": 79
+          }
+        },
+        "fail": {
+          "id": "tests/test_temporal_components.py::TemporalComponentTests.test_actual_rewired_output_fails_independent_behavior_despite_compatible_ports/api/4",
+          "input": "2effa08ca14ef84a8c3587650384dfc5ba83ac2f299fed18756616177290a3b0",
+          "result": "d39518b4bde6030ede768f95f1ac11dda9847097626a63ab47aaaaf5660f5e71",
+          "error": null,
+          "source": {
+            "file": "tests/test_temporal_components.py",
+            "function": "test_actual_rewired_output_fails_independent_behavior_despite_compatible_ports",
+            "line": 137
+          }
+        },
+        "unknown": {
+          "id": "tests/test_temporal_components.py::TemporalComponentTests.test_unknown_executable_guarantees_remain_unknown_in_behavior_acceptance/api/8",
+          "input": "1367fd932720b50df6d02f02dab459bab4853390b0ae4e9d0f8545a32caac22e",
+          "result": "8f656423146af84429bbafc8edb0ff519dbd3d6f7f1679d940ef422e815abec1",
+          "error": null,
+          "source": {
+            "file": "tests/test_temporal_components.py",
+            "function": "test_unknown_executable_guarantees_remain_unknown_in_behavior_acceptance",
+            "line": 369
+          }
+        }
+      }
+    },
+    "version_mutations": [],
+    "unicode_count": 0,
+    "unicode_examples": []
+  },
+  "synthetic-acceptance": {
+    "pin": "d32009a03f0af00de4da60f0244c210ba15b9ff89e828ea56c82b5f9e4a73331",
+    "counts": [
+      {
+        "api": "check_component_assembly",
+        "outcome": "raised",
+        "stage": "assembly_acceptance",
+        "count": 11
+      },
+      {
+        "api": "check_component_assembly",
+        "outcome": "returned",
+        "stage": "assembly_acceptance",
+        "count": 41
+      },
+      {
+        "api": "check_component_behavior",
+        "outcome": "returned",
+        "stage": "component_behavior",
+        "count": 85
+      },
+      {
+        "api": "check_realization",
+        "outcome": "returned",
+        "stage": "checker_version_mutation",
+        "count": 1
+      },
+      {
+        "api": "check_realization",
+        "outcome": "returned",
+        "stage": "realization",
+        "count": 1079
+      },
+      {
+        "api": "check_synthetic_candidate",
+        "outcome": "returned",
+        "stage": "checker_version_mutation",
+        "count": 1
+      },
+      {
+        "api": "check_synthetic_candidate",
+        "outcome": "returned",
+        "stage": "synthetic_acceptance",
+        "count": 905
+      },
+      {
+        "api": "realization_dependencies",
+        "outcome": "returned",
+        "stage": "checker_version_mutation",
+        "count": 3
+      },
+      {
+        "api": "realization_dependencies",
+        "outcome": "returned",
+        "stage": "dependencies",
+        "count": 1993
+      }
+    ],
+    "unique_authorities": {
+      "check_realization": 579,
+      "realization_dependencies": 585,
+      "check_synthetic_candidate": 534,
+      "check_component_assembly": 17,
+      "check_component_behavior": 11
+    },
+    "examples": {
+      "check_realization": {
+        "pass": {
+          "id": "tests/test_realization_checker.py::CheckArtifactTests.test_all_dependency_changes_invalidate_the_claim/api/0",
+          "input": "25137cc3416ab934d00664c38a16e76e850cddd11bffe7953812ec85ea3ed529",
+          "result": "d54e329c1c800057d285c94def2de0fe7851964887c373b637bdb0a2eab84c9b",
+          "error": null,
+          "source": {
+            "file": "tests/test_realization_checker.py",
+            "function": "test_all_dependency_changes_invalidate_the_claim",
+            "line": 485
+          }
+        },
+        "fail": {
+          "id": "tests/test_realization_checker.py::CheckArtifactTests.test_artifacts_cannot_widen_claims_or_invent_exercised_coverage/api/2",
+          "input": "c9ae3f5c704fa4d281011f1cb6ad42d9013db2e7a9aa464eb9176cfe965bcdec",
+          "result": "afa8446eb300e4236ca1456ad748d5cc2ea540ea97fa87e83564284d001ddd22",
+          "error": null,
+          "source": {
+            "file": "tests/test_realization_checker.py",
+            "function": "test_artifacts_cannot_widen_claims_or_invent_exercised_coverage",
+            "line": 465
+          }
+        },
+        "unknown": {
+          "id": "tests/test_realization_checker.py::FiniteTraceCheckerTests.test_coverage_counts_actual_deadlines_and_incomplete_episodes/api/2",
+          "input": "f024cea417554249201dfb23a60dd38f30adecd6ea60ecd529c334397b07a465",
+          "result": "d53b7a959e058b3dfd108df76d9406c18a9905efeb1ad574b5f9ae79b4415ad9",
+          "error": null,
+          "source": {
+            "file": "tests/test_realization_checker.py",
+            "function": "test_coverage_counts_actual_deadlines_and_incomplete_episodes",
+            "line": 211
+          }
+        },
+        "unsupported": {
+          "id": "tests/test_human_admission.py::AdmissionBoundaryTests.test_synthetic_candidate_and_direct_checker_reject_reidentified_human_request/api/25",
+          "input": "759316fa054a2d68ae1103e19449cfa409f57dceea0889122f6edf1eded50e48",
+          "result": "b6f30fa9e2503dbb9a41076ffbdca73d3a6c7272ad04fc15e175317b2a68c219",
+          "error": null,
+          "source": {
+            "file": "tests/test_human_admission.py",
+            "function": "test_synthetic_candidate_and_direct_checker_reject_reidentified_human_request",
+            "line": 441
+          }
+        }
+      },
+      "realization_dependencies": {
+        "dependencies": {
+          "id": "tests/test_realization_checker.py::CheckArtifactTests.test_all_dependency_changes_invalidate_the_claim/api/1",
+          "input": "25137cc3416ab934d00664c38a16e76e850cddd11bffe7953812ec85ea3ed529",
+          "result": "19a7515d1ec740a26340c38eacb93433c3b7ea79fe934356c7daf43b2c03fd30",
+          "error": null,
+          "source": {
+            "file": "tests/test_realization_checker.py",
+            "function": "test_all_dependency_changes_invalidate_the_claim",
+            "line": 485
+          }
+        }
+      },
+      "check_synthetic_candidate": {
+        "pass": {
+          "id": "tests/test_verification_mutations.py::EvidenceCoverageAuditTests.test_pipeline_keeps_exact_model_conditional_and_empirical_obligations_distinct/api/23",
+          "input": "dc77c137f07f63e4810cbc05d19a642733c26430d34606fb8a5668bb6d19b0da",
+          "result": "76d9f395c8fc325ea3d9ffb9e2cbd8871ffd6ed5ad6cb72e9612d29de6db0c95",
+          "error": null,
+          "source": {
+            "file": "tests/test_verification_mutations.py",
+            "function": "test_pipeline_keeps_exact_model_conditional_and_empirical_obligations_distinct",
+            "line": 359
+          }
+        },
+        "unknown": {
+          "id": "tests/test_component_pipeline.py::ComponentPipelineTests.test_unknown_history_cannot_be_promoted_by_linking/api/23",
+          "input": "c61bbe70168f52512edef9627ca1d371f03e8f8550643cd2cf103526a170ad4b",
+          "result": "d74c4f17b56fa6d27e9af6ebce65a05b68c2da059ca04b6e30ad4fd5cda7cc7b",
+          "error": null,
+          "source": {
+            "file": "tests/test_component_pipeline.py",
+            "function": "test_unknown_history_cannot_be_promoted_by_linking",
+            "line": 160
+          }
+        },
+        "fail": {
+          "id": "tests/test_component_adapters.py::ComponentAdapterTests.test_stale_unexercised_and_silent_candidates_cannot_be_adapted/api/21",
+          "input": "a33ea347ed14c896da28ab5f3d8da62383e36a47d8c1281d8f0176c81b932306",
+          "result": "6d38ba0edd6d02cd9ab434ed2f0d524de0b66ff46e609df63fc5e10d1db89298",
+          "error": null,
+          "source": {
+            "file": "tests/test_component_adapters.py",
+            "function": "test_stale_unexercised_and_silent_candidates_cannot_be_adapted",
+            "line": 151
+          }
+        },
+        "unsupported": {
+          "id": "tests/test_human_admission.py::AdmissionBoundaryTests.test_synthetic_candidate_and_direct_checker_reject_reidentified_human_request/api/18",
+          "input": "1f77f272b1fef96bc9661a2aec353502545554c86017398e189b611847177456",
+          "result": "5f35ef5f03c9621dc1705a289720d5bb470ee98c82b916d2e86097a4e98a9ca7",
+          "error": null,
+          "source": {
+            "file": "tests/test_human_admission.py",
+            "function": "test_synthetic_candidate_and_direct_checker_reject_reidentified_human_request",
+            "line": 439
+          }
+        }
+      },
+      "check_component_assembly": {
+        "Component assembly changed its authoritative source correspondence.": {
+          "id": "tests/test_component_pipeline.py::ComponentPipelineTests.test_changed_source_or_missing_connection_is_rejected/api/0",
+          "input": "3056abebcdeaf9278fb99050dda2b0bb90362d8cc867425a8aa04d182bdb0fd9",
+          "result": null,
+          "error": {
+            "message": "Component assembly changed its authoritative source correspondence.",
+            "module": "biocompiler.compiler.pipeline",
+            "type": "PipelineError"
+          },
+          "source": {
+            "file": "tests/test_component_pipeline.py",
+            "function": "check",
+            "line": 24
+          }
+        },
+        "pass": {
+          "id": "tests/test_component_pipeline.py::ComponentPipelineTests.test_every_dependency_invalidates_components_transitively/api/108",
+          "input": "6181e345505a27b62eb0a071025e0d1faf0df71bc28ea83dde1ecb817fbaad15",
+          "result": "32dcadf63007fb54f1805b21bfde86335fa07c3f51f9b651a2353cd19963deb3",
+          "error": null,
+          "source": {
+            "file": "tests/test_component_pipeline.py",
+            "function": "test_every_dependency_invalidates_components_transitively",
+            "line": 79
+          }
+        },
+        "Component adaptation requires passing synthetic acceptance for the current request, candidate and history.": {
+          "id": "tests/test_component_pipeline_audit.py::ComponentPipelineAuditTests.test_assembly_reuse_rechecks_finite_history_and_horizon/api/0",
+          "input": "a7036ab4b891dfaeedb61197b20385790d7527b7f06e489d331dfc6b4f2a6446",
+          "result": null,
+          "error": {
+            "message": "Component adaptation requires passing synthetic acceptance for the current request, candidate and history.",
+            "module": "biocompiler.errors",
+            "type": "SerializationError"
+          },
+          "source": {
+            "file": "tests/test_component_pipeline_audit.py",
+            "function": "test_assembly_reuse_rechecks_finite_history_and_horizon",
+            "line": 126
+          }
+        }
+      },
+      "check_component_behavior": {
+        "pass": {
+          "id": "tests/test_component_pipeline.py::ComponentPipelineTests.test_every_dependency_invalidates_components_transitively/api/149",
+          "input": "a83e4653d0b35b25345bf519eb039b1f0aa3ecadc8c590f35c98806731b6ff2c",
+          "result": "b98dd8a2c13578cf93c7508d7c1e5658cda5ed1fe8c8994664846da5486a7b8a",
+          "error": null,
+          "source": {
+            "file": "tests/test_component_pipeline.py",
+            "function": "test_every_dependency_invalidates_components_transitively",
+            "line": 79
+          }
+        },
+        "fail": {
+          "id": "tests/test_temporal_components.py::TemporalComponentTests.test_actual_rewired_output_fails_independent_behavior_despite_compatible_ports/api/0",
+          "input": "2effa08ca14ef84a8c3587650384dfc5ba83ac2f299fed18756616177290a3b0",
+          "result": "d39518b4bde6030ede768f95f1ac11dda9847097626a63ab47aaaaf5660f5e71",
+          "error": null,
+          "source": {
+            "file": "tests/test_temporal_components.py",
+            "function": "test_actual_rewired_output_fails_independent_behavior_despite_compatible_ports",
+            "line": 137
+          }
+        },
+        "unknown": {
+          "id": "tests/test_temporal_components.py::TemporalComponentTests.test_unknown_executable_guarantees_remain_unknown_in_behavior_acceptance/api/0",
+          "input": "1367fd932720b50df6d02f02dab459bab4853390b0ae4e9d0f8545a32caac22e",
+          "result": "8f656423146af84429bbafc8edb0ff519dbd3d6f7f1679d940ef422e815abec1",
+          "error": null,
+          "source": {
+            "file": "tests/test_temporal_components.py",
+            "function": "test_unknown_executable_guarantees_remain_unknown_in_behavior_acceptance",
+            "line": 369
+          }
+        }
+      }
+    },
+    "version_mutations": [
+      "tests/test_realization_checker.py::CheckArtifactTests.test_public_dependency_helper_detects_context_parameter_and_history_changes/api/5",
+      "tests/test_synthetic_verification_workflow.py::SyntheticVerificationWorkflowTests.test_forged_results_and_stale_tool_dependencies_fail_fresh_replay/api/128",
+      "tests/test_synthetic_verification_workflow.py::SyntheticVerificationWorkflowTests.test_forged_results_and_stale_tool_dependencies_fail_fresh_replay/api/130",
+      "tests/test_synthetic_verification_workflow.py::SyntheticVerificationWorkflowTests.test_forged_results_and_stale_tool_dependencies_fail_fresh_replay/api/190",
+      "tests/test_synthetic_verification_workflow.py::SyntheticVerificationWorkflowTests.test_forged_results_and_stale_tool_dependencies_fail_fresh_replay/api/191"
+    ],
+    "unicode_count": 0,
+    "unicode_examples": []
+  },
+  "synthetic-producers": {
+    "pin": "2ed5860ac7143fe4a540c7b648eb5773c2fc52cd9bf43afd8913c3d99616566b",
+    "counts": [
+      {
+        "api": "check_component_assembly",
+        "outcome": "raised",
+        "stage": "assembly_acceptance",
+        "count": 11
+      },
+      {
+        "api": "check_component_assembly",
+        "outcome": "returned",
+        "stage": "assembly_acceptance",
+        "count": 41
+      },
+      {
+        "api": "check_component_behavior",
+        "outcome": "returned",
+        "stage": "component_behavior",
+        "count": 85
+      },
+      {
+        "api": "check_realization",
+        "outcome": "returned",
+        "stage": "checker_version_mutation",
+        "count": 1
+      },
+      {
+        "api": "check_realization",
+        "outcome": "returned",
+        "stage": "realization",
+        "count": 1079
+      },
+      {
+        "api": "check_synthetic_candidate",
+        "outcome": "returned",
+        "stage": "checker_version_mutation",
+        "count": 1
+      },
+      {
+        "api": "check_synthetic_candidate",
+        "outcome": "returned",
+        "stage": "synthetic_acceptance",
+        "count": 905
+      },
+      {
+        "api": "realization_dependencies",
+        "outcome": "returned",
+        "stage": "checker_version_mutation",
+        "count": 3
+      },
+      {
+        "api": "realization_dependencies",
+        "outcome": "returned",
+        "stage": "dependencies",
+        "count": 1993
+      }
+    ],
+    "unique_authorities": {
+      "check_realization": 579,
+      "realization_dependencies": 585,
+      "check_synthetic_candidate": 534,
+      "check_component_assembly": 17,
+      "check_component_behavior": 11
+    },
+    "examples": {
+      "check_realization": {
+        "pass": {
+          "id": "tests/test_realization_checker.py::CheckArtifactTests.test_all_dependency_changes_invalidate_the_claim/api/0",
+          "input": "25137cc3416ab934d00664c38a16e76e850cddd11bffe7953812ec85ea3ed529",
+          "result": "d54e329c1c800057d285c94def2de0fe7851964887c373b637bdb0a2eab84c9b",
+          "error": null,
+          "source": {
+            "file": "tests/test_realization_checker.py",
+            "function": "test_all_dependency_changes_invalidate_the_claim",
+            "line": 485
+          }
+        },
+        "fail": {
+          "id": "tests/test_realization_checker.py::CheckArtifactTests.test_artifacts_cannot_widen_claims_or_invent_exercised_coverage/api/2",
+          "input": "c9ae3f5c704fa4d281011f1cb6ad42d9013db2e7a9aa464eb9176cfe965bcdec",
+          "result": "afa8446eb300e4236ca1456ad748d5cc2ea540ea97fa87e83564284d001ddd22",
+          "error": null,
+          "source": {
+            "file": "tests/test_realization_checker.py",
+            "function": "test_artifacts_cannot_widen_claims_or_invent_exercised_coverage",
+            "line": 465
+          }
+        },
+        "unknown": {
+          "id": "tests/test_realization_checker.py::FiniteTraceCheckerTests.test_coverage_counts_actual_deadlines_and_incomplete_episodes/api/2",
+          "input": "f024cea417554249201dfb23a60dd38f30adecd6ea60ecd529c334397b07a465",
+          "result": "d53b7a959e058b3dfd108df76d9406c18a9905efeb1ad574b5f9ae79b4415ad9",
+          "error": null,
+          "source": {
+            "file": "tests/test_realization_checker.py",
+            "function": "test_coverage_counts_actual_deadlines_and_incomplete_episodes",
+            "line": 211
+          }
+        },
+        "unsupported": {
+          "id": "tests/test_human_admission.py::AdmissionBoundaryTests.test_synthetic_candidate_and_direct_checker_reject_reidentified_human_request/api/25",
+          "input": "759316fa054a2d68ae1103e19449cfa409f57dceea0889122f6edf1eded50e48",
+          "result": "b6f30fa9e2503dbb9a41076ffbdca73d3a6c7272ad04fc15e175317b2a68c219",
+          "error": null,
+          "source": {
+            "file": "tests/test_human_admission.py",
+            "function": "test_synthetic_candidate_and_direct_checker_reject_reidentified_human_request",
+            "line": 441
+          }
+        }
+      },
+      "realization_dependencies": {
+        "dependencies": {
+          "id": "tests/test_realization_checker.py::CheckArtifactTests.test_all_dependency_changes_invalidate_the_claim/api/1",
+          "input": "25137cc3416ab934d00664c38a16e76e850cddd11bffe7953812ec85ea3ed529",
+          "result": "19a7515d1ec740a26340c38eacb93433c3b7ea79fe934356c7daf43b2c03fd30",
+          "error": null,
+          "source": {
+            "file": "tests/test_realization_checker.py",
+            "function": "test_all_dependency_changes_invalidate_the_claim",
+            "line": 485
+          }
+        }
+      },
+      "check_synthetic_candidate": {
+        "pass": {
+          "id": "tests/test_verification_mutations.py::EvidenceCoverageAuditTests.test_pipeline_keeps_exact_model_conditional_and_empirical_obligations_distinct/api/23",
+          "input": "dc77c137f07f63e4810cbc05d19a642733c26430d34606fb8a5668bb6d19b0da",
+          "result": "76d9f395c8fc325ea3d9ffb9e2cbd8871ffd6ed5ad6cb72e9612d29de6db0c95",
+          "error": null,
+          "source": {
+            "file": "tests/test_verification_mutations.py",
+            "function": "test_pipeline_keeps_exact_model_conditional_and_empirical_obligations_distinct",
+            "line": 359
+          }
+        },
+        "unknown": {
+          "id": "tests/test_component_pipeline.py::ComponentPipelineTests.test_unknown_history_cannot_be_promoted_by_linking/api/23",
+          "input": "c61bbe70168f52512edef9627ca1d371f03e8f8550643cd2cf103526a170ad4b",
+          "result": "d74c4f17b56fa6d27e9af6ebce65a05b68c2da059ca04b6e30ad4fd5cda7cc7b",
+          "error": null,
+          "source": {
+            "file": "tests/test_component_pipeline.py",
+            "function": "test_unknown_history_cannot_be_promoted_by_linking",
+            "line": 160
+          }
+        },
+        "fail": {
+          "id": "tests/test_component_adapters.py::ComponentAdapterTests.test_stale_unexercised_and_silent_candidates_cannot_be_adapted/api/21",
+          "input": "a33ea347ed14c896da28ab5f3d8da62383e36a47d8c1281d8f0176c81b932306",
+          "result": "6d38ba0edd6d02cd9ab434ed2f0d524de0b66ff46e609df63fc5e10d1db89298",
+          "error": null,
+          "source": {
+            "file": "tests/test_component_adapters.py",
+            "function": "test_stale_unexercised_and_silent_candidates_cannot_be_adapted",
+            "line": 151
+          }
+        },
+        "unsupported": {
+          "id": "tests/test_human_admission.py::AdmissionBoundaryTests.test_synthetic_candidate_and_direct_checker_reject_reidentified_human_request/api/18",
+          "input": "1f77f272b1fef96bc9661a2aec353502545554c86017398e189b611847177456",
+          "result": "5f35ef5f03c9621dc1705a289720d5bb470ee98c82b916d2e86097a4e98a9ca7",
+          "error": null,
+          "source": {
+            "file": "tests/test_human_admission.py",
+            "function": "test_synthetic_candidate_and_direct_checker_reject_reidentified_human_request",
+            "line": 439
+          }
+        }
+      },
+      "check_component_assembly": {
+        "Component assembly changed its authoritative source correspondence.": {
+          "id": "tests/test_component_pipeline.py::ComponentPipelineTests.test_changed_source_or_missing_connection_is_rejected/api/0",
+          "input": "3056abebcdeaf9278fb99050dda2b0bb90362d8cc867425a8aa04d182bdb0fd9",
+          "result": null,
+          "error": {
+            "message": "Component assembly changed its authoritative source correspondence.",
+            "module": "biocompiler.compiler.pipeline",
+            "type": "PipelineError"
+          },
+          "source": {
+            "file": "tests/test_component_pipeline.py",
+            "function": "check",
+            "line": 24
+          }
+        },
+        "pass": {
+          "id": "tests/test_component_pipeline.py::ComponentPipelineTests.test_every_dependency_invalidates_components_transitively/api/108",
+          "input": "6181e345505a27b62eb0a071025e0d1faf0df71bc28ea83dde1ecb817fbaad15",
+          "result": "32dcadf63007fb54f1805b21bfde86335fa07c3f51f9b651a2353cd19963deb3",
+          "error": null,
+          "source": {
+            "file": "tests/test_component_pipeline.py",
+            "function": "test_every_dependency_invalidates_components_transitively",
+            "line": 79
+          }
+        },
+        "Component adaptation requires passing synthetic acceptance for the current request, candidate and history.": {
+          "id": "tests/test_component_pipeline_audit.py::ComponentPipelineAuditTests.test_assembly_reuse_rechecks_finite_history_and_horizon/api/0",
+          "input": "a7036ab4b891dfaeedb61197b20385790d7527b7f06e489d331dfc6b4f2a6446",
+          "result": null,
+          "error": {
+            "message": "Component adaptation requires passing synthetic acceptance for the current request, candidate and history.",
+            "module": "biocompiler.errors",
+            "type": "SerializationError"
+          },
+          "source": {
+            "file": "tests/test_component_pipeline_audit.py",
+            "function": "test_assembly_reuse_rechecks_finite_history_and_horizon",
+            "line": 126
+          }
+        }
+      },
+      "check_component_behavior": {
+        "pass": {
+          "id": "tests/test_component_pipeline.py::ComponentPipelineTests.test_every_dependency_invalidates_components_transitively/api/149",
+          "input": "a83e4653d0b35b25345bf519eb039b1f0aa3ecadc8c590f35c98806731b6ff2c",
+          "result": "b98dd8a2c13578cf93c7508d7c1e5658cda5ed1fe8c8994664846da5486a7b8a",
+          "error": null,
+          "source": {
+            "file": "tests/test_component_pipeline.py",
+            "function": "test_every_dependency_invalidates_components_transitively",
+            "line": 79
+          }
+        },
+        "fail": {
+          "id": "tests/test_temporal_components.py::TemporalComponentTests.test_actual_rewired_output_fails_independent_behavior_despite_compatible_ports/api/0",
+          "input": "2effa08ca14ef84a8c3587650384dfc5ba83ac2f299fed18756616177290a3b0",
+          "result": "d39518b4bde6030ede768f95f1ac11dda9847097626a63ab47aaaaf5660f5e71",
+          "error": null,
+          "source": {
+            "file": "tests/test_temporal_components.py",
+            "function": "test_actual_rewired_output_fails_independent_behavior_despite_compatible_ports",
+            "line": 137
+          }
+        },
+        "unknown": {
+          "id": "tests/test_temporal_components.py::TemporalComponentTests.test_unknown_executable_guarantees_remain_unknown_in_behavior_acceptance/api/0",
+          "input": "1367fd932720b50df6d02f02dab459bab4853390b0ae4e9d0f8545a32caac22e",
+          "result": "8f656423146af84429bbafc8edb0ff519dbd3d6f7f1679d940ef422e815abec1",
+          "error": null,
+          "source": {
+            "file": "tests/test_temporal_components.py",
+            "function": "test_unknown_executable_guarantees_remain_unknown_in_behavior_acceptance",
+            "line": 369
+          }
+        }
+      }
+    },
+    "version_mutations": [
+      "tests/test_realization_checker.py::CheckArtifactTests.test_public_dependency_helper_detects_context_parameter_and_history_changes/api/5",
+      "tests/test_synthetic_verification_workflow.py::SyntheticVerificationWorkflowTests.test_forged_results_and_stale_tool_dependencies_fail_fresh_replay/api/128",
+      "tests/test_synthetic_verification_workflow.py::SyntheticVerificationWorkflowTests.test_forged_results_and_stale_tool_dependencies_fail_fresh_replay/api/130",
+      "tests/test_synthetic_verification_workflow.py::SyntheticVerificationWorkflowTests.test_forged_results_and_stale_tool_dependencies_fail_fresh_replay/api/190",
+      "tests/test_synthetic_verification_workflow.py::SyntheticVerificationWorkflowTests.test_forged_results_and_stale_tool_dependencies_fail_fresh_replay/api/191"
+    ],
+    "unicode_count": 0,
+    "unicode_examples": []
+  }
+}

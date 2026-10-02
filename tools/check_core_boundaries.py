@@ -20,6 +20,7 @@ ROOT = Path(__file__).resolve().parents[1]
 EXTERNAL_LIBRARIES = frozenset({"digestif", "zarith"})
 # New libraries/dependencies require deliberate policy review, even when harmless.
 LIBRARIES = {
+    "bioc_synthetic_producer": ("lib/synthetic_producer/dune", {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_realization_checker", "zarith"}, "producer"),
     "bioc_realization_checker": ("lib/realization_checker/dune", {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_semantics", "bioc_candidate_runtime", "zarith"}, "checker"),
     "bioc_candidate_runtime": ("lib/candidate_runtime/dune", {"bioc_wire", "bioc_domain", "zarith"}, "candidate_runtime"),
     "bioc_producer_service": ("lib/producer_service/dune", {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_service"}, "producer"),
@@ -36,6 +37,11 @@ EXECUTABLES = {
     "biocompiler-verify": ("bin/verify/dune", {"bioc_wire", "bioc_service"}, "verifier"),
 }
 TESTS = {
+    "test_synthetic_generator": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_realization_checker", "bioc_synthetic_producer", "zarith"},
+    "test_synthetic_selection": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_realization_checker", "bioc_synthetic_producer", "zarith"},
+    "test_synthetic_components": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_realization_checker", "bioc_synthetic_producer", "zarith"},
+    "test_synthetic_producers_corpus": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_realization_checker", "bioc_synthetic_producer", "zarith"},
+
     "test_synthetic_candidate_check": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_realization_checker", "zarith"},
     "test_synthetic_provenance": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_realization_checker", "zarith"},
     "test_component_assembly_check": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_realization_checker", "zarith"},
@@ -46,7 +52,7 @@ TESTS = {
     'test_composition_evidence': {'bioc_domain', 'zarith', 'bioc_wire'},
     'test_composition_check': {'bioc_domain', 'zarith', 'bioc_checker', 'bioc_wire'},
     'test_component_selection': {'bioc_domain', 'zarith', 'bioc_compiler', 'bioc_checker', 'bioc_wire'},
-    'test_component_behavior_check': {'bioc_domain', 'zarith', 'bioc_realization_checker', 'bioc_checker', 'bioc_wire'},
+    'test_component_behavior_check': {'bioc_domain', 'zarith', 'bioc_realization_checker', 'bioc_checker', 'bioc_wire', 'bioc_candidate_runtime'},
     'test_component_acceptance_corpus': {'bioc_domain', 'zarith', 'bioc_compiler', 'bioc_realization_checker', 'bioc_checker', 'bioc_wire'},
 
     "test_realization_request": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_realization_checker", "zarith"},
@@ -282,7 +288,7 @@ def source_boundary(path, allowed_libraries, *, owner=None):
             raise BoundaryError(f"Unreviewed native/process/dynamic-code escape {token} in {path.name}")
         if token == "Sys":
             reviewed = {"argv"}
-            if owner in {"test:test_architecture_check", "test:test_source_transport", "test:test_architecture_producer", "test:test_construction_producer", "test:test_candidate_runtime_corpus", "test:test_component_runtime_corpus", "test:test_realization_foundation_corpus", "test:test_realization_checks_corpus", "test:test_component_acceptance_corpus", "test:test_synthetic_authority_corpus", "test:test_synthetic_acceptance_corpus"}:
+            if owner in {"test:test_architecture_check", "test:test_source_transport", "test:test_architecture_producer", "test:test_construction_producer", "test:test_candidate_runtime_corpus", "test:test_component_runtime_corpus", "test:test_realization_foundation_corpus", "test:test_realization_checks_corpus", "test:test_component_acceptance_corpus", "test:test_synthetic_authority_corpus", "test:test_synthetic_acceptance_corpus", "test:test_synthetic_producers_corpus"}:
                 # The test-only document corpus must reject undeclared files.
                 # Production code gains no filesystem or process permission.
                 reviewed.add("readdir")
@@ -357,6 +363,7 @@ def check_boundaries(root: Path):
                     "test_component_acceptance_corpus": "%{env:BIOCOMPILER_COMPONENT_ACCEPTANCE_CORPUS=missing}",
                     "test_synthetic_authority_corpus": "%{env:BIOCOMPILER_SYNTHETIC_AUTHORITY_CORPUS=missing}",
                     "test_synthetic_acceptance_corpus": "%{env:BIOCOMPILER_SYNTHETIC_ACCEPTANCE_CORPUS=missing}",
+                    "test_synthetic_producers_corpus": "%{env:BIOCOMPILER_SYNTHETIC_PRODUCERS_CORPUS=missing}",
                 }
                 expected_actions = ([["action", ["run", "%{test}", fixture_variables[name]]]]
                                     if name in fixture_variables else [])

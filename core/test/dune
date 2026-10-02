@@ -340,7 +340,7 @@
 (test
  (name test_component_behavior_check)
  (modules test_component_behavior_check)
- (libraries bioc_wire bioc_domain bioc_checker bioc_realization_checker zarith))
+ (libraries bioc_wire bioc_domain bioc_checker bioc_realization_checker bioc_candidate_runtime zarith))
 
 (test
  (name test_component_acceptance_corpus)
@@ -379,3 +379,24 @@
  (modules test_synthetic_acceptance_corpus)
  (libraries bioc_wire bioc_domain bioc_checker bioc_realization_checker zarith)
  (action (run %{test} %{env:BIOCOMPILER_SYNTHETIC_ACCEPTANCE_CORPUS=missing})))
+
+(test
+ (name test_synthetic_generator)
+ (modules test_synthetic_generator)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_realization_checker bioc_synthetic_producer zarith))
+
+(test
+ (name test_synthetic_selection)
+ (modules test_synthetic_selection)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_realization_checker bioc_synthetic_producer zarith))
+
+(test
+ (name test_synthetic_components)
+ (modules test_synthetic_components)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_realization_checker bioc_synthetic_producer zarith))
+
+(test
+ (name test_synthetic_producers_corpus)
+ (modules test_synthetic_producers_corpus)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_realization_checker bioc_synthetic_producer zarith)
+ (action (run %{test} %{env:BIOCOMPILER_SYNTHETIC_PRODUCERS_CORPUS=missing})))

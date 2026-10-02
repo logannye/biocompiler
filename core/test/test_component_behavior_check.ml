@@ -23,6 +23,67 @@ let request_for request raw = match List.assoc_opt "request" (Json.object_fields
   | None -> request | Some raw -> Realization_request.of_json raw
 let run request raw = K.check ~until:(N.of_json (get "until" raw)) (request_for request raw)
   (Component_assembly.of_json (get "assembly" raw)) (history raw)
+let nested_resource_boundaries request assembly frames until =
+  let module Link = Bioc_checker.Composition_check in
+  let module Realization = Bioc_realization_checker.Realization_check in
+  let mapped = K.make_limits ~max_work:12345 ~max_monitor_items:321 ~max_request_bytes:23456
+      ~max_report_bytes:34567 ~max_report_nodes:456 () in
+  let expected = Link.make_limits ~max_work:12345 ~max_items:321 ~max_input_bytes:23456
+      ~max_report_bytes:34567 ~max_report_nodes:456 () |> Link.limits_json in
+  require (Json.equal (get "composition" (K.limits_json mapped)) expected)
+    "Generic linking limits omitted an outer reduction";
+  (* Measure the actual prefix using a same-size authority rejection. The fixed
+     baseline target is seven fields: comparing its keys, scalar strings and
+     three collections independently accounts for exactly 890 additional units.
+     At that transition, exhaustion must belong to the original custom parent,
+     not a fresh component-model allowance with zero remaining work. *)
+  let wrong = Component_assembly.of_json (set "request_fingerprint" (str (String.make 64 '0'))
+      (Component_assembly.to_json assembly)) in
+  require (Component_assembly.canonical_size wrong = Component_assembly.canonical_size assembly)
+    "Transition witness changed preparation input size";
+  require (Build_request.Target.fingerprint (Composition.target (Component_assembly.composition assembly)) =
+      "8a77f4a2108456b899b62c0fb1cf11c76890897fd268973f9874af76b70ca4ea")
+    "Transition target changed its independently counted comparison cost";
+  let probe = W.create ~profile:"component.transition.probe" ~error_code:"component_probe_parent" ~maximum:50_000_000 () in
+  rejected "component_behavior" (fun () -> K.check ~until ~parent:probe request wrong frames);
+  let before_reconstruction = 50_000_000 - W.remaining probe + 890 in
+  let empty = W.create ~profile:"component.transition" ~error_code:"component_transition_parent"
+      ~maximum:before_reconstruction () in
+  (match K.check ~until ~parent:empty request assembly frames with
+   | _ -> failwith "Empty reconstruction allowance returned a result"
+   | exception Diagnostic.Error error ->
+       require (error.code="component_transition_parent" && W.remaining empty=0 && W.is_exhaustion empty error)
+         "Zero reconstruction capacity masked its custom parent exhaustion");
+  (* The empty-history result stops before execution yet still requires generic
+     linking. Its smaller report and retained inventory isolate the late phase. *)
+  let composition = Component_assembly.composition assembly and registry = Component_assembly.registry assembly in
+  let linked,link_usage = Link.check_with_usage ~request:composition ~registry () in
+  let mechanism = Bioc_candidate_runtime.Components.reconstruct assembly in
+  let direct limits = Realization.check_with_usage ~until ~limits
+      (Realization_request.behavior request) (Realization_request.contract request)
+      (Realization_request.domain request) (Option.get (Realization_request.target request))
+      mechanism (Component_assembly.observation_map assembly) [] in
+  let _,early_usage = direct Realization.default_limits in
+  let empty_result = K.check ~until request assembly [] in
+  require (E.Check_result.fingerprint empty_result="9feeb39e574697b58e603a567cd04cf170fd1c2f569a1443056090036dca5040" &&
+      Composition_evidence.Result.fingerprint linked="0d303803044bdb6f0938c7a0cc402877552ba3520e977fde8a95e5a2d0f07812")
+    "Independent Python empty-history or linking witness changed";
+  let item_limit = link_usage.retained_items-1 in
+  require (item_limit > early_usage.monitor_peak) "Link retention witness no longer isolates the later phase";
+  ignore (direct (Realization.make_limits ~max_monitor_items:item_limit ()));
+  rejected "composition_item_limit" (fun () -> K.check ~until
+      ~limits:(K.make_limits ~max_monitor_items:item_limit ()) request assembly []);
+  let link_size = Legacy_ascii.measure (Composition_evidence.Result.to_json linked) in
+  require (link_size.bytes=2795) "Independent Python link byte census changed";
+  (* The full original Python report has 132 key/value nodes. Legacy_ascii's
+     size.nodes counts only values, while linker publication also counts keys. *)
+  let byte_limit = link_size.bytes-1 and node_limit = 131 in
+  ignore (direct (Realization.make_limits ~max_report_bytes:byte_limit ()));
+  ignore (direct (Realization.make_limits ~max_report_nodes:node_limit ()));
+  rejected "composition_report_limit" (fun () -> K.check ~until
+      ~limits:(K.make_limits ~max_report_bytes:byte_limit ()) request assembly []);
+  rejected "composition_report_limit" (fun () -> K.check ~until
+      ~limits:(K.make_limits ~max_report_nodes:node_limit ()) request assembly [])
 let () =
   require (List.length cases = 6) "Independent component behavior fixture census changed";
   let request = Realization_request.of_json (get "request" fixture) in
@@ -35,6 +96,7 @@ let () =
   let baseline = case "baseline" in
   let assembly = Component_assembly.of_json (get "assembly" baseline) and frames = history baseline in
   let until = N.of_json (get "until" baseline) in
+  nested_resource_boundaries request assembly frames until;
   let result,usage = K.check_with_usage ~until request assembly frames in
   require (E.Check_result.outcome result = E.Pass && usage.reconstruction_work > 0 && usage.work_charged > usage.reconstruction_work)
     "Actual reconstruction or downstream shared work was omitted";
@@ -87,10 +149,30 @@ let () =
   let exact = K.check ~until ~limits:(K.make_limits ~max_request_bytes:request_bytes ()) request assembly frames in
   require (E.Check_result.fingerprint exact = E.Check_result.fingerprint result) "Exact wrapper request byte boundary changed acceptance";
   rejected "realization_input_limit" (fun () -> K.check ~until ~limits:(K.make_limits ~max_request_bytes:(request_bytes-1) ()) request assembly frames);
-  let report_bytes = String.length (Legacy_ascii.encode (E.Check_result.to_json result)) + 1 in
-  let exact = K.check ~until ~limits:(K.make_limits ~max_report_bytes:report_bytes ()) request assembly frames in
-  require (E.Check_result.fingerprint exact = E.Check_result.fingerprint result) "Exact final ASCII report boundary changed acceptance";
-  rejected "realization_report_limit" (fun () -> K.check ~until ~limits:(K.make_limits ~max_report_bytes:(report_bytes-1) ()) request assembly frames);
+  let report_raw = E.Check_result.to_json result in
+  let report_bytes = String.length (Legacy_ascii.encode report_raw) + 1 in
+  require (report_bytes=2238 && E.Check_result.fingerprint result=
+      "366affc8689804a93a6370d72d82140588cc2b88a71842e4a6e7b596fc06cfca")
+    "Independent final ASCII report bytes or identity changed";
+  (* The generic linker first reserves its UNKNOWN skeleton inside one array:
+     original Python's 2795-byte PASS grows by three outcome bytes and two
+     framing bytes. Its 2800-byte reservation precedes the 2238-byte outer
+     report reservation. Every phase must receive the same selected reduction. *)
+  let exact = K.check ~until ~limits:(K.make_limits ~max_report_bytes:2800 ()) request assembly frames in
+  require (E.Check_result.fingerprint exact = E.Check_result.fingerprint result)
+    "Exact preceding generic-link byte boundary changed acceptance";
+  rejected "composition_report_limit" (fun () -> K.check ~until
+    ~limits:(K.make_limits ~max_report_bytes:2799 ()) request assembly frames);
+  rejected "composition_report_limit" (fun () -> K.check ~until
+    ~limits:(K.make_limits ~max_report_bytes:report_bytes ()) request assembly frames);
+  (* Verify the smaller outer publication's exact/one-under boundary separately;
+     a whole-operation assertion cannot skip the larger earlier linker phase. *)
+  let module Budget = Bioc_realization_checker.Realization_budget in
+  let publication maximum = Budget.create ~limits:(Budget.make_limits ~max_report_bytes:maximum ()) () in
+  let exact = publication report_bytes in
+  Budget.reserve_report exact report_raw;
+  require ((Budget.usage exact).report_bytes=report_bytes) "Exact outer publication accounting changed";
+  rejected "realization_report_limit" (fun () -> Budget.reserve_report (publication (report_bytes-1)) report_raw);
   let first = List.hd frames in
   let rec cyclic = first :: cyclic in
   rejected "realization_input_limit" (fun () -> K.check ~until request assembly cyclic);

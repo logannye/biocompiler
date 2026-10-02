@@ -8,13 +8,17 @@ module E = Realization_evidence
 module L = Composition_evidence
 module C = Bioc_candidate_runtime.Components
 let implementation_version = "biocompiler.ocaml.component_behavior_checker.v0.1"
-type limits = { common : B.limits; realization : Realization_check.limits }
+type limits = { common : B.limits; realization : Realization_check.limits;
+  composition : Bioc_checker.Composition_check.limits }
 let make_limits ?max_work ?max_monitor_items ?max_request_bytes ?max_report_bytes ?max_report_nodes () =
   {common=B.make_limits ?max_work ?max_monitor_items ?max_request_bytes ?max_report_bytes ?max_report_nodes ();
-   realization=Realization_check.make_limits ?max_work ?max_monitor_items ?max_request_bytes ?max_report_bytes ?max_report_nodes ()}
+   realization=Realization_check.make_limits ?max_work ?max_monitor_items ?max_request_bytes ?max_report_bytes ?max_report_nodes ();
+   composition=Bioc_checker.Composition_check.make_limits ?max_work ?max_items:max_monitor_items
+     ?max_input_bytes:max_request_bytes ?max_report_bytes ?max_report_nodes ()}
 let default_limits = make_limits ()
 let limits_json limits = Json.Object ["profile", Json.String "biocompiler.component_behavior_checker.resources.v1";
-  "shared", B.limits_json limits.common; "realization", Realization_check.limits_json limits.realization]
+  "shared", B.limits_json limits.common; "realization", Realization_check.limits_json limits.realization;
+  "composition", Bioc_checker.Composition_check.limits_json limits.composition]
 type usage = { work_charged : int; reconstruction_work : int }
 let field key value = Json.field key (Json.object_fields value)
 let replace key value raw = Json.Object ((key, value) :: List.remove_assoc key (Json.object_fields raw))
@@ -71,6 +75,9 @@ let check_with_usage ?until ?(limits=default_limits) ?parent request assembly hi
      charge actual successful work, or burn the allocated capacity on failure.
      A failed reconstruction never returns a partial mechanism or receipt. *)
   let allowance = min 50_000_000 (B.remaining budget) in
+  (* Report exhaustion through the participating parent before entering the
+     runtime's independent allowance, which has its own diagnostic identity. *)
+  if allowance = 0 then B.charge budget 1;
   let mechanism, reconstruction_work =
     match C.reconstruct_with_usage ~limits:(C.make_limits ~max_preparation_work:allowance ()) assembly with
     | result -> result
@@ -80,7 +87,7 @@ let check_with_usage ?until ?(limits=default_limits) ?parent request assembly hi
   let checked = Realization_check.check ?until ~limits:limits.realization ~parent:work
       (Realization_request.behavior raw_request) (Realization_request.contract raw_request)
       (Realization_request.domain raw_request) target mechanism (A.observation_map assembly) history in
-  let linked = Bioc_checker.Composition_check.check ~parent:work
+  let linked = Bioc_checker.Composition_check.check ~parent:work ~limits:limits.composition
       ~request:(A.composition assembly) ~registry:(A.registry assembly) () in
   let raw = E.Check_result.to_json checked in
   let raw = if L.Result.passed linked then raw else (
