@@ -14,7 +14,6 @@ let text key value=Json.string (field key value)
 let rejected label code action=match action () with
  | _->failwith (label ^ ": intended rejection accepted")
  | exception Diagnostic.Error error->require (error.code=code) (label ^ ": expected " ^ code ^ ", got " ^ error.code)
-let replace key value raw=obj ((key,value)::List.remove_assoc key (Json.object_fields raw))
 let literal_behavior ()=
  let node=Json.parse {|{"id":"role","kind":"role","inputs":[],"attributes":{"name":"recipient","cell_type":"human_T_cell","engineering":"in_vivo"},"data_type":null,"role":null,"source":null,"contact_bound":false,"requirement_ids":[]}|} in
  Behavior.of_json (obj ["schema_version",str "biocompiler.behavior.v0.1";"name",str "literal_transport_usage";
