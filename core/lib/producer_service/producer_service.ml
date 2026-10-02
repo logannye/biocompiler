@@ -66,9 +66,9 @@ let capabilities executable request =
   | Protocol.Ok, Some original, [] ->
       let changed = Json.object_fields original |> List.map (fun (key, value) -> key,
           match key with
-          | "operations" -> Json.Array (Json.array value @ List.map str operations)
-          | "validation_scopes" -> Json.Array (Json.array value @ [str validation_scope])
-          | "profiles" -> obj (Json.object_fields value @ ["architecture_producer", profile])
+          | "operations" -> Json.Array (Json.array value @ List.map str (operations @ Synthetic_producer_service.operations))
+          | "validation_scopes" -> Json.Array (Json.array value @ List.map str (validation_scope :: Synthetic_producer_service.validation_scopes))
+          | "profiles" -> obj (Json.object_fields value @ ["architecture_producer", profile] @ Synthetic_producer_service.profiles)
           | "claim_scope" -> str "Supplied-contract architecture production, independent checking, exact RNA/manifest export and separately scoped finite-history model checks. No search completeness, empirical function or human-use admission is established."
           | _ -> value) in
       Protocol.Ok, Some (obj changed), []
@@ -79,4 +79,7 @@ let handle executable (request : Protocol.request) =
   | Protocol.Core, "capabilities" -> capabilities executable request
   | Protocol.Core, "compile-architecture" -> Protocol.Ok, Some (compile request.payload), []
   | Protocol.Core, "export-architecture" -> Protocol.Ok, Some (export request.payload), []
+  | Protocol.Core, operation when List.mem operation Synthetic_producer_service.operations ->
+      Protocol.Ok, Some (Synthetic_producer_service.handle ~executable ~request_id:request.request_id
+          ~operation request.payload), []
   | Protocol.Core, _ -> Base.handle executable request

@@ -563,12 +563,12 @@ These checkpoints record narrower validated work; they do not complete a broad L
   completion or default cutover. See [native workflow routing](native-workflow-routing.md).
 
 **Credit-limit preservation, 2026-10-02:** implementation through
-[PR60](https://github.com/logannye/biocompiler/pull/60) is committed and pushed at
-`75c5c7af0c425b77c2d9c27c66a24ed3943cf847`, with fresh
-[run 36986445839](https://github.com/logannye/biocompiler/actions/runs/36986445839)
-queued at preservation. Public routing proceeds on the separate
-`codex/ocaml-workflow-public-routing` branch so PR60 validation stays intact.
-PR52–60 still require their complete exact-revision gates; no pending merge or
+[PR61](https://github.com/logannye/biocompiler/pull/61) is committed and pushed at
+`6a31e1d2aef25aab06841b5343f9c5c4f8d243fd`, with fresh
+[run 36988173318](https://github.com/logannye/biocompiler/actions/runs/36988173318)
+pending at preservation. Producer-service work proceeds on the separate
+`codex/ocaml-synthetic-producer-service` branch so PR61 validation stays intact.
+PR52–61 require their complete exact-revision gates; no pending merge or
 automatic merge is enabled. The PR57–59 source-lineage correction retains every
 original corpus pin and reviewed whole-file AST witness. Earlier partial native
 success remains historical only. All unfinished layer checkboxes remain unchecked.
@@ -577,6 +577,38 @@ A subsequent source-census audit found the remaining candidate-runtime direct-ha
 assertion. Its one-test correction is pushed to PR57–60 with byte-identical
 inventories and unchanged goldens. [Exact corrections and replacement runs](../protocol/candidate-source-census-corrections.json)
 record current parent heads; previous partial native passes are historical only.
+
+- [ ] **LM-12/R6 P1 producer service:** expose the existing OCaml generator,
+  complete two-strategy selector and freshly checked component adapter through
+  producer-only operations and a strict raw-document SDK. Preserve complete
+  candidates, alternatives, rejections, configuration and finite-history result
+  identities under one bounded operation budget. Installed campaigns must retain
+  every applicable original producer occurrence and compare full results across
+  both native platforms and Python versions. Service and raw SDK are implemented;
+  native validation is pending. The installed campaign covers all 1,226 original
+  public occurrences and three verifier rejections per runtime, retaining the
+  1,146 private/injected producer occurrences explicitly as native-library coverage.
+  Existing public synthesis functions and CLI remain on their original route.
+  Public routing, native manager freshness, canonical packages and default
+  cutover remain separate unfinished work.
+
+- [x] **LM-03 producer-service Python fixture checkpoint:** ten strict client
+  tests and six installed-campaign/comparator fixture tests pass, including actual
+  Python protocol child processes, full original occurrence accounting and
+  rehashed content forgeries. Strict typing passes for all twelve adapter modules;
+  33 CI and native dependency-boundary tests pass. Native/Python declaration
+  metadata matches exactly. Existing public source, corpus and freezer files
+  remain unchanged. These checks validate transport and the evidence harness;
+  the 23 complete native literals and all hosted native campaigns still require
+  execution at the new revision.
+
+The integrated PR51 main revision `652e2aa0aa24bf563412483827d07c4bc027a4e0`
+passed all 31 jobs in [run 36972688727](https://github.com/logannye/biocompiler/actions/runs/36972688727).
+Its aggregate was independently reconstructed, both platform binaries rehashed,
+and all four sets of 175 architecture observations and 219 exact artifacts
+compared with the retained receipt. Both Python versions accounted for all
+2,429 tests. The [foundation validation receipt](../protocol/migration-realization-foundation-validation.json)
+records this main-branch evidence; it does not validate later revisions.
 
 These stages precede the remaining B2 producer/export and B3–B6 product gates.
 
