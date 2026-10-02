@@ -1,19 +1,21 @@
-# Native workflow presentation handoff
+# Native workflow presentation checkpoint and remaining integration
 
-Reviewed against PR59 checkpoint `4d14a08` on 2026-10-02. Design only;
-no production edits or native execution were performed for this follow-up.
-Implementation has not started; this plan is retained in the separate public-workflow checkpoint.
+Implementation checkpoint, 2026-10-02. The native v2 presentation service, strict
+Python transport, immutable views and separate source-only preflight capability
+are implemented. Python fixture and campaign-tool checks pass; hosted native and
+installed-runtime validation remain pending. Public SDK and CLI routing remain
+unfinished. The exact contracts are recorded in
+[`workflow-public-contracts-v1.md`](../protocol/workflow-public-contracts-v1.md).
 
 ## Native authority and control size
 
-`cli.py::_verification_summary` currently supplies check diagnostics,
-counterexamples and coverage; exploration bounds and native derived properties;
-or reduction result, minimality, evaluation count and frame counts.
-The full summary can approach the complete artifact size. Do not put that
-summary or its JSON text inside the artifact channel's 65,536-byte control
-receipt: that would narrow the supported 64 MiB workflow artifact boundary.
+The new `verification_workflow_presentation` capability advertises workflow
+semantic profile v2, service implementation v0.2 and semantic receipt v2. The
+original v1 capability, profile, complete artifact/receipt bytes and two-operation
+artifact transport remain unchanged. The v2 profile SHA-256 is
+`a15cfc3423bc7adc739e37ca81f9ecccde284cb22d666a4b3d0bbd768762d01c`.
 
-Recommended compact receipt addition:
+The implemented compact receipt addition is:
 
 ```json
 {
@@ -26,67 +28,73 @@ Recommended compact receipt addition:
 }
 ```
 
-Frame counts are integers for reduction and null otherwise. Compute the exit
-code in OCaml from the validated typed result: check `passed`, exploration
-`all_passed`, reduction `one_minimal`; successful replay always returns zero,
-including replay of a retained failure. Precharge reduction frame traversal
-against its cached complete canonical size before taking either list length.
-Every phase remains on the passed workflow budget.
+Frame counts are integers for reduction and null otherwise. OCaml derives the
+exit code from the typed result: check `passed`, exploration `all_passed`,
+reduction `one_minimal`; successful replay returns zero, including retained
+failure or nonminimal evidence. Reduction frame traversal is precharged against
+its cached complete canonical size before either list length. Every phase shares
+the operation budget.
 
-Other authoritative exploration properties already occur in the complete
-native report: state count, possible/evaluated histories, completeness,
-all-passed, outcome counts, coverage totals and shared dependencies. Python
-copies those values; it does not recompute them. Config state-count properties
-can project the corresponding native report fields. Root approved reuse of the
-existing audited pure `CheckResult` hydration path for typed leaf behavior;
-workflow/request/exploration constructors remain forbidden on the selected
-native route. No object-construction bypasses or Python semantic fallback.
+Full diagnostics, bounds and counterexamples remain in the complete artifact.
+Do not duplicate a potentially 64 MiB summary inside the 65,536-byte control
+receipt. Exploration's eight derived fields are copied from the native report,
+not recomputed by Python; bounds views project the corresponding native counts.
+The backend uses only the individually audited CheckResult, RequirementCoverage
+and FailureSignature leaf codecs. Legacy workflow/request/exploration
+constructors remain forbidden on native output.
 
 ## Exact legacy rendering
 
-Keep complete canonical workflow artifact bytes unchanged. Freeze the summary
-format in the presentation profile: `json.dumps(..., indent=2)` with default
-ASCII escaping, original insertion order, and one stdout newline. Common keys
-are record fingerprint, request fingerprint, operation, mode, intended use,
-human admission and claim scope, followed by operation-specific keys in the
-current CLI order. Append replay text and optional output path last.
+Canonical workflow bytes remain unchanged. The CLI formatting contract remains
+`json.dumps(..., indent=2)` with default ASCII escaping, original insertion order
+and one stdout newline. Common keys are record fingerprint, request fingerprint,
+operation, mode, intended use, human admission and claim scope, followed by
+operation-specific keys in the current CLI order. Replay text and optional output
+path remain last.
 
-The audited CheckResult codec restores diagnostic/counterexample/coverage
-`to_dict` field ordering. Structural bounds and signature views must restore
-their dataclass field order, plus InputFrame and SignalSample field order.
-Arbitrary fixed-suffix signal/contact map insertion order must come from the
-frozen raw independent authority: InputFrame preserves that order, while the
-canonical output record sorts object keys. Preserve that raw-order context in
-the native view or provide it explicitly to the formatting layer. This is
-formatting only; field values remain bound to native output and authority.
-The draft CLI capture tool includes a noncanonical-order authority case.
-No child capture has run yet; exact stdout reproduction remains unvalidated.
+The immutable views restore diagnostic, counterexample, coverage, bounds,
+signature, InputFrame and SignalSample field order structurally. Arbitrary
+fixed-suffix signal/contact map order comes from the separately retained frozen
+raw authority because canonical artifact sorting cannot recover it. This context
+controls formatting only; it cannot alter native field values or identity.
 
-## Command mismatch precedence
+The baseline is now frozen from 70 actual child processes: 66 console invocations
+and four module invocations, including all 16 original observations and a
+noncanonical-order authority case. Complete stdout, stderr, exits and files are
+retained. The inventory pin is
+`a67edb95f75aa011ed5c059fe8cbe578fbe118d056931e3992f73775e8951da7`.
+Current-source recapture preserves actual metadata separately and permits only
+the explicit reviewed source-scope comparison projection. No observation or
+content blob is normalized. Actual native CLI reproduction remains unvalidated.
 
-The existing CLI first imports and validates complete authority, then rejects
-a mismatch between the selected command and the request operation, then runs
-the workflow. Checking raw JSON operation before native source validation
-changes failure precedence; checking only after a completed native run changes
-precedence relative to evaluator failures.
+## Command and historical-file precedence
 
-Recommended v2 control addition: nullable explicit `command` (or an agreed
-equivalent expected-operation field). SDK sends null; CLI supplies its exact
-command. Native handling validates this after `decode_request_in` and before
-`run_in`, preserving the original message:
-`Command and frozen verification operation disagree.` Bind the supplied command
-in the semantic receipt/presentation. Replay uses `synthetic-replay`. This
-control's final name, error code and exact field shape still need agreement.
+V2 controls contain exactly `{profile, limits, command}`. SDK commands are null;
+CLI commands are explicit. After fresh `decode_request_in`, native handling
+checks command agreement before workflow execution or historical-record loading.
+Mismatch diagnostic `workflow_protocol_command` retains the original message:
+`Command and frozen verification operation disagree.` The receipt binds command;
+replay uses `synthetic-replay`.
 
-## Versioning decision still open
+Original CLI replay also validates source before opening its historical file.
+The implemented `verification_workflow_authority` service and separate
+`artifact_transport_authority` profile supply source-only preflight to preserve
+that precedence. Planned CLI integration must freeze source bytes, preflight,
+then read the historical file and perform ordinary fresh replay using those same
+source bytes. Preflight performs no workflow evaluation and returns no acceptance
+token. Replay must validate afresh; each operation has its own explicit budget.
 
-Prefer a new workflow semantic profile v2, service implementation v0.2 and
-semantic receipt v2; retain artifact transport v1 and existing record schemas.
-Alternatively preserve v1 negotiation alongside a separately named presentation
-capability. Do not silently add fields to an exact v1 profile/receipt.
+## Remaining integration and required evidence
 
-Root must coordinate the selected option across service, strict client,
-immutable native views, public SDK/CLI routes, independent supplemental profile
-fixtures, complete installed campaigns and four-way comparator. Preserve the
-original frozen corpus and the current PR59 validation; no reviewed profile
-pins or goldens were changed during this design task.
+Hosted CI now includes installed presentation and source-preflight campaigns in
+all four existing realization variants, followed by comparisons of complete
+artifacts, receipts and executable identities. The source contains 88 native
+test suites, including preflight. These gates must pass for the exact revision;
+Python fixtures or previous v1 runs cannot substitute for native validation.
+
+Next add the explicit public SDK route and CLI routing without changing default
+behavior or failure precedence. Preserve command usage output, bounded atomic
+publication and all original observations. Add installed immutable-view/public
+CLI campaigns across both executable roles, Linux/macOS and Python 3.11/3.14.
+Existing v1 goldens and gates remain mandatory. This checkpoint does not close
+R5 or any language-migration completion item.

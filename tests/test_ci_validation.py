@@ -209,14 +209,16 @@ class ValidationGateTests(unittest.TestCase):
         text = (Path(__file__).resolve().parents[1] / ".github/workflows/ci.yml").read_text()
         matrix = text.split("\n  realization-conformance:\n", 1)[1].split("\n  realization-core-reproducibility:", 1)[0]
         commands = ["tools/check_realization_protocol.py", "tools/check_realization_routing.py",
-                    "tools/check_native_workflow.py"]
+                    "tools/check_native_workflow.py", "tools/check_native_workflow_presentation.py",
+                    "tools/check_native_workflow_authority.py"]
         for command in commands:
             self.assertIn(command, matrix)
             self.assertLess(matrix.index(command), matrix.index("Record successful complete conformance"))
         for binding in ("--core-sha256", "--verify-sha256", "--native-root", "--platform ${{ matrix.platform }}"):
             self.assertIn(binding, matrix)
         comparison = text.split("\n  realization-core-reproducibility:\n", 1)[1].split("\n  studio-typescript:", 1)[0]
-        for command in ("tools/check_realization_reproducibility.py", "tools/check_workflow_reproducibility.py"):
+        for command in ("tools/check_realization_reproducibility.py", "tools/check_workflow_reproducibility.py",
+                        "tools/check_native_workflow_presentation.py --compare", "tools/check_native_workflow_authority.py --compare"):
             self.assertIn(command, comparison)
             self.assertLess(comparison.index(command), comparison.index("Record successful complete comparison"))
         self.assertIn("generated/realization-reproducibility/*.json", comparison)

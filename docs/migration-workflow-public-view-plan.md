@@ -1,10 +1,13 @@
-# R5 public workflow views: implementation plan
+# R5 public workflow views: implementation checkpoint and remaining plan
 
-Checkpoint, 2026-10-02. This is the next implementation plan, not completed SDK
-routing or native validation evidence. No backend or production SDK changes were
-made during this audit. Read with rule 6 of
-`migration-realization-workflow-public-plan.md` and the existing native workflow
-client and artifact-transport contract.
+Checkpoint, 2026-10-02. `src/biocompiler/workflow_backend.py` now implements the
+immutable native views and input adapters described below; its 18 focused Python
+tests pass. The strict workflow client also implements the compatible v2
+presentation contract. These results do not establish hosted native success or
+complete public SDK/CLI routing: the original public workflow functions and CLI
+remain unchanged. Read with rule 6 of
+`migration-realization-workflow-public-plan.md` and
+[`workflow-public-contracts-v1.md`](../protocol/workflow-public-contracts-v1.md).
 
 ## Accepted public contract
 
@@ -26,10 +29,11 @@ nominal checks, arbitrary IR methods, or constructor-based semantic validation.
 Keep the original imports and default constructors intact. Missing, incompatible,
 rejected or unavailable selected cores must fail; never fall back to Python.
 
-Root approved the existing, individually audited **CheckResult structural
-codec** for leaf hydration, with the same narrow execution-guard allowlist and
-complete byte/fingerprint check used by `realization_backend.py`. This is not
-permission to allow arbitrary `from_dict` calls, the entire evidence module, or
+The implementation uses individually audited **CheckResult**,
+**RequirementCoverage** and **FailureSignature** structural codecs for leaf
+hydration, with narrow execution-guard exceptions and complete re-encoding
+checks. CheckResult retains the complete ASCII byte/fingerprint check used by
+`realization_backend.py`. This does not permit arbitrary `from_dict` calls, the entire evidence module, or
 `_Record.from_dict` for every subclass. No constructor bypasses, `object.__new__`
 hacks, monkeypatched validators or forged old-class identities are acceptable.
 
@@ -53,7 +57,7 @@ whose historical meaning is a different semantic fingerprint.
 | Observation view | `signal_id`, `field`, schema and exact serialized fields |
 | Input-frame/sample views | `time`, immutable `signals` and `contacts`; sample `value`, `present`, `high`, `low`; exact `to_dict()` without evaluator construction |
 | Typed `CheckResult` leaves | Existing outcome/evidence enums, dependencies, checked IDs, diagnostics, counterexamples, coverage, `passed`, exercised IDs, structural freshness comparison and complete legacy codecs |
-| Failure signature | All eight scalar/null fields and schema; exact serialization; optional existing nominal leaf hydration remains a separately proposed approval below |
+| Failure signature | All eight scalar/null fields and schema; exact serialization through the individually audited `FailureSignature` leaf codec |
 | Nested realization/candidate documents | Complete immutable supplied JSON and structural access/serialization. No Python lowering, reconstruction or generated semantic identity; unsupported legacy IR methods must remain explicit |
 
 Exploration's eight derived fields are `state_count`, `possible_histories`,
@@ -125,10 +129,11 @@ an explicit audited extension.
 
 ## Native presentation and CLI formatting
 
-The service owner is designing a compact versioned presentation receipt with
-`command_exit_code`, `original_frames` and `reduced_frames` (frame counts null
-outside reduction). Other summary values already exist in the native record or
-approved typed CheckResult leaves. Keep the control response below 64 KiB; full
+The v2 service and strict client now implement a compact versioned presentation
+receipt with `command_exit_code`, `original_frames` and `reduced_frames` (frame
+counts null outside reduction). Native source and installed campaign checks are
+wired into hosted CI; native execution remains pending. Other summary values
+already exist in the native record or approved typed CheckResult leaves. Keep the control response below 64 KiB; full
 diagnostics and counterexamples can approach the artifact limit and must stay
 in the complete record rather than being duplicated into control metadata.
 
@@ -140,63 +145,64 @@ authority when exact legacy summary text requires it: canonical artifact bytes
 sort those maps and cannot recover the original insertion order. Retain that
 bounded formatting context separately; it does not change canonical identity.
 
-## Proposed backend seams and unresolved input compatibility
+## Implemented backend seams and input compatibility
 
-After approval, own only `src/biocompiler/workflow_backend.py` and focused tests.
-Build on `WorkflowClient.run/replay`; do not duplicate capability negotiation,
-transport, semantic receipts or profile checks. Suggested raw seams:
+The backend delegates negotiation, artifact transport and semantic receipt
+binding to `WorkflowClient.run_public/replay_public`. It exposes:
 
-- `run_document(*, request, core, limits=None, cancelled=None)` returns the native
-  record view and the complete immutable native transport result.
-- `replay_document(*, request, record, core, limits=None, cancelled=None)` requires
-  independent complete authority and returns the same pair after fresh replay.
-- A small public-SDK adapter serializes already authored requests structurally
-  and returns the record view. Root owns adding the explicit `core=` branches.
-- `WorkflowCoreError(SerializationError)` retains the original CoreError and all
-  structured diagnostics. Native errors cannot enter the Python default branch.
+- `view_result(native, authority=None)` for a complete checked transport result.
+- `run_document(*, request, core, limits=None, command=None, cancelled=None)` and
+  `replay_document(*, request, record, core, limits=None, command=None, cancelled=None)`
+  returning a native view and its immutable transport result.
+- `run_record(request, *, core, **options)` and
+  `replay_record(record, *, expected_request, core, **options)` returning the view.
+- `WorkflowCoreError(SerializationError)` retaining the original CoreError and
+  all structured diagnostics. Selected-core errors never enter a Python fallback.
 
-Complete raw bytes/documents and existing native views are straightforward
-inputs. Already authored **requests** can be serialized without calling their
-semantic constructors again, subject to a focused serialization audit. A newly
-identified limitation is historical **legacy records**: their `to_json()` calls
-`ExplorationReport.to_dict()`, which recomputes all eight derived fields. Do not
-silently call that serializer inside a selected-core replay path and thereby
-reintroduce Python aggregation. Initially require raw retained bytes/mappings or
-a native view for that path, or first agree on a separately audited compatibility
-serializer. This is an explicit opt-in limitation, not a change to default Python
-replay. Constructor/default behavior must not change to hide the distinction.
+Inputs may be complete bytes, mappings, corresponding native views, or exact
+already-authored legacy request/record types. Legacy `to_dict()` executes only
+inside the scoped `serializing_legacy_input()` marker. Its exploration-derived
+fields are untrusted historical claims: OCaml independently reconstructs and
+checks the complete workflow. The marker resets even on failure, before native
+transport and output exposure. This narrowly reviewed input compatibility does
+not permit legacy constructors, evaluators, lowering or aggregation on native
+output. Execution guards must distinguish this input phase from output hydration.
 
-## Narrow optional signature codec proposal
+Public `core=` branches in `run_synthetic_verification` and
+`replay_synthetic_verification` remain to be added with exact source-lineage
+witnesses. Preserve the original default route and all generic callback APIs.
 
-`FailureSignature.from_dict` has no nested decoders and no derived fields. Its
-inherited record importer performs exact-field/schema/UTF-8 checks; the normal
-constructor validates only scalar/null names, kind and required/forbidden fields.
-It does not enumerate, execute checks, validate histories or invoke `matches`.
-A separately approved, class-specific codec entry could preserve the original
-signature class and `matches` when used with the approved typed CheckResult
-leaves. This is proposed, not yet approved. Never allow `_Record.from_dict` for
-all subclasses: config/report/request constructors have semantic work. User
-signature queries do not replace native selected-failure preservation or fresh
-replay. Without that additional approval, expose signature fields/serialization
-and explicitly leave the old nominal method compatibility unresolved.
+## Audited signature leaf boundary
+
+`FailureSignature.from_dict` has no nested decoders or derived fields. Its
+class-specific importer checks exact fields, schema and scalar/null constraints;
+it does not enumerate histories, execute checks or call `matches`. The backend
+now uses this audited leaf codec and compares its complete serialized bytes.
+Do not generalize the exception to `_Record.from_dict` for every subclass:
+config/report/request constructors perform semantic work. User signature queries
+never replace native selected-failure preservation or fresh replay.
 
 ## Required verification before public completion
 
-Use independent original full-record literals for all three operations, both
-modes, all four outcomes, mixed/contact bounds, capped campaigns and minimal/
-budget-exhausted reductions. Check every projected field, complete UTF-8 record
-identity, every ASCII leaf identity, defensive copies, deep immutability,
+The 18 focused Python tests cover complete original records across all six
+operation/mode pairs, identities, summary formatting, immutability and the input
+serialization boundary. Complete installed execution remains required. Its
+campaign must retain independent original full-record literals for all three
+operations, both modes, all four outcomes, mixed/contact bounds, capped campaigns
+and minimal/budget-exhausted reductions. Check every projected field, complete
+UTF-8 record identity, every ASCII leaf identity, defensive copies, deep immutability,
 Unicode, integer/float distinctions and signed zero. Pin the new class identity
 and reject old-class constructor bypasses.
 
 Execution guards must forbid source lowering, old workflow constructors,
 history enumeration, result aggregation, reduction, evaluators, producer calls
-and unapproved codecs on the selected native path. Keep only the exact approved
-leaf codec exceptions. Test missing/incompatible core, structured native errors,
+and unapproved codecs during native execution and output exposure. Allow exact
+legacy input serializers only while the scoped input marker is active. Keep
+only the exact approved leaf codec exceptions. Test missing/incompatible core, structured native errors,
 malformed replies, cancellation and timeout without fallback. Preserve all
 original default/callback tests independently. Exercise native replay from raw
-historical bytes and native views, and document/reject any still unsupported
-legacy typed-record input before its semantic serializer can execute.
+historical bytes, native views and exact legacy typed records within the scoped
+input boundary. Reject unsupported input types before invoking their serializers.
 
 Installed campaigns must subsequently validate both executable roles, Linux and
 macOS, Python 3.11/3.14, complete record publication and exact CLI summaries/exit

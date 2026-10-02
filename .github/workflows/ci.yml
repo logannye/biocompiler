@@ -1236,6 +1236,22 @@ jobs:
             --native-root "$GITHUB_WORKSPACE/artifacts/native" \
             --platform ${{ matrix.platform }} \
             --output "$GITHUB_WORKSPACE/generated/realization/workflow.json"
+          python "$GITHUB_WORKSPACE/tools/check_native_workflow_presentation.py" \
+            --core "$GITHUB_WORKSPACE/artifacts/native/biocompiler-core" \
+            --verify "$GITHUB_WORKSPACE/artifacts/native/biocompiler-verify" \
+            --core-sha256 "$BIOCOMPILER_WORKFLOW_CORE_SHA" \
+            --verify-sha256 "$BIOCOMPILER_WORKFLOW_VERIFY_SHA" \
+            --native-root "$GITHUB_WORKSPACE/artifacts/native" \
+            --platform ${{ matrix.platform }} \
+            --output "$GITHUB_WORKSPACE/generated/realization/workflow-presentation.json"
+          python "$GITHUB_WORKSPACE/tools/check_native_workflow_authority.py" \
+            --core "$GITHUB_WORKSPACE/artifacts/native/biocompiler-core" \
+            --verify "$GITHUB_WORKSPACE/artifacts/native/biocompiler-verify" \
+            --core-sha256 "$BIOCOMPILER_WORKFLOW_CORE_SHA" \
+            --verify-sha256 "$BIOCOMPILER_WORKFLOW_VERIFY_SHA" \
+            --native-root "$GITHUB_WORKSPACE/artifacts/native" \
+            --platform ${{ matrix.platform }} \
+            --output "$GITHUB_WORKSPACE/generated/realization/workflow-authority.json"
       - name: Retain complete protocol and SDK artifacts even on failure
         if: always()
         uses: actions/upload-artifact@v4
@@ -1287,6 +1303,14 @@ jobs:
         env:
           GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
         run: python tools/check_workflow_reproducibility.py --root artifacts/realization --native-root artifacts/core --output generated/realization-reproducibility/workflow.json
+      - name: Require complete native presentation evidence across all four runtimes
+        env:
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: python tools/check_native_workflow_presentation.py --compare --root artifacts/realization --native-root artifacts/core --output generated/realization-reproducibility/workflow-presentation.json
+      - name: Require complete source-authority preflight evidence across all four runtimes
+        env:
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: python tools/check_native_workflow_authority.py --compare --root artifacts/realization --native-root artifacts/core --output generated/realization-reproducibility/workflow-authority.json
       - name: Retain complete comparison receipt
         if: always()
         uses: actions/upload-artifact@v4

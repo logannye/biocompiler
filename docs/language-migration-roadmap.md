@@ -516,15 +516,26 @@ These checkpoints record narrower validated work; they do not complete a broad L
   [public workflow audit](migration-realization-workflow-public-plan.md) and
   [complete capture audit](migration-realization-workflow-conformance-plan.md).
 
-- [ ] **LM-12/R5 public workflow checkpoint:** a separate preservation branch
-  retains the native-view design and an unvalidated 66-case actual-child CLI
-  capture tool. Only syntax and case census were checked; no child cohort was
-  run and no golden baseline exists. The original CLI and public workflow
-  implementations remain unchanged. Freeze and independently repeat the actual
-  Python CLI baseline before adding optional native routing, then preserve
-  publication bytes, exit statuses, error precedence and source lineage. Native
-  presentation/profile compatibility and legacy typed-record serialization still
-  require explicit implementation decisions.
+- [x] **LM-03 actual CLI capture checkpoint:** all 70 actual child processes were
+  independently repeated with exact stdout, stderr, exits and complete filesystem
+  bytes. The 16 original CLI observations and four original test methods remain
+  intact; 66 console invocations and four module invocations retain all operation
+  and mode pairs, nonpassing replay, publication failures, ordering and size
+  boundaries. Eleven integrity/recapture tests pass. The complete inventory pin
+  is `a67edb95f75aa011ed5c059fe8cbe578fbe118d056931e3992f73775e8951da7`;
+  114 content documents retain 5,200,804 bytes. This proves the original Python
+  CLI baseline, not migrated native CLI execution.
+- [ ] **LM-12/R5 native public-workflow preparation:** compatible presentation v2
+  now retains v1 while adding native exit policy, reduction frame counts and
+  command validation after source validation. Separate native source preflight
+  preserves the future replay route's source-before-file-error order. Immutable
+  Python views preserve complete records and formatting through audited output
+  leaf codecs; legacy input serialization remains untrusted input only. Local
+  focused transport/view checks pass; the 88 native suites, installed campaigns
+  and full 36-job gate require hosted validation. The original public workflow
+  functions and CLI remain unchanged. Native public routing and complete installed
+  view/CLI conformance are still required, followed by R6 and distribution/cutover.
+  See [contracts and evidence scope](../protocol/workflow-public-contracts-v1.md).
 
 **Credit-limit preservation, 2026-10-02:** implementation through
 [PR59](https://github.com/logannye/biocompiler/pull/59) is committed and pushed at

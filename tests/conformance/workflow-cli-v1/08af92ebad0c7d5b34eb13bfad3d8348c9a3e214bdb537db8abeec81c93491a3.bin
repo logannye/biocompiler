@@ -1,0 +1,159 @@
+{
+  "schema_version": "biocompiler.synthetic_verification_record.v0.1",
+  "fingerprint": "9b5811a05e9a5d4d83ee19ffef622e8214f077455e0a30600cf88092736d53fb",
+  "record_fingerprint": "9b5811a05e9a5d4d83ee19ffef622e8214f077455e0a30600cf88092736d53fb",
+  "request_fingerprint": "7deafe27d74d46c6b78bce896184f24fc312d9d65c3aae0acf6a4c027d67a110",
+  "operation": "check",
+  "mode": "model",
+  "intended_use": "software_test",
+  "human_therapeutic_admission": "not_admitted",
+  "claim_scope": "Historical finite-history software-model verification record; fresh replay requires independent complete operation authority. No universal, biological or human therapeutic claim.",
+  "outcome": "fail",
+  "diagnostics": [
+    {
+      "code": "response_violation",
+      "message": "Independent model outputs violate one or more response envelopes after their deadlines.",
+      "requirement_id": null,
+      "node_id": null,
+      "source": null
+    }
+  ],
+  "counterexamples": [
+    {
+      "requirement_id": "memory_readout",
+      "time": 5,
+      "contact_id": null,
+      "expected": {
+        "state": "inactive",
+        "range": {
+          "kind": "interval",
+          "lower": {
+            "kind": "scalar",
+            "value": 0,
+            "unit": "1",
+            "canonical_value": 0,
+            "type": {
+              "kind": "scalar",
+              "name": "Level",
+              "dimensions": {},
+              "arguments": []
+            }
+          },
+          "upper": {
+            "kind": "scalar",
+            "value": 0,
+            "unit": "1",
+            "canonical_value": 0,
+            "type": {
+              "kind": "scalar",
+              "name": "Level",
+              "dimensions": {},
+              "arguments": []
+            }
+          },
+          "type": {
+            "kind": "interval",
+            "name": "Interval[Level]",
+            "dimensions": {},
+            "arguments": [
+              {
+                "kind": "scalar",
+                "name": "Level",
+                "dimensions": {},
+                "arguments": []
+              }
+            ]
+          }
+        }
+      },
+      "actual": 1,
+      "rule_id": "n000023",
+      "specification_id": "n000020",
+      "source": {
+        "file": "examples/temporal_pipeline.py",
+        "line": 31,
+        "function": "build_request"
+      }
+    },
+    {
+      "requirement_id": "memory_readout",
+      "time": 6,
+      "contact_id": null,
+      "expected": {
+        "state": "inactive",
+        "range": {
+          "kind": "interval",
+          "lower": {
+            "kind": "scalar",
+            "value": 0,
+            "unit": "1",
+            "canonical_value": 0,
+            "type": {
+              "kind": "scalar",
+              "name": "Level",
+              "dimensions": {},
+              "arguments": []
+            }
+          },
+          "upper": {
+            "kind": "scalar",
+            "value": 0,
+            "unit": "1",
+            "canonical_value": 0,
+            "type": {
+              "kind": "scalar",
+              "name": "Level",
+              "dimensions": {},
+              "arguments": []
+            }
+          },
+          "type": {
+            "kind": "interval",
+            "name": "Interval[Level]",
+            "dimensions": {},
+            "arguments": [
+              {
+                "kind": "scalar",
+                "name": "Level",
+                "dimensions": {},
+                "arguments": []
+              }
+            ]
+          }
+        }
+      },
+      "actual": 1,
+      "rule_id": "n000023",
+      "specification_id": "n000020",
+      "source": {
+        "file": "examples/temporal_pipeline.py",
+        "line": 31,
+        "function": "build_request"
+      }
+    }
+  ],
+  "coverage": [
+    {
+      "requirement_id": "contact_pulse",
+      "activation_deadlines_checked": 1,
+      "inactive_deadlines_checked": 3,
+      "incomplete_episode_count": 0,
+      "cancelled_episode_count": 0
+    },
+    {
+      "requirement_id": "local_pulse",
+      "activation_deadlines_checked": 1,
+      "inactive_deadlines_checked": 2,
+      "incomplete_episode_count": 0,
+      "cancelled_episode_count": 0
+    },
+    {
+      "requirement_id": "memory_readout",
+      "activation_deadlines_checked": 1,
+      "inactive_deadlines_checked": 2,
+      "incomplete_episode_count": 0,
+      "cancelled_episode_count": 0
+    }
+  ],
+  "inspection": "Historical report only; fresh replay requires independent complete operation authority."
+}

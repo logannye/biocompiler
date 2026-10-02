@@ -22,14 +22,14 @@ Unknown export bindings, dynamic export mutations, unresolved schema/profile dec
 | `example` | 36 |
 | `export` | 536 |
 | `ir_operation` | 165 |
-| `module` | 176 |
-| `public_definition` | 736 |
+| `module` | 178 |
+| `public_definition` | 758 |
 | `schema` | 327 |
-| `serializer` | 292 |
+| `serializer` | 295 |
 | `studio_asset` | 8 |
 | `studio_endpoint` | 14 |
-| `version_literal` | 498 |
-| `version_profile` | 97 |
+| `version_literal` | 515 |
+| `version_profile` | 98 |
 
 ## CLI command index
 
