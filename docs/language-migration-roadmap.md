@@ -4,7 +4,7 @@ Created: 2026-10-01, America/Los_Angeles.
 
 **Decision:** TypeScript for Studio; Python for authoring, orchestration and scientific exploration; OCaml for the semantic compiler, independent checking and canonical emission.
 
-**Status:** the default remains Python; explicit architecture SDK/CLI selection now uses the validated OCaml core. PR48 and PR49 passed all required PR gates and are merged, covering installed architecture routing and the independent candidate runtime. Their separate integrated-main workflows remain pending. PR50–52 preserve subsequent locked execution, realization evidence and independent realization checking; their full product gates remain pending. Generic component acceptance is the current implementation batch. Distribution, remaining public profiles and default cutover are still open.
+**Status:** the default remains Python; explicit architecture SDK/CLI selection now uses the validated OCaml core. PR48–50 passed all required PR gates and are merged, covering installed architecture routing, the independent candidate runtime and locked-component execution. Their separate integrated-main workflows remain pending. PR51–53 preserve realization evidence, independent realization checking and generic component acceptance; their full product gates remain pending. Synthetic candidate/catalog authority is the current implementation batch. Distribution, remaining public profiles and default cutover are still open.
 
 The validated foundation is merged in [PR37](https://github.com/logannye/biocompiler/pull/37), with the exact revision/platform results in the [foundation receipt](../protocol/migration-foundation-validation.json). Typed request, all 42 Behavior operations and molecular-coordinate domains are merged in [PR38](https://github.com/logannye/biocompiler/pull/38); the [domain receipt](../protocol/migration-domain-validation.json) records both native platforms and full Python/integration checks. Both integrated main revisions also passed their required gates.
 
@@ -141,7 +141,7 @@ Depends on LM-00; implementation uses LM-01.
 - [x] Freeze fingerprint behavior from [serialization.py](../src/biocompiler/ir/serialization.py). It is SHA-256 over Python's compact sorted-key UTF-8 JSON, not an assumed generic canonical-JSON standard.
 - [x] Test arbitrary-size integers, the JavaScript safe-integer boundary, bool versus int, int versus float, exponent spelling, negative zero, finite float roundtrips, invalid Unicode and object-key ordering. Do not truncate Python integers to OCaml machine integers.
 - [x] Preserve the exact decimal-to-rational primitive and existing reference floating-point behavior. PR40 validates the reference numeric corpus; PR42 validates `Fraction(str(value))` compatibility, 18 exact ratios and six literal decimal-sum boundaries.
-- [ ] Validate exact decimal interval semantics in the complete availability checker. The current architecture batch implements this contextual check but awaits hosted validation. Numeric-model improvements require a separately versioned semantic change.
+- [x] Validate exact decimal interval semantics in the complete availability checker. PR45 and its integrated-main run passed 30 complete deployment results/witnesses on both native platforms, including exact decimal equality and a genuine decimal gap. [Validation receipt](../protocol/migration-architecture-validation.json). Numeric-model improvements require a separately versioned semantic change.
 - [x] Preserve raw authoritative JSON through browser and adapter workflows; parsed JavaScript objects are display/editing aids and must not silently reserialize imported authority.
 - [ ] Separate semantic fingerprints from run timestamps, local paths and packaging metadata. Document canonical binary/text encodings and archive determinism.
 - [x] Implement protocol errors, crash/timeout/cancellation handling and executable compatibility checks. Reject incomplete responses and ambiguous outputs.
@@ -242,25 +242,30 @@ These checkpoints record narrower validated work; they do not complete a broad L
   integrated-main run `36968854701` remains pending. Public realization routing
   and full migration cutover are still open.
 
-- [ ] **B1.08b locked-component reconstruction and execution:** in progress on
-  `codex/ocaml-locked-component-execution`. Full registry/lock, composition,
+- [x] **B1.08b locked-component reconstruction and execution:** full registry/lock, composition,
   observation-map and assembly containers retain complete authority. The runner
   derives operations, parameters and ordered inputs from actual selected records
   and wiring. The unchanged 163-method baseline retains all 52,476 calls and
   exact domains, reconstructed graphs and full traces. Six source integrity/replay
   tests pass; 56 native suites, the full mandatory corpus and all product gates
-  remain required on both hosted platforms. The corpus pin is
+  passed on both hosted platforms. The corpus pin is
   `aea8309d6efa172777f550d4a91cd3ebb7b40c301234fc7e90636fb4f466fcbf`
-  (4,934 documents, 64,530,645 bytes). Draft
-  [PR50](https://github.com/logannye/biocompiler/pull/50) preserves this batch.
+  (4,934 documents, 64,530,645 bytes).
+  [PR50](https://github.com/logannye/biocompiler/pull/50) is merged.
   The initial Linux run compiled all targets but exposed a malformed-inventory
   diagnostic mismatch in the full corpus. That branch is corrected without
   changing retained expectations. A source audit also corrected kind-specific
   ValueDomain rejection precedence, with 26 new literal assertions. The reader
   reports all case failures before failing its aggregate gate. All 56 native
   suites, including the complete corpus, now pass on both hosted platforms at
-  `ca1228753dd5ae6f7e803c866800ff703ef5d05f`; fresh complete product validation remains
-  required. Generic composition acceptance, realization checking, scientific
+  `ca1228753dd5ae6f7e803c866800ff703ef5d05f`. All 31 required jobs in
+  [run 36964842188](https://github.com/logannye/biocompiler/actions/runs/36964842188)
+  passed: 2,425 tests on each Python version and four complete 175-check/219-artifact
+  installed campaigns. Source, tested merge and integrated commit
+  `1b1ffa182e05ba688c6d309f80980adac87a6f3e` share the exact tested tree.
+  [Validation receipt](../protocol/migration-locked-component-validation.json).
+  Separate integrated-main run `36970818826` remains pending.
+  Generic composition acceptance, realization checking, scientific
   adapters and empirical validity are separate unfinished obligations.
 
 - [ ] **B1.09a realization contracts and complete evidence:** port InputDomain,
@@ -338,6 +343,29 @@ These checkpoints record narrower validated work; they do not complete a broad L
 - [ ] **B1.09d component correspondence and fresh replay:** independently reconstruct
   the expected source/assembly correspondence without importing its adapter or
   producer; require complete generic linking before behavior acceptance.
+  The [independent acceptance implementation plan](migration-synthetic-acceptance-plan.md)
+  records the current producer dependencies, exact synthetic provenance and
+  policy obligations, temporal rules, candidate-dependent component declarations,
+  diagnostic precedence and required independent mutation evidence. Typed
+  synthetic catalog/configuration/candidate declarations are the next prerequisite;
+  their structural import does not establish candidate provenance or acceptance.
+  The implemented declaration batch retains both complete 9/13-operation catalogs,
+  all four profile/strategy configurations, candidate source/requirement maps and
+  locked identities. Its 373 unchanged source methods and both actual subprocesses
+  produce 47,758 observations across 381 contexts. All 41,267 domain/catalog calls
+  have complete native expectations; 6,491 generation, selection and acceptance
+  observations remain explicitly deferred, including the private generator used
+  by selection. Corpus pin
+  `caf19f88640281b28b4ea4a39d131a5e2ecf8c696465af1c5a020a265aa161fa`
+  covers 3,759 documents / 75,488,401 bytes. Six Python integrity/replay tests and
+  independent full recapture/byte comparison pass. Independent review confirms
+  22 complete artifact/fingerprint/byte literals, 74 original rejection witnesses
+  and three constructor-order cases. Two new suites bring the required native
+  total to 71; native execution and complete hosted product gates remain pending.
+  [PR54](https://github.com/logannye/biocompiler/pull/54) preserves this declaration
+  batch. Its first hosted build caught two ambiguous documentation comments;
+  correcting those annotations preserves strict warnings and leaves the full
+  replacement native/product gates required.
 - [ ] **B1.09e protocol exposure and public routing:** accept full external authority,
   freshly recompute complete results, and preserve every existing caller and
   export gate. The audited realization baseline contains 324 methods across 23
@@ -505,7 +533,7 @@ Starting points: [mechanism IR](../src/biocompiler/ir/mechanism.py), [realizatio
 Depends on LM-20/21.
 
 - [ ] Port the currently supported mechanism/model contracts, endpoint observation maps, parameter identities, operating contexts and causal dependencies.
-- [ ] Reconstruct candidate execution from actual locked records/wiring, not from requested source outputs.
+- [x] Reconstruct candidate execution from actual locked records/wiring, not from requested source outputs. PR50 validates complete locked-component reconstruction and actual execution on both native platforms; source correspondence, fresh acceptance and biological validity remain separate obligations.
 - [ ] Preserve independent active/inactive response coverage, unfinished deadlines, failure precedence and exact bounded-history claims.
 - [ ] Define Python scientific adapter requests/results with pinned model, parameter, context, numerical-method and execution identities. Adapter outputs remain scoped results, not self-authenticating verification.
 - [ ] Keep unsupported mechanism discovery, general biological simulation and unmapped operating/resource contracts explicit. This migration does not fill them with nominal implementations.
