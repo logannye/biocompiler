@@ -12,8 +12,8 @@
       "bytes": 150
     },
     "core/lib/pipeline_service/session.ml": {
-      "sha256": "5190d7095310b1c887b51e0b79746730339f2d61b7392aed2d75330fc0e4704b",
-      "bytes": 29620
+      "sha256": "ac907b1a0d0703188af87fd90afebe068ff3778ae46359ca7abb90615ce32aa5",
+      "bytes": 29624
     },
     "core/lib/pipeline_service/session.mli": {
       "sha256": "70e79f2a0d4c2320325b0871cba17cd82063344da7b76ea754a47f2b7b57e2cb",
@@ -114,5 +114,15 @@
       "64 MiB artifact integration",
       "default cutover and distribution"
     ]
+  },
+  "hosted_correction": {
+    "failed_source_revision": "7cad2cb209e0d4c5b87cdfbaea82bffe22037e3b",
+    "run_id": 37033279170,
+    "job_id": 110925164259,
+    "platform": "linux-x86_64",
+    "stage": "native compilation",
+    "diagnostic": "warning 41 ambiguous record field closed in Session.handle_frame",
+    "change": "Explicit t annotation on handle_frame state; warning policy and runtime behavior unchanged.",
+    "revalidation": "required on corrected revision; no local native compilation"
   }
 }

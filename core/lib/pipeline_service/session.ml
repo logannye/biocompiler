@@ -354,7 +354,7 @@ let resource_error state diagnostic =
   String.ends_with ~suffix:"_limit" diagnostic.Diagnostic.code ||
   List.mem diagnostic.code ["request_too_large";"response_too_large";
     "string_too_large";"number_too_large";"invalid_work_budget"]
-let handle_frame state raw =
+let handle_frame (state:t) raw =
   try
     require (not state.closed && state.pending=Some (String.length raw))
       "pipeline_session_frame" "Session frame body does not match its reservation.";
