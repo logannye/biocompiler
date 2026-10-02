@@ -1,0 +1,1 @@
+"{\"code\":\"host_capacity_mismatch\",\"instance_id\":null,\"message\":\"Pool 'shared' exceeds or differs from the target host resource declaration.\",\"requirement_ids\":[\"intent\"],\"status\":\"fail\"}"

@@ -1,0 +1,1 @@
+"{\"code\":\"incompatible_ports\",\"instance_id\":\"aggregate:local_pulse\",\"message\":\"Domain inclusion is unresolved because a domain is unknown. Initialization: Domain inclusion is unresolved because a domain is unknown.\",\"requirement_ids\":[\"local_pulse\",\"requirement:n000021\"],\"status\":\"unknown\"}"

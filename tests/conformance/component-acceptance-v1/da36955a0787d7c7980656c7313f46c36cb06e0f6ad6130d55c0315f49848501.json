@@ -1,0 +1,1 @@
+"{\"args\":[{\"component_id\":\"preferred_narrow\",\"content_fingerprint\":\"eb3d3e9fe71833d2e47d136714470b3d8af4ca86f130b30cceed27c3aa6d184c\",\"preference_rank\":[],\"reasons\":[\"domain:level: Required domain exceeds the supported domain.\"],\"schema_version\":\"biocompiler.component_selection_alternative.v0.1\",\"status\":\"rejected\",\"version\":\"1\"}],\"kwargs\":{}}"

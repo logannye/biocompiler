@@ -1,0 +1,1 @@
+{"code":"unexercised_response","message":"No active response deadline was exercised for this requirement.","node_id":"n000020","requirement_id":"memory_readout","source":{"file":"examples/temporal_pipeline.py","function":"build_request","line":31}}

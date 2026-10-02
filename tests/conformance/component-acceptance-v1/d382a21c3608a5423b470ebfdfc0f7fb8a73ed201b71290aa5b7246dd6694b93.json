@@ -1,0 +1,1 @@
+"{\"code\":\"ambiguous_provider\",\"instance_id\":\"a\",\"message\":\"A required dependency needs exactly one compatible provider or an explicit binding.\",\"requirement_ids\":[\"intent\"],\"status\":\"unknown\"}"

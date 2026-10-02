@@ -1,0 +1,1 @@
+{"code":"resource_unit_or_type","instance_id":"1","message":"Reservation and pool must match resource meaning, type and explicit units.","requirement_ids":["intent"],"status":"fail"}

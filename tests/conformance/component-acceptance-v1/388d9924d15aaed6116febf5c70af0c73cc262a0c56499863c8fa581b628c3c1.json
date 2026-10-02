@@ -1,0 +1,1 @@
+"{\"code\":\"missing_transition_model\",\"instance_id\":\"expression:n000014\",\"message\":\"Discrete-event interfaces require an explicit executable transition model.\",\"requirement_ids\":[\"memory_readout\",\"requirement:n000014\",\"requirement:n000023\"],\"status\":\"unknown\"}"

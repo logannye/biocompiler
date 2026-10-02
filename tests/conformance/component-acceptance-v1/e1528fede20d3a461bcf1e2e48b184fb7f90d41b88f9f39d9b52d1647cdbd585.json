@@ -1,0 +1,1 @@
+{"code":"resource_provider_context","instance_id":"1","message":"A resource provider must match the reservation's exact role, contact scope and compartment.","requirement_ids":["intent"],"status":"fail"}

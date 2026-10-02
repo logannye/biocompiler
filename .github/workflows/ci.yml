@@ -15,6 +15,11 @@ concurrency:
 permissions:
   contents: read
 
+# Explicit bash makes piped checker/type-check failures fail their run step.
+defaults:
+  run:
+    shell: bash
+
 jobs:
   unit-plan:
     runs-on: ubuntu-latest
@@ -822,8 +827,9 @@ jobs:
 
   ocaml-core:
     runs-on: ${{ matrix.runner }}
-    # Includes both installed Python routing campaigns and every native corpus.
-    timeout-minutes: 90
+    # Complete installed campaigns and every corpus exceeded 90 minutes on Linux.
+    # Preserve every check; this allowance is not a measured runtime target.
+    timeout-minutes: 150
     strategy:
       fail-fast: false
       matrix:
@@ -871,6 +877,8 @@ jobs:
           BIOCOMPILER_CANDIDATE_RUNTIME_CORPUS="$GITHUB_WORKSPACE/tests/conformance/candidate-runtime-v1.json" \
           BIOCOMPILER_COMPONENT_RUNTIME_CORPUS="$GITHUB_WORKSPACE/tests/conformance/component-runtime-v1.json" \
           BIOCOMPILER_REALIZATION_FOUNDATION_CORPUS="$GITHUB_WORKSPACE/tests/conformance/realization-foundation-v1.json" \
+          BIOCOMPILER_REALIZATION_CHECKS_CORPUS="$GITHUB_WORKSPACE/tests/conformance/realization-checks-v1.json" \
+          BIOCOMPILER_COMPONENT_ACCEPTANCE_CORPUS="$GITHUB_WORKSPACE/tests/conformance/component-acceptance-v1.json" \
             opam exec -- dune runtest --root core
       - name: Check retained request, behavior and coordinate domain corpora
         if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
@@ -964,6 +972,9 @@ jobs:
       - name: Independently reconstruct complete architecture acceptance and replay
         if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
         run: core/_build/default/test/test_architecture_check.exe "$GITHUB_WORKSPACE/tests/conformance/architecture-check-v1.json" | tee generated/core/test_architecture_check.txt
+      - name: Check complete generic composition, selection and actual component behavior corpus
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_component_acceptance_corpus.exe "$GITHUB_WORKSPACE/tests/conformance/component-acceptance-v1.json" | tee generated/core/test_component_acceptance_corpus.txt
       - name: Check cross-language bytes, structural intent and independent lowering correspondence
         if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
         env:
@@ -1045,6 +1056,9 @@ jobs:
       - name: Compare complete realization declarations, evidence identities and fresh admission
         if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
         run: core/_build/default/test/test_realization_foundation_corpus.exe "$GITHUB_WORKSPACE/tests/conformance/realization-foundation-v1.json" | tee generated/core/realization-foundation.txt
+      - name: Compare complete checked-request and finite-history realization observations
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_realization_checks_corpus.exe "$GITHUB_WORKSPACE/tests/conformance/realization-checks-v1.json" | tee generated/core/realization-checks.txt
       - name: Retain revision-bound native executables
         run: |
           cp core/_build/default/bin/core/main.exe generated/core/biocompiler-core

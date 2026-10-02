@@ -1,0 +1,1 @@
+"{\"code\":\"ungrounded_provider\",\"instance_id\":\"b\",\"message\":\"Provider prerequisites are missing, invalid, or circular; assumptions cannot establish their own guarantees.\",\"requirement_ids\":[\"intent\"],\"status\":\"unknown\"}"

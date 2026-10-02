@@ -1,0 +1,1 @@
+"{\"args\":[{\"compartment\":\"abstract\",\"dtype\":{\"arguments\":[],\"dimensions\":{},\"kind\":\"scalar\",\"name\":\"Level\"},\"id\":\"output\",\"role\":0,\"schema_version\":\"biocompiler.observable.v0.1\",\"scope\":\"cell\"}],\"kwargs\":{}}"

@@ -1,0 +1,1 @@
+"{\"compartment\":\"abstract\",\"dtype\":{\"arguments\":[],\"dimensions\":{},\"kind\":\"condition\",\"name\":\"Condition\"},\"id\":\"input\",\"role\":0,\"schema_version\":\"biocompiler.observable.v0.1\",\"scope\":\"cell\"}"

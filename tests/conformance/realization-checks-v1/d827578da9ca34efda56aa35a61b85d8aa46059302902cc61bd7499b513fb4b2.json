@@ -1,0 +1,1 @@
+"{\"compartment\":\"extracellular\",\"dtype\":{\"arguments\":[],\"dimensions\":{\"amount\":1,\"time\":-1},\"kind\":\"scalar\",\"name\":\"ProductionRate\"},\"id\":\"product_secretion_rate_per_cell\",\"role\":\"n000001\",\"schema_version\":\"biocompiler.observable.v0.1\",\"scope\":\"cell\"}"

@@ -29,24 +29,43 @@ let str value = Json.String value
 let names values = Json.Array (List.map str values)
 let fail = Diagnostic.fail
 let require = Diagnostic.require
+let resource_profile = "biocompiler.lowering_check.resources.v1"
+let work_json budget value =
+  let pending = ref [value] in
+  while !pending <> [] do
+    let value = List.hd !pending in pending := List.tl !pending;
+    Work_budget.charge budget 1;
+    match value with
+    | Json.String value -> Work_budget.charge budget (String.length value)
+    | Json.Int value -> Work_budget.charge budget (1 + Z.numbits value / 3)
+    | Json.Array values ->
+        Work_budget.charge budget (List.length values);
+        List.iter (fun value -> pending := value :: !pending) values
+    | Json.Object fields ->
+        Work_budget.charge budget (List.length fields);
+        List.iter (fun (key, value) -> Work_budget.charge budget (String.length key);
+          pending := value :: !pending) fields
+    | _ -> ()
+  done
 let pointer value = String.concat "~1" (String.split_on_char '/' (String.concat "~0" (String.split_on_char '~' value)))
 
 (* Python verify_lowering deliberately uses Mapping equality for policies and
    raw TypeSpec mappings, unlike its JSON-exact attribute/binding comparison.
    Keep that narrow compatibility rule explicit. In particular, JSON identity
    still distinguishes 1/1.0 and false/0 everywhere using Json.equal below. *)
-let rec python_mapping_equal left right =
+let rec python_mapping_equal budget left right =
+  Work_budget.charge budget 1;
   match left, right with
   | (Json.Int _ | Json.Float _ | Json.Bool _), (Json.Int _ | Json.Float _ | Json.Bool _) ->
       let numeric = function Json.Bool value -> Json.int (if value then 1 else 0) | value -> value in
       Json.number_compare (numeric left) (numeric right) = 0
   | Json.Array left, Json.Array right ->
-      List.length left = List.length right && List.for_all2 python_mapping_equal left right
+      List.length left = List.length right && List.for_all2 (python_mapping_equal budget) left right
   | Json.Object left, Json.Object right ->
       let sort = List.sort (fun (a, _) (b, _) -> String.compare a b) in
       let left, right = sort left, sort right in
       List.length left = List.length right
-      && List.for_all2 (fun (a, av) (b, bv) -> a = b && python_mapping_equal av bv) left right
+      && List.for_all2 (fun (a, av) (b, bv) -> a = b && python_mapping_equal budget av bv) left right
   | _ -> Json.equal left right
 
 type source_node = {
@@ -91,8 +110,9 @@ let truthy = function
   | Json.String "" | Json.Array [] | Json.Object [] -> false
   | _ -> true
 
-let source_profile profile nodes ordered =
+let source_profile budget profile nodes ordered =
   List.iter (fun node ->
+      Work_budget.charge budget (1 + String.length node.identity + List.length node.inputs + List.length node.attributes);
       if not (Name_set.mem node.kind supported || profile = Build_request.V2 && Name_set.mem node.kind extensions) then
         unsupported node "unsupported_lowering_operation" "Source operation needs an additional execution profile or refinement.";
       if List.mem node.kind ["literal"; "parameter"] then (
@@ -134,7 +154,8 @@ let source_profile profile nodes ordered =
            | _ -> ())
       | _ -> ()) ordered
 
-let expected_step request ordered =
+let expected_step budget request ordered =
+  Work_budget.charge budget (1 + List.length ordered);
   match Build_request.behavior_profile request with
   | Build_request.V1 -> Json.Null
   | Build_request.V2 ->
@@ -161,7 +182,8 @@ let expected_step request ordered =
             "invalid_lowering_execution_policy" "Integral sampling step must be positive.";
           normalized
 
-let permitted_attributes bindings node =
+let permitted_attributes budget bindings node =
+  Work_budget.charge budget (1 + List.length node.attributes);
   let replace key value fields = (key, value) :: List.remove_assoc key fields in
   let fields = match node.kind with
     | "parameter" ->
@@ -182,19 +204,34 @@ let permitted_attributes bindings node =
   in Json.Object fields
 
 let dependencies node = match node.role with None -> node.inputs | Some role -> role :: node.inputs
-let source_facts nodes ordered =
+let source_facts budget nodes ordered =
   (* Derive directly from the independently supplied source. Neither the
      Behavior validator's cached facts nor any lowering producer supplies this
      expected ancestry/contact answer. The DAG is guaranteed by Intent.t. *)
   let seen = ref Name_set.empty and pending = ref (List.map (fun node -> node.identity, false) ordered) in
   let ancestry = ref Names.empty and contacts = ref Names.empty and retained = ref 0 in
+  let output = Work_budget.create_output ~profile:resource_profile ~error_code:"lowering_lineage_limit"
+      ~max_bytes:Limits.max_response_bytes ~max_nodes:Limits.max_json_nodes () in
+  let current_count = ref 0 in
+  let add result identity =
+    Work_budget.charge budget (1 + String.length identity);
+    if Name_set.mem identity result then result else begin
+      require (!retained + !current_count < Limits.max_json_nodes)
+        "lowering_lineage_limit" "Complete source ancestry exceeds the wire document budget.";
+      Work_budget.reserve_json output (Json.Array [str identity]);
+      incr current_count; Name_set.add identity result
+    end in
   while !pending <> [] do
+    Work_budget.charge budget 1;
     let identity, closing = List.hd !pending in
     pending := List.tl !pending;
     let node = lookup nodes identity in
     if closing then (
-      let lineage = List.fold_left (fun result reference -> Name_set.union result (Names.find reference !ancestry))
-          (Name_set.singleton identity) (dependencies node) in
+      current_count := 0;
+      let lineage = List.fold_left (fun result reference ->
+          Work_budget.charge budget (1 + String.length reference);
+          Name_set.fold (fun identity result -> add result identity) (Names.find reference !ancestry) result)
+          (add Name_set.empty identity) (dependencies node) in
       retained := !retained + Name_set.cardinal lineage;
       require (!retained <= Limits.max_json_nodes) "lowering_lineage_limit" "Complete source ancestry exceeds the wire document budget.";
       ancestry := Names.add identity lineage !ancestry;
@@ -206,6 +243,7 @@ let source_facts nodes ordered =
         | _ -> List.exists (fun reference -> Names.find reference !contacts) node.inputs in
       contacts := Names.add identity contact !contacts)
     else if not (Name_set.mem identity !seen) then (
+      Work_budget.charge budget (1 + String.length identity + List.length node.inputs);
       seen := Name_set.add identity !seen;
       pending := List.map (fun reference -> reference, false) (dependencies node) @ ((identity, true) :: !pending))
   done;
@@ -221,7 +259,28 @@ let remaining request =
   @ (if Build_request.preferences request = [] then [] else ["preference_evaluation"])
   @ (if Build_request.target request = None then [] else ["target_assumption_validation"; "biological_evidence_admission"])
 
-let check ~expected_request ~behavior =
+let to_json value = Json.Object [
+    "schema_version", str schema_version; "checker_version", str checker_version;
+    "validation_scope", str validation_scope; "claim_scope", str claim_scope; "passed", Json.Bool true;
+    "request_fingerprint", str value.request_fingerprint; "request_artifact_fingerprint", str value.request_artifact_fingerprint;
+    "source_fingerprint", str value.source_fingerprint; "behavior_fingerprint", str value.behavior_fingerprint;
+    "behavior_artifact_fingerprint", str value.behavior_artifact_fingerprint; "behavior_profile", str value.behavior_profile;
+    "checks", Json.Array (List.map (fun check -> Json.Object ["property", str check.check_property;
+        "passed", Json.Bool true; "detail", str check.check_detail]) value.preservation_checks);
+    "unimplemented_obligations", names value.remaining_obligations]
+
+
+let check_with_budget ?parent ~expected_request ~behavior () =
+  let budget = match parent with
+    | None -> Work_budget.create ~profile:resource_profile ~error_code:"lowering_work_limit" ~maximum:50_000_000 ()
+    | Some parent -> Work_budget.nested ~parent ~profile:resource_profile ~error_code:"lowering_work_limit" ~maximum:50_000_000 () in
+  work_json budget (Build_request.to_json expected_request);
+  work_json budget (Behavior.to_json behavior);
+  let report_output = Work_budget.create_output ~profile:resource_profile ~error_code:"lowering_report_limit"
+      ~max_bytes:Limits.max_response_bytes ~max_nodes:Limits.max_json_nodes () in
+  let temporary_output = Work_budget.create_output ~profile:resource_profile ~error_code:"lowering_lineage_limit"
+      ~max_bytes:Limits.max_response_bytes ~max_nodes:Limits.max_json_nodes () in
+  let retain value = Work_budget.reserve_json temporary_output value; work_json budget value; value in
   let source = Build_request.intent expected_request in
   let source_fields = Intent.to_json source |> Json.object_fields in
   let ordered = Json.field "nodes" source_fields |> Json.array |> List.map source_node in
@@ -230,17 +289,19 @@ let check ~expected_request ~behavior =
   require (7 + (3 * List.length ordered) <= (Limits.max_json_nodes - 256) / 4)
     "lowering_report_limit" "Complete preservation-check report exceeds the JSON value budget.";
   let source_nodes = List.fold_left (fun map node -> Names.add node.identity node map) Names.empty ordered in
-  source_profile (Build_request.behavior_profile expected_request) source_nodes ordered;
+  source_profile budget (Build_request.behavior_profile expected_request) source_nodes ordered;
   let checks = ref [] in
   let record ?path property code condition detail =
     require ?path condition code detail;
+    let raw = Json.Array [Json.Object ["property", str property; "passed", Json.Bool true; "detail", str detail]] in
+    Work_budget.reserve_json report_output raw; work_json budget raw;
     checks := { check_property = property; check_detail = detail } :: !checks in
   let profile = match Build_request.behavior_profile expected_request with Build_request.V1 -> Behavior.V0_1 | Build_request.V2 -> Behavior.V0_2 in
-  let step = expected_step expected_request ordered in
+  let step = expected_step budget expected_request ordered in
   let candidate_step = Option.value ~default:Json.Null
       (List.assoc_opt "integral_step" (Json.object_fields (Behavior.policies behavior))) in
   record "execution_profile" "lowering_execution_profile"
-    (Behavior.profile behavior = profile && python_mapping_equal candidate_step step)
+    (Behavior.profile behavior = profile && python_mapping_equal budget candidate_step step)
     "Execution profile and sampled-integration policy match the frozen source authority.";
   (* Behavior.t already requires every other field of the closed policy version.
      Only the request-selected integral step can vary within that language. *)
@@ -265,27 +326,32 @@ let check ~expected_request ~behavior =
     "Output bindings exactly match the frozen input defaults and explicit overrides.";
   let bindings = List.fold_left (fun map (key, value) -> Names.add key value map) Names.empty bindings in
   List.iter2 (fun original target ->
+      Work_budget.charge budget (1 + String.length original.identity + List.length original.inputs);
+      work_json budget (Json.Object original.attributes);
+      work_json budget (Behavior.attributes target);
       let target_fields = Behavior.node_json target |> Json.object_fields in
       let path = "/behavior/nodes/" ^ pointer original.identity in
       record ~path ("operation:" ^ original.identity) "lowering_operation"
         (original.kind = Behavior.kind_name (Behavior.operation target)
          && original.inputs = List.map Identity.Node.to_string (Behavior.inputs target)
          && original.role = Option.map Identity.Role.to_string (Behavior.role target)
-         && python_mapping_equal original.data_type (Json.field "data_type" target_fields))
+         && python_mapping_equal budget original.data_type (Json.field "data_type" target_fields))
         "Operation, ordered dependencies, role and raw semantic type are preserved.";
       record ~path ("semantics:" ^ original.identity) "lowering_semantics"
-        (Json.equal (Behavior.attributes target) (permitted_attributes bindings original))
+        (Json.equal (Behavior.attributes target) (permitted_attributes budget bindings original))
         "Only declared parameter substitution and state/rule execution-policy normalization change attributes.";
       record ~path ("source:" ^ original.identity) "lowering_source_location"
         (Json.equal original.source (Json.field "source" target_fields))
         "Original authoring source location is retained.") ordered emitted;
-  let ancestry, contacts = source_facts source_nodes ordered in
+  let ancestry, contacts = source_facts budget source_nodes ordered in
   let expected_requirements = List.filter (fun node -> List.mem node.kind ["rule"; "state"; "memory"]) ordered
-      |> List.map (fun node -> Json.Object [
+      |> List.map (fun node -> retain (Json.Object [
           "id", str ("requirement:" ^ node.identity); "kind", str node.kind; "source_node_id", str node.identity;
-          "lineage", names (Name_set.elements (Names.find node.identity ancestry)); "source", node.source]) in
-  let expected_links = Names.bindings ancestry |> List.map (fun (key, values) -> key, names (Name_set.elements values)) in
+          "lineage", names (Name_set.elements (Names.find node.identity ancestry)); "source", node.source])) in
+  let expected_links = Names.bindings ancestry |> List.map (fun (key, values) ->
+      let value = names (Name_set.elements values) in ignore (retain (Json.Object [key, value])); key, value) in
   let observed_links = Behavior.source_links behavior |> List.map (fun (key, values) ->
+      Work_budget.charge budget (1 + List.length values);
       Identity.Node.to_string key, names (List.map Identity.Node.to_string values)) in
   record "requirements_and_lineage" "lowering_requirements_and_lineage"
     (Json.equal (Json.Array expected_requirements)
@@ -293,22 +359,19 @@ let check ~expected_request ~behavior =
      && Json.equal (Json.Object expected_links) (Json.Object observed_links))
     "Every source rule/state/memory requirement and sorted complete ancestor lineage survives.";
   record "identity_binding" "lowering_identity_binding"
-    (List.for_all (fun node -> Behavior.contact_bound node = Names.find (Identity.Node.to_string (Behavior.node_id node)) contacts) emitted)
+    (List.for_all (fun node -> Work_budget.charge budget 1;
+      Behavior.contact_bound node = Names.find (Identity.Node.to_string (Behavior.node_id node)) contacts) emitted)
     "Contact-object correlation and cell-local state boundaries are retained.";
-  { request_fingerprint = Build_request.fingerprint expected_request;
+  let report = { request_fingerprint = Build_request.fingerprint expected_request;
     request_artifact_fingerprint = Build_request.artifact_fingerprint expected_request;
     source_fingerprint = Intent.fingerprint source;
     behavior_fingerprint = Behavior.fingerprint behavior;
     behavior_artifact_fingerprint = Canonical.fingerprint (Behavior.to_json behavior);
     behavior_profile = Behavior.schema_version (Behavior.profile behavior);
-    preservation_checks = List.rev !checks; remaining_obligations = remaining expected_request }
+    preservation_checks = List.rev !checks; remaining_obligations = remaining expected_request } in
+  let json = to_json report in
+  Work_budget.reserve_json (Work_budget.create_output ~profile:resource_profile ~error_code:"lowering_report_limit"
+      ~max_bytes:Limits.max_response_bytes ~max_nodes:Limits.max_json_nodes ()) json;
+  work_json budget json; report
 
-let to_json value = Json.Object [
-    "schema_version", str schema_version; "checker_version", str checker_version;
-    "validation_scope", str validation_scope; "claim_scope", str claim_scope; "passed", Json.Bool true;
-    "request_fingerprint", str value.request_fingerprint; "request_artifact_fingerprint", str value.request_artifact_fingerprint;
-    "source_fingerprint", str value.source_fingerprint; "behavior_fingerprint", str value.behavior_fingerprint;
-    "behavior_artifact_fingerprint", str value.behavior_artifact_fingerprint; "behavior_profile", str value.behavior_profile;
-    "checks", Json.Array (List.map (fun check -> Json.Object ["property", str check.check_property;
-        "passed", Json.Bool true; "detail", str check.check_detail]) value.preservation_checks);
-    "unimplemented_obligations", names value.remaining_obligations]
+let check ~expected_request ~behavior = check_with_budget ~expected_request ~behavior ()

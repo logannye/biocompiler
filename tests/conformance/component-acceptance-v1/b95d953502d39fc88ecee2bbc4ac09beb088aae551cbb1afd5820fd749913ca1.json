@@ -1,0 +1,1 @@
+{"code":"resource_provider_capability","instance_id":null,"message":"Pool 'shared' is not supplied by the named provider capability.","requirement_ids":["intent"],"status":"fail"}

@@ -1,0 +1,286 @@
+{
+  "claim_scope": "Original Python source execution only; no native validation. The two set-difference diagnostic groups vary by process hash seed; all complete other fields and diagnostic records match.",
+  "native_declared_pairs": [
+    [
+      "unknown_dependency_binding",
+      "a"
+    ],
+    [
+      "unknown_dependency_binding",
+      "b"
+    ],
+    [
+      "unknown_resource_binding",
+      "a"
+    ],
+    [
+      "unknown_resource_binding",
+      "b"
+    ]
+  ],
+  "runs": [
+    {
+      "diagnostic_pairs": [
+        [
+          "unknown_dependency_binding",
+          "a"
+        ],
+        [
+          "unknown_dependency_binding",
+          "b"
+        ],
+        [
+          "unknown_resource_binding",
+          "a"
+        ],
+        [
+          "unknown_resource_binding",
+          "b"
+        ]
+      ],
+      "fingerprint": "3b4919a035dc3b15109302e212a2701f56a57fa82977d9688f7f02ae6aa55296",
+      "python_hash_seed": "0",
+      "result": {
+        "checked_requirement_ids": [
+          "intent"
+        ],
+        "claim_scope": "Structural component compatibility under the locked records and declared target, provider, lifecycle, model and resource assumptions only. This is not biological efficacy, sequence emission, or empirical validation.",
+        "dependencies": {
+          "admission_policy": "biocompiler.human_admission_policy.v0.1",
+          "checker": "biocompiler.component_linker.v0.3",
+          "identities": [
+            {
+              "content_fingerprint": "0000000000000000000000000000000000000000000000000000000000000000",
+              "id": "fixture",
+              "kind": "model",
+              "schema_version": "biocompiler.component_identity.v0.1",
+              "version": "1"
+            }
+          ],
+          "registry": "00512828b662f0b764a345b67fb24d852a68302a267398c5f299817aeaaeb972",
+          "registry_lock": "401b7b74b02a9acc40b65c77d03647a28b9e2249af5d95e6a419c5d3b30e9d12",
+          "request": "65f6cb7810b04fafe4594f36834cbcf6072d8c8474a3e4d515cd00efdbce244a",
+          "target": "83e543fb74e1b7ba070b66a2a5bc1ed08e0c5a2d0a8c660223bf4f9b5414cf35"
+        },
+        "diagnostics": [
+          {
+            "code": "unknown_dependency_binding",
+            "instance_id": "a",
+            "message": "Binding names undeclared dependency 'y'.",
+            "requirement_ids": [
+              "intent"
+            ],
+            "status": "fail"
+          },
+          {
+            "code": "unknown_dependency_binding",
+            "instance_id": "b",
+            "message": "Binding names undeclared dependency 'z'.",
+            "requirement_ids": [
+              "intent"
+            ],
+            "status": "fail"
+          },
+          {
+            "code": "unknown_resource_binding",
+            "instance_id": "a",
+            "message": "Resource binding names no declared reservation.",
+            "requirement_ids": [
+              "intent"
+            ],
+            "status": "fail"
+          },
+          {
+            "code": "unknown_resource_binding",
+            "instance_id": "b",
+            "message": "Resource binding names no declared reservation.",
+            "requirement_ids": [
+              "intent"
+            ],
+            "status": "fail"
+          }
+        ],
+        "outcome": "fail",
+        "resolved_dependencies": [],
+        "resource_usage": [],
+        "schema_version": "biocompiler.component_link_result.v0.3"
+      }
+    },
+    {
+      "diagnostic_pairs": [
+        [
+          "unknown_dependency_binding",
+          "b"
+        ],
+        [
+          "unknown_dependency_binding",
+          "a"
+        ],
+        [
+          "unknown_resource_binding",
+          "b"
+        ],
+        [
+          "unknown_resource_binding",
+          "a"
+        ]
+      ],
+      "fingerprint": "326577950236f69d19480924b06f9212f97ed6245bcac694c9f9b3ea03a4e5bb",
+      "python_hash_seed": "1",
+      "result": {
+        "checked_requirement_ids": [
+          "intent"
+        ],
+        "claim_scope": "Structural component compatibility under the locked records and declared target, provider, lifecycle, model and resource assumptions only. This is not biological efficacy, sequence emission, or empirical validation.",
+        "dependencies": {
+          "admission_policy": "biocompiler.human_admission_policy.v0.1",
+          "checker": "biocompiler.component_linker.v0.3",
+          "identities": [
+            {
+              "content_fingerprint": "0000000000000000000000000000000000000000000000000000000000000000",
+              "id": "fixture",
+              "kind": "model",
+              "schema_version": "biocompiler.component_identity.v0.1",
+              "version": "1"
+            }
+          ],
+          "registry": "00512828b662f0b764a345b67fb24d852a68302a267398c5f299817aeaaeb972",
+          "registry_lock": "401b7b74b02a9acc40b65c77d03647a28b9e2249af5d95e6a419c5d3b30e9d12",
+          "request": "65f6cb7810b04fafe4594f36834cbcf6072d8c8474a3e4d515cd00efdbce244a",
+          "target": "83e543fb74e1b7ba070b66a2a5bc1ed08e0c5a2d0a8c660223bf4f9b5414cf35"
+        },
+        "diagnostics": [
+          {
+            "code": "unknown_dependency_binding",
+            "instance_id": "b",
+            "message": "Binding names undeclared dependency 'z'.",
+            "requirement_ids": [
+              "intent"
+            ],
+            "status": "fail"
+          },
+          {
+            "code": "unknown_dependency_binding",
+            "instance_id": "a",
+            "message": "Binding names undeclared dependency 'y'.",
+            "requirement_ids": [
+              "intent"
+            ],
+            "status": "fail"
+          },
+          {
+            "code": "unknown_resource_binding",
+            "instance_id": "b",
+            "message": "Resource binding names no declared reservation.",
+            "requirement_ids": [
+              "intent"
+            ],
+            "status": "fail"
+          },
+          {
+            "code": "unknown_resource_binding",
+            "instance_id": "a",
+            "message": "Resource binding names no declared reservation.",
+            "requirement_ids": [
+              "intent"
+            ],
+            "status": "fail"
+          }
+        ],
+        "outcome": "fail",
+        "resolved_dependencies": [],
+        "resource_usage": [],
+        "schema_version": "biocompiler.component_link_result.v0.3"
+      }
+    },
+    {
+      "diagnostic_pairs": [
+        [
+          "unknown_dependency_binding",
+          "a"
+        ],
+        [
+          "unknown_dependency_binding",
+          "b"
+        ],
+        [
+          "unknown_resource_binding",
+          "a"
+        ],
+        [
+          "unknown_resource_binding",
+          "b"
+        ]
+      ],
+      "fingerprint": "3b4919a035dc3b15109302e212a2701f56a57fa82977d9688f7f02ae6aa55296",
+      "python_hash_seed": "37",
+      "result": {
+        "checked_requirement_ids": [
+          "intent"
+        ],
+        "claim_scope": "Structural component compatibility under the locked records and declared target, provider, lifecycle, model and resource assumptions only. This is not biological efficacy, sequence emission, or empirical validation.",
+        "dependencies": {
+          "admission_policy": "biocompiler.human_admission_policy.v0.1",
+          "checker": "biocompiler.component_linker.v0.3",
+          "identities": [
+            {
+              "content_fingerprint": "0000000000000000000000000000000000000000000000000000000000000000",
+              "id": "fixture",
+              "kind": "model",
+              "schema_version": "biocompiler.component_identity.v0.1",
+              "version": "1"
+            }
+          ],
+          "registry": "00512828b662f0b764a345b67fb24d852a68302a267398c5f299817aeaaeb972",
+          "registry_lock": "401b7b74b02a9acc40b65c77d03647a28b9e2249af5d95e6a419c5d3b30e9d12",
+          "request": "65f6cb7810b04fafe4594f36834cbcf6072d8c8474a3e4d515cd00efdbce244a",
+          "target": "83e543fb74e1b7ba070b66a2a5bc1ed08e0c5a2d0a8c660223bf4f9b5414cf35"
+        },
+        "diagnostics": [
+          {
+            "code": "unknown_dependency_binding",
+            "instance_id": "a",
+            "message": "Binding names undeclared dependency 'y'.",
+            "requirement_ids": [
+              "intent"
+            ],
+            "status": "fail"
+          },
+          {
+            "code": "unknown_dependency_binding",
+            "instance_id": "b",
+            "message": "Binding names undeclared dependency 'z'.",
+            "requirement_ids": [
+              "intent"
+            ],
+            "status": "fail"
+          },
+          {
+            "code": "unknown_resource_binding",
+            "instance_id": "a",
+            "message": "Resource binding names no declared reservation.",
+            "requirement_ids": [
+              "intent"
+            ],
+            "status": "fail"
+          },
+          {
+            "code": "unknown_resource_binding",
+            "instance_id": "b",
+            "message": "Resource binding names no declared reservation.",
+            "requirement_ids": [
+              "intent"
+            ],
+            "status": "fail"
+          }
+        ],
+        "outcome": "fail",
+        "resolved_dependencies": [],
+        "resource_usage": [],
+        "schema_version": "biocompiler.component_link_result.v0.3"
+      }
+    }
+  ],
+  "schema": "biocompiler.generated.composition_order_review.v1",
+  "source": "core/test/test_composition_check.ml:deterministic_unknown_groups"
+}

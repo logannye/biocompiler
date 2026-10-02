@@ -47,6 +47,12 @@ class CoreBoundaryTests(unittest.TestCase):
         self.assertEqual(set(receipt["transitive_dependencies"]["bioc_candidate_runtime"]),
                          {"bioc_wire", "bioc_domain", "digestif", "zarith"})
         self.assertNotIn("bioc_candidate_runtime", dependencies)
+        self.assertEqual(receipt["roles"]["bioc_realization_checker"], "checker")
+        self.assertEqual(set(receipt["transitive_dependencies"]["bioc_realization_checker"]),
+                         {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_semantics",
+                          "bioc_candidate_runtime", "digestif", "zarith"})
+        self.assertEqual(receipt["private_modules"]["bioc_realization_checker"], ["realization_monitor"])
+        self.assertNotIn("bioc_realization_checker", dependencies)
         self.assertEqual(receipt["shared_trusted_base"], ["bioc_wire", "bioc_domain"])
         self.assertIn("core/lib/checker/intent_check.ml", receipt["source_sha256"])
         self.assertEqual(receipt["native_build_and_semantic_independence"], "separate_hosted_validation_required")
@@ -85,6 +91,7 @@ class CoreBoundaryTests(unittest.TestCase):
     def test_changed_direct_dependencies_cannot_bypass_the_reviewed_graph(self):
         for relative, before, after in (
             ("lib/checker/dune", "bioc_wire bioc_domain", "bioc_wire bioc_domain bioc_service"),
+            ("lib/realization_checker/dune", "bioc_wire bioc_domain", "bioc_wire bioc_domain bioc_compiler"),
             ("lib/service/dune", "bioc_wire bioc_domain bioc_checker", "bioc_wire bioc_domain bioc_checker unix"),
             ("bin/verify/dune", "bioc_wire bioc_service", "bioc_wire bioc_service bioc_domain"),
         ):
@@ -95,7 +102,8 @@ class CoreBoundaryTests(unittest.TestCase):
 
     def test_candidate_corpus_action_requires_the_complete_external_fixture(self):
         for variable in ("BIOCOMPILER_CANDIDATE_RUNTIME_CORPUS", "BIOCOMPILER_COMPONENT_RUNTIME_CORPUS",
-                         "BIOCOMPILER_REALIZATION_FOUNDATION_CORPUS"):
+                         "BIOCOMPILER_REALIZATION_FOUNDATION_CORPUS", "BIOCOMPILER_REALIZATION_CHECKS_CORPUS",
+                         "BIOCOMPILER_COMPONENT_ACCEPTANCE_CORPUS"):
             action = "(action (run %{test} %{env:" + variable + "=missing}))"
             for replacement in ("", "(action (run true))", action + "\n " + action):
                 root = self.copy_core()

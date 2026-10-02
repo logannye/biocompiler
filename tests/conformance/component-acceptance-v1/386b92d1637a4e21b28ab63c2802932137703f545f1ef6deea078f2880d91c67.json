@@ -1,0 +1,1 @@
+{"code":"unknown_capacity","instance_id":null,"message":"Pool 'shared' capacity is unknown; missing measurement is not unlimited capacity.","requirement_ids":["intent"],"status":"unknown"}
