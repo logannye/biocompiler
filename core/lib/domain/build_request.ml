@@ -225,6 +225,47 @@ let decode_target path value =
         replace "human_target" (human_contract (child path "human_target") ~compartments (field path "human_target" fields)) fields in
   kind, Json.Object fields
 
+module Target_evidence = struct
+  type system = Human_in_vivo | Primary_human_cells | Human_cell_line | Nonhuman_in_vivo
+    | Nonhuman_cells | Cell_free | Software_fixture
+  type t = { json : Json.t; id : string; source : Pinned_identity.t; taxon_id : Z.t option;
+             system : system; source_context : string; locator : string; limitations : string }
+  let schema_version = "biocompiler.target_evidence.v0.1"
+  let system_name = function
+    | Human_in_vivo -> "human_in_vivo" | Primary_human_cells -> "primary_human_cells"
+    | Human_cell_line -> "human_cell_line" | Nonhuman_in_vivo -> "nonhuman_in_vivo"
+    | Nonhuman_cells -> "nonhuman_cells" | Cell_free -> "cell_free" | Software_fixture -> "software_fixture"
+  let of_json ?(path = "") value =
+    Measurement_contract.preflight ~path value;
+    let json = evidence path value in
+    let fields = Json.object_fields json in
+    let get key = field path key fields in
+    let system = match Json.string (get "system") with
+      | "human_in_vivo" -> Human_in_vivo | "primary_human_cells" -> Primary_human_cells
+      | "human_cell_line" -> Human_cell_line | "nonhuman_in_vivo" -> Nonhuman_in_vivo
+      | "nonhuman_cells" -> Nonhuman_cells | "cell_free" -> Cell_free
+      | _ -> Software_fixture in
+    { json; id = named path "id" fields; source = Pinned_identity.of_json ~path:(child path "source") (get "source");
+      taxon_id = (match get "taxon_id" with Json.Null -> None | value -> Some (Json.integer value)); system;
+      source_context = named path "source_context" fields; locator = named path "locator" fields;
+      limitations = named path "limitations" fields }
+  let make ~id ~source ~taxon_id ~system ~source_context ~locator ~limitations =
+    of_json (Json.Object ["schema_version", Json.String schema_version; "id", Json.String id;
+      "source", Pinned_identity.to_json source;
+      "taxon_id", (match taxon_id with None -> Json.Null | Some value -> Json.Int value);
+      "system", Json.String (system_name system); "source_context", Json.String source_context;
+      "locator", Json.String locator; "limitations", Json.String limitations])
+  let to_json value = value.json
+  let fingerprint value = Canonical.fingerprint value.json
+  let id value = value.id
+  let source value = value.source
+  let taxon_id value = value.taxon_id
+  let system value = value.system
+  let source_context value = value.source_context
+  let locator value = value.locator
+  let limitations value = value.limitations
+end
+
 module Target = struct
   type t = target_kind * Json.t
   let of_json ?(path = "") value = decode_target path value
@@ -233,6 +274,14 @@ module Target = struct
   let fingerprint value = Canonical.fingerprint (to_json value)
   let compartments value = Json.array (Json.field "compartments" (Json.object_fields (to_json value))) |> List.map Json.string
   let payload_format value = Json.string (Json.field "payload_format" (Json.object_fields (to_json value)))
+  let capabilities value = Json.array (Json.field "capabilities" (Json.object_fields (to_json value))) |> List.map Json.string
+  let resources value = Json.object_fields (Json.field "resources" (Json.object_fields (to_json value)))
+    |> List.map (fun (key, value) -> key, Measurement_contract.Scalar.of_json value)
+  let evidence value = match kind value with
+    | Legacy_target -> []
+    | Human_target ->
+        Json.field "human_target" (Json.object_fields (to_json value)) |> Json.object_fields
+        |> Json.field "evidence" |> Json.array |> List.map Target_evidence.of_json
 end
 
 module Target_claim = struct

@@ -250,8 +250,9 @@ These checkpoints record narrower validated work; they do not complete a broad L
   diagnostic mismatch in the full corpus. That branch is corrected without
   changing retained expectations. A source audit also corrected kind-specific
   ValueDomain rejection precedence, with 26 new literal assertions. The reader
-  now reports all case failures
-  before failing its aggregate gate. Fresh complete hosted validation remains
+  reports all case failures before failing its aggregate gate. All 56 native
+  suites, including the complete corpus, now pass on both hosted platforms at
+  `ca1228753dd5ae6f7e803c866800ff703ef5d05f`; fresh complete product validation remains
   required. Generic composition acceptance, realization checking, scientific
   adapters and empirical validity are separate unfinished obligations.
 
@@ -259,6 +260,8 @@ These checkpoints record narrower validated work; they do not complete a broad L
   OperatingDomain, BehaviorContract and all finite-history evidence records.
   Preserve the historical ASCII-escaped evidence/dependency identities separately
   from canonical UTF-8 artifact identities, full history and explicit horizon.
+  Implementation is in progress on `codex/ocaml-realization-contracts`; its
+  contract/evidence/admission domains and native policy remain unvalidated.
 - [ ] **B1.09b fresh admission, generic linking and selection:** reproduce complete
   policy assessments, provider grounding, lifetime/resource accounting and ranked
   alternatives. Retained decisions and identity-only freshness cannot grant use.

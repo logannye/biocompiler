@@ -279,3 +279,18 @@
  (modules test_component_runtime_corpus)
  (libraries bioc_wire bioc_domain bioc_candidate_runtime zarith)
  (action (run %{test} %{env:BIOCOMPILER_COMPONENT_RUNTIME_CORPUS=missing})))
+
+(test
+ (name test_realization_contract)
+ (modules test_realization_contract)
+ (libraries bioc_wire bioc_domain zarith))
+
+(test
+ (name test_realization_evidence)
+ (modules test_realization_evidence)
+ (libraries bioc_wire bioc_domain zarith))
+
+(test
+ (name test_admission)
+ (modules test_admission)
+ (libraries bioc_wire bioc_domain bioc_checker zarith))

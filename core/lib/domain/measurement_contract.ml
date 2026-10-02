@@ -124,6 +124,11 @@ module Observable = struct
      id = name "id"; dtype; role = name "role"; scope; compartment = name "compartment"}
   let to_json value = value.json
   let fingerprint value = Canonical.fingerprint value.json
+  let make ~id ~dtype ~role ?(scope = Cell) ?(compartment = "abstract") () =
+    of_json (Json.Object ["schema_version", str schema_version; "id", str id;
+        "dtype", Type_spec.to_json dtype; "role", str role;
+        "scope", str (match scope with Cell -> "cell" | Contact -> "contact");
+        "compartment", str compartment])
   let id value = value.id
   let dtype value = value.dtype
   let role value = value.role
@@ -131,14 +136,14 @@ module Observable = struct
   let compartment value = value.compartment
 end
 module Response = struct
-  type t = { json : Json.t; observable : Observable.t; active : Interval.t; inactive : Interval.t;
+  type t = { json : Json.t; identity : string; observable : Observable.t; active : Interval.t; inactive : Interval.t;
              activation : Scalar.t; deactivation : Scalar.t; rule : string; specification : string }
   let schema_version = "biocompiler.response_requirement.v0.1"
   let of_json ?(path = "") value =
     let fields = record ~path schema_version ["id"; "rule_id"; "specification_id"; "observable";
         "active_range"; "inactive_range"; "max_activation_delay"; "max_deactivation_delay"] value in
     let get key = Json.field ~path:(path ^ "/" ^ key) key fields in
-    ignore (Json.name ~path (get "id"));
+    let identity = Json.name ~path (get "id") in
     let rule = Json.name ~path (get "rule_id") and specification = Json.name ~path (get "specification_id") in
     let observable = Observable.of_json ~path:(path ^ "/observable") (get "observable") in
     let dtype = Observable.dtype observable in
@@ -152,9 +157,18 @@ module Response = struct
     let json = Json.Object (fields |> replace "observable" (Observable.to_json observable)
         |> replace "active_range" (Interval.to_json active) |> replace "inactive_range" (Interval.to_json inactive)
         |> replace "max_activation_delay" (Scalar.to_json activation) |> replace "max_deactivation_delay" (Scalar.to_json deactivation)) |> finish in
-    {json; observable; active; inactive; activation; deactivation; rule; specification}
+    {json; identity; observable; active; inactive; activation; deactivation; rule; specification}
   let to_json value = value.json
   let fingerprint value = Canonical.fingerprint value.json
+  let make ~id ~rule_id ~specification_id ~observable ~active_range ~inactive_range
+      ~max_activation_delay ~max_deactivation_delay =
+    of_json (Json.Object ["schema_version", str schema_version; "id", str id;
+        "rule_id", str rule_id; "specification_id", str specification_id;
+        "observable", Observable.to_json observable;
+        "active_range", Interval.to_json active_range; "inactive_range", Interval.to_json inactive_range;
+        "max_activation_delay", Scalar.to_json max_activation_delay;
+        "max_deactivation_delay", Scalar.to_json max_deactivation_delay])
+  let id value = value.identity
   let observable value = value.observable
   let active value = value.active
   let inactive value = value.inactive
