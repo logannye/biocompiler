@@ -49,7 +49,7 @@ class WorkflowCliLineageTests(unittest.TestCase):
         before = deepcopy(actual)
         with patch.object(lineage, "current_scope", return_value=scope):
             projected, evidence = lineage.historical_projection(actual)
-            receipt = lineage.verify_recapture(actual, self.blobs)
+            receipt = lineage.verify_recapture(actual, self.blobs, python_version="3.14")
         self.assertEqual(actual, before)
         self.assertEqual(projected, self.baseline)
         self.assertNotEqual(actual["inventory_fingerprint"], lineage.CORPUS_PIN)
@@ -86,12 +86,45 @@ class WorkflowCliLineageTests(unittest.TestCase):
                 projected, _ = lineage.historical_projection(changed)
                 self.assertNotEqual(projected, self.baseline)
                 with self.assertRaisesRegex(AssertionError, "observations differ"):
-                    lineage.verify_recapture(changed, self.blobs)
+                    lineage.verify_recapture(changed, self.blobs, python_version="3.14")
             blobs = dict(self.blobs)
             identity = next(iter(blobs))
             blobs[identity] += b"forged"
             with self.assertRaisesRegex(AssertionError, "content differs"):
-                lineage.verify_recapture(actual, blobs)
+                lineage.verify_recapture(actual, blobs, python_version="3.14")
+
+    def test_only_exact_declared_python311_counterpart_projects_and_actual_bytes_remain(self):
+        actual, scope = self.recapture()
+        self.actual_blobs = dict(self.blobs)
+        old = next(row for row in self.baseline["cases"] if row["id"] == "unknown-flag")
+        row = next(row for row in actual["cases"] if row["id"] == old["id"])
+        expected = lineage.runtime.workflow().expected(old, {"exit_code": old["exit_code"],
+            **{field: lineage.frozen.restore(old[field], self.blobs) for field in ("stdout", "stderr")}}, "3.11")
+        store = lineage.frozen.Store()
+        replacement = store.retain(expected["stderr"])
+        del self.actual_blobs[row["stderr"]["sha256"]]
+        self.actual_blobs.update(store.blobs)
+        row["stderr"] = replacement
+        self.rehash(actual)
+        before = deepcopy(actual)
+        with patch.object(lineage, "current_scope", return_value=scope):
+            receipt = lineage.verify_recapture(actual, self.actual_blobs, python_version="3.11.16")
+            self.assertEqual(receipt["actual_capture"], before)
+            self.assertEqual(actual, before)
+            self.assertEqual(receipt["projected_inventory_fingerprint"], lineage.CORPUS_PIN)
+            self.assertEqual(receipt["runtime_counterpart"]["changes"], [{"id": old["id"], "field": "stderr",
+                "actual": replacement, "baseline": old["stderr"]}])
+            for version in ("3.14", "3.12", "3.15"):
+                with self.assertRaises(AssertionError):
+                    lineage.verify_recapture(actual, self.actual_blobs, python_version=version)
+            forged = deepcopy(actual); content = dict(self.actual_blobs)
+            forged_row = next(row for row in forged["cases"] if row["id"] == old["id"])
+            del content[forged_row["stderr"]["sha256"]]
+            store = lineage.frozen.Store(); forged_row["stderr"] = store.retain(expected["stderr"] + b" ")
+            content.update(store.blobs); self.rehash(forged)
+            with self.assertRaisesRegex(AssertionError, "runtime counterpart stderr differs"):
+                lineage.verify_recapture(forged, content, python_version="3.11")
+
 
     def test_rehashed_scope_forgeries_missing_sources_and_changed_import_audits_fail(self):
         actual, scope = self.recapture()

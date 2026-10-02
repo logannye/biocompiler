@@ -4,6 +4,9 @@ The frozen capture tool and all observations stay unchanged. This bridge checks
 current reviewed source inventories independently, retains their actual metadata,
 and projects only source_scope for an exact comparison with the archived CLI
 baseline. Historical sources and retained source bytes cannot be normalized.
+
+An independently pinned argparse runtime counterpart retains its complete actual
+bytes; all other observations and source checks remain exact.
 """
 from __future__ import annotations
 
@@ -15,9 +18,11 @@ from pathlib import Path
 import sys
 
 if __package__:
+    from . import cli_runtime_counterparts as runtime
     from . import freeze_workflow_cli as frozen
     from . import check_realization_workflow_corpus as source
 else:
+    import cli_runtime_counterparts as runtime
     import freeze_workflow_cli as frozen
     import check_realization_workflow_corpus as source
 
@@ -144,13 +149,50 @@ def historical_projection(actual):
     return _project(actual, baseline)
 
 
-def verify_recapture(actual, blobs):
+def verify_recapture(actual, blobs, *, python_version=None):
     baseline, old_blobs = load_baseline()
     projected, evidence = _project(actual, baseline)
-    require(blobs == old_blobs, "Complete actual CLI content differs from immutable baseline")
+    projected_blobs = dict(blobs)
+    # The only observation projection is an independently executed, immutable
+    # Python-runtime counterpart. Retain every actual byte in the receipt and
+    # never infer the runtime from whichever formatting happens to be supplied.
+    counterparts = runtime.workflow()
+    minor = runtime.runtime_minor(python_version)
+    counterpart_evidence = []
+    for old in baseline["cases"]:
+        if old["id"] not in counterparts.cases:
+            continue
+        rows = [row for row in projected["cases"] if row["id"] == old["id"]]
+        require(len(rows) == 1, "Exact CLI counterpart occurrence inventory differs")
+        row = rows[0]
+        expected = counterparts.expected(old, {"exit_code": old["exit_code"],
+            **{field: frozen.restore(old[field], old_blobs) for field in ("stdout", "stderr")}}, minor)
+        require(type(row["exit_code"]) is int and row["exit_code"] == expected["exit_code"],
+                "Exact CLI runtime counterpart exit differs")
+        for field in ("stdout", "stderr"):
+            raw = frozen.restore(row[field], blobs)
+            require(raw == expected[field], "Exact CLI runtime counterpart " + field + " differs")
+            if row[field] != old[field]:
+                require(row[field] == {"kind": "blob", "bytes": len(raw), "sha256": frozen.sha(raw)},
+                        "Exact CLI runtime counterpart reference differs")
+                counterpart_evidence.append({"id": old["id"], "field": field,
+                    "actual": deepcopy(row[field]), "baseline": deepcopy(old[field])})
+                del projected_blobs[row[field]["sha256"]]
+                projected_blobs[old[field]["sha256"]] = old_blobs[old[field]["sha256"]]
+                row[field] = deepcopy(old[field])
+    projected["inventory_fingerprint"] = digest({key: value for key, value in projected.items()
+                                                  if key != "inventory_fingerprint"})
+    evidence.update(projected_inventory_fingerprint=projected["inventory_fingerprint"],
+        projection="exact_witnessed_source_metadata_and_explicit_pinned_argparse_runtime_counterpart_only_then_recompute_inventory_fingerprint",
+        runtime_counterpart={"declaration_sha256": counterparts.pin, "python_minor": minor,
+                             "validated_cases": sorted(counterparts.cases), "changes": counterpart_evidence})
+    require(projected_blobs == old_blobs, "Complete actual CLI content differs from immutable baseline")
     require(canonical(projected) == canonical(baseline), "Complete actual CLI observations differ from immutable baseline")
     evidence.update(status="complete_original_cli_recapture_equal", coverage=deepcopy(actual["coverage"]),
-                    content_documents=len(blobs), content_bytes=sum(map(len, blobs.values())))
+                    content_documents=len(blobs), content_bytes=sum(map(len, blobs.values())),
+                    actual_capture=deepcopy(actual),
+                    actual_content_inventory=[{"sha256": name, "bytes": len(body)}
+                                              for name, body in sorted(blobs.items())])
     return evidence
 
 
@@ -163,6 +205,10 @@ def main(argv=None):
     receipt["runtime"] = {"python": sys.version, "platform": sys.platform, "executable": sys.executable,
                           "revision": os.environ.get("GITHUB_SHA")}
     args.output.parent.mkdir(parents=True, exist_ok=True)
+    # Retain the full actual bytes independently of the checked projection.
+    actual_path = args.output.with_name(args.output.stem + "-actual.json")
+    frozen.write(actual, blobs, actual_path)
+    receipt["actual_capture_path"] = actual_path.name
     args.output.write_bytes(canonical(receipt) + b"\n")
     print(json.dumps({"status": receipt["status"], "actual_inventory_fingerprint": receipt["actual_inventory_fingerprint"],
                       "baseline_inventory_fingerprint": CORPUS_PIN, "coverage": receipt["coverage"]}, sort_keys=True))
