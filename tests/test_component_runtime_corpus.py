@@ -9,6 +9,8 @@ import json
 from pathlib import Path
 import unittest
 
+from tools.realization_source_lineage import verify_captured_source
+
 ROOT = Path(__file__).resolve().parents[1]
 CORPUS = ROOT / "tests/conformance/component-runtime-v1.json"
 PIN = "aea8309d6efa172777f550d4a91cd3ebb7b40c301234fc7e90636fb4f466fcbf"
@@ -125,7 +127,7 @@ class ComponentRuntimeCorpusTests(unittest.TestCase):
         self.assertEqual(coverage["unclassified_observations"], 0)
         self.assertEqual(len(self.descriptors), 4934)
         for source in self.index["source_files"]:
-            self.assertEqual(hashlib.sha256((ROOT / source["path"]).read_bytes()).hexdigest(), source["sha256"], source["path"])
+            verify_captured_source(ROOT, source)
 
     def test_every_native_input_is_derived_independently_from_complete_raw_arguments(self):
         classes = self.classes(); used = set(); seen = set()
