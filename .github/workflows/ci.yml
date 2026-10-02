@@ -15,6 +15,11 @@ concurrency:
 permissions:
   contents: read
 
+# Explicit bash makes piped checker/type-check failures fail their run step.
+defaults:
+  run:
+    shell: bash
+
 jobs:
   unit-plan:
     runs-on: ubuntu-latest
