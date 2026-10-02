@@ -1,0 +1,1 @@
+[{"path":["args"],"type":"builtins.tuple"},{"path":["args",0],"type":"biocompiler.ir.component_assembly.ComponentAssembly"},{"path":["args",1,0],"type":"biocompiler.models.synthetic.ModelInputFrame"},{"path":["args",1,1],"type":"biocompiler.models.synthetic.ModelInputFrame"},{"path":["args",1,2],"type":"biocompiler.models.synthetic.ModelInputFrame"}]

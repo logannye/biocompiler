@@ -39,6 +39,7 @@ With OCaml 5.4.0 and dependencies from `biocompiler_core.opam` installed:
 ```sh
 opam exec -- dune build --root core @all
 BIOCOMPILER_CANDIDATE_RUNTIME_CORPUS="$PWD/tests/conformance/candidate-runtime-v1.json" \
+BIOCOMPILER_COMPONENT_RUNTIME_CORPUS="$PWD/tests/conformance/component-runtime-v1.json" \
   opam exec -- dune runtest --root core
 ```
 
@@ -356,8 +357,8 @@ candidate-specific frame/trace records preserve the historical synthetic model
 profile; independent state stores and scheduling execute the selected mechanism.
 The source interpreter, producers and acceptance libraries are forbidden runtime
 dependencies. This internal runner is not yet a public protocol operation or a
-completed realization checker. Locked component reconstruction, realization
-acceptance and molecular correspondence remain open.
+completed realization checker. Locked component reconstruction is implemented in the following internal batch;
+realization acceptance and molecular correspondence remain open.
 
 The resource profile limits cumulative work to 50 million units, output frames to
 10,000, trace items and retained state to 100,000 each, and complete encoded traces
@@ -367,3 +368,37 @@ calls, every original assertion and full returned artifacts or rejection stages;
 independent native literals cover scheduling, typing and exact resource boundaries.
 The batch adds four native suites (50 total). Source integrity/replay and static
 boundary checks have passed; hosted compilation and execution remain required.
+
+
+## Locked component execution checkpoint
+
+The internal component runner reconstructs candidate operations and ordered inputs
+from the exact selected registry records, model declarations, lock and wiring.
+Complete composition, observation-map and assembly containers retain the full
+request authority, including unselected registry members and source lineage.
+Assembly decoding checks structural identity; it does not grant acceptance.
+The component profile retains its 13 historical operations and excludes delay.
+
+Preparation has a separate, caller-reducible 50-million-unit allowance; execution
+uses the synthetic runner's independently bounded allowance. Complete domain
+imports and reconstructed graphs remain bounded to 16 MiB, 250,000 JSON values,
+128 levels and 4 MiB per string. Aggregate constructor checks reject excessive or
+cyclic inputs before expanding them. Failed preparation/execution returns no
+partial successful receipt.
+
+The conformance corpus retains all 52,476 calls from 163 unchanged original test
+methods: 50,599 domain, 1,650 registry lock/resolve, 134 reconstruction and 93
+runtime observations. Every returned graph and trace, and every rejection stage,
+is retained. Twelve component operations have original execution witnesses; a
+separately labeled comparison supplement covers the remaining operator. The
+4,934 documents contain 64,530,645 bytes and are pinned by
+`aea8309d6efa172777f550d4a91cd3ebb7b40c301234fc7e90636fb4f466fcbf`.
+The fixed absolute capture-root substitution occurs before source construction
+and hashing, preserving absolute-path rejection assertions. Compact ledgers retain
+every call and can reconstruct the original complete capture byte-for-byte.
+
+Six suites bring the native total to 56. The complete external corpus is mandatory
+in both Dune and a separate hosted invocation on each platform. Source-only
+integrity/replay and dependency checks precede hosted native validation; they do
+not establish native parity. Public protocol exposure, generic composition
+acceptance, realization checking and biological validity remain separate work.

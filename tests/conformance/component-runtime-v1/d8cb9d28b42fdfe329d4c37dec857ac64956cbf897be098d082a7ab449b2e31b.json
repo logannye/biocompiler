@@ -1,0 +1,1 @@
+"{\"args\":[\"circular\",\"external\",[{\"compartment\":\"abstract\",\"id\":\"anchor\",\"role\":\"cell\",\"schema_version\":\"biocompiler.component_capability.v0.1\",\"scope\":\"cell\"}],[\"RNA\"]],\"kwargs\":{\"depends_on\":[\"circular\"]}}"

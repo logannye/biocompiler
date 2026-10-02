@@ -1,0 +1,1 @@
+[{"path":["args"],"type":"builtins.tuple"},{"path":["args",2],"type":"builtins.tuple"},{"path":["args",2,0],"type":"biocompiler.ir.component_contracts.ProvidedCapability"},{"path":["args",3],"type":"builtins.tuple"},{"path":["kwargs","depends_on"],"type":"builtins.tuple"}]

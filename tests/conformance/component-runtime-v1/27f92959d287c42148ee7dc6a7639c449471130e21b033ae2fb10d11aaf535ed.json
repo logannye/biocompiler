@@ -1,0 +1,1 @@
+"{\"args\":[],\"kwargs\":{\"consumer_instance\":\"select:contact_pulse\",\"consumer_port\":\"in:2\",\"producer_instance\":\"inactive:contact_pulse\",\"producer_port\":\"out\"}}"

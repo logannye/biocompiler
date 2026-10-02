@@ -1,0 +1,1 @@
+{"inputs":[],"outputs":[{"mechanism_output_id":"output:contact_pulse","requirement_id":"contact_pulse"},{"mechanism_output_id":"output:local_pulse","requirement_id":"local_pulse"},{"mechanism_output_id":"output:memory_readout","requirement_id":"memory_readout"}],"schema_version":"biocompiler.observation_map.v0.1"}

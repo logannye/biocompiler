@@ -39,6 +39,12 @@ TESTS = {
     "test_model_execution_data": {"bioc_wire", "bioc_domain", "zarith"},
     "test_synthetic_model": {"bioc_wire", "bioc_domain", "bioc_candidate_runtime", "zarith"},
     "test_candidate_runtime_corpus": {"bioc_wire", "bioc_domain", "bioc_candidate_runtime", "zarith"},
+    "test_component_registry": {"bioc_wire", "bioc_domain", "zarith"},
+    "test_observation_map": {"bioc_wire", "bioc_domain"},
+    "test_composition": {"bioc_wire", "bioc_domain", "zarith"},
+    "test_component_assembly": {"bioc_wire", "bioc_domain"},
+    "test_component_execution": {"bioc_wire", "bioc_domain", "bioc_candidate_runtime"},
+    "test_component_runtime_corpus": {"bioc_wire", "bioc_domain", "bioc_candidate_runtime", "zarith"},
     "test_producer_protocol": {"bioc_wire", "bioc_domain", "bioc_service", "bioc_producer_service"},
     "test_construction_producer": {"bioc_wire", "bioc_domain", "bioc_compiler", "bioc_checker", "zarith"},
     "test_source_execution": {"bioc_wire", "bioc_domain", "bioc_compiler", "bioc_checker", "zarith"},
@@ -253,7 +259,7 @@ def source_boundary(path, allowed_libraries, *, owner=None):
             raise BoundaryError(f"Unreviewed native/process/dynamic-code escape {token} in {path.name}")
         if token == "Sys":
             reviewed = {"argv"}
-            if owner in {"test:test_architecture_check", "test:test_source_transport", "test:test_architecture_producer", "test:test_construction_producer", "test:test_candidate_runtime_corpus"}:
+            if owner in {"test:test_architecture_check", "test:test_source_transport", "test:test_architecture_producer", "test:test_construction_producer", "test:test_candidate_runtime_corpus", "test:test_component_runtime_corpus"}:
                 # The test-only document corpus must reject undeclared files.
                 # Production code gains no filesystem or process permission.
                 reviewed.add("readdir")
@@ -320,9 +326,12 @@ def check_boundaries(root: Path):
             else:
                 if relative != "test/dune" or name not in TESTS or values.get("modules") != [name]:
                     raise BoundaryError(f"Unreviewed native test stanza: {name}")
-                expected_actions = ([["action", ["run", "%{test}",
-                    "%{env:BIOCOMPILER_CANDIDATE_RUNTIME_CORPUS=missing}"]]]
-                    if name == "test_candidate_runtime_corpus" else [])
+                fixture_variables = {
+                    "test_candidate_runtime_corpus": "%{env:BIOCOMPILER_CANDIDATE_RUNTIME_CORPUS=missing}",
+                    "test_component_runtime_corpus": "%{env:BIOCOMPILER_COMPONENT_RUNTIME_CORPUS=missing}",
+                }
+                expected_actions = ([["action", ["run", "%{test}", fixture_variables[name]]]]
+                                    if name in fixture_variables else [])
                 if actions != expected_actions:
                     raise BoundaryError(f"Changed native test action: {name}")
                 if name in tests or dependencies != TESTS[name]:

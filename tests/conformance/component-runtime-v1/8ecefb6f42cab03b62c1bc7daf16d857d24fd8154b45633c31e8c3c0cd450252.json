@@ -1,0 +1,1 @@
+"{\"args\":[],\"kwargs\":{\"consumer_instance\":\"pulse_onset:local_pulse\",\"consumer_port\":\"in:0\",\"producer_instance\":\"aggregate:local_pulse\",\"producer_port\":\"out\"}}"

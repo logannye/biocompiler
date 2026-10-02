@@ -1,0 +1,1 @@
+"{\"args\":[{\"consumer_instance\":\"select:memory_readout\",\"consumer_port\":\"in:1\",\"producer_instance\":\"active:memory_readout\",\"producer_port\":\"out\"}],\"kwargs\":{}}"

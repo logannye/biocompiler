@@ -232,7 +232,20 @@ These checkpoints record narrower validated work; they do not complete a broad L
   Draft [PR49](https://github.com/logannye/biocompiler/pull/49) preserves this
   implementation. Its first hosted run compiled and passed the domain/runtime
   literals, but Dune omitted the corpus argument; the invocation is corrected
-  and full native corpus validation remains pending.
+  and the complete native corpus now passes on both platforms. All remaining
+  product gates must pass before this batch is complete.
+
+- [ ] **B1.08b locked-component reconstruction and execution:** in progress on
+  `codex/ocaml-locked-component-execution`. Full registry/lock, composition,
+  observation-map and assembly containers retain complete authority. The runner
+  derives operations, parameters and ordered inputs from actual selected records
+  and wiring. The unchanged 163-method baseline retains all 52,476 calls and
+  exact domains, reconstructed graphs and full traces. Six source integrity/replay
+  tests pass; 56 native suites, the full mandatory corpus and all product gates
+  remain required on both hosted platforms. The corpus pin is
+  `aea8309d6efa172777f550d4a91cd3ebb7b40c301234fc7e90636fb4f466fcbf`
+  (4,934 documents, 64,530,645 bytes). Generic composition acceptance, realization checking, scientific
+  adapters and empirical validity are separate unfinished obligations.
 
 - [ ] **B1.09 fresh acceptance and protocol exposure**, followed by B2 producer/export and the remaining B3–B6 product gates.
 
@@ -278,9 +291,10 @@ merge `972d0427c9b9608ecda3b4d0eb7d0026355ce80c` and integrated main share tree
   merge `03936f8` and integrated main share tree
   `64e2732d72b07468b4a7e89ddddf0f7805416f36`. Public routing and distribution
   remain separate checkpoints.
-- [ ] **PR47 integrated-main validation:** separate
+- [x] **PR47 integrated-main validation:** separate
   [run 36961812619](https://github.com/logannye/biocompiler/actions/runs/36961812619)
-  is running at the integrated revision. Do not transfer the PR result to it.
+  passed all 30 required jobs at the integrated revision, including exactly 2,351
+  tests on each Python version. The pinned receipt records the full aggregate digest.
 
 - [ ] **B2 public architecture routing:** explicit `core=` SDK selection and
   architecture CLI executable options preserve historical classes, raw request
@@ -294,7 +308,7 @@ merge `972d0427c9b9608ecda3b4d0eb7d0026355ce80c` and integrated main share tree
   See [explicit core workflows](architecture-core-workflows.md).
 
 
-PR42 source `06da8b4bee4110597caed15fa2da4f2bb7724268`, tested merge `902cae85932dfc1202f68d7d9bc7502941eeb701` and integrated main share tree `06898b1f7ac5e51e692ef976d5834ec5976a495a`. Both complete PR and integrated-main gates passed. PR43 source `7fb3ec8983b038b03f0efa8f8233e4bef4e5a613`, tested merge `9f0c10ea218c4df49aa9f143718eb82d2daff842` and integrated main share tree `836da9375e1206d708194eecd48419f529ab5ff0`. Both complete PR and integrated-main gates passed. PR44 source `ae56d0c7e3dd8202aa015d7a7b769a75bd8ca037`, tested merge `8ff4d1911a6525c58be16e6db9d030b5fb670a91` and integrated main share tree `7ecc2c56f1370c0540f3c74c5795c6868d8e3841`; full PR and integrated-main gates passed. PR45 adds validated independent full architecture acceptance and its control/deployment/build prerequisites. PR46 validates experimental verification protocol, producers and coupled source transport. PR47 validates installed producer operations and is merged; its separate main run, public routing and full cutover remain open.
+PR42 source `06da8b4bee4110597caed15fa2da4f2bb7724268`, tested merge `902cae85932dfc1202f68d7d9bc7502941eeb701` and integrated main share tree `06898b1f7ac5e51e692ef976d5834ec5976a495a`. Both complete PR and integrated-main gates passed. PR43 source `7fb3ec8983b038b03f0efa8f8233e4bef4e5a613`, tested merge `9f0c10ea218c4df49aa9f143718eb82d2daff842` and integrated main share tree `836da9375e1206d708194eecd48419f529ab5ff0`. Both complete PR and integrated-main gates passed. PR44 source `ae56d0c7e3dd8202aa015d7a7b769a75bd8ca037`, tested merge `8ff4d1911a6525c58be16e6db9d030b5fb670a91` and integrated main share tree `7ecc2c56f1370c0540f3c74c5795c6868d8e3841`; full PR and integrated-main gates passed. PR45 adds validated independent full architecture acceptance and its control/deployment/build prerequisites. PR46 validates experimental verification protocol, producers and coupled source transport. PR47 validates installed producer operations and is merged with full integrated-main validation; public routing and full cutover remain open.
 
 **First vertical slice:** [the case B acceptance map](migration-case-b.md) and [retained corpus](../tests/conformance/case-b/README.md) now pin its real source/candidate and independent literal timelines. Architecture acceptance/mutation descriptors remain unexecuted; domain and source-correspondence receipts are scoped above, and per-role reference execution has complete PR40 validation. Use the existing artificial architecture case B (prime/act/recover, timeout, reset and shutdown) with exact supplied source correspondence. Reuse its actual request/templates. The initial checker stage reads the existing Python-produced candidate and independently reconstructs it. Then port its producer. Do not replace this slice with an unrelated toy expression interpreter.
 

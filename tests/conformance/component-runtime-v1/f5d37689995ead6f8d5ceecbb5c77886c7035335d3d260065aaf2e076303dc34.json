@@ -1,0 +1,1 @@
+[{"path":["args"],"type":"builtins.tuple"},{"path":["kwargs","components"],"type":"builtins.tuple"},{"path":["kwargs","identities"],"type":"builtins.tuple"},{"path":["kwargs","identities",0],"type":"biocompiler.ir.component_contracts.PinnedIdentity"}]

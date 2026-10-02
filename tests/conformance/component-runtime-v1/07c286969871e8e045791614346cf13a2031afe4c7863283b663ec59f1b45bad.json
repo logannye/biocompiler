@@ -1,0 +1,1 @@
+"{\"args\":[\"a\",{\"component_id\":\"component\",\"content_fingerprint\":\"4471b679b9457be5905b41d7c56935f5c7b98b5aa6b71a40c972d8de408a8a1b\",\"node_id\":\"a\",\"schema_version\":\"biocompiler.component_lock.v0.1\",\"version\":\"1\"},{\"constraints\":{},\"schema_version\":\"biocompiler.component_operating_domain.v0.1\"}],\"kwargs\":{}}"
