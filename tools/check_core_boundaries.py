@@ -36,6 +36,8 @@ EXECUTABLES = {
     "biocompiler-verify": ("bin/verify/dune", {"bioc_wire", "bioc_service"}, "verifier"),
 }
 TESTS = {
+    'test_synthetic_authority': {'bioc_domain', 'zarith', 'bioc_wire'},
+    'test_synthetic_authority_corpus': {'bioc_domain', 'zarith', 'bioc_wire'},
     'test_composition_evidence': {'bioc_domain', 'zarith', 'bioc_wire'},
     'test_composition_check': {'bioc_domain', 'zarith', 'bioc_checker', 'bioc_wire'},
     'test_component_selection': {'bioc_domain', 'zarith', 'bioc_compiler', 'bioc_checker', 'bioc_wire'},
@@ -275,7 +277,7 @@ def source_boundary(path, allowed_libraries, *, owner=None):
             raise BoundaryError(f"Unreviewed native/process/dynamic-code escape {token} in {path.name}")
         if token == "Sys":
             reviewed = {"argv"}
-            if owner in {"test:test_architecture_check", "test:test_source_transport", "test:test_architecture_producer", "test:test_construction_producer", "test:test_candidate_runtime_corpus", "test:test_component_runtime_corpus", "test:test_realization_foundation_corpus", "test:test_realization_checks_corpus", "test:test_component_acceptance_corpus"}:
+            if owner in {"test:test_architecture_check", "test:test_source_transport", "test:test_architecture_producer", "test:test_construction_producer", "test:test_candidate_runtime_corpus", "test:test_component_runtime_corpus", "test:test_realization_foundation_corpus", "test:test_realization_checks_corpus", "test:test_component_acceptance_corpus", "test:test_synthetic_authority_corpus"}:
                 # The test-only document corpus must reject undeclared files.
                 # Production code gains no filesystem or process permission.
                 reviewed.add("readdir")
@@ -348,6 +350,7 @@ def check_boundaries(root: Path):
                     "test_realization_foundation_corpus": "%{env:BIOCOMPILER_REALIZATION_FOUNDATION_CORPUS=missing}",
                     "test_realization_checks_corpus": "%{env:BIOCOMPILER_REALIZATION_CHECKS_CORPUS=missing}",
                     "test_component_acceptance_corpus": "%{env:BIOCOMPILER_COMPONENT_ACCEPTANCE_CORPUS=missing}",
+                    "test_synthetic_authority_corpus": "%{env:BIOCOMPILER_SYNTHETIC_AUTHORITY_CORPUS=missing}",
                 }
                 expected_actions = ([["action", ["run", "%{test}", fixture_variables[name]]]]
                                     if name in fixture_variables else [])

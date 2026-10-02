@@ -347,3 +347,14 @@
  (modules test_component_acceptance_corpus)
  (libraries bioc_wire bioc_domain bioc_checker bioc_compiler bioc_realization_checker zarith)
  (action (run %{test} %{env:BIOCOMPILER_COMPONENT_ACCEPTANCE_CORPUS=missing})))
+
+(test
+ (name test_synthetic_authority)
+ (modules test_synthetic_authority)
+ (libraries bioc_wire bioc_domain zarith))
+
+(test
+ (name test_synthetic_authority_corpus)
+ (modules test_synthetic_authority_corpus)
+ (libraries bioc_wire bioc_domain zarith)
+ (action (run %{test} %{env:BIOCOMPILER_SYNTHETIC_AUTHORITY_CORPUS=missing})))
