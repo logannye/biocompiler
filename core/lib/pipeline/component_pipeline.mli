@@ -11,7 +11,8 @@ val resource_limits : Bioc_wire.Json.t
 type t
 type failure = {error:exn;manager:Bioc_compiler.Pass_manager.t option}
 type attempt = Completed of t | Failed of failure
-(** Expected failure retains the actual upstream/partial component manager and
+
+(* Expected failure retains the actual upstream/partial component manager and
     the original exception value. Fatal/unexpected exceptions escape. No
     serialized record or caller-provided state is installed by this API. *)
 val attempt : budget:Bioc_checker.Work_budget.t ->

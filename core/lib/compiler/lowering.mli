@@ -4,7 +4,8 @@
 val producer_version : string
 val lower : Bioc_domain.Build_request.t -> Bioc_domain.Behavior.t
 val resource_profile : string
-(** Same lowering and independent acceptance, with producer transformations,
+
+(* Same lowering and independent acceptance, with producer transformations,
     document materialization and the independent checker sharing [parent].
     The caller bounds aggregate work; the checker's existing nested allowance
     and every structural/lineage/publication limit remain in force. *)

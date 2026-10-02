@@ -795,6 +795,17 @@ record current parent heads; previous partial native passes are historical only.
   records exact affected revisions; native execution and all hosted gates remain
   pending, so this does not close the native acceptance checkpoint.
 
+**Hosted corrections, 2026-10-02:** PR67's native build exposed an ambiguous
+OCaml interface documentation comment; comments were disambiguated without
+changing signatures or disabling warnings. PR64's conformance run exposed an
+expected-scope ordering error inherited by PR62–67: native declaration order is
+generation, selection, components, while canonical JSON object iteration differs.
+The campaign now derives the exact expected array from reviewed family order,
+keeps strict ordering and complete field checks, and identifies mismatched fields.
+Seventeen focused Python conformance tests pass, including ordering and field
+mutants. Corrected revisions still require every hosted gate; this does not close
+any native acceptance checkbox.
+
 The integrated PR51 main revision `652e2aa0aa24bf563412483827d07c4bc027a4e0`
 passed all 31 jobs in [run 36972688727](https://github.com/logannye/biocompiler/actions/runs/36972688727).
 Its aggregate was independently reconstructed, both platform binaries rehashed,

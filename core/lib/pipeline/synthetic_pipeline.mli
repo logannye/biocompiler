@@ -10,7 +10,8 @@ val resource_limits : Bioc_wire.Json.t
 type t
 type failure = {error:exn;manager:Bioc_compiler.Pass_manager.t option}
 type attempt = Completed of t | Failed of failure
-(** Retains only the actual live manager if construction reached that point.
+
+(* Retains only the actual live manager if construction reached that point.
     Expected diagnostics, unsupported generation and no-candidate exceptions
     retain their original exception values. Fatal/unexpected exceptions escape.
     This diagnostic result neither imports records nor grants acceptance. *)
