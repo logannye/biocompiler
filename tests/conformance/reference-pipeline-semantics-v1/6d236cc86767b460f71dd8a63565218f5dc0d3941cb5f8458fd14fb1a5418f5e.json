@@ -1,0 +1,1 @@
+{"class":"biocompiler.ir.construct.ConstructReference","class_schema":"biocompiler.construct_reference.v0.1","fields":[["instance_id",{"scalar":"str","value":"fap_cds"}],["selection",{"ref":"object/9845"}]],"instance_fields":["instance_id","selection"],"kind":"dataclass"}

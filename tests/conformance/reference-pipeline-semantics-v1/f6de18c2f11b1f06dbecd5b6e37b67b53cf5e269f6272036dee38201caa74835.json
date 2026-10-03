@@ -1,0 +1,1 @@
+{"class":"mappingproxy","items":[[{"scalar":"str","value":"schema_version"},{"scalar":"str","value":"biocompiler.component_operating_domain.v0.1"}],[{"scalar":"str","value":"constraints"},{"ref":"object/5168"}]],"kind":"mapping"}

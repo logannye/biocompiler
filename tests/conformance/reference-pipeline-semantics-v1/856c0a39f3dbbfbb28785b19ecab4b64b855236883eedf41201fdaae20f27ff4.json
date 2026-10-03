@@ -1,0 +1,1 @@
+{"class":"biocompiler.compiler.molecular.MolecularBuild","class_schema":null,"fields":[["construct",{"ref":"object/10001"}],["candidate",{"ref":"object/10333"}],["check_result",{"ref":"object/10387"}],["result",{"ref":"object/10331"}],["manager",{"ref":"object/9484"}]],"instance_fields":["construct","candidate","check_result","result","manager"],"kind":"dataclass"}

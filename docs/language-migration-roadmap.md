@@ -68,6 +68,19 @@ remains the production default. The
 [continuation design and evidence](migration-fixed-workflow-continuations.md)
 record the implemented phase boundary, object identities and remaining acceptance.
 
+**Next reference workflow checkpoint:** native Construct/Molecular pipeline
+libraries now preserve the original admission, registration, dependency-write and
+finish phases. Closed Python views reproduce 437 distinct successful original
+records without calling legacy semantics. The new baseline retains 18 unchanged
+methods, 27 managers and 439 top-level operations with complete object/callback
+graphs. Public service integration and installed replay remain open; see the
+[library and view design](migration-reference-pipeline-libraries.md) and
+[source/local evidence](../protocol/migration-reference-pipeline-libraries-checkpoint.json).
+The reference foundation is awaiting complete acceptance in
+[PR76](https://github.com/logannye/biocompiler/pull/76). Its five new native suites
+have passed on both hosted platforms; the entire 36-job gate and independent
+artifact reconstruction remain required before integration.
+
 **Resumed migration checkpoint, 2026-10-02:** PR57 and PR58 passed all 36
 exact-head jobs and are merged. Independent aggregate reconstruction, both
 platform binary manifests and all four full artifact comparisons reproduce their
@@ -1193,6 +1206,17 @@ record current parent heads; previous partial native passes are historical only.
   callable identity, ordered dependency writes and retained rejection state.
   Require complete installed original-workflow replay and four-runtime receipts;
   separate domain/library acceptance does not close this item.
+- [x] **LM-12/24/25 exact-reference pipeline source and Python baseline:** add
+  phased native Construct/Molecular libraries preserving actual manager/provider
+  identity, registration hooks, override ordering and shared resource ancestry.
+  Add 26 closed Python record decoders with six controls passing on both Python
+  versions, including 437 complete original values. Freeze all 18 unchanged
+  direct pipeline methods, 27 managers and 439 top-level operations; nine
+  capture/integrity controls pass with fresh complete replay on both versions.
+  Wire two new native suites and retain all 36 release jobs. This checkbox
+  records source and original-Python evidence only: service dispatch, installed
+  native replay, public Build identity and the preceding integration gate remain
+  open. See the [source checkpoint](../protocol/migration-reference-pipeline-libraries-checkpoint.json).
 
 - [x] **LM-03 CI harness correction checkpoint:** the installed architecture
   guard now permits only the exact new parser-registration helpers while rejecting

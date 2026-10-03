@@ -1,0 +1,1 @@
+{"closure":[["dependencies",{"ref":"object/8209"}]],"defaults":{"scalar":"NoneType","value":null},"kind":"provider","kwdefaults":{"scalar":"NoneType","value":null},"source":{"file":"src/biocompiler/compiler/molecular.py","freevars":["dependencies"],"line":126,"module":"biocompiler.compiler.molecular","qualname":"run_molecular_pipeline.<locals>.require_current_providers"}}

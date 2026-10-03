@@ -1,0 +1,1 @@
+{"class":"mappingproxy","items":[[{"scalar":"str","value":"id"},{"scalar":"str","value":"layout_composition"}],[{"scalar":"str","value":"evidence_kind"},{"scalar":"str","value":"model_conditional"}],[{"scalar":"str","value":"discharges"},{"ref":"object/1868"}]],"kind":"mapping"}

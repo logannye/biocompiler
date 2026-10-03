@@ -877,6 +877,7 @@ jobs:
           set -o pipefail
           BIOCOMPILER_REFERENCE_CONTRACTS_DOCUMENTS="$GITHUB_WORKSPACE/tests/conformance/reference-contracts-v1" \
           BIOCOMPILER_REFERENCE_CONTRACTS_CORPUS="$GITHUB_WORKSPACE/tests/conformance/reference-contracts-v1.json" \
+          BIOCOMPILER_REFERENCE_PIPELINE_DOCUMENTS="$GITHUB_WORKSPACE/tests/conformance/reference-pipeline-semantics-v1" \
           BIOCOMPILER_CANDIDATE_RUNTIME_CORPUS="$GITHUB_WORKSPACE/tests/conformance/candidate-runtime-v1.json" \
           BIOCOMPILER_COMPONENT_RUNTIME_CORPUS="$GITHUB_WORKSPACE/tests/conformance/component-runtime-v1.json" \
           BIOCOMPILER_REALIZATION_FOUNDATION_CORPUS="$GITHUB_WORKSPACE/tests/conformance/realization-foundation-v1.json" \
@@ -922,6 +923,12 @@ jobs:
       - name: Replay every original reference domain, producer and checker observation
         if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
         run: core/_build/default/test/test_reference_contracts_corpus.exe "$GITHUB_WORKSPACE/tests/conformance/reference-contracts-v1.json" | tee generated/core/test_reference_contracts_corpus.txt
+      - name: Check live reference construct admission, provenance and lifetime bounds
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_reference_construct_pipeline.exe "$GITHUB_WORKSPACE/tests/conformance/reference-pipeline-semantics-v1" | tee generated/core/test_reference_construct_pipeline.txt
+      - name: Check same-manager exact CDS continuation and retained failure state
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_reference_molecular_pipeline.exe "$GITHUB_WORKSPACE/tests/conformance/reference-pipeline-semantics-v1" | tee generated/core/test_reference_molecular_pipeline.txt
       - name: Check retained request, behavior and coordinate domain corpora
         if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
         run: |

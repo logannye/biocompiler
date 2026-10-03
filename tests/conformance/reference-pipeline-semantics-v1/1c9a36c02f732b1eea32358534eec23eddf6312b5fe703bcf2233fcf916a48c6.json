@@ -1,0 +1,1 @@
+{"class":"biocompiler.registry.components.ComponentRegistry","class_schema":"biocompiler.component_registry.v0.2","fields":[["id",{"scalar":"str","value":"reviewed-cds"}],["version",{"scalar":"str","value":"1"}],["components",{"ref":"object/1310"}]],"instance_fields":["id","version","components"],"kind":"dataclass"}

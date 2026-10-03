@@ -1,0 +1,1 @@
+{"class":"biocompiler.ir.composition.LifecycleInterval","class_schema":null,"fields":[["start",{"scalar":"int","value":0}],["end",{"scalar":"NoneType","value":null}],["unit",{"scalar":"str","value":"s"}]],"instance_fields":["start","end","unit"],"kind":"dataclass"}
