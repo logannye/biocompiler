@@ -1,0 +1,18 @@
+{
+  "added": 0,
+  "entries": 3310,
+  "entry_changed_fields": {
+    "test_coverage": 1157
+  },
+  "note": "Sorted test-file insertion renumbers reference-set indices; no product or migration state changes.",
+  "removed": 0,
+  "resolved_test_reference_changes": [
+    "public_definition:biocompiler.cli.main",
+    "public_definition:biocompiler.core_distribution.InstalledCoreDistribution",
+    "public_definition:biocompiler.ir.payload.name",
+    "public_definition:biocompiler.ir.serialization.name",
+    "public_definition:biocompiler.reference_backend.current",
+    "public_definition:biocompiler.verification.exploration.name"
+  ],
+  "semantic_entries_unchanged": true
+}

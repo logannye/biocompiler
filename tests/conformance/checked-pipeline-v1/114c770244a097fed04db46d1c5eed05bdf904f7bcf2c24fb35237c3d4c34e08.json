@@ -1,0 +1,1 @@
+{"$type":"dataclass","class":"biocompiler.compiler.pipeline.ScopedObligation","fields":{"description":"Source operation 'scope' remains unimplemented by coding-only candidate selection.","evidence_kind":{"$type":"enum","class":"biocompiler.verification.evidence.EvidenceKind","value":"unresolved"},"id":"source:n000003","scope":"therapeutic_implementation"}}

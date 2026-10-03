@@ -76,7 +76,8 @@ _ROUTES = {
     "biocompiler.compiler.workflow": ("compile",),
     "biocompiler.compiler.payload_architecture": ("compile_payload_architecture", "export_payload_architecture"),
     "biocompiler.verification.payload_architecture": ("check_payload_architecture", "verify_payload_architecture"),
-    "biocompiler.cli": ("main", "_architecture_core_arguments", "_register_circuit_infrastructure_commands",
+    "biocompiler.cli": ("main", "_architecture_core_arguments", "_workflow_core_arguments",
+                         "_synthetic_producer_core_arguments", "_register_circuit_infrastructure_commands",
                          "_architecture_core_client", "_architecture_core_command", "_architecture_command",
                          "_bounded_text", "_publish_report"),
 }

@@ -1,0 +1,128 @@
+{
+  "all_required_release_jobs": 38,
+  "corrected_hosted_acceptance": false,
+  "correction": "Add a finite receipt-only projection for the frozen deferred corpus. Bind the exact same-command/parent/registered producer result and context to ordered tuple materialization, element type and four-field access census, and unambiguous native scalar comparison/membership receipts. Require actual Boolean true and canonical capability references; preserve duplicates, order and the complete context comparison. Product semantics, protocol, original bodies and frozen expected documents remain unchanged.",
+  "diagnosis": "The actual host source-link tuple is retained as a hydration capability while the native typed context document contains an empty source_links array. The installed adapter resolves that capability; the deferred receipt checker ignored it and compared the raw typed document directly with the actual observed context.",
+  "discovery": {
+    "added": 6,
+    "classes_each": 348,
+    "receipt": "discovery.json",
+    "removed": 0,
+    "scope": "Discovery only, not execution.",
+    "tests_each": 3397
+  },
+  "evidence": {
+    "context-tests-311.log": {
+      "bytes": 99,
+      "sha256": "0e706905e08870da528ea4e5a6fc3bd002b6f792a68b11046532663edbe42b35"
+    },
+    "context-tests-314.log": {
+      "bytes": 99,
+      "sha256": "f0181fdd542dbc9682313b3ea01f2bca79ca328d4ea44f4ec236ce6050545ded"
+    },
+    "correction-validation.json": {
+      "bytes": 3279,
+      "sha256": "67b0afc8c2f69cba7f3839d7d1b9ce24d02975be133936abef363f97754b291d"
+    },
+    "correction.patch": {
+      "bytes": 22134,
+      "sha256": "148d28d3314e9c1d656ab7efdc0211a126ae15b3b55caa1b938696e79dbb7077"
+    },
+    "discovery.json": {
+      "bytes": 2431,
+      "sha256": "a45b3936ee05d7f3569e485f95c125608776b9cdeeec38ffbe1edaf6be62ce70"
+    },
+    "evidence.json": {
+      "bytes": 9656,
+      "sha256": "a13acff2e95d6530b4a52acfc388c9743a5842e55730dd418643a08f8b1c801c"
+    },
+    "linux314-installed-release.json": {
+      "bytes": 9925,
+      "sha256": "59dae8f10afdd9dde951509ae40787a4de75d9b9ca1087500f55e48d5884d7bb"
+    },
+    "linux314-pipeline-manager.log": {
+      "bytes": 201,
+      "sha256": "49043e103fc2d80ada78f0cb6ba7128e41107e4d8bb5c5c3bcb67af625078a31"
+    },
+    "macos311-installed-release.json": {
+      "bytes": 10049,
+      "sha256": "ae818208e5d8da1072181508fe4a787e402c1e73a6a5d7a822d99f85f6b1f36f"
+    },
+    "macos311-pipeline-manager.log": {
+      "bytes": 201,
+      "sha256": "49043e103fc2d80ada78f0cb6ba7128e41107e4d8bb5c5c3bcb67af625078a31"
+    },
+    "macos314-installed-release.json": {
+      "bytes": 10050,
+      "sha256": "1cc2f4115e4be474cfee95fafb0199eb8899efca3201cac227840a4a080c6720"
+    },
+    "macos314-pipeline-manager.log": {
+      "bytes": 201,
+      "sha256": "49043e103fc2d80ada78f0cb6ba7128e41107e4d8bb5c5c3bcb67af625078a31"
+    },
+    "replay-complete-311.json": {
+      "bytes": 1838,
+      "sha256": "db8cd3191a782334ed553e9ca071172252a26798197324e6bbd71d45a332a87b"
+    },
+    "replay-complete-311.log": {
+      "bytes": 1838,
+      "sha256": "db8cd3191a782334ed553e9ca071172252a26798197324e6bbd71d45a332a87b"
+    },
+    "replay-complete-314.json": {
+      "bytes": 1858,
+      "sha256": "58cffa69f2c14d86b0bbbaa9e9a5a3114c02067a1fdde71d294bb809dfc6310b"
+    },
+    "replay-complete-314.log": {
+      "bytes": 1858,
+      "sha256": "58cffa69f2c14d86b0bbbaa9e9a5a3114c02067a1fdde71d294bb809dfc6310b"
+    },
+    "replay-deferred-complete.py": {
+      "bytes": 5665,
+      "sha256": "4413e931d002d934bd93d259f57c16a0493797a81db668d82f744f6d9d735020"
+    },
+    "source-links-context-mismatches.json": {
+      "bytes": 25895,
+      "sha256": "efb6d377854f3689e531506adcd6c1a6d934c10fce9df71f19601197723c504e"
+    }
+  },
+  "failed_run_id": 37109100797,
+  "focused_tests_each": 37,
+  "local_controls": "correction-validation.json",
+  "local_native_execution": false,
+  "migration_cutoffs_complete": false,
+  "new_test_methods": 6,
+  "peer_review": "Independent source review and repaired-evidence numeric-Boolean/capability-reference controls found no remaining concrete issue after hardening.",
+  "remaining": "Rerun corrected exact source through all four complete fresh-install campaigns and the full38-job release gate before authorized consolidation merge; prove older heads are contained before closing superseded PRs, and validate actual main before leased remote-branch deletion.",
+  "retained_native_receipt_recheck": {
+    "artifacts": 16346,
+    "comparison_cases": 34,
+    "complete_cases": 86,
+    "deferred_cases": 47,
+    "deferred_processes": 53,
+    "identity_cases": 5,
+    "local_python_versions": [
+      "3.11.15",
+      "3.14.6"
+    ],
+    "original_receipt_status": "failure",
+    "receipts": [
+      "replay-complete-311.json",
+      "replay-complete-314.json"
+    ],
+    "result": "PASS",
+    "scope": "Offline checking of historical macOS3.11.9 native evidence; not a new native run or current-source/fresh-install acceptance. Exact historical trace sources are separately restored and proved byte-for-byte, while the corrected comparator checks the receipt."
+  },
+  "schema": "biocompiler.deferred_context_receipt_correction.v1",
+  "source_before_correction": "817a8ed1154975befd293327dfabdf7798ed2b4c",
+  "source_pins": {
+    "tests/test_pipeline_manager_context_bindings.py": {
+      "bytes": 12223,
+      "sha256": "b1e94dbe9a742531c15188cdf466ee903611b1c7b4d0b398f79912684fca8a3b"
+    },
+    "tools/check_pipeline_manager_install.py": {
+      "bytes": 171731,
+      "sha256": "59f94bb142d7097160dd08fef700f458a362865fb6b6ad8142c530fac5fe0edb"
+    }
+  },
+  "tested_merge_revision": "9a65ff9ebb351e73844dd546336869da5034d52c"
+}

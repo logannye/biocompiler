@@ -1,0 +1,1 @@
+"{\n  \"feature\": \"UTRs\",\n  \"reason\": \"An exact CDS spelling does not specify a delivered molecule.\",\n  \"schema_version\": \"biocompiler.molecular_feature_status.v0.1\",\n  \"scope\": \"cds_record\",\n  \"status\": \"inapplicable\",\n  \"value\": null\n}"

@@ -24,6 +24,7 @@ ROUTES = {
         "realization_dependencies", "check_realization"),
 }
 
+REFERENCE_ROUTES = frozenset(("src/biocompiler/compiler/construct.py", "src/biocompiler/compiler/molecular.py"))
 
 def sha256(raw: bytes) -> str:
     return hashlib.sha256(raw).hexdigest()
@@ -87,7 +88,29 @@ def verify_captured_source(root: Path, entry):
     if sha256(current) == entry["sha256"]:
         return {"path": entry["path"], "historical_sha256": entry["sha256"],
                 "current_sha256": entry["sha256"], "kind": "identical_bytes"}
+    from tools.synthetic_selection_cli_source_lineage import CLI, verify_source as verify_selection_cli
+    if entry["path"] == CLI:
+        return verify_selection_cli(root, entry["sha256"])
+    from tools.synthetic_producer_source_lineage import HISTORICAL as PRODUCERS, verify_source as verify_producer
+    if entry["path"] in PRODUCERS:
+        return verify_producer(root, entry["path"], entry["sha256"])
+    from tools.manager_registration_source_lineage import HISTORICAL as MANAGERS, verify_source as verify_manager
+    if entry["path"] in MANAGERS:
+        return verify_manager(root, entry["path"], entry["sha256"])
+    if entry["path"] in REFERENCE_ROUTES:
+        from tools.reference_original_counterpart import route_source_witness
+        try:
+            original, proof = route_source_witness(entry["path"], current)
+            if sha256(original) != entry["sha256"]:
+                raise ValueError("Reference route original source identity differs")
+        except AssertionError as error:
+            raise ValueError("Captured reference route source bytes differ: " + entry["path"]) from error
+        return {"path": entry["path"], "historical_sha256": entry["sha256"],
+                "current_sha256": sha256(current), "kind": "reviewed_reference_context_route", "lineage": proof}
     witness = load_witness().get(entry["path"])
     if witness is None:
+        from tools.workflow_source_lineage import HISTORICAL, verify_source
+        if entry["path"] in HISTORICAL:
+            return verify_source(root, entry["path"], entry["sha256"])
         raise ValueError("Captured source bytes differ: " + entry["path"])
     return verify_route_extension(witness, current, entry["sha256"])

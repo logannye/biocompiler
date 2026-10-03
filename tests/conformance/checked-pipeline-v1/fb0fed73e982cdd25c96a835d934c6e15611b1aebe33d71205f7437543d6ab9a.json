@@ -1,0 +1,1 @@
+{"$type":"dataclass","class":"biocompiler.compiler.pipeline.CheckSpec","fields":{"discharges":{"$type":"tuple","items":[]},"evidence_kind":{"$type":"enum","class":"biocompiler.verification.evidence.EvidenceKind","value":"exact"},"id":"planning"}}

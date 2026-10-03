@@ -1,0 +1,230 @@
+{
+  "adjacent_source_diagnosis": "Registration runtime still expected flat native paths; existing campaign_plan supplies owned package/bin paths. Route its exact role paths through the existing layout resolver while preserving every other origin predicate. Not a separately observed hosted failure.",
+  "all_required_release_jobs": 38,
+  "corrected_hosted_acceptance": false,
+  "correction": "Use that existing closed source-lineage verifier for the exact pipeline path and retain all28 other raw hashes and frozen oracle bytes. Separately restore the one-span checker delta before unchanged14-file installed-path checks.",
+  "discovery": {
+    "baseline_tests": 3398,
+    "runtimes": {
+      "311": {
+        "added": [
+          "test_pipeline_fixed_provider_source_lineage.FixedProviderSourceLineageTests.test_other_source_files_remain_exact_raw_hashes",
+          "test_pipeline_fixed_provider_source_lineage.FixedProviderSourceLineageTests.test_real_corpus_accepts_exact_reviewed_prefix_without_changing_original",
+          "test_pipeline_fixed_provider_source_lineage.FixedProviderSourceLineageTests.test_real_corpus_still_accepts_exact_historical_source",
+          "test_pipeline_fixed_provider_source_lineage.FixedProviderSourceLineageTests.test_rehashed_oracle_cannot_replace_historical_source_authority",
+          "test_pipeline_fixed_provider_source_lineage.FixedProviderSourceLineageTests.test_reviewed_prefix_does_not_authorize_any_other_manager_edit",
+          "test_pipeline_fixed_registration_runtime.FixedRegistrationInstalledPathTests.test_real_campaign_preflight_accepts_both_owned_layouts",
+          "test_pipeline_fixed_registration_runtime.FixedRegistrationInstalledPathTests.test_real_campaign_preflight_rejects_unbound_roles_and_paths",
+          "test_pipeline_fixed_registration_runtime.FixedRegistrationInstalledPathTests.test_runtime_restoration_rejects_additional_or_different_edits",
+          "test_pipeline_fixed_registration_runtime.FixedRegistrationInstalledPathTests.test_runtime_restores_whole_original_source_with_only_two_layout_edits",
+          "test_prebuilt_ci_plan.HostedCiPlanTests.test_fixed_provider_restoration_rejects_unreviewed_source_changes"
+        ],
+        "classes": 350,
+        "plan_sha256": "779c423cef6e018c85e96eb1f8c4e877c7b140768385da02b9d143f8273dd97d",
+        "python": "3.11.15",
+        "removed": [],
+        "test_ids_lf_sha256": "fbe205746822fbaef318cf37dd1e9b6e17ae90d4dd0327839a91027d46bea23d",
+        "tests": 3408
+      },
+      "314": {
+        "added": [
+          "test_pipeline_fixed_provider_source_lineage.FixedProviderSourceLineageTests.test_other_source_files_remain_exact_raw_hashes",
+          "test_pipeline_fixed_provider_source_lineage.FixedProviderSourceLineageTests.test_real_corpus_accepts_exact_reviewed_prefix_without_changing_original",
+          "test_pipeline_fixed_provider_source_lineage.FixedProviderSourceLineageTests.test_real_corpus_still_accepts_exact_historical_source",
+          "test_pipeline_fixed_provider_source_lineage.FixedProviderSourceLineageTests.test_rehashed_oracle_cannot_replace_historical_source_authority",
+          "test_pipeline_fixed_provider_source_lineage.FixedProviderSourceLineageTests.test_reviewed_prefix_does_not_authorize_any_other_manager_edit",
+          "test_pipeline_fixed_registration_runtime.FixedRegistrationInstalledPathTests.test_real_campaign_preflight_accepts_both_owned_layouts",
+          "test_pipeline_fixed_registration_runtime.FixedRegistrationInstalledPathTests.test_real_campaign_preflight_rejects_unbound_roles_and_paths",
+          "test_pipeline_fixed_registration_runtime.FixedRegistrationInstalledPathTests.test_runtime_restoration_rejects_additional_or_different_edits",
+          "test_pipeline_fixed_registration_runtime.FixedRegistrationInstalledPathTests.test_runtime_restores_whole_original_source_with_only_two_layout_edits",
+          "test_prebuilt_ci_plan.HostedCiPlanTests.test_fixed_provider_restoration_rejects_unreviewed_source_changes"
+        ],
+        "classes": 350,
+        "plan_sha256": "e3ab7a389c6f221d2063f2f77a79c5ef1ab10830a2cba15c282cc4dd9f96a945",
+        "python": "3.14.6",
+        "removed": [],
+        "test_ids_lf_sha256": "fbe205746822fbaef318cf37dd1e9b6e17ae90d4dd0327839a91027d46bea23d",
+        "tests": 3408
+      }
+    },
+    "scope": "Discovery only, not execution; working tree based on0dd0fe54"
+  },
+  "evidence": {
+    "correction.patch": {
+      "bytes": 22070,
+      "sha256": "dd6fd0adb968a15ecfa4811d8c3a6112823392cbea576cb0b8db20b43cd00af3"
+    },
+    "current-manager-validation.json": {
+      "bytes": 1088,
+      "sha256": "987184ef5ca60727c2c113b3d1f108183db2dd99547c64e5c438d603b90ffcd8"
+    },
+    "discovery.json": {
+      "bytes": 3679,
+      "sha256": "159a26ce873d1b5596252d9f7150d4801aaa79eb6115dc7e6432091857d3e877"
+    },
+    "failure-summary.json": {
+      "bytes": 1125,
+      "sha256": "473c72cb2128626e85c097850b267d1eb7fa843c51b511763333b0396713583c"
+    },
+    "focused-311.log": {
+      "bytes": 129,
+      "sha256": "8a58aef4159cdd7f7496735d8d5d9cb7fb02eb198c50a2271b4749a01c38e31d"
+    },
+    "focused-314.log": {
+      "bytes": 129,
+      "sha256": "0fba6ca9880c1ecbf62237a5ca4b9283bb3e6c5f4d75c38147c7e5b7568d62ec"
+    },
+    "installed-release.json": {
+      "bytes": 11178,
+      "sha256": "ff7dace58796913489446be038648a21403109e8648d832fa6b7c505132939b4"
+    },
+    "inventory-311.log": {
+      "bytes": 112,
+      "sha256": "c1b543556678517bed3b77e092c55c398b2dd98eb77b3fa19b1462422bd99d11"
+    },
+    "inventory-314.log": {
+      "bytes": 112,
+      "sha256": "6663e16169afc9f0a4e9c27511deda038fa7eda1ace4a5f2fef6692e26347857"
+    },
+    "inventory-change.json": {
+      "bytes": 673,
+      "sha256": "6dc23139f2a01a5b0070486a60b169a71c69cc52688b3490b6c5b58f345c888d"
+    },
+    "pipeline-fixed-providers.log": {
+      "bytes": 1359,
+      "sha256": "c15ecea9cf8eaa16577f1a7a186f3638b8b34f3b15c62aa723e17d334bf92c4c"
+    },
+    "pipeline-manager.log": {
+      "bytes": 120,
+      "sha256": "6b717a9251eb9a8911e74c875021b13b6c9fc7dba6ff666fff1b9c88ef93ba11"
+    },
+    "registration-runtime-311.log": {
+      "bytes": 110,
+      "sha256": "90e2459f917c58c29d5bc61972e2e664a1f9f12a2716a76c08d6a3f7543f7c9f"
+    },
+    "registration-runtime-314.log": {
+      "bytes": 110,
+      "sha256": "9d41fac32071432cb139b2bd7539a5203979e6f6095fed512518bf2ab9e7c0e8"
+    },
+    "registration-runtime-validation.json": {
+      "bytes": 1867,
+      "sha256": "a145ef3330c5a4a2f787e230f3b441ddfce41b11c49390d00fb99fb644b868a4"
+    },
+    "replay-current-manager.py": {
+      "bytes": 2955,
+      "sha256": "2c5f9a2045afbb6c0900b8f7831763e29482159fc9db190a0db939416225da3b"
+    },
+    "startup-audit-3.11.15.json": {
+      "bytes": 9813,
+      "sha256": "d6fff68ada8c3cad95e6ab47971f7207d15178576bd04f69ffb6a0a95100323d"
+    },
+    "startup-audit-3.14.6.json": {
+      "bytes": 9811,
+      "sha256": "e126cbd7952dd284d0b0628cb6a20e7bea71b6780f78ea1324a23cf2d93c1888"
+    },
+    "startup-eight-3.11.15.json": {
+      "bytes": 5205,
+      "sha256": "7a8137aabee97278478ce0393e98bff67a36e185d7530158ef5b683d181d2d1b"
+    },
+    "startup-eight-3.14.6.json": {
+      "bytes": 5204,
+      "sha256": "cc37ebb3e83348b3d98964c64e7b4a669743b8d8838df832ae2dfd1f0313b74b"
+    },
+    "startup-eight-summary.json": {
+      "bytes": 2064,
+      "sha256": "5ad702d25f0118142387d7e1a22abcee4ced49a9c4e3d9e45a9f56e59eb2e4a0"
+    },
+    "startup-summary.json": {
+      "bytes": 1362,
+      "sha256": "dc2a3f655448f6001434fb43e1a5f2dadf28b9e38743a18828f71f5edaa69303"
+    },
+    "startup_audit.py": {
+      "bytes": 3048,
+      "sha256": "b1fcaafe15e130003a0ae5192d80e6c0d6e39748d10a78f4301e40342fe523a9"
+    },
+    "startup_eight_audit.py": {
+      "bytes": 4359,
+      "sha256": "0ceb1729a69a6cb69b39196112b2b548553defe868302bf68f8459738ccdcc14"
+    }
+  },
+  "failed_run_id": 37121925726,
+  "failure": "The fixed-provider Corpus directly compared routed pipeline.py to its immutable historical hash before any native campaign execution. The exact approved registration-prefix witness was already used by the continuation Corpus.",
+  "failure_job_id": 111219403082,
+  "local_controls": {
+    "focused_tests_each": 40,
+    "inventory_tests_each": 13,
+    "local_native_execution": false,
+    "provider_source_and_campaign_tests_each": 29,
+    "registration_tests_each": 11,
+    "runtimes": [
+      "3.11.15",
+      "3.14.6"
+    ],
+    "startup_campaigns_each": 17,
+    "startup_child_process_and_network_forbidden": true
+  },
+  "manager_hosted_checkpoint": {
+    "all_artifacts_hash_verified_and_consumed": true,
+    "artifact_count": 16346,
+    "case_count": 86,
+    "checker_sha256": "59f94bb142d7097160dd08fef700f458a362865fb6b6ad8142c530fac5fe0edb",
+    "comparison_cases": 34,
+    "deferred_cases": 47,
+    "deferred_processes": 53,
+    "duration_seconds": 8.133604667149484,
+    "historical_source_overlay": false,
+    "hosted_python": "3.14.7",
+    "identity_cases": 5,
+    "local_native_execution": false,
+    "native_platform": "macos-arm64",
+    "projected_sha256": "e4ffabaff59cc396697898769b10110252e184a47f3c7f4db3c401043386dd98",
+    "receipt_sha256": "5ddb90efd4827262a458e70b991787fed76a95e807d05f7da818f2d3d485b0c2",
+    "receipt_status": "success",
+    "replay_python": "3.14.6 (main, Jun 10 2026, 10:03:53) [Clang 21.0.0 (clang-2100.0.123.102)]",
+    "run_id": "37121925726",
+    "scope": "Complete current-source offline validation of actual freshly installed native manager receipt; other16campaigns separate",
+    "source_revision": "0dd0fe54f3d1f0e502b30188f096cb5387fbb9b2",
+    "status": "PASS",
+    "tested_revision": "c832bd54498cd6c070d04cc7bb805bbca99bc7c1"
+  },
+  "migration_cutoffs_complete": false,
+  "peer_review": "Exact whole historical provider bytes independently matched Git0dd; registration role-path guards reviewed, exact import anchor and relocation rejection added.",
+  "preserved_source_pins": {
+    "tests/conformance/deferred-context-checker-source-delta-v1.json": "c052ed313423f5b4a016b8f8474d50a9364e278904983f3d139eb9e1ca8e4253",
+    "tests/conformance/manager-registration-source-lineage-v1.json": "f00be511bd184aa4e4d743f2f9cf86ae819ff09c7fd795cd740bce8c9c3db157",
+    "tests/conformance/pipeline-fixed-provider-semantics-v1.json": "1f25d16d8fa9688ea34b4937f1d4a2c10fdf44d862daf8990168247758a019e7",
+    "tests/conformance/prebuilt-installed-path-delta-v1.json": "f64bcd82834b120dbe0c848a94a0ac8e0fe117ea3fedd22a136a2bc415025dbd"
+  },
+  "prior_evidence_changed": false,
+  "product_native_workflow_sources_changed": false,
+  "remaining": "Require corrected exact-source native/unit/integration/full17campaign fresh installations and38jobs, then merge85 with merge commit, prove olderheads contained, close remaining supersededPRs, validate actualmain before exact-head leased cleanup. Preserve85branch/localworktrees.",
+  "schema": "biocompiler.fixed_campaign_startup_correction.v1",
+  "source_before_correction": "0dd0fe54f3d1f0e502b30188f096cb5387fbb9b2",
+  "source_pins": {
+    "tests/conformance/fixed-provider-checker-source-delta-v1.json": {
+      "bytes": 1226,
+      "sha256": "67c11513477659bb81c2e9a0cfb87191fd669cf2caf2acce0962e77f54a50b8b"
+    },
+    "tests/test_pipeline_fixed_provider_source_lineage.py": {
+      "bytes": 4870,
+      "sha256": "721ffcfe3448bf04d50c79af4466df3f7dc5fb3d88fc8f4499d86cc24641e1f8"
+    },
+    "tests/test_pipeline_fixed_registration_runtime.py": {
+      "bytes": 17016,
+      "sha256": "7f7408ba74de5295c0392fbfe5b6c0f4aa4ea1c18f605fa97af9fd768941f18f"
+    },
+    "tests/test_prebuilt_ci_plan.py": {
+      "bytes": 17568,
+      "sha256": "d2e7c5ee55b0392998f5dcae6d4e72becfb8fa0b56e3725dcf091cc245e51a6e"
+    },
+    "tools/check_pipeline_fixed_provider_install.py": {
+      "bytes": 57420,
+      "sha256": "8d5f72afe93ec0dbb84b5d5321633ea653b274e4845645c4fd064a3f62319117"
+    },
+    "tools/pipeline_fixed_registration_runtime.py": {
+      "bytes": 11553,
+      "sha256": "8b781fdf1b71c29400e002fc3fd6a40ee79df64e271d846f6f99b306689c9c9a"
+    }
+  },
+  "tested_merge_revision": "c832bd54498cd6c070d04cc7bb805bbca99bc7c1"
+}

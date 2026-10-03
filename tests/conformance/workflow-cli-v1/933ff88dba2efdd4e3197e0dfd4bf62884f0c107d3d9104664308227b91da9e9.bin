@@ -1,0 +1,23 @@
+{
+  "record_fingerprint": "8b1e0e546dff809392d95ae6fcc91b7f147c54eef7f4e1c906a6c68326eca7e1",
+  "request_fingerprint": "256333626ab95e4c77b581e309ca803552e4233c87e37628ed02ffd80c1a2d5b",
+  "operation": "check",
+  "mode": "candidate",
+  "intended_use": "software_test",
+  "human_therapeutic_admission": "not_admitted",
+  "claim_scope": "Historical finite-history software-model verification record; fresh replay requires independent complete operation authority. No universal, biological or human therapeutic claim.",
+  "outcome": "fail",
+  "diagnostics": [
+    {
+      "code": "candidate_lineage",
+      "message": "Source correspondence or requirement lineage differs from the declared generation profile.",
+      "requirement_id": null,
+      "node_id": null,
+      "source": null
+    }
+  ],
+  "counterexamples": [],
+  "coverage": [],
+  "replay": "Fresh execution reproduced the declared outcome; this does not turn a failure or unknown into PASS.",
+  "output": "/tmp/biocompiler-workflow-cli-v1/cases/candidate_fail-replay/output.json"
+}

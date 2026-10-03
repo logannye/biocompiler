@@ -1,0 +1,7 @@
+usage: biocompiler synthetic-select [-h] --request REQUEST [--output OUTPUT]
+
+options:
+  -h, --help         show this help message and exit
+  --request REQUEST  SyntheticBuildRequest JSON binding source, history,
+                     horizon and policy
+  --output OUTPUT    Atomic selection report destination

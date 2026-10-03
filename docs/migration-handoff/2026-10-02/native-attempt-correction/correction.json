@@ -1,0 +1,93 @@
+{
+  "correction": "Keep exact duplicate-output rejection as a negative check, rerun actual original producer under fresh molecular-rerun identity, and require unchanged stored and historical original record identities. Add unexpected-diagnostic case labels without swallowing/replacing exceptions.",
+  "diff_check": "PASS",
+  "evidence": {
+    "annotations.json": {
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "correction.patch": {
+      "bytes": 2964,
+      "sha256": "dd7054d14dce643b9c8426c73587b2988f89567cc1a81324f1ad9403048af4a4"
+    },
+    "job.json": {
+      "bytes": 17973,
+      "sha256": "3fda33a6d2759552fc87a88725e22e52b167cf8d43ea29d0ced4032b9c63f025"
+    },
+    "linux-native-tests.txt": {
+      "bytes": 26561,
+      "sha256": "4b347d43fcd01c922ada5d477984e8e879e52f0268149ffec585fccef81eba40"
+    },
+    "linux-native-tests.zip": {
+      "bytes": 6157,
+      "sha256": "bb2cce8eee47a19d533f19ed9b960027657aa9b26df54a16e692d1b796c3caca"
+    },
+    "macos-native-tests.txt": {
+      "bytes": 26604,
+      "sha256": "d815b772bf1bfc9528b747c582a69726ceffd5e4322b4e1c0785aa8df90003fe"
+    },
+    "macos-native-tests.zip": {
+      "bytes": 6169,
+      "sha256": "d99b83995b4ea69228a4b331617db3353f667f160b3d572347a232d4d80be292"
+    },
+    "original-reuse-3.11.json": {
+      "bytes": 54177,
+      "sha256": "f64d68fd0eebaf19f9660733d5a092b690f751a0361ddecfe0336200ae57ab25"
+    },
+    "original-reuse-3.14.json": {
+      "bytes": 54176,
+      "sha256": "cb548c6132b2796777621f01dc0dcbf2aabbc90bfaaf20ab59659b0fb81200b6"
+    },
+    "original_reuse_probe.py": {
+      "bytes": 3699,
+      "sha256": "5ee2ba2868737175689019ec68aa8e3322b742ebf3de60b5e92f5fe54c0b5cf7"
+    }
+  },
+  "failure": "Both native-suite artifacts report opaque Diagnostic.Error in test_reference_molecular_attempts. Source audit independently proves complete_and_reuse attempts an existing output identity.",
+  "files": [
+    {
+      "after_sha256": "512b27249cce4c150fb7ee0ea50ade72c314f0419b2e71cb0051c234cc7b1d92",
+      "before_sha256": "bfa1f842de8758e9c2c8f9fea83056714ca6325805e4ee93c8ff3e0b65e1970b",
+      "path": "core/test/test_reference_molecular_attempts.ml"
+    }
+  ],
+  "hosted_native_rerun": "required",
+  "linux_job": 111120204290,
+  "native_execution": false,
+  "original_probe": {
+    "complete_documents": "equal_except_runtime",
+    "proof": [
+      "six actual dependency writes precede duplicate-profile failure",
+      "old registration callable retained",
+      "duplicate output rejected before emitter invocation",
+      "fresh output uses exact original request/registry/manifest map and values",
+      "old stored record and Build artifact physical identities retained"
+    ],
+    "runtimes": [
+      "3.11.15",
+      "3.14.6"
+    ]
+  },
+  "original_sources_and_corpora_unchanged": true,
+  "peer_review": "Independent bounded static review confirmed exact original duplicate-output rejection, unchanged historical/owner/provider assertions, same-exception diagnostic rethrow and source probe; no additional concrete finding.",
+  "product_changes": false,
+  "run_id": 37094046607,
+  "schema": "native_molecular_attempt_test_correction.v1",
+  "source_revision": "96fff538bf9c3886b399012ed8d4e84aa0812d23",
+  "tests": [
+    {
+      "python": "3.14.6",
+      "seconds": 0.404,
+      "status": "PASS",
+      "suite": "tests.test_molecular_pipeline",
+      "tests": 9
+    },
+    {
+      "python": "3.11.15",
+      "seconds": 0.361,
+      "status": "PASS",
+      "suite": "tests.test_molecular_pipeline",
+      "tests": 9
+    }
+  ]
+}

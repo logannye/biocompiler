@@ -1,0 +1,1 @@
+{"class":"biocompiler.registry.reference_components.ReferenceSelection","class_schema":"biocompiler.reference_selection.v0.1","fields":[["manifest",{"ref":"object/9645"}],["reference",{"ref":"object/9646"}]],"instance_fields":["manifest","reference"],"kind":"dataclass"}

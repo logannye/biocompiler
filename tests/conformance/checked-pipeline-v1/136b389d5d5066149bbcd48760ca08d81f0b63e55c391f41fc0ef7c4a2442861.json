@@ -1,0 +1,1 @@
+{"$type":"mapping","class":"builtins.dict","items":[["args",{"$type":"tuple","items":["construct"]}],["kwargs",{"$type":"mapping","class":"builtins.dict","items":[["scope","reference_construct"]]}],["subject",{"$type":"manager","id":"manager/1005"}],["bound",{"$type":"mapping","class":"builtins.dict","items":[["identity","construct"],["scope","reference_construct"]]}]]}

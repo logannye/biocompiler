@@ -1,0 +1,20 @@
+{
+  "current": {
+    "bytes": 171939,
+    "sha256": "da71eecb632c740ba8e5c8fd5ccf85d6174d71c901ec70cbc041ce5adb1c63a6"
+  },
+  "historical": {
+    "bytes": 171731,
+    "revision": "b27f52447f49c749d33cac17f3bbb6fe772cbc24",
+    "sha256": "59f94bb142d7097160dd08fef700f458a362865fb6b6ad8142c530fac5fe0edb"
+  },
+  "path": "tools/check_pipeline_manager_install.py",
+  "schema": "biocompiler.callback_budget_checker_source_delta.v1",
+  "spans": [
+    {
+      "after": "        frame_nodes = json_nodes(value)\n        require(frame_nodes <= min(channel[\"fixed_limits\"][\"max_frame_json_nodes\"], limits[\"max_json_nodes\"]),\n            \"Callback frame exceeds selected JSON node bound\")\n        nodes += frame_nodes\n",
+      "before": "        nodes += json_nodes(value)\n",
+      "offset": 117066
+    }
+  ]
+}

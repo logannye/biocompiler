@@ -1,0 +1,37 @@
+{
+  "scope": "Discovery only, not execution; working tree on base817a8ed",
+  "runtimes": {
+    "311": {
+      "python": "3.11.15",
+      "count": 3397,
+      "classes": 348,
+      "test_ids_lf_sha256": "e13c9eb1b66e61d5f197ada5605473a25efe3fdb9b93e7559d46bf6277366d34",
+      "added": [
+        "test_pipeline_manager_context_bindings.DeferredContextBindingsTests.test_complete_tuple_projection_preserves_duplicates_and_full_context",
+        "test_pipeline_manager_context_bindings.DeferredContextBindingsTests.test_foreign_command_tuple_cannot_supply_current_hydration",
+        "test_pipeline_manager_context_bindings.DeferredContextBindingsTests.test_no_binding_context_is_not_projected_or_mutated",
+        "test_pipeline_manager_context_bindings.DeferredContextBindingsTests.test_rehashed_malformed_capability_references_are_not_native_handles",
+        "test_pipeline_manager_context_bindings.DeferredContextBindingsTests.test_rehashed_numeric_boolean_results_are_not_native_success",
+        "test_pipeline_manager_context_bindings.DeferredContextBindingsTests.test_rehashed_producer_tuple_element_and_ambiguity_mutants_fail"
+      ],
+      "removed": [],
+      "plan_sha256": "76a681a8d4b06b7bee95285363dcb458d301416e80d7dc568d6781702fd59bda"
+    },
+    "314": {
+      "python": "3.14.6",
+      "count": 3397,
+      "classes": 348,
+      "test_ids_lf_sha256": "e13c9eb1b66e61d5f197ada5605473a25efe3fdb9b93e7559d46bf6277366d34",
+      "added": [
+        "test_pipeline_manager_context_bindings.DeferredContextBindingsTests.test_complete_tuple_projection_preserves_duplicates_and_full_context",
+        "test_pipeline_manager_context_bindings.DeferredContextBindingsTests.test_foreign_command_tuple_cannot_supply_current_hydration",
+        "test_pipeline_manager_context_bindings.DeferredContextBindingsTests.test_no_binding_context_is_not_projected_or_mutated",
+        "test_pipeline_manager_context_bindings.DeferredContextBindingsTests.test_rehashed_malformed_capability_references_are_not_native_handles",
+        "test_pipeline_manager_context_bindings.DeferredContextBindingsTests.test_rehashed_numeric_boolean_results_are_not_native_success",
+        "test_pipeline_manager_context_bindings.DeferredContextBindingsTests.test_rehashed_producer_tuple_element_and_ambiguity_mutants_fail"
+      ],
+      "removed": [],
+      "plan_sha256": "d707c9a76fa39c58e42e6f69b39491152ee7fe93b49e5eea13bf13210cd80185"
+    }
+  }
+}

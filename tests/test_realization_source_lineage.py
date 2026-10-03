@@ -26,7 +26,15 @@ class RealizationSourceLineageTests(unittest.TestCase):
         for path, entry in self.witness.items():
             result = lineage.verify_captured_source(lineage.ROOT, {
                 "path": path, "sha256": entry["historical_sha256"]})
-            self.assertEqual(result["current_sha256"], entry["routed_sha256"])
+            if path == "src/biocompiler/synthesis/synthetic.py":
+                from tools import synthetic_producer_source_lineage as producer
+                parent = producer.load_witness()[path]["historical_source"].encode()
+                prior = lineage.verify_route_extension(entry, parent, entry["historical_sha256"])
+                self.assertEqual(result["lineage"][0]["current_sha256"], prior["current_sha256"])
+                self.assertEqual(result["current_sha256"], lineage.sha256((lineage.ROOT / path).read_bytes()))
+            else:
+                prior = result
+            self.assertEqual(prior["current_sha256"], entry["routed_sha256"])
             self.assertEqual(result["historical_sha256"], entry["historical_sha256"])
             self.assertNotEqual(result["current_sha256"], result["historical_sha256"])
 

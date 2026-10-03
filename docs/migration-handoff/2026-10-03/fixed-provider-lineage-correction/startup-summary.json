@@ -1,0 +1,33 @@
+{
+  "scope": "Read-only complete nine campaign startup fixture/source/declaration validation. No installed-origin or native-runtime validation claimed. Subprocess and network execution rejected by audit hook.",
+  "executed_script": "generated/migration-next/pr85-provider-source-correction/startup_audit.py",
+  "executed_working_directory": "/Users/logannye/Documents/ChatGPT/GeneMedicineCompiler/work/m11-human-evidence",
+  "commands": [
+    "PYTHONPATH=src /opt/homebrew/opt/python@3.14/bin/python3.14 generated/migration-next/pr85-provider-source-correction/startup_audit.py",
+    "PYTHONPATH=src /Users/logannye/.local/share/uv/python/cpython-3.11.15-macos-aarch64-none/bin/python3 generated/migration-next/pr85-provider-source-correction/startup_audit.py"
+  ],
+  "files": {
+    "startup_audit.py": {
+      "bytes": 3048,
+      "sha256": "b1fcaafe15e130003a0ae5192d80e6c0d6e39748d10a78f4301e40342fe523a9"
+    },
+    "startup-audit-3.14.6.json": {
+      "bytes": 9811,
+      "sha256": "e126cbd7952dd284d0b0628cb6a20e7bea71b6780f78ea1324a23cf2d93c1888"
+    },
+    "startup-audit-3.11.15.json": {
+      "bytes": 9813,
+      "sha256": "d6fff68ada8c3cad95e6ab47971f7207d15178576bd04f69ffb6a0a95100323d"
+    }
+  },
+  "results": {
+    "3.11.15": {
+      "modules": 9,
+      "passed": true
+    },
+    "3.14.6": {
+      "modules": 9,
+      "passed": true
+    }
+  }
+}

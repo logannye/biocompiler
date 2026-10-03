@@ -1,0 +1,592 @@
+[
+  {
+    "case": "static:requested",
+    "frames": 2968,
+    "observed_nodes": 247776,
+    "operations": {
+      "hello": {
+        "frames": 2,
+        "nodes": 3012,
+        "bytes": 58804
+      },
+      "initialize-components": {
+        "frames": 19,
+        "nodes": 5368,
+        "bytes": 47394
+      },
+      "register": {
+        "frames": 330,
+        "nodes": 12254,
+        "bytes": 172897
+      },
+      "continue": {
+        "frames": 6,
+        "nodes": 132,
+        "bytes": 2193
+      },
+      "inspect-ordered": {
+        "frames": 2,
+        "nodes": 27528,
+        "bytes": 275283
+      },
+      "run": {
+        "frames": 2573,
+        "nodes": 123179,
+        "bytes": 1637044
+      },
+      "call-native-provider": {
+        "frames": 34,
+        "nodes": 76247,
+        "bytes": 660201
+      },
+      "close": {
+        "frames": 1,
+        "nodes": 13,
+        "bytes": 230
+      },
+      "reply": {
+        "frames": 1,
+        "nodes": 43,
+        "bytes": 567
+      }
+    },
+    "commands": [
+      {
+        "sequence": 1,
+        "operation": "initialize-components",
+        "arguments": null
+      },
+      {
+        "sequence": 5,
+        "operation": "register",
+        "arguments": null
+      },
+      {
+        "sequence": 35,
+        "operation": "register",
+        "arguments": null
+      },
+      {
+        "sequence": 65,
+        "operation": "register",
+        "arguments": null
+      },
+      {
+        "sequence": 93,
+        "operation": "inspect-ordered",
+        "arguments": null
+      },
+      {
+        "sequence": 94,
+        "operation": "register",
+        "arguments": null
+      },
+      {
+        "sequence": 122,
+        "operation": "run",
+        "arguments": {
+          "configuration": null,
+          "input_id": "request",
+          "output_id": "fixed-view:intent_to_behavior",
+          "pass_id": "intent_to_behavior"
+        }
+      },
+      {
+        "sequence": 124,
+        "operation": "call-native-provider",
+        "arguments": {
+          "context_id": "context/45",
+          "provider_id": "provider/9"
+        }
+      },
+      {
+        "sequence": 125,
+        "operation": "call-native-provider",
+        "arguments": {
+          "context_id": "context/45",
+          "provider_id": "provider/9"
+        }
+      },
+      {
+        "sequence": 178,
+        "operation": "register",
+        "arguments": null
+      },
+      {
+        "sequence": 206,
+        "operation": "run",
+        "arguments": {
+          "configuration": {
+            "handle": "object/116"
+          },
+          "input_id": "fixed-view:intent_to_behavior",
+          "output_id": "fixed-view:behavior_to_synthetic",
+          "pass_id": "behavior_to_synthetic"
+        }
+      },
+      {
+        "sequence": 211,
+        "operation": "call-native-provider",
+        "arguments": {
+          "context_id": "context/72",
+          "provider_id": "provider/19"
+        }
+      },
+      {
+        "sequence": 220,
+        "operation": "call-native-provider",
+        "arguments": {
+          "context_id": "context/72",
+          "provider_id": "provider/19"
+        }
+      },
+      {
+        "sequence": 1276,
+        "operation": "register",
+        "arguments": null
+      },
+      {
+        "sequence": 1304,
+        "operation": "run",
+        "arguments": {
+          "configuration": null,
+          "input_id": "fixed-view:behavior_to_synthetic",
+          "output_id": "fixed-view:synthetic_to_components",
+          "pass_id": "synthetic_to_components"
+        }
+      },
+      {
+        "sequence": 1306,
+        "operation": "call-native-provider",
+        "arguments": {
+          "context_id": "context/81",
+          "provider_id": "provider/30"
+        }
+      },
+      {
+        "sequence": 1310,
+        "operation": "call-native-provider",
+        "arguments": {
+          "context_id": "context/81",
+          "provider_id": "provider/30"
+        }
+      }
+    ],
+    "last": {
+      "closed": true,
+      "event_id": 1483,
+      "kind": "reply",
+      "outcome": {
+        "status": "ok",
+        "value": null
+      },
+      "profile": "biocompiler.core.pipeline_callback_channel.v1",
+      "protocol": "biocompiler.pipeline_callback_channel.v1",
+      "request_sha256": "bbf92966b440572cd660b5d2bb4074a3289bb7e673fbba91bcd68e396e731b0b",
+      "sequence": 1483,
+      "session_id": "7e515a17-8835-4545-ab9a-c6455ab7d5e0",
+      "usage": {
+        "commands": 19,
+        "frames": 2968,
+        "input_bytes": 739193,
+        "json_nodes": 247776,
+        "output_bytes": 2115420,
+        "pending_invocations": 0,
+        "retained_bytes": 38140798,
+        "work_charged": 41199931550,
+        "work_remaining": 958800068450
+      }
+    }
+  },
+  {
+    "case": "static:selected_equal",
+    "frames": 2968,
+    "observed_nodes": 248091,
+    "operations": {
+      "hello": {
+        "frames": 2,
+        "nodes": 3012,
+        "bytes": 58804
+      },
+      "initialize-components": {
+        "frames": 19,
+        "nodes": 5375,
+        "bytes": 47441
+      },
+      "register": {
+        "frames": 330,
+        "nodes": 12254,
+        "bytes": 172897
+      },
+      "continue": {
+        "frames": 6,
+        "nodes": 132,
+        "bytes": 2193
+      },
+      "inspect-ordered": {
+        "frames": 2,
+        "nodes": 27639,
+        "bytes": 278178
+      },
+      "run": {
+        "frames": 2573,
+        "nodes": 123312,
+        "bytes": 1640488
+      },
+      "call-native-provider": {
+        "frames": 34,
+        "nodes": 76311,
+        "bytes": 661091
+      },
+      "close": {
+        "frames": 1,
+        "nodes": 13,
+        "bytes": 230
+      },
+      "reply": {
+        "frames": 1,
+        "nodes": 43,
+        "bytes": 567
+      }
+    },
+    "commands": [
+      {
+        "sequence": 1,
+        "operation": "initialize-components",
+        "arguments": null
+      },
+      {
+        "sequence": 5,
+        "operation": "register",
+        "arguments": null
+      },
+      {
+        "sequence": 35,
+        "operation": "register",
+        "arguments": null
+      },
+      {
+        "sequence": 65,
+        "operation": "register",
+        "arguments": null
+      },
+      {
+        "sequence": 93,
+        "operation": "inspect-ordered",
+        "arguments": null
+      },
+      {
+        "sequence": 94,
+        "operation": "register",
+        "arguments": null
+      },
+      {
+        "sequence": 122,
+        "operation": "run",
+        "arguments": {
+          "configuration": null,
+          "input_id": "request",
+          "output_id": "fixed-view:intent_to_behavior",
+          "pass_id": "intent_to_behavior"
+        }
+      },
+      {
+        "sequence": 124,
+        "operation": "call-native-provider",
+        "arguments": {
+          "context_id": "context/45",
+          "provider_id": "provider/9"
+        }
+      },
+      {
+        "sequence": 125,
+        "operation": "call-native-provider",
+        "arguments": {
+          "context_id": "context/45",
+          "provider_id": "provider/9"
+        }
+      },
+      {
+        "sequence": 178,
+        "operation": "register",
+        "arguments": null
+      },
+      {
+        "sequence": 206,
+        "operation": "run",
+        "arguments": {
+          "configuration": {
+            "handle": "object/116"
+          },
+          "input_id": "fixed-view:intent_to_behavior",
+          "output_id": "fixed-view:behavior_to_synthetic",
+          "pass_id": "behavior_to_synthetic"
+        }
+      },
+      {
+        "sequence": 211,
+        "operation": "call-native-provider",
+        "arguments": {
+          "context_id": "context/72",
+          "provider_id": "provider/19"
+        }
+      },
+      {
+        "sequence": 220,
+        "operation": "call-native-provider",
+        "arguments": {
+          "context_id": "context/72",
+          "provider_id": "provider/19"
+        }
+      },
+      {
+        "sequence": 1276,
+        "operation": "register",
+        "arguments": null
+      },
+      {
+        "sequence": 1304,
+        "operation": "run",
+        "arguments": {
+          "configuration": null,
+          "input_id": "fixed-view:behavior_to_synthetic",
+          "output_id": "fixed-view:synthetic_to_components",
+          "pass_id": "synthetic_to_components"
+        }
+      },
+      {
+        "sequence": 1306,
+        "operation": "call-native-provider",
+        "arguments": {
+          "context_id": "context/82",
+          "provider_id": "provider/30"
+        }
+      },
+      {
+        "sequence": 1310,
+        "operation": "call-native-provider",
+        "arguments": {
+          "context_id": "context/82",
+          "provider_id": "provider/30"
+        }
+      }
+    ],
+    "last": {
+      "closed": true,
+      "event_id": 1483,
+      "kind": "reply",
+      "outcome": {
+        "status": "ok",
+        "value": null
+      },
+      "profile": "biocompiler.core.pipeline_callback_channel.v1",
+      "protocol": "biocompiler.pipeline_callback_channel.v1",
+      "request_sha256": "27393f27ff7c98f189367c7b844dc07e95d2759136904936e8105cad563da654",
+      "sequence": 1483,
+      "session_id": "5d3e8974-5a36-4f89-a8ca-5d645578a716",
+      "usage": {
+        "commands": 19,
+        "frames": 2968,
+        "input_bytes": 739240,
+        "json_nodes": 248091,
+        "output_bytes": 2122649,
+        "pending_invocations": 0,
+        "retained_bytes": 71733441,
+        "work_charged": 41278661348,
+        "work_remaining": 958721338652
+      }
+    }
+  },
+  {
+    "case": "temporal:requested",
+    "frames": 15292,
+    "observed_nodes": 982095,
+    "operations": {
+      "hello": {
+        "frames": 2,
+        "nodes": 3012,
+        "bytes": 58804
+      },
+      "initialize-components": {
+        "frames": 19,
+        "nodes": 11734,
+        "bytes": 91828
+      },
+      "register": {
+        "frames": 330,
+        "nodes": 12274,
+        "bytes": 173576
+      },
+      "continue": {
+        "frames": 6,
+        "nodes": 132,
+        "bytes": 2194
+      },
+      "inspect-ordered": {
+        "frames": 2,
+        "nodes": 88900,
+        "bytes": 832003
+      },
+      "run": {
+        "frames": 14885,
+        "nodes": 597771,
+        "bytes": 8447482
+      },
+      "call-native-provider": {
+        "frames": 48,
+        "nodes": 268272,
+        "bytes": 2322225
+      }
+    },
+    "commands": [
+      {
+        "sequence": 1,
+        "operation": "initialize-components",
+        "arguments": null
+      },
+      {
+        "sequence": 5,
+        "operation": "register",
+        "arguments": null
+      },
+      {
+        "sequence": 35,
+        "operation": "register",
+        "arguments": null
+      },
+      {
+        "sequence": 65,
+        "operation": "register",
+        "arguments": null
+      },
+      {
+        "sequence": 93,
+        "operation": "inspect-ordered",
+        "arguments": null
+      },
+      {
+        "sequence": 94,
+        "operation": "register",
+        "arguments": null
+      },
+      {
+        "sequence": 122,
+        "operation": "run",
+        "arguments": {
+          "configuration": null,
+          "input_id": "request",
+          "output_id": "fixed-view:intent_to_behavior",
+          "pass_id": "intent_to_behavior"
+        }
+      },
+      {
+        "sequence": 124,
+        "operation": "call-native-provider",
+        "arguments": {
+          "context_id": "context/45",
+          "provider_id": "provider/9"
+        }
+      },
+      {
+        "sequence": 125,
+        "operation": "call-native-provider",
+        "arguments": {
+          "context_id": "context/45",
+          "provider_id": "provider/9"
+        }
+      },
+      {
+        "sequence": 212,
+        "operation": "register",
+        "arguments": null
+      },
+      {
+        "sequence": 240,
+        "operation": "run",
+        "arguments": {
+          "configuration": {
+            "handle": "object/140"
+          },
+          "input_id": "fixed-view:intent_to_behavior",
+          "output_id": "fixed-view:behavior_to_synthetic",
+          "pass_id": "behavior_to_synthetic"
+        }
+      },
+      {
+        "sequence": 245,
+        "operation": "call-native-provider",
+        "arguments": {
+          "context_id": "context/100",
+          "provider_id": "provider/19"
+        }
+      },
+      {
+        "sequence": 260,
+        "operation": "call-native-provider",
+        "arguments": {
+          "context_id": "context/100",
+          "provider_id": "provider/19"
+        }
+      },
+      {
+        "sequence": 7589,
+        "operation": "register",
+        "arguments": null
+      },
+      {
+        "sequence": 7617,
+        "operation": "run",
+        "arguments": {
+          "configuration": null,
+          "input_id": "fixed-view:behavior_to_synthetic",
+          "output_id": "fixed-view:synthetic_to_components",
+          "pass_id": "synthetic_to_components"
+        }
+      },
+      {
+        "sequence": 7619,
+        "operation": "call-native-provider",
+        "arguments": {
+          "context_id": "context/109",
+          "provider_id": "provider/30"
+        }
+      },
+      {
+        "sequence": 7624,
+        "operation": "call-native-provider",
+        "arguments": {
+          "context_id": "context/109",
+          "provider_id": "provider/30"
+        }
+      }
+    ],
+    "last": {
+      "action": "ordered-json",
+      "arguments": {
+        "object": {
+          "handle": "object/5347"
+        }
+      },
+      "command_sequence": 7617,
+      "command_sha256": "d28135e734e76e6056914002180010dccd824f1503f293452aa1cd569b563944",
+      "event_id": 7645,
+      "invocation_id": 7645,
+      "kind": "invoke",
+      "parent_invocation": null,
+      "profile": "biocompiler.core.pipeline_callback_channel.v1",
+      "protocol": "biocompiler.pipeline_callback_channel.v1",
+      "session_id": "0b5e33ae-4354-424d-a55e-8d71d2a8c9a9",
+      "usage": {
+        "commands": 18,
+        "frames": 15292,
+        "input_bytes": 3115971,
+        "json_nodes": 982095,
+        "output_bytes": 8812141,
+        "pending_invocations": 1,
+        "retained_bytes": 49207259,
+        "work_charged": 164152622245,
+        "work_remaining": 835847377755
+      }
+    }
+  }
+]

@@ -1,0 +1,58 @@
+{
+  "core/lib/pipeline_service/callback_channel.ml": {
+    "bytes": 22910,
+    "sha256": "a354d59d996434e7089d4609aefc8d5ea470773ed40d2ba90fcdd643771f13f4"
+  },
+  "core/test/test_pipeline_callback_channel.ml": {
+    "bytes": 26441,
+    "sha256": "a01d5ecd63355560a500d2362a69023c5b159654d533596dfe0baba898698097"
+  },
+  "core/test/test_reference_contracts_corpus.ml": {
+    "bytes": 31880,
+    "sha256": "e8c1ad0f2705db8a32d98e7a7b71813a86588b507c897de19501c2ffe197ac65"
+  },
+  "protocol/pipeline-callback-channel-v1.json": {
+    "bytes": 3770,
+    "sha256": "55a58a12cb009616075e0aedf68e6b21394f4fb8b137b4880aab92ef47fa683e"
+  },
+  "src/biocompiler/core_pipeline_callback_session.py": {
+    "bytes": 32588,
+    "sha256": "96cf3c4c70231f3039e2e16c51efc06bc202c86208f94dbddd5f438996c1bb5a"
+  },
+  "tests/conformance/callback-budget-checker-source-delta-v1.json": {
+    "bytes": 813,
+    "sha256": "6cb03e6dfa5c76528bf9370be992634b6a9fbad5219a1e43c042090abd48ff8b"
+  },
+  "tests/conformance/reference-callback-source-counterpart-v1.json": {
+    "bytes": 12105,
+    "sha256": "e3be989e0a76913f64ec959d4354bb4a352c70e0bf661ca58df68db15e544b5c"
+  },
+  "tests/test_core_pipeline_callback_session.py": {
+    "bytes": 30964,
+    "sha256": "f1a2a2109c7c58344f95be92210dabe64a2543a3be833b9cf1ac4254ab3e5990"
+  },
+  "tests/test_pipeline_callback_frame_budget.py": {
+    "bytes": 2496,
+    "sha256": "9cb266f4b37d5990a58e94feece3d53f0aacc98f2eed266a2ab1c51fff84fb05"
+  },
+  "tests/test_prebuilt_ci_plan.py": {
+    "bytes": 21531,
+    "sha256": "a8b3c4b15314f6717528cdde5f6a027e6f9187453f5de4bc335af6dc7702f564"
+  },
+  "tests/test_reference_original_counterpart.py": {
+    "bytes": 19418,
+    "sha256": "6022a5fe582e2b9d4a73b37709684e330b18328cb326e3a7c02d31f50faf8580"
+  },
+  "tools/check_pipeline_manager_install.py": {
+    "bytes": 171939,
+    "sha256": "da71eecb632c740ba8e5c8fd5ccf85d6174d71c901ec70cbc041ce5adb1c63a6"
+  },
+  "tools/check_realization_workflow_corpus.py": {
+    "bytes": 9606,
+    "sha256": "df320e37e9087bc358839a346e32724ef391160163598e4d997a3b7f8240e803"
+  },
+  "tools/reference_original_counterpart.py": {
+    "bytes": 37416,
+    "sha256": "3375aa754f8d5ce6360487fb3efbe4bc0d3c3f970f4650fae4c96f071f6228ff"
+  }
+}

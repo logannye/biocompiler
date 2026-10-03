@@ -1,0 +1,1 @@
+{"$type":"dataclass","class":"biocompiler.compiler.pipeline.CheckSpec","fields":{"discharges":{"$type":"tuple","items":["emitted_sequence_identity","construct_layout"]},"evidence_kind":{"$type":"enum","class":"biocompiler.verification.evidence.EvidenceKind","value":"exact"},"id":"sequence_identity"}}

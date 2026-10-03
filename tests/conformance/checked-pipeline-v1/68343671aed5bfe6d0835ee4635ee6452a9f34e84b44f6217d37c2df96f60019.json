@@ -1,0 +1,1 @@
+{"$type":"mapping","class":"builtins.dict","items":[["id","fragment_authority"],["evidence_kind","exact"],["discharges",{"$type":"list","items":["fragment_authority"]}]]}

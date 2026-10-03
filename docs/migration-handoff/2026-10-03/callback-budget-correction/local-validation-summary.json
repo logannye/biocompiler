@@ -1,0 +1,644 @@
+{
+  "base_revision": "b27f52447f49c749d33cac17f3bbb6fe772cbc24",
+  "callback_validation_receipt": {
+    "bytes": 1794,
+    "path": "generated/migration-next/pr85-b27-fresh-failure/callback-correction-validation.json",
+    "sha256": "1c02e38044fbd04dadb80509294e1f477f4355d87191249fe1ad7957702b7510"
+  },
+  "inventory_generation": {
+    "command_provenance": "standalone exact invocation not retained in log",
+    "entries": 3310,
+    "inventory": {
+      "bytes": 1526164,
+      "path": "protocol/migration-inventory.json",
+      "sha256": "93def39e3c42fe190aaeea59d9b967b11681c19b4261cc4083a69911ab015b47"
+    },
+    "log": {
+      "bytes": 42,
+      "path": "generated/migration-next/pr85-callback-budget-correction/inventory-generation.log",
+      "sha256": "4ead103335dae5c8d48ddb36abe848820de538f019782e3afa609d8621a8bcc3"
+    },
+    "status": "written"
+  },
+  "missing_or_pending": [
+    {
+      "detail": "Native compilation/tests and complete17campaigns in all4 fresh-installed slots must run on the new committed source; old b27 failure is not acceptance.",
+      "item": "Fresh hosted validation for the changed v2 resource profile",
+      "status": "pending"
+    },
+    {
+      "detail": "Local complete discovery is3,416 IDs; only the recorded focused139 tests per runtime executed locally.",
+      "item": "Full unit execution on the corrected source",
+      "status": "pending"
+    },
+    {
+      "detail": "Inventory generation and13 integrity tests passed. This summary does not infer a separate standalone check invocation.",
+      "item": "Standalone current inventory --check receipt",
+      "status": "not_found_in_this_directory"
+    },
+    {
+      "detail": "A reproducible command is reconstructed from the complete verbose log; test count/status/hash are directly retained.",
+      "item": "Exact inventory-test launch string",
+      "status": "not_retained"
+    }
+  ],
+  "native_execution": false,
+  "reference_validation_receipt": {
+    "bytes": 7101,
+    "path": "generated/migration-next/pr85-callback-budget-correction/reference-source-validation.json",
+    "sha256": "712391878c465171d7fe35a14219863372e2e1637e882e1726bb15ba1ad51462"
+  },
+  "release_campaign_driver": {
+    "bytes": 15618,
+    "path": "tools/prebuilt_release_pipeline.py",
+    "sha256": "5564773b6d659d2c718b483337db5959e7946880811a4a100a0893223cdefc19"
+  },
+  "runtimes": {
+    "311": {
+      "discovery": {
+        "classes": 351,
+        "log": {
+          "bytes": 202,
+          "path": "generated/migration-next/pr85-callback-budget-correction/discovery-311.log",
+          "sha256": "b17aec87bb15f99254bc85a64edc011d3c2df858beb57eca6d2e846cbdc4a698"
+        },
+        "plan": {
+          "bytes": 24685278,
+          "path": "generated/migration-next/pr85-callback-budget-correction/plan-311.json",
+          "sha256": "b63ed5f0d6864897abd96c00fd570a50997ed60b3dec0f3e8a43607e7927073a"
+        },
+        "scope": "Discovery only, not full unit execution",
+        "test_ids_lf_sha256": "cf27c05ddcfa8cc4f96c4ae7bf5d11bece4e64edfc9edb2e77c82880185e04f4",
+        "tests": 3416
+      },
+      "executed_tests_across_batches": 139,
+      "python": "3.11.15",
+      "startup": {
+        "campaigns": 17,
+        "census_matches_current_release_driver": true,
+        "evidence": [
+          {
+            "command": "PYTHONPATH=src:. /Users/logannye/.local/share/uv/python/cpython-3.11.15-macos-aarch64-none/bin/python3 -B generated/migration-next/pr85-callback-budget-correction/startup_audit.py",
+            "command_provenance": "confirmed by root",
+            "log": {
+              "bytes": 1732,
+              "path": "generated/migration-next/pr85-callback-budget-correction/startup-nine-311.log",
+              "sha256": "e689c4f25a1bee4997f8e3757907082ec79ef9e35b2e579f190a796a0149da33"
+            },
+            "receipt": {
+              "bytes": 9812,
+              "path": "generated/migration-next/pr85-callback-budget-correction/startup-audit-3.11.15.json",
+              "sha256": "8b39a92d4d9627f4658b6f93bd84aab8f4b7964e6671e7ac70006b19e74c4e57"
+            },
+            "scope": "complete startup corpus/declaration/source-file reads only; subprocess and network audited forbidden",
+            "script": {
+              "bytes": 3014,
+              "path": "generated/migration-next/pr85-callback-budget-correction/startup_audit.py",
+              "sha256": "1f68606df1126e749bc0a599d6f104945c6dfe518f674feae2f79badff377e39"
+            }
+          },
+          {
+            "command": "PYTHONPATH=src:. /Users/logannye/.local/share/uv/python/cpython-3.11.15-macos-aarch64-none/bin/python3 -B generated/migration-next/pr85-callback-budget-correction/startup_eight_audit.py",
+            "command_provenance": "confirmed by root",
+            "log": {
+              "bytes": 3880,
+              "path": "generated/migration-next/pr85-callback-budget-correction/startup-eight-311.log",
+              "sha256": "5dccf8d0565b292262ff14a52e33337e5ea8cf650ac98ab8d2d9858b81cff42e"
+            },
+            "receipt": {
+              "bytes": 5204,
+              "path": "generated/migration-next/pr85-callback-budget-correction/startup-eight-3.11.15.json",
+              "sha256": "fdac8ba8b46d6bc38b587e9c7469197302c4e00c3a65b1a67ed0116188d6ac38"
+            },
+            "scope": "Final complete startup Corpus reads and applicable current source declarations; source-tree pure audit, not installed/native execution or acceptance",
+            "script": {
+              "bytes": 4359,
+              "path": "generated/migration-next/pr85-callback-budget-correction/startup_eight_audit.py",
+              "sha256": "0ceb1729a69a6cb69b39196112b2b548553defe868302bf68f8459738ccdcc14"
+            }
+          }
+        ],
+        "rows": [
+          {
+            "case_count": 112,
+            "module": "check_native_workflow",
+            "seconds": 1.254,
+            "source_sha256": "47b44cf0a375cae1fe9491bd9c2397bc2a296f32e428505cf3efaf77b5e9f622",
+            "status": "passed"
+          },
+          {
+            "case_count": 137,
+            "module": "check_native_workflow_presentation",
+            "seconds": 2.296,
+            "source_sha256": "db6495fa79dc2c7e5251882d9dfb27186aa5699676966c129c8481931e80e08d",
+            "status": "passed"
+          },
+          {
+            "case_count": 23,
+            "module": "check_native_workflow_authority",
+            "seconds": 0.063,
+            "source_sha256": "849bee319887217fc9c2922bfd47d531304e622b40a4a3e6fe753605c4256c06",
+            "status": "passed"
+          },
+          {
+            "case_count": 164,
+            "module": "check_native_workflow_public_sdk",
+            "seconds": 2.313,
+            "source_sha256": "459e9510e2738dc8a4908f517abcd774fcfd5f153adea54799f7dcd048e6839e",
+            "status": "passed"
+          },
+          {
+            "baseline_cases": 70,
+            "case_count": 70,
+            "module": "check_native_workflow_cli",
+            "seconds": 2.16,
+            "source_sha256": "e902e5faf7fcd8c76ff34825a065a5961c79cc3b5b2e427467090d5d5cef3890",
+            "status": "passed"
+          },
+          {
+            "case_count": 1226,
+            "module": "check_native_synthetic_producer",
+            "seconds": 1.467,
+            "source_sha256": "9b2a09c3b2810a068d11f2c1a92e4bfb7bec3d3bb63601e65a4c2d64adb12085",
+            "status": "passed"
+          },
+          {
+            "case_count": 1235,
+            "module": "check_native_synthetic_public_sdk",
+            "seconds": 3.161,
+            "source_sha256": "909e2bfa52bc97d8c4e519931bd9f031e4415625c7010719a8b8f684b3804015",
+            "status": "passed"
+          },
+          {
+            "baseline_cases": 72,
+            "case_count": 72,
+            "module": "check_native_synthetic_selection_cli",
+            "seconds": 0.226,
+            "source_sha256": "9822725b704fcab547a3afed967a4a31f27cce1ab8de4567ed8eed7f3546f230",
+            "status": "passed"
+          },
+          {
+            "case_count": 9660,
+            "module": "check_native_synthetic_inspection",
+            "seconds": 3.422,
+            "source_sha256": "b8a2e7f79e5540ac41ef84060fe8f05d157234882bf5d5f4f2148160dcf2ed62",
+            "status": "passed"
+          },
+          {
+            "module": "check_realization_protocol",
+            "seconds": 0.187,
+            "source_sha256": "38abf7668e0f9525c833deff5d2d3d43397c063123a606070146685c993628e5",
+            "status": "passed"
+          },
+          {
+            "module": "check_realization_routing",
+            "seconds": 0.041,
+            "source_sha256": "2a5270112529efb4f756d8f63642f06568735bbd9be976fafdea256e9601a4fa",
+            "status": "passed"
+          },
+          {
+            "module": "check_pipeline_session_install",
+            "seconds": 0.935,
+            "source_sha256": "05b56ffa7969cea9630c2c901111f9c94fad40ac544770450932282eb35f4b62",
+            "status": "passed"
+          },
+          {
+            "module": "check_pipeline_manager_install",
+            "seconds": 2.998,
+            "source_sha256": "da71eecb632c740ba8e5c8fd5ccf85d6174d71c901ec70cbc041ce5adb1c63a6",
+            "status": "passed"
+          },
+          {
+            "module": "check_pipeline_fixed_provider_install",
+            "seconds": 2.931,
+            "source_sha256": "8d5f72afe93ec0dbb84b5d5321633ea653b274e4845645c4fd064a3f62319117",
+            "status": "passed"
+          },
+          {
+            "module": "check_pipeline_fixed_continuation_install",
+            "seconds": 1.427,
+            "source_sha256": "18cc625ed401eecaf9b07fb61a44021c56533c8f6b021ec8c332c652ce36db2b",
+            "status": "passed"
+          },
+          {
+            "module": "check_pipeline_fixed_registration_install",
+            "seconds": 1.04,
+            "source_sha256": "de75f006cd0b3ada6308736b1b8f3df69dfa6a1e3271deab9a5218785b73dc5e",
+            "status": "passed"
+          },
+          {
+            "exact_public_prefixes": 2,
+            "module": "check_pipeline_reference_install",
+            "seconds": 1.774,
+            "source_sha256": "d1cf550d00b79c2445de8c948ad7f3865379b4d77addc117fe8ea6e75772ff38",
+            "status": "passed",
+            "unchanged_test_cases": 18
+          }
+        ],
+        "status": "passed"
+      },
+      "test_batches": {
+        "callback_transport": {
+          "command": "PYTHONPATH=src:. /Users/logannye/.local/share/uv/python/cpython-3.11.15-macos-aarch64-none/bin/python3 -m unittest tests.test_core_pipeline_callback_session -q",
+          "command_provenance": "saved validation receipt",
+          "log": {
+            "bytes": 99,
+            "path": "generated/migration-next/pr85-b27-fresh-failure/callback-tests-311.log",
+            "sha256": "ff4e3aa4bd57a14e6cad5dd144605a85b624948ee94ca47a195d70c804a0b283"
+          },
+          "seconds": 18.905,
+          "status": "passed",
+          "tests": 25
+        },
+        "checker_controls": {
+          "command": "PYTHONPATH=src:. /Users/logannye/.local/share/uv/python/cpython-3.11.15-macos-aarch64-none/bin/python3 -B -m unittest tests.test_pipeline_callback_frame_budget tests.test_prebuilt_ci_plan tests.test_pipeline_manager_campaign tests.test_pipeline_manager_trace tests.test_pipeline_fixed_provider_campaign -v",
+          "command_provenance": "confirmed by root; verbose log module census independently matches",
+          "log": {
+            "bytes": 12969,
+            "path": "generated/migration-next/pr85-callback-budget-correction/checker-controls-311.log",
+            "sha256": "225de581c16ea6f6d5c20c3f03fbcbbc1a3c22e2da6302ef20924fae4bff1134"
+          },
+          "seconds": 139.334,
+          "status": "passed",
+          "tests": 61
+        },
+        "inventory_tests": {
+          "command": "PYTHONPATH=src:. /Users/logannye/.local/share/uv/python/cpython-3.11.15-macos-aarch64-none/bin/python3 -B -m unittest tests.test_migration_inventory -v",
+          "command_provenance": "reconstructed reproducible command from verbose log; original exact launch string not retained",
+          "log": {
+            "bytes": 2559,
+            "path": "generated/migration-next/pr85-callback-budget-correction/inventory-tests-311.log",
+            "sha256": "181375a1c19982881228cf6cdfb625fc5b17b508f304abb6aec12e37d87a9ee2"
+          },
+          "seconds": 4.286,
+          "status": "passed",
+          "tests": 13
+        },
+        "reference_counterparts": {
+          "argv": [
+            "/Users/logannye/.local/share/uv/python/cpython-3.11.15-macos-aarch64-none/bin/python3",
+            "-m",
+            "unittest",
+            "tests.test_reference_original_counterpart",
+            "tests.test_reference_contracts_corpus"
+          ],
+          "command_provenance": "saved reference-source-validation receipt",
+          "environment": {
+            "PYTHONPATH": "src"
+          },
+          "log": {
+            "bytes": 118,
+            "path": "generated/migration-next/pr85-callback-budget-correction/reference-counterpart-311.log",
+            "sha256": "db011b867d5af98ece335c7cb9d5e396e62ced2687d527384fdf01d6fbd973e6"
+          },
+          "seconds": 45.952,
+          "status": "passed",
+          "tests": 18
+        },
+        "source_guards": {
+          "argv": [
+            "/Users/logannye/.local/share/uv/python/cpython-3.11.15-macos-aarch64-none/bin/python3",
+            "-m",
+            "unittest",
+            "tests.test_workflow_source_lineage",
+            "tests.test_workflow_cli_lineage",
+            "tests.test_synthetic_selection_cli_capture.SyntheticSelectionCliCaptureTests.test_complete_baseline_original_method_and_full_authority_error_census",
+            "tests.test_synthetic_selection_cli_capture.SyntheticSelectionCliCaptureTests.test_both_exact_runtime_counterparts_keep_full_actual_source_and_bytes",
+            "tests.test_synthetic_selection_cli_capture.SyntheticSelectionCliCaptureTests.test_rehashed_observation_scope_imports_case_and_runtime_mutations_fail",
+            "tests.test_synthetic_selection_cli_capture.SyntheticSelectionCliCaptureTests.test_additive_sources_require_individual_pins_and_cannot_enter_children"
+          ],
+          "command_provenance": "saved reference-source-validation receipt",
+          "environment": {
+            "PYTHONPATH": "src"
+          },
+          "log": {
+            "bytes": 122,
+            "path": "generated/migration-next/pr85-callback-budget-correction/source-guards-311.log",
+            "sha256": "9f05991db6b331d50820187036b30ea6bea5e97ad067e737fb0b533580100bee"
+          },
+          "seconds": 26.132,
+          "status": "passed",
+          "tests": 22
+        }
+      }
+    },
+    "314": {
+      "discovery": {
+        "classes": 351,
+        "log": {
+          "bytes": 201,
+          "path": "generated/migration-next/pr85-callback-budget-correction/discovery-314.log",
+          "sha256": "88ca373cc4049f30559809604c26dfb19e52234a8925dfb02cc7817df359c5a6"
+        },
+        "plan": {
+          "bytes": 24685277,
+          "path": "generated/migration-next/pr85-callback-budget-correction/plan-314.json",
+          "sha256": "6848102412b8ff59e998ef42f337d3847ff5d91382402116f301ef329ab1f5f5"
+        },
+        "scope": "Discovery only, not full unit execution",
+        "test_ids_lf_sha256": "cf27c05ddcfa8cc4f96c4ae7bf5d11bece4e64edfc9edb2e77c82880185e04f4",
+        "tests": 3416
+      },
+      "executed_tests_across_batches": 139,
+      "python": "3.14.6",
+      "startup": {
+        "campaigns": 17,
+        "census_matches_current_release_driver": true,
+        "evidence": [
+          {
+            "command": "PYTHONPATH=src:. python3 -B generated/migration-next/pr85-callback-budget-correction/startup_audit.py",
+            "command_provenance": "confirmed by root",
+            "log": {
+              "bytes": 1732,
+              "path": "generated/migration-next/pr85-callback-budget-correction/startup-nine-314.log",
+              "sha256": "d46855c17417ca0073de4076319e1a3c7701be2643af5a5bcea01c892e138505"
+            },
+            "receipt": {
+              "bytes": 9811,
+              "path": "generated/migration-next/pr85-callback-budget-correction/startup-audit-3.14.6.json",
+              "sha256": "45632942e9bc915111f58b066b18d33f8ea4e874be80d8f3f370e76a8965813b"
+            },
+            "scope": "complete startup corpus/declaration/source-file reads only; subprocess and network audited forbidden",
+            "script": {
+              "bytes": 3014,
+              "path": "generated/migration-next/pr85-callback-budget-correction/startup_audit.py",
+              "sha256": "1f68606df1126e749bc0a599d6f104945c6dfe518f674feae2f79badff377e39"
+            }
+          },
+          {
+            "command": "PYTHONPATH=src:. python3 -B generated/migration-next/pr85-callback-budget-correction/startup_eight_audit.py",
+            "command_provenance": "confirmed by root",
+            "log": {
+              "bytes": 3880,
+              "path": "generated/migration-next/pr85-callback-budget-correction/startup-eight-314.log",
+              "sha256": "15be87fc6c10f1cae8419f733a32d2b220b15062360650f2f7791f4f7a6c01da"
+            },
+            "receipt": {
+              "bytes": 5203,
+              "path": "generated/migration-next/pr85-callback-budget-correction/startup-eight-3.14.6.json",
+              "sha256": "2814f51a76aae96882de8051b2fed15361d4345d842badd5194010f078445a5c"
+            },
+            "scope": "Final complete startup Corpus reads and applicable current source declarations; source-tree pure audit, not installed/native execution or acceptance",
+            "script": {
+              "bytes": 4359,
+              "path": "generated/migration-next/pr85-callback-budget-correction/startup_eight_audit.py",
+              "sha256": "0ceb1729a69a6cb69b39196112b2b548553defe868302bf68f8459738ccdcc14"
+            }
+          }
+        ],
+        "rows": [
+          {
+            "case_count": 112,
+            "module": "check_native_workflow",
+            "seconds": 0.889,
+            "source_sha256": "47b44cf0a375cae1fe9491bd9c2397bc2a296f32e428505cf3efaf77b5e9f622",
+            "status": "passed"
+          },
+          {
+            "case_count": 137,
+            "module": "check_native_workflow_presentation",
+            "seconds": 1.635,
+            "source_sha256": "db6495fa79dc2c7e5251882d9dfb27186aa5699676966c129c8481931e80e08d",
+            "status": "passed"
+          },
+          {
+            "case_count": 23,
+            "module": "check_native_workflow_authority",
+            "seconds": 0.055,
+            "source_sha256": "849bee319887217fc9c2922bfd47d531304e622b40a4a3e6fe753605c4256c06",
+            "status": "passed"
+          },
+          {
+            "case_count": 164,
+            "module": "check_native_workflow_public_sdk",
+            "seconds": 1.675,
+            "source_sha256": "459e9510e2738dc8a4908f517abcd774fcfd5f153adea54799f7dcd048e6839e",
+            "status": "passed"
+          },
+          {
+            "baseline_cases": 70,
+            "case_count": 70,
+            "module": "check_native_workflow_cli",
+            "seconds": 1.536,
+            "source_sha256": "e902e5faf7fcd8c76ff34825a065a5961c79cc3b5b2e427467090d5d5cef3890",
+            "status": "passed"
+          },
+          {
+            "case_count": 1226,
+            "module": "check_native_synthetic_producer",
+            "seconds": 1.373,
+            "source_sha256": "9b2a09c3b2810a068d11f2c1a92e4bfb7bec3d3bb63601e65a4c2d64adb12085",
+            "status": "passed"
+          },
+          {
+            "case_count": 1235,
+            "module": "check_native_synthetic_public_sdk",
+            "seconds": 2.476,
+            "source_sha256": "909e2bfa52bc97d8c4e519931bd9f031e4415625c7010719a8b8f684b3804015",
+            "status": "passed"
+          },
+          {
+            "baseline_cases": 72,
+            "case_count": 72,
+            "module": "check_native_synthetic_selection_cli",
+            "seconds": 0.265,
+            "source_sha256": "9822725b704fcab547a3afed967a4a31f27cce1ab8de4567ed8eed7f3546f230",
+            "status": "passed"
+          },
+          {
+            "case_count": 9660,
+            "module": "check_native_synthetic_inspection",
+            "seconds": 4.25,
+            "source_sha256": "b8a2e7f79e5540ac41ef84060fe8f05d157234882bf5d5f4f2148160dcf2ed62",
+            "status": "passed"
+          },
+          {
+            "module": "check_realization_protocol",
+            "seconds": 0.206,
+            "source_sha256": "38abf7668e0f9525c833deff5d2d3d43397c063123a606070146685c993628e5",
+            "status": "passed"
+          },
+          {
+            "module": "check_realization_routing",
+            "seconds": 0.041,
+            "source_sha256": "2a5270112529efb4f756d8f63642f06568735bbd9be976fafdea256e9601a4fa",
+            "status": "passed"
+          },
+          {
+            "module": "check_pipeline_session_install",
+            "seconds": 0.942,
+            "source_sha256": "05b56ffa7969cea9630c2c901111f9c94fad40ac544770450932282eb35f4b62",
+            "status": "passed"
+          },
+          {
+            "module": "check_pipeline_manager_install",
+            "seconds": 3.03,
+            "source_sha256": "da71eecb632c740ba8e5c8fd5ccf85d6174d71c901ec70cbc041ce5adb1c63a6",
+            "status": "passed"
+          },
+          {
+            "module": "check_pipeline_fixed_provider_install",
+            "seconds": 2.802,
+            "source_sha256": "8d5f72afe93ec0dbb84b5d5321633ea653b274e4845645c4fd064a3f62319117",
+            "status": "passed"
+          },
+          {
+            "module": "check_pipeline_fixed_continuation_install",
+            "seconds": 1.215,
+            "source_sha256": "18cc625ed401eecaf9b07fb61a44021c56533c8f6b021ec8c332c652ce36db2b",
+            "status": "passed"
+          },
+          {
+            "module": "check_pipeline_fixed_registration_install",
+            "seconds": 1.039,
+            "source_sha256": "de75f006cd0b3ada6308736b1b8f3df69dfa6a1e3271deab9a5218785b73dc5e",
+            "status": "passed"
+          },
+          {
+            "exact_public_prefixes": 2,
+            "module": "check_pipeline_reference_install",
+            "seconds": 1.877,
+            "source_sha256": "d1cf550d00b79c2445de8c948ad7f3865379b4d77addc117fe8ea6e75772ff38",
+            "status": "passed",
+            "unchanged_test_cases": 18
+          }
+        ],
+        "status": "passed"
+      },
+      "test_batches": {
+        "callback_transport": {
+          "command": "PYTHONPATH=src:. python3 -m unittest tests.test_core_pipeline_callback_session -q",
+          "command_provenance": "saved validation receipt",
+          "log": {
+            "bytes": 99,
+            "path": "generated/migration-next/pr85-b27-fresh-failure/callback-tests-314.log",
+            "sha256": "d44a12b5aa7971a583d81148bdcdad80c12eef3c86d7e68f2587b9099c404dff"
+          },
+          "seconds": 21.563,
+          "status": "passed",
+          "tests": 25
+        },
+        "checker_controls": {
+          "command": "PYTHONPATH=src:. python3 -B -m unittest tests.test_pipeline_callback_frame_budget tests.test_prebuilt_ci_plan tests.test_pipeline_manager_campaign tests.test_pipeline_manager_trace tests.test_pipeline_fixed_provider_campaign -v",
+          "command_provenance": "confirmed by root; verbose log module census independently matches",
+          "log": {
+            "bytes": 12969,
+            "path": "generated/migration-next/pr85-callback-budget-correction/checker-controls-314.log",
+            "sha256": "0854c29c31f0547433a72722acf030346a49b1eecc1872285b815f02cd180dd7"
+          },
+          "seconds": 119.261,
+          "status": "passed",
+          "tests": 61
+        },
+        "inventory_tests": {
+          "command": "PYTHONPATH=src:. python3 -B -m unittest tests.test_migration_inventory -v",
+          "command_provenance": "reconstructed reproducible command from verbose log; original exact launch string not retained",
+          "log": {
+            "bytes": 2559,
+            "path": "generated/migration-next/pr85-callback-budget-correction/inventory-tests-314.log",
+            "sha256": "47ebde984c0bf66d8c6c640715ba6a244118b49a1ea3ce44532ac947c91ac348"
+          },
+          "seconds": 4.186,
+          "status": "passed",
+          "tests": 13
+        },
+        "reference_counterparts": {
+          "argv": [
+            "/opt/homebrew/bin/python3",
+            "-m",
+            "unittest",
+            "tests.test_reference_original_counterpart",
+            "tests.test_reference_contracts_corpus"
+          ],
+          "command_provenance": "saved reference-source-validation receipt",
+          "environment": {
+            "PYTHONPATH": "src"
+          },
+          "log": {
+            "bytes": 118,
+            "path": "generated/migration-next/pr85-callback-budget-correction/reference-counterpart-314.log",
+            "sha256": "20b8c2728811231509132062de458d218bdd91a0b2f09d4f4a066069b969a866"
+          },
+          "seconds": 56.021,
+          "status": "passed",
+          "tests": 18
+        },
+        "source_guards": {
+          "argv": [
+            "/opt/homebrew/bin/python3",
+            "-m",
+            "unittest",
+            "tests.test_workflow_source_lineage",
+            "tests.test_workflow_cli_lineage",
+            "tests.test_synthetic_selection_cli_capture.SyntheticSelectionCliCaptureTests.test_complete_baseline_original_method_and_full_authority_error_census",
+            "tests.test_synthetic_selection_cli_capture.SyntheticSelectionCliCaptureTests.test_both_exact_runtime_counterparts_keep_full_actual_source_and_bytes",
+            "tests.test_synthetic_selection_cli_capture.SyntheticSelectionCliCaptureTests.test_rehashed_observation_scope_imports_case_and_runtime_mutations_fail",
+            "tests.test_synthetic_selection_cli_capture.SyntheticSelectionCliCaptureTests.test_additive_sources_require_individual_pins_and_cannot_enter_children"
+          ],
+          "command_provenance": "saved reference-source-validation receipt",
+          "environment": {
+            "PYTHONPATH": "src"
+          },
+          "log": {
+            "bytes": 122,
+            "path": "generated/migration-next/pr85-callback-budget-correction/source-guards-314.log",
+            "sha256": "5c29f270c92b72bc118852e3edab2ff6c9c275c01d0d3784ac5faf4216a9a62b"
+          },
+          "seconds": 26.488,
+          "status": "passed",
+          "tests": 22
+        }
+      }
+    }
+  },
+  "schema": "biocompiler.callback_budget_local_validation_summary.v1",
+  "scope": "Existing pure-Python/subprocess-fixture/static logs audited; startup reads are not native execution, installed campaign acceptance, or hosted release completion.",
+  "status": "all_retained_local_checks_pass",
+  "strict_typing": {
+    "command": "PYTHONPATH=generated/mypy-static/site python3 -B -m mypy --config-file tools/mypy-core.ini",
+    "command_provenance": "confirmed by root",
+    "config": {
+      "bytes": 1504,
+      "path": "tools/mypy-core.ini",
+      "sha256": "e0e890575f6d10f75554ed8dc17ff13be07ba8d444f7bd61624c3309d7fa0821"
+    },
+    "log": {
+      "bytes": 44,
+      "path": "generated/migration-next/pr85-callback-budget-correction/mypy.log",
+      "sha256": "44323f12010ebbb5daa4cefef4cc4308006fe3b26ad3ced614a993eb79a8b535"
+    },
+    "modules": 28,
+    "python_target": "3.11",
+    "source_pins_at_summary_time": {
+      "src/biocompiler/architecture_backend.py": "faac33bfc42f3768f70fb89ae7f31773ff943d8488acd133c874f4cdb3e2caf6",
+      "src/biocompiler/core_architecture.py": "091c6b78aa112f4a5de5dabfb664fee8f47a8eb021eacc7801023b5dccecb31b",
+      "src/biocompiler/core_architecture_producer.py": "dd778e89e2591ed38038343b404ff290a370827291a256c52976befd75a69ce4",
+      "src/biocompiler/core_artifacts.py": "77cf4dc31efb782c7fbb44fe8e79714a60e2e20374f9e7569fdce8f70d8ec59a",
+      "src/biocompiler/core_client.py": "c8d65a42c1f92cbd75cb5edd176a9463657e03509be8ed487496d78b17be00fc",
+      "src/biocompiler/core_distribution.py": "10c772076ee0ecfcb0c61a1a3410ae6014313d2e05617f30bc77f6df55485459",
+      "src/biocompiler/core_pipeline_build_views.py": "85492c4f77b3104af2dae9d9180a0518bfd4fb61c9d6143880e6e58e10a77382",
+      "src/biocompiler/core_pipeline_callback_session.py": "96cf3c4c70231f3039e2e16c51efc06bc202c86208f94dbddd5f438996c1bb5a",
+      "src/biocompiler/core_pipeline_manager.py": "f5c3410fb93d99182a1c5b9d8f3fa948990a0e1d4ce0b3b609c6b9f470d67bdd",
+      "src/biocompiler/core_pipeline_provider_views.py": "ea18d951f8170b1e1da4fbe6636d40e83f54ebda2ebdce187b0e08cf257b9c35",
+      "src/biocompiler/core_pipeline_session.py": "b0c744d8f3a38b1681805250ccf93884ba866678527cf366bcf08ff326da080d",
+      "src/biocompiler/core_realization.py": "9cadebe44a1e16ad2199a41d38b4c538ff29d1687dc1a2b3e07aed7748894e32",
+      "src/biocompiler/core_reference_host.py": "a31be5b73f1440d92cf8076fdad9d69ec9ae8605217d400af20d47f5d4e4305e",
+      "src/biocompiler/core_reference_manager.py": "188830c06e5865d65d4997558d602e9c28668e1d7f163693c515f306661c22f2",
+      "src/biocompiler/core_reference_provider_views.py": "1b4989571d71292eaa9998787f249fd7d60439958cbc8da6f36c2acca39c6bce",
+      "src/biocompiler/core_reference_views.py": "a295b4583be057a743959d077add14ae7c5424086f7edddd322dfb188786d9f9",
+      "src/biocompiler/core_synthetic_inspection.py": "5ab68d6f1dac300af1e0d7431f5ba45aa2df493c1f446a8ccd67b56ae831178f",
+      "src/biocompiler/core_synthetic_producer.py": "233ae7ffd5a10e7158b1ac833194aa4b5b05de5334e73adf77aad9d081fb1917",
+      "src/biocompiler/core_synthetic_producer_public.py": "15db52841e774d4fdf42ed937dfe173ca844cae920fb6419bbc54eec70c31082",
+      "src/biocompiler/core_workflow.py": "43b57b87a2d89db200463d8aed8b7eea7e262cf1c4ea02c772843598dbda90df",
+      "src/biocompiler/core_workflow_authority.py": "ded29c7cd4c16241812bd7f677b0c962d185a724fef1cd7294c7e899c7c32d66",
+      "src/biocompiler/pipeline_callback_objects.py": "ac5198795c3e80cff511e0fe372dc578a983d8be947e41dd9debd9f719da9eec",
+      "src/biocompiler/realization_backend.py": "1c72fefbed1489eca38252cf61d5021167d1928cd4b1c441e42444878777e744",
+      "src/biocompiler/reference_backend.py": "f390f40bb7f176e2cd45acde4db84e7aa987d8a7125269a1ceba37ea59b26358",
+      "src/biocompiler/synthetic_producer_backend.py": "99584aaa6be87849ebf1cc5eea0ba0821b86f4ca03abc190b0261a8903647db3",
+      "src/biocompiler/synthetic_producer_cli.py": "4e500dd094e41841fa15635b1be6a805a0b3b992de574dda888f4d91fa881221",
+      "src/biocompiler/workflow_backend.py": "81958a4fc1147b2ea10eae7c7bac15a68338b1cb21b738805ae04538c7bdc1db",
+      "src/biocompiler/workflow_cli.py": "641cf7f6451e52c5dd4a09a28c75c89329191aa373aed36cc9dc92c573207bd5"
+    },
+    "status": "passed"
+  }
+}

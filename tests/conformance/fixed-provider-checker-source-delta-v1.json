@@ -1,0 +1,20 @@
+{
+  "current": {
+    "bytes": 57420,
+    "sha256": "8d5f72afe93ec0dbb84b5d5321633ea653b274e4845645c4fd064a3f62319117"
+  },
+  "historical": {
+    "bytes": 57152,
+    "revision": "0dd0fe54f3d1f0e502b30188f096cb5387fbb9b2",
+    "sha256": "177e58882ee175e42e2027a6bfd94f90a63b14201651e524bb5840bb553bebf7"
+  },
+  "path": "tools/check_pipeline_fixed_provider_install.py",
+  "schema": "biocompiler.fixed_provider_checker_source_delta.v1",
+  "spans": [
+    {
+      "after": "            require(not Path(path).is_absolute() and '..' not in Path(path).parts and r.pin(identity),\n                'Invalid original fixed-provider source: '+path)\n            if path == 'src/biocompiler/compiler/pipeline.py':\n                manager.fixed.source_tool('manager_registration_source_lineage').verify_source(ROOT, path, identity)\n            else:\n                require(sha(r.raw_file(ROOT / path)) == identity, 'Original fixed-provider source changed: '+path)\n",
+      "before": "            require(not Path(path).is_absolute() and '..' not in Path(path).parts and r.pin(identity)\n                and sha(r.raw_file(ROOT / path)) == identity, 'Original fixed-provider source changed: '+path)\n",
+      "offset": 3284
+    }
+  ]
+}

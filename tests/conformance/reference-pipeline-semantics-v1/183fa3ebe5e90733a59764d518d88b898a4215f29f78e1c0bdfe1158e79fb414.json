@@ -1,0 +1,1 @@
+{"class":"biocompiler.ir.molecular.EncodingPolicy","class_schema":"biocompiler.encoding_policy.v0.1","fields":[["mode",{"scalar":"str","value":"exact_reference"}],["optimization",{"scalar":"str","value":"disabled"}],["transformations",{"ref":"object/3"}]],"instance_fields":["mode","optimization","transformations"],"kind":"dataclass"}

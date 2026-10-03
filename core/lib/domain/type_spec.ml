@@ -165,7 +165,11 @@ let normalize_binding ?(path = "") ~expected value =
     let fields = Json.object_fields ~path value in
     let field name = Json.field ~path name fields in
     let actual = of_json ~path:(path_child path "type") (field "type") in
-    let common = ["kind", Json.String (kind_name actual.kind); "type", to_json actual] in
+    (* Public mappings retain the original literal serializer's insertion order.
+       Scalar/interval serializers put type last; curves put it second.
+       Canonical encoding still sorts keys independently of this public view. *)
+    let kind = "kind", Json.String (kind_name actual.kind) in
+    let dtype = "type", to_json actual in
     match actual.kind with
     | Scalar ->
         let canonical = match registered_units actual with
@@ -175,13 +179,13 @@ let normalize_binding ?(path = "") ~expected value =
               let factor = List.assoc unit units in
               finite_number ~path (multiply (field "value") factor)
         in
-        Json.Object (common @ [
+        Json.Object [kind;
             "value", field "value"; "unit", field "unit";
-            "canonical_value", canonical])
+            "canonical_value", canonical; dtype]
     | Interval ->
-        Json.Object (common @ [
+        Json.Object [kind;
             "lower", normalize ~path:(path_child path "lower") (field "lower");
-            "upper", normalize ~path:(path_child path "upper") (field "upper")])
+            "upper", normalize ~path:(path_child path "upper") (field "upper"); dtype]
     | Curve ->
         let points = Json.array ~path (field "points")
           |> List.mapi (fun index point ->
@@ -192,10 +196,10 @@ let normalize_binding ?(path = "") ~expected value =
                   normalize ~path:(path_child point_path "1") output]
               | _ -> assert false)
         in
-        Json.Object (common @ [
+        Json.Object [kind; dtype;
             "points", Json.Array points;
             "interpolation", field "interpolation";
-            "extrapolation", field "extrapolation"])
+            "extrapolation", field "extrapolation"]
     | Condition | Event -> assert false
   in
   normalize ~path value

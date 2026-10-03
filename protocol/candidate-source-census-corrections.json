@@ -1,0 +1,131 @@
+{
+  "corrections": [
+    {
+      "changed_paths": [
+        "tests/test_candidate_runtime_corpus.py"
+      ],
+      "generated_files": [
+        {
+          "bytes": 1350269,
+          "path": "protocol/migration-inventory.json",
+          "sha256": "b14df46d358bd6377dd93391cc12e818484119b87eea9dc0ab21464777a52e2e"
+        },
+        {
+          "bytes": 7705,
+          "path": "docs/migration-coverage.md",
+          "sha256": "b859fd715a0212c5c85062fe15966e47ea124302bb19c2be0a833eb0105320a9"
+        }
+      ],
+      "head": "41ab0f99375d7293a4b86c28da1cd5408b7376c0",
+      "new_source_sha256": "02cc6de12188cd6c3f186b6aa3b3367b00f83e193405f3bfadd0d2b69264bbba",
+      "old_head": "11f2a88d6ea98631ec0812c308160c76c4e3f192",
+      "old_source_sha256": "012a0d2d00aea84e867ee90eae37542b731faadd6e29f7c254e2457833923d3b",
+      "parent_inventory_check": "parent_and_corrected_inventory_byte_exact_without_regeneration",
+      "pr": 57,
+      "url": "https://github.com/logannye/biocompiler/pull/57",
+      "validation_run": {
+        "conclusion": "",
+        "databaseId": 36987943622,
+        "headSha": "41ab0f99375d7293a4b86c28da1cd5408b7376c0",
+        "status": "pending",
+        "url": "https://github.com/logannye/biocompiler/actions/runs/36987943622"
+      }
+    },
+    {
+      "changed_paths": [
+        "tests/test_candidate_runtime_corpus.py"
+      ],
+      "generated_files": [
+        {
+          "bytes": 1355145,
+          "path": "protocol/migration-inventory.json",
+          "sha256": "8dc4c90bfc5e5966edf5a27ca74c59a6b0f3a0090f6e8397cceabd64cd676dc7"
+        },
+        {
+          "bytes": 7705,
+          "path": "docs/migration-coverage.md",
+          "sha256": "c8d52f05b55027ad4b998c8ed72d2baf350577dcbe1833d20527869afb893fdf"
+        }
+      ],
+      "head": "241bd423b3b1b877d03c2a556b325994ffe8633b",
+      "new_source_sha256": "02cc6de12188cd6c3f186b6aa3b3367b00f83e193405f3bfadd0d2b69264bbba",
+      "old_head": "166b5a49090223dabb7852a6dd36d91aee2cc3a6",
+      "old_source_sha256": "012a0d2d00aea84e867ee90eae37542b731faadd6e29f7c254e2457833923d3b",
+      "parent_inventory_check": "parent_and_corrected_inventory_byte_exact_without_regeneration",
+      "pr": 58,
+      "url": "https://github.com/logannye/biocompiler/pull/58",
+      "validation_run": {
+        "conclusion": "",
+        "databaseId": 36987950690,
+        "headSha": "241bd423b3b1b877d03c2a556b325994ffe8633b",
+        "status": "pending",
+        "url": "https://github.com/logannye/biocompiler/actions/runs/36987950690"
+      }
+    },
+    {
+      "changed_paths": [
+        "tests/test_candidate_runtime_corpus.py"
+      ],
+      "generated_files": [
+        {
+          "bytes": 1361135,
+          "path": "protocol/migration-inventory.json",
+          "sha256": "ac91b76573291e3bb0f8fbd232a59239f1ce417794ee5354a0635527b10179f0"
+        },
+        {
+          "bytes": 7705,
+          "path": "docs/migration-coverage.md",
+          "sha256": "2ac7826cbabc7b7cae8d38bf11ac5e1814a00cde85bee9f6b67589779f3ec669"
+        }
+      ],
+      "head": "32bf0af04f188638384d6344cc26d824fe53f372",
+      "new_source_sha256": "02cc6de12188cd6c3f186b6aa3b3367b00f83e193405f3bfadd0d2b69264bbba",
+      "old_head": "f7b81a1da0236f2b4187e24b1352d49d788296d4",
+      "old_source_sha256": "012a0d2d00aea84e867ee90eae37542b731faadd6e29f7c254e2457833923d3b",
+      "parent_inventory_check": "parent_and_corrected_inventory_byte_exact_without_regeneration",
+      "pr": 59,
+      "url": "https://github.com/logannye/biocompiler/pull/59",
+      "validation_run": {
+        "conclusion": "",
+        "databaseId": 36987950649,
+        "headSha": "32bf0af04f188638384d6344cc26d824fe53f372",
+        "status": "pending",
+        "url": "https://github.com/logannye/biocompiler/actions/runs/36987950649"
+      }
+    },
+    {
+      "changed_paths": [
+        "tests/test_candidate_runtime_corpus.py"
+      ],
+      "generated_files": [
+        {
+          "bytes": 1383675,
+          "path": "protocol/migration-inventory.json",
+          "sha256": "3d4906efd1bea2f768ca450efa4e8a755ad563a2e908cc74db35557e4fdd0433"
+        },
+        {
+          "bytes": 7705,
+          "path": "docs/migration-coverage.md",
+          "sha256": "51557b969e6f3960fac986157df1b88253580b1ef79b05dc3e6dac9d18f7fe3d"
+        }
+      ],
+      "head": "e8c640b74e34c1ac3db094b776e5478da67ce69e",
+      "new_source_sha256": "02cc6de12188cd6c3f186b6aa3b3367b00f83e193405f3bfadd0d2b69264bbba",
+      "old_head": "75c5c7af0c425b77c2d9c27c66a24ed3943cf847",
+      "old_source_sha256": "012a0d2d00aea84e867ee90eae37542b731faadd6e29f7c254e2457833923d3b",
+      "parent_inventory_check": "parent_and_corrected_inventory_byte_exact_without_regeneration",
+      "pr": 60,
+      "url": "https://github.com/logannye/biocompiler/pull/60",
+      "validation_run": {
+        "conclusion": "",
+        "databaseId": 36987956277,
+        "headSha": "e8c640b74e34c1ac3db094b776e5478da67ce69e",
+        "status": "pending",
+        "url": "https://github.com/logannye/biocompiler/actions/runs/36987956277"
+      }
+    }
+  ],
+  "native_execution": false,
+  "schema_version": "biocompiler.candidate_source_census_correction.v1",
+  "scope": "one historical source assertion uses existing exact reviewed lineage; all original corpus pins unchanged"
+}

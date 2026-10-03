@@ -1,0 +1,1 @@
+[{"code":"molecule_reference_metadata","instance_id":"cds","message":"Molecule alphabet, artifact class, length and coding-only completeness must match the reviewed reference.","molecule_id":"payload","requirement_ids":["exact_reference"],"source":{"file":"reference_build.py","function":"<module>","line":12},"status":"fail"}]

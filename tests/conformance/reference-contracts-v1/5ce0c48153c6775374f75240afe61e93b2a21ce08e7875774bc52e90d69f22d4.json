@@ -1,0 +1,1 @@
+"{\n  \"feature\": \"sequence-orientation\",\n  \"reason\": \"Pinned CDS reference record and standard-code policy.\",\n  \"schema_version\": \"biocompiler.molecular_feature_status.v0.1\",\n  \"scope\": \"cds_record\",\n  \"status\": \"known\",\n  \"value\": \"5prime-to-3prime\"\n}"

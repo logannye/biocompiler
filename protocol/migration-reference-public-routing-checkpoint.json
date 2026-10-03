@@ -1,0 +1,250 @@
+{
+  "schema_version": "biocompiler.reference_public_routing_checkpoint.v1",
+  "status": "source_and_focused_python_checks_complete_hosted_native_and_installed_replay_pending",
+  "base_revision": "4483d4a57497e5b95a7b416d686b83881025928a",
+  "base_pull_request": 78,
+  "scope": "Explicit existing Construct/Molecular public SDK routing; Python production defaults, canonical package/export, and all four cutoff gates remain open",
+  "public_routing": {
+    "selection": "Explicit CoreClient and ContextVar; original function objects, signatures and imported aliases preserved",
+    "authority": "Current Molecular request, registry and outer manifest snapshot distinct from retained upstream Construct provenance",
+    "source_reads": "Actual current upstream callable; one manager read; first candidate for independent check, separate opaque second candidate for returned Build",
+    "acceptance": "Actual native run/result capabilities only; host return identity cannot import acceptance",
+    "resources": "Owning channel work and cumulative retained graphs; no detached budget root or refunds",
+    "application_declaration": {
+      "operations": 33,
+      "actions": 14,
+      "exact_three_way_equality": true
+    }
+  },
+  "local_controls": {
+    "public_facade_views_registration_trace": {
+      "tests_each": 70,
+      "python_3_14_6_seconds": 19.629,
+      "python_3_11_15_seconds": 17.963,
+      "status": "pass"
+    },
+    "strict_mypy": {
+      "modules": 27,
+      "status": "pass"
+    },
+    "domain_original_counterpart": {
+      "tests_each": 8,
+      "python_3_14_6_seconds": 25.654,
+      "python_3_11_15_seconds": 21.645,
+      "status": "pass",
+      "actual_original_child_methods": 8,
+      "frozen_sources": 203,
+      "frozen_documents": 4000,
+      "copied_sources": 207,
+      "copied_data": 4005
+    },
+    "pipeline_original_counterpart": {
+      "tests_each": 7,
+      "python_3_14_6_seconds": 47.03,
+      "python_3_11_15_seconds": 45.318,
+      "status": "pass",
+      "actual_original_methods": 18,
+      "scope": "Archived original execution, not current native bridge validation"
+    },
+    "source_guards": {
+      "receipt": "protocol/migration-reference-public-source-guard-correction.json",
+      "status": "pass",
+      "tests_each": 48,
+      "python_3_14_6_seconds": 168.406,
+      "python_3_11_15_seconds": 158.637
+    },
+    "migration_inventory": {
+      "entries": 3301,
+      "tests_each": 13,
+      "status": "pass"
+    },
+    "ci_boundaries_and_fixtures": {
+      "tests_each": 47,
+      "status": "pass",
+      "python_3_11_15_combined_with_inventory": {
+        "tests": 60,
+        "seconds": 26.644
+      },
+      "python_3_14_6": "47 controls passed; separate frozen inventory13 passed in3.245s"
+    },
+    "native_source_review": {
+      "status": "no_concrete_mismatch_found",
+      "scope": "API, closed declaration, lifecycle/budgets, exact source restoration and lexical preflight; not compilation"
+    }
+  },
+  "discovery": [
+    {
+      "python": "3.11.15",
+      "tests": 3221,
+      "classes": 314,
+      "test_ids_sha256": "7bf3213c4c6df5a191cc546efad580c77fe94e67c0def062d901a0760ffdac33",
+      "is_test_execution": false
+    },
+    {
+      "python": "3.14.6",
+      "tests": 3221,
+      "classes": 314,
+      "test_ids_sha256": "7bf3213c4c6df5a191cc546efad580c77fe94e67c0def062d901a0760ffdac33",
+      "is_test_execution": false
+    }
+  ],
+  "native_validation": {
+    "native_suites_required": 111,
+    "release_jobs_required": 36,
+    "local_compilation": false,
+    "local_execution": false,
+    "hosted": "pending_for_this_source"
+  },
+  "original_authority": {
+    "unchanged_original_pipeline_methods": 18,
+    "managers": 27,
+    "top_level_operations": 439,
+    "all_events": 2220,
+    "physical_objects": 20051,
+    "documents": 10867,
+    "document_bytes": 44887166,
+    "pipeline_corpus_sha256": "516135a64458bc985294f7b2761138d5613209e3b225028492fe86f22c5092d3",
+    "source_restoration": "Exact Core declaration reversal then original six spans; exact two compiler-prefix removals; complete archived bytes verified"
+  },
+  "pending": [
+    "Actual installed original workflow execution and complete frame/object/callback correspondence on four runtimes",
+    "Source-ordered continuation attempt for completed/interrupted native reference owners",
+    "Remaining ordinary-manager/wrapper/subclass compatibility and supported package/admission/behavior families",
+    "Canonical package and fresh export authority",
+    "Existing CLI/Studio routing, prebuilt fresh installation, validated production cutover/retirement and full exact-revision integration"
+  ],
+  "source_files": {
+    "core/lib/pipeline/reference_molecular_pipeline.ml": {
+      "sha256": "6bd254b9e1255f7fc4b5c49dd3c72e1979b4de32c622b9a5e610d92faa84c971",
+      "bytes": 19420
+    },
+    "core/lib/pipeline/reference_molecular_pipeline.mli": {
+      "sha256": "96eb428902ec14cb3a77af1864f00929e3cf85784be210d177ee2e7a21e3c866",
+      "bytes": 6794
+    },
+    "core/lib/pipeline_service/callback_manager.ml": {
+      "sha256": "69a7bb5ae2d2622fc816cbf274dcefd82a2ea93da1cfd3fc984addce2cec2ddf",
+      "bytes": 113108
+    },
+    "core/lib/pipeline_service/reference_workflow.ml": {
+      "sha256": "5ac51ca232f39112350f85ab0754c0af250b1abcf5c2873bf1c2775d9b26250a",
+      "bytes": 19088
+    },
+    "core/lib/pipeline_service/reference_workflow.mli": {
+      "sha256": "a2a15de0948d9816c6b4132ca23606f1aed42cb3c6adb5ee0319e1fb007cface",
+      "bytes": 4485
+    },
+    "core/test/test_reference_callback_manager.ml": {
+      "sha256": "e4408cfb226f388c37e782ca047a916309052c2396a57e7624de9596572c7d2b",
+      "bytes": 40420
+    },
+    "core/test/test_reference_contracts_corpus.ml": {
+      "sha256": "7b8dcade6a6fdd7d714ef4cc9efa43360bea049314dd0b15fd73734fafceae05",
+      "bytes": 27069
+    },
+    "core/test/test_reference_molecular_pipeline.ml": {
+      "sha256": "9401b691e2b36b41484ce9eec4b9bca865d9cf4653c6e0783b6a2bb18804569c",
+      "bytes": 25135
+    },
+    "core/test/test_reference_workflow.ml": {
+      "sha256": "4fd440dc73f3caa410280c71a232c58aa565f23fa6b6055f205468f30230f7e2",
+      "bytes": 23579
+    },
+    "protocol/pipeline-callback-manager-v1.json": {
+      "sha256": "acfa7267bf2f475cb1fbfe4644b4134bb31ce32b5db73d24e422d3f00cf9d7f6",
+      "bytes": 23992
+    },
+    "src/biocompiler/compiler/construct.py": {
+      "sha256": "9a4220e6ffea941703e5177cfa639f5b2ed02e14ecbffe4a6dfb442b8bcdd0ee",
+      "bytes": 10518
+    },
+    "src/biocompiler/compiler/molecular.py": {
+      "sha256": "040d85262f0b96f00e20276237a42bba9f68de8bd61e06148621432417ce4166",
+      "bytes": 7224
+    },
+    "src/biocompiler/core_pipeline_manager.py": {
+      "sha256": "18ee9bd517524b4440bcf29292a5d834470603713d662198b83ca61373c7fd09",
+      "bytes": 91032
+    },
+    "src/biocompiler/core_reference_manager.py": {
+      "sha256": "239fa3486751cfdc97e5f2e599a414562f3fba952b641169b4f04db0aab83772",
+      "bytes": 38471
+    },
+    "src/biocompiler/core_reference_provider_views.py": {
+      "sha256": "1b4989571d71292eaa9998787f249fd7d60439958cbc8da6f36c2acca39c6bce",
+      "bytes": 30672
+    },
+    "src/biocompiler/reference_backend.py": {
+      "sha256": "f390f40bb7f176e2cd45acde4db84e7aa987d8a7125269a1ceba37ea59b26358",
+      "bytes": 4605
+    },
+    "tests/conformance/manager-registration-runtime-sites-v3.json": {
+      "sha256": "249f729933481336a16fe044d8f96a521c34763df8e83ac02b61b15820382da2",
+      "bytes": 13060
+    },
+    "tests/conformance/reference-manager-source-counterpart-v2.json": {
+      "sha256": "d19d7e706876ac234e2f3e5a45c66ebbf9625599a880c15dec64595c1bbed8e4",
+      "bytes": 51960
+    },
+    "tests/conformance/reference-public-routing-source-counterpart-v1.json": {
+      "sha256": "949bd00942bbaa8c6107c490692e38007e41309b0d8f22b0bccd4d8f8514f074",
+      "bytes": 18482
+    },
+    "tests/test_core_reference_manager.py": {
+      "sha256": "cb7c9e5337313483f68025e713563d0e0637f43d3ee6b50153843b36116b21b7",
+      "bytes": 33781
+    },
+    "tests/test_core_reference_provider_views.py": {
+      "sha256": "74c973f7288d5310b496dc1d87107c35a3797bb0738dc65d526651406ca548e3",
+      "bytes": 25220
+    },
+    "tests/test_reference_backend.py": {
+      "sha256": "5526e7acbcfcf450dcd147aee2c44efb4a2241782ae1605a55bb9861101b7fd8",
+      "bytes": 24719
+    },
+    "tests/test_reference_original_counterpart.py": {
+      "sha256": "0cb804e3a40731c51bb3d25aaca86d0fc84287d216843fcc16cee5cede231b7d",
+      "bytes": 13367
+    },
+    "tests/test_workflow_cli_lineage.py": {
+      "sha256": "0b09678d061061b0f08730e3e2447ca05d55b3406d43ca9bc3fb5b498db98ea3",
+      "bytes": 15632
+    },
+    "tests/test_workflow_source_lineage.py": {
+      "sha256": "a81e782132ec4e3b984c367a407c8b1c21114df5335ddd741a0b1d145f75cea8",
+      "bytes": 12559
+    },
+    "tools/check_realization_workflow_corpus.py": {
+      "sha256": "b7a4d093a1078c54e16e657ffeeb671fa52d89b38b1661d51d0731f119160478",
+      "bytes": 9219
+    },
+    "tools/check_synthetic_selection_cli_corpus.py": {
+      "sha256": "5aa9d8bf641e3af9d22d30afb7761e55314822f8a4e67bb4679e06f260c99980",
+      "bytes": 13146
+    },
+    "tools/check_workflow_cli_corpus.py": {
+      "sha256": "f7bb18837d3e80bcb17a7c954cf78f2d7824ca81a67fdf868ff100b675372c36",
+      "bytes": 17317
+    },
+    "tools/migration_inventory.py": {
+      "sha256": "20222707a4178cf8fbd62cfd83aed286b204c824966f0555509527f93bc144c8",
+      "bytes": 43523
+    },
+    "tools/mypy-core.ini": {
+      "sha256": "9302c22599dce7ae33dcdf05462abf919b055464fc416cf2b4143d82ae269f7a",
+      "bytes": 1466
+    },
+    "tools/pipeline_registration_guard.py": {
+      "sha256": "6e3839cfeed8a37b88276f430c73f8ff73ef9815325aac4e5b35ea4841cf6898",
+      "bytes": 11547
+    },
+    "tools/realization_source_lineage.py": {
+      "sha256": "592e9e0d4daab4685068a08ec16eccf0306b1a6a4939a75984e4e5be9acb608c",
+      "bytes": 5963
+    },
+    "tools/reference_original_counterpart.py": {
+      "sha256": "85e22a5ed9ec136a759fa97fdaf14cf986e4638d3262188fc6734d89b1222d7b",
+      "bytes": 28538
+    }
+  }
+}

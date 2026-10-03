@@ -1,0 +1,1 @@
+{"class":"mappingproxy","items":[[{"scalar":"str","value":"id"},{"scalar":"str","value":"sequence_identity"}],[{"scalar":"str","value":"evidence_kind"},{"scalar":"str","value":"exact"}],[{"scalar":"str","value":"discharges"},{"ref":"object/13606"}]],"kind":"mapping"}

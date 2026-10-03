@@ -1,4 +1,4 @@
-(** Core-only architecture production and fresh checked export. The standalone
+(** Core-only architecture and synthetic production, with fresh checked export. The standalone
     verifier delegates exclusively to the producer-free service. JSON text
     results are canonical UTF-8 content without a publication newline. *)
 val validation_scope : string

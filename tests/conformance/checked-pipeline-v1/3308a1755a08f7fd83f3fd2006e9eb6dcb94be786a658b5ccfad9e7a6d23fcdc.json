@@ -1,0 +1,1 @@
+{"$type":"dataclass","class":"biocompiler.compiler.pipeline.ScopedObligation","fields":{"description":"Every emitted nucleotide and structured property matches independent fragment and layout authority.","evidence_kind":{"$type":"enum","class":"biocompiler.verification.evidence.EvidenceKind","value":"exact"},"id":"molecular_design_identity","scope":"software_molecular_design"}}

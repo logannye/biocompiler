@@ -1,0 +1,1 @@
+{"call_count":1,"calls":[[[{"ref":"object/1610"}],[]]],"class":"unittest.mock.MagicMock","kind":"mock","return_value":{"ref":"object/1354"},"side_effect":{"scalar":"NoneType","value":null}}

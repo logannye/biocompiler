@@ -1,0 +1,99 @@
+{
+  "source_revision": "65f38969673337de3b6378a8486c26c7f6f72c78",
+  "tested_revision": "1a007b6abab41437da09c503751a1628e601084d",
+  "source_tree": "4b979c8cb8e58b2d6f491cf4187bed29046d7c3f",
+  "tested_tree": "4b979c8cb8e58b2d6f491cf4187bed29046d7c3f",
+  "revision": "1a007b6abab41437da09c503751a1628e601084d",
+  "run_id": "37032688421",
+  "run_attempt": "1",
+  "source_files_verified": 87733,
+  "successful_jobs": 36,
+  "aggregate_sha256": "3de9b362cdd35de88162ac57bb4c15195996a2ad6fd23662a7592907cdf9ece0",
+  "comparisons": [
+    {
+      "tool": "check_architecture_routing_reproducibility",
+      "receipt": "architecture-core-reproducibility/receipt.json",
+      "sha256": "5bea594ebb8c4a79256d4e62d30ba9187ca7725f95ee303063b57be540c41a59"
+    },
+    {
+      "tool": "check_realization_reproducibility",
+      "receipt": "realization-core-reproducibility/receipt.json",
+      "sha256": "ddd0ca38b5d175039c8a9487407a0e81359d5c6681a3df09fc1e57242eff0c70"
+    },
+    {
+      "tool": "check_workflow_reproducibility",
+      "receipt": "realization-core-reproducibility/workflow.json",
+      "sha256": "13979732a550235cc7160c5eea739d4b05de1a2165e6e6cf784a4faf61c346c6"
+    }
+  ],
+  "unit_accounting": [
+    {
+      "python_version": "3.11.16",
+      "total_tests": 2554
+    },
+    {
+      "python_version": "3.14.7",
+      "total_tests": 2554
+    }
+  ],
+  "native_local_execution": false,
+  "integration": "merged_exact_validated_tree",
+  "schema_version": "biocompiler.migration_workflow_service_validation.v1",
+  "pr": 59,
+  "pr_url": "https://github.com/logannye/biocompiler/pull/59",
+  "run_url": "https://github.com/logannye/biocompiler/actions/runs/37032688421",
+  "prospective_base_revision": "15c58934619909d5a8b97e1aa1f3cc556b010c3d",
+  "prospective_tree": "4b979c8cb8e58b2d6f491cf4187bed29046d7c3f",
+  "integrated_revision": "d2f65c59aba3a4af97dbcabd59e8142961e12c4a",
+  "integrated_tree": "4b979c8cb8e58b2d6f491cf4187bed29046d7c3f",
+  "integrated_main_run": {
+    "run_id": 37072668245,
+    "status": "completed",
+    "url": "https://github.com/logannye/biocompiler/actions/runs/37072668245",
+    "conclusion": "success",
+    "source_revision": "d2f65c59aba3a4af97dbcabd59e8142961e12c4a",
+    "successful_jobs": 36,
+    "run_attempt": 1,
+    "github_metadata_sha256": "43143daab8ed89e1142a8cbbf8603ea52c3699bba7c48cbbbf046635f116f51e",
+    "evidence_scope": "Fresh GitHub job census; independent artifact reconstruction above belongs to the accepted PR run with the identical integrated tree."
+  },
+  "scope": "Bounded native verification workflow service and immutable explicit Python SDK; Python remains default. Later manager, producer, public workflow, canonical package and distribution gates remain separate.",
+  "native_binaries": {
+    "linux-x86_64": {
+      "machine": "x86_64",
+      "manifest_sha256": "48b952a436a5152d54ec02ddeccf5fb61ad3a9b2a9447fda7affe555788b0645",
+      "revision": "1a007b6abab41437da09c503751a1628e601084d",
+      "sha256": {
+        "biocompiler-core": "55e7c76f945bbab2af89c6a3dc92e864913c470aca4182dfc3d5049ac5fa8b37",
+        "biocompiler-verify": "f3fe751fb3e584d9329fccc2f15554cd957459d6a232cebab8170b3bdaef155d"
+      },
+      "system": "Linux"
+    },
+    "macos-arm64": {
+      "machine": "arm64",
+      "manifest_sha256": "1bb08d68b0190d2dc57b995e4a0c49d8e156e16bc1c5d67cac38aa43920ebd18",
+      "revision": "1a007b6abab41437da09c503751a1628e601084d",
+      "sha256": {
+        "biocompiler-core": "dd3f0d33c310f333f8e90bceaf43d8a76e468b3bef9abb57bcd0ac3ab9523645",
+        "biocompiler-verify": "15deb3c859280c6567ae555fe7bed40b70083c5ac7d140f0f50a06c1dd540717"
+      },
+      "system": "Darwin"
+    }
+  },
+  "reconstructed_coverage": {
+    "architecture_checks_per_runtime": 175,
+    "architecture_artifacts": 219,
+    "realization_protocol_checks_per_role": 6719,
+    "realization_sdk_checks_per_role": 4157,
+    "workflow_checks_per_role": 112,
+    "native_platforms": [
+      "linux-x86_64",
+      "macos-arm64"
+    ],
+    "python_versions": [
+      "3.11.16",
+      "3.14.7"
+    ],
+    "complete_receipts_equal_to_hosted": true
+  }
+}

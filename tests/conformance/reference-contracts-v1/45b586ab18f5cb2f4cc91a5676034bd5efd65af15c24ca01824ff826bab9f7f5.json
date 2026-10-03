@@ -1,0 +1,1 @@
+[{"code":"feature_boundaries","instance_id":null,"message":"This reference manifest has no reviewed subcomponent feature-boundary records; retain the whole pinned CDS placement.","molecule_id":null,"requirement_ids":["exact_reference"],"source":null,"status":"unsupported"}]

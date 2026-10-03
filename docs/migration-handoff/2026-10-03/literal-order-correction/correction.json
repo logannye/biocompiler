@@ -1,0 +1,267 @@
+{
+  "schema_version": "biocompiler.literal_order_correction.v1",
+  "recorded_at": "2026-10-03T20:00:22.130333+00:00",
+  "base_revision": "2eb0ac643075966f3803bdfdb174f0d12bff2d75",
+  "failure": {
+    "pr": 86,
+    "source": "ee61eb3e94d0bf93abb308cad7715080be4ed524",
+    "tested_revision": "59f078f3315dff7416480a4044d32c3b2cf88428",
+    "run_id": 37148026804,
+    "job_id": 111277495700,
+    "artifact_id": 11282144354,
+    "artifact_sha256": "815a165835a4ddd82c656632cb061125bc32328aaad7f2d05f75b95eb69c34b0",
+    "python": "3.11.16",
+    "platform": "linux-x86_64",
+    "campaign": "pipeline-fixed-providers",
+    "cases": 3,
+    "providers": 9,
+    "returns": 18,
+    "accepted": false,
+    "error": "Complete actual fixed-provider observation differs from original",
+    "ordered_mapping_differences": [
+      8,
+      8,
+      40
+    ],
+    "other_values_and_aliases_equal_for_diagnosis_only": true,
+    "shared_product_source_byte_equal_to_pr85": true,
+    "second_runtime": "Linux Python 3.14.7 has byte-identical complete actual observations in all three cases; see retained independent comparison."
+  },
+  "correction": {
+    "native_files": [
+      {
+        "bytes": 10900,
+        "path": "core/lib/domain/type_spec.ml",
+        "sha256": "6791aafa688d6438244cdbd791f3cbc605ff041404947df5ce56511a4ca33cb6"
+      },
+      {
+        "bytes": 9267,
+        "path": "core/test/test_domain.ml",
+        "sha256": "f362b315b4af0a0fc5062d6c7aea045e4c09e7be20b1fca2ff8546743ebaa743"
+      }
+    ],
+    "scalar_order": [
+      "kind",
+      "value",
+      "unit",
+      "canonical_value",
+      "type"
+    ],
+    "interval_order": [
+      "kind",
+      "lower",
+      "upper",
+      "type"
+    ],
+    "curve_order_unchanged": [
+      "kind",
+      "type",
+      "points",
+      "interpolation",
+      "extrapolation"
+    ],
+    "scope": "Restore original observable literal mapping order, with no change to value validation, canonical encoding, fingerprints, alias origins or frozen expected observations."
+  },
+  "validation": {
+    "focused_commands": [
+      "PYTHONPATH=src:. <python> -B -m unittest tests.test_core_pipeline_provider_views tests.test_pipeline_fixed_provider_semantics tests.test_pipeline_fixed_provider_campaign tests.test_pipeline_fixed_provider_source_lineage"
+    ],
+    "local_runtimes": {
+      "3.11.15": {
+        "tests": 42,
+        "success": true
+      },
+      "3.14.6": {
+        "tests": 42,
+        "success": true
+      }
+    },
+    "original_literal_fixtures": 8,
+    "native_suites": 118,
+    "native_test_changes": "Existing domain suite gains recursive field-order checks, repeat normalization and reversed-input independence; existing semantic values and rejection cases retained.",
+    "native_execution_of_correction": false,
+    "inventory_check": {
+      "entries": 3310,
+      "unchanged": true,
+      "success": true
+    },
+    "git_diff_check": true,
+    "full_current_release_accepted": false,
+    "historical_2eb_native_suites_passed": 118,
+    "historical_2eb_unit_ids_per_runtime": 3416,
+    "historical_pass_transfers_to_correction": false,
+    "original_literal_fixture_runtimes": [
+      "3.11.15",
+      "3.14.6"
+    ]
+  },
+  "preserved_authority": [
+    {
+      "byte_equal_to_base": true,
+      "bytes": 3714983,
+      "path": "tests/conformance/pipeline-fixed-provider-semantics-v1.json",
+      "sha256": "1f25d16d8fa9688ea34b4937f1d4a2c10fdf44d862daf8990168247758a019e7"
+    },
+    {
+      "byte_equal_to_base": true,
+      "bytes": 19931,
+      "path": "tests/conformance/prebuilt-installed-path-delta-v1.json",
+      "sha256": "f64bcd82834b120dbe0c848a94a0ac8e0fe117ea3fedd22a136a2bc415025dbd"
+    },
+    {
+      "byte_equal_to_base": true,
+      "bytes": 813,
+      "path": "tests/conformance/callback-budget-checker-source-delta-v1.json",
+      "sha256": "6cb03e6dfa5c76528bf9370be992634b6a9fbad5219a1e43c042090abd48ff8b"
+    },
+    {
+      "byte_equal_to_base": true,
+      "bytes": 1226,
+      "path": "tests/conformance/fixed-provider-checker-source-delta-v1.json",
+      "sha256": "67c11513477659bb81c2e9a0cfb87191fd669cf2caf2acce0962e77f54a50b8b"
+    },
+    {
+      "byte_equal_to_base": true,
+      "bytes": 9516,
+      "path": "tests/conformance/deferred-context-checker-source-delta-v1.json",
+      "sha256": "c052ed313423f5b4a016b8f8474d50a9364e278904983f3d139eb9e1ca8e4253"
+    },
+    {
+      "byte_equal_to_base": true,
+      "bytes": 12105,
+      "path": "tests/conformance/reference-callback-source-counterpart-v1.json",
+      "sha256": "e3be989e0a76913f64ec959d4354bb4a352c70e0bf661ca58df68db15e544b5c"
+    },
+    {
+      "byte_equal_to_base": true,
+      "bytes": 163334,
+      "path": "tests/conformance/reference-original-sources-v1.json",
+      "sha256": "df3323eceb20d967ea9ae8909da94f38660a1995d0e0314531bc5989516b014a"
+    },
+    {
+      "byte_equal_to_base": true,
+      "bytes": 14025653,
+      "path": "tests/conformance/reference-contracts-v1.json",
+      "sha256": "f0d3acadad15fbc29f195fc1a7dae875e8fb027565ec20fdbe1934fec7f3cf1b"
+    },
+    {
+      "byte_equal_to_base": true,
+      "bytes": 57420,
+      "path": "tools/check_pipeline_fixed_provider_install.py",
+      "sha256": "8d5f72afe93ec0dbb84b5d5321633ea653b274e4845645c4fd064a3f62319117"
+    },
+    {
+      "byte_equal_to_base": true,
+      "bytes": 53244,
+      "path": "src/biocompiler/core_pipeline_provider_views.py",
+      "sha256": "ea18d951f8170b1e1da4fbe6636d40e83f54ebda2ebdce187b0e08cf257b9c35"
+    },
+    {
+      "byte_equal_to_base": true,
+      "bytes": 32588,
+      "path": "src/biocompiler/core_pipeline_callback_session.py",
+      "sha256": "96cf3c4c70231f3039e2e16c51efc06bc202c86208f94dbddd5f438996c1bb5a"
+    },
+    {
+      "byte_equal_to_base": true,
+      "bytes": 17613,
+      "path": "src/biocompiler/semantics/types.py",
+      "sha256": "da0708de4bd5fbcd1a2f00546a1619f37c8e6a9748a94758362af242655f3bc1"
+    },
+    {
+      "byte_equal_to_base": true,
+      "bytes": 3770,
+      "path": "protocol/pipeline-callback-channel-v1.json",
+      "sha256": "55a58a12cb009616075e0aedf68e6b21394f4fb8b137b4880aab92ef47fa683e"
+    },
+    {
+      "byte_equal_to_base": true,
+      "bytes": 25145,
+      "path": "protocol/pipeline-callback-manager-v1.json",
+      "sha256": "967a8dbc0acc008ea29d3652b7952944533049640611b277155dad86382d2f43"
+    }
+  ],
+  "remaining": [
+    "Build changed native domain on both hosted platforms and pass all existing native suites including test_domain.",
+    "Rebuild both executable identities and source/material/wheel ownership manifests at the new exact source/tested/run revision.",
+    "Run the unchanged complete fixed-provider 3-case/18-return gate and remaining installed campaigns in all four platform/Python slots; retain complete raw observations and exact original comparison.",
+    "Require the complete appropriate CI job census and independent aggregate reconstruction before release/merge acceptance."
+  ],
+  "scope_boundaries": {
+    "all_four_migration_cutoffs_open": true,
+    "production_default": "Python",
+    "pr86_separate_draft": true,
+    "no_merge_or_remote_branch_cleanup": true
+  },
+  "evidence_files": {
+    "artifact.json": {
+      "bytes": 815,
+      "sha256": "76cbbbe2e8348a98a088ab148fae5fa0d6e9fca10cd279ff40876dc6a0c8ece3"
+    },
+    "before-successor-summary.json": {
+      "bytes": 1644,
+      "sha256": "8af7429baf070dfcdd496f1d2d7cbb46a6681e3c62c9f17c2e475688118b954b"
+    },
+    "correction.patch": {
+      "bytes": 3876,
+      "sha256": "b5dc7d386a05cbbf6878abf5ea94dcc457f45640a1d7d22f83626121d07f4da4"
+    },
+    "diagnosis.json": {
+      "bytes": 5018,
+      "sha256": "784fee53640bdfd3dea9e852d880eb77a7b5dc91248ac15457fea3cd318414b6"
+    },
+    "focused-py311.log": {
+      "bytes": 142,
+      "sha256": "1dc2e073af10e0b1f23e1d68ee9e5e198b06d5b5adad823c708440dd78638901"
+    },
+    "focused-py314.log": {
+      "bytes": 142,
+      "sha256": "df9be062fd0248fcc4c8f3f05a55f1b21d7cf3d6627feaf65c09f4e02b58e645"
+    },
+    "independent-source-review.json": {
+      "bytes": 8874,
+      "sha256": "2ae712d471eac0f484a5a8b8e996f0799a38bd9420097f74b70194285df1e657"
+    },
+    "installed-release.json": {
+      "bytes": 8644,
+      "sha256": "69110ca207435eb91f3bbcd19f569c4a6306b9ceab356d0e14b6d3ce7acab45d"
+    },
+    "linux314-failure-summary.json": {
+      "bytes": 539,
+      "sha256": "e52de94fc77de59942cc3d1aa30076ecba8043ba71703e3a1b4e9a3d8653a444"
+    },
+    "linux314-observation-comparison.json": {
+      "bytes": 526,
+      "sha256": "e4d65b619d4e829e57d1fcb312f9549ee6fd52355263888a399aaa86ba90c783"
+    },
+    "mapping-order-diagnosis.json": {
+      "bytes": 34340,
+      "sha256": "7e120343a6bdf111f26699a9d5f88188d71a4aea8bbdc788ec8ab731cb2ad416"
+    },
+    "native-frame-order-proof.json": {
+      "bytes": 448,
+      "sha256": "f09b0253a9dc5beeebe56c22482c685c699b4533cb2948a1856b71b38aa08f31"
+    },
+    "native-inputs.json": {
+      "bytes": 582,
+      "sha256": "eef949decddcc2569bfd07f2a140437dd2b4e6fd94e4e982e26589c49bfc392b"
+    },
+    "original-order-proof-py314.json": {
+      "bytes": 4764,
+      "sha256": "6886bee71f9bcaa164665a901fba549f376b5d7931b5bda26857ca20393b36b7"
+    },
+    "original-python-review.json": {
+      "bytes": 24821,
+      "sha256": "0ecbc8a3423c76c6d65d4547dea6b4967313bc8f24f5afb0ed45bd4a61740c2b"
+    },
+    "pipeline-fixed-providers.log": {
+      "bytes": 154,
+      "sha256": "7a9c1098dafa49eb0330c3291dbff1f8d04a749c50ee7036977a3381d299240a"
+    },
+    "unit-accounting-review.json": {
+      "bytes": 11414,
+      "sha256": "6e085aa698ee61661737e37f27454339157483ad2282f2ae6c64dcfff7040d33"
+    }
+  },
+  "patch_note": "correction.patch is the same reviewed native change without context lines. The independent review retains the reproducible full-context diff hash and command."
+}

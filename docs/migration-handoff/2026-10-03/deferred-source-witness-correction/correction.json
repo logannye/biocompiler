@@ -1,0 +1,93 @@
+{
+  "all_required_release_jobs": 38,
+  "corrected_hosted_acceptance": false,
+  "correction": "Add one separately hash-pinned two-span source counterpart: remove exactly the deferred_context_document proof function and restore exactly its single comparison call. Verify current whole bytes/hash, exact span bytes/shape, and complete historical bytes/hash, then apply the unchanged original14-file whole-source and AST assertions. The historical14-file witness and all original expected documents remain unchanged; product and checker semantics are untouched by this follow-on.",
+  "discovery": {
+    "added": 1,
+    "classes_each": 348,
+    "receipt": "discovery.json",
+    "removed": 0,
+    "scope": "Discovery only, not execution.",
+    "tests_each": 3398
+  },
+  "evidence": {
+    "correction-tests-311.log": {
+      "bytes": 99,
+      "sha256": "c81f25027d653cbd6d68ef0a37efa9e935ec071f8fef1adf38e7488035142e67"
+    },
+    "correction-tests-314.log": {
+      "bytes": 99,
+      "sha256": "5ebc1d844416ae76fbafa26133fc97ce15522d03be68b2fc62339d5154861e76"
+    },
+    "correction-validation.json": {
+      "bytes": 2686,
+      "sha256": "ac455b319e25b722893b3b6b693fad7d54a7065154d7ad8ee7991d54f401c02f"
+    },
+    "correction.patch": {
+      "bytes": 16415,
+      "sha256": "860046ce29f4b6435f9fabf65330a29e2d25edd9da3d84ca9b63c5f3ad5ccbbf"
+    },
+    "diagnosis.json": {
+      "bytes": 938,
+      "sha256": "ebe346f4f3e3963602bd3d65aaae5b3e3cd049090f8accac0f62d3144b9e225b"
+    },
+    "discovery.json": {
+      "bytes": 991,
+      "sha256": "071db88ff9e374e956e8ab303e96fe8a532f1b7bf9cff80d295daf7dfce67359"
+    },
+    "evidence.json": {
+      "bytes": 1748,
+      "sha256": "58ce232fec23a76a50734da53b00cbbffea0af2e9a49d56efa2a877413ea1597"
+    },
+    "failure-excerpt.txt": {
+      "bytes": 1565,
+      "sha256": "c9dff21b2b220da6bb99310896764141bcf23301dd1c347e1199e7169163b9b4"
+    },
+    "unit311-shard2-artifact.json": {
+      "bytes": 372,
+      "sha256": "fe421fb58923d7f3b730ae8ae032455bba542813b00916ebaa127f81775b6832"
+    },
+    "unit311-shard2.zip": {
+      "bytes": 73658,
+      "sha256": "6ec0b4045b455f690365fdd129dc384603c5b8b6808e4508f9a9dc6f7593ee14"
+    }
+  },
+  "failed_run_id": 37120447580,
+  "failure": {
+    "diagnosis": "The immutable prebuilt installed-path witness pins the checker before its separately reviewed additive deferred-context correction. Its whole-source assertion correctly rejects the new hash until that exact later delta has its own finite restoration proof.",
+    "executed": 690,
+    "failures": 1,
+    "fixture_errors": 0,
+    "python": "3.11.16",
+    "shard": 2,
+    "test_id": "test_prebuilt_ci_plan.HostedCiPlanTests.test_installed_path_edits_are_finite_and_no_semantic_case_body_is_changed"
+  },
+  "failure_job_id": 111195668945,
+  "focused_tests_each": 44,
+  "local_controls": "correction-validation.json",
+  "local_native_execution": false,
+  "migration_cutoffs_complete": false,
+  "new_test_methods": 1,
+  "original_witness": {
+    "path": "tests/conformance/prebuilt-installed-path-delta-v1.json",
+    "sha256": "f64bcd82834b120dbe0c848a94a0ac8e0fe117ea3fedd22a136a2bc415025dbd",
+    "unchanged": true
+  },
+  "peer_review": "Independent native peer confirmed exact163600-byte old source againstGit817a8ed and unchanged14-file witness; no remaining concrete finding.",
+  "prior_context_correction": "../deferred-context-correction/correction.json",
+  "prior_evidence_changed": false,
+  "remaining": "Rerun corrected exact source through all required unit/native/installed campaigns and the full38-job release gate. Merge only after exact-source acceptance, prove older heads are contained before closing superseded PRs, and validate actualmain before deleting obsolete remote branches.",
+  "schema": "biocompiler.deferred_source_witness_correction.v1",
+  "source_before_correction": "00fbfac6510183d5ddd7cd224305b1c2ccf915ca",
+  "source_pins": {
+    "tests/conformance/deferred-context-checker-source-delta-v1.json": {
+      "bytes": 9516,
+      "sha256": "c052ed313423f5b4a016b8f8474d50a9364e278904983f3d139eb9e1ca8e4253"
+    },
+    "tests/test_prebuilt_ci_plan.py": {
+      "bytes": 13650,
+      "sha256": "1895affcb2335e4b1b948bc13fdd5acb89a466416dcedcb5830deac16b80b6e3"
+    }
+  },
+  "tested_merge_revision": "890cc59859b2bd8469d3295a8eef8c182abd203e"
+}

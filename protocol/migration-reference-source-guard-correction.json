@@ -1,0 +1,527 @@
+{
+  "core_counterpart": {
+    "current_sha256": "0c0cfac138484cf71f1bb1303e66873b8b148ca236e07930fdbadd0b477a11be",
+    "exact_replacements": 6,
+    "original_sha256": "40a08477c97a97159372d9723267df3cacf8335a59d6b00ada34bb56470e31f3",
+    "verification": "Pinned whole current source and exact six before/after spans reconstruct every archived original byte; arbitrary changed source, rehashed source inventories, amended addition allowlists and forged counterpart metadata reject.",
+    "witness_sha256": "9f4406d46a7d18db944094ea6875a1daceb3d327b2da8e8029250e312ea833f8"
+  },
+  "downloaded_failure_headings": [
+    {
+      "errors": [
+        "AssertionError: Traceback (most recent call last):",
+        "AssertionError: Unreviewed workflow source addition: src/biocompiler/core_reference_views.py"
+      ],
+      "heading": "ERROR: setUpClass (test_realization_workflow_corpus.RealizationWorkflowInstrumentationTests)",
+      "job": "job-111083114620",
+      "line": 919
+    },
+    {
+      "errors": [
+        "AssertionError: Unreviewed selection CLI source addition: src/biocompiler/core_reference_views.py"
+      ],
+      "heading": "FAIL: test_additive_sources_require_individual_pins_and_cannot_enter_children (test_synthetic_selection_cli_capture.SyntheticSelectionCliCaptureTests.test_additive_sources_require_individual_pins_and_cannot_enter_children)",
+      "job": "job-111083114620",
+      "line": 937
+    },
+    {
+      "errors": [
+        "AssertionError: Unreviewed selection CLI source addition: src/biocompiler/core_reference_views.py"
+      ],
+      "heading": "FAIL: test_both_exact_runtime_counterparts_keep_full_actual_source_and_bytes (test_synthetic_selection_cli_capture.SyntheticSelectionCliCaptureTests.test_both_exact_runtime_counterparts_keep_full_actual_source_and_bytes)",
+      "job": "job-111083114620",
+      "line": 950
+    },
+    {
+      "errors": [
+        "AssertionError: Unreviewed selection CLI source addition: src/biocompiler/core_reference_views.py"
+      ],
+      "heading": "FAIL: test_independent_complete_seventy_two_child_recapture_is_byte_exact (test_synthetic_selection_cli_capture.SyntheticSelectionCliCaptureTests.test_independent_complete_seventy_two_child_recapture_is_byte_exact)",
+      "job": "job-111083114620",
+      "line": 963
+    },
+    {
+      "errors": [
+        "AssertionError: Unreviewed selection CLI source addition: src/biocompiler/core_reference_views.py",
+        "AssertionError: \"counterpart bytes changed\" does not match \"Unreviewed selection CLI source addition: src/biocompiler/core_reference_views.py\""
+      ],
+      "heading": "FAIL: test_rehashed_observation_scope_imports_case_and_runtime_mutations_fail (test_synthetic_selection_cli_capture.SyntheticSelectionCliCaptureTests.test_rehashed_observation_scope_imports_case_and_runtime_mutations_fail)",
+      "job": "job-111083114620",
+      "line": 976
+    },
+    {
+      "errors": [
+        "AssertionError: 1 != 0 : Traceback (most recent call last):",
+        "AssertionError: Unreviewed workflow source addition: src/biocompiler/core_reference_views.py"
+      ],
+      "heading": "FAIL: test_complete_independent_capture_matches_frozen_bytes (test_realization_workflow_corpus.RealizationWorkflowCorpusTests.test_complete_independent_capture_matches_frozen_bytes)",
+      "job": "job-111083114621",
+      "line": 859
+    },
+    {
+      "errors": [
+        "AssertionError: Unreviewed workflow source addition: src/biocompiler/core_reference_views.py"
+      ],
+      "heading": "FAIL: test_complete_original_contexts_calls_sources_and_error_census (test_realization_workflow_corpus.RealizationWorkflowCorpusTests.test_complete_original_contexts_calls_sources_and_error_census)",
+      "job": "job-111083114621",
+      "line": 882
+    },
+    {
+      "errors": [
+        "AssertionError: Original function module origin differs"
+      ],
+      "heading": "FAIL: test_actual_code_and_canonical_function_namespace_required (test_reference_pipeline_semantics.ReferencePipelineSemanticsTests.test_actual_code_and_canonical_function_namespace_required)",
+      "job": "job-111083114621",
+      "line": 895
+    },
+    {
+      "errors": [
+        "AssertionError: Unreviewed workflow source addition: src/biocompiler/core_reference_views.py"
+      ],
+      "heading": "FAIL: test_independent_complete_seventy_child_recapture_is_byte_exact (test_workflow_cli_capture.WorkflowCliCaptureTests.test_independent_complete_seventy_child_recapture_is_byte_exact)",
+      "job": "job-111083114621",
+      "line": 907
+    },
+    {
+      "errors": [
+        "AssertionError: False is not true : tests/conformance/reference-contracts-v1"
+      ],
+      "heading": "FAIL: test_every_dune_fixture_is_bound_in_the_complete_native_suite (test_native_fixture_wiring.NativeFixtureWiringTests.test_every_dune_fixture_is_bound_in_the_complete_native_suite) (variable='BIOCOMPILER_REFERENCE_CONTRACTS_DOCUMENTS')",
+      "job": "job-111083114636",
+      "line": 1030
+    },
+    {
+      "errors": [
+        "AssertionError: False is not true : tests/conformance/reference-pipeline-semantics-v1"
+      ],
+      "heading": "FAIL: test_every_dune_fixture_is_bound_in_the_complete_native_suite (test_native_fixture_wiring.NativeFixtureWiringTests.test_every_dune_fixture_is_bound_in_the_complete_native_suite) (variable='BIOCOMPILER_REFERENCE_PIPELINE_DOCUMENTS')",
+      "job": "job-111083114636",
+      "line": 1038
+    },
+    {
+      "errors": [
+        "AssertionError: Unreviewed workflow source addition: src/biocompiler/core_reference_views.py"
+      ],
+      "heading": "FAIL: test_historical_and_archived_source_files_cannot_change_even_with_rehashed_metadata (test_workflow_cli_lineage.WorkflowCliLineageTests.test_historical_and_archived_source_files_cannot_change_even_with_rehashed_metadata)",
+      "job": "job-111083114637",
+      "line": 912
+    },
+    {
+      "errors": [
+        "AssertionError: Unreviewed workflow source addition: src/biocompiler/core_reference_views.py"
+      ],
+      "heading": "FAIL: test_observation_environment_source_byte_and_blob_tampering_is_never_projected_away (test_workflow_cli_lineage.WorkflowCliLineageTests.test_observation_environment_source_byte_and_blob_tampering_is_never_projected_away)",
+      "job": "job-111083114637",
+      "line": 934
+    },
+    {
+      "errors": [
+        "AssertionError: Unreviewed workflow source addition: src/biocompiler/core_reference_views.py"
+      ],
+      "heading": "FAIL: test_only_exact_declared_python311_counterpart_projects_and_actual_bytes_remain (test_workflow_cli_lineage.WorkflowCliLineageTests.test_only_exact_declared_python311_counterpart_projects_and_actual_bytes_remain)",
+      "job": "job-111083114637",
+      "line": 956
+    },
+    {
+      "errors": [
+        "AssertionError: Unreviewed workflow source addition: src/biocompiler/core_reference_views.py"
+      ],
+      "heading": "FAIL: test_only_source_scope_and_index_identity_change_and_actual_metadata_is_retained (test_workflow_cli_lineage.WorkflowCliLineageTests.test_only_source_scope_and_index_identity_change_and_actual_metadata_is_retained)",
+      "job": "job-111083114637",
+      "line": 978
+    },
+    {
+      "errors": [
+        "AssertionError: Unreviewed workflow source addition: src/biocompiler/core_reference_views.py"
+      ],
+      "heading": "FAIL: test_rehashed_scope_forgeries_missing_sources_and_changed_import_audits_fail (test_workflow_cli_lineage.WorkflowCliLineageTests.test_rehashed_scope_forgeries_missing_sources_and_changed_import_audits_fail)",
+      "job": "job-111083114637",
+      "line": 1000
+    },
+    {
+      "errors": [
+        "AssertionError: Unreviewed workflow source addition: src/biocompiler/core_reference_views.py"
+      ],
+      "heading": "FAIL: test_route_member_corruption_or_extra_source_content_is_not_dropped (test_workflow_cli_lineage.WorkflowCliLineageTests.test_route_member_corruption_or_extra_source_content_is_not_dropped)",
+      "job": "job-111083114637",
+      "line": 1022
+    },
+    {
+      "errors": [
+        "AssertionError: 1 != 0 : Traceback (most recent call last):",
+        "AssertionError: Unreviewed workflow source addition: src/biocompiler/core_reference_views.py"
+      ],
+      "heading": "FAIL: test_complete_independent_capture_matches_frozen_bytes (test_realization_workflow_corpus.RealizationWorkflowCorpusTests.test_complete_independent_capture_matches_frozen_bytes)",
+      "job": "job-111083114670",
+      "line": 855
+    },
+    {
+      "errors": [
+        "AssertionError: Unreviewed workflow source addition: src/biocompiler/core_reference_views.py"
+      ],
+      "heading": "FAIL: test_complete_original_contexts_calls_sources_and_error_census (test_realization_workflow_corpus.RealizationWorkflowCorpusTests.test_complete_original_contexts_calls_sources_and_error_census)",
+      "job": "job-111083114670",
+      "line": 878
+    },
+    {
+      "errors": [
+        "AssertionError: Original function module origin differs"
+      ],
+      "heading": "FAIL: test_actual_code_and_canonical_function_namespace_required (test_reference_pipeline_semantics.ReferencePipelineSemanticsTests.test_actual_code_and_canonical_function_namespace_required)",
+      "job": "job-111083114670",
+      "line": 891
+    },
+    {
+      "errors": [
+        "AssertionError: Unreviewed workflow source addition: src/biocompiler/core_reference_views.py"
+      ],
+      "heading": "FAIL: test_independent_complete_seventy_child_recapture_is_byte_exact (test_workflow_cli_capture.WorkflowCliCaptureTests.test_independent_complete_seventy_child_recapture_is_byte_exact)",
+      "job": "job-111083114670",
+      "line": 905
+    },
+    {
+      "errors": [
+        "AssertionError: Unreviewed workflow source addition: src/biocompiler/core_reference_views.py"
+      ],
+      "heading": "FAIL: test_historical_and_archived_source_files_cannot_change_even_with_rehashed_metadata (test_workflow_cli_lineage.WorkflowCliLineageTests.test_historical_and_archived_source_files_cannot_change_even_with_rehashed_metadata)",
+      "job": "job-111083114674",
+      "line": 908
+    },
+    {
+      "errors": [
+        "AssertionError: Unreviewed workflow source addition: src/biocompiler/core_reference_views.py"
+      ],
+      "heading": "FAIL: test_observation_environment_source_byte_and_blob_tampering_is_never_projected_away (test_workflow_cli_lineage.WorkflowCliLineageTests.test_observation_environment_source_byte_and_blob_tampering_is_never_projected_away)",
+      "job": "job-111083114674",
+      "line": 930
+    },
+    {
+      "errors": [
+        "AssertionError: Unreviewed workflow source addition: src/biocompiler/core_reference_views.py"
+      ],
+      "heading": "FAIL: test_only_exact_declared_python311_counterpart_projects_and_actual_bytes_remain (test_workflow_cli_lineage.WorkflowCliLineageTests.test_only_exact_declared_python311_counterpart_projects_and_actual_bytes_remain)",
+      "job": "job-111083114674",
+      "line": 952
+    },
+    {
+      "errors": [
+        "AssertionError: Unreviewed workflow source addition: src/biocompiler/core_reference_views.py"
+      ],
+      "heading": "FAIL: test_only_source_scope_and_index_identity_change_and_actual_metadata_is_retained (test_workflow_cli_lineage.WorkflowCliLineageTests.test_only_source_scope_and_index_identity_change_and_actual_metadata_is_retained)",
+      "job": "job-111083114674",
+      "line": 974
+    },
+    {
+      "errors": [
+        "AssertionError: Unreviewed workflow source addition: src/biocompiler/core_reference_views.py"
+      ],
+      "heading": "FAIL: test_rehashed_scope_forgeries_missing_sources_and_changed_import_audits_fail (test_workflow_cli_lineage.WorkflowCliLineageTests.test_rehashed_scope_forgeries_missing_sources_and_changed_import_audits_fail)",
+      "job": "job-111083114674",
+      "line": 996
+    },
+    {
+      "errors": [
+        "AssertionError: Unreviewed workflow source addition: src/biocompiler/core_reference_views.py"
+      ],
+      "heading": "FAIL: test_route_member_corruption_or_extra_source_content_is_not_dropped (test_workflow_cli_lineage.WorkflowCliLineageTests.test_route_member_corruption_or_extra_source_content_is_not_dropped)",
+      "job": "job-111083114674",
+      "line": 1018
+    },
+    {
+      "errors": [
+        "AssertionError: False is not true : tests/conformance/reference-contracts-v1"
+      ],
+      "heading": "FAIL: test_every_dune_fixture_is_bound_in_the_complete_native_suite (test_native_fixture_wiring.NativeFixtureWiringTests.test_every_dune_fixture_is_bound_in_the_complete_native_suite) (variable='BIOCOMPILER_REFERENCE_CONTRACTS_DOCUMENTS')",
+      "job": "job-111083114696",
+      "line": 1025
+    },
+    {
+      "errors": [
+        "AssertionError: False is not true : tests/conformance/reference-pipeline-semantics-v1"
+      ],
+      "heading": "FAIL: test_every_dune_fixture_is_bound_in_the_complete_native_suite (test_native_fixture_wiring.NativeFixtureWiringTests.test_every_dune_fixture_is_bound_in_the_complete_native_suite) (variable='BIOCOMPILER_REFERENCE_PIPELINE_DOCUMENTS')",
+      "job": "job-111083114696",
+      "line": 1034
+    }
+  ],
+  "edited_sources": [
+    {
+      "bytes": 9061,
+      "path": "tools/check_realization_workflow_corpus.py",
+      "sha256": "8d1922fc544be4115aee6521106bcbaa90c283aad3fbc7107e2f35d5fe725d87"
+    },
+    {
+      "bytes": 16912,
+      "path": "tools/check_workflow_cli_corpus.py",
+      "sha256": "51fcee59556428cb1a6050629fd1df48514d5f3efe724322533f83853c166841"
+    },
+    {
+      "bytes": 12604,
+      "path": "tools/check_synthetic_selection_cli_corpus.py",
+      "sha256": "8be42e99d12f34673b00642eb306c7e94442285fcf2d85dbdc2f5b050603d03b"
+    },
+    {
+      "bytes": 10668,
+      "path": "tests/test_workflow_source_lineage.py",
+      "sha256": "4741d97ad3cfc24097ffb465b72aeba62cb852d2fa7eea179a7330c1dd23db65"
+    },
+    {
+      "bytes": 15486,
+      "path": "tests/test_workflow_cli_lineage.py",
+      "sha256": "95636768514bd5e7ef737a8b76d5c5a84df7ef722787e50bc2a2c561343ff5d6"
+    },
+    {
+      "bytes": 9207,
+      "path": "tests/test_synthetic_selection_cli_capture.py",
+      "sha256": "465c3a4f4f6c094daa55372ac9a6385bd9ccae43931f4f6671f8f0cbd74b8870"
+    }
+  ],
+  "failed_jobs": [
+    111083114620,
+    111083114621,
+    111083114636,
+    111083114637,
+    111083114670,
+    111083114674,
+    111083114696
+  ],
+  "failed_run_id": 37081551087,
+  "failed_tested_revision": "6ec7c7591427fe4058fd09425ee186d5768badc4",
+  "initial_local_collision": {
+    "python_3_11_15": {
+      "cause": "Concurrent original freezer processes claimed the same exclusive fixture namespaces; all reported errors were FileExistsError.",
+      "duration_seconds": 51.507,
+      "errors": 2,
+      "failures": 1,
+      "tests_run": 40
+    },
+    "python_3_14_6": {
+      "cause": "The original full72-child selection recapture found the other process owning its exclusive fixture directory.",
+      "errors": 1,
+      "tests_run": 30
+    },
+    "safety": "The existing owners list only records successful mkdir calls; portable workflow ownership fails before entering its cleanup scope. A competing failed acquisition neither removes nor modifies the active owner directory. No freezer concurrency semantics changed. The complete 3.11 suite and failed 3.14 case were rerun serially and passed."
+  },
+  "installed_reference_service_acceptance": "pending_complete_hosted_native_and_installed_replay_gates",
+  "native_execution": false,
+  "preserved_authority": "No frozen capture tool, corpus index, expected document, original case body or original acceptance assertion was regenerated. Current capture metadata remains current and is retained separately from the explicit historical projection.",
+  "schema_version": "biocompiler.migration_reference_source_guard_correction.v1",
+  "scope": "Pure Python source-lineage guards and complete unchanged original workflow/CLI recapture; no native validation or installed reference-service parity claim.",
+  "scope_consumers": {
+    "selection_cli": "Preserves frozen scope field census; retains exact Core counterpart outside that scope in the complete recapture proof.",
+    "workflow": "Recomputes complete source scope and requires exact before/during/after import-denial receipt equality; retains counterpart evidence.",
+    "workflow_cli": "Independently recomputes exact source scope and counterpart evidence, then projects only the explicitly witnessed historical metadata; complete original case and blob equality remains required."
+  },
+  "source_authority": [
+    {
+      "bytes": 23867,
+      "path": "tools/reference_original_counterpart.py",
+      "sha256": "37cd9df7d81c6f4e24ce4192f4f629d4afcb0749f308fe78d7b0d4f8101f7170"
+    },
+    {
+      "bytes": 49956,
+      "path": "tests/conformance/reference-manager-source-counterpart-v1.json",
+      "sha256": "9f4406d46a7d18db944094ea6875a1daceb3d327b2da8e8029250e312ea833f8"
+    },
+    {
+      "bytes": 163334,
+      "path": "tests/conformance/reference-original-sources-v1.json",
+      "sha256": "df3323eceb20d967ea9ae8909da94f38660a1995d0e0314531bc5989516b014a"
+    },
+    {
+      "bytes": 90183,
+      "path": "src/biocompiler/core_pipeline_manager.py",
+      "sha256": "0c0cfac138484cf71f1bb1303e66873b8b148ca236e07930fdbadd0b477a11be"
+    },
+    {
+      "bytes": 8201,
+      "path": "src/biocompiler/core_reference_host.py",
+      "sha256": "a31be5b73f1440d92cf8076fdad9d69ec9ae8605217d400af20d47f5d4e4305e"
+    },
+    {
+      "bytes": 29858,
+      "path": "src/biocompiler/core_reference_manager.py",
+      "sha256": "82959c06a5d8c91af1a694cc4251c13045244eff53e3951f9d880a9fa0eb0faa"
+    },
+    {
+      "bytes": 29019,
+      "path": "src/biocompiler/core_reference_provider_views.py",
+      "sha256": "4be83eedf9fe0abf60d049ba108341a6d0f88364522e0dc0fa70a13f99c60c99"
+    },
+    {
+      "bytes": 24420,
+      "path": "src/biocompiler/core_reference_views.py",
+      "sha256": "a295b4583be057a743959d077add14ae7c5424086f7edddd322dfb188786d9f9"
+    }
+  ],
+  "status": "all_47_affected_tests_passed_on_python_3_11_and_3_14",
+  "tests": {
+    "exact_test_ids": [
+      "tests.test_realization_workflow_corpus.RealizationWorkflowCorpusTests.test_all_original_cli_bytes_and_publication_mutant_are_retained",
+      "tests.test_realization_workflow_corpus.RealizationWorkflowCorpusTests.test_complete_625_history_campaign_and_all_callback_invocations",
+      "tests.test_realization_workflow_corpus.RealizationWorkflowCorpusTests.test_complete_independent_capture_matches_frozen_bytes",
+      "tests.test_realization_workflow_corpus.RealizationWorkflowCorpusTests.test_complete_original_contexts_calls_sources_and_error_census",
+      "tests.test_realization_workflow_corpus.RealizationWorkflowCorpusTests.test_every_immutable_prior_observation_survives_in_order",
+      "tests.test_realization_workflow_corpus.RealizationWorkflowCorpusTests.test_every_new_domain_and_kernel_observation_replays_completely",
+      "tests.test_realization_workflow_corpus.RealizationWorkflowCorpusTests.test_fixed_current_wholeworkflow_and_exact_original_version_mutants",
+      "tests.test_realization_workflow_corpus.RealizationWorkflowInstrumentationTests.test_added_module_import_guard_denies_execution_and_preloaded_modules",
+      "tests.test_realization_workflow_corpus.RealizationWorkflowInstrumentationTests.test_every_callback_has_complete_parented_input_and_outcome",
+      "tests.test_realization_workflow_corpus.RealizationWorkflowInstrumentationTests.test_generators_retain_actual_yields_and_terminal_state",
+      "tests.test_realization_workflow_corpus.RealizationWorkflowInstrumentationTests.test_independent_focused_capture_is_byte_identical",
+      "tests.test_realization_workflow_corpus.RealizationWorkflowInstrumentationTests.test_portable_directory_collision_preserves_existing_contents",
+      "tests.test_realization_workflow_corpus.RealizationWorkflowInstrumentationTests.test_profile_does_not_mutate_immutable_prior_capture",
+      "tests.test_realization_workflow_corpus.RealizationWorkflowInstrumentationTests.test_reviewed_addition_scope_rejects_changed_originals_and_unreviewed_additions",
+      "tests.test_synthetic_selection_cli_capture.SyntheticSelectionCliCaptureTests.test_additive_sources_require_individual_pins_and_cannot_enter_children",
+      "tests.test_synthetic_selection_cli_capture.SyntheticSelectionCliCaptureTests.test_both_exact_runtime_counterparts_keep_full_actual_source_and_bytes",
+      "tests.test_synthetic_selection_cli_capture.SyntheticSelectionCliCaptureTests.test_complete_baseline_original_method_and_full_authority_error_census",
+      "tests.test_synthetic_selection_cli_capture.SyntheticSelectionCliCaptureTests.test_independent_complete_seventy_two_child_recapture_is_byte_exact",
+      "tests.test_synthetic_selection_cli_capture.SyntheticSelectionCliCaptureTests.test_rehashed_observation_scope_imports_case_and_runtime_mutations_fail",
+      "tests.test_workflow_cli_capture.WorkflowCliCaptureTests.test_actual_input_and_publication_size_boundaries_are_lossless",
+      "tests.test_workflow_cli_capture.WorkflowCliCaptureTests.test_all_six_operations_modes_and_full_supplemental_records",
+      "tests.test_workflow_cli_capture.WorkflowCliCaptureTests.test_complete_census_full_original_occurrences_and_source_lineage",
+      "tests.test_workflow_cli_capture.WorkflowCliCaptureTests.test_each_child_import_audit_and_entrypoint_have_exact_pinned_sources",
+      "tests.test_workflow_cli_capture.WorkflowCliCaptureTests.test_every_error_preserves_all_inputs_prior_output_and_removes_temporary",
+      "tests.test_workflow_cli_capture.WorkflowCliCaptureTests.test_independent_complete_seventy_child_recapture_is_byte_exact",
+      "tests.test_workflow_cli_capture.WorkflowCliCaptureTests.test_lossless_recipe_rejects_tampered_bytes_lengths_or_amplification",
+      "tests.test_workflow_cli_capture.WorkflowCliCaptureTests.test_namespace_collisions_and_escaping_paths_preserve_existing_data",
+      "tests.test_workflow_cli_capture.WorkflowCliCaptureTests.test_replay_does_not_turn_fail_unknown_or_nonminimal_into_pass",
+      "tests.test_workflow_cli_capture.WorkflowCliCaptureTests.test_store_rejects_corruption_missing_or_unreferenced_full_content",
+      "tests.test_workflow_cli_capture.WorkflowCliCaptureTests.test_summary_order_indentation_scope_and_newline_are_retained",
+      "tests.test_workflow_cli_lineage.WorkflowCliLineageTests.test_archived_scope_is_reconstructed_from_old_source_pins_without_current_relabeling",
+      "tests.test_workflow_cli_lineage.WorkflowCliLineageTests.test_current_inventory_requires_explicit_reviewed_source_additions",
+      "tests.test_workflow_cli_lineage.WorkflowCliLineageTests.test_historical_and_archived_source_files_cannot_change_even_with_rehashed_metadata",
+      "tests.test_workflow_cli_lineage.WorkflowCliLineageTests.test_observation_environment_source_byte_and_blob_tampering_is_never_projected_away",
+      "tests.test_workflow_cli_lineage.WorkflowCliLineageTests.test_only_exact_declared_python311_counterpart_projects_and_actual_bytes_remain",
+      "tests.test_workflow_cli_lineage.WorkflowCliLineageTests.test_only_source_scope_and_index_identity_change_and_actual_metadata_is_retained",
+      "tests.test_workflow_cli_lineage.WorkflowCliLineageTests.test_rehashed_actual_core_correspondence_cannot_be_projected_away",
+      "tests.test_workflow_cli_lineage.WorkflowCliLineageTests.test_rehashed_scope_forgeries_missing_sources_and_changed_import_audits_fail",
+      "tests.test_workflow_cli_lineage.WorkflowCliLineageTests.test_route_member_corruption_or_extra_source_content_is_not_dropped",
+      "tests.test_workflow_source_lineage.WorkflowSourceLineageTests.test_cli_exact_flags_branch_and_registration_census_are_checked",
+      "tests.test_workflow_source_lineage.WorkflowSourceLineageTests.test_complete_historical_and_current_bytes_and_default_ast_are_retained",
+      "tests.test_workflow_source_lineage.WorkflowSourceLineageTests.test_current_core_addition_cannot_be_blessed_by_rehashing_inventory_and_allowlist",
+      "tests.test_workflow_source_lineage.WorkflowSourceLineageTests.test_derived_signature_projection_retains_full_actual_and_raw_arguments",
+      "tests.test_workflow_source_lineage.WorkflowSourceLineageTests.test_explicit_native_keyword_and_any_other_bound_change_cannot_be_projected",
+      "tests.test_workflow_source_lineage.WorkflowSourceLineageTests.test_reference_transport_additions_are_pinned_unused_and_retain_exact_core_counterpart",
+      "tests.test_workflow_source_lineage.WorkflowSourceLineageTests.test_sdk_guard_signature_placement_and_exact_delegate_are_independently_checked",
+      "tests.test_workflow_source_lineage.WorkflowSourceLineageTests.test_witness_and_current_pins_missing_sources_and_unchanged_paths_fail_closed"
+    ],
+    "python_3_11_15": {
+      "all_47_passed": true,
+      "serial_run": {
+        "command": [
+          "/Users/logannye/.local/share/uv/python/cpython-3.11.15-macos-aarch64-none/bin/python3",
+          "-m",
+          "unittest",
+          "tests.test_workflow_source_lineage",
+          "tests.test_workflow_cli_lineage",
+          "tests.test_workflow_cli_capture",
+          "tests.test_synthetic_selection_cli_capture",
+          "tests.test_realization_workflow_corpus"
+        ],
+        "duration_seconds": 156.68,
+        "log": "generated/migration-next/reference-source-guard-tests/python311-full47.log",
+        "log_sha256": "0462975e86e8f1a3a3e486deaf20ee6dc768b1cb98d05f50e99ad9c558bce14c",
+        "name": "python311-full47",
+        "python": "Python 3.11.15",
+        "returncode": 0
+      }
+    },
+    "python_3_14_6": {
+      "all_47_passed": true,
+      "groups": [
+        {
+          "command": [
+            "python3",
+            "-m",
+            "unittest",
+            "tests.test_workflow_source_lineage",
+            "tests.test_workflow_cli_lineage"
+          ],
+          "duration_seconds": 15.451,
+          "environment": {
+            "PYTHONPATH": "src"
+          },
+          "status": "passed",
+          "tests": 17
+        },
+        {
+          "collision_test": "tests.test_synthetic_selection_cli_capture.SyntheticSelectionCliCaptureTests.test_independent_complete_seventy_two_child_recapture_is_byte_exact",
+          "command": [
+            "python3",
+            "-m",
+            "unittest",
+            "tests.test_workflow_cli_capture",
+            "tests.test_synthetic_selection_cli_capture",
+            "tests.test_realization_workflow_corpus"
+          ],
+          "duration_seconds": 136.76,
+          "environment": {
+            "PYTHONPATH": "src"
+          },
+          "status": "29_passed_1_exclusive_directory_collision",
+          "tests": 30
+        },
+        {
+          "command": [
+            "python3",
+            "-m",
+            "unittest",
+            "tests.test_synthetic_selection_cli_capture.SyntheticSelectionCliCaptureTests.test_independent_complete_seventy_two_child_recapture_is_byte_exact"
+          ],
+          "duration_seconds": 16.355,
+          "log": "generated/migration-next/reference-source-guard-tests/python314-selection-retry.log",
+          "log_sha256": "d322937cdba6e6a79c97bf004b525d133b845ab375226acd566a39ad32583f9b",
+          "name": "python314-selection-retry",
+          "python": "Python 3.14.6",
+          "returncode": 0
+        }
+      ]
+    }
+  },
+  "unchanged_frozen_authorities": [
+    {
+      "bytes": 47915,
+      "path": "tools/freeze_realization_workflow.py",
+      "sha256": "467efbc1491952ddccc0518ba7e1ae4396706f1322e04b59b6833e238c88a179"
+    },
+    {
+      "bytes": 27523,
+      "path": "tools/freeze_workflow_cli.py",
+      "sha256": "a811548539232ee29f8fd1c52620e51778c2bf895df62847db4474591ec89564"
+    },
+    {
+      "bytes": 13289,
+      "path": "tools/freeze_synthetic_selection_cli.py",
+      "sha256": "b181b47e592781a91966e90779f2c667b80f070cbc03cd0390406598b9870520"
+    },
+    {
+      "bytes": 2064814,
+      "path": "tests/conformance/realization-workflow-v1.json",
+      "sha256": "d2519e465fbc6f628c9e727ad70e21d196ae2eb6cb6bad62adcb559bbafa69c0"
+    },
+    {
+      "bytes": 2048388,
+      "path": "tests/conformance/workflow-cli-v1.json",
+      "sha256": "9251c30e4d7b7d3dfa6ff5693b967af3c7410a5ea7caa3fac656408d4fb66172"
+    },
+    {
+      "bytes": 2063944,
+      "path": "tests/conformance/synthetic-selection-cli-v1.json",
+      "sha256": "da12b62a69c8f3e2169d84846d7d4d8af6c026130135efe78dc125ec836e54a3"
+    }
+  ],
+  "unique_failures": [
+    {
+      "correction": "Individually pin the four reviewed reference transport modules; keep them excluded from original child execution. Bind the reviewed current Core addition to the exact whole-source six-span archived counterpart.",
+      "failure": "Unreviewed workflow/selection CLI source addition: src/biocompiler/core_reference_views.py"
+    },
+    {
+      "correction": "Separate exact archived canonical-original TestCase execution preserves its full original bodies and source namespace; independently corrected by reference_pipeline_original_counterpart in this checkpoint.",
+      "failure": "Original function module origin differs in original reference pipeline semantic control"
+    },
+    {
+      "correction": "Independently corrected by the exact DIRECTORY_FIXTURES census and its focused controls in this checkpoint.",
+      "failure": "Native fixture wiring treats the two reference content-addressed document directories as files"
+    }
+  ]
+}

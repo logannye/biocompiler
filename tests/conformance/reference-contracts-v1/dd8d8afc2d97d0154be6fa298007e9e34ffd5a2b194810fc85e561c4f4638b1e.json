@@ -1,0 +1,1 @@
+"{\n  \"feature\": \"coding-boundaries\",\n  \"reason\": \"Pinned CDS reference record and standard-code policy.\",\n  \"schema_version\": \"biocompiler.molecular_feature_status.v0.1\",\n  \"scope\": \"cds_record\",\n  \"status\": \"known\",\n  \"value\": \"0:1491\"\n}"

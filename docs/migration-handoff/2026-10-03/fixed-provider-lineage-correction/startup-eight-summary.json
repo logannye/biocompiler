@@ -1,0 +1,53 @@
+{
+  "scope": "All 17 complete startup loaders on final source, pure Python only. No installed-origin or native execution/acceptance claim. Audit hooks rejected child process and socket use.",
+  "cwd": "/Users/logannye/Documents/ChatGPT/GeneMedicineCompiler/work/m11-human-evidence",
+  "commands": [
+    "PYTHONPATH=src:. /opt/homebrew/bin/python3 -B generated/migration-next/pr85-fixed-provider-lineage-correction/startup_eight_audit.py",
+    "PYTHONPATH=src:. /Users/logannye/.local/share/uv/python/cpython-3.11.15-macos-aarch64-none/bin/python3 -B generated/migration-next/pr85-fixed-provider-lineage-correction/startup_eight_audit.py"
+  ],
+  "nine_module_commands": "startup-summary.json",
+  "results": {
+    "3.11.15": {
+      "startup_modules": 17,
+      "all_passed": true,
+      "eight_module_seconds": 10.686,
+      "nine_sources_rechecked_unchanged": true
+    },
+    "3.14.6": {
+      "startup_modules": 17,
+      "all_passed": true,
+      "eight_module_seconds": 10.397,
+      "nine_sources_rechecked_unchanged": true
+    }
+  },
+  "files": {
+    "startup-eight-3.11.15.json": {
+      "sha256": "7a8137aabee97278478ce0393e98bff67a36e185d7530158ef5b683d181d2d1b",
+      "bytes": 5205
+    },
+    "startup-audit-3.11.15.json": {
+      "sha256": "d6fff68ada8c3cad95e6ab47971f7207d15178576bd04f69ffb6a0a95100323d",
+      "bytes": 9813
+    },
+    "startup-eight-3.14.6.json": {
+      "sha256": "cc37ebb3e83348b3d98964c64e7b4a669743b8d8838df832ae2dfd1f0313b74b",
+      "bytes": 5204
+    },
+    "startup-audit-3.14.6.json": {
+      "sha256": "e126cbd7952dd284d0b0628cb6a20e7bea71b6780f78ea1324a23cf2d93c1888",
+      "bytes": 9811
+    },
+    "startup_eight_audit.py": {
+      "sha256": "0ceb1729a69a6cb69b39196112b2b548553defe868302bf68f8459738ccdcc14",
+      "bytes": 4359
+    },
+    "startup_audit.py": {
+      "sha256": "b1fcaafe15e130003a0ae5192d80e6c0d6e39748d10a78f4301e40342fe523a9",
+      "bytes": 3048
+    },
+    "startup-summary.json": {
+      "sha256": "dc2a3f655448f6001434fb43e1a5f2dadf28b9e38743a18828f71f5edaa69303",
+      "bytes": 1362
+    }
+  }
+}

@@ -1,0 +1,158 @@
+{
+  "schema_version": "biocompiler.deferred_runtime_correction.v1",
+  "status": "source_and_pure_python_controls_pass_hosted_validation_pending",
+  "observed_failure": {
+    "pr": 71,
+    "run_id": 37046612682,
+    "job_id": 110978646579,
+    "source_revision": "5568a0f7135efc042e95a0a25a67e77e678bb659",
+    "tested_revision": "53bd87130ff8c5829302a8c7d7257b5ca62fc8ad",
+    "python": "3.14.7",
+    "test": "test_pipeline_deferred_semantics.PipelineDeferredSemanticsTests.test_complete_frozen_original_bytes_sources_and_current_runtime_counterpart",
+    "scope": "installed_before_oracle_import_uses_verified_package_basename_trace_labels"
+  },
+  "original": {
+    "tool_sha256": "c287fe14a54bd692bbdb71e613f07bc4181537ec9eb649d932e0ce59b3b023d1",
+    "corpus_sha256": "df12526c636cf2b3a51856494558080156c45c58573d7dbc2241daed54275129",
+    "inventory_fingerprint": "21ff92c3b384a0be705733e768abfc510acc58f529065eff06af63bc77fce444",
+    "coverage": {
+      "accesses": 290,
+      "cases": 47,
+      "events": 157,
+      "marker_exceptions": 19,
+      "nested_events": 21,
+      "raised_events": 45
+    },
+    "source_files": {
+      "src/biocompiler/artifacts/provenance.py": "f2eaa6500f25a842b5afdca59d9479513ba85b3c8c8aeb030dc49141a9090086",
+      "src/biocompiler/compiler/passes.py": "97250c61b3207a093e0a0d87244724ae078bce6b6257fd1b7049661a91ceafbf",
+      "src/biocompiler/compiler/pipeline.py": "2b1dea35ac3c861f1e933cf7808a241f1f6596e59cc04ceb0ec32e4a54d27331",
+      "src/biocompiler/ir/intent.py": "711545a1b67f2d6049848d2cef8739f89098d2596687c375d7f62d2e94680de6",
+      "src/biocompiler/ir/serialization.py": "4d5ad0c7572a3ca70159dc4657c1815e85ff62cc37f542f8584200964a0149e3",
+      "src/biocompiler/ir/stages.py": "3f76660b4df4a307324fd749695508e1a2c540b683596ca7ae966a71be44263c",
+      "src/biocompiler/semantics/context.py": "01ba61ae8709ed7f61959203600bd59b950e0c9ceb830ce1f10922c660dd8c53",
+      "src/biocompiler/verification/evidence.py": "6a58e23a2deb26b3ae3e38bea61bb9ed36e3a1bb28142fdb244bd443cb89dc79",
+      "tests/test_component_admission.py": "9599a85b111f27a618c3475d1aeca4c495960e7877005dfb244dbb116a27f26f",
+      "tests/test_pipeline.py": "cee046bb960cd33f27f886668c5a56d34d14a7305abd1191d13295d41cd30ed7",
+      "tools/capture_pipeline_deferred_semantics.py": "c287fe14a54bd692bbdb71e613f07bc4181537ec9eb649d932e0ce59b3b023d1"
+    },
+    "all_case_bodies_unchanged": true,
+    "all_raw_observations_retained": true
+  },
+  "files": {
+    "tools/check_pipeline_deferred_runtime.py": {
+      "sha256": "3c1b18cc42612cd8317f821316437c5a6626a87effd57acc3f444a4f8a110d35",
+      "bytes": 17686
+    },
+    "tests/test_pipeline_deferred_runtime.py": {
+      "sha256": "6b1fd06931d326d88e9051b6f83bd61c0e8962d855007efa96e5a06272b98302",
+      "bytes": 9705
+    },
+    "tests/test_pipeline_deferred_semantics.py": {
+      "sha256": "9359928303cd33c27efc306b234a2a42fab47182008733a8ede39219d36789d8",
+      "bytes": 13275
+    }
+  },
+  "correspondences": [
+    {
+      "kind": "verified_installed_source_path",
+      "modules": [
+        "biocompiler.compiler.pipeline",
+        "biocompiler.ir.intent"
+      ],
+      "evidence": "exact frozen source bytes and current compiled code; retain raw basename and logical checkout label",
+      "python314_path_occurrences": 54,
+      "python311_path_occurrences": 55
+    },
+    {
+      "kind": "independent_mapping_iteration",
+      "case": "proposal:mapping_raises",
+      "event": 1,
+      "field": "original_traceback",
+      "offset": 3,
+      "evidence": "execute original freeze_json with failing Mapping; bind current standard-library ItemsView source and precise traceback instruction; 3.11 comprehension and iterator line remain in raw capture"
+    },
+    {
+      "kind": "independent_generator_instruction",
+      "case": "proposal:obligation_exhaustion_raises",
+      "event": 1,
+      "field": "original_traceback",
+      "offset": 3,
+      "evidence": "execute exact source-bound original generator code with failing iterator; require FOR_ITER and exact reviewed runtime line"
+    }
+  ],
+  "prior_exception_text_allowance": [
+    {
+      "case": "proposal:unhashable_status",
+      "event": 1,
+      "original_operation": "list_membership_in_candidate_status_set",
+      "paths": [
+        "exception.message",
+        "exception.args.items.0"
+      ],
+      "required_authority": "fresh_original_same_runtime_manager_and_primitive_exact_error"
+    }
+  ],
+  "local_validation": {
+    "platform": "Darwin-25.2.0-arm64-arm-64bit-Mach-O",
+    "runs": [
+      {
+        "python": "3.14.6",
+        "tests": 17,
+        "seconds": 4.511,
+        "status": "pass"
+      },
+      {
+        "python": "3.11.15",
+        "tests": 17,
+        "seconds": 5.164,
+        "status": "pass"
+      }
+    ],
+    "installed_layout_subprocess_required": true,
+    "native_execution": false,
+    "all_test_assertion_topics_retained": true,
+    "independent_review": "cloned capture code with cached-case globals rejected before any case call; loaded functions require their verified module namespace"
+  },
+  "acceptance": "not_native_conformance;not_migration_completion;all_36_exact_head_hosted_jobs_and_full_receipt_artifact_binary_tree_proofs_still_required",
+  "installed_origin_guard_correction": {
+    "prs": [
+      71,
+      72
+    ],
+    "failed_jobs": [
+      110978646548,
+      110986895684
+    ],
+    "test": "PipelineManagerCampaignTests.test_frozen_oracle_loading_restores_import_path",
+    "problem": "test expected source-tree rejection even when CI correctly loaded installed product",
+    "change": "explicitly inject the forbidden first product module source path, require exact rejection, and assert restoration; product guard unchanged",
+    "method_sha256": "ed5a0b86879bd6475d38d6549c0687921ed371a9beb70e02d0ab70b6146fb6c6",
+    "controls": [
+      {
+        "python": "Python 3.14.6",
+        "installed": false,
+        "returncode": 0,
+        "output": ".\n----------------------------------------------------------------------\nRan 1 test in 2.443s\n\nOK\n"
+      },
+      {
+        "python": "Python 3.14.6",
+        "installed": true,
+        "returncode": 0,
+        "output": ".\n----------------------------------------------------------------------\nRan 1 test in 2.377s\n\nOK\n"
+      },
+      {
+        "python": "Python 3.11.15",
+        "installed": false,
+        "returncode": 0,
+        "output": ".\n----------------------------------------------------------------------\nRan 1 test in 2.889s\n\nOK\n"
+      },
+      {
+        "python": "Python 3.11.15",
+        "installed": true,
+        "returncode": 0,
+        "output": ".\n----------------------------------------------------------------------\nRan 1 test in 2.895s\n\nOK\n"
+      }
+    ]
+  }
+}

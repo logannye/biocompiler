@@ -1,0 +1,168 @@
+{
+  "schema_version": "biocompiler.archive_foundation_checkpoint.v1",
+  "status": "source_and_focused_python_controls_complete_hosted_native_validation_pending",
+  "base_revision": "9337cf97bcb2c994103817a0d0a161a5d3957da7",
+  "base_pull_request": 79,
+  "scope": "Structural stored-ZIP and UTF8 metadata primitives only; no package construction, semantic acceptance, export route or production cutover",
+  "authority": {
+    "original_archive_source_sha256": "36d598102ffea532b67a3a116266f573ccff07da39166230023d162fd675d43f",
+    "cases_each_python_profile": 125,
+    "distinct_operations": 5,
+    "complete_file_and_case_census_pinned_by_native_suite": true,
+    "selected_stdlib_function_sources_each": 8,
+    "malformed_only_differences": 3,
+    "successful_bytes_equal": true,
+    "hosted_patch_version_conformance": "required"
+  },
+  "native_boundary": {
+    "library": "bioc_artifact",
+    "role": "trusted_primitive",
+    "dependencies": [
+      "bioc_wire",
+      "bioc_checker",
+      "zarith"
+    ],
+    "checker_surface": "Work_budget only; all other checker imports rejected by source policy",
+    "resources": "One supplied ancestor, cumulative retention, bounded parsing/encoding, no detached roots/refunds",
+    "native_suites_required": 112,
+    "release_jobs_required": 36,
+    "local_compilation": false,
+    "local_execution": false
+  },
+  "local_controls": {
+    "modules": [
+      "tests.test_archive_authority",
+      "tests.test_core_boundaries",
+      "tests.test_ci_validation",
+      "tests.test_native_fixture_wiring"
+    ],
+    "tests_each": 54,
+    "python_3_14_6_seconds": 22.891,
+    "python_3_11_15_seconds": 23.104,
+    "status": "pass",
+    "static_boundary": "pass",
+    "migration_inventory": {
+      "entries": 3301,
+      "tests_each": 13,
+      "status": "pass",
+      "python_3_14_6_seconds": 2.966,
+      "python_3_11_15_seconds": 2.976
+    }
+  },
+  "pending": [
+    "Hosted compilation and all native suites on both platforms",
+    "Complete release gates and independent exact-revision reconstruction",
+    "Typed package manifest/container and actual live workflow package construction",
+    "Independent request-based rebuild, canonical export and publication ownership"
+  ],
+  "files": {
+    ".github/workflows/ci.yml": {
+      "sha256": "75ad71fedb1074a9fe3dfbdad2c7fee546b5cc2cc3d345e3227b9f804c5f8a9d",
+      "bytes": 106814
+    },
+    "core/lib/artifact/archive_budget.ml": {
+      "sha256": "d88124094f6312f378e16be9f689550e570a31e020ba1e5f89082dc68b893b47",
+      "bytes": 3058
+    },
+    "core/lib/artifact/archive_budget.mli": {
+      "sha256": "0b4f319a8c7bf76d694e085702fdbc5af49e6113dad255d560b70b2f0b139fe5",
+      "bytes": 962
+    },
+    "core/lib/artifact/archive_unicode.ml": {
+      "sha256": "8607bcf23255e9264f24d872f61f8c861c30819488b3fd38df9916a34be9963f",
+      "bytes": 18555
+    },
+    "core/lib/artifact/archive_unicode.mli": {
+      "sha256": "176719f4fceada8e76bfff09baed7fbd96fd89c0fddaa2b52919cdec49b323e4",
+      "bytes": 92
+    },
+    "core/lib/artifact/dune": {
+      "sha256": "bff5de8c98399b869ed7fd0d61981c215dabffa3c80a4b9164bad8bca385e272",
+      "bytes": 75
+    },
+    "core/lib/artifact/stored_zip.ml": {
+      "sha256": "6b91113a619088b278c8d7afe762d9915dee0df863409a30e9d6dd2dd61ff998",
+      "bytes": 21918
+    },
+    "core/lib/artifact/stored_zip.mli": {
+      "sha256": "7c24267fd8d24bad6b3b84ab5f90f5dde0e10f6113c524a8c301f722ca2ae35b",
+      "bytes": 732
+    },
+    "core/lib/artifact/utf8_pretty.ml": {
+      "sha256": "02d43d15094bc0b72dac3aae06b603ae0cdbe736ca177611d9702f8c1db5d3ec",
+      "bytes": 5031
+    },
+    "core/lib/artifact/utf8_pretty.mli": {
+      "sha256": "643d04b5619ad91f68779fa007b596e7062f8194a6c59c7e899f86ab4d4ad200",
+      "bytes": 250
+    },
+    "core/test/dune": {
+      "sha256": "d4f92d2eccdfe2e7018121345b01c42256ba2a16c298b567fdb20535847a2c95",
+      "bytes": 18130
+    },
+    "core/test/test_stored_zip.ml": {
+      "sha256": "369f22454edc60e06da5ecb9aa7320b031095cafcb5af42e45fe1ea2ef9599ea",
+      "bytes": 8692
+    },
+    "tests/conformance/archive-container-311.json": {
+      "sha256": "0de6d702d2ea0dece95d73740a9d58b2e526ed6a82341af26b0034e2f00dff5f",
+      "bytes": 78147
+    },
+    "tests/conformance/archive-container-314.json": {
+      "sha256": "94c4b13d75a02bb15d707d64b571b8dd61ff6ca974040df27423b61ff5446361",
+      "bytes": 78162
+    },
+    "tests/conformance/archive-stdlib-authority-311.json": {
+      "sha256": "6938e408c45f2fd207516a92e8c631b21c365b6f081b4c14b30050f15b93cb0a",
+      "bytes": 24959
+    },
+    "tests/conformance/archive-stdlib-authority-314.json": {
+      "sha256": "a619cb34f9382b00c6119fed273965b06aa253df6413b48d52ed357d97d0bc57",
+      "bytes": 26919
+    },
+    "tests/conformance/archive-unicode-authority-v1.json": {
+      "sha256": "4c254e80532f15a231ac61ff643835f77ceb62bfc5f09264209397b350e6f70b",
+      "bytes": 66040
+    },
+    "tests/test_archive_authority.py": {
+      "sha256": "893dbf3adf3443a1a3e6e98fbdd119fa08ee81c38f042db3f9b0e82da1c55b35",
+      "bytes": 4473
+    },
+    "tests/test_ci_validation.py": {
+      "sha256": "1b80d25375fdede3e2840316638e9c6b798bd535fcbe628c9875daf2daf18750",
+      "bytes": 32587
+    },
+    "tests/test_core_boundaries.py": {
+      "sha256": "3e0882b8536a3994c84f50f00a35526ab89c0b76faeafd8094cf9cd1b3bb2261",
+      "bytes": 26342
+    },
+    "tests/test_native_fixture_wiring.py": {
+      "sha256": "6819a009ef4d5d21e9ebdaf5edd4852564059d995495486d901a32a9c72684b4",
+      "bytes": 4446
+    },
+    "tools/capture_archive_container.py": {
+      "sha256": "0d06721243644f8550e3ce1265f02600a89c1e6b7c533087676da3a0260efe06",
+      "bytes": 15694
+    },
+    "tools/check_core_boundaries.py": {
+      "sha256": "ee4233a1ba7be6eacd5ff0dd74a255025bef95ea7043c58993881a563d1e8e7c",
+      "bytes": 37529
+    }
+  },
+  "discovery": [
+    {
+      "python": "3.11.15",
+      "tests": 3228,
+      "classes": 315,
+      "test_ids_sha256": "c4445bf834be43d5bc0cac3c89b645daacbafc1237507b2008986b8769274ee5",
+      "is_test_execution": false
+    },
+    {
+      "python": "3.14.6",
+      "tests": 3228,
+      "classes": 315,
+      "test_ids_sha256": "c4445bf834be43d5bc0cac3c89b645daacbafc1237507b2008986b8769274ee5",
+      "is_test_execution": false
+    }
+  ]
+}

@@ -28,13 +28,15 @@ REALIZATION_VARIANTS = {f"{name}-py{version}": (system, machine, version)
                         for name, (system, machine) in CORE_PLATFORMS.items() for version in PYTHONS}
 REQUIRED_NEEDS = frozenset((*PRODUCERS, *REPRODUCIBILITY, "studio-browser",
                             "unit-plan", "unit-tests", "unit-accounting", "ocaml-core", "studio-typescript",
-                            "architecture-core-reproducibility", "realization-conformance", "realization-core-reproducibility"))
+                            "architecture-core-reproducibility", "realization-conformance", "realization-core-reproducibility", "prebuilt-core-assembly", "prebuilt-core-validation"))
 EXPECTED_RECEIPTS = frozenset((job, version) for job in PRODUCERS for version in PYTHONS) | {
     ("studio-browser", "3.11"), *((job, "cross-python") for job in REPRODUCIBILITY),
     ("studio-typescript", "3.11"), *(("ocaml-core", variant) for variant in CORE_PLATFORMS),
     ("architecture-core-reproducibility", "cross-platform"),
     *(("realization-conformance", variant) for variant in REALIZATION_VARIANTS),
     ("realization-core-reproducibility", "cross-platform"),
+    ("prebuilt-core-assembly", "cross-platform"),
+    ("prebuilt-core-validation", "cross-platform"),
 }
 
 

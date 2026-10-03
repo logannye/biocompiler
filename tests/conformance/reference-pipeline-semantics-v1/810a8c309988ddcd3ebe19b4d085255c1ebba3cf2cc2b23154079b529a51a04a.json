@@ -1,0 +1,1 @@
+{"class":"dict","items":[[{"scalar":"str","value":"instance_id"},{"scalar":"str","value":"fap_cds"}],[{"scalar":"str","value":"schema_version"},{"scalar":"str","value":"biocompiler.construct_reference.v0.1"}],[{"scalar":"str","value":"selection"},{"ref":"object/16330"}]],"kind":"mapping"}

@@ -1,0 +1,21 @@
+{
+  "diagnosis": "Frozen prebuilt installed-path witness predates the authorized additive deferred context proof. Preserve it and prove the exact later checker delta before the existing whole SHA/AST assertions.",
+  "environment": {
+    "implementation": "CPython",
+    "python": "3.11.16",
+    "revision": "890cc59859b2bd8469d3295a8eef8c182abd203e"
+  },
+  "executed": 690,
+  "failure": {
+    "class_id": "test_prebuilt_ci_plan.HostedCiPlanTests",
+    "id": "test_prebuilt_ci_plan.HostedCiPlanTests.test_installed_path_edits_are_finite_and_no_semantic_case_body_is_changed",
+    "seconds": 0.275804,
+    "status": "failure",
+    "subtests": []
+  },
+  "job_id": 111195668945,
+  "log_sha256": "43753690d6bc6959cb8fff8e46120db6986e1d1cfb1caf5abbdc292cb119edce",
+  "receipt_sha256": "aba65ab15289a0deee9c523f29b6c94e778aad33c9706c7812435195822359fd",
+  "run_id": 37120447580,
+  "source_revision": "00fbfac6510183d5ddd7cd224305b1c2ccf915ca"
+}

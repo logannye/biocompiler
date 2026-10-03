@@ -1,0 +1,20 @@
+3214: 2026-10-03T06:01:29.9779030Z Traceback (most recent call last):
+3215: 2026-10-03T06:01:29.9790996Z   File "/home/runner/work/biocompiler/biocompiler/tools/build_prebuilt_core.py", line 308, in <module>
+3216: 2026-10-03T06:01:29.9792298Z     if __name__ == '__main__': main()
+3217: 2026-10-03T06:01:29.9792759Z                                ^^^^^^
+3218: 2026-10-03T06:01:29.9793570Z   File "/home/runner/work/biocompiler/biocompiler/tools/build_prebuilt_core.py", line 296, in main
+3219: 2026-10-03T06:01:29.9794654Z     files, receipt = plan(args.native_root, target=args.platform, source_revision=args.source_revision,
+3220: 2026-10-03T06:01:29.9795494Z                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+3221: 2026-10-03T06:01:29.9796393Z   File "/home/runner/work/biocompiler/biocompiler/tools/build_prebuilt_core.py", line 175, in plan
+3222: 2026-10-03T06:01:29.9797205Z     audits[name] = audit(audit_tool, path, target)
+3223: 2026-10-03T06:01:29.9797695Z                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+3224: 2026-10-03T06:01:29.9798723Z   File "/home/runner/work/biocompiler/biocompiler/tools/build_prebuilt_core.py", line 152, in audit
+3225: 2026-10-03T06:01:29.9799645Z     return {'argv': command, 'tool_sha256': sha(regular(tool, 256*1024*1024)),
+3226: 2026-10-03T06:01:29.9800278Z                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+3227: 2026-10-03T06:01:29.9801115Z   File "/home/runner/work/biocompiler/biocompiler/tools/build_prebuilt_core.py", line 45, in regular
+3228: 2026-10-03T06:01:29.9802350Z     require(path.is_file() and not path.is_symlink() and 0 < path.stat().st_size <= maximum,
+3229: 2026-10-03T06:01:29.9803381Z   File "/home/runner/work/biocompiler/biocompiler/tools/build_prebuilt_core.py", line 34, in require
+3230: 2026-10-03T06:01:29.9804232Z     if not condition: raise ValueError(message)
+3231: 2026-10-03T06:01:29.9804701Z                       ^^^^^^^^^^^^^^^^^^^^^^^^^
+3232: 2026-10-03T06:01:29.9805375Z ValueError: Missing, nonregular, symlinked or oversized release input: /usr/bin/readelf
+3233: 2026-10-03T06:01:29.9904568Z ##[error]Process completed with exit code 1.

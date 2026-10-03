@@ -1,0 +1,1 @@
+{"class":"dict","items":[[{"scalar":"str","value":"mode"},{"scalar":"str","value":"exact_reference"}],[{"scalar":"str","value":"optimization"},{"scalar":"str","value":"disabled"}],[{"scalar":"str","value":"schema_version"},{"scalar":"str","value":"biocompiler.encoding_policy.v0.1"}],[{"scalar":"str","value":"transformations"},{"ref":"object/17299"}]],"kind":"mapping"}

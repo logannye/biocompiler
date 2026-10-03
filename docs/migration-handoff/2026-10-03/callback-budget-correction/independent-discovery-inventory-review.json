@@ -1,0 +1,216 @@
+{
+  "base_revision": "b27f52447f49c749d33cac17f3bbb6fe772cbc24",
+  "baseline": {
+    "captured_python_test_sources_bound_to_git_b27": 298,
+    "classes": 350,
+    "plans": [
+      {
+        "bytes": 24677417,
+        "path": "generated/migration-next/pr85-fixed-provider-lineage-correction/plan-311.json",
+        "sha256": "779c423cef6e018c85e96eb1f8c4e877c7b140768385da02b9d143f8273dd97d"
+      },
+      {
+        "bytes": 24677416,
+        "path": "generated/migration-next/pr85-fixed-provider-lineage-correction/plan-314.json",
+        "sha256": "e3ab7a389c6f221d2063f2f77a79c5ef1ab10830a2cba15c282cc4dd9f96a945"
+      }
+    ],
+    "sorted_lf_ids_sha256": "fbe205746822fbaef318cf37dd1e9b6e17ae90d4dd0327839a91027d46bea23d",
+    "tests": 3408
+  },
+  "discovery": {
+    "added": [
+      "test_core_pipeline_callback_session.CallbackSessionTests.test_exact_and_one_short_lifetime_boundary_include_close_frames",
+      "test_core_pipeline_callback_session.CallbackSessionTests.test_old_resource_profile_and_declaration_rejected_before_application",
+      "test_core_pipeline_callback_session.CallbackSessionTests.test_one_million_node_frame_cap_remains_separate_from_lifetime",
+      "test_core_pipeline_callback_session.CallbackSessionTests.test_v2_lifetime_crosses_old_ceiling_and_reduced_lifetime_still_closes",
+      "test_pipeline_callback_frame_budget.CallbackFrameBudgetTests.test_independent_frame_and_lifetime_exact_and_one_short_bounds",
+      "test_prebuilt_ci_plan.HostedCiPlanTests.test_callback_budget_restoration_preserves_prior_source_proofs",
+      "test_reference_original_counterpart.ReferenceOriginalCounterpartTests.test_callback_witness_location_inventory_and_archive_tampering_reject",
+      "test_reference_original_counterpart.ReferenceOriginalCounterpartTests.test_exact_callback_profile_source_restores_whole_original_client"
+    ],
+    "both_runtimes_identical_ids_and_classes": true,
+    "classes": 351,
+    "removed": [],
+    "shards_complete_unique_class_atomic": true,
+    "sorted_lf_ids_sha256": "cf27c05ddcfa8cc4f96c4ae7bf5d11bece4e64edfc9edb2e77c82880185e04f4",
+    "source_manifest_differences": [
+      {
+        "current_sha256": "d39f952dec4ef49aa8901e1ff132e630581065bf317873f3be3b32357b125b48",
+        "path": "docs/migration-pipeline-callback-contract.md",
+        "python311_sha256": "d39f952dec4ef49aa8901e1ff132e630581065bf317873f3be3b32357b125b48",
+        "python314_sha256": "724f3c3c67d6608f4def3900e1e8bac575d76d81838e401134ddcc3c6fafeaba"
+      }
+    ],
+    "source_manifest_note": "Only contract documentation changed between captures; all product/test files agree. Discovery is not executed-validation source authority",
+    "tests": 3416,
+    "unique_tests": 3416
+  },
+  "findings": [
+    {
+      "impact": "No test ID/class or product/test source difference; cannot claim identical complete source manifests",
+      "kind": "discovery_source_metadata_drift",
+      "paths": [
+        "docs/migration-pipeline-callback-contract.md"
+      ]
+    }
+  ],
+  "inventory": {
+    "added_test_source_files": [
+      "tests/test_pipeline_callback_frame_budget.py"
+    ],
+    "baseline_sha256": "ade0c189d7825b2bb3a188ba7134f5caea4da1174df97ad129dacedde1674639",
+    "changed_common_entry_field_counts": {
+      "sha256": 1,
+      "test_coverage": 1176,
+      "value": 1
+    },
+    "changed_top_level_fields": [
+      "entries",
+      "test_reference_sets",
+      "test_source_files"
+    ],
+    "current": {
+      "bytes": 1526164,
+      "path": "protocol/migration-inventory.json",
+      "sha256": "93def39e3c42fe190aaeea59d9b967b11681c19b4261cc4083a69911ab015b47"
+    },
+    "entries": 3310,
+    "reference_set_count": {
+      "after": 629,
+      "before": 627
+    },
+    "removed_test_source_files": [],
+    "resolved_common_test_reference_deltas": [
+      {
+        "added": [
+          "tests/test_core_pipeline_callback_session.py"
+        ],
+        "id": "version_profile:biocompiler.core_architecture.PROFILE",
+        "removed": []
+      },
+      {
+        "added": [
+          "tests/test_core_pipeline_callback_session.py"
+        ],
+        "id": "version_profile:biocompiler.core_architecture_producer.PROFILE",
+        "removed": []
+      },
+      {
+        "added": [
+          "tests/test_core_pipeline_callback_session.py",
+          "tests/test_reference_original_counterpart.py"
+        ],
+        "id": "version_profile:biocompiler.core_pipeline_callback_session.PROFILE",
+        "removed": []
+      },
+      {
+        "added": [
+          "tests/test_core_pipeline_callback_session.py"
+        ],
+        "id": "version_profile:biocompiler.core_pipeline_session.PROFILE",
+        "removed": []
+      },
+      {
+        "added": [
+          "tests/test_core_pipeline_callback_session.py"
+        ],
+        "id": "version_profile:biocompiler.core_synthetic_inspection.PROFILE",
+        "removed": []
+      },
+      {
+        "added": [
+          "tests/test_core_pipeline_callback_session.py"
+        ],
+        "id": "version_profile:biocompiler.core_synthetic_producer_public.PROFILE",
+        "removed": []
+      }
+    ],
+    "semantic_entry_changes": [
+      {
+        "fields": {
+          "sha256": {
+            "after": "96cf3c4c70231f3039e2e16c51efc06bc202c86208f94dbddd5f438996c1bb5a",
+            "before": "0ff388509eb9c123b87cf5decc1f35cf5eaca61a02d84a756beba7150de17018"
+          }
+        },
+        "id": "module:biocompiler.core_pipeline_callback_session"
+      },
+      {
+        "fields": {
+          "value": {
+            "after": "biocompiler.core.pipeline_callback_channel.v2",
+            "before": "biocompiler.core.pipeline_callback_channel.v1"
+          }
+        },
+        "id": "version_profile:biocompiler.core_pipeline_callback_session.PROFILE"
+      }
+    ],
+    "test_coverage_reference_rekeys": 1176,
+    "test_source_count": {
+      "after": 296,
+      "before": 295
+    },
+    "unchanged_top_level_fields": [
+      "baseline_commit",
+      "contracts",
+      "counts",
+      "coverage_method",
+      "initial_migration_branch",
+      "migration_state_policy",
+      "package_version",
+      "schema_version",
+      "scope",
+      "sources"
+    ],
+    "version_literal_replacement": {
+      "added": "version_literal:biocompiler.core_pipeline_callback_session:biocompiler.core.pipeline_callback_channel.v2",
+      "other_semantic_fields_equal": true,
+      "removed": "version_literal:biocompiler.core_pipeline_callback_session:biocompiler.core.pipeline_callback_channel.v1",
+      "test_reference_files": {
+        "after": [
+          "tests/test_core_pipeline_callback_session.py",
+          "tests/test_reference_original_counterpart.py"
+        ],
+        "before": []
+      }
+    }
+  },
+  "plans": [
+    {
+      "discovery_digest": "b387cd7bd0fca619bd60b8f76ee72dd4eeb5736d5775f0ccc825e500e2ed44ea",
+      "environment": {
+        "implementation": "CPython",
+        "python": "3.11.15",
+        "revision": "b27f52447f49c749d33cac17f3bbb6fe772cbc24"
+      },
+      "file": {
+        "bytes": 24685278,
+        "path": "generated/migration-next/pr85-callback-budget-correction/plan-311.json",
+        "sha256": "b63ed5f0d6864897abd96c00fd570a50997ed60b3dec0f3e8a43607e7927073a"
+      },
+      "fingerprint": "d609d1ada679d86e8851a0ac26978c2362491d5e3ad21ff537a80a1dfa76ac13",
+      "shards": 5,
+      "source_file_count": 124318
+    },
+    {
+      "discovery_digest": "75063bfe19ae6e7c6c219347b445aaf28a3ee3c86d4d7fb5f5cb68b0ef7dc72e",
+      "environment": {
+        "implementation": "CPython",
+        "python": "3.14.6",
+        "revision": "b27f52447f49c749d33cac17f3bbb6fe772cbc24"
+      },
+      "file": {
+        "bytes": 24685277,
+        "path": "generated/migration-next/pr85-callback-budget-correction/plan-314.json",
+        "sha256": "6848102412b8ff59e998ef42f337d3847ff5d91382402116f301ef329ab1f5f5"
+      },
+      "fingerprint": "1118eec16df3f8b933d8ca06839d4e022a3d6421da4b04645269dcfe9112b9a9",
+      "shards": 5,
+      "source_file_count": 124318
+    }
+  ],
+  "reviewed_at": "2026-10-03T18:58:22.853488+00:00",
+  "schema": "biocompiler.independent_discovery_inventory_review.v1",
+  "scope": "Read-only verification of retained discovery plans and static inventory; not executed unit or native validation"
+}

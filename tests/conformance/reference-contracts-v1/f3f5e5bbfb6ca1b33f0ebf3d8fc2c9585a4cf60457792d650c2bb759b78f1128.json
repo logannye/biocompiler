@@ -1,0 +1,1 @@
+"{\n  \"assumptions\": [\n    \"Regulation has not been characterized\"\n  ],\n  \"id\": \"regulation\",\n  \"kind\": \"activation\",\n  \"provenance\": [],\n  \"regulator_instance\": \"helper-component\",\n  \"schema_version\": \"biocompiler.construct_regulation.v0.1\",\n  \"target_instance\": \"cds\"\n}"

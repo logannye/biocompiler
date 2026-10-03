@@ -1,0 +1,29 @@
+{
+  "artifact_count": 16346,
+  "case_count": 86,
+  "comparison_cases": 34,
+  "corrected_campaign_sha256": "59f94bb142d7097160dd08fef700f458a362865fb6b6ad8142c530fac5fe0edb",
+  "deferred_cases": 47,
+  "deferred_processes": 53,
+  "duration_seconds": 11.077644707867876,
+  "finite_delta": "one complete deferred_context_document function plus one exact document comparison call substitution; entire original restored byte-for-byte",
+  "historical_campaign_sha256": "d12f67bf4080b15a96856342e87e8678007e6093188b1a36540c7f337f6463b7",
+  "historical_trace_source_pins": {
+    "src/biocompiler/compiler/pipeline.py": "dccba32618ecc7923b8a02ff54f114d515ff4e50908f45e27a8cda0a3f531be0",
+    "src/biocompiler/core_pipeline_callback_session.py": "0ff388509eb9c123b87cf5decc1f35cf5eaca61a02d84a756beba7150de17018",
+    "src/biocompiler/core_pipeline_manager.py": "f5c3410fb93d99182a1c5b9d8f3fa948990a0e1d4ce0b3b609c6b9f470d67bdd",
+    "src/biocompiler/ir/intent.py": "711545a1b67f2d6049848d2cef8739f89098d2596687c375d7f62d2e94680de6",
+    "src/biocompiler/pipeline_callback_objects.py": "ac5198795c3e80cff511e0fe372dc578a983d8be947e41dd9debd9f719da9eec",
+    "tools/capture_pipeline_deferred_semantics.py": "c287fe14a54bd692bbdb71e613f07bc4181537ec9eb649d932e0ce59b3b023d1",
+    "tools/check_pipeline_manager_install.py": "d12f67bf4080b15a96856342e87e8678007e6093188b1a36540c7f337f6463b7"
+  },
+  "hosted_python": "3.11.9",
+  "identity_cases": 5,
+  "kind": "historical-source-offline-replay-not-fresh-current-source-acceptance",
+  "native_execution": false,
+  "projected_sha256": "e4ffabaff59cc396697898769b10110252e184a47f3c7f4db3c401043386dd98",
+  "receipt_status_unchanged": "failure",
+  "replay_python": "3.11.15 (main, Mar 25 2026, 02:58:47) [Clang 22.1.1 ]",
+  "result": "PASS",
+  "source_revision": "817a8ed1154975befd293327dfabdf7798ed2b4c"
+}

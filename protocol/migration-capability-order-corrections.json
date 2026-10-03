@@ -1,0 +1,74 @@
+{
+  "schema_version": "biocompiler.migration_capability_order_corrections.v1",
+  "scope": "Exact ordered capability expectations and field-specific harness diagnostics; no semantic checker or validation gate weakened",
+  "original_failure": {
+    "pr": 64,
+    "source_head": "acdf2383e60c785edbeb2d63755686a9045636af",
+    "run_id": 36994062954,
+    "job_id": 110797201685,
+    "diagnostic": "Capability contract differs; native generation/selection/components array differs from JSON object key order"
+  },
+  "backports": [
+    {
+      "pr": 62,
+      "branch": "codex/ocaml-synthetic-producer-service",
+      "parent": "eafedbdda7c3f98830c4e80db971bdb57f19a061",
+      "source_head": "21a6e6f27316f3d1c83c64c7480c54d80e68be31",
+      "tree": "fe3a5a382f2100c6f32bc422a748f12822562eb9",
+      "proof_sha256": "2ca97b2f59755378a5453ba3b0c7cb185cb185817e368dc9db0931b3bd8845e3",
+      "status": "pushed; complete hosted validation pending"
+    },
+    {
+      "pr": 63,
+      "branch": "codex/ocaml-public-synthetic-producers",
+      "parent": "a068bc2f81f41c7d2e7ca30d0aa931c740ca0fa3",
+      "source_head": "090a4a60e1f1bb1055688fcc5588d30a56f6fb27",
+      "tree": "b02a4bb925bed2e11c3f81cec896d8b65bc107a9",
+      "proof_sha256": "02fcdb0ffcae24553f0f501c25eb969d86ecacec0e5199460b7df3de96260c0e",
+      "status": "pushed; complete hosted validation pending"
+    },
+    {
+      "pr": 64,
+      "branch": "codex/ocaml-synthetic-public-integration",
+      "parent": "acdf2383e60c785edbeb2d63755686a9045636af",
+      "source_head": "eeae11b6e72249a3292c844d442f55ff9a8a4f11",
+      "tree": "49cedae1d4cfb1074d96e6bd31765397e9252876",
+      "proof_sha256": "3f3160bd9333c93d28e7c404ace816cf8d459ce29ecc159100daa2132b257313",
+      "status": "pushed; complete hosted validation pending"
+    },
+    {
+      "pr": 65,
+      "branch": "codex/ocaml-synthetic-inspection",
+      "parent": "c6382d62da14fbd5f15534a46ffcf932b2266051",
+      "source_head": "0b908aa6aacd38082277275854b610e3dfc71969",
+      "tree": "fcd752be03487fb3872829ada6a63fc93486f5ae",
+      "proof_sha256": "b5427948b6b4ca912bf65b435a75fff37667d0e19264829adcd489c9e27c5246",
+      "status": "pushed; complete hosted validation pending"
+    },
+    {
+      "pr": 66,
+      "branch": "codex/ocaml-checked-pass-manager",
+      "parent": "2cec0698005f878f407d0937b5e461ee730ffffb",
+      "source_head": "6e24c6b3fdcd61b2de8d1d38ae6c003e74eacabf",
+      "tree": "23d3cd4f1b17e88e721a02bda3df4887bc8d8f0d",
+      "proof_sha256": "d8c4162067a11ae36bbdda3dbcc13ad894066bf57c0b01b1ac88d76bffbed27c",
+      "status": "pushed; complete hosted validation pending"
+    }
+  ],
+  "current_correction": {
+    "pr": 67,
+    "source_head": "de950fdaabdd762417dd5e73fbe8cb554aa3a4a1",
+    "also_corrects": "Ambiguous explanatory documentation in OCaml interfaces; signatures and warning policy unchanged",
+    "focused_tests": 66,
+    "seconds": 17.652,
+    "hosted_validation": "pending"
+  },
+  "validation": {
+    "parent_snapshot_method": "Exact committed Python and static source bytes; no corpus exports; baseline inventory and Markdown reproduced before patch",
+    "new_regressions_per_parent": 2,
+    "full_current_conformance_tests": 17,
+    "full_original_parent_suites": "not executed on minimal snapshots; still required hosted",
+    "native_local_compilation_or_execution": false,
+    "required_hosted_jobs": 36
+  }
+}

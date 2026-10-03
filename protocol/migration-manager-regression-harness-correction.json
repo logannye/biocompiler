@@ -1,0 +1,73 @@
+{
+  "schema_version": "biocompiler.manager_regression_harness_correction.v1",
+  "status": "source_correction_hosted_validation_pending",
+  "failed_source_revision": "d56e814ef70439eab5b227fe227e0d2cd1ba087a",
+  "failed_run": 37075992379,
+  "pull_request": 75,
+  "native_failure": {
+    "platforms": [
+      "linux-x86_64",
+      "macos-arm64"
+    ],
+    "message": "Actual wrapped native producer failed to retain its complete records",
+    "phase": "framed_fixed_interception_tests passthrough",
+    "cause": "Framed canonical JSON object members are sorted; insertion order is supplied by the existing inspect-ordered arrays. The test incorrectly compared object-member order with historical insertion order.",
+    "correction": "Request inspect-ordered, compare explicit original order arrays and verify complete duplicate-free key coverage against the full snapshot. Preserve full before/after snapshot equality, exact partial-state assertions, callback counts, source correspondence, sequence and terminal bindings.",
+    "static_peer_review": "independent review found no actionable issue; not native execution"
+  },
+  "python_failures": [
+    {
+      "test": "test_checked_pipeline_corpus.CheckedPipelineCorpusTests.test_every_complete_document_source_and_generator_has_its_original_identity",
+      "cause": "Live manager hash compared directly to the immutable pre-delegation source hash."
+    },
+    {
+      "test": "test_fixed_pipeline_literals.FixedPipelineLiteralsTests.test_every_complete_input_return_error_source_and_document_is_preserved",
+      "cause": "Live manager hash compared directly to the immutable pre-delegation source hash."
+    },
+    {
+      "test": "test_pipeline_contract_literals.PipelineContractLiteralTests.test_complete_original_literals_reproduce_without_native_execution",
+      "cause": "Fresh capture under current manager includes its changed source pin, differing from original expected inventory."
+    }
+  ],
+  "python_correction": {
+    "source_identity": "Only the complete content-pinned old/current manager witness and exact five-line delegation may explain the changed manager source; all other captured source bytes remain exact.",
+    "literal_replay": "Unchanged original test bodies and assertions execute as actual original TestCase IDs under canonical module names through the existing closed original-source child. No expected document is normalized or regenerated.",
+    "controls": "Unrelated and rehashed manager edits, foreign namespaces, missing capture/index authority and changed TestCase census reject."
+  },
+  "preserved": {
+    "original_archives_and_corpora": true,
+    "original_capture_generators": true,
+    "production_sources": true,
+    "existing_protocol_and_order_contract": true,
+    "native_resource_limits": true,
+    "python_default": true
+  },
+  "local_validation": {
+    "affected_and_lineage_tests": {
+      "python_3_11_15": {
+        "tests": 25,
+        "status": "pass",
+        "seconds": 36.706
+      },
+      "python_3_14_6": {
+        "tests": 25,
+        "status": "pass",
+        "seconds": 36.529
+      }
+    },
+    "native_local_execution": false,
+    "hosted_revalidation": "required_on_corrected_revision"
+  },
+  "source_sha256": {
+    "core/test/test_pipeline_callback_manager.ml": "7f28dcb53bd4982bf8bd8d6ecd196ab3c60bbf1355f9a86e1af1317d6cf847ad",
+    "tests/test_checked_pipeline_corpus.py": "706e85de2ce39d0632c59eddfb95b612e79745394db3be76080dece733d6338f",
+    "tests/test_fixed_pipeline_literals.py": "6ead00094bffb4913c90cfe6732790a4684458234ba23a98634bf27d1e3d4d82",
+    "tests/test_pipeline_contract_literals.py": "8d50e360a009d7793f6a23ee172433e4715750e26473f4933ebd3d7c53419270",
+    "tests/test_pipeline_historical_source_integrity.py": "54e513165aaa1c0aca147db79b453d2d5fe2237de742c270fbabcbe43732cded",
+    "tools/pipeline_historical_source_integrity.py": "ecb33a2b3d059e4af16aca1cb7a7bfa10620ece350784517a136a18f7359076e",
+    "tools/pipeline_original_counterpart.py": "8413b7fa0a869f9f366039a51acc40727be4c4c8975cb19bbc91cbe5019db526",
+    "tools/manager_registration_source_lineage.py": "93d51425616ab85658792e3171f8e64a8a2f0e850dd98b364063aaa1088119d0",
+    "tests/conformance/manager-registration-source-lineage-v1.json": "f00be511bd184aa4e4d743f2f9cf86ae819ff09c7fd795cd740bce8c9c3db157"
+  },
+  "no_acceptance_from_failed_runs": true
+}

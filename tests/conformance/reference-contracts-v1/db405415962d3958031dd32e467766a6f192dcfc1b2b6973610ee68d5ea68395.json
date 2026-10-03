@@ -1,0 +1,1 @@
+[{"code":"junctions","instance_id":null,"message":"Junctions and overlaps are represented but have no accepted reference-CDS assembly rule.","molecule_id":null,"requirement_ids":["exact_reference"],"source":null,"status":"unsupported"}]

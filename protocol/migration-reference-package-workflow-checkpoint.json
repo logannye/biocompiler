@@ -1,0 +1,253 @@
+{
+  "schema_version": "biocompiler.reference_package_workflow_checkpoint.v1",
+  "base_revision": "7645c254b170846cca2289090111241e20c3769d",
+  "status": "source_and_python_controls_pass_hosted_native_integration_pending",
+  "production_default": "python",
+  "cutoff_gates_complete": [],
+  "authority": {
+    "input_constructor_cases_each_profile": 17,
+    "complete_package_cases_each_profile": 8,
+    "cross_runtime_bytes_equal": true,
+    "original_expected_bytes_changed": false
+  },
+  "resources": {
+    "persistent_retained_bytes": 536870912,
+    "contract": "cumulative lifetime persistent-data ownership; existing checker limits bound transient work; not an RSS bound",
+    "same_work_ancestor": true,
+    "owner_replacement_or_refund": false,
+    "failures_latch_owned_lifetime": true
+  },
+  "native_boundary": {
+    "input_library": "domain",
+    "package_workflow_and_rebuild_library": "producer",
+    "standalone_verify_links_package_producer": false,
+    "public_package_transport_integrated": false,
+    "required_native_suites": 117,
+    "required_release_jobs": 36,
+    "local_compilation": false,
+    "local_execution": false
+  },
+  "local_controls": {
+    "status": "pass",
+    "python_3_14_6": [
+      {
+        "tests": 57,
+        "seconds": 29.396,
+        "scope": "original input/package witnesses, boundary and CI gates"
+      },
+      {
+        "tests": 4,
+        "seconds": 0.006,
+        "scope": "native fixture wiring"
+      },
+      {
+        "tests": 13,
+        "seconds": 3.235,
+        "scope": "migration inventory"
+      }
+    ],
+    "python_3_11_15": [
+      {
+        "tests": 10,
+        "seconds": 0.406,
+        "scope": "original input/package witnesses"
+      },
+      {
+        "tests": 47,
+        "seconds": 29.681,
+        "scope": "boundary and CI gates"
+      },
+      {
+        "tests": 4,
+        "seconds": 0.006,
+        "scope": "native fixture wiring"
+      },
+      {
+        "tests": 13,
+        "seconds": 3.06,
+        "scope": "migration inventory"
+      }
+    ],
+    "static_boundary": "pass",
+    "migration_inventory_entries": 3301
+  },
+  "discovery": {
+    "311": {
+      "classes": 328,
+      "tests": 3289,
+      "test_ids_sha256": "06f43c319488cbdb7b31b030bdf26c9c14f4f0cef97e8448b23a113dab867135",
+      "is_test_execution": false
+    },
+    "314": {
+      "classes": 328,
+      "tests": 3289,
+      "test_ids_sha256": "06f43c319488cbdb7b31b030bdf26c9c14f4f0cef97e8448b23a113dab867135",
+      "is_test_execution": false
+    }
+  },
+  "remaining": [
+    "Hosted native full corpus and ownership execution on Linux x86_64 and macOS arm64",
+    "Public package transport and module-callpoint adapters",
+    "Independent checker-only package verification and atomic publication",
+    "Installed package/export campaigns and complete release acceptance",
+    "Other manager/workflow families, prebuilt fresh installs and controlled production cutover"
+  ],
+  "files": {
+    ".github/workflows/ci.yml": {
+      "sha256": "7611d8c7e7461859fbb310050831cf97db775693d96cc8de75c8e9f19cb80b63",
+      "bytes": 110265
+    },
+    "core/lib/artifact/archive_budget.ml": {
+      "sha256": "4357d941b0c0ef6b84a45306e3fa38918355bbb0fe9d155335a32f12413e78bc",
+      "bytes": 3967
+    },
+    "core/lib/artifact/archive_budget.mli": {
+      "sha256": "978ba1f35616c0899b1a2875dbd86be8c7934fa0e17823403e6adec011ad3d63",
+      "bytes": 1396
+    },
+    "core/lib/checker/work_budget.ml": {
+      "sha256": "b5ea72fc26812cf0010b534a0b069c28d12ebc34a1fd47482235103fe6215a70",
+      "bytes": 6327
+    },
+    "core/lib/checker/work_budget.mli": {
+      "sha256": "ccf9e57d1fc0a56a88f1bbc16d05b3070e2752ac92a4090e7594b6e24842e230",
+      "bytes": 2281
+    },
+    "core/lib/compiler/pass_manager.ml": {
+      "sha256": "0bcff3443473dcb7c9eca6b72537913ba400638a78f7fb5b0d38912e49b62edb",
+      "bytes": 50712
+    },
+    "core/lib/pipeline/reference_construct_pipeline.ml": {
+      "sha256": "72f85130c2b38b2d22db32c36daa081aac9a47948530452013d9578c51910219",
+      "bytes": 25214
+    },
+    "core/lib/pipeline/reference_molecular_pipeline.ml": {
+      "sha256": "cbed67dfb826fb4f84eba7916e3fbfad2da8bec6291941a402d29680f613ff6b",
+      "bytes": 20390
+    },
+    "core/lib/reference_export/reference_sequence_export.ml": {
+      "sha256": "1b9898dc6e1648a66324efc75561ded386c34265f7a81fdc925ef94834473770",
+      "bytes": 7314
+    },
+    "core/lib/reference_export/reference_sequence_export.mli": {
+      "sha256": "7c965bdd3d1e5e9e67ee6eb15efc7bb776662d5e738f227684940f47742b6d8d",
+      "bytes": 2327
+    },
+    "core/lib/reference_input/dune": {
+      "sha256": "dd55c943c333ff72722b3453136bd2b8964f1eecb9205e46c60a2afd2478f735",
+      "bytes": 95
+    },
+    "core/lib/reference_input/reference_inputs.ml": {
+      "sha256": "601c0700cf5ae9fcfac2904069a8b1c9148ab604c52aa8f15cfdc6a373870eb7",
+      "bytes": 10233
+    },
+    "core/lib/reference_input/reference_inputs.mli": {
+      "sha256": "c94c781a1a975f78cfaf5a7f81da7b36dab8ab8e014280d324cbbced75bace19",
+      "bytes": 836
+    },
+    "core/lib/reference_package_service/dune": {
+      "sha256": "cbc1fde96ab46e1fbc3ab7ee5866b668e2b9d547c6ae6a1e02224fea1f711c5d",
+      "bytes": 215
+    },
+    "core/lib/reference_package_service/reference_build_inputs.ml": {
+      "sha256": "50741c56dfbddec21d44d878bba23de80dea48bf2ade5ccd0985ae9ea7b7068c",
+      "bytes": 2608
+    },
+    "core/lib/reference_package_service/reference_build_inputs.mli": {
+      "sha256": "38fa528421c883a120c2951ae78d07db08752c688f095c45cfbe32b53e0358b2",
+      "bytes": 498
+    },
+    "core/lib/reference_package_service/reference_package_rebuild.ml": {
+      "sha256": "9e5d014ac045a4661234d8da933d20ae4aa4d3c7bf11291e617b30fd935215a2",
+      "bytes": 4980
+    },
+    "core/lib/reference_package_service/reference_package_rebuild.mli": {
+      "sha256": "afd59fdae8d3605c4e1d39b69d8789b80cd2ae014eb31112e31b3903f184b07e",
+      "bytes": 633
+    },
+    "core/lib/reference_package_service/reference_package_workflow.ml": {
+      "sha256": "51d6cb12cb40e61ebf9813c10122ee00656b1962f8eca50c44cabb374476db07",
+      "bytes": 12663
+    },
+    "core/lib/reference_package_service/reference_package_workflow.mli": {
+      "sha256": "c71eb94b8fbef674ce8ad71af80f3a8544aa749ba903bb2432f758d0b5e57f22",
+      "bytes": 2561
+    },
+    "core/test/dune": {
+      "sha256": "07bb7de6a08e8f8e27ddc953aec5bbe91ba8b16ff0fe976e9f9c302440833416",
+      "bytes": 19453
+    },
+    "core/test/test_reference_inputs.ml": {
+      "sha256": "4532144b4026cadb99b91e248e1bab159fbd7f3f32182eebb8edb3d7cd801a7b",
+      "bytes": 7103
+    },
+    "core/test/test_reference_package_workflow.ml": {
+      "sha256": "84dcc23899e68753d6fe4649907a3aab7ba9827a7f0ecf1fe4f172bf5f124b6b",
+      "bytes": 11710
+    },
+    "core/test/test_work_budget_retention.ml": {
+      "sha256": "4ded07424afe8136ec7b6383c56e1279e5fc2337fb85f847dde2c1764acaef2d",
+      "bytes": 5547
+    },
+    "docs/language-migration-roadmap.md": {
+      "sha256": "c45db1a23b79b9428b4c25100d87167afd986b0e45fdcd002a19bd08e6d15403",
+      "bytes": 161782
+    },
+    "docs/migration-coverage.md": {
+      "sha256": "dcad924ac1838e68206c7ce21dfb1d653e0ef2a360740b6dddf3d72f90efe7f5",
+      "bytes": 7706
+    },
+    "docs/migration-reference-package-workflow.md": {
+      "sha256": "bb86d43c4cce3759d7455d77c1d92ba1561c16d614e193f9b91e5bd23bc67c22",
+      "bytes": 3863
+    },
+    "protocol/migration-inventory.json": {
+      "sha256": "da459e90749eab2846f79a10bed98d14d41a1f0825e79eadec425e58fe806750",
+      "bytes": 1520544
+    },
+    "tests/conformance/reference-inputs-311.json": {
+      "sha256": "0e23413088d1350bd48cedac6a4b2ef83e94e74dba8b32de5214559952aac8b2",
+      "bytes": 1368754
+    },
+    "tests/conformance/reference-inputs-314.json": {
+      "sha256": "0e23413088d1350bd48cedac6a4b2ef83e94e74dba8b32de5214559952aac8b2",
+      "bytes": 1368754
+    },
+    "tests/conformance/reference-packages-311.json": {
+      "sha256": "a867677f97540fcab473cbde9be813b42c139a06c4aa2fd0009e7cde9ed9f135",
+      "bytes": 5223510
+    },
+    "tests/conformance/reference-packages-314.json": {
+      "sha256": "a867677f97540fcab473cbde9be813b42c139a06c4aa2fd0009e7cde9ed9f135",
+      "bytes": 5223510
+    },
+    "tests/test_ci_validation.py": {
+      "sha256": "e2c4433629ed3b1a52ceb033626ea0be2e9e19e2a74a201c07b0d362d3c112e0",
+      "bytes": 36328
+    },
+    "tests/test_core_boundaries.py": {
+      "sha256": "48db110e8ddf2b8b3abcffe8bf8d3b8d7422a65075cde3f2aea208fd45947942",
+      "bytes": 29361
+    },
+    "tests/test_reference_input_authority.py": {
+      "sha256": "2f052ecbbdd06bb1d14ee06258b3a5b6b41914f11eaa68a1c4fd354c8e0f8852",
+      "bytes": 3806
+    },
+    "tests/test_reference_package_authority.py": {
+      "sha256": "a08c9cd10cdea586982b17b3e025a401d0c6775d063c4b911cac9e501e10fa2f",
+      "bytes": 4052
+    },
+    "tools/capture_reference_inputs.py": {
+      "sha256": "199749d3b964f95a7c66514f998eb0dfe4349c741d4068bc60cd824af69c6a62",
+      "bytes": 4784
+    },
+    "tools/capture_reference_packages.py": {
+      "sha256": "d5b377ad282cee352eb7c18a76f6e3cc89f1f0298570437f4dac2066f30fb1f9",
+      "bytes": 5045
+    },
+    "tools/check_core_boundaries.py": {
+      "sha256": "e991fab88aa0f78c58de42fa04103c094b0cab844259e4c5ce79515788aee33e",
+      "bytes": 39679
+    }
+  }
+}

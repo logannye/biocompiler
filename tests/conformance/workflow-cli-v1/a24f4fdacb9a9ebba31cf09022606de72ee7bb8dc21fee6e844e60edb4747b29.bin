@@ -1,0 +1,26 @@
+{
+  "record_fingerprint": "a16a92cc61d605134081e581ff77e5c2ed758b0f2b78cb922dbad4fd08e18a4c",
+  "request_fingerprint": "f27bf98d51ffd5839b2a47dbd70fab586027b846a4a02dd2463bcb94f18a1a7d",
+  "operation": "reduce",
+  "mode": "candidate",
+  "intended_use": "software_test",
+  "human_therapeutic_admission": "not_admitted",
+  "claim_scope": "Historical finite-history software-model verification record; fresh replay requires independent complete operation authority. No universal, biological or human therapeutic claim.",
+  "outcome": "fail",
+  "one_minimal": true,
+  "evaluations": 5,
+  "original_frames": 5,
+  "reduced_frames": 1,
+  "selected_failure": {
+    "schema_version": "biocompiler.failure_signature.v0.1",
+    "kind": "diagnostic",
+    "requirement_id": null,
+    "code": "candidate_lineage",
+    "rule_id": null,
+    "specification_id": null,
+    "contact_id": null,
+    "state": null,
+    "node_id": null
+  },
+  "output": "/tmp/biocompiler-workflow-cli-v1/cases/candidate_reduce_100-run/output.json"
+}

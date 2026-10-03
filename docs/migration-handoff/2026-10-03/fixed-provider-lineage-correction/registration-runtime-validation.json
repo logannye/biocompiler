@@ -1,0 +1,56 @@
+{
+  "scope": "pure runtime preflight and exact source restoration; no native execution or fresh-installed acceptance",
+  "tests": 11,
+  "base_revision": "0dd0fe54f3d1f0e502b30188f096cb5387fbb9b2",
+  "original_runtime_sha256": "8d2e16b1db25dd295e7ce204096bade148b94215cece9087a2dcb20a6b2980e6",
+  "source_pins": {
+    "tools/pipeline_fixed_registration_runtime.py": "8b781fdf1b71c29400e002fc3fd6a40ee79df64e271d846f6f99b306689c9c9a",
+    "tests/test_pipeline_fixed_registration_runtime.py": "7f7408ba74de5295c0392fbfe5b6c0f4aa4ea1c18f605fa97af9fd768941f18f"
+  },
+  "runs": [
+    {
+      "command": [
+        "/opt/homebrew/bin/python3",
+        "-B",
+        "-m",
+        "unittest",
+        "tests.test_pipeline_fixed_registration_runtime"
+      ],
+      "environment": {
+        "PYTHONPATH": "src:."
+      },
+      "returncode": 0,
+      "duration_seconds": 0.300154,
+      "log": {
+        "path": "registration-runtime-314.log",
+        "sha256": "9d41fac32071432cb139b2bd7539a5203979e6f6095fed512518bf2ab9e7c0e8",
+        "bytes": 110
+      }
+    },
+    {
+      "command": [
+        "/Users/logannye/.local/share/uv/python/cpython-3.11.15-macos-aarch64-none/bin/python3",
+        "-B",
+        "-m",
+        "unittest",
+        "tests.test_pipeline_fixed_registration_runtime"
+      ],
+      "environment": {
+        "PYTHONPATH": "src:."
+      },
+      "returncode": 0,
+      "duration_seconds": 0.274039,
+      "log": {
+        "path": "registration-runtime-311.log",
+        "sha256": "90e2459f917c58c29d5bc61972e2e664a1f9f12a2716a76c08d6a3f7543f7c9f",
+        "bytes": 110
+      }
+    }
+  ],
+  "source_restoration": {
+    "import_anchor": "from __future__ import annotations\\n",
+    "whole_historical_sha256": "8d2e16b1db25dd295e7ce204096bade148b94215cece9087a2dcb20a6b2980e6",
+    "relocated_import_rejected": true,
+    "extra_edits_rejected": true
+  }
+}

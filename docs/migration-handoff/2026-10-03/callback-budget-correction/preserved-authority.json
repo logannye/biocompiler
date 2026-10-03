@@ -1,0 +1,11 @@
+{
+  "source_base": "b27f52447f49c749d33cac17f3bbb6fe772cbc24",
+  "unchanged": {
+    "tests/conformance/deferred-context-checker-source-delta-v1.json": "c052ed313423f5b4a016b8f8474d50a9364e278904983f3d139eb9e1ca8e4253",
+    "tests/conformance/fixed-provider-checker-source-delta-v1.json": "67c11513477659bb81c2e9a0cfb87191fd669cf2caf2acce0962e77f54a50b8b",
+    "tests/conformance/pipeline-fixed-provider-semantics-v1.json": "1f25d16d8fa9688ea34b4937f1d4a2c10fdf44d862daf8990168247758a019e7",
+    "tests/conformance/prebuilt-installed-path-delta-v1.json": "f64bcd82834b120dbe0c848a94a0ac8e0fe117ea3fedd22a136a2bc415025dbd",
+    "tests/conformance/reference-contracts-v1.json": "f0d3acadad15fbc29f195fc1a7dae875e8fb027565ec20fdbe1934fec7f3cf1b",
+    "tests/conformance/reference-original-sources-v1.json": "df3323eceb20d967ea9ae8909da94f38660a1995d0e0314531bc5989516b014a"
+  }
+}

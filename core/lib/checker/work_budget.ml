@@ -1,21 +1,54 @@
 open Bioc_wire
+type retention = { reserve:int->unit; mutable failure:exn option; mutable active:bool }
 type counter = { profile : string; error_code : string; mutable remaining : int;
-  mutable exhaustion : Diagnostic.t option }
+  mutable exhaustion : Diagnostic.t option; retention:retention option;
+  mutable retention_failure:exn option }
 type t = counter list
 let max_scopes = 16
-let counter ~profile ~error_code ~maximum =
+let counter ?retention ~profile ~error_code ~maximum () =
   Diagnostic.require (maximum >= 0) "invalid_work_budget" "A work allowance cannot be negative.";
   Diagnostic.require (String.length profile > 0 && String.length profile <= 256 &&
                       String.length error_code > 0 && String.length error_code <= 128)
     "invalid_work_budget" "A work scope requires bounded profile and error identities.";
   Json.validate_utf8 profile; Json.validate_utf8 error_code;
-  {profile;error_code;remaining=maximum;exhaustion=None}
-let create ~profile ~error_code ~maximum () = [counter ~profile ~error_code ~maximum]
-let nested ~parent ~profile ~error_code ~maximum () =
+  {profile;error_code;remaining=maximum;exhaustion=None;retention;retention_failure=None}
+let new_retention reserve={reserve;failure=None;active=false}
+let create ?retain_bytes ~profile ~error_code ~maximum () =
+  [counter ?retention:(Option.map new_retention retain_bytes) ~profile ~error_code ~maximum ()]
+let sink budget=List.find_map(fun scope->scope.retention)budget
+let has_retention budget=Option.is_some(sink budget)
+let work_guard budget=match List.find_map(fun scope->scope.exhaustion)budget with
+  |Some diagnostic->raise(Diagnostic.Error diagnostic)|None->()
+let retention_guard budget=match List.find_map(fun scope->scope.retention_failure)budget with
+  |Some error->raise error
+  |None->(match sink budget with Some {failure=Some error;_}->raise error
+    |Some _->work_guard budget|None->())
+let nested ?retain_bytes ~parent ~profile ~error_code ~maximum () =
   Diagnostic.require (List.length parent < max_scopes) "invalid_work_budget" "Nested work scope limit exceeded.";
-  counter ~profile ~error_code ~maximum :: parent
+  Diagnostic.require (Option.is_none retain_bytes || Option.is_none(sink parent)) "invalid_work_budget"
+    "A nested work scope cannot replace its existing retention owner.";
+  retention_guard parent;
+  if Option.is_some retain_bytes then work_guard parent;
+  counter ?retention:(Option.map new_retention retain_bytes) ~profile ~error_code ~maximum () :: parent
+let retain budget amount=
+  Diagnostic.require(amount>=0) "invalid_work_budget" "Retention reservations cannot be negative.";
+  retention_guard budget;
+  match sink budget with
+  |None->()
+  |Some owner->
+    try
+      Diagnostic.require(not owner.active) "invalid_work_budget" "Recursive retention reservation is invalid.";
+      owner.active<-true;
+      Fun.protect ~finally:(fun()->owner.active<-false)(fun()->owner.reserve amount);
+      retention_guard budget
+    with error->
+      owner.failure<-Some error;
+      List.iter(fun scope->scope.retention_failure<-Some error)budget;
+      (match error with Diagnostic.Error diagnostic->List.iter(fun scope->scope.exhaustion<-Some diagnostic)budget|_->());
+      raise error
 let charge budget amount =
   Diagnostic.require (amount >= 0) "invalid_work_budget" "Work charges cannot be negative.";
+  retention_guard budget;
   List.iter (fun scope -> if amount > scope.remaining then (
       let diagnostic = { Diagnostic.code=scope.error_code;
         message="Independent checker work limit exceeded under " ^ scope.profile ^ "."; path=None } in
@@ -27,6 +60,8 @@ let charge budget amount =
   List.iter (fun scope -> scope.remaining <- scope.remaining - amount) budget
 let is_exhaustion budget diagnostic = List.exists (fun scope ->
     match scope.exhaustion with Some previous -> previous == diagnostic | None -> false) budget
+let exhausted budget = List.exists (fun scope -> Option.is_some scope.exhaustion || Option.is_some scope.retention_failure ||
+    match scope.retention with Some owner->Option.is_some owner.failure|None->false) budget
 let remaining budget = List.fold_left (fun available scope -> min available scope.remaining) max_int budget
 type output = { bytes : t; nodes : t; error_code : string; maximum_bytes : int }
 let create_output ~profile ~error_code ~max_bytes ~max_nodes () =

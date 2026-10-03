@@ -1,0 +1,18 @@
+test_alias_exports_resolve_to_source_and_class_contract (tests.test_migration_inventory.MigrationInventoryTests.test_alias_exports_resolve_to_source_and_class_contract) ... ok
+test_dynamic_duplicate_or_unreachable_cli_registration_fails (tests.test_migration_inventory.MigrationInventoryTests.test_dynamic_duplicate_or_unreachable_cli_registration_fails) ... ok
+test_dynamic_schema_and_invalid_python_fail (tests.test_migration_inventory.MigrationInventoryTests.test_dynamic_schema_and_invalid_python_fail) ... ok
+test_every_record_has_resolvable_owner_authority_tasks_and_test_evidence (tests.test_migration_inventory.MigrationInventoryTests.test_every_record_has_resolvable_owner_authority_tasks_and_test_evidence) ... ok
+test_loop_commands_preserve_conditional_argument_contracts_without_execution (tests.test_migration_inventory.MigrationInventoryTests.test_loop_commands_preserve_conditional_argument_contracts_without_execution) ... ok
+test_missing_duplicate_or_dynamic_exports_fail (tests.test_migration_inventory.MigrationInventoryTests.test_missing_duplicate_or_dynamic_exports_fail) ... ok
+test_real_export_census_resolves_every_explicit_all_symbol (tests.test_migration_inventory.MigrationInventoryTests.test_real_export_census_resolves_every_explicit_all_symbol) ... ok
+test_real_schema_and_module_declarations_cannot_disappear (tests.test_migration_inventory.MigrationInventoryTests.test_real_schema_and_module_declarations_cannot_disappear) ... ok
+test_reproducible_custom_outputs_and_check_reject_stale_or_missing_files (tests.test_migration_inventory.MigrationInventoryTests.test_reproducible_custom_outputs_and_check_reject_stale_or_missing_files) ... ok
+test_static_cli_census_matches_independently_constructed_argparse_tree (tests.test_migration_inventory.MigrationInventoryTests.test_static_cli_census_matches_independently_constructed_argparse_tree) ... ok
+test_static_json_profile_metadata_is_parsed_without_executing_code (tests.test_migration_inventory.MigrationInventoryTests.test_static_json_profile_metadata_is_parsed_without_executing_code) ... ok
+test_unknown_module_ownership_fails_instead_of_assigning_generic_owner (tests.test_migration_inventory.MigrationInventoryTests.test_unknown_module_ownership_fails_instead_of_assigning_generic_owner) ... ok
+test_unmapped_studio_direct_route_or_dynamic_table_fails (tests.test_migration_inventory.MigrationInventoryTests.test_unmapped_studio_direct_route_or_dynamic_table_fails) ... ok
+
+----------------------------------------------------------------------
+Ran 13 tests in 4.186s
+
+OK

@@ -1,0 +1,27 @@
+{
+  "record_fingerprint": "1c61b99d138c439a5866b462180d3ebb139bf49c7a7ab92a509942de49b8a574",
+  "request_fingerprint": "a97934e6fdf7b2d4c3fd88be0edf36b0f3560db3ff131195e99fa5677c545d5b",
+  "operation": "reduce",
+  "mode": "model",
+  "intended_use": "software_test",
+  "human_therapeutic_admission": "not_admitted",
+  "claim_scope": "Historical finite-history software-model verification record; fresh replay requires independent complete operation authority. No universal, biological or human therapeutic claim.",
+  "outcome": "fail",
+  "one_minimal": true,
+  "evaluations": 8,
+  "original_frames": 5,
+  "reduced_frames": 3,
+  "selected_failure": {
+    "schema_version": "biocompiler.failure_signature.v0.1",
+    "kind": "response",
+    "requirement_id": "memory_readout",
+    "code": null,
+    "rule_id": "n000023",
+    "specification_id": "n000020",
+    "contact_id": null,
+    "state": "inactive",
+    "node_id": null
+  },
+  "replay": "Fresh execution reproduced the declared outcome; this does not turn a failure or unknown into PASS.",
+  "output": "/tmp/biocompiler-workflow-cli-v1/cases/model_reduce_100-replay/output.json"
+}

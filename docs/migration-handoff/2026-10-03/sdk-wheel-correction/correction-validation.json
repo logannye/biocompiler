@@ -1,0 +1,96 @@
+{
+  "added_tests": [
+    "test_prebuilt_release_chain.SdkBackendCanonicalizationTests.test_atomic_staging_preserves_original_on_failed_final_validation",
+    "test_prebuilt_release_chain.SdkBackendCanonicalizationTests.test_bad_record_unknown_members_and_changed_source_or_pins_are_not_repaired",
+    "test_prebuilt_release_chain.SdkBackendCanonicalizationTests.test_malformed_zip_metadata_and_unclaimed_bytes_remain_rejected",
+    "test_prebuilt_release_chain.SdkBackendCanonicalizationTests.test_other_modes_and_symlinks_are_not_canonicalized",
+    "test_prebuilt_release_chain.SdkBackendCanonicalizationTests.test_pinned_backend_record_mode_changes_only_central_mode_bytes",
+    "test_prebuilt_release_chain.SdkBackendCanonicalizationTests.test_sdk_driver_records_canonicalization_after_backend_success"
+  ],
+  "ast_parse": "pass",
+  "base_source": "b3228d454a823d6ce3eea3735c415cc1afcadd5a",
+  "files": [
+    {
+      "path": "tools/check_prebuilt_core_release.py",
+      "sha256": "9d1294a63222dc1689d77d9ef666082338c609257cd256aa0ba3db0dd3a94911",
+      "size": 19015
+    },
+    {
+      "path": "tools/prebuilt_release_pipeline.py",
+      "sha256": "5564773b6d659d2c718b483337db5959e7946880811a4a100a0893223cdefc19",
+      "size": 15618
+    },
+    {
+      "path": "tests/test_prebuilt_release_chain.py",
+      "sha256": "21f1fdee42acec26bacacf2da7b8f68bd146dff44ef8e265f5c6e5da8d7a66d7",
+      "size": 19608
+    }
+  ],
+  "focused_modules": [
+    "tests.test_prebuilt_ci_plan",
+    "tests.test_prebuilt_core_release",
+    "tests.test_prebuilt_release_chain",
+    "tests.test_prebuilt_sdk_matrix"
+  ],
+  "git_diff_check": "pass",
+  "hosted_validation": "pending corrected revision",
+  "inventory_check": {
+    "entries": 3310,
+    "owner": "root regenerated static coverage index",
+    "status": "pass"
+  },
+  "removed_tests": [],
+  "root_companion_files": [
+    {
+      "path": ".github/workflows/ci.yml",
+      "sha256": "f42e76e75ada9af4b20f1acef239c18721192464bcc72deb5eaaff99769bd00a",
+      "size": 110110
+    },
+    {
+      "path": "protocol/migration-inventory.json",
+      "sha256": "a198fcf3a198c92cec1fff3bffced64133438ea38e5a0ef7b2153d080e1e8362",
+      "size": 1525517
+    }
+  ],
+  "runtimes": {
+    "311": {
+      "discovered": 3391,
+      "focused_tests": 37,
+      "log": {
+        "path": "generated/migration-next/pr85-sdk-wheel-failure/correction-tests-311.log",
+        "sha256": "694e49a5c85f9efdb2bbf3ec153c1c3a69812f03d195d7b53330fb5cdced5a22",
+        "size": 98
+      },
+      "plan": {
+        "path": "generated/migration-next/pr85-sdk-wheel-failure/correction-plan-311.json",
+        "sha256": "57f441c6acf5359c8d7aceaf549b822c841c8860d5cc20309127176dd29ededc",
+        "size": 24661001
+      },
+      "seconds": 0.319,
+      "shards": 5,
+      "status": "pass",
+      "version": "3.11.15"
+    },
+    "314": {
+      "discovered": 3391,
+      "focused_tests": 37,
+      "log": {
+        "path": "generated/migration-next/pr85-sdk-wheel-failure/correction-tests-314.log",
+        "sha256": "4d7b15c95f351129d7da9070df14ec3a3882591520129a6aac92c06a43758e9f",
+        "size": 98
+      },
+      "plan": {
+        "path": "generated/migration-next/pr85-sdk-wheel-failure/correction-plan-314.json",
+        "sha256": "440dfa1acf6ff9f7143123a1a50ed5a81204b52cbf8f87098b6f5bef0195d6bf",
+        "size": 24661000
+      },
+      "seconds": 0.356,
+      "shards": 5,
+      "status": "pass",
+      "version": "3.14.6"
+    }
+  },
+  "schema_version": "biocompiler.sdk_record_mode_correction_validation.v1",
+  "scope": "Exact SDK backend RECORD regular0664 central metadata correction; unchanged final0644 policy. Pure controls only; no native execution or actual SDK build.",
+  "test_ids_lf_sha256": "4a1d29f32540fb7440665b30e617dc10083c967950e3ffa04516006f1038600a"
+}

@@ -1,0 +1,1 @@
+{"class":"mappingproxy","items":[[{"scalar":"str","value":"schema_version"},{"scalar":"str","value":"biocompiler.reference_selection.v0.1"}],[{"scalar":"str","value":"manifest"},{"ref":"object/1097"}],[{"scalar":"str","value":"reference"},{"ref":"object/1098"}]],"kind":"mapping"}

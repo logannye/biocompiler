@@ -1,0 +1,1 @@
+{"$type":"dataclass","class":"biocompiler.compiler.pipeline.ScopedObligation","fields":{"description":"Delivered molecule boundaries, regulatory context and other unknown payload features remain unresolved.","evidence_kind":{"$type":"enum","class":"biocompiler.verification.evidence.EvidenceKind","value":"exact"},"id":"complete_payload_features","scope":"complete_payload"}}

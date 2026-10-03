@@ -1,0 +1,40 @@
+{
+  "schema": "pr85_unit_accounting_review.v1",
+  "run_id": 37101974697,
+  "source_revision": "b3228d454a823d6ce3eea3735c415cc1afcadd5a",
+  "receipts": [
+    {
+      "artifact_id": 11267535505,
+      "receipt_path": "generated/migration-next/pr85-audit-tool-unit-accounting-311.json",
+      "receipt_sha256": "71c4631eb4e9c0df320f642c9813defcfab17ef82412df3a59d56576c11aa08e",
+      "python": "3.11.16",
+      "tested_revision": "4b38e5262bf0f87c52dbd638227076a7b856b8e8",
+      "tests": 3385,
+      "shards": 5,
+      "exact_saved_plan_ids_equal": true,
+      "test_ids_sha256_lf_joined": "d92fdd622e0c32fbe2b8b6c65b4910efa0856a311661c35bc437f5f8ef0e61cb"
+    },
+    {
+      "artifact_id": 11267970277,
+      "receipt_path": "generated/migration-next/pr85-audit-tool-unit-accounting-314.json",
+      "receipt_sha256": "378c8c43c90f7778f5e6f9d6a25789fc2342501131591c9309a1769baaa6c22c",
+      "python": "3.14.7",
+      "tested_revision": "4b38e5262bf0f87c52dbd638227076a7b856b8e8",
+      "tests": 3385,
+      "shards": 5,
+      "exact_saved_plan_ids_equal": true,
+      "test_ids_sha256_lf_joined": "d92fdd622e0c32fbe2b8b6c65b4910efa0856a311661c35bc437f5f8ef0e61cb"
+    }
+  ],
+  "native_local_execution": false,
+  "complete_release_acceptance": false,
+  "tested_merge": {
+    "message": "Merge b3228d454a823d6ce3eea3735c415cc1afcadd5a into d2f65c59aba3a4af97dbcabd59e8142961e12c4a",
+    "parents": [
+      "d2f65c59aba3a4af97dbcabd59e8142961e12c4a",
+      "b3228d454a823d6ce3eea3735c415cc1afcadd5a"
+    ],
+    "sha": "4b38e5262bf0f87c52dbd638227076a7b856b8e8",
+    "tree": "8cfed7fb13e41530208125d125c707b560b49d89"
+  }
+}

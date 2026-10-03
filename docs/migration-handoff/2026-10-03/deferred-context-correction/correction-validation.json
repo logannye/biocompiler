@@ -1,0 +1,49 @@
+{
+  "base_source_revision": "817a8ed1154975befd293327dfabdf7798ed2b4c",
+  "checks": [
+    {
+      "command": "PYTHONPATH=src:. /Users/logannye/.local/share/uv/python/cpython-3.11.15-macos-aarch64-none/bin/python3 -m unittest tests.test_pipeline_manager_context_bindings tests.test_pipeline_manager_campaign -q",
+      "duration_seconds": 49.453,
+      "historical_full_replay": "generated/migration-next/pr85-sdk-wheel-failure/replay-complete-311.json",
+      "log": "generated/migration-next/pr85-sdk-wheel-failure/context-tests-311.log",
+      "log_sha256": "0e706905e08870da528ea4e5a6fc3bd002b6f792a68b11046532663edbe42b35",
+      "python": "3.11.15 (main, Mar 25 2026, 02:58:47) [Clang 22.1.1 ]",
+      "replay_sha256": "db8cd3191a782334ed553e9ca071172252a26798197324e6bbd71d45a332a87b",
+      "result": "PASS",
+      "tests": 37
+    },
+    {
+      "command": "PYTHONPATH=src:. python3 -m unittest tests.test_pipeline_manager_context_bindings tests.test_pipeline_manager_campaign -q",
+      "duration_seconds": 49.215,
+      "historical_full_replay": "generated/migration-next/pr85-sdk-wheel-failure/replay-complete-314.json",
+      "log": "generated/migration-next/pr85-sdk-wheel-failure/context-tests-314.log",
+      "log_sha256": "f0181fdd542dbc9682313b3ea01f2bca79ca328d4ea44f4ec236ce6050545ded",
+      "python": "3.14.6 (main, Jun 10 2026, 10:03:53) [Clang 21.0.0 (clang-2100.0.123.102)]",
+      "replay_sha256": "58cffa69f2c14d86b0bbbaa9e9a5a3114c02067a1fdde71d294bb809dfc6310b",
+      "result": "PASS",
+      "tests": 37
+    }
+  ],
+  "fresh_install_acceptance": false,
+  "git_diff_check": "PASS",
+  "historical_replay": "Full unchanged validate_checks over retained macOS3.11.9 native receipt:86cases and16346artifacts; strict trace grammar reads exact7historical source files. Current comparator differs only by additive proof+one callsite; original wholehelper restored byte-for-byte. Receipt stays failure.",
+  "native_execution": false,
+  "new_test_methods": 6,
+  "original_receipt": {
+    "path": "generated/migration-next/pr85-sdk-wheel-failure/fresh-macos-311-pipeline-manager.json",
+    "sha256": "843871bf1eeec56bfd7cdebdc40eecfac84efa01f0bdc23adf55b079e64d44e8"
+  },
+  "peer_review": "Native peer independently rejected repaired numeric-Boolean/malformed-reference adversaries; no remaining concrete finding.",
+  "projection_scope": "Frozen47 only; exact command/parent/registered producer/result/context/tuple traversal, ordered type and four-field read census, exact Boolean success and canonical capability references, singleton scalar membership proofs. All other complete context fields remain compared.",
+  "replay_script": {
+    "path": "generated/migration-next/pr85-sdk-wheel-failure/replay-deferred-complete.py",
+    "sha256": "4413e931d002d934bd93d259f57c16a0493797a81db668d82f744f6d9d735020"
+  },
+  "schema": "biocompiler.deferred_context_correction.local_validation.v1",
+  "source_pins": {
+    "tests/test_pipeline_manager_context_bindings.py": "b1e94dbe9a742531c15188cdf466ee903611b1c7b4d0b398f79912684fca8a3b",
+    "tools/check_pipeline_manager_install.py": "59f94bb142d7097160dd08fef700f458a362865fb6b6ad8142c530fac5fe0edb"
+  },
+  "static_compile": "PASS",
+  "zip_sha256": "afd28e21c1478a81a0a5930eadcddf22845fef643e3a4c4ff53194e9337a0d36"
+}

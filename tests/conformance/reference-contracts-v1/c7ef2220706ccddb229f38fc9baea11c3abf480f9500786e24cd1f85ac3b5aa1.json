@@ -1,0 +1,1 @@
+"{\n  \"assumptions\": [],\n  \"id\": \"regulation\",\n  \"kind\": \"expression\",\n  \"provenance\": [],\n  \"regulator_instance\": \"cds\",\n  \"schema_version\": \"biocompiler.construct_regulation.v0.1\",\n  \"target_instance\": \"cds\"\n}"
