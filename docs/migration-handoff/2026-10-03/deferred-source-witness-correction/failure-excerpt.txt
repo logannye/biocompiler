@@ -1,0 +1,15 @@
+2026-10-03T12:01:42.7918148Z FAIL: test_installed_path_edits_are_finite_and_no_semantic_case_body_is_changed (test_prebuilt_ci_plan.HostedCiPlanTests.test_installed_path_edits_are_finite_and_no_semantic_case_body_is_changed)
+2026-10-03T12:01:42.7918878Z ----------------------------------------------------------------------
+2026-10-03T12:01:42.7919283Z Traceback (most recent call last):
+2026-10-03T12:01:42.7927039Z   File "/home/runner/work/biocompiler/biocompiler/tests/test_prebuilt_ci_plan.py", line 113, in test_installed_path_edits_are_finite_and_no_semantic_case_body_is_changed
+2026-10-03T12:01:42.7927883Z     self.assertEqual(hashlib.sha256(new.encode()).hexdigest(),row['current_sha256'])
+2026-10-03T12:01:42.7928609Z AssertionError: '59f94bb142d7097160dd08fef700f458a362865fb6b6ad8142c530fac5fe0edb' != 'd12f67bf4080b15a96856342e87e8678007e6093188b1a36540c7f337f6463b7'
+2026-10-03T12:01:42.7929281Z - 59f94bb142d7097160dd08fef700f458a362865fb6b6ad8142c530fac5fe0edb
+2026-10-03T12:01:42.7929680Z + d12f67bf4080b15a96856342e87e8678007e6093188b1a36540c7f337f6463b7
+2026-10-03T12:01:42.7929945Z 
+2026-10-03T12:01:42.7929951Z 
+2026-10-03T12:01:42.7930084Z ----------------------------------------------------------------------
+2026-10-03T12:01:42.7930388Z Ran 690 tests in 1073.270s
+2026-10-03T12:01:42.7930522Z 
+2026-10-03T12:01:42.7930611Z FAILED (failures=1)
+2026-10-03T12:01:42.8306763Z {"command": "run", "status": "failure", "output": "generated/unit-result/shard-2.json", "revision": "890cc59859b2bd8469d3295a8eef8c182abd203e", "python": "3.11.16"}

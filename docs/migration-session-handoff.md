@@ -3,9 +3,9 @@
 Prepared 2026-10-02 from the current source roadmap, source receipts and frozen agent packets. This is a resumable engineering handoff, not a completion or release claim. The GitHub status described here is the state before the checkpoint push; refresh the branch PR and its exact run before treating any pending work as accepted.
 
 **Consolidation update, 2026-10-03:** the user approved validating and merging
-PR85 with a merge commit, proving every PR60–84 head is contained in `main`,
-closing any remaining superseded PRs, and removing their obsolete remote branches
-after main validation. Keep the current checkpoint branch and local worktrees.
+PR85 with a merge commit and proving every PR60–84 head is contained in `main`.
+After that proof, close any remaining superseded PRs. Remove obsolete remote
+branches only after main validation. Keep the checkpoint branch and local worktrees.
 Refresh all older heads before cleanup. Source
 `817a8ed1154975befd293327dfabdf7798ed2b4c`, run `37109100797`, passes both
 native jobs and SDK-wheel assembly after the
@@ -27,6 +27,19 @@ focused controls pass on each local runtime; six new tests bring discovery to
 local Python 3.11.15 and 3.14.6, using an exact historical trace-source overlay.
 The original receipt remains failed; replay is not a new native run or a fresh
 installation. See the [correction receipt](migration-handoff/2026-10-03/deferred-context-correction/correction.json).
+
+That receipt correction is committed at
+`00fbfac6510183d5ddd7cd224305b1c2ccf915ca`. Its run `37120447580` exposes a
+separate source-witness failure in Python 3.11 shard 2: the immutable 14-file
+installed-path proof still expects the checker before the additive context
+correction. The shard executes 690 tests with one failure at that whole-source
+hash assertion. The follow-on adds a separately pinned two-span restoration of
+only the reviewed function and comparison call before the unchanged historical
+hash and AST assertions. All 44 focused controls pass on Python 3.11.15 and
+3.14.6. Discovery adds one test, reaching 3,398 IDs with none removed. The
+original witness and prior correction receipts remain immutable; product and
+checker semantics are unchanged by this follow-on.
+See [retained source-witness correction](migration-handoff/2026-10-03/deferred-source-witness-correction/correction.json).
 
 Corrected exact-source validation, all four fresh-install campaigns and the
 complete 38-job release gate remain required before consolidation. Finish this

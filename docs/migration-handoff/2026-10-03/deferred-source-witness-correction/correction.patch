@@ -1,0 +1,138 @@
+diff --git a/tests/test_prebuilt_ci_plan.py b/tests/test_prebuilt_ci_plan.py
+index fa0a0b2ef..c2e0c9e65 100644
+--- a/tests/test_prebuilt_ci_plan.py
++++ b/tests/test_prebuilt_ci_plan.py
+@@ -1,8 +1,10 @@
+ """Exact draft CI/source topology; no hosted or native operations execute."""
+ import ast
++import hashlib
+ import importlib.util
+ from importlib.machinery import SourceFileLoader
+ import os
++import json
+ from pathlib import Path
+ import re
+ import shutil
+@@ -14,6 +16,47 @@ from unittest.mock import patch
+ 
+ ROOT=Path(__file__).resolve().parents[1]
+ SOURCE=ROOT/'tests/conformance/prebuilt-source-v1'
++CONTEXT_DELTA=ROOT/'tests/conformance/deferred-context-checker-source-delta-v1.json'
++CONTEXT_DELTA_SHA256='c052ed313423f5b4a016b8f8474d50a9364e278904983f3d139eb9e1ca8e4253'
++
++
++def restore_deferred_context_source(current, proof_bytes):
++    """Recover the exact installed-path checkpoint before its later proof fix."""
++    def require(condition,message):
++        if not condition:raise AssertionError(message)
++    require(hashlib.sha256(proof_bytes).hexdigest()==CONTEXT_DELTA_SHA256,
++        'Unreviewed deferred-context source witness')
++    proof=json.loads(proof_bytes)
++    require(set(proof)=={'schema','path','historical','current','spans'}
++        and proof['schema']=='biocompiler.deferred_context_checker_source_delta.v1'
++        and proof['path']=='tools/check_pipeline_manager_install.py',
++        'Deferred-context witness shape differs')
++    require(proof['current']=={'bytes':len(current),'sha256':hashlib.sha256(current).hexdigest()},
++        'Current checker differs from the reviewed deferred-context correction')
++    spans=proof['spans']
++    require(type(spans) is list and len(spans)==2 and all(set(row)=={'offset','before','after'}
++        and type(row['offset']) is int and row['offset']>=0
++        and type(row['before']) is str and type(row['after']) is str for row in spans),
++        'Deferred-context source span census differs')
++    addition=ast.parse(spans[0]['after'])
++    require(spans[0]['before']=='' and len(addition.body)==1
++        and isinstance(addition.body[0],ast.FunctionDef)
++        and addition.body[0].name=='deferred_context_document',
++        'Deferred-context source addition is not its single proof function')
++    require(spans[1]['before']=='equal(contexts[-1]["arguments"]["document"], values["context"], "Deferred callback read a context different from native authority")'
++        and spans[1]['after']=='equal(deferred_context_document(contexts[-1], native), values["context"],\n                "Deferred callback read a context different from native authority")'
++        and spans[0]['offset']<spans[1]['offset'],
++        'Deferred-context comparison call is not the single reviewed substitution')
++    restored=current
++    for index,row in reversed(list(enumerate(spans))):
++        offset=row['offset']+sum(len(prior['after'].encode())-len(prior['before'].encode()) for prior in spans[:index])
++        before,after=row['before'].encode(),row['after'].encode()
++        require(restored[offset:offset+len(after)]==after,'Deferred-context source span bytes differ')
++        restored=restored[:offset]+before+restored[offset+len(after):]
++    require(proof['historical']=={'revision':'817a8ed1154975befd293327dfabdf7798ed2b4c',
++        'bytes':len(restored),'sha256':hashlib.sha256(restored).hexdigest()},
++        'Complete historical installed-path checker source differs')
++    return restored
+ 
+ 
+ def load(name,path):
+@@ -109,7 +152,10 @@ class HostedCiPlanTests(unittest.TestCase):
+         proof=json.loads((ROOT/'tests/conformance/prebuilt-installed-path-delta-v1.json').read_bytes())
+         self.assertEqual(len(proof),14)
+         for name,row in proof.items():
+-            old=Path(str(SOURCE/name)+'.source').read_text();new=(ROOT/name).read_text()
++            old=Path(str(SOURCE/name)+'.source').read_text();new=(ROOT/name).read_bytes()
++            if name=='tools/check_pipeline_manager_install.py':
++                new=restore_deferred_context_source(new,CONTEXT_DELTA.read_bytes())
++            new=new.decode()
+             self.assertEqual(hashlib.sha256(new.encode()).hexdigest(),row['current_sha256'])
+             old_ast=ast.parse(old);new_ast=ast.parse(new)
+             old_functions={n.name:n for n in old_ast.body if isinstance(n,(ast.FunctionDef,ast.ClassDef))}
+@@ -123,5 +169,34 @@ class HostedCiPlanTests(unittest.TestCase):
+         self.assertIn('realization-core-reproducibility',block)
+         self.assertEqual(block.count('name: realization-'),4)
+ 
++    def test_deferred_context_restoration_rejects_unreviewed_or_extra_source_changes(self):
++        current=(ROOT/'tools/check_pipeline_manager_install.py').read_bytes()
++        witness=CONTEXT_DELTA.read_bytes();proof=json.loads(witness)
++        restored=restore_deferred_context_source(current,witness)
++        self.assertEqual(hashlib.sha256(restored).hexdigest(),
++            'd12f67bf4080b15a96856342e87e8678007e6093188b1a36540c7f337f6463b7')
++        mutants={
++            'stale historical bytes':restored,
++            'added proof body':current.replace(b'and outcome["value"] is True',b'and outcome["value"] == True'),
++            'comparison call':current.replace(proof['spans'][1]['after'].encode(),proof['spans'][1]['before'].encode()),
++            'outside original body':current.replace(b'def validate_deferred_accesses(',b'def unchecked_accesses('),
++            'extra function':current+b'\ndef unreviewed():\n    return True\n',
++            'newline normalization':current.replace(b'\n',b'\r\n'),
++        }
++        for name,mutant in mutants.items():
++            with self.subTest(change=name):
++                self.assertNotEqual(mutant,current)
++                with self.assertRaisesRegex(AssertionError,'Current checker differs'):
++                    restore_deferred_context_source(mutant,witness)
++                # Rehashing the source or editing a span cannot turn new bytes
++                # into a newly approved witness; its complete pin is separate.
++                changed=json.loads(witness)
++                changed['current']={'bytes':len(mutant),'sha256':hashlib.sha256(mutant).hexdigest()}
++                with self.assertRaisesRegex(AssertionError,'Unreviewed deferred-context source witness'):
++                    restore_deferred_context_source(mutant,json.dumps(changed,sort_keys=True,indent=2).encode()+b'\n')
++        changed=json.loads(witness);changed['spans'][0]['offset']+=1
++        with self.assertRaisesRegex(AssertionError,'Unreviewed deferred-context source witness'):
++            restore_deferred_context_source(current,json.dumps(changed,sort_keys=True,indent=2).encode()+b'\n')
++
+ 
+ if __name__=='__main__':unittest.main()
+--- /dev/null
++++ b/tests/conformance/deferred-context-checker-source-delta-v1.json
+@@ -0,0 +1,25 @@
++{
++  "current": {
++    "bytes": 171731,
++    "sha256": "59f94bb142d7097160dd08fef700f458a362865fb6b6ad8142c530fac5fe0edb"
++  },
++  "historical": {
++    "bytes": 163600,
++    "revision": "817a8ed1154975befd293327dfabdf7798ed2b4c",
++    "sha256": "d12f67bf4080b15a96856342e87e8678007e6093188b1a36540c7f337f6463b7"
++  },
++  "path": "tools/check_pipeline_manager_install.py",
++  "schema": "biocompiler.deferred_context_checker_source_delta.v1",
++  "spans": [
++    {
++      "after": "def deferred_context_document(hydration, native):\n    \"\"\"Project the frozen deferred corpus's host SourceLink tuple capability.\n\n    Host links deliberately are absent from the native typed JSON document.\n    Recover their fields only from the exact producer/tuple/native-check trace,\n    never from the observed context being checked. This finite corpus uses\n    singleton membership sets; ambiguous scalar proofs fail closed.\n    \"\"\"\n    def reference(value):\n        require(type(value) is dict and set(value) == {\"handle\"}\n            and type(value[\"handle\"]) is str and len(value[\"handle\"]) <= 32\n            and re.fullmatch(r\"object/(0|[1-9][0-9]*)\", value[\"handle\"]),\n            \"Malformed deferred source-link capability reference\")\n        return value\n    def successful_boolean(item):\n        outcome = item[\"outcome\"]\n        return type(outcome) is dict and set(outcome) == {\"status\", \"value\"} \\\n            and outcome[\"status\"] == \"return\" and outcome[\"value\"] is True\n    args = hydration[\"arguments\"]\n    document = deepcopy(args[\"document\"])\n    binding = args[\"bindings\"].get(\"source_links\")\n    if binding is None:\n        return document\n    require(type(binding) is dict and set(binding) == {\"kind\", \"object\"} and binding[\"kind\"] == \"host\"\n        and document[\"source_links\"] == [], \"Deferred source links lack the exact host tuple binding\")\n    reference(binding[\"object\"])\n    sequence = hydration[\"command_sequence\"]\n    command = next((item for item in native[\"commands\"] if item[\"sequence\"] == sequence), None)\n    require(command is not None and command[\"operation\"] == \"run\", \"Deferred host links belong to another command\")\n    inspections = [item for item in native[\"commands\"] if item[\"operation\"] == \"inspect-ordered\"\n        and item[\"end_frame\"] < command[\"start_frame\"]]\n    require(inspections, \"Deferred producer lacks its original registered authority\")\n    before = max(inspections, key=lambda item: item[\"end_frame\"])\n    registered = native[\"inspections\"][before[\"sequence\"]][\"value\"][\"snapshot\"][\"passes\"].get(command[\"arguments\"][\"pass_id\"])\n    require(registered is not None, \"Deferred source links refer to an unregistered producer\")\n    prior = sorted((item for item in native[\"invocations\"].values()\n        if item[\"command_sequence\"] == sequence and item[\"end_frame\"] < hydration[\"start_frame\"]\n        and item[\"parent_invocation\"] == hydration[\"parent_invocation\"]), key=lambda item: item[\"start_frame\"])\n    def returned(item):\n        require(type(item[\"outcome\"]) is dict and set(item[\"outcome\"]) == {\"status\", \"value\"}\n            and item[\"outcome\"][\"status\"] == \"return\", \"Deferred source-link proof contains a raised primitive\")\n        return item[\"outcome\"][\"value\"]\n    attributes = [(index,item) for index,item in enumerate(prior)\n        if item[\"action\"] == \"attr\" and item[\"arguments\"][\"name\"] == \"source_links\"]\n    require(len(attributes) == 1, \"Deferred source-link producer attribute is missing or ambiguous\")\n    index, attribute = attributes[0]\n    reference(attribute[\"arguments\"][\"object\"])\n    reference(returned(attribute))\n    producers = [item for item in prior[:index] if item[\"action\"] == \"call-provider\"\n        and item[\"arguments\"][\"provider_id\"] == registered[\"producer\"]\n        and item[\"outcome\"] == {\"status\":\"return\", \"value\":attribute[\"arguments\"][\"object\"]}\n        and item[\"end_frame\"] < attribute[\"start_frame\"]]\n    require(len(producers) == 1, \"Deferred source links are detached from the registered producer result\")\n    producer = producers[0]\n    reference(returned(producer))\n    reference(producer[\"arguments\"][\"context\"])\n    contexts = [item for item in prior if item[\"action\"] == \"hydrate-context\"\n        and item[\"end_frame\"] < producer[\"start_frame\"]\n        and item[\"outcome\"] == {\"status\":\"return\", \"value\":producer[\"arguments\"][\"context\"]}]\n    require(len(contexts) == 1 and contexts[0][\"arguments\"][\"document\"][\"output\"] is None,\n        \"Deferred source links do not originate in the actual producer context\")\n    reference(returned(contexts[0]))\n    for field in (\"input\", \"target\", \"requirements\", \"configuration\", \"dependencies\"):\n        equal(contexts[0][\"arguments\"][\"document\"][field], document[field], \"Deferred producer and validator contexts differ\")\n    def step(offset, action, arguments):\n        require(offset < len(prior), \"Deferred source-link materialization is incomplete\")\n        item = prior[offset]\n        require(item[\"action\"] == action and item[\"arguments\"] == arguments,\n            \"Deferred source-link materialization changed order or object\")\n        return returned(item)\n    whole = reference(step(index+1, \"tuple\", {\"object\":returned(attribute)}))\n    equal(whole, binding[\"object\"], \"Deferred hydration uses another source-link tuple\")\n    iterator = reference(step(index+2, \"iter\", {\"object\":whole}))\n    elements, cursor = [], index+3\n    while True:\n        value = step(cursor, \"next\", {\"object\":iterator}); cursor += 1\n        require(type(value) is dict and set(value) == {\"exhausted\", \"object\"}\n            and type(value[\"exhausted\"]) is bool, \"Malformed deferred source-link iterator step\")\n        if value[\"exhausted\"]:\n            require(value[\"object\"] is None, \"Deferred exhausted iterator retained an element\")\n            break\n        elements.append(reference(value[\"object\"]))\n    checks = prior[cursor:]\n    types = [item for item in checks if item[\"action\"] == \"is-instance\" and item[\"arguments\"][\"type\"] == \"SourceLink\"]\n    require([item[\"arguments\"][\"object\"] for item in types] == elements\n        and all(successful_boolean(item) for item in types),\n        \"Deferred source-link element type checks changed order or census\")\n    for field in (\"pass_name\", \"requirement_id\", \"target_node_id\", \"source_node_id\"):\n        require([item[\"arguments\"][\"object\"] for item in checks if item[\"action\"] == \"attr\" and item[\"arguments\"][\"name\"] == field] == elements,\n            \"Deferred source-link field reads changed order or census\")\n    literals = [item for item in checks if item[\"action\"] == \"literal\" and item[\"outcome\"][\"status\"] == \"return\"]\n    def scalar(element, field):\n        proofs = []\n        for attribute in checks:\n            if attribute[\"action\"] != \"attr\" or attribute[\"arguments\"] != {\"object\":element,\"name\":field}:\n                continue\n            scalar_reference = reference(returned(attribute))\n            for check in checks:\n                if check[\"start_frame\"] <= attribute[\"end_frame\"]:\n                    continue\n                operands = check[\"arguments\"]\n                for literal in literals:\n                    if literal[\"end_frame\"] >= check[\"start_frame\"]:\n                        continue\n                    known = literal[\"arguments\"]\n                    literal_reference = reference(returned(literal))\n                    if check[\"action\"] == \"compare\" and operands == {\"left\":scalar_reference,\"operator\":\"eq\",\"right\":literal_reference} \\\n                        and known[\"kind\"] == \"json\" and type(known[\"value\"]) is str:\n                        require(successful_boolean(check), \"Deferred source-link scalar check did not return true\")\n                        proofs.append(known[\"value\"])\n                    elif check[\"action\"] == \"contains\" and operands == {\"container\":literal_reference,\"item\":scalar_reference} \\\n                        and known[\"kind\"] == \"set\" and type(known[\"value\"]) is list and len(known[\"value\"]) == 1 \\\n                        and type(known[\"value\"][0]) is str:\n                        require(successful_boolean(check), \"Deferred source-link scalar check did not return true\")\n                        proofs.append(known[\"value\"][0])\n        require(proofs and all(value == proofs[0] for value in proofs), \"Deferred source-link scalar proof is missing or ambiguous\")\n        return proofs[0]\n    links = []\n    for element in elements:\n        links.append({field:scalar(element, field) for field in (\"requirement_id\", \"source_node_id\", \"target_node_id\", \"pass_name\")})\n    document[\"source_links\"] = links\n    return document\n\n\n",
++      "before": "",
++      "offset": 90103
++    },
++    {
++      "after": "equal(deferred_context_document(contexts[-1], native), values[\"context\"],\n                \"Deferred callback read a context different from native authority\")",
++      "before": "equal(contexts[-1][\"arguments\"][\"document\"], values[\"context\"], \"Deferred callback read a context different from native authority\")",
++      "offset": 96992
++    }
++  ]
++}

@@ -1,0 +1,41 @@
+{
+  "actual_checker_sha256": "59f94bb142d7097160dd08fef700f458a362865fb6b6ad8142c530fac5fe0edb",
+  "errors": [],
+  "executed_tests": 690,
+  "expected_checker_sha256": "d12f67bf4080b15a96856342e87e8678007e6093188b1a36540c7f337f6463b7",
+  "failure": {
+    "class_id": "test_prebuilt_ci_plan.HostedCiPlanTests",
+    "id": "test_prebuilt_ci_plan.HostedCiPlanTests.test_installed_path_edits_are_finite_and_no_semantic_case_body_is_changed",
+    "seconds": 0.275804,
+    "status": "failure",
+    "subtests": []
+  },
+  "fixture_errors": [],
+  "full_job_log": {
+    "bytes": 176118,
+    "hosted_job": 111195668945,
+    "retention": "Only exact failure excerpt retained here; full log remains at hosted job.",
+    "sha256": "43753690d6bc6959cb8fff8e46120db6986e1d1cfb1caf5abbdc292cb119edce"
+  },
+  "full_shard_result": {
+    "bytes": 633618,
+    "member": "shard-2.json",
+    "retained_archive": "unit311-shard2.zip",
+    "sha256": "aba65ab15289a0deee9c523f29b6c94e778aad33c9706c7812435195822359fd"
+  },
+  "job_id": 111195668945,
+  "job_url": "https://github.com/logannye/biocompiler/actions/runs/37120447580/job/111195668945",
+  "original_whole_source_witness": {
+    "file_count": 14,
+    "path": "tests/conformance/prebuilt-installed-path-delta-v1.json",
+    "sha256": "f64bcd82834b120dbe0c848a94a0ac8e0fe117ea3fedd22a136a2bc415025dbd"
+  },
+  "python": "3.11.16",
+  "run_id": 37120447580,
+  "schema": "biocompiler.deferred_source_witness_failure.v1",
+  "scope": "Observed failing unit shard only. Corrected-source, installed, native and complete release acceptance remain pending.",
+  "shard": 2,
+  "shard_status": "failure",
+  "source_revision": "00fbfac6510183d5ddd7cd224305b1c2ccf915ca",
+  "tested_merge": "890cc59859b2bd8469d3295a8eef8c182abd203e"
+}

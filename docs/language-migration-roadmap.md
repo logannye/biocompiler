@@ -78,6 +78,15 @@ drafts are preserved separately and are not production integrations.
   trace-source restoration is separate evidence; the old receipt remains failed
   and no native executable runs locally.
   See [correction and validation](migration-handoff/2026-10-03/deferred-context-correction/correction.json).
+- [x] **LM-12/R6 deferred checker source-witness correction:** run `37120447580`
+  at source `00fbfac6510183d5ddd7cd224305b1c2ccf915ca` exposes one stale
+  installed-path source assertion in its 690-test Python 3.11 shard. Add a
+  separately pinned two-span restoration of the reviewed proof function and
+  single comparison call before the unchanged 14-file whole-hash/AST checks.
+  Preserve the old witness, expected documents and earlier correction evidence.
+  All 44 focused controls pass on each local runtime; discovery adds exactly one
+  test, for 3,398 IDs and no removals. No product or checker semantics change.
+  See [retained failure and correction](migration-handoff/2026-10-03/deferred-source-witness-correction/correction.json).
 - [ ] **LM-12/R6 corrected deferred-context installed evidence:** bind the
   observed source-link tuple to the actual native callback and complete receipt,
   retain original values/identity/order checks, and rerun every installed manager

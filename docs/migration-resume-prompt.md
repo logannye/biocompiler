@@ -14,13 +14,14 @@ local changes and use the latest verified repository state. Earlier PRs and
 source-only receipts are historical evidence, not transferable acceptance.
 
 The immediate task is PR85 consolidation and its already-authorized cleanup.
-Run `37109100797` at source `817a8ed1154975befd293327dfabdf7798ed2b4c`
-passes native jobs and SDK assembly, but both fresh macOS slots and Linux 3.14
-fail a deferred manager receipt comparison that ignores an actual source-link
-tuple binding.
-Read the [retained failure and correction evidence](migration-handoff/2026-10-03/deferred-context-correction/correction.json).
-Offline checking of its retained 86-case receipt passes after the correction;
-this does not establish a successful fresh installed campaign.
+The checker correction at source `00fbfac6510183d5ddd7cd224305b1c2ccf915ca`, run
+`37120447580`, fails one unit source-witness assertion: the old 14-file installed
+path proof predates the reviewed additive deferred-context checker correction.
+A separately pinned two-span restoration now precedes its unchanged assertions;
+all 44 focused controls pass locally on both runtimes. Read the
+[latest correction evidence](migration-handoff/2026-10-03/deferred-source-witness-correction/correction.json)
+and the [earlier context correction](migration-handoff/2026-10-03/deferred-context-correction/correction.json).
+The earlier offline 86-case replay passes; corrected hosted acceptance stays open.
 Require the corrected revision's four complete fresh-install campaigns and all
 38 required CI jobs, then merge and prove older heads are contained before
 closing superseded PRs. Validate actual main before deleting remote branches.
