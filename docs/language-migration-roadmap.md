@@ -91,19 +91,25 @@ removes unused helpers and unnecessary mutable annotations; every assertion,
 compiler warning and release gate remains required. No native execution or
 complete integration acceptance is claimed for the corrected source.
 
-**Current public workflow work:** branch `codex/ocaml-reference-public-workflows`
-continues from that checkpoint. An opt-in context now routes the existing public
-Construct/Molecular callables while preserving previously imported aliases and
-Python defaults. Native finalization is being extended to preserve the original
-separate upstream candidate reads: one supplies the independent check; a second
-supplies the returned Build field and may be a different opaque object. Molecular
-request/registry/manifest authority is retained separately from Construct manager
-provenance. The frozen public-routing batch passes 70 Python controls on both
-Python 3.11.15 and 3.14.6; strict mypy passes all 27 selected modules. Native
-source review found no concrete interface mismatch; native execution is pending. The actual installed 18-method campaign and its complete frame/object
-reconstruction remain in progress. Foreign ordinary Python-manager returns remain
-an explicit unresolved boundary; no imported accepted state or fallback closes it.
-This batch is uncommitted and closes no cutoff checkbox.
+**Current public workflow checkpoint:** [PR79](https://github.com/logannye/biocompiler/pull/79)
+is pushed at `9337cf97bcb2c994103817a0d0a161a5d3957da7` and attached to the
+session. Hosted [run 37086526526](https://github.com/logannye/biocompiler/actions/runs/37086526526)
+has eight successful jobs and no reported failures at its last check. Both native
+platforms have compiled and are executing the required suites; complete acceptance
+remains pending. The batch preserves current Molecular authority and the original
+two candidate reads. Its 70 adapter/routing controls, 48 source guards, 15 original
+counterpart controls and strict 27-module type checks pass on both Python versions.
+Both discover the same 3,221 tests; discovery is not execution. The complete
+installed 18-method replay and remaining manager compatibility stay open.
+
+**Current archive foundation work:** branch `codex/ocaml-reference-archive`
+continues from PR79. A bounded stored-ZIP/UTF8 metadata library and complete
+125-case original corpus for each Python profile are connected to hosted native
+validation. All 54 local original-authority, boundary, CI and fixture controls
+pass on both Python versions. Required native suites increase to 112 while all
+36 release jobs remain. The typed package and fresh export layers remain separate
+work. This uncommitted source batch grants no package or export acceptance; see
+the [source checkpoint](../protocol/migration-archive-foundation-checkpoint.json).
 
 The latest hosted status snapshot has PR75 run `37079154938` at 30 successful
 jobs with no reported failed steps (all four installed conformance campaigns running), PR76 run `37079677511` at 21 successful jobs
@@ -1292,6 +1298,15 @@ record current parent heads; previous partial native passes are historical only.
   complete installed replay, remaining manager compatibility and production
   cutover remain open. See the [public route design](migration-reference-public-routing.md) and
   [source checkpoint](../protocol/migration-reference-public-routing-checkpoint.json).
+
+- [x] **LM-26 stored archive primitive source and local controls:** add bounded
+  deterministic ZIP writing, strict reading and UTF8 pretty metadata under one
+  resource ancestor. Preserve 125 original byte/error observations for each
+  closed Python profile and all eight selected stdlib function sources. Native
+  tests bind complete fixture hashes and case membership. The 54 Python source,
+  dependency-boundary, CI and fixture controls pass on both local versions.
+  This records source readiness only; hosted native parity, canonical package
+  ownership and independent export acceptance remain open.
 
 - [x] **LM-03 CI harness correction checkpoint:** the installed architecture
   guard now permits only the exact new parser-registration helpers while rejecting

@@ -25,12 +25,13 @@ class NativeFixtureWiringTests(unittest.TestCase):
     def test_every_dune_fixture_is_bound_in_the_complete_native_suite(self):
         root = Path(__file__).resolve().parents[1]
         dune = (root / "core/test/dune").read_text()
-        required = set(re.findall(r"%\{env:(BIOCOMPILER_[A-Z_]+)=missing\}", dune))
+        required = set(re.findall(r"%\{env:(BIOCOMPILER_[A-Z0-9_]+)=missing\}", dune))
         self.assertTrue(required)
+        self.assertLessEqual({"BIOCOMPILER_ARCHIVE_PYTHON311_CORPUS", "BIOCOMPILER_ARCHIVE_PYTHON314_CORPUS"}, required)
         workflow = (root / ".github/workflows/ci.yml").read_text()
         suite = workflow.split("      - name: Run every native literal and mutation suite\n", 1)[1]
         suite = suite.split("\n      - name:", 1)[0]
-        bindings = re.findall(r'(BIOCOMPILER_[A-Z_]+)="\$GITHUB_WORKSPACE/([^"\n]+)"', suite)
+        bindings = re.findall(r'(BIOCOMPILER_[A-Z0-9_]+)="\$GITHUB_WORKSPACE/([^"\n]+)"', suite)
         self.assertEqual(len(bindings), len(dict(bindings)), "duplicate fixture bindings")
         self.assertEqual(set(dict(bindings)), required, "Dune fixture arguments and CI environment differ")
         for name, relative_path in bindings:
