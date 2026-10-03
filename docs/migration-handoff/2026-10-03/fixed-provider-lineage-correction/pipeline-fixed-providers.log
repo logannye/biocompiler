@@ -1,0 +1,17 @@
+Traceback (most recent call last):
+  File "/Users/runner/work/biocompiler/biocompiler/tools/check_pipeline_fixed_provider_install.py", line 840, in <module>
+    raise SystemExit(main())
+                     ~~~~^^
+  File "/Users/runner/work/biocompiler/biocompiler/tools/check_pipeline_fixed_provider_install.py", line 826, in main
+    return campaign_main(arguments)
+  File "/Users/runner/work/biocompiler/biocompiler/tools/check_pipeline_fixed_provider_install.py", line 776, in campaign_main
+    corpus, directory = Corpus(), args.output.with_name(ARTIFACT_DIRECTORY)
+                        ~~~~~~^^
+  File "/Users/runner/work/biocompiler/biocompiler/tools/check_pipeline_fixed_provider_install.py", line 65, in __init__
+    require(not Path(path).is_absolute() and '..' not in Path(path).parts and r.pin(identity)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        and sha(r.raw_file(ROOT / path)) == identity, 'Original fixed-provider source changed: '+path)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/runner/work/biocompiler/biocompiler/tools/check_workflow_reproducibility.py", line 38, in require
+    raise AssertionError(message)
+AssertionError: Original fixed-provider source changed: src/biocompiler/compiler/pipeline.py

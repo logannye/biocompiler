@@ -62,8 +62,12 @@ class Corpus:
         equal(self.value['inventory_fingerprint'], sha(canonical({key: value for key, value in self.value.items()
             if key != 'inventory_fingerprint'})), 'Original fixed-provider inventory changed')
         for path, identity in self.value['source_files'].items():
-            require(not Path(path).is_absolute() and '..' not in Path(path).parts and r.pin(identity)
-                and sha(r.raw_file(ROOT / path)) == identity, 'Original fixed-provider source changed: '+path)
+            require(not Path(path).is_absolute() and '..' not in Path(path).parts and r.pin(identity),
+                'Invalid original fixed-provider source: '+path)
+            if path == 'src/biocompiler/compiler/pipeline.py':
+                manager.fixed.source_tool('manager_registration_source_lineage').verify_source(ROOT, path, identity)
+            else:
+                require(sha(r.raw_file(ROOT / path)) == identity, 'Original fixed-provider source changed: '+path)
         self.cases = self.value['cases']
         # Retain the pre-existing full inventories, source pins and exclusions.
         self.previous = manager.Corpus()

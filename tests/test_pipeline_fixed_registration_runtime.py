@@ -1,6 +1,8 @@
 """Outer run/source/matrix bindings; semantic receipts have separate controls."""
-from contextlib import ExitStack
+from contextlib import ExitStack, redirect_stderr, redirect_stdout
 import copy
+import hashlib
+import io
 import json
 from pathlib import Path
 import tempfile
@@ -8,6 +10,30 @@ import unittest
 from unittest.mock import patch
 
 from tools import pipeline_fixed_registration_runtime as runtime
+
+
+_RUNTIME_IMPORT = '''if __package__:
+    from .check_realization_binaries import executable_path as native_executable
+else:
+    from check_realization_binaries import executable_path as native_executable
+'''
+_RUNTIME_OLD_PATH = "(args.native_root / ('biocompiler-'+role)).resolve()"
+_RUNTIME_NEW_PATH = 'native_executable(args.native_root, role).resolve()'
+_RUNTIME_ORIGINAL_SHA256 = '8d2e16b1db25dd295e7ce204096bade148b94215cece9087a2dcb20a6b2980e6'
+
+
+def restore_runtime_source(current):
+    """The complete 0dd0fe54 runtime permits exactly the two layout edits."""
+    addition = _RUNTIME_IMPORT.encode()
+    anchor = b'from __future__ import annotations\n'
+    before, after = _RUNTIME_OLD_PATH.encode(), _RUNTIME_NEW_PATH.encode()
+    if (current.count(anchor) != 1 or current.count(anchor + addition) != 1
+            or current.count(addition) != 1 or current.count(after) != 1 or before in current):
+        raise AssertionError('Registration runtime layout edit census differs')
+    original = current.replace(addition, b'', 1).replace(after, before, 1)
+    if hashlib.sha256(original).hexdigest() != _RUNTIME_ORIGINAL_SHA256:
+        raise AssertionError('Complete original registration runtime differs')
+    return original
 
 
 class FixedRegistrationRuntimeTests(unittest.TestCase):
@@ -153,6 +179,120 @@ class FixedRegistrationRuntimeTests(unittest.TestCase):
             with self.subTest(changes=changes), self.assertRaisesRegex(AssertionError, 'Missing current'):
                 self.compare(**changes)
         self.validate.assert_not_called()
+
+
+class FixedRegistrationInstalledPathTests(unittest.TestCase):
+    def preflight(self, layout, mutation=None):
+        """Exercise campaign_main up to the first native boundary, never enter it."""
+        from biocompiler.core_distribution import InstalledCoreDistribution
+        with tempfile.TemporaryDirectory() as temporary, ExitStack() as stack:
+            root = Path(temporary).resolve()
+            package = root / 'owned'
+            binaries = package / 'bin' if layout == 'installed' else package
+            binaries.mkdir(parents=True)
+            paths, pins = {}, {}
+            for role in ('core', 'verify'):
+                path = binaries / ('biocompiler-' + role)
+                raw = ('unexecuted ' + role + ' fixture').encode()
+                path.write_bytes(raw)
+                path.chmod(0o755)
+                paths[role], pins[role] = path, hashlib.sha256(raw).hexdigest()
+            native = {'sha256': {path.name: pins[role] for role, path in paths.items()}}
+            selected = InstalledCoreDistribution(package, root / 'sdk', b'', b'', b'', b'',
+                tuple(('bin/biocompiler-' + role, path, pins[role], path.stat().st_size)
+                    for role, path in paths.items()), ())
+            supplied, supplied_pins, native_root = dict(paths), dict(pins), package
+            if mutation == 'swapped_roles':
+                supplied = {'core': paths['verify'], 'verify': paths['core']}
+            elif mutation == 'unowned_same_name':
+                other = root / 'other' / paths['core'].name
+                other.parent.mkdir()
+                other.write_bytes(paths['core'].read_bytes())
+                other.chmod(0o755)
+                supplied['core'] = other
+            elif mutation == 'symlink':
+                link = root / paths['core'].name
+                link.symlink_to(paths['core'])
+                supplied['core'] = link
+            elif mutation == 'not_executable':
+                paths['core'].chmod(0o644)
+            elif mutation == 'wrong_hash':
+                supplied_pins['core'] = 'f' * 64
+            elif mutation == 'relative_path':
+                supplied['core'] = Path(paths['core'].name)
+            elif mutation == 'wrong_root':
+                native_root = root / 'foreign'
+            elif mutation == 'unknown_layout':
+                layout = 'unreviewed'
+            elif mutation is not None:
+                self.fail('Unknown fixture mutation')
+            output = root / 'receipt.json'
+            stack.enter_context(patch.dict(runtime.os.environ, {
+                'BIOCOMPILER_NATIVE_INPUT_LAYOUT': layout,
+                'GITHUB_SHA': 'a' * 40, 'GITHUB_HEAD_SHA': 'b' * 40, 'GITHUB_RUN_ID': '123'}))
+            stack.enter_context(patch.object(runtime.gate, 'Corpus', return_value=object()))
+            stack.enter_context(patch.object(runtime, 'product_sources', return_value={}))
+            stack.enter_context(patch.object(runtime, 'campaign_sources', return_value={}))
+            stack.enter_context(patch.object(runtime, 'metadata', return_value={}))
+            stack.enter_context(patch.object(runtime.providers, 'installed_modules'))
+            stack.enter_context(patch.object(runtime.r, 'verify_binaries', return_value=native))
+            stack.enter_context(patch.object(runtime.platform, 'system', return_value='Linux'))
+            stack.enter_context(patch.object(runtime.platform, 'machine', return_value='x86_64'))
+            stack.enter_context(patch.object(runtime.Path, 'cwd', return_value=root))
+            owner = stack.enter_context(patch('biocompiler.core_distribution.installed_distribution',
+                return_value=selected))
+            client = stack.enter_context(patch('biocompiler.core_client.CoreClient'))
+            boundary = stack.enter_context(patch.object(runtime.manager, 'verify_rejection',
+                side_effect=RuntimeError('pure fixture stopped before native execution')))
+            campaign = stack.enter_context(patch.object(runtime.gate, 'campaign'))
+            stack.enter_context(patch('subprocess.Popen', side_effect=AssertionError('Native execution forbidden')))
+            arguments = ['--native-root', str(native_root), '--platform', 'linux-x86_64', '--output', str(output)]
+            for role in ('core', 'verify'):
+                arguments.extend(('--' + role, str(supplied[role]), '--' + role + '-sha256', supplied_pins[role]))
+            with redirect_stdout(io.StringIO()), redirect_stderr(io.StringIO()):
+                self.assertEqual(runtime.campaign_main(arguments), 1)
+            receipt = json.loads(output.read_bytes())
+            campaign.assert_not_called()
+            if mutation is None:
+                client.assert_called_once()
+                boundary.assert_called_once_with(paths['verify'], pins['verify'], unittest.mock.ANY)
+                self.assertEqual(receipt['executables'], {role: str(path) for role, path in paths.items()})
+                self.assertEqual(receipt['error'], 'RuntimeError: pure fixture stopped before native execution')
+                self.assertEqual(owner.call_count, 2 if layout == 'installed' else 0)
+            else:
+                client.assert_not_called()
+                boundary.assert_not_called()
+                expected = ('Installed role root differs' if mutation == 'wrong_root' and layout == 'installed'
+                    else 'Unknown explicit native input layout' if mutation == 'unknown_layout'
+                    else 'Unbound registration binary')
+                self.assertIn(expected, receipt['error'])
+
+    def test_real_campaign_preflight_accepts_both_owned_layouts(self):
+        for layout in ('artifact', 'installed'):
+            with self.subTest(layout=layout):
+                self.preflight(layout)
+
+    def test_real_campaign_preflight_rejects_unbound_roles_and_paths(self):
+        for layout in ('artifact', 'installed'):
+            for mutation in ('swapped_roles', 'unowned_same_name', 'symlink', 'not_executable',
+                    'wrong_hash', 'relative_path', 'wrong_root', 'unknown_layout'):
+                with self.subTest(layout=layout, mutation=mutation):
+                    self.preflight(layout, mutation)
+
+    def test_runtime_restores_whole_original_source_with_only_two_layout_edits(self):
+        current = Path(runtime.__file__).read_bytes()
+        original = restore_runtime_source(current)
+        self.assertIn(_RUNTIME_OLD_PATH.encode(), original)
+        self.assertNotIn(_RUNTIME_IMPORT.encode(), original)
+
+    def test_runtime_restoration_rejects_additional_or_different_edits(self):
+        current = Path(runtime.__file__).read_bytes()
+        for changed in (current + b'\n', current.replace(b'path.is_absolute()', b'True'),
+                current.replace(_RUNTIME_NEW_PATH.encode(), b'path.resolve()'),
+                current + _RUNTIME_IMPORT.encode(),
+                current.replace(_RUNTIME_IMPORT.encode(), b'', 1) + _RUNTIME_IMPORT.encode()):
+            with self.subTest(sha256=hashlib.sha256(changed).hexdigest()), self.assertRaises(AssertionError):
+                restore_runtime_source(changed)
 
 
 if __name__ == '__main__':

@@ -41,6 +41,25 @@ original witness and prior correction receipts remain immutable; product and
 checker semantics are unchanged by this follow-on.
 See [retained source-witness correction](migration-handoff/2026-10-03/deferred-source-witness-correction/correction.json).
 
+The follow-on source `0dd0fe54f3d1f0e502b30188f096cb5387fbb9b2`, run
+`37121925726`, passes both complete native jobs, SDK assembly and all 3,398
+unit tests on both runtimes. Its freshly installed macOS/Python 3.14.7 manager
+campaign succeeds: 5 identity, 34 comparison and 47 deferred cases. Independent
+replay consumes and rehashes all 16,346 artifacts with the current checker and
+no historical overlay. The next campaign fails before native execution because
+its fixed-provider oracle loader compares the current registration-routed
+`pipeline.py` directly with the historical pin. The same finite registration
+lineage is already checked in the continuation campaign. Apply it to this one
+provider source, retaining the frozen oracle and the other 28 exact source pins.
+The adjacent registration runtime also still expects flat binary paths; its
+correction uses the same owned-layout resolver as the other installed campaigns,
+preserving all role/root/path/hash/symlink/executable checks. The complete original
+runtime is restored after exactly the import and path edits. All 40 focused
+controls pass on both local Python runtimes; discovery preserves every prior
+test and adds ten, for 3,408 IDs/350 classes. The correction and its separate
+installed-path source counterpart are recorded
+in [fixed-provider lineage evidence](migration-handoff/2026-10-03/fixed-provider-lineage-correction/correction.json).
+
 Corrected exact-source validation, all four fresh-install campaigns and the
 complete 38-job release gate remain required before consolidation. Finish this
 consolidation and its authorized cleanup before resuming migration scope. Do not

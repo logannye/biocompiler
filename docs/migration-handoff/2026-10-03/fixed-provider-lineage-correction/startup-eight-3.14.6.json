@@ -1,0 +1,132 @@
+{
+  "python_version": "3.14.6",
+  "scope": "Final complete startup Corpus reads and applicable current source declarations; source-tree pure audit, not installed/native execution or acceptance",
+  "prohibited": "Subprocess, process creation/replacement and socket audit events",
+  "script_sha256": "0ceb1729a69a6cb69b39196112b2b548553defe868302bf68f8459738ccdcc14",
+  "source_count": 274,
+  "source_inventory_sha256": "b072546e75ca8e033adf26806afe354ef1d4b176de4385098ffcf60006eb760e",
+  "rows": [
+    {
+      "module": "check_realization_protocol",
+      "source_sha256": "38abf7668e0f9525c833deff5d2d3d43397c063123a606070146685c993628e5",
+      "corpus_class": "tools.check_realization_protocol.Corpus",
+      "current_product_sources": {
+        "count": 0,
+        "sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+      },
+      "declared_campaign_sources": {
+        "count": 0,
+        "sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+      },
+      "status": "passed",
+      "seconds": 0.185
+    },
+    {
+      "module": "check_realization_routing",
+      "source_sha256": "2a5270112529efb4f756d8f63642f06568735bbd9be976fafdea256e9601a4fa",
+      "corpus_class": "tools.check_realization_protocol.Corpus",
+      "current_product_sources": {
+        "count": 0,
+        "sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+      },
+      "declared_campaign_sources": {
+        "count": 0,
+        "sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+      },
+      "status": "passed",
+      "seconds": 0.038
+    },
+    {
+      "module": "check_pipeline_session_install",
+      "source_sha256": "05b56ffa7969cea9630c2c901111f9c94fad40ac544770450932282eb35f4b62",
+      "corpus_class": "tools.check_pipeline_session_install.Corpus",
+      "current_product_sources": {
+        "count": 0,
+        "sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+      },
+      "declared_campaign_sources": {
+        "count": 9,
+        "sha256": "8f7662e8c1bc865f460c9a3cecaecef7789c8ad52559276122a79a008d09a6a6"
+      },
+      "status": "passed",
+      "seconds": 0.828
+    },
+    {
+      "module": "check_pipeline_manager_install",
+      "source_sha256": "59f94bb142d7097160dd08fef700f458a362865fb6b6ad8142c530fac5fe0edb",
+      "corpus_class": "tools.check_pipeline_manager_install.Corpus",
+      "current_product_sources": {
+        "count": 31,
+        "sha256": "0974f1e392d3a9929278218e256a44674f74069984d5ae09f801c2658cd56a89"
+      },
+      "declared_campaign_sources": {
+        "count": 31,
+        "sha256": "e47adf6b5d75ada4c23702fea1a8e2a395f7d488f49a322a6d9a1cc4144791c9"
+      },
+      "status": "passed",
+      "seconds": 2.823
+    },
+    {
+      "module": "check_pipeline_fixed_provider_install",
+      "source_sha256": "8d5f72afe93ec0dbb84b5d5321633ea653b274e4845645c4fd064a3f62319117",
+      "corpus_class": "tools.check_pipeline_fixed_provider_install.Corpus",
+      "current_product_sources": {
+        "count": 37,
+        "sha256": "a2208edd3cdb938ceb0d4559b53ade164abfbda7d5f395eac3e88bcfd4fd9f80"
+      },
+      "declared_campaign_sources": {
+        "count": 42,
+        "sha256": "3d40f0bb9dde5e952c34f8aef43af7d185e8cc1078f2f254da94f3c469949a72"
+      },
+      "status": "passed",
+      "seconds": 2.669
+    },
+    {
+      "module": "check_pipeline_fixed_continuation_install",
+      "source_sha256": "18cc625ed401eecaf9b07fb61a44021c56533c8f6b021ec8c332c652ce36db2b",
+      "corpus_class": "tools.check_pipeline_fixed_continuation_install.Corpus",
+      "current_product_sources": {
+        "count": 40,
+        "sha256": "a528520a421441cf162bd983ff2e3602196abc073d32adedf197dac8de5c9d2f"
+      },
+      "declared_campaign_sources": {
+        "count": 50,
+        "sha256": "6370af414f7bb15cc5cde02591aefa982f5a51334ef0e7783bc82f66fc318195"
+      },
+      "status": "passed",
+      "seconds": 1.131
+    },
+    {
+      "module": "check_pipeline_fixed_registration_install",
+      "source_sha256": "de75f006cd0b3ada6308736b1b8f3df69dfa6a1e3271deab9a5218785b73dc5e",
+      "corpus_class": "tools.check_pipeline_fixed_registration_install.Corpus",
+      "current_product_sources": {
+        "count": 190,
+        "sha256": "a118702f508a88dd9931d7a24d6ceee98abde4a464525cff5a623f2c878352cc"
+      },
+      "declared_campaign_sources": {
+        "count": 54,
+        "sha256": "c5a9d985ff2997783a91127f1ac5915b5635cc6a484b560f2f42d8a371f7f470"
+      },
+      "status": "passed",
+      "seconds": 0.966
+    },
+    {
+      "module": "check_pipeline_reference_install",
+      "source_sha256": "d1cf550d00b79c2445de8c948ad7f3865379b4d77addc117fe8ea6e75772ff38",
+      "corpus_class": "tools.check_pipeline_reference_install.Corpus",
+      "unchanged_test_cases": 18,
+      "exact_public_prefixes": 2,
+      "current_product_sources": {
+        "count": 195,
+        "sha256": "0a92cc2e6796d33e4a9aae2a8abd1093ffde19a42b60402a64a51732ef1c1a50"
+      },
+      "declared_campaign_sources": {
+        "count": 55,
+        "sha256": "e657051c04924540da0e17e60d6c2588d21a995c9782afbbe49dccf88447d14e"
+      },
+      "status": "passed",
+      "seconds": 1.757
+    }
+  ]
+}

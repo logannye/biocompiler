@@ -1,0 +1,46 @@
+{
+  "baseline_tests": 3398,
+  "runtimes": {
+    "311": {
+      "added": [
+        "test_pipeline_fixed_provider_source_lineage.FixedProviderSourceLineageTests.test_other_source_files_remain_exact_raw_hashes",
+        "test_pipeline_fixed_provider_source_lineage.FixedProviderSourceLineageTests.test_real_corpus_accepts_exact_reviewed_prefix_without_changing_original",
+        "test_pipeline_fixed_provider_source_lineage.FixedProviderSourceLineageTests.test_real_corpus_still_accepts_exact_historical_source",
+        "test_pipeline_fixed_provider_source_lineage.FixedProviderSourceLineageTests.test_rehashed_oracle_cannot_replace_historical_source_authority",
+        "test_pipeline_fixed_provider_source_lineage.FixedProviderSourceLineageTests.test_reviewed_prefix_does_not_authorize_any_other_manager_edit",
+        "test_pipeline_fixed_registration_runtime.FixedRegistrationInstalledPathTests.test_real_campaign_preflight_accepts_both_owned_layouts",
+        "test_pipeline_fixed_registration_runtime.FixedRegistrationInstalledPathTests.test_real_campaign_preflight_rejects_unbound_roles_and_paths",
+        "test_pipeline_fixed_registration_runtime.FixedRegistrationInstalledPathTests.test_runtime_restoration_rejects_additional_or_different_edits",
+        "test_pipeline_fixed_registration_runtime.FixedRegistrationInstalledPathTests.test_runtime_restores_whole_original_source_with_only_two_layout_edits",
+        "test_prebuilt_ci_plan.HostedCiPlanTests.test_fixed_provider_restoration_rejects_unreviewed_source_changes"
+      ],
+      "classes": 350,
+      "plan_sha256": "779c423cef6e018c85e96eb1f8c4e877c7b140768385da02b9d143f8273dd97d",
+      "python": "3.11.15",
+      "removed": [],
+      "test_ids_lf_sha256": "fbe205746822fbaef318cf37dd1e9b6e17ae90d4dd0327839a91027d46bea23d",
+      "tests": 3408
+    },
+    "314": {
+      "added": [
+        "test_pipeline_fixed_provider_source_lineage.FixedProviderSourceLineageTests.test_other_source_files_remain_exact_raw_hashes",
+        "test_pipeline_fixed_provider_source_lineage.FixedProviderSourceLineageTests.test_real_corpus_accepts_exact_reviewed_prefix_without_changing_original",
+        "test_pipeline_fixed_provider_source_lineage.FixedProviderSourceLineageTests.test_real_corpus_still_accepts_exact_historical_source",
+        "test_pipeline_fixed_provider_source_lineage.FixedProviderSourceLineageTests.test_rehashed_oracle_cannot_replace_historical_source_authority",
+        "test_pipeline_fixed_provider_source_lineage.FixedProviderSourceLineageTests.test_reviewed_prefix_does_not_authorize_any_other_manager_edit",
+        "test_pipeline_fixed_registration_runtime.FixedRegistrationInstalledPathTests.test_real_campaign_preflight_accepts_both_owned_layouts",
+        "test_pipeline_fixed_registration_runtime.FixedRegistrationInstalledPathTests.test_real_campaign_preflight_rejects_unbound_roles_and_paths",
+        "test_pipeline_fixed_registration_runtime.FixedRegistrationInstalledPathTests.test_runtime_restoration_rejects_additional_or_different_edits",
+        "test_pipeline_fixed_registration_runtime.FixedRegistrationInstalledPathTests.test_runtime_restores_whole_original_source_with_only_two_layout_edits",
+        "test_prebuilt_ci_plan.HostedCiPlanTests.test_fixed_provider_restoration_rejects_unreviewed_source_changes"
+      ],
+      "classes": 350,
+      "plan_sha256": "e3ab7a389c6f221d2063f2f77a79c5ef1ab10830a2cba15c282cc4dd9f96a945",
+      "python": "3.14.6",
+      "removed": [],
+      "test_ids_lf_sha256": "fbe205746822fbaef318cf37dd1e9b6e17ae90d4dd0327839a91027d46bea23d",
+      "tests": 3408
+    }
+  },
+  "scope": "Discovery only, not execution; working tree based on0dd0fe54"
+}

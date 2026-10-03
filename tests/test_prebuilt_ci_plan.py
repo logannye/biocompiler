@@ -18,6 +18,8 @@ ROOT=Path(__file__).resolve().parents[1]
 SOURCE=ROOT/'tests/conformance/prebuilt-source-v1'
 CONTEXT_DELTA=ROOT/'tests/conformance/deferred-context-checker-source-delta-v1.json'
 CONTEXT_DELTA_SHA256='c052ed313423f5b4a016b8f8474d50a9364e278904983f3d139eb9e1ca8e4253'
+PROVIDER_DELTA=ROOT/'tests/conformance/fixed-provider-checker-source-delta-v1.json'
+PROVIDER_DELTA_SHA256='67c11513477659bb81c2e9a0cfb87191fd669cf2caf2acce0962e77f54a50b8b'
 
 
 def restore_deferred_context_source(current, proof_bytes):
@@ -56,6 +58,34 @@ def restore_deferred_context_source(current, proof_bytes):
     require(proof['historical']=={'revision':'817a8ed1154975befd293327dfabdf7798ed2b4c',
         'bytes':len(restored),'sha256':hashlib.sha256(restored).hexdigest()},
         'Complete historical installed-path checker source differs')
+    return restored
+
+
+def restore_fixed_provider_source(current, proof_bytes):
+    """Recover the complete installed-path checker before its lineage fix."""
+    def require(condition,message):
+        if not condition:raise AssertionError(message)
+    require(hashlib.sha256(proof_bytes).hexdigest()==PROVIDER_DELTA_SHA256,
+        'Unreviewed fixed-provider source witness')
+    proof=json.loads(proof_bytes)
+    require(set(proof)=={'schema','path','historical','current','spans'}
+        and proof['schema']=='biocompiler.fixed_provider_checker_source_delta.v1'
+        and proof['path']=='tools/check_pipeline_fixed_provider_install.py',
+        'Fixed-provider witness shape differs')
+    require(proof['current']=={'bytes':len(current),'sha256':hashlib.sha256(current).hexdigest()},
+        'Current fixed-provider checker differs from the reviewed lineage correction')
+    spans=proof['spans']
+    require(type(spans) is list and len(spans)==1
+        and set(spans[0])=={'offset','before','after'}
+        and type(spans[0]['offset']) is int and spans[0]['offset']>=0
+        and all(type(spans[0][name]) is str and spans[0][name] for name in ('before','after')),
+        'Fixed-provider source span census differs')
+    row=spans[0];offset=row['offset'];before=row['before'].encode();after=row['after'].encode()
+    require(current[offset:offset+len(after)]==after,'Fixed-provider source span bytes differ')
+    restored=current[:offset]+before+current[offset+len(after):]
+    require(proof['historical']=={'revision':'0dd0fe54f3d1f0e502b30188f096cb5387fbb9b2',
+        'bytes':len(restored),'sha256':hashlib.sha256(restored).hexdigest()},
+        'Complete historical fixed-provider checker source differs')
     return restored
 
 
@@ -155,6 +185,8 @@ class HostedCiPlanTests(unittest.TestCase):
             old=Path(str(SOURCE/name)+'.source').read_text();new=(ROOT/name).read_bytes()
             if name=='tools/check_pipeline_manager_install.py':
                 new=restore_deferred_context_source(new,CONTEXT_DELTA.read_bytes())
+            elif name=='tools/check_pipeline_fixed_provider_install.py':
+                new=restore_fixed_provider_source(new,PROVIDER_DELTA.read_bytes())
             new=new.decode()
             self.assertEqual(hashlib.sha256(new.encode()).hexdigest(),row['current_sha256'])
             old_ast=ast.parse(old);new_ast=ast.parse(new)
@@ -197,6 +229,33 @@ class HostedCiPlanTests(unittest.TestCase):
         changed=json.loads(witness);changed['spans'][0]['offset']+=1
         with self.assertRaisesRegex(AssertionError,'Unreviewed deferred-context source witness'):
             restore_deferred_context_source(current,json.dumps(changed,sort_keys=True,indent=2).encode()+b'\n')
+
+
+    def test_fixed_provider_restoration_rejects_unreviewed_source_changes(self):
+        current=(ROOT/'tools/check_pipeline_fixed_provider_install.py').read_bytes()
+        witness=PROVIDER_DELTA.read_bytes();proof=json.loads(witness)
+        restored=restore_fixed_provider_source(current,witness)
+        original=json.loads((ROOT/'tests/conformance/prebuilt-installed-path-delta-v1.json').read_bytes())
+        self.assertEqual(hashlib.sha256(restored).hexdigest(),
+            original['tools/check_pipeline_fixed_provider_install.py']['current_sha256'])
+        mutants={
+            'stale historical bytes':restored,
+            'changed lineage target':current.replace(b'src/biocompiler/compiler/pipeline.py',b'src/biocompiler/compiler/unreviewed.py'),
+            'extra function':current+b'\ndef unreviewed():\n    return True\n',
+            'newline normalization':current.replace(b'\n',b'\r\n'),
+        }
+        for name,mutant in mutants.items():
+            with self.subTest(change=name):
+                self.assertNotEqual(mutant,current)
+                with self.assertRaisesRegex(AssertionError,'Current fixed-provider checker differs'):
+                    restore_fixed_provider_source(mutant,witness)
+                changed=json.loads(witness)
+                changed['current']={'bytes':len(mutant),'sha256':hashlib.sha256(mutant).hexdigest()}
+                with self.assertRaisesRegex(AssertionError,'Unreviewed fixed-provider source witness'):
+                    restore_fixed_provider_source(mutant,json.dumps(changed,sort_keys=True,indent=2).encode()+b'\n')
+        changed=json.loads(witness);changed['spans'][0]['offset']+=1
+        with self.assertRaisesRegex(AssertionError,'Unreviewed fixed-provider source witness'):
+            restore_fixed_provider_source(current,json.dumps(changed,sort_keys=True,indent=2).encode()+b'\n')
 
 
 if __name__=='__main__':unittest.main()

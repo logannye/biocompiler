@@ -87,6 +87,27 @@ drafts are preserved separately and are not production integrations.
   All 44 focused controls pass on each local runtime; discovery adds exactly one
   test, for 3,398 IDs and no removals. No product or checker semantics change.
   See [retained failure and correction](migration-handoff/2026-10-03/deferred-source-witness-correction/correction.json).
+- [x] **LM-12/R6 fresh manager execution checkpoint:** source
+  `0dd0fe54f3d1f0e502b30188f096cb5387fbb9b2`, run `37121925726`, passes
+  both complete native jobs, SDK assembly and all 3,398 unit tests on both
+  runtimes. The fresh macOS/Python 3.14.7 manager campaign passes all 86 cases;
+  independent current-source replay rehashes and consumes all 16,346 artifacts
+  without a historical overlay. The next fixed-provider campaign fails at its
+  historical `pipeline.py` source pin before native execution. This checkpoint
+  does not accept a complete fresh-install slot or the distribution release.
+- [x] **LM-12/30 fixed campaign startup corrections, source checkpoint:** use
+  the existing exact registration-prefix proof for the one changed provider
+  source, retaining its original oracle and all other 28 source pins. Preserve
+  the unchanged 14-file installed-path checks with a separately pinned one-span
+  checker counterpart. Correct the registration runtime's stale flat binary
+  path using the existing owned-layout resolver; restore its complete old source
+  after exactly the import and path edits. All 40 focused controls pass on each
+  local runtime, including source tampering and 16 binary-binding mutants.
+  Discovery adds ten tests with none removed, reaching 3,408 IDs/350 classes.
+  All 17 campaign startup loaders pass on both runtimes with child processes
+  and network use forbidden; this is source validation, not native acceptance.
+  The 3,310-entry inventory retains every semantic entry and migration state.
+  See [failure, correction and scoped evidence](migration-handoff/2026-10-03/fixed-provider-lineage-correction/correction.json).
 - [ ] **LM-12/R6 corrected deferred-context installed evidence:** bind the
   observed source-link tuple to the actual native callback and complete receipt,
   retain original values/identity/order checks, and rerun every installed manager
