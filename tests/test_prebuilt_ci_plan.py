@@ -22,6 +22,37 @@ PROVIDER_DELTA=ROOT/'tests/conformance/fixed-provider-checker-source-delta-v1.js
 PROVIDER_DELTA_SHA256='67c11513477659bb81c2e9a0cfb87191fd669cf2caf2acce0962e77f54a50b8b'
 BUDGET_DELTA=ROOT/'tests/conformance/callback-budget-checker-source-delta-v1.json'
 BUDGET_DELTA_SHA256='6cb03e6dfa5c76528bf9370be992634b6a9fbad5219a1e43c042090abd48ff8b'
+REFERENCE_DELTA=ROOT/'tests/conformance/reference-distribution-source-delta-v1.json'
+REFERENCE_DELTA_SHA256='06475b6327dac7dc67187956e14abb3a0771574307e4fbf460795c49ab905a06'
+
+
+def restore_reference_distribution_source(current, proof_bytes):
+    """Restore the complete reference runtime before its explicit source pin."""
+    def require(condition,message):
+        if not condition:raise AssertionError(message)
+    require(hashlib.sha256(proof_bytes).hexdigest()==REFERENCE_DELTA_SHA256,
+        'Unreviewed reference-distribution source witness')
+    proof=json.loads(proof_bytes)
+    require(set(proof)=={'schema','path','historical','current','spans'}
+        and proof['schema']=='biocompiler.reference_distribution_source_delta.v1'
+        and proof['path']=='tools/pipeline_reference_runtime.py',
+        'Reference-distribution witness shape differs')
+    require(proof['current']=={'bytes':len(current),'sha256':hashlib.sha256(current).hexdigest()},
+        'Current reference runtime differs from the reviewed distribution correction')
+    spans=proof['spans']
+    require(type(spans) is list and len(spans)==1 and set(spans[0])=={'offset','before','after'}
+        and type(spans[0]['offset']) is int and spans[0]['offset']>=0
+        and spans[0]['before']==''
+        and spans[0]['after']=="    # Installed-layout discovery is current campaign authority, not frozen semantics.\n"
+            "    paths.add('src/biocompiler/core_distribution.py')\n",
+        'Reference-distribution source span census differs')
+    row=spans[0];offset=row['offset'];after=row['after'].encode()
+    require(current[offset:offset+len(after)]==after,'Reference-distribution source span bytes differ')
+    restored=current[:offset]+current[offset+len(after):]
+    require(proof['historical']=={'revision':'d3bef33bf45e0e80797cb30956fc8dc02e58b8eb',
+        'bytes':len(restored),'sha256':hashlib.sha256(restored).hexdigest()},
+        'Complete historical reference runtime source differs')
+    return restored
 
 
 def restore_callback_budget_source(current, proof_bytes):
@@ -218,6 +249,8 @@ class HostedCiPlanTests(unittest.TestCase):
                 new=restore_deferred_context_source(new,CONTEXT_DELTA.read_bytes())
             elif name=='tools/check_pipeline_fixed_provider_install.py':
                 new=restore_fixed_provider_source(new,PROVIDER_DELTA.read_bytes())
+            elif name=='tools/pipeline_reference_runtime.py':
+                new=restore_reference_distribution_source(new,REFERENCE_DELTA.read_bytes())
             new=new.decode()
             self.assertEqual(hashlib.sha256(new.encode()).hexdigest(),row['current_sha256'])
             old_ast=ast.parse(old);new_ast=ast.parse(new)
@@ -313,6 +346,34 @@ class HostedCiPlanTests(unittest.TestCase):
         changed=json.loads(witness);changed['spans'][0]['offset']+=1
         with self.assertRaisesRegex(AssertionError,'Unreviewed fixed-provider source witness'):
             restore_fixed_provider_source(current,json.dumps(changed,sort_keys=True,indent=2).encode()+b'\n')
+
+    def test_reference_distribution_restoration_retains_the_complete_original_path_proof(self):
+        current=(ROOT/'tools/pipeline_reference_runtime.py').read_bytes()
+        witness=REFERENCE_DELTA.read_bytes();proof=json.loads(witness)
+        restored=restore_reference_distribution_source(current,witness)
+        original=json.loads((ROOT/'tests/conformance/prebuilt-installed-path-delta-v1.json').read_bytes())
+        self.assertEqual(hashlib.sha256(restored).hexdigest(),
+            original['tools/pipeline_reference_runtime.py']['current_sha256'])
+        mutants={
+            'stale historical bytes':restored,
+            'different current source':current.replace(b"paths.add('src/biocompiler/core_distribution.py')",
+                b"paths.add('src/biocompiler/core_client.py')"),
+            'weakened installed byte guard':current.replace(b'logical in sources and sha(',b'logical in sources or sha('),
+            'extra function':current+b'\ndef unreviewed():\n    return True\n',
+            'newline normalization':current.replace(b'\n',b'\r\n'),
+        }
+        for label,mutant in mutants.items():
+            with self.subTest(change=label):
+                self.assertNotEqual(mutant,current)
+                with self.assertRaisesRegex(AssertionError,'Current reference runtime differs'):
+                    restore_reference_distribution_source(mutant,witness)
+                forged=json.loads(witness)
+                forged['current']={'bytes':len(mutant),'sha256':hashlib.sha256(mutant).hexdigest()}
+                with self.assertRaisesRegex(AssertionError,'Unreviewed reference-distribution source witness'):
+                    restore_reference_distribution_source(mutant,json.dumps(forged,sort_keys=True,indent=2).encode()+b'\n')
+        proof['spans'][0]['offset']+=1
+        with self.assertRaisesRegex(AssertionError,'Unreviewed reference-distribution source witness'):
+            restore_reference_distribution_source(current,json.dumps(proof,sort_keys=True,indent=2).encode()+b'\n')
 
 
 if __name__=='__main__':unittest.main()

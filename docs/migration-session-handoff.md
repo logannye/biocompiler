@@ -2,7 +2,21 @@
 
 Prepared 2026-10-02 from the current source roadmap, source receipts and frozen agent packets. This is a resumable engineering handoff, not a completion or release claim. The GitHub status described here is the state before the checkpoint push; refresh the branch PR and its exact run before treating any pending work as accepted.
 
-**Latest stopping checkpoint, 2026-10-03:** the user requests a clean checkpoint,
+**Current source correction, 2026-10-03:** source `d3bef33bf45e0e80797cb30956fc8dc02e58b8eb`,
+run `37157131669`, is superseded by a necessary reference-campaign source-authority
+correction. Static review and an inert fixture reproduce the late source check
+rejecting the lazily imported `core_distribution` module. This is not an observed
+hosted failure. Explicitly pin that one current source; retain exact byte checks,
+closed loaded-module admission, frozen semantic sources and the original 14-file
+installed-path proof through a separately pinned two-line restoration. All 29
+focused controls pass on Python 3.11.15 and 3.14.6. Discovery retains all 3,418
+prior IDs and adds five, reaching 3,423 IDs/352 classes; the 3,310-entry inventory
+is unchanged. See [source correction and review](migration-handoff/2026-10-03/reference-installed-source-correction/correction.json).
+Refresh the corrected commit and its automatically triggered PR run; require its
+complete 38-job gate. No merge, PR closure or branch deletion is claimed. All four
+cutoffs remain open and Python remains the production default.
+
+**Previous stopping checkpoint, 2026-10-03:** the user requests a clean checkpoint,
 safe merges and continuation in a fresh Codex session. PR85 is not yet merge-ready.
 Source `4790ac559c70a77dcbd0141331609b837bba0096`, run `37150039387`,
 passes both complete native jobs (118 suites per platform), SDK wheel assembly

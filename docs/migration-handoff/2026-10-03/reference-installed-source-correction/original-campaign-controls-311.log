@@ -1,0 +1,15 @@
+test_complete_original_taxonomy_and_genuine_method_census (tests.test_pipeline_reference_campaign.ReferenceCampaignSourceTests.test_complete_original_taxonomy_and_genuine_method_census) ... ok
+test_live_method_code_globals_and_source_origin_are_independent (tests.test_pipeline_reference_campaign.ReferenceCampaignSourceTests.test_live_method_code_globals_and_source_origin_are_independent) ... ok
+test_only_exact_public_prefix_at_the_original_callpoint_is_accepted (tests.test_pipeline_reference_campaign.ReferenceCampaignSourceTests.test_only_exact_public_prefix_at_the_original_callpoint_is_accepted) ... ok
+test_reference_initializer_is_closed_and_counted_exactly_once (tests.test_pipeline_reference_campaign.ReferenceFrameInitializerTests.test_reference_initializer_is_closed_and_counted_exactly_once) ... ok
+test_callback_role_is_compared_before_native_closure_correspondence (tests.test_pipeline_reference_campaign.ReferenceGraphCorrespondenceTests.test_callback_role_is_compared_before_native_closure_correspondence) ... ok
+test_complete_value_kind_order_and_physical_bijection (tests.test_pipeline_reference_campaign.ReferenceGraphCorrespondenceTests.test_complete_value_kind_order_and_physical_bijection) ... ok
+test_full_actual_inspection_command_and_chronology_bindings (tests.test_pipeline_reference_campaign.ReferenceObservedEvidenceTests.test_full_actual_inspection_command_and_chronology_bindings) ... ok
+test_path_correspondence_rehashes_sources_without_rewriting_user_data (tests.test_pipeline_reference_campaign.ReferenceObservedEvidenceTests.test_path_correspondence_rehashes_sources_without_rewriting_user_data) ... ok
+test_source_origin_full_bytes_and_relocated_paths_are_not_self_authorized (tests.test_pipeline_reference_campaign.ReferenceObservedEvidenceTests.test_source_origin_full_bytes_and_relocated_paths_are_not_self_authorized) ... ok
+test_all_actual_callpoint_inputs_preserve_complete_original_values_and_aliases (tests.test_pipeline_reference_campaign.ReferenceSourceCallpointTests.test_all_actual_callpoint_inputs_preserve_complete_original_values_and_aliases) ... ok
+
+----------------------------------------------------------------------
+Ran 10 tests in 3.898s
+
+OK

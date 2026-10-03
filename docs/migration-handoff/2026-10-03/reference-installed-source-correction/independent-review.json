@@ -1,0 +1,203 @@
+{
+  "base_source_revision": "d3bef33bf45e0e80797cb30956fc8dc02e58b8eb",
+  "confirmed": [
+    "The new witness has one insertion at byte1379: the exact140-byte comment and explicit core_distribution source pin. Current entire17333-byte hash is2038afce45cd6f0490957370286a0a3ba8fc0fca402c0daf30b2bede1d67d70e; removing only this span recovers the entire17193-byte d3bef33 runtime SHA928cf47c58572f8fb85c7669b47eb6a40201be4d4a4eb8bb4ac4899340f133de and the retained pre-fix bytes.",
+    "Witness raw bytes are bound to hardcoded SHA06475b6327dac7dc67187956e14abb3a0771574307e4fbf460795c49ab905a06 before decoding; exact schema/path/current whole-source pin/span shape/literal/historical revision and whole-source pin are checked. A caller cannot authorize arbitrary changed source by rehashing its witness.",
+    "Original14-entry installed-path witness and frozen source manifest are byte-identical to d3bef33. Every archived14-source file retains its original old_sha256. The restored runtime equals the pre-existing original installed-path current_sha256.",
+    "The pre-existing14-file proof loop remains complete. Removing only the new exact runtime restoration branch makes that original method AST identical to d3bef33; its full hash assertion, unchanged function/class census, exactly-one-changed-function assertion and campaign_main/main restriction remain intact.",
+    "All previously existing top-level restoration helpers and all other existing HostedCiPlanTests method ASTs are unchanged. Exactly one new test method exercises finite restoration and hostile mutations.",
+    "New controls cover stale historical bytes, changed pinned module, weakened installed byte guard, extra function, newline normalization, forged current rehashes and changed span offset. Forged witness edits reject through the fixed raw witness hash.",
+    "Runtime authority expands only by one explicit current distribution-source path. No product implementation, frozen semantic corpus/oracle, manager source closure or execution guard was changed by this correction."
+  ],
+  "created_at_utc": "2026-10-03T22:27:03.175626+00:00",
+  "evidence_pins": {
+    "discovery-311.json": {
+      "bytes": 418327,
+      "sha256": "99ca25367bd586c63bcd958d1c1404823c4714a7d83a54452dc488acf482cbba"
+    },
+    "discovery-314.json": {
+      "bytes": 418326,
+      "sha256": "eed2043f6bd348d6c035b2119cab6946978e76b98bc2bc11844e9a63b34d83cc"
+    },
+    "focused-py311.log": {
+      "bytes": 1946,
+      "sha256": "4b54ec6d2f63c8c3506b0d589436a79c44d2c3e31d6c661b77f5eae947993ded"
+    },
+    "focused-py314.log": {
+      "bytes": 1946,
+      "sha256": "4b54ec6d2f63c8c3506b0d589436a79c44d2c3e31d6c661b77f5eae947993ded"
+    },
+    "inventory-check.log": {
+      "bytes": 42,
+      "sha256": "f71083e97a33518aa7f72084fbe9887c4111012d5cff140a60f2776aa2b50470"
+    },
+    "original-campaign-controls-311.log": {
+      "bytes": 2202,
+      "sha256": "6e51156c0b3e85181015b78db9fa0b0d5d159e5a1ee4a4040da0f571c686b742"
+    },
+    "original-campaign-controls-314.log": {
+      "bytes": 2202,
+      "sha256": "acbf90b3d98a3cd8b2783df0122c2aef39791b242827e25ca0220299821044bf"
+    },
+    "source-witness-311.log": {
+      "bytes": 2133,
+      "sha256": "1ca99e92bd2b1408430d66562237dbad218220d9a442b54f06ee675dae1fb992"
+    },
+    "source-witness-314.log": {
+      "bytes": 2133,
+      "sha256": "975c24ff22a86664a9413ea7f9fe24d3e54d3bde10534f6cc10a0e92bff71883"
+    }
+  },
+  "findings": [],
+  "method": "Independent source/diff/AST and evidence-file review only. No passed checks rerun; no imports of the new test helper or product/native execution.",
+  "native_execution": false,
+  "original_fourteen_archived_sources": [
+    {
+      "bytes": 31419,
+      "path": "tests/conformance/prebuilt-source-v1/tools/check_native_synthetic_inspection.py.source",
+      "sha256": "faab36c77e0d030616bef3ad92abc4fa241414ee29e762a296f19e73b1c9528b"
+    },
+    {
+      "bytes": 36403,
+      "path": "tests/conformance/prebuilt-source-v1/tools/check_native_synthetic_producer.py.source",
+      "sha256": "2301750656bcb4c8d6080b43ef887076fdd1d6e93d00303efe69e8510f198412"
+    },
+    {
+      "bytes": 30380,
+      "path": "tests/conformance/prebuilt-source-v1/tools/check_native_synthetic_public_sdk.py.source",
+      "sha256": "6f656a1832b7d21799a5b498174681c4d46154c2941d60ce00beb13790d85719"
+    },
+    {
+      "bytes": 41450,
+      "path": "tests/conformance/prebuilt-source-v1/tools/check_native_synthetic_selection_cli.py.source",
+      "sha256": "d44853fc94c5c111dd9d051080223c8b508fe9038cf25fb21b56778b91f2e9db"
+    },
+    {
+      "bytes": 25301,
+      "path": "tests/conformance/prebuilt-source-v1/tools/check_native_workflow.py.source",
+      "sha256": "5a5f87e0eccc34f2034812b6c944dc01f0f57db8277a22b4ec39293868459a04"
+    },
+    {
+      "bytes": 27690,
+      "path": "tests/conformance/prebuilt-source-v1/tools/check_native_workflow_authority.py.source",
+      "sha256": "001a98e030b15e1cd0dfb17149e34549e38f5a9d92b6a023c62dfb5aebb3b194"
+    },
+    {
+      "bytes": 41445,
+      "path": "tests/conformance/prebuilt-source-v1/tools/check_native_workflow_cli.py.source",
+      "sha256": "58d1552ba8cb57a1614a985e4bbb457954e13c4f57c07c1a93009181b80426be"
+    },
+    {
+      "bytes": 25889,
+      "path": "tests/conformance/prebuilt-source-v1/tools/check_native_workflow_presentation.py.source",
+      "sha256": "0f2941c5f29cf590e6f569da7da3fa54e2d860735080e37653713475eb908ded"
+    },
+    {
+      "bytes": 39021,
+      "path": "tests/conformance/prebuilt-source-v1/tools/check_native_workflow_public_sdk.py.source",
+      "sha256": "7bfda785dd7bdf20ccd6f63daf7c0663d501a1e5ba2cc90c757f41218dabda72"
+    },
+    {
+      "bytes": 70950,
+      "path": "tests/conformance/prebuilt-source-v1/tools/check_pipeline_fixed_continuation_install.py.source",
+      "sha256": "976d575b3190f2f891fe8b470ee4cec85b59cda6761c143feb552ed161c48cac"
+    },
+    {
+      "bytes": 56967,
+      "path": "tests/conformance/prebuilt-source-v1/tools/check_pipeline_fixed_provider_install.py.source",
+      "sha256": "03bd395842ba2a6aa228a6392f004bb9c68c9fa8ed3615d90be2f3b3e51b70b8"
+    },
+    {
+      "bytes": 163417,
+      "path": "tests/conformance/prebuilt-source-v1/tools/check_pipeline_manager_install.py.source",
+      "sha256": "7eb6daf93734b7942a083b90e240227bb30ab1a5f2cb932b95bf54a9a81d110c"
+    },
+    {
+      "bytes": 57474,
+      "path": "tests/conformance/prebuilt-source-v1/tools/check_pipeline_session_install.py.source",
+      "sha256": "7f0fedf58a59f2a5aad9c2cfef64872aa93a6784942b2508ff7c1b12793ac61d"
+    },
+    {
+      "bytes": 17006,
+      "path": "tests/conformance/prebuilt-source-v1/tools/pipeline_reference_runtime.py.source",
+      "sha256": "34b5a08297ed5cd1b9930058b195cf911976d6562398ab068c78282c4a54e044"
+    }
+  ],
+  "proof_limits": [
+    "Inert fixture controls do not claim an actual fresh installation or real Core execution.",
+    "The complete final-source hosted gate remains required before integration; this review establishes the finite-source witness and preservation obligations only."
+  ],
+  "retained_validation_evidence": {
+    "discovery": [
+      {
+        "added": [
+          "test_pipeline_reference_runtime.ReferenceInstalledSourceClosureTests.test_current_source_closure_explicitly_pins_distribution_bytes",
+          "test_pipeline_reference_runtime.ReferenceInstalledSourceClosureTests.test_lazy_installed_resolver_import_remains_in_closed_source_authority",
+          "test_pipeline_reference_runtime.ReferenceInstalledSourceClosureTests.test_loaded_unlisted_module_does_not_expand_source_authority",
+          "test_pipeline_reference_runtime.ReferenceInstalledSourceClosureTests.test_omitted_or_changed_distribution_source_is_rejected",
+          "test_prebuilt_ci_plan.HostedCiPlanTests.test_reference_distribution_restoration_retains_the_complete_original_path_proof"
+        ],
+        "classes": 352,
+        "count": 3423,
+        "id_sha256": "19c7b1ed2bd2d70302e2c93f2e45e9168c3d77d108bb19fae7e19871290caf5d",
+        "python": "3.11.15",
+        "removed": []
+      },
+      {
+        "added": [
+          "test_pipeline_reference_runtime.ReferenceInstalledSourceClosureTests.test_current_source_closure_explicitly_pins_distribution_bytes",
+          "test_pipeline_reference_runtime.ReferenceInstalledSourceClosureTests.test_lazy_installed_resolver_import_remains_in_closed_source_authority",
+          "test_pipeline_reference_runtime.ReferenceInstalledSourceClosureTests.test_loaded_unlisted_module_does_not_expand_source_authority",
+          "test_pipeline_reference_runtime.ReferenceInstalledSourceClosureTests.test_omitted_or_changed_distribution_source_is_rejected",
+          "test_prebuilt_ci_plan.HostedCiPlanTests.test_reference_distribution_restoration_retains_the_complete_original_path_proof"
+        ],
+        "classes": 352,
+        "count": 3423,
+        "id_sha256": "19c7b1ed2bd2d70302e2c93f2e45e9168c3d77d108bb19fae7e19871290caf5d",
+        "python": "3.14.6",
+        "removed": []
+      }
+    ],
+    "independence": "These previously completed test/discovery outcomes were inspected, not rerun in this review.",
+    "inventory": "Retained inventory-check.log reports3310entries.",
+    "original_reference_campaign_controls": "Both retained logs show10tests OK on3.11/3.14.",
+    "runtime_controls": "Both retained logs show9tests OK on3.11/3.14.",
+    "source_witness_controls": "Both retained logs show10tests OK on3.11/3.14."
+  },
+  "reviewed": [
+    {
+      "bytes": 25726,
+      "path": "tests/test_prebuilt_ci_plan.py",
+      "sha256": "6bec54bcb232fefecdc2c7e9c83f2369b288aec1f9ac1795e7aaa111962e4cc5"
+    },
+    {
+      "bytes": 655,
+      "path": "tests/conformance/reference-distribution-source-delta-v1.json",
+      "sha256": "06475b6327dac7dc67187956e14abb3a0771574307e4fbf460795c49ab905a06"
+    },
+    {
+      "bytes": 17333,
+      "path": "tools/pipeline_reference_runtime.py",
+      "sha256": "2038afce45cd6f0490957370286a0a3ba8fc0fca402c0daf30b2bede1d67d70e"
+    },
+    {
+      "bytes": 13106,
+      "path": "tests/test_pipeline_reference_runtime.py",
+      "sha256": "90809996bafb862508cd93ed69e53494b433f641c548469f23f8788c76c1cfa6"
+    },
+    {
+      "bytes": 19931,
+      "path": "tests/conformance/prebuilt-installed-path-delta-v1.json",
+      "sha256": "f64bcd82834b120dbe0c848a94a0ac8e0fe117ea3fedd22a136a2bc415025dbd"
+    },
+    {
+      "bytes": 2637,
+      "path": "tests/conformance/prebuilt-source-v1.json",
+      "sha256": "d679ec6aaf09cb0fc1ba56c42bf72b85b3184b37f34456633f76139b4274363d"
+    }
+  ],
+  "root_owned_files_changed": false,
+  "schema_version": "biocompiler.reference_distribution_finite_witness_review.v1",
+  "status": "no_concrete_findings",
+  "tests_rerun": false
+}

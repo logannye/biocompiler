@@ -157,6 +157,17 @@ drafts are preserved separately and are not production integrations.
   runtime; its four fresh slots were still running when this necessary correction
   was prepared. No complete release acceptance transfers to the corrected source.
   See [console correction and bounded evidence](migration-handoff/2026-10-03/installed-console-correction/correction.json).
+- [x] **LM-30 reference installed source closure, source checkpoint:** static
+  review and inert fixtures reproduce a late rejection of the lazily imported
+  distribution discovery module, absent from the reference campaign's source
+  closure. Add that one explicit current pin; preserve exact installed bytes,
+  unlisted-module rejection and frozen semantic authority. A separately pinned
+  two-line restoration preserves the complete original 14-file source proof.
+  All 29 focused controls pass on each local runtime. Discovery retains all
+  3,418 prior IDs and adds five, for 3,423 IDs/352 classes; inventory remains
+  3,310. No actual hosted failure or fresh installation is claimed by the local
+  reproduction. The corrected source requires its own full 38-job gate.
+  See [correction and independent review](migration-handoff/2026-10-03/reference-installed-source-correction/correction.json).
 - [ ] **LM-12/R6 corrected deferred-context installed evidence:** bind the
   observed source-link tuple to the actual native callback and complete receipt,
   retain original values/identity/order checks, and rerun every installed manager

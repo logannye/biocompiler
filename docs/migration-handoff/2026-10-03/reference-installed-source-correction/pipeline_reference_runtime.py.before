@@ -38,8 +38,6 @@ def product_sources(corpus):
     paths = set(path for path in corpus.index['source_files'] if path.startswith('src/'))
     paths.update(manager.python_sources())
     paths.update(path for path in gate.SOURCES if path.startswith('src/'))
-    # Installed-layout discovery is current campaign authority, not frozen semantics.
-    paths.add('src/biocompiler/core_distribution.py')
     return r.source_pins(paths)
 
 

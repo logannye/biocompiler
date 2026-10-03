@@ -1,11 +1,8 @@
 """Outer authority/orchestration controls, never a native semantic substitute."""
-from contextlib import ExitStack, contextmanager
+from contextlib import ExitStack
 from copy import deepcopy
-import os
 from pathlib import Path
-import sys
 import tempfile
-from types import ModuleType, SimpleNamespace
 import unittest
 from unittest.mock import patch
 
@@ -121,86 +118,3 @@ class ReferenceRuntimeAuthorityTests(unittest.TestCase):
             self.compare(python314=self.interpreters['3.11'])
         with self.assertRaisesRegex(AssertionError,'Missing current reference run authority'):
             self.compare(run_id=None)
-
-
-class ReferenceInstalledSourceClosureTests(unittest.TestCase):
-    """Pure source/import controls; the inert package is not an installation."""
-    distribution_source = 'src/biocompiler/core_distribution.py'
-
-    @contextmanager
-    def inert_package(self):
-        # Exercise the actual installed-layout resolver and source checker while
-        # replacing distribution discovery with an explicitly inert module.
-        # No wheel, native executable, product constructor or subprocess runs.
-        with tempfile.TemporaryDirectory(prefix='reference-source-control-') as directory, \
-                patch.dict(sys.modules), \
-                patch.dict(os.environ, {'BIOCOMPILER_NATIVE_INPUT_LAYOUT': 'installed'}), \
-                patch.object(runtime.subprocess, 'Popen', side_effect=AssertionError('No subprocess in source control')):
-            root = Path(directory).resolve()
-            package = root / 'biocompiler'
-            package.mkdir()
-            native = root / 'inert-owned-core'
-            (package / '__init__.py').write_bytes(b'"""Inert source-control package, not an installed SDK."""\n')
-            (package / 'core_distribution.py').write_text(
-                '"""Inert discovery stand-in; no distribution is inspected."""\n'
-                'from pathlib import Path\n'
-                'from types import SimpleNamespace\n'
-                'def installed_distribution():\n'
-                '    root = Path(' + repr(str(native)) + ')\n'
-                '    return SimpleNamespace(package_root=root,\n'
-                '        executable=lambda role: root / "bin" / ("biocompiler-" + role))\n')
-            for name in tuple(sys.modules):
-                if name == 'biocompiler' or name.startswith('biocompiler.'):
-                    del sys.modules[name]
-            module = ModuleType('biocompiler')
-            module.__file__ = str(package / '__init__.py')
-            module.__path__ = [str(package)]
-            sys.modules['biocompiler'] = module
-            sources = {'src/biocompiler/' + path.name: runtime.sha(path.read_bytes())
-                       for path in package.glob('*.py')}
-            yield SimpleNamespace(package=package, native=native, sources=sources)
-
-    def test_current_source_closure_explicitly_pins_distribution_bytes(self):
-        original = 'src/biocompiler/__init__.py'
-        corpus = SimpleNamespace(index={'source_files': {original: 'frozen-original-pin'}})
-        with patch.object(runtime.manager, 'python_sources', return_value={}), \
-                patch.object(runtime.gate, 'SOURCES', ()), \
-                patch.object(runtime.subprocess, 'Popen', side_effect=AssertionError('No subprocess in source control')):
-            sources = runtime.product_sources(corpus)
-        self.assertEqual(sources, {path: runtime.sha((runtime.ROOT / path).read_bytes())
-                                  for path in (original, self.distribution_source)})
-
-    def test_lazy_installed_resolver_import_remains_in_closed_source_authority(self):
-        with self.inert_package() as fixture:
-            self.assertNotIn('biocompiler.core_distribution', sys.modules)
-            runtime.installed_sources(fixture.sources)
-            self.assertEqual(runtime.native_executable(fixture.native, 'core'),
-                             fixture.native / 'bin/biocompiler-core')
-            self.assertIn('biocompiler.core_distribution', sys.modules)
-            self.assertEqual(runtime.installed_sources(fixture.sources),
-                             str(fixture.package / '__init__.py'))
-
-    def test_omitted_or_changed_distribution_source_is_rejected(self):
-        with self.inert_package() as fixture:
-            runtime.native_executable(fixture.native, 'verify')
-            omitted = {path: pin for path, pin in fixture.sources.items() if path != self.distribution_source}
-            with self.assertRaisesRegex(AssertionError,
-                    'Loaded reference module lacks current source authority: biocompiler.core_distribution'):
-                runtime.installed_sources(omitted)
-            path = fixture.package / 'core_distribution.py'
-            path.write_bytes(path.read_bytes() + b'\n# changed after source pinning\n')
-            with self.assertRaisesRegex(AssertionError,
-                    'Installed reference source differs: src/biocompiler/core_distribution.py'):
-                runtime.installed_sources(fixture.sources)
-
-    def test_loaded_unlisted_module_does_not_expand_source_authority(self):
-        with self.inert_package() as fixture:
-            runtime.native_executable(fixture.native, 'core')
-            path = fixture.package / 'unlisted.py'
-            path.write_bytes(b'"""Unlisted inert source."""\n')
-            module = ModuleType('biocompiler.unlisted')
-            module.__file__ = str(path)
-            sys.modules[module.__name__] = module
-            with self.assertRaisesRegex(AssertionError,
-                    'Loaded reference module lacks current source authority: biocompiler.unlisted'):
-                runtime.installed_sources(fixture.sources)

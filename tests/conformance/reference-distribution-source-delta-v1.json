@@ -1,0 +1,20 @@
+{
+  "current": {
+    "bytes": 17333,
+    "sha256": "2038afce45cd6f0490957370286a0a3ba8fc0fca402c0daf30b2bede1d67d70e"
+  },
+  "historical": {
+    "bytes": 17193,
+    "revision": "d3bef33bf45e0e80797cb30956fc8dc02e58b8eb",
+    "sha256": "928cf47c58572f8fb85c7669b47eb6a40201be4d4a4eb8bb4ac4899340f133de"
+  },
+  "path": "tools/pipeline_reference_runtime.py",
+  "schema": "biocompiler.reference_distribution_source_delta.v1",
+  "spans": [
+    {
+      "after": "    # Installed-layout discovery is current campaign authority, not frozen semantics.\n    paths.add('src/biocompiler/core_distribution.py')\n",
+      "before": "",
+      "offset": 1379
+    }
+  ]
+}
