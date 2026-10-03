@@ -41,45 +41,98 @@ let read_raw ~maximum path =
     require (bytes > 0 && bytes <= maximum) "Reference source/document byte bound";
     really_input_string channel bytes)
 
-let reference_manager_original root name expected current =
-  let old_pin="40a08477c97a97159372d9723267df3cacf8335a59d6b00ada34bb56470e31f3"
-  and current_pin="0c0cfac138484cf71f1bb1303e66873b8b148ca236e07930fdbadd0b477a11be" in
-  require(name="src/biocompiler/core_pipeline_manager.py" && expected=old_pin &&
-    Canonical.sha256 current=current_pin) "Unreviewed original reference source substitution";
-  let witness_raw=read_raw ~maximum:1_000_000
-    (Filename.concat root "tests/conformance/reference-manager-source-counterpart-v1.json") in
-  require(Canonical.sha256 witness_raw="9f4406d46a7d18db944094ea6875a1daceb3d327b2da8e8029250e312ea833f8")
-    "Reference manager finite source witness changed";
-  let witness=Json.parse_artifact ~max_bytes:1_000_000 ~max_nodes:10_000 witness_raw in
-  require(text "path" witness=name && text "original_sha256" witness=old_pin &&
-    text "current_sha256" witness=current_pin &&
-    text "base_revision" witness="a8cf5266963abfb5beae408c296a6f626e8f51fe")
-    "Reference manager source witness lost its exact authority";
+let source_witness root path pin =
+  let raw=read_raw ~maximum:1_000_000 (Filename.concat root path) in
+  require(Canonical.sha256 raw=pin) "Reference finite source witness changed";
+  Json.parse_artifact ~max_bytes:1_000_000 ~max_nodes:10_000 raw
+
+let restore_source_lines current changes =
   let lines raw=if raw="" then [] else
     match List.rev(String.split_on_char '\n' raw) with
     | ""::rest->List.map(fun line->line^"\n")(List.rev rest)
-    | _->failwith "Reference manager source fragment lacks its terminal newline" in
+    | _->failwith "Reference source fragment lacks its terminal newline" in
   let split count values=
     let rec take remaining prefix tail=if remaining=0 then List.rev prefix,tail else
       match tail with head::rest->take(remaining-1)(head::prefix)rest
       | []->failwith "Reference source witness span exceeds its complete module" in
     require(count>=0) "Reference source witness span is negative";take count [] values in
-  let changes=array "changes" witness in
-  require(List.length changes=6) "Reference manager finite source change census differs";
-  let restored=List.fold_left(fun values change->
+  List.fold_left(fun values change->
     let start=integer(field "new_start_line" change) and finish=integer(field "new_end_line" change) in
     let before=lines(text "before" change) and after=lines(text "after" change) in
     require(start>0 && finish>=start-1 && List.length after=finish-start+1 &&
       List.length before=integer(field "old_end_line" change)-integer(field "old_start_line" change)+1)
-      "Reference manager source witness span lengths differ";
+      "Reference source witness span lengths differ";
     let prefix,remaining=split(start-1) values in
     let actual,suffix=split(List.length after)remaining in
-    require(actual=after) "Reference manager source witness replacement bytes differ";
-    prefix@before@suffix)(lines current)(List.rev changes) |> String.concat "" in
+    require(actual=after) "Reference source witness replacement bytes differ";
+    prefix@before@suffix)(lines current)(List.rev changes) |> String.concat ""
+
+let reference_manager_original root name expected current =
+  let old_pin="40a08477c97a97159372d9723267df3cacf8335a59d6b00ada34bb56470e31f3"
+  and previous_pin="0c0cfac138484cf71f1bb1303e66873b8b148ca236e07930fdbadd0b477a11be"
+  and current_pin="18ee9bd517524b4440bcf29292a5d834470603713d662198b83ca61373c7fd09"
+  and witness_path="tests/conformance/reference-manager-source-counterpart-v1.json"
+  and witness_pin="9f4406d46a7d18db944094ea6875a1daceb3d327b2da8e8029250e312ea833f8" in
+  require(name="src/biocompiler/core_pipeline_manager.py" && expected=old_pin &&
+    Canonical.sha256 current=current_pin) "Unreviewed original reference source substitution";
+  let update=source_witness root "tests/conformance/reference-manager-source-counterpart-v2.json"
+    "d19d7e706876ac234e2f3e5a45c66ebbf9625599a880c15dec64595c1bbed8e4" in
+  let predecessor=field "predecessor" update in
+  require(text "schema_version" update="biocompiler.reference_manager_source_counterpart.v2" &&
+    text "path" update=name && text "original_sha256" update=previous_pin &&
+    text "current_sha256" update=current_pin &&
+    text "base_revision" update="e73743bc2f17597b57ac15869986255802289615" &&
+    text "path" predecessor=witness_path && text "sha256" predecessor=witness_pin)
+    "Reference manager source update lost its exact authority";
+  let updates=array "changes" update in
+  require(List.length updates=1) "Reference manager declaration update census differs";
+  let change=List.hd updates in
+  require(List.for_all(fun key->integer(field key change)=44)
+    ["new_start_line";"new_end_line";"old_start_line";"old_end_line"] &&
+    String.starts_with ~prefix:"_APPLICATION_JSON = " (text "before" change) &&
+    String.starts_with ~prefix:"_APPLICATION_JSON = " (text "after" change))
+    "Reference manager update is not its exact declaration assignment";
+  let previous=restore_source_lines current updates in
+  require(Canonical.sha256 previous=previous_pin) "Reference preceding complete module differs";
+  let witness=source_witness root witness_path witness_pin in
+  require(text "schema_version" witness="biocompiler.reference_manager_source_counterpart.v1" &&
+    text "path" witness=name && text "original_sha256" witness=old_pin &&
+    text "current_sha256" witness=previous_pin &&
+    text "base_revision" witness="a8cf5266963abfb5beae408c296a6f626e8f51fe")
+    "Reference manager source witness lost its exact authority";
+  let changes=array "changes" witness in
+  require(List.length changes=6) "Reference manager finite source change census differs";
+  restore_source_lines previous changes
+
+let reference_routed_original root name expected current =
+  require(List.mem name ["src/biocompiler/compiler/construct.py";"src/biocompiler/compiler/molecular.py"])
+    "Unreviewed reference public source substitution";
+  let witness=source_witness root "tests/conformance/reference-public-routing-source-counterpart-v1.json"
+    "949bd00942bbaa8c6107c490692e38007e41309b0d8f22b0bccd4d8f8514f074" in
+  require(text "schema" witness="biocompiler.reference_public_routing_source_counterpart.v1" &&
+    text "base_revision" witness="e73743bc2f17597b57ac15869986255802289615")
+    "Reference public source witness lost its exact authority";
+  let row=field name (field "entrypoint_prefixes" witness) in
+  require(text "original_sha256" row=expected && text "current_sha256" row=Canonical.sha256 current &&
+    integer(field "current_bytes" row)=String.length current)
+    "Reference public complete source differs";
+  let insertion=field "insertion" row in
+  let offset=integer(field "byte_offset" insertion) and added=text "text" insertion in
+  let count=String.length added in
+  require(offset>=0 && offset<=String.length current && count<=String.length current-offset &&
+    String.sub current offset count=added &&
+    integer(field "original_bytes" row)=String.length current-count)
+    "Reference public five-line source prefix differs";
+  String.sub current 0 offset ^ String.sub current (offset+count) (String.length current-offset-count)
+
+let reference_original root name expected current =
+  let restored=if name="src/biocompiler/core_pipeline_manager.py" then
+    reference_manager_original root name expected current
+    else reference_routed_original root name expected current in
   let archived=read_raw ~maximum:1_000_000(Filename.concat root
-    ("tests/conformance/reference-original-sources-v1/"^old_pin^".blob")) in
-  require(Canonical.sha256 restored=old_pin && Canonical.sha256 archived=old_pin && restored=archived)
-    "Reference manager finite witness does not restore the whole original module";
+    ("tests/conformance/reference-original-sources-v1/"^expected^".blob")) in
+  require(Canonical.sha256 restored=expected && Canonical.sha256 archived=expected && restored=archived)
+    "Reference finite witness does not restore the whole original module";
   restored
 
 let read_document path =
@@ -269,7 +322,7 @@ let run path =
     require (Filename.is_relative name && not (List.mem ".." (String.split_on_char '/' name))) "Unsafe reference source path";
     let raw = read_raw ~maximum:Limits.max_request_bytes (Filename.concat root name) in
     let expected=hash(Json.string expected) in
-    let original=if Canonical.sha256 raw=expected then raw else reference_manager_original root name expected raw in
+    let original=if Canonical.sha256 raw=expected then raw else reference_original root name expected raw in
     require (Canonical.sha256 original = expected) ("Original reference source changed: " ^ name)) sources;
   let test_ids = array "test_ids" index |> List.map Json.string in
   require (List.length test_ids = method_count && List.length (List.sort_uniq String.compare test_ids) = method_count &&

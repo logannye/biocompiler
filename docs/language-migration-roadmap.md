@@ -81,17 +81,32 @@ The reference foundation is awaiting complete acceptance in
 have passed on both hosted platforms; the entire 36-job gate and independent
 artifact reconstruction remain required before integration.
 
-**Current reference service work:** branch `codex/ocaml-reference-service`
-continues from PR77 (`a8cf5266963abfb5beae408c296a6f626e8f51fe`). The staged
-native workflow coordinator, per-call Python override broker and typed provider
-views now connect to actual public manager operations through an explicit
-ReferenceCorePassManager facade. Local controls cover callback order, shared
-object identities, historical builds and the exact upstream Construct candidate.
-Installed original-workflow replay and native execution remain pending; this
-source checkpoint does not close any cutoff checkbox.
+**Current reference service checkpoint:** [PR78](https://github.com/logannye/biocompiler/pull/78)
+is pushed at `4483d4a57497e5b95a7b416d686b83881025928a`, with corrected hosted
+[run 37085540379](https://github.com/logannye/biocompiler/actions/runs/37085540379)
+pending at its last check. The preceding run stopped on four warning-as-error
+diagnostics in the framed test harness.
+The [correction](../protocol/migration-reference-service-build-correction.json)
+removes unused helpers and unnecessary mutable annotations; every assertion,
+compiler warning and release gate remains required. No native execution or
+complete integration acceptance is claimed for the corrected source.
 
-The latest hosted status snapshot has PR75 run `37079154938` at 28 successful
-jobs with no reported failed steps, PR76 run `37079677511` at 21 successful jobs
+**Current public workflow work:** branch `codex/ocaml-reference-public-workflows`
+continues from that checkpoint. An opt-in context now routes the existing public
+Construct/Molecular callables while preserving previously imported aliases and
+Python defaults. Native finalization is being extended to preserve the original
+separate upstream candidate reads: one supplies the independent check; a second
+supplies the returned Build field and may be a different opaque object. Molecular
+request/registry/manifest authority is retained separately from Construct manager
+provenance. The frozen public-routing batch passes 70 Python controls on both
+Python 3.11.15 and 3.14.6; strict mypy passes all 27 selected modules. Native
+source review found no concrete interface mismatch; native execution is pending. The actual installed 18-method campaign and its complete frame/object
+reconstruction remain in progress. Foreign ordinary Python-manager returns remain
+an explicit unresolved boundary; no imported accepted state or fallback closes it.
+This batch is uncommitted and closes no cutoff checkbox.
+
+The latest hosted status snapshot has PR75 run `37079154938` at 30 successful
+jobs with no reported failed steps (all four installed conformance campaigns running), PR76 run `37079677511` at 21 successful jobs
 with four failed Python unit shards and two resulting accounting failures, and
 PR77 run `37081551087` at 17 successful jobs with seven failed unit shards. All
 three runs are still in progress. PR76's native suite successes therefore do not
@@ -110,6 +125,12 @@ guards. The current batch pins the exact additions and verifies the six-span Cor
 source counterpart; all 47 affected controls pass on both Python versions. Source
 identity and the frozen corpus remain unchanged, and the complete hosted rerun
 remains required. See the [guard correction](../protocol/migration-reference-source-guard-correction.json).
+
+PR59's separate integrated-main run `37072668245` is now complete: all 36 jobs
+passed at `d2f65c59aba3a4af97dbcabd59e8142961e12c4a`. Its earlier independently
+reconstructed PR receipts and identical integrated tree remain recorded in the
+[validation evidence](../protocol/migration-workflow-service-validation.json).
+This completes that checkpoint's main validation; later migration gates remain open.
 
 **Resumed migration checkpoint, 2026-10-02:** PR57 and PR58 passed all 36
 exact-head jobs and are merged. Independent aggregate reconstruction, both
@@ -1260,6 +1281,17 @@ record current parent heads; previous partial native passes are historical only.
   default routing and complete native/integration acceptance remain open. See
   the [service design](migration-reference-service.md) and
   [source checkpoint](../protocol/migration-reference-service-checkpoint.json).
+
+- [x] **LM-12/24/25 public reference routing source and local controls:** route
+  existing Construct/Molecular function objects through an explicit native context;
+  retain the current Molecular authority and its two separate upstream candidate
+  reads. The 70 Python controls pass on both local versions, strict mypy checks
+  27 modules, and native/Python source review is complete. Exact finite witnesses
+  restore both original compiler modules and the original Core manager. This
+  checks only implemented source and local evidence. Hosted native execution,
+  complete installed replay, remaining manager compatibility and production
+  cutover remain open. See the [public route design](migration-reference-public-routing.md) and
+  [source checkpoint](../protocol/migration-reference-public-routing-checkpoint.json).
 
 - [x] **LM-03 CI harness correction checkpoint:** the installed architecture
   guard now permits only the exact new parser-registration helpers while rejecting

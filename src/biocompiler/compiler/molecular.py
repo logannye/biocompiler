@@ -54,6 +54,11 @@ def run_molecular_pipeline(
     unresolved. Reuse requires manager.result('molecular', scope='exact_cds')
     after supplying current dependency roots; serialized reports cannot grant it.
     """
+    from sys import modules
+    _reference_backend = modules.get("biocompiler.reference_backend")
+    _reference_route = None if _reference_backend is None else _reference_backend.current()
+    if _reference_route is not None:
+        return _reference_route.molecular(request, registry, manifests)
     require(isinstance(manifests, Mapping), "Expected a reference manifest mapping.")
     references = MappingProxyType(dict(manifests))
     # Admission and emission use one immutable snapshot of the supplied map.

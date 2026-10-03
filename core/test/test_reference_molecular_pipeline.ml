@@ -199,11 +199,8 @@ let partial_order directory=
        "Pipeline replaced its actual exhausted ancestor");
   require(W.exhausted work)"Pipeline work exhaustion was not sticky"
 
-let opaque_emitter directory=
-  let work,upstream=original directory "RNA" in
-  let touched=ref false in
-  let denied ()=touched:=true;failwith"Opaque override was observed before proposal construction" in
-  let host:M.host_value={
+let opaque_host ?touched message : M.host_value =
+  let denied ()=Option.iter(fun value->value:=true)touched;failwith message in {
     attribute=(fun _ _->denied());attribute_default=(fun _ _ _->denied());
     is_instance=(fun _ _->denied());is_none=(fun _->denied());truth=(fun _->denied());
     compare=(fun _ _ _->denied());contains=(fun _ _->denied());
@@ -211,7 +208,11 @@ let opaque_emitter directory=
     lookup=(fun _ _->denied());get_item=(fun _ _->denied());get=(fun _ _->denied());
     tuple=(fun _->denied());iter=(fun _->denied());call=(fun _ _->denied());
     merge=(fun _ ~before:_ ~after:_->denied());document=(fun _->denied());
-    freeze=(fun _->denied());vars=(fun _->denied())} in
+    freeze=(fun _->denied());vars=(fun _->denied())}
+let opaque_emitter directory=
+  let work,upstream=original directory "RNA" in
+  let touched=ref false in
+  let host=opaque_host ~touched "Opaque override was observed before proposal construction" in
   let marker=Failure"original proposal-builder exception" and calls=ref [] in
   let bridge:P.emitter_bridge={
     emit=(fun _ ~input:_ ~request ~construct ~registry ~manifests->
@@ -232,6 +233,114 @@ let opaque_emitter directory=
   require(keys "passes" state=["components_to_construct";"construct_to_molecular"] &&
     keys "records" state=["components";"construct"])"Callback exception rolled back or advanced original state"
 
+let final_sources directory=
+  let work,upstream=original directory "RNA" in
+  let owner=U.manager upstream in
+  let prepared=P.prepare ~budget:work upstream in
+  List.iter(fun(key,value)->M.set_dependency owner key value)(P.dependencies prepared);
+  let profile=P.prepare_profile ~budget:work prepared in
+  M.register_completion_profile owner(P.completion_profile profile);
+  let registration=P.prepare_registration ~budget:work profile in
+  register owner registration;
+  let record=M.run owner ~pass_id:"construct_to_molecular" ~input_id:"construct" ~output_id:"molecular" () in
+  let result=M.result owner ~identity:"molecular" ~scope:"exact_cds" in
+  let before=inspect owner and calls=ref [] in
+  let host=opaque_host "Final return value was semantically inspected" in
+  let selected=R.Candidate.of_json(change "request_fingerprint"(Json.String(Canonical.sha256 "external source"))
+    (R.Candidate.to_json(U.candidate upstream))) in
+  let bridge:P.final_source_bridge={
+    check_construct=(fun active->require(active==work)"First final-source read changed budget";
+      calls:= !calls@["check-source"];selected);
+    return_construct=(fun active->require(active==work)"Second final-source read changed budget";
+      calls:= !calls@["return-source"];host)} in
+  let build=P.finish ~budget:work ~final_source_bridge:bridge registration ~record ~result in
+  require(!calls=["check-source";"return-source"] && (match P.returned_construct build with Some value->value==host|None->false))
+    "Final source reads lost their order or exact opaque return";
+  require(not(E.Result.passed(P.check_result build)) && C.Pipeline_result.status(P.result build)=C.Complete)
+    "External final source replaced manager completion or bypassed independent checking";
+  let dependencies=field "dependencies"(E.Result.to_json(P.check_result build)) in
+  require(field "construct" dependencies=Json.String(R.Candidate.fingerprint selected))
+    "Final check did not bind the actual first source read";
+  require(P.result build==result && P.record build==record && same before(inspect owner))
+    "Final reads changed real manager state or historical results";
+  let normal=P.finish ~budget:work registration ~record ~result in
+  require(P.returned_construct normal=None && P.construct normal==U.candidate upstream && E.Result.passed(P.check_result normal))
+    "Default native final source changed";
+  let request,registry,manifests=authority directory "DNA" in
+  let authored:P.authority={request;registry;manifests} in
+  let alternative=P.prepare ~budget:work ~authority:authored upstream in
+  let alternative=P.prepare_profile ~budget:work alternative in
+  let alternative=P.prepare_registration ~budget:work alternative in
+  (* Exercise the final checker with the same actual historical record/result
+     but an explicitly different caller authority; no acceptance is imported. *)
+  let checked=P.finish ~budget:work alternative ~record ~result in
+  let dependencies=field "dependencies"(E.Result.to_json(P.check_result checked)) in
+  require(P.build_authority checked==authored && not(E.Result.passed(P.check_result checked)) &&
+    field "request" dependencies=Json.String(R.Request.fingerprint request) &&
+    field "registry" dependencies=Json.String(Component_registry.fingerprint registry))
+    "Final molecular check substituted upstream request or registry authority";
+  List.iter(fun first->
+    let marker=Failure(if first then "first final source" else "second final source") in
+    let observed=ref [] in
+    let failing:P.final_source_bridge={
+      check_construct=(fun _->observed:= !observed@["first"];if first then raise marker else U.candidate upstream);
+      return_construct=(fun _->observed:= !observed@["second"];raise marker)} in
+    (try ignore(P.finish ~budget:work ~final_source_bridge:failing registration ~record ~result);
+      failwith "Final source exception was swallowed" with error->require(error==marker)"Final source exception identity changed");
+    require(!observed=(if first then ["first"] else ["first";"second"]))"Final source exception changed read order") [true;false];
+  let malformed=C.Stage_record.of_json(change "payload" Json.Null(C.Stage_record.to_json record)) in
+  calls:=[];
+  error "reference_molecular" (fun()->P.finish ~budget:work ~final_source_bridge:bridge registration ~record:malformed ~result);
+  require(!calls=[])"Malformed artifact invoked final source reads";
+  calls:=[];
+  error "reference_molecular_pipeline_budget" (fun()->P.finish ~budget:(budget()) ~final_source_bridge:bridge registration ~record ~result);
+  require(!calls=[])"Foreign ancestor invoked final source reads";
+  (* Checker exhaustion after the first read must not reach the second read. *)
+  let exhausting:P.final_source_bridge={bridge with check_construct=(fun active->
+    calls:= !calls@["check-source"];W.charge active(W.remaining active);U.candidate upstream)} in
+  (try ignore(P.finish ~budget:work ~final_source_bridge:exhausting registration ~record ~result);
+    failwith "Exhausted final check accepted" with Diagnostic.Error value->
+      require(W.is_exhaustion work value)"Final check lost its actual lifetime exhaustion");
+  require(!calls=["check-source"])"Exhausted independent check invoked return source"
+
+let explicit_authority directory=
+  let work,upstream=original directory "DNA" in
+  let request,registry,manifests=authority directory "RNA" in
+  let authored:P.authority={request;registry;manifests} in
+  let owner=U.manager upstream in
+  let prepared=P.prepare ~budget:work ~authority:authored upstream in
+  require(P.prepared_authority prepared==authored && U.request upstream!=request && U.registry upstream!=registry)
+    "Molecular authoring authority was replaced with Construct authority";
+  require(List.assoc "molecular_profile"(P.dependencies prepared)=Canonical.fingerprint(Json.String "RNA-CDS"))
+    "Molecular dependency profile used the returned Construct target";
+  List.iter(fun(key,value)->M.set_dependency owner key value)(P.dependencies prepared);
+  let profile=P.prepare_profile ~budget:work prepared in
+  M.register_completion_profile owner(P.completion_profile profile);
+  let marker=Failure "external authored molecular call" and invoked=ref false in
+  let emitter_bridge:P.emitter_bridge={emit=(fun active ~input:_ ~request:actual ~construct ~registry:actual_registry ~manifests:actual_manifests->
+    require(active==work && actual==request && actual_registry==registry && actual_manifests==manifests)
+      "Molecular callback lost the exact caller-authored roots";
+    require(R.Candidate.fingerprint construct=R.Candidate.fingerprint(U.candidate upstream))
+      "Molecular callback lost actual upstream record input";
+    invoked:=true;raise marker);
+    host_proposal=(fun _ ~output:_ ~source_links:_->failwith "Failed emitter reached proposal")} in
+  let registration=P.prepare_registration ~budget:work ~emitter_bridge profile in
+  require(C.Pass_contract.consumes_requirements(P.contract registration)=Composition.requirement_ids(R.Request.composition request))
+    "Molecular contract used upstream requirements instead of caller authority";
+  register owner registration;
+  (try ignore(M.run owner ~pass_id:"construct_to_molecular" ~input_id:"construct" ~output_id:"molecular"());
+    failwith "Authored callback did not raise" with error->require(error==marker)"Authored callback exception changed");
+  require(!invoked && keys "records"(inspect owner)=["components";"construct"])
+    "Caller authority mismatch lost ordinary partial-manager behavior";
+  let context=C.Pass_context.make ~input:(C.Stage_record.payload(U.record upstream)) ~output:None
+    ~target:(R.Request.target(U.request upstream)) ~configuration:(Json.Object[])
+    ~dependencies:(P.dependencies prepared) ~requirements:[] () in
+  (match List.assoc "encoding_composition"(P.validators registration) work context with
+   |M.Decision decision->let evidence=C.Check_decision.evidence decision in
+       require(field "registry"(field "dependencies" evidence)=Json.String(Component_registry.fingerprint registry))
+         "Linkage validator used captured upstream registry"
+   |_->failwith "Linkage validator did not return a decision")
+
 let ()=
   require(Array.length Sys.argv=2)"Expected independent original reference-manager authority directory";
   let directory=Sys.argv.(1) in
@@ -241,4 +350,6 @@ let ()=
   changed_sequence directory rna;
   partial_order directory;
   opaque_emitter directory;
+  final_sources directory;
+  explicit_authority directory;
   print_endline "Reference molecular pipeline: same manager, staged mutation order, live provider roots, exact spelling and retained failures checked."

@@ -1,0 +1,194 @@
+{
+  "core_chain": {
+    "current": "18ee9bd517524b4440bcf29292a5d834470603713d662198b83ca61373c7fd09",
+    "original": "40a08477c97a97159372d9723267df3cacf8335a59d6b00ada34bb56470e31f3",
+    "previous": "0c0cfac138484cf71f1bb1303e66873b8b148ca236e07930fdbadd0b477a11be",
+    "restoration": "One exact full application assignment at line44, then unchanged six-span v1 whole-source restoration."
+  },
+  "counterpart_controls": [
+    {
+      "actual_original_methods": 8,
+      "copied_data": 4005,
+      "copied_sources": 207,
+      "frozen_sources": 203,
+      "module": "tests.test_reference_original_counterpart",
+      "original_documents": 4000,
+      "python_3_11_15_seconds": 21.645,
+      "python_3_14_6_seconds": 25.654,
+      "status": "passed_both",
+      "tests": 8
+    },
+    {
+      "actual_original_methods": 9,
+      "copied_data": 11084,
+      "copied_sources": 202,
+      "fresh_unchanged_pipeline_test_methods": 18,
+      "frozen_sources": 200,
+      "module": "tests.test_reference_pipeline_original_counterpart",
+      "original_documents": 10867,
+      "python_3_11_15_seconds": 45.318,
+      "python_3_14_6_seconds": 47.03,
+      "status": "passed_both",
+      "tests": 7
+    }
+  ],
+  "current_parent_native_test_only_correction": "4483d4a57497e5b95a7b416d686b83881025928a",
+  "edited_sources": {
+    "tests/conformance/reference-manager-source-counterpart-v2.json": "d19d7e706876ac234e2f3e5a45c66ebbf9625599a880c15dec64595c1bbed8e4",
+    "tests/test_reference_original_counterpart.py": "0cb804e3a40731c51bb3d25aaca86d0fc84287d216843fcc16cee5cede231b7d",
+    "tests/test_workflow_cli_lineage.py": "0b09678d061061b0f08730e3e2447ca05d55b3406d43ca9bc3fb5b498db98ea3",
+    "tests/test_workflow_source_lineage.py": "a81e782132ec4e3b984c367a407c8b1c21114df5335ddd741a0b1d145f75cea8",
+    "tools/check_realization_workflow_corpus.py": "b7a4d093a1078c54e16e657ffeeb671fa52d89b38b1661d51d0731f119160478",
+    "tools/check_synthetic_selection_cli_corpus.py": "5aa9d8bf641e3af9d22d30afb7761e55314822f8a4e67bb4679e06f260c99980",
+    "tools/check_workflow_cli_corpus.py": "f7bb18837d3e80bcb17a7c954cf78f2d7824ca81a67fdf868ff100b675372c36",
+    "tools/realization_source_lineage.py": "592e9e0d4daab4685068a08ec16eccf0306b1a6a4939a75984e4e5be9acb608c",
+    "tools/reference_original_counterpart.py": "85e22a5ed9ec136a759fa97fdaf14cf986e4638d3262188fc6734d89b1222d7b"
+  },
+  "exact_source_guard_test_ids": [
+    "tests.test_realization_workflow_corpus.RealizationWorkflowCorpusTests.test_all_original_cli_bytes_and_publication_mutant_are_retained",
+    "tests.test_realization_workflow_corpus.RealizationWorkflowCorpusTests.test_complete_625_history_campaign_and_all_callback_invocations",
+    "tests.test_realization_workflow_corpus.RealizationWorkflowCorpusTests.test_complete_independent_capture_matches_frozen_bytes",
+    "tests.test_realization_workflow_corpus.RealizationWorkflowCorpusTests.test_complete_original_contexts_calls_sources_and_error_census",
+    "tests.test_realization_workflow_corpus.RealizationWorkflowCorpusTests.test_every_immutable_prior_observation_survives_in_order",
+    "tests.test_realization_workflow_corpus.RealizationWorkflowCorpusTests.test_every_new_domain_and_kernel_observation_replays_completely",
+    "tests.test_realization_workflow_corpus.RealizationWorkflowCorpusTests.test_fixed_current_wholeworkflow_and_exact_original_version_mutants",
+    "tests.test_realization_workflow_corpus.RealizationWorkflowInstrumentationTests.test_added_module_import_guard_denies_execution_and_preloaded_modules",
+    "tests.test_realization_workflow_corpus.RealizationWorkflowInstrumentationTests.test_every_callback_has_complete_parented_input_and_outcome",
+    "tests.test_realization_workflow_corpus.RealizationWorkflowInstrumentationTests.test_generators_retain_actual_yields_and_terminal_state",
+    "tests.test_realization_workflow_corpus.RealizationWorkflowInstrumentationTests.test_independent_focused_capture_is_byte_identical",
+    "tests.test_realization_workflow_corpus.RealizationWorkflowInstrumentationTests.test_portable_directory_collision_preserves_existing_contents",
+    "tests.test_realization_workflow_corpus.RealizationWorkflowInstrumentationTests.test_profile_does_not_mutate_immutable_prior_capture",
+    "tests.test_realization_workflow_corpus.RealizationWorkflowInstrumentationTests.test_reviewed_addition_scope_rejects_changed_originals_and_unreviewed_additions",
+    "tests.test_synthetic_selection_cli_capture.SyntheticSelectionCliCaptureTests.test_additive_sources_require_individual_pins_and_cannot_enter_children",
+    "tests.test_synthetic_selection_cli_capture.SyntheticSelectionCliCaptureTests.test_both_exact_runtime_counterparts_keep_full_actual_source_and_bytes",
+    "tests.test_synthetic_selection_cli_capture.SyntheticSelectionCliCaptureTests.test_complete_baseline_original_method_and_full_authority_error_census",
+    "tests.test_synthetic_selection_cli_capture.SyntheticSelectionCliCaptureTests.test_independent_complete_seventy_two_child_recapture_is_byte_exact",
+    "tests.test_synthetic_selection_cli_capture.SyntheticSelectionCliCaptureTests.test_rehashed_observation_scope_imports_case_and_runtime_mutations_fail",
+    "tests.test_workflow_cli_capture.WorkflowCliCaptureTests.test_actual_input_and_publication_size_boundaries_are_lossless",
+    "tests.test_workflow_cli_capture.WorkflowCliCaptureTests.test_all_six_operations_modes_and_full_supplemental_records",
+    "tests.test_workflow_cli_capture.WorkflowCliCaptureTests.test_complete_census_full_original_occurrences_and_source_lineage",
+    "tests.test_workflow_cli_capture.WorkflowCliCaptureTests.test_each_child_import_audit_and_entrypoint_have_exact_pinned_sources",
+    "tests.test_workflow_cli_capture.WorkflowCliCaptureTests.test_every_error_preserves_all_inputs_prior_output_and_removes_temporary",
+    "tests.test_workflow_cli_capture.WorkflowCliCaptureTests.test_independent_complete_seventy_child_recapture_is_byte_exact",
+    "tests.test_workflow_cli_capture.WorkflowCliCaptureTests.test_lossless_recipe_rejects_tampered_bytes_lengths_or_amplification",
+    "tests.test_workflow_cli_capture.WorkflowCliCaptureTests.test_namespace_collisions_and_escaping_paths_preserve_existing_data",
+    "tests.test_workflow_cli_capture.WorkflowCliCaptureTests.test_replay_does_not_turn_fail_unknown_or_nonminimal_into_pass",
+    "tests.test_workflow_cli_capture.WorkflowCliCaptureTests.test_store_rejects_corruption_missing_or_unreferenced_full_content",
+    "tests.test_workflow_cli_capture.WorkflowCliCaptureTests.test_summary_order_indentation_scope_and_newline_are_retained",
+    "tests.test_workflow_cli_lineage.WorkflowCliLineageTests.test_archived_scope_is_reconstructed_from_old_source_pins_without_current_relabeling",
+    "tests.test_workflow_cli_lineage.WorkflowCliLineageTests.test_current_inventory_requires_explicit_reviewed_source_additions",
+    "tests.test_workflow_cli_lineage.WorkflowCliLineageTests.test_historical_and_archived_source_files_cannot_change_even_with_rehashed_metadata",
+    "tests.test_workflow_cli_lineage.WorkflowCliLineageTests.test_observation_environment_source_byte_and_blob_tampering_is_never_projected_away",
+    "tests.test_workflow_cli_lineage.WorkflowCliLineageTests.test_only_exact_declared_python311_counterpart_projects_and_actual_bytes_remain",
+    "tests.test_workflow_cli_lineage.WorkflowCliLineageTests.test_only_source_scope_and_index_identity_change_and_actual_metadata_is_retained",
+    "tests.test_workflow_cli_lineage.WorkflowCliLineageTests.test_rehashed_actual_core_correspondence_cannot_be_projected_away",
+    "tests.test_workflow_cli_lineage.WorkflowCliLineageTests.test_rehashed_scope_forgeries_missing_sources_and_changed_import_audits_fail",
+    "tests.test_workflow_cli_lineage.WorkflowCliLineageTests.test_route_member_corruption_or_extra_source_content_is_not_dropped",
+    "tests.test_workflow_source_lineage.WorkflowSourceLineageTests.test_cli_exact_flags_branch_and_registration_census_are_checked",
+    "tests.test_workflow_source_lineage.WorkflowSourceLineageTests.test_complete_historical_and_current_bytes_and_default_ast_are_retained",
+    "tests.test_workflow_source_lineage.WorkflowSourceLineageTests.test_current_core_addition_cannot_be_blessed_by_rehashing_inventory_and_allowlist",
+    "tests.test_workflow_source_lineage.WorkflowSourceLineageTests.test_derived_signature_projection_retains_full_actual_and_raw_arguments",
+    "tests.test_workflow_source_lineage.WorkflowSourceLineageTests.test_exact_reference_public_routes_keep_complete_original_bytes",
+    "tests.test_workflow_source_lineage.WorkflowSourceLineageTests.test_explicit_native_keyword_and_any_other_bound_change_cannot_be_projected",
+    "tests.test_workflow_source_lineage.WorkflowSourceLineageTests.test_reference_transport_additions_are_pinned_unused_and_retain_exact_core_counterpart",
+    "tests.test_workflow_source_lineage.WorkflowSourceLineageTests.test_sdk_guard_signature_placement_and_exact_delegate_are_independently_checked",
+    "tests.test_workflow_source_lineage.WorkflowSourceLineageTests.test_witness_and_current_pins_missing_sources_and_unchanged_paths_fail_closed"
+  ],
+  "independent_review": "Native agent bounded source/provenance/projection review found no concrete issue; no native execution.",
+  "installed_reference_acceptance": "pending; no installed reference campaign is wired or claimed by this receipt",
+  "known_limits": [
+    "Original source children validate the exact archived authority, not the current native bridge.",
+    "Public route source and pure facade controls do not establish installed workflow parity.",
+    "Full installed18 replay and all final migration cutoff gates remain open."
+  ],
+  "native_execution": false,
+  "parked_incomplete_harness": "generated/migration-next/reference-installed-draft/parked-public-checkpoint/manifest.json",
+  "preserved_authority": {
+    "tests/conformance/realization-workflow-v1.json": "d2519e465fbc6f628c9e727ad70e21d196ae2eb6cb6bad62adcb559bbafa69c0",
+    "tests/conformance/reference-contracts-v1.json": "f0d3acadad15fbc29f195fc1a7dae875e8fb027565ec20fdbe1934fec7f3cf1b",
+    "tests/conformance/reference-original-sources-v1.json": "df3323eceb20d967ea9ae8909da94f38660a1995d0e0314531bc5989516b014a",
+    "tests/conformance/reference-pipeline-semantics-v1.json": "516135a64458bc985294f7b2761138d5613209e3b225028492fe86f22c5092d3",
+    "tools/capture_reference_pipeline_semantics.py": "f2d2676d960ae49e44b2cca407c427b6eecee9a70cb11d5daf0abdb181c69cd3",
+    "tools/freeze_realization_workflow.py": "467efbc1491952ddccc0518ba7e1ae4396706f1322e04b59b6833e238c88a179",
+    "tools/freeze_reference_contracts.py": "9f5696318883ada6e56d582cadff25e2431724e27ab27e28f3eabf864e0f1e1f",
+    "tools/freeze_synthetic_selection_cli.py": "b181b47e592781a91966e90779f2c667b80f070cbc03cd0390406598b9870520",
+    "tools/freeze_workflow_cli.py": "a811548539232ee29f8fd1c52620e51778c2bf895df62847db4474591ec89564"
+  },
+  "reference_prefixes": {
+    "src/biocompiler/compiler/construct.py": {
+      "current_bytes": 10518,
+      "current_sha256": "9a4220e6ffea941703e5177cfa639f5b2ed02e14ecbffe4a6dfb442b8bcdd0ee",
+      "insertion": {
+        "byte_offset": 2342,
+        "text": "    from sys import modules\n    _reference_backend = modules.get(\"biocompiler.reference_backend\")\n    _reference_route = None if _reference_backend is None else _reference_backend.current()\n    if _reference_route is not None:\n        return _reference_route.construct(request, registry, manifests)\n"
+      },
+      "original_bytes": 10219,
+      "original_sha256": "11cd63df1c3cde2da1deaa334b3d51e57c4d23343e76ebf682aebeb139baad14"
+    },
+    "src/biocompiler/compiler/molecular.py": {
+      "current_bytes": 7224,
+      "current_sha256": "040d85262f0b96f00e20276237a42bba9f68de8bd61e06148621432417ce4166",
+      "insertion": {
+        "byte_offset": 1972,
+        "text": "    from sys import modules\n    _reference_backend = modules.get(\"biocompiler.reference_backend\")\n    _reference_route = None if _reference_backend is None else _reference_backend.current()\n    if _reference_route is not None:\n        return _reference_route.molecular(request, registry, manifests)\n"
+      },
+      "original_bytes": 6925,
+      "original_sha256": "a6763b804bfc2d691fee05d655d54affd44264994ec8869c8846e6c743aa83be"
+    }
+  },
+  "schema_version": "biocompiler.reference_public_source_guard_correction.v1",
+  "scope": "Exact current Core declaration and two public ContextVar prefixes preserve complete original test/capture authority; unused transport additions remain individually pinned and denied during original default captures.",
+  "source_base_revision": "e73743bc2f17597b57ac15869986255802289615",
+  "source_guard_tests": [
+    {
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "tests.test_workflow_source_lineage",
+        "tests.test_workflow_cli_lineage",
+        "tests.test_workflow_cli_capture",
+        "tests.test_synthetic_selection_cli_capture",
+        "tests.test_realization_workflow_corpus"
+      ],
+      "duration_seconds": 168.406,
+      "environment": {
+        "PYTHONPATH": "src"
+      },
+      "execution": "serial; exclusive original capture fixture paths",
+      "log": "generated/migration-next/reference-public-source-guard-tests/python314-full48.log",
+      "log_sha256": "c514761f857af554c1d8795df9a824520c6877fa35282d36b8601100306c0ab9",
+      "python_version": "3.14.6",
+      "returncode": 0,
+      "tests": 48
+    },
+    {
+      "command": [
+        "/Users/logannye/.local/share/uv/python/cpython-3.11.15-macos-aarch64-none/bin/python3",
+        "-m",
+        "unittest",
+        "tests.test_workflow_source_lineage",
+        "tests.test_workflow_cli_lineage",
+        "tests.test_workflow_cli_capture",
+        "tests.test_synthetic_selection_cli_capture",
+        "tests.test_realization_workflow_corpus"
+      ],
+      "duration_seconds": 158.637,
+      "environment": {
+        "PYTHONPATH": "src"
+      },
+      "execution": "serial; exclusive original capture fixture paths",
+      "log": "generated/migration-next/reference-public-source-guard-tests/python311-full48.log",
+      "log_sha256": "34b847c597a86bfc8a6bd39e4f6aceb5b6a7fc0f8a044c6c0b3998d587ca55e5",
+      "python_version": "3.11.15",
+      "returncode": 0,
+      "tests": 48
+    }
+  ],
+  "status": "complete_source_counterparts_and_pure_python_controls_passed",
+  "witnesses": {
+    "tests/conformance/reference-manager-source-counterpart-v1.json": "9f4406d46a7d18db944094ea6875a1daceb3d327b2da8e8029250e312ea833f8",
+    "tests/conformance/reference-manager-source-counterpart-v2.json": "d19d7e706876ac234e2f3e5a45c66ebbf9625599a880c15dec64595c1bbed8e4",
+    "tests/conformance/reference-public-routing-source-counterpart-v1.json": "949bd00942bbaa8c6107c490692e38007e41309b0d8f22b0bccd4d8f8514f074"
+  }
+}

@@ -6,6 +6,22 @@ val pipeline_version : string
 val resource_profile : string
 val resource_limits : Bioc_wire.Json.t
 type t
+type authority = {
+  request : Bioc_domain.Reference_construct.Request.t;
+  registry : Bioc_domain.Component_registry.t;
+  manifests : (string * Bioc_domain.Reference_manifest.t) list;
+}
+(* Caller-authored molecular authority is independent of the returned Construct
+   build's manager provenance. Both remain bounded, untrusted checker inputs. *)
+type final_source_bridge = {
+  check_construct : Bioc_checker.Work_budget.t -> Bioc_domain.Reference_construct.Candidate.t;
+  return_construct : Bioc_checker.Work_budget.t -> Bioc_compiler.Pass_manager.host_value;
+}
+(* Two distinct original candidate reads: the first follows artifact parsing
+   and supplies untrusted typed input to the independent check. The second
+   follows that check and remains an opaque Build.construct value; it may differ.
+   Callbacks retain their original exceptions. The host owns their captures and
+   handle reservations; this bridge cannot grant acceptance. *)
 type prepared
 type profiled
 type registration
@@ -49,8 +65,9 @@ type host_links_equal = Bioc_checker.Work_budget.t ->
    Preserve the original sequence: prepare, six dependency writes,
    prepare_profile, profile registration, prepare_registration, registration,
    run, result, finish. Every phase requires the upstream lifetime budget. *)
-val prepare : budget:Bioc_checker.Work_budget.t ->
+val prepare : budget:Bioc_checker.Work_budget.t -> ?authority:authority ->
   Reference_construct_pipeline.t -> prepared
+val prepared_authority : prepared -> authority
 val dependencies : prepared -> (string * string) list
 val prepare_profile : budget:Bioc_checker.Work_budget.t -> prepared -> profiled
 val completion_profile : profiled -> Bioc_domain.Pipeline_contract.Completion_profile.t
@@ -68,26 +85,29 @@ val allow_host_source_links : registration -> unit
 
 (* The trusted caller supplies the actual returned run/result capabilities.
    No serialized acceptance import, new get, or new result query is performed.
-   Parsing and the final independent molecular check use the retained upstream
-   candidate, not a reconstructed current manager state. *)
-val finish : budget:Bioc_checker.Work_budget.t -> registration ->
+   The default final source is the retained upstream candidate; the optional
+   bridge preserves the two external source reads without fresh manager queries. *)
+val finish : budget:Bioc_checker.Work_budget.t -> ?final_source_bridge:final_source_bridge -> registration ->
   record:Bioc_domain.Pipeline_contract.Stage_record.t ->
   result:Bioc_domain.Pipeline_contract.Pipeline_result.t -> t
 
 type failure = {error:exn;manager:Bioc_compiler.Pass_manager.t}
 type attempt = Completed of t | Failed of failure
-val attempt : budget:Bioc_checker.Work_budget.t ->
+val attempt : budget:Bioc_checker.Work_budget.t -> ?authority:authority ->
   ?provider_observer:provider_observer -> ?emitter_bridge:emitter_bridge ->
   ?host_links_equal:host_links_equal ->
-  ?register_fixed:Synthetic_pipeline.registration_hook ->
+  ?register_fixed:Synthetic_pipeline.registration_hook -> ?final_source_bridge:final_source_bridge ->
   Reference_construct_pipeline.t -> attempt
-val run : budget:Bioc_checker.Work_budget.t ->
+val run : budget:Bioc_checker.Work_budget.t -> ?authority:authority ->
   ?provider_observer:provider_observer -> ?emitter_bridge:emitter_bridge ->
   ?host_links_equal:host_links_equal ->
-  ?register_fixed:Synthetic_pipeline.registration_hook ->
+  ?register_fixed:Synthetic_pipeline.registration_hook -> ?final_source_bridge:final_source_bridge ->
   Reference_construct_pipeline.t -> t
 val upstream : t -> Reference_construct_pipeline.t
+(* Native upstream authority, not the optional opaque public return override. *)
 val construct : t -> Bioc_domain.Reference_construct.Candidate.t
+val returned_construct : t -> Bioc_compiler.Pass_manager.host_value option
+val build_authority : t -> authority
 val candidate : t -> Bioc_domain.Reference_molecular.Artifact.t
 val check_result : t -> Bioc_domain.Reference_molecular_evidence.Result.t
 val result : t -> Bioc_domain.Pipeline_contract.Pipeline_result.t

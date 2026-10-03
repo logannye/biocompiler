@@ -47,6 +47,8 @@ class ReferenceSession:
         self.providers = {}
         self.native_provider_calls = 0
         self.admission_refs = None
+        self.returned_construct = None
+        self.checked_construct = None
         self.instances.append(self)
 
     def action(self, name, arguments):
@@ -93,7 +95,9 @@ class ReferenceSession:
                 'candidate': artifact(build.candidate, 'candidate/' + name),
                 'check_result': artifact(build.check_result, 'check/' + name),
                 'result': self.result(name), 'construct': None if name == 'construct' else
-                    artifact(self.source['construct'].candidate, 'candidate/construct')}
+                    ({'value': None, 'binding': {'kind': 'host', 'object': self.returned_construct}}
+                     if self.returned_construct is not None else
+                     artifact(self.source['construct'].candidate, 'candidate/construct'))}
 
     def registration(self, name):
         contract = self.source['contracts'][name]
@@ -136,7 +140,7 @@ class ReferenceSession:
                 value = self.result(arguments['identity'])
             elif operation == 'finish-reference-construct':
                 value = self.build('construct')
-            elif operation == 'prepare-reference-molecular':
+            elif operation in ('prepare-reference-molecular', 'prepare-reference-molecular-public'):
                 value = {'preparation_id': 'preparation/molecular', 'dependencies': [
                     [key, self.source['molecular'].manager._dependencies[key]]
                     for key in self.source['contracts']['construct_to_molecular'].dependency_keys]}
@@ -147,6 +151,20 @@ class ReferenceSession:
             elif operation == 'reference-molecular-registration':
                 value = self.registration('construct_to_molecular')
             elif operation == 'finish-reference-molecular':
+                if arguments['upstream'] is not None:
+                    checked = self.action('reference-upstream-candidate',
+                        {'upstream': arguments['upstream'], 'phase': 'check'})
+                    self.checked_construct = checked
+                    if checked['value'] is None:
+                        value = {'module': 'biocompiler.errors', 'type': 'SerializationError',
+                            'message': 'Invalid molecular checker artifacts.', 'attributes': {},
+                            'attributes_tree': ['object', []]}
+                        self.last_response = SimpleNamespace(result=value, sequence=sequence,
+                            operation=operation, status='rejected')
+                        raise CallbackRejected(self.last_response)
+                    self.events.append(('fixture-check', checked['object']))
+                    self.returned_construct = self.action('reference-upstream-candidate',
+                        {'upstream': arguments['upstream'], 'phase': 'return'})['object']
                 value = self.build('molecular')
             elif operation == 'reference-build-result':
                 value = self.build(arguments['kind'])
@@ -182,7 +200,7 @@ class ReferenceSession:
         proposal = {'output': output, 'source_links': links, 'obligations': [], 'observation_map': {}, 'search_status': 'candidate'}
         roots = {'parsed': route['argument']}
         if action == 'reference-emit':
-            roots.update({name: self.objects.retain(manager._reference_host.origin(name)) for name in
+            roots.update({name: self.objects.retain(manager._reference_molecular_host.origin(name)) for name in
                           ('request', 'translation_policy', 'encoding_policy', 'evidence_policy')})
         return {'kind': 'proposal', 'value': proposal,
                 'view': {'role': role, 'tree': _ordered(proposal), 'origins': roots}}
@@ -238,6 +256,33 @@ class ReferenceManagerTests(unittest.TestCase):
         manager._contexts[token] = (b'fixture source-bound context', value)
         manager._context_ids[id(value)] = token
         return value
+
+    def test_final_source_owner_phase_command_and_return_binding_mutants_fail_closed(self):
+        original_action = ReferenceSession.action
+        for mode in ('return-first', 'repeat-check', 'foreign-owner', 'wrong-command', 'changed-return-binding'):
+            with self.subTest(mode=mode):
+                def action(session, name, arguments):
+                    if name == 'reference-upstream-candidate':
+                        arguments = dict(arguments)
+                        if mode == 'return-first' and arguments['phase'] == 'check':
+                            arguments['phase'] = 'return'
+                        elif mode == 'foreign-owner':
+                            arguments['upstream'] = session.objects.retain(object())
+                        elif mode == 'wrong-command':
+                            session._handlers[-1].sequence += 100
+                        value = original_action(session, name, arguments)
+                        if mode == 'repeat-check' and arguments['phase'] == 'check':
+                            original_action(session, name, arguments)
+                        if mode == 'changed-return-binding' and arguments['phase'] == 'return':
+                            value = {'object': session.objects.retain(object())}
+                        return value
+                    return original_action(session, name, arguments)
+                with patch.object(ReferenceSession, 'action', action):
+                    with self.assertRaises(CoreProtocolError):
+                        self.build()
+                session = ReferenceSession.instances[-1]
+                self.assertTrue(session.invalidated)
+                self.assertIsNone(session.handler.__self__._reference_final)
 
     def test_exact_public_method_order_one_session_build_and_record_identities(self):
         build = self.build()

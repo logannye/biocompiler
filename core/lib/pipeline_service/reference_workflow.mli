@@ -62,13 +62,13 @@ val notice : t -> budget:W.t -> owner:M.t -> sequence:int -> operation -> unit
    calls manager get/result. Failed final checks leave the real manager intact. *)
 val finish_construct : t -> budget:W.t -> record:C.Stage_record.t ->
   result_sequence:int -> Construct.t
-val prepare_molecular : t -> budget:W.t -> unit -> Molecular.prepared
+val prepare_molecular : ?authority:Molecular.authority -> t -> budget:W.t -> unit -> Molecular.prepared
 val prepare_molecular_profile : t -> budget:W.t -> unit -> Molecular.profiled
 val prepare_molecular_registration : t -> budget:W.t ->
   ?provider_observer:Molecular.provider_observer ->
   ?emitter_bridge:Molecular.emitter_bridge ->
   ?host_links_equal:Molecular.host_links_equal -> unit -> Molecular.registration
-val finish_molecular : t -> budget:W.t -> record:C.Stage_record.t ->
+val finish_molecular : ?final_source_bridge:Molecular.final_source_bridge -> t -> budget:W.t -> record:C.Stage_record.t ->
   result_sequence:int -> Molecular.t
 val construct_build : t -> Construct.t option
 val molecular_build : t -> Molecular.t option

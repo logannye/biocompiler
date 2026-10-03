@@ -28,10 +28,10 @@ class ReferenceOriginalCounterpartTests(unittest.TestCase):
         manager = rows['src/biocompiler/compiler/pipeline.py']
         self.assertEqual(manager['sha256'], 'dccba32618ecc7923b8a02ff54f114d515ff4e50908f45e27a8cda0a3f531be0')
         self.assertFalse(manager['substituted'])
-        self.assertEqual([name for name, row in rows.items() if row['substituted']], [original.CORE_SOURCE, original.TEST])
+        self.assertEqual([name for name, row in rows.items() if row['substituted']], sorted([original.CORE_SOURCE, original.TEST, *original.ROUTE_SOURCES]))
         self.assertEqual(rows[original.CORE_SOURCE]['origin_sha256'], original.CORE_CURRENT_SHA)
         self.assertEqual(rows[original.CORE_SOURCE]['sha256'], original.CORE_ORIGINAL_SHA)
-        self.assertEqual(len(receipt['manifest']['data']), 4003)
+        self.assertEqual(len(receipt['manifest']['data']), 4005)
         self.assertEqual(rows[original.TEST]['sha256'], original.TEST_SHA)
         self.assertEqual(receipt['modules']['biocompiler.compiler.pipeline']['namespace'], 'biocompiler.compiler.pipeline')
         self.assertTrue(all(row['class'] == 'tests.test_reference_contracts_corpus.ReferenceContractsCorpusTests'
@@ -53,7 +53,7 @@ class ReferenceOriginalCounterpartTests(unittest.TestCase):
     def test_source_copy_module_and_complete_data_mutations_reject(self):
         for kind in ('old-manager', 'missing-source', 'extra-source', 'origin', 'copied-path',
                      'missing-data', 'data-hash', 'data-bytes', 'test-witness', 'namespace',
-                     'module-path', 'missing-module', 'inventory', 'narrowed-tests', 'core-witness', 'current-core-copy'):
+                     'module-path', 'missing-module', 'inventory', 'narrowed-tests', 'core-witness', 'core-update', 'route-witness', 'current-core-copy'):
             value = deepcopy(self.receipt)
             manifest = value['manifest']
             rows = manifest['sources']
@@ -72,6 +72,8 @@ class ReferenceOriginalCounterpartTests(unittest.TestCase):
             elif kind == 'missing-module': del value['modules']['biocompiler.compiler.pipeline']
             elif kind == 'inventory': value['source_inventory'].pop(next(iter(value['source_inventory'])))
             elif kind == 'core-witness': manifest['core_source_witness']['correspondence']['changes'][0]['after'] += '# extra\n'
+            elif kind == 'core-update': manifest['core_source_witness']['update']['correspondence']['changes'][0]['after'] += '# extra\n'
+            elif kind == 'route-witness': manifest['route_source_witnesses'][0]['correspondence']['insertion']['byte_offset'] += 1
             elif kind == 'current-core-copy':
                 core = next(row for row in rows if row['logical'] == original.CORE_SOURCE)
                 core['sha256'] = core['origin_sha256']
@@ -97,7 +99,7 @@ class ReferenceOriginalCounterpartTests(unittest.TestCase):
             target = root / original.CORPUS
             target.parent.mkdir(parents=True, exist_ok=True)
             target.write_bytes((original.ROOT / original.CORPUS).read_bytes())
-            for logical in (original.CORE_BLOB, original.CORE_WITNESS):
+            for logical in (original.CORE_BLOB, original.CORE_WITNESS, original.CORE_UPDATE, original.ROUTE_WITNESS):
                 target = root / logical
                 target.parent.mkdir(parents=True, exist_ok=True)
                 target.write_bytes((original.ROOT / logical).read_bytes())
@@ -118,6 +120,8 @@ class ReferenceOriginalCounterpartTests(unittest.TestCase):
         self.assertEqual(original.sha(archived), original.CORE_ORIGINAL_SHA)
         self.assertEqual(archived, (original.ROOT / original.CORE_BLOB).read_bytes())
         self.assertEqual(len(proof['correspondence']['changes']), 6)
+        self.assertEqual(len(proof['update']['correspondence']['changes']), 1)
+        self.assertEqual(proof['update']['correspondence']['predecessor']['sha256'], original.CORE_WITNESS_SHA)
         self.assertIn('current native bridge validation is separate', proof['scope'])
         for changed in (current + b'\n', archived,
                         current.replace(b'_require_native_manager(self)', b'_require_native_manager(None)', 1)):
@@ -127,6 +131,23 @@ class ReferenceOriginalCounterpartTests(unittest.TestCase):
         del witness['manifest']['core_source_witness']
         with self.assertRaisesRegex(AssertionError, 'Malformed original reference manifest'):
             original.validate(witness)
+
+    def test_exact_public_prefixes_restore_whole_original_source(self):
+        index = original.authority()
+        for path in original.ROUTE_SOURCES:
+            current = (original.ROOT / path).read_bytes()
+            restored, proof = original.route_source_witness(path, current)
+            self.assertEqual(original.sha(restored), index['source_files'][path])
+            insertion = proof['correspondence']['insertion']
+            offset, prefix = insertion['byte_offset'], insertion['text'].encode()
+            self.assertEqual(current, restored[:offset] + prefix + restored[offset:])
+            for changed in (current + b'\n', restored,
+                            current.replace(b'return _reference_route.', b'return other.', 1),
+                            current[:offset] + prefix + current[offset:]):
+                with self.subTest(path=path, pin=original.sha(changed)), self.assertRaisesRegex(AssertionError, 'exact counterpart'):
+                    original.route_source_witness(path, changed)
+        with self.assertRaisesRegex(AssertionError, 'Unknown reference route'):
+            original.route_source_witness('src/biocompiler/compiler/pipeline.py')
 
     def test_same_byte_relocated_package_cannot_replace_actual_import_origin(self):
         value = deepcopy(self.receipt)

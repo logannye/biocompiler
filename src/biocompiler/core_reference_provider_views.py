@@ -333,6 +333,7 @@ class _Build:
     result: PipelineResult
     upstream: ConstructBuild | None
     roots: tuple[str, ...]
+    construct_origin: tuple[JsonValue, object] | None
 
 
 class ReferenceBuildStore:
@@ -408,7 +409,8 @@ class ReferenceBuildStore:
                 'Reference cached artifact descendant identity changed')
 
     def decode(self, envelope: JsonValue, *, manager: PassManager, result: PipelineResult,
-               result_envelope: JsonValue, upstream: ConstructBuild | None = None) -> ReferenceBuild:
+               result_envelope: JsonValue, upstream: ConstructBuild | None = None,
+               construct_origin: tuple[JsonValue, object] | None = None) -> ReferenceBuild:
         raw = fields(envelope, 'build_id kind candidate check_result result construct')
         identity, kind = text(raw['build_id']), text(raw['kind'])
         require(bool(identity) and kind in ('construct', 'molecular'), 'Unknown reference build identity or kind')
@@ -423,18 +425,32 @@ class ReferenceBuildStore:
         require(encode_document(candidate_envelope['value']) == encode_document(_json(record_fields.get('payload'))),
                 'Reference build candidate differs from its actual historical payload')
         signature = bytes(encode_document(envelope))
+        if construct_origin is not None:
+            require(kind == 'molecular', 'Only Molecular Build can retain a source-returned Construct root')
+            source = fields(raw['construct'], 'value binding')
+            binding = fields(source['binding'], 'kind object')
+            require(source['value'] is None and binding['kind'] == 'host'
+                    and encode_document(binding['object']) == encode_document(construct_origin[0]),
+                    'Reference Build changed its actual second candidate read')
         previous = self.builds.get(identity)
         if previous is not None:
             require(previous.signature == signature and previous.manager is manager
                     and previous.result is result and previous.upstream is upstream,
                     'Reference build identity was rebound')
+            require((previous.construct_origin is None and construct_origin is None) or
+                (previous.construct_origin is not None and construct_origin is not None
+                 and previous.construct_origin[1] is construct_origin[1]
+                 and encode_document(previous.construct_origin[0]) == encode_document(construct_origin[0])),
+                'Reference Build source-returned root was rebound')
             stored = cast(dict[str, object], object.__getattribute__(previous.value, '__dict__'))
             names = ('candidate', 'check_result', 'result', 'manager') if kind == 'construct' else (
                 'construct', 'candidate', 'check_result', 'result', 'manager')
             require(tuple(stored) == names and stored['manager'] is manager and stored['result'] is result
                 and stored['candidate'] is self.roots[previous.roots[0]].value
                 and stored['check_result'] is self.roots[previous.roots[1]].value
-                and (kind == 'construct' or (upstream is not None and stored['construct'] is upstream.candidate)),
+                and (kind == 'construct' or
+                     (construct_origin is not None and stored['construct'] is construct_origin[1]) or
+                     (construct_origin is None and upstream is not None and stored['construct'] is upstream.candidate)),
                 'Reference cached build fields changed')
             for root_id in previous.roots:
                 self._unchanged(self.roots[root_id])
@@ -475,16 +491,22 @@ class ReferenceBuildStore:
             value: ReferenceBuild = allocate(ConstructBuild, {'candidate': candidate, 'check_result': check,
                 'result': result, 'manager': manager})
         else:
-            require(type(upstream) is ConstructBuild and upstream.manager is manager,
-                    'Molecular build lacks its actual upstream Construct build')
-            assert upstream is not None
-            construct = self._root(raw['construct'], decoder.construct_candidate, expected=upstream.candidate)
+            if construct_origin is None:
+                require(type(upstream) is ConstructBuild and upstream.manager is manager,
+                        'Molecular build lacks its actual upstream Construct build')
+                assert upstream is not None
+                construct: object = self._root(raw['construct'], decoder.construct_candidate, expected=upstream.candidate)
+            else:
+                # The source reads this field after its independent check. It
+                # may be unrelated to the first candidate or even a typed record;
+                # retaining it does not change the native report or acceptance.
+                construct = construct_origin[1]
             artifact = self._root(raw['candidate'], decoder.molecular_artifact)
             molecular_check = self._root(raw['check_result'], decoder.molecular_result)
             value = allocate(MolecularBuild, {'construct': construct, 'candidate': artifact,
                 'check_result': molecular_check, 'result': result, 'manager': manager})
-        if kind == 'molecular':
+        if kind == 'molecular' and construct_origin is None:
             root_ids.append(text(fields(fields(raw['construct'], 'value binding')['binding'],
                                         'kind identity tree')['identity']))
-        self.builds[identity] = _Build(signature, value, manager, result, upstream, tuple(root_ids))
+        self.builds[identity] = _Build(signature, value, manager, result, upstream, tuple(root_ids), construct_origin)
         return value

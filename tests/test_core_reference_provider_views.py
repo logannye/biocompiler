@@ -307,6 +307,39 @@ class ReferenceProviderViewsTests(unittest.TestCase):
             self.assertIs(store.decode(second, manager=m.manager, result=m.result,
                 result_envelope=second['result'], upstream=c), m)
 
+    def test_opaque_final_source_capability_and_physical_root_are_exact(self):
+        example = self.examples[0]
+        _, envelope = self.builds(example)
+        original = example['molecular_build']
+        broker = CallbackObjects()
+        class Opaque:
+            def __getattribute__(self, name):
+                raise AssertionError('Opaque returned root must not be inspected')
+            def __eq__(self, other):
+                raise AssertionError('Opaque returned root must not be compared')
+        root = Opaque()
+        reference = broker.retain(root)
+        envelope['construct'] = {'value': None, 'binding': {'kind': 'host', 'object': reference}}
+        origin = (reference, root)
+        store = views.ReferenceBuildStore()
+        built = store.decode(envelope, manager=original.manager, result=original.result,
+            result_envelope=envelope['result'], construct_origin=origin)
+        self.assertIs(built.construct, root)
+        self.assertIs(store.decode(envelope, manager=original.manager, result=original.result,
+            result_envelope=envelope['result'], construct_origin=origin), built)
+        for other in ((reference, Opaque()), (broker.retain(Opaque()), root)):
+            with self.assertRaises(CoreProtocolError):
+                store.decode(envelope, manager=original.manager, result=original.result,
+                    result_envelope=envelope['result'], construct_origin=other)
+        for change in (lambda raw: raw['construct'].update(value={}),
+                       lambda raw: raw['construct']['binding'].update(object=broker.retain(Opaque())),
+                       lambda raw: raw['construct']['binding'].update(extra=None)):
+            wrong = deepcopy(envelope)
+            change(wrong)
+            with self.assertRaises(CoreProtocolError):
+                views.ReferenceBuildStore().decode(wrong, manager=original.manager, result=original.result,
+                    result_envelope=envelope['result'], construct_origin=origin)
+
     def test_build_identity_record_and_result_mutants_fail_without_content_interning(self):
         example = self.examples[0]
         first, second = self.builds(example)

@@ -204,6 +204,71 @@ let sidecars request registry manifests=
   expect "pipeline_error" (fun()->M.invoke_provider owner ~host_links(List.assoc "reference_authority" expected)context);
   (match M.invoke_provider owner ~host_links(List.assoc "component_linkage" expected)context with
     |M.Decision _->()|_->failwith "Shared linkage validator changed callback kind")
+let final_source_bridge request registry manifests mode=
+  let work=budget() in let state,retained=make_state work in
+  let owner=initialize state work request registry manifests in
+  ignore(admission state work owner request);ignore(registration state work owner);
+  let record,_=construct_result state work owner in
+  let upstream=F.finish_construct state ~budget:work ~record ~result_sequence:22 in
+  let authored:Q.authority={request=R.Request.of_json(R.Request.to_json request);
+    registry=Component_registry.of_json(Component_registry.to_json registry);
+    manifests=List.map(fun(key,value)->key,Reference_manifest.of_json(Reference_manifest.to_json value))manifests} in
+  let before= !retained in
+  let prepared=F.prepare_molecular ~authority:authored state ~budget:work () in
+  require(Q.prepared_authority prepared==authored && !retained>before)
+    "Explicit molecular authority was not retained under its existing owner";
+  List.iteri(fun index(key,value)->M.set_dependency owner key value;
+    notice state work owner (30+index)(F.Dependency_set(key,value)))(Q.dependencies prepared);
+  let profile=F.prepare_molecular_profile state ~budget:work () in
+  let completion=Q.completion_profile profile in
+  M.register_completion_profile owner completion;notice state work owner 40(F.Profile_registered completion);
+  let registration=F.prepare_molecular_registration state ~budget:work () in
+  let contract=Q.contract registration and producer=Q.producer registration and validators=Q.validators registration in
+  M.register owner contract ~producer ~validators;notice state work owner 41(F.Pass_registered(contract,producer,validators));
+  let record=M.run owner ~pass_id:"construct_to_molecular" ~input_id:"construct" ~output_id:"molecular" () in
+  notice state work owner 42(F.Ran{pass_id="construct_to_molecular";input_id="construct";output_id="molecular";
+    default_configuration=true;record});
+  let result=M.result owner ~identity:"molecular" ~scope:"exact_cds" in
+  notice state work owner 43(F.Result_returned{identity="molecular";scope="exact_cds";result});
+  let bridge=H.create ~budget:work ~invoke:(fun ~action:_ ~arguments:_->failwith "Opaque final root was read")() in
+  let opaque=H.of_reference bridge(Json.Object["handle",Json.String "final/arbitrary"]) in
+  let marker=Failure "actual final candidate read" and calls=ref [] in
+  let final_source_bridge:Q.final_source_bridge={
+    check_construct=(fun active->require(active==work)"Final checker source changed owner";
+      calls:= !calls@["first"];
+      if mode="first-error" then raise marker;
+      if mode="first-close" then F.close state;
+      P.candidate upstream);
+    return_construct=(fun active->require(active==work)"Final return source changed owner";
+      calls:= !calls@["second"];
+      if mode="second-error" then raise marker;
+      if mode="second-close" then F.close state;
+      opaque)} in
+  let before= !retained in
+  let finish()=F.finish_molecular ~final_source_bridge state ~budget:work ~record ~result_sequence:43 in
+  if mode="success" then begin
+    let build=finish() in
+    require(Q.result build==result && Q.record build==record && Q.build_authority build==authored &&
+      (match Q.returned_construct build with Some value->value==opaque|None->false))
+      "Workflow final bridge changed captured authority or actual return capabilities";
+    require(!calls=["first";"second"] && !retained>before && F.phase state=F.Molecular_finished)
+      "Workflow did not reserve the opaque returned source under its lifetime";
+    expect "reference_workflow_phase" finish
+  end else if mode="first-close" || mode="second-close" then begin
+    expect "reference_workflow_closed" finish;
+    require(F.phase state=F.Closed && F.owner state=None && F.molecular_build state=None)
+      "Final source callback resurrected a closed workflow"
+  end else begin
+    (try ignore(finish());failwith "Final source callback did not raise"
+     with error->require(error==marker)"Final source callback exception identity changed");
+    require(F.phase state=F.Interrupted && required(F.owner state)==owner && F.molecular_build state=None)
+      "Final callback error discarded the manager or invented a completed build";
+    require(M.get owner "molecular"==record && C.Pipeline_result.status result=C.Complete)
+      "Final callback error rolled back already completed manager operations";
+    expect "reference_workflow_phase" finish
+  end;
+  require(!calls=(if mode="first-error" || mode="first-close" then ["first"] else ["first";"second"]))
+    "Workflow final source-read count differs from source order"
 let main()=
   require(Array.length Sys.argv=2)"Expected original reference-pipeline documents directory";
   let load=load Sys.argv.(1) in
@@ -216,7 +281,8 @@ let main()=
     require(complete ~maximum:retained request registry manifests=retained)"Exact cumulative retention changed";
     expect "workflow_test_retention" (fun()->complete ~maximum:(retained-1) request registry manifests);
     boundaries request registry manifests;failure_lifetime request registry manifests;
-    generator_failure request registry manifests;closed_callbacks request registry manifests;sidecars request registry manifests)pairs;
+    generator_failure request registry manifests;closed_callbacks request registry manifests;sidecars request registry manifests;
+    List.iter(final_source_bridge request registry manifests)["success";"first-error";"second-error";"first-close";"second-close"])pairs;
   print_endline "Reference workflow: actual phased calls, exact result capabilities, historical builds, owner bounds and partial state passed."
 let ()=try main() with Diagnostic.Error error as exception_value->
   prerr_endline(error.code^": "^error.message);raise exception_value
