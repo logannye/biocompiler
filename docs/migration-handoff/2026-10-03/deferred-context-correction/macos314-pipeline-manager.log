@@ -1,0 +1,2 @@
+AssertionError: Deferred callback read a context different from native authority
+Installed pipeline manager: failure 5 original identity cases, 34 original comparison cases, 47 original deferred cases

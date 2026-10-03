@@ -1498,6 +1498,130 @@ def validate_deferred_events(actual, evidence, details, bootstrap):
     validate_deferred_accesses(actual, evidence, details)
 
 
+def deferred_context_document(hydration, native):
+    """Project the frozen deferred corpus's host SourceLink tuple capability.
+
+    Host links deliberately are absent from the native typed JSON document.
+    Recover their fields only from the exact producer/tuple/native-check trace,
+    never from the observed context being checked. This finite corpus uses
+    singleton membership sets; ambiguous scalar proofs fail closed.
+    """
+    def reference(value):
+        require(type(value) is dict and set(value) == {"handle"}
+            and type(value["handle"]) is str and len(value["handle"]) <= 32
+            and re.fullmatch(r"object/(0|[1-9][0-9]*)", value["handle"]),
+            "Malformed deferred source-link capability reference")
+        return value
+    def successful_boolean(item):
+        outcome = item["outcome"]
+        return type(outcome) is dict and set(outcome) == {"status", "value"} \
+            and outcome["status"] == "return" and outcome["value"] is True
+    args = hydration["arguments"]
+    document = deepcopy(args["document"])
+    binding = args["bindings"].get("source_links")
+    if binding is None:
+        return document
+    require(type(binding) is dict and set(binding) == {"kind", "object"} and binding["kind"] == "host"
+        and document["source_links"] == [], "Deferred source links lack the exact host tuple binding")
+    reference(binding["object"])
+    sequence = hydration["command_sequence"]
+    command = next((item for item in native["commands"] if item["sequence"] == sequence), None)
+    require(command is not None and command["operation"] == "run", "Deferred host links belong to another command")
+    inspections = [item for item in native["commands"] if item["operation"] == "inspect-ordered"
+        and item["end_frame"] < command["start_frame"]]
+    require(inspections, "Deferred producer lacks its original registered authority")
+    before = max(inspections, key=lambda item: item["end_frame"])
+    registered = native["inspections"][before["sequence"]]["value"]["snapshot"]["passes"].get(command["arguments"]["pass_id"])
+    require(registered is not None, "Deferred source links refer to an unregistered producer")
+    prior = sorted((item for item in native["invocations"].values()
+        if item["command_sequence"] == sequence and item["end_frame"] < hydration["start_frame"]
+        and item["parent_invocation"] == hydration["parent_invocation"]), key=lambda item: item["start_frame"])
+    def returned(item):
+        require(type(item["outcome"]) is dict and set(item["outcome"]) == {"status", "value"}
+            and item["outcome"]["status"] == "return", "Deferred source-link proof contains a raised primitive")
+        return item["outcome"]["value"]
+    attributes = [(index,item) for index,item in enumerate(prior)
+        if item["action"] == "attr" and item["arguments"]["name"] == "source_links"]
+    require(len(attributes) == 1, "Deferred source-link producer attribute is missing or ambiguous")
+    index, attribute = attributes[0]
+    reference(attribute["arguments"]["object"])
+    reference(returned(attribute))
+    producers = [item for item in prior[:index] if item["action"] == "call-provider"
+        and item["arguments"]["provider_id"] == registered["producer"]
+        and item["outcome"] == {"status":"return", "value":attribute["arguments"]["object"]}
+        and item["end_frame"] < attribute["start_frame"]]
+    require(len(producers) == 1, "Deferred source links are detached from the registered producer result")
+    producer = producers[0]
+    reference(returned(producer))
+    reference(producer["arguments"]["context"])
+    contexts = [item for item in prior if item["action"] == "hydrate-context"
+        and item["end_frame"] < producer["start_frame"]
+        and item["outcome"] == {"status":"return", "value":producer["arguments"]["context"]}]
+    require(len(contexts) == 1 and contexts[0]["arguments"]["document"]["output"] is None,
+        "Deferred source links do not originate in the actual producer context")
+    reference(returned(contexts[0]))
+    for field in ("input", "target", "requirements", "configuration", "dependencies"):
+        equal(contexts[0]["arguments"]["document"][field], document[field], "Deferred producer and validator contexts differ")
+    def step(offset, action, arguments):
+        require(offset < len(prior), "Deferred source-link materialization is incomplete")
+        item = prior[offset]
+        require(item["action"] == action and item["arguments"] == arguments,
+            "Deferred source-link materialization changed order or object")
+        return returned(item)
+    whole = reference(step(index+1, "tuple", {"object":returned(attribute)}))
+    equal(whole, binding["object"], "Deferred hydration uses another source-link tuple")
+    iterator = reference(step(index+2, "iter", {"object":whole}))
+    elements, cursor = [], index+3
+    while True:
+        value = step(cursor, "next", {"object":iterator}); cursor += 1
+        require(type(value) is dict and set(value) == {"exhausted", "object"}
+            and type(value["exhausted"]) is bool, "Malformed deferred source-link iterator step")
+        if value["exhausted"]:
+            require(value["object"] is None, "Deferred exhausted iterator retained an element")
+            break
+        elements.append(reference(value["object"]))
+    checks = prior[cursor:]
+    types = [item for item in checks if item["action"] == "is-instance" and item["arguments"]["type"] == "SourceLink"]
+    require([item["arguments"]["object"] for item in types] == elements
+        and all(successful_boolean(item) for item in types),
+        "Deferred source-link element type checks changed order or census")
+    for field in ("pass_name", "requirement_id", "target_node_id", "source_node_id"):
+        require([item["arguments"]["object"] for item in checks if item["action"] == "attr" and item["arguments"]["name"] == field] == elements,
+            "Deferred source-link field reads changed order or census")
+    literals = [item for item in checks if item["action"] == "literal" and item["outcome"]["status"] == "return"]
+    def scalar(element, field):
+        proofs = []
+        for attribute in checks:
+            if attribute["action"] != "attr" or attribute["arguments"] != {"object":element,"name":field}:
+                continue
+            scalar_reference = reference(returned(attribute))
+            for check in checks:
+                if check["start_frame"] <= attribute["end_frame"]:
+                    continue
+                operands = check["arguments"]
+                for literal in literals:
+                    if literal["end_frame"] >= check["start_frame"]:
+                        continue
+                    known = literal["arguments"]
+                    literal_reference = reference(returned(literal))
+                    if check["action"] == "compare" and operands == {"left":scalar_reference,"operator":"eq","right":literal_reference} \
+                        and known["kind"] == "json" and type(known["value"]) is str:
+                        require(successful_boolean(check), "Deferred source-link scalar check did not return true")
+                        proofs.append(known["value"])
+                    elif check["action"] == "contains" and operands == {"container":literal_reference,"item":scalar_reference} \
+                        and known["kind"] == "set" and type(known["value"]) is list and len(known["value"]) == 1 \
+                        and type(known["value"][0]) is str:
+                        require(successful_boolean(check), "Deferred source-link scalar check did not return true")
+                        proofs.append(known["value"][0])
+        require(proofs and all(value == proofs[0] for value in proofs), "Deferred source-link scalar proof is missing or ambiguous")
+        return proofs[0]
+    links = []
+    for element in elements:
+        links.append({field:scalar(element, field) for field in ("requirement_id", "source_node_id", "target_node_id", "pass_name")})
+    document["source_links"] = links
+    return document
+
+
 def validate_deferred_accesses(actual, evidence, details):
     require(len(evidence["accesses"]) == len(actual["access_log"]), "Deferred hook/access census differs")
     previous_offsets = {}
@@ -1585,7 +1709,8 @@ def validate_deferred_accesses(actual, evidence, details):
             contexts = [item for item in prior if item["action"] == "hydrate-context"
                 and item["outcome"] == {"status": "return", "value": context}]
             require(contexts, "Original callback context lacks its actual native hydration")
-            equal(contexts[-1]["arguments"]["document"], values["context"], "Deferred callback read a context different from native authority")
+            equal(deferred_context_document(contexts[-1], native), values["context"],
+                "Deferred callback read a context different from native authority")
     for index, native in enumerate(details):
         for identity, invocation in native["invocations"].items():
             action, args = invocation["action"], invocation["arguments"]

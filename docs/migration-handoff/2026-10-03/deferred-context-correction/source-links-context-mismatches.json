@@ -1,0 +1,1042 @@
+[
+  {
+    "access": "validator.enter",
+    "different_keys": [
+      "source_links"
+    ],
+    "id": "callback:producer_nested_run",
+    "invocation": 105,
+    "native": {
+      "configuration": {},
+      "dependencies": {
+        "registry": "161078e42e8fef3ba4b9c984035baa2e431a50b31a18ac95614cc6820394af13",
+        "request": "7d5d21d9231de998a47efb9e03b09faf6577298a865572992cc70db299abf39f",
+        "target": "8396d1d80366812b853ae7675279a61cdb6479759a00436e40b55b158fc2872d"
+      },
+      "input": {
+        "nodes": [
+          {
+            "id": "n",
+            "kind": "constant",
+            "value": 1
+          }
+        ],
+        "schema_version": "intent.v1"
+      },
+      "observation_map": {},
+      "output": {
+        "nodes": [
+          {
+            "id": "n",
+            "kind": "constant",
+            "value": 1
+          }
+        ],
+        "schema_version": "behavior.v1"
+      },
+      "requirements": [
+        "r"
+      ],
+      "source_links": [],
+      "target": {
+        "capabilities": [],
+        "compartments": [
+          "abstract"
+        ],
+        "context_id": "synthetic",
+        "context_version": "1",
+        "payload_format": "RNA",
+        "resources": {},
+        "schema_version": "biocompiler.target.v0.1"
+      }
+    },
+    "observed": {
+      "configuration": {},
+      "dependencies": {
+        "registry": "161078e42e8fef3ba4b9c984035baa2e431a50b31a18ac95614cc6820394af13",
+        "request": "7d5d21d9231de998a47efb9e03b09faf6577298a865572992cc70db299abf39f",
+        "target": "8396d1d80366812b853ae7675279a61cdb6479759a00436e40b55b158fc2872d"
+      },
+      "input": {
+        "nodes": [
+          {
+            "id": "n",
+            "kind": "constant",
+            "value": 1
+          }
+        ],
+        "schema_version": "intent.v1"
+      },
+      "observation_map": {},
+      "output": {
+        "nodes": [
+          {
+            "id": "n",
+            "kind": "constant",
+            "value": 1
+          }
+        ],
+        "schema_version": "behavior.v1"
+      },
+      "requirements": [
+        "r"
+      ],
+      "source_links": [
+        {
+          "pass_name": "lower",
+          "requirement_id": "r",
+          "source_node_id": "n",
+          "target_node_id": "n"
+        }
+      ],
+      "target": {
+        "capabilities": [],
+        "compartments": [
+          "abstract"
+        ],
+        "context_id": "synthetic",
+        "context_version": "1",
+        "payload_format": "RNA",
+        "resources": {},
+        "schema_version": "biocompiler.target.v0.1"
+      }
+    },
+    "ordinal": 2
+  },
+  {
+    "access": "validator.enter",
+    "different_keys": [
+      "source_links"
+    ],
+    "id": "callback:producer_nested_run",
+    "invocation": 174,
+    "native": {
+      "configuration": {},
+      "dependencies": {
+        "registry": "161078e42e8fef3ba4b9c984035baa2e431a50b31a18ac95614cc6820394af13",
+        "request": "7d5d21d9231de998a47efb9e03b09faf6577298a865572992cc70db299abf39f",
+        "target": "8396d1d80366812b853ae7675279a61cdb6479759a00436e40b55b158fc2872d"
+      },
+      "input": {
+        "nodes": [
+          {
+            "id": "n",
+            "kind": "constant",
+            "value": 1
+          }
+        ],
+        "schema_version": "intent.v1"
+      },
+      "observation_map": {},
+      "output": {
+        "nodes": [
+          {
+            "id": "n",
+            "kind": "constant",
+            "value": 1
+          }
+        ],
+        "schema_version": "behavior.v1"
+      },
+      "requirements": [
+        "r"
+      ],
+      "source_links": [],
+      "target": {
+        "capabilities": [],
+        "compartments": [
+          "abstract"
+        ],
+        "context_id": "synthetic",
+        "context_version": "1",
+        "payload_format": "RNA",
+        "resources": {},
+        "schema_version": "biocompiler.target.v0.1"
+      }
+    },
+    "observed": {
+      "configuration": {},
+      "dependencies": {
+        "registry": "161078e42e8fef3ba4b9c984035baa2e431a50b31a18ac95614cc6820394af13",
+        "request": "7d5d21d9231de998a47efb9e03b09faf6577298a865572992cc70db299abf39f",
+        "target": "8396d1d80366812b853ae7675279a61cdb6479759a00436e40b55b158fc2872d"
+      },
+      "input": {
+        "nodes": [
+          {
+            "id": "n",
+            "kind": "constant",
+            "value": 1
+          }
+        ],
+        "schema_version": "intent.v1"
+      },
+      "observation_map": {},
+      "output": {
+        "nodes": [
+          {
+            "id": "n",
+            "kind": "constant",
+            "value": 1
+          }
+        ],
+        "schema_version": "behavior.v1"
+      },
+      "requirements": [
+        "r"
+      ],
+      "source_links": [
+        {
+          "pass_name": "lower",
+          "requirement_id": "r",
+          "source_node_id": "n",
+          "target_node_id": "n"
+        }
+      ],
+      "target": {
+        "capabilities": [],
+        "compartments": [
+          "abstract"
+        ],
+        "context_id": "synthetic",
+        "context_version": "1",
+        "payload_format": "RNA",
+        "resources": {},
+        "schema_version": "biocompiler.target.v0.1"
+      }
+    },
+    "ordinal": 3
+  },
+  {
+    "access": "validator.enter",
+    "different_keys": [
+      "source_links"
+    ],
+    "id": "callback:producer_nested_run_raises",
+    "invocation": 105,
+    "native": {
+      "configuration": {},
+      "dependencies": {
+        "registry": "161078e42e8fef3ba4b9c984035baa2e431a50b31a18ac95614cc6820394af13",
+        "request": "7d5d21d9231de998a47efb9e03b09faf6577298a865572992cc70db299abf39f",
+        "target": "8396d1d80366812b853ae7675279a61cdb6479759a00436e40b55b158fc2872d"
+      },
+      "input": {
+        "nodes": [
+          {
+            "id": "n",
+            "kind": "constant",
+            "value": 1
+          }
+        ],
+        "schema_version": "intent.v1"
+      },
+      "observation_map": {},
+      "output": {
+        "nodes": [
+          {
+            "id": "n",
+            "kind": "constant",
+            "value": 1
+          }
+        ],
+        "schema_version": "behavior.v1"
+      },
+      "requirements": [
+        "r"
+      ],
+      "source_links": [],
+      "target": {
+        "capabilities": [],
+        "compartments": [
+          "abstract"
+        ],
+        "context_id": "synthetic",
+        "context_version": "1",
+        "payload_format": "RNA",
+        "resources": {},
+        "schema_version": "biocompiler.target.v0.1"
+      }
+    },
+    "observed": {
+      "configuration": {},
+      "dependencies": {
+        "registry": "161078e42e8fef3ba4b9c984035baa2e431a50b31a18ac95614cc6820394af13",
+        "request": "7d5d21d9231de998a47efb9e03b09faf6577298a865572992cc70db299abf39f",
+        "target": "8396d1d80366812b853ae7675279a61cdb6479759a00436e40b55b158fc2872d"
+      },
+      "input": {
+        "nodes": [
+          {
+            "id": "n",
+            "kind": "constant",
+            "value": 1
+          }
+        ],
+        "schema_version": "intent.v1"
+      },
+      "observation_map": {},
+      "output": {
+        "nodes": [
+          {
+            "id": "n",
+            "kind": "constant",
+            "value": 1
+          }
+        ],
+        "schema_version": "behavior.v1"
+      },
+      "requirements": [
+        "r"
+      ],
+      "source_links": [
+        {
+          "pass_name": "lower",
+          "requirement_id": "r",
+          "source_node_id": "n",
+          "target_node_id": "n"
+        }
+      ],
+      "target": {
+        "capabilities": [],
+        "compartments": [
+          "abstract"
+        ],
+        "context_id": "synthetic",
+        "context_version": "1",
+        "payload_format": "RNA",
+        "resources": {},
+        "schema_version": "biocompiler.target.v0.1"
+      }
+    },
+    "ordinal": 2
+  },
+  {
+    "access": "validator.enter",
+    "different_keys": [
+      "source_links"
+    ],
+    "id": "callback:validator_mutates_returns",
+    "invocation": 102,
+    "native": {
+      "configuration": {},
+      "dependencies": {
+        "registry": "161078e42e8fef3ba4b9c984035baa2e431a50b31a18ac95614cc6820394af13",
+        "request": "7d5d21d9231de998a47efb9e03b09faf6577298a865572992cc70db299abf39f",
+        "target": "8396d1d80366812b853ae7675279a61cdb6479759a00436e40b55b158fc2872d"
+      },
+      "input": {
+        "nodes": [
+          {
+            "id": "n",
+            "kind": "constant",
+            "value": 1
+          }
+        ],
+        "schema_version": "intent.v1"
+      },
+      "observation_map": {},
+      "output": {
+        "nodes": [
+          {
+            "id": "n",
+            "kind": "constant",
+            "value": 1
+          }
+        ],
+        "schema_version": "behavior.v1"
+      },
+      "requirements": [
+        "r"
+      ],
+      "source_links": [],
+      "target": {
+        "capabilities": [],
+        "compartments": [
+          "abstract"
+        ],
+        "context_id": "synthetic",
+        "context_version": "1",
+        "payload_format": "RNA",
+        "resources": {},
+        "schema_version": "biocompiler.target.v0.1"
+      }
+    },
+    "observed": {
+      "configuration": {},
+      "dependencies": {
+        "registry": "161078e42e8fef3ba4b9c984035baa2e431a50b31a18ac95614cc6820394af13",
+        "request": "7d5d21d9231de998a47efb9e03b09faf6577298a865572992cc70db299abf39f",
+        "target": "8396d1d80366812b853ae7675279a61cdb6479759a00436e40b55b158fc2872d"
+      },
+      "input": {
+        "nodes": [
+          {
+            "id": "n",
+            "kind": "constant",
+            "value": 1
+          }
+        ],
+        "schema_version": "intent.v1"
+      },
+      "observation_map": {},
+      "output": {
+        "nodes": [
+          {
+            "id": "n",
+            "kind": "constant",
+            "value": 1
+          }
+        ],
+        "schema_version": "behavior.v1"
+      },
+      "requirements": [
+        "r"
+      ],
+      "source_links": [
+        {
+          "pass_name": "lower",
+          "requirement_id": "r",
+          "source_node_id": "n",
+          "target_node_id": "n"
+        }
+      ],
+      "target": {
+        "capabilities": [],
+        "compartments": [
+          "abstract"
+        ],
+        "context_id": "synthetic",
+        "context_version": "1",
+        "payload_format": "RNA",
+        "resources": {},
+        "schema_version": "biocompiler.target.v0.1"
+      }
+    },
+    "ordinal": 1
+  },
+  {
+    "access": "validator.enter",
+    "different_keys": [
+      "source_links"
+    ],
+    "id": "callback:validator_mutates_raises",
+    "invocation": 102,
+    "native": {
+      "configuration": {},
+      "dependencies": {
+        "registry": "161078e42e8fef3ba4b9c984035baa2e431a50b31a18ac95614cc6820394af13",
+        "request": "7d5d21d9231de998a47efb9e03b09faf6577298a865572992cc70db299abf39f",
+        "target": "8396d1d80366812b853ae7675279a61cdb6479759a00436e40b55b158fc2872d"
+      },
+      "input": {
+        "nodes": [
+          {
+            "id": "n",
+            "kind": "constant",
+            "value": 1
+          }
+        ],
+        "schema_version": "intent.v1"
+      },
+      "observation_map": {},
+      "output": {
+        "nodes": [
+          {
+            "id": "n",
+            "kind": "constant",
+            "value": 1
+          }
+        ],
+        "schema_version": "behavior.v1"
+      },
+      "requirements": [
+        "r"
+      ],
+      "source_links": [],
+      "target": {
+        "capabilities": [],
+        "compartments": [
+          "abstract"
+        ],
+        "context_id": "synthetic",
+        "context_version": "1",
+        "payload_format": "RNA",
+        "resources": {},
+        "schema_version": "biocompiler.target.v0.1"
+      }
+    },
+    "observed": {
+      "configuration": {},
+      "dependencies": {
+        "registry": "161078e42e8fef3ba4b9c984035baa2e431a50b31a18ac95614cc6820394af13",
+        "request": "7d5d21d9231de998a47efb9e03b09faf6577298a865572992cc70db299abf39f",
+        "target": "8396d1d80366812b853ae7675279a61cdb6479759a00436e40b55b158fc2872d"
+      },
+      "input": {
+        "nodes": [
+          {
+            "id": "n",
+            "kind": "constant",
+            "value": 1
+          }
+        ],
+        "schema_version": "intent.v1"
+      },
+      "observation_map": {},
+      "output": {
+        "nodes": [
+          {
+            "id": "n",
+            "kind": "constant",
+            "value": 1
+          }
+        ],
+        "schema_version": "behavior.v1"
+      },
+      "requirements": [
+        "r"
+      ],
+      "source_links": [
+        {
+          "pass_name": "lower",
+          "requirement_id": "r",
+          "source_node_id": "n",
+          "target_node_id": "n"
+        }
+      ],
+      "target": {
+        "capabilities": [],
+        "compartments": [
+          "abstract"
+        ],
+        "context_id": "synthetic",
+        "context_version": "1",
+        "payload_format": "RNA",
+        "resources": {},
+        "schema_version": "biocompiler.target.v0.1"
+      }
+    },
+    "ordinal": 1
+  },
+  {
+    "access": "validator.enter",
+    "different_keys": [
+      "source_links"
+    ],
+    "id": "callback:validator_registers",
+    "invocation": 102,
+    "native": {
+      "configuration": {},
+      "dependencies": {
+        "registry": "161078e42e8fef3ba4b9c984035baa2e431a50b31a18ac95614cc6820394af13",
+        "request": "7d5d21d9231de998a47efb9e03b09faf6577298a865572992cc70db299abf39f",
+        "target": "8396d1d80366812b853ae7675279a61cdb6479759a00436e40b55b158fc2872d"
+      },
+      "input": {
+        "nodes": [
+          {
+            "id": "n",
+            "kind": "constant",
+            "value": 1
+          }
+        ],
+        "schema_version": "intent.v1"
+      },
+      "observation_map": {},
+      "output": {
+        "nodes": [
+          {
+            "id": "n",
+            "kind": "constant",
+            "value": 1
+          }
+        ],
+        "schema_version": "behavior.v1"
+      },
+      "requirements": [
+        "r"
+      ],
+      "source_links": [],
+      "target": {
+        "capabilities": [],
+        "compartments": [
+          "abstract"
+        ],
+        "context_id": "synthetic",
+        "context_version": "1",
+        "payload_format": "RNA",
+        "resources": {},
+        "schema_version": "biocompiler.target.v0.1"
+      }
+    },
+    "observed": {
+      "configuration": {},
+      "dependencies": {
+        "registry": "161078e42e8fef3ba4b9c984035baa2e431a50b31a18ac95614cc6820394af13",
+        "request": "7d5d21d9231de998a47efb9e03b09faf6577298a865572992cc70db299abf39f",
+        "target": "8396d1d80366812b853ae7675279a61cdb6479759a00436e40b55b158fc2872d"
+      },
+      "input": {
+        "nodes": [
+          {
+            "id": "n",
+            "kind": "constant",
+            "value": 1
+          }
+        ],
+        "schema_version": "intent.v1"
+      },
+      "observation_map": {},
+      "output": {
+        "nodes": [
+          {
+            "id": "n",
+            "kind": "constant",
+            "value": 1
+          }
+        ],
+        "schema_version": "behavior.v1"
+      },
+      "requirements": [
+        "r"
+      ],
+      "source_links": [
+        {
+          "pass_name": "lower",
+          "requirement_id": "r",
+          "source_node_id": "n",
+          "target_node_id": "n"
+        }
+      ],
+      "target": {
+        "capabilities": [],
+        "compartments": [
+          "abstract"
+        ],
+        "context_id": "synthetic",
+        "context_version": "1",
+        "payload_format": "RNA",
+        "resources": {},
+        "schema_version": "biocompiler.target.v0.1"
+      }
+    },
+    "ordinal": 1
+  },
+  {
+    "access": "validator.enter",
+    "different_keys": [
+      "source_links"
+    ],
+    "id": "callback:validator_nested_run",
+    "invocation": 102,
+    "native": {
+      "configuration": {},
+      "dependencies": {
+        "registry": "161078e42e8fef3ba4b9c984035baa2e431a50b31a18ac95614cc6820394af13",
+        "request": "7d5d21d9231de998a47efb9e03b09faf6577298a865572992cc70db299abf39f",
+        "target": "8396d1d80366812b853ae7675279a61cdb6479759a00436e40b55b158fc2872d"
+      },
+      "input": {
+        "nodes": [
+          {
+            "id": "n",
+            "kind": "constant",
+            "value": 1
+          }
+        ],
+        "schema_version": "intent.v1"
+      },
+      "observation_map": {},
+      "output": {
+        "nodes": [
+          {
+            "id": "n",
+            "kind": "constant",
+            "value": 1
+          }
+        ],
+        "schema_version": "behavior.v1"
+      },
+      "requirements": [
+        "r"
+      ],
+      "source_links": [],
+      "target": {
+        "capabilities": [],
+        "compartments": [
+          "abstract"
+        ],
+        "context_id": "synthetic",
+        "context_version": "1",
+        "payload_format": "RNA",
+        "resources": {},
+        "schema_version": "biocompiler.target.v0.1"
+      }
+    },
+    "observed": {
+      "configuration": {},
+      "dependencies": {
+        "registry": "161078e42e8fef3ba4b9c984035baa2e431a50b31a18ac95614cc6820394af13",
+        "request": "7d5d21d9231de998a47efb9e03b09faf6577298a865572992cc70db299abf39f",
+        "target": "8396d1d80366812b853ae7675279a61cdb6479759a00436e40b55b158fc2872d"
+      },
+      "input": {
+        "nodes": [
+          {
+            "id": "n",
+            "kind": "constant",
+            "value": 1
+          }
+        ],
+        "schema_version": "intent.v1"
+      },
+      "observation_map": {},
+      "output": {
+        "nodes": [
+          {
+            "id": "n",
+            "kind": "constant",
+            "value": 1
+          }
+        ],
+        "schema_version": "behavior.v1"
+      },
+      "requirements": [
+        "r"
+      ],
+      "source_links": [
+        {
+          "pass_name": "lower",
+          "requirement_id": "r",
+          "source_node_id": "n",
+          "target_node_id": "n"
+        }
+      ],
+      "target": {
+        "capabilities": [],
+        "compartments": [
+          "abstract"
+        ],
+        "context_id": "synthetic",
+        "context_version": "1",
+        "payload_format": "RNA",
+        "resources": {},
+        "schema_version": "biocompiler.target.v0.1"
+      }
+    },
+    "ordinal": 1
+  },
+  {
+    "access": "validator.enter",
+    "different_keys": [
+      "source_links"
+    ],
+    "id": "callback:validator_nested_run",
+    "invocation": 155,
+    "native": {
+      "configuration": {},
+      "dependencies": {
+        "registry": "161078e42e8fef3ba4b9c984035baa2e431a50b31a18ac95614cc6820394af13",
+        "request": "7d5d21d9231de998a47efb9e03b09faf6577298a865572992cc70db299abf39f",
+        "target": "8396d1d80366812b853ae7675279a61cdb6479759a00436e40b55b158fc2872d"
+      },
+      "input": {
+        "nodes": [
+          {
+            "id": "n",
+            "kind": "constant",
+            "value": 1
+          }
+        ],
+        "schema_version": "intent.v1"
+      },
+      "observation_map": {},
+      "output": {
+        "nodes": [
+          {
+            "id": "n",
+            "kind": "constant",
+            "value": 1
+          }
+        ],
+        "schema_version": "behavior.v1"
+      },
+      "requirements": [
+        "r"
+      ],
+      "source_links": [],
+      "target": {
+        "capabilities": [],
+        "compartments": [
+          "abstract"
+        ],
+        "context_id": "synthetic",
+        "context_version": "1",
+        "payload_format": "RNA",
+        "resources": {},
+        "schema_version": "biocompiler.target.v0.1"
+      }
+    },
+    "observed": {
+      "configuration": {},
+      "dependencies": {
+        "registry": "161078e42e8fef3ba4b9c984035baa2e431a50b31a18ac95614cc6820394af13",
+        "request": "7d5d21d9231de998a47efb9e03b09faf6577298a865572992cc70db299abf39f",
+        "target": "8396d1d80366812b853ae7675279a61cdb6479759a00436e40b55b158fc2872d"
+      },
+      "input": {
+        "nodes": [
+          {
+            "id": "n",
+            "kind": "constant",
+            "value": 1
+          }
+        ],
+        "schema_version": "intent.v1"
+      },
+      "observation_map": {},
+      "output": {
+        "nodes": [
+          {
+            "id": "n",
+            "kind": "constant",
+            "value": 1
+          }
+        ],
+        "schema_version": "behavior.v1"
+      },
+      "requirements": [
+        "r"
+      ],
+      "source_links": [
+        {
+          "pass_name": "lower",
+          "requirement_id": "r",
+          "source_node_id": "n",
+          "target_node_id": "n"
+        }
+      ],
+      "target": {
+        "capabilities": [],
+        "compartments": [
+          "abstract"
+        ],
+        "context_id": "synthetic",
+        "context_version": "1",
+        "payload_format": "RNA",
+        "resources": {},
+        "schema_version": "biocompiler.target.v0.1"
+      }
+    },
+    "ordinal": 3
+  },
+  {
+    "access": "validator.enter",
+    "different_keys": [
+      "source_links"
+    ],
+    "id": "callback:context_immutable",
+    "invocation": 102,
+    "native": {
+      "configuration": {},
+      "dependencies": {
+        "registry": "161078e42e8fef3ba4b9c984035baa2e431a50b31a18ac95614cc6820394af13",
+        "request": "7d5d21d9231de998a47efb9e03b09faf6577298a865572992cc70db299abf39f",
+        "target": "8396d1d80366812b853ae7675279a61cdb6479759a00436e40b55b158fc2872d"
+      },
+      "input": {
+        "nodes": [
+          {
+            "id": "n",
+            "kind": "constant",
+            "value": 1
+          }
+        ],
+        "schema_version": "intent.v1"
+      },
+      "observation_map": {},
+      "output": {
+        "nodes": [
+          {
+            "id": "n",
+            "kind": "constant",
+            "value": 1
+          }
+        ],
+        "schema_version": "behavior.v1"
+      },
+      "requirements": [
+        "r"
+      ],
+      "source_links": [],
+      "target": {
+        "capabilities": [],
+        "compartments": [
+          "abstract"
+        ],
+        "context_id": "synthetic",
+        "context_version": "1",
+        "payload_format": "RNA",
+        "resources": {},
+        "schema_version": "biocompiler.target.v0.1"
+      }
+    },
+    "observed": {
+      "configuration": {},
+      "dependencies": {
+        "registry": "161078e42e8fef3ba4b9c984035baa2e431a50b31a18ac95614cc6820394af13",
+        "request": "7d5d21d9231de998a47efb9e03b09faf6577298a865572992cc70db299abf39f",
+        "target": "8396d1d80366812b853ae7675279a61cdb6479759a00436e40b55b158fc2872d"
+      },
+      "input": {
+        "nodes": [
+          {
+            "id": "n",
+            "kind": "constant",
+            "value": 1
+          }
+        ],
+        "schema_version": "intent.v1"
+      },
+      "observation_map": {},
+      "output": {
+        "nodes": [
+          {
+            "id": "n",
+            "kind": "constant",
+            "value": 1
+          }
+        ],
+        "schema_version": "behavior.v1"
+      },
+      "requirements": [
+        "r"
+      ],
+      "source_links": [
+        {
+          "pass_name": "lower",
+          "requirement_id": "r",
+          "source_node_id": "n",
+          "target_node_id": "n"
+        }
+      ],
+      "target": {
+        "capabilities": [],
+        "compartments": [
+          "abstract"
+        ],
+        "context_id": "synthetic",
+        "context_version": "1",
+        "payload_format": "RNA",
+        "resources": {},
+        "schema_version": "biocompiler.target.v0.1"
+      }
+    },
+    "ordinal": 1
+  },
+  {
+    "access": "old.call",
+    "different_keys": [
+      "source_links"
+    ],
+    "id": "equality:nested_run",
+    "invocation": 131,
+    "native": {
+      "configuration": {},
+      "dependencies": {
+        "registry": "161078e42e8fef3ba4b9c984035baa2e431a50b31a18ac95614cc6820394af13",
+        "request": "7d5d21d9231de998a47efb9e03b09faf6577298a865572992cc70db299abf39f",
+        "target": "8396d1d80366812b853ae7675279a61cdb6479759a00436e40b55b158fc2872d"
+      },
+      "input": {
+        "nodes": [
+          {
+            "id": "n",
+            "kind": "constant",
+            "value": 1
+          }
+        ],
+        "schema_version": "intent.v1"
+      },
+      "observation_map": {},
+      "output": {
+        "nodes": [
+          {
+            "id": "n",
+            "kind": "constant",
+            "value": 1
+          }
+        ],
+        "schema_version": "behavior.v1"
+      },
+      "requirements": [
+        "r"
+      ],
+      "source_links": [],
+      "target": {
+        "capabilities": [],
+        "compartments": [
+          "abstract"
+        ],
+        "context_id": "synthetic",
+        "context_version": "1",
+        "payload_format": "RNA",
+        "resources": {},
+        "schema_version": "biocompiler.target.v0.1"
+      }
+    },
+    "observed": {
+      "configuration": {},
+      "dependencies": {
+        "registry": "161078e42e8fef3ba4b9c984035baa2e431a50b31a18ac95614cc6820394af13",
+        "request": "7d5d21d9231de998a47efb9e03b09faf6577298a865572992cc70db299abf39f",
+        "target": "8396d1d80366812b853ae7675279a61cdb6479759a00436e40b55b158fc2872d"
+      },
+      "input": {
+        "nodes": [
+          {
+            "id": "n",
+            "kind": "constant",
+            "value": 1
+          }
+        ],
+        "schema_version": "intent.v1"
+      },
+      "observation_map": {},
+      "output": {
+        "nodes": [
+          {
+            "id": "n",
+            "kind": "constant",
+            "value": 1
+          }
+        ],
+        "schema_version": "behavior.v1"
+      },
+      "requirements": [
+        "r"
+      ],
+      "source_links": [
+        {
+          "pass_name": "lower",
+          "requirement_id": "r",
+          "source_node_id": "n",
+          "target_node_id": "n"
+        }
+      ],
+      "target": {
+        "capabilities": [],
+        "compartments": [
+          "abstract"
+        ],
+        "context_id": "synthetic",
+        "context_version": "1",
+        "payload_format": "RNA",
+        "resources": {},
+        "schema_version": "biocompiler.target.v0.1"
+      }
+    },
+    "ordinal": 2
+  }
+]

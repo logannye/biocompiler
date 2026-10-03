@@ -7,19 +7,31 @@ PR85 with a merge commit, proving every PR60–84 head is contained in `main`,
 closing any remaining superseded PRs, and removing their obsolete remote branches
 after main validation. Keep the current checkpoint branch and local worktrees.
 Refresh all older heads before cleanup. Source
-`b3228d454a823d6ce3eea3735c415cc1afcadd5a`, run `37101974697`, passes both
-complete native jobs (118 suites per platform), independent native-wheel/source
-companion validation, and all 3,385 unit tests on each Python runtime. Thirty
-jobs succeed, then strict SDK-wheel checking fails on archive mode or size.
-Pinned backend source explains a regular0664 RECORD; the failed wheel was not
-retained, so this is a source-backed diagnosis rather than inspection of that
-wheel. The correction prevalidates the complete staging SDK, canonicalizes only
-that exact RECORD mode to0644, and applies unchanged strict final checks before
-atomic replacement. All 37 focused controls pass on Python 3.11.15 and 3.14.6;
-six new controls bring discovery to 3,391 tests. Corrected hosted validation,
-all four fresh installs and the complete 38-job release gate remain required.
-Do not report this checkpoint as merged or release-accepted from partial results.
-Read the [failure and correction evidence](migration-handoff/2026-10-03/sdk-wheel-correction/correction.json).
+`817a8ed1154975befd293327dfabdf7798ed2b4c`, run `37109100797`, passes both
+native jobs and SDK-wheel assembly after the
+[SDK metadata correction](migration-handoff/2026-10-03/sdk-wheel-correction/correction.json).
+The fresh macOS slots on Python 3.11.9 and 3.14.7, plus Linux 3.14.7, pass
+package lifecycle, protocol and routing checks, then fail the installed manager
+receipt checker. Its deferred-context comparison ignores the actual source-link tuple binding
+and compares only the native typed document, whose link array is intentionally
+empty on that path. The retained Python 3.11 evidence has ten such observations
+across eight cases, differing only in `source_links`; Python 3.14 reports the
+same checker exception, also confirmed on Linux 3.14.7. None of these installed
+receipts is a PASS.
+Read the [retained failure evidence](migration-handoff/2026-10-03/deferred-context-correction/evidence.json).
+
+The checker correction reconstructs that tuple from the actual registered
+producer, ordered materialization and native scalar-check receipts. All 37
+focused controls pass on each local runtime; six new tests bring discovery to
+3,397 test IDs with none removed. Offline checking now validates all 86 original cases and 16,346 retained artifacts on
+local Python 3.11.15 and 3.14.6, using an exact historical trace-source overlay.
+The original receipt remains failed; replay is not a new native run or a fresh
+installation. See the [correction receipt](migration-handoff/2026-10-03/deferred-context-correction/correction.json).
+
+Corrected exact-source validation, all four fresh-install campaigns and the
+complete 38-job release gate remain required before consolidation. Finish this
+consolidation and its authorized cleanup before resuming migration scope. Do not
+report this checkpoint as merged or release-accepted from partial results.
 
 ## Copy/paste task for the next Codex session
 

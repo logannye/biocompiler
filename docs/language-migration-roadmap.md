@@ -58,6 +58,30 @@ drafts are preserved separately and are not production integrations.
   archives. All 37 focused controls pass on each local Python runtime; six new
   tests produce 3,391 discovered cases. Peer review finds no actionable issue.
   See [retained evidence](migration-handoff/2026-10-03/sdk-wheel-correction/correction.json).
+- [x] **LM-30 SDK assembly and fresh-install lifecycle hosted checkpoint:**
+  source `817a8ed1154975befd293327dfabdf7798ed2b4c`, run `37109100797`,
+  passes both native jobs and SDK-wheel assembly. The fresh macOS Python 3.11.9
+  and 3.14.7 slots, plus Linux 3.14.7, pass installation, removal/reinstallation,
+  protocol and routing checks, then fail the deferred manager receipt comparison.
+  The actual tuple binding carries source links that the native typed context
+  document intentionally omits. This does not accept any complete fresh-install slot.
+  See [retained slot evidence](migration-handoff/2026-10-03/deferred-context-correction/evidence.json).
+- [x] **LM-12/R6 deferred-context receipt correction, source checkpoint:**
+  reconstruct the bound source-link tuple only from its registered producer,
+  same-command tuple materialization and native field checks. Preserve the
+  complete observed context comparison, tuple order and duplicates; reject
+  detached capabilities, malformed handles and numeric Boolean substitutes.
+  All 37 focused controls pass on each local runtime, including six new test
+  methods. Discovery preserves all prior IDs and adds exactly those six.
+  Offline checking of the retained failing macOS receipt passes all 86 original
+  cases and all 16,346 artifacts on both local runtimes. The exact historical
+  trace-source restoration is separate evidence; the old receipt remains failed
+  and no native executable runs locally.
+  See [correction and validation](migration-handoff/2026-10-03/deferred-context-correction/correction.json).
+- [ ] **LM-12/R6 corrected deferred-context installed evidence:** bind the
+  observed source-link tuple to the actual native callback and complete receipt,
+  retain original values/identity/order checks, and rerun every installed manager
+  case on all four supported platform/runtime slots at the corrected revision.
 - [ ] **LM-30 corrected distribution acceptance:** validate the corrected exact
   revision through both native jobs, both platform wheels, all four fresh
   installations and the complete 38-job gate before merging the consolidation

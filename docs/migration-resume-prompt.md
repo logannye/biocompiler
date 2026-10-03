@@ -13,6 +13,22 @@ finish the required validation and merge before treating it as accepted. Preserv
 local changes and use the latest verified repository state. Earlier PRs and
 source-only receipts are historical evidence, not transferable acceptance.
 
+The immediate task is PR85 consolidation and its already-authorized cleanup.
+Run `37109100797` at source `817a8ed1154975befd293327dfabdf7798ed2b4c`
+passes native jobs and SDK assembly, but both fresh macOS slots and Linux 3.14
+fail a deferred manager receipt comparison that ignores an actual source-link
+tuple binding.
+Read the [retained failure and correction evidence](migration-handoff/2026-10-03/deferred-context-correction/correction.json).
+Offline checking of its retained 86-case receipt passes after the correction;
+this does not establish a successful fresh installed campaign.
+Require the corrected revision's four complete fresh-install campaigns and all
+38 required CI jobs, then merge and prove older heads are contained before
+closing superseded PRs. Validate actual main before deleting remote branches.
+Refresh every older PR head and use exact
+compare-and-delete leases for approved obsolete branches. Keep the checkpoint
+branch and local worktrees. Do not resume broader migration implementation while
+this consolidation is still pending; the four migration cutoff gates stay open.
+
 Verify and, if needed, restore the preserved WIP with
 `python3 tools/restore_migration_handoff.py --restore`. This restores source and
 original evidence under ignored `generated/migration-next/`; it applies no patch
