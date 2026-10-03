@@ -22,10 +22,11 @@ CORPUS_PIN = "2f5e7636977f559e046776c1bb92bebf67c8f0e733ca463927f8d3a1aee3d77b"
 REVIEWED_ADDITIONS = {
     "src/biocompiler/core_pipeline_build_views.py": "85492c4f77b3104af2dae9d9180a0518bfd4fb61c9d6143880e6e58e10a77382",
     "src/biocompiler/core_pipeline_provider_views.py": "ea18d951f8170b1e1da4fbe6636d40e83f54ebda2ebdce187b0e08cf257b9c35",
-    "src/biocompiler/core_pipeline_manager.py": "0c0cfac138484cf71f1bb1303e66873b8b148ca236e07930fdbadd0b477a11be",
+    "src/biocompiler/core_pipeline_manager.py": "18ee9bd517524b4440bcf29292a5d834470603713d662198b83ca61373c7fd09",
+    "src/biocompiler/reference_backend.py": "f390f40bb7f176e2cd45acde4db84e7aa987d8a7125269a1ceba37ea59b26358",
     "src/biocompiler/core_reference_host.py": "a31be5b73f1440d92cf8076fdad9d69ec9ae8605217d400af20d47f5d4e4305e",
-    "src/biocompiler/core_reference_manager.py": "82959c06a5d8c91af1a694cc4251c13045244eff53e3951f9d880a9fa0eb0faa",
-    "src/biocompiler/core_reference_provider_views.py": "4be83eedf9fe0abf60d049ba108341a6d0f88364522e0dc0fa70a13f99c60c99",
+    "src/biocompiler/core_reference_manager.py": "239fa3486751cfdc97e5f2e599a414562f3fba952b641169b4f04db0aab83772",
+    "src/biocompiler/core_reference_provider_views.py": "1b4989571d71292eaa9998787f249fd7d60439958cbc8da6f36c2acca39c6bce",
     "src/biocompiler/core_reference_views.py": "a295b4583be057a743959d077add14ae7c5424086f7edddd322dfb188786d9f9",
     "src/biocompiler/core_pipeline_callback_session.py": "0ff388509eb9c123b87cf5decc1f35cf5eaca61a02d84a756beba7150de17018",
     "src/biocompiler/pipeline_callback_objects.py": "ac5198795c3e80cff511e0fe372dc578a983d8be947e41dd9debd9f719da9eec",
@@ -90,8 +91,8 @@ def source_scope(actual, *, allow_missing_tests=False):
             from tools.workflow_source_lineage import HISTORICAL
             from tools.synthetic_producer_source_lineage import HISTORICAL as PRODUCERS
             from tools.manager_registration_source_lineage import HISTORICAL as MANAGERS
-            from tools.realization_source_lineage import verify_captured_source
-            require(path in HISTORICAL or path in PRODUCERS or path in MANAGERS, "Historical workflow source bytes changed: " + path)
+            from tools.realization_source_lineage import verify_captured_source, REFERENCE_ROUTES
+            require(path in HISTORICAL or path in PRODUCERS or path in MANAGERS or path in REFERENCE_ROUTES, "Historical workflow source bytes changed: " + path)
             try:
                 route = verify_captured_source(ROOT, {"path": path, "sha256": before[path]})
             except ValueError as error:

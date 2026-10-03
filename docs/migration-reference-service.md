@@ -57,7 +57,12 @@ Construct layout objects come from its freshly parsed request; Molecular
 placement objects come from its freshly parsed Construct, while reference
 selection comes from the authored request and policies come from their actual
 class defaults. Final build candidates and reports are fresh parsed views.
-MolecularBuild.construct retains the exact upstream ConstructBuild.candidate.
+For the ordinary upstream Build, MolecularBuild.construct retains its actual
+Construct candidate. The public route must also preserve the two distinct reads
+of upstream.candidate around the final check, including wrappers whose second
+read returns another object. The in-progress extension checks the first supplied
+candidate independently and publishes the second only as an opaque host root.
+That return field conveys no acceptance authority.
 Historical manager, result and artifact identities remain separate from equal
 frozen JSON payloads.
 
@@ -75,7 +80,10 @@ boundary; native limits do not claim to bound arbitrary host code.
 
 ## Validation still required
 
-The source batch has passed its focused Python controls and source review. Native workflow
+The service source checkpoint has passed its focused Python controls and source
+review; its corrected hosted run remains pending. The [public-routing additions](migration-reference-public-routing.md) have
+70 focused controls passing on both Python versions and strict type checks over
+27 modules; their hosted native and installed acceptance remains pending. Native workflow
 tests and the framed service suite are complementary evidence, not substitutes
 for the unchanged public workflow campaign. The frozen original 18-method,
 27-manager, 439-operation corpus remains unchanged. Its canonical historical

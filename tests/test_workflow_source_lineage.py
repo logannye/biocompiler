@@ -51,6 +51,33 @@ class WorkflowSourceLineageTests(unittest.TestCase):
             with self.assertRaisesRegex(AssertionError, 'Unreviewed current Core addition identity'):
                 source.source_scope(actual)
 
+    def test_exact_reference_public_routes_keep_complete_original_bytes(self):
+        from tools import reference_original_counterpart as reference
+        from tools.realization_source_lineage import verify_captured_source
+        from tools import check_realization_workflow_corpus as source
+        from tools import freeze_realization_workflow as capture
+        scope = source.source_scope(capture.source_inventory())
+        proofs = {row['path']: row for row in scope['reviewed_routes']}
+        for path in reference.ROUTE_SOURCES:
+            old, correspondence = reference.route_source_witness(path)
+            self.assertEqual(proofs[path]['historical_sha256'], reference.sha(old))
+            self.assertEqual(proofs[path]['lineage'], correspondence)
+            with tempfile.TemporaryDirectory() as directory:
+                root = Path(directory)
+                target = root / path
+                target.parent.mkdir(parents=True)
+                target.write_bytes((reference.ROOT / path).read_bytes())
+                self.assertEqual(verify_captured_source(root, {'path': path, 'sha256': reference.sha(old)}), proofs[path])
+                with self.assertRaisesRegex(ValueError, 'original source identity'):
+                    verify_captured_source(root, {'path': path, 'sha256': '0' * 64})
+                target.write_bytes(target.read_bytes() + b'\n# unrelated edit\n')
+                with self.assertRaisesRegex(ValueError, 'source bytes differ'):
+                    verify_captured_source(root, {'path': path, 'sha256': reference.sha(old)})
+        self.assertIn('biocompiler.reference_backend', scope['denied_modules'])
+        with patch.object(reference, 'ROUTE_WITNESS_SHA', '0' * 64):
+            with self.assertRaisesRegex(AssertionError, 'Historical workflow source bytes changed'):
+                source.source_scope(capture.source_inventory())
+
     def altered(self, path, raw):
         entry = deepcopy(self.witness[path])
         entry.update(routed_source=raw.decode(), routed_sha256=lineage.sha(raw))

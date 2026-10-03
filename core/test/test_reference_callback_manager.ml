@@ -250,7 +250,7 @@ let initialize_reference peer request registry manifests=
    "manifests_tree",ordered pairs;"manager_limits",Json.Null;
    "target_object",boxed(get "target" request);"request_object",boxed request;"registry_object",boxed registry;
    "construct_manifests_object",boxed manifests;"molecular_manifests_object",boxed manifests;"policy_objects",policies]
-type mode=Default_native|Host_valid|Wrapped_repeat|Raise_generator|Invalid_candidate|Foreign_record|Foreign_result
+type mode=Default_native|Host_valid|Wrapped_repeat|Public_sources|Raise_generator|Invalid_candidate|Foreign_record|Foreign_result
 let reference_invocation mode generated peer name args=match name with
  | "manager-created"->Peer_return Json.Null
  | "reference-generate" | "reference-emit"->
@@ -270,7 +270,7 @@ let reference_invocation mode generated peer name args=match name with
         generated:=Some value;Peer_return(obj["kind",str "host";"argument",parsed;"output",value])
       |Invalid_candidate->let value=reference peer(Data(obj["schema_version",str "invalid.reference.candidate";"nodes",Json.Array[]])) in
         generated:=Some value;Peer_return(obj["kind",str "host";"argument",parsed;"output",value])
-      |Default_native|Wrapped_repeat|Foreign_record|Foreign_result->Peer_return(obj["kind",str "native";"argument",parsed;"output",Json.Null]))
+      |Default_native|Wrapped_repeat|Public_sources|Foreign_record|Foreign_result->Peer_return(obj["kind",str "native";"argument",parsed;"output",Json.Null]))
     else Peer_return(obj["kind",str "native";"argument",parsed;"output",Json.Null])
  | "reference-proposal"->
     require((mode=Invalid_candidate || mode=Host_valid) && Some(get "output" args)= !generated)"Proposal builder changed opaque output capability";
@@ -289,6 +289,9 @@ let run_request pass input output=obj["pass_id",str pass;"input_id",str input;"o
 let result_request identity scope=obj["identity",str identity;"scope",str scope]
 let framed_reference ?(limits=Json.Null) ?(resource_stop=false) mode request registry manifests=
  let peer=peer() and generated=ref None in
+ let upstream=reference peer(Function(fun _->failwith "Upstream wrapper must stay opaque")) in
+ let returned_construct=reference peer(Function(fun _->failwith "Returned Construct must stay opaque")) in
+ let final_reads=ref [] in
  let wrapped_producer=ref None and direct_calls=ref 0 in
  let wrapper=Function(fun _->failwith "Wrapped producer must use its actual nested native command") in
  let native=mode<>Raise_generator && mode<>Invalid_candidate in
@@ -333,7 +336,7 @@ let framed_reference ?(limits=Json.Null) ?(resource_stop=false) mode request reg
           ["inspect-ordered",obj[];"get",obj["identity",str "components"]]
        |Invalid_candidate->ignore(rejection(outcome event));
           ["inspect-ordered",obj[];"get",obj["identity",str "components"]]
-       |Default_native|Host_valid|Wrapped_repeat|Foreign_record|Foreign_result->let record=value() in construct_record:=Some record;
+       |Default_native|Host_valid|Wrapped_repeat|Public_sources|Foreign_record|Foreign_result->let record=value() in construct_record:=Some record;
           require(get "accepted"(get "value" record)=Json.Bool true)"Native construct was not accepted";
           ["result",result_request "construct" "reference_construct"])
   |"result"->incr result_commands;
@@ -347,7 +350,8 @@ let framed_reference ?(limits=Json.Null) ?(resource_stop=false) mode request reg
         require(same(get "artifact" result)(Option.get !molecular_record))"Molecular result changed actual run record";
         molecular_result:=Some result;
         ["finish-reference-molecular",obj["preparation_id",Option.get !preparation;
-          "record_id",str(record_id(Option.get !molecular_record));"result_sequence",sequence]]
+          "record_id",str(record_id(Option.get !molecular_record));"result_sequence",sequence;
+          "upstream",(if mode=Public_sources then upstream else Json.Null)]]
       end
   |"finish-reference-construct"->let build=value() in construct_build:=Some build;
       require(text "kind" build="construct" && get "construct" build=Json.Null &&
@@ -357,8 +361,14 @@ let framed_reference ?(limits=Json.Null) ?(resource_stop=false) mode request reg
       ["reference-build-result",obj["kind",str "construct"]]
   |"reference-build-result" when !molecular_build=None->
       require(same(value())(Option.get !construct_build))"Historical construct build was not stable";
-      ["prepare-reference-molecular",obj[]]
-  |"prepare-reference-molecular"->let prepared=value() in
+      (if mode=Public_sources then
+        let raw=initialize_reference peer request registry manifests in
+        let fields=List.map(fun key->key,get key raw)
+          ["request";"request_tree";"registry";"registry_tree";"manifests";"manifests_tree";
+           "request_object";"registry_object";"molecular_manifests_object";"policy_objects"] in
+        ["prepare-reference-molecular-public",obj fields]
+       else ["prepare-reference-molecular",obj[]])
+  |"prepare-reference-molecular"|"prepare-reference-molecular-public"->let prepared=value() in
       let id=get "preparation_id" prepared in preparation:=Some id;
       let dependencies=Json.array(get "dependencies" prepared) in require(List.length dependencies=6)"Molecular dependency count changed";
       List.map(function Json.Array[key;identity]->"set-dependency",obj["key",key;"identity",identity]
@@ -373,7 +383,13 @@ let framed_reference ?(limits=Json.Null) ?(resource_stop=false) mode request reg
   |"finish-reference-molecular"->let build=value() in molecular_build:=Some build;
       require(text "kind" build="molecular" && same(get "result" build)(Option.get !molecular_result))
         "Molecular finish recomputed actual result";
-      require(same(get "construct" build)(get "candidate"(Option.get !construct_build)))"Molecular build lost actual upstream candidate origin";
+      if mode=Public_sources then begin
+        require(get "value"(get "construct" build)=Json.Null)"Opaque returned Construct was serialized";
+        let binding=get "binding"(get "construct" build) in
+        require(text "kind" binding="host" && same(get "object" binding)returned_construct)
+          "Molecular build substituted the checked candidate for the actual second host root";
+        require(!final_reads=["check";"return"])"Final candidate reads changed order or multiplicity"
+      end else require(same(get "construct" build)(get "candidate"(Option.get !construct_build)))"Molecular build lost actual upstream candidate origin";
       ["reference-build-result",obj["kind",str "molecular"];"set-dependency",obj["key",str "layout";"identity",str(Canonical.sha256 "later root")];
        "reference-build-result",obj["kind",str "molecular"];"get",obj["identity",str "molecular"]]
   |"reference-build-result"->require(same(value())(Option.get !molecular_build))"Historical molecular build changed after live mutation";[]
@@ -385,6 +401,18 @@ let framed_reference ?(limits=Json.Null) ?(resource_stop=false) mode request reg
         "Host failure discarded actual registration";[]
   |_->ignore(value());[] in
  let on_invoke peer name args=
+   if name="reference-upstream-candidate" then begin
+     require(mode=Public_sources && same(get "upstream" args)upstream)"Final candidate callback changed its actual upstream wrapper";
+     let phase=text "phase" args in final_reads:= !final_reads@[phase];
+     if phase="check" then begin
+       require(!final_reads=["check"] && !result_commands=2)"Final candidate read occurred before actual result or was repeated";
+       let candidate=get "value"(get "candidate"(Option.get !construct_build)) in
+       Peer_return(obj["object",reference peer(Data candidate);"value",candidate;"tree",ordered candidate])
+     end else begin
+       require(phase="return" && !final_reads=["check";"return"])"Opaque return was read before independent checking";
+       Peer_return(obj["object",returned_construct])
+     end
+   end else
    if name="call-provider" && mode=Wrapped_repeat then begin
      require(List.assoc(text "provider_id" args)peer.providers==wrapper)
        "Nested native calls did not originate in the actually registered wrapper";
@@ -430,7 +458,7 @@ let framed_reference ?(limits=Json.Null) ?(resource_stop=false) mode request reg
  let invocations name=List.filter(fun event->text "kind" event="invoke" && text "action" event=name)result.events in
  require(List.length(invocations "manager-created")=1)"Manager publication count changed";
  require(List.length(invocations "reference-generate")=(if mode=Wrapped_repeat then 2 else 1))"Construct generator callback count changed";
- if mode=Default_native || mode=Host_valid || mode=Wrapped_repeat then begin
+ if mode=Default_native || mode=Host_valid || mode=Wrapped_repeat || mode=Public_sources then begin
    require(List.length(invocations "reference-emit")=1 && !result_commands=2)"Native molecular callback/result cadence changed";
    let roles=List.map(fun event->text "role"(get "arguments" event))(invocations "native-provider") in
    require(List.sort String.compare roles=List.sort String.compare["reference_components.authority";"reference_components.linkage";
@@ -495,6 +523,7 @@ let main()=
    "d6d781141c3f32b4eea90176a1da8e286d115a511b346d5e88645cb85432656f","bf205bf9073363a9d6e3999e0c4b59d1854b563f3ad9ee2cc96a7ecac4bd21a4"] in
  List.iter(fun(request,registry)->let request=load request and registry=load registry in
    phase:="native complete reference workflow";ignore(framed_reference Default_native request registry manifests);
+   phase:="public authority and distinct final candidate reads";ignore(framed_reference Public_sources request registry manifests);
    phase:="actual host proposal and exact native provenance";ignore(framed_reference Host_valid request registry manifests);
    phase:="repeated actual provider/context and shared retention boundary";repeated_provider_retention request registry manifests;
    phase:="opaque host generator exception";ignore(framed_reference Raise_generator request registry manifests);

@@ -20,6 +20,8 @@ from tools import freeze_synthetic_selection_cli as frozen
 from tools import synthetic_selection_cli_source_lineage as routes
 from tools import manager_registration_source_lineage as managers
 from tools import cli_runtime_counterparts as runtime
+from tools.realization_source_lineage import REFERENCE_ROUTES, verify_captured_source
+from tools.reference_original_counterpart import route_source_witness
 from tools.check_realization_workflow_corpus import REVIEWED_ADDITIONS, addition_counterparts
 
 CORPUS_PIN = '69556f367752be3076513d96e63c933fb250eaf7d9736f9e39baac1dec47e5d9'
@@ -41,7 +43,8 @@ def load_baseline():
             original['coverage']['original_occurrences'] == 1, 'Immutable complete selection CLI baseline changed')
     parent = routes.load_witness()['historical_source'].encode()
     for name, reference in original['retained_source_bytes'].items():
-        expected = parent if name == routes.CLI else managers.original_source() if name == managers.PATH else (ROOT / name).read_bytes()
+        expected = (parent if name == routes.CLI else managers.original_source() if name == managers.PATH
+                    else route_source_witness(name)[0] if name in REFERENCE_ROUTES else (ROOT / name).read_bytes())
         if name == managers.PATH:
             managers.verify_source(ROOT, name, managers.HISTORICAL[name])
         require(frozen.f.restore(reference, blobs) == expected, 'Archived selection CLI source bytes changed: ' + name)
@@ -106,10 +109,12 @@ def verify_recapture(actual, blobs, *, python_version=None):
     unused_module = unused_name[4:-3].replace('/','.')
     require(unused_module in scope['denied_modules'] and all(unused_module not in row['import_audit']['modules']
             for row in original['cases']), 'Original selection CLI imported changed native transport')
+    reference_proofs = [verify_captured_source(ROOT, {'path': name, 'sha256': before[name]})
+                        for name in sorted(REFERENCE_ROUTES & set(before))]
     for name, pin in before.items():
         path = ROOT / name
         require(path.is_file() and not path.is_symlink() and sha(path.read_bytes()) == current[name] and
-                (name in (routes.CLI,unused_name,managers.PATH) or current[name] == pin), 'Unreviewed selection CLI source bytes changed: ' + name)
+                (name in (routes.CLI,unused_name,managers.PATH) or name in REFERENCE_ROUTES or current[name] == pin), 'Unreviewed selection CLI source bytes changed: ' + name)
     projected, projected_blobs = deepcopy(actual), dict(blobs)
     for row in projected['cases']:
         audit = row['import_audit']
@@ -121,14 +126,14 @@ def verify_recapture(actual, blobs, *, python_version=None):
                     (module == 'biocompiler' or module.startswith('biocompiler.')) and
                     item['path'] in before and item['sha256'] == current[item['path']],
                     'Actual selection CLI imported unpinned source')
-            if item['path'] in (routes.CLI,managers.PATH): item['sha256'] = before[item['path']]
+            if item['path'] in (routes.CLI,managers.PATH) or item['path'] in REFERENCE_ROUTES: item['sha256'] = before[item['path']]
     require(set(actual['retained_source_bytes']) == set(original['retained_source_bytes']),
             'Complete retained selection CLI source inventory differs')
     for name, reference in actual['retained_source_bytes'].items():
         raw = (ROOT / name).read_bytes()
         require(reference == {'kind':'blob','bytes':len(raw),'sha256':sha(raw)} and
                 frozen.f.restore(reference, blobs) == raw, 'Actual retained selection CLI source bytes differ')
-    retained_routes = {routes.CLI} | ({managers.PATH} & set(actual['retained_source_bytes']))
+    retained_routes = {routes.CLI} | (({managers.PATH} | REFERENCE_ROUTES) & set(actual['retained_source_bytes']))
     for name in sorted(retained_routes):
         current_ref, old_ref = actual['retained_source_bytes'][name], original['retained_source_bytes'][name]
         if current_ref != old_ref:
@@ -160,7 +165,7 @@ def verify_recapture(actual, blobs, *, python_version=None):
     require(projected_blobs == old_blobs, 'Complete actual selection CLI content differs from immutable baseline')
     require(canonical(projected) == canonical(original), 'Complete actual selection CLI observations differ from immutable baseline')
     return {'schema_version':'biocompiler.synthetic_selection_cli_source_lineage.v1',
-        'reviewed_addition_counterparts': addition_proofs,
+        'reviewed_addition_counterparts': addition_proofs, 'reviewed_reference_routes': reference_proofs,
         'status':'complete_original_selection_cli_recapture_equal','native_execution':False,
         'baseline_inventory_fingerprint':CORPUS_PIN,'actual_inventory_fingerprint':actual['inventory_fingerprint'],
         'projected_inventory_fingerprint':projected['inventory_fingerprint'],'actual_capture':deepcopy(actual),

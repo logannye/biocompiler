@@ -48,8 +48,14 @@
   "integrated_tree": "4b979c8cb8e58b2d6f491cf4187bed29046d7c3f",
   "integrated_main_run": {
     "run_id": 37072668245,
-    "status": "in_progress_at_recording",
-    "url": "https://github.com/logannye/biocompiler/actions/runs/37072668245"
+    "status": "completed",
+    "url": "https://github.com/logannye/biocompiler/actions/runs/37072668245",
+    "conclusion": "success",
+    "source_revision": "d2f65c59aba3a4af97dbcabd59e8142961e12c4a",
+    "successful_jobs": 36,
+    "run_attempt": 1,
+    "github_metadata_sha256": "43143daab8ed89e1142a8cbbf8603ea52c3699bba7c48cbbbf046635f116f51e",
+    "evidence_scope": "Fresh GitHub job census; independent artifact reconstruction above belongs to the accepted PR run with the identical integrated tree."
   },
   "scope": "Bounded native verification workflow service and immutable explicit Python SDK; Python remains default. Later manager, producer, public workflow, canonical package and distribution gates remain separate.",
   "native_binaries": {

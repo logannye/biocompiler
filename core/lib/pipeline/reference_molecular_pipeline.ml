@@ -36,16 +36,23 @@ type emitter = W.t -> input:Json.t -> request:R.Request.t -> construct:R.Candida
 type emitter_bridge = {emit:emitter;
   host_proposal:W.t -> output:M.host_value -> source_links:C.Source_link.t list -> M.host_value}
 type host_links_equal = W.t -> actual:M.host_value list -> expected:C.Source_link.t list -> bool
-type prepared = {upstream_value:U.t;dependencies_value:(string * string) list}
+type authority = {request:R.Request.t;registry:Component_registry.t;
+  manifests:(string * Reference_manifest.t) list}
+type final_source_bridge = {check_construct:W.t -> R.Candidate.t;
+  return_construct:W.t -> M.host_value}
+type prepared = {upstream_value:U.t;authority_value:authority;dependencies_value:(string * string) list}
 type profiled = {prepared:prepared;completion:C.Completion_profile.t}
 type registration = {profiled:profiled;contract_value:C.Pass_contract.t;
   emit:M.provider;check:M.provider;check_linkage:M.provider;host_links:host_links_equal option}
-type t = {upstream_value:U.t;candidate_value:Q.Artifact.t;
+type t = {upstream_value:U.t;authority_value:authority;returned_construct_value:M.host_value option;candidate_value:Q.Artifact.t;
   checked:E.Result.t;record_value:C.Stage_record.t;result_value:C.Pipeline_result.t}
 type failure = {error:exn;manager:M.t}
 type attempt = Completed of t | Failed of failure
 let upstream (value:t) = value.upstream_value
 let construct (value:t) = U.candidate value.upstream_value
+let returned_construct (value:t) = value.returned_construct_value
+let prepared_authority (value:prepared) = value.authority_value
+let build_authority (value:t) = value.authority_value
 let candidate (value:t) = value.candidate_value
 let check_result (value:t) = value.checked
 let record (value:t) = value.record_value
@@ -87,11 +94,24 @@ let charge_product budget left right =
   if right>0 && left>W.remaining budget/right then W.charge budget(W.remaining budget+1);
   W.charge budget(left*right)
 let rec levels count = if count<=1 then 1 else 1+levels(count/2)
-let prepare ~budget upstream =
+let prepare ~budget ?authority upstream =
   phase_budget budget upstream;
+  let authority_value=match authority with
+    |None->{request=U.request upstream;registry=U.registry upstream;manifests=U.manifests upstream}
+    |Some (value:authority)->
+        let limits=domain_codec budget upstream in
+        ignore(X.measure ~limits(R.Request.to_json value.request));
+        ignore(X.measure ~limits(Component_registry.to_json value.registry));
+        let _,maximum=document_bounds upstream in
+        let count=ref 0 in
+        List.iter(fun(key,manifest)->W.charge budget(String.length key+1);
+          Diagnostic.require(!count<maximum) "reference_molecular_pipeline_limit"
+            "Molecular authority map exceeds its native resource boundary.";
+          incr count;ignore(X.measure ~limits(Reference_manifest.to_json manifest)))value.manifests;
+        value in
   let limits=codec budget upstream in
   let fingerprint value=C.Codec.fingerprint ~limits value in
-  let target=R.Request.target(U.request upstream) in
+  let target=R.Request.target authority_value.request in
   let encoding=Q.Encoding_policy.default ~limits:(domain_codec budget upstream) () in
   let dependencies_value=[
     "human_admission_policy",fingerprint(str Admission.policy_version);
@@ -100,7 +120,7 @@ let prepare ~budget upstream =
     "molecular_profile",fingerprint(str(Build_request.Target.payload_format target^"-CDS"));
     "encoding_policy",Q.Encoding_policy.fingerprint encoding;
     "molecular_pipeline",fingerprint(str pipeline_version)] in
-  {upstream_value=upstream;dependencies_value}
+  {upstream_value=upstream;authority_value;dependencies_value}
 let dependencies (value:prepared) = value.dependencies_value
 let prepare_profile ~budget (prepared:prepared) =
   phase_budget budget prepared.upstream_value;
@@ -183,7 +203,8 @@ let prepare_registration ~budget ?provider_observer ?emitter_bridge ?host_links_
   let prepared=profiled.prepared in
   let upstream=prepared.upstream_value in
   phase_budget budget upstream;
-  let request=U.request upstream and registry=U.registry upstream and manifests=U.manifests upstream in
+  let request=prepared.authority_value.request and registry=prepared.authority_value.registry
+  and manifests=prepared.authority_value.manifests in
   let owner=U.manager upstream and limits=codec budget upstream in
   let contract_value=C.Pass_contract.make ~limits ~id:"construct_to_molecular"
       ~version:Emit_native.emitter_version ~input_stage:C.Construct ~output_stage:C.Molecular
@@ -250,16 +271,22 @@ let allow_host_source_links (value:registration) =
   let manager=U.manager value.profiled.prepared.upstream_value in
   Option.iter(fun _->M.allow_host_source_links manager value.check)value.host_links;
   M.allow_host_source_links manager value.check_linkage
-let finish ~budget (registration:registration) ~record ~result =
+let finish ~budget ?final_source_bridge (registration:registration) ~record ~result =
   let upstream=registration.profiled.prepared.upstream_value in
   phase_budget budget upstream;
   let candidate_value=Q.Artifact.of_json ~limits:(domain_codec budget upstream)(C.Stage_record.payload record) in
+  let authority_value=registration.profiled.prepared.authority_value in
+  let construct=match final_source_bridge with
+    |None->U.candidate upstream
+    |Some (bridge:final_source_bridge)->W.charge budget 1;bridge.check_construct budget in
   let checked=Check.check ~parent:budget ~limits:(checker_limits upstream)
-    ~request:(U.request upstream) ~construct:(U.candidate upstream)
-    ~candidate:candidate_value ~registry:(U.registry upstream) ~manifests:(U.manifests upstream) () in
-  {upstream_value=upstream;candidate_value;checked;record_value=record;result_value=result}
-let run_internal ~budget ?provider_observer ?emitter_bridge ?host_links_equal ?register_fixed upstream =
-  let prepared=prepare ~budget upstream in
+    ~request:authority_value.request ~construct ~candidate:candidate_value
+    ~registry:authority_value.registry ~manifests:authority_value.manifests () in
+  let returned_construct_value=Option.map(fun (bridge:final_source_bridge)->
+    W.charge budget 1;bridge.return_construct budget)final_source_bridge in
+  {upstream_value=upstream;authority_value;returned_construct_value;candidate_value;checked;record_value=record;result_value=result}
+let run_internal ~budget ?authority ?provider_observer ?emitter_bridge ?host_links_equal ?register_fixed ?final_source_bridge upstream =
+  let prepared=prepare ~budget ?authority upstream in
   let manager=U.manager upstream in
   List.iter(fun(key,value)->M.set_dependency manager key value)(dependencies prepared);
   let profiled=prepare_profile ~budget prepared in
@@ -271,11 +298,11 @@ let run_internal ~budget ?provider_observer ?emitter_bridge ?host_links_equal ?r
   allow_host_source_links registration;
   let record=M.run manager ~pass_id:(C.Pass_contract.id(contract registration)) ~input_id:"construct" ~output_id:"molecular" () in
   let result=M.result manager ~identity:"molecular" ~scope:"exact_cds" in
-  finish ~budget registration ~record ~result
-let attempt ~budget ?provider_observer ?emitter_bridge ?host_links_equal ?register_fixed upstream =
-  try Completed(run_internal ~budget ?provider_observer ?emitter_bridge ?host_links_equal ?register_fixed upstream) with
+  finish ~budget ?final_source_bridge registration ~record ~result
+let attempt ~budget ?authority ?provider_observer ?emitter_bridge ?host_links_equal ?register_fixed ?final_source_bridge upstream =
+  try Completed(run_internal ~budget ?authority ?provider_observer ?emitter_bridge ?host_links_equal ?register_fixed ?final_source_bridge upstream) with
   | (Diagnostic.Error _ | M.No_candidate_found _) as error->Failed{error;manager=U.manager upstream}
-let run ~budget ?provider_observer ?emitter_bridge ?host_links_equal ?register_fixed upstream =
-  match attempt ~budget ?provider_observer ?emitter_bridge ?host_links_equal ?register_fixed upstream with
+let run ~budget ?authority ?provider_observer ?emitter_bridge ?host_links_equal ?register_fixed ?final_source_bridge upstream =
+  match attempt ~budget ?authority ?provider_observer ?emitter_bridge ?host_links_equal ?register_fixed ?final_source_bridge upstream with
   | Completed value->value
   | Failed failure->raise failure.error

@@ -222,11 +222,20 @@ let finish_construct (state:t) ~budget ~record ~result_sequence=
     retain_document state(Reference_construct.Candidate.to_json(Construct.candidate value));
     retain_document state(Reference_construct_evidence.Result.to_json(Construct.check_result value));
     state.construct_value<-Some value;state.phase_value<-Construct_finished;value)
-let prepare_molecular (state:t) ~budget ()=
+let prepare_molecular ?authority (state:t) ~budget ()=
   check state budget;require_phase state Construct_finished;
   attempt state(fun()->
     reserve state 1024;
-    let value=Molecular.prepare ~budget(required state.construct_value) in
+    Option.iter(fun (value:Molecular.authority)->
+      retain_document state(Reference_construct.Request.to_json value.request);
+      retain_document state(Component_registry.to_json value.registry);
+      let maximum=setting state.limits "max_document_nodes" and count=ref 0 in
+      List.iter(fun(key,manifest)->
+        W.charge budget(String.length key+1);
+        Diagnostic.require(!count<maximum) "reference_workflow_limit" "Molecular authority map exceeds its native bound.";
+        incr count;reserve state(String.length key+64);
+        retain_document state(Reference_manifest.to_json manifest))value.manifests)authority;
+    let value=Molecular.prepare ~budget ?authority(required state.construct_value) in
     let dependencies=Molecular.dependencies value in
     List.iter(fun(key,identity)->reserve state(String.length key+String.length identity+64))dependencies;
     state.molecular_prepared<-Some value;state.pending_dependencies<-dependencies;
@@ -248,14 +257,19 @@ let prepare_molecular_registration (state:t) ~budget ?provider_observer ?emitter
     retain_document state(C.Pass_contract.to_json(Molecular.contract value));
     state.molecular_registration<-Some value;state.molecular_host_comparison<-Option.is_some host_links_equal;
     state.phase_value<-Molecular_registration_available;value)
-let finish_molecular (state:t) ~budget ~record ~result_sequence=
+let finish_molecular ?final_source_bridge (state:t) ~budget ~record ~result_sequence=
   check state budget;require_phase state Molecular_result;
   let sequence,result=required state.molecular_result_value in
   Diagnostic.require(sequence=result_sequence && record==required state.molecular_run) "reference_workflow_capability"
     "Molecular finish requires its exact observed run and result capabilities.";
   attempt state(fun()->
     reserve state 256;
-    let value=Molecular.finish ~budget(required state.molecular_registration)~record ~result in
+    let bridge=Option.map(fun (bridge:Molecular.final_source_bridge)->
+      {Molecular.check_construct=(fun active->check state active;let value=bridge.check_construct active in
+         check state active;value);
+       return_construct=(fun active->check state active;reserve state 128;
+         let value=bridge.return_construct active in check state active;value)})final_source_bridge in
+    let value=Molecular.finish ~budget ?final_source_bridge:bridge(required state.molecular_registration)~record ~result in
     retain_document state(Reference_molecular.Artifact.to_json(Molecular.candidate value));
     retain_document state(Reference_molecular_evidence.Result.to_json(Molecular.check_result value));
     state.molecular_value<-Some value;state.phase_value<-Molecular_finished;value)

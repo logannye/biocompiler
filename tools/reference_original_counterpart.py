@@ -1,7 +1,7 @@
 """Run the frozen reference tests in their exact, finite original source closure.
 
 New product files are not original authority. Every captured file retains its
-pinned bytes in the child. The single reviewed Core transport counterpart is
+pinned bytes in the child. The finite reviewed Core and public route counterparts are
 restored from an exact archived source; this never validates the current bridge
 or refreshes an expectation. Native code is neither loaded nor run.
 """
@@ -31,10 +31,16 @@ TEST_SHA = '84df82fd9a57d18ad022d68a318aeb3495ff0a724b1205a73cb8092d20c2133b'
 RUNNER = 'tools/reference_original_counterpart.py'
 CORE_SOURCE = 'src/biocompiler/core_pipeline_manager.py'
 CORE_ORIGINAL_SHA = '40a08477c97a97159372d9723267df3cacf8335a59d6b00ada34bb56470e31f3'
-CORE_CURRENT_SHA = '0c0cfac138484cf71f1bb1303e66873b8b148ca236e07930fdbadd0b477a11be'
+CORE_PREVIOUS_SHA = '0c0cfac138484cf71f1bb1303e66873b8b148ca236e07930fdbadd0b477a11be'
+CORE_CURRENT_SHA = '18ee9bd517524b4440bcf29292a5d834470603713d662198b83ca61373c7fd09'
 CORE_BLOB = 'tests/conformance/reference-original-sources-v1/' + CORE_ORIGINAL_SHA + '.blob'
 CORE_WITNESS = 'tests/conformance/reference-manager-source-counterpart-v1.json'
 CORE_WITNESS_SHA = '9f4406d46a7d18db944094ea6875a1daceb3d327b2da8e8029250e312ea833f8'
+CORE_UPDATE = 'tests/conformance/reference-manager-source-counterpart-v2.json'
+CORE_UPDATE_SHA = 'd19d7e706876ac234e2f3e5a45c66ebbf9625599a880c15dec64595c1bbed8e4'
+ROUTE_WITNESS = 'tests/conformance/reference-public-routing-source-counterpart-v1.json'
+ROUTE_WITNESS_SHA = '949bd00942bbaa8c6107c490692e38007e41309b0d8f22b0bccd4d8f8514f074'
+ROUTE_SOURCES = ('src/biocompiler/compiler/construct.py', 'src/biocompiler/compiler/molecular.py')
 # Imported by the frozen test_synthetic_generation fixture, but not included
 # in its original source_inventory traversal. Entire bytes match c58aa504.
 SUPPORT = {'examples/realization_check.py': '0d1012d2c3cd074540afce586658ee2ee3cba08a4e3d2e2586f8aaec1fa75fc2'}
@@ -93,14 +99,35 @@ def core_source_witness(raw=None):
         witness['schema_version'] == 'biocompiler.reference_manager_source_counterpart.v1' and
         witness['base_revision'] == 'a8cf5266963abfb5beae408c296a6f626e8f51fe' and
         witness['path'] == CORE_SOURCE and witness['original_sha256'] == CORE_ORIGINAL_SHA and
-        witness['current_sha256'] == CORE_CURRENT_SHA and len(witness['changes']) == 6,
+        witness['current_sha256'] == CORE_PREVIOUS_SHA and len(witness['changes']) == 6,
         'Reference Core source correspondence is not the closed reviewed revision')
     current = local_file(ROOT, CORE_SOURCE).read_bytes() if raw is None else raw
     require(type(current) is bytes and sha(current) == CORE_CURRENT_SHA,
             'Captured reference Core source is outside its exact counterpart')
+    updated = local_file(ROOT, CORE_UPDATE).read_bytes()
+    require(sha(updated) == CORE_UPDATE_SHA, 'Reference Core source update witness changed')
+    update = json.loads(updated)
+    require(set(update) == {'schema_version', 'base_revision', 'path', 'original_sha256',
+        'current_sha256', 'predecessor', 'changes', 'restoration'} and
+        update['schema_version'] == 'biocompiler.reference_manager_source_counterpart.v2' and
+        update['base_revision'] == 'e73743bc2f17597b57ac15869986255802289615' and
+        update['path'] == CORE_SOURCE and update['original_sha256'] == CORE_PREVIOUS_SHA and
+        update['current_sha256'] == CORE_CURRENT_SHA and
+        update['predecessor'] == {'path': CORE_WITNESS, 'sha256': CORE_WITNESS_SHA} and
+        len(update['changes']) == 1, 'Reference Core update is outside its exact counterpart')
+    change = update['changes'][0]
+    require(set(change) == {'old_start_line', 'old_end_line', 'new_start_line', 'new_end_line', 'before', 'after'} and
+        change['old_start_line'] == change['old_end_line'] == change['new_start_line'] == change['new_end_line'] == 44 and
+        change['before'].startswith('_APPLICATION_JSON = ') and change['after'].startswith('_APPLICATION_JSON = '),
+        'Reference Core update is not the exact application declaration assignment')
+    current_lines = current.decode().splitlines(keepends=True)
+    require(current_lines[43] == change['after'], 'Reference Core update complete source span differs')
+    current_lines[43:44] = change['before'].splitlines(keepends=True)
+    previous = ''.join(current_lines).encode()
+    require(sha(previous) == CORE_PREVIOUS_SHA, 'Reference Core preceding whole source restoration differs')
     archived = local_file(ROOT, CORE_BLOB).read_bytes()
     require(sha(archived) == CORE_ORIGINAL_SHA, 'Original reference Core archive changed')
-    lines = current.decode().splitlines(keepends=True)
+    lines = previous.decode().splitlines(keepends=True)
     original_lines = archived.decode().splitlines(keepends=True)
     previous = 0
     for change in witness['changes']:
@@ -118,7 +145,31 @@ def core_source_witness(raw=None):
     require(''.join(lines).encode() == archived, 'Reference Core restoration differs from entire archived source')
     return archived, {'path': CORE_SOURCE, 'archive': CORE_BLOB, 'archive_sha256': CORE_ORIGINAL_SHA,
         'current_sha256': CORE_CURRENT_SHA, 'witness': CORE_WITNESS, 'witness_sha256': CORE_WITNESS_SHA,
-        'correspondence': witness, 'scope': 'original source execution only; current native bridge validation is separate'}
+        'correspondence': witness, 'update': {'path': CORE_UPDATE, 'sha256': CORE_UPDATE_SHA, 'correspondence': update}, 'scope': 'original source execution only; current native bridge validation is separate'}
+
+
+def route_source_witness(logical, raw=None):
+    """Remove only the two pinned five-line public entry prefixes."""
+    require(logical in ROUTE_SOURCES, 'Unknown reference route source')
+    encoded = local_file(ROOT, ROUTE_WITNESS).read_bytes()
+    require(sha(encoded) == ROUTE_WITNESS_SHA, 'Reference public route witness changed')
+    witness = json.loads(encoded)
+    require(witness['schema'] == 'biocompiler.reference_public_routing_source_counterpart.v1' and
+        witness['base_revision'] == 'e73743bc2f17597b57ac15869986255802289615' and
+        set(witness['entrypoint_prefixes']) == set(ROUTE_SOURCES), 'Reference route correspondence differs')
+    entry = witness['entrypoint_prefixes'][logical]
+    current = local_file(ROOT, logical).read_bytes() if raw is None else raw
+    require(type(current) is bytes and len(current) == entry['current_bytes'] and sha(current) == entry['current_sha256'],
+        'Captured reference route source is outside its exact counterpart')
+    insertion = entry['insertion']
+    offset, prefix = insertion['byte_offset'], insertion['text'].encode()
+    require(type(offset) is int and offset >= 0 and current[offset:offset + len(prefix)] == prefix and
+        len(prefix.splitlines()) == 5, 'Reference route prefix differs')
+    original = current[:offset] + current[offset + len(prefix):]
+    require(len(original) == entry['original_bytes'] and sha(original) == entry['original_sha256'],
+        'Reference route whole source restoration differs')
+    return original, {'path': logical, 'witness': ROUTE_WITNESS, 'witness_sha256': ROUTE_WITNESS_SHA,
+        'correspondence': entry, 'scope': 'original source execution only; current public routing validation is separate'}
 
 
 def test_witness(raw=None):
@@ -163,7 +214,8 @@ def data_closure(index):
         require(len(raw) == row['bytes'] and raw.endswith(b'\n') and sha(raw[:-1]) == identity,
                 'Frozen complete reference document bytes differ')
         result.append({'logical': logical, 'sha256': sha(raw), 'bytes': len(raw)})
-    for logical, identity in ((CORE_BLOB, CORE_ORIGINAL_SHA), (CORE_WITNESS, CORE_WITNESS_SHA)):
+    for logical, identity in ((CORE_BLOB, CORE_ORIGINAL_SHA), (CORE_WITNESS, CORE_WITNESS_SHA),
+                              (CORE_UPDATE, CORE_UPDATE_SHA), (ROUTE_WITNESS, ROUTE_WITNESS_SHA)):
         raw = local_file(ROOT, logical).read_bytes()
         require(sha(raw) == identity, 'Reference exact Core counterpart data changed')
         result.append({'logical': logical, 'sha256': identity, 'bytes': len(raw)})
@@ -180,6 +232,9 @@ def source_closure(index, package_root):
         if logical == CORE_SOURCE:
             require(identity == CORE_ORIGINAL_SHA, 'Frozen reference Core authority changed')
             copied, _ = core_source_witness(raw)
+        elif logical in ROUTE_SOURCES:
+            copied, _ = route_source_witness(logical, raw)
+            require(sha(copied) == identity, 'Frozen reference public route authority changed')
         else:
             require(sha(raw) == identity, 'Captured reference source bytes changed: ' + logical)
             copied = raw
@@ -219,7 +274,8 @@ def run(*, test_module=TEST_MODULE, test_ids=None):
         manifest = {'schema': SCHEMA, 'root': str(overlay), 'package_root': str(package_root),
                     'test_module': test_module, 'test_ids': ids, 'sources': rows, 'data': data,
                     'test_witness': witness, 'source_inventory': index['source_files'],
-                    'core_source_witness': core_source_witness()[1]}
+                    'core_source_witness': core_source_witness()[1],
+                    'route_source_witnesses': [route_source_witness(path)[1] for path in ROUTE_SOURCES]}
         (overlay / 'manifest.json').write_bytes(canonical(manifest))
         script = ('import sys;sys.path[:0]=[sys.argv[1],sys.argv[1]+"/src",sys.argv[1]+"/tests"];'
                   'from tools.reference_original_counterpart import child;child(sys.argv[1])')
@@ -256,7 +312,7 @@ def validate(receipt):
             'Malformed original reference receipt')
     manifest = receipt['manifest']
     require(type(manifest) is dict and set(manifest) == {'schema', 'root', 'package_root', 'test_module', 'test_ids',
-            'sources', 'data', 'test_witness', 'source_inventory', 'core_source_witness'} and manifest['schema'] == SCHEMA,
+            'sources', 'data', 'test_witness', 'source_inventory', 'core_source_witness', 'route_source_witnesses'} and manifest['schema'] == SCHEMA,
             'Malformed original reference manifest')
     root, package_root = Path(manifest['root']), Path(manifest['package_root'])
     require(root.is_absolute() and package_root.is_absolute(), 'Original reference roots differ')
@@ -267,6 +323,8 @@ def validate(receipt):
     sources, witness = source_closure(index, package_root)
     require(manifest['core_source_witness'] == core_source_witness()[1],
             'Original reference Core source correspondence differs')
+    require(manifest['route_source_witnesses'] == [route_source_witness(path)[1] for path in ROUTE_SOURCES],
+            'Original reference public route correspondence differs')
     require(manifest['test_witness'] == witness, 'Original reference whole-test correspondence differs')
     expected = []
     for logical, (origin, current, copied) in sorted(sources.items()):
