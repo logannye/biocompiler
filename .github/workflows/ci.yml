@@ -877,6 +877,9 @@ jobs:
           set -o pipefail
           BIOCOMPILER_ARCHIVE_PYTHON311_CORPUS="$GITHUB_WORKSPACE/tests/conformance/archive-container-311.json" \
           BIOCOMPILER_ARCHIVE_PYTHON314_CORPUS="$GITHUB_WORKSPACE/tests/conformance/archive-container-314.json" \
+          BIOCOMPILER_REFERENCE_PACKAGE_PYTHON311_CORPUS="$GITHUB_WORKSPACE/tests/conformance/reference-package-domains-311.json" \
+          BIOCOMPILER_REFERENCE_PACKAGE_PYTHON314_CORPUS="$GITHUB_WORKSPACE/tests/conformance/reference-package-domains-314.json" \
+          BIOCOMPILER_REFERENCE_SEQUENCE_EXPORT_CORPUS="$GITHUB_WORKSPACE/tests/conformance/reference-sequence-export-314.json" \
           BIOCOMPILER_REFERENCE_CONTRACTS_DOCUMENTS="$GITHUB_WORKSPACE/tests/conformance/reference-contracts-v1" \
           BIOCOMPILER_REFERENCE_CONTRACTS_CORPUS="$GITHUB_WORKSPACE/tests/conformance/reference-contracts-v1.json" \
           BIOCOMPILER_REFERENCE_PIPELINE_DOCUMENTS="$GITHUB_WORKSPACE/tests/conformance/reference-pipeline-semantics-v1" \
@@ -940,6 +943,11 @@ jobs:
       - name: Check complete original archive bytes and cumulative resource limits
         if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
         run: core/_build/default/test/test_stored_zip.exe "$GITHUB_WORKSPACE/tests/conformance/archive-container-311.json" "$GITHUB_WORKSPACE/tests/conformance/archive-container-314.json" | tee generated/core/test_stored_zip.txt
+      - name: Check exact package manifests and independently accepted sequence exports
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: |
+          core/_build/default/test/test_reference_package_manifest.exe "$GITHUB_WORKSPACE/tests/conformance/reference-package-domains-311.json" "$GITHUB_WORKSPACE/tests/conformance/reference-package-domains-314.json" | tee generated/core/test_reference_package_manifest.txt
+          core/_build/default/test/test_reference_sequence_export.exe "$GITHUB_WORKSPACE/tests/conformance/reference-sequence-export-314.json" | tee generated/core/test_reference_sequence_export.txt
       - name: Check retained request, behavior and coordinate domain corpora
         if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
         run: |

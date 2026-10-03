@@ -20,6 +20,8 @@ ROOT = Path(__file__).resolve().parents[1]
 EXTERNAL_LIBRARIES = frozenset({"digestif", "zarith", "unix"})
 # New libraries/dependencies require deliberate policy review, even when harmless.
 LIBRARIES = {
+    "bioc_reference_artifact": ("lib/reference_artifact/dune", {"bioc_wire", "bioc_domain", "bioc_artifact", "zarith"}, "domain"),
+    "bioc_reference_export": ("lib/reference_export/dune", {"bioc_wire", "bioc_domain", "bioc_artifact", "bioc_checker", "zarith"}, "checker_service"),
     "bioc_artifact": ("lib/artifact/dune", {"bioc_wire", "bioc_checker", "zarith"}, "trusted_primitive"),
     "bioc_pipeline_service": ("lib/pipeline_service/dune", {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_pipeline", "bioc_synthetic_producer", "zarith"}, "producer"),
     "bioc_pipeline": ("lib/pipeline/dune", {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_realization_checker", "bioc_synthetic_producer", "bioc_candidate_runtime", "zarith"}, "compiler"),
@@ -41,6 +43,8 @@ EXECUTABLES = {
 }
 TESTS = {
     "test_stored_zip": {"bioc_wire", "bioc_checker", "bioc_artifact", "zarith"},
+    "test_reference_package_manifest": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_artifact", "bioc_reference_artifact", "zarith"},
+    "test_reference_sequence_export": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_artifact", "bioc_reference_export", "zarith"},
     "test_legacy_json": {"bioc_wire"},
     "test_reference_domains": {"bioc_wire", "bioc_domain", "zarith"},
     "test_reference_checkers": {"bioc_wire", "bioc_domain", "bioc_checker", "zarith"},
@@ -469,6 +473,13 @@ def check_boundaries(root: Path):
                     expected_actions = [["action", ["run", "%{test}",
                         "%{env:BIOCOMPILER_ARCHIVE_PYTHON311_CORPUS=missing}",
                         "%{env:BIOCOMPILER_ARCHIVE_PYTHON314_CORPUS=missing}"]]]
+                if name == "test_reference_package_manifest":
+                    expected_actions = [["action", ["run", "%{test}",
+                        "%{env:BIOCOMPILER_REFERENCE_PACKAGE_PYTHON311_CORPUS=missing}",
+                        "%{env:BIOCOMPILER_REFERENCE_PACKAGE_PYTHON314_CORPUS=missing}"]]]
+                if name == "test_reference_sequence_export":
+                    expected_actions = [["action", ["run", "%{test}",
+                        "%{env:BIOCOMPILER_REFERENCE_SEQUENCE_EXPORT_CORPUS=missing}"]]]
                 if name == "test_reference_callback_manager":
                     expected_actions = [["action", ["run", "%{test}",
                         "%{env:BIOCOMPILER_PIPELINE_CALLBACK_MANAGER_DECLARATION=missing}",

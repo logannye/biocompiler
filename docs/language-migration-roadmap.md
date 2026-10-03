@@ -88,36 +88,44 @@ pending at its last check. The preceding run stopped on four warning-as-error
 diagnostics in the framed test harness.
 The [correction](../protocol/migration-reference-service-build-correction.json)
 removes unused helpers and unnecessary mutable annotations; every assertion,
-compiler warning and release gate remains required. No native execution or
-complete integration acceptance is claimed for the corrected source.
+compiler warning and release gate remains required. Both corrected native builds
+compiled. Their direct reference-workflow test fails, and complete integration
+acceptance remains open; detailed logs are unavailable while the native jobs run.
 
 **Current public workflow checkpoint:** [PR79](https://github.com/logannye/biocompiler/pull/79)
 is pushed at `9337cf97bcb2c994103817a0d0a161a5d3957da7` and attached to the
 session. Hosted [run 37086526526](https://github.com/logannye/biocompiler/actions/runs/37086526526)
-has eight successful jobs and no reported failures at its last check. Both native
-platforms have compiled and are executing the required suites; complete acceptance
+has 16 successful jobs at its last check. Both native
+platforms compiled; their reference-workflow test fails while the jobs
+continue other required suites. Complete acceptance
 remains pending. The batch preserves current Molecular authority and the original
 two candidate reads. Its 70 adapter/routing controls, 48 source guards, 15 original
 counterpart controls and strict 27-module type checks pass on both Python versions.
 Both discover the same 3,221 tests; discovery is not execution. The complete
 installed 18-method replay and remaining manager compatibility stay open.
 
-**Current archive foundation work:** branch `codex/ocaml-reference-archive`
-continues from PR79. A bounded stored-ZIP/UTF8 metadata library and complete
+**Current archive foundation checkpoint:** [PR80](https://github.com/logannye/biocompiler/pull/80)
+is pushed at `554e87e4f482c5118328edc31848d5440fb5bed4`, continuing from PR79.
+Hosted [run 37087095914](https://github.com/logannye/biocompiler/actions/runs/37087095914)
+has 14 successful jobs at its last check. Both native
+platforms compiled and passed the direct archive suite. Their reference-workflow
+test fails while the jobs continue other required suites. A bounded stored-ZIP/UTF8 metadata library and complete
 125-case original corpus for each Python profile are connected to hosted native
 validation. All 54 local original-authority, boundary, CI and fixture controls
 pass on both Python versions. Required native suites increase to 112 while all
 36 release jobs remain. The typed package and fresh export layers remain separate
-work. This uncommitted source batch grants no package or export acceptance; see
+work on `codex/ocaml-reference-package`. This source checkpoint grants no package or export acceptance; see
 the [source checkpoint](../protocol/migration-archive-foundation-checkpoint.json).
 
 The latest hosted status snapshot has PR75 run `37079154938` at 30 successful
-jobs with no reported failed steps (all four installed conformance campaigns running), PR76 run `37079677511` at 21 successful jobs
-with four failed Python unit shards and two resulting accounting failures, and
-PR77 run `37081551087` at 17 successful jobs with seven failed unit shards. All
-three runs are still in progress. PR76's native suite successes therefore do not
-establish complete acceptance; its regression failures require diagnosis and
-successful corrected validation. These are partial snapshots, not completed
+jobs with no reported failures; all four installed conformance campaigns are
+running. PR78 run `37085540379` has 22 successful jobs; its reference-workflow
+failure is reported above. A running job with an earlier failed step cannot
+confer acceptance.
+The superseded, known-failed PR76 run `37079677511` and PR77 run `37081551087`
+are now terminally cancelled; their failure evidence is retained and their
+corrections are included in PR78/79. Their native suite successes do not establish
+complete acceptance. The active counts are partial snapshots, not completed
 36-job release results.
 
 Initial PR76 failure diagnosis separates two harness issues: the original-source
@@ -146,7 +154,7 @@ hosted receipts. Source, tested and integrated trees are identical; see the
 PR59 has now passed all 36 jobs and merged with independently reconstructed
 receipts and identical source, tested, prospective and integrated trees; see the
 [workflow-service validation record](../protocol/migration-workflow-service-validation.json).
-Its separate integrated-main run remains pending. Later checkpoints still require
+Its separate integrated-main run also passed all 36 jobs. Later checkpoints still require
 successful corrected gates. The resumed session
 implementation is additive source work with Python process tests; native
 compilation, installed replay and full public-manager integration remain pending.
@@ -1307,6 +1315,16 @@ record current parent heads; previous partial native passes are historical only.
   dependency-boundary, CI and fixture controls pass on both local versions.
   This records source readiness only; hosted native parity, canonical package
   ownership and independent export acceptance remain open.
+
+- [x] **LM-24/25/26 typed package and sequence export source controls:** add six
+  immutable manifest domains, structural container reconstruction, exact sequence
+  fidelity and fresh independent export checking. Preserve 511 original package
+  cases per runtime and 140 complete sequence cases, including a rehashed mutant
+  that passes fidelity and fails current export checking. Both local Python
+  versions pass 59 focused controls plus one Unicode-profile control. This is
+  source/local evidence only: native parity, live package orchestration, public
+  routing and release acceptance remain open. See the
+  [package foundation design](migration-reference-package-foundation.md).
 
 - [x] **LM-03 CI harness correction checkpoint:** the installed architecture
   guard now permits only the exact new parser-registration helpers while rejecting

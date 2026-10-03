@@ -1,0 +1,3 @@
+(library
+ (name bioc_reference_artifact)
+ (libraries bioc_wire bioc_domain bioc_artifact zarith))

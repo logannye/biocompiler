@@ -36,7 +36,7 @@ class CoreBoundaryTests(unittest.TestCase):
         self.assertEqual(receipt["roles"]["bioc_checker"], "checker")
         self.assertEqual(receipt["private_modules"]["bioc_checker"],
                          ["construction_reconstruction", "architecture_reconstruction", "reference_check_support"])
-        self.assertEqual(len(receipt["native_tests"]), 112)
+        self.assertEqual(len(receipt["native_tests"]), 114)
         self.assertEqual(receipt["roles"]["bioc_semantics"], "source_semantics")
         self.assertEqual(receipt["roles"]["bioc_source_adapter"], "source_semantics")
         self.assertEqual(receipt["roles"]["bioc_compiler"], "compiler")
@@ -97,6 +97,26 @@ class CoreBoundaryTests(unittest.TestCase):
             with self.subTest(reference=replacement), self.assertRaisesRegex(
                     boundaries.BoundaryError, "only public checker Work_budget"):
                 boundaries.check_boundaries(root)
+
+    def test_reference_package_and_export_have_no_producer_dependencies(self):
+        receipt = boundaries.check_boundaries(boundaries.ROOT)
+        dependencies = {"bioc_wire", "bioc_domain", "bioc_artifact", "bioc_checker", "zarith", "digestif"}
+        for name, role in (("bioc_reference_artifact", "domain"),
+                           ("bioc_reference_export", "checker_service")):
+            self.assertEqual(receipt["roles"][name], role)
+            self.assertEqual(set(receipt["transitive_dependencies"][name]), dependencies)
+            self.assertNotIn(name, receipt["transitive_dependencies"]["executable:biocompiler-core"])
+            self.assertNotIn(name, receipt["transitive_dependencies"]["executable:biocompiler-verify"])
+        self.assertNotIn("bioc_checker", receipt["libraries_and_executables"]["bioc_reference_artifact"])
+        self.assertEqual(set(receipt["native_tests"]["test_reference_package_manifest"]),
+                         {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_artifact", "bioc_reference_artifact", "zarith"})
+        self.assertEqual(set(receipt["native_tests"]["test_reference_sequence_export"]),
+                         {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_artifact", "bioc_reference_export", "zarith"})
+        root = self.copy_core()
+        path = root / "core/lib/reference_export/reference_sequence_export.ml"
+        path.write_text(path.read_text() + "\nmodule Producer = Bioc_compiler.Reference_molecular_producer\n")
+        with self.assertRaisesRegex(boundaries.BoundaryError, "Undeclared local module dependency"):
+            boundaries.check_boundaries(root)
 
     def test_reference_foundation_test_dependencies_and_private_support_are_exact(self):
         expected = {
