@@ -154,6 +154,7 @@ SOURCES = ("tools/check_pipeline_manager_install.py", "tests/test_pipeline_manag
     "tests/conformance/manager-registration-runtime-sites-v2.json",
     "tests/conformance/manager-registration-runtime-sites-v3.json",
     "tests/conformance/manager-registration-runtime-sites-v4.json",
+    "tests/conformance/manager-registration-runtime-sites-v5.json",
     "tests/conformance/manager-registration-tool-lineage-v1.json",
     "tests/conformance/manager-registration-source-lineage-v1.json",
     "tools/check_pipeline_session_install.py", "tools/check_workflow_reproducibility.py", "tools/check_realization_binaries.py",

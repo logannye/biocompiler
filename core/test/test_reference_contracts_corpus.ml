@@ -71,17 +71,31 @@ let reference_manager_original root name expected current =
   let old_pin="40a08477c97a97159372d9723267df3cacf8335a59d6b00ada34bb56470e31f3"
   and previous_pin="0c0cfac138484cf71f1bb1303e66873b8b148ca236e07930fdbadd0b477a11be"
   and routed_pin="18ee9bd517524b4440bcf29292a5d834470603713d662198b83ca61373c7fd09"
-  and current_pin="562052f3848c27ccb3fd19f156bd019da44aed58abe8cd4a2c7bd922ba07fc5b"
+  and merged_pin="562052f3848c27ccb3fd19f156bd019da44aed58abe8cd4a2c7bd922ba07fc5b"
+  and current_pin="f5c3410fb93d99182a1c5b9d8f3fa948990a0e1d4ce0b3b609c6b9f470d67bdd"
   and witness_path="tests/conformance/reference-manager-source-counterpart-v1.json"
   and witness_pin="9f4406d46a7d18db944094ea6875a1daceb3d327b2da8e8029250e312ea833f8" in
   require(name="src/biocompiler/core_pipeline_manager.py" && expected=old_pin &&
     Canonical.sha256 current=current_pin) "Unreviewed original reference source substitution";
+  let attempt=source_witness root "tests/conformance/reference-manager-source-counterpart-v4.json" "7c17725b7d5e5843418dfea595b97aeb786ffc2ed2bf477d16db40012533c143" in
+  let attempt_predecessor=field "predecessor" attempt in
+  require(text "schema_version" attempt="biocompiler.reference_manager_source_counterpart.v4" &&
+    text "path" attempt=name && text "original_sha256" attempt=merged_pin && text "current_sha256" attempt=current_pin &&
+    text "base_revision" attempt="7645c254b170846cca2289090111241e20c3769d" &&
+    text "path" attempt_predecessor="tests/conformance/reference-manager-source-counterpart-v3.json" && text "sha256" attempt_predecessor="dd91ae7b9929f5806105245461a70874609781eb93a9dceffed53cfeffe13455")
+    "Molecular attempt source update lost its exact predecessor";
+  let attempt_changes=array "changes" attempt in
+  require(List.length attempt_changes=1 && List.for_all(fun key->integer(field key(List.hd attempt_changes))=44)
+    ["old_start_line";"old_end_line";"new_start_line";"new_end_line"])
+    "Molecular attempt source update is not the exact declaration assignment";
+  let current=restore_source_lines current attempt_changes in
+  require(Canonical.sha256 current=merged_pin) "Molecular attempt whole source restoration differs";
   let merge=source_witness root "tests/conformance/reference-manager-source-counterpart-v3.json"
     "dd91ae7b9929f5806105245461a70874609781eb93a9dceffed53cfeffe13455" in
   let merge_predecessor=field "predecessor" merge in
   require(text "schema_version" merge="biocompiler.reference_manager_source_counterpart.v3" &&
     text "path" merge=name && text "original_sha256" merge=routed_pin &&
-    text "current_sha256" merge=current_pin &&
+    text "current_sha256" merge=merged_pin &&
     text "base_revision" merge="28d2b2ceb119015e5743819bab695e02e4d6b9a9" &&
     text "path" merge_predecessor="tests/conformance/reference-manager-source-counterpart-v2.json" &&
     text "sha256" merge_predecessor="d19d7e706876ac234e2f3e5a45c66ebbf9625599a880c15dec64595c1bbed8e4")

@@ -576,6 +576,12 @@
  (action (run %{test} %{env:BIOCOMPILER_REFERENCE_PIPELINE_DOCUMENTS=missing})))
 
 (test
+ (name test_reference_molecular_attempts)
+ (modules test_reference_molecular_attempts)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_compiler bioc_pipeline bioc_pipeline_service zarith)
+ (action (run %{test} %{env:BIOCOMPILER_REFERENCE_PIPELINE_DOCUMENTS=missing})))
+
+(test
  (name test_reference_callback_manager)
  (modules test_reference_callback_manager)
  (libraries bioc_wire bioc_domain bioc_checker bioc_compiler bioc_pipeline_service zarith)

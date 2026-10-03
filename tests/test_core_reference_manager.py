@@ -46,6 +46,9 @@ class ReferenceSession:
         self._limits = {'max_retained_bytes': 134_217_728}
         self.providers = {}
         self.native_provider_calls = 0
+        self.preparation = None
+        self.preparation_count = 0
+        self.provider_attempts = {}
         self.admission_refs = None
         self.returned_construct = None
         self.checked_construct = None
@@ -60,7 +63,12 @@ class ReferenceSession:
 
     def provider(self, role):
         token = 'native/' + role
-        value = self.action('native-provider', {'provider_id': token, 'role': role})
+        if role.startswith('construct_to_molecular.'):
+            self.provider_attempts[token] = self.preparation
+            value = self.action('reference-molecular-provider', {'provider_id': token, 'role': role,
+                'preparation_id': self.preparation})
+        else:
+            value = self.action('native-provider', {'provider_id': token, 'role': role})
         self.providers[role] = value
         return value
 
@@ -141,9 +149,13 @@ class ReferenceSession:
             elif operation == 'finish-reference-construct':
                 value = self.build('construct')
             elif operation in ('prepare-reference-molecular', 'prepare-reference-molecular-public'):
-                value = {'preparation_id': 'preparation/molecular', 'dependencies': [
+                self.preparation_count += 1
+                self.preparation = 'preparation/molecular/' + str(self.preparation_count)
+                value = {'preparation_id': self.preparation, 'dependencies': [
                     [key, self.source['molecular'].manager._dependencies[key]]
                     for key in self.source['contracts']['construct_to_molecular'].dependency_keys]}
+            elif operation == 'leave-reference-molecular-attempt':
+                value = None
             elif operation == 'reference-molecular-profile':
                 profile = self.source['molecular'].manager._profiles['exact_cds']
                 value = {'scope': profile.scope, 'stage': profile.stage.value,
@@ -174,7 +186,8 @@ class ReferenceSession:
                 raise AssertionError('Unknown fixture command ' + operation)
             if operation in self.results:
                 value = self.results[operation](arguments, value)
-            response = SimpleNamespace(result=value, sequence=sequence, operation=operation, status='ok')
+            response = SimpleNamespace(result=value, sequence=sequence, operation=operation, status='ok',
+                request_document=encode_document({'arguments': arguments}))
             self.last_response = response
             if self.failure == operation:
                 response.result = rejected('Source-bound fixture rejection')
@@ -191,16 +204,20 @@ class ReferenceSession:
         context = manager._contexts[arguments['context_id']][1]
         document = base._literal_json(context.input)
         action = 'reference-generate' if role == 'components_to_construct.producer' else 'reference-emit'
-        route = self.action(action, {'input': document, 'argument': document, 'tree': _ordered(document)})
+        token = self.provider_attempts.get(arguments['provider_id'])
+        fields = {} if token is None else {'preparation_id': token, 'provider_id': arguments['provider_id']}
+        route = self.action(action, {**fields, 'input': document, 'argument': document, 'tree': _ordered(document)})
         links = [{'requirement_id': 'req', 'source_node_id': 'source', 'target_node_id': 'target', 'pass_name': role}]
         if route['kind'] == 'host':
-            reference = self.action('reference-proposal', {'output': route['output'], 'source_links': links})
+            fields = {} if token is None else {'preparation_id': token}
+            reference = self.action('reference-proposal' if token is None else 'reference-molecular-proposal',
+                {**fields, 'output': route['output'], 'source_links': links})
             return {'kind': 'host', 'object': reference}
         output = self.source['construct' if action == 'reference-generate' else 'molecular'].candidate.to_dict()
         proposal = {'output': output, 'source_links': links, 'obligations': [], 'observation_map': {}, 'search_status': 'candidate'}
         roots = {'parsed': route['argument']}
         if action == 'reference-emit':
-            roots.update({name: self.objects.retain(manager._reference_molecular_host.origin(name)) for name in
+            roots.update({name: self.objects.retain(manager._reference_attempts[token].host.origin(name)) for name in
                           ('request', 'translation_policy', 'encoding_policy', 'evidence_policy')})
         return {'kind': 'proposal', 'value': proposal,
                 'view': {'role': role, 'tree': _ordered(proposal), 'origins': roots}}
@@ -282,7 +299,7 @@ class ReferenceManagerTests(unittest.TestCase):
                         self.build()
                 session = ReferenceSession.instances[-1]
                 self.assertTrue(session.invalidated)
-                self.assertIsNone(session.handler.__self__._reference_final)
+                self.assertEqual(session.handler.__self__._reference_finals, [])
 
     def test_exact_public_method_order_one_session_build_and_record_identities(self):
         build = self.build()
@@ -296,7 +313,8 @@ class ReferenceManagerTests(unittest.TestCase):
             'admit-component-input', 'get', 'reference-registration', 'register', 'run', 'result',
             'finish-reference-construct', 'prepare-reference-molecular', *(['set-dependency'] * 6),
             'reference-molecular-profile', 'register-completion-profile',
-            'reference-molecular-registration', 'register', 'run', 'result', 'finish-reference-molecular'])
+            'reference-molecular-registration', 'register', 'run', 'result', 'finish-reference-molecular',
+            'leave-reference-molecular-attempt'])
         upstream = manager._reference_builds['construct']
         self.assertIs(build.construct, upstream.candidate)
         self.assertIs(build.result.artifact, manager._records['molecular'])

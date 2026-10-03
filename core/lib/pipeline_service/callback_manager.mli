@@ -9,3 +9,8 @@ type t
 val create : io:Callback_channel.io -> unit -> t
 val run : t -> unit
 val is_closed : t -> bool
+
+(* Read-only exact historical native Build capability for same-channel package
+   extensions. No parsing, replay, latest-kind lookup or fresh manager query. *)
+val molecular_build_capability : t -> channel:Callback_channel.t -> build_id:string ->
+  Bioc_pipeline.Reference_molecular_pipeline.t

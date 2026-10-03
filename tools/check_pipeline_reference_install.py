@@ -56,6 +56,11 @@ SOURCES = (SOURCE, TEST_SOURCE, original.FREEZER, original.RUNNER,
     'tools/pipeline_reference_runtime.py', 'tests/test_pipeline_reference_runtime.py',
     'tools/reference_pipeline_transcript.py', 'tests/test_reference_pipeline_transcript.py',
     'tools/reference_execution_guard.py', 'tests/test_reference_execution_guard.py',
+    'tools/reference_attempt_receipts.py', 'tests/test_reference_attempt_receipts.py',
+    'tests/test_core_reference_attempts.py',
+    'tools/reference_attempt_source.py', 'tests/test_reference_attempt_source.py',
+    'tests/test_core_reference_manager.py', 'tests/test_reference_backend.py',
+    'tests/conformance/reference-attempt-facade-counterpart-v1.json',
     'src/biocompiler/reference_backend.py',
     'tests/test_reference_pipeline_original_counterpart.py',
     'src/biocompiler/core_reference_manager.py', 'src/biocompiler/core_reference_host.py',
@@ -64,7 +69,8 @@ SOURCES = (SOURCE, TEST_SOURCE, original.FREEZER, original.RUNNER,
 
 
 def tool(name):
-    require(name in ('reference_execution_guard', 'reference_pipeline_transcript', 'pipeline_reference_runtime'),
+    require(name in ('reference_execution_guard', 'reference_pipeline_transcript', 'pipeline_reference_runtime',
+                    'reference_attempt_receipts'),
             'Unknown closed reference campaign helper')
     return importlib.import_module('.' + name, __package__) if __package__ else importlib.import_module(name)
 
@@ -547,7 +553,11 @@ class Observer:
             return [(key, local[key]) for key in ('request', 'registry', 'manifests')]
         if kind in ('native.construct-phase', 'native.molecular-phase'):
             owner = local['self']
-            host = owner._reference_host if kind == 'native.construct-phase' else owner._reference_molecular_host
+            if kind == 'native.molecular-phase' and 'snapshot' in local:
+                # Actual public call arguments own this attempt; later attempts
+                # must never change the observed authority of this invocation.
+                return [(name, local[name]) for name in ('request', 'registry')] + [('manifests', local['snapshot'])]
+            host = owner._reference_host
             return [('request', host.request), ('registry', host.registry),
                 ('manifests', host.construct_manifests if kind == 'native.construct-phase' else host.molecular_manifests)]
         if kind.startswith('host.'):
@@ -1176,8 +1186,14 @@ def validate_observation_links(observation, details, corpus):
                 and invocation['start_frame'] < link['start_frame'] <= link['end_frame'] <= invocation['end_frame'],
                 'Actual callback is detached from its enclosing native invocation')
             if row['kind'].startswith('host.'):
-                require(invocation['action'] == {'host.generate': 'reference-generate', 'host.emit': 'reference-emit',
-                    'host.proposal': 'reference-proposal'}[row['kind']], 'Reference source callback uses another native action')
+                action = invocation['action']
+                wanted = {'host.generate': ('reference-generate',), 'host.emit': ('reference-emit',),
+                    'host.proposal': ('reference-proposal', 'reference-molecular-proposal')}[row['kind']]
+                require(action in wanted, 'Reference source callback uses another native action')
+                # The attempt proof independently binds a Molecular proposal to
+                # its same-command emit output and immutable provider origin.
+                if action == 'reference-molecular-proposal':
+                    require('preparation_id' in invocation['arguments'], 'Molecular proposal omitted its attempt')
         elif row['kind'].startswith(('host.', 'override.', 'callback.')):
             raise AssertionError('Actual host callback lacks its original native invocation')
     stack, observed_ticks = [], []
@@ -1267,10 +1283,11 @@ def validate_native_evidence(receipt, corpus, artifacts):
         package_path=receipt['package_path'], runtime=receipt['python_version'])
     guarded = artifacts.json(receipt['guard'], maximum=32 * 1024 * 1024)
     guard.validate(guarded, [row['frames'] for row in receipt['processes']], artifacts)
+    attempts = tool('reference_attempt_receipts').validate(details)
     links = validate_observation_links(observation, details, corpus)
     public = validate_public_observations(corpus, observation['events'], observation['documents'])
     internal = internal_correspondence(corpus, public)
-    proof = {'links': links, 'public': public, 'internal': internal,
+    proof = {'links': links, 'public': public, 'internal': internal, 'attempt_lifecycle': attempts,
         'scope': 'complete original public behavior and actual callback identities; internal Python frames retain explicit native correspondence'}
     return observation, normalized_observation(observation, paths), guarded, proof, tapes
 

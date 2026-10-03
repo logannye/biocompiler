@@ -1,0 +1,75 @@
+{
+  "schema_version": "biocompiler.reference_package_hosted_native_milestone.v1",
+  "source_revision": "64eb5a3964c726abab4e3691c6eb13bd53c25693",
+  "run_id": 37090290216,
+  "pull_request": 83,
+  "scope": "Native library suite execution only; public routed campaigns and complete release accounting remain required",
+  "native_suites": 117,
+  "jobs": [
+    {
+      "job_id": 111108988761,
+      "name": "ocaml-core (ubuntu-24.04, linux-x86_64)",
+      "job_status": "in_progress",
+      "job_conclusion": null,
+      "steps": [
+        {
+          "name": "Run every native literal and mutation suite",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-10-03T02:37:01Z",
+          "completed_at": "2026-10-03T02:47:21Z"
+        },
+        {
+          "name": "Check exact package manifests and independently accepted sequence exports",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-10-03T02:47:59Z",
+          "completed_at": "2026-10-03T02:48:01Z"
+        },
+        {
+          "name": "Check original snapshots, complete native packages and persistent ownership",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-10-03T02:48:01Z",
+          "completed_at": "2026-10-03T02:48:05Z"
+        }
+      ]
+    },
+    {
+      "job_id": 111108988809,
+      "name": "ocaml-core (macos-14, macos-arm64)",
+      "job_status": "in_progress",
+      "job_conclusion": null,
+      "steps": [
+        {
+          "name": "Run every native literal and mutation suite",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-10-03T02:38:15Z",
+          "completed_at": "2026-10-03T02:48:48Z"
+        },
+        {
+          "name": "Check exact package manifests and independently accepted sequence exports",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-10-03T02:49:30Z",
+          "completed_at": "2026-10-03T02:49:32Z"
+        },
+        {
+          "name": "Check original snapshots, complete native packages and persistent ownership",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-10-03T02:49:32Z",
+          "completed_at": "2026-10-03T02:49:37Z"
+        }
+      ]
+    }
+  ],
+  "source_snapshot": {
+    "path": "generated/migration-next/pr83-jobs-package-native-milestone.json",
+    "sha256": "3da94c46685447d6361fcfbc2b6e61ed5ab2abdb38afd44aba1192333d199b14",
+    "bytes": 122763
+  },
+  "release_acceptance": false,
+  "public_package_acceptance": false
+}

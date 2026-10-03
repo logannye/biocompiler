@@ -14,7 +14,7 @@ import struct
 import sys
 import warnings
 import zipfile
-from types import SimpleNamespace
+from types import CodeType, FunctionType, SimpleNamespace
 from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -40,7 +40,32 @@ def unchecked(entries, **options):
                 archive.writestr(info, payload)
     return result.getvalue()
 
+def source_authority():
+    """Bind actual installed or checkout code to unchanged original bytes."""
+    logical = 'src/biocompiler/artifacts/archive_container.py'
+    source = ROOT / logical
+    actual = Path(original.__file__).resolve()
+    raw = source.read_bytes()
+    assert original.__name__ == 'biocompiler.artifacts.archive_container'
+    assert sys.modules.get(original.__name__) is original
+    assert actual.read_bytes() == raw, 'Installed archive source differs from original'
+    def codes(code):
+        yield code
+        for value in code.co_consts:
+            if type(value) is CodeType:
+                yield from codes(value)
+    compiled = list(codes(compile(raw, str(actual), 'exec', dont_inherit=True)))
+    for name in ('_safe_path','validate_files','_canonical_zip','assemble_container','_preflight','read_container'):
+        function = getattr(original, name)
+        assert type(function) is FunctionType
+        assert function.__module__ == original.__name__ and function.__qualname__ == name
+        assert Path(function.__code__.co_filename).resolve() == actual
+        assert function.__globals__ is vars(original)
+        assert any(function.__code__ == code for code in compiled), 'Loaded archive code differs from original'
+    return {'path': logical, 'sha256': hashlib.sha256(raw).hexdigest()}
+
 def capture():
+    authority = source_authority()
     rows = []
     def row(identity, operation, inputs, function, limits=None):
         observed = {'id': identity, 'operation': operation, 'input': inputs, 'limits': limits or {}}
@@ -198,12 +223,9 @@ def capture():
         row('assemble:'+label,'assemble',{'manifest':document,'members':declared,
             'entries':[[k,v.hex()] for k,v in files], 'run_metadata':run},
             lambda manifest=manifest,run_metadata=run_metadata:original.assemble_container(manifest,dict(files),run_metadata),limits)
-    source=ROOT/'src/biocompiler/artifacts/archive_container.py'
-    for name in ('_safe_path','validate_files','_canonical_zip','assemble_container','_preflight','read_container'):
-        function=getattr(original,name)
-        assert Path(function.__code__.co_filename).resolve()==source and function.__globals__ is vars(original)
+    assert source_authority() == authority, 'Archive source changed during original observation'
     return {'schema':'biocompiler.archive_container_literals.v1','python_minor':f'{sys.version_info.major}.{sys.version_info.minor}',
-            'source':{'path':source.relative_to(ROOT).as_posix(),'sha256':hashlib.sha256(source.read_bytes()).hexdigest()},
+            'source':authority,
             'cases':rows}
 
 def runtime_authority():

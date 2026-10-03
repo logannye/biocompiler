@@ -25,6 +25,17 @@ type operation=
   |Dependency_set of string*string
   |Profile_registered of C.Completion_profile.t
 
+type molecular_attempt={attempt_owner:M.t;attempt_work:W.t;
+  mutable attempt_phase:phase;mutable entered:bool;
+  mutable molecular_prepared:Molecular.prepared option;
+  mutable pending_dependencies:(string*string) list;
+  mutable molecular_profile:Molecular.profiled option;
+  mutable molecular_registration:Molecular.registration option;
+  mutable molecular_host_comparison:bool;
+  mutable molecular_run:C.Stage_record.t option;
+  mutable molecular_result_value:(int*C.Pipeline_result.t) option;
+  mutable molecular_value:Molecular.t option;
+}
 type t={work:W.t;retain:int->unit;limits:M.limits;codec:C.Codec.limits;
   mutable phase_value:phase;mutable owner_value:M.t option;
   mutable initialized:Construct.initialized option;
@@ -35,14 +46,10 @@ type t={work:W.t;retain:int->unit;limits:M.limits;codec:C.Codec.limits;
   mutable construct_run:C.Stage_record.t option;
   mutable construct_result_value:(int*C.Pipeline_result.t) option;
   mutable construct_value:Construct.t option;
-  mutable molecular_prepared:Molecular.prepared option;
-  mutable pending_dependencies:(string*string) list;
-  mutable molecular_profile:Molecular.profiled option;
-  mutable molecular_registration:Molecular.registration option;
-  mutable molecular_host_comparison:bool;
-  mutable molecular_run:C.Stage_record.t option;
-  mutable molecular_result_value:(int*C.Pipeline_result.t) option;
-  mutable molecular_value:Molecular.t option;
+  mutable molecular_attempts:molecular_attempt list;
+  mutable molecular_scopes:molecular_attempt list;
+  mutable latest_molecular:molecular_attempt option;
+  mutable completed_molecular:molecular_attempt option;
   sequences:(int,unit) Hashtbl.t}
 let failure message=Diagnostic.fail "reference_workflow_phase" message
 let required=function Some value->value|None->failure "Reference workflow capability is unavailable."
@@ -77,18 +84,39 @@ let create ~budget ~retain_bytes ?(manager_limits=M.default_limits) ()=
   {work=budget;retain=retain_bytes;limits=manager_limits;codec;phase_value=Fresh;owner_value=None;
    initialized=None;admission=None;admitted=None;construct_registration=None;
    construct_host_comparison=false;construct_run=None;construct_result_value=None;construct_value=None;
-   molecular_prepared=None;pending_dependencies=[];molecular_profile=None;molecular_registration=None;
-   molecular_host_comparison=false;molecular_run=None;molecular_result_value=None;molecular_value=None;
+   molecular_attempts=[];molecular_scopes=[];latest_molecular=None;completed_molecular=None;
    sequences=Hashtbl.create 16}
 let owner (state:t)=state.owner_value
-let phase (state:t)=state.phase_value
+let active_molecular (state:t)=match state.molecular_scopes with value::_->Some value|[]->None
+let phase (state:t)=if state.phase_value=Closed then Closed else match active_molecular state,state.latest_molecular with
+  |Some value,_|None,Some value->value.attempt_phase|None,None->state.phase_value
+let owns_attempt (state:t) value=
+  List.exists(fun previous->W.charge state.work 1;previous==value)state.molecular_attempts
+let check_attempt (state:t) budget value=
+  check state budget;
+  Diagnostic.require(value.attempt_work==budget && value.attempt_owner==required state.owner_value && owns_attempt state value)
+    "reference_workflow_capability" "Molecular attempt belongs to another workflow owner.";
+  Diagnostic.require(value.entered && (match active_molecular state with Some current->current==value|None->false))
+    "reference_workflow_capability" "Molecular attempt is not the active continuation scope."
+let current_attempt state budget=let value=required(active_molecular state) in check_attempt state budget value;value
+let leave_molecular (state:t) ~budget value=
+  check_attempt state budget value;
+  (match state.molecular_scopes with _::rest->state.molecular_scopes<-rest|[]->assert false);
+  value.entered<-false
+let molecular_attempt_phase value=value.attempt_phase
+let molecular_prepared value=required value.molecular_prepared
+let interrupt_attempt state value action=
+  value.attempt_phase<-Interrupted;
+  let result=action() in check state state.work;result
+let attempt_phase value expected=
+  if value.attempt_phase<>expected then failure "Molecular attempt operation is not available in its current phase."
 let close (state:t)=
   state.phase_value<-Closed;state.owner_value<-None;state.initialized<-None;
   state.admission<-None;state.admitted<-None;state.construct_registration<-None;
   state.construct_run<-None;state.construct_result_value<-None;state.construct_value<-None;
-  state.molecular_prepared<-None;state.pending_dependencies<-[];state.molecular_profile<-None;
-  state.molecular_registration<-None;state.molecular_run<-None;
-  state.molecular_result_value<-None;state.molecular_value<-None;Hashtbl.clear state.sequences
+  List.iter(fun value->value.entered<-false)state.molecular_attempts;
+  state.molecular_attempts<-[];state.molecular_scopes<-[];state.latest_molecular<-None;state.completed_molecular<-None;
+  Hashtbl.clear state.sequences
 (* An explicit preparation/finish is one-shot even if its callback throws. The
    actual published manager and all already performed mutations remain owned. *)
 let attempt (state:t) action=
@@ -148,7 +176,7 @@ let valid_record record ~identity ~stage ~parent ~pass_id=
   C.Stage_record.parent record=parent && C.Stage_record.pass_id record=pass_id
 let result_matches record result scope=
   C.Pipeline_result.scope result=scope && C.Pipeline_result.artifact result==record
-let notice (state:t) ~budget ~owner:manager ~sequence operation=
+let notice_construct (state:t) ~budget ~owner:manager ~sequence operation=
   check state budget;
   Diagnostic.require(manager==required state.owner_value) "reference_workflow_owner" "Reference operation belongs to another manager.";
   Diagnostic.require(sequence>=0 && not(Hashtbl.mem state.sequences sequence)) "reference_workflow_sequence"
@@ -184,33 +212,45 @@ let notice (state:t) ~budget ~owner:manager ~sequence operation=
         retain_document state(C.Pipeline_result.to_json result);
         state.construct_result_value<-Some(sequence,result);state.phase_value<-Construct_result
       end
+  |_->()
+let notice_molecular (state:t) ~budget ~scope ~sequence operation=
+  check_attempt state budget scope;
+  match scope.attempt_phase,operation with
   |Molecular_dependencies,Dependency_set(key,identity)->
-      (match state.pending_dependencies with
+      (match scope.pending_dependencies with
        |(expected_key,expected_identity)::rest->
            W.charge budget(String.length key+String.length identity+String.length expected_key+String.length expected_identity+1);
-           if key=expected_key && identity=expected_identity then state.pending_dependencies<-rest
+           if key=expected_key && identity=expected_identity then scope.pending_dependencies<-rest
        |[]->())
   |Molecular_profile_available,Profile_registered profile->
       if equality state(C.Completion_profile.to_json profile)
-          (C.Completion_profile.to_json(Molecular.completion_profile(required state.molecular_profile))) then
-        state.phase_value<-Molecular_profile_registered
+          (C.Completion_profile.to_json(Molecular.completion_profile(required scope.molecular_profile))) then
+        scope.attempt_phase<-Molecular_profile_registered
   |Molecular_registration_available,Pass_registered(contract,_,validators)->
-      let registration=required state.molecular_registration in
+      let registration=required scope.molecular_registration in
       if equality state(C.Pass_contract.to_json contract)(C.Pass_contract.to_json(Molecular.contract registration)) then begin
         allow_matching state validators(Molecular.validators registration)
-          (fun name->name="encoding_composition" || state.molecular_host_comparison);
-        state.phase_value<-Molecular_registered
+          (fun name->name="encoding_composition" || scope.molecular_host_comparison);
+        scope.attempt_phase<-Molecular_registered
       end
   |Molecular_registered,Ran{pass_id="construct_to_molecular";input_id="construct";output_id="molecular";
       default_configuration=true;record} when valid_record record ~identity:"molecular" ~stage:C.Molecular
         ~parent:(Some "construct") ~pass_id:(Some "construct_to_molecular")->
-      remember_record state record;state.molecular_run<-Some record;state.phase_value<-Molecular_ran
+      remember_record state record;scope.molecular_run<-Some record;scope.attempt_phase<-Molecular_ran
   |Molecular_ran,Result_returned{identity="molecular";scope="exact_cds";result}->
-      if result_matches(required state.molecular_run)result "exact_cds" then begin
+      if result_matches(required scope.molecular_run)result "exact_cds" then begin
         retain_document state(C.Pipeline_result.to_json result);
-        state.molecular_result_value<-Some(sequence,result);state.phase_value<-Molecular_result
+        scope.molecular_result_value<-Some(sequence,result);scope.attempt_phase<-Molecular_result
       end
   |_->()
+let notice_for (state:t) ~budget ~owner ~sequence ~molecular operation=
+  (* Scope is captured at command entry, before arbitrary callbacks. A nested
+     scope must have left before this real outer operation publishes its notice. *)
+  Option.iter(check_attempt state budget)molecular;
+  notice_construct state ~budget ~owner ~sequence operation;
+  Option.iter(fun scope->notice_molecular state ~budget ~scope ~sequence operation)molecular
+let notice (state:t) ~budget ~owner ~sequence operation=
+  notice_for state ~budget ~owner ~sequence ~molecular:(active_molecular state) operation
 let finish_construct (state:t) ~budget ~record ~result_sequence=
   check state budget;require_phase state Construct_result;
   let sequence,result=required state.construct_result_value in
@@ -223,8 +263,10 @@ let finish_construct (state:t) ~budget ~record ~result_sequence=
     retain_document state(Reference_construct_evidence.Result.to_json(Construct.check_result value));
     state.construct_value<-Some value;state.phase_value<-Construct_finished;value)
 let prepare_molecular ?authority (state:t) ~budget ()=
-  check state budget;require_phase state Construct_finished;
-  attempt state(fun()->
+  check state budget;
+  let upstream=required state.construct_value in
+  (* A completed Construct capability survives every later Molecular failure.
+     Allocate new attempt state; do not reset or overwrite an earlier attempt. *)
     reserve state 1024;
     Option.iter(fun (value:Molecular.authority)->
       retain_document state(Reference_construct.Request.to_json value.request);
@@ -235,45 +277,55 @@ let prepare_molecular ?authority (state:t) ~budget ()=
         Diagnostic.require(!count<maximum) "reference_workflow_limit" "Molecular authority map exceeds its native bound.";
         incr count;reserve state(String.length key+64);
         retain_document state(Reference_manifest.to_json manifest))value.manifests)authority;
-    let value=Molecular.prepare ~budget ?authority(required state.construct_value) in
+    let value=Molecular.prepare ~budget ?authority upstream in
     let dependencies=Molecular.dependencies value in
     List.iter(fun(key,identity)->reserve state(String.length key+String.length identity+64))dependencies;
-    state.molecular_prepared<-Some value;state.pending_dependencies<-dependencies;
-    state.phase_value<-Molecular_dependencies;value)
+    let scope={attempt_owner=required state.owner_value;attempt_work=budget;
+      attempt_phase=Molecular_dependencies;entered=true;molecular_prepared=Some value;
+      pending_dependencies=dependencies;molecular_profile=None;molecular_registration=None;
+      molecular_host_comparison=false;molecular_run=None;molecular_result_value=None;molecular_value=None} in
+    state.molecular_attempts<-scope::state.molecular_attempts;
+    state.molecular_scopes<-scope::state.molecular_scopes;
+    state.latest_molecular<-Some scope;value
 let prepare_molecular_profile (state:t) ~budget ()=
-  check state budget;require_phase state Molecular_dependencies;
-  if state.pending_dependencies<>[] then failure "Molecular profile requires all six actual dependency writes in order.";
-  attempt state(fun()->
+  let scope=current_attempt state budget in attempt_phase scope Molecular_dependencies;
+  if scope.pending_dependencies<>[] then failure "Molecular profile requires all six actual dependency writes in order.";
+  interrupt_attempt state scope(fun()->
     reserve state 256;
-    let value=Molecular.prepare_profile ~budget(required state.molecular_prepared) in
+    let value=Molecular.prepare_profile ~budget(required scope.molecular_prepared) in
     retain_document state(C.Completion_profile.to_json(Molecular.completion_profile value));
-    state.molecular_profile<-Some value;state.phase_value<-Molecular_profile_available;value)
+    scope.molecular_profile<-Some value;scope.attempt_phase<-Molecular_profile_available;value)
 let prepare_molecular_registration (state:t) ~budget ?provider_observer ?emitter_bridge ?host_links_equal ()=
-  check state budget;require_phase state Molecular_profile_registered;
-  attempt state(fun()->
+  let scope=current_attempt state budget in attempt_phase scope Molecular_profile_registered;
+  interrupt_attempt state scope(fun()->
     reserve state 512;
     let value=Molecular.prepare_registration ~budget ?provider_observer ?emitter_bridge ?host_links_equal
-      (required state.molecular_profile) in
+      (required scope.molecular_profile) in
     retain_document state(C.Pass_contract.to_json(Molecular.contract value));
-    state.molecular_registration<-Some value;state.molecular_host_comparison<-Option.is_some host_links_equal;
-    state.phase_value<-Molecular_registration_available;value)
+    scope.molecular_registration<-Some value;scope.molecular_host_comparison<-Option.is_some host_links_equal;
+    scope.attempt_phase<-Molecular_registration_available;value)
 let finish_molecular ?final_source_bridge (state:t) ~budget ~record ~result_sequence=
-  check state budget;require_phase state Molecular_result;
-  let sequence,result=required state.molecular_result_value in
-  Diagnostic.require(sequence=result_sequence && record==required state.molecular_run) "reference_workflow_capability"
+  let scope=current_attempt state budget in attempt_phase scope Molecular_result;
+  let sequence,result=required scope.molecular_result_value in
+  Diagnostic.require(sequence=result_sequence && record==required scope.molecular_run) "reference_workflow_capability"
     "Molecular finish requires its exact observed run and result capabilities.";
-  attempt state(fun()->
+  interrupt_attempt state scope(fun()->
     reserve state 256;
     let bridge=Option.map(fun (bridge:Molecular.final_source_bridge)->
       {Molecular.check_construct=(fun active->check state active;let value=bridge.check_construct active in
          check state active;value);
        return_construct=(fun active->check state active;reserve state 128;
          let value=bridge.return_construct active in check state active;value)})final_source_bridge in
-    let value=Molecular.finish ~budget ?final_source_bridge:bridge(required state.molecular_registration)~record ~result in
+    let value=Molecular.finish ~budget ?final_source_bridge:bridge(required scope.molecular_registration)~record ~result in
     retain_document state(Reference_molecular.Artifact.to_json(Molecular.candidate value));
     retain_document state(Reference_molecular_evidence.Result.to_json(Molecular.check_result value));
-    state.molecular_value<-Some value;state.phase_value<-Molecular_finished;value)
+    scope.molecular_value<-Some value;state.completed_molecular<-Some scope;scope.attempt_phase<-Molecular_finished;value)
 let construct_build (state:t)=state.construct_value
-let molecular_build (state:t)=state.molecular_value
+let molecular_build_of (state:t) ~budget value=
+  check state budget;
+  Diagnostic.require(value.attempt_work==budget && value.attempt_owner==required state.owner_value && owns_attempt state value)
+    "reference_workflow_capability" "Historical Molecular build belongs to another owner.";
+  value.molecular_value
+let molecular_build (state:t)=Option.bind state.completed_molecular(fun value->value.molecular_value)
 let construct_result_sequence (state:t)=Option.map fst state.construct_result_value
-let molecular_result_sequence (state:t)=Option.map fst state.molecular_result_value
+let molecular_result_sequence (state:t)=Option.bind state.completed_molecular(fun value->Option.map fst value.molecular_result_value)

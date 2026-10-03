@@ -1,0 +1,74 @@
+{
+  "schema_version": "biocompiler.archive_installed_origin_correction.v1",
+  "base_revision": "64eb5a3964c726abab4e3691c6eb13bd53c25693",
+  "scope": "Original archive test authority at installed or checkout paths; no product semantic change",
+  "hosted_failure": {
+    "run_id": 37089618070,
+    "job_id": 111107100443,
+    "job_name": "unit-tests (3.14, 0)",
+    "python": "3.14.7",
+    "source_revision": "7645c254b170846cca2289090111241e20c3769d",
+    "tested_merge_revision": "671c2701015396e404828b829ba323beb6360895",
+    "log": {
+      "path": "generated/migration-next/pr82-unit314-0.log",
+      "sha256": "71111bc9552bb8381352a52de9191ff595c3e5ef71f4c690030deab8f222e323",
+      "bytes": 171856
+    },
+    "diagnostic": "capture_archive_container.capture asserted the actual installed function co_filename was the checkout path",
+    "test_error": "tests.test_archive_authority.ArchiveAuthorityTests.setUpClass"
+  },
+  "correction": [
+    "Require actual installed module source bytes to equal unchanged original checkout source bytes",
+    "Require canonical sys.modules identity, exact executable code compiled from the complete actual source, and original module globals for all six original functions",
+    "Recheck authority after all original observations",
+    "Preserve both original 125-case corpora and their complete values"
+  ],
+  "local_validation": [
+    {
+      "python": "3.11.15",
+      "tests": 11,
+      "result": "pass",
+      "seconds": 1.799
+    },
+    {
+      "python": "3.14.6",
+      "tests": 11,
+      "result": "pass",
+      "seconds": 2.309
+    }
+  ],
+  "command": "PYTHONPATH=src <python> -m unittest tests.test_archive_authority tests.test_archive_source_origin",
+  "negative_controls": [
+    "changed installed source bytes",
+    "changed executable code with original path and globals",
+    "copied foreign globals with original code",
+    "replaced canonical module"
+  ],
+  "files": {
+    "tools/capture_archive_container.py": {
+      "sha256": "6e5cf1ae49298cdb988bf271e4dfa6c60f8ea31f1c1bf50fb8663a856a276227",
+      "bytes": 16758
+    },
+    "tests/test_archive_source_origin.py": {
+      "sha256": "614c3619388d400cd6192a0cbdbe1e28d981a9a6a6694bd4d8874e3d96406230",
+      "bytes": 3743
+    },
+    "src/biocompiler/artifacts/archive_container.py": {
+      "sha256": "36d598102ffea532b67a3a116266f573ccff07da39166230023d162fd675d43f",
+      "bytes": 10465
+    },
+    "tests/conformance/archive-container-311.json": {
+      "sha256": "0de6d702d2ea0dece95d73740a9d58b2e526ed6a82341af26b0034e2f00dff5f",
+      "bytes": 78147
+    },
+    "tests/conformance/archive-container-314.json": {
+      "sha256": "94c4b13d75a02bb15d707d64b571b8dd61ff6ca974040df27423b61ff5446361",
+      "bytes": 78162
+    }
+  },
+  "native_local_execution": false,
+  "product_semantics_changed": false,
+  "expectations_changed": false,
+  "corrected_hosted_status": "pending",
+  "release_acceptance": false
+}

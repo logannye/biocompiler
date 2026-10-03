@@ -83,6 +83,10 @@ class ReferenceRoutingTests(unittest.TestCase):
             'src/biocompiler/core_reference_manager.py', 'src/biocompiler/core_reference_provider_views.py'})
         for path, row in witness['adaptation_changes'].items():
             current = (ROOT / path).read_bytes()
+            if path == 'src/biocompiler/core_reference_manager.py':
+                from tools.reference_attempt_source import restore
+                current, attempt_lineage = restore(current)
+                self.assertEqual(attempt_lineage['correspondence']['original_sha256'], row['current_sha256'])
             self.assertEqual(hashlib.sha256(current).hexdigest(), row['current_sha256'])
             restored = current.decode().splitlines(keepends=True)
             for change in reversed(row['changes']):
@@ -241,7 +245,7 @@ class ReferenceRoutingTests(unittest.TestCase):
         self.assertIs(result.manager, saved[0].manager)
         self.assertIs(result.construct, saved[0].candidate)
         self.assertIsNot(result.manager._reference_host.construct_manifests,
-                         result.manager._reference_molecular_host.molecular_manifests)
+                         result.manager._reference_attempts[result.manager.session.preparation].host.molecular_manifests)
         with patch.object(molecular, 'run_construct_pipeline', return_value=self.source['construct']), reference_core(self.core):
             with self.assertRaisesRegex(CoreProtocolError, 'Python-manager continuation remains unsupported'):
                 SDK_MOLECULAR(*self.args())
@@ -329,7 +333,7 @@ class ReferenceRoutingTests(unittest.TestCase):
                 self.assertEqual(tuple(manager._records), ('components', 'construct') if failed == 'manager' else
                     ('components', 'construct', 'molecular'))
                 self.assertFalse(manager.session.closed)
-                self.assertIsNone(manager._reference_final)
+                self.assertEqual(manager._reference_finals, [])
                 self.assertEqual(sum(event[0] == 'fixture-check' for event in manager.session.events), int(failed == 'return'))
 
     def test_invalid_check_candidate_reports_original_serialization_error_without_second_read(self):
@@ -369,9 +373,9 @@ class ReferenceRoutingTests(unittest.TestCase):
         manager = actual.manager
         self.assertIs(manager, foreign.manager)
         self.assertIs(manager._reference_host.request, request)
-        self.assertIs(manager._reference_molecular_host.request, outer_request)
-        self.assertIs(manager._reference_molecular_host.registry, outer_registry)
-        self.assertIs(manager._reference_molecular_host.molecular_manifests, seen[0])
+        self.assertIs(manager._reference_attempts[manager.session.preparation].host.request, outer_request)
+        self.assertIs(manager._reference_attempts[manager.session.preparation].host.registry, outer_registry)
+        self.assertIs(manager._reference_attempts[manager.session.preparation].host.molecular_manifests, seen[0])
         command = next(args for name, args in manager.session.requests if name == 'prepare-reference-molecular-public')
         self.assertIs(manager._objects.resolve(command['request_object']), outer_request)
         self.assertIs(manager._objects.resolve(command['registry_object']), outer_registry)
