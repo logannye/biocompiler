@@ -20,7 +20,7 @@ from tools import freeze_synthetic_selection_cli as frozen
 from tools import synthetic_selection_cli_source_lineage as routes
 from tools import manager_registration_source_lineage as managers
 from tools import cli_runtime_counterparts as runtime
-from tools.check_realization_workflow_corpus import REVIEWED_ADDITIONS
+from tools.check_realization_workflow_corpus import REVIEWED_ADDITIONS, addition_counterparts
 
 CORPUS_PIN = '69556f367752be3076513d96e63c933fb250eaf7d9736f9e39baac1dec47e5d9'
 COUNTERPART = ROOT / 'tests/conformance/synthetic-selection-cli-runtime-counterparts-v1.json'
@@ -95,6 +95,7 @@ def verify_recapture(actual, blobs, *, python_version=None):
                 not path.is_symlink() and sha(path.read_bytes()) == current[name],
                 'Unreviewed selection CLI source addition: ' + name)
         additions.append({'path':name,'sha256':current[name],'source':path.read_text()})
+    addition_proofs = addition_counterparts({row['path']: row['sha256'] for row in additions})
     require(set(scope) == set(original['source_scope']) and scope['denied_modules'] == original['source_scope']['denied_modules']
             and scope['schema_version'] == original['source_scope']['schema_version'] and
             scope['source_inventory_sha256'] == digest(scope['actual_sources']), 'Selection CLI scope metadata changed')
@@ -159,6 +160,7 @@ def verify_recapture(actual, blobs, *, python_version=None):
     require(projected_blobs == old_blobs, 'Complete actual selection CLI content differs from immutable baseline')
     require(canonical(projected) == canonical(original), 'Complete actual selection CLI observations differ from immutable baseline')
     return {'schema_version':'biocompiler.synthetic_selection_cli_source_lineage.v1',
+        'reviewed_addition_counterparts': addition_proofs,
         'status':'complete_original_selection_cli_recapture_equal','native_execution':False,
         'baseline_inventory_fingerprint':CORPUS_PIN,'actual_inventory_fingerprint':actual['inventory_fingerprint'],
         'projected_inventory_fingerprint':projected['inventory_fingerprint'],'actual_capture':deepcopy(actual),

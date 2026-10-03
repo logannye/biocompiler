@@ -29,7 +29,7 @@ type manager_created=W.t->M.t->unit
 type input_registration_hook=W.t->M.t->C.Component_input_contract.t->validators:(string*M.provider) list->unit
 type registration_hook=W.t->M.t->C.Pass_contract.t->producer:M.provider->validators:(string*M.provider) list->unit
 type generated=Native_candidate of R.Candidate.t|Host_candidate of M.host_value
-type generator=W.t->R.Request.t->generated
+type generator=W.t->input:Json.t->R.Request.t->generated
 type generator_bridge={generate:generator;host_proposal:W.t->output:M.host_value->source_links:C.Source_link.t list->M.host_value}
 type host_links_equal=W.t->actual:M.host_value list->expected:C.Source_link.t list->bool
 let fail message=Diagnostic.fail "pipeline_error" message
@@ -230,7 +230,7 @@ let prepare_registration ~budget ?provider_observer ?generator_bridge ?host_link
     let bound=R.Request.of_json ~limits:(domain_codec work prepared.limits_value) (C.Pass_context.input context) in
     let output=match generator_bridge with
       | None->Native_candidate(G.generate ~parent:work ~limits:(generator_limits prepared.limits_value) bound)
-      | Some bridge->bridge.generate work bound in
+      | Some bridge->bridge.generate work ~input:(C.Pass_context.input context) bound in
     let links=source_links work prepared.limits_value bound (C.Pass_contract.id contract_value) in
     match output with
     | Native_candidate candidate->M.Proposal(C.Pass_result.make ~limits:(codec work prepared.limits_value)

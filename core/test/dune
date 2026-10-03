@@ -568,3 +568,15 @@
  (modules test_reference_molecular_pipeline)
  (libraries bioc_wire bioc_domain bioc_checker bioc_compiler bioc_pipeline zarith)
  (action (run %{test} %{env:BIOCOMPILER_REFERENCE_PIPELINE_DOCUMENTS=missing})))
+
+(test
+ (name test_reference_workflow)
+ (modules test_reference_workflow)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_compiler bioc_pipeline bioc_pipeline_service zarith)
+ (action (run %{test} %{env:BIOCOMPILER_REFERENCE_PIPELINE_DOCUMENTS=missing})))
+
+(test
+ (name test_reference_callback_manager)
+ (modules test_reference_callback_manager)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_compiler bioc_pipeline_service zarith)
+ (action (run %{test} %{env:BIOCOMPILER_PIPELINE_CALLBACK_MANAGER_DECLARATION=missing} %{env:BIOCOMPILER_REFERENCE_PIPELINE_DOCUMENTS=missing})))

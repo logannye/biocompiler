@@ -1,8 +1,9 @@
 """Run the frozen reference tests in their exact, finite original source closure.
 
-New product files are not original authority. Every captured file must still
-have its pinned bytes; this helper supplies no counterpart for changed product
-source and never refreshes an expectation. Native code is neither loaded nor run.
+New product files are not original authority. Every captured file retains its
+pinned bytes in the child. The single reviewed Core transport counterpart is
+restored from an exact archived source; this never validates the current bridge
+or refreshes an expectation. Native code is neither loaded nor run.
 """
 from __future__ import annotations
 
@@ -28,6 +29,12 @@ FREEZER_SHA = '9f5696318883ada6e56d582cadff25e2431724e27ab27e28f3eabf864e0f1e1f'
 TEST = 'tests/test_reference_contracts_corpus.py'
 TEST_SHA = '84df82fd9a57d18ad022d68a318aeb3495ff0a724b1205a73cb8092d20c2133b'
 RUNNER = 'tools/reference_original_counterpart.py'
+CORE_SOURCE = 'src/biocompiler/core_pipeline_manager.py'
+CORE_ORIGINAL_SHA = '40a08477c97a97159372d9723267df3cacf8335a59d6b00ada34bb56470e31f3'
+CORE_CURRENT_SHA = '0c0cfac138484cf71f1bb1303e66873b8b148ca236e07930fdbadd0b477a11be'
+CORE_BLOB = 'tests/conformance/reference-original-sources-v1/' + CORE_ORIGINAL_SHA + '.blob'
+CORE_WITNESS = 'tests/conformance/reference-manager-source-counterpart-v1.json'
+CORE_WITNESS_SHA = '9f4406d46a7d18db944094ea6875a1daceb3d327b2da8e8029250e312ea833f8'
 # Imported by the frozen test_synthetic_generation fixture, but not included
 # in its original source_inventory traversal. Entire bytes match c58aa504.
 SUPPORT = {'examples/realization_check.py': '0d1012d2c3cd074540afce586658ee2ee3cba08a4e3d2e2586f8aaec1fa75fc2'}
@@ -76,6 +83,44 @@ def authority():
     return index
 
 
+def core_source_witness(raw=None):
+    """One exact reviewed transport revision, never a changed-file whitelist."""
+    encoded = local_file(ROOT, CORE_WITNESS).read_bytes()
+    require(sha(encoded) == CORE_WITNESS_SHA, 'Reference Core source witness changed')
+    witness = json.loads(encoded)
+    require(set(witness) == {'schema_version', 'base_revision', 'path', 'original_sha256',
+        'current_sha256', 'changes', 'restoration'} and
+        witness['schema_version'] == 'biocompiler.reference_manager_source_counterpart.v1' and
+        witness['base_revision'] == 'a8cf5266963abfb5beae408c296a6f626e8f51fe' and
+        witness['path'] == CORE_SOURCE and witness['original_sha256'] == CORE_ORIGINAL_SHA and
+        witness['current_sha256'] == CORE_CURRENT_SHA and len(witness['changes']) == 6,
+        'Reference Core source correspondence is not the closed reviewed revision')
+    current = local_file(ROOT, CORE_SOURCE).read_bytes() if raw is None else raw
+    require(type(current) is bytes and sha(current) == CORE_CURRENT_SHA,
+            'Captured reference Core source is outside its exact counterpart')
+    archived = local_file(ROOT, CORE_BLOB).read_bytes()
+    require(sha(archived) == CORE_ORIGINAL_SHA, 'Original reference Core archive changed')
+    lines = current.decode().splitlines(keepends=True)
+    original_lines = archived.decode().splitlines(keepends=True)
+    previous = 0
+    for change in witness['changes']:
+        require(set(change) == {'old_start_line', 'old_end_line', 'new_start_line', 'new_end_line', 'before', 'after'}
+            and all(type(change[key]) is int for key in ('old_start_line', 'old_end_line', 'new_start_line', 'new_end_line'))
+            and type(change['before']) is str and type(change['after']) is str
+            and previous < change['new_start_line'] <= change['new_end_line'],
+            'Reference Core exact source spans overlap or changed')
+        previous = change['new_end_line']
+        require(''.join(lines[change['new_start_line'] - 1:change['new_end_line']]) == change['after']
+            and ''.join(original_lines[change['old_start_line'] - 1:change['old_end_line']]) == change['before'],
+            'Reference Core complete source span differs')
+    for change in reversed(witness['changes']):
+        lines[change['new_start_line'] - 1:change['new_end_line']] = change['before'].splitlines(keepends=True)
+    require(''.join(lines).encode() == archived, 'Reference Core restoration differs from entire archived source')
+    return archived, {'path': CORE_SOURCE, 'archive': CORE_BLOB, 'archive_sha256': CORE_ORIGINAL_SHA,
+        'current_sha256': CORE_CURRENT_SHA, 'witness': CORE_WITNESS, 'witness_sha256': CORE_WITNESS_SHA,
+        'correspondence': witness, 'scope': 'original source execution only; current native bridge validation is separate'}
+
+
 def test_witness(raw=None):
     current = local_file(ROOT, TEST).read_bytes() if raw is None else raw
     require(type(current) is bytes, 'Original reference test source must be bytes')
@@ -118,6 +163,10 @@ def data_closure(index):
         require(len(raw) == row['bytes'] and raw.endswith(b'\n') and sha(raw[:-1]) == identity,
                 'Frozen complete reference document bytes differ')
         result.append({'logical': logical, 'sha256': sha(raw), 'bytes': len(raw)})
+    for logical, identity in ((CORE_BLOB, CORE_ORIGINAL_SHA), (CORE_WITNESS, CORE_WITNESS_SHA)):
+        raw = local_file(ROOT, logical).read_bytes()
+        require(sha(raw) == identity, 'Reference exact Core counterpart data changed')
+        result.append({'logical': logical, 'sha256': identity, 'bytes': len(raw)})
     require(sum(row['bytes'] for row in result) <= MAX_DATA_BYTES, 'Reference counterpart data copy exceeds bound')
     return result
 
@@ -128,11 +177,16 @@ def source_closure(index, package_root):
     for logical, identity in sorted(pins.items()):
         path = local_file(ROOT, logical)
         raw = path.read_bytes()
-        require(sha(raw) == identity, 'Captured reference source bytes changed: ' + logical)
+        if logical == CORE_SOURCE:
+            require(identity == CORE_ORIGINAL_SHA, 'Frozen reference Core authority changed')
+            copied, _ = core_source_witness(raw)
+        else:
+            require(sha(raw) == identity, 'Captured reference source bytes changed: ' + logical)
+            copied = raw
         if logical.startswith('src/biocompiler/'):
             path = local_file(package_root, logical.removeprefix('src/biocompiler/'))
             require(path.read_bytes() == raw, 'Installed captured reference source bytes differ: ' + logical)
-        values[logical] = (path, raw, raw)
+        values[logical] = (path, raw, copied)
     witness = test_witness()
     values[TEST] = (local_file(ROOT, TEST), witness['current_source'].encode(), witness['original_source'].encode())
     path = local_file(ROOT, RUNNER)
@@ -164,7 +218,8 @@ def run(*, test_module=TEST_MODULE, test_ids=None):
             os.link(local_file(ROOT, row['logical']), target)
         manifest = {'schema': SCHEMA, 'root': str(overlay), 'package_root': str(package_root),
                     'test_module': test_module, 'test_ids': ids, 'sources': rows, 'data': data,
-                    'test_witness': witness, 'source_inventory': index['source_files']}
+                    'test_witness': witness, 'source_inventory': index['source_files'],
+                    'core_source_witness': core_source_witness()[1]}
         (overlay / 'manifest.json').write_bytes(canonical(manifest))
         script = ('import sys;sys.path[:0]=[sys.argv[1],sys.argv[1]+"/src",sys.argv[1]+"/tests"];'
                   'from tools.reference_original_counterpart import child;child(sys.argv[1])')
@@ -201,7 +256,7 @@ def validate(receipt):
             'Malformed original reference receipt')
     manifest = receipt['manifest']
     require(type(manifest) is dict and set(manifest) == {'schema', 'root', 'package_root', 'test_module', 'test_ids',
-            'sources', 'data', 'test_witness', 'source_inventory'} and manifest['schema'] == SCHEMA,
+            'sources', 'data', 'test_witness', 'source_inventory', 'core_source_witness'} and manifest['schema'] == SCHEMA,
             'Malformed original reference manifest')
     root, package_root = Path(manifest['root']), Path(manifest['package_root'])
     require(root.is_absolute() and package_root.is_absolute(), 'Original reference roots differ')
@@ -210,6 +265,8 @@ def validate(receipt):
     ids = selection(manifest['test_module'], manifest['test_ids'])
     index = authority()
     sources, witness = source_closure(index, package_root)
+    require(manifest['core_source_witness'] == core_source_witness()[1],
+            'Original reference Core source correspondence differs')
     require(manifest['test_witness'] == witness, 'Original reference whole-test correspondence differs')
     expected = []
     for logical, (origin, current, copied) in sorted(sources.items()):

@@ -67,7 +67,9 @@ class WorkflowCliLineageTests(unittest.TestCase):
             "src/biocompiler/core_pipeline_callback_session.py",
             "src/biocompiler/core_pipeline_manager.py",
             "src/biocompiler/core_pipeline_provider_views.py",
-            "src/biocompiler/core_pipeline_session.py", "src/biocompiler/core_synthetic_inspection.py",
+            "src/biocompiler/core_pipeline_session.py", "src/biocompiler/core_reference_host.py",
+            "src/biocompiler/core_reference_manager.py", "src/biocompiler/core_reference_provider_views.py",
+            "src/biocompiler/core_reference_views.py", "src/biocompiler/core_synthetic_inspection.py",
             "src/biocompiler/core_synthetic_producer.py",
             "src/biocompiler/core_synthetic_producer_public.py", "src/biocompiler/core_workflow_authority.py",
             "src/biocompiler/pipeline_callback_objects.py", "src/biocompiler/synthesis/components.py",
@@ -78,6 +80,8 @@ class WorkflowCliLineageTests(unittest.TestCase):
         self.assertEqual(receipt["schema_version"], "biocompiler.workflow_cli_source_lineage.v2")
         self.assertEqual(receipt["actual_capture"], before)
         self.assertEqual(receipt["reviewed_routes"], scope["reviewed_routes"])
+        from tools import reference_original_counterpart as reference
+        self.assertEqual(scope['reviewed_addition_counterparts'], [reference.core_source_witness()[1]])
         self.assertEqual(set(receipt["actual_retained_route_sources"]), set(lineage.routes.HISTORICAL))
         for key in actual:
             if key not in ("source_scope", "inventory_fingerprint", "retained_source_bytes", "cases"):
@@ -85,6 +89,16 @@ class WorkflowCliLineageTests(unittest.TestCase):
         for old, new in zip(projected["cases"], actual["cases"]):
             self.assertEqual({key: value for key, value in old.items() if key != "import_audit"},
                              {key: value for key, value in new.items() if key != "import_audit"})
+
+    def test_rehashed_actual_core_correspondence_cannot_be_projected_away(self):
+        actual, scope = self.recapture()
+        changed = deepcopy(actual)
+        changed['source_scope']['reviewed_addition_counterparts'][0]['current_sha256'] = '0' * 64
+        changed['inventory_fingerprint'] = lineage.digest({key: value for key, value in changed.items()
+            if key != 'inventory_fingerprint'})
+        with patch.object(lineage, 'current_scope', return_value=changed['source_scope']):
+            with self.assertRaisesRegex(AssertionError, 'CLI reviewed addition counterpart differs'):
+                lineage.historical_projection(changed)
 
     def test_observation_environment_source_byte_and_blob_tampering_is_never_projected_away(self):
         actual, scope = self.recapture()

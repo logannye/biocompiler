@@ -22,7 +22,11 @@ CORPUS_PIN = "2f5e7636977f559e046776c1bb92bebf67c8f0e733ca463927f8d3a1aee3d77b"
 REVIEWED_ADDITIONS = {
     "src/biocompiler/core_pipeline_build_views.py": "85492c4f77b3104af2dae9d9180a0518bfd4fb61c9d6143880e6e58e10a77382",
     "src/biocompiler/core_pipeline_provider_views.py": "ea18d951f8170b1e1da4fbe6636d40e83f54ebda2ebdce187b0e08cf257b9c35",
-    "src/biocompiler/core_pipeline_manager.py": "40a08477c97a97159372d9723267df3cacf8335a59d6b00ada34bb56470e31f3",
+    "src/biocompiler/core_pipeline_manager.py": "0c0cfac138484cf71f1bb1303e66873b8b148ca236e07930fdbadd0b477a11be",
+    "src/biocompiler/core_reference_host.py": "a31be5b73f1440d92cf8076fdad9d69ec9ae8605217d400af20d47f5d4e4305e",
+    "src/biocompiler/core_reference_manager.py": "82959c06a5d8c91af1a694cc4251c13045244eff53e3951f9d880a9fa0eb0faa",
+    "src/biocompiler/core_reference_provider_views.py": "4be83eedf9fe0abf60d049ba108341a6d0f88364522e0dc0fa70a13f99c60c99",
+    "src/biocompiler/core_reference_views.py": "a295b4583be057a743959d077add14ae7c5424086f7edddd322dfb188786d9f9",
     "src/biocompiler/core_pipeline_callback_session.py": "0ff388509eb9c123b87cf5decc1f35cf5eaca61a02d84a756beba7150de17018",
     "src/biocompiler/pipeline_callback_objects.py": "ac5198795c3e80cff511e0fe372dc578a983d8be947e41dd9debd9f719da9eec",
     "src/biocompiler/core_pipeline_session.py": "b0c744d8f3a38b1681805250ccf93884ba866678527cf366bcf08ff326da080d",
@@ -59,6 +63,17 @@ def historical_sources():
         {key: value for key, value in index.items() if key != "inventory_fingerprint"})) == CORPUS_PIN,
         "Immutable workflow source-scope inventory changed")
     return index["source_files"]
+
+
+def addition_counterparts(additions):
+    """Retain the exact reviewed Core revision proof; never admit new hashes."""
+    from tools import reference_original_counterpart as reference
+    if reference.CORE_SOURCE not in additions:
+        return []
+    require(additions[reference.CORE_SOURCE] == REVIEWED_ADDITIONS[reference.CORE_SOURCE]
+            == reference.CORE_CURRENT_SHA, "Unreviewed current Core addition identity")
+    _, proof = reference.core_source_witness((ROOT / reference.CORE_SOURCE).read_bytes())
+    return [proof]
 
 
 def source_scope(actual, *, allow_missing_tests=False):
@@ -102,6 +117,7 @@ def source_scope(actual, *, allow_missing_tests=False):
         "denied_modules": modules,
         "omitted_tests_for_focused_instrumentation": sorted(missing),
         "comparison": "exact_original_observations_and_documents_after_explicit_historical_source_projection_only",
+        "reviewed_addition_counterparts": addition_counterparts(additions),
     }
     if routes:
         result["reviewed_routes"] = routes

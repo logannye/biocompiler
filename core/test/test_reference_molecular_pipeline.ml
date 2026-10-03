@@ -162,7 +162,7 @@ let changed_sequence directory valid=
     (change "sequence"(Json.String sequence)record) in
   let changed=Q.Artifact.of_json(change "records"(Json.Array[record])raw) in
   let invoked=ref 0 in
-  let bridge:P.emitter_bridge={emit=(fun _ ~request ~construct ~registry ~manifests->
+  let bridge:P.emitter_bridge={emit=(fun _ ~input:_ ~request ~construct ~registry ~manifests->
     incr invoked;
     require(request==U.request upstream && registry==U.registry upstream && manifests==U.manifests upstream)
       "Override received reconstructed captured authority";
@@ -214,7 +214,7 @@ let opaque_emitter directory=
     freeze=(fun _->denied());vars=(fun _->denied())} in
   let marker=Failure"original proposal-builder exception" and calls=ref [] in
   let bridge:P.emitter_bridge={
-    emit=(fun _ ~request ~construct ~registry ~manifests->
+    emit=(fun _ ~input:_ ~request ~construct ~registry ~manifests->
       require(request==U.request upstream && registry==U.registry upstream && manifests==U.manifests upstream)
         "Opaque emitter lost original captured arguments";
       require(R.Candidate.fingerprint construct=R.Candidate.fingerprint(U.candidate upstream))

@@ -14,6 +14,43 @@ class WorkflowSourceLineageTests(unittest.TestCase):
     def setUp(self):
         self.witness = lineage.load_witness()
 
+    def test_reference_transport_additions_are_pinned_unused_and_retain_exact_core_counterpart(self):
+        from tools import check_realization_workflow_corpus as source
+        from tools import freeze_realization_workflow as capture
+        from tools import reference_original_counterpart as reference
+        actual = capture.source_inventory()
+        scope = source.source_scope(actual)
+        self.assertEqual(scope['actual_sources'], actual)
+        self.assertEqual(scope['reviewed_addition_counterparts'], [reference.core_source_witness()[1]])
+        additions = {row['path']: row['sha256'] for row in scope['reviewed_additions']}
+        for suffix in ('host', 'manager', 'provider_views', 'views'):
+            logical = 'src/biocompiler/core_reference_' + suffix + '.py'
+            self.assertEqual(additions[logical], source.REVIEWED_ADDITIONS[logical])
+            self.assertIn(logical[4:-3].replace('/', '.'), scope['denied_modules'])
+            with patch.dict(source.REVIEWED_ADDITIONS, {logical: '0' * 64}):
+                with self.assertRaisesRegex(AssertionError, 'Unreviewed workflow source addition'):
+                    source.source_scope(actual)
+        with patch.object(reference, 'CORE_WITNESS_SHA', '0' * 64):
+            with self.assertRaisesRegex(AssertionError, 'Core source witness changed'):
+                source.source_scope(actual)
+
+    def test_current_core_addition_cannot_be_blessed_by_rehashing_inventory_and_allowlist(self):
+        from tools import check_realization_workflow_corpus as source
+        from tools import freeze_realization_workflow as capture
+        from tools import reference_original_counterpart as reference
+        actual = capture.source_inventory()
+        raw = (source.ROOT / reference.CORE_SOURCE).read_bytes() + b'\n# unreviewed current Core change\n'
+        changed = source.digest(raw)
+        for row in actual:
+            if row['path'] == reference.CORE_SOURCE:
+                row['sha256'] = changed
+        read = Path.read_bytes
+        def altered(path):
+            return raw if path == source.ROOT / reference.CORE_SOURCE else read(path)
+        with patch.dict(source.REVIEWED_ADDITIONS, {reference.CORE_SOURCE: changed}), patch.object(Path, 'read_bytes', altered):
+            with self.assertRaisesRegex(AssertionError, 'Unreviewed current Core addition identity'):
+                source.source_scope(actual)
+
     def altered(self, path, raw):
         entry = deepcopy(self.witness[path])
         entry.update(routed_source=raw.decode(), routed_sha256=lineage.sha(raw))

@@ -91,7 +91,7 @@ let failed_authority request registry manifests=
   let stale=Component_registry.of_json(changed "version"(Json.String "stale")(Component_registry.to_json registry)) in
   List.iter(fun(registry,manifests)->
     let called=ref false in
-    let generator_bridge={P.generate=(fun _ _->called:=true;failwith "Rejected admission invoked candidate generation");host_proposal=no_host} in
+    let generator_bridge={P.generate=(fun _ ~input:_ _->called:=true;failwith "Rejected admission invoked candidate generation");host_proposal=no_host} in
     let failure=failed(P.attempt ~budget:(budget()) ~generator_bridge ~request ~registry ~manifests ()) in
     require(not !called)"Failed root reached generator";
     let owner=retained failure in let state=snapshot owner in
@@ -100,7 +100,7 @@ let failed_authority request registry manifests=
     require(not(Json.boolean(field "accepted"(field "components"(field "records" state)))))"Rejected authority became accepted";
     ignore(expect "pipeline_error" (fun()->M.get owner "components"))) [stale,manifests;registry,[]]
 let changed_candidate request registry manifests=
-  let generator_bridge={P.generate=(fun work bound->
+  let generator_bridge={P.generate=(fun work ~input:_ bound->
     let actual=G.generate ~parent:work bound in
     let placements=List.map(fun value->changed "orientation"(Json.String "reverse") value)
       (Json.array(field "placements"(R.Candidate.to_json actual))) in
@@ -133,7 +133,7 @@ let exception_lifetime request registry manifests=
   let marker=Failure "actual constructor callback exception" in
   let owner=ref None in
   let manager_created _ value=owner:=Some value in
-  let generate _ _=raise marker in
+  let generate _ ~input:_ _=raise marker in
   let generator_bridge={P.generate;host_proposal=no_host} in
   (try ignore(P.attempt ~budget:(budget()) ~manager_created ~generator_bridge ~request ~registry ~manifests ());
        failwith "Expected original callback exception"
@@ -163,7 +163,7 @@ let opaque_generator request registry manifests=
     freeze=(fun _->denied());vars=(fun _->denied())} in
   let marker=Failure "actual construct proposal-builder exception" and calls=ref [] and owner=ref None in
   let generator_bridge:P.generator_bridge={
-    generate=(fun _ bound->
+    generate=(fun _ ~input:_ bound->
       require(bound!=request && R.Request.fingerprint bound=R.Request.fingerprint request)
         "Generator lost fresh context import";
       calls:= !calls@["generate"];P.Host_candidate host);

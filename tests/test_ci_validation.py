@@ -297,6 +297,8 @@ class ValidationGateTests(unittest.TestCase):
             "test_reference_contracts_corpus": ' "$GITHUB_WORKSPACE/tests/conformance/reference-contracts-v1.json"',
             "test_reference_construct_pipeline": ' "$GITHUB_WORKSPACE/tests/conformance/reference-pipeline-semantics-v1"',
             "test_reference_molecular_pipeline": ' "$GITHUB_WORKSPACE/tests/conformance/reference-pipeline-semantics-v1"',
+            "test_reference_workflow": ' "$GITHUB_WORKSPACE/tests/conformance/reference-pipeline-semantics-v1"',
+            "test_reference_callback_manager": ' "$GITHUB_WORKSPACE/protocol/pipeline-callback-manager-v1.json" "$GITHUB_WORKSPACE/tests/conformance/reference-pipeline-semantics-v1"',
         }
         for name, argument in arguments.items():
             command = "core/_build/default/test/" + name + ".exe" + argument + " | tee generated/core/" + name + ".txt"
