@@ -31,7 +31,7 @@ class ReferenceOriginalCounterpartTests(unittest.TestCase):
         self.assertEqual([name for name, row in rows.items() if row['substituted']], sorted([original.CORE_SOURCE, original.TEST, *original.ROUTE_SOURCES]))
         self.assertEqual(rows[original.CORE_SOURCE]['origin_sha256'], original.CORE_CURRENT_SHA)
         self.assertEqual(rows[original.CORE_SOURCE]['sha256'], original.CORE_ORIGINAL_SHA)
-        self.assertEqual(len(receipt['manifest']['data']), 4005)
+        self.assertEqual(len(receipt['manifest']['data']), 4007)
         self.assertEqual(rows[original.TEST]['sha256'], original.TEST_SHA)
         self.assertEqual(receipt['modules']['biocompiler.compiler.pipeline']['namespace'], 'biocompiler.compiler.pipeline')
         self.assertTrue(all(row['class'] == 'tests.test_reference_contracts_corpus.ReferenceContractsCorpusTests'
@@ -53,7 +53,7 @@ class ReferenceOriginalCounterpartTests(unittest.TestCase):
     def test_source_copy_module_and_complete_data_mutations_reject(self):
         for kind in ('old-manager', 'missing-source', 'extra-source', 'origin', 'copied-path',
                      'missing-data', 'data-hash', 'data-bytes', 'test-witness', 'namespace',
-                     'module-path', 'missing-module', 'inventory', 'narrowed-tests', 'core-witness', 'core-update', 'route-witness', 'current-core-copy'):
+                     'module-path', 'missing-module', 'inventory', 'narrowed-tests', 'core-witness', 'core-update', 'attempt-witness', 'route-witness', 'current-core-copy'):
             value = deepcopy(self.receipt)
             manifest = value['manifest']
             rows = manifest['sources']
@@ -73,6 +73,7 @@ class ReferenceOriginalCounterpartTests(unittest.TestCase):
             elif kind == 'inventory': value['source_inventory'].pop(next(iter(value['source_inventory'])))
             elif kind == 'core-witness': manifest['core_source_witness']['correspondence']['changes'][0]['after'] += '# extra\n'
             elif kind == 'core-update': manifest['core_source_witness']['update']['correspondence']['changes'][0]['after'] += '# extra\n'
+            elif kind == 'attempt-witness': manifest['core_source_witness']['attempt_update']['correspondence']['changes'][0]['after'] += '# forged\n'
             elif kind == 'route-witness': manifest['route_source_witnesses'][0]['correspondence']['insertion']['byte_offset'] += 1
             elif kind == 'current-core-copy':
                 core = next(row for row in rows if row['logical'] == original.CORE_SOURCE)
@@ -100,7 +101,7 @@ class ReferenceOriginalCounterpartTests(unittest.TestCase):
             target.parent.mkdir(parents=True, exist_ok=True)
             target.write_bytes((original.ROOT / original.CORPUS).read_bytes())
             for logical in (original.CORE_BLOB, original.CORE_WITNESS, original.CORE_UPDATE,
-                            original.CORE_MERGE_UPDATE, original.ROUTE_WITNESS):
+                            original.CORE_MERGE_UPDATE, original.CORE_ATTEMPT_UPDATE, original.ROUTE_WITNESS):
                 target = root / logical
                 target.parent.mkdir(parents=True, exist_ok=True)
                 target.write_bytes((original.ROOT / logical).read_bytes())
@@ -127,6 +128,11 @@ class ReferenceOriginalCounterpartTests(unittest.TestCase):
         self.assertEqual(extension['predecessor'], {'path': original.CORE_UPDATE, 'sha256': original.CORE_UPDATE_SHA})
         self.assertEqual(extension['original_sha256'], original.CORE_ROUTING_SHA)
         self.assertEqual(len(extension['changes']), 4)
+        attempt = proof['attempt_update']['correspondence']
+        self.assertEqual(attempt['predecessor'], {'path': original.CORE_MERGE_UPDATE, 'sha256': original.CORE_MERGE_UPDATE_SHA})
+        self.assertEqual(attempt['original_sha256'], original.CORE_MERGED_SHA)
+        self.assertEqual(len(attempt['changes']), 1)
+        self.assertEqual(attempt['changes'][0]['new_start_line'], 44)
         self.assertIn('current native bridge validation is separate', proof['scope'])
         for changed in (current + b'\n', archived,
                         current.replace(b'_require_native_manager(self)', b'_require_native_manager(None)', 1)):

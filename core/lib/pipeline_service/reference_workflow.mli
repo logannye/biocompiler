@@ -16,6 +16,7 @@ type phase = Fresh | Initializing | Construct_created | Admission_available
   | Molecular_result | Molecular_finished | Interrupted | Closed
 
 type t
+type molecular_attempt
 (* [retain_bytes] is the owning channel's cumulative, no-refund reservation.
    It must reserve before returning and propagate resource failures unchanged. *)
 val create : budget:W.t -> retain_bytes:(int -> unit) ->
@@ -71,6 +72,21 @@ val prepare_molecular_registration : t -> budget:W.t ->
 val finish_molecular : ?final_source_bridge:Molecular.final_source_bridge -> t -> budget:W.t -> record:C.Stage_record.t ->
   result_sequence:int -> Molecular.t
 val construct_build : t -> Construct.t option
+(* Kind-only lookup names the last successfully finished attempt, in completion
+   order. A later created or failed attempt never replaces that capability.
+   Each public invocation still returns its own exact finished Build. *)
 val molecular_build : t -> Molecular.t option
 val construct_result_sequence : t -> int option
 val molecular_result_sequence : t -> int option
+
+(* Attempt scopes are explicit LIFO capabilities. They share one actual manager
+   and lifetime allowance; leaving drops only execution scope, never old roots,
+   providers, records, results or completed builds. The caller must leave in a
+   finally block unless the channel is already closed. *)
+val active_molecular : t -> molecular_attempt option
+val molecular_attempt_phase : molecular_attempt -> phase
+val molecular_prepared : molecular_attempt -> Molecular.prepared
+val leave_molecular : t -> budget:W.t -> molecular_attempt -> unit
+val notice_for : t -> budget:W.t -> owner:M.t -> sequence:int ->
+  molecular:molecular_attempt option -> operation -> unit
+val molecular_build_of : t -> budget:W.t -> molecular_attempt -> Molecular.t option

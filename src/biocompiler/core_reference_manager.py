@@ -50,6 +50,7 @@ class _InvocationOrigin:
     role: str
     sequence: int
     origins: ReferenceOrigins
+    preparation: str | None
 
 
 @dataclass(frozen=True)
@@ -57,6 +58,8 @@ class _HostOutput:
     value: HostValue
     role: str
     sequence: int
+    preparation: str | None
+    proposal: Callable[..., Any]
 
 
 @dataclass(frozen=True)
@@ -64,6 +67,7 @@ class _HostProposal:
     value: object
     role: str
     sequence: int
+    preparation: str | None
 
 
 @dataclass(eq=False)
@@ -75,6 +79,15 @@ class _FinalSource:
     checked: tuple[JsonValue, object] | None = None
     check_valid: bool = False
     returned: tuple[JsonValue, object] | None = None
+
+
+@dataclass(eq=False)
+class _MolecularAttempt:
+    preparation: ComponentPreparation
+    host: ReferenceHost
+    emit: Callable[..., Any]
+    proposal: Callable[..., Any]
+    entered: bool = True
 
 
 def _upstream_candidate(upstream: Any) -> Any:
@@ -103,7 +116,7 @@ class ReferenceCorePassManager(CorePassManager):
     """One actual Core manager, retained by both public reference Build objects."""
     _EXTRA_ACTIONS = CorePassManager._EXTRA_ACTIONS + (
         'reference-generate', 'reference-emit', 'reference-proposal', 'reference-source-links-equal',
-        'reference-upstream-candidate')
+        'reference-upstream-candidate', 'reference-molecular-provider', 'reference-molecular-proposal')
 
     def __init__(self, *args: Any, **kwargs: Any):
         raise TypeError('Use ReferenceCorePassManager.from_construct or from_molecular.')
@@ -196,20 +209,20 @@ class ReferenceCorePassManager(CorePassManager):
 
     def _reference_prepare(self, core: CoreClient, *, host: ReferenceHost, limits: JsonValue = None) -> None:
         self._reference_host = host
-        self._reference_molecular_host = host
         self._reference_origins: dict[int, _InvocationOrigin] = {}
         self._reference_outputs: dict[int, _HostOutput] = {}
         self._reference_proposals: dict[int, _HostProposal] = {}
-        self._reference_final: _FinalSource | None = None
+        self._reference_finals: list[_FinalSource | None] = []
+        self._reference_attempts: dict[str, _MolecularAttempt] = {}
+        self._reference_scopes: list[_MolecularAttempt] = []
+        self._reference_provider_attempts: dict[str, str] = {}
         self._reference_build_origins: dict[str, tuple[JsonValue, object]] = {}
         self._reference_builds: dict[str, ConstructBuild | MolecularBuild] = {}
         self._reference_origin_bytes = 0
         self._reference_binding_bytes = 0
         self._reference_pending_bytes = 0
         self._reference_generate_callable = host.generate
-        self._reference_emit_callable = host.emit
         self._reference_proposal_callable = host.proposal
-        self._reference_molecular_proposal_callable = host.proposal
         self._reference_links_callable = sorted_source_links_equal
         self._prepare(core, application=capability_profile(), limits=limits)
         self._reference_provider_views = ReferenceProviderViews(self._objects.resolve)
@@ -327,9 +340,53 @@ class ReferenceCorePassManager(CorePassManager):
         result = self.result('construct', scope='reference_construct')
         return self.finish_reference_construct(record, result)
 
+    def _remember_molecular_attempt(self, raw: JsonValue, host: ReferenceHost) -> ComponentPreparation:
+        def hydrate(value: JsonValue) -> ComponentPreparation:
+            self._reference_retention(1024)
+            self._reference_origin_bytes += 1024
+            preparation = self._component_preparation(value)
+            attempt = _MolecularAttempt(preparation, host, host.emit, host.proposal)
+            self._reference_attempts[preparation.identity] = attempt
+            self._reference_scopes.append(attempt)
+            return preparation
+        return cast(ComponentPreparation, self._view(hydrate, raw, 'reference Molecular attempt'))
+
+    def _molecular_attempt(self, identity: Any, *, active: bool = False) -> _MolecularAttempt:
+        token = _identity(identity)
+        attempt = self._reference_attempts.get(token)
+        _require(attempt is not None and self._preparations.get(token) is attempt.preparation,
+                 'Unknown Molecular attempt origin')
+        assert attempt is not None
+        if active:
+            _require(attempt.entered and bool(self._reference_scopes) and self._reference_scopes[-1] is attempt,
+                     'Molecular attempt is not the active continuation scope')
+        return attempt
+
+    def leave_reference_molecular_attempt(self, preparation: ComponentPreparation) -> None:
+        token = self._preparation_id(preparation)
+        attempt = self._molecular_attempt(token, active=True)
+        self._unit('leave-reference-molecular-attempt', {'preparation_id': token})
+        self._reference_scopes.pop()
+        attempt.entered = False
+
+    def _leave_molecular_preserving_failure(self, preparation: ComponentPreparation) -> None:
+        # Called only while propagating an existing exception. A closed channel
+        # cannot clean up remotely, and a cleanup error must never replace the
+        # exact original callback/manager exception. Never reconnect or retry.
+        if self.session.closed or self.session.invalidated:
+            return
+        try:
+            self.leave_reference_molecular_attempt(preparation)
+        except BaseException:
+            try:
+                self.session._invalidate()
+            except BaseException:
+                # Invalidation latches closed before disposing the child. Even
+                # a disposal error must preserve the already active exception.
+                pass
+
     def prepare_reference_molecular(self) -> ComponentPreparation:
-        return cast(ComponentPreparation, self._view(self._component_preparation,
-            self._call('prepare-reference-molecular', {}), 'reference Molecular preparation'))
+        return self._remember_molecular_attempt(self._call('prepare-reference-molecular', {}), self._reference_host)
 
     def reference_molecular_profile(self, preparation: ComponentPreparation) -> CompletionProfile:
         return cast(CompletionProfile, self._view(_profile_view, self._call('reference-molecular-profile',
@@ -370,11 +427,7 @@ class ReferenceCorePassManager(CorePassManager):
             'policy_objects': {name: objects.retain(host.origin(name)) for name in
                 ('translation_policy', 'encoding_policy', 'evidence_policy')},
         })
-        self._reference_molecular_host = host
-        self._reference_emit_callable = host.emit
-        self._reference_molecular_proposal_callable = host.proposal
-        return cast(ComponentPreparation, self._view(self._component_preparation, raw,
-                                                     'public reference Molecular preparation'))
+        return self._remember_molecular_attempt(raw, host)
 
     def complete_molecular_public(self, upstream: object, request: ConstructRequest,
             registry: ComponentRegistry, snapshot: Mapping[str, ReferenceManifest]) -> MolecularBuild:
@@ -384,14 +437,21 @@ class ReferenceCorePassManager(CorePassManager):
         return self._continue_molecular(preparation, upstream)
 
     def _continue_molecular(self, preparation: ComponentPreparation, upstream: object) -> MolecularBuild:
-        for key, identity in preparation.dependencies:
-            self.set_dependency(key, identity)
-        self.register_completion_profile(self.reference_molecular_profile(preparation))
-        registration = self.reference_molecular_registration(preparation)
-        self.register(registration.contract, registration.producer, registration.validators)
-        record = self.run(registration.contract.id, 'construct', 'molecular')
-        result = self.result('molecular', scope='exact_cds')
-        return self.finish_reference_molecular(preparation, record, result, upstream=upstream)
+        self._molecular_attempt(self._preparation_id(preparation), active=True)
+        try:
+            for key, identity in preparation.dependencies:
+                self.set_dependency(key, identity)
+            self.register_completion_profile(self.reference_molecular_profile(preparation))
+            registration = self.reference_molecular_registration(preparation)
+            self.register(registration.contract, registration.producer, registration.validators)
+            record = self.run(registration.contract.id, 'construct', 'molecular')
+            result = self.result('molecular', scope='exact_cds')
+            built = self.finish_reference_molecular(preparation, record, result, upstream=upstream)
+        except BaseException:
+            self._leave_molecular_preserving_failure(preparation)
+            raise
+        self.leave_reference_molecular_attempt(preparation)
+        return built
 
     def _reference_finish_arguments(self, record: StageRecord, result: PipelineResult) -> dict[str, JsonValue]:
         receipt = self._result_receipts.get(id(result))
@@ -410,9 +470,8 @@ class ReferenceCorePassManager(CorePassManager):
         args = self._reference_finish_arguments(record, result)
         args['preparation_id'] = self._preparation_id(preparation)
         args['upstream'] = None if upstream is None else self._objects.retain(upstream)
-        _require(self._reference_final is None, 'Reference finish cannot replace an active source invocation')
         source = None if upstream is None else _FinalSource(upstream, args['upstream'])
-        self._reference_final = source
+        self._reference_finals.append(source)
         try:
             raw = self._call('finish-reference-molecular', args)
             if source is not None:
@@ -430,7 +489,7 @@ class ReferenceCorePassManager(CorePassManager):
             self._session._invalidate()
             raise
         finally:
-            self._reference_final = None
+            self._reference_finals.pop()
 
     def _reference_build(self, raw: JsonValue, *, kind: str, result: PipelineResult) -> ConstructBuild | MolecularBuild:
         def hydrate(value: JsonValue) -> ConstructBuild | MolecularBuild:
@@ -447,7 +506,7 @@ class ReferenceCorePassManager(CorePassManager):
                 construct_origin=origin)
             self._reference_retention()
             previous = self._reference_builds.get(kind)
-            _require(previous is None or previous is built, 'Reference completed Build was replaced')
+            _require(kind == 'molecular' or previous is None or previous is built, 'Reference completed Construct Build was replaced')
             self._reference_builds[kind] = built
             return built
         return cast(ConstructBuild | MolecularBuild, self._view(hydrate, raw, 'reference Build'))
@@ -459,6 +518,21 @@ class ReferenceCorePassManager(CorePassManager):
         return self._reference_build(self._call('reference-build-result', {'kind': kind}), kind=kind, result=built.result)
 
     def _invoke(self, action: str, arguments: JsonValue) -> HostCompletion:
+        if action == 'reference-molecular-provider':
+            args = _object(arguments, {'preparation_id', 'provider_id', 'role'}, 'Molecular provider origin')
+            attempt = self._molecular_attempt(args['preparation_id'])
+            token = attempt.preparation.identity
+            identity = _identity(args['provider_id'])
+            _require(args['role'] in ('construct_to_molecular.producer', 'construct_to_molecular.sequence',
+                                     'construct_to_molecular.composition'), 'Unexpected Molecular provider origin role')
+            previous_attempt = self._reference_provider_attempts.get(identity)
+            _require(previous_attempt is None or previous_attempt == token, 'Molecular provider was rebound to another attempt')
+            completion = self._invoke('native-provider', {'provider_id': identity, 'role': args['role']})
+            if previous_attempt is None:
+                self._reference_retention(256)
+                self._reference_origin_bytes += 256
+                self._reference_provider_attempts[identity] = token
+            return completion
         if action == 'native-provider':
             args = _object(arguments, {'provider_id', 'role'}, 'Native reference provider')
             if type(args['role']) is str and args['role'] in REFERENCE_PROVIDER_ROLES:
@@ -475,7 +549,7 @@ class ReferenceCorePassManager(CorePassManager):
                 return self._ok(self._objects.retain(previous))
         if action == 'reference-upstream-candidate':
             args = _object(arguments, {'upstream', 'phase'}, 'Reference final source read')
-            final_source = self._reference_final
+            final_source = self._reference_finals[-1] if self._reference_finals else None
             _require(final_source is not None and self._objects.resolve(args['upstream']) is final_source.upstream
                 and encode_document(args['upstream']) == encode_document(final_source.reference),
                 'Reference final source belongs to another upstream invocation')
@@ -511,14 +585,25 @@ class ReferenceCorePassManager(CorePassManager):
             final_source.returned = (completion.value, self._objects.resolve(completion.value))
             return self._ok({'object': completion.value})
         if action in ('reference-generate', 'reference-emit'):
-            args = _object(arguments, {'input', 'argument', 'tree'}, 'Reference producer input')
+            fields = {'input', 'argument', 'tree'} if action == 'reference-generate' else {'input', 'argument', 'tree', 'preparation_id', 'provider_id'}
+            args = _object(arguments, fields, 'Reference producer input')
             document = checked_ordered(args['tree'], args['argument'])
             charge = (len(encode_document(args['input'])) + len(encode_document(document))
                       + 256 * _nodes(document) + 256)
             self._reference_retention(charge)
             self._reference_origin_bytes += charge
             decoder = ReferenceViews()
-            host = self._reference_host if action == 'reference-generate' else self._reference_molecular_host
+            preparation = None
+            proposal_function = self._reference_proposal_callable
+            host = self._reference_host
+            if action == 'reference-emit':
+                attempt = self._molecular_attempt(args['preparation_id'])
+                preparation = attempt.preparation.identity
+                provider_id = _identity(args['provider_id'])
+                _require(self._reference_provider_attempts.get(provider_id) == preparation
+                    and self._native_provider_roles.get(provider_id) == 'construct_to_molecular.producer',
+                    'Molecular invocation changed its provider attempt origin')
+                host, proposal_function = attempt.host, attempt.proposal
             function: Callable[[Any], NativeDefault | HostValue]
             if action == 'reference-generate':
                 parsed: ConstructRequest | ConstructCandidate = decoder.construct_request(document)
@@ -529,10 +614,10 @@ class ReferenceCorePassManager(CorePassManager):
                 origins = ReferenceOrigins.molecular(parsed, args['input'], parsed_document=document, request=host.request,
                     translation_policy=host.origin('translation_policy'), encoding_policy=host.origin('encoding_policy'),
                     evidence_policy=host.origin('evidence_policy'))
-                function, role, expected_default = self._reference_emit_callable, 'construct_to_molecular.producer', NativeDefault.EMIT
+                function, role, expected_default = attempt.emit, 'construct_to_molecular.producer', NativeDefault.EMIT
             sequence = self._reference_sequence()
             reference = self._objects.retain(parsed)
-            self._reference_origins[id(parsed)] = _InvocationOrigin(role, sequence, origins)
+            self._reference_origins[id(parsed)] = _InvocationOrigin(role, sequence, origins, preparation)
             completion = self._host_call(function, parsed)
             if completion.status != 'ok':
                 return completion
@@ -540,25 +625,28 @@ class ReferenceCorePassManager(CorePassManager):
             if output is expected_default:
                 return self._ok({'kind': 'native', 'argument': reference, 'output': None})
             _require(type(output) is HostValue, 'Reference producer callback returned an unknown route')
-            self._reference_outputs[id(output)] = _HostOutput(output, role, sequence)
+            self._reference_outputs[id(output)] = _HostOutput(output, role, sequence, preparation, proposal_function)
             return self._ok({'kind': 'host', 'argument': reference, 'output': self._objects.retain(output)})
-        if action == 'reference-proposal':
-            args = _object(arguments, {'output', 'source_links'}, 'Reference paired proposal')
+        if action in ('reference-proposal', 'reference-molecular-proposal'):
+            fields = {'output', 'source_links'} if action == 'reference-proposal' else {'output', 'source_links', 'preparation_id'}
+            args = _object(arguments, fields, 'Reference paired proposal')
             output = self._objects.resolve(args['output'])
             source = self._reference_outputs.get(id(output))
             _require(source is not None and source.value is output and source.sequence == self._reference_sequence(),
                      'Reference proposal output belongs to another invocation')
             assert source is not None
+            _require((source.preparation is None and action == 'reference-proposal') or
+                (source.preparation is not None and action == 'reference-molecular-proposal'
+                 and args['preparation_id'] == source.preparation), 'Paired proposal changed its captured attempt')
             _require(type(args['source_links']) is list, 'Reference source links require a complete array')
             decoder = ReferenceViews()
             links = tuple(decoder.source_link(value, ('source_links', index)) for index, value in enumerate(args['source_links']))
-            proposal_function = (self._reference_proposal_callable if source.role == 'components_to_construct.producer'
-                        else self._reference_molecular_proposal_callable)
+            proposal_function = source.proposal
             completion = self._host_call(proposal_function, output, links)
             if completion.status != 'ok':
                 return completion
             proposal = self._objects.resolve(completion.value)
-            self._reference_proposals[id(proposal)] = _HostProposal(proposal, source.role, source.sequence)
+            self._reference_proposals[id(proposal)] = _HostProposal(proposal, source.role, source.sequence, source.preparation)
             return self._ok(completion.value)
         if action == 'reference-source-links-equal':
             args = _object(arguments, {'actual', 'expected'}, 'Reference source-link comparison')
@@ -579,13 +667,16 @@ class ReferenceCorePassManager(CorePassManager):
             _require(response is not None and response.operation == 'call-native-provider',
                      'Reference provider reply lacks its actual command receipt')
             assert response is not None
+            request = cast(dict[str, Any], decode_document(response.request_document))
+            provider = request['arguments']['provider_id']
+            expected_attempt = self._reference_provider_attempts.get(provider)
             origins = None
             paired = None
             if item.get('kind') == 'host':
                 proposal = self._objects.resolve(item.get('object'))
                 host = self._reference_proposals.get(id(proposal))
                 _require(host is not None and host.value is proposal and host.role == role
-                         and host.sequence == response.sequence, 'Reference host proposal belongs to another provider command')
+                         and host.sequence == response.sequence and host.preparation == expected_attempt, 'Reference host proposal belongs to another provider command')
                 paired = proposal
             elif item.get('kind') == 'proposal':
                 view = _object(item.get('view'), {'role', 'tree', 'origins'}, 'Reference provider view')
@@ -594,7 +685,7 @@ class ReferenceCorePassManager(CorePassManager):
                 parsed = self._objects.resolve(roots['parsed'])
                 entry = self._reference_origins.get(id(parsed))
                 _require(entry is not None and entry.origins.parsed is parsed and entry.role == role
-                         and entry.sequence == response.sequence, 'Reference parsed input belongs to another provider command')
+                         and entry.sequence == response.sequence and entry.preparation == expected_attempt, 'Reference parsed input belongs to another provider command')
                 assert entry is not None
                 origins = entry.origins
             return self._reference_provider_views.decode(raw, role=role, origins=origins,

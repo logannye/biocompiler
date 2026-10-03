@@ -67,6 +67,18 @@ paragraphs below are historical checkpoints, not current acceptance.
   transport and current-module callpoints, independently check exact exported
   archives, publish atomically and pass installed package/export campaigns.
 
+- [x] **LM-12/25 same-manager Molecular reuse source checkpoint:** preserve
+  distinct attempts, LIFO callback scopes, captured providers, historical Builds
+  and original partial manager state. Add exact Core/facade source witnesses,
+  both actual runtime origins and the 118th hosted native suite. All original
+  workflow methods and expected observations remain intact. See the
+  [reuse design](migration-reference-manager-reuse.md) and
+  [source evidence](../protocol/migration-reference-manager-reuse-checkpoint.json).
+- [ ] **LM-12/25 same-manager Molecular reuse acceptance:** pass both-platform
+  native attempt/framed suites and the complete installed 18-method replay with
+  every additional cleanup frame accounted for. Ordinary/generic/subclass/duck
+  manager ownership and the complete workflow-family cutoff remain open.
+
 **Combined validation checkpoint:** PR61 run `37032666946` exposed a shared
 resource-diagnostic expectation error present in PR60–73. The source-backed
 [correction](../protocol/migration-authority-limit-correction.json) preserves the

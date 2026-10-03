@@ -33,7 +33,10 @@ CORE_SOURCE = 'src/biocompiler/core_pipeline_manager.py'
 CORE_ORIGINAL_SHA = '40a08477c97a97159372d9723267df3cacf8335a59d6b00ada34bb56470e31f3'
 CORE_PREVIOUS_SHA = '0c0cfac138484cf71f1bb1303e66873b8b148ca236e07930fdbadd0b477a11be'
 CORE_ROUTING_SHA = '18ee9bd517524b4440bcf29292a5d834470603713d662198b83ca61373c7fd09'
-CORE_CURRENT_SHA = '562052f3848c27ccb3fd19f156bd019da44aed58abe8cd4a2c7bd922ba07fc5b'
+CORE_MERGED_SHA = '562052f3848c27ccb3fd19f156bd019da44aed58abe8cd4a2c7bd922ba07fc5b'
+CORE_CURRENT_SHA = 'f5c3410fb93d99182a1c5b9d8f3fa948990a0e1d4ce0b3b609c6b9f470d67bdd'
+CORE_ATTEMPT_UPDATE = 'tests/conformance/reference-manager-source-counterpart-v4.json'
+CORE_ATTEMPT_UPDATE_SHA = '7c17725b7d5e5843418dfea595b97aeb786ffc2ed2bf477d16db40012533c143'
 CORE_BLOB = 'tests/conformance/reference-original-sources-v1/' + CORE_ORIGINAL_SHA + '.blob'
 CORE_WITNESS = 'tests/conformance/reference-manager-source-counterpart-v1.json'
 CORE_WITNESS_SHA = '9f4406d46a7d18db944094ea6875a1daceb3d327b2da8e8029250e312ea833f8'
@@ -107,6 +110,28 @@ def core_source_witness(raw=None):
     current = local_file(ROOT, CORE_SOURCE).read_bytes() if raw is None else raw
     require(type(current) is bytes and sha(current) == CORE_CURRENT_SHA,
             'Captured reference Core source is outside its exact counterpart')
+    attempt_raw = local_file(ROOT, CORE_ATTEMPT_UPDATE).read_bytes()
+    require(sha(attempt_raw) == CORE_ATTEMPT_UPDATE_SHA, 'Reference Core attempt witness changed')
+    attempt = json.loads(attempt_raw)
+    require(set(attempt) == {'schema_version', 'base_revision', 'path', 'original_sha256',
+        'current_sha256', 'predecessor', 'changes', 'restoration'} and
+        attempt['schema_version'] == 'biocompiler.reference_manager_source_counterpart.v4' and
+        attempt['base_revision'] == '7645c254b170846cca2289090111241e20c3769d' and attempt['path'] == CORE_SOURCE and
+        attempt['original_sha256'] == CORE_MERGED_SHA and attempt['current_sha256'] == CORE_CURRENT_SHA and
+        attempt['predecessor'] == {'path': CORE_MERGE_UPDATE, 'sha256': CORE_MERGE_UPDATE_SHA} and
+        len(attempt['changes']) == 1, 'Reference Core attempt update differs from its exact predecessor')
+    change = attempt['changes'][0]
+    require(set(change) == {'old_start_line', 'old_end_line', 'new_start_line', 'new_end_line', 'before', 'after'} and
+        all(type(change[key]) is int and change[key] == 44 for key in
+            ('old_start_line', 'old_end_line', 'new_start_line', 'new_end_line')) and
+        type(change['before']) is str and type(change['after']) is str and
+        change['before'].startswith('_APPLICATION_JSON = ') and change['after'].startswith('_APPLICATION_JSON = '),
+        'Reference Core attempt update is not the exact application declaration assignment')
+    lines = current.decode().splitlines(keepends=True)
+    require(lines[43] == change['after'], 'Reference Core attempt complete declaration differs')
+    lines[43:44] = change['before'].splitlines(keepends=True)
+    current = ''.join(lines).encode()
+    require(sha(current) == CORE_MERGED_SHA, 'Reference Core pre-attempt whole source restoration differs')
     merge_raw = local_file(ROOT, CORE_MERGE_UPDATE).read_bytes()
     require(sha(merge_raw) == CORE_MERGE_UPDATE_SHA, 'Reference Core ordered-merge witness changed')
     merge = json.loads(merge_raw)
@@ -115,7 +140,7 @@ def core_source_witness(raw=None):
         merge['schema_version'] == 'biocompiler.reference_manager_source_counterpart.v3' and
         merge['base_revision'] == '28d2b2ceb119015e5743819bab695e02e4d6b9a9' and
         merge['path'] == CORE_SOURCE and merge['original_sha256'] == CORE_ROUTING_SHA and
-        merge['current_sha256'] == CORE_CURRENT_SHA and
+        merge['current_sha256'] == CORE_MERGED_SHA and
         merge['predecessor'] == {'path': CORE_UPDATE, 'sha256': CORE_UPDATE_SHA} and
         len(merge['changes']) == 4, 'Reference Core ordered merge is outside its exact counterpart')
     lines = current.decode().splitlines(keepends=True)
@@ -172,6 +197,7 @@ def core_source_witness(raw=None):
     return archived, {'path': CORE_SOURCE, 'archive': CORE_BLOB, 'archive_sha256': CORE_ORIGINAL_SHA,
         'current_sha256': CORE_CURRENT_SHA, 'witness': CORE_WITNESS, 'witness_sha256': CORE_WITNESS_SHA,
         'correspondence': witness, 'update': {'path': CORE_UPDATE, 'sha256': CORE_UPDATE_SHA, 'correspondence': update},
+        'attempt_update': {'path': CORE_ATTEMPT_UPDATE, 'sha256': CORE_ATTEMPT_UPDATE_SHA, 'correspondence': attempt},
         'ordered_merge_update': {'path': CORE_MERGE_UPDATE, 'sha256': CORE_MERGE_UPDATE_SHA, 'correspondence': merge},
         'scope': 'original source execution only; current native bridge validation is separate'}
 
@@ -243,7 +269,8 @@ def data_closure(index):
                 'Frozen complete reference document bytes differ')
         result.append({'logical': logical, 'sha256': sha(raw), 'bytes': len(raw)})
     for logical, identity in ((CORE_BLOB, CORE_ORIGINAL_SHA), (CORE_WITNESS, CORE_WITNESS_SHA),
-                              (CORE_UPDATE, CORE_UPDATE_SHA), (ROUTE_WITNESS, ROUTE_WITNESS_SHA)):
+                              (CORE_UPDATE, CORE_UPDATE_SHA), (CORE_MERGE_UPDATE, CORE_MERGE_UPDATE_SHA),
+                              (CORE_ATTEMPT_UPDATE, CORE_ATTEMPT_UPDATE_SHA), (ROUTE_WITNESS, ROUTE_WITNESS_SHA)):
         raw = local_file(ROOT, logical).read_bytes()
         require(sha(raw) == identity, 'Reference exact Core counterpart data changed')
         result.append({'logical': logical, 'sha256': identity, 'bytes': len(raw)})

@@ -939,6 +939,9 @@ jobs:
       - name: Check reference workflow phase ownership and historical result capabilities
         if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
         run: core/_build/default/test/test_reference_workflow.exe "$GITHUB_WORKSPACE/tests/conformance/reference-pipeline-semantics-v1" | tee generated/core/test_reference_workflow.txt
+      - name: Check same-owner Molecular attempts and historical provider roots
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_reference_molecular_attempts.exe "$GITHUB_WORKSPACE/tests/conformance/reference-pipeline-semantics-v1" | tee generated/core/test_reference_molecular_attempts.txt
       - name: Check framed reference manager callbacks and historical builds
         if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
         run: core/_build/default/test/test_reference_callback_manager.exe "$GITHUB_WORKSPACE/protocol/pipeline-callback-manager-v1.json" "$GITHUB_WORKSPACE/tests/conformance/reference-pipeline-semantics-v1" | tee generated/core/test_reference_callback_manager.txt
