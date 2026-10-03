@@ -42,7 +42,6 @@ let mapping=function Mapping fields->fields | Data(Json.Object fields)->List.map
  | _->failwith "Not a mapping"
 let is_mapping=function Mapping _ | Data(Json.Object _)->true | _->false
 let apply fn args=match fn with Function callback->callback args | _->failwith "Not callable"
-let data value=Data value
 let attribute value name=match value,name with
  | Instance(_,fields),_->List.assoc name fields
  | _,"get" when is_mapping value->Function(function [Data(Json.String key)]->
@@ -50,8 +49,8 @@ let attribute value name=match value,name with
  | Data(Json.String value),"strip"->Function(function []->Data(str(String.trim value)) | _->failwith "strip arguments")
  | _->failwith("Missing authored attribute "^name)
 type peer={mutable objects:(string*value) list;mutable next_object:int;mutable providers:(string*value) list;
- mutable actions:string list;mutable contexts:(Json.t*Json.t) list;mutable raise_producer:bool;
- mutable request_document:Json.t option;mutable origins:(string*Json.t) list}
+ mutable actions:string list;mutable contexts:(Json.t*Json.t) list;raise_producer:bool;
+ request_document:Json.t option;mutable origins:(string*Json.t) list}
 let peer ()={objects=[];next_object=0;providers=[];actions=[];contexts=[];raise_producer=false;
  request_document=None;origins=[]}
 let reference peer value=
@@ -224,7 +223,6 @@ let rejection outcome=
    ["attributes";"attributes_tree";"message";"module";"type"])
    "Rejection omitted its exact canonical and ordered attributes";
  value
-let nth result index=snd(List.nth result.replies index)
 module RM=Bioc_domain.Reference_molecular
 module RD=Bioc_domain.Reference_construct
 module G=Bioc_compiler.Reference_construct_producer

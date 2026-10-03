@@ -183,7 +183,7 @@
     "core/lib/pipeline_service/reference_workflow.mli": "cda43bab10e4102e3b4d1d58c6af0130a8b569d9e103ea07e02f4ce3e8123798",
     "core/test/dune": "d8669b5db872c8289e24e952fa806d38c5e097a34929597a408d4dc66e792104",
     "core/test/test_pipeline_contract.ml": "7018bf599b9592e66ec302e60096b427055d51e04587569f7af708a3766ff260",
-    "core/test/test_reference_callback_manager.ml": "b299cc31da12e164ac049c0d63d83e597c7c621cdf37959efbe056bd3e570322",
+    "core/test/test_reference_callback_manager.ml": "79ceb0578a34082b49de19f224afc2a134689be4b550d40ba9e303eb7bd6521a",
     "core/test/test_reference_construct_pipeline.ml": "0c97920562762c14ed46fb6d69eb4fe1cd96bf8e7e3163bc1491e7d22209c845",
     "core/test/test_reference_contracts_corpus.ml": "1608d1c52a015e42f647d6b56987800817117973e737f6291e565549b895b68e",
     "core/test/test_reference_molecular_pipeline.ml": "2e9008a36304b2319c59240030df5328bd32ce28c75b908ae14a5648a45f36c8",
@@ -217,5 +217,6 @@
     "tools/pipeline_registration_guard.py": "bfa10c89b120f614715b08b6f26b284d7c1e0a4e8785600ae90e83962358d51d",
     "tools/reference_original_counterpart.py": "37cd9df7d81c6f4e24ce4192f4f629d4afcb0749f308fe78d7b0d4f8101f7170",
     "tools/reference_pipeline_original_counterpart.py": "0f15270ded095e4780a545633a7f6b8b8392044b75d64a2a5ac794a3bd847491"
-  }
+  },
+  "hosted_compile_correction": "protocol/migration-reference-service-build-correction.json"
 }
