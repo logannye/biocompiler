@@ -1,0 +1,2 @@
+# Frozen original source blobs are byte authority; never normalize line endings.
+tests/conformance/reference-original-sources-v1/*.blob binary

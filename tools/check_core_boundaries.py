@@ -46,6 +46,8 @@ TESTS = {
     "test_reference_producer_budget": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "zarith"},
     "test_reference_construct_pipeline": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_pipeline", "zarith"},
     "test_reference_molecular_pipeline": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_pipeline", "zarith"},
+    "test_reference_workflow": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_pipeline", "bioc_pipeline_service", "zarith"},
+    "test_reference_callback_manager": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_pipeline_service", "zarith"},
     "test_pipeline_callback_manager": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_pipeline_service", "bioc_pipeline", "zarith"},
     "test_deferred_pass_manager": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "zarith"},
     "test_pipeline_callback_channel": {"bioc_wire", "bioc_checker", "bioc_pipeline_service", "zarith"},
@@ -425,6 +427,7 @@ def check_boundaries(root: Path):
                     "test_reference_contracts_corpus": "%{env:BIOCOMPILER_REFERENCE_CONTRACTS_CORPUS=missing}",
                     "test_reference_construct_pipeline": "%{env:BIOCOMPILER_REFERENCE_PIPELINE_DOCUMENTS=missing}",
                     "test_reference_molecular_pipeline": "%{env:BIOCOMPILER_REFERENCE_PIPELINE_DOCUMENTS=missing}",
+                    "test_reference_workflow": "%{env:BIOCOMPILER_REFERENCE_PIPELINE_DOCUMENTS=missing}",
                     "test_deferred_pass_manager": "%{env:BIOCOMPILER_PIPELINE_CONTRACT_LITERALS=missing}",
                     "test_pipeline_callback_channel": "%{env:BIOCOMPILER_PIPELINE_CALLBACK_DECLARATION=missing}",
                     'test_provider_comparison': "%{env:BIOCOMPILER_PIPELINE_CALLBACK_SEMANTICS=missing}",
@@ -457,6 +460,10 @@ def check_boundaries(root: Path):
                         "%{env:BIOCOMPILER_PIPELINE_CALLBACK_MANAGER_DECLARATION=missing}",
                         "%{env:BIOCOMPILER_PIPELINE_CONTRACT_LITERALS=missing}",
                         "%{env:BIOCOMPILER_FIXED_PIPELINE_CORPUS=missing}"]]]
+                if name == "test_reference_callback_manager":
+                    expected_actions = [["action", ["run", "%{test}",
+                        "%{env:BIOCOMPILER_PIPELINE_CALLBACK_MANAGER_DECLARATION=missing}",
+                        "%{env:BIOCOMPILER_REFERENCE_PIPELINE_DOCUMENTS=missing}"]]]
                 if name == "test_pipeline_session":
                     expected_actions = [["action", ["run", "%{test}",
                         "%{env:BIOCOMPILER_PIPELINE_SESSION_DECLARATION=missing}",

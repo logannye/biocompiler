@@ -36,7 +36,7 @@ class CoreBoundaryTests(unittest.TestCase):
         self.assertEqual(receipt["roles"]["bioc_checker"], "checker")
         self.assertEqual(receipt["private_modules"]["bioc_checker"],
                          ["construction_reconstruction", "architecture_reconstruction", "reference_check_support"])
-        self.assertEqual(len(receipt["native_tests"]), 109)
+        self.assertEqual(len(receipt["native_tests"]), 111)
         self.assertEqual(receipt["roles"]["bioc_semantics"], "source_semantics")
         self.assertEqual(receipt["roles"]["bioc_source_adapter"], "source_semantics")
         self.assertEqual(receipt["roles"]["bioc_compiler"], "compiler")
@@ -86,6 +86,8 @@ class CoreBoundaryTests(unittest.TestCase):
             "test_reference_producer_budget": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "zarith"},
             "test_reference_construct_pipeline": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_pipeline", "zarith"},
             "test_reference_molecular_pipeline": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_pipeline", "zarith"},
+            "test_reference_workflow": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_pipeline", "bioc_pipeline_service", "zarith"},
+            "test_reference_callback_manager": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_pipeline_service", "zarith"},
         }
         receipt = boundaries.check_boundaries(boundaries.ROOT)
         for stem in ("reference_construct_pipeline", "reference_molecular_pipeline"):
@@ -93,6 +95,11 @@ class CoreBoundaryTests(unittest.TestCase):
                              "core/test/test_" + stem + ".ml"):
                 self.assertEqual(receipt["source_sha256"][relative],
                                  hashlib.sha256((boundaries.ROOT / relative).read_bytes()).hexdigest())
+        for relative in ("core/lib/pipeline_service/reference_workflow.ml",
+                         "core/lib/pipeline_service/reference_workflow.mli", "core/test/test_reference_workflow.ml",
+                         "core/test/test_reference_callback_manager.ml"):
+            self.assertEqual(receipt["source_sha256"][relative],
+                             hashlib.sha256((boundaries.ROOT / relative).read_bytes()).hexdigest())
         for name, dependencies in expected.items():
             self.assertEqual(set(receipt["native_tests"][name]), dependencies)
             root = self.copy_core()

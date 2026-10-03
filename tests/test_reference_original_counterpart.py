@@ -28,8 +28,10 @@ class ReferenceOriginalCounterpartTests(unittest.TestCase):
         manager = rows['src/biocompiler/compiler/pipeline.py']
         self.assertEqual(manager['sha256'], 'dccba32618ecc7923b8a02ff54f114d515ff4e50908f45e27a8cda0a3f531be0')
         self.assertFalse(manager['substituted'])
-        self.assertEqual([name for name, row in rows.items() if row['substituted']], [original.TEST])
-        self.assertEqual(len(receipt['manifest']['data']), 4001)
+        self.assertEqual([name for name, row in rows.items() if row['substituted']], [original.CORE_SOURCE, original.TEST])
+        self.assertEqual(rows[original.CORE_SOURCE]['origin_sha256'], original.CORE_CURRENT_SHA)
+        self.assertEqual(rows[original.CORE_SOURCE]['sha256'], original.CORE_ORIGINAL_SHA)
+        self.assertEqual(len(receipt['manifest']['data']), 4003)
         self.assertEqual(rows[original.TEST]['sha256'], original.TEST_SHA)
         self.assertEqual(receipt['modules']['biocompiler.compiler.pipeline']['namespace'], 'biocompiler.compiler.pipeline')
         self.assertTrue(all(row['class'] == 'tests.test_reference_contracts_corpus.ReferenceContractsCorpusTests'
@@ -51,7 +53,7 @@ class ReferenceOriginalCounterpartTests(unittest.TestCase):
     def test_source_copy_module_and_complete_data_mutations_reject(self):
         for kind in ('old-manager', 'missing-source', 'extra-source', 'origin', 'copied-path',
                      'missing-data', 'data-hash', 'data-bytes', 'test-witness', 'namespace',
-                     'module-path', 'missing-module', 'inventory', 'narrowed-tests'):
+                     'module-path', 'missing-module', 'inventory', 'narrowed-tests', 'core-witness', 'current-core-copy'):
             value = deepcopy(self.receipt)
             manifest = value['manifest']
             rows = manifest['sources']
@@ -69,6 +71,11 @@ class ReferenceOriginalCounterpartTests(unittest.TestCase):
             elif kind == 'module-path': value['modules']['biocompiler.compiler.pipeline']['path'] += '.changed'
             elif kind == 'missing-module': del value['modules']['biocompiler.compiler.pipeline']
             elif kind == 'inventory': value['source_inventory'].pop(next(iter(value['source_inventory'])))
+            elif kind == 'core-witness': manifest['core_source_witness']['correspondence']['changes'][0]['after'] += '# extra\n'
+            elif kind == 'current-core-copy':
+                core = next(row for row in rows if row['logical'] == original.CORE_SOURCE)
+                core['sha256'] = core['origin_sha256']
+                core['substituted'] = False
             else:
                 manifest['test_ids'].pop()
                 value['value']['test_ids'].pop()
@@ -90,6 +97,10 @@ class ReferenceOriginalCounterpartTests(unittest.TestCase):
             target = root / original.CORPUS
             target.parent.mkdir(parents=True, exist_ok=True)
             target.write_bytes((original.ROOT / original.CORPUS).read_bytes())
+            for logical in (original.CORE_BLOB, original.CORE_WITNESS):
+                target = root / logical
+                target.parent.mkdir(parents=True, exist_ok=True)
+                target.write_bytes((original.ROOT / logical).read_bytes())
             extra = root / 'src/biocompiler/unreferenced_new_module.py'
             extra.write_text('raise AssertionError("New code must not execute as old authority")\n')
             with patch.object(original, 'ROOT', root):
@@ -99,6 +110,23 @@ class ReferenceOriginalCounterpartTests(unittest.TestCase):
                 source.write_bytes(source.read_bytes() + b'\n# changed captured code\n')
                 with self.assertRaisesRegex(AssertionError, 'Captured reference source bytes changed'):
                     original.source_closure(index, root / 'src/biocompiler')
+
+    def test_only_exact_six_span_core_revision_restores_complete_archive(self):
+        current = (original.ROOT / original.CORE_SOURCE).read_bytes()
+        archived, proof = original.core_source_witness(current)
+        self.assertEqual(original.sha(current), original.CORE_CURRENT_SHA)
+        self.assertEqual(original.sha(archived), original.CORE_ORIGINAL_SHA)
+        self.assertEqual(archived, (original.ROOT / original.CORE_BLOB).read_bytes())
+        self.assertEqual(len(proof['correspondence']['changes']), 6)
+        self.assertIn('current native bridge validation is separate', proof['scope'])
+        for changed in (current + b'\n', archived,
+                        current.replace(b'_require_native_manager(self)', b'_require_native_manager(None)', 1)):
+            with self.subTest(pin=original.sha(changed)), self.assertRaisesRegex(AssertionError, 'exact counterpart'):
+                original.core_source_witness(changed)
+        witness = deepcopy(self.receipt)
+        del witness['manifest']['core_source_witness']
+        with self.assertRaisesRegex(AssertionError, 'Malformed original reference manifest'):
+            original.validate(witness)
 
     def test_same_byte_relocated_package_cannot_replace_actual_import_origin(self):
         value = deepcopy(self.receipt)

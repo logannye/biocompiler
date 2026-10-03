@@ -22,7 +22,9 @@ type registration_hook = W.t -> M.t -> C.Pass_contract.t -> producer:M.provider 
    original PassResult container after native source links have been derived;
    this capability cannot grant candidate or manager acceptance. *)
 type generated = Native_candidate of R.Candidate.t | Host_candidate of M.host_value
-type generator = W.t -> R.Request.t -> generated
+(* [input] is the exact context document; the typed request is the freshly
+   parsed representation, which may contain supplied parser defaults. *)
+type generator = W.t -> input:Bioc_wire.Json.t -> R.Request.t -> generated
 type generator_bridge = {
   generate : generator;
   host_proposal : W.t -> output:M.host_value -> source_links:C.Source_link.t list -> M.host_value;

@@ -41,6 +41,47 @@ let read_raw ~maximum path =
     require (bytes > 0 && bytes <= maximum) "Reference source/document byte bound";
     really_input_string channel bytes)
 
+let reference_manager_original root name expected current =
+  let old_pin="40a08477c97a97159372d9723267df3cacf8335a59d6b00ada34bb56470e31f3"
+  and current_pin="0c0cfac138484cf71f1bb1303e66873b8b148ca236e07930fdbadd0b477a11be" in
+  require(name="src/biocompiler/core_pipeline_manager.py" && expected=old_pin &&
+    Canonical.sha256 current=current_pin) "Unreviewed original reference source substitution";
+  let witness_raw=read_raw ~maximum:1_000_000
+    (Filename.concat root "tests/conformance/reference-manager-source-counterpart-v1.json") in
+  require(Canonical.sha256 witness_raw="9f4406d46a7d18db944094ea6875a1daceb3d327b2da8e8029250e312ea833f8")
+    "Reference manager finite source witness changed";
+  let witness=Json.parse_artifact ~max_bytes:1_000_000 ~max_nodes:10_000 witness_raw in
+  require(text "path" witness=name && text "original_sha256" witness=old_pin &&
+    text "current_sha256" witness=current_pin &&
+    text "base_revision" witness="a8cf5266963abfb5beae408c296a6f626e8f51fe")
+    "Reference manager source witness lost its exact authority";
+  let lines raw=if raw="" then [] else
+    match List.rev(String.split_on_char '\n' raw) with
+    | ""::rest->List.map(fun line->line^"\n")(List.rev rest)
+    | _->failwith "Reference manager source fragment lacks its terminal newline" in
+  let split count values=
+    let rec take remaining prefix tail=if remaining=0 then List.rev prefix,tail else
+      match tail with head::rest->take(remaining-1)(head::prefix)rest
+      | []->failwith "Reference source witness span exceeds its complete module" in
+    require(count>=0) "Reference source witness span is negative";take count [] values in
+  let changes=array "changes" witness in
+  require(List.length changes=6) "Reference manager finite source change census differs";
+  let restored=List.fold_left(fun values change->
+    let start=integer(field "new_start_line" change) and finish=integer(field "new_end_line" change) in
+    let before=lines(text "before" change) and after=lines(text "after" change) in
+    require(start>0 && finish>=start-1 && List.length after=finish-start+1 &&
+      List.length before=integer(field "old_end_line" change)-integer(field "old_start_line" change)+1)
+      "Reference manager source witness span lengths differ";
+    let prefix,remaining=split(start-1) values in
+    let actual,suffix=split(List.length after)remaining in
+    require(actual=after) "Reference manager source witness replacement bytes differ";
+    prefix@before@suffix)(lines current)(List.rev changes) |> String.concat "" in
+  let archived=read_raw ~maximum:1_000_000(Filename.concat root
+    ("tests/conformance/reference-original-sources-v1/"^old_pin^".blob")) in
+  require(Canonical.sha256 restored=old_pin && Canonical.sha256 archived=old_pin && restored=archived)
+    "Reference manager finite witness does not restore the whole original module";
+  restored
+
 let read_document path =
   let raw = read_raw ~maximum:1_000_001 path in
   let value = Json.parse_artifact ~max_bytes:1_000_001 ~max_nodes:1_000_000 raw in
@@ -227,7 +268,9 @@ let run path =
   List.iter (fun (name,expected) ->
     require (Filename.is_relative name && not (List.mem ".." (String.split_on_char '/' name))) "Unsafe reference source path";
     let raw = read_raw ~maximum:Limits.max_request_bytes (Filename.concat root name) in
-    require (Canonical.sha256 raw = hash (Json.string expected)) ("Original reference source changed: " ^ name)) sources;
+    let expected=hash(Json.string expected) in
+    let original=if Canonical.sha256 raw=expected then raw else reference_manager_original root name expected raw in
+    require (Canonical.sha256 original = expected) ("Original reference source changed: " ^ name)) sources;
   let test_ids = array "test_ids" index |> List.map Json.string in
   require (List.length test_ids = method_count && List.length (List.sort_uniq String.compare test_ids) = method_count &&
     Canonical.fingerprint (field "test_ids" index) = test_ids_pin) "Incomplete original reference method census";

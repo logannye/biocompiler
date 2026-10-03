@@ -81,6 +81,36 @@ The reference foundation is awaiting complete acceptance in
 have passed on both hosted platforms; the entire 36-job gate and independent
 artifact reconstruction remain required before integration.
 
+**Current reference service work:** branch `codex/ocaml-reference-service`
+continues from PR77 (`a8cf5266963abfb5beae408c296a6f626e8f51fe`). The staged
+native workflow coordinator, per-call Python override broker and typed provider
+views now connect to actual public manager operations through an explicit
+ReferenceCorePassManager facade. Local controls cover callback order, shared
+object identities, historical builds and the exact upstream Construct candidate.
+Installed original-workflow replay and native execution remain pending; this
+source checkpoint does not close any cutoff checkbox.
+
+The latest hosted status snapshot has PR75 run `37079154938` at 28 successful
+jobs with no reported failed steps, PR76 run `37079677511` at 21 successful jobs
+with four failed Python unit shards and two resulting accounting failures, and
+PR77 run `37081551087` at 17 successful jobs with seven failed unit shards. All
+three runs are still in progress. PR76's native suite successes therefore do not
+establish complete acceptance; its regression failures require diagnosis and
+successful corrected validation. These are partial snapshots, not completed
+36-job release results.
+
+Initial PR76 failure diagnosis separates two harness issues: the original-source
+capture rejects installed function paths (the PR77 canonical original-child
+counterpart addresses that layout), and the native fixture inventory applies a
+file-only assertion to the explicitly declared reference document directories.
+The current batch corrects the exact two declared fixture directories and
+preserves the original tests through pinned historical source counterparts.
+PR77 also exposed missing reviewed transport additions in the historical source
+guards. The current batch pins the exact additions and verifies the six-span Core
+source counterpart; all 47 affected controls pass on both Python versions. Source
+identity and the frozen corpus remain unchanged, and the complete hosted rerun
+remains required. See the [guard correction](../protocol/migration-reference-source-guard-correction.json).
+
 **Resumed migration checkpoint, 2026-10-02:** PR57 and PR58 passed all 36
 exact-head jobs and are merged. Independent aggregate reconstruction, both
 platform binary manifests and all four full artifact comparisons reproduce their
@@ -1217,6 +1247,19 @@ record current parent heads; previous partial native passes are historical only.
   records source and original-Python evidence only: service dispatch, installed
   native replay, public Build identity and the preceding integration gate remain
   open. See the [source checkpoint](../protocol/migration-reference-pipeline-libraries-checkpoint.json).
+
+- [x] **LM-12/24/25 exact-reference service source and local controls:** add the
+  live native coordinator and framed dispatch, plus the explicit Python manager
+  facade, per-call override broker and origin-bound typed views. Preserve actual
+  admission/register/run/result operations, provider identities and historical
+  builds. The 82 adapter controls, 23 registration controls and 14 original-source
+  counterpart controls pass on both Python versions. The counterpart runs retain
+  all original tests and complete frozen captures; they do not prove current
+  native execution. Two new suites bring required native coverage to 111 while
+  preserving all 36 release jobs. Installed original-workflow replay, public
+  default routing and complete native/integration acceptance remain open. See
+  the [service design](migration-reference-service.md) and
+  [source checkpoint](../protocol/migration-reference-service-checkpoint.json).
 
 - [x] **LM-03 CI harness correction checkpoint:** the installed architecture
   guard now permits only the exact new parser-registration helpers while rejecting

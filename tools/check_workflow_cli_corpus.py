@@ -139,6 +139,8 @@ def _project(actual, baseline):
                 raise AssertionError("Historical CLI source bytes changed: " + name) from error
     require(actual_scope.get("reviewed_routes", []) == reviewed_routes, "CLI reviewed route inventory differs")
     additions = _inventory(actual_scope["reviewed_additions"])
+    require(actual_scope.get("reviewed_addition_counterparts") == source.addition_counterparts(additions),
+            "CLI reviewed addition counterpart differs")
     require(set(current) - set(historical) == set(additions) and all(current[name] == pin for name, pin in additions.items()),
             "Current CLI excluded source inventory differs")
     require(set(FROZEN_ADDITIONS) <= set(additions) and actual_scope["denied_modules"] ==

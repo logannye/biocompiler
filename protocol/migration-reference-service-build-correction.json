@@ -1,0 +1,20 @@
+{
+  "schema_version": "biocompiler.reference_service_build_correction.v1",
+  "failed_source": "e73743bc2f17597b57ac15869986255802289615",
+  "failed_run": 37084841615,
+  "failed_linux_job": 111092850180,
+  "failed_macos_job": 111092850049,
+  "cause": "Framed test warning32 unused data/nth helpers and warning69 never-mutated raise_producer/request_document fields",
+  "changes": [
+    "Remove two unused helper definitions",
+    "Remove mutable annotation from two fields that are read but never mutated"
+  ],
+  "preserved": "All test assertions, cases, production source, warning policy and required hosted gates",
+  "source": {
+    "path": "core/test/test_reference_callback_manager.ml",
+    "before_sha256": "b299cc31da12e164ac049c0d63d83e597c7c621cdf37959efbe056bd3e570322",
+    "after_sha256": "79ceb0578a34082b49de19f224afc2a134689be4b550d40ba9e303eb7bd6521a"
+  },
+  "validation": "Source inspection and exact four replacements only; corrected hosted native and full36-job gate pending",
+  "native_local_execution": false
+}

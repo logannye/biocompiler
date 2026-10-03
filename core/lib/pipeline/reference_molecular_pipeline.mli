@@ -23,7 +23,9 @@ type provider_observer = Bioc_checker.Work_budget.t ->
    native source links have been derived. Neither part decides acceptance. *)
 type emitted = Native_artifact of Bioc_domain.Reference_molecular.Artifact.t
   | Host_artifact of Bioc_compiler.Pass_manager.host_value
-type emitter = Bioc_checker.Work_budget.t ->
+(* [input] retains the actual context document separately from the complete
+   freshly parsed Construct value, including any parser-supplied defaults. *)
+type emitter = Bioc_checker.Work_budget.t -> input:Bioc_wire.Json.t ->
   request:Bioc_domain.Reference_construct.Request.t ->
   construct:Bioc_domain.Reference_construct.Candidate.t ->
   registry:Bioc_domain.Component_registry.t ->

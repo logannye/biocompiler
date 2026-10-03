@@ -31,7 +31,7 @@ let resource_limits = Json.Object [
 type provider_role = Emit | Sequence_identity | Encoding_composition
 type provider_observer = W.t -> M.t -> M.provider -> provider_role -> unit
 type emitted = Native_artifact of Q.Artifact.t | Host_artifact of M.host_value
-type emitter = W.t -> request:R.Request.t -> construct:R.Candidate.t ->
+type emitter = W.t -> input:Json.t -> request:R.Request.t -> construct:R.Candidate.t ->
   registry:Component_registry.t -> manifests:(string * Reference_manifest.t) list -> emitted
 type emitter_bridge = {emit:emitter;
   host_proposal:W.t -> output:M.host_value -> source_links:C.Source_link.t list -> M.host_value}
@@ -206,7 +206,7 @@ let prepare_registration ~budget ?provider_observer ?emitter_bridge ?host_links_
     let artifact=match emitter_bridge with
       | None->Native_artifact(Emit_native.emit ~parent:work ~limits:(emitter_limits upstream)
           ~request ~construct ~registry ~manifests ())
-      | Some (bridge:emitter_bridge)->bridge.emit work ~request ~construct ~registry ~manifests in
+      | Some (bridge:emitter_bridge)->bridge.emit work ~input:(C.Pass_context.input context) ~request ~construct ~registry ~manifests in
     let links=source_links work upstream construct (C.Pass_contract.id contract_value) in
     match artifact,emitter_bridge with
     | Native_artifact artifact,_->M.Proposal(C.Pass_result.make ~limits:(codec work upstream)

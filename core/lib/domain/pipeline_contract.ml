@@ -498,7 +498,10 @@ module Pipeline_result = struct
     let packed=pack limits (encode limits ~status ~artifact ~scope ~unresolved) in
     {packed;status;artifact;scope;unresolved}
   let make ?(limits=Codec.default_limits) ~status ~artifact ~scope ~unresolved () =
-    of_json ~limits (encode limits ~status ~artifact ~scope ~unresolved)
+    let checked=of_json ~limits (encode limits ~status ~artifact ~scope ~unresolved) in
+    (* Typed construction preserves the actual checked record and obligation
+       capabilities. JSON import still creates independent structural values. *)
+    {checked with artifact;unresolved}
   let to_json (value:t)=value.packed.json
   let fingerprint (value:t)=value.packed.fingerprint
   let canonical_size (value:t)=value.packed.size

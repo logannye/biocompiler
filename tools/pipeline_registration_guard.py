@@ -11,8 +11,8 @@ from biocompiler.core_pipeline_manager import CorePassManager as _CANONICAL_CORE
 TAG = 'native-registration-delegation'
 BASE = ('biocompiler.compiler.pipeline', 'PassManager.register')
 NATIVE = 'src/biocompiler/core_pipeline_manager.py'
-RUNTIME_SITES='tests/conformance/manager-registration-runtime-sites-v1.json'
-RUNTIME_PIN='031dcc78de94ea39e7032bcb71a0bf78520b946934f70838b528b1a707ddda46'
+RUNTIME_SITES='tests/conformance/manager-registration-runtime-sites-v2.json'
+RUNTIME_PIN='0c880bbf1532268ecfd71cf3e79b75c5b4f8d13d8ddb03daa8919871e8330977'
 
 
 def canonical(value):

@@ -62,6 +62,8 @@ class SyntheticSelectionCliCaptureTests(unittest.TestCase):
             self.assertEqual(receipt['content_documents'],len(blobs))
             self.assertEqual(receipt['actual_retained_route_source'],(c.ROOT/c.routes.CLI).read_text())
             self.assertEqual(len(receipt['runtime_counterpart']['changes']),int(version.startswith('3.11.')))
+            from tools import reference_original_counterpart as reference
+            self.assertEqual(receipt['reviewed_addition_counterparts'], [reference.core_source_witness()[1]])
 
     def test_rehashed_observation_scope_imports_case_and_runtime_mutations_fail(self):
         actual,blobs=self.fixture('3.11')

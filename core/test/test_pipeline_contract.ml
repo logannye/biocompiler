@@ -71,4 +71,22 @@ let () =
   let baseline=get "manager_baseline" fixture |> get "records" |> get "mechanism" in
   let historical=C.Stage_record.of_json baseline in
   require(C.Stage_record.accepted historical) "Historical inspection erased original claimed acceptance";
+  let obligation=C.Scoped_obligation.make ~id:"retained_obligation" ~scope:"historical_view"
+    ~evidence_kind:Bioc_domain.Realization_evidence.Unresolved
+    ~description:"A retained object is not independent acceptance." () in
+  let unresolved=[obligation] in
+  let result=C.Pipeline_result.make ~status:C.Partial ~artifact:historical
+    ~scope:"historical_view" ~unresolved () in
+  require(C.Pipeline_result.artifact result==historical)
+    "Typed result construction replaced its actual record capability";
+  require(C.Pipeline_result.unresolved result==unresolved &&
+    List.hd(C.Pipeline_result.unresolved result)==obligation)
+    "Typed result construction replaced its unresolved obligation origins";
+  let restored=C.Pipeline_result.of_json(C.Pipeline_result.to_json result) in
+  require(C.Pipeline_result.artifact restored!=historical &&
+    List.hd(C.Pipeline_result.unresolved restored)!=obligation)
+    "Structural import reused externally supplied typed result origins";
+  require(C.Pipeline_result.fingerprint restored=C.Pipeline_result.fingerprint result &&
+    Canonical.encode(C.Pipeline_result.to_json restored)=Canonical.encode(C.Pipeline_result.to_json result))
+    "Retaining typed result origins changed complete content or identity";
   print_endline "Pipeline contracts: 13 complete original records, 19 constructor rejections, bounded codecs and historical-only claims passed"
