@@ -412,6 +412,36 @@ class ValidationGateTests(unittest.TestCase):
         self.assertIn("          update-environment: false\n", native)
         self.assertIn("${{ steps.routing_python314.outputs.python-path }}", native)
 
+    def test_reference_campaign_requires_native_execution_and_same_runtime_reconstruction(self):
+        workflow = Path(__file__).resolve().parents[1] / ".github/workflows/ci.yml"
+        text = workflow.read_text()
+        self.assertEqual(ci.workflow_jobs(workflow), ci.REQUIRED_NEEDS | {"validation"})
+        installed = text.split("\n  realization-conformance:\n", 1)[1].split("\n  realization-core-reproducibility:\n", 1)[0]
+        start = installed.index('python "$GITHUB_WORKSPACE/tools/check_pipeline_reference_install.py"')
+        end = installed.index('python "$GITHUB_WORKSPACE/tools/check_pipeline_session_install.py"', start)
+        command = installed[start:end]
+        for binding in ('--core ', '--verify ', '--core-sha256 ', '--verify-sha256 ',
+                        '--native-root ', '--platform ${{ matrix.platform }}',
+                        '"$GITHUB_WORKSPACE/generated/realization/pipeline-reference.json"'):
+            self.assertIn(binding, command)
+        self.assertLess(start, installed.index("Record successful complete conformance"))
+        comparison = text.split("\n  realization-core-reproducibility:\n", 1)[1].split("\n  studio-typescript:\n", 1)[0]
+        self.assertIn('id: reference_python311\n        with:\n          python-version: "3.11"', comparison)
+        self.assertIn('id: reference_python314\n        with:\n          python-version: "3.14"\n          update-environment: false', comparison)
+        compare_start = comparison.index("python tools/check_pipeline_reference_install.py --compare")
+        compare_end = comparison.index("      - name: Retain complete comparison receipt", compare_start)
+        compare_command = comparison[compare_start:compare_end]
+        for version in ("311", "314"):
+            interpreter = '${{ steps.reference_python' + version + '.outputs.python-path }}'
+            install = '"' + interpreter + '" -m pip install .'
+            self.assertIn(install, comparison)
+            self.assertLess(comparison.index(install), compare_start)
+            self.assertIn('--python' + version + ' "' + interpreter + '"', compare_command)
+        for binding in ('--root artifacts/realization', '--native-root artifacts/core',
+                        '--output generated/realization-reproducibility/pipeline-reference.json'):
+            self.assertIn(binding, compare_command)
+        self.assertLess(compare_start, comparison.index("Record successful complete comparison"))
+
 
     def test_realization_campaigns_are_required_on_every_runtime_and_compared_whole(self):
         workflow = Path(__file__).resolve().parents[1] / ".github/workflows/ci.yml"

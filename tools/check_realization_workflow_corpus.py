@@ -22,7 +22,7 @@ CORPUS_PIN = "2f5e7636977f559e046776c1bb92bebf67c8f0e733ca463927f8d3a1aee3d77b"
 REVIEWED_ADDITIONS = {
     "src/biocompiler/core_pipeline_build_views.py": "85492c4f77b3104af2dae9d9180a0518bfd4fb61c9d6143880e6e58e10a77382",
     "src/biocompiler/core_pipeline_provider_views.py": "ea18d951f8170b1e1da4fbe6636d40e83f54ebda2ebdce187b0e08cf257b9c35",
-    "src/biocompiler/core_pipeline_manager.py": "18ee9bd517524b4440bcf29292a5d834470603713d662198b83ca61373c7fd09",
+    "src/biocompiler/core_pipeline_manager.py": "562052f3848c27ccb3fd19f156bd019da44aed58abe8cd4a2c7bd922ba07fc5b",
     "src/biocompiler/reference_backend.py": "f390f40bb7f176e2cd45acde4db84e7aa987d8a7125269a1ceba37ea59b26358",
     "src/biocompiler/core_reference_host.py": "a31be5b73f1440d92cf8076fdad9d69ec9ae8605217d400af20d47f5d4e4305e",
     "src/biocompiler/core_reference_manager.py": "239fa3486751cfdc97e5f2e599a414562f3fba952b641169b4f04db0aab83772",

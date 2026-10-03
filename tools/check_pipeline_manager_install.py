@@ -151,6 +151,9 @@ SOURCES = ("tools/check_pipeline_manager_install.py", "tests/test_pipeline_manag
     "tools/pipeline_registration_guard.py", "tests/test_manager_registration_source_lineage.py",
     "tests/test_core_pipeline_registration_interception.py",
     "tests/conformance/manager-registration-runtime-sites-v1.json",
+    "tests/conformance/manager-registration-runtime-sites-v2.json",
+    "tests/conformance/manager-registration-runtime-sites-v3.json",
+    "tests/conformance/manager-registration-runtime-sites-v4.json",
     "tests/conformance/manager-registration-tool-lineage-v1.json",
     "tests/conformance/manager-registration-source-lineage-v1.json",
     "tools/check_pipeline_session_install.py", "tools/check_workflow_reproducibility.py", "tools/check_realization_binaries.py",
@@ -1728,7 +1731,7 @@ def json_nodes(value):
 
 def validate_frames(rows, artifacts, channel, application, *, sessions=None, details=None, provider_calls=True,
                     initializer="initialize-empty"):
-    require(type(initializer) is str and initializer in ("initialize-empty", "initialize-synthetic", "initialize-components"),
+    require(type(initializer) is str and initializer in ("initialize-empty", "initialize-synthetic", "initialize-components", "initialize-reference"),
         "Unknown closed manager initializer")
     require(type(rows) is list and rows, "Missing exact live-manager frames")
     sequence = event = commands_count = input_bytes = output_bytes = nodes = 0
@@ -1906,7 +1909,7 @@ def validate_frames(rows, artifacts, channel, application, *, sessions=None, det
             <= limits["max_total_bytes"], "Channel consumed reserved terminal capacity")
         normalized.append({"direction": row["direction"], "value": projected})
     require(closed and not commands and not invocations, "Incomplete native command or continuation stack")
-    initializers = {"initialize-empty", "initialize-synthetic", "initialize-components"}
+    initializers = {"initialize-empty", "initialize-synthetic", "initialize-components", "initialize-reference"}
     require(operations and operations[0] == initializer
         and sum(operation in initializers for operation in operations) == 1,
         "A real manager was not initialized exactly once with the declared initializer")

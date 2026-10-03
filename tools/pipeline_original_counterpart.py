@@ -1,8 +1,9 @@
 """Fresh original execution in an isolated canonical package, never in native state.
 
-Only Python sources are copied. The one changed product file is replaced by its
-whole archived original; all other copied bytes remain bound to the installed
-package. No compiled extensions, build outputs or accepted state are imported.
+Only Python sources are copied. Reviewed manager and reference entry prefixes
+are restored to their whole originals within each task's captured source scope;
+all other bytes remain bound to the installed package. No compiled extensions,
+build outputs or accepted state are imported.
 """
 from __future__ import annotations
 import importlib
@@ -62,6 +63,13 @@ def closure_task(task, test_module):
     return task
 
 
+def reference_routes(task, test_module=None):
+    if closure_task(task, test_module) != 'fixed-build-original':
+        return {}
+    from tools import reference_original_counterpart as reference
+    return {path: reference.route_source_witness(path) for path in reference.ROUTE_SOURCES}
+
+
 def task_files(task, test_module=None):
     original_task = task
     task = closure_task(task, test_module)
@@ -74,6 +82,7 @@ def task_files(task, test_module=None):
         files.extend(overlay_files())
     if task=='fixed-build-original':
         files.append('tools/realization_source_lineage.py')
+        files.append('tools/reference_original_counterpart.py')
         for _,index in build_indexes(): files.extend(path for path in index['source_files'] if not path.startswith('src/'))
     return tuple(dict.fromkeys(files))
 
@@ -88,6 +97,8 @@ def task_data(task, test_module=None):
     if task == 'fixed-provider-original': files.append('tests/conformance/pipeline-fixed-provider-semantics-v1.json')
     if task == 'fixed-build-original': files.append('tests/conformance/pipeline-fixed-build-semantics-v1.json')
     if task=='fixed-build-original':
+        from tools import reference_original_counterpart as reference
+        files.append(reference.ROUTE_WITNESS)
         for path,index in build_indexes():
             files.extend((path,'tests/conformance/'+index['full_corpus']['path']))
             files.extend('tests/conformance/'+index['provider_directory']+'/'+entry['id']+'.json'
@@ -124,13 +135,17 @@ def run(task='deferred', *, test_module=None, test_ids=None):
         path = ROOT / logical
         sources[logical] = (path, path.read_bytes())
     tool_route = lineage.verify_tool_source(sources[lineage.TOOL_PATH][1]) if lineage.TOOL_PATH in sources else None
+    routes = reference_routes(task, test_module)
+    for logical, (_, proof) in routes.items():
+        require(lineage.sha(sources[logical][1]) == proof['correspondence']['current_sha256'],
+            'Installed reference entry source differs from its reviewed counterpart')
     require(sum(len(raw) for _, raw in sources.values()) <= MAX_SOURCE_BYTES,
         'Original counterpart source copy exceeds closed bound')
     with tempfile.TemporaryDirectory(prefix='biocompiler-original-counterpart-') as directory:
         overlay = Path(directory).resolve()
         rows = []
         for logical, (path, raw) in sorted(sources.items()):
-            copied = original if logical == lineage.PATH else lineage.original_tool_source() if logical == lineage.TOOL_PATH else raw
+            copied = original if logical == lineage.PATH else lineage.original_tool_source() if logical == lineage.TOOL_PATH else routes[logical][0] if logical in routes else raw
             target = overlay / logical
             target.parent.mkdir(parents=True, exist_ok=True)
             target.write_bytes(copied)
@@ -143,7 +158,8 @@ def run(task='deferred', *, test_module=None, test_ids=None):
             os.link(ROOT / logical, target)
             data.append({'logical':logical,'sha256':lineage.sha((ROOT/logical).read_bytes())})
         manifest = {'schema': SCHEMA, 'task': task, 'test_module': test_module, 'test_ids': test_ids,
-            'root': str(overlay), 'package_root': str(package_root), 'route': route, 'tool_route':tool_route, 'sources': rows, 'data':data}
+            'root': str(overlay), 'package_root': str(package_root), 'route': route, 'tool_route':tool_route,
+            'reference_routes': {path: proof for path, (_, proof) in routes.items()}, 'sources': rows, 'data':data}
         (overlay / 'manifest.json').write_bytes(canonical(manifest))
         result = overlay / 'result.json'
         script = ('import sys;sys.path[:0]=[sys.argv[1],sys.argv[1]+"/src",sys.argv[1]+"/tests"];'
@@ -166,13 +182,16 @@ def validate(value):
     require(type(value) is dict and set(value) == {'manifest', 'modules', 'value'},
         'Malformed original counterpart result')
     manifest = value['manifest']
-    require(set(manifest) == {'schema', 'task', 'test_module', 'test_ids', 'root', 'package_root', 'route', 'tool_route', 'sources', 'data'}
+    require(set(manifest) == {'schema', 'task', 'test_module', 'test_ids', 'root', 'package_root', 'route', 'tool_route', 'reference_routes', 'sources', 'data'}
         and manifest['schema'] == SCHEMA and manifest['task'] in TASKS,
         'Malformed original counterpart manifest')
     root = Path(manifest['root'])
     require(root.is_absolute() and type(manifest['sources']) is list, 'Original counterpart root differs')
     require(manifest['data']==[{'logical':path,'sha256':lineage.sha((ROOT/path).read_bytes())} for path in task_data(manifest['task'], manifest['test_module'])],
         'Original counterpart data closure differs')
+    routes = reference_routes(manifest['task'], manifest['test_module'])
+    require(manifest['reference_routes'] == {path: proof for path, (_, proof) in routes.items()},
+        'Original counterpart reference entry correspondence differs')
     rows = {}
     for row in manifest['sources']:
         require(set(row) == {'logical', 'origin', 'origin_sha256', 'path', 'sha256', 'substituted'}
@@ -184,7 +203,7 @@ def validate(value):
             'Original counterpart source path differs')
         raw = (ROOT / logical).read_bytes()
         require(row['origin_sha256'] == lineage.sha(raw), 'Original counterpart origin bytes differ')
-        wanted = lineage.original_source() if logical == lineage.PATH else lineage.original_tool_source() if logical == lineage.TOOL_PATH else raw
+        wanted = lineage.original_source() if logical == lineage.PATH else lineage.original_tool_source() if logical == lineage.TOOL_PATH else routes[logical][0] if logical in routes else raw
         require(row['sha256'] == lineage.sha(wanted) and row['substituted'] is (wanted != raw),
             'Original counterpart substitution differs')
         if logical.startswith('src/'):
@@ -225,6 +244,9 @@ def child(directory):
     require((overlay / lineage.PATH).read_bytes() == lineage.original_source(), 'Original manager substitution missing')
     if lineage.TOOL_PATH in rows:
         require((overlay/lineage.TOOL_PATH).read_bytes()==lineage.original_tool_source(), 'Original helper substitution missing')
+    for logical, proof in manifest['reference_routes'].items():
+        require(lineage.sha((overlay / logical).read_bytes()) == proof['correspondence']['original_sha256'],
+            'Original reference entry substitution missing')
     if manifest['task'] == 'deferred':
         from tools import capture_pipeline_deferred_semantics as oracle
         from tools import check_pipeline_deferred_runtime as runtime

@@ -131,7 +131,10 @@ let action peer name args=
  | "lookup"->let key=Json.string(json(value "object")) in
    let entries=List.map(function Json.Array[Json.String key;value]->key,value | _->failwith "lookup entry")
       (Json.array(get "entries" args)) in boxed(Data(List.assoc key entries))
- | "merge"->let before=Json.object_fields(get "before" args) and after=Json.object_fields(get "after" args) in
+ | "ordered-merge"->
+   let before=unordered(get "before_tree" args) and after=unordered(get "after_tree" args) in
+   require(same before(get "before" args) && same after(get "after" args)) "Ordered merge projection differs";
+   let before=Json.object_fields before and after=Json.object_fields after in
    let merged=List.fold_left(fun fields(key,value)->
      if List.mem_assoc key fields then List.map(fun(k,v)->k,if k=key then value else v)fields else fields@[key,value])
      before(Json.object_fields(json(value "object"))@after) in boxed(Data(obj merged))
