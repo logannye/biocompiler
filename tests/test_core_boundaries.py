@@ -36,7 +36,7 @@ class CoreBoundaryTests(unittest.TestCase):
         self.assertEqual(receipt["roles"]["bioc_checker"], "checker")
         self.assertEqual(receipt["private_modules"]["bioc_checker"],
                          ["construction_reconstruction", "architecture_reconstruction", "reference_check_support"])
-        self.assertEqual(len(receipt["native_tests"]), 111)
+        self.assertEqual(len(receipt["native_tests"]), 112)
         self.assertEqual(receipt["roles"]["bioc_semantics"], "source_semantics")
         self.assertEqual(receipt["roles"]["bioc_source_adapter"], "source_semantics")
         self.assertEqual(receipt["roles"]["bioc_compiler"], "compiler")
@@ -76,6 +76,27 @@ class CoreBoundaryTests(unittest.TestCase):
         self.assertEqual(receipt["shared_trusted_base"], ["bioc_wire", "bioc_domain"])
         self.assertIn("core/lib/checker/intent_check.ml", receipt["source_sha256"])
         self.assertEqual(receipt["native_build_and_semantic_independence"], "separate_hosted_validation_required")
+
+    def test_archive_primitive_has_only_wire_and_public_resource_support(self):
+        receipt = boundaries.check_boundaries(boundaries.ROOT)
+        self.assertEqual(receipt["roles"]["bioc_artifact"], "trusted_primitive")
+        self.assertEqual(set(receipt["libraries_and_executables"]["bioc_artifact"]),
+                         {"bioc_wire", "bioc_checker", "zarith"})
+        self.assertEqual(set(receipt["transitive_dependencies"]["bioc_artifact"]),
+                         {"bioc_wire", "bioc_checker", "bioc_domain", "zarith", "digestif"})
+        self.assertNotIn("bioc_artifact", receipt["transitive_dependencies"]["executable:biocompiler-verify"])
+        self.assertEqual(set(receipt["native_tests"]["test_stored_zip"]),
+                         {"bioc_wire", "bioc_checker", "bioc_artifact", "zarith"})
+        for original, replacement in (("Bioc_checker.Work_budget", "Bioc_checker.Reference_construct_check"),
+                                      ("Bioc_checker.Work_budget", "Bioc_checker")):
+            root = self.copy_core()
+            path = root / "core/lib/artifact/archive_budget.ml"
+            source = path.read_text()
+            self.assertIn(original, source)
+            path.write_text(source.replace(original, replacement))
+            with self.subTest(reference=replacement), self.assertRaisesRegex(
+                    boundaries.BoundaryError, "only public checker Work_budget"):
+                boundaries.check_boundaries(root)
 
     def test_reference_foundation_test_dependencies_and_private_support_are_exact(self):
         expected = {

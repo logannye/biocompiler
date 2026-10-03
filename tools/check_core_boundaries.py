@@ -20,6 +20,7 @@ ROOT = Path(__file__).resolve().parents[1]
 EXTERNAL_LIBRARIES = frozenset({"digestif", "zarith", "unix"})
 # New libraries/dependencies require deliberate policy review, even when harmless.
 LIBRARIES = {
+    "bioc_artifact": ("lib/artifact/dune", {"bioc_wire", "bioc_checker", "zarith"}, "trusted_primitive"),
     "bioc_pipeline_service": ("lib/pipeline_service/dune", {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_pipeline", "bioc_synthetic_producer", "zarith"}, "producer"),
     "bioc_pipeline": ("lib/pipeline/dune", {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_realization_checker", "bioc_synthetic_producer", "bioc_candidate_runtime", "zarith"}, "compiler"),
     "bioc_synthetic_producer": ("lib/synthetic_producer/dune", {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_realization_checker", "zarith"}, "producer"),
@@ -39,6 +40,7 @@ EXECUTABLES = {
     "biocompiler-verify": ("bin/verify/dune", {"bioc_wire", "bioc_service"}, "verifier"),
 }
 TESTS = {
+    "test_stored_zip": {"bioc_wire", "bioc_checker", "bioc_artifact", "zarith"},
     "test_legacy_json": {"bioc_wire"},
     "test_reference_domains": {"bioc_wire", "bioc_domain", "zarith"},
     "test_reference_checkers": {"bioc_wire", "bioc_domain", "bioc_checker", "zarith"},
@@ -355,6 +357,9 @@ def source_boundary(path, allowed_libraries, *, owner=None):
                 reviewed.add("readdir")
             if tokens[index:index + 2] != ["Sys", "."] or index + 2 >= len(tokens) or tokens[index + 2] not in reviewed:
                 raise BoundaryError(f"Unreviewed Sys access in {path.name}")
+        if owner == "bioc_artifact" and token == "Bioc_checker":
+            if tokens[index:index + 3] != ["Bioc_checker", ".", "Work_budget"]:
+                raise BoundaryError(f"Archive primitive may use only public checker Work_budget in {path.name}")
         if token.startswith("Bioc_"):
             library = token[:1].lower() + token[1:]
             if library not in allowed_libraries:
@@ -460,6 +465,10 @@ def check_boundaries(root: Path):
                         "%{env:BIOCOMPILER_PIPELINE_CALLBACK_MANAGER_DECLARATION=missing}",
                         "%{env:BIOCOMPILER_PIPELINE_CONTRACT_LITERALS=missing}",
                         "%{env:BIOCOMPILER_FIXED_PIPELINE_CORPUS=missing}"]]]
+                if name == "test_stored_zip":
+                    expected_actions = [["action", ["run", "%{test}",
+                        "%{env:BIOCOMPILER_ARCHIVE_PYTHON311_CORPUS=missing}",
+                        "%{env:BIOCOMPILER_ARCHIVE_PYTHON314_CORPUS=missing}"]]]
                 if name == "test_reference_callback_manager":
                     expected_actions = [["action", ["run", "%{test}",
                         "%{env:BIOCOMPILER_PIPELINE_CALLBACK_MANAGER_DECLARATION=missing}",

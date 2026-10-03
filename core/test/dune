@@ -580,3 +580,9 @@
  (modules test_reference_callback_manager)
  (libraries bioc_wire bioc_domain bioc_checker bioc_compiler bioc_pipeline_service zarith)
  (action (run %{test} %{env:BIOCOMPILER_PIPELINE_CALLBACK_MANAGER_DECLARATION=missing} %{env:BIOCOMPILER_REFERENCE_PIPELINE_DOCUMENTS=missing})))
+
+(test
+ (name test_stored_zip)
+ (modules test_stored_zip)
+ (libraries bioc_wire bioc_checker bioc_artifact zarith)
+ (action (run %{test} %{env:BIOCOMPILER_ARCHIVE_PYTHON311_CORPUS=missing} %{env:BIOCOMPILER_ARCHIVE_PYTHON314_CORPUS=missing})))

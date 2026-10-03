@@ -875,6 +875,8 @@ jobs:
       - name: Run every native literal and mutation suite
         run: |
           set -o pipefail
+          BIOCOMPILER_ARCHIVE_PYTHON311_CORPUS="$GITHUB_WORKSPACE/tests/conformance/archive-container-311.json" \
+          BIOCOMPILER_ARCHIVE_PYTHON314_CORPUS="$GITHUB_WORKSPACE/tests/conformance/archive-container-314.json" \
           BIOCOMPILER_REFERENCE_CONTRACTS_DOCUMENTS="$GITHUB_WORKSPACE/tests/conformance/reference-contracts-v1" \
           BIOCOMPILER_REFERENCE_CONTRACTS_CORPUS="$GITHUB_WORKSPACE/tests/conformance/reference-contracts-v1.json" \
           BIOCOMPILER_REFERENCE_PIPELINE_DOCUMENTS="$GITHUB_WORKSPACE/tests/conformance/reference-pipeline-semantics-v1" \
@@ -935,6 +937,9 @@ jobs:
       - name: Check framed reference manager callbacks and historical builds
         if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
         run: core/_build/default/test/test_reference_callback_manager.exe "$GITHUB_WORKSPACE/protocol/pipeline-callback-manager-v1.json" "$GITHUB_WORKSPACE/tests/conformance/reference-pipeline-semantics-v1" | tee generated/core/test_reference_callback_manager.txt
+      - name: Check complete original archive bytes and cumulative resource limits
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: core/_build/default/test/test_stored_zip.exe "$GITHUB_WORKSPACE/tests/conformance/archive-container-311.json" "$GITHUB_WORKSPACE/tests/conformance/archive-container-314.json" | tee generated/core/test_stored_zip.txt
       - name: Check retained request, behavior and coordinate domain corpora
         if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
         run: |
