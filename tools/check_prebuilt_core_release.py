@@ -41,7 +41,7 @@ def document(raw, maximum=1024*1024, *, require_canonical=True):
     return value
 
 
-def archive_members(archive, *, maximum_files, maximum_total, maximum_file, stored=False):
+def archive_members(archive, *, maximum_files, maximum_total, maximum_file, stored=False, _sdk_backend_record=False):
     require(not archive.comment, 'Archive has an unbound comment')
     rows, size = {}, 0
     for entry in archive.infolist():
@@ -51,7 +51,10 @@ def archive_members(archive, *, maximum_files, maximum_total, maximum_file, stor
         require(entry.create_system == 3 and not entry.extra and not entry.comment and entry.flag_bits & ~0x800 == 0
             and entry.compress_type in ((zipfile.ZIP_STORED,) if stored else (zipfile.ZIP_STORED, zipfile.ZIP_DEFLATED))
             and entry.date_time == (1980,1,1,0,0,0), 'Unreviewed archive metadata')
-        require(0 <= entry.file_size <= maximum_file and stat.S_IMODE(mode) in (0o644,0o755), 'Invalid archive mode or member size')
+        # The pinned SDK backend writes only RECORD as regular0664. This private
+        # staging allowance is never used by the final wheel/companion readers.
+        modes = (0o644,0o755,0o664) if _sdk_backend_record and name == 'biocompiler-'+build.VERSION+'.dist-info/RECORD' else (0o644,0o755)
+        require(0 <= entry.file_size <= maximum_file and stat.S_IMODE(mode) in modes, 'Invalid archive mode or member size')
         size += entry.file_size
         require(size <= maximum_total and len(rows) < maximum_files, 'Archive complete expansion exceeds limit')
         rows[name] = entry

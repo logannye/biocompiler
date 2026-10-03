@@ -2,18 +2,24 @@
 
 Prepared 2026-10-02 from the current source roadmap, source receipts and frozen agent packets. This is a resumable engineering handoff, not a completion or release claim. The GitHub status described here is the state before the checkpoint push; refresh the branch PR and its exact run before treating any pending work as accepted.
 
-**Consolidation update:** the user approved validating and merging PR85 with a
-merge commit, verifying every PR60–84 head is contained in `main`, closing any
-remaining superseded PRs, and removing their obsolete remote branches after
-main validation. Keep the current checkpoint branch. All 25 older heads were
-ancestors of PR85 at audit; refresh them before cleanup. Source `d7ea09646ccea7b27057b5b9b5e933ba5f47592c`
-passes all 118 native suites and all native/architecture campaigns on both
-platforms, plus all 3,384 unit tests on each Python runtime. Run `37095047627`
-then fails Linux packaging because `/usr/bin/readelf` is a symlink; macOS's full
-native job succeeds. CI now resolves the selected audit tool before invoking
-the unchanged strict packager. The correction and regression require a fresh
-complete run; do not report the checkpoint as merged or release-accepted based
-on these partial results. Read the [correction evidence](migration-handoff/2026-10-02/audit-tool-correction/correction.json).
+**Consolidation update, 2026-10-03:** the user approved validating and merging
+PR85 with a merge commit, proving every PR60–84 head is contained in `main`,
+closing any remaining superseded PRs, and removing their obsolete remote branches
+after main validation. Keep the current checkpoint branch and local worktrees.
+Refresh all older heads before cleanup. Source
+`b3228d454a823d6ce3eea3735c415cc1afcadd5a`, run `37101974697`, passes both
+complete native jobs (118 suites per platform), independent native-wheel/source
+companion validation, and all 3,385 unit tests on each Python runtime. Thirty
+jobs succeed, then strict SDK-wheel checking fails on archive mode or size.
+Pinned backend source explains a regular0664 RECORD; the failed wheel was not
+retained, so this is a source-backed diagnosis rather than inspection of that
+wheel. The correction prevalidates the complete staging SDK, canonicalizes only
+that exact RECORD mode to0644, and applies unchanged strict final checks before
+atomic replacement. All 37 focused controls pass on Python 3.11.15 and 3.14.6;
+six new controls bring discovery to 3,391 tests. Corrected hosted validation,
+all four fresh installs and the complete 38-job release gate remain required.
+Do not report this checkpoint as merged or release-accepted from partial results.
+Read the [failure and correction evidence](migration-handoff/2026-10-03/sdk-wheel-correction/correction.json).
 
 ## Copy/paste task for the next Codex session
 

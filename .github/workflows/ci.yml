@@ -1563,10 +1563,12 @@ jobs:
             --sdk generated/prebuilt-wheelhouse/biocompiler-0.1.0.dev29-py3-none-any.whl \
             --output generated/prebuilt-wheelhouse/candidate.json
       - uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: prebuilt-wheelhouse
           path: generated/prebuilt-wheelhouse
           if-no-files-found: error
+          overwrite: true
           retention-days: 30
       - run: python tools/ci_validation.py finish --start generated/ci/start.json --output generated/ci/prebuilt-core-assembly-cross-platform.json
       - uses: actions/upload-artifact@v4

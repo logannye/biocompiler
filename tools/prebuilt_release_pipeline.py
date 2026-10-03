@@ -7,15 +7,19 @@ by CI. Local controls test plans only; hosted execution is required for acceptan
 from __future__ import annotations
 import argparse
 import hashlib
+import io
 import json
 import os
 from pathlib import Path
 import re
 import shutil
+import stat
+import struct
 import subprocess
 import sys
 import tempfile
 import tomllib
+import zipfile
 
 if __package__:
     from . import build_prebuilt_core as build, check_prebuilt_core_release as check
@@ -126,6 +130,61 @@ def sdk_stage(source, manifests, staging):
     return pins
 
 
+def sdk_canonical_bytes(raw, *, source_files, release):
+    """Validate backend bytes, then change only the known RECORD mode metadata.
+
+    No content, RECORD hashes, compression, ordering or other ZIP fields are
+    repaired. The final bytes must pass the ordinary strict release policy.
+    """
+    require(type(raw) is bytes and 0 < len(raw) <= check.MAX_ARCHIVE, 'Invalid backend SDK archive size')
+    with zipfile.ZipFile(io.BytesIO(raw)) as archive:
+        rows = check.archive_members(archive, maximum_files=10000, maximum_total=768*1024*1024,
+            maximum_file=256*1024*1024, _sdk_backend_record=True)
+        entries = {name:(archive.read(entry),stat.S_IMODE(entry.external_attr >> 16)) for name,entry in rows.items()}
+        record = 'biocompiler-'+build.VERSION+'.dist-info/RECORD'
+        normalized = dict(entries)
+        if record in normalized and normalized[record][1] == 0o664:
+            normalized[record] = (normalized[record][0],0o644)
+        # This independently binds every member to checkout source or reviewed
+        # metadata and checks RECORD before changing even one archive byte.
+        check.validate_sdk(normalized, source_files=source_files, release=release)
+        changes, cursor = [], archive.start_dir
+        for name,entry in rows.items():
+            require(raw[cursor:cursor+4] == b'PK\x01\x02'
+                and struct.unpack_from('<I',raw,cursor+38)[0] == entry.external_attr,
+                'Backend SDK central metadata differs')
+            if name == record and entries[name][1] == 0o664:
+                changes.append({'member':name,'offset':cursor+38,'before':entry.external_attr,
+                    'after':(stat.S_IFREG|0o644)<<16 | (entry.external_attr & 0xffff)})
+            cursor += 46+len(name.encode('utf-8'))
+    result = bytearray(raw)
+    for change in changes:
+        struct.pack_into('<I',result,change['offset'],change['after'])
+    final = bytes(result)
+    with zipfile.ZipFile(io.BytesIO(final)) as archive:
+        rows = check.archive_members(archive, maximum_files=10000, maximum_total=768*1024*1024, maximum_file=256*1024*1024)
+        actual = {name:(archive.read(entry),stat.S_IMODE(entry.external_attr >> 16)) for name,entry in rows.items()}
+    require(actual == normalized, 'SDK canonicalization changed member bytes')
+    check.validate_sdk(actual, source_files=source_files, release=release)
+    return final, {'schema_version':'biocompiler.sdk_archive_canonicalization.v1',
+        'backend':{'sha256':build.sha(raw),'size':len(raw)},
+        'canonical':{'sha256':build.sha(final),'size':len(final)},'changes':changes}
+
+
+def canonicalize_sdk(path, *, source_files, release):
+    require(path.name == 'biocompiler-'+build.VERSION+'-py3-none-any.whl', 'Unexpected backend SDK wheel name')
+    raw = build.regular(path,check.MAX_ARCHIVE)
+    final, receipt = sdk_canonical_bytes(raw, source_files=source_files, release=release)
+    # Publish only a fully checked replacement; preserve the original on failure.
+    with tempfile.TemporaryDirectory(prefix='.sdk-canonical-',dir=path.parent) as temporary:
+        candidate = Path(temporary)/path.name
+        candidate.write_bytes(final)
+        check.validate_sdk(check.read_wheel(candidate), source_files=source_files, release=release)
+        require(build.regular(path,check.MAX_ARCHIVE) == raw, 'Backend SDK changed during validation')
+        os.replace(candidate,path)
+    return receipt
+
+
 def installed_ownership(python, cwd, environment):
     script = 'import json; from biocompiler.core_distribution import installed_distribution; print(json.dumps(installed_distribution().ownership(),sort_keys=True))'
     result = subprocess.run([str(python),'-I','-c',script],cwd=cwd,env=environment,stdout=subprocess.PIPE,stderr=subprocess.PIPE,timeout=30,check=False)
@@ -178,11 +237,13 @@ def main():
     args=parser.parse_args()
     if args.operation=='installed': installed(args)
     else:
-        sdk_stage(args.checkout,args.manifests,args.staging)
+        pins = sdk_stage(args.checkout,args.manifests,args.staging)
         require(not args.output.exists(),'SDK output must be fresh'); args.output.mkdir(parents=True)
         env=clean_environment(os.environ); env['SOURCE_DATE_EPOCH']='315532800'
         receipt=run([sys.executable,'-m','build','--no-isolation','--wheel','--outdir',str(args.output)],
             cwd=args.staging,environment=env,log=args.output/'build-sdk.log',timeout=300)
+        receipt['sdk_canonicalization'] = canonicalize_sdk(args.output/('biocompiler-'+build.VERSION+'-py3-none-any.whl'),
+            source_files=check.source_package(args.checkout),release=pins)
         (args.output/'build-sdk.json').write_bytes(build.canonical(receipt))
 
 

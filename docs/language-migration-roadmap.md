@@ -44,6 +44,20 @@ drafts are preserved separately and are not production integrations.
   and preserves rejection of unresolved tool and release-input symlinks.
   All 22 focused controls pass on both local Python runtimes. See the
   [retained failure and correction](migration-handoff/2026-10-02/audit-tool-correction/correction.json).
+- [x] **LM-30 native wheel and source-companion hosted checkpoint:** source
+  `b3228d454a823d6ce3eea3735c415cc1afcadd5a`, run `37101974697`, passes both
+  complete native jobs, both platform-wheel builds and independent wheel/source
+  companion verification. Both runtimes execute all 3,385 unit tests with exact
+  accounting. The downstream SDK-wheel check fails; fresh installations and the
+  complete release gate are not accepted.
+- [x] **LM-30 SDK wheel metadata source correction:** prevalidate the complete
+  SDK staging archive against source, RECORD and release authority; canonicalize
+  only the pinned backend's exact SDK RECORD regular0664 metadata to0644, then
+  require unchanged strict final validation before atomic publication. Preserve
+  all other bytes and reject changed content, pins, other modes and malformed
+  archives. All 37 focused controls pass on each local Python runtime; six new
+  tests produce 3,391 discovered cases. Peer review finds no actionable issue.
+  See [retained evidence](migration-handoff/2026-10-03/sdk-wheel-correction/correction.json).
 - [ ] **LM-30 corrected distribution acceptance:** validate the corrected exact
   revision through both native jobs, both platform wheels, all four fresh
   installations and the complete 38-job gate before merging the consolidation

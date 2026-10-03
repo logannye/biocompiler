@@ -18,6 +18,7 @@ with patch.object(sys,'path',[str(ROOT/'tools'),str(ROOT/'tests'),*sys.path]):
     sources=importlib.import_module('prebuilt_sources')
     fixtures=importlib.import_module('test_prebuilt_core_materials')
     policy=importlib.import_module('test_prebuilt_core_release')
+    sdk_fixtures=importlib.import_module('test_prebuilt_sdk_matrix')
     importlib.import_module('check_realization_binaries')
 
 
@@ -161,3 +162,114 @@ class ArchiveBoundaryTests(unittest.TestCase):
         raw=self.fixture()
         for value in (b'prefix'+raw,raw+b'trailing',raw[:14]+b'\0\0\0\0'+raw[18:],raw[:10]+b'\x01\x00'+raw[12:]):
             with self.subTest(size=len(value)),self.assertRaises(ValueError):self.members(value)
+
+
+class SdkBackendCanonicalizationTests(unittest.TestCase):
+    """Inert ZIP grammar fixtures only: no SDK build, install or native process."""
+    def setUp(self):
+        fixture=sdk_fixtures.SdkWheelTests();fixture.setUp()
+        self.entries=fixture.entries;self.sources=fixture.sources;self.release=fixture.release
+        self.record='biocompiler-'+build.VERSION+'.dist-info/RECORD'
+        raw,_=self.entries[self.record];self.entries[self.record]=(raw,0o664)
+
+    @staticmethod
+    def archive(entries, *, deflated=False):
+        import struct,zlib
+        local,central=bytearray(),bytearray()
+        for name,(value,mode) in entries.items():
+            name=name.encode();crc=zlib.crc32(value)
+            if deflated:
+                compressor=zlib.compressobj(wbits=-15);packed=compressor.compress(value)+compressor.flush()
+            else:packed=value
+            method=8 if deflated else 0;offset=len(local)
+            local.extend(struct.pack('<I5H3I2H',0x04034b50,20,0,method,0,33,crc,len(packed),len(value),len(name),0)+name+packed)
+            central.extend(struct.pack('<I6H3I5H2I',0x02014b50,3*256+20,20,0,method,0,33,crc,len(packed),len(value),len(name),0,0,0,0,(0o100000|mode)<<16,offset)+name)
+        return bytes(local+central+struct.pack('<I4H2IH',0x06054b50,0,0,len(entries),len(entries),len(central),len(local),0))
+
+    def canonical(self,raw):
+        return pipeline.sdk_canonical_bytes(raw,source_files=self.sources,release=self.release)
+
+    def test_pinned_backend_record_mode_changes_only_central_mode_bytes(self):
+        import io,zipfile
+        for deflated in (False,True):
+            with self.subTest(deflated=deflated):
+                raw=self.archive(self.entries,deflated=deflated)
+                with zipfile.ZipFile(io.BytesIO(raw)) as archive,self.assertRaisesRegex(ValueError,'Invalid archive mode'):
+                    verify.archive_members(archive,maximum_files=10000,maximum_total=1024*1024,maximum_file=1024*1024)
+                final,receipt=self.canonical(raw)
+                self.assertEqual(len(final),len(raw));self.assertEqual(len(receipt['changes']),1)
+                change=receipt['changes'][0];offset=change['offset']
+                self.assertEqual(change['member'],self.record)
+                self.assertEqual(raw[:offset],final[:offset]);self.assertEqual(raw[offset+4:],final[offset+4:])
+                self.assertEqual(receipt['backend']['sha256'],build.sha(raw))
+                self.assertEqual(receipt['canonical']['sha256'],build.sha(final))
+                with zipfile.ZipFile(io.BytesIO(final)) as archive:
+                    rows=verify.archive_members(archive,maximum_files=10000,maximum_total=1024*1024,maximum_file=1024*1024)
+                    self.assertEqual({name:archive.read(row) for name,row in rows.items()},
+                        {name:value for name,(value,_) in self.entries.items()})
+                    self.assertEqual(archive.read(self.record),self.entries[self.record][0])
+                again,second=self.canonical(final)
+                self.assertEqual(again,final);self.assertEqual(second['changes'],[])
+
+    def test_other_modes_and_symlinks_are_not_canonicalized(self):
+        for name,mode in ((self.record,0o666),(self.record,0o755),('biocompiler/py.typed',0o664),('biocompiler/py.typed',0o755)):
+            changed=dict(self.entries);changed[name]=(changed[name][0],mode)
+            with self.subTest(name=name,mode=mode),self.assertRaises(ValueError):self.canonical(self.archive(changed))
+        import struct
+        raw=self.archive(self.entries);start=raw.index(b'PK\x01\x02');changed=bytearray(raw)
+        struct.pack_into('<I',changed,start+38,0o120644<<16)
+        with self.assertRaisesRegex(ValueError,'nonregular'):self.canonical(bytes(changed))
+
+    def test_bad_record_unknown_members_and_changed_source_or_pins_are_not_repaired(self):
+        changed=dict(self.entries);changed['biocompiler/py.typed']=(b'changed',0o644)
+        with self.assertRaisesRegex(ValueError,'RECORD byte identity'):self.canonical(self.archive(changed))
+        for name,value,message in (('biocompiler/py.typed',b'changed','source/resource'),
+            ('biocompiler-'+build.VERSION+'.dist-info/unknown',b'unreviewed','unreviewed distribution'),
+            ('biocompiler/_core_release.json',build.canonical({**self.release,'run_id':'999'}),'release pins')):
+            changed=dict(self.entries);changed[name]=(value,0o644);sdk_fixtures.record(changed)
+            changed[self.record]=(changed[self.record][0],0o664)
+            with self.subTest(name=name),self.assertRaisesRegex(ValueError,message):self.canonical(self.archive(changed))
+
+    def test_malformed_zip_metadata_and_unclaimed_bytes_remain_rejected(self):
+        import struct
+        raw=self.archive(self.entries)
+        mutants=[b'prefix'+raw,raw+b'trailing',raw[:14]+b'\0\0\0\0'+raw[18:]]
+        central=raw.index(b'PK\x01\x02')
+        for offset,value in ((6,1),(central+8,1),(central+12,1)):
+            changed=bytearray(raw);struct.pack_into('<H',changed,offset,value);mutants.append(bytes(changed))
+        for changed in mutants:
+            with self.subTest(size=len(changed)),self.assertRaises(ValueError):self.canonical(changed)
+        changed=dict(self.entries);changed['biocompiler/py.typEd']=changed['biocompiler/py.typed']
+        duplicate=self.archive(changed).replace(b'biocompiler/py.typEd',b'biocompiler/py.typed')
+        with self.assertRaisesRegex(ValueError,'Repeated'):self.canonical(duplicate)
+
+    def test_atomic_staging_preserves_original_on_failed_final_validation(self):
+        raw=self.archive(self.entries)
+        with tempfile.TemporaryDirectory() as directory:
+            path=Path(directory)/('biocompiler-'+build.VERSION+'-py3-none-any.whl');path.write_bytes(raw)
+            with patch.object(verify,'read_wheel',side_effect=ValueError('final validation failed')):
+                with self.assertRaisesRegex(ValueError,'final validation failed'):
+                    pipeline.canonicalize_sdk(path,source_files=self.sources,release=self.release)
+            self.assertEqual(path.read_bytes(),raw);self.assertEqual(list(path.parent.iterdir()),[path])
+            receipt=pipeline.canonicalize_sdk(path,source_files=self.sources,release=self.release)
+            verify.validate_sdk(verify.read_wheel(path),source_files=self.sources,release=self.release)
+            self.assertEqual(build.sha(path.read_bytes()),receipt['canonical']['sha256'])
+
+    def test_sdk_driver_records_canonicalization_after_backend_success(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory);output=root/'wheelhouse';events=[]
+            def backend(*args,**kwargs):
+                events.append('backend');return {'returncode':0}
+            def canonicalize(*args,**kwargs):
+                self.assertEqual(events,['backend']);events.append('canonicalize')
+                self.assertEqual(args,(output/('biocompiler-'+build.VERSION+'-py3-none-any.whl'),))
+                self.assertEqual(kwargs,{'source_files':self.sources,'release':self.release})
+                return {'checked':True}
+            argv=['prebuilt_release_pipeline.py','sdk','--checkout',str(root/'source'),'--manifests',str(root/'linux.json'),str(root/'macos.json'),
+                '--staging',str(root/'stage'),'--output',str(output)]
+            with patch.object(sys,'argv',argv),patch.object(pipeline,'sdk_stage',return_value=self.release),\
+                patch.object(pipeline,'run',side_effect=backend),patch.object(verify,'source_package',return_value=self.sources),\
+                patch.object(pipeline,'canonicalize_sdk',side_effect=canonicalize):
+                pipeline.main()
+            self.assertEqual(events,['backend','canonicalize'])
+            self.assertEqual(json.loads((output/'build-sdk.json').read_bytes()),{'returncode':0,'sdk_canonicalization':{'checked':True}})

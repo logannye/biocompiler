@@ -1,0 +1,84 @@
+{
+  "callpoints": {
+    "setuptools_bdist_wheel.py.source": [
+      23,
+      440
+    ],
+    "wheel_wheelfile.py.source": [
+      182,
+      193,
+      213,
+      225
+    ]
+  },
+  "files": [
+    {
+      "installed_record": [
+        "sha256=USCttNlJwafxt51YYFFKG7jnxz8dfhbyqAZL6jMTA9s",
+        "8411"
+      ],
+      "license_files": [
+        "wheel-LICENSE.txt"
+      ],
+      "local_source": "/opt/homebrew/lib/python3.14/site-packages/setuptools/_vendor/wheel/wheelfile.py",
+      "saved": "wheel_wheelfile.py.source",
+      "sha256": "5120adb4d949c1a7f1b79d5860514a1bb8e7c73f1d7e16f2a8064bea331303db",
+      "size": 8411
+    },
+    {
+      "installed_record": [
+        "sha256=SknYPVwhrRPfXudmO_gvqNHHHhzSfU8cEmFtQomQ9xI",
+        "22247"
+      ],
+      "license_files": [
+        "setuptools-LICENSE.txt",
+        "wheel-LICENSE.txt"
+      ],
+      "local_source": "/opt/homebrew/lib/python3.14/site-packages/setuptools/command/bdist_wheel.py",
+      "saved": "setuptools_bdist_wheel.py.source",
+      "sha256": "4a49d83d5c21ad13df5ee7663bf82fa8d1c71e1cd27d4f1c12616d428990f712",
+      "size": 22247
+    }
+  ],
+  "hosted_error_lines": [
+    367,
+    382
+  ],
+  "hosted_log": "assembly-job.log",
+  "hosted_requirements_file": "tools/prebuilt-build-requirements.txt",
+  "installed_versions": {
+    "setuptools": [
+      "Name: setuptools",
+      "Version: 80.9.0"
+    ],
+    "wheel": [
+      "Name: wheel",
+      "Version: 0.45.1"
+    ]
+  },
+  "license_scope": "Complete applicable installed license/copyright texts retained unchanged; setuptools source license and vendored wheel license are both retained alongside bdist_wheel, which uses WheelFile.",
+  "licenses": [
+    {
+      "installed_record": [
+        "sha256=htoPAa6uRjSKPD1GUZXcHOzN55956HdppkuNoEsqR0E",
+        "1023"
+      ],
+      "local_source": "/opt/homebrew/lib/python3.14/site-packages/setuptools-80.9.0.dist-info/licenses/LICENSE",
+      "saved": "setuptools-LICENSE.txt",
+      "sha256": "86da0f01aeae46348a3c3d465195dc1ceccde79f79e87769a64b8da04b2a4741",
+      "size": 1023
+    },
+    {
+      "installed_record": [
+        "sha256=MMI2GGeRCPPo6h0qZYx8pBe9_IkcmO8aifpP8MmChlQ",
+        "1107"
+      ],
+      "local_source": "/opt/homebrew/lib/python3.14/site-packages/setuptools/_vendor/wheel-0.45.1.dist-info/LICENSE.txt",
+      "saved": "wheel-LICENSE.txt",
+      "sha256": "30c23618679108f3e8ea1d2a658c7ca417bdfc891c98ef1a89fa4ff0c9828654",
+      "size": 1107
+    }
+  ],
+  "schema": "biocompiler.sdk_wheel_mode_source_evidence.v1",
+  "scope": "Read-only existing installed source, not a local build and not the failed hosted wheel. Versions equal hosted pinned versions; installed RECORD hashes independently checked. Source behavior supports the RECORD0664 diagnosis but the current hosted error omits the member name."
+}

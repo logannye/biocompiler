@@ -1,0 +1,17 @@
+367: 2026-10-03T08:05:46.3751883Z Traceback (most recent call last):
+368: 2026-10-03T08:05:46.3762361Z   File "/home/runner/work/biocompiler/biocompiler/tools/check_prebuilt_core_release.py", line 271, in <module>
+369: 2026-10-03T08:05:46.3763984Z     if __name__ == '__main__': main()
+370: 2026-10-03T08:05:46.3764663Z                                ^^^^^^
+371: 2026-10-03T08:05:46.3765922Z   File "/home/runner/work/biocompiler/biocompiler/tools/check_prebuilt_core_release.py", line 261, in main
+372: 2026-10-03T08:05:46.3767197Z     validate_sdk(read_wheel(args.sdk),source_files=source_package(args.source_root),release=release)
+373: 2026-10-03T08:05:46.3768088Z                  ^^^^^^^^^^^^^^^^^^^^
+374: 2026-10-03T08:05:46.3769127Z   File "/home/runner/work/biocompiler/biocompiler/tools/check_prebuilt_core_release.py", line 83, in read_wheel
+375: 2026-10-03T08:05:46.3770439Z     rows = archive_members(archive, maximum_files=10000, maximum_total=768*1024*1024, maximum_file=256*1024*1024)
+376: 2026-10-03T08:05:46.3771547Z            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+377: 2026-10-03T08:05:46.3772902Z   File "/home/runner/work/biocompiler/biocompiler/tools/check_prebuilt_core_release.py", line 54, in archive_members
+378: 2026-10-03T08:05:46.3774353Z     require(0 <= entry.file_size <= maximum_file and stat.S_IMODE(mode) in (0o644,0o755), 'Invalid archive mode or member size')
+379: 2026-10-03T08:05:46.3776057Z   File "/home/runner/work/biocompiler/biocompiler/tools/build_prebuilt_core.py", line 34, in require
+380: 2026-10-03T08:05:46.3777052Z     if not condition: raise ValueError(message)
+381: 2026-10-03T08:05:46.3777851Z                       ^^^^^^^^^^^^^^^^^^^^^^^^^
+382: 2026-10-03T08:05:46.3778557Z ValueError: Invalid archive mode or member size
+383: 2026-10-03T08:05:46.3868509Z ##[error]Process completed with exit code 1.

@@ -1,0 +1,419 @@
+﻿2026-10-03T08:05:13.7843499Z Current runner version: '2.337.0'
+2026-10-03T08:05:13.7867234Z ##[group]Runner Image Provisioner
+2026-10-03T08:05:13.7868235Z Hosted Compute Agent
+2026-10-03T08:05:13.7868792Z Version: 20260901.588
+2026-10-03T08:05:13.7869415Z Commit: f88ec8081b781fac6c440065ac7ff9e710ce3d0b
+2026-10-03T08:05:13.7870101Z Build Date: 2026-09-01T19:56:44Z
+2026-10-03T08:05:13.7870814Z Worker ID: {15e3b059-ac64-4a58-af3f-184f59a1822c}
+2026-10-03T08:05:13.7871556Z Azure Region: westcentralus
+2026-10-03T08:05:13.7872117Z ##[endgroup]
+2026-10-03T08:05:13.7873384Z ##[group]Operating System
+2026-10-03T08:05:13.7873978Z Ubuntu
+2026-10-03T08:05:13.7874464Z 24.04.5
+2026-10-03T08:05:13.7875012Z LTS
+2026-10-03T08:05:13.7875497Z ##[endgroup]
+2026-10-03T08:05:13.7876521Z ##[group]Runner Image
+2026-10-03T08:05:13.7877113Z Image: ubuntu-24.04
+2026-10-03T08:05:13.7877639Z Version: 20260927.320.1
+2026-10-03T08:05:13.7878907Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260927.320/images/ubuntu/Ubuntu2404-Readme.md
+2026-10-03T08:05:13.7880322Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260927.320
+2026-10-03T08:05:13.7881212Z ##[endgroup]
+2026-10-03T08:05:13.7882255Z ##[group]GITHUB_TOKEN Permissions
+2026-10-03T08:05:13.7884254Z Contents: read
+2026-10-03T08:05:13.7884790Z Metadata: read
+2026-10-03T08:05:13.7885340Z ##[endgroup]
+2026-10-03T08:05:13.7887448Z Secret source: Actions
+2026-10-03T08:05:13.7888374Z Cache mode: write
+2026-10-03T08:05:13.7889016Z Prepare workflow directory
+2026-10-03T08:05:13.8270457Z Prepare all required actions
+2026-10-03T08:05:13.8319101Z Getting action download info
+2026-10-03T08:05:14.1327453Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+2026-10-03T08:05:14.2879108Z Download action repository 'actions/setup-python@v5' (SHA:a26af69be951a213d495a4c3e4e4022e16d87065)
+2026-10-03T08:05:14.4368593Z Download action repository 'actions/download-artifact@v4' (SHA:d3f86a106a0bac45b974a628896c90dbdf5c8093)
+2026-10-03T08:05:15.0504520Z Download action repository 'actions/upload-artifact@v4' (SHA:ea165f8d65b6e75b540449e92b4886f43607fa02)
+2026-10-03T08:05:15.3205066Z Complete job name: prebuilt-core-assembly
+2026-10-03T08:05:15.3927463Z ##[group]Run actions/checkout@v4
+2026-10-03T08:05:15.3928315Z with:
+2026-10-03T08:05:15.3928829Z   repository: logannye/biocompiler
+2026-10-03T08:05:15.3932986Z   token: ***
+2026-10-03T08:05:15.3933519Z   ssh-strict: true
+2026-10-03T08:05:15.3934015Z   ssh-user: git
+2026-10-03T08:05:15.3934523Z   persist-credentials: true
+2026-10-03T08:05:15.3935083Z   clean: true
+2026-10-03T08:05:15.3935583Z   sparse-checkout-cone-mode: true
+2026-10-03T08:05:15.3936605Z   fetch-depth: 1
+2026-10-03T08:05:15.3937100Z   fetch-tags: false
+2026-10-03T08:05:15.3937578Z   show-progress: true
+2026-10-03T08:05:15.3938117Z   lfs: false
+2026-10-03T08:05:15.3938653Z   submodules: false
+2026-10-03T08:05:15.3939157Z   set-safe-directory: true
+2026-10-03T08:05:15.3939697Z   allow-unsafe-pr-checkout: false
+2026-10-03T08:05:15.3940503Z ##[endgroup]
+2026-10-03T08:05:15.4952097Z Syncing repository: logannye/biocompiler
+2026-10-03T08:05:15.4955163Z ##[group]Getting Git version info
+2026-10-03T08:05:15.4956632Z Working directory is '/home/runner/work/biocompiler/biocompiler'
+2026-10-03T08:05:15.4958168Z [command]/usr/bin/git version
+2026-10-03T08:05:15.5036690Z git version 2.55.0
+2026-10-03T08:05:15.5055139Z ##[endgroup]
+2026-10-03T08:05:15.5075549Z Temporarily overriding HOME='/home/runner/work/_temp/f25fa695-4e03-45b3-9c91-eb6f068298be' before making global git config changes
+2026-10-03T08:05:15.5078426Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-03T08:05:15.5081604Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/biocompiler/biocompiler
+2026-10-03T08:05:15.5129388Z Deleting the contents of '/home/runner/work/biocompiler/biocompiler'
+2026-10-03T08:05:15.5135463Z ##[group]Initializing the repository
+2026-10-03T08:05:15.5139013Z [command]/usr/bin/git init /home/runner/work/biocompiler/biocompiler
+2026-10-03T08:05:15.5236038Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-10-03T08:05:15.5237373Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-10-03T08:05:15.5238372Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-10-03T08:05:15.5239421Z hint: call:
+2026-10-03T08:05:15.5239894Z hint:
+2026-10-03T08:05:15.5240473Z hint: 	git config --global init.defaultBranch <name>
+2026-10-03T08:05:15.5241184Z hint:
+2026-10-03T08:05:15.5241810Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-10-03T08:05:15.5242778Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-10-03T08:05:15.5243604Z hint:
+2026-10-03T08:05:15.5244087Z hint: 	git branch -m <name>
+2026-10-03T08:05:15.5244674Z hint:
+2026-10-03T08:05:15.5245343Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-10-03T08:05:15.5250857Z Initialized empty Git repository in /home/runner/work/biocompiler/biocompiler/.git/
+2026-10-03T08:05:15.5264534Z [command]/usr/bin/git remote add origin https://github.com/logannye/biocompiler
+2026-10-03T08:05:15.5313588Z ##[endgroup]
+2026-10-03T08:05:15.5315190Z ##[group]Disabling automatic garbage collection
+2026-10-03T08:05:15.5320829Z [command]/usr/bin/git config --local gc.auto 0
+2026-10-03T08:05:15.5351060Z ##[endgroup]
+2026-10-03T08:05:15.5352213Z ##[group]Setting up auth
+2026-10-03T08:05:15.5358165Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-03T08:05:15.5385401Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-03T08:05:15.5720003Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-03T08:05:15.5753342Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-03T08:05:15.5954957Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-03T08:05:15.5984465Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-03T08:05:15.6168677Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-10-03T08:05:15.6209374Z ##[endgroup]
+2026-10-03T08:05:15.6210785Z ##[group]Fetching the repository
+2026-10-03T08:05:15.6219136Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +4b38e5262bf0f87c52dbd638227076a7b856b8e8:refs/remotes/pull/85/merge
+2026-10-03T08:05:24.9933840Z From https://github.com/logannye/biocompiler
+2026-10-03T08:05:24.9936985Z  * [new ref]             4b38e5262bf0f87c52dbd638227076a7b856b8e8 -> pull/85/merge
+2026-10-03T08:05:24.9943031Z ##[endgroup]
+2026-10-03T08:05:24.9945351Z ##[group]Determining the checkout info
+2026-10-03T08:05:24.9948151Z ##[endgroup]
+2026-10-03T08:05:24.9950326Z [command]/usr/bin/git sparse-checkout disable
+2026-10-03T08:05:25.0007756Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-10-03T08:05:25.0043725Z ##[group]Checking out the ref
+2026-10-03T08:05:25.0046475Z [command]/usr/bin/git checkout --progress --force refs/remotes/pull/85/merge
+2026-10-03T08:05:26.1726969Z Updating files:   9% (11937/124237)
+2026-10-03T08:05:26.2728829Z Updating files:  10% (12424/124237)
+2026-10-03T08:05:26.3694539Z Updating files:  11% (13667/124237)
+2026-10-03T08:05:26.4599731Z Updating files:  12% (14909/124237)
+2026-10-03T08:05:26.5529507Z Updating files:  13% (16151/124237)
+2026-10-03T08:05:26.6402059Z Updating files:  14% (17394/124237)
+2026-10-03T08:05:26.7309226Z Updating files:  15% (18636/124237)
+2026-10-03T08:05:26.8290753Z Updating files:  16% (19878/124237)
+2026-10-03T08:05:26.9236790Z Updating files:  17% (21121/124237)
+2026-10-03T08:05:27.0172579Z Updating files:  18% (22363/124237)
+2026-10-03T08:05:27.1291734Z Updating files:  19% (23606/124237)
+2026-10-03T08:05:27.1375302Z Updating files:  20% (24848/124237)
+2026-10-03T08:05:27.1897010Z Updating files:  20% (24930/124237)
+2026-10-03T08:05:27.2208154Z Updating files:  21% (26090/124237)
+2026-10-03T08:05:27.2519570Z Updating files:  22% (27333/124237)
+2026-10-03T08:05:27.2883625Z Updating files:  23% (28575/124237)
+2026-10-03T08:05:27.3403681Z Updating files:  24% (29817/124237)
+2026-10-03T08:05:27.3862327Z Updating files:  25% (31060/124237)
+2026-10-03T08:05:27.4437114Z Updating files:  26% (32302/124237)
+2026-10-03T08:05:27.4891898Z Updating files:  27% (33544/124237)
+2026-10-03T08:05:27.7095455Z Updating files:  28% (34787/124237)
+2026-10-03T08:05:27.9290771Z Updating files:  29% (36029/124237)
+2026-10-03T08:05:27.9926040Z Updating files:  30% (37272/124237)
+2026-10-03T08:05:28.0411732Z Updating files:  31% (38514/124237)
+2026-10-03T08:05:28.0927037Z Updating files:  32% (39756/124237)
+2026-10-03T08:05:28.1254731Z Updating files:  33% (40999/124237)
+2026-10-03T08:05:28.1387332Z Updating files:  34% (42241/124237)
+2026-10-03T08:05:28.1708890Z Updating files:  34% (42299/124237)
+2026-10-03T08:05:28.2107283Z Updating files:  35% (43483/124237)
+2026-10-03T08:05:28.2475010Z Updating files:  36% (44726/124237)
+2026-10-03T08:05:28.2807547Z Updating files:  37% (45968/124237)
+2026-10-03T08:05:28.3159420Z Updating files:  38% (47211/124237)
+2026-10-03T08:05:28.3517971Z Updating files:  39% (48453/124237)
+2026-10-03T08:05:28.3821351Z Updating files:  40% (49695/124237)
+2026-10-03T08:05:28.4148667Z Updating files:  41% (50938/124237)
+2026-10-03T08:05:28.4477629Z Updating files:  42% (52180/124237)
+2026-10-03T08:05:28.4825413Z Updating files:  43% (53422/124237)
+2026-10-03T08:05:28.5164111Z Updating files:  44% (54665/124237)
+2026-10-03T08:05:28.5531081Z Updating files:  45% (55907/124237)
+2026-10-03T08:05:28.6975927Z Updating files:  46% (57150/124237)
+2026-10-03T08:05:28.7281535Z Updating files:  47% (58392/124237)
+2026-10-03T08:05:28.7579174Z Updating files:  48% (59634/124237)
+2026-10-03T08:05:28.7881225Z Updating files:  49% (60877/124237)
+2026-10-03T08:05:28.8231298Z Updating files:  50% (62119/124237)
+2026-10-03T08:05:28.8677314Z Updating files:  51% (63361/124237)
+2026-10-03T08:05:28.9012920Z Updating files:  52% (64604/124237)
+2026-10-03T08:05:28.9328801Z Updating files:  53% (65846/124237)
+2026-10-03T08:05:28.9608108Z Updating files:  54% (67088/124237)
+2026-10-03T08:05:28.9890014Z Updating files:  55% (68331/124237)
+2026-10-03T08:05:29.0166676Z Updating files:  56% (69573/124237)
+2026-10-03T08:05:29.0455270Z Updating files:  57% (70816/124237)
+2026-10-03T08:05:29.0738475Z Updating files:  58% (72058/124237)
+2026-10-03T08:05:29.1011038Z Updating files:  59% (73300/124237)
+2026-10-03T08:05:29.1285478Z Updating files:  60% (74543/124237)
+2026-10-03T08:05:29.1375240Z Updating files:  61% (75785/124237)
+2026-10-03T08:05:29.1562172Z Updating files:  61% (76234/124237)
+2026-10-03T08:05:29.1823955Z Updating files:  62% (77027/124237)
+2026-10-03T08:05:29.2119043Z Updating files:  63% (78270/124237)
+2026-10-03T08:05:29.2525333Z Updating files:  64% (79512/124237)
+2026-10-03T08:05:29.2863829Z Updating files:  65% (80755/124237)
+2026-10-03T08:05:29.3516296Z Updating files:  66% (81997/124237)
+2026-10-03T08:05:29.4163368Z Updating files:  67% (83239/124237)
+2026-10-03T08:05:29.4686317Z Updating files:  68% (84482/124237)
+2026-10-03T08:05:29.5880202Z Updating files:  69% (85724/124237)
+2026-10-03T08:05:29.6494088Z Updating files:  70% (86966/124237)
+2026-10-03T08:05:29.6977529Z Updating files:  71% (88209/124237)
+2026-10-03T08:05:29.7435132Z Updating files:  72% (89451/124237)
+2026-10-03T08:05:29.7866753Z Updating files:  73% (90694/124237)
+2026-10-03T08:05:29.8554307Z Updating files:  74% (91936/124237)
+2026-10-03T08:05:29.8997358Z Updating files:  75% (93178/124237)
+2026-10-03T08:05:29.9613294Z Updating files:  76% (94421/124237)
+2026-10-03T08:05:29.9945973Z Updating files:  77% (95663/124237)
+2026-10-03T08:05:30.0274064Z Updating files:  78% (96905/124237)
+2026-10-03T08:05:30.1376175Z Updating files:  79% (98148/124237)
+2026-10-03T08:05:30.1512939Z Updating files:  79% (99127/124237)
+2026-10-03T08:05:30.2093450Z Updating files:  80% (99390/124237)
+2026-10-03T08:05:30.2623944Z Updating files:  81% (100632/124237)
+2026-10-03T08:05:30.3157090Z Updating files:  82% (101875/124237)
+2026-10-03T08:05:30.3654238Z Updating files:  83% (103117/124237)
+2026-10-03T08:05:30.4136686Z Updating files:  84% (104360/124237)
+2026-10-03T08:05:30.4573822Z Updating files:  85% (105602/124237)
+2026-10-03T08:05:30.4996694Z Updating files:  86% (106844/124237)
+2026-10-03T08:05:30.9557586Z Updating files:  87% (108087/124237)
+2026-10-03T08:05:31.0481229Z Updating files:  88% (109329/124237)
+2026-10-03T08:05:31.1178097Z Updating files:  89% (110571/124237)
+2026-10-03T08:05:31.1376724Z Updating files:  90% (111814/124237)
+2026-10-03T08:05:31.1943071Z Updating files:  90% (112176/124237)
+2026-10-03T08:05:31.2684276Z Updating files:  91% (113056/124237)
+2026-10-03T08:05:31.3339767Z Updating files:  92% (114299/124237)
+2026-10-03T08:05:31.3858770Z Updating files:  93% (115541/124237)
+2026-10-03T08:05:31.4381677Z Updating files:  94% (116783/124237)
+2026-10-03T08:05:31.4930566Z Updating files:  95% (118026/124237)
+2026-10-03T08:05:31.5481833Z Updating files:  96% (119268/124237)
+2026-10-03T08:05:31.6008195Z Updating files:  97% (120510/124237)
+2026-10-03T08:05:31.6592455Z Updating files:  98% (121753/124237)
+2026-10-03T08:05:31.7596337Z Updating files:  99% (122995/124237)
+2026-10-03T08:05:31.7597487Z Updating files: 100% (124237/124237)
+2026-10-03T08:05:31.7598173Z Updating files: 100% (124237/124237), done.
+2026-10-03T08:05:31.9154393Z Note: switching to 'refs/remotes/pull/85/merge'.
+2026-10-03T08:05:31.9155016Z 
+2026-10-03T08:05:31.9155455Z You are in 'detached HEAD' state. You can look around, make experimental
+2026-10-03T08:05:31.9156579Z changes and commit them, and you can discard any commits you make in this
+2026-10-03T08:05:31.9157451Z state without impacting any branches by switching back to a branch.
+2026-10-03T08:05:31.9158353Z 
+2026-10-03T08:05:31.9158674Z If you want to create a new branch to retain commits you create, you may
+2026-10-03T08:05:31.9159494Z do so (now or later) by using -c with the switch command. Example:
+2026-10-03T08:05:31.9160066Z 
+2026-10-03T08:05:31.9160296Z   git switch -c <new-branch-name>
+2026-10-03T08:05:31.9160586Z 
+2026-10-03T08:05:31.9160796Z Or undo this operation with:
+2026-10-03T08:05:31.9161101Z 
+2026-10-03T08:05:31.9161316Z   git switch -
+2026-10-03T08:05:31.9161572Z 
+2026-10-03T08:05:31.9161924Z Turn off this advice by setting config variable advice.detachedHead to false
+2026-10-03T08:05:31.9162432Z 
+2026-10-03T08:05:31.9163035Z HEAD is now at 4b38e5262 Merge b3228d454a823d6ce3eea3735c415cc1afcadd5a into d2f65c59aba3a4af97dbcabd59e8142961e12c4a
+2026-10-03T08:05:31.9219735Z ##[endgroup]
+2026-10-03T08:05:31.9268359Z [command]/usr/bin/git log -1 --format=%H
+2026-10-03T08:05:31.9291548Z 4b38e5262bf0f87c52dbd638227076a7b856b8e8
+2026-10-03T08:05:31.9586455Z ##[group]Run actions/setup-python@v5
+2026-10-03T08:05:31.9586850Z with:
+2026-10-03T08:05:31.9587199Z   python-version: 3.11
+2026-10-03T08:05:31.9587586Z   check-latest: false
+2026-10-03T08:05:31.9590194Z   token: ***
+2026-10-03T08:05:31.9590516Z   update-environment: true
+2026-10-03T08:05:31.9590860Z   allow-prereleases: false
+2026-10-03T08:05:31.9591172Z   freethreaded: false
+2026-10-03T08:05:31.9591508Z ##[endgroup]
+2026-10-03T08:05:32.0907611Z ##[group]Installed versions
+2026-10-03T08:05:32.1211022Z (node:2390) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-03T08:05:32.1211743Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-03T08:05:32.1212591Z Successfully set up CPython (3.11.16)
+2026-10-03T08:05:32.1213459Z ##[endgroup]
+2026-10-03T08:05:32.1359794Z ##[group]Run python tools/ci_validation.py start --job prebuilt-core-assembly --variant cross-platform --output generated/ci/start.json
+2026-10-03T08:05:32.1360858Z [36;1mpython tools/ci_validation.py start --job prebuilt-core-assembly --variant cross-platform --output generated/ci/start.json[0m
+2026-10-03T08:05:32.2032971Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-10-03T08:05:32.2033521Z env:
+2026-10-03T08:05:32.2033940Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-03T08:05:32.2034457Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.16/x64/lib/pkgconfig
+2026-10-03T08:05:32.2034972Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-03T08:05:32.2035435Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-03T08:05:32.2036184Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-03T08:05:32.2036633Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.16/x64/lib
+2026-10-03T08:05:32.2037175Z ##[endgroup]
+2026-10-03T08:05:33.2357450Z {"revision": "4b38e5262bf0f87c52dbd638227076a7b856b8e8", "run_attempt": "1", "run_id": "37101974697", "status": "recorded"}
+2026-10-03T08:05:33.2537634Z ##[group]Run actions/download-artifact@v4
+2026-10-03T08:05:33.2538004Z with:
+2026-10-03T08:05:33.2538308Z   name: prebuilt-linux-x86_64
+2026-10-03T08:05:33.2538687Z   path: artifacts/prebuilt/linux-x86_64
+2026-10-03T08:05:33.2539038Z   merge-multiple: false
+2026-10-03T08:05:33.2539375Z   repository: logannye/biocompiler
+2026-10-03T08:05:33.2539739Z   run-id: 37101974697
+2026-10-03T08:05:33.2540026Z env:
+2026-10-03T08:05:33.2540399Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-03T08:05:33.2540876Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.16/x64/lib/pkgconfig
+2026-10-03T08:05:33.2541359Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-03T08:05:33.2541787Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-03T08:05:33.2542197Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-03T08:05:33.2544926Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.16/x64/lib
+2026-10-03T08:05:33.2545628Z ##[endgroup]
+2026-10-03T08:05:33.4035042Z Downloading single artifact
+2026-10-03T08:05:33.4178689Z (node:2402) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-03T08:05:33.4179838Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-03T08:05:33.6090891Z Preparing to download the following artifacts:
+2026-10-03T08:05:33.6091859Z - prebuilt-linux-x86_64 (ID: 11268228848, Size: 61266951, Expected Digest: sha256:479e73ddb1ef8f7505a8f37e4ad67e2e953681e80c1c1988430bc5039d171577)
+2026-10-03T08:05:33.8139560Z Redirecting to blob download url: https://productionresultssa4.blob.core.windows.net/actions-results/03a9fc4c-84c2-81c2-acad-3c0e82b80f0a/workflow-job-run-08f7743e-ae3e-51bf-a118-7917b2ca32a6/artifacts/9e39e213376846597178eb7d9552fcf461f00678ac73ef2b69d34cc9800529cb.zip
+2026-10-03T08:05:33.8140900Z Starting download of artifact to: /home/runner/work/biocompiler/biocompiler/artifacts/prebuilt/linux-x86_64
+2026-10-03T08:05:34.0633641Z (node:2402) [DEP0005] DeprecationWarning: Buffer() is deprecated due to security and usability issues. Please use the Buffer.alloc(), Buffer.allocUnsafe(), or Buffer.from() methods instead.
+2026-10-03T08:05:35.9240584Z SHA256 digest of downloaded artifact is 479e73ddb1ef8f7505a8f37e4ad67e2e953681e80c1c1988430bc5039d171577
+2026-10-03T08:05:35.9241247Z Artifact download completed successfully.
+2026-10-03T08:05:35.9241643Z Total of 1 artifact(s) downloaded
+2026-10-03T08:05:35.9246693Z Download artifact has finished successfully
+2026-10-03T08:05:35.9737345Z ##[group]Run actions/download-artifact@v4
+2026-10-03T08:05:35.9737726Z with:
+2026-10-03T08:05:35.9738059Z   name: prebuilt-macos-arm64
+2026-10-03T08:05:35.9738433Z   path: artifacts/prebuilt/macos-arm64
+2026-10-03T08:05:35.9738791Z   merge-multiple: false
+2026-10-03T08:05:35.9739112Z   repository: logannye/biocompiler
+2026-10-03T08:05:35.9739570Z   run-id: 37101974697
+2026-10-03T08:05:35.9739918Z env:
+2026-10-03T08:05:35.9740261Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-03T08:05:35.9740753Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.16/x64/lib/pkgconfig
+2026-10-03T08:05:35.9741279Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-03T08:05:35.9741715Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-03T08:05:35.9742154Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-03T08:05:35.9742594Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.16/x64/lib
+2026-10-03T08:05:35.9743035Z ##[endgroup]
+2026-10-03T08:05:36.1178533Z Downloading single artifact
+2026-10-03T08:05:36.1319517Z (node:2415) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-03T08:05:36.1320951Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-03T08:05:36.3139277Z Preparing to download the following artifacts:
+2026-10-03T08:05:36.3140364Z - prebuilt-macos-arm64 (ID: 11267559833, Size: 52890381, Expected Digest: sha256:48a4f00a3e8cf55569cf1be22958060f1d9c34d27231933e87a2105a489b055f)
+2026-10-03T08:05:36.5206873Z Redirecting to blob download url: https://productionresultssa4.blob.core.windows.net/actions-results/03a9fc4c-84c2-81c2-acad-3c0e82b80f0a/workflow-job-run-d2119f7a-4385-5ecc-b57b-1fb00622de15/artifacts/faa4f4fe7e25c2c45414247c32c2e4705ed27e167a043bea85317e7775a1c9f0.zip
+2026-10-03T08:05:36.5208213Z Starting download of artifact to: /home/runner/work/biocompiler/biocompiler/artifacts/prebuilt/macos-arm64
+2026-10-03T08:05:36.7658353Z (node:2415) [DEP0005] DeprecationWarning: Buffer() is deprecated due to security and usability issues. Please use the Buffer.alloc(), Buffer.allocUnsafe(), or Buffer.from() methods instead.
+2026-10-03T08:05:38.7177225Z SHA256 digest of downloaded artifact is 48a4f00a3e8cf55569cf1be22958060f1d9c34d27231933e87a2105a489b055f
+2026-10-03T08:05:38.7178487Z Artifact download completed successfully.
+2026-10-03T08:05:38.7179242Z Total of 1 artifact(s) downloaded
+2026-10-03T08:05:38.7185494Z Download artifact has finished successfully
+2026-10-03T08:05:38.7343427Z ##[group]Run python -c 'import json,pathlib; r=pathlib.Path("artifacts/prebuilt"); d={p.name:{"authority":json.loads((p/"material-authority.json").read_text()),"manifest_sha256":(p/"material-manifest.sha256").read_text().strip()} for p in r.iterdir()}; pathlib.Path("artifacts/material-authorities.json").write_text(json.dumps(d,sort_keys=True,separators=(",",":"))+"\n")'
+2026-10-03T08:05:38.7346049Z [36;1mpython -c 'import json,pathlib; r=pathlib.Path("artifacts/prebuilt"); d={p.name:{"authority":json.loads((p/"material-authority.json").read_text()),"manifest_sha256":(p/"material-manifest.sha256").read_text().strip()} for p in r.iterdir()}; pathlib.Path("artifacts/material-authorities.json").write_text(json.dumps(d,sort_keys=True,separators=(",",":"))+"\n")'[0m
+2026-10-03T08:05:38.7347841Z [36;1mpython tools/check_prebuilt_core_release.py --platform-root artifacts/prebuilt/linux-x86_64 artifacts/prebuilt/macos-arm64 \[0m
+2026-10-03T08:05:38.7348796Z [36;1m  --material-authorities artifacts/material-authorities.json --source-root "$GITHUB_WORKSPACE" \[0m
+2026-10-03T08:05:38.7349543Z [36;1m  --source-revision "$GITHUB_HEAD_SHA" --tested-revision "$GITHUB_SHA" --run-id "$GITHUB_RUN_ID" \[0m
+2026-10-03T08:05:38.7350203Z [36;1m  --output generated/prebuilt-candidate/native.json[0m
+2026-10-03T08:05:38.7392036Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-10-03T08:05:38.7392503Z env:
+2026-10-03T08:05:38.7392941Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-03T08:05:38.7393511Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.16/x64/lib/pkgconfig
+2026-10-03T08:05:38.7394036Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-03T08:05:38.7394532Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-03T08:05:38.7395117Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-03T08:05:38.7395610Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.16/x64/lib
+2026-10-03T08:05:38.7396222Z   GITHUB_HEAD_SHA: b3228d454a823d6ce3eea3735c415cc1afcadd5a
+2026-10-03T08:05:38.7396649Z ##[endgroup]
+2026-10-03T08:05:40.3902877Z ##[group]Run python -m pip install --only-binary=:all: --require-hashes -r tools/prebuilt-build-requirements.txt
+2026-10-03T08:05:40.3904194Z [36;1mpython -m pip install --only-binary=:all: --require-hashes -r tools/prebuilt-build-requirements.txt[0m
+2026-10-03T08:05:40.3905275Z [36;1mpython tools/prebuilt_release_pipeline.py sdk --checkout "$GITHUB_WORKSPACE" \[0m
+2026-10-03T08:05:40.3906758Z [36;1m  --manifests "$GITHUB_WORKSPACE/artifacts/prebuilt/linux-x86_64/distribution.json" "$GITHUB_WORKSPACE/artifacts/prebuilt/macos-arm64/distribution.json" \[0m
+2026-10-03T08:05:40.3908214Z [36;1m  --staging "$RUNNER_TEMP/sdk-build" --output "$GITHUB_WORKSPACE/generated/prebuilt-wheelhouse"[0m
+2026-10-03T08:05:40.3909487Z [36;1mcp artifacts/prebuilt/linux-x86_64/*.whl artifacts/prebuilt/macos-arm64/*.whl generated/prebuilt-wheelhouse/[0m
+2026-10-03T08:05:40.3966185Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-10-03T08:05:40.3966902Z env:
+2026-10-03T08:05:40.3967575Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-03T08:05:40.3968409Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.16/x64/lib/pkgconfig
+2026-10-03T08:05:40.3969204Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-03T08:05:40.3969930Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-03T08:05:40.3970689Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-03T08:05:40.3971370Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.16/x64/lib
+2026-10-03T08:05:40.3972063Z ##[endgroup]
+2026-10-03T08:05:42.7543359Z Collecting build==1.3.0 (from -r tools/prebuilt-build-requirements.txt (line 1))
+2026-10-03T08:05:42.8528545Z   Downloading build-1.3.0-py3-none-any.whl (23 kB)
+2026-10-03T08:05:42.9844040Z Collecting setuptools==80.9.0 (from -r tools/prebuilt-build-requirements.txt (line 2))
+2026-10-03T08:05:43.0031850Z   Downloading setuptools-80.9.0-py3-none-any.whl (1.2 MB)
+2026-10-03T08:05:43.1069386Z      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.2/1.2 MB 16.1 MB/s  0:00:00
+2026-10-03T08:05:43.1426107Z Collecting wheel==0.45.1 (from -r tools/prebuilt-build-requirements.txt (line 3))
+2026-10-03T08:05:43.1612551Z   Downloading wheel-0.45.1-py3-none-any.whl (72 kB)
+2026-10-03T08:05:43.1902149Z Collecting packaging==25.0 (from -r tools/prebuilt-build-requirements.txt (line 4))
+2026-10-03T08:05:43.2088744Z   Downloading packaging-25.0-py3-none-any.whl (66 kB)
+2026-10-03T08:05:43.2348632Z Collecting pyproject-hooks==1.2.0 (from -r tools/prebuilt-build-requirements.txt (line 5))
+2026-10-03T08:05:43.2538183Z   Downloading pyproject_hooks-1.2.0-py3-none-any.whl (10 kB)
+2026-10-03T08:05:43.3769193Z Installing collected packages: wheel, setuptools, pyproject-hooks, packaging, build
+2026-10-03T08:05:43.4141687Z   Attempting uninstall: setuptools
+2026-10-03T08:05:43.4152972Z     Found existing installation: setuptools 79.0.1
+2026-10-03T08:05:43.5397310Z     Uninstalling setuptools-79.0.1:
+2026-10-03T08:05:43.5618578Z       Successfully uninstalled setuptools-79.0.1
+2026-10-03T08:05:44.3119835Z 
+2026-10-03T08:05:44.3129651Z Successfully installed build-1.3.0 packaging-25.0 pyproject-hooks-1.2.0 setuptools-80.9.0 wheel-0.45.1
+2026-10-03T08:05:45.1173912Z ##[group]Run python tools/check_prebuilt_core_release.py --platform-root artifacts/prebuilt/linux-x86_64 artifacts/prebuilt/macos-arm64 \
+2026-10-03T08:05:45.1174900Z [36;1mpython tools/check_prebuilt_core_release.py --platform-root artifacts/prebuilt/linux-x86_64 artifacts/prebuilt/macos-arm64 \[0m
+2026-10-03T08:05:45.1175869Z [36;1m  --material-authorities artifacts/material-authorities.json --source-root "$GITHUB_WORKSPACE" \[0m
+2026-10-03T08:05:45.1176639Z [36;1m  --source-revision "$GITHUB_HEAD_SHA" --tested-revision "$GITHUB_SHA" --run-id "$GITHUB_RUN_ID" \[0m
+2026-10-03T08:05:45.1177458Z [36;1m  --sdk generated/prebuilt-wheelhouse/biocompiler-0.1.0.dev29-py3-none-any.whl \[0m
+2026-10-03T08:05:45.1178052Z [36;1m  --output generated/prebuilt-wheelhouse/candidate.json[0m
+2026-10-03T08:05:45.1219929Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-10-03T08:05:45.1220354Z env:
+2026-10-03T08:05:45.1220919Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-03T08:05:45.1221409Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.16/x64/lib/pkgconfig
+2026-10-03T08:05:45.1221947Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-03T08:05:45.1222392Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-03T08:05:45.1222862Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-03T08:05:45.1223395Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.16/x64/lib
+2026-10-03T08:05:45.1223877Z   GITHUB_HEAD_SHA: b3228d454a823d6ce3eea3735c415cc1afcadd5a
+2026-10-03T08:05:45.1224319Z ##[endgroup]
+2026-10-03T08:05:46.3751883Z Traceback (most recent call last):
+2026-10-03T08:05:46.3762361Z   File "/home/runner/work/biocompiler/biocompiler/tools/check_prebuilt_core_release.py", line 271, in <module>
+2026-10-03T08:05:46.3763984Z     if __name__ == '__main__': main()
+2026-10-03T08:05:46.3764663Z                                ^^^^^^
+2026-10-03T08:05:46.3765922Z   File "/home/runner/work/biocompiler/biocompiler/tools/check_prebuilt_core_release.py", line 261, in main
+2026-10-03T08:05:46.3767197Z     validate_sdk(read_wheel(args.sdk),source_files=source_package(args.source_root),release=release)
+2026-10-03T08:05:46.3768088Z                  ^^^^^^^^^^^^^^^^^^^^
+2026-10-03T08:05:46.3769127Z   File "/home/runner/work/biocompiler/biocompiler/tools/check_prebuilt_core_release.py", line 83, in read_wheel
+2026-10-03T08:05:46.3770439Z     rows = archive_members(archive, maximum_files=10000, maximum_total=768*1024*1024, maximum_file=256*1024*1024)
+2026-10-03T08:05:46.3771547Z            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-10-03T08:05:46.3772902Z   File "/home/runner/work/biocompiler/biocompiler/tools/check_prebuilt_core_release.py", line 54, in archive_members
+2026-10-03T08:05:46.3774353Z     require(0 <= entry.file_size <= maximum_file and stat.S_IMODE(mode) in (0o644,0o755), 'Invalid archive mode or member size')
+2026-10-03T08:05:46.3776057Z   File "/home/runner/work/biocompiler/biocompiler/tools/build_prebuilt_core.py", line 34, in require
+2026-10-03T08:05:46.3777052Z     if not condition: raise ValueError(message)
+2026-10-03T08:05:46.3777851Z                       ^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-10-03T08:05:46.3778557Z ValueError: Invalid archive mode or member size
+2026-10-03T08:05:46.3868509Z ##[error]Process completed with exit code 1.
+2026-10-03T08:05:46.3951467Z ##[group]Run actions/upload-artifact@v4
+2026-10-03T08:05:46.3951854Z with:
+2026-10-03T08:05:46.3952238Z   name: ci-job-prebuilt-core-assembly-cross-platform
+2026-10-03T08:05:46.3952739Z   path: generated/ci/prebuilt-core-assembly-cross-platform.json
+2026-10-03T08:05:46.3953239Z   if-no-files-found: error
+2026-10-03T08:05:46.3953549Z   retention-days: 30
+2026-10-03T08:05:46.3953885Z   compression-level: 6
+2026-10-03T08:05:46.3954223Z   overwrite: false
+2026-10-03T08:05:46.3954541Z   include-hidden-files: false
+2026-10-03T08:05:46.3954912Z env:
+2026-10-03T08:05:46.3955249Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-03T08:05:46.3955858Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.16/x64/lib/pkgconfig
+2026-10-03T08:05:46.3956365Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-03T08:05:46.3956873Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-03T08:05:46.3957393Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.16/x64
+2026-10-03T08:05:46.3957901Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.16/x64/lib
+2026-10-03T08:05:46.3958286Z ##[endgroup]
+2026-10-03T08:05:46.5609928Z (node:2463) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-03T08:05:46.5610898Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-03T08:05:46.5638062Z ##[error]No files were found with the provided path: generated/ci/prebuilt-core-assembly-cross-platform.json. No artifacts will be uploaded.
+2026-10-03T08:05:46.5843820Z Post job cleanup.
+2026-10-03T08:05:46.6706835Z [command]/usr/bin/git version
+2026-10-03T08:05:46.6747221Z git version 2.55.0
+2026-10-03T08:05:46.6781748Z Temporarily overriding HOME='/home/runner/work/_temp/a7548ad3-a06e-4110-aa4c-4a39c0344ed6' before making global git config changes
+2026-10-03T08:05:46.6783282Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-03T08:05:46.6786528Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/biocompiler/biocompiler
+2026-10-03T08:05:46.6826580Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-03T08:05:46.6859862Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-03T08:05:46.7173915Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-03T08:05:46.7205930Z http.https://github.com/.extraheader
+2026-10-03T08:05:46.7214004Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-10-03T08:05:46.7242161Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-03T08:05:46.7571187Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-03T08:05:46.7604604Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-03T08:05:46.8056794Z Cleaning up orphan processes
+2026-10-03T08:05:46.8283023Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/download-artifact@v4, actions/setup-python@v5, actions/upload-artifact@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
