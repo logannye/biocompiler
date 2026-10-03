@@ -100,12 +100,12 @@ let repr t value=text t value;Diagnostic_text.repr value
 let retain t amount=
   Diagnostic.require (amount>=0 && amount<=t.limits.max_retained_items-t.retained)
     "pipeline_retention_limit" "Retained pipeline state exceeds its native inventory limit.";
-  charge t amount;t.retained<-t.retained+amount
+  charge t amount;W.retain t.budget (128*amount);t.retained<-t.retained+amount
 let retain_json t raw=
   let size=measure t raw in
   Diagnostic.require (size.bytes<=t.limits.max_retained_bytes-t.retained_bytes)
     "pipeline_retention_limit" "Retained pipeline state exceeds its native byte limit.";
-  retain t size.nodes;t.retained_bytes<-t.retained_bytes+size.bytes
+  W.retain t.budget (size.bytes+128);retain t size.nodes;t.retained_bytes<-t.retained_bytes+size.bytes
 let bounded t values=
   let rec visit count=function []->() | _::rest->charge t 1;
     Diagnostic.require (count<t.limits.max_document_nodes) "pipeline_inventory_limit"
@@ -116,6 +116,7 @@ let lookup t key values=
     if same_text t key other then Some value else find rest in find (bounded t values)
 let contains t key values=Option.is_some (lookup t key values)
 let replace t key value values=
+  W.retain t.budget (64*(List.length values+1));
   let rec update prefix=function []->List.rev_append prefix [key,value] | (other,old)::rest->
     if same_text t key other then List.rev_append prefix ((other,value)::rest)
     else update ((other,old)::prefix) rest in update [] (bounded t values)
@@ -159,6 +160,7 @@ let create ~budget ?(limits=default_limits) ?(validator_equivalent=(fun _ left r
   let input=X.make_limits ~max_bytes:limits.max_document_bytes ~max_nodes:limits.max_document_nodes
     ~charge:(W.charge budget) () in
   let target_identity=X.fingerprint ~limits:input (Build_request.Target.to_json target) in
+  W.retain budget 512;
   let t={budget;limits;validator_equivalent;observer;next_execution=0;callback_links=None;host_providers=[];target_value=target;target_identity;dependencies=[];passes=[];admissions=[];
     provider_history=[];admission_history=[];history_order=[];providers=[];records=[];profiles=[];retained=0;retained_bytes=0;calls=0} in
   retain_json t (Build_request.Target.to_json target);
@@ -170,15 +172,15 @@ let remember_provider t provider=
   if not (List.exists (fun previous->charge t 1;previous==provider) (bounded t t.providers)) then begin
     Diagnostic.require (List.length t.providers<t.limits.max_providers) "pipeline_provider_limit"
       "Registered pipeline providers exceed their native inventory limit.";
-    retain t 1;t.providers<-t.providers@[provider]
+    retain t 1;W.retain t.budget (64*(List.length t.providers+1));t.providers<-t.providers@[provider]
   end
 let bind_host_provider t callback=with_call t (fun ()->
   let provider work context=Host_return(callback work context) in
-  remember_provider t provider;t.host_providers<-provider::t.host_providers;provider)
+  remember_provider t provider;W.retain t.budget 64;t.host_providers<-provider::t.host_providers;provider)
 let allow_host_source_links t provider=with_call t (fun ()->
   remember_provider t provider;
   if not(List.exists(fun value->charge t 1;value==provider) t.host_providers) then
-    t.host_providers<-provider::t.host_providers)
+    W.retain t.budget 64;t.host_providers<-provider::t.host_providers)
 let host_source_links_equal t ~expected=with_call t (fun ()->match t.callback_links with
   | None->None
   | Some values->
@@ -203,7 +205,8 @@ let history_with t key=match t.observer with None->t.history_order | Some _->
     | _->charge t 1;false in
   let current=bounded t t.history_order in
   if List.exists same current then current
-  else (retain_json t(history_key_json key);charge t(List.length current+1);current@[key])
+  else (retain_json t(history_key_json key);charge t(List.length current+1);
+    W.retain t.budget (64*(List.length current+1));current@[key])
 let register t contract ~producer ~validators=with_call t (fun ()->
   ignore (measure t (PC.to_json contract));let id=PC.id contract in
   if contains t id t.admissions then fail "Pass ID collides with a component admission policy.";

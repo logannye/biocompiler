@@ -598,3 +598,20 @@
  (modules test_reference_sequence_export)
  (libraries bioc_wire bioc_domain bioc_checker bioc_artifact bioc_reference_export zarith)
  (action (run %{test} %{env:BIOCOMPILER_REFERENCE_SEQUENCE_EXPORT_CORPUS=missing})))
+
+(test
+ (name test_work_budget_retention)
+ (modules test_work_budget_retention)
+ (libraries bioc_wire bioc_checker))
+
+(test
+ (name test_reference_inputs)
+ (modules test_reference_inputs)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_artifact bioc_reference_input bioc_reference_package_service)
+ (action (run %{test} %{env:BIOCOMPILER_REFERENCE_INPUTS_CORPUS=missing})))
+
+(test
+ (name test_reference_package_workflow)
+ (modules test_reference_package_workflow)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_artifact bioc_reference_input bioc_reference_artifact bioc_reference_export bioc_reference_package_service bioc_pipeline)
+ (action (run %{test} %{env:BIOCOMPILER_REFERENCE_PACKAGE_WORKFLOW_CORPUS=missing})))

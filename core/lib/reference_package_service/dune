@@ -1,0 +1,4 @@
+(library
+ (name bioc_reference_package_service)
+ (libraries bioc_wire bioc_domain bioc_artifact bioc_reference_artifact
+  bioc_reference_input bioc_reference_export bioc_checker bioc_compiler bioc_pipeline zarith))

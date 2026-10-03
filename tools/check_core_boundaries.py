@@ -20,6 +20,8 @@ ROOT = Path(__file__).resolve().parents[1]
 EXTERNAL_LIBRARIES = frozenset({"digestif", "zarith", "unix"})
 # New libraries/dependencies require deliberate policy review, even when harmless.
 LIBRARIES = {
+    "bioc_reference_input": ("lib/reference_input/dune", {"bioc_wire", "bioc_domain", "bioc_artifact", "zarith"}, "domain"),
+    "bioc_reference_package_service": ("lib/reference_package_service/dune", {"bioc_wire", "bioc_domain", "bioc_artifact", "bioc_reference_artifact", "bioc_reference_input", "bioc_reference_export", "bioc_checker", "bioc_compiler", "bioc_pipeline", "zarith"}, "producer"),
     "bioc_reference_artifact": ("lib/reference_artifact/dune", {"bioc_wire", "bioc_domain", "bioc_artifact", "zarith"}, "domain"),
     "bioc_reference_export": ("lib/reference_export/dune", {"bioc_wire", "bioc_domain", "bioc_artifact", "bioc_checker", "zarith"}, "checker_service"),
     "bioc_artifact": ("lib/artifact/dune", {"bioc_wire", "bioc_checker", "zarith"}, "trusted_primitive"),
@@ -42,6 +44,9 @@ EXECUTABLES = {
     "biocompiler-verify": ("bin/verify/dune", {"bioc_wire", "bioc_service"}, "verifier"),
 }
 TESTS = {
+    "test_work_budget_retention": {"bioc_wire", "bioc_checker"},
+    "test_reference_inputs": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_artifact", "bioc_reference_input", "bioc_reference_package_service"},
+    "test_reference_package_workflow": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_artifact", "bioc_reference_input", "bioc_reference_artifact", "bioc_reference_export", "bioc_reference_package_service", "bioc_pipeline"},
     "test_stored_zip": {"bioc_wire", "bioc_checker", "bioc_artifact", "zarith"},
     "test_reference_package_manifest": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_artifact", "bioc_reference_artifact", "zarith"},
     "test_reference_sequence_export": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_artifact", "bioc_reference_export", "zarith"},
@@ -431,6 +436,8 @@ def check_boundaries(root: Path):
                 if relative != "test/dune" or name not in TESTS or values.get("modules") != [name]:
                     raise BoundaryError(f"Unreviewed native test stanza: {name}")
                 fixture_variables = {
+                    "test_reference_inputs": "%{env:BIOCOMPILER_REFERENCE_INPUTS_CORPUS=missing}",
+                    "test_reference_package_workflow": "%{env:BIOCOMPILER_REFERENCE_PACKAGE_WORKFLOW_CORPUS=missing}",
                     "test_reference_checkers": "%{env:BIOCOMPILER_REFERENCE_CONTRACTS_DOCUMENTS=missing}",
                     "test_reference_producer_budget": "%{env:BIOCOMPILER_REFERENCE_CONTRACTS_DOCUMENTS=missing}",
                     "test_reference_contracts_corpus": "%{env:BIOCOMPILER_REFERENCE_CONTRACTS_CORPUS=missing}",

@@ -36,7 +36,7 @@ class CoreBoundaryTests(unittest.TestCase):
         self.assertEqual(receipt["roles"]["bioc_checker"], "checker")
         self.assertEqual(receipt["private_modules"]["bioc_checker"],
                          ["construction_reconstruction", "architecture_reconstruction", "reference_check_support"])
-        self.assertEqual(len(receipt["native_tests"]), 114)
+        self.assertEqual(len(receipt["native_tests"]), 117)
         self.assertEqual(receipt["roles"]["bioc_semantics"], "source_semantics")
         self.assertEqual(receipt["roles"]["bioc_source_adapter"], "source_semantics")
         self.assertEqual(receipt["roles"]["bioc_compiler"], "compiler")
@@ -117,6 +117,25 @@ class CoreBoundaryTests(unittest.TestCase):
         path.write_text(path.read_text() + "\nmodule Producer = Bioc_compiler.Reference_molecular_producer\n")
         with self.assertRaisesRegex(boundaries.BoundaryError, "Undeclared local module dependency"):
             boundaries.check_boundaries(root)
+
+    def test_reference_package_reconstruction_is_a_producer_not_standalone_verify(self):
+        receipt = boundaries.check_boundaries(boundaries.ROOT)
+        name = "bioc_reference_package_service"
+        self.assertEqual(receipt["roles"][name], "producer")
+        for dependency in ("bioc_compiler", "bioc_pipeline", "bioc_reference_input",
+                           "bioc_reference_artifact", "bioc_reference_export"):
+            self.assertIn(dependency, receipt["transitive_dependencies"][name])
+        for executable in ("biocompiler-core", "biocompiler-verify"):
+            self.assertNotIn(name, receipt["transitive_dependencies"]["executable:" + executable])
+        self.assertEqual(receipt["roles"]["bioc_reference_input"], "domain")
+        self.assertEqual(set(receipt["transitive_dependencies"]["bioc_reference_input"]),
+                         {"bioc_wire", "bioc_domain", "bioc_artifact", "bioc_checker", "zarith", "digestif"})
+        # Reviewed checker roles must reject a transitive producer even through
+        # an otherwise shared package library.
+        graph = dict(receipt["libraries_and_executables"])
+        graph["executable:biocompiler-verify"] = ["bioc_wire", name]
+        with self.assertRaisesRegex(boundaries.BoundaryError, "transitively depends on a producer"):
+            boundaries.validate_graph(graph, receipt["roles"])
 
     def test_reference_foundation_test_dependencies_and_private_support_are_exact(self):
         expected = {

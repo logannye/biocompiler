@@ -36,6 +36,12 @@ type emitter = W.t -> input:Json.t -> request:R.Request.t -> construct:R.Candida
 type emitter_bridge = {emit:emitter;
   host_proposal:W.t -> output:M.host_value -> source_links:C.Source_link.t list -> M.host_value}
 type host_links_equal = W.t -> actual:M.host_value list -> expected:C.Source_link.t list -> bool
+let retain_document budget raw=
+  if W.has_retention budget then begin
+    let limits=Verification_exploration.Codec.make_limits ~charge:(W.charge budget)() in
+    let size=Verification_exploration.Codec.measure ~limits raw in
+    W.retain budget(size.bytes+128*size.nodes+512)
+  end
 type authority = {request:R.Request.t;registry:Component_registry.t;
   manifests:(string * Reference_manifest.t) list}
 type final_source_bridge = {check_construct:W.t -> R.Candidate.t;
@@ -120,6 +126,10 @@ let prepare ~budget ?authority upstream =
     "molecular_profile",fingerprint(str(Build_request.Target.payload_format target^"-CDS"));
     "encoding_policy",Q.Encoding_policy.fingerprint encoding;
     "molecular_pipeline",fingerprint(str pipeline_version)] in
+  retain_document budget(Json.Object["request",R.Request.to_json authority_value.request;
+    "registry",Component_registry.to_json authority_value.registry;
+    "manifests",Json.Object(List.map(fun(key,value)->key,Reference_manifest.to_json value)authority_value.manifests);
+    "dependencies",Json.Object(List.map(fun(key,value)->key,str value)dependencies_value)]);
   {upstream_value=upstream;authority_value;dependencies_value}
 let dependencies (value:prepared) = value.dependencies_value
 let prepare_profile ~budget (prepared:prepared) =
@@ -127,7 +137,7 @@ let prepare_profile ~budget (prepared:prepared) =
   let completion=C.Completion_profile.make ~limits:(codec budget prepared.upstream_value)
       ~scope:"exact_cds" ~stage:C.Molecular ~schema:Q.Artifact.schema_version
       ~obligations:["reference_authority";"component_linkage";"construct_layout";"emitted_sequence_identity"] () in
-  {prepared;completion}
+  retain_document budget(C.Completion_profile.to_json completion);{prepared;completion}
 let completion_profile (value:profiled) = value.completion
 
 let source_links budget upstream source pass_name =
@@ -259,6 +269,7 @@ let prepare_registration ~budget ?provider_observer ?emitter_bridge ?host_links_
     M.Decision(C.Check_decision.make ~limits:(codec work upstream)
       ~outcome:(Composition_evidence.Result.outcome checked)
       ~detail:Composition_evidence.claim_scope ~evidence:(Composition_evidence.Result.to_json checked) ()) in
+  retain_document budget(C.Pass_contract.to_json contract_value);W.retain budget 768;
   Option.iter(fun observe->
     observe budget owner emit Emit;
     observe budget owner check Sequence_identity;
@@ -284,6 +295,8 @@ let finish ~budget ?final_source_bridge (registration:registration) ~record ~res
     ~registry:authority_value.registry ~manifests:authority_value.manifests () in
   let returned_construct_value=Option.map(fun (bridge:final_source_bridge)->
     W.charge budget 1;bridge.return_construct budget)final_source_bridge in
+  retain_document budget(Json.Object["candidate",Q.Artifact.to_json candidate_value;
+    "check",E.Result.to_json checked;"result",C.Pipeline_result.to_json result]);
   {upstream_value=upstream;authority_value;returned_construct_value;candidate_value;checked;record_value=record;result_value=result}
 let run_internal ~budget ?authority ?provider_observer ?emitter_bridge ?host_links_equal ?register_fixed ?final_source_bridge upstream =
   let prepared=prepare ~budget ?authority upstream in

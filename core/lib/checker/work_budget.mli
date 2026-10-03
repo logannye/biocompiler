@@ -2,8 +2,18 @@
     charging every ancestor. Exhaustion raises the scope's contextual resource
     diagnostic before any counters change; a budget grants no semantic authority. *)
 type t
-val create : profile:string -> error_code:string -> maximum:int -> unit -> t
-val nested : parent:t -> profile:string -> error_code:string -> maximum:int -> unit -> t
+val create : ?retain_bytes:(int -> unit) -> profile:string -> error_code:string -> maximum:int -> unit -> t
+val nested : ?retain_bytes:(int -> unit) -> parent:t -> profile:string -> error_code:string -> maximum:int -> unit -> t
+(* A retention sink can only be installed while creating a new owner. Nested
+   scopes inherit the same sink and may not replace it. Existing scopes without
+   a sink preserve their work accounting and require no retention callback.
+   The trusted callback reserves actual bytes cumulatively before allocation;
+   it must never confer semantic acceptance or refund previous reservations.
+   Configured owners reject prior work exhaustion before and after a sink call,
+   including work failures caught inside the sink; unconfigured profiles retain
+   their historical atomic-charge behavior. *)
+val retain : t -> int -> unit
+val has_retention : t -> bool
 val charge : t -> int -> unit
 (* Recognize the actual last failed charge raised through this scope, any
     ancestor, or a participating descendant. Caller-defined diagnostic codes

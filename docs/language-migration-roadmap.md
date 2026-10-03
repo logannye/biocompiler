@@ -20,6 +20,29 @@ Biological quality/correctness work has not begun.
   Python semantic paths and pass the complete integration/release gates for the
   exact integrated revision. Record evidence before pausing.
 
+**Active integration status, 2026-10-02:** [PR82](https://github.com/logannye/biocompiler/pull/82)
+contains the installed reference campaign and ordered-manager/historical-source
+corrections at `7645c254b170846cca2289090111241e20c3769d`. Its
+[hosted run](https://github.com/logannye/biocompiler/actions/runs/37089618070)
+has compiled successfully on Linux and macOS; both full native suites are running.
+At the latest check, 13 jobs have passed and no failed step is reported. This is
+partial evidence, not release acceptance. Earlier PR status paragraphs below are
+historical checkpoints, not the current integration state.
+
+- [x] **LM-24/25/26 native package workflow source checkpoint:** integrate
+  pinned input snapshots, native construction, abstract checked exports and
+  current package reconstruction under one persistent-data owner. Frozen witnesses
+  retain 17 input/constructor cases and eight complete original package cases on
+  both Python versions. Add three required hosted suites, for 117 total. Local
+  original-authority, graph, CI and fixture controls pass. See the
+  [package workflow design](migration-reference-package-workflow.md) and
+  [source evidence](../protocol/migration-reference-package-workflow-checkpoint.json). This marks
+  source integration only; it grants no native or installed acceptance.
+- [ ] **LM-24/25/26 native package workflow acceptance:** pass the complete
+  package and shared-budget suites on both hosted platforms; connect public
+  transport and current-module callpoints, independently check exact exported
+  archives, publish atomically and pass installed package/export campaigns.
+
 **Combined validation checkpoint:** PR61 run `37032666946` exposed a shared
 resource-diagnostic expectation error present in PR60–73. The source-backed
 [correction](../protocol/migration-authority-limit-correction.json) preserves the
@@ -153,7 +176,7 @@ corrections are included in PR78/79. Their native suite successes do not establi
 complete acceptance. The active counts are partial snapshots, not completed
 36-job release results.
 
-The next uncommitted integration batch wires the installed reference campaign
+The PR82 integration batch wires the installed reference campaign
 into the existing four platform/Python slots and requires separate actual Python
 3.11 and 3.14 interpreters for complete retained-frame reconstruction. All 24 CI
 gate controls pass on each local Python version. This is harness evidence only;
