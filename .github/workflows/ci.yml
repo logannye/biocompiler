@@ -1356,6 +1356,14 @@ jobs:
             --native-root "$GITHUB_WORKSPACE/artifacts/native" \
             --platform ${{ matrix.platform }} \
             --output "$GITHUB_WORKSPACE/generated/realization/pipeline-fixed-registration.json"
+          python "$GITHUB_WORKSPACE/tools/check_pipeline_reference_install.py" \
+            --core "$GITHUB_WORKSPACE/artifacts/native/biocompiler-core" \
+            --verify "$GITHUB_WORKSPACE/artifacts/native/biocompiler-verify" \
+            --core-sha256 "$BIOCOMPILER_WORKFLOW_CORE_SHA" \
+            --verify-sha256 "$BIOCOMPILER_WORKFLOW_VERIFY_SHA" \
+            --native-root "$GITHUB_WORKSPACE/artifacts/native" \
+            --platform ${{ matrix.platform }} \
+            --output "$GITHUB_WORKSPACE/generated/realization/pipeline-reference.json"
           python "$GITHUB_WORKSPACE/tools/check_pipeline_session_install.py" \
             --core "$GITHUB_WORKSPACE/artifacts/native/biocompiler-core" \
             --verify "$GITHUB_WORKSPACE/artifacts/native/biocompiler-verify" \
@@ -1461,8 +1469,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
+        id: reference_python311
         with:
           python-version: "3.11"
+      - uses: actions/setup-python@v5
+        id: reference_python314
+        with:
+          python-version: "3.14"
+          update-environment: false
       - name: Record job authority and start time
         run: python tools/ci_validation.py start --job realization-core-reproducibility --variant cross-platform --output generated/ci/start.json
       - uses: actions/download-artifact@v4
@@ -1478,7 +1492,9 @@ jobs:
           pattern: realization-*
           path: artifacts/realization
       - name: Install package for complete frozen conformance expectations
-        run: python -m pip install .
+        run: |
+          "${{ steps.reference_python311.outputs.python-path }}" -m pip install .
+          "${{ steps.reference_python314.outputs.python-path }}" -m pip install .
       - name: Require exact complete results across both Python versions and native platforms
         env:
           GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
@@ -1539,6 +1555,15 @@ jobs:
         env:
           GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
         run: python tools/check_pipeline_fixed_registration_install.py --compare --root artifacts/realization --native-root artifacts/core --output generated/realization-reproducibility/pipeline-fixed-registration.json
+      - name: Reconstruct original reference workflows with each actual Python runtime across all four installed slots
+        env:
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          python tools/check_pipeline_reference_install.py --compare \
+            --root artifacts/realization --native-root artifacts/core \
+            --python311 "${{ steps.reference_python311.outputs.python-path }}" \
+            --python314 "${{ steps.reference_python314.outputs.python-path }}" \
+            --output generated/realization-reproducibility/pipeline-reference.json
       - name: Retain complete comparison receipt
         if: always()
         uses: actions/upload-artifact@v4

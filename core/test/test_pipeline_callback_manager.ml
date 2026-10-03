@@ -130,7 +130,10 @@ let action peer name args=
  | "lookup"->let key=Json.string(json(value "object")) in
    let entries=List.map(function Json.Array[Json.String key;value]->key,value | _->failwith "lookup entry")
       (Json.array(get "entries" args)) in boxed(Data(List.assoc key entries))
- | "merge"->let before=Json.object_fields(get "before" args) and after=Json.object_fields(get "after" args) in
+ | "ordered-merge"->
+   let before=unordered(get "before_tree" args) and after=unordered(get "after_tree" args) in
+   require(same before(get "before" args) && same after(get "after" args)) "Ordered merge projection differs";
+   let before=Json.object_fields before and after=Json.object_fields after in
    let merged=List.fold_left(fun fields(key,value)->
      if List.mem_assoc key fields then List.map(fun(k,v)->k,if k=key then value else v)fields else fields@[key,value])
      before(Json.object_fields(json(value "object"))@after) in boxed(Data(obj merged))
@@ -265,6 +268,15 @@ let baseline_test baseline=
    ("Original full record differs: "^name))["input",input;"behavior",behavior;"mechanism",mechanism];
  require(same(get "bindings" behavior)(get "bindings" repeated)) "Repeated get changed record incarnation";
  require(same(get "artifact" completed)mechanism) "Result substituted a reconstructed record incarnation";
+ let checks=unordered(get "tree"(get "checks"(get "bindings" behavior))) in
+ List.iter(fun(_,check)->require(List.map fst(Json.object_fields check)=
+   ["id";"evidence_kind";"discharges";"outcome";"detail";"evidence";"subject";"dependencies"])
+   "Canonical framing changed recorded check insertion order";
+   let dependencies=unordered(get "tree"(get "dependencies"(get "bindings" behavior))) in
+   require(List.map fst(Json.object_fields(get "dependencies" check))=List.map fst(Json.object_fields dependencies))
+     "Canonical framing changed nested check dependency order") (Json.object_fields checks);
+ require(List.mem "ordered-merge" p.actions && not(List.mem "merge" p.actions))
+   "Manager exposed a lossy plain JSON merge instruction";
  require(same(get "value" completed)(get "result" baseline)) "Original scoped result differs";
  let history=success(nth result 9) in
  require(same(get "mechanism"(get "records" history))mechanism) "Inspection lost actual historical incarnation";

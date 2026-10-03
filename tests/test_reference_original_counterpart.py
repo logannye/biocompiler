@@ -99,7 +99,8 @@ class ReferenceOriginalCounterpartTests(unittest.TestCase):
             target = root / original.CORPUS
             target.parent.mkdir(parents=True, exist_ok=True)
             target.write_bytes((original.ROOT / original.CORPUS).read_bytes())
-            for logical in (original.CORE_BLOB, original.CORE_WITNESS, original.CORE_UPDATE, original.ROUTE_WITNESS):
+            for logical in (original.CORE_BLOB, original.CORE_WITNESS, original.CORE_UPDATE,
+                            original.CORE_MERGE_UPDATE, original.ROUTE_WITNESS):
                 target = root / logical
                 target.parent.mkdir(parents=True, exist_ok=True)
                 target.write_bytes((original.ROOT / logical).read_bytes())
@@ -122,11 +123,19 @@ class ReferenceOriginalCounterpartTests(unittest.TestCase):
         self.assertEqual(len(proof['correspondence']['changes']), 6)
         self.assertEqual(len(proof['update']['correspondence']['changes']), 1)
         self.assertEqual(proof['update']['correspondence']['predecessor']['sha256'], original.CORE_WITNESS_SHA)
+        extension = proof['ordered_merge_update']['correspondence']
+        self.assertEqual(extension['predecessor'], {'path': original.CORE_UPDATE, 'sha256': original.CORE_UPDATE_SHA})
+        self.assertEqual(extension['original_sha256'], original.CORE_ROUTING_SHA)
+        self.assertEqual(len(extension['changes']), 4)
         self.assertIn('current native bridge validation is separate', proof['scope'])
         for changed in (current + b'\n', archived,
                         current.replace(b'_require_native_manager(self)', b'_require_native_manager(None)', 1)):
             with self.subTest(pin=original.sha(changed)), self.assertRaisesRegex(AssertionError, 'exact counterpart'):
                 original.core_source_witness(changed)
+        changed = deepcopy(self.receipt)
+        changed['manifest']['core_source_witness']['ordered_merge_update']['correspondence']['changes'][-1]['after'] += '# forged\n'
+        with self.assertRaises(AssertionError):
+            original.validate(changed)
         witness = deepcopy(self.receipt)
         del witness['manifest']['core_source_witness']
         with self.assertRaisesRegex(AssertionError, 'Malformed original reference manifest'):

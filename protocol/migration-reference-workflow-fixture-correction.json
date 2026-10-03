@@ -1,7 +1,23 @@
 {
   "schema_version": "biocompiler.reference_workflow_fixture_correction.v1",
   "base_revision": "554e87e4f482c5118328edc31848d5440fb5bed4",
-  "evidence_scope": "Source-proven invalid native test fixtures; running hosted job logs unavailable; corrected native execution required",
+  "evidence_scope": "Missing request dependency confirmed by the retained PR78 macOS log; invalid opaque host handle remains source-proven; corrected native execution required",
+  "retained_failure_log": {
+    "run_id": 37085540379,
+    "job_id": 111095292478,
+    "platform": "macos-arm64",
+    "run_conclusion": "cancelled",
+    "path": "generated/migration-next/pr78-native-macos.log",
+    "diagnostic": "pipeline_error: Missing authoritative request dependency.",
+    "lines": [
+      752,
+      995
+    ],
+    "corrected_source_revision": "28d2b2ceb119015e5743819bab695e02e4d6b9a9",
+    "corrected_run_id": 37088041484,
+    "sha256": "a41f8859916d629c16713df0c9d3d7dba305b6357257bbb564612047bd52fada",
+    "bytes": 405795
+  },
   "observed_hosted_failures": {
     "runs": [
       37085540379,

@@ -117,16 +117,68 @@ pass on both Python versions. Required native suites increase to 112 while all
 work on `codex/ocaml-reference-package`. This source checkpoint grants no package or export acceptance; see
 the [source checkpoint](../protocol/migration-archive-foundation-checkpoint.json).
 
-The latest hosted status snapshot has PR75 run `37079154938` at 30 successful
-jobs with no reported failures; all four installed conformance campaigns are
-running. PR78 run `37085540379` has 22 successful jobs; its reference-workflow
-failure is reported above. A running job with an earlier failed step cannot
-confer acceptance.
+**Current package/export checkpoint:** [PR81](https://github.com/logannye/biocompiler/pull/81)
+is pushed at `28d2b2ceb119015e5743819bab695e02e4d6b9a9`; hosted
+[run 37088041484](https://github.com/logannye/biocompiler/actions/runs/37088041484)
+is active. Six typed manifest domains, structural package integrity and fresh
+sequence export checking retain 511 package and 140 sequence cases per runtime.
+The [source evidence](../protocol/migration-reference-package-foundation-checkpoint.json)
+records local controls and 114 required native suites. Two invalid workflow test
+fixtures are corrected in this batch; the
+[correction](../protocol/migration-reference-workflow-fixture-correction.json)
+preserves the manager request requirement, valid host handles and every assertion.
+Corrected native execution and full release acceptance remain pending. Public
+package routing and live package reconstruction remain separate open work.
+
+The latest hosted status snapshot (2026-10-02) has PR81 run
+`37088041484` with both native compilations, the full native suite step,
+the direct reference-workflow suite and the package/export suite passed on both
+platforms. Remaining native checks are still running. Its Python 3.14 unit shard
+failed the same historical Construct source assertion corrected below; the full
+release has not passed.
+PR75 run `37079154938` has a completed Linux/Python 3.14 workflow failure:
+the installed manager `run:sharing_and_order` case differs from its original
+expectation. The retained frames and complete documents show that canonical
+transport reordered nested check metadata; the current batch preserves complete
+ordered trees without changing the expected corpus. Its direct protocol and SDK
+routing steps passed; this checkpoint has not passed complete integration.
+PR78 run `37085540379` is terminally cancelled after its known failure. Its
+retained macOS log confirms `Missing authoritative request dependency` at both
+reference-workflow steps, matching the first fixture correction in PR81. The
+second host-handle correction remains source-proven until corrected execution.
+A running job with an earlier failed step cannot confer acceptance.
 The superseded, known-failed PR76 run `37079677511` and PR77 run `37081551087`
 are now terminally cancelled; their failure evidence is retained and their
 corrections are included in PR78/79. Their native suite successes do not establish
 complete acceptance. The active counts are partial snapshots, not completed
 36-job release results.
+
+The next uncommitted integration batch wires the installed reference campaign
+into the existing four platform/Python slots and requires separate actual Python
+3.11 and 3.14 interpreters for complete retained-frame reconstruction. All 24 CI
+gate controls pass on each local Python version. This is harness evidence only;
+the campaign itself and the four cutoff acceptance boxes remain open. Prebuilt
+distribution drafting has passed 39 focused pure-Python controls on each version;
+native linkage, source/license material packaging and fresh installations remain
+unvalidated. Package orchestration and manager reuse compatibility are active
+implementation work, not completed release items.
+
+- [x] **LM-03/12/25 installed reference campaign source checkpoint:** preserve
+  all 18 original methods, 27 actual manager processes and 439 top-level manager
+  operations through explicit public routing. Complete framed traffic, source
+  guards, object-identity graphs and matching-Python reconstruction are wired
+  into all four existing installed slots and their comparison gate. The 59
+  campaign/source/traceback controls pass on both local Python versions. This
+  checkbox records source and harness controls only; actual installed native
+  execution and the manager integration acceptance gate remain open.
+- [x] **LM-03/25 ordered check metadata and historical harness correction:**
+  preserve nested insertion order through a bounded manager-only transport
+  action; 67 manager/broker controls pass on each Python version. Restore the
+  exact reviewed reference entry prefixes in historical source/child validation;
+  all 20 affected controls pass on each version. Original tests, corpora and
+  exception recipes remain unchanged. See the
+  [installed workflow design](migration-reference-installed-workflows.md).
+  Hosted corrected execution remains mandatory; no cutoff box closes here.
 
 Initial PR76 failure diagnosis separates two harness issues: the original-source
 capture rejects installed function paths (the PR77 canonical original-child

@@ -70,17 +70,32 @@ let restore_source_lines current changes =
 let reference_manager_original root name expected current =
   let old_pin="40a08477c97a97159372d9723267df3cacf8335a59d6b00ada34bb56470e31f3"
   and previous_pin="0c0cfac138484cf71f1bb1303e66873b8b148ca236e07930fdbadd0b477a11be"
-  and current_pin="18ee9bd517524b4440bcf29292a5d834470603713d662198b83ca61373c7fd09"
+  and routed_pin="18ee9bd517524b4440bcf29292a5d834470603713d662198b83ca61373c7fd09"
+  and current_pin="562052f3848c27ccb3fd19f156bd019da44aed58abe8cd4a2c7bd922ba07fc5b"
   and witness_path="tests/conformance/reference-manager-source-counterpart-v1.json"
   and witness_pin="9f4406d46a7d18db944094ea6875a1daceb3d327b2da8e8029250e312ea833f8" in
   require(name="src/biocompiler/core_pipeline_manager.py" && expected=old_pin &&
     Canonical.sha256 current=current_pin) "Unreviewed original reference source substitution";
+  let merge=source_witness root "tests/conformance/reference-manager-source-counterpart-v3.json"
+    "dd91ae7b9929f5806105245461a70874609781eb93a9dceffed53cfeffe13455" in
+  let merge_predecessor=field "predecessor" merge in
+  require(text "schema_version" merge="biocompiler.reference_manager_source_counterpart.v3" &&
+    text "path" merge=name && text "original_sha256" merge=routed_pin &&
+    text "current_sha256" merge=current_pin &&
+    text "base_revision" merge="28d2b2ceb119015e5743819bab695e02e4d6b9a9" &&
+    text "path" merge_predecessor="tests/conformance/reference-manager-source-counterpart-v2.json" &&
+    text "sha256" merge_predecessor="d19d7e706876ac234e2f3e5a45c66ebbf9625599a880c15dec64595c1bbed8e4")
+    "Ordered merge source update lost its exact predecessor";
+  let merge_changes=array "changes" merge in
+  require(List.length merge_changes=4) "Ordered merge finite source change census differs";
+  let routed=restore_source_lines current merge_changes in
+  require(Canonical.sha256 routed=routed_pin) "Ordered merge whole source restoration differs";
   let update=source_witness root "tests/conformance/reference-manager-source-counterpart-v2.json"
     "d19d7e706876ac234e2f3e5a45c66ebbf9625599a880c15dec64595c1bbed8e4" in
   let predecessor=field "predecessor" update in
   require(text "schema_version" update="biocompiler.reference_manager_source_counterpart.v2" &&
     text "path" update=name && text "original_sha256" update=previous_pin &&
-    text "current_sha256" update=current_pin &&
+    text "current_sha256" update=routed_pin &&
     text "base_revision" update="e73743bc2f17597b57ac15869986255802289615" &&
     text "path" predecessor=witness_path && text "sha256" predecessor=witness_pin)
     "Reference manager source update lost its exact authority";
@@ -92,7 +107,7 @@ let reference_manager_original root name expected current =
     String.starts_with ~prefix:"_APPLICATION_JSON = " (text "before" change) &&
     String.starts_with ~prefix:"_APPLICATION_JSON = " (text "after" change))
     "Reference manager update is not its exact declaration assignment";
-  let previous=restore_source_lines current updates in
+  let previous=restore_source_lines routed updates in
   require(Canonical.sha256 previous=previous_pin) "Reference preceding complete module differs";
   let witness=source_witness root witness_path witness_pin in
   require(text "schema_version" witness="biocompiler.reference_manager_source_counterpart.v1" &&

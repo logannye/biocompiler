@@ -1,0 +1,364 @@
+{
+  "schema_version": "biocompiler.reference_installed_workflow_checkpoint.v1",
+  "base_revision": "28d2b2ceb119015e5743819bab695e02e4d6b9a9",
+  "status": "source_and_python_controls_pass_hosted_native_integration_pending",
+  "native_local_execution": false,
+  "production_default": "python",
+  "cutoff_gates_complete": [],
+  "coverage": {
+    "native_internal_events_retained": 1718,
+    "original_events": 2220,
+    "original_managers": 27,
+    "original_methods": 18,
+    "original_top_level_manager_operations": 439,
+    "public_methods": 412,
+    "source_emit_callpoints": 13,
+    "source_generate_callpoints": 23
+  },
+  "campaign_source_validation": {
+    "coverage": {
+      "native_internal_events_retained": 1718,
+      "original_events": 2220,
+      "original_managers": 27,
+      "original_methods": 18,
+      "original_top_level_manager_operations": 439,
+      "public_methods": 412,
+      "source_emit_callpoints": 13,
+      "source_generate_callpoints": 23
+    },
+    "independent_static_review": "session_native found no actionable gap in source callpoints, native evidence, reconstruction, complete saved receipts and runtime comparison; static only",
+    "native_execution": false,
+    "schema": "biocompiler.reference_installed_source_validation.v1",
+    "scope": "Mandatory real Core source/binary/run/process/raw-frame evidence precedes separate byte-exact current-client reconstruction. Current source graph controls and Python peers do not establish installed native parity. Prior original corpora and all trace exception recipes remain unchanged.",
+    "source_base_revision": "28d2b2ceb119015e5743819bab695e02e4d6b9a9",
+    "source_pins": {
+      "tests/conformance/manager-registration-runtime-sites-v4.json": "b45b65a8db0260c173f8d77d644b24470ea6f832a70923b899ad47bc1dabb083",
+      "tests/conformance/reference-manager-source-counterpart-v3.json": "dd91ae7b9929f5806105245461a70874609781eb93a9dceffed53cfeffe13455",
+      "tests/test_pipeline_reference_campaign.py": "59477587599050f3dcc2a3a8cbfd4749813dc3f627dc31363d4133c295caa3ef",
+      "tests/test_pipeline_reference_runtime.py": "50b248572f6879f94b93e2a67cf4f567c9c01349c9cd72b6b41724a6f6613af5",
+      "tests/test_reference_execution_guard.py": "09c0da26c628f4fd28c16aa0f2f0e023912adbdaa655dd1e8c3e43a7e24a2acf",
+      "tests/test_reference_original_counterpart.py": "fc03af55773b2358d17120b6e623a8ea71d117bd626ed88c63fb819722b63819",
+      "tests/test_reference_pipeline_transcript.py": "369fd9e59af8c6f030f0af83a8edc352abdefba1a7afa90656dad28a0d540090",
+      "tools/check_pipeline_manager_install.py": "6c428ffc46bb000b97d463cbcf23b3cfc6577d0f923d8cba19d96171da7dff27",
+      "tools/check_pipeline_reference_install.py": "cdaf7f7ecbd5a2c34d08631209d1c8fac1aa029d0c1b5f1f178bd1ab1688d7f8",
+      "tools/check_realization_workflow_corpus.py": "15cfafd6658f753b9e6b644bc24ec40b4bd5bc982f7280d5c28aa5991a0d9d97",
+      "tools/pipeline_reference_runtime.py": "34b5a08297ed5cd1b9930058b195cf911976d6562398ab068c78282c4a54e044",
+      "tools/pipeline_registration_guard.py": "5053e3e85a73334862cb9a08c244d248afb0cb6eda966bae9299ff930b456576",
+      "tools/reference_execution_guard.py": "c774811fec7c57357cc48ab566e3e4e4f860ef407fa57183071ff2ec8f52b91f",
+      "tools/reference_original_counterpart.py": "a7925e96a0ae582e86afa609f9268fcfa053c313b847ad609eb4bc78e4ee9785",
+      "tools/reference_pipeline_transcript.py": "85d98d0c04b2418265a6dbd49cd25dff2016319c27b1de0b3725557f30e922c2"
+    },
+    "status": "source_controls_pass_installed_native_replay_pending",
+    "tests": [
+      {
+        "count": 17,
+        "modules": [
+          "tests.test_reference_original_counterpart",
+          "tests.test_workflow_source_lineage"
+        ],
+        "python": "3.14.6",
+        "seconds": 30.448
+      },
+      {
+        "count": 17,
+        "modules": [
+          "tests.test_reference_original_counterpart",
+          "tests.test_workflow_source_lineage"
+        ],
+        "python": "3.11.15",
+        "seconds": 25.357
+      },
+      {
+        "count": 42,
+        "modules": [
+          "tests.test_pipeline_manager_trace",
+          "tests.test_reference_execution_guard",
+          "tests.test_pipeline_reference_campaign",
+          "tests.test_pipeline_reference_runtime",
+          "tests.test_reference_pipeline_transcript"
+        ],
+        "python": "3.14.6",
+        "seconds": 60.044
+      },
+      {
+        "count": 42,
+        "modules": [
+          "tests.test_pipeline_manager_trace",
+          "tests.test_reference_execution_guard",
+          "tests.test_pipeline_reference_campaign",
+          "tests.test_pipeline_reference_runtime",
+          "tests.test_reference_pipeline_transcript"
+        ],
+        "python": "3.11.15",
+        "seconds": 57.837
+      }
+    ]
+  },
+  "ordered_merge_hosted_diagnosis": {
+    "affected_fields": "record.checks inner check mapping order and nested dependencies order only",
+    "artifact_id": "11260859502",
+    "before_correction_current_head_fixed": false,
+    "case": "run:sharing_and_order",
+    "correction": "Manager-only ordered-merge carries complete ordered trees plus exact canonical projections, with native lifetime reservation before allocating trees. Checked Python ordered instruction is retained as a call argument to the unchanged broker merge evaluator, preserving actual mapping hooks/overwrites/exceptions.",
+    "differing_leaves": 16,
+    "evidence": {
+      "pr75-linux314-authority-artifact.zip": {
+        "bytes": 7369226,
+        "sha256": "fad4759deb7463bc09cd7c598689cb003c89739c2ed03cf63572916aaf3d37ab"
+      },
+      "pr75-linux314-manager-receipt.json": {
+        "bytes": 159065,
+        "sha256": "87a083c77c56e7b48f0ce41f196ef47444a498b65ebd950150a489bb5208f945"
+      },
+      "pr75-linux314-merge-invocations.json": {
+        "bytes": 4697,
+        "sha256": "40eb96cc50bea13925194ab30c65e30b79e93dccdec1e2bf49295537b51b8eae"
+      },
+      "pr75-linux314-sharing-actual.json": {
+        "bytes": 15887,
+        "sha256": "e9576c53fc252a1b1264b534279bbcddc640cf2d3b6404f9da213ba9aef100d9"
+      },
+      "pr75-linux314-sharing-diff.json": {
+        "bytes": 4875,
+        "sha256": "c6fa7e309ab202e8dd8ceb8d941f61e42d3885446e44bcf2ae23845d288eca8f"
+      },
+      "pr75-linux314-sharing-original.json": {
+        "bytes": 15887,
+        "sha256": "510ba250d2a3d5ffae5cceee4ae0567e62519878ed2f0cc66682d817d5cace91"
+      },
+      "pr75-linux314-workflow-authority-failure.log": {
+        "bytes": 44186,
+        "sha256": "c8c022d4f9a627548cb198d88e488d91d3ae9210b92bd038eef2c8674421202b"
+      }
+    },
+    "failure": "AssertionError: Complete original manager identity/order observation differs: run:sharing_and_order",
+    "job_id": "111094434863",
+    "native_execution_local": false,
+    "platform": "linux-x86_64",
+    "python": "3.14.7",
+    "reviewed_current_head": "28d2b2ceb119015e5743819bab695e02e4d6b9a9",
+    "root_cause": [
+      "Canonical frame serialization sorts before/after plain JSON object keys recursively.",
+      "CallbackObjects.execute also canonical-copies instruction arguments before _evaluate.",
+      "Plain merge dict unpack preserves received sorted order rather than source insertion order; ordered-json later cannot recover it."
+    ],
+    "run_id": "37079154938",
+    "schema": "biocompiler.hosted_ordered_merge_diagnosis.v1",
+    "source_revision": "10edf3b397c1def9f5afef6983767745e1e7859f",
+    "tested_revision": "a1b8d800a85fa318e2c226b47232682c53b2161c"
+  },
+  "python_validation": {
+    "manager_and_broker": {
+      "tests_per_runtime": 67,
+      "python314_seconds": 0.059,
+      "python311_seconds": 0.058
+    },
+    "historical_source_and_fixed_build": {
+      "tests_per_runtime": 20,
+      "python314_seconds": 32.645,
+      "python311_seconds": 31.036
+    },
+    "boundaries_inventory_ci": {
+      "tests_per_runtime": 59,
+      "python314_seconds": 30.87,
+      "python311_seconds": 32.117
+    },
+    "strict_mypy": {
+      "modules": 27,
+      "status": "pass"
+    },
+    "migration_inventory": {
+      "entries": 3301,
+      "status": "pass"
+    },
+    "group_overlap": "Counts are separate focused groups and must not be summed as a distinct test census."
+  },
+  "unit_harness_failures": {
+    "diagnosis": "Exact reviewed reference routing prefixes were absent from the historical source validator and fixed-build canonical original child closure.",
+    "original_test_bodies_changed": false,
+    "original_corpora_changed": false,
+    "logs": {
+      "job-111098010192.log": {
+        "sha256": "30ce1551da91756798807381396c5484fca5e4a67c15f8b450cc9ee7494c1526",
+        "bytes": 167398
+      },
+      "job-111098010218.log": {
+        "sha256": "1058bd2f02c907da378afa654f1eaa955be7f93d98bfe8a6b61c824a3af87c4e",
+        "bytes": 172730
+      },
+      "job-111099673715.log": {
+        "sha256": "6062855318c98c29d744f10dfbb854dc44acf9f344f899a2e2c51d06979fd779",
+        "bytes": 180408
+      },
+      "job-111102506538.log": {
+        "sha256": "3aee56d47d06d714dbbb8b3eebd1e1cde15d06207923185664bd673aa0c77991",
+        "bytes": 182914
+      }
+    }
+  },
+  "hosted_required": {
+    "native_platforms": [
+      "linux-x86_64",
+      "macos-arm64"
+    ],
+    "python_versions": [
+      "3.11",
+      "3.14"
+    ],
+    "native_suites_per_platform": 114,
+    "required_release_jobs": 36,
+    "installed_original_tests_per_slot": 18,
+    "actual_matching_python_reconstruction": true,
+    "complete_artifact_comparison": true
+  },
+  "pending": [
+    "hosted installed original workflow execution and complete release gates",
+    "manager reuse and remaining public manager compatibility",
+    "remaining supported workflow families",
+    "complete canonical package and public export ownership",
+    "prebuilt distributions and fresh installations",
+    "production cutover and retirement of validated Python semantic paths"
+  ],
+  "files": {
+    ".github/workflows/ci.yml": {
+      "sha256": "d607ace93c2d5a28596018a91f5ee7c85fa5a091a261678e6971f2f84328e3a0",
+      "bytes": 109365
+    },
+    "core/lib/pipeline_service/callback_manager.ml": {
+      "sha256": "21e4014250d54fce6ff7e26759c89de5b27a1a65c6eb6da004fe2a9942573cba",
+      "bytes": 114131
+    },
+    "core/test/test_pipeline_callback_manager.ml": {
+      "sha256": "159e1f4a32df84c3198ccd0a073ca5892e39131e7a784db91d2ba837d38aa196",
+      "bytes": 73490
+    },
+    "core/test/test_reference_callback_manager.ml": {
+      "sha256": "783589274472810967040dc17db3422148ab5cff789f8c23460dfd66ed8b2b5f",
+      "bytes": 40613
+    },
+    "core/test/test_reference_contracts_corpus.ml": {
+      "sha256": "6c13ea4ad131abd1741d19f70d19535ebd8bef7eab2f6f962b3d632d0f78a3a6",
+      "bytes": 28227
+    },
+    "docs/language-migration-roadmap.md": {
+      "sha256": "886c589386874fc85d1537320b9dedf76453b298c24a0d04250f1e61888e2277",
+      "bytes": 160157
+    },
+    "docs/migration-reference-installed-workflows.md": {
+      "sha256": "3d3a31378580cd2b76a3a50161fe398727e20eacdd130d015c5a62e5b9acd402",
+      "bytes": 3975
+    },
+    "protocol/migration-inventory.json": {
+      "sha256": "d53de4e90cbd3e696363d5e1fd90d95a301f87623c76d63884b40a2cb2330a21",
+      "bytes": 1520390
+    },
+    "protocol/migration-reference-workflow-fixture-correction.json": {
+      "sha256": "d6639c453543ae440427c7b5127073804b3796595d46a934a6f13a17e0b6a373",
+      "bytes": 2590
+    },
+    "protocol/pipeline-callback-manager-v1.json": {
+      "sha256": "058221e74d5bc9f5ffc06e9f98fa68e2dba32ca8de39e4a556b194cb1bcbc17a",
+      "bytes": 24368
+    },
+    "src/biocompiler/core_pipeline_manager.py": {
+      "sha256": "562052f3848c27ccb3fd19f156bd019da44aed58abe8cd4a2c7bd922ba07fc5b",
+      "bytes": 92817
+    },
+    "tests/conformance/manager-registration-runtime-sites-v4.json": {
+      "sha256": "b45b65a8db0260c173f8d77d644b24470ea6f832a70923b899ad47bc1dabb083",
+      "bytes": 13060
+    },
+    "tests/conformance/reference-manager-source-counterpart-v3.json": {
+      "sha256": "dd91ae7b9929f5806105245461a70874609781eb93a9dceffed53cfeffe13455",
+      "bytes": 55565
+    },
+    "tests/test_ci_validation.py": {
+      "sha256": "bffd9f3c13e6421781ec7a0b5755f19bf208b67d8dc15a32c968d4f5e5bd31ac",
+      "bytes": 35802
+    },
+    "tests/test_core_pipeline_ordered_merge.py": {
+      "sha256": "d686ca5280e647b83cb55d23051a6425f6699bbf61387ed39f259d7755ca72f8",
+      "bytes": 5660
+    },
+    "tests/test_pipeline_historical_source_integrity.py": {
+      "sha256": "d52b47e90fd66db6260e01460d3ccc685056d07f9d0fbaa581c90cd40d02a816",
+      "bytes": 6644
+    },
+    "tests/test_pipeline_reference_campaign.py": {
+      "sha256": "59477587599050f3dcc2a3a8cbfd4749813dc3f627dc31363d4133c295caa3ef",
+      "bytes": 18963
+    },
+    "tests/test_pipeline_reference_runtime.py": {
+      "sha256": "50b248572f6879f94b93e2a67cf4f567c9c01349c9cd72b6b41724a6f6613af5",
+      "bytes": 7930
+    },
+    "tests/test_reference_execution_guard.py": {
+      "sha256": "09c0da26c628f4fd28c16aa0f2f0e023912adbdaa655dd1e8c3e43a7e24a2acf",
+      "bytes": 17023
+    },
+    "tests/test_reference_original_counterpart.py": {
+      "sha256": "fc03af55773b2358d17120b6e623a8ea71d117bd626ed88c63fb819722b63819",
+      "bytes": 14008
+    },
+    "tests/test_reference_pipeline_transcript.py": {
+      "sha256": "369fd9e59af8c6f030f0af83a8edc352abdefba1a7afa90656dad28a0d540090",
+      "bytes": 6908
+    },
+    "tools/check_pipeline_manager_install.py": {
+      "sha256": "6c428ffc46bb000b97d463cbcf23b3cfc6577d0f923d8cba19d96171da7dff27",
+      "bytes": 163349
+    },
+    "tools/check_pipeline_reference_install.py": {
+      "sha256": "cdaf7f7ecbd5a2c34d08631209d1c8fac1aa029d0c1b5f1f178bd1ab1688d7f8",
+      "bytes": 91164
+    },
+    "tools/check_realization_workflow_corpus.py": {
+      "sha256": "15cfafd6658f753b9e6b644bc24ec40b4bd5bc982f7280d5c28aa5991a0d9d97",
+      "bytes": 9219
+    },
+    "tools/pipeline_historical_source_integrity.py": {
+      "sha256": "3dd93213dee282cc471632b02639f69945afe07e0e6d3637254f1358735ebbec",
+      "bytes": 1860
+    },
+    "tools/pipeline_original_counterpart.py": {
+      "sha256": "d848f8fc2153265fcb099f4366213ccc2cd31f96692380fb013047a2d2cef4fb",
+      "bytes": 25365
+    },
+    "tools/pipeline_reference_runtime.py": {
+      "sha256": "34b5a08297ed5cd1b9930058b195cf911976d6562398ab068c78282c4a54e044",
+      "bytes": 17006
+    },
+    "tools/pipeline_registration_guard.py": {
+      "sha256": "5053e3e85a73334862cb9a08c244d248afb0cb6eda966bae9299ff930b456576",
+      "bytes": 11547
+    },
+    "tools/reference_execution_guard.py": {
+      "sha256": "c774811fec7c57357cc48ab566e3e4e4f860ef407fa57183071ff2ec8f52b91f",
+      "bytes": 37119
+    },
+    "tools/reference_original_counterpart.py": {
+      "sha256": "a7925e96a0ae582e86afa609f9268fcfa053c313b847ad609eb4bc78e4ee9785",
+      "bytes": 30814
+    },
+    "tools/reference_pipeline_transcript.py": {
+      "sha256": "85d98d0c04b2418265a6dbd49cd25dff2016319c27b1de0b3725557f30e922c2",
+      "bytes": 13240
+    }
+  },
+  "discovery": [
+    {
+      "python": "3.14.6",
+      "tests": 3278,
+      "classes": 326,
+      "test_ids_sha256": "f22abdd7aed4c13b328d8bd1a9ac6cd64bea94281ec4749607edd74adeb14f25",
+      "scope": "discovery only, not execution"
+    },
+    {
+      "python": "3.11.15",
+      "tests": 3278,
+      "classes": 326,
+      "test_ids_sha256": "f22abdd7aed4c13b328d8bd1a9ac6cd64bea94281ec4749607edd74adeb14f25",
+      "scope": "discovery only, not execution"
+    }
+  ]
+}

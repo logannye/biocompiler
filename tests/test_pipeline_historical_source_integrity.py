@@ -12,6 +12,31 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class PipelineHistoricalSourceIntegrityTests(unittest.TestCase):
+    def test_reference_entry_prefixes_require_exact_whole_source_correspondence(self):
+        from tools import reference_original_counterpart as reference
+        for logical in reference.ROUTE_SOURCES:
+            original, witness = reference.route_source_witness(logical)
+            pin = lineage.sha(original)
+            proof = verify_source_identity(ROOT, logical, pin)
+            self.assertEqual(proof['historical_sha256'], pin)
+            self.assertEqual(proof['kind'], 'reference_entry_prefix')
+            self.assertEqual(proof['witness_sha256'], reference.ROUTE_WITNESS_SHA)
+            with tempfile.TemporaryDirectory() as directory:
+                root = Path(directory)
+                path = root / logical
+                path.parent.mkdir(parents=True)
+                path.write_bytes(original)
+                self.assertEqual(verify_source_identity(root, logical, pin)['kind'], 'identical_bytes')
+                current = (ROOT / logical).read_bytes()
+                for changed in (current + b'\n# unrelated edit\n',
+                                current.replace(b'if _reference_route is not None:', b'if True:', 1)):
+                    self.assertNotEqual(changed, current)
+                    path.write_bytes(changed)
+                    with self.subTest(path=logical), self.assertRaises(AssertionError):
+                        verify_source_identity(root, logical, pin)
+                    with self.assertRaises(AssertionError):
+                        verify_source_identity(root, logical, lineage.sha(changed))
+
     def test_only_exact_manager_prefix_can_explain_a_changed_source(self):
         pin = lineage.HISTORICAL[lineage.PATH]
         current = (ROOT / lineage.PATH).read_bytes()
