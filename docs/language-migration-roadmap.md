@@ -20,14 +20,31 @@ Biological quality/correctness work has not begun.
   Python semantic paths and pass the complete integration/release gates for the
   exact integrated revision. Record evidence before pausing.
 
-**Active integration status, 2026-10-02:** [PR82](https://github.com/logannye/biocompiler/pull/82)
-contains the installed reference campaign and ordered-manager/historical-source
-corrections at `7645c254b170846cca2289090111241e20c3769d`. Its
-[hosted run](https://github.com/logannye/biocompiler/actions/runs/37089618070)
-has compiled successfully on Linux and macOS; both full native suites are running.
-At the latest check, 13 jobs have passed and no failed step is reported. This is
-partial evidence, not release acceptance. Earlier PR status paragraphs below are
-historical checkpoints, not the current integration state.
+**Active integration status, 2026-10-02:** [PR83](https://github.com/logannye/biocompiler/pull/83)
+contains the native package library checkpoint at
+`64eb5a3964c726abab4e3691c6eb13bd53c25693`. Its
+[hosted run](https://github.com/logannye/biocompiler/actions/runs/37090290216)
+has compiled successfully on Linux and macOS. At the latest check, 16 jobs have
+passed. Both platforms passed all 117 native suites and the direct package/export
+checks; remaining native integration work and nine unit shards are in progress. This is partial
+evidence, not release acceptance. The predecessor
+[PR82 run](https://github.com/logannye/biocompiler/actions/runs/37089618070)
+exposed an archive-capture test-harness assumption that incorrectly required a
+checkout path when the original module was installed. The correction binds
+actual installed bytes, executable function code and canonical module globals
+to the unchanged original; all 11 focused controls pass on Python 3.11.15 and
+3.14.6. Corrected hosted execution is still required. Earlier PR status
+paragraphs below are historical checkpoints, not current acceptance.
+
+- [x] **LM-03 installed archive origin correction, local checkpoint:** preserve
+  all 125 original archive cases, source bytes and expectations while accepting
+  the exact original module from an installed location. Reject changed installed
+  bytes, changed executable code, copied foreign globals and replaced module
+  identity. Both runtime controls pass; this grants no native or release acceptance.
+  See the [source correction evidence](../protocol/migration-archive-installed-origin-correction.json).
+- [ ] **LM-03 installed archive origin correction, hosted acceptance:** pass
+  the corrected installed-package unit shards and complete release accounting
+  for the integrated source revision.
 
 - [x] **LM-24/25/26 native package workflow source checkpoint:** integrate
   pinned input snapshots, native construction, abstract checked exports and
@@ -38,6 +55,13 @@ historical checkpoints, not the current integration state.
   [package workflow design](migration-reference-package-workflow.md) and
   [source evidence](../protocol/migration-reference-package-workflow-checkpoint.json). This marks
   source integration only; it grants no native or installed acceptance.
+- [x] **LM-24/25/26 hosted native package suite checkpoint:** PR83 source
+  `64eb5a3964c726abab4e3691c6eb13bd53c25693`, run `37090290216`, passes
+  all 117 native suites and the direct original-snapshot, complete-package,
+  persistent-owner and checked-export steps on Linux x86_64 and macOS arm64.
+  [Job-step evidence](../protocol/migration-reference-package-native-milestone.json)
+  records library execution only. Complete jobs, artifact reconstruction,
+  installed public routes and release acceptance remain required.
 - [ ] **LM-24/25/26 native package workflow acceptance:** pass the complete
   package and shared-budget suites on both hosted platforms; connect public
   transport and current-module callpoints, independently check exact exported
