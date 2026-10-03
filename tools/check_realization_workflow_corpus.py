@@ -29,7 +29,7 @@ REVIEWED_ADDITIONS = {
     "src/biocompiler/core_reference_manager.py": "188830c06e5865d65d4997558d602e9c28668e1d7f163693c515f306661c22f2",
     "src/biocompiler/core_reference_provider_views.py": "1b4989571d71292eaa9998787f249fd7d60439958cbc8da6f36c2acca39c6bce",
     "src/biocompiler/core_reference_views.py": "a295b4583be057a743959d077add14ae7c5424086f7edddd322dfb188786d9f9",
-    "src/biocompiler/core_pipeline_callback_session.py": "0ff388509eb9c123b87cf5decc1f35cf5eaca61a02d84a756beba7150de17018",
+    "src/biocompiler/core_pipeline_callback_session.py": "96cf3c4c70231f3039e2e16c51efc06bc202c86208f94dbddd5f438996c1bb5a",
     "src/biocompiler/pipeline_callback_objects.py": "ac5198795c3e80cff511e0fe372dc578a983d8be947e41dd9debd9f719da9eec",
     "src/biocompiler/core_pipeline_session.py": "b0c744d8f3a38b1681805250ccf93884ba866678527cf366bcf08ff326da080d",
     "src/biocompiler/core_synthetic_inspection.py": "5ab68d6f1dac300af1e0d7431f5ba45aa2df493c1f446a8ccd67b56ae831178f",

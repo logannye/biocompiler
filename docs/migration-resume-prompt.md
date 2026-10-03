@@ -14,23 +14,19 @@ local changes and use the latest verified repository state. Earlier PRs and
 source-only receipts are historical evidence, not transferable acceptance.
 
 The immediate task is PR85 consolidation and its already-authorized cleanup.
-Source `0dd0fe54f3d1f0e502b30188f096cb5387fbb9b2`, run `37121925726`,
-passes both native jobs, SDK assembly and all 3,398 unit tests on both runtimes.
-Its fresh macOS/Python 3.14.7 manager campaign passes all 86 cases and its
-complete 16,346-artifact receipt independently replays with the current checker.
-The next fixed-provider campaign fails at startup: its frozen historical
-`pipeline.py` pin needs the existing exact registration-prefix lineage check,
-as already used by the continuation campaign. The narrow correction retains
-all original oracle bytes and every other source pin; a separate source
-counterpart preserves the unchanged 14-file installed-path proof. Read the
-[latest correction evidence](migration-handoff/2026-10-03/fixed-provider-lineage-correction/correction.json)
-and the earlier [source-witness](migration-handoff/2026-10-03/deferred-source-witness-correction/correction.json)
-and [context corrections](migration-handoff/2026-10-03/deferred-context-correction/correction.json).
-The adjacent registration runtime now uses the reviewed owned-layout resolver
-for installed binaries while retaining all identity checks. Both complete
-historical checker/runtime sources remain recoverable through finite source
-proofs. All 40 focused controls pass on both local runtimes; discovery is now
-3,408 tests/350 classes, with ten tests added and none removed.
+Source `b27f52447f49c749d33cac17f3bbb6fe772cbc24`, run `37133499708`,
+passes both complete native jobs, SDK assembly and all 3,408 unit tests on both
+runtimes. Its fresh macOS/Python 3.14.7 manager campaign passes all 86 cases.
+The original temporal provider case then exceeds the callback session's
+one-million-node lifetime ceiling; the next continuation would reach 1,020,793
+nodes. Its whole campaign is failed. The correction introduces callback resource
+profile v2 with a two-million-node lifetime budget and an explicit one-million-node
+per-frame ceiling. All other caps, framing and original campaign cases remain.
+Exact declaration matching rejects mixed endpoint profiles. Native and Python
+transport plus the independent receipt checker enforce both budgets. Finite
+source witnesses preserve whole historical sources and immutable oracle data.
+Read the [callback-budget correction evidence](migration-handoff/2026-10-03/callback-budget-correction/correction.json)
+for measured failure, exact source pins, local controls and remaining hosted work.
 No complete fresh-install slot or full release gate is accepted yet.
 Require the corrected revision's four complete fresh-install campaigns and all
 38 required CI jobs, then merge and prove older heads are contained before

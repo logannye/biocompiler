@@ -30,6 +30,12 @@ TEST = 'tests/test_reference_contracts_corpus.py'
 TEST_SHA = '84df82fd9a57d18ad022d68a318aeb3495ff0a724b1205a73cb8092d20c2133b'
 RUNNER = 'tools/reference_original_counterpart.py'
 CORE_SOURCE = 'src/biocompiler/core_pipeline_manager.py'
+CALLBACK_SOURCE = 'src/biocompiler/core_pipeline_callback_session.py'
+CALLBACK_ORIGINAL_SHA = '0ff388509eb9c123b87cf5decc1f35cf5eaca61a02d84a756beba7150de17018'
+CALLBACK_CURRENT_SHA = '96cf3c4c70231f3039e2e16c51efc06bc202c86208f94dbddd5f438996c1bb5a'
+CALLBACK_BLOB = 'tests/conformance/reference-original-sources-v1/' + CALLBACK_ORIGINAL_SHA + '.blob'
+CALLBACK_WITNESS = 'tests/conformance/reference-callback-source-counterpart-v1.json'
+CALLBACK_WITNESS_SHA = 'e3be989e0a76913f64ec959d4354bb4a352c70e0bf661ca58df68db15e544b5c'
 CORE_ORIGINAL_SHA = '40a08477c97a97159372d9723267df3cacf8335a59d6b00ada34bb56470e31f3'
 CORE_PREVIOUS_SHA = '0c0cfac138484cf71f1bb1303e66873b8b148ca236e07930fdbadd0b477a11be'
 CORE_ROUTING_SHA = '18ee9bd517524b4440bcf29292a5d834470603713d662198b83ca61373c7fd09'
@@ -202,6 +208,47 @@ def core_source_witness(raw=None):
         'scope': 'original source execution only; current native bridge validation is separate'}
 
 
+def callback_source_witness(raw=None):
+    """Restore one exact resource-profile update to its whole archived client."""
+    encoded = local_file(ROOT, CALLBACK_WITNESS).read_bytes()
+    require(sha(encoded) == CALLBACK_WITNESS_SHA, 'Reference callback source witness changed')
+    witness = json.loads(encoded)
+    require(set(witness) == {'schema_version', 'base_revision', 'path', 'original_sha256',
+        'current_sha256', 'original_bytes', 'current_bytes', 'changes', 'scope'} and
+        witness['schema_version'] == 'biocompiler.reference_callback_source_counterpart.v1' and
+        witness['base_revision'] == 'b27f52447f49c749d33cac17f3bbb6fe772cbc24' and
+        witness['path'] == CALLBACK_SOURCE and witness['original_sha256'] == CALLBACK_ORIGINAL_SHA and
+        witness['current_sha256'] == CALLBACK_CURRENT_SHA and
+        witness['scope'] == 'Exact historical source restoration only; current resource profile validation is separate',
+        'Reference callback source correspondence differs')
+    current = local_file(ROOT, CALLBACK_SOURCE).read_bytes() if raw is None else raw
+    archived = local_file(ROOT, CALLBACK_BLOB).read_bytes()
+    require(type(current) is bytes and sha(current) == CALLBACK_CURRENT_SHA and
+        len(current) == witness['current_bytes'], 'Captured reference callback source is outside its exact counterpart')
+    require(sha(archived) == CALLBACK_ORIGINAL_SHA and len(archived) == witness['original_bytes'],
+        'Original reference callback archive changed')
+    changes = witness['changes']
+    fields = ('old_start_line', 'old_end_line', 'new_start_line', 'new_end_line')
+    require(type(changes) is list and len(changes) == 8 and all(type(row) is dict and
+        set(row) == {*fields, 'before', 'after'} and all(type(row[key]) is int for key in fields) and
+        type(row['before']) is str and type(row['after']) is str for row in changes) and
+        [tuple(row[key] for key in fields) for row in changes] ==
+        [(31, 31, 31, 31), (33, 33, 33, 33), (309, 309, 309, 309), (377, 376, 377, 379),
+         (380, 380, 383, 383), (411, 411, 414, 414), (421, 421, 424, 425), (430, 430, 434, 435)],
+        'Reference callback exact source span census differs')
+    lines, original = current.decode().splitlines(keepends=True), archived.decode().splitlines(keepends=True)
+    for row in changes:
+        require(''.join(lines[row['new_start_line']-1:row['new_end_line']]) == row['after'] and
+            ''.join(original[row['old_start_line']-1:row['old_end_line']]) == row['before'],
+            'Reference callback complete source span differs')
+    for row in reversed(changes):
+        lines[row['new_start_line']-1:row['new_end_line']] = row['before'].splitlines(keepends=True)
+    require(''.join(lines).encode() == archived, 'Reference callback restoration differs from entire archived source')
+    return archived, {'path': CALLBACK_SOURCE, 'archive': CALLBACK_BLOB, 'archive_sha256': CALLBACK_ORIGINAL_SHA,
+        'current_sha256': CALLBACK_CURRENT_SHA, 'witness': CALLBACK_WITNESS, 'witness_sha256': CALLBACK_WITNESS_SHA,
+        'correspondence': witness, 'scope': witness['scope']}
+
+
 def route_source_witness(logical, raw=None):
     """Remove only the two pinned five-line public entry prefixes."""
     require(logical in ROUTE_SOURCES, 'Unknown reference route source')
@@ -270,7 +317,8 @@ def data_closure(index):
         result.append({'logical': logical, 'sha256': sha(raw), 'bytes': len(raw)})
     for logical, identity in ((CORE_BLOB, CORE_ORIGINAL_SHA), (CORE_WITNESS, CORE_WITNESS_SHA),
                               (CORE_UPDATE, CORE_UPDATE_SHA), (CORE_MERGE_UPDATE, CORE_MERGE_UPDATE_SHA),
-                              (CORE_ATTEMPT_UPDATE, CORE_ATTEMPT_UPDATE_SHA), (ROUTE_WITNESS, ROUTE_WITNESS_SHA)):
+                              (CORE_ATTEMPT_UPDATE, CORE_ATTEMPT_UPDATE_SHA), (ROUTE_WITNESS, ROUTE_WITNESS_SHA),
+                              (CALLBACK_BLOB, CALLBACK_ORIGINAL_SHA), (CALLBACK_WITNESS, CALLBACK_WITNESS_SHA)):
         raw = local_file(ROOT, logical).read_bytes()
         require(sha(raw) == identity, 'Reference exact Core counterpart data changed')
         result.append({'logical': logical, 'sha256': identity, 'bytes': len(raw)})
@@ -287,6 +335,9 @@ def source_closure(index, package_root):
         if logical == CORE_SOURCE:
             require(identity == CORE_ORIGINAL_SHA, 'Frozen reference Core authority changed')
             copied, _ = core_source_witness(raw)
+        elif logical == CALLBACK_SOURCE:
+            require(identity == CALLBACK_ORIGINAL_SHA, 'Frozen reference callback authority changed')
+            copied, _ = callback_source_witness(raw)
         elif logical in ROUTE_SOURCES:
             copied, _ = route_source_witness(logical, raw)
             require(sha(copied) == identity, 'Frozen reference public route authority changed')
@@ -330,6 +381,7 @@ def run(*, test_module=TEST_MODULE, test_ids=None):
                     'test_module': test_module, 'test_ids': ids, 'sources': rows, 'data': data,
                     'test_witness': witness, 'source_inventory': index['source_files'],
                     'core_source_witness': core_source_witness()[1],
+                    'callback_source_witness': callback_source_witness()[1],
                     'route_source_witnesses': [route_source_witness(path)[1] for path in ROUTE_SOURCES]}
         (overlay / 'manifest.json').write_bytes(canonical(manifest))
         script = ('import sys;sys.path[:0]=[sys.argv[1],sys.argv[1]+"/src",sys.argv[1]+"/tests"];'
@@ -367,7 +419,7 @@ def validate(receipt):
             'Malformed original reference receipt')
     manifest = receipt['manifest']
     require(type(manifest) is dict and set(manifest) == {'schema', 'root', 'package_root', 'test_module', 'test_ids',
-            'sources', 'data', 'test_witness', 'source_inventory', 'core_source_witness', 'route_source_witnesses'} and manifest['schema'] == SCHEMA,
+            'sources', 'data', 'test_witness', 'source_inventory', 'core_source_witness', 'callback_source_witness', 'route_source_witnesses'} and manifest['schema'] == SCHEMA,
             'Malformed original reference manifest')
     root, package_root = Path(manifest['root']), Path(manifest['package_root'])
     require(root.is_absolute() and package_root.is_absolute(), 'Original reference roots differ')
@@ -378,6 +430,8 @@ def validate(receipt):
     sources, witness = source_closure(index, package_root)
     require(manifest['core_source_witness'] == core_source_witness()[1],
             'Original reference Core source correspondence differs')
+    require(manifest['callback_source_witness'] == callback_source_witness()[1],
+            'Original reference callback source correspondence differs')
     require(manifest['route_source_witnesses'] == [route_source_witness(path)[1] for path in ROUTE_SOURCES],
             'Original reference public route correspondence differs')
     require(manifest['test_witness'] == witness, 'Original reference whole-test correspondence differs')

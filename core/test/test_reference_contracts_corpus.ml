@@ -154,9 +154,41 @@ let reference_routed_original root name expected current =
     "Reference public five-line source prefix differs";
   String.sub current 0 offset ^ String.sub current (offset+count) (String.length current-offset-count)
 
+let reference_callback_original root name expected current =
+  let old_pin="0ff388509eb9c123b87cf5decc1f35cf5eaca61a02d84a756beba7150de17018"
+  and current_pin="96cf3c4c70231f3039e2e16c51efc06bc202c86208f94dbddd5f438996c1bb5a" in
+  require(name="src/biocompiler/core_pipeline_callback_session.py" && expected=old_pin &&
+    Canonical.sha256 current=current_pin) "Unreviewed reference callback source substitution";
+  let witness=source_witness root "tests/conformance/reference-callback-source-counterpart-v1.json"
+    "e3be989e0a76913f64ec959d4354bb4a352c70e0bf661ca58df68db15e544b5c" in
+  Json.exact_fields ["schema_version";"base_revision";"path";"original_sha256";"current_sha256";
+    "original_bytes";"current_bytes";"changes";"scope"] (Json.object_fields witness);
+  require(text "schema_version" witness="biocompiler.reference_callback_source_counterpart.v1" &&
+    text "base_revision" witness="b27f52447f49c749d33cac17f3bbb6fe772cbc24" &&
+    text "path" witness=name && text "original_sha256" witness=old_pin &&
+    text "current_sha256" witness=current_pin && integer(field "original_bytes" witness)=32312 &&
+    integer(field "current_bytes" witness)=String.length current &&
+    text "scope" witness="Exact historical source restoration only; current resource profile validation is separate")
+    "Reference callback source witness lost its exact authority";
+  let changes=array "changes" witness in
+  let spans=List.map(fun change ->
+    Json.exact_fields ["old_start_line";"old_end_line";"new_start_line";"new_end_line";"before";"after"]
+      (Json.object_fields change);
+    integer(field "old_start_line" change),integer(field "old_end_line" change),
+    integer(field "new_start_line" change),integer(field "new_end_line" change)) changes in
+  require(spans=[31,31,31,31;33,33,33,33;309,309,309,309;377,376,377,379;
+    380,380,383,383;411,411,414,414;421,421,424,425;430,430,434,435])
+    "Reference callback exact source span census differs";
+  let restored=restore_source_lines current changes in
+  require(String.length restored=integer(field "original_bytes" witness))
+    "Reference callback whole source byte count differs";
+  restored
+
 let reference_original root name expected current =
   let restored=if name="src/biocompiler/core_pipeline_manager.py" then
     reference_manager_original root name expected current
+    else if name="src/biocompiler/core_pipeline_callback_session.py" then
+      reference_callback_original root name expected current
     else reference_routed_original root name expected current in
   let archived=read_raw ~maximum:1_000_000(Filename.concat root
     ("tests/conformance/reference-original-sources-v1/"^expected^".blob")) in

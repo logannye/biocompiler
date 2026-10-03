@@ -1900,7 +1900,10 @@ def validate_frames(rows, artifacts, channel, application, *, sessions=None, det
         require(value["protocol"] == channel["protocol"] and value["profile"] == channel["profile"]
             and value["session_id"] == session_id, "Cross-session callback frame or changed protocol")
         require(len(raw) - 9 <= limits["max_frame_bytes"], "Callback frame exceeds selected bound")
-        nodes += json_nodes(value)
+        frame_nodes = json_nodes(value)
+        require(frame_nodes <= min(channel["fixed_limits"]["max_frame_json_nodes"], limits["max_json_nodes"]),
+            "Callback frame exceeds selected JSON node bound")
+        nodes += frame_nodes
         require(nodes <= limits["max_json_nodes"], "Cumulative JSON node budget exceeded")
         projected = deepcopy(value)
         projected["session_id"] = "<validated-session-uuid4>"

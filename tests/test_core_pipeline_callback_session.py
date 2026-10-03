@@ -518,6 +518,102 @@ class CallbackSessionTests(unittest.TestCase):
                     session.call('echo', value)
                 self.assertTrue(session.invalidated)
 
+    def test_v2_lifetime_crosses_old_ceiling_and_reduced_lifetime_still_closes(self):
+        self.assertEqual(capability_profile()['profile'], 'biocompiler.core.pipeline_callback_channel.v2')
+        self.assertEqual(capability_profile()['limits']['max_json_nodes'], 2_000_000)
+        self.assertEqual(capability_profile()['fixed_limits']['max_frame_json_nodes'], 1_000_000)
+        payload = [None] * 180_000
+        for ceiling in (2_000_000, 1_000_000):
+            with self.subTest(ceiling=ceiling):
+                limits = capability_profile()['limits']
+                limits['max_json_nodes'] = ceiling
+                session = self.session(self.core(timeout_seconds=30), limits=limits)
+                pid = session.pid
+                totals = []
+                for _ in range(2):
+                    response = session.call('echo', payload)
+                    self.assertEqual(response.result, payload)
+                    totals.append(response.usage['json_nodes'])
+                if ceiling == 2_000_000:
+                    response = session.call('echo', payload)
+                    self.assertEqual(response.result, payload)
+                    totals.append(response.usage['json_nodes'])
+                    self.assertGreater(totals[-1], 1_000_000)
+                    self.assertEqual(totals, sorted(set(totals)))
+                    self.assertEqual(session.pid, pid)
+                    session.close()
+                    self.assertFalse(session.invalidated)
+                else:
+                    with self.assertRaisesRegex(CoreProtocolError, 'document limits'):
+                        session.call('echo', payload)
+                    self.assertTrue(session.invalidated)
+                    self.assertIsNotNone(session.returncode)
+                    before = len(session.traffic)
+                    with self.assertRaisesRegex(CoreProtocolError, 'cannot reconnect'):
+                        session.call('echo', None)
+                    self.assertEqual(len(session.traffic), before)
+
+    def test_exact_and_one_short_lifetime_boundary_include_close_frames(self):
+        limits = capability_profile()['limits']
+        limits['max_json_nodes'] = 10_000
+        probe = self.session(limits=limits)
+        probe.call('echo', [None] * 200)
+        exact = probe.close().usage['json_nodes']
+        for ceiling in (exact, exact - 1):
+            with self.subTest(ceiling=ceiling):
+                limits = capability_profile()['limits']
+                limits['max_json_nodes'] = ceiling
+                session = self.session(limits=limits)
+                response = session.call('echo', [None] * 200)
+                self.assertLess(response.usage['json_nodes'], ceiling)
+                if ceiling == exact:
+                    self.assertEqual(session.close().usage['json_nodes'], ceiling)
+                    self.assertFalse(session.invalidated)
+                    self.assertEqual(session.returncode, 0)
+                else:
+                    with self.assertRaisesRegex(CoreProtocolError, 'document limits'):
+                        session.close()
+                    self.assertTrue(session.invalidated)
+                    self.assertIsNotNone(session.returncode)
+
+    def test_one_million_node_frame_cap_remains_separate_from_lifetime(self):
+        session = self.session(self.core(before_reply="outcome = {'status':'ok','value':None}", timeout_seconds=30))
+        skeleton = {'protocol': transport.PROTOCOL, 'profile': transport.PROFILE,
+            'session_id': session._nonce, 'kind': 'command', 'sequence': 1,
+            'parent_invocation': None, 'operation': 'echo', 'arguments': []}
+        count = 1_000_000 - transport._nodes(skeleton)
+        response = session.call('echo', [None] * count)
+        self.assertEqual(transport._nodes(session.traffic[-2].value), 1_000_000)
+        self.assertGreater(response.usage['json_nodes'], 1_000_000)
+        before = len(session.traffic)
+        with self.assertRaisesRegex(CoreProtocolError, 'node limit'):
+            session.call('echo', [None] * (count + 1))
+        self.assertEqual(len(session.traffic), before)
+        self.assertFalse(session.invalidated)  # Local encoding rejected before any I/O.
+        session.close()
+        session = self.session(self.core(before_reply="outcome = {'status':'ok','value':[None]*1_000_000}",
+            timeout_seconds=30))
+        with self.assertRaisesRegex(CoreProtocolError, 'node limit'):
+            session.call('echo', None)
+        self.assertTrue(session.invalidated)
+        self.assertIsNotNone(session.returncode)
+
+    def test_old_resource_profile_and_declaration_rejected_before_application(self):
+        old = capability_profile()
+        old['profile'] = 'biocompiler.core.pipeline_callback_channel.v1'
+        old['limits']['max_json_nodes'] = 1_000_000
+        del old['fixed_limits']['max_frame_json_nodes']
+        marker = Path(self.directory.name) / 'application-was-used'
+        mutations = ["value['profile'] = 'biocompiler.core.pipeline_callback_channel.v1'",
+            f"value['outcome']['value']['declaration'] = {old!r}"]
+        for mutation in mutations:
+            with self.subTest(mutation=mutation):
+                core = self.core(before='if next_event == 0: ' + mutation,
+                    before_reply=f"open({str(marker)!r}, 'w').write('used')")
+                with self.assertRaises(CoreProtocolError):
+                    self.session(core)
+                self.assertFalse(marker.exists())
+
     def test_thread_process_and_binary_pin_checks(self):
         session = self.session()
         errors = []

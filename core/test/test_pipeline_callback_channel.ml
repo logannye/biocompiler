@@ -288,6 +288,82 @@ let test_lifetime_nodes () =
   let h=harness () in enqueue h (hello ~limits:(controls "max_json_nodes" minimum) ());enqueue h (command 1 "echo" (Json.Array (List.init 30 (fun _ -> Json.Null))));
   let state=create h echo in C.run state;fatal h state;
   require (List.length (responses h)=2) "Cumulative parser node limit was only enforced per frame"
+let test_resource_profile () =
+  require (C.protocol="biocompiler.pipeline_callback_channel.v1" &&
+    C.profile="biocompiler.core.pipeline_callback_channel.v2") "Framing or resource profile identity differs";
+  require (integer "max_json_nodes" (get "limits" C.declaration)=2_000_000 &&
+    integer "max_frame_json_nodes" (get "fixed_limits" C.declaration)=1_000_000)
+    "Resource profile conflates frame and lifetime nodes";
+  let original_profile=str "biocompiler.core.pipeline_callback_channel.v1" in
+  let original=set "profile" original_profile
+    (set "limits" (controls "max_json_nodes" 1_000_000)
+      (set "fixed_limits" (obj (List.remove_assoc "max_frame_json_nodes"
+        (Json.object_fields (get "fixed_limits" C.declaration)))) C.declaration)) in
+  List.iter (fun greeting ->
+    let h=harness () and dispatched=ref false in
+    enqueue h greeting;enqueue h (command 1 "echo" Json.Null);
+    let state=create h (fun _ _ -> dispatched:=true;C.Success Json.Null) in
+    C.run state;fatal h state;
+    require (not !dispatched && List.length (responses h)=1)
+      "Old resource declaration reached application dispatch")
+    [set "profile" original_profile (set "declaration" original (hello ()));
+     set "declaration" original (hello ())]
+let node_session limits left right =
+  let h=harness () and dispatched=ref 0 in
+  enqueue h (hello ~limits ());
+  enqueue h (command 1 "consume" (Json.Array (List.init left (fun _ -> Json.Null))));
+  enqueue h (command 2 "consume" (Json.Array (List.init right (fun _ -> Json.Null))));
+  enqueue h (close 3);
+  let state=create h (fun _ _ -> incr dispatched;C.Success Json.Null) in
+  C.run state;h,state,!dispatched
+let test_profile_lifetime_boundary () =
+  (* Derive framing overhead from a complete real exchange. Only array cardinality
+     changes, so an independent key/value census fixes the exact lifetime total. *)
+  let payloads limits =
+    let baseline,_,count=node_session limits 0 0 in
+    require (count=2 && Json.boolean (get "closed" (last baseline))) "Node baseline did not close";
+    census baseline;
+    let remaining=2_000_000-integer "json_nodes" (get "usage" (last baseline)) in
+    let left=remaining/2 in
+    let right=remaining-left in
+    List.iter (fun count -> require (count+nodes (command 1 "consume" (Json.Array []))<=1_000_000)
+      "Lifetime fixture exceeds the independent frame ceiling") [left;right];
+    left,right in
+  let left,right=payloads Json.Null in
+  let exact,_,count=node_session Json.Null left right in
+  require (count=2 && Json.boolean (get "closed" (last exact)) &&
+    text "kind" (last exact)="reply" && integer "json_nodes" (get "usage" (last exact))=2_000_000)
+    "Default profile did not admit its exact cumulative node boundary";
+  census exact;
+  let left,right=payloads (controls "max_json_nodes" 2_000_000) in
+  let short,state,count=node_session (controls "max_json_nodes" 1_999_999) left right in
+  fatal short state;
+  require (count=2 && short.input="" && List.length (responses short)=4)
+    "One-short lifetime limit did not withhold only the final close reply";
+  let reduced,state,count=node_session (controls "max_json_nodes" 1_000_000) left right in
+  fatal reduced state;
+  require (count<2) "Reduced original lifetime ceiling was reset or ignored"
+let test_frame_node_boundaries () =
+  let run incoming count =
+    let h=harness () and dispatched=ref false in
+    let large=Json.Array (List.init count (fun _ -> Json.Null)) in
+    enqueue h (hello ());
+    enqueue h (command 1 "frame" (if incoming then large else Json.Null));
+    enqueue h (close 2);
+    let state=create h (fun _ _ -> dispatched:=true;C.Success (if incoming then Json.Null else large)) in
+    C.run state;h,state,!dispatched in
+  List.iter (fun incoming ->
+    let baseline,_,_=run incoming 0 in
+    let overhead=if incoming then nodes (command 1 "frame" (Json.Array []))
+      else nodes (List.nth (responses baseline) 1) in
+    let exact,_,dispatched=run incoming (1_000_000-overhead) in
+    require (dispatched && text "kind" (last exact)="reply" &&
+      Json.boolean (get "closed" (last exact))) "Exact frame node boundary was rejected";
+    census exact;
+    let overflow,state,dispatched=run incoming (1_000_001-overhead) in
+    fatal overflow state;
+    require (dispatched=(not incoming) && List.length (responses overflow)=2)
+      "Oversized frame reached dispatch or publication under the larger lifetime ceiling") [true;false]
 let test_retention_no_refund () =
   let h=harness () and retentions=ref [] and next=ref 2 in
   enqueue h (hello ());enqueue h (command 1 "twice" Json.Null);
@@ -332,6 +408,7 @@ let () =
   equal "Embedded channel declaration differs from repository authority" C.declaration (parse (read Sys.argv.(1)));
   List.iter (fun test -> test ()) [test_simple;test_nested;test_host_exception;test_rejection_and_internal;
     test_bad_continuations;test_wrong_nested_parent;test_outer_continuation_during_inner;test_framing;
-    test_uncertain_write;test_reductions;test_lifetime_resources;test_lifetime_nodes;test_retention_no_refund;
+    test_uncertain_write;test_reductions;test_lifetime_resources;test_lifetime_nodes;test_resource_profile;
+    test_profile_lifetime_boundary;test_frame_node_boundaries;test_retention_no_refund;
     test_wrong_hello_and_unsolicited;test_output_budget_event;test_mutated_input_body_binding];
   print_endline "pipeline callback channel framing, nested continuations and lifetime limits: PASS"

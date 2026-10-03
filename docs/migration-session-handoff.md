@@ -65,6 +65,29 @@ complete 38-job release gate remain required before consolidation. Finish this
 consolidation and its authorized cleanup before resuming migration scope. Do not
 report this checkpoint as merged or release-accepted from partial results.
 
+**Latest correction, 2026-10-03:** source
+`b27f52447f49c749d33cac17f3bbb6fe772cbc24`, run `37133499708`, passes
+both complete native jobs, SDK assembly and all 3,408 unit tests on both hosted
+runtimes. Its fresh macOS/Python 3.14.7 manager campaign passes all 86 cases.
+The provider campaign now starts, but its original temporal case exceeds the
+one-million-node lifetime budget: the next continuation would raise cumulative
+usage from 982,095 to 1,020,793 nodes. The complete provider campaign fails;
+completed static cases do not establish campaign acceptance.
+
+The correction introduces resource profile
+`biocompiler.core.pipeline_callback_channel.v2`, with a two-million-node
+lifetime budget and an explicit one-million-node per-frame ceiling. Framing,
+command syntax and all other resource caps are unchanged. Exact declaration
+matching rejects mismatched endpoints before application dispatch. Python,
+OCaml and the independent receipt checker enforce both bounds. Historical
+source archives and original oracle documents remain unchanged; finite pinned
+source restorations preserve their existing checks. See
+[callback-budget correction evidence](migration-handoff/2026-10-03/callback-budget-correction/correction.json).
+Focused pure-Python controls, startup loaders, discovery and static checks are
+recorded there. New native boundary cases have not run locally. Require this
+corrected revision's full hosted gate; earlier native and unit success does not
+transfer to it. All four migration cutoff gates remain open.
+
 ## Copy/paste task for the next Codex session
 
 Resume Biocompiler's Python-to-OCaml semantic-core migration. Preserve the user's language decisions: TypeScript/HTML/CSS for Studio; Python for scientific authoring, orchestration and exploratory search; OCaml for semantic analysis, behavioral/mechanism/architecture/molecular compiler passes, independent verification, canonical artifacts and export acceptance. The physical biological system remains empirical, outside software compilation.

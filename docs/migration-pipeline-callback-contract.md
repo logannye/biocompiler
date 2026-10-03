@@ -91,6 +91,25 @@ Arbitrary trusted Python callback CPU and opaque Python closure captures cannot
 be measured by the native work counter; the contract must state that limit rather
 than claim a bound on extension execution. Process cancellation closes authority.
 
+The current resource profile is `biocompiler.core.pipeline_callback_channel.v2`:
+`max_json_nodes` bounds the complete session at 2,000,000 keys and values, while
+the fixed `max_frame_json_nodes` retains the original 1,000,000-node ceiling for
+each frame. A negotiated lifetime reduction also bounds each frame. Framing,
+the `--pipeline-callback-session-v1` argument and the declaration schema remain
+v1; all byte, work, retention, depth, command and invocation limits are unchanged.
+Exact profile and complete-declaration negotiation rejects old/new endpoint
+combinations before application use, with no fallback or budget reset.
+
+This correction follows PR85 source `b27f5244`, run `37133499708`: the original
+temporal fixed-provider case reached 982,095 nodes, then required a 38,698-node
+continuation, exceeding v1's lifetime ceiling. Its original same-manager calls,
+typed return observations and identity graph remain required. The finite v2
+capacity is a resource policy, not evidence that the complete installed case or
+release passes; current hosted execution must establish that separately. Native,
+Python transport and independent receipt checks distinguish the frame and
+lifetime boundaries, retaining terminal failure and rejection of reduced-limit
+overflow.
+
 Preserve the existing 467-method capture, 91,566 manager events, 1,596 callbacks,
 34 equality cases and all fixed-pipeline observations. Add an independent original
 Python supplement for deferred conversion, nested run/register/admit, exception

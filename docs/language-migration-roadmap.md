@@ -108,6 +108,27 @@ drafts are preserved separately and are not production integrations.
   and network use forbidden; this is source validation, not native acceptance.
   The 3,310-entry inventory retains every semantic entry and migration state.
   See [failure, correction and scoped evidence](migration-handoff/2026-10-03/fixed-provider-lineage-correction/correction.json).
+- [x] **LM-12/30 provider execution and budget diagnosis checkpoint:** source
+  `b27f52447f49c749d33cac17f3bbb6fe772cbc24`, run `37133499708`, passes
+  both complete native jobs, SDK assembly and all 3,408 unit tests on both hosted
+  runtimes. The fresh macOS/Python 3.14.7 manager passes all 86 cases. The
+  original temporal provider case fails at the one-million-node cumulative
+  ceiling: its next continuation would reach 1,020,793 nodes. The complete
+  provider campaign and fresh-install release are not accepted.
+- [x] **LM-12 callback resource profile v2, source checkpoint:** use an explicit
+  two-million-node lifetime ceiling while retaining a one-million-node per-frame
+  ceiling. Keep framing and all other resource caps; reject mismatched endpoint
+  declarations before application dispatch. Native/Python transports and the
+  independent receipt checker enforce both bounds. Preserve immutable source
+  archives and oracle documents through finite separately pinned restorations.
+  On each local runtime, 25 callback controls, 61 checker controls, 18 reference
+  controls, 22 source-guard controls and 13 inventory tests pass. All 17 startup
+  loaders and strict mypy for 28 transport modules pass. Discovery adds exactly
+  eight tests with none removed: 3,416 IDs/351 classes. The 3,310-entry inventory
+  changes only the callback source/profile identity and additive test coverage;
+  migration states remain unchanged. Native boundary tests and full fresh-installed
+  acceptance remain hosted obligations.
+  See [correction and scoped local evidence](migration-handoff/2026-10-03/callback-budget-correction/correction.json).
 - [ ] **LM-12/R6 corrected deferred-context installed evidence:** bind the
   observed source-link tuple to the actual native callback and complete receipt,
   retain original values/identity/order checks, and rerun every installed manager

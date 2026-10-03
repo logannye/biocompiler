@@ -20,6 +20,36 @@ CONTEXT_DELTA=ROOT/'tests/conformance/deferred-context-checker-source-delta-v1.j
 CONTEXT_DELTA_SHA256='c052ed313423f5b4a016b8f8474d50a9364e278904983f3d139eb9e1ca8e4253'
 PROVIDER_DELTA=ROOT/'tests/conformance/fixed-provider-checker-source-delta-v1.json'
 PROVIDER_DELTA_SHA256='67c11513477659bb81c2e9a0cfb87191fd669cf2caf2acce0962e77f54a50b8b'
+BUDGET_DELTA=ROOT/'tests/conformance/callback-budget-checker-source-delta-v1.json'
+BUDGET_DELTA_SHA256='6cb03e6dfa5c76528bf9370be992634b6a9fbad5219a1e43c042090abd48ff8b'
+
+
+def restore_callback_budget_source(current, proof_bytes):
+    """Restore the exact checker before the separate per-frame node bound."""
+    def require(condition,message):
+        if not condition:raise AssertionError(message)
+    require(hashlib.sha256(proof_bytes).hexdigest()==BUDGET_DELTA_SHA256,
+        'Unreviewed callback-budget source witness')
+    proof=json.loads(proof_bytes)
+    require(set(proof)=={'schema','path','historical','current','spans'}
+        and proof['schema']=='biocompiler.callback_budget_checker_source_delta.v1'
+        and proof['path']=='tools/check_pipeline_manager_install.py',
+        'Callback-budget witness shape differs')
+    require(proof['current']=={'bytes':len(current),'sha256':hashlib.sha256(current).hexdigest()},
+        'Current checker differs from the reviewed callback-budget correction')
+    spans=proof['spans']
+    require(type(spans) is list and len(spans)==1 and set(spans[0])=={'offset','before','after'}
+        and type(spans[0]['offset']) is int and spans[0]['offset']>=0
+        and spans[0]['before']=='        nodes += json_nodes(value)\n'
+        and type(spans[0]['after']) is str and spans[0]['after'],
+        'Callback-budget source span census differs')
+    row=spans[0];offset=row['offset'];before=row['before'].encode();after=row['after'].encode()
+    require(current[offset:offset+len(after)]==after,'Callback-budget source span bytes differ')
+    restored=current[:offset]+before+current[offset+len(after):]
+    require(proof['historical']=={'revision':'b27f52447f49c749d33cac17f3bbb6fe772cbc24',
+        'bytes':len(restored),'sha256':hashlib.sha256(restored).hexdigest()},
+        'Complete historical callback checker source differs')
+    return restored
 
 
 def restore_deferred_context_source(current, proof_bytes):
@@ -184,6 +214,7 @@ class HostedCiPlanTests(unittest.TestCase):
         for name,row in proof.items():
             old=Path(str(SOURCE/name)+'.source').read_text();new=(ROOT/name).read_bytes()
             if name=='tools/check_pipeline_manager_install.py':
+                new=restore_callback_budget_source(new,BUDGET_DELTA.read_bytes())
                 new=restore_deferred_context_source(new,CONTEXT_DELTA.read_bytes())
             elif name=='tools/check_pipeline_fixed_provider_install.py':
                 new=restore_fixed_provider_source(new,PROVIDER_DELTA.read_bytes())
@@ -202,7 +233,8 @@ class HostedCiPlanTests(unittest.TestCase):
         self.assertEqual(block.count('name: realization-'),4)
 
     def test_deferred_context_restoration_rejects_unreviewed_or_extra_source_changes(self):
-        current=(ROOT/'tools/check_pipeline_manager_install.py').read_bytes()
+        current=restore_callback_budget_source((ROOT/'tools/check_pipeline_manager_install.py').read_bytes(),
+            BUDGET_DELTA.read_bytes())
         witness=CONTEXT_DELTA.read_bytes();proof=json.loads(witness)
         restored=restore_deferred_context_source(current,witness)
         self.assertEqual(hashlib.sha256(restored).hexdigest(),
@@ -229,6 +261,31 @@ class HostedCiPlanTests(unittest.TestCase):
         changed=json.loads(witness);changed['spans'][0]['offset']+=1
         with self.assertRaisesRegex(AssertionError,'Unreviewed deferred-context source witness'):
             restore_deferred_context_source(current,json.dumps(changed,sort_keys=True,indent=2).encode()+b'\n')
+
+    def test_callback_budget_restoration_preserves_prior_source_proofs(self):
+        current=(ROOT/'tools/check_pipeline_manager_install.py').read_bytes()
+        witness=BUDGET_DELTA.read_bytes();proof=json.loads(witness)
+        restored=restore_callback_budget_source(current,witness)
+        self.assertEqual(hashlib.sha256(restored).hexdigest(),
+            '59f94bb142d7097160dd08fef700f458a362865fb6b6ad8142c530fac5fe0edb')
+        self.assertEqual(hashlib.sha256(restore_deferred_context_source(restored,CONTEXT_DELTA.read_bytes())).hexdigest(),
+            'd12f67bf4080b15a96856342e87e8678007e6093188b1a36540c7f337f6463b7')
+        for label,mutant in {
+                'historical source':restored,
+                'comparison boundary':current.replace(b'frame_nodes <= min(',b'frame_nodes < min('),
+                'unrelated body':current.replace(b'def validate_deferred_accesses(',b'def unchecked_accesses('),
+                'additional function':current+b'\ndef unreviewed():\n    return True\n',
+                'newline normalization':current.replace(b'\n',b'\r\n')}.items():
+            with self.subTest(change=label):
+                self.assertNotEqual(mutant,current)
+                with self.assertRaises(AssertionError):restore_callback_budget_source(mutant,witness)
+                forged=json.loads(witness)
+                forged['current']={'bytes':len(mutant),'sha256':hashlib.sha256(mutant).hexdigest()}
+                with self.assertRaisesRegex(AssertionError,'Unreviewed callback-budget source witness'):
+                    restore_callback_budget_source(mutant,json.dumps(forged,sort_keys=True,indent=2).encode()+b'\n')
+        proof['spans'][0]['offset']+=1
+        with self.assertRaisesRegex(AssertionError,'Unreviewed callback-budget source witness'):
+            restore_callback_budget_source(current,json.dumps(proof,sort_keys=True,indent=2).encode()+b'\n')
 
 
     def test_fixed_provider_restoration_rejects_unreviewed_source_changes(self):

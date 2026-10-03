@@ -1,0 +1,9 @@
+{"module": "check_native_workflow", "source_sha256": "47b44cf0a375cae1fe9491bd9c2397bc2a296f32e428505cf3efaf77b5e9f622", "case_count": 112, "status": "passed", "seconds": 0.889}
+{"module": "check_native_workflow_presentation", "source_sha256": "db6495fa79dc2c7e5251882d9dfb27186aa5699676966c129c8481931e80e08d", "case_count": 137, "status": "passed", "seconds": 1.635}
+{"module": "check_native_workflow_authority", "source_sha256": "849bee319887217fc9c2922bfd47d531304e622b40a4a3e6fe753605c4256c06", "case_count": 23, "status": "passed", "seconds": 0.055}
+{"module": "check_native_workflow_public_sdk", "source_sha256": "459e9510e2738dc8a4908f517abcd774fcfd5f153adea54799f7dcd048e6839e", "case_count": 164, "status": "passed", "seconds": 1.675}
+{"module": "check_native_workflow_cli", "source_sha256": "e902e5faf7fcd8c76ff34825a065a5961c79cc3b5b2e427467090d5d5cef3890", "baseline_cases": 70, "case_count": 70, "status": "passed", "seconds": 1.536}
+{"module": "check_native_synthetic_producer", "source_sha256": "9b2a09c3b2810a068d11f2c1a92e4bfb7bec3d3bb63601e65a4c2d64adb12085", "case_count": 1226, "status": "passed", "seconds": 1.373}
+{"module": "check_native_synthetic_public_sdk", "source_sha256": "909e2bfa52bc97d8c4e519931bd9f031e4415625c7010719a8b8f684b3804015", "case_count": 1235, "status": "passed", "seconds": 2.476}
+{"module": "check_native_synthetic_selection_cli", "source_sha256": "9822725b704fcab547a3afed967a4a31f27cce1ab8de4567ed8eed7f3546f230", "baseline_cases": 72, "case_count": 72, "status": "passed", "seconds": 0.265}
+{"module": "check_native_synthetic_inspection", "source_sha256": "b8a2e7f79e5540ac41ef84060fe8f05d157234882bf5d5f4f2148160dcf2ed62", "case_count": 9660, "status": "passed", "seconds": 4.25}

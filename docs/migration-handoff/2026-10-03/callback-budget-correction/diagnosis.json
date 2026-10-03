@@ -1,0 +1,57 @@
+{
+  "artifact": {
+    "bytes": 37709711,
+    "id": 11282096717,
+    "sha256": "bfe07dab43cbdb8be1efc9657d502b8bf1e641413667d18e8b7c814ecbba2dbe",
+    "unique_members": 41130
+  },
+  "failure": {
+    "campaign": "pipeline-fixed-providers",
+    "case": "temporal:requested",
+    "command_sequence": 7617,
+    "complete_static_case_ids": [
+      "static:requested",
+      "static:selected_equal"
+    ],
+    "error": "CoreProtocolError: Callback session cumulative JSON node limit exceeded",
+    "invalidated": true,
+    "last_action": "ordered-json",
+    "last_event_id": 7645,
+    "last_usage_nodes": 982095,
+    "receipt_bytes": 7638776,
+    "receipt_sha256": "60a7f3301b31749c1d8d499c1452981df88e5f871a8d4c6ef612ac8c7ada5724",
+    "retained_frames": 15292
+  },
+  "job": 111253671825,
+  "platform": "macos-arm64",
+  "preceding_manager": {
+    "comparison_coverage": {
+      "cases": 34,
+      "comparison_events": 28,
+      "manager_events": 78,
+      "raised_events": 18
+    },
+    "completed_checks": 5,
+    "coverage": {
+      "cases": 5,
+      "events": 34,
+      "records": 10
+    },
+    "deferred_coverage": {
+      "accesses": 290,
+      "cases": 47,
+      "events": 157,
+      "marker_exceptions": 19,
+      "nested_events": 21,
+      "raised_events": 45
+    },
+    "receipt_bytes": 5700430,
+    "receipt_sha256": "d71187671335ac9209487fcc7114ccf05e4a5033d458fb59478ecb7160d44f24",
+    "status": "success"
+  },
+  "python": "3.14.7",
+  "run_id": 37133499708,
+  "scope": "Actual retained hosted failure and preceding manager success only; complete fixed-provider and all17 fresh-installed campaigns are not accepted.",
+  "source_revision": "b27f52447f49c749d33cac17f3bbb6fe772cbc24",
+  "tested_revision": "64673221a35d7e0c95bc0c9165dcc8a93b006869"
+}

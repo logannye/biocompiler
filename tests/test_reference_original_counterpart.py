@@ -1,5 +1,7 @@
 """Finite original source execution, complete retained outcomes, and mutations."""
 from copy import deepcopy
+import ast
+import json
 import importlib
 from pathlib import Path
 import tempfile
@@ -28,10 +30,12 @@ class ReferenceOriginalCounterpartTests(unittest.TestCase):
         manager = rows['src/biocompiler/compiler/pipeline.py']
         self.assertEqual(manager['sha256'], 'dccba32618ecc7923b8a02ff54f114d515ff4e50908f45e27a8cda0a3f531be0')
         self.assertFalse(manager['substituted'])
-        self.assertEqual([name for name, row in rows.items() if row['substituted']], sorted([original.CORE_SOURCE, original.TEST, *original.ROUTE_SOURCES]))
+        self.assertEqual([name for name, row in rows.items() if row['substituted']], sorted([original.CORE_SOURCE, original.CALLBACK_SOURCE, original.TEST, *original.ROUTE_SOURCES]))
         self.assertEqual(rows[original.CORE_SOURCE]['origin_sha256'], original.CORE_CURRENT_SHA)
         self.assertEqual(rows[original.CORE_SOURCE]['sha256'], original.CORE_ORIGINAL_SHA)
-        self.assertEqual(len(receipt['manifest']['data']), 4007)
+        self.assertEqual(len(receipt['manifest']['data']), 4009)
+        self.assertEqual(rows[original.CALLBACK_SOURCE]['origin_sha256'], original.CALLBACK_CURRENT_SHA)
+        self.assertEqual(rows[original.CALLBACK_SOURCE]['sha256'], original.CALLBACK_ORIGINAL_SHA)
         self.assertEqual(rows[original.TEST]['sha256'], original.TEST_SHA)
         self.assertEqual(receipt['modules']['biocompiler.compiler.pipeline']['namespace'], 'biocompiler.compiler.pipeline')
         self.assertTrue(all(row['class'] == 'tests.test_reference_contracts_corpus.ReferenceContractsCorpusTests'
@@ -53,7 +57,8 @@ class ReferenceOriginalCounterpartTests(unittest.TestCase):
     def test_source_copy_module_and_complete_data_mutations_reject(self):
         for kind in ('old-manager', 'missing-source', 'extra-source', 'origin', 'copied-path',
                      'missing-data', 'data-hash', 'data-bytes', 'test-witness', 'namespace',
-                     'module-path', 'missing-module', 'inventory', 'narrowed-tests', 'core-witness', 'core-update', 'attempt-witness', 'route-witness', 'current-core-copy'):
+                     'module-path', 'missing-module', 'inventory', 'narrowed-tests', 'core-witness', 'core-update', 'attempt-witness', 'route-witness', 'current-core-copy',
+                     'callback-witness', 'current-callback-copy', 'missing-callback-witness'):
             value = deepcopy(self.receipt)
             manifest = value['manifest']
             rows = manifest['sources']
@@ -75,6 +80,12 @@ class ReferenceOriginalCounterpartTests(unittest.TestCase):
             elif kind == 'core-update': manifest['core_source_witness']['update']['correspondence']['changes'][0]['after'] += '# extra\n'
             elif kind == 'attempt-witness': manifest['core_source_witness']['attempt_update']['correspondence']['changes'][0]['after'] += '# forged\n'
             elif kind == 'route-witness': manifest['route_source_witnesses'][0]['correspondence']['insertion']['byte_offset'] += 1
+            elif kind == 'callback-witness': manifest['callback_source_witness']['correspondence']['changes'][0]['after'] += '# forged\n'
+            elif kind == 'missing-callback-witness': del manifest['callback_source_witness']
+            elif kind == 'current-callback-copy':
+                callback = next(row for row in rows if row['logical'] == original.CALLBACK_SOURCE)
+                callback['sha256'] = callback['origin_sha256']
+                callback['substituted'] = False
             elif kind == 'current-core-copy':
                 core = next(row for row in rows if row['logical'] == original.CORE_SOURCE)
                 core['sha256'] = core['origin_sha256']
@@ -101,7 +112,8 @@ class ReferenceOriginalCounterpartTests(unittest.TestCase):
             target.parent.mkdir(parents=True, exist_ok=True)
             target.write_bytes((original.ROOT / original.CORPUS).read_bytes())
             for logical in (original.CORE_BLOB, original.CORE_WITNESS, original.CORE_UPDATE,
-                            original.CORE_MERGE_UPDATE, original.CORE_ATTEMPT_UPDATE, original.ROUTE_WITNESS):
+                            original.CORE_MERGE_UPDATE, original.CORE_ATTEMPT_UPDATE, original.ROUTE_WITNESS,
+                            original.CALLBACK_BLOB, original.CALLBACK_WITNESS):
                 target = root / logical
                 target.parent.mkdir(parents=True, exist_ok=True)
                 target.write_bytes((original.ROOT / logical).read_bytes())
@@ -146,6 +158,61 @@ class ReferenceOriginalCounterpartTests(unittest.TestCase):
         del witness['manifest']['core_source_witness']
         with self.assertRaisesRegex(AssertionError, 'Malformed original reference manifest'):
             original.validate(witness)
+
+    def test_exact_callback_profile_source_restores_whole_original_client(self):
+        current = (original.ROOT / original.CALLBACK_SOURCE).read_bytes()
+        restored, proof = original.callback_source_witness(current)
+        self.assertEqual(restored, (original.ROOT / original.CALLBACK_BLOB).read_bytes())
+        self.assertEqual(original.sha(restored), original.CALLBACK_ORIGINAL_SHA)
+        self.assertEqual(len(restored), 32312)
+        self.assertEqual(len(proof['correspondence']['changes']), 8)
+        self.assertIn('current resource profile validation is separate', proof['scope'])
+        def declaration(raw):
+            tree = ast.parse(raw)
+            row = next(node for node in tree.body if isinstance(node, ast.Assign)
+                and any(isinstance(target, ast.Name) and target.id == '_DECLARATION_JSON' for target in node.targets))
+            return json.loads(ast.literal_eval(row.value))
+        before, after = declaration(restored), declaration(current)
+        self.assertEqual(before['profile'], 'biocompiler.core.pipeline_callback_channel.v1')
+        self.assertEqual(after['profile'], 'biocompiler.core.pipeline_callback_channel.v2')
+        self.assertEqual(before['limits']['max_json_nodes'], 1_000_000)
+        self.assertEqual(after['limits']['max_json_nodes'], 2_000_000)
+        self.assertEqual(after['fixed_limits']['max_frame_json_nodes'], 1_000_000)
+        self.assertEqual(after['protocol'], before['protocol'])
+        for changed in (current+b'\n', restored,
+                current.replace(b'max_frame_json_nodes', b'max_other_json_nodes', 1),
+                b'# relocated client\n'+current):
+            with self.subTest(pin=original.sha(changed)), self.assertRaisesRegex(AssertionError, 'exact counterpart'):
+                original.callback_source_witness(changed)
+
+    def test_callback_witness_location_inventory_and_archive_tampering_reject(self):
+        raw = (original.ROOT / original.CALLBACK_SOURCE).read_bytes()
+        _, proof = original.callback_source_witness(raw)
+        for kind in ('offset', 'missing-span', 'duplicate-span', 'before', 'after', 'path', 'base', 'current-hash', 'archive'):
+            changed = deepcopy(proof['correspondence'])
+            if kind == 'offset': changed['changes'][0]['new_start_line'] += 1
+            elif kind == 'missing-span': changed['changes'].pop()
+            elif kind == 'duplicate-span': changed['changes'].append(changed['changes'][-1].copy())
+            elif kind in ('before', 'after'): changed['changes'][0][kind] += '# forged\n'
+            elif kind == 'path': changed['path'] = original.CORE_SOURCE
+            elif kind == 'base': changed['base_revision'] = '0' * 40
+            elif kind == 'current-hash': changed['current_sha256'] = original.CALLBACK_ORIGINAL_SHA
+            encoded = original.canonical(changed) + b'\n'
+            with tempfile.TemporaryDirectory() as directory:
+                root = Path(directory)
+                for logical in (original.CALLBACK_WITNESS, original.CALLBACK_BLOB):
+                    target = root / logical
+                    target.parent.mkdir(parents=True, exist_ok=True)
+                    target.write_bytes((original.ROOT / logical).read_bytes())
+                (root / original.CALLBACK_WITNESS).write_bytes(encoded)
+                if kind == 'archive':
+                    target = root / original.CALLBACK_BLOB
+                    target.write_bytes(target.read_bytes()+b'\n')
+                with self.subTest(kind=kind), patch.object(original, 'ROOT', root):
+                    # Even a repaired witness digest cannot authorize a new path,
+                    # location, span census or archived source identity.
+                    with patch.object(original, 'CALLBACK_WITNESS_SHA', original.sha(encoded)), self.assertRaises(AssertionError):
+                        original.callback_source_witness(raw)
 
     def test_exact_public_prefixes_restore_whole_original_source(self):
         index = original.authority()
