@@ -586,3 +586,15 @@
  (modules test_stored_zip)
  (libraries bioc_wire bioc_checker bioc_artifact zarith)
  (action (run %{test} %{env:BIOCOMPILER_ARCHIVE_PYTHON311_CORPUS=missing} %{env:BIOCOMPILER_ARCHIVE_PYTHON314_CORPUS=missing})))
+
+(test
+ (name test_reference_package_manifest)
+ (modules test_reference_package_manifest)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_artifact bioc_reference_artifact zarith)
+ (action (run %{test} %{env:BIOCOMPILER_REFERENCE_PACKAGE_PYTHON311_CORPUS=missing} %{env:BIOCOMPILER_REFERENCE_PACKAGE_PYTHON314_CORPUS=missing})))
+
+(test
+ (name test_reference_sequence_export)
+ (modules test_reference_sequence_export)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_artifact bioc_reference_export zarith)
+ (action (run %{test} %{env:BIOCOMPILER_REFERENCE_SEQUENCE_EXPORT_CORPUS=missing})))

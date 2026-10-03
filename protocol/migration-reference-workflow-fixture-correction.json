@@ -1,0 +1,52 @@
+{
+  "schema_version": "biocompiler.reference_workflow_fixture_correction.v1",
+  "base_revision": "554e87e4f482c5118328edc31848d5440fb5bed4",
+  "evidence_scope": "Source-proven invalid native test fixtures; running hosted job logs unavailable; corrected native execution required",
+  "observed_hosted_failures": {
+    "runs": [
+      37085540379,
+      37086526526,
+      37087095914
+    ],
+    "platforms": [
+      "linux-x86_64",
+      "macos-arm64"
+    ],
+    "steps": [
+      "Run every native literal and mutation suite",
+      "Check reference workflow phase ownership and historical result capabilities"
+    ]
+  },
+  "changes": [
+    {
+      "fixture": "foreign manager ownership",
+      "before": "M.create with empty dependencies",
+      "source_requirement": "Pass_manager.create rejects a missing authoritative request dependency before returning a manager",
+      "after": "Create a distinct physical manager with the actual request fingerprint before testing foreign-owner rejection"
+    },
+    {
+      "fixture": "opaque final candidate identity",
+      "before": "Host_bridge.of_reference with final/arbitrary",
+      "source_requirement": "Host_bridge.handle accepts only object/<canonical decimal> of at most32bytes",
+      "after": "Use valid opaque object/0; callback still rejects any dereference and every final-source assertion remains"
+    }
+  ],
+  "production_changes": false,
+  "assertions_removed": false,
+  "native_local_execution": false,
+  "corrected_hosted_status": "pending",
+  "files": {
+    "core/test/test_reference_workflow.ml": {
+      "sha256": "878ab3e4fa0eff798aa9c3c0ccde2320990770e26e7d480aab384a6dc1ca8827",
+      "bytes": 23769
+    },
+    "core/lib/compiler/pass_manager.ml": {
+      "sha256": "18eafdc65eda41a1224ca73d21a08e094ae4f78252332a01c2bfaa69fe2baf2e",
+      "bytes": 50429
+    },
+    "core/lib/pipeline_service/host_bridge.ml": {
+      "sha256": "1541144f828faa878626617871817f429b4b283d2959850826f908114ebb9e48",
+      "bytes": 9888
+    }
+  }
+}

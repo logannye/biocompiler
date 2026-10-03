@@ -110,7 +110,10 @@ let complete ?maximum request registry manifests=
 let boundaries request registry manifests=
   let work=budget() in let state,_=make_state work in let owner=initialize state work request registry manifests in
   expect "reference_workflow_budget" (fun()->F.prepare_admission state ~budget:(budget()) ());
-  let other=M.create ~budget:work ~target:(R.Request.target request) ~dependencies:[] () in
+  (* A foreign owner must itself be a valid manager; otherwise construction
+     rejects the missing request before the workflow ownership check runs. *)
+  let other=M.create ~budget:work ~target:(R.Request.target request)
+    ~dependencies:["request",R.Request.fingerprint request] () in
   expect "reference_workflow_owner" (fun()->notice state work other 1(F.Dependency_set("unrelated",Canonical.sha256 "x")));
   M.set_dependency owner "unrelated"(Canonical.sha256 "x");
   notice state work owner 1(F.Dependency_set("unrelated",Canonical.sha256 "x"));
@@ -231,7 +234,7 @@ let final_source_bridge request registry manifests mode=
   let result=M.result owner ~identity:"molecular" ~scope:"exact_cds" in
   notice state work owner 43(F.Result_returned{identity="molecular";scope="exact_cds";result});
   let bridge=H.create ~budget:work ~invoke:(fun ~action:_ ~arguments:_->failwith "Opaque final root was read")() in
-  let opaque=H.of_reference bridge(Json.Object["handle",Json.String "final/arbitrary"]) in
+  let opaque=H.of_reference bridge(Json.Object["handle",Json.String "object/0"]) in
   let marker=Failure "actual final candidate read" and calls=ref [] in
   let final_source_bridge:Q.final_source_bridge={
     check_construct=(fun active->require(active==work)"Final checker source changed owner";

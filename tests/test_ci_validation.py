@@ -287,6 +287,9 @@ class ValidationGateTests(unittest.TestCase):
         runtest = native.split("      - name: Run every native literal and mutation suite\n", 1)[1].split("      - name:", 1)[0]
         for variable, relative in (("BIOCOMPILER_ARCHIVE_PYTHON311_CORPUS", "tests/conformance/archive-container-311.json"),
                                    ("BIOCOMPILER_ARCHIVE_PYTHON314_CORPUS", "tests/conformance/archive-container-314.json"),
+                                   ("BIOCOMPILER_REFERENCE_PACKAGE_PYTHON311_CORPUS", "tests/conformance/reference-package-domains-311.json"),
+                                   ("BIOCOMPILER_REFERENCE_PACKAGE_PYTHON314_CORPUS", "tests/conformance/reference-package-domains-314.json"),
+                                   ("BIOCOMPILER_REFERENCE_SEQUENCE_EXPORT_CORPUS", "tests/conformance/reference-sequence-export-314.json"),
                                    ("BIOCOMPILER_REFERENCE_CONTRACTS_DOCUMENTS", "tests/conformance/reference-contracts-v1"),
                                    ("BIOCOMPILER_REFERENCE_CONTRACTS_CORPUS", "tests/conformance/reference-contracts-v1.json"),
                                    ("BIOCOMPILER_REFERENCE_PIPELINE_DOCUMENTS", "tests/conformance/reference-pipeline-semantics-v1")):
@@ -294,6 +297,8 @@ class ValidationGateTests(unittest.TestCase):
         self.assertIn("opam exec -- dune runtest --root core 2>&1 | tee generated/core/native-tests.txt", runtest)
         arguments = {
             "test_stored_zip": ' "$GITHUB_WORKSPACE/tests/conformance/archive-container-311.json" "$GITHUB_WORKSPACE/tests/conformance/archive-container-314.json"',
+            "test_reference_package_manifest": ' "$GITHUB_WORKSPACE/tests/conformance/reference-package-domains-311.json" "$GITHUB_WORKSPACE/tests/conformance/reference-package-domains-314.json"',
+            "test_reference_sequence_export": ' "$GITHUB_WORKSPACE/tests/conformance/reference-sequence-export-314.json"',
             "test_legacy_json": "", "test_reference_domains": "",
             "test_reference_producer_budget": ' "$GITHUB_WORKSPACE/tests/conformance/reference-contracts-v1"',
             "test_reference_checkers": ' "$GITHUB_WORKSPACE/tests/conformance/reference-contracts-v1"',

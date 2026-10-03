@@ -28,6 +28,8 @@ class NativeFixtureWiringTests(unittest.TestCase):
         required = set(re.findall(r"%\{env:(BIOCOMPILER_[A-Z0-9_]+)=missing\}", dune))
         self.assertTrue(required)
         self.assertLessEqual({"BIOCOMPILER_ARCHIVE_PYTHON311_CORPUS", "BIOCOMPILER_ARCHIVE_PYTHON314_CORPUS"}, required)
+        self.assertLessEqual({"BIOCOMPILER_REFERENCE_PACKAGE_PYTHON311_CORPUS", "BIOCOMPILER_REFERENCE_PACKAGE_PYTHON314_CORPUS",
+                              "BIOCOMPILER_REFERENCE_SEQUENCE_EXPORT_CORPUS"}, required)
         workflow = (root / ".github/workflows/ci.yml").read_text()
         suite = workflow.split("      - name: Run every native literal and mutation suite\n", 1)[1]
         suite = suite.split("\n      - name:", 1)[0]
