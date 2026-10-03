@@ -198,6 +198,9 @@ def installed(args):
     require(not args.environment.is_relative_to(args.checkout), 'Fresh environment must be outside checkout')
     source = args.checkout.resolve(); environment = args.environment.resolve()
     python = environment/('Scripts/python.exe' if os.name == 'nt' else 'bin/python')
+    # Explicit Python invocation does not activate this environment for console
+    # lookup in child campaigns. Select its installed commands before host tools.
+    env['PATH'] = str(python.parent) + os.pathsep + env.get('PATH', os.defpath)
     receipt = {'schema_version':'biocompiler.prebuilt_installed_campaign.v1','status':'running','python_version':sys.version,
         'source_revision':args.source_revision,'tested_revision':args.tested_revision,'run_id':args.run_id,
         'native_platform':args.platform,'commands':[],'campaigns':[]}
@@ -214,6 +217,9 @@ def installed(args):
         for name,command in lifecycle[2:]:
             execute(command,name)
         require(installed_ownership(python,environment,env) == ownership,'Reinstalled ownership differs')
+        console = python.parent/('biocompiler.exe' if os.name == 'nt' else 'biocompiler')
+        require(shutil.which('biocompiler',path=env['PATH']) == str(console),
+                'Fresh installed console script missing')
         for name,command in campaign_plan(source,python,ownership,args.output):
             execute(command,name)
             require((args.output/(name+'.json')).is_file(),'Campaign omitted its complete receipt')

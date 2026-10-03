@@ -1,0 +1,125 @@
+{
+  "event": "pull_request",
+  "jobs": [
+    {
+      "completed_at": "2026-10-03T21:05:36Z",
+      "conclusion": "success",
+      "evidence": {
+        "111281997447-completed.json": {
+          "bytes": 25552,
+          "sha256": "c90ad17f2ac6d09398f669eb9628172c30320ce424503135cfee78cb57a43734"
+        },
+        "linux-completed-job.log": {
+          "bytes": 308968,
+          "sha256": "7fadc23973e330fad0deac13790671276c03a77b2d7e8807ba40694126d09c4d"
+        }
+      },
+      "job_id": 111281997447,
+      "milestones": [
+        {
+          "completed_at": "2026-10-03T20:11:50Z",
+          "conclusion": "success",
+          "name": "Run every native literal and mutation suite",
+          "number": 11,
+          "started_at": "2026-10-03T20:05:56Z",
+          "status": "completed"
+        },
+        {
+          "completed_at": "2026-10-03T20:44:08Z",
+          "conclusion": "success",
+          "name": "Check installed public architecture SDK and CLI on Python 3.11",
+          "number": 73,
+          "started_at": "2026-10-03T20:26:02Z",
+          "status": "completed"
+        },
+        {
+          "completed_at": "2026-10-03T21:01:44Z",
+          "conclusion": "success",
+          "name": "Check installed public architecture SDK and CLI on Python 3.14",
+          "number": 75,
+          "started_at": "2026-10-03T20:44:08Z",
+          "status": "completed"
+        },
+        {
+          "completed_at": "2026-10-03T21:05:25Z",
+          "conclusion": "success",
+          "name": "Retain final-byte material closure and assemble internal platform wheel",
+          "number": 84,
+          "started_at": "2026-10-03T21:05:19Z",
+          "status": "completed"
+        }
+      ],
+      "name": "ocaml-core (ubuntu-24.04, linux-x86_64)",
+      "platform": "linux-x86_64",
+      "started_at": "2026-10-03T20:02:56Z",
+      "successful_steps": 93
+    },
+    {
+      "completed_at": "2026-10-03T21:37:28Z",
+      "conclusion": "success",
+      "evidence": {
+        "111281997639-completed.json": {
+          "bytes": 25543,
+          "sha256": "cf278f4eb3ce1475c0d455b27efb92e8d6a65ffaf429963544d5d4b61057e167"
+        },
+        "macos-completed-job.log": {
+          "bytes": 280349,
+          "sha256": "616ab9f1a97974c96c7a9f4862e8135400c27e862dae99dd03dfa73070c07bb3"
+        }
+      },
+      "job_id": 111281997639,
+      "milestones": [
+        {
+          "completed_at": "2026-10-03T20:19:16Z",
+          "conclusion": "success",
+          "name": "Run every native literal and mutation suite",
+          "number": 11,
+          "started_at": "2026-10-03T20:09:08Z",
+          "status": "completed"
+        },
+        {
+          "completed_at": "2026-10-03T21:07:52Z",
+          "conclusion": "success",
+          "name": "Check installed public architecture SDK and CLI on Python 3.11",
+          "number": 73,
+          "started_at": "2026-10-03T20:43:38Z",
+          "status": "completed"
+        },
+        {
+          "completed_at": "2026-10-03T21:30:32Z",
+          "conclusion": "success",
+          "name": "Check installed public architecture SDK and CLI on Python 3.14",
+          "number": 75,
+          "started_at": "2026-10-03T21:07:53Z",
+          "status": "completed"
+        },
+        {
+          "completed_at": "2026-10-03T21:37:12Z",
+          "conclusion": "success",
+          "name": "Retain final-byte material closure and assemble internal platform wheel",
+          "number": 84,
+          "started_at": "2026-10-03T21:37:01Z",
+          "status": "completed"
+        }
+      ],
+      "name": "ocaml-core (macos-14, macos-arm64)",
+      "platform": "macos-arm64",
+      "started_at": "2026-10-03T20:03:31Z",
+      "successful_steps": 93
+    }
+  ],
+  "native_suite_count_per_platform": 118,
+  "run_attempt": 1,
+  "run_id": 37150039387,
+  "schema": "biocompiler.native-platform-completed-milestones.v1",
+  "scope": "Both native jobs,118native suites/platform,all4architectureSDKruntime campaigns and both platform material/wheel assemblies passed for this exact source/tested merge. SDK assembly/fresh install17campaign matrix/full38job acceptance remain separately required. No binary downloads or local native execution.",
+  "source_revision": "4790ac559c70a77dcbd0141331609b837bba0096",
+  "suite_manifest_sha256": "7bcadb05771aa53231309ad6e26373bb174cdfea0e0efefdaf7f71134d75c138",
+  "tested_merge_metadata_sha256": "9a68e3861d6f47997b25483cfc770df7e8daf4e561c459113c4f4ce18c0588ed",
+  "tested_parent_revisions": [
+    "d2f65c59aba3a4af97dbcabd59e8142961e12c4a",
+    "4790ac559c70a77dcbd0141331609b837bba0096"
+  ],
+  "tested_revision": "e7f4945096776e61005db71a245708806c54a8dd",
+  "tested_tree": "0349c1f14ce1ded81e35b411391ac93166f091f3"
+}

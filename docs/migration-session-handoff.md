@@ -2,6 +2,24 @@
 
 Prepared 2026-10-02 from the current source roadmap, source receipts and frozen agent packets. This is a resumable engineering handoff, not a completion or release claim. The GitHub status described here is the state before the checkpoint push; refresh the branch PR and its exact run before treating any pending work as accepted.
 
+**Latest stopping checkpoint, 2026-10-03:** the user requests a clean checkpoint,
+safe merges and continuation in a fresh Codex session. PR85 is not yet merge-ready.
+Source `4790ac559c70a77dcbd0141331609b837bba0096`, run `37150039387`,
+passes both complete native jobs (118 suites per platform), SDK wheel assembly
+and all 3,416 unit tests on both runtimes. Its four fresh-install slots were still
+running when a shared harness defect was confirmed from PR86's retained failures:
+the fresh Python interpreter is selected explicitly, but `PATH` still selects host
+commands. Workflow and synthetic CLI checks cannot find the installed console and
+launch zero children. The correction selects the fresh scripts directory first
+and rejects a missing fresh console even if a host copy exists. All original
+campaign bodies and authority remain unchanged. Read the
+[correction and retained evidence](migration-handoff/2026-10-03/installed-console-correction/correction.json).
+Require the corrected source's complete hosted gate before merging; partial
+success on `4790ac55` is historical evidence only. No PR closure or branch deletion
+has occurred. Preserve PR85, PR86 and all local worktrees. PR86 also needs its
+stale native-runner unit assertion adapted while preserving its fixture coverage.
+All four migration cutoffs remain open; production semantic authority remains Python.
+
 **Consolidation update, 2026-10-03:** the user approved validating and merging
 PR85 with a merge commit and proving every PR60–84 head is contained in `main`.
 After that proof, close any remaining superseded PRs. Remove obsolete remote

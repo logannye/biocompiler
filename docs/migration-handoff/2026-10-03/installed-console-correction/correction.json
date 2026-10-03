@@ -1,0 +1,115 @@
+{
+  "correction": "Prepend the exact fresh interpreter scripts directory to sanitized PATH and require the selected biocompiler console path to be that environment before any campaign, rejecting host fallback.",
+  "date": "2026-10-03",
+  "evidence": {
+    "campaign-inner-failures.json": {
+      "sha256": "640eb065835b6dcde45b688989de4b8419e1ccbb0492783fc90a083713bbf25b",
+      "size": 2640
+    },
+    "focused-311.log": {
+      "sha256": "dd6ad2a03fce7c16b3845107ceda82bc41288bfcadfd98f7d5adbac13cdc5ed4",
+      "size": 7203
+    },
+    "focused-314.log": {
+      "sha256": "2f5e1d5178c9578463f89b693459bdd4f84aa8b1edbf82c0c80b53cf60a158f8",
+      "size": 7203
+    },
+    "independent-review.json": {
+      "sha256": "ffd53820c71ab7631f5bdf4076980ca325c663060627feb2228a06c1941f4e9d",
+      "size": 626
+    },
+    "mutation_probe.py": {
+      "sha256": "35ed8ecb1c11838ae8742ae268bc663f15a0005f4aa773693c99b4ade9766097",
+      "size": 2276
+    },
+    "mutations-311.json": {
+      "sha256": "3b1d93f0f3688ffd4953296cbb7004b083669f929d14da53e00735a78a1bda0e",
+      "size": 6824
+    },
+    "mutations-314.json": {
+      "sha256": "f801d0c604267745d07a4567c1e328e647736fdf1cb62cbe06435817978dbd9a",
+      "size": 7519
+    },
+    "optimization-unit-failures.json": {
+      "sha256": "453130e0cf9fdb8309faf3f83788ab688ab2fd9fce3046bd4735f374bcb52941",
+      "size": 8213
+    },
+    "prior-native-completion.json": {
+      "sha256": "1142e68711f6d1fe8e2cb94de1f754f51751b69e5262c11e6d02390d80954d74",
+      "size": 4704
+    },
+    "prior-sdk-assembly.json": {
+      "sha256": "b4a0dc6fcb00292cbf04302409b9fa7ae8bf9bb8b008a1c6fb5517246b80dfb7",
+      "size": 2702
+    },
+    "prior-unit-accounting.json": {
+      "sha256": "cc83b0db893465006ec3076fecc4e6e9c86fa4347408905fbfe329ded5725420",
+      "size": 9211
+    },
+    "python-controls.json": {
+      "sha256": "dacafb77c1d4e8f5e4c628d5a55e897663a94b2c9b8dc365d89d95063d660264",
+      "size": 5553
+    },
+    "shared-source-review.json": {
+      "sha256": "7d2982decb81f344f7efde20fed64eece09d01a6146873f2fb55bd418321bac0",
+      "size": 708
+    },
+    "synthetic-selection-cli.log": {
+      "sha256": "2b9be4a43676f41365582e6583fc0536e269914c982c68fa7d7cc9826a12e436",
+      "size": 107
+    },
+    "workflow-cli.log": {
+      "sha256": "b46a05cd944bbd2f60be7b1a52c01811f2bcf8f0ea7dd0cf57cdf07fc7c04eb9",
+      "size": 97
+    }
+  },
+  "failure_run": 37148026804,
+  "failure_source": "ee61eb3e94d0bf93abb308cad7715080be4ed524",
+  "local_validation": {
+    "classes_per_runtime": 351,
+    "discovered_ids_per_runtime": 3418,
+    "focused_tests_per_runtime": 37,
+    "inventory_entries": 3310,
+    "modules": [
+      "tests.test_prebuilt_release_chain",
+      "tests.test_prebuilt_sdk_matrix",
+      "tests.test_prebuilt_ci_plan"
+    ],
+    "mutation_controls": "both missing-PATH-prepend and missing-exact-console-guard mutants are rejected on each runtime",
+    "native_build_execution_packaging_installation": false,
+    "new_tests": 2,
+    "python_versions": [
+      "3.11.15",
+      "3.14.6"
+    ],
+    "sorted_lf_ids_sha256": "6ff31e33b2a1c40879b28f7e983b5abc96508549fe53ef2bd1815497f1bb6040"
+  },
+  "prior_pr85_run": 37150039387,
+  "prior_pr85_source": "4790ac559c70a77dcbd0141331609b837bba0096",
+  "problem": "Fresh installed Python was explicit but its console script directory was not added to child PATH. Actual workflow and synthetic CLI campaigns fail before launching any child; identical lookup and environment defect exists in prior PR85 source.",
+  "remaining": "Fresh exact-source hosted run, full38-job receipt reconstruction, premerge audit, merge85, current older-head containment/closures, actual-main validation before obsolete branch deletion. PR86 needs separate native-runner fixture test repair and fresh validation.",
+  "source_files": [
+    {
+      "after_sha256": "fe09640b34223aa036d385f6411ada010da380658b9e74e3e2eb7fb563632306",
+      "before_sha256": "5564773b6d659d2c718b483337db5959e7946880811a4a100a0893223cdefc19",
+      "path": "tools/prebuilt_release_pipeline.py",
+      "size": 16086
+    },
+    {
+      "after_sha256": "e65cd02cfdc5c107c8a82cb746b9c67c18522049d7e63248eec1f550ac6bb8d6",
+      "before_sha256": "21f1fdee42acec26bacacf2da7b8f68bd146dff44ef8e265f5c6e5da8d7a66d7",
+      "path": "tests/test_prebuilt_release_chain.py",
+      "size": 26845
+    }
+  ],
+  "status": "source_checkpoint_hosted_acceptance_pending",
+  "unchanged": [
+    "six lifecycle steps",
+    "17 complete campaign bodies",
+    "38-job gate",
+    "original CLI checkers and expected observations",
+    "source authority and frozen oracles",
+    "native source and Python public semantics",
+    "all four open migration cutoffs"
+  ]
+}

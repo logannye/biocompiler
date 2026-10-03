@@ -3,9 +3,12 @@ from copy import deepcopy
 import hashlib
 import importlib
 import json
+import os
 from pathlib import Path
+import shutil
 import sys
 import tempfile
+from types import SimpleNamespace
 import unittest
 from unittest.mock import patch
 
@@ -124,6 +127,101 @@ class HostedPlanTests(unittest.TestCase):
         env=pipeline.clean_environment({'PYTHONPATH':'/source','LD_LIBRARY_PATH':'/gmp','DYLD_INSERT_LIBRARIES':'/foreign','PATH':'/bin'})
         self.assertNotIn('PYTHONPATH',env);self.assertNotIn('LD_LIBRARY_PATH',env);self.assertNotIn('DYLD_INSERT_LIBRARIES',env)
         with self.assertRaisesRegex(ValueError,'reviewed wheels'):pipeline.install_plan(Path('/python'),Path('/fresh/bin/python'),Path('/wheelhouse/source.tar.gz'),native)
+
+    def installed_console_fixture(self, *, inherited_path, fresh_mode):
+        temporary=self.enterContext(tempfile.TemporaryDirectory());root=Path(temporary).resolve()
+        host=root/'host-bin';host.mkdir()
+        console_name='biocompiler.exe' if os.name=='nt' else 'biocompiler'
+        foreign=host/console_name;foreign.write_bytes(b'#!/bin/sh\nexit 97\n');foreign.chmod(0o755)
+        environment=root/'fresh';python=environment/('Scripts/python.exe' if os.name=='nt' else 'bin/python')
+        console=python.parent/console_name
+        args=SimpleNamespace(checkout=ROOT,sdk=root/('biocompiler-'+build.VERSION+'-py3-none-any.whl'),
+            native=root/('biocompiler_core-'+build.VERSION+'-'+build.TARGETS['linux-x86_64'][2]+'.whl'),
+            environment=environment,output=root/'evidence',source_revision='1'*40,
+            tested_revision='2'*40,run_id='123',platform='linux-x86_64')
+        package=environment/'lib/site-packages/biocompiler_core'
+        ownership={'package_root':str(package),'source_revision':args.source_revision,
+            'tested_revision':args.tested_revision,'run_id':args.run_id,'native_platform':args.platform,
+            'files':{f'bin/biocompiler-{role}':{'path':str(package/'bin'/('biocompiler-'+role)),
+                'sha256':str(index)*64} for index,role in enumerate(('core','verify'),1)}}
+        blocked=('PYTHONPATH','PYTHONHOME','LD_PRELOAD','LD_LIBRARY_PATH','DYLD_LIBRARY_PATH',
+            'DYLD_FALLBACK_LIBRARY_PATH','DYLD_INSERT_LIBRARIES','OPAM_SWITCH_PREFIX','CAML_LD_LIBRARY_PATH')
+        parent={key:'/foreign/loader' for key in blocked};parent['KEEP_HOST_VALUE']='unchanged'
+        tail=str(host)+os.pathsep+os.defpath
+        if inherited_path:parent['PATH']=tail
+        selected=str(python.parent)+os.pathsep+(tail if inherited_path else os.defpath)
+        calls=[];owners=[]
+        def check_environment(env):
+            self.assertEqual(env['PATH'],selected)
+            self.assertEqual(env['KEEP_HOST_VALUE'],'unchanged')
+            self.assertTrue(set(blocked).isdisjoint(env))
+            self.assertEqual({key:env[key] for key in ('PIP_NO_INDEX','PIP_DISABLE_PIP_VERSION_CHECK',
+                'PYTHONNOUSERSITE','BIOCOMPILER_NATIVE_INPUT_LAYOUT')},
+                {'PIP_NO_INDEX':'1','PIP_DISABLE_PIP_VERSION_CHECK':'1','PYTHONNOUSERSITE':'1',
+                 'BIOCOMPILER_NATIVE_INPUT_LAYOUT':'installed'})
+        def fake_run(command, *, cwd, environment, log, **kwargs):
+            name=log.stem
+            check_environment(environment)
+            if name=='create-environment':
+                # Inert filesystem fixtures only; no venv, installer or script
+                # executes. Materialize the stand-in before observing lookup.
+                python.parent.mkdir(parents=True)
+                python.write_bytes(b'inert interpreter path fixture\n')
+                if fresh_mode is not None:
+                    console.write_bytes(b'#!/bin/sh\nexit 98\n');console.chmod(fresh_mode)
+            resolved=shutil.which('biocompiler',path=environment['PATH'])
+            calls.append({'name':name,'argv':command,'cwd':cwd,'environment':dict(environment),'console':resolved})
+            if name in {label for _,label in pipeline.CAMPAIGNS}:
+                (args.output/(name+'.json')).write_text('{"fixture":"complete mocked campaign receipt"}\n')
+            return {'argv':command,'cwd':str(cwd),'returncode':0,'log':{'path':log.name,'sha256':'a'*64,'size':0}}
+        def fake_ownership(actual_python,cwd,env):
+            self.assertEqual(actual_python,python);self.assertEqual(cwd,environment);check_environment(env)
+            owners.append(len(calls));return deepcopy(ownership)
+        with patch.dict(os.environ,parent,clear=True):
+            self.assertEqual(shutil.which('biocompiler',path=tail),str(foreign))
+            with patch.object(pipeline,'run',side_effect=fake_run), \
+                    patch.object(pipeline,'installed_ownership',side_effect=fake_ownership), \
+                    patch.object(pipeline.subprocess,'run',side_effect=AssertionError('no process or package execution')):
+                if fresh_mode==0o755:pipeline.installed(args)
+                else:
+                    with self.assertRaisesRegex(ValueError,'Fresh installed console script missing'):
+                        pipeline.installed(args)
+            self.assertEqual(dict(os.environ),parent,'installed selection mutated the caller environment')
+        receipt=json.loads((args.output/'installed-release.json').read_bytes())
+        return args,python,console,foreign,calls,owners,receipt
+
+    def test_installed_dispatch_selects_fresh_console_for_complete_lifecycle_and_campaigns(self):
+        lifecycle=['create-environment','install','smoke','uninstall','missing-package','reinstall']
+        for inherited_path in (True,False):
+            with self.subTest(inherited_path=inherited_path):
+                args,python,console,_,calls,owners,receipt=self.installed_console_fixture(
+                    inherited_path=inherited_path,fresh_mode=0o755)
+                self.assertEqual([row['name'] for row in calls],lifecycle+[name for _,name in pipeline.CAMPAIGNS])
+                self.assertEqual(len(calls),23);self.assertEqual(len(receipt['campaigns']),17)
+                self.assertTrue(all(row['console']==str(console) for row in calls))
+                driver=str(Path(sys.executable).resolve())
+                self.assertEqual(calls[0]['argv'],[driver,'-m','venv','--without-pip',str(args.environment)])
+                for index in (1,3,5):
+                    self.assertEqual(calls[index]['argv'][:5],[driver,'-m','pip','--python',str(python)])
+                for index in (2,4):self.assertEqual(calls[index]['argv'][:2],[str(python),'-I'])
+                for (tool,name),row in zip(pipeline.CAMPAIGNS,calls[6:],strict=True):
+                    self.assertEqual(row['argv'][:2],[str(python),str(ROOT/'tools'/(tool+'.py'))])
+                    self.assertEqual(row['cwd'],args.environment)
+                self.assertEqual(owners,[2,6,23]);self.assertEqual(receipt['status'],'pass')
+                self.assertEqual(receipt['ownership_before'],receipt['ownership_after'])
+                self.assertEqual([row['name'] for row in receipt['campaigns']],[name for _,name in pipeline.CAMPAIGNS])
+
+    def test_missing_or_nonexecutable_fresh_console_rejects_host_fallback_before_campaigns(self):
+        for fresh_mode in (None,0o644):
+            with self.subTest(fresh_mode=fresh_mode):
+                _,_,_,foreign,calls,owners,receipt=self.installed_console_fixture(
+                    inherited_path=True,fresh_mode=fresh_mode)
+                self.assertEqual([row['name'] for row in calls],
+                    ['create-environment','install','smoke','uninstall','missing-package','reinstall'])
+                self.assertTrue(all(row['console']==str(foreign) for row in calls))
+                self.assertEqual(owners,[2,6]);self.assertEqual(receipt['status'],'running')
+                self.assertEqual(receipt['campaigns'],[]);self.assertEqual(len(receipt['commands']),6)
+                self.assertNotIn('ownership_after',receipt)
 
     def test_locked_upstream_sources_have_complete_pinned_license_census(self):
         lock=json.loads(sources.LOCK.read_bytes())

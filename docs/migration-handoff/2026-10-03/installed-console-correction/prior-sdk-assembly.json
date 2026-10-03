@@ -1,0 +1,76 @@
+{
+  "fresh_slots": [
+    {
+      "id": 111298770178,
+      "name": "realization-conformance (ubuntu-24.04, linux-x86_64, 3.14)",
+      "started_at": "2026-10-03T21:38:06Z",
+      "status": "in_progress"
+    },
+    {
+      "id": 111298770226,
+      "name": "realization-conformance (macos-14, macos-arm64, 3.14)",
+      "started_at": "2026-10-03T21:38:12Z",
+      "status": "in_progress"
+    },
+    {
+      "id": 111298770262,
+      "name": "realization-conformance (ubuntu-24.04, linux-x86_64, 3.11)",
+      "started_at": "2026-10-03T21:38:06Z",
+      "status": "in_progress"
+    },
+    {
+      "id": 111298770348,
+      "name": "realization-conformance (macos-14, macos-arm64, 3.11)",
+      "started_at": "2026-10-03T21:38:12Z",
+      "status": "in_progress"
+    }
+  ],
+  "native_and_assembly_jobs": [
+    {
+      "completed_at": "2026-10-03T21:05:36Z",
+      "conclusion": "success",
+      "id": 111281997447,
+      "log": {
+        "bytes": 308968,
+        "path": "generated/migration-next/pr85-4790ac55-fresh-monitor/job-111281997447.log",
+        "sha256": "7fadc23973e330fad0deac13790671276c03a77b2d7e8807ba40694126d09c4d"
+      },
+      "name": "ocaml-core (ubuntu-24.04, linux-x86_64)",
+      "started_at": "2026-10-03T20:02:56Z",
+      "successful_steps": 93,
+      "tested_revision": "e7f4945096776e61005db71a245708806c54a8dd"
+    },
+    {
+      "completed_at": "2026-10-03T21:37:28Z",
+      "conclusion": "success",
+      "id": 111281997639,
+      "log": {
+        "bytes": 280349,
+        "path": "generated/migration-next/pr85-4790ac55-fresh-monitor/job-111281997639.log",
+        "sha256": "616ab9f1a97974c96c7a9f4862e8135400c27e862dae99dd03dfa73070c07bb3"
+      },
+      "name": "ocaml-core (macos-14, macos-arm64)",
+      "started_at": "2026-10-03T20:03:31Z",
+      "successful_steps": 93,
+      "tested_revision": "e7f4945096776e61005db71a245708806c54a8dd"
+    },
+    {
+      "completed_at": "2026-10-03T21:38:04Z",
+      "conclusion": "success",
+      "id": 111298668756,
+      "log": {
+        "bytes": 38698,
+        "path": "generated/migration-next/pr85-4790ac55-fresh-monitor/job-111298668756.log",
+        "sha256": "fa4037750d7f0266111f1a8075443b933399a21d6027dda77de4bf50f672f4d9"
+      },
+      "name": "prebuilt-core-assembly",
+      "started_at": "2026-10-03T21:37:30Z",
+      "successful_steps": 15,
+      "tested_revision": "e7f4945096776e61005db71a245708806c54a8dd"
+    }
+  ],
+  "run_id": 37150039387,
+  "scope": "Successful hosted prerequisite milestone only. All17 campaigns across four fresh slots and full aggregate remain pending.",
+  "source_revision": "4790ac559c70a77dcbd0141331609b837bba0096",
+  "tested_revision": "e7f4945096776e61005db71a245708806c54a8dd"
+}

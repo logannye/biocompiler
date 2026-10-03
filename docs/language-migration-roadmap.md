@@ -143,6 +143,20 @@ drafts are preserved separately and are not production integrations.
   passes all 118 native suites and all 3,416 unit tests on both hosted runtimes;
   the corrected native source still requires its own complete hosted validation.
   See [retained failure and correction](migration-handoff/2026-10-03/literal-order-correction/correction.json).
+- [x] **LM-30 fresh installed console selection, source checkpoint:** the
+  parallel PR86 workflow and synthetic CLI campaigns fail before launching any
+  children because the fresh environment's console script is absent from the
+  inherited `PATH`. The same harness defect is present in PR85. Prepend the
+  fresh interpreter's scripts directory and require that exact installed
+  console before campaigns; reject fallback to a host command. Pure orchestration
+  controls retain all six lifecycle steps and all 17 campaigns without executing
+  a local build, installation or native process. All 37 focused checks pass on
+  Python 3.11.15 and 3.14.6; discovery retains all prior tests and adds two,
+  reaching 3,418 IDs/351 classes. The preceding `4790ac55` run
+  passes both complete native jobs, SDK assembly and all 3,416 unit tests on each
+  runtime; its four fresh slots were still running when this necessary correction
+  was prepared. No complete release acceptance transfers to the corrected source.
+  See [console correction and bounded evidence](migration-handoff/2026-10-03/installed-console-correction/correction.json).
 - [ ] **LM-12/R6 corrected deferred-context installed evidence:** bind the
   observed source-link tuple to the actual native callback and complete receipt,
   retain original values/identity/order checks, and rerun every installed manager

@@ -1,0 +1,64 @@
+[
+  {
+    "artifact": {
+      "id": 11284285578,
+      "node_id": "MDg6QXJ0aWZhY3QxMTI4NDI4NTU3OA==",
+      "name": "installed-campaign-linux-x86_64-py3.11-workflow",
+      "size_in_bytes": 6846272,
+      "url": "https://api.github.com/repos/logannye/biocompiler/actions/artifacts/11284285578",
+      "archive_download_url": "https://api.github.com/repos/logannye/biocompiler/actions/artifacts/11284285578/zip",
+      "expired": false,
+      "digest": "sha256:0a87ea5270c378a4d3be8774616db46075724c8c14f3ce49562ac91cdc29f379",
+      "created_at": "2026-10-03T20:11:09Z",
+      "updated_at": "2026-10-03T20:11:09Z",
+      "expires_at": "2026-10-10T20:11:07Z",
+      "workflow_run": {
+        "id": 37148026804,
+        "repository_id": 1395674522,
+        "head_repository_id": 1395674522,
+        "head_branch": "codex/ci-critical-path",
+        "head_sha": "ee61eb3e94d0bf93abb308cad7715080be4ed524"
+      }
+    },
+    "zip_sha256": "0a87ea5270c378a4d3be8774616db46075724c8c14f3ce49562ac91cdc29f379",
+    "member": "workflow-cli.log",
+    "log_bytes": 97,
+    "log_sha256": "b46a05cd944bbd2f60be7b1a52c01811f2bcf8f0ea7dd0cf57cdf07fc7c04eb9",
+    "member_count": 1985,
+    "tail": [
+      "AssertionError: Installed console script missing",
+      "Installed native CLI: failure 0 actual children"
+    ]
+  },
+  {
+    "artifact": {
+      "id": 11284261600,
+      "node_id": "MDg6QXJ0aWZhY3QxMTI4NDI2MTYwMA==",
+      "name": "installed-campaign-linux-x86_64-py3.11-synthetic",
+      "size_in_bytes": 63482681,
+      "url": "https://api.github.com/repos/logannye/biocompiler/actions/artifacts/11284261600",
+      "archive_download_url": "https://api.github.com/repos/logannye/biocompiler/actions/artifacts/11284261600/zip",
+      "expired": false,
+      "digest": "sha256:4412e78497818ceda3da0b72d83e2e5be6e4ff5509627ddf17552f5f4129f36d",
+      "created_at": "2026-10-03T20:24:48Z",
+      "updated_at": "2026-10-03T20:24:48Z",
+      "expires_at": "2026-10-10T20:24:37Z",
+      "workflow_run": {
+        "id": 37148026804,
+        "repository_id": 1395674522,
+        "head_repository_id": 1395674522,
+        "head_branch": "codex/ci-critical-path",
+        "head_sha": "ee61eb3e94d0bf93abb308cad7715080be4ed524"
+      }
+    },
+    "zip_sha256": "4412e78497818ceda3da0b72d83e2e5be6e4ff5509627ddf17552f5f4129f36d",
+    "member": "synthetic-selection-cli.log",
+    "log_bytes": 107,
+    "log_sha256": "2b9be4a43676f41365582e6583fc0536e269914c982c68fa7d7cc9826a12e436",
+    "member_count": 12713,
+    "tail": [
+      "AssertionError: Installed console script missing",
+      "Installed native selection CLI: failure 0 actual children"
+    ]
+  }
+]

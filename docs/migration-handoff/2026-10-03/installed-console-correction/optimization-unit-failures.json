@@ -1,0 +1,152 @@
+{
+  "classification": "Independent workflow-optimization integration mismatch: stale unit assertion names the replaced native runner command. Not the native literal order defect corrected on PR85 at4790ac5.",
+  "fixture_binding_census": {
+    "bindings": {
+      "BIOCOMPILER_ARCHIVE_PYTHON311_CORPUS": "tests/conformance/archive-container-311.json",
+      "BIOCOMPILER_ARCHIVE_PYTHON314_CORPUS": "tests/conformance/archive-container-314.json",
+      "BIOCOMPILER_CANDIDATE_RUNTIME_CORPUS": "tests/conformance/candidate-runtime-v1.json",
+      "BIOCOMPILER_CHECKED_PIPELINE_CORPUS": "tests/conformance/checked-pipeline-v1.json",
+      "BIOCOMPILER_COMPONENT_ACCEPTANCE_CORPUS": "tests/conformance/component-acceptance-v1.json",
+      "BIOCOMPILER_COMPONENT_RUNTIME_CORPUS": "tests/conformance/component-runtime-v1.json",
+      "BIOCOMPILER_FIXED_PIPELINE_CONTINUATIONS": "tests/conformance/fixed-pipeline-continuations-native-v1.json",
+      "BIOCOMPILER_FIXED_PIPELINE_CORPUS": "tests/conformance/fixed-pipeline-native-v1.json",
+      "BIOCOMPILER_LOWERING_CORPUS": "tests/conformance/lowering-v1.json",
+      "BIOCOMPILER_PIPELINE_CALLBACK_DECLARATION": "protocol/pipeline-callback-channel-v1.json",
+      "BIOCOMPILER_PIPELINE_CALLBACK_MANAGER_DECLARATION": "protocol/pipeline-callback-manager-v1.json",
+      "BIOCOMPILER_PIPELINE_CALLBACK_SEMANTICS": "tests/conformance/pipeline-callback-semantics-v1.json",
+      "BIOCOMPILER_PIPELINE_CONTRACT_LITERALS": "tests/conformance/pipeline-contract-literals-v1.json",
+      "BIOCOMPILER_PIPELINE_SESSION_DECLARATION": "protocol/pipeline-session-v1.json",
+      "BIOCOMPILER_REALIZATION_CHECKS_CORPUS": "tests/conformance/realization-checks-v1.json",
+      "BIOCOMPILER_REALIZATION_FOUNDATION_CORPUS": "tests/conformance/realization-foundation-v1.json",
+      "BIOCOMPILER_REALIZATION_WORKFLOW_CORPUS": "tests/conformance/realization-workflow-v1.json",
+      "BIOCOMPILER_REFERENCE_CONTRACTS_CORPUS": "tests/conformance/reference-contracts-v1.json",
+      "BIOCOMPILER_REFERENCE_CONTRACTS_DOCUMENTS": "tests/conformance/reference-contracts-v1",
+      "BIOCOMPILER_REFERENCE_INPUTS_CORPUS": "tests/conformance/reference-inputs-311.json",
+      "BIOCOMPILER_REFERENCE_PACKAGE_PYTHON311_CORPUS": "tests/conformance/reference-package-domains-311.json",
+      "BIOCOMPILER_REFERENCE_PACKAGE_PYTHON314_CORPUS": "tests/conformance/reference-package-domains-314.json",
+      "BIOCOMPILER_REFERENCE_PACKAGE_WORKFLOW_CORPUS": "tests/conformance/reference-packages-311.json",
+      "BIOCOMPILER_REFERENCE_PIPELINE_DOCUMENTS": "tests/conformance/reference-pipeline-semantics-v1",
+      "BIOCOMPILER_REFERENCE_SEQUENCE_EXPORT_CORPUS": "tests/conformance/reference-sequence-export-314.json",
+      "BIOCOMPILER_SYNTHETIC_ACCEPTANCE_CORPUS": "tests/conformance/synthetic-acceptance-v1.json",
+      "BIOCOMPILER_SYNTHETIC_AUTHORITY_CORPUS": "tests/conformance/synthetic-authority-v1.json",
+      "BIOCOMPILER_SYNTHETIC_INSPECTION_DECLARATION": "protocol/synthetic-inspection-v1.json",
+      "BIOCOMPILER_SYNTHETIC_INSPECTION_FIXTURES": "tests/conformance/synthetic-inspection-supplemental-v1.json",
+      "BIOCOMPILER_SYNTHETIC_PRODUCERS_CORPUS": "tests/conformance/synthetic-producers-v1.json"
+    },
+    "exact_sets_equal": true,
+    "required_count": 30,
+    "unique_actual_count": 30
+  },
+  "new_command": "python tools/ci_native_bundle.py test --path generated/core/native-suites --workers 2",
+  "old_command": "opam exec -- dune runtest --root core",
+  "old_test_unchanged_from_pr85_2eb": true,
+  "run_id": 37148026804,
+  "runtimes": [
+    {
+      "assertion": "opam exec -- dune runtest --root core not found in current native suite step",
+      "executed_tests": 666,
+      "failed_test": "test_native_fixture_wiring.NativeFixtureWiringTests.test_every_dune_fixture_is_bound_in_the_complete_native_suite",
+      "failing_source_line": 42,
+      "failure_excerpt": {
+        "bytes": 4849,
+        "path": "generated/migration-next/pr86-monitor/latest-triage/unit-failure-311.txt",
+        "sha256": "0d70d252e4305b1274005b2de3c8a590fbe00f3001a5b65a0c71f297ca461dce"
+      },
+      "failures": 1,
+      "job": {
+        "completed_at": "2026-10-03T20:08:15Z",
+        "conclusion": "failure",
+        "head_sha": "ee61eb3e94d0bf93abb308cad7715080be4ed524",
+        "html_url": "https://github.com/logannye/biocompiler/actions/runs/37148026804/job/111276456004",
+        "id": 111276456004,
+        "name": "unit-tests (3.11, 4)",
+        "run_attempt": 1,
+        "run_id": 37148026804,
+        "started_at": "2026-10-03T19:31:59Z",
+        "status": "completed",
+        "steps": [
+          {
+            "conclusion": "failure",
+            "name": "Rediscover and execute assigned tests with timing and accounting",
+            "number": 7
+          }
+        ]
+      },
+      "log": {
+        "bytes": 177722,
+        "path": "generated/migration-next/pr86-monitor/latest-triage/unit-shard4-311.log",
+        "sha256": "68f4fbd66362622f925c654f675682456e2ad41dcaca62ab8d2935989d42ff89"
+      },
+      "python_version": "3.11.16",
+      "seconds": 2128.045,
+      "tested_revision": "59f078f3315dff7416480a4044d32c3b2cf88428"
+    },
+    {
+      "assertion": "opam exec -- dune runtest --root core not found in current native suite step",
+      "executed_tests": 666,
+      "failed_test": "test_native_fixture_wiring.NativeFixtureWiringTests.test_every_dune_fixture_is_bound_in_the_complete_native_suite",
+      "failing_source_line": 42,
+      "failure_excerpt": {
+        "bytes": 4944,
+        "path": "generated/migration-next/pr86-monitor/latest-triage/unit-failure-314.txt",
+        "sha256": "f7e2bd87b958d7cb271973d119b578bde5543a58f6e4384208491758d8e57fae"
+      },
+      "failures": 1,
+      "job": {
+        "completed_at": "2026-10-03T20:08:09Z",
+        "conclusion": "failure",
+        "head_sha": "ee61eb3e94d0bf93abb308cad7715080be4ed524",
+        "html_url": "https://github.com/logannye/biocompiler/actions/runs/37148026804/job/111276456001",
+        "id": 111276456001,
+        "name": "unit-tests (3.14, 4)",
+        "run_attempt": 1,
+        "run_id": 37148026804,
+        "started_at": "2026-10-03T19:31:58Z",
+        "status": "completed",
+        "steps": [
+          {
+            "conclusion": "failure",
+            "name": "Rediscover and execute assigned tests with timing and accounting",
+            "number": 7
+          }
+        ]
+      },
+      "log": {
+        "bytes": 177725,
+        "path": "generated/migration-next/pr86-monitor/latest-triage/unit-shard4-314.log",
+        "sha256": "1f9b241106ec6a86af848ed58f1eeb43531bcd13e87f7edf217cfe3278a84e8c"
+      },
+      "python_version": "3.14.7",
+      "seconds": 2124.196,
+      "tested_revision": "59f078f3315dff7416480a4044d32c3b2cf88428"
+    }
+  ],
+  "schema": "biocompiler.pr86.unit_failure_triage.v1",
+  "scope": "Read-only source/log diagnosis; no source changes, native execution, CI dispatch, GitHub mutation or PR85 evidence transfer.",
+  "smallest_followup": "Update the companion wiring test for the reviewed bundled-runner path while preserving exact Dune suite/fixture/argv coverage and adding a meaningful missing/duplicate/unbound-fixture control. Do not merely delete the old assertion or treat current failure as corrected by4790. Run pure source controls and fresh complete PR86 validation after normal integration of verified main.",
+  "source_files": [
+    {
+      "bytes": 4665,
+      "path": "tests/test_native_fixture_wiring.py",
+      "sha256": "aaf676f07c571a5505c19ca877c5410eb4221bd1282d4e45d0e9479594e6939b"
+    },
+    {
+      "bytes": 122871,
+      "path": ".github/workflows/ci.yml",
+      "sha256": "0b07b06b67105030bf451aad050329cd3b9a0676df9dd66ddc6f203289a46117"
+    },
+    {
+      "bytes": 9356,
+      "path": "tools/ci_native_bundle.py",
+      "sha256": "dd360481be26fd5221f9f3bae8c214cc6ac494f7c39b1770e37dd9cf6671d5ac"
+    },
+    {
+      "bytes": 19733,
+      "path": "core/test/dune",
+      "sha256": "374a48e9928d8fc96f5d4c3f990af812357322d982927726309ee8370d6431a5"
+    }
+  ],
+  "source_revision": "ee61eb3e94d0bf93abb308cad7715080be4ed524",
+  "status": "diagnosed_not_fixed",
+  "tested_revision": "59f078f3315dff7416480a4044d32c3b2cf88428"
+}

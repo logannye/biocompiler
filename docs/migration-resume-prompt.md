@@ -5,6 +5,20 @@ Repository: https://github.com/logannye/biocompiler
 Local checkout: `/Users/logannye/Documents/ChatGPT/GeneMedicineCompiler/work/m11-human-evidence`
 Checkpoint branch: `codex/ocaml-package-distribution`.
 
+Latest checkpoint: the user requests continuation in a fresh session after safe
+consolidation. PR85 remains unmerged until its corrected exact source passes all
+38 jobs. Prior source `4790ac559c70a77dcbd0141331609b837bba0096`, run
+`37150039387`, passes both full native jobs, SDK assembly and 3,416 unit tests per
+runtime; four fresh slots were still running. PR86's parallel workflow/synthetic
+CLI failures exposed a shared installation harness defect: invoking the fresh
+Python does not put its installed console script on `PATH`. The new correction
+prepends that environment's scripts directory and requires its exact console,
+rejecting host fallback. See
+[console correction evidence](migration-handoff/2026-10-03/installed-console-correction/correction.json).
+Refresh the actual new source/run instead of reusing the prior run. No older PR
+has been closed and no branch deleted. PR86 also has a separate stale native-runner
+unit assertion to correct without reducing coverage. Keep its branch and history.
+
 First read `AGENTS.md`, `docs/migration-session-handoff.md`,
 `docs/language-migration-roadmap.md`, `docs/development-validation.md`, and
 `protocol/migration-prebuilt-source-checkpoint.json`. Check GitHub for the
