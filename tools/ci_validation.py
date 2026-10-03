@@ -19,6 +19,11 @@ import subprocess
 import sys
 import time
 
+try:
+    from .prebuilt_release_pipeline import CAMPAIGN_GROUPS
+except ImportError:
+    from prebuilt_release_pipeline import CAMPAIGN_GROUPS
+
 
 PYTHONS = ("3.11", "3.14")
 PRODUCERS = ("installed-executable", "installed-architecture", "circuit-integration", "integration-examples")
@@ -26,10 +31,21 @@ REPRODUCIBILITY = ("executable-rna-reproducibility", "payload-architecture-repro
 CORE_PLATFORMS = {"linux-x86_64": ("Linux", "x86_64"), "macos-arm64": ("Darwin", "arm64")}
 REALIZATION_VARIANTS = {f"{name}-py{version}": (system, machine, version)
                         for name, (system, machine) in CORE_PLATFORMS.items() for version in PYTHONS}
+CAMPAIGN_VARIANTS = {f"{variant}-{group}": runtime for variant, runtime in REALIZATION_VARIANTS.items()
+                     for group in CAMPAIGN_GROUPS}
+RUNTIME_VARIANTS = {**REALIZATION_VARIANTS, **CAMPAIGN_VARIANTS}
+PLATFORM_JOBS = frozenset(("ocaml-build", "ocaml-native-tests", "ocaml-core"))
+RUNTIME_JOBS = {"architecture-sdk": REALIZATION_VARIANTS, "realization-conformance": REALIZATION_VARIANTS,
+                "installed-campaigns": CAMPAIGN_VARIANTS}
 REQUIRED_NEEDS = frozenset((*PRODUCERS, *REPRODUCIBILITY, "studio-browser",
+                            "ci-preflight", "ocaml-build", "ocaml-native-tests", "architecture-sdk", "installed-campaigns",
                             "unit-plan", "unit-tests", "unit-accounting", "ocaml-core", "studio-typescript",
                             "architecture-core-reproducibility", "realization-conformance", "realization-core-reproducibility", "prebuilt-core-assembly", "prebuilt-core-validation"))
 EXPECTED_RECEIPTS = frozenset((job, version) for job in PRODUCERS for version in PYTHONS) | {
+    *(("ci-preflight", version) for version in PYTHONS),
+    *((job, variant) for job in ("ocaml-build", "ocaml-native-tests") for variant in CORE_PLATFORMS),
+    *(("architecture-sdk", variant) for variant in REALIZATION_VARIANTS),
+    *(("installed-campaigns", variant) for variant in CAMPAIGN_VARIANTS),
     ("studio-browser", "3.11"), *((job, "cross-python") for job in REPRODUCIBILITY),
     ("studio-typescript", "3.11"), *(("ocaml-core", variant) for variant in CORE_PLATFORMS),
     ("architecture-core-reproducibility", "cross-platform"),
@@ -78,10 +94,10 @@ def start_job(job, variant, expected):
     actual_python = platform.python_version()
     if variant in PYTHONS and ".".join(actual_python.split(".")[:2]) != variant:
         raise ValueError("Job Python differs from required variant")
-    if job == "ocaml-core" and (platform.system(), platform.machine()) != CORE_PLATFORMS[variant]:
+    if job in PLATFORM_JOBS and (platform.system(), platform.machine()) != CORE_PLATFORMS[variant]:
         raise ValueError("Core build platform differs from required variant")
-    if job == "realization-conformance":
-        system, machine, version = REALIZATION_VARIANTS[variant]
+    if job in RUNTIME_JOBS:
+        system, machine, version = RUNTIME_JOBS[job][variant]
         if (platform.system(), platform.machine(), ".".join(actual_python.split(".")[:2])) != (system, machine, version):
             raise ValueError("Realization conformance runtime differs from required variant")
     return {"schema_version": "biocompiler.ci_job_start.v0.1", **expected,
@@ -155,12 +171,12 @@ def validate(needs, receipts, accounting, expected):
             problems.append("stale_job_receipt:" + str(key))
         if key[1] in PYTHONS and ".".join(str(receipt.get("python_version", "")).split(".")[:2]) != key[1]:
             problems.append("wrong_job_python:" + str(key))
-        if key[0] == "ocaml-core" and (receipt.get("system"), receipt.get("machine")) != CORE_PLATFORMS.get(key[1]):
+        if key[0] in PLATFORM_JOBS and (receipt.get("system"), receipt.get("machine")) != CORE_PLATFORMS.get(key[1]):
             problems.append("wrong_core_platform:" + str(key))
-        if key[0] == "realization-conformance":
+        if key[0] in RUNTIME_JOBS:
             actual = (receipt.get("system"), receipt.get("machine"),
                       ".".join(str(receipt.get("python_version", "")).split(".")[:2]))
-            if actual != REALIZATION_VARIANTS.get(key[1]):
+            if actual != RUNTIME_JOBS[key[0]].get(key[1]):
                 problems.append("wrong_realization_runtime:" + str(key))
     if set(found) != EXPECTED_RECEIPTS:
         problems.append("incomplete_job_variant_coverage")
