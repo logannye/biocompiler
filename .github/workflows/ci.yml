@@ -1221,6 +1221,7 @@ jobs:
             --source-revision "$GITHUB_HEAD_SHA" --tested-revision "$GITHUB_SHA" --run-id "$GITHUB_RUN_ID" \
             --platform ${{ matrix.platform }} --output "$GITHUB_WORKSPACE/generated/prebuilt-materials"
           if [ "${{ runner.os }}" = macOS ]; then audit_tool="$(command -v otool)"; else audit_tool="$(command -v readelf)"; fi
+          audit_tool="$(python -c 'import pathlib,sys; print(pathlib.Path(sys.argv[1]).resolve(strict=True))' "$audit_tool")"
           python tools/build_prebuilt_core.py wheel --source-root "$GITHUB_WORKSPACE" \
             --native-root "$GITHUB_WORKSPACE/generated/core" --platform ${{ matrix.platform }} \
             --source-revision "$GITHUB_HEAD_SHA" --tested-revision "$GITHUB_SHA" --run-id "$GITHUB_RUN_ID" \

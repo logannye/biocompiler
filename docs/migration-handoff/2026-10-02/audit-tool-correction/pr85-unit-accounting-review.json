@@ -1,0 +1,46 @@
+{
+  "schema": "pr85_unit_accounting_review.v1",
+  "run_id": 37095047627,
+  "source_revision": "d7ea09646ccea7b27057b5b9b5e933ba5f47592c",
+  "tested_merge_revision": "1e7731cc1955b43b77a44922db24c664090171b0",
+  "tested_merge_parents": [
+    "d2f65c59aba3a4af97dbcabd59e8142961e12c4a",
+    "d7ea09646ccea7b27057b5b9b5e933ba5f47592c"
+  ],
+  "merge_parent_source": "GitHub git/commits/1e7731cc1955b43b77a44922db24c664090171b0",
+  "review": "Exact unique3384 executed IDs equal across runtimes; hosted accounting reports all5 source-bound shard receipts successful. No localnative execution or fullrelease acceptance inferred.",
+  "receipts": [
+    {
+      "artifact_id": 11264942460,
+      "receipt_path": "generated/migration-next/pr85-unit-accounting-311.json",
+      "receipt_sha256": "190b4057fe6227add57f81eadb4a481d80296789ba4325872d27940f1a7174c0",
+      "archive_path": "generated/migration-next/pr85-unit-accounting-311.zip",
+      "archive_sha256": "42507ab702629b6ee87515a3ffa64f7e5fb37708582e09954805813c1ba91cb4",
+      "python": "3.11.16",
+      "tested_revision": "1e7731cc1955b43b77a44922db24c664090171b0",
+      "status": "pass",
+      "tests": 3384,
+      "shards": 5,
+      "discovery_digest": "f45ee656c4778480e8ece482955f7e2c14dd67d75144c98ded01297667804db7",
+      "test_ids_sha256_lf_joined": "2509ce6d46aabefee91ffd2c5f85c0981c2453846142b6b9c0ab91f44cfb2a55"
+    },
+    {
+      "artifact_id": 11265535024,
+      "receipt_path": "generated/migration-next/pr85-unit-accounting-314.json",
+      "receipt_sha256": "d5a26daede01d5bdff9658976da8e3a933abcefa456e3dce94433ec2aaaf94b7",
+      "archive_path": "generated/migration-next/pr85-unit-accounting-314.zip",
+      "archive_sha256": "1d9a3e70ac6e1ac2ff757b5fcf8c7f0f92c84ae6a0728ce31dd7b7d30b6bb417",
+      "python": "3.14.7",
+      "tested_revision": "1e7731cc1955b43b77a44922db24c664090171b0",
+      "status": "pass",
+      "tests": 3384,
+      "shards": 5,
+      "discovery_digest": "f45ee656c4778480e8ece482955f7e2c14dd67d75144c98ded01297667804db7",
+      "test_ids_sha256_lf_joined": "2509ce6d46aabefee91ffd2c5f85c0981c2453846142b6b9c0ab91f44cfb2a55"
+    }
+  ],
+  "local_prebuilt_saved_plan": {
+    "path": "generated/migration-next/prebuilt-handoff-unit-plan-314.json",
+    "complete_test_ids_equal": true
+  }
+}

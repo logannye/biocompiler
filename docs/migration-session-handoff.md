@@ -2,6 +2,19 @@
 
 Prepared 2026-10-02 from the current source roadmap, source receipts and frozen agent packets. This is a resumable engineering handoff, not a completion or release claim. The GitHub status described here is the state before the checkpoint push; refresh the branch PR and its exact run before treating any pending work as accepted.
 
+**Consolidation update:** the user approved validating and merging PR85 with a
+merge commit, verifying every PR60–84 head is contained in `main`, closing any
+remaining superseded PRs, and removing their obsolete remote branches after
+main validation. Keep the current checkpoint branch. All 25 older heads were
+ancestors of PR85 at audit; refresh them before cleanup. Source `d7ea09646ccea7b27057b5b9b5e933ba5f47592c`
+passes all 118 native suites and all native/architecture campaigns on both
+platforms, plus all 3,384 unit tests on each Python runtime. Run `37095047627`
+then fails Linux packaging because `/usr/bin/readelf` is a symlink; macOS's full
+native job succeeds. CI now resolves the selected audit tool before invoking
+the unchanged strict packager. The correction and regression require a fresh
+complete run; do not report the checkpoint as merged or release-accepted based
+on these partial results. Read the [correction evidence](migration-handoff/2026-10-02/audit-tool-correction/correction.json).
+
 ## Copy/paste task for the next Codex session
 
 Resume Biocompiler's Python-to-OCaml semantic-core migration. Preserve the user's language decisions: TypeScript/HTML/CSS for Studio; Python for scientific authoring, orchestration and exploratory search; OCaml for semantic analysis, behavioral/mechanism/architecture/molecular compiler passes, independent verification, canonical artifacts and export acceptance. The physical biological system remains empirical, outside software compilation.

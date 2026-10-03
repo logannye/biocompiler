@@ -1,0 +1,75 @@
+{
+  "schema": "biocompiler.audit_tool_correction_controls.v1",
+  "source_revision_before_change": "d7ea09646ccea7b27057b5b9b5e933ba5f47592c",
+  "files": {
+    ".github/workflows/ci.yml": {
+      "sha256": "5572de67b26afcb8f75ba5dfa6ef8d621743963457bbbb7a3b42f8d68677e640",
+      "bytes": 110063
+    },
+    "tests/test_prebuilt_ci_plan.py": {
+      "sha256": "3649f7694b5e3fe0705bfcea4b93e11b7f855c6ccae6ef069a84f63880195788",
+      "bytes": 8484
+    }
+  },
+  "focused_tests": [
+    {
+      "python": "3.14.6",
+      "command": "PYTHONPATH=src:. python3 -m unittest tests.test_prebuilt_ci_plan tests.test_prebuilt_core_release tests.test_prebuilt_release_chain -q",
+      "tests": 22,
+      "seconds": 0.339,
+      "exit_code": 0,
+      "status": "PASS",
+      "evidence": "Observed tool stdout; initial invocation did not redirect to a log file"
+    },
+    {
+      "python": "3.11.15",
+      "command": "PYTHONPATH=src:. /Users/logannye/.local/share/uv/python/cpython-3.11.15-macos-aarch64-none/bin/python3 -m unittest tests.test_prebuilt_ci_plan tests.test_prebuilt_core_release tests.test_prebuilt_release_chain -q",
+      "tests": 22,
+      "seconds": 0.306,
+      "exit_code": 0,
+      "status": "PASS",
+      "evidence": "Observed tool stdout; initial invocation did not redirect to a log file"
+    }
+  ],
+  "static_checks": {
+    "ast_parse": "PASS",
+    "git_diff_check": "PASS",
+    "migration_inventory": {
+      "status": "PASS",
+      "entries": 3310
+    }
+  },
+  "peer_review": "session_native: no actionable finding; both exact hosted command branches and strict symlink rejection verified",
+  "native_local_execution": false,
+  "hosted_wheel_acceptance": "pending",
+  "discovery_plans": [
+    {
+      "python": "3.11.15",
+      "path": "generated/migration-next/audit-tool-correction-plan-311.json",
+      "log": "generated/migration-next/audit-tool-correction-plan-311.log",
+      "sha256": "399a726e8d24d6c6abfd8a436f58d2a373474d58b0a810d3e479ceccba33d5ed",
+      "tests": 3385,
+      "shards": 5,
+      "added_ids": [
+        "test_prebuilt_ci_plan.HostedCiPlanTests.test_hosted_audit_selection_resolves_tool_symlinks_without_relaxing_release_inputs"
+      ],
+      "removed_ids": [],
+      "test_ids_sha256_lf_joined": "d92fdd622e0c32fbe2b8b6c65b4910efa0856a311661c35bc437f5f8ef0e61cb",
+      "status": "PASS_discovery_not_execution"
+    },
+    {
+      "python": "3.14.6",
+      "path": "generated/migration-next/audit-tool-correction-plan-314.json",
+      "log": "generated/migration-next/audit-tool-correction-plan-314.log",
+      "sha256": "a0fce42a5aadfe6f1c331b5e8cf0c99223de825c4e578cc5b48b0201d774e0e8",
+      "tests": 3385,
+      "shards": 5,
+      "added_ids": [
+        "test_prebuilt_ci_plan.HostedCiPlanTests.test_hosted_audit_selection_resolves_tool_symlinks_without_relaxing_release_inputs"
+      ],
+      "removed_ids": [],
+      "test_ids_sha256_lf_joined": "d92fdd622e0c32fbe2b8b6c65b4910efa0856a311661c35bc437f5f8ef0e61cb",
+      "status": "PASS_discovery_not_execution"
+    }
+  ]
+}

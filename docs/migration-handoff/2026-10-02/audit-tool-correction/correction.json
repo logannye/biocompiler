@@ -1,0 +1,74 @@
+{
+  "all_required_release_jobs": 38,
+  "corrected_hosted_acceptance": false,
+  "correction": "Resolve only the CI-selected audit executable path strictly before --audit-tool. Preserve strict release inputs, linker policy, tool hashing, compiler semantics and all original cases.",
+  "diagnosis": "Linux command -v readelf selects a symlink. The final-byte auditor rejects symlinked inputs when retaining the audit executable digest. Both native platforms passed all earlier suites and conformance; macOS packaging passed.",
+  "evidence": {
+    "correction.patch": {
+      "bytes": 4934,
+      "sha256": "671d3c996fe517906dd986af4bcf4fef750f537e1167c071872f15dc672f077f"
+    },
+    "evidence.json": {
+      "bytes": 16722,
+      "sha256": "21e3eac6539d76a689beb1e5bb48ddb4e578e293aabc649145e68f9e71ab6c62"
+    },
+    "failure-excerpt.txt": {
+      "bytes": 2202,
+      "sha256": "b4903903d5386ab17a4c6897b85b64bbfc5bf782051ac29fd0ed4d3531f2b353"
+    },
+    "linux-job.json": {
+      "bytes": 20053,
+      "sha256": "d8d994d4839ec113eba3ad4766ec2ba68102a34132f11cb7ff6c83d536707ee7"
+    },
+    "linux-job.log": {
+      "bytes": 301335,
+      "sha256": "282e5b2b1eaa873171b6fcadc0e17e313c14346bbcb6417e5f067fd2e48b28a7"
+    },
+    "local-controls.json": {
+      "bytes": 3019,
+      "sha256": "7d7f6a72183c7b4c2c6259354e0ba5de4f25cbd58f92d47835c2a93d73a9ef7a"
+    },
+    "macos-job.json": {
+      "bytes": 20044,
+      "sha256": "04e09da3bd8e1248233fed8266a756614cf25809f3b1b49f476b8b55e5a92a87"
+    },
+    "pr85-unit-accounting-311.zip": {
+      "bytes": 74845,
+      "sha256": "42507ab702629b6ee87515a3ffa64f7e5fb37708582e09954805813c1ba91cb4"
+    },
+    "pr85-unit-accounting-314.zip": {
+      "bytes": 74844,
+      "sha256": "1d9a3e70ac6e1ac2ff757b5fcf8c7f0f92c84ae6a0728ce31dd7b7d30b6bb417"
+    },
+    "pr85-unit-accounting-review.json": {
+      "bytes": 2287,
+      "sha256": "188e9679fc6d9df2d0536e3926f9e7bd5f7aa351e08f3e5cb499439e049b01d0"
+    },
+    "run.json": {
+      "bytes": 13013,
+      "sha256": "9f1b4c57f73e6e0dd75679d47f47ae1bac2b53bcae1482f4d0e9476b1a2e49d9"
+    }
+  },
+  "failed_run_id": 37095047627,
+  "hosted_unit_tests_before_correction": {
+    "count_each": 3384,
+    "pythons": [
+      "3.11.16",
+      "3.14.7"
+    ],
+    "status": "pass"
+  },
+  "local_controls": "local-controls.json",
+  "migration_cutoffs_complete": false,
+  "new_discovery_count_each": 3385,
+  "schema": "biocompiler.hosted_audit_tool_correction.v1",
+  "source_before_correction": "d7ea09646ccea7b27057b5b9b5e933ba5f47592c",
+  "source_pins": {
+    ".github/workflows/ci.yml": "5572de67b26afcb8f75ba5dfa6ef8d621743963457bbbb7a3b42f8d68677e640",
+    "tests/test_prebuilt_ci_plan.py": "3649f7694b5e3fe0705bfcea4b93e11b7f855c6ccae6ef069a84f63880195788",
+    "tools/build_prebuilt_core.py": "c50155235716f37f5cf7eada008d9f5e27340c35d50bb9211617779ee399c5d0",
+    "tools/check_prebuilt_core_release.py": "f041edf4675004cfc19322d1a5cc5872ed5505e18cc10241c62fb1449f3bba96",
+    "tools/prebuilt_core_materials.py": "e69255941e72ee7c7c605f97d8e8058ade594634aa0b58fba29eace65a67fcdd"
+  },
+  "tested_merge_revision": "1e7731cc1955b43b77a44922db24c664090171b0"
+}

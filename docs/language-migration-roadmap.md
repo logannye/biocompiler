@@ -28,6 +28,27 @@ branch is `codex/ocaml-package-distribution`, based on PR84 source
 four cutoff gates remain open; Python remains the production default. Unfinished
 drafts are preserved separately and are not production integrations.
 
+- [x] **LM-03 PR85 native and unit execution checkpoint:** source
+  `d7ea09646ccea7b27057b5b9b5e933ba5f47592c`, hosted run `37095047627`,
+  passes all 118 native suites, the corrected same-manager attempt check, both
+  installed architecture SDK/CLI runtime campaigns and every native corpus
+  comparison on Linux x86_64 and macOS arm64. All 3,384 unit tests execute on
+  both Python 3.11.16 and 3.14.7 with complete five-shard accounting. macOS's
+  native job also passes platform-wheel assembly. This is a scoped execution
+  checkpoint: Linux packaging and the complete release gate did not pass.
+- [x] **LM-30 hosted audit-tool resolution, source correction:** Ubuntu's
+  `/usr/bin/readelf` is a symlink, which the strict audit input check correctly
+  rejects. Resolve the selected tool's canonical path in CI before invocation;
+  retain strict regular-file checks, tool-byte hashes and linkage policies.
+  A real-filesystem regression exercises both Linux and macOS command branches
+  and preserves rejection of unresolved tool and release-input symlinks.
+  All 22 focused controls pass on both local Python runtimes. See the
+  [retained failure and correction](migration-handoff/2026-10-02/audit-tool-correction/correction.json).
+- [ ] **LM-30 corrected distribution acceptance:** validate the corrected exact
+  revision through both native jobs, both platform wheels, all four fresh
+  installations and the complete 38-job gate before merging the consolidation
+  PR. The preceding run's successful checks do not transfer to new source.
+
 - [x] **LM-30 prebuilt distribution source checkpoint:** integrate exact-source
   material retention, portable static-GMP build instructions, platform wheel and
   SDK assembly, owned installed discovery, four fresh-install slots and complete
@@ -58,7 +79,9 @@ drafts are preserved separately and are not production integrations.
   Both original Python probes and all nine original Molecular tests per runtime
   pass. [Exact correction and diagnostics](migration-handoff/2026-10-02/native-attempt-correction/correction.json)
   retain the failure and source evidence. Production code and original corpora
-  are unchanged; corrected hosted execution remains required.
+  are unchanged. Corrected native execution passes on both platforms at
+  `d7ea09646ccea7b27057b5b9b5e933ba5f47592c`; the separate Linux packaging
+  failure above still prevents complete release acceptance.
 
 **Earlier native milestone, 2026-10-02:** [PR83](https://github.com/logannye/biocompiler/pull/83)
 contains the native package library checkpoint at

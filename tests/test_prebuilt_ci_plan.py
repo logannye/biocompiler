@@ -2,9 +2,15 @@
 import ast
 import importlib.util
 from importlib.machinery import SourceFileLoader
+import os
 from pathlib import Path
 import re
+import shutil
+import subprocess
+import sys
+import tempfile
 import unittest
+from unittest.mock import patch
 
 ROOT=Path(__file__).resolve().parents[1]
 SOURCE=ROOT/'tests/conformance/prebuilt-source-v1'
@@ -49,6 +55,43 @@ class HostedCiPlanTests(unittest.TestCase):
         self.assertIn('tools/prebuilt_release_pipeline.py installed',block)
         self.assertNotIn('pip install .',block);self.assertNotIn('brew install',block);self.assertNotIn('--prepare',block)
         self.assertIn('$RUNNER_TEMP/biocompiler-fresh-',block)
+
+    def test_hosted_audit_selection_resolves_tool_symlinks_without_relaxing_release_inputs(self):
+        lines=self.new.splitlines()
+        index=next(i for i,line in enumerate(lines) if 'audit_tool="$(command -v otool)"' in line)
+        selection=lines[index].strip();resolution=lines[index+1].strip()
+        self.assertEqual(resolution,
+            'audit_tool="$(python -c \'import pathlib,sys; print(pathlib.Path(sys.argv[1]).resolve(strict=True))\' "$audit_tool")"')
+        release=load('hosted_audit_release',ROOT/'tools/build_prebuilt_core.py')
+        policy=load('hosted_audit_policy',ROOT/'tests/test_prebuilt_core_release.py')
+        bash=shutil.which('bash');self.assertIsNotNone(bash)
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory).resolve();bin_path=root/'bin';bin_path.mkdir()
+            (bin_path/'python').symlink_to(Path(sys.executable).resolve())
+            artifact=root/'artifact';artifact.write_bytes(b'nonexecuted native-byte fixture')
+            for runner_os,name,target,output in (
+                    ('Linux','readelf','linux-x86_64',policy.ELF),
+                    ('macOS','otool','macos-arm64',policy.MACHO)):
+                with self.subTest(runner_os=runner_os):
+                    actual=root/(name+'-actual');actual.write_bytes(b'nonexecuted audit fixture: '+name.encode());actual.chmod(0o755)
+                    selected=bin_path/name;selected.symlink_to(actual)
+                    script='\n'.join((selection.replace('${{ runner.os }}',runner_os),resolution,'printf \'%s\\n\' "$audit_tool"'))
+                    resolved=subprocess.run([bash,'-e','-c',script],env={**os.environ,'PATH':str(bin_path)},
+                        stdout=subprocess.PIPE,stderr=subprocess.PIPE,check=True,timeout=10)
+                    self.assertEqual(resolved.stderr,b'')
+                    canonical=Path(resolved.stdout.decode().rstrip('\n'))
+                    self.assertEqual(canonical,actual);self.assertFalse(canonical.is_symlink())
+                    completed=subprocess.CompletedProcess([],0,stdout=output.encode(),stderr=b'')
+                    with patch.object(release.subprocess,'run',return_value=completed) as invoked:
+                        with self.assertRaisesRegex(ValueError,'symlinked'):
+                            release.audit(selected,artifact,target)
+                        receipt=release.audit(canonical,artifact,target)
+                    self.assertEqual(receipt['argv'][0],str(actual))
+                    self.assertEqual(receipt['tool_sha256'],release.sha(actual.read_bytes()))
+                    self.assertEqual(invoked.call_args.args[0],receipt['argv'])
+                    artifact_link=root/(name+'-artifact-link');artifact_link.symlink_to(artifact)
+                    with self.assertRaisesRegex(ValueError,'symlinked'):
+                        release.regular(artifact_link,1024)
 
     def test_sdk_assembly_pins_build_tools_and_both_material_companions(self):
         block=self.new.split('  prebuilt-core-assembly:',1)[1].split('  prebuilt-core-validation:',1)[0]
