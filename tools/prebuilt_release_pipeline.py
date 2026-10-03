@@ -16,6 +16,7 @@ import shutil
 import stat
 import struct
 import subprocess
+import time
 import sys
 import tempfile
 import tomllib
@@ -43,6 +44,29 @@ CAMPAIGNS = (
     ('check_native_synthetic_selection_cli','synthetic-selection-cli'),
     ('check_native_synthetic_inspection','synthetic-inspection'))
 
+# Scheduling changes only; every campaign and each stateful scenario inside it
+# remains intact. Initial groups are conservative; recorded timings guide edits.
+CAMPAIGN_GROUPS = {
+    'protocol': ('protocol', 'routing'),
+    'manager': ('pipeline-manager',),
+    'fixed': ('pipeline-fixed-providers', 'pipeline-fixed-continuations',
+              'pipeline-fixed-registration', 'pipeline-reference', 'pipeline-session'),
+    'workflow': ('workflow', 'workflow-presentation', 'workflow-authority',
+                 'workflow-public-sdk', 'workflow-cli'),
+    'synthetic': ('synthetic-producer', 'synthetic-public-sdk',
+                  'synthetic-selection-cli', 'synthetic-inspection'),
+}
+LIFECYCLE_NAMES = ('create-environment', 'install', 'smoke', 'uninstall', 'missing-package', 'reinstall')
+
+
+def campaign_names(group=None):
+    complete = [name for _, name in CAMPAIGNS]
+    assigned = [name for names in CAMPAIGN_GROUPS.values() for name in names]
+    require(len(assigned) == len(set(assigned)) and set(assigned) == set(complete),
+            'Campaign groups omit or repeat required work')
+    require(group is None or group in CAMPAIGN_GROUPS, 'Unknown campaign group')
+    return complete if group is None else list(CAMPAIGN_GROUPS[group])
+
 
 def require(value,message):
     if not value: raise ValueError(message)
@@ -60,9 +84,15 @@ def run(command, *, cwd, environment, log, timeout=10800):
     require(type(command) is list and all(type(part) is str for part in command), 'Invalid hosted command')
     require(not log.exists(), 'Hosted command log already exists')
     # Output is streamed to a retained file instead of unbounded PIPE accumulation.
+    started = time.monotonic()
+    print('::group::Installed campaign: '+log.stem, flush=True)
     with log.open('xb') as output:
         completed = subprocess.run(command,cwd=cwd,env=environment,stdout=output,stderr=subprocess.STDOUT,timeout=timeout,check=False)
+    elapsed = round(time.monotonic() - started, 6)
+    print(f'{log.stem}: exit {completed.returncode}, {elapsed}s', flush=True)
+    print('::endgroup::', flush=True)
     receipt = {'argv':command,'cwd':str(cwd),'returncode':completed.returncode,
+        'duration_seconds':elapsed,
         'log':{'path':log.name,'sha256':hashlib.file_digest(log.open('rb'),'sha256').hexdigest(),'size':log.stat().st_size}}
     require(completed.returncode == 0, 'Hosted command failed; complete log retained: '+str(log))
     return receipt
@@ -92,13 +122,14 @@ def lifecycle_plan(driver, python, checkout, output, sdk, native, authority):
         ('reinstall',install_plan(driver,python,sdk,native))]
 
 
-def campaign_plan(checkout, python, ownership, output):
+def campaign_plan(checkout, python, ownership, output, group=None):
     package = Path(ownership['package_root']); source = ownership['source_revision']; tested = ownership['tested_revision']
     require(package.is_absolute() and not package.is_relative_to(checkout) and source != '' and tested != '', 'Invalid installed campaign ownership')
     core = ownership['files']['bin/biocompiler-core']; verify = ownership['files']['bin/biocompiler-verify']
     require(core['path'] == str(package/'bin/biocompiler-core') and verify['path'] == str(package/'bin/biocompiler-verify'), 'Installed role paths are detached')
     result = []
     for tool,name in CAMPAIGNS:
+        if name not in campaign_names(group): continue
         command = [str(python),str(checkout/'tools'/str(tool+'.py')),'--core',core['path'],'--verify',verify['path']]
         if name not in ('protocol','routing'):
             command += ['--core-sha256',core['sha256'],'--verify-sha256',verify['sha256'],
@@ -192,6 +223,24 @@ def installed_ownership(python, cwd, environment):
     return json.loads(result.stdout)
 
 
+def native_input_document(ownership, python_version):
+    """Bridge actual installed ownership to existing cross-runtime checkers."""
+    raw = build.regular(Path(ownership['package_root'])/'binaries.json', 64*1024)
+    require(ownership['files']['binaries.json'] == {
+        'path':str(Path(ownership['package_root'])/'binaries.json'), 'sha256':build.sha(raw), 'size':len(raw)},
+        'Installed binary manifest differs from its owned bytes')
+    manifest = json.loads(raw)
+    require(set(manifest) == {'revision','system','machine','sha256'}
+            and manifest['revision'] == ownership['tested_revision']
+            and (manifest['system'],manifest['machine']) == build.TARGETS[ownership['native_platform']][:2]
+            and manifest['sha256'] == {name:ownership['files']['bin/'+name]['sha256'] for name in build.ROLES},
+            'Installed binary manifest identity differs')
+    return {'schema_version':'biocompiler.native_conformance_inputs.v1', 'status':'pass',
+            **manifest, 'native_platform':ownership['native_platform'], 'manifest_sha256':build.sha(raw),
+            'source_revision':ownership['source_revision'], 'run_id':ownership['run_id'],
+            'python_version':python_version}
+
+
 def installed(args):
     require(not args.output.exists() and not args.environment.exists(), 'Installed job requires fresh environment and evidence')
     args.output.mkdir(parents=True); env = clean_environment(os.environ)
@@ -201,6 +250,10 @@ def installed(args):
     receipt = {'schema_version':'biocompiler.prebuilt_installed_campaign.v1','status':'running','python_version':sys.version,
         'source_revision':args.source_revision,'tested_revision':args.tested_revision,'run_id':args.run_id,
         'native_platform':args.platform,'commands':[],'campaigns':[]}
+    group = getattr(args, 'group', None)
+    if group is not None:
+        campaign_names(group)
+        receipt.update(schema_version='biocompiler.prebuilt_installed_campaign.v2', campaign_group=group)
     def execute(command,name,cwd=environment):
         receipt['commands'].append(run(command,cwd=cwd,environment=env,log=args.output/(name+'.log')))
     lifecycle = lifecycle_plan(Path(sys.executable).resolve(),python,source,args.output,args.sdk,args.native,receipt)
@@ -214,16 +267,74 @@ def installed(args):
         for name,command in lifecycle[2:]:
             execute(command,name)
         require(installed_ownership(python,environment,env) == ownership,'Reinstalled ownership differs')
-        for name,command in campaign_plan(source,python,ownership,args.output):
+        inputs = build.canonical(native_input_document(ownership, sys.version.split()[0]))
+        (args.output/'native-inputs.json').write_bytes(inputs)
+        receipt['native_inputs_sha256'] = build.sha(inputs)
+        for name,command in campaign_plan(source,python,ownership,args.output,group):
             execute(command,name)
             require((args.output/(name+'.json')).is_file(),'Campaign omitted its complete receipt')
             receipt['campaigns'].append({'name':name,'receipt_sha256':hashlib.sha256((args.output/(name+'.json')).read_bytes()).hexdigest()})
         receipt['ownership_after'] = installed_ownership(python,environment,env)
         require(receipt['ownership_after'] == ownership,'Installed ownership changed during campaigns')
-        require([row['name'] for row in receipt['campaigns']] == [name for _,name in CAMPAIGNS], 'Incomplete installed campaign census')
+        require([row['name'] for row in receipt['campaigns']] == campaign_names(group), 'Incomplete installed campaign census')
         receipt['status']='pass'
     finally:
         (args.output/'installed-release.json').write_bytes(build.canonical(receipt))
+
+
+def aggregate(args):
+    """Validate all group receipts and retain their original logs/authorities.
+
+    Original campaign artifact paths remain at the slot root, so all existing
+    independent semantic/reproducibility checkers still consume complete data.
+    Lifecycle logs remain distinct under groups/<name>; no result is overwritten.
+    """
+    if __package__:
+        from . import check_prebuilt_matrix as matrix
+    else:
+        import check_prebuilt_matrix as matrix
+    expected = {key: getattr(args, key) for key in ('source_revision', 'tested_revision', 'run_id')}
+    candidate = json.loads(args.candidate.read_bytes())
+    require(candidate.get('status') == 'pass' and candidate.get('sdk') is not None
+            and all(candidate.get(k) == v for k, v in expected.items()), 'Stale or incomplete candidate')
+    require(not args.output.exists() and args.root.is_dir() and not args.root.is_symlink(), 'Unsafe aggregate paths')
+    require({p.name for p in args.root.iterdir()} == set(CAMPAIGN_GROUPS), 'Incomplete installed group census')
+    records = {}
+    for group in CAMPAIGN_GROUPS:
+        directory = args.root / group
+        require(directory.is_dir() and not directory.is_symlink(), 'Unsafe installed group')
+        require(all(not p.is_symlink() for p in directory.rglob('*')), 'Symlinked group evidence')
+        receipt = json.loads((directory / 'installed-release.json').read_bytes())
+        matrix.validate_slot(receipt, expected, args.platform, args.python_minor, candidate,
+                             lambda name, directory=directory: (directory/name).read_bytes(), group=group)
+        records[group] = receipt
+    owners = [row['ownership_before'] for row in records.values()]
+    require(all(owner == owners[0] for owner in owners), 'Group installed owners or binary identities differ')
+    require(len({row['python_version'] for row in records.values()}) == 1, 'Group Python runtimes differ')
+    # Copy only after the full receipt census has been independently checked.
+    args.output.mkdir(parents=True)
+    reserved = {'installed-release.json', 'smoke.json', *(name+'.log' for name in LIFECYCLE_NAMES)}
+    for group in CAMPAIGN_GROUPS:
+        directory = args.root/group
+        for path in sorted(directory.rglob('*')):
+            if path.is_dir(): continue
+            relative = path.relative_to(directory)
+            require(relative.parts[0] != 'groups', 'Reserved group evidence path')
+            target = args.output/'groups'/group/relative if relative.as_posix() in reserved else args.output/relative
+            if relative.as_posix() == 'native-inputs.json' and target.exists():
+                require(target.read_bytes() == path.read_bytes(), 'Group native input authorities differ')
+                continue
+            require(not target.exists(), 'Overlapping campaign artifacts: '+str(relative))
+            target.parent.mkdir(parents=True, exist_ok=True)
+            with target.open('xb') as output:
+                output.write(path.read_bytes())
+    document = {'schema_version':'biocompiler.prebuilt_installed_matrix_slot.v2', 'status':'pass',
+                **expected, 'native_platform':args.platform, 'python_version':next(iter(records.values()))['python_version'],
+                'groups':{group: hashlib.sha256((args.output/'groups'/group/'installed-release.json').read_bytes()).hexdigest()
+                          for group in CAMPAIGN_GROUPS}}
+    matrix.validate_partitioned_slot(document, expected, args.platform, args.python_minor, candidate,
+                                     lambda name: (args.output/name).read_bytes())
+    (args.output/'installed-release.json').write_bytes(build.canonical(document))
 
 
 def main():
@@ -234,8 +345,13 @@ def main():
     install=commands.add_parser('installed')
     for name in ('checkout','sdk','native','environment','output'): install.add_argument('--'+name,type=Path,required=True)
     for name in ('source-revision','tested-revision','run-id','platform'): install.add_argument('--'+name,required=True)
+    install.add_argument('--group', choices=tuple(CAMPAIGN_GROUPS))
+    combine=commands.add_parser('aggregate')
+    for name in ('root','candidate','output'): combine.add_argument('--'+name,type=Path,required=True)
+    for name in ('source-revision','tested-revision','run-id','platform','python-minor'): combine.add_argument('--'+name,required=True)
     args=parser.parse_args()
     if args.operation=='installed': installed(args)
+    elif args.operation=='aggregate': aggregate(args)
     else:
         pins = sdk_stage(args.checkout,args.manifests,args.staging)
         require(not args.output.exists(),'SDK output must be fresh'); args.output.mkdir(parents=True)

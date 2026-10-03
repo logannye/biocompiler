@@ -136,9 +136,10 @@ class HostedCiPlanTests(unittest.TestCase):
 
     def test_every_previous_required_job_and_variant_remains_with_two_additions(self):
         old=load('old_ci_validation',SOURCE/'tools/ci_validation.py.source');new=load('draft_ci_validation',ROOT/'tools/ci_validation.py')
-        self.assertEqual(new.REQUIRED_NEEDS-old.REQUIRED_NEEDS,{'prebuilt-core-assembly','prebuilt-core-validation'})
+        self.assertEqual(new.REQUIRED_NEEDS-old.REQUIRED_NEEDS,{'prebuilt-core-assembly','prebuilt-core-validation','ci-preflight','ocaml-build','ocaml-native-tests','architecture-sdk','installed-campaigns'})
         self.assertEqual(old.REQUIRED_NEEDS-new.REQUIRED_NEEDS,set())
-        self.assertEqual(new.EXPECTED_RECEIPTS-old.EXPECTED_RECEIPTS,{('prebuilt-core-assembly','cross-platform'),('prebuilt-core-validation','cross-platform')})
+        self.assertEqual(old.EXPECTED_RECEIPTS-new.EXPECTED_RECEIPTS,set())
+        self.assertEqual(len(new.EXPECTED_RECEIPTS-old.EXPECTED_RECEIPTS),32)
         self.assertEqual(new.REALIZATION_VARIANTS,old.REALIZATION_VARIANTS)
         self.assertEqual(new.workflow_jobs(ROOT/'.github/workflows/ci.yml'),new.REQUIRED_NEEDS|{'validation'})
 
@@ -152,9 +153,9 @@ class HostedCiPlanTests(unittest.TestCase):
         self.assertIn('native_build',self.new)
 
     def test_fresh_four_runtime_slots_have_no_source_install_or_dynamic_gmp_fallback(self):
-        block=self.new.split('  realization-conformance:',1)[1].split('  realization-core-reproducibility:',1)[0]
-        self.assertEqual(block.count('python-version: "3.11"'),2);self.assertEqual(block.count('python-version: "3.14"'),2)
-        self.assertIn('needs: [ocaml-core, prebuilt-core-assembly]',block)
+        block=self.new.split('  installed-campaigns:',1)[1].split('  realization-conformance:',1)[0]
+        self.assertEqual(block.count('python-version: "3.11"'),10);self.assertEqual(block.count('python-version: "3.14"'),10)
+        self.assertIn('needs: [ocaml-build, prebuilt-core-assembly]',block)
         self.assertIn('tools/prebuilt_release_pipeline.py installed',block)
         self.assertNotIn('pip install .',block);self.assertNotIn('brew install',block);self.assertNotIn('--prepare',block)
         self.assertIn('$RUNNER_TEMP/biocompiler-fresh-',block)
@@ -198,7 +199,7 @@ class HostedCiPlanTests(unittest.TestCase):
 
     def test_sdk_assembly_pins_build_tools_and_both_material_companions(self):
         block=self.new.split('  prebuilt-core-assembly:',1)[1].split('  prebuilt-core-validation:',1)[0]
-        self.assertIn('needs: ocaml-core',block)
+        self.assertIn('needs: ocaml-build',block)
         self.assertEqual(block.count('tools/check_prebuilt_core_release.py'),2)
         self.assertIn('--only-binary=:all: --require-hashes',block)
         self.assertIn('prebuilt-linux-x86_64',block);self.assertIn('prebuilt-macos-arm64',block)

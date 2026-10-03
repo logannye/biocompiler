@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import math
 from pathlib import Path
 import re
 
@@ -14,10 +15,16 @@ else:
 
 require=build.require
 SLOTS={f'{target}-py{python}':(target,python) for target in build.TARGETS for python in ('3.11','3.14')}
+REQUIRED_RELEASE_NEEDS=frozenset(('ocaml-build','ocaml-core','ocaml-native-tests','architecture-sdk',
+    'architecture-core-reproducibility','prebuilt-core-assembly','realization-conformance','realization-core-reproducibility'))
 
 
-def validate_slot(receipt,expected,platform,minor,candidate,read):
+def validate_slot(receipt,expected,platform,minor,candidate,read,*,group=None):
     require(type(receipt) is dict and receipt.get('status')=='pass' and all(receipt.get(k)==v for k,v in expected.items()),'Installed slot is incomplete or stale')
+    require(receipt.get('schema_version') == ('biocompiler.prebuilt_installed_campaign.v1' if group is None
+            else 'biocompiler.prebuilt_installed_campaign.v2'), 'Installed campaign schema differs')
+    require((group is None and 'campaign_group' not in receipt) or receipt.get('campaign_group') == group,
+            'Installed campaign group differs')
     require(receipt['native_platform']==platform and receipt['python_version'].split()[0].startswith(minor+'.'),'Installed slot runtime differs')
     before=receipt['ownership_before'];after=receipt['ownership_after']
     require(before==after and all(before[k]==v for k,v in expected.items()),'Installed ownership changed or is stale')
@@ -29,16 +36,29 @@ def validate_slot(receipt,expected,platform,minor,candidate,read):
         owned=before['files'][name]
         require(owned=={'path':str(Path(before['package_root'])/name),**pin}, 'Owned file differs from independently verified candidate')
     require(before['release_sha256']==hashlib.sha256(build.canonical(candidate['release'])).hexdigest(), 'Owned SDK release pin bytes differ')
-    require([row['name'] for row in receipt['campaigns']]==[name for _,name in pipeline.CAMPAIGNS], 'Full installed campaign census differs')
+    if group is not None:
+        inputs = read('native-inputs.json')
+        require(hashlib.sha256(inputs).hexdigest() == receipt.get('native_inputs_sha256'), 'Native input receipt pin differs')
+        require(json.loads(inputs) == {'schema_version':'biocompiler.native_conformance_inputs.v1', 'status':'pass',
+            'revision':expected['tested_revision'], 'source_revision':expected['source_revision'], 'run_id':expected['run_id'],
+            'native_platform':platform, 'system':build.TARGETS[platform][0], 'machine':build.TARGETS[platform][1],
+            'manifest_sha256':before['files']['binaries.json']['sha256'],
+            'python_version':receipt['python_version'].split()[0],
+            'sha256':{name:before['files']['bin/'+name]['sha256'] for name in build.ROLES}},
+            'Native input authority differs from installed candidate')
+    require([row['name'] for row in receipt['campaigns']]==pipeline.campaign_names(group), 'Full installed campaign census differs')
     for row in receipt['campaigns']:
         raw=read(row['name']+'.json')
         require(hashlib.sha256(raw).hexdigest()==row['receipt_sha256'],'Installed campaign receipt bytes differ')
     commands=receipt['commands']
-    names=['create-environment','install','smoke','uninstall','missing-package','reinstall']+[name for _,name in pipeline.CAMPAIGNS]
+    names=list(pipeline.LIFECYCLE_NAMES)+pipeline.campaign_names(group)
     require(len(commands)==len(names),'Hosted command census differs')
     for row,name in zip(commands,names):
-        require(type(row) is dict and set(row)=={'argv','cwd','returncode','log'} and row['returncode']==0
+        require(type(row) is dict and set(row) in ({'argv','cwd','returncode','log'}, {'argv','cwd','returncode','log','duration_seconds'}) and row['returncode']==0
             and type(row['returncode']) is int and Path(row['cwd']).is_absolute(),'Hosted command outcome differs')
+        require((group is None and 'duration_seconds' not in row) or
+                (type(row.get('duration_seconds')) in (int,float) and math.isfinite(row['duration_seconds'])
+                 and row['duration_seconds'] >= 0), 'Missing or invalid campaign timing')
         require(row['log']['path']==name+'.log','Hosted command log belongs to another phase')
         raw=read(name+'.log')
         require(row['log']['size']==len(raw) and row['log']['sha256']==hashlib.sha256(raw).hexdigest(),'Hosted command log bytes differ')
@@ -49,7 +69,7 @@ def validate_slot(receipt,expected,platform,minor,candidate,read):
     python=Path(install[4]);sdk=Path(install[9]);native=Path(install[10])
     require(install==pipeline.install_plan(Path(install[0]),python,sdk,native),'Installed wheel names or command differ')
     checkout=Path(commands[2]['argv'][2]).parent.parent
-    wanted=pipeline.campaign_plan(checkout,python,before,Path(commands[6]['argv'][-1]).parent)
+    wanted=pipeline.campaign_plan(checkout,python,before,Path(commands[6]['argv'][-1]).parent,group)
     require([row['argv'] for row in commands[6:]]==[command for _,command in wanted], 'Campaign command differs from exact owned-path recipe')
     output=Path(commands[6]['argv'][-1]).parent
     lifecycle=pipeline.lifecycle_plan(Path(install[0]),python,checkout,output,sdk,native,expected)
@@ -66,6 +86,34 @@ def validate_slot(receipt,expected,platform,minor,candidate,read):
     return {'native_platform':platform,'python_minor':minor,'ownership':before,'campaigns':receipt['campaigns']}
 
 
+def validate_partitioned_slot(receipt, expected, platform, minor, candidate, read):
+    require(type(receipt) is dict and receipt.get('schema_version') == 'biocompiler.prebuilt_installed_matrix_slot.v2'
+            and receipt.get('status') == 'pass' and all(receipt.get(k) == v for k,v in expected.items()),
+            'Partitioned installed slot is incomplete or stale')
+    require(receipt.get('native_platform') == platform and receipt.get('python_version','').startswith(minor+'.'),
+            'Partitioned installed runtime differs')
+    groups = receipt.get('groups')
+    require(type(groups) is dict and set(groups) == set(pipeline.CAMPAIGN_GROUPS), 'Missing or extra installed group')
+    results = []
+    for group in pipeline.CAMPAIGN_GROUPS:
+        prefix = 'groups/'+group+'/'
+        raw = read(prefix+'installed-release.json')
+        require(hashlib.sha256(raw).hexdigest() == groups[group], 'Installed group receipt pin differs')
+        part = json.loads(raw)
+        require(part.get('python_version') == receipt['python_version'], 'Group Python version differs')
+        reserved = {'installed-release.json', 'smoke.json', *(name+'.log' for name in pipeline.LIFECYCLE_NAMES)}
+        result = validate_slot(part, expected, platform, minor, candidate,
+                               lambda name, prefix=prefix: read(prefix+name if name in reserved else name), group=group)
+        results.append(result)
+    require(all(row['ownership'] == results[0]['ownership'] for row in results), 'Mixed installed binary owners')
+    campaigns = [item for row in results for item in row['campaigns']]
+    names = [row['name'] for row in campaigns]
+    require(len(names) == len(set(names)) and set(names) == set(pipeline.campaign_names()), 'Incomplete or repeated campaign union')
+    order = {name: index for index,name in enumerate(pipeline.campaign_names())}
+    return {**results[0], 'campaigns':sorted(campaigns,key=lambda row:order[row['name']]),
+            'groups':list(pipeline.CAMPAIGN_GROUPS)}
+
+
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--root',type=Path,required=True);parser.add_argument('--candidate',type=Path,required=True)
@@ -73,7 +121,7 @@ def main():
     for key in ('source-revision','tested-revision','run-id'):parser.add_argument('--'+key,required=True)
     args=parser.parse_args();expected={key:getattr(args,key) for key in ('source_revision','tested_revision','run_id')}
     needs=json.loads(args.needs.read_bytes())
-    require(set(needs)=={'ocaml-core','prebuilt-core-assembly','realization-conformance','realization-core-reproducibility'}
+    require(set(needs)==REQUIRED_RELEASE_NEEDS
         and all(row['result']=='success' for row in needs.values()),'Prebuilt release has missing, skipped or failed required jobs')
     candidate=json.loads(args.candidate.read_bytes())
     require(candidate['status']=='pass' and candidate['sdk'] is not None and all(candidate[k]==v for k,v in expected.items()),'Candidate wheel/SDK validation missing')
@@ -81,7 +129,7 @@ def main():
     results={}
     for name,(target,minor) in SLOTS.items():
         root=args.root/name;receipt=json.loads((root/'installed-release.json').read_bytes())
-        results[name]=validate_slot(receipt,expected,target,minor,candidate,lambda name:(root/name).read_bytes())
+        results[name]=validate_partitioned_slot(receipt,expected,target,minor,candidate,lambda name:(root/name).read_bytes())
     require(results['linux-x86_64-py3.11']['ownership']['distribution_sha256']==results['linux-x86_64-py3.14']['ownership']['distribution_sha256']
         and results['macos-arm64-py3.11']['ownership']['distribution_sha256']==results['macos-arm64-py3.14']['ownership']['distribution_sha256'],'Same-platform native wheel identity differs')
     result={'schema_version':'biocompiler.prebuilt_release_validation.v1','status':'pass',**expected,

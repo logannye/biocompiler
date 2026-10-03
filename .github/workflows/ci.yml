@@ -21,7 +21,43 @@ defaults:
     shell: bash
 
 jobs:
+  ci-preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.14"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - run: python tools/ci_validation.py start --job ci-preflight --variant ${{ matrix.python-version }} --output generated/ci/start.json
+      - name: Validate source, corpus and installed command plans without native execution
+        env:
+          PYTHONPATH: src:.
+        run: |
+          python -B -m unittest tests.test_ci_validation tests.test_prebuilt_ci_plan tests.test_prebuilt_release_chain tests.test_prebuilt_sdk_matrix tests.test_ci_scheduling tests.test_ci_native_bundle tests.test_architecture_routing_parallel tests.test_architecture_routing_reproducibility tests.test_architecture_routing_corpus
+          python -B tools/check_ci_preflight.py --output generated/preflight/campaigns.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          overwrite: true
+          name: preflight-${{ matrix.python-version }}
+          path: generated/preflight/
+          if-no-files-found: warn
+      - name: Record successful complete ci-preflight
+        run: python tools/ci_validation.py finish --start generated/ci/start.json --output generated/ci/ci-preflight-${{ matrix.python-version }}.json
+      - uses: actions/upload-artifact@v4
+        with:
+          overwrite: true
+          name: ci-job-ci-preflight-${{ matrix.python-version }}
+          path: generated/ci/ci-preflight-${{ matrix.python-version }}.json
+          if-no-files-found: error
+
   unit-plan:
+    needs: ci-preflight
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -125,6 +161,7 @@ jobs:
           retention-days: 7
 
   installed-executable:
+    needs: ci-preflight
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -174,6 +211,7 @@ jobs:
           retention-days: 7
 
   installed-architecture:
+    needs: ci-preflight
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -217,6 +255,7 @@ jobs:
           retention-days: 7
 
   circuit-integration:
+    needs: ci-preflight
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -349,6 +388,7 @@ jobs:
           retention-days: 7
 
   integration-examples:
+    needs: ci-preflight
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -759,6 +799,7 @@ jobs:
           retention-days: 7
 
   studio-browser:
+    needs: ci-preflight
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -825,11 +866,10 @@ jobs:
           overwrite: true
           retention-days: 7
 
-  ocaml-core:
+  ocaml-build:
+    needs: ci-preflight
+    timeout-minutes: 30
     runs-on: ${{ matrix.runner }}
-    # Complete installed campaigns and every corpus exceeded 90 minutes on Linux.
-    # Preserve every check; this allowance is not a measured runtime target.
-    timeout-minutes: 150
     strategy:
       fail-fast: false
       matrix:
@@ -844,7 +884,7 @@ jobs:
         with:
           python-version: "3.11"
       - name: Record revision and verify the actual native platform
-        run: python tools/ci_validation.py start --job ocaml-core --variant ${{ matrix.platform }} --output generated/ci/start.json
+        run: python tools/ci_validation.py start --job ocaml-build --variant ${{ matrix.platform }} --output generated/ci/start.json
       - uses: ocaml/setup-ocaml@93303b622b2522e4411e295f9e77411a24912ac7 # v3, pinned 2026-10-01
         with:
           ocaml-compiler: "5.4.0"
@@ -857,11 +897,13 @@ jobs:
           python tools/prebuilt_sources.py static-build --sources "$GITHUB_WORKSPACE/generated/prebuilt-sources" \
             --output "$GITHUB_WORKSPACE/generated/static-gmp" --platform ${{ matrix.platform }} \
             --compiler "$(command -v cc)" --make "$(command -v make)" --pkg-config "$(command -v pkg-config)"
-          echo "PKG_CONFIG_PATH=$GITHUB_WORKSPACE/generated/static-gmp/configuration" >> "$GITHUB_ENV"
-          echo "PKG_CONFIG_LIBDIR=$GITHUB_WORKSPACE/generated/static-gmp/configuration" >> "$GITHUB_ENV"
-          echo "PKG_CONFIG_ALLOW_SYSTEM_CFLAGS=1" >> "$GITHUB_ENV"
-          echo "PKG_CONFIG_ALLOW_SYSTEM_LIBS=1" >> "$GITHUB_ENV"
-          if [ "${{ runner.os }}" = macOS ]; then echo "MACOSX_DEPLOYMENT_TARGET=14.0" >> "$GITHUB_ENV"; fi
+          {
+            echo "PKG_CONFIG_PATH=$GITHUB_WORKSPACE/generated/static-gmp/configuration"
+            echo "PKG_CONFIG_LIBDIR=$GITHUB_WORKSPACE/generated/static-gmp/configuration"
+            echo "PKG_CONFIG_ALLOW_SYSTEM_CFLAGS=1"
+            echo "PKG_CONFIG_ALLOW_SYSTEM_LIBS=1"
+            if [ "${{ runner.os }}" = macOS ]; then echo "MACOSX_DEPLOYMENT_TARGET=14.0"; fi
+          } >> "$GITHUB_ENV"
       - name: Resolve pinned native dependencies and retain the platform lock
         run: |
           opam install core/biocompiler_core.opam --deps-only --with-test --no-depexts --yes
@@ -884,9 +926,93 @@ jobs:
         id: native_build
         run: |
           opam exec -- dune build --root core @all
+      - name: Retain revision-bound native executables
+        run: |
+          cp core/_build/default/bin/core/main.exe generated/core/biocompiler-core
+          cp core/_build/default/bin/verify/main.exe generated/core/biocompiler-verify
+          python -c 'import hashlib,json,os,pathlib,platform; p=pathlib.Path("generated/core"); p.joinpath("binaries.json").write_text(json.dumps({"revision":os.environ["GITHUB_SHA"],"system":platform.system(),"machine":platform.machine(),"sha256":{n:hashlib.sha256(p.joinpath(n).read_bytes()).hexdigest() for n in ("biocompiler-core","biocompiler-verify")}},sort_keys=True,indent=2)+"\n")'
+      - name: Retain final-byte material closure and assemble internal platform wheel
+        env:
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          python tools/collect_prebuilt_materials.py --checkout "$GITHUB_WORKSPACE" \
+            --sources "$GITHUB_WORKSPACE/generated/prebuilt-sources" --static-root "$GITHUB_WORKSPACE/generated/static-gmp" \
+            --native-root "$GITHUB_WORKSPACE/generated/core" --switch "$(opam var prefix)" --opam "$(command -v opam)" \
+            --source-revision "$GITHUB_HEAD_SHA" --tested-revision "$GITHUB_SHA" --run-id "$GITHUB_RUN_ID" \
+            --platform ${{ matrix.platform }} --output "$GITHUB_WORKSPACE/generated/prebuilt-materials"
+          if [ "${{ runner.os }}" = macOS ]; then audit_tool="$(command -v otool)"; else audit_tool="$(command -v readelf)"; fi
+          audit_tool="$(python -c 'import pathlib,sys; print(pathlib.Path(sys.argv[1]).resolve(strict=True))' "$audit_tool")"
+          python tools/build_prebuilt_core.py wheel --source-root "$GITHUB_WORKSPACE" \
+            --native-root "$GITHUB_WORKSPACE/generated/core" --platform ${{ matrix.platform }} \
+            --source-revision "$GITHUB_HEAD_SHA" --tested-revision "$GITHUB_SHA" --run-id "$GITHUB_RUN_ID" \
+            --audit-tool "$audit_tool" --materials-root "$GITHUB_WORKSPACE/generated/prebuilt-materials/files" \
+            --materials "$GITHUB_WORKSPACE/generated/prebuilt-materials/materials.json" \
+            --materials-authority "$GITHUB_WORKSPACE/generated/prebuilt-materials/authority.json" \
+            --materials-sha256 "$(cat generated/prebuilt-materials/manifest.sha256)" \
+            --output "$GITHUB_WORKSPACE/generated/prebuilt-platform"
+          cp generated/prebuilt-materials/authority.json generated/prebuilt-platform/material-authority.json
+          cp generated/prebuilt-materials/manifest.sha256 generated/prebuilt-platform/material-manifest.sha256
+      - uses: actions/upload-artifact@v4
+        with:
+          overwrite: true
+          name: prebuilt-${{ matrix.platform }}
+          path: generated/prebuilt-platform
+          if-no-files-found: error
+          retention-days: 30
+      - name: Bundle the exact compiled native suite and production roles
+        run: python tools/ci_native_bundle.py bundle --path generated/native-bundle/native.zip
+      - uses: actions/upload-artifact@v4
+        with:
+          overwrite: true
+          name: native-bundle-${{ matrix.platform }}
+          path: generated/native-bundle/native.zip
+          if-no-files-found: error
+      - name: Retain native evidence even on failure
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: core-${{ matrix.platform }}
+          path: generated/core/
+          if-no-files-found: warn
+          overwrite: true
+          retention-days: 7
+      - name: Record successful complete ocaml-build
+        run: python tools/ci_validation.py finish --start generated/ci/start.json --output generated/ci/ocaml-build-${{ matrix.platform }}.json
+      - uses: actions/upload-artifact@v4
+        with:
+          overwrite: true
+          name: ci-job-ocaml-build-${{ matrix.platform }}
+          path: generated/ci/ocaml-build-${{ matrix.platform }}.json
+          if-no-files-found: error
+
+  ocaml-native-tests:
+    needs: ocaml-build
+    timeout-minutes: 45
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: ubuntu-24.04
+            platform: linux-x86_64
+          - runner: macos-14
+            platform: macos-arm64
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: python tools/ci_validation.py start --job ocaml-native-tests --variant ${{ matrix.platform }} --output generated/ci/start.json
+      - uses: actions/download-artifact@v4
+        with:
+          name: native-bundle-${{ matrix.platform }}
+          path: artifacts/native-bundle
+      - name: Restore exact source and platform bound compiled executables
+        run: python tools/ci_native_bundle.py restore --path artifacts/native-bundle/native.zip
       - name: Run every native literal and mutation suite
         run: |
           set -o pipefail
+          mkdir -p generated/core
           BIOCOMPILER_ARCHIVE_PYTHON311_CORPUS="$GITHUB_WORKSPACE/tests/conformance/archive-container-311.json" \
           BIOCOMPILER_ARCHIVE_PYTHON314_CORPUS="$GITHUB_WORKSPACE/tests/conformance/archive-container-314.json" \
           BIOCOMPILER_REFERENCE_PACKAGE_PYTHON311_CORPUS="$GITHUB_WORKSPACE/tests/conformance/reference-package-domains-311.json" \
@@ -917,62 +1043,101 @@ jobs:
           BIOCOMPILER_PIPELINE_CONTRACT_LITERALS="$GITHUB_WORKSPACE/tests/conformance/pipeline-contract-literals-v1.json" \
           BIOCOMPILER_SYNTHETIC_INSPECTION_DECLARATION="$GITHUB_WORKSPACE/protocol/synthetic-inspection-v1.json" \
           BIOCOMPILER_SYNTHETIC_INSPECTION_FIXTURES="$GITHUB_WORKSPACE/tests/conformance/synthetic-inspection-supplemental-v1.json" \
-            opam exec -- dune runtest --root core 2>&1 | tee generated/core/native-tests.txt
+            python tools/ci_native_bundle.py test --path generated/core/native-suites --workers 2 2>&1 | tee generated/core/native-tests.txt
       - name: Retain native suite diagnostics before longer installed campaigns
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: core-native-tests-${{ matrix.platform }}
-          path: generated/core/native-tests.txt
+          path: generated/core/
           if-no-files-found: ignore
           overwrite: true
           retention-days: 7
+      - name: Record successful complete ocaml-native-tests
+        run: python tools/ci_validation.py finish --start generated/ci/start.json --output generated/ci/ocaml-native-tests-${{ matrix.platform }}.json
+      - uses: actions/upload-artifact@v4
+        with:
+          overwrite: true
+          name: ci-job-ocaml-native-tests-${{ matrix.platform }}
+          path: generated/ci/ocaml-native-tests-${{ matrix.platform }}.json
+          if-no-files-found: error
+
+  ocaml-core:
+    needs: ocaml-build
+    timeout-minutes: 60
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: ubuntu-24.04
+            platform: linux-x86_64
+          - runner: macos-14
+            platform: macos-arm64
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: python tools/ci_validation.py start --job ocaml-core --variant ${{ matrix.platform }} --output generated/ci/start.json
+      - uses: actions/download-artifact@v4
+        with:
+          name: native-bundle-${{ matrix.platform }}
+          path: artifacts/native-bundle
+      - name: Restore exact source and platform bound compiled executables
+        id: restore_native
+        run: python tools/ci_native_bundle.py restore --path artifacts/native-bundle/native.zip
+      - uses: actions/download-artifact@v4
+        with:
+          name: core-${{ matrix.platform }}
+          path: generated/core
+      - run: python -m pip install .
       - name: Check historical JSON spelling, rejection order and parser bounds
-        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.restore_native.outcome == 'success' }}
         run: core/_build/default/test/test_legacy_json.exe | tee generated/core/test_legacy_json.txt
       - name: Check typed historical reference, construct and molecular domains
-        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.restore_native.outcome == 'success' }}
         run: core/_build/default/test/test_reference_domains.exe | tee generated/core/test_reference_domains.txt
       - name: Independently check exact reference layout, sequence and translation
-        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.restore_native.outcome == 'success' }}
         run: core/_build/default/test/test_reference_checkers.exe "$GITHUB_WORKSPACE/tests/conformance/reference-contracts-v1" | tee generated/core/test_reference_checkers.txt
       - name: Check shared reference producer work and output bounds
-        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.restore_native.outcome == 'success' }}
         run: core/_build/default/test/test_reference_producer_budget.exe "$GITHUB_WORKSPACE/tests/conformance/reference-contracts-v1" | tee generated/core/test_reference_producer_budget.txt
       - name: Replay every original reference domain, producer and checker observation
-        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.restore_native.outcome == 'success' }}
         run: core/_build/default/test/test_reference_contracts_corpus.exe "$GITHUB_WORKSPACE/tests/conformance/reference-contracts-v1.json" | tee generated/core/test_reference_contracts_corpus.txt
       - name: Check live reference construct admission, provenance and lifetime bounds
-        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.restore_native.outcome == 'success' }}
         run: core/_build/default/test/test_reference_construct_pipeline.exe "$GITHUB_WORKSPACE/tests/conformance/reference-pipeline-semantics-v1" | tee generated/core/test_reference_construct_pipeline.txt
       - name: Check same-manager exact CDS continuation and retained failure state
-        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.restore_native.outcome == 'success' }}
         run: core/_build/default/test/test_reference_molecular_pipeline.exe "$GITHUB_WORKSPACE/tests/conformance/reference-pipeline-semantics-v1" | tee generated/core/test_reference_molecular_pipeline.txt
       - name: Check reference workflow phase ownership and historical result capabilities
-        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.restore_native.outcome == 'success' }}
         run: core/_build/default/test/test_reference_workflow.exe "$GITHUB_WORKSPACE/tests/conformance/reference-pipeline-semantics-v1" | tee generated/core/test_reference_workflow.txt
       - name: Check same-owner Molecular attempts and historical provider roots
-        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.restore_native.outcome == 'success' }}
         run: core/_build/default/test/test_reference_molecular_attempts.exe "$GITHUB_WORKSPACE/tests/conformance/reference-pipeline-semantics-v1" | tee generated/core/test_reference_molecular_attempts.txt
       - name: Check framed reference manager callbacks and historical builds
-        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.restore_native.outcome == 'success' }}
         run: core/_build/default/test/test_reference_callback_manager.exe "$GITHUB_WORKSPACE/protocol/pipeline-callback-manager-v1.json" "$GITHUB_WORKSPACE/tests/conformance/reference-pipeline-semantics-v1" | tee generated/core/test_reference_callback_manager.txt
       - name: Check complete original archive bytes and cumulative resource limits
-        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.restore_native.outcome == 'success' }}
         run: core/_build/default/test/test_stored_zip.exe "$GITHUB_WORKSPACE/tests/conformance/archive-container-311.json" "$GITHUB_WORKSPACE/tests/conformance/archive-container-314.json" | tee generated/core/test_stored_zip.txt
       - name: Check exact package manifests and independently accepted sequence exports
-        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.restore_native.outcome == 'success' }}
         run: |
           core/_build/default/test/test_reference_package_manifest.exe "$GITHUB_WORKSPACE/tests/conformance/reference-package-domains-311.json" "$GITHUB_WORKSPACE/tests/conformance/reference-package-domains-314.json" | tee generated/core/test_reference_package_manifest.txt
           core/_build/default/test/test_reference_sequence_export.exe "$GITHUB_WORKSPACE/tests/conformance/reference-sequence-export-314.json" | tee generated/core/test_reference_sequence_export.txt
       - name: Check original snapshots, complete native packages and persistent ownership
-        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.restore_native.outcome == 'success' }}
         run: |
           core/_build/default/test/test_work_budget_retention.exe | tee generated/core/test_work_budget_retention.txt
           core/_build/default/test/test_reference_inputs.exe "$GITHUB_WORKSPACE/tests/conformance/reference-inputs-314.json" | tee generated/core/test_reference_inputs.txt
           core/_build/default/test/test_reference_package_workflow.exe "$GITHUB_WORKSPACE/tests/conformance/reference-packages-314.json" | tee generated/core/test_reference_package_workflow.txt
       - name: Check retained request, behavior and coordinate domain corpora
-        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.restore_native.outcome == 'success' }}
         run: |
           core/_build/default/test/test_build_request.exe "$GITHUB_WORKSPACE/tests/conformance/case-b" | tee generated/core/build-request-domain.txt
           core/_build/default/test/test_behavior.exe "$GITHUB_WORKSPACE/tests/conformance/case-b" "$GITHUB_WORKSPACE/tests/conformance/behavior-domains-v1.json" | tee generated/core/behavior-domain.txt
@@ -980,150 +1145,150 @@ jobs:
           core/_build/default/test/test_circuit_request.exe "$GITHUB_WORKSPACE/tests/conformance/request-domains-v1.json" | tee generated/core/circuit-request-domain.txt
           core/_build/default/test/test_lowering_check.exe "$GITHUB_WORKSPACE/tests/conformance/case-b" "$GITHUB_WORKSPACE/tests/conformance/request-domains-v1.json" | tee generated/core/lowering-check.txt
       - name: Check exact scalar arithmetic and complete per-role reference traces
-        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.restore_native.outcome == 'success' }}
         run: |
           core/_build/default/test/test_runtime_number.exe "$GITHUB_WORKSPACE/tests/conformance/runtime-numbers-v1.json" | tee generated/core/runtime-numbers.txt
           core/_build/default/test/test_execution_data.exe "$GITHUB_WORKSPACE/tests/conformance/reference-execution-v1.json" | tee generated/core/execution-data.txt
           core/_build/default/test/test_reference.exe "$GITHUB_WORKSPACE/tests/conformance/reference-execution-v1.json" | tee generated/core/reference-execution.txt
       - name: Check fresh lowering against exact retained source authority
-        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.restore_native.outcome == 'success' }}
         run: core/_build/default/test/test_lowering.exe "$GITHUB_WORKSPACE/tests/conformance/lowering-v1.json" | tee generated/core/lowering-producer.txt
       - name: Check component domains and fresh compatibility assessments
-        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.restore_native.outcome == 'success' }}
         run: core/_build/default/test/test_component_contract.exe "$GITHUB_WORKSPACE/tests/conformance/component-contracts-v1.json" | tee generated/core/component-contracts.txt
       - name: Check bounded molecular declarations and serialization
-        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.restore_native.outcome == 'success' }}
         run: core/_build/default/test/test_molecular_record.exe "$GITHUB_WORKSPACE/tests/conformance/molecule-chemistry-v1.json" | tee generated/core/molecular-records.txt
       - name: Check molecular chemistry and nominal identity
-        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.restore_native.outcome == 'success' }}
         run: core/_build/default/test/test_molecule_chemistry.exe "$GITHUB_WORKSPACE/tests/conformance/molecule-chemistry-v1.json" | tee generated/core/molecule-chemistry.txt
       - name: Check supplied deployment windows and exact decimal interval boundaries
-        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.restore_native.outcome == 'success' }}
         run: |
           core/_build/default/test/test_architecture_deployment.exe "$GITHUB_WORKSPACE/tests/conformance/architecture-deployment-v1.json" | tee generated/core/test_architecture_deployment.txt
       - name: Check complete component declarations and contextual model contracts
-        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.restore_native.outcome == 'success' }}
         run: |
           core/_build/default/test/test_component.exe "$GITHUB_WORKSPACE/tests/conformance/components-v1.json" | tee generated/core/test_component.txt
       - name: Check full human source wrapper authority and circuit correspondence
-        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.restore_native.outcome == 'success' }}
         run: |
           core/_build/default/test/test_human_wrappers.exe "$GITHUB_WORKSPACE/tests/conformance/human-wrappers-v1.json" | tee generated/core/test_human_wrappers.txt
       - name: Check molecular inventories, nominal identities and complete request authority
-        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.restore_native.outcome == 'success' }}
         run: |
           core/_build/default/test/test_molecule.exe "$GITHUB_WORKSPACE/tests/conformance/molecules-v1.json" | tee generated/core/test_molecule.txt
           core/_build/default/test/test_molecule_set.exe "$GITHUB_WORKSPACE/tests/conformance/molecules-v1.json" | tee generated/core/test_molecule_set.txt
       - name: Check supplied payload structure contracts and required region inventories
-        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.restore_native.outcome == 'success' }}
         run: core/_build/default/test/test_payload_structure.exe "$GITHUB_WORKSPACE/tests/conformance/payload-structure-v1.json" | tee generated/core/test_payload_structure.txt
       - name: Check architecture bindings, controls, channels and source constraints
-        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.restore_native.outcome == 'success' }}
         run: core/_build/default/test/test_architecture_contract.exe "$GITHUB_WORKSPACE/tests/conformance/architecture-contracts-v1.json" | tee generated/core/test_architecture_contract.txt
       - name: Check explicit molecular transitions, edits and translation policies
-        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.restore_native.outcome == 'success' }}
         run: core/_build/default/test/test_molecular_transitions.exe "$GITHUB_WORKSPACE/tests/conformance/molecular-transitions-v1.json" | tee generated/core/test_molecular_transitions.txt
       - name: Check complete construction operation and request declarations
-        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.restore_native.outcome == 'success' }}
         run: core/_build/default/test/test_construction.exe "$GITHUB_WORKSPACE/tests/conformance/construction-v1.json" | tee generated/core/test_construction.txt
       - name: Check unchecked construction artifacts and exact derivation inventories
-        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.restore_native.outcome == 'success' }}
         run: core/_build/default/test/test_construction_artifact.exe "$GITHUB_WORKSPACE/tests/conformance/construction-artifacts-v1.json" | tee generated/core/test_construction_artifact.txt
       - name: Independently check required payload regions against supplied authority
-        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.restore_native.outcome == 'success' }}
         run: core/_build/default/test/test_payload_structure_check.exe "$GITHUB_WORKSPACE/tests/conformance/payload-structure-check-v1.json" | tee generated/core/test_payload_structure_check.txt
       - name: Check complete payload templates and architecture refinement authority
-        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.restore_native.outcome == 'success' }}
         run: |
           core/_build/default/test/test_architecture_domains.exe "$GITHUB_WORKSPACE/tests/conformance/payload-templates-v1.json" "$GITHUB_WORKSPACE/tests/conformance/architecture-domains-v1.json" | tee generated/core/test_architecture_domains.txt
       - name: Independently check declared molecular chemistry and feature transitions
-        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.restore_native.outcome == 'success' }}
         run: |
           core/_build/default/test/test_transition_check.exe "$GITHUB_WORKSPACE/tests/conformance/transition-check-v1.json" | tee generated/core/test_transition_check.txt
       - name: Independently reconstruct complete construction candidates and replay acceptance
-        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.restore_native.outcome == 'success' }}
         run: |
           core/_build/default/test/test_construction_check.exe "$GITHUB_WORKSPACE/tests/conformance/construction-check-v1.json" | tee generated/core/test_construction_check.txt
       - name: Check historical source manifests and independently reconstruct source inventories
-        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.restore_native.outcome == 'success' }}
         run: |
           core/_build/default/test/test_source_manifest.exe "$GITHUB_WORKSPACE/tests/conformance/source-manifest-v1.json" | tee generated/core/test_source_manifest.txt
           core/_build/default/test/test_source_check.exe "$GITHUB_WORKSPACE/tests/conformance/source-manifest-v1.json" | tee generated/core/test_source_check.txt
       - name: Check complete historical architecture builds and assessment scope
-        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.restore_native.outcome == 'success' }}
         run: core/_build/default/test/test_architecture_build.exe "$GITHUB_WORKSPACE/tests/conformance/architecture-build-v1.json" | tee generated/core/test_architecture_build.txt
       - name: Independently check supplementary circuit bindings against original source
-        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.restore_native.outcome == 'success' }}
         run: core/_build/default/test/test_circuit_bindings.exe "$GITHUB_WORKSPACE/tests/conformance/circuit-bindings-v1.json" | tee generated/core/test_circuit_bindings.txt
       - name: Independently prove bounded source controls and exact deployment intervals
-        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.restore_native.outcome == 'success' }}
         run: |
           core/_build/default/test/test_architecture_controls_check.exe "$GITHUB_WORKSPACE/tests/conformance/architecture-controls-check-v1.json" | tee generated/core/test_architecture_controls_check.txt
           core/_build/default/test/test_architecture_deployment_check.exe "$GITHUB_WORKSPACE/tests/conformance/architecture-deployment-check-v1.json" | tee generated/core/test_architecture_deployment_check.txt
       - name: Independently reconstruct complete architecture acceptance and replay
-        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.restore_native.outcome == 'success' }}
         run: core/_build/default/test/test_architecture_check.exe "$GITHUB_WORKSPACE/tests/conformance/architecture-check-v1.json" | tee generated/core/test_architecture_check.txt
       - name: Check complete generic composition, selection and actual component behavior corpus
-        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.restore_native.outcome == 'success' }}
         run: core/_build/default/test/test_component_acceptance_corpus.exe "$GITHUB_WORKSPACE/tests/conformance/component-acceptance-v1.json" | tee generated/core/test_component_acceptance_corpus.txt
       - name: Check complete synthetic candidate and catalog authority corpus
-        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.restore_native.outcome == 'success' }}
         run: core/_build/default/test/test_synthetic_authority_corpus.exe "$GITHUB_WORKSPACE/tests/conformance/synthetic-authority-v1.json" | tee generated/core/test_synthetic_authority_corpus.txt
       - name: Independently check complete synthetic candidate and component assembly corpus
-        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.restore_native.outcome == 'success' }}
         run: core/_build/default/test/test_synthetic_acceptance_corpus.exe "$GITHUB_WORKSPACE/tests/conformance/synthetic-acceptance-v1.json" | tee generated/core/test_synthetic_acceptance_corpus.txt
       - name: Check complete synthetic generation, bounded selection and component adaptation corpus
-        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.restore_native.outcome == 'success' }}
         run: core/_build/default/test/test_synthetic_producers_corpus.exe "$GITHUB_WORKSPACE/tests/conformance/synthetic-producers-v1.json" | tee generated/core/test_synthetic_producers_corpus.txt
       - name: Check producer-only protocol, complete receipts and resource boundaries
-        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.restore_native.outcome == 'success' }}
         run: core/_build/default/test/test_synthetic_producer_protocol.exe | tee generated/core/test_synthetic_producer_protocol.txt
       - name: Check complete public synthetic build authority and selection receipts
-        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.restore_native.outcome == 'success' }}
         run: core/_build/default/test/test_synthetic_producer_public_protocol.exe | tee generated/core/test_synthetic_producer_public_protocol.txt
       - name: Check native helper authority, exact structural queries and registry replay
-        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.restore_native.outcome == 'success' }}
         run: core/_build/default/test/test_synthetic_inspection_protocol.exe "$GITHUB_WORKSPACE/tests/conformance/synthetic-inspection-supplemental-v1.json" "$GITHUB_WORKSPACE/protocol/synthetic-inspection-v1.json" | tee generated/core/test_synthetic_inspection_protocol.txt
       - name: Check deferred manager access and reentrant callback mutations
-        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.restore_native.outcome == 'success' }}
         run: core/_build/default/test/test_deferred_pass_manager.exe "$GITHUB_WORKSPACE/tests/conformance/pipeline-contract-literals-v1.json" | tee generated/core/test_deferred_pass_manager.txt
       - name: Check nested callback framing and cumulative channel authority
-        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.restore_native.outcome == 'success' }}
         run: core/_build/default/test/test_pipeline_callback_channel.exe "$GITHUB_WORKSPACE/protocol/pipeline-callback-channel-v1.json" | tee generated/core/test_pipeline_callback_channel.txt
       - name: Check deferred host capability envelopes and lifetime authority
-        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.restore_native.outcome == 'success' }}
         run: core/_build/default/test/test_pipeline_host_bridge.exe | tee generated/core/test_pipeline_host_bridge.txt
       - name: Check live callback manager dispatch and native acceptance authority
-        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.restore_native.outcome == 'success' }}
         run: core/_build/default/test/test_pipeline_callback_manager.exe "$GITHUB_WORKSPACE/protocol/pipeline-callback-manager-v1.json" "$GITHUB_WORKSPACE/tests/conformance/pipeline-contract-literals-v1.json" "$GITHUB_WORKSPACE/tests/conformance/fixed-pipeline-native-v1.json" | tee generated/core/test_pipeline_callback_manager.txt
       - name: Check persistent manager state and cumulative session resource bounds
-        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.restore_native.outcome == 'success' }}
         run: core/_build/default/test/test_pipeline_session.exe "$GITHUB_WORKSPACE/protocol/pipeline-session-v1.json" "$GITHUB_WORKSPACE/tests/conformance/fixed-pipeline-native-v1.json" | tee generated/core/test_pipeline_session.txt
       - name: Check complete pipeline contract records and original constructor rejections
-        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.restore_native.outcome == 'success' }}
         run: core/_build/default/test/test_pipeline_contract.exe "$GITHUB_WORKSPACE/tests/conformance/pipeline-contract-literals-v1.json" | tee generated/core/test_pipeline_contract.txt
       - name: Check native stage acceptance, scoped completion and transitive freshness
-        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.restore_native.outcome == 'success' }}
         run: core/_build/default/test/test_pass_manager.exe "$GITHUB_WORKSPACE/tests/conformance/pipeline-contract-literals-v1.json" | tee generated/core/test_pass_manager.txt
       - name: Preserve original validator comparison order, identity and callback mutations
-        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.restore_native.outcome == 'success' }}
         run: core/_build/default/test/test_provider_comparison.exe "$GITHUB_WORKSPACE/tests/conformance/pipeline-callback-semantics-v1.json" | tee generated/core/test_provider_comparison.txt
       - name: Replay original manager commands, callback bodies and complete state changes
-        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.restore_native.outcome == 'success' }}
         run: core/_build/default/test/test_checked_pipeline_corpus.exe "$GITHUB_WORKSPACE/tests/conformance/checked-pipeline-v1.json" | tee generated/core/test_checked_pipeline_corpus.txt
       - name: Check lowering and independent preservation share the caller work ancestor
-        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.restore_native.outcome == 'success' }}
         run: core/_build/default/test/test_lowering_budget.exe "$GITHUB_WORKSPACE/tests/conformance/lowering-v1.json" | tee generated/core/test_lowering_budget.txt
       - name: Replay fixed native pipelines and original post-return manager observations
-        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.restore_native.outcome == 'success' }}
         run: core/_build/default/test/test_fixed_pipeline_corpus.exe "$GITHUB_WORKSPACE/tests/conformance/fixed-pipeline-native-v1.json" "$GITHUB_WORKSPACE/tests/conformance/fixed-pipeline-continuations-native-v1.json" | tee generated/core/test_fixed_pipeline_corpus.txt
       - name: Check every original workflow, exploration, reduction and callback observation
-        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.restore_native.outcome == 'success' }}
         run: |
           set -o pipefail
           core/_build/default/test/test_realization_workflow_corpus.exe "$GITHUB_WORKSPACE/tests/conformance/realization-workflow-v1.json" | tee generated/core/test_realization_workflow_corpus.txt
       - name: Check cross-language bytes, structural intent and independent lowering correspondence
-        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.restore_native.outcome == 'success' }}
         env:
           GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
         run: |
@@ -1132,7 +1297,7 @@ jobs:
             --verify "$GITHUB_WORKSPACE/core/_build/default/bin/verify/main.exe" \
             --output generated/core/conformance.json
       - name: Check installed standalone architecture verification and fresh replay
-        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.restore_native.outcome == 'success' }}
         env:
           GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
         run: |
@@ -1141,10 +1306,10 @@ jobs:
             --verify "$GITHUB_WORKSPACE/core/_build/default/bin/verify/main.exe" \
             --output generated/core/architecture-protocol.json
       - name: Check native producer protocol with original case B authority
-        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.restore_native.outcome == 'success' }}
         run: core/_build/default/test/test_producer_protocol.exe "$GITHUB_WORKSPACE/tests/conformance/case-b" | tee generated/core/producer-protocol.txt
       - name: Check installed architecture compilation and paired export
-        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.restore_native.outcome == 'success' }}
         env:
           GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
         run: |
@@ -1154,111 +1319,104 @@ jobs:
             --core "$GITHUB_WORKSPACE/core/_build/default/bin/core/main.exe" \
             --verify "$GITHUB_WORKSPACE/core/_build/default/bin/verify/main.exe" \
             --output "$GITHUB_WORKSPACE/generated/core/architecture-producer-protocol.json"
-      - name: Check installed public architecture SDK and CLI on Python 3.11
-        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
-        env:
-          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
-        run: |
-          mkdir -p "$RUNNER_TEMP/architecture-routing-3.11"
-          cd "$RUNNER_TEMP/architecture-routing-3.11"
-          python "$GITHUB_WORKSPACE/tools/check_architecture_routing.py" \
-            --core "$GITHUB_WORKSPACE/core/_build/default/bin/core/main.exe" \
-            --verify "$GITHUB_WORKSPACE/core/_build/default/bin/verify/main.exe" \
-            --output "$GITHUB_WORKSPACE/generated/core/architecture-routing-3.11.json"
-      - name: Select Python 3.14 without changing the native job runtime
-        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
-        id: routing_python314
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.14"
-          update-environment: false
-      - name: Check installed public architecture SDK and CLI on Python 3.14
-        if: ${{ !cancelled() && steps.native_build.outcome == 'success' && steps.routing_python314.outcome == 'success' }}
-        env:
-          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
-          ROUTING_PYTHON: ${{ steps.routing_python314.outputs.python-path }}
-        run: |
-          "$ROUTING_PYTHON" -m pip install .
-          mkdir -p "$RUNNER_TEMP/architecture-routing-3.14"
-          cd "$RUNNER_TEMP/architecture-routing-3.14"
-          "$ROUTING_PYTHON" "$GITHUB_WORKSPACE/tools/check_architecture_routing.py" \
-            --core "$GITHUB_WORKSPACE/core/_build/default/bin/core/main.exe" \
-            --verify "$GITHUB_WORKSPACE/core/_build/default/bin/verify/main.exe" \
-            --output "$GITHUB_WORKSPACE/generated/core/architecture-routing-3.14.json"
       - name: Compare complete construction producer and workflow artifacts
-        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.restore_native.outcome == 'success' }}
         run: core/_build/default/test/test_construction_producer.exe "$GITHUB_WORKSPACE/tests/conformance/construction-producer-v1.json" | tee generated/core/construction-producer.txt
       - name: Compare source manifests, matching, architecture production and paired export
-        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.restore_native.outcome == 'success' }}
         run: core/_build/default/test/test_architecture_producer.exe "$GITHUB_WORKSPACE/tests/conformance/architecture-producer-v1.json" | tee generated/core/architecture-producer.txt
       - name: Compare complete coupled source transport traces and rejection signatures
-        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.restore_native.outcome == 'success' }}
         run: core/_build/default/test/test_source_transport.exe "$GITHUB_WORKSPACE/tests/conformance/source-transport-v1.json" | tee generated/core/source-transport.txt
       - name: Compare every captured independent candidate model trace and rejection
-        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.restore_native.outcome == 'success' }}
         run: core/_build/default/test/test_candidate_runtime_corpus.exe "$GITHUB_WORKSPACE/tests/conformance/candidate-runtime-v1.json" | tee generated/core/candidate-runtime.txt
       - name: Compare complete locked registry, assembly reconstruction and component execution
-        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.restore_native.outcome == 'success' }}
         run: core/_build/default/test/test_component_runtime_corpus.exe "$GITHUB_WORKSPACE/tests/conformance/component-runtime-v1.json" | tee generated/core/component-runtime.txt
       - name: Compare complete realization declarations, evidence identities and fresh admission
-        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.restore_native.outcome == 'success' }}
         run: core/_build/default/test/test_realization_foundation_corpus.exe "$GITHUB_WORKSPACE/tests/conformance/realization-foundation-v1.json" | tee generated/core/realization-foundation.txt
       - name: Compare complete checked-request and finite-history realization observations
-        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.restore_native.outcome == 'success' }}
         run: core/_build/default/test/test_realization_checks_corpus.exe "$GITHUB_WORKSPACE/tests/conformance/realization-checks-v1.json" | tee generated/core/realization-checks.txt
-      - name: Retain revision-bound native executables
-        run: |
-          cp core/_build/default/bin/core/main.exe generated/core/biocompiler-core
-          cp core/_build/default/bin/verify/main.exe generated/core/biocompiler-verify
-          python -c 'import hashlib,json,os,pathlib,platform; p=pathlib.Path("generated/core"); p.joinpath("binaries.json").write_text(json.dumps({"revision":os.environ["GITHUB_SHA"],"system":platform.system(),"machine":platform.machine(),"sha256":{n:hashlib.sha256(p.joinpath(n).read_bytes()).hexdigest() for n in ("biocompiler-core","biocompiler-verify")}},sort_keys=True,indent=2)+"\n")'
-      - name: Retain final-byte material closure and assemble internal platform wheel
-        env:
-          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
-        run: |
-          python tools/collect_prebuilt_materials.py --checkout "$GITHUB_WORKSPACE" \
-            --sources "$GITHUB_WORKSPACE/generated/prebuilt-sources" --static-root "$GITHUB_WORKSPACE/generated/static-gmp" \
-            --native-root "$GITHUB_WORKSPACE/generated/core" --switch "$(opam var prefix)" --opam "$(command -v opam)" \
-            --source-revision "$GITHUB_HEAD_SHA" --tested-revision "$GITHUB_SHA" --run-id "$GITHUB_RUN_ID" \
-            --platform ${{ matrix.platform }} --output "$GITHUB_WORKSPACE/generated/prebuilt-materials"
-          if [ "${{ runner.os }}" = macOS ]; then audit_tool="$(command -v otool)"; else audit_tool="$(command -v readelf)"; fi
-          audit_tool="$(python -c 'import pathlib,sys; print(pathlib.Path(sys.argv[1]).resolve(strict=True))' "$audit_tool")"
-          python tools/build_prebuilt_core.py wheel --source-root "$GITHUB_WORKSPACE" \
-            --native-root "$GITHUB_WORKSPACE/generated/core" --platform ${{ matrix.platform }} \
-            --source-revision "$GITHUB_HEAD_SHA" --tested-revision "$GITHUB_SHA" --run-id "$GITHUB_RUN_ID" \
-            --audit-tool "$audit_tool" --materials-root "$GITHUB_WORKSPACE/generated/prebuilt-materials/files" \
-            --materials "$GITHUB_WORKSPACE/generated/prebuilt-materials/materials.json" \
-            --materials-authority "$GITHUB_WORKSPACE/generated/prebuilt-materials/authority.json" \
-            --materials-sha256 "$(cat generated/prebuilt-materials/manifest.sha256)" \
-            --output "$GITHUB_WORKSPACE/generated/prebuilt-platform"
-          cp generated/prebuilt-materials/authority.json generated/prebuilt-platform/material-authority.json
-          cp generated/prebuilt-materials/manifest.sha256 generated/prebuilt-platform/material-manifest.sha256
       - uses: actions/upload-artifact@v4
-        with:
-          name: prebuilt-${{ matrix.platform }}
-          path: generated/prebuilt-platform
-          if-no-files-found: error
-          retention-days: 30
-      - name: Retain native evidence even on failure
         if: always()
-        uses: actions/upload-artifact@v4
         with:
-          name: core-${{ matrix.platform }}
-          path: generated/core/
-          if-no-files-found: warn
           overwrite: true
-          retention-days: 7
-      - name: Record successful native validation
+          name: native-checks-${{ matrix.platform }}
+          path: generated/core/
+          if-no-files-found: error
+      - name: Record successful complete ocaml-core
         run: python tools/ci_validation.py finish --start generated/ci/start.json --output generated/ci/ocaml-core-${{ matrix.platform }}.json
       - uses: actions/upload-artifact@v4
         with:
+          overwrite: true
           name: ci-job-ocaml-core-${{ matrix.platform }}
           path: generated/ci/ocaml-core-${{ matrix.platform }}.json
           if-no-files-found: error
+
+  architecture-sdk:
+    needs: ocaml-build
+    timeout-minutes: 60
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: ubuntu-24.04
+            platform: linux-x86_64
+            python-version: "3.11"
+          - runner: ubuntu-24.04
+            platform: linux-x86_64
+            python-version: "3.14"
+          - runner: macos-14
+            platform: macos-arm64
+            python-version: "3.11"
+          - runner: macos-14
+            platform: macos-arm64
+            python-version: "3.14"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - run: python tools/ci_validation.py start --job architecture-sdk --variant ${{ matrix.platform }}-py${{ matrix.python-version }} --output generated/ci/start.json
+      - uses: actions/download-artifact@v4
+        with:
+          name: native-bundle-${{ matrix.platform }}
+          path: artifacts/native-bundle
+      - name: Restore exact source and platform bound compiled executables
+        run: python tools/ci_native_bundle.py restore --path artifacts/native-bundle/native.zip
+      - run: python -m pip install .
+      - name: Check installed public architecture SDK and CLI on selected Python runtime
+        env:
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/architecture-routing-${{ matrix.python-version }}"
+          cd "$RUNNER_TEMP/architecture-routing-${{ matrix.python-version }}"
+          python "$GITHUB_WORKSPACE/tools/check_architecture_routing.py" \
+            --core "$GITHUB_WORKSPACE/core/_build/default/bin/core/main.exe" \
+            --verify "$GITHUB_WORKSPACE/core/_build/default/bin/verify/main.exe" \
+            --workers 2 --output "$GITHUB_WORKSPACE/generated/core/architecture-routing-${{ matrix.python-version }}.json"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
           overwrite: true
-          retention-days: 7
+          name: architecture-sdk-${{ matrix.platform }}-py${{ matrix.python-version }}
+          path: generated/core/
+          if-no-files-found: error
+      - name: Record successful complete architecture-sdk
+        run: python tools/ci_validation.py finish --start generated/ci/start.json --output generated/ci/architecture-sdk-${{ matrix.platform }}-py${{ matrix.python-version }}.json
+      - uses: actions/upload-artifact@v4
+        with:
+          overwrite: true
+          name: ci-job-architecture-sdk-${{ matrix.platform }}-py${{ matrix.python-version }}
+          path: generated/ci/architecture-sdk-${{ matrix.platform }}-py${{ matrix.python-version }}.json
+          if-no-files-found: error
 
   architecture-core-reproducibility:
-    needs: ocaml-core
+    needs: [ocaml-build, architecture-sdk]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -1275,6 +1433,16 @@ jobs:
         with:
           name: core-macos-arm64
           path: artifacts/core/macos-arm64
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: architecture-sdk-linux-x86_64-py*
+          path: artifacts/core/linux-x86_64
+          merge-multiple: true
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: architecture-sdk-macos-arm64-py*
+          path: artifacts/core/macos-arm64
+          merge-multiple: true
       - name: Install Python package for retained artifact comparison
         run: python -m pip install .
       - name: Compare exact SDK and CLI artifacts across Python versions and native platforms
@@ -1302,11 +1470,143 @@ jobs:
           overwrite: true
           retention-days: 7
 
-  realization-conformance:
-    needs: [ocaml-core, prebuilt-core-assembly]
+  installed-campaigns:
+    needs: [ocaml-build, prebuilt-core-assembly]
     runs-on: ${{ matrix.runner }}
-    # Both complete installed campaigns retain every original occurrence.
-    timeout-minutes: 180
+    # Each platform/Python slot retains all 17 campaigns across five groups.
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      max-parallel: 8
+      matrix:
+        include:
+          - runner: ubuntu-24.04
+            platform: linux-x86_64
+            python-version: "3.11"
+            group: protocol
+          - runner: ubuntu-24.04
+            platform: linux-x86_64
+            python-version: "3.14"
+            group: protocol
+          - runner: macos-14
+            platform: macos-arm64
+            python-version: "3.11"
+            group: protocol
+          - runner: macos-14
+            platform: macos-arm64
+            python-version: "3.14"
+            group: protocol
+          - runner: ubuntu-24.04
+            platform: linux-x86_64
+            python-version: "3.11"
+            group: manager
+          - runner: ubuntu-24.04
+            platform: linux-x86_64
+            python-version: "3.14"
+            group: manager
+          - runner: macos-14
+            platform: macos-arm64
+            python-version: "3.11"
+            group: manager
+          - runner: macos-14
+            platform: macos-arm64
+            python-version: "3.14"
+            group: manager
+          - runner: ubuntu-24.04
+            platform: linux-x86_64
+            python-version: "3.11"
+            group: fixed
+          - runner: ubuntu-24.04
+            platform: linux-x86_64
+            python-version: "3.14"
+            group: fixed
+          - runner: macos-14
+            platform: macos-arm64
+            python-version: "3.11"
+            group: fixed
+          - runner: macos-14
+            platform: macos-arm64
+            python-version: "3.14"
+            group: fixed
+          - runner: ubuntu-24.04
+            platform: linux-x86_64
+            python-version: "3.11"
+            group: workflow
+          - runner: ubuntu-24.04
+            platform: linux-x86_64
+            python-version: "3.14"
+            group: workflow
+          - runner: macos-14
+            platform: macos-arm64
+            python-version: "3.11"
+            group: workflow
+          - runner: macos-14
+            platform: macos-arm64
+            python-version: "3.14"
+            group: workflow
+          - runner: ubuntu-24.04
+            platform: linux-x86_64
+            python-version: "3.11"
+            group: synthetic
+          - runner: ubuntu-24.04
+            platform: linux-x86_64
+            python-version: "3.14"
+            group: synthetic
+          - runner: macos-14
+            platform: macos-arm64
+            python-version: "3.11"
+            group: synthetic
+          - runner: macos-14
+            platform: macos-arm64
+            python-version: "3.14"
+            group: synthetic
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Bind the required Python and native platform variant
+        run: python tools/ci_validation.py start --job installed-campaigns --variant ${{ matrix.platform }}-py${{ matrix.python-version }}-${{ matrix.group }} --output generated/ci/start.json
+      - uses: actions/download-artifact@v4
+        with:
+          name: core-${{ matrix.platform }}
+          path: artifacts/native
+      - uses: actions/download-artifact@v4
+        with:
+          name: prebuilt-wheelhouse
+          path: artifacts/prebuilt-wheelhouse
+      - name: Execute the complete selected installed campaign group in a fresh wheel-only environment
+        env:
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          python tools/prebuilt_release_pipeline.py installed --checkout "$GITHUB_WORKSPACE" \
+            --sdk "$GITHUB_WORKSPACE/artifacts/prebuilt-wheelhouse/biocompiler-0.1.0.dev29-py3-none-any.whl" \
+            --native "$(python -c 'import pathlib; import sys; sys.path.insert(0,"tools"); import build_prebuilt_core as b; print((pathlib.Path("artifacts/prebuilt-wheelhouse")/("biocompiler_core-"+b.VERSION+"-"+b.TARGETS["${{ matrix.platform }}"][2]+".whl")).resolve())')" \
+            --environment "$RUNNER_TEMP/biocompiler-fresh-${{ matrix.python-version }}" \
+            --source-revision "$GITHUB_HEAD_SHA" --tested-revision "$GITHUB_SHA" --run-id "$GITHUB_RUN_ID" \
+            --platform ${{ matrix.platform }} --group ${{ matrix.group }} --output "$GITHUB_WORKSPACE/generated/realization"
+      - name: Retain complete protocol and SDK artifacts even on failure
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: installed-campaign-${{ matrix.platform }}-py${{ matrix.python-version }}-${{ matrix.group }}
+          path: generated/realization/
+          if-no-files-found: error
+          overwrite: true
+          retention-days: 7
+      - name: Record successful complete installed-campaigns
+        run: python tools/ci_validation.py finish --start generated/ci/start.json --output generated/ci/installed-campaigns-${{ matrix.platform }}-py${{ matrix.python-version }}-${{ matrix.group }}.json
+      - uses: actions/upload-artifact@v4
+        with:
+          overwrite: true
+          name: ci-job-installed-campaigns-${{ matrix.platform }}-py${{ matrix.python-version }}-${{ matrix.group }}
+          path: generated/ci/installed-campaigns-${{ matrix.platform }}-py${{ matrix.python-version }}-${{ matrix.group }}.json
+          if-no-files-found: error
+
+  realization-conformance:
+    needs: [installed-campaigns, prebuilt-core-assembly]
+    timeout-minutes: 20
+    runs-on: ${{ matrix.runner }}
     strategy:
       fail-fast: false
       matrix:
@@ -1328,47 +1628,56 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Bind the required Python and native platform variant
-        run: python tools/ci_validation.py start --job realization-conformance --variant ${{ matrix.platform }}-py${{ matrix.python-version }} --output generated/ci/start.json
+      - run: python tools/ci_validation.py start --job realization-conformance --variant ${{ matrix.platform }}-py${{ matrix.python-version }} --output generated/ci/start.json
       - uses: actions/download-artifact@v4
         with:
-          name: core-${{ matrix.platform }}
-          path: artifacts/native
+          name: installed-campaign-${{ matrix.platform }}-py${{ matrix.python-version }}-protocol
+          path: artifacts/groups/protocol
+      - uses: actions/download-artifact@v4
+        with:
+          name: installed-campaign-${{ matrix.platform }}-py${{ matrix.python-version }}-manager
+          path: artifacts/groups/manager
+      - uses: actions/download-artifact@v4
+        with:
+          name: installed-campaign-${{ matrix.platform }}-py${{ matrix.python-version }}-fixed
+          path: artifacts/groups/fixed
+      - uses: actions/download-artifact@v4
+        with:
+          name: installed-campaign-${{ matrix.platform }}-py${{ matrix.python-version }}-workflow
+          path: artifacts/groups/workflow
+      - uses: actions/download-artifact@v4
+        with:
+          name: installed-campaign-${{ matrix.platform }}-py${{ matrix.python-version }}-synthetic
+          path: artifacts/groups/synthetic
       - uses: actions/download-artifact@v4
         with:
           name: prebuilt-wheelhouse
           path: artifacts/prebuilt-wheelhouse
-      - name: Execute every existing installed campaign in a fresh wheel-only environment
+      - name: Reconstruct every campaign and installed lifecycle without omissions
         env:
           GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
         run: |
-          python tools/prebuilt_release_pipeline.py installed --checkout "$GITHUB_WORKSPACE" \
-            --sdk "$GITHUB_WORKSPACE/artifacts/prebuilt-wheelhouse/biocompiler-0.1.0.dev29-py3-none-any.whl" \
-            --native "$(python -c 'import pathlib; import sys; sys.path.insert(0,"tools"); import build_prebuilt_core as b; print((pathlib.Path("artifacts/prebuilt-wheelhouse")/("biocompiler_core-"+b.VERSION+"-"+b.TARGETS["${{ matrix.platform }}"][2]+".whl")).resolve())')" \
-            --environment "$RUNNER_TEMP/biocompiler-fresh-${{ matrix.python-version }}" \
-            --source-revision "$GITHUB_HEAD_SHA" --tested-revision "$GITHUB_SHA" --run-id "$GITHUB_RUN_ID" \
-            --platform ${{ matrix.platform }} --output "$GITHUB_WORKSPACE/generated/realization"
-      - name: Retain complete protocol and SDK artifacts even on failure
-        if: always()
-        uses: actions/upload-artifact@v4
+          python tools/prebuilt_release_pipeline.py aggregate --root artifacts/groups \
+            --candidate artifacts/prebuilt-wheelhouse/candidate.json --output generated/realization \
+            --source-revision "$GITHUB_HEAD_SHA" --tested-revision "$GITHUB_SHA" \
+            --run-id "$GITHUB_RUN_ID" --platform ${{ matrix.platform }} --python-minor ${{ matrix.python-version }}
+      - uses: actions/upload-artifact@v4
         with:
+          overwrite: true
           name: realization-${{ matrix.platform }}-py${{ matrix.python-version }}
           path: generated/realization/
           if-no-files-found: error
-          overwrite: true
-          retention-days: 7
-      - name: Record successful complete conformance
-        run: python tools/ci_validation.py finish --start generated/ci/start.json --output generated/ci/realization-${{ matrix.platform }}-py${{ matrix.python-version }}.json
+      - name: Record successful complete realization-conformance
+        run: python tools/ci_validation.py finish --start generated/ci/start.json --output generated/ci/realization-conformance-${{ matrix.platform }}-py${{ matrix.python-version }}.json
       - uses: actions/upload-artifact@v4
         with:
-          name: ci-job-realization-${{ matrix.platform }}-py${{ matrix.python-version }}
-          path: generated/ci/realization-${{ matrix.platform }}-py${{ matrix.python-version }}.json
-          if-no-files-found: error
           overwrite: true
-          retention-days: 7
+          name: ci-job-realization-conformance-${{ matrix.platform }}-py${{ matrix.python-version }}
+          path: generated/ci/realization-conformance-${{ matrix.platform }}-py${{ matrix.python-version }}.json
+          if-no-files-found: error
 
   realization-core-reproducibility:
-    needs: [ocaml-core, realization-conformance]
+    needs: [ocaml-build, realization-conformance]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -1488,6 +1797,7 @@ jobs:
           retention-days: 7
 
   studio-typescript:
+    needs: ci-preflight
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -1521,7 +1831,7 @@ jobs:
           retention-days: 7
 
   prebuilt-core-assembly:
-    needs: ocaml-core
+    needs: ocaml-build
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
@@ -1574,6 +1884,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
+          overwrite: true
           name: ci-job-prebuilt-core-assembly-cross-platform
           path: generated/ci/prebuilt-core-assembly-cross-platform.json
           if-no-files-found: error
@@ -1581,7 +1892,7 @@ jobs:
 
   prebuilt-core-validation:
     if: always()
-    needs: [ocaml-core, prebuilt-core-assembly, realization-conformance, realization-core-reproducibility]
+    needs: [ocaml-build, ocaml-core, ocaml-native-tests, architecture-sdk, architecture-core-reproducibility, prebuilt-core-assembly, realization-conformance, realization-core-reproducibility]
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
@@ -1622,6 +1933,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
+          overwrite: true
           name: prebuilt-release-validation
           path: generated/prebuilt-validation
           if-no-files-found: error
@@ -1629,6 +1941,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
+          overwrite: true
           name: ci-job-prebuilt-core-validation-cross-platform
           path: generated/ci/prebuilt-core-validation-cross-platform.json
           if-no-files-found: error
@@ -1638,6 +1951,11 @@ jobs:
     name: Validation complete
     if: always()
     needs:
+      - ci-preflight
+      - ocaml-build
+      - ocaml-native-tests
+      - architecture-sdk
+      - installed-campaigns
       - unit-plan
       - unit-tests
       - unit-accounting

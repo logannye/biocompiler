@@ -63,6 +63,9 @@ class MatrixTests(unittest.TestCase):
     def setUp(self):
         self.expected={'source_revision':'a'*40,'tested_revision':'b'*40,'run_id':'123'}
         self.manifest={'files':{'bin/biocompiler-core':{'sha256':'c'*64,'size':10},'bin/biocompiler-verify':{'sha256':'d'*64,'size':11}}}
+        self.binaries=build.canonical({'revision':'b'*40,'system':'Linux','machine':'x86_64',
+            'sha256':{'biocompiler-core':'c'*64,'biocompiler-verify':'d'*64}})
+        self.manifest['files']['binaries.json']={'sha256':build.sha(self.binaries),'size':len(self.binaries)}
         self.release={'platforms':{'linux-x86_64':hashlib.sha256(build.canonical(self.manifest)).hexdigest()}}
         self.candidate={'release':self.release,'distributions':{'linux-x86_64':self.manifest}}
         self.owner={**self.expected,'package_root':'/fresh/site/biocompiler_core','native_platform':'linux-x86_64',
@@ -78,7 +81,11 @@ class MatrixTests(unittest.TestCase):
         self.raw['smoke.json']=build.canonical({**self.expected,'python_version':'3.11.15','roles':{
             role:{key:self.owner['files']['bin/biocompiler-'+role][key] for key in ('path','sha256')} for role in ('core','verify')},
             'process_lifecycle':{'reaped':True,'attempts':1}})
-        self.receipt={'status':'pass',**self.expected,'native_platform':'linux-x86_64','python_version':'3.11.15 actual',
+        self.raw['native-inputs.json']=build.canonical({'schema_version':'biocompiler.native_conformance_inputs.v1','status':'pass',
+            'revision':self.expected['tested_revision'],'source_revision':self.expected['source_revision'],'run_id':'123',
+            'native_platform':'linux-x86_64','system':'Linux','machine':'x86_64','manifest_sha256':build.sha(self.binaries),
+            'python_version':'3.11.15','sha256':{'biocompiler-core':'c'*64,'biocompiler-verify':'d'*64}})
+        self.receipt={'schema_version':'biocompiler.prebuilt_installed_campaign.v1','status':'pass',**self.expected,'native_platform':'linux-x86_64','python_version':'3.11.15 actual',
             'ownership_before':self.owner,'ownership_after':deepcopy(self.owner),'commands':[
                 {'argv':command,'cwd':'/evidence' if name=='create-environment' else '/fresh','returncode':0,'log':{'path':name+'.log','sha256':hashlib.sha256(self.raw[name+'.log']).hexdigest(),'size':len(self.raw[name+'.log'])}} for name,command in plans],
             'campaigns':[{'name':name,'receipt_sha256':hashlib.sha256(self.raw[name+'.json']).hexdigest()} for _,name in pipeline.CAMPAIGNS]}
