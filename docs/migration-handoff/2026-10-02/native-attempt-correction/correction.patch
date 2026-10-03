@@ -1,0 +1,39 @@
+diff --git a/core/test/test_reference_molecular_attempts.ml b/core/test/test_reference_molecular_attempts.ml
+index e00ba9913..fe54a9e51 100644
+--- a/core/test/test_reference_molecular_attempts.ml
++++ b/core/test/test_reference_molecular_attempts.ml
+@@ -112,9 +112,16 @@ let complete_and_reuse request registry manifests=
+   require(Json.string(field "producer"(field "construct_to_molecular"(field "passes" registered)))="original-producer")
+     "Failed reentry replaced the actual registered original producer";
+   expect "reference_workflow_capability" (fun()->F.leave_molecular state ~budget:work next);
++  (* An existing artifact identity is never overwritten, even when its actual
++     registration and captured authority remain valid for another run. *)
++  (try ignore(M.run owner ~pass_id:"construct_to_molecular" ~input_id:"construct" ~output_id:"molecular" ());
++       failwith "Duplicate output identity was accepted"
++   with Diagnostic.Error error->require(error.code="pipeline_error" &&
++       error.message="Artifact 'molecular' already exists; use a new identity.")"Duplicate output diagnostic changed");
+   (* Old actual registration still executes on its captured authority. *)
+-  let rerun=M.run owner ~pass_id:"construct_to_molecular" ~input_id:"construct" ~output_id:"molecular" () in
+-  require(rerun!=record && Q.record build==record)"Rerun replaced a historical Build record";
++  let rerun=M.run owner ~pass_id:"construct_to_molecular" ~input_id:"construct" ~output_id:"molecular-rerun" () in
++  require(rerun!=record && Q.record build==record && M.get owner "molecular"==record)
++    "Rerun replaced a historical Build or stored record";
+   F.close state;expect "reference_workflow_closed" (fun()->F.molecular_build_of state ~budget:work old_scope)
+ let failed_reentry request registry manifests=
+   let state,work,owner,_,_=constructed request registry manifests in
+@@ -190,6 +197,12 @@ let ()=
+   let registry=Component_registry.of_json(load directory "bf205bf9073363a9d6e3999e0c4b59d1854b563f3ad9ee2cc96a7ecac4bd21a4") in
+   let manifests=List.map(fun(key,value)->key,Reference_manifest.of_json value)
+     (Json.object_fields(load directory "f6119eba928e760f8201011028e007d9d46bdda0b599e946b0ea4f068663562b")) in
+-  complete_and_reuse request registry manifests;failed_reentry request registry manifests;
+-  nested_notice request registry manifests;captured_old_authority request registry manifests;
+-  bounded_attempts request registry manifests
++  let run_case name action=try action request registry manifests with
++    |Diagnostic.Error error as cause->
++        Printf.eprintf "Reference Molecular attempt %s: %s: %s\n%!" name error.code error.message;
++        raise cause in
++  run_case "complete_and_reuse" complete_and_reuse;
++  run_case "failed_reentry" failed_reentry;
++  run_case "nested_notice" nested_notice;
++  run_case "captured_old_authority" captured_old_authority;
++  run_case "bounded_attempts" bounded_attempts

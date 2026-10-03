@@ -49,6 +49,17 @@ drafts are preserved separately and are not production integrations.
   compilation and all dependent checks on both platforms. PR84 run `37091936085`
   failed compilation and is not accepted.
 
+- [x] **LM-03 same-manager attempt fixture correction, source checkpoint:**
+  PR85 source `96fff538bf9c3886b399012ed8d4e84aa0812d23` compiles on both
+  platforms. Its new reuse fixture then incorrectly requests an existing output
+  identity, which both original Python and native managers reject. Preserve that
+  rejection explicitly, use a fresh identity for the intended retained-provider
+  rerun, and require both historical and stored record identity to remain intact.
+  Both original Python probes and all nine original Molecular tests per runtime
+  pass. [Exact correction and diagnostics](migration-handoff/2026-10-02/native-attempt-correction/correction.json)
+  retain the failure and source evidence. Production code and original corpora
+  are unchanged; corrected hosted execution remains required.
+
 **Earlier native milestone, 2026-10-02:** [PR83](https://github.com/logannye/biocompiler/pull/83)
 contains the native package library checkpoint at
 `64eb5a3964c726abab4e3691c6eb13bd53c25693`. Its

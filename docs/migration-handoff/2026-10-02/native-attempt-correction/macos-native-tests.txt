@@ -1,0 +1,242 @@
+Entering directory '/Users/runner/work/biocompiler/biocompiler/core'
+[2m(cd _build/default/test && ./test_legacy_json.exe)[0m
+Historical JSON spelling, error order and bounded parsing controls passed
+[2m(cd _build/default/test && ./test_domain.exe)[0m
+domain: exact typed-binding reconstruction and validation preservation checked
+[2m(cd _build/default/test && ./test_build_request.exe)[0m
+build request: 94 literal authority/normalization/mutation checks passed
+[2m(cd _build/default/test && ./test_behavior.exe)[0m
+behavior literals: 41 intended rejections; profile/type/state/contact/constant/obligation checks passed
+[2m(cd _build/default/test && ./test_molecule_coordinates.exe)[0m
+molecule coordinates: literal traversal, nominal authority and resource limits checked
+[2m(cd _build/default/test && ./test_circuit_request.exe)[0m
+circuit request: 31 literal checks passed
+[2m(cd _build/default/test && ./test_runtime_number.exe)[0m
+runtime numbers: literal precision, representation, overflow and boundedness checked
+[2m(cd _build/default/test && ./test_wire.exe)[0m
+wire: canonical, malformed, Unicode, bounds, SHA256 and binary64 checks passed
+[2m(cd _build/default/test && ./test_execution_data.exe)[0m
+Execution data: 55 literal and malformed-record checks passed.
+[2m(cd _build/default/test && ./test_pinned_identity.exe)[0m
+pinned identity: all five kinds, exact canonical authority and strict rejection/resource bounds checked
+[2m(cd _build/default/test && ./test_molecular_record.exe)[0m
+molecular records: provenance, Unicode, tree/number/publication bounds and cycle literals passed
+[2m(cd _build/default/test && ./test_molecule_chemistry.exe)[0m
+molecule chemistry: literal parent spelling, completeness, metadata and bounded declaration cases passed
+[2m(cd _build/default/test && ./test_architecture_deployment.exe)[0m
+deployment literals: decimal boundaries, retained numeric kinds, structural scope and resource bounds passed
+[2m(cd _build/default/test && ./test_component_contract.exe)[0m
+component contract: 94 literal checks
+[2m(cd _build/default/test && ./test_human_wrappers.exe)[0m
+human wrappers: independent typed numeric, fixed policy, provenance and native resource literals passed
+[2m(cd _build/default/test && ./test_component.exe)[0m
+components: 34 literal checks
+[2m(cd _build/default/test && ./test_molecule_set.exe)[0m
+molecular amount literals: independent integer/float/null identity, 1024-bit boundary and bounded role lists passed
+[2m(cd _build/default/test && ./test_molecule.exe)[0m
+molecule literals: spelling, streamed chemical coverage, circular identity, defaults and bounded constructors passed
+[2m(cd _build/default/test && ./test_payload_structure.exe)[0m
+payload structure literals: ordering, unknown authority, modalities and native resource bounds passed
+[2m(cd _build/default/test && ./test_architecture_contract.exe)[0m
+architecture leaves: 39 independent constructor, context-boundary and resource checks passed
+[2m(cd _build/default/test && ./test_construction.exe)[0m
+construction literals: all 14 typed operations, exact selections/conditions, numeric identity and bounded constructors passed
+[2m(cd _build/default/test && ./test_construction_artifact.exe)[0m
+construction artifacts: independent missing-candidate literal, exact text inventories and native cycle guards passed
+[2m(cd _build/default/test && ./test_molecular_transitions.exe)[0m
+molecular transitions: exact edit and 64-codon literals, public circuit leaves, collection boundaries and native cyclic constructors passed
+[2m(cd _build/default/test && ./test_construction_assessment.exe)[0m
+construction assessment: strict historical identity, all claims/outcomes, mandatory fields and bounded diagnostics passed
+[2m(cd _build/default/test && ./test_architecture_domains.exe)[0m
+architecture composite literals: 33 independent structure/context, aggregate-boundary and native-cycle checks passed
+[2m(cd _build/default/test && ./test_architecture_build.exe)[0m
+architecture build: independent literals and 38 rejection/resource checks passed
+[2m(cd _build/default/test && ./test_mechanism.exe)[0m
+Mechanism independent domain checks: 51 passed
+[2m(cd _build/default/test && ./test_source_manifest.exe)[0m
+source manifest literals: complete historical leaves, retained order/number kinds, bounded cycles, UTF8, exact native depth/node/shared byte limits passed
+[2m(cd _build/default/test && ./test_model_execution_data.exe)[0m
+Candidate execution data independent checks: 55 passed
+[2m(cd _build/default/test && ./test_workflow_wire.exe)[0m
+workflow artifact codecs: complete 36 MiB identity, strict shared JSON grammar, exact byte/value boundaries and unchanged v1 limits checked
+[2m(cd _build/default/test && ./test_component_registry.exe)[0m
+component registry: 39 literal checks passed
+[2m(cd _build/default/test && ./test_observation_map.exe)[0m
+observation map: 29 literal checks passed
+[2m(cd _build/default/test && ./test_component_assembly.exe)[0m
+component assembly: exact complete authority, lineage and derived inventories, stale locks, duplicate fields and bounded native cycles checked
+[2m(cd _build/default/test && ./test_realization_evidence.exe)[0m
+realization evidence: six complete records, independent legacy ASCII identities, all dependency freshness, PASS invariants and cumulative native boundaries checked
+[2m(cd _build/default/test && ./test_composition.exe)[0m
+Composition: 90 complete domain, ordering, context and resource checks passed
+[2m(cd _build/default/test && ./test_synthetic_authority.exe)[0m
+synthetic authority: 240 checks; 22 complete independent artifacts, 74 original Python rejections, both complete catalogs and bounded structural provenance
+[2m(cd _build/default/test && ./test_realization_contract.exe)[0m
+Realization contracts: 124 identity, membership, context and resource checks passed
+[2m(cd _build/default/test && ./test_composition_evidence.exe)[0m
+Composition evidence: 135 literal/identity/resource checks passed
+[2m(cd _build/default/test && ./test_pipeline_contract.exe /Users/runner/work/biocompiler/biocompiler/tests/conformance/pipeline-contract-literals-v1.json)[0m
+Pipeline contracts: 13 complete original records, 19 constructor rejections, bounded codecs and historical-only claims passed
+[2m(cd _build/default/test && ./test_reference_domains.exe)[0m
+Reference domains: exact identities, rich declarations and resource boundaries passed.
+[2m(cd _build/default/test && ./test_reference.exe)[0m
+reference literals: complete reaction trace, role selection, fresh-session isolation, and 12 intended failures passed
+[2m(cd _build/default/test && ./test_synthetic_model.exe)[0m
+independent synthetic model: all14 operations, complete literal traces, exact deadlines and resource boundaries checked
+[2m(cd _build/default/test && ./test_verification_workflow_records.exe)[0m
+verification workflow records: 11 full Python literals, 16 exact rejections and bounded codec tests passed
+workflow resource accounting: typed writer costs, traversal bounds and immutable suffix reuse passed
+workflow leaf imports: delegated bounded traversals are precharged
+typed dependency replacement: complete Python report/identity and prospective boundary passed
+[2m(cd _build/default/test && ./test_component_execution.exe)[0m
+locked component execution: actual relocked contents, full timelines, declared port order, authority boundaries, exact contextual failures and separate resource allowances checked
+[2m(cd _build/default/test && ./test_candidate_runtime_corpus.exe /Users/runner/work/biocompiler/biocompiler/tests/conformance/candidate-runtime-v1.json)[0m
+candidate runtime corpus: 155 original methods, 2 subprocesses, 549 complete runs (537 returned, 12 rejected), 11938 domain observations (11809 returned, 129 rejected), all 14 operations, 3955 exact documents passed
+[2m(cd _build/default/test && ./test_intent.exe)[0m
+intent: graph, types, units, bindings, source identity and claim-scope checks passed
+[2m(cd _build/default/test && ./test_lowering_check.exe)[0m
+lowering literal checks: defaults/overrides, numeric distinctions, source ownership, alpha renaming, and 10 intended rejections passed
+[2m(cd _build/default/test && ./test_payload_structure_check.exe)[0m
+payload checker: 13 independent invalid-boundary, precedence and native resource literals passed
+[2m(cd _build/default/test && ./test_transition_check.exe)[0m
+transition checker literals: exact native shared work boundary, independent unresolved results and cyclic input bounds passed
+[2m(cd _build/default/test && ./test_construction_check.exe)[0m
+construction checker literal: independent whole RNA, rehashed mutation, fresh replay and default-budget atomicity passed
+[2m(cd _build/default/test && ./test_work_budget.exe)[0m
+shared checker budget: independent and aggregate ceilings, atomic failure, bounded scopes passed
+[2m(cd _build/default/test && ./test_architecture_check.exe)[0m
+architecture checker literals: incomplete historical PASS, exact full verdict, fresh replay, stale authority and aggregate work boundaries passed
+architecture corpus literals: strict independent deltas and selective diagnostic ordering passed
+[2m(cd _build/default/test && ./test_circuit_bindings.exe)[0m
+circuit bindings: complete literals, native cycles/UTF8/bounds, exact/shared work budgets and deep repeated DAG passed
+[2m(cd _build/default/test && ./test_architecture_controls_check.exe)[0m
+architecture controls: 18 independent literal and runtime-boundary checks passed
+[2m(cd _build/default/test && ./test_architecture_deployment_check.exe)[0m
+architecture deployment: 10 independent decimal/mapping/runtime checks passed
+[2m(cd _build/default/test && ./test_admission.exe)[0m
+admission: 134 literal checks
+[2m(cd _build/default/test && ./test_realization_foundation_corpus.exe /Users/runner/work/biocompiler/biocompiler/tests/conformance/realization-foundation-v1.json)[0m
+realization foundation: all324methods/332contexts/70019observations retained; domain, evidence identities, properties and fresh admission checked; finite-history acceptance explicitly deferred
+[2m(cd _build/default/test && ./test_composition_check.exe)[0m
+composition check: 33 complete independently checked results, exact decimal and lifecycle semantics, ordered diagnostics and 81 exact identity/resource assertions passed
+[2m(cd _build/default/test && ./test_reference_checkers.exe /Users/runner/work/biocompiler/biocompiler/tests/conformance/reference-contracts-v1)[0m
+Reference checkers: fresh authority, complete replay, diagnostic order and shared resource bounds passed.
+[2m(cd _build/default/test && ./test_work_budget_retention.exe)[0m
+Optional retention owner: exact shared ancestry, cumulative reservations and sticky exception identity passed.
+[2m(cd _build/default/test && ./test_source_transport.exe)[0m
+source transport literals: exact reference usage, unchanged wrapper, typed records and cyclic native/resource boundaries passed
+[2m(cd _build/default/test && ./test_construction_producer.exe)[0m
+construction producer: 33 independent literal and resource checks passed
+[2m(cd _build/default/test && ./test_stored_zip.exe /Users/runner/work/biocompiler/biocompiler/tests/conformance/archive-container-311.json /Users/runner/work/biocompiler/biocompiler/tests/conformance/archive-container-314.json)[0m
+Stored ZIP and UTF-8 pretty JSON: source literal and cumulative resource controls passed.
+[2m(cd _build/default/test && ./test_source_execution.exe)[0m
+source execution literals: full authority, signed zero, exact unsupported location, constraints and preferences passed
+[2m(cd _build/default/test && ./test_architecture_matching.exe)[0m
+architecture matching literals: exact ambiguity, anchors, identity, pair/instance limits and shared parent passed
+[2m(cd _build/default/test && ./test_architecture_producer.exe)[0m
+architecture producer literals: independently expected empty search, fresh checking, export rejection and cumulative bound passed
+[2m(cd _build/default/test && ./test_lowering.exe)[0m
+lowering literals: exact source/binding emission, independent corruption rejection, unknown source and bounded lineage passed
+[2m(cd _build/default/test && ./test_component_selection.exe)[0m
+component selection:15 full independent result literals, all hard constraints/ranks/admission, fresh replay, strict codecs and cumulative shared bounds checked
+[2m(cd _build/default/test && ./test_pass_manager.exe /Users/runner/work/biocompiler/biocompiler/tests/conformance/pipeline-contract-literals-v1.json)[0m
+Checked manager: complete original baseline, independent checks, scoped completion, rejected stages, provider identity, ancestor freshness and lifetime budgets passed
+[2m(cd _build/default/test && ./test_checked_pipeline_corpus.exe /Users/runner/work/biocompiler/biocompiler/tests/conformance/checked-pipeline-v1.json)[0m
+Checked pipeline: 21 original contexts, 374 external commands, 57 actual callbacks, 987 independent record observations, 60 native-input/exception helper correspondences, one actual reentrant mutation; 455 other captured contexts retain pending callback parity
+[2m(cd _build/default/test && ./test_lowering_budget.exe /Users/runner/work/biocompiler/biocompiler/tests/conformance/lowering-v1.json)[0m
+Shared lowering budget: 31 original complete outputs, exact/short/repeated ancestor boundaries passed
+[2m(cd _build/default/test && ./test_provider_comparison.exe /Users/runner/work/biocompiler/biocompiler/tests/conformance/pipeline-callback-semantics-v1.json)[0m
+Provider comparison: all 34 original cases and 106 nested events match complete states/results/errors; physical identity, reentrancy, retention and exact lifetime bounds checked.
+[2m(cd _build/default/test && ./test_deferred_pass_manager.exe /Users/runner/work/biocompiler/biocompiler/tests/conformance/pipeline-contract-literals-v1.json)[0m
+deferred pass manager: ordered host capabilities, checks, prefix validation and fail-closed mixed providers passed
+[2m(cd _build/default/test && ./test_component_runtime_corpus.exe /Users/runner/work/biocompiler/biocompiler/tests/conformance/component-runtime-v1.json)[0m
+component runtime corpus: 163 original methods, 52476 complete observations (51495 returned, 981 rejected), 134 reconstructions, 93 runtime calls, 4934 documents, all 13 component operations and excluded delay passed
+[2m(cd _build/default/test && ./test_reference_producer_budget.exe /Users/runner/work/biocompiler/biocompiler/tests/conformance/reference-contracts-v1)[0m
+Reference producers: actual generation/emission, inherited reductions, exact lifetime work and bounded inventories passed.
+[2m(cd _build/default/test && ./test_reference_sequence_export.exe /Users/runner/work/biocompiler/biocompiler/tests/conformance/reference-sequence-export-314.json)[0m
+Reference sequence export: complete original bytes, fresh checking and shared resources passed.
+[2m(cd _build/default/test && ./test_realization_request.exe)[0m
+Realization request: 38 structural, fresh authority, identity and budget literals passed
+[2m(cd _build/default/test && ./test_realization_check.exe)[0m
+realization coordinator: exact full dependency/result literals, ordered preflight, independent fresh engines, full future authority, shared resource exhaustion and conservative failure accounting checked
+[2m(cd _build/default/test && ./test_realization_monitor.exe)[0m
+realization monitor: 44 public-entrypoint literal, full-report identity, numeric and cumulative resource checks passed
+[2m(cd _build/default/test && ./test_synthetic_authority_corpus.exe /Users/runner/work/biocompiler/biocompiler/tests/conformance/synthetic-authority-v1.json)[0m
+synthetic authority: all 373 methods / 381 contexts / 47,758 observations retained; catalog/configuration/candidate domain checked; generation and acceptance explicitly deferred
+[2m(cd _build/default/test && ./test_component_behavior_check.exe)[0m
+actual component behavior:6 full independent Python results, coherent wrong implementation, link-result merge, authority, exact/shared bounds and repeated failed reconstruction checked
+[2m(cd _build/default/test && ./test_reference_contracts_corpus.exe /Users/runner/work/biocompiler/biocompiler/tests/conformance/reference-contracts-v1.json)[0m
+reference contracts: all 72 original methods / 22584 complete domain, producer and checker observations passed; no manager/archive acceptance claim
+[2m(cd _build/default/test && ./test_synthetic_candidate_check.exe)[0m
+synthetic acceptance: 12 complete independent Python results, actual-candidate execution, source coordinates, rejection precedence, exact/shared bounds and failure isolation checked
+[2m(cd _build/default/test && ./test_synthetic_provenance.exe)[0m
+synthetic provenance: 204 checks across 62 complete original reports, both strategies/profiles, alias/memory updates, actual execution and shared resource boundaries
+[2m(cd _build/default/test && ./test_component_assembly_check.exe)[0m
+component assembly: 12 full independent Python reports, 14 exact provenance/acceptance rejections, actual candidate and relocated source authority, shared bounds and failure isolation checked
+[2m(cd _build/default/test && ./test_component_acceptance_corpus.exe /Users/runner/work/biocompiler/biocompiler/tests/conformance/component-acceptance-v1.json)[0m
+component acceptance: all373methods/380contexts/4539observations retained; composition/selection/actual-component behavior checked; source correspondence explicitly deferred
+[2m(cd _build/default/test && ./test_verification_exploration.exe)[0m
+Native verification exploration: 4 complete campaigns, 4 reductions, 2 adversarial inventories, transcript and resource controls passed
+[2m(cd _build/default/test && ./test_synthetic_verification_workflow.exe)[0m
+Native synthetic workflow: 12 complete original records, both modes/all operations/all outcomes, fresh replay and shared budget controls passed
+[2m(cd _build/default/test && ./test_reference_package_manifest.exe /Users/runner/work/biocompiler/biocompiler/tests/conformance/reference-package-domains-311.json /Users/runner/work/biocompiler/biocompiler/tests/conformance/reference-package-domains-314.json)[0m
+Reference package domains and structural container: complete original literals and resources passed.
+[2m(cd _build/default/test && ./test_synthetic_generator.exe)[0m
+synthetic generator: 22 complete independent candidates, 19 exact source-bearing rejections, policy and shared exact resource boundaries passed
+[2m(cd _build/default/test && ./test_synthetic_selection.exe)[0m
+synthetic selection: complete original records, constructors, mutations, fresh checks and aggregate budgets passed
+[2m(cd _build/default/test && ./test_synthetic_components.exe)[0m
+synthetic adaptation: 30 full original/independent productions, 2 exact prerequisite failures, 1 exact compatible Boolean alias rejection, fresh independent assembly checks, altered actual witness, shared bounds and failure isolation
+[2m(cd _build/default/test && ./test_realization_checks_corpus.exe /Users/runner/work/biocompiler/biocompiler/tests/conformance/realization-checks-v1.json)[0m
+realization checks: all340methods/348contexts/74803observations retained; checked request correspondence and supplied-history realization checked; generic component acceptance explicitly deferred
+[2m(cd _build/default/test && ./test_synthetic_acceptance_corpus.exe /Users/runner/work/biocompiler/biocompiler/tests/conformance/synthetic-acceptance-v1.json)[0m
+synthetic acceptance: all 373 methods / 381 contexts / 47,758 observations retained; full synthetic and assembly acceptance checked; generation, adaptation and selection explicitly deferred
+[2m(cd _build/default/test && ./test_synthetic_producers_corpus.exe /Users/runner/work/biocompiler/biocompiler/tests/conformance/synthetic-producers-v1.json)[0m
+synthetic producers: all 373 methods / 381 contexts / 47,901 observations retained; full generation, proposals, selection, adaptation and independent acceptance checked
+[2m(cd _build/default/test && ./test_fixed_pipeline_corpus.exe /Users/runner/work/biocompiler/biocompiler/tests/conformance/fixed-pipeline-native-v1.json /Users/runner/work/biocompiler/biocompiler/tests/conformance/fixed-pipeline-continuations-native-v1.json)[0m
+Fixed pipelines: 126 real native runs (121 returned, 5 rejected), complete records/state/errors; 121 return-boundary rechecks and 563 continuation commands. Preserved pending: 6 patched-register, 3 Python-type, 1 mocked call; 254 callback-dependent suffix commands plus 24 prefix/9 suffix commands tied to patched calls. All 136 calls/850 continuations across 467 original methods retained.
+[2m(cd _build/default/test && ./test_reference_construct_pipeline.exe /Users/runner/work/biocompiler/biocompiler/tests/conformance/reference-pipeline-semantics-v1)[0m
+Reference construct pipeline: live admission, closure identities, provenance, historical results and one lifetime budget passed.
+[2m(cd _build/default/test && ./test_reference_molecular_pipeline.exe /Users/runner/work/biocompiler/biocompiler/tests/conformance/reference-pipeline-semantics-v1)[0m
+Reference molecular pipeline: same manager, staged mutation order, live provider roots, exact spelling and retained failures checked.
+[2m(cd _build/default/test && ./test_reference_inputs.exe /Users/runner/work/biocompiler/biocompiler/tests/conformance/reference-inputs-311.json)[0m
+Reference input snapshot: original bytes, constructors and shared resources passed.
+[2m(cd _build/default/test && ./test_pipeline_host_bridge.exe)[0m
+host bridge: deferred envelopes, physical identities, enum comparison, tuple order, original exceptions and cumulative limits checked
+[2m(cd _build/default/test && ./test_pipeline_callback_channel.exe /Users/runner/work/biocompiler/biocompiler/protocol/pipeline-callback-channel-v1.json)[0m
+pipeline callback channel framing, nested continuations and lifetime limits: PASS
+[2m(cd _build/default/test && ./test_pipeline_session.exe /Users/runner/work/biocompiler/biocompiler/protocol/pipeline-session-v1.json /Users/runner/work/biocompiler/biocompiler/tests/conformance/fixed-pipeline-native-v1.json)[0m
+Native persistent session identity, live fixed authority, partial errors, freshness, retention and lifetime limits passed.
+[2m(cd _build/default/test && ./test_reference_workflow.exe /Users/runner/work/biocompiler/biocompiler/tests/conformance/reference-pipeline-semantics-v1)[0m
+Reference workflow: actual phased calls, exact result capabilities, historical builds, owner bounds and partial state passed.
+[0;1mFile "test/dune", line 579, characters 7-40:[0m
+579 |  (name test_reference_molecular_attempts)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[2m(cd _build/default/test && ./test_reference_molecular_attempts.exe /Users/runner/work/biocompiler/biocompiler/tests/conformance/reference-pipeline-semantics-v1)[0m
+Fatal error: exception Bioc_wire.Diagnostic.Error(_)
+[2m(cd _build/default/test && ./test_reference_callback_manager.exe /Users/runner/work/biocompiler/biocompiler/protocol/pipeline-callback-manager-v1.json /Users/runner/work/biocompiler/biocompiler/tests/conformance/reference-pipeline-semantics-v1)[0m
+Reference callback service: actual framed admission, construction, emission, retained builds, host errors and capability failures passed.
+[2m(cd _build/default/test && ./test_pipeline_callback_manager.exe /Users/runner/work/biocompiler/biocompiler/protocol/pipeline-callback-manager-v1.json /Users/runner/work/biocompiler/biocompiler/tests/conformance/pipeline-contract-literals-v1.json /Users/runner/work/biocompiler/biocompiler/tests/conformance/fixed-pipeline-native-v1.json)[0m
+callback manager application: framed state/errors and 18 actual fixed producer returns with typed construction origins and exact metadata resource bounds passed
+[2m(cd _build/default/test && ./test_protocol.exe)[0m
+protocol: roles, envelopes, errors and unsupported operations checked
+[2m(cd _build/default/test && ./test_producer_protocol.exe)[0m
+producer protocol literals: core-only capabilities, exact fields/bytes, raw authority pins, no-solution/unsupported scopes and export rejection passed
+[2m(cd _build/default/test && ./test_reference_package_workflow.exe /Users/runner/work/biocompiler/biocompiler/tests/conformance/reference-packages-311.json)[0m
+Full reference package: original bytes, fresh calls, bound export and cumulative lifetime passed.
+[2m(cd _build/default/test && ./test_synthetic_producer_public_protocol.exe)[0m
+Complete synthetic build authority, source precedence, producer records and shared protocol boundaries passed
+[2m(cd _build/default/test && ./test_synthetic_producer_protocol.exe)[0m
+Synthetic producer literal records/errors, role separation, complete authority and shared resource boundaries passed
+[2m(cd _build/default/test && ./test_artifact_io.exe)[0m
+artifact_io: inherited descriptor validation, complete bytes, one shared budget and bounded publication checked
+[2m(cd _build/default/test && ./test_realization_protocol.exe)[0m
+Independent realization protocol literals, complete replays, scopes and resource boundaries passed
+[2m(cd _build/default/test && ./test_synthetic_inspection_protocol.exe /Users/runner/work/biocompiler/biocompiler/tests/conformance/synthetic-inspection-supplemental-v1.json /Users/runner/work/biocompiler/biocompiler/protocol/synthetic-inspection-v1.json)[0m
+Synthetic inspection protocol: complete literal helpers, role separation, identity and five bounded controls passed
+[2m(cd _build/default/test && ./test_verification_workflow_service.exe)[0m
+Workflow service: 9 complete original records, 36 role/run/replay cases, exact receipts, fresh authority and shared publication accounting passed
+Workflow presentation: 12 full original records, 48 role/run/replay cases, exact CLI status/counts, authority-first commands and shared budgets passed
+[2m(cd _build/default/test && ./test_realization_workflow_corpus.exe /Users/runner/work/biocompiler/biocompiler/tests/conformance/realization-workflow-v1.json)[0m
+workflow corpus: 376 original methods / 385 contexts / 69,236 observations; all 874 new domain/kernel observations, 1,030 callbacks and the complete 625-case campaign replayed; original CLI evidence retained, installed CLI routing remains a separate gate
+Leaving directory '/Users/runner/work/biocompiler/biocompiler/core'
