@@ -290,12 +290,17 @@ class ValidationGateTests(unittest.TestCase):
                                    ("BIOCOMPILER_REFERENCE_PACKAGE_PYTHON311_CORPUS", "tests/conformance/reference-package-domains-311.json"),
                                    ("BIOCOMPILER_REFERENCE_PACKAGE_PYTHON314_CORPUS", "tests/conformance/reference-package-domains-314.json"),
                                    ("BIOCOMPILER_REFERENCE_SEQUENCE_EXPORT_CORPUS", "tests/conformance/reference-sequence-export-314.json"),
+                                   ("BIOCOMPILER_REFERENCE_INPUTS_CORPUS", "tests/conformance/reference-inputs-311.json"),
+                                   ("BIOCOMPILER_REFERENCE_PACKAGE_WORKFLOW_CORPUS", "tests/conformance/reference-packages-311.json"),
                                    ("BIOCOMPILER_REFERENCE_CONTRACTS_DOCUMENTS", "tests/conformance/reference-contracts-v1"),
                                    ("BIOCOMPILER_REFERENCE_CONTRACTS_CORPUS", "tests/conformance/reference-contracts-v1.json"),
                                    ("BIOCOMPILER_REFERENCE_PIPELINE_DOCUMENTS", "tests/conformance/reference-pipeline-semantics-v1")):
             self.assertIn(variable + '="$GITHUB_WORKSPACE/' + relative + '" \\\n', runtest)
         self.assertIn("opam exec -- dune runtest --root core 2>&1 | tee generated/core/native-tests.txt", runtest)
         arguments = {
+            "test_work_budget_retention": "",
+            "test_reference_inputs": ' "$GITHUB_WORKSPACE/tests/conformance/reference-inputs-314.json"',
+            "test_reference_package_workflow": ' "$GITHUB_WORKSPACE/tests/conformance/reference-packages-314.json"',
             "test_stored_zip": ' "$GITHUB_WORKSPACE/tests/conformance/archive-container-311.json" "$GITHUB_WORKSPACE/tests/conformance/archive-container-314.json"',
             "test_reference_package_manifest": ' "$GITHUB_WORKSPACE/tests/conformance/reference-package-domains-311.json" "$GITHUB_WORKSPACE/tests/conformance/reference-package-domains-314.json"',
             "test_reference_sequence_export": ' "$GITHUB_WORKSPACE/tests/conformance/reference-sequence-export-314.json"',

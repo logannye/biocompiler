@@ -880,6 +880,8 @@ jobs:
           BIOCOMPILER_REFERENCE_PACKAGE_PYTHON311_CORPUS="$GITHUB_WORKSPACE/tests/conformance/reference-package-domains-311.json" \
           BIOCOMPILER_REFERENCE_PACKAGE_PYTHON314_CORPUS="$GITHUB_WORKSPACE/tests/conformance/reference-package-domains-314.json" \
           BIOCOMPILER_REFERENCE_SEQUENCE_EXPORT_CORPUS="$GITHUB_WORKSPACE/tests/conformance/reference-sequence-export-314.json" \
+          BIOCOMPILER_REFERENCE_INPUTS_CORPUS="$GITHUB_WORKSPACE/tests/conformance/reference-inputs-311.json" \
+          BIOCOMPILER_REFERENCE_PACKAGE_WORKFLOW_CORPUS="$GITHUB_WORKSPACE/tests/conformance/reference-packages-311.json" \
           BIOCOMPILER_REFERENCE_CONTRACTS_DOCUMENTS="$GITHUB_WORKSPACE/tests/conformance/reference-contracts-v1" \
           BIOCOMPILER_REFERENCE_CONTRACTS_CORPUS="$GITHUB_WORKSPACE/tests/conformance/reference-contracts-v1.json" \
           BIOCOMPILER_REFERENCE_PIPELINE_DOCUMENTS="$GITHUB_WORKSPACE/tests/conformance/reference-pipeline-semantics-v1" \
@@ -948,6 +950,12 @@ jobs:
         run: |
           core/_build/default/test/test_reference_package_manifest.exe "$GITHUB_WORKSPACE/tests/conformance/reference-package-domains-311.json" "$GITHUB_WORKSPACE/tests/conformance/reference-package-domains-314.json" | tee generated/core/test_reference_package_manifest.txt
           core/_build/default/test/test_reference_sequence_export.exe "$GITHUB_WORKSPACE/tests/conformance/reference-sequence-export-314.json" | tee generated/core/test_reference_sequence_export.txt
+      - name: Check original snapshots, complete native packages and persistent ownership
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
+        run: |
+          core/_build/default/test/test_work_budget_retention.exe | tee generated/core/test_work_budget_retention.txt
+          core/_build/default/test/test_reference_inputs.exe "$GITHUB_WORKSPACE/tests/conformance/reference-inputs-314.json" | tee generated/core/test_reference_inputs.txt
+          core/_build/default/test/test_reference_package_workflow.exe "$GITHUB_WORKSPACE/tests/conformance/reference-packages-314.json" | tee generated/core/test_reference_package_workflow.txt
       - name: Check retained request, behavior and coordinate domain corpora
         if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
         run: |

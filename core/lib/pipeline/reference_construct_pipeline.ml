@@ -23,6 +23,12 @@ let resource_limits=obj ["profile",str resource_profile;
   "composition_checker",Link.limits_json Link.default_limits;
   "records",C.resource_limits;
   "host_execution",str "trusted_callbacks_and_opaque_host_captures_outside_native_cpu_and_json_proof"]
+let retain_document budget raw=
+  if W.has_retention budget then begin
+    let limits=Verification_exploration.Codec.make_limits ~charge:(W.charge budget)() in
+    let size=Verification_exploration.Codec.measure ~limits raw in
+    W.retain budget(size.bytes+128*size.nodes+512)
+  end
 type provider_role=Authority_validator|Linkage_validator|Construct_producer|Layout_validator
 type provider_observer=W.t->M.t->M.provider->provider_role->unit
 type manager_created=W.t->M.t->unit
@@ -77,7 +83,7 @@ let copy_manifests budget limits manifests=
         W.charge budget (String.length key+1);
         Diagnostic.require (count<maximum) "reference_construct_pipeline_limit" "Reference manifest inventory exceeds its native bound.";
         Diagnostic.require (not (Hashtbl.mem seen key)) "reference_construct_pipeline" "Reference manifest keys must be unique.";
-        Hashtbl.add seen key ();copy (count+1) ((key,value)::reversed) rest in
+        W.retain budget(String.length key+128);Hashtbl.add seen key ();copy (count+1) ((key,value)::reversed) rest in
   copy 0 [] manifests
 let prepare ~budget ?(manager_limits=M.default_limits) ~request ~registry ~manifests ()=
   let manifests=copy_manifests budget manager_limits manifests in
@@ -115,6 +121,11 @@ let prepare ~budget ?(manager_limits=M.default_limits) ~request ~registry ~manif
     "Molecular behavior and same-cell coexistence are not established by a reference layout." in
   let completion=C.Completion_profile.make ~limits ~scope:"reference_construct" ~stage:C.Construct
     ~schema:R.Candidate.schema_version ~obligations:[C.Scoped_obligation.id authority;C.Scoped_obligation.id linkage;C.Scoped_obligation.id layout] () in
+  retain_document budget(obj["request",R.Request.to_json request;"registry",Component_registry.to_json registry;
+    "manifests",obj(List.map(fun(key,value)->key,F.to_json value)manifests);
+    "dependencies",obj(List.map(fun(key,value)->key,str value)dependencies);
+    "obligations",Json.Array(List.map C.Scoped_obligation.to_json[authority;linkage;layout;sequence;payload;biology]);
+    "completion",C.Completion_profile.to_json completion]);
   {budget_value=budget;limits_value=manager_limits;request_value=request;registry_value=registry;manifests_value=manifests;
    dependencies_value=dependencies;authority;linkage;layout;sequence;payload;biology;completion}
 let dependencies (value:prepared)=value.dependencies_value
@@ -126,7 +137,7 @@ let create ~budget ?validator_equivalent ?observer ?manager_created (prepared:pr
     ~target:(R.Request.target prepared.request_value) ~dependencies:prepared.dependencies_value
     ~completion_profiles:[prepared.completion] () in
   Option.iter (fun publish->publish budget owner) manager_created;
-  {prepared;owner}
+  W.retain budget 128;{prepared;owner}
 let initialized_manager (value:initialized)=value.owner
 let prepare_admission ~budget ?provider_observer (initialized:initialized)=
   let prepared=initialized.prepared in phase_budget budget prepared;
@@ -163,6 +174,7 @@ let prepare_admission ~budget ?provider_observer (initialized:initialized)=
     let detail=Json.string(Json.field "claim_scope" (Json.object_fields evidence)) in
     M.Decision(C.Check_decision.make ~limits:(codec work prepared.limits_value)
       ~outcome:(Composition_evidence.Result.outcome checked) ~detail ~evidence ()) in
+  retain_document budget(C.Component_input_contract.to_json admission_value);W.retain budget 512;
   Option.iter (fun observe->observe budget initialized.owner verify_authority Authority_validator;
     observe budget initialized.owner verify_linkage Linkage_validator) provider_observer;
   {initialized;admission_value;verify_authority;verify_linkage}
@@ -256,6 +268,7 @@ let prepare_registration ~budget ?provider_observer ?generator_bridge ?host_link
     let evidence=E.Result.to_json checked in
     let detail=Json.string(Json.field "claim_scope" (Json.object_fields evidence)) in
     M.Decision(C.Check_decision.make ~limits ~outcome:(E.Result.outcome checked) ~detail ~evidence ()) in
+  retain_document budget(C.Pass_contract.to_json contract_value);W.retain budget 512;
   Option.iter (fun observe->observe budget initialized.owner assemble Construct_producer;
     observe budget initialized.owner verify_layout Layout_validator) provider_observer;
   {admission;contract_value;assemble;verify_layout;host_comparison=Option.is_some host_links_equal}
@@ -270,6 +283,8 @@ let finish ~budget (registration:registration) ~record ~result=
   let candidate_value=R.Candidate.of_json ~limits:(domain_codec budget prepared.limits_value) (C.Stage_record.payload record) in
   let check_value=Q.check ~parent:budget ~limits:(checker_limits prepared.limits_value)
     ~request:prepared.request_value ~candidate:candidate_value ~registry:prepared.registry_value ~manifests:prepared.manifests_value () in
+  retain_document budget(obj["candidate",R.Candidate.to_json candidate_value;
+    "check",E.Result.to_json check_value;"result",C.Pipeline_result.to_json result]);
   {registration;candidate_value;check_value;result_value=result;record_value=record}
 let run_internal owner ~budget ?manager_limits ?validator_equivalent ?observer ?provider_observer ?manager_created
     ?register_input ?register_fixed ?generator_bridge ?host_links_equal ~request ~registry ~manifests ()=
