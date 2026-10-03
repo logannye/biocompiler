@@ -129,6 +129,20 @@ drafts are preserved separately and are not production integrations.
   migration states remain unchanged. Native boundary tests and full fresh-installed
   acceptance remain hosted obligations.
   See [correction and scoped local evidence](migration-handoff/2026-10-03/callback-budget-correction/correction.json).
+- [x] **LM-12 native literal order correction, source checkpoint:** PR86's
+  parallel fresh-installed provider campaign at `ee61eb3e94d0bf93abb308cad7715080be4ed524`
+  completes all three cases and 18 returns, then rejects 56 nested scalar
+  mappings whose native field order differs from the original. Correct scalar
+  and interval reconstruction to put `type` last; preserve curve root order,
+  numeric validation, canonical identities and the complete frozen oracle.
+  Add recursive order, repeated-normalization and reversed-input checks to the
+  existing native domain suite. All 42 focused Python view/original/comparator/
+  source-lineage controls pass on each runtime. Independent original Python
+  replay verifies eight literal fixtures; the 3,310-entry inventory is unchanged.
+  The preceding PR85 source `2eb0ac643075966f3803bdfdb174f0d12bff2d75`
+  passes all 118 native suites and all 3,416 unit tests on both hosted runtimes;
+  the corrected native source still requires its own complete hosted validation.
+  See [retained failure and correction](migration-handoff/2026-10-03/literal-order-correction/correction.json).
 - [ ] **LM-12/R6 corrected deferred-context installed evidence:** bind the
   observed source-link tuple to the actual native callback and complete receipt,
   retain original values/identity/order checks, and rerun every installed manager

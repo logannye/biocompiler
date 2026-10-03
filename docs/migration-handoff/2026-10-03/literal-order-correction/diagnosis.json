@@ -1,0 +1,138 @@
+{
+  "artifact": {
+    "bytes": 17098345,
+    "digest": "sha256:815a165835a4ddd82c656632cb061125bc32328aaad7f2d05f75b95eb69c34b0",
+    "id": 11282144354,
+    "name": "installed-campaign-linux-x86_64-py3.11-fixed",
+    "verified": true
+  },
+  "campaign": "pipeline-fixed-providers",
+  "captured_at": "2026-10-03T19:54:10.630239+00:00",
+  "completed_checks": 3,
+  "coverage": {
+    "cases": 3,
+    "providers": 9,
+    "returns": 18
+  },
+  "diagnosis": {
+    "actual_key_order": [
+      "kind",
+      "type",
+      "value",
+      "unit",
+      "canonical_value"
+    ],
+    "affected_roots": [
+      "PassResult.output.mechanism.nodes[*].attributes.value",
+      "PassResult.output.registry.components[*].synthetic_model.attributes.value"
+    ],
+    "cases": [
+      {
+        "id": "static:requested",
+        "mapping_order_differences": 8,
+        "otherwise_equal_for_diagnosis_only": true
+      },
+      {
+        "id": "static:selected_equal",
+        "mapping_order_differences": 8,
+        "otherwise_equal_for_diagnosis_only": true
+      },
+      {
+        "id": "temporal:requested",
+        "mapping_order_differences": 40,
+        "otherwise_equal_for_diagnosis_only": true
+      }
+    ],
+    "no_acceptance_projection_applied": true,
+    "original_key_order": [
+      "kind",
+      "value",
+      "unit",
+      "canonical_value",
+      "type"
+    ]
+  },
+  "duration_seconds": 159.834155,
+  "files": {
+    "7b0b14dbc4c4b7f6d06cbe9c537f6ba53c5789c8fcd6f61713ea33c1922a6467.json": {
+      "bytes": 2377731,
+      "sha256": "7b0b14dbc4c4b7f6d06cbe9c537f6ba53c5789c8fcd6f61713ea33c1922a6467"
+    },
+    "artifact.json": {
+      "bytes": 815,
+      "sha256": "76cbbbe2e8348a98a088ab148fae5fa0d6e9fca10cd279ff40876dc6a0c8ece3"
+    },
+    "b61d7c88478959a67e33b449fc2de62ab3e79b0152e926bf993e93e90f271c75.json": {
+      "bytes": 666245,
+      "sha256": "b61d7c88478959a67e33b449fc2de62ab3e79b0152e926bf993e93e90f271c75"
+    },
+    "c24cbc42a74fcc7d3805d7bb60a4fd38ab8ff7aa103df0e56ebad0956a59dcc0.json": {
+      "bytes": 667299,
+      "sha256": "c24cbc42a74fcc7d3805d7bb60a4fd38ab8ff7aa103df0e56ebad0956a59dcc0"
+    },
+    "efc633d352912570a92d62a2fdecccf8a3b1b150433a4135bc9729be970a76ee.json": {
+      "bytes": 3714982,
+      "sha256": "efc633d352912570a92d62a2fdecccf8a3b1b150433a4135bc9729be970a76ee"
+    },
+    "installed-release.json": {
+      "bytes": 8644,
+      "sha256": "69110ca207435eb91f3bbcd19f569c4a6306b9ceab356d0e14b6d3ce7acab45d"
+    },
+    "mapping-order-diagnosis.json": {
+      "bytes": 34340,
+      "sha256": "7e120343a6bdf111f26699a9d5f88188d71a4aea8bbdc788ec8ab731cb2ad416"
+    },
+    "native-inputs.json": {
+      "bytes": 582,
+      "sha256": "eef949decddcc2569bfd07f2a140437dd2b4e6fd94e4e982e26589c49bfc392b"
+    },
+    "observation-differences.json": {
+      "bytes": 306586,
+      "sha256": "dbf0b1f2eee46f93c6e3724b08008dafdb31bd31ec57da9178cac70e99e13543"
+    },
+    "pipeline-fixed-providers.json": {
+      "bytes": 8085833,
+      "sha256": "c0c1a0cd45783cb51273c5c8dad94eccf6af715df5b6b01fa2a04f187d1c69a9"
+    },
+    "pipeline-fixed-providers.log": {
+      "bytes": 154,
+      "sha256": "7a9c1098dafa49eb0330c3291dbff1f8d04a749c50ee7036977a3381d299240a"
+    }
+  },
+  "fresh_original_equals_entire_frozen_oracle": true,
+  "inner_error": "AssertionError: Complete actual fixed-provider observation differs from original",
+  "job": "installed-campaigns (ubuntu-24.04, linux-x86_64, 3.11, fixed)",
+  "job_id": 111277495700,
+  "native_inputs": {
+    "machine": "x86_64",
+    "manifest_sha256": "24464d11b1f994e16d90ef7910fac06eb8fe45c2d708e65aaa1a55c8afdbb079",
+    "native_platform": "linux-x86_64",
+    "revision": "59f078f3315dff7416480a4044d32c3b2cf88428",
+    "schema_version": "biocompiler.native_conformance_inputs.v1",
+    "sha256": {
+      "biocompiler-core": "60bfcd5d76261fb0ffd7b13b3ad4dc6029d20be6deb4b1e04034c547492de9c1",
+      "biocompiler-verify": "7d2475eb7c96ec95e7bc774737ca7d49cc8ccab0d075263a5a48bffdc76f8711"
+    },
+    "status": "pass",
+    "system": "Linux"
+  },
+  "oracle": {
+    "inventory_fingerprint": "a109283e7122690d85821f46329975e3d5f41e40aae51f7601371b1a5c9229c0",
+    "path": "tests/conformance/pipeline-fixed-provider-semantics-v1.json",
+    "sha256": "1f25d16d8fa9688ea34b4937f1d4a2c10fdf44d862daf8990168247758a019e7"
+  },
+  "python_version": "3.11.16",
+  "receipt_status": "failure",
+  "release_receipt_status": "running (failure interrupted group; not acceptance)",
+  "run_id": "37148026804",
+  "schema_version": "pr86.fixed-provider-failure-diagnosis.v1",
+  "scope": "Read-only diagnosis of real hosted failure. No native executed locally; no source changes or expected-observation repair.",
+  "source_comparison": {
+    "base": "2eb0ac643075966f3803bdfdb174f0d12bff2d75",
+    "changed_product_or_native_files": [],
+    "changed_receipt_pinned_sources": [],
+    "head": "ee61eb3e94d0bf93abb308cad7715080be4ed524"
+  },
+  "source_revision": "ee61eb3e94d0bf93abb308cad7715080be4ed524",
+  "tested_revision": "59f078f3315dff7416480a4044d32c3b2cf88428"
+}

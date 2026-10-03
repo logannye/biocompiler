@@ -1,0 +1,16 @@
+{
+  "artifact_bytes": 17091935,
+  "artifact_digest": "sha256:d74bee1a2561bddc4429af1f9b7c8c04727b79cabcb1481df3c458f04c1348be",
+  "artifact_id": 11282893669,
+  "coverage": {
+    "cases": 3,
+    "providers": 9,
+    "returns": 18
+  },
+  "error": "AssertionError: Complete actual fixed-provider observation differs from original",
+  "python_version": "3.14.7",
+  "run_id": "37148026804",
+  "source_revision": "ee61eb3e94d0bf93abb308cad7715080be4ed524",
+  "status": "failure",
+  "tested_revision": "59f078f3315dff7416480a4044d32c3b2cf88428"
+}

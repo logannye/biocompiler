@@ -1,0 +1,2 @@
+AssertionError: Complete actual fixed-provider observation differs from original
+Installed fixed-provider views: failure 3 cases, 9 providers, 18 returns

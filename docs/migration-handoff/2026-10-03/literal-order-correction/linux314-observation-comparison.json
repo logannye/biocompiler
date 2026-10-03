@@ -1,0 +1,17 @@
+[
+  {
+    "id": "static:requested",
+    "same_complete_actual_observation_bytes": true,
+    "sha256": "b61d7c88478959a67e33b449fc2de62ab3e79b0152e926bf993e93e90f271c75"
+  },
+  {
+    "id": "static:selected_equal",
+    "same_complete_actual_observation_bytes": true,
+    "sha256": "c24cbc42a74fcc7d3805d7bb60a4fd38ab8ff7aa103df0e56ebad0956a59dcc0"
+  },
+  {
+    "id": "temporal:requested",
+    "same_complete_actual_observation_bytes": true,
+    "sha256": "7b0b14dbc4c4b7f6d06cbe9c537f6ba53c5789c8fcd6f61713ea33c1922a6467"
+  }
+]

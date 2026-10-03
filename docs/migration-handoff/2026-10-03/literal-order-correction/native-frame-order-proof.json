@@ -1,0 +1,24 @@
+{
+  "case": "static:requested",
+  "event_id": 219,
+  "frame_index": 219,
+  "frame_sha256": "65abe8e00fd15f48ce4277c92f7134811b4616a085d3505e3948de189aa16090",
+  "keys": [
+    "kind",
+    "type",
+    "value",
+    "unit",
+    "canonical_value"
+  ],
+  "node_id": "active:response",
+  "ordered_tree_path": [
+    "output",
+    "mechanism",
+    "nodes",
+    0,
+    "attributes",
+    "value"
+  ],
+  "pass_id": "behavior_to_synthetic",
+  "sequence": 211
+}

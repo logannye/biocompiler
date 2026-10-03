@@ -1,0 +1,48 @@
+{
+  "jobs": [
+    {
+      "active": [
+        {
+          "completed_at": null,
+          "conclusion": null,
+          "name": "Check installed public architecture SDK and CLI on Python 3.11",
+          "number": 73,
+          "started_at": "2026-10-03T19:41:43Z",
+          "status": "in_progress"
+        }
+      ],
+      "conclusion": null,
+      "failed": [],
+      "id": 111271013004,
+      "name": "ocaml-core (ubuntu-24.04, linux-x86_64)",
+      "sha256": "91fffbb5dfa67369ab410466838ea5cf0d891ab3e39b9f6d4b43df803cec0535",
+      "snapshot": "111271013004-before-successor.json",
+      "status": "in_progress",
+      "successful_steps": 72
+    },
+    {
+      "active": [
+        {
+          "completed_at": null,
+          "conclusion": null,
+          "name": "Check installed public architecture SDK and CLI on Python 3.11",
+          "number": 73,
+          "started_at": "2026-10-03T19:40:13Z",
+          "status": "in_progress"
+        }
+      ],
+      "conclusion": null,
+      "failed": [],
+      "id": 111271013060,
+      "name": "ocaml-core (macos-14, macos-arm64)",
+      "sha256": "2a08b4a7b1f7f61b0b898d9ceefd6c9b43c94900b285deda050a7ad6bb097050",
+      "snapshot": "111271013060-before-successor.json",
+      "status": "in_progress",
+      "successful_steps": 72
+    }
+  ],
+  "retained_at": "2026-10-03T19:59:01.775111+00:00",
+  "run_id": 37146246536,
+  "scope": "Historical partial milestones only; successor source must receive a complete fresh gate. Both118-suite steps passed; native jobs still running. No evidence transfers to Type_spec correction.",
+  "source_revision": "2eb0ac643075966f3803bdfdb174f0d12bff2d75"
+}

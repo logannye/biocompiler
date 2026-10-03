@@ -1,0 +1,235 @@
+{
+  "base_revision": "2eb0ac643075966f3803bdfdb174f0d12bff2d75",
+  "diff": {
+    "bytes": 5025,
+    "command": [
+      "git",
+      "diff",
+      "2eb0ac643075966f3803bdfdb174f0d12bff2d75",
+      "--",
+      "core/lib/domain/type_spec.ml",
+      "core/test/test_domain.ml"
+    ],
+    "path": "generated/migration-next/pr85-literal-order-correction/independent-reviewed-native.diff",
+    "sha256": "fc19998f242f85c50ab8fa19ae845632f5ec3c6a8f2492ef699a25c2e4745258"
+  },
+  "finding": "No actionable blocker in the two-file native correction after bounded independent source review. Static review only.",
+  "hosted_failure": {
+    "artifact_id": 11282144354,
+    "artifact_sha256": "815a165835a4ddd82c656632cb061125bc32328aaad7f2d05f75b95eb69c34b0",
+    "frame_proof": {
+      "bytes": 448,
+      "path": "generated/migration-next/pr86-monitor/fixed-linux311/native-frame-order-proof.json",
+      "sha256": "f09b0253a9dc5beeebe56c22482c685c699b4533cb2948a1856b71b38aa08f31"
+    },
+    "inner_error": "AssertionError: Complete actual fixed-provider observation differs from original",
+    "job_id": 111277495700,
+    "run_id": 37148026804,
+    "source_revision": "ee61eb3e94d0bf93abb308cad7715080be4ed524",
+    "tested_revision": "59f078f3315dff7416480a4044d32c3b2cf88428"
+  },
+  "local_native_execution": false,
+  "rationale": [
+    "Scalar/interval output order now matches original Python serializers; curve root order remains unchanged.",
+    "Original numeric validation occurs before reconstruction and is unchanged, including canonical value mismatch rejection, exact integer/float and signed-zero handling.",
+    "Canonical encoding still sorts object keys; JSON values, canonical fingerprints, node counts and source-origin/alias labels do not change.",
+    "Existing dtype value is constructed once at the same point; the change does not add content interning, replace roots, or alter alias construction.",
+    "New test_domain assertions check recursive literal key order for all eight existing normalization fixtures, reordered input independence and repeated-normalization order while retaining existing semantic literals and rejection checks."
+  ],
+  "residual_hosted_obligations": [
+    "Build changed native domain on both hosted platforms and pass all existing native suites including test_domain.",
+    "Rebuild both executable identities and source/material/wheel ownership manifests at the new exact source/tested/run revision.",
+    "Run the unchanged complete fixed-provider 3-case/18-return gate and remaining installed campaigns in all four platform/Python slots; retain complete raw observations and exact original comparison.",
+    "Require the complete appropriate CI job census and independent aggregate reconstruction before release/merge acceptance."
+  ],
+  "reviewed_at": "2026-10-03T19:58:47.244565+00:00",
+  "reviewed_files": [
+    {
+      "bytes": 10900,
+      "path": "core/lib/domain/type_spec.ml",
+      "sha256": "6791aafa688d6438244cdbd791f3cbc605ff041404947df5ce56511a4ca33cb6"
+    },
+    {
+      "bytes": 9267,
+      "path": "core/test/test_domain.ml",
+      "sha256": "f362b315b4af0a0fc5062d6c7aea045e4c09e7be20b1fca2ff8546743ebaa743"
+    }
+  ],
+  "reviewer": "session_campaign",
+  "schema_version": "pr85.literal-order-independent-source-review.v1",
+  "source_chain": [
+    {
+      "fact": "ScalarLiteral.to_dict returns kind,value,unit,canonical_value,type.",
+      "lines": [
+        173,
+        180
+      ],
+      "path": "src/biocompiler/semantics/types.py"
+    },
+    {
+      "fact": "Interval.to_dict returns kind,lower,upper,type.",
+      "lines": [
+        319,
+        325
+      ],
+      "path": "src/biocompiler/semantics/types.py"
+    },
+    {
+      "fact": "Curve.to_dict deliberately retains kind,type,points,interpolation,extrapolation; its scalar children follow scalar order.",
+      "lines": [
+        390,
+        397
+      ],
+      "path": "src/biocompiler/semantics/types.py"
+    },
+    {
+      "fact": "Original mechanism constructors normalize scalar and duration attributes through decode_binding(...).to_dict before freeze_json.",
+      "lines": [
+        65,
+        74,
+        134,
+        160
+      ],
+      "path": "src/biocompiler/ir/mechanism.py"
+    },
+    {
+      "fact": "Scalar.of_json stores the complete Type_spec.normalize_binding output; Scalar.to_json returns it.",
+      "lines": [
+        77,
+        86
+      ],
+      "path": "core/lib/domain/measurement_contract.ml"
+    },
+    {
+      "fact": "Node normalization reconstructs attributes from those scalar JSON objects.",
+      "lines": [
+        43,
+        54,
+        106,
+        109
+      ],
+      "path": "core/lib/domain/mechanism.ml"
+    },
+    {
+      "fact": "Component adaptation carries actual node attributes into synthetic_model.",
+      "lines": [
+        116,
+        231,
+        232
+      ],
+      "path": "core/lib/synthetic_producer/components.ml"
+    },
+    {
+      "fact": "Ordered tree preserves the native JSON object field list.",
+      "lines": [
+        97,
+        100,
+        407,
+        408
+      ],
+      "path": "core/lib/pipeline_service/callback_manager.ml"
+    },
+    {
+      "fact": "Python structural decoder faithfully reconstructs ordered mappings and bypasses semantic constructors; no decoder/comparator repair is warranted.",
+      "lines": [
+        130,
+        142,
+        153,
+        178,
+        233,
+        237,
+        691,
+        693
+      ],
+      "path": "src/biocompiler/core_pipeline_provider_views.py"
+    }
+  ],
+  "source_edits_by_reviewer": false,
+  "source_witness_obligation": "No Python/protocol/checker source witness update needed for these two native-only paths. Older frozen expectations and finite fourteen-file proof stay unchanged.",
+  "unchanged_authority": [
+    {
+      "byte_equal_to_base": true,
+      "bytes": 3714983,
+      "path": "tests/conformance/pipeline-fixed-provider-semantics-v1.json",
+      "sha256": "1f25d16d8fa9688ea34b4937f1d4a2c10fdf44d862daf8990168247758a019e7"
+    },
+    {
+      "byte_equal_to_base": true,
+      "bytes": 19931,
+      "path": "tests/conformance/prebuilt-installed-path-delta-v1.json",
+      "sha256": "f64bcd82834b120dbe0c848a94a0ac8e0fe117ea3fedd22a136a2bc415025dbd"
+    },
+    {
+      "byte_equal_to_base": true,
+      "bytes": 813,
+      "path": "tests/conformance/callback-budget-checker-source-delta-v1.json",
+      "sha256": "6cb03e6dfa5c76528bf9370be992634b6a9fbad5219a1e43c042090abd48ff8b"
+    },
+    {
+      "byte_equal_to_base": true,
+      "bytes": 1226,
+      "path": "tests/conformance/fixed-provider-checker-source-delta-v1.json",
+      "sha256": "67c11513477659bb81c2e9a0cfb87191fd669cf2caf2acce0962e77f54a50b8b"
+    },
+    {
+      "byte_equal_to_base": true,
+      "bytes": 9516,
+      "path": "tests/conformance/deferred-context-checker-source-delta-v1.json",
+      "sha256": "c052ed313423f5b4a016b8f8474d50a9364e278904983f3d139eb9e1ca8e4253"
+    },
+    {
+      "byte_equal_to_base": true,
+      "bytes": 12105,
+      "path": "tests/conformance/reference-callback-source-counterpart-v1.json",
+      "sha256": "e3be989e0a76913f64ec959d4354bb4a352c70e0bf661ca58df68db15e544b5c"
+    },
+    {
+      "byte_equal_to_base": true,
+      "bytes": 163334,
+      "path": "tests/conformance/reference-original-sources-v1.json",
+      "sha256": "df3323eceb20d967ea9ae8909da94f38660a1995d0e0314531bc5989516b014a"
+    },
+    {
+      "byte_equal_to_base": true,
+      "bytes": 14025653,
+      "path": "tests/conformance/reference-contracts-v1.json",
+      "sha256": "f0d3acadad15fbc29f195fc1a7dae875e8fb027565ec20fdbe1934fec7f3cf1b"
+    },
+    {
+      "byte_equal_to_base": true,
+      "bytes": 57420,
+      "path": "tools/check_pipeline_fixed_provider_install.py",
+      "sha256": "8d5f72afe93ec0dbb84b5d5321633ea653b274e4845645c4fd064a3f62319117"
+    },
+    {
+      "byte_equal_to_base": true,
+      "bytes": 53244,
+      "path": "src/biocompiler/core_pipeline_provider_views.py",
+      "sha256": "ea18d951f8170b1e1da4fbe6636d40e83f54ebda2ebdce187b0e08cf257b9c35"
+    },
+    {
+      "byte_equal_to_base": true,
+      "bytes": 32588,
+      "path": "src/biocompiler/core_pipeline_callback_session.py",
+      "sha256": "96cf3c4c70231f3039e2e16c51efc06bc202c86208f94dbddd5f438996c1bb5a"
+    },
+    {
+      "byte_equal_to_base": true,
+      "bytes": 17613,
+      "path": "src/biocompiler/semantics/types.py",
+      "sha256": "da0708de4bd5fbcd1a2f00546a1619f37c8e6a9748a94758362af242655f3bc1"
+    },
+    {
+      "byte_equal_to_base": true,
+      "bytes": 3770,
+      "path": "protocol/pipeline-callback-channel-v1.json",
+      "sha256": "55a58a12cb009616075e0aedf68e6b21394f4fb8b137b4880aab92ef47fa683e"
+    },
+    {
+      "byte_equal_to_base": true,
+      "bytes": 25145,
+      "path": "protocol/pipeline-callback-manager-v1.json",
+      "sha256": "967a8dbc0acc008ea29d3652b7952944533049640611b277155dad86382d2f43"
+    }
+  ]
+}

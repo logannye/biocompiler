@@ -28,6 +28,19 @@ source witnesses preserve whole historical sources and immutable oracle data.
 Read the [callback-budget correction evidence](migration-handoff/2026-10-03/callback-budget-correction/correction.json)
 for measured failure, exact source pins, local controls and remaining hosted work.
 No complete fresh-install slot or full release gate is accepted yet.
+The next shared defect was exposed sooner by PR86's parallel campaigns (source
+`ee61eb3e94d0bf93abb308cad7715080be4ed524`, run `37148026804`): all
+three provider cases and 18 returns complete, but native nested scalar mappings
+have `type` second instead of last. Scalar/interval native reconstruction now
+matches original public field order; curve roots retain their original order.
+The existing native domain suite adds recursive, repeated-normalization and
+reversed-input order checks without changing semantic fixture values or the
+frozen provider oracle. Read
+[literal-order evidence](migration-handoff/2026-10-03/literal-order-correction/correction.json).
+The preceding PR85 source `2eb0ac643075966f3803bdfdb174f0d12bff2d75`
+passes all 118 native suites and all 3,416 unit IDs on both runtimes; that partial
+evidence cannot validate this native correction. PR86 remains a separate draft;
+its workflow optimization is not integrated into PR85's 38-job gate.
 Require the corrected revision's four complete fresh-install campaigns and all
 38 required CI jobs, then merge and prove older heads are contained before
 closing superseded PRs. Validate actual main before deleting remote branches.

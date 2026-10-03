@@ -5,13 +5,40 @@ let require condition message = if not condition then failwith message
 let parse = Json.parse
 let binding_type value = Type_spec.of_json (Json.field "type" (Json.object_fields value))
 
+(* Json.equal deliberately ignores object order. Public provider views expose
+   Python mapping iteration, so check each original literal serializer's order
+   separately, including scalar children of interval and curve bindings. *)
+let rec check_binding_order label value =
+  let fields = Json.object_fields value in
+  let field key = Json.field key fields in
+  let expected, children = match Json.string (field "kind") with
+    | "scalar" -> ["kind"; "value"; "unit"; "canonical_value"; "type"], []
+    | "interval" -> ["kind"; "lower"; "upper"; "type"], [field "lower"; field "upper"]
+    | "curve" -> ["kind"; "type"; "points"; "interpolation"; "extrapolation"],
+        List.concat_map Json.array (Json.array (field "points"))
+    | _ -> failwith (label ^ ": unexpected literal kind") in
+  require (List.map fst fields = expected) (label ^ ": public literal mapping order differs");
+  List.iter (check_binding_order label) children
+
+let rec reverse_object_order = function
+  | Json.Object fields -> Json.Object
+      (List.rev_map (fun (key, value) -> key, reverse_object_order value) fields)
+  | Json.Array values -> Json.Array (List.map reverse_object_order values)
+  | value -> value
+
 let check label source expected =
   let source = parse source and expected = parse expected in
   let actual = Type_spec.normalize_binding ~expected:(binding_type source) source in
   require (Json.equal actual expected)
     (label ^ ": normalized value differs: " ^ Canonical.encode actual);
-  require (Json.equal (Type_spec.normalize_binding ~expected:(binding_type actual) actual) actual)
-    (label ^ ": normalization is not idempotent")
+  check_binding_order label actual;
+  let repeated = Type_spec.normalize_binding ~expected:(binding_type actual) actual in
+  require (Json.equal repeated actual) (label ^ ": normalization is not idempotent");
+  check_binding_order (label ^ " repeated") repeated;
+  let reordered = Type_spec.normalize_binding ~expected:(binding_type source)
+      (reverse_object_order source) in
+  require (Json.equal reordered actual) (label ^ ": input order changed normalized meaning");
+  check_binding_order (label ^ " reordered input") reordered
 
 let rejected label expected source code =
   let source = parse source in

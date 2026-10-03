@@ -88,6 +88,28 @@ recorded there. New native boundary cases have not run locally. Require this
 corrected revision's full hosted gate; earlier native and unit success does not
 transfer to it. All four migration cutoff gates remain open.
 
+**Latest native correction, 2026-10-03:** PR86's parallel installed campaigns
+expose a shared native defect before PR85 reaches that stage. PR86 source
+`ee61eb3e94d0bf93abb308cad7715080be4ed524`, run `37148026804`, completes
+all three fixed-provider cases and 18 returns on Linux/Python 3.11.16, then fails
+the unchanged complete original comparison. Nested scalar mappings put `type`
+second instead of last at 8, 8 and 40 sites. Retained native ordered replies
+already contain the mismatch; all other observed values and aliases match in
+diagnostic comparison. This is failed evidence, not acceptance.
+
+The correction changes only native literal reconstruction and its existing
+native test suite: scalar and interval mappings put `type` last, while curve
+roots keep it second. Numeric validation, canonical identities, Python views,
+original oracle bytes and all comparator checks remain unchanged. Recursive
+order assertions cover all eight existing literal fixtures, repeated
+normalization and reversed input order. See
+[literal-order correction evidence](migration-handoff/2026-10-03/literal-order-correction/correction.json).
+New native execution and complete installed acceptance remain hosted obligations.
+The preceding source `2eb0ac643075966f3803bdfdb174f0d12bff2d75`, run
+`37146246536`, has passed all 118 native suites on both platforms and all 3,416
+unit tests on both runtimes, but its complete release gate is not accepted.
+PR86 remains a separate draft; no merge or cleanup has occurred.
+
 ## Copy/paste task for the next Codex session
 
 Resume Biocompiler's Python-to-OCaml semantic-core migration. Preserve the user's language decisions: TypeScript/HTML/CSS for Studio; Python for scientific authoring, orchestration and exploratory search; OCaml for semantic analysis, behavioral/mechanism/architecture/molecular compiler passes, independent verification, canonical artifacts and export acceptance. The physical biological system remains empirical, outside software compilation.

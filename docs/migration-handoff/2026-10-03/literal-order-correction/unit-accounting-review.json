@@ -1,0 +1,259 @@
+{
+  "network_commands": [
+    "gh api repos/logannye/biocompiler/actions/runs/37146246536/artifacts --paginate",
+    "gh api repos/logannye/biocompiler/actions/artifacts/11283760474/zip",
+    "gh api repos/logannye/biocompiler/actions/artifacts/11282513992/zip",
+    "gh api repos/logannye/biocompiler/commits/8bfa69099d9e01ff995579424c93543de67eb229",
+    "gh run view 37146246536 --repo logannye/biocompiler --json headSha,status,conclusion,jobs"
+  ],
+  "run_id": 37146246536,
+  "runtimes": [
+    {
+      "added_ids": [
+        "test_core_pipeline_callback_session.CallbackSessionTests.test_exact_and_one_short_lifetime_boundary_include_close_frames",
+        "test_core_pipeline_callback_session.CallbackSessionTests.test_old_resource_profile_and_declaration_rejected_before_application",
+        "test_core_pipeline_callback_session.CallbackSessionTests.test_one_million_node_frame_cap_remains_separate_from_lifetime",
+        "test_core_pipeline_callback_session.CallbackSessionTests.test_v2_lifetime_crosses_old_ceiling_and_reduced_lifetime_still_closes",
+        "test_pipeline_callback_frame_budget.CallbackFrameBudgetTests.test_independent_frame_and_lifetime_exact_and_one_short_bounds",
+        "test_prebuilt_ci_plan.HostedCiPlanTests.test_callback_budget_restoration_preserves_prior_source_proofs",
+        "test_reference_original_counterpart.ReferenceOriginalCounterpartTests.test_callback_witness_location_inventory_and_archive_tampering_reject",
+        "test_reference_original_counterpart.ReferenceOriginalCounterpartTests.test_exact_callback_profile_source_restores_whole_original_client"
+      ],
+      "artifact": {
+        "digest": "sha256:18cc0b7b813251cafa07a7f5104b7d1bd698690f895e6a257d71e5578af61199",
+        "id": 11283760474,
+        "name": "unit-accounting-py3.11",
+        "size_in_bytes": 75563,
+        "workflow_run": {
+          "head_branch": "codex/ocaml-package-distribution",
+          "head_repository_id": 1395674522,
+          "head_sha": "2eb0ac643075966f3803bdfdb174f0d12bff2d75",
+          "id": 37146246536,
+          "repository_id": 1395674522
+        }
+      },
+      "baseline_3408_ids_preserved": true,
+      "discovered_count": 3416,
+      "exact_current_plan_id_set": true,
+      "executed_count": 3416,
+      "plan_path": "generated/migration-next/pr85-callback-budget-correction/plan-311.json",
+      "plan_sha256": "b63ed5f0d6864897abd96c00fd570a50997ed60b3dec0f3e8a43607e7927073a",
+      "python_version": "3.11.16",
+      "receipt": {
+        "path": "generated/migration-next/pr85-v2-unit-monitor/unit-accounting-311.json",
+        "sha256": "e80341418ededccda0901ed9189b26008dc29180bc73c7160813374bb6ddcabf",
+        "size_bytes": 417659
+      },
+      "shard_result_digests": [
+        "41571cd7fef16630d86f62e1f249355f219c92650f5dda6674e1aa3d9ecb3b2a",
+        "654472f1b8baec89c162d24b473b611f9ecc97eb4bdfa0384a3b605c6f03adc8",
+        "7311dff0e66d309ef59b105d2f0fe66ff5fb29415141ff6402ff0527ba70820b",
+        "80ed3da4720940774a4349bb134093d765fb4d4238a484f06c2af86d784ba56f",
+        "bccd59efcd5dd17653abbf832eae99e9efbcf043d52ab4ac7341dd9fbded7869"
+      ],
+      "sorted_lf_ids_sha256": "cf27c05ddcfa8cc4f96c4ae7bf5d11bece4e64edfc9edb2e77c82880185e04f4",
+      "status": "pass",
+      "unique_class_count": 351,
+      "verified_shards": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "added_ids": [
+        "test_core_pipeline_callback_session.CallbackSessionTests.test_exact_and_one_short_lifetime_boundary_include_close_frames",
+        "test_core_pipeline_callback_session.CallbackSessionTests.test_old_resource_profile_and_declaration_rejected_before_application",
+        "test_core_pipeline_callback_session.CallbackSessionTests.test_one_million_node_frame_cap_remains_separate_from_lifetime",
+        "test_core_pipeline_callback_session.CallbackSessionTests.test_v2_lifetime_crosses_old_ceiling_and_reduced_lifetime_still_closes",
+        "test_pipeline_callback_frame_budget.CallbackFrameBudgetTests.test_independent_frame_and_lifetime_exact_and_one_short_bounds",
+        "test_prebuilt_ci_plan.HostedCiPlanTests.test_callback_budget_restoration_preserves_prior_source_proofs",
+        "test_reference_original_counterpart.ReferenceOriginalCounterpartTests.test_callback_witness_location_inventory_and_archive_tampering_reject",
+        "test_reference_original_counterpart.ReferenceOriginalCounterpartTests.test_exact_callback_profile_source_restores_whole_original_client"
+      ],
+      "artifact": {
+        "digest": "sha256:ba33e8c8b05e549c87f498e9c2712ca1e50e355036068c083333bc723c9f66ad",
+        "id": 11282513992,
+        "name": "unit-accounting-py3.14",
+        "size_in_bytes": 75562,
+        "workflow_run": {
+          "head_branch": "codex/ocaml-package-distribution",
+          "head_repository_id": 1395674522,
+          "head_sha": "2eb0ac643075966f3803bdfdb174f0d12bff2d75",
+          "id": 37146246536,
+          "repository_id": 1395674522
+        }
+      },
+      "baseline_3408_ids_preserved": true,
+      "discovered_count": 3416,
+      "exact_current_plan_id_set": true,
+      "executed_count": 3416,
+      "plan_path": "generated/migration-next/pr85-callback-budget-correction/plan-314.json",
+      "plan_sha256": "6848102412b8ff59e998ef42f337d3847ff5d91382402116f301ef329ab1f5f5",
+      "python_version": "3.14.7",
+      "receipt": {
+        "path": "generated/migration-next/pr85-v2-unit-monitor/unit-accounting-314.json",
+        "sha256": "41fd344584fb0b7b03ba8875811f52020622d4e8aacfd7e3a44feae5835b04f0",
+        "size_bytes": 417658
+      },
+      "shard_result_digests": [
+        "18bb4e230d6ab99197674c335cb15e5b74ab5d6b13c46ac59dbfdce63fd2b34f",
+        "8d4f79b1fb770e3517a4c0fead09724c7d144f2ff0b5489e2f173d85c0ad607d",
+        "bff4a0d64a7619444f77edf0ed1e03d906cc8902dff957f15ba8f11709d5fe0d",
+        "e91b6683c45f6399912c44fe14dcfbac27cc0ebb81502d08648f1969d1ee7a6e",
+        "f728df4ec9f6e14d9902010b5cd47b848604b806624cd46617b3f9cbfef794da"
+      ],
+      "sorted_lf_ids_sha256": "cf27c05ddcfa8cc4f96c4ae7bf5d11bece4e64edfc9edb2e77c82880185e04f4",
+      "status": "pass",
+      "unique_class_count": 351,
+      "verified_shards": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ]
+    }
+  ],
+  "schema": "biocompiler.pr85.unit_accounting_review.v1",
+  "scope": "Exact-source PR85 unit shards and complete accounting only. Native/distribution/fresh-install release gates remain separate; PR86 is not included.",
+  "source_revision": "2eb0ac643075966f3803bdfdb174f0d12bff2d75",
+  "status": "pass",
+  "tested_merge": {
+    "parents": [
+      "d2f65c59aba3a4af97dbcabd59e8142961e12c4a",
+      "2eb0ac643075966f3803bdfdb174f0d12bff2d75"
+    ],
+    "sha": "8bfa69099d9e01ff995579424c93543de67eb229"
+  },
+  "unit_jobs": [
+    {
+      "completedAt": "2026-10-03T19:01:36Z",
+      "conclusion": "success",
+      "databaseId": 111271012917,
+      "name": "unit-plan (3.11)",
+      "startedAt": "2026-10-03T19:00:58Z",
+      "status": "completed",
+      "url": "https://github.com/logannye/biocompiler/actions/runs/37146246536/job/111271012917"
+    },
+    {
+      "completedAt": "2026-10-03T19:01:40Z",
+      "conclusion": "success",
+      "databaseId": 111271013006,
+      "name": "unit-plan (3.14)",
+      "startedAt": "2026-10-03T19:00:58Z",
+      "status": "completed",
+      "url": "https://github.com/logannye/biocompiler/actions/runs/37146246536/job/111271013006"
+    },
+    {
+      "completedAt": "2026-10-03T19:52:23Z",
+      "conclusion": "success",
+      "databaseId": 111271151800,
+      "name": "unit-tests (3.11, 4)",
+      "startedAt": "2026-10-03T19:01:42Z",
+      "status": "completed",
+      "url": "https://github.com/logannye/biocompiler/actions/runs/37146246536/job/111271151800"
+    },
+    {
+      "completedAt": "2026-10-03T19:22:28Z",
+      "conclusion": "success",
+      "databaseId": 111271151806,
+      "name": "unit-tests (3.14, 0)",
+      "startedAt": "2026-10-03T19:01:42Z",
+      "status": "completed",
+      "url": "https://github.com/logannye/biocompiler/actions/runs/37146246536/job/111271151806"
+    },
+    {
+      "completedAt": "2026-10-03T19:18:24Z",
+      "conclusion": "success",
+      "databaseId": 111271151822,
+      "name": "unit-tests (3.14, 1)",
+      "startedAt": "2026-10-03T19:01:42Z",
+      "status": "completed",
+      "url": "https://github.com/logannye/biocompiler/actions/runs/37146246536/job/111271151822"
+    },
+    {
+      "completedAt": "2026-10-03T19:26:34Z",
+      "conclusion": "success",
+      "databaseId": 111271151827,
+      "name": "unit-tests (3.11, 2)",
+      "startedAt": "2026-10-03T19:01:42Z",
+      "status": "completed",
+      "url": "https://github.com/logannye/biocompiler/actions/runs/37146246536/job/111271151827"
+    },
+    {
+      "completedAt": "2026-10-03T19:23:19Z",
+      "conclusion": "success",
+      "databaseId": 111271151851,
+      "name": "unit-tests (3.14, 3)",
+      "startedAt": "2026-10-03T19:01:42Z",
+      "status": "completed",
+      "url": "https://github.com/logannye/biocompiler/actions/runs/37146246536/job/111271151851"
+    },
+    {
+      "completedAt": "2026-10-03T19:30:55Z",
+      "conclusion": "success",
+      "databaseId": 111271151852,
+      "name": "unit-tests (3.11, 3)",
+      "startedAt": "2026-10-03T19:01:42Z",
+      "status": "completed",
+      "url": "https://github.com/logannye/biocompiler/actions/runs/37146246536/job/111271151852"
+    },
+    {
+      "completedAt": "2026-10-03T19:23:18Z",
+      "conclusion": "success",
+      "databaseId": 111271151857,
+      "name": "unit-tests (3.11, 0)",
+      "startedAt": "2026-10-03T19:01:42Z",
+      "status": "completed",
+      "url": "https://github.com/logannye/biocompiler/actions/runs/37146246536/job/111271151857"
+    },
+    {
+      "completedAt": "2026-10-03T19:22:09Z",
+      "conclusion": "success",
+      "databaseId": 111271151862,
+      "name": "unit-tests (3.11, 1)",
+      "startedAt": "2026-10-03T19:01:42Z",
+      "status": "completed",
+      "url": "https://github.com/logannye/biocompiler/actions/runs/37146246536/job/111271151862"
+    },
+    {
+      "completedAt": "2026-10-03T19:31:11Z",
+      "conclusion": "success",
+      "databaseId": 111271151897,
+      "name": "unit-tests (3.14, 4)",
+      "startedAt": "2026-10-03T19:01:42Z",
+      "status": "completed",
+      "url": "https://github.com/logannye/biocompiler/actions/runs/37146246536/job/111271151897"
+    },
+    {
+      "completedAt": "2026-10-03T19:29:33Z",
+      "conclusion": "success",
+      "databaseId": 111271151926,
+      "name": "unit-tests (3.14, 2)",
+      "startedAt": "2026-10-03T19:01:42Z",
+      "status": "completed",
+      "url": "https://github.com/logannye/biocompiler/actions/runs/37146246536/job/111271151926"
+    },
+    {
+      "completedAt": "2026-10-03T19:53:06Z",
+      "conclusion": "success",
+      "databaseId": 111280051593,
+      "name": "unit-accounting (3.14)",
+      "startedAt": "2026-10-03T19:52:26Z",
+      "status": "completed",
+      "url": "https://github.com/logannye/biocompiler/actions/runs/37146246536/job/111280051593"
+    },
+    {
+      "completedAt": "2026-10-03T19:53:02Z",
+      "conclusion": "success",
+      "databaseId": 111280051647,
+      "name": "unit-accounting (3.11)",
+      "startedAt": "2026-10-03T19:52:26Z",
+      "status": "completed",
+      "url": "https://github.com/logannye/biocompiler/actions/runs/37146246536/job/111280051647"
+    }
+  ]
+}

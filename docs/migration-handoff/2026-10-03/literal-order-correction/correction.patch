@@ -1,0 +1,66 @@
+diff --git a/core/lib/domain/type_spec.ml b/core/lib/domain/type_spec.ml
+index bdb1fd23a..3b820b231 100644
+--- a/core/lib/domain/type_spec.ml
++++ b/core/lib/domain/type_spec.ml
+@@ -168 +168,5 @@ let normalize_binding ?(path = "") ~expected value =
+-    let common = ["kind", Json.String (kind_name actual.kind); "type", to_json actual] in
++    (* Public mappings retain the original literal serializer's insertion order.
++       Scalar/interval serializers put type last; curves put it second.
++       Canonical encoding still sorts keys independently of this public view. *)
++    let kind = "kind", Json.String (kind_name actual.kind) in
++    let dtype = "type", to_json actual in
+@@ -178 +182 @@ let normalize_binding ?(path = "") ~expected value =
+-        Json.Object (common @ [
++        Json.Object [kind;
+@@ -180 +184 @@ let normalize_binding ?(path = "") ~expected value =
+-            "canonical_value", canonical])
++            "canonical_value", canonical; dtype]
+@@ -182 +186 @@ let normalize_binding ?(path = "") ~expected value =
+-        Json.Object (common @ [
++        Json.Object [kind;
+@@ -184 +188 @@ let normalize_binding ?(path = "") ~expected value =
+-            "upper", normalize ~path:(path_child path "upper") (field "upper")])
++            "upper", normalize ~path:(path_child path "upper") (field "upper"); dtype]
+@@ -195 +199 @@ let normalize_binding ?(path = "") ~expected value =
+-        Json.Object (common @ [
++        Json.Object [kind; dtype;
+@@ -198 +202 @@ let normalize_binding ?(path = "") ~expected value =
+-            "extrapolation", field "extrapolation"])
++            "extrapolation", field "extrapolation"]
+diff --git a/core/test/test_domain.ml b/core/test/test_domain.ml
+index 1621aacfa..cdad470b1 100644
+--- a/core/test/test_domain.ml
++++ b/core/test/test_domain.ml
+@@ -7,0 +8,21 @@ let binding_type value = Type_spec.of_json (Json.field "type" (Json.object_field
++(* Json.equal deliberately ignores object order. Public provider views expose
++   Python mapping iteration, so check each original literal serializer's order
++   separately, including scalar children of interval and curve bindings. *)
++let rec check_binding_order label value =
++  let fields = Json.object_fields value in
++  let field key = Json.field key fields in
++  let expected, children = match Json.string (field "kind") with
++    | "scalar" -> ["kind"; "value"; "unit"; "canonical_value"; "type"], []
++    | "interval" -> ["kind"; "lower"; "upper"; "type"], [field "lower"; field "upper"]
++    | "curve" -> ["kind"; "type"; "points"; "interpolation"; "extrapolation"],
++        List.concat_map Json.array (Json.array (field "points"))
++    | _ -> failwith (label ^ ": unexpected literal kind") in
++  require (List.map fst fields = expected) (label ^ ": public literal mapping order differs");
++  List.iter (check_binding_order label) children
++
++let rec reverse_object_order = function
++  | Json.Object fields -> Json.Object
++      (List.rev_map (fun (key, value) -> key, reverse_object_order value) fields)
++  | Json.Array values -> Json.Array (List.map reverse_object_order values)
++  | value -> value
++
+@@ -13,2 +34,8 @@ let check label source expected =
+-  require (Json.equal (Type_spec.normalize_binding ~expected:(binding_type actual) actual) actual)
+-    (label ^ ": normalization is not idempotent")
++  check_binding_order label actual;
++  let repeated = Type_spec.normalize_binding ~expected:(binding_type actual) actual in
++  require (Json.equal repeated actual) (label ^ ": normalization is not idempotent");
++  check_binding_order (label ^ " repeated") repeated;
++  let reordered = Type_spec.normalize_binding ~expected:(binding_type source)
++      (reverse_object_order source) in
++  require (Json.equal reordered actual) (label ^ ": input order changed normalized meaning");
++  check_binding_order (label ^ " reordered input") reordered
