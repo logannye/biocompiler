@@ -1,0 +1,1 @@
+{"closure":[],"defaults":{"scalar":"NoneType","value":null},"kind":"provider","kwdefaults":{"scalar":"NoneType","value":null},"source":{"file":"src/biocompiler/compiler/pipeline.py","freevars":[],"line":646,"module":"biocompiler.compiler.pipeline","qualname":"PassManager.get"}}

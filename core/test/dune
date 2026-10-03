@@ -556,3 +556,15 @@
  (modules test_reference_producer_budget)
  (libraries bioc_wire bioc_domain bioc_checker bioc_compiler zarith)
  (action (run %{test} %{env:BIOCOMPILER_REFERENCE_CONTRACTS_DOCUMENTS=missing})))
+
+(test
+ (name test_reference_construct_pipeline)
+ (modules test_reference_construct_pipeline)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_compiler bioc_pipeline zarith)
+ (action (run %{test} %{env:BIOCOMPILER_REFERENCE_PIPELINE_DOCUMENTS=missing})))
+
+(test
+ (name test_reference_molecular_pipeline)
+ (modules test_reference_molecular_pipeline)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_compiler bioc_pipeline zarith)
+ (action (run %{test} %{env:BIOCOMPILER_REFERENCE_PIPELINE_DOCUMENTS=missing})))

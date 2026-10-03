@@ -1,0 +1,1 @@
+{"class":"biocompiler.compiler.pipeline.PassManager","fields":[["_target",{"ref":"object/9406"}],["_dependencies",{"ref":"object/9489"}],["_passes",{"ref":"object/9490"}],["_component_inputs",{"ref":"object/9491"}],["_provider_history",{"ref":"object/9492"}],["_records",{"ref":"object/9493"}],["_profiles",{"ref":"object/9494"}]],"kind":"manager"}

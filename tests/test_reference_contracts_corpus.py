@@ -130,3 +130,8 @@ class ReferenceContractsCorpusTests(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+def load_tests(loader, tests, pattern):
+    from tools.reference_original_counterpart import original_test_suite
+    return original_test_suite(loader, tests, pattern, __name__)

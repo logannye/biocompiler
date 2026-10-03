@@ -1,0 +1,1 @@
+{"args":{"ref":"object/655"},"cause":{"scalar":"NoneType","value":null},"class":"biocompiler.compiler.pipeline.PipelineError","context":{"scalar":"NoneType","value":null},"fields":[],"kind":"exception","suppress_context":false}

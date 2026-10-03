@@ -1,0 +1,1 @@
+{"class":"biocompiler.compiler.pipeline.CheckSpec","class_schema":null,"fields":[["id",{"scalar":"str","value":"encoding_composition"}],["evidence_kind",{"enum":"biocompiler.verification.evidence.EvidenceKind","value":{"scalar":"str","value":"model_conditional"}}],["discharges",{"ref":"object/9127"}]],"instance_fields":["id","evidence_kind","discharges"],"kind":"dataclass"}

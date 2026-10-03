@@ -1,0 +1,190 @@
+{
+  "schema_version": "biocompiler.reference_pipeline_libraries_checkpoint.v1",
+  "status": "source_and_original_python_baseline_complete_native_public_integration_pending",
+  "base_revision": "c58aa504544b644af1828f9d1d084367607e6a88",
+  "base_pull_request": 76,
+  "native_libraries": {
+    "construct": "original prepare/create/publish/admission/register/run/result/finish sequence; actual shared linkage provider",
+    "molecular": "actual upstream manager; six ordered dependency writes, profile, registration, run/result and finish",
+    "overrides": "paired native-or-opaque generator/emitter hook; source links after actual call; deferred ordinary manager conversion",
+    "authority": "all phases/providers require actual upstream work ancestor; no imported acceptance"
+  },
+  "original_pipeline_corpus": {
+    "path": "tests/conformance/reference-pipeline-semantics-v1.json",
+    "sha256": "516135a64458bc985294f7b2761138d5613209e3b225028492fe86f22c5092d3",
+    "inventory_fingerprint": "e5ce05abcd7645854f4ca2daf46632cc5871f9ed301c283220b018709991d417",
+    "coverage": {
+      "events": 2220,
+      "kinds": {
+        "callback.assemble": 23,
+        "callback.check": 13,
+        "callback.check_linkage": 11,
+        "callback.emit": 18,
+        "callback.forged": 1,
+        "callback.producer": 2,
+        "callback.require_current_providers": 42,
+        "callback.verify_authority": 27,
+        "callback.verify_layout": 23,
+        "callback.verify_linkage": 49,
+        "import.ConstructCandidate.from_dict": 71,
+        "import.ConstructCandidate.from_json": 1,
+        "import.ConstructRequest.from_dict": 125,
+        "import.ConstructRequest.from_json": 2,
+        "import.MolecularArtifact.from_dict": 22,
+        "import.MolecularArtifact.from_json": 1,
+        "manager.__init__": 27,
+        "manager.admit_component_input": 27,
+        "manager.get": 357,
+        "manager.register": 35,
+        "manager.register_completion_profile": 39,
+        "manager.register_component_input": 27,
+        "manager.result": 67,
+        "manager.run": 41,
+        "manager.set_dependency": 493,
+        "manager.target": 593,
+        "override.emit_reference_sequence": 1,
+        "override.generate_construct": 1,
+        "pipeline.construct": 27,
+        "pipeline.molecular": 14,
+        "producer.emit_reference_sequence": 12,
+        "producer.generate_construct": 23,
+        "registration.wrapper": 5
+      },
+      "managers": 27,
+      "methods": 18,
+      "physical_objects": 20051,
+      "top_level_operations": 439
+    },
+    "documents": 10867,
+    "document_bytes": 44887166,
+    "source_data_files": 200,
+    "top_level_returns": 378,
+    "top_level_raises": 61,
+    "manager_observations": 1706,
+    "original_tracebacks": 116,
+    "actual_override_calls": 2,
+    "actual_public_registration_wrappers": 5,
+    "fresh_baseline_and_observed_test_bodies_unchanged": true,
+    "native_replay": "pending"
+  },
+  "public_views": {
+    "explicit_decoders": 26,
+    "original_successful_values": 437,
+    "original_domain_kinds": 23,
+    "default_identity": "fresh allocation; explicit source-bound factory may supply approved sharing",
+    "legacy_semantic_calls_forbidden_during_hydration": true,
+    "typed_service_Build_integration": "pending"
+  },
+  "original_domain_test_counterpart": {
+    "frozen_source_census": 203,
+    "complete_copied_source_census": 207,
+    "documents": 4000,
+    "additional_example_sha256": "0d1012d2c3cd074540afce586658ee2ee3cba08a4e3d2e2586f8aaec1fa75fc2",
+    "original_test_sha256": "84df82fd9a57d18ad022d68a318aeb3495ff0a724b1205a73cb8092d20c2133b",
+    "test_change": "exact removable appended load_tests hook only",
+    "installed_origin": "must match current imported biocompiler package root; same-byte relocation rejects",
+    "original_testcases": 8,
+    "frozen_freezer_and_corpus_unchanged": true
+  },
+  "validation": {
+    "reference_views": {
+      "tests_per_version": 6,
+      "python_3_14_6_seconds": 0.217,
+      "python_3_11_15_seconds": 0.2,
+      "status": "pass"
+    },
+    "reference_views_support_and_inventory": {
+      "tests_per_version": 42,
+      "python_3_14_6_seconds": 24.28,
+      "python_3_11_15_seconds": 23.679,
+      "status": "pass"
+    },
+    "original_pipeline_capture_integrity": {
+      "tests_per_version": 9,
+      "python_3_14_6_seconds": 23.707,
+      "python_3_11_15_seconds": 19.638,
+      "fresh_complete_capture_each_version": true,
+      "status": "pass"
+    },
+    "original_domain_counterpart_integrity": {
+      "tests_per_version": 6,
+      "python_3_14_6_seconds": 32.658,
+      "python_3_11_15_seconds": 28.018,
+      "each_executes_all_eight_actual_original_testcases": true,
+      "status": "pass"
+    },
+    "ci_boundary_controls": {
+      "tests_per_version": 43,
+      "python_3_14_6_seconds": 23.368,
+      "python_3_11_15_seconds": 26.804,
+      "status": "pass"
+    },
+    "strict_mypy": {
+      "modules": 23,
+      "status": "pass"
+    },
+    "peer_review": "native pipeline interfaces and capture reviewed; exact target numeric-type and installed counterpart source-origin findings fixed and tested",
+    "native_suite_count": 109,
+    "ci_jobs": 36,
+    "new_native_suites": [
+      "test_reference_construct_pipeline",
+      "test_reference_molecular_pipeline"
+    ],
+    "inventory_entries": 3284,
+    "local_native_build_or_execution": false,
+    "hosted_new_native_and_full_release_validation": "pending",
+    "full_test_discovery": [
+      {
+        "python": "3.14.6",
+        "tests": 3143,
+        "classes": 309,
+        "discovery_digest": "85969e9a1ff9357af1bf01505fc879a8523411fba649c02060410a4dee32996f",
+        "status": "discovery_only_not_full_execution"
+      },
+      {
+        "python": "3.11.15",
+        "tests": 3143,
+        "classes": 309,
+        "discovery_digest": "85969e9a1ff9357af1bf01505fc879a8523411fba649c02060410a4dee32996f",
+        "status": "discovery_only_not_full_execution"
+      }
+    ]
+  },
+  "remaining": [
+    "actual reference service dispatch and public manager facade",
+    "complete provider and public Build identity transport",
+    "installed original reference pipeline and remaining package/admission replay",
+    "all required independently reconstructed four-runtime and release receipts",
+    "remaining supported workflow families",
+    "canonical package and fresh export ownership",
+    "existing SDK/CLI/Studio routing",
+    "prebuilt distributions and fresh installation checks",
+    "validated-profile production cutover"
+  ],
+  "source_sha256": {
+    ".github/workflows/ci.yml": "3b60fe657df06a1c957ae996ef7a426fe60f505df4be91ce52ad57828db72a13",
+    "core/lib/pipeline/reference_construct_pipeline.ml": "c482c0b3c4a2eee139181b46dc5de90d44312233a94407f1c46387e3f9daff75",
+    "core/lib/pipeline/reference_construct_pipeline.mli": "503d1b1bef9cbc573ee3868ce49202330446ee7accdf520b576d7247c945745c",
+    "core/lib/pipeline/reference_molecular_pipeline.ml": "f22b2cb5d4c4d9349eba1cc9519f3d1ae7b02ebcc59dc4098a732acbe1f01f8e",
+    "core/lib/pipeline/reference_molecular_pipeline.mli": "c7340b9ef77f8161f414d19a501cd98257da5dbfaad3e92a1d26d4d36a9176db",
+    "core/test/dune": "711631a8e30375651c28958312433de4b5c2f9570512afba8d9d690ef1af8bb0",
+    "core/test/test_reference_construct_pipeline.ml": "f19fd983d6d15ea8c00323918cd8ce8966ccf7d0ec4148fea22d1b439da01b4e",
+    "core/test/test_reference_molecular_pipeline.ml": "8468592f8f05ee75d28d3c9302d2ba925a4c137f82a3c5a4b52bdb8db071b850",
+    "docs/migration-reference-pipeline-libraries.md": "2304c0dd9697e8885f912719e8fee63e36c2e33e13052353ccdc19f825dbc1d8",
+    "src/biocompiler/core_reference_views.py": "a295b4583be057a743959d077add14ae7c5424086f7edddd322dfb188786d9f9",
+    "tests/conformance/reference-pipeline-semantics-v1.json": "516135a64458bc985294f7b2761138d5613209e3b225028492fe86f22c5092d3",
+    "tests/test_ci_validation.py": "1633a1fa52825b8ff4a1b818b13294ac53f4de6808fee59f34acea61d80a24af",
+    "tests/test_core_boundaries.py": "8ced2b9a82001bb5e9954aa25afc96015f4f11fa769b50f03591fd0a721ff4aa",
+    "tests/test_core_reference_views.py": "7adfe6374dafee64ce303141cc2fdfecd502bf408dc1b69355f4cb822380ae3d",
+    "tests/test_reference_contracts_corpus.py": "9fddd89bbfb9ef3d4ec6ee08ed91454336f1acbe2742889581c05e11f8bc4f80",
+    "tests/test_reference_original_counterpart.py": "59e8870d317465f203de03ba96fb8cf7f14b4c4d94365828c573ec51db518ba7",
+    "tests/test_reference_pipeline_semantics.py": "fc571817d0bef6095c5161e519e9047293aaaee670083d8681c59e06d1c65487",
+    "tools/capture_reference_pipeline_semantics.py": "f2d2676d960ae49e44b2cca407c427b6eecee9a70cb11d5daf0abdb181c69cd3",
+    "tools/check_core_boundaries.py": "60a5c118082cf46af9874f65cb3ccdf970f3c31b5b6c7d5a84c73255c79d78f4",
+    "tools/migration_inventory.py": "6c9aa98ed6c176b251418a85ce2de1b341fcf8ef51ebc1a54550813ce431b62e",
+    "tools/mypy-core.ini": "7cd9bb81f17a35bd4489dc0362fc399343e29b522def3daed0a8d532e9650f82",
+    "tools/reference_original_counterpart.py": "309f575664ba37ddd6dc875f11bd9eee8ad98cdea3b38b46fdc956386cf99f35"
+  },
+  "production_default": "python",
+  "cutoff_gates_complete": []
+}

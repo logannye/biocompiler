@@ -1,6 +1,7 @@
 """Transitive link boundaries fail closed on direct and indirect regressions."""
 
 import contextlib
+import hashlib
 import io
 import json
 from pathlib import Path
@@ -35,7 +36,7 @@ class CoreBoundaryTests(unittest.TestCase):
         self.assertEqual(receipt["roles"]["bioc_checker"], "checker")
         self.assertEqual(receipt["private_modules"]["bioc_checker"],
                          ["construction_reconstruction", "architecture_reconstruction", "reference_check_support"])
-        self.assertEqual(len(receipt["native_tests"]), 107)
+        self.assertEqual(len(receipt["native_tests"]), 109)
         self.assertEqual(receipt["roles"]["bioc_semantics"], "source_semantics")
         self.assertEqual(receipt["roles"]["bioc_source_adapter"], "source_semantics")
         self.assertEqual(receipt["roles"]["bioc_compiler"], "compiler")
@@ -83,8 +84,15 @@ class CoreBoundaryTests(unittest.TestCase):
             "test_reference_checkers": {"bioc_wire", "bioc_domain", "bioc_checker", "zarith"},
             "test_reference_contracts_corpus": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "zarith"},
             "test_reference_producer_budget": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "zarith"},
+            "test_reference_construct_pipeline": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_pipeline", "zarith"},
+            "test_reference_molecular_pipeline": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_pipeline", "zarith"},
         }
         receipt = boundaries.check_boundaries(boundaries.ROOT)
+        for stem in ("reference_construct_pipeline", "reference_molecular_pipeline"):
+            for relative in ("core/lib/pipeline/" + stem + ".ml", "core/lib/pipeline/" + stem + ".mli",
+                             "core/test/test_" + stem + ".ml"):
+                self.assertEqual(receipt["source_sha256"][relative],
+                                 hashlib.sha256((boundaries.ROOT / relative).read_bytes()).hexdigest())
         for name, dependencies in expected.items():
             self.assertEqual(set(receipt["native_tests"][name]), dependencies)
             root = self.copy_core()
@@ -189,7 +197,7 @@ class CoreBoundaryTests(unittest.TestCase):
         for variable in ("BIOCOMPILER_CANDIDATE_RUNTIME_CORPUS", "BIOCOMPILER_COMPONENT_RUNTIME_CORPUS",
                          "BIOCOMPILER_REALIZATION_FOUNDATION_CORPUS", "BIOCOMPILER_REALIZATION_CHECKS_CORPUS",
                          "BIOCOMPILER_COMPONENT_ACCEPTANCE_CORPUS", "BIOCOMPILER_REFERENCE_CONTRACTS_DOCUMENTS",
-                         "BIOCOMPILER_REFERENCE_CONTRACTS_CORPUS"):
+                         "BIOCOMPILER_REFERENCE_CONTRACTS_CORPUS", "BIOCOMPILER_REFERENCE_PIPELINE_DOCUMENTS"):
             action = "(action (run %{test} %{env:" + variable + "=missing}))"
             for replacement in ("", "(action (run true))", action + "\n " + action):
                 root = self.copy_core()

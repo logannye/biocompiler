@@ -1,0 +1,1 @@
+{"class":"biocompiler.semantics.coordinates.SequenceRange","class_schema":"biocompiler.sequence_range.v0.1","fields":[["start",{"scalar":"int","value":0}],["end",{"scalar":"int","value":1491}]],"instance_fields":["start","end"],"kind":"dataclass"}

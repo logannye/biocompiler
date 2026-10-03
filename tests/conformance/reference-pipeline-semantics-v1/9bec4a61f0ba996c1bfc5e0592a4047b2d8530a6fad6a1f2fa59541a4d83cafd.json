@@ -1,0 +1,1 @@
+{"class":"biocompiler.semantics.component_contracts.OperatingDomain","class_schema":"biocompiler.component_operating_domain.v0.1","fields":[["constraints",{"ref":"object/742"}]],"instance_fields":["constraints"],"kind":"dataclass"}
