@@ -23,7 +23,7 @@ class WorkflowCliLineageTests(unittest.TestCase):
         for row in actual["cases"]:
             for item in row["import_audit"]["modules"].values():
                 item["sha256"] = current[item["path"]]
-        for name in lineage.routes.HISTORICAL:
+        for name in (*lineage.routes.HISTORICAL, lineage.packaging.PATH):
             old = actual["retained_source_bytes"][name]
             raw = (lineage.ROOT / name).read_bytes()
             identity = lineage.frozen.sha(raw)
@@ -64,7 +64,7 @@ class WorkflowCliLineageTests(unittest.TestCase):
             "src/biocompiler/cli.py", "src/biocompiler/compiler/construct.py",
             "src/biocompiler/compiler/molecular.py", "src/biocompiler/compiler/pipeline.py",
             "src/biocompiler/compiler/verification_workflow.py",
-            "src/biocompiler/core_artifacts.py", "src/biocompiler/core_pipeline_build_views.py",
+            "src/biocompiler/core_artifacts.py", "src/biocompiler/core_distribution.py", "src/biocompiler/core_pipeline_build_views.py",
             "src/biocompiler/core_pipeline_callback_session.py",
             "src/biocompiler/core_pipeline_manager.py",
             "src/biocompiler/core_pipeline_provider_views.py",
@@ -79,7 +79,8 @@ class WorkflowCliLineageTests(unittest.TestCase):
             "src/biocompiler/synthetic_producer_backend.py", "src/biocompiler/synthetic_producer_cli.py",
             "src/biocompiler/workflow_backend.py",
             "src/biocompiler/workflow_cli.py"])
-        self.assertEqual(receipt["schema_version"], "biocompiler.workflow_cli_source_lineage.v2")
+        self.assertEqual(receipt["schema_version"], "biocompiler.workflow_cli_source_lineage.v3")
+        self.assertEqual(receipt["packaging_metadata_counterpart"], lineage.packaging.counterpart()[1])
         self.assertEqual(receipt["actual_capture"], before)
         self.assertEqual(receipt["reviewed_routes"], scope["reviewed_routes"])
         from tools import reference_original_counterpart as reference

@@ -5,6 +5,11 @@ requests and explicit normalization, source and resource witnesses are retained;
 this service supplies no workflow acceptance or reusable validation token.
 """
 from __future__ import annotations
+if __package__:
+    from .check_realization_binaries import executable_path as native_executable
+else:
+    from check_realization_binaries import executable_path as native_executable
+
 
 import argparse
 import builtins
@@ -371,7 +376,7 @@ def campaign_main(argv=None):
         pins = {"core": args.core_sha256, "verify": args.verify_sha256}
         clients = []
         for role, path in (("core", args.core), ("verify", args.verify)):
-            expected = args.native_root / ("biocompiler-" + role)
+            expected = native_executable(args.native_root, role)
             require(path.is_absolute() and path.resolve() == expected.resolve() and not path.is_symlink()
                     and os.access(path, os.X_OK), "Unbound or nonexecutable installed native binary")
             require(pins[role] == native["sha256"][expected.name], "Explicit release pin differs from same-run native manifest")

@@ -2,7 +2,7 @@
 
 Only the exact additive CLI route source, individually pinned unused transport
 additions, the archived unused backend replacement and independently captured
-argparse runtime counterpart may be projected. Complete actual source, import, stream,
+argparse runtime counterpart and two exact packaging metadata edits may be projected. Complete actual source, import, stream,
 filesystem and content evidence remains retained without output normalization.
 """
 from __future__ import annotations
@@ -20,6 +20,7 @@ from tools import freeze_synthetic_selection_cli as frozen
 from tools import synthetic_selection_cli_source_lineage as routes
 from tools import manager_registration_source_lineage as managers
 from tools import cli_runtime_counterparts as runtime
+from tools import package_metadata_source_lineage as packaging
 from tools.realization_source_lineage import REFERENCE_ROUTES, verify_captured_source
 from tools.reference_original_counterpart import route_source_witness
 from tools.check_realization_workflow_corpus import REVIEWED_ADDITIONS, addition_counterparts
@@ -44,7 +45,9 @@ def load_baseline():
     parent = routes.load_witness()['historical_source'].encode()
     for name, reference in original['retained_source_bytes'].items():
         expected = (parent if name == routes.CLI else managers.original_source() if name == managers.PATH
-                    else route_source_witness(name)[0] if name in REFERENCE_ROUTES else (ROOT / name).read_bytes())
+                    else route_source_witness(name)[0] if name in REFERENCE_ROUTES
+                    else packaging.counterpart(ROOT)[0] if name == packaging.PATH
+                    else (ROOT / name).read_bytes())
         if name == managers.PATH:
             managers.verify_source(ROOT, name, managers.HISTORICAL[name])
         require(frozen.f.restore(reference, blobs) == expected, 'Archived selection CLI source bytes changed: ' + name)
@@ -111,10 +114,14 @@ def verify_recapture(actual, blobs, *, python_version=None):
             for row in original['cases']), 'Original selection CLI imported changed native transport')
     reference_proofs = [verify_captured_source(ROOT, {'path': name, 'sha256': before[name]})
                         for name in sorted(REFERENCE_ROUTES & set(before))]
+    original_metadata, packaging_counterpart = packaging.counterpart(ROOT)
+    require(sha(original_metadata) == before[packaging.PATH] and
+            packaging_counterpart['current_sha256'] == current[packaging.PATH],
+            'Selection CLI package metadata source identities differ')
     for name, pin in before.items():
         path = ROOT / name
         require(path.is_file() and not path.is_symlink() and sha(path.read_bytes()) == current[name] and
-                (name in (routes.CLI,unused_name,managers.PATH) or name in REFERENCE_ROUTES or current[name] == pin), 'Unreviewed selection CLI source bytes changed: ' + name)
+                (name in (routes.CLI,unused_name,managers.PATH,packaging.PATH) or name in REFERENCE_ROUTES or current[name] == pin), 'Unreviewed selection CLI source bytes changed: ' + name)
     projected, projected_blobs = deepcopy(actual), dict(blobs)
     for row in projected['cases']:
         audit = row['import_audit']
@@ -133,7 +140,7 @@ def verify_recapture(actual, blobs, *, python_version=None):
         raw = (ROOT / name).read_bytes()
         require(reference == {'kind':'blob','bytes':len(raw),'sha256':sha(raw)} and
                 frozen.f.restore(reference, blobs) == raw, 'Actual retained selection CLI source bytes differ')
-    retained_routes = {routes.CLI} | (({managers.PATH} | REFERENCE_ROUTES) & set(actual['retained_source_bytes']))
+    retained_routes = {routes.CLI} | (({managers.PATH, packaging.PATH} | REFERENCE_ROUTES) & set(actual['retained_source_bytes']))
     for name in sorted(retained_routes):
         current_ref, old_ref = actual['retained_source_bytes'][name], original['retained_source_bytes'][name]
         if current_ref != old_ref:
@@ -164,7 +171,8 @@ def verify_recapture(actual, blobs, *, python_version=None):
     projected['inventory_fingerprint'] = digest({key:value for key,value in projected.items() if key != 'inventory_fingerprint'})
     require(projected_blobs == old_blobs, 'Complete actual selection CLI content differs from immutable baseline')
     require(canonical(projected) == canonical(original), 'Complete actual selection CLI observations differ from immutable baseline')
-    return {'schema_version':'biocompiler.synthetic_selection_cli_source_lineage.v1',
+    return {'schema_version':'biocompiler.synthetic_selection_cli_source_lineage.v2',
+        'packaging_metadata_counterpart':packaging_counterpart,
         'reviewed_addition_counterparts': addition_proofs, 'reviewed_reference_routes': reference_proofs,
         'status':'complete_original_selection_cli_recapture_equal','native_execution':False,
         'baseline_inventory_fingerprint':CORPUS_PIN,'actual_inventory_fingerprint':actual['inventory_fingerprint'],
@@ -177,7 +185,7 @@ def verify_recapture(actual, blobs, *, python_version=None):
             'validated_cases':sorted(declared.cases),'changes':changes},'coverage':deepcopy(actual['coverage']),
         'content_documents':len(blobs),'content_bytes':sum(map(len,blobs.values())),
         'actual_content_inventory':[{'sha256':name,'bytes':len(raw)} for name,raw in sorted(blobs.items())],
-        'projection':'exact_additive_selection_CLI_source_individually_pinned_unimported_additions_exact_archived_unused_backend_exact_manager_registration_prefix_and_declared_argparse_runtime_counterpart_only; actual_bytes_retained'}
+        'projection':'exact_additive_selection_CLI_source_individually_pinned_unimported_additions_exact_archived_unused_backend_exact_manager_registration_prefix_two_witnessed_packaging_metadata_edits_and_declared_argparse_runtime_counterpart_only; actual_bytes_retained'}
 
 
 def main(argv=None):

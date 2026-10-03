@@ -18,9 +18,10 @@ class SyntheticSelectionCliCaptureTests(unittest.TestCase):
         current={row['path']:row['sha256'] for row in scope['actual_sources']}
         for row in actual['cases']:
             for item in row['import_audit']['modules'].values():item['sha256']=current[item['path']]
-        raw=(c.ROOT/c.routes.CLI).read_bytes();old=actual['retained_source_bytes'][c.routes.CLI]
-        del blobs[old['sha256']];store=c.frozen.f.Store()
-        actual['retained_source_bytes'][c.routes.CLI]=store.retain(raw);blobs.update(store.blobs)
+        for name in (c.routes.CLI,c.packaging.PATH):
+            raw=(c.ROOT/name).read_bytes();old=actual['retained_source_bytes'][name]
+            del blobs[old['sha256']];store=c.frozen.f.Store()
+            actual['retained_source_bytes'][name]=store.retain(raw);blobs.update(store.blobs)
         old=next(row for row in self.original['cases'] if row['id']=='unknown-flag')
         row=next(row for row in actual['cases'] if row['id']==old['id'])
         expected=c.counterparts().expected(old,{'exit_code':old['exit_code'],
@@ -61,6 +62,7 @@ class SyntheticSelectionCliCaptureTests(unittest.TestCase):
             self.assertEqual(receipt['actual_capture'],before);self.assertEqual(actual,before)
             self.assertEqual(receipt['content_documents'],len(blobs))
             self.assertEqual(receipt['actual_retained_route_source'],(c.ROOT/c.routes.CLI).read_text())
+            self.assertEqual(receipt['packaging_metadata_counterpart'],c.packaging.counterpart()[1])
             self.assertEqual(len(receipt['runtime_counterpart']['changes']),int(version.startswith('3.11.')))
             from tools import reference_original_counterpart as reference
             self.assertEqual(receipt['reviewed_addition_counterparts'], [reference.core_source_witness()[1]])

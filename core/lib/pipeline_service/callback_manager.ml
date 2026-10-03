@@ -272,7 +272,7 @@ let observe_construct_provider state supplied owner provider role=
     | RC.Linkage_validator->"reference_components.linkage"
     | RC.Construct_producer->"components_to_construct.producer"
     | RC.Layout_validator->"components_to_construct.layout")
-let observe_molecular_provider state attempt supplied owner provider role=
+let observe_molecular_provider state (attempt:reference_attempt) supplied owner provider role=
   observe_reference_provider ~attempt:attempt.preparation_id state supplied owner provider(match role with
     | RM.Emit->"construct_to_molecular.producer"
     | RM.Sequence_identity->"construct_to_molecular.sequence"
@@ -815,7 +815,7 @@ let reference_host_proposal ?attempt (state:t) supplied ~output ~source_links=
     "source_links",Json.Array(map state C.Source_link.to_json source_links)] in
   let action,arguments=match attempt with
     |None->"reference-proposal",arguments
-    |Some value->"reference-molecular-proposal",obj(("preparation_id",str value.preparation_id)::Json.object_fields arguments) in
+    |Some (value:reference_attempt)->"reference-molecular-proposal",obj(("preparation_id",str value.preparation_id)::Json.object_fields arguments) in
   retain state arguments;host state(invoke state action arguments)
 let reference_generator_bridge (state:t):RC.generator_bridge={
   generate=(fun supplied ~input request->
@@ -826,7 +826,7 @@ let reference_generator_bridge (state:t):RC.generator_bridge={
     remember_reference_output state "components_to_construct.producer"(RD.Candidate.to_json candidate)(get "argument" reply);
     RC.Native_candidate candidate);
   host_proposal=reference_host_proposal state}
-let reference_emitter_bridge (state:t) attempt:RM.emitter_bridge={
+let reference_emitter_bridge (state:t) (attempt:reference_attempt):RM.emitter_bridge={
   emit=(fun supplied ~input ~request ~construct ~registry ~manifests->
     require(supplied==work state) "Reference emitter received a foreign lifetime budget.";
     let provider=match find state(fun entry->match entry.reference with
@@ -912,7 +912,7 @@ let reference_construct_registration (state:t)=
     ~host_links_equal:(reference_links_equal state) () in
   reference_registration state(RC.contract registration)(RC.producer registration)(RC.validators registration)
 let reference_preparation (state:t) token=
-  match find state(fun value->value.preparation_id=token)state.reference_attempts with
+  match find state(fun (value:reference_attempt)->value.preparation_id=token)state.reference_attempts with
   |Some value->value|None->fail "Unknown reference Molecular preparation capability."
 let reference_prepared (state:t) ~roots prepared=
   let workflow=reference_workflow state in

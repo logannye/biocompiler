@@ -1,0 +1,603 @@
+{
+  "base_revision": "56c710a47560297969b2f7159a430340d2feeafe",
+  "compile_correction": {
+    "changes": [
+      "Four explicit reference_attempt annotations resolve warning 41 without changing inferred types.",
+      "Remove unused mutable marker from initialization-only molecular_prepared field (warning 69).",
+      "Remove unused C/H aliases and snapshot/keys helpers from focused test (warnings 60/32); all test assertions remain unchanged."
+    ],
+    "checks": [
+      {
+        "command": "PYTHONPATH=src:. python3 -m unittest tests.test_core_boundaries -q",
+        "kind": "source_boundary_suite",
+        "python": "3.14.6",
+        "result": "PASS",
+        "seconds": 32.03,
+        "tests": 23
+      },
+      {
+        "command": "PYTHONPATH=src:. /Users/logannye/.local/share/uv/python/cpython-3.11.15-macos-aarch64-none/bin/python3 -m unittest tests.test_core_boundaries -q",
+        "kind": "source_boundary_suite",
+        "python": "3.11.15",
+        "result": "PASS",
+        "seconds": 32.752,
+        "tests": 23
+      },
+      {
+        "kind": "git diff --check",
+        "result": "PASS"
+      },
+      {
+        "kind": "independent bounded static review",
+        "result": "no concrete issue; intended type selection, initialization-only field and dead helpers confirmed"
+      }
+    ],
+    "diagnostic_sites": 9,
+    "diagnostics_file": "diagnostics.json",
+    "failed_jobs": [
+      111113928429,
+      111113928442
+    ],
+    "files": [
+      {
+        "after_sha256": "d0d8631d7db4c9fcbe9c5e86e168153dc38cab1ca3c59359c16199ffe51fa92c",
+        "before_sha256": "bef07d56bfad1ff56eedeaaf6e7b7e96238970d9ed5e864f6724068bab71e071",
+        "changed_sites": 1,
+        "path": "core/lib/pipeline_service/reference_workflow.ml"
+      },
+      {
+        "after_sha256": "042fab41d7a5f2dd0d05f499fd00caf7ffd3816fc0fb1c50b83c8dcbc9ae1fb6",
+        "before_sha256": "0b7dc1730eb6783d657fd37962e4a213b1fefbe1625ec3faecc0b366bcbdace1",
+        "changed_sites": 4,
+        "path": "core/lib/pipeline_service/callback_manager.ml"
+      },
+      {
+        "after_sha256": "bfa1f842de8758e9c2c8f9fea83056714ca6325805e4ee93c8ff3e0b65e1970b",
+        "before_sha256": "e530d0706ca0e81e3465d19b3e8bb24ff296e02351d864a0fad0e2ab3d04cfc5",
+        "changed_sites": 4,
+        "path": "core/test/test_reference_molecular_attempts.ml"
+      }
+    ],
+    "native_build_status": "requires hosted rerun",
+    "native_execution": false,
+    "no_commits": true,
+    "other_active_work": "preserved",
+    "patch_sha256": "3e7eecefd1c069d3285fc65955fc2efeedd5847cd63dc4909fd54e9c736ecb27",
+    "platforms": [
+      "linux-x86_64",
+      "macos-arm64"
+    ],
+    "run_id": 37091936085,
+    "schema": "native_compile_correction.v1",
+    "source_revision": "56c710a47560297969b2f7159a430340d2feeafe"
+  },
+  "current_installed_campaigns": 17,
+  "cutoff_gates_complete": false,
+  "discovery": {
+    "classes": 346,
+    "complete_execution": false,
+    "python_versions": [
+      "3.11.15",
+      "3.14.6"
+    ],
+    "test_ids_sha256": "8a9b7dbb87fc8a619a2bd8103752b5ea69c5813e599c1260705907097cec446c",
+    "tests": 3384
+  },
+  "forthcoming_package_campaign": "32 unchanged methods; not integrated; mandatory before migration cutoff",
+  "local_checks": [
+    {
+      "kind": "integrated_prebuilt_ci_and_cli_lineage",
+      "python": "3.14.6",
+      "seconds": 53.08,
+      "status": "PASS",
+      "tests": 117
+    },
+    {
+      "kind": "integrated_prebuilt_ci_and_cli_lineage",
+      "python": "3.11.15",
+      "seconds": 50.27,
+      "status": "PASS",
+      "tests": 117
+    },
+    {
+      "kind": "strict_mypy",
+      "modules": 28,
+      "status": "PASS"
+    }
+  ],
+  "native_local_execution": false,
+  "native_suites_per_platform": 118,
+  "original_cli_recaptures": [
+    {
+      "actual": "e0b57af1828745acd243efa5b314d4bc7bdc167db0d61ed564c2981bd24144f5",
+      "baseline": "a67edb95f75aa011ed5c059fe8cbe578fbe118d056931e3992f73775e8951da7",
+      "children": 70,
+      "family": "workflow",
+      "projected": "a67edb95f75aa011ed5c059fe8cbe578fbe118d056931e3992f73775e8951da7",
+      "python": "3.11.15",
+      "receipt_path": "generated/migration-next/prebuilt-metadata-workflow-cli-311.json",
+      "receipt_sha256": "1a33e7750c19e89b0b4574afdf517b31522df169dd66c06d1bbaeb001987d036",
+      "status": "complete_original_cli_recapture_equal"
+    },
+    {
+      "actual": "3e84f0fc2d16614c11c55594b2230ab15438512cb1315ad3576a4e056873e1df",
+      "baseline": "69556f367752be3076513d96e63c933fb250eaf7d9736f9e39baac1dec47e5d9",
+      "children": 72,
+      "family": "selection",
+      "projected": "69556f367752be3076513d96e63c933fb250eaf7d9736f9e39baac1dec47e5d9",
+      "python": "3.11.15",
+      "receipt_path": "generated/migration-next/prebuilt-metadata-selection-cli-311.json",
+      "receipt_sha256": "14790eaf630b78aa4983591afda721f12085f867b437f2f0c3502882f8c06022",
+      "status": "complete_original_selection_cli_recapture_equal"
+    },
+    {
+      "actual": "67777e39b00f547cfd302a06f1e9eae38622b3b22b2033c51b6cd5d2281e41bf",
+      "baseline": "a67edb95f75aa011ed5c059fe8cbe578fbe118d056931e3992f73775e8951da7",
+      "children": 70,
+      "family": "workflow",
+      "projected": "a67edb95f75aa011ed5c059fe8cbe578fbe118d056931e3992f73775e8951da7",
+      "python": "3.14.6",
+      "receipt_path": "generated/migration-next/prebuilt-metadata-workflow-cli-314.json",
+      "receipt_sha256": "84bf956c53b0c858a96d398916e926e81b7372aed756f04566aae6e236f5b989",
+      "status": "complete_original_cli_recapture_equal"
+    },
+    {
+      "actual": "27a7ffc2f40bf6fc934cbfe04b04e50f42d8da6e76595263caf3192eebb7fb13",
+      "baseline": "69556f367752be3076513d96e63c933fb250eaf7d9736f9e39baac1dec47e5d9",
+      "children": 72,
+      "family": "selection",
+      "projected": "69556f367752be3076513d96e63c933fb250eaf7d9736f9e39baac1dec47e5d9",
+      "python": "3.14.6",
+      "receipt_path": "generated/migration-next/prebuilt-metadata-selection-cli-314.json",
+      "receipt_sha256": "3382c972b729061016b802581fece847a0e4789972d158837dd62b620fbf6e87",
+      "status": "complete_original_selection_cli_recapture_equal"
+    }
+  ],
+  "prebuilt_draft_paths": 79,
+  "python_production_default": true,
+  "required_release_jobs": 38,
+  "schema_version": "biocompiler.prebuilt_source_checkpoint.v1",
+  "scope": "Source integration and local controls only; no hosted wheel, fresh installation, or release acceptance",
+  "source_files": [
+    {
+      "bytes": 109937,
+      "path": ".github/workflows/ci.yml",
+      "sha256": "f85e65e6bcf465f3c2787e602e958cba901784c80530fc04f9ffacc64f4163c1"
+    },
+    {
+      "bytes": 118868,
+      "path": "core/lib/pipeline_service/callback_manager.ml",
+      "sha256": "042fab41d7a5f2dd0d05f499fd00caf7ffd3816fc0fb1c50b83c8dcbc9ae1fb6"
+    },
+    {
+      "bytes": 22713,
+      "path": "core/lib/pipeline_service/reference_workflow.ml",
+      "sha256": "d0d8631d7db4c9fcbe9c5e86e168153dc38cab1ca3c59359c16199ffe51fa92c"
+    },
+    {
+      "bytes": 13991,
+      "path": "core/test/test_reference_molecular_attempts.ml",
+      "sha256": "bfa1f842de8758e9c2c8f9fea83056714ca6325805e4ee93c8ff3e0b65e1970b"
+    },
+    {
+      "bytes": 2024,
+      "path": "protocol/core-release-opam/digestif.1.3.0.opam",
+      "sha256": "6c18265a1177d8e46aea2120d598b34eb5f8844c5003345a8581f7f21c62989a"
+    },
+    {
+      "bytes": 3026,
+      "path": "protocol/core-release-opam/dune.3.20.2.opam",
+      "sha256": "16f981d2a4d6ac85cf8b1525dab06bcef6a54e36d4bd7256e917355791505fc4"
+    },
+    {
+      "bytes": 1372,
+      "path": "protocol/core-release-opam/eqaf.0.10.opam",
+      "sha256": "9c241a094a644994e253574a3269bdd108c05ff97a25dad2407bb35ec87af29d"
+    },
+    {
+      "bytes": 641,
+      "path": "protocol/core-release-opam/ocaml-base-compiler.5.4.0.opam",
+      "sha256": "0b904ea25575eb14e4b13aa72be5b3260a7f54decbb1e89cb93d719a9f1986bf"
+    },
+    {
+      "bytes": 5710,
+      "path": "protocol/core-release-opam/ocaml-compiler.5.4.0.opam",
+      "sha256": "317250e88785a2a27739b6a8e51f7bb2798373f6de0fca3a8983aac0a7e0bdf7"
+    },
+    {
+      "bytes": 1542,
+      "path": "protocol/core-release-opam/ocamlfind.1.9.8.opam",
+      "sha256": "b6180836d0c101bb4d2f029196ad194090ab9fc7549a0b514408b820e11e142b"
+    },
+    {
+      "bytes": 1218,
+      "path": "protocol/core-release-opam/zarith.1.14.opam",
+      "sha256": "9c859185d289c38dcb1c216aea751afa28bebf5d653e8af3d10aabb252ebe4bb"
+    },
+    {
+      "bytes": 6720,
+      "path": "protocol/core-release-sources-v1.json",
+      "sha256": "cfff010985f7a3f9fd51b7b09176f883f76ec8ea493c71bb0611c708b3007df1"
+    },
+    {
+      "bytes": 1118,
+      "path": "pyproject.toml",
+      "sha256": "be0a8547356afa58d67f4b8c7629ab37d85a80dedef600f3a9b9a00cfdf08b85"
+    },
+    {
+      "bytes": 14437,
+      "path": "src/biocompiler/core_distribution.py",
+      "sha256": "10c772076ee0ecfcb0c61a1a3410ae6014313d2e05617f30bc77f6df55485459"
+    },
+    {
+      "bytes": 3158,
+      "path": "tests/conformance/package-metadata-source-counterpart-v1.json",
+      "sha256": "13f1ef0b3af5fd6b0310dacd6763244aae008c8fd8252e0c61428deef1b99fc1"
+    },
+    {
+      "bytes": 19931,
+      "path": "tests/conformance/prebuilt-installed-path-delta-v1.json",
+      "sha256": "f64bcd82834b120dbe0c848a94a0ac8e0fe117ea3fedd22a136a2bc415025dbd"
+    },
+    {
+      "bytes": 122156,
+      "path": "tests/conformance/prebuilt-session-helper-lineage-v1.json",
+      "sha256": "6c56211e5cb8bd779458b4f92a51fbb7d0d3c838fbd3be724eebf3a36edca38c"
+    },
+    {
+      "bytes": 2637,
+      "path": "tests/conformance/prebuilt-source-v1.json",
+      "sha256": "d679ec6aaf09cb0fc1ba56c42bf72b85b3184b37f34456633f76139b4274363d"
+    },
+    {
+      "bytes": 110625,
+      "path": "tests/conformance/prebuilt-source-v1/.github/workflows/ci.yml.source",
+      "sha256": "e0885dbcbc213ee3b51b8b25971f5ca501336447e7cf3000b521a7038c01fa3d"
+    },
+    {
+      "bytes": 9151,
+      "path": "tests/conformance/prebuilt-source-v1/tests/test_manager_registration_source_lineage.py.source",
+      "sha256": "5da69ad32ce1512d2fa058ec8e5facb97fb27fdb875a2d4eb0fdaf9cde4c0800"
+    },
+    {
+      "bytes": 31419,
+      "path": "tests/conformance/prebuilt-source-v1/tools/check_native_synthetic_inspection.py.source",
+      "sha256": "faab36c77e0d030616bef3ad92abc4fa241414ee29e762a296f19e73b1c9528b"
+    },
+    {
+      "bytes": 36403,
+      "path": "tests/conformance/prebuilt-source-v1/tools/check_native_synthetic_producer.py.source",
+      "sha256": "2301750656bcb4c8d6080b43ef887076fdd1d6e93d00303efe69e8510f198412"
+    },
+    {
+      "bytes": 30380,
+      "path": "tests/conformance/prebuilt-source-v1/tools/check_native_synthetic_public_sdk.py.source",
+      "sha256": "6f656a1832b7d21799a5b498174681c4d46154c2941d60ce00beb13790d85719"
+    },
+    {
+      "bytes": 41450,
+      "path": "tests/conformance/prebuilt-source-v1/tools/check_native_synthetic_selection_cli.py.source",
+      "sha256": "d44853fc94c5c111dd9d051080223c8b508fe9038cf25fb21b56778b91f2e9db"
+    },
+    {
+      "bytes": 25301,
+      "path": "tests/conformance/prebuilt-source-v1/tools/check_native_workflow.py.source",
+      "sha256": "5a5f87e0eccc34f2034812b6c944dc01f0f57db8277a22b4ec39293868459a04"
+    },
+    {
+      "bytes": 27690,
+      "path": "tests/conformance/prebuilt-source-v1/tools/check_native_workflow_authority.py.source",
+      "sha256": "001a98e030b15e1cd0dfb17149e34549e38f5a9d92b6a023c62dfb5aebb3b194"
+    },
+    {
+      "bytes": 41445,
+      "path": "tests/conformance/prebuilt-source-v1/tools/check_native_workflow_cli.py.source",
+      "sha256": "58d1552ba8cb57a1614a985e4bbb457954e13c4f57c07c1a93009181b80426be"
+    },
+    {
+      "bytes": 25889,
+      "path": "tests/conformance/prebuilt-source-v1/tools/check_native_workflow_presentation.py.source",
+      "sha256": "0f2941c5f29cf590e6f569da7da3fa54e2d860735080e37653713475eb908ded"
+    },
+    {
+      "bytes": 39021,
+      "path": "tests/conformance/prebuilt-source-v1/tools/check_native_workflow_public_sdk.py.source",
+      "sha256": "7bfda785dd7bdf20ccd6f63daf7c0663d501a1e5ba2cc90c757f41218dabda72"
+    },
+    {
+      "bytes": 70950,
+      "path": "tests/conformance/prebuilt-source-v1/tools/check_pipeline_fixed_continuation_install.py.source",
+      "sha256": "976d575b3190f2f891fe8b470ee4cec85b59cda6761c143feb552ed161c48cac"
+    },
+    {
+      "bytes": 56967,
+      "path": "tests/conformance/prebuilt-source-v1/tools/check_pipeline_fixed_provider_install.py.source",
+      "sha256": "03bd395842ba2a6aa228a6392f004bb9c68c9fa8ed3615d90be2f3b3e51b70b8"
+    },
+    {
+      "bytes": 163417,
+      "path": "tests/conformance/prebuilt-source-v1/tools/check_pipeline_manager_install.py.source",
+      "sha256": "7eb6daf93734b7942a083b90e240227bb30ab1a5f2cb932b95bf54a9a81d110c"
+    },
+    {
+      "bytes": 57474,
+      "path": "tests/conformance/prebuilt-source-v1/tools/check_pipeline_session_install.py.source",
+      "sha256": "7f0fedf58a59f2a5aad9c2cfef64872aa93a6784942b2508ff7c1b12793ac61d"
+    },
+    {
+      "bytes": 3984,
+      "path": "tests/conformance/prebuilt-source-v1/tools/check_realization_binaries.py.source",
+      "sha256": "021906fc3883648f21eea5d007743e97db4b359130165edb663fe048607da861"
+    },
+    {
+      "bytes": 13680,
+      "path": "tests/conformance/prebuilt-source-v1/tools/ci_validation.py.source",
+      "sha256": "e073368e6dd8f222bdbcc9fc1ad92d1a9ac25ff39b07ade5de98bcf8e8acb6ba"
+    },
+    {
+      "bytes": 25365,
+      "path": "tests/conformance/prebuilt-source-v1/tools/pipeline_original_counterpart.py.source",
+      "sha256": "d848f8fc2153265fcb099f4366213ccc2cd31f96692380fb013047a2d2cef4fb"
+    },
+    {
+      "bytes": 17006,
+      "path": "tests/conformance/prebuilt-source-v1/tools/pipeline_reference_runtime.py.source",
+      "sha256": "34b5a08297ed5cd1b9930058b195cf911976d6562398ab068c78282c4a54e044"
+    },
+    {
+      "bytes": 36270,
+      "path": "tests/test_ci_validation.py",
+      "sha256": "bf094ecb369e3a3cbc9feb10695e84fc13f9505f432393b72636f083099cbca1"
+    },
+    {
+      "bytes": 12154,
+      "path": "tests/test_core_distribution.py",
+      "sha256": "2ddeb8fd9ca0fbadaaed0af8ca2087bb2a0e7eba25a7372936d706e4f8c58aa5"
+    },
+    {
+      "bytes": 9207,
+      "path": "tests/test_manager_registration_source_lineage.py",
+      "sha256": "e134730dfb6c50d78188f051101bec6913351bb578b60827cb21ba2aa09f3095"
+    },
+    {
+      "bytes": 5015,
+      "path": "tests/test_package_metadata_source_lineage.py",
+      "sha256": "a171ea2b675112e8779e210e1fa1d0cf1c001779e895582b9199bf16bdc9a379"
+    },
+    {
+      "bytes": 5476,
+      "path": "tests/test_prebuilt_ci_plan.py",
+      "sha256": "2a53f0721939fe09974ade9c7ea95c7b74dd24cd57e7eb7bc3505adbda2030f4"
+    },
+    {
+      "bytes": 6898,
+      "path": "tests/test_prebuilt_core_materials.py",
+      "sha256": "6738207cc41985dd094c77928a55abb89271108e5a87ea1d2c612af778dee251"
+    },
+    {
+      "bytes": 5971,
+      "path": "tests/test_prebuilt_core_release.py",
+      "sha256": "51a4c0023988241f5d76be7c71b6bf0cae0fdeb236f17f4f429a6b5591f56c42"
+    },
+    {
+      "bytes": 7004,
+      "path": "tests/test_prebuilt_installed_inputs.py",
+      "sha256": "5188899b8bb1c5177b65450e28a145b5293d18978d7c8817d52d0cf39698961d"
+    },
+    {
+      "bytes": 11605,
+      "path": "tests/test_prebuilt_release_chain.py",
+      "sha256": "8691b4fe0c0485fea43b41a481d6a2f7684ca7713881ab2f84b307d9e6987baa"
+    },
+    {
+      "bytes": 7859,
+      "path": "tests/test_prebuilt_sdk_matrix.py",
+      "sha256": "599a1d2242cf4531255ee2b00d43aaf113a55aeb8c5415162bc142f9e436fae3"
+    },
+    {
+      "bytes": 3971,
+      "path": "tests/test_prebuilt_source_counterpart.py",
+      "sha256": "d7235b0937886dc790762fefbd6c1e27f3adb8992694488734fba8cfb77d6b08"
+    },
+    {
+      "bytes": 7375,
+      "path": "tests/test_static_gmp_configuration.py",
+      "sha256": "5d0fdd3744139c9a9a1e68b95f46e55f93e8d8d3ff59d00fa0d543a76bf5dd32"
+    },
+    {
+      "bytes": 9349,
+      "path": "tests/test_synthetic_selection_cli_capture.py",
+      "sha256": "55b98485f26289eb161db9c132115412632b81eb304a5c78a7195251eaed640b"
+    },
+    {
+      "bytes": 15803,
+      "path": "tests/test_workflow_cli_lineage.py",
+      "sha256": "994a099c645162504e14bbb0ce364ecebf22ffee723cfe0eb86019bdee6adc12"
+    },
+    {
+      "bytes": 19222,
+      "path": "tools/build_prebuilt_core.py",
+      "sha256": "c50155235716f37f5cf7eada008d9f5e27340c35d50bb9211617779ee399c5d0"
+    },
+    {
+      "bytes": 31602,
+      "path": "tools/check_native_synthetic_inspection.py",
+      "sha256": "b8a2e7f79e5540ac41ef84060fe8f05d157234882bf5d5f4f2148160dcf2ed62"
+    },
+    {
+      "bytes": 36586,
+      "path": "tools/check_native_synthetic_producer.py",
+      "sha256": "9b2a09c3b2810a068d11f2c1a92e4bfb7bec3d3bb63601e65a4c2d64adb12085"
+    },
+    {
+      "bytes": 30563,
+      "path": "tools/check_native_synthetic_public_sdk.py",
+      "sha256": "909e2bfa52bc97d8c4e519931bd9f031e4415625c7010719a8b8f684b3804015"
+    },
+    {
+      "bytes": 41635,
+      "path": "tools/check_native_synthetic_selection_cli.py",
+      "sha256": "9822725b704fcab547a3afed967a4a31f27cce1ab8de4567ed8eed7f3546f230"
+    },
+    {
+      "bytes": 25484,
+      "path": "tools/check_native_workflow.py",
+      "sha256": "47b44cf0a375cae1fe9491bd9c2397bc2a296f32e428505cf3efaf77b5e9f622"
+    },
+    {
+      "bytes": 27873,
+      "path": "tools/check_native_workflow_authority.py",
+      "sha256": "849bee319887217fc9c2922bfd47d531304e622b40a4a3e6fe753605c4256c06"
+    },
+    {
+      "bytes": 41628,
+      "path": "tools/check_native_workflow_cli.py",
+      "sha256": "e902e5faf7fcd8c76ff34825a065a5961c79cc3b5b2e427467090d5d5cef3890"
+    },
+    {
+      "bytes": 26072,
+      "path": "tools/check_native_workflow_presentation.py",
+      "sha256": "db6495fa79dc2c7e5251882d9dfb27186aa5699676966c129c8481931e80e08d"
+    },
+    {
+      "bytes": 39204,
+      "path": "tools/check_native_workflow_public_sdk.py",
+      "sha256": "459e9510e2738dc8a4908f517abcd774fcfd5f153adea54799f7dcd048e6839e"
+    },
+    {
+      "bytes": 71135,
+      "path": "tools/check_pipeline_fixed_continuation_install.py",
+      "sha256": "18cc625ed401eecaf9b07fb61a44021c56533c8f6b021ec8c332c652ce36db2b"
+    },
+    {
+      "bytes": 57152,
+      "path": "tools/check_pipeline_fixed_provider_install.py",
+      "sha256": "177e58882ee175e42e2027a6bfd94f90a63b14201651e524bb5840bb553bebf7"
+    },
+    {
+      "bytes": 163600,
+      "path": "tools/check_pipeline_manager_install.py",
+      "sha256": "d12f67bf4080b15a96856342e87e8678007e6093188b1a36540c7f337f6463b7"
+    },
+    {
+      "bytes": 57657,
+      "path": "tools/check_pipeline_session_install.py",
+      "sha256": "05b56ffa7969cea9630c2c901111f9c94fad40ac544770450932282eb35f4b62"
+    },
+    {
+      "bytes": 5011,
+      "path": "tools/check_prebuilt_core_install.py",
+      "sha256": "c5d0e3f6da9cd01adf56c9af4bd928af04ded855f05fa8475d4900072d1ec377"
+    },
+    {
+      "bytes": 18696,
+      "path": "tools/check_prebuilt_core_release.py",
+      "sha256": "f041edf4675004cfc19322d1a5cc5872ed5505e18cc10241c62fb1449f3bba96"
+    },
+    {
+      "bytes": 7349,
+      "path": "tools/check_prebuilt_matrix.py",
+      "sha256": "22065dc3bf91e6e81d8d56be75764ca71471e7fa394108224a21a86a967da732"
+    },
+    {
+      "bytes": 7039,
+      "path": "tools/check_realization_binaries.py",
+      "sha256": "cdc1eeaa24aa500aec60ecb0e170e5652cb2d43b7952a9d55026066b4f399a13"
+    },
+    {
+      "bytes": 9606,
+      "path": "tools/check_realization_workflow_corpus.py",
+      "sha256": "7032e626da74100f4cdbfdb47fe34f39a6e19a45de2e9ea715937c2dacc5e458"
+    },
+    {
+      "bytes": 13775,
+      "path": "tools/check_synthetic_selection_cli_corpus.py",
+      "sha256": "6261ad20eb2aea90615ed4f5a7241cf8a56f4afee69f49ccd5c4268ad79db4df"
+    },
+    {
+      "bytes": 17934,
+      "path": "tools/check_workflow_cli_corpus.py",
+      "sha256": "5c449c80c7ec727904a1715ed49f8a26671840e9d618f2785471f7d908615291"
+    },
+    {
+      "bytes": 13836,
+      "path": "tools/ci_validation.py",
+      "sha256": "933df3b875b2b07e62feb8f5e8c7aa3707e6f7ff45d41b19068153594909bc21"
+    },
+    {
+      "bytes": 7953,
+      "path": "tools/collect_prebuilt_materials.py",
+      "sha256": "8f8a606a657c74b0624a2dc26f5596d0abea8670cff7eca5c666831189899189"
+    },
+    {
+      "bytes": 13097,
+      "path": "tools/manager_registration_source_lineage.py",
+      "sha256": "2abda6f9d2812ad8f4865a9c10ed1c14f32f4554288776f998d5b23c4f166cd6"
+    },
+    {
+      "bytes": 43556,
+      "path": "tools/migration_inventory.py",
+      "sha256": "f88f8f763d6b566104cdd3a42bc1079cc45c378b328ae205db76f806591c6f57"
+    },
+    {
+      "bytes": 1504,
+      "path": "tools/mypy-core.ini",
+      "sha256": "e0e890575f6d10f75554ed8dc17ff13be07ba8d444f7bd61624c3309d7fa0821"
+    },
+    {
+      "bytes": 3412,
+      "path": "tools/package_metadata_source_lineage.py",
+      "sha256": "50668303d353f07e4bf93a646ed5a2a885b1c3aa7118dcc479a726bfcd167220"
+    },
+    {
+      "bytes": 25397,
+      "path": "tools/pipeline_original_counterpart.py",
+      "sha256": "a9ebbb5ca05d0b3a43e9fee898f011df9d13047226a11c48a9f0804bfaebfa6e"
+    },
+    {
+      "bytes": 17193,
+      "path": "tools/pipeline_reference_runtime.py",
+      "sha256": "928cf47c58572f8fb85c7669b47eb6a40201be4d4a4eb8bb4ac4899340f133de"
+    },
+    {
+      "bytes": 480,
+      "path": "tools/prebuilt-build-requirements.txt",
+      "sha256": "7b2dc778e35ddfbd9ca9ad37c6b28a2a9b348617aa9b72dbf9aaea35ffa06250"
+    },
+    {
+      "bytes": 2062,
+      "path": "tools/prebuilt_campaign_inputs.py",
+      "sha256": "4e6717f0db8083ab349465e4c5c88b092f3ad79ec1106fdd98e642a17cc78fd9"
+    },
+    {
+      "bytes": 13261,
+      "path": "tools/prebuilt_core_materials.py",
+      "sha256": "e69255941e72ee7c7c605f97d8e8058ade594634aa0b58fba29eace65a67fcdd"
+    },
+    {
+      "bytes": 3389,
+      "path": "tools/prebuilt_process_probe.py",
+      "sha256": "9f88f993a4c559facc12bf0f4a8b6ec5b9ee9cb62d29d57f181710d409b2e261"
+    },
+    {
+      "bytes": 11916,
+      "path": "tools/prebuilt_release_pipeline.py",
+      "sha256": "e7da9b92a3e6e68d9445853385ca4f09c1185aa702be740a0237980a6b527590"
+    },
+    {
+      "bytes": 9421,
+      "path": "tools/prebuilt_sources.py",
+      "sha256": "674c8f9d9eb01279f48669d6fcd3b1e52a5385336404ff162ad819232599bd3e"
+    },
+    {
+      "bytes": 13395,
+      "path": "tools/prepare_static_gmp.py",
+      "sha256": "16886c4ee594c9be459976c6dfa293ac98c00017b3a95cc69ad6ef9c9b92698d"
+    },
+    {
+      "bytes": 1154,
+      "path": "tools/relink_prebuilt_core.sh",
+      "sha256": "833e7336c76bea2d32e4c5508cef0bfcc902ed4bafd95ae298459b07b78c2cdf"
+    }
+  ]
+}

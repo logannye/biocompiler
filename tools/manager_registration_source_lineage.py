@@ -147,6 +147,12 @@ TOOL_CHECK = '            source_tool("realization_source_lineage").verify_captu
 
 
 def verify_tool_extension(entry, current, historical_sha256):
+    if current != entry['current_source'].encode():
+        previous = restore_installed_tool(current)
+        proof = verify_tool_extension(entry, previous, historical_sha256)
+        return {**proof, 'current_sha256': sha(current), 'installed_layout': {
+            'previous_sha256': sha(previous), 'current_sha256': sha(current),
+            'witness_sha256': INSTALLED_TOOL_SHA256}}
     old, new = entry['historical_source'].encode(), entry['current_source'].encode()
     require(entry['schema'] == 'biocompiler.manager_registration_tool_lineage.v1'
         and entry['path'] == TOOL_PATH and historical_sha256 == TOOL_HISTORICAL == entry['historical_sha256'] == sha(old),
@@ -184,3 +190,30 @@ def original_tool_source():
 
 def verify_tool_source(current, historical_sha256=TOOL_HISTORICAL):
     return verify_tool_extension(tool_witness(), current, historical_sha256)
+
+
+# A separate exact counterpart preserves the first immutable helper witness.
+INSTALLED_TOOL_WITNESS = 'tests/conformance/prebuilt-session-helper-lineage-v1.json'
+INSTALLED_TOOL_SHA256 = '6c56211e5cb8bd779458b4f92a51fbb7d0d3c838fbd3be724eebf3a36edca38c'
+INSTALLED_TOOL_INSERT = 'if __package__:\n    from .check_realization_binaries import executable_path as native_executable\nelse:\n    from check_realization_binaries import executable_path as native_executable\n\n'
+INSTALLED_TOOL_BEFORE = '(args.native_root / ("biocompiler-" + role))'
+INSTALLED_TOOL_AFTER = '(native_executable(args.native_root, role))'
+
+
+def restore_installed_tool(current):
+    raw = (ROOT / INSTALLED_TOOL_WITNESS).read_bytes()
+    require(sha(raw) == INSTALLED_TOOL_SHA256, 'Installed session helper witness bytes differ')
+    entry = json.loads(raw)
+    require(set(entry) == {'schema','path','previous_sha256','current_sha256','previous_source','current_source','insert','before','after'}
+        and entry['schema'] == 'biocompiler.prebuilt_session_helper_lineage.v1' and entry['path'] == TOOL_PATH
+        and entry['insert'] == INSTALLED_TOOL_INSERT and entry['before'] == INSTALLED_TOOL_BEFORE
+        and entry['after'] == INSTALLED_TOOL_AFTER, 'Installed helper counterpart inventory differs')
+    old, new = entry['previous_source'].encode(), entry['current_source'].encode()
+    require(current == new and sha(current) == entry['current_sha256']
+        and sha(old) == entry['previous_sha256'], 'Installed helper whole source differs')
+    require(old.count(INSTALLED_TOOL_BEFORE.encode()) == 1 and INSTALLED_TOOL_INSERT.encode() not in old
+        and new.count(INSTALLED_TOOL_INSERT.encode()) == new.count(INSTALLED_TOOL_AFTER.encode()) == 1
+        and new.replace(INSTALLED_TOOL_INSERT.encode(), b'', 1).replace(INSTALLED_TOOL_AFTER.encode(), INSTALLED_TOOL_BEFORE.encode(), 1) == old,
+        'Installed helper extension does not recover the entire preceding source')
+    require(old == tool_witness()['current_source'].encode(), 'Installed helper preceding authority differs')
+    return old

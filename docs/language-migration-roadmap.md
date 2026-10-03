@@ -20,7 +20,36 @@ Biological quality/correctness work has not begun.
   Python semantic paths and pass the complete integration/release gates for the
   exact integrated revision. Record evidence before pausing.
 
-**Active integration status, 2026-10-02:** [PR83](https://github.com/logannye/biocompiler/pull/83)
+**Fresh-session checkpoint, 2026-10-02:** the user requested that all current
+progress be saved to GitHub and handed to a fresh Codex session. The current
+branch is `codex/ocaml-package-distribution`, based on PR84 source
+`56c710a47560297969b2f7159a430340d2feeafe`. Read
+[the resumable handoff](migration-session-handoff.md) before continuing. All
+four cutoff gates remain open; Python remains the production default. Unfinished
+drafts are preserved separately and are not production integrations.
+
+- [x] **LM-30 prebuilt distribution source checkpoint:** integrate exact-source
+  material retention, portable static-GMP build instructions, platform wheel and
+  SDK assembly, owned installed discovery, four fresh-install slots and complete
+  release accounting. Preserve all 118 native suites and add two jobs, for 38
+  required jobs. The 117 focused Python controls pass on both runtimes, as do
+  strict typing of 28 transport modules and all 142 original CLI child outcomes
+  per runtime. Only two explicit packaging metadata edits are projected through
+  a complete-source witness; frozen CLI expectations remain unchanged.
+- [ ] **LM-30 prebuilt hosted acceptance and publication:** run the actual native
+  builds, linkage/material audits, wheel assembly, four fresh installations and
+  complete integration/release gates on the final revision. Add the forthcoming
+  complete public package campaign before final migration acceptance, then ship
+  the accepted distributions. Source controls alone do not satisfy this item.
+- [x] **LM-03 PR84 native compile correction, source checkpoint:** correct nine
+  warning-as-error sites using four explicit record type annotations, removal of
+  an unused mutable marker and removal of dead test helpers. Both 23-test source
+  boundary suites pass. No semantic behavior or test assertion changed.
+- [ ] **LM-03 PR84 native compile correction, hosted acceptance:** rerun native
+  compilation and all dependent checks on both platforms. PR84 run `37091936085`
+  failed compilation and is not accepted.
+
+**Earlier native milestone, 2026-10-02:** [PR83](https://github.com/logannye/biocompiler/pull/83)
 contains the native package library checkpoint at
 `64eb5a3964c726abab4e3691c6eb13bd53c25693`. Its
 [hosted run](https://github.com/logannye/biocompiler/actions/runs/37090290216)

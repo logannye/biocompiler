@@ -27,7 +27,7 @@ type operation=
 
 type molecular_attempt={attempt_owner:M.t;attempt_work:W.t;
   mutable attempt_phase:phase;mutable entered:bool;
-  mutable molecular_prepared:Molecular.prepared option;
+  molecular_prepared:Molecular.prepared option;
   mutable pending_dependencies:(string*string) list;
   mutable molecular_profile:Molecular.profiled option;
   mutable molecular_registration:Molecular.registration option;

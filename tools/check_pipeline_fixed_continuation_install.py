@@ -5,6 +5,11 @@ unchanged original fixture and test functions. A native factory may replace only
 the public fixed compiler entry points; authoring and assertions remain original.
 """
 from __future__ import annotations
+if __package__:
+    from .check_realization_binaries import executable_path as native_executable
+else:
+    from check_realization_binaries import executable_path as native_executable
+
 
 from collections import Counter
 from contextlib import ExitStack, contextmanager, nullcontext
@@ -1010,7 +1015,7 @@ def campaign_main(argv):
         receipt['native_inputs'], receipt['executables'] = native, {}
         for role in ('core', 'verify'):
             path, pin = getattr(args, role), getattr(args, role+'_sha256')
-            require(path.is_absolute() and path.resolve() == (args.native_root / ('biocompiler-'+role)).resolve()
+            require(path.is_absolute() and path.resolve() == (native_executable(args.native_root, role)).resolve()
                 and not path.is_symlink() and os.access(path, os.X_OK) and pin == native['sha256'][path.name], 'Unbound retained-workflow binary')
             receipt['executables'][role] = str(path)
         receipt['python_sources'] = product_sources(corpus)

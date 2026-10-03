@@ -31,7 +31,25 @@ def file_hash(path, maximum):
         return hashlib.file_digest(source, "sha256").hexdigest()
 
 
+def executable_path(directory, role):
+    require(role in ('core', 'verify'), 'Unknown native executable role')
+    layout = os.environ.get('BIOCOMPILER_NATIVE_INPUT_LAYOUT', 'artifact')
+    require(layout in ('artifact', 'installed'), 'Unknown explicit native input layout')
+    if layout == 'installed':
+        from biocompiler.core_distribution import installed_distribution
+        selected = installed_distribution()
+        require(Path(directory) == selected.package_root, 'Installed role root differs from owned package')
+        return selected.executable(role)
+    return Path(directory) / ('biocompiler-' + role)
+
+
 def verify(directory, revision, target):
+    layout = os.environ.get('BIOCOMPILER_NATIVE_INPUT_LAYOUT', 'artifact')
+    require(layout in ('artifact', 'installed'), 'Unknown explicit native input layout')
+    if layout == 'installed':
+        return verify_installed(directory, revision, target,
+            source_revision=os.environ.get('GITHUB_HEAD_SHA'), run_id=os.environ.get('GITHUB_RUN_ID'),
+            core=executable_path(directory, 'core'), verify_binary=executable_path(directory, 'verify'))['native']
     require(type(revision) is str and re.fullmatch(r"[0-9a-f]{40}", revision), "Invalid expected revision")
     require(target in PLATFORMS, "Unknown native platform")
     directory = Path(directory)
@@ -78,6 +96,7 @@ def main():
     require((platform.system(), platform.machine()) == PLATFORMS[args.platform],
             "Conformance runner differs from downloaded executable platform")
     if args.prepare:
+        require(os.environ.get('BIOCOMPILER_NATIVE_INPUT_LAYOUT', 'artifact') == 'artifact', 'Installed executables must never be repaired')
         for name in BINARIES:
             path = args.root / name
             path.chmod(path.stat().st_mode | 0o111)
@@ -87,6 +106,34 @@ def main():
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(receipt, sort_keys=True, indent=2) + "\n", encoding="utf-8")
     print("Verified both exact-revision native executables for", args.platform)
+
+
+def verify_installed(directory, revision, target, *, source_revision, run_id, core, verify_binary):
+    """Explicit installed-layout evidence; no executable copy, chmod or process."""
+    from biocompiler.core_distribution import installed_distribution
+    selected = installed_distribution()
+    ownership = selected.ownership()
+    require(ownership['tested_revision'] == revision and ownership['native_platform'] == target
+        and ownership['source_revision'] == source_revision and ownership['run_id'] == run_id,
+        'Installed source/tested/run/platform authority differs')
+    root = Path(directory)
+    require(root.is_absolute() and root == selected.package_root,
+        'Installed campaign root is not the actual owned package')
+    for role, supplied in (('core', core), ('verify', verify_binary)):
+        path = Path(supplied)
+        require(path.is_absolute() and path == selected.executable(role),
+            'Installed campaign executable is not its exact owned path')
+    manifest = json.loads(selected.binaries_bytes)
+    native = {'schema_version': 'biocompiler.native_conformance_inputs.v1', 'status': 'pass',
+        'revision': revision, 'native_platform': target,
+        'manifest_sha256': hashlib.sha256(selected.binaries_bytes).hexdigest(),
+        'system': manifest['system'], 'machine': manifest['machine'], 'sha256': dict(manifest['sha256'])}
+    return {'schema_version': 'biocompiler.installed_native_conformance_inputs.v1',
+        'native': native, 'ownership': ownership,
+        'documents': {'release.json': selected.release_bytes.decode('utf-8'),
+            'distribution.json': selected.distribution_bytes.decode('utf-8'),
+            'binaries.json': selected.binaries_bytes.decode('utf-8'),
+            'linkage.json': selected.linkage_bytes.decode('utf-8')}}
 
 
 if __name__ == "__main__":

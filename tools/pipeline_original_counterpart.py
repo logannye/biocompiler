@@ -93,7 +93,7 @@ def task_data(task, test_module=None):
     if task == 'tests' and test_module.removeprefix('tests.') == 'test_pipeline_contract_literals':
         files.append('tests/conformance/pipeline-contract-literals-v1.json')
     if task.startswith('fixed-'):
-        files.extend((lineage.TOOL_WITNESS, 'tests/conformance/pipeline-fixed-build-semantics-v1.json'))
+        files.extend((lineage.TOOL_WITNESS, lineage.INSTALLED_TOOL_WITNESS, 'tests/conformance/pipeline-fixed-build-semantics-v1.json'))
     if task == 'fixed-provider-original': files.append('tests/conformance/pipeline-fixed-provider-semantics-v1.json')
     if task == 'fixed-build-original': files.append('tests/conformance/pipeline-fixed-build-semantics-v1.json')
     if task=='fixed-build-original':

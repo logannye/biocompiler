@@ -21,6 +21,7 @@ from tools import workflow_source_lineage as routes
 from tools import synthetic_producer_source_lineage as producers
 from tools import manager_registration_source_lineage as managers
 from tools import cli_runtime_counterparts as runtime
+from tools import package_metadata_source_lineage as packaging
 from tools.realization_source_lineage import verify_captured_source, REFERENCE_ROUTES
 
 if __package__:
@@ -101,6 +102,9 @@ def load_baseline():
                 verify_captured_source(ROOT, {"path": name, "sha256": frozen.sha(raw)})
             except ValueError as error:
                 raise AssertionError("Archived CLI source bytes changed: " + name) from error
+        elif name == packaging.PATH:
+            require(packaging.counterpart(ROOT)[0] == raw,
+                    "Archived CLI package metadata changed")
         else:
             require(path.read_bytes() == raw, "Archived CLI source bytes changed: " + name)
     return document, blobs
@@ -163,6 +167,7 @@ def _project(actual, baseline):
     require(set(actual["retained_source_bytes"]) == set(baseline["retained_source_bytes"]),
             "Actual retained CLI source inventory differs")
     retained_actual = {}
+    packaging_counterpart = None
     for name, reference in actual["retained_source_bytes"].items():
         raw = (ROOT / name).read_bytes()
         require(reference == {"kind": "blob", "bytes": len(raw), "sha256": frozen.sha(raw)},
@@ -170,10 +175,13 @@ def _project(actual, baseline):
         if name in routes.HISTORICAL or name in managers.HISTORICAL or name in REFERENCE_ROUTES:
             retained_actual[name] = raw.decode("utf-8")
             projected["retained_source_bytes"][name] = deepcopy(baseline["retained_source_bytes"][name])
+        elif name == packaging.PATH:
+            _, packaging_counterpart = packaging.counterpart(ROOT, current=raw)
+            projected["retained_source_bytes"][name] = deepcopy(baseline["retained_source_bytes"][name])
     projected["source_scope"] = deepcopy(baseline["source_scope"])
     projected["inventory_fingerprint"] = digest({key: value for key, value in projected.items() if key != "inventory_fingerprint"})
     evidence = {
-        "schema_version": "biocompiler.workflow_cli_source_lineage.v2",
+        "schema_version": "biocompiler.workflow_cli_source_lineage.v3",
         "status": "source_lineage_verified", "native_execution": False,
         "baseline_inventory_fingerprint": CORPUS_PIN, "baseline_source_scope_fingerprint": SCOPE_PIN,
         "actual_inventory_fingerprint": actual["inventory_fingerprint"],
@@ -181,11 +189,12 @@ def _project(actual, baseline):
         "actual_source_scope": deepcopy(actual_scope),
         "actual_capture": deepcopy(actual),
         "actual_retained_route_sources": retained_actual,
+        "packaging_metadata_counterpart": packaging_counterpart,
         "reviewed_routes": reviewed_routes,
         "source_changes": [{"path": name, "previous_sha256": before.get(name),
                             "current_sha256": current.get(name)}
                            for name in sorted(set(before) | set(current)) if before.get(name) != current.get(name)],
-        "projection": "exact_witnessed_source_scope_import_hashes_and_retained_source_references_only_then_recompute_inventory_fingerprint",
+        "projection": "exact_witnessed_source_scope_import_hashes_retained_source_references_and_two_packaging_metadata_edits_only_then_recompute_inventory_fingerprint",
     }
     return projected, evidence
 
@@ -199,7 +208,7 @@ def verify_recapture(actual, blobs, *, python_version=None):
     baseline, old_blobs = load_baseline()
     projected, evidence = _project(actual, baseline)
     projected_blobs = dict(blobs)
-    retained_routes = set(routes.HISTORICAL) | ((set(managers.HISTORICAL) | REFERENCE_ROUTES) & set(actual["retained_source_bytes"]))
+    retained_routes = set(routes.HISTORICAL) | ((set(managers.HISTORICAL) | REFERENCE_ROUTES | {packaging.PATH}) & set(actual["retained_source_bytes"]))
     for name in sorted(retained_routes):
         current_ref = actual["retained_source_bytes"][name]
         old_ref = baseline["retained_source_bytes"][name]
@@ -241,7 +250,7 @@ def verify_recapture(actual, blobs, *, python_version=None):
     projected["inventory_fingerprint"] = digest({key: value for key, value in projected.items()
                                                   if key != "inventory_fingerprint"})
     evidence.update(projected_inventory_fingerprint=projected["inventory_fingerprint"],
-        projection="exact_witnessed_source_metadata_and_explicit_pinned_argparse_runtime_counterpart_only_then_recompute_inventory_fingerprint",
+        projection="exact_witnessed_source_metadata_two_packaging_metadata_edits_and_explicit_pinned_argparse_runtime_counterpart_only_then_recompute_inventory_fingerprint",
         runtime_counterpart={"declaration_sha256": counterparts.pin, "python_minor": minor,
                              "validated_cases": sorted(counterparts.cases), "changes": counterpart_evidence})
     require(projected_blobs == old_blobs, "Complete actual CLI content differs from immutable baseline")

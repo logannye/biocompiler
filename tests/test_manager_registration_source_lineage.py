@@ -74,6 +74,7 @@ class ManagerRegistrationLineageTests(unittest.TestCase):
         entry=lineage.tool_witness()
         current=(lineage.ROOT/lineage.TOOL_PATH).read_bytes()
         lineage.verify_tool_extension(entry,current,lineage.TOOL_HISTORICAL)
+        current=lineage.restore_installed_tool(current)
         restored=current.replace(lineage.TOOL_LOADER.encode(),b'',1).replace(lineage.TOOL_CHECK.encode(),b'',1)            .replace(lineage.TOOL_NEW_LINE.encode(),lineage.TOOL_OLD_LINE.encode(),1)
         self.assertEqual(restored,lineage.original_tool_source())
         for kind in ('stale','extra','omitted-check'):

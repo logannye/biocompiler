@@ -1,13 +1,11 @@
 open Bioc_wire
 open Bioc_domain
 module F=Bioc_pipeline_service.Reference_workflow
-module C=Pipeline_contract
 module M=Bioc_compiler.Pass_manager
 module W=Bioc_checker.Work_budget
 module P=Bioc_pipeline.Reference_construct_pipeline
 module Q=Bioc_pipeline.Reference_molecular_pipeline
 module R=Reference_construct
-module H=Bioc_pipeline_service.Host_bridge
 let require condition message=if not condition then failwith message
 let required=function Some value->value|None->failwith "Missing test capability"
 let expect code action=try ignore(action());failwith("Expected "^code) with Diagnostic.Error error->
@@ -20,8 +18,6 @@ let load directory identity=
     really_input_string channel size) in
   let value=Json.parse_artifact ~max_bytes:Limits.max_request_bytes ~max_nodes:Limits.max_json_nodes raw in
   require(Canonical.fingerprint value=identity)"Original caller authority changed";value
-let snapshot owner=M.inspect owner ~provider_identity:(fun _->"native-provider")
-let keys key value=List.map fst(Json.object_fields(Json.field key(Json.object_fields value)))
 let make_state ?(maximum=max_int) work=
   let retained=ref 0 in
   let retain_bytes amount=

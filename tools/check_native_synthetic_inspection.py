@@ -6,6 +6,11 @@ Only independently checked UUIDs and runtime guard frames are projected across
 four hosted runtimes. This grants no pipeline, package or empirical acceptance.
 """
 from __future__ import annotations
+if __package__:
+    from .check_realization_binaries import executable_path as native_executable
+else:
+    from check_realization_binaries import executable_path as native_executable
+
 
 import argparse
 import builtins
@@ -454,7 +459,7 @@ def campaign_main(argv=None):
         receipt["native_inputs"], receipt["executables"], clients = native, {}, []
         for role in ROLES:
             path, pin = getattr(args, role), getattr(args, role + "_sha256")
-            expected = args.native_root / ("biocompiler-" + role)
+            expected = native_executable(args.native_root, role)
             require(path.is_absolute() and path.resolve() == expected.resolve() and not path.is_symlink() and
                     os.access(path, os.X_OK) and pin == native["sha256"][expected.name], "Unbound inspection executable")
             receipt["executables"][role] = str(path)

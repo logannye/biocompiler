@@ -12,6 +12,38 @@ from tools import ci_validation as ci
 
 
 class ValidationGateTests(unittest.TestCase):
+    def installed_commands(self, block):
+        # Commands moved into one source-pinned driver; assert its actual pure
+        # plan and the required YAML invocation, rather than synthetic text.
+        from tools import prebuilt_release_pipeline as driver
+        self.assertIn('needs: [ocaml-core, prebuilt-core-assembly]', block)
+        self.assertIn('python tools/prebuilt_release_pipeline.py installed', block)
+        self.assertLess(block.index('python tools/prebuilt_release_pipeline.py installed'),
+            block.index('Record successful complete conformance'))
+        for value in ('--sdk ', '--native ', '--environment "$RUNNER_TEMP/',
+                      '--source-revision "$GITHUB_HEAD_SHA"', '--tested-revision "$GITHUB_SHA"',
+                      '--run-id "$GITHUB_RUN_ID"', '--platform ${{ matrix.platform }}'):
+            self.assertIn(value, block)
+        ownership={'package_root':'/fresh/site/biocompiler_core','source_revision':'a'*40,
+            'tested_revision':'b'*40,'native_platform':'linux-x86_64','files':{
+                'bin/biocompiler-'+role:{'path':'/fresh/site/biocompiler_core/bin/biocompiler-'+role,
+                    'sha256':str(index)*64} for index,role in enumerate(('core','verify'),1)}}
+        rows=driver.campaign_plan(Path('/checkout'),Path('/fresh/bin/python'),ownership,Path('/evidence'))
+        self.assertEqual(len(rows),17)
+        result={Path(command[1]).name:(name,command) for name,command in rows}
+        self.assertEqual(len(result),len(rows))
+        for name,command in rows:
+            self.assertEqual(command[0],'/fresh/bin/python')
+            self.assertEqual(command[-2:],['--output','/evidence/'+name+'.json'])
+            for role in ('core','verify'):
+                self.assertEqual(command[command.index('--'+role)+1],ownership['files']['bin/biocompiler-'+role]['path'])
+            if name not in ('protocol','routing'):
+                for role in ('core','verify'):
+                    self.assertEqual(command[command.index('--'+role+'-sha256')+1],ownership['files']['bin/biocompiler-'+role]['sha256'])
+                self.assertEqual(command[command.index('--native-root')+1],ownership['package_root'])
+                self.assertEqual(command[command.index('--platform')+1],'linux-x86_64')
+        return result
+
     def test_callback_manager_compact_corpus_preserves_exact_original_authorities(self):
         root = Path(__file__).resolve().parents[1]
         full_path = root / 'tests/conformance/fixed-pipeline-literals-v1.json'
@@ -253,11 +285,9 @@ class ValidationGateTests(unittest.TestCase):
                     "tools/check_native_workflow_authority.py", "tools/check_native_workflow_public_sdk.py", "tools/check_native_workflow_cli.py",
                     "tools/check_native_synthetic_producer.py", "tools/check_native_synthetic_public_sdk.py",
                     "tools/check_native_synthetic_selection_cli.py", "tools/check_native_synthetic_inspection.py"]
+        planned=self.installed_commands(matrix)
         for command in commands:
-            self.assertIn(command, matrix)
-            self.assertLess(matrix.index(command), matrix.index("Record successful complete conformance"))
-        for binding in ("--core-sha256", "--verify-sha256", "--native-root", "--platform ${{ matrix.platform }}"):
-            self.assertIn(binding, matrix)
+            self.assertIn(Path(command).name,planned)
         comparison = text.split("\n  realization-core-reproducibility:\n", 1)[1].split("\n  studio-typescript:", 1)[0]
         for command in ("tools/check_pipeline_session_install.py --compare", "tools/check_realization_reproducibility.py", "tools/check_workflow_reproducibility.py",
                         "tools/check_native_workflow_presentation.py --compare", "tools/check_native_workflow_authority.py --compare", "tools/check_native_workflow_public_sdk.py --compare", "tools/check_native_workflow_cli.py --compare",
@@ -278,8 +308,8 @@ class ValidationGateTests(unittest.TestCase):
         text = (root / ".github/workflows/ci.yml").read_text()
         native = text.split("\n  ocaml-core:\n", 1)[1].split("\n  architecture-core-reproducibility:\n", 1)[0]
         self.assertEqual(ci.workflow_jobs(root / ".github/workflows/ci.yml"), ci.REQUIRED_NEEDS | {"validation"})
-        # Existing expanded topology: 35 required job instances plus final validation.
-        self.assertEqual(len(ci.EXPECTED_RECEIPTS) + 2 + 10 + 2 + 1, 36)
+        # Preserve the original 36 slots and require both additive prebuilt gates.
+        self.assertEqual(len(ci.EXPECTED_RECEIPTS) + 2 + 10 + 2 + 1, 38)
         for platform in ci.CORE_PLATFORMS:
             self.assertEqual(native.count("            platform: " + platform + "\n"), 1)
         self.assertIn("runs-on: ${{ matrix.runner }}", native)
@@ -345,10 +375,7 @@ class ValidationGateTests(unittest.TestCase):
     def test_live_manager_campaign_requires_all_installed_runtimes_and_comparison(self):
         text = (Path(__file__).resolve().parents[1] / ".github/workflows/ci.yml").read_text()
         installed = text.split("\n  realization-conformance:\n", 1)[1].split("\n  realization-core-reproducibility:\n", 1)[0]
-        self.assertIn('python "$GITHUB_WORKSPACE/tools/check_pipeline_manager_install.py"', installed)
-        self.assertIn('"$GITHUB_WORKSPACE/generated/realization/pipeline-manager.json"', installed)
-        self.assertLess(installed.index("tools/check_pipeline_manager_install.py"),
-                        installed.index("Record successful complete conformance"))
+        self.assertEqual(self.installed_commands(installed)['check_pipeline_manager_install.py'][0],'pipeline-manager')
         comparison = text.split("\n  realization-core-reproducibility:\n", 1)[1].split("\n  validation:\n", 1)[0]
         command = "python tools/check_pipeline_manager_install.py --compare --root artifacts/realization --native-root artifacts/core --output generated/realization-reproducibility/pipeline-manager.json"
         self.assertIn(command, comparison)
@@ -357,14 +384,7 @@ class ValidationGateTests(unittest.TestCase):
     def test_fixed_provider_campaign_requires_all_installed_runtimes_and_comparison(self):
         text = (Path(__file__).resolve().parents[1] / ".github/workflows/ci.yml").read_text()
         installed = text.split("\n  realization-conformance:\n", 1)[1].split("\n  realization-core-reproducibility:\n", 1)[0]
-        start = installed.index('python "$GITHUB_WORKSPACE/tools/check_pipeline_fixed_provider_install.py"')
-        end = installed.index('python "$GITHUB_WORKSPACE/tools/check_pipeline_session_install.py"', start)
-        command = installed[start:end]
-        for binding in ('--core ', '--verify ', '--core-sha256 ', '--verify-sha256 ',
-                        '--native-root ', '--platform ${{ matrix.platform }}',
-                        '"$GITHUB_WORKSPACE/generated/realization/pipeline-fixed-providers.json"'):
-            self.assertIn(binding, command)
-        self.assertLess(start, installed.index("Record successful complete conformance"))
+        self.assertEqual(self.installed_commands(installed)['check_pipeline_fixed_provider_install.py'][0],'pipeline-fixed-providers')
         comparison = text.split("\n  realization-core-reproducibility:\n", 1)[1].split("\n  validation:\n", 1)[0]
         command = "python tools/check_pipeline_fixed_provider_install.py --compare --root artifacts/realization --native-root artifacts/core --output generated/realization-reproducibility/pipeline-fixed-providers.json"
         self.assertIn(command, comparison)
@@ -373,14 +393,7 @@ class ValidationGateTests(unittest.TestCase):
     def test_fixed_continuation_campaign_is_bound_before_installed_and_comparison_success(self):
         text = (Path(__file__).resolve().parents[1] / ".github/workflows/ci.yml").read_text()
         installed = text.split("\n  realization-conformance:\n", 1)[1].split("\n  realization-core-reproducibility:\n", 1)[0]
-        start = installed.index('python "$GITHUB_WORKSPACE/tools/check_pipeline_fixed_continuation_install.py"')
-        end = installed.index('python "$GITHUB_WORKSPACE/tools/check_pipeline_session_install.py"', start)
-        command = installed[start:end]
-        for binding in ('--core ', '--verify ', '--core-sha256 ', '--verify-sha256 ',
-                        '--native-root ', '--platform ${{ matrix.platform }}',
-                        '"$GITHUB_WORKSPACE/generated/realization/pipeline-fixed-continuations.json"'):
-            self.assertIn(binding, command)
-        self.assertLess(start, installed.index("Record successful complete conformance"))
+        self.assertEqual(self.installed_commands(installed)['check_pipeline_fixed_continuation_install.py'][0],'pipeline-fixed-continuations')
         comparison = text.split("\n  realization-core-reproducibility:\n", 1)[1].split("\n  validation:\n", 1)[0]
         command = "python tools/check_pipeline_fixed_continuation_install.py --compare --root artifacts/realization --native-root artifacts/core --output generated/realization-reproducibility/pipeline-fixed-continuations.json"
         self.assertIn(command, comparison)
@@ -389,14 +402,7 @@ class ValidationGateTests(unittest.TestCase):
     def test_fixed_registration_campaign_is_bound_before_installed_and_comparison_success(self):
         text = (Path(__file__).resolve().parents[1] / ".github/workflows/ci.yml").read_text()
         installed = text.split("\n  realization-conformance:\n", 1)[1].split("\n  realization-core-reproducibility:\n", 1)[0]
-        start = installed.index('python "$GITHUB_WORKSPACE/tools/check_pipeline_fixed_registration_install.py"')
-        end = installed.index('python "$GITHUB_WORKSPACE/tools/check_pipeline_session_install.py"', start)
-        command = installed[start:end]
-        for binding in ('--core ', '--verify ', '--core-sha256 ', '--verify-sha256 ',
-                        '--native-root ', '--platform ${{ matrix.platform }}',
-                        '"$GITHUB_WORKSPACE/generated/realization/pipeline-fixed-registration.json"'):
-            self.assertIn(binding, command)
-        self.assertLess(start, installed.index("Record successful complete conformance"))
+        self.assertEqual(self.installed_commands(installed)['check_pipeline_fixed_registration_install.py'][0],'pipeline-fixed-registration')
         comparison = text.split("\n  realization-core-reproducibility:\n", 1)[1].split("\n  validation:\n", 1)[0]
         command = "python tools/check_pipeline_fixed_registration_install.py --compare --root artifacts/realization --native-root artifacts/core --output generated/realization-reproducibility/pipeline-fixed-registration.json"
         self.assertIn(command, comparison)
@@ -423,14 +429,7 @@ class ValidationGateTests(unittest.TestCase):
         text = workflow.read_text()
         self.assertEqual(ci.workflow_jobs(workflow), ci.REQUIRED_NEEDS | {"validation"})
         installed = text.split("\n  realization-conformance:\n", 1)[1].split("\n  realization-core-reproducibility:\n", 1)[0]
-        start = installed.index('python "$GITHUB_WORKSPACE/tools/check_pipeline_reference_install.py"')
-        end = installed.index('python "$GITHUB_WORKSPACE/tools/check_pipeline_session_install.py"', start)
-        command = installed[start:end]
-        for binding in ('--core ', '--verify ', '--core-sha256 ', '--verify-sha256 ',
-                        '--native-root ', '--platform ${{ matrix.platform }}',
-                        '"$GITHUB_WORKSPACE/generated/realization/pipeline-reference.json"'):
-            self.assertIn(binding, command)
-        self.assertLess(start, installed.index("Record successful complete conformance"))
+        self.assertEqual(self.installed_commands(installed)['check_pipeline_reference_install.py'][0],'pipeline-reference')
         comparison = text.split("\n  realization-core-reproducibility:\n", 1)[1].split("\n  studio-typescript:\n", 1)[0]
         self.assertIn('id: reference_python311\n        with:\n          python-version: "3.11"', comparison)
         self.assertIn('id: reference_python314\n        with:\n          python-version: "3.14"\n          update-environment: false', comparison)
@@ -454,13 +453,14 @@ class ValidationGateTests(unittest.TestCase):
         self.assertEqual(ci.workflow_jobs(workflow), ci.REQUIRED_NEEDS | {"validation"})
         text = workflow.read_text()
         matrix = text.split("\n  realization-conformance:\n", 1)[1].split("\n  realization-core-reproducibility:\n", 1)[0]
-        self.assertIn("    needs: ocaml-core\n", matrix)
+        self.assertIn("    needs: [ocaml-core, prebuilt-core-assembly]\n", matrix)
         for target in ci.CORE_PLATFORMS:
             self.assertEqual(matrix.count("            platform: " + target + "\n"), 2)
         for version in ci.PYTHONS:
             self.assertEqual(matrix.count('            python-version: "' + version + '"\n'), 2)
-        for command in ("check_realization_binaries.py", "check_realization_protocol.py", "check_realization_routing.py"):
-            self.assertIn(command, matrix)
+        planned=self.installed_commands(matrix)
+        for command in ("check_realization_protocol.py", "check_realization_routing.py"):
+            self.assertIn(command, planned)
         self.assertNotIn("--sample", matrix)
         self.assertNotIn("continue-on-error", matrix)
         self.assertIn("          fail-fast: false", matrix.replace("      fail-fast", "          fail-fast"))

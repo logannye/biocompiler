@@ -7,6 +7,11 @@ are explicit additional evidence, never normalized output. Six historical
 inspection commands retain their original non-accepting inspection scope.
 """
 from __future__ import annotations
+if __package__:
+    from .check_realization_binaries import executable_path as native_executable
+else:
+    from check_realization_binaries import executable_path as native_executable
+
 
 import argparse
 from collections import Counter
@@ -526,7 +531,7 @@ def campaign_main(argv):
             for name in ("startup", "cwd", "native-artifacts"): (f.CLI_ROOT / name).mkdir()
             (f.CLI_ROOT / "startup/sitecustomize.py").write_text(STARTUP)
             for role, executable, pin in (("core", args.core, args.core_sha256), ("verify", args.verify, args.verify_sha256)):
-                require(executable.is_absolute() and executable.resolve() == (args.native_root / ("biocompiler-" + role)).resolve()
+                require(executable.is_absolute() and executable.resolve() == (native_executable(args.native_root, role)).resolve()
                         and not executable.is_symlink() and os.access(executable, os.X_OK) and
                         pin == native["sha256"]["biocompiler-" + role], "Unbound native executable")
                 for case in cases:

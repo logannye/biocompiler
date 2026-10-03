@@ -5,6 +5,11 @@ minor. Reconstruction emits only recorded server bytes and never replaces the
 real native process or independent checker authority.
 """
 from __future__ import annotations
+if __package__:
+    from .check_realization_binaries import executable_path as native_executable
+else:
+    from check_realization_binaries import executable_path as native_executable
+
 
 import argparse
 import importlib
@@ -122,7 +127,7 @@ def campaign_main(argv):
         receipt['native_inputs'],receipt['executables']=native,{}
         for role in ('core','verify'):
             path,pin=getattr(args,role),getattr(args,role+'_sha256')
-            require(path.is_absolute() and path.resolve()==(args.native_root/('biocompiler-'+role)).resolve()
+            require(path.is_absolute() and path.resolve()==(native_executable(args.native_root, role)).resolve()
                 and not path.is_symlink() and os.access(path,os.X_OK) and pin==native['sha256'][path.name],
                 'Unbound actual reference native binary')
             receipt['executables'][role]=str(path)
