@@ -144,6 +144,15 @@ class HostedPlanTests(unittest.TestCase):
             'tested_revision':args.tested_revision,'run_id':args.run_id,'native_platform':args.platform,
             'files':{f'bin/biocompiler-{role}':{'path':str(package/'bin'/('biocompiler-'+role)),
                 'sha256':str(index)*64} for index,role in enumerate(('core','verify'),1)}}
+        # PR86 validates the installed manifest bridge before dispatch. Keep the
+        # real validator active against inert owned bytes in this pure fixture.
+        ownership['tested_revision']=args.tested_revision
+        ownership['native_platform']=args.platform
+        manifest=package/'binaries.json'
+        raw=build.canonical({'revision':args.tested_revision,'system':'Linux','machine':'x86_64',
+            'sha256':{'biocompiler-'+role:ownership['files']['bin/biocompiler-'+role]['sha256']
+                for role in ('core','verify')}})
+        ownership['files']['binaries.json']={'path':str(manifest),'sha256':build.sha(raw),'size':len(raw)}
         blocked=('PYTHONPATH','PYTHONHOME','LD_PRELOAD','LD_LIBRARY_PATH','DYLD_LIBRARY_PATH',
             'DYLD_FALLBACK_LIBRARY_PATH','DYLD_INSERT_LIBRARIES','OPAM_SWITCH_PREFIX','CAML_LD_LIBRARY_PATH')
         parent={key:'/foreign/loader' for key in blocked};parent['KEEP_HOST_VALUE']='unchanged'
@@ -166,6 +175,8 @@ class HostedPlanTests(unittest.TestCase):
                 # Inert filesystem fixtures only; no venv, installer or script
                 # executes. Materialize the stand-in before observing lookup.
                 python.parent.mkdir(parents=True)
+                package.mkdir(parents=True)
+                manifest.write_bytes(raw)
                 python.write_bytes(b'inert interpreter path fixture\n')
                 if fresh_mode is not None:
                     console.write_bytes(b'#!/bin/sh\nexit 98\n');console.chmod(fresh_mode)

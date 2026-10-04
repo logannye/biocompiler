@@ -12,10 +12,11 @@ to remove tests, supported Python versions, artifacts or verification gates.
 All run steps explicitly select Bash so a failed checker piped into `tee`
 fails its step. GitHub's unspecified non-Windows shell does not provide that
 same pipeline guarantee; see the [official shell behavior](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#defaultsrun).
-Native jobs now allow 150 minutes after complete Linux runs exceeded the former
-90-minute limit during their last corpus replay. Every original check remains
-required. This is a job allowance, not a measured runtime target or permission
-to treat cancelled jobs or incomplete reports as successful validation.
+The native build, native suites, conformance commands, architecture SDK routes,
+and installed campaigns have separate jobs. Candidate wheels are available after
+compilation and material checks; they do not wait for the long test campaigns.
+The final release and merge gates still require every original check. Job timeouts
+are failure bounds, not measured performance claims.
 
 Commit useful local checkpoints freely. Push a coherent batch when it is ready
 for review and remote validation, rather than pushing every small edit solely
@@ -44,7 +45,8 @@ remain distinct revision boundaries.
 
 | Job | Coverage and dependency |
 | --- | --- |
-| `unit-plan` | Python 3.11 and 3.14 first check outside-checkout campaign authoring and bounded failure diagnostics, then independently discover the full suite and produce five-shard plans. |
+| `ci-preflight` | Both Python versions run pure scheduling/receipt, native fixture wiring, installed reference-source closure, outside-checkout authoring and bounded failure-diagnostic regressions, then load all 17 frozen campaign corpora with child processes and network forbidden. It detects source, schema and path-plan failures before expensive jobs. |
+| `unit-plan` | Python 3.11 and 3.14 independently discover the full suite and produce five-shard plans. |
 | `unit-tests` | Ten jobs: each Python version executes shards 0–4 against its plan, with at most ten running unit jobs. |
 | `unit-accounting` | One per Python version independently verifies its complete five-result census against fresh discovery. |
 | `installed-executable` | Both Python versions run the installed executable RNA API/CLI path outside the checkout. |
@@ -53,33 +55,55 @@ remain distinct revision boundaries.
 | `integration-examples` | Both Python versions retain all remaining audit, molecular, synthetic, human, authoring and CLI examples. |
 | `studio-browser` | Installed Python 3.11 package, Node 22 and the pinned Playwright/Chromium setup run guided workspace, construction inspection and review suites. |
 | `studio-typescript` | Pinned strict TypeScript checks, unchanged generated release assets, runtime response decoding and current migration inventory. |
-| `ocaml-core` | Depends on both short unit plans, including their campaign preflight controls; Linux x86_64 and macOS arm64 native builds, native tests, independent-library boundaries and exact Python/OCaml conformance follow. |
+| `ocaml-build` | Build once per native platform, check library boundaries/type transport, retain locked inputs and exact compiled suite/role bytes, and assemble candidate platform wheels. No test result is inferred from building a wheel. |
+| `ocaml-native-tests` | Restore the current run/platform-bound executable bundle and run all Dune-declared suites with their original arguments and two bounded workers. Unsupported Dune declarations fail closed; no compilation occurs in consumers. |
+| `ocaml-core` | Preserve every original direct corpus, protocol, resource-bound and Python/OCaml conformance command against the same restored binaries. |
+| `architecture-sdk` | Four platform/Python jobs run concurrently. Each uses two isolated Python workers for all 16 architecture scenarios. Case B retains all its rejection/publication controls. The coordinator applies the unchanged independent 175-check/219-artifact census before reporting success. |
 | `executable-rna-reproducibility` | Depends only on `installed-executable`; compares complete relative-file SHA-256 inventories from both Python versions. |
 | `payload-architecture-reproducibility` | Depends only on `installed-architecture`; requires all 13 case outputs and compares every relative file across versions. |
 | `circuit-reproducibility` | Depends only on `circuit-integration`; compares the complete infrastructure/source/review artifact inventories. |
-| `architecture-core-reproducibility` | Depends on both native platforms; rehashes complete SDK/CLI artifacts from Python 3.11 and 3.14 on each platform and requires exact four-way equality with current run and executable authority. |
-| `realization-conformance` | Four fresh wheel installations: both native platforms × Python 3.11/3.14. Validate owned SDK/Core/Verify bytes, perform actual uninstall/reinstall, then run all 17 current installed campaigns outside the checkout. SDK calls forbid Python semantic authority. Whole-workflow public SDK and actual CLI child campaigns retain complete records, native receipts, stdout/stderr and publication bytes. Direct producer campaigns retain all original public generator, selector and adapter observations; verifier rejection is checked for all three producer operations. |
+| `architecture-core-reproducibility` | Depends on both native builds and all four architecture SDK jobs; rehashes complete SDK/CLI artifacts from Python 3.11 and 3.14 on each platform and requires exact four-way equality with current run and executable authority. |
+| `installed-campaigns` | Both platforms × Python 3.11/3.14 × five complete campaign groups (20 jobs, at most eight concurrent). Each group installs the exact same SDK/native wheels outside the checkout and performs the complete smoke/uninstall/missing-package/reinstall lifecycle. Protocol runs alone; routing and pipeline-manager run in that order in the manager group. Fixed/reference, workflow and synthetic groups retain their original membership. All groups retain every original case, artifact and independent checker; no stateful scenario is split. |
+| `realization-conformance` | Four independent aggregation jobs require all five group receipts and all 17 campaigns exactly once per runtime. Recheck current source/run/candidate identities, complete owned bytes, original command recipes, separate lifecycle logs, campaign logs and artifact hashes. Native input receipts bind the installed files for unchanged cross-runtime checkers. |
 | `realization-core-reproducibility` | Rehash complete realization protocol, workflow and producer SDK reports, verify every original applicable occurrence and all additional cases, require current run/source/binary authority and exact equality across all four campaigns. Private producer calls and injected-proposal cases remain explicitly classified as native-library coverage. |
-| `prebuilt-core-assembly` | Depends on both native platforms. Independently checks complete platform wheels, original linked sources/notices/relink companions and final executable identities; builds and checks one pure SDK wheel containing both platform pins. |
-| `prebuilt-core-validation` | Requires all four fresh-install/lifecycle/campaign receipts, exact owned bytes, original command recipes and successful upstream assembly and cross-runtime reconstruction. |
-| `validation` | Final gate requires all 38 jobs, including successful unit accounting, every installed/integration/browser job, TypeScript, both native platforms, all five reproducibility jobs and both prebuilt jobs. |
+| `prebuilt-core-assembly` | Depends only on both native builds, allowing installation tests to start while other tests run. Independently checks complete platform wheels, original linked sources/notices/relink companions and final executable identities; builds and checks one pure SDK wheel containing both platform pins. |
+| `prebuilt-core-validation` | Requires all four fresh-install/lifecycle/campaign receipts, exact owned bytes, original command recipes and successful upstream assembly, all native suites/conformance, architecture SDK checks, and cross-runtime reconstruction. |
+| `validation` | Final gate requires all 68 jobs, including successful unit accounting, every installed/integration/browser job, TypeScript, both native platforms, all five reproducibility jobs and both prebuilt jobs. |
 
-The short campaign controls remain in full unit discovery and accounting. Their
-early execution checks authoring paths, per-occurrence source identity and exact
-source restoration before native builds and serial campaigns; native work waits
-for both plans, not for unit-test shards. Equal serialized requests can have
-different physical object identities after a JSON roundtrip, so continuation
-graphs are bound to each original call occurrence. Failed or timed-out installed commands also print a bounded,
-escaped tail of their retained log directly in the hosted job. Complete logs
-remain the diagnostic authority, and successful commands do not replay them.
+All expensive producers wait for the short preflight, then independent work
+runs concurrently. The critical path is preflight → candidate build/assembly →
+parallel native/SDK/installed work → independent comparisons → final gate.
+Actual overlap depends on the hosted concurrency allowance; adding jobs is not
+itself a promise of faster execution. Installed groups are capped at eight jobs,
+native suites and architecture scenarios at two workers per runner. The matrix
+lists all four fixed groups and then all four protocol groups first to request
+earlier continuation feedback; runner availability still governs start order. Campaign and
+scenario timings and streamed start/completion messages identify remaining slow
+work. Rebalance only from measured timings, preserving every stateful sequence.
 
-Reproducibility no longer waits behind the full unit suite. The intended steady
-work comprises ten unit runners, eight producer runners, one browser runner,
-one TypeScript runner and two OCaml runners;
-planning and accounting are shorter phases. Actual overlap depends on the hosted
-concurrency allowance. The final gate runs even when a dependency fails so that
-failure, cancellation, missing artifacts and unexpected skipped jobs cannot
-become an implicit success. Matrix failures must not cancel sibling coverage.
+The short authoring, per-occurrence source identity, exact source-restoration
+and diagnostics controls run in both preflight slots and remain in full unit
+discovery and accounting. Equal serialized requests can have different physical
+object identities after a JSON roundtrip, so continuation graphs are bound to
+each original call occurrence. They are not repeated in
+`unit-plan`; native builds depend on `ci-preflight` directly. The diagnostic
+controls use harmless Python children; corpus loading separately denies
+child processes and network. Failed or timed-out installed commands print a
+bounded, escaped tail of their complete retained log. Successful commands
+print only the scheduler group/timing envelope. Every opened group closes
+on failure as well as success; retained logs remain the diagnostic authority.
+
+The final gate runs even when a dependency fails. Missing, cancelled, skipped,
+stale, duplicated, wrong-runtime or failed work cannot become a successful
+census. The registry includes 53 ordinary job receipts, ten unit shards, two
+unit plans, two unit accounting jobs and the final gate: 68 concrete jobs.
+The source-only scheduling controls and artifact fixtures are safe to run
+locally; native execution and actual packaging remain hosted-only.
+
+This restructuring has no measured speedup claim until its exact revision passes
+hosted validation. Compare full wall time, critical-path steps, runner queue time,
+and aggregate runner minutes with the recorded pre-change run. Candidate build
+caching or passing receipts from another revision cannot replace current tests.
 
 Rerunning failed jobs may preserve a successful receipt from an earlier attempt
 of the same GitHub run and revision. The final gate also requires GitHub's actual
@@ -100,6 +124,13 @@ The deterministic longest-processing-time assignment keeps each complete
 [test_shard_weights.json](../tools/test_shard_weights.json) affect placement only;
 they cannot exclude tests or substitute for execution. Every discovered class
 is assigned exactly once across the five shards for its Python version.
+
+The combined continuation correction and scheduling update discovers 3,477 tests
+in 362 classes on both Python versions. Placement weights retain the historical
+fixture-inclusive maximum for every previously measured class and add the
+existing two-second estimate for each new method. The source measurement and
+every unmeasured addition are recorded in the weights file. No original test ID
+was removed; estimates guide placement and do not establish a runtime bound.
 
 Each runner rediscovers the suite and verifies the plan before executing its
 assigned tests. Results retain test/subtest outcomes, durations, class totals
@@ -184,6 +215,26 @@ compatible runs, and record the revision/platform of those measurements.
 Include class/module fixture setup and teardown when estimating class costs;
 test-method durations alone can understate them. Compare recorded method totals
 with shard elapsed time before reseeding estimates from a new report.
+
+Measure three user-visible intervals separately: push to the first actionable
+failure, push to complete PR acceptance, and merge to complete main acceptance.
+Also record the time spent preparing and reviewing a coherent source update.
+For each hosted comparison retain source/tested revisions, event and attempt,
+Python/platform identities, job readiness/start/end times and aggregate runner
+minutes. Time after prerequisite completion is an observed scheduling delay;
+do not attribute it to runner capacity without further evidence. A completed
+campaign inside a failed run can inform placement estimates but does not prove
+release acceptance or an overall speedup.
+
+Recalibrate the five unit shards when measured balance drifts or substantial
+new classes are added. Use fixture-inclusive class totals from all five successful
+shards for both Python versions, bound to their exact accounting reports. Take
+the larger measured class total across the two runtimes for shared hints.
+Reconcile against fresh discovery: identify new or changed classes and their
+fallback estimates, retain every ID and keep each class whole. Record the
+measurement run, revisions, versions and result hashes in the hints. Placement
+estimates never replace test execution. Recheck actual longest-shard time after
+the next complete run; a forecast is not an achieved reduction.
 
 Use focused profiling to identify repeated construction, serialization,
 verification or fixture setup. Prefer a measured optimization with unchanged

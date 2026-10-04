@@ -37,9 +37,18 @@ class HostedCommandDiagnosticsTests(unittest.TestCase):
                   + 'os.write(1, ' + repr(rows + b'long-line:' + b'y' * 2000 + b'\nstdout-cause\n') + ')\n'
                   + 'os.write(2, ' + repr(stderr) + ')\nraise SystemExit(7)\n')
         output = io.StringIO()
-        with redirect_stdout(output), self.assertRaisesRegex(ValueError, 'Hosted command failed; complete log retained'):
+        with patch.object(pipeline.time, 'monotonic', side_effect=[10.0, 11.25]), \
+                redirect_stdout(output), self.assertRaisesRegex(ValueError, 'Hosted command failed; complete log retained'):
             self.run_python(script)
-        shown = output.getvalue()
+        envelope = output.getvalue().splitlines()
+        self.assertEqual(envelope[:2], ['::group::Installed campaign: campaign', 'campaign: exit 7, 1.25s'])
+        self.assertEqual(envelope[-1], '::endgroup::')
+        self.assertEqual(envelope.count('::group::Installed campaign: campaign'), 1)
+        self.assertEqual(envelope.count('::endgroup::'), 1)
+        self.assertLessEqual(len(envelope), pipeline.FAILURE_TAIL_LINES + 4)
+        # Only the approved three-line progress envelope is excluded. Every
+        # original bound and escaping assertion below still checks the tail.
+        shown = '\n'.join(envelope[2:-1]) + '\n'
         self.assertIn('(exit 7)', shown)
         self.assertIn('stdout-cause', shown)
         self.assertIn('stderr-cause', shown)
@@ -65,9 +74,14 @@ class HostedCommandDiagnosticsTests(unittest.TestCase):
     def test_success_retains_hashed_log_without_replaying_child_output(self):
         raw = b'success-stdout\nsuccess-stderr\n'
         output = io.StringIO()
-        with redirect_stdout(output):
+        with patch.object(pipeline.time, 'monotonic', side_effect=[10.0, 11.25]), redirect_stdout(output):
             receipt = self.run_python("import os; os.write(1,b'success-stdout\\n'); os.write(2,b'success-stderr\\n')")
-        self.assertEqual(output.getvalue(), '')
+        self.assertEqual(output.getvalue().splitlines(), [
+            '::group::Installed campaign: campaign', 'campaign: exit 0, 1.25s', '::endgroup::'])
+        self.assertNotIn('success-stdout', output.getvalue())
+        self.assertNotIn('success-stderr', output.getvalue())
+        self.assertNotIn('log tail:', output.getvalue())
+        self.assertEqual(receipt['duration_seconds'], 1.25)
         self.assertEqual(receipt['returncode'], 0)
         self.assertEqual(receipt['cwd'], str(self.root))
         self.assertEqual(receipt['log'], {'path': self.log.name, 'size': len(raw),
@@ -94,6 +108,27 @@ class HostedCommandDiagnosticsTests(unittest.TestCase):
         self.assertIn('(timeout)', output.getvalue())
         self.assertIn('partial-timeout-cause', output.getvalue())
         self.assertEqual(self.log.read_bytes(), b'partial-timeout-cause\n')
+        envelope = output.getvalue().splitlines()
+        self.assertEqual(envelope[0], '::group::Installed campaign: campaign')
+        self.assertEqual(envelope[-1], '::endgroup::')
+        self.assertEqual(envelope.count('::group::Installed campaign: campaign'), 1)
+        self.assertEqual(envelope.count('::endgroup::'), 1)
+        self.assertNotIn('campaign: exit', output.getvalue())
+
+        # Opening the retained log can fail before a subprocess starts; the
+        # begun group must still close without replacing that exact error.
+        unavailable = self.root / 'unavailable.log'
+        failure = OSError('inert log-open failure')
+        output = io.StringIO()
+        with patch.object(Path, 'open', side_effect=failure), \
+                patch.object(pipeline.subprocess, 'run') as child, redirect_stdout(output):
+            with self.assertRaises(OSError) as caught:
+                pipeline.run([sys.executable, '-I', '-c', 'pass'], cwd=self.root,
+                             environment=self.environment, log=unavailable)
+        self.assertIs(caught.exception, failure)
+        child.assert_not_called()
+        self.assertEqual(output.getvalue().splitlines(), [
+            '::group::Installed campaign: unavailable', '::endgroup::'])
 
     def test_preview_reads_only_the_bounded_suffix(self):
         self.log.write_bytes(b'x' * (pipeline.FAILURE_TAIL_BYTES * 2) + b'\nlast-cause\n')

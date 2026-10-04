@@ -16,10 +16,10 @@ class ValidationGateTests(unittest.TestCase):
         # Commands moved into one source-pinned driver; assert its actual pure
         # plan and the required YAML invocation, rather than synthetic text.
         from tools import prebuilt_release_pipeline as driver
-        self.assertIn('needs: [ocaml-core, prebuilt-core-assembly]', block)
+        self.assertIn('needs: [ocaml-build, prebuilt-core-assembly]', block)
         self.assertIn('python tools/prebuilt_release_pipeline.py installed', block)
         self.assertLess(block.index('python tools/prebuilt_release_pipeline.py installed'),
-            block.index('Record successful complete conformance'))
+            block.index('Record successful complete installed-campaigns'))
         for value in ('--sdk ', '--native ', '--environment "$RUNNER_TEMP/',
                       '--source-revision "$GITHUB_HEAD_SHA"', '--tested-revision "$GITHUB_SHA"',
                       '--run-id "$GITHUB_RUN_ID"', '--platform ${{ matrix.platform }}'):
@@ -88,9 +88,9 @@ class ValidationGateTests(unittest.TestCase):
         needs = {job: {"result": "success"} for job in ci.REQUIRED_NEEDS}
         receipts = [{"schema_version": "biocompiler.ci_job_receipt.v0.1", **expected,
                      "job": job, "variant": variant, "status": "success",
-                     "system": ci.REALIZATION_VARIANTS.get(variant, ci.CORE_PLATFORMS.get(variant, ("Linux", "x86_64")))[0],
-                     "machine": ci.REALIZATION_VARIANTS.get(variant, ci.CORE_PLATFORMS.get(variant, ("Linux", "x86_64")))[1],
-                     "python_version": (ci.REALIZATION_VARIANTS[variant][2] + ".7" if variant in ci.REALIZATION_VARIANTS
+                     "system": ci.RUNTIME_VARIANTS.get(variant, ci.CORE_PLATFORMS.get(variant, ("Linux", "x86_64")))[0],
+                     "machine": ci.RUNTIME_VARIANTS.get(variant, ci.CORE_PLATFORMS.get(variant, ("Linux", "x86_64")))[1],
+                     "python_version": (ci.RUNTIME_VARIANTS[variant][2] + ".7" if variant in ci.RUNTIME_VARIANTS
                                         else variant + ".7" if variant in ci.PYTHONS else "3.12.1")}
                     for job, variant in sorted(ci.EXPECTED_RECEIPTS)]
         accounting = [{"schema": "biocompiler.unittest_shard_accounting.v1",
@@ -213,7 +213,7 @@ class ValidationGateTests(unittest.TestCase):
 
     def test_native_platform_must_match_its_registered_variant(self):
         args = self.fixture()
-        native = next(item for item in args[1] if item["variant"] == "macos-arm64")
+        native = next(item for item in args[1] if item["job"] == "ocaml-core" and item["variant"] == "macos-arm64")
         native["machine"] = "x86_64"
         self.assertIn("wrong_core_platform:('ocaml-core', 'macos-arm64')", ci.validate(*args)["problems"])
         with patch.dict("os.environ", {"GITHUB_JOB": "ocaml-core"}), \
@@ -279,7 +279,7 @@ class ValidationGateTests(unittest.TestCase):
 
     def test_complete_workflow_campaign_is_required_before_matrix_receipts(self):
         text = (Path(__file__).resolve().parents[1] / ".github/workflows/ci.yml").read_text()
-        matrix = text.split("\n  realization-conformance:\n", 1)[1].split("\n  realization-core-reproducibility:", 1)[0]
+        matrix = text.split("\n  installed-campaigns:\n", 1)[1].split("\n  realization-conformance:", 1)[0]
         commands = ["tools/check_pipeline_session_install.py", "tools/check_realization_protocol.py", "tools/check_realization_routing.py",
                     "tools/check_native_workflow.py", "tools/check_native_workflow_presentation.py",
                     "tools/check_native_workflow_authority.py", "tools/check_native_workflow_public_sdk.py", "tools/check_native_workflow_cli.py",
@@ -299,22 +299,22 @@ class ValidationGateTests(unittest.TestCase):
 
     def test_public_synthetic_authority_suite_is_a_hosted_native_gate(self):
         text = (Path(__file__).resolve().parents[1] / ".github/workflows/ci.yml").read_text()
-        native = text.split("\n  ocaml-core:\n", 1)[1].split("\n  architecture-core-reproducibility:\n", 1)[0]
+        native = text.split("\n  ocaml-core:\n", 1)[1].split("\n  architecture-sdk:\n", 1)[0]
         self.assertIn("core/_build/default/test/test_synthetic_producer_public_protocol.exe | tee generated/core/test_synthetic_producer_public_protocol.txt", native)
         self.assertIn('core/_build/default/test/test_synthetic_inspection_protocol.exe "$GITHUB_WORKSPACE/tests/conformance/synthetic-inspection-supplemental-v1.json" "$GITHUB_WORKSPACE/protocol/synthetic-inspection-v1.json" | tee generated/core/test_synthetic_inspection_protocol.txt', native)
 
     def test_reference_foundation_suites_are_required_on_both_native_platforms(self):
         root = Path(__file__).resolve().parents[1]
         text = (root / ".github/workflows/ci.yml").read_text()
-        native = text.split("\n  ocaml-core:\n", 1)[1].split("\n  architecture-core-reproducibility:\n", 1)[0]
+        native = text.split("\n  ocaml-core:\n", 1)[1].split("\n  architecture-sdk:\n", 1)[0]
         self.assertEqual(ci.workflow_jobs(root / ".github/workflows/ci.yml"), ci.REQUIRED_NEEDS | {"validation"})
-        # Preserve the original 36 slots and require both additive prebuilt gates.
-        self.assertEqual(len(ci.EXPECTED_RECEIPTS) + 2 + 10 + 2 + 1, 38)
+        # Preserve every original slot and require the separated execution jobs.
+        self.assertEqual(len(ci.EXPECTED_RECEIPTS) + 2 + 10 + 2 + 1, 68)
         for platform in ci.CORE_PLATFORMS:
             self.assertEqual(native.count("            platform: " + platform + "\n"), 1)
         self.assertIn("runs-on: ${{ matrix.runner }}", native)
         self.assertIn("      fail-fast: false", native)
-        runtest = native.split("      - name: Run every native literal and mutation suite\n", 1)[1].split("      - name:", 1)[0]
+        runtest = text.split("\n  ocaml-native-tests:\n", 1)[1].split("\n  ocaml-core:", 1)[0]
         for variable, relative in (("BIOCOMPILER_ARCHIVE_PYTHON311_CORPUS", "tests/conformance/archive-container-311.json"),
                                    ("BIOCOMPILER_ARCHIVE_PYTHON314_CORPUS", "tests/conformance/archive-container-314.json"),
                                    ("BIOCOMPILER_REFERENCE_PACKAGE_PYTHON311_CORPUS", "tests/conformance/reference-package-domains-311.json"),
@@ -326,7 +326,7 @@ class ValidationGateTests(unittest.TestCase):
                                    ("BIOCOMPILER_REFERENCE_CONTRACTS_CORPUS", "tests/conformance/reference-contracts-v1.json"),
                                    ("BIOCOMPILER_REFERENCE_PIPELINE_DOCUMENTS", "tests/conformance/reference-pipeline-semantics-v1")):
             self.assertIn(variable + '="$GITHUB_WORKSPACE/' + relative + '" \\\n', runtest)
-        self.assertIn("opam exec -- dune runtest --root core 2>&1 | tee generated/core/native-tests.txt", runtest)
+        self.assertIn("python tools/ci_native_bundle.py test --path generated/core/native-suites --workers 2 2>&1 | tee generated/core/native-tests.txt", runtest)
         arguments = {
             "test_work_budget_retention": "",
             "test_reference_inputs": ' "$GITHUB_WORKSPACE/tests/conformance/reference-inputs-314.json"',
@@ -349,17 +349,17 @@ class ValidationGateTests(unittest.TestCase):
             with self.subTest(suite=name):
                 self.assertEqual(native.count(command), 1)
                 block = next(item for item in native.split("      - name: ") if command in item)
-                self.assertIn("if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}", block)
+                self.assertIn("needs: ocaml-build", native)
                 self.assertNotIn("continue-on-error", block)
-                self.assertLess(native.index(command), native.index("Record successful native validation"))
-        artifact = native.split("      - name: Retain native evidence even on failure\n", 1)[1].split("      - name:", 1)[0]
+                self.assertLess(native.index(command), native.index("Record successful complete ocaml-core"))
+        artifact = native.split("      - uses: actions/upload-artifact@v4\n", 1)[1].split("      - name:", 1)[0]
         self.assertIn("if: always()", artifact)
-        self.assertIn("name: core-${{ matrix.platform }}", artifact)
+        self.assertIn("name: native-checks-${{ matrix.platform }}", artifact)
         self.assertIn("path: generated/core/", artifact)
 
     def test_checked_manager_and_contract_suites_are_hosted_gates(self):
         text = (Path(__file__).resolve().parents[1] / ".github/workflows/ci.yml").read_text()
-        native = text.split("\n  ocaml-core:\n", 1)[1].split("\n  architecture-core-reproducibility:\n", 1)[0]
+        native = text.split("\n  ocaml-core:\n", 1)[1].split("\n  architecture-sdk:\n", 1)[0]
         self.assertIn('core/_build/default/test/test_pipeline_session.exe "$GITHUB_WORKSPACE/protocol/pipeline-session-v1.json" "$GITHUB_WORKSPACE/tests/conformance/fixed-pipeline-native-v1.json" | tee generated/core/test_pipeline_session.txt', native)
         self.assertIn("core/_build/default/test/test_pipeline_host_bridge.exe | tee generated/core/test_pipeline_host_bridge.txt", native)
         self.assertIn('core/_build/default/test/test_pipeline_callback_manager.exe "$GITHUB_WORKSPACE/protocol/pipeline-callback-manager-v1.json" "$GITHUB_WORKSPACE/tests/conformance/pipeline-contract-literals-v1.json" "$GITHUB_WORKSPACE/tests/conformance/fixed-pipeline-native-v1.json" | tee generated/core/test_pipeline_callback_manager.txt', native)
@@ -374,7 +374,7 @@ class ValidationGateTests(unittest.TestCase):
 
     def test_live_manager_campaign_requires_all_installed_runtimes_and_comparison(self):
         text = (Path(__file__).resolve().parents[1] / ".github/workflows/ci.yml").read_text()
-        installed = text.split("\n  realization-conformance:\n", 1)[1].split("\n  realization-core-reproducibility:\n", 1)[0]
+        installed = text.split("\n  installed-campaigns:\n", 1)[1].split("\n  realization-conformance:\n", 1)[0]
         self.assertEqual(self.installed_commands(installed)['check_pipeline_manager_install.py'][0],'pipeline-manager')
         comparison = text.split("\n  realization-core-reproducibility:\n", 1)[1].split("\n  validation:\n", 1)[0]
         command = "python tools/check_pipeline_manager_install.py --compare --root artifacts/realization --native-root artifacts/core --output generated/realization-reproducibility/pipeline-manager.json"
@@ -383,7 +383,7 @@ class ValidationGateTests(unittest.TestCase):
 
     def test_fixed_provider_campaign_requires_all_installed_runtimes_and_comparison(self):
         text = (Path(__file__).resolve().parents[1] / ".github/workflows/ci.yml").read_text()
-        installed = text.split("\n  realization-conformance:\n", 1)[1].split("\n  realization-core-reproducibility:\n", 1)[0]
+        installed = text.split("\n  installed-campaigns:\n", 1)[1].split("\n  realization-conformance:\n", 1)[0]
         self.assertEqual(self.installed_commands(installed)['check_pipeline_fixed_provider_install.py'][0],'pipeline-fixed-providers')
         comparison = text.split("\n  realization-core-reproducibility:\n", 1)[1].split("\n  validation:\n", 1)[0]
         command = "python tools/check_pipeline_fixed_provider_install.py --compare --root artifacts/realization --native-root artifacts/core --output generated/realization-reproducibility/pipeline-fixed-providers.json"
@@ -392,7 +392,7 @@ class ValidationGateTests(unittest.TestCase):
 
     def test_fixed_continuation_campaign_is_bound_before_installed_and_comparison_success(self):
         text = (Path(__file__).resolve().parents[1] / ".github/workflows/ci.yml").read_text()
-        installed = text.split("\n  realization-conformance:\n", 1)[1].split("\n  realization-core-reproducibility:\n", 1)[0]
+        installed = text.split("\n  installed-campaigns:\n", 1)[1].split("\n  realization-conformance:\n", 1)[0]
         self.assertEqual(self.installed_commands(installed)['check_pipeline_fixed_continuation_install.py'][0],'pipeline-fixed-continuations')
         comparison = text.split("\n  realization-core-reproducibility:\n", 1)[1].split("\n  validation:\n", 1)[0]
         command = "python tools/check_pipeline_fixed_continuation_install.py --compare --root artifacts/realization --native-root artifacts/core --output generated/realization-reproducibility/pipeline-fixed-continuations.json"
@@ -401,7 +401,7 @@ class ValidationGateTests(unittest.TestCase):
 
     def test_fixed_registration_campaign_is_bound_before_installed_and_comparison_success(self):
         text = (Path(__file__).resolve().parents[1] / ".github/workflows/ci.yml").read_text()
-        installed = text.split("\n  realization-conformance:\n", 1)[1].split("\n  realization-core-reproducibility:\n", 1)[0]
+        installed = text.split("\n  installed-campaigns:\n", 1)[1].split("\n  realization-conformance:\n", 1)[0]
         self.assertEqual(self.installed_commands(installed)['check_pipeline_fixed_registration_install.py'][0],'pipeline-fixed-registration')
         comparison = text.split("\n  realization-core-reproducibility:\n", 1)[1].split("\n  validation:\n", 1)[0]
         command = "python tools/check_pipeline_fixed_registration_install.py --compare --root artifacts/realization --native-root artifacts/core --output generated/realization-reproducibility/pipeline-fixed-registration.json"
@@ -413,22 +413,23 @@ class ValidationGateTests(unittest.TestCase):
         self.assertEqual(ci.workflow_jobs(workflow), ci.REQUIRED_NEEDS | {"validation"})
         text = workflow.read_text(encoding="utf-8")
         comparison = text.split("\n  architecture-core-reproducibility:\n", 1)[1].split("\n  studio-typescript:", 1)[0]
-        self.assertIn("    needs: ocaml-core\n", comparison)
+        self.assertIn("    needs: [ocaml-build, architecture-sdk]\n", comparison)
         for target in ("artifacts/core/linux-x86_64", "artifacts/core/macos-arm64",
                        "--root artifacts/core --output generated/core-reproducibility/receipt.json"):
             self.assertIn(target, comparison)
         self.assertIn("      - architecture-core-reproducibility\n", text.split("\n  validation:\n", 1)[1])
-        native = text.split("\n  ocaml-core:\n", 1)[1].split("\n  architecture-core-reproducibility:\n", 1)[0]
+        native = text.split("\n  ocaml-core:\n", 1)[1].split("\n  architecture-sdk:\n", 1)[0]
+        sdk = text.split("\n  architecture-sdk:\n", 1)[1].split("\n  architecture-core-reproducibility:", 1)[0]
         for version in ci.PYTHONS:
-            self.assertIn("architecture-routing-" + version + ".json", native)
-        self.assertIn("          update-environment: false\n", native)
-        self.assertIn("${{ steps.routing_python314.outputs.python-path }}", native)
+            self.assertEqual(sdk.count('python-version: "'+version+'"'), 2)
+        self.assertIn("architecture-routing-${{ matrix.python-version }}.json", sdk)
+        self.assertIn("needs: ocaml-build", sdk)
 
     def test_reference_campaign_requires_native_execution_and_same_runtime_reconstruction(self):
         workflow = Path(__file__).resolve().parents[1] / ".github/workflows/ci.yml"
         text = workflow.read_text()
         self.assertEqual(ci.workflow_jobs(workflow), ci.REQUIRED_NEEDS | {"validation"})
-        installed = text.split("\n  realization-conformance:\n", 1)[1].split("\n  realization-core-reproducibility:\n", 1)[0]
+        installed = text.split("\n  installed-campaigns:\n", 1)[1].split("\n  realization-conformance:\n", 1)[0]
         self.assertEqual(self.installed_commands(installed)['check_pipeline_reference_install.py'][0],'pipeline-reference')
         comparison = text.split("\n  realization-core-reproducibility:\n", 1)[1].split("\n  studio-typescript:\n", 1)[0]
         self.assertIn('id: reference_python311\n        with:\n          python-version: "3.11"', comparison)
@@ -452,12 +453,12 @@ class ValidationGateTests(unittest.TestCase):
         workflow = Path(__file__).resolve().parents[1] / ".github/workflows/ci.yml"
         self.assertEqual(ci.workflow_jobs(workflow), ci.REQUIRED_NEEDS | {"validation"})
         text = workflow.read_text()
-        matrix = text.split("\n  realization-conformance:\n", 1)[1].split("\n  realization-core-reproducibility:\n", 1)[0]
-        self.assertIn("    needs: [ocaml-core, prebuilt-core-assembly]\n", matrix)
+        matrix = text.split("\n  installed-campaigns:\n", 1)[1].split("\n  realization-conformance:\n", 1)[0]
+        self.assertIn("    needs: [ocaml-build, prebuilt-core-assembly]\n", matrix)
         for target in ci.CORE_PLATFORMS:
-            self.assertEqual(matrix.count("            platform: " + target + "\n"), 2)
+            self.assertEqual(matrix.count("            platform: " + target + "\n"), 10)
         for version in ci.PYTHONS:
-            self.assertEqual(matrix.count('            python-version: "' + version + '"\n'), 2)
+            self.assertEqual(matrix.count('            python-version: "' + version + '"\n'), 10)
         planned=self.installed_commands(matrix)
         for command in ("check_realization_protocol.py", "check_realization_routing.py"):
             self.assertIn(command, planned)
@@ -468,7 +469,7 @@ class ValidationGateTests(unittest.TestCase):
         self.assertIn("      - realization-conformance\n", gate)
         self.assertIn("      - realization-core-reproducibility\n", gate)
         comparison = text.split("\n  realization-core-reproducibility:\n", 1)[1].split("\n  studio-typescript:\n", 1)[0]
-        self.assertIn("needs: [ocaml-core, realization-conformance]", comparison)
+        self.assertIn("needs: [ocaml-build, realization-conformance]", comparison)
         self.assertIn("check_realization_reproducibility.py", comparison)
         self.assertIn("--native-root artifacts/core", comparison)
 

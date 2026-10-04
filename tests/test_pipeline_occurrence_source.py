@@ -56,12 +56,17 @@ class OccurrenceSourceTests(unittest.TestCase):
 
     def test_occurrence_controls_run_before_native_work_with_prior_preflight(self):
         workflow = (source.ROOT / '.github/workflows/ci.yml').read_text()
+        preflight = workflow.split('  ci-preflight:', 1)[1].split('  unit-plan:', 1)[0]
         plan = workflow.split('  unit-plan:', 1)[1].split('  unit-tests:', 1)[0]
+        self.assertIn('needs: ci-preflight', plan)
         for module in ('test_pipeline_authoring_sources', 'test_prebuilt_command_diagnostics',
                 'test_pipeline_fixed_continuation_identity', 'test_pipeline_occurrence_source'):
-            self.assertIn('tests.' + module, plan)
-        native = workflow.split('  ocaml-core:', 1)[1].split('\n  realization-conformance:', 1)[0]
-        self.assertIn('needs: unit-plan', native)
+            self.assertIn('tests.' + module, preflight)
+            self.assertNotIn('tests.' + module, plan)
+        native = workflow.split('  ocaml-build:', 1)[1].split('\n  ocaml-native-tests:', 1)[0]
+        self.assertIn('needs: ci-preflight', native)
+        core = workflow.split('  ocaml-core:', 1)[1].split('\n  architecture-sdk:', 1)[0]
+        self.assertIn('needs: ocaml-build', core)
 
 
 if __name__ == '__main__':

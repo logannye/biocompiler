@@ -107,8 +107,9 @@ def routed_execution():
                     classified[key] = cached
                     seen.add(qualified)
                 policy, qualified, _code = cached
-                require(allowed_frame(frame) if policy is None else policy,
-                        "Python semantic authority executed on native realization route: " + qualified)
+                if not (allowed_frame(frame) if policy is None else policy):
+                    require(False,
+                            "Python semantic authority executed on native realization route: " + qualified)
     sys.setprofile(guard)
     try:
         yield seen
