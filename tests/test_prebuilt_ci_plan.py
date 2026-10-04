@@ -234,7 +234,13 @@ def restore_fixed_provider_source(current, proof_bytes):
 
 
 def load(name,path):
-    spec=importlib.util.spec_from_file_location(name,path,loader=SourceFileLoader(name,str(path)));module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module);return module
+    spec=importlib.util.spec_from_file_location(name,path,loader=SourceFileLoader(name,str(path)))
+    module=importlib.util.module_from_spec(spec)
+    # Current direct-script tools resolve their sibling imports without relying
+    # on another test module having imported those siblings earlier.
+    with patch.object(sys,'path',[str(ROOT/'tools'),*sys.path]):
+        spec.loader.exec_module(module)
+    return module
 
 
 class HostedCiPlanTests(unittest.TestCase):
@@ -258,9 +264,17 @@ class HostedCiPlanTests(unittest.TestCase):
         self.assertEqual(new.workflow_jobs(ROOT/'.github/workflows/ci.yml'),new.REQUIRED_NEEDS|{'validation'})
 
     def test_every_native_test_command_survives_and_static_preparation_precedes_dependencies(self):
+        from tools.ci_core_groups import load_plan
         before=re.findall(r'core/_build/default/test/[^\n]+',self.old)
-        after=re.findall(r'core/_build/default/test/[^\n]+',self.new)
+        after=re.findall(r'core/_build/default/test/[^\n]+',
+            '\n'.join(group['run'] for group in load_plan(ROOT)))
         self.assertEqual(after,before)
+        native=self.new.split('\n  ocaml-core:\n',1)[1].split('\n  architecture-sdk:\n',1)[0]
+        run='python tools/ci_core_groups.py run --output generated/core/command-groups --workers 2'
+        check='python tools/ci_core_groups.py check --output generated/core/command-groups'
+        self.assertEqual(native.count(run),1);self.assertEqual(native.count(check),1)
+        self.assertLess(native.index(run),native.index(check))
+        self.assertLess(native.index(check),native.index('Record successful complete ocaml-core'))
         self.assertLess(self.new.index('tools/prebuilt_sources.py static-build'),self.new.index('opam install core/biocompiler_core.opam'))
         self.assertIn('opam reinstall zarith.1.14 --yes --no-depexts',self.new)
         self.assertLess(self.new.index('Retain revision-bound native executables'),self.new.index('tools/build_prebuilt_core.py wheel'))

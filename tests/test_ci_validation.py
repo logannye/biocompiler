@@ -12,6 +12,17 @@ from tools import ci_validation as ci
 
 
 class ValidationGateTests(unittest.TestCase):
+    def core_commands(self, block):
+        from tools.ci_core_groups import load_plan
+        run = "python tools/ci_core_groups.py run --output generated/core/command-groups --workers 2"
+        check = "python tools/ci_core_groups.py check --output generated/core/command-groups"
+        self.assertEqual(block.count(run), 1)
+        self.assertEqual(block.count(check), 1)
+        self.assertLess(block.index("tools/ci_native_bundle.py restore"), block.index(run))
+        self.assertLess(block.index(run), block.index(check))
+        self.assertLess(block.index(check), block.index("Record successful complete ocaml-core"))
+        return "\n".join(row["run"] for row in load_plan(Path(__file__).resolve().parents[1]))
+
     def installed_commands(self, block):
         # Commands moved into one source-pinned driver; assert its actual pure
         # plan and the required YAML invocation, rather than synthetic text.
@@ -300,6 +311,7 @@ class ValidationGateTests(unittest.TestCase):
     def test_public_synthetic_authority_suite_is_a_hosted_native_gate(self):
         text = (Path(__file__).resolve().parents[1] / ".github/workflows/ci.yml").read_text()
         native = text.split("\n  ocaml-core:\n", 1)[1].split("\n  architecture-sdk:\n", 1)[0]
+        native = self.core_commands(native)
         self.assertIn("core/_build/default/test/test_synthetic_producer_public_protocol.exe | tee generated/core/test_synthetic_producer_public_protocol.txt", native)
         self.assertIn('core/_build/default/test/test_synthetic_inspection_protocol.exe "$GITHUB_WORKSPACE/tests/conformance/synthetic-inspection-supplemental-v1.json" "$GITHUB_WORKSPACE/protocol/synthetic-inspection-v1.json" | tee generated/core/test_synthetic_inspection_protocol.txt', native)
 
@@ -327,6 +339,7 @@ class ValidationGateTests(unittest.TestCase):
                                    ("BIOCOMPILER_REFERENCE_PIPELINE_DOCUMENTS", "tests/conformance/reference-pipeline-semantics-v1")):
             self.assertIn(variable + '="$GITHUB_WORKSPACE/' + relative + '" \\\n', runtest)
         self.assertIn("python tools/ci_native_bundle.py test --path generated/core/native-suites --workers 2 2>&1 | tee generated/core/native-tests.txt", runtest)
+        commands = self.core_commands(native)
         arguments = {
             "test_work_budget_retention": "",
             "test_reference_inputs": ' "$GITHUB_WORKSPACE/tests/conformance/reference-inputs-314.json"',
@@ -347,11 +360,9 @@ class ValidationGateTests(unittest.TestCase):
         for name, argument in arguments.items():
             command = "core/_build/default/test/" + name + ".exe" + argument + " | tee generated/core/" + name + ".txt"
             with self.subTest(suite=name):
-                self.assertEqual(native.count(command), 1)
-                block = next(item for item in native.split("      - name: ") if command in item)
+                self.assertEqual(commands.count(command), 1)
                 self.assertIn("needs: ocaml-build", native)
-                self.assertNotIn("continue-on-error", block)
-                self.assertLess(native.index(command), native.index("Record successful complete ocaml-core"))
+                self.assertNotIn("continue-on-error", native)
         artifact = native.split("      - uses: actions/upload-artifact@v4\n", 1)[1].split("      - name:", 1)[0]
         self.assertIn("if: always()", artifact)
         self.assertIn("name: native-checks-${{ matrix.platform }}", artifact)
@@ -360,6 +371,7 @@ class ValidationGateTests(unittest.TestCase):
     def test_checked_manager_and_contract_suites_are_hosted_gates(self):
         text = (Path(__file__).resolve().parents[1] / ".github/workflows/ci.yml").read_text()
         native = text.split("\n  ocaml-core:\n", 1)[1].split("\n  architecture-sdk:\n", 1)[0]
+        native = self.core_commands(native)
         self.assertIn('core/_build/default/test/test_pipeline_session.exe "$GITHUB_WORKSPACE/protocol/pipeline-session-v1.json" "$GITHUB_WORKSPACE/tests/conformance/fixed-pipeline-native-v1.json" | tee generated/core/test_pipeline_session.txt', native)
         self.assertIn("core/_build/default/test/test_pipeline_host_bridge.exe | tee generated/core/test_pipeline_host_bridge.txt", native)
         self.assertIn('core/_build/default/test/test_pipeline_callback_manager.exe "$GITHUB_WORKSPACE/protocol/pipeline-callback-manager-v1.json" "$GITHUB_WORKSPACE/tests/conformance/pipeline-contract-literals-v1.json" "$GITHUB_WORKSPACE/tests/conformance/fixed-pipeline-native-v1.json" | tee generated/core/test_pipeline_callback_manager.txt', native)

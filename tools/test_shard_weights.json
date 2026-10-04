@@ -204,6 +204,10 @@
       "seconds": 34.46897,
       "tests": 8
     },
+    "test_ci_core_groups.CoreGroupTests": {
+      "seconds": 16.0,
+      "tests": 8
+    },
     "test_ci_native_bundle.NativeBundleTests": {
       "seconds": 12.0,
       "tests": 6
@@ -924,6 +928,18 @@
       "seconds": 14.0,
       "tests": 7
     },
+    "test_pipeline_fixed_continuation_workers.ContinuationReceiptControls": {
+      "seconds": 18.0,
+      "tests": 9
+    },
+    "test_pipeline_fixed_continuation_workers.ContinuationSourceDeltaControls": {
+      "seconds": 6.0,
+      "tests": 3
+    },
+    "test_pipeline_fixed_continuation_workers.ContinuationWorkerControls": {
+      "seconds": 22.0,
+      "tests": 11
+    },
     "test_pipeline_fixed_direct_controls.DirectControlTests": {
       "seconds": 103.876135,
       "tests": 6
@@ -1127,6 +1143,10 @@
     "test_realization_protocol_corpus.RealizationProtocolCorpusTests": {
       "seconds": 39.935664,
       "tests": 9
+    },
+    "test_realization_protocol_parallel.ProtocolRoleTests": {
+      "seconds": 38.0,
+      "tests": 19
     },
     "test_realization_reproducibility.RealizationReproducibilityTests": {
       "seconds": 10.352727,
@@ -1466,9 +1486,9 @@
       "unit_count": 3436
     },
     "reconciled_inventory": {
-      "classes": 362,
-      "sorted_lf_ids_sha256": "ab1b714de7113054637a7aab1e7003d5d0363b5d1351533dea56cd69ec37dd62",
-      "tests": 3477
+      "classes": 367,
+      "sorted_lf_ids_sha256": "85d75c5e72afe190929573749b1b8f9a1436460e6471471582f07f31aa89df1f",
+      "tests": 3527
     },
     "scope": "Historical placement input only; fresh discovery/execution/accounting remain mandatory.",
     "unmeasured": {
@@ -1481,6 +1501,21 @@
           "test_architecture_routing_parallel.ArchitecturePartitionTests.test_every_case_and_all_b_derived_controls_remain_exactly_once",
           "test_architecture_routing_parallel.ArchitecturePartitionTests.test_incomplete_failed_stale_unguarded_and_duplicate_partitions_reject",
           "test_architecture_routing_parallel.ArchitecturePartitionTests.test_wrong_outcomes_or_inconsistent_native_pins_fail_original_checker"
+        ]
+      },
+      "test_ci_core_groups.CoreGroupTests": {
+        "complete_estimated_seconds": 16.0,
+        "fallback_seconds": 16.0,
+        "kind": "unmeasured_new_class",
+        "unmeasured_test_ids": [
+          "test_ci_core_groups.CoreGroupTests.test_changed_missing_duplicate_reordered_recipe_is_rejected",
+          "test_ci_core_groups.CoreGroupTests.test_original_complete_plan_and_distinct_output_paths",
+          "test_ci_core_groups.CoreGroupTests.test_receipts_reject_stale_missing_duplicate_failed_and_modified_logs",
+          "test_ci_core_groups.CoreGroupTests.test_shell_order_pipefail_all_groups_and_full_logs",
+          "test_ci_core_groups.CoreGroupTests.test_timeout_and_spawn_failure_are_recorded",
+          "test_ci_core_groups.CoreGroupTests.test_two_groups_overlap_and_keep_original_receipt_order",
+          "test_ci_core_groups.CoreGroupTests.test_worker_count_is_bounded_before_execution",
+          "test_ci_core_groups.CoreGroupTests.test_workflow_runs_and_checks_complete_plan_before_success"
         ]
       },
       "test_ci_native_bundle.NativeBundleTests": {
@@ -1544,6 +1579,50 @@
           "test_pipeline_fixed_continuation_identity.PipelineFixedContinuationIdentityTests.test_six_frozen_authored_graphs_remain_exact"
         ]
       },
+      "test_pipeline_fixed_continuation_workers.ContinuationReceiptControls": {
+        "complete_estimated_seconds": 18.0,
+        "fallback_seconds": 18.0,
+        "kind": "unmeasured_new_class",
+        "unmeasured_test_ids": [
+          "test_pipeline_fixed_continuation_workers.ContinuationReceiptControls.test_actual_artifact_collision_rejects_merge",
+          "test_pipeline_fixed_continuation_workers.ContinuationReceiptControls.test_changed_raw_receipt_cannot_be_hidden_by_parsed_claim",
+          "test_pipeline_fixed_continuation_workers.ContinuationReceiptControls.test_complete_worker_merge_preserves_source_order_and_raw_evidence",
+          "test_pipeline_fixed_continuation_workers.ContinuationReceiptControls.test_failed_or_mixed_revision_worker_cannot_merge",
+          "test_pipeline_fixed_continuation_workers.ContinuationReceiptControls.test_missing_and_reordered_workers_cannot_merge",
+          "test_pipeline_fixed_continuation_workers.ContinuationReceiptControls.test_nonzero_worker_exit_cannot_be_hidden_by_success_receipt",
+          "test_pipeline_fixed_continuation_workers.ContinuationReceiptControls.test_repaired_aggregate_execution_cannot_invent_test_success",
+          "test_pipeline_fixed_continuation_workers.ContinuationReceiptControls.test_repaired_raw_worker_receipt_must_match_aggregate_checks",
+          "test_pipeline_fixed_continuation_workers.ContinuationReceiptControls.test_worker_outcomes_cannot_drop_partition_proof"
+        ]
+      },
+      "test_pipeline_fixed_continuation_workers.ContinuationSourceDeltaControls": {
+        "complete_estimated_seconds": 6.0,
+        "fallback_seconds": 6.0,
+        "kind": "unmeasured_new_class",
+        "unmeasured_test_ids": [
+          "test_pipeline_fixed_continuation_workers.ContinuationSourceDeltaControls.test_exact_additive_delta_precedes_unchanged_occurrence_witness",
+          "test_pipeline_fixed_continuation_workers.ContinuationSourceDeltaControls.test_extra_delta_and_rehashed_witness_are_rejected",
+          "test_pipeline_fixed_continuation_workers.ContinuationSourceDeltaControls.test_frozen_original_driver_functions_remain_exact"
+        ]
+      },
+      "test_pipeline_fixed_continuation_workers.ContinuationWorkerControls": {
+        "complete_estimated_seconds": 22.0,
+        "fallback_seconds": 22.0,
+        "kind": "unmeasured_new_class",
+        "unmeasured_test_ids": [
+          "test_pipeline_fixed_continuation_workers.ContinuationWorkerControls.test_class_assertion_failure_is_not_partial_success",
+          "test_pipeline_fixed_continuation_workers.ContinuationWorkerControls.test_class_fixture_and_ordered_methods_keep_shared_identity",
+          "test_pipeline_fixed_continuation_workers.ContinuationWorkerControls.test_equal_but_distinct_method_code_is_rejected",
+          "test_pipeline_fixed_continuation_workers.ContinuationWorkerControls.test_failed_worker_is_retained_and_cannot_become_success",
+          "test_pipeline_fixed_continuation_workers.ContinuationWorkerControls.test_group_case_selection_keeps_each_context_and_all_calls",
+          "test_pipeline_fixed_continuation_workers.ContinuationWorkerControls.test_group_comparison_rejects_equal_authority_with_changed_physical_graph",
+          "test_pipeline_fixed_continuation_workers.ContinuationWorkerControls.test_invalid_bound_and_duplicate_jobs_cannot_launch",
+          "test_pipeline_fixed_continuation_workers.ContinuationWorkerControls.test_launch_failure_drains_previously_started_workers",
+          "test_pipeline_fixed_continuation_workers.ContinuationWorkerControls.test_one_worker_is_a_true_serial_limit",
+          "test_pipeline_fixed_continuation_workers.ContinuationWorkerControls.test_timeout_terminates_worker_and_retains_failure",
+          "test_pipeline_fixed_continuation_workers.ContinuationWorkerControls.test_two_process_bound_and_source_order_survive_out_of_order_finishes"
+        ]
+      },
       "test_pipeline_graph_diagnostics.PublicGraphDiagnosticSourceTests": {
         "complete_estimated_seconds": 4.0,
         "fallback_seconds": 4.0,
@@ -1574,6 +1653,32 @@
           "test_pipeline_occurrence_source.OccurrenceSourceTests.test_extra_changes_and_rehashed_witnesses_are_rejected",
           "test_pipeline_occurrence_source.OccurrenceSourceTests.test_new_original_task_keeps_the_complete_prior_source_and_data_closure",
           "test_pipeline_occurrence_source.OccurrenceSourceTests.test_occurrence_controls_run_before_native_work_with_prior_preflight"
+        ]
+      },
+      "test_realization_protocol_parallel.ProtocolRoleTests": {
+        "complete_estimated_seconds": 38.0,
+        "fallback_seconds": 38.0,
+        "kind": "unmeasured_new_class",
+        "unmeasured_test_ids": [
+          "test_realization_protocol_parallel.ProtocolRoleTests.test_campaign_recipe_only_enables_protocol_and_routing_parallelism",
+          "test_realization_protocol_parallel.ProtocolRoleTests.test_changed_extra_symlinked_and_colliding_artifacts_reject_before_publication",
+          "test_realization_protocol_parallel.ProtocolRoleTests.test_each_routing_role_must_preserve_complete_guard",
+          "test_realization_protocol_parallel.ProtocolRoleTests.test_exact_full_13438_order_and_original_independent_checker",
+          "test_realization_protocol_parallel.ProtocolRoleTests.test_forged_self_consistent_report_fails_unchanged_semantic_checker",
+          "test_realization_protocol_parallel.ProtocolRoleTests.test_full_8314_routing_order_guards_and_original_body",
+          "test_realization_protocol_parallel.ProtocolRoleTests.test_identical_role_artifacts_deduplicate_with_original_receipt_shape",
+          "test_realization_protocol_parallel.ProtocolRoleTests.test_independent_installed_recipe_rejects_serial_missing_or_extra_workers",
+          "test_realization_protocol_parallel.ProtocolRoleTests.test_mode_does_not_accept_arbitrary_campaign_callable_or_schema",
+          "test_realization_protocol_parallel.ProtocolRoleTests.test_original_case_and_boundary_bodies_are_byte_for_byte_unchanged",
+          "test_realization_protocol_parallel.ProtocolRoleTests.test_postrun_each_routing_guard_and_raw_report_bytes_are_required",
+          "test_realization_protocol_parallel.ProtocolRoleTests.test_postrun_metadata_source_closure_and_safe_paths_fail_closed",
+          "test_realization_protocol_parallel.ProtocolRoleTests.test_raw_workers_are_rechecked_independently_after_aggregation",
+          "test_realization_protocol_parallel.ProtocolRoleTests.test_relative_custom_output_keeps_owned_mode_worker_root",
+          "test_realization_protocol_parallel.ProtocolRoleTests.test_shared_runner_dispatches_serial_coordinator_and_both_selected_roles",
+          "test_realization_protocol_parallel.ProtocolRoleTests.test_source_run_runtime_package_corpus_executable_ownership_is_exact",
+          "test_realization_protocol_parallel.ProtocolRoleTests.test_two_isolated_workers_keep_exact_commands_environment_and_wait_on_failure",
+          "test_realization_protocol_parallel.ProtocolRoleTests.test_worker_completion_order_does_not_change_merge_order",
+          "test_realization_protocol_parallel.ProtocolRoleTests.test_wrong_missing_reordered_duplicated_or_failed_role_cannot_publish"
         ]
       }
     }

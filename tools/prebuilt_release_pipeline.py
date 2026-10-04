@@ -184,6 +184,8 @@ def campaign_plan(checkout, python, ownership, output, group=None):
         if name not in ('protocol','routing'):
             command += ['--core-sha256',core['sha256'],'--verify-sha256',verify['sha256'],
                 '--native-root',str(package),'--platform',ownership['native_platform']]
+        if name in ('protocol', 'routing'):
+            command += ['--workers', '2']
         command += ['--output',str(output/str(name+'.json'))]
         result.append((name,command))
     return result

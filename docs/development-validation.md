@@ -57,7 +57,7 @@ remain distinct revision boundaries.
 | `studio-typescript` | Pinned strict TypeScript checks, unchanged generated release assets, runtime response decoding and current migration inventory. |
 | `ocaml-build` | Build once per native platform, check library boundaries/type transport, retain locked inputs and exact compiled suite/role bytes, and assemble candidate platform wheels. No test result is inferred from building a wheel. |
 | `ocaml-native-tests` | Restore the current run/platform-bound executable bundle and run all Dune-declared suites with their original arguments and two bounded workers. Unsupported Dune declarations fail closed; no compilation occurs in consumers. |
-| `ocaml-core` | Preserve every original direct corpus, protocol, resource-bound and Python/OCaml conformance command against the same restored binaries. |
+| `ocaml-core` | Two workers execute all 67 original direct corpus, protocol, resource-bound and Python/OCaml conformance command groups against the same restored binaries. Commands within each group keep their original order and output paths; complete current-run group/log accounting is required before success. |
 | `architecture-sdk` | Four platform/Python jobs run concurrently. Each uses two isolated Python workers for all 16 architecture scenarios. Case B retains all its rejection/publication controls. The coordinator applies the unchanged independent 175-check/219-artifact census before reporting success. |
 | `executable-rna-reproducibility` | Depends only on `installed-executable`; compares complete relative-file SHA-256 inventories from both Python versions. |
 | `payload-architecture-reproducibility` | Depends only on `installed-architecture`; requires all 13 case outputs and compares every relative file across versions. |
@@ -75,11 +75,27 @@ runs concurrently. The critical path is preflight → candidate build/assembly �
 parallel native/SDK/installed work → independent comparisons → final gate.
 Actual overlap depends on the hosted concurrency allowance; adding jobs is not
 itself a promise of faster execution. Installed groups are capped at eight jobs,
-native suites and architecture scenarios at two workers per runner. The matrix
+native suites, direct-core command groups and architecture scenarios at two workers per runner. The matrix
 lists all four fixed groups and then all four protocol groups first to request
 earlier continuation feedback; runner availability still governs start order. Campaign and
 scenario timings and streamed start/completion messages identify remaining slow
 work. Rebalance only from measured timings, preserving every stateful sequence.
+
+Inside each installed protocol and routing campaign, two isolated Python
+processes execute the complete core and verify roles. The original per-role
+native calls, replay and rejection order remain intact. The coordinator requires
+all 13,438 protocol checks and 8,314 routing checks and applies the independent
+semantic checker before publishing the combined artifacts. Worker source pins,
+raw receipts and complete logs accompany the aggregate.
+
+Fixed-continuation execution partitions only at the four original test-class
+boundaries, with at most two worker processes. Each class retains its fixture,
+method order and stateful manager sequences. Fresh grouped original-Python
+observations must equal the full serial original baseline before native execution;
+all 39 native call occurrences are then reconstructed and checked in their original
+order. Equal serialized inputs do not replace per-occurrence physical-identity
+observations. These concurrency bounds change scheduling, not scientific scope
+or migration admission.
 
 The short authoring, per-occurrence source identity, exact source-restoration
 and diagnostics controls run in both preflight slots and remain in full unit
@@ -125,8 +141,9 @@ The deterministic longest-processing-time assignment keeps each complete
 they cannot exclude tests or substitute for execution. Every discovered class
 is assigned exactly once across the five shards for its Python version.
 
-The combined continuation correction and scheduling update discovers 3,477 tests
-in 362 classes on both Python versions. Placement weights retain the historical
+The current suite discovers 3,527 tests in 367 classes on both Python versions.
+The campaign parallelism adds 50 scheduling, receipt and source controls while
+preserving all previous 3,477 test IDs. Placement weights retain the historical
 fixture-inclusive maximum for every previously measured class and add the
 existing two-second estimate for each new method. The source measurement and
 every unmeasured addition are recorded in the weights file. No original test ID

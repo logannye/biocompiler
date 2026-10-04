@@ -23,6 +23,8 @@ def restore(path, current, proof_bytes=None):
         and set(proof['files']) == {'tools/check_pipeline_fixed_continuation_install.py',
             'tools/pipeline_original_counterpart.py'} and path in proof['files'],
         'Per-occurrence source witness scope differs')
+    from tools import pipeline_continuation_parallel_source
+    current = pipeline_continuation_parallel_source.restore(path, current)
     row = proof['files'][path]
     require(set(row) == {'historical', 'current', 'spans'}
         and row['current'] == {'bytes': len(current), 'sha256': hashlib.sha256(current).hexdigest()},

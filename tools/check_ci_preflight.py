@@ -19,6 +19,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from tools.prebuilt_release_pipeline import CAMPAIGNS, campaign_names
 from tools.ci_native_bundle import test_plan
+from tools.ci_core_groups import load_plan
 
 
 def audit(event, args):
@@ -66,6 +67,7 @@ def main():
     args = parser.parse_args()
     campaign_names()  # Exact group partition is mandatory even before loading.
     native = test_plan((ROOT/'core/test/dune').read_text())
+    direct_core = load_plan(ROOT)
     sys.addaudithook(audit)
     rows = []
     for name, campaign in CAMPAIGNS:
@@ -80,7 +82,8 @@ def main():
         print(json.dumps(row, sort_keys=True), flush=True)
         gc.collect()
     document = {'status':'pass' if all(row['status']=='pass' for row in rows) else 'fail',
-                'python_version':platform.python_version(), 'native_suites':len(native), 'campaigns':rows,
+                'python_version':platform.python_version(), 'native_suites':len(native),
+                'direct_core_groups':len(direct_core), 'campaigns':rows,
                 'scope':'source preflight only; native execution and final artifact acceptance remain required'}
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(document, indent=2)+'\n')

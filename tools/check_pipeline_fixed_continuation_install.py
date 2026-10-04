@@ -488,7 +488,10 @@ SOURCES = tuple(dict.fromkeys((BUILD_TOOL, 'tests/test_pipeline_fixed_build_sema
     'tests/test_pipeline_graph_diagnostics.py',
     'tools/pipeline_authoring_sources.py', 'tests/test_pipeline_authoring_sources.py',
     'src/biocompiler/core_pipeline_build_views.py', 'tests/test_core_pipeline_build_views.py',
-    'tools/pipeline_fixed_direct_controls.py', 'tests/test_pipeline_fixed_direct_controls.py', *providers.SOURCES)))
+    'tools/pipeline_fixed_direct_controls.py', 'tests/test_pipeline_fixed_direct_controls.py',
+    'tools/pipeline_fixed_continuation_workers.py', 'tests/test_pipeline_fixed_continuation_workers.py',
+    'tools/pipeline_continuation_parallel_source.py', 'tools/pipeline_occurrence_source.py',
+    'tests/conformance/pipeline-continuation-parallel-source-delta-v1.json', *providers.SOURCES)))
 
 
 def load_oracle(*, installed=True):
@@ -586,7 +589,41 @@ def close_receipt(actual, row, seen, receipt):
     row['guard'] = manager.artifact(receipt, canonical([list(item) for item in sorted(seen)]))
 
 
-def campaign(core, corpus, receipt):
+def continuation_workers():
+    if __package__:
+        from . import pipeline_fixed_continuation_workers as workers
+    else:
+        import pipeline_fixed_continuation_workers as workers
+    return workers
+
+
+def run_native_bodies(core, corpus, receipt, oracle, occurrence_graphs, *, group=None):
+    modules = load_body_modules()
+    providers.installed_modules()
+    witness = NativeWitness(core, corpus, oracle, occurrence_graphs)
+    try:
+        with oracle.portable_sources(), witness.entries(modules) as entries:
+            execution = (run_original_bodies(context=witness.in_context, modules=modules) if group is None else
+                continuation_workers().run_original_group(sys.modules[__name__], group, context=witness.in_context, modules=modules))
+        receipt['original_execution'] = manager.artifact(receipt, canonical({**execution, 'entries': entries}))
+        expected = corpus.cases if group is None else continuation_workers().cases(sys.modules[__name__], corpus, group)
+        equal([case['id'] for case in witness.cases], [case['id'] for case in expected],
+            'Original fixed calls were omitted or reordered')
+        for case in witness.cases:
+            row = {'id': case['id'], 'actual': manager.artifact(receipt, canonical(case['graph'])),
+                'evidence': manager.artifact(receipt, canonical(witness_evidence(case, oracle)))}
+            receipt['checks'].append(row)
+    finally:
+        for case in witness.cases:
+            if 'manager' not in case:
+                continue
+            row = next((item for item in receipt['checks'] if item['id'] == case['id']), None)
+            if row is None:
+                row = {'id': case['id']}; receipt['checks'].append(row)
+            close_receipt(case['manager'], row, case['guard'], receipt)
+
+
+def campaign(core, corpus, receipt, *, workers=1, native_root=None):
     if __package__:
         from . import pipeline_fixed_direct_controls as direct
     else:
@@ -602,27 +639,11 @@ def campaign(core, corpus, receipt):
     receipt['occurrence_original'] = {key: value for key, value in occurrence_receipt.items()
         if key not in ('_artifact_directory', 'artifacts')}
     occurrence_graphs = occurrences.validate(current_occurrences, corpus, sys.modules[__name__])
-    modules = load_body_modules()
-    providers.installed_modules()
-    witness = NativeWitness(core, corpus, oracle, occurrence_graphs)
-    try:
-        with oracle.portable_sources(), witness.entries(modules) as entries:
-            execution = run_original_bodies(context=witness.in_context, modules=modules)
-        receipt['original_execution'] = manager.artifact(receipt, canonical({**execution, 'entries': entries}))
-        equal([case['id'] for case in witness.cases], [case['id'] for case in corpus.cases],
-            'Original fixed calls were omitted or reordered')
-        for case in witness.cases:
-            row = {'id': case['id'], 'actual': manager.artifact(receipt, canonical(case['graph'])),
-                'evidence': manager.artifact(receipt, canonical(witness_evidence(case, oracle)))}
-            receipt['checks'].append(row)
-    finally:
-        for case in witness.cases:
-            if 'manager' not in case:
-                continue
-            row = next((item for item in receipt['checks'] if item['id'] == case['id']), None)
-            if row is None:
-                row = {'id': case['id']}; receipt['checks'].append(row)
-            close_receipt(case['manager'], row, case['guard'], receipt)
+    if workers > 1:
+        continuation_workers().run_workers(sys.modules[__name__], core, corpus, receipt,
+            current_occurrences, limit=workers, native_root=native_root)
+    else:
+        run_native_bodies(core, corpus, receipt, oracle, occurrence_graphs)
     direct.run(core, corpus, oracle, receipt, originals)
     providers.installed_modules()
 
@@ -1012,6 +1033,7 @@ def validate_checks(receipt, corpus, artifacts):
     equal(occurrences.capture(corpus, oracle, sys.modules[__name__], retain=occurrence_objects), current_occurrences,
         'Independent original occurrence authority is not reproducible')
     occurrence_graphs = occurrences.validate(current_occurrences, corpus, sys.modules[__name__])
+    continuation_workers().validate_partitions(sys.modules[__name__], receipt, corpus, artifacts, current_occurrences)
     authorities = {case['id']: objects['authority_objects']
         for case, objects in zip(current_occurrences['occurrences'], occurrence_objects)}
     sessions, pids, projected = set(), set(), []
@@ -1088,7 +1110,12 @@ def campaign_main(argv):
     parser.add_argument('--native-root', required=True, type=Path)
     parser.add_argument('--platform', required=True, choices=r.PLATFORMS)
     parser.add_argument('--output', required=True, type=Path)
+    parser.add_argument('--workers', type=int, choices=(1, 2), default=2)
+    parser.add_argument('--worker-group', choices=tuple(METHODS))
+    parser.add_argument('--worker-baseline', type=Path)
     args = parser.parse_args(argv)
+    require((args.worker_group is None) == (args.worker_baseline is None), 'Incomplete class worker selection')
+    require(args.worker_group is None or args.workers == 1, 'Nested class workers are forbidden')
     import biocompiler
     from biocompiler.core_client import CoreClient
     for name in sorted(manager.TRANSPORT_MODULES | manager.LITERAL_MODULES | {'biocompiler.core_pipeline_provider_views', 'biocompiler.core_pipeline_build_views'}):
@@ -1124,10 +1151,16 @@ def campaign_main(argv):
             require(sha(r.raw_file(Path(sys.modules[name].__file__))) == pin, 'Installed retained-workflow source differs: '+name)
         receipt['campaign_sources'] = r.source_pins(SOURCES)
         client = CoreClient(args.core, role='core', expected_sha256=args.core_sha256, timeout_seconds=300)
-        manager.verify_rejection(args.verify, args.verify_sha256, receipt)
-        campaign(client, corpus, receipt)
-        receipt['completed_checks'] = len(receipt['checks'])
-        validate_checks(receipt, corpus, manager.Artifacts(directory, receipt['artifacts']))
+        if args.worker_group is None:
+            manager.verify_rejection(args.verify, args.verify_sha256, receipt)
+            campaign(client, corpus, receipt, workers=args.workers, native_root=args.native_root)
+            receipt['completed_checks'] = len(receipt['checks'])
+            validate_checks(receipt, corpus, manager.Artifacts(directory, receipt['artifacts']))
+        else:
+            continuation_workers().worker_campaign(sys.modules[__name__], client, corpus, receipt,
+                args.worker_group, args.worker_baseline)
+        equal(product_sources(corpus), receipt['python_sources'], 'Retained-workflow product sources changed during execution')
+        equal(r.source_pins(SOURCES), receipt['campaign_sources'], 'Retained-workflow campaign sources changed during execution')
         equal(r.verify_binaries(args.native_root, receipt['revision'], args.platform), native, 'Retained-workflow binaries changed during execution')
         receipt['status'], code = 'success', 0
     except Exception as error:
@@ -1137,7 +1170,8 @@ def campaign_main(argv):
     del receipt['_artifact_directory']
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_bytes(canonical(receipt)+b'\n')
-    print('Installed retained-workflow views:', receipt['status'], receipt['completed_checks'], 'chains, 566 original operations, six direct controls')
+    print('Installed retained-workflow views:', receipt['status'], receipt['completed_checks'],
+        'class worker' if args.worker_group is not None else 'chains, 566 original operations, six direct controls')
     return code
 
 

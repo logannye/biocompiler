@@ -1,0 +1,414 @@
+{
+  "groups": [
+    {
+      "environment": {},
+      "id": "group-00",
+      "name": "Check historical JSON spelling, rejection order and parser bounds",
+      "run": "core/_build/default/test/test_legacy_json.exe | tee generated/core/test_legacy_json.txt\n"
+    },
+    {
+      "environment": {},
+      "id": "group-01",
+      "name": "Check typed historical reference, construct and molecular domains",
+      "run": "core/_build/default/test/test_reference_domains.exe | tee generated/core/test_reference_domains.txt\n"
+    },
+    {
+      "environment": {},
+      "id": "group-02",
+      "name": "Independently check exact reference layout, sequence and translation",
+      "run": "core/_build/default/test/test_reference_checkers.exe \"$GITHUB_WORKSPACE/tests/conformance/reference-contracts-v1\" | tee generated/core/test_reference_checkers.txt\n"
+    },
+    {
+      "environment": {},
+      "id": "group-03",
+      "name": "Check shared reference producer work and output bounds",
+      "run": "core/_build/default/test/test_reference_producer_budget.exe \"$GITHUB_WORKSPACE/tests/conformance/reference-contracts-v1\" | tee generated/core/test_reference_producer_budget.txt\n"
+    },
+    {
+      "environment": {},
+      "id": "group-04",
+      "name": "Replay every original reference domain, producer and checker observation",
+      "run": "core/_build/default/test/test_reference_contracts_corpus.exe \"$GITHUB_WORKSPACE/tests/conformance/reference-contracts-v1.json\" | tee generated/core/test_reference_contracts_corpus.txt\n"
+    },
+    {
+      "environment": {},
+      "id": "group-05",
+      "name": "Check live reference construct admission, provenance and lifetime bounds",
+      "run": "core/_build/default/test/test_reference_construct_pipeline.exe \"$GITHUB_WORKSPACE/tests/conformance/reference-pipeline-semantics-v1\" | tee generated/core/test_reference_construct_pipeline.txt\n"
+    },
+    {
+      "environment": {},
+      "id": "group-06",
+      "name": "Check same-manager exact CDS continuation and retained failure state",
+      "run": "core/_build/default/test/test_reference_molecular_pipeline.exe \"$GITHUB_WORKSPACE/tests/conformance/reference-pipeline-semantics-v1\" | tee generated/core/test_reference_molecular_pipeline.txt\n"
+    },
+    {
+      "environment": {},
+      "id": "group-07",
+      "name": "Check reference workflow phase ownership and historical result capabilities",
+      "run": "core/_build/default/test/test_reference_workflow.exe \"$GITHUB_WORKSPACE/tests/conformance/reference-pipeline-semantics-v1\" | tee generated/core/test_reference_workflow.txt\n"
+    },
+    {
+      "environment": {},
+      "id": "group-08",
+      "name": "Check same-owner Molecular attempts and historical provider roots",
+      "run": "core/_build/default/test/test_reference_molecular_attempts.exe \"$GITHUB_WORKSPACE/tests/conformance/reference-pipeline-semantics-v1\" | tee generated/core/test_reference_molecular_attempts.txt\n"
+    },
+    {
+      "environment": {},
+      "id": "group-09",
+      "name": "Check framed reference manager callbacks and historical builds",
+      "run": "core/_build/default/test/test_reference_callback_manager.exe \"$GITHUB_WORKSPACE/protocol/pipeline-callback-manager-v1.json\" \"$GITHUB_WORKSPACE/tests/conformance/reference-pipeline-semantics-v1\" | tee generated/core/test_reference_callback_manager.txt\n"
+    },
+    {
+      "environment": {},
+      "id": "group-10",
+      "name": "Check complete original archive bytes and cumulative resource limits",
+      "run": "core/_build/default/test/test_stored_zip.exe \"$GITHUB_WORKSPACE/tests/conformance/archive-container-311.json\" \"$GITHUB_WORKSPACE/tests/conformance/archive-container-314.json\" | tee generated/core/test_stored_zip.txt\n"
+    },
+    {
+      "environment": {},
+      "id": "group-11",
+      "name": "Check exact package manifests and independently accepted sequence exports",
+      "run": "core/_build/default/test/test_reference_package_manifest.exe \"$GITHUB_WORKSPACE/tests/conformance/reference-package-domains-311.json\" \"$GITHUB_WORKSPACE/tests/conformance/reference-package-domains-314.json\" | tee generated/core/test_reference_package_manifest.txt\ncore/_build/default/test/test_reference_sequence_export.exe \"$GITHUB_WORKSPACE/tests/conformance/reference-sequence-export-314.json\" | tee generated/core/test_reference_sequence_export.txt\n"
+    },
+    {
+      "environment": {},
+      "id": "group-12",
+      "name": "Check original snapshots, complete native packages and persistent ownership",
+      "run": "core/_build/default/test/test_work_budget_retention.exe | tee generated/core/test_work_budget_retention.txt\ncore/_build/default/test/test_reference_inputs.exe \"$GITHUB_WORKSPACE/tests/conformance/reference-inputs-314.json\" | tee generated/core/test_reference_inputs.txt\ncore/_build/default/test/test_reference_package_workflow.exe \"$GITHUB_WORKSPACE/tests/conformance/reference-packages-314.json\" | tee generated/core/test_reference_package_workflow.txt\n"
+    },
+    {
+      "environment": {},
+      "id": "group-13",
+      "name": "Check retained request, behavior and coordinate domain corpora",
+      "run": "core/_build/default/test/test_build_request.exe \"$GITHUB_WORKSPACE/tests/conformance/case-b\" | tee generated/core/build-request-domain.txt\ncore/_build/default/test/test_behavior.exe \"$GITHUB_WORKSPACE/tests/conformance/case-b\" \"$GITHUB_WORKSPACE/tests/conformance/behavior-domains-v1.json\" | tee generated/core/behavior-domain.txt\ncore/_build/default/test/test_molecule_coordinates.exe \"$GITHUB_WORKSPACE/tests/conformance/molecule-coordinates-v1.json\" | tee generated/core/molecule-coordinates-domain.txt\ncore/_build/default/test/test_circuit_request.exe \"$GITHUB_WORKSPACE/tests/conformance/request-domains-v1.json\" | tee generated/core/circuit-request-domain.txt\ncore/_build/default/test/test_lowering_check.exe \"$GITHUB_WORKSPACE/tests/conformance/case-b\" \"$GITHUB_WORKSPACE/tests/conformance/request-domains-v1.json\" | tee generated/core/lowering-check.txt\n"
+    },
+    {
+      "environment": {},
+      "id": "group-14",
+      "name": "Check exact scalar arithmetic and complete per-role reference traces",
+      "run": "core/_build/default/test/test_runtime_number.exe \"$GITHUB_WORKSPACE/tests/conformance/runtime-numbers-v1.json\" | tee generated/core/runtime-numbers.txt\ncore/_build/default/test/test_execution_data.exe \"$GITHUB_WORKSPACE/tests/conformance/reference-execution-v1.json\" | tee generated/core/execution-data.txt\ncore/_build/default/test/test_reference.exe \"$GITHUB_WORKSPACE/tests/conformance/reference-execution-v1.json\" | tee generated/core/reference-execution.txt\n"
+    },
+    {
+      "environment": {},
+      "id": "group-15",
+      "name": "Check fresh lowering against exact retained source authority",
+      "run": "core/_build/default/test/test_lowering.exe \"$GITHUB_WORKSPACE/tests/conformance/lowering-v1.json\" | tee generated/core/lowering-producer.txt\n"
+    },
+    {
+      "environment": {},
+      "id": "group-16",
+      "name": "Check component domains and fresh compatibility assessments",
+      "run": "core/_build/default/test/test_component_contract.exe \"$GITHUB_WORKSPACE/tests/conformance/component-contracts-v1.json\" | tee generated/core/component-contracts.txt\n"
+    },
+    {
+      "environment": {},
+      "id": "group-17",
+      "name": "Check bounded molecular declarations and serialization",
+      "run": "core/_build/default/test/test_molecular_record.exe \"$GITHUB_WORKSPACE/tests/conformance/molecule-chemistry-v1.json\" | tee generated/core/molecular-records.txt\n"
+    },
+    {
+      "environment": {},
+      "id": "group-18",
+      "name": "Check molecular chemistry and nominal identity",
+      "run": "core/_build/default/test/test_molecule_chemistry.exe \"$GITHUB_WORKSPACE/tests/conformance/molecule-chemistry-v1.json\" | tee generated/core/molecule-chemistry.txt\n"
+    },
+    {
+      "environment": {},
+      "id": "group-19",
+      "name": "Check supplied deployment windows and exact decimal interval boundaries",
+      "run": "core/_build/default/test/test_architecture_deployment.exe \"$GITHUB_WORKSPACE/tests/conformance/architecture-deployment-v1.json\" | tee generated/core/test_architecture_deployment.txt\n"
+    },
+    {
+      "environment": {},
+      "id": "group-20",
+      "name": "Check complete component declarations and contextual model contracts",
+      "run": "core/_build/default/test/test_component.exe \"$GITHUB_WORKSPACE/tests/conformance/components-v1.json\" | tee generated/core/test_component.txt\n"
+    },
+    {
+      "environment": {},
+      "id": "group-21",
+      "name": "Check full human source wrapper authority and circuit correspondence",
+      "run": "core/_build/default/test/test_human_wrappers.exe \"$GITHUB_WORKSPACE/tests/conformance/human-wrappers-v1.json\" | tee generated/core/test_human_wrappers.txt\n"
+    },
+    {
+      "environment": {},
+      "id": "group-22",
+      "name": "Check molecular inventories, nominal identities and complete request authority",
+      "run": "core/_build/default/test/test_molecule.exe \"$GITHUB_WORKSPACE/tests/conformance/molecules-v1.json\" | tee generated/core/test_molecule.txt\ncore/_build/default/test/test_molecule_set.exe \"$GITHUB_WORKSPACE/tests/conformance/molecules-v1.json\" | tee generated/core/test_molecule_set.txt\n"
+    },
+    {
+      "environment": {},
+      "id": "group-23",
+      "name": "Check supplied payload structure contracts and required region inventories",
+      "run": "core/_build/default/test/test_payload_structure.exe \"$GITHUB_WORKSPACE/tests/conformance/payload-structure-v1.json\" | tee generated/core/test_payload_structure.txt\n"
+    },
+    {
+      "environment": {},
+      "id": "group-24",
+      "name": "Check architecture bindings, controls, channels and source constraints",
+      "run": "core/_build/default/test/test_architecture_contract.exe \"$GITHUB_WORKSPACE/tests/conformance/architecture-contracts-v1.json\" | tee generated/core/test_architecture_contract.txt\n"
+    },
+    {
+      "environment": {},
+      "id": "group-25",
+      "name": "Check explicit molecular transitions, edits and translation policies",
+      "run": "core/_build/default/test/test_molecular_transitions.exe \"$GITHUB_WORKSPACE/tests/conformance/molecular-transitions-v1.json\" | tee generated/core/test_molecular_transitions.txt\n"
+    },
+    {
+      "environment": {},
+      "id": "group-26",
+      "name": "Check complete construction operation and request declarations",
+      "run": "core/_build/default/test/test_construction.exe \"$GITHUB_WORKSPACE/tests/conformance/construction-v1.json\" | tee generated/core/test_construction.txt\n"
+    },
+    {
+      "environment": {},
+      "id": "group-27",
+      "name": "Check unchecked construction artifacts and exact derivation inventories",
+      "run": "core/_build/default/test/test_construction_artifact.exe \"$GITHUB_WORKSPACE/tests/conformance/construction-artifacts-v1.json\" | tee generated/core/test_construction_artifact.txt\n"
+    },
+    {
+      "environment": {},
+      "id": "group-28",
+      "name": "Independently check required payload regions against supplied authority",
+      "run": "core/_build/default/test/test_payload_structure_check.exe \"$GITHUB_WORKSPACE/tests/conformance/payload-structure-check-v1.json\" | tee generated/core/test_payload_structure_check.txt\n"
+    },
+    {
+      "environment": {},
+      "id": "group-29",
+      "name": "Check complete payload templates and architecture refinement authority",
+      "run": "core/_build/default/test/test_architecture_domains.exe \"$GITHUB_WORKSPACE/tests/conformance/payload-templates-v1.json\" \"$GITHUB_WORKSPACE/tests/conformance/architecture-domains-v1.json\" | tee generated/core/test_architecture_domains.txt\n"
+    },
+    {
+      "environment": {},
+      "id": "group-30",
+      "name": "Independently check declared molecular chemistry and feature transitions",
+      "run": "core/_build/default/test/test_transition_check.exe \"$GITHUB_WORKSPACE/tests/conformance/transition-check-v1.json\" | tee generated/core/test_transition_check.txt\n"
+    },
+    {
+      "environment": {},
+      "id": "group-31",
+      "name": "Independently reconstruct complete construction candidates and replay acceptance",
+      "run": "core/_build/default/test/test_construction_check.exe \"$GITHUB_WORKSPACE/tests/conformance/construction-check-v1.json\" | tee generated/core/test_construction_check.txt\n"
+    },
+    {
+      "environment": {},
+      "id": "group-32",
+      "name": "Check historical source manifests and independently reconstruct source inventories",
+      "run": "core/_build/default/test/test_source_manifest.exe \"$GITHUB_WORKSPACE/tests/conformance/source-manifest-v1.json\" | tee generated/core/test_source_manifest.txt\ncore/_build/default/test/test_source_check.exe \"$GITHUB_WORKSPACE/tests/conformance/source-manifest-v1.json\" | tee generated/core/test_source_check.txt\n"
+    },
+    {
+      "environment": {},
+      "id": "group-33",
+      "name": "Check complete historical architecture builds and assessment scope",
+      "run": "core/_build/default/test/test_architecture_build.exe \"$GITHUB_WORKSPACE/tests/conformance/architecture-build-v1.json\" | tee generated/core/test_architecture_build.txt\n"
+    },
+    {
+      "environment": {},
+      "id": "group-34",
+      "name": "Independently check supplementary circuit bindings against original source",
+      "run": "core/_build/default/test/test_circuit_bindings.exe \"$GITHUB_WORKSPACE/tests/conformance/circuit-bindings-v1.json\" | tee generated/core/test_circuit_bindings.txt\n"
+    },
+    {
+      "environment": {},
+      "id": "group-35",
+      "name": "Independently prove bounded source controls and exact deployment intervals",
+      "run": "core/_build/default/test/test_architecture_controls_check.exe \"$GITHUB_WORKSPACE/tests/conformance/architecture-controls-check-v1.json\" | tee generated/core/test_architecture_controls_check.txt\ncore/_build/default/test/test_architecture_deployment_check.exe \"$GITHUB_WORKSPACE/tests/conformance/architecture-deployment-check-v1.json\" | tee generated/core/test_architecture_deployment_check.txt\n"
+    },
+    {
+      "environment": {},
+      "id": "group-36",
+      "name": "Independently reconstruct complete architecture acceptance and replay",
+      "run": "core/_build/default/test/test_architecture_check.exe \"$GITHUB_WORKSPACE/tests/conformance/architecture-check-v1.json\" | tee generated/core/test_architecture_check.txt\n"
+    },
+    {
+      "environment": {},
+      "id": "group-37",
+      "name": "Check complete generic composition, selection and actual component behavior corpus",
+      "run": "core/_build/default/test/test_component_acceptance_corpus.exe \"$GITHUB_WORKSPACE/tests/conformance/component-acceptance-v1.json\" | tee generated/core/test_component_acceptance_corpus.txt\n"
+    },
+    {
+      "environment": {},
+      "id": "group-38",
+      "name": "Check complete synthetic candidate and catalog authority corpus",
+      "run": "core/_build/default/test/test_synthetic_authority_corpus.exe \"$GITHUB_WORKSPACE/tests/conformance/synthetic-authority-v1.json\" | tee generated/core/test_synthetic_authority_corpus.txt\n"
+    },
+    {
+      "environment": {},
+      "id": "group-39",
+      "name": "Independently check complete synthetic candidate and component assembly corpus",
+      "run": "core/_build/default/test/test_synthetic_acceptance_corpus.exe \"$GITHUB_WORKSPACE/tests/conformance/synthetic-acceptance-v1.json\" | tee generated/core/test_synthetic_acceptance_corpus.txt\n"
+    },
+    {
+      "environment": {},
+      "id": "group-40",
+      "name": "Check complete synthetic generation, bounded selection and component adaptation corpus",
+      "run": "core/_build/default/test/test_synthetic_producers_corpus.exe \"$GITHUB_WORKSPACE/tests/conformance/synthetic-producers-v1.json\" | tee generated/core/test_synthetic_producers_corpus.txt\n"
+    },
+    {
+      "environment": {},
+      "id": "group-41",
+      "name": "Check producer-only protocol, complete receipts and resource boundaries",
+      "run": "core/_build/default/test/test_synthetic_producer_protocol.exe | tee generated/core/test_synthetic_producer_protocol.txt\n"
+    },
+    {
+      "environment": {},
+      "id": "group-42",
+      "name": "Check complete public synthetic build authority and selection receipts",
+      "run": "core/_build/default/test/test_synthetic_producer_public_protocol.exe | tee generated/core/test_synthetic_producer_public_protocol.txt\n"
+    },
+    {
+      "environment": {},
+      "id": "group-43",
+      "name": "Check native helper authority, exact structural queries and registry replay",
+      "run": "core/_build/default/test/test_synthetic_inspection_protocol.exe \"$GITHUB_WORKSPACE/tests/conformance/synthetic-inspection-supplemental-v1.json\" \"$GITHUB_WORKSPACE/protocol/synthetic-inspection-v1.json\" | tee generated/core/test_synthetic_inspection_protocol.txt\n"
+    },
+    {
+      "environment": {},
+      "id": "group-44",
+      "name": "Check deferred manager access and reentrant callback mutations",
+      "run": "core/_build/default/test/test_deferred_pass_manager.exe \"$GITHUB_WORKSPACE/tests/conformance/pipeline-contract-literals-v1.json\" | tee generated/core/test_deferred_pass_manager.txt\n"
+    },
+    {
+      "environment": {},
+      "id": "group-45",
+      "name": "Check nested callback framing and cumulative channel authority",
+      "run": "core/_build/default/test/test_pipeline_callback_channel.exe \"$GITHUB_WORKSPACE/protocol/pipeline-callback-channel-v1.json\" | tee generated/core/test_pipeline_callback_channel.txt\n"
+    },
+    {
+      "environment": {},
+      "id": "group-46",
+      "name": "Check deferred host capability envelopes and lifetime authority",
+      "run": "core/_build/default/test/test_pipeline_host_bridge.exe | tee generated/core/test_pipeline_host_bridge.txt\n"
+    },
+    {
+      "environment": {},
+      "id": "group-47",
+      "name": "Check live callback manager dispatch and native acceptance authority",
+      "run": "core/_build/default/test/test_pipeline_callback_manager.exe \"$GITHUB_WORKSPACE/protocol/pipeline-callback-manager-v1.json\" \"$GITHUB_WORKSPACE/tests/conformance/pipeline-contract-literals-v1.json\" \"$GITHUB_WORKSPACE/tests/conformance/fixed-pipeline-native-v1.json\" | tee generated/core/test_pipeline_callback_manager.txt\n"
+    },
+    {
+      "environment": {},
+      "id": "group-48",
+      "name": "Check persistent manager state and cumulative session resource bounds",
+      "run": "core/_build/default/test/test_pipeline_session.exe \"$GITHUB_WORKSPACE/protocol/pipeline-session-v1.json\" \"$GITHUB_WORKSPACE/tests/conformance/fixed-pipeline-native-v1.json\" | tee generated/core/test_pipeline_session.txt\n"
+    },
+    {
+      "environment": {},
+      "id": "group-49",
+      "name": "Check complete pipeline contract records and original constructor rejections",
+      "run": "core/_build/default/test/test_pipeline_contract.exe \"$GITHUB_WORKSPACE/tests/conformance/pipeline-contract-literals-v1.json\" | tee generated/core/test_pipeline_contract.txt\n"
+    },
+    {
+      "environment": {},
+      "id": "group-50",
+      "name": "Check native stage acceptance, scoped completion and transitive freshness",
+      "run": "core/_build/default/test/test_pass_manager.exe \"$GITHUB_WORKSPACE/tests/conformance/pipeline-contract-literals-v1.json\" | tee generated/core/test_pass_manager.txt\n"
+    },
+    {
+      "environment": {},
+      "id": "group-51",
+      "name": "Preserve original validator comparison order, identity and callback mutations",
+      "run": "core/_build/default/test/test_provider_comparison.exe \"$GITHUB_WORKSPACE/tests/conformance/pipeline-callback-semantics-v1.json\" | tee generated/core/test_provider_comparison.txt\n"
+    },
+    {
+      "environment": {},
+      "id": "group-52",
+      "name": "Replay original manager commands, callback bodies and complete state changes",
+      "run": "core/_build/default/test/test_checked_pipeline_corpus.exe \"$GITHUB_WORKSPACE/tests/conformance/checked-pipeline-v1.json\" | tee generated/core/test_checked_pipeline_corpus.txt\n"
+    },
+    {
+      "environment": {},
+      "id": "group-53",
+      "name": "Check lowering and independent preservation share the caller work ancestor",
+      "run": "core/_build/default/test/test_lowering_budget.exe \"$GITHUB_WORKSPACE/tests/conformance/lowering-v1.json\" | tee generated/core/test_lowering_budget.txt\n"
+    },
+    {
+      "environment": {},
+      "id": "group-54",
+      "name": "Replay fixed native pipelines and original post-return manager observations",
+      "run": "core/_build/default/test/test_fixed_pipeline_corpus.exe \"$GITHUB_WORKSPACE/tests/conformance/fixed-pipeline-native-v1.json\" \"$GITHUB_WORKSPACE/tests/conformance/fixed-pipeline-continuations-native-v1.json\" | tee generated/core/test_fixed_pipeline_corpus.txt\n"
+    },
+    {
+      "environment": {},
+      "id": "group-55",
+      "name": "Check every original workflow, exploration, reduction and callback observation",
+      "run": "set -o pipefail\ncore/_build/default/test/test_realization_workflow_corpus.exe \"$GITHUB_WORKSPACE/tests/conformance/realization-workflow-v1.json\" | tee generated/core/test_realization_workflow_corpus.txt\n"
+    },
+    {
+      "environment": {
+        "GITHUB_HEAD_SHA": "source"
+      },
+      "id": "group-56",
+      "name": "Check cross-language bytes, structural intent and independent lowering correspondence",
+      "run": "python tools/check_core_conformance.py \\\n  --core \"$GITHUB_WORKSPACE/core/_build/default/bin/core/main.exe\" \\\n  --verify \"$GITHUB_WORKSPACE/core/_build/default/bin/verify/main.exe\" \\\n  --output generated/core/conformance.json\n"
+    },
+    {
+      "environment": {
+        "GITHUB_HEAD_SHA": "source"
+      },
+      "id": "group-57",
+      "name": "Check installed standalone architecture verification and fresh replay",
+      "run": "python tools/check_architecture_protocol.py \\\n  --core \"$GITHUB_WORKSPACE/core/_build/default/bin/core/main.exe\" \\\n  --verify \"$GITHUB_WORKSPACE/core/_build/default/bin/verify/main.exe\" \\\n  --output generated/core/architecture-protocol.json\n"
+    },
+    {
+      "environment": {},
+      "id": "group-58",
+      "name": "Check native producer protocol with original case B authority",
+      "run": "core/_build/default/test/test_producer_protocol.exe \"$GITHUB_WORKSPACE/tests/conformance/case-b\" | tee generated/core/producer-protocol.txt\n"
+    },
+    {
+      "environment": {
+        "GITHUB_HEAD_SHA": "source"
+      },
+      "id": "group-59",
+      "name": "Check installed architecture compilation and paired export",
+      "run": "mkdir -p \"$RUNNER_TEMP/architecture-producer-protocol\"\ncd \"$RUNNER_TEMP/architecture-producer-protocol\"\npython \"$GITHUB_WORKSPACE/tools/check_architecture_producer_protocol.py\" \\\n  --core \"$GITHUB_WORKSPACE/core/_build/default/bin/core/main.exe\" \\\n  --verify \"$GITHUB_WORKSPACE/core/_build/default/bin/verify/main.exe\" \\\n  --output \"$GITHUB_WORKSPACE/generated/core/architecture-producer-protocol.json\"\n"
+    },
+    {
+      "environment": {},
+      "id": "group-60",
+      "name": "Compare complete construction producer and workflow artifacts",
+      "run": "core/_build/default/test/test_construction_producer.exe \"$GITHUB_WORKSPACE/tests/conformance/construction-producer-v1.json\" | tee generated/core/construction-producer.txt\n"
+    },
+    {
+      "environment": {},
+      "id": "group-61",
+      "name": "Compare source manifests, matching, architecture production and paired export",
+      "run": "core/_build/default/test/test_architecture_producer.exe \"$GITHUB_WORKSPACE/tests/conformance/architecture-producer-v1.json\" | tee generated/core/architecture-producer.txt\n"
+    },
+    {
+      "environment": {},
+      "id": "group-62",
+      "name": "Compare complete coupled source transport traces and rejection signatures",
+      "run": "core/_build/default/test/test_source_transport.exe \"$GITHUB_WORKSPACE/tests/conformance/source-transport-v1.json\" | tee generated/core/source-transport.txt\n"
+    },
+    {
+      "environment": {},
+      "id": "group-63",
+      "name": "Compare every captured independent candidate model trace and rejection",
+      "run": "core/_build/default/test/test_candidate_runtime_corpus.exe \"$GITHUB_WORKSPACE/tests/conformance/candidate-runtime-v1.json\" | tee generated/core/candidate-runtime.txt\n"
+    },
+    {
+      "environment": {},
+      "id": "group-64",
+      "name": "Compare complete locked registry, assembly reconstruction and component execution",
+      "run": "core/_build/default/test/test_component_runtime_corpus.exe \"$GITHUB_WORKSPACE/tests/conformance/component-runtime-v1.json\" | tee generated/core/component-runtime.txt\n"
+    },
+    {
+      "environment": {},
+      "id": "group-65",
+      "name": "Compare complete realization declarations, evidence identities and fresh admission",
+      "run": "core/_build/default/test/test_realization_foundation_corpus.exe \"$GITHUB_WORKSPACE/tests/conformance/realization-foundation-v1.json\" | tee generated/core/realization-foundation.txt\n"
+    },
+    {
+      "environment": {},
+      "id": "group-66",
+      "name": "Compare complete checked-request and finite-history realization observations",
+      "run": "core/_build/default/test/test_realization_checks_corpus.exe \"$GITHUB_WORKSPACE/tests/conformance/realization-checks-v1.json\" | tee generated/core/realization-checks.txt\n"
+    }
+  ],
+  "origin_revision": "1a8f775429c6b8d23e5a4bc66240f28fdb2a95a2",
+  "schema": "biocompiler.ci_core_groups.v1"
+}
