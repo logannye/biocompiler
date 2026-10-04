@@ -4,7 +4,7 @@
     "tools/check_pipeline_fixed_continuation_install.py": {
       "current": {
         "bytes": 79097,
-        "sha256": "d5371e156ba658d0159606844b94892202333ffd80c4cacfd151fd84b28d90fa"
+        "sha256": "8d459519d221e364f65cd218973dbc415b352581af72a28aba403f4d85315103"
       },
       "historical": {
         "bytes": 76828,
@@ -22,8 +22,8 @@
           "offset": 34006
         },
         {
-          "after": "    if workers > 1:\n        continuation_workers().run_workers(sys.modules[__name__], core, corpus, receipt,\n            current_occurrences, limit=workers, native_root=native_root)\n    else:\n        run_native_bodies(core, corpus, receipt, oracle, occurrence_graphs)\n",
-          "before": "    modules = load_body_modules()\n    providers.installed_modules()\n    witness = NativeWitness(core, corpus, oracle, occurrence_graphs)\n    try:\n        with oracle.portable_sources(), witness.entries(modules) as entries:\n            execution = run_original_bodies(context=witness.in_context, modules=modules)\n        receipt['original_execution'] = manager.artifact(receipt, canonical({**execution, 'entries': entries}))\n        equal([case['id'] for case in witness.cases], [case['id'] for case in corpus.cases],\n            'Original fixed calls were omitted or reordered')\n        for case in witness.cases:\n            row = {'id': case['id'], 'actual': manager.artifact(receipt, canonical(case['graph'])),\n                'evidence': manager.artifact(receipt, canonical(witness_evidence(case, oracle)))}\n            receipt['checks'].append(row)\n    finally:\n        for case in witness.cases:\n            if 'manager' not in case:\n                continue\n            row = next((item for item in receipt['checks'] if item['id'] == case['id']), None)\n            if row is None:\n                row = {'id': case['id']}; receipt['checks'].append(row)\n            close_receipt(case['manager'], row, case['guard'], receipt)\n",
+          "after": "    direct.run(core, corpus, oracle, receipt, originals)\n    if workers > 1:\n        continuation_workers().run_workers(sys.modules[__name__], core, corpus, receipt,\n            current_occurrences, limit=workers, native_root=native_root)\n    else:\n        run_native_bodies(core, corpus, receipt, oracle, occurrence_graphs)\n",
+          "before": "    modules = load_body_modules()\n    providers.installed_modules()\n    witness = NativeWitness(core, corpus, oracle, occurrence_graphs)\n    try:\n        with oracle.portable_sources(), witness.entries(modules) as entries:\n            execution = run_original_bodies(context=witness.in_context, modules=modules)\n        receipt['original_execution'] = manager.artifact(receipt, canonical({**execution, 'entries': entries}))\n        equal([case['id'] for case in witness.cases], [case['id'] for case in corpus.cases],\n            'Original fixed calls were omitted or reordered')\n        for case in witness.cases:\n            row = {'id': case['id'], 'actual': manager.artifact(receipt, canonical(case['graph'])),\n                'evidence': manager.artifact(receipt, canonical(witness_evidence(case, oracle)))}\n            receipt['checks'].append(row)\n    finally:\n        for case in witness.cases:\n            if 'manager' not in case:\n                continue\n            row = next((item for item in receipt['checks'] if item['id'] == case['id']), None)\n            if row is None:\n                row = {'id': case['id']}; receipt['checks'].append(row)\n            close_receipt(case['manager'], row, case['guard'], receipt)\n    direct.run(core, corpus, oracle, receipt, originals)\n",
           "offset": 35035
         },
         {

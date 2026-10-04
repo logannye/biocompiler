@@ -21,6 +21,8 @@ CONTEXT_DELTA=ROOT/'tests/conformance/deferred-context-checker-source-delta-v1.j
 CONTEXT_DELTA_SHA256='c052ed313423f5b4a016b8f8474d50a9364e278904983f3d139eb9e1ca8e4253'
 PROVIDER_DELTA=ROOT/'tests/conformance/fixed-provider-checker-source-delta-v1.json'
 PROVIDER_DELTA_SHA256='67c11513477659bb81c2e9a0cfb87191fd669cf2caf2acce0962e77f54a50b8b'
+PROVIDER_RECORD_DELTA=ROOT/'tests/conformance/fixed-provider-record-observation-source-delta-v1.json'
+PROVIDER_RECORD_DELTA_SHA256='c9640228aa97f42321ed6182d4559d305f03be863da8252aac9b86ac7a7357bb'
 BUDGET_DELTA=ROOT/'tests/conformance/callback-budget-checker-source-delta-v1.json'
 BUDGET_DELTA_SHA256='6cb03e6dfa5c76528bf9370be992634b6a9fbad5219a1e43c042090abd48ff8b'
 REFERENCE_DELTA=ROOT/'tests/conformance/reference-distribution-source-delta-v1.json'
@@ -205,6 +207,37 @@ def restore_deferred_context_source(current, proof_bytes):
     return restored
 
 
+def restore_fixed_provider_record_source(current, proof_bytes=None):
+    """Remove only the reviewed retention of already inspected record objects."""
+    def require(condition,message):
+        if not condition:raise AssertionError(message)
+    raw=PROVIDER_RECORD_DELTA.read_bytes() if proof_bytes is None else proof_bytes
+    require(hashlib.sha256(raw).hexdigest()==PROVIDER_RECORD_DELTA_SHA256,
+        'Unreviewed fixed-provider record observation witness')
+    proof=json.loads(raw)
+    require(set(proof)=={'schema','path','historical','current','spans'}
+        and proof['schema']=='biocompiler.fixed_provider_record_observation_source_delta.v1'
+        and proof['path']=='tools/check_pipeline_fixed_provider_install.py',
+        'Fixed-provider record observation witness shape differs')
+    require(proof['current']=={'bytes':len(current),'sha256':hashlib.sha256(current).hexdigest()},
+        'Current fixed-provider checker differs from reviewed record observation')
+    spans=proof['spans']
+    require(type(spans) is list and len(spans)==2 and all(set(row)=={'offset','before','after'}
+        and type(row['offset']) is int and row['offset']>=0 and row['before']==''
+        and type(row['after']) is str and row['after'] for row in spans)
+        and spans[0]['offset']<spans[1]['offset'], 'Fixed-provider record observation span census differs')
+    restored=current
+    for index,row in reversed(list(enumerate(spans))):
+        offset=row['offset']+sum(len(prior['after'].encode()) for prior in spans[:index])
+        after=row['after'].encode()
+        require(restored[offset:offset+len(after)]==after, 'Fixed-provider record observation span differs')
+        restored=restored[:offset]+restored[offset+len(after):]
+    require(proof['historical']=={'revision':'7b953c27e165be6389747a6f7c03a50465622e72',
+        'bytes':len(restored),'sha256':hashlib.sha256(restored).hexdigest()},
+        'Complete prior fixed-provider checker differs after record restoration')
+    return restored
+
+
 def restore_fixed_provider_source(current, proof_bytes):
     """Recover the complete installed-path checker before its lineage fix."""
     def require(condition,message):
@@ -216,6 +249,7 @@ def restore_fixed_provider_source(current, proof_bytes):
         and proof['schema']=='biocompiler.fixed_provider_checker_source_delta.v1'
         and proof['path']=='tools/check_pipeline_fixed_provider_install.py',
         'Fixed-provider witness shape differs')
+    current=restore_fixed_provider_record_source(current)
     require(proof['current']=={'bytes':len(current),'sha256':hashlib.sha256(current).hexdigest()},
         'Current fixed-provider checker differs from the reviewed lineage correction')
     spans=proof['spans']
@@ -422,6 +456,18 @@ class HostedCiPlanTests(unittest.TestCase):
         with self.assertRaisesRegex(AssertionError,'Unreviewed callback-budget source witness'):
             restore_callback_budget_source(current,json.dumps(proof,sort_keys=True,indent=2).encode()+b'\n')
 
+
+    def test_fixed_provider_record_observation_restoration_is_exact_and_rejects_forgery(self):
+        current=(ROOT/'tools/check_pipeline_fixed_provider_install.py').read_bytes()
+        witness=PROVIDER_RECORD_DELTA.read_bytes();proof=json.loads(witness)
+        restored=restore_fixed_provider_record_source(current,witness)
+        prior=json.loads(PROVIDER_DELTA.read_bytes())['current']
+        self.assertEqual({'bytes':len(restored),'sha256':hashlib.sha256(restored).hexdigest()},prior)
+        with self.assertRaisesRegex(AssertionError,'Current fixed-provider checker differs'):
+            restore_fixed_provider_record_source(current+b'\n',witness)
+        proof['spans'][0]['offset']+=1
+        with self.assertRaisesRegex(AssertionError,'Unreviewed fixed-provider record observation witness'):
+            restore_fixed_provider_record_source(current,json.dumps(proof,sort_keys=True,indent=2).encode()+b'\n')
 
     def test_fixed_provider_restoration_rejects_unreviewed_source_changes(self):
         current=(ROOT/'tools/check_pipeline_fixed_provider_install.py').read_bytes()

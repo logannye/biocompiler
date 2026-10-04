@@ -119,6 +119,7 @@ class Witness:
         self.request = self.config = self.manager = None
         self.calls, self.pending = [], None
         self.inspection = None
+        self.records = {}
         self.providers = {}
         self.contracts = {}
         self.proposals = []
@@ -143,6 +144,9 @@ class Witness:
         live = raw_manager(instance)
         state = instance.inspection_state()
         self.inspection = live.session.last_response.sequence
+        # This detached view follows native insertion order; the SDK's private
+        # record cache follows first materialization by build/result readers.
+        self.records = state['_records']
         for pass_id, (_, provider, validators) in state['_passes'].items():
             self.contracts[pass_id] = state['_passes'][pass_id][0]
             for slot, actual in [('producer', provider), *validators.items()]:

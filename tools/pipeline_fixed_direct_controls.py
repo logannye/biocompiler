@@ -64,7 +64,7 @@ def run(core, corpus, oracle, receipt, originals):
                 component_sequence = actual.session.last_response.sequence
             witness.manager, witness.request, witness.config = actual, request, actual._provider_config
             inspected = witness.registrations(manager.GuardedManager(actual, seen))
-            records = dict(actual._records)
+            records = dict(witness.records)
             require(tuple(records) == ('request', 'behavior', 'mechanism', 'components'), 'Direct initial record census differs')
             source_id = 'request'
             proposals = []

@@ -5,7 +5,7 @@ from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 PATH='tools/check_pipeline_fixed_continuation_install.py'
 WITNESS=ROOT/'tests/conformance/pipeline-continuation-parallel-source-delta-v1.json'
-WITNESS_SHA256='bca7480ba6e6a44736c5004b7f5b4bda1294a60b6b32aa9f3bbc43250ed0d4ad'
+WITNESS_SHA256='16869820863ef1624f06ebf606861aa93aa3def3c88250e066dfb0be036d3bf9'
 
 def restore(path,current,proof_bytes=None):
     if path!=PATH:return current

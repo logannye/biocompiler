@@ -121,6 +121,42 @@ class ContinuationWorkerControls(unittest.TestCase):
         with self.assertRaisesRegex(AssertionError,'Unknown'):
             workers.contexts(driver,'other.py')
 
+    def test_direct_controls_finish_before_native_chains_in_both_schedules(self):
+        self.check_direct_first(fail=False)
+
+    def test_direct_control_failure_prevents_expensive_native_chain_launch(self):
+        self.check_direct_first(fail=True)
+
+    def check_direct_first(self, *, fail):
+        from tools import check_pipeline_fixed_continuation_install as driver
+        from tools import pipeline_fixed_direct_controls as direct
+        for limit in (1, 2):
+            with self.subTest(workers=limit):
+                events = []
+                receipt = {'_artifact_directory': 'unused', 'artifacts': {}}
+                oracle = SimpleNamespace(capture=lambda **kwargs: {})
+                def controls(*args):
+                    self.assertIs(args[3], receipt)
+                    events.append('direct')
+                    if fail:
+                        raise AssertionError('original direct failure')
+                with patch.object(driver, 'load_oracle', return_value=oracle), \
+                        patch.object(driver.providers, 'capture_counterpart'), \
+                        patch.object(driver.providers, 'installed_modules'), \
+                        patch.object(driver.occurrences, 'read_frozen', return_value={}), \
+                        patch.object(driver.occurrences, 'capture', return_value={}), \
+                        patch.object(driver.occurrences, 'validate', return_value={}), \
+                        patch.object(direct, 'run', side_effect=controls), \
+                        patch.object(workers, 'run_workers', side_effect=lambda *args, **kwargs: events.append('workers')), \
+                        patch.object(driver, 'run_native_bodies', side_effect=lambda *args, **kwargs: events.append('serial')):
+                    if fail:
+                        with self.assertRaisesRegex(AssertionError, '^original direct failure$'):
+                            driver.campaign(object(), SimpleNamespace(build={}), receipt, workers=limit, native_root=Path('/unused'))
+                        self.assertEqual(events, ['direct'])
+                    else:
+                        driver.campaign(object(), SimpleNamespace(build={}), receipt, workers=limit, native_root=Path('/unused'))
+                        self.assertEqual(events, ['direct', 'workers' if limit == 2 else 'serial'])
+
     def test_group_comparison_rejects_equal_authority_with_changed_physical_graph(self):
         driver,module,cls,events=self.fixture();driver.occurrences=SimpleNamespace(validate=lambda *args:None)
         baseline={'source_files':{'source':'pin'},'driver_body_sha256':'body',

@@ -1,0 +1,25 @@
+{
+  "current": {
+    "bytes": 57644,
+    "sha256": "165a2dfb46f6256783bfda7c0c4869345bbae48af4a36c62d69c44016b240401"
+  },
+  "historical": {
+    "bytes": 57420,
+    "revision": "7b953c27e165be6389747a6f7c03a50465622e72",
+    "sha256": "8d5f72afe93ec0dbb84b5d5321633ea653b274e4845645c4fd064a3f62319117"
+  },
+  "path": "tools/check_pipeline_fixed_provider_install.py",
+  "schema": "biocompiler.fixed_provider_record_observation_source_delta.v1",
+  "spans": [
+    {
+      "after": "        self.records = {}\n",
+      "before": "",
+      "offset": 5820
+    },
+    {
+      "after": "        # This detached view follows native insertion order; the SDK's private\n        # record cache follows first materialization by build/result readers.\n        self.records = state['_records']\n",
+      "before": "",
+      "offset": 6981
+    }
+  ]
+}

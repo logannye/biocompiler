@@ -63,7 +63,7 @@ remain distinct revision boundaries.
 | `payload-architecture-reproducibility` | Depends only on `installed-architecture`; requires all 13 case outputs and compares every relative file across versions. |
 | `circuit-reproducibility` | Depends only on `circuit-integration`; compares the complete infrastructure/source/review artifact inventories. |
 | `architecture-core-reproducibility` | Depends on both native builds and all four architecture SDK jobs; rehashes complete SDK/CLI artifacts from Python 3.11 and 3.14 on each platform and requires exact four-way equality with current run and executable authority. |
-| `installed-campaigns` | Both platforms × Python 3.11/3.14 × five complete campaign groups (20 jobs, at most eight concurrent). Each group installs the exact same SDK/native wheels outside the checkout and performs the complete smoke/uninstall/missing-package/reinstall lifecycle. Protocol runs alone; routing and pipeline-manager run in that order in the manager group. Fixed/reference, workflow and synthetic groups retain their original membership. All groups retain every original case, artifact and independent checker; no stateful scenario is split. |
+| `installed-campaigns` | Both platforms × Python 3.11/3.14 × five complete campaign groups (20 jobs, at most 20 concurrent). Each group installs the exact same SDK/native wheels outside the checkout and performs the complete smoke/uninstall/missing-package/reinstall lifecycle. Protocol runs alone. Manager and fixed groups may overlap two complete campaigns after the serial install lifecycle; receipts retain the original recipe order. Fixed/reference, workflow and synthetic groups retain their original membership. All groups retain every original case, artifact and independent checker; no stateful scenario is split. |
 | `realization-conformance` | Four independent aggregation jobs require all five group receipts and all 17 campaigns exactly once per runtime. Recheck current source/run/candidate identities, complete owned bytes, original command recipes, separate lifecycle logs, campaign logs and artifact hashes. Native input receipts bind the installed files for unchanged cross-runtime checkers. |
 | `realization-core-reproducibility` | Rehash complete realization protocol, workflow and producer SDK reports, verify every original applicable occurrence and all additional cases, require current run/source/binary authority and exact equality across all four campaigns. Private producer calls and injected-proposal cases remain explicitly classified as native-library coverage. |
 | `prebuilt-core-assembly` | Depends only on both native builds, allowing installation tests to start while other tests run. Independently checks complete platform wheels, original linked sources/notices/relink companions and final executable identities; builds and checks one pure SDK wheel containing both platform pins. |
@@ -74,7 +74,7 @@ All expensive producers wait for the short preflight, then independent work
 runs concurrently. The critical path is preflight → candidate build/assembly →
 parallel native/SDK/installed work → independent comparisons → final gate.
 Actual overlap depends on the hosted concurrency allowance; adding jobs is not
-itself a promise of faster execution. Installed groups are capped at eight jobs,
+itself a promise of faster execution. Installed groups are capped at 20 jobs,
 native suites, direct-core command groups and architecture scenarios at two workers per runner. The matrix
 lists all four fixed groups and then all four protocol groups first to request
 earlier continuation feedback; runner availability still governs start order. Campaign and
@@ -95,7 +95,11 @@ observations must equal the full serial original baseline before native executio
 all 39 native call occurrences are then reconstructed and checked in their original
 order. Equal serialized inputs do not replace per-occurrence physical-identity
 observations. These concurrency bounds change scheduling, not scientific scope
-or migration admission.
+or migration admission. Manager and fixed groups also use up to two campaign
+processes, each retaining its existing internal worker allowance, so the total
+process count per runner can exceed two. The six direct continuation controls
+run before the 39 native chains to expose short failures earlier; all remain
+required for success.
 
 The short authoring, per-occurrence source identity, exact source-restoration
 and diagnostics controls run in both preflight slots and remain in full unit

@@ -639,12 +639,12 @@ def campaign(core, corpus, receipt, *, workers=1, native_root=None):
     receipt['occurrence_original'] = {key: value for key, value in occurrence_receipt.items()
         if key not in ('_artifact_directory', 'artifacts')}
     occurrence_graphs = occurrences.validate(current_occurrences, corpus, sys.modules[__name__])
+    direct.run(core, corpus, oracle, receipt, originals)
     if workers > 1:
         continuation_workers().run_workers(sys.modules[__name__], core, corpus, receipt,
             current_occurrences, limit=workers, native_root=native_root)
     else:
         run_native_bodies(core, corpus, receipt, oracle, occurrence_graphs)
-    direct.run(core, corpus, oracle, receipt, originals)
     providers.installed_modules()
 
 

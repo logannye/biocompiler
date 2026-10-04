@@ -6,6 +6,7 @@ by CI. Local controls test plans only; hosted execution is required for acceptan
 """
 from __future__ import annotations
 import argparse
+from concurrent.futures import FIRST_COMPLETED, ThreadPoolExecutor, wait
 import hashlib
 import io
 import json
@@ -57,6 +58,8 @@ CAMPAIGN_GROUPS = {
                   'synthetic-selection-cli', 'synthetic-inspection'),
 }
 LIFECYCLE_NAMES = ('create-environment', 'install', 'smoke', 'uninstall', 'missing-package', 'reinstall')
+PARALLEL_CAMPAIGN_GROUPS = frozenset(('fixed', 'manager'))
+CAMPAIGN_WORKERS = 2
 
 
 def campaign_names(group=None):
@@ -120,12 +123,12 @@ def _hosted_progress(text):
         pass
 
 
-def run(command, *, cwd, environment, log, timeout=10800):
+def run(command, *, cwd, environment, log, timeout=10800, grouped=True):
     require(type(command) is list and all(type(part) is str for part in command), 'Invalid hosted command')
     require(not log.exists(), 'Hosted command log already exists')
     # Output is streamed to a retained file instead of unbounded PIPE accumulation.
     started = time.monotonic()
-    _hosted_progress('::group::Installed campaign: ' + _diagnostic_line(log.stem))
+    _hosted_progress(('::group::' if grouped else '') + 'Installed campaign: ' + _diagnostic_line(log.stem))
     try:
         try:
             with log.open('xb') as output:
@@ -145,7 +148,8 @@ def run(command, *, cwd, environment, log, timeout=10800):
         require(completed.returncode == 0, 'Hosted command failed; complete log retained: '+str(log))
         return receipt
     finally:
-        _hosted_progress('::endgroup::')
+        if grouped:
+            _hosted_progress('::endgroup::')
 
 
 def install_plan(python, environment_python, sdk, native):
@@ -189,6 +193,74 @@ def campaign_plan(checkout, python, ownership, output, group=None):
         command += ['--output',str(output/str(name+'.json'))]
         result.append((name,command))
     return result
+
+
+def campaign_execution(names, *, started=None):
+    """Bind a complete ordered dispatch to this exact installed driver source."""
+    return {'schema_version':'biocompiler.installed_campaign_execution.v1',
+        'workers':CAMPAIGN_WORKERS, 'driver_source':{'path':'tools/prebuilt_release_pipeline.py',
+            'sha256':hashlib.sha256(Path(__file__).read_bytes()).hexdigest()},
+        'campaign_order':list(names), 'started':list(names if started is None else started)}
+
+
+def execute_campaigns(plan, *, cwd, environment, output, receipt):
+    """Overlap whole commands only; stop dispatch on failure and drain children.
+
+    Threads own no biological/session state: every task invokes the original
+    complete campaign subprocess. Nested campaign workers retain their existing
+    limits, so this bounds top-level campaigns rather than all native processes.
+    """
+    require(type(plan) is list and plan and len({name for name,_ in plan}) == len(plan),
+            'Invalid or repeated parallel campaign plan')
+    names = [name for name,_ in plan]
+    outcomes, next_index, failed = {}, 0, False
+
+    def execute(index):
+        name,command = plan[index]
+        row, campaign = None, None
+        try:
+            row = run(command, cwd=cwd, environment=environment, log=output/(name+'.log'), grouped=False)
+            path = output/(name+'.json')
+            require(path.is_file(), 'Campaign omitted its complete receipt')
+            campaign = {'name':name, 'receipt_sha256':hashlib.sha256(path.read_bytes()).hexdigest()}
+            return row, campaign, None
+        except BaseException as error:
+            # Return the same exception after draining; do not replace timeout
+            # or process diagnostics, and do not synthesize a successful row.
+            return row, campaign, error
+
+    with ThreadPoolExecutor(max_workers=CAMPAIGN_WORKERS) as executor:
+        pending = {}
+        while next_index < min(CAMPAIGN_WORKERS, len(plan)):
+            pending[executor.submit(execute,next_index)] = next_index
+            next_index += 1
+        while pending:
+            done, _ = wait(pending, return_when=FIRST_COMPLETED)
+            for future in sorted(done, key=pending.get):
+                index = pending.pop(future)
+                outcomes[index] = future.result()
+                failed = failed or outcomes[index][2] is not None
+            if not failed:
+                while next_index < len(plan) and len(pending) < CAMPAIGN_WORKERS:
+                    pending[executor.submit(execute,next_index)] = next_index
+                    next_index += 1
+    # Only the coordinator publishes receipt rows, in the original source order.
+    receipt['campaign_execution'] = campaign_execution(names,
+        started=[names[index] for index in sorted(outcomes)])
+    for index in sorted(outcomes):
+        row,campaign,error = outcomes[index]
+        if row is not None:
+            receipt['commands'].append(row)
+        if campaign is not None:
+            receipt['campaigns'].append(campaign)
+    errors = [(index, outcome[2]) for index,outcome in sorted(outcomes.items()) if outcome[2] is not None]
+    if errors:
+        receipt['status'] = 'failure'
+        receipt['campaign_failures'] = [{'name':names[index], 'type':type(error).__name__,
+            'message':str(error)} for index,error in errors]
+        raise errors[0][1]
+    require(len(outcomes) == len(plan) and [row['name'] for row in receipt['campaigns']] == names,
+            'Incomplete parallel campaign census')
 
 
 def sdk_stage(source, manifests, staging):
@@ -328,10 +400,14 @@ def installed(args):
         inputs = build.canonical(native_input_document(ownership, sys.version.split()[0]))
         (args.output/'native-inputs.json').write_bytes(inputs)
         receipt['native_inputs_sha256'] = build.sha(inputs)
-        for name,command in campaign_plan(source,python,ownership,args.output,group):
-            execute(command,name)
-            require((args.output/(name+'.json')).is_file(),'Campaign omitted its complete receipt')
-            receipt['campaigns'].append({'name':name,'receipt_sha256':hashlib.sha256((args.output/(name+'.json')).read_bytes()).hexdigest()})
+        plan = campaign_plan(source,python,ownership,args.output,group)
+        if group in PARALLEL_CAMPAIGN_GROUPS:
+            execute_campaigns(plan, cwd=environment, environment=env, output=args.output, receipt=receipt)
+        else:
+            for name,command in plan:
+                execute(command,name)
+                require((args.output/(name+'.json')).is_file(),'Campaign omitted its complete receipt')
+                receipt['campaigns'].append({'name':name,'receipt_sha256':hashlib.sha256((args.output/(name+'.json')).read_bytes()).hexdigest()})
         receipt['ownership_after'] = installed_ownership(python,environment,env)
         require(receipt['ownership_after'] == ownership,'Installed ownership changed during campaigns')
         require([row['name'] for row in receipt['campaigns']] == campaign_names(group), 'Incomplete installed campaign census')

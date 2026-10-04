@@ -46,6 +46,9 @@ def validate_slot(receipt,expected,platform,minor,candidate,read,*,group=None):
             'python_version':receipt['python_version'].split()[0],
             'sha256':{name:before['files']['bin/'+name]['sha256'] for name in build.ROLES}},
             'Native input authority differs from installed candidate')
+    if group in pipeline.PARALLEL_CAMPAIGN_GROUPS:
+        require(receipt.get('campaign_execution') == pipeline.campaign_execution(pipeline.campaign_names(group)),
+                'Parallel campaign execution or driver source differs')
     require([row['name'] for row in receipt['campaigns']]==pipeline.campaign_names(group), 'Full installed campaign census differs')
     for row in receipt['campaigns']:
         raw=read(row['name']+'.json')

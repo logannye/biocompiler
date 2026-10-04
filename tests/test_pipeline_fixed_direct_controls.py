@@ -1,8 +1,10 @@
 """Fabricated complete peers exercise direct controls; no native acceptance."""
 from copy import deepcopy
 from pathlib import Path
+from types import SimpleNamespace
 import tempfile
 import unittest
+from unittest.mock import patch
 
 from tools import pipeline_fixed_direct_controls as direct
 from tools import check_pipeline_fixed_continuation_install as continuation
@@ -12,6 +14,124 @@ from tests.test_core_pipeline_build_views import BuildEnvelopeFixture
 from tests.test_pipeline_manager_campaign import reframe, guard_with_routes
 
 manager = direct.manager
+
+
+class DirectRecordObservationTests(unittest.TestCase):
+    """Record observation order is independent of lazy SDK cache insertion."""
+    def setUp(self):
+        from tests import test_core_pipeline_manager as views
+        self.views = views.CorePipelineManagerTests()
+        self.views.setUp()
+        self.addCleanup(self.views.doCleanups)
+        self.names = ('request', 'behavior', 'mechanism', 'components')
+        self.envelopes = {name: self.views.record(identity=name) for name in self.names}
+        from biocompiler.core_pipeline_manager import _ordered
+        self.configuration = {'actual': 'inspected mechanism configuration'}
+        provenance = {'configuration': self.configuration}
+        self.envelopes['mechanism']['value']['provenance'] = provenance
+        self.envelopes['mechanism']['bindings']['provenance']['tree'] = _ordered(provenance)
+
+    def inspected_records(self):
+        live = self.views.manager
+        # The actual build reader decodes its historical candidate before its
+        # result record: synthetic -> mechanism, components -> mechanism/components.
+        for name in ('mechanism', 'mechanism', 'mechanism', 'components'):
+            live._record(self.envelopes[name])
+        snapshot = {name: {} for name in ('passes', 'component_inputs', 'provider_history',
+            'component_input_history', 'dependencies', 'profiles')}
+        snapshot.update(target=live._target.to_dict(), records=self.envelopes)
+        order = {name: list(value) for name, value in snapshot.items() if name != 'target'}
+        order.update(combined_provider_history=[], validators={name: {} for name in
+            ('passes', 'component_inputs', 'provider_history', 'component_input_history')})
+        inspected = live._ordered_inspection({'snapshot': snapshot, 'order': order, 'providers': []})
+        return live._inspection_state(inspected)['_records']
+
+    def test_actual_sdk_inspection_order_retains_lazy_cached_record_objects(self):
+        records = self.inspected_records()
+        self.assertEqual(tuple(self.views.manager._records), ('mechanism', 'components', 'request', 'behavior'))
+        self.assertEqual(tuple(records), self.names)
+        self.assertIsNot(records, self.views.manager._records)
+        for name in self.names:
+            self.assertIs(records[name], self.views.manager._records[name])
+
+    def run_direct(self, *, wrong_inspection_order=False):
+        records = self.inspected_records()
+        configuration = self.configuration
+        expected = [{'id': 'direct/'+str(index), 'original_cases': []} for index in range(6)]
+        authority = {'request': object(), 'history': (), 'until': 1, 'config': object()}
+        originals = [{'authority_objects': authority} for _ in expected]
+        selected = object()
+        created, observed, witnesses, closed = [], [], [], []
+        test = self
+        class Peer:
+            def __init__(self):
+                self.session = SimpleNamespace(last_response=SimpleNamespace(sequence=0), traffic=[])
+                self._records = dict(test.views.manager._records)
+                order = tuple(reversed(test.names)) if wrong_inspection_order else test.names
+                self.observed_records = {name: records[name] for name in order}
+                self._provider_config = authority['config']
+                self._inspection_providers = {}
+                self.passes, self.registered, self.calls = {}, {}, []
+                for index, role in enumerate(direct.ROLES):
+                    def producer(context):
+                        return SimpleNamespace(output=SimpleNamespace(generator_config=selected))
+                    self.passes[role] = (SimpleNamespace(version='fixture.v1'), producer, {})
+                    self._inspection_providers['provider/'+str(index)] = producer
+                self.inspections = 0
+            def build_result(self, kind):
+                self.session.last_response.sequence += 1
+                return kind
+            def inspection_state(self):
+                self.inspections += 1
+                self.session.last_response.sequence += 1
+                return {'_passes': self.passes, '_records': self.observed_records}
+            def register(self, contract, wrapper, validators):
+                self.registered[len(self.registered)] = wrapper
+            def run(self, role, source, output, *, configuration):
+                self.calls.append((role, source, output, configuration))
+                return self.registered[len(self.calls)-1](object())
+        class Witness(direct.Witness):
+            def __init__(self):
+                super().__init__()
+                witnesses.append(self)
+            def evidence(self, oracle):
+                return {}
+        def factory(*args, **kwargs):
+            peer = Peer(); created.append(peer); return peer
+        def observe(identity, value, **kwargs):
+            self.assertEqual(tuple(name for name, _ in value['component_records']), self.names)
+            self.assertEqual(tuple(name for name, _ in value['synthetic_records']), self.names[:3])
+            for name, actual in value['component_records']:
+                self.assertIs(actual, records[name])
+            self.assertIs(value['selected_config'], selected)
+            observed.append(identity)
+            return {'id': identity}
+        from biocompiler.core_pipeline_manager import CorePassManager
+        receipt = {}
+        with patch.object(CorePassManager, 'from_components', side_effect=factory), \
+                patch.object(direct, 'Witness', Witness), \
+                patch.object(direct.providers, 'installed_modules'), \
+                patch.object(manager, 'artifact', side_effect=lambda receipt, raw: manager.sha(raw)), \
+                patch.object(continuation, 'close_receipt', side_effect=lambda peer, *_: closed.append(peer)):
+            direct.run(object(), SimpleNamespace(build={'cases': expected}),
+                SimpleNamespace(observe_case=observe), receipt, originals)
+        self.assertEqual(observed, [row['id'] for row in expected])
+        self.assertEqual(len(receipt['direct_checks']), 6)
+        self.assertEqual(closed, created)
+        for peer, witness in zip(created, witnesses):
+            self.assertEqual(peer.inspections, 1)
+            self.assertIs(witness.records, peer.observed_records)
+            self.assertEqual(tuple(peer._records), ('mechanism', 'components', 'request', 'behavior'))
+            self.assertEqual(peer.calls, [(role, source, output, configuration if index == 1 else None)
+                for index, (role, source, output) in enumerate(zip(direct.ROLES,
+                    ('request', *direct.OUTPUTS[:2]), direct.OUTPUTS))])
+
+    def test_direct_controls_use_one_inspected_order_and_the_same_record_objects(self):
+        self.run_direct()
+
+    def test_direct_controls_still_reject_wrong_native_inspection_order(self):
+        with self.assertRaisesRegex(AssertionError, 'Direct initial record census differs'):
+            self.run_direct(wrong_inspection_order=True)
 
 
 def fixture(receipt, expected, original, *, late_origin=False):

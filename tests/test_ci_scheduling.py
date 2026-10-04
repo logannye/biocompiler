@@ -80,7 +80,7 @@ class SchedulingTests(unittest.TestCase):
             self.assertNotIn('dune build',jobs[job])
         installed=jobs['installed-campaigns']
         self.assertIn('needs: [ocaml-build, prebuilt-core-assembly]',installed)
-        self.assertIn('max-parallel: 8',installed)
+        self.assertIn('max-parallel: 20',installed)
         self.assertIn('--group ${{ matrix.group }}',installed)
         rows=re.findall(r'platform: ([a-z0-9_-]+)\n            python-version: "([0-9.]+)"\n            group: ([a-z]+)',installed)
         self.assertEqual(len(rows),20)
@@ -102,6 +102,8 @@ class PartitionedReceiptTests(unittest.TestCase):
         for group,names in pipeline.CAMPAIGN_GROUPS.items():
             receipt=deepcopy(fixture.receipt)
             receipt.update(schema_version='biocompiler.prebuilt_installed_campaign.v2',campaign_group=group)
+            if group in pipeline.PARALLEL_CAMPAIGN_GROUPS:
+                receipt['campaign_execution'] = pipeline.campaign_execution(pipeline.campaign_names(group))
             receipt['native_inputs_sha256']=hashlib.sha256(fixture.raw['native-inputs.json']).hexdigest()
             receipt['campaigns']=[row for row in receipt['campaigns'] if row['name'] in names]
             allowed={name+'.log' for name in (*pipeline.LIFECYCLE_NAMES,*names)}
