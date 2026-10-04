@@ -65,9 +65,11 @@ remain distinct revision boundaries.
 | `validation` | Final gate requires all 38 jobs, including successful unit accounting, every installed/integration/browser job, TypeScript, both native platforms, all five reproducibility jobs and both prebuilt jobs. |
 
 The short campaign controls remain in full unit discovery and accounting. Their
-early execution prevents a known authoring-path failure from waiting behind
-native builds and serial campaigns; native work waits for both plans, not for
-unit-test shards. Failed or timed-out installed commands also print a bounded,
+early execution checks authoring paths, per-occurrence source identity and exact
+source restoration before native builds and serial campaigns; native work waits
+for both plans, not for unit-test shards. Equal serialized requests can have
+different physical object identities after a JSON roundtrip, so continuation
+graphs are bound to each original call occurrence. Failed or timed-out installed commands also print a bounded,
 escaped tail of their retained log directly in the hosted job. Complete logs
 remain the diagnostic authority, and successful commands do not replay them.
 

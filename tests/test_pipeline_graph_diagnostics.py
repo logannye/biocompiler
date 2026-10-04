@@ -6,6 +6,7 @@ import importlib.util
 import json
 from pathlib import Path
 import unittest
+from tools.pipeline_occurrence_source import restore as restore_occurrence_source
 
 ROOT = Path(__file__).resolve().parents[1]
 CHECKER = ROOT/'tools/check_pipeline_fixed_continuation_install.py'
@@ -127,7 +128,8 @@ class PublicGraphDiagnosticSourceTests(unittest.TestCase):
 
     def test_new_delta_composes_before_unchanged_authoring_and_original_path_proofs(self):
         plan = self.plan()
-        restored = plan.restore_public_graph_diagnostic_source(CHECKER.read_bytes(),
+        current = restore_occurrence_source('tools/check_pipeline_fixed_continuation_install.py', CHECKER.read_bytes())
+        restored = plan.restore_public_graph_diagnostic_source(current,
             plan.GRAPH_DIAGNOSTIC_DELTA.read_bytes())
         self.assertEqual(hashlib.sha256(restored).hexdigest(),
             '733d9823b203dc31c9f36715433f98ef654d08e1c6aba3cefb19e9b85e9447fd')
@@ -145,7 +147,8 @@ class PublicGraphDiagnosticSourceTests(unittest.TestCase):
 
     def test_extra_source_omitted_diagnostic_and_rehashed_witness_are_rejected(self):
         plan = self.plan()
-        current, witness = CHECKER.read_bytes(), plan.GRAPH_DIAGNOSTIC_DELTA.read_bytes()
+        current = restore_occurrence_source('tools/check_pipeline_fixed_continuation_install.py', CHECKER.read_bytes())
+        witness = plan.GRAPH_DIAGNOSTIC_DELTA.read_bytes()
         restored = plan.restore_public_graph_diagnostic_source(current, witness)
         for mutant in (restored, current+b'\n# unreviewed\n', current.replace(b'16_384', b'16_385'),
                 current.replace(b'case[\'graph\'] = observed_public_graph(', b'case[\'graph\'] = unreviewed_graph('),

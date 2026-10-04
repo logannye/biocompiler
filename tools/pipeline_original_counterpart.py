@@ -41,7 +41,7 @@ TEST_MODULES = ('test_pipeline_callback_semantics', 'test_pipeline_identity_sema
     'test_pipeline_deferred_runtime_receipt', 'test_pipeline_fixed_provider_semantics', 'test_pipeline_fixed_build_semantics', 'test_pipeline_contract_literals')
 MAX_SOURCE_BYTES = 32 * 1024 * 1024
 MAX_OUTPUT_BYTES = 32 * 1024 * 1024
-TASKS = ('deferred', 'callbacks', 'identity', 'tests', 'fixed-registration-original', 'fixed-provider-original', 'fixed-build-original')
+TASKS = ('deferred', 'callbacks', 'identity', 'tests', 'fixed-registration-original', 'fixed-provider-original', 'fixed-build-original', 'fixed-continuation-original')
 
 def build_indexes():
     from tools.check_pipeline_session_install import INDEXES
@@ -64,7 +64,7 @@ def closure_task(task, test_module):
 
 
 def reference_routes(task, test_module=None):
-    if closure_task(task, test_module) != 'fixed-build-original':
+    if closure_task(task, test_module) not in ('fixed-build-original', 'fixed-continuation-original'):
         return {}
     from tools import reference_original_counterpart as reference
     return {path: reference.route_source_witness(path) for path in reference.ROUTE_SOURCES}
@@ -80,7 +80,8 @@ def task_files(task, test_module=None):
     if task.startswith('fixed-'):
         from tools.check_pipeline_fixed_registration_install import overlay_files
         files.extend(overlay_files())
-    if task=='fixed-build-original':
+        files.append('tools/capture_pipeline_fixed_continuation_semantics.py')
+    if task in ('fixed-build-original', 'fixed-continuation-original'):
         files.append('tools/realization_source_lineage.py')
         files.append('tools/reference_original_counterpart.py')
         for _,index in build_indexes(): files.extend(path for path in index['source_files'] if not path.startswith('src/'))
@@ -96,13 +97,22 @@ def task_data(task, test_module=None):
         files.extend((lineage.TOOL_WITNESS, lineage.INSTALLED_TOOL_WITNESS, 'tests/conformance/pipeline-fixed-build-semantics-v1.json'))
     if task == 'fixed-provider-original': files.append('tests/conformance/pipeline-fixed-provider-semantics-v1.json')
     if task == 'fixed-build-original': files.append('tests/conformance/pipeline-fixed-build-semantics-v1.json')
-    if task=='fixed-build-original':
+    if task in ('fixed-build-original', 'fixed-continuation-original'):
         from tools import reference_original_counterpart as reference
         files.append(reference.ROUTE_WITNESS)
         for path,index in build_indexes():
             files.extend((path,'tests/conformance/'+index['full_corpus']['path']))
             files.extend('tests/conformance/'+index['provider_directory']+'/'+entry['id']+'.json'
                 for entry in index['provider_documents'])
+    if task == 'fixed-continuation-original':
+        files.extend('data/references/fap_car/' + name for name in
+            ('manifest.json', 'source-excerpts.html', 'independent-audit.json', 'curation.md'))
+        from tools import check_pipeline_fixed_continuation_install as continuation
+        raw = (ROOT / continuation.BUILD_ORACLE).read_bytes()
+        require(lineage.sha(raw) == continuation.BUILD_ORACLE_SHA256,
+            'Original continuation authority archive differs')
+        files.extend('tests/conformance/fixed-pipeline-literals-v1/' + case['authority_sha256'] + '.json'
+            for case in json.loads(raw)['cases'])
     return tuple(dict.fromkeys(files))
 
 
@@ -168,7 +178,8 @@ def run(task='deferred', *, test_module=None, test_ids=None):
         environment.pop('PYTHONPATH', None)
         environment['PYTHONDONTWRITEBYTECODE'] = '1'
         completed = subprocess.run([sys.executable, '-I', '-c', script, str(overlay)],
-            cwd=directory, env=environment, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=90)
+            cwd=directory, env=environment, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+            timeout=600 if task == 'fixed-continuation-original' else 90)
         require(completed.returncode == 0, 'Original counterpart child failed: ' +
             completed.stderr.decode(errors='replace')[-12000:])
         require(result.is_file() and result.stat().st_size <= MAX_OUTPUT_BYTES,
@@ -261,6 +272,10 @@ def child(directory):
         if manifest['task']=='fixed-registration-original':
             from tools.check_pipeline_fixed_registration_install import capture_original
             value=capture_original()
+        elif manifest['task']=='fixed-continuation-original':
+            from tools import capture_pipeline_fixed_continuation_semantics as occurrence
+            from tools import check_pipeline_fixed_continuation_install as driver
+            value=occurrence.capture(driver.Corpus(), driver.load_oracle(installed=False), driver)
         else:
             suffix='provider' if manifest['task']=='fixed-provider-original' else 'build'
             oracle=importlib.import_module('tools.capture_pipeline_fixed_'+suffix+'_semantics')
@@ -387,7 +402,7 @@ def original_test_suite(loader, tests, pattern, module):
 def metadata_correspondence(current, counterpart):
     """Two full executions, one exact source-metadata difference, no state import."""
     old=validate(counterpart)
-    require(counterpart['manifest']['task'] in ('fixed-provider-original','fixed-build-original','callbacks'),
+    require(counterpart['manifest']['task'] in ('fixed-provider-original','fixed-build-original','fixed-continuation-original','callbacks'),
         'Source metadata correspondence has no closed original task')
     require(type(current) is dict and set(current)==set(old) and
         type(current.get('source_files')) is dict and type(old.get('source_files')) is dict,

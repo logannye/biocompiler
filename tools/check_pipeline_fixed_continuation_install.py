@@ -30,9 +30,11 @@ from unittest.mock import patch
 if __package__:
     from . import check_pipeline_fixed_provider_install as providers
     from . import pipeline_authoring_sources as authoring_sources
+    from . import capture_pipeline_fixed_continuation_semantics as occurrences
 else:
     import check_pipeline_fixed_provider_install as providers
     import pipeline_authoring_sources as authoring_sources
+    import capture_pipeline_fixed_continuation_semantics as occurrences
 
 manager, fixed, r = providers.manager, providers.manager.fixed, providers.r
 ROOT = manager.ROOT
@@ -42,6 +44,7 @@ SCOPE = '39_original_live_fixed_workflow_chains_312_prefix_254_suffix_operations
 RECEIPT_FILE, ARTIFACT_DIRECTORY = 'pipeline-fixed-continuations.json', 'pipeline-fixed-continuations-artifacts'
 BUILD_ORACLE = 'tests/conformance/pipeline-fixed-build-semantics-v1.json'
 BUILD_ORACLE_SHA256 = 'b423e1d60fbe688090bd44787ccb372a10847681cd8a011fd897cface9b9e28e'
+OCCURRENCE_ORACLE_SHA256 = '5faf7890dae5a32aa3b9db704ec7ad0661ba2d46632e754540bd2a2139e89c84'
 METHODS = {
     'tests/test_component_pipeline.py': ('ComponentPipelineTests', (
         'test_checked_component_scope_preserves_upstream_evidence_and_sources',
@@ -83,12 +86,15 @@ class Corpus:
         for path, identity in self.build['source_files'].items():
             require(not Path(path).is_absolute() and '..' not in Path(path).parts and r.pin(identity),
                 'Invalid original public build source: '+path)
+            actual = r.raw_file(ROOT / path)
+            if sha(actual) == identity:
+                continue
             if path == 'src/biocompiler/compiler/pipeline.py':
                 fixed.source_tool('manager_registration_source_lineage').verify_source(ROOT, path, identity)
             elif path == 'tools/check_pipeline_session_install.py':
-                fixed.source_tool('manager_registration_source_lineage').verify_tool_source(r.raw_file(ROOT / path), identity)
+                fixed.source_tool('manager_registration_source_lineage').verify_tool_source(actual, identity)
             else:
-                require(sha(r.raw_file(ROOT / path)) == identity, 'Original public build source changed: '+path)
+                raise AssertionError('Original public build source changed: '+path)
         self.authorities = {case['authority_sha256']: case for case in self.build['cases']}
         require(len(self.cases) == 39 and len(self.authorities) == 6, 'Original continuation cohort was narrowed')
         require({case['authority'] for case in self.cases} == set(self.authorities), 'Original continuation authority coverage differs')
@@ -317,8 +323,9 @@ def equal_public_graph(actual, expected):
 
 class NativeWitness:
     """Observe actual public operations on one retained native manager per call."""
-    def __init__(self, core, corpus, oracle):
+    def __init__(self, core, corpus, oracle, occurrence_graphs=None):
         self.core, self.corpus, self.oracle = core, corpus, oracle
+        self.occurrence_graphs = occurrence_graphs
         self.context = None
         self.offsets, self.cases = {}, []
         self.depth = set()
@@ -450,7 +457,9 @@ class NativeWitness:
         case['after_records'] = tuple((name, actual._records[name]) for name in ('request', 'behavior', 'mechanism', 'components'))
         case['graph'] = observed_public_graph(self.oracle, request, config, upstream, built,
             case['before_records'], case['after_records'])
-        equal_public_graph(case['graph'], public_graph(self.corpus.authorities[expected['authority']]))
+        require(self.occurrence_graphs is not None and expected['id'] in self.occurrence_graphs,
+            'Original per-occurrence public graph is absent')
+        equal_public_graph(case['graph'], self.occurrence_graphs[expected['id']])
         return built
 
     @contextmanager
@@ -474,6 +483,7 @@ class NativeWitness:
 
 BUILD_TOOL = 'tools/capture_pipeline_fixed_build_semantics.py'
 SOURCES = tuple(dict.fromkeys((BUILD_TOOL, 'tests/test_pipeline_fixed_build_semantics.py',
+    occurrences.SOURCE, 'tests/test_pipeline_fixed_continuation_identity.py',
     'tools/check_pipeline_fixed_continuation_install.py', 'tests/test_pipeline_fixed_continuation_campaign.py',
     'tests/test_pipeline_graph_diagnostics.py',
     'tools/pipeline_authoring_sources.py', 'tests/test_pipeline_authoring_sources.py',
@@ -502,6 +512,8 @@ def metadata(corpus):
     return {'coverage': COVERAGE, 'pending': corpus.pending,
         'original_build': {'path': BUILD_ORACLE, 'sha256': corpus.build_pin,
             'inventory_fingerprint': corpus.build['inventory_fingerprint']},
+        'original_occurrences': {'path': occurrences.OUTPUT, 'sha256': OCCURRENCE_ORACLE_SHA256,
+            'identity': 'every_original_case_context_and_call_index;deduplicated_complete_graphs_only'},
         'fixed_authority': fixed.metadata(corpus.fixed),
         'declarations': r.source_pins((manager.CHANNEL_PATH, manager.APPLICATION_PATH)),
         'public_graph_projection': {'retained': ['target', 'config_argument', 'source_origins', 'synthetic',
@@ -582,9 +594,17 @@ def campaign(core, corpus, receipt):
     oracle, originals = load_oracle(), []
     fresh = oracle.capture(retain=originals)
     providers.capture_counterpart(receipt, fresh, 'fixed-build-original', corpus.build)
+    occurrence_original = occurrences.read_frozen(corpus, sys.modules[__name__])
+    current_occurrences = occurrences.capture(corpus, oracle, sys.modules[__name__])
+    occurrence_receipt = {'_artifact_directory': receipt['_artifact_directory'], 'artifacts': receipt['artifacts']}
+    providers.capture_counterpart(occurrence_receipt, current_occurrences,
+        'fixed-continuation-original', occurrence_original)
+    receipt['occurrence_original'] = {key: value for key, value in occurrence_receipt.items()
+        if key not in ('_artifact_directory', 'artifacts')}
+    occurrence_graphs = occurrences.validate(current_occurrences, corpus, sys.modules[__name__])
     modules = load_body_modules()
     providers.installed_modules()
-    witness = NativeWitness(core, corpus, oracle)
+    witness = NativeWitness(core, corpus, oracle, occurrence_graphs)
     try:
         with oracle.portable_sources(), witness.entries(modules) as entries:
             execution = run_original_bodies(context=witness.in_context, modules=modules)
@@ -705,13 +725,14 @@ def expand_inspections(commands):
     return expanded
 
 
-def validate_case(corpus, expected, actual, evidence, details, oracle, authority_objects):
+def validate_case(corpus, expected, actual, evidence, details, oracle, authority_objects, *, expected_graph=None):
     from biocompiler.core_pipeline_manager import _ordered
     from biocompiler.core_pipeline_provider_views import StructuralViews, origin_reference
     fields = {'events', 'inspections', 'initial', 'completed', 'upstream_sequence', 'prepare_sequence',
         'profile_sequence', 'registration_sequence', 'finish_sequence', 'sources', 'providers', 'record_identities'}
     require(type(evidence) is dict and set(evidence) == fields, 'Incomplete retained-manager evidence')
-    expected_graph = public_graph(corpus.authorities[expected['authority']])
+    if expected_graph is None:
+        expected_graph = public_graph(corpus.authorities[expected['authority']])
     equal(actual, expected_graph, 'Complete public build graph differs from original')
     commands = {item['sequence']: item for item in details['commands']}
     require(len(commands) == len(details['commands']), 'Fixed continuation repeated a native command')
@@ -984,8 +1005,15 @@ def validate_checks(receipt, corpus, artifacts):
     # Independently rebuild source-owned authoring roots. No accepted original
     # record is ever consumed by the native request or the receipt view reader.
     equal(oracle.capture(retain=originals), current, 'Independent original authority is not reproducible')
-    authorities = {case['authority_sha256']: objects['authority_objects']
-        for case, objects in zip(corpus.build['cases'], originals)}
+    frozen_occurrences = occurrences.read_frozen(corpus, sys.modules[__name__])
+    current_occurrences, _ = providers.validate_counterpart(receipt['occurrence_original'], artifacts,
+        'fixed-continuation-original', frozen_occurrences)
+    occurrence_objects = []
+    equal(occurrences.capture(corpus, oracle, sys.modules[__name__], retain=occurrence_objects), current_occurrences,
+        'Independent original occurrence authority is not reproducible')
+    occurrence_graphs = occurrences.validate(current_occurrences, corpus, sys.modules[__name__])
+    authorities = {case['id']: objects['authority_objects']
+        for case, objects in zip(current_occurrences['occurrences'], occurrence_objects)}
     sessions, pids, projected = set(), set(), []
     for expected, row in zip(corpus.cases, receipt['checks']):
         require(type(row) is dict and set(row) == {'id', 'actual', 'evidence', 'pid', 'returncode', 'closed', 'invalidated',
@@ -996,7 +1024,8 @@ def validate_checks(receipt, corpus, artifacts):
         traffic = manager.validate_frames(row['frames'], artifacts, channel, application, sessions=sessions,
             details=details, provider_calls=False, initializer='initialize-synthetic')
         result = validate_case(corpus, expected, artifacts.json(row['actual'], r.MAX_ARTIFACT_BYTES),
-            artifacts.json(row['evidence'], r.MAX_ARTIFACT_BYTES), details, oracle, authorities[expected['authority']])
+            artifacts.json(row['evidence'], r.MAX_ARTIFACT_BYTES), details, oracle, authorities[expected['id']],
+            expected_graph=occurrence_graphs[expected['id']])
         projected.append({**result, **traffic})
     direct_projection = direct.validate(receipt, corpus, oracle, artifacts, sessions, pids, originals=originals)
     require(artifacts.used == set(artifacts.declared), 'Unreferenced complete retained-workflow evidence')

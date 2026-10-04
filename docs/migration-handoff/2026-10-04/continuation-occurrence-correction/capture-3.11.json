@@ -1,0 +1,14 @@
+{
+  "status": "pass",
+  "python": "3.11.15",
+  "seconds": 149.9845225410536,
+  "bytes": 9076888,
+  "decoded_sha256": "8c0968a5e8a4cde46d643fdd851b6c1be447b17aef4c2f34aa9410f645645123",
+  "coverage": {
+    "authorities": 6,
+    "contexts": 17,
+    "graphs": 8,
+    "occurrences": 39,
+    "original_methods": 13
+  }
+}

@@ -7,6 +7,7 @@ from pathlib import Path
 import tempfile
 import unittest
 from unittest.mock import patch
+from tools.pipeline_occurrence_source import restore as restore_occurrence_source
 
 DRAFT=Path(__file__).resolve().parents[1]
 SOURCE=DRAFT if (DRAFT/'core/dune-project').is_file() else DRAFT.parents[2]
@@ -50,6 +51,7 @@ class InstalledHelperCounterpartTests(unittest.TestCase):
 
     def test_overlay_explicitly_copies_both_witnesses_and_old_assertions_remain(self):
         before=(BASE/'tools/pipeline_original_counterpart.py.source').read_text();after=(DRAFT/'tools/pipeline_original_counterpart.py').read_text()
+        after=restore_occurrence_source('tools/pipeline_original_counterpart.py',after.encode()).decode()
         self.assertEqual(after.replace('lineage.TOOL_WITNESS, lineage.INSTALLED_TOOL_WITNESS,','lineage.TOOL_WITNESS,'),before)
         before=(BASE/'tests/test_manager_registration_source_lineage.py.source').read_text();after=(DRAFT/'tests/test_manager_registration_source_lineage.py').read_text()
         self.assertEqual(after.replace('        current=lineage.restore_installed_tool(current)\n','',1),before)

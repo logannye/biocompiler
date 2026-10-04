@@ -13,6 +13,7 @@ import sys
 import tempfile
 import unittest
 from unittest.mock import patch
+from tools.pipeline_occurrence_source import restore as restore_occurrence_source
 
 ROOT=Path(__file__).resolve().parents[1]
 SOURCE=ROOT/'tests/conformance/prebuilt-source-v1'
@@ -334,6 +335,7 @@ class HostedCiPlanTests(unittest.TestCase):
             elif name=='tools/pipeline_reference_runtime.py':
                 new=restore_reference_distribution_source(new,REFERENCE_DELTA.read_bytes())
             elif name=='tools/check_pipeline_fixed_continuation_install.py':
+                new=restore_occurrence_source(name,new)
                 new=restore_public_graph_diagnostic_source(new,GRAPH_DIAGNOSTIC_DELTA.read_bytes())
                 new=restore_installed_authoring_source(new,AUTHORING_DELTA.read_bytes())
             new=new.decode()
@@ -434,6 +436,7 @@ class HostedCiPlanTests(unittest.TestCase):
 
     def test_installed_authoring_restoration_rejects_unreviewed_source_changes(self):
         current=(ROOT/'tools/check_pipeline_fixed_continuation_install.py').read_bytes()
+        current=restore_occurrence_source('tools/check_pipeline_fixed_continuation_install.py',current)
         current=restore_public_graph_diagnostic_source(current,GRAPH_DIAGNOSTIC_DELTA.read_bytes())
         witness=AUTHORING_DELTA.read_bytes()
         restored=restore_installed_authoring_source(current,witness)
