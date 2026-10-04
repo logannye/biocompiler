@@ -129,3 +129,19 @@ let () =
   rejected "realization_evidence_limit" (fun () -> R.make ~outcome:E.Fail ~dependencies:deps ~checked_requirement_ids:[] ~diagnostics:[large; large; large] ());
   rejected "legacy_ascii_limit" (fun () -> Legacy_ascii.encode (arr [str unicode_large; str unicode_large; str unicode_large]));
   print_endline "realization evidence: six complete records, independent legacy ASCII identities, all dependency freshness, PASS invariants and cumulative native boundaries checked"
+
+let () =
+  let keys value = List.map fst (Json.object_fields value) in
+  let expected = ["schema_version";"outcome";"evidence_kind";"claim_scope";"dependencies";
+    "checked_requirement_ids";"diagnostics";"counterexamples";"coverage"] in
+  let deps = dependencies () in
+  let original = R.make ~outcome:E.Unknown ~dependencies:deps ~checked_requirement_ids:[] () in
+  let imported = R.of_json (obj (List.rev (Json.object_fields (R.to_json original)))) in
+  require (keys (R.to_json imported) = expected) "CheckResult import retained transport order instead of public order";
+  let replacement = D.of_json (obj (List.rev (Json.object_fields (D.to_json deps)))) in
+  let changed = R.with_dependencies imported replacement in
+  require (keys (R.to_json changed) = expected) "Dependency replacement displaced the public CheckResult field";
+  require (keys (get "dependencies" (R.to_json changed)) = keys (D.to_json replacement))
+    "CheckResult normalized an authored dependency mapping order";
+  require (R.fingerprint changed = R.fingerprint original && R.canonical_size changed = R.canonical_size original)
+    "Ordered report repair changed canonical identity or measured size"

@@ -223,7 +223,11 @@ let decode_target path value =
     | Human_target ->
         require ~path (not (List.mem "abstract" compartments)) "invalid_human_target" "Human targets require explicit physical compartments.";
         replace "human_target" (human_contract (child path "human_target") ~compartments (field path "human_target" fields)) fields in
-  kind, Json.Object fields
+  (* TargetContext.to_dict fixes the public envelope order after validation;
+     resource member order remains the authored mapping order. *)
+  kind, Json.Object (List.map (fun key -> key,field path key fields)
+    (["schema_version";"context_id";"context_version";"payload_format";
+      "capabilities";"compartments";"resources"] @ extra))
 
 module Target_evidence = struct
   type system = Human_in_vivo | Primary_human_cells | Human_cell_line | Nonhuman_in_vivo

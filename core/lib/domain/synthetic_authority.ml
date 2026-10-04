@@ -309,8 +309,11 @@ module Candidate = struct
     let source_map = name_map budget source_map in
     let behavior_requirement_ids = name_map budget behavior_requirement_ids in
     let component_locks = array budget Lock.to_json component_locks in
-    Json.Object (["source_map",source_map;"behavior_requirement_ids",behavior_requirement_ids;"component_locks",component_locks] @
-      List.filter (fun (key,_) -> not (List.mem key ["source_map";"behavior_requirement_ids";"component_locks"])) skeleton)
+    (* Public candidate documents follow SyntheticCandidate.to_dict, including
+       the positions of normalized fields. Canonical hashes alone hide order. *)
+    Json.Object (List.map (fun (key,value) -> key,(match key with
+      | "source_map" -> source_map | "behavior_requirement_ids" -> behavior_requirement_ids
+      | "component_locks" -> component_locks | _ -> value)) skeleton)
   let of_json ?(path = "") raw =
     let fields = record ~path schema_version ["intended_use";"human_therapeutic_admission";"request_fingerprint";
       "mechanism";"observation_map";"source_map";"behavior_requirement_ids";"component_locks";"generator_config"] raw in

@@ -184,3 +184,17 @@ let () =
   require (E.Check_result.fingerprint (K.check ~until request assembly frames) = E.Check_result.fingerprint result)
     "A failed reconstruction contaminated a fresh component behavior check";
   print_endline "actual component behavior:6 full independent Python results, coherent wrong implementation, link-result merge, authority, exact/shared bounds and repeated failed reconstruction checked"
+
+let () =
+  let request = Realization_request.of_json (get "request" fixture) in
+  let report = E.Check_result.to_json (run request (case "baseline")) in
+  let keys value = List.map fst (Json.object_fields value) in
+  let dependencies = get "dependencies" report in
+  require (keys dependencies = ["behavior";"behavior_artifact";"contract";"domain";"target";
+    "mechanism";"observation_map";"history";"horizon";"checker";"model_runner";"reference_evaluator";"settings"])
+    "Component checking moved replaced settings ahead of original dependencies";
+  require (keys (get "settings" dependencies) =
+    ["scope";"intended_use";"human_admission_policy";"time";"response";"nonvacuity";"contact_loss";
+     "coverage";"max_microsteps";"component_reconstruction";"component_assembly";
+     "component_registry";"component_composition"])
+    "Component settings differ from original mapping-unpack insertion order"

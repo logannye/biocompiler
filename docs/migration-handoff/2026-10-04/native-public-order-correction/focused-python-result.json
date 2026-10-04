@@ -1,0 +1,93 @@
+{
+  "base_revision": "2cf35b440ce9fca6dc951709b27f8122f00b81f7",
+  "changes": {
+    "tests/conformance/public-graph-diagnostic-source-delta-v1.json": {
+      "bytes": 4315,
+      "sha256": "28b90d52d30d291ad1aeee4dad62c35ce012c6f209b02dd4c7972320530ed4c3"
+    },
+    "tests/test_pipeline_graph_diagnostics.py": {
+      "bytes": 9013,
+      "sha256": "5911d8c46afd16e2d4d5c4e377d982d491286d2700b63cbfcd39619beed2c101"
+    },
+    "tests/test_prebuilt_ci_plan.py": {
+      "bytes": 33475,
+      "sha256": "b40826f26bb0669e082888b43d98b9f241e3708a4c9a383922d1f336d84031d7"
+    },
+    "tools/check_pipeline_fixed_continuation_install.py": {
+      "bytes": 74660,
+      "sha256": "a50d4f3bed59fdd308a169e765e3d8b9145ad616c290e7bf635765f038f9b5b4"
+    }
+  },
+  "controls": {
+    "3.11": {
+      "actual_ast_definition_source_count": 3,
+      "actual_imported_project_source_count": 3,
+      "duration_seconds": 0.321535,
+      "log_sha256": "f386d918b7d9d330fef2bd28eb78398a3c13f534fd1e246dd21469665c0983b4",
+      "receipt_sha256": "241323859f3db34e8d07d2195e053ee56cc64b08858d5235a16bb8272c757f55",
+      "runtime": "3.11.15",
+      "status": "pass",
+      "tests_run": 9
+    },
+    "3.14": {
+      "actual_ast_definition_source_count": 3,
+      "actual_imported_project_source_count": 3,
+      "duration_seconds": 0.372067,
+      "log_sha256": "5826ac3dd767994b22b261e915ac740b22691951a0437ac86a3693b665b453be",
+      "receipt_sha256": "23d56c326377e990301a0853832fbf142fed7ec0d4a18013214cca1f8d6cfaca",
+      "runtime": "3.14.6",
+      "status": "pass",
+      "tests_run": 9
+    }
+  },
+  "members": {
+    "checker-before.py.source": {
+      "bytes": 71452,
+      "sha256": "733d9823b203dc31c9f36715433f98ef654d08e1c6aba3cefb19e9b85e9447fd"
+    },
+    "controls-3.11.json": {
+      "bytes": 3621,
+      "sha256": "241323859f3db34e8d07d2195e053ee56cc64b08858d5235a16bb8272c757f55"
+    },
+    "controls-3.11.log": {
+      "bytes": 2010,
+      "sha256": "f386d918b7d9d330fef2bd28eb78398a3c13f534fd1e246dd21469665c0983b4"
+    },
+    "controls-3.14.json": {
+      "bytes": 3576,
+      "sha256": "23d56c326377e990301a0853832fbf142fed7ec0d4a18013214cca1f8d6cfaca"
+    },
+    "controls-3.14.log": {
+      "bytes": 2010,
+      "sha256": "5826ac3dd767994b22b261e915ac740b22691951a0437ac86a3693b665b453be"
+    },
+    "proposal.patch": {
+      "bytes": 23257,
+      "sha256": "c01bf0eb992771dadbaa24afa4fa7c9383e151b260989218b9fb9b3e78b8cbc1"
+    },
+    "run_controls.py": {
+      "bytes": 4316,
+      "sha256": "9a7d2ea283f851420bf25e2c3b946639c3c01620afa81c7ceabd47d760088681"
+    },
+    "source-proposal.json": {
+      "bytes": 2427,
+      "sha256": "0d12aefc919bd7c9a21fe305cb7f8e3d124953ed2580fdf84456c44bbc043a0a"
+    }
+  },
+  "outcome": "Exact canonical graph comparison remains authoritative. Failure-only bounded detail retains first encoded-graph divergence in the original AssertionError message. Successful output, receipt shapes, artifacts, process closure, original corpus and earlier source witnesses are unchanged.",
+  "preserved_original_inputs": {
+    "tests/conformance/installed-authoring-source-delta-v1.json": "9903d8be3224513c3bf260ae9cbe2dcd13cb65f9d4f7132313c1fb374d8896dd",
+    "tests/conformance/pipeline-fixed-build-semantics-v1.json": "b423e1d60fbe688090bd44787ccb372a10847681cd8a011fd897cface9b9e28e",
+    "tests/conformance/prebuilt-installed-path-delta-v1.json": "f64bcd82834b120dbe0c848a94a0ac8e0fe117ea3fedd22a136a2bc415025dbd",
+    "tests/conformance/prebuilt-source-v1.json": "d679ec6aaf09cb0fc1ba56c42bf72b85b3184b37f34456633f76139b4274363d"
+  },
+  "runner_sha256": "9a7d2ea283f851420bf25e2c3b946639c3c01620afa81c7ceabd47d760088681",
+  "schema": "biocompiler.public_graph_diagnostic_result.v1",
+  "scope_limits": [
+    "Native mapping-order correction is owned and validated separately.",
+    "No local native execution, original campaign, full discovery or broad suite was run.",
+    "Traversal/output limits produce explicit diagnostic limit text, never an acceptance decision."
+  ],
+  "source_proposal_sha256": "0d12aefc919bd7c9a21fe305cb7f8e3d124953ed2580fdf84456c44bbc043a0a",
+  "status": "focused-pure-controls-passed"
+}

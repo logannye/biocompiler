@@ -248,6 +248,73 @@ def ordinary_value(value):
             'description': item.description} for item in value.unresolved]}
 
 
+def public_graph_difference(actual, expected):
+    """Bounded advisory detail from encoded graphs, never an acceptance test."""
+    remaining = 16_384
+
+    def preview(value):
+        kind = type(value)
+        if kind is str:
+            return {'type': 'str', 'length': len(value), 'prefix': value[:128]}
+        if kind in (list, dict):
+            return {'type': kind.__name__, 'length': len(value)}
+        if kind is int and value.bit_length() > 256:
+            return {'type': 'int', 'bits': value.bit_length()}
+        if value is None or kind in (bool, int, float):
+            return {'type': kind.__name__, 'value': value}
+        return {'type': 'unsupported'}
+
+    def visit(left, right, path):
+        nonlocal remaining
+        remaining -= 1
+        detail = {'path': path, 'actual': preview(left), 'expected': preview(right)}
+        if remaining < 0 or len(path) > 48:
+            return {**detail, 'reason': 'scan-limit'}
+        if type(left) is not type(right):
+            return {**detail, 'reason': 'type'}
+        if type(left) is dict:
+            if len(left) > 64 or len(right) > 64 or any(type(key) is not str or len(key) > 64
+                    for value in (left, right) for key in value):
+                return {**detail, 'reason': 'scan-limit'}
+            for key in sorted(left.keys() | right.keys()):
+                if key not in left or key not in right:
+                    return {'path': path+[key], 'reason': 'missing-key',
+                        'actual': preview(left[key]) if key in left else {'missing': True},
+                        'expected': preview(right[key]) if key in right else {'missing': True}}
+                found = visit(left[key], right[key], path+[key])
+                if found is not None:
+                    return found
+            return None
+        if type(left) is list:
+            for index, (item, wanted) in enumerate(zip(left, right)):
+                found = visit(item, wanted, path+[index])
+                if found is not None:
+                    return found
+            return {**detail, 'reason': 'length'} if len(left) != len(right) else None
+        if ((type(left) is str and max(len(left), len(right)) > 4096)
+                or (type(left) is int and max(left.bit_length(), right.bit_length()) > 256)):
+            return {**detail, 'reason': 'scan-limit'}
+        if left is None or type(left) in (bool, int, float, str):
+            return {**detail, 'reason': 'value'} if canonical(left) != canonical(right) else None
+        return {**detail, 'reason': 'unsupported'}
+
+    detail = visit(actual, expected, []) or {'reason': 'no-difference-in-bounded-view'}
+    raw = canonical(detail)
+    return raw.decode('utf-8') if len(raw) <= 8192 else '{"reason":"diagnostic-output-limit"}'
+
+
+def equal_public_graph(actual, expected):
+    try:
+        equal(actual, expected, 'Complete public native build values or physical identities differ')
+    except AssertionError as error:
+        try:
+            detail = public_graph_difference(actual, expected)
+        except Exception:
+            detail = '{"reason":"diagnostic-unavailable"}'
+        error.args = (error.args[0]+'; first public graph difference: '+detail,)
+        raise
+
+
 class NativeWitness:
     """Observe actual public operations on one retained native manager per call."""
     def __init__(self, core, corpus, oracle):
@@ -383,8 +450,7 @@ class NativeWitness:
         case['after_records'] = tuple((name, actual._records[name]) for name in ('request', 'behavior', 'mechanism', 'components'))
         case['graph'] = observed_public_graph(self.oracle, request, config, upstream, built,
             case['before_records'], case['after_records'])
-        equal(case['graph'], public_graph(self.corpus.authorities[expected['authority']]),
-            'Complete public native build values or physical identities differ')
+        equal_public_graph(case['graph'], public_graph(self.corpus.authorities[expected['authority']]))
         return built
 
     @contextmanager
@@ -409,6 +475,7 @@ class NativeWitness:
 BUILD_TOOL = 'tools/capture_pipeline_fixed_build_semantics.py'
 SOURCES = tuple(dict.fromkeys((BUILD_TOOL, 'tests/test_pipeline_fixed_build_semantics.py',
     'tools/check_pipeline_fixed_continuation_install.py', 'tests/test_pipeline_fixed_continuation_campaign.py',
+    'tests/test_pipeline_graph_diagnostics.py',
     'tools/pipeline_authoring_sources.py', 'tests/test_pipeline_authoring_sources.py',
     'src/biocompiler/core_pipeline_build_views.py', 'tests/test_core_pipeline_build_views.py',
     'tools/pipeline_fixed_direct_controls.py', 'tests/test_pipeline_fixed_direct_controls.py', *providers.SOURCES)))

@@ -120,7 +120,9 @@ module Observable = struct
     require ~path (List.mem (Type_spec.kind dtype) [Type_spec.Scalar; Type_spec.Condition]) "Observable requires a scalar or condition type.";
     let scope = match Json.string (get "scope") with "cell" -> Cell | "contact" -> Contact
       | _ -> Diagnostic.fail ~path "invalid_measurement_contract" "Unknown observable scope." in
-    {json = finish (Json.Object (replace "dtype" (Type_spec.to_json dtype) fields));
+    {json = finish (Json.Object (List.map (fun key -> key,
+       (if key = "dtype" then Type_spec.to_json dtype else get key))
+       ["schema_version";"id";"dtype";"role";"scope";"compartment"]));
      id = name "id"; dtype; role = name "role"; scope; compartment = name "compartment"}
   let to_json value = value.json
   let fingerprint value = Canonical.fingerprint value.json

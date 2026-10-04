@@ -26,6 +26,49 @@ REFERENCE_DELTA=ROOT/'tests/conformance/reference-distribution-source-delta-v1.j
 REFERENCE_DELTA_SHA256='06475b6327dac7dc67187956e14abb3a0771574307e4fbf460795c49ab905a06'
 AUTHORING_DELTA=ROOT/'tests/conformance/installed-authoring-source-delta-v1.json'
 AUTHORING_DELTA_SHA256='9903d8be3224513c3bf260ae9cbe2dcd13cb65f9d4f7132313c1fb374d8896dd'
+GRAPH_DIAGNOSTIC_DELTA=ROOT/'tests/conformance/public-graph-diagnostic-source-delta-v1.json'
+GRAPH_DIAGNOSTIC_DELTA_SHA256='28b90d52d30d291ad1aeee4dad62c35ce012c6f209b02dd4c7972320530ed4c3'
+
+
+def restore_public_graph_diagnostic_source(current, proof_bytes):
+    """Remove only the reviewed failure detail before all earlier source proofs."""
+    def require(condition,message):
+        if not condition:raise AssertionError(message)
+    require(hashlib.sha256(proof_bytes).hexdigest()==GRAPH_DIAGNOSTIC_DELTA_SHA256,
+        'Unreviewed public-graph diagnostic source witness')
+    proof=json.loads(proof_bytes)
+    require(set(proof)=={'schema','path','historical','current','spans'}
+        and proof['schema']=='biocompiler.public_graph_diagnostic_source_delta.v1'
+        and proof['path']=='tools/check_pipeline_fixed_continuation_install.py',
+        'Public-graph diagnostic witness shape differs')
+    require(proof['current']=={'bytes':len(current),'sha256':hashlib.sha256(current).hexdigest()},
+        'Current continuation driver differs from the reviewed graph diagnostic')
+    spans=proof['spans']
+    require(type(spans) is list and len(spans)==3 and all(set(row)=={'offset','before','after'}
+        and type(row['offset']) is int and row['offset']>=0
+        and type(row['before']) is str and type(row['after']) is str for row in spans)
+        and spans[0]['offset']<spans[1]['offset']<spans[2]['offset'],
+        'Public-graph diagnostic source span census differs')
+    addition=ast.parse(spans[0]['after'])
+    require(spans[0]['before']=='' and len(addition.body)==2
+        and all(isinstance(node,ast.FunctionDef) for node in addition.body)
+        and [node.name for node in addition.body]==['public_graph_difference','equal_public_graph'],
+        'Public-graph diagnostic additions differ')
+    require(spans[1]['before']=="        equal(case['graph'], public_graph(self.corpus.authorities[expected['authority']]),\n"
+            "            'Complete public native build values or physical identities differ')\n"
+        and spans[1]['after']=="        equal_public_graph(case['graph'], public_graph(self.corpus.authorities[expected['authority']]))\n"
+        and spans[2]['before']=='' and spans[2]['after']=="    'tests/test_pipeline_graph_diagnostics.py',\n",
+        'Public-graph diagnostic call or control source differs')
+    restored=current
+    for index,row in reversed(list(enumerate(spans))):
+        offset=row['offset']+sum(len(prior['after'].encode())-len(prior['before'].encode()) for prior in spans[:index])
+        before,after=row['before'].encode(),row['after'].encode()
+        require(restored[offset:offset+len(after)]==after,'Public-graph diagnostic source span bytes differ')
+        restored=restored[:offset]+before+restored[offset+len(after):]
+    require(proof['historical']=={'revision':'2cf35b440ce9fca6dc951709b27f8122f00b81f7',
+        'bytes':len(restored),'sha256':hashlib.sha256(restored).hexdigest()},
+        'Complete historical continuation driver source differs')
+    return restored
 
 
 def restore_installed_authoring_source(current, proof_bytes):
@@ -291,6 +334,7 @@ class HostedCiPlanTests(unittest.TestCase):
             elif name=='tools/pipeline_reference_runtime.py':
                 new=restore_reference_distribution_source(new,REFERENCE_DELTA.read_bytes())
             elif name=='tools/check_pipeline_fixed_continuation_install.py':
+                new=restore_public_graph_diagnostic_source(new,GRAPH_DIAGNOSTIC_DELTA.read_bytes())
                 new=restore_installed_authoring_source(new,AUTHORING_DELTA.read_bytes())
             new=new.decode()
             self.assertEqual(hashlib.sha256(new.encode()).hexdigest(),row['current_sha256'])
@@ -390,6 +434,7 @@ class HostedCiPlanTests(unittest.TestCase):
 
     def test_installed_authoring_restoration_rejects_unreviewed_source_changes(self):
         current=(ROOT/'tools/check_pipeline_fixed_continuation_install.py').read_bytes()
+        current=restore_public_graph_diagnostic_source(current,GRAPH_DIAGNOSTIC_DELTA.read_bytes())
         witness=AUTHORING_DELTA.read_bytes()
         restored=restore_installed_authoring_source(current,witness)
         original=json.loads((ROOT/'tests/conformance/prebuilt-installed-path-delta-v1.json').read_bytes())

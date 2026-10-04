@@ -249,7 +249,14 @@ module Check_result = struct
       require ~path (List.length coverage_ids = List.length checked && List.for_all (fun item ->
         Requirement_coverage.exercised item && Z.equal (Requirement_coverage.incomplete_episode_count item) Z.zero) coverage)
         "A passing result requires exercised active and inactive deadlines and complete response coverage.");
-    let json = obj (fields |> Measurement_contract.replace "counterexamples" (arr (List.map Counterexample.to_json counterexamples))) in
+    (* CheckResult.to_dict has a fixed envelope order, even after importing a
+       differently ordered document. Keep dependency mappings in their actual
+       order; only this declared record envelope is reconstructed here. *)
+    let normalized = arr (List.map Counterexample.to_json counterexamples) in
+    let json = obj (List.map (fun key -> key,
+      (if key = "counterexamples" then normalized else get path key fields))
+      ["schema_version";"outcome";"evidence_kind";"claim_scope";"dependencies";
+       "checked_requirement_ids";"diagnostics";"counterexamples";"coverage"]) in
     {packed = pack ~path json; outcome; dependencies; checked; diagnostics; counterexamples; coverage}
   let with_dependencies value dependencies =
     (* Both arguments are already structurally validated immutable records.
@@ -261,7 +268,8 @@ module Check_result = struct
     let replacement=dependencies.size in
     let body_bytes=value.packed.size.bytes-previous.bytes and body_nodes=value.packed.size.nodes-previous.nodes in
     limit(replacement.bytes<=Limits.max_response_bytes-body_bytes && replacement.nodes<=Limits.max_json_nodes-body_nodes);
-    let json=obj(Measurement_contract.replace "dependencies" (Dependency_snapshot.to_json dependencies)
+    let json=obj(List.map (fun (key,previous) -> key,
+      (if key = "dependencies" then Dependency_snapshot.to_json dependencies else previous))
       (Json.object_fields value.packed.json)) in
     {value with packed=pack json;dependencies}
   let to_json value = value.packed.json
