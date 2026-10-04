@@ -44,7 +44,7 @@ remain distinct revision boundaries.
 
 | Job | Coverage and dependency |
 | --- | --- |
-| `unit-plan` | Python 3.11 and 3.14 independently discover the full suite and produce five-shard plans. |
+| `unit-plan` | Python 3.11 and 3.14 first check outside-checkout campaign authoring and bounded failure diagnostics, then independently discover the full suite and produce five-shard plans. |
 | `unit-tests` | Ten jobs: each Python version executes shards 0–4 against its plan, with at most ten running unit jobs. |
 | `unit-accounting` | One per Python version independently verifies its complete five-result census against fresh discovery. |
 | `installed-executable` | Both Python versions run the installed executable RNA API/CLI path outside the checkout. |
@@ -53,7 +53,7 @@ remain distinct revision boundaries.
 | `integration-examples` | Both Python versions retain all remaining audit, molecular, synthetic, human, authoring and CLI examples. |
 | `studio-browser` | Installed Python 3.11 package, Node 22 and the pinned Playwright/Chromium setup run guided workspace, construction inspection and review suites. |
 | `studio-typescript` | Pinned strict TypeScript checks, unchanged generated release assets, runtime response decoding and current migration inventory. |
-| `ocaml-core` | Linux x86_64 and macOS arm64 native builds, native tests, independent-library boundaries and exact Python/OCaml conformance. |
+| `ocaml-core` | Depends on both short unit plans, including their campaign preflight controls; Linux x86_64 and macOS arm64 native builds, native tests, independent-library boundaries and exact Python/OCaml conformance follow. |
 | `executable-rna-reproducibility` | Depends only on `installed-executable`; compares complete relative-file SHA-256 inventories from both Python versions. |
 | `payload-architecture-reproducibility` | Depends only on `installed-architecture`; requires all 13 case outputs and compares every relative file across versions. |
 | `circuit-reproducibility` | Depends only on `circuit-integration`; compares the complete infrastructure/source/review artifact inventories. |
@@ -63,6 +63,13 @@ remain distinct revision boundaries.
 | `prebuilt-core-assembly` | Depends on both native platforms. Independently checks complete platform wheels, original linked sources/notices/relink companions and final executable identities; builds and checks one pure SDK wheel containing both platform pins. |
 | `prebuilt-core-validation` | Requires all four fresh-install/lifecycle/campaign receipts, exact owned bytes, original command recipes and successful upstream assembly and cross-runtime reconstruction. |
 | `validation` | Final gate requires all 38 jobs, including successful unit accounting, every installed/integration/browser job, TypeScript, both native platforms, all five reproducibility jobs and both prebuilt jobs. |
+
+The short campaign controls remain in full unit discovery and accounting. Their
+early execution prevents a known authoring-path failure from waiting behind
+native builds and serial campaigns; native work waits for both plans, not for
+unit-test shards. Failed or timed-out installed commands also print a bounded,
+escaped tail of their retained log directly in the hosted job. Complete logs
+remain the diagnostic authority, and successful commands do not replay them.
 
 Reproducibility no longer waits behind the full unit suite. The intended steady
 work comprises ten unit runners, eight producer runners, one browser runner,

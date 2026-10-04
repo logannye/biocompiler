@@ -1,0 +1,85 @@
+{
+  "base_source_revision": "705480688a7e37e6c0f03447226350684512342f",
+  "before_reproduction": {
+    "kind": "exact unchanged temporal build_request with unchanged portable_sources in temporary external cwd; no installed/native execution",
+    "path": "pre-fix-failure.json",
+    "sha256": "017f54e68bde04f1c8c55e80d11b59571580e0058e4092293208c966d70cc2fd"
+  },
+  "controls": {
+    "3.11": {
+      "ids": [
+        "tests.test_pipeline_authoring_sources.AuthoringSourceTests.test_actual_non_temporal_authoring_is_unchanged",
+        "tests.test_pipeline_authoring_sources.AuthoringSourceTests.test_actual_temporal_authoring_retains_all_original_bytes_and_logical_sources",
+        "tests.test_pipeline_authoring_sources.AuthoringSourceTests.test_non_temporal_factory_arguments_order_and_foreign_source_rejection_remain",
+        "tests.test_pipeline_authoring_sources.AuthoringSourceTests.test_oracle_loader_binds_shared_context_and_finite_child_source_closure",
+        "tests.test_pipeline_authoring_sources.AuthoringSourceTests.test_original_context_and_body_exceptions_restore_factory_and_cwd",
+        "tests.test_pipeline_authoring_sources.AuthoringSourceTests.test_original_temporal_external_cwd_failure_is_reproduced"
+      ],
+      "log_sha256": "a3e698fbf5f6ee2e6d3370a1918a91bcebfbf5d7566d2fd3189d62c061ceb201",
+      "proof_sha256": "8bbbb0a5132c10f53f7d859c2b009ff1e034b829ba6626979a214e69a741ef92",
+      "python_version": "3.11.15 (main, Mar 25 2026, 02:58:47) [Clang 22.1.1 ]",
+      "status": "pass",
+      "tests": 6
+    },
+    "3.14": {
+      "ids": [
+        "tests.test_pipeline_authoring_sources.AuthoringSourceTests.test_actual_non_temporal_authoring_is_unchanged",
+        "tests.test_pipeline_authoring_sources.AuthoringSourceTests.test_actual_temporal_authoring_retains_all_original_bytes_and_logical_sources",
+        "tests.test_pipeline_authoring_sources.AuthoringSourceTests.test_non_temporal_factory_arguments_order_and_foreign_source_rejection_remain",
+        "tests.test_pipeline_authoring_sources.AuthoringSourceTests.test_oracle_loader_binds_shared_context_and_finite_child_source_closure",
+        "tests.test_pipeline_authoring_sources.AuthoringSourceTests.test_original_context_and_body_exceptions_restore_factory_and_cwd",
+        "tests.test_pipeline_authoring_sources.AuthoringSourceTests.test_original_temporal_external_cwd_failure_is_reproduced"
+      ],
+      "log_sha256": "10750013b4182bc842a41aec3ace829efc51cf141bae9c1dcf8ca0349401479f",
+      "proof_sha256": "a78b5719b6cb19aef6e847d3059da21213ed41fb0297329931b27939dc11b9b7",
+      "python_version": "3.14.6 (main, Jun 10 2026, 10:03:53) [Clang 21.0.0 (clang-2100.0.123.102)]",
+      "status": "pass",
+      "tests": 6
+    }
+  },
+  "correction": [
+    "Wrap only the existing authoring SourceLocation factory before the original portable_sources context. Reanchor its exact temporal logical filename at construction so the unchanged temporal example itself yields the original logical filename.",
+    "No cwd change, request rewrite, native path change, old body replacement or broad source allowlist. All other factory fields and non-temporal arguments preserve original order and values; exceptions and factory identity restore.",
+    "Bind one wrapped context in continuation.load_oracle so fresh capture, native original-body witness and independent validate_checks reuse it. Registration inherits the same loader context; add helper to its finite original-child import closure.",
+    "Campaign source authority includes helper and new regression source. Root owns finite restoration of the new continuation source span before existing14-file original witness."
+  ],
+  "failed_hosted_attempt": 1,
+  "failed_hosted_job": 111326572424,
+  "failed_hosted_platform": "macos-arm64",
+  "failed_hosted_python": "3.14.7",
+  "failed_hosted_run": 37158616787,
+  "failed_hosted_tested_revision": "69ecd56d2ec408d5a86b5035d57588687a461b72",
+  "failure": "Frozen portable_sources emits relative examples/temporal_pipeline.py; unchanged original example resolves it against external fresh-environment cwd and rejects its path relative to repository before any continuation chains.",
+  "frozen_sources_preserved": {
+    "examples/temporal_pipeline.py": "933752e2134bf81b8394598df981a6b72d9ea716e09b4ecc77efc3a0d0975325",
+    "tests/conformance/pipeline-fixed-build-semantics-v1.json": "b423e1d60fbe688090bd44787ccb372a10847681cd8a011fd897cface9b9e28e",
+    "tools/capture_pipeline_fixed_build_semantics.py": "4b8b0d0f059cd7230193a53c122357ce50fd636018924d8fe2c533a2d3317495",
+    "tools/freeze_realization_acceptance.py": "9db5dfa67f3141b8c43fd4e399bf5a1ee66568cab80ed77f3946d0d81c90f6f9"
+  },
+  "limits": [
+    "No local installation, native execution, full original campaign replay or hosted acceptance. Only small actual original authoring calls and inert context/source closure controls ran.",
+    "New source requires fresh hosted full gates; prior run remains failed. Root will collect final discovery, finite witness, docs and composed review before commit/push.",
+    "Other macOS3.11 failure observed by root is not independently diagnosed; no second artifact downloaded."
+  ],
+  "owned_files": {
+    "tests/test_pipeline_authoring_sources.py": {
+      "bytes": 6195,
+      "sha256": "bba9c6762a6e872a788455ba8d3fda525dab06289004fcce202338a8cf01baed"
+    },
+    "tools/check_pipeline_fixed_continuation_install.py": {
+      "bytes": 71452,
+      "sha256": "733d9823b203dc31c9f36715433f98ef654d08e1c6aba3cefb19e9b85e9447fd"
+    },
+    "tools/check_pipeline_fixed_registration_install.py": {
+      "bytes": 69550,
+      "sha256": "7d82173b470564d45247ecbb2ebf029eae09fa1391cf2f4ae1b007c0e39fdf8b"
+    },
+    "tools/pipeline_authoring_sources.py": {
+      "bytes": 1368,
+      "sha256": "375961ab50658efa9d6ae2a7ea84cc3baba03a690f35d39519dfe5b333bfb92d"
+    }
+  },
+  "prepared_at": "2026-10-04T01:47:40.692637+00:00",
+  "schema_version": "migration.installed_authoring_source_correction.v1",
+  "status": "pure_correction_validated_pending_independent_review_and_hosted_acceptance"
+}

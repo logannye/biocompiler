@@ -29,8 +29,10 @@ from unittest.mock import patch
 
 if __package__:
     from . import check_pipeline_fixed_provider_install as providers
+    from . import pipeline_authoring_sources as authoring_sources
 else:
     import check_pipeline_fixed_provider_install as providers
+    import pipeline_authoring_sources as authoring_sources
 
 manager, fixed, r = providers.manager, providers.manager.fixed, providers.r
 ROOT = manager.ROOT
@@ -407,6 +409,7 @@ class NativeWitness:
 BUILD_TOOL = 'tools/capture_pipeline_fixed_build_semantics.py'
 SOURCES = tuple(dict.fromkeys((BUILD_TOOL, 'tests/test_pipeline_fixed_build_semantics.py',
     'tools/check_pipeline_fixed_continuation_install.py', 'tests/test_pipeline_fixed_continuation_campaign.py',
+    'tools/pipeline_authoring_sources.py', 'tests/test_pipeline_authoring_sources.py',
     'src/biocompiler/core_pipeline_build_views.py', 'tests/test_core_pipeline_build_views.py',
     'tools/pipeline_fixed_direct_controls.py', 'tests/test_pipeline_fixed_direct_controls.py', *providers.SOURCES)))
 
@@ -420,6 +423,7 @@ def load_oracle(*, installed=True):
         oracle = importlib.util.module_from_spec(spec)
         sys.modules[spec.name] = oracle
         spec.loader.exec_module(oracle)
+        oracle.portable_sources = authoring_sources.bind_portable_sources(oracle.portable_sources, ROOT)
     finally:
         sys.path[:] = previous
     if installed:

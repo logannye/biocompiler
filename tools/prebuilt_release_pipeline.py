@@ -56,14 +56,55 @@ def clean_environment(environment):
     return result
 
 
+FAILURE_TAIL_BYTES = 64 * 1024
+FAILURE_TAIL_LINES = 80
+FAILURE_LINE_CHARS = 1000
+
+
+def _diagnostic_line(text):
+    # ASCII escaping keeps control characters from rewriting hosted output.
+    # Also neutralize both workflow-command forms, even after a line prefix.
+    text = re.sub(r':(?=:)', ': ', ascii(text)[1:-1]).replace('##[', '# #[')
+    suffix = ' ... [line truncated]'
+    return text if len(text) <= FAILURE_LINE_CHARS else text[:FAILURE_LINE_CHARS-len(suffix)] + suffix
+
+
+def failure_log_tail(log, *, reason):
+    """Best-effort bounded diagnostics; the complete retained bytes stay intact."""
+    try:
+        with log.open('rb') as source:
+            source.seek(0, os.SEEK_END)
+            size = source.tell()
+            source.seek(max(0, size - FAILURE_TAIL_BYTES))
+            raw = source.read(FAILURE_TAIL_BYTES)
+        lines = raw.splitlines()
+        print('Failed hosted command (' + reason + ') log tail: ' + _diagnostic_line(str(log))
+              + f' (last {len(raw)}/{size} bytes; at most {FAILURE_TAIL_LINES} lines, '
+                f'{FAILURE_LINE_CHARS} characters per line)', flush=True)
+        for line in lines[-FAILURE_TAIL_LINES:]:
+            print('  | ' + _diagnostic_line(line.decode('utf-8', 'backslashreplace')), flush=True)
+    except (OSError, UnicodeError, ValueError):
+        # A missing/unreadable log or unavailable stdout must not replace the
+        # child failure (including the original TimeoutExpired instance).
+        pass
+
+
 def run(command, *, cwd, environment, log, timeout=10800):
     require(type(command) is list and all(type(part) is str for part in command), 'Invalid hosted command')
     require(not log.exists(), 'Hosted command log already exists')
     # Output is streamed to a retained file instead of unbounded PIPE accumulation.
-    with log.open('xb') as output:
-        completed = subprocess.run(command,cwd=cwd,env=environment,stdout=output,stderr=subprocess.STDOUT,timeout=timeout,check=False)
+    try:
+        with log.open('xb') as output:
+            completed = subprocess.run(command,cwd=cwd,env=environment,stdout=output,stderr=subprocess.STDOUT,timeout=timeout,check=False)
+    except subprocess.TimeoutExpired:
+        failure_log_tail(log, reason='timeout')
+        raise
+    if completed.returncode != 0:
+        failure_log_tail(log, reason=f'exit {completed.returncode}')
+    with log.open('rb') as source:
+        log_sha256 = hashlib.file_digest(source, 'sha256').hexdigest()
     receipt = {'argv':command,'cwd':str(cwd),'returncode':completed.returncode,
-        'log':{'path':log.name,'sha256':hashlib.file_digest(log.open('rb'),'sha256').hexdigest(),'size':log.stat().st_size}}
+        'log':{'path':log.name,'sha256':log_sha256,'size':log.stat().st_size}}
     require(completed.returncode == 0, 'Hosted command failed; complete log retained: '+str(log))
     return receipt
 

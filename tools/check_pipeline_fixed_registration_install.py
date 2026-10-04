@@ -58,6 +58,7 @@ def overlay_files():
         'tools/check_pipeline_session_install.py', 'tools/check_pipeline_manager_trace.py',
         'tools/check_pipeline_manager_install.py', 'tools/pipeline_fixed_initializer_receipts.py',
         'tools/check_pipeline_fixed_provider_install.py', 'tools/check_pipeline_fixed_continuation_install.py',
+        'tools/pipeline_authoring_sources.py',
         'tools/check_pipeline_fixed_registration_install.py', 'examples/checked_pipeline.py',
         'examples/component_linking.py', 'tests/test_component_pipeline_audit.py',
         'tools/capture_pipeline_fixed_build_semantics.py', 'examples/temporal_pipeline.py',

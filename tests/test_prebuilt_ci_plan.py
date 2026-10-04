@@ -24,6 +24,45 @@ BUDGET_DELTA=ROOT/'tests/conformance/callback-budget-checker-source-delta-v1.jso
 BUDGET_DELTA_SHA256='6cb03e6dfa5c76528bf9370be992634b6a9fbad5219a1e43c042090abd48ff8b'
 REFERENCE_DELTA=ROOT/'tests/conformance/reference-distribution-source-delta-v1.json'
 REFERENCE_DELTA_SHA256='06475b6327dac7dc67187956e14abb3a0771574307e4fbf460795c49ab905a06'
+AUTHORING_DELTA=ROOT/'tests/conformance/installed-authoring-source-delta-v1.json'
+AUTHORING_DELTA_SHA256='9903d8be3224513c3bf260ae9cbe2dcd13cb65f9d4f7132313c1fb374d8896dd'
+
+
+def restore_installed_authoring_source(current, proof_bytes):
+    """Retain the complete original installed-path proof before this adapter."""
+    def require(condition,message):
+        if not condition:raise AssertionError(message)
+    require(hashlib.sha256(proof_bytes).hexdigest()==AUTHORING_DELTA_SHA256,
+        'Unreviewed installed-authoring source witness')
+    proof=json.loads(proof_bytes)
+    require(set(proof)=={'schema','path','historical','current','spans'}
+        and proof['schema']=='biocompiler.installed_authoring_source_delta.v1'
+        and proof['path']=='tools/check_pipeline_fixed_continuation_install.py',
+        'Installed-authoring witness shape differs')
+    require(proof['current']=={'bytes':len(current),'sha256':hashlib.sha256(current).hexdigest()},
+        'Current continuation driver differs from the reviewed authoring correction')
+    additions=(
+        '    from . import pipeline_authoring_sources as authoring_sources\n',
+        '    import pipeline_authoring_sources as authoring_sources\n',
+        "    'tools/pipeline_authoring_sources.py', 'tests/test_pipeline_authoring_sources.py',\n",
+        '        oracle.portable_sources = authoring_sources.bind_portable_sources(oracle.portable_sources, ROOT)\n')
+    spans=proof['spans']
+    require(type(spans) is list and len(spans)==len(additions)
+        and all(set(row)=={'offset','before','after'} and type(row['offset']) is int
+            and row['offset']>=0 and row['before']=='' and row['after']==after
+            for row,after in zip(spans,additions)), 'Installed-authoring source span census differs')
+    restored=current
+    end=len(current)
+    for row in reversed(spans):
+        offset=row['offset'];after=row['after'].encode()
+        require(offset+len(after)<=end and restored[offset:offset+len(after)]==after,
+            'Installed-authoring source span bytes differ')
+        restored=restored[:offset]+restored[offset+len(after):]
+        end=offset
+    require(proof['historical']=={'revision':'705480688a7e37e6c0f03447226350684512342f',
+        'bytes':len(restored),'sha256':hashlib.sha256(restored).hexdigest()},
+        'Complete historical continuation driver source differs')
+    return restored
 
 
 def restore_reference_distribution_source(current, proof_bytes):
@@ -251,6 +290,8 @@ class HostedCiPlanTests(unittest.TestCase):
                 new=restore_fixed_provider_source(new,PROVIDER_DELTA.read_bytes())
             elif name=='tools/pipeline_reference_runtime.py':
                 new=restore_reference_distribution_source(new,REFERENCE_DELTA.read_bytes())
+            elif name=='tools/check_pipeline_fixed_continuation_install.py':
+                new=restore_installed_authoring_source(new,AUTHORING_DELTA.read_bytes())
             new=new.decode()
             self.assertEqual(hashlib.sha256(new.encode()).hexdigest(),row['current_sha256'])
             old_ast=ast.parse(old);new_ast=ast.parse(new)
@@ -346,6 +387,33 @@ class HostedCiPlanTests(unittest.TestCase):
         changed=json.loads(witness);changed['spans'][0]['offset']+=1
         with self.assertRaisesRegex(AssertionError,'Unreviewed fixed-provider source witness'):
             restore_fixed_provider_source(current,json.dumps(changed,sort_keys=True,indent=2).encode()+b'\n')
+
+    def test_installed_authoring_restoration_rejects_unreviewed_source_changes(self):
+        current=(ROOT/'tools/check_pipeline_fixed_continuation_install.py').read_bytes()
+        witness=AUTHORING_DELTA.read_bytes()
+        restored=restore_installed_authoring_source(current,witness)
+        original=json.loads((ROOT/'tests/conformance/prebuilt-installed-path-delta-v1.json').read_bytes())
+        self.assertEqual(hashlib.sha256(restored).hexdigest(),
+            original['tools/check_pipeline_fixed_continuation_install.py']['current_sha256'])
+        mutants={
+            'stale historical bytes':restored,
+            'different binding':current.replace(b'bind_portable_sources(oracle.portable_sources, ROOT)',
+                b'bind_portable_sources(oracle.portable_sources, Path.cwd())'),
+            'extra function':current+b'\ndef unreviewed():\n    return True\n',
+            'newline normalization':current.replace(b'\n',b'\r\n'),
+        }
+        for label,mutant in mutants.items():
+            with self.subTest(change=label):
+                self.assertNotEqual(mutant,current)
+                with self.assertRaisesRegex(AssertionError,'Current continuation driver differs'):
+                    restore_installed_authoring_source(mutant,witness)
+                forged=json.loads(witness)
+                forged['current']={'bytes':len(mutant),'sha256':hashlib.sha256(mutant).hexdigest()}
+                with self.assertRaisesRegex(AssertionError,'Unreviewed installed-authoring source witness'):
+                    restore_installed_authoring_source(mutant,json.dumps(forged,sort_keys=True,indent=2).encode()+b'\n')
+        forged=json.loads(witness);forged['spans'][0]['offset']+=1
+        with self.assertRaisesRegex(AssertionError,'Unreviewed installed-authoring source witness'):
+            restore_installed_authoring_source(current,json.dumps(forged,sort_keys=True,indent=2).encode()+b'\n')
 
     def test_reference_distribution_restoration_retains_the_complete_original_path_proof(self):
         current=(ROOT/'tools/pipeline_reference_runtime.py').read_bytes()

@@ -1,0 +1,53 @@
+{
+  "schema": "biocompiler.prebuilt_command_diagnostics.local_controls.v1",
+  "status": "focused-pure-controls-pass",
+  "base_revision": "705480688a7e37e6c0f03447226350684512342f",
+  "tested_state": "uncommitted source bytes pinned below; not hosted acceptance",
+  "sources": {
+    "tools/prebuilt_release_pipeline.py": "f6c65dc6b7572864b42c303318febfbc9b700d5fd1b3d1cdc74ccc1ddb423d0a",
+    "tests/test_prebuilt_command_diagnostics.py": "bd1a2cefe9476fe00427662818eed10c83b6d90739768ea9bd676765e635b987"
+  },
+  "limits": {
+    "read_bytes": 65536,
+    "child_lines": 80,
+    "ascii_characters_per_child_line": 1000,
+    "child_line_prefix_bytes": 4,
+    "child_lines_stdout_bytes_maximum": 80400
+  },
+  "runs": [
+    {
+      "minor": "3.11",
+      "command": "/Users/logannye/.local/share/uv/python/cpython-3.11.15-macos-aarch64-none/bin/python3.11 -B -m unittest -v tests.test_prebuilt_command_diagnostics",
+      "exit_code": 0,
+      "tests": 6,
+      "log": "python-3.11.log",
+      "output": "test_failed_child_prints_bounded_cause_and_keeps_complete_combined_log (tests.test_prebuilt_command_diagnostics.HostedCommandDiagnosticsTests.test_failed_child_prints_bounded_cause_and_keeps_complete_combined_log) ... ok\ntest_preview_reads_only_the_bounded_suffix (tests.test_prebuilt_command_diagnostics.HostedCommandDiagnosticsTests.test_preview_reads_only_the_bounded_suffix) ... ok\ntest_success_retains_hashed_log_without_replaying_child_output (tests.test_prebuilt_command_diagnostics.HostedCommandDiagnosticsTests.test_success_retains_hashed_log_without_replaying_child_output) ... ok\ntest_timeout_closes_log_before_preview_and_reraises_same_exception (tests.test_prebuilt_command_diagnostics.HostedCommandDiagnosticsTests.test_timeout_closes_log_before_preview_and_reraises_same_exception) ... ok\ntest_unavailable_preview_does_not_replace_child_failure (tests.test_prebuilt_command_diagnostics.HostedCommandDiagnosticsTests.test_unavailable_preview_does_not_replace_child_failure) ... ok\ntest_unavailable_stdout_does_not_replace_timeout (tests.test_prebuilt_command_diagnostics.HostedCommandDiagnosticsTests.test_unavailable_stdout_does_not_replace_timeout) ... ok\n\n----------------------------------------------------------------------\nRan 6 tests in 0.046s\n\nOK\n"
+    },
+    {
+      "minor": "3.14",
+      "command": "/opt/homebrew/bin/python3.14 -B -m unittest -v tests.test_prebuilt_command_diagnostics",
+      "exit_code": 0,
+      "tests": 6,
+      "log": "python-3.14.log",
+      "output": "test_failed_child_prints_bounded_cause_and_keeps_complete_combined_log (tests.test_prebuilt_command_diagnostics.HostedCommandDiagnosticsTests.test_failed_child_prints_bounded_cause_and_keeps_complete_combined_log) ... ok\ntest_preview_reads_only_the_bounded_suffix (tests.test_prebuilt_command_diagnostics.HostedCommandDiagnosticsTests.test_preview_reads_only_the_bounded_suffix) ... ok\ntest_success_retains_hashed_log_without_replaying_child_output (tests.test_prebuilt_command_diagnostics.HostedCommandDiagnosticsTests.test_success_retains_hashed_log_without_replaying_child_output) ... ok\ntest_timeout_closes_log_before_preview_and_reraises_same_exception (tests.test_prebuilt_command_diagnostics.HostedCommandDiagnosticsTests.test_timeout_closes_log_before_preview_and_reraises_same_exception) ... ok\ntest_unavailable_preview_does_not_replace_child_failure (tests.test_prebuilt_command_diagnostics.HostedCommandDiagnosticsTests.test_unavailable_preview_does_not_replace_child_failure) ... ok\ntest_unavailable_stdout_does_not_replace_timeout (tests.test_prebuilt_command_diagnostics.HostedCommandDiagnosticsTests.test_unavailable_stdout_does_not_replace_timeout) ... ok\n\n----------------------------------------------------------------------\nRan 6 tests in 0.065s\n\nOK\n"
+    }
+  ],
+  "checks": [
+    "real harmless Python child nonzero exit with combined stdout/stderr, bounded tail, overlapping modern and legacy command forms, bad UTF-8 and controls, exact retained bytes",
+    "real harmless Python success child preserves receipt hash and no output replay",
+    "mock timeout exact exception identity and closed log before preview",
+    "fixed maximum raw read and seek verified",
+    "preview read failure cannot replace child failure",
+    "closed stdout cannot replace timeout"
+  ],
+  "static_validation": "git diff --check passed",
+  "nonexecution": [
+    "no native executables",
+    "no compilation",
+    "no package installation",
+    "no network",
+    "no commit/push",
+    "no original campaign execution"
+  ],
+  "scope_note": "Six unit methods, three harmless real Python children per runtime; timeout and failure-infrastructure controls are mocked. These checks do not validate installed/native campaigns."
+}

@@ -1,0 +1,34 @@
+{
+  "base_revision": "705480688a7e37e6c0f03447226350684512342f",
+  "retained_files": {
+    "authoring-proof.json": "6765a6877f314126f11a43e7d66e4d39e5b153c3a903955f66cd590a4ee64819",
+    "diagnostics-proof.json": "d72236c8f088c5a6ebdf0b392f1cf4b3363ca41bf99e966ccc0073cbcad7b13e",
+    "hosted-failure.log": "6c8ffd60a9768e2649f48c66aac753c96a9f8de73e64bfebf324260b51c9eb29",
+    "independent-source-review.json": "727dbc7610c8c9dc9040f1e16b62b4598c1e8e0834241693d32152ed963a9d2b"
+  },
+  "runtimes": [
+    {
+      "python": "3.11.15",
+      "tests.test_prebuilt_ci_plan": {
+        "passed": true,
+        "seconds": 0.403,
+        "tests": 11
+      }
+    },
+    {
+      "python": "3.14.6",
+      "tests.test_prebuilt_ci_plan": {
+        "passed": true,
+        "seconds": 0.397,
+        "tests": 11
+      }
+    }
+  ],
+  "scope": "Actual finite source-restoration and existing CI plan controls; no native compilation, native execution, installation or release acceptance.",
+  "source_files": {
+    ".github/workflows/ci.yml": "30259905484442e082450e37d1771c3e3b38cdadb855ebe430136756c4f41301",
+    "tests/conformance/installed-authoring-source-delta-v1.json": "9903d8be3224513c3bf260ae9cbe2dcd13cb65f9d4f7132313c1fb374d8896dd",
+    "tests/test_prebuilt_ci_plan.py": "025ef46d390b62288c6510a8b55b9ffec49cbbb4691b91bccf362188f50d1bb3"
+  },
+  "status": "focused_pure_controls_pass_hosted_validation_pending"
+}

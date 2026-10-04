@@ -1,0 +1,35 @@
+{
+  "current": {
+    "bytes": 71452,
+    "sha256": "733d9823b203dc31c9f36715433f98ef654d08e1c6aba3cefb19e9b85e9447fd"
+  },
+  "historical": {
+    "bytes": 71135,
+    "revision": "705480688a7e37e6c0f03447226350684512342f",
+    "sha256": "18cc625ed401eecaf9b07fb61a44021c56533c8f6b021ec8c332c652ce36db2b"
+  },
+  "path": "tools/check_pipeline_fixed_continuation_install.py",
+  "schema": "biocompiler.installed_authoring_source_delta.v1",
+  "spans": [
+    {
+      "after": "    from . import pipeline_authoring_sources as authoring_sources\n",
+      "before": "",
+      "offset": 952
+    },
+    {
+      "after": "    import pipeline_authoring_sources as authoring_sources\n",
+      "before": "",
+      "offset": 1086
+    },
+    {
+      "after": "    'tools/pipeline_authoring_sources.py', 'tests/test_pipeline_authoring_sources.py',\n",
+      "before": "",
+      "offset": 24068
+    },
+    {
+      "after": "        oracle.portable_sources = authoring_sources.bind_portable_sources(oracle.portable_sources, ROOT)\n",
+      "before": "",
+      "offset": 24730
+    }
+  ]
+}
