@@ -54,8 +54,8 @@ let run request submission corpus =
   rejects "observation_access" (change "disease" "access" (str "external_evaluator") program);
   rejects "expression_scope" (change "gate/respond" "when" (replace "scope" (reference "Role" "executor") (replace "ref" (reference "Observation" "disease") (expr "observe" truth []))) program);
   rejects "guard_type" (change "gate/respond" "when" (expr "rising" (type_spec "event" Json.Null) [yes]) program);
-  let effect = named "effect" program in
-  let lifecycle = field "lifecycle" effect |> replace "cancellation" (str "unsupported") |> replace "on_loss" (str "request_cancel") in
+  let effect_value = named "effect" program in
+  let lifecycle = field "lifecycle" effect_value |> replace "cancellation" (str "unsupported") |> replace "on_loss" (str "request_cancel") in
   rejects "cancellation_contract" (change "effect" "lifecycle" lifecycle program);
   let req = named "response_progress" program in
   rejects "requirement_deadline_anchor" (change "response_progress" "clock" Json.Null program);

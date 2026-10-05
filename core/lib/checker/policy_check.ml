@@ -299,10 +299,10 @@ let behavior state path executor value =
   let evidence = Seen.union (subjects state (get "on" value)) (subjects state (get "when" value)) in
   List.iteri (fun i reference ->
     let location = path ^ "/effects/" ^ string_of_int i in
-    let effect = resolve state Names.empty location reference ["Effect"] in
-    if present effect then (
-      require state location (equal (get "executor" effect) executor) "executor_ownership" "Requested effect belongs to another executor.";
-      require state location (Seen.for_all (fun subject -> subject = ref_id (get "subject" effect)) evidence || present (get "relationship" effect)) "effect_relationship" "Redirected subject evidence requires an explicit relationship contract.")) (list "effects" value);
+    let requested_effect = resolve state Names.empty location reference ["Effect"] in
+    if present requested_effect then (
+      require state location (equal (get "executor" requested_effect) executor) "executor_ownership" "Requested effect belongs to another executor.";
+      require state location (Seen.for_all (fun subject -> subject = ref_id (get "subject" requested_effect)) evidence || present (get "relationship" requested_effect)) "effect_relationship" "Redirected subject evidence requires an explicit relationship contract.")) (list "effects" value);
   List.iteri (fun i assignment ->
     let location = path ^ "/assignments/" ^ string_of_int i in
     let store = resolve state Names.empty (location ^ "/state") (get "state" assignment) ["StateStore"] in

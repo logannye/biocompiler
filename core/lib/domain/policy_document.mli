@@ -24,13 +24,13 @@ val kind : t -> kind
 val program : t -> Json.t
 val request : t -> Json.t option
 val declarations : t -> declaration list
-(** The request document identity, or program identity for an unbound program. *)
+(* The request document identity, or program identity for an unbound program. *)
 val fingerprint : t -> string
-(** Identity of every field in the submitted artifact, including source maps. *)
+(* Identity of every field in the submitted artifact, including source maps. *)
 val artifact_digest : t -> string
-(** Canonical Python-compatible JSON hash, excluding precisely fields named
+(* Canonical Python-compatible JSON hash, excluding precisely fields named
     [source_map] and [provenance] recursively. This function enforces budgets
     but does not on its own validate a document's record shapes or meaning. *)
 val document_digest : Json.t -> string
-(** Bounded finite decimal syntax, evaluated exactly without binary64 coercion. *)
+(* Bounded finite decimal syntax, evaluated exactly without binary64 coercion. *)
 val exact_decimal : ?path:string -> string -> Q.t
