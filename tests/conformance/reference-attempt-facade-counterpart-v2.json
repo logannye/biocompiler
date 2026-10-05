@@ -1,0 +1,32 @@
+{
+  "base_revision": "0297d583d5774dc8991fda24c4f8fb39a277cc9a",
+  "changes": [
+    {
+      "after": "from biocompiler.semantics.context import PayloadFormat\n\n\n# Both original fixed reference constructors omit targets. Their generated\n# initializer retains this actual default tuple across separate registrations.\n_REFERENCE_TARGETS = PassContract.targets\n_REFERENCE_CONTRACT_INIT = PassContract.__init__\n_REFERENCE_CONTRACT_CODE = _REFERENCE_CONTRACT_INIT.__code__\n_REFERENCE_CONTRACT_DEFAULTS = _REFERENCE_CONTRACT_INIT.__defaults__\n\n\ndef _reference_contract_targets(contract: PassContract, *, expected: str) -> None:\n    _require(expected in ('components_to_construct', 'construct_to_molecular')\n        and type(contract) is PassContract and contract.id == expected,\n        'Unknown original reference contract target origin')\n    initializer = vars(PassContract).get('__init__')\n    fields = vars(PassContract).get('__dataclass_fields__')\n    _require(initializer is _REFERENCE_CONTRACT_INIT\n        and initializer.__code__ is _REFERENCE_CONTRACT_CODE\n        and initializer.__defaults__ is _REFERENCE_CONTRACT_DEFAULTS\n        and type(_REFERENCE_CONTRACT_DEFAULTS) is tuple and len(_REFERENCE_CONTRACT_DEFAULTS) == 11\n        and _REFERENCE_CONTRACT_DEFAULTS[1] is _REFERENCE_TARGETS\n        and vars(PassContract).get('targets') is _REFERENCE_TARGETS\n        and type(fields) is dict and 'targets' in fields\n        and fields['targets'].default is _REFERENCE_TARGETS\n        and type(_REFERENCE_TARGETS) is tuple and len(_REFERENCE_TARGETS) == 2\n        and _REFERENCE_TARGETS[0] is PayloadFormat.DNA and _REFERENCE_TARGETS[1] is PayloadFormat.RNA,\n        'Original reference contract target default changed')\n    _require(type(contract.targets) is tuple and len(contract.targets) == len(_REFERENCE_TARGETS)\n        and all(actual is original for actual, original in zip(contract.targets, _REFERENCE_TARGETS)),\n        'Native reference contract targets differ from the original default')\n    object.__setattr__(contract, 'targets', _REFERENCE_TARGETS)\n",
+      "before": "",
+      "new_end_line": 71,
+      "new_start_line": 40,
+      "old_end_line": 39,
+      "old_start_line": 40
+    },
+    {
+      "after": "        _reference_contract_targets(contract, expected=expected)\n",
+      "before": "",
+      "new_end_line": 360,
+      "new_start_line": 360,
+      "old_end_line": 327,
+      "old_start_line": 328
+    }
+  ],
+  "current_bytes": 45778,
+  "current_sha256": "cd75fca7e114b76ea42dfe433c399f175e6402ea7270f00e5ed5982d584bbd31",
+  "original_bytes": 43749,
+  "original_sha256": "188830c06e5865d65d4997558d602e9c28668e1d7f163693c515f306661c22f2",
+  "path": "src/biocompiler/core_reference_manager.py",
+  "predecessor": {
+    "path": "tests/conformance/reference-attempt-facade-counterpart-v1.json",
+    "sha256": "23d5cdd16455f81ad50de6a4f6931a2a3505dda089f28a105bc572ab558a571e"
+  },
+  "schema_version": "biocompiler.reference_attempt_facade_counterpart.v2",
+  "scope": "Exact historical source restoration only; current reference target identity validation is separate"
+}

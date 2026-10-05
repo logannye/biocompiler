@@ -415,7 +415,10 @@ class CorePipelineSession:
                 self._output_bytes += len(received)
                 self._quiet()
                 return bytes(received[HEADER_BYTES:])
-            if 'stdout' in self._eof or self._process.poll() is not None:
+            # Exit can race with a readiness snapshot while the final reply is
+            # still buffered. Only stdout EOF proves an incomplete frame; the
+            # existing deadline also bounds pipes inherited by descendants.
+            if 'stdout' in self._eof:
                 raise CoreTransportError('Pipeline Core exited with an incomplete response frame')
 
     def _finish(self, deadline: float, cancelled: Callable[[], bool] | None) -> None:

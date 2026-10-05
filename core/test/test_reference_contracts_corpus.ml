@@ -67,7 +67,41 @@ let restore_source_lines current changes =
     require(actual=after) "Reference source witness replacement bytes differ";
     prefix@before@suffix)(lines current)(List.rev changes) |> String.concat ""
 
+let reference_manager_view_original root name current =
+  let previous_pin="f5c3410fb93d99182a1c5b9d8f3fa948990a0e1d4ce0b3b609c6b9f470d67bdd"
+  and current_pin="44eeed2c22a9d07ff254dcd5b1e1edd26cf7e6bcfc29918ae20da39c2fbb544c" in
+  require(name="src/biocompiler/core_pipeline_manager.py" &&
+    Canonical.sha256 current=current_pin && String.length current=94893)
+    "Unreviewed reference manager view source substitution";
+  let witness=source_witness root "tests/conformance/reference-manager-source-counterpart-v5.json"
+    "56e6f74417aab4de65eafdc4e7ca00a78db736c4b3ae8608be046a6340ce913d" in
+  Json.exact_fields ["schema_version";"base_revision";"path";"original_sha256";"current_sha256";
+    "original_bytes";"current_bytes";"changes";"scope";"predecessor"] (Json.object_fields witness);
+  let predecessor=field "predecessor" witness in
+  Json.exact_fields ["path";"sha256"] (Json.object_fields predecessor);
+  require(text "schema_version" witness="biocompiler.reference_manager_source_counterpart.v5" &&
+    text "base_revision" witness="0297d583d5774dc8991fda24c4f8fb39a277cc9a" &&
+    text "path" witness=name && text "original_sha256" witness=previous_pin &&
+    text "current_sha256" witness=current_pin && integer(field "original_bytes" witness)=93594 &&
+    integer(field "current_bytes" witness)=94893 &&
+    text "path" predecessor="tests/conformance/reference-manager-source-counterpart-v4.json" &&
+    text "sha256" predecessor="7c17725b7d5e5843418dfea595b97aeb786ffc2ed2bf477d16db40012533c143" &&
+    text "scope" witness="Exact historical source restoration only; current structural view validation is separate")
+    "Reference manager view source witness lost its exact authority";
+  let changes=array "changes" witness in
+  let spans=List.map(fun change->
+    Json.exact_fields ["old_start_line";"old_end_line";"new_start_line";"new_end_line";"before";"after"]
+      (Json.object_fields change);
+    integer(field "old_start_line" change),integer(field "old_end_line" change),
+    integer(field "new_start_line" change),integer(field "new_end_line" change)) changes in
+  require(spans=[112,117,112,139]) "Reference manager view exact source span census differs";
+  let restored=restore_source_lines current changes in
+  require(String.length restored=93594 && Canonical.sha256 restored=previous_pin)
+    "Reference manager view whole preceding source differs";
+  restored
+
 let reference_manager_original root name expected current =
+  let current=reference_manager_view_original root name current in
   let old_pin="40a08477c97a97159372d9723267df3cacf8335a59d6b00ada34bb56470e31f3"
   and previous_pin="0c0cfac138484cf71f1bb1303e66873b8b148ca236e07930fdbadd0b477a11be"
   and routed_pin="18ee9bd517524b4440bcf29292a5d834470603713d662198b83ca61373c7fd09"
@@ -218,11 +252,42 @@ let reference_callback_original root name expected current =
     "Reference callback whole source byte count differs";
   restored
 
+let reference_session_original root name expected current =
+  let original_pin="b0c744d8f3a38b1681805250ccf93884ba866678527cf366bcf08ff326da080d"
+  and current_pin="8de06056804e4e58350fa562c438acf2b6306a462edd9df3a1da2070f298d169" in
+  require(name="src/biocompiler/core_pipeline_session.py" && expected=original_pin &&
+    Canonical.sha256 current=current_pin && String.length current=34104)
+    "Unreviewed reference session source substitution";
+  let witness=source_witness root "tests/conformance/reference-session-source-counterpart-v1.json"
+    "0ad1db1de89c118f74d8b0237e9ecad7e09da28d02931362332ac520fc911250" in
+  Json.exact_fields ["schema_version";"base_revision";"path";"original_sha256";"current_sha256";
+    "original_bytes";"current_bytes";"changes";"scope"] (Json.object_fields witness);
+  require(text "schema_version" witness="biocompiler.reference_session_source_counterpart.v1" &&
+    text "base_revision" witness="0297d583d5774dc8991fda24c4f8fb39a277cc9a" &&
+    text "path" witness=name && text "original_sha256" witness=original_pin &&
+    text "current_sha256" witness=current_pin && integer(field "original_bytes" witness)=33907 &&
+    integer(field "current_bytes" witness)=34104 &&
+    text "scope" witness="Exact historical source restoration only; current session transport validation is separate")
+    "Reference session source witness lost its exact authority";
+  let changes=array "changes" witness in
+  let spans=List.map(fun change->
+    Json.exact_fields ["old_start_line";"old_end_line";"new_start_line";"new_end_line";"before";"after"]
+      (Json.object_fields change);
+    integer(field "old_start_line" change),integer(field "old_end_line" change),
+    integer(field "new_start_line" change),integer(field "new_end_line" change)) changes in
+  require(spans=[418,418,418,421]) "Reference session exact source span census differs";
+  let restored=restore_source_lines current changes in
+  require(String.length restored=33907 && Canonical.sha256 restored=original_pin)
+    "Reference session whole original source differs";
+  restored
+
 let reference_original root name expected current =
   let restored=if name="src/biocompiler/core_pipeline_manager.py" then
     reference_manager_original root name expected current
     else if name="src/biocompiler/core_pipeline_callback_session.py" then
       reference_callback_original root name expected current
+    else if name="src/biocompiler/core_pipeline_session.py" then
+      reference_session_original root name expected current
     else reference_routed_original root name expected current in
   let archived=read_raw ~maximum:1_000_000(Filename.concat root
     ("tests/conformance/reference-original-sources-v1/"^expected^".blob")) in

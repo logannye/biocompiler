@@ -30,12 +30,14 @@ class ReferenceOriginalCounterpartTests(unittest.TestCase):
         manager = rows['src/biocompiler/compiler/pipeline.py']
         self.assertEqual(manager['sha256'], 'dccba32618ecc7923b8a02ff54f114d515ff4e50908f45e27a8cda0a3f531be0')
         self.assertFalse(manager['substituted'])
-        self.assertEqual([name for name, row in rows.items() if row['substituted']], sorted([original.CORE_SOURCE, original.CALLBACK_SOURCE, original.TEST, *original.ROUTE_SOURCES]))
+        self.assertEqual([name for name, row in rows.items() if row['substituted']], sorted([original.CORE_SOURCE, original.CALLBACK_SOURCE, original.SESSION_SOURCE, original.TEST, *original.ROUTE_SOURCES]))
         self.assertEqual(rows[original.CORE_SOURCE]['origin_sha256'], original.CORE_CURRENT_SHA)
         self.assertEqual(rows[original.CORE_SOURCE]['sha256'], original.CORE_ORIGINAL_SHA)
-        self.assertEqual(len(receipt['manifest']['data']), 4010)
+        self.assertEqual(len(receipt['manifest']['data']), 4013)
         self.assertEqual(rows[original.CALLBACK_SOURCE]['origin_sha256'], original.CALLBACK_CURRENT_SHA)
         self.assertEqual(rows[original.CALLBACK_SOURCE]['sha256'], original.CALLBACK_ORIGINAL_SHA)
+        self.assertEqual(rows[original.SESSION_SOURCE]['origin_sha256'], original.SESSION_CURRENT_SHA)
+        self.assertEqual(rows[original.SESSION_SOURCE]['sha256'], original.SESSION_ORIGINAL_SHA)
         self.assertEqual(rows[original.TEST]['sha256'], original.TEST_SHA)
         self.assertEqual(receipt['modules']['biocompiler.compiler.pipeline']['namespace'], 'biocompiler.compiler.pipeline')
         self.assertTrue(all(row['class'] == 'tests.test_reference_contracts_corpus.ReferenceContractsCorpusTests'
@@ -58,7 +60,8 @@ class ReferenceOriginalCounterpartTests(unittest.TestCase):
         for kind in ('old-manager', 'missing-source', 'extra-source', 'origin', 'copied-path',
                      'missing-data', 'data-hash', 'data-bytes', 'test-witness', 'namespace',
                      'module-path', 'missing-module', 'inventory', 'narrowed-tests', 'core-witness', 'core-update', 'attempt-witness', 'route-witness', 'current-core-copy',
-                     'callback-witness', 'current-callback-copy', 'missing-callback-witness'):
+                     'callback-witness', 'current-callback-copy', 'missing-callback-witness',
+                     'session-witness', 'current-session-copy', 'missing-session-witness'):
             value = deepcopy(self.receipt)
             manifest = value['manifest']
             rows = manifest['sources']
@@ -82,6 +85,12 @@ class ReferenceOriginalCounterpartTests(unittest.TestCase):
             elif kind == 'route-witness': manifest['route_source_witnesses'][0]['correspondence']['insertion']['byte_offset'] += 1
             elif kind == 'callback-witness': manifest['callback_source_witness']['correspondence']['changes'][0]['after'] += '# forged\n'
             elif kind == 'missing-callback-witness': del manifest['callback_source_witness']
+            elif kind == 'session-witness': manifest['session_source_witness']['correspondence']['changes'][0]['after'] += '# forged\n'
+            elif kind == 'missing-session-witness': del manifest['session_source_witness']
+            elif kind == 'current-session-copy':
+                session = next(row for row in rows if row['logical'] == original.SESSION_SOURCE)
+                session['sha256'] = session['origin_sha256']
+                session['substituted'] = False
             elif kind == 'current-callback-copy':
                 callback = next(row for row in rows if row['logical'] == original.CALLBACK_SOURCE)
                 callback['sha256'] = callback['origin_sha256']
@@ -112,8 +121,9 @@ class ReferenceOriginalCounterpartTests(unittest.TestCase):
             target.parent.mkdir(parents=True, exist_ok=True)
             target.write_bytes((original.ROOT / original.CORPUS).read_bytes())
             for logical in (original.CORE_BLOB, original.CORE_WITNESS, original.CORE_UPDATE,
-                            original.CORE_MERGE_UPDATE, original.CORE_ATTEMPT_UPDATE, original.ROUTE_WITNESS,
-                            original.CALLBACK_BLOB, original.CALLBACK_WITNESS, original.CALLBACK_DRAIN_WITNESS):
+                            original.CORE_MERGE_UPDATE, original.CORE_ATTEMPT_UPDATE, original.CORE_VIEW_UPDATE, original.ROUTE_WITNESS,
+                            original.CALLBACK_BLOB, original.CALLBACK_WITNESS, original.CALLBACK_DRAIN_WITNESS,
+                            original.SESSION_BLOB, original.SESSION_WITNESS):
                 target = root / logical
                 target.parent.mkdir(parents=True, exist_ok=True)
                 target.write_bytes((original.ROOT / logical).read_bytes())

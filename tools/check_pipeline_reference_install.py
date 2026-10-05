@@ -12,6 +12,7 @@ import contextlib
 from contextlib import contextmanager
 from dataclasses import fields, is_dataclass
 from enum import Enum
+import faulthandler
 import importlib
 import importlib.util
 import dis
@@ -21,6 +22,7 @@ import platform
 import sys
 import sysconfig
 import tempfile
+import time
 from types import FunctionType, MappingProxyType
 import unittest
 from unittest.mock import Mock, DEFAULT
@@ -59,8 +61,13 @@ SOURCES = (SOURCE, TEST_SOURCE, original.FREEZER, original.RUNNER,
     'tools/reference_attempt_receipts.py', 'tests/test_reference_attempt_receipts.py',
     'tests/test_core_reference_attempts.py',
     'tools/reference_attempt_source.py', 'tests/test_reference_attempt_source.py',
+    'tests/test_reference_target_source_lineage.py',
+    'tests/test_reference_observer_dispatch.py',
+    'tests/test_reference_session_source_lineage.py',
+    'tests/test_reference_campaign_diagnostics.py',
     'tests/test_core_reference_manager.py', 'tests/test_reference_backend.py',
     'tests/conformance/reference-attempt-facade-counterpart-v1.json',
+    'tests/conformance/reference-attempt-facade-counterpart-v2.json',
     'src/biocompiler/reference_backend.py',
     'tests/test_reference_pipeline_original_counterpart.py',
     'src/biocompiler/core_reference_manager.py', 'src/biocompiler/core_reference_host.py',
@@ -73,6 +80,20 @@ def tool(name):
                     'reference_attempt_receipts'),
             'Unknown closed reference campaign helper')
     return importlib.import_module('.' + name, __package__) if __package__ else importlib.import_module(name)
+
+
+@contextmanager
+def diagnostic_phase(name):
+    """Write bounded progress outside observed events and receipt schemas."""
+    started = time.monotonic()
+    print('Reference campaign: ' + name + ' started', file=sys.stderr, flush=True)
+    outcome = 'failed'
+    try:
+        yield
+        outcome = 'complete'
+    finally:
+        elapsed = time.monotonic() - started
+        print(f'Reference campaign: {name} {outcome} ({elapsed:.3f}s)', file=sys.stderr, flush=True)
 
 
 def source_function(function, *, expected=None):
@@ -523,6 +544,10 @@ class Observer:
             require(function is local['self'], 'Reference override invocation lost its actual module global')
             self.entry_functions[id(frame)] = function
             return 'override.' + name, None
+        # Only these original fixture callbacks can match the path-based lane.
+        # Keep live path and callable checks for every eligible invocation.
+        if code.co_name != 'register' and not (code.co_name in ('forged', 'producer') and 'context' in local):
+            return None
         if Path(code.co_filename).resolve() in (ROOT / 'tests/test_construct_pipeline.py', ROOT / 'tests/test_molecular_pipeline.py'):
             if code.co_name == 'register':
                 from biocompiler.compiler.pipeline import PassManager
@@ -919,56 +944,59 @@ def run_bodies(corpus, *, core=None, factories=None, observer=None, installed=Tr
 # Runtime observation deliberately precedes any oracle comparison. It retains
 # actual selected processes even when an unchanged assertion or callback fails.
 def run_observed(core, corpus, receipt, *, installed=True, guard=None):
-    from biocompiler.core_client import CoreProtocolError
-    observer = Observer(corpus)
-    result = None
-    failed = None
-    execution = None
-    receipt['processes'] = []
-    try:
-        with (contextlib.nullcontext() if guard is None else guard(observer)) as execution:
-            result = run_bodies(corpus, core=core, observer=observer, installed=installed)
-    except BaseException as error:
-        failed = error
-    finally:
-        # Closing happens outside the observation trace: it is transport cleanup,
-        # not an original user operation. Every close frame remains in receipts.
-        for number, owner in enumerate(observer.managers):
-            session = owner.session
-            row = {'manager': number, 'pid': session.pid,
-                'executable_sha256': session.executable_sha256, 'frames': []}
-            receipt['processes'].append(row)
-            try:
-                owner.close()
-                before = len(session.traffic)
-                try:
-                    owner.get('request')
-                except CoreProtocolError as error:
-                    row['after_close'] = {'type': type(error).__name__, 'message': str(error),
-                        'traffic_unchanged': len(session.traffic) == before, 'pid_unchanged': session.pid == row['pid']}
-                else:
-                    raise AssertionError('Closed reference manager resumed')
-            except BaseException as error:
-                if failed is None: failed = error
-            finally:
-                row.update(returncode=session.returncode, closed=session.closed, invalidated=session.invalidated,
-                    stderr=manager.artifact(receipt, canonical({'hex': session.stderr_bytes.hex()})),
-                    frames=[{'direction': entry.direction, 'index': entry.index,
-                             'frame': manager.artifact(receipt, entry.frame)} for entry in session.traffic])
-        observation = {
-            'events': observer.rows, 'initializations': observer.initializations,
-            'raw_tracebacks': observer.raw_traces,
-            'documents': sorted(manager.artifact(receipt, canonical(value)) for value in observer.graph.store.docs.values()),
-            'physical_objects': len(observer.graph.original.values), 'result': result}
-        receipt['observation'] = manager.artifact(receipt, canonical(observation))
-        receipt['observation_sources'] = manager.artifact(receipt, canonical(capture_observation_sources(
-            observation, observer.graph.store.docs, receipt)))
-    if failed is not None: raise failed
-    require(execution is not None, 'Reference native execution guard is mandatory')
-    receipt['guard'] = manager.artifact(receipt, canonical(execution.evidence()))
-    require(len(observer.managers) == 27 and len(observer.initializations) == 27,
-            'Reference unchanged methods did not retain all27actual manager processes')
-    return observer
+    with diagnostic_phase('run_observed'):
+        from biocompiler.core_client import CoreProtocolError
+        observer = Observer(corpus)
+        result = None
+        failed = None
+        execution = None
+        receipt['processes'] = []
+        try:
+            with (contextlib.nullcontext() if guard is None else guard(observer)) as execution:
+                with diagnostic_phase('run_bodies'):
+                    result = run_bodies(corpus, core=core, observer=observer, installed=installed)
+        except BaseException as error:
+            failed = error
+        finally:
+            # Closing happens outside the observation trace: it is transport cleanup,
+            # not an original user operation. Every close frame remains in receipts.
+            with diagnostic_phase('cleanup'):
+                for number, owner in enumerate(observer.managers):
+                    session = owner.session
+                    row = {'manager': number, 'pid': session.pid,
+                        'executable_sha256': session.executable_sha256, 'frames': []}
+                    receipt['processes'].append(row)
+                    try:
+                        owner.close()
+                        before = len(session.traffic)
+                        try:
+                            owner.get('request')
+                        except CoreProtocolError as error:
+                            row['after_close'] = {'type': type(error).__name__, 'message': str(error),
+                                'traffic_unchanged': len(session.traffic) == before, 'pid_unchanged': session.pid == row['pid']}
+                        else:
+                            raise AssertionError('Closed reference manager resumed')
+                    except BaseException as error:
+                        if failed is None: failed = error
+                    finally:
+                        row.update(returncode=session.returncode, closed=session.closed, invalidated=session.invalidated,
+                            stderr=manager.artifact(receipt, canonical({'hex': session.stderr_bytes.hex()})),
+                            frames=[{'direction': entry.direction, 'index': entry.index,
+                                     'frame': manager.artifact(receipt, entry.frame)} for entry in session.traffic])
+            observation = {
+                'events': observer.rows, 'initializations': observer.initializations,
+                'raw_tracebacks': observer.raw_traces,
+                'documents': sorted(manager.artifact(receipt, canonical(value)) for value in observer.graph.store.docs.values()),
+                'physical_objects': len(observer.graph.original.values), 'result': result}
+            receipt['observation'] = manager.artifact(receipt, canonical(observation))
+            receipt['observation_sources'] = manager.artifact(receipt, canonical(capture_observation_sources(
+                observation, observer.graph.store.docs, receipt)))
+        if failed is not None: raise failed
+        require(execution is not None, 'Reference native execution guard is mandatory')
+        receipt['guard'] = manager.artifact(receipt, canonical(execution.evidence()))
+        require(len(observer.managers) == 27 and len(observer.initializations) == 27,
+                'Reference unchanged methods did not retain all27actual manager processes')
+        return observer
 
 
 def validate_processes(receipt, artifacts, *, executable_sha256):
@@ -1309,53 +1337,54 @@ def reconstruct(receipt, corpus, artifacts, *, installed=True, retain=None):
     This returns separately labeled mechanical evidence. It never replaces the
     required real-Core run or executes an original Python semantic backend.
     """
-    import biocompiler
-    from biocompiler.core_client import CoreClient
-    guard = tool('reference_execution_guard')
-    TranscriptPeer = tool('reference_pipeline_transcript').TranscriptPeer
-    require(receipt['python_version'].split('.')[:2] == list(map(str, sys.version_info[:2])),
-            'Reference transcript reconstruction requires its actual Python minor')
-    actual, normalized, guarded, proof, tapes = validate_native_evidence(receipt, corpus, artifacts)
-    with tempfile.TemporaryDirectory(prefix='reference-reconstruction-evidence-') as directory:
-        replay = {'_artifact_directory': directory, 'artifacts': {}, 'execution_kind': 'transcript-reconstruction',
-            'package_path': str(Path(biocompiler.__file__).resolve()), 'python_version': platform.python_version()}
-        with TranscriptPeer(tapes) as peer:
-            client = CoreClient(peer.executable, role='core', expected_sha256=peer.executable_sha256, timeout_seconds=300)
-            with peer.recorded_nonces():
-                observer = run_observed(client, corpus, replay, installed=installed, guard=guard.execution)
-            completion = peer.evidence([owner.session for owner in observer.managers])
-            replay['peer_executable'] = manager.artifact(replay, peer.executable.read_bytes())
-        replay_artifacts = manager.Artifacts(directory, replay['artifacts'])
-        current = observed_data(replay, replay_artifacts)
-        source_proof = replay_artifacts.json(replay['observation_sources'], maximum=4 * 1024 * 1024)
-        current_paths = validate_observation_sources(source_proof, current, current['documents'], replay_artifacts,
-            package_path=str(Path(biocompiler.__file__).resolve()), runtime=platform.python_version())
-        equal(normalized_observation(current, current_paths), normalized,
-              'Current unchanged workflow reconstruction differs from the complete actual native observation')
-        current_guard = replay_artifacts.json(replay['guard'], maximum=32 * 1024 * 1024)
-        guard.validate(current_guard, [row['frames'] for row in replay['processes']], replay_artifacts)
-        old_sources = artifacts.json(receipt['observation_sources'], maximum=4 * 1024 * 1024)
-        original_paths = {filename: row['logical'] for filename, row in old_sources['files'].items()}
-        equal(guarded_projection(current_guard, current_paths), guarded_projection(guarded, original_paths),
-              'Current reconstruction changed its complete guarded execution')
-        for process in replay['processes']:
-            replay_artifacts.json(process['stderr'])
-            for frame in process['frames']: replay_artifacts.raw(frame['frame'])
-        replay_artifacts.raw(replay['peer_executable'])
-        require(replay_artifacts.used == set(replay_artifacts.declared), 'Unconsumed reconstruction artifact')
-        if retain is not None:
-            for identity in replay_artifacts.declared:
-                require(retain(replay_artifacts.raw(identity)) == identity, 'Reconstructed raw artifact was not retained exactly')
-        return {'schema_version': 'biocompiler.reference_workflow_reconstruction.v1',
-            'native_execution': False, 'python_version': platform.python_version(),
-            'source_platform': {'system': receipt['system'], 'machine': receipt['machine']},
-            'reconstruction_platform': {'system': platform.system(), 'machine': platform.machine()},
-            'scope': 'same-minor current client/host execution from byte-exact real native transcript; no native acceptance substituted',
-            'complete_observation_sha256': sha(canonical(normalized)),
-            'guarded_execution_sha256': sha(canonical(guarded_projection(current_guard, current_paths))),
-            'comparison': proof, 'peer': completion,
-            'reconstructed_receipt': {key: value for key, value in replay.items() if key != '_artifact_directory'},
-            'reconstructed_artifacts': {identity: replay_artifacts.verified[identity] for identity in sorted(replay_artifacts.verified)}}
+    with diagnostic_phase('reconstruct'):
+        import biocompiler
+        from biocompiler.core_client import CoreClient
+        guard = tool('reference_execution_guard')
+        TranscriptPeer = tool('reference_pipeline_transcript').TranscriptPeer
+        require(receipt['python_version'].split('.')[:2] == list(map(str, sys.version_info[:2])),
+                'Reference transcript reconstruction requires its actual Python minor')
+        actual, normalized, guarded, proof, tapes = validate_native_evidence(receipt, corpus, artifacts)
+        with tempfile.TemporaryDirectory(prefix='reference-reconstruction-evidence-') as directory:
+            replay = {'_artifact_directory': directory, 'artifacts': {}, 'execution_kind': 'transcript-reconstruction',
+                'package_path': str(Path(biocompiler.__file__).resolve()), 'python_version': platform.python_version()}
+            with TranscriptPeer(tapes) as peer:
+                client = CoreClient(peer.executable, role='core', expected_sha256=peer.executable_sha256, timeout_seconds=300)
+                with peer.recorded_nonces():
+                    observer = run_observed(client, corpus, replay, installed=installed, guard=guard.execution)
+                completion = peer.evidence([owner.session for owner in observer.managers])
+                replay['peer_executable'] = manager.artifact(replay, peer.executable.read_bytes())
+            replay_artifacts = manager.Artifacts(directory, replay['artifacts'])
+            current = observed_data(replay, replay_artifacts)
+            source_proof = replay_artifacts.json(replay['observation_sources'], maximum=4 * 1024 * 1024)
+            current_paths = validate_observation_sources(source_proof, current, current['documents'], replay_artifacts,
+                package_path=str(Path(biocompiler.__file__).resolve()), runtime=platform.python_version())
+            equal(normalized_observation(current, current_paths), normalized,
+                  'Current unchanged workflow reconstruction differs from the complete actual native observation')
+            current_guard = replay_artifacts.json(replay['guard'], maximum=32 * 1024 * 1024)
+            guard.validate(current_guard, [row['frames'] for row in replay['processes']], replay_artifacts)
+            old_sources = artifacts.json(receipt['observation_sources'], maximum=4 * 1024 * 1024)
+            original_paths = {filename: row['logical'] for filename, row in old_sources['files'].items()}
+            equal(guarded_projection(current_guard, current_paths), guarded_projection(guarded, original_paths),
+                  'Current reconstruction changed its complete guarded execution')
+            for process in replay['processes']:
+                replay_artifacts.json(process['stderr'])
+                for frame in process['frames']: replay_artifacts.raw(frame['frame'])
+            replay_artifacts.raw(replay['peer_executable'])
+            require(replay_artifacts.used == set(replay_artifacts.declared), 'Unconsumed reconstruction artifact')
+            if retain is not None:
+                for identity in replay_artifacts.declared:
+                    require(retain(replay_artifacts.raw(identity)) == identity, 'Reconstructed raw artifact was not retained exactly')
+            return {'schema_version': 'biocompiler.reference_workflow_reconstruction.v1',
+                'native_execution': False, 'python_version': platform.python_version(),
+                'source_platform': {'system': receipt['system'], 'machine': receipt['machine']},
+                'reconstruction_platform': {'system': platform.system(), 'machine': platform.machine()},
+                'scope': 'same-minor current client/host execution from byte-exact real native transcript; no native acceptance substituted',
+                'complete_observation_sha256': sha(canonical(normalized)),
+                'guarded_execution_sha256': sha(canonical(guarded_projection(current_guard, current_paths))),
+                'comparison': proof, 'peer': completion,
+                'reconstructed_receipt': {key: value for key, value in replay.items() if key != '_artifact_directory'},
+                'reconstructed_artifacts': {identity: replay_artifacts.verified[identity] for identity in sorted(replay_artifacts.verified)}}
 
 
 class SubsetArtifacts:
@@ -1457,4 +1486,8 @@ def main(argv=None):
 
 
 if __name__ == '__main__':
-    raise SystemExit(main())
+    faulthandler.dump_traceback_later(300, repeat=True, file=sys.stderr)
+    try:
+        raise SystemExit(main())
+    finally:
+        faulthandler.cancel_dump_traceback_later()

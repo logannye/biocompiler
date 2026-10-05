@@ -1,0 +1,24 @@
+{
+  "base_revision": "0297d583d5774dc8991fda24c4f8fb39a277cc9a",
+  "changes": [
+    {
+      "after": "def _raw_fields(cls: Any, values: Mapping[str, Any]) -> Any:\n    \"\"\"Hydrate a native-checked value without rerunning Python semantic checks.\"\"\"\n    # JSON member order is independent of the original generated initializer's\n    # attribute insertion order. These five structural views retain that order.\n    names: tuple[str, ...]\n    if cls is ScopedObligation:\n        names = ('id', 'scope', 'evidence_kind', 'description')\n    elif cls is CheckSpec:\n        names = ('id', 'evidence_kind', 'discharges')\n    elif cls is ComponentInputContract:\n        names = ('id', 'version', 'schema', 'checks', 'requirements', 'obligations',\n            'dependency_keys', 'operation_path')\n    elif cls is PassContract:\n        names = ('id', 'version', 'input_stage', 'output_stage', 'input_schema', 'output_schema',\n            'profile', 'profile_version', 'supported_operations', 'checks', 'dependency_keys',\n            'targets', 'required_capabilities', 'consumes_requirements', 'assumptions', 'introduces',\n            'requires_source_map', 'requires_observation_map', 'changed_properties',\n            'invalidated_analyses', 'operation_path')\n    elif cls is CompletionProfile:\n        names = ('scope', 'stage', 'schema', 'obligations')\n    else:\n        raise CoreProtocolError('Unreviewed native structural view class')\n    _require(isinstance(values, Mapping) and set(values) == set(names),\n        'Native structural view field census differs')\n    result = object.__new__(cls)\n    for name in names:\n        object.__setattr__(result, name, values[name])\n    return result\n",
+      "before": "def _raw_fields(cls: Any, values: Mapping[str, Any]) -> Any:\n    \"\"\"Hydrate a native-checked value without rerunning Python semantic checks.\"\"\"\n    result = object.__new__(cls)\n    for name, value in values.items():\n        object.__setattr__(result, name, value)\n    return result\n",
+      "new_end_line": 139,
+      "new_start_line": 112,
+      "old_end_line": 117,
+      "old_start_line": 112
+    }
+  ],
+  "current_bytes": 94893,
+  "current_sha256": "44eeed2c22a9d07ff254dcd5b1e1edd26cf7e6bcfc29918ae20da39c2fbb544c",
+  "original_bytes": 93594,
+  "original_sha256": "f5c3410fb93d99182a1c5b9d8f3fa948990a0e1d4ce0b3b609c6b9f470d67bdd",
+  "path": "src/biocompiler/core_pipeline_manager.py",
+  "predecessor": {
+    "path": "tests/conformance/reference-manager-source-counterpart-v4.json",
+    "sha256": "7c17725b7d5e5843418dfea595b97aeb786ffc2ed2bf477d16db40012533c143"
+  },
+  "schema_version": "biocompiler.reference_manager_source_counterpart.v5",
+  "scope": "Exact historical source restoration only; current structural view validation is separate"
+}

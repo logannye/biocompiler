@@ -12,6 +12,7 @@ else:
 
 
 import argparse
+from concurrent.futures import ThreadPoolExecutor
 import importlib
 import os
 from pathlib import Path
@@ -205,6 +206,7 @@ def compare(root,native_root,*,revision,source_revision,run_id,python311,python3
         and len(set(interpreters.values()))==2,'Reference comparison requires two actual Python runtimes')
     receipts,binaries,common={}, {},None
     with tempfile.TemporaryDirectory(prefix='reference-independent-replay-') as temporary:
+        jobs=[]
         for target in r.PLATFORMS:
             native=r.verify_binaries(native_root/target,revision,target);binaries[target]=native
             for python in r.PYTHONS:
@@ -224,22 +226,30 @@ def compare(root,native_root,*,revision,source_revision,run_id,python311,python3
                 command=[str(interpreters[python]),str(ROOT/gate.SOURCE),'--reconstruct','--receipt',str(directory/gate.RECEIPT_FILE),
                     '--native-root',str(native_root/target),'--output',str(output),'--revision',revision,
                     '--source-revision',source_revision,'--run-id',run_id,'--platform',target,'--python',python]
-                completed=subprocess.run(command,cwd=temporary,capture_output=True,timeout=1800,check=False)
-                require(len(completed.stdout)+len(completed.stderr)<=1024*1024,'Reference reconstruction diagnostics exceeded bound')
-                require(completed.returncode==0,'Reference independent reconstruction failed: '+completed.stderr.decode('utf-8','replace'))
-                report,report_pin=r.read(output)
-                expected={'schema_version':'biocompiler.reference_independent_reconstruction.v1','status':'success',
-                    'receipt_sha256':pin,'revision':revision,'source_revision':source_revision,'run_id':run_id,
-                    'native_platform':target,'campaign_sources':tools,'python_sources':sources,
-                    'interpreter':str(interpreters[python]),'interpreter_sha256':sha(r.raw_file(interpreters[python],256*1024*1024)),
-                    'complete_artifacts':artifacts.verified}
-                for key,value in expected.items():equal(report.get(key),value,'Unbound reference reconstruction worker: '+key)
-                require(report['python_version'].startswith(python+'.'),'Reference worker used another runtime')
-                projected=canonical(report['projection']['original_behavior'])
-                require(common is None or projected==common,'Original reference public behavior differs across runtimes')
-                common=projected
-                receipts[name]={'receipt_sha256':pin,'native_inputs_sha256':inputs_pin,'independent_reconstruction':report,
-                    'independent_reconstruction_sha256':report_pin,'complete_artifacts':artifacts.verified}
+                jobs.append((name,target,python,pin,inputs_pin,artifacts,output,command))
+        # Only pipe I/O and waiting overlap. Source/receipt preparation stays on
+        # this thread; each reconstruction owns its process-local instrumentation.
+        # Leaving the executor drains every started worker even when one fails.
+        with ThreadPoolExecutor(max_workers=4) as executor:
+            futures=[executor.submit(subprocess.run,job[-1],cwd=temporary,
+                capture_output=True,timeout=1800,check=False) for job in jobs]
+        for (name,target,python,pin,inputs_pin,artifacts,output,command),future in zip(jobs,futures):
+            completed=future.result()
+            require(len(completed.stdout)+len(completed.stderr)<=1024*1024,'Reference reconstruction diagnostics exceeded bound')
+            require(completed.returncode==0,'Reference independent reconstruction failed: '+completed.stderr.decode('utf-8','replace'))
+            report,report_pin=r.read(output)
+            expected={'schema_version':'biocompiler.reference_independent_reconstruction.v1','status':'success',
+                'receipt_sha256':pin,'revision':revision,'source_revision':source_revision,'run_id':run_id,
+                'native_platform':target,'campaign_sources':tools,'python_sources':sources,
+                'interpreter':str(interpreters[python]),'interpreter_sha256':sha(r.raw_file(interpreters[python],256*1024*1024)),
+                'complete_artifacts':artifacts.verified}
+            for key,value in expected.items():equal(report.get(key),value,'Unbound reference reconstruction worker: '+key)
+            require(report['python_version'].startswith(python+'.'),'Reference worker used another runtime')
+            projected=canonical(report['projection']['original_behavior'])
+            require(common is None or projected==common,'Original reference public behavior differs across runtimes')
+            common=projected
+            receipts[name]={'receipt_sha256':pin,'native_inputs_sha256':inputs_pin,'independent_reconstruction':report,
+                'independent_reconstruction_sha256':report_pin,'complete_artifacts':artifacts.verified}
     return {'schema_version':'biocompiler.reference_workflow_reproducibility.v1','status':'success','scope':SCOPE,
         'revision':revision,'source_revision':source_revision,'run_id':run_id,**metadata(corpus),
         'receipts':receipts,'native_inputs':binaries,'complete_original_behavior_sha256':sha(common),

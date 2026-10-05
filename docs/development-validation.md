@@ -122,6 +122,31 @@ Registration rejection checks bind the final native inspection and its original
 record order separately from SDK cache insertion order. They still require every
 original cached record object and reject added, missing or replaced records.
 
+Reference reproducibility prepares all four runtime slots and their complete
+source, binary and artifact authority before launching up to four independent
+reconstruction subprocesses. Each retains its existing 1,800-second timeout,
+diagnostic bound and unique output. All started workers finish or fail before
+the parent validates reports in the original platform/Python order and requires
+complete cross-runtime equality. Instrumentation and transcript peers remain
+inside each worker process; the four-slot limit is not a total process limit.
+
+The reference observer filters irrelevant function names before resolving
+source paths. Every eligible registration or callback still resolves its
+current path and checks the same live function identity. This removes repeated
+filesystem work from tracing without caching source authority or changing
+the observation census. End-to-end timing remains a hosted measurement.
+Flushed phase markers and a stack dump every five minutes identify long-running
+reference phases; the timer is cancelled on every script exit. Diagnostic output
+is separate from observation documents and receipt schemas.
+
+Historical manager views preserve the original attribute insertion order for
+all five closed dataclass types without rerunning Python constructors or semantic
+checks. The two fixed reference registrations retain the original shared
+`PassContract.targets` default after checking its actual source and object
+identity; generic view decoding retains separate tuples. Native sequence-range
+documents likewise preserve the original public mapping order. The complete raw graph comparison still rejects order changes;
+canonical JSON equality alone cannot establish this public object correspondence.
+
 The short authoring, per-occurrence source identity, exact source-restoration
 and diagnostics controls run in both preflight slots and remain in full unit
 discovery and accounting. Equal serialized requests can have different physical
@@ -140,6 +165,12 @@ last response fragment and unsolicited suffix, preserving every byte and origina
 assertion while removing a scheduling race. A separate FIFO-synchronized control
 requires genuinely later output to invalidate the next call or close before any
 new frame is sent; production transport timing and bounds remain unchanged.
+Persistent pipeline sessions likewise drain stdout after process exit before
+declaring an incomplete response. Real-pipe regressions require buffered
+responses to survive that readiness race while preserving EOF rejection,
+frame and aggregate limits, deadlines, cancellation and nonzero exit failure.
+The complete source-restoration checks include the two fixed-reference
+target additions and preserve the preceding whole-source witness unchanged.
 Preflight also loads every closed reference helper through both package and
 script entry paths, including the attempt lifecycle validator used after native
 execution. The same complete validation functions and manager bindings apply in
@@ -182,9 +213,10 @@ The deterministic longest-processing-time assignment keeps each complete
 they cannot exclude tests or substitute for execution. Every discovered class
 is assigned exactly once across the five shards for its Python version.
 
-The current suite discovers 3,597 tests in 382 classes on both Python versions.
-The capture scheduling, callback fixture and reference import changes add 19
-controls while
+The current suite discovers 3,655 tests in 391 classes on both Python versions.
+The capture scheduling, callback fixture, reference import, typed view and
+reference target identity, source lineage, session drain, observer dispatch, campaign diagnostics and
+reconstruction scheduling changes add 77 controls while
 preserving all previous 3,578 test IDs. Placement weights retain the historical
 fixture-inclusive maximum for every previously measured class. Fresh discovery
 assigns the existing two-second fallback to unmeasured methods and classes;

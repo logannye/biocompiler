@@ -111,9 +111,31 @@ def _literal_json(value: Any) -> JsonValue:
 
 def _raw_fields(cls: Any, values: Mapping[str, Any]) -> Any:
     """Hydrate a native-checked value without rerunning Python semantic checks."""
+    # JSON member order is independent of the original generated initializer's
+    # attribute insertion order. These five structural views retain that order.
+    names: tuple[str, ...]
+    if cls is ScopedObligation:
+        names = ('id', 'scope', 'evidence_kind', 'description')
+    elif cls is CheckSpec:
+        names = ('id', 'evidence_kind', 'discharges')
+    elif cls is ComponentInputContract:
+        names = ('id', 'version', 'schema', 'checks', 'requirements', 'obligations',
+            'dependency_keys', 'operation_path')
+    elif cls is PassContract:
+        names = ('id', 'version', 'input_stage', 'output_stage', 'input_schema', 'output_schema',
+            'profile', 'profile_version', 'supported_operations', 'checks', 'dependency_keys',
+            'targets', 'required_capabilities', 'consumes_requirements', 'assumptions', 'introduces',
+            'requires_source_map', 'requires_observation_map', 'changed_properties',
+            'invalidated_analyses', 'operation_path')
+    elif cls is CompletionProfile:
+        names = ('scope', 'stage', 'schema', 'obligations')
+    else:
+        raise CoreProtocolError('Unreviewed native structural view class')
+    _require(isinstance(values, Mapping) and set(values) == set(names),
+        'Native structural view field census differs')
     result = object.__new__(cls)
-    for name, value in values.items():
-        object.__setattr__(result, name, value)
+    for name in names:
+        object.__setattr__(result, name, values[name])
     return result
 
 

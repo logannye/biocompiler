@@ -27,6 +27,10 @@ BUDGET_DELTA=ROOT/'tests/conformance/callback-budget-checker-source-delta-v1.jso
 BUDGET_DELTA_SHA256='6cb03e6dfa5c76528bf9370be992634b6a9fbad5219a1e43c042090abd48ff8b'
 REFERENCE_DELTA=ROOT/'tests/conformance/reference-distribution-source-delta-v1.json'
 REFERENCE_DELTA_SHA256='06475b6327dac7dc67187956e14abb3a0771574307e4fbf460795c49ab905a06'
+REFERENCE_PARALLEL_DELTA=ROOT/'tests/conformance/reference-parallel-source-delta-v1.json'
+REFERENCE_PARALLEL_DELTA_SHA256='96f5803d6f66fa6dc5e6088a5ed7d5cf8f217fd93ee5266b04fc533f01882bb7'
+MANAGER_INVENTORY_DELTA=ROOT/'tests/conformance/manager-source-inventory-delta-v1.json'
+MANAGER_INVENTORY_DELTA_SHA256='8eb6ba9af872a61a3749244d835fa434ea0f131efade5da16e10a01b59316999'
 AUTHORING_DELTA=ROOT/'tests/conformance/installed-authoring-source-delta-v1.json'
 AUTHORING_DELTA_SHA256='9903d8be3224513c3bf260ae9cbe2dcd13cb65f9d4f7132313c1fb374d8896dd'
 GRAPH_DIAGNOSTIC_DELTA=ROOT/'tests/conformance/public-graph-diagnostic-source-delta-v1.json'
@@ -175,6 +179,51 @@ def restore_installed_authoring_source(current, proof_bytes):
     return restored
 
 
+def restore_reference_parallel_source(current, proof_bytes):
+    """Restore exact serial scheduling before the immutable distribution proof."""
+    def require(condition,message):
+        if not condition:raise AssertionError(message)
+    def pin(raw):
+        return {'bytes':len(raw),'sha256':hashlib.sha256(raw).hexdigest()}
+    require(hashlib.sha256(proof_bytes).hexdigest()==REFERENCE_PARALLEL_DELTA_SHA256,
+        'Unreviewed reference parallel source witness')
+    proof=json.loads(proof_bytes)
+    historical={'revision':'ce744f6afccae3014b21bf0a876d54858764b321','bytes':17333,
+        'sha256':'2038afce45cd6f0490957370286a0a3ba8fc0fca402c0daf30b2bede1d67d70e'}
+    parallel={'bytes':17918,'sha256':'8316869ed38ed7a5173c959a4995c2f00b0b5b70e8170675876f01a56e770e1c'}
+    require(type(proof) is dict and set(proof)=={'schema','path','historical','current','spans'}
+        and proof['schema']=='biocompiler.reference_parallel_source_delta.v1'
+        and proof['path']=='tools/pipeline_reference_runtime.py'
+        and proof['historical']==historical and proof['current']==parallel
+        and type(proof['historical']['bytes']) is int and type(proof['current']['bytes']) is int
+        and pin(current)==parallel, 'Reference parallel exact source authority differs')
+    spans=proof['spans']
+    require(type(spans) is list and len(spans)==3,'Reference parallel source span census differs')
+    end=0
+    for row in spans:
+        require(type(row) is dict and set(row)=={'offset','before','after'}
+            and type(row['offset']) is int and row['offset']>=end
+            and type(row['before']) is str and type(row['after']) is str
+            and row['before']!=row['after'], 'Reference parallel source span shape differs')
+        end=row['offset']+len(row['before'].encode())
+    restored=current
+    for index,row in reversed(list(enumerate(spans))):
+        offset=row['offset']+sum(len(prior['after'].encode())-len(prior['before'].encode())
+            for prior in spans[:index])
+        before,after=row['before'].encode(),row['after'].encode()
+        require(restored[offset:offset+len(after)]==after,'Reference parallel source span bytes differ')
+        restored=restored[:offset]+before+restored[offset+len(after):]
+    require(pin(restored)=={key:historical[key] for key in ('bytes','sha256')},
+        'Complete historical reference parallel source differs')
+    def functions(raw):
+        return {node.name:ast.dump(node) for node in ast.parse(raw).body
+            if isinstance(node,(ast.FunctionDef,ast.ClassDef))}
+    old,new=functions(restored),functions(current)
+    require(set(old)==set(new) and {key for key in old if old[key]!=new[key]}=={'compare'},
+        'Reference parallel scheduling changed a worker or semantic body')
+    return restored
+
+
 def restore_reference_distribution_source(current, proof_bytes):
     """Restore the complete reference runtime before its explicit source pin."""
     def require(condition,message):
@@ -201,6 +250,36 @@ def restore_reference_distribution_source(current, proof_bytes):
     require(proof['historical']=={'revision':'d3bef33bf45e0e80797cb30956fc8dc02e58b8eb',
         'bytes':len(restored),'sha256':hashlib.sha256(restored).hexdigest()},
         'Complete historical reference runtime source differs')
+    return restored
+
+
+def restore_manager_inventory_source(current, proof_bytes):
+    """Remove only two reviewed source witnesses before all prior manager proofs."""
+    def require(condition,message):
+        if not condition:raise AssertionError(message)
+    require(hashlib.sha256(proof_bytes).hexdigest()==MANAGER_INVENTORY_DELTA_SHA256,
+        'Unreviewed manager source inventory witness')
+    proof=json.loads(proof_bytes)
+    historical={'bytes':171939,'sha256':'da71eecb632c740ba8e5c8fd5ccf85d6174d71c901ec70cbc041ce5adb1c63a6'}
+    added={'bytes':172077,'sha256':'72cbd6bf9487f9c17e67f2d4dcd87cc0feab119ea11e75aee9a514a4a56a472a'}
+    require(type(proof) is dict and set(proof)=={'schema','path','historical','current','addition'}
+        and proof['schema']=='biocompiler.manager_source_inventory_delta.v1'
+        and proof['path']=='tools/check_pipeline_manager_install.py'
+        and proof['historical']==historical and proof['current']==added
+        and type(proof['historical']['bytes']) is int and type(proof['current']['bytes']) is int
+        and added=={'bytes':len(current),'sha256':hashlib.sha256(current).hexdigest()},
+        'Manager source inventory exact authority differs')
+    row=proof['addition']
+    addition=('    "tests/conformance/manager-registration-runtime-sites-v6.json",\n'
+        '    "tests/conformance/reference-manager-source-counterpart-v5.json",\n').encode()
+    require(type(row) is dict and set(row)=={'offset','bytes'} and type(row['offset']) is int
+        and row['offset']>=0 and row['bytes']==addition.decode() and current.count(addition)==1,
+        'Manager source inventory addition differs')
+    offset=row['offset']
+    require(current[offset:offset+len(addition)]==addition,'Manager source inventory exact span differs')
+    restored=current[:offset]+current[offset+len(addition):]
+    require(historical=={'bytes':len(restored),'sha256':hashlib.sha256(restored).hexdigest()},
+        'Complete previous manager source differs')
     return restored
 
 
@@ -443,11 +522,13 @@ class HostedCiPlanTests(unittest.TestCase):
             if name=='tools/check_native_synthetic_inspection.py':
                 new=restore_synthetic_inspection_source(new,INSPECTION_DELTA.read_bytes())
             elif name=='tools/check_pipeline_manager_install.py':
+                new=restore_manager_inventory_source(new,MANAGER_INVENTORY_DELTA.read_bytes())
                 new=restore_callback_budget_source(new,BUDGET_DELTA.read_bytes())
                 new=restore_deferred_context_source(new,CONTEXT_DELTA.read_bytes())
             elif name=='tools/check_pipeline_fixed_provider_install.py':
                 new=restore_fixed_provider_source(new,PROVIDER_DELTA.read_bytes())
             elif name=='tools/pipeline_reference_runtime.py':
+                new=restore_reference_parallel_source(new,REFERENCE_PARALLEL_DELTA.read_bytes())
                 new=restore_reference_distribution_source(new,REFERENCE_DELTA.read_bytes())
             elif name=='tools/check_pipeline_fixed_continuation_install.py':
                 new=restore_occurrence_source(name,new)
@@ -496,7 +577,9 @@ class HostedCiPlanTests(unittest.TestCase):
             restore_synthetic_inspection_source(current,witness+b'\n')
 
     def test_deferred_context_restoration_rejects_unreviewed_or_extra_source_changes(self):
-        current=restore_callback_budget_source((ROOT/'tools/check_pipeline_manager_install.py').read_bytes(),
+        current=restore_manager_inventory_source((ROOT/'tools/check_pipeline_manager_install.py').read_bytes(),
+            MANAGER_INVENTORY_DELTA.read_bytes())
+        current=restore_callback_budget_source(current,
             BUDGET_DELTA.read_bytes())
         witness=CONTEXT_DELTA.read_bytes();proof=json.loads(witness)
         restored=restore_deferred_context_source(current,witness)
@@ -525,8 +608,40 @@ class HostedCiPlanTests(unittest.TestCase):
         with self.assertRaisesRegex(AssertionError,'Unreviewed deferred-context source witness'):
             restore_deferred_context_source(current,json.dumps(changed,sort_keys=True,indent=2).encode()+b'\n')
 
+    def test_manager_inventory_restoration_preserves_exact_prior_chain_and_rejects_forgery(self):
+        current=(ROOT/'tools/check_pipeline_manager_install.py').read_bytes()
+        witness=MANAGER_INVENTORY_DELTA.read_bytes()
+        restored=restore_manager_inventory_source(current,witness)
+        self.assertEqual({'bytes':len(restored),'sha256':hashlib.sha256(restored).hexdigest()},
+            json.loads(BUDGET_DELTA.read_bytes())['current'])
+        complete=restore_deferred_context_source(restore_callback_budget_source(restored,BUDGET_DELTA.read_bytes()),
+            CONTEXT_DELTA.read_bytes())
+        self.assertEqual(hashlib.sha256(complete).hexdigest(),
+            'd12f67bf4080b15a96856342e87e8678007e6093188b1a36540c7f337f6463b7')
+        for mutant in (restored,current+b'\n',current.replace(b'runtime-sites-v6.json',b'runtime-sites-v7.json'),
+                current.replace(b'def validate_frames(',b'def changed_frames(')):
+            with self.subTest(source_sha256=hashlib.sha256(mutant).hexdigest()):
+                self.assertNotEqual(mutant,current)
+                with self.assertRaises(AssertionError):restore_manager_inventory_source(mutant,witness)
+        for mutation in ('schema','path','historical','current','offset','bool_offset','bytes','float_bytes'):
+            forged=json.loads(witness)
+            if mutation=='schema':forged['schema']+='x'
+            elif mutation=='path':forged['path']='tools/unreviewed.py'
+            elif mutation in ('historical','current'):forged[mutation]['sha256']='0'*64
+            elif mutation=='float_bytes':forged['current']['bytes']=float(forged['current']['bytes'])
+            elif mutation=='offset':forged['addition']['offset']+=1
+            elif mutation=='bool_offset':forged['addition']['offset']=True
+            else:forged['addition']['bytes']+=' '
+            encoded=json.dumps(forged,sort_keys=True,indent=2).encode()+b'\n'
+            with self.subTest(witness_mutation=mutation),patch.dict(globals(),
+                    MANAGER_INVENTORY_DELTA_SHA256=hashlib.sha256(encoded).hexdigest()),self.assertRaises(AssertionError):
+                restore_manager_inventory_source(current,encoded)
+        with self.assertRaisesRegex(AssertionError,'Unreviewed manager source inventory'):
+            restore_manager_inventory_source(current,witness+b'\n')
+
     def test_callback_budget_restoration_preserves_prior_source_proofs(self):
         current=(ROOT/'tools/check_pipeline_manager_install.py').read_bytes()
+        current=restore_manager_inventory_source(current,MANAGER_INVENTORY_DELTA.read_bytes())
         witness=BUDGET_DELTA.read_bytes();proof=json.loads(witness)
         restored=restore_callback_budget_source(current,witness)
         self.assertEqual(hashlib.sha256(restored).hexdigest(),
@@ -618,8 +733,50 @@ class HostedCiPlanTests(unittest.TestCase):
         with self.assertRaisesRegex(AssertionError,'Unreviewed installed-authoring source witness'):
             restore_installed_authoring_source(current,json.dumps(forged,sort_keys=True,indent=2).encode()+b'\n')
 
+    def test_reference_parallel_restoration_preserves_exact_full_chain_and_rejects_forgery(self):
+        current=(ROOT/'tools/pipeline_reference_runtime.py').read_bytes()
+        witness=REFERENCE_PARALLEL_DELTA.read_bytes()
+        restored=restore_reference_parallel_source(current,witness)
+        self.assertEqual({'bytes':len(restored),'sha256':hashlib.sha256(restored).hexdigest()},
+            json.loads(REFERENCE_DELTA.read_bytes())['current'])
+        complete=restore_reference_distribution_source(restored,REFERENCE_DELTA.read_bytes())
+        original=json.loads((ROOT/'tests/conformance/prebuilt-installed-path-delta-v1.json').read_bytes())
+        self.assertEqual(hashlib.sha256(complete).hexdigest(),
+            original['tools/pipeline_reference_runtime.py']['current_sha256'])
+        for mutant in (restored,current+b'\n',current.replace(b'max_workers=4',b'max_workers=3'),
+                current.replace(b'timeout=1800',b'timeout=1801'),current.replace(b'\n',b'\r\n')):
+            with self.subTest(source_sha256=hashlib.sha256(mutant).hexdigest()):
+                self.assertNotEqual(mutant,current)
+                with self.assertRaises(AssertionError):restore_reference_parallel_source(mutant,witness)
+                forged=json.loads(witness)
+                forged['current']={'bytes':len(mutant),'sha256':hashlib.sha256(mutant).hexdigest()}
+                encoded=json.dumps(forged,sort_keys=True,indent=2).encode()+b'\n'
+                with patch.dict(globals(),REFERENCE_PARALLEL_DELTA_SHA256=hashlib.sha256(encoded).hexdigest()), \
+                        self.assertRaisesRegex(AssertionError,'exact source authority'):
+                    restore_reference_parallel_source(mutant,encoded)
+        for mutation in ('schema','path','revision','prior','float_bytes','order','missing','offset','before','after','overlap','bool_offset'):
+            forged=json.loads(witness)
+            if mutation=='schema':forged['schema']+='x'
+            elif mutation=='path':forged['path']='tools/check_pipeline_reference_install.py'
+            elif mutation=='revision':forged['historical']['revision']='0'*40
+            elif mutation=='prior':forged['historical']['sha256']='0'*64
+            elif mutation=='float_bytes':forged['current']['bytes']=float(forged['current']['bytes'])
+            elif mutation=='order':forged['spans'].reverse()
+            elif mutation=='missing':forged['spans'].pop()
+            elif mutation=='overlap':forged['spans'][1]['offset']=0
+            elif mutation=='bool_offset':forged['spans'][0]['offset']=True
+            elif mutation=='offset':forged['spans'][0]['offset']+=1
+            else:forged['spans'][0][mutation]+=' '
+            encoded=json.dumps(forged,sort_keys=True,indent=2).encode()+b'\n'
+            with self.subTest(witness_mutation=mutation),patch.dict(globals(),
+                    REFERENCE_PARALLEL_DELTA_SHA256=hashlib.sha256(encoded).hexdigest()),self.assertRaises(AssertionError):
+                restore_reference_parallel_source(current,encoded)
+        with self.assertRaisesRegex(AssertionError,'Unreviewed reference parallel'):
+            restore_reference_parallel_source(current,witness+b'\n')
+
     def test_reference_distribution_restoration_retains_the_complete_original_path_proof(self):
         current=(ROOT/'tools/pipeline_reference_runtime.py').read_bytes()
+        current=restore_reference_parallel_source(current,REFERENCE_PARALLEL_DELTA.read_bytes())
         witness=REFERENCE_DELTA.read_bytes();proof=json.loads(witness)
         restored=restore_reference_distribution_source(current,witness)
         original=json.loads((ROOT/'tests/conformance/prebuilt-installed-path-delta-v1.json').read_bytes())

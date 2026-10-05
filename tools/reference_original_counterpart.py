@@ -39,11 +39,20 @@ CALLBACK_WITNESS = 'tests/conformance/reference-callback-source-counterpart-v1.j
 CALLBACK_WITNESS_SHA = 'e3be989e0a76913f64ec959d4354bb4a352c70e0bf661ca58df68db15e544b5c'
 CALLBACK_DRAIN_WITNESS = 'tests/conformance/reference-callback-source-counterpart-v2.json'
 CALLBACK_DRAIN_WITNESS_SHA = '878291d0b0e70db1f5e98611e103099d252ab3ffacf4995ae72ae73a9a9e16ce'
+SESSION_SOURCE = 'src/biocompiler/core_pipeline_session.py'
+SESSION_ORIGINAL_SHA = 'b0c744d8f3a38b1681805250ccf93884ba866678527cf366bcf08ff326da080d'
+SESSION_CURRENT_SHA = '8de06056804e4e58350fa562c438acf2b6306a462edd9df3a1da2070f298d169'
+SESSION_BLOB = 'tests/conformance/reference-original-sources-v1/' + SESSION_ORIGINAL_SHA + '.blob'
+SESSION_WITNESS = 'tests/conformance/reference-session-source-counterpart-v1.json'
+SESSION_WITNESS_SHA = '0ad1db1de89c118f74d8b0237e9ecad7e09da28d02931362332ac520fc911250'
 CORE_ORIGINAL_SHA = '40a08477c97a97159372d9723267df3cacf8335a59d6b00ada34bb56470e31f3'
 CORE_PREVIOUS_SHA = '0c0cfac138484cf71f1bb1303e66873b8b148ca236e07930fdbadd0b477a11be'
 CORE_ROUTING_SHA = '18ee9bd517524b4440bcf29292a5d834470603713d662198b83ca61373c7fd09'
 CORE_MERGED_SHA = '562052f3848c27ccb3fd19f156bd019da44aed58abe8cd4a2c7bd922ba07fc5b'
-CORE_CURRENT_SHA = 'f5c3410fb93d99182a1c5b9d8f3fa948990a0e1d4ce0b3b609c6b9f470d67bdd'
+CORE_PRE_VIEW_SHA = 'f5c3410fb93d99182a1c5b9d8f3fa948990a0e1d4ce0b3b609c6b9f470d67bdd'
+CORE_CURRENT_SHA = '44eeed2c22a9d07ff254dcd5b1e1edd26cf7e6bcfc29918ae20da39c2fbb544c'
+CORE_VIEW_UPDATE = 'tests/conformance/reference-manager-source-counterpart-v5.json'
+CORE_VIEW_UPDATE_SHA = '56e6f74417aab4de65eafdc4e7ca00a78db736c4b3ae8608be046a6340ce913d'
 CORE_ATTEMPT_UPDATE = 'tests/conformance/reference-manager-source-counterpart-v4.json'
 CORE_ATTEMPT_UPDATE_SHA = '7c17725b7d5e5843418dfea595b97aeb786ffc2ed2bf477d16db40012533c143'
 CORE_BLOB = 'tests/conformance/reference-original-sources-v1/' + CORE_ORIGINAL_SHA + '.blob'
@@ -104,6 +113,44 @@ def authority():
     return index
 
 
+def core_view_source_witness(current, encoded=None):
+    """Restore only the exact structural-view update before the unchanged v4 chain."""
+    encoded = local_file(ROOT, CORE_VIEW_UPDATE).read_bytes() if encoded is None else encoded
+    require(sha(encoded) == CORE_VIEW_UPDATE_SHA, 'Reference Core view source witness changed')
+    witness = json.loads(encoded)
+    require(set(witness) == {'schema_version', 'base_revision', 'path', 'original_sha256',
+        'current_sha256', 'original_bytes', 'current_bytes', 'changes', 'scope', 'predecessor'} and
+        witness['schema_version'] == 'biocompiler.reference_manager_source_counterpart.v5' and
+        witness['base_revision'] == '0297d583d5774dc8991fda24c4f8fb39a277cc9a' and
+        witness['path'] == CORE_SOURCE and witness['original_sha256'] == CORE_PRE_VIEW_SHA and
+        witness['current_sha256'] == CORE_CURRENT_SHA and
+        witness['original_bytes'] == 93594 and witness['current_bytes'] == 94893 and
+        witness['predecessor'] == {'path': CORE_ATTEMPT_UPDATE, 'sha256': CORE_ATTEMPT_UPDATE_SHA} and
+        witness['scope'] == 'Exact historical source restoration only; current structural view validation is separate',
+        'Reference Core view source correspondence differs')
+    require(type(current) is bytes and sha(current) == CORE_CURRENT_SHA and len(current) == 94893,
+        'Captured reference Core source is outside its exact counterpart')
+    changes = witness['changes']
+    fields = ('old_start_line', 'old_end_line', 'new_start_line', 'new_end_line')
+    require(type(changes) is list and len(changes) == 1 and type(changes[0]) is dict and
+        set(changes[0]) == {*fields, 'before', 'after'} and
+        all(type(changes[0][key]) is int for key in fields) and
+        tuple(changes[0][key] for key in fields) == (112, 117, 112, 139) and
+        type(changes[0]['before']) is str and type(changes[0]['after']) is str,
+        'Reference Core view exact source span census differs')
+    change = changes[0]
+    lines = current.decode().splitlines(keepends=True)
+    require(''.join(lines[111:139]) == change['after'] and
+        len(change['before'].splitlines(keepends=True)) == 6,
+        'Reference Core view complete source span differs')
+    lines[111:139] = change['before'].splitlines(keepends=True)
+    restored = ''.join(lines).encode()
+    require(len(restored) == 93594 and sha(restored) == CORE_PRE_VIEW_SHA,
+        'Reference Core view whole preceding source differs')
+    return restored, {'path': CORE_VIEW_UPDATE, 'sha256': CORE_VIEW_UPDATE_SHA,
+                      'correspondence': witness}
+
+
 def core_source_witness(raw=None):
     """One exact reviewed transport revision, never a changed-file whitelist."""
     encoded = local_file(ROOT, CORE_WITNESS).read_bytes()
@@ -117,7 +164,8 @@ def core_source_witness(raw=None):
         witness['current_sha256'] == CORE_PREVIOUS_SHA and len(witness['changes']) == 6,
         'Reference Core source correspondence is not the closed reviewed revision')
     current = local_file(ROOT, CORE_SOURCE).read_bytes() if raw is None else raw
-    require(type(current) is bytes and sha(current) == CORE_CURRENT_SHA,
+    current, view_update = core_view_source_witness(current)
+    require(type(current) is bytes and sha(current) == CORE_PRE_VIEW_SHA,
             'Captured reference Core source is outside its exact counterpart')
     attempt_raw = local_file(ROOT, CORE_ATTEMPT_UPDATE).read_bytes()
     require(sha(attempt_raw) == CORE_ATTEMPT_UPDATE_SHA, 'Reference Core attempt witness changed')
@@ -126,7 +174,7 @@ def core_source_witness(raw=None):
         'current_sha256', 'predecessor', 'changes', 'restoration'} and
         attempt['schema_version'] == 'biocompiler.reference_manager_source_counterpart.v4' and
         attempt['base_revision'] == '7645c254b170846cca2289090111241e20c3769d' and attempt['path'] == CORE_SOURCE and
-        attempt['original_sha256'] == CORE_MERGED_SHA and attempt['current_sha256'] == CORE_CURRENT_SHA and
+        attempt['original_sha256'] == CORE_MERGED_SHA and attempt['current_sha256'] == CORE_PRE_VIEW_SHA and
         attempt['predecessor'] == {'path': CORE_MERGE_UPDATE, 'sha256': CORE_MERGE_UPDATE_SHA} and
         len(attempt['changes']) == 1, 'Reference Core attempt update differs from its exact predecessor')
     change = attempt['changes'][0]
@@ -207,6 +255,7 @@ def core_source_witness(raw=None):
         'current_sha256': CORE_CURRENT_SHA, 'witness': CORE_WITNESS, 'witness_sha256': CORE_WITNESS_SHA,
         'correspondence': witness, 'update': {'path': CORE_UPDATE, 'sha256': CORE_UPDATE_SHA, 'correspondence': update},
         'attempt_update': {'path': CORE_ATTEMPT_UPDATE, 'sha256': CORE_ATTEMPT_UPDATE_SHA, 'correspondence': attempt},
+        'view_update': view_update,
         'ordered_merge_update': {'path': CORE_MERGE_UPDATE, 'sha256': CORE_MERGE_UPDATE_SHA, 'correspondence': merge},
         'scope': 'original source execution only; current native bridge validation is separate'}
 
@@ -291,6 +340,46 @@ def callback_source_witness(raw=None):
         'correspondence': witness, 'buffered_close_update': drain_update, 'scope': witness['scope']}
 
 
+def session_source_witness(raw=None, encoded=None):
+    """Restore the exact buffered-exit edit to the frozen whole session module."""
+    encoded = local_file(ROOT, SESSION_WITNESS).read_bytes() if encoded is None else encoded
+    require(sha(encoded) == SESSION_WITNESS_SHA, 'Reference session source witness changed')
+    witness = json.loads(encoded)
+    require(set(witness) == {'schema_version', 'base_revision', 'path', 'original_sha256',
+        'current_sha256', 'original_bytes', 'current_bytes', 'changes', 'scope'} and
+        witness['schema_version'] == 'biocompiler.reference_session_source_counterpart.v1' and
+        witness['base_revision'] == '0297d583d5774dc8991fda24c4f8fb39a277cc9a' and
+        witness['path'] == SESSION_SOURCE and witness['original_sha256'] == SESSION_ORIGINAL_SHA and
+        witness['current_sha256'] == SESSION_CURRENT_SHA and
+        witness['original_bytes'] == 33907 and witness['current_bytes'] == 34104 and
+        witness['scope'] == 'Exact historical source restoration only; current session transport validation is separate',
+        'Reference session source correspondence differs')
+    current = local_file(ROOT, SESSION_SOURCE).read_bytes() if raw is None else raw
+    require(type(current) is bytes and sha(current) == SESSION_CURRENT_SHA and len(current) == 34104,
+        'Captured reference session source is outside its exact counterpart')
+    changes = witness['changes']
+    fields = ('old_start_line', 'old_end_line', 'new_start_line', 'new_end_line')
+    require(type(changes) is list and len(changes) == 1 and type(changes[0]) is dict and
+        set(changes[0]) == {*fields, 'before', 'after'} and
+        all(type(changes[0][key]) is int for key in fields) and
+        tuple(changes[0][key] for key in fields) == (418, 418, 418, 421) and
+        type(changes[0]['before']) is str and type(changes[0]['after']) is str,
+        'Reference session exact source span census differs')
+    change = changes[0]
+    lines = current.decode().splitlines(keepends=True)
+    require(''.join(lines[417:421]) == change['after'] and
+        len(change['before'].splitlines(keepends=True)) == 1,
+        'Reference session complete source span differs')
+    lines[417:421] = change['before'].splitlines(keepends=True)
+    restored = ''.join(lines).encode()
+    archived = local_file(ROOT, SESSION_BLOB).read_bytes()
+    require(len(archived) == 33907 and sha(archived) == SESSION_ORIGINAL_SHA and restored == archived,
+        'Reference session restoration differs from whole original source')
+    return archived, {'path': SESSION_SOURCE, 'archive': SESSION_BLOB, 'archive_sha256': SESSION_ORIGINAL_SHA,
+        'current_sha256': SESSION_CURRENT_SHA, 'witness': SESSION_WITNESS, 'witness_sha256': SESSION_WITNESS_SHA,
+        'correspondence': witness, 'scope': witness['scope']}
+
+
 def route_source_witness(logical, raw=None):
     """Remove only the two pinned five-line public entry prefixes."""
     require(logical in ROUTE_SOURCES, 'Unknown reference route source')
@@ -359,9 +448,11 @@ def data_closure(index):
         result.append({'logical': logical, 'sha256': sha(raw), 'bytes': len(raw)})
     for logical, identity in ((CORE_BLOB, CORE_ORIGINAL_SHA), (CORE_WITNESS, CORE_WITNESS_SHA),
                               (CORE_UPDATE, CORE_UPDATE_SHA), (CORE_MERGE_UPDATE, CORE_MERGE_UPDATE_SHA),
-                              (CORE_ATTEMPT_UPDATE, CORE_ATTEMPT_UPDATE_SHA), (ROUTE_WITNESS, ROUTE_WITNESS_SHA),
+                              (CORE_ATTEMPT_UPDATE, CORE_ATTEMPT_UPDATE_SHA), (CORE_VIEW_UPDATE, CORE_VIEW_UPDATE_SHA),
+                              (ROUTE_WITNESS, ROUTE_WITNESS_SHA),
                               (CALLBACK_BLOB, CALLBACK_ORIGINAL_SHA), (CALLBACK_WITNESS, CALLBACK_WITNESS_SHA),
-                              (CALLBACK_DRAIN_WITNESS, CALLBACK_DRAIN_WITNESS_SHA)):
+                              (CALLBACK_DRAIN_WITNESS, CALLBACK_DRAIN_WITNESS_SHA),
+                              (SESSION_BLOB, SESSION_ORIGINAL_SHA), (SESSION_WITNESS, SESSION_WITNESS_SHA)):
         raw = local_file(ROOT, logical).read_bytes()
         require(sha(raw) == identity, 'Reference exact Core counterpart data changed')
         result.append({'logical': logical, 'sha256': identity, 'bytes': len(raw)})
@@ -381,6 +472,9 @@ def source_closure(index, package_root):
         elif logical == CALLBACK_SOURCE:
             require(identity == CALLBACK_ORIGINAL_SHA, 'Frozen reference callback authority changed')
             copied, _ = callback_source_witness(raw)
+        elif logical == SESSION_SOURCE:
+            require(identity == SESSION_ORIGINAL_SHA, 'Frozen reference session authority changed')
+            copied, _ = session_source_witness(raw)
         elif logical in ROUTE_SOURCES:
             copied, _ = route_source_witness(logical, raw)
             require(sha(copied) == identity, 'Frozen reference public route authority changed')
@@ -425,6 +519,7 @@ def run(*, test_module=TEST_MODULE, test_ids=None):
                     'test_witness': witness, 'source_inventory': index['source_files'],
                     'core_source_witness': core_source_witness()[1],
                     'callback_source_witness': callback_source_witness()[1],
+                    'session_source_witness': session_source_witness()[1],
                     'route_source_witnesses': [route_source_witness(path)[1] for path in ROUTE_SOURCES]}
         (overlay / 'manifest.json').write_bytes(canonical(manifest))
         script = ('import sys;sys.path[:0]=[sys.argv[1],sys.argv[1]+"/src",sys.argv[1]+"/tests"];'
@@ -462,7 +557,8 @@ def validate(receipt):
             'Malformed original reference receipt')
     manifest = receipt['manifest']
     require(type(manifest) is dict and set(manifest) == {'schema', 'root', 'package_root', 'test_module', 'test_ids',
-            'sources', 'data', 'test_witness', 'source_inventory', 'core_source_witness', 'callback_source_witness', 'route_source_witnesses'} and manifest['schema'] == SCHEMA,
+            'sources', 'data', 'test_witness', 'source_inventory', 'core_source_witness', 'callback_source_witness',
+            'session_source_witness', 'route_source_witnesses'} and manifest['schema'] == SCHEMA,
             'Malformed original reference manifest')
     root, package_root = Path(manifest['root']), Path(manifest['package_root'])
     require(root.is_absolute() and package_root.is_absolute(), 'Original reference roots differ')
@@ -475,6 +571,8 @@ def validate(receipt):
             'Original reference Core source correspondence differs')
     require(manifest['callback_source_witness'] == callback_source_witness()[1],
             'Original reference callback source correspondence differs')
+    require(manifest['session_source_witness'] == session_source_witness()[1],
+            'Original reference session source correspondence differs')
     require(manifest['route_source_witnesses'] == [route_source_witness(path)[1] for path in ROUTE_SOURCES],
             'Original reference public route correspondence differs')
     require(manifest['test_witness'] == witness, 'Original reference whole-test correspondence differs')

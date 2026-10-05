@@ -37,6 +37,38 @@ from biocompiler.ir.construct import ConstructCandidate, ConstructRequest
 from biocompiler.pipeline_callback_objects import HostCompletion
 from biocompiler.registry.components import ComponentRegistry
 from biocompiler.registry.references import ReferenceManifest
+from biocompiler.semantics.context import PayloadFormat
+
+
+# Both original fixed reference constructors omit targets. Their generated
+# initializer retains this actual default tuple across separate registrations.
+_REFERENCE_TARGETS = PassContract.targets
+_REFERENCE_CONTRACT_INIT = PassContract.__init__
+_REFERENCE_CONTRACT_CODE = _REFERENCE_CONTRACT_INIT.__code__
+_REFERENCE_CONTRACT_DEFAULTS = _REFERENCE_CONTRACT_INIT.__defaults__
+
+
+def _reference_contract_targets(contract: PassContract, *, expected: str) -> None:
+    _require(expected in ('components_to_construct', 'construct_to_molecular')
+        and type(contract) is PassContract and contract.id == expected,
+        'Unknown original reference contract target origin')
+    initializer = vars(PassContract).get('__init__')
+    fields = vars(PassContract).get('__dataclass_fields__')
+    _require(initializer is _REFERENCE_CONTRACT_INIT
+        and initializer.__code__ is _REFERENCE_CONTRACT_CODE
+        and initializer.__defaults__ is _REFERENCE_CONTRACT_DEFAULTS
+        and type(_REFERENCE_CONTRACT_DEFAULTS) is tuple and len(_REFERENCE_CONTRACT_DEFAULTS) == 11
+        and _REFERENCE_CONTRACT_DEFAULTS[1] is _REFERENCE_TARGETS
+        and vars(PassContract).get('targets') is _REFERENCE_TARGETS
+        and type(fields) is dict and 'targets' in fields
+        and fields['targets'].default is _REFERENCE_TARGETS
+        and type(_REFERENCE_TARGETS) is tuple and len(_REFERENCE_TARGETS) == 2
+        and _REFERENCE_TARGETS[0] is PayloadFormat.DNA and _REFERENCE_TARGETS[1] is PayloadFormat.RNA,
+        'Original reference contract target default changed')
+    _require(type(contract.targets) is tuple and len(contract.targets) == len(_REFERENCE_TARGETS)
+        and all(actual is original for actual, original in zip(contract.targets, _REFERENCE_TARGETS)),
+        'Native reference contract targets differ from the original default')
+    object.__setattr__(contract, 'targets', _REFERENCE_TARGETS)
 
 
 @dataclass(frozen=True)
@@ -325,6 +357,7 @@ class ReferenceCorePassManager(CorePassManager):
         value = _object(raw, {'contract', 'producer', 'validators', 'obligation_objects'}, 'Reference registration')
         contract = _contract_view(value['contract'], admission=False)
         _require(contract.id == expected, 'Unexpected reference pass contract')
+        _reference_contract_targets(contract, expected=expected)
         object.__setattr__(contract, 'introduces', self._reference_obligations(value['obligation_objects'], contract.introduces))
         return ComponentRegistration(contract, self._reference_provider(value['producer'], expected + '.producer'),
                                      self._reference_validators(value['validators'], contract))

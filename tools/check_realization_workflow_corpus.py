@@ -23,15 +23,15 @@ REVIEWED_ADDITIONS = {
     "src/biocompiler/core_distribution.py": "10c772076ee0ecfcb0c61a1a3410ae6014313d2e05617f30bc77f6df55485459",
     "src/biocompiler/core_pipeline_build_views.py": "85492c4f77b3104af2dae9d9180a0518bfd4fb61c9d6143880e6e58e10a77382",
     "src/biocompiler/core_pipeline_provider_views.py": "ea18d951f8170b1e1da4fbe6636d40e83f54ebda2ebdce187b0e08cf257b9c35",
-    "src/biocompiler/core_pipeline_manager.py": "f5c3410fb93d99182a1c5b9d8f3fa948990a0e1d4ce0b3b609c6b9f470d67bdd",
+    "src/biocompiler/core_pipeline_manager.py": "44eeed2c22a9d07ff254dcd5b1e1edd26cf7e6bcfc29918ae20da39c2fbb544c",
     "src/biocompiler/reference_backend.py": "f390f40bb7f176e2cd45acde4db84e7aa987d8a7125269a1ceba37ea59b26358",
     "src/biocompiler/core_reference_host.py": "a31be5b73f1440d92cf8076fdad9d69ec9ae8605217d400af20d47f5d4e4305e",
-    "src/biocompiler/core_reference_manager.py": "188830c06e5865d65d4997558d602e9c28668e1d7f163693c515f306661c22f2",
+    "src/biocompiler/core_reference_manager.py": "cd75fca7e114b76ea42dfe433c399f175e6402ea7270f00e5ed5982d584bbd31",
     "src/biocompiler/core_reference_provider_views.py": "1b4989571d71292eaa9998787f249fd7d60439958cbc8da6f36c2acca39c6bce",
     "src/biocompiler/core_reference_views.py": "a295b4583be057a743959d077add14ae7c5424086f7edddd322dfb188786d9f9",
     "src/biocompiler/core_pipeline_callback_session.py": "d24cb3b78df7b7c85d0bbec5cd3c7634ca4756c5e8b0e113a8a3ba7258229a54",
     "src/biocompiler/pipeline_callback_objects.py": "ac5198795c3e80cff511e0fe372dc578a983d8be947e41dd9debd9f719da9eec",
-    "src/biocompiler/core_pipeline_session.py": "b0c744d8f3a38b1681805250ccf93884ba866678527cf366bcf08ff326da080d",
+    "src/biocompiler/core_pipeline_session.py": "8de06056804e4e58350fa562c438acf2b6306a462edd9df3a1da2070f298d169",
     "src/biocompiler/core_synthetic_inspection.py": "5ab68d6f1dac300af1e0d7431f5ba45aa2df493c1f446a8ccd67b56ae831178f",
     "src/biocompiler/core_synthetic_producer_public.py": "15db52841e774d4fdf42ed937dfe173ca844cae920fb6419bbc54eec70c31082",
     "src/biocompiler/synthetic_producer_cli.py": "4e500dd094e41841fa15635b1be6a805a0b3b992de574dda888f4d91fa881221",
@@ -72,7 +72,8 @@ def addition_counterparts(additions):
     from tools import reference_original_counterpart as reference
     from tools import reference_attempt_source as attempt
     if attempt.SOURCE in additions:
-        require(additions[attempt.SOURCE] == attempt.CURRENT, 'Unreviewed current Molecular facade addition identity')
+        require(additions[attempt.SOURCE] == REVIEWED_ADDITIONS[attempt.SOURCE] == attempt.TARGET_CURRENT,
+                'Unreviewed current Molecular facade addition identity')
         attempt.restore((ROOT / attempt.SOURCE).read_bytes())
     if reference.CALLBACK_SOURCE in additions:
         require(additions[reference.CALLBACK_SOURCE] == REVIEWED_ADDITIONS[reference.CALLBACK_SOURCE]

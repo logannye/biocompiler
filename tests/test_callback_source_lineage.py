@@ -81,7 +81,7 @@ class CallbackSourceLineageTests(unittest.TestCase):
 
     def test_native_source_gate_retains_old_body_and_same_new_finite_authority(self):
         source = (original.ROOT / 'core/test/test_reference_contracts_corpus.ml').read_text()
-        before = source[source.index('let reference_callback_original '):source.index('let reference_original ')]
+        before = source[source.index('let reference_callback_original '):source.index('let reference_session_original ')]
         added = '  let current=reference_callback_drain_original root name current in\n'
         self.assertEqual(before.count(added), 1)
         self.assertEqual(hashlib.sha256(before.replace(added, '').encode()).hexdigest(),

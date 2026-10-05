@@ -89,13 +89,13 @@ module Sequence_range = struct
     require ~path (Z.sign start>=0 && Z.compare start end_<=0) "Sequence coordinates require integers with 0 <= start <= end.";
     let derived_convention=str "zero-based-half-open-reference-5prime-to-3prime.v1" in
     require ~path (same limits (get "convention" raw) derived_convention) "Unsupported sequence coordinate schema/convention.";
-    let json=obj ["schema_version",str schema_version;"start",Json.Int start;"end",Json.Int end_;"convention",derived_convention] in
+    let json=obj ["schema_version",str schema_version;"convention",derived_convention;"start",Json.Int start;"end",Json.Int end_] in
     let encoded=Codec.encode ~limits json in Codec.charge limits (String.length encoded);
     {json;identity=Canonical.sha256 encoded;bytes=String.length encoded;start;end_}
   let of_json_text ?(limits=default_limits) ?(path="") text=of_json ~limits ~path (parse_text limits Legacy_json.Artifact text)
   let make ?(limits=default_limits) ~start ~end_ () =
     let derived_convention=str "zero-based-half-open-reference-5prime-to-3prime.v1" in
-    of_json ~limits (obj ["schema_version",str schema_version;"start",Json.Int start;"end",Json.Int end_;"convention",derived_convention])
+    of_json ~limits (obj ["schema_version",str schema_version;"convention",derived_convention;"start",Json.Int start;"end",Json.Int end_])
   let to_json (v:t)=v.json
   let fingerprint (v:t)=v.identity
   let canonical_size (v:t)=v.bytes

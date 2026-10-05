@@ -53,6 +53,29 @@ let rich_declaration_tests ()=
   require (Z.equal (N.Translation_policy.genetic_code policy) (Z.of_int 2)) "Translation declaration incorrectly became acceptance";
   ignore(N.Change.make ~id:"proposal" ~record_id:"r" ~before_sequence_sha256:(String.make 64 'a') ~after_sequence_sha256:(String.make 64 'b') ~changed_properties:["sequence"] ~reason:"untrusted proposal" ~preservation_claims:["untrusted claim"] ());
   expect "reference_molecular" "Unknown/inapplicable features have no value." (fun()->N.Feature_status.make ~feature:"cap" ~status:N.Unknown ~scope:N.Delivered_molecule ~reason:"unknown" ~value:(Some "absent") ())
+let range_order_tests ()=
+  (* SequenceRange(0,1491).to_dict() preserves this original field order even
+     though its canonical identity sorts keys. Compare the actual ordered tree. *)
+  let expected=Json.Object ["schema_version",Json.String "biocompiler.sequence_range.v0.1";
+    "convention",Json.String "zero-based-half-open-reference-5prime-to-3prime.v1";
+    "start",Json.int 0;"end",Json.int 1491] in
+  let imported=C.Sequence_range.of_json (Json.Object (List.rev (Json.object_fields expected))) in
+  let made=C.Sequence_range.make ~start:Z.zero ~end_:(Z.of_int 1491) () in
+  List.iter (fun span->
+    require (C.Sequence_range.to_json span=expected) "Original SequenceRange field order changed";
+    require (C.Sequence_range.fingerprint span="a4be12800ea5579fd80cb4f705ccf4c37a176281fd7ebbf6040b8a91c4d9872f")
+      "Original SequenceRange canonical identity changed";
+    require (Z.equal (C.Sequence_range.start span) Z.zero &&
+      Z.equal (C.Sequence_range.end_ span) (Z.of_int 1491)) "Range values changed during ordered projection"
+  ) [imported;made];
+  let component=Component_registry.Component_lock.make ~node_id:"instance" ~component_id:"fixture" ~version:"1" ~content_fingerprint:(String.make 64 'a') in
+  let reference=Pinned_identity.make ~kind:Pinned_identity.Reference ~id:"ref" ~version:"1" ~content_fingerprint:(String.make 64 'b') in
+  let placement=C.Placement.make ~instance_id:"instance" ~molecule_id:"molecule" ~component ~reference
+    ~source_range:imported ~molecule_range:made ~orientation:C.Forward ~reading_frame:(Some 0) ~requirement_ids:[] ~source:None () in
+  let raw=C.Placement.to_json placement in
+  List.iter (fun value->List.iter (fun name->
+    require (Json.field name (Json.object_fields value)=expected) "Nested placement range field order changed"
+  ) ["source_range";"molecule_range"]) [raw;C.Placement.to_json (C.Placement.of_json raw)]
 let changed key value raw=Json.Object (List.map (fun (name,old)->name,if name=key then value else old) (Json.object_fields raw))
 let validation_order_tests ()=
   let molecule=C.Molecule.make ~id:"rich" ~alphabet:M.RNA ~artifact_class:"candidate-only" ~length:(Z.of_int 2)
@@ -100,5 +123,5 @@ let budget_tests ()=
   let rec cyclic=Json.Array [cyclic] in
   (try C.bounded_json cyclic;failwith "Cyclic declaration accepted" with Diagnostic.Error error->require (error.code="verification_exploration_cycle") "Cycle diagnostic changed")
 let ()=
-  identity_tests();manifest_tests();rich_declaration_tests();validation_order_tests();json_text_tests();budget_tests();
+  identity_tests();manifest_tests();rich_declaration_tests();range_order_tests();validation_order_tests();json_text_tests();budget_tests();
   print_endline "Reference domains: exact identities, rich declarations and resource boundaries passed."
