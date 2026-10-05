@@ -34,3 +34,5 @@ val artifact_digest : t -> string
 val document_digest : Json.t -> string
 (* Bounded finite decimal syntax, evaluated exactly without binary64 coercion. *)
 val exact_decimal : ?path:string -> string -> Q.t
+(* Python-compatible Unicode blank check for strings from validated documents. *)
+val nonblank_text : string -> bool

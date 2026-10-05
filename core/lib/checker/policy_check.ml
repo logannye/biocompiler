@@ -243,7 +243,7 @@ let rec walk state formals bound in_definition path value =
       let kind = tag value in
       let formals = if kind = "SemanticDefinition" then List.fold_left (fun acc p -> Names.add (ref_id p) p acc) Names.empty (list "parameters" value) else formals in
       let in_definition = in_definition || kind = "SemanticDefinition" in
-      List.iter (fun key -> match get key value with Json.String s -> require state (path ^ "/" ^ key) (String.trim s <> "") "empty_name" "Required name or meaning is empty." | _ -> ()) ["id";"name";"version";"description";"meaning";"expected";"question"];
+      List.iter (fun key -> match get key value with Json.String s -> require state (path ^ "/" ^ key) (D.nonblank_text s) "empty_name" "Required name or meaning is empty." | _ -> ()) ["id";"name";"version";"description";"meaning";"expected";"question"];
       if List.mem kind ["PolicyProgram";"SemanticDefinition";"Parameter"] then require state (path ^ "/id") (identifier (ref_id value)) "invalid_identifier" "Identity is outside the ASCII namespaced identifier grammar.";
       List.iter (fun x -> match x with Json.String s -> state.assumptions <- Seen.add s state.assumptions | _ -> ()) (list "assumptions" value);
       (match kind with
@@ -259,7 +259,7 @@ let rec walk state formals bound in_definition path value =
           require state path ((type_kind value = "entity") = present (get "entity_kind" value)) "type_entity" "Exactly entity types carry nominal entity kinds."
       | "Unit" ->
           require state path (Q.sign (D.exact_decimal (text "scale" value)) > 0) "unit_scale" "Unit scale must be positive.";
-          require state path (String.trim (text "dimension" value) <> "" && String.trim (text "quantity_kind" value) <> "") "unit_dimension" "Unit dimension and quantity kind are required."
+          require state path (D.nonblank_text (text "dimension" value) && D.nonblank_text (text "quantity_kind" value)) "unit_dimension" "Unit dimension and quantity kind are required."
       | "Expr" -> expression state formals bound path value
       | "Scope" -> scope state path value
       | "Parameter" -> parameter state path in_definition value
@@ -350,7 +350,7 @@ let declaration state path value =
       let contract = def "contract" ["observation"] in
       if present contract then req (present (get "result" contract) && compatible (get "value_type" value) (get "result" contract)) "observation_signature" "Observation type differs from its contract result.";
       duration state (path ^ "/freshness") ~positive:false (get "freshness" value);
-      req (String.trim (text "coherence" value) <> "") "observation_coherence" "Observation requires a coherent-frame identity.";
+      req (D.nonblank_text (text "coherence" value)) "observation_coherence" "Observation requires a coherent-frame identity.";
       req (unique (names (list "invalidity" value))) "duplicate_invalidity" "Observation invalidity reasons repeat."
   | "StateStore" ->
       let value_type = get "value_type" value in
@@ -391,7 +391,7 @@ let declaration state path value =
       let owner = scope_owner state (get "scope" value) in
       req (not (present owner) || equal owner (get "executor" value)) "executor_ownership" "Machine executor differs from its scope owner.";
       let states = names (list "states" value) and terminal = names (list "terminal" value) in
-      req (states <> [] && unique states && List.for_all (fun s -> String.trim s <> "") states) "machine_states" "Machine states must be nonempty and unique.";
+      req (states <> [] && unique states && List.for_all D.nonblank_text states) "machine_states" "Machine states must be nonempty and unique.";
       req (List.mem (text "initial" value) states && unique terminal && Seen.subset (set terminal) (set states)) "machine_membership" "Initial/terminal state is absent from the machine.";
       obligation state "machine_reachability_termination_and_progress"
   | "Transition" ->

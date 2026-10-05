@@ -67,6 +67,11 @@ let run request submission corpus =
   let defs = items "definitions" semantics in
   let altered = replace "meaning" (str "Changed supplied meaning under stale pin") (List.hd defs) in
   rejects "definition_identity" (replace "semantics" (replace "definitions" (arr (altered :: List.tl defs)) semantics) program);
+  let text_definition = List.hd defs |> replace "id" (str "unicode_meaning") in
+  let with_meaning meaning =
+    replace "semantics" (replace "definitions" (arr (defs @ [replace "meaning" (str meaning) text_definition])) semantics) program in
+  ignore (valid (with_meaning "\194\160Scoped source meaning.\226\128\131"));
+  List.iter (fun blank -> rejects "empty_name" (with_meaning blank)) ["\194\160";"\226\128\131\194\160"];
   let formal = obj ["$type",str "Parameter";"id",str "private";"value_type",truth;"value",Json.Null;"lower",Json.Null;"upper",Json.Null;"selection",str "fixed"] in
   let private_definition = List.hd defs |> replace "id" (str "gate/respond") |> replace "parameters" (arr [formal]) in
   let with_private = replace "semantics" (replace "definitions" (arr (defs @ [private_definition])) semantics) program in
