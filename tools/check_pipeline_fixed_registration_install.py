@@ -46,6 +46,7 @@ COVERAGE = {'fixed_boundaries': 136, 'original_manager_contexts': 476,
     'prior_excluded_boundaries': 10, 'remaining_excluded_boundaries': 4}
 SOURCES = ('tools/check_pipeline_fixed_registration_install.py',
     'tests/test_pipeline_fixed_registration_locations.py',
+    'tests/test_pipeline_fixed_registration_records.py',
     'tests/test_pipeline_fixed_registration_campaign.py',
     'tests/test_pipeline_fixed_initializer_receipts.py', 'tools/pipeline_fixed_registration_runtime.py',
     'tests/test_pipeline_fixed_registration_runtime.py', 'tests/pipeline_fixed_registration_fixture.py',
@@ -211,6 +212,23 @@ def authored_fixture(cls, module):
     cls.request, cls.history = module.build_request()
 
 
+def unchanged_historical_records(actual, case):
+    """Check the final native order separately from lazy SDK cache insertion."""
+    response, traffic_length = case['_last_inspection']
+    require(actual.session.last_response is response
+        and len(actual.session.traffic) == traffic_length
+        and response.operation == 'inspect-ordered-references'
+        and response.sequence == case['completed'] == case['events'][-1]['after'],
+        'Failed native proposal lost its actual final inspection')
+    names = ('request', 'behavior', 'mechanism')
+    equal(response.result['order']['records'], list(names),
+        'Failed native proposal changed original record order')
+    require(tuple(key for key, _ in case['before_records']) == names
+        and set(actual._records) == set(names)
+        and all(actual._records[key] is value for key, value in case['before_records']),
+        'Failed native proposal stored or replaced an actual historical record')
+
+
 class NativeWitness(continuation.NativeWitness):
     """Execute the same staged calls; the unchanged patched register owns wrapping."""
     def __init__(self, core, corpus, oracle, module):
@@ -281,9 +299,7 @@ class NativeWitness(continuation.NativeWitness):
             require(not actual.session.closed and not actual.session.invalidated,
                 'Logical rejection discarded the already-published actual manager')
             case['completed'] = case['events'][-1]['after']
-            require(tuple(actual._records) == ('request', 'behavior', 'mechanism')
-                and all(actual._records[key] is value for key, value in case['before_records']),
-                'Failed native proposal stored or replaced an actual historical record')
+            unchanged_historical_records(actual, case)
             require('source_proposal' in case and 'mutated_proposal' in case and case.get('wrapper_context_same') is True,
                 'Original mutation did not observe the actual native producer return')
             case['mutation_graph'] = mutation_graph(self.oracle, request, case['context_object'],

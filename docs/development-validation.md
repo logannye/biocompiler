@@ -110,6 +110,9 @@ required for success. The fixed group prioritizes registration alongside provide
 checks to expose installed-source comparison failures earlier. Submission order
 is recorded separately from the unchanged recipe and receipt order; this priority
 is not a dependency barrier between otherwise independent campaigns.
+Registration rejection checks bind the final native inspection and its original
+record order separately from SDK cache insertion order. They still require every
+original cached record object and reject added, missing or replaced records.
 
 The short authoring, per-occurrence source identity, exact source-restoration
 and diagnostics controls run in both preflight slots and remain in full unit
@@ -161,7 +164,7 @@ The deterministic longest-processing-time assignment keeps each complete
 they cannot exclude tests or substitute for execution. Every discovered class
 is assigned exactly once across the five shards for its Python version.
 
-The current suite discovers 3,572 tests in 375 classes on both Python versions.
+The current suite discovers 3,578 tests in 376 classes on both Python versions.
 The campaign parallelism and corrections add 75 scheduling, transport, receipt and source controls while
 preserving all previous 3,477 test IDs. Placement weights retain the historical
 fixture-inclusive maximum for every previously measured class and add the
