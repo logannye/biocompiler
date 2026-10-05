@@ -649,6 +649,21 @@ Depends on LM-02, LM-12 and validated LM-20; a deterministic draft adapter can b
 
 ### LM-12 — Layer 3: Python SDK, notebooks and CLI
 
+The expressive-authoring increment is specified in
+[policy-language-v0.1](policy-language-v0.1.md). Its `biocompiler.policy` documents
+are a separate source family; they do not widen existing executable profiles or
+close a migration cutoff gate. Studio and conversational authoring are deferred.
+
+- [x] Implement typed immutable rich policy declarations, Python builders and
+  symbolic expressions, bounded data-only JSON, authoring diagnostics, notebook
+  inspection, policy CLI commands and explicit immutable submissions.
+- [x] Add abstract examples for gating, secretion, staged responses, scoped
+  memory, local restraint, coordination and lineage; preserve original frozen
+  migration witnesses separately.
+- [ ] Validate this source increment through the complete hosted release gates.
+- [ ] Implement the new authoring profile's authoritative OCaml semantics,
+  lowering and independent preservation checks in the dedicated lower-layer work.
+
 Starting points: [frontend](../src/biocompiler/frontend/api.py), [symbolic expressions](../src/biocompiler/frontend/expressions.py), [public exports](../src/biocompiler/__init__.py), [CLI](../src/biocompiler/cli.py), [packaging](../pyproject.toml).
 
 Depends on LM-02; individual operations route to OCaml only after their core parity gate.

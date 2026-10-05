@@ -16,7 +16,7 @@ classifiers = [
 ]
 
 [project.scripts]
-biocompiler = "biocompiler.cli:main"
+biocompiler = "biocompiler.entrypoint:main"
 
 [project.urls]
 Repository = "https://github.com/logannye/biocompiler"
