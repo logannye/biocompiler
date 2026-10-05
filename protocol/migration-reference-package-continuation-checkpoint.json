@@ -332,5 +332,49 @@
     "tools/reference_original_counterpart.py": "2a5383dce1d7b9712aee32ae191daa919b3ed8c4f1fd4dfbe781ff8f84eeecc8",
     "tools/reference_package_source_lineage.py": "8e5f20f732613e84a44e1c59e51086224586e9d2296b560418060978303233e3"
   },
-  "source_snapshot_policy": "Hashes bind the reviewed changed source files; observations apply to these bytes. This document and prose handoffs are excluded to avoid circular hashing. Git commit identity is available from the commit containing this checkpoint."
+  "source_snapshot_policy": "Hashes bind the reviewed changed source files; observations apply to these bytes. This document and prose handoffs are excluded to avoid circular hashing. Git commit identity is available from the commit containing this checkpoint.",
+  "unit_discovery": {
+    "scope": "Discovery and planning only; full unittest execution and hosted accounting remain pending. Regenerate at the final hosted revision.",
+    "complete_test_id_census_equal_across_python_minors": true,
+    "original32_method_ids_present": true,
+    "duplicate_or_omitted_sharded_ids": false,
+    "results": [
+      {
+        "python": "3.11.15",
+        "source_revision": "830a81588259c5626b02658a0a96aee9eabbf535",
+        "tests": 3773,
+        "classes": 407,
+        "shards": 5,
+        "shard_test_counts": [
+          809,
+          799,
+          712,
+          678,
+          775
+        ],
+        "discovery_digest": "7c26b02878dd728652f36d6d2fc4d80539993664f5905c7ab061fa055725a5f9",
+        "plan_fingerprint": "ed3d75e3af67d37c15c5a75afee4e666352996532589dd3ea41a51c2e8d391a4",
+        "retained_plan": "generated/migration-next/reference-package-continuation-session/unit-plan-311.json",
+        "retained_plan_sha256": "f423d467702d9d37329dce9ad6099c90bcdda015c1804ec6b68bb7699061d9c1"
+      },
+      {
+        "python": "3.14.6",
+        "source_revision": "830a81588259c5626b02658a0a96aee9eabbf535",
+        "tests": 3773,
+        "classes": 407,
+        "shards": 5,
+        "shard_test_counts": [
+          809,
+          799,
+          712,
+          678,
+          775
+        ],
+        "discovery_digest": "7c26b02878dd728652f36d6d2fc4d80539993664f5905c7ab061fa055725a5f9",
+        "plan_fingerprint": "09251525cf6ad9e5edf4f0b75795866b068b45f634824aaaeed2157ce1277110",
+        "retained_plan": "generated/migration-next/reference-package-continuation-session/unit-plan-314.json",
+        "retained_plan_sha256": "b4cf7686b9f46a56bebe6d3ba4dd5880eedebacf212ce615a91eeac00c10df5e"
+      }
+    ]
+  }
 }

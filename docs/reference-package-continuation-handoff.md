@@ -22,6 +22,9 @@ fixtures remain shared historical infrastructure, with no biological validation.
   provenance remain unchanged. No native build, executable test or packaging
   ran locally.
 
+Implementation source checkpoint: `830a81588259c5626b02658a0a96aee9eabbf535`.
+The subsequent census/handoff checkpoint changes documentation only.
+
 ## Implemented source
 
 `core_reference_package_route.py` now implements prepare, build, current
@@ -82,7 +85,11 @@ contains 3,358 entries, with 48 additions, no removals, and every entry still
 controls pass with the exact native suite census updated from 118 to 125.
 Focused controls use inert Python peers or original Python
 implementations; neither establishes native execution. Strict typing covers all
-39 selected transport modules. Whole-source counterparts retain earlier frozen
+39 selected transport modules. Full discovery at the implementation commit finds
+3,773 tests in 407 classes on both Python versions, with identical test
+IDs, all original 32 IDs present and complete five-shard accounting. This is a
+discovery result, not a full unit execution; regenerate plans on the hosted
+revision. Whole-source counterparts retain earlier frozen
 hashes by exact reviewed restoration, including the new public prefixes and the
 rebased transport delta. No frozen corpus or original TestCase was rebaselined.
 
