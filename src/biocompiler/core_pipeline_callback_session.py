@@ -352,7 +352,10 @@ class CorePipelineCallbackSession:
                 self._traffic.append(CallbackFrame('server', self._next_event, raw))
                 self._quiet()
                 return raw
-            if 'stdout' in self._eof or self._process.poll() is not None:
+            # Exit can race with a readiness snapshot while the final reply is
+            # still buffered. Only stdout EOF proves an incomplete frame; the
+            # existing deadline also bounds pipes inherited by descendants.
+            if 'stdout' in self._eof:
                 raise CoreTransportError('Callback Core exited with an incomplete frame')
 
     def _finish(self, deadline: float) -> None:

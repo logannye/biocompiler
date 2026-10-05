@@ -58,7 +58,7 @@ CAMPAIGN_GROUPS = {
                   'synthetic-selection-cli', 'synthetic-inspection'),
 }
 LIFECYCLE_NAMES = ('create-environment', 'install', 'smoke', 'uninstall', 'missing-package', 'reinstall')
-PARALLEL_CAMPAIGN_GROUPS = frozenset(('fixed', 'manager'))
+PARALLEL_CAMPAIGN_GROUPS = frozenset(('fixed', 'manager', 'workflow', 'synthetic'))
 CAMPAIGN_WORKERS = 2
 
 

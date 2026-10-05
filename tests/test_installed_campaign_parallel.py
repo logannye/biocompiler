@@ -37,37 +37,39 @@ class InstalledCampaignParallelTests(unittest.TestCase):
                                           output=self.root, receipt=self.receipt)
 
     def test_actual_two_worker_overlap_all_five_and_original_receipt_order(self):
-        plan = self.plan()
-        lock, barrier = threading.Lock(), threading.Barrier(2)
-        active = maximum = 0
-        started, finished = [], []
-        def run(command, *, cwd, environment, log, grouped):
-            nonlocal active, maximum
-            with lock:
-                active += 1
-                maximum = max(maximum, active)
-                started.append(log.stem)
-            try:
-                self.assertEqual(cwd, self.root)
-                self.assertEqual(environment, self.environment)
-                self.assertFalse(grouped)
-                if log.stem != plan[-1][0]:
-                    barrier.wait(5)
-                return self.row(command, log)
-            finally:
+        for group in sorted(pipeline.PARALLEL_CAMPAIGN_GROUPS):
+            self.receipt = {'status': 'running', 'commands': [], 'campaigns': []}
+            plan = self.plan(group)
+            lock, barrier = threading.Lock(), threading.Barrier(2)
+            active = maximum = 0
+            started, finished = [], []
+            def run(command, *, cwd, environment, log, grouped):
+                nonlocal active, maximum
                 with lock:
-                    active -= 1
-                    finished.append(log.stem)
-        with patch.object(pipeline, 'run', side_effect=run):
-            self.execute(plan)
-        names = [name for name, _ in plan]
-        self.assertEqual(maximum, 2)
-        self.assertEqual(active, 0)
-        self.assertCountEqual(started, names)
-        self.assertCountEqual(finished, names)
-        self.assertEqual([row['argv'] for row in self.receipt['commands']], [command for _, command in plan])
-        self.assertEqual([row['name'] for row in self.receipt['campaigns']], names)
-        self.assertEqual(self.receipt['campaign_execution'], pipeline.campaign_execution(names))
+                    active += 1
+                    maximum = max(maximum, active)
+                    started.append(log.stem)
+                try:
+                    self.assertEqual(cwd, self.root)
+                    self.assertEqual(environment, self.environment)
+                    self.assertFalse(grouped)
+                    if len(plan) % 2 == 0 or log.stem != plan[-1][0]:
+                        barrier.wait(5)
+                    return self.row(command, log)
+                finally:
+                    with lock:
+                        active -= 1
+                        finished.append(log.stem)
+            with patch.object(pipeline, 'run', side_effect=run):
+                self.execute(plan)
+            names = [name for name, _ in plan]
+            self.assertEqual(maximum, 2)
+            self.assertEqual(active, 0)
+            self.assertCountEqual(started, names)
+            self.assertCountEqual(finished, names)
+            self.assertEqual([row['argv'] for row in self.receipt['commands']], [command for _, command in plan])
+            self.assertEqual([row['name'] for row in self.receipt['campaigns']], names)
+            self.assertEqual(self.receipt['campaign_execution'], pipeline.campaign_execution(names))
 
     def test_reversed_completion_keeps_manager_recipe_order(self):
         plan = self.plan('manager')
@@ -139,28 +141,29 @@ class InstalledCampaignParallelTests(unittest.TestCase):
             run.assert_not_called()
 
     def test_source_worker_and_started_census_are_independently_required(self):
-        for mutation in ('missing', 'source', 'workers', 'order', 'started'):
-            fixture = scheduling.PartitionedReceiptTests()
-            fixture.setUp()
-            self.addCleanup(fixture.doCleanups)
-            receipt = fixture.parts['manager']
-            if mutation == 'missing':
-                del receipt['campaign_execution']
-            elif mutation == 'source':
-                receipt['campaign_execution']['driver_source']['sha256'] = '0' * 64
-            elif mutation == 'workers':
-                receipt['campaign_execution']['workers'] = 3
-            elif mutation == 'order':
-                receipt['campaign_execution']['campaign_order'].reverse()
-            else:
-                receipt['campaign_execution']['started'].pop()
-            fixture.write_groups()
-            with self.subTest(mutation=mutation), self.assertRaisesRegex(ValueError, 'Parallel campaign execution'):
-                pipeline.aggregate(fixture.args)
+        for group in sorted(pipeline.PARALLEL_CAMPAIGN_GROUPS):
+            for mutation in ('missing', 'source', 'workers', 'order', 'started'):
+                fixture = scheduling.PartitionedReceiptTests()
+                fixture.setUp()
+                self.addCleanup(fixture.doCleanups)
+                receipt = fixture.parts[group]
+                if mutation == 'missing':
+                    del receipt['campaign_execution']
+                elif mutation == 'source':
+                    receipt['campaign_execution']['driver_source']['sha256'] = '0' * 64
+                elif mutation == 'workers':
+                    receipt['campaign_execution']['workers'] = 3
+                elif mutation == 'order':
+                    receipt['campaign_execution']['campaign_order'].reverse()
+                else:
+                    receipt['campaign_execution']['started'].pop()
+                fixture.write_groups()
+                with self.subTest(group=group, mutation=mutation), self.assertRaisesRegex(ValueError, 'Parallel campaign execution'):
+                    pipeline.aggregate(fixture.args)
 
     def test_lifecycle_stays_serial_and_ownership_after_waits_for_every_campaign(self):
-        self.assertEqual(pipeline.PARALLEL_CAMPAIGN_GROUPS, {'fixed', 'manager'})
-        for group in ('fixed', 'manager'):
+        self.assertEqual(pipeline.PARALLEL_CAMPAIGN_GROUPS, {'fixed', 'manager', 'workflow', 'synthetic'})
+        for group in sorted(pipeline.PARALLEL_CAMPAIGN_GROUPS):
             fixture = release.HostedPlanTests()
             fixture.setUp()
             self.addCleanup(fixture.doCleanups)
