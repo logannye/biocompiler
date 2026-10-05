@@ -120,6 +120,15 @@ class ReferenceCampaignDiagnosticsTests(unittest.TestCase):
                             and expression.func.id == 'diagnostic_phase':
                         labels.append(ast.literal_eval(expression.args[0]))
                         return node.body
+                    if isinstance(expression, ast.Call) and isinstance(expression.func, ast.Name) \
+                            and expression.func.id == 'guarded_comparison_diagnostics':
+                        expected = ast.parse('guarded_comparison_diagnostics(current_guard, current_paths, '
+                            'guarded, original_paths, receipt=receipt, replay=replay, '
+                            'replay_artifacts=replay_artifacts, retain=retain)', mode='eval').body
+                        if ast.dump(expression) != ast.dump(expected):
+                            raise AssertionError('Changed guarded-comparison diagnostic scope')
+                        labels.append('guarded_comparison')
+                        return node.body
                 return node
 
         expected = {
@@ -132,7 +141,7 @@ class ReferenceCampaignDiagnosticsTests(unittest.TestCase):
                 restored = RemoveDiagnostics().visit(function)
                 self.assertEqual(hashlib.sha256(json.dumps(document(restored), separators=(',', ':')).encode()).hexdigest(),
                                  expected[function.name])
-        self.assertCountEqual(labels, ['run_observed', 'run_bodies', 'cleanup', 'reconstruct'])
+        self.assertCountEqual(labels, ['run_observed', 'run_bodies', 'cleanup', 'reconstruct', 'guarded_comparison'])
 
 
 if __name__ == '__main__':

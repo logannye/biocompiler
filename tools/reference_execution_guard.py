@@ -10,6 +10,7 @@ import builtins
 from collections import Counter
 from contextlib import contextmanager
 from dataclasses import MISSING, fields, field, is_dataclass, make_dataclass
+import dis
 import hashlib
 import importlib
 import json
@@ -25,7 +26,7 @@ else:
 registration = manager.fixed.source_tool('pipeline_registration_guard')
 
 ROOT = Path(__file__).resolve().parents[1]
-SCHEMA = 'biocompiler.reference_execution_guard.v1'
+SCHEMA = 'biocompiler.reference_execution_guard.v2'
 PREFIX_WITNESS = 'tests/conformance/reference-public-routing-source-counterpart-v1.json'
 PREFIX_PIN = '949bd00942bbaa8c6107c490692e38007e41309b0d8f22b0bccd4d8f8514f074'
 TRANSPORT = manager.TRANSPORT_MODULES | {
@@ -63,6 +64,17 @@ DATA_CLASSES = {
 }
 PUBLIC = {'biocompiler.compiler.construct': 'run_construct_pipeline',
           'biocompiler.compiler.molecular': 'run_molecular_pipeline'}
+# These exact source spans perform one check/read per OS readiness turn or
+# received chunk. The same helpers' other call sites remain exact counts.
+SCHEDULING_MODULE = 'biocompiler.core_pipeline_callback_session'
+SCHEDULING_SOURCE_SHA256 = 'd24cb3b78df7b7c85d0bbec5cd3c7634ca4756c5e8b0e113a8a3ba7258229a54'
+SCHEDULING_SITES = (
+    ('exchange-deadline', '_exchange', '_check_time', (320, 320, 12, 38)),
+    ('exchange-read', '_exchange', '_read', (333, 333, 28, 43)),
+    ('exchange-aggregate', '_exchange', '_require', (337, 338, 20, 78)),
+    ('exchange-trailing', '_exchange', '_require', (346, 346, 24, 112)),
+    ('quiet-read', '_quiet', '_read', (295, 295, 24, 39)),
+)
 
 
 def require(value, message):
@@ -143,6 +155,40 @@ class Policy:
         for name, classes in DATA_CLASSES.items():
             for cls in classes: self.generated(vars(self.module(name))[cls], name, 'data')
         self.prefixes()
+        self.scheduling_policy()
+
+    def scheduling_policy(self):
+        require(self.sources[SCHEDULING_MODULE]['sha256'] == SCHEDULING_SOURCE_SHA256,
+                'Reference scheduling call sites require their exact reviewed source')
+        self.scheduling_sites, self.scheduling_lookup = [], {}
+        self.scheduling_callees = set()
+        for name, caller_name, callee_name, position in SCHEDULING_SITES:
+            caller = self.lookup(SCHEDULING_MODULE, 'CorePipelineCallbackSession.' + caller_name).__code__
+            callee = self.lookup(SCHEDULING_MODULE, callee_name if callee_name == '_require'
+                                 else 'CorePipelineCallbackSession.' + callee_name).__code__
+            instructions = list(dis.get_instructions(caller, show_caches=True))
+            matches = [index for index, instruction in enumerate(instructions)
+                if instruction.opname == 'CALL' and tuple(instruction.positions) == position]
+            require(len(matches) == 1, 'Reference scheduling call instruction changed')
+            index = matches[0]
+            site = {'name': name, 'source': self.sources[SCHEDULING_MODULE],
+                'caller': self.entries[id(caller)][2], 'callee': self.entries[id(callee)][2],
+                'position': list(position), 'instruction': instructions[index].offset}
+            self.scheduling_sites.append(site)
+            self.scheduling_callees.add(id(callee))
+            # 3.11 reports the last CALL cache offset; 3.14 reports CALL itself.
+            for instruction in instructions[index:]:
+                if instruction is not instructions[index] and instruction.opname != 'CACHE': break
+                self.scheduling_lookup[(id(caller), instruction.offset, id(callee))] = site
+
+    def scheduling_entry(self, frame):
+        caller = frame.f_back
+        if caller is None: return None
+        site = self.scheduling_lookup.get((id(caller.f_code), caller.f_lasti, id(frame.f_code)))
+        if site is None: return None
+        require(self.entry(caller) is site['caller'] and self.entry(frame) is site['callee'],
+                'Reference scheduling call site has foreign code or globals')
+        return site['name']
 
     def module(self, name):
         if name in self.modules: return self.modules[name]
@@ -265,6 +311,7 @@ class Guard:
     def __init__(self, observer=None):
         self.policy, self.observer = Policy(), observer
         self.seen, self.counts, self.active, self.routed = set(), Counter(), {}, []
+        self.scheduling_counts = Counter()
         self.commands, self.pending = [], {}
         self.host_frames, self.overrides = {}, []
         self.observing = 0
@@ -447,6 +494,9 @@ class Guard:
                             require(manager._conversion_ancestry(frame, self.policy.conversion_entries,
                                 self.policy.conversion_roots), 'Reference semantic conversion lacks reviewed serializer ancestry')
                         self.counts[self.policy.keys[id(frame.f_code)]] += 1
+                        if id(frame.f_code) in self.policy.scheduling_callees:
+                            site = self.policy.scheduling_entry(frame)
+                            if site is not None: self.scheduling_counts[site] += 1
                     self.seen.add((frame.f_globals.get('__name__'), frame.f_code.co_qualname))
             if event == 'return':
                 self.active.pop(id(frame), None)
@@ -461,6 +511,8 @@ class Guard:
         return {'schema': SCHEMA, 'runtime': list(sys.version_info[:2]), 'python_version':sys.version, 'sources': self.policy.sources,
             'prefix_witness': PREFIX_PIN, 'commands': self.commands, 'inspection':{'source':self.observation_source,'count':self.observation_count}, 'host_overrides':self.overrides, 'calls': [{'frame': json.loads(key), 'count': count}
                 for key, count in sorted(self.counts.items())], 'routes': self.routed,
+            'scheduling': {'sites': self.policy.scheduling_sites,
+                'counts': [{'site': name, 'count': count} for name, count in sorted(self.scheduling_counts.items())]},
             'delegation': [list(row) for row in sorted(self.seen) if row[0] == registration.TAG or row == registration.BASE]}
 
 
@@ -499,8 +551,53 @@ def execution(observer=None):
             if sys.gettrace() == guard.idle_trace: sys.settrace(previous_trace)
 
 
+def validate_scheduling(evidence, policy):
+    """Authenticate the call-site subcensus without removing any raw counts."""
+    require(evidence.get('schema') == SCHEMA, 'Reference scheduling requires the current guard schema')
+    value = evidence.get('scheduling')
+    require(type(value) is dict and set(value) == {'sites', 'counts'}
+        and value['sites'] == policy.scheduling_sites and type(value['counts']) is list,
+        'Reference scheduling call-site authority differs')
+    sites = {site['name']: site for site in policy.scheduling_sites}
+    totals = {}
+    for row in evidence['calls']:
+        require(type(row) is dict and set(row) == {'frame', 'count'}
+            and type(row['count']) is int and row['count'] > 0, 'Malformed reference raw call count')
+        key = canonical(row['frame']).decode()
+        require(key not in totals, 'Repeated reference raw call count')
+        totals[key] = row['count']
+    reductions, names = Counter(), []
+    for row in value['counts']:
+        require(type(row) is dict and set(row) == {'site', 'count'} and type(row['site']) is str
+            and row['site'] in sites and type(row['count']) is int and row['count'] > 0,
+            'Malformed reference scheduling count')
+        names.append(row['site'])
+        require(canonical(sites[row['site']]['caller']).decode() in totals,
+                'Reference scheduling site lacks its actual source-bound caller')
+        key = canonical(sites[row['site']]['callee']).decode()
+        reductions[key] += row['count']
+        require(key in totals and reductions[key] <= totals[key],
+                'Reference scheduling count exceeds its actual source-bound calls')
+    require(names == sorted(set(names)), 'Repeated or unordered reference scheduling site')
+    return reductions
+
+
+def scheduling_projection(evidence):
+    """Subtract only authenticated I/O-site occurrences from a validated guard.
+
+    Every raw descriptor remains, including a zero residual for pure I/O helpers.
+    The complete original census and call-site counts remain in the raw receipt.
+    """
+    reductions = validate_scheduling(evidence, Policy())
+    result = json.loads(canonical(evidence))
+    for row in result['calls']:
+        row['count'] -= reductions[canonical(row['frame']).decode()]
+    result['scheduling']['counts'] = []
+    return result
+
+
 def validate(evidence, frames, artifacts):
-    require(type(evidence) is dict and set(evidence) == {'schema','runtime','python_version','sources','prefix_witness','commands','inspection','host_overrides','calls','routes','delegation'}
+    require(type(evidence) is dict and set(evidence) == {'schema','runtime','python_version','sources','prefix_witness','commands','inspection','host_overrides','calls','routes','delegation','scheduling'}
         and evidence['schema'] == SCHEMA and evidence['runtime'] in ([3,11],[3,14])
         and evidence['runtime'] == list(sys.version_info[:2])
         and type(evidence['python_version']) is str and evidence['python_version'].startswith('.'.join(map(str,evidence['runtime'])) + '.'),
@@ -522,6 +619,7 @@ def validate(evidence, frames, artifacts):
         known = key in allowed
         require(known and key not in seen, 'Unknown or repeated reference execution frame')
         seen.add(key)
+    validate_scheduling(evidence, policy)
     for row in evidence['routes']:
         require(type(row) is dict and set(row) == {'module','qualname','lines','outcome'} and row['module'] in PUBLIC
             and row['qualname'] == PUBLIC[row['module']] and row['outcome'] == 'finished', 'Malformed reference public route proof')

@@ -140,6 +140,23 @@ The campaign does not arm an asynchronous frame-dump watchdog: Python 3.11 can
 corrupt the dump or hang while trace/profile callbacks inspect active frames.
 Diagnostic output remains separate from observation documents and receipt schemas.
 
+Reference execution receipts retain every observed Python call count. Their
+cross-execution comparison accounts separately for five source-verified I/O
+call sites whose counts depend on readiness polling or frame chunking. The
+receipt binds each such occurrence to its actual caller, callee and instruction
+site, checks its count against the complete raw census, and compares all
+remaining call counts exactly. Complete protocol traffic, object graphs, source
+permissions, callbacks and public-route evidence remain required. Whole helper
+functions are not exempted from comparison: calls from other sites retain their
+exact counts. Both Python versions run finite scheduling and tampering controls
+before native builds.
+
+If the guarded-execution comparison differs, the campaign retains both guard
+documents and the replay's source evidence before its temporary directory closes. A bounded
+diagnostic identifies the first unequal field; diagnostic storage or output
+errors preserve the original rejection. Retained failure data cannot satisfy
+the successful reconstruction gate.
+
 Historical manager views preserve the original attribute insertion order for
 all five closed dataclass types without rerunning Python constructors or semantic
 checks. The two fixed reference registrations retain the original shared

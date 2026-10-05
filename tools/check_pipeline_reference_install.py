@@ -64,6 +64,7 @@ SOURCES = (SOURCE, TEST_SOURCE, original.FREEZER, original.RUNNER,
     'tests/test_reference_observer_dispatch.py',
     'tests/test_reference_session_source_lineage.py',
     'tests/test_reference_campaign_diagnostics.py',
+    'tests/test_reference_guard_scheduling.py', 'tests/test_reference_guard_failure_evidence.py',
     'tests/test_core_reference_manager.py', 'tests/test_reference_backend.py',
     'tests/conformance/reference-attempt-facade-counterpart-v1.json',
     'tests/conformance/reference-attempt-facade-counterpart-v2.json',
@@ -1320,14 +1321,82 @@ def validate_native_evidence(receipt, corpus, artifacts):
 
 
 def guarded_projection(value, paths):
-    """Only recorded runtime build-string/path differences leave the comparison."""
-    result = json.loads(canonical(value))
+    """Compare all guarded behavior except authenticated I/O scheduling counts."""
+    result = tool('reference_execution_guard').scheduling_projection(value)
     result.pop('python_version')
     for override in result['host_overrides']:
         for source in override['source']:
             require(source['file'] in paths, 'Reference guarded host source is absent from observation authority')
             source['file'] = paths[source['file']]
     return result
+
+
+def first_guard_difference(current, native, path='$'):
+    """A bounded diagnostic path; the full unequal guards are retained separately."""
+    if type(current) is type(native) and type(current) not in (dict, list) and current == native: return None
+    if type(current) is dict and type(native) is dict:
+        for key in sorted(set(current) | set(native)):
+            child = path + '.' + key
+            if key not in current or key not in native:
+                return {'path': child[:512], 'current': 'present' if key in current else 'missing',
+                        'native': 'present' if key in native else 'missing'}
+            found = first_guard_difference(current[key], native[key], child)
+            if found is not None: return found
+        return None
+    elif type(current) is list and type(native) is list:
+        for index, (left, right) in enumerate(zip(current, native)):
+            found = first_guard_difference(left, right, path + '[' + str(index) + ']')
+            if found is not None: return found
+        if len(current) != len(native):
+            return {'path': (path + '.length')[:512], 'current': str(len(current)), 'native': str(len(native))}
+        return None
+    return {'path': path[:512], 'current': repr(current)[:160], 'native': repr(native)[:160]}
+
+
+def guard_diagnostic_notice(message):
+    try:
+        print(message, file=sys.stderr, flush=True)
+    except Exception:
+        pass
+
+
+@contextmanager
+def guarded_comparison_diagnostics(current_guard, current_paths, guarded, original_paths,
+                                   *, receipt, replay, replay_artifacts, retain):
+    """Retain failed comparison evidence before replay temporary files disappear."""
+    try:
+        yield
+    except AssertionError:
+        try:
+            difference = first_guard_difference(guarded_projection(current_guard, current_paths),
+                                                guarded_projection(guarded, original_paths))
+            guard_diagnostic_notice('Reference guarded comparison first mismatch: ' + json.dumps(difference, sort_keys=True))
+            if retain is not None:
+                retained = {}
+                for name in ('guard', 'observation_sources'):
+                    identity = replay[name]
+                    require(retain(replay_artifacts.raw(identity)) == identity,
+                            'Failed reconstruction evidence was not retained exactly')
+                    retained[name] = identity
+                source = replay_artifacts.json(replay['observation_sources'], maximum=4 * 1024 * 1024)
+                for row in source['files'].values():
+                    identity = row['artifact']
+                    if identity is not None:
+                        require(retain(replay_artifacts.raw(identity)) == identity,
+                                'Failed reconstruction source was not retained exactly')
+                failure = {'schema_version': 'biocompiler.reference_guard_comparison_failure.v1',
+                    'acceptance': False, 'native_guard': receipt['guard'], 'replay': retained,
+                    'native_paths': original_paths, 'replay_paths': current_paths, 'first_difference': difference}
+                raw = canonical(failure)
+                identity = retain(raw)
+                require(identity == sha(raw), 'Failed reconstruction report was not retained exactly')
+                receipt['reconstruction_failure'] = identity
+                guard_diagnostic_notice('Reference guarded comparison failure artifact: ' + identity)
+        except Exception as diagnostic_error:
+            # A diagnostic storage failure must never mask the original rejection.
+            guard_diagnostic_notice('Reference guarded comparison diagnostic failure: ' + type(diagnostic_error).__name__
+                  + ': ' + str(diagnostic_error)[:256])
+        raise
 
 
 def reconstruct(receipt, corpus, artifacts, *, installed=True, retain=None):
@@ -1364,8 +1433,10 @@ def reconstruct(receipt, corpus, artifacts, *, installed=True, retain=None):
             guard.validate(current_guard, [row['frames'] for row in replay['processes']], replay_artifacts)
             old_sources = artifacts.json(receipt['observation_sources'], maximum=4 * 1024 * 1024)
             original_paths = {filename: row['logical'] for filename, row in old_sources['files'].items()}
-            equal(guarded_projection(current_guard, current_paths), guarded_projection(guarded, original_paths),
-                  'Current reconstruction changed its complete guarded execution')
+            with guarded_comparison_diagnostics(current_guard, current_paths, guarded, original_paths,
+                    receipt=receipt, replay=replay, replay_artifacts=replay_artifacts, retain=retain):
+                equal(guarded_projection(current_guard, current_paths), guarded_projection(guarded, original_paths),
+                      'Current reconstruction changed its complete guarded execution')
             for process in replay['processes']:
                 replay_artifacts.json(process['stderr'])
                 for frame in process['frames']: replay_artifacts.raw(frame['frame'])
