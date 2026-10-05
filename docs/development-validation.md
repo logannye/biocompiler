@@ -45,7 +45,7 @@ remain distinct revision boundaries.
 
 | Job | Coverage and dependency |
 | --- | --- |
-| `ci-preflight` | Both Python versions run pure scheduling/receipt, native fixture wiring, installed reference-source closure, outside-checkout authoring and bounded failure-diagnostic regressions, then load all 17 frozen campaign corpora with child processes and network forbidden. It detects source, schema and path-plan failures before expensive jobs. |
+| `ci-preflight` | Both Python versions run pure scheduling/receipt, native fixture wiring, installed reference-source closure, outside-checkout authoring and bounded failure-diagnostic regressions, then restore the complete reference and workflow source authorities and load all 17 frozen campaign corpora with child processes and network forbidden. It detects source, schema and path-plan failures before expensive jobs. |
 | `unit-plan` | Python 3.11 and 3.14 independently discover the full suite and produce five-shard plans. |
 | `unit-tests` | Ten jobs: each Python version executes shards 0–4 against its plan, with at most ten running unit jobs. |
 | `unit-accounting` | One per Python version independently verifies its complete five-result census against fresh discovery. |
@@ -107,7 +107,10 @@ discovery and accounting. Equal serialized requests can have different physical
 object identities after a JSON roundtrip, so continuation graphs are bound to
 each original call occurrence. They are not repeated in
 `unit-plan`; native builds depend on `ci-preflight` directly. The diagnostic
-controls use harmless Python children; corpus loading separately denies
+controls use harmless Python children. Full original reference-contract, workflow
+and workflow-CLI source restoration runs before native compilation, including
+every additive transport witness; changing a source hash without its exact
+restoration proof fails this early gate. Corpus loading separately denies
 child processes and network. Failed or timed-out installed commands print a
 bounded, escaped tail of their complete retained log. Successful commands
 print only the scheduler group/timing envelope. Every opened group closes
@@ -145,8 +148,8 @@ The deterministic longest-processing-time assignment keeps each complete
 they cannot exclude tests or substitute for execution. Every discovered class
 is assigned exactly once across the five shards for its Python version.
 
-The current suite discovers 3,527 tests in 367 classes on both Python versions.
-The campaign parallelism adds 50 scheduling, receipt and source controls while
+The current suite discovers 3,552 tests in 372 classes on both Python versions.
+The campaign parallelism and corrections add 75 scheduling, transport, receipt and source controls while
 preserving all previous 3,477 test IDs. Placement weights retain the historical
 fixture-inclusive maximum for every previously measured class and add the
 existing two-second estimate for each new method. The source measurement and

@@ -154,7 +154,41 @@ let reference_routed_original root name expected current =
     "Reference public five-line source prefix differs";
   String.sub current 0 offset ^ String.sub current (offset+count) (String.length current-offset-count)
 
+let reference_callback_drain_original root name current =
+  let previous_pin="96cf3c4c70231f3039e2e16c51efc06bc202c86208f94dbddd5f438996c1bb5a"
+  and current_pin="d24cb3b78df7b7c85d0bbec5cd3c7634ca4756c5e8b0e113a8a3ba7258229a54" in
+  require(name="src/biocompiler/core_pipeline_callback_session.py" &&
+    Canonical.sha256 current=current_pin && String.length current=32785)
+    "Unreviewed reference callback drain source substitution";
+  let witness=source_witness root "tests/conformance/reference-callback-source-counterpart-v2.json"
+    "878291d0b0e70db1f5e98611e103099d252ab3ffacf4995ae72ae73a9a9e16ce" in
+  Json.exact_fields ["schema_version";"base_revision";"path";"original_sha256";"current_sha256";
+    "original_bytes";"current_bytes";"changes";"scope";"predecessor"] (Json.object_fields witness);
+  let predecessor=field "predecessor" witness in
+  Json.exact_fields ["path";"sha256"] (Json.object_fields predecessor);
+  require(text "schema_version" witness="biocompiler.reference_callback_source_counterpart.v2" &&
+    text "base_revision" witness="4baaaf7e6e19ef9138372746495ef4e0fa51b71f" &&
+    text "path" witness=name && text "original_sha256" witness=previous_pin &&
+    text "current_sha256" witness=current_pin && integer(field "original_bytes" witness)=32588 &&
+    integer(field "current_bytes" witness)=32785 &&
+    text "path" predecessor="tests/conformance/reference-callback-source-counterpart-v1.json" &&
+    text "sha256" predecessor="e3be989e0a76913f64ec959d4354bb4a352c70e0bf661ca58df68db15e544b5c" &&
+    text "scope" witness="Exact historical source restoration only; current transport validation is separate")
+    "Reference callback drain source witness lost its exact authority";
+  let changes=array "changes" witness in
+  let spans=List.map(fun change->
+    Json.exact_fields ["old_start_line";"old_end_line";"new_start_line";"new_end_line";"before";"after"]
+      (Json.object_fields change);
+    integer(field "old_start_line" change),integer(field "old_end_line" change),
+    integer(field "new_start_line" change),integer(field "new_end_line" change)) changes in
+  require(spans=[355,355,355,358]) "Reference callback drain exact source span census differs";
+  let restored=restore_source_lines current changes in
+  require(String.length restored=32588 && Canonical.sha256 restored=previous_pin)
+    "Reference callback drain whole preceding source differs";
+  restored
+
 let reference_callback_original root name expected current =
+  let current=reference_callback_drain_original root name current in
   let old_pin="0ff388509eb9c123b87cf5decc1f35cf5eaca61a02d84a756beba7150de17018"
   and current_pin="96cf3c4c70231f3039e2e16c51efc06bc202c86208f94dbddd5f438996c1bb5a" in
   require(name="src/biocompiler/core_pipeline_callback_session.py" && expected=old_pin &&

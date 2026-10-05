@@ -28,6 +28,28 @@ def audit(event, args):
         raise AssertionError('Preflight prohibits processes and network: '+event)
 
 
+def check_original_sources(name):
+    """Restore current bytes to frozen authority without executing a corpus."""
+    if name == 'reference-contracts':
+        from tools import reference_original_counterpart as original
+        index = original.authority()
+        sources, _ = original.source_closure(index, ROOT / 'src/biocompiler')
+        data = original.data_closure(index)
+        return {'source_count': len(sources), 'data_count': len(data),
+                'inventory_fingerprint': index['inventory_fingerprint']}
+    if name == 'realization-workflow':
+        from tools import check_realization_workflow_corpus as lineage
+        from tools import freeze_realization_workflow as capture
+        scope = lineage.source_scope(capture.source_inventory())
+    elif name == 'workflow-cli':
+        from tools import check_workflow_cli_corpus as lineage
+        scope = lineage.current_scope()
+    else:
+        raise AssertionError('Unknown original source authority: ' + name)
+    return {'source_count': len(scope['actual_sources']),
+            'source_inventory_sha256': scope['actual_source_inventory_sha256']}
+
+
 def check(name):
     module = importlib.import_module('tools.'+name)
     if name in ('check_native_workflow_cli', 'check_native_synthetic_selection_cli'):
@@ -69,6 +91,18 @@ def main():
     native = test_plan((ROOT/'core/test/dune').read_text())
     direct_core = load_plan(ROOT)
     sys.addaudithook(audit)
+    authorities = []
+    for name in ('reference-contracts', 'realization-workflow', 'workflow-cli'):
+        started = time.monotonic()
+        row = {'name': name}
+        try:
+            row.update(check_original_sources(name), status='pass')
+        except Exception as error:
+            row.update(status='fail', error=type(error).__name__ + ': ' + str(error))
+        row['duration_seconds'] = round(time.monotonic() - started, 6)
+        authorities.append(row)
+        print(json.dumps(row, sort_keys=True), flush=True)
+        gc.collect()
     rows = []
     for name, campaign in CAMPAIGNS:
         started = time.monotonic()
@@ -81,9 +115,9 @@ def main():
         rows.append(row)
         print(json.dumps(row, sort_keys=True), flush=True)
         gc.collect()
-    document = {'status':'pass' if all(row['status']=='pass' for row in rows) else 'fail',
+    document = {'status':'pass' if all(row['status']=='pass' for row in [*authorities, *rows]) else 'fail',
                 'python_version':platform.python_version(), 'native_suites':len(native),
-                'direct_core_groups':len(direct_core), 'campaigns':rows,
+                'direct_core_groups':len(direct_core), 'original_source_authorities':authorities, 'campaigns':rows,
                 'scope':'source preflight only; native execution and final artifact acceptance remain required'}
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(document, indent=2)+'\n')

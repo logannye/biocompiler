@@ -32,10 +32,13 @@ RUNNER = 'tools/reference_original_counterpart.py'
 CORE_SOURCE = 'src/biocompiler/core_pipeline_manager.py'
 CALLBACK_SOURCE = 'src/biocompiler/core_pipeline_callback_session.py'
 CALLBACK_ORIGINAL_SHA = '0ff388509eb9c123b87cf5decc1f35cf5eaca61a02d84a756beba7150de17018'
-CALLBACK_CURRENT_SHA = '96cf3c4c70231f3039e2e16c51efc06bc202c86208f94dbddd5f438996c1bb5a'
+CALLBACK_PREVIOUS_SHA = '96cf3c4c70231f3039e2e16c51efc06bc202c86208f94dbddd5f438996c1bb5a'
+CALLBACK_CURRENT_SHA = 'd24cb3b78df7b7c85d0bbec5cd3c7634ca4756c5e8b0e113a8a3ba7258229a54'
 CALLBACK_BLOB = 'tests/conformance/reference-original-sources-v1/' + CALLBACK_ORIGINAL_SHA + '.blob'
 CALLBACK_WITNESS = 'tests/conformance/reference-callback-source-counterpart-v1.json'
 CALLBACK_WITNESS_SHA = 'e3be989e0a76913f64ec959d4354bb4a352c70e0bf661ca58df68db15e544b5c'
+CALLBACK_DRAIN_WITNESS = 'tests/conformance/reference-callback-source-counterpart-v2.json'
+CALLBACK_DRAIN_WITNESS_SHA = '878291d0b0e70db1f5e98611e103099d252ab3ffacf4995ae72ae73a9a9e16ce'
 CORE_ORIGINAL_SHA = '40a08477c97a97159372d9723267df3cacf8335a59d6b00ada34bb56470e31f3'
 CORE_PREVIOUS_SHA = '0c0cfac138484cf71f1bb1303e66873b8b148ca236e07930fdbadd0b477a11be'
 CORE_ROUTING_SHA = '18ee9bd517524b4440bcf29292a5d834470603713d662198b83ca61373c7fd09'
@@ -208,6 +211,44 @@ def core_source_witness(raw=None):
         'scope': 'original source execution only; current native bridge validation is separate'}
 
 
+def callback_drain_source_witness(current, encoded=None):
+    """Undo only the exact buffered-close correction before the frozen v1 proof."""
+    encoded = local_file(ROOT, CALLBACK_DRAIN_WITNESS).read_bytes() if encoded is None else encoded
+    require(sha(encoded) == CALLBACK_DRAIN_WITNESS_SHA, 'Reference callback drain source witness changed')
+    witness = json.loads(encoded)
+    require(set(witness) == {'schema_version', 'base_revision', 'path', 'original_sha256',
+        'current_sha256', 'original_bytes', 'current_bytes', 'changes', 'scope', 'predecessor'} and
+        witness['schema_version'] == 'biocompiler.reference_callback_source_counterpart.v2' and
+        witness['base_revision'] == '4baaaf7e6e19ef9138372746495ef4e0fa51b71f' and
+        witness['path'] == CALLBACK_SOURCE and witness['original_sha256'] == CALLBACK_PREVIOUS_SHA and
+        witness['current_sha256'] == CALLBACK_CURRENT_SHA and
+        witness['original_bytes'] == 32588 and witness['current_bytes'] == 32785 and
+        witness['predecessor'] == {'path': CALLBACK_WITNESS, 'sha256': CALLBACK_WITNESS_SHA} and
+        witness['scope'] == 'Exact historical source restoration only; current transport validation is separate',
+        'Reference callback drain source correspondence differs')
+    require(type(current) is bytes and sha(current) == CALLBACK_CURRENT_SHA and len(current) == 32785,
+        'Captured reference callback source is outside its exact counterpart')
+    changes = witness['changes']
+    fields = ('old_start_line', 'old_end_line', 'new_start_line', 'new_end_line')
+    require(type(changes) is list and len(changes) == 1 and type(changes[0]) is dict and
+        set(changes[0]) == {*fields, 'before', 'after'} and
+        all(type(changes[0][key]) is int for key in fields) and
+        tuple(changes[0][key] for key in fields) == (355, 355, 355, 358) and
+        type(changes[0]['before']) is str and type(changes[0]['after']) is str,
+        'Reference callback drain exact source span census differs')
+    change = changes[0]
+    lines = current.decode().splitlines(keepends=True)
+    require(''.join(lines[354:358]) == change['after'] and
+        len(change['before'].splitlines(keepends=True)) == 1,
+        'Reference callback drain complete source span differs')
+    lines[354:358] = change['before'].splitlines(keepends=True)
+    restored = ''.join(lines).encode()
+    require(len(restored) == 32588 and sha(restored) == CALLBACK_PREVIOUS_SHA,
+        'Reference callback drain whole preceding source differs')
+    return restored, {'path': CALLBACK_DRAIN_WITNESS, 'sha256': CALLBACK_DRAIN_WITNESS_SHA,
+                      'correspondence': witness}
+
+
 def callback_source_witness(raw=None):
     """Restore one exact resource-profile update to its whole archived client."""
     encoded = local_file(ROOT, CALLBACK_WITNESS).read_bytes()
@@ -218,12 +259,13 @@ def callback_source_witness(raw=None):
         witness['schema_version'] == 'biocompiler.reference_callback_source_counterpart.v1' and
         witness['base_revision'] == 'b27f52447f49c749d33cac17f3bbb6fe772cbc24' and
         witness['path'] == CALLBACK_SOURCE and witness['original_sha256'] == CALLBACK_ORIGINAL_SHA and
-        witness['current_sha256'] == CALLBACK_CURRENT_SHA and
+        witness['current_sha256'] == CALLBACK_PREVIOUS_SHA and
         witness['scope'] == 'Exact historical source restoration only; current resource profile validation is separate',
         'Reference callback source correspondence differs')
     current = local_file(ROOT, CALLBACK_SOURCE).read_bytes() if raw is None else raw
+    current, drain_update = callback_drain_source_witness(current)
     archived = local_file(ROOT, CALLBACK_BLOB).read_bytes()
-    require(type(current) is bytes and sha(current) == CALLBACK_CURRENT_SHA and
+    require(type(current) is bytes and sha(current) == CALLBACK_PREVIOUS_SHA and
         len(current) == witness['current_bytes'], 'Captured reference callback source is outside its exact counterpart')
     require(sha(archived) == CALLBACK_ORIGINAL_SHA and len(archived) == witness['original_bytes'],
         'Original reference callback archive changed')
@@ -246,7 +288,7 @@ def callback_source_witness(raw=None):
     require(''.join(lines).encode() == archived, 'Reference callback restoration differs from entire archived source')
     return archived, {'path': CALLBACK_SOURCE, 'archive': CALLBACK_BLOB, 'archive_sha256': CALLBACK_ORIGINAL_SHA,
         'current_sha256': CALLBACK_CURRENT_SHA, 'witness': CALLBACK_WITNESS, 'witness_sha256': CALLBACK_WITNESS_SHA,
-        'correspondence': witness, 'scope': witness['scope']}
+        'correspondence': witness, 'buffered_close_update': drain_update, 'scope': witness['scope']}
 
 
 def route_source_witness(logical, raw=None):
@@ -318,7 +360,8 @@ def data_closure(index):
     for logical, identity in ((CORE_BLOB, CORE_ORIGINAL_SHA), (CORE_WITNESS, CORE_WITNESS_SHA),
                               (CORE_UPDATE, CORE_UPDATE_SHA), (CORE_MERGE_UPDATE, CORE_MERGE_UPDATE_SHA),
                               (CORE_ATTEMPT_UPDATE, CORE_ATTEMPT_UPDATE_SHA), (ROUTE_WITNESS, ROUTE_WITNESS_SHA),
-                              (CALLBACK_BLOB, CALLBACK_ORIGINAL_SHA), (CALLBACK_WITNESS, CALLBACK_WITNESS_SHA)):
+                              (CALLBACK_BLOB, CALLBACK_ORIGINAL_SHA), (CALLBACK_WITNESS, CALLBACK_WITNESS_SHA),
+                              (CALLBACK_DRAIN_WITNESS, CALLBACK_DRAIN_WITNESS_SHA)):
         raw = local_file(ROOT, logical).read_bytes()
         require(sha(raw) == identity, 'Reference exact Core counterpart data changed')
         result.append({'logical': logical, 'sha256': identity, 'bytes': len(raw)})

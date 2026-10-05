@@ -33,7 +33,7 @@ class ReferenceOriginalCounterpartTests(unittest.TestCase):
         self.assertEqual([name for name, row in rows.items() if row['substituted']], sorted([original.CORE_SOURCE, original.CALLBACK_SOURCE, original.TEST, *original.ROUTE_SOURCES]))
         self.assertEqual(rows[original.CORE_SOURCE]['origin_sha256'], original.CORE_CURRENT_SHA)
         self.assertEqual(rows[original.CORE_SOURCE]['sha256'], original.CORE_ORIGINAL_SHA)
-        self.assertEqual(len(receipt['manifest']['data']), 4009)
+        self.assertEqual(len(receipt['manifest']['data']), 4010)
         self.assertEqual(rows[original.CALLBACK_SOURCE]['origin_sha256'], original.CALLBACK_CURRENT_SHA)
         self.assertEqual(rows[original.CALLBACK_SOURCE]['sha256'], original.CALLBACK_ORIGINAL_SHA)
         self.assertEqual(rows[original.TEST]['sha256'], original.TEST_SHA)
@@ -113,7 +113,7 @@ class ReferenceOriginalCounterpartTests(unittest.TestCase):
             target.write_bytes((original.ROOT / original.CORPUS).read_bytes())
             for logical in (original.CORE_BLOB, original.CORE_WITNESS, original.CORE_UPDATE,
                             original.CORE_MERGE_UPDATE, original.CORE_ATTEMPT_UPDATE, original.ROUTE_WITNESS,
-                            original.CALLBACK_BLOB, original.CALLBACK_WITNESS):
+                            original.CALLBACK_BLOB, original.CALLBACK_WITNESS, original.CALLBACK_DRAIN_WITNESS):
                 target = root / logical
                 target.parent.mkdir(parents=True, exist_ok=True)
                 target.write_bytes((original.ROOT / logical).read_bytes())
@@ -200,7 +200,7 @@ class ReferenceOriginalCounterpartTests(unittest.TestCase):
             encoded = original.canonical(changed) + b'\n'
             with tempfile.TemporaryDirectory() as directory:
                 root = Path(directory)
-                for logical in (original.CALLBACK_WITNESS, original.CALLBACK_BLOB):
+                for logical in (original.CALLBACK_WITNESS, original.CALLBACK_BLOB, original.CALLBACK_DRAIN_WITNESS):
                     target = root / logical
                     target.parent.mkdir(parents=True, exist_ok=True)
                     target.write_bytes((original.ROOT / logical).read_bytes())
