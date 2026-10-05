@@ -5,7 +5,10 @@ Original public operations and complete object graphs remain independently bound
 """
 from __future__ import annotations
 
-from . import check_pipeline_manager_install as manager
+if __package__:
+    from . import check_pipeline_manager_install as manager
+else:
+    import check_pipeline_manager_install as manager
 
 require, equal = manager.require, manager.equal
 PREPARE = ('prepare-reference-molecular', 'prepare-reference-molecular-public')

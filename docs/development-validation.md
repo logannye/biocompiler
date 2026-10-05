@@ -140,6 +140,10 @@ last response fragment and unsolicited suffix, preserving every byte and origina
 assertion while removing a scheduling race. A separate FIFO-synchronized control
 requires genuinely later output to invalidate the next call or close before any
 new frame is sent; production transport timing and bounds remain unchanged.
+Preflight also loads every closed reference helper through both package and
+script entry paths, including the attempt lifecycle validator used after native
+execution. The same complete validation functions and manager bindings apply in
+both modes, so import failures are caught before the long installed campaign.
 Corpus loading
 separately denies child processes and network. Failed or timed-out installed commands print a
 bounded, escaped tail of their complete retained log. Successful commands
@@ -178,8 +182,9 @@ The deterministic longest-processing-time assignment keeps each complete
 they cannot exclude tests or substitute for execution. Every discovered class
 is assigned exactly once across the five shards for its Python version.
 
-The current suite discovers 3,594 tests in 381 classes on both Python versions.
-The capture scheduling and callback fixture changes add 16 controls while
+The current suite discovers 3,597 tests in 382 classes on both Python versions.
+The capture scheduling, callback fixture and reference import changes add 19
+controls while
 preserving all previous 3,578 test IDs. Placement weights retain the historical
 fixture-inclusive maximum for every previously measured class. Fresh discovery
 assigns the existing two-second fallback to unmeasured methods and classes;
