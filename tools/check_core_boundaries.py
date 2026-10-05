@@ -37,6 +37,9 @@ EXECUTABLES = {
     "biocompiler-verify": ("bin/verify/dune", {"bioc_wire", "bioc_service"}, "verifier"),
 }
 TESTS = {
+    "test_policy_document": {"bioc_wire", "bioc_domain", "zarith"},
+    "test_policy_check": {"bioc_wire", "bioc_domain", "bioc_checker", "zarith"},
+    "test_policy_service": {"bioc_wire", "bioc_service"},
     "test_artifact_io": {"bioc_wire", "bioc_service", "bioc_checker", "bioc_realization_checker", "unix", "zarith"},
     "test_verification_workflow_service": {"bioc_wire", "bioc_service", "bioc_domain", "bioc_checker", "bioc_realization_checker", "zarith"},
     "test_synthetic_generator": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_realization_checker", "bioc_synthetic_producer", "zarith"},
@@ -408,6 +411,14 @@ def check_boundaries(root: Path):
                 }
                 expected_actions = ([["action", ["run", "%{test}", fixture_variables[name]]]]
                                     if name in fixture_variables else [])
+                policy_fixtures = {
+                    "test_policy_document": ["policy_documents_v01.json"],
+                    "test_policy_check": ["policy_frontend_request.json", "policy_frontend_submission.json", "policy_documents_v01.json"],
+                    "test_policy_service": ["policy_documents_v01.json"],
+                }
+                if name in policy_fixtures:
+                    expected_actions = [["action", ["run", "%{test}",
+                        *("%{dep:data/" + fixture + "}" for fixture in policy_fixtures[name])]]]
                 if actions != expected_actions:
                     raise BoundaryError(f"Changed native test action: {name}")
                 if name in tests or dependencies != TESTS[name]:

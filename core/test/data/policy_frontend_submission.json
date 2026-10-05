@@ -1,0 +1,1234 @@
+{
+  "$type": "CompilationSubmission",
+  "assumptions": [],
+  "authoring_status": "complete",
+  "backend_execution": "not_performed",
+  "claim_scope": "Structurally complete authoring data only; no semantic, realization, biological, admission or export acceptance.",
+  "dependencies": [
+    {
+      "$type": "DefinitionRef",
+      "digest": "2934cbd5c4a80c6eb2d4b435075604952807f2c49b3f4daa5bb4bd1f3cc3643a",
+      "id": "example.delivery",
+      "version": "1"
+    },
+    {
+      "$type": "DefinitionRef",
+      "digest": "655b5dce8eefbe6d3f10937e6658d902b0a7f28304a648bc4ead9f9a028419d1",
+      "id": "example.encounter",
+      "version": "1"
+    },
+    {
+      "$type": "DefinitionRef",
+      "digest": "1ce7243b7e5ef1e56f6a0b3b19e16fd81bd6fbba9f0daf7ba70fd9103410e183",
+      "id": "example.environment",
+      "version": "1"
+    },
+    {
+      "$type": "DefinitionRef",
+      "digest": "e4d87cba4c8d950d42eafb895fbbac1f03816820ee0487d90b6be85f8a4b2810",
+      "id": "example.interface",
+      "version": "1"
+    },
+    {
+      "$type": "DefinitionRef",
+      "digest": "9e8e9b947a68cecb58b4ee32ac5487b67cdaaaf76a5c1fa640c48c4d27175036",
+      "id": "example.lifecycle",
+      "version": "1"
+    },
+    {
+      "$type": "DefinitionRef",
+      "digest": "ed4860e9922b26eae4b079b5860dc79e517c06b3058952b83fb80761bb410dec",
+      "id": "example.model",
+      "version": "1"
+    },
+    {
+      "$type": "DefinitionRef",
+      "digest": "d8a82a4d87be93e7235afe86fb9890ac416af782a070cdb25408e5ea65201e52",
+      "id": "example.observation",
+      "version": "1"
+    },
+    {
+      "$type": "DefinitionRef",
+      "digest": "c456cda01957d23f02cd2f2c949c657c63eeeaf28d110bf285133f4faf853c36",
+      "id": "example.response",
+      "version": "1"
+    }
+  ],
+  "document_digest": "36f9b303bfc869a1a7ce8c72f11eca1a86a5a75ac67c4e55078e2b5db874667a",
+  "implementation_catalog": {
+    "$type": "DefinitionRef",
+    "digest": "42bd0826c04eb1fc474272bbb8bbe4392f7bc12c7e4c9bad46667fcfda9a6fa4",
+    "id": "empty_supplied_catalog",
+    "version": "1"
+  },
+  "outstanding_obligations": [
+    "arbitration_fairness_and_conflict_resolution",
+    "chassis_capability_and_delivery_suitability",
+    "effect_authorization_feedback_and_cancellation",
+    "implementation_catalog_applicability",
+    "policy_execution_and_lowering",
+    "realizability_and_target_suitability",
+    "requested_assurance_not_established",
+    "safety_and_progress_satisfaction",
+    "temporal_and_uncertainty_semantics"
+  ],
+  "profile": "biocompiler.policy.v0.1",
+  "program_digest": "93695b24e3a7cd19a275714a1250502539a47cc165f7a795e681250cf8741a35",
+  "request": {
+    "$type": "BuildRequest",
+    "assurance": {
+      "$type": "AssuranceRequest",
+      "assumptions": [],
+      "horizon": {
+        "$type": "Quantity",
+        "amount": "30",
+        "unit": {
+          "$type": "Unit",
+          "dimension": "time",
+          "id": "s",
+          "quantity_kind": "duration",
+          "reference": null,
+          "scale": "1"
+        }
+      },
+      "level": "proof",
+      "requirements": [
+        "permission",
+        "response_progress"
+      ],
+      "tolerances": []
+    },
+    "deployment": {
+      "$type": "Deployment",
+      "bindings": [
+        {
+          "$type": "RoleBinding",
+          "chassis": {
+            "$type": "ChassisProfile",
+            "activation_states": [
+              "declared"
+            ],
+            "capabilities": [
+              {
+                "$type": "DefinitionRef",
+                "digest": "e4d87cba4c8d950d42eafb895fbbac1f03816820ee0487d90b6be85f8a4b2810",
+                "id": "example.interface",
+                "version": "1"
+              }
+            ],
+            "differentiation_states": [
+              "declared"
+            ],
+            "environment": [
+              {
+                "$type": "DefinitionRef",
+                "digest": "1ce7243b7e5ef1e56f6a0b3b19e16fd81bd6fbba9f0daf7ba70fd9103410e183",
+                "id": "example.environment",
+                "version": "1"
+              }
+            ],
+            "id": "illustrative_immune",
+            "interfaces": [
+              {
+                "$type": "DefinitionRef",
+                "digest": "e4d87cba4c8d950d42eafb895fbbac1f03816820ee0487d90b6be85f8a4b2810",
+                "id": "example.interface",
+                "version": "1"
+              }
+            ],
+            "lineage": "abstract_immune",
+            "operational_model": {
+              "$type": "DefinitionRef",
+              "digest": "ed4860e9922b26eae4b079b5860dc79e517c06b3058952b83fb80761bb410dec",
+              "id": "example.model",
+              "version": "1"
+            },
+            "recipient_class": "immune",
+            "species": "human",
+            "subtype": "supplied_profile",
+            "version": "1"
+          },
+          "role": {
+            "$type": "Ref",
+            "id": "executor",
+            "kind": "Role"
+          }
+        }
+      ],
+      "delivery": {
+        "$type": "DeliveryContract",
+        "activation": {
+          "$type": "DefinitionRef",
+          "digest": "2934cbd5c4a80c6eb2d4b435075604952807f2c49b3f4daa5bb4bd1f3cc3643a",
+          "id": "example.delivery",
+          "version": "1"
+        },
+        "arrival": {
+          "$type": "DefinitionRef",
+          "digest": "2934cbd5c4a80c6eb2d4b435075604952807f2c49b3f4daa5bb4bd1f3cc3643a",
+          "id": "example.delivery",
+          "version": "1"
+        },
+        "assumptions": [],
+        "co_delivery": "none_required",
+        "contract": {
+          "$type": "DefinitionRef",
+          "digest": "2934cbd5c4a80c6eb2d4b435075604952807f2c49b3f4daa5bb4bd1f3cc3643a",
+          "id": "example.delivery",
+          "version": "1"
+        },
+        "expression": {
+          "$type": "DefinitionRef",
+          "digest": "2934cbd5c4a80c6eb2d4b435075604952807f2c49b3f4daa5bb4bd1f3cc3643a",
+          "id": "example.delivery",
+          "version": "1"
+        },
+        "id": "delivery",
+        "intended_recipients": [
+          {
+            "$type": "Ref",
+            "id": "executor",
+            "kind": "Role"
+          }
+        ]
+      },
+      "environment": [
+        {
+          "$type": "DefinitionRef",
+          "digest": "1ce7243b7e5ef1e56f6a0b3b19e16fd81bd6fbba9f0daf7ba70fd9103410e183",
+          "id": "example.environment",
+          "version": "1"
+        }
+      ],
+      "id": "deployment",
+      "payload": {
+        "$type": "RNAConstraints",
+        "copy_number": null,
+        "design_count": 1,
+        "dose": null,
+        "effector_persistence": null,
+        "format": "RNA",
+        "helper_count": 0,
+        "member_count": 1,
+        "orf_count": null,
+        "payload_persistence": null,
+        "product_count": null
+      },
+      "route": "in_vivo"
+    },
+    "implementations": {
+      "$type": "ImplementationCatalogLock",
+      "id": "empty_supplied_catalog",
+      "implementations": [],
+      "version": "1"
+    },
+    "profile": "biocompiler.policy.v0.1",
+    "program": {
+      "$type": "PolicyProgram",
+      "declarations": [
+        {
+          "$type": "Role",
+          "id": "executor",
+          "lineage_role": false,
+          "population": null,
+          "requires": [
+            {
+              "$type": "DefinitionRef",
+              "digest": "e4d87cba4c8d950d42eafb895fbbac1f03816820ee0487d90b6be85f8a4b2810",
+              "id": "example.interface",
+              "version": "1"
+            }
+          ]
+        },
+        {
+          "$type": "Clock",
+          "basis": "availability",
+          "id": "available_time",
+          "resolution": {
+            "$type": "Quantity",
+            "amount": "0.1",
+            "unit": {
+              "$type": "Unit",
+              "dimension": "time",
+              "id": "s",
+              "quantity_kind": "duration",
+              "reference": null,
+              "scale": "1"
+            }
+          },
+          "simultaneous": "atomic_batch"
+        },
+        {
+          "$type": "Subject",
+          "domain": null,
+          "encounter": {
+            "$type": "Ref",
+            "id": "encounter",
+            "kind": "Encounter"
+          },
+          "entity_kind": "cell",
+          "executor": {
+            "$type": "Ref",
+            "id": "executor",
+            "kind": "Role"
+          },
+          "id": "encounter/target",
+          "identity": "encounter"
+        },
+        {
+          "$type": "Encounter",
+          "contract": {
+            "$type": "DefinitionRef",
+            "digest": "655b5dce8eefbe6d3f10937e6658d902b0a7f28304a648bc4ead9f9a028419d1",
+            "id": "example.encounter",
+            "version": "1"
+          },
+          "executor": {
+            "$type": "Ref",
+            "id": "executor",
+            "kind": "Role"
+          },
+          "id": "encounter",
+          "target": {
+            "$type": "Ref",
+            "id": "encounter/target",
+            "kind": "Subject"
+          },
+          "termination": "contact_loss"
+        },
+        {
+          "$type": "Observation",
+          "access": "cell",
+          "clock": {
+            "$type": "Ref",
+            "id": "available_time",
+            "kind": "Clock"
+          },
+          "coherence": "target_frame",
+          "contract": {
+            "$type": "DefinitionRef",
+            "digest": "d8a82a4d87be93e7235afe86fb9890ac416af782a070cdb25408e5ea65201e52",
+            "id": "example.observation",
+            "version": "1"
+          },
+          "coverage": "continuous",
+          "freshness": {
+            "$type": "Quantity",
+            "amount": "1",
+            "unit": {
+              "$type": "Unit",
+              "dimension": "time",
+              "id": "s",
+              "quantity_kind": "duration",
+              "reference": null,
+              "scale": "1"
+            }
+          },
+          "id": "disease",
+          "invalidity": [
+            "missing",
+            "stale",
+            "invalid",
+            "conflicting"
+          ],
+          "observer": {
+            "$type": "Ref",
+            "id": "executor",
+            "kind": "Role"
+          },
+          "spatial_scope": null,
+          "subject": {
+            "$type": "Ref",
+            "id": "encounter/target",
+            "kind": "Subject"
+          },
+          "value_type": {
+            "$type": "TypeSpec",
+            "entity_kind": null,
+            "kind": "truth",
+            "unit": null
+          }
+        },
+        {
+          "$type": "Observation",
+          "access": "cell",
+          "clock": {
+            "$type": "Ref",
+            "id": "available_time",
+            "kind": "Clock"
+          },
+          "coherence": "target_frame",
+          "contract": {
+            "$type": "DefinitionRef",
+            "digest": "d8a82a4d87be93e7235afe86fb9890ac416af782a070cdb25408e5ea65201e52",
+            "id": "example.observation",
+            "version": "1"
+          },
+          "coverage": "continuous",
+          "freshness": {
+            "$type": "Quantity",
+            "amount": "1",
+            "unit": {
+              "$type": "Unit",
+              "dimension": "time",
+              "id": "s",
+              "quantity_kind": "duration",
+              "reference": null,
+              "scale": "1"
+            }
+          },
+          "id": "exclusion",
+          "invalidity": [
+            "missing",
+            "stale",
+            "invalid",
+            "conflicting"
+          ],
+          "observer": {
+            "$type": "Ref",
+            "id": "executor",
+            "kind": "Role"
+          },
+          "spatial_scope": null,
+          "subject": {
+            "$type": "Ref",
+            "id": "encounter/target",
+            "kind": "Subject"
+          },
+          "value_type": {
+            "$type": "TypeSpec",
+            "entity_kind": null,
+            "kind": "truth",
+            "unit": null
+          }
+        },
+        {
+          "$type": "Effect",
+          "contract": {
+            "$type": "DefinitionRef",
+            "digest": "c456cda01957d23f02cd2f2c949c657c63eeeaf28d110bf285133f4faf853c36",
+            "id": "example.response",
+            "version": "1"
+          },
+          "executor": {
+            "$type": "Ref",
+            "id": "executor",
+            "kind": "Role"
+          },
+          "id": "effect",
+          "lifecycle": {
+            "$type": "EffectLifecycle",
+            "authorization": "continuous",
+            "cancellation": "acknowledged",
+            "completion": "feedback",
+            "contract": {
+              "$type": "DefinitionRef",
+              "digest": "9e8e9b947a68cecb58b4ee32ac5487b67cdaaaf76a5c1fa640c48c4d27175036",
+              "id": "example.lifecycle",
+              "version": "1"
+            },
+            "failure": "feedback",
+            "feedback_identity": "attempt_executor_subject",
+            "on_loss": "request_stop",
+            "on_unknown": "request_stop",
+            "timeout": {
+              "$type": "Quantity",
+              "amount": "10",
+              "unit": {
+                "$type": "Unit",
+                "dimension": "time",
+                "id": "s",
+                "quantity_kind": "duration",
+                "reference": null,
+                "scale": "1"
+              }
+            }
+          },
+          "parameters": [],
+          "relationship": null,
+          "resources": [],
+          "spatial_scope": null,
+          "subject": {
+            "$type": "Ref",
+            "id": "encounter/target",
+            "kind": "Subject"
+          }
+        },
+        {
+          "$type": "Rule",
+          "arbitration": {
+            "$type": "Arbitration",
+            "contract": null,
+            "fairness": "none",
+            "mode": "exclusive",
+            "order": [],
+            "preemption": "forbidden",
+            "tie": "reject",
+            "write_conflict": "reject"
+          },
+          "assignments": [],
+          "effects": [
+            {
+              "$type": "Ref",
+              "id": "effect",
+              "kind": "Effect"
+            }
+          ],
+          "emissions": [],
+          "executor": {
+            "$type": "Ref",
+            "id": "executor",
+            "kind": "Role"
+          },
+          "id": "gate/respond",
+          "on": {
+            "$type": "Expr",
+            "args": [],
+            "binding": null,
+            "clock": null,
+            "contract": null,
+            "coverage": null,
+            "duration": null,
+            "op": "updated",
+            "ref": {
+              "$type": "Ref",
+              "id": "disease",
+              "kind": "Observation"
+            },
+            "scope": {
+              "$type": "Ref",
+              "id": "encounter/target",
+              "kind": "Subject"
+            },
+            "value": null,
+            "value_type": {
+              "$type": "TypeSpec",
+              "entity_kind": null,
+              "kind": "event",
+              "unit": null
+            }
+          },
+          "unknown": "defer",
+          "unknown_target": null,
+          "when": {
+            "$type": "Expr",
+            "args": [
+              {
+                "$type": "Expr",
+                "args": [],
+                "binding": null,
+                "clock": null,
+                "contract": null,
+                "coverage": null,
+                "duration": null,
+                "op": "observe",
+                "ref": {
+                  "$type": "Ref",
+                  "id": "disease",
+                  "kind": "Observation"
+                },
+                "scope": {
+                  "$type": "Ref",
+                  "id": "encounter/target",
+                  "kind": "Subject"
+                },
+                "value": null,
+                "value_type": {
+                  "$type": "TypeSpec",
+                  "entity_kind": null,
+                  "kind": "truth",
+                  "unit": null
+                }
+              },
+              {
+                "$type": "Expr",
+                "args": [
+                  {
+                    "$type": "Expr",
+                    "args": [],
+                    "binding": null,
+                    "clock": null,
+                    "contract": null,
+                    "coverage": null,
+                    "duration": null,
+                    "op": "observe",
+                    "ref": {
+                      "$type": "Ref",
+                      "id": "exclusion",
+                      "kind": "Observation"
+                    },
+                    "scope": {
+                      "$type": "Ref",
+                      "id": "encounter/target",
+                      "kind": "Subject"
+                    },
+                    "value": null,
+                    "value_type": {
+                      "$type": "TypeSpec",
+                      "entity_kind": null,
+                      "kind": "truth",
+                      "unit": null
+                    }
+                  }
+                ],
+                "binding": null,
+                "clock": null,
+                "contract": null,
+                "coverage": null,
+                "duration": null,
+                "op": "not",
+                "ref": null,
+                "scope": null,
+                "value": null,
+                "value_type": {
+                  "$type": "TypeSpec",
+                  "entity_kind": null,
+                  "kind": "truth",
+                  "unit": null
+                }
+              }
+            ],
+            "binding": null,
+            "clock": null,
+            "contract": null,
+            "coverage": null,
+            "duration": null,
+            "op": "all",
+            "ref": null,
+            "scope": null,
+            "value": null,
+            "value_type": {
+              "$type": "TypeSpec",
+              "entity_kind": null,
+              "kind": "truth",
+              "unit": null
+            }
+          }
+        },
+        {
+          "$type": "Requirement",
+          "applies_to": [
+            {
+              "$type": "Ref",
+              "id": "effect",
+              "kind": "Effect"
+            }
+          ],
+          "assumptions": [],
+          "clock": null,
+          "condition": {
+            "$type": "Expr",
+            "args": [
+              {
+                "$type": "Expr",
+                "args": [],
+                "binding": null,
+                "clock": null,
+                "contract": null,
+                "coverage": null,
+                "duration": null,
+                "op": "observe",
+                "ref": {
+                  "$type": "Ref",
+                  "id": "disease",
+                  "kind": "Observation"
+                },
+                "scope": {
+                  "$type": "Ref",
+                  "id": "encounter/target",
+                  "kind": "Subject"
+                },
+                "value": null,
+                "value_type": {
+                  "$type": "TypeSpec",
+                  "entity_kind": null,
+                  "kind": "truth",
+                  "unit": null
+                }
+              },
+              {
+                "$type": "Expr",
+                "args": [
+                  {
+                    "$type": "Expr",
+                    "args": [],
+                    "binding": null,
+                    "clock": null,
+                    "contract": null,
+                    "coverage": null,
+                    "duration": null,
+                    "op": "observe",
+                    "ref": {
+                      "$type": "Ref",
+                      "id": "exclusion",
+                      "kind": "Observation"
+                    },
+                    "scope": {
+                      "$type": "Ref",
+                      "id": "encounter/target",
+                      "kind": "Subject"
+                    },
+                    "value": null,
+                    "value_type": {
+                      "$type": "TypeSpec",
+                      "entity_kind": null,
+                      "kind": "truth",
+                      "unit": null
+                    }
+                  }
+                ],
+                "binding": null,
+                "clock": null,
+                "contract": null,
+                "coverage": null,
+                "duration": null,
+                "op": "not",
+                "ref": null,
+                "scope": null,
+                "value": null,
+                "value_type": {
+                  "$type": "TypeSpec",
+                  "entity_kind": null,
+                  "kind": "truth",
+                  "unit": null
+                }
+              }
+            ],
+            "binding": null,
+            "clock": null,
+            "contract": null,
+            "coverage": null,
+            "duration": null,
+            "op": "all",
+            "ref": null,
+            "scope": null,
+            "value": null,
+            "value_type": {
+              "$type": "TypeSpec",
+              "entity_kind": null,
+              "kind": "truth",
+              "unit": null
+            }
+          },
+          "contract": null,
+          "deadline": null,
+          "description": "No new response starts without the declared permission.",
+          "horizon": null,
+          "id": "permission",
+          "kind": "safety",
+          "lower": null,
+          "response": null,
+          "scope": {
+            "$type": "Scope",
+            "kind": "executor",
+            "subject": {
+              "$type": "Ref",
+              "id": "executor",
+              "kind": "Role"
+            }
+          },
+          "trigger": null,
+          "upper": null
+        },
+        {
+          "$type": "Requirement",
+          "applies_to": [],
+          "assumptions": [],
+          "clock": {
+            "$type": "Ref",
+            "id": "available_time",
+            "kind": "Clock"
+          },
+          "condition": null,
+          "contract": null,
+          "deadline": {
+            "$type": "Quantity",
+            "amount": "10",
+            "unit": {
+              "$type": "Unit",
+              "dimension": "time",
+              "id": "s",
+              "quantity_kind": "duration",
+              "reference": null,
+              "scale": "1"
+            }
+          },
+          "description": "A response request requires correlated completion under supplied execution assumptions.",
+          "horizon": {
+            "$type": "Quantity",
+            "amount": "30",
+            "unit": {
+              "$type": "Unit",
+              "dimension": "time",
+              "id": "s",
+              "quantity_kind": "duration",
+              "reference": null,
+              "scale": "1"
+            }
+          },
+          "id": "response_progress",
+          "kind": "progress",
+          "lower": null,
+          "response": {
+            "$type": "Expr",
+            "args": [],
+            "binding": null,
+            "clock": null,
+            "contract": null,
+            "coverage": null,
+            "duration": null,
+            "op": "effect_event",
+            "ref": {
+              "$type": "Ref",
+              "id": "effect",
+              "kind": "Effect"
+            },
+            "scope": {
+              "$type": "Ref",
+              "id": "encounter/target",
+              "kind": "Subject"
+            },
+            "value": "completed",
+            "value_type": {
+              "$type": "TypeSpec",
+              "entity_kind": null,
+              "kind": "event",
+              "unit": null
+            }
+          },
+          "scope": {
+            "$type": "Scope",
+            "kind": "executor",
+            "subject": {
+              "$type": "Ref",
+              "id": "executor",
+              "kind": "Role"
+            }
+          },
+          "trigger": {
+            "$type": "Expr",
+            "args": [],
+            "binding": null,
+            "clock": null,
+            "contract": null,
+            "coverage": null,
+            "duration": null,
+            "op": "effect_event",
+            "ref": {
+              "$type": "Ref",
+              "id": "effect",
+              "kind": "Effect"
+            },
+            "scope": {
+              "$type": "Ref",
+              "id": "encounter/target",
+              "kind": "Subject"
+            },
+            "value": "requested",
+            "value_type": {
+              "$type": "TypeSpec",
+              "entity_kind": null,
+              "kind": "event",
+              "unit": null
+            }
+          },
+          "upper": null
+        }
+      ],
+      "id": "context_gated_response",
+      "profile": "biocompiler.policy.v0.1",
+      "semantics": {
+        "$type": "SemanticBundle",
+        "definitions": [
+          {
+            "$type": "SemanticDefinition",
+            "assumptions": [],
+            "category": "interface",
+            "clauses": [],
+            "executor_kind": null,
+            "id": "example.interface",
+            "meaning": "Abstract human immune executor interface; supplied, unvalidated capabilities.",
+            "parameters": [],
+            "result": null,
+            "subject_kind": null,
+            "version": "1"
+          },
+          {
+            "$type": "SemanticDefinition",
+            "assumptions": [],
+            "category": "encounter",
+            "clauses": [],
+            "executor_kind": null,
+            "id": "example.encounter",
+            "meaning": "One contact-bound target identity; contact loss ends the encounter.",
+            "parameters": [],
+            "result": null,
+            "subject_kind": null,
+            "version": "1"
+          },
+          {
+            "$type": "SemanticDefinition",
+            "assumptions": [],
+            "category": "observation",
+            "clauses": [],
+            "executor_kind": null,
+            "id": "example.observation",
+            "meaning": "Supplied cell-accessible observations with declared coherence and coverage; missing evidence is unknown.",
+            "parameters": [],
+            "result": {
+              "$type": "TypeSpec",
+              "entity_kind": null,
+              "kind": "truth",
+              "unit": null
+            },
+            "subject_kind": null,
+            "version": "1"
+          },
+          {
+            "$type": "SemanticDefinition",
+            "assumptions": [],
+            "category": "observation",
+            "clauses": [],
+            "executor_kind": null,
+            "id": "example.observation_rate",
+            "meaning": "Supplied sampled rate observations in an explicitly typed executor reference scope.",
+            "parameters": [],
+            "result": {
+              "$type": "TypeSpec",
+              "entity_kind": null,
+              "kind": "quantity",
+              "unit": {
+                "$type": "Unit",
+                "dimension": "count/time",
+                "id": "abstract_output_per_s",
+                "quantity_kind": "output_rate",
+                "reference": "executor",
+                "scale": "1"
+              }
+            },
+            "subject_kind": null,
+            "version": "1"
+          },
+          {
+            "$type": "SemanticDefinition",
+            "assumptions": [],
+            "category": "lifecycle",
+            "clauses": [],
+            "executor_kind": null,
+            "id": "example.lifecycle",
+            "meaning": "Request, initiation, completion, failure and cancellation acknowledgment are separate feedback events bound to an attempt and subject.",
+            "parameters": [],
+            "result": null,
+            "subject_kind": null,
+            "version": "1"
+          },
+          {
+            "$type": "SemanticDefinition",
+            "assumptions": [],
+            "category": "transport",
+            "clauses": [],
+            "executor_kind": null,
+            "id": "example.transport",
+            "meaning": "Abstract addressed messages with explicit subject correlation; supplied transport assumptions are not a delivery guarantee.",
+            "parameters": [],
+            "result": null,
+            "subject_kind": null,
+            "version": "1"
+          },
+          {
+            "$type": "SemanticDefinition",
+            "assumptions": [],
+            "category": "model",
+            "clauses": [],
+            "executor_kind": null,
+            "id": "example.model",
+            "meaning": "Abstract human immune chassis operational model; no empirical execution claim.",
+            "parameters": [],
+            "result": null,
+            "subject_kind": null,
+            "version": "1"
+          },
+          {
+            "$type": "SemanticDefinition",
+            "assumptions": [],
+            "category": "environment",
+            "clauses": [],
+            "executor_kind": null,
+            "id": "example.environment",
+            "meaning": "Illustrative declared human in-vivo environment; all applicability remains unresolved.",
+            "parameters": [],
+            "result": null,
+            "subject_kind": null,
+            "version": "1"
+          },
+          {
+            "$type": "SemanticDefinition",
+            "assumptions": [],
+            "category": "delivery",
+            "clauses": [],
+            "executor_kind": null,
+            "id": "example.delivery",
+            "meaning": "Supplied delivery assumptions separately bind arrival, expression and activation; no implied empirical support.",
+            "parameters": [],
+            "result": null,
+            "subject_kind": null,
+            "version": "1"
+          },
+          {
+            "$type": "SemanticDefinition",
+            "assumptions": [],
+            "category": "spatial",
+            "clauses": [],
+            "executor_kind": null,
+            "id": "example.spatial",
+            "meaning": "Abstract local region; observation and effect scopes must be explicitly bound.",
+            "parameters": [],
+            "result": null,
+            "subject_kind": null,
+            "version": "1"
+          },
+          {
+            "$type": "SemanticDefinition",
+            "assumptions": [],
+            "category": "inheritance",
+            "clauses": [],
+            "executor_kind": null,
+            "id": "example.inheritance",
+            "meaning": "Declared copying of finite state to descendants; realization and preservation are unresolved.",
+            "parameters": [],
+            "result": null,
+            "subject_kind": null,
+            "version": "1"
+          },
+          {
+            "$type": "SemanticDefinition",
+            "assumptions": [],
+            "category": "operation",
+            "clauses": [],
+            "executor_kind": "executor",
+            "id": "example.response",
+            "meaning": "Request the abstract response effect on the bound subject; completion requires separate correlated feedback.",
+            "parameters": [],
+            "result": null,
+            "subject_kind": "cell",
+            "version": "1"
+          },
+          {
+            "$type": "SemanticDefinition",
+            "assumptions": [],
+            "category": "operation",
+            "clauses": [],
+            "executor_kind": "executor",
+            "id": "example.cleanup",
+            "meaning": "Request the abstract cleanup effect on the bound subject; completion requires separate correlated feedback.",
+            "parameters": [],
+            "result": null,
+            "subject_kind": "cell",
+            "version": "1"
+          },
+          {
+            "$type": "SemanticDefinition",
+            "assumptions": [],
+            "category": "operation",
+            "clauses": [],
+            "executor_kind": "executor",
+            "id": "example.repair",
+            "meaning": "Request the abstract repair effect on the bound subject; completion requires separate correlated feedback.",
+            "parameters": [],
+            "result": null,
+            "subject_kind": "cell",
+            "version": "1"
+          },
+          {
+            "$type": "SemanticDefinition",
+            "assumptions": [],
+            "category": "operation",
+            "clauses": [],
+            "executor_kind": "executor",
+            "id": "example.report",
+            "meaning": "Request the abstract report effect on the bound subject; completion requires separate correlated feedback.",
+            "parameters": [],
+            "result": null,
+            "subject_kind": "cell",
+            "version": "1"
+          },
+          {
+            "$type": "SemanticDefinition",
+            "assumptions": [],
+            "category": "operation",
+            "clauses": [],
+            "executor_kind": "executor",
+            "id": "example.restrain",
+            "meaning": "Request the abstract restrain effect on the bound subject; completion requires separate correlated feedback.",
+            "parameters": [],
+            "result": null,
+            "subject_kind": "cell",
+            "version": "1"
+          },
+          {
+            "$type": "SemanticDefinition",
+            "assumptions": [],
+            "category": "operation",
+            "clauses": [],
+            "executor_kind": "executor",
+            "id": "example.stop",
+            "meaning": "Request the abstract stop effect on the bound subject; completion requires separate correlated feedback.",
+            "parameters": [],
+            "result": null,
+            "subject_kind": "cell",
+            "version": "1"
+          },
+          {
+            "$type": "SemanticDefinition",
+            "assumptions": [],
+            "category": "operation",
+            "clauses": [],
+            "executor_kind": "executor",
+            "id": "example.secrete",
+            "meaning": "Request abstract secretion at the supplied rate; no molecular implementation is supplied.",
+            "parameters": [
+              {
+                "$type": "Parameter",
+                "id": "rate",
+                "lower": null,
+                "selection": "design",
+                "upper": null,
+                "value": null,
+                "value_type": {
+                  "$type": "TypeSpec",
+                  "entity_kind": null,
+                  "kind": "quantity",
+                  "unit": {
+                    "$type": "Unit",
+                    "dimension": "count/time",
+                    "id": "abstract_output_per_s",
+                    "quantity_kind": "output_rate",
+                    "reference": "executor",
+                    "scale": "1"
+                  }
+                }
+              }
+            ],
+            "result": null,
+            "subject_kind": "cell",
+            "version": "1"
+          }
+        ],
+        "id": "abstract_examples",
+        "profile": "biocompiler.policy.v0.1",
+        "version": "1"
+      },
+      "source_map": [
+        {
+          "$type": "SourceSpan",
+          "column": 0,
+          "declaration_id": "executor",
+          "file": "<stdin>",
+          "line": 7,
+          "pattern": null
+        },
+        {
+          "$type": "SourceSpan",
+          "column": 0,
+          "declaration_id": "available_time",
+          "file": "<stdin>",
+          "line": 7,
+          "pattern": null
+        },
+        {
+          "$type": "SourceSpan",
+          "column": 0,
+          "declaration_id": "encounter/target",
+          "file": "<stdin>",
+          "line": 7,
+          "pattern": null
+        },
+        {
+          "$type": "SourceSpan",
+          "column": 0,
+          "declaration_id": "encounter",
+          "file": "<stdin>",
+          "line": 7,
+          "pattern": null
+        },
+        {
+          "$type": "SourceSpan",
+          "column": 0,
+          "declaration_id": "disease",
+          "file": "<stdin>",
+          "line": 7,
+          "pattern": null
+        },
+        {
+          "$type": "SourceSpan",
+          "column": 0,
+          "declaration_id": "exclusion",
+          "file": "<stdin>",
+          "line": 7,
+          "pattern": null
+        },
+        {
+          "$type": "SourceSpan",
+          "column": 0,
+          "declaration_id": "effect",
+          "file": "<stdin>",
+          "line": 7,
+          "pattern": null
+        },
+        {
+          "$type": "SourceSpan",
+          "column": 0,
+          "declaration_id": "gate/respond",
+          "file": "<stdin>",
+          "line": 7,
+          "pattern": "gate"
+        },
+        {
+          "$type": "SourceSpan",
+          "column": 0,
+          "declaration_id": "permission",
+          "file": "<stdin>",
+          "line": 7,
+          "pattern": null
+        },
+        {
+          "$type": "SourceSpan",
+          "column": 0,
+          "declaration_id": "response_progress",
+          "file": "<stdin>",
+          "line": 7,
+          "pattern": null
+        }
+      ]
+    }
+  },
+  "required_features": [
+    "declaration:Clock",
+    "declaration:Effect",
+    "declaration:Encounter",
+    "declaration:Observation",
+    "declaration:Requirement",
+    "declaration:Role",
+    "declaration:Rule",
+    "declaration:Subject",
+    "effects:lifecycle",
+    "expression:all",
+    "expression:effect_event",
+    "expression:not",
+    "expression:observe",
+    "expression:updated",
+    "profile:biocompiler.policy.v0.1",
+    "request:deployment_catalog_assurance",
+    "scope:executor",
+    "truth:three_valued"
+  ],
+  "schema_version": "biocompiler.policy_submission.v0.1",
+  "semantic_bundle": {
+    "$type": "DefinitionRef",
+    "digest": "77d85d6b81b51a1c8eaa14e714a4d0d752cdd7f3a10eec4a004b62569efc1524",
+    "id": "abstract_examples",
+    "version": "1"
+  },
+  "semantic_status": "unassessed",
+  "target_status": "unassessed"
+}

@@ -31,6 +31,7 @@ from biocompiler.core_architecture import PROFILE as ARCHITECTURE_PROFILE, VALID
 from biocompiler.core_architecture_producer import PROFILE as PRODUCER_PROFILE, VALIDATION_SCOPE as PRODUCER_SCOPE
 from biocompiler.core_realization import PROFILES as REALIZATION_PROFILES, OPERATIONS as REALIZATION_OPERATIONS, VALIDATION_SCOPES as REALIZATION_SCOPES
 from biocompiler.core_artifacts import TRANSPORT_PROFILE as ARTIFACT_PROFILE
+from biocompiler.core_policy import PROFILE as POLICY_PROFILE, VALIDATION_SCOPE as POLICY_SCOPE
 from biocompiler.core_workflow import capability_profile as workflow_profile, OPERATIONS as WORKFLOW_OPERATIONS
 from biocompiler.ir.intent import IntentProgram
 from biocompiler.compiler.request import BuildRequest
@@ -447,10 +448,10 @@ def run_campaign(clients, corpus, receipt, programs):
         capabilities = client.capabilities().result
         require(type(capabilities) is dict, "Missing capabilities")
         operations = ["canonicalize", "capabilities", "replay-architecture", "validate-intent", "verify-architecture", "verify-lowering"]
-        operations += list(REALIZATION_OPERATIONS) + list(WORKFLOW_OPERATIONS)
+        operations += ["assess-policy", "replay-policy-assessment"] + list(REALIZATION_OPERATIONS) + list(WORKFLOW_OPERATIONS)
         workflow = workflow_profile()
-        scopes = [SCOPE, LOWERING_SCOPE, ARCHITECTURE_SCOPE] + list(REALIZATION_SCOPES) + [workflow["validation_scope"]]
-        profiles = {"architecture": ARCHITECTURE_PROFILE, **REALIZATION_PROFILES,
+        scopes = [SCOPE, LOWERING_SCOPE, ARCHITECTURE_SCOPE, POLICY_SCOPE] + list(REALIZATION_SCOPES) + [workflow["validation_scope"]]
+        profiles = {"architecture": ARCHITECTURE_PROFILE, "policy_frontend": POLICY_PROFILE, **REALIZATION_PROFILES,
                     "artifact_transport": ARTIFACT_PROFILE, "verification_workflow": workflow}
         claim = "Structural intent validation, frozen source-to-Behavior correspondence, supplied architecture contracts and independently executed finite-history model checks. No search completeness, empirical function or human-use admission."
         if client.role == "core":
