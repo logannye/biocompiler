@@ -35,22 +35,56 @@ class ReferenceCampaignDiagnosticsTests(unittest.TestCase):
                 self.assertEqual(printed.call_args_list[-1],
                     call('Reference campaign: sample failed (2.500s)', file=gate.sys.stderr, flush=True))
 
-    def test_script_timer_is_repeated_and_cancelled_for_every_exit(self):
+    def test_script_entry_preserves_profiled_outcomes_without_async_frame_walker(self):
         tree = ast.parse(Path(gate.__file__).read_text())
         script = tree.body[-1]
-        self.assertIsInstance(script, ast.If)
+        direct = ast.parse("if __name__ == '__main__':\n    raise SystemExit(main())\n").body[0]
+        self.assertEqual(ast.dump(script, include_attributes=False), ast.dump(direct, include_attributes=False))
+        self.assertFalse(any(isinstance(node, ast.Import) and any(
+            item.name == 'faulthandler' for item in node.names) or
+            isinstance(node, ast.ImportFrom) and node.module == 'faulthandler' for node in ast.walk(tree)))
         code = compile(ast.Module(body=[script], type_ignores=[]), str(gate.__file__), 'exec')
+        payload = {'rows': [{'id': number, 'values': ['RNA', number, None]} for number in range(12)]}
+        encoded = json.dumps(payload, sort_keys=True, separators=(',', ':'))
         for outcome in (7, ValueError('original'), KeyboardInterrupt('original')):
             with self.subTest(outcome=repr(outcome)):
-                events = Mock()
-                handler = SimpleNamespace(dump_traceback_later=events.arm,
-                                          cancel_dump_traceback_later=events.cancel)
-                if isinstance(outcome, BaseException):
-                    events.main.side_effect = outcome
-                else:
-                    events.main.return_value = outcome
+                blocked = Mock(side_effect=AssertionError('Asynchronous frame walker is forbidden'))
+                handler = SimpleNamespace(dump_traceback_later=blocked, cancel_dump_traceback_later=blocked)
+                previous_trace, previous_profile = gate.sys.gettrace(), gate.sys.getprofile()
+                observed = {'trace': 0, 'profile': 0, 'iterations': 0}
+
+                def trace(frame, event, argument):
+                    if event == 'call' and frame.f_globals.get('__name__') == 'json.encoder':
+                        observed['trace'] += 1
+                    return None
+
+                def profile(frame, event, argument):
+                    if event == 'call' and frame.f_globals.get('__name__') == 'json.encoder':
+                        observed['profile'] += 1
+                        # Exercise real frame access with the interpreter GIL;
+                        # retain no frame and start no background frame walker.
+                        frame.f_locals.get('o')
+                        parent = frame.f_back
+                        if parent is not None:
+                            parent.f_code.co_name
+
+                def main():
+                    try:
+                        gate.sys.settrace(trace)
+                        gate.sys.setprofile(profile)
+                        encoder = json.JSONEncoder(sort_keys=True, separators=(',', ':'))
+                        for _ in range(8):
+                            self.assertEqual(''.join(encoder.iterencode(payload)), encoded)
+                            observed['iterations'] += 1
+                        if isinstance(outcome, BaseException):
+                            raise outcome
+                        return outcome
+                    finally:
+                        gate.sys.setprofile(previous_profile)
+                        gate.sys.settrace(previous_trace)
+
                 namespace = {'__name__': '__main__', 'faulthandler': handler,
-                             'sys': gate.sys, 'main': events.main}
+                             'sys': gate.sys, 'main': main}
                 expected = type(outcome) if isinstance(outcome, BaseException) else SystemExit
                 with self.assertRaises(expected) as caught:
                     exec(code, namespace)
@@ -58,8 +92,12 @@ class ReferenceCampaignDiagnosticsTests(unittest.TestCase):
                     self.assertIs(caught.exception, outcome)
                 else:
                     self.assertEqual(caught.exception.code, outcome)
-                self.assertEqual(events.mock_calls, [
-                    call.arm(300, repeat=True, file=gate.sys.stderr), call.main(), call.cancel()])
+                self.assertEqual(observed['iterations'], 8)
+                self.assertGreater(observed['trace'], 0)
+                self.assertGreater(observed['profile'], 0)
+                self.assertIs(gate.sys.gettrace(), previous_trace)
+                self.assertIs(gate.sys.getprofile(), previous_profile)
+                blocked.assert_not_called()
 
     def test_phase_removal_recovers_every_original_statement(self):
         labels = []

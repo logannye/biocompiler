@@ -135,9 +135,10 @@ source paths. Every eligible registration or callback still resolves its
 current path and checks the same live function identity. This removes repeated
 filesystem work from tracing without caching source authority or changing
 the observation census. End-to-end timing remains a hosted measurement.
-Flushed phase markers and a stack dump every five minutes identify long-running
-reference phases; the timer is cancelled on every script exit. Diagnostic output
-is separate from observation documents and receipt schemas.
+Flushed phase markers and elapsed times identify long-running reference phases.
+The campaign does not arm an asynchronous frame-dump watchdog: Python 3.11 can
+corrupt the dump or hang while trace/profile callbacks inspect active frames.
+Diagnostic output remains separate from observation documents and receipt schemas.
 
 Historical manager views preserve the original attribute insertion order for
 all five closed dataclass types without rerunning Python constructors or semantic

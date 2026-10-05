@@ -12,7 +12,6 @@ import contextlib
 from contextlib import contextmanager
 from dataclasses import fields, is_dataclass
 from enum import Enum
-import faulthandler
 import importlib
 import importlib.util
 import dis
@@ -1486,8 +1485,4 @@ def main(argv=None):
 
 
 if __name__ == '__main__':
-    faulthandler.dump_traceback_later(300, repeat=True, file=sys.stderr)
-    try:
-        raise SystemExit(main())
-    finally:
-        faulthandler.cancel_dump_traceback_later()
+    raise SystemExit(main())
