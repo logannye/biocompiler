@@ -1,0 +1,158 @@
+{
+  "artifacts": [
+    {
+      "bytes": 4916,
+      "path": "generated/policy-validation/installed-py311.json",
+      "sha256": "365b13a467654aa38b07654860ef5fb241a6b7cf980da1a2394323b8f4cd33d1",
+      "storage": "local_ignored"
+    },
+    {
+      "bytes": 4915,
+      "path": "generated/policy-validation/installed-py314.json",
+      "sha256": "673a854cf782dfe39319a805849ae312485769071f91db1fb4a5b89e15230f3b",
+      "storage": "local_ignored"
+    },
+    {
+      "bytes": 904885,
+      "path": "generated/policy-validation/wheels/biocompiler-0.1.0.dev29-py3-none-any.whl",
+      "sha256": "acae25b79cb7a7a58119c0b88bdf32871f3504b55c4c5d30dbac06d493a8fbe4",
+      "storage": "local_ignored"
+    },
+    {
+      "bytes": 2702,
+      "path": "generated/migration-next/policy-integration/final-controls-python314.log",
+      "sha256": "fa2086627e5a55420577487c4696c3d9ee9961c0ed654a619992fbcdcab981c3",
+      "storage": "local_ignored"
+    },
+    {
+      "bytes": 3226181,
+      "path": "generated/migration-next/policy-integration/selection-cli-python314.json",
+      "sha256": "9a07044007f516248779ca5f8419ab004d1f5140c46cdf7a2af97969de6f0ba0",
+      "storage": "local_ignored"
+    },
+    {
+      "bytes": 307,
+      "path": "generated/migration-next/policy-integration/selection-cli-python314.log",
+      "sha256": "ac5b2cc33f2ae27ebe3268129aaad8ed85af7441d3d04b6a46bbe1f7ad158392",
+      "storage": "local_ignored"
+    },
+    {
+      "bytes": 38069393,
+      "path": "generated/migration-next/policy-integration/workflow-source-lineage.json",
+      "sha256": "25344497ad1cd08d9fb8943cab62083795bb114618b0112b5435c7d789f7348f",
+      "storage": "local_ignored"
+    },
+    {
+      "bytes": 7147,
+      "path": "generated/migration-next/policy-integration/workflow-source-lineage.log",
+      "sha256": "ee903470709f07e22c88979f4c401378e5541cdf7f5aa78159f23156fb259f37",
+      "storage": "local_ignored"
+    },
+    {
+      "bytes": 192951021,
+      "path": "generated/migration-next/policy-integration/workflow-capture/capture.json",
+      "sha256": "8fce52cac60affad3e5d8f8f65b41c803bad9982d5a7c57f74124cf007f100b9",
+      "storage": "local_ignored"
+    },
+    {
+      "bytes": 331135,
+      "path": "generated/migration-next/policy-integration/workflow-capture/receipt.json",
+      "sha256": "7b3290bb9c942598d931b4c4a1206549d7a862980bf438b3f2e9908d5b1087f0",
+      "storage": "local_ignored"
+    },
+    {
+      "bytes": 146968,
+      "path": "generated/migration-next/policy-integration/workflow-capture/original-tests.log",
+      "sha256": "3fac4f2448993b5605adc69e613fc7149a0651b4aea75590b1cd2781aff636ac",
+      "storage": "local_ignored"
+    },
+    {
+      "bytes": 101989,
+      "path": "tests/conformance/policy-entrypoint-source-counterpart-v1.json",
+      "sha256": "75db98b705aac4c288ee744ae68caefeee07ac871716f0bc1fac91f15847cc51",
+      "storage": "tracked"
+    }
+  ],
+  "branch": "codex/reference-package-continuations",
+  "date": "2026-10-05",
+  "evidence_binding": "Checks ran on the unchanged source bytes subsequently committed as implementation_revision.",
+  "fresh_installations": [
+    {
+      "cli_commands": 23,
+      "examples": 8,
+      "python": [
+        3,
+        11,
+        15
+      ],
+      "receipt": "generated/policy-validation/installed-py311.json"
+    },
+    {
+      "cli_commands": 23,
+      "examples": 8,
+      "python": [
+        3,
+        14,
+        3
+      ],
+      "receipt": "generated/policy-validation/installed-py314.json"
+    }
+  ],
+  "hosted_validation": "not_performed",
+  "implementation_revision": "71345fe06c5ed516ee9f31ad82cd3d8ce8553f9f",
+  "legacy_controls": {
+    "error": "Exclusive temporary directory already owned by another simultaneous capture.",
+    "errors": 1,
+    "passed": 98,
+    "reference_contract_methods_passed": 8,
+    "reference_pipeline_methods_passed": 9,
+    "retry": "Separate full 72-child selection checker passed; the 99-test suite was not rerun as a whole.",
+    "tests": 99,
+    "workflow_cli_children_passed": 70
+  },
+  "migration_inventory": {
+    "entries": 3668,
+    "status": "passed"
+  },
+  "native_compilation": "not_performed",
+  "native_execution": "not_performed",
+  "policy_suite": {
+    "python_versions": [
+      "3.11.15",
+      "3.14.6"
+    ],
+    "status": "passed",
+    "tests": 96
+  },
+  "predecessor_revision": "cecb75f1890a08d163b48900eca52e419f5be481",
+  "production_cutover": "not_performed",
+  "profile": "biocompiler.policy.v0.1",
+  "schema_version": "biocompiler.policy_authoring_local_checkpoint.v0.1",
+  "scope": "Local Python authoring, packaging and legacy source compatibility only.",
+  "selection_recapture": {
+    "children": 72,
+    "console_children": 68,
+    "module_children": 4,
+    "projected_baseline_fingerprint": "69556f367752be3076513d96e63c933fb250eaf7d9736f9e39baac1dec47e5d9",
+    "status": "complete_original_selection_cli_recapture_equal"
+  },
+  "semantic_acceptance": "unassessed",
+  "typing": {
+    "hosted_pinned_version_run": false,
+    "modules": 24,
+    "mypy_version": "1.20.2",
+    "status": "passed"
+  },
+  "workflow_recapture": {
+    "api_calls": 69236,
+    "captured_methods": 376,
+    "contexts": 385,
+    "documents": 9463,
+    "preserved_prior_occurrences": 47901,
+    "projected_baseline_fingerprint": "2f5e7636977f559e046776c1bb92bebf67c8f0e733ca463927f8d3a1aee3d77b",
+    "reviewed_signature_projections": 52,
+    "status": "complete_original_workflow_recapture_equal",
+    "unclassified_observations": 0,
+    "uninstrumented_methods": 376
+  }
+}
