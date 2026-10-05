@@ -7,6 +7,8 @@ build outputs or accepted state are imported.
 """
 from __future__ import annotations
 import importlib
+from concurrent.futures import ThreadPoolExecutor
+import time
 import json
 import os
 from pathlib import Path
@@ -125,7 +127,59 @@ def require(condition, message):
         raise AssertionError(message)
 
 
-def run(task='deferred', *, test_module=None, test_ids=None):
+def _capture_process(command, *, cwd, env, timeout, capture, popen=None):
+    """One isolated Python child and one parent capture; drain I/O concurrently.
+
+    The I/O thread touches only this Popen. A child timeout stops/drains the
+    child while the original parent body runs to its own normal boundary; the
+    pair cannot publish or reach native execution after either failure.
+    """
+    process = (subprocess.Popen if popen is None else popen)(command, cwd=cwd, env=env,
+        stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    started = time.monotonic()
+    def drain():
+        try:
+            return process.communicate(timeout=max(0, timeout-(time.monotonic()-started)))
+        except subprocess.TimeoutExpired:
+            process.kill()
+            process.communicate()
+            raise
+    primary = False
+    try:
+        with ThreadPoolExecutor(max_workers=1, thread_name_prefix='original-capture-io') as pool:
+            future = pool.submit(drain)
+            try:
+                current = capture()
+            except BaseException:
+                primary = True
+                try:
+                    if process.poll() is None: process.kill()
+                except BaseException: pass
+                try: future.result()
+                except BaseException: pass
+                raise
+            stdout, stderr = future.result()
+        return subprocess.CompletedProcess(command, process.returncode, stdout, stderr), current
+    except BaseException:
+        primary = True
+        raise
+    finally:
+        try:
+            if process.poll() is None: process.kill()
+            process.wait()
+            for stream in (process.stdout, process.stderr):
+                if stream is not None: stream.close()
+        except BaseException:
+            if not primary: raise
+
+
+def run_with_capture(task, capture):
+    require(task in ('fixed-build-original', 'fixed-continuation-original') and callable(capture),
+        'Unreviewed paired original capture')
+    return run(task, _capture=capture)
+
+
+def run(task='deferred', *, test_module=None, test_ids=None, _capture=None):
     require(task in TASKS, 'Unknown original counterpart task')
     require((task == 'tests' and test_module.removeprefix('tests.') in TEST_MODULES and type(test_ids) is list and test_ids and len(set(test_ids)) == len(test_ids)) or (task != 'tests' and test_module is None),
         'Unknown original counterpart test module')
@@ -177,16 +231,23 @@ def run(task='deferred', *, test_module=None, test_ids=None):
         environment = dict(os.environ)
         environment.pop('PYTHONPATH', None)
         environment['PYTHONDONTWRITEBYTECODE'] = '1'
-        completed = subprocess.run([sys.executable, '-I', '-c', script, str(overlay)],
-            cwd=directory, env=environment, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-            timeout=600 if task == 'fixed-continuation-original' else 90)
+        command = [sys.executable, '-I', '-c', script, str(overlay)]
+        timeout = 600 if task == 'fixed-continuation-original' else 90
+        if _capture is None:
+            completed = subprocess.run(command, cwd=directory, env=environment,
+                stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=timeout)
+        else:
+            require(task in ('fixed-build-original', 'fixed-continuation-original') and callable(_capture),
+                'Unreviewed paired original capture')
+            completed, current = _capture_process(command, cwd=directory, env=environment,
+                timeout=timeout, capture=_capture)
         require(completed.returncode == 0, 'Original counterpart child failed: ' +
             completed.stderr.decode(errors='replace')[-12000:])
         require(result.is_file() and result.stat().st_size <= MAX_OUTPUT_BYTES,
             'Original counterpart output missing or too large')
         value = json.loads(result.read_bytes())
         validate(value)
-        return value
+        return value if _capture is None else (value, current)
 
 
 def validate(value):

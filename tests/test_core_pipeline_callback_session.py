@@ -265,6 +265,14 @@ class CallbackSessionTests(unittest.TestCase):
         self.addCleanup(self.objects.close)
 
     def core(self, *, before='', after='', before_write='', after_write='', before_reply='', **options):
+        # This one malformed-output fixture requires the complete reply and its
+        # suffix to be available together. Separate writes permit the parent to
+        # finish the reply before the peer is scheduled to publish the suffix.
+        # Keep the existing method, bytes and assertion; delayed output has a
+        # separate FIFO-synchronized boundary test.
+        if after_write == "if next_event == 2: os.write(1, b'unsolicited')":
+            before_write += "\nif next_event == 1:\n    while len(packet) > 37:\n        sent = os.write(1, packet[:37])\n        packet = packet[sent:]\n    packet += b'unsolicited'\n    assert len(packet) <= os.fpathconf(1, 'PC_PIPE_BUF')\n    assert os.write(1, packet) == len(packet)\n    packet = b''"
+            after_write = ''
         script = PEER
         for key, value in [('BEFORE_EVENT', before), ('AFTER_EVENT', after), ('BEFORE_WRITE', before_write),
                            ('AFTER_WRITE', after_write), ('BEFORE_REPLY', before_reply)]:

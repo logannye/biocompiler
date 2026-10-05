@@ -8,6 +8,8 @@ WITNESS=ROOT/'tests/conformance/pipeline-continuation-parallel-source-delta-v1.j
 WITNESS_SHA256='16869820863ef1624f06ebf606861aa93aa3def3c88250e066dfb0be036d3bf9'
 
 def restore(path,current,proof_bytes=None):
+    from tools import pipeline_capture_overlap_source
+    current = pipeline_capture_overlap_source.restore(path, current)
     if path!=PATH:return current
     def require(value,message):
         if not value:raise AssertionError(message)

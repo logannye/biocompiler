@@ -141,7 +141,7 @@ class ContinuationWorkerControls(unittest.TestCase):
                     if fail:
                         raise AssertionError('original direct failure')
                 with patch.object(driver, 'load_oracle', return_value=oracle), \
-                        patch.object(driver.providers, 'capture_counterpart'), \
+                        patch.object(driver, 'capture_counterpart_pair', side_effect=lambda _receipt, _task, _expected, capture: capture()), \
                         patch.object(driver.providers, 'installed_modules'), \
                         patch.object(driver.occurrences, 'read_frozen', return_value={}), \
                         patch.object(driver.occurrences, 'capture', return_value={}), \

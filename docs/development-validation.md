@@ -95,6 +95,14 @@ all 13,438 protocol checks and 8,314 routing checks and applies the independent
 semantic checker before publishing the combined artifacts. Worker source pins,
 raw receipts and complete logs accompany the aggregate.
 
+Before fixed-continuation native execution, each fresh parent reference capture
+runs concurrently with its existing isolated original-source counterpart child.
+The parent stays on its owning thread; a separate thread only drains the child
+pipes. Both complete captures and the unchanged full correspondence proof must
+pass before any native work starts. Parent failure kills and drains the child;
+child failure or the unchanged 90/600-second timeout prevents publication. No
+capture, original assertion, retained object or independent replay is removed.
+
 Fixed-continuation execution partitions only at the four original test-class
 boundaries, with at most two worker processes. Each class retains its fixture,
 method order and stateful manager sequences. Fresh grouped original-Python
@@ -126,7 +134,13 @@ every additive transport witness; changing a source hash without its exact
 restoration proof fails this early gate. Synthetic inspection also checks every
 case input shape and both frozen wire-rejection obligations before native work.
 Those two occurrences retain their original Python observations and require exact
-native JSON rejection; they do not claim native helper equivalence. Corpus loading
+native JSON rejection; they do not claim native helper equivalence. The callback
+malformed-frame regression also runs in preflight. Its inert peer co-publishes the
+last response fragment and unsolicited suffix, preserving every byte and original
+assertion while removing a scheduling race. A separate FIFO-synchronized control
+requires genuinely later output to invalidate the next call or close before any
+new frame is sent; production transport timing and bounds remain unchanged.
+Corpus loading
 separately denies child processes and network. Failed or timed-out installed commands print a
 bounded, escaped tail of their complete retained log. Successful commands
 print only the scheduler group/timing envelope. Every opened group closes
@@ -164,13 +178,14 @@ The deterministic longest-processing-time assignment keeps each complete
 they cannot exclude tests or substitute for execution. Every discovered class
 is assigned exactly once across the five shards for its Python version.
 
-The current suite discovers 3,578 tests in 376 classes on both Python versions.
-The campaign parallelism and corrections add 75 scheduling, transport, receipt and source controls while
-preserving all previous 3,477 test IDs. Placement weights retain the historical
-fixture-inclusive maximum for every previously measured class and add the
-existing two-second estimate for each new method. The source measurement and
-every unmeasured addition are recorded in the weights file. No original test ID
-was removed; estimates guide placement and do not establish a runtime bound.
+The current suite discovers 3,594 tests in 381 classes on both Python versions.
+The capture scheduling and callback fixture changes add 16 controls while
+preserving all previous 3,578 test IDs. Placement weights retain the historical
+fixture-inclusive maximum for every previously measured class. Fresh discovery
+assigns the existing two-second fallback to unmeasured methods and classes;
+the weights file records the historical measurement and its earlier inventory
+reconciliation. No original test ID was removed. These estimates guide placement
+and do not establish a runtime bound.
 
 Each runner rediscovers the suite and verifies the plan before executing its
 assigned tests. Results retain test/subtest outcomes, durations, class totals

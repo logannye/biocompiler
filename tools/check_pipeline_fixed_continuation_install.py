@@ -491,6 +491,8 @@ SOURCES = tuple(dict.fromkeys((BUILD_TOOL, 'tests/test_pipeline_fixed_build_sema
     'tools/pipeline_fixed_direct_controls.py', 'tests/test_pipeline_fixed_direct_controls.py',
     'tools/pipeline_fixed_continuation_workers.py', 'tests/test_pipeline_fixed_continuation_workers.py',
     'tools/pipeline_continuation_parallel_source.py', 'tools/pipeline_occurrence_source.py',
+    'tools/pipeline_capture_overlap_source.py', 'tests/test_pipeline_capture_overlap.py',
+    'tests/conformance/pipeline-capture-overlap-source-delta-v1.json',
     'tests/conformance/pipeline-continuation-parallel-source-delta-v1.json', *providers.SOURCES)))
 
 
@@ -623,19 +625,32 @@ def run_native_bodies(core, corpus, receipt, oracle, occurrence_graphs, *, group
             close_receipt(case['manager'], row, case['guard'], receipt)
 
 
+def capture_counterpart_pair(receipt, task, expected, capture):
+    """Join two fresh isolated captures before publishing their exact proof."""
+    counterpart=providers.tool('pipeline_original_counterpart')
+    original, current = counterpart.run_with_capture(task, capture)
+    equal(counterpart.validate(original), expected, 'Complete fresh original counterpart differs from frozen authority')
+    proof = counterpart.metadata_correspondence(current, original)
+    receipt['fresh_original'] = providers.artifact(receipt, canonical(expected))
+    receipt['current_original'] = providers.artifact(receipt, canonical(current))
+    receipt['original_counterpart'] = providers.artifact(receipt, canonical(original))
+    receipt['original_correspondence'] = providers.artifact(receipt, canonical(proof))
+    return current
+
+
 def campaign(core, corpus, receipt, *, workers=1, native_root=None):
     if __package__:
         from . import pipeline_fixed_direct_controls as direct
     else:
         import pipeline_fixed_direct_controls as direct
     oracle, originals = load_oracle(), []
-    fresh = oracle.capture(retain=originals)
-    providers.capture_counterpart(receipt, fresh, 'fixed-build-original', corpus.build)
+    capture_counterpart_pair(receipt, 'fixed-build-original', corpus.build,
+        lambda: oracle.capture(retain=originals))
     occurrence_original = occurrences.read_frozen(corpus, sys.modules[__name__])
-    current_occurrences = occurrences.capture(corpus, oracle, sys.modules[__name__])
     occurrence_receipt = {'_artifact_directory': receipt['_artifact_directory'], 'artifacts': receipt['artifacts']}
-    providers.capture_counterpart(occurrence_receipt, current_occurrences,
-        'fixed-continuation-original', occurrence_original)
+    current_occurrences = capture_counterpart_pair(occurrence_receipt,
+        'fixed-continuation-original', occurrence_original,
+        lambda: occurrences.capture(corpus, oracle, sys.modules[__name__]))
     receipt['occurrence_original'] = {key: value for key, value in occurrence_receipt.items()
         if key not in ('_artifact_directory', 'artifacts')}
     occurrence_graphs = occurrences.validate(current_occurrences, corpus, sys.modules[__name__])
