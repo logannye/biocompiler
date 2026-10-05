@@ -22,6 +22,14 @@ class SyntheticSelectionCliCaptureTests(unittest.TestCase):
             raw=(c.ROOT/name).read_bytes();old=actual['retained_source_bytes'][name]
             del blobs[old['sha256']];store=c.frozen.f.Store()
             actual['retained_source_bytes'][name]=store.retain(raw);blobs.update(store.blobs)
+        dispatch = c.policy.verify_entrypoint()
+        for row in actual['cases']:
+            row['import_audit']['modules'][c.policy.MODULE] = {'path': c.policy.ENTRYPOINT, 'sha256': dispatch['sha256']}
+        old_entrypoint = actual['capture_environment']['entrypoint_source']
+        del blobs[old_entrypoint['sha256']]
+        store = c.frozen.f.Store()
+        actual['capture_environment']['entrypoint_source'] = store.retain(c.policy.CONSOLE.encode())
+        blobs.update(store.blobs)
         old=next(row for row in self.original['cases'] if row['id']=='unknown-flag')
         row=next(row for row in actual['cases'] if row['id']==old['id'])
         expected=c.counterparts().expected(old,{'exit_code':old['exit_code'],
@@ -98,14 +106,14 @@ class SyntheticSelectionCliCaptureTests(unittest.TestCase):
         self.assertTrue(additions)
         before=c.inventory(self.original['source_scope']['actual_sources'])
         current=c.inventory(actual['source_scope']['actual_sources'])
-        self.assertEqual({row['path'] for row in additions},set(current)-set(before))
+        self.assertEqual({row['path'] for row in additions},set(current)-set(before)-{c.policy.ENTRYPOINT})
         for row in additions:
             self.assertEqual(c.sha(row['source'].encode()),row['sha256'])
             with patch.dict(c.REVIEWED_ADDITIONS,{row['path']:'0'*64}):
                 with self.assertRaisesRegex(AssertionError,'Unreviewed selection CLI source addition'):
                     c.verify_recapture(actual,blobs,python_version='3.11')
             changed=deepcopy(actual)
-            changed['cases'][0]['import_audit']['modules'][row['path'][4:-3].replace('/','.')]=dict(
+            changed['cases'][0]['import_audit']['modules'][c.addition_module(row['path'])]=dict(
                 path=row['path'],sha256=row['sha256'])
             self.rehash(changed)
             with self.assertRaisesRegex(AssertionError,'imported unpinned source'):
@@ -132,7 +140,7 @@ class SyntheticSelectionCliCaptureTests(unittest.TestCase):
                 c.verify_recapture(changed,blobs,python_version='3.11')
 
     def test_independent_complete_seventy_two_child_recapture_is_byte_exact(self):
-        actual,blobs=c.frozen.capture()
+        actual,blobs=c.capture()
         receipt=c.verify_recapture(actual,blobs)
         self.assertEqual(receipt['status'],'complete_original_selection_cli_recapture_equal')
         self.assertEqual(receipt['coverage']['actual_children'],72)

@@ -94,6 +94,9 @@ def verify_source(root, logical, historical_sha256):
 
 def native_reference_counterpart(raw):
     """Restore the exact outer native source proof before its frozen old gates."""
+    if type(raw) is bytes and sha(raw) != 'e9db018e299f112c7e0c606edd6ea51ef1a98bf1bc28ffbb119589a173b1a853':
+        from tools.policy_entrypoint_source_lineage import native_reference_counterpart as restore_authoring
+        raw = restore_authoring(raw)
     require(type(raw) is bytes and sha(raw) == 'e9db018e299f112c7e0c606edd6ea51ef1a98bf1bc28ffbb119589a173b1a853',
             'Native package source proof differs')
     start = raw.index(b'(* Package integration is one additional finite source restoration layer.')

@@ -59,9 +59,14 @@ def counterpart(root=ROOT, *, current=None):
         require(path.is_file() and not path.is_symlink() and path.stat().st_size <= 4096,
                 "Current package metadata is missing, redirected or oversized")
         current = path.read_bytes()
+    actual = current
+    authoring_counterpart = None
+    if type(current) is bytes and current != proposed:
+        from tools.policy_entrypoint_source_lineage import restore
+        current, authoring_counterpart = restore(PATH, current, root=root)
     require(type(current) is bytes and current == proposed,
             "Current package metadata differs from its exact whole-source counterpart")
     return historical, {"schema_version": entry["schema_version"], "path": PATH,
-        "historical_sha256": HISTORICAL_SHA256, "current_sha256": CURRENT_SHA256,
-        "witness_sha256": WITNESS_SHA256, "current_source": current.decode(),
-        "changes": entry["changes"]}
+        "historical_sha256": HISTORICAL_SHA256, "current_sha256": sha(actual),
+        "witness_sha256": WITNESS_SHA256, "current_source": actual.decode(),
+        "changes": entry["changes"], "authoring_counterpart": authoring_counterpart}

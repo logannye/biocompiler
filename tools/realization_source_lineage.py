@@ -88,6 +88,9 @@ def verify_captured_source(root: Path, entry):
     if sha256(current) == entry["sha256"]:
         return {"path": entry["path"], "historical_sha256": entry["sha256"],
                 "current_sha256": entry["sha256"], "kind": "identical_bytes"}
+    from tools.policy_entrypoint_source_lineage import PATHS as POLICY_ROUTES, verify_source as verify_policy_source
+    if entry["path"] in POLICY_ROUTES:
+        return verify_policy_source(root, entry["path"], entry["sha256"])
     from tools.reference_package_source_lineage import PUBLIC, verify_source as verify_package_source
     if entry['path'] in PUBLIC:
         try:

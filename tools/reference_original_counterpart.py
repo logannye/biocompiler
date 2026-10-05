@@ -445,6 +445,7 @@ def selection(module, ids):
 
 def data_closure(index):
     from tools.reference_package_source_lineage import PUBLIC_WITNESS, PUBLIC_PIN, TRANSPORT_WITNESS, TRANSPORT_PIN
+    from tools.policy_entrypoint_source_lineage import WITNESS as POLICY_WITNESS, WITNESS_SHA256 as POLICY_PIN
     result = [{'logical': CORPUS, 'sha256': CORPUS_SHA, 'bytes': len(local_file(ROOT, CORPUS).read_bytes())}]
     for identity, row in sorted(index['documents'].items()):
         logical = 'tests/conformance/reference-contracts-v1/' + identity + '.json'
@@ -453,7 +454,7 @@ def data_closure(index):
         require(len(raw) == row['bytes'] and raw.endswith(b'\n') and sha(raw[:-1]) == identity,
                 'Frozen complete reference document bytes differ')
         result.append({'logical': logical, 'sha256': sha(raw), 'bytes': len(raw)})
-    for logical, identity in ((PUBLIC_WITNESS, PUBLIC_PIN), (TRANSPORT_WITNESS, TRANSPORT_PIN),
+    for logical, identity in ((POLICY_WITNESS, POLICY_PIN), (PUBLIC_WITNESS, PUBLIC_PIN), (TRANSPORT_WITNESS, TRANSPORT_PIN),
                               (CORE_BLOB, CORE_ORIGINAL_SHA), (CORE_WITNESS, CORE_WITNESS_SHA),
                               (CORE_UPDATE, CORE_UPDATE_SHA), (CORE_MERGE_UPDATE, CORE_MERGE_UPDATE_SHA),
                               (CORE_ATTEMPT_UPDATE, CORE_ATTEMPT_UPDATE_SHA), (CORE_VIEW_UPDATE, CORE_VIEW_UPDATE_SHA),
@@ -469,6 +470,7 @@ def data_closure(index):
 
 
 def source_closure(index, package_root):
+    from tools.policy_entrypoint_source_lineage import PATHS as POLICY_ROUTES, restore as restore_policy
     from tools.reference_package_source_lineage import PUBLIC, restore
     values = {}
     pins = index['source_files'] | {FREEZER: FREEZER_SHA} | SUPPORT
@@ -487,6 +489,9 @@ def source_closure(index, package_root):
         elif logical in ROUTE_SOURCES:
             copied, _ = route_source_witness(logical, raw)
             require(sha(copied) == identity, 'Frozen reference public route authority changed')
+        elif logical in POLICY_ROUTES:
+            copied, _ = restore_policy(logical, raw, root=ROOT)
+            require(sha(copied) == identity, 'Frozen policy entrypoint source authority changed')
         elif logical in PUBLIC:
             copied, _ = restore(logical, raw, root=ROOT)
             require(sha(copied) == identity, 'Frozen package public source authority changed')

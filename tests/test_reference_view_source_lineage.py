@@ -89,7 +89,7 @@ class ReferenceViewSourceLineageTests(unittest.TestCase):
     def test_new_witness_is_in_complete_data_and_source_closure_without_execution(self):
         index = original.authority()
         data = original.data_closure(index)
-        self.assertEqual(len(data), 4015)
+        self.assertEqual(len(data), 4016)
         self.assertEqual([row for row in data if row['logical'] == original.CORE_VIEW_UPDATE],
             [{'logical': original.CORE_VIEW_UPDATE, 'sha256': original.CORE_VIEW_UPDATE_SHA,
               'bytes': len(self.encoded)}])

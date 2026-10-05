@@ -59,6 +59,8 @@ config = json.loads(pathlib.Path(os.environ["BIOCOMPILER_NATIVE_CLI_CONFIG"]).re
 sys.path.insert(0, config["tools"])
 import check_native_workflow_public_sdk as policy
 import biocompiler, biocompiler.cli as cli
+biocompiler._load_legacy_exports()
+import biocompiler.entrypoint
 import biocompiler.workflow_cli
 import biocompiler.workflow_backend as backend
 import biocompiler.core_workflow_authority
@@ -98,6 +100,8 @@ def guard(frame, event, value):
         permitted = (entry[2] == "output" and (
             module in {"biocompiler.workflow_cli", "biocompiler.core_workflow_authority"}
             or module == "biocompiler.cli" and code.co_qualname.split(".<locals>.", 1)[0] in cli_calls
+            or module == "biocompiler.entrypoint" and code.co_qualname == "main" and entry[3] == ""
+            or module == "biocompiler" and code.co_qualname == "_load_legacy_exports" and entry[3] == ""
             or module == "biocompiler.__main__" and code.co_qualname == "<module>"
             or module == "biocompiler.ir.serialization" and code.co_qualname.split(".<locals>.", 1)[0] in {"parse_json", "require"}
             or module != "biocompiler.compiler.verification_workflow" and policy.allowed_frame(frame)))
@@ -272,6 +276,8 @@ def allowed_cli_call(module, name, phase, owner):
     root = name.split(".<locals>.", 1)[0]
     return (module in {"biocompiler.workflow_cli", "biocompiler.core_workflow_authority"}
         or module == "biocompiler.cli" and root in CLI_CALLS
+        or module == "biocompiler.entrypoint" and name == "main" and owner == ""
+        or module == "biocompiler" and name == "_load_legacy_exports" and owner == ""
         or module == "biocompiler.__main__" and name == "<module>"
         or module == "biocompiler.ir.serialization" and root in {"parse_json", "require"}
         or module != "biocompiler.compiler.verification_workflow" and policy.allowed_call(module, name, phase, owner))

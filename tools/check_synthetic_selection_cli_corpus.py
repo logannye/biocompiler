@@ -2,7 +2,7 @@
 
 Only the exact additive CLI route source, individually pinned unused transport
 additions, the archived unused backend replacement and independently captured
-argparse runtime counterpart and two exact packaging metadata edits may be projected. Complete actual source, import, stream,
+argparse runtime counterpart and exact authoring dispatch source may be projected. Complete actual source, import, stream,
 filesystem and content evidence remains retained without output normalization.
 """
 from __future__ import annotations
@@ -21,9 +21,12 @@ from tools import synthetic_selection_cli_source_lineage as routes
 from tools import manager_registration_source_lineage as managers
 from tools import cli_runtime_counterparts as runtime
 from tools import package_metadata_source_lineage as packaging
+from tools import policy_entrypoint_source_lineage as policy
+from tools.reference_package_source_lineage import PUBLIC as _PACKAGE_ROUTES
+PACKAGE_ROUTES = frozenset(_PACKAGE_ROUTES)
 from tools.realization_source_lineage import REFERENCE_ROUTES, verify_captured_source
 from tools.reference_original_counterpart import route_source_witness
-from tools.check_realization_workflow_corpus import REVIEWED_ADDITIONS, addition_counterparts
+from tools.check_realization_workflow_corpus import REVIEWED_ADDITIONS, REVIEWED_EXAMPLES, addition_counterparts, addition_module
 
 CORPUS_PIN = '69556f367752be3076513d96e63c933fb250eaf7d9736f9e39baac1dec47e5d9'
 COUNTERPART = ROOT / 'tests/conformance/synthetic-selection-cli-runtime-counterparts-v1.json'
@@ -96,7 +99,7 @@ def verify_recapture(actual, blobs, *, python_version=None):
     additions = []
     for name in sorted(set(current) - set(before)):
         path = ROOT / name
-        require(name.startswith('src/biocompiler/') and name.endswith('.py') and
+        require((name.startswith('src/biocompiler/') or name in REVIEWED_EXAMPLES) and name.endswith('.py') and
                 REVIEWED_ADDITIONS.get(name) == current[name] and path.is_file() and
                 not path.is_symlink() and sha(path.read_bytes()) == current[name],
                 'Unreviewed selection CLI source addition: ' + name)
@@ -113,7 +116,8 @@ def verify_recapture(actual, blobs, *, python_version=None):
     require(unused_module in scope['denied_modules'] and all(unused_module not in row['import_audit']['modules']
             for row in original['cases']), 'Original selection CLI imported changed native transport')
     reference_proofs = [verify_captured_source(ROOT, {'path': name, 'sha256': before[name]})
-                        for name in sorted(REFERENCE_ROUTES & set(before))]
+                        for name in sorted((REFERENCE_ROUTES | PACKAGE_ROUTES) & set(before))]
+    policy_proofs = [policy.verify_source(ROOT, name, before[name]) for name in sorted(policy.ROUTES & set(before)) if name != packaging.PATH]
     original_metadata, packaging_counterpart = packaging.counterpart(ROOT)
     require(sha(original_metadata) == before[packaging.PATH] and
             packaging_counterpart['current_sha256'] == current[packaging.PATH],
@@ -121,8 +125,13 @@ def verify_recapture(actual, blobs, *, python_version=None):
     for name, pin in before.items():
         path = ROOT / name
         require(path.is_file() and not path.is_symlink() and sha(path.read_bytes()) == current[name] and
-                (name in (routes.CLI,unused_name,managers.PATH,packaging.PATH) or name in REFERENCE_ROUTES or current[name] == pin), 'Unreviewed selection CLI source bytes changed: ' + name)
+                (name in (routes.CLI,unused_name,managers.PATH,packaging.PATH) or name in (REFERENCE_ROUTES | PACKAGE_ROUTES) or name in policy.ROUTES or current[name] == pin), 'Unreviewed selection CLI source bytes changed: ' + name)
     projected, projected_blobs = deepcopy(actual), dict(blobs)
+    try:
+        policy.project_environment(actual, projected, original)
+        policy.project_blobs(actual, blobs, original, old_blobs, projected_blobs)
+    except ValueError as error:
+        raise AssertionError(str(error)) from error
     for row in projected['cases']:
         audit = row['import_audit']
         require(audit['guard_active'] is True and audit['denied_absent'] is True and
@@ -133,14 +142,14 @@ def verify_recapture(actual, blobs, *, python_version=None):
                     (module == 'biocompiler' or module.startswith('biocompiler.')) and
                     item['path'] in before and item['sha256'] == current[item['path']],
                     'Actual selection CLI imported unpinned source')
-            if item['path'] in (routes.CLI,managers.PATH) or item['path'] in REFERENCE_ROUTES: item['sha256'] = before[item['path']]
+            if item['path'] in (routes.CLI,managers.PATH) or item['path'] in (REFERENCE_ROUTES | PACKAGE_ROUTES) or item['path'] in policy.ROUTES: item['sha256'] = before[item['path']]
     require(set(actual['retained_source_bytes']) == set(original['retained_source_bytes']),
             'Complete retained selection CLI source inventory differs')
     for name, reference in actual['retained_source_bytes'].items():
         raw = (ROOT / name).read_bytes()
         require(reference == {'kind':'blob','bytes':len(raw),'sha256':sha(raw)} and
                 frozen.f.restore(reference, blobs) == raw, 'Actual retained selection CLI source bytes differ')
-    retained_routes = {routes.CLI} | (({managers.PATH, packaging.PATH} | REFERENCE_ROUTES) & set(actual['retained_source_bytes']))
+    retained_routes = {routes.CLI} | (({managers.PATH, packaging.PATH} | REFERENCE_ROUTES | PACKAGE_ROUTES | policy.ROUTES) & set(actual['retained_source_bytes']))
     for name in sorted(retained_routes):
         current_ref, old_ref = actual['retained_source_bytes'][name], original['retained_source_bytes'][name]
         if current_ref != old_ref:
@@ -180,19 +189,24 @@ def verify_recapture(actual, blobs, *, python_version=None):
         'actual_retained_route_source':(ROOT/routes.CLI).read_text(),'reviewed_route':proof,
         'reviewed_manager_registration_prefix':manager_proof,
         'actual_retained_manager_source':(ROOT/managers.PATH).read_text(),
-        'reviewed_unused_source_additions':additions,'reviewed_unused_source_change':unused,
+        'reviewed_unused_source_additions':[row for row in additions if row['path'] != policy.ENTRYPOINT],
+        'reviewed_dispatch_source':policy.verify_entrypoint(),'policy_entrypoint_counterparts':policy_proofs,'reviewed_unused_source_change':unused,
         'runtime_counterpart':{'declaration_sha256':declared.pin,'python_minor':minor,
             'validated_cases':sorted(declared.cases),'changes':changes},'coverage':deepcopy(actual['coverage']),
         'content_documents':len(blobs),'content_bytes':sum(map(len,blobs.values())),
         'actual_content_inventory':[{'sha256':name,'bytes':len(raw)} for name,raw in sorted(blobs.items())],
-        'projection':'exact_additive_selection_CLI_source_individually_pinned_unimported_additions_exact_archived_unused_backend_exact_manager_registration_prefix_two_witnessed_packaging_metadata_edits_and_declared_argparse_runtime_counterpart_only; actual_bytes_retained'}
+        'projection':'exact_selection_CLI_package_and_authoring_source_counterparts_individually_pinned_unused_additions_reviewed_dispatch_import_archived_unused_backend_manager_prefix_packaging_metadata_and_argparse_runtime_counterpart_only; actual_bytes_retained'}
+
+
+def capture():
+    return policy.capture(frozen)
 
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output', required=True, type=Path)
     args = parser.parse_args(argv)
-    actual, blobs = frozen.capture()
+    actual, blobs = capture()
     receipt = verify_recapture(actual, blobs)
     receipt['runtime'] = {'python':sys.version,'platform':sys.platform,'executable':sys.executable,
                           'revision':os.environ.get('GITHUB_SHA')}

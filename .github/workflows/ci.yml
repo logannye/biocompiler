@@ -922,6 +922,7 @@ jobs:
           python -m pip install --only-binary=:all: --platform any --require-hashes \
             --target generated/typecheck -r tools/typecheck-requirements.txt
           PYTHONPATH=generated/typecheck python -m mypy --config-file tools/mypy-core.ini | tee generated/core/python-types.txt
+          PYTHONPATH=generated/typecheck python -m mypy --config-file tools/mypy-policy.ini | tee generated/core/policy-types.txt
       - name: Compile native core and standalone verifier
         id: native_build
         run: |

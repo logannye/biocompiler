@@ -83,7 +83,7 @@ class ReferenceSessionSourceLineageTests(unittest.TestCase):
         self.assertEqual(current, self.current)
         self.assertEqual(copied, (original.ROOT / original.SESSION_BLOB).read_bytes())
         data = original.data_closure(index)
-        self.assertEqual(len(data), 4015)
+        self.assertEqual(len(data), 4016)
         for logical, pin in ((original.SESSION_BLOB, original.SESSION_ORIGINAL_SHA),
                              (original.SESSION_WITNESS, original.SESSION_WITNESS_SHA)):
             self.assertEqual([row for row in data if row['logical'] == logical],

@@ -24,12 +24,14 @@ class PackageMetadataSourceLineageTests(unittest.TestCase):
                          {"core": ["biocompiler-core==0.1.0.dev29"]})
         self.assertEqual(current["tool"]["setuptools"]["package-data"]["biocompiler"].pop(0),
                          "_core_release.json")
+        self.assertEqual(current["project"]["scripts"].pop("biocompiler"), "biocompiler.entrypoint:main")
+        self.assertEqual(old["project"]["scripts"].pop("biocompiler"), "biocompiler.cli:main")
         self.assertEqual(current, old)
 
     def test_stale_changed_or_missing_current_source_is_rejected(self):
         old, proof = metadata.counterpart()
         for raw in (old, proof["current_source"].encode() + b"\n",
-                    proof["current_source"].replace("biocompiler.cli:main", "elsewhere:main").encode()):
+                    proof["current_source"].replace("biocompiler.entrypoint:main", "elsewhere:main").encode()):
             with self.subTest(sha256=metadata.sha(raw)), self.assertRaises(ValueError):
                 metadata.counterpart(current=raw)
 

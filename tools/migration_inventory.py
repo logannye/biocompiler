@@ -190,6 +190,30 @@ class Sources:
                 elif isinstance(node, ast.Import):
                     for alias in node.names:
                         imports[alias.asname or alias.name.split(".")[0]] = (alias.name if alias.asname else alias.name.split(".")[0], "")
+            if module == "biocompiler" and "_LEGACY_EXPORTS" in bindings:
+                node = bindings["_LEGACY_EXPORTS"]
+                try:
+                    exports = ast.literal_eval(node)
+                    public = ast.literal_eval(bindings["__all__"])
+                except (ValueError, TypeError, KeyError) as error:
+                    raise InventoryError("Lazy legacy exports require literal bindings") from error
+                if (not isinstance(node, ast.Dict) or type(exports) is not dict
+                        or len(exports) != len(node.keys) or set(exports) != set(public)
+                        or any(type(name) is not str or type(pair) is not tuple or len(pair) != 2
+                               or any(type(item) is not str for item in pair)
+                               for name, pair in exports.items())):
+                    raise InventoryError("Lazy legacy export map differs from the public declarations")
+                stores = [n for n in ast.walk(tree) if isinstance(n, ast.Name)
+                          and n.id == "_LEGACY_EXPORTS" and isinstance(n.ctx, ast.Store)]
+                mutations = [n for n in ast.walk(tree) if isinstance(n, ast.Call)
+                             and isinstance(n.func, ast.Attribute) and isinstance(n.func.value, ast.Name)
+                             and n.func.value.id == "_LEGACY_EXPORTS" and n.func.attr != "items"]
+                mutations.extend(n for n in ast.walk(tree) if isinstance(n, ast.Subscript)
+                                 and isinstance(n.value, ast.Name) and n.value.id == "_LEGACY_EXPORTS"
+                                 and isinstance(n.ctx, (ast.Store, ast.Del)))
+                if len(stores) != 1 or mutations:
+                    raise InventoryError("Lazy legacy exports may not be rebound or mutated")
+                imports.update(exports)
             self.modules[module] = Source(relative, module, text, tree, bindings, imports, definitions)
         if not self.modules:
             raise InventoryError("No src/biocompiler Python modules found")
@@ -203,6 +227,8 @@ class Sources:
             raise InventoryError(f"Missing source for public binding: {module}.{name}")
         if name in source.imports:
             owner, symbol = source.imports[name]
+            if symbol and owner + "." + symbol in self.modules:
+                return owner + "." + symbol, ""
             if owner in self.modules and symbol:
                 return self.origin(owner, symbol, (*seen, key))
             if not symbol and owner in self.modules:
@@ -239,7 +265,7 @@ class Sources:
         raise InventoryError(f"Unknown static name: {module}.{name}")
 
 
-def cli_commands(source: Source):
+def cli_commands(source: Source, registration="main"):
     """Expand literal loops/branches in registration code; reject dynamic names."""
     definitions = source.definitions
     commands, visited = {}, set()
@@ -248,6 +274,8 @@ def cli_commands(source: Source):
         def resolve(name):
             if name in env:
                 return env[name]
+            if name == "argparse.SUPPRESS":
+                return {"symbol": "argparse.SUPPRESS"}
             raise InventoryError(f"Unresolved CLI registration name: {name}")
         return literal(node, resolve)
 
@@ -318,22 +346,31 @@ def cli_commands(source: Source):
             elif isinstance(node, ast.Expr) and isinstance(node.value, ast.Call):
                 call(node.value, env, stack)
             elif isinstance(node, ast.For):
-                if not isinstance(node.target, ast.Name):
+                targets = node.target.elts if isinstance(node.target, (ast.Tuple, ast.List)) else [node.target]
+                if not all(isinstance(target, ast.Name) for target in targets):
                     raise InventoryError("Unsupported CLI registration loop target")
                 for item in evaluate(node.iter, env):
-                    env[node.target.id] = item
+                    values = item if isinstance(node.target, (ast.Tuple, ast.List)) else [item]
+                    if not isinstance(values, (tuple, list)) or len(values) != len(targets):
+                        raise InventoryError("CLI registration loop unpacking differs")
+                    env.update({target.id: value for target, value in zip(targets, values)})
                     walk(node.body, env, stack)
             elif isinstance(node, ast.If):
                 walk(node.body if evaluate(node.test, env) else node.orelse, env, stack)
+            elif isinstance(node, ast.Return):
+                result = evaluate(node.value, env)
+                if result != {"parser_kind": "root"}:
+                    raise InventoryError("CLI registration may only return its root parser")
+                return
             elif isinstance(node, (ast.Pass, ast.Expr)):
                 continue
             else:
                 raise InventoryError(f"Unsupported CLI registration statement: {type(node).__name__}:{node.lineno}")
 
-    main = definitions.get("main")
+    main = definitions.get(registration)
     if not isinstance(main, ast.FunctionDef):
         raise InventoryError("CLI main registration function missing")
-    walk(main.body, {}, ("main",))
+    walk(main.body, {}, (registration,))
     declared = {node.lineno for node in ast.walk(source.tree) if isinstance(node, ast.Call)
                 and isinstance(node.func, ast.Attribute) and node.func.attr == "add_parser"}
     if declared != visited:
@@ -346,6 +383,8 @@ def ownership(module, category):
         return "TypeScript", ["LM-10", "LM-30"], "preserve_studio_surface"
     if category == "example":
         return "Python", ["LM-03", "LM-11"], "retain_example_with_core_routing"
+    if module.startswith("biocompiler.policy") or module == "biocompiler.entrypoint":
+        return "Python", ["LM-11", "LM-12"], "retain_declarative_authoring_without_semantic_or_target_authority"
     if module.startswith("biocompiler.frontend") or module in {"biocompiler.errors", "biocompiler", "biocompiler.__main__"}:
         return "Python", ["LM-11"], "retain_python_authoring_or_compatibility_adapter"
     if module in {"biocompiler.core_pipeline_provider_views", "biocompiler.core_pipeline_build_views", "biocompiler.core_reference_views", "biocompiler.core_reference_provider_views"}:
@@ -380,6 +419,8 @@ def authority(module, category):
         return "independent_complete_request_and_pinned_component_model_sequence_roots"
     if module.startswith("biocompiler.models") or module in {"biocompiler.semantics.architecture_execution"}:
         return "candidate_records_and_locked_component_models_separate_from_source_evaluator"
+    if module.startswith("biocompiler.policy") or module == "biocompiler.entrypoint":
+        return "structural_authoring_closure_only_native_semantics_and_target_realizability_unassessed"
     if module.startswith("biocompiler.frontend"):
         return "authored_program_freezes_explicit_domain_semantics"
     if module.startswith("biocompiler.ir"):
@@ -531,6 +572,12 @@ def build_inventory(root: Path):
         record = add("cli_command", name, cli_source, line, value=name, **command)
         record["source_authority_flags"] = [flag for argument in command["arguments"] for flag in argument["flags"]
                                              if flag.startswith("--expected-") or flag in {"--request", "--inventory"}]
+    policy_cli = sources.modules.get("biocompiler.policy.cli")
+    if policy_cli is not None:
+        for command in cli_commands(policy_cli, "_parser"):
+            name, line = "policy " + command.pop("name"), command.pop("line")
+            record = add("cli_command", name, policy_cli, line, value=name, **command)
+            record["source_authority_flags"] = []
     server = sources.modules.get("biocompiler.studio.server")
     if server is None:
         raise InventoryError("Studio HTTP source missing")

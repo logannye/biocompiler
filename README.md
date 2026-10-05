@@ -26,6 +26,13 @@ a separate empirical question. The earlier
 
 ## What works today
 
+For new expressive source programs, use [`biocompiler.policy`](docs/policy-language-v0.1.md).
+It provides typed Python authoring, immutable documents, structural diagnostics,
+notebook inspection and `biocompiler policy` commands across recognition, timing,
+state, effects, spatial scope and coordinated populations. Its new document
+profile is ready for a later OCaml consumer; it does not yet compile to RNA or
+extend the executable profiles below. Studio and AI authoring remain deferred.
+
 | Workflow | What it provides |
 | --- | --- |
 | Select a complete RNA architecture | `bc.compile(PayloadArchitectureRequest(...))` matches supplied composite behavior contracts and RNA partitions, checks functional controls, independence, helpers, declared deployment windows and channels, and emits freshly verified RNA plus a complete manifest. |

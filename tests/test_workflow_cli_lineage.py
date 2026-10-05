@@ -23,13 +23,22 @@ class WorkflowCliLineageTests(unittest.TestCase):
         for row in actual["cases"]:
             for item in row["import_audit"]["modules"].values():
                 item["sha256"] = current[item["path"]]
-        for name in (*lineage.routes.HISTORICAL, lineage.packaging.PATH):
+        for name in (*lineage.routes.HISTORICAL, *sorted(lineage.policy.ROUTES & set(actual["retained_source_bytes"])), lineage.packaging.PATH):
             old = actual["retained_source_bytes"][name]
             raw = (lineage.ROOT / name).read_bytes()
             identity = lineage.frozen.sha(raw)
             del self.actual_blobs[old["sha256"]]
             self.actual_blobs[identity] = raw
             actual["retained_source_bytes"][name] = {"kind": "blob", "bytes": len(raw), "sha256": identity}
+        dispatch = lineage.policy.verify_entrypoint()
+        for row in actual["cases"]:
+            row["import_audit"]["modules"][lineage.policy.MODULE] = {"path": lineage.policy.ENTRYPOINT, "sha256": dispatch["sha256"]}
+        old = actual["capture_environment"]["entrypoint_source"]
+        del self.actual_blobs[old["sha256"]]
+        store = lineage.frozen.Store()
+        actual["capture_environment"]["entrypoint_source"] = store.retain(lineage.policy.CONSOLE.encode())
+        actual["capture_environment"]["declared_console_entrypoint"] = "biocompiler.entrypoint:main"
+        self.actual_blobs.update(store.blobs)
         self.rehash(actual)
         return actual, deepcopy(scope)
 
@@ -61,33 +70,90 @@ class WorkflowCliLineageTests(unittest.TestCase):
         self.assertEqual(receipt["actual_inventory_fingerprint"], actual["inventory_fingerprint"])
         self.assertEqual(receipt["projected_inventory_fingerprint"], lineage.CORPUS_PIN)
         self.assertEqual([row["path"] for row in receipt["source_changes"]], [
-            "src/biocompiler/cli.py", "src/biocompiler/compiler/construct.py",
-            "src/biocompiler/compiler/molecular.py", "src/biocompiler/compiler/pipeline.py",
-            "src/biocompiler/compiler/verification_workflow.py",
-            "src/biocompiler/core_artifacts.py", "src/biocompiler/core_distribution.py", "src/biocompiler/core_pipeline_build_views.py",
-            "src/biocompiler/core_pipeline_callback_session.py",
-            "src/biocompiler/core_pipeline_manager.py",
-            "src/biocompiler/core_pipeline_provider_views.py",
-            "src/biocompiler/core_pipeline_session.py", "src/biocompiler/core_reference_host.py",
-            "src/biocompiler/core_reference_manager.py", "src/biocompiler/core_reference_provider_views.py",
-            "src/biocompiler/core_reference_views.py", "src/biocompiler/core_synthetic_inspection.py",
-            "src/biocompiler/core_synthetic_producer.py",
-            "src/biocompiler/core_synthetic_producer_public.py", "src/biocompiler/core_workflow_authority.py",
-            "src/biocompiler/pipeline_callback_objects.py", "src/biocompiler/reference_backend.py",
-            "src/biocompiler/synthesis/components.py",
-            "src/biocompiler/synthesis/selection.py", "src/biocompiler/synthesis/synthetic.py",
-            "src/biocompiler/synthetic_producer_backend.py", "src/biocompiler/synthetic_producer_cli.py",
-            "src/biocompiler/workflow_backend.py",
-            "src/biocompiler/workflow_cli.py"])
+            'examples/expressive_policies.py',
+            'src/biocompiler/__init__.py',
+            'src/biocompiler/__main__.py',
+            'src/biocompiler/artifacts/sequences.py',
+            'src/biocompiler/cli.py',
+            'src/biocompiler/compiler/construct.py',
+            'src/biocompiler/compiler/molecular.py',
+            'src/biocompiler/compiler/pipeline.py',
+            'src/biocompiler/compiler/reference.py',
+            'src/biocompiler/compiler/verification_workflow.py',
+            'src/biocompiler/core_artifacts.py',
+            'src/biocompiler/core_distribution.py',
+            'src/biocompiler/core_package_files.py',
+            'src/biocompiler/core_package_owner.py',
+            'src/biocompiler/core_pipeline_build_views.py',
+            'src/biocompiler/core_pipeline_callback_session.py',
+            'src/biocompiler/core_pipeline_manager.py',
+            'src/biocompiler/core_pipeline_provider_views.py',
+            'src/biocompiler/core_pipeline_session.py',
+            'src/biocompiler/core_reference_host.py',
+            'src/biocompiler/core_reference_manager.py',
+            'src/biocompiler/core_reference_package_host.py',
+            'src/biocompiler/core_reference_package_io.py',
+            'src/biocompiler/core_reference_package_origins.py',
+            'src/biocompiler/core_reference_package_protocol.py',
+            'src/biocompiler/core_reference_package_route.py',
+            'src/biocompiler/core_reference_package_source.py',
+            'src/biocompiler/core_reference_package_verify.py',
+            'src/biocompiler/core_reference_package_views.py',
+            'src/biocompiler/core_reference_provider_views.py',
+            'src/biocompiler/core_reference_views.py',
+            'src/biocompiler/core_synthetic_inspection.py',
+            'src/biocompiler/core_synthetic_producer.py',
+            'src/biocompiler/core_synthetic_producer_public.py',
+            'src/biocompiler/core_workflow_authority.py',
+            'src/biocompiler/entrypoint.py',
+            'src/biocompiler/pipeline_callback_objects.py',
+            'src/biocompiler/policy/__init__.py',
+            'src/biocompiler/policy/behavior.py',
+            'src/biocompiler/policy/catalog.py',
+            'src/biocompiler/policy/chassis.py',
+            'src/biocompiler/policy/cli.py',
+            'src/biocompiler/policy/coordination.py',
+            'src/biocompiler/policy/deployment.py',
+            'src/biocompiler/policy/effects.py',
+            'src/biocompiler/policy/entities.py',
+            'src/biocompiler/policy/examples.py',
+            'src/biocompiler/policy/handoff.py',
+            'src/biocompiler/policy/inspection.py',
+            'src/biocompiler/policy/logic.py',
+            'src/biocompiler/policy/model.py',
+            'src/biocompiler/policy/observations.py',
+            'src/biocompiler/policy/patterns.py',
+            'src/biocompiler/policy/programs.py',
+            'src/biocompiler/policy/requirements.py',
+            'src/biocompiler/policy/serialization.py',
+            'src/biocompiler/policy/space.py',
+            'src/biocompiler/policy/state.py',
+            'src/biocompiler/policy/time.py',
+            'src/biocompiler/policy/validation.py',
+            'src/biocompiler/policy/values.py',
+            'src/biocompiler/reference_backend.py',
+            'src/biocompiler/reference_package_backend.py',
+            'src/biocompiler/registry/reference_builds.py',
+            'src/biocompiler/synthesis/components.py',
+            'src/biocompiler/synthesis/selection.py',
+            'src/biocompiler/synthesis/synthetic.py',
+            'src/biocompiler/synthetic_producer_backend.py',
+            'src/biocompiler/synthetic_producer_cli.py',
+            'src/biocompiler/verification/components.py',
+            'src/biocompiler/verification/construct.py',
+            'src/biocompiler/verification/molecular.py',
+            'src/biocompiler/workflow_backend.py',
+            'src/biocompiler/workflow_cli.py',
+        ])
         self.assertEqual(receipt["schema_version"], "biocompiler.workflow_cli_source_lineage.v3")
         self.assertEqual(receipt["packaging_metadata_counterpart"], lineage.packaging.counterpart()[1])
         self.assertEqual(receipt["actual_capture"], before)
         self.assertEqual(receipt["reviewed_routes"], scope["reviewed_routes"])
         from tools import reference_original_counterpart as reference
         self.assertEqual(scope['reviewed_addition_counterparts'], [reference.core_source_witness()[1]])
-        self.assertEqual(set(receipt["actual_retained_route_sources"]), set(lineage.routes.HISTORICAL))
+        self.assertEqual(set(receipt["actual_retained_route_sources"]), set(lineage.routes.HISTORICAL) | {"src/biocompiler/__main__.py"})
         for key in actual:
-            if key not in ("source_scope", "inventory_fingerprint", "retained_source_bytes", "cases"):
+            if key not in ("source_scope", "inventory_fingerprint", "retained_source_bytes", "cases", "capture_environment"):
                 self.assertEqual(lineage.canonical(projected[key]), lineage.canonical(actual[key]))
         for old, new in zip(projected["cases"], actual["cases"]):
             self.assertEqual({key: value for key, value in old.items() if key != "import_audit"},
@@ -113,7 +179,6 @@ class WorkflowCliLineageTests(unittest.TestCase):
             lambda value: value["cases"].pop(),
             lambda value: value["capture_environment"].update(hash_seed="37"),
             lambda value: value["capture_environment"]["startup"].update(sha256="b" * 64),
-            lambda value: value["capture_environment"]["entrypoint_source"].update(bytes=1),
         ]
         with patch.object(lineage, "current_scope", return_value=scope):
             for mutate in mutations:
@@ -124,6 +189,11 @@ class WorkflowCliLineageTests(unittest.TestCase):
                 self.assertNotEqual(projected, self.baseline)
                 with self.assertRaisesRegex(AssertionError, "observations differ"):
                     lineage.verify_recapture(changed, self.actual_blobs, python_version="3.14")
+            changed = deepcopy(actual)
+            changed["capture_environment"]["entrypoint_source"]["bytes"] = 1
+            self.rehash(changed)
+            with self.assertRaisesRegex(AssertionError, "console dispatch bytes differ"):
+                lineage.historical_projection(changed)
             blobs = dict(self.actual_blobs)
             route_ids = {ref["sha256"] for ref in actual["retained_source_bytes"].values()}
             identity = next(name for name in blobs if name not in route_ids)

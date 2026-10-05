@@ -230,8 +230,8 @@ class WorkflowCliCaptureTests(unittest.TestCase):
             with self.assertRaises((AssertionError, KeyError)): frozen.load(target)
 
     def test_independent_complete_seventy_child_recapture_is_byte_exact(self):
-        from tools.check_workflow_cli_corpus import verify_recapture
-        actual, blobs = frozen.capture()
+        from tools.check_workflow_cli_corpus import verify_recapture, capture
+        actual, blobs = capture()
         evidence = verify_recapture(actual, blobs)
         self.assertEqual(evidence["status"], "complete_original_cli_recapture_equal")
         self.assertEqual(evidence["baseline_inventory_fingerprint"], PIN)

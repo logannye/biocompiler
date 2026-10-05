@@ -69,6 +69,8 @@ def allowed_cli_call(module, name, phase, owner):
     if phase != "output" or owner != "": return False
     name = name.split(".<locals>.", 1)[0]
     return (module in TRANSPORT_MODULES or module == "biocompiler.cli" and name in CLI_CALLS
+        or module == "biocompiler.entrypoint" and name == "main" and owner == ""
+        or module == "biocompiler" and name == "_load_legacy_exports" and owner == ""
         or module == "biocompiler.__main__" and name == "<module>"
         or module == "biocompiler.ir.serialization" and name in {"parse_json", "require"}
         or module == "biocompiler.errors" and name in {"UnsupportedBehaviorError.__init__", "LoweringError.__init__"})
@@ -169,6 +171,8 @@ config = json.loads(pathlib.Path(os.environ["BIOCOMPILER_NATIVE_CLI_CONFIG"]).re
 sys.path.insert(0, config["tools"])
 import check_native_synthetic_selection_cli as policy
 import biocompiler, biocompiler.cli as cli
+biocompiler._load_legacy_exports()
+import biocompiler.entrypoint
 import biocompiler.synthetic_producer_cli
 import biocompiler.synthetic_producer_backend as backend
 import biocompiler.core_synthetic_producer_public

@@ -331,7 +331,28 @@ let reference_package_original root name current=
     require(Canonical.sha256 restored=text "before_sha256" entry)"Package public whole preceding source differs";restored
   end
 
+(* Authoring entrypoints add one exact outer source counterpart. The historical
+   reader, restored source bytes and acceptance pins below remain unchanged. *)
+let policy_entrypoint_original root name current =
+  let names=["src/biocompiler/__init__.py";"src/biocompiler/__main__.py"] in
+  if not(List.mem name names) then current else begin
+    let witness=source_witness root "tests/conformance/policy-entrypoint-source-counterpart-v1.json"
+      "75db98b705aac4c288ee744ae68caefeee07ac871716f0bc1fac91f15847cc51" in
+    require(text "schema_version" witness="biocompiler.policy_entrypoint_source_counterpart.v1" &&
+      text "base_revision" witness="cecb75f1890a08d163b48900eca52e419f5be481" &&
+      text "scope" witness="Exact lazy legacy export identities and data-only policy dispatch; no semantic implementation change." &&
+      List.map fst(Json.object_fields(field "sources" witness))="pyproject.toml"::names)
+      "Policy entrypoint restoration changed its exact scope";
+    let entry=field name(field "sources" witness) in
+    let before=text "before_source" entry and after=text "after_source" entry in
+    require(current=after && Canonical.sha256 current=text "after_sha256" entry &&
+      Canonical.sha256 before=text "before_sha256" entry)
+      "Policy entrypoint complete source identity differs";
+    before
+  end
+
 let reference_original root name expected current =
+  let current=policy_entrypoint_original root name current in
   let current=reference_package_original root name current in
   let restored=if Canonical.sha256 current=expected then current else if name="src/biocompiler/core_pipeline_manager.py" then
     reference_manager_original root name expected current
