@@ -14,6 +14,7 @@ from biocompiler.registry import reference_builds
 from biocompiler.registry.references import ReferenceManifest
 from biocompiler.artifacts.manifest import RunMetadata
 from biocompiler.artifacts.archive import read_archive
+from tools.reference_package_source_lineage import source_identity
 
 
 def canonical(value):
@@ -73,7 +74,7 @@ def capture():
                 row["outcome"] = {"status": "raise", "module": type(error).__module__, "type": type(error).__qualname__, "message": str(error)}
         row["calls"] = calls
         cases.append(row)
-    sources = {path: hashlib.sha256((ROOT / path).read_bytes()).hexdigest() for path in (
+    sources = {path: source_identity(ROOT, path) for path in (
         "src/biocompiler/compiler/reference.py", "src/biocompiler/compiler/construct.py", "src/biocompiler/compiler/molecular.py",
         "src/biocompiler/artifacts/sequences.py", "src/biocompiler/artifacts/manifest.py", "src/biocompiler/artifacts/archive.py",
         "src/biocompiler/artifacts/archive_container.py", "src/biocompiler/registry/reference_builds.py")}

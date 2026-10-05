@@ -153,3 +153,37 @@ let collect_snapshot budget ~reference ~files=
     "Supplied manifest differs from the current pinned offline reference snapshot.";snapshot
 let manifest snapshot=snapshot.reference
 let files snapshot=snapshot.retained
+
+(* Actual source-cadence loader. Callbacks read bytes only; their exceptions
+   remain untouched. Each native parse/hash runs before the next read, so an
+   earlier mismatch cannot be hidden by a later filesystem exception. *)
+type reader={manifest_first:unit->string;retained_first:string->string;
+  manifest_second:unit->string;source_second:string->string;review_second:string->string}
+let load_snapshot budget ~reader=
+  B.guard budget;
+  let first=reader.manifest_first() in B.guard budget;
+  let initial=parsed budget first in
+  require(F.reference_set_id initial=Pinned_identity.id manifest_pin && F.version initial=Pinned_identity.version manifest_pin &&
+    F.fingerprint initial=Pinned_identity.content_fingerprint manifest_pin)
+    "Reference build manifest differs from the independently reviewed pin.";
+  let paths=retained_paths budget initial in
+  let retained=List.map(fun(name,identity)->
+    let bytes=reader.retained_first name in B.guard budget;
+    ignore(source_bytes budget[name,bytes]);
+    require(hashed budget bytes=identity)("Retained reference hash mismatch: "^name^".");name,bytes)paths in
+  let checked=parsed budget(reader.manifest_second()) in B.guard budget;
+  require(F.fingerprint checked=Pinned_identity.content_fingerprint manifest_pin)"Reference manifest lock mismatch.";
+  let retained_source=ref false in
+  List.iter(fun source->B.charge budget 1;match get "local_path" source with
+    |Json.Null->()|raw->let name=Json.string raw in path budget name;
+      let bytes=reader.source_second name in B.guard budget;ignore(source_bytes budget[name,bytes]);
+      require(hashed budget bytes=text "sha256" source)("Source artifact hash mismatch: "^text "id" source^".");
+      retained_source:=true)(F.sources checked);
+  require !retained_source "At least one source extraction artifact must be retained offline.";
+  List.iter(fun review->B.charge budget 1;match get "evidence" review with
+    |Json.Null->()|item->let name=text "local_path" item in path budget name;
+      let bytes=reader.review_second name in B.guard budget;ignore(source_bytes budget[name,bytes]);
+      require(hashed budget bytes=text "sha256" item)("Review evidence hash mismatch: "^text "reviewer" review^"."))(F.reviews checked);
+  require(F.fingerprint checked=F.fingerprint initial)"Reference manifest changed while reading offline inputs.";
+  let canonical=manifest_bytes budget checked in B.reserve budget(256+64*List.length retained);
+  {owner=budget;reference=checked;retained=("manifest.json",canonical)::retained}

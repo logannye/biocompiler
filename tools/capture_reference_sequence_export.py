@@ -5,6 +5,7 @@ import copy,hashlib,json,sys
 ROOT=Path(__file__).resolve().parents[1];sys.path[:0]=[str(ROOT/'src'),str(ROOT),str(ROOT/'tests')]
 from biocompiler.artifacts import sequences as source
 from tests.test_sequence_export import export_fixture
+from tools.reference_package_source_lineage import source_identity
 
 def canonical(value):return json.dumps(value,sort_keys=True,separators=(',',':'),ensure_ascii=False,allow_nan=False).encode()
 def fields(bundle):return {name:getattr(bundle,name)for name in ('fasta','specification','line_width','sequence_sha256','molecular_fingerprint')}
@@ -48,6 +49,6 @@ def capture():
   changed_bundle=replace(bundle,fasta=header+'\n'+'\n'.join(sequence[i:i+bundle.line_width]for i in range(0,len(sequence),bundle.line_width))+'\n',specification=changed_artifact.to_json()+'\n',sequence_sha256=changed_record.sequence_sha256,molecular_fingerprint=changed_artifact.fingerprint)
   row(alphabet+':self-rehashed-fidelity','verify',{'artifact':changed_artifact.to_dict(),'bundle':fields(changed_bundle)},lambda:source.verify_sequence_export(changed_bundle,changed_artifact))
   row(alphabet+':self-rehashed-current-check','export',authority|{'artifact':changed_artifact.to_dict(),'line_width':80},lambda:source.export_reference_sequence(request,construct,changed_artifact,registry,manifests))
- sources={p:hashlib.sha256((ROOT/p).read_bytes()).hexdigest()for p in ['src/biocompiler/artifacts/sequences.py','src/biocompiler/backends/reference.py','src/biocompiler/verification/molecular.py','tests/test_sequence_export.py','tests/test_construct_checker.py']}
+ sources={p:source_identity(ROOT,p)for p in ['src/biocompiler/artifacts/sequences.py','src/biocompiler/backends/reference.py','src/biocompiler/verification/molecular.py','tests/test_sequence_export.py','tests/test_construct_checker.py']}
  return {'schema':'biocompiler.reference_sequence_export_literals.v1','sources':sources,'cases':rows}
 if __name__=='__main__':Path(sys.argv[1]).write_bytes(canonical(capture())+b'\n')

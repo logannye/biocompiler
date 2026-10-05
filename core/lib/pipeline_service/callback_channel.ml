@@ -1,9 +1,12 @@
 open Bioc_wire
 module W = Bioc_checker.Work_budget
 module C = Bioc_domain.Verification_exploration.Codec
+module B = Bioc_artifact.Archive_budget
 let protocol = "biocompiler.pipeline_callback_channel.v1"
 let profile = "biocompiler.core.pipeline_callback_channel.v2"
 let declaration = Json.parse {|{"application":"caller_supplied_exact_declaration;channel_has_no_manager_or_acceptance_authority","client_fields":{"close":["protocol","profile","session_id","kind","sequence","parent_invocation"],"command":["protocol","profile","session_id","kind","sequence","parent_invocation","operation","arguments"],"continue":["protocol","profile","session_id","kind","sequence","invocation_id","invocation_sha256","outcome"],"hello":["protocol","profile","session_id","kind","sequence","declaration","application","limits"]},"close":"top_level_only;successful_null_reply_with_closed_true;no_resume","continuation_binding":"only_exact_current_top_invocation_id_and_body_sha256_may_complete","continuation_outcomes":{"raise":["status","token"],"return":["status","value"]},"event_sequence":"zero_then_exact_successor_across_replies_invocations_and_fatal","exception":"opaque_bounded_host_token_preserved;only_explicit_rejected_reply_or_Host_exception_keeps_application_live","fatal":"pipeline_callback_fatal;closed_latched;nullable_last_validated_request_binding;no_retry_or_fatal_write_after_uncertain_write","fixed_limits":{"frame_header_bytes":9,"max_action_bytes":128,"max_frame_json_nodes":1000000,"max_json_depth":128,"max_json_number_characters":4300,"max_json_string_bytes":4194304,"max_token_bytes":128,"terminal_bytes":8192,"terminal_work":1000000},"framing":"8_lowercase_hex_utf8_body_bytes_then_LF_then_exact_body","hello":"exact_complete_transport_and_application_declarations;null_or_complete_positive_integer_limit_reductions;already_consumed_prefix_counts","hello_result_fields":["declaration","application","limits"],"host_execution":"arbitrary_host_callback_cpu_and_memory_outside_native_bound;application_must_charge_its_native_work_and_retention_to_channel","invocation_identity":"event_id_and_sha256_exact_invocation_body_without_frame_header","limits":{"max_commands":10000,"max_frame_bytes":33554432,"max_frames":1000000,"max_json_nodes":2000000,"max_pending_invocations":128,"max_retained_bytes":134217728,"max_total_bytes":268435456,"max_work":1000000000000},"parent_binding":"command_parent_is_current_top_invocation_or_null_at_top_level;invocation_parent_is_enclosing_invocation","profile":"biocompiler.core.pipeline_callback_channel.v2","protocol":"biocompiler.pipeline_callback_channel.v1","reply_outcomes":{"ok":["status","value"],"raise":["status","token"],"rejected":["status","value"]},"request_identity":"sha256_exact_utf8_body_without_frame_header","retention":"cumulative_canonical_application_declaration_and_received_body_bytes_plus_callback_arguments_and_explicit_application_reservations;no_refund","schema_version":"biocompiler.pipeline_callback_channel_declaration.v1","sequence":"hello_zero_then_exact_successor_across_commands_continuations_and_close","server_fields":{"fatal":["protocol","profile","session_id","kind","event_id","sequence","request_sha256","code","closed","usage"],"invoke":["protocol","profile","session_id","kind","event_id","invocation_id","parent_invocation","command_sequence","command_sha256","action","arguments","usage"],"reply":["protocol","profile","session_id","kind","event_id","sequence","request_sha256","outcome","closed","usage"]},"session_identity":"client_canonical_lowercase_uuid_bound_to_one_channel_no_reconnect","terminal_reserve":"prepaid_1000000_work;normal_frames_leave_8192_bytes_and_one_frame;one_fatal_may_exceed_reduced_frame_and_node_ceilings_within_prepaid_byte_work_bound","usage":"conservative_reservations_before_io_or_allocation;partial_headers_and_bodies_remain_charged;json_nodes_counts_all_received_and_published_keys_and_values","usage_fields":["work_charged","work_remaining","input_bytes","output_bytes","frames","commands","json_nodes","pending_invocations","retained_bytes"]}|}
+let package_profile = "biocompiler.core.reference_package_channel.v1"
+let package_declaration = Json.parse {package|{"application":"caller_supplied_exact_declaration;channel_has_no_manager_or_acceptance_authority","client_fields":{"close":["protocol","profile","session_id","kind","sequence","parent_invocation"],"command":["protocol","profile","session_id","kind","sequence","parent_invocation","operation","arguments"],"continue":["protocol","profile","session_id","kind","sequence","invocation_id","invocation_sha256","outcome"],"hello":["protocol","profile","session_id","kind","sequence","declaration","application","limits"]},"close":"top_level_only;successful_null_reply_with_closed_true;no_resume","continuation_binding":"only_exact_current_top_invocation_id_and_body_sha256_may_complete","continuation_outcomes":{"raise":["status","token"],"return":["status","value"]},"event_sequence":"zero_then_exact_successor_across_replies_invocations_and_fatal","exception":"opaque_bounded_host_token_preserved;only_explicit_rejected_reply_or_Host_exception_keeps_application_live","fatal":"pipeline_callback_fatal;closed_latched;nullable_last_validated_request_binding;no_retry_or_fatal_write_after_uncertain_write","fixed_limits":{"frame_header_bytes":9,"max_action_bytes":128,"max_json_depth":128,"max_json_number_characters":4300,"max_json_string_bytes":4194304,"max_token_bytes":128,"terminal_bytes":8192,"terminal_work":1000000},"framing":"8_lowercase_hex_utf8_body_bytes_then_LF_then_exact_body","hello":"exact_complete_transport_and_application_declarations;null_or_complete_positive_integer_limit_reductions;already_consumed_prefix_counts","hello_result_fields":["declaration","application","limits"],"host_execution":"arbitrary_host_callback_cpu_and_memory_outside_native_bound;application_must_charge_its_native_work_and_retention_to_channel","invocation_identity":"event_id_and_sha256_exact_invocation_body_without_frame_header","limits":{"max_commands":10000,"max_frame_bytes":33554432,"max_frames":1000000,"max_json_nodes":1000000,"max_pending_invocations":128,"max_retained_bytes":536870912,"max_total_bytes":268435456,"max_work":10000000000},"parent_binding":"command_parent_is_current_top_invocation_or_null_at_top_level;invocation_parent_is_enclosing_invocation","profile":"biocompiler.core.reference_package_channel.v1","protocol":"biocompiler.pipeline_callback_channel.v1","reply_outcomes":{"ok":["status","value"],"raise":["status","token"],"rejected":["status","value"]},"request_identity":"sha256_exact_utf8_body_without_frame_header","retention":"one_package_owner_installed_during_hello_before_reply;cumulative_retained_data_including_transferred_prior_channel_bytes_and_all_descendant_manager_check_report_artifact_ownership;no_refund;not_process_RSS","schema_version":"biocompiler.pipeline_callback_channel_declaration.v1","sequence":"hello_zero_then_exact_successor_across_commands_continuations_and_close","server_fields":{"fatal":["protocol","profile","session_id","kind","event_id","sequence","request_sha256","code","closed","usage"],"invoke":["protocol","profile","session_id","kind","event_id","invocation_id","parent_invocation","command_sequence","command_sha256","action","arguments","usage"],"reply":["protocol","profile","session_id","kind","event_id","sequence","request_sha256","outcome","closed","usage"]},"session_identity":"client_canonical_lowercase_uuid_bound_to_one_channel_no_reconnect","terminal_reserve":"prepaid_1000000_work;normal_frames_leave_8192_bytes_and_one_frame;one_fatal_may_exceed_reduced_frame_and_node_ceilings_within_prepaid_byte_work_bound","usage":"conservative_reservations_before_io_or_allocation;partial_headers_and_bodies_remain_charged;json_nodes_counts_all_received_and_published_keys_and_values","usage_fields":["work_charged","work_remaining","input_bytes","output_bytes","frames","commands","json_nodes","pending_invocations","retained_bytes"]}|package}
 let maximum_frame_nodes = 1_000_000
 let terminal_bytes = 8192
 let terminal_work = 1_000_000
@@ -24,13 +27,14 @@ type limits = {max_frame_bytes:int;max_total_bytes:int;max_retained_bytes:int;
 let defaults = {max_frame_bytes=33_554_432;max_total_bytes=268_435_456;
   max_retained_bytes=134_217_728;max_work=maximum_work;max_json_nodes=2_000_000;
   max_pending_invocations=128;max_commands=10_000;max_frames=1_000_000}
+let package_defaults = {defaults with max_json_nodes=1_000_000;max_retained_bytes=536_870_912;max_work=B.defaults.max_work}
 let limits_json value = obj ["max_frame_bytes",Json.int value.max_frame_bytes;
   "max_total_bytes",Json.int value.max_total_bytes;"max_retained_bytes",Json.int value.max_retained_bytes;
   "max_work",Json.int value.max_work;"max_json_nodes",Json.int value.max_json_nodes;
   "max_pending_invocations",Json.int value.max_pending_invocations;
   "max_commands",Json.int value.max_commands;"max_frames",Json.int value.max_frames]
-let reduced raw = match raw with Json.Null -> defaults | _ ->
-  let maximum=Json.object_fields (limits_json defaults) in
+let reduced maximum raw = match raw with Json.Null -> maximum | _ ->
+  let maximum=Json.object_fields (limits_json maximum) in
   exact (List.map fst maximum) raw;
   List.iter (fun (key,bound) -> let value=Json.integer (get key raw) in
     require (Z.sign value>0 && Z.compare value (Json.integer bound)<=0)
@@ -49,6 +53,7 @@ exception Closed
 type binding = {request_sequence:int;request_sha256:string}
 type invocation = {id:int;mutable sha256:string}
 type t = {io:io;application:Json.t;application_bytes:string;
+  package:bool;channel_profile:string;channel_declaration:Json.t;maximum:limits;mutable package_owner:B.t option;
   dispatch:t -> command -> reply;root:W.t;mutable work:W.t;mutable limits:limits;
   mutable session_id:string option;mutable next_sequence:int;mutable next_event:int;
   mutable negotiated:bool;mutable running:bool;mutable closed:bool;
@@ -60,6 +65,8 @@ let is_closed state = state.closed
 let ensure_open state =
   if state.closed || W.exhausted state.root then (state.closed<-true;raise Closed)
 let budget state = ensure_open state;state.work
+let package_budget state = ensure_open state;state.package_owner
+let retained state = match state.package_owner with None->state.retained_bytes|Some owner->B.retained owner
 let multiply state amount factor =
   if amount>W.remaining state.work/factor then W.charge state.work (W.remaining state.work+1);
   W.charge state.work (amount*factor)
@@ -67,34 +74,37 @@ let retain_bytes state amount =
   ensure_open state;
   try
     W.charge state.work 1;
-    limit (amount>=0 && amount<=state.limits.max_retained_bytes-state.retained_bytes);
-    state.retained_bytes<-state.retained_bytes+amount
+    limit (amount>=0 && amount<=state.limits.max_retained_bytes-retained state);
+    (match state.package_owner with None->state.retained_bytes<-state.retained_bytes+amount
+     |Some owner->B.reserve owner amount)
   with _ -> state.closed<-true;raise Closed
 let codec state ~max_nodes =
   limit (max_nodes>0);
-  (* The resource profile enlarges only the complete session allowance. Every
-     independently encoded or parsed frame keeps the original node ceiling. *)
-  C.make_limits ~max_bytes:state.limits.max_frame_bytes
-    ~max_nodes:(min maximum_frame_nodes max_nodes) ~charge:(W.charge state.work) ()
+  C.make_limits ~max_bytes:state.limits.max_frame_bytes ~max_nodes:(min maximum_frame_nodes max_nodes) ~charge:(W.charge state.work) ()
 let usage_with_output ?(extra_frames=0) ?(extra_nodes=0) state output = obj [
   "work_charged",Json.int (state.limits.max_work-W.remaining state.work);
   "work_remaining",Json.int (W.remaining state.work);"input_bytes",Json.int state.input_bytes;
   "output_bytes",Json.int output;"frames",Json.int (state.frames+extra_frames);"commands",Json.int state.commands;
   "json_nodes",Json.int (state.json_nodes+extra_nodes);"pending_invocations",Json.int (List.length state.pending);
-  "retained_bytes",Json.int state.retained_bytes]
+  "retained_bytes",Json.int(retained state)]
 let usage state = usage_with_output state state.output_bytes
-let create ~io ~application ~dispatch () =
-  let root=W.create ~profile ~error_code:"pipeline_callback_work" ~maximum:maximum_work () in
+let create_with_profile ~package ~io ~application ~dispatch () =
+  let maximum=if package then package_defaults else defaults in
+  let channel_profile=if package then package_profile else profile in
+  let channel_declaration=if package then package_declaration else declaration in
+  let root=W.create ~profile:channel_profile ~error_code:"pipeline_callback_work" ~maximum:maximum.max_work () in
   W.charge root terminal_work;
-  let application_bytes=C.encode ~limits:(C.make_limits ~max_bytes:defaults.max_frame_bytes
+  let application_bytes=C.encode ~limits:(C.make_limits ~max_bytes:maximum.max_frame_bytes
     ~max_nodes:maximum_frame_nodes ~charge:(W.charge root) ()) application in
   let retained=String.length application_bytes in
-  limit (retained<=defaults.max_retained_bytes);
-  {io;application;application_bytes;dispatch;root;work=root;limits=defaults;session_id=None;
+  limit (retained<=maximum.max_retained_bytes);
+  {io;application;application_bytes;package;channel_profile;channel_declaration;maximum;package_owner=None;dispatch;root;work=root;limits=maximum;session_id=None;
    next_sequence=0;next_event=0;negotiated=false;running=false;closed=false;
    write_uncertain=false;terminal_sent=false;current=None;active=[];pending=[];
    input_bytes=0;output_bytes=0;frames=0;commands=0;json_nodes=0;retained_bytes=retained;largest_input=0}
-let common state kind event = ["protocol",str protocol;"profile",str profile;
+let create ~io ~application ~dispatch ()=create_with_profile ~package:false ~io ~application ~dispatch ()
+let create_package ~io ~application ~dispatch ()=create_with_profile ~package:true ~io ~application ~dispatch ()
+let common state kind event = ["protocol",str protocol;"profile",str state.channel_profile;
   "session_id",optional_string state.session_id;"kind",str kind;"event_id",Json.int event]
 let framed body = Printf.sprintf "%08x\n%s" (String.length body) body
 let write state body =
@@ -118,10 +128,10 @@ let publication state kind fields =
      unmetered encoder traversal. Sixteen fixed-point rewrites, SHA and framing
      copies are all prepaid by a conservative successful traversal bound. *)
   let largest_usage=obj ["work_charged",Json.int maximum_work;"work_remaining",Json.int maximum_work;
-    "input_bytes",Json.int defaults.max_total_bytes;"output_bytes",Json.int defaults.max_total_bytes;
-    "frames",Json.int defaults.max_frames;"commands",Json.int defaults.max_commands;
-    "json_nodes",Json.int defaults.max_json_nodes;"pending_invocations",Json.int defaults.max_pending_invocations;
-    "retained_bytes",Json.int defaults.max_retained_bytes] in
+    "input_bytes",Json.int state.maximum.max_total_bytes;"output_bytes",Json.int state.maximum.max_total_bytes;
+    "frames",Json.int state.maximum.max_frames;"commands",Json.int state.maximum.max_commands;
+    "json_nodes",Json.int state.maximum.max_json_nodes;"pending_invocations",Json.int state.maximum.max_pending_invocations;
+    "retained_bytes",Json.int state.maximum.max_retained_bytes] in
   let size=C.measure ~limits:(codec state ~max_nodes:(state.limits.max_json_nodes-state.json_nodes))
     (obj (fields @ ["usage",largest_usage])) in
   let bound=(C.work_bounds size).encode in
@@ -195,7 +205,7 @@ let read state =
     ~max_nodes:(min maximum_frame_nodes (max 1 (state.limits.max_json_nodes-state.json_nodes)))
     ~on_node:(fun () -> limit (state.json_nodes<state.limits.max_json_nodes);
       W.charge state.work 256;state.json_nodes<-state.json_nodes+1) body in
-  require (text "protocol" raw=protocol && text "profile" raw=profile) "Channel protocol or profile changed.";
+  require (text "protocol" raw=protocol && text "profile" raw=state.channel_profile) "Channel protocol or profile changed.";
   let identity=text "session_id" raw in
   require (uuid identity) "Channel identity must be a canonical lowercase UUID.";
   (match state.session_id with None -> state.session_id<-Some identity
@@ -227,18 +237,29 @@ let hello state raw binding =
   require (text "kind" raw="hello" && binding.request_sequence=0 && not state.negotiated)
     "Exactly one initial hello is required.";
   let encoded value=C.encode ~limits:(codec state ~max_nodes:state.limits.max_json_nodes) value in
-  require (encoded (get "declaration" raw)=encoded declaration) "Complete transport declaration differs.";
+  require (encoded (get "declaration" raw)=encoded state.channel_declaration) "Complete transport declaration differs.";
   require (encoded (get "application" raw)=state.application_bytes) "Complete application declaration differs.";
-  let controls=reduced (get "limits" raw) in
-  let spent=maximum_work-W.remaining state.root in
+  let controls=reduced state.maximum (get "limits" raw) in
+  let spent=state.maximum.max_work-W.remaining state.root in
   limit (spent<controls.max_work && state.largest_input<=controls.max_frame_bytes &&
     state.input_bytes+state.output_bytes+terminal_bytes<=controls.max_total_bytes &&
-    state.retained_bytes<=controls.max_retained_bytes && state.json_nodes<controls.max_json_nodes &&
+    retained state<=controls.max_retained_bytes && state.json_nodes<controls.max_json_nodes &&
     state.frames<controls.max_frames-1 && state.commands<=controls.max_commands);
-  state.work<-W.nested ~parent:state.root ~profile ~error_code:"pipeline_callback_work"
+  state.work<-W.nested ~parent:state.root ~profile:state.channel_profile ~error_code:"pipeline_callback_work"
     ~maximum:(controls.max_work-spent) ();
-  state.limits<-controls;state.negotiated<-true;
-  reply state binding ~closed:false (success (obj ["declaration",declaration;
+  state.limits<-controls;
+  if state.package then begin
+    (* No hello success or application capability can escape before this owner
+       exists. All prior work remains in the ancestor; all prior retained bytes
+       transfer once. The owner overhead is separately reserved before reply. *)
+    let owner=B.create_owner ~parent:state.work ~retain_bytes:(fun _->())
+      ~limits:(B.make_limits ~max_retained_bytes:controls.max_retained_bytes
+        ~max_work:(W.remaining state.work)())() in
+    B.reserve owner state.retained_bytes;
+    state.package_owner<-Some owner;state.work<-B.work owner
+  end;
+  state.negotiated<-true;
+  reply state binding ~closed:false (success (obj ["declaration",state.channel_declaration;
     "application",state.application;"limits",limits_json controls]))
 let dispatch_command state raw binding =
   exact (base_fields @ ["parent_invocation";"operation";"arguments"]) raw;
@@ -262,7 +283,7 @@ let close_command state raw binding =
   exact (base_fields @ ["parent_invocation"]) raw;
   require (state.pending=[] && get "parent_invocation" raw=Json.Null) "Close is permitted only at top level.";
   count_command state;reply state binding ~closed:true (success Json.Null)
-let invoke state ~action ~arguments =
+let invoke_bound ?(on_open=(fun _->())) state ~action ~arguments =
   ensure_open state;
   let previous=state.pending in
   try
@@ -275,6 +296,7 @@ let invoke state ~action ~arguments =
     retain_bytes state size.bytes;
     let invocation={id=state.next_event;sha256=""} in
     state.pending<-invocation::previous;
+    on_open invocation.id;ensure_open state;
     let _,body=publication state "invoke" ["invocation_id",Json.int invocation.id;
       "parent_invocation",optional_int (match previous with [] -> None | value::_ -> Some value.id);
       "command_sequence",Json.int command.sequence;"command_sha256",str command.body_sha256;
@@ -299,11 +321,15 @@ let invoke state ~action ~arguments =
            | _ -> Diagnostic.fail "pipeline_callback_protocol" "Unknown continuation outcome.")
       | _ -> Diagnostic.fail "pipeline_callback_protocol" "Only nested commands or the active continuation are permitted." in
     let value=wait () in
-    state.pending<-previous;ensure_open state;value
+    state.pending<-previous;ensure_open state;invocation.id,value
   with
   | Host_exception _ as error -> state.pending<-previous;ensure_open state;raise error
   | Closed -> terminate state;state.pending<-previous;raise Closed
   | _ -> terminate state;state.pending<-previous;raise Closed
+let invoke state ~action ~arguments=snd(invoke_bound state ~action ~arguments)
+let active_command state=
+  ensure_open state;match state.active with value::_->value|[]->
+    Diagnostic.fail "pipeline_callback_state" "No actual command is currently executing."
 let run state =
   ensure_open state;
   if state.running then (terminate state;raise Closed);

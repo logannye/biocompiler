@@ -42,7 +42,7 @@ class NativeBundleTests(unittest.TestCase):
 
     def test_actual_dune_suite_census_and_argument_order_are_preserved(self):
         plan = bundle.test_plan((ROOT/'core/test/dune').read_text())
-        self.assertEqual(len(plan),118)
+        self.assertEqual(len(plan),125)
         manager = next(row for row in plan if row['name']=='test_pipeline_callback_manager')
         self.assertEqual(manager['environment'], ['BIOCOMPILER_PIPELINE_CALLBACK_MANAGER_DECLARATION',
             'BIOCOMPILER_PIPELINE_CONTRACT_LITERALS','BIOCOMPILER_FIXED_PIPELINE_CORPUS'])

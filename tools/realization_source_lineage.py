@@ -88,6 +88,12 @@ def verify_captured_source(root: Path, entry):
     if sha256(current) == entry["sha256"]:
         return {"path": entry["path"], "historical_sha256": entry["sha256"],
                 "current_sha256": entry["sha256"], "kind": "identical_bytes"}
+    from tools.reference_package_source_lineage import PUBLIC, verify_source as verify_package_source
+    if entry['path'] in PUBLIC:
+        try:
+            return verify_package_source(root, entry['path'], entry['sha256'])
+        except AssertionError as error:
+            raise ValueError('Captured package source counterpart differs: ' + entry['path']) from error
     from tools.synthetic_selection_cli_source_lineage import CLI, verify_source as verify_selection_cli
     if entry["path"] == CLI:
         return verify_selection_cli(root, entry["sha256"])

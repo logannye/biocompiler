@@ -29,10 +29,12 @@ from unittest.mock import patch
 
 if __package__:
     from . import check_pipeline_fixed_provider_install as providers
+    from . import reference_package_source_lineage as package_source
     from . import pipeline_authoring_sources as authoring_sources
     from . import capture_pipeline_fixed_continuation_semantics as occurrences
 else:
     import check_pipeline_fixed_provider_install as providers
+    import reference_package_source_lineage as package_source
     import pipeline_authoring_sources as authoring_sources
     import capture_pipeline_fixed_continuation_semantics as occurrences
 
@@ -93,6 +95,8 @@ class Corpus:
                 fixed.source_tool('manager_registration_source_lineage').verify_source(ROOT, path, identity)
             elif path == 'tools/check_pipeline_session_install.py':
                 fixed.source_tool('manager_registration_source_lineage').verify_tool_source(actual, identity)
+            elif path in package_source.PUBLIC:
+                package_source.verify_source(ROOT, path, identity)
             else:
                 raise AssertionError('Original public build source changed: '+path)
         self.authorities = {case['authority_sha256']: case for case in self.build['cases']}
@@ -483,6 +487,8 @@ class NativeWitness:
 
 BUILD_TOOL = 'tools/capture_pipeline_fixed_build_semantics.py'
 SOURCES = tuple(dict.fromkeys((BUILD_TOOL, 'tests/test_pipeline_fixed_build_semantics.py',
+    'tools/reference_package_source_lineage.py', 'tests/test_reference_package_source_lineage.py',
+    package_source.PUBLIC_WITNESS, package_source.TRANSPORT_WITNESS,
     occurrences.SOURCE, 'tests/test_pipeline_fixed_continuation_identity.py',
     'tools/check_pipeline_fixed_continuation_install.py', 'tests/test_pipeline_fixed_continuation_campaign.py',
     'tests/test_pipeline_graph_diagnostics.py',

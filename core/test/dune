@@ -621,3 +621,42 @@
  (modules test_reference_package_workflow)
  (libraries bioc_wire bioc_domain bioc_checker bioc_artifact bioc_reference_input bioc_reference_artifact bioc_reference_export bioc_reference_package_service bioc_pipeline)
  (action (run %{test} %{env:BIOCOMPILER_REFERENCE_PACKAGE_WORKFLOW_CORPUS=missing})))
+
+(test
+ (name test_package_io)
+ (modules test_package_io)
+ (libraries bioc_wire bioc_checker bioc_artifact bioc_package_io unix))
+
+(test
+ (name test_package_callback_channel)
+ (modules test_package_callback_channel)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_artifact bioc_compiler bioc_pipeline_service zarith))
+
+(test
+ (name test_package_manager_capabilities)
+ (modules test_package_manager_capabilities)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_artifact bioc_compiler bioc_pipeline_service zarith))
+
+(test
+ (name test_package_public_callbacks)
+ (modules test_package_public_callbacks)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_artifact bioc_compiler bioc_pipeline bioc_reference_artifact bioc_reference_input bioc_reference_export bioc_reference_package_service)
+ (action (run %{test} %{env:BIOCOMPILER_REFERENCE_PACKAGE_WORKFLOW_CORPUS=missing})))
+
+(test
+ (name test_reference_package_check)
+ (modules test_reference_package_check)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_artifact bioc_reference_artifact bioc_reference_input bioc_reference_export bioc_reference_package_check zarith)
+ (action (run %{test} %{env:BIOCOMPILER_REFERENCE_PACKAGE_WORKFLOW_CORPUS=missing})))
+
+(test
+ (name test_reference_package_verify)
+ (modules test_reference_package_verify)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_artifact bioc_reference_input bioc_reference_export bioc_reference_package_check bioc_reference_package_verify bioc_package_io unix zarith)
+ (action (run %{test} %{env:BIOCOMPILER_REFERENCE_PACKAGE_WORKFLOW_CORPUS=missing})))
+
+(test
+ (name test_reference_package_session)
+ (modules test_reference_package_session)
+ (libraries bioc_wire bioc_pipeline_service bioc_package_io bioc_reference_package_session unix)
+ (action (run %{test} %{env:BIOCOMPILER_REFERENCE_PACKAGE_WORKFLOW_CORPUS=missing})))

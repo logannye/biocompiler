@@ -868,7 +868,9 @@ class CorePassManager(PassManager):  # type: ignore[misc]
         return elements
 
     def _prepare(self, core: CoreClient, *, application: JsonValue, limits: JsonValue = None) -> None:
-        self._objects = CallbackObjects()
+        from biocompiler.core_package_owner import current as package_owner
+        owner = package_owner()
+        self._objects = CallbackObjects() if owner is None else owner.objects_for(self, core, application)
         self._bindings: dict[str, _Binding] = {}
         self._contexts: dict[str, tuple[bytes, Any]] = {}
         self._context_ids: dict[int, str] = {}
@@ -903,8 +905,9 @@ class CorePassManager(PassManager):  # type: ignore[misc]
         self._ordered_callable = _ordered
         self._ordered_merge_callable = self._objects._evaluate
         self._fixed_register_callable = self._register_fixed
-        self._session = CorePipelineCallbackSession(core, application=application, objects=self._objects,
+        self._session = (CorePipelineCallbackSession(core, application=application, objects=self._objects,
             limits=limits, allowed_actions=_BROKER_ACTIONS + self._EXTRA_ACTIONS, invocation_handler=self._invoke)
+            if owner is None else owner.bind(self))
 
     def _ok(self, value: JsonValue) -> HostCompletion:
         return HostCompletion('ok', encode_document(value, max_bytes=self._objects.limits.max_document_bytes,

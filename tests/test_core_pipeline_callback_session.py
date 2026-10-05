@@ -74,6 +74,7 @@ class CallbackExitedPipeTests(unittest.TestCase):
                 return getattr(delegate, name)
 
         session = CorePipelineCallbackSession.__new__(CorePipelineCallbackSession)
+        session._package_files = None
         session._process, session._selector = process, DelayedStdout()
         session._eof, session._commands, session._traffic = set(), [], []
         session._stderr, session._sent = bytearray(), {}

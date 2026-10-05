@@ -20,12 +20,17 @@ ROOT = Path(__file__).resolve().parents[1]
 EXTERNAL_LIBRARIES = frozenset({"digestif", "zarith", "unix"})
 # New libraries/dependencies require deliberate policy review, even when harmless.
 LIBRARIES = {
+    'bioc_package_io': ('lib/package_io/dune', {'bioc_artifact', 'bioc_checker', 'bioc_wire', 'unix', 'zarith'}, 'trusted_primitive'),
+    'bioc_reference_package_check': ('lib/reference_package_check/dune', {'bioc_artifact', 'bioc_checker', 'bioc_domain', 'bioc_reference_artifact', 'bioc_reference_export', 'bioc_reference_input', 'bioc_wire', 'zarith'}, 'checker'),
+    'bioc_reference_package_verify': ('lib/reference_package_verify/dune', {'bioc_artifact', 'bioc_checker', 'bioc_domain', 'bioc_package_io', 'bioc_reference_artifact', 'bioc_reference_package_check', 'bioc_wire', 'zarith'}, 'checker_service'),
+    'bioc_reference_package_session': ('lib/reference_package_session/dune', {'bioc_artifact', 'bioc_checker', 'bioc_compiler', 'bioc_domain', 'bioc_package_io', 'bioc_pipeline', 'bioc_pipeline_service', 'bioc_reference_artifact', 'bioc_reference_export', 'bioc_reference_input', 'bioc_reference_package_service', 'bioc_wire', 'zarith'}, 'producer'),
+
     "bioc_reference_input": ("lib/reference_input/dune", {"bioc_wire", "bioc_domain", "bioc_artifact", "zarith"}, "domain"),
     "bioc_reference_package_service": ("lib/reference_package_service/dune", {"bioc_wire", "bioc_domain", "bioc_artifact", "bioc_reference_artifact", "bioc_reference_input", "bioc_reference_export", "bioc_checker", "bioc_compiler", "bioc_pipeline", "zarith"}, "producer"),
     "bioc_reference_artifact": ("lib/reference_artifact/dune", {"bioc_wire", "bioc_domain", "bioc_artifact", "zarith"}, "domain"),
     "bioc_reference_export": ("lib/reference_export/dune", {"bioc_wire", "bioc_domain", "bioc_artifact", "bioc_checker", "zarith"}, "checker_service"),
     "bioc_artifact": ("lib/artifact/dune", {"bioc_wire", "bioc_checker", "zarith"}, "trusted_primitive"),
-    "bioc_pipeline_service": ("lib/pipeline_service/dune", {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_pipeline", "bioc_synthetic_producer", "zarith"}, "producer"),
+    "bioc_pipeline_service": ("lib/pipeline_service/dune", {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_pipeline", "bioc_synthetic_producer", "bioc_artifact", "zarith"}, "producer"),
     "bioc_pipeline": ("lib/pipeline/dune", {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_realization_checker", "bioc_synthetic_producer", "bioc_candidate_runtime", "zarith"}, "compiler"),
     "bioc_synthetic_producer": ("lib/synthetic_producer/dune", {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_realization_checker", "zarith"}, "producer"),
     "bioc_realization_checker": ("lib/realization_checker/dune", {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_semantics", "bioc_candidate_runtime", "zarith"}, "checker"),
@@ -40,10 +45,18 @@ LIBRARIES = {
     "bioc_service": ("lib/service/dune", {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_realization_checker", "zarith", "unix"}, "checker_service"),
 }
 EXECUTABLES = {
-    "biocompiler-core": ("bin/core/dune", {"bioc_wire", "bioc_service", "bioc_producer_service", "bioc_pipeline_service"}, "core_entrypoint"),
-    "biocompiler-verify": ("bin/verify/dune", {"bioc_wire", "bioc_service"}, "verifier"),
+    "biocompiler-core": ("bin/core/dune", {"bioc_wire", "bioc_service", "bioc_producer_service", "bioc_pipeline_service", "bioc_reference_package_session"}, "core_entrypoint"),
+    "biocompiler-verify": ("bin/verify/dune", {"bioc_wire", "bioc_service", "bioc_reference_package_verify"}, "verifier"),
 }
 TESTS = {
+    'test_package_io': {'bioc_artifact', 'bioc_checker', 'bioc_package_io', 'bioc_wire', 'unix'},
+    'test_package_callback_channel': {'bioc_artifact', 'bioc_checker', 'bioc_compiler', 'bioc_domain', 'bioc_pipeline_service', 'bioc_wire', 'zarith'},
+    'test_package_manager_capabilities': {'bioc_artifact', 'bioc_checker', 'bioc_compiler', 'bioc_domain', 'bioc_pipeline_service', 'bioc_wire', 'zarith'},
+    'test_package_public_callbacks': {'bioc_artifact', 'bioc_checker', 'bioc_compiler', 'bioc_domain', 'bioc_pipeline', 'bioc_reference_artifact', 'bioc_reference_export', 'bioc_reference_input', 'bioc_reference_package_service', 'bioc_wire'},
+    'test_reference_package_check': {'bioc_artifact', 'bioc_checker', 'bioc_domain', 'bioc_reference_artifact', 'bioc_reference_export', 'bioc_reference_input', 'bioc_reference_package_check', 'bioc_wire', 'zarith'},
+    'test_reference_package_verify': {'bioc_artifact', 'bioc_checker', 'bioc_domain', 'bioc_package_io', 'bioc_reference_export', 'bioc_reference_input', 'bioc_reference_package_check', 'bioc_reference_package_verify', 'bioc_wire', 'unix', 'zarith'},
+    'test_reference_package_session': {'bioc_package_io', 'bioc_pipeline_service', 'bioc_reference_package_session', 'bioc_wire', 'unix'},
+
     "test_work_budget_retention": {"bioc_wire", "bioc_checker"},
     "test_reference_inputs": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_artifact", "bioc_reference_input", "bioc_reference_package_service"},
     "test_reference_package_workflow": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_artifact", "bioc_reference_input", "bioc_reference_artifact", "bioc_reference_export", "bioc_reference_package_service", "bioc_pipeline"},
@@ -177,6 +190,14 @@ ARTIFACT_UNIX = frozenset({"file_descr", "Unix_error", "close", "fstat", "S_REG"
                           "st_dev", "st_ino", "lseek", "SEEK_SET", "read", "single_write_substring"})
 ARTIFACT_TEST_UNIX = ARTIFACT_UNIX | frozenset({"openfile", "O_RDONLY", "O_WRONLY", "O_RDWR", "O_CREAT",
     "O_TRUNC", "O_APPEND", "O_CLOEXEC", "O_NONBLOCK", "write", "stat", "unlink", "pipe", "link"})
+
+PACKAGE_STUB = "core/lib/package_io/package_fd_stubs.c"
+PACKAGE_STUB_SHA256 = "0fcaa49fcd4e07cfc67049223b8d2c06a3ad756deece179f14b24c733d9d0364"
+PACKAGE_EXTERNAL = 'external duplicate_checked : int -> int -> bool -> Unix.file_descr = "bioc_package_duplicate_checked"'
+PACKAGE_TEST_EXTERNAL = 'external descriptor_number : Unix.file_descr -> int = "%identity"'
+PACKAGE_TEST_OWNERS = frozenset({"test:test_package_io", "test:test_reference_package_verify", "test:test_reference_package_session"})
+PACKAGE_UNIX = ARTIFACT_UNIX | frozenset({"st_perm", "st_nlink", "stdin", "stdout", "stderr", "EBADF"})
+PACKAGE_TEST_UNIX = ARTIFACT_TEST_UNIX | frozenset({"chmod"})
 
 PRODUCER_ROLES = frozenset({"compiler", "matcher", "selection", "emitter", "assembler", "producer"})
 # Reconstruction is an independent checker's implementation detail. Consumers
@@ -346,6 +367,8 @@ def source_boundary(path, allowed_libraries, *, owner=None):
         if token == "external":
             reviewed = (ARTIFACT_EXTERNAL if owner == "bioc_service" and path.name == "artifact_io.ml"
                         else ARTIFACT_TEST_EXTERNAL if owner == "test:test_artifact_io" and path.name == "test_artifact_io.ml"
+                        else PACKAGE_EXTERNAL if owner == "bioc_package_io" and path.name == "package_io.ml"
+                        else PACKAGE_TEST_EXTERNAL if owner in PACKAGE_TEST_OWNERS and path.name == owner[5:] + ".ml"
                         else None)
             if (reviewed is None or tokens.count("external") != 1
                     or re.findall(r"(?ms)^external .*?(?=^let |^module |^type |\Z)", source)
@@ -355,7 +378,9 @@ def source_boundary(path, allowed_libraries, *, owner=None):
             raise BoundaryError(f"Unreviewed native/process/dynamic-code escape {token} in {path.name}")
         if token == "Unix":
             members = (ARTIFACT_UNIX if owner == "bioc_service" and path.name == "artifact_io.ml"
-                       else ARTIFACT_TEST_UNIX if owner == "test:test_artifact_io" else frozenset())
+                       else ARTIFACT_TEST_UNIX if owner == "test:test_artifact_io"
+                       else PACKAGE_UNIX if owner == "bioc_package_io" and path.name == "package_io.ml"
+                       else PACKAGE_TEST_UNIX if owner in PACKAGE_TEST_OWNERS else frozenset())
             if (tokens[index:index + 2] != ["Unix", "."] or index + 2 >= len(tokens)
                     or tokens[index + 2] not in members):
                 raise BoundaryError(f"Unreviewed native/process/dynamic-code escape Unix in {path.name}")
@@ -409,9 +434,10 @@ def check_boundaries(root: Path):
                 actions = [field for field in stanza[1:]
                            if isinstance(field, list) and field and field[0] == "action"]
                 stanza = [stanza[0], *(field for field in stanza[1:] if field not in actions)]
-            if kind == "library" and relative == "lib/service/dune":
+            if kind == "library" and relative in {"lib/service/dune", "lib/package_io/dune"}:
                 stubs = [field for field in stanza[1:] if isinstance(field, list) and field and field[0] == "foreign_stubs"]
-                if stubs != [["foreign_stubs", ["language", "c"], ["names", "artifact_fd_stubs"]]]:
+                stub_name = "artifact_fd_stubs" if relative == "lib/service/dune" else "package_fd_stubs"
+                if stubs != [["foreign_stubs", ["language", "c"], ["names", stub_name]]]:
                     raise BoundaryError("Changed reviewed artifact descriptor primitive")
                 stanza = [stanza[0], *(field for field in stanza[1:] if field not in stubs)]
             values = fields(stanza, allowed)
@@ -437,6 +463,11 @@ def check_boundaries(root: Path):
                 if relative != "test/dune" or name not in TESTS or values.get("modules") != [name]:
                     raise BoundaryError(f"Unreviewed native test stanza: {name}")
                 fixture_variables = {
+                    'test_package_public_callbacks': "%{env:BIOCOMPILER_REFERENCE_PACKAGE_WORKFLOW_CORPUS=missing}",
+                    'test_reference_package_check': "%{env:BIOCOMPILER_REFERENCE_PACKAGE_WORKFLOW_CORPUS=missing}",
+                    'test_reference_package_verify': "%{env:BIOCOMPILER_REFERENCE_PACKAGE_WORKFLOW_CORPUS=missing}",
+                    'test_reference_package_session': "%{env:BIOCOMPILER_REFERENCE_PACKAGE_WORKFLOW_CORPUS=missing}",
+
                     "test_reference_inputs": "%{env:BIOCOMPILER_REFERENCE_INPUTS_CORPUS=missing}",
                     "test_reference_package_workflow": "%{env:BIOCOMPILER_REFERENCE_PACKAGE_WORKFLOW_CORPUS=missing}",
                     "test_reference_checkers": "%{env:BIOCOMPILER_REFERENCE_CONTRACTS_DOCUMENTS=missing}",
@@ -512,12 +543,15 @@ def check_boundaries(root: Path):
     closure = validate_graph(graph, roles)
     native_files = [path for path in core.rglob("*") if "_build" not in path.relative_to(core).parts
                     and path.suffix in {".c", ".h", ".cc", ".cpp", ".S", ".s"}]
-    if [path.relative_to(root).as_posix() for path in native_files] != [ARTIFACT_STUB]:
+    expected_stubs = {ARTIFACT_STUB: ARTIFACT_STUB_SHA256, PACKAGE_STUB: PACKAGE_STUB_SHA256}
+    if sorted(path.relative_to(root).as_posix() for path in native_files) != sorted(expected_stubs):
         raise BoundaryError("Unreviewed native artifact primitive source inventory")
-    stub_digest = hashlib.sha256(native_files[0].read_bytes()).hexdigest()
-    if stub_digest != ARTIFACT_STUB_SHA256:
-        raise BoundaryError("Changed reviewed artifact descriptor primitive source")
-    source_files[ARTIFACT_STUB] = stub_digest
+    for path in native_files:
+        relative = path.relative_to(root).as_posix()
+        stub_digest = hashlib.sha256(path.read_bytes()).hexdigest()
+        if stub_digest != expected_stubs[relative]:
+            raise BoundaryError("Changed reviewed artifact descriptor primitive source")
+        source_files[relative] = stub_digest
     references = {}
     for path in sorted(core.rglob("*")):
         if "_build" in path.relative_to(core).parts or path.suffix not in {".ml", ".mli"}:

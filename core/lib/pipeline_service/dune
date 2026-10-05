@@ -1,4 +1,4 @@
 (library
  (name bioc_pipeline_service)
  (libraries bioc_wire bioc_domain bioc_checker bioc_compiler bioc_pipeline
-   bioc_synthetic_producer zarith))
+   bioc_synthetic_producer bioc_artifact zarith))

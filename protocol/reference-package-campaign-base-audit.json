@@ -1,0 +1,148 @@
+{
+  "schema_version": "biocompiler.reference_package_campaign_base_audit.v1",
+  "base_revision": "573cfdf6504572cfc0fdd045bbd018c9e4d85320",
+  "scope": "Frozen original provenance and immutable base source comparison only; no native or current-source acceptance",
+  "original_sources": 518,
+  "byte_identical_at_base": 496,
+  "original_expected_bytes_changed": false,
+  "differences": [
+    {
+      "path": "src/biocompiler/compiler/construct.py",
+      "frozen_sha256": "11cd63df1c3cde2da1deaa334b3d51e57c4d23343e76ebf682aebeb139baad14",
+      "base_sha256": "9a4220e6ffea941703e5177cfa639f5b2ed02e14ecbffe4a6dfb442b8bcdd0ee",
+      "classification": "historical_explicit_restoration"
+    },
+    {
+      "path": "src/biocompiler/compiler/molecular.py",
+      "frozen_sha256": "a6763b804bfc2d691fee05d655d54affd44264994ec8869c8846e6c743aa83be",
+      "base_sha256": "040d85262f0b96f00e20276237a42bba9f68de8bd61e06148621432417ce4166",
+      "classification": "historical_explicit_restoration"
+    },
+    {
+      "path": "src/biocompiler/compiler/pipeline.py",
+      "frozen_sha256": "2b1dea35ac3c861f1e933cf7808a241f1f6596e59cc04ceb0ec32e4a54d27331",
+      "base_sha256": "dccba32618ecc7923b8a02ff54f114d515ff4e50908f45e27a8cda0a3f531be0",
+      "classification": "historical_explicit_restoration"
+    },
+    {
+      "path": "src/biocompiler/core_pipeline_callback_session.py",
+      "frozen_sha256": "0ff388509eb9c123b87cf5decc1f35cf5eaca61a02d84a756beba7150de17018",
+      "base_sha256": "d24cb3b78df7b7c85d0bbec5cd3c7634ca4756c5e8b0e113a8a3ba7258229a54",
+      "classification": "later_source_evolution_not_original_bytes"
+    },
+    {
+      "path": "src/biocompiler/core_pipeline_manager.py",
+      "frozen_sha256": "562052f3848c27ccb3fd19f156bd019da44aed58abe8cd4a2c7bd922ba07fc5b",
+      "base_sha256": "44eeed2c22a9d07ff254dcd5b1e1edd26cf7e6bcfc29918ae20da39c2fbb544c",
+      "classification": "later_source_evolution_not_original_bytes"
+    },
+    {
+      "path": "src/biocompiler/core_pipeline_session.py",
+      "frozen_sha256": "b0c744d8f3a38b1681805250ccf93884ba866678527cf366bcf08ff326da080d",
+      "base_sha256": "8de06056804e4e58350fa562c438acf2b6306a462edd9df3a1da2070f298d169",
+      "classification": "later_source_evolution_not_original_bytes"
+    },
+    {
+      "path": "src/biocompiler/core_reference_manager.py",
+      "frozen_sha256": "239fa3486751cfdc97e5f2e599a414562f3fba952b641169b4f04db0aab83772",
+      "base_sha256": "cd75fca7e114b76ea42dfe433c399f175e6402ea7270f00e5ed5982d584bbd31",
+      "classification": "later_source_evolution_not_original_bytes"
+    },
+    {
+      "path": "tests/test_ci_validation.py",
+      "frozen_sha256": "e2c4433629ed3b1a52ceb033626ea0be2e9e19e2a74a201c07b0d362d3c112e0",
+      "base_sha256": "dfaf2c7a37dd92610f1aaf54371fa47c42fbc7dce962031d939b2790c3767795",
+      "classification": "later_source_evolution_not_original_bytes"
+    },
+    {
+      "path": "tests/test_core_boundaries.py",
+      "frozen_sha256": "48db110e8ddf2b8b3abcffe8bf8d3b8d7422a65075cde3f2aea208fd45947942",
+      "base_sha256": "ee01877cf49a859fa07759cd531e216f4354488e8d5e50bbb5ccfd3608c6c2f7",
+      "classification": "later_source_evolution_not_original_bytes"
+    },
+    {
+      "path": "tests/test_core_pipeline_callback_session.py",
+      "frozen_sha256": "35f88557e4aab8ce30e05455a3c401f657896010169ebdf3a8fd23f628ac5fd7",
+      "base_sha256": "53ba8f9145dd86297272fe924ac516338b780c9e825e9dbeb6cc775c11bc449e",
+      "classification": "later_source_evolution_not_original_bytes"
+    },
+    {
+      "path": "tests/test_core_reference_manager.py",
+      "frozen_sha256": "cb7c9e5337313483f68025e713563d0e0637f43d3ee6b50153843b36116b21b7",
+      "base_sha256": "7daff97b39803e167f2b9671a54b1ef53b6fca03b5eb759d051b3e9cc5addb0b",
+      "classification": "later_source_evolution_not_original_bytes"
+    },
+    {
+      "path": "tests/test_manager_registration_source_lineage.py",
+      "frozen_sha256": "5da69ad32ce1512d2fa058ec8e5facb97fb27fdb875a2d4eb0fdaf9cde4c0800",
+      "base_sha256": "e134730dfb6c50d78188f051101bec6913351bb578b60827cb21ba2aa09f3095",
+      "classification": "later_source_evolution_not_original_bytes"
+    },
+    {
+      "path": "tests/test_native_fixture_wiring.py",
+      "frozen_sha256": "aaf676f07c571a5505c19ca877c5410eb4221bd1282d4e45d0e9479594e6939b",
+      "base_sha256": "ae79a57110dedf8d1a84ea590a02c9b827dd587a83f6388f2214437bb7d04c9a",
+      "classification": "later_source_evolution_not_original_bytes"
+    },
+    {
+      "path": "tests/test_native_synthetic_inspection_campaign.py",
+      "frozen_sha256": "016f0b0ee2ed07974094b77ec65291a3aaca14e7cda30fa28783eb4048730ab9",
+      "base_sha256": "f47f496518343694c9a9a67912abb27abc55c128311d266cbf29066584f91d91",
+      "classification": "later_source_evolution_not_original_bytes"
+    },
+    {
+      "path": "tests/test_pipeline_fixed_direct_controls.py",
+      "frozen_sha256": "b1a095dfe9659008690d7e1e380e599d5360a5d3310db2e021c780c0235fa6c3",
+      "base_sha256": "28ca506375afdc784c1de2eb1379465d3c474fe825e59f5980c750940bcedaf2",
+      "classification": "later_source_evolution_not_original_bytes"
+    },
+    {
+      "path": "tests/test_pipeline_fixed_registration_runtime.py",
+      "frozen_sha256": "de4ba62e137a48d2e35757b35ccebe7d5779f52e5e195f5f2f943c00d648493d",
+      "base_sha256": "7f7408ba74de5295c0392fbfe5b6c0f4aa4ea1c18f605fa97af9fd768941f18f",
+      "classification": "later_source_evolution_not_original_bytes"
+    },
+    {
+      "path": "tests/test_pipeline_reference_runtime.py",
+      "frozen_sha256": "50b248572f6879f94b93e2a67cf4f567c9c01349c9cd72b6b41724a6f6613af5",
+      "base_sha256": "90809996bafb862508cd93ed69e53494b433f641c548469f23f8788c76c1cfa6",
+      "classification": "later_source_evolution_not_original_bytes"
+    },
+    {
+      "path": "tests/test_reference_backend.py",
+      "frozen_sha256": "5526e7acbcfcf450dcd147aee2c44efb4a2241782ae1605a55bb9861101b7fd8",
+      "base_sha256": "826b9ea5e1ac56c610cc450a54a5ddce62010c3cb5acaf01502307f9bfe84cfb",
+      "classification": "later_source_evolution_not_original_bytes"
+    },
+    {
+      "path": "tests/test_reference_original_counterpart.py",
+      "frozen_sha256": "fc03af55773b2358d17120b6e623a8ea71d117bd626ed88c63fb819722b63819",
+      "base_sha256": "5403cb78d1e1bad0f914cdfb16af4ba4dd4637c387a5cc12e956a6f6f770f494",
+      "classification": "later_source_evolution_not_original_bytes"
+    },
+    {
+      "path": "tests/test_synthetic_selection_cli_capture.py",
+      "frozen_sha256": "465c3a4f4f6c094daa55372ac9a6385bd9ccae43931f4f6671f8f0cbd74b8870",
+      "base_sha256": "55b98485f26289eb161db9c132115412632b81eb304a5c78a7195251eaed640b",
+      "classification": "later_source_evolution_not_original_bytes"
+    },
+    {
+      "path": "tests/test_workflow_cli_lineage.py",
+      "frozen_sha256": "0b09678d061061b0f08730e3e2447ca05d55b3406d43ca9bc3fb5b498db98ea3",
+      "base_sha256": "994a099c645162504e14bbb0ce364ecebf22ffee723cfe0eb86019bdee6adc12",
+      "classification": "later_source_evolution_not_original_bytes"
+    },
+    {
+      "path": "tools/capture_reference_package_workflows.py",
+      "frozen_sha256": "268283f56943abc8b887f6584ce465794f4425782bf434433acc90da6d7cecda",
+      "base_sha256": null,
+      "classification": "absent_capture_tool"
+    }
+  ],
+  "source_pins": {
+    "original-311.json": "3db5514a955e04e9fad05bdb14cb8f7e8261e0b70937fb9e67e27423df71065d",
+    "original-314.json": "aa88e9fcdf4a9fd6ea3f1ef12364e4c997dd7c6045ee3fff93a50283b891d450",
+    "frozen/sources.json": "2175314b615bfe6d7360a4e205d12da4dd55add8c5c05903a05f0ff36a439e94",
+    "package/tools/capture_reference_package_workflows.py": "268283f56943abc8b887f6584ce465794f4425782bf434433acc90da6d7cecda"
+  }
+}

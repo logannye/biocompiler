@@ -12,3 +12,10 @@ val require_owner : B.t -> t -> unit
 val manifest : t -> Bioc_domain.Reference_manifest.t
 val files : t -> (string * string) list
 val manifest_bytes : B.t -> Bioc_domain.Reference_manifest.t -> string
+
+(** Additive source-cadence byte callbacks. Native parsing/pins/hash validation
+    run between actual reads and stop before any later read on failure. No path
+    is opened here, and callbacks never supply validity or a parsed manifest. *)
+type reader = { manifest_first:unit -> string; retained_first:string -> string;
+  manifest_second:unit -> string; source_second:string -> string; review_second:string -> string }
+val load_snapshot : B.t -> reader:reader -> t

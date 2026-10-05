@@ -606,6 +606,12 @@ def check_construct_request(request, registry, manifests):
 
 def check_construct(request, candidate, registry, manifests):
     """Independently accept exact single-CDS membership, coverage and provenance."""
+    import sys as _package_sys
+    _package_backend = _package_sys.modules.get('biocompiler.reference_package_backend')
+    if _package_backend is not None:
+        _package_value = _package_backend.default('check_construct', request, candidate, registry, manifests)
+        if _package_value is not _package_backend.UNSELECTED:
+            return _package_value
     from biocompiler.ir.construct import ConstructCandidate, ConstructRequest
 
     require(isinstance(request, ConstructRequest), "Expected a ConstructRequest.")

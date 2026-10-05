@@ -68,6 +68,12 @@ def _json_bytes(value):
 
 
 def _tools():
+    import sys as _package_sys
+    _package_backend = _package_sys.modules.get('biocompiler.reference_package_backend')
+    if _package_backend is not None:
+        _package_value = _package_backend.default('_tools')
+        if _package_value is not _package_backend.UNSELECTED:
+            return _package_value
     versions = {
         "reference_build": REFERENCE_BUILD_VERSION,
         "human_admission_policy": ADMISSION_POLICY_VERSION,
@@ -108,6 +114,11 @@ class ReferencePackage:
 
 def prepare_reference_build(alphabet, reference_directory, *, fasta_line_width=80):
     """Freeze a supported component-root request against reviewed offline pins."""
+    import sys as _package_sys
+    _package_backend = _package_sys.modules.get('biocompiler.reference_package_backend')
+    _package_route = None if _package_backend is None else _package_backend.current()
+    if _package_route is not None:
+        return _package_route.prepare(alphabet, reference_directory, fasta_line_width=fasta_line_width)
     construct, _, _ = load_reference_inputs(alphabet, reference_directory)
     return ReferenceBuildRequest(construct, fasta_line_width=fasta_line_width)
 
@@ -124,6 +135,11 @@ def build_reference_package(
     request remains authoritative; deriving a registry from pinned reference inputs
     cannot relax its selected identity, source, target or layout requirements.
     """
+    import sys as _package_sys
+    _package_backend = _package_sys.modules.get('biocompiler.reference_package_backend')
+    _package_route = None if _package_backend is None else _package_backend.current()
+    if _package_route is not None:
+        return _package_route.build(request, reference_directory, run_metadata=run_metadata)
     require(
         isinstance(request, ReferenceBuildRequest),
         "Expected a frozen ReferenceBuildRequest; general intent compilation is unsupported.",
@@ -247,6 +263,11 @@ def verify_reference_package(
     authority. At least one expected identity must be supplied independently.
     Inspection without authority is available through read_archive instead.
     """
+    import sys as _package_sys
+    _package_backend = _package_sys.modules.get('biocompiler.reference_package_backend')
+    _package_route = None if _package_backend is None else _package_backend.current()
+    if _package_route is not None:
+        return _package_route.reconstruct(data, expected_request=expected_request, expected_build_fingerprint=expected_build_fingerprint)
     require(
         expected_request is not None or expected_build_fingerprint is not None,
         "Fresh verification requires an independently trusted request or build fingerprint.",
@@ -299,6 +320,11 @@ def verify_reference_package(
 
 def publish_reference_package(package: ReferencePackage, output) -> Path:
     """Recheck current package evidence, then atomically replace a single archive."""
+    import sys as _package_sys
+    _package_backend = _package_sys.modules.get('biocompiler.reference_package_backend')
+    _package_route = None if _package_backend is None else _package_backend.current()
+    if _package_route is not None:
+        return _package_route.publish(package, output)
     require(isinstance(package, ReferencePackage), "Expected a reference package.")
     checked = verify_reference_package(
         package.data,

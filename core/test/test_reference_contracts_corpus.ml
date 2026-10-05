@@ -281,8 +281,59 @@ let reference_session_original root name expected current =
     "Reference session whole original source differs";
   restored
 
+(* Package integration is one additional finite source restoration layer.
+   Its witnesses bind the whole current and preceding module; the historical
+   reader below and all historical pins remain unchanged. *)
+let reference_package_original root name current=
+  let support_names=["src/biocompiler/core_pipeline_manager.py";"src/biocompiler/core_pipeline_callback_session.py"] in
+  let public_names=["compiler/reference.py";"registry/reference_builds.py";"artifacts/sequences.py";
+    "verification/components.py";"verification/construct.py";"verification/molecular.py"] in
+  if List.mem name support_names then begin
+    let witness=source_witness root "tests/conformance/reference-package-transport-source-counterpart-v1.json"
+      "80573b86ff3e5f08bedacbf631a35d8d7c4a5598e5b80175debc4a74175b67e9" in
+    require(text "schema_version" witness="biocompiler.reference_package_transport_counterpart.v1" &&
+      text "base_revision" witness="573cfdf6504572cfc0fdd045bbd018c9e4d85320" &&
+      List.map fst(Json.object_fields(field "files" witness))=support_names)
+      "Package support restoration changed its exact scope";
+    let entry=field name(field "files" witness) in
+    require(Canonical.sha256 current=text "after_sha256" entry && String.length current=integer(field "after_bytes" entry))
+      "Package support whole current source differs";
+    let changes=Json.array(field "changes" entry) in
+    require(List.length changes=(if name=List.hd support_names then 3 else 17))"Package support change census differs";
+    let restored=List.fold_left(fun source change->
+      let offset=integer(field "byte_offset" change) and before=text "before" change and after=text "after" change in
+      require(offset>=0 && offset<=String.length source-String.length after && String.sub source offset(String.length after)=after)
+        "Package support exact replacement span differs";
+      String.sub source 0 offset^before^String.sub source(offset+String.length after)(String.length source-offset-String.length after))
+      current(List.rev changes) in
+    require(Canonical.sha256 restored=text "before_sha256" entry && String.length restored=integer(field "before_bytes" entry))
+      "Package support whole preceding source differs";restored
+  end else
+  let prefix="src/biocompiler/" in
+  let relative=if String.starts_with ~prefix name then String.sub name(String.length prefix)(String.length name-String.length prefix)else "" in
+  if not(List.mem relative public_names)then current else begin
+    let witness=source_witness root "protocol/reference-package-public-prefixes-v1.json"
+      "2056c3a8f996646999bcbfc690e553c315a6c615a41484ed429b44b067ca7d96" in
+    require(text "schema_version" witness="biocompiler.reference_package_public_prefixes.v1" &&
+      text "base_revision" witness="573cfdf6504572cfc0fdd045bbd018c9e4d85320" &&
+      List.map fst(Json.object_fields(field "files" witness))=public_names)
+      "Package public restoration changed its exact scope";
+    let entry=field relative(field "files" witness) in
+    require(Canonical.sha256 current=text "after_sha256" entry)"Package public whole current source differs";
+    let restored=List.fold_left(fun source change->
+      let fragment=text "text" change in require(String.length fragment>0)"Empty public prefix";
+      let count=String.length source-String.length fragment in
+      let rec matches offset found=if offset>count then List.rev found else
+        matches(offset+1)(if String.sub source offset(String.length fragment)=fragment then offset::found else found) in
+      let offset=match matches 0 [] with [offset]->offset|_->failwith"Package public prefix occurrence differs" in
+      String.sub source 0 offset^String.sub source(offset+String.length fragment)(String.length source-offset-String.length fragment))
+      current(Json.array(field "prefixes" entry)) in
+    require(Canonical.sha256 restored=text "before_sha256" entry)"Package public whole preceding source differs";restored
+  end
+
 let reference_original root name expected current =
-  let restored=if name="src/biocompiler/core_pipeline_manager.py" then
+  let current=reference_package_original root name current in
+  let restored=if Canonical.sha256 current=expected then current else if name="src/biocompiler/core_pipeline_manager.py" then
     reference_manager_original root name expected current
     else if name="src/biocompiler/core_pipeline_callback_session.py" then
       reference_callback_original root name expected current

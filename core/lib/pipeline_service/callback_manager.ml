@@ -57,7 +57,10 @@ type build_artifact=Build_candidate of Synthetic_authority.Candidate.t
 type reference_attempt={preparation_id:string;scope:RW.molecular_attempt;roots:Json.t}
 type reference_completed_build=Reference_construct_build of RC.t|Reference_molecular_build of RM.t
 type reference_build_view={completed:reference_completed_build;envelope:Json.t}
-type t={mutable channel:Ch.t option;mutable bridge:H.t option;mutable initialized:bool;
+type completed_return=
+  | Get_return of M.t*string*C.Stage_record.t*int option
+  | Result_return of M.t*string*string*C.Pipeline_result.t*int option
+type t={package_capabilities:bool;mutable completed_returns:(int*completed_return) list;mutable channel:Ch.t option;mutable bridge:H.t option;mutable initialized:bool;
   mutable live:M.t option;mutable manager_limits:M.limits;mutable manager_json:Json.t;
   mutable target_binding:Json.t option;mutable artifacts:(string*Json.t) list;
   mutable requested_config:(Json.t*Json.t) option;
@@ -1146,13 +1149,23 @@ let dispatch_value (state:t) ~sequence operation payload=
   | "inspect-ordered"->inspect_ordered state
   | "inspect-ordered-references"->inspect_ordered_references state
   | "get"->let identity=name "identity" in
-      let record=M.get(live state) identity in
+      let manager=live state in
+      let record=M.get manager identity in
+      if state.package_capabilities then begin
+        retain state(obj["operation",str "get";"identity",str identity;"sequence",Json.int sequence]);
+        state.completed_returns<-(sequence,Get_return(manager,identity,record,(Ch.active_command(channel state)).parent_invocation))::state.completed_returns
+      end;
       reference_notice state ~sequence(RW.Got {identity;record});record_envelope state record
   | "result"->let manager=live state in
       let value=M.result manager ~identity:(name "identity") ~scope:(name "scope") in
       (* A result already retains the actual record whose freshness it checked.
          Envelope publication must not add a second manager read. *)
       let record=C.Pipeline_result.artifact value in
+      if state.package_capabilities then begin
+        retain state(C.Pipeline_result.to_json value);
+        Ch.retain_bytes(channel state)256;
+        state.completed_returns<-(sequence,Result_return(manager,name "identity",name "scope",value,(Ch.active_command(channel state)).parent_invocation))::state.completed_returns
+      end;
       reference_notice state ~sequence(RW.Result_returned {identity=name "identity";scope=name "scope";result=value});
       (match state.component_workflow with
        | Some ({phase=Component_ran(registration,previous);_} as workflow)
@@ -1306,16 +1319,46 @@ let dispatch (state:t) _ (command:Ch.command)=
   let parent=state.reference_command_scopes in
   state.reference_command_scopes<-(command.sequence,scope)::parent;
   Fun.protect ~finally:(fun()->state.reference_command_scopes<-parent) run
-let create ~io ()=
-  let state={channel=None;bridge=None;initialized=false;live=None;manager_limits=M.default_limits;
+let new_state ~package_capabilities ()=
+  {package_capabilities;completed_returns=[];channel=None;bridge=None;initialized=false;live=None;manager_limits=M.default_limits;
     manager_json=defaults;target_binding=None;requested_config=None;fixed_request=None;origins=[];artifacts=[];providers=[];contexts=[];records=[];compact_records=[];
      authority=None;upstream=None;component_attempted=false;component_workflow=None;builds=[];build_artifacts=[];selection_views=[];candidate_types=[];
      reference_mode=false;reference_workflow=None;reference_roots=None;reference_outputs=[];reference_builds=[];reference_attempts=[];reference_command_scopes=[];
     bindings=[];frozen=[];executions=[];pass_sidecars=[];admission_sidecars=[];
-    input_sidecar=None;next_identity=0} in
+    input_sidecar=None;next_identity=0}
+let create ~io ()=
+  let state=new_state ~package_capabilities:false() in
   let value=Ch.create ~io ~application:declaration ~dispatch:(dispatch state) () in
   state.channel<-Some value;state
+let create_package ~io ~application ~extension ()=
+  let state=new_state ~package_capabilities:true() in
+  let dispatch_package channel command=
+    try match extension state channel command with
+      |Some reply->reply
+      |None->dispatch state channel command
+    with cause->match reject state cause with Some value->Ch.Rejected value|None->raise cause in
+  let value=Ch.create_package ~io ~application ~dispatch:dispatch_package() in
+  state.channel<-Some value;state
+let require_channel state actual=
+  if not state.package_capabilities || not(channel state==actual) || Ch.is_closed actual then
+    fail "Package operation capability belongs to another or closed native channel."
+let manager_capability state ~channel:actual=
+  require_channel state actual;live state
+let get_return_capability state ~channel:actual ~manager ~sequence ~invocation ~identity=
+  require_channel state actual;
+  W.charge(work state)(String.length identity+1);
+  match find state(fun(key,_)->key=sequence)state.completed_returns with
+  |Some(_,Get_return(owner,original,record,parent)) when owner==manager && original=identity && parent=Some invocation->record
+  |_->fail "Package get capability is not the actual matching completed manager operation."
+let result_return_capability state ~channel:actual ~manager ~sequence ~invocation ~identity ~scope=
+  require_channel state actual;
+  W.charge(work state)(String.length identity+String.length scope+1);
+  match find state(fun(key,_)->key=sequence)state.completed_returns with
+  |Some(_,Result_return(owner,original,original_scope,result,parent))
+      when owner==manager && original=identity && original_scope=scope && parent=Some invocation->result
+  |_->fail "Package result capability is not the actual matching completed manager operation."
 let release (state:t)=
+   state.completed_returns<-[];
    state.reference_mode<-false;
    Option.iter RW.close state.reference_workflow;state.reference_workflow<-None;
    state.reference_roots<-None;state.reference_outputs<-[];state.reference_builds<-[];state.reference_attempts<-[];state.reference_command_scopes<-[];

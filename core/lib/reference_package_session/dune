@@ -1,0 +1,3 @@
+(library
+ (name bioc_reference_package_session)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_compiler bioc_pipeline bioc_pipeline_service bioc_artifact bioc_reference_artifact bioc_reference_input bioc_reference_export bioc_reference_package_service bioc_package_io zarith))

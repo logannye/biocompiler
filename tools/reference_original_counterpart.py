@@ -51,6 +51,8 @@ CORE_ROUTING_SHA = '18ee9bd517524b4440bcf29292a5d834470603713d662198b83ca61373c7
 CORE_MERGED_SHA = '562052f3848c27ccb3fd19f156bd019da44aed58abe8cd4a2c7bd922ba07fc5b'
 CORE_PRE_VIEW_SHA = 'f5c3410fb93d99182a1c5b9d8f3fa948990a0e1d4ce0b3b609c6b9f470d67bdd'
 CORE_CURRENT_SHA = '44eeed2c22a9d07ff254dcd5b1e1edd26cf7e6bcfc29918ae20da39c2fbb544c'
+CORE_PACKAGE_SHA = 'e70b302502bbae0cf274fb5dc420b276edf033189ea41cc3083575935f7119ba'
+CALLBACK_PACKAGE_SHA = '963af95957f4a6c7843fca8f575ebe3817349b9ce0722c59da0cd64d21e9bc51'
 CORE_VIEW_UPDATE = 'tests/conformance/reference-manager-source-counterpart-v5.json'
 CORE_VIEW_UPDATE_SHA = '56e6f74417aab4de65eafdc4e7ca00a78db736c4b3ae8608be046a6340ce913d'
 CORE_ATTEMPT_UPDATE = 'tests/conformance/reference-manager-source-counterpart-v4.json'
@@ -115,6 +117,8 @@ def authority():
 
 def core_view_source_witness(current, encoded=None):
     """Restore only the exact structural-view update before the unchanged v4 chain."""
+    from tools.reference_package_source_lineage import restore
+    current, _ = restore(CORE_SOURCE, current, root=ROOT)
     encoded = local_file(ROOT, CORE_VIEW_UPDATE).read_bytes() if encoded is None else encoded
     require(sha(encoded) == CORE_VIEW_UPDATE_SHA, 'Reference Core view source witness changed')
     witness = json.loads(encoded)
@@ -252,7 +256,7 @@ def core_source_witness(raw=None):
         lines[change['new_start_line'] - 1:change['new_end_line']] = change['before'].splitlines(keepends=True)
     require(''.join(lines).encode() == archived, 'Reference Core restoration differs from entire archived source')
     return archived, {'path': CORE_SOURCE, 'archive': CORE_BLOB, 'archive_sha256': CORE_ORIGINAL_SHA,
-        'current_sha256': CORE_CURRENT_SHA, 'witness': CORE_WITNESS, 'witness_sha256': CORE_WITNESS_SHA,
+        'current_sha256': CORE_PACKAGE_SHA, 'witness': CORE_WITNESS, 'witness_sha256': CORE_WITNESS_SHA,
         'correspondence': witness, 'update': {'path': CORE_UPDATE, 'sha256': CORE_UPDATE_SHA, 'correspondence': update},
         'attempt_update': {'path': CORE_ATTEMPT_UPDATE, 'sha256': CORE_ATTEMPT_UPDATE_SHA, 'correspondence': attempt},
         'view_update': view_update,
@@ -262,6 +266,8 @@ def core_source_witness(raw=None):
 
 def callback_drain_source_witness(current, encoded=None):
     """Undo only the exact buffered-close correction before the frozen v1 proof."""
+    from tools.reference_package_source_lineage import restore
+    current, _ = restore(CALLBACK_SOURCE, current, root=ROOT)
     encoded = local_file(ROOT, CALLBACK_DRAIN_WITNESS).read_bytes() if encoded is None else encoded
     require(sha(encoded) == CALLBACK_DRAIN_WITNESS_SHA, 'Reference callback drain source witness changed')
     witness = json.loads(encoded)
@@ -336,7 +342,7 @@ def callback_source_witness(raw=None):
         lines[row['new_start_line']-1:row['new_end_line']] = row['before'].splitlines(keepends=True)
     require(''.join(lines).encode() == archived, 'Reference callback restoration differs from entire archived source')
     return archived, {'path': CALLBACK_SOURCE, 'archive': CALLBACK_BLOB, 'archive_sha256': CALLBACK_ORIGINAL_SHA,
-        'current_sha256': CALLBACK_CURRENT_SHA, 'witness': CALLBACK_WITNESS, 'witness_sha256': CALLBACK_WITNESS_SHA,
+        'current_sha256': CALLBACK_PACKAGE_SHA, 'witness': CALLBACK_WITNESS, 'witness_sha256': CALLBACK_WITNESS_SHA,
         'correspondence': witness, 'buffered_close_update': drain_update, 'scope': witness['scope']}
 
 
@@ -438,6 +444,7 @@ def selection(module, ids):
 
 
 def data_closure(index):
+    from tools.reference_package_source_lineage import PUBLIC_WITNESS, PUBLIC_PIN, TRANSPORT_WITNESS, TRANSPORT_PIN
     result = [{'logical': CORPUS, 'sha256': CORPUS_SHA, 'bytes': len(local_file(ROOT, CORPUS).read_bytes())}]
     for identity, row in sorted(index['documents'].items()):
         logical = 'tests/conformance/reference-contracts-v1/' + identity + '.json'
@@ -446,7 +453,8 @@ def data_closure(index):
         require(len(raw) == row['bytes'] and raw.endswith(b'\n') and sha(raw[:-1]) == identity,
                 'Frozen complete reference document bytes differ')
         result.append({'logical': logical, 'sha256': sha(raw), 'bytes': len(raw)})
-    for logical, identity in ((CORE_BLOB, CORE_ORIGINAL_SHA), (CORE_WITNESS, CORE_WITNESS_SHA),
+    for logical, identity in ((PUBLIC_WITNESS, PUBLIC_PIN), (TRANSPORT_WITNESS, TRANSPORT_PIN),
+                              (CORE_BLOB, CORE_ORIGINAL_SHA), (CORE_WITNESS, CORE_WITNESS_SHA),
                               (CORE_UPDATE, CORE_UPDATE_SHA), (CORE_MERGE_UPDATE, CORE_MERGE_UPDATE_SHA),
                               (CORE_ATTEMPT_UPDATE, CORE_ATTEMPT_UPDATE_SHA), (CORE_VIEW_UPDATE, CORE_VIEW_UPDATE_SHA),
                               (ROUTE_WITNESS, ROUTE_WITNESS_SHA),
@@ -461,6 +469,7 @@ def data_closure(index):
 
 
 def source_closure(index, package_root):
+    from tools.reference_package_source_lineage import PUBLIC, restore
     values = {}
     pins = index['source_files'] | {FREEZER: FREEZER_SHA} | SUPPORT
     for logical, identity in sorted(pins.items()):
@@ -478,6 +487,9 @@ def source_closure(index, package_root):
         elif logical in ROUTE_SOURCES:
             copied, _ = route_source_witness(logical, raw)
             require(sha(copied) == identity, 'Frozen reference public route authority changed')
+        elif logical in PUBLIC:
+            copied, _ = restore(logical, raw, root=ROOT)
+            require(sha(copied) == identity, 'Frozen package public source authority changed')
         else:
             require(sha(raw) == identity, 'Captured reference source bytes changed: ' + logical)
             copied = raw

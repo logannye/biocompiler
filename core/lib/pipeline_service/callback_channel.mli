@@ -4,6 +4,8 @@
 val protocol : string
 val profile : string
 val declaration : Bioc_wire.Json.t
+val package_profile : string
+val package_declaration : Bioc_wire.Json.t
 
 type io = {
   read_header : unit -> string option;
@@ -47,3 +49,18 @@ val retain_bytes : t -> int -> unit
     conservatively and never refunded, including completed continuations. *)
 
 val usage : t -> Bioc_wire.Json.t
+
+(** The separately negotiated package profile installs exactly one 512 MiB
+    maximum persistent-data owner during hello, before its first successful
+    response. Positive reductions apply before owner allocation. Ordinary
+    callback sessions remain unchanged at 128 MiB. *)
+val create_package : io:io -> application:Bioc_wire.Json.t ->
+  dispatch:(t -> command -> reply) -> unit -> t
+val package_budget : t -> Bioc_artifact.Archive_budget.t option
+(** [None] before package hello or in the ordinary profile. A returned owner is
+    the exact ancestry used by subsequent channel and manager operations. *)
+
+(* Trusted package binding: the returned identity is the actual published
+   invocation, and active_command is the real dispatcher frame, never host data. *)
+val invoke_bound : ?on_open:(int -> unit) -> t -> action:string -> arguments:Bioc_wire.Json.t -> int * Bioc_wire.Json.t
+val active_command : t -> command

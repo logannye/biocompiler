@@ -24,7 +24,8 @@ val export_owned : B.t -> request:Bioc_domain.Reference_construct.Request.t ->
 (* Only the actual fresh owned exporter can mint this abstract capability.
    Identity comparisons below bind immutable authority; they do not import PASS. *)
 type checked
-val export_checked_owned : B.t -> request:Bioc_domain.Reference_construct.Request.t ->
+val export_checked_owned :
+  ?observe_check:(native:(unit -> Bioc_domain.Reference_molecular_evidence.Result.t) -> unit) -> B.t -> request:Bioc_domain.Reference_construct.Request.t ->
   construct:Bioc_domain.Reference_construct.Candidate.t ->
   artifact:Bioc_domain.Reference_molecular.Artifact.t ->
   registry:Bioc_domain.Component_registry.t ->

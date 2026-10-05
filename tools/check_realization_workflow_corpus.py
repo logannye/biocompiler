@@ -20,16 +20,27 @@ CORPUS_PIN = "2f5e7636977f559e046776c1bb92bebf67c8f0e733ca463927f8d3a1aee3d77b"
 # Each addition requires a fresh explicit review and hash. Wildcards and amended
 # hashes for historical source files are deliberately unsupported.
 REVIEWED_ADDITIONS = {
+    'src/biocompiler/core_package_files.py': 'e0e67a9b2fd75276a9deaa38d3600ab29049e0b5fa08d6175912a56c576ae226',
+    'src/biocompiler/core_package_owner.py': 'b848f2b27f6d39de34f4a6c219d8cf9e567e081d2598e46035f2e19f82a5297a',
+    'src/biocompiler/core_reference_package_host.py': '34e1e4ffa46e68afce1abdb75f38b9c495d3476aaebe03804f36316c8f429e8b',
+    'src/biocompiler/core_reference_package_io.py': '4f609af9943aee6a734c8a68583345a97656c4f2a402dfd4e48e7fbe867aa33e',
+    'src/biocompiler/core_reference_package_origins.py': '68667a330fd6bde7ebf6e1a603e07fe7b735d593e7e30ab76152496f1e512ef2',
+    'src/biocompiler/core_reference_package_protocol.py': '17b059b75c80cbcfb06ca6f8e05c2db8ee077c1c5e1e58ced8b3cac6870aaa2f',
+    'src/biocompiler/core_reference_package_route.py': '88f66ec408b015b9c2d2d8014f7eea38a3cfa453419d5d21749a6f9560cdfa9f',
+    'src/biocompiler/core_reference_package_source.py': '21e740757f6db9ea0146dbafddd84e164898a53422fe8e2ed37c26e5bab7b1fb',
+    'src/biocompiler/core_reference_package_verify.py': '42d2b68fbb3b30766f3f3ec08d5d823db3bfbe205da3b0ec3fca47f0e832700d',
+    'src/biocompiler/core_reference_package_views.py': '8a763380c7e8a8b37b90eed374dd06e0544595cd5520aa8fcc014743f08ad961',
+    'src/biocompiler/reference_package_backend.py': '208a74adf4d902588b21bac46d0990f056952081fb839d9d309f3ed7be5021fd',
     "src/biocompiler/core_distribution.py": "10c772076ee0ecfcb0c61a1a3410ae6014313d2e05617f30bc77f6df55485459",
     "src/biocompiler/core_pipeline_build_views.py": "85492c4f77b3104af2dae9d9180a0518bfd4fb61c9d6143880e6e58e10a77382",
     "src/biocompiler/core_pipeline_provider_views.py": "ea18d951f8170b1e1da4fbe6636d40e83f54ebda2ebdce187b0e08cf257b9c35",
-    "src/biocompiler/core_pipeline_manager.py": "44eeed2c22a9d07ff254dcd5b1e1edd26cf7e6bcfc29918ae20da39c2fbb544c",
+    "src/biocompiler/core_pipeline_manager.py": "e70b302502bbae0cf274fb5dc420b276edf033189ea41cc3083575935f7119ba",
     "src/biocompiler/reference_backend.py": "f390f40bb7f176e2cd45acde4db84e7aa987d8a7125269a1ceba37ea59b26358",
     "src/biocompiler/core_reference_host.py": "a31be5b73f1440d92cf8076fdad9d69ec9ae8605217d400af20d47f5d4e4305e",
     "src/biocompiler/core_reference_manager.py": "cd75fca7e114b76ea42dfe433c399f175e6402ea7270f00e5ed5982d584bbd31",
     "src/biocompiler/core_reference_provider_views.py": "1b4989571d71292eaa9998787f249fd7d60439958cbc8da6f36c2acca39c6bce",
     "src/biocompiler/core_reference_views.py": "a295b4583be057a743959d077add14ae7c5424086f7edddd322dfb188786d9f9",
-    "src/biocompiler/core_pipeline_callback_session.py": "d24cb3b78df7b7c85d0bbec5cd3c7634ca4756c5e8b0e113a8a3ba7258229a54",
+    "src/biocompiler/core_pipeline_callback_session.py": "963af95957f4a6c7843fca8f575ebe3817349b9ce0722c59da0cd64d21e9bc51",
     "src/biocompiler/pipeline_callback_objects.py": "ac5198795c3e80cff511e0fe372dc578a983d8be947e41dd9debd9f719da9eec",
     "src/biocompiler/core_pipeline_session.py": "8de06056804e4e58350fa562c438acf2b6306a462edd9df3a1da2070f298d169",
     "src/biocompiler/core_synthetic_inspection.py": "5ab68d6f1dac300af1e0d7431f5ba45aa2df493c1f446a8ccd67b56ae831178f",
@@ -77,12 +88,12 @@ def addition_counterparts(additions):
         attempt.restore((ROOT / attempt.SOURCE).read_bytes())
     if reference.CALLBACK_SOURCE in additions:
         require(additions[reference.CALLBACK_SOURCE] == REVIEWED_ADDITIONS[reference.CALLBACK_SOURCE]
-                == reference.CALLBACK_CURRENT_SHA, 'Unreviewed current callback addition identity')
+                == reference.CALLBACK_PACKAGE_SHA, 'Unreviewed current callback addition identity')
         reference.callback_source_witness((ROOT / reference.CALLBACK_SOURCE).read_bytes())
     if reference.CORE_SOURCE not in additions:
         return []
     require(additions[reference.CORE_SOURCE] == REVIEWED_ADDITIONS[reference.CORE_SOURCE]
-            == reference.CORE_CURRENT_SHA, "Unreviewed current Core addition identity")
+            == reference.CORE_PACKAGE_SHA, "Unreviewed current Core addition identity")
     _, proof = reference.core_source_witness((ROOT / reference.CORE_SOURCE).read_bytes())
     return [proof]
 
@@ -102,7 +113,9 @@ def source_scope(actual, *, allow_missing_tests=False):
             from tools.synthetic_producer_source_lineage import HISTORICAL as PRODUCERS
             from tools.manager_registration_source_lineage import HISTORICAL as MANAGERS
             from tools.realization_source_lineage import verify_captured_source, REFERENCE_ROUTES
-            require(path in HISTORICAL or path in PRODUCERS or path in MANAGERS or path in REFERENCE_ROUTES, "Historical workflow source bytes changed: " + path)
+            from tools.reference_package_source_lineage import PUBLIC as PACKAGE_ROUTES
+            require(path in HISTORICAL or path in PRODUCERS or path in MANAGERS or path in REFERENCE_ROUTES
+                    or path in PACKAGE_ROUTES, "Historical workflow source bytes changed: " + path)
             try:
                 route = verify_captured_source(ROOT, {"path": path, "sha256": before[path]})
             except ValueError as error:

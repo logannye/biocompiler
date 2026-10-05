@@ -171,6 +171,12 @@ def load_reference_inputs(alphabet, reference_directory):
     The directory is explicit so relocated packages and installed wheels use the
     same profile without relying on a checkout path or executable authoring file.
     """
+    import sys as _package_sys
+    _package_backend = _package_sys.modules.get('biocompiler.reference_package_backend')
+    if _package_backend is not None:
+        _package_value = _package_backend.default('load_reference_inputs', alphabet, reference_directory)
+        if _package_value is not _package_backend.UNSELECTED:
+            return _package_value
     require(
         isinstance(alphabet, str) and alphabet in REFERENCE_PINS,
         "The reviewed reference build supports only DNA or RNA.",
@@ -205,6 +211,12 @@ def collect_reference_files(reference_directory, manifest):
     source URLs are metadata and are never fetched. Unrelated directory files and
     authoring scripts are excluded from the returned inventory.
     """
+    import sys as _package_sys
+    _package_backend = _package_sys.modules.get('biocompiler.reference_package_backend')
+    if _package_backend is not None:
+        _package_value = _package_backend.default('collect_reference_files', reference_directory, manifest)
+        if _package_value is not _package_backend.UNSELECTED:
+            return _package_value
     require(
         isinstance(manifest, ReferenceManifest),
         "Expected a reviewed reference manifest.",

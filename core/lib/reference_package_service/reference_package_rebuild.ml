@@ -33,7 +33,7 @@ let equal budget left right=
     |_,_,Json.Object left,Json.Object right->List.length left=List.length right &&
       List.for_all(fun(key,value)->match lookup key right with Some other->same value other|None->false)left
     |_->false in same left right
-let verify ?runtime budget ~callbacks ?expected_request ?expected_build_fingerprint data=
+let verify_with_builder ?runtime ?invalid_utf8 budget ~builder ?expected_request ?expected_build_fingerprint data=
   B.charge budget 1;
   require(Option.is_some expected_request || Option.is_some expected_build_fingerprint)
     "Fresh verification requires an independently trusted request or build fingerprint.";
@@ -43,6 +43,7 @@ let verify ?runtime budget ~callbacks ?expected_request ?expected_build_fingerpr
   let raw=match List.assoc_opt "request.json" files with Some value->value|None->
     Diagnostic.fail "reference_package" "Package has no frozen request." in
   (try Json.validate_utf8 raw with Diagnostic.Error error when error.code="invalid_utf8"->
+    Option.iter(fun observe->observe raw)invalid_utf8;
     Diagnostic.fail "reference_package" "Packaged request must be UTF-8 JSON.");
   let request=D.Request.of_json_text budget raw in
   Option.iter(fun expected->require(equal budget(D.Request.to_json request)(D.Request.to_json expected))
@@ -62,10 +63,16 @@ let verify ?runtime budget ~callbacks ?expected_request ?expected_build_fingerpr
       let count=String.length name-String.length prefix in B.reserve budget(count+64);
       Some(String.sub name(String.length prefix)count,bytes)
     end else None)files in
-  let rebuilt=S.build budget ~callbacks:(callbacks retained) ~request ?run_metadata:(A.run_metadata imported)() in
+  let rebuilt=builder budget ~request ~files:retained ~run_metadata:(A.run_metadata imported) in
+  B.guard budget;require(S.owner rebuilt==budget)"Reconstructed package belongs to another native lifetime.";
   B.charge budget(D.Manifest.canonical_size manifest+D.Manifest.canonical_size(S.manifest rebuilt)+1);
   require(equal budget(D.Manifest.to_json(S.manifest rebuilt))(D.Manifest.to_json manifest))
     "Package identities or evidence are stale, altered or unsupported by current tools.";
   B.charge budget(String.length(S.data rebuilt)+String.length data+1);
   require(String.equal(S.data rebuilt)data)"Package content differs from current independent offline reconstruction.";
   rebuilt
+
+let verify ?runtime budget ~callbacks ?expected_request ?expected_build_fingerprint data=
+  verify_with_builder ?runtime budget ~builder:(fun owner ~request ~files ~run_metadata->
+    S.build owner ~callbacks:(callbacks files) ~request ?run_metadata())
+    ?expected_request ?expected_build_fingerprint data

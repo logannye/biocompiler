@@ -54,6 +54,9 @@ ROLE_SOURCES = {
     'construct_to_molecular.composition': ('biocompiler.compiler.molecular', 'run_molecular_pipeline.<locals>.check_linkage'),
 }
 SOURCES = (SOURCE, TEST_SOURCE, original.FREEZER, original.RUNNER,
+    'tools/reference_package_source_lineage.py', 'tests/test_reference_package_source_lineage.py',
+    'protocol/reference-package-public-prefixes-v1.json',
+    'tests/conformance/reference-package-transport-source-counterpart-v1.json',
     'tools/pipeline_reference_runtime.py', 'tests/test_pipeline_reference_runtime.py',
     'tools/reference_pipeline_transcript.py', 'tests/test_reference_pipeline_transcript.py',
     'tools/reference_execution_guard.py', 'tests/test_reference_execution_guard.py',

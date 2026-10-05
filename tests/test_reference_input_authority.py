@@ -27,7 +27,7 @@ class ReferenceInputAuthorityTests(unittest.TestCase):
 
     def test_source_and_raw_snapshot_hashes(self):
         for path, pin in self.current["sources"].items():
-            self.assertEqual(hashlib.sha256((authority.ROOT / path).read_bytes()).hexdigest(), pin)
+            self.assertEqual(authority.source_identity(authority.ROOT, path), pin)
         value = self.rows["load:original"]["outcome"]["value"]
         files = dict(value["files"])
         manifest = authority.ReferenceManifest.from_dict(value["manifest"])

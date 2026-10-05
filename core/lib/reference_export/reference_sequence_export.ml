@@ -50,7 +50,7 @@ let input budget raw=
     |Json.Object values->List.iter(fun(_,value)->depth(level+1)value)values|_->() in
   depth 0 raw;
   B.reserve budget(size.bytes+64*size.nodes+128);size
-let export_with ~owned budget ~request ~construct ~artifact ~registry ~manifests ~line_width ()=
+let export_with ~owned ?observe_check budget ~request ~construct ~artifact ~registry ~manifests ~line_width ()=
   B.charge budget 1;
   if owned then Diagnostic.require(B.owns_retention budget) "reference_export_owner"
     "Owned package export requires its existing cumulative retention owner.";
@@ -69,7 +69,9 @@ let export_with ~owned budget ~request ~construct ~artifact ~registry ~manifests
     ignore(input budget(Json.Object[key,Reference_manifest.to_json value]));authorities(count+1)rest in
   authorities 0 manifests;
   if not owned then B.reserve budget(checker_reservation_bytes());
-  let checked=Check.check ~parent:(B.work budget) ~limits:molecular_limits ~request ~construct ~candidate:artifact ~registry ~manifests () in
+  let native=lazy(Check.check ~parent:(B.work budget) ~limits:molecular_limits ~request ~construct ~candidate:artifact ~registry ~manifests ()) in
+  Option.iter(fun observe->observe ~native:(fun()->Lazy.force native);B.guard budget)observe_check;
+  let checked=Lazy.force native in
   if owned then ignore(input budget(E.Result.to_json checked));
   if not(E.Result.passed checked)then begin
     let codes=List.map(fun value->Json.string(field "code"(E.Diagnostic.to_json value)))(E.Result.diagnostics checked) in
@@ -87,8 +89,8 @@ let export_owned budget ~request ~construct ~artifact ~registry ~manifests ~line
 type checked={owner:B.t;request:R.Request.t;construct:R.Candidate.t;artifact:Q.Artifact.t;
   registry:Component_registry.t;manifests:(string*Reference_manifest.t)list;
   bundle:Reference_sequence_codec.t;report:E.Result.t;line_width:int}
-let export_checked_owned budget ~request ~construct ~artifact ~registry ~manifests ~line_width ()=
-  let bundle,report=export_with ~owned:true budget ~request ~construct ~artifact ~registry ~manifests ~line_width() in
+let export_checked_owned ?observe_check budget ~request ~construct ~artifact ~registry ~manifests ~line_width ()=
+  let bundle,report=export_with ~owned:true ?observe_check budget ~request ~construct ~artifact ~registry ~manifests ~line_width() in
   B.reserve budget(512+128*List.length manifests);
   {owner=budget;request;construct;artifact;registry;manifests;bundle;report;line_width}
 let require_checked budget value ~request ~construct ~artifact ~registry ~manifests ~line_width=

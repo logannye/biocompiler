@@ -7,3 +7,9 @@ val prepare : B.t -> alphabet:Bioc_domain.Reference_manifest.alphabet ->
 val request : t -> Bioc_domain.Reference_construct.Request.t
 val reference : t -> Bioc_domain.Reference_manifest.t
 val registry : t -> Bioc_domain.Component_registry.t
+
+(** A typed host declaration, never an accepted build. The original public
+    loader may be replaced; independent downstream checks retain authority. *)
+val supplied : B.t -> request:Bioc_domain.Reference_construct.Request.t ->
+  reference:Bioc_domain.Reference_manifest.t -> registry:Bioc_domain.Component_registry.t -> t
+val require_owner : B.t -> t -> unit

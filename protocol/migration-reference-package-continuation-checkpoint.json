@@ -1,0 +1,336 @@
+{
+  "schema_version": "biocompiler.reference_package_continuation_source_checkpoint.v1",
+  "scope": "Local reviewed source snapshot and Python-only checks; not native, installed-campaign, release, or migration-cutoff acceptance.",
+  "base_revision": "573cfdf6504572cfc0fdd045bbd018c9e4d85320",
+  "branch": "codex/reference-package-continuations",
+  "platform": "Darwin-25.2.0-arm64-arm-64bit-Mach-O",
+  "implementation": [
+    "prepare/build/reconstruct/publish/direct export continuations under a private package owner",
+    "current public load/collect/pipeline/checker/tool/build/verify callpoints",
+    "separate producer-free Verify and current Core reconstruction",
+    "finite public source-prefix and transport counterpart proofs",
+    "native package IO, session, checker, verifier and seven native test sources"
+  ],
+  "restrictions_observed": {
+    "local_native_compilation": false,
+    "local_native_execution": false,
+    "native_packaging": false,
+    "push": false,
+    "pr_changes": false,
+    "ci_dispatch_or_watch": false,
+    "merge": false,
+    "other_session_messages": false,
+    "production_default": "Python",
+    "migration_cutoff_gates": "all four open"
+  },
+  "focused_python_controls": {
+    "modules": [
+      "tests.test_reference_package_application",
+      "tests.test_reference_package_route",
+      "tests.test_reference_package_origins",
+      "tests.test_reference_package_routing",
+      "tests.test_reference_package_host",
+      "tests.test_reference_package_source",
+      "tests.test_package_owner",
+      "tests.test_package_files",
+      "tests.test_package_views",
+      "tests.test_package_source_io",
+      "tests.test_package_callback_transport",
+      "tests.test_package_verify_transport",
+      "tests.test_reference_package_source_lineage"
+    ],
+    "command": "PYTHONPATH=src:tests:. <python> -m unittest tests.test_reference_package_application tests.test_reference_package_route tests.test_reference_package_origins tests.test_reference_package_routing tests.test_reference_package_host tests.test_reference_package_source tests.test_package_owner tests.test_package_files tests.test_package_views tests.test_package_source_io tests.test_package_callback_transport tests.test_package_verify_transport tests.test_reference_package_source_lineage -q",
+    "results": [
+      {
+        "python": "3.11.15",
+        "tests": 106,
+        "seconds": 2.429,
+        "exit_code": 0
+      },
+      {
+        "python": "3.14.6",
+        "tests": 106,
+        "seconds": 2.241,
+        "exit_code": 0
+      }
+    ],
+    "scope": "Inert Python peers, source checks and Python object controls; no native executable selected."
+  },
+  "additional_source_controls": {
+    "scope": "Local Python/source controls only. No native execution or migration acceptance. Earlier python311.json records the separate pre-final148-test support run.",
+    "final_source_controls": {
+      "modules": [
+        "tests.test_reference_package_source",
+        "tests.test_reference_package_source_lineage",
+        "tests.test_reference_package_host",
+        "tests.test_reference_view_source_lineage",
+        "tests.test_callback_source_lineage",
+        "tests.test_reference_session_source_lineage",
+        "tests.test_reference_package_authority",
+        "tests.test_sequence_export_authority",
+        "tests.test_reference_input_authority"
+      ],
+      "python311": {
+        "version": "3.11.15",
+        "tests": 52,
+        "seconds": 2.18,
+        "exit_code": 0
+      },
+      "python314": {
+        "version": "3.14.6",
+        "tests": 52,
+        "seconds": 2.027,
+        "exit_code": 0
+      }
+    },
+    "final_verify_transport_controls": {
+      "module": "tests.test_package_verify_transport",
+      "python311": {
+        "tests": 7,
+        "seconds": 1.731,
+        "exit_code": 0
+      },
+      "python314": {
+        "tests": 7,
+        "seconds": 1.669,
+        "exit_code": 0
+      }
+    },
+    "original_workflow_and_source_controls": {
+      "modules": [
+        "tests.test_realization_workflow_corpus",
+        "tests.test_pipeline_authoring_sources",
+        "tests.test_reference_session_source_lineage"
+      ],
+      "python": "3.14.6",
+      "tests": 26,
+      "seconds": 124.832,
+      "exit_code": 0,
+      "retained_capture": "generated/migration-next/realization-workflow-capture"
+    },
+    "preflight": {
+      "311": {
+        "path": "generated/migration-next/reference-package-python-integration/preflight-311.json",
+        "sha256": "7564d670c8adb5f1764011a9be2b2a4f7a117c996351e29d9ded448dba1c8e8c",
+        "status": "pass"
+      },
+      "314": {
+        "path": "generated/migration-next/reference-package-python-integration/preflight-314.json",
+        "sha256": "fbb15735c172f8861d66f8176be3be077a63755d9133267d85d1f63b46de524e",
+        "status": "pass"
+      }
+    },
+    "current_source_sha256": {
+      "src/biocompiler/core_package_files.py": "e0e67a9b2fd75276a9deaa38d3600ab29049e0b5fa08d6175912a56c576ae226",
+      "src/biocompiler/core_package_owner.py": "b848f2b27f6d39de34f4a6c219d8cf9e567e081d2598e46035f2e19f82a5297a",
+      "src/biocompiler/core_pipeline_callback_session.py": "963af95957f4a6c7843fca8f575ebe3817349b9ce0722c59da0cd64d21e9bc51",
+      "src/biocompiler/core_pipeline_manager.py": "e70b302502bbae0cf274fb5dc420b276edf033189ea41cc3083575935f7119ba",
+      "src/biocompiler/core_reference_package_host.py": "34e1e4ffa46e68afce1abdb75f38b9c495d3476aaebe03804f36316c8f429e8b",
+      "src/biocompiler/core_reference_package_io.py": "4f609af9943aee6a734c8a68583345a97656c4f2a402dfd4e48e7fbe867aa33e",
+      "src/biocompiler/core_reference_package_source.py": "21e740757f6db9ea0146dbafddd84e164898a53422fe8e2ed37c26e5bab7b1fb",
+      "src/biocompiler/core_reference_package_verify.py": "42d2b68fbb3b30766f3f3ec08d5d823db3bfbe205da3b0ec3fca47f0e832700d",
+      "src/biocompiler/core_reference_package_views.py": "8a763380c7e8a8b37b90eed374dd06e0544595cd5520aa8fcc014743f08ad961",
+      "src/biocompiler/reference_package_backend.py": "208a74adf4d902588b21bac46d0990f056952081fb839d9d309f3ed7be5021fd",
+      "tools/reference_package_source_lineage.py": "8e5f20f732613e84a44e1c59e51086224586e9d2296b560418060978303233e3",
+      "tools/reference_original_counterpart.py": "2a5383dce1d7b9712aee32ae191daa919b3ed8c4f1fd4dfbe781ff8f84eeecc8",
+      "tools/check_realization_workflow_corpus.py": "168a18a2a5c2384187e3dd75a1c4b0472769f2ccdf383f15f33026f14277b258",
+      "tools/pipeline_registration_guard.py": "4e0dfe7b4c2ce20b1ecfa5745ce2077aba17dcc2b05d84958fdf2d9d9e982e24",
+      "protocol/reference-package-public-prefixes-v1.json": "2056c3a8f996646999bcbfc690e553c315a6c615a41484ed429b44b067ca7d96",
+      "tests/conformance/reference-package-transport-source-counterpart-v1.json": "80573b86ff3e5f08bedacbf631a35d8d7c4a5598e5b80175debc4a74175b67e9"
+    }
+  },
+  "other_checks": [
+    {
+      "command": "PYTHONPATH=src:tests:. <python> -m unittest tests.test_migration_inventory -q",
+      "python": [
+        "3.11.15",
+        "3.14.6"
+      ],
+      "tests_each": 13,
+      "exit_code": 0,
+      "inventory_entries": 3358,
+      "new_entries": 48,
+      "removed_entries": 0,
+      "all_entry_states": "legacy"
+    },
+    {
+      "command": "python3 tools/migration_inventory.py --check",
+      "exit_code": 0
+    },
+    {
+      "command": "python3 tools/check_core_boundaries.py",
+      "exit_code": 0,
+      "scope": "Static dependency and source policy only"
+    },
+    {
+      "command": "PYTHONPATH=src:tests:. python3 -m unittest tests.test_core_boundaries -q",
+      "python": "3.14.6",
+      "tests": 24,
+      "exit_code": 0
+    },
+    {
+      "command": "PYTHONPATH=src:tests:. python3 -m unittest tests.test_ci_native_bundle -q",
+      "python": "3.14.6",
+      "tests": 6,
+      "exit_code": 0,
+      "scope": "Inert fixture bytes; subprocess execution mocked"
+    },
+    {
+      "command": "PYTHONPATH=<existing pure-Python mypy runtime> python3 -m mypy --config-file tools/mypy-core.ini",
+      "python": "3.14.6",
+      "checked_source_files": 39,
+      "exit_code": 0,
+      "scope": "Reused installed checker without dependency installation or native builds"
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0
+    }
+  ],
+  "original_package_campaign": {
+    "original_methods": 32,
+    "public_calls": 270,
+    "documents": 3984,
+    "frozen_sources": 518,
+    "original_bytes_unchanged": true,
+    "python_default_execution": [
+      {
+        "python": "3.11.15",
+        "methods": 32,
+        "exit_code": 0
+      },
+      {
+        "python": "3.14.6",
+        "methods": 32,
+        "exit_code": 0
+      }
+    ],
+    "installed_selected_core_and_verify_execution": "not run; full original campaign remains required, without reduced replacement"
+  },
+  "native_test_plan": {
+    "suites": 125,
+    "added_suites": [
+      "test_package_io",
+      "test_package_callback_channel",
+      "test_package_manager_capabilities",
+      "test_package_public_callbacks",
+      "test_reference_package_check",
+      "test_reference_package_verify",
+      "test_reference_package_session"
+    ],
+    "compiled": false,
+    "executed": false
+  },
+  "pending": [
+    "additive installed package recorder with complete reviewed current-source closure",
+    "independently checked full observation replay of original32 on installed Core+Verify",
+    "remaining arbitrary manager/duck returns, copied/transformed package results, repeated or nested ownership, retained manager lifetime, conversion/error timing and sequence-fidelity override compatibility",
+    "fresh exact-revision Linux x86_64 and macOS arm64 native compilation and all125 suites",
+    "all four installed platform/Python3.11 and3.14 slots plus unchanged release/accounting gates; requires new hosted authorization"
+  ],
+  "source_snapshot_sha256": {
+    "core/bin/core/dune": "a80c6659fe08772c07c8ee5dcbf5f824b71268f94ab6fc4b692cb5dc16329dac",
+    "core/bin/core/main.ml": "aca3f9db2a9a9b7b76009a9517177ede76644e0d3d78bfb4717d7533cbf5b901",
+    "core/bin/verify/dune": "2b8d3169b73427e3b46777f1a1e85fb0ee287198a4322358592d3549ecb5ff98",
+    "core/bin/verify/main.ml": "422a02f2794faf5d9cd6822c9301691a224f8b2164c49865dba043a57934cb22",
+    "core/lib/package_io/dune": "9c86b9def57f350deac06b8f7df720b4644d0ee5a7a37408abd2641e8aab279b",
+    "core/lib/package_io/package_fd_stubs.c": "0fcaa49fcd4e07cfc67049223b8d2c06a3ad756deece179f14b24c733d9d0364",
+    "core/lib/package_io/package_io.ml": "ac0bb6b5c54f5f11974af47a60782c56b71c26c6be903b3f388b97aec576055f",
+    "core/lib/package_io/package_io.mli": "107ac8e74ea576a8453a8fbe62cc2410450ecd281c0b180bfec4d9c1f6bd0724",
+    "core/lib/pipeline_service/callback_channel.ml": "207f2e9814f88ba4051713bea14a6c3ccc0de9251aadff74b90471d26638b795",
+    "core/lib/pipeline_service/callback_channel.mli": "c7be7f9698be677664ee1c831f701cfc062dfd2ca892658f63bb55b3cca7ca63",
+    "core/lib/pipeline_service/callback_manager.ml": "a9b05b7cea315af89011f81a2167194d315fffbff2be5af1e0edc5d0a13dc4ce",
+    "core/lib/pipeline_service/callback_manager.mli": "9de6457b049aa19da1d20b514baf9af02c29d10e8e161c4dddf493b312bf4d4d",
+    "core/lib/pipeline_service/dune": "a20e67a016b9af50c918f44b7376f045a1a5f4f2970e26fe0b42e9eb14c40d11",
+    "core/lib/reference_export/reference_sequence_export.ml": "fad4f2bf866c10b9903207d6a96ff4476e677cae85fd0c9439241d62880bb318",
+    "core/lib/reference_export/reference_sequence_export.mli": "d5eace33c0bab6f69ef33635ab11f6b14f601e3c466e68c7d4c1ecf9986a17f5",
+    "core/lib/reference_input/reference_inputs.ml": "d9c00f64f6c2268d3f0c4cea1f5b2adad05e4f7cbd8c21bb8ff94b7da1a764c2",
+    "core/lib/reference_input/reference_inputs.mli": "86fe03c44ed1bd16bf1c5b9fc8ce9033fb78563f5a0e2731b339b6354a896884",
+    "core/lib/reference_package_check/dune": "9fe98f026a233b6da200ce87f0dcd3888e1d88e187f3474f910bc037b93c18a1",
+    "core/lib/reference_package_check/reference_package_check.ml": "9f6cf76848a757c1782e935e09591bfd5aff9232bc473d60fa1de0676c8b7c7e",
+    "core/lib/reference_package_check/reference_package_check.mli": "b331ab950b099f35b3877186161a4aa19d3339aba0cab323596db9e7e6505eef",
+    "core/lib/reference_package_service/reference_build_inputs.ml": "30e367c918b214c7655a6ef4f3871330d524c41c81ddf1a1664a8e8142ce9bdb",
+    "core/lib/reference_package_service/reference_build_inputs.mli": "e3ac4b1fe9994893b882a4e896830876892fe38c6cd0f9da852b99af739f77b8",
+    "core/lib/reference_package_service/reference_package_rebuild.ml": "1a2267d2b65437ac9a32938c81ee0d29ec77e87bd41b0b70609e0ea874520431",
+    "core/lib/reference_package_service/reference_package_rebuild.mli": "8b0fa73596fce56bf4d43d05c99029ba954a24e19a3a93d5b05c5396e0edf352",
+    "core/lib/reference_package_service/reference_package_workflow.ml": "588db48c1ab698a8169601d6fd66a7b3548a6138caed393fc7e0d1992ecd30ae",
+    "core/lib/reference_package_service/reference_package_workflow.mli": "9e6ca484ac2a640e607fb94e1ea9e2ec42c4c613d008cc11852ef835d2511ffe",
+    "core/lib/reference_package_session/dune": "cbba239755cb3c82e7a44fd0267c0d1fd7b6d792f5ba2cc194071526c5019bbc",
+    "core/lib/reference_package_session/reference_package_session.ml": "c39e8e93b021e6876875c3ea3e27b600ca20a5ed7234366aff231a0976aa7f7f",
+    "core/lib/reference_package_session/reference_package_session.mli": "1c09b9f52d45347d546aaa391d578e110bd1db253f51b6e2181944873508f4d9",
+    "core/lib/reference_package_verify/dune": "2765ad786c39b41b59db5c7aec9e5ab2cb19ef94a6d1f54f365b96c01f97b22d",
+    "core/lib/reference_package_verify/reference_package_verify.ml": "3c38754522f743352f47aab54f9fc38ca5784a8e23aeaefecbb45c6b4fcff9bb",
+    "core/lib/reference_package_verify/reference_package_verify.mli": "4715876399ec792c9a35b3d9a11cec525f7e996a4ddb67a54a834a31bd192534",
+    "core/test/dune": "debc03d5202d83f265ee0282fc03dc5f8ce6905a06a79d3e0194a061a2ff5b5b",
+    "core/test/test_package_callback_channel.ml": "6570d66d33dece626a9037db916e3c68dd925f6db290d5bef7af365ce303c3bc",
+    "core/test/test_package_io.ml": "6136f3d4cacb182daab895ec8b11986a0c963a830a5b9ce14a69193532cb3898",
+    "core/test/test_package_manager_capabilities.ml": "d215644de14ba2d52e08731c469f15a8a15614bd7642b19fa904eb570a94e44b",
+    "core/test/test_package_public_callbacks.ml": "21a6082e22d5eb16a668f40255fb67105e86af1a2cf464b7e2655b01120ce2c8",
+    "core/test/test_reference_contracts_corpus.ml": "e9db018e299f112c7e0c606edd6ea51ef1a98bf1bc28ffbb119589a173b1a853",
+    "core/test/test_reference_package_check.ml": "1003333095e15e2febef8ff8df5817ae3484429b58c136021f437f43db399617",
+    "core/test/test_reference_package_session.ml": "8a26e300d8e1cf6c39483e7857b5ce96140e283b734697e5d808ae52ec737793",
+    "core/test/test_reference_package_verify.ml": "428d08a753dd39e75bde7746421b59178e574b9b93202941df82037f8e7bcd1a",
+    "protocol/migration-inventory.json": "a2f59e22fe0c7439e4b16283260817401b2eda008f8d30225333bbf30355187a",
+    "protocol/reference-package-application-v1.json": "b41eafa25c259c3280a3e8d370d17c49372aa30b522689a817fd1bd9b0f74661",
+    "protocol/reference-package-campaign-base-audit.json": "3fad09201a78bbed331685fe5dd1f98ce127d29f4ea029030c48203b581a0572",
+    "protocol/reference-package-channel-v1.json": "fd491f9136efdad7dbb89dabec8da1cbfd23d337807d3494614441d456af0f86",
+    "protocol/reference-package-public-prefixes-v1.json": "2056c3a8f996646999bcbfc690e553c315a6c615a41484ed429b44b067ca7d96",
+    "src/biocompiler/artifacts/sequences.py": "ba7264d7e9fb19c693ddeb54e570ac6bc09e17638b1dc6c50acb4e0ec71598c3",
+    "src/biocompiler/compiler/reference.py": "8e56175c7f2c82004baa2ddc4652ace854a6b9bc36f2602724635b688a741cf9",
+    "src/biocompiler/core_package_files.py": "e0e67a9b2fd75276a9deaa38d3600ab29049e0b5fa08d6175912a56c576ae226",
+    "src/biocompiler/core_package_owner.py": "b848f2b27f6d39de34f4a6c219d8cf9e567e081d2598e46035f2e19f82a5297a",
+    "src/biocompiler/core_pipeline_callback_session.py": "963af95957f4a6c7843fca8f575ebe3817349b9ce0722c59da0cd64d21e9bc51",
+    "src/biocompiler/core_pipeline_manager.py": "e70b302502bbae0cf274fb5dc420b276edf033189ea41cc3083575935f7119ba",
+    "src/biocompiler/core_reference_package_host.py": "34e1e4ffa46e68afce1abdb75f38b9c495d3476aaebe03804f36316c8f429e8b",
+    "src/biocompiler/core_reference_package_io.py": "4f609af9943aee6a734c8a68583345a97656c4f2a402dfd4e48e7fbe867aa33e",
+    "src/biocompiler/core_reference_package_origins.py": "68667a330fd6bde7ebf6e1a603e07fe7b735d593e7e30ab76152496f1e512ef2",
+    "src/biocompiler/core_reference_package_protocol.py": "17b059b75c80cbcfb06ca6f8e05c2db8ee077c1c5e1e58ced8b3cac6870aaa2f",
+    "src/biocompiler/core_reference_package_route.py": "88f66ec408b015b9c2d2d8014f7eea38a3cfa453419d5d21749a6f9560cdfa9f",
+    "src/biocompiler/core_reference_package_source.py": "21e740757f6db9ea0146dbafddd84e164898a53422fe8e2ed37c26e5bab7b1fb",
+    "src/biocompiler/core_reference_package_verify.py": "42d2b68fbb3b30766f3f3ec08d5d823db3bfbe205da3b0ec3fca47f0e832700d",
+    "src/biocompiler/core_reference_package_views.py": "8a763380c7e8a8b37b90eed374dd06e0544595cd5520aa8fcc014743f08ad961",
+    "src/biocompiler/reference_package_backend.py": "208a74adf4d902588b21bac46d0990f056952081fb839d9d309f3ed7be5021fd",
+    "src/biocompiler/registry/reference_builds.py": "bca8a9d704d656d215479271e80564997ea4cb12bf616378defa2e9657a1af43",
+    "src/biocompiler/verification/components.py": "81320d87650a2d5f2aaffb16957c5388c5576218f0d68a4d8bf0ddcc4a76bda3",
+    "src/biocompiler/verification/construct.py": "d648609057ee528bb4d1a90179b6b3daa7938d915713966e44d120930fc0b793",
+    "src/biocompiler/verification/molecular.py": "34b06b55ab1cb2866ab34e53a6d0039c9f3f827eb97d0dd056dc68303c0213f2",
+    "tests/conformance/reference-package-transport-source-counterpart-v1.json": "80573b86ff3e5f08bedacbf631a35d8d7c4a5598e5b80175debc4a74175b67e9",
+    "tests/test_callback_source_lineage.py": "ba48d4bdd6e9acc510cabfd38d876b0104749a23a432892653193c8c3a1c6577",
+    "tests/test_ci_native_bundle.py": "873a00b77a842a693edee3fae03e0fc296d3a1291f1e0564b73db181691ab1b0",
+    "tests/test_core_boundaries.py": "1459154a0796ed1812207ee681253196b2efd53b8255d19feb6ad98993cb6054",
+    "tests/test_core_pipeline_callback_session.py": "35758ab08268e95f3985f489e26830c817b8c63e8132e9f2aa15bfa348952302",
+    "tests/test_package_callback_transport.py": "9237f1fcae70a7b48b75a4d6c9ca46da1033f135b78500dc513f6536b7af3069",
+    "tests/test_package_files.py": "63e95e2d522f70c9731087673d1aa665d5799d23eef903ae39c09e1223471c8f",
+    "tests/test_package_owner.py": "ae2b53f687e41ed89995f3177761595b6b6fb195708c5aea630c445ed64eb3c3",
+    "tests/test_package_source_io.py": "3ad65687998e7ff264f1ca62087d20874ce5df13c6d8fc8b95e8a9442a2539a9",
+    "tests/test_package_verify_transport.py": "9e0cbf3f849ddfab14ec72a4ada7c1a583ce1ea3b63e039c4062c51551cb46a0",
+    "tests/test_package_views.py": "97e913bf63723b7c34cb35a3b032c28d3657d4cc719da13a2fe53c892d5c9f80",
+    "tests/test_reference_input_authority.py": "1b118918299dc261f76b969412798c93e31e729196e9979598e71a40266e155b",
+    "tests/test_reference_original_counterpart.py": "7e86b5f91a123ae88666d9649c7536b429c00322f4f95234ad9161ba9100e205",
+    "tests/test_reference_package_application.py": "27edf09187cbac5106c89ee8767b107171761706c57355470fefb47e63a3dc9c",
+    "tests/test_reference_package_authority.py": "2710107604461249e62c5cba29412e32d5b82fca03ad3ef21de16f41e2244635",
+    "tests/test_reference_package_host.py": "1a4ea115421ec27e4d67ce25a088f011645ff8b60efab4d7a882c37ae7b3b84a",
+    "tests/test_reference_package_origins.py": "32ae01de04741c93ebf05d04b768571c9d19c8d340cc728a192f0f1bdc63de5a",
+    "tests/test_reference_package_route.py": "72d5c3afea7b075a60cd715640fb6288b6d560764d0860648268f097ef900171",
+    "tests/test_reference_package_routing.py": "b6417299b1b43127bc75e8a517480851562e3441b4ba42d1955cea5cefa3e1ec",
+    "tests/test_reference_package_source.py": "054d9dae8a0b956e142bc54bbc4bb45a4914aa48299e35488a19c58174fe2aa0",
+    "tests/test_reference_package_source_lineage.py": "b5a36ff18c51c95a8749c21c46e9df8388ccb2f7c3687ce7b31fd10a235010e8",
+    "tests/test_reference_session_source_lineage.py": "26e31a10bec8533a43c751209f5964c94b09ff6e148af440ded87950796868da",
+    "tests/test_reference_view_source_lineage.py": "067d95fd36aa4492926be6d98d31660fd7674f8a39f997c9dc22b6895b500dde",
+    "tests/test_sequence_export_authority.py": "31fcb04dc7740611ba8b83388813f8fbb65c3a53ca31de1bcea70ccbf3672938",
+    "tools/capture_reference_inputs.py": "ccd02ee89bb613fc46a6445eabc650fb1e1fa35818dead1a0100abde10ec6c39",
+    "tools/capture_reference_packages.py": "17538571bc9326f3ae04e70856dfb0ce9218116891c9d3094774bde9715a0380",
+    "tools/capture_reference_sequence_export.py": "720651719091af8f2e96b755affb7e7658ac37037236884624dec7024074849f",
+    "tools/check_core_boundaries.py": "b52cc308a47a820bef77e1d6e443cfdc737fcba3ec7ca6602aec3eef5c48bcf8",
+    "tools/check_pipeline_fixed_continuation_install.py": "8690f65868e18aa3249696747b39d30f8120d679c87b1a26877e11d85cddbc6b",
+    "tools/check_pipeline_reference_install.py": "785d5f74c2ccb077ef31d3dabd9c17dc28fa51151319866093fb68e9b1e48e42",
+    "tools/check_realization_workflow_corpus.py": "168a18a2a5c2384187e3dd75a1c4b0472769f2ccdf383f15f33026f14277b258",
+    "tools/migration_inventory.py": "31230d6d58d153faad6d164c01feabac205cbbc704f0677fc898f7218f04694d",
+    "tools/mypy-core.ini": "c51038ed846a82241f54042c768249ae3a6dc5a1f0f593bd06314d517bc62509",
+    "tools/pipeline_registration_guard.py": "4e0dfe7b4c2ce20b1ecfa5745ce2077aba17dcc2b05d84958fdf2d9d9e982e24",
+    "tools/realization_source_lineage.py": "bf6ec3f464d895d3a4edb150b4e8da1a39c5681828495a73b754804fedbde5dc",
+    "tools/reference_original_counterpart.py": "2a5383dce1d7b9712aee32ae191daa919b3ed8c4f1fd4dfbe781ff8f84eeecc8",
+    "tools/reference_package_source_lineage.py": "8e5f20f732613e84a44e1c59e51086224586e9d2296b560418060978303233e3"
+  },
+  "source_snapshot_policy": "Hashes bind the reviewed changed source files; observations apply to these bytes. This document and prose handoffs are excluded to avoid circular hashing. Git commit identity is available from the commit containing this checkpoint."
+}

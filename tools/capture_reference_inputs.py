@@ -10,6 +10,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path[:0] = [str(ROOT / "src"), str(ROOT)]
 from biocompiler.registry import reference_builds as source
 from biocompiler.registry.references import ReferenceManifest
+from tools.reference_package_source_lineage import source_identity
 
 
 def canonical(value):
@@ -72,7 +73,7 @@ def capture():
         changed = manifest.to_dict()
         changed["redistribution"]["note"] = note
         observe("manifest-bytes:" + label, "manifest-bytes", files, manifest=changed)
-    sources = {path: hashlib.sha256((ROOT / path).read_bytes()).hexdigest() for path in (
+    sources = {path: source_identity(ROOT, path) for path in (
         "src/biocompiler/registry/reference_builds.py", "src/biocompiler/registry/references.py",
         "src/biocompiler/registry/reference_components.py", "src/biocompiler/synthesis/construct.py")}
     return {"schema": "biocompiler.reference_input_snapshot_literals.v1", "sources": sources, "cases": rows}

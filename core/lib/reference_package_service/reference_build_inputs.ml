@@ -4,7 +4,7 @@ module B=Bioc_artifact.Archive_budget
 module I=Bioc_reference_input.Reference_inputs
 module C=Verification_exploration.Codec
 module G=Bioc_compiler.Reference_construct_producer
-type t={request_value:Reference_construct.Request.t;reference_value:Reference_manifest.t;registry_value:Component_registry.t}
+type t={owner:B.t;request_value:Reference_construct.Request.t;reference_value:Reference_manifest.t;registry_value:Component_registry.t}
 let prepare budget ~alphabet snapshot=
   B.charge budget 1;
   let reference_pin=I.reference_pin budget alphabet in
@@ -32,7 +32,20 @@ let prepare budget ~alphabet snapshot=
     ~required_domain:(Component_contract.Operating_domain.make[]) ~requirement_ids:requirements() in
   let composition=Composition.make ~target ~registry_lock:lock ~instances:[instance] ~requirement_ids:requirements() in
   let request=G.prepare ~parent:(B.work budget) ~manifest:reference ~selection ~composition ~registry() in
-  {request_value=request;reference_value=reference;registry_value=registry}
+  {owner=budget;request_value=request;reference_value=reference;registry_value=registry}
 let request value=value.request_value
 let reference value=value.reference_value
 let registry value=value.registry_value
+
+let require_owner budget value=
+  B.guard budget;Diagnostic.require(value.owner==budget) "reference_input_owner"
+    "Prepared reference inputs belong to another resource lifetime."
+let supplied budget ~request ~reference ~registry=
+  B.guard budget;
+  let limits=B.limits budget in
+  let codec=C.make_limits ~max_bytes:(min Limits.max_request_bytes limits.max_member_bytes)
+    ~max_nodes:(min Limits.max_json_nodes limits.max_json_nodes) ~charge:(B.charge budget)() in
+  List.iter(fun raw->let size=C.measure ~limits:codec raw in
+    B.reserve budget(size.bytes+128*size.nodes+256))
+    [Reference_construct.Request.to_json request;Reference_manifest.to_json reference;Component_registry.to_json registry];
+  {owner=budget;request_value=request;reference_value=reference;registry_value=registry}

@@ -1,3 +1,5 @@
+> Local isolated continuation: see [reference-package source handoff](reference-package-continuation-handoff.md). Its base is PR85 head `573cfdf6504572cfc0fdd045bbd018c9e4d85320`; all native/installed acceptance and all four cutoff gates remain open. Historical missing-route descriptions below are preserved as packet provenance.
+
 # Fresh-session handoff: finish the existing-workflow language migration
 
 Prepared 2026-10-02 from the current source roadmap, source receipts and frozen agent packets. This is a resumable engineering handoff, not a completion or release claim. The GitHub status described here is the state before the checkpoint push; refresh the branch PR and its exact run before treating any pending work as accepted.

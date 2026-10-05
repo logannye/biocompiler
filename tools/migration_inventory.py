@@ -350,6 +350,17 @@ def ownership(module, category):
         return "Python", ["LM-11"], "retain_python_authoring_or_compatibility_adapter"
     if module in {"biocompiler.core_pipeline_provider_views", "biocompiler.core_pipeline_build_views", "biocompiler.core_reference_views", "biocompiler.core_reference_provider_views"}:
         return "Python", ["LM-12", "LM-25"], "retain_closed_structural_public_views_without_semantic_authority"
+    if module in {"biocompiler.core_reference_package_views", "biocompiler.core_reference_package_origins"}:
+        return "Python", ["LM-12", "LM-25", "LM-26"], "retain_closed_package_views_and_original_identities_without_semantic_authority"
+    if module in {"biocompiler.core_package_files", "biocompiler.core_package_owner",
+                  "biocompiler.core_reference_package_io", "biocompiler.core_reference_package_protocol",
+                  "biocompiler.core_reference_package_verify"}:
+        return "Python", ["LM-12", "LM-25", "LM-26"], "retain_package_transport_route_semantic_authority_to_ocaml"
+    if module == "biocompiler.core_reference_package_source":
+        return "Python", ["LM-03", "LM-12", "LM-25"], "retain_exact_package_source_provenance_without_semantic_authority"
+    if module in {"biocompiler.core_reference_package_host", "biocompiler.core_reference_package_route",
+                  "biocompiler.reference_package_backend"}:
+        return "Python", ["LM-12", "LM-25", "LM-26"], "retain_package_orchestration_route_semantic_authority_to_ocaml"
     if module in {"biocompiler.cli", "biocompiler.core_distribution", "biocompiler.core_client", "biocompiler.core_pipeline_session", "biocompiler.core_pipeline_callback_session", "biocompiler.core_pipeline_manager", "biocompiler.core_reference_manager", "biocompiler.core_reference_host", "biocompiler.reference_backend", "biocompiler.pipeline_callback_objects", "biocompiler.core_architecture", "biocompiler.core_architecture_producer", "biocompiler.architecture_backend", "biocompiler.core_realization", "biocompiler.core_synthetic_producer", "biocompiler.synthetic_producer_backend", "biocompiler.core_synthetic_producer_public", "biocompiler.synthetic_producer_cli", "biocompiler.core_synthetic_inspection", "biocompiler.realization_backend", "biocompiler.core_artifacts", "biocompiler.core_workflow", "biocompiler.core_workflow_authority", "biocompiler.workflow_backend", "biocompiler.workflow_cli", "biocompiler.interop"} or module.startswith("biocompiler.studio"):
         return "Python", ["LM-10", "LM-11", "LM-25"], "retain_transport_route_semantic_authority_to_ocaml"
     section = module.split(".")[1] if "." in module else ""

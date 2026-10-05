@@ -1,0 +1,4 @@
+(library
+ (name bioc_package_io)
+ (libraries bioc_wire bioc_checker bioc_artifact zarith unix)
+ (foreign_stubs (language c) (names package_fd_stubs)))

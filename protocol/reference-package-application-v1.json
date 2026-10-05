@@ -1,0 +1,1349 @@
+{
+  "actions": {
+    "package-check": {
+      "arguments": [
+        "name",
+        "arguments",
+        "check_id"
+      ],
+      "result": "native_or_host"
+    },
+    "package-check-value": {
+      "arguments": [
+        "name",
+        "value"
+      ],
+      "result": "report_reference"
+    },
+    "package-collect": {
+      "arguments": "reference_manifest",
+      "result": "capability"
+    },
+    "package-construct": {
+      "arguments": [
+        "artifact"
+      ],
+      "result": "construct_candidate"
+    },
+    "package-export": {
+      "arguments": [
+        "request",
+        "construct",
+        "artifact",
+        "registry",
+        "manifests",
+        "line_width"
+      ],
+      "result": "native_or_host"
+    },
+    "package-get": {
+      "arguments": [
+        "identity"
+      ],
+      "result": "completed_sequence"
+    },
+    "package-load": {
+      "arguments": [
+        "alphabet"
+      ],
+      "result": "capability"
+    },
+    "package-read": {
+      "arguments": [
+        "kind",
+        "path"
+      ],
+      "result": "lowercase_hex"
+    },
+    "package-rebuild": {
+      "arguments": [
+        "request",
+        "files",
+        "run_metadata"
+      ],
+      "result": "capability"
+    },
+    "package-report-document": {
+      "arguments": "report_reference",
+      "result": "report_document"
+    },
+    "package-report-export": {
+      "arguments": "report_reference",
+      "result": "export_report_observation"
+    },
+    "package-report-passed": {
+      "arguments": "report_reference",
+      "result": "boolean"
+    },
+    "package-result": {
+      "arguments": [
+        "identity",
+        "scope"
+      ],
+      "result": "completed_sequence"
+    },
+    "package-run": {
+      "arguments": [
+        "request",
+        "registry",
+        "manifests"
+      ],
+      "result": "molecular_build_capability"
+    },
+    "package-tools": {
+      "arguments": "null",
+      "result": "tool_pins"
+    },
+    "package-version": {
+      "arguments": "null",
+      "result": "string"
+    }
+  },
+  "authority": "Actual same-channel manager capabilities and fresh native checks; host reports and transported bytes grant no acceptance.",
+  "manager": {
+    "acceptance": "native_manager_checks_and_freshness_only;inspection_and_host_sidecars_cannot_import_accepted_records",
+    "actions": {
+      "hydrate-context": {
+        "fields": [
+          "context_id",
+          "document",
+          "bindings"
+        ],
+        "result": "object_reference"
+      },
+      "manager-created": {
+        "fields": [
+          "target"
+        ],
+        "result": "null"
+      },
+      "native-provider": {
+        "fields": [
+          "provider_id",
+          "role"
+        ],
+        "result": "object_reference"
+      },
+      "ordered-json": {
+        "fields": [
+          "object"
+        ],
+        "result": "ordered_tree"
+      },
+      "ordered-merge": {
+        "fields": [
+          "object",
+          "before",
+          "after",
+          "before_tree",
+          "after_tree"
+        ],
+        "result": "object_reference"
+      },
+      "origin-reference": {
+        "fields": [
+          "root",
+          "path"
+        ],
+        "result": "object_reference"
+      },
+      "provider-reference": {
+        "fields": [
+          "object"
+        ],
+        "result": "host_or_native_provider_reference"
+      },
+      "reference-emit": {
+        "fields": [
+          "preparation_id",
+          "provider_id",
+          "input",
+          "argument",
+          "tree"
+        ],
+        "result": "reference_source_result"
+      },
+      "reference-generate": {
+        "fields": [
+          "input",
+          "argument",
+          "tree"
+        ],
+        "result": "reference_source_result"
+      },
+      "reference-molecular-proposal": {
+        "fields": [
+          "preparation_id",
+          "output",
+          "source_links"
+        ],
+        "result": "object_reference"
+      },
+      "reference-molecular-provider": {
+        "fields": [
+          "preparation_id",
+          "provider_id",
+          "role"
+        ],
+        "result": "object_reference"
+      },
+      "reference-proposal": {
+        "fields": [
+          "output",
+          "source_links"
+        ],
+        "result": "object_reference"
+      },
+      "reference-source-links-equal": {
+        "fields": [
+          "actual",
+          "expected"
+        ],
+        "result": "boolean"
+      },
+      "reference-upstream-candidate": {
+        "fields": [
+          "upstream",
+          "phase"
+        ],
+        "result": "reference_upstream_candidate"
+      },
+      "register-fixed": {
+        "fields": [
+          "contract",
+          "producer",
+          "validators",
+          "obligation_objects"
+        ],
+        "result": "null"
+      },
+      "set-equal": {
+        "fields": [
+          "object",
+          "values"
+        ],
+        "result": "boolean"
+      },
+      "source-link-set-equal": {
+        "fields": [
+          "objects",
+          "expected"
+        ],
+        "result": "boolean"
+      }
+    },
+    "argument": "--pipeline-callback-session-v1",
+    "authoring_boundary": "canonical_typed_contract_target_profile_fields;opaque_payload_configuration_provider_and_validator_objects_are_read_at_native_requested_points",
+    "bindings": {
+      "host": [
+        "kind",
+        "object"
+      ],
+      "native": [
+        "kind",
+        "identity",
+        "tree"
+      ]
+    },
+    "broker_actions": {
+      "attr": {
+        "fields": [
+          "object",
+          "name"
+        ],
+        "result": "object_reference"
+      },
+      "attr-default": {
+        "fields": [
+          "object",
+          "name",
+          "default"
+        ],
+        "result": "object_reference"
+      },
+      "bind-provider": {
+        "fields": [
+          "provider_id",
+          "object"
+        ],
+        "result": "null"
+      },
+      "call": {
+        "fields": [
+          "callable",
+          "args",
+          "kwargs"
+        ],
+        "result": "object_reference"
+      },
+      "call-provider": {
+        "fields": [
+          "provider_id",
+          "context"
+        ],
+        "result": "object_reference"
+      },
+      "callable": {
+        "fields": [
+          "object"
+        ],
+        "result": "boolean"
+      },
+      "compare": {
+        "fields": [
+          "left",
+          "right",
+          "operator"
+        ],
+        "result": "boolean"
+      },
+      "contains": {
+        "fields": [
+          "container",
+          "item"
+        ],
+        "result": "boolean"
+      },
+      "dict": {
+        "fields": [
+          "object"
+        ],
+        "result": "object_reference"
+      },
+      "document": {
+        "fields": [
+          "object"
+        ],
+        "result": "object_reference"
+      },
+      "enum": {
+        "fields": [
+          "type",
+          "value"
+        ],
+        "result": "object_reference"
+      },
+      "freeze-json": {
+        "fields": [
+          "object"
+        ],
+        "result": "object_reference"
+      },
+      "get-item": {
+        "fields": [
+          "object",
+          "key"
+        ],
+        "result": "object_reference"
+      },
+      "is-instance": {
+        "fields": [
+          "object",
+          "type"
+        ],
+        "result": "boolean"
+      },
+      "is-none": {
+        "fields": [
+          "object"
+        ],
+        "result": "boolean"
+      },
+      "iter": {
+        "fields": [
+          "object"
+        ],
+        "result": "object_reference"
+      },
+      "json": {
+        "fields": [
+          "object"
+        ],
+        "result": "json"
+      },
+      "len": {
+        "fields": [
+          "object"
+        ],
+        "result": "integer"
+      },
+      "list": {
+        "fields": [
+          "object"
+        ],
+        "result": "object_reference"
+      },
+      "literal": {
+        "fields": [
+          "kind",
+          "value"
+        ],
+        "result": "object_reference"
+      },
+      "lookup": {
+        "fields": [
+          "object",
+          "entries"
+        ],
+        "result": "object_reference"
+      },
+      "mapping-items": {
+        "fields": [
+          "object"
+        ],
+        "result": "object_reference"
+      },
+      "mapping-keys": {
+        "fields": [
+          "object"
+        ],
+        "result": "object_reference"
+      },
+      "mapping-values": {
+        "fields": [
+          "object"
+        ],
+        "result": "object_reference"
+      },
+      "merge": {
+        "fields": [
+          "object",
+          "before",
+          "after"
+        ],
+        "result": "object_reference"
+      },
+      "next": {
+        "fields": [
+          "object"
+        ],
+        "result": "iterator_step"
+      },
+      "release": {
+        "fields": [
+          "handles"
+        ],
+        "result": "null"
+      },
+      "set-attribute-equal": {
+        "fields": [
+          "objects",
+          "name",
+          "values"
+        ],
+        "result": "boolean"
+      },
+      "truth": {
+        "fields": [
+          "object"
+        ],
+        "result": "boolean"
+      },
+      "tuple": {
+        "fields": [
+          "object"
+        ],
+        "result": "object_reference"
+      },
+      "vars": {
+        "fields": [
+          "object"
+        ],
+        "result": "object_reference"
+      }
+    },
+    "channel": "biocompiler.pipeline_callback_channel.v1",
+    "claim_scope": "software_contract_conditional_translation_and_scoped_completion;no_empirical_or_human_use_acceptance",
+    "comparison_operators": [
+      "eq",
+      "ne",
+      "is",
+      "is-not"
+    ],
+    "compatibility_pending": [
+      "complete_original_installed_replay",
+      "fixed_public_registration_interception",
+      "arbitrary_authoring_subclass_and_scalar_operator_semantics",
+      "default_cutover"
+    ],
+    "component_continuation": {
+      "failure": "actual_partial_manager_and_previous_successful_mutations_preserved_on_logical_or_host_failure;fatal_channel_failures_close_authority",
+      "finish": "exact_retained_actual_run_record_incarnation_and_matching_actual_result_command_sequence_owner_stage_scope;no_recomputation_or_import_of_accepted_result",
+      "limits": "all_preparations_origins_build_views_and_retained_result_receipts_charged_to_channel_lifetime_work_and_retention",
+      "obligation_objects": "ordered_native_binding_descriptors_matching_contract_introduces_slots;structural_host_views_returned_as_strong_host_references_during_actual_register;native_validation_remains_authoritative",
+      "order": [
+        "prepare-components",
+        "ordered_actual_set-dependency_calls",
+        "component-profile",
+        "actual_register-completion-profile",
+        "component-registration",
+        "actual_register",
+        "actual_run",
+        "actual_result",
+        "finish-components"
+      ],
+      "owner": "same_live_manager_and_actual_retained_synthetic_build;one_preparation_attempt;preparation_id_is_channel_scoped_native_capability",
+      "preparation": "native_adaptation_and_ordered_dependencies_only;profile_and_registration_constructors_remain_after_prior_actual_mutations",
+      "registration": "actual_native_contract_and_physical_fixed_producer_and_validator_closures;ordered_validator_name_and_host_reference_pairs"
+    },
+    "context_bindings": [
+      "input",
+      "output",
+      "target",
+      "configuration",
+      "dependencies",
+      "requirements",
+      "source_links",
+      "observation_map"
+    ],
+    "context_identity": "actual_native_context_physical_identity;distinct_producer_and_validation_contexts;one_validation_context_shared_by_its_validators",
+    "default_generator_config": {
+      "catalog_fingerprint": "f2a4b4c1625b4794028fcd1d0e08785724f957023966a29faafe9374cca77343",
+      "conjunction_strategy": "native",
+      "generator_version": "biocompiler.synthetic.generator.v0.4",
+      "profile_version": "biocompiler.synthetic.combinational.v0.1",
+      "schema_version": "biocompiler.synthetic_generator_config.v0.3",
+      "witness_selection": "closed_band_lower_endpoint"
+    },
+    "default_generator_config_authority": "exact_negotiated_native_Config_make_default;fresh_closed_Python_representation_before_initialization;native_import_and_catalog_validation_remain_authoritative",
+    "dependencies_encoding": "ordered_unique_string_identity_pairs",
+    "enum_types": [
+      "EvidenceKind",
+      "CheckOutcome",
+      "Stage",
+      "ArtifactStatus",
+      "PayloadFormat"
+    ],
+    "executable": "core",
+    "expected_rejection_attributes": "fresh_ordered_tree_with_exact_canonical_attributes_projection;no_cached_binding_or_context_container_reuse;NoCandidateFound_retains_pass_configuration_and_dependency_order",
+    "expected_rejection_fields": [
+      "module",
+      "type",
+      "message",
+      "attributes",
+      "attributes_tree"
+    ],
+    "failure": "expected_logical_rejection_and_opaque_host_exception_preserve_actual_partial_manager;malformed_resource_internal_or_uncertain_io_failure_closes_authority",
+    "fixed_build_view": {
+      "absent_selection": "value_and_binding_null;selection_config_and_required_capabilities_null;alternative_configs_empty_and_no_selection_aliases;candidate_type_aliases_remain_required",
+      "aliases": "selection_paths_start_selection_result_alternatives_nonnegative_index_candidate_then_closed_typed_candidate_path_with_same_eight_provider_alias_tags;candidate_paths_only_TypeSpec_at_candidate_mechanism_nodes_nonnegative_index_output_dtype;no_assembly_or_report_aliases",
+      "alternative_configs": "ordered_candidate_slots;null_only_without_candidate;native_constructor_origin_bindings;selected_slot_reuses_actual_fixed_provider_selected_config_origin",
+      "artifact_fields": [
+        "value",
+        "binding"
+      ],
+      "artifact_identity": "dedicated_retained_actual_build_artifact_origins;never_manager_frozen_json_or_provider_output_roots;upstream_candidate_and_selection_shared_only_from_actual_retained_synthetic_build",
+      "artifacts": {
+        "components": [
+          "candidate",
+          "selection_result",
+          "assembly",
+          "link_result",
+          "behavior_result"
+        ],
+        "synthetic": [
+          "candidate",
+          "selection_result"
+        ]
+      },
+      "candidate_source": "actual_historical_upstream_mechanism_record_envelope;parsed_node_inputs_and_requirement_ids_and_program_outputs_and_required_capabilities_retain_source_tuple_identity",
+      "candidate_type_origins": "one_retained_actual_parsed_type_origin_per_upstream_candidate_physical_identity_node_and_argument_path;distinct_even_when_fields_equal;same_origin_used_by_actual_component_provider_registry_descendants",
+      "fields": [
+        "selection_config",
+        "alternative_configs",
+        "required_capabilities",
+        "aliases"
+      ],
+      "fresh_roots": "parsed_candidate_and_assembly_are_fresh_from_original_frozen_payload;assembly_composition_target_is_fresh_and_not_manager_target",
+      "kinds": [
+        "synthetic",
+        "components"
+      ],
+      "required_capabilities": "null_without_selection_candidates;otherwise_actual_syntheticCapabilities_constant_host_binding;only_generated_selection_and_provider_candidates_share_this_tuple",
+      "result": "actual_historical_pipeline_result_and_record_envelope;finish_reuses_exact_public_result_wrapper_from_result_sequence;historical_views_do_not_grant_fresh_acceptance",
+      "selection_config": "actual_requested_host_configuration",
+      "sources": [
+        "candidate"
+      ]
+    },
+    "fixed_registration": {
+      "failure": "published_manager_retained_only_after_exact_completed_rejected_or_opaque_raise_initialization_reply_on_open_channel;fatal_or_uncertain_channel_closes_authority",
+      "hook": "source_ordered_actual_fixed_contract_native_producer_ordered_validators_and_introduced_obligations;invoke_current_public_register_once;ignore_return_without_inspection;no_implicit_fallback",
+      "native_registration": "only_actual_nested_register_commands_mutate_the_live_manager;producer_wrappers_and_original_native_validator_identity_preserved",
+      "publication": "exact_actual_manager_and_authored_target_before_first_input_or_registration;once_per_fixed_initialization;no_manager_replacement",
+      "roles": [
+        "intent_to_behavior",
+        "behavior_to_synthetic",
+        "synthetic_to_components"
+      ],
+      "staged_components": "existing_actual_public_register_call_only;no_second_register_fixed_hook;unchanged_contract_and_actual_native_validator_enable_host_source_link_capability_independently_of_producer_wrapper"
+    },
+    "fixed_request_tree": "ordered_tree_from_same_authoring_serialization_as_request;exact_canonical_projection_required_before_native_import;retained_order_is_not_acceptance",
+    "host_execution": "trusted_host_code_cpu_and_opaque_captures_outside_native_work_and_json_memory_bounds",
+    "inspection_order": {
+      "combined_provider_history": "actual_successful_insertion_order;pass_fingerprint_string_or_component_input_tag_and_fingerprint_pair;replacements_preserve_position",
+      "fields": [
+        "dependencies",
+        "passes",
+        "component_inputs",
+        "provider_history",
+        "component_input_history",
+        "records",
+        "profiles",
+        "combined_provider_history",
+        "validators"
+      ],
+      "mapping_order": "unique_complete_snapshot_key_arrays",
+      "provider_fields": [
+        "provider_id",
+        "object"
+      ],
+      "providers": "exact_reachable_snapshot_provider_token_census;stable_bijection_to_actual_retained_callable_identity;no_user_equality_or_hash",
+      "scope": "manager_mapping_and_validator_order_only;nested_unobserved_json_order_not_generalized;historical_observation_cannot_grant_acceptance",
+      "validator_maps": [
+        "passes",
+        "component_inputs",
+        "provider_history",
+        "component_input_history"
+      ],
+      "validators": "four_exact_registration_maps_of_unique_complete_validator_key_arrays"
+    },
+    "inspection_references": {
+      "authority": "inspection_only;references_cannot_import_records_or_grant_fresh_acceptance;existing_inspect_ordered_unchanged",
+      "definitions": "ordered_complete_record_envelopes_exactly_for_first_compact_publication_of_each_actual_record_incarnation_in_order_records;no_duplicates_unused_definitions_or_rebinding",
+      "record_reference_fields": [
+        "record_id"
+      ],
+      "resolution": "same_channel_earlier_or_current_definitions_only;exact_record_name_and_incarnation_bijection;checked_immutable_full_envelope_expansion_without_get_result_or_acceptance_query",
+      "retention": "strong_actual_record_identity_and_definition_publication_census_charged_to_existing_channel_lifetime;publication_marked_only_after_complete_response_assembly",
+      "snapshot": "same_complete_historical_state_as_inspect_ordered_with_records_replaced_by_incarnation_references;all_other_fields_and_orders_unchanged"
+    },
+    "iterator_step_fields": [
+      "exhausted",
+      "object"
+    ],
+    "lifecycle": "one_initialization_attempt_per_channel;existing_channel_close_is_top_level_only;no_reconnect_retry_or_state_import",
+    "limits": "all_native_framing_application_import_callback_and_publication_work_uses_one_channel_lifetime_ancestor;retention_is_cumulative_no_refund",
+    "literal_kinds": [
+      "json",
+      "tuple",
+      "set"
+    ],
+    "manager_limits": "initialization_once;null_defaults_or_complete_positive_integer_reductions",
+    "native_provider_context": "only_exact_retained_context_from_this_live_manager;no_external_context_import",
+    "native_provider_result_kinds": [
+      "proposal",
+      "decision",
+      "invalid"
+    ],
+    "native_provider_view": {
+      "alias_fields": [
+        "kind",
+        "paths",
+        "binding"
+      ],
+      "alias_kinds": [
+        "biocompiler.ir.intent.SourceLocation",
+        "biocompiler.semantics.types.TypeSpec",
+        "biocompiler.semantics.realization.Observable",
+        "biocompiler.semantics.component_contracts.OperatingDomain",
+        "biocompiler.semantics.component_contracts.ValueDomain",
+        "biocompiler.ir.component_contracts.PinnedIdentity",
+        "biocompiler.ir.components.ComponentLock",
+        "biocompiler.ir.composition.LifecycleInterval"
+      ],
+      "alias_paths": "unique_closed_typed_field_and_nonnegative_array_index_paths_relative_to_complete_value;exact_class_and_shape;slot_overlap_requires_identical_binding",
+      "bindings_by_role": {
+        "behavior_to_synthetic.producer": [
+          "generator_config",
+          "required_capabilities"
+        ],
+        "behavior_to_synthetic.validator": [],
+        "intent_to_behavior.producer": [],
+        "intent_to_behavior.validator": [],
+        "synthetic_to_components.producer": [
+          "registry",
+          "composition",
+          "composition_target"
+        ],
+        "synthetic_to_components.validator": []
+      },
+      "fields": [
+        "role",
+        "tree",
+        "bindings",
+        "aliases"
+      ],
+      "identity": "explicit_actual_host_objects_or_retained_native_constructor_origins;strong_lifetime_retention;never_equal_content_interning;charged_to_channel_limits",
+      "invalid": "view_is_null_only_for_invalid_result",
+      "lower_context_tuples": "intent_to_behavior_producer_only;BehaviorNode_inputs_and_BehaviorProgram_roots_reuse_exact_actual_owner_context_input_intent_tuples_after_source_node_identity_and_complete_slot_value_checks;no_extra_manager_calls_or_semantic_parser",
+      "role_authority": "actual_fixed_native_closure_and_manager_owner;immutable_provider_registration_binding",
+      "roles": [
+        "intent_to_behavior.producer",
+        "intent_to_behavior.validator",
+        "behavior_to_synthetic.producer",
+        "behavior_to_synthetic.validator",
+        "synthetic_to_components.producer",
+        "synthetic_to_components.validator"
+      ],
+      "scope": "closed_structural_public_views_only;no_semantic_parsers_or_acceptance;fresh_proposal_and_output_roots",
+      "tree": "complete_value_ordered_tree;canonical_projection_matches_value"
+    },
+    "object_reference": {
+      "fields": [
+        "handle"
+      ],
+      "scope": "one_live_trusted_host_broker_physical_identity"
+    },
+    "obligation_objects": "array_of_actual_host_references_matching_canonical_obligation_slots;whole_tuple_sidecar_preserves_add_input_and_admission_collection_identity;run_allocates_a_new_tuple_reusing_elements;sidecars_do_not_grant_acceptance",
+    "operations": {
+      "add-input": {
+        "fields": [
+          "identity",
+          "stage",
+          "requirements",
+          "obligations",
+          "obligation_objects",
+          "payload",
+          "obligations_object"
+        ],
+        "result": "record"
+      },
+      "admit-component-input": {
+        "fields": [
+          "contract_id",
+          "identity",
+          "payload"
+        ],
+        "result": "record"
+      },
+      "artifact": {
+        "fields": [
+          "name"
+        ],
+        "result": "canonical_immutable_build_artifact"
+      },
+      "build-result": {
+        "fields": [
+          "kind"
+        ],
+        "result": "fixed_build"
+      },
+      "call-native-provider": {
+        "fields": [
+          "provider_id",
+          "context_id"
+        ],
+        "result": "native_provider_result"
+      },
+      "component-profile": {
+        "fields": [
+          "preparation_id"
+        ],
+        "result": "completion_profile"
+      },
+      "component-registration": {
+        "fields": [
+          "preparation_id"
+        ],
+        "result": "component_registration"
+      },
+      "finish-components": {
+        "fields": [
+          "preparation_id",
+          "record_id",
+          "result_sequence"
+        ],
+        "result": "fixed_build"
+      },
+      "finish-reference-construct": {
+        "fields": [
+          "record_id",
+          "result_sequence"
+        ],
+        "result": "reference_build"
+      },
+      "finish-reference-molecular": {
+        "fields": [
+          "preparation_id",
+          "record_id",
+          "result_sequence",
+          "upstream"
+        ],
+        "result": "reference_build"
+      },
+      "get": {
+        "fields": [
+          "identity"
+        ],
+        "result": "record"
+      },
+      "initialize-components": {
+        "fields": [
+          "request",
+          "request_tree",
+          "history",
+          "until",
+          "config",
+          "manager_limits",
+          "target_object",
+          "request_object",
+          "config_object"
+        ],
+        "result": "initialization"
+      },
+      "initialize-empty": {
+        "fields": [
+          "target",
+          "dependencies",
+          "completion_profiles",
+          "manager_limits",
+          "target_object"
+        ],
+        "result": "initialization"
+      },
+      "initialize-reference": {
+        "fields": [
+          "request",
+          "request_tree",
+          "registry",
+          "registry_tree",
+          "manifests",
+          "manifests_tree",
+          "manager_limits",
+          "target_object",
+          "request_object",
+          "registry_object",
+          "construct_manifests_object",
+          "molecular_manifests_object",
+          "policy_objects"
+        ],
+        "result": "initialization"
+      },
+      "initialize-synthetic": {
+        "fields": [
+          "request",
+          "request_tree",
+          "history",
+          "until",
+          "config",
+          "manager_limits",
+          "target_object",
+          "request_object",
+          "config_object"
+        ],
+        "result": "initialization"
+      },
+      "inspect": {
+        "fields": [],
+        "result": "historical_observation_only"
+      },
+      "inspect-ordered": {
+        "fields": [],
+        "result": "ordered_historical_observation_only"
+      },
+      "inspect-ordered-references": {
+        "fields": [],
+        "result": "referenced_historical_observation_only"
+      },
+      "leave-reference-molecular-attempt": {
+        "fields": [
+          "preparation_id"
+        ],
+        "result": "null"
+      },
+      "prepare-components": {
+        "fields": [],
+        "result": "component_preparation"
+      },
+      "prepare-reference-molecular": {
+        "fields": [],
+        "result": "component_preparation"
+      },
+      "prepare-reference-molecular-public": {
+        "fields": [
+          "request",
+          "request_tree",
+          "registry",
+          "registry_tree",
+          "manifests",
+          "manifests_tree",
+          "request_object",
+          "registry_object",
+          "molecular_manifests_object",
+          "policy_objects"
+        ],
+        "result": "component_preparation"
+      },
+      "reference-admission": {
+        "fields": [],
+        "result": "reference_admission"
+      },
+      "reference-build-result": {
+        "fields": [
+          "kind"
+        ],
+        "result": "reference_build"
+      },
+      "reference-molecular-profile": {
+        "fields": [
+          "preparation_id"
+        ],
+        "result": "completion_profile"
+      },
+      "reference-molecular-registration": {
+        "fields": [
+          "preparation_id"
+        ],
+        "result": "component_registration"
+      },
+      "reference-registration": {
+        "fields": [],
+        "result": "component_registration"
+      },
+      "register": {
+        "fields": [
+          "contract",
+          "producer",
+          "validators",
+          "obligation_objects"
+        ],
+        "result": "null"
+      },
+      "register-completion-profile": {
+        "fields": [
+          "profile"
+        ],
+        "result": "null"
+      },
+      "register-component-input": {
+        "fields": [
+          "contract",
+          "validators",
+          "obligation_objects",
+          "obligations_object",
+          "requirements_object"
+        ],
+        "result": "null"
+      },
+      "result": {
+        "fields": [
+          "identity",
+          "scope"
+        ],
+        "result": "pipeline_result"
+      },
+      "run": {
+        "fields": [
+          "pass_id",
+          "input_id",
+          "output_id",
+          "configuration"
+        ],
+        "result": "record"
+      },
+      "set-dependency": {
+        "fields": [
+          "key",
+          "identity"
+        ],
+        "result": "null"
+      },
+      "target": {
+        "fields": [],
+        "result": "target"
+      }
+    },
+    "ordered_merge": "native_before_and_after_mapping_order_carried_as_complete_duplicate_free_ordered_trees;exact_canonical_projection_required_before_original_host_mapping_unpack;complete_expansion_precharged_to_channel_lifetime;no_host_semantics_or_acceptance_import",
+    "ordered_tree": {
+      "array": [
+        "array",
+        "ordered_trees"
+      ],
+      "object": [
+        "object",
+        "ordered_unique_key_tree_pairs"
+      ],
+      "scalar": [
+        "scalar",
+        "json_scalar"
+      ]
+    },
+    "origin_reference": {
+      "authority": "exact_retained_regular_authoring_objects_and_closed_stored_fields;no_dynamic_attribute_or_property_lookup;representation_only",
+      "constant_paths": "empty_only",
+      "observable_suffix": "optional_dtype_followed_by_zero_or_more_arguments_nonnegative_integer_pairs",
+      "request_paths": [
+        [
+          "domain",
+          "inputs",
+          "nonnegative_integer",
+          "observable"
+        ],
+        [
+          "contract",
+          "requirements",
+          "nonnegative_integer",
+          "observable"
+        ],
+        [
+          "behavior",
+          "nodes",
+          "nonnegative_integer",
+          "source"
+        ]
+      ],
+      "roots": [
+        "request",
+        "BOOLEAN",
+        "DURATION",
+        "LEVEL",
+        "defaultLifecycle",
+        "syntheticCapabilities"
+      ],
+      "synthetic_capabilities": "empty_path_only;exact_unique_tuple_code_constant_of_audited_original_generate_synthetic;closed_structural_reference_only;never_execute_generator"
+    },
+    "profile": "biocompiler.core.pipeline_callback_manager.v1",
+    "provider_reference": {
+      "host": [
+        "kind",
+        "object"
+      ],
+      "native": [
+        "kind",
+        "provider_id"
+      ]
+    },
+    "record_bindings": [
+      "record_id",
+      "payload",
+      "dependencies",
+      "requirements",
+      "obligations",
+      "obligation_objects",
+      "checks",
+      "provenance"
+    ],
+    "record_identity": "one_token_per_actual_native_record_physical_identity_including_rejected_and_stored_before_error_records;not_content_hash_or_import",
+    "reference_molecular_attempts": {
+      "errors": "logical_failure_preserves_mutations;closed_cleanup_never_replaces_original_exception",
+      "notice": "actual_command_entry_scope_preserved_across_nested_callbacks",
+      "ownership": "same_actual_manager_and_channel_lifetime",
+      "provider_origins": "immutable_preparation_and_actual_provider_identity",
+      "retention": "cumulative_no_refund_all_attempts_and_historical_builds",
+      "scopes": "explicit_LIFO_prepare_and_leave"
+    },
+    "reference_workflow": {
+      "build": "fresh_closed_candidate_and_check_result_views;exact_historical_public_manager_result;Molecular_construct_is_actual_second_upstream_candidate_read_or_native_default;host_return_root_conveys_no_acceptance",
+      "construct_order": [
+        "initialize-reference",
+        "reference-admission",
+        "actual_register-component-input",
+        "actual_admit-component-input",
+        "actual_get",
+        "reference-registration",
+        "actual_register",
+        "actual_run",
+        "actual_result",
+        "finish-reference-construct"
+      ],
+      "final_source": "after_native_molecular_parse_read_actual_upstream_candidate_for_fresh_independent_check;after_check_read_again_and_retain_actual_opaque_return_root;no_unused_Build_fields_or_identity_requirement",
+      "finish": "actual_run_record_and_result_sequence;historical_result_retained;independent_native_final_checks;no_serialized_acceptance_import",
+      "host_result": "reference_producers_only;kind_host_with_actual_paired_PassResult_object_reference;no_conversion_or_acceptance",
+      "initialization": "ordered_request_registry_and_manifest_documents_with_exact_canonical_projection;actual_authored_target;one_manager_created_publication",
+      "limits": "one_shared_channel_lifetime_work_and_cumulative_retention_for_every_phase_callback_origin_and_build;native_semantic_resource_failures_remain_fatal",
+      "molecular_authority": "explicit_public_request_registry_and_outer_manifest_snapshot;retained_construct_manager_provenance_is_separate;all_native_limits_and_budget_use_actual_upstream_owner",
+      "molecular_order": [
+        "prepare-reference-molecular",
+        "six_ordered_actual_set-dependency_calls",
+        "reference-molecular-profile",
+        "actual_register-completion-profile",
+        "reference-molecular-registration",
+        "actual_register",
+        "actual_run",
+        "actual_result",
+        "finish-reference-molecular"
+      ],
+      "owner": "one_actual_native_manager;source_ordered_public_calls;no_hidden_get_or_result",
+      "phase_authority": "actual_successful_manager_operation_objects_and_command_sequence;unrelated_generic_calls_do_not_advance;explicit_wrong_phase_or_foreign_capability_is_fatal",
+      "provider_view": {
+        "binding": "actual_per_invocation_parsed_host_object;native_output_physical_identity;no_equal_content_or_last_call_interning",
+        "construct_origins": [
+          "parsed"
+        ],
+        "decision_origins": [],
+        "fields": [
+          "role",
+          "tree",
+          "origins"
+        ],
+        "molecular_origins": [
+          "parsed",
+          "request",
+          "translation_policy",
+          "encoding_policy",
+          "evidence_policy"
+        ]
+      },
+      "roles": [
+        "reference_components.authority",
+        "reference_components.linkage",
+        "components_to_construct.producer",
+        "components_to_construct.layout",
+        "construct_to_molecular.producer",
+        "construct_to_molecular.sequence",
+        "construct_to_molecular.composition"
+      ],
+      "scope": "historical_exact_reference_utilities;not_new_product_backends;no_empirical_or_complete_payload_claim",
+      "shared_provider": "reference_components.linkage_is_one_actual_closure_for_component_linkage_and_layout_composition",
+      "source_argument": "input_is_actual_context_input;argument_and_tree_are_the_complete_fresh_native_parsed_value;host_origin_binds_both_without_python_semantic_parsing",
+      "source_callback": "each_original_callpoint_performs_dynamic_host_default_lookup_after_native_parse;verified_default_runs_native_producer;replacement_runs_once_and_remains_opaque_until_deferred_manager_materialization",
+      "source_links": "expected_first_sorted_four_field_tuples;duplicates_preserved;actual_host_attribute_order_equality_and_exceptions"
+    },
+    "results": {
+      "component_preparation": [
+        "preparation_id",
+        "dependencies"
+      ],
+      "component_registration": [
+        "contract",
+        "producer",
+        "validators",
+        "obligation_objects"
+      ],
+      "fixed_build": [
+        "kind",
+        "identity",
+        "result",
+        "artifacts",
+        "sources",
+        "view"
+      ],
+      "initialization": [
+        "kind",
+        "manager",
+        "artifacts",
+        "target"
+      ],
+      "native_provider_result": [
+        "kind",
+        "value",
+        "view"
+      ],
+      "ordered_historical_observation_only": [
+        "snapshot",
+        "order",
+        "providers"
+      ],
+      "pipeline_result": [
+        "value",
+        "artifact"
+      ],
+      "record": [
+        "value",
+        "bindings"
+      ],
+      "reference_admission": [
+        "contract",
+        "validators",
+        "obligation_objects"
+      ],
+      "reference_build": [
+        "build_id",
+        "kind",
+        "candidate",
+        "check_result",
+        "result",
+        "construct"
+      ],
+      "reference_source_result": [
+        "kind",
+        "argument",
+        "output"
+      ],
+      "reference_upstream_candidate": {
+        "check": [
+          "object",
+          "value",
+          "tree"
+        ],
+        "return": [
+          "object"
+        ]
+      },
+      "referenced_historical_observation_only": [
+        "snapshot",
+        "order",
+        "providers",
+        "record_definitions"
+      ],
+      "target": [
+        "value",
+        "binding"
+      ]
+    },
+    "schema_version": "biocompiler.pipeline_callback_manager_declaration.v1",
+    "source_links_binding": "null_for_native_context_default_or_complete_host_or_native_collection_binding;tuple_identity_and_element_identity_preserved"
+  },
+  "operations": {
+    "package-build": {
+      "fields": [
+        "request",
+        "run_metadata",
+        "runtime"
+      ],
+      "result": "package"
+    },
+    "package-check-evaluate": {
+      "fields": [
+        "check_id",
+        "name",
+        "arguments"
+      ],
+      "result": "native_report"
+    },
+    "package-check-native": {
+      "fields": [
+        "check_id"
+      ],
+      "result": "native_report"
+    },
+    "package-collect": {
+      "fields": [
+        "reference"
+      ],
+      "result": "collection"
+    },
+    "package-export": {
+      "fields": [
+        "request",
+        "construct",
+        "artifact",
+        "registry",
+        "manifests",
+        "line_width"
+      ],
+      "result": "export"
+    },
+    "package-import-files": {
+      "fields": [
+        "files"
+      ],
+      "result": "capability"
+    },
+    "package-import-inputs": {
+      "fields": [
+        "request",
+        "reference",
+        "registry"
+      ],
+      "result": "inputs"
+    },
+    "package-inputs": {
+      "fields": [
+        "alphabet"
+      ],
+      "result": "inputs"
+    },
+    "package-output": {
+      "fields": [
+        "capability"
+      ],
+      "result": "archive_descriptor"
+    },
+    "package-prepare": {
+      "fields": [
+        "inputs",
+        "line_width"
+      ],
+      "result": "reference_build_request"
+    },
+    "package-reconstruct": {
+      "fields": [
+        "archive",
+        "expected_request",
+        "expected_build_fingerprint",
+        "runtime"
+      ],
+      "result": "package"
+    },
+    "package-tools-native": {
+      "fields": [
+        "versions"
+      ],
+      "result": "tool_pins"
+    }
+  },
+  "profile": "biocompiler.core.reference_package_application.v1",
+  "reconstruction": "Core reconstruction is distinct from producer-free independently authorized Verify.",
+  "rejections": {
+    "cause_utf8_bytes_hex": "lowercase_hex_of_bounded_native_request_member;host_recreates_only_actual_utf8_decode_failure",
+    "ordinary": [
+      "module",
+      "type",
+      "message",
+      "attributes",
+      "attributes_tree"
+    ],
+    "request_utf8": [
+      "module",
+      "type",
+      "message",
+      "attributes",
+      "attributes_tree",
+      "cause_utf8_bytes_hex"
+    ]
+  },
+  "results": {
+    "archive_descriptor": [
+      "bytes",
+      "sha256"
+    ],
+    "capability": [
+      "capability"
+    ],
+    "collection": [
+      "capability",
+      "files"
+    ],
+    "completed_sequence": [
+      "sequence"
+    ],
+    "export": [
+      "capability",
+      "value"
+    ],
+    "export_report_observation": [
+      "passed",
+      "diagnostics"
+    ],
+    "inputs": [
+      "capability",
+      "request",
+      "reference",
+      "registry"
+    ],
+    "molecular_build_capability": [
+      "build_id"
+    ],
+    "native_or_host": [
+      "kind",
+      "value"
+    ],
+    "package": [
+      "capability",
+      "request",
+      "manifest",
+      "archive",
+      "build_fingerprint"
+    ],
+    "reference_build_request": "biocompiler.reference_build_request.v0.1"
+  },
+  "retention": "512 MiB lifetime retained ownership; separate unchanged bounded transient checker profiles.",
+  "runtime_ownership": "first_build_or_reconstruct_selects_runtime;unchanged_for_entire_owner",
+  "runtime_profiles": [
+    "python311",
+    "python314"
+  ],
+  "schema_version": "biocompiler.reference_package_application_declaration.v1"
+}

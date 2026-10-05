@@ -380,6 +380,12 @@ def check_molecular(request, construct, candidate, registry, manifests):
     The emitter supplies no success receipt. The reviewed nucleotide, linked
     protein and counterpart nucleotide records remain independent expectations.
     """
+    import sys as _package_sys
+    _package_backend = _package_sys.modules.get('biocompiler.reference_package_backend')
+    if _package_backend is not None:
+        _package_value = _package_backend.default('check_molecular', request, construct, candidate, registry, manifests)
+        if _package_value is not _package_backend.UNSELECTED:
+            return _package_value
     from biocompiler.ir.molecular import reference_feature_statuses
 
     dependencies = molecular_dependencies(

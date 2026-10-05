@@ -286,6 +286,12 @@ def check_composition(
     No accepted producer report, capability assertion for a selected component,
     or caller-edited reservation list enters this interface.
     """
+    import sys as _package_sys
+    _package_backend = _package_sys.modules.get('biocompiler.reference_package_backend')
+    if _package_backend is not None:
+        _package_value = _package_backend.default('check_composition', request, registry)
+        if _package_value is not _package_backend.UNSELECTED:
+            return _package_value
     require(
         isinstance(request, CompositionRequest)
         and isinstance(registry, ComponentRegistry),

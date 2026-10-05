@@ -39,9 +39,11 @@ def runtime_authority(runtime):
     require(document['schema']=='biocompiler.registration_entry_runtime_sites.v1'
         and [item['runtime'] for item in document['runtimes']]==[[3,11],[3,14]], 'Registration runtime census differs')
     rows=[item for item in document['runtimes'] if item['runtime']==runtime]
-    require(len(rows)==1 and rows[0]['source_sha256']==authority()['native_sha256'],
+    from tools.reference_package_source_lineage import restore
+    original, _ = restore(NATIVE, root=lineage.ROOT)
+    require(len(rows)==1 and rows[0]['source_sha256']==lineage.sha(original),
         'Registration runtime sites are detached from reviewed source')
-    return rows[0]
+    return {**rows[0], 'source_sha256': authority()['native_sha256']}
 
 
 def proof(request, reply):

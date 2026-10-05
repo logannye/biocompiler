@@ -68,7 +68,7 @@ class ReferenceViewSourceLineageTests(unittest.TestCase):
                     original.core_view_source_witness(self.current, encoded)
 
     def test_workflow_addition_requires_exact_live_source_and_complete_chain(self):
-        additions = {original.CORE_SOURCE: original.CORE_CURRENT_SHA}
+        additions = {original.CORE_SOURCE: original.CORE_PACKAGE_SHA}
         self.assertEqual(workflow.REVIEWED_ADDITIONS[original.CORE_SOURCE], original.sha(self.current))
         with patch.object(original, 'core_source_witness', wraps=original.core_source_witness) as checked:
             proof = workflow.addition_counterparts(additions)
@@ -89,7 +89,7 @@ class ReferenceViewSourceLineageTests(unittest.TestCase):
     def test_new_witness_is_in_complete_data_and_source_closure_without_execution(self):
         index = original.authority()
         data = original.data_closure(index)
-        self.assertEqual(len(data), 4013)
+        self.assertEqual(len(data), 4015)
         self.assertEqual([row for row in data if row['logical'] == original.CORE_VIEW_UPDATE],
             [{'logical': original.CORE_VIEW_UPDATE, 'sha256': original.CORE_VIEW_UPDATE_SHA,
               'bytes': len(self.encoded)}])
@@ -100,7 +100,8 @@ class ReferenceViewSourceLineageTests(unittest.TestCase):
         self.assertEqual(copied, (original.ROOT / original.CORE_BLOB).read_bytes())
 
     def test_native_source_gate_retains_entire_old_body_and_same_finite_authority(self):
-        source = (original.ROOT / 'core/test/test_reference_contracts_corpus.ml').read_text()
+        from tools.reference_package_source_lineage import native_reference_counterpart
+        source = native_reference_counterpart((original.ROOT / 'core/test/test_reference_contracts_corpus.ml').read_bytes()).decode()
         session_start = source.index('let reference_session_original ')
         session_end = source.index('let reference_original root ')
         source = (source[:session_start] + source[session_end:]).replace(
@@ -136,7 +137,8 @@ class ReferenceViewSourceLineageTests(unittest.TestCase):
             self.assertEqual(after, {**before, 'source_sha256': original.CORE_CURRENT_SHA,
                 'sites': [{**site, 'line': None if site['line'] is None else site['line'] + 22}
                           for site in before['sites']]})
-            self.assertEqual(registration.runtime_authority(after['runtime']), after)
+            self.assertEqual(registration.runtime_authority(after['runtime']),
+                {**after, 'source_sha256': original.CORE_PACKAGE_SHA})
         def codes(code):
             yield code
             for value in code.co_consts:

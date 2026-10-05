@@ -172,6 +172,11 @@ def export_reference_sequence(
     Return immutable text/bytes for the caller to save. This does not publish a
     success manifest or promise atomic multi-file packaging.
     """
+    import sys as _package_sys
+    _package_backend = _package_sys.modules.get('biocompiler.reference_package_backend')
+    _package_route = None if _package_backend is None else _package_backend.current()
+    if _package_route is not None:
+        return _package_route.export(request, construct, artifact, registry, manifests, line_width=line_width)
     _line_width(line_width)
     require_software_use(request.target, boundary="export")
     checked = check_molecular(request, construct, artifact, registry, manifests)

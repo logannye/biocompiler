@@ -20,6 +20,15 @@ Biological quality/correctness work has not begun.
   Python semantic paths and pass the complete integration/release gates for the
   exact integrated revision. Record evidence before pausing.
 
+**Isolated package continuation, 2026-10-05:** the explicit prepare/build/current
+reconstruction/publish/export route and same-owner native session are now source
+integrated on `codex/reference-package-continuations`, based on pushed PR85 head
+`573cfdf6504572cfc0fdd045bbd018c9e4d85320`. See the
+[local handoff](reference-package-continuation-handoff.md). Native compilation,
+complete public-workflow parity, the unchanged 32-method installed campaign and
+all release gates remain pending. No LM exit condition is newly marked complete;
+Python remains the production default.
+
 **Fresh-session checkpoint, 2026-10-02:** the user requested that all current
 progress be saved to GitHub and handed to a fresh Codex session. The current
 branch is `codex/ocaml-package-distribution`, based on PR84 source

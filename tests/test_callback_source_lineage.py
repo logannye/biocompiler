@@ -63,7 +63,7 @@ class CallbackSourceLineageTests(unittest.TestCase):
                     original.callback_drain_source_witness(self.current, encoded)
 
     def test_workflow_addition_requires_current_bytes_and_complete_witness(self):
-        additions = {original.CALLBACK_SOURCE: original.CALLBACK_CURRENT_SHA}
+        additions = {original.CALLBACK_SOURCE: original.CALLBACK_PACKAGE_SHA}
         with patch.object(original, 'callback_source_witness', wraps=original.callback_source_witness) as checked:
             self.assertEqual(workflow.addition_counterparts(additions), [])
             checked.assert_called_once_with(self.current)

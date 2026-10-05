@@ -83,7 +83,7 @@ class ReferenceSessionSourceLineageTests(unittest.TestCase):
         self.assertEqual(current, self.current)
         self.assertEqual(copied, (original.ROOT / original.SESSION_BLOB).read_bytes())
         data = original.data_closure(index)
-        self.assertEqual(len(data), 4013)
+        self.assertEqual(len(data), 4015)
         for logical, pin in ((original.SESSION_BLOB, original.SESSION_ORIGINAL_SHA),
                              (original.SESSION_WITNESS, original.SESSION_WITNESS_SHA)):
             self.assertEqual([row for row in data if row['logical'] == logical],
@@ -92,7 +92,8 @@ class ReferenceSessionSourceLineageTests(unittest.TestCase):
         self.assertEqual(campaign.SOURCES.count('tests/test_reference_session_source_lineage.py'), 1)
 
     def test_native_gate_addition_preserves_entire_prior_source_and_archive_comparison(self):
-        source = (original.ROOT / 'core/test/test_reference_contracts_corpus.ml').read_text()
+        from tools.reference_package_source_lineage import native_reference_counterpart
+        source = native_reference_counterpart((original.ROOT / 'core/test/test_reference_contracts_corpus.ml').read_bytes()).decode()
         start = source.index('let reference_session_original ')
         end = source.index('let reference_original root ')
         helper = source[start:end]

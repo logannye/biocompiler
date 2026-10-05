@@ -1,0 +1,3 @@
+(library
+ (name bioc_reference_package_verify)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_artifact bioc_reference_artifact bioc_reference_package_check bioc_package_io zarith))

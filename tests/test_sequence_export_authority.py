@@ -32,7 +32,7 @@ class SequenceAuthorityTests(unittest.TestCase):
         self.assertEqual(hashlib.sha256(self.raw).hexdigest(), PIN)
         self.assertEqual(self.raw, (ROOT / "tests/conformance/reference-sequence-export-311.json").read_bytes())
         for path, pin in self.actual["sources"].items():
-            self.assertEqual(hashlib.sha256((authority.ROOT / path).read_bytes()).hexdigest(), pin)
+            self.assertEqual(authority.source_identity(authority.ROOT, path), pin)
 
     def test_exact_width_dependent_bytes_and_independent_sequence_identity(self):
         for alphabet in ("DNA", "RNA"):

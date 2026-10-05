@@ -9,6 +9,7 @@ import unittest
 from unittest.mock import patch
 
 from tools import reference_original_counterpart as original
+from tools import reference_package_source_lineage as package_source
 
 
 class ReferenceOriginalCounterpartTests(unittest.TestCase):
@@ -30,11 +31,11 @@ class ReferenceOriginalCounterpartTests(unittest.TestCase):
         manager = rows['src/biocompiler/compiler/pipeline.py']
         self.assertEqual(manager['sha256'], 'dccba32618ecc7923b8a02ff54f114d515ff4e50908f45e27a8cda0a3f531be0')
         self.assertFalse(manager['substituted'])
-        self.assertEqual([name for name, row in rows.items() if row['substituted']], sorted([original.CORE_SOURCE, original.CALLBACK_SOURCE, original.SESSION_SOURCE, original.TEST, *original.ROUTE_SOURCES]))
-        self.assertEqual(rows[original.CORE_SOURCE]['origin_sha256'], original.CORE_CURRENT_SHA)
+        self.assertEqual([name for name, row in rows.items() if row['substituted']], sorted([original.CORE_SOURCE, original.CALLBACK_SOURCE, original.SESSION_SOURCE, original.TEST, *original.ROUTE_SOURCES, *(set(package_source.PUBLIC) & set(rows))]))
+        self.assertEqual(rows[original.CORE_SOURCE]['origin_sha256'], original.CORE_PACKAGE_SHA)
         self.assertEqual(rows[original.CORE_SOURCE]['sha256'], original.CORE_ORIGINAL_SHA)
-        self.assertEqual(len(receipt['manifest']['data']), 4013)
-        self.assertEqual(rows[original.CALLBACK_SOURCE]['origin_sha256'], original.CALLBACK_CURRENT_SHA)
+        self.assertEqual(len(receipt['manifest']['data']), 4015)
+        self.assertEqual(rows[original.CALLBACK_SOURCE]['origin_sha256'], original.CALLBACK_PACKAGE_SHA)
         self.assertEqual(rows[original.CALLBACK_SOURCE]['sha256'], original.CALLBACK_ORIGINAL_SHA)
         self.assertEqual(rows[original.SESSION_SOURCE]['origin_sha256'], original.SESSION_CURRENT_SHA)
         self.assertEqual(rows[original.SESSION_SOURCE]['sha256'], original.SESSION_ORIGINAL_SHA)
@@ -120,7 +121,8 @@ class ReferenceOriginalCounterpartTests(unittest.TestCase):
             target = root / original.CORPUS
             target.parent.mkdir(parents=True, exist_ok=True)
             target.write_bytes((original.ROOT / original.CORPUS).read_bytes())
-            for logical in (original.CORE_BLOB, original.CORE_WITNESS, original.CORE_UPDATE,
+            for logical in (package_source.PUBLIC_WITNESS, package_source.TRANSPORT_WITNESS,
+                            original.CORE_BLOB, original.CORE_WITNESS, original.CORE_UPDATE,
                             original.CORE_MERGE_UPDATE, original.CORE_ATTEMPT_UPDATE, original.CORE_VIEW_UPDATE, original.ROUTE_WITNESS,
                             original.CALLBACK_BLOB, original.CALLBACK_WITNESS, original.CALLBACK_DRAIN_WITNESS,
                             original.SESSION_BLOB, original.SESSION_WITNESS):
@@ -140,7 +142,7 @@ class ReferenceOriginalCounterpartTests(unittest.TestCase):
     def test_only_exact_six_span_core_revision_restores_complete_archive(self):
         current = (original.ROOT / original.CORE_SOURCE).read_bytes()
         archived, proof = original.core_source_witness(current)
-        self.assertEqual(original.sha(current), original.CORE_CURRENT_SHA)
+        self.assertEqual(original.sha(current), original.CORE_PACKAGE_SHA)
         self.assertEqual(original.sha(archived), original.CORE_ORIGINAL_SHA)
         self.assertEqual(archived, (original.ROOT / original.CORE_BLOB).read_bytes())
         self.assertEqual(len(proof['correspondence']['changes']), 6)
@@ -210,7 +212,8 @@ class ReferenceOriginalCounterpartTests(unittest.TestCase):
             encoded = original.canonical(changed) + b'\n'
             with tempfile.TemporaryDirectory() as directory:
                 root = Path(directory)
-                for logical in (original.CALLBACK_WITNESS, original.CALLBACK_BLOB, original.CALLBACK_DRAIN_WITNESS):
+                for logical in (package_source.TRANSPORT_WITNESS, original.CALLBACK_WITNESS,
+                                original.CALLBACK_BLOB, original.CALLBACK_DRAIN_WITNESS):
                     target = root / logical
                     target.parent.mkdir(parents=True, exist_ok=True)
                     target.write_bytes((original.ROOT / logical).read_bytes())

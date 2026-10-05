@@ -66,6 +66,44 @@ let tools budget values=
   B.reserve budget(128*List.length values+128);
   List.map(fun(id,version)->D.Tool.make budget ~id ~version ~content_fingerprint:(fingerprint budget(str version))())values
 let manifests reference=[Reference_manifest.reference_set_id reference,reference]
+type report_view={report_owner:B.t;passed:B.t->bool;document:B.t->Json.t;native_document:Json.t option}
+let observed_report budget ~passed ~document=
+  B.guard budget;B.reserve budget 192;{report_owner=budget;passed;document;native_document=None}
+let native_report budget ~passed raw=
+  let size=Codec.measure ~limits:(codec budget)raw in
+  B.reserve budget(size.bytes+128*size.nodes+704);
+  {report_owner=budget;passed=(fun owner->B.guard owner;passed);document=(fun owner->B.guard owner;raw);native_document=Some raw}
+let native_report_document budget view=
+  B.guard budget;require(view.report_owner==budget)"Package report belongs to another native lifetime.";
+  match view.native_document with Some raw->raw|None->
+    Diagnostic.fail "reference_package" "A host report cannot supply a native report capability."
+type hooks={
+  get:B.t->V.t->identity:string->C.Stage_record.t;
+  result:B.t->V.t->identity:string->scope:string->C.Pipeline_result.t;
+  composition:B.t->native:(unit->report_view)->request:Composition.t->registry:Component_registry.t->report_view;
+  construct_check:B.t->native:(unit->report_view)->request:Reference_construct.Request.t->
+    construct:Reference_construct.Candidate.t->registry:Component_registry.t->
+    manifests:(string*Reference_manifest.t)list->report_view;
+  molecular_check:B.t->native:(unit->report_view)->V.t->report_view}
+let materialize_report budget ~native view=
+  B.guard budget;
+  require(view.report_owner==budget)"Package report view belongs to another native lifetime.";
+  let passed=view.passed budget in B.guard budget;
+  require passed "A current independent check failed during packaging.";
+  let raw=view.document budget in B.guard budget;
+  let size=Codec.measure ~limits:(codec budget)raw in
+  B.reserve budget(size.bytes+128*size.nodes+512);
+  (* A replaced host report may be observed, but only this actual fresh native
+     result can authorize its full content. The default native view is memoized
+     at its original callpoint, avoiding a duplicate independent check. *)
+  let expected=native() in B.guard budget;
+  require(expected.report_owner==budget && expected.passed budget)
+    "A current independent check failed during packaging.";
+  let current=expected.document budget in
+  let left=Codec.encode ~limits:(codec budget)raw and right=Codec.encode ~limits:(codec budget)current in
+  B.charge budget(String.length left+String.length right+1);
+  require(String.equal left right)"Host package evidence disagrees with its fresh independent native check.";
+  raw
 let guard_build budget build=
   B.guard budget;
   require(U.budget(V.upstream build)==B.work budget)"Package pipeline belongs to another resource lifetime."
@@ -77,7 +115,7 @@ let admission budget target boundary=
 type t={owner_value:B.t;request_value:D.Request.t;manifest_value:D.Manifest.t;data_value:string;
   archive_identity:string;build_value:V.t;records_value:C.Stage_record.t list;
   completion_value:C.Pipeline_result.t;files_value:Bioc_artifact.Stored_zip.entry list}
-let build budget ~callbacks ~request ?run_metadata()=
+let build budget ~callbacks ?hooks ?load_prepared ?collect_files ?tool_pins ~request ?run_metadata()=
   B.charge budget 1;
   require(B.owns_retention budget)"Package construction requires one configured persistent-data owner.";
   let construct_request=D.Request.construct request in
@@ -86,14 +124,17 @@ let build budget ~callbacks ~request ?run_metadata()=
   let alphabet=match Build_request.Target.payload_format target with
     |"DNA"->Reference_manifest.DNA|"RNA"->Reference_manifest.RNA
     |_->Diagnostic.fail "reference_inputs" "The reviewed reference build supports only DNA or RNA." in
-  let loaded=callbacks.load budget alphabet in I.require_owner budget loaded;
-  (* The historical load path also derives its request before returning the
-     reviewed registry, even though this authoritative request is retained. *)
-  let inputs=Reference_build_inputs.prepare budget ~alphabet loaded in
+  let inputs=match load_prepared with
+    |Some load->let value=load budget alphabet in Reference_build_inputs.require_owner budget value;value
+    |None->let loaded=callbacks.load budget alphabet in I.require_owner budget loaded;
+      Reference_build_inputs.prepare budget ~alphabet loaded in
   let reference=Reference_build_inputs.reference inputs and registry=Reference_build_inputs.registry inputs in
-  let retained=callbacks.collect budget reference in I.require_owner budget retained;
-  require(Reference_manifest.fingerprint(I.manifest retained)=Reference_manifest.fingerprint reference)
-    "Supplied manifest differs from the current pinned offline reference snapshot.";
+  let retained=match collect_files with
+    |Some collect->collect budget reference
+    |None->let retained=callbacks.collect budget reference in I.require_owner budget retained;
+      require(Reference_manifest.fingerprint(I.manifest retained)=Reference_manifest.fingerprint reference)
+        "Supplied manifest differs from the current pinned offline reference snapshot.";I.files retained in
+  B.guard budget;
   let manifests=manifests reference in
   let build=callbacks.run budget ~request:construct_request ~registry ~manifests in guard_build budget build;
   let candidate=V.candidate build in
@@ -105,8 +146,17 @@ let build budget ~callbacks ~request ?run_metadata()=
   let exported=Export.checked_bundle checked_export in
   B.guard budget;
   let manager=V.manager build in
-  let records=List.map(M.get manager)["components";"construct";"molecular"] in
-  let completion=M.result manager ~identity:"molecular" ~scope:"exact_cds" in
+  let records=List.map(fun identity->
+    let record=match hooks with None->M.get manager identity
+      |Some hooks->hooks.get budget build ~identity in
+    B.guard budget;
+    require(C.Stage_record.id record=identity)"Package read returned another stage capability.";
+    record)["components";"construct";"molecular"] in
+  let completion=match hooks with None->M.result manager ~identity:"molecular" ~scope:"exact_cds"
+    |Some hooks->hooks.result budget build ~identity:"molecular" ~scope:"exact_cds" in
+  B.guard budget;
+  require(C.Pipeline_result.artifact completion==List.nth records 2 && C.Pipeline_result.scope completion="exact_cds")
+    "Package completion is not its actual molecular read/result capability.";
   let members=ref [] in
   let add path role bytes=
     B.charge budget(String.length path+String.length role+1);
@@ -119,6 +169,8 @@ let build budget ~callbacks ~request ?run_metadata()=
     add("stages/"^id^".json")(id^"-stage")(json budget(C.Stage_record.to_json record)))records;
   add "molecular.json" "molecular-specification"(X.specification exported);
   add "sequence.fasta" "sequence"(X.fasta exported);
+  (match hooks with
+  |None->
   let composition=Composition_check.check ~parent:(B.work budget)
     ~request:(Reference_construct.Request.composition construct_request) ~registry() in
   let construct=Construct_check.check ~parent:(B.work budget) ~request:construct_request
@@ -132,7 +184,41 @@ let build budget ~callbacks ~request ?run_metadata()=
     "construct",Reference_construct_evidence.Result.passed construct,Reference_construct_evidence.Result.to_json construct;
     "molecular",Reference_molecular_evidence.Result.passed molecular,Reference_molecular_evidence.Result.to_json molecular] in
   List.iter(fun(name,passed,raw)->require passed "A current independent check failed during packaging.";
-    add("checks/"^name^".json")(name^"-check")(json budget raw))checks;
+    add("checks/"^name^".json")(name^"-check")(json budget raw))checks
+  |Some _->
+  let composition_native=lazy(
+    let checked=Composition_check.check ~parent:(B.work budget)
+      ~request:(Reference_construct.Request.composition construct_request) ~registry() in
+    native_report budget ~passed:(Composition_evidence.Result.passed checked)(Composition_evidence.Result.to_json checked)) in
+  let composition=match hooks with None->Lazy.force composition_native|Some hooks->
+    hooks.composition budget ~native:(fun()->Lazy.force composition_native)
+      ~request:(Reference_construct.Request.composition construct_request) ~registry in
+  B.guard budget;
+  (* Preserve the separate second read and eager constructor call before the
+     first report's passed/to_dict observations. *)
+  let checked_construct=callbacks.construct budget build in
+  let construct_native=lazy(
+    let checked=Construct_check.check ~parent:(B.work budget) ~request:construct_request
+      ~candidate:checked_construct ~registry ~manifests() in
+    native_report budget ~passed:(Reference_construct_evidence.Result.passed checked)(Reference_construct_evidence.Result.to_json checked)) in
+  let construct=match hooks with None->Lazy.force construct_native|Some hooks->
+    hooks.construct_check budget ~native:(fun()->Lazy.force construct_native) ~request:construct_request
+      ~construct:checked_construct ~registry ~manifests in
+  B.guard budget;
+  let molecular_native=lazy(let checked=V.check_result build in
+    native_report budget ~passed:(Reference_molecular_evidence.Result.passed checked)(Reference_molecular_evidence.Result.to_json checked)) in
+  let molecular=match hooks with None->Lazy.force molecular_native|Some hooks->
+    hooks.molecular_check budget ~native:(fun()->Lazy.force molecular_native)build in
+  B.guard budget;
+  let completion_size=Codec.measure ~limits:(codec budget)(C.Pipeline_result.to_json completion) in
+  B.reserve budget(completion_size.bytes+128*completion_size.nodes+512);
+  List.iter(fun(name,view,native)->
+    let raw=materialize_report budget ~native view in
+    add("checks/"^name^".json")(name^"-check")(json budget raw))
+    ["composition",composition,(fun()->Lazy.force composition_native);
+     "construct",construct,(fun()->Lazy.force construct_native);
+     "molecular",molecular,(fun()->Lazy.force molecular_native)]
+  );
   let raw_candidate=Reference_molecular.Artifact.to_json candidate in
   let first=match Json.array(field "records" raw_candidate)with value::_->value|[]->
     Diagnostic.fail "reference_package" "Checked molecular build has no sequence record." in
@@ -152,7 +238,7 @@ let build budget ~callbacks ~request ?run_metadata()=
     "upstream_scope",str "This component-root reference request has no accepted upstream intent or behavior realization."] in
   add "result.json" "build-summary"(json budget summary);
   List.iter(fun(path,bytes)->add("references/"^Reference_manifest.reference_set_id reference^"/"^path)
-    "reference-input" bytes)(I.files retained);
+    "reference-input" bytes)retained;
   let entries=List.map(fun(path,(role,bytes))->D.File.make budget ~path ~role ~sha256:(sha budget bytes)
     ~byte_length:(Z.of_int(String.length bytes))())(sorted budget !members) in
   let stages=List.map(fun record->
@@ -163,7 +249,7 @@ let build budget ~callbacks ~request ?run_metadata()=
       ~artifact_schema:(Json.string(field "schema_version"(C.Stage_record.payload record)))())records in
   (* Keep the original late SDK lookup before the current module tool table. *)
   let package_version=callbacks.package_version() in B.guard budget;
-  let toolchain=tools budget(callbacks.tool_versions()) in B.guard budget;
+  let toolchain=match tool_pins with None->tools budget(callbacks.tool_versions())|Some get->get budget in B.guard budget;
   let manifest=D.Manifest.make budget ~request_fingerprint:(D.Request.fingerprint request)
     ~files:entries ~accepted_stages:stages ~toolchain ~package_version() in
   let files=List.map(fun(path,(_,bytes))->path,bytes) !members in
@@ -181,3 +267,5 @@ let molecular_build value=value.build_value
 let records value=value.records_value
 let completion value=value.completion_value
 let files value=value.files_value
+
+let tool_pins=tools

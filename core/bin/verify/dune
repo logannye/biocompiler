@@ -2,4 +2,4 @@
  (name main)
  (public_name biocompiler-verify)
  (package biocompiler_core)
- (libraries bioc_wire bioc_service))
+ (libraries bioc_wire bioc_service bioc_reference_package_verify))

@@ -23,12 +23,14 @@ from biocompiler.core_client import (
     CoreCancelled, CoreClient, CoreError, CoreProtocolError, CoreTimeout,
     CoreTransportError, CoreUnavailable, JsonValue,
 )
+from biocompiler.core_package_files import PackageFiles
 from biocompiler.core_pipeline_session import (
     HEADER_BYTES, MAX_STDERR_BYTES, _dispose, _frame, decode_document, encode_document,
 )
 from biocompiler.pipeline_callback_objects import CallbackObjects, HostCompletion
 
 _DECLARATION_JSON = "{\"application\":\"caller_supplied_exact_declaration;channel_has_no_manager_or_acceptance_authority\",\"client_fields\":{\"close\":[\"protocol\",\"profile\",\"session_id\",\"kind\",\"sequence\",\"parent_invocation\"],\"command\":[\"protocol\",\"profile\",\"session_id\",\"kind\",\"sequence\",\"parent_invocation\",\"operation\",\"arguments\"],\"continue\":[\"protocol\",\"profile\",\"session_id\",\"kind\",\"sequence\",\"invocation_id\",\"invocation_sha256\",\"outcome\"],\"hello\":[\"protocol\",\"profile\",\"session_id\",\"kind\",\"sequence\",\"declaration\",\"application\",\"limits\"]},\"close\":\"top_level_only;successful_null_reply_with_closed_true;no_resume\",\"continuation_binding\":\"only_exact_current_top_invocation_id_and_body_sha256_may_complete\",\"continuation_outcomes\":{\"raise\":[\"status\",\"token\"],\"return\":[\"status\",\"value\"]},\"event_sequence\":\"zero_then_exact_successor_across_replies_invocations_and_fatal\",\"exception\":\"opaque_bounded_host_token_preserved;only_explicit_rejected_reply_or_Host_exception_keeps_application_live\",\"fatal\":\"pipeline_callback_fatal;closed_latched;nullable_last_validated_request_binding;no_retry_or_fatal_write_after_uncertain_write\",\"fixed_limits\":{\"frame_header_bytes\":9,\"max_action_bytes\":128,\"max_frame_json_nodes\":1000000,\"max_json_depth\":128,\"max_json_number_characters\":4300,\"max_json_string_bytes\":4194304,\"max_token_bytes\":128,\"terminal_bytes\":8192,\"terminal_work\":1000000},\"framing\":\"8_lowercase_hex_utf8_body_bytes_then_LF_then_exact_body\",\"hello\":\"exact_complete_transport_and_application_declarations;null_or_complete_positive_integer_limit_reductions;already_consumed_prefix_counts\",\"hello_result_fields\":[\"declaration\",\"application\",\"limits\"],\"host_execution\":\"arbitrary_host_callback_cpu_and_memory_outside_native_bound;application_must_charge_its_native_work_and_retention_to_channel\",\"invocation_identity\":\"event_id_and_sha256_exact_invocation_body_without_frame_header\",\"limits\":{\"max_commands\":10000,\"max_frame_bytes\":33554432,\"max_frames\":1000000,\"max_json_nodes\":2000000,\"max_pending_invocations\":128,\"max_retained_bytes\":134217728,\"max_total_bytes\":268435456,\"max_work\":1000000000000},\"parent_binding\":\"command_parent_is_current_top_invocation_or_null_at_top_level;invocation_parent_is_enclosing_invocation\",\"profile\":\"biocompiler.core.pipeline_callback_channel.v2\",\"protocol\":\"biocompiler.pipeline_callback_channel.v1\",\"reply_outcomes\":{\"ok\":[\"status\",\"value\"],\"raise\":[\"status\",\"token\"],\"rejected\":[\"status\",\"value\"]},\"request_identity\":\"sha256_exact_utf8_body_without_frame_header\",\"retention\":\"cumulative_canonical_application_declaration_and_received_body_bytes_plus_callback_arguments_and_explicit_application_reservations;no_refund\",\"schema_version\":\"biocompiler.pipeline_callback_channel_declaration.v1\",\"sequence\":\"hello_zero_then_exact_successor_across_commands_continuations_and_close\",\"server_fields\":{\"fatal\":[\"protocol\",\"profile\",\"session_id\",\"kind\",\"event_id\",\"sequence\",\"request_sha256\",\"code\",\"closed\",\"usage\"],\"invoke\":[\"protocol\",\"profile\",\"session_id\",\"kind\",\"event_id\",\"invocation_id\",\"parent_invocation\",\"command_sequence\",\"command_sha256\",\"action\",\"arguments\",\"usage\"],\"reply\":[\"protocol\",\"profile\",\"session_id\",\"kind\",\"event_id\",\"sequence\",\"request_sha256\",\"outcome\",\"closed\",\"usage\"]},\"session_identity\":\"client_canonical_lowercase_uuid_bound_to_one_channel_no_reconnect\",\"terminal_reserve\":\"prepaid_1000000_work;normal_frames_leave_8192_bytes_and_one_frame;one_fatal_may_exceed_reduced_frame_and_node_ceilings_within_prepaid_byte_work_bound\",\"usage\":\"conservative_reservations_before_io_or_allocation;partial_headers_and_bodies_remain_charged;json_nodes_counts_all_received_and_published_keys_and_values\",\"usage_fields\":[\"work_charged\",\"work_remaining\",\"input_bytes\",\"output_bytes\",\"frames\",\"commands\",\"json_nodes\",\"pending_invocations\",\"retained_bytes\"]}"
+_PACKAGE_DECLARATION_JSON = '{"application":"caller_supplied_exact_declaration;channel_has_no_manager_or_acceptance_authority","client_fields":{"close":["protocol","profile","session_id","kind","sequence","parent_invocation"],"command":["protocol","profile","session_id","kind","sequence","parent_invocation","operation","arguments"],"continue":["protocol","profile","session_id","kind","sequence","invocation_id","invocation_sha256","outcome"],"hello":["protocol","profile","session_id","kind","sequence","declaration","application","limits"]},"close":"top_level_only;successful_null_reply_with_closed_true;no_resume","continuation_binding":"only_exact_current_top_invocation_id_and_body_sha256_may_complete","continuation_outcomes":{"raise":["status","token"],"return":["status","value"]},"event_sequence":"zero_then_exact_successor_across_replies_invocations_and_fatal","exception":"opaque_bounded_host_token_preserved;only_explicit_rejected_reply_or_Host_exception_keeps_application_live","fatal":"pipeline_callback_fatal;closed_latched;nullable_last_validated_request_binding;no_retry_or_fatal_write_after_uncertain_write","fixed_limits":{"frame_header_bytes":9,"max_action_bytes":128,"max_json_depth":128,"max_json_number_characters":4300,"max_json_string_bytes":4194304,"max_token_bytes":128,"terminal_bytes":8192,"terminal_work":1000000},"framing":"8_lowercase_hex_utf8_body_bytes_then_LF_then_exact_body","hello":"exact_complete_transport_and_application_declarations;null_or_complete_positive_integer_limit_reductions;already_consumed_prefix_counts","hello_result_fields":["declaration","application","limits"],"host_execution":"arbitrary_host_callback_cpu_and_memory_outside_native_bound;application_must_charge_its_native_work_and_retention_to_channel","invocation_identity":"event_id_and_sha256_exact_invocation_body_without_frame_header","limits":{"max_commands":10000,"max_frame_bytes":33554432,"max_frames":1000000,"max_json_nodes":1000000,"max_pending_invocations":128,"max_retained_bytes":536870912,"max_total_bytes":268435456,"max_work":10000000000},"parent_binding":"command_parent_is_current_top_invocation_or_null_at_top_level;invocation_parent_is_enclosing_invocation","profile":"biocompiler.core.reference_package_channel.v1","protocol":"biocompiler.pipeline_callback_channel.v1","reply_outcomes":{"ok":["status","value"],"raise":["status","token"],"rejected":["status","value"]},"request_identity":"sha256_exact_utf8_body_without_frame_header","retention":"one_package_owner_installed_during_hello_before_reply;cumulative_retained_data_including_transferred_prior_channel_bytes_and_all_descendant_manager_check_report_artifact_ownership;no_refund;not_process_RSS","schema_version":"biocompiler.pipeline_callback_channel_declaration.v1","sequence":"hello_zero_then_exact_successor_across_commands_continuations_and_close","server_fields":{"fatal":["protocol","profile","session_id","kind","event_id","sequence","request_sha256","code","closed","usage"],"invoke":["protocol","profile","session_id","kind","event_id","invocation_id","parent_invocation","command_sequence","command_sha256","action","arguments","usage"],"reply":["protocol","profile","session_id","kind","event_id","sequence","request_sha256","outcome","closed","usage"]},"session_identity":"client_canonical_lowercase_uuid_bound_to_one_channel_no_reconnect","terminal_reserve":"prepaid_1000000_work;normal_frames_leave_8192_bytes_and_one_frame;one_fatal_may_exceed_reduced_frame_and_node_ceilings_within_prepaid_byte_work_bound","usage":"conservative_reservations_before_io_or_allocation;partial_headers_and_bodies_remain_charged;json_nodes_counts_all_received_and_published_keys_and_values","usage_fields":["work_charged","work_remaining","input_bytes","output_bytes","frames","commands","json_nodes","pending_invocations","retained_bytes"]}'
 PROTOCOL = 'biocompiler.pipeline_callback_channel.v1'
 PROFILE = 'biocompiler.core.pipeline_callback_channel.v2'
 ARGUMENT = '--pipeline-callback-session-v1'
@@ -39,6 +41,10 @@ _BROKER_ACTIONS = (
     'iter', 'next', 'tuple', 'list', 'dict', 'len', 'mapping-items',
     'mapping-values', 'mapping-keys', 'vars', 'document', 'freeze-json', 'json',
 )
+
+
+def package_capability_profile() -> dict[str, Any]:
+    return cast(dict[str, Any], json.loads(_PACKAGE_DECLARATION_JSON))
 
 
 def capability_profile() -> dict[str, Any]:
@@ -154,15 +160,22 @@ class CorePipelineCallbackSession:
                  objects: CallbackObjects, limits: JsonValue = None,
                  allowed_actions: tuple[str, ...] = _BROKER_ACTIONS,
                  invocation_handler: Callable[[str, JsonValue], HostCompletion] | None = None,
-                 cancelled: Callable[[], bool] | None = None):
+                 cancelled: Callable[[], bool] | None = None,
+                 _package_files: PackageFiles | None = None):
+        _require(_package_files is None or type(_package_files) is PackageFiles,
+                 "Package callback transport requires the exact private FD owner")
+        self._package_files = _package_files
+        self._declaration_json = _DECLARATION_JSON if _package_files is None else _PACKAGE_DECLARATION_JSON
+        self._profile = PROFILE if _package_files is None else package_capability_profile()["profile"]
+        self._defaults: dict[str, int] = dict(_DEFAULTS) if _package_files is None else package_capability_profile()["limits"]
         _require(isinstance(core, CoreClient) and core.role == 'core', 'Callback sessions require an explicit Core role')
         if os.name != 'posix':
             raise CoreUnavailable('Callback sessions currently require POSIX')
-        self._limits = dict(_DEFAULTS)
+        self._limits = dict(self._defaults)
         if limits is not None:
-            reduced = _object(limits, set(_DEFAULTS), 'Callback limits')
+            reduced = _object(limits, set(self._defaults), 'Callback limits')
             _require(all(type(reduced[key]) is int and 0 < reduced[key] <= maximum
-                         for key, maximum in _DEFAULTS.items()), 'Callback limits require positive integer reductions')
+                         for key, maximum in self._defaults.items()), 'Callback limits require positive integer reductions')
             self._limits = cast(dict[str, int], dict(reduced))
         _require(isinstance(objects, CallbackObjects), 'Callback sessions require a local object broker')
         objects.counts  # Check broker ownership before launching a process.
@@ -204,8 +217,9 @@ class CorePipelineCallbackSession:
             raise CoreUnavailable('Selected callback Core does not match its release pin')
         self._selector = selectors.DefaultSelector()
         try:
-            self._process = subprocess.Popen([str(path), ARGUMENT], stdin=subprocess.PIPE,
-                stdout=subprocess.PIPE, stderr=subprocess.PIPE, start_new_session=True)
+            arguments, descriptors = ((ARGUMENT,), ()) if _package_files is None else _package_files.claim_launch()
+            self._process = subprocess.Popen([str(path), *arguments], stdin=subprocess.PIPE,
+                stdout=subprocess.PIPE, stderr=subprocess.PIPE, start_new_session=True, pass_fds=descriptors)
         except BaseException as exception:
             self._selector.close()
             if isinstance(exception, OSError):
@@ -219,7 +233,7 @@ class CorePipelineCallbackSession:
                 if label != 'stdin':
                     self._selector.register(pipe, selectors.EVENT_READ, label)
             self.hello_response = self._request('hello', 'hello', {
-                'declaration': capability_profile(), 'application': decode_document(self._application),
+                'declaration': json.loads(self._declaration_json), 'application': decode_document(self._application),
                 'limits': None if limits is None else cast(JsonValue, dict(self._limits)),
             }, cancelled)
         except BaseException:
@@ -267,8 +281,12 @@ class CorePipelineCallbackSession:
     def _invalidate(self) -> None:
         self._closed = self._invalidated = True
         self._finalizer()
+        if self._package_files is not None:
+            self._package_files.invalidate()
 
     def _check_time(self, deadline: float) -> None:
+        if self._package_files is not None:
+            self._package_files.monitor()
         for command in self._commands:
             if command.cancelled is not None and command.cancelled():
                 raise CoreCancelled('Callback session command cancelled')
@@ -351,6 +369,8 @@ class CorePipelineCallbackSession:
                 raw = bytes(received[HEADER_BYTES:])
                 self._traffic.append(CallbackFrame('server', self._next_event, raw))
                 self._quiet()
+                if self._package_files is not None:
+                    self._package_files.monitor()
                 return raw
             # Exit can race with a readiness snapshot while the final reply is
             # still buffered. Only stdout EOF proves an incomplete frame; the
@@ -378,10 +398,10 @@ class CorePipelineCallbackSession:
         self._finalizer.detach()
 
     def _frame_node_limit(self) -> int:
-        return min(_FIXED['max_frame_json_nodes'], self._limits['max_json_nodes'])
+        return cast(int, min(_FIXED['max_frame_json_nodes'], self._limits['max_json_nodes']))
 
     def _body(self, kind: str, fields: dict[str, JsonValue]) -> bytes:
-        value: JsonValue = {'protocol': PROTOCOL, 'profile': PROFILE, 'session_id': self._nonce,
+        value: JsonValue = {'protocol': PROTOCOL, 'profile': self._profile, 'session_id': self._nonce,
             'kind': kind, 'sequence': self._next_sequence, **fields}
         body = encode_document(value, max_bytes=self._limits['max_frame_bytes'], max_nodes=self._frame_node_limit())
         self._next_sequence += 1
@@ -392,7 +412,7 @@ class CorePipelineCallbackSession:
         _require(all(type(item) is int and item >= 0 for item in value.values()), 'Callback usage requires nonnegative integers')
         totals = {self._limits['max_work']}
         if fatal and len(self._commands) == 1 and self._commands[0].operation == 'hello':
-            totals.add(_DEFAULTS['max_work'])
+            totals.add(self._defaults['max_work'])
         _require(value['work_charged'] + value['work_remaining'] in totals
                  and value['work_charged'] >= _FIXED['terminal_work'], 'Callback lifetime work ancestor changed')
         if not fatal:
@@ -420,7 +440,7 @@ class CorePipelineCallbackSession:
         kind = fields.get('kind')
         _require(type(kind) is str and kind in ('reply', 'invoke', 'fatal'), 'Unknown callback event kind')
         _object(fields, set(capability_profile()['server_fields'][kind]), 'Callback event')
-        _require(fields['protocol'] == PROTOCOL and fields['profile'] == PROFILE and fields['session_id'] == self._nonce
+        _require(fields['protocol'] == PROTOCOL and fields['profile'] == self._profile and fields['session_id'] == self._nonce
             and type(fields['event_id']) is int and fields['event_id'] == self._next_event,
             'Callback event session, profile or sequence mismatch')
         self._next_event += 1
@@ -510,7 +530,7 @@ class CorePipelineCallbackSession:
                 if operation == 'hello':
                     _require(status == 'ok', 'Callback hello was rejected')
                     result = _object(outcome['value'], {'declaration', 'application', 'limits'}, 'Callback hello result')
-                    _require(encode_document(result['declaration']) == _DECLARATION_JSON.encode('utf-8')
+                    _require(encode_document(result['declaration']) == self._declaration_json.encode('utf-8')
                         and encode_document(result['application']) == self._application
                         and encode_document(result['limits']) == encode_document(cast(JsonValue, self._limits)),
                         'Callback negotiation changed its exact declarations or limits')

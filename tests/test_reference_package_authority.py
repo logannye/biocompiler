@@ -24,7 +24,7 @@ class ReferencePackageAuthorityTests(unittest.TestCase):
         self.assertEqual(len(self.current["cases"]), 8)
         self.assertEqual((ROOT / "tests/conformance/reference-packages-311.json").read_bytes(), (ROOT / "tests/conformance/reference-packages-314.json").read_bytes())
         for path, pin in self.current["sources"].items():
-            self.assertEqual(hashlib.sha256((authority.ROOT / path).read_bytes()).hexdigest(), pin)
+            self.assertEqual(authority.source_identity(authority.ROOT, path), pin)
 
     def test_full_archive_manifest_and_members(self):
         for row in self.rows.values():
