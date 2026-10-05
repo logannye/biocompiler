@@ -29,6 +29,8 @@ REFERENCE_DELTA=ROOT/'tests/conformance/reference-distribution-source-delta-v1.j
 REFERENCE_DELTA_SHA256='06475b6327dac7dc67187956e14abb3a0771574307e4fbf460795c49ab905a06'
 REFERENCE_PARALLEL_DELTA=ROOT/'tests/conformance/reference-parallel-source-delta-v1.json'
 REFERENCE_PARALLEL_DELTA_SHA256='96f5803d6f66fa6dc5e6088a5ed7d5cf8f217fd93ee5266b04fc533f01882bb7'
+REFERENCE_TIMEOUT_DELTA=ROOT/'tests/conformance/reference-timeout-source-delta-v1.json'
+REFERENCE_TIMEOUT_DELTA_SHA256='f2c1e1ee1ac95a091caec48465f595304828b4bc685bc0ea5f7b6ed8101617a9'
 MANAGER_INVENTORY_DELTA=ROOT/'tests/conformance/manager-source-inventory-delta-v1.json'
 MANAGER_INVENTORY_DELTA_SHA256='8eb6ba9af872a61a3749244d835fa434ea0f131efade5da16e10a01b59316999'
 AUTHORING_DELTA=ROOT/'tests/conformance/installed-authoring-source-delta-v1.json'
@@ -176,6 +178,35 @@ def restore_installed_authoring_source(current, proof_bytes):
     require(proof['historical']=={'revision':'705480688a7e37e6c0f03447226350684512342f',
         'bytes':len(restored),'sha256':hashlib.sha256(restored).hexdigest()},
         'Complete historical continuation driver source differs')
+    return restored
+
+
+def restore_reference_timeout_source(current, proof_bytes):
+    """Restore the exact finite worker allowance before all frozen source proofs."""
+    def require(condition,message):
+        if not condition:raise AssertionError(message)
+    def pin(raw):
+        return {'bytes':len(raw),'sha256':hashlib.sha256(raw).hexdigest()}
+    require(hashlib.sha256(proof_bytes).hexdigest()==REFERENCE_TIMEOUT_DELTA_SHA256,
+        'Unreviewed reference timeout source witness')
+    proof=json.loads(proof_bytes)
+    historical={'revision':'db38364eb9ea1fcfa57c8754a790c9e27eb40726','bytes':17918,
+        'sha256':'8316869ed38ed7a5173c959a4995c2f00b0b5b70e8170675876f01a56e770e1c'}
+    bounded={'bytes':17919,'sha256':'636feb7b10e0c0e95ddbd015c4b66ebdfef0578b284c0d4526e0555f7cfc9715'}
+    span={'offset':14880,'before':'timeout=1800','after':'timeout=10800'}
+    require(type(proof) is dict and proof=={
+        'schema':'biocompiler.reference_timeout_source_delta.v1',
+        'path':'tools/pipeline_reference_runtime.py','historical':historical,
+        'current':bounded,'spans':[span]}
+        and type(proof['historical']['bytes']) is int
+        and type(proof['current']['bytes']) is int
+        and type(proof['spans'][0]['offset']) is int and pin(current)==bounded,
+        'Reference timeout exact source authority differs')
+    offset=span['offset'];before=span['before'].encode();after=span['after'].encode()
+    require(current[offset:offset+len(after)]==after,'Reference timeout source span bytes differ')
+    restored=current[:offset]+before+current[offset+len(after):]
+    require(pin(restored)=={key:historical[key] for key in ('bytes','sha256')},
+        'Complete historical reference timeout source differs')
     return restored
 
 
@@ -528,6 +559,7 @@ class HostedCiPlanTests(unittest.TestCase):
             elif name=='tools/check_pipeline_fixed_provider_install.py':
                 new=restore_fixed_provider_source(new,PROVIDER_DELTA.read_bytes())
             elif name=='tools/pipeline_reference_runtime.py':
+                new=restore_reference_timeout_source(new,REFERENCE_TIMEOUT_DELTA.read_bytes())
                 new=restore_reference_parallel_source(new,REFERENCE_PARALLEL_DELTA.read_bytes())
                 new=restore_reference_distribution_source(new,REFERENCE_DELTA.read_bytes())
             elif name=='tools/check_pipeline_fixed_continuation_install.py':
@@ -733,8 +765,55 @@ class HostedCiPlanTests(unittest.TestCase):
         with self.assertRaisesRegex(AssertionError,'Unreviewed installed-authoring source witness'):
             restore_installed_authoring_source(current,json.dumps(forged,sort_keys=True,indent=2).encode()+b'\n')
 
+    def test_reference_timeout_restoration_preserves_exact_full_chain_and_rejects_forgery(self):
+        current=(ROOT/'tools/pipeline_reference_runtime.py').read_bytes()
+        witness=REFERENCE_TIMEOUT_DELTA.read_bytes()
+        restored=restore_reference_timeout_source(current,witness)
+        self.assertEqual({'bytes':len(restored),'sha256':hashlib.sha256(restored).hexdigest()},
+            json.loads(REFERENCE_PARALLEL_DELTA.read_bytes())['current'])
+        parallel=restore_reference_parallel_source(restored,REFERENCE_PARALLEL_DELTA.read_bytes())
+        complete=restore_reference_distribution_source(parallel,REFERENCE_DELTA.read_bytes())
+        original=json.loads((ROOT/'tests/conformance/prebuilt-installed-path-delta-v1.json').read_bytes())
+        self.assertEqual(hashlib.sha256(complete).hexdigest(),
+            original['tools/pipeline_reference_runtime.py']['current_sha256'])
+        for mutant in (restored,current+b'\n',current.replace(b'max_workers=4',b'max_workers=3'),
+                current.replace(b'timeout=10800',b'timeout=10801'),
+                current.replace(b'capture_output=True',b'capture_output=False'),
+                current.replace(b'check=False',b'check=True'),current.replace(b'\n',b'\r\n')):
+            with self.subTest(source_sha256=hashlib.sha256(mutant).hexdigest()):
+                self.assertNotEqual(mutant,current)
+                with self.assertRaises(AssertionError):restore_reference_timeout_source(mutant,witness)
+                forged=json.loads(witness)
+                forged['current']={'bytes':len(mutant),'sha256':hashlib.sha256(mutant).hexdigest()}
+                encoded=json.dumps(forged,sort_keys=True,indent=2).encode()+b'\n'
+                with patch.dict(globals(),REFERENCE_TIMEOUT_DELTA_SHA256=hashlib.sha256(encoded).hexdigest()), \
+                        self.assertRaisesRegex(AssertionError,'exact source authority'):
+                    restore_reference_timeout_source(mutant,encoded)
+        for mutation in ('schema','path','revision','prior','historical_float_bytes','float_bytes',
+                'missing','extra','offset','float_offset','bool_offset','before','after'):
+            forged=json.loads(witness)
+            if mutation=='schema':forged['schema']+='x'
+            elif mutation=='path':forged['path']='tools/check_pipeline_reference_install.py'
+            elif mutation=='revision':forged['historical']['revision']='0'*40
+            elif mutation=='prior':forged['historical']['sha256']='0'*64
+            elif mutation=='historical_float_bytes':forged['historical']['bytes']=float(forged['historical']['bytes'])
+            elif mutation=='float_bytes':forged['current']['bytes']=float(forged['current']['bytes'])
+            elif mutation=='missing':forged['spans'].clear()
+            elif mutation=='extra':forged['spans'].append(dict(forged['spans'][0]))
+            elif mutation=='offset':forged['spans'][0]['offset']+=1
+            elif mutation=='float_offset':forged['spans'][0]['offset']=float(forged['spans'][0]['offset'])
+            elif mutation=='bool_offset':forged['spans'][0]['offset']=True
+            else:forged['spans'][0][mutation]+=' '
+            encoded=json.dumps(forged,sort_keys=True,indent=2).encode()+b'\n'
+            with self.subTest(witness_mutation=mutation),patch.dict(globals(),
+                    REFERENCE_TIMEOUT_DELTA_SHA256=hashlib.sha256(encoded).hexdigest()),self.assertRaises(AssertionError):
+                restore_reference_timeout_source(current,encoded)
+        with self.assertRaisesRegex(AssertionError,'Unreviewed reference timeout'):
+            restore_reference_timeout_source(current,witness+b'\n')
+
     def test_reference_parallel_restoration_preserves_exact_full_chain_and_rejects_forgery(self):
         current=(ROOT/'tools/pipeline_reference_runtime.py').read_bytes()
+        current=restore_reference_timeout_source(current,REFERENCE_TIMEOUT_DELTA.read_bytes())
         witness=REFERENCE_PARALLEL_DELTA.read_bytes()
         restored=restore_reference_parallel_source(current,witness)
         self.assertEqual({'bytes':len(restored),'sha256':hashlib.sha256(restored).hexdigest()},
@@ -776,6 +855,7 @@ class HostedCiPlanTests(unittest.TestCase):
 
     def test_reference_distribution_restoration_retains_the_complete_original_path_proof(self):
         current=(ROOT/'tools/pipeline_reference_runtime.py').read_bytes()
+        current=restore_reference_timeout_source(current,REFERENCE_TIMEOUT_DELTA.read_bytes())
         current=restore_reference_parallel_source(current,REFERENCE_PARALLEL_DELTA.read_bytes())
         witness=REFERENCE_DELTA.read_bytes();proof=json.loads(witness)
         restored=restore_reference_distribution_source(current,witness)

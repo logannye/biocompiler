@@ -44,7 +44,7 @@ class ReferenceParallelTests(unittest.TestCase):
             self.assertNotEqual(threading.get_ident(), parent)
             self.assertEqual(len(prepared), 4)
             self.assertEqual(kwargs, {'cwd': kwargs['cwd'], 'capture_output': True,
-                'timeout': 1800, 'check': False})
+                'timeout': 10800, 'check': False})
             self.assertFalse(Path(kwargs['cwd']).is_relative_to(runtime.ROOT))
             with lock:
                 active += 1
@@ -114,7 +114,7 @@ class ReferenceParallelTests(unittest.TestCase):
 
     def test_spawn_exception_and_timeout_drain_all_started_slots(self):
         for failure in (OSError('inert spawn failure'),
-                        subprocess.TimeoutExpired(['inert-worker'], 1800)):
+                        subprocess.TimeoutExpired(['inert-worker'], 10800)):
             with self.subTest(failure=type(failure).__name__):
                 finished = self.failed_cohort(failure)
                 with self.assertRaises(type(failure)) as caught:

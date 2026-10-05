@@ -232,7 +232,7 @@ def compare(root,native_root,*,revision,source_revision,run_id,python311,python3
         # Leaving the executor drains every started worker even when one fails.
         with ThreadPoolExecutor(max_workers=4) as executor:
             futures=[executor.submit(subprocess.run,job[-1],cwd=temporary,
-                capture_output=True,timeout=1800,check=False) for job in jobs]
+                capture_output=True,timeout=10800,check=False) for job in jobs]
         for (name,target,python,pin,inputs_pin,artifacts,output,command),future in zip(jobs,futures):
             completed=future.result()
             require(len(completed.stdout)+len(completed.stderr)<=1024*1024,'Reference reconstruction diagnostics exceeded bound')

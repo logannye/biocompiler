@@ -124,8 +124,10 @@ original cached record object and reject added, missing or replaced records.
 
 Reference reproducibility prepares all four runtime slots and their complete
 source, binary and artifact authority before launching up to four independent
-reconstruction subprocesses. Each retains its existing 1,800-second timeout,
-diagnostic bound and unique output. All started workers finish or fail before
+reconstruction subprocesses. Each has a finite 10,800-second timeout, matching
+the complete installed campaign allowance, with the same diagnostic bound and
+unique output. Measured hosted reconstructions exceeded the former 1,800-second
+limit; shorter transport deadlines remain unchanged. All started workers finish or fail before
 the parent validates reports in the original platform/Python order and requires
 complete cross-runtime equality. Instrumentation and transcript peers remain
 inside each worker process; the four-slot limit is not a total process limit.
