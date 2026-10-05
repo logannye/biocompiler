@@ -45,6 +45,7 @@ COVERAGE = {'fixed_boundaries': 136, 'original_manager_contexts': 476,
     'returned_operations': 30, 'raised_operations': 3,
     'prior_excluded_boundaries': 10, 'remaining_excluded_boundaries': 4}
 SOURCES = ('tools/check_pipeline_fixed_registration_install.py',
+    'tests/test_pipeline_fixed_registration_locations.py',
     'tests/test_pipeline_fixed_registration_campaign.py',
     'tests/test_pipeline_fixed_initializer_receipts.py', 'tools/pipeline_fixed_registration_runtime.py',
     'tests/test_pipeline_fixed_registration_runtime.py', 'tests/pipeline_fixed_registration_fixture.py',
@@ -930,14 +931,108 @@ def validate_case(corpus, expected, actual, evidence, details, oracle, source, o
         'complete_graph_sha256':sha(canonical(actual))}
 
 
+PROVIDER_SOURCE_SLOTS = {
+    'biocompiler.compiler.synthetic': ('run_synthetic_pipeline', ('lower', 'verify', 'generate', 'check')),
+    'biocompiler.compiler.components': ('run_component_pipeline', ('generate', 'verify')),
+}
+
+
+def provider_locations():
+    """Bind the two live provider modules to complete reviewed source bytes."""
+    package = importlib.import_module('biocompiler')
+    package_path = Path(package.__file__).resolve()
+    sources = []
+    for name, (entry, _) in PROVIDER_SOURCE_SLOTS.items():
+        module = importlib.import_module(name)
+        path = Path(module.__file__).resolve()
+        logical = 'src/' + name.replace('.', '/') + '.py'
+        raw = r.raw_file(path)
+        require(path == package_path.parent / logical.removeprefix('src/biocompiler/')
+            and raw == r.raw_file(ROOT / logical), 'Registration installed provider source differs')
+        function = getattr(module, entry)
+        codes = [code for code in manager._nested_codes(compile(raw, str(path), 'exec', dont_inherit=True))
+            if code.co_qualname == entry]
+        require(type(function) is FunctionType and function.__globals__ is vars(module)
+            and function.__module__ == name and len(codes) == 1
+            and Path(function.__code__.co_filename).resolve() == path and function.__code__ == codes[0],
+            'Registration live provider entry differs from complete source')
+        sources.append({'module': name, 'logical': logical, 'path': str(path),
+            'sha256': sha(raw), 'bytes': len(raw)})
+    return {'package_path': str(package_path), 'source_root': str(ROOT), 'sources': sources}
+
+
+def provider_projection(value, locations):
+    """Project only the eighteen source-authenticated provider file fields."""
+    require(type(locations) is dict and set(locations) == {'package_path', 'source_root', 'sources'},
+        'Malformed registration provider locations')
+    package, root = Path(locations['package_path']), Path(locations['source_root'])
+    require(package.is_absolute() and package.name == '__init__.py' and root.is_absolute()
+        and '..' not in package.parts and '..' not in root.parts,
+        'Registration provider location roots differ')
+    require(type(locations['sources']) is list and len(locations['sources']) == 2,
+        'Registration provider source census differs')
+    files, slots = {}, Counter()
+    for row, (name, (entry, children)) in zip(locations['sources'], PROVIDER_SOURCE_SLOTS.items()):
+        logical = 'src/' + name.replace('.', '/') + '.py'
+        raw = r.raw_file(ROOT / logical)
+        path = package.parent / logical.removeprefix('src/biocompiler/')
+        equal(row, {'module': name, 'logical': logical, 'path': str(path),
+            'sha256': sha(raw), 'bytes': len(raw)}, 'Registration provider source location differs')
+        try:
+            observed = path.relative_to(root).as_posix()
+        except ValueError:
+            observed = path.name
+        files[name] = (observed, logical)
+        slots.update({(name, entry + '.<locals>.' + child): 3 for child in children})
+    require(type(value) is dict and type(value.get('providers')) is dict,
+        'Registration provider capture is incomplete')
+    actual = Counter((item.get('module'), item.get('qualname')) for item in value['providers'].values()
+        if item.get('module') in files)
+    require(actual == slots, 'Registration eighteen provider source slots differ')
+    projected = deepcopy(value)
+    for item in projected['providers'].values():
+        if item.get('module') in files:
+            observed, logical = files[item['module']]
+            equal(item['file'], observed, 'Registration provider observed source path differs')
+            item['file'] = logical
+    return projected
+
+
+def compare_original(current, original, locations):
+    """Full equality after finite source placement correspondence; raw inputs survive."""
+    counterpart = providers.tool('pipeline_original_counterpart')
+    expected = counterpart.validate(original)
+    require(original['manifest']['task'] == 'fixed-registration-original', 'Wrong original counterpart task')
+    sources = {row['logical']: row for row in original['manifest']['sources']}
+    equal(locations['package_path'], str(Path(original['manifest']['package_root']) / '__init__.py'),
+        'Registration counterpart package location differs')
+    equal(locations['source_root'], str(Path(sources['tools/check_pipeline_fixed_registration_install.py']['origin']).parents[1]),
+        'Registration counterpart source root differs')
+    for row in locations['sources']:
+        source = sources[row['logical']]
+        equal((row['path'], row['sha256']), (source['origin'], source['origin_sha256']),
+            'Registration counterpart provider source differs')
+        require(source['sha256'] == row['sha256'] and source['substituted'] is False,
+            'Registration counterpart provider source was substituted')
+        equal(original['modules'][row['module']], {'logical': row['logical'], 'path': source['path'],
+            'sha256': row['sha256'], 'namespace': row['module']},
+            'Registration counterpart provider module differs')
+    projected = provider_projection(current, locations)
+    equal(projected, expected, 'Current ordinary behavior differs from exact original child')
+    return projected
+
+
 def campaign(core, corpus, receipt):
     counterpart=providers.tool('pipeline_original_counterpart')
     oracle, module = continuation.load_oracle(), load_body_module(installed=True)
     original = counterpart.run('fixed-registration-original')
+    locations = provider_locations()
     current = capture_original(module=module, oracle=oracle)
-    equal(current, counterpart.validate(original), 'Current ordinary behavior differs from exact original child')
+    receipt['fresh_original'] = manager.artifact(receipt, canonical({
+        'original': original, 'current': current, 'locations': locations}))
+    equal(provider_locations(), locations, 'Registration provider source changed during capture')
+    compare_original(current, original, locations)
     validate_original(corpus, current)
-    receipt['fresh_original'] = manager.artifact(receipt, canonical({'original': original, 'current': current}))
     witness = NativeWitness(core, corpus, oracle, module)
     try:
         with oracle.portable_sources(), witness.observed_callbacks(), witness.entries({SOURCE: module}) as entries:
@@ -965,12 +1060,15 @@ def validate_checks(receipt, corpus, artifacts):
     require(receipt.get('completed_checks') == 3 and type(receipt.get('checks')) is list
         and len(receipt['checks']) == 3, 'Incomplete installed interception campaign')
     fresh = artifacts.json(receipt['fresh_original'], r.MAX_ARTIFACT_BYTES)
-    require(type(fresh) is dict and set(fresh) == {'original', 'current'}, 'Incomplete original counterpart evidence')
-    require(fresh['original']['manifest']['task'] == 'fixed-registration-original', 'Wrong original counterpart task')
-    equal(fresh['current'], counterpart.validate(fresh['original']), 'Original child and complete current capture differ')
+    require(type(fresh) is dict and set(fresh) == {'original', 'current', 'locations'}, 'Incomplete original counterpart evidence')
+    equal(fresh['locations']['package_path'], receipt['package_path'], 'Registration receipt package location differs')
+    expected = compare_original(fresh['current'], fresh['original'], fresh['locations'])
     validate_original(corpus, fresh['current'])
     oracle, module = continuation.load_oracle(installed=False), load_body_module()
-    equal(capture_original(module=module, oracle=oracle), fresh['current'], 'Complete original interception is not reproducible')
+    locations = provider_locations()
+    actual = capture_original(module=module, oracle=oracle)
+    equal(provider_locations(), locations, 'Registration replay source changed during capture')
+    equal(provider_projection(actual, locations), expected, 'Complete original interception is not reproducible')
     execution = artifacts.json(receipt['original_execution'], r.MAX_ARTIFACT_BYTES)
     equal({key: value for key, value in execution.items() if key != 'entries'}, fresh['current']['execution'],
         'Unchanged original method assertions did not execute against the native adapter')

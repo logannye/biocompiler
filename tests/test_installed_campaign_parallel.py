@@ -95,6 +95,8 @@ class InstalledCampaignParallelTests(unittest.TestCase):
                 self.root = Path(folder)
                 self.receipt = {'status': 'running', 'commands': [], 'campaigns': []}
                 plan = self.plan()
+                dispatch = pipeline.campaign_dispatch([name for name, _ in plan])
+                expected_started = [name for name, _ in plan if name in dispatch[:2]]
                 second_started, release_second, second_finished = (threading.Event() for _ in range(3))
                 started = []
                 failure = RuntimeError('Original failed child diagnostic')
@@ -106,13 +108,13 @@ class InstalledCampaignParallelTests(unittest.TestCase):
                     return done, pending
                 def run(command, *, log, **kwargs):
                     started.append(log.stem)
-                    if log.stem == plan[0][0]:
+                    if log.stem == dispatch[0]:
                         self.assertTrue(second_started.wait(5))
                         row = self.row(command, log, receipt=False)
                         if missing:
                             return row
                         raise failure
-                    self.assertEqual(log.stem, plan[1][0], 'No new campaign after observed failure')
+                    self.assertEqual(log.stem, dispatch[1], 'No new campaign after observed failure')
                     second_started.set()
                     self.assertTrue(release_second.wait(5))
                     row = self.row(command, log)
@@ -126,12 +128,15 @@ class InstalledCampaignParallelTests(unittest.TestCase):
                 else:
                     self.assertIn('Campaign omitted its complete receipt', str(caught.exception))
                 self.assertTrue(second_finished.is_set())
-                self.assertCountEqual(started, [name for name, _ in plan[:2]])
+                self.assertEqual(dispatch[0], 'pipeline-fixed-registration')
+                self.assertNotIn('pipeline-fixed-continuations', started)
+                self.assertCountEqual(started, expected_started)
                 self.assertEqual(self.receipt['status'], 'failure')
-                self.assertEqual(self.receipt['campaign_execution']['started'], [name for name, _ in plan[:2]])
-                self.assertEqual(self.receipt['campaign_failures'][0]['name'], plan[0][0])
-                self.assertTrue(all((self.root / (name + '.log')).is_file() for name, _ in plan[:2]))
-                self.assertEqual([row['name'] for row in self.receipt['campaigns']], [plan[1][0]])
+                self.assertEqual(self.receipt['campaign_execution']['started'], expected_started)
+                self.assertEqual(self.receipt['campaign_execution']['dispatch_order'], dispatch)
+                self.assertEqual(self.receipt['campaign_failures'][0]['name'], dispatch[0])
+                self.assertTrue(all((self.root / (name + '.log')).is_file() for name in expected_started))
+                self.assertEqual([row['name'] for row in self.receipt['campaigns']], [dispatch[1]])
                 self.root = previous_root
 
     def test_duplicate_or_empty_plans_reject_before_dispatch(self):
@@ -142,7 +147,7 @@ class InstalledCampaignParallelTests(unittest.TestCase):
 
     def test_source_worker_and_started_census_are_independently_required(self):
         for group in sorted(pipeline.PARALLEL_CAMPAIGN_GROUPS):
-            for mutation in ('missing', 'source', 'workers', 'order', 'started'):
+            for mutation in ('missing', 'source', 'workers', 'order', 'dispatch', 'started'):
                 fixture = scheduling.PartitionedReceiptTests()
                 fixture.setUp()
                 self.addCleanup(fixture.doCleanups)
@@ -155,6 +160,8 @@ class InstalledCampaignParallelTests(unittest.TestCase):
                     receipt['campaign_execution']['workers'] = 3
                 elif mutation == 'order':
                     receipt['campaign_execution']['campaign_order'].reverse()
+                elif mutation == 'dispatch':
+                    receipt['campaign_execution']['dispatch_order'].reverse()
                 else:
                     receipt['campaign_execution']['started'].pop()
                 fixture.write_groups()

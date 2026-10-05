@@ -81,6 +81,13 @@ earlier continuation feedback; runner availability still governs start order. Ca
 scenario timings and streamed start/completion messages identify remaining slow
 work. Rebalance only from measured timings, preserving every stateful sequence.
 
+Synthetic inspection uses two isolated Python processes over disjoint original
+occurrence ordinals. It retains all 9,668 rows: 9,658 public helper observations,
+two explicit native wire rejections and eight Verify-role rejections. Each case
+keeps its capability and operation order. The parent restores the original row
+order and rechecks complete raw worker receipts, source pins, logs and artifacts;
+serial diagnostic execution cannot satisfy the installed parallel acceptance gate.
+
 Inside each installed protocol and routing campaign, two isolated Python
 processes execute the complete core and verify roles. The original per-role
 native calls, replay and rejection order remain intact. The coordinator requires
@@ -99,7 +106,10 @@ or migration admission. Manager, fixed, workflow and synthetic groups also use
 up to two campaign processes, each retaining its existing internal worker allowance, so the total
 process count per runner can exceed two. The six direct continuation controls
 run before the 39 native chains to expose short failures earlier; all remain
-required for success.
+required for success. The fixed group prioritizes registration alongside provider
+checks to expose installed-source comparison failures earlier. Submission order
+is recorded separately from the unchanged recipe and receipt order; this priority
+is not a dependency barrier between otherwise independent campaigns.
 
 The short authoring, per-occurrence source identity, exact source-restoration
 and diagnostics controls run in both preflight slots and remain in full unit
@@ -110,8 +120,11 @@ each original call occurrence. They are not repeated in
 controls use harmless Python children. Full original reference-contract, workflow
 and workflow-CLI source restoration runs before native compilation, including
 every additive transport witness; changing a source hash without its exact
-restoration proof fails this early gate. Corpus loading separately denies
-child processes and network. Failed or timed-out installed commands print a
+restoration proof fails this early gate. Synthetic inspection also checks every
+case input shape and both frozen wire-rejection obligations before native work.
+Those two occurrences retain their original Python observations and require exact
+native JSON rejection; they do not claim native helper equivalence. Corpus loading
+separately denies child processes and network. Failed or timed-out installed commands print a
 bounded, escaped tail of their complete retained log. Successful commands
 print only the scheduler group/timing envelope. Every opened group closes
 on failure as well as success; retained logs remain the diagnostic authority.
@@ -148,7 +161,7 @@ The deterministic longest-processing-time assignment keeps each complete
 they cannot exclude tests or substitute for execution. Every discovered class
 is assigned exactly once across the five shards for its Python version.
 
-The current suite discovers 3,552 tests in 372 classes on both Python versions.
+The current suite discovers 3,572 tests in 375 classes on both Python versions.
 The campaign parallelism and corrections add 75 scheduling, transport, receipt and source controls while
 preserving all previous 3,477 test IDs. Placement weights retain the historical
 fixture-inclusive maximum for every previously measured class and add the

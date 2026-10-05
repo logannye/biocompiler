@@ -75,6 +75,7 @@ def check(name):
         current = module.python_sources()
     if name == 'check_native_synthetic_inspection':
         module.declaration()
+        module.preflight_cases(corpus)
     for path in getattr(module, 'SOURCES', ()):
         current.setdefault(path, hashlib.sha256((ROOT/path).read_bytes()).hexdigest())
     for path, pin in current.items():

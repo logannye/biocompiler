@@ -195,12 +195,19 @@ def campaign_plan(checkout, python, ownership, output, group=None):
     return result
 
 
+def campaign_dispatch(names):
+    # Prioritize early installed/source path failures alongside provider checks.
+    # All commands and the published receipt order remain unchanged.
+    return sorted(names, key=lambda name: name != 'pipeline-fixed-registration')
+
+
 def campaign_execution(names, *, started=None):
     """Bind a complete ordered dispatch to this exact installed driver source."""
-    return {'schema_version':'biocompiler.installed_campaign_execution.v1',
+    return {'schema_version':'biocompiler.installed_campaign_execution.v2',
         'workers':CAMPAIGN_WORKERS, 'driver_source':{'path':'tools/prebuilt_release_pipeline.py',
             'sha256':hashlib.sha256(Path(__file__).read_bytes()).hexdigest()},
-        'campaign_order':list(names), 'started':list(names if started is None else started)}
+        'campaign_order':list(names), 'dispatch_order':campaign_dispatch(names),
+        'started':list(names if started is None else started)}
 
 
 def execute_campaigns(plan, *, cwd, environment, output, receipt):
@@ -213,6 +220,7 @@ def execute_campaigns(plan, *, cwd, environment, output, receipt):
     require(type(plan) is list and plan and len({name for name,_ in plan}) == len(plan),
             'Invalid or repeated parallel campaign plan')
     names = [name for name,_ in plan]
+    dispatch = [names.index(name) for name in campaign_dispatch(names)]
     outcomes, next_index, failed = {}, 0, False
 
     def execute(index):
@@ -232,7 +240,8 @@ def execute_campaigns(plan, *, cwd, environment, output, receipt):
     with ThreadPoolExecutor(max_workers=CAMPAIGN_WORKERS) as executor:
         pending = {}
         while next_index < min(CAMPAIGN_WORKERS, len(plan)):
-            pending[executor.submit(execute,next_index)] = next_index
+            index = dispatch[next_index]
+            pending[executor.submit(execute,index)] = index
             next_index += 1
         while pending:
             done, _ = wait(pending, return_when=FIRST_COMPLETED)
@@ -242,7 +251,8 @@ def execute_campaigns(plan, *, cwd, environment, output, receipt):
                 failed = failed or outcomes[index][2] is not None
             if not failed:
                 while next_index < len(plan) and len(pending) < CAMPAIGN_WORKERS:
-                    pending[executor.submit(execute,next_index)] = next_index
+                    index = dispatch[next_index]
+                    pending[executor.submit(execute,index)] = index
                     next_index += 1
     # Only the coordinator publishes receipt rows, in the original source order.
     receipt['campaign_execution'] = campaign_execution(names,

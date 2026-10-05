@@ -31,6 +31,70 @@ AUTHORING_DELTA=ROOT/'tests/conformance/installed-authoring-source-delta-v1.json
 AUTHORING_DELTA_SHA256='9903d8be3224513c3bf260ae9cbe2dcd13cb65f9d4f7132313c1fb374d8896dd'
 GRAPH_DIAGNOSTIC_DELTA=ROOT/'tests/conformance/public-graph-diagnostic-source-delta-v1.json'
 GRAPH_DIAGNOSTIC_DELTA_SHA256='28b90d52d30d291ad1aeee4dad62c35ce012c6f209b02dd4c7972320530ed4c3'
+INSPECTION_DELTA=ROOT/'tests/conformance/synthetic-inspection-checker-source-delta-v1.json'
+INSPECTION_DELTA_SHA256='dcb1015d864e1acad4202763ce24a7896ae924951d90c302dc4e89c3211a0e1c'
+
+
+def restore_synthetic_inspection_source(current, proof_bytes):
+    """Restore both reviewed additions before the immutable installed-path gate."""
+    def require(condition,message):
+        if not condition:raise AssertionError(message)
+    def pin(raw):
+        return {'bytes':len(raw),'sha256':hashlib.sha256(raw).hexdigest()}
+    require(hashlib.sha256(proof_bytes).hexdigest()==INSPECTION_DELTA_SHA256,
+        'Unreviewed inspection checker source witness')
+    proof=json.loads(proof_bytes)
+    require(set(proof)=={'schema','path','base_revision','stages'}
+        and proof['schema']=='biocompiler.synthetic_inspection_checker_source_delta.v1'
+        and proof['path']=='tools/check_native_synthetic_inspection.py'
+        and proof['base_revision']=='45476d61e5d85d9d042c17e9fd0797f03bb90c1e',
+        'Inspection source witness shape differs')
+    historical={'bytes':31602,'sha256':'b8a2e7f79e5540ac41ef84060fe8f05d157234882bf5d5f4f2148160dcf2ed62'}
+    boundary={'bytes':38222,'sha256':'beefdeb218dbb39e92afce0e2b0325edf718313468360f7e45e4c3d6d4dbf6ab'}
+    parallel={'bytes':41413,'sha256':'5dbefdf1b4439138ba9ebeccd99457031b6c0df5e0f42d671949341e69218015'}
+    expected=(('explicit_frozen_wire_boundaries',historical,boundary,16),
+              ('isolated_occurrence_workers',boundary,parallel,18))
+    require(type(proof['stages']) is list and len(proof['stages'])==2,
+        'Inspection source stage census differs')
+    restored=current
+    for stage,(name,before_pin,after_pin,count) in reversed(list(zip(proof['stages'],expected))):
+        require(type(stage) is dict and set(stage)=={'name','historical','current','spans'}
+            and stage['name']==name and stage['historical']==before_pin and stage['current']==after_pin
+            and pin(restored)==after_pin, 'Inspection exact source stage differs')
+        spans=stage['spans']
+        require(type(spans) is list and len(spans)==count,
+            'Inspection source span census differs')
+        end=0
+        for row in spans:
+            require(type(row) is dict and set(row)=={'offset','before','after'}
+                and type(row['offset']) is int and row['offset']>=end
+                and type(row['before']) is str and type(row['after']) is str
+                and row['before']!=row['after'], 'Inspection source span shape differs')
+            end=row['offset']+len(row['before'].encode())
+        newer=restored
+        for index,row in reversed(list(enumerate(spans))):
+            offset=row['offset']+sum(len(prior['after'].encode())-len(prior['before'].encode())
+                for prior in spans[:index])
+            before,after=row['before'].encode(),row['after'].encode()
+            require(restored[offset:offset+len(after)]==after,'Inspection source span bytes differ')
+            restored=restored[:offset]+before+restored[offset+len(after):]
+        require(pin(restored)==before_pin,'Complete historical inspection source differs')
+        if name=='isolated_occurrence_workers':
+            def functions(raw):
+                return {node.name:node for node in ast.parse(raw).body
+                    if isinstance(node,(ast.FunctionDef,ast.ClassDef))}
+            old,new=functions(restored),functions(newer)
+            require(set(old)==set(new) and {key for key in old if ast.dump(old[key])!=ast.dump(new[key])}
+                =={'campaign','campaign_main','compare','validate_checks'},
+                'Inspection worker changed an unrelated function')
+            old_loop=next(node for node in old['campaign'].body if isinstance(node,ast.For))
+            new_loop=next(node for node in new['campaign'].body if isinstance(node,ast.For))
+            require([ast.dump(node) for node in old_loop.body]==[ast.dump(node) for node in new_loop.body[1:]],
+                'Inspection worker changed a complete per-case execution body')
+            old_loop=next(node for node in old['validate_checks'].body if isinstance(node,ast.For))
+            new_loop=next(node for node in new['validate_checks'].body if isinstance(node,ast.For))
+            require(ast.dump(old_loop)==ast.dump(new_loop),'Inspection worker changed complete per-row validation')
+    return restored
 
 
 def restore_public_graph_diagnostic_source(current, proof_bytes):
@@ -376,7 +440,9 @@ class HostedCiPlanTests(unittest.TestCase):
         self.assertEqual(len(proof),14)
         for name,row in proof.items():
             old=Path(str(SOURCE/name)+'.source').read_text();new=(ROOT/name).read_bytes()
-            if name=='tools/check_pipeline_manager_install.py':
+            if name=='tools/check_native_synthetic_inspection.py':
+                new=restore_synthetic_inspection_source(new,INSPECTION_DELTA.read_bytes())
+            elif name=='tools/check_pipeline_manager_install.py':
                 new=restore_callback_budget_source(new,BUDGET_DELTA.read_bytes())
                 new=restore_deferred_context_source(new,CONTEXT_DELTA.read_bytes())
             elif name=='tools/check_pipeline_fixed_provider_install.py':
@@ -400,6 +466,34 @@ class HostedCiPlanTests(unittest.TestCase):
         block=self.new.split('  prebuilt-core-validation:',1)[1].split('  validation:',1)[0]
         self.assertIn('realization-core-reproducibility',block)
         self.assertEqual(block.count('name: realization-'),4)
+
+    def test_inspection_restoration_preserves_both_reviewed_stages_and_rejects_forgery(self):
+        current=(ROOT/'tools/check_native_synthetic_inspection.py').read_bytes()
+        witness=INSPECTION_DELTA.read_bytes();proof=json.loads(witness)
+        restored=restore_synthetic_inspection_source(current,witness)
+        original=json.loads((ROOT/'tests/conformance/prebuilt-installed-path-delta-v1.json').read_bytes())
+        self.assertEqual(hashlib.sha256(restored).hexdigest(),
+            original['tools/check_native_synthetic_inspection.py']['current_sha256'])
+        for mutant in (restored,current+b'\n',current.replace(b'byte:1303',b'byte:1304'),
+                current.replace(b'ordinal not in selected',b'ordinal in selected'),
+                current.replace(b'def invoke_public(',b'def unchecked_public(')):
+            with self.subTest(source_sha256=hashlib.sha256(mutant).hexdigest()),self.assertRaises(AssertionError):
+                restore_synthetic_inspection_source(mutant,witness)
+        for mutation in ('revision','order','missing','current','historical','offset','before','after','overlap'):
+            changed=json.loads(witness)
+            if mutation=='revision':changed['base_revision']='0'*40
+            elif mutation=='order':changed['stages'].reverse()
+            elif mutation=='missing':changed['stages'].pop()
+            elif mutation in ('current','historical'):changed['stages'][1][mutation]['sha256']='0'*64
+            elif mutation=='overlap':changed['stages'][1]['spans'][1]['offset']=0
+            elif mutation=='offset':changed['stages'][1]['spans'][0]['offset']+=1
+            else:changed['stages'][1]['spans'][0][mutation]+=' '
+            encoded=json.dumps(changed,sort_keys=True,indent=2).encode()+b'\n'
+            with self.subTest(witness_mutation=mutation),patch.dict(globals(),
+                    INSPECTION_DELTA_SHA256=hashlib.sha256(encoded).hexdigest()),self.assertRaises(AssertionError):
+                restore_synthetic_inspection_source(current,encoded)
+        with self.assertRaises(AssertionError):
+            restore_synthetic_inspection_source(current,witness+b'\n')
 
     def test_deferred_context_restoration_rejects_unreviewed_or_extra_source_changes(self):
         current=restore_callback_budget_source((ROOT/'tools/check_pipeline_manager_install.py').read_bytes(),

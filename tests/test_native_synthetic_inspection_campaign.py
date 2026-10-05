@@ -168,11 +168,36 @@ sys.exit(code)
                 receipt["verify_capabilities"]["executable"] = receipt["executables"]["verify"]
                 write(slot / "native-inputs.json", dict(inputs, run_id=RUN, source_revision=SOURCE, python_version=python + ".9"))
                 receipt.update(schema_version=p.SCHEMA, status="success", scope=p.SCOPE, revision=REVISION,
+                    execution=p.PARALLEL_EXECUTION,
                     source_revision=SOURCE, run_id=RUN, system=system, machine=machine, native_platform=target,
                     python_version=python + ".9", native_inputs=inputs, package_path="/installed/biocompiler/__init__.py",
                     artifact_directory=p.ARTIFACT_DIRECTORY, **p.metadata(self.small),
                     transport_sources=p.source_pins("src/" + name.replace(".", "/") + ".py" for name in sorted(p.SOURCE_MODULES)),
                     campaign_sources=p.source_pins(p.SOURCES))
+                # Current acceptance requires both complete raw worker proofs,
+                # even when this small fixture starts from one serial peer run.
+                from tools import synthetic_inspection_workers as workers
+                worker_root = slot / workers.ROOT_NAME
+                for index in (0, 1):
+                    folder = worker_root / str(index)
+                    worker_artifacts = folder / p.ARTIFACT_DIRECTORY
+                    worker_artifacts.mkdir(parents=True)
+                    part = deepcopy(receipt)
+                    part.update(schema_version=workers.SCHEMA, worker_index=index, worker_count=2,
+                                execution={"mode":"occurrence_worker","workers":2,"index":index})
+                    part["checks"] = [part["checks"][ordinal] for ordinal in workers.ordinals(self.small, index)]
+                    part["completed_checks"] = len(part["checks"])
+                    if index:
+                        part.pop("verify_capabilities"); part.pop("verify_capability_guard")
+                    referenced = p.canonical(part["checks"]) + p.canonical({key:part[key] for key in
+                        ("verify_capabilities","verify_capability_guard") if key in part})
+                    part["artifacts"] = {identity:entry for identity,entry in part["artifacts"].items()
+                                         if identity.encode() in referenced}
+                    for entry in part["artifacts"].values():
+                        shutil.copyfile(artifacts / entry["path"], worker_artifacts / entry["path"])
+                    write(folder / "receipt.json", part)
+                    (folder / "worker.log").write_text("complete inert worker diagnostics\n")
+                _, _, receipt["occurrence_workers"] = workers.collect(worker_root, receipt, self.small)
                 write(slot / p.RECEIPT_FILE, receipt)
         return root, natives
 

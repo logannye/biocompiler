@@ -1,9 +1,11 @@
-"""Execute every original rich producer-view helper with installed native authority.
+"""Check every rich helper occurrence and its frozen native boundary obligation.
 
 Each original occurrence remains distinct. Complete requests, responses, public
 observations, source evidence and execution guards are retained as exact bytes.
 Only independently checked UUIDs and runtime guard frames are projected across
-four hosted runtimes. This grants no pipeline, package or empirical acceptance.
+four hosted runtimes. The two explicit Python wire boundaries retain historical
+helper properties and require native rejection, never fresh helper equivalence.
+This grants no pipeline, package or empirical acceptance.
 """
 from __future__ import annotations
 if __package__:
@@ -41,7 +43,8 @@ else:
 
 ROOT = Path(__file__).resolve().parents[1]
 SCHEMA = "biocompiler.native_synthetic_inspection_conformance.v1"
-SCOPE = "complete_original_public_helper_observations_no_pipeline_package_or_empirical_acceptance"
+PARALLEL_EXECUTION = {"mode": "isolated_occurrences", "workers": 2}
+SCOPE = "complete_original_helper_and_explicit_wire_boundary_observations_no_pipeline_package_or_empirical_acceptance"
 RECEIPT_FILE, ARTIFACT_DIRECTORY = "synthetic-inspection.json", "synthetic-inspection-artifacts"
 ROLES, PYTHONS, PLATFORMS = r.ROLES, r.PYTHONS, r.PLATFORMS
 canonical, digest, require, decode = r.canonical, r.digest, r.require, r.decode
@@ -55,6 +58,9 @@ INPUT_MODULES = {"biocompiler.ir.mechanism", "biocompiler.ir.components", "bioco
     "biocompiler.ir.serialization"}
 SOURCE_MODULES = TRANSPORT_MODULES | INPUT_MODULES | {"biocompiler.errors"}
 SOURCES = ("tools/check_native_synthetic_inspection.py", "tests/test_native_synthetic_inspection_campaign.py",
+    "tests/test_synthetic_inspection_boundaries.py", "core/lib/wire/json.ml", "core/lib/wire/protocol.ml",
+    "core/lib/service/service.ml",
+    "tools/synthetic_inspection_workers.py", "tests/test_synthetic_inspection_workers.py",
     "tools/synthetic_inspection_corpus.py", "tests/test_synthetic_inspection_corpus.py", "tools/check_native_synthetic_producer.py",
     "tools/check_native_workflow_public_sdk.py", "tools/check_workflow_reproducibility.py",
     "tools/check_realization_binaries.py", "protocol/synthetic-inspection-v1.json",
@@ -72,6 +78,79 @@ PUBLIC_METHODS = {
     "CheckResult.is_fresh": "NativeCheckResult.is_fresh",
     "DependencySnapshot.changed": "NativeDependencies.changed",
 }
+BOUNDARY_IDS = tuple(name + "/tests/test_verification_exploration.py::BooleanExplorationTests."
+    "test_lone_unicode_surrogates_are_rejected_in_configs_and_results/api/5/property/exercised_requirement_ids"
+    for name in ("realization-foundation-v1", "realization-checks-v1"))
+BOUNDARY_RECORD_SHA256 = "b2c5c987d1e185412a29d0457d3c9cc3926a931f32729f199a3769e3d352d3a1"
+
+
+def wire_boundary(case):
+    """Retain the two frozen Python returns whose original native stage rejects."""
+    observation = case["evidence"].get("observation", {})
+    native = observation.get("native", {})
+    if case["id"] not in BOUNDARY_IDS:
+        require(native.get("native_stage") != "python_wire_boundary",
+                "Unreviewed inspection Python wire boundary")
+        return None
+    original = case["evidence"]
+    raw = original.get("original_native_arguments")
+    require(case["api"] == "CheckResult.exercised_requirement_ids" and
+        case["operation"] == "inspect-synthetic-check-result" and case["error"] is None and
+        observation["api"] == "CheckResult.__init__" and observation["outcome"] == "returned" and
+        observation["result_format"] == "python_json_text" and
+        observation["result"] == BOUNDARY_RECORD_SHA256 and native == {
+            "operation": "CheckResult", "input": BOUNDARY_RECORD_SHA256,
+            "input_format": "python_json_text", "source_stage": "constructor",
+            "native_stage": "python_wire_boundary", "expected_code": "invalid_json"} and
+        type(raw) is str and digest(raw) == BOUNDARY_RECORD_SHA256 and
+        raw == original["original_result"] == case["payload"]["record"] and
+        case["payload"]["query"] == "coverage" and case["payload"]["current"] is None and
+        case["payload"]["limits"] is None and
+        case["expected_public"] == {"value": original["properties"]["exercised_requirement_ids"], "properties": {}} and
+        case["expected_value"] == {"exercised_requirement_ids": original["properties"]["exercised_requirement_ids"],
+                                   "freshness": None}, "Frozen inspection wire-boundary authority differs")
+    return {"classification": "original_python_return_native_wire_rejection",
+            "native_helper_equivalence": False, "original_native": native,
+            "original_result_sha256": BOUNDARY_RECORD_SHA256, "wire_sha256": sha(raw.encode("ascii"))}
+
+
+def preflight_cases(corpus):
+    """Check every public import shape and explicit boundary before native work."""
+    boundaries = []
+    for case in corpus.cases:
+        if wire_boundary(case) is not None:
+            boundaries.append(case["id"])
+            continue
+        api = case["api"]
+        field = ("mechanism" if api == "MechanismProgram.topological_nodes" else
+                 "registry" if api.startswith("ComponentRegistry.") else
+                 "selection" if api == "SelectionResult.outcome" else
+                 "previous" if api == "DependencySnapshot.changed" else "record")
+        require(type(case["payload"][field]) is dict, "Public inspection view lacks complete object authority")
+    require(boundaries == list(BOUNDARY_IDS), "Complete original inspection boundary census differs")
+    return {"cases": len(corpus.cases), "native_wire_boundaries": boundaries}
+
+
+def boundary_response():
+    # Both frozen 1476-byte inputs have the same unpaired high surrogate. The
+    # strict parser expects a backslash after its six-byte escape at byte 1303.
+    return envelope("core", None, None, "error", None,
+        [{"code": "invalid_json", "message": "Unexpected JSON token.", "path": "byte:1303"}])
+
+
+def invoke_boundary(case, client):
+    import biocompiler.core_client as transport
+    require(wire_boundary(case) is not None and client.role == "core", "Unbound inspection boundary role")
+    raw = case["evidence"]["original_native_arguments"].encode("ascii")
+    client.capabilities()  # Fresh role/profile evidence, independently checked below.
+    require(client.expected_sha256 is not None and client.executable.is_file() and
+        os.access(client.executable, os.X_OK), "Unpinned inspection boundary executable")
+    with client.executable.open("rb") as binary:
+        require(hashlib.file_digest(binary, "sha256").hexdigest() == client.expected_sha256,
+                "Inspection boundary executable changed")
+    response, code = transport._exchange(client.executable, raw, client.timeout_seconds, None)
+    require(code == 2 and response == canonical(boundary_response()) + b"\n",
+            "Original inspection wire boundary was not rejected exactly")
 
 
 def declaration():
@@ -167,8 +246,11 @@ def expected_cases(corpus):
 
 
 def metadata(corpus):
+    boundaries = [case["id"] for case in corpus.cases if wire_boundary(case) is not None]
     return {"corpus_pins": corpus.pins, "corpus_census": corpus.census,
             "original_occurrences": corpus.original_count,
+            "native_wire_boundary_occurrences": boundaries,
+            "public_helper_occurrences": len(corpus.cases) - len(boundaries),
             "profile_pin": digest(declaration())}
 
 
@@ -180,7 +262,12 @@ def check_guard(entries, case, role):
     for item in entries:
         require(item[2] == "output" and allowed_call(*item), "Forbidden inspection semantic guard frame")
     modules = {item[0] for item in entries}
-    if role == "verify":
+    if role == "core" and wire_boundary(case) is not None:
+        require(modules == {"biocompiler.core_client"} and
+            ["biocompiler.core_client", "CoreClient.capabilities", "output", ""] in entries and
+            ["biocompiler.core_client", "_exchange", "output", ""] in entries,
+            "Missing exact inspection wire-boundary transport guard")
+    elif role == "verify":
         require(modules == {"biocompiler.core_client"}, "Verifier inspection guard differs")
     else:
         backend = "biocompiler.synthetic_producer_backend"
@@ -243,14 +330,20 @@ def public_error(error, case):
     return {"module": type(error).__module__, "type": type(error).__name__, "message": str(error)}
 
 
-def campaign(clients, corpus, receipt):
+def campaign(clients, corpus, receipt, *, ordinals=None, verify_capabilities=True):
     from biocompiler.core_client import CoreRejected
     from biocompiler.errors import SerializationError
     clients = {client.role: client for client in clients}
-    for (role, _), case in expected_cases(corpus).items():
+    selected = None if ordinals is None else set(ordinals)
+    for ordinal, ((role, _), case) in enumerate(expected_cases(corpus).items()):
+        if selected is not None and ordinal not in selected:
+            continue
+        boundary = wire_boundary(case) if role == "core" else None
         with guarded_execution() as (seen, exchanges):
             public = None
-            if role == "core":
+            if boundary is not None:
+                invoke_boundary(case, clients[role])
+            elif role == "core":
                 try:
                     value = invoke_public(case, clients[role])
                     public = {"value": public_plain(value), "properties": {
@@ -276,10 +369,14 @@ def campaign(clients, corpus, receipt):
             "evidence": artifact(receipt, canonical(case["evidence"])),
             "public": None if public is None else artifact(receipt, canonical(public)),
             "guard": artifact(receipt, canonical(entries)), "exchanges": []}
+        if boundary is not None:
+            row["boundary"] = artifact(receipt, canonical(boundary))
         for exchange in exchanges:
             row["exchanges"].append({**exchange, "request": artifact(receipt, exchange["request"]),
                                      "response": artifact(receipt, exchange["response"])})
         receipt["checks"].append(row)
+    if not verify_capabilities:
+        return
     with guarded_execution() as (seen, exchanges):
         clients["verify"].capabilities()
     require(len(exchanges) == 1 and {entry[0] for entry in seen} == {"biocompiler.core_client"},
@@ -289,25 +386,38 @@ def campaign(clients, corpus, receipt):
                                       "response": artifact(receipt, exchanges[0]["response"])}
 
 
-def validate_checks(receipt, corpus, artifacts):
+def validate_checks(receipt, corpus, artifacts, *, ordinals=None, verify_capabilities=True):
     expected = expected_cases(corpus)
+    if ordinals is not None:
+        order = list(expected)
+        require(type(ordinals) is list and all(type(index) is int for index in ordinals) and
+            ordinals == sorted(set(ordinals)) and all(0 <= index < len(order) for index in ordinals),
+            "Invalid inspection occurrence selection")
+        expected = {order[index]: expected[order[index]] for index in ordinals}
     require(type(receipt.get("completed_checks")) is int and receipt["completed_checks"] == len(expected) and
         type(receipt.get("checks")) is list and len(receipt["checks"]) == len(expected), "Incomplete helper occurrences")
+    require([(row.get("role"), row.get("id")) for row in receipt["checks"]] == list(expected),
+            "Reordered original inspection occurrences")
     identities, seen, projected = set(), set(), []
     capabilities = SimpleNamespace(profiles={"synthetic_inspection": declaration()})
     for row in receipt["checks"]:
-        require(type(row) is dict and set(row) == {"id", "api", "operation", "role", "authority", "expected",
-            "evidence", "public", "guard", "exchanges"}, "Unexpected helper observation fields")
+        require(type(row) is dict, "Unexpected helper observation type")
         key = row["role"], row["id"]
         require(key in expected and key not in seen, "Missing, duplicated or substituted helper occurrence")
         seen.add(key)
         case, role = expected[key], row["role"]
+        boundary = wire_boundary(case) if role == "core" else None
+        require(set(row) == {"id", "api", "operation", "role", "authority", "expected", "evidence", "public",
+            "guard", "exchanges"} | ({"boundary"} if boundary is not None else set()),
+            "Unexpected helper observation fields")
+        if boundary is not None:
+            require(artifacts.raw(row["boundary"]) == canonical(boundary), "Original wire-boundary classification differs")
         require(row["api"] == case["api"] and row["operation"] == case["operation"] and
             artifacts.raw(row["authority"]) == canonical(case["payload"]) and
             artifacts.raw(row["expected"]) == canonical({"value": case["expected_value"], "error": case["error"],
                                                         "public": case["expected_public"]}) and
             artifacts.raw(row["evidence"]) == canonical(case["evidence"]), "Original complete helper evidence differs")
-        require(row["public"] is None if role == "verify" else
+        require(row["public"] is None if role == "verify" or boundary is not None else
             artifacts.raw(row["public"]) == canonical(case["expected_public"]), "Complete helper public presentation differs")
         check_guard(artifacts.json(row["guard"]), case, role)
         exchanges = row["exchanges"]
@@ -320,7 +430,14 @@ def validate_checks(receipt, corpus, artifacts):
             require(path.is_absolute() and path.name == "biocompiler-" + role and str(path) == receipt["executables"][role],
                     "Wrong selected helper executable")
             raw_request, raw_response = artifacts.raw(exchange["request"]), artifacts.raw(exchange["response"])
-            request, response = decode(raw_request), decode(raw_response)
+            response = decode(raw_response)
+            if boundary is not None and ordinal == 1:
+                require(raw_request == case["evidence"]["original_native_arguments"].encode("ascii") and
+                    raw_response == canonical(boundary_response()) + b"\n" and exchange["exit_code"] == 2,
+                    "Complete original native wire-boundary evidence differs")
+                normalized.append({"request_bytes_sha256": sha(raw_request), "response": response, "exit_code": 2})
+                continue
+            request = decode(raw_request)
             if role == "core" and ordinal == 0:
                 identity, response_projection = base.validate_capability(raw_response, role, capabilities, identities)
                 require(canonical(request) == canonical({"protocol": "biocompiler.core.v1", "request_id": identity,
@@ -348,6 +465,11 @@ def validate_checks(receipt, corpus, artifacts):
                     "exchanges": normalized}
         projected.append({"role": role, "id": case["id"], "complete_observation_sha256": digest(complete)})
     require(seen == set(expected), "Original helper occurrence omitted")
+    if not verify_capabilities:
+        require("verify_capabilities" not in receipt and "verify_capability_guard" not in receipt,
+                "Unassigned inspection capability witness")
+        require(artifacts.used == set(artifacts.declared), "Unreferenced complete inspection evidence")
+        return {"checks": projected, "verify_capabilities": None}
     exchange = receipt["verify_capabilities"]
     check_guard(artifacts.json(receipt["verify_capability_guard"]), {}, "verify")
     require(type(exchange) is dict and set(exchange) == {"request", "response", "exit_code", "executable"} and
@@ -390,6 +512,7 @@ def compare(root, native_root, *, revision, source_revision, run_id):
                     "Stale or mixed inspection native inputs")
             receipt, receipt_pin = read(directory / RECEIPT_FILE)
             fields = {"schema_version": SCHEMA, "status": "success", "scope": SCOPE,
+                "execution": PARALLEL_EXECUTION,
                 "revision": revision, "source_revision": source_revision, "run_id": run_id,
                 "python_version": inputs["python_version"], "system": system, "machine": machine,
                 "native_platform": target, "artifact_directory": ARTIFACT_DIRECTORY, "native_inputs": native,
@@ -405,7 +528,12 @@ def compare(root, native_root, *, revision, source_revision, run_id):
                 Path(executables["core"]).parent == Path(executables["verify"]).parent,
                 "Missing exact inspection executable selection")
             artifacts = Artifacts(directory / ARTIFACT_DIRECTORY, receipt.get("artifacts"))
+            if __package__:
+                from . import synthetic_inspection_workers as workers
+            else:
+                import synthetic_inspection_workers as workers
             projected = canonical(validate_checks(receipt, corpus, artifacts))
+            workers.validate_evidence(directory, receipt, corpus)
             if reference is None:
                 reference = projected
             else:
@@ -429,18 +557,25 @@ def campaign_main(argv=None):
     parser.add_argument("--native-root", required=True, type=Path)
     parser.add_argument("--platform", required=True, choices=PLATFORMS)
     parser.add_argument("--output", required=True, type=Path)
+    parser.add_argument("--workers", type=int, choices=(1, 2), default=2)
+    parser.add_argument("--worker-index", type=int, choices=(0, 1))
     args = parser.parse_args(argv)
+    require(args.worker_index is None or args.workers == 1, "Inspection workers cannot recursively spawn")
     import biocompiler
     from biocompiler.core_client import CoreClient
     for name in sorted(SOURCE_MODULES):
         importlib.import_module(name)
     corpus = Corpus()
+    preflight_cases(corpus)
     directory = args.output.with_name(ARTIFACT_DIRECTORY)
     directory.mkdir(parents=True, exist_ok=True)
     require(directory.is_dir() and not directory.is_symlink() and not any(directory.iterdir()),
             "Unsafe or nonempty inspection evidence directory")
     started = time.monotonic()
     receipt = {"schema_version": SCHEMA, "status": "running", "scope": SCOPE, **metadata(corpus),
+        "execution": ({"mode": "occurrence_worker", "workers": 2, "index": args.worker_index}
+            if args.worker_index is not None else PARALLEL_EXECUTION if args.workers == 2 else
+            {"mode": "serial_diagnostic", "workers": 1}),
         "revision": os.environ.get("GITHUB_SHA"), "source_revision": os.environ.get("GITHUB_HEAD_SHA", os.environ.get("GITHUB_SHA")),
         "run_id": os.environ.get("GITHUB_RUN_ID"), "python_version": platform.python_version(),
         "system": platform.system(), "machine": platform.machine(), "native_platform": args.platform,
@@ -472,11 +607,28 @@ def campaign_main(argv=None):
             require(pin == sha((ROOT / relative).read_bytes()), "Installed inspection source differs from tested revision")
             receipt["transport_sources"][relative] = pin
         receipt["campaign_sources"] = source_pins(SOURCES)
-        campaign(clients, corpus, receipt)
+        if __package__:
+            from . import synthetic_inspection_workers as workers
+        else:
+            import synthetic_inspection_workers as workers
+        selected = None
+        if args.worker_index is not None:
+            selected = workers.ordinals(corpus, args.worker_index)
+            receipt.update(schema_version=workers.SCHEMA, worker_index=args.worker_index, worker_count=2)
+            campaign(clients, corpus, receipt, ordinals=selected, verify_capabilities=args.worker_index == 0)
+        elif args.workers == 2:
+            workers.execute(args, directory, receipt, corpus)
+        else:
+            campaign(clients, corpus, receipt)
         receipt["completed_checks"] = len(receipt["checks"])
-        validate_checks(receipt, corpus, Artifacts(directory, receipt["artifacts"]))
+        validate_checks(receipt, corpus, Artifacts(directory, receipt["artifacts"]), ordinals=selected,
+                        verify_capabilities=args.worker_index in (None, 0))
         require(canonical(verify_binaries(args.native_root, receipt["revision"], args.platform)) == canonical(native),
                 "Inspection binaries changed during execution")
+        require(source_pins(SOURCES) == receipt["campaign_sources"] and all(
+            sha(Path(sys.modules[name].__file__).read_bytes()) == receipt["transport_sources"][
+                "src/" + name.replace(".", "/") + ".py"] for name in SOURCE_MODULES),
+                "Inspection sources changed during execution")
         receipt["status"], code = "success", 0
     except Exception as error:
         receipt["status"], receipt["error"] = "failure", type(error).__name__ + ": " + str(error)
