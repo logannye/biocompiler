@@ -54,7 +54,7 @@ type feedback = { feedback_id:string; feedback_at:int; feedback_executor:string;
 type evidence = { observed:int; available:int; status:string; value:O.value option; occurrences:string list }
 type evaluated = { value:O.value option; reasons:string list }
 type event = { event_id:string; kind:string; declaration:string; binding:binding; attempt:string option }
-type attempt = { attempt_id:string; effect:O.effect; binding:binding; subject:string;
+type attempt = { attempt_id:string; effect_spec:O.effect_spec; binding:binding; subject:string;
   initiator:string; guard:O.expression; causes:string list; parameters:(string * O.value) list;
   started:int; deadline:int option; mutable ended:int option; mutable status:string;
   mutable authorization:O.truth; machine:string option }
@@ -185,9 +185,9 @@ let event_matches s b ?machine expression =
       let expected=subject_binding s observation.subject b in
       List.filter(fun e->e.kind="updated" && e.declaration=observation.observation_id && e.binding=expected) s.events
   | "effect_event" ->
-      let effect=lookup s "policy_execution_effect" (reference expression) (fun (x:O.effect)->x.effect_id) s.behavior.effects in
-      let expected=subject_binding s effect.subject b in
-      let matches=List.filter(fun e->e.kind=Option.value expression.phase ~default:"" && e.declaration=effect.effect_id && e.binding=expected) s.events in
+      let effect_spec=lookup s "policy_execution_effect" (reference expression) (fun (x:O.effect_spec)->x.effect_id) s.behavior.effects in
+      let expected=subject_binding s effect_spec.subject b in
+      let matches=List.filter(fun e->e.kind=Option.value expression.phase ~default:"" && e.declaration=effect_spec.effect_id && e.binding=expected) s.events in
       (match machine with None->matches | Some identity ->
         let retained=Option.value(Hashtbl.find_opt s.machine_attempts(identity,b)) ~default:[] in
         List.filter(fun (e:event)->match e.attempt with Some id->List.mem id retained|None->false) matches)
@@ -200,7 +200,7 @@ let rec required_encounters s expression =
   let current=match expression.O.op,expression.reference with
     | ("observe"|"updated"),Some id -> let o=lookup s "policy_execution_observation" id (fun(x:O.observation)->x.observation_id) s.behavior.observations in
         (match List.find_opt(fun(x:O.subject)->x.subject_id=o.subject) s.behavior.subjects with Some x->Option.to_list x.encounter|None->[])
-    | "effect_event",Some id -> let e=lookup s "policy_execution_effect" id (fun(x:O.effect)->x.effect_id) s.behavior.effects in
+    | "effect_event",Some id -> let e=lookup s "policy_execution_effect" id (fun(x:O.effect_spec)->x.effect_id) s.behavior.effects in
         (match List.find_opt(fun(x:O.subject)->x.subject_id=e.subject) s.behavior.subjects with Some x->Option.to_list x.encounter|None->[])
     | "state",Some id -> let st=lookup s "policy_execution_state" id (fun(x:O.state_store)->x.state_id) s.behavior.stores in
         (match st.scope with O.Encounter id->[id]|_->[])
@@ -230,7 +230,7 @@ let discard_scope s b reason =
     List.iter(Hashtbl.remove table) keys in
   remove s.states;remove s.machines;remove s.machine_attempts;remove s.evidence;remove s.rising;
   List.iter(fun (a:attempt)->if a.binding=b && a.status="active" then (
-    a.status<-reason;a.ended<-Some s.now;ignore(emit s ~attempt:a.attempt_id reason a.effect.effect_id b))) s.attempts;
+    a.status<-reason;a.ended<-Some s.now;ignore(emit s ~attempt:a.attempt_id reason a.effect_spec.effect_id b))) s.attempts;
   List.iter(fun (p:pending)->if p.binding=b && p.status="pending" then (p.status<-"unknown";p.closed<-Some s.now)) s.pending
 let apply_encounters s =
   List.iter(fun e->charge s 1;
@@ -286,24 +286,24 @@ let apply_feedback s =
     match List.find_opt(fun(a:attempt)->a.attempt_id=input.feedback_attempt) s.attempts with
     | None -> reject "unknown_attempt"
     | Some a when input.feedback_executor<>s.executor || input.feedback_subject<>a.subject ||
-        input.feedback_encounter<>a.binding.encounter || input.feedback_effect<>a.effect.effect_id -> reject "identity_mismatch"
+        input.feedback_encounter<>a.binding.encounter || input.feedback_effect<>a.effect_spec.effect_id -> reject "identity_mismatch"
     | Some a when a.status<>"active" || not(binding_live s a.binding) -> reject "stale_attempt"
     | Some a -> a.status<-input.outcome;a.ended<-Some s.now;
         action s "feedback_accepted" (obj["id",str input.feedback_id;"attempt",str a.attempt_id]);
-        Some(emit s ~attempt:a.attempt_id input.outcome a.effect.effect_id a.binding)) s.feedback
+        Some(emit s ~attempt:a.attempt_id input.outcome a.effect_spec.effect_id a.binding)) s.feedback
 let apply_timeouts s =
   List.filter_map(fun (a:attempt)->charge s 1;
     if a.status="active" && a.deadline=Some s.now then (
-      a.status<-"timed_out";a.ended<-Some s.now;Some(emit s ~attempt:a.attempt_id "timed_out" a.effect.effect_id a.binding)) else None) s.attempts
+      a.status<-"timed_out";a.ended<-Some s.now;Some(emit s ~attempt:a.attempt_id "timed_out" a.effect_spec.effect_id a.binding)) else None) s.attempts
 let refresh_authorizations s =
-  List.iter(fun (a:attempt)->charge s 1;if a.status="active" && a.effect.lifecycle.authorization="continuous" then (
+  List.iter(fun (a:attempt)->charge s 1;if a.status="active" && a.effect_spec.lifecycle.authorization="continuous" then (
     let evaluated=eval s a.binding a.guard in
     let current=truth evaluated in
     if current<>a.authorization then (
       a.authorization<-current;
       action s "authorization_changed" (obj["attempt",str a.attempt_id;"authorization",truth_json current;
         "reasons",arr(List.map str evaluated.reasons);
-        "lifecycle_response",str(if current=O.Unknown then a.effect.lifecycle.on_unknown else if current=O.False then a.effect.lifecycle.on_loss else "authorized")]))) s.attempts
+        "lifecycle_response",str(if current=O.Unknown then a.effect_spec.lifecycle.on_unknown else if current=O.False then a.effect_spec.lifecycle.on_loss else "authorized")]))) s.attempts
 let rising_expressions s =
   let all=List.concat_map(fun(r:O.rule)->[r.on]) s.behavior.rules @
     List.concat_map(fun(t:O.transition)->[t.on]) s.behavior.transitions @
@@ -326,7 +326,7 @@ let candidate_activations s =
   let rules=List.concat_map(fun(r:O.rule)->
     let expressions=r.on::r.guard::List.map(fun(a:O.assignment)->a.value) r.assignments in
     (* Effect-only subject binding is also part of an activation's environment. *)
-    let effect_context=List.concat_map(fun id->let e=lookup s "policy_execution_effect" id (fun(x:O.effect)->x.effect_id) s.behavior.effects in
+    let effect_context=List.concat_map(fun id->let e=lookup s "policy_execution_effect" id (fun(x:O.effect_spec)->x.effect_id) s.behavior.effects in
       match List.find_opt(fun(x:O.subject)->x.subject_id=e.subject) s.behavior.subjects with Some x->Option.to_list x.encounter|None->[]) r.effects in
     let contexts=match List.sort_uniq String.compare effect_context with
       | []->expression_contexts s expressions
@@ -383,9 +383,9 @@ let execute_activations s activations =
       let store=lookup s "policy_execution_state" assignment.state (fun(st:O.state_store)->st.state_id) s.behavior.stores in
       let binding=scope_binding s store.scope a.binding in
       (store.state_id,binding),eval s a.binding assignment.value) a.assignments in
-    let effects=List.map(fun id->let effect=lookup s "policy_execution_effect" id (fun(e:O.effect)->e.effect_id) s.behavior.effects in
-      let parameters=List.map(fun(name,expression)->name,eval s a.binding expression) effect.parameters in
-      effect,parameters) a.effects in
+    let effects=List.map(fun id->let effect_spec=lookup s "policy_execution_effect" id (fun(e:O.effect_spec)->e.effect_id) s.behavior.effects in
+      let parameters=List.map(fun(name,expression)->name,eval s a.binding expression) effect_spec.parameters in
+      effect_spec,parameters) a.effects in
     if List.exists(fun(_,(value:evaluated))->value.value=None) assigned ||
        List.exists(fun(_,parameters)->List.exists(fun(_,(value:evaluated))->value.value=None) parameters) effects
     then action s "activation_deferred" (obj["declaration",str a.identity;"binding",binding_json a.binding;"reasons",arr[str "unknown_assignment_or_parameter"]])
@@ -402,22 +402,22 @@ let execute_activations s activations =
   List.iter(fun((state,b),value,_)->Hashtbl.replace s.states(state,b) value;
     action s "state_written" (obj["state",str state;"binding",binding_json b;"value",O.value_to_json value])) !writes;
   List.concat_map(fun((a:activation),effects)->
-    let started=List.map(fun((effect:O.effect),parameters)->
+    let started=List.map(fun((effect_spec:O.effect_spec),parameters)->
       s.attempt_sequence<-s.attempt_sequence+1;
       let id="attempt/"^string_of_int s.attempt_sequence in
-      let binding=subject_binding s effect.subject a.binding in
+      let binding=subject_binding s effect_spec.subject a.binding in
       (* The retained activation binding is wider than an executor-targeted
          effect when the initiating guard depended on an encounter. Keep it. *)
       require(binding=a.binding) "policy_execution_scope" "Effect subject and retained activation binding must coincide.";
-      let attempt={attempt_id=id;effect;binding=a.binding;subject=concrete_subject s effect.subject a.binding;
+      let attempt={attempt_id=id;effect_spec;binding=a.binding;subject=concrete_subject s effect_spec.subject a.binding;
         initiator=a.identity;guard=a.guard;causes=List.map(fun(e:event)->e.event_id)a.causes;parameters;
-        started=s.now;deadline=Option.map(deadline s) effect.lifecycle.timeout;
+        started=s.now;deadline=Option.map(deadline s) effect_spec.lifecycle.timeout;
         ended=None;status="active";authorization=O.True;machine=Option.map(fun(m:O.machine)->m.machine_id)a.machine} in
       charge s(List.length s.attempts);s.attempts<-s.attempts@[attempt];
-      action s "effect_requested" (obj["attempt",str id;"effect",str effect.effect_id;"initiator",str a.identity;
+      action s "effect_requested" (obj["attempt",str id;"effect",str effect_spec.effect_id;"initiator",str a.identity;
         "binding",binding_json a.binding;"subject",str attempt.subject;"causes",arr(List.map str attempt.causes);
         "parameters",obj(List.map(fun(name,value)->name,O.value_to_json value) parameters)]);
-      attempt,[emit s ~attempt:id "requested" effect.effect_id a.binding;emit s ~attempt:id "initiated" effect.effect_id a.binding]) effects in
+      attempt,[emit s ~attempt:id "requested" effect_spec.effect_id a.binding;emit s ~attempt:id "initiated" effect_spec.effect_id a.binding]) effects in
     (match a.machine,a.destination with
     | Some machine,Some destination->Hashtbl.replace s.machines(machine.machine_id,a.binding)destination;
         let retained=Option.value(Hashtbl.find_opt s.machine_attempts(machine.machine_id,a.binding))~default:[] in
@@ -508,7 +508,7 @@ let snapshot s =
     "evidence",arr evidence;"active_attempts",arr(List.filter_map(fun(a:attempt)->if a.status="active" then Some(str a.attempt_id)else None)s.attempts)]in
   charge_json s result;result
 let attempt_json s (a:attempt) = obj[
-  "id",str a.attempt_id;"effect",str a.effect.effect_id;"executor",str s.executor;"subject",str a.subject;
+  "id",str a.attempt_id;"effect",str a.effect_spec.effect_id;"executor",str s.executor;"subject",str a.subject;
   "binding",binding_json a.binding;"initiator",str a.initiator;"causes",arr(List.map str a.causes);
   "parameters",obj(List.map(fun(k,v)->k,O.value_to_json v)a.parameters);
   "started_at",time_json(tick s a.started);"deadline",nullable(fun t->time_json(tick s t))a.deadline;
@@ -589,7 +589,7 @@ let execute (behavior:O.behavior) timeline =
     (match Hashtbl.find_opt feedback_outcomes key with None->Hashtbl.add feedback_outcomes key input.outcome
     | Some outcome->require(outcome=input.outcome) "policy_execution_feedback_conflict" "One attempt has contradictory simultaneous feedback outcomes."))feedback;
   List.iter(fun(o:O.observation)->require(aligned resolution o.freshness>0) "policy_execution_time" "Freshness must span at least one tick.")behavior.observations;
-  List.iter(fun(e:O.effect)->
+  List.iter(fun(e:O.effect_spec)->
     require(List.mem e.lifecycle.authorization["initiation";"continuous"] && e.lifecycle.on_loss="continue" && List.mem e.lifecycle.on_unknown["continue";"defer"])
       "policy_execution_lifecycle" "Lifecycle stop or cancellation is not implemented in this profile.";
     Option.iter(fun d->require(aligned resolution d>0) "policy_execution_time" "Timeout must span at least one tick.")e.lifecycle.timeout)behavior.effects;

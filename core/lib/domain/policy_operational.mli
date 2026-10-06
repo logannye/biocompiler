@@ -32,7 +32,7 @@ type lifecycle = {
   authorization : string; on_loss : string; on_unknown : string;
   timeout : Q.t option;
 }
-type effect = {
+type effect_spec = {
   effect_id : string; executor : string; subject : string; lifecycle : lifecycle;
   parameters : (string * expression) list;
 }
@@ -76,7 +76,7 @@ type behavior = private {
   assumptions : string list; unresolved_obligations : string list;
   roles : role list; subjects : subject list; encounters : encounter list;
   clocks : clock list; observations : observation list; stores : state_store list;
-  effects : effect list; rules : rule list; machines : machine list;
+  effects : effect_spec list; rules : rule list; machines : machine list;
   transitions : transition list; requirements : requirement list; parameters : parameter list;
 }
 val behavior_of_json : Json.t -> behavior

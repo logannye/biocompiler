@@ -124,8 +124,8 @@ let run fixture =
     replace "freshness" (replace "amount" (str "0") (get "freshness" observation)) observation) raw);
   unsupported "persistent encounter storage" (change_declaration "seen" (replace "lifetime" (str "persistent")) raw);
   unsupported "unbounded storage" (change_declaration "seen" (replace "capacity" (str "unbounded_requested")) raw);
-  unsupported "effect stop requests" (change_declaration "response" (fun effect ->
-    replace "lifecycle" (replace "on_loss" (str "request_stop") (get "lifecycle" effect)) effect) raw);
+  unsupported "effect stop requests" (change_declaration "response" (fun effect_value ->
+    replace "lifecycle" (replace "on_loss" (str "request_stop") (get "lifecycle" effect_value)) effect_value) raw);
   unsupported "unknown rule stop requests" (change_declaration "respond" (replace "unknown" (str "request_stop")) raw);
   let observation=List.find (fun declaration -> text "id" declaration = "condition") (items "declarations" raw) in
   let same_frame=replace "declarations" (arr (items "declarations" raw @ [replace "id" (str "same_frame_observation") observation])) raw in
