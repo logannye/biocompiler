@@ -85,6 +85,7 @@ broader SM acceptance items below.
 - [x] Pass both complete hosted direct-core jobs, retaining all 67 original groups per platform.
 - [x] Independently audit both current-union native bundles: 151 executables, 23 fixtures, all 149 suite records and 67 direct-group records per platform, plus exact published Core/Verify bytes and all six successful producer jobs. No local native execution.
 - [x] Pass all four current-union architecture SDK slots and the complete six-comparison job, plus all four policy-prebuilt installed slots and their comparison.
+- [x] Pass the current union's hosted original-continuation and original-registration comparisons. The 18:26 UTC exact-job read confirms both successful steps; independent final artifact auditing and the remaining reference/prebuilt/aggregate gates are separate.
 - [x] Pass all ten current-union unit shards and both unit-accounting jobs with plan-bound interpreters, then independently audit all 14 unit artifacts: each runtime has 4,063 successful tests and 26,705 successful retained subtests, with no duplicates or omissions.
 - [x] Independently audit PR95's complete unit accounting, Linux/macOS native packages and source companions, and all four prebuilt ownership/material/offline slots. These results belong to `bb84421cf`, not the later union.
 - [x] Independently replay PR95's six complete architecture/policy comparisons against authenticated original artifacts (`six-comparisons-scoped-proof.json`).
@@ -105,7 +106,7 @@ broader SM acceptance items below.
 
 | Subject | Source / tested checkout / tree | Current evidence boundary |
 | --- | --- | --- |
-| Current PR85 union | H `a85b1112ff35ba988a71cc969bfabdfefb354cfe`; C `00af6e6bab506d52a700e0a72e16ef2e2e8d8d61`; shared tree `7d22ca4c27eafcd36f018b3f262ef87404a3caf6` | [Run 37471505350, attempt 1](https://github.com/logannye/biocompiler/actions/runs/37471505350): 71 successful jobs and no failures at the retained 17:05 UTC snapshot; all 20 installed groups and four assembly jobs passed, reproducibility is active at its retained-manager continuation comparison, and two final release gates remain pending |
+| Current PR85 union | H `a85b1112ff35ba988a71cc969bfabdfefb354cfe`; C `00af6e6bab506d52a700e0a72e16ef2e2e8d8d61`; shared tree `7d22ca4c27eafcd36f018b3f262ef87404a3caf6` | [Run 37471505350, attempt 1](https://github.com/logannye/biocompiler/actions/runs/37471505350): last complete job census at 17:40 UTC has 71 successes, one active job and two pending final gates. The 18:26 exact-job read confirms continuation/registration comparisons passed and the final reference comparison is active; it is not a fresh full-job census |
 | Separate PR95 policy head | H `bb84421cf1f93cd1dc02813d80a2c54a3520a919`; C `4fe47eb1aa69782a03723fda2df892985b4e7328`; shared tree `889583e44a9de598a32beb4154f42c0471e4be83` | [Run 37450940506, attempt 1](https://github.com/logannye/biocompiler/actions/runs/37450940506): all 42 hosted jobs succeeded; independent final artifact audit passed for its stated scope. Normal union integration and fresh main acceptance remain pending |
 | Current main baseline | `f594991ac2ff2496723ae5f2427ad93e6df7a51d` | PR88 is merged; the policy/material/package union has not yet been merged or main-validated |
 
@@ -155,6 +156,14 @@ comparison and two not-yet-materialized final jobs. Later run reads through
 HTTP 502, so those reads do not establish fresh job counts. This is an API
 acquisition failure, not a hosted test failure. The reproducibility job has no
 explicit workflow timeout; the 120-minute setting belongs to a different job.
+
+At 18:26 UTC, the run and exact reproducibility-job endpoints recovered narrow
+progress: continuation comparison step 23 passed at 17:42:39, registration step
+24 passed at 17:43:19, and the final four-slot original-reference comparison
+step 25 remains active. The authority-checked run/job proof is retained at
+`acceptance-37471505350-assembly-bounds/hosted-progress-20261006T182500Z/progress-proof.json`,
+SHA-256 `ea8ea68102061b2023e180282518030d3e7ec3c19992785a069c3556d25e886e`.
+This does not refresh the complete 74-job census or establish final acceptance.
 
 A separate source-cost review identified repeated reconstruction of the same
 two immutable source indexes inside each row of original-counterpart validation.
@@ -695,6 +704,19 @@ The tracked `docs/policy-component-composition-v0.1.md` there records the full
 future path, including constant-broadcast versus encounter-scoped links and a
 new original composition context/layout authority. No new profile is admitted,
 executed or exportable.
+The next local material/library interface and independent test matrix are now
+reviewed and frozen in that tracked composition specification. Source authoring
+is in progress for one original primary-RNA root per component, exhaustive
+ordered feature carriers, complete product declarations and symbolic typed
+provider prerequisites. Concrete provider/capacity/layout bodies remain outside
+reusable identity. Driver/A/B target inventories are independently 14/82/93;
+retained correlations and feedback rows keep their per-executor scopes. Local
+decoding will not claim translation, global resource sufficiency or composition
+acceptance. Reviews are retained in `generated/policy-component-composition/`
+as `c01-local-material-interface.md` (SHA-256
+`7e3af65fe34184de819644ba2130f84d304797283807b218ecbabce351f5cb8c`)
+and `c01-local-material-test-review.md` (SHA-256
+`d66f3678037985a2eb97831625498d072a77bbd03a70c2c1bce8c899266bb5a5`).
 Acceptance still depends on the current profile and the complete new vertical
 path. Preserve all existing v0.1 contracts and outputs.
 
