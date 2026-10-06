@@ -86,7 +86,9 @@ let original_literals case=
     Json.equal(arr requirements)(get "requirements" expected))"Original three hard requirements changed"
 let assessment_literals expected compiled=
   let report=get "report" compiled and candidate=get "candidate" compiled in
-  List.iter(fun key->require(get key report=get key expected)("Material domain claim changed: "^key))
+  List.iter(fun key->require(get key report=get key expected)
+    ("Material domain claim changed: "^key^(if key="status" then
+      "; original domain "^text "domain_digest" expected^"; complete fresh report: "^Canonical.encode report else "")))
     ["status";"claim_scope";"material_status";"context_status";"empirical";"artifact";"export"];
   require(get "artifact" compiled=Json.Null && get "all_original_obligations_discharged" report=Json.Bool true)
     "Compilation published material or omitted the complete original conjunction";

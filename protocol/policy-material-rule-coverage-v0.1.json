@@ -1445,7 +1445,7 @@
     },
     {
       "path": "core/test/test_policy_material_domain.ml",
-      "sha256": "f564a33f38faf50830fcabb1b825b7adfee949fe912806f7979f4a7e23cb0bff"
+      "sha256": "a24d1db032aaaae51f1428e01371aade9045b56d2735fde8582b59d27fc4db76"
     },
     {
       "path": "core/test/test_policy_material_lifecycle.ml",
