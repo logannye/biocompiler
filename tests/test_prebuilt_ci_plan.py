@@ -14,6 +14,7 @@ import tempfile
 import unittest
 from unittest.mock import patch
 from tools.pipeline_occurrence_source import restore as restore_occurrence_source
+from tools.native_cli_dispatch_source import restore as restore_native_cli_dispatch_source
 
 ROOT=Path(__file__).resolve().parents[1]
 SOURCE=ROOT/'tests/conformance/prebuilt-source-v1'
@@ -552,6 +553,8 @@ class HostedCiPlanTests(unittest.TestCase):
             old=Path(str(SOURCE/name)+'.source').read_text();new=(ROOT/name).read_bytes()
             if name=='tools/check_native_synthetic_inspection.py':
                 new=restore_synthetic_inspection_source(new,INSPECTION_DELTA.read_bytes())
+            elif name in ('tools/check_native_workflow_cli.py','tools/check_native_synthetic_selection_cli.py'):
+                new=restore_native_cli_dispatch_source(name,new)
             elif name=='tools/check_pipeline_manager_install.py':
                 new=restore_manager_inventory_source(new,MANAGER_INVENTORY_DELTA.read_bytes())
                 new=restore_callback_budget_source(new,BUDGET_DELTA.read_bytes())
@@ -579,6 +582,34 @@ class HostedCiPlanTests(unittest.TestCase):
         block=self.new.split('  prebuilt-core-validation:',1)[1].split('  validation:',1)[0]
         self.assertIn('realization-core-reproducibility',block)
         self.assertEqual(block.count('name: realization-'),4)
+
+    def test_dispatch_guard_restoration_retains_complete_original_installed_path_proof(self):
+        from tools import native_cli_dispatch_source as dispatch
+        witness=(ROOT/dispatch.WITNESS).read_bytes()
+        manifest=json.loads((ROOT/'tests/conformance/prebuilt-installed-path-delta-v1.json').read_bytes())
+        proof=json.loads(witness)
+        for name in dispatch.HISTORICAL:
+            current=(ROOT/name).read_bytes()
+            restored=dispatch.restore(name,current,witness)
+            self.assertEqual(hashlib.sha256(restored).hexdigest(),manifest[name]['current_sha256'])
+            for changed in (restored,current+b'\n',current.replace(b'phase != "output"',b'phase != "input"'),
+                            current.replace(b'def run_case(',b'def unchecked_case(')):
+                with self.subTest(path=name,current=hashlib.sha256(changed).hexdigest()), self.assertRaises(AssertionError):
+                    dispatch.restore(name,changed,witness)
+            for mutation in ('missing','order','offset','before','after','current','historical','base','policy'):
+                changed=json.loads(witness)
+                row=changed['files'][name]
+                if mutation=='missing': row['spans'].pop()
+                elif mutation=='order': row['spans'].reverse()
+                elif mutation=='offset': row['spans'][0]['offset']+=1
+                elif mutation in ('before','after'): row['spans'][0][mutation]+='\n'
+                elif mutation in ('current','historical'): row[mutation]['sha256']='0'*64
+                elif mutation=='base': changed['base_revision']='0'*40
+                else: changed['policy_witness_sha256']='0'*64
+                raw=(json.dumps(changed,sort_keys=True,indent=2)+'\n').encode()
+                with self.subTest(path=name,witness=mutation), self.assertRaisesRegex(AssertionError,'Unreviewed'):
+                    dispatch.restore(name,current,raw)
+        self.assertEqual(set(proof['files']),set(dispatch.HISTORICAL))
 
     def test_inspection_restoration_preserves_both_reviewed_stages_and_rejects_forgery(self):
         current=(ROOT/'tools/check_native_synthetic_inspection.py').read_bytes()

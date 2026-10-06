@@ -1,4 +1,4 @@
-"""Exact packaging-only counterpart for immutable original CLI observations."""
+"""Compose pinned packaging and policy dispatch edits over original CLI bytes."""
 from __future__ import annotations
 
 import hashlib
@@ -54,14 +54,26 @@ def counterpart(root=ROOT, *, current=None):
         require(expected.count(before.encode()) == 1, "Package metadata edit is not unique")
         expected = expected.replace(before.encode(), after.encode(), 1)
     require(expected == proposed, "Package metadata has an unlisted whole-source change")
+    from tools import policy_entrypoint_source_lineage as policy
+    policy_entry = policy.witness(root)["sources"][PATH]
+    policy_current = policy_entry["after_source"].encode()
+    restored, policy_proof = policy.restore(PATH, policy_current, root=root)
+    require(restored == historical,
+            "Packaging and policy dispatch witnesses do not share exact original metadata")
+    composed = policy_current
+    for before, after in CHANGES:
+        require(composed.count(before.encode()) == 1, "Composed package metadata edit is not unique")
+        composed = composed.replace(before.encode(), after.encode(), 1)
     if current is None:
         path = root / PATH
         require(path.is_file() and not path.is_symlink() and path.stat().st_size <= 4096,
                 "Current package metadata is missing, redirected or oversized")
         current = path.read_bytes()
-    require(type(current) is bytes and current == proposed,
+    require(type(current) is bytes and current == composed,
             "Current package metadata differs from its exact whole-source counterpart")
-    return historical, {"schema_version": entry["schema_version"], "path": PATH,
-        "historical_sha256": HISTORICAL_SHA256, "current_sha256": CURRENT_SHA256,
+    return historical, {"schema_version": "biocompiler.package_metadata_source_counterpart.v2", "path": PATH,
+        "historical_sha256": HISTORICAL_SHA256, "current_sha256": sha(current),
         "witness_sha256": WITNESS_SHA256, "current_source": current.decode(),
-        "changes": entry["changes"]}
+        "changes": entry["changes"], "packaging_source_sha256": CURRENT_SHA256,
+        "policy_entrypoint_counterpart": policy_proof,
+        "composition": "exact_packaging_changes_applied_to_pinned_policy_entrypoint_source"}

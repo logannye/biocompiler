@@ -19,6 +19,7 @@ CORPUS = ROOT / "tests/conformance/realization-workflow-v1.json"
 CORPUS_PIN = "2f5e7636977f559e046776c1bb92bebf67c8f0e733ca463927f8d3a1aee3d77b"
 # Each addition requires a fresh explicit review and hash. Wildcards and amended
 # hashes for historical source files are deliberately unsupported.
+REVIEWED_EXAMPLES = frozenset({"examples/expressive_policies.py"})
 REVIEWED_ADDITIONS = {
     "src/biocompiler/core_distribution.py": "10c772076ee0ecfcb0c61a1a3410ae6014313d2e05617f30bc77f6df55485459",
     "src/biocompiler/core_pipeline_build_views.py": "85492c4f77b3104af2dae9d9180a0518bfd4fb61c9d6143880e6e58e10a77382",
@@ -42,6 +43,34 @@ REVIEWED_ADDITIONS = {
     "src/biocompiler/workflow_backend.py": "81958a4fc1147b2ea10eae7c7bac15a68338b1cb21b738805ae04538c7bdc1db",
     "src/biocompiler/core_workflow_authority.py": "ded29c7cd4c16241812bd7f677b0c962d185a724fef1cd7294c7e899c7c32d66",
     "src/biocompiler/workflow_cli.py": "641cf7f6451e52c5dd4a09a28c75c89329191aa373aed36cc9dc92c573207bd5",
+    'src/biocompiler/policy/native.py': '956e33656d6b5ee332fae215a56d667d7b88019d7853426440aa5502777dc9f0',
+    'src/biocompiler/core_policy.py': '9af5592f01bfb721965376ec0051b0eeaba9bfcb38ba6db3a3c56351b708044e',
+    'examples/expressive_policies.py': 'face2b9c24b039da9931b4af4e4fc26ad4fcec94b9aa338196c2c7455d789bec',
+    'src/biocompiler/entrypoint.py': '7158963ef6435bcd8d8dbbb4952b185c6a64414fe01f8651b6e3dccff5492ed8',
+    'src/biocompiler/policy/__init__.py': 'd9dd6be96e54f316bd087c0953d4cfce8214d170112e674b4c58edf81d28697b',
+    'src/biocompiler/policy/behavior.py': '691b7710b8e915665526e57ba41f3b2df3fe1519ec22371d47441050c37e34bf',
+    'src/biocompiler/policy/catalog.py': '96bd1729202b96c12fcaea35e2ca1560011bed7a5dd712e2fc8d0a5fc9ff3e30',
+    'src/biocompiler/policy/chassis.py': '21960a5498db0934150ab5288eb6de30c2eb63062fe9e06a2c57a0214c811ab1',
+    'src/biocompiler/policy/cli.py': '7e6e5f2e74fe4de76117433b2b8065e0b7a1d2386c2efe831cf353596ec8c591',
+    'src/biocompiler/policy/coordination.py': 'ce597e5c05dc1f64b73bbeb4b60ae9863b26c645155ce03ea46a827135b009c9',
+    'src/biocompiler/policy/deployment.py': 'cddace3d45f04ecd722a47849325c9ff6a41fc166b0e23253c2377f037eae29f',
+    'src/biocompiler/policy/effects.py': '2e228309b98defa71730cac3e2b8883a9e86c9f63f0d5c25b37bf70b27a02578',
+    'src/biocompiler/policy/entities.py': 'f38a35089b5c5c7522b012729f95a2b17f45fd2a56c1affe168aa526fb1d7f18',
+    'src/biocompiler/policy/examples.py': '36f4e4ba467ae48bc2bfb1d1f54455533a7981dcd8a2c659227d34d06807017a',
+    'src/biocompiler/policy/handoff.py': 'a51200b3bb412ebc65cc43df3d69435ea37a7f48a75ba2eba5b7fbafd2479a51',
+    'src/biocompiler/policy/inspection.py': '7eca4c5bf12aab21899bb7c9e54b64f8255bae9759e7ebd6a4858bf0f5e76caf',
+    'src/biocompiler/policy/logic.py': 'cc0a0fe952f9c8aa16fb5714d0cd1972296154cf1e5e5deed4e7ea9ece3ddf4f',
+    'src/biocompiler/policy/model.py': '7197696399733e610b7a5c458aebf0ddc4b0df997f190cb53fa1659c419b6038',
+    'src/biocompiler/policy/observations.py': '24400413e0b42fad132d02d0841cfdc3f9307c452e64ec1b2283be7f389f5a26',
+    'src/biocompiler/policy/patterns.py': 'a906a7acc9ca55aa0feee855d56a39c9b1d6b80bba8a502ba13beeff35de21be',
+    'src/biocompiler/policy/programs.py': '86e983e87902407d30ee1b6146a7494298b072f9f70fae60825b050423784296',
+    'src/biocompiler/policy/requirements.py': '80579a127424a9d179d67406e2eecd6bc875ed2b6edcc7fc19f823cf4e7beb3b',
+    'src/biocompiler/policy/serialization.py': 'd0e2feb4e8dd3fe65a10793d20c06144ad6fec396d99e6107f3485682ee570bf',
+    'src/biocompiler/policy/space.py': 'c32bc67b86370f471fcabe54fdb61332f746130bc23e22d5a2ce7e08666b97c9',
+    'src/biocompiler/policy/state.py': '94ef54313d4475428ca678258dfe59727c8dbbe8d327e26b79ba819dcc20d22d',
+    'src/biocompiler/policy/time.py': '115fad72c39fa62587d1253e78a374162b0e1543ba146d8634773bab5d41b969',
+    'src/biocompiler/policy/validation.py': '00be9fc170771f06ee7fae34c17ec9a47fcd1c1741efb34fd64044a114d7c5b8',
+    'src/biocompiler/policy/values.py': '56b36e3e4cc8d2caad0bbd26e7ef626eed0b694a50731911e537f4454555bca5',
 }
 
 
@@ -87,6 +116,13 @@ def addition_counterparts(additions):
     return [proof]
 
 
+def addition_module(path):
+    require(path.endswith(".py") and (path.startswith("src/biocompiler/") or path in REVIEWED_EXAMPLES),
+            "Unreviewed addition import shape")
+    relative = path[4:] if path.startswith("src/") else path
+    return relative[:-3].replace("/", ".").removesuffix(".__init__")
+
+
 def source_scope(actual, *, allow_missing_tests=False):
     historical = historical_sources()
     before = {row["path"]: row["sha256"] for row in historical}
@@ -95,6 +131,7 @@ def source_scope(actual, *, allow_missing_tests=False):
     missing = set(before) - set(current)
     require(not missing or allow_missing_tests and all(path.startswith("tests/") for path in missing),
             "Historical workflow authority source is missing")
+    from tools.policy_entrypoint_source_lineage import PATHS as POLICY_ROUTES, ENTRYPOINT, verify_entrypoint
     routes = []
     for path in sorted(set(before) & set(current)):
         if before[path] != current[path]:
@@ -102,7 +139,9 @@ def source_scope(actual, *, allow_missing_tests=False):
             from tools.synthetic_producer_source_lineage import HISTORICAL as PRODUCERS
             from tools.manager_registration_source_lineage import HISTORICAL as MANAGERS
             from tools.realization_source_lineage import verify_captured_source, REFERENCE_ROUTES
-            require(path in HISTORICAL or path in PRODUCERS or path in MANAGERS or path in REFERENCE_ROUTES, "Historical workflow source bytes changed: " + path)
+            require(path in HISTORICAL or path in PRODUCERS or path in MANAGERS or path in REFERENCE_ROUTES or path in POLICY_ROUTES, "Historical workflow source bytes changed: " + path)
+            require(digest((ROOT / path).read_bytes()) == current[path],
+                    "Historical workflow source bytes changed: " + path)
             try:
                 route = verify_captured_source(ROOT, {"path": path, "sha256": before[path]})
             except ValueError as error:
@@ -113,10 +152,12 @@ def source_scope(actual, *, allow_missing_tests=False):
     for path, sha in additions.items():
         require(REVIEWED_ADDITIONS.get(path) == sha, "Unreviewed workflow source addition: " + path)
         require(digest((ROOT / path).read_bytes()) == sha, "Reviewed addition bytes changed")
+    if ENTRYPOINT in additions:
+        require(verify_entrypoint()["sha256"] == additions[ENTRYPOINT], "Unreviewed authoring dispatch module")
     modules = []
     for path in additions:
-        require(path.startswith("src/") and path.endswith(".py"), "Unreviewed addition import shape")
-        modules.append(path[4:-3].replace("/", "."))
+        if path != ENTRYPOINT:
+            modules.append(addition_module(path))
     result = {
         "schema_version": "biocompiler.realization_workflow_source_scope.v2" if routes else "biocompiler.realization_workflow_source_scope.v1",
         "historical_corpus_pin": CORPUS_PIN,
@@ -125,6 +166,7 @@ def source_scope(actual, *, allow_missing_tests=False):
         "historical_source_inventory_sha256": digest(canonical(historical)),
         "actual_source_inventory_sha256": digest(canonical(actual)),
         "reviewed_additions": [{"path": path, "sha256": sha} for path, sha in additions.items()],
+        "reviewed_source_routes": routes,
         "denied_modules": modules,
         "omitted_tests_for_focused_instrumentation": sorted(missing),
         "comparison": "exact_original_observations_and_documents_after_explicit_historical_source_projection_only",

@@ -83,7 +83,7 @@ class ReferenceSessionSourceLineageTests(unittest.TestCase):
         self.assertEqual(current, self.current)
         self.assertEqual(copied, (original.ROOT / original.SESSION_BLOB).read_bytes())
         data = original.data_closure(index)
-        self.assertEqual(len(data), 4013)
+        self.assertEqual(len(data), 4014)
         for logical, pin in ((original.SESSION_BLOB, original.SESSION_ORIGINAL_SHA),
                              (original.SESSION_WITNESS, original.SESSION_WITNESS_SHA)):
             self.assertEqual([row for row in data if row['logical'] == logical],
@@ -93,6 +93,22 @@ class ReferenceSessionSourceLineageTests(unittest.TestCase):
 
     def test_native_gate_addition_preserves_entire_prior_source_and_archive_comparison(self):
         source = (original.ROOT / 'core/test/test_reference_contracts_corpus.ml').read_text()
+        for start_marker, end_marker, pin in (
+                ('let reference_policy_entrypoint_original ', 'let reference_original root ',
+                 '25ca0c2d86c83fb496ebfb42cbdebf301d382536e83aea16a9550de437ba8c35'),
+                ('let policy_entrypoint_source_controls ', 'let read_document path ',
+                 '25db3d271d41100a3bfa23fdebaf9e38998bde3ded71b3098658bb29f41e1ae0')):
+            self.assertEqual(source.count(start_marker), 1)
+            self.assertEqual(source.count(end_marker), 1)
+            start, end = source.index(start_marker), source.index(end_marker)
+            self.assertEqual(original.sha(source[start:end].encode()), pin)
+            source = source[:start] + source[end:]
+        policy_branch = ('    else if List.mem name ["src/biocompiler/__init__.py";"src/biocompiler/__main__.py"] then\n'
+                         '      reference_policy_entrypoint_original root name expected current\n')
+        policy_call = '  policy_entrypoint_source_controls root sources;\n'
+        for added in (policy_branch, policy_call):
+            self.assertEqual(source.count(added), 1)
+            source = source.replace(added, '', 1)
         start = source.index('let reference_session_original ')
         end = source.index('let reference_original root ')
         helper = source[start:end]

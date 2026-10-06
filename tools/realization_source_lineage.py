@@ -107,6 +107,9 @@ def verify_captured_source(root: Path, entry):
             raise ValueError("Captured reference route source bytes differ: " + entry["path"]) from error
         return {"path": entry["path"], "historical_sha256": entry["sha256"],
                 "current_sha256": sha256(current), "kind": "reviewed_reference_context_route", "lineage": proof}
+    from tools.policy_entrypoint_source_lineage import PATHS as POLICY_ROUTES, verify_source as verify_policy_source
+    if entry["path"] in POLICY_ROUTES:
+        return verify_policy_source(root, entry["path"], entry["sha256"])
     witness = load_witness().get(entry["path"])
     if witness is None:
         from tools.workflow_source_lineage import HISTORICAL, verify_source

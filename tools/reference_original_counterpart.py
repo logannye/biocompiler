@@ -65,6 +65,9 @@ CORE_MERGE_UPDATE_SHA = 'dd91ae7b9929f5806105245461a70874609781eb93a9dceffed53cf
 ROUTE_WITNESS = 'tests/conformance/reference-public-routing-source-counterpart-v1.json'
 ROUTE_WITNESS_SHA = '949bd00942bbaa8c6107c490692e38007e41309b0d8f22b0bccd4d8f8514f074'
 ROUTE_SOURCES = ('src/biocompiler/compiler/construct.py', 'src/biocompiler/compiler/molecular.py')
+POLICY_ROUTES = ('src/biocompiler/__init__.py', 'src/biocompiler/__main__.py')
+POLICY_WITNESS = 'tests/conformance/policy-entrypoint-source-counterpart-v1.json'
+POLICY_WITNESS_SHA = '680d26bc0107115e80ed4c6b8e9bae52698acf619e3ae4872e86d7f7ac3404e8'
 # Imported by the frozen test_synthetic_generation fixture, but not included
 # in its original source_inventory traversal. Entire bytes match c58aa504.
 SUPPORT = {'examples/realization_check.py': '0d1012d2c3cd074540afce586658ee2ee3cba08a4e3d2e2586f8aaec1fa75fc2'}
@@ -437,6 +440,18 @@ def selection(module, ids):
     return ids
 
 
+def policy_source_witness(logical, current):
+    """Restore only the exact reviewed authoring dispatch, never new defaults."""
+    from tools import policy_entrypoint_source_lineage as policy
+    require(logical in POLICY_ROUTES and set(POLICY_ROUTES) == policy.ROUTES and
+            policy.WITNESS == POLICY_WITNESS and policy.WITNESS_SHA256 == POLICY_WITNESS_SHA,
+            'Reference policy counterpart inventory differs')
+    try:
+        return policy.restore(logical, current, root=ROOT)
+    except ValueError as error:
+        raise AssertionError('Captured reference policy source bytes changed: ' + logical) from error
+
+
 def data_closure(index):
     result = [{'logical': CORPUS, 'sha256': CORPUS_SHA, 'bytes': len(local_file(ROOT, CORPUS).read_bytes())}]
     for identity, row in sorted(index['documents'].items()):
@@ -452,7 +467,8 @@ def data_closure(index):
                               (ROUTE_WITNESS, ROUTE_WITNESS_SHA),
                               (CALLBACK_BLOB, CALLBACK_ORIGINAL_SHA), (CALLBACK_WITNESS, CALLBACK_WITNESS_SHA),
                               (CALLBACK_DRAIN_WITNESS, CALLBACK_DRAIN_WITNESS_SHA),
-                              (SESSION_BLOB, SESSION_ORIGINAL_SHA), (SESSION_WITNESS, SESSION_WITNESS_SHA)):
+                              (SESSION_BLOB, SESSION_ORIGINAL_SHA), (SESSION_WITNESS, SESSION_WITNESS_SHA),
+                              (POLICY_WITNESS, POLICY_WITNESS_SHA)):
         raw = local_file(ROOT, logical).read_bytes()
         require(sha(raw) == identity, 'Reference exact Core counterpart data changed')
         result.append({'logical': logical, 'sha256': identity, 'bytes': len(raw)})
@@ -478,6 +494,9 @@ def source_closure(index, package_root):
         elif logical in ROUTE_SOURCES:
             copied, _ = route_source_witness(logical, raw)
             require(sha(copied) == identity, 'Frozen reference public route authority changed')
+        elif logical in POLICY_ROUTES:
+            copied, _ = policy_source_witness(logical, raw)
+            require(sha(copied) == identity, 'Frozen reference policy source authority changed')
         else:
             require(sha(raw) == identity, 'Captured reference source bytes changed: ' + logical)
             copied = raw

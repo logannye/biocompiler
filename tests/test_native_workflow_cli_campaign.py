@@ -5,6 +5,7 @@ test fixtures; the production campaign requires the separately pinned binaries.
 """
 from collections import Counter
 from copy import deepcopy
+import ast
 import json
 import os
 from pathlib import Path
@@ -12,6 +13,7 @@ import shutil
 import sys
 import tempfile
 import unittest
+from types import SimpleNamespace
 from unittest.mock import patch
 from uuid import uuid4
 
@@ -25,6 +27,68 @@ class NativeWorkflowCliCampaignTests(unittest.TestCase):
     def setUpClass(cls):
         cls.original, cls.old_blobs = c.baseline()
         cls.oracle = c.Oracle()
+
+    def test_exact_dispatch_calls_do_not_relax_the_actual_startup_guard(self):
+        node = next(node for node in ast.parse(c.STARTUP).body if isinstance(node, ast.FunctionDef) and node.name == "guard")
+        phase, owner = "output", ""
+        namespace = {"seen": set(), "cli_calls": c.CLI_CALLS, "policy": SimpleNamespace(
+            input_phase=lambda: phase == "input", frame_owner=lambda frame: owner,
+            allowed_frame=lambda frame: c.policy.allowed_call(frame.f_globals["__name__"], frame.f_code.co_qualname, phase, owner))}
+        exec(compile(ast.Module(body=[node], type_ignores=[]), "<reviewed-native-cli-guard>", "exec"), namespace)
+        allowed = [("biocompiler.entrypoint", "main"), ("biocompiler", "_load_legacy_exports")]
+        denied = [("biocompiler.entrypoint", "main.<locals>.helper"), ("biocompiler.entrypoint", "helper"),
+                  ("biocompiler", "_load_legacy_exports.<locals>.helper"), ("biocompiler", "__getattr__"),
+                  ("biocompiler.policy.cli", "main"), ("biocompiler.compiler.verification_workflow", "run_synthetic_verification")]
+        for module, name in allowed + denied:
+            frame = SimpleNamespace(f_globals={"__name__": module}, f_code=SimpleNamespace(co_qualname=name, co_name=name))
+            with self.subTest(module=module, name=name):
+                self.assertEqual(c.allowed_cli_call(module, name, phase, owner), (module, name) in allowed)
+                if (module, name) in allowed:
+                    namespace["guard"](frame, "call", None)
+                else:
+                    with self.assertRaisesRegex(AssertionError, "Forbidden Python authority"):
+                        namespace["guard"](frame, "call", None)
+        for phase, owner in (("input", ""), ("output", "unreviewed")):
+            for module, name in allowed:
+                frame = SimpleNamespace(f_globals={"__name__": module}, f_code=SimpleNamespace(co_qualname=name, co_name=name))
+                self.assertFalse(c.allowed_cli_call(module, name, phase, owner))
+                with self.assertRaisesRegex(AssertionError, "Forbidden Python authority"):
+                    namespace["guard"](frame, "call", None)
+
+    def test_policy_dispatch_witness_rejects_changed_complete_product_sources(self):
+        from tools import check_native_synthetic_selection_cli as selection
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            for name in (c.dispatch.WITNESS, c.dispatch.ENTRYPOINT, *c.dispatch.ROUTES):
+                path = root / name; path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_bytes((c.ROOT / name).read_bytes())
+            for helper in (c, selection):
+                expected = helper.dispatch_sources()
+                with patch.object(helper, "ROOT", root):
+                    self.assertEqual(helper.dispatch_sources(), expected)
+                    for name in (c.dispatch.WITNESS, c.dispatch.ENTRYPOINT, *sorted(c.dispatch.ROUTES)):
+                        path = root / name; original = path.read_bytes()
+                        path.write_bytes(original + b"\n")
+                        with self.subTest(helper=helper.__name__, path=name), self.assertRaises((AssertionError, ValueError)):
+                            helper.dispatch_sources()
+                        path.write_bytes(original)
+
+    def test_dispatch_audit_cannot_omit_calls_or_repin_changed_sources(self):
+        receipt, blobs = self.fixture_receipt()
+        row = next(row for row in receipt["checks"] if row["scope"] == "native_workflow" and row["entrypoint"] == "module")
+        original = c.r.decode(c.f.restore(row["audit"], blobs))
+        for mutation in ("missing_module", "changed_pin", "repinned_source", "missing_root_module", "missing_dispatch", "missing_loader"):
+            audit, sources = deepcopy(original), dict(receipt["product_sources"])
+            if mutation == "missing_module": del audit["modules"]["biocompiler.entrypoint"]
+            elif mutation == "missing_root_module": del audit["modules"]["biocompiler"]
+            elif mutation in ("changed_pin", "repinned_source"):
+                audit["modules"]["biocompiler.entrypoint"]["sha256"] = "0" * 64
+                if mutation == "repinned_source": sources["src/biocompiler/entrypoint.py"] = "0" * 64
+            else:
+                removed = "biocompiler.entrypoint" if mutation == "missing_dispatch" else "biocompiler"
+                audit["functions"] = [entry for entry in audit["functions"] if entry[0] != removed]
+            with self.subTest(mutation=mutation), self.assertRaisesRegex(AssertionError, "witnessed"):
+                c.validate_audit(row, audit, blobs, sources, self.oracle)
 
     def write(self, path, value):
         path.parent.mkdir(parents=True, exist_ok=True)
@@ -62,7 +126,12 @@ class NativeWorkflowCliCampaignTests(unittest.TestCase):
                     "modules": {"biocompiler.cli": {"path": "src/biocompiler/cli.py", "sha256": sources["src/biocompiler/cli.py"]}},
                     "package_path": "/installed/site-packages/biocompiler", "responses": [],
                     "native_artifacts": {}, "wire_responses": {}}
-                if scope == "native_workflow": audit["functions"].append(["biocompiler.cli", "main", "output", ""])
+                audit["modules"].update({module: value for module, value in c.dispatch_sources().items()
+                    if module != "biocompiler.__main__"})
+                if scope == "native_workflow":
+                    audit["functions"].extend([[module, name, "output", ""] for module, name in (
+                        ("biocompiler.cli", "main"), ("biocompiler.entrypoint", "main"),
+                        ("biocompiler", "_load_legacy_exports"))])
                 trace = self.oracle.trace(old["id"])
                 if trace:
                     audit["functions"].extend([[module, name, "output", ""] for module, name in (
@@ -70,7 +139,7 @@ class NativeWorkflowCliCampaignTests(unittest.TestCase):
                         ("biocompiler.core_client", "_response"), ("biocompiler.core_artifacts", "call_artifact"))])
                 audit["functions"].sort()
                 for module, _name, _phase, _owner in audit["functions"]:
-                    source = "src/" + module.replace(".", "/") + ".py"
+                    source = "src/" + module.replace(".", "/") + ("/__init__.py" if module == "biocompiler" else ".py")
                     audit["modules"][module] = {"path": source, "sha256": sources[source]}
                 authority, retained = self.oracle.inputs(self.oracle.cases[old["id"]])
                 for operation, status, diagnostic, artifact in trace:
@@ -273,7 +342,9 @@ class NativeWorkflowCliCampaignTests(unittest.TestCase):
             site = root / "site"; site.mkdir()
             shutil.copytree(c.ROOT / "src/biocompiler", site / "biocompiler", ignore=shutil.ignore_patterns("__pycache__"))
             binary = root / "fixture-core"; binary.write_text(f"#!{sys.executable}\n" + CHILD); binary.chmod(0o700)
-            console = root / "biocompiler"; console.write_text(f"#!{sys.executable}\n" + c.f.ENTRYPOINT); console.chmod(0o700)
+            console = root / "biocompiler"
+            console.write_text(f"#!{sys.executable}\nfrom biocompiler.entrypoint import main\nraise SystemExit(main())\n")
+            console.chmod(0o700)
             for name in ("startup", "cwd", "native-artifacts"): (c.f.CLI_ROOT / name).mkdir()
             startup = "import sys\nsys.path.insert(0, " + repr(str(site)) + ")\n" + c.STARTUP
             (c.f.CLI_ROOT / "startup/sitecustomize.py").write_text(startup)

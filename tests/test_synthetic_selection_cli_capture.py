@@ -14,10 +14,17 @@ class SyntheticSelectionCliCaptureTests(unittest.TestCase):
 
     def fixture(self,version='3.14'):
         actual=deepcopy(self.original);blobs=dict(self.blobs)
-        scope=actual['source_scope']=c.frozen.source_scope()
+        scope=actual['source_scope']=c.current_scope()
         current={row['path']:row['sha256'] for row in scope['actual_sources']}
         for row in actual['cases']:
             for item in row['import_audit']['modules'].values():item['sha256']=current[item['path']]
+            row['import_audit']['modules']['biocompiler.entrypoint']={
+                'path':'src/biocompiler/entrypoint.py','sha256':current['src/biocompiler/entrypoint.py']}
+        shim=b'from biocompiler.entrypoint import main\nraise SystemExit(main())\n'
+        old=actual['capture_environment']['entrypoint_source'];del blobs[old['sha256']]
+        store=c.frozen.f.Store()
+        actual['capture_environment']['entrypoint_source']=store.retain(shim);blobs.update(store.blobs)
+        actual['capture_environment']['declared_console_entrypoint']='biocompiler.entrypoint:main'
         for name in (c.routes.CLI,c.packaging.PATH):
             raw=(c.ROOT/name).read_bytes();old=actual['retained_source_bytes'][name]
             del blobs[old['sha256']];store=c.frozen.f.Store()
@@ -57,6 +64,7 @@ class SyntheticSelectionCliCaptureTests(unittest.TestCase):
         for version in ('3.11.16','3.14.9'):
             actual,blobs=self.fixture(version);before=deepcopy(actual)
             receipt=c.verify_recapture(actual,blobs,python_version=version)
+            self.assertEqual(receipt['schema_version'],'biocompiler.synthetic_selection_cli_source_lineage.v3')
             self.assertEqual(receipt['status'],'complete_original_selection_cli_recapture_equal')
             self.assertEqual(receipt['projected_inventory_fingerprint'],c.CORPUS_PIN)
             self.assertEqual(receipt['actual_capture'],before);self.assertEqual(actual,before)
@@ -66,6 +74,9 @@ class SyntheticSelectionCliCaptureTests(unittest.TestCase):
             self.assertEqual(len(receipt['runtime_counterpart']['changes']),int(version.startswith('3.11.')))
             from tools import reference_original_counterpart as reference
             self.assertEqual(receipt['reviewed_addition_counterparts'], [reference.core_source_witness()[1]])
+            self.assertEqual({row['path'] for row in receipt['reviewed_policy_routes']},
+                             {'src/biocompiler/__init__.py','src/biocompiler/__main__.py'})
+            self.assertEqual(receipt['reviewed_dispatch_source_addition']['path'],'src/biocompiler/entrypoint.py')
 
     def test_rehashed_observation_scope_imports_case_and_runtime_mutations_fail(self):
         actual,blobs=self.fixture('3.11')
@@ -98,17 +109,17 @@ class SyntheticSelectionCliCaptureTests(unittest.TestCase):
         self.assertTrue(additions)
         before=c.inventory(self.original['source_scope']['actual_sources'])
         current=c.inventory(actual['source_scope']['actual_sources'])
-        self.assertEqual({row['path'] for row in additions},set(current)-set(before))
+        self.assertEqual({row['path'] for row in additions} | {'src/biocompiler/entrypoint.py'},set(current)-set(before))
         for row in additions:
             self.assertEqual(c.sha(row['source'].encode()),row['sha256'])
             with patch.dict(c.REVIEWED_ADDITIONS,{row['path']:'0'*64}):
                 with self.assertRaisesRegex(AssertionError,'Unreviewed selection CLI source addition'):
                     c.verify_recapture(actual,blobs,python_version='3.11')
             changed=deepcopy(actual)
-            changed['cases'][0]['import_audit']['modules'][row['path'][4:-3].replace('/','.')]=dict(
+            changed['cases'][0]['import_audit']['modules'][c.addition_module(row['path'])]=dict(
                 path=row['path'],sha256=row['sha256'])
             self.rehash(changed)
-            with self.assertRaisesRegex(AssertionError,'imported unpinned source'):
+            with self.assertRaisesRegex(AssertionError,'import census differs|imported excluded native transport'):
                 c.verify_recapture(changed,blobs,python_version='3.11')
         unused=receipt['reviewed_unused_source_change']
         self.assertEqual(c.sha(unused['historical_source'].encode()),before[unused['path']])
@@ -128,11 +139,43 @@ class SyntheticSelectionCliCaptureTests(unittest.TestCase):
             else:rows[:]=[row for row in rows if row['path']!=c.routes.CLI]
             rows.sort(key=lambda row:row['path']);scope['source_inventory_sha256']=c.digest(rows)
             self.rehash(changed)
-            with patch.object(c.frozen,'source_scope',return_value=scope),self.assertRaises(AssertionError):
+            with patch.object(c,'current_scope',return_value=scope),self.assertRaises(AssertionError):
                 c.verify_recapture(changed,blobs,python_version='3.11')
 
+    def test_exact_dispatch_counterpart_rejects_missing_forged_or_extra_imports_and_shim(self):
+        actual,blobs=self.fixture('3.11')
+        for mutate in (
+            lambda value:value['cases'][0]['import_audit']['modules'].pop('biocompiler.entrypoint'),
+            lambda value:value['cases'][0]['import_audit']['modules'].pop('biocompiler.cli'),
+            lambda value:value['cases'][0]['import_audit']['modules']['biocompiler.entrypoint'].update(sha256='0'*64),
+            lambda value:value['cases'][0]['import_audit']['modules']['biocompiler.entrypoint'].update(path=c.routes.CLI),
+            lambda value:value['cases'][0]['import_audit']['modules'].update({'biocompiler.unreviewed':{
+                'path':'src/biocompiler/entrypoint.py','sha256':c.policy.verify_entrypoint()['sha256']}}),
+            lambda value:value['capture_environment'].update(declared_console_entrypoint='biocompiler.cli:main'),
+            lambda value:value.update(capture_environment=deepcopy(self.original['capture_environment'])),
+        ):
+            changed=deepcopy(actual);mutate(changed);self.rehash(changed)
+            with self.assertRaises(AssertionError):c.verify_recapture(changed,blobs,python_version='3.11')
+        changed=deepcopy(actual);content=dict(blobs)
+        old=changed['capture_environment']['entrypoint_source'];del content[old['sha256']]
+        raw=b'from biocompiler.cli import main\nraise SystemExit(main())\n'
+        store=c.frozen.f.Store();changed['capture_environment']['entrypoint_source']=store.retain(raw);content.update(store.blobs)
+        self.rehash(changed)
+        with self.assertRaisesRegex(AssertionError,'dispatch environment differs'):
+            c.verify_recapture(changed,content,python_version='3.11')
+        content=dict(blobs);content[actual['capture_environment']['entrypoint_source']['sha256']]=raw
+        with self.assertRaises(AssertionError):c.verify_recapture(actual,content,python_version='3.11')
+        with patch.dict(c.REVIEWED_ADDITIONS,{'src/biocompiler/entrypoint.py':'0'*64}),self.assertRaisesRegex(
+                AssertionError,'Unreviewed selection CLI source addition'):
+            c.verify_recapture(actual,blobs,python_version='3.11')
+        with patch.object(c.capture_current,'FREEZER_SHA256','0'*64),self.assertRaisesRegex(
+                AssertionError,'Original selection CLI freezer bytes changed'):
+            c.verify_recapture(actual,blobs,python_version='3.11')
+        with patch.object(c.policy,'WITNESS_SHA256','0'*64),self.assertRaises(ValueError):
+            c.verify_recapture(actual,blobs,python_version='3.11')
+
     def test_independent_complete_seventy_two_child_recapture_is_byte_exact(self):
-        actual,blobs=c.frozen.capture()
+        actual,blobs=c.capture_current.capture()
         receipt=c.verify_recapture(actual,blobs)
         self.assertEqual(receipt['status'],'complete_original_selection_cli_recapture_equal')
         self.assertEqual(receipt['coverage']['actual_children'],72)

@@ -33,12 +33,14 @@ if __package__:
     from . import freeze_workflow_cli as f
     from . import check_workflow_reproducibility as r
     from . import check_native_synthetic_producer as producer
+    from . import policy_entrypoint_source_lineage as dispatch
 else:
     import cli_runtime_counterparts as runtime
     import freeze_synthetic_selection_cli as frozen
     import freeze_workflow_cli as f
     import check_workflow_reproducibility as r
     import check_native_synthetic_producer as producer
+    import policy_entrypoint_source_lineage as dispatch
 ROOT = Path(__file__).resolve().parents[1]
 SCHEMA = "biocompiler.native_synthetic_selection_cli_conformance.v1"
 SCOPE = "complete_explicit_native_synthetic_selection_cli_no_pipeline_export_or_rich_helper_cutover"
@@ -54,7 +56,8 @@ SOURCES = ("tools/check_native_synthetic_selection_cli.py", "tests/test_native_s
     "tests/conformance/synthetic-selection-cli-runtime-counterparts-v1.json", "protocol/synthetic-producer-public-v1.json",
     "protocol/synthetic-producer-v1.json", "core/test/test_synthetic_producer_public_protocol.ml",
     "core/lib/domain/synthetic_build_request.ml", "core/lib/domain/build_request.ml",
-    "core/lib/producer_service/synthetic_producer_public_service.ml")
+    "core/lib/producer_service/synthetic_producer_public_service.ml",
+    "tools/policy_entrypoint_source_lineage.py", dispatch.WITNESS)
 canonical, require, digest = r.canonical, r.require, r.digest
 PLATFORMS, PYTHONS, ROLES = r.PLATFORMS, r.PYTHONS, r.ROLES
 TRANSPORT_MODULES = {"biocompiler.core_client", "biocompiler.core_synthetic_producer",
@@ -67,6 +70,8 @@ CLI_CALLS = {"main", "_selection_command", "_bounded_text", "_publish_report", "
 @lru_cache(maxsize=4096)
 def allowed_cli_call(module, name, phase, owner):
     if phase != "output" or owner != "": return False
+    if (module, name) in {("biocompiler.entrypoint", "main"), ("biocompiler", "_load_legacy_exports")}:
+        return True
     name = name.split(".<locals>.", 1)[0]
     return (module in TRANSPORT_MODULES or module == "biocompiler.cli" and name in CLI_CALLS
         or module == "biocompiler.__main__" and name == "<module>"
@@ -168,12 +173,20 @@ import atexit, hashlib, json, os, pathlib, sys
 config = json.loads(pathlib.Path(os.environ["BIOCOMPILER_NATIVE_CLI_CONFIG"]).read_bytes())
 sys.path.insert(0, config["tools"])
 import check_native_synthetic_selection_cli as policy
-import biocompiler, biocompiler.cli as cli
+import biocompiler
+root = pathlib.Path(biocompiler.__file__).resolve().parent
+assert not root.is_relative_to(pathlib.Path(config["checkout"]))
+for item in policy.dispatch_sources().values():
+    path = root / item["path"].removeprefix("src/biocompiler/")
+    assert path.is_file() and not path.is_symlink() and hashlib.sha256(path.read_bytes()).hexdigest() == item["sha256"]
+# Preserve the original eager legacy-import boundary before profiling; the
+# exact dispatcher and its no-op export-loader invocation remain observed.
+biocompiler._load_legacy_exports()
+import biocompiler.entrypoint
+import biocompiler.cli as cli
 import biocompiler.synthetic_producer_cli
 import biocompiler.synthetic_producer_backend as backend
 import biocompiler.core_synthetic_producer_public
-root = pathlib.Path(biocompiler.__file__).resolve().parent
-assert not root.is_relative_to(pathlib.Path(config["checkout"]))
 fault = config["fault"]
 if fault:
     class PublicationOS:
@@ -237,8 +250,21 @@ sys.setprofile(guard)
 
 
 def product_sources():
+    dispatch_sources()
     return {path.relative_to(ROOT).as_posix(): f.sha(path.read_bytes())
             for path in sorted((ROOT / "src/biocompiler").rglob("*.py"))}
+
+
+def dispatch_sources():
+    witness = dispatch.witness(ROOT)
+    entrypoint = dispatch.verify_entrypoint(ROOT)
+    result = {"biocompiler.entrypoint": {"path": dispatch.ENTRYPOINT, "sha256": entrypoint["sha256"]}}
+    for module, path in (("biocompiler", "src/biocompiler/__init__.py"),
+                         ("biocompiler.__main__", "src/biocompiler/__main__.py")):
+        require((ROOT / path).is_file() and not (ROOT / path).is_symlink(), "Unsafe witnessed dispatch source")
+        dispatch.restore(path, root=ROOT)
+        result[module] = {"path": path, "sha256": witness["sources"][path]["after_sha256"]}
+    return result
 
 
 def read_artifacts(directory, declared):
@@ -419,6 +445,9 @@ def validate_audit(row, audit, blobs, sources, oracle, *, executable=None, ident
             Path(audit["package_path"]).name == "biocompiler" and not Path(audit["package_path"]).is_relative_to(ROOT),
             "Missing installed package origin")
     require(type(audit["modules"]) is dict and "biocompiler.cli" in audit["modules"], "Missing installed product modules")
+    for module, expected in dispatch_sources().items():
+        if module != "biocompiler.__main__":
+            require(audit["modules"].get(module) == expected, "Missing or changed witnessed policy dispatch source")
     for name, item in audit["modules"].items():
         require(type(item) is dict and set(item) == {"path", "sha256"} and
                 item["path"] == "src/" + name.replace(".", "/") + ("/__init__.py" if name == "biocompiler" or
@@ -431,6 +460,9 @@ def validate_audit(row, audit, blobs, sources, oracle, *, executable=None, ident
             all(entry[0] in audit["modules"] and allowed_cli_call(*entry) for entry in frames),
             "Forbidden, unbound or repeated Python authority frame")
     require(["biocompiler.cli","main","output",""] in frames, "Actual CLI entry point missing")
+    require(all([module, name, "output", ""] in frames for module, name in (
+        ("biocompiler.entrypoint", "main"), ("biocompiler", "_load_legacy_exports"))),
+        "Actual witnessed dispatcher or legacy export-loader call missing")
     if oracle.trace(row["id"]) is not None:
         for module,name in (("biocompiler.cli","_selection_command"), ("biocompiler.synthetic_producer_cli","selection_command"),
                             ("biocompiler.core_client","_exchange"),

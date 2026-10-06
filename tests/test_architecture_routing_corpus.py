@@ -1,6 +1,8 @@
 """Public native route fixture, codec and execution-guard regressions."""
 
 from copy import deepcopy
+from pathlib import Path
+import subprocess
 import sys
 from types import FunctionType
 import unittest
@@ -14,6 +16,36 @@ from tools import check_architecture_routing as routing
 
 
 class ArchitectureRoutingCorpusTests(unittest.TestCase):
+    def test_fresh_process_loads_legacy_exports_before_guard_and_still_blocks_semantics(self):
+        # Other unit modules may have warmed the lazy root; isolate the installed
+        # campaign's first public lookup without running a native executable.
+        code = '''
+import biocompiler as bc
+from tools.check_architecture_routing import routed_execution
+assert not bc._legacy_loaded
+with routed_execution():
+    assert bc._legacy_loaded
+    assert bc.PayloadArchitectureRequest is not None
+    assert bc.compile_payload_architecture is not None
+    try:
+        bc.__getattr__("PayloadArchitectureRequest")
+    except AssertionError as error:
+        assert "biocompiler.__getattr__" in str(error)
+    else:
+        raise AssertionError("The execution guard allowed lazy loading inside a native operation")
+from biocompiler.compiler.behavior import lower_to_behavior
+with routed_execution():
+    try:
+        lower_to_behavior(None)
+    except AssertionError as error:
+        assert "Python semantic authority executed" in str(error)
+    else:
+        raise AssertionError("Legacy compiler authority escaped the execution guard")
+'''
+        result = subprocess.run([sys.executable, "-c", code], cwd=Path(__file__).resolve().parents[1],
+                                text=True, capture_output=True, timeout=30)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
     @classmethod
     def setUpClass(cls):
         cls.corpus = Corpus()

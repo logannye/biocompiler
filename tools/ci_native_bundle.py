@@ -23,6 +23,14 @@ except ImportError:
     import ci_validation as ci
 
 
+DEPENDENCY_FIXTURES = {
+    "test_policy_document": ["data/policy_documents_v01.json"],
+    "test_policy_check": ["data/policy_frontend_request.json", "data/policy_frontend_submission.json",
+                          "data/policy_documents_v01.json"],
+    "test_policy_service": ["data/policy_documents_v01.json"],
+}
+
+
 def require(value, message):
     if not value:
         raise ValueError(message)
@@ -77,9 +85,15 @@ def test_plan(text):
         action = fields.get("action", [["run", "%{test}"]])
         require(len(action) == 1 and isinstance(action[0], list) and action[0][:2] == ["run", "%{test}"], "Unsupported native test action")
         arguments = action[0][2:]
-        require(all(isinstance(arg, str) and re.fullmatch(r"%\{env:BIOCOMPILER_[A-Z0-9_]+=missing\}", arg) for arg in arguments),
-                "Unsupported native test argument")
-        result.append({"name": name, "environment": [arg[6:-9] for arg in arguments]})
+        if name in DEPENDENCY_FIXTURES:
+            dependencies = DEPENDENCY_FIXTURES[name]
+            require(arguments == ["%{dep:" + path + "}" for path in dependencies],
+                    "Changed native dependency fixture arguments")
+            result.append({"name": name, "environment": [], "dependencies": list(dependencies)})
+        else:
+            require(all(isinstance(arg, str) and re.fullmatch(r"%\{env:BIOCOMPILER_[A-Z0-9_]+=missing\}", arg) for arg in arguments),
+                    "Unsupported native test argument")
+            result.append({"name": name, "environment": [arg[6:-9] for arg in arguments]})
     require(result and len({row["name"] for row in result}) == len(result), "Empty or duplicated native test census")
     return result
 
@@ -87,7 +101,22 @@ def test_plan(text):
 def expected_members(root):
     plan = test_plan((root / "core/test/dune").read_text())
     return {"core/_build/default/bin/core/main.exe", "core/_build/default/bin/verify/main.exe"} | {
-        "core/_build/default/test/" + row["name"] + ".exe" for row in plan}
+        "core/_build/default/test/" + row["name"] + ".exe" for row in plan} | set(dependency_members(root))
+
+
+def dependency_members(root):
+    """Map closed bundle destinations to complete original source fixtures."""
+    plan = test_plan((root / "core/test/dune").read_text())
+    return {"core/_build/default/test/" + path: "core/test/" + path
+            for row in plan for path in row.get("dependencies", [])}
+
+
+def fixture_pin(root, relative):
+    path = root / relative
+    require(path.is_file() and not path.is_symlink()
+            and not any(parent.is_symlink() for parent in path.parents if parent != root.parent),
+            "Missing or unsafe native dependency fixture: " + relative)
+    return file_pin(path)
 
 
 def file_pin(path):
@@ -99,15 +128,17 @@ def file_pin(path):
 def bundle(root, output):
     require(not output.exists(), "Native bundle must be new")
     paths = sorted(expected_members(root))
+    fixtures = dependency_members(root)
     metadata = {"schema": "biocompiler.ci_native_bundle.v1", **ci.identity(),
                 "system": ci.platform.system(), "machine": ci.platform.machine(),
                 "dune_sha256": hashlib.sha256((root / "core/test/dune").read_bytes()).hexdigest(),
-                "files": {name: file_pin(root / name) for name in paths}}
+                "files": {name: fixture_pin(root, fixtures[name]) if name in fixtures
+                          else file_pin(root / name) for name in paths}}
     output.parent.mkdir(parents=True, exist_ok=True)
     with zipfile.ZipFile(output, "x", compression=zipfile.ZIP_DEFLATED) as archive:
         archive.writestr("manifest.json", json.dumps(metadata, sort_keys=True))
         for name in paths:
-            archive.write(root / name, name)
+            archive.write(root / fixtures.get(name, name), name)
 
 
 def restore(root, source):
@@ -115,6 +146,7 @@ def restore(root, source):
     with zipfile.ZipFile(source) as archive:
         names = archive.namelist()
         wanted = expected_members(root)
+        fixtures = dependency_members(root)
         require(len(names) == len(set(names)) and set(names) == wanted | {"manifest.json"}, "Native bundle member census differs")
         require(archive.getinfo("manifest.json").file_size < 1024 * 1024, "Oversized native manifest")
         document = manifest_document(archive.read("manifest.json"))
@@ -132,6 +164,9 @@ def restore(root, source):
             require(0 < entry.file_size <= 128 * 1024 * 1024, "Oversized native member")
             raw = archive.read(name)
             require(document["files"][name] == {"sha256": hashlib.sha256(raw).hexdigest(), "size": len(raw)}, "Native member hash mismatch")
+            if name in fixtures:
+                require(document["files"][name] == fixture_pin(root, fixtures[name]),
+                        "Native dependency fixture differs from original source: " + fixtures[name])
             target = root / name
             require(not target.exists() and not target.is_symlink()
                     and not any(p.is_symlink() for p in target.parents if p != root.parent), "Unsafe native restore destination")
@@ -140,7 +175,7 @@ def restore(root, source):
             target.parent.mkdir(parents=True, exist_ok=True)
             with target.open("xb") as handle:
                 handle.write(archive.read(name))
-            target.chmod(0o755)
+            target.chmod(0o644 if name in fixtures else 0o755)
     return document
 
 
@@ -156,6 +191,12 @@ def run_tests(root, output, workers):
             value = os.environ.get(name, "")
             require(value and Path(value).is_absolute() and Path(value).exists(), "Missing required native fixture: " + name)
             command.append(value)
+        for relative in row.get("dependencies", []):
+            original = "core/test/" + relative
+            restored = "core/_build/default/test/" + relative
+            require(fixture_pin(root, restored) == fixture_pin(root, original),
+                    "Native dependency fixture differs from original source: " + original)
+            command.append(str(root / restored))
         commands.append((row["name"], command))
 
     def execute(item):

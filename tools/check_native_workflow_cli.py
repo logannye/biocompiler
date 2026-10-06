@@ -32,11 +32,13 @@ if __package__:
     from . import freeze_workflow_cli as f
     from . import check_workflow_reproducibility as r
     from . import check_native_workflow_public_sdk as policy
+    from . import policy_entrypoint_source_lineage as dispatch
 else:
     import cli_runtime_counterparts as runtime
     import freeze_workflow_cli as f
     import check_workflow_reproducibility as r
     import check_native_workflow_public_sdk as policy
+    import policy_entrypoint_source_lineage as dispatch
 
 ROOT = Path(__file__).resolve().parents[1]
 SCHEMA = "biocompiler.native_workflow_cli_conformance.v1"
@@ -46,7 +48,8 @@ ARTIFACT_DIRECTORY = "workflow-cli-artifacts"
 BASELINE_PIN = "a67edb95f75aa011ed5c059fe8cbe578fbe118d056931e3992f73775e8951da7"
 SOURCES = ("tools/check_native_workflow_cli.py", "tools/check_native_workflow_public_sdk.py",
            "tools/freeze_workflow_cli.py", "tests/test_native_workflow_cli_campaign.py",
-           "tools/cli_runtime_counterparts.py", "tests/conformance/workflow-cli-runtime-counterparts-v1.json")
+           "tools/cli_runtime_counterparts.py", "tests/conformance/workflow-cli-runtime-counterparts-v1.json",
+           "tools/policy_entrypoint_source_lineage.py", dispatch.WITNESS)
 canonical, require, digest = r.canonical, r.require, r.digest
 PLATFORMS, PYTHONS, ROLES = r.PLATFORMS, r.PYTHONS, r.ROLES
 OPERATIONS = {"validate-verification-workflow-authority", "run-verification-workflow", "replay-verification-workflow"}
@@ -58,12 +61,22 @@ import atexit, hashlib, json, os, pathlib, sys
 config = json.loads(pathlib.Path(os.environ["BIOCOMPILER_NATIVE_CLI_CONFIG"]).read_bytes())
 sys.path.insert(0, config["tools"])
 import check_native_workflow_public_sdk as policy
-import biocompiler, biocompiler.cli as cli
+import check_native_workflow_cli as campaign
+import biocompiler
+root = pathlib.Path(biocompiler.__file__).resolve().parent
+assert not root.is_relative_to(pathlib.Path(config["checkout"]))
+for item in campaign.dispatch_sources().values():
+    path = root / item["path"].removeprefix("src/biocompiler/")
+    assert path.is_file() and not path.is_symlink() and hashlib.sha256(path.read_bytes()).hexdigest() == item["sha256"]
+# The original package eagerly imported these exact legacy exports before the
+# guard started. Restore that initialization boundary, then observe the real
+# dispatcher and its already-loaded export-loader call under the guard.
+biocompiler._load_legacy_exports()
+import biocompiler.entrypoint
+import biocompiler.cli as cli
 import biocompiler.workflow_cli
 import biocompiler.workflow_backend as backend
 import biocompiler.core_workflow_authority
-root = pathlib.Path(biocompiler.__file__).resolve().parent
-assert not root.is_relative_to(pathlib.Path(config["checkout"]))
 fault = config["fault"]
 if fault:
     # Inject the original publication fault at the same CLI call sites without
@@ -97,6 +110,8 @@ def guard(frame, event, value):
         entry = (module, code.co_qualname, "input" if policy.input_phase() else "output", policy.frame_owner(frame))
         permitted = (entry[2] == "output" and (
             module in {"biocompiler.workflow_cli", "biocompiler.core_workflow_authority"}
+            or entry[3] == "" and (module, code.co_qualname) in {
+                ("biocompiler.entrypoint", "main"), ("biocompiler", "_load_legacy_exports")}
             or module == "biocompiler.cli" and code.co_qualname.split(".<locals>.", 1)[0] in cli_calls
             or module == "biocompiler.__main__" and code.co_qualname == "<module>"
             or module == "biocompiler.ir.serialization" and code.co_qualname.split(".<locals>.", 1)[0] in {"parse_json", "require"}
@@ -153,8 +168,21 @@ def baseline():
 
 
 def product_sources():
+    dispatch_sources()
     return {path.relative_to(ROOT).as_posix(): f.sha(path.read_bytes())
             for path in sorted((ROOT / "src/biocompiler").rglob("*.py"))}
+
+
+def dispatch_sources():
+    witness = dispatch.witness(ROOT)
+    entrypoint = dispatch.verify_entrypoint(ROOT)
+    result = {"biocompiler.entrypoint": {"path": dispatch.ENTRYPOINT, "sha256": entrypoint["sha256"]}}
+    for module, path in (("biocompiler", "src/biocompiler/__init__.py"),
+                         ("biocompiler.__main__", "src/biocompiler/__main__.py")):
+        require((ROOT / path).is_file() and not (ROOT / path).is_symlink(), "Unsafe witnessed dispatch source")
+        dispatch.restore(path, root=ROOT)
+        result[module] = {"path": path, "sha256": witness["sources"][path]["after_sha256"]}
+    return result
 
 
 def read_artifacts(directory, declared):
@@ -269,6 +297,8 @@ CLI_CALLS = {"main", "_verification_command", "_bounded_text", "_publish_report"
 
 def allowed_cli_call(module, name, phase, owner):
     if phase != "output": return False
+    if (module, name) in {("biocompiler.entrypoint", "main"), ("biocompiler", "_load_legacy_exports")}:
+        return owner == ""
     root = name.split(".<locals>.", 1)[0]
     return (module in {"biocompiler.workflow_cli", "biocompiler.core_workflow_authority"}
         or module == "biocompiler.cli" and root in CLI_CALLS
@@ -359,6 +389,9 @@ def validate_audit(row, audit, blobs, sources, oracle):
             Path(audit["package_path"]).name == "biocompiler" and
             not Path(audit["package_path"]).is_relative_to(ROOT), "Missing installed package origin")
     require(type(audit["modules"]) is dict and "biocompiler.cli" in audit["modules"], "Missing installed product modules")
+    for module, expected in dispatch_sources().items():
+        if module != "biocompiler.__main__":
+            require(audit["modules"].get(module) == expected, "Missing or changed witnessed policy dispatch source")
     for name, item in audit["modules"].items():
         require(type(item) is dict and set(item) == {"path", "sha256"} and
                 item["path"] == "src/" + name.replace(".", "/") + ("/__init__.py" if name == "biocompiler" or
@@ -375,6 +408,9 @@ def validate_audit(row, audit, blobs, sources, oracle):
                 "Historical inspection acquired native acceptance")
     else:
         require(any(entry[:2] == ["biocompiler.cli", "main"] for entry in frames), "Actual CLI entry point missing")
+        require(all([module, name, "output", ""] in frames for module, name in (
+            ("biocompiler.entrypoint", "main"), ("biocompiler", "_load_legacy_exports"))),
+            "Actual witnessed dispatcher or legacy export-loader call missing")
     expected_trace = oracle.trace(row["id"])
     require(type(audit["responses"]) is list and len(audit["responses"]) == len(expected_trace),
             "Expected complete preflight/run/replay occurrence sequence missing")

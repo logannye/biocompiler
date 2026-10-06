@@ -23,13 +23,24 @@ class WorkflowCliLineageTests(unittest.TestCase):
         for row in actual["cases"]:
             for item in row["import_audit"]["modules"].values():
                 item["sha256"] = current[item["path"]]
-        for name in (*lineage.routes.HISTORICAL, lineage.packaging.PATH):
+            row["import_audit"]["modules"]["biocompiler.entrypoint"] = {
+                "path": lineage.policy_entrypoint.ENTRYPOINT,
+                "sha256": current[lineage.policy_entrypoint.ENTRYPOINT]}
+        for name in (*lineage.routes.HISTORICAL, "src/biocompiler/__main__.py", lineage.packaging.PATH):
             old = actual["retained_source_bytes"][name]
             raw = (lineage.ROOT / name).read_bytes()
             identity = lineage.frozen.sha(raw)
             del self.actual_blobs[old["sha256"]]
             self.actual_blobs[identity] = raw
             actual["retained_source_bytes"][name] = {"kind": "blob", "bytes": len(raw), "sha256": identity}
+        from tools import workflow_cli_policy_capture as dispatch
+        old_shim = actual["capture_environment"]["entrypoint_source"]
+        del self.actual_blobs[old_shim["sha256"]]
+        shim = dispatch.ENTRYPOINT.encode()
+        pin = lineage.frozen.sha(shim)
+        self.actual_blobs[pin] = shim
+        actual["capture_environment"].update(declared_console_entrypoint="biocompiler.entrypoint:main",
+            entrypoint_source={"kind": "blob", "bytes": len(shim), "sha256": pin})
         self.rehash(actual)
         return actual, deepcopy(scope)
 
@@ -60,7 +71,7 @@ class WorkflowCliLineageTests(unittest.TestCase):
         self.assertEqual(receipt["status"], "complete_original_cli_recapture_equal")
         self.assertEqual(receipt["actual_inventory_fingerprint"], actual["inventory_fingerprint"])
         self.assertEqual(receipt["projected_inventory_fingerprint"], lineage.CORPUS_PIN)
-        self.assertEqual([row["path"] for row in receipt["source_changes"]], [
+        self.assertEqual([row["path"] for row in receipt["source_changes"]], sorted([
             "src/biocompiler/cli.py", "src/biocompiler/compiler/construct.py",
             "src/biocompiler/compiler/molecular.py", "src/biocompiler/compiler/pipeline.py",
             "src/biocompiler/compiler/verification_workflow.py",
@@ -78,16 +89,26 @@ class WorkflowCliLineageTests(unittest.TestCase):
             "src/biocompiler/synthesis/selection.py", "src/biocompiler/synthesis/synthetic.py",
             "src/biocompiler/synthetic_producer_backend.py", "src/biocompiler/synthetic_producer_cli.py",
             "src/biocompiler/workflow_backend.py",
-            "src/biocompiler/workflow_cli.py"])
-        self.assertEqual(receipt["schema_version"], "biocompiler.workflow_cli_source_lineage.v3")
+            "src/biocompiler/workflow_cli.py",
+            "examples/expressive_policies.py", "src/biocompiler/__init__.py", "src/biocompiler/__main__.py",
+            "src/biocompiler/entrypoint.py", "src/biocompiler/core_policy.py",
+            *["src/biocompiler/policy/" + name + ".py" for name in (
+                "__init__", "behavior", "catalog", "chassis", "cli", "coordination", "deployment",
+                "effects", "entities", "examples", "handoff", "inspection", "logic", "model", "native",
+                "observations", "patterns", "programs", "requirements", "serialization", "space",
+                "state", "time", "validation", "values")]]))
+        self.assertEqual(receipt["schema_version"], "biocompiler.workflow_cli_source_lineage.v4")
         self.assertEqual(receipt["packaging_metadata_counterpart"], lineage.packaging.counterpart()[1])
         self.assertEqual(receipt["actual_capture"], before)
         self.assertEqual(receipt["reviewed_routes"], scope["reviewed_routes"])
         from tools import reference_original_counterpart as reference
         self.assertEqual(scope['reviewed_addition_counterparts'], [reference.core_source_witness()[1]])
-        self.assertEqual(set(receipt["actual_retained_route_sources"]), set(lineage.routes.HISTORICAL))
+        self.assertEqual(set(receipt["actual_retained_route_sources"]),
+                         set(lineage.routes.HISTORICAL) | {"src/biocompiler/__main__.py"})
+        from tools import workflow_cli_policy_capture as dispatch
+        self.assertEqual(receipt["policy_dispatch_counterpart"], dispatch.verify_sources())
         for key in actual:
-            if key not in ("source_scope", "inventory_fingerprint", "retained_source_bytes", "cases"):
+            if key not in ("source_scope", "inventory_fingerprint", "retained_source_bytes", "cases", "capture_environment"):
                 self.assertEqual(lineage.canonical(projected[key]), lineage.canonical(actual[key]))
         for old, new in zip(projected["cases"], actual["cases"]):
             self.assertEqual({key: value for key, value in old.items() if key != "import_audit"},
@@ -102,6 +123,29 @@ class WorkflowCliLineageTests(unittest.TestCase):
         with patch.object(lineage, 'current_scope', return_value=changed['source_scope']):
             with self.assertRaisesRegex(AssertionError, 'CLI reviewed addition counterpart differs'):
                 lineage.historical_projection(changed)
+
+    def test_dispatch_module_and_shim_remain_exact_even_with_rehashed_capture(self):
+        actual, scope = self.recapture()
+        mutations = (
+            lambda value: value["cases"][0]["import_audit"]["modules"].pop("biocompiler.entrypoint"),
+            lambda value: value["cases"][0]["import_audit"]["modules"]["biocompiler.entrypoint"].update(sha256="f" * 64),
+            lambda value: value["cases"][0]["import_audit"]["modules"]["biocompiler.entrypoint"].update(path="src/biocompiler/cli.py"),
+            lambda value: value["capture_environment"].update(declared_console_entrypoint="biocompiler.cli:main"),
+            lambda value: value["capture_environment"]["entrypoint_source"].update(sha256="a" * 64),
+        )
+        with patch.object(lineage, "current_scope", return_value=scope):
+            for mutate in mutations:
+                changed = deepcopy(actual)
+                mutate(changed)
+                self.rehash(changed)
+                with self.assertRaisesRegex(AssertionError, "dispatch"):
+                    lineage.verify_recapture(changed, self.actual_blobs, python_version="3.14")
+            pin = actual["capture_environment"]["entrypoint_source"]["sha256"]
+            for bad in (b"from biocompiler.cli import main\nraise SystemExit(main())\n", b"altered"):
+                content = dict(self.actual_blobs)
+                content[pin] = bad
+                with self.assertRaises(AssertionError):
+                    lineage.verify_recapture(actual, content, python_version="3.14")
 
     def test_observation_environment_source_byte_and_blob_tampering_is_never_projected_away(self):
         actual, scope = self.recapture()
@@ -120,9 +164,13 @@ class WorkflowCliLineageTests(unittest.TestCase):
                 changed = deepcopy(actual)
                 mutate(changed)
                 self.rehash(changed)
-                projected, _ = lineage.historical_projection(changed)
-                self.assertNotEqual(projected, self.baseline)
-                with self.assertRaisesRegex(AssertionError, "observations differ"):
+                try:
+                    projected, _ = lineage.historical_projection(changed)
+                except AssertionError as error:
+                    self.assertRegex(str(error), "child census differs|dispatch environment differs")
+                else:
+                    self.assertNotEqual(projected, self.baseline)
+                with self.assertRaisesRegex(AssertionError, "observations differ|child census differs|dispatch environment differs"):
                     lineage.verify_recapture(changed, self.actual_blobs, python_version="3.14")
             blobs = dict(self.actual_blobs)
             route_ids = {ref["sha256"] for ref in actual["retained_source_bytes"].values()}

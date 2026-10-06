@@ -36,8 +36,13 @@ class NativeFixtureWiringTests(unittest.TestCase):
         for stanza in stanzas:
             names = re.findall(r"\(name (test_[a-z0-9_]+)\)", stanza)
             self.assertEqual(len(names), 1, "expected one named Dune test per stanza")
-            declared.append({"name": names[0], "environment": re.findall(
-                r"%\{env:(BIOCOMPILER_[A-Z0-9_]+)=missing\}", stanza)})
+            row = {"name": names[0], "environment": re.findall(
+                r"%\{env:(BIOCOMPILER_[A-Z0-9_]+)=missing\}", stanza)}
+            dependencies = re.findall(r"%\{dep:(data/[a-z0-9_]+\.json)\}", stanza)
+            if dependencies:
+                self.assertFalse(row["environment"], "mixed fixture forms are not reviewed")
+                row["dependencies"] = dependencies
+            declared.append(row)
         self.assertEqual(len(declared), len({row["name"] for row in declared}), "duplicate Dune suite")
         return declared
 
@@ -73,10 +78,14 @@ class NativeFixtureWiringTests(unittest.TestCase):
         self.assertIn("name: native-bundle-${{ matrix.platform }}", build)
         declared = self.declared_suites(dune)
         self.assertEqual(bundle.test_plan(dune), declared, "runner changed a Dune suite or ordered fixture argv")
+        for row in declared:
+            for relative in row.get("dependencies", []):
+                self.assert_fixture_path(root, row["name"], "core/test/" + relative)
         self.assertEqual(bundle.expected_members(root), {
             "core/_build/default/bin/core/main.exe", "core/_build/default/bin/verify/main.exe",
-            *("core/_build/default/test/" + row["name"] + ".exe" for row in declared)},
-            "compiled bundle omitted or added a native executable")
+            *("core/_build/default/test/" + row["name"] + ".exe" for row in declared),
+            *("core/_build/default/test/" + relative for row in declared for relative in row.get("dependencies", []))},
+            "compiled bundle omitted or added a native executable or source dependency fixture")
         return declared, dict(bindings)
 
     def test_every_dune_fixture_is_bound_in_the_complete_native_suite(self):
@@ -98,7 +107,14 @@ class NativeFixtureWiringTests(unittest.TestCase):
                 executable.parent.mkdir(parents=True, exist_ok=True)
                 executable.write_bytes(b"INERT: subprocess is mocked; never executable")
                 expected[row["name"]] = [str(executable), *(
-                    str(root / bindings[name]) for name in row["environment"])]
+                    str(root / bindings[name]) for name in row["environment"]), *(
+                    str(inert / "core/_build/default/test" / relative) for relative in row.get("dependencies", []))]
+                for relative in row.get("dependencies", []):
+                    raw = (root / "core/test" / relative).read_bytes()
+                    for base in ("core/test", "core/_build/default/test"):
+                        path = inert / base / relative
+                        path.parent.mkdir(parents=True, exist_ok=True)
+                        path.write_bytes(raw)
             observed = []
             def execute(command, **kwargs):
                 observed.append(command)
@@ -145,8 +161,12 @@ class NativeFixtureWiringTests(unittest.TestCase):
         workflow = (root / ".github/workflows/ci.yml").read_text()
         declared = self.declared_suites(dune)
         reordered = [{**row, "environment": list(reversed(row["environment"]))} for row in declared]
+        dependency_reordered = [{**row, "dependencies":list(reversed(row["dependencies"]))} if "dependencies" in row
+                                else row for row in declared]
         self.assertNotEqual(reordered, declared, "mutation requires an original multi-argument suite")
-        for name, changed in (("missing", declared[1:]), ("duplicate", declared + declared[:1]), ("argv", reordered)):
+        self.assertNotEqual(dependency_reordered, declared, "mutation requires an original multi-dependency suite")
+        for name, changed in (("missing", declared[1:]), ("duplicate", declared + declared[:1]),
+                              ("argv", reordered), ("dependency-argv", dependency_reordered)):
             with self.subTest(mutation=name), patch.object(bundle, "test_plan", return_value=changed), self.assertRaises(AssertionError):
                 self.assert_native_suite_wiring(root, dune, workflow)
 

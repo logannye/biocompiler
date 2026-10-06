@@ -125,6 +125,10 @@ def _allowed_frame(frame):
 
 @contextmanager
 def routed_execution():
+    # The historical root eagerly loaded these exact exports before this guard
+    # existed. Preserve that setup boundary now that policy-only imports are
+    # lazy; no compiler/evaluator call is permitted by this initialization.
+    bc._load_legacy_exports()
     previous = sys.getprofile()
     seen = set()
     classified = {}

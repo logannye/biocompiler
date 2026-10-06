@@ -50,25 +50,34 @@ remain distinct revision boundaries.
 | `unit-tests` | Ten jobs: each Python version executes shards 0–4 against its plan, with at most ten running unit jobs. |
 | `unit-accounting` | One per Python version independently verifies its complete five-result census against fresh discovery. |
 | `installed-executable` | Both Python versions run the installed executable RNA API/CLI path outside the checkout. |
-| `installed-architecture` | Both Python versions run all 13 installed architecture cases and complete API/CLI/FASTA/manifest checks outside the checkout. |
+| `installed-architecture` | Both Python versions run all 13 installed architecture cases and complete API/CLI/FASTA/manifest checks outside the checkout, followed by complete expressive-policy authoring and real installed-console checks with separately retained receipts. |
 | `circuit-integration` | Both Python versions exercise source metadata, infrastructure, review bundles, construction, molecules, intent and human circuit profiles. |
 | `integration-examples` | Both Python versions retain all remaining audit, molecular, synthetic, human, authoring and CLI examples. |
 | `studio-browser` | Installed Python 3.11 package, Node 22 and the pinned Playwright/Chromium setup run guided workspace, construction inspection and review suites. |
 | `studio-typescript` | Pinned strict TypeScript checks, unchanged generated release assets, runtime response decoding and current migration inventory. |
-| `ocaml-build` | Build once per native platform, check library boundaries/type transport, retain locked inputs and exact compiled suite/role bytes, and assemble candidate platform wheels. No test result is inferred from building a wheel. |
+| `ocaml-build` | Build once per native platform, check library boundaries, the generated policy wire schema and both strict transport/policy type gates, retain locked inputs and exact compiled suite/role bytes, and assemble candidate platform wheels. No test result is inferred from building a wheel. |
 | `ocaml-native-tests` | Restore the current run/platform-bound executable bundle and run all Dune-declared suites with their original arguments and two bounded workers. Unsupported Dune declarations fail closed; no compilation occurs in consumers. |
 | `ocaml-core` | Two workers execute all 67 original direct corpus, protocol, resource-bound and Python/OCaml conformance command groups against the same restored binaries. Commands within each group keep their original order and output paths; complete current-run group/log accounting is required before success. |
-| `architecture-sdk` | Four platform/Python jobs run concurrently. Each uses two isolated Python workers for all 16 architecture scenarios. Case B retains all its rejection/publication controls. The coordinator applies the unchanged independent 175-check/219-artifact census before reporting success. |
+| `architecture-sdk` | Four platform/Python jobs run concurrently. Each first checks installed expressive-policy native assessment/replay and the selected interpreter's real console outside the checkout against the exact restored Core/Verify binaries. It then uses two isolated Python workers for all 16 architecture scenarios. Case B retains all its rejection/publication controls. The coordinator applies the unchanged independent 175-check/219-artifact census before reporting success; each artifact also retains its distinct policy receipt. |
 | `executable-rna-reproducibility` | Depends only on `installed-executable`; compares complete relative-file SHA-256 inventories from both Python versions. |
 | `payload-architecture-reproducibility` | Depends only on `installed-architecture`; requires all 13 case outputs and compares every relative file across versions. |
 | `circuit-reproducibility` | Depends only on `circuit-integration`; compares the complete infrastructure/source/review artifact inventories. |
-| `architecture-core-reproducibility` | Depends on both native builds and all four architecture SDK jobs; rehashes complete SDK/CLI artifacts from Python 3.11 and 3.14 on each platform and requires exact four-way equality with current run and executable authority. |
+| `architecture-core-reproducibility` | Depends on both native builds and all four architecture SDK jobs; rehashes complete SDK/CLI artifacts from Python 3.11 and 3.14 on each platform and requires exact four-way equality with current run and executable authority. The separate policy comparator checks all four complete policy receipts against the original policy fixture and published binary manifests/bytes. Both comparison receipts are retained. |
 | `installed-campaigns` | Both platforms × Python 3.11/3.14 × five complete campaign groups (20 jobs, at most 20 concurrent). Each group installs the exact same SDK/native wheels outside the checkout and performs the complete smoke/uninstall/missing-package/reinstall lifecycle. Protocol runs alone. Manager, fixed, workflow and synthetic groups may overlap two complete campaigns after the serial install lifecycle; receipts retain the original recipe order. Fixed/reference, workflow and synthetic groups retain their original membership. All groups retain every original case, artifact and independent checker; no stateful scenario is split. |
 | `realization-conformance` | Four independent aggregation jobs require all five group receipts and all 17 campaigns exactly once per runtime. Recheck current source/run/candidate identities, complete owned bytes, original command recipes, separate lifecycle logs, campaign logs and artifact hashes. Native input receipts bind the installed files for unchanged cross-runtime checkers. |
 | `realization-core-reproducibility` | Rehash complete realization protocol, workflow and producer SDK reports, verify every original applicable occurrence and all additional cases, require current run/source/binary authority and exact equality across all four campaigns. Private producer calls and injected-proposal cases remain explicitly classified as native-library coverage. |
 | `prebuilt-core-assembly` | Depends only on both native builds, allowing installation tests to start while other tests run. Independently checks complete platform wheels, original linked sources/notices/relink companions and final executable identities; builds and checks one pure SDK wheel containing both platform pins. |
 | `prebuilt-core-validation` | Requires all four fresh-install/lifecycle/campaign receipts, exact owned bytes, original command recipes and successful upstream assembly, all native suites/conformance, architecture SDK checks, and cross-runtime reconstruction. |
 | `validation` | Final gate requires all 68 jobs, including successful unit accounting, every installed/integration/browser job, TypeScript, both native platforms, all five reproducibility jobs and both prebuilt jobs. |
+
+The PR85 integration with main `f594991ac2ff2496723ae5f2427ad93e6df7a51d`
+rederives this census from the merged workflow: 24 job definitions expand to
+68 executions. There are 53 ordinary revision-bound job receipts, two unit
+plans, ten unit shard results, two independent unit-accounting results and the
+final aggregate execution. Policy checks join existing required jobs; no
+separate policy slot or original native/package/reference campaign is omitted.
+These counts describe required work, not transferred acceptance from an older
+68-job run. The merged revision must pass every gate afresh.
 
 All expensive producers wait for the short preflight, then independent work
 runs concurrently. The critical path is preflight → candidate build/assembly →

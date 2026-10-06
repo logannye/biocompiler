@@ -1,6 +1,7 @@
 """Complete native-CLI evidence checks using byte fixtures, never native builds."""
 from collections import Counter
 from copy import deepcopy
+import ast
 import json
 import os
 from pathlib import Path
@@ -8,6 +9,7 @@ import shutil
 import sys
 import tempfile
 import unittest
+from types import SimpleNamespace
 from unittest.mock import patch
 from uuid import uuid4
 
@@ -34,6 +36,43 @@ class NativeSyntheticSelectionCliCampaignTests(unittest.TestCase):
     def setUpClass(cls):
         cls.original, cls.old_blobs = c.baseline()
         cls.oracle = c.Oracle()
+
+    def test_actual_guard_allows_only_the_exact_witnessed_dispatch_calls(self):
+        node = next(node for node in ast.parse(c.STARTUP).body if isinstance(node, ast.FunctionDef) and node.name == "guard")
+        namespace = {"seen": set(), "policy": c}
+        exec(compile(ast.Module(body=[node], type_ignores=[]), "<reviewed-selection-cli-guard>", "exec"), namespace)
+        allowed = [("biocompiler.entrypoint", "main"), ("biocompiler", "_load_legacy_exports")]
+        denied = [("biocompiler.entrypoint", "main.<locals>.helper"), ("biocompiler.entrypoint", "helper"),
+                  ("biocompiler", "_load_legacy_exports.<locals>.helper"), ("biocompiler", "__getattr__"),
+                  ("biocompiler.policy.cli", "main"), ("biocompiler.synthesis.selection", "select_implementation")]
+        for module, name in allowed + denied:
+            frame = SimpleNamespace(f_globals={"__name__": module}, f_code=SimpleNamespace(co_qualname=name, co_name=name))
+            with self.subTest(module=module, name=name):
+                self.assertEqual(c.allowed_cli_call(module, name, "output", ""), (module, name) in allowed)
+                if (module, name) in allowed: namespace["guard"](frame, "call", None)
+                else:
+                    with self.assertRaisesRegex(AssertionError, "Forbidden Python authority"):
+                        namespace["guard"](frame, "call", None)
+        for module, name in allowed:
+            self.assertFalse(c.allowed_cli_call(module, name, "input", ""))
+            self.assertFalse(c.allowed_cli_call(module, name, "output", "unreviewed"))
+
+    def test_dispatch_audit_cannot_omit_calls_or_repin_changed_sources(self):
+        receipt, blobs = self.fixture_receipt()
+        row = next(row for row in receipt["checks"] if row["entrypoint"] == "module")
+        original = c.r.decode(c.f.restore(row["audit"], blobs))
+        for mutation in ("missing_module", "changed_pin", "repinned_source", "missing_root_module", "missing_dispatch", "missing_loader"):
+            audit, sources = deepcopy(original), dict(receipt["product_sources"])
+            if mutation == "missing_module": del audit["modules"]["biocompiler.entrypoint"]
+            elif mutation == "missing_root_module": del audit["modules"]["biocompiler"]
+            elif mutation in ("changed_pin", "repinned_source"):
+                audit["modules"]["biocompiler.entrypoint"]["sha256"] = "0" * 64
+                if mutation == "repinned_source": sources["src/biocompiler/entrypoint.py"] = "0" * 64
+            else:
+                removed = "biocompiler.entrypoint" if mutation == "missing_dispatch" else "biocompiler"
+                audit["functions"] = [entry for entry in audit["functions"] if entry[0] != removed]
+            with self.subTest(mutation=mutation), self.assertRaisesRegex(AssertionError, "witnessed"):
+                c.validate_audit(row, audit, blobs, sources, self.oracle)
 
     def write(self,path,value):
         path.parent.mkdir(parents=True,exist_ok=True)
@@ -76,14 +115,17 @@ class NativeSyntheticSelectionCliCampaignTests(unittest.TestCase):
             row.update(role="core",scope="native_synthetic_selection",argv=[old["argv"][0],"--core-executable",
                 "/installed/biocompiler-core","--core-sha256",native["sha256"]["biocompiler-core"],"--core-timeout","300",*old["argv"][1:]],
                 console_path="/installed/bin/biocompiler",python_executable="/installed/bin/python3",native_artifacts={})
-            frames = [["biocompiler.cli","main","output",""]]
+            frames = [[module,name,"output",""] for module,name in (("biocompiler.cli","main"),
+                ("biocompiler.entrypoint","main"),("biocompiler","_load_legacy_exports"))]
             if self.oracle.trace(old["id"]) is not None:
                 frames += [[module,name,"output",""] for module,name in (("biocompiler.cli","_selection_command"),
                     ("biocompiler.synthetic_producer_cli","selection_command"),("biocompiler.core_client","_exchange"),
                     ("biocompiler.core_synthetic_producer_public","SyntheticProducerPublicClient.select_document"))]
-            modules = {}
+            modules = {module:value for module,value in c.dispatch_sources().items()
+                       if module != "biocompiler.__main__"}
             for module,*_ in frames:
-                path = "src/"+module.replace(".","/")+".py"; modules[module] = {"path":path,"sha256":sources[path]}
+                path = "src/"+module.replace(".","/")+("/__init__.py" if module == "biocompiler" else ".py")
+                modules[module] = {"path":path,"sha256":sources[path]}
             audit = {"scope":row["scope"],"guard_active":True,"functions":sorted(frames),"modules":modules,
                 "package_path":"/installed/site-packages/biocompiler","exchanges":[],"receipts":{}}
             self.fixture_trace(row,audit,store,self.oracle.trace(old["id"]),"core")
@@ -228,7 +270,9 @@ class NativeSyntheticSelectionCliCampaignTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory,c.selection_paths(),c.f.owned_directories():
             root=Path(directory);site=root/"site";site.mkdir()
             shutil.copytree(c.ROOT/"src/biocompiler",site/"biocompiler",ignore=shutil.ignore_patterns("__pycache__"))
-            console=root/"biocompiler";console.write_text("#!"+sys.executable+"\n"+c.f.ENTRYPOINT);console.chmod(0o700)
+            console=root/"biocompiler"
+            console.write_text("#!"+sys.executable+"\nfrom biocompiler.entrypoint import main\nraise SystemExit(main())\n")
+            console.chmod(0o700)
             table={}
             for case in self.oracle.cases.values():
                 trace=self.oracle.trace(case["id"])

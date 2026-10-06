@@ -281,6 +281,37 @@ let reference_session_original root name expected current =
     "Reference session whole original source differs";
   restored
 
+let reference_policy_entrypoint_original root name expected current =
+  require(List.mem name ["src/biocompiler/__init__.py";"src/biocompiler/__main__.py"])
+    "Unreviewed reference policy entrypoint source substitution";
+  let witness=source_witness root "tests/conformance/policy-entrypoint-source-counterpart-v1.json"
+    "680d26bc0107115e80ed4c6b8e9bae52698acf619e3ae4872e86d7f7ac3404e8" in
+  Json.exact_fields ["schema_version";"base_revision";"scope";"sources";"entrypoint"]
+    (Json.object_fields witness);
+  require(text "schema_version" witness="biocompiler.policy_entrypoint_source_counterpart.v1" &&
+    text "base_revision" witness="d2f65c59aba3a4af97dbcabd59e8142961e12c4a" &&
+    text "scope" witness="Exact lazy legacy export identities and data-only policy dispatch; no semantic implementation change.")
+    "Reference policy entrypoint witness lost its exact authority";
+  let sources=field "sources" witness in
+  Json.exact_fields ["src/biocompiler/__init__.py";"src/biocompiler/__main__.py";"pyproject.toml"]
+    (Json.object_fields sources);
+  List.iter(fun (_,row)->
+    Json.exact_fields ["before_source";"before_sha256";"after_source";"after_sha256"]
+      (Json.object_fields row);
+    require(Canonical.sha256(text "before_source" row)=text "before_sha256" row &&
+      Canonical.sha256(text "after_source" row)=text "after_sha256" row)
+      "Reference policy entrypoint complete witness source differs") (Json.object_fields sources);
+  let entrypoint=field "entrypoint" witness in
+  Json.exact_fields ["path";"source";"sha256"] (Json.object_fields entrypoint);
+  require(text "path" entrypoint="src/biocompiler/entrypoint.py" &&
+    Canonical.sha256(text "source" entrypoint)=text "sha256" entrypoint)
+    "Reference policy dispatch witness source differs";
+  let row=field name sources in
+  require(expected=text "before_sha256" row && current=text "after_source" row &&
+    Canonical.sha256 current=text "after_sha256" row)
+    "Reference policy entrypoint complete source differs";
+  text "before_source" row
+
 let reference_original root name expected current =
   let restored=if name="src/biocompiler/core_pipeline_manager.py" then
     reference_manager_original root name expected current
@@ -288,12 +319,29 @@ let reference_original root name expected current =
       reference_callback_original root name expected current
     else if name="src/biocompiler/core_pipeline_session.py" then
       reference_session_original root name expected current
+    else if List.mem name ["src/biocompiler/__init__.py";"src/biocompiler/__main__.py"] then
+      reference_policy_entrypoint_original root name expected current
     else reference_routed_original root name expected current in
   let archived=read_raw ~maximum:1_000_000(Filename.concat root
     ("tests/conformance/reference-original-sources-v1/"^expected^".blob")) in
   require(Canonical.sha256 restored=expected && Canonical.sha256 archived=expected && restored=archived)
     "Reference finite witness does not restore the whole original module";
   restored
+
+let policy_entrypoint_source_controls root sources =
+  let rejected message action=match action () with
+    | _->failwith "Reference policy source mutation was accepted"
+    | exception Failure actual->require(actual=message) "Reference policy source rejection boundary differs" in
+  List.iter(fun name->
+    let current=read_raw ~maximum:1_000_000 (Filename.concat root name) in
+    let expected=Json.string(List.assoc name sources) in
+    rejected "Reference policy entrypoint complete source differs" (fun ()->
+      reference_policy_entrypoint_original root name expected (current^"\n# unreviewed\n"));
+    rejected "Reference policy entrypoint complete source differs" (fun ()->
+      reference_policy_entrypoint_original root name (String.make 64 '0') current))
+    ["src/biocompiler/__init__.py";"src/biocompiler/__main__.py"];
+  rejected "Unreviewed reference policy entrypoint source substitution" (fun ()->
+    reference_policy_entrypoint_original root "pyproject.toml" (String.make 64 '0') "")
 
 let read_document path =
   let raw = read_raw ~maximum:1_000_001 path in
@@ -484,6 +532,7 @@ let run path =
     let expected=hash(Json.string expected) in
     let original=if Canonical.sha256 raw=expected then raw else reference_original root name expected raw in
     require (Canonical.sha256 original = expected) ("Original reference source changed: " ^ name)) sources;
+  policy_entrypoint_source_controls root sources;
   let test_ids = array "test_ids" index |> List.map Json.string in
   require (List.length test_ids = method_count && List.length (List.sort_uniq String.compare test_ids) = method_count &&
     Canonical.fingerprint (field "test_ids" index) = test_ids_pin) "Incomplete original reference method census";

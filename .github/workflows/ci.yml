@@ -233,6 +233,27 @@ jobs:
         env:
           ARCHITECTURE_OUTPUT: ${{ github.workspace }}/generated/payload-architecture-ci
         run: python "$GITHUB_WORKSPACE/tools/check_payload_architecture_install.py" --output "$ARCHITECTURE_OUTPUT"
+      - name: Check installed policy authoring and its real console outside the checkout
+        working-directory: ${{ runner.temp }}
+        env:
+          PYTHONPATH: ""
+          PYTHONNOUSERSITE: "1"
+        run: |
+          mkdir -p "$GITHUB_WORKSPACE/generated/policy-install"
+          POLICY_INSTALLED_ROOT="$(python -c 'import sys; print(sys.prefix)')"
+          POLICY_SCRIPTS="$(python -c 'import sysconfig; print(sysconfig.get_path("scripts"))')"
+          python "$GITHUB_WORKSPACE/tools/check_policy_install.py" \
+            --installed-root "$POLICY_INSTALLED_ROOT" --scripts "$POLICY_SCRIPTS" \
+            > "$GITHUB_WORKSPACE/generated/policy-install/receipt.json"
+      - name: Retain installed policy authoring evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: policy-authoring-install-py${{ matrix.python-version }}
+          path: generated/policy-install/receipt.json
+          if-no-files-found: error
+          overwrite: true
+          retention-days: 7
       - name: Retain complete RNA architecture and paired export evidence
         if: always()
         uses: actions/upload-artifact@v4
@@ -916,12 +937,14 @@ jobs:
       - name: Install Python package and check compiler/checker dependency separation
         run: |
           python -m pip install .
+          python tools/generate_policy_wire_schema.py --check
           python tools/check_core_boundaries.py --output generated/core/boundaries.json
       - name: Strictly type-check the migrated Python transport boundary
         run: |
           python -m pip install --only-binary=:all: --platform any --require-hashes \
             --target generated/typecheck -r tools/typecheck-requirements.txt
           PYTHONPATH=generated/typecheck python -m mypy --config-file tools/mypy-core.ini | tee generated/core/python-types.txt
+          PYTHONPATH=generated/typecheck python -m mypy --config-file tools/mypy-policy.ini | tee generated/core/policy-types.txt
       - name: Compile native core and standalone verifier
         id: native_build
         run: |
@@ -1150,6 +1173,18 @@ jobs:
       - name: Restore exact source and platform bound compiled executables
         run: python tools/ci_native_bundle.py restore --path artifacts/native-bundle/native.zip
       - run: python -m pip install .
+      - name: Check installed expressive policy assessment and replay on selected Python runtime
+        env:
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/policy-core-${{ matrix.python-version }}"
+          cd "$RUNNER_TEMP/policy-core-${{ matrix.python-version }}"
+          python "$GITHUB_WORKSPACE/tools/check_policy_core.py" \
+            --core "$GITHUB_WORKSPACE/core/_build/default/bin/core/main.exe" \
+            --verify "$GITHUB_WORKSPACE/core/_build/default/bin/verify/main.exe" \
+            --fixture "$GITHUB_WORKSPACE/core/test/data/policy_documents_v01.json" \
+            --console "$(python -c 'import sysconfig; print(sysconfig.get_path("scripts") + "/biocompiler")')" \
+            --output "$GITHUB_WORKSPACE/generated/core/policy-core-${{ matrix.python-version }}.json"
       - name: Check installed public architecture SDK and CLI on selected Python runtime
         env:
           GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
@@ -1210,12 +1245,24 @@ jobs:
         env:
           GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
         run: python tools/check_architecture_routing_reproducibility.py --root artifacts/core --output generated/core-reproducibility/receipt.json
+      - name: Compare complete expressive policy source assessments and native identity
+        env:
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          python tools/check_policy_core.py \
+            --compare artifacts/core/linux-x86_64/policy-core-3.11.json \
+            --compare artifacts/core/linux-x86_64/policy-core-3.14.json \
+            --compare artifacts/core/macos-arm64/policy-core-3.11.json \
+            --compare artifacts/core/macos-arm64/policy-core-3.14.json \
+            --native-artifacts artifacts/core \
+            --fixture core/test/data/policy_documents_v01.json \
+            --output generated/core-reproducibility/policy-receipt.json
       - name: Retain complete comparison receipt
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: architecture-core-reproducibility
-          path: generated/core-reproducibility/receipt.json
+          path: generated/core-reproducibility/
           if-no-files-found: error
           overwrite: true
           retention-days: 7

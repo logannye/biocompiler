@@ -18,6 +18,14 @@ DECLARATION = '''(test (name test_a) (modules test_a) (libraries example))
 (test (name test_b) (modules test_b) (libraries example)
  (action (run %{test} %{env:BIOCOMPILER_FIXTURE=missing})))
 '''
+POLICY_DECLARATION = '''(test (name test_policy_check) (modules test_policy_check) (libraries example)
+ (action (run %{test} %{dep:data/policy_frontend_request.json}
+  %{dep:data/policy_frontend_submission.json} %{dep:data/policy_documents_v01.json})))
+(test (name test_policy_service) (modules test_policy_service) (libraries example)
+ (action (run %{test} %{dep:data/policy_documents_v01.json})))
+'''
+POLICY_FIXTURES = ["data/policy_frontend_request.json", "data/policy_frontend_submission.json",
+                   "data/policy_documents_v01.json"]
 
 
 class NativeBundleTests(unittest.TestCase):
@@ -42,11 +50,16 @@ class NativeBundleTests(unittest.TestCase):
 
     def test_actual_dune_suite_census_and_argument_order_are_preserved(self):
         plan = bundle.test_plan((ROOT/'core/test/dune').read_text())
-        self.assertEqual(len(plan),118)
+        self.assertEqual(len(plan),121)
         manager = next(row for row in plan if row['name']=='test_pipeline_callback_manager')
         self.assertEqual(manager['environment'], ['BIOCOMPILER_PIPELINE_CALLBACK_MANAGER_DECLARATION',
             'BIOCOMPILER_PIPELINE_CONTRACT_LITERALS','BIOCOMPILER_FIXED_PIPELINE_CORPUS'])
         self.assertEqual(bundle.test_plan(DECLARATION)[1]['environment'],['BIOCOMPILER_FIXTURE'])
+        policy = next(row for row in plan if row['name']=='test_policy_check')
+        self.assertEqual(policy, {'name':'test_policy_check', 'environment':[], 'dependencies':POLICY_FIXTURES})
+        for name in ('test_policy_document', 'test_policy_service'):
+            self.assertEqual(next(row for row in plan if row['name']==name),
+                             {'name':name, 'environment':[], 'dependencies':['data/policy_documents_v01.json']})
 
     def test_unhandled_dune_actions_or_fields_and_duplicate_tests_fail_closed(self):
         for text in (DECLARATION+DECLARATION, DECLARATION+'(rule (action (run other)))',
@@ -55,6 +68,107 @@ class NativeBundleTests(unittest.TestCase):
                      DECLARATION.replace('%{env:BIOCOMPILER_FIXTURE=missing}', 'unreviewed'),
                      DECLARATION.replace('(modules test_a)', '(modules test_b)')):
             with self.subTest(text=text),self.assertRaises(ValueError): bundle.test_plan(text)
+
+    def test_dependency_arguments_are_closed_ordered_and_never_paths_from_the_archive(self):
+        original = '%{dep:data/policy_frontend_request.json}'
+        for changed in ('%{dep:../data/policy_frontend_request.json}',
+                        '%{dep:/data/policy_frontend_request.json}',
+                        '%{dep:data/../../escaped.json}', '%{dep:data/unreviewed.json}',
+                        '%{env:BIOCOMPILER_FIXTURE=missing}', ''):
+            with self.subTest(changed=changed), self.assertRaisesRegex(ValueError, 'dependency fixture arguments'):
+                bundle.test_plan(POLICY_DECLARATION.replace(original, changed, 1))
+        swapped = POLICY_DECLARATION.replace('policy_frontend_request.json', 'temporary.json').replace(
+            'policy_frontend_submission.json', 'policy_frontend_request.json').replace('temporary.json', 'policy_frontend_submission.json')
+        with self.assertRaisesRegex(ValueError, 'dependency fixture arguments'):
+            bundle.test_plan(swapped)
+        with self.assertRaisesRegex(ValueError, 'Unsupported native test argument'):
+            bundle.test_plan(DECLARATION.replace('%{env:BIOCOMPILER_FIXTURE=missing}', original))
+
+    def policy_bundle(self):
+        (self.source/'core/test/dune').write_text(POLICY_DECLARATION)
+        for index, relative in enumerate(POLICY_FIXTURES):
+            path = self.source/'core/test'/relative
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(json.dumps({'original_fixture':index}))
+        for name in ('test_policy_check', 'test_policy_service'):
+            (self.source/'core/_build/default/test'/(name+'.exe')).write_bytes(b'INERT: mocked subprocess only')
+        archive = self.root/'policy.zip'
+        bundle.bundle(self.source, archive)
+        return archive
+
+    def policy_destination(self, name):
+        root = self.destination(name)
+        (root/'core/test/dune').write_text(POLICY_DECLARATION)
+        for relative in POLICY_FIXTURES:
+            path = root/'core/test'/relative
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_bytes((self.source/'core/test'/relative).read_bytes())
+        return root
+
+    def test_source_dependencies_are_bundled_pinned_restored_and_dispatched_in_exact_order(self):
+        archive = self.policy_bundle()
+        target = self.policy_destination('policy-roundtrip')
+        document = bundle.restore(target, archive)
+        for relative in POLICY_FIXTURES:
+            original = self.source/'core/test'/relative
+            member = 'core/_build/default/test/'+relative
+            self.assertEqual(document['files'][member], bundle.file_pin(original))
+            self.assertEqual((target/member).read_bytes(), original.read_bytes())
+            self.assertFalse(os.access(target/member, os.X_OK))
+        observed = []
+        def execute(command, **kwargs):
+            observed.append(command)
+            kwargs['stdout'].write(b'inert source fixture scheduling\n')
+            return subprocess.CompletedProcess(command, 0)
+        with patch.dict(os.environ, {}, clear=True), patch.object(bundle.subprocess, 'run', side_effect=execute):
+            bundle.run_tests(target, self.root/'policy-results', 2)
+        expected = {name: [str(target/'core/_build/default/test'/relative) for relative in relatives]
+                    for name, relatives in [('test_policy_check', POLICY_FIXTURES),
+                                            ('test_policy_service', ['data/policy_documents_v01.json'])]}
+        self.assertEqual({Path(argv[0]).stem:argv[1:] for argv in observed}, expected)
+
+    def test_changed_missing_symlinked_or_repinned_source_fixtures_cannot_restore(self):
+        archive = self.policy_bundle()
+        for mutation in ('missing', 'changed', 'symlink', 'parent-symlink', 'repinned-archive'):
+            target = self.policy_destination('policy-'+mutation)
+            path = target/'core/test/data/policy_frontend_request.json'
+            selected = archive
+            if mutation=='missing': path.unlink()
+            elif mutation=='changed': path.write_text('{"changed":true}')
+            elif mutation=='symlink':
+                path.unlink(); path.symlink_to(self.source/'core/test/data/policy_frontend_request.json')
+            elif mutation=='parent-symlink':
+                data = target/'core/test/data'
+                data.rename(target/'core/test/original-data'); data.symlink_to(target/'core/test/original-data', target_is_directory=True)
+            else:
+                with zipfile.ZipFile(archive) as source:
+                    entries = {name:source.read(name) for name in source.namelist()}
+                member = 'core/_build/default/test/data/policy_frontend_request.json'
+                entries[member] = b'{"changed":true}'
+                document = json.loads(entries['manifest.json'])
+                document['files'][member] = {'sha256':hashlib.sha256(entries[member]).hexdigest(), 'size':len(entries[member])}
+                entries['manifest.json'] = json.dumps(document).encode()
+                selected = self.root/'repinned-policy.zip'
+                with zipfile.ZipFile(selected, 'w') as damaged:
+                    for name, raw in entries.items(): damaged.writestr(name, raw)
+            with self.subTest(mutation=mutation), self.assertRaisesRegex(ValueError, 'native dependency fixture|Native dependency fixture'):
+                bundle.restore(target, selected)
+            self.assertFalse((target/'core/_build').exists())
+
+    def test_dependency_change_after_restore_prevents_every_test_dispatch(self):
+        archive = self.policy_bundle()
+        for mutation in ('original', 'restored', 'restored-symlink'):
+            target = self.policy_destination('late-'+mutation)
+            bundle.restore(target, archive)
+            relative = ('core/test' if mutation=='original' else 'core/_build/default/test')+'/data/policy_documents_v01.json'
+            path = target/relative
+            if mutation=='restored-symlink':
+                path.unlink(); path.symlink_to(target/'core/test/data/policy_documents_v01.json')
+            else: path.write_text('{"changed":true}')
+            with self.subTest(mutation=mutation), patch.object(bundle.subprocess, 'run') as child:
+                with self.assertRaisesRegex(ValueError, 'native dependency fixture|Native dependency fixture'):
+                    bundle.run_tests(target, target/'results', 2)
+                child.assert_not_called()
 
     def test_complete_bundle_restores_exact_bytes_and_executable_modes(self):
         target=self.destination()

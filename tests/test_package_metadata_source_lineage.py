@@ -1,4 +1,4 @@
-"""Only the two explicit packaging edits can explain original CLI metadata."""
+"""Only pinned packaging and dispatch edits can explain original CLI metadata."""
 from copy import deepcopy
 import json
 from pathlib import Path
@@ -24,14 +24,36 @@ class PackageMetadataSourceLineageTests(unittest.TestCase):
                          {"core": ["biocompiler-core==0.1.0.dev29"]})
         self.assertEqual(current["tool"]["setuptools"]["package-data"]["biocompiler"].pop(0),
                          "_core_release.json")
+        self.assertEqual(current["project"]["scripts"]["biocompiler"], "biocompiler.entrypoint:main")
+        current["project"]["scripts"]["biocompiler"] = "biocompiler.cli:main"
         self.assertEqual(current, old)
+        from tools import policy_entrypoint_source_lineage as policy
+        self.assertEqual(proof["schema_version"], "biocompiler.package_metadata_source_counterpart.v2")
+        self.assertEqual(proof["packaging_source_sha256"], metadata.CURRENT_SHA256)
+        self.assertEqual(proof["policy_entrypoint_counterpart"]["witness_sha256"], policy.WITNESS_SHA256)
+        self.assertEqual(proof["current_sha256"], metadata.sha((metadata.ROOT / metadata.PATH).read_bytes()))
 
     def test_stale_changed_or_missing_current_source_is_rejected(self):
         old, proof = metadata.counterpart()
         for raw in (old, proof["current_source"].encode() + b"\n",
-                    proof["current_source"].replace("biocompiler.cli:main", "elsewhere:main").encode()):
+                    proof["current_source"].replace("biocompiler.entrypoint:main", "elsewhere:main").encode()):
             with self.subTest(sha256=metadata.sha(raw)), self.assertRaises(ValueError):
                 metadata.counterpart(current=raw)
+
+    def test_each_uncomposed_revision_and_changed_policy_witness_is_rejected(self):
+        from tools import policy_entrypoint_source_lineage as policy
+        packaged = json.loads((metadata.ROOT / metadata.WITNESS).read_bytes())["current_source"].encode()
+        dispatched = policy.witness()["sources"][metadata.PATH]["after_source"].encode()
+        for raw in (packaged, dispatched):
+            with self.subTest(sha256=metadata.sha(raw)), self.assertRaisesRegex(ValueError, "exact whole-source counterpart"):
+                metadata.counterpart(current=raw)
+        read = Path.read_bytes
+        witness_path = metadata.ROOT / policy.WITNESS
+        def changed(path):
+            raw = read(path)
+            return raw + b' ' if path == witness_path else raw
+        with patch.object(Path, 'read_bytes', changed), self.assertRaisesRegex(ValueError, "Policy entrypoint witness bytes changed"):
+            metadata.counterpart()
 
     def test_changed_witness_bytes_are_rejected(self):
         with tempfile.TemporaryDirectory() as directory:

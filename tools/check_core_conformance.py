@@ -36,6 +36,7 @@ from biocompiler.core_artifacts import (TRANSPORT_PROFILE as ARTIFACT_PROFILE,
 from biocompiler.core_workflow import (capability_profile as workflow_profile,
     presentation_capability_profile as workflow_presentation_profile, OPERATIONS as WORKFLOW_OPERATIONS)
 from biocompiler.core_workflow_authority import capability_profile as workflow_authority_profile, OPERATION as AUTHORITY_OPERATION
+from biocompiler.core_policy import PROFILE as POLICY_PROFILE, VALIDATION_SCOPE as POLICY_SCOPE
 from biocompiler.ir.intent import IntentProgram
 from biocompiler.compiler.request import BuildRequest
 from biocompiler.ir.behavior import BehaviorProgram
@@ -491,10 +492,10 @@ def run_campaign(clients, corpus, receipt, programs):
         capabilities = client.capabilities().result
         require(type(capabilities) is dict, "Missing capabilities")
         operations = ["canonicalize", "capabilities", "replay-architecture", "validate-intent", "verify-architecture", "verify-lowering"]
-        operations += list(REALIZATION_OPERATIONS) + list(WORKFLOW_OPERATIONS) + [AUTHORITY_OPERATION]
+        operations += ["assess-policy", "replay-policy-assessment"] + list(REALIZATION_OPERATIONS) + list(WORKFLOW_OPERATIONS) + [AUTHORITY_OPERATION]
         workflow = workflow_profile()
-        scopes = [SCOPE, LOWERING_SCOPE, ARCHITECTURE_SCOPE] + list(REALIZATION_SCOPES) + [workflow["validation_scope"], workflow_authority_profile()["validation_scope"]]
-        profiles = {"architecture": ARCHITECTURE_PROFILE, **REALIZATION_PROFILES,
+        scopes = [SCOPE, LOWERING_SCOPE, ARCHITECTURE_SCOPE, POLICY_SCOPE] + list(REALIZATION_SCOPES) + [workflow["validation_scope"], workflow_authority_profile()["validation_scope"]]
+        profiles = {"architecture": ARCHITECTURE_PROFILE, "policy_frontend": POLICY_PROFILE, **REALIZATION_PROFILES,
                     "artifact_transport": ARTIFACT_PROFILE, "verification_workflow": workflow,
                     "verification_workflow_presentation": workflow_presentation_profile(),
                     "artifact_transport_authority": AUTHORITY_ARTIFACT_PROFILE,

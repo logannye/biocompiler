@@ -89,7 +89,7 @@ class ReferenceViewSourceLineageTests(unittest.TestCase):
     def test_new_witness_is_in_complete_data_and_source_closure_without_execution(self):
         index = original.authority()
         data = original.data_closure(index)
-        self.assertEqual(len(data), 4013)
+        self.assertEqual(len(data), 4014)
         self.assertEqual([row for row in data if row['logical'] == original.CORE_VIEW_UPDATE],
             [{'logical': original.CORE_VIEW_UPDATE, 'sha256': original.CORE_VIEW_UPDATE_SHA,
               'bytes': len(self.encoded)}])
@@ -99,8 +99,65 @@ class ReferenceViewSourceLineageTests(unittest.TestCase):
         self.assertEqual(current, self.current)
         self.assertEqual(copied, (original.ROOT / original.CORE_BLOB).read_bytes())
 
+    def test_policy_dispatch_restores_exact_originals_without_adding_product_sources(self):
+        from tools import policy_entrypoint_source_lineage as policy
+        index = original.authority()
+        sources, _ = original.source_closure(index, original.ROOT / 'src/biocompiler')
+        self.assertEqual(len(sources), 207)
+        self.assertNotIn(policy.ENTRYPOINT, sources)
+        witness = policy.witness()
+        for logical in original.POLICY_ROUTES:
+            _, current, copied = sources[logical]
+            self.assertEqual(current, witness['sources'][logical]['after_source'].encode())
+            self.assertEqual(copied, witness['sources'][logical]['before_source'].encode())
+            self.assertEqual(original.sha(copied), index['source_files'][logical])
+            changed = deepcopy(index)
+            changed['source_files'][logical] = original.sha(current)
+            with self.assertRaisesRegex(AssertionError, 'Frozen reference policy source authority changed'):
+                original.source_closure(changed, original.ROOT / 'src/biocompiler')
+            with self.assertRaisesRegex(AssertionError, 'Captured reference policy source bytes changed'):
+                original.policy_source_witness(logical, current + b'\n# unreviewed\n')
+        data = original.data_closure(index)
+        self.assertEqual([row for row in data if row['logical'] == policy.WITNESS],
+            [{'logical': policy.WITNESS, 'sha256': policy.WITNESS_SHA256,
+              'bytes': len((original.ROOT / policy.WITNESS).read_bytes())}])
+
+    def test_policy_dispatch_requires_unchanged_pinned_witness(self):
+        from tools import policy_entrypoint_source_lineage as policy
+        logical = original.POLICY_ROUTES[0]
+        current = (original.ROOT / logical).read_bytes()
+        witness_path = original.ROOT / original.POLICY_WITNESS
+        read = Path.read_bytes
+        def changed(path):
+            raw = read(path)
+            return raw + b' ' if path == witness_path else raw
+        with patch.object(Path, 'read_bytes', changed):
+            with self.assertRaisesRegex(AssertionError, 'Captured reference policy source bytes changed'):
+                original.policy_source_witness(logical, current)
+            with self.assertRaisesRegex(AssertionError, 'counterpart data changed'):
+                original.data_closure(original.authority())
+        with patch.object(policy, 'WITNESS_SHA256', '0' * 64):
+            with self.assertRaisesRegex(AssertionError, 'counterpart inventory differs'):
+                original.policy_source_witness(logical, current)
+
     def test_native_source_gate_retains_entire_old_body_and_same_finite_authority(self):
         source = (original.ROOT / 'core/test/test_reference_contracts_corpus.ml').read_text()
+        for start_marker, end_marker, pin in (
+                ('let reference_policy_entrypoint_original ', 'let reference_original root ',
+                 '25ca0c2d86c83fb496ebfb42cbdebf301d382536e83aea16a9550de437ba8c35'),
+                ('let policy_entrypoint_source_controls ', 'let read_document path ',
+                 '25db3d271d41100a3bfa23fdebaf9e38998bde3ded71b3098658bb29f41e1ae0')):
+            self.assertEqual(source.count(start_marker), 1)
+            self.assertEqual(source.count(end_marker), 1)
+            start, end = source.index(start_marker), source.index(end_marker)
+            self.assertEqual(original.sha(source[start:end].encode()), pin)
+            source = source[:start] + source[end:]
+        policy_branch = ('    else if List.mem name ["src/biocompiler/__init__.py";"src/biocompiler/__main__.py"] then\n'
+                         '      reference_policy_entrypoint_original root name expected current\n')
+        policy_call = '  policy_entrypoint_source_controls root sources;\n'
+        for added in (policy_branch, policy_call):
+            self.assertEqual(source.count(added), 1)
+            source = source.replace(added, '', 1)
         session_start = source.index('let reference_session_original ')
         session_end = source.index('let reference_original root ')
         source = (source[:session_start] + source[session_end:]).replace(

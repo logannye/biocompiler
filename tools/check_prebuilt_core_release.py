@@ -216,7 +216,7 @@ def validate_sdk(entries, *, source_files, release):
     requirements = metadata.get_all('Requires-Dist') or []
     require(len(requirements) == 1 and re.fullmatch(r'biocompiler-core\s*==\s*'+re.escape(build.VERSION)+r'\s*;\s*extra\s*==\s*[\"\']core[\"\']',requirements[0]),
         'SDK does not pin the exact optional native release')
-    require(entries[info+'entry_points.txt'][0] == b'[console_scripts]\nbiocompiler = biocompiler.cli:main\n', 'SDK CLI entry point differs')
+    require(entries[info+'entry_points.txt'][0] == b'[console_scripts]\nbiocompiler = biocompiler.entrypoint:main\n', 'SDK CLI entry point differs')
     wheel = entries[info+'WHEEL'][0].decode()
     require('Root-Is-Purelib: true' in wheel.splitlines() and [line for line in wheel.splitlines() if line.startswith('Tag:')] == ['Tag: py3-none-any'], 'SDK wheel is not pure')
     require(all(mode == 0o644 for _,mode in entries.values()), 'SDK contains executable members')

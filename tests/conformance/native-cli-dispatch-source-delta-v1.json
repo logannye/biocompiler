@@ -1,0 +1,137 @@
+{
+  "base_revision": "573cfdf6504572cfc0fdd045bbd018c9e4d85320",
+  "files": {
+    "tools/check_native_synthetic_selection_cli.py": {
+      "current": {
+        "bytes": 43515,
+        "sha256": "c266fde77e8d528324c8cf98b48b54f7ab16986fa7afd48fb3d6ac94cd6b2684"
+      },
+      "historical": {
+        "bytes": 41635,
+        "sha256": "9822725b704fcab547a3afed967a4a31f27cce1ab8de4567ed8eed7f3546f230"
+      },
+      "spans": [
+        {
+          "after": "    from . import policy_entrypoint_source_lineage as dispatch\n",
+          "before": "",
+          "offset": 1234
+        },
+        {
+          "after": "    import policy_entrypoint_source_lineage as dispatch\n",
+          "before": "",
+          "offset": 1477
+        },
+        {
+          "after": "    \"core/lib/producer_service/synthetic_producer_public_service.ml\",\n    \"tools/policy_entrypoint_source_lineage.py\", dispatch.WITNESS)\n",
+          "before": "    \"core/lib/producer_service/synthetic_producer_public_service.ml\")\n",
+          "offset": 2806
+        },
+        {
+          "after": "    if (module, name) in {(\"biocompiler.entrypoint\", \"main\"), (\"biocompiler\", \"_load_legacy_exports\")}:\n        return True\n",
+          "before": "",
+          "offset": 3617
+        },
+        {
+          "after": "import biocompiler\nroot = pathlib.Path(biocompiler.__file__).resolve().parent\nassert not root.is_relative_to(pathlib.Path(config[\"checkout\"]))\nfor item in policy.dispatch_sources().values():\n    path = root / item[\"path\"].removeprefix(\"src/biocompiler/\")\n    assert path.is_file() and not path.is_symlink() and hashlib.sha256(path.read_bytes()).hexdigest() == item[\"sha256\"]\n# Preserve the original eager legacy-import boundary before profiling; the\n# exact dispatcher and its no-op export-loader invocation remain observed.\nbiocompiler._load_legacy_exports()\nimport biocompiler.entrypoint\nimport biocompiler.cli as cli\n",
+          "before": "import biocompiler, biocompiler.cli as cli\n",
+          "offset": 9028
+        },
+        {
+          "after": "",
+          "before": "root = pathlib.Path(biocompiler.__file__).resolve().parent\nassert not root.is_relative_to(pathlib.Path(config[\"checkout\"]))\n",
+          "offset": 9220
+        },
+        {
+          "after": "    dispatch_sources()\n",
+          "before": "",
+          "offset": 12781
+        },
+        {
+          "after": "\n\ndef dispatch_sources():\n    witness = dispatch.witness(ROOT)\n    entrypoint = dispatch.verify_entrypoint(ROOT)\n    result = {\"biocompiler.entrypoint\": {\"path\": dispatch.ENTRYPOINT, \"sha256\": entrypoint[\"sha256\"]}}\n    for module, path in ((\"biocompiler\", \"src/biocompiler/__init__.py\"),\n                         (\"biocompiler.__main__\", \"src/biocompiler/__main__.py\")):\n        require((ROOT / path).is_file() and not (ROOT / path).is_symlink(), \"Unsafe witnessed dispatch source\")\n        dispatch.restore(path, root=ROOT)\n        result[module] = {\"path\": path, \"sha256\": witness[\"sources\"][path][\"after_sha256\"]}\n    return result\n",
+          "before": "",
+          "offset": 12927
+        },
+        {
+          "after": "    for module, expected in dispatch_sources().items():\n        if module != \"biocompiler.__main__\":\n            require(audit[\"modules\"].get(module) == expected, \"Missing or changed witnessed policy dispatch source\")\n",
+          "before": "",
+          "offset": 24975
+        },
+        {
+          "after": "    require(all([module, name, \"output\", \"\"] in frames for module, name in (\n        (\"biocompiler.entrypoint\", \"main\"), (\"biocompiler\", \"_load_legacy_exports\"))),\n        \"Actual witnessed dispatcher or legacy export-loader call missing\")\n",
+          "before": "",
+          "offset": 25974
+        }
+      ]
+    },
+    "tools/check_native_workflow_cli.py": {
+      "current": {
+        "bytes": 43817,
+        "sha256": "4902fa8164c207691ee340d0124252bb9ba2c2d588b178219e2e8b3967da7c0f"
+      },
+      "historical": {
+        "bytes": 41628,
+        "sha256": "e902e5faf7fcd8c76ff34825a065a5961c79cc3b5b2e427467090d5d5cef3890"
+      },
+      "spans": [
+        {
+          "after": "    from . import policy_entrypoint_source_lineage as dispatch\n",
+          "before": "",
+          "offset": 1129
+        },
+        {
+          "after": "    import policy_entrypoint_source_lineage as dispatch\n",
+          "before": "",
+          "offset": 1319
+        },
+        {
+          "after": "           \"tools/cli_runtime_counterparts.py\", \"tests/conformance/workflow-cli-runtime-counterparts-v1.json\",\n           \"tools/policy_entrypoint_source_lineage.py\", dispatch.WITNESS)\n",
+          "before": "           \"tools/cli_runtime_counterparts.py\", \"tests/conformance/workflow-cli-runtime-counterparts-v1.json\")\n",
+          "offset": 1871
+        },
+        {
+          "after": "import check_native_workflow_cli as campaign\nimport biocompiler\nroot = pathlib.Path(biocompiler.__file__).resolve().parent\nassert not root.is_relative_to(pathlib.Path(config[\"checkout\"]))\nfor item in campaign.dispatch_sources().values():\n    path = root / item[\"path\"].removeprefix(\"src/biocompiler/\")\n    assert path.is_file() and not path.is_symlink() and hashlib.sha256(path.read_bytes()).hexdigest() == item[\"sha256\"]\n# The original package eagerly imported these exact legacy exports before the\n# guard started. Restore that initialization boundary, then observe the real\n# dispatcher and its already-loaded export-loader call under the guard.\nbiocompiler._load_legacy_exports()\nimport biocompiler.entrypoint\nimport biocompiler.cli as cli\n",
+          "before": "import biocompiler, biocompiler.cli as cli\n",
+          "offset": 2622
+        },
+        {
+          "after": "",
+          "before": "root = pathlib.Path(biocompiler.__file__).resolve().parent\nassert not root.is_relative_to(pathlib.Path(config[\"checkout\"]))\n",
+          "offset": 2787
+        },
+        {
+          "after": "            or entry[3] == \"\" and (module, code.co_qualname) in {\n                (\"biocompiler.entrypoint\", \"main\"), (\"biocompiler\", \"_load_legacy_exports\")}\n",
+          "before": "",
+          "offset": 4806
+        },
+        {
+          "after": "    dispatch_sources()\n",
+          "before": "",
+          "offset": 8338
+        },
+        {
+          "after": "\n\ndef dispatch_sources():\n    witness = dispatch.witness(ROOT)\n    entrypoint = dispatch.verify_entrypoint(ROOT)\n    result = {\"biocompiler.entrypoint\": {\"path\": dispatch.ENTRYPOINT, \"sha256\": entrypoint[\"sha256\"]}}\n    for module, path in ((\"biocompiler\", \"src/biocompiler/__init__.py\"),\n                         (\"biocompiler.__main__\", \"src/biocompiler/__main__.py\")):\n        require((ROOT / path).is_file() and not (ROOT / path).is_symlink(), \"Unsafe witnessed dispatch source\")\n        dispatch.restore(path, root=ROOT)\n        result[module] = {\"path\": path, \"sha256\": witness[\"sources\"][path][\"after_sha256\"]}\n    return result\n",
+          "before": "",
+          "offset": 8484
+        },
+        {
+          "after": "    if (module, name) in {(\"biocompiler.entrypoint\", \"main\"), (\"biocompiler\", \"_load_legacy_exports\")}:\n        return owner == \"\"\n",
+          "before": "",
+          "offset": 15901
+        },
+        {
+          "after": "    for module, expected in dispatch_sources().items():\n        if module != \"biocompiler.__main__\":\n            require(audit[\"modules\"].get(module) == expected, \"Missing or changed witnessed policy dispatch source\")\n",
+          "before": "",
+          "offset": 21907
+        },
+        {
+          "after": "        require(all([module, name, \"output\", \"\"] in frames for module, name in (\n            (\"biocompiler.entrypoint\", \"main\"), (\"biocompiler\", \"_load_legacy_exports\"))),\n            \"Actual witnessed dispatcher or legacy export-loader call missing\")\n",
+          "before": "",
+          "offset": 23151
+        }
+      ]
+    }
+  },
+  "policy_witness_sha256": "680d26bc0107115e80ed4c6b8e9bae52698acf619e3ae4872e86d7f7ac3404e8",
+  "schema": "biocompiler.native_cli_dispatch_source_delta.v1",
+  "scope": "Exact witnessed policy dispatcher and legacy export-loader guard/source binding only; all original case execution, observations and native checks retained"
+}

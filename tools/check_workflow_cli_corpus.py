@@ -22,6 +22,7 @@ from tools import synthetic_producer_source_lineage as producers
 from tools import manager_registration_source_lineage as managers
 from tools import cli_runtime_counterparts as runtime
 from tools import package_metadata_source_lineage as packaging
+from tools import policy_entrypoint_source_lineage as policy_entrypoint
 from tools.realization_source_lineage import verify_captured_source, REFERENCE_ROUTES
 
 if __package__:
@@ -86,12 +87,14 @@ def load_baseline():
         path = ROOT / name
         raw = frozen.restore(reference, blobs)
         require(path.is_file() and not path.is_symlink(), "Archived CLI source bytes changed: " + name)
-        if name in routes.HISTORICAL or name in producers.HISTORICAL or name in managers.HISTORICAL or name in REFERENCE_ROUTES:
+        if name in routes.HISTORICAL or name in producers.HISTORICAL or name in managers.HISTORICAL or name in REFERENCE_ROUTES or name in policy_entrypoint.ROUTES:
             if name in routes.HISTORICAL:
                 entry = routes.load_witness()[name]
                 require(raw == entry["historical_source"].encode(), "Archived CLI source bytes changed: " + name)
             elif name in managers.HISTORICAL:
                 require(raw == managers.original_source(), "Archived CLI source bytes changed: " + name)
+            elif name in policy_entrypoint.ROUTES:
+                require(raw == policy_entrypoint.restore(name)[0], "Archived CLI policy route bytes changed: " + name)
             elif name in REFERENCE_ROUTES:
                 from tools.reference_original_counterpart import route_source_witness
                 require(raw == route_source_witness(name)[0], "Archived CLI reference route bytes changed: " + name)
@@ -139,7 +142,7 @@ def _project(actual, baseline):
         require(path.is_file() and not path.is_symlink() and frozen.sha(path.read_bytes()) == current[name],
                 "Historical CLI filesystem bytes changed: " + name)
         if current[name] != pin:
-            require(name in routes.HISTORICAL or name in producers.HISTORICAL or name in managers.HISTORICAL or name in REFERENCE_ROUTES, "Unreviewed historical CLI source change")
+            require(name in routes.HISTORICAL or name in producers.HISTORICAL or name in managers.HISTORICAL or name in REFERENCE_ROUTES or name in policy_entrypoint.ROUTES, "Unreviewed historical CLI source change")
             try:
                 reviewed_routes.append(verify_captured_source(ROOT, {"path": name, "sha256": pin}))
             except ValueError as error:
@@ -151,18 +154,38 @@ def _project(actual, baseline):
     require(set(current) - set(historical) == set(additions) and all(current[name] == pin for name, pin in additions.items()),
             "Current CLI excluded source inventory differs")
     require(set(FROZEN_ADDITIONS) <= set(additions) and actual_scope["denied_modules"] ==
-            [name[4:-3].replace("/", ".") for name in sorted(additions)], "Current CLI excluded imports are incomplete")
+            [source.addition_module(name) for name in sorted(additions) if name != policy_entrypoint.ENTRYPOINT], "Current CLI excluded imports are incomplete")
+    from tools import workflow_cli_policy_capture as dispatch
+    dispatch_proof = dispatch.verify_sources()
+    entrypoint = policy_entrypoint.verify_entrypoint()
+    shim = dispatch.ENTRYPOINT.encode()
+    expected_environment = deepcopy(baseline["capture_environment"])
+    expected_environment.update(
+        declared_console_entrypoint="biocompiler.entrypoint:main",
+        entrypoint_source={"kind": "blob", "bytes": len(shim), "sha256": frozen.sha(shim)})
+    require(actual["capture_environment"] == expected_environment,
+            "Actual CLI dispatch environment differs from its exact counterpart")
+    require(len(actual["cases"]) == len(baseline["cases"]), "Actual CLI child census differs")
     projected = deepcopy(actual)
-    for row, projected_row in zip(actual["cases"], projected["cases"]):
+    for row, projected_row, old in zip(actual["cases"], projected["cases"], baseline["cases"]):
         audit = row["import_audit"]
         require(audit["guard_active"] is True and audit["denied_absent"] is True and
                 "biocompiler.cli" in audit["modules"] and
                 not (set(actual_scope["denied_modules"]) & set(audit["modules"])), "Actual CLI child imported excluded source")
+        require(row["id"] == old["id"] and set(audit["modules"]) ==
+                set(old["import_audit"]["modules"]) | {"biocompiler.entrypoint"},
+                "Actual CLI child import census differs from exact dispatch counterpart")
+        require(audit["modules"]["biocompiler.entrypoint"] ==
+                {"path": policy_entrypoint.ENTRYPOINT, "sha256": entrypoint["sha256"]},
+                "Actual CLI child dispatch source differs")
         for module, item in audit["modules"].items():
             require(module == "biocompiler" or module.startswith("biocompiler."), "Unrecognized CLI import audit module")
+            if module == "biocompiler.entrypoint":
+                del projected_row["import_audit"]["modules"][module]
+                continue
             require(item["path"] in historical and item["sha256"] == current[item["path"]],
                     "Actual CLI child import source is not historical or exactly witnessed")
-            if item["path"] in routes.HISTORICAL or item["path"] in producers.HISTORICAL or item["path"] in managers.HISTORICAL or item["path"] in REFERENCE_ROUTES:
+            if item["path"] in routes.HISTORICAL or item["path"] in producers.HISTORICAL or item["path"] in managers.HISTORICAL or item["path"] in REFERENCE_ROUTES or item["path"] in policy_entrypoint.ROUTES:
                 projected_row["import_audit"]["modules"][module]["sha256"] = historical[item["path"]]
     require(set(actual["retained_source_bytes"]) == set(baseline["retained_source_bytes"]),
             "Actual retained CLI source inventory differs")
@@ -172,16 +195,17 @@ def _project(actual, baseline):
         raw = (ROOT / name).read_bytes()
         require(reference == {"kind": "blob", "bytes": len(raw), "sha256": frozen.sha(raw)},
                 "Actual retained CLI source byte identity differs: " + name)
-        if name in routes.HISTORICAL or name in managers.HISTORICAL or name in REFERENCE_ROUTES:
+        if name in routes.HISTORICAL or name in managers.HISTORICAL or name in REFERENCE_ROUTES or name in policy_entrypoint.ROUTES:
             retained_actual[name] = raw.decode("utf-8")
             projected["retained_source_bytes"][name] = deepcopy(baseline["retained_source_bytes"][name])
         elif name == packaging.PATH:
             _, packaging_counterpart = packaging.counterpart(ROOT, current=raw)
             projected["retained_source_bytes"][name] = deepcopy(baseline["retained_source_bytes"][name])
+    projected["capture_environment"] = deepcopy(baseline["capture_environment"])
     projected["source_scope"] = deepcopy(baseline["source_scope"])
     projected["inventory_fingerprint"] = digest({key: value for key, value in projected.items() if key != "inventory_fingerprint"})
     evidence = {
-        "schema_version": "biocompiler.workflow_cli_source_lineage.v3",
+        "schema_version": "biocompiler.workflow_cli_source_lineage.v4",
         "status": "source_lineage_verified", "native_execution": False,
         "baseline_inventory_fingerprint": CORPUS_PIN, "baseline_source_scope_fingerprint": SCOPE_PIN,
         "actual_inventory_fingerprint": actual["inventory_fingerprint"],
@@ -190,11 +214,12 @@ def _project(actual, baseline):
         "actual_capture": deepcopy(actual),
         "actual_retained_route_sources": retained_actual,
         "packaging_metadata_counterpart": packaging_counterpart,
+        "policy_dispatch_counterpart": dispatch_proof,
         "reviewed_routes": reviewed_routes,
         "source_changes": [{"path": name, "previous_sha256": before.get(name),
                             "current_sha256": current.get(name)}
                            for name in sorted(set(before) | set(current)) if before.get(name) != current.get(name)],
-        "projection": "exact_witnessed_source_scope_import_hashes_retained_source_references_and_two_packaging_metadata_edits_only_then_recompute_inventory_fingerprint",
+        "projection": "exact_witnessed_source_scope_import_hashes_retained_source_references_composed_package_metadata_and_policy_dispatch_only_then_recompute_inventory_fingerprint",
     }
     return projected, evidence
 
@@ -208,7 +233,14 @@ def verify_recapture(actual, blobs, *, python_version=None):
     baseline, old_blobs = load_baseline()
     projected, evidence = _project(actual, baseline)
     projected_blobs = dict(blobs)
-    retained_routes = set(routes.HISTORICAL) | ((set(managers.HISTORICAL) | REFERENCE_ROUTES | {packaging.PATH}) & set(actual["retained_source_bytes"]))
+    from tools import workflow_cli_policy_capture as dispatch
+    current_shim = actual["capture_environment"]["entrypoint_source"]
+    old_shim = baseline["capture_environment"]["entrypoint_source"]
+    require(frozen.restore(current_shim, blobs) == dispatch.ENTRYPOINT.encode(),
+            "Actual CLI dispatch shim content differs")
+    del projected_blobs[current_shim["sha256"]]
+    projected_blobs[old_shim["sha256"]] = old_blobs[old_shim["sha256"]]
+    retained_routes = set(routes.HISTORICAL) | ((set(managers.HISTORICAL) | REFERENCE_ROUTES | policy_entrypoint.ROUTES | {packaging.PATH}) & set(actual["retained_source_bytes"]))
     for name in sorted(retained_routes):
         current_ref = actual["retained_source_bytes"][name]
         old_ref = baseline["retained_source_bytes"][name]
@@ -250,7 +282,7 @@ def verify_recapture(actual, blobs, *, python_version=None):
     projected["inventory_fingerprint"] = digest({key: value for key, value in projected.items()
                                                   if key != "inventory_fingerprint"})
     evidence.update(projected_inventory_fingerprint=projected["inventory_fingerprint"],
-        projection="exact_witnessed_source_metadata_two_packaging_metadata_edits_and_explicit_pinned_argparse_runtime_counterpart_only_then_recompute_inventory_fingerprint",
+        projection="exact_witnessed_source_metadata_composed_package_and_policy_dispatch_and_explicit_pinned_argparse_runtime_counterpart_only_then_recompute_inventory_fingerprint",
         runtime_counterpart={"declaration_sha256": counterparts.pin, "python_minor": minor,
                              "validated_cases": sorted(counterparts.cases), "changes": counterpart_evidence})
     require(projected_blobs == old_blobs, "Complete actual CLI content differs from immutable baseline")
@@ -266,7 +298,8 @@ def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", required=True, type=Path)
     args = parser.parse_args(argv)
-    actual, blobs = frozen.capture()
+    from tools.workflow_cli_policy_capture import capture
+    actual, blobs = capture()
     receipt = verify_recapture(actual, blobs)
     receipt["runtime"] = {"python": sys.version, "platform": sys.platform, "executable": sys.executable,
                           "revision": os.environ.get("GITHUB_SHA")}

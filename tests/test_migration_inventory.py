@@ -80,6 +80,10 @@ def main(argv=None):
         for action in captured[0]._actions:
             if isinstance(action, argparse._SubParsersAction):
                 parsers.update(action.choices)
+        from biocompiler.policy.cli import _parser
+        for action in _parser()._actions:
+            if isinstance(action, argparse._SubParsersAction):
+                parsers.update({"policy " + name: parser for name, parser in action.choices.items()})
         actual = {entry["value"]: entry for entry in self.actual["entries"] if entry["category"] == "cli_command"}
         self.assertEqual(set(parsers), set(actual))
         for name, parser in parsers.items():

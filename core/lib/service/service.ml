@@ -2,13 +2,13 @@ open Bioc_wire
 
 let capabilities = Json.Object [
     "schema_version", Json.String "biocompiler.core_capabilities.v1";
-    "operations", Json.Array (List.map (fun value -> Json.String value) (["capabilities"; "canonicalize"; "validate-intent"; "verify-lowering"; "verify-architecture"; "replay-architecture"] @ Realization_service.operations @ Verification_workflow_service.operations @ Verification_workflow_authority.operations));
+    "operations", Json.Array (List.map (fun value -> Json.String value) (["capabilities"; "canonicalize"; "validate-intent"; "verify-lowering"; "verify-architecture"; "replay-architecture"] @ Policy_service.operations @ Realization_service.operations @ Verification_workflow_service.operations @ Verification_workflow_authority.operations));
     "intent_schemas", Json.Array [Json.String Bioc_domain.Intent.schema_version];
     "canonicalization", Json.String "python-json-v1";
     "validation_scopes", Json.Array (List.map (fun value -> Json.String value)
       ([Bioc_domain.Intent.validation_scope; Bioc_checker.Lowering_check.validation_scope;
-        Architecture_service.validation_scope] @ Realization_service.validation_scopes @ Verification_workflow_service.validation_scopes @ Verification_workflow_authority.validation_scopes));
-    "profiles", Json.Object (("architecture", Architecture_service.profile) :: ("artifact_transport", Artifact_io.profile) ::
+        Architecture_service.validation_scope; Policy_service.validation_scope] @ Realization_service.validation_scopes @ Verification_workflow_service.validation_scopes @ Verification_workflow_authority.validation_scopes));
+    "profiles", Json.Object (("policy_frontend", Policy_service.profile) :: ("architecture", Architecture_service.profile) :: ("artifact_transport", Artifact_io.profile) ::
       ("artifact_transport_authority", Artifact_io.authority_profile) ::
       Realization_service.profiles @ Verification_workflow_service.profiles @ Verification_workflow_authority.profiles);
     "limits", Protocol.limits;
@@ -27,6 +27,8 @@ let handle executable (request : Protocol.request) =
           "canonical_json", Json.String canonical_json;
           "sha256", Json.String (Canonical.sha256 canonical_json)]), []
   | "validate-intent" -> Protocol.Ok, Some (Bioc_checker.Intent_check.check request.payload), []
+  | operation when List.mem operation Policy_service.operations ->
+      Protocol.Ok, Some (Policy_service.handle ~operation request.payload), []
   | "verify-architecture" -> Protocol.Ok, Some (Architecture_service.verify ~replay:false request.payload), []
   | "replay-architecture" -> Protocol.Ok, Some (Architecture_service.verify ~replay:true request.payload), []
   | "verify-lowering" ->

@@ -4,6 +4,26 @@
  (libraries bioc_wire zarith))
 
 (test
+ (name test_policy_document)
+ (modules test_policy_document)
+ (libraries bioc_wire bioc_domain zarith)
+ (action (run %{test} %{dep:data/policy_documents_v01.json})))
+
+(test
+ (name test_policy_check)
+ (modules test_policy_check)
+ (libraries bioc_wire bioc_domain bioc_checker zarith)
+ (action (run %{test} %{dep:data/policy_frontend_request.json}
+              %{dep:data/policy_frontend_submission.json}
+              %{dep:data/policy_documents_v01.json})))
+
+(test
+ (name test_policy_service)
+ (modules test_policy_service)
+ (libraries bioc_wire bioc_service)
+ (action (run %{test} %{dep:data/policy_documents_v01.json})))
+
+(test
  (name test_intent)
  (modules test_intent)
  (libraries bioc_wire bioc_domain bioc_checker))

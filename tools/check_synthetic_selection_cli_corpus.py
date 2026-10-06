@@ -1,9 +1,9 @@
-"""Check all72 default selection CLI children against the immutable full baseline.
+"""Check all 72 default selection CLI children against the immutable full baseline.
 
-Only the exact additive CLI route source, individually pinned unused transport
-additions, the archived unused backend replacement and independently captured
-argparse runtime counterpart and two exact packaging metadata edits may be projected. Complete actual source, import, stream,
-filesystem and content evidence remains retained without output normalization.
+Only exactly witnessed routes, individually pinned unused additions, the archived
+unused backend replacement, composed package metadata, policy dispatch and the
+independently captured argparse runtime counterpart may be projected. Complete
+actual source, import, stream, filesystem and content evidence remains retained.
 """
 from __future__ import annotations
 
@@ -21,9 +21,11 @@ from tools import synthetic_selection_cli_source_lineage as routes
 from tools import manager_registration_source_lineage as managers
 from tools import cli_runtime_counterparts as runtime
 from tools import package_metadata_source_lineage as packaging
+from tools import policy_entrypoint_source_lineage as policy
+from tools import synthetic_selection_cli_policy_capture as capture_current
 from tools.realization_source_lineage import REFERENCE_ROUTES, verify_captured_source
 from tools.reference_original_counterpart import route_source_witness
-from tools.check_realization_workflow_corpus import REVIEWED_ADDITIONS, addition_counterparts
+from tools.check_realization_workflow_corpus import REVIEWED_ADDITIONS, REVIEWED_EXAMPLES, addition_counterparts, addition_module
 
 CORPUS_PIN = '69556f367752be3076513d96e63c933fb250eaf7d9736f9e39baac1dec47e5d9'
 COUNTERPART = ROOT / 'tests/conformance/synthetic-selection-cli-runtime-counterparts-v1.json'
@@ -35,6 +37,13 @@ canonical, digest, sha, require = frozen.canonical, frozen.digest, frozen.sha, f
 
 def counterparts():
     return runtime.Counterparts(COUNTERPART, COUNTERPART_SHA256, CORPUS_PIN)
+
+
+def current_scope():
+    scope = frozen.source_scope()
+    return {**scope, 'schema_version': 'biocompiler.synthetic_selection_cli_source_scope.v2',
+            'denied_modules': sorted(set(scope['denied_modules']) | {
+                'biocompiler.core_policy', 'biocompiler.policy', 'examples.expressive_policies'})}
 
 
 def load_baseline():
@@ -90,20 +99,22 @@ def verify_recapture(actual, blobs, *, python_version=None):
             digest({key:value for key,value in actual.items() if key != 'inventory_fingerprint'}),
             'Incomplete or changed actual selection CLI capture')
     scope = actual['source_scope']
-    require(canonical(scope) == canonical(frozen.source_scope()), 'Actual selection CLI scope differs from current source bytes')
+    require(canonical(scope) == canonical(current_scope()), 'Actual selection CLI scope differs from current source bytes')
     before, current = inventory(original['source_scope']['actual_sources']), inventory(scope['actual_sources'])
     require(set(before) <= set(current), 'Selection CLI historical source membership changed')
     additions = []
     for name in sorted(set(current) - set(before)):
         path = ROOT / name
-        require(name.startswith('src/biocompiler/') and name.endswith('.py') and
+        require((name.startswith('src/biocompiler/') or name in REVIEWED_EXAMPLES) and name.endswith('.py') and
                 REVIEWED_ADDITIONS.get(name) == current[name] and path.is_file() and
                 not path.is_symlink() and sha(path.read_bytes()) == current[name],
                 'Unreviewed selection CLI source addition: ' + name)
         additions.append({'path':name,'sha256':current[name],'source':path.read_text()})
     addition_proofs = addition_counterparts({row['path']: row['sha256'] for row in additions})
-    require(set(scope) == set(original['source_scope']) and scope['denied_modules'] == original['source_scope']['denied_modules']
-            and scope['schema_version'] == original['source_scope']['schema_version'] and
+    require(set(scope) == set(original['source_scope']) and scope['denied_modules'] ==
+            sorted(set(original['source_scope']['denied_modules']) | {
+                'biocompiler.core_policy', 'biocompiler.policy', 'examples.expressive_policies'})
+            and scope['schema_version'] == 'biocompiler.synthetic_selection_cli_source_scope.v2' and
             scope['source_inventory_sha256'] == digest(scope['actual_sources']), 'Selection CLI scope metadata changed')
     proof = routes.verify_source(ROOT, before[routes.CLI])
     manager_proof = managers.verify_source(ROOT, managers.PATH, before[managers.PATH])
@@ -114,6 +125,17 @@ def verify_recapture(actual, blobs, *, python_version=None):
             for row in original['cases']), 'Original selection CLI imported changed native transport')
     reference_proofs = [verify_captured_source(ROOT, {'path': name, 'sha256': before[name]})
                         for name in sorted(REFERENCE_ROUTES & set(before))]
+    policy_proofs = [verify_captured_source(ROOT, {'path': name, 'sha256': before[name]})
+                     for name in sorted(policy.ROUTES & set(before))]
+    dispatch_proof = capture_current.verify_sources()
+    entrypoint = policy.verify_entrypoint(ROOT)
+    shim = b'from biocompiler.entrypoint import main\nraise SystemExit(main())\n'
+    expected_environment = deepcopy(original['capture_environment'])
+    expected_environment.update(declared_console_entrypoint='biocompiler.entrypoint:main',
+        entrypoint_source={'kind':'blob','bytes':len(shim),'sha256':sha(shim)})
+    require(actual['capture_environment'] == expected_environment and
+            frozen.f.restore(actual['capture_environment']['entrypoint_source'], blobs) == shim,
+            'Actual selection CLI dispatch environment differs from its exact counterpart')
     original_metadata, packaging_counterpart = packaging.counterpart(ROOT)
     require(sha(original_metadata) == before[packaging.PATH] and
             packaging_counterpart['current_sha256'] == current[packaging.PATH],
@@ -121,19 +143,38 @@ def verify_recapture(actual, blobs, *, python_version=None):
     for name, pin in before.items():
         path = ROOT / name
         require(path.is_file() and not path.is_symlink() and sha(path.read_bytes()) == current[name] and
-                (name in (routes.CLI,unused_name,managers.PATH,packaging.PATH) or name in REFERENCE_ROUTES or current[name] == pin), 'Unreviewed selection CLI source bytes changed: ' + name)
+                (name in (routes.CLI,unused_name,managers.PATH,packaging.PATH) or
+                 name in REFERENCE_ROUTES or name in policy.ROUTES or current[name] == pin),
+                'Unreviewed selection CLI source bytes changed: ' + name)
     projected, projected_blobs = deepcopy(actual), dict(blobs)
-    for row in projected['cases']:
+    require(len(actual['cases']) == len(original['cases']), 'Actual selection CLI child census differs')
+    for row, projected_row, old in zip(actual['cases'], projected['cases'], original['cases']):
         audit = row['import_audit']
         require(audit['guard_active'] is True and audit['denied_absent'] is True and
                 'biocompiler.cli' in audit['modules'] and not(set(scope['denied_modules']) & set(audit['modules'])),
                 'Actual selection CLI imported excluded native transport')
+        require(row['id'] == old['id'] and set(audit['modules']) ==
+                set(old['import_audit']['modules']) | {'biocompiler.entrypoint'},
+                'Actual selection CLI import census differs from exact dispatch counterpart')
+        require(audit['modules']['biocompiler.entrypoint'] ==
+                {'path':policy.ENTRYPOINT,'sha256':entrypoint['sha256']},
+                'Actual selection CLI dispatch source differs')
         for module, item in audit['modules'].items():
+            if module == 'biocompiler.entrypoint':
+                del projected_row['import_audit']['modules'][module]
+                continue
             require(type(item) is dict and set(item) == {'path','sha256'} and
                     (module == 'biocompiler' or module.startswith('biocompiler.')) and
+                    item['path'] == old['import_audit']['modules'][module]['path'] and
                     item['path'] in before and item['sha256'] == current[item['path']],
                     'Actual selection CLI imported unpinned source')
-            if item['path'] in (routes.CLI,managers.PATH) or item['path'] in REFERENCE_ROUTES: item['sha256'] = before[item['path']]
+            if item['path'] in (routes.CLI,managers.PATH) or item['path'] in REFERENCE_ROUTES or item['path'] in policy.ROUTES:
+                projected_row['import_audit']['modules'][module]['sha256'] = before[item['path']]
+    current_shim = actual['capture_environment']['entrypoint_source']
+    old_shim = original['capture_environment']['entrypoint_source']
+    del projected_blobs[current_shim['sha256']]
+    projected_blobs[old_shim['sha256']] = old_blobs[old_shim['sha256']]
+    projected['capture_environment'] = deepcopy(original['capture_environment'])
     require(set(actual['retained_source_bytes']) == set(original['retained_source_bytes']),
             'Complete retained selection CLI source inventory differs')
     for name, reference in actual['retained_source_bytes'].items():
@@ -171,8 +212,9 @@ def verify_recapture(actual, blobs, *, python_version=None):
     projected['inventory_fingerprint'] = digest({key:value for key,value in projected.items() if key != 'inventory_fingerprint'})
     require(projected_blobs == old_blobs, 'Complete actual selection CLI content differs from immutable baseline')
     require(canonical(projected) == canonical(original), 'Complete actual selection CLI observations differ from immutable baseline')
-    return {'schema_version':'biocompiler.synthetic_selection_cli_source_lineage.v2',
+    return {'schema_version':'biocompiler.synthetic_selection_cli_source_lineage.v3',
         'packaging_metadata_counterpart':packaging_counterpart,
+        'policy_dispatch_counterpart':dispatch_proof, 'reviewed_policy_routes':policy_proofs,
         'reviewed_addition_counterparts': addition_proofs, 'reviewed_reference_routes': reference_proofs,
         'status':'complete_original_selection_cli_recapture_equal','native_execution':False,
         'baseline_inventory_fingerprint':CORPUS_PIN,'actual_inventory_fingerprint':actual['inventory_fingerprint'],
@@ -180,19 +222,21 @@ def verify_recapture(actual, blobs, *, python_version=None):
         'actual_retained_route_source':(ROOT/routes.CLI).read_text(),'reviewed_route':proof,
         'reviewed_manager_registration_prefix':manager_proof,
         'actual_retained_manager_source':(ROOT/managers.PATH).read_text(),
-        'reviewed_unused_source_additions':additions,'reviewed_unused_source_change':unused,
+        'reviewed_unused_source_additions':[row for row in additions if row['path'] != policy.ENTRYPOINT],
+        'reviewed_dispatch_source_addition':next(row for row in additions if row['path'] == policy.ENTRYPOINT),
+        'reviewed_unused_source_change':unused,
         'runtime_counterpart':{'declaration_sha256':declared.pin,'python_minor':minor,
             'validated_cases':sorted(declared.cases),'changes':changes},'coverage':deepcopy(actual['coverage']),
         'content_documents':len(blobs),'content_bytes':sum(map(len,blobs.values())),
         'actual_content_inventory':[{'sha256':name,'bytes':len(raw)} for name,raw in sorted(blobs.items())],
-        'projection':'exact_additive_selection_CLI_source_individually_pinned_unimported_additions_exact_archived_unused_backend_exact_manager_registration_prefix_two_witnessed_packaging_metadata_edits_and_declared_argparse_runtime_counterpart_only; actual_bytes_retained'}
+        'projection':'exact_additive_selection_CLI_source_individually_pinned_unimported_additions_exact_archived_unused_backend_exact_manager_registration_prefix_composed_package_metadata_witnessed_policy_dispatch_and_declared_argparse_runtime_counterpart_only; actual_bytes_retained'}
 
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output', required=True, type=Path)
     args = parser.parse_args(argv)
-    actual, blobs = frozen.capture()
+    actual, blobs = capture_current.capture()
     receipt = verify_recapture(actual, blobs)
     receipt['runtime'] = {'python':sys.version,'platform':sys.platform,'executable':sys.executable,
                           'revision':os.environ.get('GITHUB_SHA')}

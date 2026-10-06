@@ -40,10 +40,15 @@ class SdkWheelTests(unittest.TestCase):
         self.entries.update({info+'METADATA':(('Metadata-Version: 2.4\nName: biocompiler\nVersion: '+build.VERSION+
             '\nRequires-Python: >=3.11\nProvides-Extra: core\nRequires-Dist: biocompiler-core=='+build.VERSION+'; extra == "core"\n\n').encode(),0o644),
             info+'WHEEL':(b'Wheel-Version: 1.0\nRoot-Is-Purelib: true\nTag: py3-none-any\n',0o644),
-            info+'entry_points.txt':(b'[console_scripts]\nbiocompiler = biocompiler.cli:main\n',0o644)})
+            info+'entry_points.txt':(b'[console_scripts]\nbiocompiler = biocompiler.entrypoint:main\n',0o644)})
         record(self.entries)
     def verify(self):check.validate_sdk(self.entries,source_files=self.sources,release=self.release)
     def test_complete_sdk_source_resources_cli_and_exact_optional_native_pin(self):self.verify()
+    def test_repaired_record_cannot_bypass_policy_dispatch_with_legacy_entrypoint(self):
+        name='biocompiler-'+build.VERSION+'.dist-info/entry_points.txt'
+        self.entries[name]=(b'[console_scripts]\nbiocompiler = biocompiler.cli:main\n',0o644)
+        record(self.entries)
+        with self.assertRaisesRegex(ValueError,'CLI entry point'):self.verify()
     def test_repaired_record_cannot_remove_studio_resource_or_change_source(self):
         del self.entries['biocompiler/studio/static/app.js'];record(self.entries)
         with self.assertRaisesRegex(ValueError,'source/resource'):self.verify()
