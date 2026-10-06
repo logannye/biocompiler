@@ -915,6 +915,7 @@ jobs:
           python tools/generate_policy_material_lifecycle_fixture.py --check
           python tools/generate_policy_material_compound_fixture.py --check
           python tools/generate_policy_material_domain_fixture.py --check
+          python tools/generate_policy_material_closure_fixture.py --check
           python tools/check_policy_material_rule_coverage.py
           python tools/check_core_boundaries.py --output generated/core/boundaries.json
       - name: Strictly type-check the migrated Python transport boundary
@@ -950,6 +951,7 @@ jobs:
             core/_build/default/test/test_policy_material_lifecycle.exe core/test/data/policy_material_lifecycle_v01.json
             core/_build/default/test/test_policy_material_compound.exe core/test/data/policy_material_compound_v01.json
             core/_build/default/test/test_policy_material_domain.exe core/test/data/policy_material_domain_v01.json
+            core/_build/default/test/test_policy_material_closure.exe core/test/data/policy_material_closure_v01.json
           } 2>&1 | tee generated/core/policy-native-tests.txt
       - name: Retain focused policy native diagnostics before full campaigns
         if: always()

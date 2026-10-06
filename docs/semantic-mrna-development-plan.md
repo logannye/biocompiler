@@ -22,7 +22,7 @@ Completion means a complete stack for an explicitly declared supported profile, 
 
 ## 2. Verified starting point and ownership
 
-Implementation baseline: f5564f251dcf62627769bb0f855802c315e75dd8, branch codex/bounded-policy-execution, worktree work/bounded-policy-execution. Development base: pushed PR88 revision 88421d068ebc8437d6d0d4fa1a1bfdb32f150883.
+Historical implementation baseline: f5564f251dcf62627769bb0f855802c315e75dd8, branch codex/bounded-policy-execution, worktree work/bounded-policy-execution. Development base: pushed PR88 revision 88421d068ebc8437d6d0d4fa1a1bfdb32f150883. The following foundation inventory records that starting point; later source and acceptance checkpoints appear under their milestones.
 
 - [PR89](https://github.com/logannye/biocompiler/pull/89) contains the new bounded operational profile.
 - [Run 37401642752](https://github.com/logannye/biocompiler/actions/runs/37401642752), attempt 1, passed native compilation, native literal/mutation suites and installed operational Python 3.11 campaigns on both Linux x86_64 and macOS arm64 at the last read-only review.
@@ -39,7 +39,7 @@ Implementation baseline: f5564f251dcf62627769bb0f855802c315e75dd8, branch codex/
 | [Construction producer](../core/lib/compiler/construction_producer.mli), [checker](../core/lib/checker/construction_check.mli) | Exact molecular construction, chemistry, coordinates and fresh replay | Complete checked policy-to-implementation-to-material chain |
 | [Architecture export](../src/biocompiler/compiler/payload_architecture.py) | Fresh verification and paired FASTA/manifest export pattern | A dedicated rich-policy request and acceptance profile |
 
-PR85, PR87, PR88 and their validation/merge owners remain untouched. The preserved reference-package continuation already implements prepare/build/reconstruct/publish/export in source; its owner retains compatibility and hosted acceptance work. Do not recreate it or import that branch wholesale. Integrate accepted main containing the prerequisite source only after a fresh identity/ancestry check, without rewriting other owners' branches.
+Current ownership: the user confirmed that the parallel session finished; this session is now the sole current integration owner. PR88 is merged in verified main at `f594991ac2ff2496723ae5f2427ad93e6df7a51d`, already integrated into the material worktree on `codex/policy-material-export`. Preserve the original PR branches and continuation worktrees. The reference-package continuation already implements prepare/build/reconstruct/publish/export in source; its compatibility and hosted acceptance remain separate obligations. Reuse its narrowly reviewed distribution foundation without recreating the route or importing its branch wholesale. Any further integration still requires a fresh identity/ancestry check.
 
 This plan controls the session's priorities. The existing product and migration roadmaps retain historical acceptance records and separate release obligations.
 
@@ -187,7 +187,7 @@ Checkboxes mean accepted completion of the stated task, not merely source writte
 
 ### SM-00 — Close the current operational foundation
 
-Depends on: existing PR87–89 source; coordinate accepted-main integration with their owners.
+Depends on: existing PR87–89 source and verified accepted-main ancestry; preserve the original PR branches during integration.
 
 - [x] **SM-00.1** Refresh local/remote identities and current hosted failures; retain exact diagnostic evidence without taking over PR85/87/88.
 - [ ] **SM-00.2** Review and register all new source additions/lineage changes in the frozen workflow authority machinery; preserve original comparisons and rejection controls.
@@ -461,9 +461,9 @@ all four installed slots with independent comparison, and exact-revision
 aggregate/integration acceptance. Keep packaged/offline/default-routing work
 separately visible, retain all historical gates, and record successful source
 and tested revisions before changing any checkbox. The existing reference-package
-source implementation remains under its compatibility/acceptance owner's scope.
+source implementation retains its separate compatibility/acceptance scope.
 
-Current exact-revision checkpoint: source `46fb5a5c9fded877866d333f0e1e8aef75a9fe5b`,
+Historical exact-revision checkpoint: source `46fb5a5c9fded877866d333f0e1e8aef75a9fe5b`,
 run `37420548147`, passed the focused native tests through 124 context controls
 on both platforms. The coordinator then rejected a fixture expecting one extra
 persistent-state obligation although its stores have encounter lifetime. The
@@ -509,7 +509,8 @@ These exercise already admitted meaning rather than expanding the profile.
 SM-08.7 additionally needs supplied-wheel installation and package-owned binary
 resolution for this material profile. The reusable distribution implementation
 already exists in the preserved continuation; use its narrow foundation without
-recreating reference-package routing or taking over its owner's acceptance.
+recreating reference-package routing or treating material evidence as that
+route's compatibility acceptance.
 
 The source audit additionally found abstract-effect formal defaults/refinements
 that lacked an executable interpretation. Admission now requires signature-only
@@ -540,15 +541,40 @@ assertion. A separate migration-inventory refresh retains all 3,460 entries and
 adds the source-acquisition test to its static reference table. Neither partial
 result closes an acceptance checkbox.
 
-The next coherent witness batch promotes the previously private extended-
-evidence and reset/old-feedback domains into complete original public material
-requests, and adds reset followed by a fresh attempt. Literal complete-domain
-censuses are respectively 54/227/228, 27/87/88 and 486/995/996
-histories/transitions/prefixes. The final grammar preserves Keep alongside Reset
-and every prior-attempt feedback choice, including stale feedback. Original
-requirements, complete context/resource premises and exact RNA remain bound
-through fresh compile/check/replay/export. These witnesses and narrowly targeted
-source-boundary controls await fresh hosted execution.
+Latest diagnostic checkpoint: source
+`141f5ba5b880aced295c941445127bb6a45f1ba8`,
+[run 37432923650](https://github.com/logannye/biocompiler/actions/runs/37432923650),
+compiled both native platforms and passed the preceding suites, including all
+994 compound assertions. The original extended-evidence and reset/old-feedback
+public material cases passed compile/check/replay/export with full censuses
+54/227/228 and 27/87/88 histories/transitions/prefixes. The separate reset/recreate
+request requires 486/995/996. Its frozen 100,000,000 preservation-work budget
+stopped exploration after 216 histories/445 transitions and 99,768,825 charged
+preservation work. Requirements remained unknown and material/export withheld;
+full release gates failed or remain incomplete.
+
+The correction preserves that entire 486-history request and all six literal
+traces as an expected-incomplete regression. A distinct
+`reset_recreate_feedback` domain declares feedback only at tick5, with all
+silence/completed/failed choices for all three prior attempts and both Keep and
+Reset at tick3. Its census is 54/115/116 with separate domain/context identities,
+unchanged hard requirements/resources/RNA and six new literal traces. The four
+domain cases now contain 16 literal histories. This smaller domain's positive
+acceptance remains hosted-pending and does not discharge the original larger
+request; no profile ceiling is raised and no explored grammar is pruned.
+
+The same source-reviewed batch adds three full public closure families:
+one-rule material compilation at 9/29/30, age0/1/2 evidence at 16/67/68, and
+ordered zero-to-two-row evidence batches at 31/127/128. Fourteen literal traces
+distinguish age/tie handling, ordered occurrences, state and attempt outcomes.
+Three source-valid requirement-field mutations (`lower`, `upper`, `contract`)
+must preserve the complete original requirement inventory while remaining
+unsupported through full checking/replay and withholding export. A nonzero
+encounter-birth control rejects at the public domain boundary. Native execution
+of these additions remains pending. The contextual inventory now records 25
+witness files, 96 source files and 62 rule families, including 16 explicitly
+partial families. Neither this inventory nor partial hosted evidence closes any
+milestone acceptance checkbox.
 
 ### SM-09 — Expand supported semantics through complete vertical profiles
 

@@ -1400,12 +1400,16 @@
   ],
   "witness_sources": [
     {
+      "path": "core/test/data/policy_material_closure_v01.json",
+      "sha256": "4289644a5c288b21eaf37950f2c8fe2dd6d15783fd4ad7818a04cb0c0bf9d581"
+    },
+    {
       "path": "core/test/data/policy_material_compound_v01.json",
       "sha256": "1b6d2669c013f2dccfa36e542fc3b179e4d759874c4e8975b02aab28f0fb2100"
     },
     {
       "path": "core/test/data/policy_material_domain_v01.json",
-      "sha256": "905d688fd1b2455e4e6cb0e73b2c92672bc752fe2898d885b196563e37dfa60c"
+      "sha256": "6b3766e0fb67bb4c668ad80ff6a06a3ecce8e795539b07fb409c8b14c0e5ce18"
     },
     {
       "path": "core/test/data/policy_material_lifecycle_v01.json",
@@ -1436,6 +1440,10 @@
       "sha256": "62f8c1481806bf1511495f714f12a01a84bfde18753db9de110fd0c4b33fa789"
     },
     {
+      "path": "core/test/test_policy_material_closure.ml",
+      "sha256": "84e6d30dd9593d69a5c457ba5f6c40afa7d2c349e8cfc75dadabb515f085beb2"
+    },
+    {
       "path": "core/test/test_policy_material_compound.ml",
       "sha256": "685005ebbb34a10f165489461d0810310623996bce2ca8407f9dbfa99b9bb263"
     },
@@ -1445,7 +1453,7 @@
     },
     {
       "path": "core/test/test_policy_material_domain.ml",
-      "sha256": "a24d1db032aaaae51f1428e01371aade9045b56d2735fde8582b59d27fc4db76"
+      "sha256": "e55ca2085dd0046b0911f5c98a5e5c5c2f245fe121b66f3cbdd717ad92ce5693"
     },
     {
       "path": "core/test/test_policy_material_lifecycle.ml",
@@ -2437,7 +2445,7 @@
             "anchor": "Fresh Core/Verify checks differ from generic production",
             "occurrence": 1
           },
-          "context": "Complete original public compile/check/replay/export paths for three supplied grammars: extended evidence (54/227/228), reset/end plus stale feedback (27/87/88), and Keep/Reset with a new attempt plus all old/new feedback (486/995/996 histories/transitions/prefixes). All original requirements and material/context resources are retained; these are source assertions awaiting hosted execution.",
+          "context": "Complete original public compile/check/replay/export paths for three supplied positive grammars: extended evidence (54/227/228), reset/end plus stale feedback (27/87/88), and Keep/Reset plus all old/new feedback at tick5 (54/115/116 histories/transitions/prefixes). The separate unchanged 486/995/996 request must remain incomplete with export withheld at its original work limit. All original requirements and material/context resources are retained; these are source assertions awaiting hosted execution.",
           "evidence_scope": "source_only_not_executed_by_this_gate"
         },
         {
@@ -2447,6 +2455,15 @@
             "occurrence": 1
           },
           "context": "Frozen independent source authority and literal census/attempt/occurrence expectations; this fixture contains no saved candidate or report.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_material_closure.ml",
+            "anchor": "Age/merge/expiry changed literal retained evidence or ordered occurrence identity",
+            "occurrence": 1
+          },
+          "context": "Public aged-evidence16/67/68 and ordered-multiplicity31/127/128 requests preserve original requirements and complete context/resources. Literal histories distinguish older, tied and newer observations, silent expiry, both conflicting row orders and repeated equal evidence with ordered occurrence IDs.",
           "evidence_scope": "source_only_not_executed_by_this_gate"
         }
       ],
@@ -2477,11 +2494,20 @@
           },
           "context": "Full original material check and export must reject wrong-target routes at the closed domain decoder, before stale downstream authority can mask unsupported input.",
           "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_material_closure.ml",
+            "anchor": "Public decoder accepted nonzero encounter start",
+            "occurrence": 1
+          },
+          "context": "Public compile/check/export must reject nonzero fixed-slot birth at the exact explicit unsupported decoder, before stale downstream authority can mask it.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
         }
       ],
       "witness_status": "partial_source_witnesses",
       "gaps": [
-        "Nonzero encounter birth schedules remain to be individually indexed. Foreign/wrong addressing is explicitly unsupported, with private decoder and public wrong-route controls; no positive foreign-feedback support is claimed. The three full public grammar witnesses do not establish arbitrary combinations outside their exact domains."
+        "All indexed domains retain every explicitly supplied choice. Age and ordered multiplicity have complete public source witnesses; nonzero fixed-slot birth and foreign/wrong addressing are explicitly unsupported. Other arbitrary combinations of admitted domain factors remain outside these individual witness claims."
       ]
     },
     {
@@ -2515,7 +2541,7 @@
             "anchor": "Fresh Core/Verify checks differ from generic production",
             "occurrence": 1
           },
-          "context": "Complete original public compile/check/replay/export paths for three supplied grammars: extended evidence (54/227/228), reset/end plus stale feedback (27/87/88), and Keep/Reset with a new attempt plus all old/new feedback (486/995/996 histories/transitions/prefixes). All original requirements and material/context resources are retained; these are source assertions awaiting hosted execution.",
+          "context": "Complete original public compile/check/replay/export paths for three supplied positive grammars: extended evidence (54/227/228), reset/end plus stale feedback (27/87/88), and Keep/Reset plus all old/new feedback at tick5 (54/115/116 histories/transitions/prefixes). The separate unchanged 486/995/996 request must remain incomplete with export withheld at its original work limit. All original requirements and material/context resources are retained; these are source assertions awaiting hosted execution.",
           "evidence_scope": "source_only_not_executed_by_this_gate"
         }
       ],
@@ -2535,7 +2561,7 @@
             "anchor": "Reset/end/repeated feedback reused a global input occurrence identity",
             "occurrence": 1
           },
-          "context": "Ten original-domain literal histories compare source and candidate input histories and injective creation-time attempt identities; altered feedback targets fail correspondence and cross-kind reused occurrence identities reject.",
+          "context": "Sixteen original-domain literal histories compare source and candidate input histories and injective creation-time attempt identities; altered feedback targets fail correspondence and cross-kind reused occurrence identities reject.",
           "evidence_scope": "source_only_not_executed_by_this_gate"
         }
       ],
@@ -2577,6 +2603,24 @@
           },
           "context": "Static binding positives for one-rule/one-store and two-rule/two-store original sources. The cited complete material witness uses only the latter.",
           "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_material_closure.ml",
+            "anchor": "|\"one_rule\"->[1;1;9;9;9],9,29,30,9",
+            "occurrence": 1
+          },
+          "context": "Complete original one-rule/one-store nine-node material request retains all four original hard requirements, with independently fixed9/29/30 census. Public production/check/replay/export and two literal feedback/timeout histories must pass; original broad UNKNOWN witness is preserved unchanged.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/data/policy_material_closure_v01.json",
+            "anchor": "\"id\": \"one_rule\"",
+            "occurrence": 1
+          },
+          "context": "Independently supplied nine-node kernel, complete53carriers,12typed resource demands, original four hard requirements and exact RNA construction; no saved candidate or result supplies production authority.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
         }
       ],
       "negative": [
@@ -2601,7 +2645,7 @@
       ],
       "witness_status": "partial_source_witnesses",
       "gaps": [
-        "A full material witness for the one-rule/one-store positive and independently isolated subject/encounter ownership combinations remain unindexed. Existing static binding positives and the 13 original-source family restrictions do not imply a broader full-path positive."
+        "Complete one-rule and two-rule original material requests are now indexed; independently isolated remaining subject/encounter ownership combinations still require explicit witness indexing."
       ]
     },
     {
@@ -2754,6 +2798,15 @@
             "occurrence": 1
           },
           "context": "Frozen full-path exclusion sibling: two encounter slots, truth registers initially false, event evidence, exclusive arbitration, one fixed product, continuous/defer lifecycle, original nine-history domain. Other admitted combinations are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_material_closure.ml",
+            "anchor": "Age/merge/expiry changed literal retained evidence or ordered occurrence identity",
+            "occurrence": 1
+          },
+          "context": "Public aged-evidence16/67/68 and ordered-multiplicity31/127/128 requests preserve original requirements and complete context/resources. Literal histories distinguish older, tied and newer observations, silent expiry, both conflicting row orders and repeated equal evidence with ordered occurrence IDs.",
           "evidence_scope": "source_only_not_executed_by_this_gate"
         }
       ],
@@ -3021,7 +3074,7 @@
             "anchor": "Fresh Core/Verify checks differ from generic production",
             "occurrence": 1
           },
-          "context": "Complete original public compile/check/replay/export paths for three supplied grammars: extended evidence (54/227/228), reset/end plus stale feedback (27/87/88), and Keep/Reset with a new attempt plus all old/new feedback (486/995/996 histories/transitions/prefixes). All original requirements and material/context resources are retained; these are source assertions awaiting hosted execution.",
+          "context": "Complete original public compile/check/replay/export paths for three supplied positive grammars: extended evidence (54/227/228), reset/end plus stale feedback (27/87/88), and Keep/Reset plus all old/new feedback at tick5 (54/115/116 histories/transitions/prefixes). The separate unchanged 486/995/996 request must remain incomplete with export withheld at its original work limit. All original requirements and material/context resources are retained; these are source assertions awaiting hosted execution.",
           "evidence_scope": "source_only_not_executed_by_this_gate"
         }
       ],
@@ -3312,11 +3365,20 @@
           },
           "context": "Six fresh-source-admitted and graph-bound controls retain all original requirements and assert exact unsupported reasons initially and through horizon4: applies_to, safety trigger, missing safety condition, missing progress trigger, missing deadline and uncorrelated effect-to-observation response. Unrelated decoder/admission/binding rejection fails the test.",
           "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_material_closure.ml",
+            "anchor": "Unsupported requirement became accepted or failed at an unrelated boundary",
+            "occurrence": 1
+          },
+          "context": "Three original-source-valid requirement lower/upper/contract edits receive fresh generic candidates, complete public Core/Verify check/replay and exact unsupported requirement evidence. Original hard ledgers remain present and fresh export is withheld; unrelated early rejection fails.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
         }
       ],
       "witness_status": "partial_source_witnesses",
       "gaps": [
-        "Remaining lower/upper/contract and scope/type/time alternatives need individually indexed rejection witnesses or explicit earlier-stage exclusion; the six monitor controls cover only their named reachable combinations."
+        "Named lower/upper/contract and six monitor boundaries are indexed. Remaining scope/type/time alternatives need individual witness indexing or explicit earlier-stage exclusion."
       ]
     },
     {
@@ -3393,6 +3455,15 @@
             "occurrence": 1
           },
           "context": "Distinguishing source control for the specifically named boundary; other boundary branches are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_material_domain.ml",
+            "anchor": "Exhausted original domain gained material acceptance or publication",
+            "occurrence": 1
+          },
+          "context": "Unchanged486-history original request is preserved at the frozen100m work ceiling. Incomplete coverage, unknown hard requirements, retained original authority/obligations and withheld material/export must replay independently; a separate54-history candidate or receipt cannot discharge it.",
           "evidence_scope": "source_only_not_executed_by_this_gate"
         }
       ],
@@ -4462,6 +4533,7 @@
     "Supplied executable model-to-sequence and provider contracts remain conditional premises; empirical biology, human use, Studio and conversational authoring are outside this gate.",
     "The preserved prebuilt resolver is pinned as a dependency, but targeted installed material routing, prebuilt distribution and offline resolver/transport acceptance are pending. No legacy transport guard is widened by this inventory.",
     "Frozen compound/literal-Unknown and four-case lifecycle source witnesses are now indexed; their presence and literal 54-history assertions do not establish hosted acceptance or exhaustive combinations beyond those original finite domains.",
-    "Complete public domain requests, twelve source-boundary controls and six requirement-monitor controls are source witnesses pending hosted validation. Their static presence cannot establish execution or full release acceptance."
+    "Complete public domain requests, twelve source-boundary controls and six requirement-monitor controls are source witnesses pending hosted validation. Their static presence cannot establish execution or full release acceptance.",
+    "The unchanged486-history reset/repeated-feedback request exceeds its original work allowance and is an explicit incomplete/no-export control. A separately declared54-history request neither narrows nor discharges that original authority. Closure source witnesses still require current hosted execution."
   ]
 }

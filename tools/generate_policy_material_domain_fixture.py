@@ -1,10 +1,12 @@
 """Author complete original domain-extension requests without executing policy.
 
 The first two authorities retain the existing independently authored context
-fixtures. The third supplies a new keep/reset grammar, two fresh observations,
-and repeated correlated old/new-attempt feedback. Counts and trace witnesses
-are literal expectations, never obtained from a producer or checked report.
-This is source authoring only; hosted native checks establish acceptance.
+fixtures. The third retains a keep/reset grammar whose complete search exceeds
+the frozen work budget; it must remain incomplete with no export. The fourth
+separately declares a smaller grammar with feedback at tick5 only. It cannot
+discharge the third case's larger domain. Counts and trace witnesses are literal
+expectations, never obtained from a producer or checked report. This is source
+authoring only; hosted native checks establish acceptance.
 """
 from __future__ import annotations
 
@@ -156,6 +158,47 @@ def recreate(seed: dict, extended: dict) -> dict:
     return case
 
 
+def recreate_feedback(original_case: dict) -> dict:
+    """Author a distinct complete domain, without filtering the larger search."""
+    case = deepcopy(original_case)
+    case["id"] = "reset_recreate_feedback"
+    request = case["request"]
+    domain = request["implementation_request"]["operating_domain"]
+    domain["feedback_factors"][0]["ticks"] = [5]
+    # Both old attempts and the new attempt enter tick5's alphabet. Each has
+    # silence/completed/failed, for 2 lifecycle choices * 3**3 = 54 histories.
+    # Five e1 evidence records, three correlations/feedback rows, queue39 and
+    # cause273 stay unchanged. Every choice is retained, including stale ones.
+    contract = request["material_contract"]
+    contract["identity"]["id"] = "artificial.context.reset_recreate_feedback_component"
+    pin(contract)
+    request["catalog_binding"]["material_contract"] = deepcopy(contract["identity"])
+    context = request["context"]
+    context["record_layout"]["domain_digest"] = digest(domain)
+    for provider in context["providers"]:
+        body = provider["body"]
+        if body["kind"] == "environment":
+            body["grammar"] = deepcopy(domain)
+        for capacity in body["capacities"]:
+            capacity["record_layout_digest"] = digest(context["record_layout"])
+        pin(provider)
+    widths = [1, 1, 1, 2, 2, 54, 54]
+    expected = case["expected"]
+    expected.update(histories=widths[-1], transitions=sum(widths), prefixes_started=1 + sum(widths),
+        prefixes_after_tick=widths,
+        domain_claim="A separately declared complete domain: every keep/reset choice at tick3 combines "
+            "with silence/completed/failed feedback for all three prior attempts at tick5 only. "
+            "Fixed false3/true4 samples recreate an e1 attempt in the retained or reset generation. "
+            "This 54-history domain does not discharge the separate 486-history reset_recreate request. "
+            "No active-only selector, requirement filter, or wrong-address route is admitted.")
+    for witness in expected["trace_witnesses"]:
+        witness["feedback"] = [row for row in witness["feedback"] if row["tick"] == 5]
+        witness["feedback_rejections"] = [row for row in witness["feedback_rejections"] if row["tick"] == 5]
+        witness["feedback_occurrence_ids"] = [identity for identity in witness["feedback_occurrence_ids"]
+            if identity.startswith("domain/feedback/5/")]
+    return case
+
+
 def build() -> dict:
     seed = json.loads((DATA / "policy_material_request_v01.json").read_text())
     contexts = json.loads((DATA / "policy_material_context_v01.json").read_text())
@@ -179,9 +222,17 @@ def build() -> dict:
         "feedback_rejections": [{"tick": 4, "creation_ordinal": ordinal, "reason": "stale_attempt"} for ordinal in (1, 2)],
         "feedback_acceptances": []}
         for action, status in (("keep", "timed_out"), ("reset", "encounter_reset"), ("end", "encounter_ended"))]
-    cases = [extended, resetting, recreate(seed, contexts["extended_evidence_case"])]
+    large_recreation = recreate(seed, contexts["extended_evidence_case"])
+    cases = [extended, resetting, large_recreation, recreate_feedback(large_recreation)]
     for case in cases:
         refresh_expectations(case, seed)
+        case["expected"]["check_expectation"] = "accepted"
+    # Keep the original 486-history request and every literal trace unchanged.
+    # No increase in its frozen 100m work limit and no retrospective narrowing
+    # may convert an incomplete search into an accepted material artifact.
+    large_recreation["expected"].update(check_expectation="incomplete", status="not_accepted",
+        material_status="unassessed", context_status="unassessed",
+        incomplete_code="policy_preservation_work_limit")
     return {"schema_version": "biocompiler.policy_material_domain_literals.v0.1",
         "notice": "Artificial supplied contracts and complete original domains. Source-only literal witnesses; hosted native acceptance pending. "
             "No biological viability claim. No saved candidate/report is production authority.",

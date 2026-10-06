@@ -409,7 +409,7 @@ platforms at source `3044e9d62a4c16cc294e4110ab521b019537298d`, run
 service/replay/export suite and 1,519 lifecycle assertions. This is partial
 hosted evidence; it does not establish the full release gate.
 
-A further source-ready compound family supplies two complete graph/material
+A further compound family supplies two complete graph/material
 cases with nested `all`/`any` guards and assignments. Both begin with explicitly
 defined Unknown state; evidence absence retains its separate representation.
 The cases preserve one versus two ordered uncertainty reasons, including repeated
@@ -418,8 +418,9 @@ hard requirements and the independently counted 54 histories/176 transitions/
 177 prefixes. Literal state, assignments, authorization, resource minima and
 record widths are checked independently. Operator/operand/state mutations,
 lost reasons, insufficient re-pinned storage and substitution of a different
-fully pinned graph case must reject even with identical RNA. These additional
-native tests remain hosted-pending.
+fully pinned graph case must reject even with identical RNA. After the fixture
+serialization correction described below, all 994 compound assertions passed
+on both hosted native platforms in run `37432923650`.
 
 The initial family remains narrow: one executor, explicitly named finite
 encounters, one truth observation, one or two encounter-scoped truth stores,
@@ -443,28 +444,53 @@ and lifecycle suites on both platforms. The following compound suite exposed
 a fixture serialization error: material-kernel wires used implementation-wire
 keys instead of the material contract's required `from`/`to` keys. Its correction
 retains the original policy, actual graph, RNA and every native assertion, while
-refreshing the affected material/provider/context/request identities. That
-correction and the complete release gate still require fresh hosted validation.
+refreshing the affected material/provider/context/request identities.
 
-Three additional full original material requests extend the public compile,
-independent check, replay and fresh-export witness coverage. They retain the
-original three hard requirements and independently enumerated evidence or
-lifecycle choices: 54 histories/227 transitions/228 prefixes for extended
-evidence, 27/87/88 for reset/end plus old feedback, and 486/995/996 for reset
-followed by a new attempt. The final family retains all old-attempt feedback
-choices and checks new-generation correlation, completion, failure and quiet
-timeout. Fixed occurrence identities and complete resource dispositions are
-checked explicitly. These are tests of already admitted meaning under supplied
-contracts; native execution remains pending.
+At source `141f5ba5b880aced295c941445127bb6a45f1ba8`,
+[run 37432923650](https://github.com/logannye/biocompiler/actions/runs/37432923650)
+compiled both native platforms and passed the preceding material/lifecycle
+suites and all 994 compound assertions. The extended-evidence public material
+case passed its complete 54 histories/227 transitions/228 prefixes, and the
+reset/end plus old-feedback case passed 27/87/88, through compile, independent
+check, replay and fresh export. The third original request, reset followed by a
+new attempt, has 486/995/996 in its full declared grammar. It exhausted the
+frozen 100,000,000 preservation-work budget after 216 histories and 445
+transitions, with 99,768,825 charged preservation work before the next required
+reservation was denied. Its result is incomplete, with requirements unknown,
+original obligations unresolved and material/export withheld. These are partial
+hosted results; the full gates failed or remain incomplete.
+
+The correction retains that entire 486-history request and its six literal
+traces unchanged as an expected-incomplete regression. It does not increase the
+profile ceiling or discard feedback choices. A separate
+`reset_recreate_feedback` request explicitly permits feedback at tick5 only:
+Keep/Reset at tick3 crossed with silence/completed/failed for all three prior
+attempts gives 54 histories/115 transitions/116 prefixes. Its distinct
+domain/context pins retain every original hard requirement, the same resource
+dispositions and exact RNA. Six new literal traces distinguish retained/new
+generation correlation, stale old feedback, completion, failure and quiet
+timeout. There are now 16 domain literal histories in total. The smaller case's
+positive acceptance is hosted-pending and cannot discharge the larger request.
+
+A separate source-reviewed closure family adds the complete one-rule material
+path (9 histories/29 transitions/30 prefixes), age0/1/2 evidence including tied
+and older observations (16/67/68), and ordered zero-to-two-row evidence batches
+(31/127/128). Fourteen literal traces retain ordered occurrence identities,
+conflict behavior, state and attempt ledgers. Three source-valid hard-requirement
+edits (`lower`, `upper`, `contract`) must remain unsupported through complete
+checking and replay with no export; a nonzero encounter-birth control must
+reject at the public domain boundary. All original hard requirements remain in
+each request, including the one-rule family's four requirements. This new
+closure family still requires hosted native execution.
 
 The same batch adds twelve source-valid contextual rejection controls and six
 requirement-monitor controls. Fresh source admission, occurrence accounting and
 graph correspondence precede the latter checks; each original requirement is
 retained and its exact unsupported reason is checked initially and through the
-declared horizon. The contextual inventory now indexes 23 witness files across
-62 rule families and preserves 16 explicitly partial families. Broader
-operational coverage and unindexed first-profile branches remain visible; this
-static inventory is not an execution receipt.
+declared horizon. The contextual inventory now indexes 25 witness files and 96
+source files across 62 rule families, preserving 16 explicitly partial families.
+Broader operational coverage and unindexed first-profile branches remain
+visible; this static inventory is not an execution receipt.
 
 Additional numeric/quantity domains, machines, predicate resets, coordination,
 quantification, inheritance, complex spatial relationships, broader arbitration,
@@ -489,8 +515,13 @@ wiring are source implementations. Receipt comparison must reject missing,
 duplicate, stale, failed or altered slots and must compare complete retained
 semantic outputs and artifact bytes. Existing source-only, operational and
 implementation-only profiles keep their own claims and acceptance records.
-The reference-package route already has source implementations in its preserved
-continuation; compatibility/hosted acceptance remain with its owner.
+The user has confirmed that the parallel session finished; this session is now
+the sole current integration owner. PR88 is merged in verified main at
+`f594991ac2ff2496723ae5f2427ad93e6df7a51d`; original PR branches and preserved
+continuations remain intact. The reference-package route already has source
+implementations in its continuation. Reuse the narrow reviewed distribution
+foundation; do not recreate the route or confuse its separate compatibility and
+hosted-acceptance obligations with this material profile's results.
 
 SM-08.7 now reuses the distribution foundation from continuation revision
 `b7a176dd5c75e700b9aa86ac8006b70fcb3eaf57`, with per-file provenance in

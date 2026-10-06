@@ -49,12 +49,13 @@ let census = function
   |"extended_evidence"->[1;1;9;54;54;54;54],54,227,228
   |"reset_feedback"->[1;1;1;3;27;27;27],27,87,88
   |"reset_recreate"->[1;1;1;2;18;486;486],486,995,996
+  |"reset_recreate_feedback"->[1;1;1;2;2;54;54],54,115,116
   |_->failwith "Unreviewed material domain fixture"
 let sorted key rows=List.sort(fun a b->String.compare(text key a)(text key b))rows
 let original_literals case=
   let request=get "request" case and expected=get "expected" case in
   let prefix,histories,transitions,prefixes=census(text "id" case)in
-  require(3*3*6=54 && 3*3*3=27 && 2*(3*3)*(3*3*3)=486)
+  require(3*3*6=54 && 3*3*3=27 && 2*(3*3)*(3*3*3)=486 && 2*(3*3*3)=54)
     "Independent product census changed";
   require(List.map integer(items "prefixes_after_tick" expected)=prefix &&
     List.fold_left(+)0 prefix=transitions && prefixes=transitions+1 &&
@@ -127,6 +128,29 @@ let assessment_literals expected compiled=
     ["maximum_tick","maximum_tick";"ordered_cause_slots","ordered_cause_slots"];
   require(List.length(items "nodes"(get "implementation" candidate))=15)
     "Fresh producer changed the supplied primitive inventory"
+let incomplete_literals expected compiled=
+  let report=get "report" compiled in
+  require(text "status" report="not_accepted" && text "material_status" report="unassessed" &&
+    text "context_status" report="unassessed" && get "all_original_obligations_discharged" report=Json.Bool false &&
+    text "artifact" report="withheld" && text "export" report="withheld" && get "artifact" compiled=Json.Null)
+    "Exhausted original domain gained material acceptance or publication";
+  let preservation=get "preservation" report and diagnostic=at["preservation";"stopped";"diagnostic"]report in
+  require(text "status" preservation="incomplete" && text "preservation" preservation="unassessed" &&
+    at["coverage";"complete"]preservation=Json.Bool false && at["stopped";"category"]preservation=str "incomplete" &&
+    text "code" diagnostic=text "incomplete_code" expected && get "path" diagnostic=Json.Null &&
+    text "message" diagnostic="Complete traversal lacks the next required execution reservation.")
+    "Original large domain failed at an unrelated boundary instead of bounded work exhaustion";
+  require(at["binding";"operating_domain_digest"]preservation=get "domain_digest" expected)
+    "Incomplete exploration substituted a smaller original domain";
+  let histories=number "histories"(get "coverage" preservation) and transitions=number "transitions"(get "coverage" preservation)in
+  require(histories>0 && histories<number "histories" expected && transitions<number "transitions" expected)
+    "Partial exploration silently acquired a complete-domain census";
+  require(Json.equal(arr(List.map(get "source")(items "requirements" preservation)))(get "requirements" expected) &&
+    List.for_all(fun row->text "status" row="unknown")(items "requirements" preservation))
+    "Incomplete exploration dropped or accepted a hard requirement";
+  require(List.map(get "obligation")(items "obligations" report)=items "obligations" expected &&
+    List.for_all(fun row->text "status" row="unresolved" && get "evidence" row=Json.Null)(items "obligations" report))
+    "Incomplete conjunction dropped or discharged an original obligation"
 let status_name = function
   |P.Active->"active"|P.Completed->"completed"|P.Failed->"failed"|P.Timed_out->"timed_out"
   |P.Reset_invalidated->"encounter_reset"|P.End_invalidated->"encounter_ended"
@@ -251,7 +275,7 @@ let ()=
   let fixture=read Sys.argv.(1)in
   require(text "schema_version" fixture="biocompiler.policy_material_domain_literals.v0.1")"Unknown domain witness schema";
   let cases=items "cases" fixture and limits=get "limits" fixture in
-  require(List.map(text "id")cases=["extended_evidence";"reset_feedback";"reset_recreate"])
+  require(List.map(text "id")cases=["extended_evidence";"reset_feedback";"reset_recreate";"reset_recreate_feedback"])
     "Domain witness inventory changed";
   let baseline=get "request"(List.hd cases)in
   let results=List.map(fun case->
@@ -268,7 +292,9 @@ let ()=
     List.iter(fun(role,handler)->require(Json.equal compiled(run handler role "check-policy-material"payload))
       "Fresh Core/Verify checks differ from generic production")
       [Protocol.Core,Producer.handle;Protocol.Verify,Service.handle];
-    assessment_literals expected compiled;
+    let incomplete=text "check_expectation" expected="incomplete"in
+    require(incomplete=(text "id" case="reset_recreate"))"Unreviewed incomplete-domain classification";
+    if incomplete then incomplete_literals expected compiled else assessment_literals expected compiled;
     require(text "request_fingerprint" compiled=Canonical.fingerprint request &&
       text "candidate_fingerprint" compiled=Canonical.fingerprint candidate &&
       text "invocation_fingerprint" compiled=Canonical.fingerprint payload &&
@@ -276,13 +302,17 @@ let ()=
       "Complete wrapper omitted an authority or evidence binding";
     require(Json.equal compiled(run Service.handle Protocol.Verify "replay-policy-material"(set "report" compiled payload)))
       "Full fresh domain replay changed exact evidence";
-    let export=run Service.handle Protocol.Verify "export-policy-material"payload in
-    publication_literals request candidate limits expected(get "report" compiled)export;
+    let export=if incomplete then(
+      List.iter(fun(role,handler)->rejects "incomplete original-domain export" "policy_material_export_not_accepted"
+        (fun()->run handler role "export-policy-material"payload))
+        [Protocol.Core,Producer.handle;Protocol.Verify,Service.handle];None)
+      else let export=run Service.handle Protocol.Verify "export-policy-material"payload in
+        publication_literals request candidate limits expected(get "report" compiled)export;Some export in
     let witnesses=items "trace_witnesses" expected in
     require(List.map(text "id")witnesses=(match text "id" case with
       |"extended_evidence"->["known_true_repeated_attempt"]
       |"reset_feedback"->["keep_old_feedback";"reset_old_feedback";"end_old_feedback"]
-      |"reset_recreate"->["keep_completed";"keep_failed";"keep_silence";"reset_completed";"reset_failed";"reset_silence"]
+      |"reset_recreate"|"reset_recreate_feedback"->["keep_completed";"keep_failed";"keep_silence";"reset_completed";"reset_failed";"reset_silence"]
       |_->assert false))"Literal lifecycle/feedback witness inventory changed";
     List.iter(run_history request candidate limits)witnesses;
     let wrong=put["implementation_request";"operating_domain";"feedback_factors";"0";"routes"]
@@ -295,8 +325,23 @@ let ()=
     reject_route "check-policy-material"(set "request" wrong payload);
     reject_route "export-policy-material"(set "request" wrong payload);
     case,compiled,export)cases in
+  (* The smaller accepted grammar has its own complete original authority; it
+     cannot discharge the unchanged 486-history request. Keep that failed
+     request and every one of its literal histories as independent controls. *)
+  let large_case,large,_=List.find(fun(case,_,_)->text "id" case="reset_recreate")results in
+  let small_case,small,_=List.find(fun(case,_,_)->text "id" case="reset_recreate_feedback")results in
+  require(text "request_fingerprint" large<>text "request_fingerprint" small &&
+    text "domain_digest"(get "expected" large_case)<>text "domain_digest"(get "expected" small_case))
+    "Separate finite grammar reused the incomplete original authority";
+  let large_payload=obj["request",get "request" large_case;"candidate",get "candidate" large;"limits",limits]in
+  rejects "small-domain receipt cannot complete the large original" "policy_material_replay"(fun()->
+    run Service.handle Protocol.Verify "replay-policy-material"(set "report" small large_payload));
+  rejects "small-domain candidate cannot export the large original" "policy_implementation_contract"(fun()->
+    Material.check ~export:true ~request:(get "request" large_case) ~candidate:(get "candidate" small) ~limits);
+  let accepted=List.filter_map(fun(case,compiled,export)->Option.map(fun export->case,compiled,export)export)results in
+  require(List.length accepted=3)"Accepted domain family census changed";
   List.iteri(fun index(case,compiled,export)->
-    let other,other_compiled,other_export=List.nth results((index+1)mod List.length results)in
+    let other,other_compiled,other_export=List.nth accepted((index+1)mod List.length accepted)in
     let request=get "request" other and candidate=get "candidate" other_compiled in
     let payload=obj["request",request;"candidate",candidate;"limits",limits]in
     rejects "old domain receipt with freshly produced candidate" "policy_material_replay"(fun()->
@@ -307,5 +352,5 @@ let ()=
       text "manifest_sha256"(get "artifact" export)<>text "manifest_sha256"(get "artifact" other_export) &&
       text "request_fingerprint" compiled<>text "request_fingerprint" other_compiled &&
       text "domain_digest"(get "expected" case)<>text "domain_digest"(get "expected" other))
-      "Identical RNA reused another domain's acceptance or manifest")results;
-  Printf.printf "policy material complete finite-domain production/replay/export and 10 literal histories passed (%d checks)\n" !checks
+      "Identical RNA reused another domain's acceptance or manifest")accepted;
+  Printf.printf "policy material complete finite-domain production/replay/export and 16 literal histories including retained exhaustion passed (%d checks)\n" !checks
