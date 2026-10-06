@@ -8,8 +8,8 @@ future original authority and independent controls; it is not a decoded request,
 execution receipt or export capability. No producer output or expected-trace
 generator defines these literal values. Native validation remains hosted.
 
-The implemented source slices are closed partial-graph/interface and local
-material/library decoders. Original assembly rules, request/catalog binding, independent
+The implemented source slices are closed partial-graph/interface, local
+material/library and original assembly-rule decoders. Request/catalog binding, independent
 union/material/context checking, producer and public profile negotiation remain
 separate work. Track completion in [the development plan](semantic-mrna-development-plan.md).
 
@@ -58,15 +58,16 @@ shared driver using only original model declarations from the preserved A/B
 fixtures. It includes constant-broadcast controls and 55 rejection invocations,
 including exact diagnostic checks for false scope, a local scheduling cycle,
 input aliasing, hidden outputs and re-pinned models absent from the original
-library. The source is registered in the full native-suite inventory. Native
-compilation/execution and a full JSON Schema validator run remain pending;
-static inspection is not execution evidence.
+library. The source is registered in the full native-suite inventory. Hosted
+compilation and this suite passed in development run 37515212004 at a89f80b07.
+A full JSON Schema validator run and complete composition acceptance remain
+pending; development feedback is not release acceptance.
 
-## Local material record/library: implemented source, hosted validation pending
+## Local material record/library: focused hosted validation passed
 
 `Policy_component_material` and `Policy_component_library` implement this
-interface, with independently authored native test source. Compilation and
-execution remain pending hosted feedback; no translation or export result is
+interface, with independently authored native tests. Compilation and execution
+passed in development run 37515212004 at a89f80b07; no translation or export result is
 claimed here. A component envelope has `schema_version`, `profile`,
 `identity`, and `body`; its body has exactly `fragment`, `root`, `carriers`,
 `products`, and `provider_requirements`. The Model identity pins the full body.
@@ -133,6 +134,45 @@ separate hosted development lane.
 Full ordered-union/material reconstruction, translation, chemistry-facet
 dispositions, context sufficiency and source/catalog/export authority remain
 independent obligations.
+
+## Original assembly rule: source implemented, hosted validation pending
+
+`Policy_component_assembly_rule.of_json ~components` decodes the closed
+`biocompiler.policy_component_assembly_rule.v0.1` schema with profile
+`biocompiler.policy_exact_component_assembly.v0.1`. Its Model pin covers the
+complete original body. The decoding component/model library fingerprints are
+retained as context and do not enter reusable rule identity.
+
+The body fixes the primitive, observable, phase and identity-transport profiles;
+one shared two-slot layout; complete `decision` and `driver` component pins;
+the three typed links; ordered node, wire, input, group and export inventories;
+root bindings; one join; all three link-carrier premises; and complete typed
+`Policy_mrna_structure` material authority. References are structured slot/local
+records. There is no candidate renaming map or source-bearing implementation
+envelope in this original authority.
+
+Local order survives global interleaving. Every node, local wire, group, external
+input and primitive output appears exactly once. The product constant may
+broadcast across encounter slots; request and authorization retain the same
+encounter layout. Authorization names the actual initiating gate's guard
+producer through its original commit and arbiter lane. Exactly one two-node
+driver and its single feedback input are admitted.
+
+The material premise retains both complete original component roots under only
+their declared source-ID rename. The sole transform concatenates whole roots in
+decision/driver order at their exact adjacent offset. It retains one complete
+coding RNA output, its complete expected product, every source feature and all
+ten root chemistry facets. Each link selects actual boundary-carrier sites and
+the original join. Molecular reconstruction, feature/chemistry projection,
+translation, source/catalog correspondence, context sufficiency and export
+acceptance remain separate independent checks.
+
+The native test source independently spells the A/B node and wire interleaving,
+shared driver, material bodies and links. It distinguishes a changed but valid
+original ordering from a candidate that fails to implement its original. Both
+genuine component/PM positives and targeted authority substitutions precede
+rejection assertions. This suite extends focused hosted feedback to ten suites;
+the complete native inventory is 152 suites with 154 executables and 23 fixtures.
 
 ## Corrections found in the deeper review
 

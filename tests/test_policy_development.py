@@ -95,14 +95,15 @@ class PolicyDevelopmentTests(unittest.TestCase):
         dev.prepare(self.root)
         result = dev.run(self.root)
         self.assertEqual([row[0] for row in dev.SUITES], [
-            "test_policy_component_fragment", "test_policy_component_material", "test_policy_implementation_binding",
+            "test_policy_component_fragment", "test_policy_component_material", "test_policy_component_assembly_rule",
+            "test_policy_implementation_binding",
             "test_policy_preservation_check", "test_policy_material_binding", "test_policy_material_context",
             "test_policy_material_check", "test_policy_mrna_structure", "test_construction_content"])
         self.assertEqual(self.calls[:2], [
             ["opam", "install", "core/biocompiler_core.opam", "--deps-only", "--with-test", "--yes"],
             ["opam", "exec", "--", "dune", "build", "--root", "core", "@all"]])
-        self.assertEqual(len(self.calls), 11)
-        self.assertEqual([Path(p).name for p in self.calls[4][4:]], [
+        self.assertEqual(len(self.calls), 12)
+        self.assertEqual([Path(p).name for p in self.calls[5][4:]], [
             "policy_implementation_binding_v01.json", "policy_realization_request_v01.json", "policy_exclusion_source_v01.json"])
         self.assertEqual(result["status"], "passed")
         self.assertFalse(result["acceptance"])
@@ -125,10 +126,16 @@ class PolicyDevelopmentTests(unittest.TestCase):
         (self.root / "core/test/dune").write_text("".join(self.stanzas[1:]))
         with self.assertRaisesRegex(ValueError, "Missing or changed registered suite"):
             dev.selected_suites(self.root)
-        reversed_binding = self.stanzas[2].replace(
+        binding_index = next(i for i, stanza in enumerate(self.stanzas)
+                             if "(name test_policy_implementation_binding)" in stanza)
+        original_binding = self.stanzas[binding_index]
+        reversed_binding = original_binding.replace(
             "%{dep:data/policy_implementation_binding_v01.json} %{dep:data/policy_realization_request_v01.json}",
             "%{dep:data/policy_realization_request_v01.json} %{dep:data/policy_implementation_binding_v01.json}")
-        (self.root / "core/test/dune").write_text("".join(self.stanzas[:2] + [reversed_binding] + self.stanzas[3:]))
+        self.assertNotEqual(original_binding, reversed_binding)
+        changed = list(self.stanzas)
+        changed[binding_index] = reversed_binding
+        (self.root / "core/test/dune").write_text("".join(changed))
         with self.assertRaisesRegex(ValueError, "Changed native dependency fixture arguments"):
             dev.selected_suites(self.root)
         self.assertEqual(self.calls, [])
@@ -175,14 +182,14 @@ class PolicyDevelopmentTests(unittest.TestCase):
         self.assertEqual(len(self.calls), 2)
         self.assertEqual(self.report()["status"], "failed")
 
-    def test_failed_suite_retains_all_nine_outcomes_and_fails(self):
+    def test_failed_suite_retains_all_ten_outcomes_and_fails(self):
         dev.prepare(self.root)
         self.fail = dev.selected_suites(self.root)[1]["argv"]
         with self.assertRaisesRegex(ValueError, "Focused native suite failed"):
             dev.run(self.root)
         result = self.report()
-        self.assertEqual(len(self.calls), 11)
-        self.assertEqual([r["status"] for r in result["suites"]].count("passed"), 8)
+        self.assertEqual(len(self.calls), 12)
+        self.assertEqual([r["status"] for r in result["suites"]].count("passed"), 9)
         self.assertEqual(result["suites"][1]["status"], "failed")
         self.assertEqual(result["status"], "failed")
 

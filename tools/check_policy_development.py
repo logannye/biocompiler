@@ -28,6 +28,7 @@ SOURCE_ROOTS = ("core", "src", "tools", "protocol", ".github", "pyproject.toml")
 SUITES = (
     ("test_policy_component_fragment", ("data/policy_material_request_v01.json", "data/policy_material_state_v01.json")),
     ("test_policy_component_material", ("data/policy_material_request_v01.json", "data/policy_material_state_v01.json")),
+    ("test_policy_component_assembly_rule", ("data/policy_material_request_v01.json", "data/policy_material_state_v01.json")),
     ("test_policy_implementation_binding", ("data/policy_implementation_binding_v01.json", "data/policy_realization_request_v01.json", "data/policy_exclusion_source_v01.json")),
     ("test_policy_preservation_check", ("data/policy_implementation_binding_v01.json",)),
     ("test_policy_material_binding", ("data/policy_material_binding_v01.json",)),
@@ -146,7 +147,7 @@ def save(path, value):
 
 def feedback():
     return {"schema": SCHEMA, "acceptance": False,
-            "scope": "Nine focused native suites; development feedback only, no release acceptance.",
+            "scope": "Ten focused native suites; development feedback only, no release acceptance.",
             "status": "incomplete", "actions": [], "suites": [
                 {"name": name, "status": "not_run"} for name, _ in SUITES]}
 
