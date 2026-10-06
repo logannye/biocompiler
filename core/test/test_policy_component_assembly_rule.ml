@@ -384,7 +384,6 @@ let swap first second raw = match raw with
   | Json.Array values -> arr (List.mapi (fun index value ->
       if index = first then List.nth values second else if index = second then List.nth values first else value) values)
   | _ -> failwith "Mutation requires a declared ordered inventory"
-let without key value = obj (List.remove_assoc key (Json.object_fields value))
 
 let run first second =
   let model_a_raw = original_library first and model_b_raw = original_library second in
