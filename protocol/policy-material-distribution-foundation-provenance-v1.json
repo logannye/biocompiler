@@ -1,0 +1,319 @@
+{
+  "copied_files": [
+    {
+      "change": "none",
+      "copied": {
+        "bytes": 2024,
+        "sha256": "6c18265a1177d8e46aea2120d598b34eb5f8844c5003345a8581f7f21c62989a"
+      },
+      "path": "protocol/core-release-opam/digestif.1.3.0.opam",
+      "source": {
+        "bytes": 2024,
+        "sha256": "6c18265a1177d8e46aea2120d598b34eb5f8844c5003345a8581f7f21c62989a"
+      }
+    },
+    {
+      "change": "none",
+      "copied": {
+        "bytes": 3026,
+        "sha256": "16f981d2a4d6ac85cf8b1525dab06bcef6a54e36d4bd7256e917355791505fc4"
+      },
+      "path": "protocol/core-release-opam/dune.3.20.2.opam",
+      "source": {
+        "bytes": 3026,
+        "sha256": "16f981d2a4d6ac85cf8b1525dab06bcef6a54e36d4bd7256e917355791505fc4"
+      }
+    },
+    {
+      "change": "none",
+      "copied": {
+        "bytes": 1372,
+        "sha256": "9c241a094a644994e253574a3269bdd108c05ff97a25dad2407bb35ec87af29d"
+      },
+      "path": "protocol/core-release-opam/eqaf.0.10.opam",
+      "source": {
+        "bytes": 1372,
+        "sha256": "9c241a094a644994e253574a3269bdd108c05ff97a25dad2407bb35ec87af29d"
+      }
+    },
+    {
+      "change": "none",
+      "copied": {
+        "bytes": 5710,
+        "sha256": "317250e88785a2a27739b6a8e51f7bb2798373f6de0fca3a8983aac0a7e0bdf7"
+      },
+      "path": "protocol/core-release-opam/ocaml-compiler.5.4.0.opam",
+      "source": {
+        "bytes": 5710,
+        "sha256": "317250e88785a2a27739b6a8e51f7bb2798373f6de0fca3a8983aac0a7e0bdf7"
+      }
+    },
+    {
+      "change": "none",
+      "copied": {
+        "bytes": 1542,
+        "sha256": "b6180836d0c101bb4d2f029196ad194090ab9fc7549a0b514408b820e11e142b"
+      },
+      "path": "protocol/core-release-opam/ocamlfind.1.9.8.opam",
+      "source": {
+        "bytes": 1542,
+        "sha256": "b6180836d0c101bb4d2f029196ad194090ab9fc7549a0b514408b820e11e142b"
+      }
+    },
+    {
+      "change": "none",
+      "copied": {
+        "bytes": 1218,
+        "sha256": "9c859185d289c38dcb1c216aea751afa28bebf5d653e8af3d10aabb252ebe4bb"
+      },
+      "path": "protocol/core-release-opam/zarith.1.14.opam",
+      "source": {
+        "bytes": 1218,
+        "sha256": "9c859185d289c38dcb1c216aea751afa28bebf5d653e8af3d10aabb252ebe4bb"
+      }
+    },
+    {
+      "change": "none",
+      "copied": {
+        "bytes": 6720,
+        "sha256": "cfff010985f7a3f9fd51b7b09176f883f76ec8ea493c71bb0611c708b3007df1"
+      },
+      "path": "protocol/core-release-sources-v1.json",
+      "source": {
+        "bytes": 6720,
+        "sha256": "cfff010985f7a3f9fd51b7b09176f883f76ec8ea493c71bb0611c708b3007df1"
+      }
+    },
+    {
+      "change": "none",
+      "copied": {
+        "bytes": 14437,
+        "sha256": "10c772076ee0ecfcb0c61a1a3410ae6014313d2e05617f30bc77f6df55485459"
+      },
+      "path": "src/biocompiler/core_distribution.py",
+      "source": {
+        "bytes": 14437,
+        "sha256": "10c772076ee0ecfcb0c61a1a3410ae6014313d2e05617f30bc77f6df55485459"
+      }
+    },
+    {
+      "change": "none",
+      "copied": {
+        "bytes": 12154,
+        "sha256": "2ddeb8fd9ca0fbadaaed0af8ca2087bb2a0e7eba25a7372936d706e4f8c58aa5"
+      },
+      "path": "tests/test_core_distribution.py",
+      "source": {
+        "bytes": 12154,
+        "sha256": "2ddeb8fd9ca0fbadaaed0af8ca2087bb2a0e7eba25a7372936d706e4f8c58aa5"
+      }
+    },
+    {
+      "change": "none",
+      "copied": {
+        "bytes": 6898,
+        "sha256": "6738207cc41985dd094c77928a55abb89271108e5a87ea1d2c612af778dee251"
+      },
+      "path": "tests/test_prebuilt_core_materials.py",
+      "source": {
+        "bytes": 6898,
+        "sha256": "6738207cc41985dd094c77928a55abb89271108e5a87ea1d2c612af778dee251"
+      }
+    },
+    {
+      "change": "none",
+      "copied": {
+        "bytes": 5971,
+        "sha256": "51a4c0023988241f5d76be7c71b6bf0cae0fdeb236f17f4f429a6b5591f56c42"
+      },
+      "path": "tests/test_prebuilt_core_release.py",
+      "source": {
+        "bytes": 5971,
+        "sha256": "51a4c0023988241f5d76be7c71b6bf0cae0fdeb236f17f4f429a6b5591f56c42"
+      }
+    },
+    {
+      "change": "none",
+      "copied": {
+        "bytes": 7375,
+        "sha256": "5d0fdd3744139c9a9a1e68b95f46e55f93e8d8d3ff59d00fa0d543a76bf5dd32"
+      },
+      "path": "tests/test_static_gmp_configuration.py",
+      "source": {
+        "bytes": 7375,
+        "sha256": "5d0fdd3744139c9a9a1e68b95f46e55f93e8d8d3ff59d00fa0d543a76bf5dd32"
+      }
+    },
+    {
+      "change": "none",
+      "copied": {
+        "bytes": 19222,
+        "sha256": "c50155235716f37f5cf7eada008d9f5e27340c35d50bb9211617779ee399c5d0"
+      },
+      "path": "tools/build_prebuilt_core.py",
+      "source": {
+        "bytes": 19222,
+        "sha256": "c50155235716f37f5cf7eada008d9f5e27340c35d50bb9211617779ee399c5d0"
+      }
+    },
+    {
+      "change": "current_sdk_console_entrypoint_only",
+      "copied": {
+        "bytes": 19022,
+        "sha256": "ef035cb7169d686de9ab9f2128b1fc608e7e6eb0a5a9442e1f4e282f4a3fe778"
+      },
+      "path": "tools/check_prebuilt_core_release.py",
+      "source": {
+        "bytes": 19015,
+        "sha256": "9d1294a63222dc1689d77d9ef666082338c609257cd256aa0ba3db0dd3a94911"
+      }
+    },
+    {
+      "change": "none",
+      "copied": {
+        "bytes": 7953,
+        "sha256": "8f8a606a657c74b0624a2dc26f5596d0abea8670cff7eca5c666831189899189"
+      },
+      "path": "tools/collect_prebuilt_materials.py",
+      "source": {
+        "bytes": 7953,
+        "sha256": "8f8a606a657c74b0624a2dc26f5596d0abea8670cff7eca5c666831189899189"
+      }
+    },
+    {
+      "change": "none",
+      "copied": {
+        "bytes": 480,
+        "sha256": "7b2dc778e35ddfbd9ca9ad37c6b28a2a9b348617aa9b72dbf9aaea35ffa06250"
+      },
+      "path": "tools/prebuilt-build-requirements.txt",
+      "source": {
+        "bytes": 480,
+        "sha256": "7b2dc778e35ddfbd9ca9ad37c6b28a2a9b348617aa9b72dbf9aaea35ffa06250"
+      }
+    },
+    {
+      "change": "none",
+      "copied": {
+        "bytes": 13261,
+        "sha256": "e69255941e72ee7c7c605f97d8e8058ade594634aa0b58fba29eace65a67fcdd"
+      },
+      "path": "tools/prebuilt_core_materials.py",
+      "source": {
+        "bytes": 13261,
+        "sha256": "e69255941e72ee7c7c605f97d8e8058ade594634aa0b58fba29eace65a67fcdd"
+      }
+    },
+    {
+      "change": "none",
+      "copied": {
+        "bytes": 30082,
+        "sha256": "13f9fb5d63d1cf89e242f74125620ff809ce003a9b6af2dae6c44b8b01ae18ca"
+      },
+      "path": "tools/prebuilt_release_pipeline.py",
+      "source": {
+        "bytes": 30082,
+        "sha256": "13f9fb5d63d1cf89e242f74125620ff809ce003a9b6af2dae6c44b8b01ae18ca"
+      }
+    },
+    {
+      "change": "none",
+      "copied": {
+        "bytes": 9421,
+        "sha256": "674c8f9d9eb01279f48669d6fcd3b1e52a5385336404ff162ad819232599bd3e"
+      },
+      "path": "tools/prebuilt_sources.py",
+      "source": {
+        "bytes": 9421,
+        "sha256": "674c8f9d9eb01279f48669d6fcd3b1e52a5385336404ff162ad819232599bd3e"
+      }
+    },
+    {
+      "change": "none",
+      "copied": {
+        "bytes": 13395,
+        "sha256": "16886c4ee594c9be459976c6dfa293ac98c00017b3a95cc69ad6ef9c9b92698d"
+      },
+      "path": "tools/prepare_static_gmp.py",
+      "source": {
+        "bytes": 13395,
+        "sha256": "16886c4ee594c9be459976c6dfa293ac98c00017b3a95cc69ad6ef9c9b92698d"
+      }
+    },
+    {
+      "change": "none",
+      "copied": {
+        "bytes": 1154,
+        "sha256": "833e7336c76bea2d32e4c5508cef0bfcc902ed4bafd95ae298459b07b78c2cdf"
+      },
+      "path": "tools/relink_prebuilt_core.sh",
+      "source": {
+        "bytes": 1154,
+        "sha256": "833e7336c76bea2d32e4c5508cef0bfcc902ed4bafd95ae298459b07b78c2cdf"
+      }
+    }
+  ],
+  "copied_pipeline_commands_not_used_by_material_lane": [
+    "prebuilt_release_pipeline.py installed",
+    "prebuilt_release_pipeline.py aggregate"
+  ],
+  "copied_source_equals_git_revision": true,
+  "hosted_acceptance": "pending",
+  "native_compilation": false,
+  "native_execution": false,
+  "new_files": [
+    {
+      "bytes": 3616,
+      "path": "tests/test_prebuilt_sdk_entrypoint.py",
+      "purpose": "Accept the current entrypoint and reject correctly rehashed legacy/foreign console metadata.",
+      "sha256": "5c3edeaeefdcf9dc70ee3149c2454cf04db43e232740deaf52e0d240e53d9278"
+    }
+  ],
+  "not_copied": [
+    "optional installed smoke/process probe",
+    "legacy release-chain and SDK-matrix tests",
+    "legacy complete campaign comparator",
+    "native entrypoints or Dune",
+    "migration/reference-route implementations",
+    "generated release pins or native/package artifacts"
+  ],
+  "packaging": false,
+  "pipeline_reuse_scope": [
+    "sdk staging and wheel validation",
+    "bounded command runner used by hosted static GMP preparation"
+  ],
+  "reviewed_deviation": {
+    "current_console": "biocompiler.entrypoint:main",
+    "old_console": "biocompiler.cli:main",
+    "path": "tools/check_prebuilt_core_release.py",
+    "reason": "Preserve the exact current pyproject.toml console entrypoint and declarative policy routing."
+  },
+  "schema_version": "biocompiler.policy_material_distribution_source_provenance.v0.1",
+  "scope": "Reusable distribution foundation for a separately gated material-only prebuilt lane. No reference-route implementation, default cutover or release acceptance is imported.",
+  "source_revision": "b7a176dd5c75e700b9aa86ac8006b70fcb3eaf57",
+  "source_worktree": "/Users/logannye/Documents/ChatGPT/GeneMedicineCompiler/work/reference-package-continuations",
+  "status": "source_only",
+  "target_base_revision": "3044e9d62a4c16cc294e4110ab521b019537298d",
+  "unchanged_existing_dependencies": [
+    {
+      "bytes": 61171,
+      "path": "src/biocompiler/__init__.py",
+      "sha256": "983da73517b57dead27b185ebb6ea2c9c34bba9ca89a28aee7b90dae3b3de769"
+    },
+    {
+      "bytes": 21197,
+      "path": "src/biocompiler/core_client.py",
+      "sha256": "c8d65a42c1f92cbd75cb5edd176a9463657e03509be8ed487496d78b17be00fc"
+    },
+    {
+      "bytes": 500,
+      "path": "core/biocompiler_core.opam",
+      "sha256": "59fbb48c22b923bef28e8efe844306d7a36517c184766be236eaf9ca36c23e69"
+    },
+    {
+      "bytes": 3984,
+      "path": "tools/check_realization_binaries.py",
+      "sha256": "021906fc3883648f21eea5d007743e97db4b359130165edb663fe048607da861"
+    }
+  ]
+}

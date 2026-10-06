@@ -33,6 +33,12 @@ let admit ~document ~descriptors =
   let lookup reference=Names.find (ref_id reference) index in
   let defs=list "definitions" (get "semantics" (D.program document)) in
   let definitions=List.fold_left (fun acc def -> Names.add (ref_id def) def acc) Names.empty defs in
+  let definition_root=match D.kind document with
+    | D.Program -> "/document/semantics/definitions"
+    | D.Request -> "/document/program/semantics/definitions"
+    | D.Submission -> "/document/request/program/semantics/definitions" in
+  let definition_paths=Names.of_seq (List.to_seq (List.mapi (fun index definition ->
+    ref_id definition,definition_root^"/"^string_of_int index) defs)) in
   let descriptor_index=List.fold_left (fun acc (descriptor:O.descriptor) ->
     let pin=O.definition_ref_to_json descriptor.definition and path="/definitions" in
     require path (not (Names.mem (ref_id pin) acc)) "Duplicate or conflicting operational definition descriptor.";
@@ -51,7 +57,19 @@ let admit ~document ~descriptors =
       "Descriptor identity or operational interpretation differs from this contextual use.";
     used:=Seen.add (ref_id reference) !used;
     let definition=Names.find (ref_id reference) definitions in
-    if semantics <> O.Effect_abstract_attempt then require path (list "parameters" definition = []) "This primitive descriptor takes no formal parameters.";
+    if semantics <> O.Effect_abstract_attempt then require path (list "parameters" definition = []) "This primitive descriptor takes no formal parameters."
+    else (
+      (* Formal parameters declare an argument signature here. Selection,
+         defaults and refinements require semantics beyond abstract attempts;
+         an actual fixed argument cannot discharge those original fields. *)
+      let definition_path=Names.find (ref_id reference) definition_paths in
+      List.iteri (fun index parameter ->
+        let parameter_path=definition_path^"/parameters/"^string_of_int index in
+        require (parameter_path^"/selection") (text "selection" parameter = "fixed")
+          "Effect formal parameters are signature-only; nonfixed selection is unsupported.";
+        List.iter (fun field -> require (parameter_path^"/"^field) (get field parameter = Json.Null)
+          "Effect formal parameters are signature-only; supplied values and bounds are unsupported.")
+          ["value";"lower";"upper"]) (list "parameters" definition));
     if semantics <> O.Observation_external_evidence then require path (get "result" definition = Json.Null) "This primitive descriptor does not return a value."
   in
   let clocks=List.filter (fun (d:D.declaration) -> d.kind=D.Clock) declarations in

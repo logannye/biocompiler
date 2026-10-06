@@ -126,7 +126,79 @@ let ()=
     [["program";"declarations"];["deployment"];["assurance"]];
   require(items "implementations"(get "implementations"(get "document" exclusion_source))=[])
     "Binding fixture silently rewrote original empty catalog";
-  let first_bound=positive first in ignore(positive second);
+  let first_bound=positive first and second_bound=positive second in
+  List.iter(fun(case,bound)->
+    let original_request=A.request(C.admitted_inputs bound) in
+    let original_behavior=O.behavior_to_json(A.behavior(C.admitted_inputs bound))in
+    let signature_definitions=Json.array(at["request";"document";"program";"semantics";"definitions"]case)in
+    let operation=at(declaration_path case "response"@["contract"])case in
+    let operation_id=text "id" operation in
+    let definition_index=List.find_index(fun definition->text "id" definition=operation_id)signature_definitions |> Option.get in
+    let formal_path=["request";"document";"program";"semantics";"definitions";string_of_int definition_index;"parameters";"0"]in
+    require(text "selection"(at formal_path case)="fixed" &&
+      List.for_all(fun key->get key(at formal_path case)=Json.Null)["value";"lower";"upper"])
+      "Ordinary accepted effect signature acquired a refinement";
+    List.iter(fun(label,field,replacement)->
+      let edited=set(formal_path@[field])replacement case in
+      let changed_definition=at["request";"document";"program";"semantics";"definitions";string_of_int definition_index]edited in
+      let digest=D.document_digest changed_definition in
+      let rec repin value=match value with
+        |Json.Object fields->let value=obj(List.map(fun(key,value)->key,repin value)fields)in
+            if List.assoc_opt "$type" fields=Some(str "DefinitionRef") && List.assoc_opt "id" fields=Some(str operation_id)
+            then set["digest"](str digest)value else value
+        |Json.Array values->arr(List.map repin values)
+        |value->value in
+      let edited=repin edited in
+      let entries=Json.array(at["request";"document";"implementations";"implementations"]edited)in
+      let bridges=Json.array(at["request";"catalog_bindings"]edited)|>List.map(fun bridge->
+        let entry=List.find(fun entry->text "id" entry=text "entry_id" bridge)entries in
+        set["entry_digest"](str(Canonical.fingerprint entry))bridge)in
+      let edited=repin_authority(set["request";"catalog_bindings"](arr bridges)edited)in
+      let request=R.of_json(get "request" edited)in
+      let document=R.document request and descriptors=R.definitions request in
+      let assessment=Bioc_checker.Policy_check.check document in
+      require(text "status" assessment="valid")("Full request formal control lost generic source validity: "^label);
+      require(R.fingerprint request<>R.fingerprint original_request &&
+        D.artifact_digest document<>D.artifact_digest(R.document original_request) &&
+        O.descriptors_digest descriptors<>O.descriptors_digest(R.definitions original_request))
+        "Effect formal mutation retained stale original authority";
+      List.iter(fun(bridge:R.catalog_binding)->
+        let entry=List.find(fun entry->text "id" entry=bridge.entry_id)entries in
+        require(bridge.entry_digest=Canonical.fingerprint entry && Json.equal bridge.operation(get "operation" entry))
+          "Effect formal mutation retained stale catalog membership") (R.catalog_bindings request);
+      let nodes=List.map2(fun node(declaration:D.declaration)->
+        set["data"](obj(List.remove_assoc "$type"(Json.object_fields declaration.value)))node)
+        (items "nodes" original_behavior)(D.declarations document)in
+      let behavior=original_behavior |>set["source_document"](D.to_json document)
+        |>set["source_artifact_digest"](str(D.artifact_digest document))
+        |>set["descriptor_bundle"](O.descriptors_to_json descriptors)
+        |>set["descriptors_digest"](str(O.descriptors_digest descriptors))
+        |>set["nodes"](arr nodes)|>set["source_ledger"](get "declarations" assessment)
+        |>set["requirements_ledger"](get "requirements" assessment)
+        |>set["assumptions"](get "assumptions" assessment)
+        |>set["unresolved_obligations"](get "unresolved_obligations" assessment)
+        |>O.behavior_of_json in
+      (* Decode the unchanged concrete graph and proposed source mapping outside
+         rejection. Only the original effect signature makes this unsupported. *)
+      let graph=I.of_json ~library:(R.implementation_library request)(get "implementation" edited)
+      and proposed=B.of_json(get "proposed" edited)in
+      require((I.authority graph).source_artifact_digest=D.artifact_digest document &&
+        (I.authority graph).descriptors_digest=O.descriptors_digest descriptors &&
+        (I.authority graph).implementation_catalog_digest=Canonical.fingerprint(get "implementations"(D.to_json document)))
+        "Full request formal control retained stale candidate authority";
+      incr controls;
+      match A.admit ~request ~behavior with
+      |admitted->ignore(C.check ~admitted ~implementation:graph ~proposed);
+          failwith("Full request accepted unsupported effect formal: "^label)
+      |exception Diagnostic.Error diagnostic->
+          require(diagnostic.code="policy_operational_unsupported" &&
+            diagnostic.path=Some("/document/program/semantics/definitions/"^string_of_int definition_index^"/parameters/0/"^field))
+            ("Full request formal failed outside its exact admission guard: "^label))
+      ["full request formal design selection","selection",str "design";
+       "full request formal measured selection","selection",str "measured";
+       "full request formal uncertain selection","selection",str "uncertain";
+       "full request formal supplied value","value",str "fixture.product.different"])
+    [first,first_bound;second,second_bound];
   let negative_controls=items "negative_controls" fixture in
   require(List.length negative_controls=1)"Original chassis mismatch rejection authority was lost";
   List.iter(fun control->

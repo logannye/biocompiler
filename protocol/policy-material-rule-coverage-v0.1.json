@@ -1,0 +1,4161 @@
+{
+  "schema_version": "biocompiler.policy_material_rule_coverage.v0.1",
+  "profile": "policy-truth-mrna-v0.1",
+  "claim_scope": "reviewed_contextual_rule_and_witness_source_inventory_only",
+  "syntax_ledger": "protocol/policy-semantic-coverage-v0.1.json",
+  "scope": "Reviewed first bounded human immune in-vivo truth-policy-to-one-exact-mRNA profile; broader operational support is explicitly stage-local. This contextual matrix complements the separate 612-distinction syntax ledger.",
+  "limitations": [
+    "Full source hashes and lexical guard/profile identifier counts are review tripwires, not a proof that the prose is exhaustive or that a predicate is correctly implemented.",
+    "Witness pointers and full witness-file hashes establish source presence only. This gate executes no native code, proves no semantics and records no hosted acceptance.",
+    "A positive or negative pointer covers only its stated context. Baseline evidence does not establish all combinations described by a family; explicit gaps remain below.",
+    "The fixed family census is reviewed separately from discovered syntax. Adding or changing a source file/profile requires source review and intentional ledger changes; there is no automatic baseline refresh.",
+    "Only the closed listed source/operational public-route exceptions are outside the material route; they are still source-pinned. Shared construction leaves remain context-neutral.",
+    "The dependency inventory is deliberately bounded, not the complete transitive compiler/library/build dependency closure. General source-lineage, native module-boundary, semantic and release CI gates remain necessary."
+  ],
+  "sources": [
+    {
+      "path": "core/bin/core/main.ml",
+      "sha256": "d04b8ef278c4dfd6721bfff5345075473603f0cb78ad54cdb688976a60d06427",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "dependency",
+      "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
+    },
+    {
+      "path": "core/bin/verify/main.ml",
+      "sha256": "0e71c6dc1b280e00657be77460a1b2b49eb51058e4fe35518b003da1e46a0e84",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "dependency",
+      "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
+    },
+    {
+      "path": "core/lib/candidate_runtime/policy_primitives.ml",
+      "sha256": "1bb404967129fcbdb06d17d97ec5f929b9d3ae65854d6d00be0dd36f8389ed9d",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 1,
+          "fail": 22,
+          "require": 30
+        },
+        "profile_literals": {
+          "biocompiler.policy_primitive_execution.v0.1": 1
+        }
+      },
+      "disposition": "rule_owner",
+      "reason": "Owns explicitly reviewed contextual families below."
+    },
+    {
+      "path": "core/lib/candidate_runtime/policy_primitives.mli",
+      "sha256": "b074f9b0f38cc91409e4f87d7ba09a178c2a4cca4616ed54dc65f90a85e0248a",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "dependency",
+      "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
+    },
+    {
+      "path": "core/lib/checker/construction_check.ml",
+      "sha256": "8f97aae4e17eca60d61a7d13a84a316513a3eecaa05c1792e2af033be81f1d0b",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 1,
+          "Diagnostic.require": 3
+        },
+        "profile_literals": {
+          "biocompiler.construction_check.resources.v1": 1,
+          "biocompiler.construction_content_assessment.v0.1": 1,
+          "biocompiler.ocaml.construction_check.v0.1": 1,
+          "biocompiler.ocaml.construction_content_check.v0.1": 1
+        }
+      },
+      "disposition": "rule_owner",
+      "reason": "Owns explicitly reviewed contextual families below."
+    },
+    {
+      "path": "core/lib/checker/construction_check.mli",
+      "sha256": "6552fe4e59ac2d27e04a8b91ca4670dce708477944b4b3e494f349f287f67df4",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "dependency",
+      "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
+    },
+    {
+      "path": "core/lib/checker/construction_reconstruction.ml",
+      "sha256": "b2646f2f59292b0d0f5a4a04c103fce87bfc9b1b411576a965c7bf7e99513238",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.require": 1,
+          "reject": 6
+        },
+        "profile_literals": {
+          "biocompiler.molecule_coordinate_path.v0.1": 1,
+          "biocompiler.molecule_coordinate_space.v0.1": 1,
+          "biocompiler.molecule_index_span.v0.1": 1
+        }
+      },
+      "disposition": "dependency",
+      "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
+    },
+    {
+      "path": "core/lib/checker/construction_reconstruction.mli",
+      "sha256": "daaf22a876c2eca94aa3894ba79cffb7944fa0d75f8894d612ec28f0c20ea5c1",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "dependency",
+      "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
+    },
+    {
+      "path": "core/lib/checker/policy_admission.ml",
+      "sha256": "7d8ba644a491438afce37fbd15f0a5c0ad466b077cc29fd145a28704d3b2a6d9",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 1,
+          "Diagnostic.require": 1,
+          "fail": 5,
+          "require": 52
+        },
+        "profile_literals": {
+          "biocompiler.policy_operational_admission.v0.1": 1
+        }
+      },
+      "disposition": "rule_owner",
+      "reason": "Owns explicitly reviewed contextual families below."
+    },
+    {
+      "path": "core/lib/checker/policy_admission.mli",
+      "sha256": "0497f05a06a6aa2b28366077aff8d5374a56bf07d0f52924c9755f4edc725c1d",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "dependency",
+      "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
+    },
+    {
+      "path": "core/lib/checker/policy_check.ml",
+      "sha256": "2aad7572b04cb20fdac3a162c4185cc1b976b895d578a249f230ae7e368b2bd1",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.require": 1,
+          "require": 59
+        },
+        "profile_literals": {
+          "biocompiler.ocaml.policy_check.v0.1": 1,
+          "biocompiler.policy_assessment.v0.1": 1
+        }
+      },
+      "disposition": "dependency",
+      "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
+    },
+    {
+      "path": "core/lib/checker/policy_check.mli",
+      "sha256": "231e58a02154c0d72131dcf45cca75392e4881762403c339134e77143fb63794",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "dependency",
+      "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
+    },
+    {
+      "path": "core/lib/checker/policy_correspondence.ml",
+      "sha256": "437bbb1dcbf1a988a98d7f0520d822e1049052bdd9b1fe61a223f73ccbdcc54b",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 1,
+          "Diagnostic.require": 4
+        },
+        "profile_literals": {
+          "biocompiler.policy_correspondence.v0.1": 1
+        }
+      },
+      "disposition": "rule_owner",
+      "reason": "Owns explicitly reviewed contextual families below."
+    },
+    {
+      "path": "core/lib/checker/policy_correspondence.mli",
+      "sha256": "a80bacf3f9cebd9ec2dad3f60b0d7f0c83028fa455a594e0cab2509e244f9da9",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "dependency",
+      "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
+    },
+    {
+      "path": "core/lib/checker/policy_implementation_binding_check.ml",
+      "sha256": "af77acf6c93f5d7635ce7f4729afac40da4febf38705733ff031a50e5403211a",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 14,
+          "Diagnostic.require": 1,
+          "require": 50
+        },
+        "profile_literals": {
+          "biocompiler.policy_implementation_binding_report.v0.1": 1
+        }
+      },
+      "disposition": "rule_owner",
+      "reason": "Owns explicitly reviewed contextual families below."
+    },
+    {
+      "path": "core/lib/checker/policy_implementation_binding_check.mli",
+      "sha256": "91552a30cff9a16827c1c18fb7d27df406cc2cd7ce3c515974dcbb230ef4915e",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "dependency",
+      "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
+    },
+    {
+      "path": "core/lib/checker/policy_mrna_structure_check.ml",
+      "sha256": "14a340af4a2a4e46628ad80a239790b6b23ac32f94a3a42ee54343680214c213",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.require": 3,
+          "supported": 15,
+          "verify": 21
+        },
+        "profile_literals": {
+          "biocompiler.ocaml.policy_mrna_structure_check.v0.1": 1,
+          "biocompiler.policy_mrna_structure_assessment.v0.1": 1
+        }
+      },
+      "disposition": "rule_owner",
+      "reason": "Owns explicitly reviewed contextual families below."
+    },
+    {
+      "path": "core/lib/checker/policy_mrna_structure_check.mli",
+      "sha256": "098dfde90a7ae1e462e1b612158561f514278dcbf6e084d902aeb438fd112ffe",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "dependency",
+      "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
+    },
+    {
+      "path": "core/lib/checker/policy_realization_admission.ml",
+      "sha256": "3cf0e5b4931051da873140691b0b74e98bea1d51f68db8db157bd6ac4283ecda",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 2,
+          "Diagnostic.require": 1,
+          "require": 11,
+          "supported": 11
+        },
+        "profile_literals": {
+          "biocompiler.policy_realization_admission.v0.1": 1
+        }
+      },
+      "disposition": "rule_owner",
+      "reason": "Owns explicitly reviewed contextual families below."
+    },
+    {
+      "path": "core/lib/checker/policy_realization_admission.mli",
+      "sha256": "b778ff7e4a21c49aafba051741e0a4f5e287be6f537e247255ba7db540362c2c",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "dependency",
+      "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
+    },
+    {
+      "path": "core/lib/compiler/construction_producer.ml",
+      "sha256": "c59acedb2cd0a40bce344278c1bc9cbd90644046eb30a45006cda495e4de689e",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.require": 1,
+          "require": 20
+        },
+        "profile_literals": {
+          "biocompiler.molecule_coordinate_path.v0.1": 1,
+          "biocompiler.molecule_coordinate_space.v0.1": 1,
+          "biocompiler.molecule_index_span.v0.1": 1,
+          "biocompiler.ocaml.construction_producer.v0.1": 1
+        }
+      },
+      "disposition": "dependency",
+      "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
+    },
+    {
+      "path": "core/lib/compiler/construction_producer.mli",
+      "sha256": "540f28bb8be1e88e3e7daa5cbdc41d44d8c3ba27ee8d61765be3647ba1175b58",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "dependency",
+      "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
+    },
+    {
+      "path": "core/lib/compiler/policy_implementation_lowering.ml",
+      "sha256": "ca278d98039620eba89f6aaec11008f35bc589748a3479b598e26e732b249681",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 11,
+          "Diagnostic.require": 5,
+          "supported": 27
+        },
+        "profile_literals": {}
+      },
+      "disposition": "dependency",
+      "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
+    },
+    {
+      "path": "core/lib/compiler/policy_implementation_lowering.mli",
+      "sha256": "c3fac71eba7c2b7bc263169b8a6314142e95bd6bea774cba20e36fe1a6c358c0",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "dependency",
+      "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
+    },
+    {
+      "path": "core/lib/compiler/policy_lowering.ml",
+      "sha256": "e78d39ea6a7cf92547c899c6eb758604c236053fbd763832b03a1318a9d6a6ed",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "dependency",
+      "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
+    },
+    {
+      "path": "core/lib/compiler/policy_lowering.mli",
+      "sha256": "4b6415b68caae88f5994c8a90e8bbebf73fe907d69aed2d865d703d305636af6",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "dependency",
+      "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
+    },
+    {
+      "path": "core/lib/domain/construction_content.ml",
+      "sha256": "b276e19b82b57270cee7650a8bd133d97e0e5059a8e8bf9d80d6e3428e6bdde0",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 3,
+          "Diagnostic.require": 2
+        },
+        "profile_literals": {
+          "biocompiler.construction_content.v0.1": 1,
+          "biocompiler.construction_content_authority.v0.1": 1,
+          "biocompiler.molecular_content_inventory.v0.1": 1
+        }
+      },
+      "disposition": "dependency",
+      "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
+    },
+    {
+      "path": "core/lib/domain/construction_content.mli",
+      "sha256": "0bc536585f98bf5bc7214948c3d782844650667b2e7b6f1b82672b191c1ef920",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "dependency",
+      "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
+    },
+    {
+      "path": "core/lib/domain/policy_document.ml",
+      "sha256": "db2860b602d63df29d1a8240417f8632c37693b797f9561e00395bd1fd2f95dc",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 3,
+          "Diagnostic.require": 4,
+          "require": 14
+        },
+        "profile_literals": {
+          "biocompiler.policy.v0.1": 1
+        }
+      },
+      "disposition": "dependency",
+      "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
+    },
+    {
+      "path": "core/lib/domain/policy_document.mli",
+      "sha256": "61ce81ca248bdec1256e1ed4e7aaf0ca410853b58fa7a28dbe50c0dbd3fade4f",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "dependency",
+      "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
+    },
+    {
+      "path": "core/lib/domain/policy_implementation.ml",
+      "sha256": "0cfcbdcb9d9dd99b5d7b88842e2b8b139abc5ccb6e4747ada23e4a5827297a37",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 1,
+          "Diagnostic.require": 1,
+          "fail": 19,
+          "require": 43
+        },
+        "profile_literals": {
+          "biocompiler.policy_implementation.resources.v0.1": 1,
+          "biocompiler.policy_implementation.v0.1": 1,
+          "biocompiler.policy_implementation_library.v0.1": 1,
+          "biocompiler.policy_primitive_model.v0.1": 1,
+          "biocompiler.policy_truth_observables.v0.1": 1,
+          "biocompiler.policy_truth_primitives.v0.1": 1
+        }
+      },
+      "disposition": "rule_owner",
+      "reason": "Owns explicitly reviewed contextual families below."
+    },
+    {
+      "path": "core/lib/domain/policy_implementation.mli",
+      "sha256": "934f7e6fcae6e88163b9b7d564028a651d74f7d0a633adb8fccee8cab1ea3742",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "dependency",
+      "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
+    },
+    {
+      "path": "core/lib/domain/policy_implementation_binding.ml",
+      "sha256": "45c819e058ca3c66b727f4a2851d6b9712696f3a9a17e5c4e4992c77608b8eed",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.require": 1,
+          "require": 6
+        },
+        "profile_literals": {
+          "biocompiler.policy_exclusive_source_graph.v0.1": 1,
+          "biocompiler.policy_implementation_binding.v0.1": 1
+        }
+      },
+      "disposition": "dependency",
+      "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
+    },
+    {
+      "path": "core/lib/domain/policy_implementation_binding.mli",
+      "sha256": "6843fca29304d4847e5df9e731d78381d38058547d64b1b001b7f71a66271c37",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "dependency",
+      "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
+    },
+    {
+      "path": "core/lib/domain/policy_material_context.ml",
+      "sha256": "9fb3a60e865d23a094b1c334bb03d63280a9d6480c9edcde31be92d7a499ae20",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 3,
+          "Diagnostic.require": 1,
+          "require": 20
+        },
+        "profile_literals": {
+          "biocompiler.policy_delivery_group.v0.1": 1,
+          "biocompiler.policy_material_complete_records.v0.1": 1,
+          "biocompiler.policy_material_context.v0.1": 1,
+          "biocompiler.policy_material_provider.v0.1": 1,
+          "biocompiler.policy_truth_mrna.v0.1": 1
+        }
+      },
+      "disposition": "dependency",
+      "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
+    },
+    {
+      "path": "core/lib/domain/policy_material_context.mli",
+      "sha256": "b52bf9fcbd1478cab0e7818583a1a85b9a300fd9ba266bf8dce3c408c80dd989",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "dependency",
+      "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
+    },
+    {
+      "path": "core/lib/domain/policy_material_contract.ml",
+      "sha256": "afd7b220c3cd675d9eeed8d093626da60d935a30e183bd25423986a037adf486",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 6,
+          "Diagnostic.require": 1,
+          "require": 15
+        },
+        "profile_literals": {
+          "biocompiler.policy_material_binding.v0.1": 1,
+          "biocompiler.policy_material_contract.v0.1": 1,
+          "biocompiler.policy_material_kernel.v0.1": 1,
+          "biocompiler.policy_primitive_execution.v0.1": 1,
+          "biocompiler.policy_truth_mrna_material.v0.1": 1
+        }
+      },
+      "disposition": "dependency",
+      "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
+    },
+    {
+      "path": "core/lib/domain/policy_material_contract.mli",
+      "sha256": "ad98b85ea7972431857e9a49156efd3cdfa563f4e27e28234a5407a2b575f203",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "dependency",
+      "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
+    },
+    {
+      "path": "core/lib/domain/policy_material_request.ml",
+      "sha256": "d9b93435f5d41705135fb65e7802e5b28a874d710bc2d6ac614f45edcc118d5a",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.require": 6,
+          "require": 6
+        },
+        "profile_literals": {
+          "biocompiler.policy_material_request.v0.1": 1,
+          "biocompiler.policy_material_resources.v0.1": 1,
+          "biocompiler.policy_truth_mrna.v0.1": 1
+        }
+      },
+      "disposition": "rule_owner",
+      "reason": "Owns explicitly reviewed contextual families below."
+    },
+    {
+      "path": "core/lib/domain/policy_material_request.mli",
+      "sha256": "e376c61cf0a623790e561052189b50bc80cc543378d2000160dd1596d1416227",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "dependency",
+      "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
+    },
+    {
+      "path": "core/lib/domain/policy_mrna_structure.ml",
+      "sha256": "27c37a1981b0f56e2edc7a0461cb84589f20e6596fecef9e85d494724ac9d5a9",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.require": 1,
+          "require": 6
+        },
+        "profile_literals": {
+          "biocompiler.policy_mrna_completeness.v0.1": 1,
+          "biocompiler.policy_mrna_product_content.v0.1": 1,
+          "biocompiler.policy_mrna_structure_authority.v0.1": 1
+        }
+      },
+      "disposition": "dependency",
+      "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
+    },
+    {
+      "path": "core/lib/domain/policy_mrna_structure.mli",
+      "sha256": "ac2971aaaa53ac4232e168d948fb30f19b8ed916e1b1bb766f9ffd0119ac5af4",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "dependency",
+      "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
+    },
+    {
+      "path": "core/lib/domain/policy_operating_domain.ml",
+      "sha256": "bad7552eaf0642d051f1d7a1cf70ccc3e3e216b2ce5659b9a7ace4577660fd08",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 4,
+          "Diagnostic.require": 1,
+          "require": 27
+        },
+        "profile_literals": {
+          "biocompiler.policy_operating_domain.v0.1": 1,
+          "biocompiler.policy_truth_domain.v0.1": 1
+        }
+      },
+      "disposition": "rule_owner",
+      "reason": "Owns explicitly reviewed contextual families below."
+    },
+    {
+      "path": "core/lib/domain/policy_operating_domain.mli",
+      "sha256": "b5a700541f8a58b2dd83c21f01bdf6b1646082eafbe196e810b18e7414817201",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "dependency",
+      "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
+    },
+    {
+      "path": "core/lib/domain/policy_operational.ml",
+      "sha256": "bd5d03f8acefed68ab0a8059041774479426928266351b325535a124e3e23d34",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 5,
+          "Diagnostic.require": 3,
+          "require": 13
+        },
+        "profile_literals": {
+          "biocompiler.policy_behavior.v0.1": 1,
+          "biocompiler.policy_operational.v0.1": 1,
+          "biocompiler.policy_operational_definitions.v0.1": 1
+        }
+      },
+      "disposition": "dependency",
+      "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
+    },
+    {
+      "path": "core/lib/domain/policy_operational.mli",
+      "sha256": "4606a2ac03ccf53898b47d064a54bf283605f5c43087759d14e1deac0fd6df7e",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "dependency",
+      "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
+    },
+    {
+      "path": "core/lib/domain/policy_realization_request.ml",
+      "sha256": "27709b7950788d37a7eb4816e6909c805ee4b46da26a9bae26d8529bfff8a0ac",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.require": 1,
+          "require": 11
+        },
+        "profile_literals": {
+          "biocompiler.policy_realization_inputs.resources.v0.1": 1,
+          "biocompiler.policy_realization_inputs.v0.1": 1,
+          "biocompiler.policy_realization_request.v0.1": 1
+        }
+      },
+      "disposition": "dependency",
+      "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
+    },
+    {
+      "path": "core/lib/domain/policy_realization_request.mli",
+      "sha256": "a0d3cf7931d015ff2caba7e8075afb43af76a1e110d84c224483a324eaafabf2",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "dependency",
+      "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
+    },
+    {
+      "path": "core/lib/domain/policy_schema.ml",
+      "sha256": "ea829a61d0584e98e4c63a3df6404988dec0d6af4bdf3faef31158420be2b2c5",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {
+          "biocompiler.policy_capability_assessment.v0.1": 1,
+          "biocompiler.policy_submission.v0.1": 1
+        }
+      },
+      "disposition": "dependency",
+      "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
+    },
+    {
+      "path": "core/lib/domain/policy_schema.mli",
+      "sha256": "9cfd2d1449ea8e0611e6c96406bc3ca2bdd89a640b017dda7b3d45936ef4b8f1",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "dependency",
+      "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
+    },
+    {
+      "path": "core/lib/producer_service/policy_implementation_producer.ml",
+      "sha256": "81ffbee4d3862f69c054f9d6031366d99871e72ddbea7165bc515f2a53f6dc5e",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "dependency",
+      "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
+    },
+    {
+      "path": "core/lib/producer_service/policy_implementation_producer.mli",
+      "sha256": "c82f09c41d2aaa8f6f5a12a300803cdb3d7ddc2a8658574776607c6761c1ca4d",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "dependency",
+      "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
+    },
+    {
+      "path": "core/lib/producer_service/policy_material_producer.ml",
+      "sha256": "cc48338ae7c06197e79a76e77b9b5008860ad32ece2c35d333b258937ac76a7e",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 1,
+          "Diagnostic.require": 2,
+          "supported": 3
+        },
+        "profile_literals": {}
+      },
+      "disposition": "dependency",
+      "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
+    },
+    {
+      "path": "core/lib/producer_service/policy_material_producer.mli",
+      "sha256": "50934de7be37397cb50db97ddf9bd7bf32adf94f52205f0b1a90360e7f726882",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "dependency",
+      "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
+    },
+    {
+      "path": "core/lib/producer_service/policy_operational_producer.ml",
+      "sha256": "b1df07294cc3f3e4267d677590cd3d667063a8a7dd11d94d1591aeabe852536b",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Separate source/operational public route; no complete material admission authority."
+    },
+    {
+      "path": "core/lib/producer_service/policy_operational_producer.mli",
+      "sha256": "d5a6723655290fad5a1597c170ac19a59c572c34b2475ccab437327e28147353",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Separate source/operational public route; no complete material admission authority."
+    },
+    {
+      "path": "core/lib/producer_service/producer_service.ml",
+      "sha256": "abf64d6bfdba2b13bf50159dfdcd6f3f3d198f851ef8854e9009b2e55a3df05e",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {
+          "biocompiler.core.architecture_build.v1": 1,
+          "biocompiler.core.architecture_export.v1": 1
+        }
+      },
+      "disposition": "dependency",
+      "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
+    },
+    {
+      "path": "core/lib/producer_service/producer_service.mli",
+      "sha256": "98866b8aec1d940f53f2e60780a50d39170985bf95545acd5bdbcf848423e7ef",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "dependency",
+      "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
+    },
+    {
+      "path": "core/lib/realization_checker/policy_material_binding_check.ml",
+      "sha256": "36a7f89f98077d6607c808e8976a61a66acdd5e7fc78feddb8eeff7392945020",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.require": 2,
+          "verify": 33
+        },
+        "profile_literals": {
+          "biocompiler.ocaml.policy_material_binding_check.v0.1": 1,
+          "biocompiler.policy_material_binding_assessment.v0.1": 1
+        }
+      },
+      "disposition": "rule_owner",
+      "reason": "Owns explicitly reviewed contextual families below."
+    },
+    {
+      "path": "core/lib/realization_checker/policy_material_binding_check.mli",
+      "sha256": "75d3b4daa7b667322cdae317fc3766a76705fa03dc6371a67ed2b9794abd1529",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "dependency",
+      "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
+    },
+    {
+      "path": "core/lib/realization_checker/policy_material_check.ml",
+      "sha256": "46448ccb8e0f22d0de71ce60ee8c66bfd4d680b8f5ac661d309d9855ce500c16",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.require": 4,
+          "require": 5
+        },
+        "profile_literals": {
+          "biocompiler.ocaml.policy_material_check.v0.1": 1,
+          "biocompiler.policy_material_assessment.v0.1": 1,
+          "biocompiler.policy_material_candidate.v0.1": 1
+        }
+      },
+      "disposition": "rule_owner",
+      "reason": "Owns explicitly reviewed contextual families below."
+    },
+    {
+      "path": "core/lib/realization_checker/policy_material_check.mli",
+      "sha256": "05fc71296285f70f36b46c2b18df03b902c25b972eb86cc779e52267ab5f11d2",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "dependency",
+      "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
+    },
+    {
+      "path": "core/lib/realization_checker/policy_material_context_check.ml",
+      "sha256": "7abd2fb441d9dd0491f61bab33e6d54d613c09e643cffa9e9d6658b8511f6d11",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 14,
+          "Diagnostic.require": 4,
+          "fail": 39,
+          "supported": 17
+        },
+        "profile_literals": {
+          "biocompiler.ocaml.policy_material_context_check.v0.1": 1,
+          "biocompiler.policy_material_context_assessment.v0.1": 1
+        }
+      },
+      "disposition": "rule_owner",
+      "reason": "Owns explicitly reviewed contextual families below."
+    },
+    {
+      "path": "core/lib/realization_checker/policy_material_context_check.mli",
+      "sha256": "f1e14d492e72c4fe66cfc2673ba69c4049a17745aa0a604a79be24cdc8550f64",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "dependency",
+      "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
+    },
+    {
+      "path": "core/lib/realization_checker/policy_preservation_check.ml",
+      "sha256": "ea6855f47b940070ad1b2f508329b1cd547d01865960684bc2185e1d0d51724d",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 1,
+          "Diagnostic.require": 1,
+          "require": 7
+        },
+        "profile_literals": {
+          "biocompiler.policy_bounded_preservation.v0.1": 1,
+          "biocompiler.policy_preservation_report.v0.1": 1,
+          "biocompiler.policy_preservation_resources.v0.1": 1
+        }
+      },
+      "disposition": "rule_owner",
+      "reason": "Owns explicitly reviewed contextual families below."
+    },
+    {
+      "path": "core/lib/realization_checker/policy_preservation_check.mli",
+      "sha256": "6c4a8045012dcd7b4d153477a01acff90930ee2f20cd2ea73ed26651e557575c",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "dependency",
+      "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
+    },
+    {
+      "path": "core/lib/realization_checker/policy_requirement_monitor.ml",
+      "sha256": "4c1cad3e859eb20e4d066aaca8808840fbc73db65534f07511f83c06e906d789",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 1,
+          "fail": 4,
+          "require": 13,
+          "unsupported": 20
+        },
+        "profile_literals": {
+          "biocompiler.policy_candidate_requirements.v0.1": 1
+        }
+      },
+      "disposition": "rule_owner",
+      "reason": "Owns explicitly reviewed contextual families below."
+    },
+    {
+      "path": "core/lib/realization_checker/policy_requirement_monitor.mli",
+      "sha256": "915daf881b0c905a3a49326bf21d95f709031ea0e0e96e5487e11ddb57cdf49e",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "dependency",
+      "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
+    },
+    {
+      "path": "core/lib/realization_checker/policy_trace_correspondence.ml",
+      "sha256": "996e050c608f06ff49f93e28071261b4aa5f6e7bb521fc63694e3d618b5f22e5",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 6,
+          "Diagnostic.require": 1,
+          "require": 18
+        },
+        "profile_literals": {
+          "biocompiler.policy_exact_trace_correspondence.v0.1": 1
+        }
+      },
+      "disposition": "dependency",
+      "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
+    },
+    {
+      "path": "core/lib/realization_checker/policy_trace_correspondence.mli",
+      "sha256": "0b324756d764be31e14032b16aa99dfe5c16a5758deaf3c25c0af9943365c5b9",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "dependency",
+      "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
+    },
+    {
+      "path": "core/lib/semantics/policy_domain_reference.ml",
+      "sha256": "4e522afe0bafdd82c171fe6764a67a840e97d06d3f498409d0f48ccb00d58809",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 3,
+          "Diagnostic.require": 1,
+          "require": 6
+        },
+        "profile_literals": {
+          "biocompiler.policy_domain_reference.v0.1": 1
+        }
+      },
+      "disposition": "dependency",
+      "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
+    },
+    {
+      "path": "core/lib/semantics/policy_domain_reference.mli",
+      "sha256": "b1dd726a0756ebaaeaa8061bcf35e07c95742e9edbc4e2e53a9bc184433140e8",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "dependency",
+      "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
+    },
+    {
+      "path": "core/lib/semantics/policy_execution.ml",
+      "sha256": "5b14bb49022d0ea44527f565fb382c3639d03ba7e0329fa5c63d0b2ba3107e0b",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 1,
+          "Diagnostic.require": 1,
+          "fail": 18,
+          "reject": 4,
+          "require": 45,
+          "supported": 2
+        },
+        "profile_literals": {
+          "biocompiler.policy_execution.v0.1": 1,
+          "biocompiler.policy_timeline.v0.1": 1
+        }
+      },
+      "disposition": "dependency",
+      "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
+    },
+    {
+      "path": "core/lib/semantics/policy_execution.mli",
+      "sha256": "21e97ef5e08215b17a630598b25968c618a3bc154a6acbbf72fbacffac1b4387",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "dependency",
+      "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
+    },
+    {
+      "path": "core/lib/service/policy_implementation_service.ml",
+      "sha256": "2ab777a600cfa83e1ab2774e19bb19d48d3265f0cf62a0d9685a7397dfb727cf",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.require": 3
+        },
+        "profile_literals": {
+          "biocompiler.core.policy_implementation.v1": 1,
+          "biocompiler.ocaml.policy_implementation.v0.1": 1,
+          "biocompiler.policy_implementation_candidate.v0.1": 1,
+          "biocompiler.policy_preservation_resources.v0.1": 1
+        }
+      },
+      "disposition": "dependency",
+      "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
+    },
+    {
+      "path": "core/lib/service/policy_implementation_service.mli",
+      "sha256": "ad8b025775b323c9739552b864151b1a07728ef42d9dc7d557eb3d0cfe7dc73e",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "dependency",
+      "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
+    },
+    {
+      "path": "core/lib/service/policy_material_service.ml",
+      "sha256": "6d7727a572605b365c4503a0b0838f2517661f13549fe88aca3a9f25f028b21a",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 2,
+          "Diagnostic.require": 5
+        },
+        "profile_literals": {
+          "biocompiler.core.policy_material.v1": 1,
+          "biocompiler.ocaml.policy_material.v0.1": 1,
+          "biocompiler.policy_material_candidate.v0.1": 1,
+          "biocompiler.policy_mrna_export.v0.1": 1,
+          "biocompiler.policy_mrna_manifest.v0.1": 1
+        }
+      },
+      "disposition": "rule_owner",
+      "reason": "Owns explicitly reviewed contextual families below."
+    },
+    {
+      "path": "core/lib/service/policy_material_service.mli",
+      "sha256": "4a532311f0723825efe231a71d05cb85424f5fbc442e34999814b73798d78a6a",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "dependency",
+      "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
+    },
+    {
+      "path": "core/lib/service/policy_operational_service.ml",
+      "sha256": "1f07e35003c54da390ea9dd1b1cf5275ddb1a7cd607f8613e041f7d710b064fb",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.require": 2
+        },
+        "profile_literals": {
+          "biocompiler.core.policy_operational.v1": 1,
+          "biocompiler.ocaml.policy_operational.v0.1": 1,
+          "biocompiler.policy_lowering_report.v0.1": 1,
+          "biocompiler.policy_operational.resources.v0.1": 1
+        }
+      },
+      "disposition": "outside_route",
+      "reason": "Separate source/operational public route; no complete material admission authority."
+    },
+    {
+      "path": "core/lib/service/policy_operational_service.mli",
+      "sha256": "123b92c6197f3e6b26a322850d62e1bfcae5b73baf9805b7077eee028e990f70",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Separate source/operational public route; no complete material admission authority."
+    },
+    {
+      "path": "core/lib/service/policy_service.ml",
+      "sha256": "0346b988022611c29ca5990c111418770f3bbc29370fb3e12b0283a71d87a8b9",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 1,
+          "Diagnostic.require": 1
+        },
+        "profile_literals": {
+          "biocompiler.core.policy_assessment.v1": 1,
+          "biocompiler.ocaml.policy_check.v0.1": 1,
+          "biocompiler.policy.v0.1": 1,
+          "biocompiler.policy_assessment.v0.1": 1,
+          "biocompiler.policy_frontend.resources.v0.1": 1
+        }
+      },
+      "disposition": "outside_route",
+      "reason": "Separate source/operational public route; no complete material admission authority."
+    },
+    {
+      "path": "core/lib/service/policy_service.mli",
+      "sha256": "3c2e38ac1a3a7c73c724320da21b66e333317e3c434ffad1af51c856cd9a10dc",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Separate source/operational public route; no complete material admission authority."
+    },
+    {
+      "path": "core/lib/service/service.ml",
+      "sha256": "a4e5dce5198cdbf1a48fb082a72f810fbc572b90617897f12fe7a27c72dca496",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 1,
+          "Diagnostic.require": 7
+        },
+        "profile_literals": {
+          "biocompiler.core.artifact_response.v1": 1,
+          "biocompiler.core.artifact_transport.v1": 2,
+          "biocompiler.core_capabilities.v1": 1
+        }
+      },
+      "disposition": "dependency",
+      "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
+    },
+    {
+      "path": "core/lib/service/service.mli",
+      "sha256": "64aee24f637242c51b64203132f9e4471c09ac7253c7429d7f7d9b5ffe1bb279",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "dependency",
+      "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
+    },
+    {
+      "path": "core/lib/wire/limits.ml",
+      "sha256": "169da0fd73f0e2d80b4ebd207565e354f1978fe987c61305f8b27f4776251e14",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "dependency",
+      "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
+    },
+    {
+      "path": "core/lib/wire/limits.mli",
+      "sha256": "8f2d00c041fac2cb0fd1707b7fd374fabac1d0374f3ef2d566936559d117fa90",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "dependency",
+      "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
+    },
+    {
+      "path": "core/lib/wire/protocol.ml",
+      "sha256": "d922db5015c43aba844ac8817a6b7da0984ad37992c60419a9a4879373fcb05e",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.require": 3
+        },
+        "profile_literals": {
+          "biocompiler.core.v1": 1
+        }
+      },
+      "disposition": "dependency",
+      "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
+    },
+    {
+      "path": "core/lib/wire/protocol.mli",
+      "sha256": "53cb259585d7a8b2cbef889e98a097e24b2a39e5b77385801a5e675b7c3c1ad4",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "dependency",
+      "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
+    },
+    {
+      "path": "src/biocompiler/__main__.py",
+      "sha256": "d5b809722d6dfee6e4cb84d0b4a513239d99ae898defe55c1753ac85c21a9eb4",
+      "census": {
+        "kind": "python_ast_node_census",
+        "guards": {
+          "Raise": 1
+        },
+        "profile_literals": {}
+      },
+      "disposition": "dependency",
+      "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
+    },
+    {
+      "path": "src/biocompiler/core_client.py",
+      "sha256": "c8d65a42c1f92cbd75cb5edd176a9463657e03509be8ed487496d78b17be00fc",
+      "census": {
+        "kind": "python_ast_node_census",
+        "guards": {
+          "Assert": 1,
+          "ClassDef": 12,
+          "FunctionDef": 24,
+          "Raise": 55
+        },
+        "profile_literals": {
+          "biocompiler.core.v1": 1,
+          "biocompiler.core_capabilities.v1": 1
+        }
+      },
+      "disposition": "dependency",
+      "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
+    },
+    {
+      "path": "src/biocompiler/core_distribution.py",
+      "sha256": "10c772076ee0ecfcb0c61a1a3410ae6014313d2e05617f30bc77f6df55485459",
+      "census": {
+        "kind": "python_ast_node_census",
+        "guards": {
+          "ClassDef": 1,
+          "FunctionDef": 15,
+          "Raise": 4
+        },
+        "profile_literals": {
+          "biocompiler.core_distribution.v1": 1,
+          "biocompiler.core_linkage.v1": 1,
+          "biocompiler.core_release.v1": 1,
+          "biocompiler.installed_core_ownership.v1": 1
+        }
+      },
+      "disposition": "dependency",
+      "reason": "Narrow prebuilt resolver foundation only; targeted installed material routing and exact-revision acceptance remain pending."
+    },
+    {
+      "path": "src/biocompiler/core_policy_material.py",
+      "sha256": "b3a28a1f40d475de8848cc6cea45d4c0975042da17b2c90977facca7f2d9100c",
+      "census": {
+        "kind": "python_ast_node_census",
+        "guards": {
+          "ClassDef": 2,
+          "FunctionDef": 19,
+          "Raise": 54
+        },
+        "profile_literals": {
+          "biocompiler.construction_content_assessment.v0.1": 1,
+          "biocompiler.construction_content_authority.v0.1": 1,
+          "biocompiler.core.policy_material.v1": 1,
+          "biocompiler.ocaml.construction_content_check.v0.1": 1,
+          "biocompiler.ocaml.policy_material.v0.1": 1,
+          "biocompiler.ocaml.policy_material_binding_check.v0.1": 1,
+          "biocompiler.ocaml.policy_material_check.v0.1": 1,
+          "biocompiler.ocaml.policy_material_context_check.v0.1": 1,
+          "biocompiler.ocaml.policy_mrna_structure_check.v0.1": 1,
+          "biocompiler.policy_material_assessment.v0.1": 1,
+          "biocompiler.policy_material_binding_assessment.v0.1": 1,
+          "biocompiler.policy_material_candidate.v0.1": 1,
+          "biocompiler.policy_material_context_assessment.v0.1": 1,
+          "biocompiler.policy_material_request.v0.1": 1,
+          "biocompiler.policy_material_resources.v0.1": 1,
+          "biocompiler.policy_mrna_completeness.v0.1": 1,
+          "biocompiler.policy_mrna_export.v0.1": 1,
+          "biocompiler.policy_mrna_manifest.v0.1": 1,
+          "biocompiler.policy_mrna_structure_assessment.v0.1": 1,
+          "biocompiler.policy_preservation_report.v0.1": 1,
+          "biocompiler.policy_truth_mrna.v0.1": 1,
+          "biocompiler.policy_truth_mrna_material.v0.1": 1
+        }
+      },
+      "disposition": "dependency",
+      "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
+    },
+    {
+      "path": "src/biocompiler/entrypoint.py",
+      "sha256": "7158963ef6435bcd8d8dbbb4952b185c6a64414fe01f8651b6e3dccff5492ed8",
+      "census": {
+        "kind": "python_ast_node_census",
+        "guards": {
+          "FunctionDef": 1
+        },
+        "profile_literals": {}
+      },
+      "disposition": "dependency",
+      "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
+    },
+    {
+      "path": "src/biocompiler/policy/cli.py",
+      "sha256": "2eab649fbcf2223e26312b4987a842bf251425b1779ce795a3542fa8ab97cc60",
+      "census": {
+        "kind": "python_ast_node_census",
+        "guards": {
+          "FunctionDef": 5,
+          "Raise": 15
+        },
+        "profile_literals": {}
+      },
+      "disposition": "dependency",
+      "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
+    },
+    {
+      "path": "src/biocompiler/policy/material.py",
+      "sha256": "cabfab5d543c84d5732d9d9adcb1edf1482f45e3ebb80fdab1022ef3bea16359",
+      "census": {
+        "kind": "python_ast_node_census",
+        "guards": {
+          "FunctionDef": 8,
+          "Raise": 14
+        },
+        "profile_literals": {}
+      },
+      "disposition": "rule_owner",
+      "reason": "Owns explicitly reviewed contextual families below."
+    },
+    {
+      "path": "tools/policy_material_authoring_witness.py",
+      "sha256": "368293a1cc847c091e2642963774d7f0239f6c5b9be37d90a9ad1b23ec813812",
+      "census": {
+        "kind": "python_ast_node_census",
+        "guards": {
+          "FunctionDef": 2,
+          "Raise": 3
+        },
+        "profile_literals": {
+          "biocompiler.policy_material_authoring_witness.v0.1": 1
+        }
+      },
+      "disposition": "rule_owner",
+      "reason": "Owns explicitly reviewed contextual families below."
+    }
+  ],
+  "witness_sources": [
+    {
+      "path": "core/test/data/policy_material_compound_v01.json",
+      "sha256": "c55c03558450b44aaa42ce348bd76920744492db91581bddcbbc19a85a10c216"
+    },
+    {
+      "path": "core/test/data/policy_material_lifecycle_v01.json",
+      "sha256": "6f2486b344fdc931334ac6db51ff593d391dd3b0e0641fcde6fb2fea82e862e1"
+    },
+    {
+      "path": "core/test/data/policy_material_request_v01.json",
+      "sha256": "3c8d3ac797b29f41371d94e1093103dfdd35400896a1a0829a8ec166c7a397a6"
+    },
+    {
+      "path": "core/test/data/policy_operational_v01.json",
+      "sha256": "bd9dfbb65c456b75fa401049341e85a6de882e8f130b4c76dfdadd9b6dd08968"
+    },
+    {
+      "path": "core/test/test_policy_implementation.ml",
+      "sha256": "1f7373c92d728ca8d707b9363892f487f6543240e2c9b61735f63daf8df26c2e"
+    },
+    {
+      "path": "core/test/test_policy_implementation_binding.ml",
+      "sha256": "ccebedd537ad25cea781d3e0ff8d71ab583068591d9031789dc3ea222180c8da"
+    },
+    {
+      "path": "core/test/test_policy_material_binding.ml",
+      "sha256": "11ee6999a4426037b1ed8f296bd05068eadba8d025f55745bf17050f551603a7"
+    },
+    {
+      "path": "core/test/test_policy_material_check.ml",
+      "sha256": "62f8c1481806bf1511495f714f12a01a84bfde18753db9de110fd0c4b33fa789"
+    },
+    {
+      "path": "core/test/test_policy_material_compound.ml",
+      "sha256": "685005ebbb34a10f165489461d0810310623996bce2ca8407f9dbfa99b9bb263"
+    },
+    {
+      "path": "core/test/test_policy_material_context.ml",
+      "sha256": "71f7bb9054d0b7b7944372a509162d08f0e004ce34a6aa22359db1b569e16785"
+    },
+    {
+      "path": "core/test/test_policy_material_lifecycle.ml",
+      "sha256": "e5ff70416b56d27e5ecdc4f985e75014efc9eca6af17323193c6aa2e6aaa2603"
+    },
+    {
+      "path": "core/test/test_policy_material_service.ml",
+      "sha256": "45e9892dc290e58f358abb29c66b82474475bba8ee3e036164765eacdd5db5f3"
+    },
+    {
+      "path": "core/test/test_policy_mrna_structure.ml",
+      "sha256": "ce3160beb6b2f852160b341c3b0b675fddf3e24da1aeb125e3d17a073da0a7f4"
+    },
+    {
+      "path": "core/test/test_policy_operating_domain.ml",
+      "sha256": "014d5bf8fba6a7368bc6041a47b5db24ceca6ab239dac89a55a0a90420e6f176"
+    },
+    {
+      "path": "core/test/test_policy_operational.ml",
+      "sha256": "21d515ca64ad2b9dc56181ad91fefd28c2070967c174a82ef8120c0084a0c71a"
+    },
+    {
+      "path": "core/test/test_policy_preservation_check.ml",
+      "sha256": "b240546fdbe6fd1e8e7fae814e0ca66070b7aa483f2fc0ac6cfcbda56ab2b981"
+    },
+    {
+      "path": "core/test/test_policy_primitives.ml",
+      "sha256": "b67b398794a75b12bba9d4cdff50d190788f22e9955091258a11ae421a416d83"
+    },
+    {
+      "path": "core/test/test_policy_realization_admission.ml",
+      "sha256": "b8d3984044bea8c5e5cf308e96b09c8879264ad4eba9950a7599ad29791ba479"
+    },
+    {
+      "path": "tests/test_policy_material.py",
+      "sha256": "da5ea0d0998bdfcc4049188a17b4ecb5ca5e5421e5dd968505c9cf848125e662"
+    },
+    {
+      "path": "tests/test_policy_material_authoring.py",
+      "sha256": "3f0ab96cdd007462e4b0db164b8b23c025431e9ab5c2b4fcd7c7d0f8d9f2801b"
+    }
+  ],
+  "rules": [
+    {
+      "id": "authoring.canonical_boundary",
+      "stage": "authoring",
+      "owners": [
+        {
+          "path": "tools/policy_material_authoring_witness.py",
+          "anchor": "def build(",
+          "occurrence": 1
+        }
+      ],
+      "admitted_context": "Public declarative builders and both request helpers reproduce the complete independently retained source request; original supplied model/material/context bodies stay external.",
+      "outside_context": {
+        "disposition": "rejected",
+        "description": "Changed guard, source position or definition cannot masquerade as the frozen builder witness; authoring alone grants no native acceptance."
+      },
+      "positive": [
+        {
+          "source": {
+            "path": "tests/test_policy_material_authoring.py",
+            "anchor": "test_public_builders_and_both_request_helpers_preserve_full_original",
+            "occurrence": 1
+          },
+          "context": "Complete Python builder-to-canonical original witness; pure transport/authoring scope.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "negative": [
+        {
+          "source": {
+            "path": "tests/test_policy_material_authoring.py",
+            "anchor": "test_changed_guard_or_source_location_cannot_masquerade_as_builder_output",
+            "occurrence": 1
+          },
+          "context": "Distinguishing source control for the specifically named boundary; other boundary branches are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "witness_status": "source_witnesses_present",
+      "gaps": []
+    },
+    {
+      "id": "operational.source_identity",
+      "stage": "operational",
+      "owners": [
+        {
+          "path": "core/lib/checker/policy_correspondence.ml",
+          "anchor": "let check",
+          "occurrence": 1
+        }
+      ],
+      "admitted_context": "Fresh source validation and independent lowering correspondence retain complete ordered declarations, typed instructions, source spans, assumptions, requirements and unresolved obligations.",
+      "outside_context": {
+        "disposition": "rejected",
+        "description": "Omitted/altered instruction data, reordered declarations, changed source authority or invented assumptions are rejected."
+      },
+      "positive": [
+        {
+          "source": {
+            "path": "core/test/test_policy_operational.ml",
+            "anchor": "Lowering omitted declarations",
+            "occurrence": 1
+          },
+          "context": "Operational literal fixture with one executor, encounter evidence and finite truth state; this is source-level native-test inventory only.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/data/policy_operational_v01.json",
+            "anchor": "\"document\":",
+            "occurrence": 1
+          },
+          "context": "Full original operational document, descriptor authority and timeline fixture consumed by the indexed native test.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "negative": [
+        {
+          "source": {
+            "path": "core/test/test_policy_operational.ml",
+            "anchor": "rejects \"missing instruction\"",
+            "occurrence": 1
+          },
+          "context": "Distinguishing source control for the specifically named boundary; other boundary branches are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "witness_status": "source_witnesses_present",
+      "gaps": []
+    },
+    {
+      "id": "operational.descriptor_identity",
+      "stage": "operational",
+      "owners": [
+        {
+          "path": "core/lib/checker/policy_admission.ml",
+          "anchor": "Reachable source operation has no exact executable descriptor.",
+          "occurrence": 1
+        }
+      ],
+      "admitted_context": "Every reachable interpreted operation has its full id/version/body digest and closed semantic descriptor; definitions have no uninterpreted clauses or executor/subject qualifiers, and all supplied descriptors are used.",
+      "outside_context": {
+        "disposition": "mixed",
+        "description": "Missing, duplicate, stale, conflicting, unused or semantically wrong descriptors and unimplemented definition restrictions are unsupported."
+      },
+      "positive": [
+        {
+          "source": {
+            "path": "core/test/test_policy_operational.ml",
+            "anchor": "Lowering omitted declarations",
+            "occurrence": 1
+          },
+          "context": "Operational literal fixture with one executor, encounter evidence and finite truth state; this is source-level native-test inventory only.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "negative": [
+        {
+          "source": {
+            "path": "core/test/test_policy_operational.ml",
+            "anchor": "rejects \"unreachable descriptor authority\"",
+            "occurrence": 1
+          },
+          "context": "Distinguishing source control for the specifically named boundary; other boundary branches are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "witness_status": "partial_source_witnesses",
+      "gaps": [
+        "Dedicated positive/rejection witnesses for every allowed descriptor category and executor_kind/subject_kind restriction remain to be indexed."
+      ]
+    },
+    {
+      "id": "operational.effect_signature",
+      "stage": "operational",
+      "owners": [
+        {
+          "path": "core/lib/checker/policy_admission.ml",
+          "anchor": "Effect formal parameters are signature-only; nonfixed selection is unsupported.",
+          "occurrence": 1
+        }
+      ],
+      "admitted_context": "Reachable abstract-effect SemanticDefinition.parameters are signature-only: selection is fixed and value/lower/upper are null; actual effect argument expressions supply separately checked concrete values. The generic source language remains unchanged.",
+      "outside_context": {
+        "disposition": "unsupported",
+        "description": "Design, measured or uncertain formal selection, nonnull defaults or bounds require semantics beyond abstract attempts and are rejected at the original canonical definition field, even when every DefinitionRef/descriptor pin is recomputed."
+      },
+      "positive": [
+        {
+          "source": {
+            "path": "core/test/test_policy_operational.ml",
+            "anchor": "Signature-only effect changed its exact supplied argument",
+            "occurrence": 1
+          },
+          "context": "Separate text/integer actual effect arguments remain exact under fixed/null formal signatures; fresh independent correspondence is invoked.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_operational.ml",
+            "anchor": "Signature-only admission narrowing changed the ordinary operational artifact",
+            "occurrence": 1
+          },
+          "context": "The original accepted operational candidate retains its exact complete bytes after the narrowing guard.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_implementation_binding.ml",
+            "anchor": "Ordinary accepted effect signature acquired a refinement",
+            "occurrence": 1
+          },
+          "context": "Both original full-request source families retain fixed, null-valued/unbounded formal signatures before any negative mutation.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "negative": [
+        {
+          "source": {
+            "path": "core/test/test_policy_operational.ml",
+            "anchor": "\"formal design selection\"",
+            "occurrence": 1
+          },
+          "context": "Source-valid design/measured/uncertain formal selection mutations are fully repinned and rejected by direct admission and independent correspondence at the original selection field.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_operational.ml",
+            "anchor": "\"formal supplied value\"",
+            "occurrence": 1
+          },
+          "context": "A source-valid nonnull formal value is unsupported despite a separately supplied fixed actual argument and refreshed source/descriptor/candidate identities.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_operational.ml",
+            "anchor": "\"formal lower refinement\"",
+            "occurrence": 1
+          },
+          "context": "Source-valid integer lower/upper Quantity refinements are repinned and rejected at the exact original formal field.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_implementation_binding.ml",
+            "anchor": "\"full request formal design selection\"",
+            "occurrence": 1
+          },
+          "context": "Both complete request families refresh source, descriptor, catalog-entry and graph authority; design/measured/uncertain/supplied-value controls still reach the exact policy_operational_unsupported guard.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "witness_status": "source_witnesses_present",
+      "gaps": []
+    },
+    {
+      "id": "operational.clock",
+      "stage": "operational",
+      "owners": [
+        {
+          "path": "core/lib/checker/policy_admission.ml",
+          "anchor": "Bounded operational profile requires exactly one shared logical clock.",
+          "occurrence": 1
+        }
+      ],
+      "admitted_context": "One logical/availability clock and exact unreferenced time units; positive supported durations are integer multiples of the exact resolution.",
+      "outside_context": {
+        "disposition": "unsupported",
+        "description": "Observation-based time, nominal time-reference conversion, nonpositive or off-grid bounds are unsupported."
+      },
+      "positive": [
+        {
+          "source": {
+            "path": "core/test/test_policy_operational.ml",
+            "anchor": "Equivalent seconds/milliseconds changed exact clock, freshness, timeout or requirement bounds",
+            "occurrence": 1
+          },
+          "context": "Equivalent physical durations retain source representation and exact operational bounds.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "negative": [
+        {
+          "source": {
+            "path": "core/test/test_policy_operational.ml",
+            "anchor": "unsupported \"observation-based clock\"",
+            "occurrence": 1
+          },
+          "context": "Distinguishing source control for the specifically named boundary; other boundary branches are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "witness_status": "source_witnesses_present",
+      "gaps": []
+    },
+    {
+      "id": "operational.executor_subject",
+      "stage": "operational",
+      "owners": [
+        {
+          "path": "core/lib/checker/policy_admission.ml",
+          "anchor": "Bounded operational profile requires one executor role.",
+          "occurrence": 1
+        }
+      ],
+      "admitted_context": "One executor owns concrete cell subjects with encounter identity and explicit encounter/contact-loss timeline termination.",
+      "outside_context": {
+        "disposition": "unsupported",
+        "description": "Population/lineage roles, foreign ownership, unsupported subject identity and mixed concrete encounter environments are unsupported."
+      },
+      "positive": [
+        {
+          "source": {
+            "path": "core/test/test_policy_operational.ml",
+            "anchor": "Lowering omitted declarations",
+            "occurrence": 1
+          },
+          "context": "Operational literal fixture with one executor, encounter evidence and finite truth state; this is source-level native-test inventory only.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "negative": [],
+      "witness_status": "partial_source_witnesses",
+      "gaps": [
+        "No separately indexed positive contact_loss source witness or distinguishing population/lineage rejection witness in this matrix."
+      ]
+    },
+    {
+      "id": "operational.observation",
+      "stage": "operational",
+      "owners": [
+        {
+          "path": "core/lib/checker/policy_admission.ml",
+          "anchor": "Executable observations require cell access and no unresolved spatial contract.",
+          "occurrence": 1
+        }
+      ],
+      "admitted_context": "Cell-access truth/integer/text/exact-quantity evidence with matching result type and nominal quantity-unit compatibility, sampled/event coverage, explicit freshness and all four missing/stale/invalid/conflicting classes.",
+      "outside_context": {
+        "disposition": "unsupported",
+        "description": "Spatial contracts, continuous coverage, omitted uncertainty classes or mismatched primitive/result types are unsupported."
+      },
+      "positive": [
+        {
+          "source": {
+            "path": "core/test/test_policy_operational.ml",
+            "anchor": "Lowering omitted declarations",
+            "occurrence": 1
+          },
+          "context": "Operational literal fixture with one executor, encounter evidence and finite truth state; this is source-level native-test inventory only.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "negative": [
+        {
+          "source": {
+            "path": "core/test/test_policy_operational.ml",
+            "anchor": "unsupported \"omitted uncertainty class\"",
+            "occurrence": 1
+          },
+          "context": "Distinguishing source control for the specifically named boundary; other boundary branches are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "witness_status": "partial_source_witnesses",
+      "gaps": [
+        "Integer/text/exact-quantity evidence positives and each result-type or quantity-unit mismatch are not individually indexed; the material layer narrows evidence to event truth."
+      ]
+    },
+    {
+      "id": "operational.coherence",
+      "stage": "operational",
+      "owners": [
+        {
+          "path": "core/lib/checker/policy_admission.ml",
+          "anchor": "Multiple observations in one subject/coherence group require an explicit frame join",
+          "occurrence": 1
+        }
+      ],
+      "admitted_context": "Each subject/coherence pair has a single observation; independent groups retain separate evidence identities.",
+      "outside_context": {
+        "disposition": "unsupported",
+        "description": "Multi-observation joins in the same subject/coherence group are explicitly unsupported."
+      },
+      "positive": [
+        {
+          "source": {
+            "path": "core/test/test_policy_operational.ml",
+            "anchor": "Lowering omitted declarations",
+            "occurrence": 1
+          },
+          "context": "Operational literal fixture with one executor, encounter evidence and finite truth state; this is source-level native-test inventory only.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "negative": [
+        {
+          "source": {
+            "path": "core/test/test_policy_operational.ml",
+            "anchor": "unsupported \"unimplemented multi-observation frame join\"",
+            "occurrence": 1
+          },
+          "context": "Distinguishing source control for the specifically named boundary; other boundary branches are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "witness_status": "partial_source_witnesses",
+      "gaps": [
+        "A positive multiple-distinct-coherence-group operational fixture is not indexed."
+      ]
+    },
+    {
+      "id": "operational.finite_state",
+      "stage": "operational",
+      "owners": [
+        {
+          "path": "core/lib/checker/policy_admission.ml",
+          "anchor": "State is finite truth/integer/text storage.",
+          "occurrence": 1
+        }
+      ],
+      "admitted_context": "Finite truth/integer/text stores have capacity 1..4096, reject overflow, executor/encounter scope with matching lifetime and implemented reset/not-applicable inheritance.",
+      "outside_context": {
+        "disposition": "unsupported",
+        "description": "Persistent/unbounded storage, unsupported lifetime/inheritance or overflow behavior is unsupported."
+      },
+      "positive": [
+        {
+          "source": {
+            "path": "core/test/test_policy_operational.ml",
+            "anchor": "Lowering omitted declarations",
+            "occurrence": 1
+          },
+          "context": "Operational literal fixture with one executor, encounter evidence and finite truth state; this is source-level native-test inventory only.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "negative": [
+        {
+          "source": {
+            "path": "core/test/test_policy_operational.ml",
+            "anchor": "unsupported \"persistent encounter storage\"",
+            "occurrence": 1
+          },
+          "context": "Distinguishing source control for the specifically named boundary; other boundary branches are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "witness_status": "partial_source_witnesses",
+      "gaps": [
+        "Branch-specific positive integer/text stores and both inheritance branches remain unindexed; material only admits truth encounter stores."
+      ]
+    },
+    {
+      "id": "operational.scope_closure",
+      "stage": "operational",
+      "owners": [
+        {
+          "path": "core/lib/checker/policy_admission.ml",
+          "anchor": "Effect subject and retained initiating environment require different concrete bindings",
+          "occurrence": 1
+        }
+      ],
+      "admitted_context": "Reset expressions, transitions, assignments and retained effect environments close over compatible executor/encounter scope; encounter execution may read executor state.",
+      "outside_context": {
+        "disposition": "unsupported",
+        "description": "Executor reset/machine reading encounter data, destination-introduced encounter scope and effect/environment binding disagreement are unsupported."
+      },
+      "positive": [
+        {
+          "source": {
+            "path": "core/test/test_policy_operational.ml",
+            "anchor": "reads_global_document",
+            "occurrence": 1
+          },
+          "context": "Encounter rule may read explicitly scoped executor state.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "negative": [
+        {
+          "source": {
+            "path": "core/test/test_policy_operational.ml",
+            "anchor": "unsupported \"effect subject differs from retained encounter environment\"",
+            "occurrence": 1
+          },
+          "context": "Distinguishing source control for the specifically named boundary; other boundary branches are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "witness_status": "source_witnesses_present",
+      "gaps": []
+    },
+    {
+      "id": "operational.expressions",
+      "stage": "operational",
+      "owners": [
+        {
+          "path": "core/lib/checker/policy_admission.ml",
+          "anchor": "Expression operation is outside bounded operational semantics.",
+          "occurrence": 1
+        }
+      ],
+      "admitted_context": "The versioned operational operator list retains exact truth/definedness, integer/text/exact-quantity comparisons, scoped references and implemented event phases; arithmetic is not admitted by this profile.",
+      "outside_context": {
+        "disposition": "mixed",
+        "description": "Unimplemented operators/types, event literals and unsupported effect phases are rejected as unsupported."
+      },
+      "positive": [
+        {
+          "source": {
+            "path": "core/test/test_policy_operational.ml",
+            "anchor": "Explicit source UNKNOWN was not retained",
+            "occurrence": 1
+          },
+          "context": "Explicit Unknown literal remains three-valued truth, distinct from malformed null.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "negative": [
+        {
+          "source": {
+            "path": "core/test/test_policy_operational.ml",
+            "anchor": "rejects \"malformed null truth evidence\"",
+            "occurrence": 1
+          },
+          "context": "Distinguishing source control for the specifically named boundary; other boundary branches are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "witness_status": "partial_source_witnesses",
+      "gaps": [
+        "That literal control only distinguishes null from explicit Unknown; operator-by-type positive/rejection closure, including exact-quantity comparisons and compatible/incompatible nominal units, is still pending."
+      ]
+    },
+    {
+      "id": "operational.rising",
+      "stage": "operational",
+      "owners": [
+        {
+          "path": "core/lib/checker/policy_admission.ml",
+          "anchor": "List.for_all observed_only",
+          "occurrence": 1
+        }
+      ],
+      "admitted_context": "Rising depends on observed evidence through supported pure logical/comparison expressions and fires only for the defined once-per-tick edge semantics.",
+      "outside_context": {
+        "disposition": "unsupported",
+        "description": "State/parameter-only rising or unsupported event interpretation is outside the operational profile."
+      },
+      "positive": [
+        {
+          "source": {
+            "path": "core/test/test_policy_operational.ml",
+            "anchor": "Lowering omitted declarations",
+            "occurrence": 1
+          },
+          "context": "Operational literal fixture with one executor, encounter evidence and finite truth state; this is source-level native-test inventory only.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "negative": [],
+      "witness_status": "partial_source_witnesses",
+      "gaps": [
+        "A direct source-valid operational state-only rising rejection and every allowed comparison edge witness remain to be indexed."
+      ]
+    },
+    {
+      "id": "operational.lifecycle",
+      "stage": "operational",
+      "owners": [
+        {
+          "path": "core/lib/checker/policy_admission.ml",
+          "anchor": "text \"on_loss\" lifecycle = \"continue\"",
+          "occurrence": 1
+        }
+      ],
+      "admitted_context": "Effect attempts use correlated requested/initiation/completed/failed/timed-out events, initiation or continuous authorization, on-loss continue, and on-unknown continue/defer.",
+      "outside_context": {
+        "disposition": "unsupported",
+        "description": "Stop/cancel requests and unimplemented cancellation modes are unsupported; no cancellation is inferred from uncertainty."
+      },
+      "positive": [
+        {
+          "source": {
+            "path": "core/test/test_policy_operational.ml",
+            "anchor": "Lowering omitted declarations",
+            "occurrence": 1
+          },
+          "context": "Operational literal fixture with one executor, encounter evidence and finite truth state; this is source-level native-test inventory only.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_material_lifecycle.ml",
+            "anchor": "Lifecycle inventory no longer covers each admitted authorization/unknown-response pair",
+            "occurrence": 1
+          },
+          "context": "All four initiation/continuous \u00d7 continue/defer source cases enter the full material conjunction, each with 54 histories; literal missing/invalid/conflicting, quiet stale, false authorization, feedback and timeout checks remain source inventory.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "negative": [
+        {
+          "source": {
+            "path": "core/test/test_policy_operational.ml",
+            "anchor": "unsupported \"effect stop requests\"",
+            "occurrence": 1
+          },
+          "context": "Distinguishing source control for the specifically named boundary; other boundary branches are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_material_lifecycle.ml",
+            "anchor": "Different supplied lifecycle case gained acceptance through identical RNA",
+            "occurrence": 1
+          },
+          "context": "Freshly checked graph is rejected against another complete lifecycle material case even though RNA is identical.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "witness_status": "source_witnesses_present",
+      "gaps": []
+    },
+    {
+      "id": "operational.arbitration",
+      "stage": "operational",
+      "owners": [
+        {
+          "path": "core/lib/checker/policy_admission.ml",
+          "anchor": "Deterministic arbitration must be supplied explicitly.",
+          "occurrence": 1
+        }
+      ],
+      "admitted_context": "Explicit exclusive/priority policy with implemented tie behavior, reject/identical-only write conflict and forbidden preemption; group policies agree.",
+      "outside_context": {
+        "disposition": "unsupported",
+        "description": "Missing/conflicting group policies, preemption and unimplemented arbitration choices are unsupported."
+      },
+      "positive": [
+        {
+          "source": {
+            "path": "core/test/test_policy_operational.ml",
+            "anchor": "Lowering omitted declarations",
+            "occurrence": 1
+          },
+          "context": "Operational literal fixture with one executor, encounter evidence and finite truth state; this is source-level native-test inventory only.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "negative": [],
+      "witness_status": "partial_source_witnesses",
+      "gaps": [
+        "Positive priority/identical-only operational branches and matching source-valid rejection pointers remain unindexed; graph/material closure is exclusive/reject only."
+      ]
+    },
+    {
+      "id": "operational.extended_declarations",
+      "stage": "operational",
+      "owners": [
+        {
+          "path": "core/lib/checker/policy_admission.ml",
+          "anchor": "Coordination, quantification, spatial scopes and inheritance require separately implemented semantics.",
+          "occurrence": 1
+        }
+      ],
+      "admitted_context": "Only explicitly dispatched operational declarations, including bounded machines/transitions at this layer, retain executable meaning.",
+      "outside_context": {
+        "disposition": "unsupported",
+        "description": "Coordination, quantification, spatial declarations and unimplemented inheritance are unsupported; material does not inherit operational machine support."
+      },
+      "positive": [
+        {
+          "source": {
+            "path": "core/test/test_policy_operational.ml",
+            "anchor": "Lowering omitted declarations",
+            "occurrence": 1
+          },
+          "context": "Operational literal fixture with one executor, encounter evidence and finite truth state; this is source-level native-test inventory only.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "negative": [
+        {
+          "source": {
+            "path": "core/test/test_policy_operational.ml",
+            "anchor": "unsupported \"executor machine reads encounter event\"",
+            "occurrence": 1
+          },
+          "context": "Distinguishing source control for the specifically named boundary; other boundary branches are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "witness_status": "partial_source_witnesses",
+      "gaps": [
+        "This scope control does not cover each excluded declaration kind; positive machine behavior and each excluded-kind rejection remain to be indexed."
+      ]
+    },
+    {
+      "id": "implementation.assurance",
+      "stage": "implementation",
+      "owners": [
+        {
+          "path": "core/lib/checker/policy_realization_admission.ml",
+          "anchor": "This admission profile supports bounded assurance only;",
+          "occurrence": 1
+        }
+      ],
+      "admitted_context": "Nonempty complete safety/progress requirements, bounded assurance with exact domain horizon and matching explicit hard horizons; no assumptions/tolerances restrict the domain.",
+      "outside_context": {
+        "disposition": "mixed",
+        "description": "Proof/unbounded/different horizon, omitted requirements, preferences, extra assumptions or tolerance overrides are not admitted."
+      },
+      "positive": [
+        {
+          "source": {
+            "path": "core/test/test_policy_material_service.ml",
+            "anchor": "Generic producer and independent standalone material checker differ",
+            "occurrence": 1
+          },
+          "context": "Frozen full-path exclusion sibling: two encounter slots, truth registers initially false, event evidence, exclusive arbitration, one fixed product, continuous/defer lifecycle, original nine-history domain. Other admitted combinations are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "negative": [
+        {
+          "source": {
+            "path": "core/test/test_policy_realization_admission.ml",
+            "anchor": "reject_fresh \"producer omitted hard requirement\"",
+            "occurrence": 1
+          },
+          "context": "Distinguishing source control for the specifically named boundary; other boundary branches are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "witness_status": "source_witnesses_present",
+      "gaps": []
+    },
+    {
+      "id": "implementation.catalog",
+      "stage": "implementation",
+      "owners": [
+        {
+          "path": "core/lib/checker/policy_realization_admission.ml",
+          "anchor": "Every original catalog entry requires exactly one external membership bridge.",
+          "occurrence": 1
+        }
+      ],
+      "admitted_context": "Nonempty original catalog with exact full entry/version/digest and operation/realization DefinitionRefs; effect-rooted model bridge is complete.",
+      "outside_context": {
+        "disposition": "rejected",
+        "description": "Empty original catalog, stale/substituted entry refs or missing/extra membership bridges cannot authorize supplied models."
+      },
+      "positive": [
+        {
+          "source": {
+            "path": "core/test/test_policy_material_service.ml",
+            "anchor": "Generic producer and independent standalone material checker differ",
+            "occurrence": 1
+          },
+          "context": "Frozen full-path exclusion sibling: two encounter slots, truth registers initially false, event evidence, exclusive arbitration, one fixed product, continuous/defer lifecycle, original nine-history domain. Other admitted combinations are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "negative": [
+        {
+          "source": {
+            "path": "core/test/test_policy_realization_admission.ml",
+            "anchor": "reject_fresh \"original empty catalog cannot authorize supplied models\"",
+            "occurrence": 1
+          },
+          "context": "Distinguishing source control for the specifically named boundary; other boundary branches are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "witness_status": "source_witnesses_present",
+      "gaps": []
+    },
+    {
+      "id": "implementation.chassis",
+      "stage": "implementation",
+      "owners": [
+        {
+          "path": "core/lib/checker/policy_realization_admission.ml",
+          "anchor": "The original deployment must retain its explicit in-vivo RNA context.",
+          "occurrence": 1
+        }
+      ],
+      "admitted_context": "Original in-vivo RNA deployment is explicitly eligible for every catalog entry and all named chassis; formats are exactly RNA.",
+      "outside_context": {
+        "disposition": "mixed",
+        "description": "Wrong/missing chassis eligibility, absent/duplicate RNA authorization and unsupported catalog dependency/evidence closure are rejected."
+      },
+      "positive": [
+        {
+          "source": {
+            "path": "core/test/test_policy_material_service.ml",
+            "anchor": "Generic producer and independent standalone material checker differ",
+            "occurrence": 1
+          },
+          "context": "Frozen full-path exclusion sibling: two encounter slots, truth registers initially false, event evidence, exclusive arbitration, one fixed product, continuous/defer lifecycle, original nine-history domain. Other admitted combinations are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "negative": [
+        {
+          "source": {
+            "path": "core/test/test_policy_realization_admission.ml",
+            "anchor": "reject_fresh \"wrong original chassis\"",
+            "occurrence": 1
+          },
+          "context": "Distinguishing source control for the specifically named boundary; other boundary branches are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "witness_status": "source_witnesses_present",
+      "gaps": []
+    },
+    {
+      "id": "implementation.model_membership",
+      "stage": "implementation",
+      "owners": [
+        {
+          "path": "core/lib/checker/policy_realization_admission.ml",
+          "anchor": "Every supplied library model must be explicitly authorized",
+          "occurrence": 1
+        }
+      ],
+      "admitted_context": "Every exact supplied model pin is authorized by an original entry bridge; selected graph models use the selected entry scope and full bodies/configurations.",
+      "outside_context": {
+        "disposition": "rejected",
+        "description": "Foreign model bodies, same ID with changed digest and unaccounted library alternatives are rejected."
+      },
+      "positive": [
+        {
+          "source": {
+            "path": "core/test/test_policy_material_service.ml",
+            "anchor": "Generic producer and independent standalone material checker differ",
+            "occurrence": 1
+          },
+          "context": "Frozen full-path exclusion sibling: two encounter slots, truth registers initially false, event evidence, exclusive arbitration, one fixed product, continuous/defer lifecycle, original nine-history domain. Other admitted combinations are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "negative": [
+        {
+          "source": {
+            "path": "core/test/test_policy_realization_admission.ml",
+            "anchor": "reject_fresh \"self-consistent model edit lacks original membership\"",
+            "occurrence": 1
+          },
+          "context": "Distinguishing source control for the specifically named boundary; other boundary branches are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "witness_status": "source_witnesses_present",
+      "gaps": []
+    },
+    {
+      "id": "implementation.domain_grammar",
+      "stage": "implementation",
+      "owners": [
+        {
+          "path": "core/lib/domain/policy_operating_domain.ml",
+          "anchor": "This profile creates fixed encounter slots at tick zero.",
+          "occurrence": 1
+        }
+      ],
+      "admitted_context": "Finite immutable encounter slots born at tick zero, explicit fixed/factored truth evidence including silence/status/ages, lifecycle alternatives, and all-prior correlated feedback.",
+      "outside_context": {
+        "disposition": "mixed",
+        "description": "Foreign attempts, wrong-address routes, active-only feedback selection, overlapping factors and dynamic slot births are outside this finite profile."
+      },
+      "positive": [
+        {
+          "source": {
+            "path": "core/test/test_policy_material_service.ml",
+            "anchor": "Generic producer and independent standalone material checker differ",
+            "occurrence": 1
+          },
+          "context": "Frozen full-path exclusion sibling: two encounter slots, truth registers initially false, event evidence, exclusive arbitration, one fixed product, continuous/defer lifecycle, original nine-history domain. Other admitted combinations are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_material_context.ml",
+            "anchor": "[\"extended_evidence_case\",54,227,228;\"reset_feedback_case\",27,87,88]",
+            "occurrence": 1
+          },
+          "context": "Two independent supplied context authorities traverse exact 54-history/227-transition/228-prefix extended-evidence and 27-history/87-transition/88-prefix reset-plus-old-feedback domains through fresh private preservation, material binding and context checks. These are leaf conjunction witnesses, not public coordinator or export witnesses.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "negative": [
+        {
+          "source": {
+            "path": "core/test/test_policy_operating_domain.ml",
+            "anchor": "str \"active_only\"",
+            "occurrence": 1
+          },
+          "context": "Distinguishing source control for the specifically named boundary; other boundary branches are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_material_context.ml",
+            "anchor": "no_accept ~binding (name^\": smaller environment\") \"complete_original_environment_grammar\"",
+            "occurrence": 1
+          },
+          "context": "Each wider original grammar rejects a repinned narrower supplied environment after fresh private preservation and material binding; no public coordinator/export coverage is inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "witness_status": "partial_source_witnesses",
+      "gaps": [
+        "Individual fixed-birth and foreign-feedback positives/rejections are not all indexed here; wider grammar private leaf witnesses do not establish public coordinator/export coverage, and complete grammar must never be pruned by candidate behavior."
+      ]
+    },
+    {
+      "id": "implementation.domain_causality",
+      "stage": "implementation",
+      "owners": [
+        {
+          "path": "core/lib/domain/policy_operating_domain.ml",
+          "anchor": "let check_cursor",
+          "occurrence": 1
+        }
+      ],
+      "admitted_context": "Environment prefixes advance immutably with source-owned creation records, exact cursor identity, generation/attempt bounds and causal observed/available ticks.",
+      "outside_context": {
+        "disposition": "mixed",
+        "description": "Foreign/stale cursors, future observations, invented/duplicate creations and contradiction cannot be silently omitted from exploration."
+      },
+      "positive": [
+        {
+          "source": {
+            "path": "core/test/test_policy_material_service.ml",
+            "anchor": "Generic producer and independent standalone material checker differ",
+            "occurrence": 1
+          },
+          "context": "Frozen full-path exclusion sibling: two encounter slots, truth registers initially false, event evidence, exclusive arbitration, one fixed product, continuous/defer lifecycle, original nine-history domain. Other admitted combinations are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "negative": [
+        {
+          "source": {
+            "path": "core/test/test_policy_operating_domain.ml",
+            "anchor": "rejects \"policy_domain_cursor\"",
+            "occurrence": 1
+          },
+          "context": "Distinguishing source control for the specifically named boundary; other boundary branches are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "witness_status": "partial_source_witnesses",
+      "gaps": [
+        "The lexical pointer is a cursor-control family, not proof of every environment permutation."
+      ]
+    },
+    {
+      "id": "implementation.source_family",
+      "stage": "implementation",
+      "owners": [
+        {
+          "path": "core/lib/checker/policy_implementation_binding_check.ml",
+          "anchor": "This source/graph family has one or two exclusive rules/stores",
+          "occurrence": 1
+        }
+      ],
+      "admitted_context": "Exactly one role, encounter declaration, cell subject, clock, truth observation, product effect and fixed parameter; one or two rules/stores and no machines/transitions.",
+      "outside_context": {
+        "disposition": "unsupported",
+        "description": "Larger source families, machine support and non-explicit encounter termination are outside this graph profile."
+      },
+      "positive": [
+        {
+          "source": {
+            "path": "core/test/test_policy_material_service.ml",
+            "anchor": "Generic producer and independent standalone material checker differ",
+            "occurrence": 1
+          },
+          "context": "Frozen full-path exclusion sibling: two encounter slots, truth registers initially false, event evidence, exclusive arbitration, one fixed product, continuous/defer lifecycle, original nine-history domain. Other admitted combinations are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "negative": [],
+      "witness_status": "partial_source_witnesses",
+      "gaps": [
+        "Dedicated source-valid controls for each cardinality boundary and no-machine restriction remain to be indexed."
+      ]
+    },
+    {
+      "id": "implementation.types",
+      "stage": "implementation",
+      "owners": [
+        {
+          "path": "core/lib/checker/policy_implementation_binding_check.ml",
+          "anchor": "Source type is outside this exact truth/product profile.",
+          "occurrence": 1
+        }
+      ],
+      "admitted_context": "Truth/event operands and a fixed text product have exact unreferenced types; no unit/entity-kind decoration or uninterpreted expression contracts/bounds.",
+      "outside_context": {
+        "disposition": "unsupported",
+        "description": "Operational integer/text state/evidence, numeric arithmetic, richer type refinements and product selection ranges do not lower in this material family."
+      },
+      "positive": [
+        {
+          "source": {
+            "path": "core/test/test_policy_material_service.ml",
+            "anchor": "Generic producer and independent standalone material checker differ",
+            "occurrence": 1
+          },
+          "context": "Frozen full-path exclusion sibling: two encounter slots, truth registers initially false, event evidence, exclusive arbitration, one fixed product, continuous/defer lifecycle, original nine-history domain. Other admitted combinations are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "negative": [],
+      "witness_status": "partial_source_witnesses",
+      "gaps": [
+        "A complete independently source-valid type/refinement rejection matrix remains pending."
+      ]
+    },
+    {
+      "id": "implementation.replication",
+      "stage": "implementation",
+      "owners": [
+        {
+          "path": "core/lib/checker/policy_implementation_binding_check.ml",
+          "anchor": "Source mutable/control state is not replicated by the exact encounter layout.",
+          "occurrence": 1
+        }
+      ],
+      "admitted_context": "Mutable/control primitives replicate over the exact original encounter slot layout; immutable truth/product constants and allowed combinational logic may be executor-wide.",
+      "outside_context": {
+        "disposition": "rejected",
+        "description": "Executor-scoped mutable/control state cannot collapse encounter identities or change slot count."
+      },
+      "positive": [
+        {
+          "source": {
+            "path": "core/test/test_policy_material_service.ml",
+            "anchor": "Generic producer and independent standalone material checker differ",
+            "occurrence": 1
+          },
+          "context": "Frozen full-path exclusion sibling: two encounter slots, truth registers initially false, event evidence, exclusive arbitration, one fixed product, continuous/defer lifecycle, original nine-history domain. Other admitted combinations are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "negative": [
+        {
+          "source": {
+            "path": "core/test/test_policy_implementation.ml",
+            "anchor": "rejects \"executor scope collapses encounter control/state\"",
+            "occurrence": 1
+          },
+          "context": "Distinguishing source control for the specifically named boundary; other boundary branches are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "witness_status": "source_witnesses_present",
+      "gaps": []
+    },
+    {
+      "id": "implementation.evidence",
+      "stage": "implementation",
+      "owners": [
+        {
+          "path": "core/lib/checker/policy_implementation_binding_check.ml",
+          "anchor": "Only encounter-local event evidence with frame coherence is supported",
+          "occurrence": 1
+        }
+      ],
+      "admitted_context": "One encounter-local event truth observation with frame coherence, exact original freshness ticks, external evidence bank and subject binding.",
+      "outside_context": {
+        "disposition": "rejected",
+        "description": "Sampled operational evidence cannot acquire this event-only graph interpretation; changed bank freshness/input destination is rejected."
+      },
+      "positive": [
+        {
+          "source": {
+            "path": "core/test/test_policy_material_service.ml",
+            "anchor": "Generic producer and independent standalone material checker differ",
+            "occurrence": 1
+          },
+          "context": "Frozen full-path exclusion sibling: two encounter slots, truth registers initially false, event evidence, exclusive arbitration, one fixed product, continuous/defer lifecycle, original nine-history domain. Other admitted combinations are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "negative": [
+        {
+          "source": {
+            "path": "core/test/test_policy_implementation_binding.ml",
+            "anchor": "sampled coverage cannot acquire an event-only graph binding",
+            "occurrence": 1
+          },
+          "context": "Distinguishing source control for the specifically named boundary; other boundary branches are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "witness_status": "source_witnesses_present",
+      "gaps": []
+    },
+    {
+      "id": "implementation.state",
+      "stage": "implementation",
+      "owners": [
+        {
+          "path": "core/lib/checker/policy_implementation_binding_check.ml",
+          "anchor": "State lifetime, scope, capacity, reset or writer semantics are outside this family.",
+          "occurrence": 1
+        }
+      ],
+      "admitted_context": "One/two encounter truth registers retain exact initial truth, all ordered writers, capacity covering slots, no predicate reset/duration/coordination/contract, reject overflow and no inheritance.",
+      "outside_context": {
+        "disposition": "rejected",
+        "description": "Predicate resets, changed initial state, nontruth registers or incomplete writer/capacity inventory cannot bind."
+      },
+      "positive": [
+        {
+          "source": {
+            "path": "core/test/test_policy_material_service.ml",
+            "anchor": "Generic producer and independent standalone material checker differ",
+            "occurrence": 1
+          },
+          "context": "Frozen full-path exclusion sibling: two encounter slots, truth registers initially false, event evidence, exclusive arbitration, one fixed product, continuous/defer lifecycle, original nine-history domain. Other admitted combinations are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_material_compound.ml",
+            "anchor": "Explicit Unknown/known atomic state differs from literal; Unknown must remain defined",
+            "occurrence": 1
+          },
+          "context": "Two original compound cases retain defined Unknown initial state, nested all/any guards and assignment values, complete material conjunction and 54-history domain; missing and stale evidence retain ordered reasons.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/data/policy_material_compound_v01.json",
+            "anchor": "\"id\": \"single_reason\"",
+            "occurrence": 1
+          },
+          "context": "Full frozen original compound authority for single/repeated reason cases; no acceptance inferred from fixture contents.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "negative": [
+        {
+          "source": {
+            "path": "core/test/test_policy_implementation_binding.ml",
+            "anchor": "predicate-reset state has no primitive interpretation in this family",
+            "occurrence": 1
+          },
+          "context": "Distinguishing source control for the specifically named boundary; other boundary branches are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_material_compound.ml",
+            "anchor": "reject(model_mutation original graph \"selected\"",
+            "occurrence": 1
+          },
+          "context": "Distinct model substitution is re-pinned against the supplied library and rejected by independent source/graph correspondence.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "witness_status": "source_witnesses_present",
+      "gaps": []
+    },
+    {
+      "id": "implementation.expression_wiring",
+      "stage": "implementation",
+      "owners": [
+        {
+          "path": "core/lib/checker/policy_implementation_binding_check.ml",
+          "anchor": "Truth operator or ordered arity differs from original expression.",
+          "occurrence": 1
+        }
+      ],
+      "admitted_context": "Actual incoming graph wires recursively match exact observed/state/literal/product references and ordered not/all/any truth expressions.",
+      "outside_context": {
+        "disposition": "rejected",
+        "description": "Well-typed guard shortcuts, different operand order/arity, source metadata used as an interpreter or mismatched assignments are rejected."
+      },
+      "positive": [
+        {
+          "source": {
+            "path": "core/test/test_policy_material_service.ml",
+            "anchor": "Generic producer and independent standalone material checker differ",
+            "occurrence": 1
+          },
+          "context": "Frozen full-path exclusion sibling: two encounter slots, truth registers initially false, event evidence, exclusive arbitration, one fixed product, continuous/defer lifecycle, original nine-history domain. Other admitted combinations are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_material_compound.ml",
+            "anchor": "Explicit Unknown/known atomic state differs from literal; Unknown must remain defined",
+            "occurrence": 1
+          },
+          "context": "Two original compound cases retain defined Unknown initial state, nested all/any guards and assignment values, complete material conjunction and 54-history domain; missing and stale evidence retain ordered reasons.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "negative": [
+        {
+          "source": {
+            "path": "core/test/test_policy_implementation_binding.ml",
+            "anchor": "known-true shortcut guard is not observed authorization",
+            "occurrence": 1
+          },
+          "context": "Distinguishing source control for the specifically named boundary; other boundary branches are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_material_compound.ml",
+            "anchor": "reject(model_mutation original graph \"guard_select_all\"",
+            "occurrence": 1
+          },
+          "context": "Distinct model substitution is re-pinned against the supplied library and rejected by independent source/graph correspondence.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_material_compound.ml",
+            "anchor": "reject swapped;",
+            "occurrence": 1
+          },
+          "context": "Ordered compound operands cannot be swapped even when truth-commutative; ordered reason multiplicity is observable.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "witness_status": "source_witnesses_present",
+      "gaps": []
+    },
+    {
+      "id": "implementation.edge_identity",
+      "stage": "implementation",
+      "owners": [
+        {
+          "path": "core/lib/checker/policy_implementation_binding_check.ml",
+          "anchor": "Distinct rising expressions share one edge memory.",
+          "occurrence": 1
+        }
+      ],
+      "admitted_context": "Observed rising uses observation-only truth predicates, one memory per distinct source expression and exact source-derived edge order.",
+      "outside_context": {
+        "disposition": "rejected",
+        "description": "Identical source edges split into distinct memory, distinct edges aliased or requirement-only edge memory omitted from the graph is rejected."
+      },
+      "positive": [
+        {
+          "source": {
+            "path": "core/test/test_policy_material_service.ml",
+            "anchor": "Generic producer and independent standalone material checker differ",
+            "occurrence": 1
+          },
+          "context": "Frozen full-path exclusion sibling: two encounter slots, truth registers initially false, event evidence, exclusive arbitration, one fixed product, continuous/defer lifecycle, original nine-history domain. Other admitted combinations are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "negative": [
+        {
+          "source": {
+            "path": "core/test/test_policy_implementation_binding.ml",
+            "anchor": "identical source edges cannot allocate distinct memories",
+            "occurrence": 1
+          },
+          "context": "Distinguishing source control for the specifically named boundary; other boundary branches are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "witness_status": "source_witnesses_present",
+      "gaps": []
+    },
+    {
+      "id": "implementation.attempts",
+      "stage": "implementation",
+      "owners": [
+        {
+          "path": "core/lib/checker/policy_implementation_binding_check.ml",
+          "anchor": "Attempt bank timeout, uncertainty, authorization or capacity changes original bounded behavior.",
+          "occurrence": 1
+        }
+      ],
+      "admitted_context": "One initiating gate drives one attempt bank, retaining its actual guard/product, full correlation, positive exact timeout, configured initiation/continuous and continue/defer, sufficient per-slot active capacity.",
+      "outside_context": {
+        "disposition": "rejected",
+        "description": "Multiple initiators, wrong feedback route, wrong authorization guard, changed lifecycle configuration or inadequate capacity is rejected."
+      },
+      "positive": [
+        {
+          "source": {
+            "path": "core/test/test_policy_material_service.ml",
+            "anchor": "Generic producer and independent standalone material checker differ",
+            "occurrence": 1
+          },
+          "context": "Frozen full-path exclusion sibling: two encounter slots, truth registers initially false, event evidence, exclusive arbitration, one fixed product, continuous/defer lifecycle, original nine-history domain. Other admitted combinations are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_material_lifecycle.ml",
+            "anchor": "Lifecycle inventory no longer covers each admitted authorization/unknown-response pair",
+            "occurrence": 1
+          },
+          "context": "All four initiation/continuous \u00d7 continue/defer source cases enter the full material conjunction, each with 54 histories; literal missing/invalid/conflicting, quiet stale, false authorization, feedback and timeout checks remain source inventory.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/data/policy_material_lifecycle_v01.json",
+            "anchor": "\"id\": \"initiation_continue\"",
+            "occurrence": 1
+          },
+          "context": "Full frozen authority for all four ordered lifecycle cases; paired with the native test census, not an execution receipt.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "negative": [
+        {
+          "source": {
+            "path": "core/test/test_policy_implementation_binding.ml",
+            "anchor": "multiple gates cannot initiate one attempt bank",
+            "occurrence": 1
+          },
+          "context": "Distinguishing source control for the specifically named boundary; other boundary branches are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_material_lifecycle.ml",
+            "anchor": "Different supplied lifecycle case gained acceptance through identical RNA",
+            "occurrence": 1
+          },
+          "context": "Freshly checked graph is rejected against another complete lifecycle material case even though RNA is identical.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "witness_status": "source_witnesses_present",
+      "gaps": []
+    },
+    {
+      "id": "implementation.rule_order",
+      "stage": "implementation",
+      "owners": [
+        {
+          "path": "core/lib/checker/policy_implementation_binding_check.ml",
+          "anchor": "Rule, arbitration mode, tie/write conflict or lane order changes source semantics.",
+          "occurrence": 1
+        }
+      ],
+      "admitted_context": "One exclusive arbiter has one lane per source rule, declared gate order, reject tie/write conflict, no priority order and observed rising triggers.",
+      "outside_context": {
+        "disposition": "rejected",
+        "description": "Priority/identical-only operational arbitration or lane/gate reorder cannot silently bind to this implementation family."
+      },
+      "positive": [
+        {
+          "source": {
+            "path": "core/test/test_policy_material_service.ml",
+            "anchor": "Generic producer and independent standalone material checker differ",
+            "occurrence": 1
+          },
+          "context": "Frozen full-path exclusion sibling: two encounter slots, truth registers initially false, event evidence, exclusive arbitration, one fixed product, continuous/defer lifecycle, original nine-history domain. Other admitted combinations are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "negative": [
+        {
+          "source": {
+            "path": "core/test/test_policy_implementation_binding.ml",
+            "anchor": "identical-only writes need a separately implemented arbitration profile",
+            "occurrence": 1
+          },
+          "context": "Distinguishing source control for the specifically named boundary; other boundary branches are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "witness_status": "source_witnesses_present",
+      "gaps": []
+    },
+    {
+      "id": "implementation.atomic_writes",
+      "stage": "implementation",
+      "owners": [
+        {
+          "path": "core/lib/checker/policy_implementation_binding_check.ml",
+          "anchor": "Atomic commit does not retain every source assignment and effect.",
+          "occurrence": 1
+        }
+      ],
+      "admitted_context": "Direct gate-to-arbiter-to-commit topology preserves all source writes/requests, ordered destinations and a single ordered atomic group using common prestate.",
+      "outside_context": {
+        "disposition": "rejected",
+        "description": "Swapped state destinations, dropped writes/effects or changed group ownership/order is rejected."
+      },
+      "positive": [
+        {
+          "source": {
+            "path": "core/test/test_policy_material_service.ml",
+            "anchor": "Generic producer and independent standalone material checker differ",
+            "occurrence": 1
+          },
+          "context": "Frozen full-path exclusion sibling: two encounter slots, truth registers initially false, event evidence, exclusive arbitration, one fixed product, continuous/defer lifecycle, original nine-history domain. Other admitted combinations are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "negative": [
+        {
+          "source": {
+            "path": "core/test/test_policy_implementation_binding.ml",
+            "anchor": "well-typed opposite state destinations",
+            "occurrence": 1
+          },
+          "context": "Distinguishing source control for the specifically named boundary; other boundary branches are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "witness_status": "source_witnesses_present",
+      "gaps": []
+    },
+    {
+      "id": "implementation.occurrences",
+      "stage": "implementation",
+      "owners": [
+        {
+          "path": "core/lib/checker/policy_implementation_binding_check.ml",
+          "anchor": "let record",
+          "occurrence": 1
+        }
+      ],
+      "admitted_context": "Independent source traversal accounts for every declaration/expression/requirement occurrence with the exact typed disposition and actual output endpoints.",
+      "outside_context": {
+        "disposition": "rejected",
+        "description": "Erased executable occurrences, invented requirement primitives, missing/reordered source inventory or hidden outputs are rejected."
+      },
+      "positive": [
+        {
+          "source": {
+            "path": "core/test/test_policy_material_service.ml",
+            "anchor": "Generic producer and independent standalone material checker differ",
+            "occurrence": 1
+          },
+          "context": "Frozen full-path exclusion sibling: two encounter slots, truth registers initially false, event evidence, exclusive arbitration, one fixed product, continuous/defer lifecycle, original nine-history domain. Other admitted combinations are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "negative": [
+        {
+          "source": {
+            "path": "core/test/test_policy_implementation.ml",
+            "anchor": "rejects \"requirement treated as executable primitive\"",
+            "occurrence": 1
+          },
+          "context": "Distinguishing source control for the specifically named boundary; other boundary branches are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "witness_status": "source_witnesses_present",
+      "gaps": []
+    },
+    {
+      "id": "implementation.graph_closure",
+      "stage": "implementation",
+      "owners": [
+        {
+          "path": "core/lib/domain/policy_implementation.ml",
+          "anchor": "let of_json",
+          "occurrence": 1
+        }
+      ],
+      "admitted_context": "Closed concrete primitive/model/configuration graph has typed single-driver ports, complete external inputs, atomic ownership, exports and legal scheduling graph.",
+      "outside_context": {
+        "disposition": "rejected",
+        "description": "Opaque AST operands, hidden model overrides, aliases, wrong ports and typed combinational cycles are rejected structurally."
+      },
+      "positive": [
+        {
+          "source": {
+            "path": "core/test/test_policy_material_service.ml",
+            "anchor": "Generic producer and independent standalone material checker differ",
+            "occurrence": 1
+          },
+          "context": "Frozen full-path exclusion sibling: two encounter slots, truth registers initially false, event evidence, exclusive arbitration, one fixed product, continuous/defer lifecycle, original nine-history domain. Other admitted combinations are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "negative": [
+        {
+          "source": {
+            "path": "core/test/test_policy_implementation.ml",
+            "anchor": "rejects \"typed combinational scheduling cycle\"",
+            "occurrence": 1
+          },
+          "context": "Distinguishing source control for the specifically named boundary; other boundary branches are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "witness_status": "source_witnesses_present",
+      "gaps": []
+    },
+    {
+      "id": "implementation.runtime_phases",
+      "stage": "implementation",
+      "owners": [
+        {
+          "path": "core/lib/candidate_runtime/policy_primitives.ml",
+          "anchor": "let step",
+          "occurrence": 1
+        }
+      ],
+      "admitted_context": "Independent graph execution has exact definedness/ordered reasons, once-per-tick edges, feedback before timeout, atomic common-prestate writes and immutable successor state.",
+      "outside_context": {
+        "disposition": "mixed",
+        "description": "Unsupported topology, simultaneous conflicting feedback, identity reuse, exceeded capacity or phase/work bounds fail explicitly."
+      },
+      "positive": [
+        {
+          "source": {
+            "path": "core/test/test_policy_material_service.ml",
+            "anchor": "Generic producer and independent standalone material checker differ",
+            "occurrence": 1
+          },
+          "context": "Frozen full-path exclusion sibling: two encounter slots, truth registers initially false, event evidence, exclusive arbitration, one fixed product, continuous/defer lifecycle, original nine-history domain. Other admitted combinations are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "negative": [
+        {
+          "source": {
+            "path": "core/test/test_policy_primitives.ml",
+            "anchor": "rejects \"identity\"(fun()->P.step s1",
+            "occurrence": 1
+          },
+          "context": "Distinguishing source control for the specifically named boundary; other boundary branches are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "witness_status": "partial_source_witnesses",
+      "gaps": [
+        "This baseline does not independently inventory every runtime phase/uncertainty interaction; the runtime literal suite must run on hosted native builds."
+      ]
+    },
+    {
+      "id": "implementation.requirements",
+      "stage": "implementation",
+      "owners": [
+        {
+          "path": "core/lib/realization_checker/policy_requirement_monitor.ml",
+          "anchor": "unsupported_requirement_fields",
+          "occurrence": 1
+        }
+      ],
+      "admitted_context": "Candidate-owned monitoring compiles supported safety/progress predicates/events, finite horizons/deadlines, exact scopes and supported event correlations while retaining all original requirements.",
+      "outside_context": {
+        "disposition": "mixed",
+        "description": "Unsupported fields/forms/edges remain unsupported; a false or Unknown history prevents a passing hard requirement. Individual not_exercised histories remain explicit and may coexist with other passing histories when the complete domain meets aggregate nonvacuity."
+      },
+      "positive": [
+        {
+          "source": {
+            "path": "core/test/test_policy_material_service.ml",
+            "anchor": "Generic producer and independent standalone material checker differ",
+            "occurrence": 1
+          },
+          "context": "Frozen full-path exclusion sibling: two encounter slots, truth registers initially false, event evidence, exclusive arbitration, one fixed product, continuous/defer lifecycle, original nine-history domain. Other admitted combinations are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "negative": [
+        {
+          "source": {
+            "path": "core/test/test_policy_preservation_check.ml",
+            "anchor": "verdict unresolved \"initiation_progress\" \"unsupported\"",
+            "occurrence": 1
+          },
+          "context": "Distinguishing source control for the specifically named boundary; other boundary branches are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "witness_status": "partial_source_witnesses",
+      "gaps": [
+        "Distinguishing witnesses for each unsupported requirement field/correlation combination remain to be indexed."
+      ]
+    },
+    {
+      "id": "implementation.nonvacuity",
+      "stage": "implementation",
+      "owners": [
+        {
+          "path": "core/lib/realization_checker/policy_preservation_check.ml",
+          "anchor": "let check",
+          "occurrence": 1
+        }
+      ],
+      "admitted_context": "Acceptance requires complete unpruned finite-domain traversal, independent source/candidate observations, original hard requirements passing, and active/inactive/creation coverage.",
+      "outside_context": {
+        "disposition": "withheld",
+        "description": "Any failing or Unknown requirement history, wholly unexercised requirements, counterexamples or incomplete domain coverage withhold implementation acceptance; individual not_exercised histories do not by themselves fail an otherwise fully covered, nonvacuous domain."
+      },
+      "positive": [
+        {
+          "source": {
+            "path": "core/test/test_policy_material_service.ml",
+            "anchor": "Generic producer and independent standalone material checker differ",
+            "occurrence": 1
+          },
+          "context": "Frozen full-path exclusion sibling: two encounter slots, truth registers initially false, event evidence, exclusive arbitration, one fixed product, continuous/defer lifecycle, original nine-history domain. Other admitted combinations are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "negative": [
+        {
+          "source": {
+            "path": "core/test/test_policy_preservation_check.ml",
+            "anchor": "Progress-only empty activity was treated as therapeutic execution",
+            "occurrence": 1
+          },
+          "context": "Distinguishing source control for the specifically named boundary; other boundary branches are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "witness_status": "source_witnesses_present",
+      "gaps": []
+    },
+    {
+      "id": "implementation.bounds",
+      "stage": "implementation",
+      "owners": [
+        {
+          "path": "core/lib/realization_checker/policy_preservation_check.ml",
+          "anchor": "policy_preservation_prefix_limit",
+          "occurrence": 1
+        }
+      ],
+      "admitted_context": "Original domain/work/trace/prefix/transition/monitor limits and bounded complete publication are retained separately from semantic domain meaning.",
+      "outside_context": {
+        "disposition": "incomplete",
+        "description": "Exhaustion is incomplete or a precise resource diagnostic; it never prunes histories or reuses prior acceptance."
+      },
+      "positive": [
+        {
+          "source": {
+            "path": "core/test/test_policy_material_service.ml",
+            "anchor": "Generic producer and independent standalone material checker differ",
+            "occurrence": 1
+          },
+          "context": "Frozen full-path exclusion sibling: two encounter slots, truth registers initially false, event evidence, exclusive arbitration, one fixed product, continuous/defer lifecycle, original nine-history domain. Other admitted combinations are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "negative": [
+        {
+          "source": {
+            "path": "core/test/test_policy_preservation_check.ml",
+            "anchor": "rejects \"bounded report nodes\"",
+            "occurrence": 1
+          },
+          "context": "Distinguishing source control for the specifically named boundary; other boundary branches are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "witness_status": "source_witnesses_present",
+      "gaps": []
+    },
+    {
+      "id": "material.original_request",
+      "stage": "material",
+      "owners": [
+        {
+          "path": "core/lib/domain/policy_material_request.ml",
+          "anchor": "let of_json",
+          "occurrence": 1
+        }
+      ],
+      "admitted_context": "Complete original realization request, supplied material case, context, catalog link and budgets are separately decoded and bounded; saved candidates/reports supply no original authority.",
+      "outside_context": {
+        "disposition": "rejected",
+        "description": "Missing authority, embedded acceptance, malformed pins, cycles or excessive request resources are rejected."
+      },
+      "positive": [
+        {
+          "source": {
+            "path": "core/test/test_policy_material_service.ml",
+            "anchor": "Generic producer and independent standalone material checker differ",
+            "occurrence": 1
+          },
+          "context": "Frozen full-path exclusion sibling: two encounter slots, truth registers initially false, event evidence, exclusive arbitration, one fixed product, continuous/defer lifecycle, original nine-history domain. Other admitted combinations are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/data/policy_material_request_v01.json",
+            "anchor": "\"schema_version\": \"biocompiler.policy_material_request_fixture.v0.1\"",
+            "occurrence": 1
+          },
+          "context": "Full frozen original source/model/material/context request and independent nine-history/molecular expectations.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "negative": [
+        {
+          "source": {
+            "path": "core/test/test_policy_material_check.ml",
+            "anchor": "R.of_json(set \"saved_report\"",
+            "occurrence": 1
+          },
+          "context": "Distinguishing source control for the specifically named boundary; other boundary branches are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "witness_status": "source_witnesses_present",
+      "gaps": []
+    },
+    {
+      "id": "material.catalog_bridge",
+      "stage": "material",
+      "owners": [
+        {
+          "path": "core/lib/realization_checker/policy_material_check.ml",
+          "anchor": "let catalog_check",
+          "occurrence": 1
+        }
+      ],
+      "admitted_context": "Material link binds the exact original selected catalog entry and full realization reference to the independently supplied material contract identity.",
+      "outside_context": {
+        "disposition": "rejected",
+        "description": "Repinning a candidate or changing only a nominal component name cannot substitute original catalog-to-material correspondence."
+      },
+      "positive": [
+        {
+          "source": {
+            "path": "core/test/test_policy_material_service.ml",
+            "anchor": "Generic producer and independent standalone material checker differ",
+            "occurrence": 1
+          },
+          "context": "Frozen full-path exclusion sibling: two encounter slots, truth registers initially false, event evidence, exclusive arbitration, one fixed product, continuous/defer lifecycle, original nine-history domain. Other admitted combinations are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "negative": [
+        {
+          "source": {
+            "path": "core/test/test_policy_material_check.ml",
+            "anchor": "\"policy_material_catalog_binding\"",
+            "occurrence": 1
+          },
+          "context": "Distinguishing source control for the specifically named boundary; other boundary branches are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "witness_status": "source_witnesses_present",
+      "gaps": []
+    },
+    {
+      "id": "material.kernel",
+      "stage": "material",
+      "owners": [
+        {
+          "path": "core/lib/realization_checker/policy_material_binding_check.ml",
+          "anchor": "complete_ordered_wiring",
+          "occurrence": 1
+        }
+      ],
+      "admitted_context": "A total ordered node bijection matches complete concrete models/configurations/replication, wires, inputs, atomic groups, exports, slots and fixed runtime/observable profiles.",
+      "outside_context": {
+        "disposition": "rejected",
+        "description": "Pins without full kernel equality, renamed hidden outputs, changed wires/configuration/replication or incomplete bijections fail."
+      },
+      "positive": [
+        {
+          "source": {
+            "path": "core/test/test_policy_material_service.ml",
+            "anchor": "Generic producer and independent standalone material checker differ",
+            "occurrence": 1
+          },
+          "context": "Frozen full-path exclusion sibling: two encounter slots, truth registers initially false, event evidence, exclusive arbitration, one fixed product, continuous/defer lifecycle, original nine-history domain. Other admitted combinations are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "negative": [
+        {
+          "source": {
+            "path": "core/test/test_policy_material_binding.ml",
+            "anchor": "changed wire with recomputed case pins",
+            "occurrence": 1
+          },
+          "context": "Distinguishing source control for the specifically named boundary; other boundary branches are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_material_compound.ml",
+            "anchor": "A different compound whole-graph case was accepted merely because its RNA matched",
+            "occurrence": 1
+          },
+          "context": "Same RNA cannot substitute different actual whole-graph wiring.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "witness_status": "source_witnesses_present",
+      "gaps": []
+    },
+    {
+      "id": "material.carriers",
+      "stage": "material",
+      "owners": [
+        {
+          "path": "core/lib/realization_checker/policy_material_binding_check.ml",
+          "anchor": "exhaustive_ordered_material_dispositions",
+          "occurrence": 1
+        }
+      ],
+      "admitted_context": "Every primitive/configuration/replication/wire/input/group/export/layout target has an ordered nonempty disposition onto actual named features and exact valid material paths.",
+      "outside_context": {
+        "disposition": "rejected",
+        "description": "Missing targets, wrong feature/path, zero-length/outside paths or fabricated material carriers fail."
+      },
+      "positive": [
+        {
+          "source": {
+            "path": "core/test/test_policy_material_service.ml",
+            "anchor": "Generic producer and independent standalone material checker differ",
+            "occurrence": 1
+          },
+          "context": "Frozen full-path exclusion sibling: two encounter slots, truth registers initially false, event evidence, exclusive arbitration, one fixed product, continuous/defer lifecycle, original nine-history domain. Other admitted combinations are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "negative": [
+        {
+          "source": {
+            "path": "core/test/test_policy_material_binding.ml",
+            "anchor": "missing primitive material disposition",
+            "occurrence": 1
+          },
+          "context": "Distinguishing source control for the specifically named boundary; other boundary branches are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "witness_status": "source_witnesses_present",
+      "gaps": []
+    },
+    {
+      "id": "material.product",
+      "stage": "material",
+      "owners": [
+        {
+          "path": "core/lib/realization_checker/policy_material_binding_check.ml",
+          "anchor": "complete_product_symbol_bindings",
+          "occurrence": 1
+        }
+      ],
+      "admitted_context": "Every actual product constant has an exact symbol-to-original encoded product/member mapping and full product identity.",
+      "outside_context": {
+        "disposition": "rejected",
+        "description": "Missing/extra/swapped product symbols, absent member or different full encoded protein identity fail."
+      },
+      "positive": [
+        {
+          "source": {
+            "path": "core/test/test_policy_material_service.ml",
+            "anchor": "Generic producer and independent standalone material checker differ",
+            "occurrence": 1
+          },
+          "context": "Frozen full-path exclusion sibling: two encounter slots, truth registers initially false, event evidence, exclusive arbitration, one fixed product, continuous/defer lifecycle, original nine-history domain. Other admitted combinations are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "negative": [
+        {
+          "source": {
+            "path": "core/test/test_policy_material_binding.ml",
+            "anchor": "changed product interpretation",
+            "occurrence": 1
+          },
+          "context": "Distinguishing source control for the specifically named boundary; other boundary branches are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "witness_status": "source_witnesses_present",
+      "gaps": []
+    },
+    {
+      "id": "material.construction",
+      "stage": "material",
+      "owners": [
+        {
+          "path": "core/lib/checker/construction_check.ml",
+          "anchor": "let check_template",
+          "occurrence": 1
+        }
+      ],
+      "admitted_context": "Independent reconstruction from the complete supplied template plus original ordered inventory checks exact molecule content, transition chemistry/coordinates and derivation.",
+      "outside_context": {
+        "disposition": "mixed",
+        "description": "Changed bases with recomputed candidate pins, missing content or unsupported recipe transitions cannot inherit a construction receipt."
+      },
+      "positive": [
+        {
+          "source": {
+            "path": "core/test/test_policy_material_service.ml",
+            "anchor": "Generic producer and independent standalone material checker differ",
+            "occurrence": 1
+          },
+          "context": "Frozen full-path exclusion sibling: two encounter slots, truth registers initially false, event evidence, exclusive arbitration, one fixed product, continuous/defer lifecycle, original nine-history domain. Other admitted combinations are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "negative": [
+        {
+          "source": {
+            "path": "core/test/test_policy_material_binding.ml",
+            "anchor": "altered candidate bases and recomputed local pins",
+            "occurrence": 1
+          },
+          "context": "Distinguishing source control for the specifically named boundary; other boundary branches are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "witness_status": "source_witnesses_present",
+      "gaps": []
+    },
+    {
+      "id": "material.member_inventory",
+      "stage": "material",
+      "owners": [
+        {
+          "path": "core/lib/checker/policy_mrna_structure_check.ml",
+          "anchor": "requires_complete_linear_delivered_rna",
+          "occurrence": 1
+        }
+      ],
+      "admitted_context": "PM-02\u201309 require the full ordered declared inventory of complete linear delivered coding RNA, exact canonical bases/length and no unresolved missing members.",
+      "outside_context": {
+        "disposition": "mixed",
+        "description": "Core-only/partial RNA, wrong modality, missing member or bounded/unknown unrepresented tail cannot be complete."
+      },
+      "positive": [
+        {
+          "source": {
+            "path": "core/test/test_policy_material_service.ml",
+            "anchor": "Generic producer and independent standalone material checker differ",
+            "occurrence": 1
+          },
+          "context": "Frozen full-path exclusion sibling: two encounter slots, truth registers initially false, event evidence, exclusive arbitration, one fixed product, continuous/defer lifecycle, original nine-history domain. Other admitted combinations are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "negative": [
+        {
+          "source": {
+            "path": "core/test/test_policy_mrna_structure.ml",
+            "anchor": "Bounded appended tail",
+            "occurrence": 1
+          },
+          "context": "Distinguishing source control for the specifically named boundary; other boundary branches are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "witness_status": "source_witnesses_present",
+      "gaps": []
+    },
+    {
+      "id": "material.regions",
+      "stage": "material",
+      "owners": [
+        {
+          "path": "core/lib/checker/policy_mrna_structure_check.ml",
+          "anchor": "ordered_complete_partition",
+          "occurrence": 1
+        }
+      ],
+      "admitted_context": "Exactly four named nonempty forward UTR5/CDS/UTR3/poly-A regions have prescribed meaning, frame and contiguous complete molecular partition.",
+      "outside_context": {
+        "disposition": "mixed",
+        "description": "Missing/arbitrary region meaning, overlap/gap/reversal/empty region or extra annotation semantics fail or remain unsupported."
+      },
+      "positive": [
+        {
+          "source": {
+            "path": "core/test/test_policy_material_service.ml",
+            "anchor": "Generic producer and independent standalone material checker differ",
+            "occurrence": 1
+          },
+          "context": "Frozen full-path exclusion sibling: two encounter slots, truth registers initially false, event evidence, exclusive arbitration, one fixed product, continuous/defer lifecycle, original nine-history domain. Other admitted combinations are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "negative": [
+        {
+          "source": {
+            "path": "core/test/test_policy_mrna_structure.ml",
+            "anchor": "Repinned arbitrary region meaning",
+            "occurrence": 1
+          },
+          "context": "Distinguishing source control for the specifically named boundary; other boundary branches are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "witness_status": "source_witnesses_present",
+      "gaps": []
+    },
+    {
+      "id": "material.translation",
+      "stage": "material",
+      "owners": [
+        {
+          "path": "core/lib/checker/policy_mrna_structure_check.ml",
+          "anchor": "ordinary_standard_code_without_recoding_required",
+          "occurrence": 1
+        }
+      ],
+      "admitted_context": "Complete one-CDS ordinary standard-code translation starts AUG, terminates in-frame without internal stop and equals the entire supplied protein spelling/pin.",
+      "outside_context": {
+        "disposition": "mixed",
+        "description": "Recoding, modified CDS, wrong start/stop/frame or different complete product is rejected or unsupported."
+      },
+      "positive": [
+        {
+          "source": {
+            "path": "core/test/test_policy_material_service.ml",
+            "anchor": "Generic producer and independent standalone material checker differ",
+            "occurrence": 1
+          },
+          "context": "Frozen full-path exclusion sibling: two encounter slots, truth registers initially false, event evidence, exclusive arbitration, one fixed product, continuous/defer lifecycle, original nine-history domain. Other admitted combinations are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "negative": [
+        {
+          "source": {
+            "path": "core/test/test_policy_mrna_structure.ml",
+            "anchor": "Wrong complete product",
+            "occurrence": 1
+          },
+          "context": "Distinguishing source control for the specifically named boundary; other boundary branches are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "witness_status": "source_witnesses_present",
+      "gaps": []
+    },
+    {
+      "id": "material.chemistry",
+      "stage": "material",
+      "owners": [
+        {
+          "path": "core/lib/checker/policy_mrna_structure_check.ml",
+          "anchor": "original_full_chemistry_mismatch",
+          "occurrence": 1
+        }
+      ],
+      "admitted_context": "Full original nominal chemistry matches, cap/ends are explicitly declared, modification inventory is declared even when empty, and the positive exact tail is represented and all-A.",
+      "outside_context": {
+        "disposition": "mixed",
+        "description": "Unknown/absent chemistry, unsupported modified CDS or a tail not corresponding to the exact terminal region withholds completeness."
+      },
+      "positive": [
+        {
+          "source": {
+            "path": "core/test/test_policy_mrna_structure.ml",
+            "anchor": "Known explicitly supplied non-CDS chemistry was rejected",
+            "occurrence": 1
+          },
+          "context": "Declared non-CDS chemistry may pass the structural leaf; this is not empirical efficacy.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "negative": [
+        {
+          "source": {
+            "path": "core/test/test_policy_mrna_structure.ml",
+            "anchor": "Unknown modification inventory",
+            "occurrence": 1
+          },
+          "context": "Distinguishing source control for the specifically named boundary; other boundary branches are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "witness_status": "source_witnesses_present",
+      "gaps": []
+    },
+    {
+      "id": "material.coordinates",
+      "stage": "material",
+      "owners": [
+        {
+          "path": "core/lib/checker/policy_mrna_structure_check.ml",
+          "anchor": "invalid_region_coordinates:",
+          "occurrence": 1
+        }
+      ],
+      "admitted_context": "Every region/carrier path is checked in actual molecular coordinates with complete orientation, finite span, reading frame and sequence coverage.",
+      "outside_context": {
+        "disposition": "mixed",
+        "description": "Unknown boundaries, shifted frame, reverse/outside coordinates and altered material sites fail or remain unknown."
+      },
+      "positive": [
+        {
+          "source": {
+            "path": "core/test/test_policy_material_service.ml",
+            "anchor": "Generic producer and independent standalone material checker differ",
+            "occurrence": 1
+          },
+          "context": "Frozen full-path exclusion sibling: two encounter slots, truth registers initially false, event evidence, exclusive arbitration, one fixed product, continuous/defer lifecycle, original nine-history domain. Other admitted combinations are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "negative": [
+        {
+          "source": {
+            "path": "core/test/test_policy_mrna_structure.ml",
+            "anchor": "Shifted CDS frame",
+            "occurrence": 1
+          },
+          "context": "Distinguishing source control for the specifically named boundary; other boundary branches are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "witness_status": "source_witnesses_present",
+      "gaps": []
+    },
+    {
+      "id": "material.provenance",
+      "stage": "material",
+      "owners": [
+        {
+          "path": "core/lib/checker/policy_mrna_structure_check.ml",
+          "anchor": "declared_pinned_provenance_required",
+          "occurrence": 1
+        }
+      ],
+      "admitted_context": "Supplied construction/region/chemistry/product provenance retains nonempty full declared authority; step assumptions have no implicit semantic force.",
+      "outside_context": {
+        "disposition": "mixed",
+        "description": "Unknown/unpinned declaration provenance or uninterpreted construction assumptions withhold structural completeness; no biological claim is discharged."
+      },
+      "positive": [
+        {
+          "source": {
+            "path": "core/test/test_policy_material_service.ml",
+            "anchor": "Generic producer and independent standalone material checker differ",
+            "occurrence": 1
+          },
+          "context": "Frozen full-path exclusion sibling: two encounter slots, truth registers initially false, event evidence, exclusive arbitration, one fixed product, continuous/defer lifecycle, original nine-history domain. Other admitted combinations are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "negative": [
+        {
+          "source": {
+            "path": "core/test/test_policy_mrna_structure.ml",
+            "anchor": "Unknown original mapping provenance",
+            "occurrence": 1
+          },
+          "context": "Distinguishing source control for the specifically named boundary; other boundary branches are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "witness_status": "source_witnesses_present",
+      "gaps": []
+    },
+    {
+      "id": "context.counts",
+      "stage": "context",
+      "owners": [
+        {
+          "path": "core/lib/realization_checker/policy_material_context_check.ml",
+          "anchor": "exact_source_count_required:",
+          "occurrence": 1
+        }
+      ],
+      "admitted_context": "Original source counts remain distinct: one design, member, ORF and product, zero helpers; one RNA material inventory and payload role with no hidden complexes/amounts.",
+      "outside_context": {
+        "disposition": "unsupported",
+        "description": "Changed counts, helpers, copy number/dose or persistence interpretations are explicitly unsupported rather than rewritten."
+      },
+      "positive": [
+        {
+          "source": {
+            "path": "core/test/test_policy_material_service.ml",
+            "anchor": "Generic producer and independent standalone material checker differ",
+            "occurrence": 1
+          },
+          "context": "Frozen full-path exclusion sibling: two encounter slots, truth registers initially false, event evidence, exclusive arbitration, one fixed product, continuous/defer lifecycle, original nine-history domain. Other admitted combinations are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "negative": [
+        {
+          "source": {
+            "path": "core/test/test_policy_material_context.ml",
+            "anchor": "Different original count ",
+            "occurrence": 1
+          },
+          "context": "Distinguishing source control for the specifically named boundary; other boundary branches are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "witness_status": "source_witnesses_present",
+      "gaps": []
+    },
+    {
+      "id": "context.recipient",
+      "stage": "context",
+      "owners": [
+        {
+          "path": "core/lib/realization_checker/policy_material_context_check.ml",
+          "anchor": "executor_recipient_binding",
+          "occurrence": 1
+        }
+      ],
+      "admitted_context": "Human immune in-vivo RNA is placed at the concrete executor, correct compartment and original chassis; encountered targets remain distinct delivery identities.",
+      "outside_context": {
+        "disposition": "rejected",
+        "description": "Target-bound RNA, population substitution, foreign recipient/compartment or original catalog chassis mismatch fails."
+      },
+      "positive": [
+        {
+          "source": {
+            "path": "core/test/test_policy_material_service.ml",
+            "anchor": "Generic producer and independent standalone material checker differ",
+            "occurrence": 1
+          },
+          "context": "Frozen full-path exclusion sibling: two encounter slots, truth registers initially false, event evidence, exclusive arbitration, one fixed product, continuous/defer lifecycle, original nine-history domain. Other admitted combinations are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "negative": [
+        {
+          "source": {
+            "path": "core/test/test_policy_material_context.ml",
+            "anchor": "Target-bound RNA",
+            "occurrence": 1
+          },
+          "context": "Distinguishing source control for the specifically named boundary; other boundary branches are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "witness_status": "source_witnesses_present",
+      "gaps": []
+    },
+    {
+      "id": "context.provider_closure",
+      "stage": "context",
+      "owners": [
+        {
+          "path": "core/lib/realization_checker/policy_material_context_check.ml",
+          "anchor": "complete_original_provider_closure",
+          "occurrence": 1
+        }
+      ],
+      "admitted_context": "Every original chassis/environment/interface/delivery reference resolves to one exact full definition and typed provider body; environment grammar equals the entire original finite domain.",
+      "outside_context": {
+        "disposition": "mixed",
+        "description": "Missing/extra providers, richer uninterpreted definitions, changed chassis bodies or narrower environments cannot discharge source context."
+      },
+      "positive": [
+        {
+          "source": {
+            "path": "core/test/test_policy_material_service.ml",
+            "anchor": "Generic producer and independent standalone material checker differ",
+            "occurrence": 1
+          },
+          "context": "Frozen full-path exclusion sibling: two encounter slots, truth registers initially false, event evidence, exclusive arbitration, one fixed product, continuous/defer lifecycle, original nine-history domain. Other admitted combinations are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "negative": [
+        {
+          "source": {
+            "path": "core/test/test_policy_material_context.ml",
+            "anchor": "Narrowed environment",
+            "occurrence": 1
+          },
+          "context": "Distinguishing source control for the specifically named boundary; other boundary branches are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "witness_status": "source_witnesses_present",
+      "gaps": []
+    },
+    {
+      "id": "context.time",
+      "stage": "context",
+      "owners": [
+        {
+          "path": "core/lib/realization_checker/policy_material_context_check.ml",
+          "anchor": "guaranteed_inclusive_availability:",
+          "occurrence": 1
+        }
+      ],
+      "admitted_context": "Exact decimal rational origin/period preserves original clock resolution and guarantees every provider/channel/capacity throughout the inclusive finite horizon.",
+      "outside_context": {
+        "disposition": "rejected",
+        "description": "Late onset, early expiry, shifted original clock or loss of decimal precision fails."
+      },
+      "positive": [
+        {
+          "source": {
+            "path": "core/test/test_policy_material_service.ml",
+            "anchor": "Generic producer and independent standalone material checker differ",
+            "occurrence": 1
+          },
+          "context": "Frozen full-path exclusion sibling: two encounter slots, truth registers initially false, event evidence, exclusive arbitration, one fixed product, continuous/defer lifecycle, original nine-history domain. Other admitted combinations are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "negative": [
+        {
+          "source": {
+            "path": "core/test/test_policy_material_context.ml",
+            "anchor": "Availability ends early",
+            "occurrence": 1
+          },
+          "context": "Distinguishing source control for the specifically named boundary; other boundary branches are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "witness_status": "source_witnesses_present",
+      "gaps": []
+    },
+    {
+      "id": "context.delivery",
+      "stage": "context",
+      "owners": [
+        {
+          "path": "core/lib/realization_checker/policy_material_context_check.ml",
+          "anchor": "complete_original_delivery_phase_relation",
+          "occurrence": 1
+        }
+      ],
+      "admitted_context": "Co-delivered single RNA has explicit same executor/count and no opaque assumptions; complete arrival/expression/activation intervals agree across all original delivery refs and causally precede start.",
+      "outside_context": {
+        "disposition": "mixed",
+        "description": "Independent delivery, phase disagreement after full re-pinning, noncausal timing or opaque delivery assumptions is unsupported/failing."
+      },
+      "positive": [
+        {
+          "source": {
+            "path": "core/test/test_policy_material_context.ml",
+            "anchor": "Coherent distinct delivery providers failed",
+            "occurrence": 1
+          },
+          "context": "Different exact provider DefinitionRefs with equal full three-phase relations are admitted.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "negative": [
+        {
+          "source": {
+            "path": "core/test/test_policy_material_context.ml",
+            "anchor": "complete_original_delivery_phase_relation",
+            "occurrence": 1
+          },
+          "context": "Distinguishing source control for the specifically named boundary; other boundary branches are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "witness_status": "source_witnesses_present",
+      "gaps": []
+    },
+    {
+      "id": "context.inputs",
+      "stage": "context",
+      "owners": [
+        {
+          "path": "core/lib/realization_checker/policy_material_context_check.ml",
+          "anchor": "complete_input_source_binding",
+          "occurrence": 1
+        }
+      ],
+      "admitted_context": "Every actual evidence/feedback input maps to a unique available original provider channel of exact kind/source/observer/subject and complete environment authority; no supplied channel is unused.",
+      "outside_context": {
+        "disposition": "rejected",
+        "description": "Cross-kind channel aliases, wrong source/target, missing/unused channel or expired input fails."
+      },
+      "positive": [
+        {
+          "source": {
+            "path": "core/test/test_policy_material_service.ml",
+            "anchor": "Generic producer and independent standalone material checker differ",
+            "occurrence": 1
+          },
+          "context": "Frozen full-path exclusion sibling: two encounter slots, truth registers initially false, event evidence, exclusive arbitration, one fixed product, continuous/defer lifecycle, original nine-history domain. Other admitted combinations are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "negative": [
+        {
+          "source": {
+            "path": "core/test/test_policy_material_context.ml",
+            "anchor": "Supplied provider channel has no actual input witness",
+            "occurrence": 1
+          },
+          "context": "Distinguishing source control for the specifically named boundary; other boundary branches are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "witness_status": "partial_source_witnesses",
+      "gaps": [
+        "The one-observation/one-feedback alias control reaches kind/source mismatch before generic same-channel alias detection; no larger input family is claimed."
+      ]
+    },
+    {
+      "id": "context.record_resources",
+      "stage": "context",
+      "owners": [
+        {
+          "path": "core/lib/realization_checker/policy_material_context_check.ml",
+          "anchor": "complete_finite_record_layout",
+          "occurrence": 1
+        }
+      ],
+      "admitted_context": "Kernel/domain-derived resources include full definedness, ordered reason/cause, identity, timer, edge, generation, active-attempt and retained-correlation record layouts; complete owner/unit/scope inventory is retained.",
+      "outside_context": {
+        "disposition": "rejected",
+        "description": "Truncated record widths, omitted/extra/wrong demand ownership or declared quantity below derived minimum fails."
+      },
+      "positive": [
+        {
+          "source": {
+            "path": "core/test/test_policy_material_service.ml",
+            "anchor": "Generic producer and independent standalone material checker differ",
+            "occurrence": 1
+          },
+          "context": "Frozen full-path exclusion sibling: two encounter slots, truth registers initially false, event evidence, exclusive arbitration, one fixed product, continuous/defer lifecycle, original nine-history domain. Other admitted combinations are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_material_compound.ml",
+            "anchor": "Complete compound record capacity derivation changed",
+            "occurrence": 1
+          },
+          "context": "Both compound widths have explicit derived resource and complete ordered reason/cause capacity literals.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "negative": [
+        {
+          "source": {
+            "path": "core/test/test_policy_material_context.ml",
+            "anchor": "Discarded ordered reasons",
+            "occurrence": 1
+          },
+          "context": "Distinguishing source control for the specifically named boundary; other boundary branches are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_material_compound.ml",
+            "anchor": "Re-pinned capacity layout silently dropped all ordered uncertainty reasons",
+            "occurrence": 1
+          },
+          "context": "All provider identities are re-pinned after reducing reason width; fresh context checking still rejects.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "witness_status": "source_witnesses_present",
+      "gaps": []
+    },
+    {
+      "id": "context.capacity",
+      "stage": "context",
+      "owners": [
+        {
+          "path": "core/lib/realization_checker/policy_material_context_check.ml",
+          "anchor": "shared_capacity_sum_exceeded",
+          "occurrence": 1
+        }
+      ],
+      "admitted_context": "All declared demands are exclusively allocated to exact original provider capacities with matching unit/scope/slot/layout/recipient/availability and summed shared-pool reservations.",
+      "outside_context": {
+        "disposition": "rejected",
+        "description": "Double-spent pools, capacity type/scope/slot mismatch, expired capacity or unused capacity fails."
+      },
+      "positive": [
+        {
+          "source": {
+            "path": "core/test/test_policy_material_service.ml",
+            "anchor": "Generic producer and independent standalone material checker differ",
+            "occurrence": 1
+          },
+          "context": "Frozen full-path exclusion sibling: two encounter slots, truth registers initially false, event evidence, exclusive arbitration, one fixed product, continuous/defer lifecycle, original nine-history domain. Other admitted combinations are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "negative": [
+        {
+          "source": {
+            "path": "core/test/test_policy_material_context.ml",
+            "anchor": "Shared truth pool used twice",
+            "occurrence": 1
+          },
+          "context": "Distinguishing source control for the specifically named boundary; other boundary branches are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "witness_status": "source_witnesses_present",
+      "gaps": []
+    },
+    {
+      "id": "material.obligations",
+      "stage": "material",
+      "owners": [
+        {
+          "path": "core/lib/realization_checker/policy_material_check.ml",
+          "anchor": "Unknown future obligations",
+          "occurrence": 1
+        }
+      ],
+      "admitted_context": "Only the complete conjunction of preservation, catalog, material and context may discharge the unchanged original source-obligation ledger through typed stage-specific evidence.",
+      "outside_context": {
+        "disposition": "withheld",
+        "description": "Unknown future obligations, absent/failed leaves or status-only receipts leave the program not accepted and export withheld."
+      },
+      "positive": [
+        {
+          "source": {
+            "path": "core/test/test_policy_material_service.ml",
+            "anchor": "Generic producer and independent standalone material checker differ",
+            "occurrence": 1
+          },
+          "context": "Frozen full-path exclusion sibling: two encounter slots, truth registers initially false, event evidence, exclusive arbitration, one fixed product, continuous/defer lifecycle, original nine-history domain. Other admitted combinations are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "negative": [
+        {
+          "source": {
+            "path": "core/test/test_policy_material_check.ml",
+            "anchor": "Unrecognized original semantic obligation",
+            "occurrence": 1
+          },
+          "context": "Distinguishing source control for the specifically named boundary; other boundary branches are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "witness_status": "source_witnesses_present",
+      "gaps": []
+    },
+    {
+      "id": "export.freshness",
+      "stage": "export",
+      "owners": [
+        {
+          "path": "core/lib/service/policy_material_service.ml",
+          "anchor": "Saved full material wrapper differs from complete fresh checking.",
+          "occurrence": 1
+        }
+      ],
+      "admitted_context": "Check/replay/export bind full original request, candidate and limits; replay rechecks the entire saved wrapper, while export requires a fresh private accepted conjunction.",
+      "outside_context": {
+        "disposition": "rejected",
+        "description": "Changed original spans/limits/material, old/rehash-forged wrappers or a saved export used as authority is rejected; same RNA may have a different fresh manifest."
+      },
+      "positive": [
+        {
+          "source": {
+            "path": "core/test/test_policy_material_service.ml",
+            "anchor": "Generic producer and independent standalone material checker differ",
+            "occurrence": 1
+          },
+          "context": "Frozen full-path exclusion sibling: two encounter slots, truth registers initially false, event evidence, exclusive arbitration, one fixed product, continuous/defer lifecycle, original nine-history domain. Other admitted combinations are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "negative": [
+        {
+          "source": {
+            "path": "core/test/test_policy_material_service.ml",
+            "anchor": "old report after fresh source location lowering",
+            "occurrence": 1
+          },
+          "context": "Distinguishing source control for the specifically named boundary; other boundary branches are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "witness_status": "source_witnesses_present",
+      "gaps": []
+    },
+    {
+      "id": "export.publication",
+      "stage": "export",
+      "owners": [
+        {
+          "path": "core/lib/service/policy_material_service.ml",
+          "anchor": "let validate_publication",
+          "occurrence": 1
+        }
+      ],
+      "admitted_context": "Closed profiles and whole framed result bytes/nodes/depth bounds retain full reports and exact FASTA plus canonical complete-manifest byte hashes.",
+      "outside_context": {
+        "disposition": "rejected",
+        "description": "Oversized or truncated evidence, hidden claim changes and inconsistent hashes cannot be published as accepted material."
+      },
+      "positive": [
+        {
+          "source": {
+            "path": "core/test/test_policy_material_service.ml",
+            "anchor": "Generic producer and independent standalone material checker differ",
+            "occurrence": 1
+          },
+          "context": "Frozen full-path exclusion sibling: two encounter slots, truth registers initially false, event evidence, exclusive arbitration, one fixed product, continuous/defer lifecycle, original nine-history domain. Other admitted combinations are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "negative": [
+        {
+          "source": {
+            "path": "core/test/test_policy_material_service.ml",
+            "anchor": "whole wrapper nodes",
+            "occurrence": 1
+          },
+          "context": "Distinguishing source control for the specifically named boundary; other boundary branches are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "witness_status": "source_witnesses_present",
+      "gaps": []
+    },
+    {
+      "id": "export.paired_archive",
+      "stage": "export",
+      "owners": [
+        {
+          "path": "src/biocompiler/policy/material.py",
+          "anchor": "def export(",
+          "occurrence": 1
+        }
+      ],
+      "admitted_context": "Fresh native export is retained inertly and published as one deterministic stored ZIP after exact staged-byte/metadata readback; no-clobber default and explicit atomic replacement preserve paired bytes.",
+      "outside_context": {
+        "disposition": "withheld",
+        "description": "Input aliases, corrupt/short archive, cancellation, fsync/replace failure or publication race cannot overwrite prior output with an incomplete pair."
+      },
+      "positive": [
+        {
+          "source": {
+            "path": "tests/test_policy_material.py",
+            "anchor": "test_deterministic_archive_carries_exact_fresh_native_pair",
+            "occurrence": 1
+          },
+          "context": "Python packaging peer tests byte preservation only; actual semantic/export authority remains native.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "negative": [
+        {
+          "source": {
+            "path": "tests/test_policy_material.py",
+            "anchor": "test_corrupt_or_short_staged_bytes_fail_before_replacement",
+            "occurrence": 1
+          },
+          "context": "Distinguishing source control for the specifically named boundary; other boundary branches are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "witness_status": "source_witnesses_present",
+      "gaps": []
+    },
+    {
+      "id": "export.standalone",
+      "stage": "export",
+      "owners": [
+        {
+          "path": "core/lib/service/policy_material_service.ml",
+          "anchor": "Material service only checks, replays or freshly exports supplied candidates.",
+          "occurrence": 1
+        }
+      ],
+      "admitted_context": "Standalone Verify exposes checking/replay/fresh export without material production; explicit negotiated Core capability is required to compile.",
+      "outside_context": {
+        "disposition": "rejected",
+        "description": "Verify producer calls, missing/wrong binary, profile mismatch and semantic Python fallback are rejected."
+      },
+      "positive": [
+        {
+          "source": {
+            "path": "core/test/test_policy_material_service.ml",
+            "anchor": "Generic producer and independent standalone material checker differ",
+            "occurrence": 1
+          },
+          "context": "Frozen full-path exclusion sibling: two encounter slots, truth registers initially false, event evidence, exclusive arbitration, one fixed product, continuous/defer lifecycle, original nine-history domain. Other admitted combinations are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "negative": [
+        {
+          "source": {
+            "path": "core/test/test_policy_material_service.ml",
+            "anchor": "Standalone Verify acquired material producer authority",
+            "occurrence": 1
+          },
+          "context": "Distinguishing source control for the specifically named boundary; other boundary branches are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
+      "witness_status": "source_witnesses_present",
+      "gaps": []
+    }
+  ],
+  "known_gaps": [
+    "SM-01.1/SM-01.2 and SM-08 closure remain open: this matrix inventories reviewed first-profile rule families, not every cross-product of authorable syntax, enum value, scope and context.",
+    "Four-case lifecycle, phase-provider, original-input and fresh-export families require their own current hosted results; source presence cannot transfer acceptance across revisions or platforms.",
+    "Supplied executable model-to-sequence and provider contracts remain conditional premises; empirical biology, human use, Studio and conversational authoring are outside this gate.",
+    "The preserved prebuilt resolver is pinned as a dependency, but targeted installed material routing, prebuilt distribution and offline resolver/transport acceptance are pending. No legacy transport guard is widened by this inventory.",
+    "Frozen compound/literal-Unknown and four-case lifecycle source witnesses are now indexed; their presence and literal 54-history assertions do not establish hosted acceptance or exhaustive combinations beyond those original finite domains."
+  ]
+}

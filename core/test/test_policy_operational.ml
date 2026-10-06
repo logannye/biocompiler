@@ -110,6 +110,83 @@ let run fixture =
     admit_definitions (edit_first (fun descriptor -> replace "definition" (replace field (str "changed") (get "definition" descriptor)) descriptor))))
     ["id";"version";"digest"];
   let source_defs=items "definitions" (get "semantics" raw) in
+  let effect_source=List.find (fun declaration -> text "$type" declaration = "Effect") (items "declarations" raw) in
+  let effect_definition_id=text "id" (get "contract" effect_source) in
+  let rec repin_definition digest value = match value with
+    | Json.Object fields ->
+        let value=obj (List.map (fun (key,value) -> key,repin_definition digest value) fields) in
+        if List.assoc_opt "$type" fields = Some (str "DefinitionRef") && List.assoc_opt "id" fields = Some (str effect_definition_id)
+        then replace "digest" (str digest) value else value
+    | Json.Array values -> arr (List.map (repin_definition digest) values)
+    | value -> value in
+  let signature kind argument_value change =
+    let value_type=obj ["$type",str "TypeSpec";"kind",str kind;"unit",Json.Null;"entity_kind",Json.Null] in
+    let parameter=obj ["$type",str "Parameter";"id",str "product";"value_type",value_type;
+      "value",Json.Null;"lower",Json.Null;"upper",Json.Null;"selection",str "fixed"] |> change in
+    let definition=List.find (fun definition -> text "id" definition = effect_definition_id) source_defs
+      |> replace "parameters" (arr [parameter]) in
+    let expression=obj ["$type",str "Expr";"op",str "literal";"value_type",value_type;"args",arr [];
+      "value",argument_value;"ref",Json.Null;"scope",Json.Null;"contract",Json.Null;"duration",Json.Null;
+      "clock",Json.Null;"coverage",Json.Null;"binding",Json.Null] in
+    let source=raw |> replace "semantics" (replace "definitions" (arr (List.map (fun original ->
+      if text "id" original = effect_definition_id then definition else original) source_defs)) (get "semantics" raw))
+      |> replace "declarations" (arr (List.map (fun declaration ->
+        if text "id" declaration = text "id" effect_source then replace "parameters"
+          (arr [obj ["$type",str "Argument";"name",str "product";"value",expression]]) declaration
+        else declaration) (items "declarations" raw))) in
+    let digest=D.document_digest definition in
+    repin_definition digest source,O.descriptors_of_json (repin_definition digest descriptor_json),expression in
+  let signature_document label source =
+    let document=D.of_json ~path:"/document" source in
+    require (text "status" (Bioc_checker.Policy_check.check document) = "valid")
+      ("Effect formal control lost generic source validity: "^label);document in
+  List.iter (fun (kind,value) ->
+    let source,descriptors,expression=signature kind value Fun.id in
+    let document=signature_document (kind^" signature") source in
+    let behavior=L.lower (A.admit ~document ~descriptors) in
+    ignore (C.check ~expected_document:document ~descriptors behavior);
+    require ((List.hd behavior.effects).parameters = ["product",O.expression_of_json expression])
+      "Signature-only effect changed its exact supplied argument";
+    require (Json.equal behavior.source_document source && Json.equal (O.descriptors_to_json descriptors) (get "descriptor_bundle" (O.behavior_to_json behavior)))
+      "Signature-only effect discarded original source or descriptor authority")
+    ["text",str "fixture.product.alpha";"integer",Json.int 3];
+  let count_bound amount=obj ["$type",str "Quantity";"amount",str amount;
+    "unit",obj ["$type",str "Unit";"id",str "count";"dimension",str "count";
+      "quantity_kind",str "count";"scale",str "1";"reference",Json.Null]] in
+  List.iter (fun (label,kind,value,field,replacement) ->
+    let source,descriptors,_=signature kind value (replace field replacement) in
+    let document=signature_document label source in
+    let assessment=Bioc_checker.Policy_check.check document in
+    let unsupported_signature action = match action () with
+      | () -> failwith ("Unsupported effect formal admitted: "^label)
+      | exception Diagnostic.Error diagnostic ->
+          require (diagnostic.code = "policy_operational_unsupported" &&
+            Option.fold ~none:false ~some:(String.ends_with ~suffix:("/parameters/0/"^field)) diagnostic.path)
+            ("Effect formal failed outside its exact admission guard: "^label);
+          incr rejected in
+    unsupported_signature (fun () -> ignore (A.admit ~document ~descriptors));
+    (* Refresh every original source/descriptor pin and complete ledger. A
+       candidate cannot use independent correspondence to bypass admission. *)
+    let nodes=List.map2 (fun node (declaration:D.declaration) ->
+      replace "data" (remove "$type" declaration.value) node) (items "nodes" initial) (D.declarations document) in
+    let candidate=initial |> replace "source_document" source
+      |> replace "source_artifact_digest" (str (D.artifact_digest document))
+      |> replace "descriptor_bundle" (O.descriptors_to_json descriptors)
+      |> replace "descriptors_digest" (str (O.descriptors_digest descriptors))
+      |> replace "nodes" (arr nodes) |> replace "source_ledger" (get "declarations" assessment)
+      |> replace "requirements_ledger" (get "requirements" assessment)
+      |> replace "assumptions" (get "assumptions" assessment)
+      |> replace "unresolved_obligations" (get "unresolved_obligations" assessment) in
+    let candidate=O.behavior_of_json candidate in
+    unsupported_signature (fun () -> ignore (C.check ~expected_document:document ~descriptors candidate)))
+    ["formal design selection","text",str "fixture.product.alpha","selection",str "design";
+     "formal measured selection","text",str "fixture.product.alpha","selection",str "measured";
+     "formal uncertain selection","text",str "fixture.product.alpha","selection",str "uncertain";
+     "formal supplied value","text",str "fixture.product.alpha","value",str "fixture.product.different";
+     "formal lower refinement","integer",Json.int 3,"lower",count_bound "1";
+     "formal upper refinement","integer",Json.int 3,"upper",count_bound "5"];
+  require (Json.equal initial (O.behavior_to_json (L.lower (A.admit ~document ~descriptors))))
+    "Signature-only admission narrowing changed the ordinary operational artifact";
   let unused_definition=List.hd source_defs |> replace "id" (str "unused.definition") |> replace "meaning" (str "Unreachable source definition remains unproved.") in
   let unused_source=replace "semantics" (replace "definitions" (arr (source_defs @ [unused_definition])) (get "semantics" raw)) raw in
   let unused_document=D.of_json ~path:"/document" unused_source in

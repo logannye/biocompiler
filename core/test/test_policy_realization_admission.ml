@@ -233,6 +233,9 @@ let () =
   let rec cyclic = Json.Null::cyclic in
   rejects "native cyclic array is bounded before decoding" "policy_document_limit"
     (fun()->R.of_json(set["catalog_bindings"](arr cyclic)raw));
-  require(!controls=52)"Admission negative-control inventory changed";
+  (* 45 literal controls plus 4 dependency/evidence, 2 assurance-level and
+     3 horizon controls. The former 52 omitted the added nominal assurance
+     reference and old-behavior/reference rejection controls. *)
+  require(!controls=54)("Admission negative-control inventory changed: expected 54, received "^string_of_int !controls);
   print_endline("Source/domain/model inputs admitted with "^string_of_int !controls^
     " rejection controls; preservation, hard requirements, material and export remain unestablished")

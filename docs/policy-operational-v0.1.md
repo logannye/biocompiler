@@ -48,6 +48,13 @@ source assumptions and requirements remain visible, including unsupported proof
 forms. An admitted abstract operation does not establish the capability of a
 cell, chassis, environment or supplied molecular implementation.
 
+Abstract-effect formal parameters are signatures in this profile: selection is
+`fixed`, and `value`, `lower` and `upper` are null. Actual call arguments retain
+their own typed expressions. Formal defaults, design/measured/uncertain selection
+and refinements have no executable interpretation here and reject before
+lowering, even if the supplied actual argument is fixed. Generic source
+authoring can still represent those fields for future profiles.
+
 ## Checked behavior representation
 
 The dedicated behavior profile is separate from legacy Behavior v0.1/v0.2. Each

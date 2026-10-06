@@ -364,6 +364,8 @@ def ownership(module, category):
         return "TypeScript", ["LM-10", "LM-30"], "preserve_studio_surface"
     if category == "example":
         return "Python", ["LM-03", "LM-11"], "retain_example_with_core_routing"
+    if module == "biocompiler.core_distribution":
+        return "Python", ["LM-11", "LM-12", "LM-25"], "retain_opt_in_owned_prebuilt_resolution_without_semantic_or_default_routing_authority"
     if module in {"biocompiler.core_policy_material", "biocompiler.policy.material"}:
         return "Python", ["LM-12", "LM-20", "LM-21", "LM-24", "LM-25", "LM-26"], "retain_explicit_transport_to_fresh_native_policy_material_and_exact_paired_export"
     if module in {"biocompiler.core_policy_implementation", "biocompiler.policy.implementation"}:
@@ -391,6 +393,8 @@ def ownership(module, category):
 def authority(module, category):
     if category in {"example", "studio_asset"}:
         return "authored_or_displayed_inputs_are_not_acceptance_authority"
+    if module == "biocompiler.core_distribution":
+        return "installed_sdk_release_pins_and_owned_wheel_RECORD_with_fresh_explicit_native_role_and_operation_negotiation"
     if module in {"biocompiler.core_policy_material", "biocompiler.policy.material"}:
         return "full_original_policy_models_material_context_and_fresh_native_conditional_artifact_check"
     if module in {"biocompiler.core_policy_implementation", "biocompiler.policy.implementation"}:

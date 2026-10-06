@@ -489,6 +489,36 @@ run `37421588095`; the service then stopped at an object-key-order-sensitive
 test comparison, now corrected to canonical JSON equality. New source and all
 remaining installed/aggregate acceptance still require hosted validation.
 
+Current partial evidence: integrated source
+`3044e9d62a4c16cc294e4110ab521b019537298d` includes accepted main through PR88
+merge `f594991ac2ff2496723ae5f2427ad93e6df7a51d`. Run `37423025439`, attempt 1,
+passed both complete early native suites, including context 137, coordinator
+100, generic production/independent service/replay/fresh export and lifecycle
+1,519 assertions. Both Python 3.11 installed material and inherited-network-
+denial Verify-only campaigns also passed. The complete native suites then failed
+two stale test inventories: realization admission expected 52 instead of the
+54 existing rejection controls, and producer protocol omitted the two new
+implementation/material compile operations. Test corrections retain the exact
+inventories and extend standalone producer-operation rejection. Remaining
+installed/aggregate evidence and the corrections require fresh validation.
+
+The next source batch adds two complete compound-guard/assignment cases with
+defined Unknown state and ordered reason multiplicity, each retaining the three
+original hard requirements over 54 histories/176 transitions/177 prefixes.
+These exercise already admitted meaning rather than expanding the profile.
+SM-08.7 additionally needs supplied-wheel installation and package-owned binary
+resolution for this material profile. The reusable distribution implementation
+already exists in the preserved continuation; use its narrow foundation without
+recreating reference-package routing or taking over its owner's acceptance.
+
+The source audit additionally found abstract-effect formal defaults/refinements
+that lacked an executable interpretation. Admission now requires signature-only
+formals (fixed selection and null value/lower/upper); 20 fully repinned controls
+retain generic source validity and must reject at this new guard. The reviewed
+contextual matrix inventories 62 rule families with explicit source witnesses
+and remaining gaps, complementary to the 612 syntax distinctions. These source
+checks do not execute semantics or close hosted acceptance.
+
 ### SM-09 — Expand supported semantics through complete vertical profiles
 
 Depends on: SM-08 for acceptance; design work can be prepared earlier.

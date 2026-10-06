@@ -11,6 +11,45 @@ from tools import ci_validation as ci
 
 
 class ValidationGateTests(unittest.TestCase):
+    def test_prebuilt_material_requires_assembly_every_owned_slot_and_comparison(self):
+        jobs = {"policy-prebuilt-sdk", "policy-prebuilt-installed", "policy-prebuilt-reproducibility"}
+        self.assertTrue(jobs <= ci.REQUIRED_NEEDS)
+        expected = {(job, "cross-platform") for job in jobs - {"policy-prebuilt-installed"}}
+        expected |= {("policy-prebuilt-installed", variant) for variant in ci.REALIZATION_VARIANTS}
+        self.assertEqual({pair for pair in ci.EXPECTED_RECEIPTS if pair[0] in jobs}, expected)
+        for pair in expected:
+            for mutation in ("missing", "duplicate", "failed_job", "skipped_job", "stale_run"):
+                with self.subTest(pair=pair, mutation=mutation):
+                    needs, receipts, accounts, authority = self.fixture()
+                    receipt = next(row for row in receipts if (row["job"], row["variant"]) == pair)
+                    if mutation == "missing":
+                        receipts.remove(receipt)
+                    elif mutation == "duplicate":
+                        receipts.append(deepcopy(receipt))
+                    elif mutation in {"failed_job", "skipped_job"}:
+                        needs[pair[0]]["result"] = "failure" if mutation == "failed_job" else "skipped"
+                    else:
+                        receipt["run_id"] = "other"
+                    self.assertEqual(ci.validate(needs, receipts, accounts, authority)["status"], "fail")
+
+    def test_prebuilt_slot_cannot_claim_another_python_or_native_platform(self):
+        for variant in ci.REALIZATION_VARIANTS:
+            for field, value in (("python_version", "3.10.0"), ("system", "wrong"), ("machine", "wrong")):
+                with self.subTest(variant=variant, field=field):
+                    args = self.fixture()
+                    receipt = next(row for row in args[1] if row["job"] == "policy-prebuilt-installed" and row["variant"] == variant)
+                    receipt[field] = value
+                    self.assertEqual(ci.validate(*args)["status"], "fail")
+        with patch.dict("os.environ", {"GITHUB_JOB": "policy-prebuilt-installed"}), \
+             patch.object(ci.platform, "system", return_value="Linux"), \
+             patch.object(ci.platform, "machine", return_value="x86_64"), \
+             patch.object(ci.platform, "python_version", return_value="3.11.7"):
+            authority = self.fixture()[3]
+            self.assertEqual(ci.start_job("policy-prebuilt-installed", "linux-x86_64-py3.11", authority)["job"],
+                             "policy-prebuilt-installed")
+            with self.assertRaises(ValueError):
+                ci.start_job("policy-prebuilt-installed", "linux-x86_64-py3.14", authority)
+
     def fixture(self):
         expected = {"revision": "a" * 40, "run_id": "123", "run_attempt": "2"}
         needs = {job: {"result": "success"} for job in ci.REQUIRED_NEEDS}

@@ -21,6 +21,9 @@ CORPUS_PIN = "2f5e7636977f559e046776c1bb92bebf67c8f0e733ca463927f8d3a1aee3d77b"
 # hashes for historical source files are deliberately unsupported.
 REVIEWED_EXAMPLES = frozenset({"examples/expressive_policies.py"})
 REVIEWED_ADDITIONS = {
+    # Explicit owned-wheel resolver reused from the preserved continuation;
+    # historical workflow capture cannot import this new opt-in route.
+    'src/biocompiler/core_distribution.py': '10c772076ee0ecfcb0c61a1a3410ae6014313d2e05617f30bc77f6df55485459',
     'src/biocompiler/policy/material.py': 'cabfab5d543c84d5732d9d9adcb1edf1482f45e3ebb80fdab1022ef3bea16359',
     'src/biocompiler/core_policy_material.py': 'b3a28a1f40d475de8848cc6cea45d4c0975042da17b2c90977facca7f2d9100c',
     'src/biocompiler/policy/implementation.py': '4e1de0535cf852885169328aaae035caff9178b367b84f204c1e68eaae478515',

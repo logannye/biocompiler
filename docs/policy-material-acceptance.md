@@ -363,12 +363,12 @@ or CRCs. Pure-Python corruption controls preserve prior output and remove the
 unpublished stage. The nested transport fixture also registers cleanup with
 its owning test, preventing patched assessments from leaking to later tests.
 
-The first-profile witness audit still requires coherent source/model/material
-families for authorization and uncertainty alternatives before timeout,
-compound `all`/`any` guards with explicit Unknown state, and distinct delivery
-providers with matching full phase relations. Re-pinned near-neighbor mutations
-must fail at the relevant semantic checks. These are remaining SM-08 coverage
-obligations; primitive-only tests and rejected stale pins do not close them.
+The first-profile witness audit uses coherent source/model/material families
+for authorization and uncertainty alternatives before timeout, compound
+`all`/`any` guards with explicit Unknown state, and distinct delivery providers
+with matching full phase relations. Re-pinned near-neighbor mutations must fail
+at the relevant semantic checks. Primitive-only tests and rejected stale pins
+do not close these SM-08 coverage obligations.
 
 The Verify-only consumer campaign stages unmodified installed transport modules,
 one pinned verifier and separate original/proposal/expectation files. It runs
@@ -390,8 +390,23 @@ original hard requirements and independently enumerates 54 histories, 176
 transitions and 177 prefixes. Literal histories distinguish missing, invalid,
 conflicting, stale and false evidence while attempts remain active, correlated
 feedback and quiet-time timeout. Cross-case material substitution must reject
-even when every RNA base is identical. These controls are source-ready; their
-native results are not yet established.
+even when every RNA base is identical. These controls passed on both native
+platforms at source `3044e9d62a4c16cc294e4110ab521b019537298d`, run
+`37423025439`: 137 context controls, 100 coordinator controls, the complete
+service/replay/export suite and 1,519 lifecycle assertions. This is partial
+hosted evidence; it does not establish the full release gate.
+
+A further source-ready compound family supplies two complete graph/material
+cases with nested `all`/`any` guards and assignments. Both begin with explicitly
+defined Unknown state; evidence absence retains its separate representation.
+The cases preserve one versus two ordered uncertainty reasons, including repeated
+reasons from repeated expression occurrences. Each retains the original three
+hard requirements and the independently counted 54 histories/176 transitions/
+177 prefixes. Literal state, assignments, authorization, resource minima and
+record widths are checked independently. Operator/operand/state mutations,
+lost reasons, insufficient re-pinned storage and substitution of a different
+fully pinned graph case must reject even with identical RNA. These additional
+native tests remain hosted-pending.
 
 The initial family remains narrow: one executor, explicitly named finite
 encounters, one truth observation, one or two encounter-scoped truth stores,
@@ -400,6 +415,15 @@ material/context route supports one exact complete RNA/product, no delivered
 helper, exact supplied human immune in-vivo RNA context, and a single supplied
 whole-graph case. Supplied context is a formal premise. No disease response,
 biological state transition or therapeutic effect is inferred from these labels.
+
+Review after the passing partial run found that abstract-effect formal
+parameters were structurally type-checked but exempt from executable admission
+restrictions. Their design/measured/uncertain selection or non-null default was
+not interpreted. The bounded profile is being closed to signature-only formals:
+fixed selection and null value/lower/upper. Generic source authoring remains
+expressive. Source-valid mutations with all affected definition identities
+refreshed must reject at the new admission guard, rather than at a stale pin.
+The earlier partial run does not validate this correction.
 
 Additional numeric/quantity domains, machines, predicate resets, coordination,
 quantification, inheritance, complex spatial relationships, broader arbitration,
@@ -426,6 +450,26 @@ semantic outputs and artifact bytes. Existing source-only, operational and
 implementation-only profiles keep their own claims and acceptance records.
 The reference-package route already has source implementations in its preserved
 continuation; compatibility/hosted acceptance remain with its owner.
+
+SM-08.7 now reuses the distribution foundation from continuation revision
+`b7a176dd5c75e700b9aa86ac8006b70fcb3eaf57`, with per-file provenance in
+[`policy-material-distribution-foundation-provenance-v1.json`](../protocol/policy-material-distribution-foundation-provenance-v1.json).
+The only foundation change corrects the reviewed SDK entrypoint expectation to
+`biocompiler.entrypoint:main`. The resolver remains opt-in. The material lane does
+not invoke the copied migration pipeline's legacy installed/aggregate campaigns.
+
+Hosted validation will prepare locked static dependencies, compile and test the
+actual binaries, audit their final linkage/material closure, and package those
+same bytes. One SDK wheel binds both platform manifests. Four fresh wheel-only
+install slots check owned RECORD/release identities, explicit material profile
+negotiation, full SDK/CLI compilation and required offline standalone verification.
+Installation-specific mutations and uninstall/missing/reinstall controls must
+reject or restore exact ownership as specified. An independent comparator binds
+complete original material/consumer receipts to the supplied wheels and source
+revision. Producer and consumer run attempts are retained separately; only an
+already successful earlier attempt of the exact same run/source may be reused.
+Every new job and slot is mandatory in the existing aggregate gate. These are
+source implementations awaiting hosted packaging and installed acceptance.
 
 Immediate next work is to run the coherent material batch on hosted native
 targets, repair any failures without weakening original authority or controls,
