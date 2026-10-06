@@ -9,6 +9,8 @@ PATHS = {'tools/pipeline_original_counterpart.py', 'tools/check_pipeline_fixed_c
 
 def restore(path, current, proof_bytes=None):
     if path not in PATHS: return current
+    from tools import pipeline_policy_counterpart_source
+    current = pipeline_policy_counterpart_source.restore(path, current)
     def require(value, message):
         if not value: raise AssertionError(message)
     def pin(raw): return {'sha256': hashlib.sha256(raw).hexdigest(), 'bytes': len(raw)}

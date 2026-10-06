@@ -441,6 +441,18 @@ let source_quantity_and_ownership_controls case=
   let executor_observation=case|>edit "condition"["subject"](reference "Role" "executor")
     |>map_json(fun value->if references "observe" "condition" value then
       set["scope"](reference "Role" "executor")value else value)in
+  (* The effect-free exclusion rule must retain a readable encounter binding:
+     its assignment destinations cannot introduce one after the observation
+     becomes executor-scoped. Keep its original guard and read the unchanged
+     encounter-local excluded store explicitly before testing domain admission. *)
+  let excluded_state=at["condition";"args";"0";"args";"1"](source "exclusive_selection")in
+  require(references "state" "excluded" excluded_state &&
+    Json.equal(get "scope" excluded_state)(reference "Encounter" "encounter"))
+    "Executor observation control lost its explicit encounter state operand";
+  let exclusion_guard=get "when"(at(declaration_path executor_observation "exclude")executor_observation)in
+  let exclusion_guard=truth_literal|>set["op"](str "all")|>set["value"]Json.Null
+    |>set["args"](arr[exclusion_guard;equal excluded_state excluded_state])in
+  let executor_observation=edit "exclude"["when"]exclusion_guard executor_observation in
   domain "executor observation cannot consume encounter-addressed input rows" ~code:"policy_domain_reference"
     "Unknown operating-domain reference: executor" executor_observation;
   (* Three quantity and five ownership controls retain the original domain,

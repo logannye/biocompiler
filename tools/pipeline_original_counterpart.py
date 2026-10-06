@@ -2,6 +2,7 @@
 
 Only Python sources are copied. Reviewed manager and reference entry prefixes
 are restored to their whole originals within each task's captured source scope;
+fixed build/continuation overlays also restore the exact policy entrypoints.
 all other bytes remain bound to the installed package. No compiled extensions,
 build outputs or accepted state are imported.
 """
@@ -19,7 +20,7 @@ import tempfile
 from tools import manager_registration_source_lineage as lineage
 
 ROOT = Path(__file__).resolve().parents[1]
-SCHEMA = 'biocompiler.original_manager_counterpart.v1'
+SCHEMA = 'biocompiler.original_manager_counterpart.v2'
 FILES = (
     'tools/capture_pipeline_deferred_semantics.py',
     'tools/capture_pipeline_callback_semantics.py',
@@ -72,6 +73,32 @@ def reference_routes(task, test_module=None):
     return {path: reference.route_source_witness(path) for path in reference.ROUTE_SOURCES}
 
 
+def policy_routes(task, test_module=None):
+    if closure_task(task, test_module) not in ('fixed-build-original', 'fixed-continuation-original'):
+        return {}
+    from tools import policy_entrypoint_source_lineage as policy
+    return {path: policy.restore(path, root=ROOT) for path in sorted(policy.ROUTES)}
+
+
+def verify_child_policy_routes(manifest, rows):
+    """Check both original copied bytes and current-origin pins from the witness."""
+    scoped = closure_task(manifest['task'], manifest['test_module']) in (
+        'fixed-build-original', 'fixed-continuation-original')
+    if not scoped:
+        require(manifest['policy_routes'] == {}, 'Unreviewed original policy substitution task')
+        return
+    from tools import policy_entrypoint_source_lineage as policy
+    witness = policy.witness(ROOT)
+    expected = {path: policy.restore(path, witness['sources'][path]['after_source'].encode(), root=ROOT)
+        for path in sorted(policy.ROUTES)}
+    require(manifest['policy_routes'] == {path: proof for path, (_, proof) in expected.items()},
+        'Original policy entrypoint correspondence differs')
+    for logical, (raw, proof) in expected.items():
+        require(logical in rows and rows[logical]['origin_sha256'] == proof['current_sha256'] and
+            rows[logical]['sha256'] == proof['historical_sha256'] and rows[logical]['substituted'] is True and
+            (ROOT / logical).read_bytes() == raw, 'Original policy entrypoint substitution missing')
+
+
 def task_files(task, test_module=None):
     original_task = task
     task = closure_task(task, test_module)
@@ -86,6 +113,7 @@ def task_files(task, test_module=None):
     if task in ('fixed-build-original', 'fixed-continuation-original'):
         files.append('tools/realization_source_lineage.py')
         files.append('tools/reference_original_counterpart.py')
+        files.append('tools/policy_entrypoint_source_lineage.py')
         for _,index in build_indexes(): files.extend(path for path in index['source_files'] if not path.startswith('src/'))
     return tuple(dict.fromkeys(files))
 
@@ -102,6 +130,8 @@ def task_data(task, test_module=None):
     if task in ('fixed-build-original', 'fixed-continuation-original'):
         from tools import reference_original_counterpart as reference
         files.append(reference.ROUTE_WITNESS)
+        from tools import policy_entrypoint_source_lineage as policy
+        files.append(policy.WITNESS)
         for path,index in build_indexes():
             files.extend((path,'tests/conformance/'+index['full_corpus']['path']))
             files.extend('tests/conformance/'+index['provider_directory']+'/'+entry['id']+'.json'
@@ -203,13 +233,17 @@ def run(task='deferred', *, test_module=None, test_ids=None, _capture=None):
     for logical, (_, proof) in routes.items():
         require(lineage.sha(sources[logical][1]) == proof['correspondence']['current_sha256'],
             'Installed reference entry source differs from its reviewed counterpart')
+    policies = policy_routes(task, test_module)
+    for logical, (_, proof) in policies.items():
+        require(lineage.sha(sources[logical][1]) == proof['current_sha256'],
+            'Installed policy entrypoint differs from its reviewed counterpart')
     require(sum(len(raw) for _, raw in sources.values()) <= MAX_SOURCE_BYTES,
         'Original counterpart source copy exceeds closed bound')
     with tempfile.TemporaryDirectory(prefix='biocompiler-original-counterpart-') as directory:
         overlay = Path(directory).resolve()
         rows = []
         for logical, (path, raw) in sorted(sources.items()):
-            copied = original if logical == lineage.PATH else lineage.original_tool_source() if logical == lineage.TOOL_PATH else routes[logical][0] if logical in routes else raw
+            copied = original if logical == lineage.PATH else lineage.original_tool_source() if logical == lineage.TOOL_PATH else routes[logical][0] if logical in routes else policies[logical][0] if logical in policies else raw
             target = overlay / logical
             target.parent.mkdir(parents=True, exist_ok=True)
             target.write_bytes(copied)
@@ -223,7 +257,8 @@ def run(task='deferred', *, test_module=None, test_ids=None, _capture=None):
             data.append({'logical':logical,'sha256':lineage.sha((ROOT/logical).read_bytes())})
         manifest = {'schema': SCHEMA, 'task': task, 'test_module': test_module, 'test_ids': test_ids,
             'root': str(overlay), 'package_root': str(package_root), 'route': route, 'tool_route':tool_route,
-            'reference_routes': {path: proof for path, (_, proof) in routes.items()}, 'sources': rows, 'data':data}
+            'reference_routes': {path: proof for path, (_, proof) in routes.items()},
+            'policy_routes': {path: proof for path, (_, proof) in policies.items()}, 'sources': rows, 'data':data}
         (overlay / 'manifest.json').write_bytes(canonical(manifest))
         result = overlay / 'result.json'
         script = ('import sys;sys.path[:0]=[sys.argv[1],sys.argv[1]+"/src",sys.argv[1]+"/tests"];'
@@ -254,7 +289,7 @@ def validate(value):
     require(type(value) is dict and set(value) == {'manifest', 'modules', 'value'},
         'Malformed original counterpart result')
     manifest = value['manifest']
-    require(set(manifest) == {'schema', 'task', 'test_module', 'test_ids', 'root', 'package_root', 'route', 'tool_route', 'reference_routes', 'sources', 'data'}
+    require(set(manifest) == {'schema', 'task', 'test_module', 'test_ids', 'root', 'package_root', 'route', 'tool_route', 'reference_routes', 'policy_routes', 'sources', 'data'}
         and manifest['schema'] == SCHEMA and manifest['task'] in TASKS,
         'Malformed original counterpart manifest')
     root = Path(manifest['root'])
@@ -264,6 +299,9 @@ def validate(value):
     routes = reference_routes(manifest['task'], manifest['test_module'])
     require(manifest['reference_routes'] == {path: proof for path, (_, proof) in routes.items()},
         'Original counterpart reference entry correspondence differs')
+    policies = policy_routes(manifest['task'], manifest['test_module'])
+    require(manifest['policy_routes'] == {path: proof for path, (_, proof) in policies.items()},
+        'Original counterpart policy entrypoint correspondence differs')
     rows = {}
     for row in manifest['sources']:
         require(set(row) == {'logical', 'origin', 'origin_sha256', 'path', 'sha256', 'substituted'}
@@ -275,7 +313,7 @@ def validate(value):
             'Original counterpart source path differs')
         raw = (ROOT / logical).read_bytes()
         require(row['origin_sha256'] == lineage.sha(raw), 'Original counterpart origin bytes differ')
-        wanted = lineage.original_source() if logical == lineage.PATH else lineage.original_tool_source() if logical == lineage.TOOL_PATH else routes[logical][0] if logical in routes else raw
+        wanted = lineage.original_source() if logical == lineage.PATH else lineage.original_tool_source() if logical == lineage.TOOL_PATH else routes[logical][0] if logical in routes else policies[logical][0] if logical in policies else raw
         require(row['sha256'] == lineage.sha(wanted) and row['substituted'] is (wanted != raw),
             'Original counterpart substitution differs')
         if logical.startswith('src/'):
@@ -319,6 +357,7 @@ def child(directory):
     for logical, proof in manifest['reference_routes'].items():
         require(lineage.sha((overlay / logical).read_bytes()) == proof['correspondence']['original_sha256'],
             'Original reference entry substitution missing')
+    verify_child_policy_routes(manifest, rows)
     if manifest['task'] == 'deferred':
         from tools import capture_pipeline_deferred_semantics as oracle
         from tools import check_pipeline_deferred_runtime as runtime
@@ -461,7 +500,7 @@ def original_test_suite(loader, tests, pattern, module):
 
 
 def metadata_correspondence(current, counterpart):
-    """Two full executions, one exact source-metadata difference, no state import."""
+    """Two full executions, reviewed source-metadata differences, no state import."""
     old=validate(counterpart)
     require(counterpart['manifest']['task'] in ('fixed-provider-original','fixed-build-original','fixed-continuation-original','callbacks'),
         'Source metadata correspondence has no closed original task')
@@ -472,6 +511,7 @@ def metadata_correspondence(current, counterpart):
         require(document.get('inventory_fingerprint')==lineage.sha(canonical({key:value for key,value in document.items()
             if key!='inventory_fingerprint'})), 'Complete original/current capture inventory differs')
     require(set(current['source_files'])==set(old['source_files']), 'Original/current source census differs')
+    policies = policy_routes(counterpart['manifest']['task'], counterpart['manifest']['test_module'])
     for path,pin in old['source_files'].items():
         observed=current['source_files'][path]
         require(observed==lineage.sha((ROOT/path).read_bytes()), 'Current capture source differs from actual bytes')
@@ -479,6 +519,10 @@ def metadata_correspondence(current, counterpart):
             lineage.verify_source(ROOT,path,pin)
         elif path==lineage.TOOL_PATH:
             lineage.verify_tool_source((ROOT/path).read_bytes(),pin)
+        elif path in policies:
+            original, proof = policies[path]
+            require(lineage.sha(original) == pin and proof['current_sha256'] == observed,
+                'Original/current policy source metadata differs')
         else:
             require(observed==pin, 'Unreviewed current capture metadata difference')
     historical={key:value for key,value in old.items() if key not in ('source_files','inventory_fingerprint')}

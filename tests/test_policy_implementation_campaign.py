@@ -3,6 +3,7 @@ from copy import deepcopy
 import importlib.util
 import json
 from pathlib import Path
+import re
 import tempfile
 from types import SimpleNamespace
 import unittest
@@ -295,13 +296,21 @@ class ImplementationCampaignTests(unittest.TestCase):
 
     def test_workflow_runs_both_installed_interpreters_and_compares_exactly_four_slots(self):
         workflow = (ROOT / ".github/workflows/ci.yml").read_text(encoding="utf-8")
-        self.assertEqual(workflow.count('"$GITHUB_WORKSPACE/tools/check_policy_implementation.py"'), 2)
+        sdk = workflow.split('\n  architecture-sdk:\n', 1)[1].split('\n  architecture-core-reproducibility:\n', 1)[0]
+        slots = re.findall(r'platform: ([a-z0-9_-]+)\n            python-version: "([0-9.]+)"', sdk)
+        self.assertCountEqual(slots, [(system, minor) for system in ('linux-x86_64', 'macos-arm64')
+                                     for minor in ('3.11', '3.14')])
+        self.assertEqual(sdk.count('python "$GITHUB_WORKSPACE/tools/check_policy_implementation.py"'), 1)
         self.assertEqual(workflow.count('python tools/check_policy_implementation.py'), 1)
-        self.assertIn('python "$GITHUB_WORKSPACE/tools/check_policy_implementation.py"', workflow)
-        self.assertIn('"$ROUTING_PYTHON" "$GITHUB_WORKSPACE/tools/check_policy_implementation.py"', workflow)
+        self.assertIn('python-version: ${{ matrix.python-version }}', sdk)
+        self.assertIn('--core "$GITHUB_WORKSPACE/core/_build/default/bin/core/main.exe"', sdk)
+        self.assertIn('--verify "$GITHUB_WORKSPACE/core/_build/default/bin/verify/main.exe"', sdk)
+        self.assertIn('--fixture "$GITHUB_WORKSPACE/core/test/data/policy_implementation_request_v01.json"', sdk)
+        self.assertIn('sysconfig.get_path("scripts") + "/biocompiler"', sdk)
         for minor in ("3.11", "3.14"):
-            self.assertIn('cd "$RUNNER_TEMP/policy-implementation-' + minor + '"', workflow)
-            self.assertIn('--output "$GITHUB_WORKSPACE/generated/core/policy-implementation-' + minor + '.json"', workflow)
+            expanded = sdk.replace('${{ matrix.python-version }}', minor)
+            self.assertIn('cd "$RUNNER_TEMP/policy-implementation-' + minor + '"', expanded)
+            self.assertIn('--output "$GITHUB_WORKSPACE/generated/core/policy-implementation-' + minor + '.json"', expanded)
             for system in ("linux-x86_64", "macos-arm64"):
                 self.assertEqual(workflow.count(f"--compare artifacts/core/{system}/policy-implementation-{minor}.json"), 1)
         self.assertIn("--native-artifacts artifacts/core", workflow)

@@ -15,6 +15,7 @@ import json
 import math
 from pathlib import Path
 import platform
+import re
 import signal
 import subprocess
 import sys
@@ -221,6 +222,77 @@ def validate_plan(plan, discovery, env):
         all_classes.extend(shard["class_ids"])
     require(Counter(all_ids) == Counter(discovery.tests.keys()), "Tests missing, extra or duplicated across shards.")
     require(Counter(all_classes) == Counter(discovery.manifest["classes"].keys()), "Classes missing or duplicated across shards.")
+
+
+def plan_runtime(plan, root, python_minor):
+    """Select an exact plan interpreter without importing or discovering tests.
+
+    This validates inert plan structure and current source bytes only. Run and
+    verify still rediscover and check the complete environment independently
+    after setup-python installs the returned version.
+    """
+    require(isinstance(python_minor, str) and
+            re.fullmatch(r"3\.(0|[1-9][0-9]{0,2})", python_minor) is not None,
+            "Requested Python minor must be a canonical stable Python 3 version.")
+    require(isinstance(plan, dict) and set(plan) == {"schema", "environment", "discovery", "shard_count",
+            "weights_digest", "shards", "fingerprint"}, "Malformed shard plan.")
+    require(plan["schema"] == PLAN_SCHEMA, "Unsupported shard plan schema.")
+    require(plan["fingerprint"] == digest({key: value for key, value in plan.items() if key != "fingerprint"}),
+            "Shard plan fingerprint mismatch.")
+    env = plan["environment"]
+    require(isinstance(env, dict) and set(env) == {"revision", "python", "implementation"},
+            "Malformed plan runtime environment.")
+    require(env["implementation"] == "CPython", "Plan runtime must be CPython.")
+    version = env["python"]
+    require(isinstance(version, str) and
+            re.fullmatch(r"3\.(0|[1-9][0-9]{0,2})\.(0|[1-9][0-9]{0,2})", version) is not None,
+            "Plan Python version must be one canonical stable full version.")
+    require(version.rsplit(".", 1)[0] == python_minor, "Plan Python minor differs from requested cohort.")
+    require(isinstance(env["revision"], str) and re.fullmatch(r"[0-9a-f]{40}", env["revision"]) is not None,
+            "Malformed plan revision.")
+    root = Path(root).resolve()
+    revision = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=root, text=True).strip()
+    require(env["revision"] == revision, "Stale plan revision.")
+    manifest = plan["discovery"]
+    require(isinstance(manifest, dict) and set(manifest) == {
+            "start_directory", "pattern", "test_ids", "classes", "source_files", "digest"},
+            "Malformed plan discovery manifest.")
+    require(manifest["digest"] == digest({key: value for key, value in manifest.items() if key != "digest"}),
+            "Plan discovery digest mismatch.")
+
+    def relative_path(value):
+        return (isinstance(value, str) and bool(value) and not value.startswith("/") and
+                "\\" not in value and "\x00" not in value and
+                all(part not in {"", ".", ".."} for part in value.split("/")))
+
+    start_directory = manifest["start_directory"]
+    require(relative_path(start_directory), "Plan test directory must be a canonical relative path.")
+    start = (root / start_directory).resolve()
+    require(start.is_relative_to(root) and start.is_dir(), "Test directory must be inside the checkout.")
+    pattern = manifest["pattern"]
+    require(isinstance(pattern, str) and bool(pattern) and not any(char in pattern for char in "/\\\x00"),
+            "Malformed plan discovery pattern.")
+    identities, classes, sources = manifest["test_ids"], manifest["classes"], manifest["source_files"]
+    require(isinstance(identities, list) and bool(identities) and
+            all(isinstance(value, str) and bool(value) for value in identities), "Invalid discovered test IDs.")
+    require(identities == sorted(set(identities)), "Discovered test IDs must be sorted and unique.")
+    require(isinstance(classes, dict) and bool(classes) and
+            all(isinstance(key, str) and bool(key) and isinstance(values, list) and bool(values) and
+                all(isinstance(value, str) and bool(value) for value in values)
+                for key, values in classes.items()), "Invalid discovered classes.")
+    require(all(values == sorted(set(values)) for values in classes.values()) and
+            Counter(value for values in classes.values() for value in values) == Counter(identities),
+            "Discovered class inventory differs from test IDs.")
+    require(isinstance(sources, dict) and bool(sources) and
+            all(relative_path(path) and isinstance(pin, str) and re.fullmatch(r"[0-9a-f]{64}", pin) is not None
+                for path, pin in sources.items()), "Malformed plan source inventory.")
+    require(isinstance(plan["weights_digest"], str) and
+            re.fullmatch(r"[0-9a-f]{64}", plan["weights_digest"]) is not None, "Malformed plan weights digest.")
+    # Reuse the complete assignment validator with inert IDs. This is not a
+    # discovered suite and cannot execute: fresh discovery remains mandatory.
+    validate_plan(plan, Discovery(dict.fromkeys(identities), manifest), env)
+    require(sources == source_inventory(root, start_directory), "Stale plan source inventory.")
+    return version
 
 
 class TimedResult(unittest.TextTestResult):
@@ -435,6 +507,9 @@ def main(argv=None):
     plan_args.add_argument("--shards", type=int, default=5)
     plan_args.add_argument("--weights", type=Path, default=WEIGHTS)
     plan_args.add_argument("--output", type=Path, required=True)
+    runtime_args = commands.add_parser("runtime")
+    runtime_args.add_argument("--plan", type=Path, required=True)
+    runtime_args.add_argument("--python-minor", required=True)
     for command in ("run", "verify"):
         subparser = commands.add_parser(command)
         subparser.add_argument("--plan", type=Path, required=True)
@@ -444,6 +519,14 @@ def main(argv=None):
         else:
             subparser.add_argument("--result", type=Path, action="append", default=[])
     args = parser.parse_args(argv)
+    if args.command == "runtime":
+        try:
+            version = plan_runtime(read_json(args.plan, max_bytes=PLAN_MAX_BYTES), args.root, args.python_minor)
+        except (Exception, KeyboardInterrupt) as error:
+            print(type(error).__name__ + ": " + str(error), file=sys.stderr)
+            return 1
+        print(version)
+        return 0
     failure = {"schema": ACCOUNTING_SCHEMA if args.command == "verify" else RESULT_SCHEMA,
                "status": "validation_error", "errors": []}
     protected = [getattr(args, "plan", None), *getattr(args, "result", [])]

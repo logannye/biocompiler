@@ -19,6 +19,39 @@ ROOT=Path(__file__).resolve().parents[1]
 
 
 class SchedulingTests(unittest.TestCase):
+    def test_unit_consumers_select_the_plans_exact_patch_before_installation(self):
+        text = (ROOT / '.github/workflows/ci.yml').read_text()
+        jobs = {match.group(1): match.group(2) for match in re.finditer(
+            r'^  ([a-z][a-z0-9-]*):\n(.*?)(?=^  [a-z][a-z0-9-]*:\n|\Z)',
+            text.split('\njobs:\n', 1)[1], re.M | re.S)}
+        self.assertIn('python-version: ${{ matrix.python-version }}', jobs['unit-plan'])
+        for name in ('unit-tests', 'unit-accounting'):
+            with self.subTest(job=name):
+                job = jobs[name]
+                ordered = (
+                    'uses: actions/checkout@v4',
+                    'name: unit-plan-py${{ matrix.python-version }}',
+                    'id: plan_python',
+                    'python3 -I -B tools/test_shards.py runtime --plan generated/unit-plan/plan.json '
+                    "--python-minor '${{ matrix.python-version }}'",
+                    "printf 'python-version=%s\\n' \"$plan_python_version\" >> \"$GITHUB_OUTPUT\"",
+                    'uses: actions/setup-python@v5',
+                    'python-version: ${{ steps.plan_python.outputs.python-version }}',
+                    'run: python -m pip install .',
+                    'python tools/test_shards.py ' + ('run' if name == 'unit-tests' else 'verify'),
+                )
+                positions = [job.index(value) for value in ordered]
+                self.assertEqual(positions, sorted(positions))
+                self.assertEqual(job.count('uses: actions/setup-python@v5'), 1)
+                self.assertEqual(job.count('name: unit-plan-py${{ matrix.python-version }}'), 1)
+                self.assertNotIn('python-version: ${{ matrix.python-version }}', job)
+                self.assertIn('python-version: ["3.11", "3.14"]', job)
+        self.assertIn('shard: [0, 1, 2, 3, 4]', jobs['unit-tests'])
+        self.assertIn('needs: [unit-plan, unit-tests]', jobs['unit-accounting'])
+        for index in range(5):
+            self.assertIn('--result generated/unit-results/shard-' + str(index) + '.json',
+                          jobs['unit-accounting'])
+
     def test_complete_campaign_partition_and_all_runtime_jobs_are_required(self):
         names=pipeline.campaign_names()
         self.assertEqual(len(names),17)

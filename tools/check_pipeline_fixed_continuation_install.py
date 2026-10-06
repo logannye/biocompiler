@@ -492,6 +492,9 @@ SOURCES = tuple(dict.fromkeys((BUILD_TOOL, 'tests/test_pipeline_fixed_build_sema
     'tools/pipeline_fixed_continuation_workers.py', 'tests/test_pipeline_fixed_continuation_workers.py',
     'tools/pipeline_continuation_parallel_source.py', 'tools/pipeline_occurrence_source.py',
     'tools/pipeline_capture_overlap_source.py', 'tests/test_pipeline_capture_overlap.py',
+    'tools/pipeline_policy_counterpart_source.py', 'tests/test_pipeline_policy_counterpart.py',
+    'tests/conformance/pipeline-policy-counterpart-source-delta-v1.json',
+    'tools/policy_entrypoint_source_lineage.py', 'tests/conformance/policy-entrypoint-source-counterpart-v1.json',
     'tests/conformance/pipeline-capture-overlap-source-delta-v1.json',
     'tests/conformance/pipeline-continuation-parallel-source-delta-v1.json', *providers.SOURCES)))
 

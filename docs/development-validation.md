@@ -73,6 +73,21 @@ remain distinct revision boundaries.
 | `policy-prebuilt-reproducibility` | Requires the policy SDK and all four installed slots; independently rechecks original fixture authority, wheel/material ownership, release identities and complete material/consumer results across every slot. |
 | `validation` | Final gate requires all 74 jobs, including successful unit accounting, every installed/integration/browser job, TypeScript, both native platforms, all six reproducibility jobs and both existing prebuilt gates plus all three policy-prebuilt jobs. |
 
+Unit shards and accounting select the exact CPython patch version recorded in
+their same-run plan before installing the package. An isolated standard-library
+bootstrap validates the bounded plan, fingerprint, checkout and requested minor
+version before returning the exact interpreter version to `setup-python`.
+Discovery, execution and accounting still require identical full environments;
+a hosted Python patch rollout cannot justify relaxing that requirement. Failed
+selection has no fallback interpreter and cannot supply successful accounting.
+
+Original-only fixed build and continuation replays restore the historical
+package entrypoints alongside their archived session checker. The private
+counterpart v2 manifest retains the independently pinned current-to-original
+source proof, checked in both parent and child. Other counterpart tasks retain
+their current package entrypoints. A separate exact predecessor proof preserves
+the earlier capture and continuation witnesses without rewriting their corpora.
+
 The union of PR85 `ae2db34b31efd8d914622630721768b14f0eacd6` and PR95
 `bb84421cf1f93cd1dc02813d80a2c54a3520a919` rederives the census from the
 combined workflow: 27 job definitions expand to 74 executions. There are

@@ -1442,7 +1442,7 @@
     },
     {
       "path": "core/test/test_policy_implementation_binding.ml",
-      "sha256": "6b9f9760b601e2f7ed850725bc05f792e14bca6fd5b93dbe4795f77f0904bd3e"
+      "sha256": "84f2d08243fd57d2acc1f1102917e324688684faf4296a7f7c5e80288b7ae8b1"
     },
     {
       "path": "core/test/test_policy_material_binding.ml",
@@ -2876,7 +2876,7 @@
             "anchor": "let source_quantity_and_ownership_controls case=",
             "occurrence": 1
           },
-          "context": "Eight independently source-valid controls preserve original domains, budgets, models, candidate structure and requirement identities: quantity product and executor state reject at binding; quantity state, population/stable subject and mixed sibling-encounter state reject operationally; quantity evidence and executor-subject evidence reject at the operating-domain boundary. Every earlier validity/admission check remains outside the expected-error catch.",
+          "context": "Eight independently source-valid controls preserve original domains, budgets, models, candidate structure and requirement identities: quantity product and executor state reject at binding; quantity state, population/stable subject and mixed sibling-encounter state reject operationally; quantity evidence and executor-subject evidence reject at the operating-domain boundary. The executor-observation control retains a readable encounter-state guard for its effect-free rule, whose assignment destinations cannot introduce that scope. Every earlier validity/admission check remains outside the expected-error catch.",
           "evidence_scope": "source_only_not_executed_by_this_gate"
         }
       ],

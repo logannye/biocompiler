@@ -1,5 +1,6 @@
 """Closed source correspondence and genuine historical contract-test execution."""
 from copy import deepcopy
+import json
 from pathlib import Path
 import tempfile
 import unittest
@@ -12,6 +13,79 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class PipelineHistoricalSourceIntegrityTests(unittest.TestCase):
+    def test_policy_entrypoints_require_exact_original_pins_and_complete_current_bytes(self):
+        from tools import policy_entrypoint_source_lineage as policy
+        witness = policy.witness(ROOT)
+        for logical in sorted(policy.ROUTES):
+            entry = witness['sources'][logical]
+            original, current = entry['before_source'].encode(), entry['after_source'].encode()
+            pin = lineage.sha(original)
+            proof = verify_source_identity(ROOT, logical, pin)
+            self.assertEqual(proof, policy.verify_source(ROOT, logical, pin))
+            with tempfile.TemporaryDirectory() as directory:
+                root = Path(directory)
+                authority = root / policy.WITNESS
+                authority.parent.mkdir(parents=True)
+                authority.write_bytes((ROOT / policy.WITNESS).read_bytes())
+                path = root / logical
+                path.parent.mkdir(parents=True)
+                path.write_bytes(original)
+                self.assertEqual(verify_source_identity(root, logical, pin), {
+                    'path': logical, 'historical_sha256': pin, 'current_sha256': pin,
+                    'kind': 'identical_bytes', 'witness_sha256': policy.WITNESS_SHA256})
+                path.write_bytes(current)
+                self.assertEqual(verify_source_identity(root, logical, pin), proof)
+                with self.assertRaisesRegex(AssertionError, 'Original policy entrypoint source identity'):
+                    verify_source_identity(root, logical, lineage.sha(current))
+                for changed in (original + b'\n# extra original edit\n',
+                                current + b'\n# extra current edit\n',
+                                current.replace(b'\n', b'\r\n')):
+                    self.assertNotIn(changed, (original, current))
+                    path.write_bytes(changed)
+                    with self.subTest(path=logical), self.assertRaisesRegex(ValueError, 'Current policy entrypoint differs'):
+                        verify_source_identity(root, logical, pin)
+                    with self.assertRaisesRegex(AssertionError, 'Original policy entrypoint source identity'):
+                        verify_source_identity(root, logical, lineage.sha(changed))
+
+    def test_policy_witness_corruption_or_rehashed_source_cannot_supply_new_authority(self):
+        from tools import policy_entrypoint_source_lineage as policy
+        raw = (ROOT / policy.WITNESS).read_bytes()
+        witness = policy.witness(ROOT)
+        for logical in sorted(policy.ROUTES):
+            entry = witness['sources'][logical]
+            for mode in ('whitespace', 'rehashed_before', 'rehashed_after'):
+                with self.subTest(path=logical, mode=mode), tempfile.TemporaryDirectory() as directory:
+                    root = Path(directory)
+                    authority = root / policy.WITNESS
+                    authority.parent.mkdir(parents=True)
+                    changed = deepcopy(witness)
+                    if mode != 'whitespace':
+                        side = 'before' if mode == 'rehashed_before' else 'after'
+                        changed['sources'][logical][side + '_source'] += '\n# forged source\n'
+                        changed['sources'][logical][side + '_sha256'] = lineage.sha(
+                            changed['sources'][logical][side + '_source'].encode())
+                    authority.write_bytes(raw + b' ' if mode == 'whitespace' else json.dumps(changed).encode())
+                    path = root / logical
+                    path.parent.mkdir(parents=True)
+                    for source in (entry['before_source'], entry['after_source'],
+                                   changed['sources'][logical]['after_source']):
+                        path.write_text(source)
+                        with self.assertRaisesRegex(ValueError, 'Policy entrypoint witness bytes changed'):
+                            verify_source_identity(root, logical, entry['before_sha256'])
+
+    def test_policy_counterpart_does_not_extend_to_pyproject_or_other_paths(self):
+        from tools import policy_entrypoint_source_lineage as policy
+        witness = policy.witness(ROOT)
+        with self.assertRaisesRegex(AssertionError, 'Original captured source bytes changed'):
+            verify_source_identity(ROOT, 'pyproject.toml', witness['sources']['pyproject.toml']['before_sha256'])
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            path = root / 'ordinary.py'
+            entry = witness['sources']['src/biocompiler/__init__.py']
+            path.write_text(entry['after_source'])
+            with self.assertRaisesRegex(AssertionError, 'Original captured source bytes changed'):
+                verify_source_identity(root, 'ordinary.py', entry['before_sha256'])
+
     def test_reference_entry_prefixes_require_exact_whole_source_correspondence(self):
         from tools import reference_original_counterpart as reference
         for logical in reference.ROUTE_SOURCES:
