@@ -68,7 +68,7 @@ broader SM acceptance items below.
 - [x] Pass both complete hosted native-suite jobs, covering the retained 149-suite inventory on each platform. Independent final artifact auditing and the full release gate remain open.
 - [x] Pass both complete hosted direct-core jobs, retaining all 67 original groups per platform.
 - [x] Pass all four current-union architecture SDK slots and the complete six-comparison job, plus all four policy-prebuilt installed slots and their comparison.
-- [x] Pass all ten current-union unit shards and both unit-accounting jobs with plan-bound interpreters. Independent unit-artifact accounting remains part of the final audit.
+- [x] Pass all ten current-union unit shards and both unit-accounting jobs with plan-bound interpreters, then independently audit all 14 unit artifacts: each runtime has 4,063 successful tests and 26,705 successful retained subtests, with no duplicates or omissions.
 - [x] Independently audit PR95's complete unit accounting, Linux/macOS native packages and source companions, and all four prebuilt ownership/material/offline slots. These results belong to `bb84421cf`, not the later union.
 - [x] Independently replay PR95's six complete architecture/policy comparisons against authenticated original artifacts (`six-comparisons-scoped-proof.json`).
 - [x] Pass PR95's full 42-job hosted gate and independent final artifact audit at `bb84421cf`: 27 ordinary receipts, 14 unit artifacts, six comparisons, four owned prebuilt slots and all 53 selected ZIPs. Union/main acceptance remains separate; large legacy semantics retain their required hosted checks and receipt evidence.
@@ -82,7 +82,7 @@ broader SM acceptance items below.
 
 | Subject | Source / tested checkout / tree | Current evidence boundary |
 | --- | --- | --- |
-| Current PR85 union | H `a85b1112ff35ba988a71cc969bfabdfefb354cfe`; C `00af6e6bab506d52a700e0a72e16ef2e2e8d8d61`; shared tree `7d22ca4c27eafcd36f018b3f262ef87404a3caf6` | [Run 37471505350, attempt 1](https://github.com/logannye/biocompiler/actions/runs/37471505350): 59 successful jobs and no failures at the retained snapshot; all unit shards/accounting passed, remaining installed campaigns active/queued and downstream aggregate pending |
+| Current PR85 union | H `a85b1112ff35ba988a71cc969bfabdfefb354cfe`; C `00af6e6bab506d52a700e0a72e16ef2e2e8d8d61`; shared tree `7d22ca4c27eafcd36f018b3f262ef87404a3caf6` | [Run 37471505350, attempt 1](https://github.com/logannye/biocompiler/actions/runs/37471505350): 62 successful jobs and no failures at the retained snapshot; five installed campaign groups remain active, with downstream assembly/comparison/release gates pending |
 | Separate PR95 policy head | H `bb84421cf1f93cd1dc02813d80a2c54a3520a919`; C `4fe47eb1aa69782a03723fda2df892985b4e7328`; shared tree `889583e44a9de598a32beb4154f42c0471e4be83` | [Run 37450940506, attempt 1](https://github.com/logannye/biocompiler/actions/runs/37450940506): all 42 hosted jobs succeeded; independent final artifact audit passed for its stated scope. Normal union integration and fresh main acceptance remain pending |
 | Current main baseline | `f594991ac2ff2496723ae5f2427ad93e6df7a51d` | PR88 is merged; the policy/material/package union has not yet been merged or main-validated |
 
@@ -93,11 +93,20 @@ group jobs covering 17 campaigns in each of four runtime slots. Historical
 must independently account for every discovered test; the focused 416-test
 preflight is not the full unit suite.
 
+The current union's scoped unit audit has passed at
+`acceptance-37471505350/unit-scoped-audit/unit-scoped-proof.json`, SHA-256
+`bc586f1b94044840c5b70f36e9ff81a490711b962910aef4b28d565b668d391f`.
+Python 3.11.16 and 3.14.7 each account for all 4,063 tests, 431 classes and
+26,705 retained subtests across shard counts 676/857/818/826/886. Both complete
+124,731-file source inventories, plan/discovery/result/accounting digests and all
+14 artifact producer identities were independently checked. This scoped proof
+does not replace the remaining installed, aggregate, merge or main gates.
+
 Retained local evidence lives under
 `work/m11-human-evidence/generated/migration-next/pr85-pr95-union/`
 (preflight pair `preflight-unittest-passed-pair-a85b1112f.json`, guarded original
 build/continuation proofs, current `acceptance-37471505350/` checklist and hosted
-snapshots, including `hosted-progress-native-focused.json`, `hosted-progress-native-complete.json`, `hosted-progress-units-complete.json` and `hosted-progress-installed-partial.json`). Earlier-head scoped proofs live under
+snapshots, including `hosted-progress-native-focused.json`, `hosted-progress-native-complete.json`, `hosted-progress-units-complete.json` and `hosted-progress-campaigns-running.json`). Earlier-head scoped proofs live under
 `work/bounded-policy-execution/generated/policy-realization/acceptance-37450940506/`
 (unit, platform, `prebuilt-scoped-proof.json` and `six-comparisons-scoped-proof.json`). These generated records remain
 evidence with the stated scope, not substitutes for full acceptance.
@@ -381,9 +390,22 @@ Depends on: source interfaces already present; final acceptance follows SM-00.
 - [ ] **SM-01.2b** Complete every restriction's owner, positive witness and rejection witness; shared controls and syntax classification alone do not close this coverage task.
 - [ ] **SM-01.3** Inventory every public rich-policy builder/pattern/serialization/submission path. Preserve symbolic truth guards, immutable snapshots, exact values, source spans and full request inputs.
 - [x] **SM-01.4a** Verify independently authored `once_per_scope` expansion, roundtrip and two namespaces with separate state/effect references.
-- [ ] **SM-01.4b** Complete manual-expansion and identity coverage for all six public patterns. Any added module composition requires explicit imports/exports and reference rebinding; the one-pattern witness does not establish that facility.
+- [x] **SM-01.4b** Verify all six public patterns against independently authored manual expansions, with full serialization/reference comparisons, separate instance identities, alternate names, supplied arbitration and relevant parameter variants. These bounded authoring controls do not implement module imports/exports or reference rebinding.
 - [x] **SM-01.5** Freeze positive, negative and edit-propagation witnesses from section 4, including complete original BuildRequest/deployment/catalog/assurance authority and expected claim scopes.
 - [x] **SM-01.6** Define and freeze the complete exact-mRNA structural predicate before accepting material fixtures; distinguish complete members from core-only sequence, unresolved tails and unresolved chemistry.
+
+Current pattern checkpoint: the isolated follow-up branch adds 16 independently
+reviewed tests in `tests/test_policy_patterns.py` for all six public patterns.
+The focused Python 3.14.6 run passes 33 tests with process/network access denied:
+16 new pattern tests, seven unchanged realization-fixture tests and ten existing
+serialization tests. It checks 33 complete actual/manual program pairs, 39 literal
+expansions, nine invalid arguments and six duplicate-name rejections. The 3,731
+migration entries retain their order, nonreference fields and every old reference;
+140 entries gain the new test reference. Evidence is retained in
+`work/policy-descriptor-witnesses/generated/policy-pattern-witnesses/named-final-authoring.json`.
+This completes the bounded authoring task; the follow-up branch's hosted
+integration remains pending and these broader patterns gain no new native,
+implementation or material support from these tests.
 
 Preparation checkpoint: the [coverage ledger](../protocol/policy-semantic-coverage-v0.1.json)
 enumerates 612 source syntax distinctions and separately records contextual
