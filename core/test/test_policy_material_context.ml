@@ -1,4 +1,8 @@
 open Bioc_wire
+let ()=Printexc.register_printer(function
+  |Diagnostic.Error value->Some(Printf.sprintf "Diagnostic.Error(code=%s, path=%s, message=%s)"
+    value.code(Option.value ~default:"<none>" value.path)value.message)
+  |_->None)
 module C=Bioc_domain.Policy_material_context
 module MC=Bioc_domain.Policy_material_contract
 module D=Bioc_domain.Policy_document
