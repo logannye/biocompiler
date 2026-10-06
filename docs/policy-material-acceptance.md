@@ -321,6 +321,14 @@ wrapper/manifest identities and ZIP bytes after truncating those inventories;
 the missing evidence must still be rejected. These are transport-completeness
 checks, not Python reimplementations of native capacity or policy semantics.
 
+The installed campaign now rebuilds the original policy through the reviewed
+Python `ProgramBuilder` witness, attaches separately supplied realization and
+catalog records, and uses both public request-preparation helpers. It requires
+exact equality with the separately retained full original request before the
+native semantic execution guard is installed. The authoring receipt identifies
+the recipe, adapter and complete source/request contents. Construction-time
+structural checks do not supply runtime semantics or native acceptance.
+
 At source `46fb5a5c9fded877866d333f0e1e8aef75a9fe5b`, hosted run
 `37420548147` passed the focused suites through all 124 context controls on
 both platforms, then failed the coordinator's literal obligation census.
@@ -331,6 +339,13 @@ source has encounter-lifetime stores. The correction removes only that extra
 expected fixture entry; it preserves every original request field, checker
 obligation and the 480,645-unit decoding census. Full native coordinator,
 service and installed material acceptance remain pending.
+
+Source `5e26a18d999328932dbc78cd1182b648d73b38ee`, hosted run `37421588095`,
+subsequently passed all 100 coordinator controls on both native platforms.
+The service test then failed an order-sensitive OCaml equality comparison of
+JSON molecule objects. Its corrected comparison uses canonical JSON equality,
+preserving every value and ordered array while ignoring object-key order.
+Service completion still requires fresh hosted execution.
 
 The next correction also rejects unsupported nominal references on durations
 before bounded operational admission. Generic source units retain their
@@ -354,6 +369,29 @@ compound `all`/`any` guards with explicit Unknown state, and distinct delivery
 providers with matching full phase relations. Re-pinned near-neighbor mutations
 must fail at the relevant semantic checks. These are remaining SM-08 coverage
 obligations; primitive-only tests and rejected stale pins do not close them.
+
+The Verify-only consumer campaign stages unmodified installed transport modules,
+one pinned verifier and separate original/proposal/expectation files. It runs
+Python with isolated/no-site flags, denies other imports and executable launches,
+checks the complete staged byte inventory, and freshly checks, replays and exports
+before comparing complete evidence. Core and producer modules are absent from
+the staged directory; the host filesystem is explicitly not isolated. Linux
+uses an inherited kernel syscall filter and macOS an inherited sandbox network
+policy, each with IPv4/IPv6 denial probes. Required mode fails if enforcement is
+unavailable. Explicit deferred mode cannot pass the four-slot offline gate.
+This new campaign is source-ready and requires hosted execution on both systems.
+
+Additional native witness sources now cover distinct delivery providers with
+the same complete phase relation, re-pinned phase disagreement and channel
+conflicts. Four complete lifecycle cases cover initiation/continuous
+authorization crossed with continue/defer uncertainty response. Each supplies
+its own exact material case under one authorized model library, retains all
+original hard requirements and independently enumerates 54 histories, 176
+transitions and 177 prefixes. Literal histories distinguish missing, invalid,
+conflicting, stale and false evidence while attempts remain active, correlated
+feedback and quiet-time timeout. Cross-case material substitution must reject
+even when every RNA base is identical. These controls are source-ready; their
+native results are not yet established.
 
 The initial family remains narrow: one executor, explicitly named finite
 encounters, one truth observation, one or two encounter-scoped truth stores,

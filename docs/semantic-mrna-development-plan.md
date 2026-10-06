@@ -479,6 +479,16 @@ re-pinned provider/channel conflicts; Verify-only consumer packaging with
 producer absence and explicit offline enforcement. Keep each item open until
 its complete positive and distinguishing negative controls execute successfully.
 
+Further source checkpoint: the installed material campaign now checks an exact
+Python-builder-to-canonical-request witness before native execution. A separate
+consumer stage removes producer modules/Core from its staged tree, requires
+inherited OS network denial, and repeats full original-bound Verify check/replay/
+export with four-slot evidence comparison. The native coordinator passed 100
+controls on both platforms at source `5e26a18d999328932dbc78cd1182b648d73b38ee`,
+run `37421588095`; the service then stopped at an object-key-order-sensitive
+test comparison, now corrected to canonical JSON equality. New source and all
+remaining installed/aggregate acceptance still require hosted validation.
+
 ### SM-09 — Expand supported semantics through complete vertical profiles
 
 Depends on: SM-08 for acceptance; design work can be prepared earlier.

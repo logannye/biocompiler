@@ -261,6 +261,18 @@ class ValidationGateTests(unittest.TestCase):
         self.assertIn("check_realization_reproducibility.py", comparison)
         self.assertIn("--native-root artifacts/core", comparison)
 
+    def test_policy_consumer_requires_offline_execution_and_all_four_comparisons(self):
+        text = (Path(__file__).resolve().parents[1] / ".github/workflows/ci.yml").read_text()
+        self.assertEqual(text.count('--network required'), 2)
+        self.assertNotIn('--network deferred', text)
+        for version in ci.PYTHONS:
+            self.assertIn(f'--producer-receipt "$GITHUB_WORKSPACE/generated/core/policy-material-{version}.json"', text)
+            self.assertIn(f'generated/core/policy-consumer-{version}.log', text)
+            for target in ci.CORE_PLATFORMS:
+                self.assertIn(f'--compare artifacts/core/{target}/policy-consumer-{version}.json', text)
+                self.assertIn(f'--producer-receipts artifacts/core/{target}/policy-material-{version}.json', text)
+        self.assertIn('--output generated/core-reproducibility/policy-consumer-receipt.json', text)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -79,7 +79,7 @@ let ()=
   require(Json.equal(get "request" manifest)request && Json.equal(get "candidate" manifest)candidate &&
     Json.equal(get "limits" manifest)limits && Json.equal(get "assessment" manifest)report)
     "Manifest omitted an original authority, candidate, invocation or fresh assessment";
-  require(List.map(get "molecule")(items "members" manifest)=items "molecules" expected)
+  require(Json.equal(arr(List.map(get "molecule")(items "members" manifest)))(get "molecules" expected))
     "Manifest lost exact molecular chemistry, coordinates, products or derivation";
   require(text "empirical" manifest="unassessed" && text "claim_scope" manifest="bounded_conditional_policy_to_exact_mrna" &&
     text "original_authority" manifest="retain_original_inputs_separately")"Export widened conditional claim or reused manifest as authority";

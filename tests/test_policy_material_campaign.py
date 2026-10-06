@@ -135,6 +135,7 @@ class MaterialCampaignTests(unittest.TestCase):
                 retained = deepcopy(observations())
                 self.receipts.append({"schema_version": TOOL.SCHEMA, "status": "pass", **IDENTITY, "system": system, "machine": machine,
                     "python_version": f"3.{minor}.0", "fixture_sha256": TOOL.digest_file(FIXTURE), "binary_sha256": pins[system], "package": package,
+                    "authoring": TOOL.authoring_witness(self.fixture["request"])[1],
                     "parent_imports": origins, "cli_guards": {name: deepcopy(guard) for name in TOOL.CLI_CASES}, "observations": retained,
                     "observations_fingerprint": TOOL.canonical_digest(retained), "python_semantic_authority": "forbidden"})
                 self.paths.append(self.root / f"{system}-{minor}.json")
@@ -173,7 +174,8 @@ class MaterialCampaignTests(unittest.TestCase):
         original = deepcopy(self.receipts[0])
         for field, value in (("status", "failed"), ("revision", "0" * 40), ("head_revision", "0" * 40), ("run_id", "1"),
                              ("run_attempt", "0"), ("run_attempt", "3"), ("machine", "arm64"), ("python_version", "3.12.0"),
-                             ("fixture_sha256", "0" * 64), ("binary_sha256", {}), ("python_semantic_authority", "allowed")):
+                             ("fixture_sha256", "0" * 64), ("binary_sha256", {}), ("python_semantic_authority", "allowed"),
+                             ("authoring", {})):
             self.receipts[0] = {**deepcopy(original), field: value}
             self.write()
             with self.subTest(field=field), self.assertRaises(AssertionError):

@@ -98,6 +98,63 @@ let ()=
     let result=Check.check ~context:(C.of_json(repin_providers raw)) ~binding ()in
     require(Check.outcome result<>E.Pass && Check.accepted result=None)(label^" gained context acceptance");
     require(List.mem(str code)(Json.array(get "diagnostics"(Check.report result))))(label^" lost diagnostic "^code)in
+  (* Separate original definition identities may describe the same complete
+     delivery relation. Every phase reference needs its own full provider;
+     agreement of the selected phase alone cannot establish that relation. *)
+  let phases=["arrival";"expression";"activation"]in
+  let original_delivery=at["request";"document";"program";"semantics";"definitions";"7"]source in
+  let delivery_rows=List.map(fun phase->
+    let definition=set "id"(str("exclusion.delivery."^phase))original_delivery in
+    let reference=at["request";"document";"deployment";"delivery";phase]source
+      |>set "id"(get "id" definition)|>set "digest"(str(D.document_digest definition))in
+    phase,definition,reference)phases in
+  let distinct_source=List.fold_left(fun raw(phase,definition,reference)->raw
+    |>edit["request";"document";"program";"semantics";"definitions"](fun values->arr(Json.array values@[definition]))
+    |>put["request";"document";"deployment";"delivery";phase]reference)source delivery_rows in
+  let distinct_request,distinct_implementation,distinct_preservation=source_accept distinct_source in
+  require(R.fingerprint distinct_request<>R.fingerprint request)"Distinct original delivery references reused the original request identity";
+  require(Json.equal(at["request";"document";"implementations"]distinct_source)
+    (at["request";"document";"implementations"]source) &&
+    Json.equal(at["request";"catalog_bindings"]distinct_source)(at["request";"catalog_bindings"]source))
+    "Delivery-only authority changed the original implementation catalog or its membership pins";
+  require(at["coverage";"histories"]distinct_preservation=Json.int 9)"Distinct delivery references changed the original finite histories";
+  let distinct_binding=bind ~request:distinct_request ~implementation:distinct_implementation contract_raw in
+  let distinct_providers=Json.array(get "providers" context_raw)@List.map(fun(phase,_,reference)->
+    at["providers";"3"]context_raw|>put["identity";"id"](str("context.delivery."^phase))
+      |>put["body";"definition"]reference)delivery_rows in
+  let extended_available value=value|>set "duration_min"(str "8")|>set "duration_max"(str "8")in
+  let interval tick=Json.Object["earliest",str tick;"latest",str tick]in
+  let distinct_context=context_raw|>put["clock";"origin_seconds"](str "2")
+    |>set "providers"(arr(List.map(fun provider->
+      let provider=provider|>edit["body";"availability"]extended_available
+        |>edit["body";"capacities"](fun values->arr(List.map(edit["availability"]extended_available)(Json.array values)))in
+      let provider=if at["body";"kind"]provider=str "interface"then
+        edit["body";"channels"](fun values->arr(List.map(edit["availability"]extended_available)(Json.array values)))provider
+        else provider in
+      let provider=if at["body";"kind"]provider=str "delivery"then provider
+        |>put["body";"arrival"](interval "0")|>put["body";"expression"](interval "1")
+        |>put["body";"activation"](interval "2")else provider in
+      repin provider)distinct_providers))in
+  let distinct_context_value=C.of_json distinct_context in
+  require(List.length(C.providers distinct_context_value)=7)"Distinct delivery fixture lost its seven-provider closure";
+  let distinct_result=Check.check ~context:distinct_context_value ~binding:distinct_binding ()in
+  require(Check.outcome distinct_result=E.Pass && Option.is_some(Check.accepted distinct_result))
+    ("Coherent distinct delivery providers failed: "^Canonical.encode(Check.report distinct_result));
+  let distinct_report=Check.report distinct_result in
+  require(List.length(Json.array(get "source_obligations" distinct_report))=26)
+    "Three original delivery definitions did not retain three additional source obligations";
+  require(List.map(get "id")(Json.array(get "discharges" distinct_report))=List.map str
+    ["chassis_capability_and_delivery_suitability";"semantic_definition:exclusion.chassis";
+     "semantic_definition:exclusion.delivery";"semantic_definition:exclusion.delivery.activation";
+     "semantic_definition:exclusion.delivery.arrival";"semantic_definition:exclusion.delivery.expression";
+     "semantic_definition:exclusion.environment";"semantic_definition:exclusion.interface"])
+    "Distinct provider closure did not discharge the exact eight contextual source obligations";
+  (* The expression reference's selected expression phase still agrees. Its
+     changed arrival remains internally causal, but differs from the complete
+     contract relation and must fail after fresh provider re-pinning. *)
+  no_accept ~binding:distinct_binding "One phase differs in a distinct delivery provider"
+    "complete_original_delivery_phase_relation"
+    (put["providers";"5";"body";"arrival";"latest"](str "0.5")distinct_context);
   let renamed_gate=String.make 128 'g'in
   let rec rename_gate=function
     |Json.String "select_gate"->str renamed_gate
@@ -169,6 +226,14 @@ let ()=
   no_accept "Truncated causal record" "complete_finite_record_layout"(put["record_layout";"ordered_cause_slots"](Json.int 1)context_raw);
   no_accept "Discarded ordered reasons" "complete_finite_record_layout"(put["record_layout";"ordered_reason_slots"](Json.int 0)context_raw);
   let new_contract change=repin(change contract_raw)|>bind in
+  (* This profile has one observation and one feedback input. Their alias is
+     rejected by the exact kind/source correspondence before the later generic
+     same-channel uniqueness check; no larger input profile is fabricated. *)
+  no_accept ~binding:(new_contract(put["body";"input_witnesses";"1";"channel"](str "condition")))
+    "Observation and feedback alias one provider channel" "complete_input_source_binding" context_raw;
+  let unused_channel=at["providers";"2";"body";"channels";"0"]context_raw|>set "id"(str "unused.condition")in
+  no_accept "Supplied provider channel has no actual input witness" "unused_original_input_channel"
+    (edit["providers";"2";"body";"channels"](fun values->arr(Json.array values@[unused_channel]))context_raw);
   no_accept ~binding:(new_contract(put["body";"resources";"2";"quantity"](Json.int 1)))
     "Undercounted evidence history" "declared_resource_below_derived_minimum" context_raw;
   no_accept ~binding:(new_contract(put["body";"resources";"7";"quantity"](Json.int 1)))

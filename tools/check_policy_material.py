@@ -68,6 +68,14 @@ REQUIREMENTS = {"exclusive_selection": "pass", "initiation_progress": "pass", "r
 MAX_RECEIPT_BYTES = 32 * 1024 * 1024
 
 
+def authoring_witness(original: dict) -> tuple[dict, dict]:
+    try:
+        from policy_material_authoring_witness import build
+    except ModuleNotFoundError:
+        from tools.policy_material_authoring_witness import build
+    return build(original)
+
+
 class MaterialBoundary(ImplementationBoundary):
     @staticmethod
     def allowed(name: str) -> bool:
@@ -301,6 +309,9 @@ def run(args: argparse.Namespace) -> dict:
     package = Path(spec.origin).resolve().parent
     if package.is_relative_to(checkout) or Path.cwd().resolve().is_relative_to(checkout):
         raise AssertionError("Installed campaign requires a non-editable package and working directory outside checkout")
+    fixture = checked_fixture(args.fixture)
+    request, authoring = authoring_witness(fixture["request"])
+    limits = fixture["limits"]
     boundary = MaterialBoundary(package)
     sys.meta_path.insert(0, boundary)
     sys.setprofile(boundary.trace)
@@ -308,8 +319,6 @@ def run(args: argparse.Namespace) -> dict:
     from biocompiler.core_policy_material import PolicyMaterialClient
     from biocompiler.policy.material import export as publish
 
-    fixture = checked_fixture(args.fixture)
-    request, limits = fixture["request"], fixture["limits"]
     core_path, verify_path = args.core.resolve(strict=True), args.verify.resolve(strict=True)
     pins = {"biocompiler-core": digest_file(core_path), "biocompiler-verify": digest_file(verify_path)}
     core = PolicyMaterialClient(CoreClient(core_path, role="core", expected_sha256=pins["biocompiler-core"], timeout_seconds=60))
@@ -430,7 +439,7 @@ def run(args: argparse.Namespace) -> dict:
     sys.meta_path.remove(boundary)
     return {"schema_version": SCHEMA, "status": "pass", **source_identity(), "system": platform.system(), "machine": platform.machine(),
         "python_version": platform.python_version(), "fixture_sha256": digest_file(args.fixture), "binary_sha256": pins,
-        "package": str(package), "parent_imports": origins, "cli_guards": cli_guards, "observations": observations,
+        "package": str(package), "authoring": authoring, "parent_imports": origins, "cli_guards": cli_guards, "observations": observations,
         "observations_fingerprint": canonical_digest(observations), "python_semantic_authority": "forbidden"}
 
 
@@ -440,12 +449,13 @@ def compare(paths: list[Path], native_root: Path, fixture_path: Path) -> dict:
     identity = source_identity()
     binaries = native_manifests(native_root, identity["revision"])
     fixture, fixture_hash = checked_fixture(fixture_path), digest_file(fixture_path)
+    _, authoring = authoring_witness(fixture["request"])
     expected = {(system, machine, python) for system, machine in (("Linux", "x86_64"), ("Darwin", "arm64")) for python in ("3.11", "3.14")}
     found, baseline, baseline_observations = set(), None, None
     for path in paths:
         receipt = read_json(path)
         if (type(receipt) is not dict or set(receipt) != {"schema_version", "status", "revision", "head_revision", "run_id", "run_attempt",
-            "system", "machine", "python_version", "fixture_sha256", "binary_sha256", "package", "parent_imports", "cli_guards", "observations",
+            "system", "machine", "python_version", "fixture_sha256", "binary_sha256", "package", "authoring", "parent_imports", "cli_guards", "observations",
             "observations_fingerprint", "python_semantic_authority"}
                 or any(type(receipt[key]) is not str for key in ("system", "machine", "python_version", "run_attempt"))
                 or not receipt["run_attempt"].isdecimal()):
@@ -458,7 +468,8 @@ def compare(paths: list[Path], native_root: Path, fixture_path: Path) -> dict:
                 or any(receipt[key] != identity[key] for key in ("revision", "head_revision", "run_id"))
                 or not 0 < int(receipt["run_attempt"]) <= int(identity["run_attempt"])
                 or receipt["binary_sha256"] != binaries[receipt["system"].lower()]["sha256"]
-                or receipt["python_semantic_authority"] != "forbidden"):
+                or receipt["python_semantic_authority"] != "forbidden"
+                or canonical_digest(receipt["authoring"]) != canonical_digest(authoring)):
             raise AssertionError("Material receipt lacks exact current run/source/binary authority")
         check_import_origins(receipt["parent_imports"], receipt["package"], {"biocompiler.core_client", "biocompiler.core_policy",
             "biocompiler.core_policy_operational", "biocompiler.core_policy_implementation", "biocompiler.core_policy_material", "biocompiler.policy.material"})
