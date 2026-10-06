@@ -46,6 +46,7 @@ type validated
 val of_json : Json.t -> t
 val to_json : t -> Json.t
 val digest : t -> string
+
 (** Compatibility with the supplied behavior only. The caller must separately
     establish its external source/descriptor correspondence. Initial values and
     finite machine states remain those of that original source. *)
@@ -74,6 +75,7 @@ type cursor
 val initial : validated -> cursor
 val cursor_tick : cursor -> int
 val finished : validated -> cursor -> bool
+
 (** Lazy exhaustive choices for this prefix. Every factor combines by Cartesian
     product, including silence. No candidate state or requirement result enters
     choice eligibility. Observation batches enumerate all ordered rows up to
@@ -95,6 +97,7 @@ val finished : validated -> cursor -> bool
     The caller must bound traversal/work separately. A stopped sequence is not
     complete exploration. Logical limits never stand in for such a budget. *)
 val choices : validated -> cursor -> input_batch Seq.t
+
 (** Supply the complete ordered list of freshly observed source creations for
     this tick. This function checks identity, generation and finite bounds; it
     does not prove that the source emitted the supplied records. Exceeding a

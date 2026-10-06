@@ -25,6 +25,7 @@ type t
 
 val of_json : Json.t -> t
 val to_json : t -> Json.t
+
 (** Exact full-envelope identity, including source maps, bindings and budgets. *)
 val fingerprint : t -> string
 val document : t -> Policy_document.t

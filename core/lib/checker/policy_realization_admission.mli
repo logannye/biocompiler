@@ -16,6 +16,7 @@ val request : admitted_inputs -> R.t
 val behavior : admitted_inputs -> O.behavior
 val operating_domain : admitted_inputs -> F.validated
 val authorized_models : admitted_inputs -> P.t list
+
 (** Exact membership only; selecting a permitted model proves no correspondence. *)
 val require_model : admitted_inputs -> entry_id:string -> P.t -> unit
 val report : admitted_inputs -> Json.t
