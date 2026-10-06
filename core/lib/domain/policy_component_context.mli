@@ -8,6 +8,7 @@ val schema_version : string
 val profile : string
 val record_profile : string
 val union_profile : string
+
 (** Canonical ordered union of original component records, with structured local
     identities. This is neither a candidate implementation nor source authority. *)
 val ordered_union_json : A.t -> Json.t

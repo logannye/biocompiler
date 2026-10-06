@@ -22,6 +22,7 @@ type input_binding = private {
 type resource_owner = Node of {slot:A.slot; node_id:string} | Input of string | Layout
 type resource_key = {owner:resource_owner; unit:C.resource_unit; scope:C.resource_scope}
 type resource_binding = private {key:resource_key; provider:C.provider_ref; capacity_id:string}
+
 (** Capacity keys retain decision then driver prerequisite order, followed by
     layout generation counters, executor timer and executor control-event queue.
     Their quantities still require independent original-domain derivation. *)
