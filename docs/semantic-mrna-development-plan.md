@@ -29,11 +29,13 @@ preserved reference/package migration. It includes exact policy head
 [PR95](https://github.com/logannye/biocompiler/pull/95). The user confirmed that
 this session is the sole integration owner. Preserve prior branches and worktrees.
 
-The first bounded Python-policy → exact-mRNA path is implemented. It uses one
-supplied whole-graph contract and one complete RNA member. Reusable component
-composition, bounded alternatives, delivered helpers and multiple RNA members
-are still unimplemented for this rich-policy path. Studio, conversational
-authoring and biological viability remain deferred.
+Two bounded Python-policy → exact-mRNA paths are implemented: the original
+supplied whole-graph route and a separate reusable-component composition route.
+The latter independently checks two policy families sharing the exact same driver
+and emits one complete RNA member with fresh paired export. Its hosted source-tree
+path passes; installed-package, release and actual-main acceptance remain open.
+Bounded alternatives, delivered helpers and multiple RNA members remain future
+extensions. Studio, conversational authoring and biological viability remain deferred.
 
 **Overall acceptance is still open.** Completed specification and implementation
 tasks are checked for their stated bounded profile. Broader source coverage,
@@ -66,11 +68,11 @@ checked native bounded profile.
 | SM-02 Request/domain/preservation contract | All seven specified tasks implemented for the bounded truth/exclusive profile, including strict admission, causal domain and exact preservation/assurance contracts | Concrete schemas, executable checks and literal counterexamples; separately audited PR95 native/service evidence | Full integration/release remains dependent on SM-00/08; wider assumptions, types and assurance profiles remain excluded |
 | SM-03 Independent primitives | Typed executable graph and candidate runtime independent of source evaluation | Current union complete native literal/mutation/dependency suites independently audited; four SDK slots and six full cross-slot comparisons passed | Complete current artifact audit and acceptance gate; new numeric/machine primitives remain future work |
 | SM-04 Lowering and bounded preservation | All six tasks implemented for the first one/two-rule family: real lowering, source obligations, complete bounded exploration, independent requirements and distinguishing mutations | Literal nine-history / 47-transition / 48-prefix success, separate rejected/incomplete requests, current union native suites passed | Complete current union audit/main gates; preserve work-exhaustion results and open broader contextual/mutation coverage |
-| SM-05 Components and architecture | One supplied whole-graph material binding with declared recipient, provider, timing and finite resources | PR95 material/context/native/prebuilt checks | **Reusable component composition, finite alternatives, helper bootstrap/dependencies, many-to-many ownership and multiple RNA members remain unimplemented.** First-profile acceptance cannot close this broader package |
-| SM-06 Exact construction | Whole-graph case, complete single-member construction, configuration correspondence and first-profile mutation tasks complete | PR95 exact material/fresh export and mutation checks in all four installed slots | Current union acceptance; reusable component joins, helper products and multi-member correspondence require extensions |
+| SM-05 Components and architecture | Original whole-graph binding plus exact two-component composition, original context/provider binding and aggregate finite resources | PR95 original-profile checks; separate component source-tree native and SDK path passed at 5a45d354e | Component installed/release acceptance; finite alternatives, helper dependencies, broader ownership and multiple RNA members remain open |
+| SM-06 Exact construction | Whole-graph and ordered component assembly both produce exact single-member construction, coordinates, chemistry and material correspondence | PR95 four-slot original-profile checks; component source-tree exact A/B FASTA/manifest ZIPs passed at 5a45d354e | Component installed/release acceptance; helper products and multiple members require extensions |
 | SM-07 Public SDK/CLI and export | All six first-profile tasks implemented and demonstrated: complete manifests, immutable native transport, conservative invalidation, compile/check/replay, producer-free Verify and fresh paired export | Current union four SDK slots, six comparisons, four policy-prebuilt installed slots and prebuilt comparison passed; separate PR95 evidence independently audited | Independent exact-union artifact audit, complete aggregate and main gates |
 | SM-08 Compatibility and acceptance | Full combined workflow, retained legacy routes/corpora, exact unit accounting and targeted prebuilt routing | Original a85 union passed all 74 hosted jobs and independent 102-archive audit. PR95 all 42 hosted jobs and independent audit passed | Corrected-head fresh acceptance in run 37519748082, normal merge and fresh actual-main validation |
-| SM-09 Vertical expansions | SM-09.1 complete: select exact reusable component composition; fragment, local material/library and assembly-rule decoders/tests implemented; independent assembly checker and literal material tests implemented | Hosted source-tree path passed at 5a45d354e: all sixteen native suites and 26 public SDK observations, including exact A/B paired exports; installed and release acceptance remain open | Complete source/API/rule registrations and installed/offline four-slot acceptance before expanding the profile |
+| SM-09 Vertical expansions | SM-09.1 complete: select exact reusable component composition; fragment, local material/library and assembly-rule decoders/tests implemented; independent assembly checker and literal material tests implemented | Hosted source-tree path passed at 5a45d354e: all sixteen native suites and 26 public SDK observations, including exact A/B paired exports; installed and release acceptance remain open | Source registrations complete at 6ed5a952a; fresh development run pending, then installed/offline four-slot acceptance before expanding the profile |
 
 ### Completed integration and validation tasks
 
@@ -107,9 +109,9 @@ broader SM acceptance items below.
 - [x] Independently check declared context, complete record layouts, exact provider identity, timing and aggregate resource sufficiency. Hosted run 37524498720 at fbfefff75 passed all thirteen suites, including 323 context checks.
 - [x] Promote recurring release auditing into stable versioned tools at 832ceb98c. Twelve test methods passed on both supported local Python versions; clean exact-tool CLI preparation and eight authority rejection controls passed. This tool validation is not acceptance of a new release.
 - [x] Complete the combined original-obligation checker and public native/Python route through paired artifacts and fresh export for both reusable-component policies. Hosted run 37527311912 at 5a45d354e passed sixteen native suites and 26 SDK observations; root independently verified all 1,133 source pins, retained observations and both exact ZIP pairs. This closes source-tree development only.
-- [ ] Complete the new component profile’s release registrations: native capability census, reviewed public API/rule/source indices, migration ownership, exact added-source pins and strict typing. The bounded source-readiness batch is in progress.
+- [x] Complete the new component profile’s source registrations at `6ed5a952a`: exact native capability census, separate component rule index, public API/source indices, migration ownership, reviewed source-addition pins and strict typing. Both supported Pythons passed 103 focused tests and 36 extra import-denial controls; historical definitions remain preserved. Fresh hosted development run 37531033330 is in progress; this checkbox closes source readiness, not installed or release acceptance.
 - [ ] Add installed four-slot component and Verify-only offline campaigns, compare complete results, then require full release and actual-main acceptance. Existing whole-graph installed results do not transfer to the new component profile.
-- [ ] Consolidate the recurring release audit into stable versioned repository tools without weakening source/run identity, complete coverage, archive bounds or merge/main checks.
+- [x] Consolidate recurring release auditing into stable versioned repository tools without weakening source/run identity, complete coverage, archive bounds or merge/main checks. Tool implementation and supported-runtime profile are committed at 129bcd7d7; a later component scope still requires its own reviewed profile update.
 - [ ] Validate the three added descriptor rejection controls on hosted CI: valid-format stale digest, unsupported observation formal, unsupported effect result. Source controls are implemented in the corrected follow-up; preserve the shared-context reachability index.
 - [x] Complete the original a85 union's full 74-job hosted gate and independent 102-archive audit. Its evidence does not accept the later corrected head.
 - [ ] Integrate the reviewed frontend corrections and coherent source-coverage follow-up; complete a fresh exact-revision hosted gate and artifact audit before normal merge. Retain the earlier a85 run as distinct evidence.
@@ -123,6 +125,7 @@ broader SM acceptance items below.
 | Original PR85 union | H `a85b1112ff35ba988a71cc969bfabdfefb354cfe`; C `00af6e6bab506d52a700e0a72e16ef2e2e8d8d61`; shared tree `7d22ca4c27eafcd36f018b3f262ef87404a3caf6` | [Run 37471505350, attempt 1](https://github.com/logannye/biocompiler/actions/runs/37471505350): all 74 jobs and the independent 102-archive audit passed. Corrected-head and main acceptance remain distinct |
 | Corrected PR85 follow-up | H `510ba5fe8805c8e4ea13aca52283edf17aec6e3f`; C `5f512fa722757ca6c8805f007521dd8c8e62e5a4`; shared tree `1ae5c9885696cd370d7f699fb7bd1d98e056f8cf` | [Run 37519748082](https://github.com/logannye/biocompiler/actions/runs/37519748082), attempt 1: both preflights, both 149-suite native jobs and both 67-group direct jobs passed. Two failures are identified: migration inventory omitted two existing tests, and a Python 3.14 shard received 3.14.8 whose stdlib source differs from the frozen supported profile. The combined correction `8c61f45af9969d27d951754be7f633f7207d2547` is committed and pushed on the separate descriptor branch; PR85 remains at 510 while healthy jobs finish. The third failed job is accounting correctly rejecting the failed 3.14 shard. Both supported versions passed 129 focused and 13 inventory tests locally. Full acceptance remains open. Prior run 37515436546 failed both preflights on one stale reviewed Python-builder pin; only that pin was corrected, with both interpreters and negative controls passing locally |
 | Component development batch | H `5a45d354ee869f26f0e5d3181c8972a6402baca6`; tree `fbc4b75d38c363e49e2a7314695fa245b426a2df` | [Development run 37527311912](https://github.com/logannye/biocompiler/actions/runs/37527311912): all sixteen native suites and 26 public Python SDK observations passed. Both exact 17/18-base RNA plus complete manifests were independently inspected. Native step completed 3m26s after run creation; full run with SDK took about 5m45s. Installed and full release acceptance remain separate |
+| Component source-registration batch | H `6ed5a952a24c295404f4c0cb761948d69f79133f`; tree `4103da6f8ef9c1b9ed2f26108a5714a12dfe08bb` | [Development run 37531033330](https://github.com/logannye/biocompiler/actions/runs/37531033330) is in progress. Local source-only checks passed on both supported Pythons: 103 focused methods, 36 extra import rejections, strict core/policy typing and five static coverage/schema checks. The 3,731 original migration entries and authority fields are preserved; 29 entries belong to the two new adapters. Installed/full release acceptance remains open |
 | Separate PR95 policy head | H `bb84421cf1f93cd1dc02813d80a2c54a3520a919`; C `4fe47eb1aa69782a03723fda2df892985b4e7328`; shared tree `889583e44a9de598a32beb4154f42c0471e4be83` | [Run 37450940506, attempt 1](https://github.com/logannye/biocompiler/actions/runs/37450940506): all 42 hosted jobs succeeded; independent final artifact audit passed for its stated scope. Normal union integration and fresh main acceptance remain pending |
 | Current main baseline | `f594991ac2ff2496723ae5f2427ad93e6df7a51d` | PR88 is merged; the policy/material/package union has not yet been merged or main-validated |
 
@@ -235,6 +238,16 @@ coverage expectations. Promote recurring release auditing into stable versioned
 tools so each run needs only authenticated inputs, a plan and results.
 Measure time to hosted native feedback, vertical-slice completion and the
 full-release critical path; update this tracker at meaningful boundaries.
+
+The complete two-policy source-tree SDK path now takes about 5m45s in the observed
+hosted run, including one native build and sixteen suites. The next acceptance
+batch will reuse the existing four installed Linux/macOS × Python slots and
+standalone offline harness. It needs a separately scoped component campaign,
+original domain-only fixture data, complete cross-slot outputs and actual paired
+ZIP checks; existing whole-graph receipts cannot be relabeled. No production
+resolver or new packaging API is currently required. The fresh registration
+proof is `work/policy-component-composition/generated/component-release-readiness/root-integration.json`,
+SHA-256 `33fc6aaf92e92b851d06e02336b53ff4debe7bbcf850bc0255ad36c1d93306c8`.
 
 The stable audit tools are now committed and pushed at `832ceb98ccc4ad7bb29e2f4ed5673dfd3365e4d9` in `work/release-audit-tools`. They preserve the prior identity/receipt/archive semantics and reject changes to source, tool revision, plan seal, declared scope or job evidence. The reviewed profile remains the 74-job/149-native-suite release scope; a later component release needs an explicit reviewed scope update. Clean CLI proof SHA-256: `f28db7d0dd922d9083d41cb3fdb9ca9193d2e3ed18cbfa6b243cd84913633a88`. A subsequent reviewed profile-only update at `129bcd7d73edb9e3195bb953d446b88ec96c9a47` binds the supported-runtime workflow and three added comparator setup steps; all thirteen tooling tests passed on both versions, including fifteen new rejection controls, with every acceptance algorithm and scope unchanged. New release runs need inert plans and authenticated evidence, without copied audit helpers.
 
@@ -744,7 +757,7 @@ Depends on: SM-04; schema/library preparation may overlap SM-03.
 Exit: a complete checked implementation has a complete eligible RNA architecture under the original declared contracts, with no hidden helper or unmet semantic constraint.
 
 The four bounded composition slices below now pass focused hosted source-tree validation. Installed four-slot and full release acceptance remain open; alternatives, helpers and multiple members remain separate extensions.
-Source preparation has begun in the isolated sparse worktree
+Historical source preparation began in the isolated sparse worktree
 `work/policy-component-composition`, branch `codex/policy-component-composition`,
 based on the pending corrected union `4157108cb`. This overlaps the long release
 gate without changing either frozen acceptance subject. The first task is the
@@ -775,8 +788,10 @@ remain pending. These additional census files were not part of the earlier
 587-file test snapshot.
 The tracked `docs/policy-component-composition-v0.1.md` there records the full
 future path, including constant-broadcast versus encounter-scoped links and a
-new original composition context/layout authority. No new profile is admitted,
-executed or exportable.
+new original composition context/layout authority. At that initial checkpoint,
+no new profile was admitted, executed or exportable. The complete bounded
+source-tree path is now demonstrated by run 37527311912; installed/release
+acceptance is separate.
 The local material/library interface and independent native test matrix are now
 implemented and source-reviewed in that tracked composition specification.
 They retain one original primary-RNA root per component, exhaustive
@@ -924,7 +939,7 @@ The original installed campaign, subsequent diagnostic runs, budget-preserving r
 Depends on: SM-08 for acceptance; design work can be prepared earlier.
 
 - [x] **SM-09.1** Choose exact reusable component composition as the next profile: two independently supplied fragments, three explicit boundary links and two source families reusing one identical driver. Alternatives and helpers/multiple members follow as distinct extensions; design selection does not accept their implementation.
-- [ ] **SM-09.2** Extend source meaning, primitive semantics, lowering, preservation, material contracts and public profile negotiation together; specify version compatibility and artifact invalidation.
+- [x] **SM-09.2** For the bounded reusable-component extension, connect source meaning, primitive semantics, lowering, preservation, material contracts and public profile negotiation; version the separate request/candidate/resource/export contracts and reconstruct acceptance after edits. Hosted source-tree validation passed at 5a45d354e; the repeated installed/full gate remains SM-09.3.
 - [ ] **SM-09.3** Add complete accepted/rejected witness families and repeat the same hosted gate. Never mark a feature exportable merely because it is authorable or reference-executable.
 - [ ] **SM-09.4** Reconcile affected public workflow/default migration tasks with their owners. Retire a Python semantic authority only when every dependent admitted path is accepted.
 
@@ -932,8 +947,9 @@ Exit per expansion: a complete supported source-to-mRNA path with explicit bound
 
 Current profile boundary: the first material profile is a single supplied whole-graph
 case with one exact RNA/product and no delivered helper, using a narrow
-exclusive truth/encounter family and explicit formal context. General component
-composition, broader numeric/state/lifecycle operations, machines, coordination,
+exclusive truth/encounter family and explicit formal context. The separate bounded composition profile now supports two exact components and
+two source families through fresh source-tree export. Its installed/full acceptance
+remains open. Broader composition, numeric/state/lifecycle operations, machines, coordination,
 quantification, inheritance, independent delivery and helper/multiple-member
 closure remain material-profile expansion work. Existing authoring or broader
 reference-execution support does not establish admission through that entire
