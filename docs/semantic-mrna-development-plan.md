@@ -43,10 +43,10 @@ tracker as current status; older checkpoint paragraphs are historical evidence.
 
 | Package | Implemented scope / completed work | Verified evidence | Remaining work and acceptance |
 | --- | --- | --- | --- |
-| SM-00 Operational foundation | Versioned truth/evidence, identity, scoped state, arbitration, silent freshness/timeout, correlated attempts and lifecycle semantics | Current union complete native suites and correction preflights passed; PR95 installed checks remain separate evidence | Independent current native evidence audit, full installed/aggregate gate and main acceptance; retain exclusions |
+| SM-00 Operational foundation | Versioned truth/evidence, identity, scoped state, arbitration, silent freshness/timeout, correlated attempts and lifecycle semantics | Current union complete native suites and correction preflights passed; independent audit of both native bundles passed | Full installed/aggregate gate and main acceptance; retain exclusions |
 | SM-01 Source authority and coverage | Immutable builders/serialization, original request/definitions, structural mRNA predicate, syntax and contextual ledgers | 612 syntax distinctions; 62 contextual families, 96 production dependencies and 30 witness files; 16 families explicitly partial | Complete promised contextual witnesses or narrow their claims; full source-valid exclusion and pattern/identity coverage; exact union acceptance |
 | SM-02 Request/domain/preservation contract | All seven specified tasks implemented for the bounded truth/exclusive profile, including strict admission, causal domain and exact preservation/assurance contracts | Concrete schemas, executable checks and literal counterexamples; separately audited PR95 native/service evidence | Full integration/release remains dependent on SM-00/08; wider assumptions, types and assurance profiles remain excluded |
-| SM-03 Independent primitives | Typed executable graph and candidate runtime independent of source evaluation | Current union complete native literal/mutation/dependency suites, four SDK slots and six full cross-slot comparisons passed | Independent current evidence audit and complete acceptance gate; new numeric/machine primitives remain future work |
+| SM-03 Independent primitives | Typed executable graph and candidate runtime independent of source evaluation | Current union complete native literal/mutation/dependency suites independently audited; four SDK slots and six full cross-slot comparisons passed | Complete current artifact audit and acceptance gate; new numeric/machine primitives remain future work |
 | SM-04 Lowering and bounded preservation | All six tasks implemented for the first one/two-rule family: real lowering, source obligations, complete bounded exploration, independent requirements and distinguishing mutations | Literal nine-history / 47-transition / 48-prefix success, separate rejected/incomplete requests, current union native suites passed | Complete current union audit/main gates; preserve work-exhaustion results and open broader contextual/mutation coverage |
 | SM-05 Components and architecture | One supplied whole-graph material binding with declared recipient, provider, timing and finite resources | PR95 material/context/native/prebuilt checks | **Reusable component composition, finite alternatives, helper bootstrap/dependencies, many-to-many ownership and multiple RNA members remain unimplemented.** First-profile acceptance cannot close this broader package |
 | SM-06 Exact construction | Whole-graph case, complete single-member construction, configuration correspondence and first-profile mutation tasks complete | PR95 exact material/fresh export and mutation checks in all four installed slots | Current union acceptance; reusable component joins, helper products and multi-member correspondence require extensions |
@@ -67,6 +67,7 @@ broader SM acceptance items below.
 - [x] Pass the focused native policy/implementation/molecular group on both platforms, including the corrected ownership fixture. The installed campaigns and final acceptance are separate downstream tasks.
 - [x] Pass both complete hosted native-suite jobs, covering the retained 149-suite inventory on each platform. Independent final artifact auditing and the full release gate remain open.
 - [x] Pass both complete hosted direct-core jobs, retaining all 67 original groups per platform.
+- [x] Independently audit both current-union native bundles: 151 executables, 23 fixtures, all 149 suite records and 67 direct-group records per platform, plus exact published Core/Verify bytes and all six successful producer jobs. No local native execution.
 - [x] Pass all four current-union architecture SDK slots and the complete six-comparison job, plus all four policy-prebuilt installed slots and their comparison.
 - [x] Pass all ten current-union unit shards and both unit-accounting jobs with plan-bound interpreters, then independently audit all 14 unit artifacts: each runtime has 4,063 successful tests and 26,705 successful retained subtests, with no duplicates or omissions.
 - [x] Independently audit PR95's complete unit accounting, Linux/macOS native packages and source companions, and all four prebuilt ownership/material/offline slots. These results belong to `bb84421cf`, not the later union.
@@ -101,6 +102,15 @@ Python 3.11.16 and 3.14.7 each account for all 4,063 tests, 431 classes and
 124,731-file source inventories, plan/discovery/result/accounting digests and all
 14 artifact producer identities were independently checked. This scoped proof
 does not replace the remaining installed, aggregate, merge or main gates.
+
+The current union's scoped native audit has also passed at
+`acceptance-37471505350/native-scoped-audit/native-scoped-proof.json`, SHA-256
+`ae33595d3100be2018220304d8dcc82c26ee43aa7dce0486a6180f9d3a09eeca`.
+The audit binds both 151-executable / 23-fixture bundles, all 149 suite and 67
+direct-group records per platform, and published Core/Verify bytes to the exact
+source/tested tree, run and six successful producer jobs. It rechecks 124,731
+source pins and 14 retained archives without extracting or executing native
+programs. The complete release and actual-main gates remain open.
 
 Retained local evidence lives under
 `work/m11-human-evidence/generated/migration-next/pr85-pr95-union/`
