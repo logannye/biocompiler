@@ -1,6 +1,6 @@
 # Semantic compilation from Python policy to exact mRNA
 
-Prepared 2026-10-05, America/Los_Angeles. This is the active development plan and to-do list for the remainder of this session.
+Prepared 2026-10-05; tracker refreshed 2026-10-06, America/Los_Angeles. This is the active development plan and to-do list for the remainder of this session. Update it as individual implementation, verification and acceptance tasks close; retain the exact scope and evidence for each claim.
 
 ## 1. Objective and scope
 
@@ -22,26 +22,88 @@ Completion means a complete stack for an explicitly declared supported profile, 
 
 ## 2. Current checkpoint, starting point and ownership
 
-Current source checkpoint, 2026-10-06: [PR95](https://github.com/logannye/biocompiler/pull/95)
-at `bb84421cf1f93cd1dc02813d80a2c54a3520a919` contains the first bounded
-Python-policy-to-exact-mRNA path. Complete hosted acceptance, normal integration
-and actual-main validation remain open. The unchecked tasks below retain their
-full exit conditions; the presence of source code alone does not close them.
+Current integration source: [PR85](https://github.com/logannye/biocompiler/pull/85),
+`a85b1112ff35ba988a71cc969bfabdfefb354cfe`, contains the policy compiler and the
+preserved reference/package migration. It includes exact policy head
+`bb84421cf1f93cd1dc02813d80a2c54a3520a919` from
+[PR95](https://github.com/logannye/biocompiler/pull/95). The user confirmed that
+this session is the sole integration owner. Preserve prior branches and worktrees.
 
-| Boundary | Implemented source within the first profile | Remaining scope |
+The first bounded Python-policy → exact-mRNA path is implemented. It uses one
+supplied whole-graph contract and one complete RNA member. Reusable component
+composition, bounded alternatives, delivered helpers and multiple RNA members
+are still unimplemented for this rich-policy path. Studio, conversational
+authoring and biological viability remain deferred.
+
+**Acceptance is still open.** All ten milestone exits remain open; the completed
+narrow items SM-00.1 and SM-01.6 remain checked. An implemented stage, a passing
+subset or a supplied contract is not a completed release gate. Use the following
+tracker as current status; older checkpoint paragraphs are historical evidence.
+
+| Package | Implemented scope / completed work | Verified evidence | Remaining work and acceptance |
+| --- | --- | --- | --- |
+| SM-00 Operational foundation | Versioned truth/evidence, identity, scoped state, arbitration, silent freshness/timeout, correlated attempts and lifecycle semantics | PR95 native/installed checks passed their stated scope; PR85 correction preflights passed | Current union native scope/lifecycle controls, full gate and main acceptance; retain exclusions |
+| SM-01 Source authority and coverage | Immutable builders/serialization, original request/definitions, structural mRNA predicate, syntax and contextual ledgers | 612 syntax distinctions; 62 contextual families, 96 production dependencies and 30 witness files; 16 families explicitly partial | Complete promised contextual witnesses or narrow their claims; full source-valid exclusion and pattern/identity coverage; exact union acceptance |
+| SM-02 Request/domain/preservation contract | Closed versioned requests and decoders, finite causal domains, explicit bounds and observable/identity mappings | PR95 finite-domain and requirement controls; separate incomplete and accepted request authorities | Exact union domain/requirement/nonvacuity evidence and main gate; broader assumptions/assurance profiles remain excluded |
+| SM-03 Independent primitives | Typed executable graph and candidate runtime independent of source evaluation | PR95 literal, mutation, dependency and installed implementation checks | Current union complete native/runtime gate; new numeric/machine primitives remain future work |
+| SM-04 Lowering and bounded preservation | Real primitive lowering, source-obligation correspondence, complete bounded exploration and independent requirement checks | PR95 preservation/closure families; current extra ownership/type/requirement witnesses are registered | Execute current union mutations and retained work-exhaustion controls; contextual interaction gaps remain explicit |
+| SM-05 Components and architecture | One supplied whole-graph material binding with declared recipient, provider, timing and finite resources | PR95 material/context/native/prebuilt checks | **Reusable component composition, finite alternatives, helper bootstrap/dependencies, many-to-many ownership and multiple RNA members remain unimplemented.** First-profile acceptance cannot close this broader package |
+| SM-06 Exact construction | Independent single-member base/coordinate/feature/chemistry/product and full configuration correspondence | PR95 exact material/fresh export and mutation checks in all four installed slots | Current union gate; component joins, helper products and multi-member correspondence require extensions |
+| SM-07 Public SDK/CLI and export | Immutable native transport, compile/check/replay, producer-free Verify, fresh paired FASTA/manifest export | PR95 source/operational/implementation/material/offline comparisons and independent prebuilt ownership audit passed | Exact union outside-checkout, version/error, replay/export and independent comparison gates |
+| SM-08 Compatibility and acceptance | Full combined workflow, retained legacy routes/corpora, exact unit accounting and targeted prebuilt routing | Current union local/hosted preflights, both hosted builds and both focused native policy groups passed; full run is active | All 74 jobs, 59 ordinary receipts, 14 unit artifacts, complete independent audit, normal merge and fresh actual-main validation |
+| SM-09 Vertical expansions | Next composition profile and independently authored fixture specification prepared | Design review only; no implementation or execution claim | Implement and accept each complete profile after the first path's gate; broader production-default cutover remains separate |
+
+### Completed integration and validation tasks
+
+These checkboxes record the stated completed task only; they do not close the
+broader SM acceptance items below.
+
+- [x] Integrate verified PR88 main and the exact PR95 head into PR85 while preserving original reference/package implementations and immutable corpora.
+- [x] Commit and push the coherent compatibility correction as `a85b1112f`: exact plan-bound Python selection, byte-exact historical entrypoint restoration, narrow source-identity proofs, corrected workflow assertions and a source-valid ownership fixture.
+- [x] Pass the exact 49-selector preflight on Python 3.11.15 and 3.14.6: **416 tests each**, with all four 1,563-file source snapshots unchanged.
+- [x] Pass all nine original build-semantics methods on both interpreters with descendant process launches denied; reproduce the complete guarded 39-occurrence continuation oracle unchanged.
+- [x] Pass both hosted PR85 preflights and both native builds at the current tested tree.
+- [x] Pass the focused native policy/implementation/molecular group on both platforms, including the corrected ownership fixture. The complete 149-suite jobs, installed campaigns and final acceptance are separate downstream tasks.
+- [x] Independently audit PR95's complete unit accounting, Linux/macOS native packages and source companions, and all four prebuilt ownership/material/offline slots. These results belong to `bb84421cf`, not the later union.
+- [x] Specify the next composition fixture: two source families reuse an identical driver, with independently supplied connections and material fragments. This is completed design preparation only.
+- [ ] Complete the current union's full hosted gate and independent artifact audit.
+- [ ] Merge the exact accepted union normally, preserving branches, and validate the actual main revision with its own full fresh gate.
+- [ ] Reconcile each SM task against its own exit and evidence after acceptance; leave wider unsupported/compositional gaps open.
+
+### Exact validation subjects and retained evidence
+
+| Subject | Source / tested checkout / tree | Current evidence boundary |
 | --- | --- | --- |
-| Source and operational meaning, SM-00–02 | Original request and definition authority; executable truth, identity, state, event and lifecycle meaning; explicit finite operating domains | Complete contextual witness indexing and exact source-valid exclusion dispositions |
-| Implementation and preservation, SM-03–04 | Typed primitive graph lowering; independent candidate execution, binding, bounded preservation and hard requirement checks | Admitted interaction coverage and complete hosted acceptance |
-| Components and material, SM-05–06 | One supplied whole-graph contract and template; exact single-mRNA construction with context, resource, product, chemistry and base correspondence | Reusable component composition, alternative selection, delivered helpers and multiple RNA members |
-| Public acceptance and export, SM-07–08 | Immutable SDK/CLI operations, producer-free Verify, fresh paired FASTA/manifest publication and targeted prebuilt routing | All required platform/Python campaigns, independent complete comparison, aggregate gates and fresh main validation |
+| Current PR85 union | H `a85b1112ff35ba988a71cc969bfabdfefb354cfe`; C `00af6e6bab506d52a700e0a72e16ef2e2e8d8d61`; shared tree `7d22ca4c27eafcd36f018b3f262ef87404a3caf6` | [Run 37471505350, attempt 1](https://github.com/logannye/biocompiler/actions/runs/37471505350): 23 successful jobs and no failures at the retained snapshot; native suites, unit shards and installed campaigns still active/queued |
+| Separate PR95 policy head | H `bb84421cf1f93cd1dc02813d80a2c54a3520a919`; C `4fe47eb1aa69782a03723fda2df892985b4e7328`; shared tree `889583e44a9de598a32beb4154f42c0471e4be83` | [Run 37450940506, attempt 1](https://github.com/logannye/biocompiler/actions/runs/37450940506): 36 successful jobs and no failures at the retained snapshot; legacy conformance, comparison and aggregate remain open |
+| Current main baseline | `f594991ac2ff2496723ae5f2427ad93e6df7a51d` | PR88 is merged; the policy/material/package union has not yet been merged or main-validated |
 
-The 62-family contextual ledger has 16 explicitly partial families. These record
-coverage and scope gaps, including broader operational cases and earlier
-rejection stages; they are not a count of missing compiler stages. The retained
-486-history request remains incomplete under its declared work bound and cannot
-export. The separately declared 54-history success case has its own authority.
-Detailed source and acceptance boundaries are in
-[policy-material-acceptance.md](policy-material-acceptance.md).
+The current union workflow has 27 definitions / 74 executions / 59 ordinary
+receipts, all 149 native suites and 67 direct groups per platform, and 20 installed
+group jobs covering 17 campaigns in each of four runtime slots. Historical
+42-job PR95 or 68-job PR85 gates do not accept this union. The unit plans/results
+must independently account for every discovered test; the focused 416-test
+preflight is not the full unit suite.
+
+Retained local evidence lives under
+`work/m11-human-evidence/generated/migration-next/pr85-pr95-union/`
+(preflight pair `preflight-unittest-passed-pair-a85b1112f.json`, guarded original
+build/continuation proofs, current `acceptance-37471505350/` checklist and hosted
+snapshots, including `hosted-progress-native-focused.json`). Earlier-head scoped proofs live under
+`work/bounded-policy-execution/generated/policy-realization/acceptance-37450940506/`
+(unit, platform and `prebuilt-scoped-proof.json`). These generated records remain
+evidence with the stated scope, not substitutes for full acceptance.
+
+The 16 partial contextual families are coverage/scope gaps, not a count of
+missing compiler stages. The original 486-history request remains incomplete
+under its unchanged work bound and cannot export; the separately declared
+54-history success has distinct authority. See
+[policy-material-acceptance.md](policy-material-acceptance.md) for profile limits.
+
+Tracker edits are maintained in the isolated `codex/semantic-mrna-tracker`
+worktree while both tested source trees remain frozen. Include these documentation
+updates in the next coherent integration batch; do not restart a healthy run
+merely to publish a progress note.
 
 The following starting-point inventory and milestone preparation paragraphs
 are historical checkpoints. They explain the original dependency order; use the
@@ -64,7 +126,13 @@ Historical implementation baseline: f5564f251dcf62627769bb0f855802c315e75dd8, br
 | [Construction producer](../core/lib/compiler/construction_producer.mli), [checker](../core/lib/checker/construction_check.mli) | Exact molecular construction, chemistry, coordinates and fresh replay | Complete checked policy-to-implementation-to-material chain |
 | [Architecture export](../src/biocompiler/compiler/payload_architecture.py) | Fresh verification and paired FASTA/manifest export pattern | A dedicated rich-policy request and acceptance profile |
 
-Current ownership: the user confirmed that the parallel session finished; this session is now the sole current integration owner. PR88 is merged in verified main at `f594991ac2ff2496723ae5f2427ad93e6df7a51d`, already integrated into the material worktree on `codex/policy-material-export`. Preserve the original PR branches and continuation worktrees. The reference-package continuation already implements prepare/build/reconstruct/publish/export in source; its compatibility and hosted acceptance remain separate obligations. Reuse its narrowly reviewed distribution foundation without recreating the route or importing its branch wholesale. Any further integration still requires a fresh identity/ancestry check.
+Current ownership: this session is the sole integration owner. PR88 main and
+PR95 are integrated into the frozen PR85 union described in section 2. Preserve
+all original branches and continuation worktrees. The reference-package route
+already implements prepare/build/reconstruct/publish/export; its compatibility
+and hosted acceptance now run within the combined gate. Do not recreate it or
+transfer historical acceptance. Recheck identities and ancestry before any
+further integration.
 
 This plan controls the session's priorities. The existing product and migration roadmaps retain historical acceptance records and separate release obligations.
 
@@ -600,7 +668,7 @@ must preserve the complete original requirement inventory while remaining
 unsupported through full checking/replay and withholding export. A nonzero
 encounter-birth control rejects at the public domain boundary.
 
-Latest partial hosted checkpoint: source
+Earlier partial hosted checkpoint (superseded by section 2): source
 `4fb5219a8ae857f4f733e364fdf07ff1e7981f4f`,
 [run 37448827385](https://github.com/logannye/biocompiler/actions/runs/37448827385),
 compiled both platforms and passed the focused suites. The retained Linux log
@@ -723,11 +791,12 @@ The session's first major completion gate is SM-08:
 
 ## 9. Immediate execution queue
 
-1. Preserve the active PR95 revision while its complete hosted campaigns run. Diagnose actual failures against their exact source and retain all required coverage.
-2. Finish source-valid ownership/type/exclusion witness indexing for the first profile. Record the earliest rejecting stage; keep broader operational support and material support distinct.
-3. Complete SM-08 acceptance: all four installed slots, complete output and artifact comparisons, offline Verify, prebuilt routing, exact aggregate identity, normal merge and fresh main validation.
-4. Integrate the existing reference/package migration under its own fresh compatibility and hosted gates. Preserve its implemented route and all historical source authority.
-5. After the first complete path is accepted, implement SM-05 reusable component composition and bounded alternatives. Extend helpers, RNA partitioning and additional semantics as complete vertical profiles under SM-09.
+1. Finish PR85's fresh `a85b1112f` union run and independent audit. Diagnose actual failures against the exact source; retain every native, unit, installed, comparison and release gate. Keep PR95's healthy run intact and its evidence separate.
+2. Require all 74 union jobs and 59 ordinary receipts, exact full unit accounting, complete native/campaign closure and both prebuilt paths. Recheck source, tested tree, current main and review requirements before integration.
+3. Merge the accepted PR85 union normally, then validate actual main freshly. Exact PR95 ancestry establishes incorporation; it does not transfer standalone or parent-run PASS records to the union.
+4. Update this tracker immediately as individual checks and task exits are satisfied. Record source/tested/main revisions separately. Close only the promised first-profile scope; preserve contextual gaps and the broader SM-05 work.
+5. Implement reusable component composition using untouched original request/catalog authority, independently reconstructed ordered graphs, explicit connection semantics and supplied fragment/junction rules. The reviewed first fixture demonstrates cross-program driver reuse, not multiple independent driver instances in one assembly.
+6. Add bounded alternatives and then helper/multiple-member closure as complete vertical profiles. A real executable helper requires independently authorized observable/hidden-step semantics and fresh preservation; a manifest label or counted RNA is insufficient.
 
 ## 10. Related governing documents
 
