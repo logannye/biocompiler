@@ -14,6 +14,7 @@ val limits_of_json : Json.t -> limits
 val limits_to_json : limits -> Json.t
 type result
 type checked_implementation
+type startup_pass = Input | Identity
 
 (** Every invocation freshly repeats original source and graph admission.
     Exhaustion/contradiction/mismatch stops with incomplete coverage and an
@@ -24,6 +25,15 @@ type checked_implementation
     diagnostic is raised and no result or checked implementation is returned. *)
 val check : request:R.t -> behavior:O.behavior -> implementation:I.t ->
   proposed:U.t -> limits:limits -> result
+
+(** Identical checker with an enclosing logical-data-work preflight callback
+    before each source admission, graph binding, source/runtime initialization
+    and initial identity/projection input pass. The callback cannot replace
+    those fresh checks. Its exception propagates before a result is returned;
+    default [check] invokes a no-op and retains its existing report/accounting.
+    Startup charges supplement rather than reinterpret child semantic work. *)
+val check_with_startup_charge : startup_charge:(startup_pass -> Json.t -> unit) -> request:R.t ->
+  behavior:O.behavior -> implementation:I.t -> proposed:U.t -> limits:limits -> result
 val report : result -> Json.t
 
 (** Available only after complete finite-domain preservation and all original

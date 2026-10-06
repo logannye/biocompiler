@@ -492,3 +492,72 @@ wrapper through `--report`. Authoring validation is never executed as a fallback
 CLI exit codes are 0 for checked implementation, 1 for a completed native response
 that withholds acceptance, and 2 for input/transport/native protocol failure.
 All results retain target/material unassessed and artifact/export withheld.
+
+## Conditional policy material v0.1
+
+The new `policy-truth-mrna-v0.1` scope negotiates
+`biocompiler.core.policy_material.v1`,
+`biocompiler.ocaml.policy_material.v0.1`, and
+`biocompiler.policy_material_resources.v0.1`. Core alone advertises
+`compile-policy-material`; Core and standalone Verify expose
+`check-policy-material`, `replay-policy-material`, and `export-policy-material`.
+The verifier dependency boundary still excludes the producer.
+
+Compile takes exactly `{request, limits}`. Check and export take exactly
+`{request, candidate, limits}`. Replay additionally takes the full saved wrapper
+as `report`. No operation accepts a saved report as native acceptance authority.
+The original `biocompiler.policy_material_request.v0.1` retains the full
+implementation request, full supplied material case, exact provider/context
+contracts, an original catalog-entry/material-case binding, and aggregate work
+and publication budgets. The request profile is
+`biocompiler.policy_truth_mrna.v0.1`; `limits` retains the unchanged preservation
+resource schema. Fields, timing, resources and unsupported cases are specified
+in [material acceptance](../docs/policy-material-acceptance.md).
+
+The candidate schema `biocompiler.policy_material_candidate.v0.1` contains
+`behavior`, `implementation`, `binding`, `material_binding`, and `construction`.
+Fresh checking reruns source admission, both IR correspondences, full finite
+preservation and requirement evaluation, exact whole-graph/material binding,
+independent molecular construction, original context contracts and every original
+source obligation. Only the complete conjunction creates private native material
+acceptance. Missing, unknown, unsupported, incomplete or failed obligations cannot
+authorize export. Supplied model-to-sequence and provider contracts are explicit
+premises; empirical validity remains unassessed.
+
+The result wrapper contains schema, implementation, resource and scope fields,
+request/candidate/invocation/report fingerprints, complete candidate and report,
+and `artifact`. Compile/check/replay set `artifact` to null. Replay compares the
+whole freshly reconstructed wrapper. Export independently rechecks the full
+chain and returns an artifact only from its private accepted material value.
+The underlying assessment retains `artifact=withheld` and `export=withheld`;
+export does not relabel historical leaf assessments.
+
+The artifact schema is `biocompiler.policy_mrna_export.v0.1`, with exact fields
+`schema_version`, `fasta`, `fasta_sha256`, `manifest`, `manifest_sha256`. Ordered
+members receive headers `rna_0001`, `rna_0002`, etc., with `alphabet=RNA`,
+80-column sequence lines and final newlines. The canonical manifest has no
+trailing newline and includes complete original request, candidate, limits,
+assessment, their binding fingerprints, the full molecule records and exact
+FASTA hash. Its own hash is carried in the outer artifact. The manifest records
+that original authority must be retained separately; it cannot substitute for
+those original inputs during later checking.
+
+The service reserves complete publication within 8,323,072 bytes and 249,968
+key/value nodes, including worst-case legal request identity/framing. It never
+trims proof evidence. Aggregate work is explicitly measured as logical data
+visits and child semantic work, with charged decoding and startup passes; it is
+not a wall-clock or machine-instruction bound. Decoder and child bounds remain
+independent requirements.
+
+`PolicyMaterialClient` and `policy.material` transport inert immutable snapshots.
+The CLI provides `compile-material-native`, `check-material-native`,
+`replay-material-native`, and `export-material-native`, with required `--limits`.
+Fresh export requires an output `.zip` and publishes `program.fasta` plus
+`manifest.json` as one deterministic stored archive. The Python helper verifies
+the fresh native pair, writes and fsyncs a temporary archive, reads back exact
+member bytes/metadata, and atomically publishes it. Existing destinations require
+explicit `--replace`; original inputs and aliases cannot be overwritten. Failed
+checking, cancellation, changed staged bytes and publication failures preserve
+prior output. Exit codes remain 0 for acceptance, 1 for a completed nonaccepted
+assessment, and 2 for input/transport/native errors. There is no Python semantic
+fallback.

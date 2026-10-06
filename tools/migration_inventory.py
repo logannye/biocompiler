@@ -364,6 +364,8 @@ def ownership(module, category):
         return "TypeScript", ["LM-10", "LM-30"], "preserve_studio_surface"
     if category == "example":
         return "Python", ["LM-03", "LM-11"], "retain_example_with_core_routing"
+    if module in {"biocompiler.core_policy_material", "biocompiler.policy.material"}:
+        return "Python", ["LM-12", "LM-20", "LM-21", "LM-24", "LM-25", "LM-26"], "retain_explicit_transport_to_fresh_native_policy_material_and_exact_paired_export"
     if module in {"biocompiler.core_policy_implementation", "biocompiler.policy.implementation"}:
         return "Python", ["LM-12", "LM-20", "LM-21", "LM-25"], "retain_explicit_transport_to_independently_checked_ocaml_implementation"
     if module in {"biocompiler.core_policy_operational", "biocompiler.policy.operational"}:
@@ -389,6 +391,8 @@ def ownership(module, category):
 def authority(module, category):
     if category in {"example", "studio_asset"}:
         return "authored_or_displayed_inputs_are_not_acceptance_authority"
+    if module in {"biocompiler.core_policy_material", "biocompiler.policy.material"}:
+        return "full_original_policy_models_material_context_and_fresh_native_conditional_artifact_check"
     if module in {"biocompiler.core_policy_implementation", "biocompiler.policy.implementation"}:
         return "complete_external_request_and_supplied_models_with_fresh_native_full_domain_preservation_and_hard_requirements"
     if module in {"biocompiler.core_policy_operational", "biocompiler.policy.operational"}:
@@ -565,6 +569,9 @@ def build_inventory(root: Path):
             if name in {"policy compile-implementation-native", "policy check-implementation-native", "policy replay-implementation-native"}:
                 record["native_profile"] = "biocompiler.policy_bounded_preservation.v0.1"
                 record["authority_boundary"] = "explicit_native_complete_domain_implementation_preservation_without_material_or_export_authority"
+            if name in {"policy compile-material-native", "policy check-material-native", "policy replay-material-native", "policy export-material-native"}:
+                record["native_profile"] = "biocompiler.policy_truth_mrna.v0.1"
+                record["authority_boundary"] = "fresh_native_full_policy_material_context_check_and_atomic_exact_rna_manifest_pair"
     server = sources.modules.get("biocompiler.studio.server")
     if server is None:
         raise InventoryError("Studio HTTP source missing")

@@ -14,6 +14,7 @@ import tempfile
 
 _OPERATIONAL_COMMANDS = ("compile-native", "check-lowering-native", "execute-native", "replay-execution-native")
 _IMPLEMENTATION_COMMANDS = ("compile-implementation-native", "check-implementation-native", "replay-implementation-native")
+_MATERIAL_COMMANDS = ("compile-material-native", "check-material-native", "replay-material-native", "export-material-native")
 
 
 def _operational_json(path: Path, *, field: str | None = None) -> object:
@@ -74,7 +75,7 @@ def _write(path: Path, text: str, *, replace: bool, inputs: Sequence[Path] = ())
 def _parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="biocompiler policy",
-        description="Inspect policy documents and explicitly invoke bounded native operations. Target realizability remains unassessed.",
+        description="Inspect policy documents and explicitly invoke bounded native operations. Material claims require the separate complete supplied-contract profile.",
     )
     parser.add_argument("--json", action="store_true", help="Print machine-readable JSON.")
     commands = parser.add_subparsers(dest="command", required=True)
@@ -92,6 +93,10 @@ def _parser() -> argparse.ArgumentParser:
         ("compile-implementation-native", "Lower and independently check an implementation over its complete finite domain."),
         ("check-implementation-native", "Independently check an implementation against the complete original realization request."),
         ("replay-implementation-native", "Freshly reproduce the full retained implementation-check wrapper."),
+        ("compile-material-native", "Lower and freshly check a complete supplied policy-to-mRNA case."),
+        ("check-material-native", "Independently reconstruct the complete policy/material/context chain."),
+        ("replay-material-native", "Freshly reproduce the entire saved material-check wrapper."),
+        ("export-material-native", "Freshly check and atomically export the exact RNA/manifest pair as a ZIP archive."),
     ):
         command = commands.add_parser(name, help=help_text)
         command.add_argument("--json", action="store_true", default=argparse.SUPPRESS, help="Print machine-readable JSON.")
@@ -99,10 +104,10 @@ def _parser() -> argparse.ArgumentParser:
             command.add_argument("path", type=Path, help="Saved policy authoring JSON document.")
         if name == "diff":
             command.add_argument("other", type=Path, help="Document to compare against.")
-        if name in ("assess-native", "compile-native", "check-lowering-native", "execute-native", "replay-execution-native", "compile-implementation-native", "check-implementation-native", "replay-implementation-native"):
+        if name in ("assess-native", "compile-native", "check-lowering-native", "execute-native", "replay-execution-native", "compile-implementation-native", "check-implementation-native", "replay-implementation-native", "compile-material-native", "check-material-native", "replay-material-native", "export-material-native"):
             backend = command.add_mutually_exclusive_group(required=True)
             backend.add_argument("--core", type=Path, help="Absolute path to the selected Core executable.")
-            if name not in ("compile-native", "compile-implementation-native"):
+            if name not in ("compile-native", "compile-implementation-native", "compile-material-native"):
                 backend.add_argument("--verify", type=Path, help="Absolute path to the selected independent Verify executable.")
             command.add_argument("--expected-sha256", help="Optional caller-supplied executable SHA-256 pin.")
             command.add_argument("--timeout", type=float, default=30.0, help="Positive per-exchange timeout in seconds.")
@@ -120,7 +125,13 @@ def _parser() -> argparse.ArgumentParser:
                 command.add_argument("--candidate", required=True, type=Path, help="Implementation candidate JSON or complete saved implementation result.")
             if name == "replay-implementation-native":
                 command.add_argument("--report", required=True, type=Path, help="Entire saved implementation result wrapper; inner reports are insufficient.")
-        command.add_argument("--output", "-o", type=Path, help="Write complete JSON atomically to this path.")
+        if name in ("compile-material-native", "check-material-native", "replay-material-native", "export-material-native"):
+            command.add_argument("--limits", required=True, type=Path, help="Explicit original preservation execution limits.")
+            if name != "compile-material-native":
+                command.add_argument("--candidate", required=True, type=Path, help="Complete material candidate or saved material result.")
+            if name == "replay-material-native":
+                command.add_argument("--report", required=True, type=Path, help="Entire saved material result wrapper.")
+        command.add_argument("--output", "-o", type=Path, help="Atomically write JSON; material export writes one RNA/manifest ZIP archive.")
         command.add_argument("--replace", action="store_true", help="Explicitly permit atomic replacement of an existing output file.")
     return parser
 
@@ -130,6 +141,8 @@ def main(argv: Sequence[str] | None = None) -> int:
     arguments = parser.parse_args(argv)
     if arguments.replace and arguments.output is None:
         parser.error("--replace requires --output")
+    if arguments.command == "export-material-native" and arguments.output is None:
+        parser.error("export-material-native requires --output for the inseparable RNA/manifest archive")
     try:
         from .serialization import PolicySerializationError, load, schema, to_data
         from .handoff import SubmissionError
@@ -139,6 +152,50 @@ def main(argv: Sequence[str] | None = None) -> int:
         result: object
         if arguments.command == "export-schema":
             result = schema()
+        elif arguments.command in _MATERIAL_COMMANDS:
+            from typing import cast
+
+            from biocompiler.core_client import CoreClient, CoreError, JsonValue
+            from biocompiler.core_policy_material import PolicyMaterialClient, RESULT_SCHEMA
+
+            request = cast(JsonValue, _operational_json(arguments.path))
+            limits = cast(JsonValue, _operational_json(arguments.limits))
+            inputs = (arguments.path, arguments.limits)
+            try:
+                transport = CoreClient(arguments.core or arguments.verify,
+                                       role="core" if arguments.core else "verify",
+                                       timeout_seconds=arguments.timeout,
+                                       expected_sha256=arguments.expected_sha256)
+                client = PolicyMaterialClient(transport)
+                if arguments.command == "compile-material-native":
+                    material_result = client.compile(request, limits)
+                else:
+                    candidate = cast(JsonValue, _operational_json(arguments.candidate))
+                    if isinstance(candidate, dict) and candidate.get("schema_version") == RESULT_SCHEMA:
+                        if "candidate" not in candidate:
+                            raise ValueError("Saved material result is missing candidate.")
+                        candidate = candidate["candidate"]
+                    inputs += (arguments.candidate,)
+                    if arguments.command == "check-material-native":
+                        material_result = client.check(request, candidate, limits)
+                    elif arguments.command == "replay-material-native":
+                        saved = cast(JsonValue, _operational_json(arguments.report))
+                        inputs += (arguments.report,)
+                        material_result = client.replay(request, candidate, limits, saved)
+                    else:
+                        from .material import export
+
+                        material_result = export(request, candidate=candidate, limits=limits, client=client,
+                                                 output=arguments.output, input_paths=inputs, replace=arguments.replace)
+                        notice = {"status": "written", "operation": arguments.command,
+                                  "output": str(arguments.output), "format": "RNA_FASTA_and_canonical_manifest_zip"}
+                        print(_json(notice) if arguments.json else "Wrote " + str(arguments.output),
+                              end="" if arguments.json else "\n")
+                        return 0
+            except CoreError as error:
+                raise ValueError(str(error)) from error
+            result = material_result.result
+            exit_code = 0 if material_result.status == "checked_material" else 1
         elif arguments.command in _IMPLEMENTATION_COMMANDS:
             from typing import cast
 
@@ -273,7 +330,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                 print(_json(notice), end="")
             else:
                 print(f"Wrote {arguments.output}")
-        elif arguments.json or arguments.command in ("export-schema", "export-request", "assess-native", *_OPERATIONAL_COMMANDS, *_IMPLEMENTATION_COMMANDS):
+        elif arguments.json or arguments.command in ("export-schema", "export-request", "assess-native", *_OPERATIONAL_COMMANDS, *_IMPLEMENTATION_COMMANDS, *_MATERIAL_COMMANDS):
             print(text, end="")
         else:
             label = {"check": "Authoring check", "inspect": "Authoring inspection", "diff": "Authoring comparison"}[arguments.command]

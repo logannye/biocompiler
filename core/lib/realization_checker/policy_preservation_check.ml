@@ -50,6 +50,7 @@ let limits_of_json raw =
 let limits_to_json value=value.raw
 type checked_implementation={checked:B.checked_binding;evidence_value:Json.t}
 type result={report_value:Json.t;accepted_value:checked_implementation option}
+type startup_pass=Input|Identity
 let report value=value.report_value
 let accepted value=value.accepted_value
 let binding value=value.checked
@@ -77,15 +78,28 @@ let normalized_monitor correspondence row =
     else if key="attempt" && value<>Json.Null then source_identity correspondence "attempts"(Json.string value)
     else value)(Json.object_fields obligation)))(items "obligations" row)in
   obj(List.map(fun(key,value)->key,if key="obligations"then arr obligations else value)(Json.object_fields row))
-let check ~request ~behavior ~implementation ~proposed ~limits =
+let check_with_startup_charge ~startup_charge ~request ~behavior ~implementation ~proposed ~limits =
   (* These constructors check original external roots again on every call. *)
+  startup_charge Input(obj["request",R.to_json request;"behavior",O.behavior_to_json behavior]);
+  (* Operational admission and independent correspondence each perform their
+     own canonical original-document decode. Retain both logical input passes. *)
+  startup_charge Input(D.to_json(R.document request));
+  startup_charge Input(D.to_json(R.document request));
   let admitted=A.admit ~request ~behavior in
+  startup_charge Input(obj["admission",A.report admitted;"implementation",I.to_json implementation;
+    "proposed",U.to_json proposed]);
   let checked=B.check ~admitted ~implementation ~proposed in
   let domain=R.operating_domain request and budgets=R.budgets request in
   require(limits.candidate.max_attempts>domain.logical_limits.max_source_attempts)
     "policy_preservation_limits" "Candidate allocation resource ceiling must exceed the original semantic source bound.";
+  startup_charge Input(obj["behavior",O.behavior_to_json behavior;"domain",F.to_json domain;
+    "bounds",S.execution_bounds_to_json limits.source]);
   let source=S.create ~behavior ~domain ~bounds:limits.source in
   let environment=B.environment checked in
+  startup_charge Input(obj["implementation",I.to_json(B.implementation checked);
+    "environment",obj["executor",str environment.executor;"horizon_ticks",Json.int environment.horizon_ticks;
+      "slots",arr(List.map(fun(slot:B.slot)->obj["identity",str slot.identity;"target",str slot.target;
+        "start_tick",Json.int slot.start_tick])environment.slots)];"limits",limits.raw]);
   let candidate=P.initialize ~implementation:(B.implementation checked)
     ~environment:{P.executor=environment.executor;horizon_ticks=environment.horizon_ticks;
       slots=List.map(fun(slot:B.slot)->{P.slot_id=slot.identity;target=slot.target;start_tick=slot.start_tick})environment.slots}
@@ -95,8 +109,11 @@ let check ~request ~behavior ~implementation ~proposed ~limits =
   let path=ref [] and latest_source=ref None and latest_candidate=ref None in
   let retained_witnesses=ref 0 and live_trace=ref 0 and activity=ref [] in
   let active_prefixes=ref 0 and inactive_prefixes=ref 0 and created_attempts=ref 0 in
-  let frontier_digest=ref(Canonical.fingerprint(obj["profile",str profile;"request",str(R.fingerprint request);
-    "implementation",str(I.fingerprint(B.implementation checked));"limits",limits.raw]))in
+  startup_charge Identity(I.to_json(B.implementation checked));
+  let frontier_identity=obj["profile",str profile;"request",str(R.fingerprint request);
+    "implementation",str(I.fingerprint(B.implementation checked));"limits",limits.raw]in
+  startup_charge Identity frontier_identity;
+  let frontier_digest=ref(Canonical.fingerprint frontier_identity)in
   let output=W.create_output ~profile ~error_code:"policy_preservation_report_limit"
     ~max_bytes:limits.report_bytes ~max_nodes:limits.report_nodes ()in
   let aggregates=List.map(fun(requirement:O.requirement)->{requirement;histories=[];samples=Z.zero;
@@ -244,6 +261,9 @@ let check ~request ~behavior ~implementation ~proposed ~limits =
             visit(live+weight)advanced.next next_candidate next_monitor next_correspondence(Some source_report)!path;
             choices rest in
       choices(S.choices source))in
+  (* An enclosing startup exhaustion must propagate with its own identity,
+     rather than become a caught source/candidate traversal verdict. *)
+  startup_charge Identity(B.report checked);
   let stopped =
     try
       ignore(charge_json(obj["request",R.to_json request;"behavior",O.behavior_to_json behavior;
@@ -308,3 +328,6 @@ let check ~request ~behavior ~implementation ~proposed ~limits =
     ~max_bytes:limits.report_bytes ~max_nodes:limits.report_nodes ()in
   W.reserve_json final_output report_value;
   {report_value;accepted_value=(if requirements_pass then Some{checked;evidence_value=report_value}else None)}
+
+let check ~request ~behavior ~implementation ~proposed ~limits=
+  check_with_startup_charge ~startup_charge:(fun _ _->()) ~request ~behavior ~implementation ~proposed ~limits

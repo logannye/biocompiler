@@ -361,13 +361,22 @@ Depends on: SM-05; construction leaf work can overlap SM-04.
 
 Exit: exact complete mRNA candidates are independently checked against both their material construction authority and the accepted implementation binding.
 
-Construction checkpoint: the [source-neutral construction leaf](construction-content-v0.1.md)
-now reuses the existing producer and independent reconstruction without a
-fabricated legacy circuit. Complete template authority includes explicit ordered
-members; legacy candidate/assessment bytes have frozen regression controls.
-Exact-content success leaves context and mRNA completeness unassessed. This
-source-ready leaf still needs hosted validation and the policy-specific
-implementation/material, deployment and complete-mRNA checks above.
+Construction/material source checkpoint: the
+[source-neutral construction leaf](construction-content-v0.1.md) reuses the
+existing producer and independent reconstruction without a fabricated legacy
+circuit. Its own success keeps broader claims unassessed. Separate mRNA
+structure, whole-graph material and original-context checkers now have source
+implementations, followed by a coordinator that requires private upstream
+acceptance and complete original-obligation discharge. The initial case pins
+every primitive/configuration/connection disposition to supplied exact material;
+it does not infer biological behavior from sequences. The
+[material acceptance checkpoint](policy-material-acceptance.md) specifies the
+closed schemas, record capacities and conditional scope. New literal controls
+retain the complete original request, 24 obligations, exact molecules and
+9-history/47-transition/48-prefix expectations. Full material hosted acceptance
+is pending; SM-06 checkboxes remain open. Next: execute the exact-content,
+configuration/carrier, context and cross-layer mutation controls together, then
+retain their exact-revision evidence.
 
 ### SM-07 — Integrate fresh acceptance, immutable artifacts and public SDK/CLI
 
@@ -382,20 +391,47 @@ Depends on: SM-04 through SM-06.
 
 Exit: one complete Python-policy → implementation → exact mRNA path works through installed public APIs with fresh standalone verification and exact request-bound export.
 
-Source checkpoint: the separate bounded implementation SDK/CLI and native
-compile/check/full-wrapper replay operations are source-ready. The installed
-campaign compares complete results in all four required slots and retains the
-unchanged UNKNOWN control. The exact mRNA structural and whole-graph material
-leaves are also source-ready; they explicitly withhold context and export.
+Source checkpoint: separate implementation operations retain their intermediate
+claims. The [material path](policy-material-acceptance.md) now has dedicated
+compile/check/full-wrapper replay/fresh-export native operations, immutable
+Python transport, CLI routing and a complete manifest/FASTA pair. Standalone
+Verify checks/replays/exports without producer linkage; compilation remains a
+Core proposal followed by fresh checking. No saved report can authorize export.
+The helper stages one ZIP, checks its complete bytes/metadata by bounded
+readback, then publishes atomically. Request, candidate, invocation and report
+identities are separate; all original obligations and empirical-unassessed
+statuses remain visible. Native/service/publication tests are source-ready,
+not accepted hosted execution. Next: run them with separately retained originals
+and fresh installed Core/Verify binaries, including forged/rehashed wrappers,
+changed bounds, cancellation, staged corruption and preserved prior output.
 
 Hosted correction: runs 37414250697 and 37414496311 compiled on Linux but their
 native suite step failed. A mismatched exclusion-catalog chassis was found in
 the inherited positive fixture. A separately named resolved catalog now pins the
 matching original chassis; the complete previous mismatch is retained as a
 negative control. The original UNKNOWN source and its uncertainty requirement
-remain unchanged. A separate source-only exclusion failure needs hosted diagnostic
-output; no semantic workaround has been applied. All SM-04/05/06/07 acceptance
-checkboxes remain open.
+remain unchanged. A subsequent source-path correction canonicalizes the
+unchanged original document root across direct and service ingress. A later
+preservation run exposed a 100,000-unit monitor allowance that could not encode
+the full binding report at initialization; positive fixtures now explicitly use
+1,000,000, with tiny-monitor incomplete controls retained. These are regression
+corrections, not transferred acceptance. The coordinator separately charges
+logical data visits plus child semantic work, including original decoding and
+startup/publication passes. Its frozen request decoder has an independently
+calculated 480,657-unit census with exact/one-short controls; this is not native
+CPU accounting or a hosted receipt. All SM-04/05/06/07 acceptance checkboxes
+remain open.
+
+New partial native evidence: [run 37418186608](https://github.com/logannye/biocompiler/actions/runs/37418186608),
+source `d982d58642d94f9d9c798f20bc672fcc69d1f04f`, passed both early platform
+suites through source/source-graph, trace, lowering, independent monitor,
+whole-domain preservation (9 histories/47 transitions/48 prefixes and 22 negative
+controls) and implementation service. Construction then failed a test expecting
+a later bundle-residue diagnostic when the transform had already failed.
+Test-only correction `1eeb05817ce73a27a3ef5df109336ddb70d35de7` preserves the
+exact earlier member/step failures and separately tests a two-member aggregate
+residue overflow; production behavior is unchanged. The correction and subsequent
+material stages still require hosted validation. Full gates remain pending.
 
 ### SM-08 — Close the declared profile, compatibility and hosted acceptance
 
@@ -411,6 +447,17 @@ Depends on: SM-07; test/campaign design starts at SM-01.
 
 Exit: the first declared rich-policy-to-mRNA profile is accepted end to end. A demo, subset of tests, static check or prior branch's receipt cannot close this package.
 
+Source checkpoint: the installed material campaign and Linux/macOS × Python
+3.11/3.14 wiring/comparator have source implementations, with complete semantic
+outputs, original authority, binary/run/attempt pins and exact artifact-pair
+checks. No hosted material run or complete four-gate acceptance is established
+by this checkpoint. Next: complete required checks, both hosted native targets,
+all four installed slots with independent comparison, and exact-revision
+aggregate/integration acceptance. Keep packaged/offline/default-routing work
+separately visible, retain all historical gates, and record successful source
+and tested revisions before changing any checkbox. The existing reference-package
+source implementation remains under its compatibility/acceptance owner's scope.
+
 ### SM-09 — Expand supported semantics through complete vertical profiles
 
 Depends on: SM-08 for acceptance; design work can be prepared earlier.
@@ -421,6 +468,17 @@ Depends on: SM-08 for acceptance; design work can be prepared earlier.
 - [ ] **SM-09.4** Reconcile affected public workflow/default migration tasks with their owners. Retire a Python semantic authority only when every dependent admitted path is accepted.
 
 Exit per expansion: a complete supported source-to-mRNA path with explicit boundaries. Deferred language forms remain faithfully represented and explicitly unsupported until their own contracts are implemented.
+
+Source checkpoint: the first material profile is a single supplied whole-graph
+case with one exact RNA/product and no delivered helper, using a narrow
+exclusive truth/encounter family and explicit formal context. General component
+composition, broader numeric/state/lifecycle operations, machines, coordination,
+quantification, inheritance, independent delivery and helper/multiple-member
+closure remain expansion work. Next: choose one concrete source-coverage need
+after the initial SM-08 gate, extend every dependent semantic/material/public
+boundary, and repeat complete positive/distinguishing-negative hosted acceptance.
+No broader support follows from a source declaration, matching sequence or
+single-case success; biological viability is outside this session's scope.
 
 ## 6. Required semantic and mutation matrix
 

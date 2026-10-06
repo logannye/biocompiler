@@ -1,0 +1,332 @@
+# Bounded conditional policy-to-mRNA acceptance
+
+This is a source checkpoint for SM-06 through SM-09 in the
+[semantic mRNA development plan](semantic-mrna-development-plan.md). The material
+coordinator, native services, Python transport, paired publication and hosted
+campaign have source implementations. Their complete hosted material acceptance
+has not been established. No task checkbox is closed by this document, an authored
+fixture, a mock transport test or a successful earlier implementation-only run.
+
+The claim is internal semantic correspondence under explicitly supplied finite
+domains, primitive models, model-to-sequence contracts and provider contracts.
+It is not a claim that those contracts describe biological behavior. Empirical
+validation, cellular viability and therapeutic efficacy remain outside this
+profile; exported manifests retain `empirical: unassessed`.
+
+## Complete original authority and closed schemas
+
+The original material request contains these exact fields:
+
+| Field | Meaning |
+| --- | --- |
+| `schema_version` | `biocompiler.policy_material_request.v0.1` |
+| `profile` | `biocompiler.policy_truth_mrna.v0.1` |
+| `implementation_request` | Complete original `biocompiler.policy_realization_request.v0.1`: Python-authored BuildRequest, operational definitions, finite operating domain, supplied primitive library, exact catalog-to-model bridges and original exploration budgets |
+| `material_contract` | Independently supplied whole-graph material case, `biocompiler.policy_material_contract.v0.1`, profile `biocompiler.policy_truth_mrna_material.v0.1` |
+| `context` | Original recipient, clock, placement, delivery and provider/capacity authority, `biocompiler.policy_material_context.v0.1` |
+| `catalog_binding` | Exact original entry ID/version/digest and operation/realization DefinitionRefs, plus the complete material-contract model identity |
+| `budgets` | `biocompiler.policy_material_resources.v0.1`, with `max_work`, `max_report_bytes` and `max_report_nodes` |
+
+The material bridge does not authorize primitive models on its own. Source
+admission still requires the original nonempty catalog, exact entry bodies,
+original chassis/RNA eligibility and explicit authorization of every supplied
+library model. The current material conjunction supports one original catalog
+root and one supplied whole-graph case. An empty catalog or a self-authored
+candidate fingerprint cannot supply missing authority.
+
+The separate, untrusted candidate uses
+`biocompiler.policy_material_candidate.v0.1` and exactly:
+`schema_version`, `behavior`, `implementation`, `binding`, `material_binding`,
+`construction`. The operational behavior is checked against the external original
+source; its embedded source is not allowed to replace that original. The graph
+binding uses `biocompiler.policy_implementation_binding.v0.1`; the material node
+bijection uses `biocompiler.policy_material_binding.v0.1`. Source-neutral
+construction content is checked under the exact supplied template roots, rather
+than being granted a fabricated legacy circuit authority.
+
+Per-invocation preservation `limits` remain separately supplied and use
+`biocompiler.policy_preservation_resources.v0.1`. They bound source execution,
+candidate execution, the independent requirement monitor, per-step work/retention
+and complete report publication. They never shorten the original domain or
+weaken its assurance horizon.
+
+The [request decoder](../core/lib/domain/policy_material_request.mli),
+[material contract](../core/lib/domain/policy_material_contract.mli) and
+[context decoder](../core/lib/domain/policy_material_context.mli) define these
+closed representations. Decoding establishes bounded shape and identities, not
+accepted compilation.
+
+## Independent checking and the original obligation inventory
+
+The [coordinator](../core/lib/realization_checker/policy_material_check.ml)
+re-decodes the original request and requires the following conjunction:
+
+1. Fresh source admission and source-to-behavior correspondence, followed by
+   independently reconstructed source-to-graph bindings. Actual ports, wires,
+   configurations, scopes, rule order and source occurrences are checked; source
+   path labels are not proof.
+2. Exhaustive traversal of the original finite causal input domain. Source and
+   candidate runtimes execute independently, exact ordered observable traces are
+   compared through creation-time identity correspondence, and a separate monitor
+   checks every original hard requirement. Complete coverage and real effect,
+   active and inactive witnesses are required. Failure, UNKNOWN, unsupported
+   requirements or incomplete traversal cannot produce a checked implementation.
+3. The original catalog-to-material bridge and a total ordered bijection between
+   the actual graph and supplied material kernel. Complete models, configurations,
+   replication, wires, inputs, atomic groups, semantic exports and slot layout
+   must match. Every corresponding material target requires a disposition under
+   the supplied case.
+4. Fresh construction reconstruction and mRNA structural checks, followed by
+   exact whole-molecule comparison to the case's independent material key. The
+   supported structural profile requires complete linear coding RNA, the four
+   required regions, ordinary standard-code translation with supplied product
+   authority, exact represented terminal tail, declared chemistry and checked
+   coordinates/derivation. Unknown or unsupported material content is not complete.
+5. Original context checking: concrete executor recipient and compartment,
+   exact clock relation, complete original provider references, input grammar,
+   causal delivery/activation, inclusive availability, exact payload cardinality
+   and sufficient complete-record resource capacities.
+6. A disposition for every obligation from the fresh original source assessment.
+   Each discharge retains the applicable preservation, material and/or context
+   evidence fingerprint. An unknown additional obligation remains unresolved even
+   when all earlier leaves pass.
+
+Only the coordinator can construct its private `checked_material` value. Every
+failed or incomplete stage that returns a report retains the full original
+obligation inventory with unresolved dispositions. Malformed authority and
+resource exhaustion may instead raise a diagnostic without returning a report
+or accepted value. Neither route may turn a missing obligation into success.
+
+The report schema is `biocompiler.policy_material_assessment.v0.1`. Its status is
+`checked_material` only after the full conjunction; otherwise it is
+`not_accepted`. Stage outcomes remain separately visible as `pass`, `fail`,
+`unknown`, `unsupported` or `unassessed`, as applicable. The report's claim is
+`bounded_conditional_policy_to_exact_mrna`, with premise
+`supplied_model_to_sequence_and_provider_contracts`. Even a checked report keeps
+`artifact: withheld` and `export: withheld`; only a new export invocation may
+produce an artifact.
+
+The [producer](../core/lib/producer_service/policy_material_producer.ml) lowers
+source, selects exactly authorized model configurations, proposes a bounded
+complete graph arrangement and constructs template content. It then invokes the
+same checking service. Standalone Verify does not link this producer. A producer's
+search exhaustion is not evidence of global impossibility, and a plausible graph
+arrangement does not bypass source order or independent material checking.
+
+## Resource meaning and work accounting
+
+Formal component capacities are distinct from software execution allowances.
+The context profile counts truth cells, evidence records, edge-history cells,
+generation counters, active-attempt records, retained historical correlations,
+timers, control-event records and input rows per tick. Each demand is scoped per
+executor or per concrete encounter slot. Shared capacity pools are summed;
+separate allocations cannot consume the same pool as though it were unshared.
+
+Records retain their complete semantic contents, including three-valued truth,
+ordered reasons with duplicates, subject/generation identity, complete evidence
+timestamps, correlated attempt state, authorization, causal events and products.
+The independently checked record layout pins the kernel/domain, slots,
+generations, attempt bound, horizon and maximum tick, ordered reason/cause widths
+and identifier bytes. Capacity is not just the number of containers. It is also
+not RNA copy number, dosage, a software trace limit or empirical memory capacity.
+The [context checker](../core/lib/realization_checker/policy_material_context_check.ml)
+derives demands from the actual graph and the entire original input grammar.
+
+The coordinator's explicit work unit is
+`logical_data_visits_and_child_semantic_work`. It comprises:
+
+- Bounded preflight JSON value/key, list-edge and ancestor-identity visits, plus
+  scalar string and decimal-spelling bytes.
+- Explicit canonical encoding, hashing and publication byte passes at the
+  coordinator boundary.
+- The child checkers' own declared semantic work, including fresh preservation
+  traversal and nested material/context work.
+
+This is an aggregate logical-work metric, not an estimate or ceiling on native
+CPU instructions. Original decoder and per-stage hard limits remain active.
+Protocol ingress and producer search retain their own limits; this report does
+not claim that all process overhead is measured by the coordinator's counter.
+
+The material budget exists before the coordinator's fresh `R.of_json` decode.
+The decoder preflights its full original input and each child decoder input,
+charges exact original encoding/hash bytes, and exposes `decoding_work`.
+`Policy_preservation_check.check_with_startup_charge` adds enclosing preflights
+before admission, graph binding, runtime/reference initialization and initial
+identity passes. Default `check` retains its existing signature, behavior and
+report. The coordinator reserves the entire original preservation allowance,
+rechecks that reservation after startup charges, and charges actual child work
+afterward. The allowance does not change the source request.
+
+Original request decoding retains the fixed 4,000,000-byte, 100,000-node and
+96-depth limits. General coordinator preflight can explicitly use the protocol
+ceiling of 8,388,608 bytes, 250,000 nodes and depth 128. Final material service
+publication is tighter: 8,323,072 bytes and 249,968 nodes, including its result
+framing. Complete evidence is reserved and checked; it is never truncated to fit.
+Private acceptance is constructed only after the coordinator's publication
+reservation succeeds. The service also checks the complete candidate/report and,
+when exporting, full manifest/FASTA wrapper.
+
+The report records `usage.unit`, `usage.charged_work` and
+`usage.request_decoding_work`. The frozen complete-original fixture has an
+independently calculated decoder census of **480,657 logical units**. Native
+controls require that exact allowance to succeed and 480,656 to fail. A separate
+literal `{"a":[true,12,"x\n"]}` has 16 logical units and 21 canonical bytes.
+These are fixture/accounting calibrations, not hosted execution receipts.
+
+## Public operations, identities and fresh paired export
+
+Negotiation requires exact `policy_material` and, for compilation,
+`policy_material_producer` profiles. The validation scope is
+`policy-truth-mrna-v0.1`, service implementation
+`biocompiler.ocaml.policy_material.v0.1`, and result schema
+`biocompiler.core.policy_material.v1`.
+
+| Native operation | Executables | Exact payload |
+| --- | --- | --- |
+| `compile-policy-material` | Core | `request`, `limits` |
+| `check-policy-material` | Core, Verify | `request`, `candidate`, `limits` |
+| `replay-policy-material` | Core, Verify | `request`, `candidate`, `limits`, `report` |
+| `export-policy-material` | Core, Verify | `request`, `candidate`, `limits` |
+
+Replay's `report` is the entire saved non-export result wrapper, not its inner
+assessment. Replay recomputes the complete wrapper and requires canonical
+equality, including profile, authority, candidate and evidence. An export wrapper
+is not a check receipt. Export takes no saved report or serialized acceptance.
+
+Four distinct fingerprints are retained: complete original request; complete
+candidate including its schema; invocation `{request,candidate,limits}`; and
+complete report. Declaration-content identity remains separate from full source
+artifact identity. Source-map or provenance edits may preserve declaration
+meaning but still change the original authority and invalidate old behavior,
+graph bindings and receipts. Rehashing an edited claim cannot make it accepted.
+
+Fresh export reconstructs the complete conjunction again, obtains the private
+accepted content, and returns `biocompiler.policy_mrna_export.v0.1`. Its exact RNA
+FASTA uses stable `rna_0001`-style identifiers, ordered members, 80-column wrapping
+and explicit newlines. The `biocompiler.policy_mrna_manifest.v0.1` contains the
+entire original request, complete candidate, limits, fresh assessment, four
+identity bindings, complete molecular records and sequence/FASTA hashes. The
+outer export hashes exact canonical manifest bytes; no self-hash is embedded.
+Original authority must still be supplied independently for future checking.
+
+The [immutable SDK](../src/biocompiler/core_policy_material.py) snapshots request
+bytes before negotiation/calls and checks exact profiles, identities, full
+obligation/stage consistency and the exact artifact pair. It performs transport
+and consistency checking, not Python policy execution. Missing/wrong binaries,
+unsupported profiles, timeout, cancellation and protocol failures have no Python
+semantic fallback. `prepare_request` in the
+[inert public helper](../src/biocompiler/policy/material.py) only freezes authority.
+
+The CLI exposes `compile-material-native`, `check-material-native`,
+`replay-material-native` and `export-material-native`. All take the original
+request path and `--limits`; checking/export also require `--candidate`, replay
+also requires `--report`. An explicit `--core` or supported `--verify` is required;
+Verify cannot compile. Export requires a `.zip` `--output` for one inseparable
+`program.fasta`/`manifest.json` pair. Existing destinations require `--replace`.
+
+Publication stages a stored ZIP in the destination directory with fixed member
+order, names, timestamps and permissions, flushes/fsyncs it, then reads back the
+bounded archive and verifies complete bytes and metadata. It rejects input
+aliases, symlinks and changed destinations. An atomic exclusive link publishes a
+new output; explicit replacement uses an atomic rename. Prepublication failure
+preserves prior output and removes the staging file. This is atomic paired
+publication, not a claim of directory-fsync crash durability.
+
+## Current witness, unsupported scope and acceptance gates
+
+The [complete request fixture](../core/test/data/policy_material_request_v01.json)
+has request fingerprint
+`c2bc619bb5c1c633cfca3733df94b79776959bcf31ea2bc754c2e78c9b99d6ff`.
+It independently retains the resolved exclusion source, catalog, domain, graph,
+material/context authority, complete molecule and 24 original obligations. Only
+its untrusted operational behavior is produced natively. Its authored positive
+census is nine histories, 47 transitions, 48 prefixes, 15 graph nodes and 92
+material dispositions. Context controls include 14 demands over 13 capacity
+records and one shared truth pool. These are expected values, not a PASS receipt.
+
+The original source with unresolved/UNKNOWN safety remains a separate negative
+family. The coordinator also adds a hard UNKNOWN or false requirement without
+removing an old requirement or narrowing the domain; neither can cross material
+acceptance. An extra unrecognized semantic definition must leave its obligation
+open even if preservation, material and context individually pass.
+
+A hosted implementation-domain regression exposed a monitor initialization
+allowance of 100,000 that could not encode the complete binding report before
+exploration. The positive fixtures now explicitly supply 1,000,000. Source,
+domain and requirements are unchanged; tiny-monitor controls remain and must
+return incomplete coverage with no acceptance. The allowance correction alone
+does not establish acceptance.
+
+The integration owner subsequently verified the early Linux and macOS suites in
+[run 37418186608](https://github.com/logannye/biocompiler/actions/runs/37418186608),
+source `d982d58642d94f9d9c798f20bc672fcc69d1f04f`: source/source-graph checks,
+trace correspondence, lowering, independent monitor, whole-domain preservation
+(nine histories, 47 transitions, 48 prefixes and 22 negative controls), and the
+implementation service passed. The suites then stopped at a construction-test
+expectation: the producer correctly reported earlier
+`member:payload:unavailable_value` and `step:step:residue_budget` diagnostics,
+rather than the later bundle-residue diagnostic. Test-only correction
+`1eeb05817ce73a27a3ef5df109336ddb70d35de7` pins those exact earlier failures and
+adds a separate two-member `6 + 6 > 6` aggregate-bound control. No production
+semantics changed in that correction. Its hosted validation and all subsequent
+material/context/coordinator/service/export gates remain pending here. These
+partial native results cannot stand in for the complete run or material release.
+
+The initial family remains narrow: one executor, explicitly named finite
+encounters, one truth observation, one or two encounter-scoped truth stores,
+one or two exclusive rules and one fixed product-bearing effect bank. The
+material/context route supports one exact complete RNA/product, no delivered
+helper, exact supplied human immune in-vivo RNA context, and a single supplied
+whole-graph case. Supplied context is a formal premise. No disease response,
+biological state transition or therapeutic effect is inferred from these labels.
+
+Additional numeric/quantity domains, machines, predicate resets, coordination,
+quantification, inheritance, complex spatial relationships, broader arbitration,
+multiple initiating gates per bank, independent delivery, helper closure,
+multiple RNA/product architectures, recoding/modified-CDS semantics and general
+component composition need explicit vertical extensions. Uninterpreted source
+assumptions/tolerances, dependency/evidence closure and payload-dose/persistence
+fields cannot silently become supported. General search or mechanism discovery
+is not implemented by the single-case arrangement producer.
+
+All four release gates remain pending for this material increment:
+
+| Gate | Required evidence |
+| --- | --- |
+| Complete checks | Required source-authority, protocol, library-boundary, Python/type/static and native mutation suites, with no dropped legacy tests |
+| Hosted native | Exact-source Linux x86_64 and macOS arm64 compilation, executable tests and actual Core/Verify identities |
+| Installed four-slot | Both platforms × Python 3.11/3.14 outside the checkout, semantic fallbacks forbidden, full SDK/CLI/check/replay/export cases and independent complete-output/artifact comparison |
+| Aggregate/integration | Successful exact-revision aggregate and required integration/main gates, preserving source commit, tested checkout/tree, run/attempt, platform/toolchain and binary provenance |
+
+The [installed material campaign](../tools/check_policy_material.py) and workflow
+wiring are source implementations. Receipt comparison must reject missing,
+duplicate, stale, failed or altered slots and must compare complete retained
+semantic outputs and artifact bytes. Existing source-only, operational and
+implementation-only profiles keep their own claims and acceptance records.
+The reference-package route already has source implementations in its preserved
+continuation; compatibility/hosted acceptance remain with its owner.
+
+Immediate next work is to run the coherent material batch on hosted native
+targets, repair any failures without weakening original authority or controls,
+complete the four installed campaigns/comparator, and record exact aggregate
+evidence. Then verify packaged/offline routing and fresh export outside the
+checkout before closing any SM-06/07/08 exit. Each SM-09 expansion must extend
+source semantics, graph lowering/runtime, preservation, material/context
+contracts and public profiles together, with new accepted/rejected witnesses.
+
+Implementation/test entry points:
+
+- [Preservation startup/accounting](../core/lib/realization_checker/policy_preservation_check.mli),
+  [material leaf](../core/lib/realization_checker/policy_material_binding_check.mli),
+  [mRNA structure](../core/lib/checker/policy_mrna_structure_check.mli).
+- [Fresh native service](../core/lib/service/policy_material_service.ml),
+  [coordinator controls](../core/test/test_policy_material_check.ml),
+  [service/export controls](../core/test/test_policy_material_service.ml).
+- [Context controls](../core/test/test_policy_material_context.ml),
+  [transport controls](../tests/test_core_policy_material.py),
+  [atomic/readback controls](../tests/test_policy_material.py),
+  [CLI controls](../tests/test_policy_material_cli.py).
+- [Hosted validation rules](development-validation.md) and
+  [workflow](../.github/workflows/ci.yml). All native compilation, execution and
+  packaging remain hosted; local static/Python checks do not validate changed
+  native source.
