@@ -87,7 +87,7 @@ let destination (p:plan) id port = match Map.find_opt(key(endpoint id port))p.de
 let context (p:plan) (e:I.endpoint) (b:binding) = match (node p e.node_id).model.replication with
   |I.Executor->executor_binding|I.Encounter_slots _->b
 let live_bindings (s:state) (n:I.node) = match n.model.replication with
-  |I.Executor->[executor_binding]|I.Encounter_slots _->List.filter_map(fun slot->if slot.active then Some(binding slot)else None)s.slots
+  |I.Executor->[executor_binding]|I.Encounter_slots _->List.filter_map(fun(slot:slot_state)->if slot.active then Some(binding slot)else None)s.slots
 let find_slot (s:state) id = match List.find_opt(fun slot->slot.description.slot_id=id)s.slots with
   |Some value->value|None->fail "identity" "Input names an absent concrete slot."
 let charge w amount =
@@ -337,8 +337,7 @@ let update_rising w =
         (live_bindings snapshot n)
     |_->[])snapshot.plan.nodes
 
-type prepared = { activation : activation; control : control;
-  writes : (int * truth_write) list; requests : (int * request) list }
+type prepared = { writes : (int * truth_write) list; requests : (int * request) list }
 let control (p:plan) gate = match List.find_opt(fun(c:control)->c.gate=gate)p.controls with
   |Some value->value|None->fail "graph" "Gate lacks its direct atomic path."
 let candidates w (snapshot:state) (evaluate:I.endpoint -> binding -> truth_signal) events =
@@ -384,7 +383,7 @@ let prepare w (snapshot:state) (evaluate:I.endpoint -> binding -> truth_signal) 
       let target=destination snapshot.plan owner.commit("request"^string_of_int index)in
       let product=product snapshot.plan(input snapshot.plan owner.commit("product"^string_of_int index))in
       index,{commit=owner.commit;bank=target.node_id;activation=a;product})in
-    Some{activation=a;control=owner;writes;requests})selected
+    Some{writes;requests})selected
 let commit w (prepared:prepared list) =
   let writes=List.concat_map(fun(p:prepared)->List.map snd p.writes)prepared
   and requests=List.concat_map(fun(p:prepared)->List.map snd p.requests)prepared in
@@ -456,7 +455,7 @@ let port_inventory w snapshot evaluate events (candidates:activation list) (sele
         |I.Evidence_batch|I.Feedback_batch->fail "graph" "External input cannot appear in semantic output inventory."in
         let count,cost=signal_cost signal in retain_payload w count;reserve_output w(300+endpoint_cost e+binding_cost b+cost);
         {endpoint=e;binding=b;signal})(live_bindings snapshot n)) (I.ports n.model.primitive))snapshot.plan.nodes
-let evidence_inventory w snapshot =
+let evidence_inventory w (snapshot:state) =
   List.concat_map(fun(n:I.node)->match n.model.primitive with
     |I.Evidence_bank{freshness_ticks}->List.map(fun b->retain w;
         let retained=Map.find_opt(cell n.node_id b)snapshot.evidence in

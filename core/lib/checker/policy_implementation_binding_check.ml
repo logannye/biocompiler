@@ -162,7 +162,7 @@ let check ~admitted ~implementation ~proposed =
     nulls ~path:source_path ["contract";"duration";"clock";"coverage";"binding"]source in
   let ref_matches source key kind identity=
     let value=get key source in value<>Json.Null && text "kind" value=kind && O.ref_id value=identity in
-  let rec check_expression role source_path source endpoint =
+  let rec check_expression role source_path source (endpoint:I.endpoint) =
     raw_expr_fields source_path source;
     let expression=O.expression_of_json source in
     let operator=expression.op and args=items "args" source in
