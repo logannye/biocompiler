@@ -241,16 +241,44 @@ let proposal_controls case =
   rejected "policy_component_assembly_proposal" "unknown proposal slot" (fun () -> Q.of_json (put ["nodes";"0";"slot"] (str "helper") raw));
   rejected "policy_component_assembly_proposal" "unknown proposal profile" (fun () -> Q.of_json (replace "profile" (str "future") raw));
   rejected "molecular_resource_limit" "bounded proposal inventory" (fun () -> Q.of_json (replace "nodes" (arr (List.init 257 (fun _ -> at ["nodes";"0"] raw))) raw))
+(* Alpha conversion changes node references only. Local node names deliberately
+   collide with the evidence kind and product link ID; those are not aliases. *)
+let rename_fields names keys raw =
+  List.fold_left (fun value key -> edit [key] (rename names) value) raw keys
+let map_rows key transform = edit [key] (fun rows -> arr (List.map transform (Json.array rows)))
+let alpha_graph names raw =
+  let node = rename_fields names ["node"] in
+  raw |> map_rows "nodes" (rename_fields names ["id"])
+    |> map_rows "wires" (fun row -> row |> edit ["producer"] node |> edit ["consumer"] node)
+    |> map_rows "inputs" (edit ["consumer"] node)
+    |> map_rows "atomic_groups" (fun row -> row |> rename_fields names ["arbiter"]
+      |> edit ["commits"] (fun values -> arr (List.map (rename names) (Json.array values))))
+    |> map_rows "semantic_exports" node
+    |> map_rows "occurrences" (map_rows "targets" node)
+let alpha_binding names raw =
+  raw |> map_rows "observations" (rename_fields names ["bank"])
+    |> map_rows "states" (rename_fields names ["register"])
+    |> map_rows "effects" (rename_fields names ["bank"])
+    |> map_rows "rules" (rename_fields names ["gate";"arbiter";"commit"])
+let alpha_links names rows = arr (List.map (fun row -> row
+  |> edit ["producer_endpoint"] (rename_fields names ["node"])
+  |> edit ["consumer_endpoint"] (rename_fields names ["node"])) rows)
 let graph_controls case =
   let names = List.map (fun (node:I.node) -> node.node_id,"alpha."^node.node_id) (I.nodes case.graph) in
-  let renamed = with_graph case (rename names (I.to_json case.graph)) (rename names (U.to_json case.binding)) in
+  let graph = alpha_graph names (I.to_json case.graph) in
+  require (List.map (get "kind") (items "inputs" graph)=[str "evidence";str "feedback"])
+    "Alpha conversion changed an external input kind";
+  require (get "authority" graph=get "authority" (I.to_json case.graph) &&
+    List.map (get "model") (items "nodes" graph)=List.map (get "model") (items "nodes" (I.to_json case.graph)))
+    "Alpha conversion changed original authority or configured model identities";
+  let renamed = with_graph case graph (alpha_binding names (U.to_json case.binding)) in
   let proposed = Q.of_json (edit ["nodes"] (fun rows -> arr (List.map (fun row ->
     replace "actual" (rename names (get "actual" row)) row) (Json.array rows))) (Q.to_json case.proposed)) in
   let renamed_result = check {renamed with proposed} in
   let report = Check.report renamed_result in
   ignore (accepted "complete independently preserved alpha-renaming" renamed_result);
   require (Json.equal (get "carrier_projections" report) (arr (expected_carriers case.state_reading))) "Graph alpha rename changed molecular ownership";
-  require (Json.equal (get "link_projections" report) (rename names (arr (expected_links case.state_reading)))) "Graph alpha rename lost exact cross-links";
+  require (Json.equal (get "link_projections" report) (alpha_links names (expected_links case.state_reading))) "Graph alpha rename lost exact cross-links";
   result_failed "old mapping cannot authorize renamed graph" "ordered_total_actual_node_bijection" (check renamed);
   let swapped = edit ["wires"] (fun rows -> let rows=Json.array rows in arr (List.nth rows 1::List.hd rows::List.tl (List.tl rows))) (I.to_json case.graph) in
   let reordered = with_graph case swapped (U.to_json case.binding) in
