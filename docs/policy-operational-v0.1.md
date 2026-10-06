@@ -91,7 +91,9 @@ or priority arbitration with deterministic tie and write-conflict policies.
 Declaration order grants no implicit priority. A machine retains the effect
 attempt it started when awaiting its correlated feedback.
 
-Each effect request creates a fresh attempt. Completion/failure feedback must
+Each effect request creates a fresh attempt. Its `requested` event is emitted
+before its `initiated` event, with consecutive creation identities in that
+order. Both belong to the same atomic commit microstep. Completion/failure feedback must
 match attempt, effect, executor, subject and encounter. Continuous authorization
 retains the initiating guard and its binding environment. This subset admits
 explicit `on_loss=continue` and `on_unknown=continue|defer`; neither causes an

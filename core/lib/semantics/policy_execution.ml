@@ -417,7 +417,12 @@ let execute_activations (s:session) (activations:activation list) =
       action s "effect_requested" (obj["attempt",str id;"effect",str effect_spec.effect_id;"initiator",str a.identity;
         "binding",binding_json a.binding;"subject",str attempt.subject;"causes",arr(List.map str attempt.causes);
         "parameters",obj(List.map(fun(name,value)->name,O.value_to_json value) parameters)]);
-      attempt,[emit s ~attempt:id "requested" effect_spec.effect_id a.binding;emit s ~attempt:id "initiated" effect_spec.effect_id a.binding]) effects in
+      (* Event creation mutates the ordered trace and identity counter. Keep
+         the request-before-initiation contract independent of OCaml's
+         unspecified evaluation order for list elements. *)
+      let requested = emit s ~attempt:id "requested" effect_spec.effect_id a.binding in
+      let initiated = emit s ~attempt:id "initiated" effect_spec.effect_id a.binding in
+      attempt,[requested;initiated]) effects in
     (match a.machine,a.destination with
     | Some machine,Some destination->Hashtbl.replace s.machines(machine.machine_id,a.binding)destination;
         let retained=Option.value(Hashtbl.find_opt s.machine_attempts(machine.machine_id,a.binding))~default:[] in

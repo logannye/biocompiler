@@ -48,6 +48,16 @@ let requirement_controls document definitions timeline =
   let initial=List.hd(items "observations" one) and external_feedback=List.hd(items "feedback" timeline) in
   let success=replace "feedback"(arr[feedback external_feedback "requirement-completion" "2" "attempt/1" "completed"])one in
   let baseline=E.execute(compiled document definitions)success in
+  let creation_events=List.filter(fun event->
+    field "attempt" event=str "attempt/1" && List.mem(text "kind" event)["requested";"initiated"])
+    (items "events"(frame "1" baseline)) in
+  require (List.map(text "kind")creation_events=["requested";"initiated"])
+    "Attempt initiation was emitted before its request";
+  (match creation_events with
+   | [requested;initiated]->
+       let ordinal event=int_of_string(String.sub(text "id" event)6(String.length(text "id" event)-6))in
+       require(ordinal initiated=ordinal requested+1) "Request/initiation event identities lost ordered creation"
+   | _->failwith "Attempt creation event multiplicity differs");
   let checked source =
     require(text "status"(Bioc_checker.Policy_check.check(D.of_json source))="valid")"Requirement control is not source-valid";
     compiled source definitions in
