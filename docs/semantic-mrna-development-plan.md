@@ -530,6 +530,26 @@ source-valid restrictions: 16 exact graph-binding rejections, three operational
 admission rejections and four finite-domain type rejections. These require fresh
 hosted execution; source inventory and test declarations cannot close acceptance.
 
+At corrected source `2349d8ad9fdf5209f241ab22bb48bf87600f3f9f`, run
+`37429106811` compiled both native platforms and passed the 20 effect-formal
+controls, those 23 source-boundary controls and the full preceding material and
+lifecycle suites. The compound suite then found material-kernel fixture wires
+serialized with implementation-wire keys. Correcting only that representation
+and its dependent identities preserves every policy, graph, RNA and test
+assertion. A separate migration-inventory refresh retains all 3,460 entries and
+adds the source-acquisition test to its static reference table. Neither partial
+result closes an acceptance checkbox.
+
+The next coherent witness batch promotes the previously private extended-
+evidence and reset/old-feedback domains into complete original public material
+requests, and adds reset followed by a fresh attempt. Literal complete-domain
+censuses are respectively 54/227/228, 27/87/88 and 486/995/996
+histories/transitions/prefixes. The final grammar preserves Keep alongside Reset
+and every prior-attempt feedback choice, including stale feedback. Original
+requirements, complete context/resource premises and exact RNA remain bound
+through fresh compile/check/replay/export. These witnesses and narrowly targeted
+source-boundary controls await fresh hosted execution.
+
 ### SM-09 — Expand supported semantics through complete vertical profiles
 
 Depends on: SM-08 for acceptance; design work can be prepared earlier.

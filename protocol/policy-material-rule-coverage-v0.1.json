@@ -1401,7 +1401,11 @@
   "witness_sources": [
     {
       "path": "core/test/data/policy_material_compound_v01.json",
-      "sha256": "c55c03558450b44aaa42ce348bd76920744492db91581bddcbbc19a85a10c216"
+      "sha256": "1b6d2669c013f2dccfa36e542fc3b179e4d759874c4e8975b02aab28f0fb2100"
+    },
+    {
+      "path": "core/test/data/policy_material_domain_v01.json",
+      "sha256": "905d688fd1b2455e4e6cb0e73b2c92672bc752fe2898d885b196563e37dfa60c"
     },
     {
       "path": "core/test/data/policy_material_lifecycle_v01.json",
@@ -1421,7 +1425,7 @@
     },
     {
       "path": "core/test/test_policy_implementation_binding.ml",
-      "sha256": "43a9c5bde964005de112c83a0b33167f67649f85d51a46d298edef72456db392"
+      "sha256": "72386dd7a3e029b0006fe179193b4ff3898b27172f468c31354a56138902e7ff"
     },
     {
       "path": "core/test/test_policy_material_binding.ml",
@@ -1438,6 +1442,10 @@
     {
       "path": "core/test/test_policy_material_context.ml",
       "sha256": "71f7bb9054d0b7b7944372a509162d08f0e004ce34a6aa22359db1b569e16785"
+    },
+    {
+      "path": "core/test/test_policy_material_domain.ml",
+      "sha256": "f564a33f38faf50830fcabb1b825b7adfee949fe912806f7979f4a7e23cb0bff"
     },
     {
       "path": "core/test/test_policy_material_lifecycle.ml",
@@ -1470,6 +1478,10 @@
     {
       "path": "core/test/test_policy_realization_admission.ml",
       "sha256": "b8d3984044bea8c5e5cf308e96b09c8879264ad4eba9950a7599ad29791ba479"
+    },
+    {
+      "path": "core/test/test_policy_requirement_monitor.ml",
+      "sha256": "68f44dd82e0a35c6e2276dde991f659db654894e7a719bd8c0ffb8a599271987"
     },
     {
       "path": "tests/test_policy_material.py",
@@ -1605,11 +1617,20 @@
           },
           "context": "Distinguishing source control for the specifically named boundary; other boundary branches are not inferred.",
           "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_implementation_binding.ml",
+            "anchor": "reachable observation definition ",
+            "occurrence": 1
+          },
+          "context": "Two separately instantiated, fully repinned definition controls reject nominal executor_kind and subject_kind constraints after generic source validity; an executable-clause control rejects uninterpreted preconditions.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
         }
       ],
       "witness_status": "partial_source_witnesses",
       "gaps": [
-        "Dedicated positive/rejection witnesses for every allowed descriptor category and executor_kind/subject_kind restriction remain to be indexed."
+        "Descriptor categories beyond the first material observation/effect family retain stage-local operational coverage; their individual positive/rejection witnesses remain to be indexed."
       ]
     },
     {
@@ -1781,11 +1802,29 @@
           },
           "context": "A second generic-valid role has complete deployment and intended-recipient bindings, and rejects the exact one-executor operational admission requirement.",
           "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_implementation_binding.ml",
+            "anchor": "source lineage role needs lifecycle semantics",
+            "occurrence": 1
+          },
+          "context": "A generic-valid lineage role rejects at its exact original declaration; omitted subject executor independently reaches the material ownership restriction.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_implementation_binding.ml",
+            "anchor": "source encounter contact loss needs another graph profile",
+            "occurrence": 1
+          },
+          "context": "Source-valid contact-loss encounter termination rejects at the fixed material slot profile.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
         }
       ],
       "witness_status": "partial_source_witnesses",
       "gaps": [
-        "No separately indexed positive contact_loss source witness or distinguishing population/lineage rejection witness in this matrix."
+        "Positive contact_loss belongs to the broader operational profile and remains unindexed; this material profile explicitly rejects it. Population-specific operational rejection remains to be indexed."
       ]
     },
     {
@@ -1865,6 +1904,15 @@
           },
           "context": "Distinguishing source control for the specifically named boundary; other boundary branches are not inferred.",
           "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_implementation_binding.ml",
+            "anchor": "source event evidence has a different coherence identity",
+            "occurrence": 1
+          },
+          "context": "Event truth evidence with another coherence identity rejects at graph binding; the original observation and definition remain complete.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
         }
       ],
       "witness_status": "partial_source_witnesses",
@@ -1907,11 +1955,20 @@
           },
           "context": "Distinguishing source control for the specifically named boundary; other boundary branches are not inferred.",
           "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_implementation_binding.ml",
+            "anchor": "source reset inheritance needs another graph profile",
+            "occurrence": 1
+          },
+          "context": "Source-valid reset inheritance and a separately writerless retained truth store reject at independent state-family binding.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
         }
       ],
       "witness_status": "partial_source_witnesses",
       "gaps": [
-        "Branch-specific positive integer/text stores and both inheritance branches remain unindexed; material only admits truth encounter stores."
+        "Integer/text stores and reset inheritance have explicit first-material rejection witnesses. Their broader operational positive execution and nominal enum/quantity state coverage remain unindexed."
       ]
     },
     {
@@ -2022,10 +2079,20 @@
           "evidence_scope": "source_only_not_executed_by_this_gate"
         }
       ],
-      "negative": [],
+      "negative": [
+        {
+          "source": {
+            "path": "core/test/test_policy_implementation_binding.ml",
+            "anchor": "source state-only rising has no observation boundary",
+            "occurrence": 1
+          },
+          "context": "A generic-valid state-only rising expression rejects at its exact operational source path; updated observation triggers independently reject at graph binding.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
       "witness_status": "partial_source_witnesses",
       "gaps": [
-        "A direct source-valid operational state-only rising rejection and every allowed comparison edge witness remain to be indexed."
+        "Comparison-edge positives beyond truth evidence remain broader operational coverage and are not individually indexed."
       ]
     },
     {
@@ -2112,10 +2179,20 @@
           "evidence_scope": "source_only_not_executed_by_this_gate"
         }
       ],
-      "negative": [],
+      "negative": [
+        {
+          "source": {
+            "path": "core/test/test_policy_implementation_binding.ml",
+            "anchor": "source coherent priority order needs another graph profile",
+            "occurrence": 1
+          },
+          "context": "Both source rules carry the same well-formed explicit priority order; generic validity passes and independent graph binding rejects unsupported arbitration.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
       "witness_status": "partial_source_witnesses",
       "gaps": [
-        "Positive priority/identical-only operational branches and matching source-valid rejection pointers remain unindexed; graph/material closure is exclusive/reject only."
+        "Positive priority/identical-only execution remains broader operational coverage; this graph/material profile rejects both alternatives."
       ]
     },
     {
@@ -2353,6 +2430,24 @@
           },
           "context": "Two independent supplied context authorities traverse exact 54-history/227-transition/228-prefix extended-evidence and 27-history/87-transition/88-prefix reset-plus-old-feedback domains through fresh private preservation, material binding and context checks. These are leaf conjunction witnesses, not public coordinator or export witnesses.",
           "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_material_domain.ml",
+            "anchor": "Fresh Core/Verify checks differ from generic production",
+            "occurrence": 1
+          },
+          "context": "Complete original public compile/check/replay/export paths for three supplied grammars: extended evidence (54/227/228), reset/end plus stale feedback (27/87/88), and Keep/Reset with a new attempt plus all old/new feedback (486/995/996 histories/transitions/prefixes). All original requirements and material/context resources are retained; these are source assertions awaiting hosted execution.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/data/policy_material_domain_v01.json",
+            "anchor": "\"id\": \"reset_recreate\"",
+            "occurrence": 1
+          },
+          "context": "Frozen independent source authority and literal census/attempt/occurrence expectations; this fixture contains no saved candidate or report.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
         }
       ],
       "negative": [
@@ -2373,11 +2468,20 @@
           },
           "context": "Each wider original grammar rejects a repinned narrower supplied environment after fresh private preservation and material binding; no public coordinator/export coverage is inferred.",
           "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_material_domain.ml",
+            "anchor": "Full material route admitted unsupported feedback addressing",
+            "occurrence": 1
+          },
+          "context": "Full original material check and export must reject wrong-target routes at the closed domain decoder, before stale downstream authority can mask unsupported input.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
         }
       ],
       "witness_status": "partial_source_witnesses",
       "gaps": [
-        "Individual fixed-birth and foreign-feedback positives/rejections are not all indexed here; wider grammar private leaf witnesses do not establish public coordinator/export coverage, and complete grammar must never be pruned by candidate behavior."
+        "Nonzero encounter birth schedules remain to be individually indexed. Foreign/wrong addressing is explicitly unsupported, with private decoder and public wrong-route controls; no positive foreign-feedback support is claimed. The three full public grammar witnesses do not establish arbitrary combinations outside their exact domains."
       ]
     },
     {
@@ -2404,6 +2508,15 @@
           },
           "context": "Frozen full-path exclusion sibling: two encounter slots, truth registers initially false, event evidence, exclusive arbitration, one fixed product, continuous/defer lifecycle, original nine-history domain. Other admitted combinations are not inferred.",
           "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_material_domain.ml",
+            "anchor": "Fresh Core/Verify checks differ from generic production",
+            "occurrence": 1
+          },
+          "context": "Complete original public compile/check/replay/export paths for three supplied grammars: extended evidence (54/227/228), reset/end plus stale feedback (27/87/88), and Keep/Reset with a new attempt plus all old/new feedback (486/995/996 histories/transitions/prefixes). All original requirements and material/context resources are retained; these are source assertions awaiting hosted execution.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
         }
       ],
       "negative": [
@@ -2415,11 +2528,20 @@
           },
           "context": "Distinguishing source control for the specifically named boundary; other boundary branches are not inferred.",
           "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_material_domain.ml",
+            "anchor": "Reset/end/repeated feedback reused a global input occurrence identity",
+            "occurrence": 1
+          },
+          "context": "Ten original-domain literal histories compare source and candidate input histories and injective creation-time attempt identities; altered feedback targets fail correspondence and cross-kind reused occurrence identities reject.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
         }
       ],
       "witness_status": "partial_source_witnesses",
       "gaps": [
-        "The lexical pointer is a cursor-control family, not proof of every environment permutation."
+        "The complete public witness domains and ten literal histories cover their specified choices without pruning. Other time/birth/age/multiplicity combinations remain separately scoped; no abstraction or unbounded permutation proof is claimed."
       ]
     },
     {
@@ -2465,6 +2587,15 @@
             "occurrence": 1
           },
           "context": "Thirteen source-family controls use fresh generic validity and full authority repinning: zero/three rules, zero/three stores, extra distinct-coherence observation, effect, fixed parameter or encounter; no parameter with a typed literal actual; correctly scoped machine/transition; contact_loss; extra clock and fully deployed role. The last two reject at operational admission, the first eleven at independent graph binding. Exact diagnostic code, path and message are required.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_implementation_binding.ml",
+            "anchor": "let source_boundary_controls case=",
+            "occurrence": 1
+          },
+          "context": "Twelve additional fully repinned source-valid contextual controls: five exact operational rejections and seven exact graph-binding rejections. No production support is widened.",
           "evidence_scope": "source_only_not_executed_by_this_gate"
         }
       ],
@@ -2635,6 +2766,15 @@
           },
           "context": "Distinguishing source control for the specifically named boundary; other boundary branches are not inferred.",
           "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_implementation_binding.ml",
+            "anchor": "source event evidence has a different coherence identity",
+            "occurrence": 1
+          },
+          "context": "Fresh original evidence with nonframe coherence is explicitly unsupported by this graph family.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
         }
       ],
       "witness_status": "source_witnesses_present",
@@ -2701,6 +2841,15 @@
             "occurrence": 1
           },
           "context": "Distinct model substitution is re-pinned against the supplied library and rejected by independent source/graph correspondence.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_implementation_binding.ml",
+            "anchor": "source retains an original store without any writer",
+            "occurrence": 1
+          },
+          "context": "Removing every write to one retained encounter truth store preserves source validity but rejects at graph binding.",
           "evidence_scope": "source_only_not_executed_by_this_gate"
         }
       ],
@@ -2809,6 +2958,15 @@
           },
           "context": "Distinguishing source control for the specifically named boundary; other boundary branches are not inferred.",
           "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_implementation_binding.ml",
+            "anchor": "source updated trigger needs another activation primitive",
+            "occurrence": 1
+          },
+          "context": "A generic-valid updated observation event cannot silently replace a rising edge.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
         }
       ],
       "witness_status": "source_witnesses_present",
@@ -2856,6 +3014,15 @@
           },
           "context": "Full frozen authority for all four ordered lifecycle cases; paired with the native test census, not an execution receipt.",
           "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_material_domain.ml",
+            "anchor": "Fresh Core/Verify checks differ from generic production",
+            "occurrence": 1
+          },
+          "context": "Complete original public compile/check/replay/export paths for three supplied grammars: extended evidence (54/227/228), reset/end plus stale feedback (27/87/88), and Keep/Reset with a new attempt plus all old/new feedback (486/995/996 histories/transitions/prefixes). All original requirements and material/context resources are retained; these are source assertions awaiting hosted execution.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
         }
       ],
       "negative": [
@@ -2875,6 +3042,15 @@
             "occurrence": 1
           },
           "context": "Freshly checked graph is rejected against another complete lifecycle material case even though RNA is identical.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_implementation_binding.ml",
+            "anchor": "source omits the attempt timeout",
+            "occurrence": 1
+          },
+          "context": "A source-valid absent timeout rejects instead of borrowing the supplied primitive deadline.",
           "evidence_scope": "source_only_not_executed_by_this_gate"
         }
       ],
@@ -2915,6 +3091,15 @@
             "occurrence": 1
           },
           "context": "Distinguishing source control for the specifically named boundary; other boundary branches are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_implementation_binding.ml",
+            "anchor": "source coherent priority order needs another graph profile",
+            "occurrence": 1
+          },
+          "context": "A fully consistent source priority order cannot be lowered as exclusive arbitration.",
           "evidence_scope": "source_only_not_executed_by_this_gate"
         }
       ],
@@ -3118,11 +3303,20 @@
           },
           "context": "Distinguishing source control for the specifically named boundary; other boundary branches are not inferred.",
           "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_requirement_monitor.ml",
+            "anchor": "let requirement_rejection_controls first=",
+            "occurrence": 1
+          },
+          "context": "Six fresh-source-admitted and graph-bound controls retain all original requirements and assert exact unsupported reasons initially and through horizon4: applies_to, safety trigger, missing safety condition, missing progress trigger, missing deadline and uncorrelated effect-to-observation response. Unrelated decoder/admission/binding rejection fails the test.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
         }
       ],
       "witness_status": "partial_source_witnesses",
       "gaps": [
-        "Distinguishing witnesses for each unsupported requirement field/correlation combination remain to be indexed."
+        "Remaining lower/upper/contract and scope/type/time alternatives need individually indexed rejection witnesses or explicit earlier-stage exclusion; the six monitor controls cover only their named reachable combinations."
       ]
     },
     {
@@ -3978,6 +4172,15 @@
           },
           "context": "Both compound widths have explicit derived resource and complete ordered reason/cause capacity literals.",
           "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_material_domain.ml",
+            "anchor": "Whole-domain resource minima differ from literal demand inventory",
+            "occurrence": 1
+          },
+          "context": "Each complete original domain checks every typed resource minimum against the independently supplied literal inventory and exact record bounds, including retained correlations and larger evidence history.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
         }
       ],
       "negative": [
@@ -4118,6 +4321,15 @@
           },
           "context": "Distinguishing source control for the specifically named boundary; other boundary branches are not inferred.",
           "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_material_domain.ml",
+            "anchor": "old domain receipt with freshly produced candidate",
+            "occurrence": 1
+          },
+          "context": "Changed original grammar freshly produces and verifies a candidate, but cannot replay the prior full receipt or export its stale candidate. Identical RNA retains distinct original-domain manifests.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
         }
       ],
       "witness_status": "source_witnesses_present",
@@ -4249,6 +4461,7 @@
     "Four-case lifecycle, phase-provider, original-input and fresh-export families require their own current hosted results; source presence cannot transfer acceptance across revisions or platforms.",
     "Supplied executable model-to-sequence and provider contracts remain conditional premises; empirical biology, human use, Studio and conversational authoring are outside this gate.",
     "The preserved prebuilt resolver is pinned as a dependency, but targeted installed material routing, prebuilt distribution and offline resolver/transport acceptance are pending. No legacy transport guard is widened by this inventory.",
-    "Frozen compound/literal-Unknown and four-case lifecycle source witnesses are now indexed; their presence and literal 54-history assertions do not establish hosted acceptance or exhaustive combinations beyond those original finite domains."
+    "Frozen compound/literal-Unknown and four-case lifecycle source witnesses are now indexed; their presence and literal 54-history assertions do not establish hosted acceptance or exhaustive combinations beyond those original finite domains.",
+    "Complete public domain requests, twelve source-boundary controls and six requirement-monitor controls are source witnesses pending hosted validation. Their static presence cannot establish execution or full release acceptance."
   ]
 }

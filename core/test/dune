@@ -605,3 +605,9 @@
  (modules test_policy_material_compound)
  (libraries bioc_wire bioc_domain bioc_checker bioc_compiler bioc_semantics bioc_candidate_runtime bioc_realization_checker zarith)
  (action (run %{test} %{dep:data/policy_material_compound_v01.json})))
+
+(test
+ (name test_policy_material_domain)
+ (modules test_policy_material_domain)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_semantics bioc_candidate_runtime bioc_realization_checker bioc_service bioc_producer_service zarith)
+ (action (run %{test} %{dep:data/policy_material_domain_v01.json})))

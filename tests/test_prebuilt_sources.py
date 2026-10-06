@@ -195,6 +195,30 @@ class SourceFetchTests(unittest.TestCase):
         self.assertEqual(opener.open.call_count, 1)
         self.assertFalse(self.output.exists())
 
+    def test_delayed_eof_is_checked_before_publication_without_fallback(self):
+        original_pin = deepcopy(self.pin)
+        for eof_time in (30, 31):
+            with self.subTest(eof_time=eof_time):
+                response = Response(self.raw, self.url)
+                opener = self.opened([response])
+                events = []
+                with patch.object(sources.urllib.request, 'build_opener', return_value=opener), \
+                     patch.object(sources.time, 'monotonic', side_effect=[0, 1, 2, 29, eof_time]), \
+                     patch.object(response, 'read1', wraps=response.read1) as read:
+                    if eof_time == 30:
+                        sources.fetch(self.url, self.pin, self.output, notify=events.append)
+                        self.assertEqual(self.output.read_bytes(), self.raw)
+                        self.output.unlink()
+                    else:
+                        with self.assertRaises(sources.FetchError):
+                            sources.fetch(self.url, self.pin, self.output, notify=events.append)
+                        self.assertEqual([row['status'] for row in events], ['started', 'rejected'])
+                        self.assertFalse(self.output.exists())
+                    self.assertEqual(read.call_count, 2)
+                self.assertEqual(opener.open.call_count, 1)
+                self.assertFalse(self.output.with_suffix('.source.part').exists())
+                self.assertEqual(self.pin, original_pin)
+
 
 if __name__ == '__main__':
     unittest.main()

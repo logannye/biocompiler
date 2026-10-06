@@ -436,7 +436,35 @@ not interpreted. The bounded profile is being closed to signature-only formals:
 fixed selection and null value/lower/upper. Generic source authoring remains
 expressive. Source-valid mutations with all affected definition identities
 refreshed must reject at the new admission guard, rather than at a stale pin.
-The earlier partial run does not validate this correction.
+At source `2349d8ad9fdf5209f241ab22bb48bf87600f3f9f`, hosted run
+`37429106811` passed these 20 formal-parameter controls, 23 additional original
+source/admission/domain controls, native compilation and all preceding material
+and lifecycle suites on both platforms. The following compound suite exposed
+a fixture serialization error: material-kernel wires used implementation-wire
+keys instead of the material contract's required `from`/`to` keys. Its correction
+retains the original policy, actual graph, RNA and every native assertion, while
+refreshing the affected material/provider/context/request identities. That
+correction and the complete release gate still require fresh hosted validation.
+
+Three additional full original material requests extend the public compile,
+independent check, replay and fresh-export witness coverage. They retain the
+original three hard requirements and independently enumerated evidence or
+lifecycle choices: 54 histories/227 transitions/228 prefixes for extended
+evidence, 27/87/88 for reset/end plus old feedback, and 486/995/996 for reset
+followed by a new attempt. The final family retains all old-attempt feedback
+choices and checks new-generation correlation, completion, failure and quiet
+timeout. Fixed occurrence identities and complete resource dispositions are
+checked explicitly. These are tests of already admitted meaning under supplied
+contracts; native execution remains pending.
+
+The same batch adds twelve source-valid contextual rejection controls and six
+requirement-monitor controls. Fresh source admission, occurrence accounting and
+graph correspondence precede the latter checks; each original requirement is
+retained and its exact unsupported reason is checked initially and through the
+declared horizon. The contextual inventory now indexes 23 witness files across
+62 rule families and preserves 16 explicitly partial families. Broader
+operational coverage and unindexed first-profile branches remain visible; this
+static inventory is not an execution receipt.
 
 Additional numeric/quantity domains, machines, predicate resets, coordination,
 quantification, inheritance, complex spatial relationships, broader arbitration,

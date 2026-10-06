@@ -221,6 +221,54 @@ let progress_controls first=
   let executor_scope=set["subject"](obj["$type",str "Ref";"id",str "executor";"kind",str "Role"])(set["kind"](str "executor")scope)in
   let _,_,monitor=initialize(edit first "scoped_memory" ["scope"]executor_scope)in
   assert_verdict monitor "scoped_memory" M.Unsupported_requirement
+let requirement_rejection_controls first=
+  let requested=get "trigger"(declaration first "initiation_progress")in
+  let observed=observe_expression first in
+  let updated=set["op"](str "updated")(set["value_type"](get "value_type" requested)observed)in
+  let missing_trigger=edit(edit first "initiation_progress" ["deadline"]Json.Null)
+      "initiation_progress" ["trigger"]Json.Null in
+  let cases=[
+    "applies_to", "scoped_memory", "unsupported_requirement_fields",
+      edit first "scoped_memory" ["applies_to"](arr[get "subject"(declaration first "condition")]);
+    "safety_trigger", "scoped_memory", "unsupported_safety_fields",
+      edit first "scoped_memory" ["trigger"]requested;
+    "safety_condition", "scoped_memory", "missing_safety_condition",
+      edit first "scoped_memory" ["condition"]Json.Null;
+    "progress_trigger", "initiation_progress", "missing_trigger", missing_trigger;
+    "progress_deadline", "initiation_progress", "missing_deadline",
+      edit first "initiation_progress" ["deadline"]Json.Null;
+    "event_correlation", "initiation_progress", "unsupported_event_correlation",
+      edit first "initiation_progress" ["response"]updated]in
+  require(List.length cases=6)"Requirement rejection witness census changed";
+  let original=R.of_json(get "request" first)in
+  let expected_ids=List.filter_map(fun value->if get "$type" value=str "Requirement"
+    then Some(text "id" value)else None)(declarations first)in
+  List.iter(fun(label,id,reason,case)->
+    (* No expected-exception catch surrounds decoding, fresh source admission,
+       correspondence, or graph binding: an unrelated rejection fails the test. *)
+    let bound,runtime,monitor=initialize case in
+    let admitted=B.admitted_inputs bound in
+    let request=A.request admitted in
+    require(R.fingerprint request<>R.fingerprint original)(label^": source edit retained old request authority");
+    require(Json.equal(D.to_json(R.document request))(get "document"(get "request" case)))
+      (label^": original edited document was not retained");
+    require(text "request_fingerprint"(B.report bound)=R.fingerprint request)
+      (label^": source binding did not pin the fresh request");
+    let check monitor=
+      let rows=items "requirements"(M.report monitor)in
+      require(List.map(text "id")rows=expected_ids)(label^": monitor lost or reordered a hard requirement");
+      List.iter(fun value->require(Json.equal(get "source" value)(declaration case(text "id" value)))
+        (label^": monitor changed an original requirement"))rows;
+      require(List.filter_map(fun(row:M.requirement_summary)->
+        if row.verdict=M.Unsupported_requirement then Some row.id else None)(M.summaries monitor)=[id])
+        (label^": another rejection masked the intended monitor boundary");
+      assert_verdict monitor id M.Unsupported_requirement;
+      require(text "unsupported_reason"(row id monitor)=reason)(label^": wrong unsupported reason");
+      assert_claim monitor in
+    check monitor;
+    let _,monitor=finish runtime monitor 0 4 in
+    check monitor)cases;
+  print_endline "six source-admitted requirement rejection controls passed"
 let resource_controls first=
   let _,runtime,monitor=initialize ~limits:{M.max_work=100000000;max_obligations=1;max_samples=100000}first in
   let runtime,monitor,_=apply runtime monitor(batch 0 [observe 0 "e1"(P.Known false);observe 0 "e2"(P.Known false)])in
@@ -263,5 +311,6 @@ let crosscheck case=
 let ()=
   let cases=items "cases"(read Sys.argv.(1))in
   let first=List.nth cases 0 and second=List.nth cases 1 in
-  literals first second;progress_controls first;resource_controls first;List.iter crosscheck cases;
+  literals first second;progress_controls first;requirement_rejection_controls first;
+  resource_controls first;List.iter crosscheck cases;
   print_endline "independent candidate requirement monitor literals and fresh source cross-checks passed"

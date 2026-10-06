@@ -1942,7 +1942,7 @@
           ]
         },
         "material_binding": {
-          "contract_digest": "e4028521c0d14940eb29c65d05b5c2ae9de6ea0456421e712eb5ba389005a556",
+          "contract_digest": "feb920f37b5756b1176620a71c3d130e966337b419cd1d773ca4a6fcdbb2a244",
           "nodes": [
             {
               "local_id": "local.evidence",
@@ -2056,7 +2056,7 @@
         "ordered_reason_width": 1,
         "prefixes_started": 177,
         "queue_records": 34,
-        "request_fingerprint": "268103811e86aff1858b3fb03c455a004918384032151b3cf9a1b4bbc6cfe13c",
+        "request_fingerprint": "42491e02efbe04e861ee1094745ffca0685a3e8cb3efb69e63fbfccb691e11ab",
         "requirements": [
           "exclusive_selection",
           "initiation_progress",
@@ -2082,7 +2082,7 @@
           "entry_id": "exclusion.response.primitives.resolved_chassis",
           "entry_version": "1",
           "material_contract": {
-            "content_fingerprint": "1fa8d820b11e4b808fbc627dad6560d9af35635d008a749187f3c7b852db35c9",
+            "content_fingerprint": "2ee2a1bf09de251cab6c2bc82a7333fc48d9f1e46cf11c5ec2657d5137daa8bd",
             "id": "artificial.compound.single_reason",
             "kind": "model",
             "schema_version": "biocompiler.component_identity.v0.1",
@@ -2169,7 +2169,7 @@
                     "id": "shared.truth",
                     "pool_id": "executor.pool.shared.truth",
                     "quantity": 2,
-                    "record_layout_digest": "705f49e90ef8495d3425534a9965a66af8667875e9ed55311cc6cdfc695a0c26",
+                    "record_layout_digest": "227370a2de7573604150c534e60dab5ad7e1fe28c9ae43639ef88a2f2b724ea6",
                     "scope": "per_encounter_slot",
                     "slots": [
                       "e1",
@@ -2187,7 +2187,7 @@
                     "id": "local.evidence.evidence_records.per_encounter_slot",
                     "pool_id": "executor.pool.local.evidence.evidence_records.per_encounter_slot",
                     "quantity": 3,
-                    "record_layout_digest": "705f49e90ef8495d3425534a9965a66af8667875e9ed55311cc6cdfc695a0c26",
+                    "record_layout_digest": "227370a2de7573604150c534e60dab5ad7e1fe28c9ae43639ef88a2f2b724ea6",
                     "scope": "per_encounter_slot",
                     "slots": [
                       "e1",
@@ -2205,7 +2205,7 @@
                     "id": "local.select_edge.edge_history_cells.per_encounter_slot",
                     "pool_id": "executor.pool.local.select_edge.edge_history_cells.per_encounter_slot",
                     "quantity": 1,
-                    "record_layout_digest": "705f49e90ef8495d3425534a9965a66af8667875e9ed55311cc6cdfc695a0c26",
+                    "record_layout_digest": "227370a2de7573604150c534e60dab5ad7e1fe28c9ae43639ef88a2f2b724ea6",
                     "scope": "per_encounter_slot",
                     "slots": [
                       "e1",
@@ -2223,7 +2223,7 @@
                     "id": "local.exclude_edge.edge_history_cells.per_encounter_slot",
                     "pool_id": "executor.pool.local.exclude_edge.edge_history_cells.per_encounter_slot",
                     "quantity": 1,
-                    "record_layout_digest": "705f49e90ef8495d3425534a9965a66af8667875e9ed55311cc6cdfc695a0c26",
+                    "record_layout_digest": "227370a2de7573604150c534e60dab5ad7e1fe28c9ae43639ef88a2f2b724ea6",
                     "scope": "per_encounter_slot",
                     "slots": [
                       "e1",
@@ -2241,7 +2241,7 @@
                     "id": "layout.generation_counters.per_encounter_slot",
                     "pool_id": "executor.pool.layout.generation_counters.per_encounter_slot",
                     "quantity": 1,
-                    "record_layout_digest": "705f49e90ef8495d3425534a9965a66af8667875e9ed55311cc6cdfc695a0c26",
+                    "record_layout_digest": "227370a2de7573604150c534e60dab5ad7e1fe28c9ae43639ef88a2f2b724ea6",
                     "scope": "per_encounter_slot",
                     "slots": [
                       "e1",
@@ -2259,7 +2259,7 @@
                     "id": "local.attempt.active_attempt_records.per_encounter_slot",
                     "pool_id": "executor.pool.local.attempt.active_attempt_records.per_encounter_slot",
                     "quantity": 8,
-                    "record_layout_digest": "705f49e90ef8495d3425534a9965a66af8667875e9ed55311cc6cdfc695a0c26",
+                    "record_layout_digest": "227370a2de7573604150c534e60dab5ad7e1fe28c9ae43639ef88a2f2b724ea6",
                     "scope": "per_encounter_slot",
                     "slots": [
                       "e1",
@@ -2277,7 +2277,7 @@
                     "id": "local.attempt.retained_correlation_records.per_executor",
                     "pool_id": "executor.pool.local.attempt.retained_correlation_records.per_executor",
                     "quantity": 2,
-                    "record_layout_digest": "705f49e90ef8495d3425534a9965a66af8667875e9ed55311cc6cdfc695a0c26",
+                    "record_layout_digest": "227370a2de7573604150c534e60dab5ad7e1fe28c9ae43639ef88a2f2b724ea6",
                     "scope": "per_executor",
                     "slots": [],
                     "unit": "retained_correlation_records"
@@ -2292,7 +2292,7 @@
                     "id": "local.attempt.timer_cells.per_encounter_slot",
                     "pool_id": "executor.pool.local.attempt.timer_cells.per_encounter_slot",
                     "quantity": 8,
-                    "record_layout_digest": "705f49e90ef8495d3425534a9965a66af8667875e9ed55311cc6cdfc695a0c26",
+                    "record_layout_digest": "227370a2de7573604150c534e60dab5ad7e1fe28c9ae43639ef88a2f2b724ea6",
                     "scope": "per_encounter_slot",
                     "slots": [
                       "e1",
@@ -2310,7 +2310,7 @@
                     "id": "local.evidence.timer_cells.per_encounter_slot",
                     "pool_id": "executor.pool.local.evidence.timer_cells.per_encounter_slot",
                     "quantity": 1,
-                    "record_layout_digest": "705f49e90ef8495d3425534a9965a66af8667875e9ed55311cc6cdfc695a0c26",
+                    "record_layout_digest": "227370a2de7573604150c534e60dab5ad7e1fe28c9ae43639ef88a2f2b724ea6",
                     "scope": "per_encounter_slot",
                     "slots": [
                       "e1",
@@ -2328,7 +2328,7 @@
                     "id": "layout.timer_cells.per_executor",
                     "pool_id": "executor.pool.layout.timer_cells.per_executor",
                     "quantity": 1,
-                    "record_layout_digest": "705f49e90ef8495d3425534a9965a66af8667875e9ed55311cc6cdfc695a0c26",
+                    "record_layout_digest": "227370a2de7573604150c534e60dab5ad7e1fe28c9ae43639ef88a2f2b724ea6",
                     "scope": "per_executor",
                     "slots": [],
                     "unit": "timer_cells"
@@ -2343,7 +2343,7 @@
                     "id": "layout.control_event_records.per_executor",
                     "pool_id": "executor.pool.layout.control_event_records.per_executor",
                     "quantity": 34,
-                    "record_layout_digest": "705f49e90ef8495d3425534a9965a66af8667875e9ed55311cc6cdfc695a0c26",
+                    "record_layout_digest": "227370a2de7573604150c534e60dab5ad7e1fe28c9ae43639ef88a2f2b724ea6",
                     "scope": "per_executor",
                     "slots": [],
                     "unit": "control_event_records"
@@ -2358,7 +2358,7 @@
                     "id": "condition.input_rows_per_tick.per_encounter_slot",
                     "pool_id": "executor.pool.condition.input_rows_per_tick.per_encounter_slot",
                     "quantity": 1,
-                    "record_layout_digest": "705f49e90ef8495d3425534a9965a66af8667875e9ed55311cc6cdfc695a0c26",
+                    "record_layout_digest": "227370a2de7573604150c534e60dab5ad7e1fe28c9ae43639ef88a2f2b724ea6",
                     "scope": "per_encounter_slot",
                     "slots": [
                       "e1",
@@ -2376,7 +2376,7 @@
                     "id": "feedback.input_rows_per_tick.per_executor",
                     "pool_id": "executor.pool.feedback.input_rows_per_tick.per_executor",
                     "quantity": 2,
-                    "record_layout_digest": "705f49e90ef8495d3425534a9965a66af8667875e9ed55311cc6cdfc695a0c26",
+                    "record_layout_digest": "227370a2de7573604150c534e60dab5ad7e1fe28c9ae43639ef88a2f2b724ea6",
                     "scope": "per_executor",
                     "slots": [],
                     "unit": "input_rows_per_tick"
@@ -2441,7 +2441,7 @@
                 }
               },
               "identity": {
-                "content_fingerprint": "7b38c20cff649ad1114c1b39f6a45f325957573c0d45c4dee19389b25f728d72",
+                "content_fingerprint": "42881a8f9af102725121bfa333e0cc5d4a5067646cff9c007fdb390c46abddfb",
                 "id": "context.chassis",
                 "kind": "model",
                 "schema_version": "biocompiler.component_identity.v0.1",
@@ -2699,7 +2699,7 @@
             "generations": 2,
             "horizon_ticks": 6,
             "identifier_bytes": 384,
-            "kernel_digest": "6e3772075535e35f0cfe2b3260ec7c4a82bb7b02b0cfbd873726ca25d0429c8b",
+            "kernel_digest": "47716e9594f4d23345cb631b86be5ce0115c7094e460917177ebdf6702fbd71b",
             "maximum_tick": 11,
             "ordered_cause_slots": 238,
             "ordered_reason_slots": 1,
@@ -9749,383 +9749,383 @@
               ],
               "wires": [
                 {
-                  "consumer": {
+                  "from": {
+                    "node": "local.evidence",
+                    "port": "value"
+                  },
+                  "to": {
                     "node": "local.select_edge",
                     "port": "in"
-                  },
-                  "producer": {
-                    "node": "local.evidence",
-                    "port": "value"
                   }
                 },
                 {
-                  "consumer": {
+                  "from": {
+                    "node": "local.evidence",
+                    "port": "value"
+                  },
+                  "to": {
                     "node": "local.not",
                     "port": "in"
-                  },
-                  "producer": {
-                    "node": "local.evidence",
-                    "port": "value"
                   }
                 },
                 {
-                  "consumer": {
-                    "node": "local.exclude_edge",
-                    "port": "in"
-                  },
-                  "producer": {
+                  "from": {
                     "node": "local.not",
                     "port": "out"
+                  },
+                  "to": {
+                    "node": "local.exclude_edge",
+                    "port": "in"
                   }
                 },
                 {
-                  "consumer": {
-                    "node": "local.select_gate",
-                    "port": "on"
-                  },
-                  "producer": {
+                  "from": {
                     "node": "local.select_edge",
                     "port": "events"
+                  },
+                  "to": {
+                    "node": "local.select_gate",
+                    "port": "on"
                   }
                 },
                 {
-                  "consumer": {
-                    "node": "local.exclude_gate",
-                    "port": "on"
-                  },
-                  "producer": {
+                  "from": {
                     "node": "local.exclude_edge",
                     "port": "events"
+                  },
+                  "to": {
+                    "node": "local.exclude_gate",
+                    "port": "on"
                   }
                 },
                 {
-                  "consumer": {
-                    "node": "local.select_gate",
-                    "port": "guard"
-                  },
-                  "producer": {
+                  "from": {
                     "node": "local.guard_select_all",
                     "port": "out"
+                  },
+                  "to": {
+                    "node": "local.select_gate",
+                    "port": "guard"
                   }
                 },
                 {
-                  "consumer": {
-                    "node": "local.exclude_gate",
-                    "port": "guard"
-                  },
-                  "producer": {
+                  "from": {
                     "node": "local.guard_exclude_any",
                     "port": "out"
+                  },
+                  "to": {
+                    "node": "local.exclude_gate",
+                    "port": "guard"
                   }
                 },
                 {
-                  "consumer": {
-                    "node": "local.arbiter",
-                    "port": "in0"
-                  },
-                  "producer": {
+                  "from": {
                     "node": "local.select_gate",
                     "port": "candidate"
+                  },
+                  "to": {
+                    "node": "local.arbiter",
+                    "port": "in0"
                   }
                 },
                 {
-                  "consumer": {
-                    "node": "local.select_commit",
-                    "port": "grant"
-                  },
-                  "producer": {
+                  "from": {
                     "node": "local.arbiter",
                     "port": "out0"
+                  },
+                  "to": {
+                    "node": "local.select_commit",
+                    "port": "grant"
                   }
                 },
                 {
-                  "consumer": {
-                    "node": "local.select_commit",
-                    "port": "value0"
-                  },
-                  "producer": {
+                  "from": {
                     "node": "local.write_true_all",
                     "port": "out"
+                  },
+                  "to": {
+                    "node": "local.select_commit",
+                    "port": "value0"
                   }
                 },
                 {
-                  "consumer": {
+                  "from": {
+                    "node": "local.select_commit",
+                    "port": "write0"
+                  },
+                  "to": {
                     "node": "local.selected",
                     "port": "write0"
-                  },
-                  "producer": {
-                    "node": "local.select_commit",
-                    "port": "write0"
                   }
                 },
                 {
-                  "consumer": {
-                    "node": "local.select_commit",
-                    "port": "value1"
-                  },
-                  "producer": {
+                  "from": {
                     "node": "local.write_false_any",
                     "port": "out"
+                  },
+                  "to": {
+                    "node": "local.select_commit",
+                    "port": "value1"
                   }
                 },
                 {
-                  "consumer": {
-                    "node": "local.excluded",
-                    "port": "write0"
-                  },
-                  "producer": {
+                  "from": {
                     "node": "local.select_commit",
                     "port": "write1"
+                  },
+                  "to": {
+                    "node": "local.excluded",
+                    "port": "write0"
                   }
                 },
                 {
-                  "consumer": {
-                    "node": "local.arbiter",
-                    "port": "in1"
-                  },
-                  "producer": {
+                  "from": {
                     "node": "local.exclude_gate",
                     "port": "candidate"
+                  },
+                  "to": {
+                    "node": "local.arbiter",
+                    "port": "in1"
                   }
                 },
                 {
-                  "consumer": {
-                    "node": "local.exclude_commit",
-                    "port": "grant"
-                  },
-                  "producer": {
+                  "from": {
                     "node": "local.arbiter",
                     "port": "out1"
+                  },
+                  "to": {
+                    "node": "local.exclude_commit",
+                    "port": "grant"
                   }
                 },
                 {
-                  "consumer": {
+                  "from": {
+                    "node": "local.write_false_any",
+                    "port": "out"
+                  },
+                  "to": {
                     "node": "local.exclude_commit",
                     "port": "value0"
-                  },
-                  "producer": {
-                    "node": "local.write_false_any",
-                    "port": "out"
                   }
                 },
                 {
-                  "consumer": {
-                    "node": "local.selected",
-                    "port": "write1"
-                  },
-                  "producer": {
+                  "from": {
                     "node": "local.exclude_commit",
                     "port": "write0"
+                  },
+                  "to": {
+                    "node": "local.selected",
+                    "port": "write1"
                   }
                 },
                 {
-                  "consumer": {
+                  "from": {
+                    "node": "local.write_true_all",
+                    "port": "out"
+                  },
+                  "to": {
                     "node": "local.exclude_commit",
                     "port": "value1"
-                  },
-                  "producer": {
-                    "node": "local.write_true_all",
-                    "port": "out"
                   }
                 },
                 {
-                  "consumer": {
-                    "node": "local.excluded",
-                    "port": "write1"
-                  },
-                  "producer": {
+                  "from": {
                     "node": "local.exclude_commit",
                     "port": "write1"
+                  },
+                  "to": {
+                    "node": "local.excluded",
+                    "port": "write1"
                   }
                 },
                 {
-                  "consumer": {
-                    "node": "local.select_commit",
-                    "port": "product0"
-                  },
-                  "producer": {
+                  "from": {
                     "node": "local.product",
                     "port": "out"
+                  },
+                  "to": {
+                    "node": "local.select_commit",
+                    "port": "product0"
                   }
                 },
                 {
-                  "consumer": {
-                    "node": "local.attempt",
-                    "port": "request"
-                  },
-                  "producer": {
+                  "from": {
                     "node": "local.select_commit",
                     "port": "request0"
+                  },
+                  "to": {
+                    "node": "local.attempt",
+                    "port": "request"
                   }
                 },
                 {
-                  "consumer": {
+                  "from": {
+                    "node": "local.guard_select_all",
+                    "port": "out"
+                  },
+                  "to": {
                     "node": "local.attempt",
                     "port": "authorization"
-                  },
-                  "producer": {
-                    "node": "local.guard_select_all",
-                    "port": "out"
                   }
                 },
                 {
-                  "consumer": {
-                    "node": "local.guard_select_any",
-                    "port": "in0"
-                  },
-                  "producer": {
+                  "from": {
                     "node": "local.false",
                     "port": "out"
+                  },
+                  "to": {
+                    "node": "local.guard_select_any",
+                    "port": "in0"
                   }
                 },
                 {
-                  "consumer": {
-                    "node": "local.guard_select_any",
-                    "port": "in1"
-                  },
-                  "producer": {
+                  "from": {
                     "node": "local.true",
                     "port": "out"
+                  },
+                  "to": {
+                    "node": "local.guard_select_any",
+                    "port": "in1"
                   }
                 },
                 {
-                  "consumer": {
-                    "node": "local.guard_select_all",
-                    "port": "in0"
-                  },
-                  "producer": {
+                  "from": {
                     "node": "local.evidence",
                     "port": "value"
+                  },
+                  "to": {
+                    "node": "local.guard_select_all",
+                    "port": "in0"
                   }
                 },
                 {
-                  "consumer": {
-                    "node": "local.guard_select_all",
-                    "port": "in1"
-                  },
-                  "producer": {
+                  "from": {
                     "node": "local.guard_select_any",
                     "port": "out"
+                  },
+                  "to": {
+                    "node": "local.guard_select_all",
+                    "port": "in1"
                   }
                 },
                 {
-                  "consumer": {
-                    "node": "local.guard_exclude_all",
-                    "port": "in0"
-                  },
-                  "producer": {
+                  "from": {
                     "node": "local.false",
                     "port": "out"
+                  },
+                  "to": {
+                    "node": "local.guard_exclude_all",
+                    "port": "in0"
                   }
                 },
                 {
-                  "consumer": {
-                    "node": "local.guard_exclude_all",
-                    "port": "in1"
-                  },
-                  "producer": {
+                  "from": {
                     "node": "local.true",
                     "port": "out"
+                  },
+                  "to": {
+                    "node": "local.guard_exclude_all",
+                    "port": "in1"
                   }
                 },
                 {
-                  "consumer": {
-                    "node": "local.guard_exclude_any",
-                    "port": "in0"
-                  },
-                  "producer": {
+                  "from": {
                     "node": "local.not",
                     "port": "out"
+                  },
+                  "to": {
+                    "node": "local.guard_exclude_any",
+                    "port": "in0"
                   }
                 },
                 {
-                  "consumer": {
-                    "node": "local.guard_exclude_any",
-                    "port": "in1"
-                  },
-                  "producer": {
+                  "from": {
                     "node": "local.guard_exclude_all",
                     "port": "out"
+                  },
+                  "to": {
+                    "node": "local.guard_exclude_any",
+                    "port": "in1"
                   }
                 },
                 {
-                  "consumer": {
-                    "node": "local.write_true_any",
-                    "port": "in0"
-                  },
-                  "producer": {
+                  "from": {
                     "node": "local.false",
                     "port": "out"
+                  },
+                  "to": {
+                    "node": "local.write_true_any",
+                    "port": "in0"
                   }
                 },
                 {
-                  "consumer": {
-                    "node": "local.write_true_any",
-                    "port": "in1"
-                  },
-                  "producer": {
+                  "from": {
                     "node": "local.true",
                     "port": "out"
+                  },
+                  "to": {
+                    "node": "local.write_true_any",
+                    "port": "in1"
                   }
                 },
                 {
-                  "consumer": {
+                  "from": {
+                    "node": "local.true",
+                    "port": "out"
+                  },
+                  "to": {
                     "node": "local.write_true_all",
                     "port": "in0"
-                  },
-                  "producer": {
-                    "node": "local.true",
-                    "port": "out"
                   }
                 },
                 {
-                  "consumer": {
-                    "node": "local.write_true_all",
-                    "port": "in1"
-                  },
-                  "producer": {
+                  "from": {
                     "node": "local.write_true_any",
                     "port": "out"
+                  },
+                  "to": {
+                    "node": "local.write_true_all",
+                    "port": "in1"
                   }
                 },
                 {
-                  "consumer": {
-                    "node": "local.write_false_all",
-                    "port": "in0"
-                  },
-                  "producer": {
+                  "from": {
                     "node": "local.false",
                     "port": "out"
+                  },
+                  "to": {
+                    "node": "local.write_false_all",
+                    "port": "in0"
                   }
                 },
                 {
-                  "consumer": {
-                    "node": "local.write_false_all",
-                    "port": "in1"
-                  },
-                  "producer": {
+                  "from": {
                     "node": "local.true",
                     "port": "out"
+                  },
+                  "to": {
+                    "node": "local.write_false_all",
+                    "port": "in1"
                   }
                 },
                 {
-                  "consumer": {
-                    "node": "local.write_false_any",
-                    "port": "in0"
-                  },
-                  "producer": {
+                  "from": {
                     "node": "local.false",
                     "port": "out"
+                  },
+                  "to": {
+                    "node": "local.write_false_any",
+                    "port": "in0"
                   }
                 },
                 {
-                  "consumer": {
-                    "node": "local.write_false_any",
-                    "port": "in1"
-                  },
-                  "producer": {
+                  "from": {
                     "node": "local.write_false_all",
                     "port": "out"
+                  },
+                  "to": {
+                    "node": "local.write_false_any",
+                    "port": "in1"
                   }
                 }
               ]
@@ -11296,7 +11296,7 @@
             }
           },
           "identity": {
-            "content_fingerprint": "1fa8d820b11e4b808fbc627dad6560d9af35635d008a749187f3c7b852db35c9",
+            "content_fingerprint": "2ee2a1bf09de251cab6c2bc82a7333fc48d9f1e46cf11c5ec2657d5137daa8bd",
             "id": "artificial.compound.single_reason",
             "kind": "model",
             "schema_version": "biocompiler.component_identity.v0.1",
@@ -13262,7 +13262,7 @@
           ]
         },
         "material_binding": {
-          "contract_digest": "6dc5470896b2c35519e5c7d2afe447c1916660596c75d616bf2081118362273d",
+          "contract_digest": "fd9bafb8748fdbbe16cdfad37ad0834bcaab1eb68f5773cf2481a062d25a9fa0",
           "nodes": [
             {
               "local_id": "local.evidence",
@@ -13376,7 +13376,7 @@
         "ordered_reason_width": 2,
         "prefixes_started": 177,
         "queue_records": 34,
-        "request_fingerprint": "213fb59e3ea9dd5381e3169241722fc90d58249412c41fb9b4307499e5663f20",
+        "request_fingerprint": "7f983b7a79862a98f406bdbae2e3a2c794260d3cfaeb75924b900db6e6abe92b",
         "requirements": [
           "exclusive_selection",
           "initiation_progress",
@@ -13402,7 +13402,7 @@
           "entry_id": "exclusion.response.primitives.resolved_chassis",
           "entry_version": "1",
           "material_contract": {
-            "content_fingerprint": "1579e114ed0314bf5046cab5f12ccf3509cde66f8ffe0e1fcbf2ae81515e4fd3",
+            "content_fingerprint": "ad6b6db3240b1a19a6837d0a0f961efd0cefe319da67c267f71c3c73e3106f38",
             "id": "artificial.compound.repeated_reasons",
             "kind": "model",
             "schema_version": "biocompiler.component_identity.v0.1",
@@ -13489,7 +13489,7 @@
                     "id": "shared.truth",
                     "pool_id": "executor.pool.shared.truth",
                     "quantity": 2,
-                    "record_layout_digest": "2bb72ffdc92f16e1908bf92e2d4b84872728759c9ef2650ee841060806108335",
+                    "record_layout_digest": "ff982a1519cd4a36b11de6391f604b1a32a323fc2ebe0bbcc5e80dc4d41579db",
                     "scope": "per_encounter_slot",
                     "slots": [
                       "e1",
@@ -13507,7 +13507,7 @@
                     "id": "local.evidence.evidence_records.per_encounter_slot",
                     "pool_id": "executor.pool.local.evidence.evidence_records.per_encounter_slot",
                     "quantity": 3,
-                    "record_layout_digest": "2bb72ffdc92f16e1908bf92e2d4b84872728759c9ef2650ee841060806108335",
+                    "record_layout_digest": "ff982a1519cd4a36b11de6391f604b1a32a323fc2ebe0bbcc5e80dc4d41579db",
                     "scope": "per_encounter_slot",
                     "slots": [
                       "e1",
@@ -13525,7 +13525,7 @@
                     "id": "local.select_edge.edge_history_cells.per_encounter_slot",
                     "pool_id": "executor.pool.local.select_edge.edge_history_cells.per_encounter_slot",
                     "quantity": 1,
-                    "record_layout_digest": "2bb72ffdc92f16e1908bf92e2d4b84872728759c9ef2650ee841060806108335",
+                    "record_layout_digest": "ff982a1519cd4a36b11de6391f604b1a32a323fc2ebe0bbcc5e80dc4d41579db",
                     "scope": "per_encounter_slot",
                     "slots": [
                       "e1",
@@ -13543,7 +13543,7 @@
                     "id": "local.exclude_edge.edge_history_cells.per_encounter_slot",
                     "pool_id": "executor.pool.local.exclude_edge.edge_history_cells.per_encounter_slot",
                     "quantity": 1,
-                    "record_layout_digest": "2bb72ffdc92f16e1908bf92e2d4b84872728759c9ef2650ee841060806108335",
+                    "record_layout_digest": "ff982a1519cd4a36b11de6391f604b1a32a323fc2ebe0bbcc5e80dc4d41579db",
                     "scope": "per_encounter_slot",
                     "slots": [
                       "e1",
@@ -13561,7 +13561,7 @@
                     "id": "layout.generation_counters.per_encounter_slot",
                     "pool_id": "executor.pool.layout.generation_counters.per_encounter_slot",
                     "quantity": 1,
-                    "record_layout_digest": "2bb72ffdc92f16e1908bf92e2d4b84872728759c9ef2650ee841060806108335",
+                    "record_layout_digest": "ff982a1519cd4a36b11de6391f604b1a32a323fc2ebe0bbcc5e80dc4d41579db",
                     "scope": "per_encounter_slot",
                     "slots": [
                       "e1",
@@ -13579,7 +13579,7 @@
                     "id": "local.attempt.active_attempt_records.per_encounter_slot",
                     "pool_id": "executor.pool.local.attempt.active_attempt_records.per_encounter_slot",
                     "quantity": 8,
-                    "record_layout_digest": "2bb72ffdc92f16e1908bf92e2d4b84872728759c9ef2650ee841060806108335",
+                    "record_layout_digest": "ff982a1519cd4a36b11de6391f604b1a32a323fc2ebe0bbcc5e80dc4d41579db",
                     "scope": "per_encounter_slot",
                     "slots": [
                       "e1",
@@ -13597,7 +13597,7 @@
                     "id": "local.attempt.retained_correlation_records.per_executor",
                     "pool_id": "executor.pool.local.attempt.retained_correlation_records.per_executor",
                     "quantity": 2,
-                    "record_layout_digest": "2bb72ffdc92f16e1908bf92e2d4b84872728759c9ef2650ee841060806108335",
+                    "record_layout_digest": "ff982a1519cd4a36b11de6391f604b1a32a323fc2ebe0bbcc5e80dc4d41579db",
                     "scope": "per_executor",
                     "slots": [],
                     "unit": "retained_correlation_records"
@@ -13612,7 +13612,7 @@
                     "id": "local.attempt.timer_cells.per_encounter_slot",
                     "pool_id": "executor.pool.local.attempt.timer_cells.per_encounter_slot",
                     "quantity": 8,
-                    "record_layout_digest": "2bb72ffdc92f16e1908bf92e2d4b84872728759c9ef2650ee841060806108335",
+                    "record_layout_digest": "ff982a1519cd4a36b11de6391f604b1a32a323fc2ebe0bbcc5e80dc4d41579db",
                     "scope": "per_encounter_slot",
                     "slots": [
                       "e1",
@@ -13630,7 +13630,7 @@
                     "id": "local.evidence.timer_cells.per_encounter_slot",
                     "pool_id": "executor.pool.local.evidence.timer_cells.per_encounter_slot",
                     "quantity": 1,
-                    "record_layout_digest": "2bb72ffdc92f16e1908bf92e2d4b84872728759c9ef2650ee841060806108335",
+                    "record_layout_digest": "ff982a1519cd4a36b11de6391f604b1a32a323fc2ebe0bbcc5e80dc4d41579db",
                     "scope": "per_encounter_slot",
                     "slots": [
                       "e1",
@@ -13648,7 +13648,7 @@
                     "id": "layout.timer_cells.per_executor",
                     "pool_id": "executor.pool.layout.timer_cells.per_executor",
                     "quantity": 1,
-                    "record_layout_digest": "2bb72ffdc92f16e1908bf92e2d4b84872728759c9ef2650ee841060806108335",
+                    "record_layout_digest": "ff982a1519cd4a36b11de6391f604b1a32a323fc2ebe0bbcc5e80dc4d41579db",
                     "scope": "per_executor",
                     "slots": [],
                     "unit": "timer_cells"
@@ -13663,7 +13663,7 @@
                     "id": "layout.control_event_records.per_executor",
                     "pool_id": "executor.pool.layout.control_event_records.per_executor",
                     "quantity": 34,
-                    "record_layout_digest": "2bb72ffdc92f16e1908bf92e2d4b84872728759c9ef2650ee841060806108335",
+                    "record_layout_digest": "ff982a1519cd4a36b11de6391f604b1a32a323fc2ebe0bbcc5e80dc4d41579db",
                     "scope": "per_executor",
                     "slots": [],
                     "unit": "control_event_records"
@@ -13678,7 +13678,7 @@
                     "id": "condition.input_rows_per_tick.per_encounter_slot",
                     "pool_id": "executor.pool.condition.input_rows_per_tick.per_encounter_slot",
                     "quantity": 1,
-                    "record_layout_digest": "2bb72ffdc92f16e1908bf92e2d4b84872728759c9ef2650ee841060806108335",
+                    "record_layout_digest": "ff982a1519cd4a36b11de6391f604b1a32a323fc2ebe0bbcc5e80dc4d41579db",
                     "scope": "per_encounter_slot",
                     "slots": [
                       "e1",
@@ -13696,7 +13696,7 @@
                     "id": "feedback.input_rows_per_tick.per_executor",
                     "pool_id": "executor.pool.feedback.input_rows_per_tick.per_executor",
                     "quantity": 2,
-                    "record_layout_digest": "2bb72ffdc92f16e1908bf92e2d4b84872728759c9ef2650ee841060806108335",
+                    "record_layout_digest": "ff982a1519cd4a36b11de6391f604b1a32a323fc2ebe0bbcc5e80dc4d41579db",
                     "scope": "per_executor",
                     "slots": [],
                     "unit": "input_rows_per_tick"
@@ -13761,7 +13761,7 @@
                 }
               },
               "identity": {
-                "content_fingerprint": "65ada5700c1162fec7cd01efffec0ba9d0eb88e4416a422d77e0bfe49bcce492",
+                "content_fingerprint": "4ed410ec8532f1b2e4d76c74fa22548dc9f93ff782063ebc7db064ad5272ca50",
                 "id": "context.chassis",
                 "kind": "model",
                 "schema_version": "biocompiler.component_identity.v0.1",
@@ -14019,7 +14019,7 @@
             "generations": 2,
             "horizon_ticks": 6,
             "identifier_bytes": 384,
-            "kernel_digest": "04d00aeb00cf265477a4f52a11b81dcd7d39230c2936dc207333d68a5654d244",
+            "kernel_digest": "431f0dcb92ea628e7661e29dfad144b4b29cfff237f5f01c0a91502d7d5fe8de",
             "maximum_tick": 11,
             "ordered_cause_slots": 238,
             "ordered_reason_slots": 2,
@@ -21105,383 +21105,383 @@
               ],
               "wires": [
                 {
-                  "consumer": {
+                  "from": {
+                    "node": "local.evidence",
+                    "port": "value"
+                  },
+                  "to": {
                     "node": "local.select_edge",
                     "port": "in"
-                  },
-                  "producer": {
-                    "node": "local.evidence",
-                    "port": "value"
                   }
                 },
                 {
-                  "consumer": {
+                  "from": {
+                    "node": "local.evidence",
+                    "port": "value"
+                  },
+                  "to": {
                     "node": "local.not",
                     "port": "in"
-                  },
-                  "producer": {
-                    "node": "local.evidence",
-                    "port": "value"
                   }
                 },
                 {
-                  "consumer": {
-                    "node": "local.exclude_edge",
-                    "port": "in"
-                  },
-                  "producer": {
+                  "from": {
                     "node": "local.not",
                     "port": "out"
+                  },
+                  "to": {
+                    "node": "local.exclude_edge",
+                    "port": "in"
                   }
                 },
                 {
-                  "consumer": {
-                    "node": "local.select_gate",
-                    "port": "on"
-                  },
-                  "producer": {
+                  "from": {
                     "node": "local.select_edge",
                     "port": "events"
+                  },
+                  "to": {
+                    "node": "local.select_gate",
+                    "port": "on"
                   }
                 },
                 {
-                  "consumer": {
-                    "node": "local.exclude_gate",
-                    "port": "on"
-                  },
-                  "producer": {
+                  "from": {
                     "node": "local.exclude_edge",
                     "port": "events"
+                  },
+                  "to": {
+                    "node": "local.exclude_gate",
+                    "port": "on"
                   }
                 },
                 {
-                  "consumer": {
-                    "node": "local.select_gate",
-                    "port": "guard"
-                  },
-                  "producer": {
+                  "from": {
                     "node": "local.guard_select_all",
                     "port": "out"
+                  },
+                  "to": {
+                    "node": "local.select_gate",
+                    "port": "guard"
                   }
                 },
                 {
-                  "consumer": {
-                    "node": "local.exclude_gate",
-                    "port": "guard"
-                  },
-                  "producer": {
+                  "from": {
                     "node": "local.guard_exclude_any",
                     "port": "out"
+                  },
+                  "to": {
+                    "node": "local.exclude_gate",
+                    "port": "guard"
                   }
                 },
                 {
-                  "consumer": {
-                    "node": "local.arbiter",
-                    "port": "in0"
-                  },
-                  "producer": {
+                  "from": {
                     "node": "local.select_gate",
                     "port": "candidate"
+                  },
+                  "to": {
+                    "node": "local.arbiter",
+                    "port": "in0"
                   }
                 },
                 {
-                  "consumer": {
-                    "node": "local.select_commit",
-                    "port": "grant"
-                  },
-                  "producer": {
+                  "from": {
                     "node": "local.arbiter",
                     "port": "out0"
+                  },
+                  "to": {
+                    "node": "local.select_commit",
+                    "port": "grant"
                   }
                 },
                 {
-                  "consumer": {
-                    "node": "local.select_commit",
-                    "port": "value0"
-                  },
-                  "producer": {
+                  "from": {
                     "node": "local.write_true_all",
                     "port": "out"
+                  },
+                  "to": {
+                    "node": "local.select_commit",
+                    "port": "value0"
                   }
                 },
                 {
-                  "consumer": {
+                  "from": {
+                    "node": "local.select_commit",
+                    "port": "write0"
+                  },
+                  "to": {
                     "node": "local.selected",
                     "port": "write0"
-                  },
-                  "producer": {
-                    "node": "local.select_commit",
-                    "port": "write0"
                   }
                 },
                 {
-                  "consumer": {
-                    "node": "local.select_commit",
-                    "port": "value1"
-                  },
-                  "producer": {
+                  "from": {
                     "node": "local.write_false_any",
                     "port": "out"
+                  },
+                  "to": {
+                    "node": "local.select_commit",
+                    "port": "value1"
                   }
                 },
                 {
-                  "consumer": {
-                    "node": "local.excluded",
-                    "port": "write0"
-                  },
-                  "producer": {
+                  "from": {
                     "node": "local.select_commit",
                     "port": "write1"
+                  },
+                  "to": {
+                    "node": "local.excluded",
+                    "port": "write0"
                   }
                 },
                 {
-                  "consumer": {
-                    "node": "local.arbiter",
-                    "port": "in1"
-                  },
-                  "producer": {
+                  "from": {
                     "node": "local.exclude_gate",
                     "port": "candidate"
+                  },
+                  "to": {
+                    "node": "local.arbiter",
+                    "port": "in1"
                   }
                 },
                 {
-                  "consumer": {
-                    "node": "local.exclude_commit",
-                    "port": "grant"
-                  },
-                  "producer": {
+                  "from": {
                     "node": "local.arbiter",
                     "port": "out1"
+                  },
+                  "to": {
+                    "node": "local.exclude_commit",
+                    "port": "grant"
                   }
                 },
                 {
-                  "consumer": {
+                  "from": {
+                    "node": "local.write_false_any",
+                    "port": "out"
+                  },
+                  "to": {
                     "node": "local.exclude_commit",
                     "port": "value0"
-                  },
-                  "producer": {
-                    "node": "local.write_false_any",
-                    "port": "out"
                   }
                 },
                 {
-                  "consumer": {
-                    "node": "local.selected",
-                    "port": "write1"
-                  },
-                  "producer": {
+                  "from": {
                     "node": "local.exclude_commit",
                     "port": "write0"
+                  },
+                  "to": {
+                    "node": "local.selected",
+                    "port": "write1"
                   }
                 },
                 {
-                  "consumer": {
+                  "from": {
+                    "node": "local.write_true_all",
+                    "port": "out"
+                  },
+                  "to": {
                     "node": "local.exclude_commit",
                     "port": "value1"
-                  },
-                  "producer": {
-                    "node": "local.write_true_all",
-                    "port": "out"
                   }
                 },
                 {
-                  "consumer": {
-                    "node": "local.excluded",
-                    "port": "write1"
-                  },
-                  "producer": {
+                  "from": {
                     "node": "local.exclude_commit",
                     "port": "write1"
+                  },
+                  "to": {
+                    "node": "local.excluded",
+                    "port": "write1"
                   }
                 },
                 {
-                  "consumer": {
-                    "node": "local.select_commit",
-                    "port": "product0"
-                  },
-                  "producer": {
+                  "from": {
                     "node": "local.product",
                     "port": "out"
+                  },
+                  "to": {
+                    "node": "local.select_commit",
+                    "port": "product0"
                   }
                 },
                 {
-                  "consumer": {
-                    "node": "local.attempt",
-                    "port": "request"
-                  },
-                  "producer": {
+                  "from": {
                     "node": "local.select_commit",
                     "port": "request0"
+                  },
+                  "to": {
+                    "node": "local.attempt",
+                    "port": "request"
                   }
                 },
                 {
-                  "consumer": {
+                  "from": {
+                    "node": "local.guard_select_all",
+                    "port": "out"
+                  },
+                  "to": {
                     "node": "local.attempt",
                     "port": "authorization"
-                  },
-                  "producer": {
-                    "node": "local.guard_select_all",
-                    "port": "out"
                   }
                 },
                 {
-                  "consumer": {
-                    "node": "local.guard_select_any",
-                    "port": "in0"
-                  },
-                  "producer": {
+                  "from": {
                     "node": "local.evidence",
                     "port": "value"
+                  },
+                  "to": {
+                    "node": "local.guard_select_any",
+                    "port": "in0"
                   }
                 },
                 {
-                  "consumer": {
-                    "node": "local.guard_select_any",
-                    "port": "in1"
-                  },
-                  "producer": {
+                  "from": {
                     "node": "local.true",
                     "port": "out"
+                  },
+                  "to": {
+                    "node": "local.guard_select_any",
+                    "port": "in1"
                   }
                 },
                 {
-                  "consumer": {
-                    "node": "local.guard_select_all",
-                    "port": "in0"
-                  },
-                  "producer": {
+                  "from": {
                     "node": "local.evidence",
                     "port": "value"
+                  },
+                  "to": {
+                    "node": "local.guard_select_all",
+                    "port": "in0"
                   }
                 },
                 {
-                  "consumer": {
-                    "node": "local.guard_select_all",
-                    "port": "in1"
-                  },
-                  "producer": {
+                  "from": {
                     "node": "local.guard_select_any",
                     "port": "out"
+                  },
+                  "to": {
+                    "node": "local.guard_select_all",
+                    "port": "in1"
                   }
                 },
                 {
-                  "consumer": {
-                    "node": "local.guard_exclude_all",
-                    "port": "in0"
-                  },
-                  "producer": {
+                  "from": {
                     "node": "local.not",
                     "port": "out"
+                  },
+                  "to": {
+                    "node": "local.guard_exclude_all",
+                    "port": "in0"
                   }
                 },
                 {
-                  "consumer": {
-                    "node": "local.guard_exclude_all",
-                    "port": "in1"
-                  },
-                  "producer": {
+                  "from": {
                     "node": "local.false",
                     "port": "out"
+                  },
+                  "to": {
+                    "node": "local.guard_exclude_all",
+                    "port": "in1"
                   }
                 },
                 {
-                  "consumer": {
-                    "node": "local.guard_exclude_any",
-                    "port": "in0"
-                  },
-                  "producer": {
+                  "from": {
                     "node": "local.not",
                     "port": "out"
+                  },
+                  "to": {
+                    "node": "local.guard_exclude_any",
+                    "port": "in0"
                   }
                 },
                 {
-                  "consumer": {
-                    "node": "local.guard_exclude_any",
-                    "port": "in1"
-                  },
-                  "producer": {
+                  "from": {
                     "node": "local.guard_exclude_all",
                     "port": "out"
+                  },
+                  "to": {
+                    "node": "local.guard_exclude_any",
+                    "port": "in1"
                   }
                 },
                 {
-                  "consumer": {
-                    "node": "local.write_true_any",
-                    "port": "in0"
-                  },
-                  "producer": {
+                  "from": {
                     "node": "local.false",
                     "port": "out"
+                  },
+                  "to": {
+                    "node": "local.write_true_any",
+                    "port": "in0"
                   }
                 },
                 {
-                  "consumer": {
-                    "node": "local.write_true_any",
-                    "port": "in1"
-                  },
-                  "producer": {
+                  "from": {
                     "node": "local.true",
                     "port": "out"
+                  },
+                  "to": {
+                    "node": "local.write_true_any",
+                    "port": "in1"
                   }
                 },
                 {
-                  "consumer": {
+                  "from": {
+                    "node": "local.true",
+                    "port": "out"
+                  },
+                  "to": {
                     "node": "local.write_true_all",
                     "port": "in0"
-                  },
-                  "producer": {
-                    "node": "local.true",
-                    "port": "out"
                   }
                 },
                 {
-                  "consumer": {
-                    "node": "local.write_true_all",
-                    "port": "in1"
-                  },
-                  "producer": {
+                  "from": {
                     "node": "local.write_true_any",
                     "port": "out"
+                  },
+                  "to": {
+                    "node": "local.write_true_all",
+                    "port": "in1"
                   }
                 },
                 {
-                  "consumer": {
-                    "node": "local.write_false_all",
-                    "port": "in0"
-                  },
-                  "producer": {
+                  "from": {
                     "node": "local.false",
                     "port": "out"
+                  },
+                  "to": {
+                    "node": "local.write_false_all",
+                    "port": "in0"
                   }
                 },
                 {
-                  "consumer": {
-                    "node": "local.write_false_all",
-                    "port": "in1"
-                  },
-                  "producer": {
+                  "from": {
                     "node": "local.true",
                     "port": "out"
+                  },
+                  "to": {
+                    "node": "local.write_false_all",
+                    "port": "in1"
                   }
                 },
                 {
-                  "consumer": {
-                    "node": "local.write_false_any",
-                    "port": "in0"
-                  },
-                  "producer": {
+                  "from": {
                     "node": "local.false",
                     "port": "out"
+                  },
+                  "to": {
+                    "node": "local.write_false_any",
+                    "port": "in0"
                   }
                 },
                 {
-                  "consumer": {
-                    "node": "local.write_false_any",
-                    "port": "in1"
-                  },
-                  "producer": {
+                  "from": {
                     "node": "local.write_false_all",
                     "port": "out"
+                  },
+                  "to": {
+                    "node": "local.write_false_any",
+                    "port": "in1"
                   }
                 }
               ]
@@ -22652,7 +22652,7 @@
             }
           },
           "identity": {
-            "content_fingerprint": "1579e114ed0314bf5046cab5f12ccf3509cde66f8ffe0e1fcbf2ae81515e4fd3",
+            "content_fingerprint": "ad6b6db3240b1a19a6837d0a0f961efd0cefe319da67c267f71c3c73e3106f38",
             "id": "artificial.compound.repeated_reasons",
             "kind": "model",
             "schema_version": "biocompiler.component_identity.v0.1",

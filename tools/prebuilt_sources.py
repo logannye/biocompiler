@@ -118,6 +118,7 @@ def fetch_once(url, pin, output):
                 while True:
                     require(time.monotonic() - started <= STREAM_DEADLINE, 'Source stream exceeded its elapsed-time allowance')
                     chunk = response.read1(min(65536, pin['size'] + 1 - size))
+                    require(time.monotonic() - started <= STREAM_DEADLINE, 'Source stream exceeded its elapsed-time allowance')
                     if not chunk:
                         break
                     size += len(chunk)

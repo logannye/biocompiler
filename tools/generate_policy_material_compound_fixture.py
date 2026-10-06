@@ -134,7 +134,7 @@ def build_case(seed: dict, repeated: bool) -> dict:
     def local(output: dict) -> dict:
         return endpoint(f"local.{output['node']}", output["port"])
 
-    kernel["wires"] = [{"producer": local(wire["producer"]), "consumer": local(wire["consumer"])} for wire in graph["wires"]]
+    kernel["wires"] = [{"from": local(wire["producer"]), "to": local(wire["consumer"])} for wire in graph["wires"]]
     kernel["semantic_exports"] = [local(output) for output in graph["semantic_exports"]]
     targets = [{"kind": kind, "id": node["local_id"]} for node in kernel["nodes"] for kind in ("primitive", "configuration", "replication")]
     targets += [{"kind": "wire", "index": i} for i in range(len(kernel["wires"]))]

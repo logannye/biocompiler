@@ -287,6 +287,73 @@ let source_profile_controls case=
     "This effect requires exactly the fixed typed product argument." literal_argument;
   require(!controls-initial_controls=23)"First-profile source restriction control census changed";
   Printf.printf "First-profile original-source restrictions: 16 graph-binding, 3 operational, 4 domain controls.\n"
+let source_boundary_controls case=
+  let initial_controls= !controls in
+  let source identity=at(declaration_path case identity)case in
+  let edit identity path replacement value=set(declaration_path value identity@path)replacement value in
+  let binding label message changed=reject_source_binding label message(repin_authority changed)in
+  let operational label path message changed=
+    reject_source_operational label path message(repin_authority changed)in
+  let definitions_path=["request";"document";"program";"semantics";"definitions"]in
+  let observation_definition=text "id"(get "contract"(source "condition"))in
+  let definition_index=List.find_index(fun definition->text "id" definition=observation_definition)
+    (Json.array(at definitions_path case))|>Option.get in
+  let definition_path=definitions_path@[string_of_int definition_index]in
+  (* The definition body, every complete reference, descriptor bundle, catalog
+     bridge and graph authority are refreshed before generic validity is checked.
+     The original model bodies remain unchanged; their names cannot discharge
+     newly supplied source clauses or nominal executor/subject constraints. *)
+  List.iter(fun field->
+    let changed=set(definition_path@[field])(str "cell")case|>repin_source_definitions in
+    reject_source_operational ("reachable observation definition "^field) "/definitions"
+      "Nominal executor/subject-kind constraints need a supplied typed interpretation and cannot be silently ignored."
+      changed)["executor_kind";"subject_kind"];
+  let clause=obj["$type",str "ContractClause";"kind",str "precondition";
+    "description",str "Require the supplied truth condition.";
+    "expression",get "condition"(source "request_progress")]in
+  let clauses=set(definition_path@["clauses"])(arr[clause])case|>repin_source_definitions in
+  reject_source_operational "reachable observation definition executable clause" "/definitions"
+    "Definition clauses need an executable interpretation and cannot be silently discarded." clauses;
+  operational "source lineage role needs lifecycle semantics" "/document/program/declarations/0"
+    "Population and lineage roles remain unsupported."
+    (edit "executor"["lineage_role"](Json.Bool true)case);
+  binding "source subject omits the explicit material executor"
+    "Encounter ownership, target or termination differs from the explicit slot profile."
+    (edit "encounter/target"["executor"]Json.Null case);
+  binding "source event evidence has a different coherence identity"
+    "Only encounter-local event evidence with frame coherence is supported by this graph profile."
+    (edit "condition"["coherence"](str "other_frame")case);
+  binding "source reset inheritance needs another graph profile"
+    "State lifetime, scope, capacity, reset or writer semantics are outside this family."
+    (edit "selected"["inheritance"](str "reset")case);
+  let writerless=List.fold_left(fun changed identity->
+    let assignments=items "assignments"(at(declaration_path changed identity)changed)
+      |>List.filter(fun assignment->text "id"(get "state" assignment)<>"excluded")in
+    edit identity["assignments"](arr assignments)changed)case["select";"exclude"]in
+  binding "source retains an original store without any writer"
+    "State lifetime, scope, capacity, reset or writer semantics are outside this family." writerless;
+  let state=at["condition";"args";"0";"args";"0"](source "exclusive_selection")in
+  operational "source state-only rising has no observation boundary" "/document/program/declarations/9/on"
+    "Rising requires an observed predicate; missing-to-true and state-only edges are unsupported."
+    (edit "select"["on";"args"](arr[state])case);
+  let updated=get "on"(source "select")|>set["op"](str "updated")|>set["args"](arr[])
+    |>set["ref"](obj["$type",str "Ref";"kind",str "Observation";"id",str "condition"])
+    |>set["scope"](get "subject"(source "condition"))in
+  binding "source updated trigger needs another activation primitive"
+    "This rule family triggers only on an observed rising event."
+    (edit "select"["on"]updated case);
+  binding "source omits the attempt timeout"
+    "An attempt bank requires an explicit source timeout."
+    (edit "response"["lifecycle";"timeout"]Json.Null case);
+  let priority=get "arbitration"(source "select")|>set["mode"](str "priority")
+    |>set["tie"](str "declared_order")|>set["order"](arr[str "select";str "exclude"])in
+  binding "source coherent priority order needs another graph profile"
+    "Rule, arbitration mode, tie/write conflict or lane order changes source semantics."
+    (case|>edit "select"["arbitration"]priority|>edit "exclude"["arbitration"]priority);
+  (* Three definition constraints + lineage + state-only rising are operational
+     exclusions; the seven remaining source-valid controls reach the binder. *)
+  require(!controls-initial_controls=12)"First-profile contextual boundary control census changed";
+  Printf.printf "First-profile contextual source boundaries: 7 graph-binding and 5 operational controls.\n"
 let ()=
   require(Array.length Sys.argv=4)"Supply binding fixture, original resolved request, and unchanged exclusion source fixture";
   let fixture=read Sys.argv.(1)and original_request=read Sys.argv.(2)and exclusion_source=read Sys.argv.(3)in
@@ -300,6 +367,7 @@ let ()=
     "Binding fixture silently rewrote original empty catalog";
   let first_bound=positive first and second_bound=positive second in
   source_profile_controls second;
+  source_boundary_controls second;
   List.iter(fun(case,bound)->
     let original_request=A.request(C.admitted_inputs bound) in
     let original_behavior=O.behavior_to_json(A.behavior(C.admitted_inputs bound))in
