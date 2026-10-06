@@ -27,6 +27,8 @@ import release_audit_plan
 import release_audit_policy
 import release_audit_units
 
+BOOTSTRAP_STEP_NAME = 'Seed the exact hosted macOS ARM64 Python runtime'
+
 def require(value, message):
     if not value:
         raise AssertionError(message)
@@ -45,8 +47,71 @@ def validate_legacy_comparison(record, *, name, plan, identity):
             and record['source_revision'] == identity['head_revision'] and record['run_id'] == identity['run_id'],
             'Legacy hosted comparator receipt is stale or unsuccessful: ' + name)
 
+def bootstrap_step_conditions(physical_jobs):
+    """Evaluate only the reviewed bootstrap condition in its exact physical slots."""
+    fixed = {'ocaml-build', 'ocaml-native-tests', 'ocaml-core'}
+    selected = {'architecture-sdk', 'installed-campaigns',
+                'realization-conformance', 'policy-prebuilt-installed'}
+    expected_counts = {'ocaml-build': 2, 'ocaml-native-tests': 2, 'ocaml-core': 2,
+                       'architecture-sdk': 4, 'installed-campaigns': 20,
+                       'realization-conformance': 4, 'policy-prebuilt-installed': 4}
+    seed_name = BOOTSTRAP_STEP_NAME
+    counts = Counter(); result = {}
+    for spec in physical_jobs:
+        seeds = [row for row in spec['steps'] if row['name'] == seed_name]
+        if spec['job'] not in fixed | selected:
+            require(not seeds, 'Bootstrap declared outside reviewed runtime slots')
+            continue
+        counts[spec['job']] += 1
+        matrix = spec['matrix']
+        keys = {'runner', 'platform'} | ({'python-version'} if spec['job'] in selected else set())
+        if spec['job'] == 'installed-campaigns':
+            keys.add('group')
+        if spec['job'] == 'policy-prebuilt-installed':
+            keys.add('wheel-tag')
+        require(type(matrix) is dict and set(matrix) == keys, 'Bootstrap matrix fields differ')
+        runners = {'linux-x86_64': 'ubuntu-24.04', 'macos-arm64': 'macos-14'}
+        require(matrix['platform'] in runners and matrix['runner'] == spec['runner']
+                == runners[matrix['platform']], 'Bootstrap runner/platform differs')
+        minor = matrix.get('python-version', '3.11')
+        require(minor in {'3.11', '3.14'}, 'Bootstrap selected Python profile differs')
+        components = [matrix['runner'], matrix['platform']]
+        if spec['job'] in selected:
+            components.append(minor)
+        if spec['job'] == 'installed-campaigns':
+            require(matrix['group'] in {'protocol', 'manager', 'fixed', 'workflow', 'synthetic'},
+                    'Bootstrap installed campaign group differs')
+            components.append(matrix['group'])
+        if spec['job'] == 'policy-prebuilt-installed':
+            wheels = {'linux-x86_64': 'manylinux_2_39_x86_64', 'macos-arm64': 'macosx_14_0_arm64'}
+            require(matrix['wheel-tag'] == wheels[matrix['platform']], 'Bootstrap wheel platform differs')
+            components.append(matrix['wheel-tag'])
+        require(spec['name'] == spec['job'] + ' (' + ', '.join(components) + ')'
+                and spec['name'] not in result, 'Bootstrap physical slot identity differs')
+        selected_version = ("fromJSON(env.BIOCOMPILER_SUPPORTED_PYTHON)['3.11']" if spec['job'] in fixed
+                            else 'fromJSON(env.BIOCOMPILER_SUPPORTED_PYTHON)[matrix.python-version]')
+        condition = ("${{ runner.environment == 'github-hosted' && runner.os == 'macOS' "
+                     "&& runner.arch == 'ARM64' && " + selected_version + " == '3.11.15' }}")
+        expected = {'if': condition, 'name': seed_name, 'uses': None, 'yaml_ordinal': 2}
+        require(same(seeds, [expected]) and len(spec['steps']) >= 3
+                and same(spec['steps'][:3], [
+                    {'if': None, 'name': None, 'uses': 'actions/checkout@v4', 'yaml_ordinal': 1},
+                    expected,
+                    {'if': None, 'name': None, 'uses': 'actions/setup-python@v5', 'yaml_ordinal': 3}]),
+                'Bootstrap condition or checkout/setup ordering differs')
+        # The whole workflow pins these minor-to-patch mappings. Runner labels
+        # are independently required from API jobs below; source/runtime checks
+        # separately bind every native and installed platform in the final audit.
+        patch = {'3.11': '3.11.15', '3.14': '3.14.6'}[minor]
+        result[spec['name']] = (condition, matrix['platform'] == 'macos-arm64' and patch == '3.11.15')
+    require(counts == expected_counts and len(result) == 38
+            and sum(value for _, value in result.values()) == 11,
+            'Complete bootstrap runtime census differs')
+    return result
+
 def validate_jobs(document, run, plan):
     jobs = document['jobs']; expected = {row['name']: row for row in plan['physical_jobs']}
+    bootstrap = bootstrap_step_conditions(plan['physical_jobs'])
     require(document['total_count'] == len(jobs) == len(expected) == 74 and len({row['id'] for row in jobs}) == 74, 'Incomplete physical job census')
     require(Counter(row['name'] for row in jobs) == Counter(expected.keys()), 'Physical matrix job census differs')
     allowed_skips = []
@@ -56,6 +121,9 @@ def validate_jobs(document, run, plan):
         require(job['labels'] == [spec['runner']], 'Unexpected hosted runner label')
         steps = job['steps']; by_number = {row['number']: row for row in steps}
         require(steps and len(by_number) == len(steps) and all(type(n) is int and n > 0 for n in by_number), 'Malformed API step census')
+        observed_seeds = [step['number'] for step in steps if step['name'] == BOOTSTRAP_STEP_NAME]
+        require(observed_seeds == ([3] if job['name'] in bootstrap else []),
+                'Observed bootstrap step census differs: ' + job['name'])
         for declared in spec['steps']:
             number = declared['yaml_ordinal'] + 1
             require(number in by_number, 'Authored workflow step omitted from API: ' + job['name'])
@@ -64,11 +132,24 @@ def validate_jobs(document, run, plan):
                 require(actual['name'] == declared['name'], 'Authored step number/name differs: ' + job['name'])
             if declared['if'] == 'failure()':
                 require(actual['conclusion'] == 'skipped', 'Failure-only upload executed in an otherwise successful accepted job')
+            if job['name'] in bootstrap and declared['yaml_ordinal'] == 2:
+                _, applies = bootstrap[job['name']]
+                require(actual['conclusion'] == ('success' if applies else 'skipped'),
+                        'Bootstrap step differs from evaluated runtime condition: ' + job['name'])
         for index, step in enumerate(steps):
             require(step['status'] == 'completed', 'Incomplete hosted step')
             if step['conclusion'] == 'success':
                 continue
             matching = [row for row in spec['steps'] if row['yaml_ordinal'] + 1 == step['number']]
+            if job['name'] in bootstrap and step['number'] == 3:
+                condition, applies = bootstrap[job['name']]
+                require(not applies and step['conclusion'] == 'skipped' and len(matching) == 1
+                        and matching[0]['if'] == condition and matching[0]['name'] == step['name']
+                        and all(row['conclusion'] == 'success' for row in steps[:index]),
+                        'Inapplicable bootstrap step was not skipped exactly')
+                allowed_skips.append({'job': job['name'], 'step': step['name'], 'number': step['number'],
+                                      'condition': condition, 'value': False})
+                continue
             require(spec['job'] == 'integration-examples' and len(matching) == 1 and matching[0]['if'] == 'failure()' and matching[0]['uses'] == 'actions/upload-artifact@v4' and matching[0]['name'] == step['name'] == 'Retain reference build failure evidence' and step['number'] == 33 and step['conclusion'] == 'skipped' and all(row['conclusion'] == 'success' for row in steps[:index]), 'Failed/skipped validation step: ' + job['name'] + '/' + step['name'])
             allowed_skips.append({'job': job['name'], 'step': step['name'], 'number': step['number'], 'condition': 'failure()', 'value': False})
     return allowed_skips

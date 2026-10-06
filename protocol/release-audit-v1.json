@@ -3144,100 +3144,106 @@
           "yaml_ordinal": 1
         },
         {
+          "if": "${{ runner.environment == 'github-hosted' && runner.os == 'macOS' && runner.arch == 'ARM64' && fromJSON(env.BIOCOMPILER_SUPPORTED_PYTHON)['3.11'] == '3.11.15' }}",
+          "name": "Seed the exact hosted macOS ARM64 Python runtime",
+          "uses": null,
+          "yaml_ordinal": 2
+        },
+        {
           "if": null,
           "name": null,
           "uses": "actions/setup-python@v5",
-          "yaml_ordinal": 2
+          "yaml_ordinal": 3
         },
         {
           "if": null,
           "name": "Record revision and verify the actual native platform",
           "uses": null,
-          "yaml_ordinal": 3
+          "yaml_ordinal": 4
         },
         {
           "if": null,
           "name": null,
           "uses": "ocaml/setup-ocaml@93303b622b2522e4411e295f9e77411a24912ac7",
-          "yaml_ordinal": 4
+          "yaml_ordinal": 5
         },
         {
           "if": null,
           "name": "Fetch exact locked upstream sources and build portable static GMP",
           "uses": null,
-          "yaml_ordinal": 5
+          "yaml_ordinal": 6
         },
         {
           "if": null,
           "name": "Resolve pinned native dependencies and retain the platform lock",
           "uses": null,
-          "yaml_ordinal": 6
+          "yaml_ordinal": 7
         },
         {
           "if": null,
           "name": "Install Python package and check compiler/checker dependency separation",
           "uses": null,
-          "yaml_ordinal": 7
+          "yaml_ordinal": 8
         },
         {
           "if": null,
           "name": "Strictly type-check the migrated Python transport boundary",
           "uses": null,
-          "yaml_ordinal": 8
+          "yaml_ordinal": 9
         },
         {
           "if": null,
           "name": "Compile native core and standalone verifier",
           "uses": null,
-          "yaml_ordinal": 9
+          "yaml_ordinal": 10
         },
         {
           "if": null,
           "name": "Retain revision-bound native executables",
           "uses": null,
-          "yaml_ordinal": 10
+          "yaml_ordinal": 11
         },
         {
           "if": null,
           "name": "Retain final-byte material closure and assemble internal platform wheel",
           "uses": null,
-          "yaml_ordinal": 11
+          "yaml_ordinal": 12
         },
         {
           "if": null,
           "name": null,
           "uses": "actions/upload-artifact@v4",
-          "yaml_ordinal": 12
+          "yaml_ordinal": 13
         },
         {
           "if": null,
           "name": "Bundle the exact compiled native suite and production roles",
           "uses": null,
-          "yaml_ordinal": 13
+          "yaml_ordinal": 14
         },
         {
           "if": null,
           "name": null,
           "uses": "actions/upload-artifact@v4",
-          "yaml_ordinal": 14
+          "yaml_ordinal": 15
         },
         {
           "if": "always()",
           "name": "Retain native evidence even on failure",
           "uses": "actions/upload-artifact@v4",
-          "yaml_ordinal": 15
+          "yaml_ordinal": 16
         },
         {
           "if": null,
           "name": "Record successful complete ocaml-build",
           "uses": null,
-          "yaml_ordinal": 16
+          "yaml_ordinal": 17
         },
         {
           "if": null,
           "name": null,
           "uses": "actions/upload-artifact@v4",
-          "yaml_ordinal": 17
+          "yaml_ordinal": 18
         }
       ]
     },
@@ -3257,100 +3263,106 @@
           "yaml_ordinal": 1
         },
         {
+          "if": "${{ runner.environment == 'github-hosted' && runner.os == 'macOS' && runner.arch == 'ARM64' && fromJSON(env.BIOCOMPILER_SUPPORTED_PYTHON)['3.11'] == '3.11.15' }}",
+          "name": "Seed the exact hosted macOS ARM64 Python runtime",
+          "uses": null,
+          "yaml_ordinal": 2
+        },
+        {
           "if": null,
           "name": null,
           "uses": "actions/setup-python@v5",
-          "yaml_ordinal": 2
+          "yaml_ordinal": 3
         },
         {
           "if": null,
           "name": "Record revision and verify the actual native platform",
           "uses": null,
-          "yaml_ordinal": 3
+          "yaml_ordinal": 4
         },
         {
           "if": null,
           "name": null,
           "uses": "ocaml/setup-ocaml@93303b622b2522e4411e295f9e77411a24912ac7",
-          "yaml_ordinal": 4
+          "yaml_ordinal": 5
         },
         {
           "if": null,
           "name": "Fetch exact locked upstream sources and build portable static GMP",
           "uses": null,
-          "yaml_ordinal": 5
+          "yaml_ordinal": 6
         },
         {
           "if": null,
           "name": "Resolve pinned native dependencies and retain the platform lock",
           "uses": null,
-          "yaml_ordinal": 6
+          "yaml_ordinal": 7
         },
         {
           "if": null,
           "name": "Install Python package and check compiler/checker dependency separation",
           "uses": null,
-          "yaml_ordinal": 7
+          "yaml_ordinal": 8
         },
         {
           "if": null,
           "name": "Strictly type-check the migrated Python transport boundary",
           "uses": null,
-          "yaml_ordinal": 8
+          "yaml_ordinal": 9
         },
         {
           "if": null,
           "name": "Compile native core and standalone verifier",
           "uses": null,
-          "yaml_ordinal": 9
+          "yaml_ordinal": 10
         },
         {
           "if": null,
           "name": "Retain revision-bound native executables",
           "uses": null,
-          "yaml_ordinal": 10
+          "yaml_ordinal": 11
         },
         {
           "if": null,
           "name": "Retain final-byte material closure and assemble internal platform wheel",
           "uses": null,
-          "yaml_ordinal": 11
+          "yaml_ordinal": 12
         },
         {
           "if": null,
           "name": null,
           "uses": "actions/upload-artifact@v4",
-          "yaml_ordinal": 12
+          "yaml_ordinal": 13
         },
         {
           "if": null,
           "name": "Bundle the exact compiled native suite and production roles",
           "uses": null,
-          "yaml_ordinal": 13
+          "yaml_ordinal": 14
         },
         {
           "if": null,
           "name": null,
           "uses": "actions/upload-artifact@v4",
-          "yaml_ordinal": 14
+          "yaml_ordinal": 15
         },
         {
           "if": "always()",
           "name": "Retain native evidence even on failure",
           "uses": "actions/upload-artifact@v4",
-          "yaml_ordinal": 15
+          "yaml_ordinal": 16
         },
         {
           "if": null,
           "name": "Record successful complete ocaml-build",
           "uses": null,
-          "yaml_ordinal": 16
+          "yaml_ordinal": 17
         },
         {
           "if": null,
           "name": null,
           "uses": "actions/upload-artifact@v4",
-          "yaml_ordinal": 17
+          "yaml_ordinal": 18
         }
       ]
     },
@@ -3370,64 +3382,70 @@
           "yaml_ordinal": 1
         },
         {
-          "if": null,
-          "name": null,
-          "uses": "actions/setup-python@v5",
+          "if": "${{ runner.environment == 'github-hosted' && runner.os == 'macOS' && runner.arch == 'ARM64' && fromJSON(env.BIOCOMPILER_SUPPORTED_PYTHON)['3.11'] == '3.11.15' }}",
+          "name": "Seed the exact hosted macOS ARM64 Python runtime",
+          "uses": null,
           "yaml_ordinal": 2
         },
         {
           "if": null,
           "name": null,
-          "uses": null,
+          "uses": "actions/setup-python@v5",
           "yaml_ordinal": 3
         },
         {
           "if": null,
           "name": null,
-          "uses": "actions/download-artifact@v4",
+          "uses": null,
           "yaml_ordinal": 4
+        },
+        {
+          "if": null,
+          "name": null,
+          "uses": "actions/download-artifact@v4",
+          "yaml_ordinal": 5
         },
         {
           "if": null,
           "name": "Restore exact source and platform bound compiled executables",
           "uses": null,
-          "yaml_ordinal": 5
+          "yaml_ordinal": 6
         },
         {
           "if": null,
           "name": "Check bounded policy implementation and molecular leaves early",
           "uses": null,
-          "yaml_ordinal": 6
+          "yaml_ordinal": 7
         },
         {
           "if": "always()",
           "name": "Retain focused policy native diagnostics before full campaigns",
           "uses": "actions/upload-artifact@v4",
-          "yaml_ordinal": 7
+          "yaml_ordinal": 8
         },
         {
           "if": null,
           "name": "Run every native literal and mutation suite",
           "uses": null,
-          "yaml_ordinal": 8
+          "yaml_ordinal": 9
         },
         {
           "if": "always()",
           "name": "Retain native suite diagnostics before longer installed campaigns",
           "uses": "actions/upload-artifact@v4",
-          "yaml_ordinal": 9
+          "yaml_ordinal": 10
         },
         {
           "if": null,
           "name": "Record successful complete ocaml-native-tests",
           "uses": null,
-          "yaml_ordinal": 10
+          "yaml_ordinal": 11
         },
         {
           "if": null,
           "name": null,
           "uses": "actions/upload-artifact@v4",
-          "yaml_ordinal": 11
+          "yaml_ordinal": 12
         }
       ]
     },
@@ -3447,64 +3465,70 @@
           "yaml_ordinal": 1
         },
         {
-          "if": null,
-          "name": null,
-          "uses": "actions/setup-python@v5",
+          "if": "${{ runner.environment == 'github-hosted' && runner.os == 'macOS' && runner.arch == 'ARM64' && fromJSON(env.BIOCOMPILER_SUPPORTED_PYTHON)['3.11'] == '3.11.15' }}",
+          "name": "Seed the exact hosted macOS ARM64 Python runtime",
+          "uses": null,
           "yaml_ordinal": 2
         },
         {
           "if": null,
           "name": null,
-          "uses": null,
+          "uses": "actions/setup-python@v5",
           "yaml_ordinal": 3
         },
         {
           "if": null,
           "name": null,
-          "uses": "actions/download-artifact@v4",
+          "uses": null,
           "yaml_ordinal": 4
+        },
+        {
+          "if": null,
+          "name": null,
+          "uses": "actions/download-artifact@v4",
+          "yaml_ordinal": 5
         },
         {
           "if": null,
           "name": "Restore exact source and platform bound compiled executables",
           "uses": null,
-          "yaml_ordinal": 5
+          "yaml_ordinal": 6
         },
         {
           "if": null,
           "name": "Check bounded policy implementation and molecular leaves early",
           "uses": null,
-          "yaml_ordinal": 6
+          "yaml_ordinal": 7
         },
         {
           "if": "always()",
           "name": "Retain focused policy native diagnostics before full campaigns",
           "uses": "actions/upload-artifact@v4",
-          "yaml_ordinal": 7
+          "yaml_ordinal": 8
         },
         {
           "if": null,
           "name": "Run every native literal and mutation suite",
           "uses": null,
-          "yaml_ordinal": 8
+          "yaml_ordinal": 9
         },
         {
           "if": "always()",
           "name": "Retain native suite diagnostics before longer installed campaigns",
           "uses": "actions/upload-artifact@v4",
-          "yaml_ordinal": 9
+          "yaml_ordinal": 10
         },
         {
           "if": null,
           "name": "Record successful complete ocaml-native-tests",
           "uses": null,
-          "yaml_ordinal": 10
+          "yaml_ordinal": 11
         },
         {
           "if": null,
           "name": null,
           "uses": "actions/upload-artifact@v4",
-          "yaml_ordinal": 11
+          "yaml_ordinal": 12
         }
       ]
     },
@@ -3524,70 +3548,76 @@
           "yaml_ordinal": 1
         },
         {
-          "if": null,
-          "name": null,
-          "uses": "actions/setup-python@v5",
+          "if": "${{ runner.environment == 'github-hosted' && runner.os == 'macOS' && runner.arch == 'ARM64' && fromJSON(env.BIOCOMPILER_SUPPORTED_PYTHON)['3.11'] == '3.11.15' }}",
+          "name": "Seed the exact hosted macOS ARM64 Python runtime",
+          "uses": null,
           "yaml_ordinal": 2
         },
         {
           "if": null,
           "name": null,
-          "uses": null,
+          "uses": "actions/setup-python@v5",
           "yaml_ordinal": 3
         },
         {
           "if": null,
           "name": null,
-          "uses": "actions/download-artifact@v4",
+          "uses": null,
           "yaml_ordinal": 4
+        },
+        {
+          "if": null,
+          "name": null,
+          "uses": "actions/download-artifact@v4",
+          "yaml_ordinal": 5
         },
         {
           "if": null,
           "name": "Restore exact source and platform bound compiled executables",
           "uses": null,
-          "yaml_ordinal": 5
-        },
-        {
-          "if": null,
-          "name": null,
-          "uses": "actions/download-artifact@v4",
           "yaml_ordinal": 6
         },
         {
           "if": null,
           "name": null,
-          "uses": null,
+          "uses": "actions/download-artifact@v4",
           "yaml_ordinal": 7
+        },
+        {
+          "if": null,
+          "name": null,
+          "uses": null,
+          "yaml_ordinal": 8
         },
         {
           "if": "${{ !cancelled() && steps.restore_native.outcome == 'success' }}",
           "name": "Run every original direct-core command group with bounded overlap",
           "uses": null,
-          "yaml_ordinal": 8
+          "yaml_ordinal": 9
         },
         {
           "if": null,
           "name": "Require complete current direct-core command and log accounting",
           "uses": null,
-          "yaml_ordinal": 9
+          "yaml_ordinal": 10
         },
         {
           "if": "always()",
           "name": null,
           "uses": "actions/upload-artifact@v4",
-          "yaml_ordinal": 10
+          "yaml_ordinal": 11
         },
         {
           "if": null,
           "name": "Record successful complete ocaml-core",
           "uses": null,
-          "yaml_ordinal": 11
+          "yaml_ordinal": 12
         },
         {
           "if": null,
           "name": null,
           "uses": "actions/upload-artifact@v4",
-          "yaml_ordinal": 12
+          "yaml_ordinal": 13
         }
       ]
     },
@@ -3607,70 +3637,76 @@
           "yaml_ordinal": 1
         },
         {
-          "if": null,
-          "name": null,
-          "uses": "actions/setup-python@v5",
+          "if": "${{ runner.environment == 'github-hosted' && runner.os == 'macOS' && runner.arch == 'ARM64' && fromJSON(env.BIOCOMPILER_SUPPORTED_PYTHON)['3.11'] == '3.11.15' }}",
+          "name": "Seed the exact hosted macOS ARM64 Python runtime",
+          "uses": null,
           "yaml_ordinal": 2
         },
         {
           "if": null,
           "name": null,
-          "uses": null,
+          "uses": "actions/setup-python@v5",
           "yaml_ordinal": 3
         },
         {
           "if": null,
           "name": null,
-          "uses": "actions/download-artifact@v4",
+          "uses": null,
           "yaml_ordinal": 4
+        },
+        {
+          "if": null,
+          "name": null,
+          "uses": "actions/download-artifact@v4",
+          "yaml_ordinal": 5
         },
         {
           "if": null,
           "name": "Restore exact source and platform bound compiled executables",
           "uses": null,
-          "yaml_ordinal": 5
-        },
-        {
-          "if": null,
-          "name": null,
-          "uses": "actions/download-artifact@v4",
           "yaml_ordinal": 6
         },
         {
           "if": null,
           "name": null,
-          "uses": null,
+          "uses": "actions/download-artifact@v4",
           "yaml_ordinal": 7
+        },
+        {
+          "if": null,
+          "name": null,
+          "uses": null,
+          "yaml_ordinal": 8
         },
         {
           "if": "${{ !cancelled() && steps.restore_native.outcome == 'success' }}",
           "name": "Run every original direct-core command group with bounded overlap",
           "uses": null,
-          "yaml_ordinal": 8
+          "yaml_ordinal": 9
         },
         {
           "if": null,
           "name": "Require complete current direct-core command and log accounting",
           "uses": null,
-          "yaml_ordinal": 9
+          "yaml_ordinal": 10
         },
         {
           "if": "always()",
           "name": null,
           "uses": "actions/upload-artifact@v4",
-          "yaml_ordinal": 10
+          "yaml_ordinal": 11
         },
         {
           "if": null,
           "name": "Record successful complete ocaml-core",
           "uses": null,
-          "yaml_ordinal": 11
+          "yaml_ordinal": 12
         },
         {
           "if": null,
           "name": null,
           "uses": "actions/upload-artifact@v4",
-          "yaml_ordinal": 12
+          "yaml_ordinal": 13
         }
       ]
     },
@@ -3691,94 +3727,100 @@
           "yaml_ordinal": 1
         },
         {
-          "if": null,
-          "name": null,
-          "uses": "actions/setup-python@v5",
+          "if": "${{ runner.environment == 'github-hosted' && runner.os == 'macOS' && runner.arch == 'ARM64' && fromJSON(env.BIOCOMPILER_SUPPORTED_PYTHON)[matrix.python-version] == '3.11.15' }}",
+          "name": "Seed the exact hosted macOS ARM64 Python runtime",
+          "uses": null,
           "yaml_ordinal": 2
         },
         {
           "if": null,
           "name": null,
-          "uses": null,
+          "uses": "actions/setup-python@v5",
           "yaml_ordinal": 3
         },
         {
           "if": null,
           "name": null,
-          "uses": "actions/download-artifact@v4",
+          "uses": null,
           "yaml_ordinal": 4
+        },
+        {
+          "if": null,
+          "name": null,
+          "uses": "actions/download-artifact@v4",
+          "yaml_ordinal": 5
         },
         {
           "if": null,
           "name": "Restore exact source and platform bound compiled executables",
           "uses": null,
-          "yaml_ordinal": 5
-        },
-        {
-          "if": null,
-          "name": null,
-          "uses": null,
           "yaml_ordinal": 6
         },
         {
           "if": null,
-          "name": "Check installed expressive policy assessment and replay on selected Python runtime",
+          "name": null,
           "uses": null,
           "yaml_ordinal": 7
         },
         {
           "if": null,
-          "name": "Check installed bounded operational policy and standalone replay on Python 3.11",
+          "name": "Check installed expressive policy assessment and replay on selected Python runtime",
           "uses": null,
           "yaml_ordinal": 8
         },
         {
-          "if": "${{ !cancelled() && steps.policy_native_ready.outcome == 'success' && steps.policy_runtime_ready.outcome == 'success' }}",
-          "name": "Check installed bounded implementation and standalone replay on Python 3.11",
+          "if": null,
+          "name": "Check installed bounded operational policy and standalone replay on Python 3.11",
           "uses": null,
           "yaml_ordinal": 9
         },
         {
           "if": "${{ !cancelled() && steps.policy_native_ready.outcome == 'success' && steps.policy_runtime_ready.outcome == 'success' }}",
-          "name": "Check installed conditional policy material and fresh paired export on Python 3.11",
+          "name": "Check installed bounded implementation and standalone replay on Python 3.11",
           "uses": null,
           "yaml_ordinal": 10
         },
         {
           "if": "${{ !cancelled() && steps.policy_native_ready.outcome == 'success' && steps.policy_runtime_ready.outcome == 'success' }}",
-          "name": "Check Verify-only offline material consumer on Python 3.11",
+          "name": "Check installed conditional policy material and fresh paired export on Python 3.11",
           "uses": null,
           "yaml_ordinal": 11
+        },
+        {
+          "if": "${{ !cancelled() && steps.policy_native_ready.outcome == 'success' && steps.policy_runtime_ready.outcome == 'success' }}",
+          "name": "Check Verify-only offline material consumer on Python 3.11",
+          "uses": null,
+          "yaml_ordinal": 12
         },
         {
           "if": "always()",
           "name": "Retain early installed policy diagnostics for Python 3.11",
           "uses": "actions/upload-artifact@v4",
-          "yaml_ordinal": 12
+          "yaml_ordinal": 13
         },
         {
           "if": null,
           "name": "Check installed public architecture SDK and CLI on selected Python runtime",
           "uses": null,
-          "yaml_ordinal": 13
+          "yaml_ordinal": 14
         },
         {
           "if": "always()",
           "name": null,
           "uses": "actions/upload-artifact@v4",
-          "yaml_ordinal": 14
+          "yaml_ordinal": 15
         },
         {
           "if": null,
           "name": "Record successful complete architecture-sdk",
           "uses": null,
-          "yaml_ordinal": 15
+          "yaml_ordinal": 16
         },
         {
           "if": null,
           "name": null,
           "uses": "actions/upload-artifact@v4",
-          "yaml_ordinal": 16
+          "yaml_ordinal": 17
         }
       ]
     },
@@ -3799,94 +3841,100 @@
           "yaml_ordinal": 1
         },
         {
-          "if": null,
-          "name": null,
-          "uses": "actions/setup-python@v5",
+          "if": "${{ runner.environment == 'github-hosted' && runner.os == 'macOS' && runner.arch == 'ARM64' && fromJSON(env.BIOCOMPILER_SUPPORTED_PYTHON)[matrix.python-version] == '3.11.15' }}",
+          "name": "Seed the exact hosted macOS ARM64 Python runtime",
+          "uses": null,
           "yaml_ordinal": 2
         },
         {
           "if": null,
           "name": null,
-          "uses": null,
+          "uses": "actions/setup-python@v5",
           "yaml_ordinal": 3
         },
         {
           "if": null,
           "name": null,
-          "uses": "actions/download-artifact@v4",
+          "uses": null,
           "yaml_ordinal": 4
+        },
+        {
+          "if": null,
+          "name": null,
+          "uses": "actions/download-artifact@v4",
+          "yaml_ordinal": 5
         },
         {
           "if": null,
           "name": "Restore exact source and platform bound compiled executables",
           "uses": null,
-          "yaml_ordinal": 5
-        },
-        {
-          "if": null,
-          "name": null,
-          "uses": null,
           "yaml_ordinal": 6
         },
         {
           "if": null,
-          "name": "Check installed expressive policy assessment and replay on selected Python runtime",
+          "name": null,
           "uses": null,
           "yaml_ordinal": 7
         },
         {
           "if": null,
-          "name": "Check installed bounded operational policy and standalone replay on Python 3.14",
+          "name": "Check installed expressive policy assessment and replay on selected Python runtime",
           "uses": null,
           "yaml_ordinal": 8
         },
         {
-          "if": "${{ !cancelled() && steps.policy_native_ready.outcome == 'success' && steps.policy_runtime_ready.outcome == 'success' }}",
-          "name": "Check installed bounded implementation and standalone replay on Python 3.14",
+          "if": null,
+          "name": "Check installed bounded operational policy and standalone replay on Python 3.14",
           "uses": null,
           "yaml_ordinal": 9
         },
         {
           "if": "${{ !cancelled() && steps.policy_native_ready.outcome == 'success' && steps.policy_runtime_ready.outcome == 'success' }}",
-          "name": "Check installed conditional policy material and fresh paired export on Python 3.14",
+          "name": "Check installed bounded implementation and standalone replay on Python 3.14",
           "uses": null,
           "yaml_ordinal": 10
         },
         {
           "if": "${{ !cancelled() && steps.policy_native_ready.outcome == 'success' && steps.policy_runtime_ready.outcome == 'success' }}",
-          "name": "Check Verify-only offline material consumer on Python 3.14",
+          "name": "Check installed conditional policy material and fresh paired export on Python 3.14",
           "uses": null,
           "yaml_ordinal": 11
+        },
+        {
+          "if": "${{ !cancelled() && steps.policy_native_ready.outcome == 'success' && steps.policy_runtime_ready.outcome == 'success' }}",
+          "name": "Check Verify-only offline material consumer on Python 3.14",
+          "uses": null,
+          "yaml_ordinal": 12
         },
         {
           "if": "always()",
           "name": "Retain early installed policy diagnostics for Python 3.14",
           "uses": "actions/upload-artifact@v4",
-          "yaml_ordinal": 12
+          "yaml_ordinal": 13
         },
         {
           "if": null,
           "name": "Check installed public architecture SDK and CLI on selected Python runtime",
           "uses": null,
-          "yaml_ordinal": 13
+          "yaml_ordinal": 14
         },
         {
           "if": "always()",
           "name": null,
           "uses": "actions/upload-artifact@v4",
-          "yaml_ordinal": 14
+          "yaml_ordinal": 15
         },
         {
           "if": null,
           "name": "Record successful complete architecture-sdk",
           "uses": null,
-          "yaml_ordinal": 15
+          "yaml_ordinal": 16
         },
         {
           "if": null,
           "name": null,
           "uses": "actions/upload-artifact@v4",
-          "yaml_ordinal": 16
+          "yaml_ordinal": 17
         }
       ]
     },
@@ -3907,94 +3955,100 @@
           "yaml_ordinal": 1
         },
         {
-          "if": null,
-          "name": null,
-          "uses": "actions/setup-python@v5",
+          "if": "${{ runner.environment == 'github-hosted' && runner.os == 'macOS' && runner.arch == 'ARM64' && fromJSON(env.BIOCOMPILER_SUPPORTED_PYTHON)[matrix.python-version] == '3.11.15' }}",
+          "name": "Seed the exact hosted macOS ARM64 Python runtime",
+          "uses": null,
           "yaml_ordinal": 2
         },
         {
           "if": null,
           "name": null,
-          "uses": null,
+          "uses": "actions/setup-python@v5",
           "yaml_ordinal": 3
         },
         {
           "if": null,
           "name": null,
-          "uses": "actions/download-artifact@v4",
+          "uses": null,
           "yaml_ordinal": 4
+        },
+        {
+          "if": null,
+          "name": null,
+          "uses": "actions/download-artifact@v4",
+          "yaml_ordinal": 5
         },
         {
           "if": null,
           "name": "Restore exact source and platform bound compiled executables",
           "uses": null,
-          "yaml_ordinal": 5
-        },
-        {
-          "if": null,
-          "name": null,
-          "uses": null,
           "yaml_ordinal": 6
         },
         {
           "if": null,
-          "name": "Check installed expressive policy assessment and replay on selected Python runtime",
+          "name": null,
           "uses": null,
           "yaml_ordinal": 7
         },
         {
           "if": null,
-          "name": "Check installed bounded operational policy and standalone replay on Python 3.11",
+          "name": "Check installed expressive policy assessment and replay on selected Python runtime",
           "uses": null,
           "yaml_ordinal": 8
         },
         {
-          "if": "${{ !cancelled() && steps.policy_native_ready.outcome == 'success' && steps.policy_runtime_ready.outcome == 'success' }}",
-          "name": "Check installed bounded implementation and standalone replay on Python 3.11",
+          "if": null,
+          "name": "Check installed bounded operational policy and standalone replay on Python 3.11",
           "uses": null,
           "yaml_ordinal": 9
         },
         {
           "if": "${{ !cancelled() && steps.policy_native_ready.outcome == 'success' && steps.policy_runtime_ready.outcome == 'success' }}",
-          "name": "Check installed conditional policy material and fresh paired export on Python 3.11",
+          "name": "Check installed bounded implementation and standalone replay on Python 3.11",
           "uses": null,
           "yaml_ordinal": 10
         },
         {
           "if": "${{ !cancelled() && steps.policy_native_ready.outcome == 'success' && steps.policy_runtime_ready.outcome == 'success' }}",
-          "name": "Check Verify-only offline material consumer on Python 3.11",
+          "name": "Check installed conditional policy material and fresh paired export on Python 3.11",
           "uses": null,
           "yaml_ordinal": 11
+        },
+        {
+          "if": "${{ !cancelled() && steps.policy_native_ready.outcome == 'success' && steps.policy_runtime_ready.outcome == 'success' }}",
+          "name": "Check Verify-only offline material consumer on Python 3.11",
+          "uses": null,
+          "yaml_ordinal": 12
         },
         {
           "if": "always()",
           "name": "Retain early installed policy diagnostics for Python 3.11",
           "uses": "actions/upload-artifact@v4",
-          "yaml_ordinal": 12
+          "yaml_ordinal": 13
         },
         {
           "if": null,
           "name": "Check installed public architecture SDK and CLI on selected Python runtime",
           "uses": null,
-          "yaml_ordinal": 13
+          "yaml_ordinal": 14
         },
         {
           "if": "always()",
           "name": null,
           "uses": "actions/upload-artifact@v4",
-          "yaml_ordinal": 14
+          "yaml_ordinal": 15
         },
         {
           "if": null,
           "name": "Record successful complete architecture-sdk",
           "uses": null,
-          "yaml_ordinal": 15
+          "yaml_ordinal": 16
         },
         {
           "if": null,
           "name": null,
           "uses": "actions/upload-artifact@v4",
-          "yaml_ordinal": 16
+          "yaml_ordinal": 17
         }
       ]
     },
@@ -4015,94 +4069,100 @@
           "yaml_ordinal": 1
         },
         {
-          "if": null,
-          "name": null,
-          "uses": "actions/setup-python@v5",
+          "if": "${{ runner.environment == 'github-hosted' && runner.os == 'macOS' && runner.arch == 'ARM64' && fromJSON(env.BIOCOMPILER_SUPPORTED_PYTHON)[matrix.python-version] == '3.11.15' }}",
+          "name": "Seed the exact hosted macOS ARM64 Python runtime",
+          "uses": null,
           "yaml_ordinal": 2
         },
         {
           "if": null,
           "name": null,
-          "uses": null,
+          "uses": "actions/setup-python@v5",
           "yaml_ordinal": 3
         },
         {
           "if": null,
           "name": null,
-          "uses": "actions/download-artifact@v4",
+          "uses": null,
           "yaml_ordinal": 4
+        },
+        {
+          "if": null,
+          "name": null,
+          "uses": "actions/download-artifact@v4",
+          "yaml_ordinal": 5
         },
         {
           "if": null,
           "name": "Restore exact source and platform bound compiled executables",
           "uses": null,
-          "yaml_ordinal": 5
-        },
-        {
-          "if": null,
-          "name": null,
-          "uses": null,
           "yaml_ordinal": 6
         },
         {
           "if": null,
-          "name": "Check installed expressive policy assessment and replay on selected Python runtime",
+          "name": null,
           "uses": null,
           "yaml_ordinal": 7
         },
         {
           "if": null,
-          "name": "Check installed bounded operational policy and standalone replay on Python 3.14",
+          "name": "Check installed expressive policy assessment and replay on selected Python runtime",
           "uses": null,
           "yaml_ordinal": 8
         },
         {
-          "if": "${{ !cancelled() && steps.policy_native_ready.outcome == 'success' && steps.policy_runtime_ready.outcome == 'success' }}",
-          "name": "Check installed bounded implementation and standalone replay on Python 3.14",
+          "if": null,
+          "name": "Check installed bounded operational policy and standalone replay on Python 3.14",
           "uses": null,
           "yaml_ordinal": 9
         },
         {
           "if": "${{ !cancelled() && steps.policy_native_ready.outcome == 'success' && steps.policy_runtime_ready.outcome == 'success' }}",
-          "name": "Check installed conditional policy material and fresh paired export on Python 3.14",
+          "name": "Check installed bounded implementation and standalone replay on Python 3.14",
           "uses": null,
           "yaml_ordinal": 10
         },
         {
           "if": "${{ !cancelled() && steps.policy_native_ready.outcome == 'success' && steps.policy_runtime_ready.outcome == 'success' }}",
-          "name": "Check Verify-only offline material consumer on Python 3.14",
+          "name": "Check installed conditional policy material and fresh paired export on Python 3.14",
           "uses": null,
           "yaml_ordinal": 11
+        },
+        {
+          "if": "${{ !cancelled() && steps.policy_native_ready.outcome == 'success' && steps.policy_runtime_ready.outcome == 'success' }}",
+          "name": "Check Verify-only offline material consumer on Python 3.14",
+          "uses": null,
+          "yaml_ordinal": 12
         },
         {
           "if": "always()",
           "name": "Retain early installed policy diagnostics for Python 3.14",
           "uses": "actions/upload-artifact@v4",
-          "yaml_ordinal": 12
+          "yaml_ordinal": 13
         },
         {
           "if": null,
           "name": "Check installed public architecture SDK and CLI on selected Python runtime",
           "uses": null,
-          "yaml_ordinal": 13
+          "yaml_ordinal": 14
         },
         {
           "if": "always()",
           "name": null,
           "uses": "actions/upload-artifact@v4",
-          "yaml_ordinal": 14
+          "yaml_ordinal": 15
         },
         {
           "if": null,
           "name": "Record successful complete architecture-sdk",
           "uses": null,
-          "yaml_ordinal": 15
+          "yaml_ordinal": 16
         },
         {
           "if": null,
           "name": null,
           "uses": "actions/upload-artifact@v4",
-          "yaml_ordinal": 16
+          "yaml_ordinal": 17
         }
       ]
     },
@@ -4234,21 +4294,21 @@
           "yaml_ordinal": 1
         },
         {
+          "if": "${{ runner.environment == 'github-hosted' && runner.os == 'macOS' && runner.arch == 'ARM64' && fromJSON(env.BIOCOMPILER_SUPPORTED_PYTHON)[matrix.python-version] == '3.11.15' }}",
+          "name": "Seed the exact hosted macOS ARM64 Python runtime",
+          "uses": null,
+          "yaml_ordinal": 2
+        },
+        {
           "if": null,
           "name": null,
           "uses": "actions/setup-python@v5",
-          "yaml_ordinal": 2
+          "yaml_ordinal": 3
         },
         {
           "if": null,
           "name": "Bind the required Python and native platform variant",
           "uses": null,
-          "yaml_ordinal": 3
-        },
-        {
-          "if": null,
-          "name": null,
-          "uses": "actions/download-artifact@v4",
           "yaml_ordinal": 4
         },
         {
@@ -4259,27 +4319,33 @@
         },
         {
           "if": null,
+          "name": null,
+          "uses": "actions/download-artifact@v4",
+          "yaml_ordinal": 6
+        },
+        {
+          "if": null,
           "name": "Execute the complete selected installed campaign group in a fresh wheel-only environment",
           "uses": null,
-          "yaml_ordinal": 6
+          "yaml_ordinal": 7
         },
         {
           "if": "always()",
           "name": "Retain complete protocol and SDK artifacts even on failure",
           "uses": "actions/upload-artifact@v4",
-          "yaml_ordinal": 7
+          "yaml_ordinal": 8
         },
         {
           "if": null,
           "name": "Record successful complete installed-campaigns",
           "uses": null,
-          "yaml_ordinal": 8
+          "yaml_ordinal": 9
         },
         {
           "if": null,
           "name": null,
           "uses": "actions/upload-artifact@v4",
-          "yaml_ordinal": 9
+          "yaml_ordinal": 10
         }
       ]
     },
@@ -4301,21 +4367,21 @@
           "yaml_ordinal": 1
         },
         {
+          "if": "${{ runner.environment == 'github-hosted' && runner.os == 'macOS' && runner.arch == 'ARM64' && fromJSON(env.BIOCOMPILER_SUPPORTED_PYTHON)[matrix.python-version] == '3.11.15' }}",
+          "name": "Seed the exact hosted macOS ARM64 Python runtime",
+          "uses": null,
+          "yaml_ordinal": 2
+        },
+        {
           "if": null,
           "name": null,
           "uses": "actions/setup-python@v5",
-          "yaml_ordinal": 2
+          "yaml_ordinal": 3
         },
         {
           "if": null,
           "name": "Bind the required Python and native platform variant",
           "uses": null,
-          "yaml_ordinal": 3
-        },
-        {
-          "if": null,
-          "name": null,
-          "uses": "actions/download-artifact@v4",
           "yaml_ordinal": 4
         },
         {
@@ -4326,27 +4392,33 @@
         },
         {
           "if": null,
+          "name": null,
+          "uses": "actions/download-artifact@v4",
+          "yaml_ordinal": 6
+        },
+        {
+          "if": null,
           "name": "Execute the complete selected installed campaign group in a fresh wheel-only environment",
           "uses": null,
-          "yaml_ordinal": 6
+          "yaml_ordinal": 7
         },
         {
           "if": "always()",
           "name": "Retain complete protocol and SDK artifacts even on failure",
           "uses": "actions/upload-artifact@v4",
-          "yaml_ordinal": 7
+          "yaml_ordinal": 8
         },
         {
           "if": null,
           "name": "Record successful complete installed-campaigns",
           "uses": null,
-          "yaml_ordinal": 8
+          "yaml_ordinal": 9
         },
         {
           "if": null,
           "name": null,
           "uses": "actions/upload-artifact@v4",
-          "yaml_ordinal": 9
+          "yaml_ordinal": 10
         }
       ]
     },
@@ -4368,21 +4440,21 @@
           "yaml_ordinal": 1
         },
         {
+          "if": "${{ runner.environment == 'github-hosted' && runner.os == 'macOS' && runner.arch == 'ARM64' && fromJSON(env.BIOCOMPILER_SUPPORTED_PYTHON)[matrix.python-version] == '3.11.15' }}",
+          "name": "Seed the exact hosted macOS ARM64 Python runtime",
+          "uses": null,
+          "yaml_ordinal": 2
+        },
+        {
           "if": null,
           "name": null,
           "uses": "actions/setup-python@v5",
-          "yaml_ordinal": 2
+          "yaml_ordinal": 3
         },
         {
           "if": null,
           "name": "Bind the required Python and native platform variant",
           "uses": null,
-          "yaml_ordinal": 3
-        },
-        {
-          "if": null,
-          "name": null,
-          "uses": "actions/download-artifact@v4",
           "yaml_ordinal": 4
         },
         {
@@ -4393,27 +4465,33 @@
         },
         {
           "if": null,
+          "name": null,
+          "uses": "actions/download-artifact@v4",
+          "yaml_ordinal": 6
+        },
+        {
+          "if": null,
           "name": "Execute the complete selected installed campaign group in a fresh wheel-only environment",
           "uses": null,
-          "yaml_ordinal": 6
+          "yaml_ordinal": 7
         },
         {
           "if": "always()",
           "name": "Retain complete protocol and SDK artifacts even on failure",
           "uses": "actions/upload-artifact@v4",
-          "yaml_ordinal": 7
+          "yaml_ordinal": 8
         },
         {
           "if": null,
           "name": "Record successful complete installed-campaigns",
           "uses": null,
-          "yaml_ordinal": 8
+          "yaml_ordinal": 9
         },
         {
           "if": null,
           "name": null,
           "uses": "actions/upload-artifact@v4",
-          "yaml_ordinal": 9
+          "yaml_ordinal": 10
         }
       ]
     },
@@ -4435,21 +4513,21 @@
           "yaml_ordinal": 1
         },
         {
+          "if": "${{ runner.environment == 'github-hosted' && runner.os == 'macOS' && runner.arch == 'ARM64' && fromJSON(env.BIOCOMPILER_SUPPORTED_PYTHON)[matrix.python-version] == '3.11.15' }}",
+          "name": "Seed the exact hosted macOS ARM64 Python runtime",
+          "uses": null,
+          "yaml_ordinal": 2
+        },
+        {
           "if": null,
           "name": null,
           "uses": "actions/setup-python@v5",
-          "yaml_ordinal": 2
+          "yaml_ordinal": 3
         },
         {
           "if": null,
           "name": "Bind the required Python and native platform variant",
           "uses": null,
-          "yaml_ordinal": 3
-        },
-        {
-          "if": null,
-          "name": null,
-          "uses": "actions/download-artifact@v4",
           "yaml_ordinal": 4
         },
         {
@@ -4460,27 +4538,33 @@
         },
         {
           "if": null,
+          "name": null,
+          "uses": "actions/download-artifact@v4",
+          "yaml_ordinal": 6
+        },
+        {
+          "if": null,
           "name": "Execute the complete selected installed campaign group in a fresh wheel-only environment",
           "uses": null,
-          "yaml_ordinal": 6
+          "yaml_ordinal": 7
         },
         {
           "if": "always()",
           "name": "Retain complete protocol and SDK artifacts even on failure",
           "uses": "actions/upload-artifact@v4",
-          "yaml_ordinal": 7
+          "yaml_ordinal": 8
         },
         {
           "if": null,
           "name": "Record successful complete installed-campaigns",
           "uses": null,
-          "yaml_ordinal": 8
+          "yaml_ordinal": 9
         },
         {
           "if": null,
           "name": null,
           "uses": "actions/upload-artifact@v4",
-          "yaml_ordinal": 9
+          "yaml_ordinal": 10
         }
       ]
     },
@@ -4502,21 +4586,21 @@
           "yaml_ordinal": 1
         },
         {
+          "if": "${{ runner.environment == 'github-hosted' && runner.os == 'macOS' && runner.arch == 'ARM64' && fromJSON(env.BIOCOMPILER_SUPPORTED_PYTHON)[matrix.python-version] == '3.11.15' }}",
+          "name": "Seed the exact hosted macOS ARM64 Python runtime",
+          "uses": null,
+          "yaml_ordinal": 2
+        },
+        {
           "if": null,
           "name": null,
           "uses": "actions/setup-python@v5",
-          "yaml_ordinal": 2
+          "yaml_ordinal": 3
         },
         {
           "if": null,
           "name": "Bind the required Python and native platform variant",
           "uses": null,
-          "yaml_ordinal": 3
-        },
-        {
-          "if": null,
-          "name": null,
-          "uses": "actions/download-artifact@v4",
           "yaml_ordinal": 4
         },
         {
@@ -4527,27 +4611,33 @@
         },
         {
           "if": null,
+          "name": null,
+          "uses": "actions/download-artifact@v4",
+          "yaml_ordinal": 6
+        },
+        {
+          "if": null,
           "name": "Execute the complete selected installed campaign group in a fresh wheel-only environment",
           "uses": null,
-          "yaml_ordinal": 6
+          "yaml_ordinal": 7
         },
         {
           "if": "always()",
           "name": "Retain complete protocol and SDK artifacts even on failure",
           "uses": "actions/upload-artifact@v4",
-          "yaml_ordinal": 7
+          "yaml_ordinal": 8
         },
         {
           "if": null,
           "name": "Record successful complete installed-campaigns",
           "uses": null,
-          "yaml_ordinal": 8
+          "yaml_ordinal": 9
         },
         {
           "if": null,
           "name": null,
           "uses": "actions/upload-artifact@v4",
-          "yaml_ordinal": 9
+          "yaml_ordinal": 10
         }
       ]
     },
@@ -4569,21 +4659,21 @@
           "yaml_ordinal": 1
         },
         {
+          "if": "${{ runner.environment == 'github-hosted' && runner.os == 'macOS' && runner.arch == 'ARM64' && fromJSON(env.BIOCOMPILER_SUPPORTED_PYTHON)[matrix.python-version] == '3.11.15' }}",
+          "name": "Seed the exact hosted macOS ARM64 Python runtime",
+          "uses": null,
+          "yaml_ordinal": 2
+        },
+        {
           "if": null,
           "name": null,
           "uses": "actions/setup-python@v5",
-          "yaml_ordinal": 2
+          "yaml_ordinal": 3
         },
         {
           "if": null,
           "name": "Bind the required Python and native platform variant",
           "uses": null,
-          "yaml_ordinal": 3
-        },
-        {
-          "if": null,
-          "name": null,
-          "uses": "actions/download-artifact@v4",
           "yaml_ordinal": 4
         },
         {
@@ -4594,27 +4684,33 @@
         },
         {
           "if": null,
+          "name": null,
+          "uses": "actions/download-artifact@v4",
+          "yaml_ordinal": 6
+        },
+        {
+          "if": null,
           "name": "Execute the complete selected installed campaign group in a fresh wheel-only environment",
           "uses": null,
-          "yaml_ordinal": 6
+          "yaml_ordinal": 7
         },
         {
           "if": "always()",
           "name": "Retain complete protocol and SDK artifacts even on failure",
           "uses": "actions/upload-artifact@v4",
-          "yaml_ordinal": 7
+          "yaml_ordinal": 8
         },
         {
           "if": null,
           "name": "Record successful complete installed-campaigns",
           "uses": null,
-          "yaml_ordinal": 8
+          "yaml_ordinal": 9
         },
         {
           "if": null,
           "name": null,
           "uses": "actions/upload-artifact@v4",
-          "yaml_ordinal": 9
+          "yaml_ordinal": 10
         }
       ]
     },
@@ -4636,21 +4732,21 @@
           "yaml_ordinal": 1
         },
         {
+          "if": "${{ runner.environment == 'github-hosted' && runner.os == 'macOS' && runner.arch == 'ARM64' && fromJSON(env.BIOCOMPILER_SUPPORTED_PYTHON)[matrix.python-version] == '3.11.15' }}",
+          "name": "Seed the exact hosted macOS ARM64 Python runtime",
+          "uses": null,
+          "yaml_ordinal": 2
+        },
+        {
           "if": null,
           "name": null,
           "uses": "actions/setup-python@v5",
-          "yaml_ordinal": 2
+          "yaml_ordinal": 3
         },
         {
           "if": null,
           "name": "Bind the required Python and native platform variant",
           "uses": null,
-          "yaml_ordinal": 3
-        },
-        {
-          "if": null,
-          "name": null,
-          "uses": "actions/download-artifact@v4",
           "yaml_ordinal": 4
         },
         {
@@ -4661,27 +4757,33 @@
         },
         {
           "if": null,
+          "name": null,
+          "uses": "actions/download-artifact@v4",
+          "yaml_ordinal": 6
+        },
+        {
+          "if": null,
           "name": "Execute the complete selected installed campaign group in a fresh wheel-only environment",
           "uses": null,
-          "yaml_ordinal": 6
+          "yaml_ordinal": 7
         },
         {
           "if": "always()",
           "name": "Retain complete protocol and SDK artifacts even on failure",
           "uses": "actions/upload-artifact@v4",
-          "yaml_ordinal": 7
+          "yaml_ordinal": 8
         },
         {
           "if": null,
           "name": "Record successful complete installed-campaigns",
           "uses": null,
-          "yaml_ordinal": 8
+          "yaml_ordinal": 9
         },
         {
           "if": null,
           "name": null,
           "uses": "actions/upload-artifact@v4",
-          "yaml_ordinal": 9
+          "yaml_ordinal": 10
         }
       ]
     },
@@ -4703,21 +4805,21 @@
           "yaml_ordinal": 1
         },
         {
+          "if": "${{ runner.environment == 'github-hosted' && runner.os == 'macOS' && runner.arch == 'ARM64' && fromJSON(env.BIOCOMPILER_SUPPORTED_PYTHON)[matrix.python-version] == '3.11.15' }}",
+          "name": "Seed the exact hosted macOS ARM64 Python runtime",
+          "uses": null,
+          "yaml_ordinal": 2
+        },
+        {
           "if": null,
           "name": null,
           "uses": "actions/setup-python@v5",
-          "yaml_ordinal": 2
+          "yaml_ordinal": 3
         },
         {
           "if": null,
           "name": "Bind the required Python and native platform variant",
           "uses": null,
-          "yaml_ordinal": 3
-        },
-        {
-          "if": null,
-          "name": null,
-          "uses": "actions/download-artifact@v4",
           "yaml_ordinal": 4
         },
         {
@@ -4728,27 +4830,33 @@
         },
         {
           "if": null,
+          "name": null,
+          "uses": "actions/download-artifact@v4",
+          "yaml_ordinal": 6
+        },
+        {
+          "if": null,
           "name": "Execute the complete selected installed campaign group in a fresh wheel-only environment",
           "uses": null,
-          "yaml_ordinal": 6
+          "yaml_ordinal": 7
         },
         {
           "if": "always()",
           "name": "Retain complete protocol and SDK artifacts even on failure",
           "uses": "actions/upload-artifact@v4",
-          "yaml_ordinal": 7
+          "yaml_ordinal": 8
         },
         {
           "if": null,
           "name": "Record successful complete installed-campaigns",
           "uses": null,
-          "yaml_ordinal": 8
+          "yaml_ordinal": 9
         },
         {
           "if": null,
           "name": null,
           "uses": "actions/upload-artifact@v4",
-          "yaml_ordinal": 9
+          "yaml_ordinal": 10
         }
       ]
     },
@@ -4770,21 +4878,21 @@
           "yaml_ordinal": 1
         },
         {
+          "if": "${{ runner.environment == 'github-hosted' && runner.os == 'macOS' && runner.arch == 'ARM64' && fromJSON(env.BIOCOMPILER_SUPPORTED_PYTHON)[matrix.python-version] == '3.11.15' }}",
+          "name": "Seed the exact hosted macOS ARM64 Python runtime",
+          "uses": null,
+          "yaml_ordinal": 2
+        },
+        {
           "if": null,
           "name": null,
           "uses": "actions/setup-python@v5",
-          "yaml_ordinal": 2
+          "yaml_ordinal": 3
         },
         {
           "if": null,
           "name": "Bind the required Python and native platform variant",
           "uses": null,
-          "yaml_ordinal": 3
-        },
-        {
-          "if": null,
-          "name": null,
-          "uses": "actions/download-artifact@v4",
           "yaml_ordinal": 4
         },
         {
@@ -4795,27 +4903,33 @@
         },
         {
           "if": null,
+          "name": null,
+          "uses": "actions/download-artifact@v4",
+          "yaml_ordinal": 6
+        },
+        {
+          "if": null,
           "name": "Execute the complete selected installed campaign group in a fresh wheel-only environment",
           "uses": null,
-          "yaml_ordinal": 6
+          "yaml_ordinal": 7
         },
         {
           "if": "always()",
           "name": "Retain complete protocol and SDK artifacts even on failure",
           "uses": "actions/upload-artifact@v4",
-          "yaml_ordinal": 7
+          "yaml_ordinal": 8
         },
         {
           "if": null,
           "name": "Record successful complete installed-campaigns",
           "uses": null,
-          "yaml_ordinal": 8
+          "yaml_ordinal": 9
         },
         {
           "if": null,
           "name": null,
           "uses": "actions/upload-artifact@v4",
-          "yaml_ordinal": 9
+          "yaml_ordinal": 10
         }
       ]
     },
@@ -4837,21 +4951,21 @@
           "yaml_ordinal": 1
         },
         {
+          "if": "${{ runner.environment == 'github-hosted' && runner.os == 'macOS' && runner.arch == 'ARM64' && fromJSON(env.BIOCOMPILER_SUPPORTED_PYTHON)[matrix.python-version] == '3.11.15' }}",
+          "name": "Seed the exact hosted macOS ARM64 Python runtime",
+          "uses": null,
+          "yaml_ordinal": 2
+        },
+        {
           "if": null,
           "name": null,
           "uses": "actions/setup-python@v5",
-          "yaml_ordinal": 2
+          "yaml_ordinal": 3
         },
         {
           "if": null,
           "name": "Bind the required Python and native platform variant",
           "uses": null,
-          "yaml_ordinal": 3
-        },
-        {
-          "if": null,
-          "name": null,
-          "uses": "actions/download-artifact@v4",
           "yaml_ordinal": 4
         },
         {
@@ -4862,27 +4976,33 @@
         },
         {
           "if": null,
+          "name": null,
+          "uses": "actions/download-artifact@v4",
+          "yaml_ordinal": 6
+        },
+        {
+          "if": null,
           "name": "Execute the complete selected installed campaign group in a fresh wheel-only environment",
           "uses": null,
-          "yaml_ordinal": 6
+          "yaml_ordinal": 7
         },
         {
           "if": "always()",
           "name": "Retain complete protocol and SDK artifacts even on failure",
           "uses": "actions/upload-artifact@v4",
-          "yaml_ordinal": 7
+          "yaml_ordinal": 8
         },
         {
           "if": null,
           "name": "Record successful complete installed-campaigns",
           "uses": null,
-          "yaml_ordinal": 8
+          "yaml_ordinal": 9
         },
         {
           "if": null,
           "name": null,
           "uses": "actions/upload-artifact@v4",
-          "yaml_ordinal": 9
+          "yaml_ordinal": 10
         }
       ]
     },
@@ -4904,21 +5024,21 @@
           "yaml_ordinal": 1
         },
         {
+          "if": "${{ runner.environment == 'github-hosted' && runner.os == 'macOS' && runner.arch == 'ARM64' && fromJSON(env.BIOCOMPILER_SUPPORTED_PYTHON)[matrix.python-version] == '3.11.15' }}",
+          "name": "Seed the exact hosted macOS ARM64 Python runtime",
+          "uses": null,
+          "yaml_ordinal": 2
+        },
+        {
           "if": null,
           "name": null,
           "uses": "actions/setup-python@v5",
-          "yaml_ordinal": 2
+          "yaml_ordinal": 3
         },
         {
           "if": null,
           "name": "Bind the required Python and native platform variant",
           "uses": null,
-          "yaml_ordinal": 3
-        },
-        {
-          "if": null,
-          "name": null,
-          "uses": "actions/download-artifact@v4",
           "yaml_ordinal": 4
         },
         {
@@ -4929,27 +5049,33 @@
         },
         {
           "if": null,
+          "name": null,
+          "uses": "actions/download-artifact@v4",
+          "yaml_ordinal": 6
+        },
+        {
+          "if": null,
           "name": "Execute the complete selected installed campaign group in a fresh wheel-only environment",
           "uses": null,
-          "yaml_ordinal": 6
+          "yaml_ordinal": 7
         },
         {
           "if": "always()",
           "name": "Retain complete protocol and SDK artifacts even on failure",
           "uses": "actions/upload-artifact@v4",
-          "yaml_ordinal": 7
+          "yaml_ordinal": 8
         },
         {
           "if": null,
           "name": "Record successful complete installed-campaigns",
           "uses": null,
-          "yaml_ordinal": 8
+          "yaml_ordinal": 9
         },
         {
           "if": null,
           "name": null,
           "uses": "actions/upload-artifact@v4",
-          "yaml_ordinal": 9
+          "yaml_ordinal": 10
         }
       ]
     },
@@ -4971,21 +5097,21 @@
           "yaml_ordinal": 1
         },
         {
+          "if": "${{ runner.environment == 'github-hosted' && runner.os == 'macOS' && runner.arch == 'ARM64' && fromJSON(env.BIOCOMPILER_SUPPORTED_PYTHON)[matrix.python-version] == '3.11.15' }}",
+          "name": "Seed the exact hosted macOS ARM64 Python runtime",
+          "uses": null,
+          "yaml_ordinal": 2
+        },
+        {
           "if": null,
           "name": null,
           "uses": "actions/setup-python@v5",
-          "yaml_ordinal": 2
+          "yaml_ordinal": 3
         },
         {
           "if": null,
           "name": "Bind the required Python and native platform variant",
           "uses": null,
-          "yaml_ordinal": 3
-        },
-        {
-          "if": null,
-          "name": null,
-          "uses": "actions/download-artifact@v4",
           "yaml_ordinal": 4
         },
         {
@@ -4996,27 +5122,33 @@
         },
         {
           "if": null,
+          "name": null,
+          "uses": "actions/download-artifact@v4",
+          "yaml_ordinal": 6
+        },
+        {
+          "if": null,
           "name": "Execute the complete selected installed campaign group in a fresh wheel-only environment",
           "uses": null,
-          "yaml_ordinal": 6
+          "yaml_ordinal": 7
         },
         {
           "if": "always()",
           "name": "Retain complete protocol and SDK artifacts even on failure",
           "uses": "actions/upload-artifact@v4",
-          "yaml_ordinal": 7
+          "yaml_ordinal": 8
         },
         {
           "if": null,
           "name": "Record successful complete installed-campaigns",
           "uses": null,
-          "yaml_ordinal": 8
+          "yaml_ordinal": 9
         },
         {
           "if": null,
           "name": null,
           "uses": "actions/upload-artifact@v4",
-          "yaml_ordinal": 9
+          "yaml_ordinal": 10
         }
       ]
     },
@@ -5038,21 +5170,21 @@
           "yaml_ordinal": 1
         },
         {
+          "if": "${{ runner.environment == 'github-hosted' && runner.os == 'macOS' && runner.arch == 'ARM64' && fromJSON(env.BIOCOMPILER_SUPPORTED_PYTHON)[matrix.python-version] == '3.11.15' }}",
+          "name": "Seed the exact hosted macOS ARM64 Python runtime",
+          "uses": null,
+          "yaml_ordinal": 2
+        },
+        {
           "if": null,
           "name": null,
           "uses": "actions/setup-python@v5",
-          "yaml_ordinal": 2
+          "yaml_ordinal": 3
         },
         {
           "if": null,
           "name": "Bind the required Python and native platform variant",
           "uses": null,
-          "yaml_ordinal": 3
-        },
-        {
-          "if": null,
-          "name": null,
-          "uses": "actions/download-artifact@v4",
           "yaml_ordinal": 4
         },
         {
@@ -5063,27 +5195,33 @@
         },
         {
           "if": null,
+          "name": null,
+          "uses": "actions/download-artifact@v4",
+          "yaml_ordinal": 6
+        },
+        {
+          "if": null,
           "name": "Execute the complete selected installed campaign group in a fresh wheel-only environment",
           "uses": null,
-          "yaml_ordinal": 6
+          "yaml_ordinal": 7
         },
         {
           "if": "always()",
           "name": "Retain complete protocol and SDK artifacts even on failure",
           "uses": "actions/upload-artifact@v4",
-          "yaml_ordinal": 7
+          "yaml_ordinal": 8
         },
         {
           "if": null,
           "name": "Record successful complete installed-campaigns",
           "uses": null,
-          "yaml_ordinal": 8
+          "yaml_ordinal": 9
         },
         {
           "if": null,
           "name": null,
           "uses": "actions/upload-artifact@v4",
-          "yaml_ordinal": 9
+          "yaml_ordinal": 10
         }
       ]
     },
@@ -5105,21 +5243,21 @@
           "yaml_ordinal": 1
         },
         {
+          "if": "${{ runner.environment == 'github-hosted' && runner.os == 'macOS' && runner.arch == 'ARM64' && fromJSON(env.BIOCOMPILER_SUPPORTED_PYTHON)[matrix.python-version] == '3.11.15' }}",
+          "name": "Seed the exact hosted macOS ARM64 Python runtime",
+          "uses": null,
+          "yaml_ordinal": 2
+        },
+        {
           "if": null,
           "name": null,
           "uses": "actions/setup-python@v5",
-          "yaml_ordinal": 2
+          "yaml_ordinal": 3
         },
         {
           "if": null,
           "name": "Bind the required Python and native platform variant",
           "uses": null,
-          "yaml_ordinal": 3
-        },
-        {
-          "if": null,
-          "name": null,
-          "uses": "actions/download-artifact@v4",
           "yaml_ordinal": 4
         },
         {
@@ -5130,27 +5268,33 @@
         },
         {
           "if": null,
+          "name": null,
+          "uses": "actions/download-artifact@v4",
+          "yaml_ordinal": 6
+        },
+        {
+          "if": null,
           "name": "Execute the complete selected installed campaign group in a fresh wheel-only environment",
           "uses": null,
-          "yaml_ordinal": 6
+          "yaml_ordinal": 7
         },
         {
           "if": "always()",
           "name": "Retain complete protocol and SDK artifacts even on failure",
           "uses": "actions/upload-artifact@v4",
-          "yaml_ordinal": 7
+          "yaml_ordinal": 8
         },
         {
           "if": null,
           "name": "Record successful complete installed-campaigns",
           "uses": null,
-          "yaml_ordinal": 8
+          "yaml_ordinal": 9
         },
         {
           "if": null,
           "name": null,
           "uses": "actions/upload-artifact@v4",
-          "yaml_ordinal": 9
+          "yaml_ordinal": 10
         }
       ]
     },
@@ -5172,21 +5316,21 @@
           "yaml_ordinal": 1
         },
         {
+          "if": "${{ runner.environment == 'github-hosted' && runner.os == 'macOS' && runner.arch == 'ARM64' && fromJSON(env.BIOCOMPILER_SUPPORTED_PYTHON)[matrix.python-version] == '3.11.15' }}",
+          "name": "Seed the exact hosted macOS ARM64 Python runtime",
+          "uses": null,
+          "yaml_ordinal": 2
+        },
+        {
           "if": null,
           "name": null,
           "uses": "actions/setup-python@v5",
-          "yaml_ordinal": 2
+          "yaml_ordinal": 3
         },
         {
           "if": null,
           "name": "Bind the required Python and native platform variant",
           "uses": null,
-          "yaml_ordinal": 3
-        },
-        {
-          "if": null,
-          "name": null,
-          "uses": "actions/download-artifact@v4",
           "yaml_ordinal": 4
         },
         {
@@ -5197,27 +5341,33 @@
         },
         {
           "if": null,
+          "name": null,
+          "uses": "actions/download-artifact@v4",
+          "yaml_ordinal": 6
+        },
+        {
+          "if": null,
           "name": "Execute the complete selected installed campaign group in a fresh wheel-only environment",
           "uses": null,
-          "yaml_ordinal": 6
+          "yaml_ordinal": 7
         },
         {
           "if": "always()",
           "name": "Retain complete protocol and SDK artifacts even on failure",
           "uses": "actions/upload-artifact@v4",
-          "yaml_ordinal": 7
+          "yaml_ordinal": 8
         },
         {
           "if": null,
           "name": "Record successful complete installed-campaigns",
           "uses": null,
-          "yaml_ordinal": 8
+          "yaml_ordinal": 9
         },
         {
           "if": null,
           "name": null,
           "uses": "actions/upload-artifact@v4",
-          "yaml_ordinal": 9
+          "yaml_ordinal": 10
         }
       ]
     },
@@ -5239,21 +5389,21 @@
           "yaml_ordinal": 1
         },
         {
+          "if": "${{ runner.environment == 'github-hosted' && runner.os == 'macOS' && runner.arch == 'ARM64' && fromJSON(env.BIOCOMPILER_SUPPORTED_PYTHON)[matrix.python-version] == '3.11.15' }}",
+          "name": "Seed the exact hosted macOS ARM64 Python runtime",
+          "uses": null,
+          "yaml_ordinal": 2
+        },
+        {
           "if": null,
           "name": null,
           "uses": "actions/setup-python@v5",
-          "yaml_ordinal": 2
+          "yaml_ordinal": 3
         },
         {
           "if": null,
           "name": "Bind the required Python and native platform variant",
           "uses": null,
-          "yaml_ordinal": 3
-        },
-        {
-          "if": null,
-          "name": null,
-          "uses": "actions/download-artifact@v4",
           "yaml_ordinal": 4
         },
         {
@@ -5264,27 +5414,33 @@
         },
         {
           "if": null,
+          "name": null,
+          "uses": "actions/download-artifact@v4",
+          "yaml_ordinal": 6
+        },
+        {
+          "if": null,
           "name": "Execute the complete selected installed campaign group in a fresh wheel-only environment",
           "uses": null,
-          "yaml_ordinal": 6
+          "yaml_ordinal": 7
         },
         {
           "if": "always()",
           "name": "Retain complete protocol and SDK artifacts even on failure",
           "uses": "actions/upload-artifact@v4",
-          "yaml_ordinal": 7
+          "yaml_ordinal": 8
         },
         {
           "if": null,
           "name": "Record successful complete installed-campaigns",
           "uses": null,
-          "yaml_ordinal": 8
+          "yaml_ordinal": 9
         },
         {
           "if": null,
           "name": null,
           "uses": "actions/upload-artifact@v4",
-          "yaml_ordinal": 9
+          "yaml_ordinal": 10
         }
       ]
     },
@@ -5306,21 +5462,21 @@
           "yaml_ordinal": 1
         },
         {
+          "if": "${{ runner.environment == 'github-hosted' && runner.os == 'macOS' && runner.arch == 'ARM64' && fromJSON(env.BIOCOMPILER_SUPPORTED_PYTHON)[matrix.python-version] == '3.11.15' }}",
+          "name": "Seed the exact hosted macOS ARM64 Python runtime",
+          "uses": null,
+          "yaml_ordinal": 2
+        },
+        {
           "if": null,
           "name": null,
           "uses": "actions/setup-python@v5",
-          "yaml_ordinal": 2
+          "yaml_ordinal": 3
         },
         {
           "if": null,
           "name": "Bind the required Python and native platform variant",
           "uses": null,
-          "yaml_ordinal": 3
-        },
-        {
-          "if": null,
-          "name": null,
-          "uses": "actions/download-artifact@v4",
           "yaml_ordinal": 4
         },
         {
@@ -5331,27 +5487,33 @@
         },
         {
           "if": null,
+          "name": null,
+          "uses": "actions/download-artifact@v4",
+          "yaml_ordinal": 6
+        },
+        {
+          "if": null,
           "name": "Execute the complete selected installed campaign group in a fresh wheel-only environment",
           "uses": null,
-          "yaml_ordinal": 6
+          "yaml_ordinal": 7
         },
         {
           "if": "always()",
           "name": "Retain complete protocol and SDK artifacts even on failure",
           "uses": "actions/upload-artifact@v4",
-          "yaml_ordinal": 7
+          "yaml_ordinal": 8
         },
         {
           "if": null,
           "name": "Record successful complete installed-campaigns",
           "uses": null,
-          "yaml_ordinal": 8
+          "yaml_ordinal": 9
         },
         {
           "if": null,
           "name": null,
           "uses": "actions/upload-artifact@v4",
-          "yaml_ordinal": 9
+          "yaml_ordinal": 10
         }
       ]
     },
@@ -5373,21 +5535,21 @@
           "yaml_ordinal": 1
         },
         {
+          "if": "${{ runner.environment == 'github-hosted' && runner.os == 'macOS' && runner.arch == 'ARM64' && fromJSON(env.BIOCOMPILER_SUPPORTED_PYTHON)[matrix.python-version] == '3.11.15' }}",
+          "name": "Seed the exact hosted macOS ARM64 Python runtime",
+          "uses": null,
+          "yaml_ordinal": 2
+        },
+        {
           "if": null,
           "name": null,
           "uses": "actions/setup-python@v5",
-          "yaml_ordinal": 2
+          "yaml_ordinal": 3
         },
         {
           "if": null,
           "name": "Bind the required Python and native platform variant",
           "uses": null,
-          "yaml_ordinal": 3
-        },
-        {
-          "if": null,
-          "name": null,
-          "uses": "actions/download-artifact@v4",
           "yaml_ordinal": 4
         },
         {
@@ -5398,27 +5560,33 @@
         },
         {
           "if": null,
+          "name": null,
+          "uses": "actions/download-artifact@v4",
+          "yaml_ordinal": 6
+        },
+        {
+          "if": null,
           "name": "Execute the complete selected installed campaign group in a fresh wheel-only environment",
           "uses": null,
-          "yaml_ordinal": 6
+          "yaml_ordinal": 7
         },
         {
           "if": "always()",
           "name": "Retain complete protocol and SDK artifacts even on failure",
           "uses": "actions/upload-artifact@v4",
-          "yaml_ordinal": 7
+          "yaml_ordinal": 8
         },
         {
           "if": null,
           "name": "Record successful complete installed-campaigns",
           "uses": null,
-          "yaml_ordinal": 8
+          "yaml_ordinal": 9
         },
         {
           "if": null,
           "name": null,
           "uses": "actions/upload-artifact@v4",
-          "yaml_ordinal": 9
+          "yaml_ordinal": 10
         }
       ]
     },
@@ -5440,21 +5608,21 @@
           "yaml_ordinal": 1
         },
         {
+          "if": "${{ runner.environment == 'github-hosted' && runner.os == 'macOS' && runner.arch == 'ARM64' && fromJSON(env.BIOCOMPILER_SUPPORTED_PYTHON)[matrix.python-version] == '3.11.15' }}",
+          "name": "Seed the exact hosted macOS ARM64 Python runtime",
+          "uses": null,
+          "yaml_ordinal": 2
+        },
+        {
           "if": null,
           "name": null,
           "uses": "actions/setup-python@v5",
-          "yaml_ordinal": 2
+          "yaml_ordinal": 3
         },
         {
           "if": null,
           "name": "Bind the required Python and native platform variant",
           "uses": null,
-          "yaml_ordinal": 3
-        },
-        {
-          "if": null,
-          "name": null,
-          "uses": "actions/download-artifact@v4",
           "yaml_ordinal": 4
         },
         {
@@ -5465,27 +5633,33 @@
         },
         {
           "if": null,
+          "name": null,
+          "uses": "actions/download-artifact@v4",
+          "yaml_ordinal": 6
+        },
+        {
+          "if": null,
           "name": "Execute the complete selected installed campaign group in a fresh wheel-only environment",
           "uses": null,
-          "yaml_ordinal": 6
+          "yaml_ordinal": 7
         },
         {
           "if": "always()",
           "name": "Retain complete protocol and SDK artifacts even on failure",
           "uses": "actions/upload-artifact@v4",
-          "yaml_ordinal": 7
+          "yaml_ordinal": 8
         },
         {
           "if": null,
           "name": "Record successful complete installed-campaigns",
           "uses": null,
-          "yaml_ordinal": 8
+          "yaml_ordinal": 9
         },
         {
           "if": null,
           "name": null,
           "uses": "actions/upload-artifact@v4",
-          "yaml_ordinal": 9
+          "yaml_ordinal": 10
         }
       ]
     },
@@ -5507,21 +5681,21 @@
           "yaml_ordinal": 1
         },
         {
+          "if": "${{ runner.environment == 'github-hosted' && runner.os == 'macOS' && runner.arch == 'ARM64' && fromJSON(env.BIOCOMPILER_SUPPORTED_PYTHON)[matrix.python-version] == '3.11.15' }}",
+          "name": "Seed the exact hosted macOS ARM64 Python runtime",
+          "uses": null,
+          "yaml_ordinal": 2
+        },
+        {
           "if": null,
           "name": null,
           "uses": "actions/setup-python@v5",
-          "yaml_ordinal": 2
+          "yaml_ordinal": 3
         },
         {
           "if": null,
           "name": "Bind the required Python and native platform variant",
           "uses": null,
-          "yaml_ordinal": 3
-        },
-        {
-          "if": null,
-          "name": null,
-          "uses": "actions/download-artifact@v4",
           "yaml_ordinal": 4
         },
         {
@@ -5532,27 +5706,33 @@
         },
         {
           "if": null,
+          "name": null,
+          "uses": "actions/download-artifact@v4",
+          "yaml_ordinal": 6
+        },
+        {
+          "if": null,
           "name": "Execute the complete selected installed campaign group in a fresh wheel-only environment",
           "uses": null,
-          "yaml_ordinal": 6
+          "yaml_ordinal": 7
         },
         {
           "if": "always()",
           "name": "Retain complete protocol and SDK artifacts even on failure",
           "uses": "actions/upload-artifact@v4",
-          "yaml_ordinal": 7
+          "yaml_ordinal": 8
         },
         {
           "if": null,
           "name": "Record successful complete installed-campaigns",
           "uses": null,
-          "yaml_ordinal": 8
+          "yaml_ordinal": 9
         },
         {
           "if": null,
           "name": null,
           "uses": "actions/upload-artifact@v4",
-          "yaml_ordinal": 9
+          "yaml_ordinal": 10
         }
       ]
     },
@@ -5573,21 +5753,21 @@
           "yaml_ordinal": 1
         },
         {
-          "if": null,
-          "name": null,
-          "uses": "actions/setup-python@v5",
+          "if": "${{ runner.environment == 'github-hosted' && runner.os == 'macOS' && runner.arch == 'ARM64' && fromJSON(env.BIOCOMPILER_SUPPORTED_PYTHON)[matrix.python-version] == '3.11.15' }}",
+          "name": "Seed the exact hosted macOS ARM64 Python runtime",
+          "uses": null,
           "yaml_ordinal": 2
         },
         {
           "if": null,
           "name": null,
-          "uses": null,
+          "uses": "actions/setup-python@v5",
           "yaml_ordinal": 3
         },
         {
           "if": null,
           "name": null,
-          "uses": "actions/download-artifact@v4",
+          "uses": null,
           "yaml_ordinal": 4
         },
         {
@@ -5622,27 +5802,33 @@
         },
         {
           "if": null,
+          "name": null,
+          "uses": "actions/download-artifact@v4",
+          "yaml_ordinal": 10
+        },
+        {
+          "if": null,
           "name": "Reconstruct every campaign and installed lifecycle without omissions",
           "uses": null,
-          "yaml_ordinal": 10
+          "yaml_ordinal": 11
         },
         {
           "if": null,
           "name": null,
           "uses": "actions/upload-artifact@v4",
-          "yaml_ordinal": 11
+          "yaml_ordinal": 12
         },
         {
           "if": null,
           "name": "Record successful complete realization-conformance",
           "uses": null,
-          "yaml_ordinal": 12
+          "yaml_ordinal": 13
         },
         {
           "if": null,
           "name": null,
           "uses": "actions/upload-artifact@v4",
-          "yaml_ordinal": 13
+          "yaml_ordinal": 14
         }
       ]
     },
@@ -5663,21 +5849,21 @@
           "yaml_ordinal": 1
         },
         {
-          "if": null,
-          "name": null,
-          "uses": "actions/setup-python@v5",
+          "if": "${{ runner.environment == 'github-hosted' && runner.os == 'macOS' && runner.arch == 'ARM64' && fromJSON(env.BIOCOMPILER_SUPPORTED_PYTHON)[matrix.python-version] == '3.11.15' }}",
+          "name": "Seed the exact hosted macOS ARM64 Python runtime",
+          "uses": null,
           "yaml_ordinal": 2
         },
         {
           "if": null,
           "name": null,
-          "uses": null,
+          "uses": "actions/setup-python@v5",
           "yaml_ordinal": 3
         },
         {
           "if": null,
           "name": null,
-          "uses": "actions/download-artifact@v4",
+          "uses": null,
           "yaml_ordinal": 4
         },
         {
@@ -5712,27 +5898,33 @@
         },
         {
           "if": null,
+          "name": null,
+          "uses": "actions/download-artifact@v4",
+          "yaml_ordinal": 10
+        },
+        {
+          "if": null,
           "name": "Reconstruct every campaign and installed lifecycle without omissions",
           "uses": null,
-          "yaml_ordinal": 10
+          "yaml_ordinal": 11
         },
         {
           "if": null,
           "name": null,
           "uses": "actions/upload-artifact@v4",
-          "yaml_ordinal": 11
+          "yaml_ordinal": 12
         },
         {
           "if": null,
           "name": "Record successful complete realization-conformance",
           "uses": null,
-          "yaml_ordinal": 12
+          "yaml_ordinal": 13
         },
         {
           "if": null,
           "name": null,
           "uses": "actions/upload-artifact@v4",
-          "yaml_ordinal": 13
+          "yaml_ordinal": 14
         }
       ]
     },
@@ -5753,21 +5945,21 @@
           "yaml_ordinal": 1
         },
         {
-          "if": null,
-          "name": null,
-          "uses": "actions/setup-python@v5",
+          "if": "${{ runner.environment == 'github-hosted' && runner.os == 'macOS' && runner.arch == 'ARM64' && fromJSON(env.BIOCOMPILER_SUPPORTED_PYTHON)[matrix.python-version] == '3.11.15' }}",
+          "name": "Seed the exact hosted macOS ARM64 Python runtime",
+          "uses": null,
           "yaml_ordinal": 2
         },
         {
           "if": null,
           "name": null,
-          "uses": null,
+          "uses": "actions/setup-python@v5",
           "yaml_ordinal": 3
         },
         {
           "if": null,
           "name": null,
-          "uses": "actions/download-artifact@v4",
+          "uses": null,
           "yaml_ordinal": 4
         },
         {
@@ -5802,27 +5994,33 @@
         },
         {
           "if": null,
+          "name": null,
+          "uses": "actions/download-artifact@v4",
+          "yaml_ordinal": 10
+        },
+        {
+          "if": null,
           "name": "Reconstruct every campaign and installed lifecycle without omissions",
           "uses": null,
-          "yaml_ordinal": 10
+          "yaml_ordinal": 11
         },
         {
           "if": null,
           "name": null,
           "uses": "actions/upload-artifact@v4",
-          "yaml_ordinal": 11
+          "yaml_ordinal": 12
         },
         {
           "if": null,
           "name": "Record successful complete realization-conformance",
           "uses": null,
-          "yaml_ordinal": 12
+          "yaml_ordinal": 13
         },
         {
           "if": null,
           "name": null,
           "uses": "actions/upload-artifact@v4",
-          "yaml_ordinal": 13
+          "yaml_ordinal": 14
         }
       ]
     },
@@ -5843,21 +6041,21 @@
           "yaml_ordinal": 1
         },
         {
-          "if": null,
-          "name": null,
-          "uses": "actions/setup-python@v5",
+          "if": "${{ runner.environment == 'github-hosted' && runner.os == 'macOS' && runner.arch == 'ARM64' && fromJSON(env.BIOCOMPILER_SUPPORTED_PYTHON)[matrix.python-version] == '3.11.15' }}",
+          "name": "Seed the exact hosted macOS ARM64 Python runtime",
+          "uses": null,
           "yaml_ordinal": 2
         },
         {
           "if": null,
           "name": null,
-          "uses": null,
+          "uses": "actions/setup-python@v5",
           "yaml_ordinal": 3
         },
         {
           "if": null,
           "name": null,
-          "uses": "actions/download-artifact@v4",
+          "uses": null,
           "yaml_ordinal": 4
         },
         {
@@ -5892,27 +6090,33 @@
         },
         {
           "if": null,
+          "name": null,
+          "uses": "actions/download-artifact@v4",
+          "yaml_ordinal": 10
+        },
+        {
+          "if": null,
           "name": "Reconstruct every campaign and installed lifecycle without omissions",
           "uses": null,
-          "yaml_ordinal": 10
+          "yaml_ordinal": 11
         },
         {
           "if": null,
           "name": null,
           "uses": "actions/upload-artifact@v4",
-          "yaml_ordinal": 11
+          "yaml_ordinal": 12
         },
         {
           "if": null,
           "name": "Record successful complete realization-conformance",
           "uses": null,
-          "yaml_ordinal": 12
+          "yaml_ordinal": 13
         },
         {
           "if": null,
           "name": null,
           "uses": "actions/upload-artifact@v4",
-          "yaml_ordinal": 13
+          "yaml_ordinal": 14
         }
       ]
     },
@@ -6382,21 +6586,21 @@
           "yaml_ordinal": 1
         },
         {
+          "if": "${{ runner.environment == 'github-hosted' && runner.os == 'macOS' && runner.arch == 'ARM64' && fromJSON(env.BIOCOMPILER_SUPPORTED_PYTHON)[matrix.python-version] == '3.11.15' }}",
+          "name": "Seed the exact hosted macOS ARM64 Python runtime",
+          "uses": null,
+          "yaml_ordinal": 2
+        },
+        {
           "if": null,
           "name": null,
           "uses": "actions/setup-python@v5",
-          "yaml_ordinal": 2
+          "yaml_ordinal": 3
         },
         {
           "if": null,
           "name": "Record exact installed slot authority",
           "uses": null,
-          "yaml_ordinal": 3
-        },
-        {
-          "if": null,
-          "name": null,
-          "uses": "actions/download-artifact@v4",
           "yaml_ordinal": 4
         },
         {
@@ -6407,27 +6611,33 @@
         },
         {
           "if": null,
+          "name": null,
+          "uses": "actions/download-artifact@v4",
+          "yaml_ordinal": 6
+        },
+        {
+          "if": null,
           "name": "Install exact supplied wheels and run complete material and offline campaigns",
           "uses": null,
-          "yaml_ordinal": 6
+          "yaml_ordinal": 7
         },
         {
           "if": "always()",
           "name": "Retain bounded installed evidence and failure logs",
           "uses": "actions/upload-artifact@v4",
-          "yaml_ordinal": 7
+          "yaml_ordinal": 8
         },
         {
           "if": null,
           "name": "Record successful installed-wheel validation",
           "uses": null,
-          "yaml_ordinal": 8
+          "yaml_ordinal": 9
         },
         {
           "if": "always()",
           "name": null,
           "uses": "actions/upload-artifact@v4",
-          "yaml_ordinal": 9
+          "yaml_ordinal": 10
         }
       ]
     },
@@ -6449,21 +6659,21 @@
           "yaml_ordinal": 1
         },
         {
+          "if": "${{ runner.environment == 'github-hosted' && runner.os == 'macOS' && runner.arch == 'ARM64' && fromJSON(env.BIOCOMPILER_SUPPORTED_PYTHON)[matrix.python-version] == '3.11.15' }}",
+          "name": "Seed the exact hosted macOS ARM64 Python runtime",
+          "uses": null,
+          "yaml_ordinal": 2
+        },
+        {
           "if": null,
           "name": null,
           "uses": "actions/setup-python@v5",
-          "yaml_ordinal": 2
+          "yaml_ordinal": 3
         },
         {
           "if": null,
           "name": "Record exact installed slot authority",
           "uses": null,
-          "yaml_ordinal": 3
-        },
-        {
-          "if": null,
-          "name": null,
-          "uses": "actions/download-artifact@v4",
           "yaml_ordinal": 4
         },
         {
@@ -6474,27 +6684,33 @@
         },
         {
           "if": null,
+          "name": null,
+          "uses": "actions/download-artifact@v4",
+          "yaml_ordinal": 6
+        },
+        {
+          "if": null,
           "name": "Install exact supplied wheels and run complete material and offline campaigns",
           "uses": null,
-          "yaml_ordinal": 6
+          "yaml_ordinal": 7
         },
         {
           "if": "always()",
           "name": "Retain bounded installed evidence and failure logs",
           "uses": "actions/upload-artifact@v4",
-          "yaml_ordinal": 7
+          "yaml_ordinal": 8
         },
         {
           "if": null,
           "name": "Record successful installed-wheel validation",
           "uses": null,
-          "yaml_ordinal": 8
+          "yaml_ordinal": 9
         },
         {
           "if": "always()",
           "name": null,
           "uses": "actions/upload-artifact@v4",
-          "yaml_ordinal": 9
+          "yaml_ordinal": 10
         }
       ]
     },
@@ -6516,21 +6732,21 @@
           "yaml_ordinal": 1
         },
         {
+          "if": "${{ runner.environment == 'github-hosted' && runner.os == 'macOS' && runner.arch == 'ARM64' && fromJSON(env.BIOCOMPILER_SUPPORTED_PYTHON)[matrix.python-version] == '3.11.15' }}",
+          "name": "Seed the exact hosted macOS ARM64 Python runtime",
+          "uses": null,
+          "yaml_ordinal": 2
+        },
+        {
           "if": null,
           "name": null,
           "uses": "actions/setup-python@v5",
-          "yaml_ordinal": 2
+          "yaml_ordinal": 3
         },
         {
           "if": null,
           "name": "Record exact installed slot authority",
           "uses": null,
-          "yaml_ordinal": 3
-        },
-        {
-          "if": null,
-          "name": null,
-          "uses": "actions/download-artifact@v4",
           "yaml_ordinal": 4
         },
         {
@@ -6541,27 +6757,33 @@
         },
         {
           "if": null,
+          "name": null,
+          "uses": "actions/download-artifact@v4",
+          "yaml_ordinal": 6
+        },
+        {
+          "if": null,
           "name": "Install exact supplied wheels and run complete material and offline campaigns",
           "uses": null,
-          "yaml_ordinal": 6
+          "yaml_ordinal": 7
         },
         {
           "if": "always()",
           "name": "Retain bounded installed evidence and failure logs",
           "uses": "actions/upload-artifact@v4",
-          "yaml_ordinal": 7
+          "yaml_ordinal": 8
         },
         {
           "if": null,
           "name": "Record successful installed-wheel validation",
           "uses": null,
-          "yaml_ordinal": 8
+          "yaml_ordinal": 9
         },
         {
           "if": "always()",
           "name": null,
           "uses": "actions/upload-artifact@v4",
-          "yaml_ordinal": 9
+          "yaml_ordinal": 10
         }
       ]
     },
@@ -6583,21 +6805,21 @@
           "yaml_ordinal": 1
         },
         {
+          "if": "${{ runner.environment == 'github-hosted' && runner.os == 'macOS' && runner.arch == 'ARM64' && fromJSON(env.BIOCOMPILER_SUPPORTED_PYTHON)[matrix.python-version] == '3.11.15' }}",
+          "name": "Seed the exact hosted macOS ARM64 Python runtime",
+          "uses": null,
+          "yaml_ordinal": 2
+        },
+        {
           "if": null,
           "name": null,
           "uses": "actions/setup-python@v5",
-          "yaml_ordinal": 2
+          "yaml_ordinal": 3
         },
         {
           "if": null,
           "name": "Record exact installed slot authority",
           "uses": null,
-          "yaml_ordinal": 3
-        },
-        {
-          "if": null,
-          "name": null,
-          "uses": "actions/download-artifact@v4",
           "yaml_ordinal": 4
         },
         {
@@ -6608,27 +6830,33 @@
         },
         {
           "if": null,
+          "name": null,
+          "uses": "actions/download-artifact@v4",
+          "yaml_ordinal": 6
+        },
+        {
+          "if": null,
           "name": "Install exact supplied wheels and run complete material and offline campaigns",
           "uses": null,
-          "yaml_ordinal": 6
+          "yaml_ordinal": 7
         },
         {
           "if": "always()",
           "name": "Retain bounded installed evidence and failure logs",
           "uses": "actions/upload-artifact@v4",
-          "yaml_ordinal": 7
+          "yaml_ordinal": 8
         },
         {
           "if": null,
           "name": "Record successful installed-wheel validation",
           "uses": null,
-          "yaml_ordinal": 8
+          "yaml_ordinal": 9
         },
         {
           "if": "always()",
           "name": null,
           "uses": "actions/upload-artifact@v4",
-          "yaml_ordinal": 9
+          "yaml_ordinal": 10
         }
       ]
     },
@@ -7061,5 +7289,5 @@
     }
   ],
   "workflow_path": ".github/workflows/ci.yml",
-  "workflow_sha256": "ecb3c38f6cc7b9fc95878ffa2ed414c5d427774d3c3477754dcd2498070f98e1"
+  "workflow_sha256": "f3cae89b566811835c2273988150a6f4ab8bf088399c9cba66c2bb57485a314c"
 }

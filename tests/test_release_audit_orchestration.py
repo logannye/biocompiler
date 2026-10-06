@@ -5,14 +5,32 @@ import json
 from pathlib import Path
 import tempfile
 import unittest
+from unittest.mock import patch
 
 from tools import release_audit as audit
 
 ROOT = Path(__file__).resolve().parents[1]
 PROFILE = json.loads((ROOT / 'protocol/release-audit-v1.json').read_text())
+BOOTSTRAP_NAME = 'Seed the exact hosted macOS ARM64 Python runtime'
+BOOTSTRAP_FIXED = "${{ runner.environment == 'github-hosted' && runner.os == 'macOS' && runner.arch == 'ARM64' && fromJSON(env.BIOCOMPILER_SUPPORTED_PYTHON)['3.11'] == '3.11.15' }}"
+BOOTSTRAP_MATRIX = "${{ runner.environment == 'github-hosted' && runner.os == 'macOS' && runner.arch == 'ARM64' && fromJSON(env.BIOCOMPILER_SUPPORTED_PYTHON)[matrix.python-version] == '3.11.15' }}"
+BOOTSTRAP_JOBS = {'ocaml-build': 2, 'ocaml-native-tests': 2, 'ocaml-core': 2,
+                  'architecture-sdk': 4, 'installed-campaigns': 20,
+                  'realization-conformance': 4, 'policy-prebuilt-installed': 4}
+
+
+def required_bootstrap(spec):
+    # Independent expected policy over the literal reviewed platform/minor labels.
+    return spec['matrix'].get('platform') == 'macos-arm64' and spec['matrix'].get('python-version', '3.11') == '3.11'
 
 
 class ReleaseAuditOrchestrationTests(unittest.TestCase):
+    def setUp(self):
+        for target in ('subprocess.Popen', 'socket.socket', 'socket.create_connection', 'ctypes.CDLL', 'os.system'):
+            guard = patch(target, side_effect=AssertionError('Inert release audit tests forbid process/network/native loading'))
+            guard.start()
+            self.addCleanup(guard.stop)
+
     def jobs(self):
         rows = []
         for index, spec in enumerate(PROFILE['physical_jobs']):
@@ -20,22 +38,24 @@ class ReleaseAuditOrchestrationTests(unittest.TestCase):
             for declared in spec['steps']:
                 steps.append({'name': declared['name'] or 'Run ' + str(declared['uses']),
                               'number': declared['yaml_ordinal'] + 1, 'status': 'completed',
-                              'conclusion': 'skipped' if declared['if'] == 'failure()' else 'success'})
+                              'conclusion': 'skipped' if declared['if'] == 'failure()' or (declared['name'] == BOOTSTRAP_NAME and not required_bootstrap(spec)) else 'success'})
             rows.append({'id': index + 1000, 'name': spec['name'], 'run_id': 37, 'run_attempt': 1,
                          'head_sha': 'a' * 40, 'status': 'completed', 'conclusion': 'success',
                          'labels': [spec['runner']], 'steps': steps})
         return {'total_count': 74, 'jobs': rows}
 
-    def check_jobs(self, jobs):
-        return audit.validate_jobs(jobs, {'id': 37, 'head_sha': 'a' * 40}, PROFILE)
+    def check_jobs(self, jobs, profile=None):
+        return audit.validate_jobs(jobs, {'id': 37, 'head_sha': 'a' * 40}, PROFILE if profile is None else profile)
 
     def test_complete_job_gate_and_only_two_failure_upload_skips(self):
         jobs = self.jobs()
-        self.assertEqual(self.check_jobs(jobs), [
+        skips = self.check_jobs(jobs)
+        self.assertEqual([row for row in skips if row['condition'] == 'failure()'], [
             {'job': 'integration-examples (3.11)', 'step': 'Retain reference build failure evidence',
              'number': 33, 'condition': 'failure()', 'value': False},
             {'job': 'integration-examples (3.14)', 'step': 'Retain reference build failure evidence',
              'number': 33, 'condition': 'failure()', 'value': False}])
+        self.assertEqual(len(skips), 29)
         for field, value in [('run_id', 38), ('run_attempt', 2), ('head_sha', 'b' * 40),
                              ('status', 'in_progress'), ('conclusion', 'failure'),
                              ('labels', ['self-hosted']), ('name', 'unreviewed')]:
@@ -76,7 +96,7 @@ class ReleaseAuditOrchestrationTests(unittest.TestCase):
 
     def test_pinned_runtime_comparator_steps_remain_required_before_comparison(self):
         self.assertEqual(PROFILE['workflow_sha256'],
-                         'ecb3c38f6cc7b9fc95878ffa2ed414c5d427774d3c3477754dcd2498070f98e1')
+                         'f3cae89b566811835c2273988150a6f4ab8bf088399c9cba66c2bb57485a314c')
         comparisons = {
             'executable-rna-reproducibility':
                 'Compare exact RNA and contract artifacts across Python versions',
@@ -160,3 +180,98 @@ class ReleaseAuditOrchestrationTests(unittest.TestCase):
         for name in ('identity', 'native', 'plan', 'policy', 'units'):
             module = getattr(audit, 'release_audit_' + name)
             self.assertEqual(Path(module.__file__).resolve(), ROOT / ('tools/release_audit_' + name + '.py'))
+
+    def test_exact_bootstrap_profile_has_eleven_required_runs_and_twenty_seven_skips(self):
+        affected = [row for row in PROFILE['physical_jobs'] if row['job'] in BOOTSTRAP_JOBS]
+        self.assertEqual(len(affected), 38)
+        self.assertEqual({name: sum(row['job'] == name for row in affected) for name in BOOTSTRAP_JOBS}, BOOTSTRAP_JOBS)
+        self.assertEqual(sum(required_bootstrap(row) for row in affected), 11)
+        observed = []
+        for row in PROFILE['physical_jobs']:
+            declared = [step for step in row['steps'] if step['name'] == BOOTSTRAP_NAME]
+            if row['job'] not in BOOTSTRAP_JOBS:
+                self.assertEqual(declared, [])
+                continue
+            condition = BOOTSTRAP_FIXED if row['job'] in {'ocaml-build', 'ocaml-native-tests', 'ocaml-core'} else BOOTSTRAP_MATRIX
+            self.assertEqual(declared, [{'yaml_ordinal': 2, 'name': BOOTSTRAP_NAME, 'uses': None, 'if': condition}])
+            self.assertEqual(row['steps'][0], {'yaml_ordinal': 1, 'name': None, 'uses': 'actions/checkout@v4', 'if': None})
+            self.assertEqual(row['steps'][2], {'yaml_ordinal': 3, 'name': None, 'uses': 'actions/setup-python@v5', 'if': None})
+            if not required_bootstrap(row):
+                observed.append({'job': row['name'], 'step': BOOTSTRAP_NAME, 'number': 3, 'condition': condition, 'value': False})
+        self.assertEqual(len(observed), 27)
+        self.assertEqual([row for row in self.check_jobs(self.jobs()) if row['step'] == BOOTSTRAP_NAME], observed)
+
+    def test_bootstrap_execution_condition_cannot_be_skipped_or_run_in_another_slot(self):
+        for spec in PROFILE['physical_jobs']:
+            if spec['job'] not in BOOTSTRAP_JOBS:
+                continue
+            jobs = self.jobs()
+            job = next(row for row in jobs['jobs'] if row['name'] == spec['name'])
+            seed = next(step for step in job['steps'] if step['name'] == BOOTSTRAP_NAME)
+            seed['conclusion'] = 'skipped' if required_bootstrap(spec) else 'success'
+            with self.subTest(slot=spec['name']), self.assertRaises(AssertionError):
+                self.check_jobs(jobs)
+        for conclusion, status in (('failure', 'completed'), ('cancelled', 'completed'), (None, 'in_progress')):
+            jobs = self.jobs()
+            job = next(row for row in jobs['jobs'] if row['name'] == 'ocaml-build (macos-14, macos-arm64)')
+            seed = next(step for step in job['steps'] if step['name'] == BOOTSTRAP_NAME)
+            seed.update(conclusion=conclusion, status=status)
+            with self.subTest(conclusion=conclusion, status=status), self.assertRaises(AssertionError):
+                self.check_jobs(jobs)
+
+    def test_bootstrap_missing_extra_renamed_or_reordered_observed_step_is_rejected(self):
+        for mutation in ('missing', 'extra', 'renamed', 'reordered'):
+            jobs = self.jobs()
+            job = next(row for row in jobs['jobs'] if row['name'] == 'ocaml-build (macos-14, macos-arm64)')
+            seed = next(step for step in job['steps'] if step['name'] == BOOTSTRAP_NAME)
+            if mutation == 'missing':
+                job['steps'].remove(seed)
+            elif mutation == 'extra':
+                job['steps'].append(dict(seed, number=900))
+            elif mutation == 'renamed':
+                seed['name'] = 'Unreviewed runtime acquisition'
+            else:
+                setup = next(step for step in job['steps'] if step['number'] == 4)
+                seed['number'], setup['number'] = setup['number'], seed['number']
+            with self.subTest(mutation=mutation), self.assertRaises(AssertionError):
+                self.check_jobs(jobs)
+
+    def test_bootstrap_profile_missing_extra_position_or_condition_cannot_expand_skip_allowance(self):
+        for mutation in ('missing', 'extra', 'position', 'condition', 'unconditional', 'uses', 'foreign-job'):
+            profile = deepcopy(PROFILE)
+            spec = next(row for row in profile['physical_jobs'] if row['name'] == 'ocaml-build (macos-14, macos-arm64)')
+            seed = next(step for step in spec['steps'] if step['name'] == BOOTSTRAP_NAME)
+            if mutation == 'missing':
+                spec['steps'].remove(seed)
+            elif mutation == 'extra':
+                spec['steps'].append(dict(seed, yaml_ordinal=900))
+            elif mutation == 'position':
+                seed['yaml_ordinal'] = 1
+            elif mutation == 'condition':
+                seed['if'] = "${{ runner.os == 'macOS' }}"
+            elif mutation == 'unconditional':
+                seed['if'] = None
+            elif mutation == 'uses':
+                seed['uses'] = 'unreviewed/provider@v1'
+            else:
+                target = next(row for row in profile['physical_jobs'] if row['job'] == 'ci-preflight')
+                target['steps'].append(dict(seed, yaml_ordinal=900))
+            with self.subTest(mutation=mutation), self.assertRaises(AssertionError):
+                self.check_jobs(self.jobs(), profile)
+
+    def test_profile_slot_mutations_cannot_turn_required_bootstrap_into_permitted_skip(self):
+        for mutation in ('python-minor', 'platform', 'runner', 'physical-name', 'installed-group'):
+            profile = deepcopy(PROFILE)
+            spec = next(row for row in profile['physical_jobs'] if row['name'] == 'installed-campaigns (macos-14, macos-arm64, 3.11, fixed)')
+            if mutation == 'python-minor':
+                spec['matrix']['python-version'] = '3.14'
+            elif mutation == 'platform':
+                spec['matrix']['platform'] = 'linux-x86_64'
+            elif mutation == 'runner':
+                spec['runner'] = 'ubuntu-24.04'
+            elif mutation == 'physical-name':
+                spec['name'] = 'unreviewed physical slot'
+            else:
+                spec['matrix']['group'] = 'unreviewed'
+            with self.subTest(mutation=mutation), self.assertRaises(AssertionError):
+                self.check_jobs(self.jobs(), profile)

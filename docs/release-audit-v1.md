@@ -98,8 +98,9 @@ The profile retains 74 jobs, 59 ordinary receipts, 14 unit artifacts, 102 requir
 ZIPs and 128 required artifact metadata entries. It covers both native platforms,
 151 executable entries plus 23 fixtures, all 149 native suites and 67 direct
 command groups; four installed slots with 17 campaigns each and 20 group receipts;
-all six architecture/policy comparisons and both prebuilt routes. The only
-successful-run skipped steps are the two exact failure-only example uploads.
+all six architecture/policy comparisons and both prebuilt routes. Successful-run
+skips are limited to the two exact failure-only example uploads and 27 exact
+inapplicable hosted Python bootstrap steps.
 
 The reviewed workflow selects the frozen source profiles Python 3.11.15 and
 3.14.6 while retaining the minor-version matrix and receipt names. Unit consumers
@@ -108,6 +109,17 @@ the explicit Python setup step before authority recording in each of the three
 inline RNA, architecture and circuit comparison jobs. A changed workflow hash
 requires a reviewed profile update; pinning the interpreter does not waive source,
 runtime, receipt or full-run identity checks.
+
+The workflow at `aeb3c95c7` adds an exact Python 3.11.15 cache bootstrap before
+the existing setup action in seven job definitions. The audit checks all 38
+expanded bootstrap slots against their reviewed runner, platform, Python minor,
+campaign group or wheel tag, step name, literal condition and checkout/setup
+ordering. It requires bootstrap success in all eleven macOS ARM64 Python 3.11
+slots and a skipped step in the other 27 slots. Missing, duplicated, renamed,
+moved or condition-altered bootstrap steps fail; a successful bootstrap on an
+inapplicable slot also fails. This condition-specific handling grants no other
+skip allowance. The supplementary `python-bootstrap.yml` feedback workflow is
+outside release acceptance and cannot substitute for any of the 74 release jobs.
 
 Archive limits remain 640 MiB compressed and 4 GiB expanded per outer ZIP,
 512 MiB per member, 300,000 members, 4 GiB total compressed, 20 GiB total declared
