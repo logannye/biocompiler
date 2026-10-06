@@ -48,8 +48,9 @@ ownership before checking a namespaced copy. Both reproduce on a previously
 complete source document. Narrow fixes and six regression controls are committed as
 `ebfc76b6d` in the isolated follow-up worktree, with the reviewed descriptor and
 pattern controls in its preceding commits. The coherent follow-up and tracker
-are published on `codex/policy-descriptor-witnesses` at `77d6be591`
-(production and tests unchanged from `4157108cb`); PR85 itself
+are published on `codex/policy-descriptor-witnesses`. The later source-validation
+correction is published there as `360e2cbbd`; its exact scope and independent
+evidence are recorded below. PR85 itself
 still has the original tested head. Let the healthy `a85b1112f` run finish and retain
 its evidence, then integrate the coherent correction and validate its new exact
 revision before normal merge. A passing a85 run or PR95 audit cannot accept the
@@ -93,7 +94,7 @@ broader SM acceptance items below.
 - [x] Implement the bounded authored-API and source unit/scope ledgers with independent drift/overclaim controls; pass the 55-test authoring/API pair and 29-test source-context pair. This completes the stated static tooling, not the wider SM-01 semantic census.
 - [x] Prepare and independently review the separate actual-main identity predicates: four positive and 83 rejection controls pass on synthetic literal inputs, including normal-merge parents, push identity and unchanged accepted trees. No real main revision or main acceptance is established by these controls.
 - [x] Implement the separate partial component-fragment domain, closed schema and independent literal native-test source as `4fbf4176f`; pass the 34-test Python boundary/bundle pair and preserve the independently maintained suite/fixture census in `3518db4b7`. This closes source preparation only; native tests, complete schema validation and the composition path remain open.
-- [ ] Complete and independently review the isolated per-call source-closure validation correction; retain every original semantic check, immutable predecessor witness and hosted comparison. Synthetic source checks do not accept original replay or the corrected release head.
+- [x] Implement and independently review the per-call source-closure validation correction as `360e2cbbd`; pass 22 synthetic/source-lineage tests on each Python version and the two unchanged restoration regressions after preserving their authentication order. Every original semantic check, historical witness and hosted comparison remains required. Original replay and corrected-head release acceptance are still pending.
 - [ ] Add and validate the three missing descriptor rejection controls: valid-format stale digest, unsupported observation formal, unsupported effect result. Production guards already exist; preserve the shared-context reachability index.
 - [ ] Complete the current union's full hosted gate and independent artifact audit.
 - [ ] Integrate the reviewed frontend corrections and coherent source-coverage follow-up; complete a fresh exact-revision hosted gate and artifact audit before normal merge. Retain the earlier a85 run as distinct evidence.
@@ -163,12 +164,29 @@ This is a static operation count, not measured disk traffic or a runtime estimat
 The review is retained under the authenticated assembly-bounds preparation at
 `cost-review/step23-cost-review.json`, SHA-256
 `26214592cf8698e782d6803a51a36fe35d783522afa5ada7f9eee44d6dd52ecd`.
-An isolated follow-up in `work/original-source-closure-snapshot` captures a
+The isolated source correction `360e2cbbd` in
+`work/original-source-closure-snapshot` captures a
 per-call entry inventory and repeats fresh closing source/data/route checks.
-No cross-call cache, cached acceptance, comparison removal or active-run edit
-is authorized by this change. Independent mutation tests and an additive exact
-predecessor proof are in progress; all existing historical witnesses remain
-unchanged. The corrected source still requires its own full hosted acceptance.
+The 343-row fixture now reconstructs the index pair four times per call, with
+independent repeated calls. All original row/hash/substitution/origin/module
+checks and top-level validations remain. No cross-call cache, cached acceptance,
+comparison removal or active-run edit was introduced. An additive exact
+predecessor proof preserves all four existing historical witnesses byte for
+byte. Review caught and corrected an early-hook error-ordering regression;
+the unchanged old proof-authentication tests now pass.
+
+Both Python 3.11.15 and 3.14.6 pass all 22 focused tests, with the same 15-file
+closure unchanged before/after and process/network execution denied. Two
+unchanged policy restoration methods separately pass on Python 3.11.15.
+The combined proof is `generated/closure-snapshot/combined-pair-proof.json`,
+SHA-256 `cbb7828a4ae96478d2e0272d4c0fdc9665508f3b299f0219917b0c28d922c2d1`,
+and the independent final lineage review is
+`generated/pipeline-counterpart-closure-review/final-lineage-review.json`,
+SHA-256 `da401d1879d754c253e3841c6d4e665789c701cc82f39cbcba2eb783d785dd5e`,
+both in that isolated worktree. These are source/synthetic checks; no original
+semantic replay or native execution was performed locally. Entry/closing reads
+do not claim an atomic filesystem snapshot or detect transient edits restored
+between reads. The corrected source requires its own full hosted acceptance.
 
 The original archive preparation and its digest are preserved. A separately
 reviewed 640 MiB compressed cap accommodated the four roughly 571 MB assembly

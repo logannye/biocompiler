@@ -34,6 +34,8 @@ def restore(path, current, proof_bytes=None):
     historical, reviewed = row['historical_source'].encode(), row['current_source'].encode()
     require(pin(historical) == row['historical'] and pin(reviewed) == row['current'],
             'Policy counterpart complete runner identity differs')
+    from tools import pipeline_counterpart_closure_source
+    current = pipeline_counterpart_closure_source.restore(path, current)
     require(type(current) is bytes and current == reviewed,
             'Current source differs from reviewed policy counterpart runner')
     return historical
