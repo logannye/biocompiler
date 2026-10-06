@@ -30,13 +30,16 @@ LIBRARIES = {
     "bioc_source_adapter": ("lib/source_adapter/dune", {"bioc_wire", "bioc_domain", "bioc_semantics", "bioc_checker", "zarith"}, "source_semantics"),
     "bioc_compiler": ("lib/compiler/dune", {"bioc_wire", "bioc_domain", "bioc_checker", "zarith"}, "compiler"),
     "bioc_checker": ("lib/checker/dune", {"bioc_wire", "bioc_domain", "zarith"}, "checker"),
-    "bioc_service": ("lib/service/dune", {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_realization_checker", "zarith", "unix"}, "checker_service"),
+    "bioc_service": ("lib/service/dune", {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_realization_checker", "bioc_semantics", "zarith", "unix"}, "checker_service"),
 }
 EXECUTABLES = {
     "biocompiler-core": ("bin/core/dune", {"bioc_wire", "bioc_service", "bioc_producer_service"}, "core_entrypoint"),
     "biocompiler-verify": ("bin/verify/dune", {"bioc_wire", "bioc_service"}, "verifier"),
 }
 TESTS = {
+    "test_policy_operational": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "zarith"},
+    "test_policy_execution": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_semantics", "zarith"},
+    "test_policy_operational_service": {"bioc_wire", "bioc_service", "bioc_producer_service"},
     "test_policy_document": {"bioc_wire", "bioc_domain", "zarith"},
     "test_policy_check": {"bioc_wire", "bioc_domain", "bioc_checker", "zarith"},
     "test_policy_service": {"bioc_wire", "bioc_service"},
@@ -412,6 +415,9 @@ def check_boundaries(root: Path):
                 expected_actions = ([["action", ["run", "%{test}", fixture_variables[name]]]]
                                     if name in fixture_variables else [])
                 policy_fixtures = {
+                    "test_policy_operational": ["policy_operational_v01.json"],
+                    "test_policy_execution": ["policy_operational_v01.json"],
+                    "test_policy_operational_service": ["policy_operational_v01.json"],
                     "test_policy_document": ["policy_documents_v01.json"],
                     "test_policy_check": ["policy_frontend_request.json", "policy_frontend_submission.json", "policy_documents_v01.json"],
                     "test_policy_service": ["policy_documents_v01.json"],

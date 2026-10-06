@@ -52,9 +52,9 @@ let literals () =
   require (Json.equal base verifier) "Verifier acquired producer capabilities";
   List.iter (fun operation -> match call Protocol.Verify operation (obj []) with
     | Protocol.Unsupported,None,[diagnostic] -> require (diagnostic.code="unsupported_operation") "Verifier returned wrong unsupported code"
-    | _ -> failwith "Standalone verifier attempted a producer operation") ["compile-architecture";"export-architecture"];
+    | _ -> failwith "Standalone verifier attempted a producer operation") ["compile-architecture";"export-architecture";"compile-policy"];
   let capabilities=success "capabilities" (obj []) in
-  require (Json.array (field "operations" capabilities)=Json.array (field "operations" base) @ [str "compile-architecture";str "export-architecture"])
+  require (Json.array (field "operations" capabilities)=Json.array (field "operations" base) @ [str "compile-architecture";str "export-architecture";str "compile-policy"])
     "Core operation census changed";
   require (Json.array (field "validation_scopes" capabilities)=Json.array (field "validation_scopes" base) @ [str Service.validation_scope])
     "Producer scope was not appended to the existing checking scopes";
@@ -63,7 +63,7 @@ let literals () =
     Json.equal (field "architecture_producer" profiles) Service.profile) "Producer capability changed existing checker profile";
   assert_fields ["operations";"request_schema";"build_schema";"export_schema";"assessment_schema";"implementation";
     "resource_profile";"checker_implementation";"checker_resource_profile";"validation_scope"] Service.profile;
-  List.iter (fun operation -> rejected "missing_field" (fun () -> call Protocol.Core operation (obj []))) ["compile-architecture";"export-architecture"];
+  List.iter (fun operation -> rejected "missing_field" (fun () -> call Protocol.Core operation (obj []))) ["compile-architecture";"export-architecture";"compile-policy"];
   rejected "unknown_field" (fun () -> success "compile-architecture" (obj ["request",Json.parse literal_request;"assessment",obj []]));
   let original=Json.parse literal_request in
   let result,build=compile_result original in

@@ -461,3 +461,21 @@
  (name test_verification_workflow_service)
  (modules test_verification_workflow_service)
  (libraries bioc_wire bioc_service bioc_domain bioc_checker bioc_realization_checker zarith))
+
+(test
+ (name test_policy_operational)
+ (modules test_policy_operational)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_compiler zarith)
+ (action (run %{test} %{dep:data/policy_operational_v01.json})))
+
+(test
+ (name test_policy_execution)
+ (modules test_policy_execution)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_compiler bioc_semantics zarith)
+ (action (run %{test} %{dep:data/policy_operational_v01.json})))
+
+(test
+ (name test_policy_operational_service)
+ (modules test_policy_operational_service)
+ (libraries bioc_wire bioc_service bioc_producer_service)
+ (action (run %{test} %{dep:data/policy_operational_v01.json})))

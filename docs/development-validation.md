@@ -227,3 +227,15 @@ Their 180-minute job limit accommodates the complete initial campaign and does n
 establish a measured runtime target. Failed or incomplete campaigns cannot pass the
 aggregate gate. Historical 31-job receipts retain their original revision's gate;
 the new 36-job requirement applies to the realization protocol revision onward.
+
+## Bounded operational policy additive gates
+
+The operational-policy increment registers its native admission/correspondence,
+execution and service suites in the existing Dune test census and boundary
+registry. `tools/check_policy_operational.py` runs outside the checkout with the
+installed package and explicitly supplied native Core/Verify binaries on both
+existing platforms and both Python versions. The existing cross-platform job
+requires all four complete campaign reports, fresh original-source authority,
+actual binary digests and full result equality. A source-only or mock-peer result
+cannot satisfy these gates. All previous native corpora and release obligations
+remain required.

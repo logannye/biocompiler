@@ -705,6 +705,27 @@ Depends on LM-02.
 
 **Exit:** all inventoried intent/request schemas roundtrip or reject consistently; canonical identities agree for unchanged semantics; unsupported requirements remain in the ledger.
 
+### Bounded rich-policy operational checkpoint (source implementation)
+
+The isolated `codex/bounded-policy-execution` increment, based on the verified
+pushed PR88 head `88421d068ebc8437d6d0d4fa1a1bfdb32f150883`, adds the
+[bounded operational profile](policy-operational-v0.1.md). It retains the
+existing source-assessment contract and adds exact definition descriptors,
+contextual admission, dedicated typed behavior instructions, producer-independent
+correspondence checking, bounded reference timelines, scoped finite state and
+correlated effect attempts. Native execution and requirement checks remain
+abstract supplied-model results; target feasibility and RNA artifacts are withheld.
+
+- [ ] Accept the new operational decoder/admission/lowering/checker and native
+  literal/mutation suites on both hosted platforms at the exact integrated source.
+- [ ] Accept fresh standalone replay and all installed SDK/CLI campaigns on
+  Linux x86_64/macOS arm64 and Python 3.11/3.14, with complete result comparison.
+- [ ] Complete the existing release gate before promoting this checkpoint beyond
+  source implementation; preserve PR87/88 and package-route acceptance ownership.
+
+These entries do not close LM-20/21/25 in full, any of the four production cutover
+obligations, deployment/realization binding or source-to-RNA correspondence.
+
 ### LM-21 — Layer 5: behavior lowering and reference semantics
 
 The checked items below cover the existing Behavior profiles. The expressive

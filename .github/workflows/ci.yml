@@ -884,6 +884,7 @@ jobs:
         run: |
           python -m pip install .
           python tools/generate_policy_wire_schema.py --check
+          python tools/generate_policy_operational_fixture.py --check
           python tools/check_core_boundaries.py --output generated/core/boundaries.json
       - name: Strictly type-check the migrated Python transport boundary
         run: |
@@ -907,6 +908,18 @@ jobs:
             --fixture "$GITHUB_WORKSPACE/core/test/data/policy_documents_v01.json" \
             --console "$(command -v biocompiler)" \
             --output "$GITHUB_WORKSPACE/generated/core/policy-core-3.11.json"
+      - name: Check installed bounded operational policy and standalone replay on Python 3.11
+        env:
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/policy-operational-3.11"
+          cd "$RUNNER_TEMP/policy-operational-3.11"
+          python "$GITHUB_WORKSPACE/tools/check_policy_operational.py" \
+            --core "$GITHUB_WORKSPACE/core/_build/default/bin/core/main.exe" \
+            --verify "$GITHUB_WORKSPACE/core/_build/default/bin/verify/main.exe" \
+            --fixture "$GITHUB_WORKSPACE/core/test/data/policy_operational_v01.json" \
+            --console "$(command -v biocompiler)" \
+            --output "$GITHUB_WORKSPACE/generated/core/policy-operational-3.11.json"
       - name: Run every native literal and mutation suite
         run: |
           set -o pipefail
@@ -1115,6 +1128,20 @@ jobs:
             --fixture "$GITHUB_WORKSPACE/core/test/data/policy_documents_v01.json" \
             --console "$("$ROUTING_PYTHON" -c 'import sysconfig; print(sysconfig.get_path("scripts") + "/biocompiler")')" \
             --output "$GITHUB_WORKSPACE/generated/core/policy-core-3.14.json"
+      - name: Check installed bounded operational policy and standalone replay on Python 3.14
+        if: ${{ !cancelled() && steps.native_build.outcome == 'success' && steps.routing_python314.outcome == 'success' }}
+        env:
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+          ROUTING_PYTHON: ${{ steps.routing_python314.outputs.python-path }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/policy-operational-3.14"
+          cd "$RUNNER_TEMP/policy-operational-3.14"
+          "$ROUTING_PYTHON" "$GITHUB_WORKSPACE/tools/check_policy_operational.py" \
+            --core "$GITHUB_WORKSPACE/core/_build/default/bin/core/main.exe" \
+            --verify "$GITHUB_WORKSPACE/core/_build/default/bin/verify/main.exe" \
+            --fixture "$GITHUB_WORKSPACE/core/test/data/policy_operational_v01.json" \
+            --console "$("$ROUTING_PYTHON" -c 'import sysconfig; print(sysconfig.get_path("scripts") + "/biocompiler")')" \
+            --output "$GITHUB_WORKSPACE/generated/core/policy-operational-3.14.json"
       - name: Compare complete construction producer and workflow artifacts
         if: ${{ !cancelled() && steps.native_build.outcome == 'success' }}
         run: core/_build/default/test/test_construction_producer.exe "$GITHUB_WORKSPACE/tests/conformance/construction-producer-v1.json" | tee generated/core/construction-producer.txt
@@ -1196,6 +1223,18 @@ jobs:
             --native-artifacts artifacts/core \
             --fixture core/test/data/policy_documents_v01.json \
             --output generated/core-reproducibility/policy-receipt.json
+      - name: Compare complete bounded operational results across all four installed slots
+        env:
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          python tools/check_policy_operational.py \
+            --compare artifacts/core/linux-x86_64/policy-operational-3.11.json \
+            --compare artifacts/core/linux-x86_64/policy-operational-3.14.json \
+            --compare artifacts/core/macos-arm64/policy-operational-3.11.json \
+            --compare artifacts/core/macos-arm64/policy-operational-3.14.json \
+            --native-artifacts artifacts/core \
+            --fixture core/test/data/policy_operational_v01.json \
+            --output generated/core-reproducibility/policy-operational-receipt.json
       - name: Retain complete comparison receipt
         if: always()
         uses: actions/upload-artifact@v4

@@ -414,3 +414,34 @@ constructor performs Python lowering verification. Historical pure result views
 may be hydrated only with exact round-trip bytes and fingerprints. Full workflows,
 exploration/reduction, pipelines, archive/export authority and default cutover
 remain separate migration gates; these direct operations do not advertise them.
+
+## Bounded rich-policy operational profile
+
+`policy_operational` negotiates the exact v0.1 operational contract documented in
+[policy-operational-v0.1](../docs/policy-operational-v0.1.md). Core and standalone
+Verify expose `check-policy-lowering`, `execute-policy` and
+`replay-policy-execution`; Core alone exposes `compile-policy` under the additional
+`policy_operational_producer` profile. The source-only `policy_frontend` profile
+and its results are unchanged.
+
+| Operation | Exact payload fields |
+| --- | --- |
+| `compile-policy` | `document`, `definitions` |
+| `check-policy-lowering` | `document`, `definitions`, `candidate` |
+| `execute-policy` | `document`, `definitions`, `candidate`, `timeline` |
+| `replay-policy-execution` | `document`, `definitions`, `candidate`, `timeline`, `report` |
+
+The result schema is `biocompiler.core.policy_operational.v1`, with exact fields
+`schema_version`, `implementation`, `resource_profile`, `validation_scope`,
+`request_fingerprint`, `candidate_fingerprint`, `report_fingerprint`, `candidate`
+and `report`. Input identity hashes the complete payload excluding only replay's
+retained `report`. Execution bounds are explicit in the timeline and therefore
+part of this authority. Replay returns only after complete fresh report equality.
+
+A lowering report retains the original native source assessment, independent
+correspondence report and unchanged `artifact=withheld`,
+`target_status=unassessed`, `realization=unassessed`. Execution adds its complete
+trace and requirement ledger. Unsupported admission, malformed source or values,
+changed candidate authority and resource exhaustion do not produce successful
+partial results. This profile has no artifact publication operation or implicit
+Python fallback and does not establish supplied-realization correspondence.
