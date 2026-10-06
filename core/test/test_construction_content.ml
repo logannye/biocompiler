@@ -99,8 +99,9 @@ let () =
   rejected "construction_producer_limit" (fun () -> P.construct_template ~limits:(P.Limits.make ~work:0 ()) ~member_order:order template);
   rejected "construction_resource_limit" (fun () -> Check.check_template ~maximum:0 ~expected_template:template ~expected_member_order:order candidate);
   let limited = P.construct_template ~limits:(P.Limits.make ~final_residues:5 ()) ~member_order:order template in
-  require (K.inventory limited = None && K.missing_members limited = order && K.diagnostics limited = ["bundle:residue_budget"])
-    "Neutral output residue preflight did not retain explicit failure";
+  require (K.inventory limited = None && K.missing_members limited = order &&
+    K.diagnostics limited = ["member:payload:unavailable_value";"step:step:residue_budget"])
+    "Neutral transform residue preflight did not retain exact failure and missing member";
   require (Check.content_outcome (check limited) = E.Fail) "Limited producer result became complete content";
   let member = List.hd (Payload_template.output_members template) in
   let helper = C.Output_member.make ~id:"z-helper" ~value:(C.Output_member.value member) ~space_id:"z-helper.frame"
@@ -119,6 +120,14 @@ let () =
   let pair_report = Check.check_template ~expected_template:pair ~expected_member_order:pair_order pair_candidate in
   require (Check.content_outcome pair_report = E.Pass) "Two-member content failed";
   require (List.map N.id (K.Inventory.molecules (Option.get (K.inventory pair_candidate))) = pair_order) "Explicit original order was normalized away";
+  (* Each six-base transform fits separately; the two delivered members exceed
+     the same total allowance. Exercise aggregate and transform limits apart. *)
+  let pair_limited = P.construct_template ~limits:(P.Limits.make ~final_residues:6 ()) ~member_order:pair_order pair in
+  require (K.inventory pair_limited = None && K.missing_members pair_limited = List.sort String.compare pair_order &&
+    K.diagnostics pair_limited = ["bundle:residue_budget"])
+    "Neutral delivered-member residue preflight did not retain exact aggregate failure";
+  require (Check.content_outcome (Check.check_template ~expected_template:pair ~expected_member_order:pair_order pair_limited) = E.Fail)
+    "Aggregate-limited producer result became complete content";
   let opposite = List.rev pair_order in
   let reordered = P.construct_template ~member_order:opposite pair in
   require (K.authority reordered <> K.authority pair_candidate) "Original order omitted from authority identity";
