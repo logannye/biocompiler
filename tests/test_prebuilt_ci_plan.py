@@ -463,12 +463,12 @@ class HostedCiPlanTests(unittest.TestCase):
         self.old=(SOURCE/'.github/workflows/ci.yml.source').read_text()
         self.new=(ROOT/'.github/workflows/ci.yml').read_text()
 
-    def test_every_previous_required_job_and_variant_remains_with_two_additions(self):
+    def test_every_previous_required_job_and_variant_remains_with_reviewed_additions(self):
         old=load('old_ci_validation',SOURCE/'tools/ci_validation.py.source');new=load('draft_ci_validation',ROOT/'tools/ci_validation.py')
-        self.assertEqual(new.REQUIRED_NEEDS-old.REQUIRED_NEEDS,{'prebuilt-core-assembly','prebuilt-core-validation','ci-preflight','ocaml-build','ocaml-native-tests','architecture-sdk','installed-campaigns'})
+        self.assertEqual(new.REQUIRED_NEEDS-old.REQUIRED_NEEDS,{'prebuilt-core-assembly','prebuilt-core-validation','ci-preflight','ocaml-build','ocaml-native-tests','architecture-sdk','installed-campaigns','policy-prebuilt-sdk','policy-prebuilt-installed','policy-prebuilt-reproducibility'})
         self.assertEqual(old.REQUIRED_NEEDS-new.REQUIRED_NEEDS,set())
         self.assertEqual(old.EXPECTED_RECEIPTS-new.EXPECTED_RECEIPTS,set())
-        self.assertEqual(len(new.EXPECTED_RECEIPTS-old.EXPECTED_RECEIPTS),32)
+        self.assertEqual(len(new.EXPECTED_RECEIPTS-old.EXPECTED_RECEIPTS),38)
         self.assertEqual(new.REALIZATION_VARIANTS,old.REALIZATION_VARIANTS)
         self.assertEqual(new.workflow_jobs(ROOT/'.github/workflows/ci.yml'),new.REQUIRED_NEEDS|{'validation'})
 

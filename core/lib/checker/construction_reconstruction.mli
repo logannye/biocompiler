@@ -9,3 +9,5 @@ type transition = {
 val reserve_json : Work_budget.t -> Bioc_wire.Json.t -> unit
 val protect : (unit -> 'a) -> 'a
 val reconstruct : budget:Work_budget.t -> Bioc_domain.Construction.Request.t -> Bioc_domain.Construction_artifact.t * transition list
+val reconstruct_template : budget:Work_budget.t -> member_order:string list ->
+  Bioc_domain.Payload_template.t -> Bioc_domain.Construction_content.t * transition list

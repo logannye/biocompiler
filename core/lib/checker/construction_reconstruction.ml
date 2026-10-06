@@ -280,8 +280,14 @@ let primitive_proposals budget step selections inputs initial_paths remaining =
   reserve remaining (List.fold_left (fun total (_,paths) -> List.fold_left (fun total path -> total + G.Path.length path) total paths) 0 planned);
   let input_values = List.fold_left (fun map (selection,source) -> Names.add (reference_id selection) source map) Names.empty (List.combine selections inputs) |> Names.bindings in
   List.map (fun (port,paths) -> port,propose budget step port selections inputs paths rule,input_values) planned
-let reconstruct ~budget request = protect (fun () ->
-  let available = ref (List.fold_left (fun map root -> Names.add (C.Root_source.id root) (I.of_molecule (C.Root_source.molecule root)) map) Names.empty (C.Request.sources request)) in
+type recipe = {
+  sources:C.Root_source.t list; steps:C.Transform_step.t list;
+  output_members:C.Output_member.t list; complex_members:C.Complex_member.t list;
+  requirements:C.Member_requirement.t list; amounts:C.Amount_declaration.t list;
+}
+let reconstruct_recipe ~budget (recipe:recipe) ~authority_json
+    ~make_bundle ~bundle_to_json ~validate_bundle ~make_candidate =
+  let available = ref (List.fold_left (fun map root -> Names.add (C.Root_source.id root) (I.of_molecule (C.Root_source.molecule root)) map) Names.empty recipe.sources) in
   let products = ref [] and failures = ref [] and transitions = ref [] and remaining = ref C.max_cumulative_produced_residues in
   List.iter (fun step ->
       reserve_json budget (C.Transform_step.to_json step);
@@ -306,18 +312,18 @@ let reconstruct ~budget request = protect (fun () ->
               with Problem code -> reject code; None | Diagnostic.Error _ -> reject "invalid_operation"; None in
             Option.iter (List.iter (fun (port,product,input_values) ->
                 products := product :: !products; available := Names.add (A.Value.id product) (I.of_value product) !available;
-                transitions := {step;port;inputs=input_values;product} :: !transitions)) proposed) (C.Request.steps request);
+                transitions := {step;port;inputs=input_values;product} :: !transitions)) proposed) recipe.steps;
   let candidate ?(amounts = []) bundle missing =
-    reserve_json budget (C.Request.to_json request);
+    reserve_json budget (authority_json ());
     List.iter (fun value -> reserve_json budget (A.Value.to_json value)) !products;
-    Option.iter (fun value -> reserve_json budget (S.to_json value)) bundle;
-    A.make ~request_fingerprint:(C.Request.fingerprint request) ~values:(List.rev !products)
+    Option.iter (fun value -> reserve_json budget (bundle_to_json value)) bundle;
+    make_candidate ~values:(List.rev !products)
       ~bundle ~missing_members:missing ~diagnostics:(List.sort_uniq String.compare !failures) ~experimental_amounts:amounts in
   let final_residues = List.fold_left (fun total member -> match Names.find_opt (C.Value_ref.id (C.Output_member.value member)) !available with
-      | None -> total | Some value -> total + G.Space.length (I.space value)) 0 (C.Request.output_members request) in
+      | None -> total | Some value -> total + G.Space.length (I.space value)) 0 recipe.output_members in
   if final_residues > Molecular_record.max_residues then (
     failures := "bundle:residue_budget" :: !failures;
-    candidate None (List.map C.Output_member.id (C.Request.output_members request) @ List.map C.Complex_member.id (C.Request.complex_members request)), List.rev !transitions
+    candidate None (List.map C.Output_member.id recipe.output_members @ List.map C.Complex_member.id recipe.complex_members), List.rev !transitions
   ) else (
     let members = ref Names.empty and missing = ref [] in
     List.iter (fun member ->
@@ -328,7 +334,7 @@ let reconstruct ~budget request = protect (fun () ->
             (match materialize_member budget member value with
              | molecule -> members := Names.add id molecule !members;
                  if N.complete_nominal_identity molecule = None then failures := ("member:" ^ id ^ ":nominal_incomplete") :: !failures
-             | exception Diagnostic.Error _ -> missing := id :: !missing; failures := ("member:" ^ id ^ ":invalid_molecule") :: !failures)) (C.Request.output_members request);
+             | exception Diagnostic.Error _ -> missing := id :: !missing; failures := ("member:" ^ id ^ ":invalid_molecule") :: !failures)) recipe.output_members;
     let complexes = ref Names.empty in
     List.iter (fun plan ->
         reserve_json budget (C.Complex_member.to_json plan);
@@ -346,7 +352,7 @@ let reconstruct ~budget request = protect (fun () ->
               if List.exists (fun part -> C.Complex_constituent.stoichiometry part = None || not (N.declared_nominal_complete (Names.find (C.Complex_constituent.member_id part) !members)))
                   (C.Complex_member.constituents plan) then failures := ("member:" ^ id ^ ":nominal_incomplete") :: !failures
           | exception Diagnostic.Error _ -> missing := id :: !missing; failures := ("member:" ^ id ^ ":invalid_molecule") :: !failures
-        )) (C.Request.complex_members request);
+        )) recipe.complex_members;
     let bundle,amounts = if !missing <> [] then None,[] else
       let construct () =
         let subject_fingerprint id = match Names.find_opt id !members with
@@ -354,8 +360,8 @@ let reconstruct ~budget request = protect (fun () ->
           | None -> let value=Names.find id !complexes in reserve_json budget (N.Complex.to_json value);N.Complex.fingerprint value in
         let roles = List.concat_map (fun requirement -> match C.Member_requirement.member_id requirement with None -> [] | Some id ->
             List.map (fun role -> N.Role.make ~id:(C.Role.id role) ~subject_id:id ~subject_fingerprint:(subject_fingerprint id)
-                ~role:(C.Role.role role) ~purpose:(C.Role.purpose role) ~compartment:(C.Role.compartment role)) (C.Member_requirement.roles requirement)) (C.Request.requirements request) in
-        let bundle = S.make ~id:(C.Request.id request ^ ".molecules") ~request:(C.Request.circuit request) ~molecules:(Names.bindings !members |> List.map snd)
+                ~role:(C.Role.role role) ~purpose:(C.Role.purpose role) ~compartment:(C.Role.compartment role)) (C.Member_requirement.roles requirement)) recipe.requirements in
+        let bundle = make_bundle ~molecules:(Names.bindings !members |> List.map snd)
             ~complexes:(Names.bindings !complexes |> List.map snd) ~role_instances:roles ~form_mappings:[] in
         let amounts = List.map (fun amount ->
             let quantity = match C.Amount_declaration.quantity amount with C.Amount_declaration.Unknown -> S.Amount.Unknown
@@ -363,8 +369,34 @@ let reconstruct ~budget request = protect (fun () ->
             S.Amount.make ~id:(C.Amount_declaration.id amount) ~subject_id:(C.Amount_declaration.subject_id amount)
               ~subject_fingerprint:(subject_fingerprint (C.Amount_declaration.subject_id amount)) ~preparation_id:(C.Amount_declaration.preparation_id amount)
               ~role_instance_ids:(C.Amount_declaration.role_instance_ids amount) ~quantity ~unit:(C.Amount_declaration.unit amount)
-              ~provenance:(C.Amount_declaration.provenance amount)) (C.Request.amounts request) in
-        ignore (S.Artifact.make ~bundle ~experimental_amounts:amounts ~run_metadata:[]); Some bundle,amounts in
+              ~provenance:(C.Amount_declaration.provenance amount)) recipe.amounts in
+        validate_bundle bundle amounts; Some bundle,amounts in
       match construct () with result -> result | exception Diagnostic.Error _ -> failures := "bundle:invalid_inventory" :: !failures; None,[] in
     candidate ~amounts bundle (List.rev !missing),List.rev !transitions
-  ))
+  )
+
+let reconstruct ~budget request = protect (fun () ->
+  let recipe = {sources=C.Request.sources request;steps=C.Request.steps request;
+      output_members=C.Request.output_members request;complex_members=C.Request.complex_members request;
+      requirements=C.Request.requirements request;amounts=C.Request.amounts request} in
+  reconstruct_recipe ~budget recipe ~authority_json:(fun () -> C.Request.to_json request)
+    ~make_bundle:(S.make ~id:(C.Request.id request ^ ".molecules") ~request:(C.Request.circuit request))
+    ~bundle_to_json:S.to_json
+    ~validate_bundle:(fun bundle amounts -> ignore (S.Artifact.make ~bundle ~experimental_amounts:amounts ~run_metadata:[]))
+    ~make_candidate:(A.make ~request_fingerprint:(C.Request.fingerprint request)))
+
+let reconstruct_template ~budget ~member_order template = protect (fun () ->
+  let module P = Payload_template in
+  let module K = Construction_content in
+  let authority = K.authority_json ~template ~member_order in
+  let recipe = {sources=P.sources template;steps=P.steps template;
+      output_members=P.output_members template;complex_members=P.complex_members template;
+      requirements=P.requirements template;amounts=P.amounts template} in
+  let make_bundle ~molecules ~complexes ~role_instances ~form_mappings =
+    let molecules = List.map (fun id -> List.find (fun value -> N.id value = id) molecules) member_order in
+    K.Inventory.make ~id:(P.id template ^ ".molecules") ~molecules ~complexes ~role_instances ~form_mappings in
+  reconstruct_recipe ~budget recipe ~authority_json:(fun () -> authority)
+    ~make_bundle ~bundle_to_json:K.Inventory.to_json ~validate_bundle:K.Inventory.validate_amounts
+    ~make_candidate:(fun ~values ~bundle ~missing_members ~diagnostics ~experimental_amounts ->
+      K.make ~authority_fingerprint:(Canonical.fingerprint authority) ~member_order ~values ~inventory:bundle
+        ~missing_members ~diagnostics ~experimental_amounts))

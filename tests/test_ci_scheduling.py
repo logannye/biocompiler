@@ -33,7 +33,7 @@ class SchedulingTests(unittest.TestCase):
             'workflow':('workflow','workflow-presentation','workflow-authority','workflow-public-sdk','workflow-cli'),
             'synthetic':('synthetic-producer','synthetic-public-sdk','synthetic-selection-cli','synthetic-inspection')})
         self.assertEqual(len(ci.CAMPAIGN_VARIANTS),20)
-        self.assertEqual(len(ci.EXPECTED_RECEIPTS),53)
+        self.assertEqual(len(ci.EXPECTED_RECEIPTS),59)
         self.assertEqual(len(ci.REALIZATION_VARIANTS),4)
         plan_fixture=fixtures.MatrixTests();plan_fixture.setUp()
         plan_args=(Path('/checkout'),Path('/fresh/bin/python'),plan_fixture.owner,Path('/evidence'))

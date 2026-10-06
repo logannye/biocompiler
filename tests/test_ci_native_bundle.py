@@ -28,6 +28,39 @@ POLICY_FIXTURES = ["data/policy_frontend_request.json", "data/policy_frontend_su
                    "data/policy_documents_v01.json"]
 
 
+# Literal union inventory, independent of the runner's closed allowlist.
+POLICY_OPERATIONAL_FIXTURES = {
+    'test_policy_operational': ['data/policy_operational_v01.json'],
+    'test_policy_execution': ['data/policy_operational_v01.json'],
+    'test_policy_operational_service': ['data/policy_operational_v01.json'],
+    'test_policy_realization_source': ['data/policy_realization_source_v01.json'],
+    'test_policy_exclusion_source': ['data/policy_exclusion_source_v01.json'],
+    'test_policy_operating_domain': ['data/policy_operating_domain_v01.json', 'data/policy_operational_v01.json'],
+    'test_policy_implementation': ['data/policy_implementation_v01.json'],
+    'test_policy_realization_admission': ['data/policy_realization_request_v01.json', 'data/policy_realization_source_v01.json'],
+    'test_policy_domain_reference': ['data/policy_operating_domain_v01.json', 'data/policy_operational_v01.json'],
+    'test_policy_primitives': ['data/policy_implementation_v01.json', 'data/policy_primitives_v01.json'],
+    'test_policy_trace_correspondence': ['data/policy_implementation_binding_v01.json'],
+    'test_policy_implementation_binding': ['data/policy_implementation_binding_v01.json', 'data/policy_realization_request_v01.json', 'data/policy_exclusion_source_v01.json'],
+    'test_policy_implementation_lowering': ['data/policy_implementation_binding_v01.json'],
+    'test_policy_requirement_monitor': ['data/policy_implementation_binding_v01.json'],
+    'test_policy_preservation_check': ['data/policy_implementation_binding_v01.json'],
+    'test_construction_content': ['data/construction_content_v01.json'],
+    'test_policy_mrna_structure': ['data/policy_mrna_structure_v01.json'],
+    'test_policy_implementation_service': ['data/policy_implementation_request_v01.json'],
+    'test_policy_material_binding': ['data/policy_material_binding_v01.json'],
+    'test_policy_material_context': ['data/policy_material_context_v01.json'],
+    'test_policy_material_check': ['data/policy_material_request_v01.json'],
+    'test_policy_material_service': ['data/policy_material_request_v01.json'],
+    'test_policy_material_lifecycle': ['data/policy_material_lifecycle_v01.json'],
+    'test_policy_material_compound': ['data/policy_material_compound_v01.json'],
+    'test_policy_material_domain': ['data/policy_material_domain_v01.json'],
+    'test_policy_material_closure': ['data/policy_material_closure_v01.json'],
+    'test_policy_material_timing': ['data/policy_material_timing_v01.json'],
+    'test_policy_material_state': ['data/policy_material_state_v01.json'],
+}
+
+
 class NativeBundleTests(unittest.TestCase):
     def setUp(self):
         self.root = Path(self.enterContext(tempfile.TemporaryDirectory())).resolve()
@@ -50,7 +83,7 @@ class NativeBundleTests(unittest.TestCase):
 
     def test_actual_dune_suite_census_and_argument_order_are_preserved(self):
         plan = bundle.test_plan((ROOT/'core/test/dune').read_text())
-        self.assertEqual(len(plan),121)
+        self.assertEqual(len(plan),149)
         manager = next(row for row in plan if row['name']=='test_pipeline_callback_manager')
         self.assertEqual(manager['environment'], ['BIOCOMPILER_PIPELINE_CALLBACK_MANAGER_DECLARATION',
             'BIOCOMPILER_PIPELINE_CONTRACT_LITERALS','BIOCOMPILER_FIXED_PIPELINE_CORPUS'])
@@ -60,6 +93,29 @@ class NativeBundleTests(unittest.TestCase):
         for name in ('test_policy_document', 'test_policy_service'):
             self.assertEqual(next(row for row in plan if row['name']==name),
                              {'name':name, 'environment':[], 'dependencies':['data/policy_documents_v01.json']})
+
+    def test_every_operational_dependency_is_exact_ordered_and_source_complete(self):
+        plan = bundle.test_plan((ROOT/'core/test/dune').read_text())
+        observed = {row['name']:row['dependencies'] for row in plan if 'dependencies' in row}
+        self.assertEqual(observed, {**POLICY_OPERATIONAL_FIXTURES,
+            'test_policy_check':POLICY_FIXTURES,
+            'test_policy_document':['data/policy_documents_v01.json'],
+            'test_policy_service':['data/policy_documents_v01.json']})
+        self.assertEqual(len(POLICY_OPERATIONAL_FIXTURES),28)
+        self.assertEqual(len(observed),31)
+        self.assertEqual(len(bundle.dependency_members(ROOT)),23)
+        self.assertEqual(len(bundle.expected_members(ROOT)),174)
+        for name, relatives in POLICY_OPERATIONAL_FIXTURES.items():
+            declaration = '(test (name '+name+') (modules '+name+') (libraries example) (action (run %{test} '
+            arguments = ['%{dep:'+relative+'}' for relative in relatives]
+            for changed in ([], arguments+arguments[:1], list(reversed(arguments)) if len(arguments)>1 else ['%{dep:data/unreviewed.json}'],
+                            ['%{dep:../'+relatives[0]+'}']+arguments[1:],
+                            ['%{dep:/'+relatives[0]+'}']+arguments[1:]):
+                with self.subTest(suite=name,arguments=changed), self.assertRaisesRegex(ValueError,'dependency fixture arguments'):
+                    bundle.test_plan(declaration+' '.join(changed)+')))')
+            for relative in relatives:
+                with self.subTest(suite=name,fixture=relative):
+                    self.assertTrue((ROOT/'core/test'/relative).is_file())
 
     def test_unhandled_dune_actions_or_fields_and_duplicate_tests_fail_closed(self):
         for text in (DECLARATION+DECLARATION, DECLARATION+'(rule (action (run other)))',

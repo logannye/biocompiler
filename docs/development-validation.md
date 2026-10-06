@@ -55,29 +55,35 @@ remain distinct revision boundaries.
 | `integration-examples` | Both Python versions retain all remaining audit, molecular, synthetic, human, authoring and CLI examples. |
 | `studio-browser` | Installed Python 3.11 package, Node 22 and the pinned Playwright/Chromium setup run guided workspace, construction inspection and review suites. |
 | `studio-typescript` | Pinned strict TypeScript checks, unchanged generated release assets, runtime response decoding and current migration inventory. |
-| `ocaml-build` | Build once per native platform, check library boundaries, the generated policy wire schema and both strict transport/policy type gates, retain locked inputs and exact compiled suite/role bytes, and assemble candidate platform wheels. No test result is inferred from building a wheel. |
-| `ocaml-native-tests` | Restore the current run/platform-bound executable bundle and run all Dune-declared suites with their original arguments and two bounded workers. Unsupported Dune declarations fail closed; no compilation occurs in consumers. |
+| `ocaml-build` | Build once per native platform, check library boundaries, generated policy schema/operational/material fixtures, rule coverage and both strict transport/policy type gates. Retain locked inputs and exact compiled suite/role/fixture bytes, assemble candidate platform wheels and stamp their policy source authority. No test result is inferred from building a wheel. |
+| `ocaml-native-tests` | Restore the current run/platform-bound bundle, run the 22 focused policy/producer/construction checks with separately retained diagnostics, then all 149 Dune-declared suites with their original arguments and two bounded workers. The bundle binds 151 executable entries and 23 original JSON fixtures; 31 suites have explicit ordered fixture dependencies. Unsupported Dune declarations fail closed; no compilation occurs in consumers. |
 | `ocaml-core` | Two workers execute all 67 original direct corpus, protocol, resource-bound and Python/OCaml conformance command groups against the same restored binaries. Commands within each group keep their original order and output paths; complete current-run group/log accounting is required before success. |
-| `architecture-sdk` | Four platform/Python jobs run concurrently. Each first checks installed expressive-policy native assessment/replay and the selected interpreter's real console outside the checkout against the exact restored Core/Verify binaries. It then uses two isolated Python workers for all 16 architecture scenarios. Case B retains all its rejection/publication controls. The coordinator applies the unchanged independent 175-check/219-artifact census before reporting success; each artifact also retains its distinct policy receipt. |
+| `architecture-sdk` | Four platform/Python jobs run concurrently. Each checks installed policy source assessment, operational execution, implementation preservation, material compilation/fresh export and Verify-only offline consumption against original fixtures and exact restored Core/Verify binaries. The selected interpreter's real console runs outside the checkout; policy reports and logs remain distinct. It then uses two isolated Python workers for all 16 architecture scenarios. Case B retains all its rejection/publication controls. The coordinator applies the unchanged independent 175-check/219-artifact architecture census before reporting success. |
 | `executable-rna-reproducibility` | Depends only on `installed-executable`; compares complete relative-file SHA-256 inventories from both Python versions. |
 | `payload-architecture-reproducibility` | Depends only on `installed-architecture`; requires all 13 case outputs and compares every relative file across versions. |
 | `circuit-reproducibility` | Depends only on `circuit-integration`; compares the complete infrastructure/source/review artifact inventories. |
-| `architecture-core-reproducibility` | Depends on both native builds and all four architecture SDK jobs; rehashes complete SDK/CLI artifacts from Python 3.11 and 3.14 on each platform and requires exact four-way equality with current run and executable authority. The separate policy comparator checks all four complete policy receipts against the original policy fixture and published binary manifests/bytes. Both comparison receipts are retained. |
+| `architecture-core-reproducibility` | Depends on both native builds and all four architecture SDK jobs; rehashes complete SDK/CLI artifacts from Python 3.11 and 3.14 on each platform and requires exact four-way equality with current run and executable authority. Five separate policy comparators require complete source, operational, implementation, material and offline-consumer receipts against original fixtures and published binary manifests/bytes. The consumer comparison also binds each original material producer receipt. All six comparison receipts are retained. |
 | `installed-campaigns` | Both platforms × Python 3.11/3.14 × five complete campaign groups (20 jobs, at most 20 concurrent). Each group installs the exact same SDK/native wheels outside the checkout and performs the complete smoke/uninstall/missing-package/reinstall lifecycle. Protocol runs alone. Manager, fixed, workflow and synthetic groups may overlap two complete campaigns after the serial install lifecycle; receipts retain the original recipe order. Fixed/reference, workflow and synthetic groups retain their original membership. All groups retain every original case, artifact and independent checker; no stateful scenario is split. |
 | `realization-conformance` | Four independent aggregation jobs require all five group receipts and all 17 campaigns exactly once per runtime. Recheck current source/run/candidate identities, complete owned bytes, original command recipes, separate lifecycle logs, campaign logs and artifact hashes. Native input receipts bind the installed files for unchanged cross-runtime checkers. |
 | `realization-core-reproducibility` | Rehash complete realization protocol, workflow and producer SDK reports, verify every original applicable occurrence and all additional cases, require current run/source/binary authority and exact equality across all four campaigns. Private producer calls and injected-proposal cases remain explicitly classified as native-library coverage. |
 | `prebuilt-core-assembly` | Depends only on both native builds, allowing installation tests to start while other tests run. Independently checks complete platform wheels, original linked sources/notices/relink companions and final executable identities; builds and checks one pure SDK wheel containing both platform pins. |
 | `prebuilt-core-validation` | Requires all four fresh-install/lifecycle/campaign receipts, exact owned bytes, original command recipes and successful upstream assembly, all native suites/conformance, architecture SDK checks, and cross-runtime reconstruction. |
-| `validation` | Final gate requires all 68 jobs, including successful unit accounting, every installed/integration/browser job, TypeScript, both native platforms, all five reproducibility jobs and both prebuilt jobs. |
+| `policy-prebuilt-sdk` | Depends on both native builds; independently checks complete supplied native wheels and source companions, builds a pure SDK with exact platform pins, and retains the policy artifact-source stamp and release candidate. |
+| `policy-prebuilt-installed` | Four platform/Python slots install those exact SDK/native wheels outside the checkout and run complete material/fresh export and Verify-only offline-consumer campaigns, retaining owned bytes, command receipts, evidence and failure logs. |
+| `policy-prebuilt-reproducibility` | Requires the policy SDK and all four installed slots; independently rechecks original fixture authority, wheel/material ownership, release identities and complete material/consumer results across every slot. |
+| `validation` | Final gate requires all 74 jobs, including successful unit accounting, every installed/integration/browser job, TypeScript, both native platforms, all six reproducibility jobs and both existing prebuilt gates plus all three policy-prebuilt jobs. |
 
-The PR85 integration with main `f594991ac2ff2496723ae5f2427ad93e6df7a51d`
-rederives this census from the merged workflow: 24 job definitions expand to
-68 executions. There are 53 ordinary revision-bound job receipts, two unit
-plans, ten unit shard results, two independent unit-accounting results and the
-final aggregate execution. Policy checks join existing required jobs; no
-separate policy slot or original native/package/reference campaign is omitted.
-These counts describe required work, not transferred acceptance from an older
-68-job run. The merged revision must pass every gate afresh.
+The union of PR85 `ae2db34b31efd8d914622630721768b14f0eacd6` and PR95
+`bb84421cf1f93cd1dc02813d80a2c54a3520a919` rederives the census from the
+combined workflow: 27 job definitions expand to 74 executions. There are
+59 ordinary revision-bound job receipts, two unit plans, ten unit shard results,
+two independent unit-accounting results and the final aggregate execution.
+Policy source-through-material campaigns join the four existing SDK slots;
+the three added policy-prebuilt definitions contribute six executions. All
+67 direct command groups and 20 installed campaign jobs remain required.
+Historical 68-job PR85 and 42-job PR95 runs do not establish acceptance of this
+union. Its exact tested revision, subsequent normal merge and actual-main
+revision require their own complete acceptance evidence.
 
 All expensive producers wait for the short preflight, then independent work
 runs concurrently. The critical path is preflight → candidate build/assembly →
@@ -212,8 +218,8 @@ on failure as well as success; retained logs remain the diagnostic authority.
 
 The final gate runs even when a dependency fails. Missing, cancelled, skipped,
 stale, duplicated, wrong-runtime or failed work cannot become a successful
-census. The registry includes 53 ordinary job receipts, ten unit shards, two
-unit plans, two unit accounting jobs and the final gate: 68 concrete jobs.
+census. The registry includes 59 ordinary job receipts, ten unit shards, two
+unit plans, two unit accounting jobs and the final gate: 74 concrete jobs.
 The source-only scheduling controls and artifact fixtures are safe to run
 locally; native execution and actual packaging remain hosted-only.
 
@@ -242,16 +248,16 @@ The deterministic longest-processing-time assignment keeps each complete
 they cannot exclude tests or substitute for execution. Every discovered class
 is assigned exactly once across the five shards for its Python version.
 
-The current suite discovers 3,655 tests in 391 classes on both Python versions.
-The capture scheduling, callback fixture, reference import, typed view and
-reference target identity, source lineage, session drain, observer dispatch, campaign diagnostics and
-reconstruction scheduling changes add 77 controls while
-preserving all previous 3,578 test IDs. Placement weights retain the historical
-fixture-inclusive maximum for every previously measured class. Fresh discovery
-assigns the existing two-second fallback to unmeasured methods and classes;
-the weights file records the historical measurement and its earlier inventory
-reconciliation. No original test ID was removed. These estimates guide placement
-and do not establish a runtime bound.
+Pure source discovery of the current union on Python 3.14.6 finds 4,039 tests
+in 428 classes. This is an inventory result, not test execution or hosted
+acceptance. Both hosted Python versions must independently rediscover and
+account for the complete current suite. Existing capture scheduling, callback,
+reference, source lineage and reconstruction controls remain alongside the
+added policy controls. Placement weights retain the historical fixture-inclusive
+maximum for every previously measured class. Fresh discovery assigns the
+existing two-second fallback to unmeasured methods and classes; the weights file
+records its historical measurement and earlier inventory reconciliation.
+These estimates guide placement and do not establish a runtime bound.
 
 Each runner rediscovers the suite and verifies the plan before executing its
 assigned tests. Results retain test/subtest outcomes, durations, class totals
@@ -408,5 +414,33 @@ revision and checked against their native platform manifest; the separate campai
 do not rebuild them. macOS installs only the GMP runtime if the runner lacks it.
 Their 180-minute job limit accommodates the complete initial campaign and does not
 establish a measured runtime target. Failed or incomplete campaigns cannot pass the
-aggregate gate. Historical 31-job receipts retain their original revision's gate;
-the new 36-job requirement applies to the realization protocol revision onward.
+aggregate gate. Historical 31-job and 36-job receipts retain only their original
+revision's scope; the current union requires the complete 74-job census above.
+
+## Bounded policy source-to-material additive gates
+
+The policy increment registers native admission/correspondence, execution,
+implementation preservation, material construction, context and service suites
+in the complete Dune census and boundary registry. Fixture freshness covers the
+operational, lifecycle, compound, domain, closure, simultaneous timing and
+state-dependent paths; the material rule coverage inventory remains a separate
+source gate. Strict typing checks the union of all 32 core transport files and
+the unchanged policy typing scope.
+
+The existing four architecture SDK slots execute every source, operational,
+implementation, material and offline-consumer campaign outside the checkout.
+Each retains original fixture authority, explicit native role paths, actual
+binary digests and the selected Python console. The independent comparator
+requires all four complete reports for each layer and full result equality.
+The offline consumer has only Verify and requires network isolation; it remains
+bound to the original material producer receipt. Independent implementation,
+material and consumer diagnostics may continue after an earlier failure once
+the native bundle and installed runtime are ready, but a failed step still
+prevents the successful whole-job receipt.
+
+The separate four-slot policy-prebuilt campaign checks actual wheel ownership,
+material source closure, fresh export and offline consumption under current
+release identities. Source-only or mock-peer results cannot satisfy hosted
+gates. All previous native corpora, direct command groups, installed campaigns
+and release obligations remain required. Static union checks do not close
+hosted, merge or actual-main acceptance.

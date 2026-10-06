@@ -1,0 +1,2057 @@
+{
+  "authority": {
+    "member_order": [
+      "z-helper",
+      "payload"
+    ],
+    "members": [
+      {
+        "chemistry": {
+          "cap": {
+            "identity": {
+              "accession": "artificial_cap",
+              "namespace": "software_fixture.chemical",
+              "schema_version": "biocompiler.chemical_identity.v0.1",
+              "version": "1"
+            },
+            "provenance": {
+              "authority": [
+                {
+                  "content_fingerprint": "f8f3bd498be91477cea9ac4e0cf3768498b168a969ee8913b0db7ab686f13e6b",
+                  "id": "artificial-pm-structure-notice",
+                  "kind": "source",
+                  "schema_version": "biocompiler.component_identity.v0.1",
+                  "version": "1"
+                }
+              ],
+              "locator": "frozen artificial literal",
+              "reason": "Supplied artificial structural authority, not empirical or component-to-material evidence.",
+              "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+              "status": "declared"
+            },
+            "schema_version": "biocompiler.chemistry_claim.v0.1",
+            "status": "declared"
+          },
+          "finish_end": {
+            "identity": {
+              "accession": "hydroxyl",
+              "namespace": "software_fixture.chemical",
+              "schema_version": "biocompiler.chemical_identity.v0.1",
+              "version": "1"
+            },
+            "provenance": {
+              "authority": [
+                {
+                  "content_fingerprint": "f8f3bd498be91477cea9ac4e0cf3768498b168a969ee8913b0db7ab686f13e6b",
+                  "id": "artificial-pm-structure-notice",
+                  "kind": "source",
+                  "schema_version": "biocompiler.component_identity.v0.1",
+                  "version": "1"
+                }
+              ],
+              "locator": "frozen artificial literal",
+              "reason": "Supplied artificial structural authority, not empirical or component-to-material evidence.",
+              "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+              "status": "declared"
+            },
+            "schema_version": "biocompiler.chemistry_claim.v0.1",
+            "status": "declared"
+          },
+          "modification_inventory_provenance": {
+            "authority": [
+              {
+                "content_fingerprint": "f8f3bd498be91477cea9ac4e0cf3768498b168a969ee8913b0db7ab686f13e6b",
+                "id": "artificial-pm-structure-notice",
+                "kind": "source",
+                "schema_version": "biocompiler.component_identity.v0.1",
+                "version": "1"
+              }
+            ],
+            "locator": "frozen artificial literal",
+            "reason": "Supplied artificial structural authority, not empirical or component-to-material evidence.",
+            "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+            "status": "declared"
+          },
+          "modification_inventory_status": "declared",
+          "modifications": [],
+          "schema_version": "biocompiler.molecule_chemistry.v0.1",
+          "start_end": {
+            "identity": {
+              "accession": "hydroxyl",
+              "namespace": "software_fixture.chemical",
+              "schema_version": "biocompiler.chemical_identity.v0.1",
+              "version": "1"
+            },
+            "provenance": {
+              "authority": [
+                {
+                  "content_fingerprint": "f8f3bd498be91477cea9ac4e0cf3768498b168a969ee8913b0db7ab686f13e6b",
+                  "id": "artificial-pm-structure-notice",
+                  "kind": "source",
+                  "schema_version": "biocompiler.component_identity.v0.1",
+                  "version": "1"
+                }
+              ],
+              "locator": "frozen artificial literal",
+              "reason": "Supplied artificial structural authority, not empirical or component-to-material evidence.",
+              "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+              "status": "declared"
+            },
+            "schema_version": "biocompiler.chemistry_claim.v0.1",
+            "status": "declared"
+          },
+          "terminal_tail": {
+            "length": {
+              "exact": 5,
+              "lower": null,
+              "mode": "exact",
+              "schema_version": "biocompiler.tail_length.v0.1",
+              "upper": null
+            },
+            "path": {
+              "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+              "space_id": "z-helper.output.frame",
+              "spans": [
+                {
+                  "end": 18,
+                  "schema_version": "biocompiler.molecule_index_span.v0.1",
+                  "start": 13
+                }
+              ],
+              "strand": "+"
+            },
+            "placement": "represented_terminal",
+            "provenance": {
+              "authority": [
+                {
+                  "content_fingerprint": "f8f3bd498be91477cea9ac4e0cf3768498b168a969ee8913b0db7ab686f13e6b",
+                  "id": "artificial-pm-structure-notice",
+                  "kind": "source",
+                  "schema_version": "biocompiler.component_identity.v0.1",
+                  "version": "1"
+                }
+              ],
+              "locator": "frozen artificial literal",
+              "reason": "Supplied artificial structural authority, not empirical or component-to-material evidence.",
+              "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+              "status": "declared"
+            },
+            "schema_version": "biocompiler.tail_declaration.v0.1",
+            "status": "declared"
+          }
+        },
+        "id": "z-helper",
+        "product": {
+          "identity": {
+            "content_fingerprint": "8f3d19e4fb6be8220a56ed7c4b5a6715c9b86918332881f1ff0a58c942a25c04",
+            "id": "z-helper.artificial.product",
+            "kind": "source",
+            "schema_version": "biocompiler.component_identity.v0.1",
+            "version": "1"
+          },
+          "provenance": {
+            "authority": [
+              {
+                "content_fingerprint": "f8f3bd498be91477cea9ac4e0cf3768498b168a969ee8913b0db7ab686f13e6b",
+                "id": "artificial-pm-structure-notice",
+                "kind": "source",
+                "schema_version": "biocompiler.component_identity.v0.1",
+                "version": "1"
+              }
+            ],
+            "locator": "frozen artificial literal",
+            "reason": "Supplied artificial structural authority, not empirical or component-to-material evidence.",
+            "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+            "status": "declared"
+          },
+          "sequence": "ME",
+          "translation_policy": {
+            "genetic_code": "ncbi_standard_v1",
+            "profile": "ordinary_cds",
+            "recodings": [],
+            "schema_version": "biocompiler.translation_policy.v0.1"
+          }
+        },
+        "regions": {
+          "cds": "cds",
+          "poly_a": "poly_a",
+          "utr3": "utr3",
+          "utr5": "utr5"
+        }
+      },
+      {
+        "chemistry": {
+          "cap": {
+            "identity": {
+              "accession": "artificial_cap",
+              "namespace": "software_fixture.chemical",
+              "schema_version": "biocompiler.chemical_identity.v0.1",
+              "version": "1"
+            },
+            "provenance": {
+              "authority": [
+                {
+                  "content_fingerprint": "f8f3bd498be91477cea9ac4e0cf3768498b168a969ee8913b0db7ab686f13e6b",
+                  "id": "artificial-pm-structure-notice",
+                  "kind": "source",
+                  "schema_version": "biocompiler.component_identity.v0.1",
+                  "version": "1"
+                }
+              ],
+              "locator": "frozen artificial literal",
+              "reason": "Supplied artificial structural authority, not empirical or component-to-material evidence.",
+              "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+              "status": "declared"
+            },
+            "schema_version": "biocompiler.chemistry_claim.v0.1",
+            "status": "declared"
+          },
+          "finish_end": {
+            "identity": {
+              "accession": "hydroxyl",
+              "namespace": "software_fixture.chemical",
+              "schema_version": "biocompiler.chemical_identity.v0.1",
+              "version": "1"
+            },
+            "provenance": {
+              "authority": [
+                {
+                  "content_fingerprint": "f8f3bd498be91477cea9ac4e0cf3768498b168a969ee8913b0db7ab686f13e6b",
+                  "id": "artificial-pm-structure-notice",
+                  "kind": "source",
+                  "schema_version": "biocompiler.component_identity.v0.1",
+                  "version": "1"
+                }
+              ],
+              "locator": "frozen artificial literal",
+              "reason": "Supplied artificial structural authority, not empirical or component-to-material evidence.",
+              "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+              "status": "declared"
+            },
+            "schema_version": "biocompiler.chemistry_claim.v0.1",
+            "status": "declared"
+          },
+          "modification_inventory_provenance": {
+            "authority": [
+              {
+                "content_fingerprint": "f8f3bd498be91477cea9ac4e0cf3768498b168a969ee8913b0db7ab686f13e6b",
+                "id": "artificial-pm-structure-notice",
+                "kind": "source",
+                "schema_version": "biocompiler.component_identity.v0.1",
+                "version": "1"
+              }
+            ],
+            "locator": "frozen artificial literal",
+            "reason": "Supplied artificial structural authority, not empirical or component-to-material evidence.",
+            "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+            "status": "declared"
+          },
+          "modification_inventory_status": "declared",
+          "modifications": [],
+          "schema_version": "biocompiler.molecule_chemistry.v0.1",
+          "start_end": {
+            "identity": {
+              "accession": "hydroxyl",
+              "namespace": "software_fixture.chemical",
+              "schema_version": "biocompiler.chemical_identity.v0.1",
+              "version": "1"
+            },
+            "provenance": {
+              "authority": [
+                {
+                  "content_fingerprint": "f8f3bd498be91477cea9ac4e0cf3768498b168a969ee8913b0db7ab686f13e6b",
+                  "id": "artificial-pm-structure-notice",
+                  "kind": "source",
+                  "schema_version": "biocompiler.component_identity.v0.1",
+                  "version": "1"
+                }
+              ],
+              "locator": "frozen artificial literal",
+              "reason": "Supplied artificial structural authority, not empirical or component-to-material evidence.",
+              "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+              "status": "declared"
+            },
+            "schema_version": "biocompiler.chemistry_claim.v0.1",
+            "status": "declared"
+          },
+          "terminal_tail": {
+            "length": {
+              "exact": 4,
+              "lower": null,
+              "mode": "exact",
+              "schema_version": "biocompiler.tail_length.v0.1",
+              "upper": null
+            },
+            "path": {
+              "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+              "space_id": "payload.output.frame",
+              "spans": [
+                {
+                  "end": 17,
+                  "schema_version": "biocompiler.molecule_index_span.v0.1",
+                  "start": 13
+                }
+              ],
+              "strand": "+"
+            },
+            "placement": "represented_terminal",
+            "provenance": {
+              "authority": [
+                {
+                  "content_fingerprint": "f8f3bd498be91477cea9ac4e0cf3768498b168a969ee8913b0db7ab686f13e6b",
+                  "id": "artificial-pm-structure-notice",
+                  "kind": "source",
+                  "schema_version": "biocompiler.component_identity.v0.1",
+                  "version": "1"
+                }
+              ],
+              "locator": "frozen artificial literal",
+              "reason": "Supplied artificial structural authority, not empirical or component-to-material evidence.",
+              "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+              "status": "declared"
+            },
+            "schema_version": "biocompiler.tail_declaration.v0.1",
+            "status": "declared"
+          }
+        },
+        "id": "payload",
+        "product": {
+          "identity": {
+            "content_fingerprint": "c7434883f345ffc2100dd9e3750afbbee436ba7535cf5fb26b9be706ce413c9b",
+            "id": "payload.artificial.product",
+            "kind": "source",
+            "schema_version": "biocompiler.component_identity.v0.1",
+            "version": "1"
+          },
+          "provenance": {
+            "authority": [
+              {
+                "content_fingerprint": "f8f3bd498be91477cea9ac4e0cf3768498b168a969ee8913b0db7ab686f13e6b",
+                "id": "artificial-pm-structure-notice",
+                "kind": "source",
+                "schema_version": "biocompiler.component_identity.v0.1",
+                "version": "1"
+              }
+            ],
+            "locator": "frozen artificial literal",
+            "reason": "Supplied artificial structural authority, not empirical or component-to-material evidence.",
+            "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+            "status": "declared"
+          },
+          "sequence": "MA",
+          "translation_policy": {
+            "genetic_code": "ncbi_standard_v1",
+            "profile": "ordinary_cds",
+            "recodings": [],
+            "schema_version": "biocompiler.translation_policy.v0.1"
+          }
+        },
+        "regions": {
+          "cds": "cds",
+          "poly_a": "poly_a",
+          "utr3": "utr3",
+          "utr5": "utr5"
+        }
+      }
+    ],
+    "profile": "biocompiler.policy_mrna_completeness.v0.1",
+    "schema_version": "biocompiler.policy_mrna_structure_authority.v0.1",
+    "template": {
+      "amounts": [],
+      "complex_members": [],
+      "id": "artificial.two_member_mrna",
+      "output_members": [
+        {
+          "coding_status": "coding",
+          "form": "delivered_rna",
+          "id": "payload",
+          "provenance": {
+            "authority": [
+              {
+                "content_fingerprint": "f8f3bd498be91477cea9ac4e0cf3768498b168a969ee8913b0db7ab686f13e6b",
+                "id": "artificial-pm-structure-notice",
+                "kind": "source",
+                "schema_version": "biocompiler.component_identity.v0.1",
+                "version": "1"
+              }
+            ],
+            "locator": "frozen artificial literal",
+            "reason": "Supplied artificial structural authority, not empirical or component-to-material evidence.",
+            "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+            "status": "declared"
+          },
+          "schema_version": "biocompiler.construction_output_member.v0.1",
+          "sequence_extent": "complete",
+          "space_id": "payload.output.frame",
+          "value": {
+            "id": "payload.input",
+            "kind": "root",
+            "schema_version": "biocompiler.construction_value_ref.v0.1"
+          }
+        },
+        {
+          "coding_status": "coding",
+          "form": "delivered_rna",
+          "id": "z-helper",
+          "provenance": {
+            "authority": [
+              {
+                "content_fingerprint": "f8f3bd498be91477cea9ac4e0cf3768498b168a969ee8913b0db7ab686f13e6b",
+                "id": "artificial-pm-structure-notice",
+                "kind": "source",
+                "schema_version": "biocompiler.component_identity.v0.1",
+                "version": "1"
+              }
+            ],
+            "locator": "frozen artificial literal",
+            "reason": "Supplied artificial structural authority, not empirical or component-to-material evidence.",
+            "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+            "status": "declared"
+          },
+          "schema_version": "biocompiler.construction_output_member.v0.1",
+          "sequence_extent": "complete",
+          "space_id": "z-helper.output.frame",
+          "value": {
+            "id": "z-helper.input",
+            "kind": "root",
+            "schema_version": "biocompiler.construction_value_ref.v0.1"
+          }
+        }
+      ],
+      "payload_structures": [
+        {
+          "form": "delivered_rna",
+          "member_id": "payload",
+          "provenance": {
+            "authority": [
+              {
+                "content_fingerprint": "f8f3bd498be91477cea9ac4e0cf3768498b168a969ee8913b0db7ab686f13e6b",
+                "id": "artificial-pm-structure-notice",
+                "kind": "source",
+                "schema_version": "biocompiler.component_identity.v0.1",
+                "version": "1"
+              }
+            ],
+            "locator": "frozen artificial literal",
+            "reason": "Supplied artificial structural authority, not empirical or component-to-material evidence.",
+            "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+            "status": "declared"
+          },
+          "regions": [
+            {
+              "feature_id": "cds",
+              "kind": "coding_sequence",
+              "schema_version": "biocompiler.required_payload_region.v0.1"
+            },
+            {
+              "feature_id": "poly_a",
+              "kind": "poly_a_tail",
+              "schema_version": "biocompiler.required_payload_region.v0.1"
+            },
+            {
+              "feature_id": "utr3",
+              "kind": "three_prime_utr",
+              "schema_version": "biocompiler.required_payload_region.v0.1"
+            },
+            {
+              "feature_id": "utr5",
+              "kind": "five_prime_utr",
+              "schema_version": "biocompiler.required_payload_region.v0.1"
+            }
+          ],
+          "schema_version": "biocompiler.payload_structure_contract.v0.1",
+          "topology": "linear"
+        },
+        {
+          "form": "delivered_rna",
+          "member_id": "z-helper",
+          "provenance": {
+            "authority": [
+              {
+                "content_fingerprint": "f8f3bd498be91477cea9ac4e0cf3768498b168a969ee8913b0db7ab686f13e6b",
+                "id": "artificial-pm-structure-notice",
+                "kind": "source",
+                "schema_version": "biocompiler.component_identity.v0.1",
+                "version": "1"
+              }
+            ],
+            "locator": "frozen artificial literal",
+            "reason": "Supplied artificial structural authority, not empirical or component-to-material evidence.",
+            "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+            "status": "declared"
+          },
+          "regions": [
+            {
+              "feature_id": "cds",
+              "kind": "coding_sequence",
+              "schema_version": "biocompiler.required_payload_region.v0.1"
+            },
+            {
+              "feature_id": "poly_a",
+              "kind": "poly_a_tail",
+              "schema_version": "biocompiler.required_payload_region.v0.1"
+            },
+            {
+              "feature_id": "utr3",
+              "kind": "three_prime_utr",
+              "schema_version": "biocompiler.required_payload_region.v0.1"
+            },
+            {
+              "feature_id": "utr5",
+              "kind": "five_prime_utr",
+              "schema_version": "biocompiler.required_payload_region.v0.1"
+            }
+          ],
+          "schema_version": "biocompiler.payload_structure_contract.v0.1",
+          "topology": "linear"
+        }
+      ],
+      "requirements": [
+        {
+          "category": "payload",
+          "external_fingerprint": null,
+          "external_id": null,
+          "id": "payload.requirement",
+          "member_id": "payload",
+          "roles": [
+            {
+              "compartment": "cytoplasm",
+              "id": "payload.role",
+              "purpose": "requested_payload",
+              "role": "payload",
+              "schema_version": "biocompiler.construction_role_declaration.v0.1"
+            }
+          ],
+          "schema_version": "biocompiler.construction_member_requirement.v0.1"
+        },
+        {
+          "category": "delivered_helper",
+          "external_fingerprint": null,
+          "external_id": null,
+          "id": "z-helper.requirement",
+          "member_id": "z-helper",
+          "roles": [
+            {
+              "compartment": "cytoplasm",
+              "id": "z-helper.role",
+              "purpose": "helper",
+              "role": "z-helper",
+              "schema_version": "biocompiler.construction_role_declaration.v0.1"
+            }
+          ],
+          "schema_version": "biocompiler.construction_member_requirement.v0.1"
+        }
+      ],
+      "schema_version": "biocompiler.payload_template.v0.1",
+      "sources": [
+        {
+          "id": "payload.input",
+          "molecule": {
+            "assembly": [
+              {
+                "destination": {
+                  "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+                  "space_id": "payload.root.frame",
+                  "spans": [
+                    {
+                      "end": 17,
+                      "schema_version": "biocompiler.molecule_index_span.v0.1",
+                      "start": 0
+                    }
+                  ],
+                  "strand": "+"
+                },
+                "id": "payload.supplied.origin",
+                "provenance": {
+                  "authority": [
+                    {
+                      "content_fingerprint": "f8f3bd498be91477cea9ac4e0cf3768498b168a969ee8913b0db7ab686f13e6b",
+                      "id": "artificial-pm-structure-notice",
+                      "kind": "source",
+                      "schema_version": "biocompiler.component_identity.v0.1",
+                      "version": "1"
+                    }
+                  ],
+                  "locator": "frozen artificial literal",
+                  "reason": "Supplied artificial structural authority, not empirical or component-to-material evidence.",
+                  "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                  "status": "declared"
+                },
+                "schema_version": "biocompiler.assembly_origin.v0.1",
+                "source_path": {
+                  "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+                  "space_id": "payload.external.frame",
+                  "spans": [
+                    {
+                      "end": 17,
+                      "schema_version": "biocompiler.molecule_index_span.v0.1",
+                      "start": 0
+                    }
+                  ],
+                  "strand": "+"
+                },
+                "source_space": {
+                  "alphabet": "RNA",
+                  "axis": "5prime_to_3prime",
+                  "id": "payload.external.frame",
+                  "length": 17,
+                  "schema_version": "biocompiler.molecule_coordinate_space.v0.1",
+                  "topology": "linear"
+                }
+              }
+            ],
+            "chemistry": {
+              "cap": {
+                "identity": {
+                  "accession": "artificial_cap",
+                  "namespace": "software_fixture.chemical",
+                  "schema_version": "biocompiler.chemical_identity.v0.1",
+                  "version": "1"
+                },
+                "provenance": {
+                  "authority": [
+                    {
+                      "content_fingerprint": "f8f3bd498be91477cea9ac4e0cf3768498b168a969ee8913b0db7ab686f13e6b",
+                      "id": "artificial-pm-structure-notice",
+                      "kind": "source",
+                      "schema_version": "biocompiler.component_identity.v0.1",
+                      "version": "1"
+                    }
+                  ],
+                  "locator": "frozen artificial literal",
+                  "reason": "Supplied artificial structural authority, not empirical or component-to-material evidence.",
+                  "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                  "status": "declared"
+                },
+                "schema_version": "biocompiler.chemistry_claim.v0.1",
+                "status": "declared"
+              },
+              "finish_end": {
+                "identity": {
+                  "accession": "hydroxyl",
+                  "namespace": "software_fixture.chemical",
+                  "schema_version": "biocompiler.chemical_identity.v0.1",
+                  "version": "1"
+                },
+                "provenance": {
+                  "authority": [
+                    {
+                      "content_fingerprint": "f8f3bd498be91477cea9ac4e0cf3768498b168a969ee8913b0db7ab686f13e6b",
+                      "id": "artificial-pm-structure-notice",
+                      "kind": "source",
+                      "schema_version": "biocompiler.component_identity.v0.1",
+                      "version": "1"
+                    }
+                  ],
+                  "locator": "frozen artificial literal",
+                  "reason": "Supplied artificial structural authority, not empirical or component-to-material evidence.",
+                  "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                  "status": "declared"
+                },
+                "schema_version": "biocompiler.chemistry_claim.v0.1",
+                "status": "declared"
+              },
+              "modification_inventory_provenance": {
+                "authority": [
+                  {
+                    "content_fingerprint": "f8f3bd498be91477cea9ac4e0cf3768498b168a969ee8913b0db7ab686f13e6b",
+                    "id": "artificial-pm-structure-notice",
+                    "kind": "source",
+                    "schema_version": "biocompiler.component_identity.v0.1",
+                    "version": "1"
+                  }
+                ],
+                "locator": "frozen artificial literal",
+                "reason": "Supplied artificial structural authority, not empirical or component-to-material evidence.",
+                "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                "status": "declared"
+              },
+              "modification_inventory_status": "declared",
+              "modifications": [],
+              "schema_version": "biocompiler.molecule_chemistry.v0.1",
+              "start_end": {
+                "identity": {
+                  "accession": "hydroxyl",
+                  "namespace": "software_fixture.chemical",
+                  "schema_version": "biocompiler.chemical_identity.v0.1",
+                  "version": "1"
+                },
+                "provenance": {
+                  "authority": [
+                    {
+                      "content_fingerprint": "f8f3bd498be91477cea9ac4e0cf3768498b168a969ee8913b0db7ab686f13e6b",
+                      "id": "artificial-pm-structure-notice",
+                      "kind": "source",
+                      "schema_version": "biocompiler.component_identity.v0.1",
+                      "version": "1"
+                    }
+                  ],
+                  "locator": "frozen artificial literal",
+                  "reason": "Supplied artificial structural authority, not empirical or component-to-material evidence.",
+                  "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                  "status": "declared"
+                },
+                "schema_version": "biocompiler.chemistry_claim.v0.1",
+                "status": "declared"
+              },
+              "terminal_tail": {
+                "length": {
+                  "exact": 4,
+                  "lower": null,
+                  "mode": "exact",
+                  "schema_version": "biocompiler.tail_length.v0.1",
+                  "upper": null
+                },
+                "path": {
+                  "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+                  "space_id": "payload.root.frame",
+                  "spans": [
+                    {
+                      "end": 17,
+                      "schema_version": "biocompiler.molecule_index_span.v0.1",
+                      "start": 13
+                    }
+                  ],
+                  "strand": "+"
+                },
+                "placement": "represented_terminal",
+                "provenance": {
+                  "authority": [
+                    {
+                      "content_fingerprint": "f8f3bd498be91477cea9ac4e0cf3768498b168a969ee8913b0db7ab686f13e6b",
+                      "id": "artificial-pm-structure-notice",
+                      "kind": "source",
+                      "schema_version": "biocompiler.component_identity.v0.1",
+                      "version": "1"
+                    }
+                  ],
+                  "locator": "frozen artificial literal",
+                  "reason": "Supplied artificial structural authority, not empirical or component-to-material evidence.",
+                  "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                  "status": "declared"
+                },
+                "schema_version": "biocompiler.tail_declaration.v0.1",
+                "status": "declared"
+              }
+            },
+            "coding_status": "coding",
+            "features": [
+              {
+                "id": "cds",
+                "kind": "coding_sequence",
+                "path": {
+                  "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+                  "space_id": "payload.root.frame",
+                  "spans": [
+                    {
+                      "end": 11,
+                      "schema_version": "biocompiler.molecule_index_span.v0.1",
+                      "start": 2
+                    }
+                  ],
+                  "strand": "+"
+                },
+                "provenance": {
+                  "authority": [
+                    {
+                      "content_fingerprint": "f8f3bd498be91477cea9ac4e0cf3768498b168a969ee8913b0db7ab686f13e6b",
+                      "id": "artificial-pm-structure-notice",
+                      "kind": "source",
+                      "schema_version": "biocompiler.component_identity.v0.1",
+                      "version": "1"
+                    }
+                  ],
+                  "locator": "frozen artificial literal",
+                  "reason": "Supplied artificial structural authority, not empirical or component-to-material evidence.",
+                  "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                  "status": "declared"
+                },
+                "reading_frame": 0,
+                "schema_version": "biocompiler.molecule_feature.v0.1"
+              },
+              {
+                "id": "poly_a",
+                "kind": "poly_a_tail",
+                "path": {
+                  "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+                  "space_id": "payload.root.frame",
+                  "spans": [
+                    {
+                      "end": 17,
+                      "schema_version": "biocompiler.molecule_index_span.v0.1",
+                      "start": 13
+                    }
+                  ],
+                  "strand": "+"
+                },
+                "provenance": {
+                  "authority": [
+                    {
+                      "content_fingerprint": "f8f3bd498be91477cea9ac4e0cf3768498b168a969ee8913b0db7ab686f13e6b",
+                      "id": "artificial-pm-structure-notice",
+                      "kind": "source",
+                      "schema_version": "biocompiler.component_identity.v0.1",
+                      "version": "1"
+                    }
+                  ],
+                  "locator": "frozen artificial literal",
+                  "reason": "Supplied artificial structural authority, not empirical or component-to-material evidence.",
+                  "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                  "status": "declared"
+                },
+                "reading_frame": null,
+                "schema_version": "biocompiler.molecule_feature.v0.1"
+              },
+              {
+                "id": "utr3",
+                "kind": "three_prime_utr",
+                "path": {
+                  "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+                  "space_id": "payload.root.frame",
+                  "spans": [
+                    {
+                      "end": 13,
+                      "schema_version": "biocompiler.molecule_index_span.v0.1",
+                      "start": 11
+                    }
+                  ],
+                  "strand": "+"
+                },
+                "provenance": {
+                  "authority": [
+                    {
+                      "content_fingerprint": "f8f3bd498be91477cea9ac4e0cf3768498b168a969ee8913b0db7ab686f13e6b",
+                      "id": "artificial-pm-structure-notice",
+                      "kind": "source",
+                      "schema_version": "biocompiler.component_identity.v0.1",
+                      "version": "1"
+                    }
+                  ],
+                  "locator": "frozen artificial literal",
+                  "reason": "Supplied artificial structural authority, not empirical or component-to-material evidence.",
+                  "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                  "status": "declared"
+                },
+                "reading_frame": null,
+                "schema_version": "biocompiler.molecule_feature.v0.1"
+              },
+              {
+                "id": "utr5",
+                "kind": "five_prime_utr",
+                "path": {
+                  "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+                  "space_id": "payload.root.frame",
+                  "spans": [
+                    {
+                      "end": 2,
+                      "schema_version": "biocompiler.molecule_index_span.v0.1",
+                      "start": 0
+                    }
+                  ],
+                  "strand": "+"
+                },
+                "provenance": {
+                  "authority": [
+                    {
+                      "content_fingerprint": "f8f3bd498be91477cea9ac4e0cf3768498b168a969ee8913b0db7ab686f13e6b",
+                      "id": "artificial-pm-structure-notice",
+                      "kind": "source",
+                      "schema_version": "biocompiler.component_identity.v0.1",
+                      "version": "1"
+                    }
+                  ],
+                  "locator": "frozen artificial literal",
+                  "reason": "Supplied artificial structural authority, not empirical or component-to-material evidence.",
+                  "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                  "status": "declared"
+                },
+                "reading_frame": null,
+                "schema_version": "biocompiler.molecule_feature.v0.1"
+              }
+            ],
+            "form": "delivered_rna",
+            "id": "payload.root",
+            "provenance": {
+              "authority": [
+                {
+                  "content_fingerprint": "f8f3bd498be91477cea9ac4e0cf3768498b168a969ee8913b0db7ab686f13e6b",
+                  "id": "artificial-pm-structure-notice",
+                  "kind": "source",
+                  "schema_version": "biocompiler.component_identity.v0.1",
+                  "version": "1"
+                }
+              ],
+              "locator": "frozen artificial literal",
+              "reason": "Supplied artificial structural authority, not empirical or component-to-material evidence.",
+              "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+              "status": "declared"
+            },
+            "schema_version": "biocompiler.circuit_molecule.v0.1",
+            "sequence": "CCAUGGCUUAAGGAAAA",
+            "sequence_extent": "complete",
+            "space": {
+              "alphabet": "RNA",
+              "axis": "5prime_to_3prime",
+              "id": "payload.root.frame",
+              "length": 17,
+              "schema_version": "biocompiler.molecule_coordinate_space.v0.1",
+              "topology": "linear"
+            }
+          },
+          "provenance": {
+            "authority": [
+              {
+                "content_fingerprint": "f8f3bd498be91477cea9ac4e0cf3768498b168a969ee8913b0db7ab686f13e6b",
+                "id": "artificial-pm-structure-notice",
+                "kind": "source",
+                "schema_version": "biocompiler.component_identity.v0.1",
+                "version": "1"
+              }
+            ],
+            "locator": "frozen artificial literal",
+            "reason": "Supplied artificial structural authority, not empirical or component-to-material evidence.",
+            "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+            "status": "declared"
+          },
+          "schema_version": "biocompiler.construction_root_source.v0.1"
+        },
+        {
+          "id": "z-helper.input",
+          "molecule": {
+            "assembly": [
+              {
+                "destination": {
+                  "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+                  "space_id": "z-helper.root.frame",
+                  "spans": [
+                    {
+                      "end": 18,
+                      "schema_version": "biocompiler.molecule_index_span.v0.1",
+                      "start": 0
+                    }
+                  ],
+                  "strand": "+"
+                },
+                "id": "z-helper.supplied.origin",
+                "provenance": {
+                  "authority": [
+                    {
+                      "content_fingerprint": "f8f3bd498be91477cea9ac4e0cf3768498b168a969ee8913b0db7ab686f13e6b",
+                      "id": "artificial-pm-structure-notice",
+                      "kind": "source",
+                      "schema_version": "biocompiler.component_identity.v0.1",
+                      "version": "1"
+                    }
+                  ],
+                  "locator": "frozen artificial literal",
+                  "reason": "Supplied artificial structural authority, not empirical or component-to-material evidence.",
+                  "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                  "status": "declared"
+                },
+                "schema_version": "biocompiler.assembly_origin.v0.1",
+                "source_path": {
+                  "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+                  "space_id": "z-helper.external.frame",
+                  "spans": [
+                    {
+                      "end": 18,
+                      "schema_version": "biocompiler.molecule_index_span.v0.1",
+                      "start": 0
+                    }
+                  ],
+                  "strand": "+"
+                },
+                "source_space": {
+                  "alphabet": "RNA",
+                  "axis": "5prime_to_3prime",
+                  "id": "z-helper.external.frame",
+                  "length": 18,
+                  "schema_version": "biocompiler.molecule_coordinate_space.v0.1",
+                  "topology": "linear"
+                }
+              }
+            ],
+            "chemistry": {
+              "cap": {
+                "identity": {
+                  "accession": "artificial_cap",
+                  "namespace": "software_fixture.chemical",
+                  "schema_version": "biocompiler.chemical_identity.v0.1",
+                  "version": "1"
+                },
+                "provenance": {
+                  "authority": [
+                    {
+                      "content_fingerprint": "f8f3bd498be91477cea9ac4e0cf3768498b168a969ee8913b0db7ab686f13e6b",
+                      "id": "artificial-pm-structure-notice",
+                      "kind": "source",
+                      "schema_version": "biocompiler.component_identity.v0.1",
+                      "version": "1"
+                    }
+                  ],
+                  "locator": "frozen artificial literal",
+                  "reason": "Supplied artificial structural authority, not empirical or component-to-material evidence.",
+                  "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                  "status": "declared"
+                },
+                "schema_version": "biocompiler.chemistry_claim.v0.1",
+                "status": "declared"
+              },
+              "finish_end": {
+                "identity": {
+                  "accession": "hydroxyl",
+                  "namespace": "software_fixture.chemical",
+                  "schema_version": "biocompiler.chemical_identity.v0.1",
+                  "version": "1"
+                },
+                "provenance": {
+                  "authority": [
+                    {
+                      "content_fingerprint": "f8f3bd498be91477cea9ac4e0cf3768498b168a969ee8913b0db7ab686f13e6b",
+                      "id": "artificial-pm-structure-notice",
+                      "kind": "source",
+                      "schema_version": "biocompiler.component_identity.v0.1",
+                      "version": "1"
+                    }
+                  ],
+                  "locator": "frozen artificial literal",
+                  "reason": "Supplied artificial structural authority, not empirical or component-to-material evidence.",
+                  "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                  "status": "declared"
+                },
+                "schema_version": "biocompiler.chemistry_claim.v0.1",
+                "status": "declared"
+              },
+              "modification_inventory_provenance": {
+                "authority": [
+                  {
+                    "content_fingerprint": "f8f3bd498be91477cea9ac4e0cf3768498b168a969ee8913b0db7ab686f13e6b",
+                    "id": "artificial-pm-structure-notice",
+                    "kind": "source",
+                    "schema_version": "biocompiler.component_identity.v0.1",
+                    "version": "1"
+                  }
+                ],
+                "locator": "frozen artificial literal",
+                "reason": "Supplied artificial structural authority, not empirical or component-to-material evidence.",
+                "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                "status": "declared"
+              },
+              "modification_inventory_status": "declared",
+              "modifications": [],
+              "schema_version": "biocompiler.molecule_chemistry.v0.1",
+              "start_end": {
+                "identity": {
+                  "accession": "hydroxyl",
+                  "namespace": "software_fixture.chemical",
+                  "schema_version": "biocompiler.chemical_identity.v0.1",
+                  "version": "1"
+                },
+                "provenance": {
+                  "authority": [
+                    {
+                      "content_fingerprint": "f8f3bd498be91477cea9ac4e0cf3768498b168a969ee8913b0db7ab686f13e6b",
+                      "id": "artificial-pm-structure-notice",
+                      "kind": "source",
+                      "schema_version": "biocompiler.component_identity.v0.1",
+                      "version": "1"
+                    }
+                  ],
+                  "locator": "frozen artificial literal",
+                  "reason": "Supplied artificial structural authority, not empirical or component-to-material evidence.",
+                  "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                  "status": "declared"
+                },
+                "schema_version": "biocompiler.chemistry_claim.v0.1",
+                "status": "declared"
+              },
+              "terminal_tail": {
+                "length": {
+                  "exact": 5,
+                  "lower": null,
+                  "mode": "exact",
+                  "schema_version": "biocompiler.tail_length.v0.1",
+                  "upper": null
+                },
+                "path": {
+                  "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+                  "space_id": "z-helper.root.frame",
+                  "spans": [
+                    {
+                      "end": 18,
+                      "schema_version": "biocompiler.molecule_index_span.v0.1",
+                      "start": 13
+                    }
+                  ],
+                  "strand": "+"
+                },
+                "placement": "represented_terminal",
+                "provenance": {
+                  "authority": [
+                    {
+                      "content_fingerprint": "f8f3bd498be91477cea9ac4e0cf3768498b168a969ee8913b0db7ab686f13e6b",
+                      "id": "artificial-pm-structure-notice",
+                      "kind": "source",
+                      "schema_version": "biocompiler.component_identity.v0.1",
+                      "version": "1"
+                    }
+                  ],
+                  "locator": "frozen artificial literal",
+                  "reason": "Supplied artificial structural authority, not empirical or component-to-material evidence.",
+                  "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                  "status": "declared"
+                },
+                "schema_version": "biocompiler.tail_declaration.v0.1",
+                "status": "declared"
+              }
+            },
+            "coding_status": "coding",
+            "features": [
+              {
+                "id": "cds",
+                "kind": "coding_sequence",
+                "path": {
+                  "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+                  "space_id": "z-helper.root.frame",
+                  "spans": [
+                    {
+                      "end": 11,
+                      "schema_version": "biocompiler.molecule_index_span.v0.1",
+                      "start": 2
+                    }
+                  ],
+                  "strand": "+"
+                },
+                "provenance": {
+                  "authority": [
+                    {
+                      "content_fingerprint": "f8f3bd498be91477cea9ac4e0cf3768498b168a969ee8913b0db7ab686f13e6b",
+                      "id": "artificial-pm-structure-notice",
+                      "kind": "source",
+                      "schema_version": "biocompiler.component_identity.v0.1",
+                      "version": "1"
+                    }
+                  ],
+                  "locator": "frozen artificial literal",
+                  "reason": "Supplied artificial structural authority, not empirical or component-to-material evidence.",
+                  "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                  "status": "declared"
+                },
+                "reading_frame": 0,
+                "schema_version": "biocompiler.molecule_feature.v0.1"
+              },
+              {
+                "id": "poly_a",
+                "kind": "poly_a_tail",
+                "path": {
+                  "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+                  "space_id": "z-helper.root.frame",
+                  "spans": [
+                    {
+                      "end": 18,
+                      "schema_version": "biocompiler.molecule_index_span.v0.1",
+                      "start": 13
+                    }
+                  ],
+                  "strand": "+"
+                },
+                "provenance": {
+                  "authority": [
+                    {
+                      "content_fingerprint": "f8f3bd498be91477cea9ac4e0cf3768498b168a969ee8913b0db7ab686f13e6b",
+                      "id": "artificial-pm-structure-notice",
+                      "kind": "source",
+                      "schema_version": "biocompiler.component_identity.v0.1",
+                      "version": "1"
+                    }
+                  ],
+                  "locator": "frozen artificial literal",
+                  "reason": "Supplied artificial structural authority, not empirical or component-to-material evidence.",
+                  "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                  "status": "declared"
+                },
+                "reading_frame": null,
+                "schema_version": "biocompiler.molecule_feature.v0.1"
+              },
+              {
+                "id": "utr3",
+                "kind": "three_prime_utr",
+                "path": {
+                  "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+                  "space_id": "z-helper.root.frame",
+                  "spans": [
+                    {
+                      "end": 13,
+                      "schema_version": "biocompiler.molecule_index_span.v0.1",
+                      "start": 11
+                    }
+                  ],
+                  "strand": "+"
+                },
+                "provenance": {
+                  "authority": [
+                    {
+                      "content_fingerprint": "f8f3bd498be91477cea9ac4e0cf3768498b168a969ee8913b0db7ab686f13e6b",
+                      "id": "artificial-pm-structure-notice",
+                      "kind": "source",
+                      "schema_version": "biocompiler.component_identity.v0.1",
+                      "version": "1"
+                    }
+                  ],
+                  "locator": "frozen artificial literal",
+                  "reason": "Supplied artificial structural authority, not empirical or component-to-material evidence.",
+                  "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                  "status": "declared"
+                },
+                "reading_frame": null,
+                "schema_version": "biocompiler.molecule_feature.v0.1"
+              },
+              {
+                "id": "utr5",
+                "kind": "five_prime_utr",
+                "path": {
+                  "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+                  "space_id": "z-helper.root.frame",
+                  "spans": [
+                    {
+                      "end": 2,
+                      "schema_version": "biocompiler.molecule_index_span.v0.1",
+                      "start": 0
+                    }
+                  ],
+                  "strand": "+"
+                },
+                "provenance": {
+                  "authority": [
+                    {
+                      "content_fingerprint": "f8f3bd498be91477cea9ac4e0cf3768498b168a969ee8913b0db7ab686f13e6b",
+                      "id": "artificial-pm-structure-notice",
+                      "kind": "source",
+                      "schema_version": "biocompiler.component_identity.v0.1",
+                      "version": "1"
+                    }
+                  ],
+                  "locator": "frozen artificial literal",
+                  "reason": "Supplied artificial structural authority, not empirical or component-to-material evidence.",
+                  "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                  "status": "declared"
+                },
+                "reading_frame": null,
+                "schema_version": "biocompiler.molecule_feature.v0.1"
+              }
+            ],
+            "form": "delivered_rna",
+            "id": "z-helper.root",
+            "provenance": {
+              "authority": [
+                {
+                  "content_fingerprint": "f8f3bd498be91477cea9ac4e0cf3768498b168a969ee8913b0db7ab686f13e6b",
+                  "id": "artificial-pm-structure-notice",
+                  "kind": "source",
+                  "schema_version": "biocompiler.component_identity.v0.1",
+                  "version": "1"
+                }
+              ],
+              "locator": "frozen artificial literal",
+              "reason": "Supplied artificial structural authority, not empirical or component-to-material evidence.",
+              "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+              "status": "declared"
+            },
+            "schema_version": "biocompiler.circuit_molecule.v0.1",
+            "sequence": "GGAUGGAAUGACCAAAAA",
+            "sequence_extent": "complete",
+            "space": {
+              "alphabet": "RNA",
+              "axis": "5prime_to_3prime",
+              "id": "z-helper.root.frame",
+              "length": 18,
+              "schema_version": "biocompiler.molecule_coordinate_space.v0.1",
+              "topology": "linear"
+            }
+          },
+          "provenance": {
+            "authority": [
+              {
+                "content_fingerprint": "f8f3bd498be91477cea9ac4e0cf3768498b168a969ee8913b0db7ab686f13e6b",
+                "id": "artificial-pm-structure-notice",
+                "kind": "source",
+                "schema_version": "biocompiler.component_identity.v0.1",
+                "version": "1"
+              }
+            ],
+            "locator": "frozen artificial literal",
+            "reason": "Supplied artificial structural authority, not empirical or component-to-material evidence.",
+            "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+            "status": "declared"
+          },
+          "schema_version": "biocompiler.construction_root_source.v0.1"
+        }
+      ],
+      "steps": []
+    }
+  },
+  "authority_digest": "ff7c2efea0a608be4a7dc81aa59c7393337cf6744e55cfbeb96921cc54784646",
+  "candidate_digest": "5beb361f308aa9d8fa8598dc57c61f00828eb4e1289b07c75d6cdd4cab36319c",
+  "claim": "Artificial structural leaf only. PM01/10/11/12 and external component binding remain unassessed.",
+  "expected_outcome": "pass",
+  "expected_sequences": [
+    {
+      "member": "z-helper",
+      "product": "ME",
+      "sequence": "GGAUGGAAUGACCAAAAA"
+    },
+    {
+      "member": "payload",
+      "product": "MA",
+      "sequence": "CCAUGGCUUAAGGAAAA"
+    }
+  ],
+  "literal_candidate": {
+    "authority_fingerprint": "548afda7a82b109ab265bc851f85ac7180798a3cd4c9d9e62d66ef9966ec17a3",
+    "diagnostics": [],
+    "experimental_amounts": [],
+    "inventory": {
+      "complexes": [],
+      "form_mappings": [],
+      "id": "artificial.two_member_mrna.molecules",
+      "molecules": [
+        {
+          "assembly": [
+            {
+              "destination": {
+                "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+                "space_id": "z-helper.output.frame",
+                "spans": [
+                  {
+                    "end": 18,
+                    "schema_version": "biocompiler.molecule_index_span.v0.1",
+                    "start": 0
+                  }
+                ],
+                "strand": "+"
+              },
+              "id": "z-helper.origin",
+              "provenance": {
+                "authority": [
+                  {
+                    "content_fingerprint": "f8f3bd498be91477cea9ac4e0cf3768498b168a969ee8913b0db7ab686f13e6b",
+                    "id": "artificial-pm-structure-notice",
+                    "kind": "source",
+                    "schema_version": "biocompiler.component_identity.v0.1",
+                    "version": "1"
+                  }
+                ],
+                "locator": "frozen artificial literal",
+                "reason": "Supplied artificial structural authority, not empirical or component-to-material evidence.",
+                "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                "status": "declared"
+              },
+              "schema_version": "biocompiler.assembly_origin.v0.1",
+              "source_path": {
+                "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+                "space_id": "z-helper.root.frame",
+                "spans": [
+                  {
+                    "end": 18,
+                    "schema_version": "biocompiler.molecule_index_span.v0.1",
+                    "start": 0
+                  }
+                ],
+                "strand": "+"
+              },
+              "source_space": {
+                "alphabet": "RNA",
+                "axis": "5prime_to_3prime",
+                "id": "z-helper.root.frame",
+                "length": 18,
+                "schema_version": "biocompiler.molecule_coordinate_space.v0.1",
+                "topology": "linear"
+              }
+            }
+          ],
+          "chemistry": {
+            "cap": {
+              "identity": {
+                "accession": "artificial_cap",
+                "namespace": "software_fixture.chemical",
+                "schema_version": "biocompiler.chemical_identity.v0.1",
+                "version": "1"
+              },
+              "provenance": {
+                "authority": [
+                  {
+                    "content_fingerprint": "f8f3bd498be91477cea9ac4e0cf3768498b168a969ee8913b0db7ab686f13e6b",
+                    "id": "artificial-pm-structure-notice",
+                    "kind": "source",
+                    "schema_version": "biocompiler.component_identity.v0.1",
+                    "version": "1"
+                  }
+                ],
+                "locator": "frozen artificial literal",
+                "reason": "Supplied artificial structural authority, not empirical or component-to-material evidence.",
+                "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                "status": "declared"
+              },
+              "schema_version": "biocompiler.chemistry_claim.v0.1",
+              "status": "declared"
+            },
+            "finish_end": {
+              "identity": {
+                "accession": "hydroxyl",
+                "namespace": "software_fixture.chemical",
+                "schema_version": "biocompiler.chemical_identity.v0.1",
+                "version": "1"
+              },
+              "provenance": {
+                "authority": [
+                  {
+                    "content_fingerprint": "f8f3bd498be91477cea9ac4e0cf3768498b168a969ee8913b0db7ab686f13e6b",
+                    "id": "artificial-pm-structure-notice",
+                    "kind": "source",
+                    "schema_version": "biocompiler.component_identity.v0.1",
+                    "version": "1"
+                  }
+                ],
+                "locator": "frozen artificial literal",
+                "reason": "Supplied artificial structural authority, not empirical or component-to-material evidence.",
+                "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                "status": "declared"
+              },
+              "schema_version": "biocompiler.chemistry_claim.v0.1",
+              "status": "declared"
+            },
+            "modification_inventory_provenance": {
+              "authority": [
+                {
+                  "content_fingerprint": "f8f3bd498be91477cea9ac4e0cf3768498b168a969ee8913b0db7ab686f13e6b",
+                  "id": "artificial-pm-structure-notice",
+                  "kind": "source",
+                  "schema_version": "biocompiler.component_identity.v0.1",
+                  "version": "1"
+                }
+              ],
+              "locator": "frozen artificial literal",
+              "reason": "Supplied artificial structural authority, not empirical or component-to-material evidence.",
+              "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+              "status": "declared"
+            },
+            "modification_inventory_status": "declared",
+            "modifications": [],
+            "schema_version": "biocompiler.molecule_chemistry.v0.1",
+            "start_end": {
+              "identity": {
+                "accession": "hydroxyl",
+                "namespace": "software_fixture.chemical",
+                "schema_version": "biocompiler.chemical_identity.v0.1",
+                "version": "1"
+              },
+              "provenance": {
+                "authority": [
+                  {
+                    "content_fingerprint": "f8f3bd498be91477cea9ac4e0cf3768498b168a969ee8913b0db7ab686f13e6b",
+                    "id": "artificial-pm-structure-notice",
+                    "kind": "source",
+                    "schema_version": "biocompiler.component_identity.v0.1",
+                    "version": "1"
+                  }
+                ],
+                "locator": "frozen artificial literal",
+                "reason": "Supplied artificial structural authority, not empirical or component-to-material evidence.",
+                "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                "status": "declared"
+              },
+              "schema_version": "biocompiler.chemistry_claim.v0.1",
+              "status": "declared"
+            },
+            "terminal_tail": {
+              "length": {
+                "exact": 5,
+                "lower": null,
+                "mode": "exact",
+                "schema_version": "biocompiler.tail_length.v0.1",
+                "upper": null
+              },
+              "path": {
+                "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+                "space_id": "z-helper.output.frame",
+                "spans": [
+                  {
+                    "end": 18,
+                    "schema_version": "biocompiler.molecule_index_span.v0.1",
+                    "start": 13
+                  }
+                ],
+                "strand": "+"
+              },
+              "placement": "represented_terminal",
+              "provenance": {
+                "authority": [
+                  {
+                    "content_fingerprint": "f8f3bd498be91477cea9ac4e0cf3768498b168a969ee8913b0db7ab686f13e6b",
+                    "id": "artificial-pm-structure-notice",
+                    "kind": "source",
+                    "schema_version": "biocompiler.component_identity.v0.1",
+                    "version": "1"
+                  }
+                ],
+                "locator": "frozen artificial literal",
+                "reason": "Supplied artificial structural authority, not empirical or component-to-material evidence.",
+                "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                "status": "declared"
+              },
+              "schema_version": "biocompiler.tail_declaration.v0.1",
+              "status": "declared"
+            }
+          },
+          "coding_status": "coding",
+          "features": [
+            {
+              "id": "cds",
+              "kind": "coding_sequence",
+              "path": {
+                "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+                "space_id": "z-helper.output.frame",
+                "spans": [
+                  {
+                    "end": 11,
+                    "schema_version": "biocompiler.molecule_index_span.v0.1",
+                    "start": 2
+                  }
+                ],
+                "strand": "+"
+              },
+              "provenance": {
+                "authority": [
+                  {
+                    "content_fingerprint": "f8f3bd498be91477cea9ac4e0cf3768498b168a969ee8913b0db7ab686f13e6b",
+                    "id": "artificial-pm-structure-notice",
+                    "kind": "source",
+                    "schema_version": "biocompiler.component_identity.v0.1",
+                    "version": "1"
+                  }
+                ],
+                "locator": "frozen artificial literal",
+                "reason": "Supplied artificial structural authority, not empirical or component-to-material evidence.",
+                "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                "status": "declared"
+              },
+              "reading_frame": 0,
+              "schema_version": "biocompiler.molecule_feature.v0.1"
+            },
+            {
+              "id": "poly_a",
+              "kind": "poly_a_tail",
+              "path": {
+                "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+                "space_id": "z-helper.output.frame",
+                "spans": [
+                  {
+                    "end": 18,
+                    "schema_version": "biocompiler.molecule_index_span.v0.1",
+                    "start": 13
+                  }
+                ],
+                "strand": "+"
+              },
+              "provenance": {
+                "authority": [
+                  {
+                    "content_fingerprint": "f8f3bd498be91477cea9ac4e0cf3768498b168a969ee8913b0db7ab686f13e6b",
+                    "id": "artificial-pm-structure-notice",
+                    "kind": "source",
+                    "schema_version": "biocompiler.component_identity.v0.1",
+                    "version": "1"
+                  }
+                ],
+                "locator": "frozen artificial literal",
+                "reason": "Supplied artificial structural authority, not empirical or component-to-material evidence.",
+                "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                "status": "declared"
+              },
+              "reading_frame": null,
+              "schema_version": "biocompiler.molecule_feature.v0.1"
+            },
+            {
+              "id": "utr3",
+              "kind": "three_prime_utr",
+              "path": {
+                "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+                "space_id": "z-helper.output.frame",
+                "spans": [
+                  {
+                    "end": 13,
+                    "schema_version": "biocompiler.molecule_index_span.v0.1",
+                    "start": 11
+                  }
+                ],
+                "strand": "+"
+              },
+              "provenance": {
+                "authority": [
+                  {
+                    "content_fingerprint": "f8f3bd498be91477cea9ac4e0cf3768498b168a969ee8913b0db7ab686f13e6b",
+                    "id": "artificial-pm-structure-notice",
+                    "kind": "source",
+                    "schema_version": "biocompiler.component_identity.v0.1",
+                    "version": "1"
+                  }
+                ],
+                "locator": "frozen artificial literal",
+                "reason": "Supplied artificial structural authority, not empirical or component-to-material evidence.",
+                "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                "status": "declared"
+              },
+              "reading_frame": null,
+              "schema_version": "biocompiler.molecule_feature.v0.1"
+            },
+            {
+              "id": "utr5",
+              "kind": "five_prime_utr",
+              "path": {
+                "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+                "space_id": "z-helper.output.frame",
+                "spans": [
+                  {
+                    "end": 2,
+                    "schema_version": "biocompiler.molecule_index_span.v0.1",
+                    "start": 0
+                  }
+                ],
+                "strand": "+"
+              },
+              "provenance": {
+                "authority": [
+                  {
+                    "content_fingerprint": "f8f3bd498be91477cea9ac4e0cf3768498b168a969ee8913b0db7ab686f13e6b",
+                    "id": "artificial-pm-structure-notice",
+                    "kind": "source",
+                    "schema_version": "biocompiler.component_identity.v0.1",
+                    "version": "1"
+                  }
+                ],
+                "locator": "frozen artificial literal",
+                "reason": "Supplied artificial structural authority, not empirical or component-to-material evidence.",
+                "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                "status": "declared"
+              },
+              "reading_frame": null,
+              "schema_version": "biocompiler.molecule_feature.v0.1"
+            }
+          ],
+          "form": "delivered_rna",
+          "id": "z-helper",
+          "provenance": {
+            "authority": [
+              {
+                "content_fingerprint": "f8f3bd498be91477cea9ac4e0cf3768498b168a969ee8913b0db7ab686f13e6b",
+                "id": "artificial-pm-structure-notice",
+                "kind": "source",
+                "schema_version": "biocompiler.component_identity.v0.1",
+                "version": "1"
+              }
+            ],
+            "locator": "frozen artificial literal",
+            "reason": "Supplied artificial structural authority, not empirical or component-to-material evidence.",
+            "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+            "status": "declared"
+          },
+          "schema_version": "biocompiler.circuit_molecule.v0.1",
+          "sequence": "GGAUGGAAUGACCAAAAA",
+          "sequence_extent": "complete",
+          "space": {
+            "alphabet": "RNA",
+            "axis": "5prime_to_3prime",
+            "id": "z-helper.output.frame",
+            "length": 18,
+            "schema_version": "biocompiler.molecule_coordinate_space.v0.1",
+            "topology": "linear"
+          }
+        },
+        {
+          "assembly": [
+            {
+              "destination": {
+                "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+                "space_id": "payload.output.frame",
+                "spans": [
+                  {
+                    "end": 17,
+                    "schema_version": "biocompiler.molecule_index_span.v0.1",
+                    "start": 0
+                  }
+                ],
+                "strand": "+"
+              },
+              "id": "payload.origin",
+              "provenance": {
+                "authority": [
+                  {
+                    "content_fingerprint": "f8f3bd498be91477cea9ac4e0cf3768498b168a969ee8913b0db7ab686f13e6b",
+                    "id": "artificial-pm-structure-notice",
+                    "kind": "source",
+                    "schema_version": "biocompiler.component_identity.v0.1",
+                    "version": "1"
+                  }
+                ],
+                "locator": "frozen artificial literal",
+                "reason": "Supplied artificial structural authority, not empirical or component-to-material evidence.",
+                "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                "status": "declared"
+              },
+              "schema_version": "biocompiler.assembly_origin.v0.1",
+              "source_path": {
+                "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+                "space_id": "payload.root.frame",
+                "spans": [
+                  {
+                    "end": 17,
+                    "schema_version": "biocompiler.molecule_index_span.v0.1",
+                    "start": 0
+                  }
+                ],
+                "strand": "+"
+              },
+              "source_space": {
+                "alphabet": "RNA",
+                "axis": "5prime_to_3prime",
+                "id": "payload.root.frame",
+                "length": 17,
+                "schema_version": "biocompiler.molecule_coordinate_space.v0.1",
+                "topology": "linear"
+              }
+            }
+          ],
+          "chemistry": {
+            "cap": {
+              "identity": {
+                "accession": "artificial_cap",
+                "namespace": "software_fixture.chemical",
+                "schema_version": "biocompiler.chemical_identity.v0.1",
+                "version": "1"
+              },
+              "provenance": {
+                "authority": [
+                  {
+                    "content_fingerprint": "f8f3bd498be91477cea9ac4e0cf3768498b168a969ee8913b0db7ab686f13e6b",
+                    "id": "artificial-pm-structure-notice",
+                    "kind": "source",
+                    "schema_version": "biocompiler.component_identity.v0.1",
+                    "version": "1"
+                  }
+                ],
+                "locator": "frozen artificial literal",
+                "reason": "Supplied artificial structural authority, not empirical or component-to-material evidence.",
+                "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                "status": "declared"
+              },
+              "schema_version": "biocompiler.chemistry_claim.v0.1",
+              "status": "declared"
+            },
+            "finish_end": {
+              "identity": {
+                "accession": "hydroxyl",
+                "namespace": "software_fixture.chemical",
+                "schema_version": "biocompiler.chemical_identity.v0.1",
+                "version": "1"
+              },
+              "provenance": {
+                "authority": [
+                  {
+                    "content_fingerprint": "f8f3bd498be91477cea9ac4e0cf3768498b168a969ee8913b0db7ab686f13e6b",
+                    "id": "artificial-pm-structure-notice",
+                    "kind": "source",
+                    "schema_version": "biocompiler.component_identity.v0.1",
+                    "version": "1"
+                  }
+                ],
+                "locator": "frozen artificial literal",
+                "reason": "Supplied artificial structural authority, not empirical or component-to-material evidence.",
+                "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                "status": "declared"
+              },
+              "schema_version": "biocompiler.chemistry_claim.v0.1",
+              "status": "declared"
+            },
+            "modification_inventory_provenance": {
+              "authority": [
+                {
+                  "content_fingerprint": "f8f3bd498be91477cea9ac4e0cf3768498b168a969ee8913b0db7ab686f13e6b",
+                  "id": "artificial-pm-structure-notice",
+                  "kind": "source",
+                  "schema_version": "biocompiler.component_identity.v0.1",
+                  "version": "1"
+                }
+              ],
+              "locator": "frozen artificial literal",
+              "reason": "Supplied artificial structural authority, not empirical or component-to-material evidence.",
+              "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+              "status": "declared"
+            },
+            "modification_inventory_status": "declared",
+            "modifications": [],
+            "schema_version": "biocompiler.molecule_chemistry.v0.1",
+            "start_end": {
+              "identity": {
+                "accession": "hydroxyl",
+                "namespace": "software_fixture.chemical",
+                "schema_version": "biocompiler.chemical_identity.v0.1",
+                "version": "1"
+              },
+              "provenance": {
+                "authority": [
+                  {
+                    "content_fingerprint": "f8f3bd498be91477cea9ac4e0cf3768498b168a969ee8913b0db7ab686f13e6b",
+                    "id": "artificial-pm-structure-notice",
+                    "kind": "source",
+                    "schema_version": "biocompiler.component_identity.v0.1",
+                    "version": "1"
+                  }
+                ],
+                "locator": "frozen artificial literal",
+                "reason": "Supplied artificial structural authority, not empirical or component-to-material evidence.",
+                "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                "status": "declared"
+              },
+              "schema_version": "biocompiler.chemistry_claim.v0.1",
+              "status": "declared"
+            },
+            "terminal_tail": {
+              "length": {
+                "exact": 4,
+                "lower": null,
+                "mode": "exact",
+                "schema_version": "biocompiler.tail_length.v0.1",
+                "upper": null
+              },
+              "path": {
+                "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+                "space_id": "payload.output.frame",
+                "spans": [
+                  {
+                    "end": 17,
+                    "schema_version": "biocompiler.molecule_index_span.v0.1",
+                    "start": 13
+                  }
+                ],
+                "strand": "+"
+              },
+              "placement": "represented_terminal",
+              "provenance": {
+                "authority": [
+                  {
+                    "content_fingerprint": "f8f3bd498be91477cea9ac4e0cf3768498b168a969ee8913b0db7ab686f13e6b",
+                    "id": "artificial-pm-structure-notice",
+                    "kind": "source",
+                    "schema_version": "biocompiler.component_identity.v0.1",
+                    "version": "1"
+                  }
+                ],
+                "locator": "frozen artificial literal",
+                "reason": "Supplied artificial structural authority, not empirical or component-to-material evidence.",
+                "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                "status": "declared"
+              },
+              "schema_version": "biocompiler.tail_declaration.v0.1",
+              "status": "declared"
+            }
+          },
+          "coding_status": "coding",
+          "features": [
+            {
+              "id": "cds",
+              "kind": "coding_sequence",
+              "path": {
+                "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+                "space_id": "payload.output.frame",
+                "spans": [
+                  {
+                    "end": 11,
+                    "schema_version": "biocompiler.molecule_index_span.v0.1",
+                    "start": 2
+                  }
+                ],
+                "strand": "+"
+              },
+              "provenance": {
+                "authority": [
+                  {
+                    "content_fingerprint": "f8f3bd498be91477cea9ac4e0cf3768498b168a969ee8913b0db7ab686f13e6b",
+                    "id": "artificial-pm-structure-notice",
+                    "kind": "source",
+                    "schema_version": "biocompiler.component_identity.v0.1",
+                    "version": "1"
+                  }
+                ],
+                "locator": "frozen artificial literal",
+                "reason": "Supplied artificial structural authority, not empirical or component-to-material evidence.",
+                "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                "status": "declared"
+              },
+              "reading_frame": 0,
+              "schema_version": "biocompiler.molecule_feature.v0.1"
+            },
+            {
+              "id": "poly_a",
+              "kind": "poly_a_tail",
+              "path": {
+                "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+                "space_id": "payload.output.frame",
+                "spans": [
+                  {
+                    "end": 17,
+                    "schema_version": "biocompiler.molecule_index_span.v0.1",
+                    "start": 13
+                  }
+                ],
+                "strand": "+"
+              },
+              "provenance": {
+                "authority": [
+                  {
+                    "content_fingerprint": "f8f3bd498be91477cea9ac4e0cf3768498b168a969ee8913b0db7ab686f13e6b",
+                    "id": "artificial-pm-structure-notice",
+                    "kind": "source",
+                    "schema_version": "biocompiler.component_identity.v0.1",
+                    "version": "1"
+                  }
+                ],
+                "locator": "frozen artificial literal",
+                "reason": "Supplied artificial structural authority, not empirical or component-to-material evidence.",
+                "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                "status": "declared"
+              },
+              "reading_frame": null,
+              "schema_version": "biocompiler.molecule_feature.v0.1"
+            },
+            {
+              "id": "utr3",
+              "kind": "three_prime_utr",
+              "path": {
+                "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+                "space_id": "payload.output.frame",
+                "spans": [
+                  {
+                    "end": 13,
+                    "schema_version": "biocompiler.molecule_index_span.v0.1",
+                    "start": 11
+                  }
+                ],
+                "strand": "+"
+              },
+              "provenance": {
+                "authority": [
+                  {
+                    "content_fingerprint": "f8f3bd498be91477cea9ac4e0cf3768498b168a969ee8913b0db7ab686f13e6b",
+                    "id": "artificial-pm-structure-notice",
+                    "kind": "source",
+                    "schema_version": "biocompiler.component_identity.v0.1",
+                    "version": "1"
+                  }
+                ],
+                "locator": "frozen artificial literal",
+                "reason": "Supplied artificial structural authority, not empirical or component-to-material evidence.",
+                "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                "status": "declared"
+              },
+              "reading_frame": null,
+              "schema_version": "biocompiler.molecule_feature.v0.1"
+            },
+            {
+              "id": "utr5",
+              "kind": "five_prime_utr",
+              "path": {
+                "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+                "space_id": "payload.output.frame",
+                "spans": [
+                  {
+                    "end": 2,
+                    "schema_version": "biocompiler.molecule_index_span.v0.1",
+                    "start": 0
+                  }
+                ],
+                "strand": "+"
+              },
+              "provenance": {
+                "authority": [
+                  {
+                    "content_fingerprint": "f8f3bd498be91477cea9ac4e0cf3768498b168a969ee8913b0db7ab686f13e6b",
+                    "id": "artificial-pm-structure-notice",
+                    "kind": "source",
+                    "schema_version": "biocompiler.component_identity.v0.1",
+                    "version": "1"
+                  }
+                ],
+                "locator": "frozen artificial literal",
+                "reason": "Supplied artificial structural authority, not empirical or component-to-material evidence.",
+                "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                "status": "declared"
+              },
+              "reading_frame": null,
+              "schema_version": "biocompiler.molecule_feature.v0.1"
+            }
+          ],
+          "form": "delivered_rna",
+          "id": "payload",
+          "provenance": {
+            "authority": [
+              {
+                "content_fingerprint": "f8f3bd498be91477cea9ac4e0cf3768498b168a969ee8913b0db7ab686f13e6b",
+                "id": "artificial-pm-structure-notice",
+                "kind": "source",
+                "schema_version": "biocompiler.component_identity.v0.1",
+                "version": "1"
+              }
+            ],
+            "locator": "frozen artificial literal",
+            "reason": "Supplied artificial structural authority, not empirical or component-to-material evidence.",
+            "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+            "status": "declared"
+          },
+          "schema_version": "biocompiler.circuit_molecule.v0.1",
+          "sequence": "CCAUGGCUUAAGGAAAA",
+          "sequence_extent": "complete",
+          "space": {
+            "alphabet": "RNA",
+            "axis": "5prime_to_3prime",
+            "id": "payload.output.frame",
+            "length": 17,
+            "schema_version": "biocompiler.molecule_coordinate_space.v0.1",
+            "topology": "linear"
+          }
+        }
+      ],
+      "role_instances": [
+        {
+          "compartment": "cytoplasm",
+          "id": "payload.role",
+          "purpose": "requested_payload",
+          "role": "payload",
+          "schema_version": "biocompiler.molecule_role_instance.v0.1",
+          "subject_fingerprint": "3416d668a71ca27368fa4a44844426f4478a52004ea0c80042ff715da1b0be78",
+          "subject_id": "payload"
+        },
+        {
+          "compartment": "cytoplasm",
+          "id": "z-helper.role",
+          "purpose": "helper",
+          "role": "z-helper",
+          "schema_version": "biocompiler.molecule_role_instance.v0.1",
+          "subject_fingerprint": "3925a62b168fee6e1bf8786c87541683401ba141d4829806a263ff9e56ff0271",
+          "subject_id": "z-helper"
+        }
+      ],
+      "schema_version": "biocompiler.molecular_content_inventory.v0.1"
+    },
+    "member_order": [
+      "z-helper",
+      "payload"
+    ],
+    "missing_members": [],
+    "schema_version": "biocompiler.construction_content.v0.1",
+    "values": []
+  },
+  "notice": {
+    "schema_version": "artificial_sequence_notice.v1",
+    "text": "Short invented software-only sequences; no biological function or use claim."
+  }
+}

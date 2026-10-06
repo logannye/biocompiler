@@ -15,7 +15,7 @@ let () =
   require (Json.string (Json.field "schema_version" fields) = "biocompiler.core_capabilities.v1") "Capability schema missing";
   require (Json.array (Json.field "operations" fields) |> List.map Json.string =
     (["capabilities";"canonicalize";"validate-intent";"verify-lowering";"verify-architecture";"replay-architecture"] @
-     Bioc_service.Policy_service.operations @ Bioc_service.Realization_service.operations @ Bioc_service.Verification_workflow_service.operations @
+     Bioc_service.Policy_service.operations @ Bioc_service.Policy_operational_service.operations @ Bioc_service.Policy_implementation_service.operations @ Bioc_service.Policy_material_service.operations @ Bioc_service.Realization_service.operations @ Bioc_service.Verification_workflow_service.operations @
      Bioc_service.Verification_workflow_authority.operations))
     "Advertised operation census differs";
   let architecture = Json.field "architecture" (Json.object_fields (Json.field "profiles" fields)) in
@@ -33,6 +33,9 @@ let () =
      Bioc_service.Verification_workflow_authority.profiles @
      ["artifact_transport",Bioc_service.Artifact_io.profile;
       "artifact_transport_authority",Bioc_service.Artifact_io.authority_profile;
+      "policy_material",Bioc_service.Policy_material_service.profile;
+      "policy_implementation",Bioc_service.Policy_implementation_service.profile;
+      "policy_operational",Bioc_service.Policy_operational_service.profile;
       "policy_frontend",Bioc_service.Policy_service.profile]);
   let response = Protocol.response ~executable:Protocol.Verify ~request:(Some decoded) ~status ~result diagnostics in
   let identity = Json.field "core" (Json.object_fields response) |> Json.object_fields in

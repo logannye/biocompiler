@@ -37,6 +37,18 @@ from biocompiler.core_workflow import (capability_profile as workflow_profile,
     presentation_capability_profile as workflow_presentation_profile, OPERATIONS as WORKFLOW_OPERATIONS)
 from biocompiler.core_workflow_authority import capability_profile as workflow_authority_profile, OPERATION as AUTHORITY_OPERATION
 from biocompiler.core_policy import PROFILE as POLICY_PROFILE, VALIDATION_SCOPE as POLICY_SCOPE
+from biocompiler.core_policy_operational import (
+    PROFILE as OPERATIONAL_PROFILE, PRODUCER_PROFILE as OPERATIONAL_PRODUCER_PROFILE,
+    VALIDATION_SCOPE as OPERATIONAL_SCOPE,
+)
+from biocompiler.core_policy_implementation import (
+    PROFILE as IMPLEMENTATION_PROFILE, PRODUCER_PROFILE as IMPLEMENTATION_PRODUCER_PROFILE,
+    VALIDATION_SCOPE as IMPLEMENTATION_SCOPE,
+)
+from biocompiler.core_policy_material import (
+    PROFILE as MATERIAL_PROFILE, PRODUCER_PROFILE as MATERIAL_PRODUCER_PROFILE,
+    VALIDATION_SCOPE as MATERIAL_SCOPE,
+)
 from biocompiler.ir.intent import IntentProgram
 from biocompiler.compiler.request import BuildRequest
 from biocompiler.ir.behavior import BehaviorProgram
@@ -492,17 +504,20 @@ def run_campaign(clients, corpus, receipt, programs):
         capabilities = client.capabilities().result
         require(type(capabilities) is dict, "Missing capabilities")
         operations = ["canonicalize", "capabilities", "replay-architecture", "validate-intent", "verify-architecture", "verify-lowering"]
+        operations += list(OPERATIONAL_PROFILE["operations"])
+        operations += list(IMPLEMENTATION_PROFILE["operations"])
+        operations += list(MATERIAL_PROFILE["operations"])
         operations += ["assess-policy", "replay-policy-assessment"] + list(REALIZATION_OPERATIONS) + list(WORKFLOW_OPERATIONS) + [AUTHORITY_OPERATION]
         workflow = workflow_profile()
-        scopes = [SCOPE, LOWERING_SCOPE, ARCHITECTURE_SCOPE, POLICY_SCOPE] + list(REALIZATION_SCOPES) + [workflow["validation_scope"], workflow_authority_profile()["validation_scope"]]
-        profiles = {"architecture": ARCHITECTURE_PROFILE, "policy_frontend": POLICY_PROFILE, **REALIZATION_PROFILES,
+        scopes = [SCOPE, LOWERING_SCOPE, ARCHITECTURE_SCOPE, POLICY_SCOPE, OPERATIONAL_SCOPE, IMPLEMENTATION_SCOPE, MATERIAL_SCOPE] + list(REALIZATION_SCOPES) + [workflow["validation_scope"], workflow_authority_profile()["validation_scope"]]
+        profiles = {"policy_material": MATERIAL_PROFILE, "policy_implementation": IMPLEMENTATION_PROFILE, "policy_operational": OPERATIONAL_PROFILE, "architecture": ARCHITECTURE_PROFILE, "policy_frontend": POLICY_PROFILE, **REALIZATION_PROFILES,
                     "artifact_transport": ARTIFACT_PROFILE, "verification_workflow": workflow,
                     "verification_workflow_presentation": workflow_presentation_profile(),
                     "artifact_transport_authority": AUTHORITY_ARTIFACT_PROFILE,
                     "verification_workflow_authority": workflow_authority_profile()}
         claim = "Structural intent validation, frozen source-to-Behavior correspondence, supplied architecture contracts and independently executed finite-history model checks. No search completeness, empirical function or human-use admission."
         if client.role == "core":
-            operations += ["compile-architecture", "export-architecture"]
+            operations += ["compile-architecture", "export-architecture", "compile-policy", "compile-policy-implementation", "compile-policy-material"]
             scopes.append(PRODUCER_SCOPE)
             profiles["architecture_producer"] = PRODUCER_PROFILE
             operations += list(SYNTHETIC_PRODUCER_OPERATIONS)
@@ -516,6 +531,9 @@ def run_campaign(clients, corpus, receipt, programs):
             operations += inspection["operations"]
             scopes.append(inspection["validation_scope"])
             profiles["synthetic_inspection"] = inspection
+            profiles["policy_operational_producer"] = OPERATIONAL_PRODUCER_PROFILE
+            profiles["policy_implementation_producer"] = IMPLEMENTATION_PRODUCER_PROFILE
+            profiles["policy_material_producer"] = MATERIAL_PRODUCER_PROFILE
             claim = "Supplied-contract architecture production, independent checking, exact RNA/manifest export and separately scoped finite-history model checks. No search completeness, empirical function or human-use admission is established."
         require(sorted(capabilities["operations"]) == sorted(operations), "Missing or untested advertised operation")
         check_capability_fields(capabilities, scopes, profiles)

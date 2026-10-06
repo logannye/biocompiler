@@ -2,6 +2,8 @@
 
 Created: 2026-10-01, America/Los_Angeles.
 
+**Active session priorities (2026-10-05):** follow the [semantic Python-policy-to-mRNA development plan](semantic-mrna-development-plan.md) and its SM checklist. This phase establishes internal correctness under supplied implementation and material contracts; Studio, conversational authoring and empirical biological viability are deferred. The historical receipts and wider migration obligations below remain separately gated.
+
 **Decision:** TypeScript for Studio; Python for authoring, orchestration and scientific exploration; OCaml for the semantic compiler, independent checking and canonical emission.
 
 **User-directed session cutoff, 2026-10-02:** continue until the four gates below
@@ -1847,6 +1849,38 @@ Depends on LM-02.
 - [ ] Port strict import limits and rejection behavior; test duplicate IDs, missing references, invalid scalar types and scope mixing.
 
 **Exit:** all inventoried intent/request schemas roundtrip or reject consistently; canonical identities agree for unchanged semantics; unsupported requirements remain in the ledger.
+
+### Bounded rich-policy source-to-material checkpoint (source implementation)
+
+The current integration combines the existing package/reference migration with
+the [bounded operational profile](policy-operational-v0.1.md) and the
+[conditional material acceptance path](policy-material-acceptance.md). It retains
+the original source-assessment contract and adds versioned definitions, typed
+operational and implementation representations, independently executed candidate
+primitives, complete declared finite-domain preservation and hard-requirement
+checks. Scoped state, three-valued evidence, quiet-time freshness, correlated
+feedback and simultaneous lifecycle events have explicit semantics.
+
+The bounded material profile binds the checked implementation to supplied whole-graph
+models, sequence templates and recipient/resource contracts. Its Python SDK/CLI
+can request fresh native compilation, checking, replay and paired RNA/manifest
+export; standalone Verify has no producer linkage. These are source implementations
+undergoing integrated release acceptance. The supplied artificial RNA witness is
+not a general realization library. Biological viability is outside this phase's
+acceptance criteria, and unsupported semantics or unsatisfied declared contracts
+continue to prevent export.
+
+- [ ] Accept operational, implementation, material and context checking plus all
+  original native suites on both hosted platforms at the exact integrated source.
+- [ ] Accept fresh standalone replay and all installed SDK/CLI campaigns on
+  Linux x86_64/macOS arm64 and Python 3.11/3.14, with complete result comparison.
+- [ ] Complete the full original and policy prebuilt release gates, normal merge
+  and separate actual-main validation; preserve every historical profile and
+  source authority during integration.
+
+These entries do not close LM-20/21/25 in full or any of the four production
+cutover obligations. Conditional correspondence for the declared bounded profile
+requires the complete acceptance chain above; broader realization remains open.
 
 ### LM-21 — Layer 5: behavior lowering and reference semantics
 

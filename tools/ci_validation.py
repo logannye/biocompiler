@@ -36,11 +36,12 @@ CAMPAIGN_VARIANTS = {f"{variant}-{group}": runtime for variant, runtime in REALI
 RUNTIME_VARIANTS = {**REALIZATION_VARIANTS, **CAMPAIGN_VARIANTS}
 PLATFORM_JOBS = frozenset(("ocaml-build", "ocaml-native-tests", "ocaml-core"))
 RUNTIME_JOBS = {"architecture-sdk": REALIZATION_VARIANTS, "realization-conformance": REALIZATION_VARIANTS,
-                "installed-campaigns": CAMPAIGN_VARIANTS}
+                "installed-campaigns": CAMPAIGN_VARIANTS, "policy-prebuilt-installed": REALIZATION_VARIANTS}
 REQUIRED_NEEDS = frozenset((*PRODUCERS, *REPRODUCIBILITY, "studio-browser",
                             "ci-preflight", "ocaml-build", "ocaml-native-tests", "architecture-sdk", "installed-campaigns",
                             "unit-plan", "unit-tests", "unit-accounting", "ocaml-core", "studio-typescript",
-                            "architecture-core-reproducibility", "realization-conformance", "realization-core-reproducibility", "prebuilt-core-assembly", "prebuilt-core-validation"))
+                            "architecture-core-reproducibility", "realization-conformance", "realization-core-reproducibility", "prebuilt-core-assembly", "prebuilt-core-validation",
+                            "policy-prebuilt-sdk", "policy-prebuilt-installed", "policy-prebuilt-reproducibility"))
 EXPECTED_RECEIPTS = frozenset((job, version) for job in PRODUCERS for version in PYTHONS) | {
     *(("ci-preflight", version) for version in PYTHONS),
     *((job, variant) for job in ("ocaml-build", "ocaml-native-tests") for variant in CORE_PLATFORMS),
@@ -53,6 +54,9 @@ EXPECTED_RECEIPTS = frozenset((job, version) for job in PRODUCERS for version in
     ("realization-core-reproducibility", "cross-platform"),
     ("prebuilt-core-assembly", "cross-platform"),
     ("prebuilt-core-validation", "cross-platform"),
+    ("policy-prebuilt-sdk", "cross-platform"),
+    *(("policy-prebuilt-installed", variant) for variant in REALIZATION_VARIANTS),
+    ("policy-prebuilt-reproducibility", "cross-platform"),
 }
 
 

@@ -12,6 +12,102 @@ from tools import ci_validation as ci
 
 
 class ValidationGateTests(unittest.TestCase):
+    def test_prebuilt_material_requires_assembly_every_owned_slot_and_comparison(self):
+        jobs = {"policy-prebuilt-sdk", "policy-prebuilt-installed", "policy-prebuilt-reproducibility"}
+        self.assertTrue(jobs <= ci.REQUIRED_NEEDS)
+        expected = {(job, "cross-platform") for job in jobs - {"policy-prebuilt-installed"}}
+        expected |= {("policy-prebuilt-installed", variant) for variant in ci.REALIZATION_VARIANTS}
+        self.assertEqual({pair for pair in ci.EXPECTED_RECEIPTS if pair[0] in jobs}, expected)
+        for pair in expected:
+            for mutation in ("missing", "duplicate", "failed_job", "skipped_job", "stale_run"):
+                with self.subTest(pair=pair, mutation=mutation):
+                    needs, receipts, accounts, authority = self.fixture()
+                    receipt = next(row for row in receipts if (row["job"], row["variant"]) == pair)
+                    if mutation == "missing":
+                        receipts.remove(receipt)
+                    elif mutation == "duplicate":
+                        receipts.append(deepcopy(receipt))
+                    elif mutation in {"failed_job", "skipped_job"}:
+                        needs[pair[0]]["result"] = "failure" if mutation == "failed_job" else "skipped"
+                    else:
+                        receipt["run_id"] = "other"
+                    self.assertEqual(ci.validate(needs, receipts, accounts, authority)["status"], "fail")
+
+    def test_prebuilt_slot_cannot_claim_another_python_or_native_platform(self):
+        for variant in ci.REALIZATION_VARIANTS:
+            for field, value in (("python_version", "3.10.0"), ("system", "wrong"), ("machine", "wrong")):
+                with self.subTest(variant=variant, field=field):
+                    args = self.fixture()
+                    receipt = next(row for row in args[1] if row["job"] == "policy-prebuilt-installed" and row["variant"] == variant)
+                    receipt[field] = value
+                    self.assertEqual(ci.validate(*args)["status"], "fail")
+        with patch.dict("os.environ", {"GITHUB_JOB": "policy-prebuilt-installed"}), \
+             patch.object(ci.platform, "system", return_value="Linux"), \
+             patch.object(ci.platform, "machine", return_value="x86_64"), \
+             patch.object(ci.platform, "python_version", return_value="3.11.7"):
+            authority = self.fixture()[3]
+            self.assertEqual(ci.start_job("policy-prebuilt-installed", "linux-x86_64-py3.11", authority)["job"],
+                             "policy-prebuilt-installed")
+            with self.assertRaises(ValueError):
+                ci.start_job("policy-prebuilt-installed", "linux-x86_64-py3.14", authority)
+
+    def test_policy_consumer_requires_offline_execution_and_all_four_comparisons(self):
+        text = (Path(__file__).resolve().parents[1] / ".github/workflows/ci.yml").read_text()
+        self.assertEqual(text.count('--network required'), 1)
+        self.assertNotIn('--network deferred', text)
+        sdk = text.split("\n  architecture-sdk:\n", 1)[1].split("\n  architecture-core-reproducibility:\n", 1)[0]
+        for version in ci.PYTHONS:
+            expanded = sdk.replace("${{ matrix.python-version }}", version)
+            self.assertIn(f'--producer-receipt "$GITHUB_WORKSPACE/generated/core/policy-material-{version}.json"', expanded)
+            self.assertIn(f'generated/core/policy-consumer-{version}.log', expanded)
+            for target in ci.CORE_PLATFORMS:
+                self.assertIn(f'--compare artifacts/core/{target}/policy-consumer-{version}.json', text)
+                self.assertIn(f'--producer-receipts artifacts/core/{target}/policy-material-{version}.json', text)
+        self.assertIn('--output generated/core-reproducibility/policy-consumer-receipt.json', text)
+
+    def test_policy_union_retains_all_installed_layers_and_focused_native_gates(self):
+        root = Path(__file__).resolve().parents[1]
+        text = (root / ".github/workflows/ci.yml").read_text()
+        sdk = text.split("\n  architecture-sdk:\n", 1)[1].split("\n  architecture-core-reproducibility:\n", 1)[0]
+        comparison = text.split("\n  architecture-core-reproducibility:\n", 1)[1].split("\n  installed-campaigns:\n", 1)[0]
+        for target in ci.CORE_PLATFORMS:
+            self.assertEqual(sdk.count("            platform: " + target + "\n"), 2)
+        for version in ci.PYTHONS:
+            self.assertEqual(sdk.count('            python-version: "' + version + '"\n'), 2)
+        for tool, output, fixture in (
+            ("core", "core", "policy_documents_v01.json"),
+            ("operational", "operational", "policy_operational_v01.json"),
+            ("implementation", "implementation", "policy_implementation_request_v01.json"),
+            ("material", "material", "policy_material_request_v01.json"),
+            ("material_consumer", "consumer", "policy_material_request_v01.json"),
+        ):
+            command = 'python "$GITHUB_WORKSPACE/tools/check_policy_' + tool + '.py"'
+            self.assertEqual(sdk.count(command), 1)
+            campaign = sdk[sdk.index(command):].split("\n      - ", 1)[0]
+            self.assertIn('--verify "$GITHUB_WORKSPACE/core/_build/default/bin/verify/main.exe"', campaign)
+            self.assertIn('--fixture "$GITHUB_WORKSPACE/core/test/data/' + fixture + '"', campaign)
+            self.assertIn('--output "$GITHUB_WORKSPACE/generated/core/policy-' + output + '-${{ matrix.python-version }}.json"', campaign)
+            if tool == "material_consumer":
+                self.assertNotIn("--core ", campaign)
+            else:
+                self.assertIn('--core "$GITHUB_WORKSPACE/core/_build/default/bin/core/main.exe"', campaign)
+                self.assertIn('sysconfig.get_path("scripts") + "/biocompiler"', campaign)
+            for target in ci.CORE_PLATFORMS:
+                for version in ci.PYTHONS:
+                    self.assertIn(f"--compare artifacts/core/{target}/policy-{output}-{version}.json", comparison)
+            self.assertIn('--fixture core/test/data/' + fixture, comparison)
+        self.assertIn('path: generated/core/', sdk)
+        self.assertLess(sdk.index('tools/ci_native_bundle.py restore'), sdk.index('tools/check_policy_core.py'))
+        native = text.split("\n  ocaml-native-tests:\n", 1)[1].split("\n  ocaml-core:\n", 1)[0]
+        focus = native.split("Check bounded policy implementation and molecular leaves early", 1)[1].split("Retain focused policy", 1)[0]
+        self.assertEqual(focus.count("core/_build/default/test/"), 22)
+        for suite in ("domain", "closure", "timing", "state"):
+            self.assertIn(f"test_policy_material_{suite}.exe core/test/data/policy_material_{suite}_v01.json", focus)
+        self.assertLess(native.index('tools/ci_native_bundle.py restore'), native.index('Check bounded policy'))
+        self.assertLess(native.index('Check bounded policy'), native.index('tools/ci_native_bundle.py test'))
+        self.assertNotIn('continue-on-error', sdk + native + comparison)
+        self.assertEqual(ci.RUNTIME_JOBS["policy-prebuilt-installed"], ci.REALIZATION_VARIANTS)
+
     def core_commands(self, block):
         from tools.ci_core_groups import load_plan
         run = "python tools/ci_core_groups.py run --output generated/core/command-groups --workers 2"
@@ -321,7 +417,9 @@ class ValidationGateTests(unittest.TestCase):
         native = text.split("\n  ocaml-core:\n", 1)[1].split("\n  architecture-sdk:\n", 1)[0]
         self.assertEqual(ci.workflow_jobs(root / ".github/workflows/ci.yml"), ci.REQUIRED_NEEDS | {"validation"})
         # Preserve every original slot and require the separated execution jobs.
-        self.assertEqual(len(ci.EXPECTED_RECEIPTS) + 2 + 10 + 2 + 1, 68)
+        self.assertEqual(len(ci.REQUIRED_NEEDS) + 1, 27)
+        self.assertEqual(len(ci.EXPECTED_RECEIPTS), 59)
+        self.assertEqual(len(ci.EXPECTED_RECEIPTS) + 2 + 10 + 2 + 1, 74)
         for platform in ci.CORE_PLATFORMS:
             self.assertEqual(native.count("            platform: " + platform + "\n"), 1)
         self.assertIn("runs-on: ${{ matrix.runner }}", native)
