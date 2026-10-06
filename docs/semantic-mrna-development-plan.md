@@ -208,6 +208,23 @@ native corrections still require hosted validation. PR88 advanced to
 changes. Its owner's branch and checks remain untouched. Retained diagnostic
 details are in the [SM-00 diagnostic review](../protocol/policy-operational-sm00-review.json).
 
+The first correction was pushed in PR89 at
+`474b924fcf86d7399c4856260fd630733b934eed`, with source changes in
+`a2ee388235536f55aefa5f798af1ddc2d43fdc95` and the unchanged-file PR88 merge.
+[Run 37406813336](https://github.com/logannye/biocompiler/actions/runs/37406813336),
+attempt 1, has passed native compilation, all native literal/mutation tests and
+installed operational Python 3.11 checks on Linux x86_64 and macOS arm64 at the
+latest read-only review. Full installed/four-slot/aggregate acceptance is still
+pending at that snapshot. Python 3.11 then exposed AST-display fingerprint drift
+in the coverage ledger. The portability fix, preserving every reviewed source
+distinction and support disposition, is pushed as
+`72b0ffcc3ab134e3880b0171d14b9d8bcc58e19b`;
+[run 37409588377](https://github.com/logannye/biocompiler/actions/runs/37409588377)
+is its new attempt-1 validation. All 25 coverage tests and the complete inventory
+agree on installed Python 3.11, 3.12, 3.13 and 3.14. Subsequent SM-01/02 source work
+is isolated on the stacked
+`codex/policy-realization-contracts` branch so it does not cancel that run.
+
 ### SM-01 — Freeze source coverage, complete authority and acceptance fixtures
 
 Depends on: source interfaces already present; final acceptance follows SM-00.
@@ -234,6 +251,14 @@ separate pattern instances. Implementation, finite-domain and material authority
 remain explicit gaps; passing literal timelines must not be claimed before
 native execution, or promoted into whole-domain requirement acceptance.
 
+A separate [exclusion witness](../core/test/data/policy_exclusion_source_v01.json)
+adds two defined encounter-scoped flags and an exclusion safety property, five
+timelines and four distinguishing source edits. It preserves the original
+witness's unknown-safety cases. The 13 source-fixture Python tests and 25 static
+coverage tests pass locally. Native source tests now cover both full requests,
+exact lifecycle/state literals and fresh replay; their new hosted validation is
+pending. Both fixtures still lack complete material authority.
+
 Exit: no authorable distinction can silently disappear, and the first complete compilation target is defined independently of producer output. A new source field/operator fails coverage accounting until classified.
 
 ### SM-02 — Specify the realization request, finite domain and preservation contract
@@ -247,6 +272,17 @@ Depends on: SM-01; implementation can proceed while SM-00 hosted validation runs
 - [ ] **SM-02.5** Publish literal preservation examples and counterexamples for timing, unknowns, target mixing, reset, multiplicity, extra/missing events and divergent internal steps.
 - [ ] **SM-02.6** Version separate status/report contracts; preserve current assessment/operational operations instead of broadening their meanings.
 - [ ] **SM-02.7** Check original assurance strength, requested requirement identities, horizon/domain, tolerances and allowed assumptions against the actual result. Reject omitted requirements and stronger requests satisfied only by weaker evidence.
+
+Foundation checkpoint: the [realization contract](policy-realization-contracts-v0.1.md)
+now specifies and connects closed operating-domain, primitive-library/graph and
+complete source/domain/model request representations. The new native input
+admission checker preserves original source, catalog and assurance authority;
+it grants no preservation, whole-domain requirement, material or export claim.
+Domain tests specify a literal 1,764-history/3,630-prefix census, including silent
+ticks and old-attempt feedback. This is an environment-enumeration fixture, not an
+executed source proof. Graph checks and all new native controls await hosted
+validation. Primitive transitions, producer-independent behavioral preservation,
+complete material bindings and public realization operations remain open.
 
 Exit: request admission and the preservation relation are reviewable and executable without relying on a lowering producer.
 

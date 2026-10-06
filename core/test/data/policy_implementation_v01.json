@@ -1,0 +1,676 @@
+{
+  "claim_scope": "Artificial structural contract fixture only; no runtime, source preservation, requirement acceptance, catalog admission, component or material realization. Pins refer to source-only authority whose implementation catalog is deliberately empty. This manually authored occurrence inventory is not a complete semantic source classification.",
+  "library": {
+    "schema_version": "biocompiler.policy_implementation_library.v0.1",
+    "profile": "biocompiler.policy_truth_primitives.v0.1",
+    "id": "fixture.truth.primitives",
+    "version": "1",
+    "models": [
+      {
+        "identity": {
+          "schema_version": "biocompiler.component_identity.v0.1",
+          "kind": "model",
+          "id": "fixture.primitive.evidence",
+          "version": "1",
+          "content_fingerprint": "fe02ae542a5240ac3771fbbbe79ebc7b9d58e521d8404abdb4d046127ce9064b"
+        },
+        "configuration_digest": "021d62b03792c8a9aa2cece6509446b6fff8cdf30ece7713cad51f031166bfb3",
+        "body": {
+          "schema_version": "biocompiler.policy_primitive_model.v0.1",
+          "profile": "biocompiler.policy_truth_primitives.v0.1",
+          "primitive": "evidence_bank",
+          "configuration": {
+            "freshness_ticks": 2
+          },
+          "replication": {
+            "kind": "encounter_slots",
+            "layout_id": "encounters",
+            "slots": 2
+          }
+        }
+      },
+      {
+        "identity": {
+          "schema_version": "biocompiler.component_identity.v0.1",
+          "kind": "model",
+          "id": "fixture.primitive.edge",
+          "version": "1",
+          "content_fingerprint": "28a820bd48d10f352c6b6c4beb728a4627d1b3c1aaaeb996c770bb8e19889e7d"
+        },
+        "configuration_digest": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+        "body": {
+          "schema_version": "biocompiler.policy_primitive_model.v0.1",
+          "profile": "biocompiler.policy_truth_primitives.v0.1",
+          "primitive": "observed_rising",
+          "configuration": {},
+          "replication": {
+            "kind": "encounter_slots",
+            "layout_id": "encounters",
+            "slots": 2
+          }
+        }
+      },
+      {
+        "identity": {
+          "schema_version": "biocompiler.component_identity.v0.1",
+          "kind": "model",
+          "id": "fixture.primitive.true",
+          "version": "1",
+          "content_fingerprint": "c7d92838458d4242181f921bedb39cf660fdc653cbfbf240a8724d0e7c9811d3"
+        },
+        "configuration_digest": "149a74a8992a85dd985d11f107c2a55b57319d498a68ef9f89cd11e4f6732638",
+        "body": {
+          "schema_version": "biocompiler.policy_primitive_model.v0.1",
+          "profile": "biocompiler.policy_truth_primitives.v0.1",
+          "primitive": "truth_constant",
+          "configuration": {
+            "value": "true"
+          },
+          "replication": {
+            "kind": "executor"
+          }
+        }
+      },
+      {
+        "identity": {
+          "schema_version": "biocompiler.component_identity.v0.1",
+          "kind": "model",
+          "id": "fixture.primitive.product",
+          "version": "1",
+          "content_fingerprint": "b9f18177e93c478197dc985846db3cf522fdf7286c7217a2ffe2b673ad374be3"
+        },
+        "configuration_digest": "fca971476bb8e1636119d4e40db306d075882590ba126215c5b6cfe462bf1448",
+        "body": {
+          "schema_version": "biocompiler.policy_primitive_model.v0.1",
+          "profile": "biocompiler.policy_truth_primitives.v0.1",
+          "primitive": "product_constant",
+          "configuration": {
+            "product": "fixture.product.alpha"
+          },
+          "replication": {
+            "kind": "executor"
+          }
+        }
+      },
+      {
+        "identity": {
+          "schema_version": "biocompiler.component_identity.v0.1",
+          "kind": "model",
+          "id": "fixture.primitive.gate",
+          "version": "1",
+          "content_fingerprint": "080ad87443cc911a2a08c732fe70b7109995b18e4ece98debee2444b5ba74a4b"
+        },
+        "configuration_digest": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+        "body": {
+          "schema_version": "biocompiler.policy_primitive_model.v0.1",
+          "profile": "biocompiler.policy_truth_primitives.v0.1",
+          "primitive": "activation_gate",
+          "configuration": {},
+          "replication": {
+            "kind": "encounter_slots",
+            "layout_id": "encounters",
+            "slots": 2
+          }
+        }
+      },
+      {
+        "identity": {
+          "schema_version": "biocompiler.component_identity.v0.1",
+          "kind": "model",
+          "id": "fixture.primitive.arbiter",
+          "version": "1",
+          "content_fingerprint": "78543213937cfe8ea29ff569a005364138bd77b1228e32fd2794923d337c60f9"
+        },
+        "configuration_digest": "3593a32b93ccc62471750923bf79e8bc4c46dac7c9f118f4d50169fa75cd36d4",
+        "body": {
+          "schema_version": "biocompiler.policy_primitive_model.v0.1",
+          "profile": "biocompiler.policy_truth_primitives.v0.1",
+          "primitive": "exclusive_arbiter",
+          "configuration": {
+            "lanes": 1
+          },
+          "replication": {
+            "kind": "encounter_slots",
+            "layout_id": "encounters",
+            "slots": 2
+          }
+        }
+      },
+      {
+        "identity": {
+          "schema_version": "biocompiler.component_identity.v0.1",
+          "kind": "model",
+          "id": "fixture.primitive.commit",
+          "version": "1",
+          "content_fingerprint": "7bbf8b145188ee2b085b3223aae79f31a9f8e825eca00d405740b8b3dc8de21b"
+        },
+        "configuration_digest": "9c3d46fa70b2e63bff65dbe24cef6eacd1426d5bc45edffca8b0f025c7fe8106",
+        "body": {
+          "schema_version": "biocompiler.policy_primitive_model.v0.1",
+          "profile": "biocompiler.policy_truth_primitives.v0.1",
+          "primitive": "atomic_commit",
+          "configuration": {
+            "writes": 1,
+            "requests": 1
+          },
+          "replication": {
+            "kind": "encounter_slots",
+            "layout_id": "encounters",
+            "slots": 2
+          }
+        }
+      },
+      {
+        "identity": {
+          "schema_version": "biocompiler.component_identity.v0.1",
+          "kind": "model",
+          "id": "fixture.primitive.seen",
+          "version": "1",
+          "content_fingerprint": "d0b6c5b8abea9449557a286237ee1dc490527b9b8e297ea205fa15b5bea45672"
+        },
+        "configuration_digest": "96463b5a8465d375d639352a95652ce8c5b84d860ec4039931d833db1a541d11",
+        "body": {
+          "schema_version": "biocompiler.policy_primitive_model.v0.1",
+          "profile": "biocompiler.policy_truth_primitives.v0.1",
+          "primitive": "truth_register",
+          "configuration": {
+            "initial": "false",
+            "writers": 1
+          },
+          "replication": {
+            "kind": "encounter_slots",
+            "layout_id": "encounters",
+            "slots": 2
+          }
+        }
+      },
+      {
+        "identity": {
+          "schema_version": "biocompiler.component_identity.v0.1",
+          "kind": "model",
+          "id": "fixture.primitive.attempt",
+          "version": "1",
+          "content_fingerprint": "7de0c5ffc3e7320d91c8e6e2958bf44ce232ad3952d0e460cb2cee4a367cfdf7"
+        },
+        "configuration_digest": "6aa9bfe4458e15e6336b0c6fd6a260e87c6493dcae6664907d87487ca56bec32",
+        "body": {
+          "schema_version": "biocompiler.policy_primitive_model.v0.1",
+          "profile": "biocompiler.policy_truth_primitives.v0.1",
+          "primitive": "attempt_bank",
+          "configuration": {
+            "capacity": 8,
+            "timeout_ticks": 2,
+            "authorization": "continuous",
+            "on_loss": "continue",
+            "on_unknown": "defer"
+          },
+          "replication": {
+            "kind": "encounter_slots",
+            "layout_id": "encounters",
+            "slots": 2
+          }
+        }
+      }
+    ]
+  },
+  "candidate": {
+    "schema_version": "biocompiler.policy_implementation.v0.1",
+    "profile": "biocompiler.policy_truth_primitives.v0.1",
+    "observable_profile": "biocompiler.policy_truth_observables.v0.1",
+    "authority": {
+      "source_artifact_digest": "7a869939debd615d2402326003a92a911ff51dcae4e38c50171b08babc76d0ba",
+      "descriptors_digest": "d152bb1eb3ce3efdd9c69845f65acbc9a82507db16371f60246c0868b1c6d808",
+      "domain_digest": "74408eecc735967f39c283fdc1ad7c688d3beb567222f5bd0033a0d17b013e1d",
+      "implementation_catalog_digest": "77c8d37c9f9d673318fe28b03acf4e53f3c19444633553836ea09ab4a24158cb",
+      "library_digest": "4d4fb474ca5714d5bcf049834c858d24116d497c13d7c4c936de78cc2380c542"
+    },
+    "slot_layout": {
+      "id": "encounters",
+      "encounter": "encounter",
+      "slots": 2
+    },
+    "nodes": [
+      {
+        "id": "evidence",
+        "model": {
+          "schema_version": "biocompiler.component_identity.v0.1",
+          "kind": "model",
+          "id": "fixture.primitive.evidence",
+          "version": "1",
+          "content_fingerprint": "fe02ae542a5240ac3771fbbbe79ebc7b9d58e521d8404abdb4d046127ce9064b"
+        },
+        "configuration_digest": "021d62b03792c8a9aa2cece6509446b6fff8cdf30ece7713cad51f031166bfb3"
+      },
+      {
+        "id": "edge",
+        "model": {
+          "schema_version": "biocompiler.component_identity.v0.1",
+          "kind": "model",
+          "id": "fixture.primitive.edge",
+          "version": "1",
+          "content_fingerprint": "28a820bd48d10f352c6b6c4beb728a4627d1b3c1aaaeb996c770bb8e19889e7d"
+        },
+        "configuration_digest": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+      },
+      {
+        "id": "true",
+        "model": {
+          "schema_version": "biocompiler.component_identity.v0.1",
+          "kind": "model",
+          "id": "fixture.primitive.true",
+          "version": "1",
+          "content_fingerprint": "c7d92838458d4242181f921bedb39cf660fdc653cbfbf240a8724d0e7c9811d3"
+        },
+        "configuration_digest": "149a74a8992a85dd985d11f107c2a55b57319d498a68ef9f89cd11e4f6732638"
+      },
+      {
+        "id": "product",
+        "model": {
+          "schema_version": "biocompiler.component_identity.v0.1",
+          "kind": "model",
+          "id": "fixture.primitive.product",
+          "version": "1",
+          "content_fingerprint": "b9f18177e93c478197dc985846db3cf522fdf7286c7217a2ffe2b673ad374be3"
+        },
+        "configuration_digest": "fca971476bb8e1636119d4e40db306d075882590ba126215c5b6cfe462bf1448"
+      },
+      {
+        "id": "gate",
+        "model": {
+          "schema_version": "biocompiler.component_identity.v0.1",
+          "kind": "model",
+          "id": "fixture.primitive.gate",
+          "version": "1",
+          "content_fingerprint": "080ad87443cc911a2a08c732fe70b7109995b18e4ece98debee2444b5ba74a4b"
+        },
+        "configuration_digest": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+      },
+      {
+        "id": "arbiter",
+        "model": {
+          "schema_version": "biocompiler.component_identity.v0.1",
+          "kind": "model",
+          "id": "fixture.primitive.arbiter",
+          "version": "1",
+          "content_fingerprint": "78543213937cfe8ea29ff569a005364138bd77b1228e32fd2794923d337c60f9"
+        },
+        "configuration_digest": "3593a32b93ccc62471750923bf79e8bc4c46dac7c9f118f4d50169fa75cd36d4"
+      },
+      {
+        "id": "commit",
+        "model": {
+          "schema_version": "biocompiler.component_identity.v0.1",
+          "kind": "model",
+          "id": "fixture.primitive.commit",
+          "version": "1",
+          "content_fingerprint": "7bbf8b145188ee2b085b3223aae79f31a9f8e825eca00d405740b8b3dc8de21b"
+        },
+        "configuration_digest": "9c3d46fa70b2e63bff65dbe24cef6eacd1426d5bc45edffca8b0f025c7fe8106"
+      },
+      {
+        "id": "seen",
+        "model": {
+          "schema_version": "biocompiler.component_identity.v0.1",
+          "kind": "model",
+          "id": "fixture.primitive.seen",
+          "version": "1",
+          "content_fingerprint": "d0b6c5b8abea9449557a286237ee1dc490527b9b8e297ea205fa15b5bea45672"
+        },
+        "configuration_digest": "96463b5a8465d375d639352a95652ce8c5b84d860ec4039931d833db1a541d11"
+      },
+      {
+        "id": "attempt",
+        "model": {
+          "schema_version": "biocompiler.component_identity.v0.1",
+          "kind": "model",
+          "id": "fixture.primitive.attempt",
+          "version": "1",
+          "content_fingerprint": "7de0c5ffc3e7320d91c8e6e2958bf44ce232ad3952d0e460cb2cee4a367cfdf7"
+        },
+        "configuration_digest": "6aa9bfe4458e15e6336b0c6fd6a260e87c6493dcae6664907d87487ca56bec32"
+      }
+    ],
+    "wires": [
+      {
+        "producer": {
+          "node": "evidence",
+          "port": "value"
+        },
+        "consumer": {
+          "node": "edge",
+          "port": "in"
+        }
+      },
+      {
+        "producer": {
+          "node": "edge",
+          "port": "events"
+        },
+        "consumer": {
+          "node": "gate",
+          "port": "on"
+        }
+      },
+      {
+        "producer": {
+          "node": "evidence",
+          "port": "value"
+        },
+        "consumer": {
+          "node": "gate",
+          "port": "guard"
+        }
+      },
+      {
+        "producer": {
+          "node": "gate",
+          "port": "candidate"
+        },
+        "consumer": {
+          "node": "arbiter",
+          "port": "in0"
+        }
+      },
+      {
+        "producer": {
+          "node": "arbiter",
+          "port": "out0"
+        },
+        "consumer": {
+          "node": "commit",
+          "port": "grant"
+        }
+      },
+      {
+        "producer": {
+          "node": "true",
+          "port": "out"
+        },
+        "consumer": {
+          "node": "commit",
+          "port": "value0"
+        }
+      },
+      {
+        "producer": {
+          "node": "product",
+          "port": "out"
+        },
+        "consumer": {
+          "node": "commit",
+          "port": "product0"
+        }
+      },
+      {
+        "producer": {
+          "node": "commit",
+          "port": "write0"
+        },
+        "consumer": {
+          "node": "seen",
+          "port": "write0"
+        }
+      },
+      {
+        "producer": {
+          "node": "commit",
+          "port": "request0"
+        },
+        "consumer": {
+          "node": "attempt",
+          "port": "request"
+        }
+      },
+      {
+        "producer": {
+          "node": "evidence",
+          "port": "value"
+        },
+        "consumer": {
+          "node": "attempt",
+          "port": "authorization"
+        }
+      }
+    ],
+    "inputs": [
+      {
+        "id": "condition",
+        "kind": "evidence",
+        "consumer": {
+          "node": "evidence",
+          "port": "samples"
+        }
+      },
+      {
+        "id": "feedback",
+        "kind": "feedback",
+        "consumer": {
+          "node": "attempt",
+          "port": "feedback"
+        }
+      }
+    ],
+    "atomic_groups": [
+      {
+        "id": "response",
+        "arbiter": "arbiter",
+        "commits": [
+          "commit"
+        ]
+      }
+    ],
+    "semantic_exports": [
+      {
+        "node": "evidence",
+        "port": "value"
+      },
+      {
+        "node": "evidence",
+        "port": "updated"
+      },
+      {
+        "node": "edge",
+        "port": "events"
+      },
+      {
+        "node": "true",
+        "port": "out"
+      },
+      {
+        "node": "product",
+        "port": "out"
+      },
+      {
+        "node": "gate",
+        "port": "candidate"
+      },
+      {
+        "node": "arbiter",
+        "port": "out0"
+      },
+      {
+        "node": "commit",
+        "port": "write0"
+      },
+      {
+        "node": "commit",
+        "port": "request0"
+      },
+      {
+        "node": "seen",
+        "port": "value"
+      },
+      {
+        "node": "attempt",
+        "port": "events"
+      },
+      {
+        "node": "attempt",
+        "port": "snapshot"
+      }
+    ],
+    "occurrences": [
+      {
+        "source_path": "/program/declarations/0",
+        "role": "declaration",
+        "disposition": "retained_metadata",
+        "targets": []
+      },
+      {
+        "source_path": "/program/declarations/1",
+        "role": "declaration",
+        "disposition": "retained_metadata",
+        "targets": []
+      },
+      {
+        "source_path": "/program/declarations/2",
+        "role": "declaration",
+        "disposition": "retained_metadata",
+        "targets": []
+      },
+      {
+        "source_path": "/program/declarations/3",
+        "role": "clock",
+        "disposition": "retained_metadata",
+        "targets": []
+      },
+      {
+        "source_path": "/program/declarations/4",
+        "role": "declaration",
+        "disposition": "executable",
+        "targets": [
+          {
+            "node": "evidence",
+            "port": "value"
+          }
+        ]
+      },
+      {
+        "source_path": "/program/declarations/5",
+        "role": "declaration",
+        "disposition": "executable",
+        "targets": [
+          {
+            "node": "seen",
+            "port": "value"
+          }
+        ]
+      },
+      {
+        "source_path": "/program/declarations/6",
+        "role": "effect_parameter",
+        "disposition": "constant",
+        "targets": [
+          {
+            "node": "product",
+            "port": "out"
+          }
+        ]
+      },
+      {
+        "source_path": "/program/declarations/7",
+        "role": "lifecycle",
+        "disposition": "executable",
+        "targets": [
+          {
+            "node": "attempt",
+            "port": "events"
+          }
+        ]
+      },
+      {
+        "source_path": "/program/declarations/8",
+        "role": "declaration",
+        "disposition": "executable",
+        "targets": [
+          {
+            "node": "gate",
+            "port": "candidate"
+          },
+          {
+            "node": "arbiter",
+            "port": "out0"
+          },
+          {
+            "node": "commit",
+            "port": "write0"
+          },
+          {
+            "node": "commit",
+            "port": "request0"
+          }
+        ]
+      },
+      {
+        "source_path": "/program/declarations/8/on",
+        "role": "predicate",
+        "disposition": "executable",
+        "targets": [
+          {
+            "node": "edge",
+            "port": "events"
+          }
+        ]
+      },
+      {
+        "source_path": "/program/declarations/8/assignments/0/value",
+        "role": "state_write",
+        "disposition": "constant",
+        "targets": [
+          {
+            "node": "true",
+            "port": "out"
+          }
+        ]
+      },
+      {
+        "source_path": "/program/declarations/9",
+        "role": "requirement",
+        "disposition": "obligation",
+        "targets": []
+      },
+      {
+        "source_path": "/program/declarations/10",
+        "role": "requirement",
+        "disposition": "obligation",
+        "targets": []
+      },
+      {
+        "source_path": "/program/declarations/11",
+        "role": "requirement",
+        "disposition": "obligation",
+        "targets": []
+      },
+      {
+        "source_path": "/program/declarations/12",
+        "role": "requirement",
+        "disposition": "obligation",
+        "targets": []
+      }
+    ]
+  },
+  "expected_authority": {
+    "source_artifact_digest": "7a869939debd615d2402326003a92a911ff51dcae4e38c50171b08babc76d0ba",
+    "descriptors_digest": "d152bb1eb3ce3efdd9c69845f65acbc9a82507db16371f60246c0868b1c6d808",
+    "domain_digest": "74408eecc735967f39c283fdc1ad7c688d3beb567222f5bd0033a0d17b013e1d",
+    "implementation_catalog_digest": "77c8d37c9f9d673318fe28b03acf4e53f3c19444633553836ea09ab4a24158cb",
+    "library_digest": "4d4fb474ca5714d5bcf049834c858d24116d497c13d7c4c936de78cc2380c542"
+  },
+  "expected_occurrences": [
+    "/program/declarations/0",
+    "/program/declarations/1",
+    "/program/declarations/2",
+    "/program/declarations/3",
+    "/program/declarations/4",
+    "/program/declarations/5",
+    "/program/declarations/6",
+    "/program/declarations/7",
+    "/program/declarations/8",
+    "/program/declarations/8/on",
+    "/program/declarations/8/assignments/0/value",
+    "/program/declarations/9",
+    "/program/declarations/10",
+    "/program/declarations/11",
+    "/program/declarations/12"
+  ]
+}

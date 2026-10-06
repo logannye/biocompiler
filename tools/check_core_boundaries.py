@@ -37,6 +37,11 @@ EXECUTABLES = {
     "biocompiler-verify": ("bin/verify/dune", {"bioc_wire", "bioc_service"}, "verifier"),
 }
 TESTS = {
+    "test_policy_realization_admission": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_semantics", "zarith"},
+    "test_policy_implementation": {"bioc_wire", "bioc_domain", "zarith"},
+    "test_policy_operating_domain": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "zarith"},
+    "test_policy_exclusion_source": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_semantics", "bioc_service", "zarith"},
+    "test_policy_realization_source": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_semantics", "bioc_service", "zarith"},
     "test_policy_operational": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "zarith"},
     "test_policy_execution": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_semantics", "zarith"},
     "test_policy_operational_service": {"bioc_wire", "bioc_service", "bioc_producer_service"},
@@ -418,6 +423,11 @@ def check_boundaries(root: Path):
                     "test_policy_operational": ["policy_operational_v01.json"],
                     "test_policy_execution": ["policy_operational_v01.json"],
                     "test_policy_operational_service": ["policy_operational_v01.json"],
+                    "test_policy_realization_source": ["policy_realization_source_v01.json"],
+                    "test_policy_exclusion_source": ["policy_exclusion_source_v01.json"],
+                    "test_policy_operating_domain": ["policy_operating_domain_v01.json", "policy_operational_v01.json"],
+                    "test_policy_implementation": ["policy_implementation_v01.json"],
+                    "test_policy_realization_admission": ["policy_realization_request_v01.json", "policy_realization_source_v01.json"],
                     "test_policy_document": ["policy_documents_v01.json"],
                     "test_policy_check": ["policy_frontend_request.json", "policy_frontend_submission.json", "policy_documents_v01.json"],
                     "test_policy_service": ["policy_documents_v01.json"],
