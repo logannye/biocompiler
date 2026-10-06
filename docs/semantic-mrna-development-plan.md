@@ -49,8 +49,8 @@ tracker as current status; older checkpoint paragraphs are historical evidence.
 | SM-03 Independent primitives | Typed executable graph and candidate runtime independent of source evaluation | Current union complete native literal/mutation/dependency suites, four SDK slots and six full cross-slot comparisons passed | Independent current evidence audit and complete acceptance gate; new numeric/machine primitives remain future work |
 | SM-04 Lowering and bounded preservation | All six tasks implemented for the first one/two-rule family: real lowering, source obligations, complete bounded exploration, independent requirements and distinguishing mutations | Literal nine-history / 47-transition / 48-prefix success, separate rejected/incomplete requests, current union native suites passed | Complete current union audit/main gates; preserve work-exhaustion results and open broader contextual/mutation coverage |
 | SM-05 Components and architecture | One supplied whole-graph material binding with declared recipient, provider, timing and finite resources | PR95 material/context/native/prebuilt checks | **Reusable component composition, finite alternatives, helper bootstrap/dependencies, many-to-many ownership and multiple RNA members remain unimplemented.** First-profile acceptance cannot close this broader package |
-| SM-06 Exact construction | Independent single-member base/coordinate/feature/chemistry/product and full configuration correspondence | PR95 exact material/fresh export and mutation checks in all four installed slots | Current union gate; component joins, helper products and multi-member correspondence require extensions |
-| SM-07 Public SDK/CLI and export | Immutable native transport, compile/check/replay, producer-free Verify, fresh paired FASTA/manifest export | Current union four SDK slots, six comparisons, four policy-prebuilt installed slots and prebuilt comparison passed; separate PR95 comparisons independently replayed | Independent exact-union artifact audit, complete aggregate and main gates |
+| SM-06 Exact construction | Whole-graph case, complete single-member construction, configuration correspondence and first-profile mutation tasks complete | PR95 exact material/fresh export and mutation checks in all four installed slots | Current union acceptance; reusable component joins, helper products and multi-member correspondence require extensions |
+| SM-07 Public SDK/CLI and export | All six first-profile tasks implemented and demonstrated: complete manifests, immutable native transport, conservative invalidation, compile/check/replay, producer-free Verify and fresh paired export | Current union four SDK slots, six comparisons, four policy-prebuilt installed slots and prebuilt comparison passed; separate PR95 evidence independently audited | Independent exact-union artifact audit, complete aggregate and main gates |
 | SM-08 Compatibility and acceptance | Full combined workflow, retained legacy routes/corpora, exact unit accounting and targeted prebuilt routing | Current union both complete native/direct suites, all ten unit shards and both unit-accounting jobs passed; full run remains active. PR95 all 42 hosted jobs passed | Current union remaining installed campaigns, all 74 jobs / 59 ordinary receipts / 14 unit artifacts independently audited, normal merge and fresh actual-main validation |
 | SM-09 Vertical expansions | SM-09.1 complete: select exact reusable component composition as the next profile; independently authored fixture specification prepared | Design review only; no implementation or execution claim | Implement and accept each complete profile after the first path's gate; broader production-default cutover remains separate |
 
@@ -122,7 +122,12 @@ missing production guard: the previous wrong-digest test used malformed text,
 and non-effect formals / non-observation results lack direct rejection witnesses.
 `descriptor-identity-reachability-a85b1112f.md` records the exact paths, source-valid
 mutations and shared guards across eight signature contexts. A separate follow-up
-worktree prepares these tests without changing the currently tested source.
+worktree now contains the reviewed test/ledger commit `82c6fa57f` on
+`codex/policy-descriptor-witnesses`. All 42 focused pure-Python coverage controls
+and the unchanged 3,731-entry migration inventory pass; no production pins or
+coverage statuses changed. Native execution and exact-revision acceptance of
+these three new controls remain pending. This follow-up is not included in the
+currently tested PR85/95 source trees.
 
 Tracker edits are maintained in the isolated `codex/semantic-mrna-tracker`
 worktree while both tested source trees remain frozen. Include these documentation
@@ -528,12 +533,24 @@ Exit: a complete checked implementation has a complete eligible RNA architecture
 
 Depends on: SM-05; construction leaf work can overlap SM-04.
 
-- [ ] **SM-06.1** Define independently supplied configuration-to-template and connection-to-composition rules, pinning the implementation model, exact template roots, sequence features and relevant context.
-- [ ] **SM-06.2** Independently reconstruct material bindings from actual selected components and templates. Reject orphan executable operations, missing helpers, phantom connections and unauthorized extra delivered members.
-- [ ] **SM-06.3** Reuse existing construction operations and exact chemistry/coordinate checks, then enforce SM-01.6 completeness. Resolve full sequence extent, exact tails, required UTR/CDS/end features, chemistry and supplied product translation/junction authority; reject unresolved partial constructions.
-- [ ] **SM-06.4** Check every emitted base, member, feature and source/destination coordinate against original roots and authorized transforms. No implicit back-translation, optimization or invented sequence.
-- [ ] **SM-06.5** Establish complete implementation-configuration-to-material dependency maps. Sequence/layout edits invalidate affected implementation/material claims; identical bytes do not imply identical configuration authority.
-- [ ] **SM-06.6** Add source/implementation/material mutations: guard polarity, state encoding, deadline/configuration, product/CDS, missing member, altered base, wrong junction, chemistry or recipient.
+- [x] **SM-06.1a** Define the independently supplied whole-graph material case: full implementation/configuration/connection authority, exact template roots, features, products and context.
+- [ ] **SM-06.1b** Extend that authority to reusable component configuration-to-template and connection-to-composition rules with independently supplied composition semantics.
+- [x] **SM-06.2a** Independently reconstruct the whole-graph binding, including total ordered node/model/wire/group/export/carrier coverage and exact single-member material. Reject orphan operations, phantom connections and extra members.
+- [ ] **SM-06.2b** Extend reconstruction to selected reusable component assemblies and their helper dependencies; independently justify any additional behavior and every delivered member.
+- [x] **SM-06.3** Reuse existing construction operations and exact chemistry/coordinate checks, then enforce SM-01.6 completeness. Resolve full sequence extent, exact tails, required UTR/CDS/end features, chemistry and supplied product translation/junction authority; reject unresolved partial constructions.
+- [x] **SM-06.4** Check every emitted base, member, feature and source/destination coordinate against original roots and authorized transforms. No implicit back-translation, optimization or invented sequence.
+- [x] **SM-06.5** Establish complete implementation-configuration-to-material dependency maps. Sequence/layout edits invalidate affected implementation/material claims; identical bytes do not imply identical configuration authority.
+- [x] **SM-06.6a** Demonstrate first-profile mutation rejection for guards, state/atomic writes, deadlines/configuration, product/CDS, missing/extra members, altered bases, region geometry, chemistry and recipient.
+- [ ] **SM-06.6b** Add genuine component-to-component material-junction mutations with the new composition profile. Existing region-gap/overlap checks do not establish those composition semantics.
+
+Current completion scope: one complete linear coding RNA with an ordinary CDS,
+full four-region partition, exact supplied product translation, exact represented
+tail and nominal chemistry. Fresh reconstruction checks every original root,
+authorized transform, base and coordinate. Configuration/carrier coverage and
+equal-RNA/wrong-authority controls preserve the conditional model-to-material
+relation. The complete profile still requires one RNA and zero helpers; broader
+standalone structural leaf tests do not establish full-profile multi-RNA support.
+Reusable fragment composition remains the explicit remainder above.
 
 Exit: exact complete mRNA candidates are independently checked against both their material construction authority and the accepted implementation binding.
 
@@ -558,12 +575,27 @@ retain their exact-revision evidence.
 
 Depends on: SM-04 through SM-06.
 
-- [ ] **SM-07.1** Define a canonical accepted-build manifest containing full original source artifact, definitions, domain, implementation/material libraries, every IR, mappings, requirements, bounds, checker identities and emitted member inventory.
-- [ ] **SM-07.2** Distinguish declaration-content identity from full source-artifact identity, including source maps/provenance. Define a stage-by-stage invalidation graph and exact replay inputs.
-- [ ] **SM-07.3** Add explicit versioned compile/check/replay/export native operations. Standalone Verify reconstructs acceptance without producer linkage; old result profiles retain their existing statuses.
-- [ ] **SM-07.4** Route complete rich-policy requests through thin immutable Python SDK/CLI adapters. No semantic fallback on unsupported input, incompatible binaries, timeout, crash, cancellation or exhausted work.
-- [ ] **SM-07.5** Export only a freshly checked immutable accepted result, atomically binding RNA FASTA and full manifest. Recheck exact bytes at the publication boundary and preserve prior outputs on failure.
-- [ ] **SM-07.6** Verify outside the checkout with producer modules absent and original authority supplied separately. Reject forged/rehashed reports, stale binaries, altered claims and truncated evidence.
+- [x] **SM-07.1** Define a canonical accepted-build manifest containing full original source artifact, definitions, domain, implementation/material libraries, every IR, mappings, requirements, bounds, checker identities and emitted member inventory.
+- [x] **SM-07.2** Distinguish declaration-content identity from full source-artifact identity, including source maps/provenance. Define a stage-by-stage invalidation graph and exact replay inputs.
+- [x] **SM-07.3** Add explicit versioned compile/check/replay/export native operations. Standalone Verify reconstructs acceptance without producer linkage; old result profiles retain their existing statuses.
+- [x] **SM-07.4** Route complete rich-policy requests through thin immutable Python SDK/CLI adapters. No semantic fallback on unsupported input, incompatible binaries, timeout, crash, cancellation or exhausted work.
+- [x] **SM-07.5** Export only a freshly checked immutable accepted result, atomically binding RNA FASTA and full manifest. Recheck exact bytes at the publication boundary and preserve prior outputs on failure.
+- [x] **SM-07.6** Verify outside the checkout with producer modules absent and original authority supplied separately. Reject forged/rehashed reports, stale binaries, altered claims and truncated evidence.
+
+Current completion scope: the manifest retains all original inputs, candidate
+stages, bounds, complete fresh assessment and exact molecular inventory. SM-07.2
+uses conservative full-chain invalidation: every replay/export reconstructs the
+required stages from original authority; no incremental cache scheduler is
+claimed. SM-07.5 atomically publishes one read-back-verified FASTA/manifest ZIP
+and preserves prior outputs on failure; directory-fsync crash durability is not
+claimed. SM-07.6 is demonstrated by authenticated four-slot PR95 standalone
+consumer/prebuilt evidence for the unchanged modules; union/main acceptance
+remains SM-08 work.
+
+The source/witness reconciliation for SM-06/07 is retained in
+`work/m11-human-evidence/generated/policy-realization/tracker-sm06-sm07-review-a85b1112f.md`,
+SHA-256 `aa370c32ebe49fd331677dcd175f519b5f80145459bd94308f4b10496edcea70`.
+Its exact task scopes complement the revision-bound execution evidence in section 2.
 
 Exit: one complete Python-policy → implementation → exact mRNA path works through installed public APIs with fresh standalone verification and exact request-bound export.
 
