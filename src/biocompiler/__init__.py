@@ -1,534 +1,569 @@
-"""Author inspectable therapeutic programs for in-vivo immune-cell engineering."""
+"""Lightweight package surface with the original legacy objects loaded on demand.
+
+The policy authoring package does not load compiler or semantic implementations.
+Accessing a legacy public name initializes the historical exports in their
+original order, preserving the objects and import closure used by old workflows.
+"""
+
+from importlib import import_module as _import_module
+from threading import RLock as _RLock
 
 __version__ = "0.1.0.dev29"
 
-from biocompiler.ir.architecture_build import (
-    ArchitectureGap, RequirementRealization, ArchitectureAlternative,
-    PayloadArchitectureRequest, PayloadArchitecturePlan, PayloadArchitectureBuild,
-    PayloadArchitectureExport,
-)
-from biocompiler.ir.payload_architecture import (
-    ArchitectureBinding, ArchitectureConnection, ArchitecturePlacement,
-    ArchitectureControl, ControlRequirement, ArchitectureHelper, ArchitectureChannel,
-    ArchitectureOutputBinding, RecipientDeliveryGroup, RNAArchitectureConstraints,
-    PayloadArchitectureRefinement, PayloadArchitectureLibrary,
-    ArchitectureMatchPolicy, ArchitectureRefinementInstance,
-)
-from biocompiler.ir.architecture_deployment import RNAAvailabilityContract, RNADeploymentRequirement
-from biocompiler.ir.circuit_intent import ExecutableCircuitBehavior
-from biocompiler.ir.behavior import BEHAVIOR_V2
-from biocompiler.semantics.payload_execution import SourceExecutionManifest, derive_source_execution
-from biocompiler.semantics.architecture_execution import (
-    ArchitectureExecutionResult, evaluate_payload_architecture,
-)
-from biocompiler.compiler.payload_architecture import compile_payload_architecture, export_payload_architecture
-from biocompiler.verification.payload_architecture import (
-    PayloadArchitectureVerification, check_payload_architecture, verify_payload_architecture,
-)
+# Static import authority: original public name -> (module, original attribute).
+# Do not derive exports by importing compiler modules at package initialization.
+_LEGACY_EXPORTS = {
+    'ArchitectureGap': ('biocompiler.ir.architecture_build', 'ArchitectureGap'),
+    'RequirementRealization': ('biocompiler.ir.architecture_build', 'RequirementRealization'),
+    'ArchitectureAlternative': ('biocompiler.ir.architecture_build', 'ArchitectureAlternative'),
+    'PayloadArchitectureRequest': ('biocompiler.ir.architecture_build', 'PayloadArchitectureRequest'),
+    'PayloadArchitecturePlan': ('biocompiler.ir.architecture_build', 'PayloadArchitecturePlan'),
+    'PayloadArchitectureBuild': ('biocompiler.ir.architecture_build', 'PayloadArchitectureBuild'),
+    'PayloadArchitectureExport': ('biocompiler.ir.architecture_build', 'PayloadArchitectureExport'),
+    'ArchitectureBinding': ('biocompiler.ir.payload_architecture', 'ArchitectureBinding'),
+    'ArchitectureConnection': ('biocompiler.ir.payload_architecture', 'ArchitectureConnection'),
+    'ArchitecturePlacement': ('biocompiler.ir.payload_architecture', 'ArchitecturePlacement'),
+    'ArchitectureControl': ('biocompiler.ir.payload_architecture', 'ArchitectureControl'),
+    'ControlRequirement': ('biocompiler.ir.payload_architecture', 'ControlRequirement'),
+    'ArchitectureHelper': ('biocompiler.ir.payload_architecture', 'ArchitectureHelper'),
+    'ArchitectureChannel': ('biocompiler.ir.payload_architecture', 'ArchitectureChannel'),
+    'ArchitectureOutputBinding': ('biocompiler.ir.payload_architecture', 'ArchitectureOutputBinding'),
+    'RecipientDeliveryGroup': ('biocompiler.ir.payload_architecture', 'RecipientDeliveryGroup'),
+    'RNAArchitectureConstraints': ('biocompiler.ir.payload_architecture', 'RNAArchitectureConstraints'),
+    'PayloadArchitectureRefinement': ('biocompiler.ir.payload_architecture', 'PayloadArchitectureRefinement'),
+    'PayloadArchitectureLibrary': ('biocompiler.ir.payload_architecture', 'PayloadArchitectureLibrary'),
+    'ArchitectureMatchPolicy': ('biocompiler.ir.payload_architecture', 'ArchitectureMatchPolicy'),
+    'ArchitectureRefinementInstance': ('biocompiler.ir.payload_architecture', 'ArchitectureRefinementInstance'),
+    'RNAAvailabilityContract': ('biocompiler.ir.architecture_deployment', 'RNAAvailabilityContract'),
+    'RNADeploymentRequirement': ('biocompiler.ir.architecture_deployment', 'RNADeploymentRequirement'),
+    'ExecutableCircuitBehavior': ('biocompiler.ir.circuit_intent', 'ExecutableCircuitBehavior'),
+    'BEHAVIOR_V2': ('biocompiler.ir.behavior', 'BEHAVIOR_V2'),
+    'SourceExecutionManifest': ('biocompiler.semantics.payload_execution', 'SourceExecutionManifest'),
+    'derive_source_execution': ('biocompiler.semantics.payload_execution', 'derive_source_execution'),
+    'ArchitectureExecutionResult': ('biocompiler.semantics.architecture_execution', 'ArchitectureExecutionResult'),
+    'evaluate_payload_architecture': ('biocompiler.semantics.architecture_execution', 'evaluate_payload_architecture'),
+    'compile_payload_architecture': ('biocompiler.compiler.payload_architecture', 'compile_payload_architecture'),
+    'export_payload_architecture': ('biocompiler.compiler.payload_architecture', 'export_payload_architecture'),
+    'PayloadArchitectureVerification': ('biocompiler.verification.payload_architecture', 'PayloadArchitectureVerification'),
+    'check_payload_architecture': ('biocompiler.verification.payload_architecture', 'check_payload_architecture'),
+    'verify_payload_architecture': ('biocompiler.verification.payload_architecture', 'verify_payload_architecture'),
+    'ArchitectureCoreError': ('biocompiler.architecture_backend', 'ArchitectureCoreError'),
+    'PayloadCompilationRequest': ('biocompiler.ir.executable_payload', 'PayloadCompilationRequest'),
+    'PayloadSelectionConstraints': ('biocompiler.ir.executable_payload', 'PayloadSelectionConstraints'),
+    'PayloadCircuitBinding': ('biocompiler.ir.executable_payload', 'PayloadCircuitBinding'),
+    'PayloadAlternative': ('biocompiler.ir.executable_payload', 'PayloadAlternative'),
+    'PayloadBuild': ('biocompiler.ir.executable_payload', 'PayloadBuild'),
+    'PayloadTemplate': ('biocompiler.ir.payload_contracts', 'PayloadTemplate'),
+    'PayloadPortBinding': ('biocompiler.ir.payload_contracts', 'PayloadPortBinding'),
+    'PayloadCapabilityBinding': ('biocompiler.ir.payload_contracts', 'PayloadCapabilityBinding'),
+    'PayloadComponentContract': ('biocompiler.ir.payload_contracts', 'PayloadComponentContract'),
+    'PayloadContractLibrary': ('biocompiler.ir.payload_contracts', 'PayloadContractLibrary'),
+    'PayloadRequirements': ('biocompiler.semantics.payload_requirements', 'PayloadRequirements'),
+    'PayloadOutputRequirement': ('biocompiler.semantics.payload_requirements', 'PayloadOutputRequirement'),
+    'PayloadSourceDiagnostic': ('biocompiler.semantics.payload_requirements', 'PayloadDiagnostic'),
+    'extract_payload_requirements': ('biocompiler.semantics.payload_requirements', 'extract_payload_requirements'),
+    'derive_boolean_response': ('biocompiler.semantics.payload_requirements', 'derive_boolean_response'),
+    'validate_boolean_mapping': ('biocompiler.semantics.payload_requirements', 'validate_boolean_mapping'),
+    'compile_payload': ('biocompiler.compiler.executable_payload', 'compile_payload'),
+    'export_payload_fasta': ('biocompiler.compiler.executable_payload', 'export_payload_fasta'),
+    'PayloadVerification': ('biocompiler.verification.executable_payload', 'PayloadVerification'),
+    'check_payload_build': ('biocompiler.verification.executable_payload', 'check_payload_build'),
+    'verify_payload_build': ('biocompiler.verification.executable_payload', 'verify_payload_build'),
+    'CircuitReviewAuthority': ('biocompiler.artifacts.circuit_review', 'CircuitReviewAuthority'),
+    'CircuitReviewManifest': ('biocompiler.artifacts.circuit_review', 'CircuitReviewManifest'),
+    'CircuitReviewBundle': ('biocompiler.artifacts.circuit_review_bundle', 'CircuitReviewBundle'),
+    'create_circuit_review_bundle': ('biocompiler.artifacts.circuit_review_bundle', 'create_circuit_review_bundle'),
+    'publish_circuit_review_bundle': ('biocompiler.artifacts.circuit_review_bundle', 'publish_circuit_review_bundle'),
+    'inspect_circuit_review_bundle': ('biocompiler.verification.circuit_review', 'inspect_circuit_review_bundle'),
+    'verify_circuit_review_bundle': ('biocompiler.verification.circuit_review', 'verify_circuit_review_bundle'),
+    'CircuitBindingRequest': ('biocompiler.ir.circuit_bindings', 'CircuitBindingRequest'),
+    'CircuitEntityBinding': ('biocompiler.ir.circuit_bindings', 'CircuitEntityBinding'),
+    'CircuitBindingAssessment': ('biocompiler.verification.circuit_bindings', 'CircuitBindingAssessment'),
+    'check_circuit_bindings': ('biocompiler.verification.circuit_bindings', 'check_circuit_bindings'),
+    'verify_circuit_binding_assessment': ('biocompiler.verification.circuit_bindings', 'verify_circuit_binding_assessment'),
+    'CircuitEvidenceObservationBinding': ('biocompiler.ir.circuit_evidence', 'CircuitEvidenceObservationBinding'),
+    'CircuitEvidenceSource': ('biocompiler.ir.circuit_evidence', 'CircuitEvidenceSource'),
+    'CircuitEvidenceRequest': ('biocompiler.ir.circuit_evidence', 'CircuitEvidenceRequest'),
+    'CircuitEvidenceSourceReceipt': ('biocompiler.ir.circuit_evidence', 'CircuitEvidenceSourceReceipt'),
+    'CircuitEvidenceReceipt': ('biocompiler.ir.circuit_evidence', 'CircuitEvidenceReceipt'),
+    'CircuitEvidenceDependencyStatus': ('biocompiler.verification.circuit_evidence', 'CircuitEvidenceDependencyStatus'),
+    'CircuitEvidenceAssessment': ('biocompiler.verification.circuit_evidence', 'CircuitEvidenceAssessment'),
+    'capture_circuit_evidence': ('biocompiler.verification.circuit_evidence', 'capture_circuit_evidence'),
+    'check_circuit_evidence': ('biocompiler.verification.circuit_evidence', 'check_circuit_evidence'),
+    'verify_circuit_evidence_assessment': ('biocompiler.verification.circuit_evidence', 'verify_circuit_evidence_assessment'),
+    'SourceDocument': ('biocompiler.ir.circuit_sources', 'SourceDocument'),
+    'SourceGap': ('biocompiler.ir.circuit_sources', 'SourceGap'),
+    'CircuitSourceCase': ('biocompiler.ir.circuit_sources', 'CircuitSourceCase'),
+    'SourceReview': ('biocompiler.ir.circuit_sources', 'SourceReview'),
+    'CircuitSourceInventory': ('biocompiler.ir.circuit_sources', 'CircuitSourceInventory'),
+    'CircuitSourcesAssessment': ('biocompiler.verification.circuit_sources', 'CircuitSourcesAssessment'),
+    'check_circuit_sources': ('biocompiler.verification.circuit_sources', 'check_circuit_sources'),
+    'verify_circuit_sources': ('biocompiler.verification.circuit_sources', 'verify_circuit_sources'),
+    'inspect_circuit_source_readiness': ('biocompiler.verification.circuit_sources', 'inspect_circuit_source_readiness'),
+    'inspect_circuit_construction': ('biocompiler.artifacts.circuit_inspection', 'inspect_circuit_construction'),
+    'diff_circuit_constructions': ('biocompiler.artifacts.circuit_inspection', 'diff_circuit_constructions'),
+    'RootSource': ('biocompiler.ir.circuit_construction', 'RootSource'),
+    'ValueRef': ('biocompiler.ir.circuit_construction', 'ValueRef'),
+    'ValueSelection': ('biocompiler.ir.circuit_construction', 'ValueSelection'),
+    'ProductPort': ('biocompiler.ir.circuit_construction', 'ProductPort'),
+    'SliceOperation': ('biocompiler.ir.circuit_construction', 'SliceOperation'),
+    'ConcatenateOperation': ('biocompiler.ir.circuit_construction', 'ConcatenateOperation'),
+    'OrientationOperation': ('biocompiler.ir.circuit_construction', 'OrientationOperation'),
+    'TranscriptionOperation': ('biocompiler.ir.circuit_construction', 'TranscriptionOperation'),
+    'ProcessingProduct': ('biocompiler.ir.circuit_construction', 'ProcessingProduct'),
+    'RNACleavageOperation': ('biocompiler.ir.circuit_construction', 'RNACleavageOperation'),
+    'RNASplicingOperation': ('biocompiler.ir.circuit_construction', 'RNASplicingOperation'),
+    'ProteinCleavageOperation': ('biocompiler.ir.circuit_construction', 'ProteinCleavageOperation'),
+    'ProteinSplicingOperation': ('biocompiler.ir.circuit_construction', 'ProteinSplicingOperation'),
+    'CircularizationOperation': ('biocompiler.ir.circuit_construction', 'CircularizationOperation'),
+    'BaseEditingOperation': ('biocompiler.ir.circuit_construction', 'BaseEditingOperation'),
+    'TranslationOperation': ('biocompiler.ir.circuit_construction', 'TranslationOperation'),
+    'TranslationProduct': ('biocompiler.ir.circuit_construction', 'TranslationProduct'),
+    'MultiORFTranslationOperation': ('biocompiler.ir.circuit_construction', 'MultiORFTranslationOperation'),
+    'TranslationBranch': ('biocompiler.ir.circuit_construction', 'TranslationBranch'),
+    'ConditionalTranslationOperation': ('biocompiler.ir.circuit_construction', 'ConditionalTranslationOperation'),
+    'PeptideProduct': ('biocompiler.ir.circuit_construction', 'PeptideProduct'),
+    'RibosomalSkippingOperation': ('biocompiler.ir.circuit_construction', 'RibosomalSkippingOperation'),
+    'TransformStep': ('biocompiler.ir.circuit_construction', 'TransformStep'),
+    'OutputMember': ('biocompiler.ir.circuit_construction', 'OutputMember'),
+    'RoleDeclaration': ('biocompiler.ir.circuit_construction', 'RoleDeclaration'),
+    'MemberRequirement': ('biocompiler.ir.circuit_construction', 'MemberRequirement'),
+    'ComplexMemberConstituent': ('biocompiler.ir.circuit_construction', 'ComplexMemberConstituent'),
+    'ComplexMemberPlan': ('biocompiler.ir.circuit_construction', 'ComplexMemberPlan'),
+    'AmountDeclaration': ('biocompiler.ir.circuit_construction', 'AmountDeclaration'),
+    'CircuitConstructionRequest': ('biocompiler.ir.circuit_construction', 'CircuitConstructionRequest'),
+    'CanonicalBaseEdit': ('biocompiler.ir.circuit_recoding', 'CanonicalBaseEdit'),
+    'ChemicalBaseEdit': ('biocompiler.ir.circuit_recoding', 'ChemicalBaseEdit'),
+    'CodonRecoding': ('biocompiler.ir.circuit_recoding', 'CodonRecoding'),
+    'CircuitTranslationPolicy': ('biocompiler.ir.circuit_recoding', 'TranslationPolicy'),
+    'ChemistryDisposition': ('biocompiler.ir.circuit_transitions', 'ChemistryDisposition'),
+    'ChemistryTransition': ('biocompiler.ir.circuit_transitions', 'ChemistryTransition'),
+    'FeatureDisposition': ('biocompiler.ir.circuit_transitions', 'FeatureDisposition'),
+    'FeatureTransition': ('biocompiler.ir.circuit_transitions', 'FeatureTransition'),
+    'RequiredPayloadRegion': ('biocompiler.ir.circuit_payloads', 'RequiredPayloadRegion'),
+    'PayloadStructureContract': ('biocompiler.ir.circuit_payloads', 'PayloadStructureContract'),
+    'DerivedSegment': ('biocompiler.artifacts.circuit_construction', 'DerivedSegment'),
+    'ConsumedSegment': ('biocompiler.artifacts.circuit_construction', 'ConsumedSegment'),
+    'ConstructedValue': ('biocompiler.artifacts.circuit_construction', 'ConstructedValue'),
+    'ConstructionCandidate': ('biocompiler.artifacts.circuit_construction', 'ConstructionCandidate'),
+    'CircuitConstructionBuild': ('biocompiler.artifacts.circuit_construction_build', 'CircuitConstructionBuild'),
+    'build_circuit_construction': ('biocompiler.compiler.circuit_construction', 'build_circuit_construction'),
+    'verify_circuit_construction': ('biocompiler.compiler.circuit_construction', 'verify_circuit_construction'),
+    'verified_circuit_molecules': ('biocompiler.compiler.circuit_construction', 'verified_circuit_molecules'),
+    'CircuitConstructionAssessment': ('biocompiler.verification.circuit_construction', 'CircuitConstructionAssessment'),
+    'check_circuit_construction': ('biocompiler.verification.circuit_construction', 'check_circuit_construction'),
+    'verify_circuit_construction_assessment': ('biocompiler.verification.circuit_construction', 'verify_circuit_construction_assessment'),
+    'DeclarationProvenance': ('biocompiler.ir.molecule_records', 'DeclarationProvenance'),
+    'CoordinateSpace': ('biocompiler.semantics.molecule_coordinates', 'CoordinateSpace'),
+    'IndexSpan': ('biocompiler.semantics.molecule_coordinates', 'IndexSpan'),
+    'CoordinatePath': ('biocompiler.semantics.molecule_coordinates', 'CoordinatePath'),
+    'ChemicalIdentity': ('biocompiler.ir.molecule_chemistry', 'ChemicalIdentity'),
+    'ChemistryClaim': ('biocompiler.ir.molecule_chemistry', 'ChemistryClaim'),
+    'BaseModification': ('biocompiler.ir.molecule_chemistry', 'BaseModification'),
+    'TailLength': ('biocompiler.ir.molecule_chemistry', 'TailLength'),
+    'TailDeclaration': ('biocompiler.ir.molecule_chemistry', 'TailDeclaration'),
+    'MoleculeChemistry': ('biocompiler.ir.molecule_chemistry', 'MoleculeChemistry'),
+    'AssemblyOrigin': ('biocompiler.ir.circuit_molecules', 'AssemblyOrigin'),
+    'MoleculeFeature': ('biocompiler.ir.circuit_molecules', 'MoleculeFeature'),
+    'CircuitMolecule': ('biocompiler.ir.circuit_molecules', 'CircuitMolecule'),
+    'ComplexConstituent': ('biocompiler.ir.circuit_molecules', 'ComplexConstituent'),
+    'MolecularComplex': ('biocompiler.ir.circuit_molecules', 'MolecularComplex'),
+    'MoleculeRoleInstance': ('biocompiler.ir.circuit_molecules', 'MoleculeRoleInstance'),
+    'FormCoordinateMapping': ('biocompiler.ir.circuit_molecules', 'FormCoordinateMapping'),
+    'CircuitMoleculeSet': ('biocompiler.ir.circuit_molecules', 'CircuitMoleculeSet'),
+    'ExperimentalAmount': ('biocompiler.artifacts.circuit_molecules', 'ExperimentalAmount'),
+    'CircuitMoleculeRecord': ('biocompiler.artifacts.circuit_molecules', 'CircuitMoleculeRecord'),
+    'BooleanSpec': ('biocompiler.ir.circuit_logic', 'BooleanSpec'),
+    'CircuitSignal': ('biocompiler.ir.circuit_logic', 'CircuitSignal'),
+    'LogicValue': ('biocompiler.ir.circuit_logic', 'LogicValue'),
+    'all_equal': ('biocompiler.ir.circuit_logic', 'all_equal'),
+    'nand': ('biocompiler.ir.circuit_logic', 'nand'),
+    'nor': ('biocompiler.ir.circuit_logic', 'nor'),
+    'parity': ('biocompiler.ir.circuit_logic', 'parity'),
+    'xnor': ('biocompiler.ir.circuit_logic', 'xnor'),
+    'CircuitObservation': ('biocompiler.ir.circuit_observations', 'CircuitObservation'),
+    'CircuitProduct': ('biocompiler.ir.circuit_observations', 'CircuitProduct'),
+    'NumericInterval': ('biocompiler.ir.circuit_observations', 'NumericInterval'),
+    'ObservationEncoding': ('biocompiler.ir.circuit_observations', 'ObservationEncoding'),
+    'ObservationEntity': ('biocompiler.ir.circuit_observations', 'ObservationEntity'),
+    'ObservationSample': ('biocompiler.ir.circuit_observations', 'ObservationSample'),
+    'ObservationScope': ('biocompiler.ir.circuit_observations', 'ObservationScope'),
+    'ObservationWindow': ('biocompiler.ir.circuit_observations', 'ObservationWindow'),
+    'ProductKind': ('biocompiler.ir.circuit_observations', 'ProductKind'),
+    'QuantityKind': ('biocompiler.ir.circuit_observations', 'QuantityKind'),
+    'classify_observation': ('biocompiler.ir.circuit_observations', 'classify_observation'),
+    'CircuitBehavior': ('biocompiler.ir.circuit_intent', 'CircuitBehavior'),
+    'CircuitBehaviorExpectation': ('biocompiler.ir.circuit_intent', 'CircuitBehaviorExpectation'),
+    'CircuitInputBinding': ('biocompiler.ir.circuit_intent', 'CircuitInputBinding'),
+    'CircuitLifecycle': ('biocompiler.ir.circuit_intent', 'CircuitLifecycle'),
+    'CircuitProviderRequirement': ('biocompiler.ir.circuit_intent', 'CircuitProviderRequirement'),
+    'CircuitReferenceLock': ('biocompiler.ir.circuit_intent', 'CircuitReferenceLock'),
+    'CircuitRequest': ('biocompiler.ir.circuit_intent', 'CircuitRequest'),
+    'CircuitRequirement': ('biocompiler.ir.circuit_intent', 'CircuitRequirement'),
+    'CircuitBuilder': ('biocompiler.frontend.circuits', 'CircuitBuilder'),
+    'CircuitIntentAssessment': ('biocompiler.verification.circuit_intent', 'CircuitIntentAssessment'),
+    'check_circuit_intent': ('biocompiler.verification.circuit_intent', 'check_circuit_intent'),
+    'verify_circuit_intent': ('biocompiler.verification.circuit_intent', 'verify_circuit_intent'),
+    'CircuitProfileRequest': ('biocompiler.ir.circuit_profile', 'CircuitProfileRequest'),
+    'HumanExperimentContext': ('biocompiler.ir.circuit_profile', 'HumanExperimentContext'),
+    'ImmuneLineage': ('biocompiler.ir.circuit_profile', 'ImmuneLineage'),
+    'ImmuneRecipientIdentity': ('biocompiler.ir.circuit_profile', 'ImmuneRecipientIdentity'),
+    'CircuitProfileAssessment': ('biocompiler.verification.circuit_profile', 'CircuitProfileAssessment'),
+    'check_circuit_profile': ('biocompiler.verification.circuit_profile', 'check_circuit_profile'),
+    'verify_circuit_profile': ('biocompiler.verification.circuit_profile', 'verify_circuit_profile'),
+    'AdmissionAssessment': ('biocompiler.semantics.admission', 'AdmissionAssessment'),
+    'AdmissionRequest': ('biocompiler.semantics.admission', 'AdmissionRequest'),
+    'assess_admission': ('biocompiler.verification.admission', 'assess_admission'),
+    'verify_admission': ('biocompiler.verification.admission', 'verify_admission'),
+    'HumanAcceptanceRequest': ('biocompiler.compiler.acceptance', 'HumanAcceptanceRequest'),
+    'AcceptanceSample': ('biocompiler.semantics.acceptance', 'AcceptanceSample'),
+    'ExternalShutdownSpec': ('biocompiler.semantics.acceptance', 'ExternalShutdownSpec'),
+    'HumanAcceptanceContract': ('biocompiler.semantics.acceptance', 'HumanAcceptanceContract'),
+    'InputAvailabilitySpec': ('biocompiler.semantics.acceptance', 'InputAvailabilitySpec'),
+    'HumanAcceptanceResult': ('biocompiler.verification.acceptance', 'HumanAcceptanceResult'),
+    'check_human_acceptance': ('biocompiler.verification.acceptance', 'check_human_acceptance'),
+    'HumanDeploymentRequest': ('biocompiler.compiler.deployment', 'HumanDeploymentRequest'),
+    'CoPayloadRequirement': ('biocompiler.semantics.deployment', 'CoPayloadRequirement'),
+    'DeliveryPlatformSpec': ('biocompiler.semantics.deployment', 'DeliveryPlatformSpec'),
+    'DeploymentContract': ('biocompiler.semantics.deployment', 'DeploymentContract'),
+    'ExposureAssumption': ('biocompiler.semantics.deployment', 'ExposureAssumption'),
+    'ExpressionTiming': ('biocompiler.semantics.deployment', 'ExpressionTiming'),
+    'DeploymentAssessment': ('biocompiler.verification.deployment', 'DeploymentAssessment'),
+    'check_deployment': ('biocompiler.verification.deployment', 'check_deployment'),
+    'HumanBehaviorRequest': ('biocompiler.compiler.human_behavior', 'HumanBehaviorRequest'),
+    'ConditionalSecretionContract': ('biocompiler.semantics.human_behavior', 'ConditionalSecretionContract'),
+    'MeasurementSpec': ('biocompiler.semantics.human_behavior', 'MeasurementSpec'),
+    'PredicateRefinement': ('biocompiler.semantics.human_behavior', 'PredicateRefinement'),
+    'SecretionSample': ('biocompiler.semantics.human_behavior', 'SecretionSample'),
+    'SecretionTraceResult': ('biocompiler.verification.human_behavior', 'SecretionTraceResult'),
+    'check_secretion_trace': ('biocompiler.verification.human_behavior', 'check_secretion_trace'),
+    'PayloadFeature': ('biocompiler.ir.payload', 'PayloadFeature'),
+    'PayloadMolecule': ('biocompiler.ir.payload', 'PayloadMolecule'),
+    'PayloadReference': ('biocompiler.ir.payload', 'PayloadReference'),
+    'PayloadRegion': ('biocompiler.ir.payload', 'PayloadRegion'),
+    'PayloadReview': ('biocompiler.ir.payload', 'PayloadReview'),
+    'PayloadSource': ('biocompiler.ir.payload', 'PayloadSource'),
+    'PayloadDiagnostic': ('biocompiler.verification.payload', 'PayloadDiagnostic'),
+    'PayloadResult': ('biocompiler.verification.payload', 'PayloadResult'),
+    'check_payload': ('biocompiler.verification.payload', 'check_payload'),
+    'payload_dependencies': ('biocompiler.verification.payload', 'payload_dependencies'),
+    'MolecularEvidence': ('biocompiler.semantics.molecular_behavior', 'MolecularEvidence'),
+    'MolecularImplementationContract': ('biocompiler.semantics.molecular_behavior', 'MolecularImplementationContract'),
+    'MolecularInputBinding': ('biocompiler.semantics.molecular_behavior', 'MolecularInputBinding'),
+    'MolecularParameter': ('biocompiler.semantics.molecular_behavior', 'MolecularParameter'),
+    'MolecularResponseBinding': ('biocompiler.semantics.molecular_behavior', 'MolecularResponseBinding'),
+    'MolecularBehaviorDiagnostic': ('biocompiler.verification.molecular_behavior', 'MolecularBehaviorDiagnostic'),
+    'MolecularBehaviorResult': ('biocompiler.verification.molecular_behavior', 'MolecularBehaviorResult'),
+    'check_molecular_implementation': ('biocompiler.verification.molecular_behavior', 'check_molecular_implementation'),
+    'molecular_behavior_dependencies': ('biocompiler.verification.molecular_behavior', 'molecular_behavior_dependencies'),
+    'AdversarialConfig': ('biocompiler.verification.exploration', 'AdversarialConfig'),
+    'BooleanContactConfig': ('biocompiler.verification.exploration', 'BooleanContactConfig'),
+    'BooleanInputConfig': ('biocompiler.verification.exploration', 'BooleanInputConfig'),
+    'BooleanInputExplorationReport': ('biocompiler.verification.exploration', 'BooleanInputExplorationReport'),
+    'BooleanObservation': ('biocompiler.verification.exploration', 'BooleanObservation'),
+    'ExplorationReport': ('biocompiler.verification.exploration', 'ExplorationReport'),
+    'FailureSignature': ('biocompiler.verification.exploration', 'FailureSignature'),
+    'HistoryCase': ('biocompiler.verification.exploration', 'HistoryCase'),
+    'ReductionResult': ('biocompiler.verification.exploration', 'ReductionResult'),
+    'enumerate_boolean_histories': ('biocompiler.verification.exploration', 'enumerate_boolean_histories'),
+    'explore_boolean_histories': ('biocompiler.verification.exploration', 'explore_boolean_histories'),
+    'generate_adversarial_histories': ('biocompiler.verification.exploration', 'generate_adversarial_histories'),
+    'reduce_counterexample': ('biocompiler.verification.exploration', 'reduce_counterexample'),
+    'BuildManifest': ('biocompiler.artifacts.manifest', 'BuildManifest'),
+    'ReferenceBuildRequest': ('biocompiler.artifacts.manifest', 'ReferenceBuildRequest'),
+    'RunMetadata': ('biocompiler.artifacts.manifest', 'RunMetadata'),
+    'ReferencePackage': ('biocompiler.compiler.reference', 'ReferencePackage'),
+    'build_reference_package': ('biocompiler.compiler.reference', 'build_reference_package'),
+    'prepare_reference_build': ('biocompiler.compiler.reference', 'prepare_reference_build'),
+    'publish_reference_package': ('biocompiler.compiler.reference', 'publish_reference_package'),
+    'verify_reference_package': ('biocompiler.compiler.reference', 'verify_reference_package'),
+    'SequenceExport': ('biocompiler.artifacts.sequences', 'SequenceExport'),
+    'export_reference_sequence': ('biocompiler.artifacts.sequences', 'export_reference_sequence'),
+    'verify_sequence_export': ('biocompiler.artifacts.sequences', 'verify_sequence_export'),
+    'emit_dna_cds': ('biocompiler.backends.dna', 'emit_dna_cds'),
+    'emit_rna_cds': ('biocompiler.backends.rna', 'emit_rna_cds'),
+    'MolecularBuild': ('biocompiler.compiler.molecular', 'MolecularBuild'),
+    'run_molecular_pipeline': ('biocompiler.compiler.molecular', 'run_molecular_pipeline'),
+    'EncodingChange': ('biocompiler.ir.molecular', 'EncodingChange'),
+    'EncodingEvidencePolicy': ('biocompiler.ir.molecular', 'EncodingEvidencePolicy'),
+    'EncodingPolicy': ('biocompiler.ir.molecular', 'EncodingPolicy'),
+    'FeatureStatus': ('biocompiler.ir.molecular', 'FeatureStatus'),
+    'MolecularArtifact': ('biocompiler.ir.molecular', 'MolecularArtifact'),
+    'MolecularRecord': ('biocompiler.ir.molecular', 'MolecularRecord'),
+    'TranslationPolicy': ('biocompiler.ir.molecular', 'TranslationPolicy'),
+    'canonical_sequence_sha256': ('biocompiler.ir.molecular', 'canonical_sequence_sha256'),
+    'MolecularCheck': ('biocompiler.verification.molecular', 'MolecularCheck'),
+    'MolecularDiagnostic': ('biocompiler.verification.molecular', 'MolecularDiagnostic'),
+    'MolecularResult': ('biocompiler.verification.molecular', 'MolecularResult'),
+    'check_molecular': ('biocompiler.verification.molecular', 'check_molecular'),
+    'ConstructBuild': ('biocompiler.compiler.construct', 'ConstructBuild'),
+    'run_construct_pipeline': ('biocompiler.compiler.construct', 'run_construct_pipeline'),
+    'ComponentPlacement': ('biocompiler.ir.construct', 'ComponentPlacement'),
+    'ConstructCandidate': ('biocompiler.ir.construct', 'ConstructCandidate'),
+    'ConstructDependency': ('biocompiler.ir.construct', 'ConstructDependency'),
+    'ConstructFeature': ('biocompiler.ir.construct', 'ConstructFeature'),
+    'ConstructJunction': ('biocompiler.ir.construct', 'ConstructJunction'),
+    'ConstructMolecule': ('biocompiler.ir.construct', 'ConstructMolecule'),
+    'ConstructReference': ('biocompiler.ir.construct', 'ConstructReference'),
+    'ConstructRequest': ('biocompiler.ir.construct', 'ConstructRequest'),
+    'LayoutEvidencePolicy': ('biocompiler.ir.construct', 'LayoutEvidencePolicy'),
+    'RegulatoryRelationship': ('biocompiler.ir.construct', 'RegulatoryRelationship'),
+    'SequenceRange': ('biocompiler.ir.construct', 'SequenceRange'),
+    'generate_construct': ('biocompiler.synthesis.construct', 'generate_construct'),
+    'prepare_reference_construct': ('biocompiler.synthesis.construct', 'prepare_reference_construct'),
+    'ConstructResult': ('biocompiler.verification.construct', 'ConstructResult'),
+    'check_construct': ('biocompiler.verification.construct', 'check_construct'),
+    'ComponentBuild': ('biocompiler.compiler.components', 'ComponentBuild'),
+    'check_component_assembly': ('biocompiler.compiler.components', 'check_component_assembly'),
+    'check_component_behavior': ('biocompiler.compiler.components', 'check_component_behavior'),
+    'run_component_pipeline': ('biocompiler.compiler.components', 'run_component_pipeline'),
+    'ComponentAssembly': ('biocompiler.ir.component_assembly', 'ComponentAssembly'),
+    'ComponentRecord': ('biocompiler.ir.component_contracts', 'ComponentRecord'),
+    'SyntheticOperatorModel': ('biocompiler.ir.component_contracts', 'SyntheticOperatorModel'),
+    'DependencyRequirement': ('biocompiler.ir.component_contracts', 'DependencyRequirement'),
+    'ParameterProvenance': ('biocompiler.ir.component_contracts', 'ParameterProvenance'),
+    'PinnedIdentity': ('biocompiler.ir.component_contracts', 'PinnedIdentity'),
+    'ProvidedCapability': ('biocompiler.ir.component_contracts', 'ProvidedCapability'),
+    'ResourceReservation': ('biocompiler.ir.component_contracts', 'ResourceReservation'),
+    'SequenceReferenceMetadata': ('biocompiler.ir.component_contracts', 'SequenceReferenceMetadata'),
+    'CompositionInstance': ('biocompiler.ir.composition', 'CompositionInstance'),
+    'CompositionRequest': ('biocompiler.ir.composition', 'CompositionRequest'),
+    'Connection': ('biocompiler.ir.composition', 'Connection'),
+    'DependencyBinding': ('biocompiler.ir.composition', 'DependencyBinding'),
+    'LifecycleInterval': ('biocompiler.ir.composition', 'LifecycleInterval'),
+    'Provider': ('biocompiler.ir.composition', 'Provider'),
+    'ResourceBinding': ('biocompiler.ir.composition', 'ResourceBinding'),
+    'ResourcePool': ('biocompiler.ir.composition', 'ResourcePool'),
+    'ComponentRegistry': ('biocompiler.registry.components', 'ComponentRegistry'),
+    'RegistryLock': ('biocompiler.registry.components', 'RegistryLock'),
+    'SelectionRequest': ('biocompiler.registry.components', 'SelectionRequest'),
+    'ReferenceSelection': ('biocompiler.registry.reference_components', 'ReferenceSelection'),
+    'adapt_reference_component': ('biocompiler.registry.reference_components', 'adapt_reference_component'),
+    'ComponentOperatingDomain': ('biocompiler.semantics.component_contracts', 'OperatingDomain'),
+    'PortContract': ('biocompiler.semantics.component_contracts', 'PortContract'),
+    'ValueDomain': ('biocompiler.semantics.component_contracts', 'ValueDomain'),
+    'CompositionResult': ('biocompiler.verification.components', 'CompositionResult'),
+    'check_composition': ('biocompiler.verification.components', 'check_composition'),
+    'lower_to_behavior': ('biocompiler.compiler.behavior', 'lower_to_behavior'),
+    'verify_lowering': ('biocompiler.compiler.behavior', 'verify_lowering'),
+    'CandidateRequest': ('biocompiler.ir.candidate', 'CandidateRequest'),
+    'CandidateConstraints': ('biocompiler.ir.candidate', 'CandidateConstraints'),
+    'CandidateRequirements': ('biocompiler.ir.candidate', 'CandidateRequirements'),
+    'CandidateObligation': ('biocompiler.ir.candidate', 'CandidateObligation'),
+    'MolecularLibrary': ('biocompiler.ir.candidate', 'MolecularLibrary'),
+    'MolecularPart': ('biocompiler.ir.candidate', 'MolecularPart'),
+    'ProductBinding': ('biocompiler.ir.candidate', 'ProductBinding'),
+    'RNAArchitecture': ('biocompiler.ir.candidate', 'RNAArchitecture'),
+    'CandidateBuildRecord': ('biocompiler.ir.candidate_build', 'CandidateBuildRecord'),
+    'CandidateCompilation': ('biocompiler.compiler.candidate', 'CandidateCompilation'),
+    'compile_candidate': ('biocompiler.compiler.candidate', 'compile_candidate'),
+    'verify_candidate_build': ('biocompiler.compiler.candidate', 'verify_candidate_build'),
+    'export_candidate_fasta': ('biocompiler.compiler.candidate', 'export_candidate_fasta'),
+    'ImplementationRequirements': ('biocompiler.ir.implementation_requirements', 'ImplementationRequirements'),
+    'ImplementationObligation': ('biocompiler.ir.implementation_requirements', 'ImplementationObligation'),
+    'ImplementationDiagnostic': ('biocompiler.ir.implementation_requirements', 'ImplementationDiagnostic'),
+    'ProductRequirement': ('biocompiler.ir.implementation_requirements', 'ProductRequirement'),
+    'analyze_implementation_requirements': ('biocompiler.compiler.implementation_requirements', 'analyze_implementation_requirements'),
+    'SequenceAuthority': ('biocompiler.ir.implementation', 'SequenceAuthority'),
+    'CodingSegment': ('biocompiler.ir.implementation', 'CodingSegment'),
+    'CodingJunction': ('biocompiler.ir.implementation', 'CodingJunction'),
+    'ImplementationDependencyBinding': ('biocompiler.ir.implementation', 'ImplementationDependencyBinding'),
+    'SecretedRNAArchitecture': ('biocompiler.ir.implementation', 'SecretedRNAArchitecture'),
+    'ImplementationLibrary': ('biocompiler.ir.implementation', 'ImplementationLibrary'),
+    'ImplementationConstraints': ('biocompiler.ir.implementation', 'ImplementationConstraints'),
+    'ImplementationRequest': ('biocompiler.ir.implementation', 'ImplementationRequest'),
+    'ImplementationRejection': ('biocompiler.ir.implementation', 'ImplementationRejection'),
+    'ImplementationAlternative': ('biocompiler.ir.implementation', 'ImplementationAlternative'),
+    'ImplementationSelection': ('biocompiler.ir.implementation', 'ImplementationSelection'),
+    'ImplementationRole': ('biocompiler.ir.implementation', 'ImplementationRole'),
+    'ImplementationEdge': ('biocompiler.ir.implementation', 'ImplementationEdge'),
+    'ImplementationDependency': ('biocompiler.ir.implementation', 'ImplementationDependency'),
+    'ImplementationPlan': ('biocompiler.ir.implementation', 'ImplementationPlan'),
+    'ImplementationPlacement': ('biocompiler.ir.implementation', 'ImplementationPlacement'),
+    'ImplementationConstruct': ('biocompiler.ir.implementation', 'ImplementationConstruct'),
+    'ImplementationBuildRecord': ('biocompiler.ir.implementation_build', 'ImplementationBuildRecord'),
+    'ImplementationCompilation': ('biocompiler.compiler.implementation', 'ImplementationCompilation'),
+    'compile_implementation': ('biocompiler.compiler.implementation', 'compile_implementation'),
+    'verify_implementation_requirements': ('biocompiler.compiler.implementation', 'verify_implementation_requirements'),
+    'verify_implementation_build': ('biocompiler.compiler.implementation', 'verify_implementation_build'),
+    'export_implementation_fasta': ('biocompiler.compiler.implementation', 'export_implementation_fasta'),
+    'ImplementationVerificationResult': ('biocompiler.verification.implementation', 'ImplementationVerificationResult'),
+    'check_implementation_requirements': ('biocompiler.verification.implementation', 'check_implementation_requirements'),
+    'check_implementation_selection': ('biocompiler.verification.implementation', 'check_implementation_selection'),
+    'check_implementation_plan': ('biocompiler.verification.implementation', 'check_implementation_plan'),
+    'check_implementation_construct': ('biocompiler.verification.implementation', 'check_implementation_construct'),
+    'check_implementation': ('biocompiler.verification.implementation', 'check_implementation'),
+    'implementation_dependencies': ('biocompiler.verification.implementation', 'implementation_dependencies'),
+    'BindingMetadata': ('biocompiler.compiler.request', 'BindingMetadata'),
+    'BuildRequest': ('biocompiler.compiler.request', 'BuildRequest'),
+    'ElaborationProvenance': ('biocompiler.compiler.request', 'ElaborationProvenance'),
+    'RealizationRequest': ('biocompiler.compiler.request', 'RealizationRequest'),
+    'SyntheticBuild': ('biocompiler.compiler.synthetic', 'SyntheticBuild'),
+    'run_synthetic_pipeline': ('biocompiler.compiler.synthetic', 'run_synthetic_pipeline'),
+    'SyntheticBuildRequest': ('biocompiler.artifacts.synthetic_build', 'SyntheticBuildRequest'),
+    'SyntheticHistory': ('biocompiler.artifacts.synthetic_build', 'SyntheticHistory'),
+    'SyntheticBuildManifest': ('biocompiler.artifacts.synthetic_build', 'SyntheticBuildManifest'),
+    'SyntheticPackage': ('biocompiler.compiler.synthetic_build', 'SyntheticPackage'),
+    'build_synthetic_package': ('biocompiler.compiler.synthetic_build', 'build_synthetic_package'),
+    'verify_synthetic_package': ('biocompiler.compiler.synthetic_build', 'verify_synthetic_package'),
+    'publish_synthetic_package': ('biocompiler.compiler.synthetic_build', 'publish_synthetic_package'),
+    'SequenceFragment': ('biocompiler.ir.molecular_design', 'SequenceFragment'),
+    'FragmentPlacement': ('biocompiler.ir.molecular_design', 'FragmentPlacement'),
+    'MolecularDesignRequest': ('biocompiler.ir.molecular_design', 'MolecularDesignRequest'),
+    'MolecularDesignConstruct': ('biocompiler.ir.molecular_design', 'MolecularDesignConstruct'),
+    'MolecularDesignArtifact': ('biocompiler.ir.molecular_design', 'MolecularDesignArtifact'),
+    'MolecularDesignBuild': ('biocompiler.compiler.molecular_design', 'MolecularDesignBuild'),
+    'run_molecular_design_pipeline': ('biocompiler.compiler.molecular_design', 'run_molecular_design_pipeline'),
+    'MolecularDesignResult': ('biocompiler.verification.molecular_design', 'MolecularDesignResult'),
+    'check_molecular_design_request': ('biocompiler.verification.molecular_design', 'check_molecular_design_request'),
+    'check_molecular_design_construct': ('biocompiler.verification.molecular_design', 'check_molecular_design_construct'),
+    'check_molecular_design': ('biocompiler.verification.molecular_design', 'check_molecular_design'),
+    'MolecularDesignBuildManifest': ('biocompiler.artifacts.molecular_design', 'MolecularDesignBuildManifest'),
+    'MolecularDesignHandoff': ('biocompiler.artifacts.molecular_design', 'MolecularDesignHandoff'),
+    'MolecularDesignPackage': ('biocompiler.compiler.molecular_design_build', 'MolecularDesignPackage'),
+    'build_molecular_design_package': ('biocompiler.compiler.molecular_design_build', 'build_molecular_design_package'),
+    'verify_molecular_design_package': ('biocompiler.compiler.molecular_design_build', 'verify_molecular_design_package'),
+    'publish_molecular_design_package': ('biocompiler.compiler.molecular_design_build', 'publish_molecular_design_package'),
+    'TEMPORAL_PROFILE_VERSION': ('biocompiler.registry.synthetic', 'TEMPORAL_PROFILE_VERSION'),
+    'SyntheticCandidate': ('biocompiler.synthesis.synthetic', 'SyntheticCandidate'),
+    'SyntheticGeneratorConfig': ('biocompiler.synthesis.synthetic', 'SyntheticGeneratorConfig'),
+    'generate_synthetic': ('biocompiler.synthesis.synthetic', 'generate_synthetic'),
+    'check_synthetic_candidate': ('biocompiler.synthesis.synthetic', 'check_synthetic_candidate'),
+    'SyntheticAlternative': ('biocompiler.synthesis.selection', 'SyntheticAlternative'),
+    'SyntheticSelectionResult': ('biocompiler.synthesis.selection', 'SyntheticSelectionResult'),
+    'select_synthetic': ('biocompiler.synthesis.selection', 'select_synthetic'),
+    'reconstruct_component_mechanism': ('biocompiler.models.components', 'reconstruct_component_mechanism'),
+    'SyntheticVerificationRequest': ('biocompiler.compiler.verification_workflow', 'SyntheticVerificationRequest'),
+    'SyntheticVerificationRecord': ('biocompiler.compiler.verification_workflow', 'SyntheticVerificationRecord'),
+    'run_synthetic_verification': ('biocompiler.compiler.verification_workflow', 'run_synthetic_verification'),
+    'replay_synthetic_verification': ('biocompiler.compiler.verification_workflow', 'replay_synthetic_verification'),
+    'BuildProfile': ('biocompiler.compiler.workflow', 'BuildProfile'),
+    'DesignChoice': ('biocompiler.compiler.workflow', 'DesignChoice'),
+    'RealizationPlan': ('biocompiler.compiler.workflow', 'RealizationPlan'),
+    'compile': ('biocompiler.compiler.workflow', 'compile'),
+    'plan': ('biocompiler.compiler.workflow', 'plan'),
+    'BehaviorError': ('biocompiler.errors', 'BehaviorError'),
+    'BiocompilerError': ('biocompiler.errors', 'BiocompilerError'),
+    'EvaluationError': ('biocompiler.errors', 'EvaluationError'),
+    'LoweringError': ('biocompiler.errors', 'LoweringError'),
+    'LoweringVerificationError': ('biocompiler.errors', 'LoweringVerificationError'),
+    'NonConvergenceError': ('biocompiler.errors', 'NonConvergenceError'),
+    'StateConflictError': ('biocompiler.errors', 'StateConflictError'),
+    'UnsupportedBehaviorError': ('biocompiler.errors', 'UnsupportedBehaviorError'),
+    'CompilationUnavailableError': ('biocompiler.errors', 'CompilationUnavailableError'),
+    'DefinitionError': ('biocompiler.errors', 'DefinitionError'),
+    'ScopeError': ('biocompiler.errors', 'ScopeError'),
+    'SerializationError': ('biocompiler.errors', 'SerializationError'),
+    'TypeMismatchError': ('biocompiler.errors', 'TypeMismatchError'),
+    'Action': ('biocompiler.frontend.api', 'Action'),
+    'CellProgram': ('biocompiler.frontend.api', 'CellProgram'),
+    'Channel': ('biocompiler.frontend.api', 'Channel'),
+    'ContactScope': ('biocompiler.frontend.api', 'ContactScope'),
+    'Controller': ('biocompiler.frontend.api', 'Controller'),
+    'EnvironmentScope': ('biocompiler.frontend.api', 'EnvironmentScope'),
+    'ExternalScope': ('biocompiler.frontend.api', 'ExternalScope'),
+    'Goal': ('biocompiler.frontend.api', 'Goal'),
+    'InternalScope': ('biocompiler.frontend.api', 'InternalScope'),
+    'Memory': ('biocompiler.frontend.api', 'Memory'),
+    'Rule': ('biocompiler.frontend.api', 'Rule'),
+    'RuleBuilder': ('biocompiler.frontend.api', 'RuleBuilder'),
+    'Scope': ('biocompiler.frontend.api', 'Scope'),
+    'Secretion': ('biocompiler.frontend.api', 'Secretion'),
+    'State': ('biocompiler.frontend.api', 'State'),
+    'Therapy': ('biocompiler.frontend.api', 'Therapy'),
+    'Condition': ('biocompiler.frontend.expressions', 'Condition'),
+    'ControlPort': ('biocompiler.frontend.expressions', 'ControlPort'),
+    'Event': ('biocompiler.frontend.expressions', 'Event'),
+    'Expr': ('biocompiler.frontend.expressions', 'Expr'),
+    'Parameter': ('biocompiler.frontend.expressions', 'Parameter'),
+    'Quantity': ('biocompiler.frontend.expressions', 'Quantity'),
+    'Signal': ('biocompiler.frontend.expressions', 'Signal'),
+    'SpatialSignal': ('biocompiler.frontend.expressions', 'SpatialSignal'),
+    'at_least': ('biocompiler.frontend.expressions', 'at_least'),
+    'Signature': ('biocompiler.frontend.signatures', 'Signature'),
+    'signature': ('biocompiler.frontend.signatures', 'signature'),
+    'IntentNode': ('biocompiler.ir.intent', 'IntentNode'),
+    'IntentProgram': ('biocompiler.ir.intent', 'IntentProgram'),
+    'SourceLocation': ('biocompiler.ir.intent', 'SourceLocation'),
+    'BehaviorNode': ('biocompiler.ir.behavior', 'BehaviorNode'),
+    'BehaviorProgram': ('biocompiler.ir.behavior', 'BehaviorProgram'),
+    'MechanismNode': ('biocompiler.ir.mechanism', 'MechanismNode'),
+    'MechanismProgram': ('biocompiler.ir.mechanism', 'MechanismProgram'),
+    'ModelInputFrame': ('biocompiler.models.synthetic', 'ModelInputFrame'),
+    'ModelTrace': ('biocompiler.models.synthetic', 'ModelTrace'),
+    'run_model': ('biocompiler.models.synthetic', 'run_model'),
+    'BehaviorRequirement': ('biocompiler.semantics.contracts', 'BehaviorRequirement'),
+    'LoweringReport': ('biocompiler.semantics.contracts', 'LoweringReport'),
+    'PreservationCheck': ('biocompiler.semantics.contracts', 'PreservationCheck'),
+    'ActionRequest': ('biocompiler.semantics.evaluator', 'ActionRequest'),
+    'EvaluationFrame': ('biocompiler.semantics.evaluator', 'EvaluationFrame'),
+    'EvaluationResult': ('biocompiler.semantics.evaluator', 'EvaluationResult'),
+    'EventOccurrence': ('biocompiler.semantics.evaluator', 'EventOccurrence'),
+    'InputFrame': ('biocompiler.semantics.evaluator', 'InputFrame'),
+    'SignalSample': ('biocompiler.semantics.evaluator', 'SignalSample'),
+    'evaluate': ('biocompiler.semantics.evaluator', 'evaluate'),
+    'HumanTargetContext': ('biocompiler.semantics.context', 'HumanTargetContext'),
+    'PayloadFormat': ('biocompiler.semantics.context', 'PayloadFormat'),
+    'TargetContext': ('biocompiler.semantics.context', 'TargetContext'),
+    'HumanHostDependency': ('biocompiler.semantics.human_target', 'HumanHostDependency'),
+    'HumanOperatingCondition': ('biocompiler.semantics.human_target', 'HumanOperatingCondition'),
+    'HumanTargetContract': ('biocompiler.semantics.human_target', 'HumanTargetContract'),
+    'TargetClaim': ('biocompiler.semantics.human_target', 'TargetClaim'),
+    'TargetEvidence': ('biocompiler.semantics.human_target', 'TargetEvidence'),
+    'BehaviorContract': ('biocompiler.semantics.realization', 'BehaviorContract'),
+    'InputDomain': ('biocompiler.semantics.realization', 'InputDomain'),
+    'Observable': ('biocompiler.semantics.realization', 'Observable'),
+    'OperatingDomain': ('biocompiler.semantics.realization', 'OperatingDomain'),
+    'ResponseRequirement': ('biocompiler.semantics.realization', 'ResponseRequirement'),
+    'Concentration': ('biocompiler.semantics.types', 'Concentration'),
+    'Curve': ('biocompiler.semantics.types', 'Curve'),
+    'Duration': ('biocompiler.semantics.types', 'Duration'),
+    'Interval': ('biocompiler.semantics.types', 'Interval'),
+    'Level': ('biocompiler.semantics.types', 'Level'),
+    'ProductionRate': ('biocompiler.semantics.types', 'ProductionRate'),
+    'ScalarLiteral': ('biocompiler.semantics.types', 'ScalarLiteral'),
+    'SurfaceDensity': ('biocompiler.semantics.types', 'SurfaceDensity'),
+    'TypeSpec': ('biocompiler.semantics.types', 'TypeSpec'),
+    'CheckDiagnostic': ('biocompiler.verification.evidence', 'CheckDiagnostic'),
+    'CheckOutcome': ('biocompiler.verification.evidence', 'CheckOutcome'),
+    'CheckResult': ('biocompiler.verification.evidence', 'CheckResult'),
+    'Counterexample': ('biocompiler.verification.evidence', 'Counterexample'),
+    'DependencySnapshot': ('biocompiler.verification.evidence', 'DependencySnapshot'),
+    'EvidenceKind': ('biocompiler.verification.evidence', 'EvidenceKind'),
+    'FreshnessReport': ('biocompiler.verification.evidence', 'FreshnessReport'),
+    'RequirementCoverage': ('biocompiler.verification.evidence', 'RequirementCoverage'),
+    'InputBinding': ('biocompiler.verification.realization', 'InputBinding'),
+    'ObservationMap': ('biocompiler.verification.realization', 'ObservationMap'),
+    'OutputBinding': ('biocompiler.verification.realization', 'OutputBinding'),
+    'check_realization': ('biocompiler.verification.realization', 'check_realization'),
+    'realization_dependencies': ('biocompiler.verification.realization', 'realization_dependencies'),
+}
 
-from biocompiler.architecture_backend import ArchitectureCoreError
+_legacy_lock = _RLock()
+_legacy_loaded = False
 
-from biocompiler.ir.executable_payload import (
-    PayloadCompilationRequest, PayloadSelectionConstraints, PayloadCircuitBinding,
-    PayloadAlternative, PayloadBuild,
-)
-from biocompiler.ir.payload_contracts import (
-    PayloadTemplate, PayloadPortBinding, PayloadCapabilityBinding,
-    PayloadComponentContract, PayloadContractLibrary,
-)
-from biocompiler.semantics.payload_requirements import (
-    PayloadRequirements, PayloadOutputRequirement, PayloadDiagnostic as PayloadSourceDiagnostic,
-    extract_payload_requirements, derive_boolean_response, validate_boolean_mapping,
-)
-from biocompiler.compiler.executable_payload import compile_payload, export_payload_fasta
-from biocompiler.verification.executable_payload import (
-    PayloadVerification, check_payload_build, verify_payload_build,
-)
 
-from biocompiler.artifacts.circuit_review import CircuitReviewAuthority, CircuitReviewManifest
-from biocompiler.artifacts.circuit_review_bundle import (
-    CircuitReviewBundle, create_circuit_review_bundle, publish_circuit_review_bundle,
-)
-from biocompiler.verification.circuit_review import (
-    inspect_circuit_review_bundle, verify_circuit_review_bundle,
-)
+def _load_legacy_exports() -> None:
+    global _legacy_loaded
+    with _legacy_lock:
+        if not _legacy_loaded:
+            # Keep original import order and real module objects; do not wrap
+            # functions/classes or replace them with compatibility proxies.
+            for public, (module, attribute) in _LEGACY_EXPORTS.items():
+                globals()[public] = getattr(_import_module(module), attribute)
+            _legacy_loaded = True
 
-from biocompiler.ir.circuit_bindings import CircuitBindingRequest, CircuitEntityBinding
-from biocompiler.verification.circuit_bindings import (
-    CircuitBindingAssessment, check_circuit_bindings, verify_circuit_binding_assessment,
-)
-from biocompiler.ir.circuit_evidence import (
-    CircuitEvidenceObservationBinding, CircuitEvidenceSource, CircuitEvidenceRequest,
-    CircuitEvidenceSourceReceipt, CircuitEvidenceReceipt,
-)
-from biocompiler.verification.circuit_evidence import (
-    CircuitEvidenceDependencyStatus, CircuitEvidenceAssessment,
-    capture_circuit_evidence, check_circuit_evidence, verify_circuit_evidence_assessment,
-)
-from biocompiler.ir.circuit_sources import (
-    SourceDocument, SourceGap, CircuitSourceCase, SourceReview, CircuitSourceInventory,
-)
-from biocompiler.verification.circuit_sources import (
-    CircuitSourcesAssessment, check_circuit_sources, verify_circuit_sources,
-    inspect_circuit_source_readiness,
-)
-from biocompiler.artifacts.circuit_inspection import (
-    inspect_circuit_construction, diff_circuit_constructions,
-)
 
-from biocompiler.ir.circuit_construction import (
-    RootSource, ValueRef, ValueSelection, ProductPort, SliceOperation, ConcatenateOperation, OrientationOperation, TranscriptionOperation, ProcessingProduct, RNACleavageOperation, RNASplicingOperation, ProteinCleavageOperation, ProteinSplicingOperation, CircularizationOperation, BaseEditingOperation, TranslationOperation, TranslationProduct, MultiORFTranslationOperation, TranslationBranch, ConditionalTranslationOperation, PeptideProduct, RibosomalSkippingOperation, TransformStep, OutputMember, RoleDeclaration, MemberRequirement, ComplexMemberConstituent, ComplexMemberPlan, AmountDeclaration, CircuitConstructionRequest
-)
-from biocompiler.ir.circuit_recoding import (
-    CanonicalBaseEdit, ChemicalBaseEdit, CodonRecoding,
-    TranslationPolicy as CircuitTranslationPolicy,
-)
-from biocompiler.ir.circuit_transitions import (
-    ChemistryDisposition, ChemistryTransition, FeatureDisposition, FeatureTransition,
-)
-from biocompiler.ir.circuit_payloads import RequiredPayloadRegion, PayloadStructureContract
-from biocompiler.artifacts.circuit_construction import (
-    DerivedSegment, ConsumedSegment, ConstructedValue, ConstructionCandidate,
-)
-from biocompiler.artifacts.circuit_construction_build import CircuitConstructionBuild
-from biocompiler.compiler.circuit_construction import (
-    build_circuit_construction, verify_circuit_construction, verified_circuit_molecules,
-)
-from biocompiler.verification.circuit_construction import (
-    CircuitConstructionAssessment, check_circuit_construction,
-    verify_circuit_construction_assessment,
-)
+def __getattr__(name: str):
+    if name not in _LEGACY_EXPORTS:
+        raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+    _load_legacy_exports()
+    return globals()[name]
 
-from biocompiler.ir.molecule_records import DeclarationProvenance
-from biocompiler.semantics.molecule_coordinates import CoordinateSpace, IndexSpan, CoordinatePath
-from biocompiler.ir.molecule_chemistry import (
-    ChemicalIdentity, ChemistryClaim, BaseModification, TailLength,
-    TailDeclaration, MoleculeChemistry,
-)
-from biocompiler.ir.circuit_molecules import (
-    AssemblyOrigin, MoleculeFeature, CircuitMolecule, ComplexConstituent,
-    MolecularComplex, MoleculeRoleInstance, FormCoordinateMapping, CircuitMoleculeSet,
-)
-from biocompiler.artifacts.circuit_molecules import ExperimentalAmount, CircuitMoleculeRecord
-from biocompiler.ir.circuit_logic import (
-    BooleanSpec, CircuitSignal, LogicValue, all_equal, nand, nor, parity, xnor,
-)
-from biocompiler.ir.circuit_observations import (
-    CircuitObservation, CircuitProduct, NumericInterval, ObservationEncoding,
-    ObservationEntity, ObservationSample, ObservationScope, ObservationWindow,
-    ProductKind, QuantityKind, classify_observation,
-)
-from biocompiler.ir.circuit_intent import (
-    CircuitBehavior, CircuitBehaviorExpectation, CircuitInputBinding, CircuitLifecycle,
-    CircuitProviderRequirement, CircuitReferenceLock, CircuitRequest,
-    CircuitRequirement,
-)
-from biocompiler.frontend.circuits import CircuitBuilder
-from biocompiler.verification.circuit_intent import (
-    CircuitIntentAssessment, check_circuit_intent, verify_circuit_intent,
-)
-from biocompiler.ir.circuit_profile import (
-    CircuitProfileRequest,
-    HumanExperimentContext,
-    ImmuneLineage,
-    ImmuneRecipientIdentity,
-)
-from biocompiler.verification.circuit_profile import (
-    CircuitProfileAssessment,
-    check_circuit_profile,
-    verify_circuit_profile,
-)
 
-from biocompiler.semantics.admission import AdmissionAssessment, AdmissionRequest
-from biocompiler.verification.admission import assess_admission, verify_admission
+def __dir__() -> list[str]:
+    return sorted(set(globals()) | set(_LEGACY_EXPORTS))
 
-from biocompiler.compiler.acceptance import HumanAcceptanceRequest
-from biocompiler.semantics.acceptance import (
-    AcceptanceSample,
-    ExternalShutdownSpec,
-    HumanAcceptanceContract,
-    InputAvailabilitySpec,
-)
-from biocompiler.verification.acceptance import (
-    HumanAcceptanceResult,
-    check_human_acceptance,
-)
-
-from biocompiler.compiler.deployment import HumanDeploymentRequest
-from biocompiler.semantics.deployment import (
-    CoPayloadRequirement,
-    DeliveryPlatformSpec,
-    DeploymentContract,
-    ExposureAssumption,
-    ExpressionTiming,
-)
-from biocompiler.verification.deployment import DeploymentAssessment, check_deployment
-
-from biocompiler.compiler.human_behavior import HumanBehaviorRequest
-from biocompiler.semantics.human_behavior import (
-    ConditionalSecretionContract,
-    MeasurementSpec,
-    PredicateRefinement,
-    SecretionSample,
-)
-from biocompiler.verification.human_behavior import (
-    SecretionTraceResult,
-    check_secretion_trace,
-)
-
-from biocompiler.ir.payload import (
-    PayloadFeature,
-    PayloadMolecule,
-    PayloadReference,
-    PayloadRegion,
-    PayloadReview,
-    PayloadSource,
-)
-from biocompiler.verification.payload import (
-    PayloadDiagnostic,
-    PayloadResult,
-    check_payload,
-    payload_dependencies,
-)
-from biocompiler.semantics.molecular_behavior import (
-    MolecularEvidence,
-    MolecularImplementationContract,
-    MolecularInputBinding,
-    MolecularParameter,
-    MolecularResponseBinding,
-)
-from biocompiler.verification.molecular_behavior import (
-    MolecularBehaviorDiagnostic,
-    MolecularBehaviorResult,
-    check_molecular_implementation,
-    molecular_behavior_dependencies,
-)
-
-from biocompiler.verification.exploration import (
-    AdversarialConfig,
-    BooleanContactConfig,
-    BooleanInputConfig,
-    BooleanInputExplorationReport,
-    BooleanObservation,
-    ExplorationReport,
-    FailureSignature,
-    HistoryCase,
-    ReductionResult,
-    enumerate_boolean_histories,
-    explore_boolean_histories,
-    generate_adversarial_histories,
-    reduce_counterexample,
-)
-from biocompiler.artifacts.manifest import (
-    BuildManifest,
-    ReferenceBuildRequest,
-    RunMetadata,
-)
-from biocompiler.compiler.reference import (
-    ReferencePackage,
-    build_reference_package,
-    prepare_reference_build,
-    publish_reference_package,
-    verify_reference_package,
-)
-from biocompiler.artifacts.sequences import (
-    SequenceExport,
-    export_reference_sequence,
-    verify_sequence_export,
-)
-from biocompiler.backends.dna import emit_dna_cds
-from biocompiler.backends.rna import emit_rna_cds
-from biocompiler.compiler.molecular import MolecularBuild, run_molecular_pipeline
-from biocompiler.ir.molecular import (
-    EncodingChange,
-    EncodingEvidencePolicy,
-    EncodingPolicy,
-    FeatureStatus,
-    MolecularArtifact,
-    MolecularRecord,
-    TranslationPolicy,
-    canonical_sequence_sha256,
-)
-from biocompiler.verification.molecular import (
-    MolecularCheck,
-    MolecularDiagnostic,
-    MolecularResult,
-    check_molecular,
-)
-from biocompiler.compiler.construct import ConstructBuild, run_construct_pipeline
-from biocompiler.ir.construct import (
-    ComponentPlacement,
-    ConstructCandidate,
-    ConstructDependency,
-    ConstructFeature,
-    ConstructJunction,
-    ConstructMolecule,
-    ConstructReference,
-    ConstructRequest,
-    LayoutEvidencePolicy,
-    RegulatoryRelationship,
-    SequenceRange,
-)
-from biocompiler.synthesis.construct import (
-    generate_construct,
-    prepare_reference_construct,
-)
-from biocompiler.verification.construct import ConstructResult, check_construct
-
-from biocompiler.compiler.components import (
-    ComponentBuild,
-    check_component_assembly,
-    check_component_behavior,
-    run_component_pipeline,
-)
-from biocompiler.ir.component_assembly import ComponentAssembly
-from biocompiler.ir.component_contracts import (
-    ComponentRecord,
-    SyntheticOperatorModel,
-    DependencyRequirement,
-    ParameterProvenance,
-    PinnedIdentity,
-    ProvidedCapability,
-    ResourceReservation,
-    SequenceReferenceMetadata,
-)
-from biocompiler.ir.composition import (
-    CompositionInstance,
-    CompositionRequest,
-    Connection,
-    DependencyBinding,
-    LifecycleInterval,
-    Provider,
-    ResourceBinding,
-    ResourcePool,
-)
-from biocompiler.registry.components import (
-    ComponentRegistry,
-    RegistryLock,
-    SelectionRequest,
-)
-from biocompiler.registry.reference_components import (
-    ReferenceSelection,
-    adapt_reference_component,
-)
-from biocompiler.semantics.component_contracts import (
-    OperatingDomain as ComponentOperatingDomain,
-    PortContract,
-    ValueDomain,
-)
-from biocompiler.verification.components import CompositionResult, check_composition
-
-from biocompiler.compiler.behavior import lower_to_behavior, verify_lowering
-from biocompiler.ir.candidate import (
-    CandidateRequest, CandidateConstraints, CandidateRequirements, CandidateObligation,
-    MolecularLibrary, MolecularPart, ProductBinding, RNAArchitecture,
-)
-from biocompiler.ir.candidate_build import CandidateBuildRecord
-from biocompiler.compiler.candidate import (
-    CandidateCompilation, compile_candidate, verify_candidate_build, export_candidate_fasta,
-)
-from biocompiler.ir.implementation_requirements import (
-    ImplementationRequirements, ImplementationObligation, ImplementationDiagnostic, ProductRequirement,
-)
-from biocompiler.compiler.implementation_requirements import analyze_implementation_requirements
-from biocompiler.ir.implementation import (
-    SequenceAuthority, CodingSegment, CodingJunction, ImplementationDependencyBinding,
-    SecretedRNAArchitecture, ImplementationLibrary, ImplementationConstraints,
-    ImplementationRequest, ImplementationRejection, ImplementationAlternative,
-    ImplementationSelection, ImplementationRole, ImplementationEdge, ImplementationDependency,
-    ImplementationPlan, ImplementationPlacement, ImplementationConstruct,
-)
-from biocompiler.ir.implementation_build import ImplementationBuildRecord
-from biocompiler.compiler.implementation import (
-    ImplementationCompilation, compile_implementation, verify_implementation_requirements,
-    verify_implementation_build, export_implementation_fasta,
-)
-from biocompiler.verification.implementation import (
-    ImplementationVerificationResult, check_implementation_requirements,
-    check_implementation_selection, check_implementation_plan,
-    check_implementation_construct, check_implementation, implementation_dependencies,
-)
-from biocompiler.compiler.request import (
-    BindingMetadata,
-    BuildRequest,
-    ElaborationProvenance,
-    RealizationRequest,
-)
-from biocompiler.compiler.synthetic import SyntheticBuild, run_synthetic_pipeline
-from biocompiler.artifacts.synthetic_build import (
-    SyntheticBuildRequest,
-    SyntheticHistory,
-    SyntheticBuildManifest,
-)
-from biocompiler.compiler.synthetic_build import (
-    SyntheticPackage,
-    build_synthetic_package,
-    verify_synthetic_package,
-    publish_synthetic_package,
-)
-from biocompiler.ir.molecular_design import (
-    SequenceFragment,
-    FragmentPlacement,
-    MolecularDesignRequest,
-    MolecularDesignConstruct,
-    MolecularDesignArtifact,
-)
-from biocompiler.compiler.molecular_design import (
-    MolecularDesignBuild,
-    run_molecular_design_pipeline,
-)
-from biocompiler.verification.molecular_design import (
-    MolecularDesignResult,
-    check_molecular_design_request,
-    check_molecular_design_construct,
-    check_molecular_design,
-)
-from biocompiler.artifacts.molecular_design import (
-    MolecularDesignBuildManifest,
-    MolecularDesignHandoff,
-)
-from biocompiler.compiler.molecular_design_build import (
-    MolecularDesignPackage,
-    build_molecular_design_package,
-    verify_molecular_design_package,
-    publish_molecular_design_package,
-)
-from biocompiler.registry.synthetic import TEMPORAL_PROFILE_VERSION
-from biocompiler.synthesis.synthetic import (
-    SyntheticCandidate,
-    SyntheticGeneratorConfig,
-    generate_synthetic,
-    check_synthetic_candidate,
-)
-from biocompiler.synthesis.selection import (
-    SyntheticAlternative,
-    SyntheticSelectionResult,
-    select_synthetic,
-)
-from biocompiler.models.components import reconstruct_component_mechanism
-from biocompiler.compiler.verification_workflow import (
-    SyntheticVerificationRequest,
-    SyntheticVerificationRecord,
-    run_synthetic_verification,
-    replay_synthetic_verification,
-)
-from biocompiler.compiler.workflow import (
-    BuildProfile,
-    DesignChoice,
-    RealizationPlan,
-    compile,
-    plan,
-)
-from biocompiler.errors import (
-    BehaviorError,
-    BiocompilerError,
-    EvaluationError,
-    LoweringError,
-    LoweringVerificationError,
-    NonConvergenceError,
-    StateConflictError,
-    UnsupportedBehaviorError,
-    CompilationUnavailableError,
-    DefinitionError,
-    ScopeError,
-    SerializationError,
-    TypeMismatchError,
-)
-from biocompiler.frontend.api import (
-    Action,
-    CellProgram,
-    Channel,
-    ContactScope,
-    Controller,
-    EnvironmentScope,
-    ExternalScope,
-    Goal,
-    InternalScope,
-    Memory,
-    Rule,
-    RuleBuilder,
-    Scope,
-    Secretion,
-    State,
-    Therapy,
-)
-from biocompiler.frontend.expressions import (
-    Condition,
-    ControlPort,
-    Event,
-    Expr,
-    Parameter,
-    Quantity,
-    Signal,
-    SpatialSignal,
-    at_least,
-)
-from biocompiler.frontend.signatures import Signature, signature
-from biocompiler.ir.intent import IntentNode, IntentProgram, SourceLocation
-from biocompiler.ir.behavior import BehaviorNode, BehaviorProgram
-from biocompiler.ir.mechanism import MechanismNode, MechanismProgram
-from biocompiler.models.synthetic import ModelInputFrame, ModelTrace, run_model
-from biocompiler.semantics.contracts import (
-    BehaviorRequirement,
-    LoweringReport,
-    PreservationCheck,
-)
-from biocompiler.semantics.evaluator import (
-    ActionRequest,
-    EvaluationFrame,
-    EvaluationResult,
-    EventOccurrence,
-    InputFrame,
-    SignalSample,
-    evaluate,
-)
-from biocompiler.semantics.context import (
-    HumanTargetContext,
-    PayloadFormat,
-    TargetContext,
-)
-from biocompiler.semantics.human_target import (
-    HumanHostDependency,
-    HumanOperatingCondition,
-    HumanTargetContract,
-    TargetClaim,
-    TargetEvidence,
-)
-from biocompiler.semantics.realization import (
-    BehaviorContract,
-    InputDomain,
-    Observable,
-    OperatingDomain,
-    ResponseRequirement,
-)
-from biocompiler.semantics.types import (
-    Concentration,
-    Curve,
-    Duration,
-    Interval,
-    Level,
-    ProductionRate,
-    ScalarLiteral,
-    SurfaceDensity,
-    TypeSpec,
-)
-from biocompiler.verification.evidence import (
-    CheckDiagnostic,
-    CheckOutcome,
-    CheckResult,
-    Counterexample,
-    DependencySnapshot,
-    EvidenceKind,
-    FreshnessReport,
-    RequirementCoverage,
-)
-from biocompiler.verification.realization import (
-    InputBinding,
-    ObservationMap,
-    OutputBinding,
-    check_realization,
-    realization_dependencies,
-)
 
 __all__ = [
     "ArchitectureExecutionResult", "evaluate_payload_architecture",

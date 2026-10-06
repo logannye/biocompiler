@@ -1,5 +1,13 @@
 # Architecture
 
+The new [`biocompiler.policy` authoring family](policy-language-v0.1.md) supplies
+layer 3's expressive declarative documents, builders, structural checks,
+inspection, serialization and explicit compiler submissions. It is independent
+of the current executable Intent/Behavior families: importing or freezing one of
+these documents grants no semantic, realization or acceptance result. Later
+OCaml layers must independently validate the full declared profile before
+lowering it. Layer 1 Studio and layer 2 conversational integration are deferred.
+
 The accepted target implementation uses TypeScript for Studio, Python for
 authoring/orchestration/scientific exploration, and OCaml for the compiler,
 independent checking and canonical emission. See [ADR 0007](decisions/0007-language-boundaries-and-ocaml-core.md)
