@@ -292,7 +292,7 @@ The default decoder limits are 2 MiB, 64 nesting levels, 100,000 visited nodes,
 262,144 bytes per string and 256 characters per numeric spelling. Quantity
 canonical spellings are also bounded to 256 characters. Limits are configurable
 through `SerializationLimits`; a larger input cannot bypass scalar construction
-bounds. Submission packaging is additionally bounded to 4 MiB.
+bounds. Submission packaging uses the same 2 MiB document limit.
 
 Document digests use deterministic sorted-key UTF-8 JSON and SHA-256, excluding
 `source_map` and provenance fields. Ordered arrays remain ordered. Digests bind
@@ -317,6 +317,12 @@ version decision; imports never silently upgrade old documents.
 There is deliberately no new-profile compile dispatch until a native consumer
 implements and validates this contract. No fallback to the old Python compiler
 can discard unsupported meanings.
+
+The opt-in [native source front end](policy-native-front-end-v0.1.md) now exposes
+`policy.native.assess()` and `biocompiler policy assess-native` for complete
+frozen programs, requests and submissions. It performs OCaml source-contract
+checks and fresh replay while reporting execution, lowering and realization
+as unsupported. Source-valid reports do not authorize molecular artifacts.
 
 ## CLI and notebook usage
 

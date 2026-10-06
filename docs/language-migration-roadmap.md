@@ -680,6 +680,19 @@ Depends on LM-02; individual operations route to OCaml only after their core par
 
 ### LM-20 — Layer 4: canonical intent and semantic analysis
 
+**Expressive-policy integration in progress:** the
+[native policy front end](policy-native-front-end-v0.1.md) adds a closed OCaml
+representation for all 45 policy records, exact numeric/source-contract checks,
+complete requirement/source ledgers and independent fresh assessment replay.
+`policy.native` and `policy assess-native` route explicitly to the selected
+native executable. Hosted validation for this increment remains required;
+these source changes do not close the profile's migration gates.
+
+- [ ] Validate the expressive-policy native decoder, source checker, installed
+  SDK/CLI and fresh replay across both native platforms and Python 3.11/3.14.
+- [ ] Define and implement executable operational semantics for expressive
+  policy definitions; retain unsupported meaning and progress obligations.
+
 Starting points: [intent IR](../src/biocompiler/ir/intent.py), [types](../src/biocompiler/semantics/types.py), [context](../src/biocompiler/semantics/context.py), [build request](../src/biocompiler/compiler/request.py).
 
 Depends on LM-02.
@@ -693,6 +706,15 @@ Depends on LM-02.
 **Exit:** all inventoried intent/request schemas roundtrip or reject consistently; canonical identities agree for unchanged semantics; unsupported requirements remain in the ledger.
 
 ### LM-21 — Layer 5: behavior lowering and reference semantics
+
+The checked items below cover the existing Behavior profiles. The expressive
+`biocompiler.policy.v0.1` source family additionally requires:
+
+- [ ] A policy behavioral IR preserving three-valued observations, entity
+  correlation, scoped state, effect occurrence/lifecycle, arbitration and
+  temporal/spatial/population contracts without coercion into legacy profiles.
+- [ ] Native lowering, source execution and independent preservation checks
+  for every supported rich-policy operation, with explicit unsupported results.
 
 Starting points: [behavior IR](../src/biocompiler/ir/behavior.py), [lowerer](../src/biocompiler/compiler/behavior.py), [reference evaluator](../src/biocompiler/semantics/evaluator.py), [coupled executor](../src/biocompiler/semantics/architecture_execution.py), [semantic specification](behavior-semantics-v0.1.md).
 

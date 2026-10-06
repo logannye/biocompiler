@@ -21,13 +21,15 @@ CORPUS_PIN = "2f5e7636977f559e046776c1bb92bebf67c8f0e733ca463927f8d3a1aee3d77b"
 # hashes for historical source files are deliberately unsupported.
 REVIEWED_EXAMPLES = frozenset({"examples/expressive_policies.py"})
 REVIEWED_ADDITIONS = {
+    'src/biocompiler/policy/native.py': '956e33656d6b5ee332fae215a56d667d7b88019d7853426440aa5502777dc9f0',
+    'src/biocompiler/core_policy.py': '9af5592f01bfb721965376ec0051b0eeaba9bfcb38ba6db3a3c56351b708044e',
     'examples/expressive_policies.py': 'face2b9c24b039da9931b4af4e4fc26ad4fcec94b9aa338196c2c7455d789bec',
     'src/biocompiler/entrypoint.py': '7158963ef6435bcd8d8dbbb4952b185c6a64414fe01f8651b6e3dccff5492ed8',
     'src/biocompiler/policy/__init__.py': 'd9dd6be96e54f316bd087c0953d4cfce8214d170112e674b4c58edf81d28697b',
     'src/biocompiler/policy/behavior.py': '691b7710b8e915665526e57ba41f3b2df3fe1519ec22371d47441050c37e34bf',
     'src/biocompiler/policy/catalog.py': '96bd1729202b96c12fcaea35e2ca1560011bed7a5dd712e2fc8d0a5fc9ff3e30',
     'src/biocompiler/policy/chassis.py': '21960a5498db0934150ab5288eb6de30c2eb63062fe9e06a2c57a0214c811ab1',
-    'src/biocompiler/policy/cli.py': '27a36c8a692e4114f6a412bf1a48ec66e216d642f85150341ea3ca7831b515af',
+    'src/biocompiler/policy/cli.py': '7e6e5f2e74fe4de76117433b2b8065e0b7a1d2386c2efe831cf353596ec8c591',
     'src/biocompiler/policy/coordination.py': 'ce597e5c05dc1f64b73bbeb4b60ae9863b26c645155ce03ea46a827135b009c9',
     'src/biocompiler/policy/deployment.py': 'cddace3d45f04ecd722a47849325c9ff6a41fc166b0e23253c2377f037eae29f',
     'src/biocompiler/policy/effects.py': '2e228309b98defa71730cac3e2b8883a9e86c9f63f0d5c25b37bf70b27a02578',

@@ -17,19 +17,19 @@ Unknown export bindings, dynamic export mutations, unresolved schema/profile dec
 | Inventory category | Entries |
 | --- | ---: |
 | `authority_boundary` | 94 |
-| `cli_command` | 55 |
+| `cli_command` | 56 |
 | `console_script` | 1 |
 | `example` | 37 |
 | `export` | 699 |
 | `ir_operation` | 165 |
-| `module` | 201 |
-| `public_definition` | 840 |
+| `module` | 203 |
+| `public_definition` | 844 |
 | `schema` | 329 |
 | `serializer` | 294 |
 | `studio_asset` | 8 |
 | `studio_endpoint` | 14 |
-| `version_literal` | 505 |
-| `version_profile` | 98 |
+| `version_literal` | 510 |
+| `version_profile` | 100 |
 
 ## CLI command index
 
@@ -73,6 +73,7 @@ Unknown export bindings, dynamic export mutations, unresolved schema/profile dec
 | `payload-build` | `--request` | legacy |
 | `payload-fasta` | `--expected-request` | legacy |
 | `payload-verify` | `--expected-request` | legacy |
+| `policy assess-native` | See argument contract; inspection is not verification | legacy |
 | `policy check` | See argument contract; inspection is not verification | legacy |
 | `policy diff` | See argument contract; inspection is not verification | legacy |
 | `policy export-request` | See argument contract; inspection is not verification | legacy |

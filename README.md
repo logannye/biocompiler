@@ -30,8 +30,9 @@ For new expressive source programs, use [`biocompiler.policy`](docs/policy-langu
 It provides typed Python authoring, immutable documents, structural diagnostics,
 notebook inspection and `biocompiler policy` commands across recognition, timing,
 state, effects, spatial scope and coordinated populations. Its new document
-profile is ready for a later OCaml consumer; it does not yet compile to RNA or
-extend the executable profiles below. Studio and AI authoring remain deferred.
+profile has an explicit [OCaml source-assessment bridge](docs/policy-native-front-end-v0.1.md)
+with complete declaration retention and fresh replay. It does not yet compile
+to RNA or extend the executable profiles below. Studio and AI authoring remain deferred.
 
 | Workflow | What it provides |
 | --- | --- |

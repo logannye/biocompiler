@@ -364,6 +364,8 @@ def ownership(module, category):
         return "TypeScript", ["LM-10", "LM-30"], "preserve_studio_surface"
     if category == "example":
         return "Python", ["LM-03", "LM-11"], "retain_example_with_core_routing"
+    if module in {"biocompiler.core_policy", "biocompiler.policy.native"}:
+        return "Python", ["LM-12", "LM-20", "LM-25"], "retain_explicit_transport_to_ocaml_source_assessment"
     if module.startswith("biocompiler.policy") or module == "biocompiler.entrypoint":
         return "Python", ["LM-11", "LM-12"], "retain_declarative_authoring_without_semantic_or_target_authority"
     if module.startswith("biocompiler.frontend") or module in {"biocompiler.errors", "biocompiler", "biocompiler.__main__"}:
@@ -383,6 +385,8 @@ def ownership(module, category):
 def authority(module, category):
     if category in {"example", "studio_asset"}:
         return "authored_or_displayed_inputs_are_not_acceptance_authority"
+    if module in {"biocompiler.core_policy", "biocompiler.policy.native"}:
+        return "frozen_document_and_fresh_native_source_contract_check_not_execution_or_lowering_authority"
     if module.startswith("biocompiler.verification"):
         return "independent_complete_request_and_pinned_component_model_sequence_roots"
     if module.startswith("biocompiler.models") or module in {"biocompiler.semantics.architecture_execution"}:
