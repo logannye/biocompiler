@@ -19,12 +19,75 @@ ROOT=Path(__file__).resolve().parents[1]
 
 
 class SchedulingTests(unittest.TestCase):
+    def assert_supported_runtime_workflow(self, text):
+        matches = re.findall(r"^  BIOCOMPILER_SUPPORTED_PYTHON: '([^'\n]+)'$", text, re.M)
+        self.assertEqual(len(matches), 1)
+        patches = json.loads(matches[0])
+        self.assertEqual(patches, {'3.11': '3.11.15', '3.14': '3.14.6'})
+        for minor, patch_version in patches.items():
+            authority = json.loads((ROOT / ('tests/conformance/archive-stdlib-authority-'
+                                           + minor.replace('.', '') + '.json')).read_text())
+            self.assertEqual(authority['python'], patch_version)
+        jobs = {match.group(1): match.group(2) for match in re.finditer(
+            r'^  ([a-z][a-z0-9-]*):\n(.*?)(?=^  [a-z][a-z0-9-]*:\n|\Z)',
+            text.split('\njobs:\n', 1)[1], re.M | re.S)}
+        self.assertEqual(set(jobs), ci.REQUIRED_NEEDS | {'validation'})
+        matrix_jobs = {'ci-preflight', 'unit-plan', 'installed-executable', 'installed-architecture',
+                       'circuit-integration', 'integration-examples', 'architecture-sdk',
+                       'installed-campaigns', 'realization-conformance', 'policy-prebuilt-installed'}
+        matrix = '${{ fromJSON(env.BIOCOMPILER_SUPPORTED_PYTHON)[matrix.python-version] }}'
+        fixed311 = "${{ fromJSON(env.BIOCOMPILER_SUPPORTED_PYTHON)['3.11'] }}"
+        fixed314 = "${{ fromJSON(env.BIOCOMPILER_SUPPORTED_PYTHON)['3.14'] }}"
+        selected_plan = '${{ steps.plan_python.outputs.python-version }}'
+        total = 0
+        for name, job in jobs.items():
+            steps = [match.group(1) for match in re.finditer(
+                r'^      - (.*?)(?=^      - |\Z)', job, re.M | re.S)]
+            setup = [step for step in steps if step.startswith('uses: actions/setup-python@v5\n')]
+            total += len(setup)
+            actual = []
+            for step in setup:
+                versions = re.findall(r'^          python-version: (.*)$', step, re.M)
+                self.assertEqual(len(versions), 1)
+                actual.extend(versions)
+            expected = ([matrix] if name in matrix_jobs else
+                        [selected_plan] if name in {'unit-tests', 'unit-accounting'} else
+                        [fixed311, fixed314] if name == 'realization-core-reproducibility' else
+                        [fixed311])
+            self.assertEqual(actual, expected, name)
+            # A narrower job/step environment cannot replace the reviewed mapping.
+            self.assertNotRegex(job, r'BIOCOMPILER_SUPPORTED_PYTHON:')
+        self.assertEqual(total, 28)
+        self.assertEqual(text.count('uses: actions/setup-python@'), 28)
+        preflight = jobs['ci-preflight']
+        self.assertIn('tests.test_archive_authority', preflight)
+        self.assertIn('python -B tools/migration_inventory.py --check', preflight)
+
+    def test_every_hosted_python_consumer_selects_the_supported_source_profile(self):
+        text = (ROOT / '.github/workflows/ci.yml').read_text()
+        self.assert_supported_runtime_workflow(text)
+        changes = [
+            text.replace('"3.14":"3.14.6"', '"3.14":"3.14.8"'),
+            text.replace('"3.11":"3.11.15"', '"3.11":"3.11"'),
+            text.replace('fromJSON(env.BIOCOMPILER_SUPPORTED_PYTHON)[matrix.python-version]',
+                         'matrix.python-version', 1),
+            text.replace("fromJSON(env.BIOCOMPILER_SUPPORTED_PYTHON)['3.11']", "'3.11'", 1),
+            text.replace("fromJSON(env.BIOCOMPILER_SUPPORTED_PYTHON)['3.14']", "'3.14'", 1),
+            text.replace('steps.plan_python.outputs.python-version', 'matrix.python-version', 1),
+            text.replace('uses: actions/setup-python@v5', 'uses: actions/setup-python@v6', 1),
+            text.replace(' tests.test_archive_authority', ''),
+            text.replace('          python -B tools/migration_inventory.py --check\n', ''),
+        ]
+        for index, changed in enumerate(changes):
+            with self.subTest(mutation=index), self.assertRaises(AssertionError):
+                self.assert_supported_runtime_workflow(changed)
+
     def test_unit_consumers_select_the_plans_exact_patch_before_installation(self):
         text = (ROOT / '.github/workflows/ci.yml').read_text()
         jobs = {match.group(1): match.group(2) for match in re.finditer(
             r'^  ([a-z][a-z0-9-]*):\n(.*?)(?=^  [a-z][a-z0-9-]*:\n|\Z)',
             text.split('\njobs:\n', 1)[1], re.M | re.S)}
-        self.assertIn('python-version: ${{ matrix.python-version }}', jobs['unit-plan'])
+        self.assertIn('python-version: ${{ fromJSON(env.BIOCOMPILER_SUPPORTED_PYTHON)[matrix.python-version] }}', jobs['unit-plan'])
         for name in ('unit-tests', 'unit-accounting'):
             with self.subTest(job=name):
                 job = jobs[name]

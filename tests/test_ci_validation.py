@@ -542,8 +542,8 @@ class ValidationGateTests(unittest.TestCase):
         installed = text.split("\n  installed-campaigns:\n", 1)[1].split("\n  realization-conformance:\n", 1)[0]
         self.assertEqual(self.installed_commands(installed)['check_pipeline_reference_install.py'][0],'pipeline-reference')
         comparison = text.split("\n  realization-core-reproducibility:\n", 1)[1].split("\n  studio-typescript:\n", 1)[0]
-        self.assertIn('id: reference_python311\n        with:\n          python-version: "3.11"', comparison)
-        self.assertIn('id: reference_python314\n        with:\n          python-version: "3.14"\n          update-environment: false', comparison)
+        self.assertIn('id: reference_python311\n        with:\n          python-version: ${{ fromJSON(env.BIOCOMPILER_SUPPORTED_PYTHON)[\'3.11\'] }}', comparison)
+        self.assertIn('id: reference_python314\n        with:\n          python-version: ${{ fromJSON(env.BIOCOMPILER_SUPPORTED_PYTHON)[\'3.14\'] }}\n          update-environment: false', comparison)
         compare_start = comparison.index("python tools/check_pipeline_reference_install.py --compare")
         compare_end = comparison.index("      - name: Retain complete comparison receipt", compare_start)
         compare_command = comparison[compare_start:compare_end]
