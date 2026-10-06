@@ -20,6 +20,10 @@ let require path condition message = if not condition then fail path message
 let supported_types = ["truth";"integer";"text";"quantity"]
 let expr_ops = ["literal";"observe";"state";"parameter";"all";"any";"not";"eq";"ne";"lt";"le";"gt";"ge";"updated";"rising";"effect_event"]
 let admit ~document ~descriptors =
+  (* Ingress diagnostic locations are not authored program coordinates. Every
+     operational artifact uses one canonical document root, whether admission
+     started through the direct API, a request envelope or a native service. *)
+  let document=D.of_json ~path:"/document" (D.to_json document) in
   let assessment=Policy_check.check document in
   Diagnostic.require ~path:"/document" (text "status" assessment = "valid") "policy_operational_source_invalid"
     "Operational admission requires a fresh valid native source assessment.";

@@ -6,6 +6,7 @@ let check ~expected_document ~descriptors (candidate:O.behavior) =
   (* The checker imports no lowering producer, and reconstructs every expected
      instruction field directly from the original external source. *)
   let admitted=Policy_admission.admit ~document:expected_document ~descriptors in
+  let expected_document=Policy_admission.document admitted in
   let assessment=Policy_admission.source_assessment admitted in
   let equal path expected actual = Diagnostic.require ~path (Json.equal expected actual)
       "policy_correspondence" "Behavior differs from its complete independent source/operational authority." in

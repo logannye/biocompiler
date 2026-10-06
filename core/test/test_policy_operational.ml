@@ -39,6 +39,16 @@ let run fixture =
   let initial=O.behavior_to_json behavior in
   let checked=C.check ~expected_document:document ~descriptors behavior in
   require (text "status" checked = "valid") "Literal operational lowering was not checked";
+  List.iter (fun ingress ->
+    let external_document=D.of_json ~path:ingress raw in
+    let relocated=L.lower(A.admit ~document:external_document ~descriptors) in
+    require(Json.equal initial(O.behavior_to_json relocated))
+      "Ingress diagnostic prefix changed the authored operational artifact";
+    require(Json.equal checked(C.check ~expected_document:external_document ~descriptors relocated))
+      "Independent correspondence changed under an ingress diagnostic prefix";
+    require(Json.equal raw(D.to_json(A.document(A.admit ~document:external_document ~descriptors))))
+      "Canonical occurrence coordinates changed original authored source")
+    ["";"/document";"/payload/document"];
   require (text "target_status" checked = "unassessed" && text "artifact" checked = "withheld") "Operational check inflated realization claims";
   require (List.length behavior.nodes = List.length (D.declarations document)) "Lowering omitted declarations";
   require (List.length behavior.requirements = 2) "Lowering omitted requirements";

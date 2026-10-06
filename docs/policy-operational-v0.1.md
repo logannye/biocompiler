@@ -200,3 +200,11 @@ correspondence, RNA emission, rich-policy Studio, conversational review and
 production cutover remain subsequent milestones. The preserved reference-package
 route already has source implementations; this increment does not recreate it
 or claim its pending compatibility and hosted acceptance work.
+
+
+Operational occurrence coordinates have the canonical `/document` root. The
+optional diagnostic prefix used while decoding a source record cannot alter
+lowered instruction paths or independent correspondence. Admission redecodes the
+same complete original source under this coordinate root; authored `source_map`,
+provenance and every source field remain byte-identical. Native metamorphic tests
+compare direct, `/document`, and `/payload/document` ingress.
