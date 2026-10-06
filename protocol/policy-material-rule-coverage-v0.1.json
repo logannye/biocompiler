@@ -1420,6 +1420,14 @@
       "sha256": "3c8d3ac797b29f41371d94e1093103dfdd35400896a1a0829a8ec166c7a397a6"
     },
     {
+      "path": "core/test/data/policy_material_state_v01.json",
+      "sha256": "9628f56fb43cd9c0b768db443bfb1e85bfef2bab4d0a209681fbd8f3a72a6af1"
+    },
+    {
+      "path": "core/test/data/policy_material_timing_v01.json",
+      "sha256": "3e4dd5cfaeb53cb933c359aafaeaf3180dbf7ec58f81ef285250bf3d8a9af2ae"
+    },
+    {
       "path": "core/test/data/policy_operational_v01.json",
       "sha256": "bd9dfbb65c456b75fa401049341e85a6de882e8f130b4c76dfdadd9b6dd08968"
     },
@@ -1441,7 +1449,7 @@
     },
     {
       "path": "core/test/test_policy_material_closure.ml",
-      "sha256": "84e6d30dd9593d69a5c457ba5f6c40afa7d2c349e8cfc75dadabb515f085beb2"
+      "sha256": "f80cd96cc81df710e57d8c2d75caa7c2392b45f0794a2e506eb0b72c6c959638"
     },
     {
       "path": "core/test/test_policy_material_compound.ml",
@@ -1462,6 +1470,14 @@
     {
       "path": "core/test/test_policy_material_service.ml",
       "sha256": "45e9892dc290e58f358abb29c66b82474475bba8ee3e036164765eacdd5db5f3"
+    },
+    {
+      "path": "core/test/test_policy_material_state.ml",
+      "sha256": "a899d18ee0637333bcb49b2ddc789a0c00ad03c4d02ef72d3fcf8a134adf496e"
+    },
+    {
+      "path": "core/test/test_policy_material_timing.ml",
+      "sha256": "2e7b5c78045a9a3df8667a3805cd219bfa4c3f2edd4bca91b8817c3b82d427be"
     },
     {
       "path": "core/test/test_policy_mrna_structure.ml",
@@ -1769,6 +1785,15 @@
             "occurrence": 1
           },
           "context": "A second generic-valid logical clock rejects the exact one-clock operational admission requirement.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_material_closure.ml",
+            "anchor": "Public material route admitted an unaligned operational requirement deadline",
+            "occurrence": 1
+          },
+          "context": "Fractional deadline is generically source-valid but rejected by the earlier positive-integral-tick operational admission rule. Public compile/check/export require its exact diagnostic code/path/message; monitor-level support is not inferred.",
           "evidence_scope": "source_only_not_executed_by_this_gate"
         }
       ],
@@ -2465,6 +2490,24 @@
           },
           "context": "Public aged-evidence16/67/68 and ordered-multiplicity31/127/128 requests preserve original requirements and complete context/resources. Literal histories distinguish older, tied and newer observations, silent expiry, both conflicting row orders and repeated equal evidence with ordered occurrence IDs.",
           "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_material_timing.ml",
+            "anchor": "Lifecycle/feedback/timeout event order changed: ",
+            "occurrence": 1
+          },
+          "context": "All 27 Keep/Reset/End by silence/completed/failed feedback combinations at exact deadline tick3, with 111 transitions/112 prefixes. Every history has independent literal event/action/attempt/slot/input-ID expectations and complete public compile/Core-Verify check/replay/export. Lifecycle invalidation precedes correlated feedback; feedback precedes timeout. No permitted outcome is filtered.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/data/policy_material_timing_v01.json",
+            "anchor": "\"schema_version\": \"biocompiler.policy_material_timing_literals.v0.1\"",
+            "occurrence": 1
+          },
+          "context": "Independently supplied same-tick lifecycle/feedback grammar retains original source, all three requirements, 23 obligations, complete resources and exact RNA. Literal expectations cover every Cartesian history.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
         }
       ],
       "negative": [
@@ -2543,6 +2586,15 @@
           },
           "context": "Complete original public compile/check/replay/export paths for three supplied positive grammars: extended evidence (54/227/228), reset/end plus stale feedback (27/87/88), and Keep/Reset plus all old/new feedback at tick5 (54/115/116 histories/transitions/prefixes). The separate unchanged 486/995/996 request must remain incomplete with export withheld at its original work limit. All original requirements and material/context resources are retained; these are source assertions awaiting hosted execution.",
           "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_material_timing.ml",
+            "anchor": "Lifecycle/feedback/timeout event order changed: ",
+            "occurrence": 1
+          },
+          "context": "All 27 Keep/Reset/End by silence/completed/failed feedback combinations at exact deadline tick3, with 111 transitions/112 prefixes. Every history has independent literal event/action/attempt/slot/input-ID expectations and complete public compile/Core-Verify check/replay/export. Lifecycle invalidation precedes correlated feedback; feedback precedes timeout. No permitted outcome is filtered.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
         }
       ],
       "negative": [
@@ -2567,7 +2619,7 @@
       ],
       "witness_status": "partial_source_witnesses",
       "gaps": [
-        "The complete public witness domains and ten literal histories cover their specified choices without pruning. Other time/birth/age/multiplicity combinations remain separately scoped; no abstraction or unbounded permutation proof is claimed."
+        "The complete public domains retain every declared choice, with sixteen original domain histories, fourteen closure histories, all twenty-seven equal-time lifecycle/feedback histories and two state-read histories independently specified. Other combinations remain separately scoped; no abstraction or unbounded permutation proof is claimed."
       ]
     },
     {
@@ -2620,6 +2672,15 @@
             "occurrence": 1
           },
           "context": "Independently supplied nine-node kernel, complete53carriers,12typed resource demands, original four hard requirements and exact RNA construction; no saved candidate or result supplies production authority.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/data/policy_material_state_v01.json",
+            "anchor": "\"schema_version\": \"biocompiler.policy_material_state_literals.v0.1\"",
+            "occurrence": 1
+          },
+          "context": "Separately authored original state-reading policy, models, exact kernel/wires, complete carriers/resources and unchanged RNA; no candidate or report is production authority.",
           "evidence_scope": "source_only_not_executed_by_this_gate"
         }
       ],
@@ -2875,6 +2936,15 @@
           },
           "context": "Full frozen original compound authority for single/repeated reason cases; no acceptance inferred from fixture contents.",
           "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_material_state.ml",
+            "anchor": "Settled source state differs from the literal common-prestate result",
+            "occurrence": 1
+          },
+          "context": "Complete public state-read material request retains all three original requirements and unchanged 9/47/48 history/transition/prefix domain. Independently supplied 17-node/25-wire/103-carrier kernel implements selected := true and excluded := old(selected), with observation && not(selected) guard. Two histories distinguish common prestate, settled values, pre/post-write continuous authorization, quiet timeout and mixed feedback across both encounter slots.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
         }
       ],
       "negative": [
@@ -2903,6 +2973,15 @@
             "occurrence": 1
           },
           "context": "Removing every write to one retained encounter truth store preserves source validity but rejects at graph binding.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_material_state.ml",
+            "anchor": "sequential assignment reads newly written selected",
+            "occurrence": 1
+          },
+          "context": "Independent source trace rejects a sequential-write candidate frame. Typed wrong-state, constant substitution and guard mutations also reach source/graph correspondence; even a constant matching this finite domain cannot replace the authored state read.",
           "evidence_scope": "source_only_not_executed_by_this_gate"
         }
       ],
@@ -2941,6 +3020,15 @@
             "occurrence": 1
           },
           "context": "Two original compound cases retain defined Unknown initial state, nested all/any guards and assignment values, complete material conjunction and 54-history domain; missing and stale evidence retain ordered reasons.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_material_state.ml",
+            "anchor": "Settled source state differs from the literal common-prestate result",
+            "occurrence": 1
+          },
+          "context": "Complete public state-read material request retains all three original requirements and unchanged 9/47/48 history/transition/prefix domain. Independently supplied 17-node/25-wire/103-carrier kernel implements selected := true and excluded := old(selected), with observation && not(selected) guard. Two histories distinguish common prestate, settled values, pre/post-write continuous authorization, quiet timeout and mixed feedback across both encounter slots.",
           "evidence_scope": "source_only_not_executed_by_this_gate"
         }
       ],
@@ -3076,6 +3164,15 @@
           },
           "context": "Complete original public compile/check/replay/export paths for three supplied positive grammars: extended evidence (54/227/228), reset/end plus stale feedback (27/87/88), and Keep/Reset plus all old/new feedback at tick5 (54/115/116 histories/transitions/prefixes). The separate unchanged 486/995/996 request must remain incomplete with export withheld at its original work limit. All original requirements and material/context resources are retained; these are source assertions awaiting hosted execution.",
           "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_material_timing.ml",
+            "anchor": "Lifecycle/feedback/timeout event order changed: ",
+            "occurrence": 1
+          },
+          "context": "All 27 Keep/Reset/End by silence/completed/failed feedback combinations at exact deadline tick3, with 111 transitions/112 prefixes. Every history has independent literal event/action/attempt/slot/input-ID expectations and complete public compile/Core-Verify check/replay/export. Lifecycle invalidation precedes correlated feedback; feedback precedes timeout. No permitted outcome is filtered.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
         }
       ],
       "negative": [
@@ -3104,6 +3201,15 @@
             "occurrence": 1
           },
           "context": "A source-valid absent timeout rejects instead of borrowing the supplied primitive deadline.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_material_timing.ml",
+            "anchor": "deadline feedback replaced by timeout",
+            "occurrence": 1
+          },
+          "context": "Trace correspondence rejects reordered simultaneous events/dispositions, missing feedback disposition and completion/failure relabeled as timeout; exact event identity and causal phase are observable.",
           "evidence_scope": "source_only_not_executed_by_this_gate"
         }
       ],
@@ -3183,6 +3289,15 @@
           },
           "context": "Frozen full-path exclusion sibling: two encounter slots, truth registers initially false, event evidence, exclusive arbitration, one fixed product, continuous/defer lifecycle, original nine-history domain. Other admitted combinations are not inferred.",
           "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_material_state.ml",
+            "anchor": "Settled source state differs from the literal common-prestate result",
+            "occurrence": 1
+          },
+          "context": "Complete public state-read material request retains all three original requirements and unchanged 9/47/48 history/transition/prefix domain. Independently supplied 17-node/25-wire/103-carrier kernel implements selected := true and excluded := old(selected), with observation && not(selected) guard. Two histories distinguish common prestate, settled values, pre/post-write continuous authorization, quiet timeout and mixed feedback across both encounter slots.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
         }
       ],
       "negative": [
@@ -3193,6 +3308,15 @@
             "occurrence": 1
           },
           "context": "Distinguishing source control for the specifically named boundary; other boundary branches are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_material_state.ml",
+            "anchor": "sequential assignment reads newly written selected",
+            "occurrence": 1
+          },
+          "context": "Independent source trace rejects a sequential-write candidate frame. Typed wrong-state, constant substitution and guard mutations also reach source/graph correspondence; even a constant matching this finite domain cannot replace the authored state read.",
           "evidence_scope": "source_only_not_executed_by_this_gate"
         }
       ],
@@ -3303,6 +3427,24 @@
           },
           "context": "Frozen full-path exclusion sibling: two encounter slots, truth registers initially false, event evidence, exclusive arbitration, one fixed product, continuous/defer lifecycle, original nine-history domain. Other admitted combinations are not inferred.",
           "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_material_state.ml",
+            "anchor": "Settled source state differs from the literal common-prestate result",
+            "occurrence": 1
+          },
+          "context": "Complete public state-read material request retains all three original requirements and unchanged 9/47/48 history/transition/prefix domain. Independently supplied 17-node/25-wire/103-carrier kernel implements selected := true and excluded := old(selected), with observation && not(selected) guard. Two histories distinguish common prestate, settled values, pre/post-write continuous authorization, quiet timeout and mixed feedback across both encounter slots.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_material_timing.ml",
+            "anchor": "Lifecycle/feedback/timeout event order changed: ",
+            "occurrence": 1
+          },
+          "context": "All 27 Keep/Reset/End by silence/completed/failed feedback combinations at exact deadline tick3, with 111 transitions/112 prefixes. Every history has independent literal event/action/attempt/slot/input-ID expectations and complete public compile/Core-Verify check/replay/export. Lifecycle invalidation precedes correlated feedback; feedback precedes timeout. No permitted outcome is filtered.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
         }
       ],
       "negative": [
@@ -3314,11 +3456,29 @@
           },
           "context": "Distinguishing source control for the specifically named boundary; other boundary branches are not inferred.",
           "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_material_state.ml",
+            "anchor": "sequential assignment reads newly written selected",
+            "occurrence": 1
+          },
+          "context": "Independent source trace rejects a sequential-write candidate frame. Typed wrong-state, constant substitution and guard mutations also reach source/graph correspondence; even a constant matching this finite domain cannot replace the authored state read.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_material_timing.ml",
+            "anchor": "deadline feedback replaced by timeout",
+            "occurrence": 1
+          },
+          "context": "Trace correspondence rejects reordered simultaneous events/dispositions, missing feedback disposition and completion/failure relabeled as timeout; exact event identity and causal phase are observable.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
         }
       ],
       "witness_status": "partial_source_witnesses",
       "gaps": [
-        "This baseline does not independently inventory every runtime phase/uncertainty interaction; the runtime literal suite must run on hosted native builds."
+        "Common-prestate state reads, pre/post-write authorization and exact lifecycle-before-feedback-before-timeout are now indexed through full public material paths. These witnesses do not establish every cross-product of runtime phases and uncertainty inputs; hosted execution remains a separate gate."
       ]
     },
     {
@@ -3344,6 +3504,15 @@
             "occurrence": 1
           },
           "context": "Frozen full-path exclusion sibling: two encounter slots, truth registers initially false, event evidence, exclusive arbitration, one fixed product, continuous/defer lifecycle, original nine-history domain. Other admitted combinations are not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_material_closure.ml",
+            "anchor": "\"truth_equality\",\"scoped_memory\",\"pass\",None,",
+            "occurrence": 1
+          },
+          "context": "Source-valid supported truth equality receives a fresh generic candidate, all-nine-history checking/replay and fresh exact export; the paired false equality must fail on every history with no export.",
           "evidence_scope": "source_only_not_executed_by_this_gate"
         }
       ],
@@ -3374,11 +3543,38 @@
           },
           "context": "Three original-source-valid requirement lower/upper/contract edits receive fresh generic candidates, complete public Core/Verify check/replay and exact unsupported requirement evidence. Original hard ledgers remain present and fresh export is withheld; unrelated early rejection fails.",
           "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_material_closure.ml",
+            "anchor": "Beyond-horizon completion must retain both unanswered correlated obligations",
+            "occurrence": 1
+          },
+          "context": "Complete nine-history requested-to-completed requirement with deadline9 beyond horizon4 retains eight UNKNOWN histories and one PASS. First unknown witness retains both pending correlated obligations, exact opened/deadline/closure state and no invented response. All original obligations remain unresolved and both public exports reject.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_material_closure.ml",
+            "anchor": "\"executor_reads_encounter\",\"scoped_memory\",\"unsupported\",Some \"scope_requires_encounter\",",
+            "occurrence": 1
+          },
+          "context": "Fresh source-valid executor-scoped encounter-state reading and text-literal equality remain explicitly unsupported with exact reasons; full source/candidate preservation and original requirement inventory are still checked.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_material_closure.ml",
+            "anchor": "Public material route admitted an unaligned operational requirement deadline",
+            "occurrence": 1
+          },
+          "context": "Fractional deadline is generically source-valid but rejected by the earlier positive-integral-tick operational admission rule. Public compile/check/export require its exact diagnostic code/path/message; monitor-level support is not inferred.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
         }
       ],
       "witness_status": "partial_source_witnesses",
       "gaps": [
-        "Named lower/upper/contract and six monitor boundaries are indexed. Remaining scope/type/time alternatives need individual witness indexing or explicit earlier-stage exclusion."
+        "Named field, scope, literal-type, equality and pending-horizon branches are indexed, with fractional deadlines explicitly excluded at operational admission. Other source-invalid or earlier-excluded scope/type forms are not promoted into monitor support; broader requirement alternatives retain their own stage scope."
       ]
     },
     {

@@ -470,7 +470,7 @@ domain/context pins retain every original hard requirement, the same resource
 dispositions and exact RNA. Six new literal traces distinguish retained/new
 generation correlation, stale old feedback, completion, failure and quiet
 timeout. There are now 16 domain literal histories in total. The smaller case's
-positive acceptance is hosted-pending and cannot discharge the larger request.
+passing bounded result cannot discharge the larger request.
 
 A separate source-reviewed closure family adds the complete one-rule material
 path (9 histories/29 transitions/30 prefixes), age0/1/2 evidence including tied
@@ -480,24 +480,62 @@ conflict behavior, state and attempt ledgers. Three source-valid hard-requiremen
 edits (`lower`, `upper`, `contract`) must remain unsupported through complete
 checking and replay with no export; a nonzero encounter-birth control must
 reject at the public domain boundary. All original hard requirements remain in
-each request, including the one-rule family's four requirements. This new
-closure family still requires hosted native execution.
+each request, including the one-rule family's four requirements.
+
+At source `4fb5219a8ae857f4f733e364fdf07ff1e7981f4f`,
+[run 37448827385](https://github.com/logannye/biocompiler/actions/runs/37448827385)
+compiled both native platforms and passed the focused suites above. The retained
+Linux log records 1,236 domain assertions, including the unchanged large-domain
+incomplete regression, and 1,183 closure assertions. Both platforms advanced to
+installed checks. The full run is still active; these results establish neither
+complete native-suite acceptance nor installed, packaging or aggregate release
+acceptance.
+
+The next source batch adds a complete simultaneous-deadline family with 27
+histories/111 transitions/112 prefixes and literal expectations for every
+history. Keep/Reset/End at tick3 combines with silence/completed/failed feedback
+for both prior attempts at that exact deadline. The specified order is lifecycle,
+then feedback, then timeout: feedback at the deadline wins under Keep, while
+Reset/End invalidates the affected attempt before its feedback arrives. Ordered
+input identities, event/action dispositions, generation and terminal ledgers
+remain independently checked through public compilation and fresh export.
+
+A separate state family supplies 17 nodes, 25 wires and 103 material carriers
+over nine histories/47 transitions/48 prefixes. Two literal histories distinguish
+quiet timeout from mixed completion/failure. The guard and assignments evaluate
+against the same state before commit; the newly committed state then changes
+continuous authorization. Rewiring a state read, replacing it with a coincident
+constant, or bypassing the state-dependent guard must reject.
+
+Six additional closure controls distinguish source-valid requirement outcomes:
+fractional deadlines reject at their earlier operational-admission boundary;
+executor-scoped reads of encounter state and literal text equality remain
+unsupported by the monitor; truth equality passes and its false variant fails.
+Requested-to-completed response with duration8 from tick1 has deadline9 beyond
+the declared horizon4: one of nine histories passes and eight remain unknown,
+retaining their pending obligations. These new timing/state/requirement changes
+are source-reviewed and still await their own hosted native validation; the
+`4fb5219a8` receipt does not cover them.
 
 The same batch adds twelve source-valid contextual rejection controls and six
 requirement-monitor controls. Fresh source admission, occurrence accounting and
 graph correspondence precede the latter checks; each original requirement is
 retained and its exact unsupported reason is checked initially and through the
-declared horizon. The contextual inventory now indexes 25 witness files and 96
-source files across 62 rule families, preserving 16 explicitly partial families.
+declared horizon. The next batch's reviewed contextual inventory indexes 29
+witness files and the same 96 source files across 62 rule families, preserving
+16 explicitly partial families.
 Broader operational coverage and unindexed first-profile branches remain
 visible; this static inventory is not an execution receipt.
 
-Additional numeric/quantity domains, machines, predicate resets, coordination,
-quantification, inheritance, complex spatial relationships, broader arbitration,
-multiple initiating gates per bank, independent delivery, helper closure,
-multiple RNA/product architectures, recoding/modified-CDS semantics and general
-component composition need explicit vertical extensions. Uninterpreted source
-assumptions/tolerances, dependency/evidence closure and payload-dose/persistence
+The material profile still excludes additional numeric/quantity domains,
+machines, predicate resets, coordination, quantification, inheritance, complex
+spatial relationships, broader arbitration, multiple initiating gates per bank,
+independent delivery, helper closure, multiple RNA/product architectures,
+recoding/modified-CDS semantics and general component composition. Some forms
+are already authorable or reference-executable; that does not supply their
+missing implementation/material contracts or complete preservation checks.
+Broader operational support and material admission remain separate.
+Uninterpreted source assumptions/tolerances, dependency/evidence closure and payload-dose/persistence
 fields cannot silently become supported. General search or mechanism discovery
 is not implemented by the single-case arrangement producer.
 

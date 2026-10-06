@@ -541,7 +541,7 @@ assertion. A separate migration-inventory refresh retains all 3,460 entries and
 adds the source-acquisition test to its static reference table. Neither partial
 result closes an acceptance checkbox.
 
-Latest diagnostic checkpoint: source
+Earlier diagnostic checkpoint: source
 `141f5ba5b880aced295c941445127bb6a45f1ba8`,
 [run 37432923650](https://github.com/logannye/biocompiler/actions/runs/37432923650),
 compiled both native platforms and passed the preceding suites, including all
@@ -559,9 +559,9 @@ traces as an expected-incomplete regression. A distinct
 silence/completed/failed choices for all three prior attempts and both Keep and
 Reset at tick3. Its census is 54/115/116 with separate domain/context identities,
 unchanged hard requirements/resources/RNA and six new literal traces. The four
-domain cases now contain 16 literal histories. This smaller domain's positive
-acceptance remains hosted-pending and does not discharge the original larger
-request; no profile ceiling is raised and no explored grammar is pruned.
+domain cases now contain 16 literal histories. This smaller domain's passing
+bounded result does not discharge the original larger request; no profile
+ceiling is raised and no explored grammar is pruned.
 
 The same source-reviewed batch adds three full public closure families:
 one-rule material compilation at 9/29/30, age0/1/2 evidence at 16/67/68, and
@@ -570,10 +570,39 @@ distinguish age/tie handling, ordered occurrences, state and attempt outcomes.
 Three source-valid requirement-field mutations (`lower`, `upper`, `contract`)
 must preserve the complete original requirement inventory while remaining
 unsupported through full checking/replay and withholding export. A nonzero
-encounter-birth control rejects at the public domain boundary. Native execution
-of these additions remains pending. The contextual inventory now records 25
-witness files, 96 source files and 62 rule families, including 16 explicitly
-partial families. Neither this inventory nor partial hosted evidence closes any
+encounter-birth control rejects at the public domain boundary.
+
+Latest partial hosted checkpoint: source
+`4fb5219a8ae857f4f733e364fdf07ff1e7981f4f`,
+[run 37448827385](https://github.com/logannye/biocompiler/actions/runs/37448827385),
+compiled both platforms and passed the focused suites. The retained Linux log
+confirms 1,236 domain assertions and 1,183 closure assertions; both platforms
+advanced to installed checks. The full run remains active. The existing
+486-history incomplete regression still withholds material, and complete
+native-suite, installed, packaging and aggregate acceptance remain open.
+
+The next, unvalidated source batch adds simultaneous lifecycle/feedback/deadline
+coverage at 27/111/112 with all 27 literal histories. Lifecycle precedes feedback,
+which precedes timeout; reset/end and same-tick feedback therefore retain their
+distinct event, identity and terminal-state outcomes. A new state case supplies
+17 nodes/25 wires/103 carriers over 9/47/48, with two literal histories testing
+common pre-commit state reads, state-dependent guards and authorization changes
+after commit. Both families require complete public compile/check/replay/export
+and distinguishing independent-checker mutations under separately supplied
+material authority.
+
+Six additional requirement controls retain source validity while separating
+earlier fractional-deadline operational rejection from unsupported encounter
+reads under executor scope and literal text equality. Truth equality has a
+positive export and a false negative control. A requested-to-completed response
+opened at tick1 with duration8 retains deadline9 beyond horizon4: its complete
+nine-history result is one pass/eight unknown, with pending obligations retained.
+These additions remain source-reviewed and native-pending; the current hosted
+receipt covers only the committed `4fb5219a8` source.
+
+The next batch's reviewed contextual inventory records 29 witness files, the
+same 96 source files and 62 rule families, including 16 explicitly partial
+families. Neither this inventory nor partial hosted evidence closes any
 milestone acceptance checkbox.
 
 ### SM-09 — Expand supported semantics through complete vertical profiles
@@ -592,8 +621,10 @@ case with one exact RNA/product and no delivered helper, using a narrow
 exclusive truth/encounter family and explicit formal context. General component
 composition, broader numeric/state/lifecycle operations, machines, coordination,
 quantification, inheritance, independent delivery and helper/multiple-member
-closure remain expansion work. Next: choose one concrete source-coverage need
-after the initial SM-08 gate, extend every dependent semantic/material/public
+closure remain material-profile expansion work. Existing authoring or broader
+reference-execution support does not establish admission through that entire
+chain; operational and material restrictions remain distinct. Next: choose one
+concrete source-coverage need after the initial SM-08 gate, extend every dependent semantic/material/public
 boundary, and repeat complete positive/distinguishing-negative hosted acceptance.
 No broader support follows from a source declaration, matching sequence or
 single-case success; biological viability is outside this session's scope.

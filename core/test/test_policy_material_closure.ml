@@ -362,6 +362,105 @@ let nonzero_start_control request limits compiled=
   List.iter(fun(role,handler)->List.iter(fun operation->check(fun()->run handler role operation
       (obj["request",changed;"candidate",candidate;"limits",limits])))
       ["check-policy-material";"export-policy-material"])roles
+let requirement_alternative_controls case limits baseline=
+  let original=get "request" case and expected=get "expected" case in
+  let declarations=Json.array(at["implementation_request";"document";"program";"declarations"]original)in
+  let declaration identity=List.find(fun row->text "id" row=identity)declarations in
+  let path identity=["implementation_request";"document";"program";"declarations";
+    string_of_int(Option.get(List.find_index(fun row->text "id" row=identity)declarations))]in
+  let edit identity suffix value request=put(path identity@suffix)value request in
+  let truth=get "condition"(declaration "request_progress")in
+  let falsehood=set "value"(Json.Bool false)truth in
+  let equality left right=truth|>set "op"(str "eq")|>set "value" Json.Null|>set "args"(arr[left;right])in
+  let text_literal=truth|>set "value_type"(set "kind"(str "text")(get "value_type" truth))
+    |>set "value"(str "same product label")in
+  let scope=obj["$type",str "Scope";"kind",str "executor";
+    "subject",obj["$type",str "Ref";"kind",str "Role";"id",str "executor"]]in
+  let completion=get "response"(declaration "initiation_progress")|>set "value"(str "completed")in
+  let cases=[
+    "executor_reads_encounter","scoped_memory","unsupported",Some "scope_requires_encounter",
+      edit "scoped_memory"["scope"]scope original;
+    "text_literal_equality","scoped_memory","unsupported",Some "unsupported_literal_type",
+      edit "scoped_memory"["condition"](equality text_literal text_literal)original;
+    "truth_equality","scoped_memory","pass",None,
+      edit "scoped_memory"["condition"](equality truth truth)original;
+    "false_truth_equality","scoped_memory","fail",None,
+      edit "scoped_memory"["condition"](equality truth falsehood)original;
+    "pending_completion","request_authorization","unknown",None,
+      (original|>edit "request_authorization"["response"]completion
+        |>edit "request_authorization"["deadline";"amount"](str "8"))
+  ]in
+  List.iter(fun(label,identity,status,unsupported,request)->
+    let decoded=R.of_json request in
+    let source=Bioc_checker.Policy_check.check(Q.document(R.implementation_request decoded))in
+    require(text "status" source="valid" && items "unresolved_obligations" source=items "obligations" expected)
+      (label^": requirement alternative must reach checking with the complete valid original source");
+    let compiled,payload=compile_check_replay request limits in
+    List.iter(fun key->require(get key compiled<>get key baseline)(label^": stale "^key))
+      ["request_fingerprint";"candidate_fingerprint";"invocation_fingerprint";"report_fingerprint"];
+    let report=get "report" compiled in
+    let preservation=get "preservation" report in
+    require(text "preservation" preservation="pass" && at["coverage";"complete"]preservation=Json.Bool true &&
+      get "stopped" preservation=Json.Null)
+      (label^": requirement alternative failed outside the fully explored requirement boundary: "^Canonical.encode report);
+    List.iter(fun key->require(at["coverage";key]preservation=get key expected)(label^": changed domain census "^key))
+      ["histories";"transitions";"prefixes_started"];
+    let rows=items "requirements" preservation in
+    require(Json.equal(arr(List.map(get "source")rows))(arr(requirements request)))
+      (label^": a requirement alternative omitted original hard obligations");
+    List.iter(fun row->if text "id" row<>identity then require(text "status" row="pass")
+      (label^": another unchanged requirement did not pass")else(
+      require(text "status" row=status)(label^": exact requirement outcome changed");
+      let count key=number key(get "histories" row)in
+      List.iter(fun key->require(count key=(if key=status then (if status="unknown"then 8 else 9)
+          else if status="unknown" && key="pass"then 1 else 0))
+        (label^": complete requirement-outcome census differs: "^key))
+        ["pass";"fail";"unknown";"unsupported";"not_exercised"];
+      let witness=at["witnesses";status;"requirement"]row in
+      require(get "unsupported_reason" witness=Option.fold ~none:Json.Null ~some:str unsupported)
+        (label^": requirement reason changed");
+      if status="unknown"then(
+        let obligations=items "obligations" witness in
+        require(List.length obligations=2 && List.for_all(fun obligation->
+          text "status" obligation="unknown" && text "reason" obligation="pending_horizon" &&
+          get "opened_tick" obligation=Json.int 1 && text "deadline_tick" obligation="9" &&
+          get "closed_tick" obligation=Json.Null && get "response_unknown" obligation=Json.Bool false)obligations)
+          "Beyond-horizon completion must retain both unanswered correlated obligations")))rows;
+    if status="pass"then(
+      let expected=set "requirements"(arr(requirements request))expected in
+      assessment_literals expected compiled;
+      List.iter(fun(role,handler)->let exported=run handler role "export-policy-material"payload in
+        publication_literals request(get "candidate" compiled)limits expected report exported)roles)
+    else(
+      require(text "status" report="not_accepted" && text "status" preservation="requirements_not_satisfied" &&
+        text "material_status" report="unassessed" && text "context_status" report="unassessed" &&
+        get "all_original_obligations_discharged" report=Json.Bool false && get "artifact" compiled=Json.Null &&
+        text "artifact" report="withheld" && text "export" report="withheld")
+        (label^": failed, unknown or unsupported requirement became accepted material");
+      require(List.map(get "obligation")(items "obligations" report)=items "obligations" expected &&
+        List.for_all(fun row->text "status" row="unresolved" && get "evidence" row=Json.Null)(items "obligations" report))
+        (label^": incomplete conjunction discharged or dropped an original obligation");
+      List.iter(fun(role,handler)->rejects(label^" export")"policy_material_export_not_accepted"
+        (fun()->run handler role "export-policy-material"payload))roles))cases;
+  (* Structurally valid fractional time is excluded by operational admission,
+     before a candidate monitor can interpret it. Assert that exact boundary. *)
+  let request=edit "request_progress"["deadline";"amount"](str "0.5")original in
+  let decoded=R.of_json request in
+  let source=Bioc_checker.Policy_check.check(Q.document(R.implementation_request decoded))in
+  require(text "status" source="valid" && items "unresolved_obligations" source=items "obligations" expected)
+    "Fractional requirement deadline was rejected by structural source checking";
+  let expected_path="/"^String.concat "/"(List.tl(path "request_progress")@["deadline"])in
+  let reject_fractional action=match action()with
+    |_->failwith "Public material route admitted an unaligned operational requirement deadline"
+    |exception Diagnostic.Error diagnostic->require(diagnostic.code="policy_operational_unsupported" &&
+        diagnostic.path=Some expected_path && diagnostic.message=
+        "Operational durations must be positive integral multiples of the shared clock resolution.")
+        "Fractional deadline failed outside its explicit operational admission boundary"in
+  reject_fractional(fun()->run Producer.handle Protocol.Core "compile-policy-material"
+    (obj["request",request;"limits",limits]));
+  List.iter(fun(role,handler)->List.iter(fun operation->reject_fractional(fun()->run handler role operation
+      (obj["request",request;"candidate",get "candidate" baseline;"limits",limits])))
+      ["check-policy-material";"export-policy-material"])roles
 let ()=
   require(Array.length Sys.argv=2)"Supply independently authored complete closure fixture";
   let fixture=read Sys.argv.(1)in
@@ -384,5 +483,6 @@ let ()=
     case,compiled)cases in
   let first,compiled=List.hd results in
   requirement_controls first limits compiled;
+  requirement_alternative_controls first limits compiled;
   nonzero_start_control(get "request" first)limits compiled;
-  Printf.printf "policy material public closure, age/ordered-multiplicity literals, three unsupported requirements and nonzero-start rejection passed (%d checks)\n" !checks
+  Printf.printf "policy material public closure, age/ordered-multiplicity literals, nine requirement controls and nonzero-start rejection passed (%d checks)\n" !checks
