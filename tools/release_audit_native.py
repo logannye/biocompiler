@@ -35,9 +35,15 @@ def duration(value):
     require(type(value) in (int, float) and math.isfinite(value) and value >= 0, 'Invalid duration')
 
 
-def audit_bundle(archive, *, identity, runtime, expected_members, fixture_pins, dune_sha256):
+def audit_bundle(archive, *, identity, runtime, expected_members, fixture_pins, dune_sha256,
+                 expected_executables=151, expected_fixtures=23):
+    require(type(expected_executables) is int and type(expected_fixtures) is int
+            and (expected_executables, expected_fixtures) in {(151, 23), (158, 23)},
+            'Unsupported native executable/fixture scope')
     names = archive.namelist()
-    require(len(names) == len(set(names)) == 175 and set(names) == set(expected_members) | {'manifest.json'}, 'Native bundle exact member census differs')
+    require(len(names) == len(set(names)) == expected_executables + expected_fixtures + 1
+            and len(expected_members) == len(set(expected_members))
+            and set(names) == set(expected_members) | {'manifest.json'}, 'Native bundle exact member census differs')
     require(sum(entry.file_size for entry in archive.infolist()) <= 2 * 1024**3, 'Nested native bundle exceeds prepared expansion bound')
     require(archive.getinfo('manifest.json').file_size < 1024 * 1024, 'Native manifest exceeds bound')
     document = decode(archive.read('manifest.json'))
@@ -56,15 +62,19 @@ def audit_bundle(archive, *, identity, runtime, expected_members, fixture_pins, 
         require(observed == document['files'][name], 'Native member bytes differ: ' + name)
         if name in fixture_pins:
             require(observed == fixture_pins[name], 'Native fixture differs from original source: ' + name)
-    require(len(fixture_pins) == 23 and len(expected_members) - len(fixture_pins) == 151, 'Native executable/fixture split differs')
+    require(set(fixture_pins) <= set(expected_members) and len(fixture_pins) == expected_fixtures
+            and len(expected_members) - len(fixture_pins) == expected_executables,
+            'Native executable/fixture split differs')
     return document
 
 
-def audit_suites(read, names, *, identity, plan, environment_paths):
+def audit_suites(read, names, *, identity, plan, environment_paths, expected_count=149):
+    require(type(expected_count) is int and expected_count in {149, 156}, 'Unsupported native suite scope')
     document = decode(read('native-suites/receipt.json'))
     require(set(document) == {'revision', 'run_id', 'run_attempt', 'tests', 'expected'} and all(document[k] == v for k, v in identity.items()), 'Native suite receipt identity/fields differ')
     expected = [row['name'] for row in plan]
-    require(len(expected) == 149 and document['expected'] == expected and len(document['tests']) == 149, 'Native suite census differs')
+    require(len(expected) == len(set(expected)) == expected_count and document['expected'] == expected
+            and len(document['tests']) == expected_count, 'Native suite census differs')
     required_logs = {'native-suites/' + name + '.log' for name in expected}
     require({name for name in names if name.startswith('native-suites/')} == required_logs | {'native-suites/receipt.json'}, 'Native suite log census differs')
     roots = set()

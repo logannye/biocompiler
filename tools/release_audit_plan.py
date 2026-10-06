@@ -1,4 +1,4 @@
-"""Re-derive inert run plans for the single versioned complete-release profile.
+"""Re-derive inert run plans for explicitly selected complete-release profiles.
 
 The profile is fixed source authority, not supplied by a hosted producer. Its
 workflow hash prevents an old scope from accepting changed workflow semantics.
@@ -10,7 +10,18 @@ from __future__ import annotations
 import ast
 import hashlib
 from pathlib import Path
+import re
+import stat
 from typing import Any
+
+
+COMPONENT_SOURCE_ROOTS = ('core', 'src', 'tools', 'protocol', '.github', 'pyproject.toml')
+BASE_COUNTS = {
+    'architecture_policy_comparisons': 6, 'direct_core_groups': 67, 'download_artifacts': 102,
+    'installed_campaigns': 17, 'installed_group_receipts': 20, 'installed_runtime_slots': 4,
+    'native_executables': 151, 'native_fixtures': 23, 'native_suites': 149,
+    'ordinary_receipts': 59, 'physical_jobs': 74, 'required_metadata': 128, 'unit_artifacts': 14,
+}
 
 
 def require(value, message):
@@ -23,9 +34,52 @@ def sha(path):
         return hashlib.file_digest(stream, 'sha256').hexdigest()
 
 
+def derive_component_sources(root: Path, component_source_rows: list[str], tracked: list[str]) -> dict[str, Any]:
+    """Bind exact Git rows to current files, then independently recheck the census."""
+    try:
+        from .release_audit_component import audit_sources
+    except ImportError:
+        from release_audit_component import audit_sources
+    root = Path(root)
+    require(type(tracked) is list and all(type(name) is str for name in tracked)
+            and len(tracked) == len(set(tracked)), 'Malformed tracked component source catalog')
+    require(type(component_source_rows) is list and component_source_rows,
+            'Complete component Git source rows are required')
+    expected = {name for name in tracked if any(name == base or
+                (base != 'pyproject.toml' and name.startswith(base + '/')) for base in COMPONENT_SOURCE_ROOTS)}
+    result = {}
+    for row in component_source_rows:
+        require(type(row) is str and row.count('\t') == 1 and not any(char in row for char in '\0\n\r'),
+                'Malformed component Git source row')
+        header, name = row.split('\t')
+        fields = header.split(' ')
+        require(len(fields) == 3 and fields[0] in {'100644', '100755'} and fields[1] == 'blob'
+                and re.fullmatch(r'[0-9a-f]{40}', fields[2]) is not None, 'Unsupported component Git source metadata')
+        mode, _, blob = fields
+        require(name and not name.startswith('/') and '\\' not in name
+                and all(part not in {'', '.', '..'} for part in name.split('/'))
+                and name in expected and name not in result, 'Unsafe, duplicate or out-of-scope component source')
+        path = root / name
+        require(path.is_file() and not any(parent.is_symlink() for parent in (path, *path.parents)),
+                'Missing or redirected component source: ' + name)
+        require(path.stat().st_size <= 128 * 1024**2, 'Component source exceeds reviewed bound')
+        raw = path.read_bytes()
+        require(len(raw) <= 128 * 1024**2
+                and hashlib.sha1(b'blob ' + str(len(raw)).encode() + b'\0' + raw).hexdigest() == blob
+                and bool(path.stat().st_mode & stat.S_IXUSR) == (mode == '100755'),
+                'Component source bytes or executable mode differ from Git: ' + name)
+        result[name] = {'sha256': hashlib.sha256(raw).hexdigest(), 'size': len(raw),
+                        'git_blob': blob, 'mode': mode}
+    require(set(result) == expected, 'Component Git rows omit tracked source files')
+    checked = audit_sources(root, audited_sources=result)
+    require(checked == result, 'Component source reconstruction differs')
+    return dict(sorted(result.items()))
+
+
 def build_plan(root: Path, *, identity: dict[str, str], tree: str, base: str,
                profile: dict[str, Any], profile_sha256: str,
-               tracked: list[str], source_rows: list[str]) -> dict[str, Any]:
+               tracked: list[str], source_rows: list[str],
+               component_source_rows: list[str] | None = None) -> dict[str, Any]:
     """Caller supplies fresh read-only Git catalogs for authenticated clean H."""
     # Source-root original modules are loaded only after CLI inventory/identity
     # capture. Their exact bytes become this independent source plan's authority.
@@ -33,7 +87,15 @@ def build_plan(root: Path, *, identity: dict[str, str], tree: str, base: str,
     import ci_core_groups
     import ci_validation
     require(profile['schema'] == 'biocompiler.release_audit_profile.v1'
-            and profile['id'] == 'complete-release-v1', 'Unsupported audit profile')
+            and profile['id'] in {'complete-release-v1', 'complete-component-release-v1'},
+            'Unsupported audit profile')
+    component_profile = profile['id'] == 'complete-component-release-v1'
+    expected_counts = {**BASE_COUNTS, **({'native_executables': 158, 'native_suites': 156}
+                                       if component_profile else {})}
+    require(type(profile['counts']) is dict and profile['counts'] == expected_counts
+            and all(type(value) is int for value in profile['counts'].values()),
+            'Complete profile count scope differs')
+    require(component_profile or component_source_rows is None, 'Component catalog supplied to the legacy profile')
     require(sha(root / profile['workflow_path']) == profile['workflow_sha256'],
             'Workflow differs from reviewed complete-release profile')
     require(len(tracked) == len(set(tracked)), 'Duplicate Git source catalog')
@@ -45,6 +107,8 @@ def build_plan(root: Path, *, identity: dict[str, str], tree: str, base: str,
         path = root / name
         require(path.is_file() and not path.is_symlink(), 'Missing or redirected source file: ' + name)
         inventory[name] = sha(path)
+    component_sources = (derive_component_sources(root, component_source_rows, tracked)
+                         if component_profile else None)
     archive_files = {}
     for row in source_rows:
         metadata, name = row.split('\t'); mode, kind, _ = metadata.split()
@@ -103,12 +167,14 @@ def build_plan(root: Path, *, identity: dict[str, str], tree: str, base: str,
               'native_environment_paths', 'platforms', 'legacy_comparison_receipts')
     plan = {'schema': 'biocompiler.release_audit_plan.v1', 'status': 'prepared_not_executed',
             'identity': identity, 'tree': tree, 'base': base, 'profile': profile['id'],
-            'profile_sha256': profile_sha256, **{key: profile[key] for key in fields},
+            'profile_sha256': profile_sha256, 'counts': dict(counts), **{key: profile[key] for key in fields},
             'source_inventory': inventory, 'source_archive_files': archive_files,
             'native_plan': native_plan, 'native_members': members, 'fixture_pins': fixture_pins,
             'dune_sha256': profile['dune_sha256'], 'direct_groups': groups,
             'direct_group_plan_sha256': profile['direct_group_plan_sha256'],
             'legacy_comparison_schemas': schemas, 'limitations': profile['limitations']}
+    if component_profile:
+        plan['component_sources'] = component_sources
     for field, count in [('physical_jobs', 'physical_jobs'), ('ordinary_receipts', 'ordinary_receipts'),
                          ('unit_artifacts', 'unit_artifacts'), ('download_artifact_names', 'download_artifacts'),
                          ('required_metadata_names', 'required_metadata')]:

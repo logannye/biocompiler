@@ -1,5 +1,7 @@
 """Complete fixed workflow gates, pinned inputs and original-body promotion."""
 from copy import deepcopy
+from contextlib import redirect_stderr
+from io import StringIO
 import hashlib
 import json
 from pathlib import Path
@@ -31,9 +33,10 @@ class ReleaseAuditOrchestrationTests(unittest.TestCase):
             guard.start()
             self.addCleanup(guard.stop)
 
-    def jobs(self):
+    def jobs(self, profile=None):
         rows = []
-        for index, spec in enumerate(PROFILE['physical_jobs']):
+        profile = PROFILE if profile is None else profile
+        for index, spec in enumerate(profile['physical_jobs']):
             steps = [{'name': 'Set up job', 'number': 1, 'status': 'completed', 'conclusion': 'success'}]
             for declared in spec['steps']:
                 steps.append({'name': declared['name'] or 'Run ' + str(declared['uses']),
@@ -275,3 +278,46 @@ class ReleaseAuditOrchestrationTests(unittest.TestCase):
                 spec['matrix']['group'] = 'unreviewed'
             with self.subTest(mutation=mutation), self.assertRaises(AssertionError):
                 self.check_jobs(self.jobs(), profile)
+
+    def test_profile_cli_defaults_to_original_and_requires_closed_explicit_component_choice(self):
+        arguments = ['prepare', '--source-root', '/literal/source', '--authority', '/literal/authority.json',
+                     '--packet', '/literal/packet.json', '--output', '/literal/plan.json',
+                     '--authority-sha256', 'a' * 64, '--packet-sha256', 'b' * 64, '--tool-revision', 'c' * 40]
+        self.assertEqual(audit.parse_args(arguments).profile, 'complete-release-v1')
+        self.assertEqual(audit.parse_args(arguments + ['--profile', 'complete-component-release-v1']).profile,
+                         'complete-component-release-v1')
+        with redirect_stderr(StringIO()), self.assertRaises(SystemExit):
+            audit.parse_args(arguments + ['--profile', 'automatic-or-partial'])
+        self.assertEqual(Path(audit.release_audit_component.__file__).resolve(), ROOT / 'tools/release_audit_component.py')
+
+    def test_component_profile_requires_full_existing_jobs_and_hosted_original_emission(self):
+        profile = json.loads((ROOT / 'protocol/release-audit-component-v1.json').read_text())
+        self.assertEqual(profile['id'], 'complete-component-release-v1')
+        self.assertEqual(profile['counts'], {**PROFILE['counts'], 'native_suites': 156, 'native_executables': 158})
+        jobs = self.jobs(profile)
+        self.assertEqual(len(jobs['jobs']), 74)
+        skips = self.check_jobs(jobs, profile)
+        self.assertEqual(len(skips), 29)
+        emitter = 'Emit independent component originals from the current domain-only build'
+        builds = [row for row in profile['physical_jobs'] if row['job'] == 'ocaml-build']
+        self.assertEqual(len(builds), 2)
+        for spec in builds:
+            steps = [step for step in spec['steps'] if step['name'] == emitter]
+            self.assertEqual(len(steps), 1)
+            self.assertIsNone(steps[0]['if'])
+            actual = next(row for row in jobs['jobs'] if row['name'] == spec['name'])
+            number = steps[0]['yaml_ordinal'] + 1
+            for mutation in ('missing', 'skipped', 'failure', 'wrong-name'):
+                changed = deepcopy(jobs)
+                target = next(row for row in changed['jobs'] if row['name'] == actual['name'])
+                step = next(row for row in target['steps'] if row['number'] == number)
+                if mutation == 'missing':
+                    target['steps'].remove(step)
+                elif mutation == 'wrong-name':
+                    step['name'] = 'Different fixture producer'
+                else:
+                    step['conclusion'] = mutation
+                with self.subTest(slot=spec['name'], mutation=mutation), self.assertRaises(AssertionError):
+                    self.check_jobs(changed, profile)
+        for field in ('ordinary_receipts', 'unit_artifacts', 'required_needs', 'download_artifact_names', 'required_metadata_names'):
+            self.assertEqual(profile[field], PROFILE[field])
