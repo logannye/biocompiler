@@ -5,6 +5,11 @@
 val schema_version : string
 val timeline_profile : string
 
+(** Exact finite decimal serialization used by source timeline adapters. No
+    floating-point conversion or rounding; the caller supplies nonnegative
+    time. The existing bounded representation failure remains explicit. *)
+val time_json : Q.t -> Bioc_wire.Json.t
+
 (** Execute a closed timeline. All time strings are exact nonnegative decimals
     in base units and must align with the single source clock. The full closed
     timeline has fields [profile, executor, horizon, encounters, observations,

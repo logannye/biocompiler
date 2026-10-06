@@ -298,6 +298,18 @@ Depends on: SM-02.
 
 Exit: a hand-authored implementation candidate executes the accepted/rejected witness histories correctly without consulting the source evaluator or producer.
 
+Source checkpoint: [independent primitive execution](policy-primitive-execution-v0.1.md)
+now includes a separate actual-graph runtime, causal source-prefix replay,
+producer-independent source/graph binding and exact observable prefix comparison.
+Native controls cover the one-rule and exclusion witnesses and altered traces.
+The new source is awaiting hosted execution; complete-domain exploration,
+independent requirement monitoring and material acceptance are still open.
+Review also found an unspecified host-language evaluation order in source
+request/initiation event creation. The explicit-order correction is pushed to
+PR90 as `4440e08c953a20d07e8d9d3a57c97bdcaa69c434`, with native validation in
+[run 37411134501](https://github.com/logannye/biocompiler/actions/runs/37411134501).
+PR89's older run cannot establish acceptance of this additional correction.
+
 ### SM-04 — Implement lowering and independent bounded preservation checking
 
 Depends on: SM-02 and SM-03; accepted results also depend on SM-00.
