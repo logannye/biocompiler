@@ -83,7 +83,7 @@ broader SM acceptance items below.
 
 | Subject | Source / tested checkout / tree | Current evidence boundary |
 | --- | --- | --- |
-| Current PR85 union | H `a85b1112ff35ba988a71cc969bfabdfefb354cfe`; C `00af6e6bab506d52a700e0a72e16ef2e2e8d8d61`; shared tree `7d22ca4c27eafcd36f018b3f262ef87404a3caf6` | [Run 37471505350, attempt 1](https://github.com/logannye/biocompiler/actions/runs/37471505350): 62 successful jobs and no failures at the retained snapshot; five installed campaign groups remain active, with downstream assembly/comparison/release gates pending |
+| Current PR85 union | H `a85b1112ff35ba988a71cc969bfabdfefb354cfe`; C `00af6e6bab506d52a700e0a72e16ef2e2e8d8d61`; shared tree `7d22ca4c27eafcd36f018b3f262ef87404a3caf6` | [Run 37471505350, attempt 1](https://github.com/logannye/biocompiler/actions/runs/37471505350): 63 successful jobs and no failures at the retained 15:31 UTC snapshot; four installed campaign groups remain active, with seven downstream assembly/comparison/release gates pending |
 | Separate PR95 policy head | H `bb84421cf1f93cd1dc02813d80a2c54a3520a919`; C `4fe47eb1aa69782a03723fda2df892985b4e7328`; shared tree `889583e44a9de598a32beb4154f42c0471e4be83` | [Run 37450940506, attempt 1](https://github.com/logannye/biocompiler/actions/runs/37450940506): all 42 hosted jobs succeeded; independent final artifact audit passed for its stated scope. Normal union integration and fresh main acceptance remain pending |
 | Current main baseline | `f594991ac2ff2496723ae5f2427ad93e6df7a51d` | PR88 is merged; the policy/material/package union has not yet been merged or main-validated |
 
@@ -152,6 +152,29 @@ Tracker edits are maintained in the isolated `codex/semantic-mrna-tracker`
 worktree while both tested source trees remain frozen. Include these documentation
 updates in the next coherent integration batch; do not restart a healthy run
 merely to publish a progress note.
+
+Active follow-up source-coverage work, not yet a completed acceptance item:
+
+- **SM-01.3:** the reviewed API census covers 32 primary files, 163 explicit
+  export bindings, 61 classes and 65 function candidates, plus 17 CLI commands
+  and 13 native operations. A second inert source review found no missing owned
+  top-level candidates. The proposed bounded AST drift gate, independent builder
+  expansion/default/source-map witnesses and exact route-to-input links are now
+  being implemented. Shared witness links do not establish per-body semantics.
+- **SM-01.1b:** the source-stage unit/scope review now indexes 40 reviewed kernel
+  rows and 43 caller contexts against 11 source pins. Its bounded drift checker
+  is being implemented. Python authoring diagnostics and native
+  source assessment have distinct enforcement boundaries; the inventory must
+  retain those differences. Downstream operational, domain, implementation and
+  material/context rules still require their own individual census.
+
+These reviews are retained under
+`work/m11-human-evidence/generated/policy-realization/source-api-census-a85b1112f/`
+and `work/m11-human-evidence/generated/migration-next/pr85-pr95-union/sm01-contextual-census/`.
+The latter includes three unexecuted source-stage counterexample specifications
+for persistence durations, state-reset ownership and message correlation
+ownership. They describe stage differences, not established production bugs or
+new executable support. Neither review changes either frozen validation subject.
 
 The following starting-point inventory and milestone preparation paragraphs
 are historical checkpoints. They explain the original dependency order; use the
