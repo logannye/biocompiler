@@ -1,18 +1,81 @@
 """Static coverage-census controls: never import policy or execute a native tool."""
 from __future__ import annotations
 
+import ast
 import copy
 from contextlib import redirect_stderr, redirect_stdout
 import io
+import json
 from pathlib import Path
 import shutil
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
 
 from tools.check_policy_semantic_coverage import (
-    CoverageError, LEDGER, MODEL, ROOT, SOURCE_ROOT, STAGES, discover, main, read_ledger, validate,
+    CoverageError, LEDGER, MODEL, ROOT, SOURCE_ROOT, STAGES, discover, main, read_ledger, syntax, validate,
 )
+
+
+class SyntaxNormalizationTests(unittest.TestCase):
+    def test_call_empty_fields_and_optional_defaults_have_exact_portable_shape(self):
+        # 3.11/3.12 ast.dump prints keywords=[]; 3.14 omits that same field.
+        node = ast.parse('TypeSpec("event")', mode='eval').body
+        expected = ['Call', [
+            ['args', ['list', [['Constant', [['kind', ['none']], ['value', ['str', 'event']]]]]]],
+            ['func', ['Name', [['ctx', ['Load', []]], ['id', ['str', 'TypeSpec']]]]],
+            ['keywords', ['list', []]],
+        ]]
+        with patch('ast.dump', side_effect=AssertionError('Display formatting is not syntax authority')):
+            self.assertEqual(json.loads(syntax(node)), expected)
+        self.assertNotEqual(syntax(node), syntax(ast.parse('TypeSpec("event", unit=None)', mode='eval').body))
+        self.assertNotEqual(syntax(node), syntax(ast.parse('TypeSpec()', mode='eval').body))
+
+    def test_version_added_empty_generic_fields_normalize_without_hiding_values(self):
+        for source in ('def f(): pass', 'async def f(): pass', 'class C: pass'):
+            with self.subTest(source=source):
+                absent = ast.parse(source).body[0]
+                absent._fields = tuple(key for key in absent._fields if key != 'type_params')
+                if hasattr(absent, 'type_params'):
+                    delattr(absent, 'type_params')
+                explicit = copy.deepcopy(absent)
+                explicit._fields += ('type_params',)
+                explicit.type_params = []
+                self.assertEqual(syntax(absent), syntax(explicit))
+                explicit.type_params = [ast.Name(id='T', ctx=ast.Load())]
+                self.assertNotEqual(syntax(absent), syntax(explicit))
+        for name in ('TypeVar', 'ParamSpec', 'TypeVarTuple'):
+            # Construct both schema shapes even on interpreters predating them.
+            node_type = type(name, (ast.AST,), {'_fields': ('name',)})
+            absent = node_type(name='T')
+            explicit = node_type(name='T')
+            explicit._fields = ('name', 'default_value')
+            explicit.default_value = None
+            self.assertEqual(syntax(absent), syntax(explicit))
+            explicit.default_value = ast.Name(id='int', ctx=ast.Load())
+            self.assertNotEqual(syntax(absent), syntax(explicit))
+
+    def test_scalar_types_empty_containers_and_none_default_slots_stay_distinct(self):
+        sources = ('False', '0', '0.0', '""', 'b""', 'None', '()', '[]', '{}', '...', '0j')
+        self.assertEqual(len({syntax(ast.parse(source, mode='eval').body) for source in sources}), len(sources))
+        # kw_defaults=[None] means a required keyword, unlike Constant(None).
+        required = ast.parse('def f(*, option): pass').body[0]
+        defaulted = ast.parse('def f(*, option=None): pass').body[0]
+        self.assertNotEqual(syntax(required), syntax(defaulted))
+
+    def test_signature_default_operator_and_future_field_changes_remain_visible(self):
+        original = ast.parse('def f(value: int = 0): return value + 1').body[0]
+        for source in ('def f(value: str = 0): return value + 1',
+                       'def f(value: int = 1): return value + 1',
+                       'def f(value: int = 0): return value - 1',
+                       'def f(value: int = 0, /): return value + 1'):
+            with self.subTest(source=source):
+                self.assertNotEqual(syntax(original), syntax(ast.parse(source).body[0]))
+        changed = copy.deepcopy(original)
+        changed._fields += ('future_semantic_field',)
+        changed.future_semantic_field = []
+        self.assertNotEqual(syntax(original), syntax(changed))
 
 
 class PolicySemanticCoverageTests(unittest.TestCase):

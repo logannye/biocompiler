@@ -45,8 +45,52 @@ def closed(value: Any, keys: set[str], label: str) -> None:
     require(type(value) is dict and set(value) == keys, f"{label}: unexpected or missing keys")
 
 
+# These fields were added in Python 3.12/3.13. Their absent and explicit empty
+# defaults describe the same nongeneric source. Nonempty values remain hashed.
+# Other fields, including future additions, are never silently discarded.
+AST_ADDED_DEFAULTS: dict[str, dict[str, Any]] = {
+    "FunctionDef": {"type_params": []},
+    "AsyncFunctionDef": {"type_params": []},
+    "ClassDef": {"type_params": []},
+    "TypeVar": {"default_value": None},
+    "ParamSpec": {"default_value": None},
+    "TypeVarTuple": {"default_value": None},
+}
+
+
 def syntax(node: ast.AST | None) -> str | None:
-    return None if node is None else ast.dump(node, include_attributes=False)
+    """Encode actual syntax fields, independent of ast.dump's display defaults.
+
+    Python 3.14 omits empty collections from ast.dump by default. Keep them here,
+    together with None, scalar types, operand order and all nonlocation fields.
+    Only the version-added defaults above are filled when absent.
+    """
+    def shape(value: Any) -> Any:
+        if isinstance(value, ast.AST):
+            fields = dict(ast.iter_fields(value))
+            for key, default in AST_ADDED_DEFAULTS.get(type(value).__name__, {}).items():
+                fields[key] = getattr(value, key, default)
+            return [type(value).__name__, [[key, shape(fields[key])] for key in sorted(fields)]]
+        if type(value) is list:
+            return ["list", [shape(item) for item in value]]
+        if value is None:
+            return ["none"]
+        if type(value) in (str, bool):
+            return [type(value).__name__, value]
+        if type(value) is int:
+            return ["int", str(value)]
+        if type(value) is float:
+            return ["float", value.hex()]
+        if type(value) is complex:
+            return ["complex", value.real.hex(), value.imag.hex()]
+        if type(value) is bytes:
+            return ["bytes", value.hex()]
+        if value is Ellipsis:
+            return ["ellipsis"]
+        raise CoverageError(f"Unsupported AST field value: {type(value).__name__}")
+
+    return None if node is None else json.dumps(shape(node), ensure_ascii=True,
+                                               separators=(",", ":"), allow_nan=False)
 
 
 def terminal(node: ast.AST) -> str:
