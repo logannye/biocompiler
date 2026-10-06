@@ -63,3 +63,13 @@ val placement : t -> Architecture_contract.Placement.t
 val delivery_group : t -> delivery_group
 val helpers : t -> Architecture_contract.Helper.t list
 val providers : t -> provider list
+
+(** Bounded syntax leaves shared with independently versioned context records.
+    These do not confer original-context, capacity or deployment acceptance. *)
+val clock_of_json : Json.t -> clock
+val clock_to_json : clock -> Json.t
+val recipient_of_json : Json.t -> recipient
+val provider_of_json : Json.t -> provider
+val delivery_group_of_json : Json.t -> delivery_group
+val delivery_group_to_json : delivery_group -> Json.t
+val record_shapes : Json.t

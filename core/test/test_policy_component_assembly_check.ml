@@ -10,6 +10,8 @@ module SA = Bioc_checker.Policy_admission
 module RA = Bioc_checker.Policy_realization_admission
 module SL = Bioc_compiler.Policy_lowering
 module GL = Bioc_compiler.Policy_implementation_lowering
+module CL = Bioc_compiler.Policy_component_lowering
+module CP = Bioc_compiler.Construction_producer
 module K = Bioc_domain.Construction_content
 module Artifact = Bioc_domain.Construction_artifact
 module E = Bioc_domain.Construction_assessment
@@ -404,6 +406,60 @@ let resource_controls case =
     |> replace "catalog_authorization" (str "pass") in
   require (not (Json.equal forged (Check.report (check case)))) "Untrusted report rewrote fresh checker authority";
   rejected "missing_field" "receipt cannot be deserialized as a proposal" (fun () -> Q.of_json forged)
+let producer_controls case other =
+  let library = RR.implementation_library case.request in
+  let admitted = RA.admit ~request:case.request ~behavior:case.behavior in
+  let lowered = GL.lower ~admitted ~library in
+  let original_graph = I.to_json lowered.implementation and original_binding = U.to_json lowered.binding in
+  let arranged = CL.arrange ~library ~rule:case.assembly_rule lowered in
+  (* The reviewed literal allocation fixes expected names independently of the
+     matching producer. Only typed node references change; enums and input IDs
+     retain their original spelling. *)
+  let names = List.map (fun (node:I.node) ->
+    let actual = fst (List.find (fun (_,local) -> local=node.node_id) (allocation case.state_reading)) in
+    node.node_id,actual) (I.nodes case.graph) in
+  let expected_graph = alpha_graph names (I.to_json case.graph) in
+  let expected_binding = alpha_binding names (U.to_json case.binding) in
+  let expected_proposal = edit ["nodes"] (fun rows -> arr (List.map (fun row ->
+    replace "actual" (rename names (get "actual" row)) row) (Json.array rows))) (Q.to_json case.proposed) in
+  require (Json.equal (I.to_json arranged.implementation) expected_graph)
+    "Actual component producer differs from the complete literal ordered union";
+  require (Json.equal (U.to_json arranged.binding) expected_binding &&
+    Json.equal (Q.to_json arranged.assembly) expected_proposal)
+    "Actual producer lost exact source occurrences, node ownership or input correspondence";
+  require (Json.equal (get "authority" (I.to_json arranged.implementation)) (get "authority" original_graph) &&
+    Json.equal (get "occurrences" (I.to_json arranged.implementation)) (get "occurrences" original_graph))
+    "Arrangement replaced original source authority or occurrence inventory";
+  require (Json.equal original_graph (I.to_json lowered.implementation) &&
+    Json.equal original_binding (U.to_json lowered.binding)) "Arrangement mutated its source-produced inputs";
+  let again = CL.arrange ~library ~rule:case.assembly_rule lowered in
+  require (Json.equal (I.to_json arranged.implementation) (I.to_json again.implementation) &&
+    Json.equal (U.to_json arranged.binding) (U.to_json again.binding) &&
+    Json.equal (Q.to_json arranged.assembly) (Q.to_json again.assembly))
+    "Fresh component arrangement is not deterministic";
+  let authority = A.material_authority case.assembly_rule in
+  let content = CP.construct_template ~member_order:["payload"] (PM.template authority) in
+  require (Json.equal (K.to_json content) (K.to_json case.content))
+    "Actual construction differs from independently authored full17/18-base material";
+  let content_again = CP.construct_template ~member_order:["payload"] (PM.template authority) in
+  require (Json.equal (K.to_json content_again) (K.to_json content)) "Fresh construction changed exact derived material";
+  let preserved = preserved case.request case.behavior arranged.implementation arranged.binding case.limits in
+  let produced_case = {case with graph=arranged.implementation;binding=arranged.binding;
+    proposed=arranged.assembly;preserved;content} in
+  let result = check produced_case in
+  let checked = accepted "actual source-to-component arrangement and construction" result in
+  require (Json.equal (RR.to_json (Check.original checked)) (RR.to_json case.request) &&
+    A.fingerprint (Check.rule checked)=A.fingerprint case.assembly_rule &&
+    L.fingerprint (Check.components checked)=L.fingerprint case.components)
+    "Fresh produced assembly replaced untouched original request/component/rule authority";
+  let report = Check.report result in
+  require (Json.equal (get "carrier_projections" report) (arr (expected_carriers case.state_reading)) &&
+    Json.equal (get "link_projections" report) (alpha_links names (expected_links case.state_reading)))
+    "Produced assembly omitted a literal local carrier or original cross-link projection";
+  require (Json.equal report (Check.report (check produced_case))) "Fresh produced assembly check changed complete evidence";
+  rejected ~message:"The original component union and source-produced graph need equal bounded primitive inventories."
+    "policy_component_lowering_unsupported" "different source family cannot borrow an original rule"
+    (fun () -> CL.arrange ~library ~rule:other.assembly_rule lowered)
 let run first second =
   let a = make_case first false and b = make_case second true in
   require (C.fingerprint (A.component a.assembly_rule A.Driver)=C.fingerprint (A.component b.assembly_rule A.Driver))
@@ -415,6 +471,7 @@ let run first second =
   material_failed "A exact artifact cannot transfer to B original" (check {b with content=a.content});
   result_failed "A preservation cannot transfer to B source" "unchanged_original_realization_request" (check {b with preserved=a.preserved});
   resource_controls a;
+  producer_controls a b;producer_controls b a;
   Printf.printf "component assembly checker: %d independent checks passed\n" !checks
 let () =
   Printexc.register_printer (function
