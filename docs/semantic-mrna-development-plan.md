@@ -630,7 +630,15 @@ test source now exist in that worktree. The decoder preserves complete configure
 models, typed boundary/external slots, input ownership, local atomic groups and
 all ordered outputs; its identity excludes the surrounding whole-library digest.
 The new fixture uses the identical driver across independently supplied A/B
-libraries. These are source changes; native compilation/tests remain pending.
+libraries. Static dependency checks and all 34 Python boundary/bundle tests pass
+on both Python 3.11.15 and 3.14.6 under process/network denial, with the same
+587-file source manifest. The new native test is registered as suite 150;
+existing suites and all 23 fixture dependencies are preserved. The independent
+native source review counts 55 rejection invocations. These are source/static
+results; native compilation/tests and full JSON Schema validation remain pending.
+The focused proof is
+`work/policy-component-composition/generated/component-fragment/focused-pair-proof.json`,
+SHA-256 `21e8061becba5defa76f4057029918b2daf6b1f165a54552eb45137c4b49edfe`.
 The tracked `docs/policy-component-composition-v0.1.md` there records the full
 future path, including constant-broadcast versus encounter-scoped links and a
 new original composition context/layout authority. No new profile is admitted,
