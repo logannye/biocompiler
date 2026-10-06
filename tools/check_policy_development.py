@@ -32,6 +32,9 @@ SUITES = (
     ("test_policy_component_assembly_check", ("data/policy_material_request_v01.json", "data/policy_material_state_v01.json")),
     ("test_policy_component_material_request", ("data/policy_material_request_v01.json", "data/policy_material_state_v01.json")),
     ("test_policy_component_context_check", ("data/policy_material_request_v01.json", "data/policy_material_state_v01.json")),
+    ("test_policy_component_material_service", ("data/policy_material_request_v01.json", "data/policy_material_state_v01.json")),
+    ("test_protocol", ()),
+    ("test_producer_protocol", ()),
     ("test_policy_implementation_binding", ("data/policy_implementation_binding_v01.json", "data/policy_realization_request_v01.json", "data/policy_exclusion_source_v01.json")),
     ("test_policy_preservation_check", ("data/policy_implementation_binding_v01.json",)),
     ("test_policy_material_binding", ("data/policy_material_binding_v01.json",)),
@@ -135,7 +138,7 @@ def selected_suites(root):
     result = []
     for name, fixtures in SUITES:
         require(name in plan and plan[name].get("environment") == []
-                and plan[name].get("dependencies") == list(fixtures), "Missing or changed registered suite: " + name)
+                and plan[name].get("dependencies", []) == list(fixtures), "Missing or changed registered suite: " + name)
         paths = ["core/test/" + path for path in fixtures]
         result.append({"name": name, "executable": "core/_build/default/test/" + name + ".exe",
                        "fixtures": {path: pin(root, path) for path in paths},

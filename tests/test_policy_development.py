@@ -24,8 +24,8 @@ class PolicyDevelopmentTests(unittest.TestCase):
         (self.root / "core/test/data").mkdir()
         self.stanzas = []
         for name, fixtures in dev.SUITES:
-            self.stanzas.append(f"(test (name {name}) (modules {name}) (libraries bioc_wire) "
-                + "(action (run %{test} " + " ".join("%{dep:" + path + "}" for path in fixtures) + ")))\n")
+            action = (" (action (run %{test} " + " ".join("%{dep:" + path + "}" for path in fixtures) + "))") if fixtures else ""
+            self.stanzas.append(f"(test (name {name}) (modules {name}) (libraries bioc_wire){action})\n")
             for path in fixtures:
                 (self.root / "core/test" / path).write_text('{"independent_fixture":true}\n')
         (self.root / "core/test/dune").write_text("".join(self.stanzas))
@@ -97,13 +97,14 @@ class PolicyDevelopmentTests(unittest.TestCase):
         self.assertEqual([row[0] for row in dev.SUITES], [
             "test_policy_component_fragment", "test_policy_component_material", "test_policy_component_assembly_rule", "test_policy_component_assembly_check",
             "test_policy_component_material_request", "test_policy_component_context_check",
+            "test_policy_component_material_service", "test_protocol", "test_producer_protocol",
             "test_policy_implementation_binding",
             "test_policy_preservation_check", "test_policy_material_binding", "test_policy_material_context",
             "test_policy_material_check", "test_policy_mrna_structure", "test_construction_content"])
         self.assertEqual(self.calls[:2], [
             ["opam", "install", "core/biocompiler_core.opam", "--deps-only", "--with-test", "--yes"],
             ["opam", "exec", "--", "dune", "build", "--root", "core", "@all"]])
-        self.assertEqual(len(self.calls), 15)
+        self.assertEqual(len(self.calls), 18)
         self.assertEqual([Path(p).name for p in next(call for call in self.calls if any(str(arg).endswith("test_policy_implementation_binding.exe") for arg in call))[4:]], [
             "policy_implementation_binding_v01.json", "policy_realization_request_v01.json", "policy_exclusion_source_v01.json"])
         self.assertEqual(result["status"], "passed")
@@ -183,14 +184,14 @@ class PolicyDevelopmentTests(unittest.TestCase):
         self.assertEqual(len(self.calls), 2)
         self.assertEqual(self.report()["status"], "failed")
 
-    def test_failed_suite_retains_all_thirteen_outcomes_and_fails(self):
+    def test_failed_suite_retains_all_sixteen_outcomes_and_fails(self):
         dev.prepare(self.root)
         self.fail = dev.selected_suites(self.root)[1]["argv"]
         with self.assertRaisesRegex(ValueError, "Focused native suite failed"):
             dev.run(self.root)
         result = self.report()
-        self.assertEqual(len(self.calls), 15)
-        self.assertEqual([r["status"] for r in result["suites"]].count("passed"), 12)
+        self.assertEqual(len(self.calls), 18)
+        self.assertEqual([r["status"] for r in result["suites"]].count("passed"), 15)
         self.assertEqual(result["suites"][1]["status"], "failed")
         self.assertEqual(result["status"], "failed")
 
