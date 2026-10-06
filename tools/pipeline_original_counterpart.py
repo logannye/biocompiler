@@ -286,6 +286,12 @@ def run(task='deferred', *, test_module=None, test_ids=None, _capture=None):
 
 
 def validate(value):
+    """Recheck one result against fresh entry and closing source closures.
+
+    Membership is local to this call, never a cached validation. Closing reads
+    detect retained changes; they do not provide an atomic filesystem snapshot
+    or guarantee detection of transient changes restored between reads.
+    """
     require(type(value) is dict and set(value) == {'manifest', 'modules', 'value'},
         'Malformed original counterpart result')
     manifest = value['manifest']
@@ -294,25 +300,32 @@ def validate(value):
         'Malformed original counterpart manifest')
     root = Path(manifest['root'])
     require(root.is_absolute() and type(manifest['sources']) is list, 'Original counterpart root differs')
-    require(manifest['data']==[{'logical':path,'sha256':lineage.sha((ROOT/path).read_bytes())} for path in task_data(manifest['task'], manifest['test_module'])],
+    source_root, task, test_module = ROOT, manifest['task'], manifest['test_module']
+    input_snapshot = canonical(value)
+    source_files = tuple(task_files(task, test_module))
+    source_membership = frozenset(source_files)
+    data_files = tuple(task_data(task, test_module))
+    data_pins = tuple((path, lineage.sha((source_root/path).read_bytes())) for path in data_files)
+    require(manifest['data']==[{'logical':path,'sha256':pin} for path, pin in data_pins],
         'Original counterpart data closure differs')
-    routes = reference_routes(manifest['task'], manifest['test_module'])
+    routes = reference_routes(task, test_module)
     require(manifest['reference_routes'] == {path: proof for path, (_, proof) in routes.items()},
         'Original counterpart reference entry correspondence differs')
-    policies = policy_routes(manifest['task'], manifest['test_module'])
+    policies = policy_routes(task, test_module)
     require(manifest['policy_routes'] == {path: proof for path, (_, proof) in policies.items()},
         'Original counterpart policy entrypoint correspondence differs')
-    rows = {}
+    rows, origin_pins = {}, {}
     for row in manifest['sources']:
         require(set(row) == {'logical', 'origin', 'origin_sha256', 'path', 'sha256', 'substituted'}
             and row['logical'] not in rows, 'Original counterpart source census differs')
         logical = row['logical']
-        require(logical in task_files(manifest['task'], manifest['test_module']) or logical.startswith('src/biocompiler/') and logical.endswith('.py'),
+        require(logical in source_membership or logical.startswith('src/biocompiler/') and logical.endswith('.py'),
             'Unreviewed original counterpart file')
         require('..' not in Path(logical).parts and row['path'] == str(root / logical),
             'Original counterpart source path differs')
-        raw = (ROOT / logical).read_bytes()
-        require(row['origin_sha256'] == lineage.sha(raw), 'Original counterpart origin bytes differ')
+        raw = (source_root / logical).read_bytes()
+        origin_pins[logical] = lineage.sha(raw)
+        require(row['origin_sha256'] == origin_pins[logical], 'Original counterpart origin bytes differ')
         wanted = lineage.original_source() if logical == lineage.PATH else lineage.original_tool_source() if logical == lineage.TOOL_PATH else routes[logical][0] if logical in routes else policies[logical][0] if logical in policies else raw
         require(row['sha256'] == lineage.sha(wanted) and row['substituted'] is (wanted != raw),
             'Original counterpart substitution differs')
@@ -322,12 +335,13 @@ def validate(value):
         else:
             require(Path(row['origin']).name == Path(logical).name, 'Original counterpart tool origin differs')
         rows[logical] = row
-    expected = set(task_files(manifest['task'], manifest['test_module'])) | {'src/biocompiler/' + path.relative_to(ROOT / 'src/biocompiler').as_posix()
-        for path in (ROOT / 'src/biocompiler').rglob('*.py')}
+    package_sources = frozenset('src/biocompiler/' + path.relative_to(source_root / 'src/biocompiler').as_posix()
+        for path in (source_root / 'src/biocompiler').rglob('*.py'))
+    expected = source_membership | package_sources
     require(set(rows) == expected, 'Original counterpart complete source census differs')
-    require(manifest['tool_route'] == (lineage.verify_tool_source((ROOT/lineage.TOOL_PATH).read_bytes())
+    require(manifest['tool_route'] == (lineage.verify_tool_source((source_root/lineage.TOOL_PATH).read_bytes())
         if lineage.TOOL_PATH in expected else None), 'Original counterpart helper source lineage differs')
-    require(manifest['route'] == lineage.verify_source(ROOT, lineage.PATH, lineage.HISTORICAL[lineage.PATH]),
+    require(manifest['route'] == lineage.verify_source(source_root, lineage.PATH, lineage.HISTORICAL[lineage.PATH]),
         'Original counterpart routed source lineage differs')
     modules = value['modules']
     require(type(modules) is dict and 'biocompiler.compiler.pipeline' in modules, 'Original canonical module absent')
@@ -338,6 +352,22 @@ def validate(value):
             and module['namespace'] == name, 'Original product module provenance differs')
         derived = logical.removeprefix('src/').removesuffix('.py').replace('/', '.')
         require(name == derived.removesuffix('.__init__'), 'Original module is not in its canonical namespace')
+    require(ROOT == source_root and canonical(value) == input_snapshot,
+        'Original counterpart inputs changed during validation')
+    require(tuple(task_files(task, test_module)) == source_files,
+        'Original counterpart source closure changed during validation')
+    require(tuple(task_data(task, test_module)) == data_files and
+        tuple((path, lineage.sha((source_root/path).read_bytes())) for path in data_files) == data_pins,
+        'Original counterpart data closure changed during validation')
+    require(frozenset('src/biocompiler/' + path.relative_to(source_root / 'src/biocompiler').as_posix()
+        for path in (source_root / 'src/biocompiler').rglob('*.py')) == package_sources,
+        'Original counterpart package census changed during validation')
+    require(all(lineage.sha((source_root/logical).read_bytes()) == pin for logical, pin in origin_pins.items()),
+        'Original counterpart source bytes changed during validation')
+    require(reference_routes(task, test_module) == routes and policy_routes(task, test_module) == policies,
+        'Original counterpart source routes changed during validation')
+    require(ROOT == source_root and canonical(value) == input_snapshot,
+        'Original counterpart inputs changed during validation')
     return value['value']
 
 
