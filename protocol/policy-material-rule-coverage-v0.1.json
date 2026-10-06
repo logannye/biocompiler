@@ -1494,7 +1494,7 @@
     },
     {
       "path": "core/test/test_policy_operational.ml",
-      "sha256": "21d515ca64ad2b9dc56181ad91fefd28c2070967c174a82ef8120c0084a0c71a"
+      "sha256": "5bf3cfd63df5cfd705fab4f9349e3520d2972564381efda425409e5d38d999bb"
     },
     {
       "path": "core/test/test_policy_preservation_check.ml",
@@ -1619,12 +1619,32 @@
           "path": "core/lib/checker/policy_admission.ml",
           "anchor": "Reachable source operation has no exact executable descriptor.",
           "occurrence": 1
+        },
+        {
+          "path": "core/lib/checker/policy_admission.ml",
+          "anchor": "Operational descriptor is not bound to the complete source DefinitionRef.",
+          "occurrence": 1
+        },
+        {
+          "path": "core/lib/checker/policy_admission.ml",
+          "anchor": "Descriptor identity or operational interpretation differs from this contextual use.",
+          "occurrence": 1
+        },
+        {
+          "path": "core/lib/checker/policy_admission.ml",
+          "anchor": "This primitive descriptor takes no formal parameters.",
+          "occurrence": 1
+        },
+        {
+          "path": "core/lib/checker/policy_admission.ml",
+          "anchor": "This primitive descriptor does not return a value.",
+          "occurrence": 1
         }
       ],
       "admitted_context": "Every reachable interpreted operation has its full id/version/body digest and closed semantic descriptor; definitions have no uninterpreted clauses or executor/subject qualifiers, and all supplied descriptors are used.",
       "outside_context": {
         "disposition": "mixed",
-        "description": "Missing, duplicate, stale, conflicting, unused or semantically wrong descriptors and unimplemented definition restrictions are unsupported."
+        "description": "Missing, duplicate, stale, conflicting, unused or semantically wrong descriptors and unimplemented definition restrictions are unsupported. Source DefinitionRef identity/category failures reject earlier during fresh source assessment; malformed descriptor digests and unknown semantic tags reject during decoding. After source validation and complete descriptor-index binding, the late bind identity-false branch is unreachable: both closed references contain the same id/version/body digest. Its contextual semantic-tag mismatch remains reachable and is separately witnessed."
       },
       "positive": [
         {
@@ -1664,11 +1684,93 @@
           },
           "context": "Two separately instantiated, fully repinned definition controls reject nominal executor_kind and subject_kind constraints after generic source validity; an executable-clause control rejects uninterpreted preconditions.",
           "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_operational.ml",
+            "anchor": "rejects \"missing semantics\"",
+            "occurrence": 1
+          },
+          "context": "Unchanged admitted source loses the reachable Role capability descriptor and rejects at the shared bind lookup; the original positive fixture reaches capability, encounter, observation, effect and lifecycle calls.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_operational.ml",
+            "anchor": "rejects \"duplicate semantics\"",
+            "occurrence": 1
+          },
+          "context": "Unchanged admitted source repeats an exact descriptor and rejects at descriptor-index construction before contextual binding.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_operational.ml",
+            "anchor": "rejects \"malformed SHA-256 descriptor ingress\"",
+            "occurrence": 1
+          },
+          "context": "The four 63/65/nonhex/uppercase digest controls exercise descriptor decoding, not complete source identity binding.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_operational.ml",
+            "anchor": "rejects \"unknown semantic tag\"",
+            "occurrence": 1
+          },
+          "context": "An unrecognized semantic tag rejects during closed descriptor decoding; this is distinct from a recognized tag used in the wrong context.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_operational.ml",
+            "anchor": "rejects \"contextually wrong semantics\"",
+            "occurrence": 1
+          },
+          "context": "A recognized effect tag replaces the capability tag on the original Role descriptor. Complete identity remains unchanged; the shared contextual semantic-tag predicate rejects.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_operational.ml",
+            "anchor": "rejects (\"wrong complete definition identity \"^field)",
+            "occurrence": 1
+          },
+          "context": "Original id and version mutations reject during descriptor-index binding against unchanged valid source. The original digest mutation is malformed and rejects at decoding; it is retained separately from the well-formed stale-digest control.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_operational.ml",
+            "anchor": "unsupported \"well-formed stale descriptor digest\"",
+            "occurrence": 1
+          },
+          "context": "Fresh source validity and successful descriptor decoding/roundtrip precede the exact rejection catcher. One changed hex digit in the 64-character capability digest reaches policy_operational_unsupported at /definitions with the complete DefinitionRef diagnostic; no source input is altered.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_operational.ml",
+            "anchor": "unsupported \"observation formal has no executable argument interpretation\"",
+            "occurrence": 1
+          },
+          "context": "A fully repinned observation definition adds one fixed truth formal with null value/bounds, preserving its compatible truth result. Source validity and descriptor decoding precede exact policy_operational_unsupported at /document/declarations/4/contract for nonempty formals. Capability/Role, encounter and lifecycle definitions can also carry such source-valid formals and reach this same unconditional non-effect predicate; those three contexts are a shared-guard reachability argument, not separately executed negatives. Effect formals use the separately indexed signature-only branch.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_operational.ml",
+            "anchor": "unsupported \"abstract effect cannot silently discard a supplied result\"",
+            "occurrence": 1
+          },
+          "context": "A fully repinned effect definition adds a truth result while retaining matched empty formals/actuals. Source validity and descriptor decoding precede exact policy_operational_unsupported at /document/declarations/6/contract for non-null results. Capability/Role, encounter and lifecycle definitions can likewise carry source-valid results and reach the same non-observation predicate; those three contexts are a shared-guard reachability argument, not separately executed negatives. Observation null/mismatched results and effect missing/mistyped actuals instead reject earlier under source observation_signature/effect_arguments/effect_argument_type checks.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
         }
       ],
       "witness_status": "partial_source_witnesses",
       "gaps": [
-        "All five closed descriptor variants are indexed in the operational fixture. Individual context-specific identity and signature rejection witnesses remain to be indexed; tag presence alone does not establish their execution meaning."
+        "The three exact source-valid identity/signature controls are reviewed source additions awaiting hosted native execution and exact-revision acceptance; this static index does not establish their execution.",
+        "All five descriptor uses and both shared signature guards are mapped. The non-effect formal and non-observation result controls each instantiate one of four reachable source-valid contexts; the other contexts rely on the explicit shared-predicate reachability argument above. Arbitrary combinations and full per-context execution coverage remain outside this index."
       ]
     },
     {
