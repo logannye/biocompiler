@@ -1432,12 +1432,16 @@
       "sha256": "bd9dfbb65c456b75fa401049341e85a6de882e8f130b4c76dfdadd9b6dd08968"
     },
     {
+      "path": "core/test/test_policy_execution.ml",
+      "sha256": "b32c6fb2541df9928d5dc229740463c05fe105dcde0beeca0bbdc00ef513ec07"
+    },
+    {
       "path": "core/test/test_policy_implementation.ml",
       "sha256": "1f7373c92d728ca8d707b9363892f487f6543240e2c9b61735f63daf8df26c2e"
     },
     {
       "path": "core/test/test_policy_implementation_binding.ml",
-      "sha256": "72386dd7a3e029b0006fe179193b4ff3898b27172f468c31354a56138902e7ff"
+      "sha256": "6b9f9760b601e2f7ed850725bc05f792e14bca6fd5b93dbe4795f77f0904bd3e"
     },
     {
       "path": "core/test/test_policy_material_binding.ml",
@@ -1449,7 +1453,7 @@
     },
     {
       "path": "core/test/test_policy_material_closure.ml",
-      "sha256": "f80cd96cc81df710e57d8c2d75caa7c2392b45f0794a2e506eb0b72c6c959638"
+      "sha256": "6829d072c2c4774ec1ee374ffbe062284b062e89a96d69c14dc5dfc063049474"
     },
     {
       "path": "core/test/test_policy_material_compound.ml",
@@ -1505,7 +1509,7 @@
     },
     {
       "path": "core/test/test_policy_requirement_monitor.ml",
-      "sha256": "68f44dd82e0a35c6e2276dde991f659db654894e7a719bd8c0ffb8a599271987"
+      "sha256": "f4eb1f1bc66bb9b00c5788c152e834350971d6ddf9ef377f10d5981e4fcd4cb3"
     },
     {
       "path": "tests/test_policy_material.py",
@@ -1630,6 +1634,15 @@
           },
           "context": "Operational literal fixture with one executor, encounter evidence and finite truth state; this is source-level native-test inventory only.",
           "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_operational.ml",
+            "anchor": "Closed semantic descriptor variant lost its versioned tag",
+            "occurrence": 1
+          },
+          "context": "Operational fixture retains all five closed capability, encounter, observation, effect and lifecycle descriptor tags. This is a descriptor/lowering control, not an execution witness for every descriptor context.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
         }
       ],
       "negative": [
@@ -1654,7 +1667,7 @@
       ],
       "witness_status": "partial_source_witnesses",
       "gaps": [
-        "Descriptor categories beyond the first material observation/effect family retain stage-local operational coverage; their individual positive/rejection witnesses remain to be indexed."
+        "All five closed descriptor variants are indexed in the operational fixture. Individual context-specific identity and signature rejection witnesses remain to be indexed; tag presence alone does not establish their execution meaning."
       ]
     },
     {
@@ -1824,6 +1837,15 @@
           },
           "context": "Operational literal fixture with one executor, encounter evidence and finite truth state; this is source-level native-test inventory only.",
           "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_implementation_binding.ml",
+            "anchor": "source encounter contact loss needs another graph profile",
+            "occurrence": 1
+          },
+          "context": "Generic validity, operational admission/lowering and correspondence accept the source-valid contact-loss declaration before independent graph binding explicitly rejects it. This does not supply a contact-loss execution history.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
         }
       ],
       "negative": [
@@ -1884,6 +1906,33 @@
           },
           "context": "Operational literal fixture with one executor, encounter evidence and finite truth state; this is source-level native-test inventory only.",
           "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_execution.ml",
+            "anchor": "Evidence reason lost: ",
+            "occurrence": 1
+          },
+          "context": "Literal operational traces retain each named truth-evidence reason; this does not establish numeric evidence support.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_execution.ml",
+            "anchor": "Observed/availability time distinction lost",
+            "occurrence": 1
+          },
+          "context": "Operational execution distinguishes observation time from availability time; quiet expiry and delayed evidence retain their stated trace scope.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_implementation_binding.ml",
+            "anchor": "kind^\" dynamic source observation is outside the finite truth domain\"",
+            "occurrence": 1
+          },
+          "context": "Source-valid INTEGER/TEXT observations with matching definitions and typed comparisons pass operational admission/correspondence, then reject at the finite truth operating-domain boundary. This is not numeric/text execution coverage.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
         }
       ],
       "negative": [
@@ -1899,7 +1948,7 @@
       ],
       "witness_status": "partial_source_witnesses",
       "gaps": [
-        "Integer/text/exact-quantity evidence positives and each result-type or quantity-unit mismatch are not individually indexed; the material layer narrows evidence to event truth."
+        "Truth evidence reason/time traces and INTEGER/TEXT operational admission before domain exclusion are indexed. Integer/text/exact-quantity execution positives and each result-type or quantity-unit mismatch remain individually unindexed; material evidence remains event truth."
       ]
     },
     {
@@ -1926,6 +1975,15 @@
           },
           "context": "Operational literal fixture with one executor, encounter evidence and finite truth state; this is source-level native-test inventory only.",
           "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_implementation_binding.ml",
+            "anchor": "source family has two independent observations",
+            "occurrence": 1
+          },
+          "context": "Two distinct-coherence observations pass fresh operational admission and correspondence before the exact narrow source-family binder rejection; their combined execution is not established here.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
         }
       ],
       "negative": [
@@ -1950,7 +2008,7 @@
       ],
       "witness_status": "partial_source_witnesses",
       "gaps": [
-        "A positive multiple-distinct-coherence-group operational fixture is not indexed."
+        "Two distinct-coherence observations have an operational admission/correspondence witness before narrow graph-family rejection. A distinguishing operational execution history for both groups remains unindexed."
       ]
     },
     {
@@ -1977,6 +2035,33 @@
           },
           "context": "Operational literal fixture with one executor, encounter evidence and finite truth state; this is source-level native-test inventory only.",
           "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_execution.ml",
+            "anchor": "Reset predicates observed an earlier reset write",
+            "occurrence": 1
+          },
+          "context": "Operational truth resets read a common prestate; this is predicate reset behavior, not reset-inheritance coverage.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_execution.ml",
+            "anchor": "Truth reset did not execute once at the silent tick",
+            "occurrence": 1
+          },
+          "context": "Operational truth reset executes at a quiet tick without a new observation; this does not extend the material inheritance profile.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_implementation_binding.ml",
+            "anchor": "kind^\" dynamic source state is outside the finite truth domain\"",
+            "occurrence": 1
+          },
+          "context": "Source-valid INTEGER/TEXT state retains typed initial values, assignments and reads through operational admission/correspondence before finite truth-domain exclusion.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
         }
       ],
       "negative": [
@@ -1997,11 +2082,20 @@
           },
           "context": "Source-valid reset inheritance and a separately writerless retained truth store reject at independent state-family binding.",
           "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_implementation_binding.ml",
+            "anchor": "quantity state needs storage semantics beyond the operational profile",
+            "occurrence": 1
+          },
+          "context": "Source-valid quantity state, assignments and reads reject at the exact operational finite-storage guard, before domain or graph binding.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
         }
       ],
       "witness_status": "partial_source_witnesses",
       "gaps": [
-        "Integer/text stores and reset inheritance have explicit first-material rejection witnesses. Their broader operational positive execution and nominal enum/quantity state coverage remain unindexed."
+        "INTEGER/TEXT stores and reset inheritance have operational-admission and later first-material rejection witnesses. Broader INTEGER/TEXT execution and inheritance behavior remain unindexed. Quantity storage is explicitly unsupported at operational admission; nominal enum is not a TypeSpec kind in the source grammar."
       ]
     },
     {
@@ -2068,6 +2162,24 @@
           },
           "context": "Explicit Unknown literal remains three-valued truth, distinct from malformed null.",
           "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_execution.ml",
+            "anchor": "Exact comparison was rounded through binary64",
+            "occurrence": 1
+          },
+          "context": "Operational greater-than on exact integer literals above binary64 precision enables one attempt.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_execution.ml",
+            "anchor": "Exact comparison reversed ordering",
+            "occurrence": 1
+          },
+          "context": "Changing that exact integer comparison to less-than withholds the attempt; no numeric material support is claimed.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
         }
       ],
       "negative": [
@@ -2083,7 +2195,7 @@
       ],
       "witness_status": "partial_source_witnesses",
       "gaps": [
-        "That literal control only distinguishes null from explicit Unknown; operator-by-type positive/rejection closure, including exact-quantity comparisons and compatible/incompatible nominal units, is still pending."
+        "Exact large-integer gt/lt operational execution and the null-versus-Unknown control are indexed. Operator-by-type positive/rejection closure, including exact-quantity comparisons and compatible/incompatible units, remains pending."
       ]
     },
     {
@@ -2109,6 +2221,15 @@
             "occurrence": 1
           },
           "context": "Operational literal fixture with one executor, encounter evidence and finite truth state; this is source-level native-test inventory only.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_execution.ml",
+            "anchor": "Unknown-to-true invented a rising edge",
+            "occurrence": 1
+          },
+          "context": "Literal truth-evidence transition from Unknown to true does not invent a false-to-true rising edge. Numeric/comparison edge behavior is outside this witness.",
           "evidence_scope": "source_only_not_executed_by_this_gate"
         }
       ],
@@ -2210,6 +2331,24 @@
           },
           "context": "Operational literal fixture with one executor, encounter evidence and finite truth state; this is source-level native-test inventory only.",
           "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_execution.ml",
+            "anchor": "Declared priority did not override source declaration order",
+            "occurrence": 1
+          },
+          "context": "Operational priority selects the explicitly higher-ranked rule despite declaration order and retains suppressed arbitration actions.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_execution.ml",
+            "anchor": "Identical atomic assignments failed",
+            "occurrence": 1
+          },
+          "context": "Operational identical-only arbitration permits same-value shared executor-state writes from simultaneous encounter activations; material support is not implied.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
         }
       ],
       "negative": [
@@ -2225,7 +2364,7 @@
       ],
       "witness_status": "partial_source_witnesses",
       "gaps": [
-        "Positive priority/identical-only execution remains broader operational coverage; this graph/material profile rejects both alternatives."
+        "Priority ordering/suppression and identical-only shared writes now have operational execution witnesses, while the material profile rejects these alternatives. Full tie, conflict and preemption-context rejection indexing remains pending."
       ]
     },
     {
@@ -2252,6 +2391,33 @@
           },
           "context": "Operational literal fixture with one executor, encounter evidence and finite truth state; this is source-level native-test inventory only.",
           "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_execution.ml",
+            "anchor": "Machine did not retain the attempt it started",
+            "occurrence": 1
+          },
+          "context": "Operational machine state retains the identity of its initiated attempt.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_execution.ml",
+            "anchor": "Old feedback advanced a newer machine attempt",
+            "occurrence": 1
+          },
+          "context": "Operational machine execution rejects an old attempt completion as a transition for its newer attempt.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_execution.ml",
+            "anchor": "Machine timeout did not occur at a silent tick",
+            "occurrence": 1
+          },
+          "context": "Operational machine timeout transitions without a new observation. This remains operational-only machine support.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
         }
       ],
       "negative": [
@@ -2267,7 +2433,7 @@
       ],
       "witness_status": "partial_source_witnesses",
       "gaps": [
-        "This scope control does not cover each excluded declaration kind; positive machine behavior and each excluded-kind rejection remain to be indexed."
+        "Operational machine attempt lineage, wrong feedback and quiet timeout are indexed. Each excluded coordination, quantification, spatial or inheritance declaration kind still requires its own valid-input/earliest-stage rejection index; no broader material support is inferred."
       ]
     },
     {
@@ -2702,11 +2868,20 @@
           },
           "context": "Twelve additional fully repinned source-valid contextual controls: five exact operational rejections and seven exact graph-binding rejections. No production support is widened.",
           "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_implementation_binding.ml",
+            "anchor": "let source_quantity_and_ownership_controls case=",
+            "occurrence": 1
+          },
+          "context": "Eight independently source-valid controls preserve original domains, budgets, models, candidate structure and requirement identities: quantity product and executor state reject at binding; quantity state, population/stable subject and mixed sibling-encounter state reject operationally; quantity evidence and executor-subject evidence reject at the operating-domain boundary. Every earlier validity/admission check remains outside the expected-error catch.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
         }
       ],
       "witness_status": "partial_source_witnesses",
       "gaps": [
-        "Complete one-rule and two-rule original material requests are now indexed; independently isolated remaining subject/encounter ownership combinations still require explicit witness indexing."
+        "Five exact source-valid ownership controls now index non-cell/stable subjects, executor-scoped state, sibling-encounter state and executor-subject evidence. Missing or inconsistent encounter backlinks and contradictory target/executor fields reject at generic source validation; those are not isolated binder controls. Broader ownership combinations remain outside the indexed witness claims."
       ]
     },
     {
@@ -2789,11 +2964,38 @@
           },
           "context": "An equal text literal actual with a retained fixed product declaration rejects at the independently checked argument-reference contract.",
           "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_implementation_binding.ml",
+            "anchor": "fixed quantity product is outside the text product profile",
+            "occurrence": 1
+          },
+          "context": "A source-valid fixed quantity product with matching definition, actual argument and refreshed authority reaches the exact graph-binding type rejection.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_implementation_binding.ml",
+            "anchor": "quantity observation cannot be reinterpreted by the finite truth alphabet",
+            "occurrence": 1
+          },
+          "context": "A source-valid quantity observation with matching definition and typed equality passes operational admission/correspondence before finite truth-domain rejection.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_implementation_binding.ml",
+            "anchor": "quantity state needs storage semantics beyond the operational profile",
+            "occurrence": 1
+          },
+          "context": "A source-valid quantity store with typed initial value, writes and reads rejects at operational finite-storage admission.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
         }
       ],
       "witness_status": "partial_source_witnesses",
       "gaps": [
-        "Quantity/enum and other source-valid type refinements remain to be individually indexed. Generic-invalid truth/text unit or entity-kind decorations are not binder-reachable controls; the 10 source-valid type/refinement cases are distinguished by their actual admission, domain or binding stage."
+        "Thirteen source-valid type/refinement controls now include quantity product, observation and state at their actual binding, domain and operational boundaries. Other entity/refinement and operator/type interactions remain individually unindexed. TypeSpec has no nominal enum kind; enum and invalid truth/text unit or entity-kind decorations are schema/structural ingress exclusions, not binder-reachable controls."
       ]
     },
     {
@@ -3514,6 +3716,24 @@
           },
           "context": "Source-valid supported truth equality receives a fresh generic candidate, all-nine-history checking/replay and fresh exact export; the paired false equality must fail on every history with no export.",
           "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_requirement_monitor.ml",
+            "anchor": "Fixed-product parameter equality differs from ten literal true slot/tick samples",
+            "occurrence": 1
+          },
+          "context": "Fresh original-source admission and graph binding feed the independent monitor. Equality reads the original fixed product parameter and yields ten literal true samples over two encounters and ticks zero through four; every original requirement remains and a separate fresh source execution must agree.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_material_closure.ml",
+            "anchor": "\"product_parameter_equality\",\"scoped_memory\",\"pass\",None,",
+            "occurrence": 1
+          },
+          "context": "Revised source requirement equates the original fixed product parameter with itself. A fresh generic candidate, complete nine-history Core/Verify check and replay, and fresh paired export must retain the unchanged exact RNA under the revised complete authority.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
         }
       ],
       "negative": [
@@ -3570,11 +3790,29 @@
           },
           "context": "Fractional deadline is generically source-valid but rejected by the earlier positive-integral-tick operational admission rule. Public compile/check/export require its exact diagnostic code/path/message; monitor-level support is not inferred.",
           "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_requirement_monitor.ml",
+            "anchor": "Program scope failed outside its independent monitor boundary",
+            "occurrence": 1
+          },
+          "context": "Generic-valid program-scoped requirement passes operational admission and graph binding, then the independent monitor reports exact unsupported_scope before and through horizon four without fabricated samples or obligations.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_material_closure.ml",
+            "anchor": "\"program_scope\",\"scoped_memory\",\"unsupported\",Some \"unsupported_scope\",",
+            "occurrence": 1
+          },
+          "context": "Complete public nine-history checking/replay retains the original requirement inventory and exact unsupported_scope; both fresh exports are withheld rather than dropping the unsupported requirement.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
         }
       ],
       "witness_status": "partial_source_witnesses",
       "gaps": [
-        "Named field, scope, literal-type, equality and pending-horizon branches are indexed, with fractional deadlines explicitly excluded at operational admission. Other source-invalid or earlier-excluded scope/type forms are not promoted into monitor support; broader requirement alternatives retain their own stage scope."
+        "Named field, executor/program scope, truth/product-parameter equality, literal-type and pending-horizon branches are indexed. Fractional deadlines reject operationally; missing progress response rejects structurally, and absent finite horizon, unsupported requirement kinds or assumptions reject at realization admission. Those earlier exclusions are not monitor support; broader requirement interactions retain their own witness scope."
       ]
     },
     {
@@ -4399,11 +4637,38 @@
           },
           "context": "Distinguishing source control for the specifically named boundary; other boundary branches are not inferred.",
           "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_material_context.ml",
+            "anchor": "Observation and feedback alias one provider channel",
+            "occurrence": 1
+          },
+          "context": "The current single observation and single feedback cannot alias a provider channel: exact complete_input_source_binding fails on their distinct kind/source before the generic same-kind alias branch.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_material_context.ml",
+            "anchor": "Wrong input target",
+            "occurrence": 1
+          },
+          "context": "A source-valid supplied input channel naming the wrong recipient fails exact complete_input_source_binding.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_material_context.ml",
+            "anchor": "Expired input",
+            "occurrence": 1
+          },
+          "context": "An expired supplied observation channel fails guaranteed_inclusive_availability:condition under the original lifetime.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
         }
       ],
       "witness_status": "partial_source_witnesses",
       "gaps": [
-        "The one-observation/one-feedback alias control reaches kind/source mismatch before generic same-channel alias detection; no larger input family is claimed."
+        "The indexed channel controls cover wrong target, expiry, unused channel and cross-kind aliasing. The generic same-kind alias branch is unreachable under the exact one-observation/one-feedback profile because kind/source validation rejects first; it is not missing executable support. Broader provider/channel permutation interactions are outside these named witness claims."
       ]
     },
     {

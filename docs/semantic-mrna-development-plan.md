@@ -20,7 +20,32 @@ Deferred: Studio, conversational authoring, biological viability, empirical cali
 
 Completion means a complete stack for an explicitly declared supported profile, plus an exhaustive disposition of the wider source vocabulary. It does not mean that every expressible policy must compile. Unsupported source meaning must remain visible and must prevent a complete-artifact claim when it is required by the program.
 
-## 2. Verified starting point and ownership
+## 2. Current checkpoint, starting point and ownership
+
+Current source checkpoint, 2026-10-06: [PR95](https://github.com/logannye/biocompiler/pull/95)
+at `bb84421cf1f93cd1dc02813d80a2c54a3520a919` contains the first bounded
+Python-policy-to-exact-mRNA path. Complete hosted acceptance, normal integration
+and actual-main validation remain open. The unchecked tasks below retain their
+full exit conditions; the presence of source code alone does not close them.
+
+| Boundary | Implemented source within the first profile | Remaining scope |
+| --- | --- | --- |
+| Source and operational meaning, SM-00–02 | Original request and definition authority; executable truth, identity, state, event and lifecycle meaning; explicit finite operating domains | Complete contextual witness indexing and exact source-valid exclusion dispositions |
+| Implementation and preservation, SM-03–04 | Typed primitive graph lowering; independent candidate execution, binding, bounded preservation and hard requirement checks | Admitted interaction coverage and complete hosted acceptance |
+| Components and material, SM-05–06 | One supplied whole-graph contract and template; exact single-mRNA construction with context, resource, product, chemistry and base correspondence | Reusable component composition, alternative selection, delivered helpers and multiple RNA members |
+| Public acceptance and export, SM-07–08 | Immutable SDK/CLI operations, producer-free Verify, fresh paired FASTA/manifest publication and targeted prebuilt routing | All required platform/Python campaigns, independent complete comparison, aggregate gates and fresh main validation |
+
+The 62-family contextual ledger has 16 explicitly partial families. These record
+coverage and scope gaps, including broader operational cases and earlier
+rejection stages; they are not a count of missing compiler stages. The retained
+486-history request remains incomplete under its declared work bound and cannot
+export. The separately declared 54-history success case has its own authority.
+Detailed source and acceptance boundaries are in
+[policy-material-acceptance.md](policy-material-acceptance.md).
+
+The following starting-point inventory and milestone preparation paragraphs
+are historical checkpoints. They explain the original dependency order; use the
+current source checkpoint and each task's exit condition to decide what remains.
 
 Historical implementation baseline: f5564f251dcf62627769bb0f855802c315e75dd8, branch codex/bounded-policy-execution, worktree work/bounded-policy-execution. Development base: pushed PR88 revision 88421d068ebc8437d6d0d4fa1a1bfdb32f150883. The following foundation inventory records that starting point; later source and acceptance checkpoints appear under their milestones.
 
@@ -55,7 +80,10 @@ Every consequential field must be interpreted, checked as a declared premise, or
 
 ### 3.2 Introduce three distinct implementation-side representations
 
-Names below are proposed, not shipped APIs.
+The table below defines the target representation contracts. Current versioned
+native and Python interfaces implement the bounded scope listed above;
+preferences, reusable composition and delivered helpers remain later milestone
+work. Release acceptance is tracked separately from interface presence.
 
 | Representation | Required content |
 | --- | --- |
@@ -695,11 +723,11 @@ The session's first major completion gate is SM-08:
 
 ## 9. Immediate execution queue
 
-1. SM-00.1–00.4: repair reviewed source-authority registration and requirement-phase classification; inspect any remaining current-run failures without weakening guards.
-2. SM-01.1–01.6: freeze the field-level coverage ledger, complete request authority, exact-mRNA completeness predicate and first accepted/rejected witness families.
-3. SM-02.1–02.7: specify and implement the closed finite operating domain, implementation/material contracts, assurance compatibility and exact preservation relation.
-4. SM-03/04: build independent candidate primitives/checking and the first actual implementation lowering together.
-5. Continue through SM-05–08 using this checklist; select further profile expansions only after the complete first path is established.
+1. Preserve the active PR95 revision while its complete hosted campaigns run. Diagnose actual failures against their exact source and retain all required coverage.
+2. Finish source-valid ownership/type/exclusion witness indexing for the first profile. Record the earliest rejecting stage; keep broader operational support and material support distinct.
+3. Complete SM-08 acceptance: all four installed slots, complete output and artifact comparisons, offline Verify, prebuilt routing, exact aggregate identity, normal merge and fresh main validation.
+4. Integrate the existing reference/package migration under its own fresh compatibility and hosted gates. Preserve its implemented route and all historical source authority.
+5. After the first complete path is accepted, implement SM-05 reusable component composition and bounded alternatives. Extend helpers, RNA partitioning and additional semantics as complete vertical profiles under SM-09.
 
 ## 10. Related governing documents
 

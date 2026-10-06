@@ -40,7 +40,7 @@ class PolicyMaterialRuleCoverageTests(unittest.TestCase):
         result = coverage.check()
         self.assertEqual(result["rules"], 62)
         self.assertEqual(result["sources"], 96)
-        self.assertEqual(result["witness_sources"], 29)
+        self.assertEqual(result["witness_sources"], 30)
         self.assertEqual(result["rules_with_pending_witnesses"], 16)
         self.assertEqual(result["status"], "source_inventory_current")
         self.assertEqual(result["semantic_proof"], "not_established")

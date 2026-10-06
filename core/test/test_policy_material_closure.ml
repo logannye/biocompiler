@@ -376,12 +376,23 @@ let requirement_alternative_controls case limits baseline=
     |>set "value"(str "same product label")in
   let scope=obj["$type",str "Scope";"kind",str "executor";
     "subject",obj["$type",str "Ref";"kind",str "Role";"id",str "executor"]]in
+  let program_scope=obj["$type",str "Scope";"kind",str "program";"subject",Json.Null]in
+  let parameter=get "value"(List.hd(items "parameters"(declaration "response")))in
+  require(text "op" parameter="parameter" && text "id"(get "ref" parameter)="product" &&
+    get "scope" parameter=Json.Null && get "value" parameter=Json.Null &&
+    text "kind"(get "value_type" parameter)="text" &&
+    get "value"(declaration "product")=str "fixture.product.alpha")
+    "Public parameter equality must read the original fixed text product";
   let completion=get "response"(declaration "initiation_progress")|>set "value"(str "completed")in
   let cases=[
     "executor_reads_encounter","scoped_memory","unsupported",Some "scope_requires_encounter",
       edit "scoped_memory"["scope"]scope original;
+    "program_scope","scoped_memory","unsupported",Some "unsupported_scope",
+      edit "scoped_memory"["scope"]program_scope original;
     "text_literal_equality","scoped_memory","unsupported",Some "unsupported_literal_type",
       edit "scoped_memory"["condition"](equality text_literal text_literal)original;
+    "product_parameter_equality","scoped_memory","pass",None,
+      edit "scoped_memory"["condition"](equality parameter parameter)original;
     "truth_equality","scoped_memory","pass",None,
       edit "scoped_memory"["condition"](equality truth truth)original;
     "false_truth_equality","scoped_memory","fail",None,
@@ -485,4 +496,4 @@ let ()=
   requirement_controls first limits compiled;
   requirement_alternative_controls first limits compiled;
   nonzero_start_control(get "request" first)limits compiled;
-  Printf.printf "policy material public closure, age/ordered-multiplicity literals, nine requirement controls and nonzero-start rejection passed (%d checks)\n" !checks
+  Printf.printf "policy material public closure, age/ordered-multiplicity literals, eleven requirement controls and nonzero-start rejection passed (%d checks)\n" !checks
