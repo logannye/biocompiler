@@ -44,6 +44,10 @@ EXECUTABLES = {
     "biocompiler-core": ("bin/core/dune", {"bioc_wire", "bioc_service", "bioc_producer_service", "bioc_pipeline_service"}, "core_entrypoint"),
     "biocompiler-verify": ("bin/verify/dune", {"bioc_wire", "bioc_service"}, "verifier"),
 }
+PRIVATE_TEST_TOOLS = {
+    "component_originals": ("test/component_fixture_export/dune",
+        {"bioc_wire", "bioc_domain", "bioc_policy_component_test_support"}, "test_support"),
+}
 TESTS = {
     "test_work_budget_retention": {"bioc_wire", "bioc_checker"},
     "test_reference_inputs": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_artifact", "bioc_reference_input", "bioc_reference_package_service"},
@@ -467,11 +471,18 @@ def check_boundaries(root: Path):
                     raise BoundaryError(f"Changed private module boundary for {name}")
                 key = name
             elif kind == "executable":
-                public_name = one(values, "public_name")
-                if public_name not in EXECUTABLES or name != "main" or one(values, "package") != "biocompiler_core":
-                    raise BoundaryError(f"Unreviewed Dune executable: {public_name}")
-                expected_path, expected_dependencies, role = EXECUTABLES[public_name]
-                key = "executable:" + public_name
+                private = [key for key, entry in PRIVATE_TEST_TOOLS.items() if relative == entry[0]]
+                if private:
+                    if len(private) != 1 or name != "main" or set(values) != {"name", "libraries"}:
+                        raise BoundaryError("Changed private source-fixture executable declaration")
+                    expected_path, expected_dependencies, role = PRIVATE_TEST_TOOLS[private[0]]
+                    key = "test_tool:" + private[0]
+                else:
+                    public_name = one(values, "public_name")
+                    if public_name not in EXECUTABLES or name != "main" or one(values, "package") != "biocompiler_core":
+                        raise BoundaryError(f"Unreviewed Dune executable: {public_name}")
+                    expected_path, expected_dependencies, role = EXECUTABLES[public_name]
+                    key = "executable:" + public_name
             else:
                 if relative != "test/dune" or name not in TESTS or values.get("modules") != [name]:
                     raise BoundaryError(f"Unreviewed native test stanza: {name}")
@@ -588,7 +599,8 @@ def check_boundaries(root: Path):
             if relative != expected_path or dependencies != expected_dependencies or key in graph:
                 raise BoundaryError(f"Changed/duplicate Dune boundary for {key}: {relative} -> {sorted(dependencies)}")
             graph[key], roles[key], locations[path.parent] = sorted(dependencies), role, key
-    expected_nodes = set(LIBRARIES) | {"executable:" + name for name in EXECUTABLES}
+    expected_nodes = (set(LIBRARIES) | {"executable:" + name for name in EXECUTABLES}
+                      | {"test_tool:" + name for name in PRIVATE_TEST_TOOLS})
     if set(graph) != expected_nodes or set(tests) != set(TESTS):
         raise BoundaryError("Missing reviewed libraries, executables or native tests")
     closure = validate_graph(graph, roles)

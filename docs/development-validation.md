@@ -6,6 +6,13 @@ validation coverage and independent checks. The release workflow remains
 [opt-in hosted workflow](../.github/workflows/policy-development.yml), triggered
 only by pushes to `codex/dev-policy/**`. It builds the native core once on Linux
 and runs sixteen fixed component, protocol, preservation, material and construction suites.
+The same build then runs the Python SDK witness for both component policies:
+an independently authored, domain-only source fixture is exported by a private
+test tool, the public DSL reconstructs the originals, and Core/Verify perform
+compile/check/replay and fresh exact paired export. Neither the source fixture
+nor the development receipt grants release acceptance. Core, Verify and the
+private test tool are pinned immediately after the build and rechecked across
+both stages; the private tool is absent from installed package entrypoints.
 Its first nine-suite run at `a89f80b07` completed successfully in 2 minutes
 41 seconds, including 43 seconds of dependency installation, 30 seconds of
 compilation and 35 seconds of tests. This is one observed run, not a runtime

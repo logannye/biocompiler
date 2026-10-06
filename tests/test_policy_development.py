@@ -83,6 +83,11 @@ class PolicyDevelopmentTests(unittest.TestCase):
                     binary.parent.mkdir(parents=True, exist_ok=True)
                     binary.write_bytes(b"INERT TEST BYTES - NEVER EXECUTED")
                     binary.chmod(0o755)
+            for relative in dev.SDK_BINARIES.values():
+                binary = self.root / relative
+                binary.parent.mkdir(parents=True, exist_ok=True)
+                binary.write_bytes(b"INERT SDK BYTES - NEVER EXECUTED")
+                binary.chmod(0o755)
         stdout.write(b"mock outcome\n")
         if self.mutate:
             self.mutate(argv)

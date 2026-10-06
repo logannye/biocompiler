@@ -24,7 +24,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: '3.11.15'
       - name: Authenticate hosted push and exact sources before native setup
         run: python -B tools/check_policy_development.py prepare
       - uses: ocaml/setup-ocaml@93303b622b2522e4411e295f9e77411a24912ac7
@@ -35,6 +35,10 @@ jobs:
             default: git+https://github.com/ocaml/opam-repository.git#ac27950e5eac6c981ad809dff370c937820b7893
       - name: Install ordinary dependencies, build once and run sixteen fixed suites
         run: python -B tools/check_policy_development.py run
+      - name: Exercise Python authored component policies through fresh paired export
+        env:
+          PYTHONPATH: src
+        run: python -B tools/check_policy_development.py public-sdk
       - name: Retain diagnostic evidence even when native work fails
         if: always()
         uses: actions/upload-artifact@v4

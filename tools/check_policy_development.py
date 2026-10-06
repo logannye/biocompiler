@@ -45,6 +45,15 @@ SUITES = (
 )
 DEPENDENCIES = ["opam", "install", "core/biocompiler_core.opam", "--deps-only", "--with-test", "--yes"]
 BUILD = ["opam", "exec", "--", "dune", "build", "--root", "core", "@all"]
+SDK_BINARIES = {
+    "originals": "core/_build/default/test/component_fixture_export/main.exe",
+    "core": "core/_build/default/bin/core/main.exe",
+    "verify": "core/_build/default/bin/verify/main.exe",
+}
+SDK_ORIGINALS = (
+    "core/test/data/policy_material_request_v01.json", "core/test/data/policy_material_state_v01.json",
+    "core/test/policy_component_support/literals.ml", "core/test/policy_component_support/requests.ml",
+)
 
 
 def require(value, message):
@@ -153,7 +162,7 @@ def save(path, value):
 
 def feedback():
     return {"schema": SCHEMA, "acceptance": False,
-            "scope": "Thirteen focused native suites; development feedback only, no release acceptance.",
+            "scope": "Fixed focused native suites; development feedback only, no release acceptance.",
             "status": "incomplete", "actions": [], "suites": [
                 {"name": name, "status": "not_run"} for name, _ in SUITES]}
 
@@ -212,7 +221,8 @@ def run(root):
             save(output / "feedback.json", report)
             require(row["status"] == "passed", "Development " + name + " failed")
         suites = prepared["suites"]
-        binaries = {row["executable"]: pin(root, row["executable"], executable=True) for row in suites}
+        binary_paths = [row["executable"] for row in suites] + list(SDK_BINARIES.values())
+        binaries = {path: pin(root, path, executable=True) for path in binary_paths}
         report["binaries"] = binaries
         for index, suite in enumerate(suites):
             require(preparation(root) == prepared, "Source or identity changed before native suite")
@@ -239,13 +249,102 @@ def run(root):
     return report
 
 
+def validate_native_feedback(root, native, prepared):
+    require(native.get("schema") == SCHEMA and native.get("acceptance") is False
+            and native.get("status") == "passed" and native.get("identity") == prepared["identity"]
+            and native.get("sources_before") == native.get("sources_after") == prepared["sources"],
+            "SDK requires the complete successful focused native run on these sources")
+    actions = native.get("actions")
+    suites = native.get("suites")
+    require(type(actions) is list and len(actions) == 2 and type(suites) is list
+            and len(suites) == len(prepared["suites"]), "Incomplete native command census")
+    expected = [{"name": "dependencies", "argv": DEPENDENCIES}, {"name": "build", "argv": BUILD}]
+    expected += prepared["suites"]
+    for row, original in zip(actions + suites, expected):
+        name = original["name"]
+        require(type(row) is dict and all(row.get(key) == value for key, value in original.items())
+                and row.get("status") == "passed" and type(row.get("returncode")) is int
+                and row["returncode"] == 0 and row.get("log") == name + ".log",
+                "Changed native command record: " + name)
+        require(row.get("log_pin") == pin(root, "generated/development-feedback/" + name + ".log"),
+                "Changed native command log: " + name)
+
+
+def public_sdk(root):
+    """Use the same hosted build for original declarations and the public SDK.
+
+    The domain-only helper exports independent source fixtures. Core and Verify
+    subsequently check candidates; no fixture report grants acceptance.
+    """
+    output = root / "generated/development-feedback"
+    report = {"schema": "biocompiler.development-sdk-feedback.v0.1", "acceptance": False,
+              "scope": "hosted source-tree SDK feedback; installed and release acceptance remain separate",
+              "status": "failed", "actions": []}
+    prepared = None
+    binaries = {}
+    try:
+        prepared = bundle.manifest_document((output / "preparation.json").read_bytes())
+        require(prepared == preparation(root), "SDK source or hosted identity differs from native preparation")
+        native_pin = pin(root, "generated/development-feedback/feedback.json")
+        native = bundle.manifest_document((output / "feedback.json").read_bytes())
+        validate_native_feedback(root, native, prepared)
+        require(pin(root, "generated/development-feedback/feedback.json") == native_pin,
+                "Native feedback changed during validation")
+        report.update(identity=prepared["identity"], sources_before=prepared["sources"],
+                      native_feedback=native_pin)
+        binaries = {path: pin(root, path, executable=True) for path in SDK_BINARIES.values()}
+        require(all(native["binaries"].get(path) == value for path, value in binaries.items()),
+                "SDK executable differs from the completed native build")
+        report["binaries"] = binaries
+        fixture = output / "component-originals.json"
+        witness = output / "sdk-witness.json"
+        commands = (
+            ("component-originals", ["opam", "exec", "--", str(root / SDK_BINARIES["originals"]),
+                *(str(root / path) for path in SDK_ORIGINALS), str(fixture)]),
+            ("component-sdk", [sys.executable, "-B", str(root / "tools/check_policy_component_material.py"),
+                "--fixture", str(fixture), "--core", str(root / SDK_BINARIES["core"]),
+                "--verify", str(root / SDK_BINARIES["verify"]), "--output", str(witness)]),
+        )
+        for name, argv in commands:
+            require(preparation(root) == prepared, "SDK source or identity changed before execution")
+            require({path: pin(root, path, executable=True) for path in binaries} == binaries,
+                    "SDK executable changed before execution")
+            row = command(root, output, name, argv)
+            report["actions"].append(row)
+            save(output / "public-sdk.json", report)
+            require(row["status"] == "passed", "Public SDK " + name + " failed")
+        require(fixture.stat().st_size <= 4_000_000 and witness.stat().st_size <= 1024 * 1024,
+                "SDK original or witness receipt exceeds its bound")
+        report["outputs"] = {path.name: pin(root, path.relative_to(root).as_posix()) for path in (fixture, witness)}
+        report["status"] = "passed"
+    except Exception as error:
+        report.update(status="failed", error=str(error))
+        raise
+    finally:
+        try:
+            after = preparation(root)
+            report["sources_after"] = after["sources"]
+            require(prepared == after, "SDK source or identity changed after execution")
+            require({path: pin(root, path, executable=True) for path in binaries} == binaries,
+                    "SDK executable changed during execution")
+            if "native_feedback" in report:
+                require(pin(root, "generated/development-feedback/feedback.json") == report["native_feedback"],
+                        "Native feedback changed during SDK execution")
+                validate_native_feedback(root, bundle.manifest_document((output / "feedback.json").read_bytes()), prepared)
+        except Exception as error:
+            report.update(status="failed", source_error=str(error))
+        save(output / "public-sdk.json", report)
+        require(report["status"] == "passed", report.get("source_error", report.get("error", "Incomplete SDK feedback")))
+    return report
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("command", choices=("prepare", "run"))
+    parser.add_argument("command", choices=("prepare", "run", "public-sdk"))
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[1]
     try:
-        (prepare if args.command == "prepare" else run)(root)
+        {"prepare": prepare, "run": run, "public-sdk": public_sdk}[args.command](root)
     except (OSError, ValueError) as error:
         print(str(error), file=sys.stderr)
         return 1

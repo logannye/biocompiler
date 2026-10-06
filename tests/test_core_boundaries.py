@@ -26,6 +26,33 @@ class CoreBoundaryTests(unittest.TestCase):
         self.assertIn(before, content)
         path.write_text(content.replace(before, after))
 
+    def test_original_component_fixture_tool_is_private_and_domain_only(self):
+        receipt = boundaries.check_boundaries(boundaries.ROOT)
+        key = "test_tool:component_originals"
+        self.assertEqual(receipt["roles"][key], "test_support")
+        self.assertEqual(set(receipt["transitive_dependencies"][key]),
+            {"bioc_wire", "bioc_domain", "bioc_policy_component_test_support", "digestif", "zarith"})
+        for public in ("biocompiler-core", "biocompiler-verify"):
+            self.assertNotIn(key, receipt["transitive_dependencies"]["executable:" + public])
+        root = self.copy_core()
+        path = root / "core/test/component_fixture_export/dune"
+        original = path.read_text()
+        for mutant in (
+            original.replace("(name main)", "(name main) (public_name component-fixture)"),
+            original.replace("(name main)", "(name changed)"),
+            original.replace("bioc_domain", "bioc_domain bioc_compiler"),
+            original.replace("bioc_policy_component_test_support", ""),
+        ):
+            with self.subTest(mutant=mutant):
+                path.write_text(mutant)
+                with self.assertRaises(boundaries.BoundaryError):
+                    boundaries.check_boundaries(root)
+        path.write_text(original)
+        source = root / "core/test/component_fixture_export/main.ml"
+        source.write_text(source.read_text() + "\nmodule Forbidden = Bioc_compiler.Policy_lowering\n")
+        with self.assertRaisesRegex(boundaries.BoundaryError, "Undeclared local module dependency"):
+            boundaries.check_boundaries(root)
+
     def test_current_actual_dune_graph_has_separate_verifier_and_explicit_trusted_base(self):
         receipt = boundaries.check_boundaries(boundaries.ROOT)
         self.assertEqual(receipt["status"], "pass")

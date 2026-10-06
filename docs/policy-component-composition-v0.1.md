@@ -8,10 +8,12 @@ future original authority and independent controls; it is not a decoded request,
 execution receipt or export capability. No producer output or expected-trace
 generator defines these literal values. Native validation remains hosted.
 
-The implemented source slices are closed partial-graph/interface, local
-material/library and original assembly-rule decoders. Request/catalog binding, independent
-union/material/context checking, producer and public profile negotiation remain
-separate work. Track completion in [the development plan](semantic-mrna-development-plan.md).
+The implemented native path now includes closed component/library/rule and original
+request domains, bounded graph arrangement, independent preservation/assembly/context
+checking, complete original-obligation discharge and fresh paired export. All sixteen
+focused native suites passed at `4d19d7b37` in hosted run `37526163552`.
+The public Python adapter and two-policy DSL-to-export witness are under validation;
+full installed, cross-platform and release acceptance remain separate work. Track completion in [the development plan](semantic-mrna-development-plan.md).
 
 The preserved design and fixture review under
 `work/bounded-policy-execution/generated/policy-realization/` remain historical
