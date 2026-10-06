@@ -49,6 +49,10 @@ from biocompiler.core_policy_material import (
     PROFILE as MATERIAL_PROFILE, PRODUCER_PROFILE as MATERIAL_PRODUCER_PROFILE,
     VALIDATION_SCOPE as MATERIAL_SCOPE,
 )
+from biocompiler.core_policy_component_material import (
+    PROFILE as COMPONENT_MATERIAL_PROFILE, PRODUCER_PROFILE as COMPONENT_MATERIAL_PRODUCER_PROFILE,
+    VALIDATION_SCOPE as COMPONENT_MATERIAL_SCOPE,
+)
 from biocompiler.ir.intent import IntentProgram
 from biocompiler.compiler.request import BuildRequest
 from biocompiler.ir.behavior import BehaviorProgram
@@ -202,6 +206,53 @@ def check_capability_fields(capabilities, scopes, profiles):
         require(capabilities[field] == value, "Capability contract differs: " + field)
     require(canonical(capabilities["profiles"]) == canonical(profiles),
             "Capability contract differs: profiles")
+
+
+def capability_contract(role):
+    """Exact reviewed Core/Verify capability contract; no executable is invoked."""
+    require(role in {"core", "verify"}, "Unknown native executable role")
+    operations = ["canonicalize", "capabilities", "replay-architecture", "validate-intent", "verify-architecture", "verify-lowering"]
+    operations += list(OPERATIONAL_PROFILE["operations"])
+    operations += list(IMPLEMENTATION_PROFILE["operations"])
+    operations += list(MATERIAL_PROFILE["operations"])
+    operations += list(COMPONENT_MATERIAL_PROFILE["operations"])
+    operations += ["assess-policy", "replay-policy-assessment"] + list(REALIZATION_OPERATIONS) + list(WORKFLOW_OPERATIONS) + [AUTHORITY_OPERATION]
+    workflow = workflow_profile()
+    scopes = [SCOPE, LOWERING_SCOPE, ARCHITECTURE_SCOPE, POLICY_SCOPE, OPERATIONAL_SCOPE, IMPLEMENTATION_SCOPE, MATERIAL_SCOPE, COMPONENT_MATERIAL_SCOPE] + list(REALIZATION_SCOPES) + [workflow["validation_scope"], workflow_authority_profile()["validation_scope"]]
+    profiles = {"policy_component_material": COMPONENT_MATERIAL_PROFILE, "policy_material": MATERIAL_PROFILE, "policy_implementation": IMPLEMENTATION_PROFILE, "policy_operational": OPERATIONAL_PROFILE, "architecture": ARCHITECTURE_PROFILE, "policy_frontend": POLICY_PROFILE, **REALIZATION_PROFILES,
+                "artifact_transport": ARTIFACT_PROFILE, "verification_workflow": workflow,
+                "verification_workflow_presentation": workflow_presentation_profile(),
+                "artifact_transport_authority": AUTHORITY_ARTIFACT_PROFILE,
+                "verification_workflow_authority": workflow_authority_profile()}
+    claim = "Structural intent validation, frozen source-to-Behavior correspondence, supplied architecture contracts and independently executed finite-history model checks. No search completeness, empirical function or human-use admission."
+    if role == "core":
+        operations += ["compile-architecture", "export-architecture", "compile-policy", "compile-policy-implementation", "compile-policy-material", "compile-policy-component-material"]
+        scopes.append(PRODUCER_SCOPE)
+        profiles["architecture_producer"] = PRODUCER_PROFILE
+        operations += list(SYNTHETIC_PRODUCER_OPERATIONS)
+        scopes += synthetic_producer_scopes()
+        profiles.update(SYNTHETIC_PRODUCER_PROFILES)
+        public_producer = synthetic_public_profile()
+        operations += public_producer["operations"]
+        scopes.append(public_producer["validation_scope"])
+        profiles["synthetic_producer_public"] = public_producer
+        inspection = synthetic_inspection_profile()
+        operations += inspection["operations"]
+        scopes.append(inspection["validation_scope"])
+        profiles["synthetic_inspection"] = inspection
+        profiles["policy_operational_producer"] = OPERATIONAL_PRODUCER_PROFILE
+        profiles["policy_implementation_producer"] = IMPLEMENTATION_PRODUCER_PROFILE
+        profiles["policy_material_producer"] = MATERIAL_PRODUCER_PROFILE
+        profiles["policy_component_material_producer"] = COMPONENT_MATERIAL_PRODUCER_PROFILE
+        claim = "Supplied-contract architecture production, independent checking, exact RNA/manifest export and separately scoped finite-history model checks. No search completeness, empirical function or human-use admission is established."
+    return operations, scopes, profiles, claim
+
+
+def check_capabilities(capabilities, role):
+    operations, scopes, profiles, claim = capability_contract(role)
+    require(sorted(capabilities["operations"]) == sorted(operations), "Missing or untested advertised operation")
+    check_capability_fields(capabilities, scopes, profiles)
+    require(capabilities["claim_scope"] == claim, "Capabilities lost limited claim scope")
 
 
 def synthetic_public_profile():
@@ -503,41 +554,7 @@ def run_campaign(clients, corpus, receipt, programs):
     for client in clients:
         capabilities = client.capabilities().result
         require(type(capabilities) is dict, "Missing capabilities")
-        operations = ["canonicalize", "capabilities", "replay-architecture", "validate-intent", "verify-architecture", "verify-lowering"]
-        operations += list(OPERATIONAL_PROFILE["operations"])
-        operations += list(IMPLEMENTATION_PROFILE["operations"])
-        operations += list(MATERIAL_PROFILE["operations"])
-        operations += ["assess-policy", "replay-policy-assessment"] + list(REALIZATION_OPERATIONS) + list(WORKFLOW_OPERATIONS) + [AUTHORITY_OPERATION]
-        workflow = workflow_profile()
-        scopes = [SCOPE, LOWERING_SCOPE, ARCHITECTURE_SCOPE, POLICY_SCOPE, OPERATIONAL_SCOPE, IMPLEMENTATION_SCOPE, MATERIAL_SCOPE] + list(REALIZATION_SCOPES) + [workflow["validation_scope"], workflow_authority_profile()["validation_scope"]]
-        profiles = {"policy_material": MATERIAL_PROFILE, "policy_implementation": IMPLEMENTATION_PROFILE, "policy_operational": OPERATIONAL_PROFILE, "architecture": ARCHITECTURE_PROFILE, "policy_frontend": POLICY_PROFILE, **REALIZATION_PROFILES,
-                    "artifact_transport": ARTIFACT_PROFILE, "verification_workflow": workflow,
-                    "verification_workflow_presentation": workflow_presentation_profile(),
-                    "artifact_transport_authority": AUTHORITY_ARTIFACT_PROFILE,
-                    "verification_workflow_authority": workflow_authority_profile()}
-        claim = "Structural intent validation, frozen source-to-Behavior correspondence, supplied architecture contracts and independently executed finite-history model checks. No search completeness, empirical function or human-use admission."
-        if client.role == "core":
-            operations += ["compile-architecture", "export-architecture", "compile-policy", "compile-policy-implementation", "compile-policy-material"]
-            scopes.append(PRODUCER_SCOPE)
-            profiles["architecture_producer"] = PRODUCER_PROFILE
-            operations += list(SYNTHETIC_PRODUCER_OPERATIONS)
-            scopes += synthetic_producer_scopes()
-            profiles.update(SYNTHETIC_PRODUCER_PROFILES)
-            public_producer = synthetic_public_profile()
-            operations += public_producer["operations"]
-            scopes.append(public_producer["validation_scope"])
-            profiles["synthetic_producer_public"] = public_producer
-            inspection = synthetic_inspection_profile()
-            operations += inspection["operations"]
-            scopes.append(inspection["validation_scope"])
-            profiles["synthetic_inspection"] = inspection
-            profiles["policy_operational_producer"] = OPERATIONAL_PRODUCER_PROFILE
-            profiles["policy_implementation_producer"] = IMPLEMENTATION_PRODUCER_PROFILE
-            profiles["policy_material_producer"] = MATERIAL_PRODUCER_PROFILE
-            claim = "Supplied-contract architecture production, independent checking, exact RNA/manifest export and separately scoped finite-history model checks. No search completeness, empirical function or human-use admission is established."
-        require(sorted(capabilities["operations"]) == sorted(operations), "Missing or untested advertised operation")
-        check_capability_fields(capabilities, scopes, profiles)
-        require(capabilities["claim_scope"] == claim, "Capabilities lost limited claim scope")
+        check_capabilities(capabilities, client.role)
         campaign.passed(client, "capabilities", "complete-advertised-contract")
         for vector in corpus["literal_vectors"]:
             campaign.codec(client, vector["id"], None, vector["canonical_json"], vector["input_json"], "independent_literal")

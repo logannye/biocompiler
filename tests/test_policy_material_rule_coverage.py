@@ -28,8 +28,9 @@ class PolicyMaterialRuleCoverageTests(unittest.TestCase):
         directory = tempfile.TemporaryDirectory(prefix="policy-material-rule-coverage-")
         self.addCleanup(directory.cleanup)
         root = Path(directory.name)
-        names = set(self.source_names) | {self.original["syntax_ledger"]}
+        names = set(self.source_names) | {self.original["syntax_ledger"], coverage.COMPONENT_LEDGER}
         names.update(row["path"] for row in self.original["witness_sources"])
+        names.update(coverage.COMPONENT_WITNESSES)
         for name in names:
             target = root / name
             target.parent.mkdir(parents=True, exist_ok=True)
@@ -39,12 +40,15 @@ class PolicyMaterialRuleCoverageTests(unittest.TestCase):
     def test_reviewed_inventory_is_current_without_semantic_acceptance(self):
         result = coverage.check()
         self.assertEqual(result["rules"], 62)
-        self.assertEqual(result["sources"], 96)
+        self.assertEqual(result["sources"], 124)
         self.assertEqual(result["witness_sources"], 30)
         self.assertEqual(result["rules_with_pending_witnesses"], 16)
         self.assertEqual(result["status"], "source_inventory_current")
         self.assertEqual(result["semantic_proof"], "not_established")
         self.assertEqual(result["test_execution"], "not_performed")
+        self.assertEqual(result["component_route"], {"rules": 10, "sources": 28, "witness_sources": 15,
+            "status": "source_inventory_current", "semantic_proof": "not_established", "test_execution": "not_performed",
+            "historical_feedback": "reference_only_not_reauthenticated_or_transferred"})
         self.assertEqual(len(coverage.decode(coverage.read(coverage.ROOT, self.original["syntax_ledger"]))["entries"]), 612)
 
     def test_omitted_duplicate_reordered_or_invented_family_is_rejected(self):
@@ -193,6 +197,51 @@ let check x = Diagnostic.require x "code" "message"
                 coverage.read(root, "large.json")
             with self.assertRaisesRegex(coverage.CoverageError, "escapes repository"):
                 coverage.source(root, "../foreign.json")
+
+    def test_component_route_cannot_be_promoted_into_old_whole_kernel_rules(self):
+        self.assertEqual(len(coverage.COMPONENT_SOURCES), 28)
+        for path in coverage.COMPONENT_SOURCES:
+            row = next(value for value in self.original["sources"] if value["path"] == path)
+            self.assertEqual(row["disposition"], "outside_route")
+            self.assertEqual(row["reason"], coverage.COMPONENT_REASON)
+        path = "core/lib/realization_checker/policy_component_material_check.ml"
+        self.rejected(lambda value: next(row for row in value["sources"] if row["path"] == path).update(disposition="rule_owner"),
+                      "Changed route exception")
+
+    def test_component_meaning_and_witness_identity_cannot_be_reassigned_by_repins(self):
+        original = coverage.decode(coverage.read(coverage.ROOT, coverage.COMPONENT_LEDGER))
+        mutations = [lambda value: value["rules"].pop(),
+                     lambda value: value["sources"].pop(),
+                     lambda value: value["witness_sources"].reverse(),
+                     lambda value: value["rules"][0].update(evidence_scope="hosted_pass"),
+                     lambda value: value["rules"][0].update(scope="unrestricted reusable biological components"),
+                     lambda value: value["historical_development_feedback"].update(revision="0" * 40),
+                     lambda value: value["rules"][0].update(negative=deepcopy(value["rules"][1]["positive"]))]
+        for mutation in mutations:
+            ledger = deepcopy(original); mutation(ledger)
+            with self.subTest(mutation=mutation), self.assertRaises(coverage.CoverageError):
+                coverage.check_component(coverage.ROOT, ledger)
+        # The replacement points to a real, current, pinned assertion; only the
+        # independently reviewed meaning map distinguishes its wrong purpose.
+        ledger = deepcopy(original)
+        ledger["rules"][0]["negative"] = deepcopy(ledger["rules"][1]["positive"])
+        with self.assertRaisesRegex(coverage.CoverageError, "meaning/witness/provenance metadata"):
+            coverage.check_component(coverage.ROOT, ledger)
+
+    def test_component_source_and_anchor_drift_have_separate_boundaries(self):
+        root = self.checkout()
+        ledger = coverage.decode(coverage.read(root, coverage.COMPONENT_LEDGER))
+        path = root / "core/lib/domain/policy_component_fragment.ml"
+        path.write_text(path.read_text() + '\nlet future = "biocompiler.component_future.v1"\n')
+        with self.assertRaisesRegex(coverage.CoverageError, "Stale component source hash"):
+            coverage.check_component(root, ledger)
+        next(row for row in ledger["sources"] if row["path"] == path.relative_to(root).as_posix())["sha256"] = coverage.digest(path.read_bytes())
+        with self.assertRaisesRegex(coverage.CoverageError, "guard/profile census"):
+            coverage.check_component(root, ledger)
+        ledger = coverage.decode(coverage.read(coverage.ROOT, coverage.COMPONENT_LEDGER))
+        ledger["rules"][0]["positive"][0]["anchor"] = "invented source assertion"
+        with self.assertRaisesRegex(coverage.CoverageError, "Missing component source anchor"):
+            coverage.check_component(coverage.ROOT, ledger)
 
 
 if __name__ == "__main__":

@@ -254,5 +254,75 @@ class CoreConformanceTests(unittest.TestCase):
         self.assertEqual(runner.receipt["checks"], [])
 
 
+class ComponentCapabilityConformanceTests(unittest.TestCase):
+    """Exact additive transport contract; no native invocation or policy evaluation."""
+
+    @staticmethod
+    def capabilities(role):
+        operations, scopes, profiles, claim = campaign.capability_contract(role)
+        return {"operations": operations, "validation_scopes": scopes, "profiles": profiles,
+                "claim_scope": claim, "canonicalization": "python-json-v1",
+                "intent_schemas": ["biocompiler.intent.v0.1"], "limits": deepcopy(campaign.LIMITS),
+                "schema_version": "biocompiler.core_capabilities.v1"}
+
+    def test_component_operations_are_additive_to_exact_legacy_contract(self):
+        import hashlib
+        # Canonical complete legacy contracts reviewed from the unmodified
+        # capability-construction block at 5a45; ordered scopes/operations kept.
+        legacy = {"verify": "68aa0fd8f135229fa8d680ffa34e20279269fa1c79462a2c72573308144c8bd5",
+                  "core": "ffab38b0ce113569e5926e038eed09b110f785c812d1fd16a31cab1e345d2d3e"}
+        component = ["check-policy-component-material", "replay-policy-component-material", "export-policy-component-material"]
+        self.assertEqual(campaign.COMPONENT_MATERIAL_PROFILE["operations"], component)
+        for role in ("verify", "core"):
+            actual = self.capabilities(role)
+            campaign.check_capabilities(actual, role)
+            self.assertEqual([name for name in actual["operations"] if "policy-component-material" in name],
+                             component + (["compile-policy-component-material"] if role == "core" else []))
+            reduced = {"operations": [name for name in actual["operations"] if name not in component + ["compile-policy-component-material"]],
+                       "scopes": [value for value in actual["validation_scopes"] if value != "policy-component-mrna-v0.1"],
+                       "profiles": {key: value for key, value in actual["profiles"].items()
+                                    if key not in {"policy_component_material", "policy_component_material_producer"}},
+                       "claim": actual["claim_scope"]}
+            self.assertEqual(hashlib.sha256(campaign.canonical(reduced).encode()).hexdigest(), legacy[role])
+            self.assertEqual(actual["validation_scopes"].count("policy-component-mrna-v0.1"), 1)
+            self.assertEqual("policy_component_material_producer" in actual["profiles"], role == "core")
+
+    def test_missing_duplicate_extra_or_wrong_role_operation_rejects(self):
+        for role in ("verify", "core"):
+            original = self.capabilities(role)
+            mutations = [lambda row: row["operations"].remove("check-policy-component-material"),
+                         lambda row: row["operations"].append("export-policy-component-material"),
+                         lambda row: row["operations"].append("unreviewed-component-route")]
+            mutations.append((lambda row: row["operations"].append("compile-policy-component-material")) if role == "verify"
+                             else (lambda row: row["operations"].remove("compile-policy-component-material")))
+            for mutation in mutations:
+                changed = deepcopy(original)
+                mutation(changed)
+                with self.subTest(role=role), self.assertRaisesRegex(AssertionError, "Missing or untested advertised operation"):
+                    campaign.check_capabilities(changed, role)
+
+    def test_profile_scope_and_verify_producer_mutants_reject(self):
+        for role in ("verify", "core"):
+            for mutation, reason in (
+                (lambda row: row["profiles"].pop("policy_component_material"), "profiles"),
+                (lambda row: row["profiles"]["policy_component_material"].update(artifact="accepted"), "profiles"),
+                (lambda row: row["validation_scopes"].remove("policy-component-mrna-v0.1"), "validation_scopes"),
+                (lambda row: row["validation_scopes"].reverse(), "validation_scopes"),
+            ):
+                changed = deepcopy(self.capabilities(role)); mutation(changed)
+                with self.subTest(role=role, reason=reason), self.assertRaisesRegex(AssertionError, "Capability contract differs: " + reason):
+                    campaign.check_capabilities(changed, role)
+        changed = self.capabilities("verify")
+        changed["profiles"]["policy_component_material_producer"] = deepcopy(campaign.COMPONENT_MATERIAL_PRODUCER_PROFILE)
+        with self.assertRaisesRegex(AssertionError, "profiles"):
+            campaign.check_capabilities(changed, "verify")
+        changed = self.capabilities("core")
+        changed["profiles"].pop("policy_component_material_producer")
+        with self.assertRaisesRegex(AssertionError, "profiles"):
+            campaign.check_capabilities(changed, "core")
+        with self.assertRaisesRegex(AssertionError, "Unknown native executable role"):
+            campaign.capability_contract("foreign")
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -23,6 +23,13 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[1]
 VERSION_LITERAL = re.compile(r"^[A-Za-z][A-Za-z0-9_.-]*\.v[0-9]+(?:\.[0-9]+)*$")
 CODECS = {"to_dict", "from_dict", "to_json", "from_json", "fingerprint", "parse_json", "freeze_json", "thaw_json"}
+_LAZY_ROOT_GETATTR = ast.dump(ast.parse('''
+def __getattr__(name: str):
+    if name not in _LEGACY_EXPORTS:
+        raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+    _load_legacy_exports()
+    return globals()[name]
+''').body[0], include_attributes=False)
 
 
 class InventoryError(ValueError):
@@ -252,6 +259,26 @@ class Sources:
             prefix, rest = name.split(".", 1)
             if prefix in source.imports:
                 owner, symbol = source.imports[prefix]
+                # ``from package import module as alias`` names a discovered
+                # module, not a constant on the package. Keep member lookup
+                # inside that exact source without importing either module.
+                if symbol and owner + "." + symbol in self.modules:
+                    package = self.modules.get(owner)
+                    if package is None or any(symbol in names for names in (
+                            package.bindings, package.definitions, package.imports)):
+                        raise InventoryError(f"Ambiguous imported module constant: {owner}.{symbol}")
+                    namespace = (package.bindings, package.definitions, package.imports)
+                    if any("__getattr__" in names for names in namespace):
+                        hook = package.definitions.get("__getattr__")
+                        # The only supported dynamic package hook immediately
+                        # rejects this absent name in the validated legacy map.
+                        if (owner != "biocompiler" or "_LEGACY_EXPORTS" not in package.bindings
+                                or "__getattr__" in package.bindings or "__getattr__" in package.imports
+                                or any("AttributeError" in names for names in namespace)
+                                or not isinstance(hook, ast.FunctionDef)
+                                or ast.dump(hook, include_attributes=False) != _LAZY_ROOT_GETATTR):
+                            raise InventoryError(f"Dynamic imported module constant: {owner}.{symbol}")
+                    return self.value(owner + "." + symbol, rest, (*seen, key))
                 return self.value(owner, ".".join(filter(None, (symbol, rest))), (*seen, key))
             cls = source.definitions.get(prefix)
             if isinstance(cls, ast.ClassDef):
@@ -385,6 +412,8 @@ def ownership(module, category):
         return "Python", ["LM-03", "LM-11"], "retain_example_with_core_routing"
     if module == "biocompiler.core_distribution":
         return "Python", ["LM-11", "LM-12", "LM-25"], "retain_opt_in_owned_prebuilt_resolution_without_semantic_or_default_routing_authority"
+    if module in {"biocompiler.core_policy_component_material", "biocompiler.policy.component_material"}:
+        return "Python", ["LM-12", "LM-20", "LM-21", "LM-24", "LM-25", "LM-26"], "retain_explicit_transport_to_fresh_native_component_composition_and_exact_paired_export"
     if module in {"biocompiler.core_policy_material", "biocompiler.policy.material"}:
         return "Python", ["LM-12", "LM-20", "LM-21", "LM-24", "LM-25", "LM-26"], "retain_explicit_transport_to_fresh_native_policy_material_and_exact_paired_export"
     if module in {"biocompiler.core_policy_implementation", "biocompiler.policy.implementation"}:
@@ -416,6 +445,8 @@ def authority(module, category):
         return "authored_or_displayed_inputs_are_not_acceptance_authority"
     if module == "biocompiler.core_distribution":
         return "installed_sdk_release_pins_and_owned_wheel_RECORD_with_fresh_explicit_native_role_and_operation_negotiation"
+    if module in {"biocompiler.core_policy_component_material", "biocompiler.policy.component_material"}:
+        return "untouched_original_policy_catalog_component_rule_and_context_authority_with_fresh_native_conjunction_and_paired_export"
     if module in {"biocompiler.core_policy_material", "biocompiler.policy.material"}:
         return "full_original_policy_models_material_context_and_fresh_native_conditional_artifact_check"
     if module in {"biocompiler.core_policy_implementation", "biocompiler.policy.implementation"}:

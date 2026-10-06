@@ -73,6 +73,41 @@ ROUTE_EXCEPTIONS = {
 }
 
 
+# Components form a separately negotiated composition route, not the original
+# whole-kernel profile. Keep this path census closed and independently reviewed.
+COMPONENT_MODULES = (
+    ("compiler", "policy_component_lowering"),
+    ("domain", "policy_component_assembly_proposal"), ("domain", "policy_component_assembly_rule"),
+    ("domain", "policy_component_context"), ("domain", "policy_component_fragment"),
+    ("domain", "policy_component_library"), ("domain", "policy_component_material"),
+    ("domain", "policy_component_material_request"),
+    ("producer_service", "policy_component_material_producer"),
+    ("realization_checker", "policy_component_assembly_check"),
+    ("realization_checker", "policy_component_context_check"),
+    ("realization_checker", "policy_component_material_check"),
+    ("service", "policy_component_material_service"),
+)
+COMPONENT_SOURCES = tuple(sorted(
+    [f"core/lib/{directory}/{name}.{suffix}" for directory, name in COMPONENT_MODULES for suffix in ("ml", "mli")]
+    + ["src/biocompiler/core_policy_component_material.py", "src/biocompiler/policy/component_material.py"]))
+COMPONENT_REASON = "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+ROUTE_EXCEPTIONS.update({path: COMPONENT_REASON for path in COMPONENT_SOURCES})
+EXTRA_SOURCES += ("src/biocompiler/core_policy_component_material.py", "src/biocompiler/policy/component_material.py")
+COMPONENT_LEDGER = "protocol/policy-component-rule-coverage-v0.1.json"
+COMPONENT_RULE_IDS = ("component.fragment", "component.local_material", "component.assembly_rule", "component.ordered_union",
+    "component.original_request", "component.context", "component.conjunction", "component.production", "component.export", "component.sdk")
+COMPONENT_WITNESSES = tuple(sorted([
+    *[f"core/test/test_policy_component_{name}.ml" for name in ("fragment", "material", "assembly_rule", "assembly_check", "material_request", "context_check", "material_service")],
+    "core/test/policy_component_support/literals.ml", "core/test/policy_component_support/requests.ml",
+    "core/test/component_fixture_export/main.ml", "tools/check_policy_component_material.py",
+    "tests/test_core_policy_component_material.py", "tests/test_policy_component_material.py",
+    "core/test/data/policy_material_request_v01.json", "core/test/data/policy_material_state_v01.json",
+]))
+# Fixed reviewed meaning/provenance projection, excluding source-body hashes and
+# lexical counts. Re-pinning changed files cannot reassign witness meaning.
+COMPONENT_METADATA_SHA256 = "8e70e8355517875a1ccfc19e7ffd46c3947f2b5a7c4e39baa5f6cfbdedcce71c"
+
+
 class CoverageError(ValueError):
     """A reviewed contextual inventory is malformed, incomplete or stale."""
 
@@ -187,6 +222,59 @@ def discover(root: Path) -> list[str]:
     return sorted(paths | set(EXTRA_SOURCES))
 
 
+def component_metadata(ledger: dict[str, Any]) -> dict[str, Any]:
+    """Reviewed meaning/provenance, separate from current body/lexical pins."""
+    return {**{key: value for key, value in ledger.items() if key not in {"sources", "witness_sources"}},
+            "source_paths": [row["path"] for row in ledger["sources"]],
+            "witness_paths": [row["path"] for row in ledger["witness_sources"]]}
+
+
+def check_component(root: Path = ROOT, ledger: Any | None = None) -> dict[str, Any]:
+    if ledger is None:
+        ledger = decode(read(root, COMPONENT_LEDGER))
+    closed(ledger, {"schema_version", "profile", "claim_scope", "sources", "witness_sources", "rules",
+                    "limitations", "historical_development_feedback"}, "component ledger")
+    require(ledger["schema_version"] == "biocompiler.policy_component_rule_coverage.v0.1"
+            and ledger["profile"] == "policy-component-mrna-v0.1"
+            and ledger["claim_scope"] == "reviewed_component_route_and_witness_source_inventory_only",
+            "Changed separate component coverage claim")
+    texts: dict[str, str] = {}
+    for key, expected in (("sources", COMPONENT_SOURCES), ("witness_sources", COMPONENT_WITNESSES)):
+        rows = ledger[key]
+        require(type(rows) is list and all(type(row) is dict for row in rows), "Component inventory must be records")
+        require([row.get("path") for row in rows] == list(expected), "Changed component " + key + " census")
+        for row in rows:
+            closed(row, {"path", "sha256", "census"} if key == "sources" else {"path", "sha256"}, "component source")
+            raw = read(root, row["path"])
+            require(row["sha256"] == digest(raw), "Stale component source hash: " + row["path"])
+            if key == "sources":
+                require(row["census"] == census(row["path"], raw), "Changed component guard/profile census")
+            texts[row["path"]] = raw.decode("utf-8")
+    rules = ledger["rules"]
+    require(type(rules) is list and all(type(row) is dict for row in rules)
+            and [row.get("id") for row in rules] == list(COMPONENT_RULE_IDS), "Changed component rule census")
+    for row in rules:
+        closed(row, {"id", "owners", "positive", "negative", "scope", "limits", "evidence_scope"}, "component rule")
+        require(row["evidence_scope"] == "source_only_not_executed_by_this_gate", "Component witness upgraded to execution proof")
+        for key in ("scope", "limits"):
+            words(row[key], "component " + key)
+        for key in ("owners", "positive", "negative"):
+            require(type(row[key]) is list and row[key], "Missing component owner or distinguishing witness")
+            for pointer in row[key]:
+                closed(pointer, {"path", "anchor", "occurrence"}, "component pointer")
+                allowed = COMPONENT_SOURCES if key == "owners" else COMPONENT_WITNESSES
+                require(type(pointer["path"]) is str and pointer["path"] in allowed, "Unclassified component pointer")
+                words(pointer["anchor"], "component anchor")
+                require(type(pointer["occurrence"]) is int and pointer["occurrence"] >= 1
+                        and texts[pointer["path"]].count(pointer["anchor"]) >= pointer["occurrence"],
+                        "Missing component source anchor")
+    metadata = json.dumps(component_metadata(ledger), sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()
+    require(digest(metadata) == COMPONENT_METADATA_SHA256, "Changed reviewed component meaning/witness/provenance metadata")
+    return {"rules": len(rules), "sources": len(COMPONENT_SOURCES), "witness_sources": len(COMPONENT_WITNESSES),
+            "status": "source_inventory_current", "semantic_proof": "not_established", "test_execution": "not_performed",
+            "historical_feedback": "reference_only_not_reauthenticated_or_transferred"}
+
+
 def check(root: Path = ROOT, ledger: Any | None = None) -> dict[str, Any]:
     if ledger is None:
         ledger = decode(read(root, LEDGER))
@@ -280,7 +368,8 @@ def check(root: Path = ROOT, ledger: Any | None = None) -> dict[str, Any]:
         words(gap, "known gap")
     return {"schema_version": SCHEMA, "status": "source_inventory_current", "claim_scope": CLAIM,
             "rules": len(rules), "sources": len(sources), "witness_sources": len(witnesses),
-            "rules_with_pending_witnesses": pending, "semantic_proof": "not_established", "test_execution": "not_performed"}
+            "rules_with_pending_witnesses": pending, "semantic_proof": "not_established", "test_execution": "not_performed",
+            "component_route": check_component(root)}
 
 
 def main() -> int:

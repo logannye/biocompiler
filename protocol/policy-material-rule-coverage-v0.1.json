@@ -323,6 +323,32 @@
       "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
     },
     {
+      "path": "core/lib/compiler/policy_component_lowering.ml",
+      "sha256": "1411327566b59a1d99a123f9a48c52441c13b9f3ab66f18ec587cf26f7aa315f",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 1,
+          "Diagnostic.require": 2,
+          "supported": 3
+        },
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "core/lib/compiler/policy_component_lowering.mli",
+      "sha256": "fa5342d327682a6f44cda0d942568d4e3b323de61bbf337c1acad9f80aab3164",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
       "path": "core/lib/compiler/policy_implementation_lowering.ml",
       "sha256": "ca278d98039620eba89f6aaec11008f35bc589748a3479b598e26e732b249681",
       "census": {
@@ -398,6 +424,213 @@
       },
       "disposition": "dependency",
       "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
+    },
+    {
+      "path": "core/lib/domain/policy_component_assembly_proposal.ml",
+      "sha256": "744f915e383f61997e36af948a40b8b15a35f6a19540a49b5bafc9ad7fe43320",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 1,
+          "Diagnostic.require": 1,
+          "require": 5
+        },
+        "profile_literals": {
+          "biocompiler.policy_component_assembly_proposal.v0.1": 1
+        }
+      },
+      "disposition": "outside_route",
+      "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "core/lib/domain/policy_component_assembly_proposal.mli",
+      "sha256": "2935a1494200b31d8f4b722cd09475882f745a8bdbd8987e4b16f09168fcca78",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "core/lib/domain/policy_component_assembly_rule.ml",
+      "sha256": "c3fb78dabd6e44cec3af6c33ea49b20b4b89dd259bda04fcae1226021f69e827",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 1,
+          "Diagnostic.require": 1,
+          "fail": 20,
+          "require": 44
+        },
+        "profile_literals": {
+          "biocompiler.policy_component_assembly_rule.v0.1": 1,
+          "biocompiler.policy_exact_component_assembly.v0.1": 1,
+          "biocompiler.policy_identity_transport.v0.1": 1
+        }
+      },
+      "disposition": "outside_route",
+      "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "core/lib/domain/policy_component_assembly_rule.mli",
+      "sha256": "c56977fdf2b1463161032fb22b62a3ae09469e1f324727d9eacb040d1ca0c56a",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "core/lib/domain/policy_component_context.ml",
+      "sha256": "8be015ed0745b4dd49991c5bb4ab5385ac726e06ac8ad9d7f32f6d8a13e39114",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.require": 1,
+          "require": 11
+        },
+        "profile_literals": {
+          "biocompiler.policy_component_complete_records.v0.1": 1,
+          "biocompiler.policy_component_context.v0.1": 1,
+          "biocompiler.policy_component_mrna.v0.1": 1,
+          "biocompiler.policy_component_ordered_union.v0.1": 1
+        }
+      },
+      "disposition": "outside_route",
+      "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "core/lib/domain/policy_component_context.mli",
+      "sha256": "0025708660866390614f066444b97129a49b7da2cf13b6670b8276b0f6707709",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "core/lib/domain/policy_component_fragment.ml",
+      "sha256": "24cb2062cfac492b542f78a28b1dc0643f8a23927cb1a9e0719058f12774c4d1",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 1,
+          "Diagnostic.require": 1,
+          "fail": 12,
+          "require": 24
+        },
+        "profile_literals": {
+          "biocompiler.policy_component_fragment.resources.v0.1": 1,
+          "biocompiler.policy_component_fragment.v0.1": 1,
+          "biocompiler.policy_exact_fragment.v0.1": 1,
+          "biocompiler.policy_primitive_execution.v0.1": 1
+        }
+      },
+      "disposition": "outside_route",
+      "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "core/lib/domain/policy_component_fragment.mli",
+      "sha256": "127154bfc0bae72642aad4c45919328542395ce027fd710fb3d9c1a2a1f4dcc9",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "core/lib/domain/policy_component_library.ml",
+      "sha256": "69769174fa3dd14914fbf9037a7d83f12a0795d628931f46b117d671c22a6b2b",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.require": 1,
+          "require": 6
+        },
+        "profile_literals": {
+          "biocompiler.policy_component_library.v0.1": 1,
+          "biocompiler.policy_exact_component_library.v0.1": 1
+        }
+      },
+      "disposition": "outside_route",
+      "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "core/lib/domain/policy_component_library.mli",
+      "sha256": "8bda829d142efe6bc7b9356c6fec92d09108ef07592df576dda28b282286e42c",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "core/lib/domain/policy_component_material.ml",
+      "sha256": "4de851b835eed12721cac0f1c0dd669289aa3623faca1d5540df930ba34757d3",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 6,
+          "Diagnostic.require": 1,
+          "require": 25
+        },
+        "profile_literals": {
+          "biocompiler.policy_component_material.v0.1": 1,
+          "biocompiler.policy_exact_local_material.v0.1": 1
+        }
+      },
+      "disposition": "outside_route",
+      "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "core/lib/domain/policy_component_material.mli",
+      "sha256": "842042bda5b80933543e5061e64cc99c722111e53148f4a87e58e10b7c0d9e87",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "core/lib/domain/policy_component_material_request.ml",
+      "sha256": "052666c385fea9b49798dc8484a46619b5fae88ba8c2af27bdc70023414deb98",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 6,
+          "Diagnostic.require": 3,
+          "require": 20
+        },
+        "profile_literals": {
+          "biocompiler.policy_component_material_request.v0.1": 1,
+          "biocompiler.policy_component_material_resources.v0.1": 1
+        }
+      },
+      "disposition": "outside_route",
+      "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "core/lib/domain/policy_component_material_request.mli",
+      "sha256": "2d4d773ec7deccc0380dbf9da4996b600221c01fd03196e0118c49c1ab6558cc",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
     },
     {
       "path": "core/lib/domain/policy_document.ml",
@@ -491,7 +724,7 @@
     },
     {
       "path": "core/lib/domain/policy_material_context.ml",
-      "sha256": "9fb3a60e865d23a094b1c334bb03d63280a9d6480c9edcde31be92d7a499ae20",
+      "sha256": "12d4f24d00a364e5148f283d19c1b2e7fd56f031d68948941dca0950da43b2a0",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
@@ -512,7 +745,7 @@
     },
     {
       "path": "core/lib/domain/policy_material_context.mli",
-      "sha256": "b52bf9fcbd1478cab0e7818583a1a85b9a300fd9ba266bf8dce3c408c80dd989",
+      "sha256": "64066b039724843a35292b2f75b58ecb622bbcf4d7961bca03227a2c2f6b1efa",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {},
@@ -725,6 +958,28 @@
       "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
     },
     {
+      "path": "core/lib/producer_service/policy_component_material_producer.ml",
+      "sha256": "23d721ecbe733d64927e1bfa1b950751194e9c8d9738da0e6eb725c5cd510eec",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "core/lib/producer_service/policy_component_material_producer.mli",
+      "sha256": "242fe988b98e5856465b50d6751866432b75ba7f537d7b97fcab664948d05d3f",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
       "path": "core/lib/producer_service/policy_implementation_producer.ml",
       "sha256": "81ffbee4d3862f69c054f9d6031366d99871e72ddbea7165bc515f2a53f6dc5e",
       "census": {
@@ -796,7 +1051,7 @@
     },
     {
       "path": "core/lib/producer_service/producer_service.ml",
-      "sha256": "6f8f8d8a069195a6fd67b6a94c3ef0292485226356a9aead82777c6921dc1323",
+      "sha256": "374cb431711de44513604878f1bac480eb379a614cf176fc68522ecacca839c9",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {},
@@ -818,6 +1073,94 @@
       },
       "disposition": "dependency",
       "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
+    },
+    {
+      "path": "core/lib/realization_checker/policy_component_assembly_check.ml",
+      "sha256": "aefb2413d1659daa526f7e1bfd3200003238c681575663f010440a837a42df49",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.require": 3,
+          "verify": 34
+        },
+        "profile_literals": {
+          "biocompiler.ocaml.policy_component_assembly_check.v0.1": 1,
+          "biocompiler.policy_component_assembly_assessment.v0.1": 1
+        }
+      },
+      "disposition": "outside_route",
+      "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "core/lib/realization_checker/policy_component_assembly_check.mli",
+      "sha256": "a2e91133165ed883aa73ba4ed96a141c205c84ed4a0a289abf75eb01b7a8ab74",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "core/lib/realization_checker/policy_component_context_check.ml",
+      "sha256": "ca61983d1bbe49f5d987c935582b0f27f24d9a904a190020ea0978f36e55671e",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 14,
+          "Diagnostic.require": 5,
+          "fail": 44,
+          "supported": 18
+        },
+        "profile_literals": {
+          "biocompiler.ocaml.policy_component_context_check.v0.1": 1,
+          "biocompiler.policy_component_context_assessment.v0.1": 1
+        }
+      },
+      "disposition": "outside_route",
+      "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "core/lib/realization_checker/policy_component_context_check.mli",
+      "sha256": "a81e90704baba21c11cb69817908fdf36c840f5e01b5af62d740f7d430265b3f",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "core/lib/realization_checker/policy_component_material_check.ml",
+      "sha256": "7e78054a94ad04593e1d198c2de741a490302605b085cbfdf24847e90c31c95f",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 1,
+          "Diagnostic.require": 4,
+          "require": 6
+        },
+        "profile_literals": {
+          "biocompiler.ocaml.policy_component_material_check.v0.1": 1,
+          "biocompiler.policy_component_material_assessment.v0.1": 1,
+          "biocompiler.policy_component_material_candidate.v0.1": 1
+        }
+      },
+      "disposition": "outside_route",
+      "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "core/lib/realization_checker/policy_component_material_check.mli",
+      "sha256": "1f5d283abdf622e1564a11b11d5d96122fc9c2654b62c649f985d70c61ab52f9",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
     },
     {
       "path": "core/lib/realization_checker/policy_material_binding_check.ml",
@@ -1054,6 +1397,37 @@
       "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
     },
     {
+      "path": "core/lib/service/policy_component_material_service.ml",
+      "sha256": "d59e871e0baedf70203281054350afa8957a3a41fe521c2b09834db74c0a9893",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 2,
+          "Diagnostic.require": 5
+        },
+        "profile_literals": {
+          "biocompiler.core.policy_component_material.v1": 1,
+          "biocompiler.ocaml.policy_component_material.v0.1": 1,
+          "biocompiler.policy_component_material_candidate.v0.1": 1,
+          "biocompiler.policy_component_mrna_export.v0.1": 1,
+          "biocompiler.policy_component_mrna_manifest.v0.1": 1
+        }
+      },
+      "disposition": "outside_route",
+      "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "core/lib/service/policy_component_material_service.mli",
+      "sha256": "1fa5a6032b78f2a223abefd3fe2e12a1b9be772bdd1822f844a4f10bcc3151f0",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
       "path": "core/lib/service/policy_implementation_service.ml",
       "sha256": "2ab777a600cfa83e1ab2774e19bb19d48d3265f0cf62a0d9685a7397dfb727cf",
       "census": {
@@ -1175,7 +1549,7 @@
     },
     {
       "path": "core/lib/service/service.ml",
-      "sha256": "e741581e70cd7cfb1955843e8cf983af8659f416e454e75c96ec6825286ec534",
+      "sha256": "15871eadda0f4ace7c662edd68a9557bf6463922bdf0d97ef182493cbd8b29f7",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
@@ -1304,13 +1678,45 @@
       "reason": "Narrow prebuilt resolver foundation only; targeted installed material routing and exact-revision acceptance remain pending."
     },
     {
-      "path": "src/biocompiler/core_policy_material.py",
-      "sha256": "b3a28a1f40d475de8848cc6cea45d4c0975042da17b2c90977facca7f2d9100c",
+      "path": "src/biocompiler/core_policy_component_material.py",
+      "sha256": "303e9ce373bbe03fa988717449bb1fb15676a5cb8faf844e9cec14a1db947882",
       "census": {
         "kind": "python_ast_node_census",
         "guards": {
           "ClassDef": 2,
-          "FunctionDef": 19,
+          "FunctionDef": 13,
+          "Raise": 28
+        },
+        "profile_literals": {
+          "biocompiler.core.policy_component_material.v1": 1,
+          "biocompiler.ocaml.policy_component_assembly_check.v0.1": 1,
+          "biocompiler.ocaml.policy_component_context_check.v0.1": 1,
+          "biocompiler.ocaml.policy_component_material.v0.1": 1,
+          "biocompiler.ocaml.policy_component_material_check.v0.1": 1,
+          "biocompiler.policy_component_assembly_assessment.v0.1": 1,
+          "biocompiler.policy_component_assembly_proposal.v0.1": 1,
+          "biocompiler.policy_component_context_assessment.v0.1": 1,
+          "biocompiler.policy_component_material_assessment.v0.1": 1,
+          "biocompiler.policy_component_material_candidate.v0.1": 1,
+          "biocompiler.policy_component_material_request.v0.1": 1,
+          "biocompiler.policy_component_material_resources.v0.1": 1,
+          "biocompiler.policy_component_mrna.v0.1": 1,
+          "biocompiler.policy_component_mrna_export.v0.1": 1,
+          "biocompiler.policy_component_mrna_manifest.v0.1": 1,
+          "biocompiler.policy_exact_component_assembly.v0.1": 2
+        }
+      },
+      "disposition": "outside_route",
+      "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "src/biocompiler/core_policy_material.py",
+      "sha256": "45afd4c5457434b009af9293b988ae20da59672211dd7a749ee825dea63212b3",
+      "census": {
+        "kind": "python_ast_node_census",
+        "guards": {
+          "ClassDef": 2,
+          "FunctionDef": 21,
           "Raise": 54
         },
         "profile_literals": {
@@ -1356,7 +1762,7 @@
     },
     {
       "path": "src/biocompiler/policy/cli.py",
-      "sha256": "2eab649fbcf2223e26312b4987a842bf251425b1779ce795a3542fa8ab97cc60",
+      "sha256": "beaff7cf4994019f24fab7361e588a3702b32bb16d357bda42e16000a5060d0f",
       "census": {
         "kind": "python_ast_node_census",
         "guards": {
@@ -1369,12 +1775,25 @@
       "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
     },
     {
-      "path": "src/biocompiler/policy/material.py",
-      "sha256": "cabfab5d543c84d5732d9d9adcb1edf1482f45e3ebb80fdab1022ef3bea16359",
+      "path": "src/biocompiler/policy/component_material.py",
+      "sha256": "24da1db993f5f56ff516ad3b2d14667731f681ebe9f1c9ae6898d0728bd5eaba",
       "census": {
         "kind": "python_ast_node_census",
         "guards": {
-          "FunctionDef": 8,
+          "FunctionDef": 5
+        },
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "src/biocompiler/policy/material.py",
+      "sha256": "5893a53e408ff4b408049b9bdb370ebb20a77688d8b5b4b825f308d2a40fdd79",
+      "census": {
+        "kind": "python_ast_node_census",
+        "guards": {
+          "FunctionDef": 9,
           "Raise": 14
         },
         "profile_literals": {}
@@ -2383,7 +2802,7 @@
             "anchor": "Lifecycle inventory no longer covers each admitted authorization/unknown-response pair",
             "occurrence": 1
           },
-          "context": "All four initiation/continuous \u00d7 continue/defer source cases enter the full material conjunction, each with 54 histories; literal missing/invalid/conflicting, quiet stale, false authorization, feedback and timeout checks remain source inventory.",
+          "context": "All four initiation/continuous × continue/defer source cases enter the full material conjunction, each with 54 histories; literal missing/invalid/conflicting, quiet stale, false authorization, feedback and timeout checks remain source inventory.",
           "evidence_scope": "source_only_not_executed_by_this_gate"
         }
       ],
@@ -3449,7 +3868,7 @@
             "anchor": "Lifecycle inventory no longer covers each admitted authorization/unknown-response pair",
             "occurrence": 1
           },
-          "context": "All four initiation/continuous \u00d7 continue/defer source cases enter the full material conjunction, each with 54 histories; literal missing/invalid/conflicting, quiet stale, false authorization, feedback and timeout checks remain source inventory.",
+          "context": "All four initiation/continuous × continue/defer source cases enter the full material conjunction, each with 54 histories; literal missing/invalid/conflicting, quiet stale, false authorization, feedback and timeout checks remain source inventory.",
           "evidence_scope": "source_only_not_executed_by_this_gate"
         },
         {
@@ -4275,7 +4694,7 @@
           "occurrence": 1
         }
       ],
-      "admitted_context": "PM-02\u201309 require the full ordered declared inventory of complete linear delivered coding RNA, exact canonical bases/length and no unresolved missing members.",
+      "admitted_context": "PM-02–09 require the full ordered declared inventory of complete linear delivered coding RNA, exact canonical bases/length and no unresolved missing members.",
       "outside_context": {
         "disposition": "mixed",
         "description": "Core-only/partial RNA, wrong modality, missing member or bounded/unknown unrepresented tail cannot be complete."

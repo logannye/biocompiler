@@ -44,8 +44,10 @@ REVIEWED_ADDITIONS = {
     "src/biocompiler/core_workflow_authority.py": "ded29c7cd4c16241812bd7f677b0c962d185a724fef1cd7294c7e899c7c32d66",
     "src/biocompiler/workflow_cli.py": "641cf7f6451e52c5dd4a09a28c75c89329191aa373aed36cc9dc92c573207bd5",
     # Independently reviewed policy transports remain outside original authority.
-    'src/biocompiler/policy/material.py': 'cabfab5d543c84d5732d9d9adcb1edf1482f45e3ebb80fdab1022ef3bea16359',
-    'src/biocompiler/core_policy_material.py': 'b3a28a1f40d475de8848cc6cea45d4c0975042da17b2c90977facca7f2d9100c',
+    'src/biocompiler/policy/component_material.py': '24da1db993f5f56ff516ad3b2d14667731f681ebe9f1c9ae6898d0728bd5eaba',
+    'src/biocompiler/core_policy_component_material.py': '303e9ce373bbe03fa988717449bb1fb15676a5cb8faf844e9cec14a1db947882',
+    'src/biocompiler/policy/material.py': '5893a53e408ff4b408049b9bdb370ebb20a77688d8b5b4b825f308d2a40fdd79',
+    'src/biocompiler/core_policy_material.py': '45afd4c5457434b009af9293b988ae20da59672211dd7a749ee825dea63212b3',
     'src/biocompiler/policy/implementation.py': '4e1de0535cf852885169328aaae035caff9178b367b84f204c1e68eaae478515',
     'src/biocompiler/core_policy_implementation.py': 'b0a1c56ed960e146153dcb1f89ac28cc0f809a79716a7f7c1e096496b4bcf556',
     # Explicit operational-policy transport and CLI stay excluded from the
@@ -60,7 +62,7 @@ REVIEWED_ADDITIONS = {
     'src/biocompiler/policy/behavior.py': '691b7710b8e915665526e57ba41f3b2df3fe1519ec22371d47441050c37e34bf',
     'src/biocompiler/policy/catalog.py': '96bd1729202b96c12fcaea35e2ca1560011bed7a5dd712e2fc8d0a5fc9ff3e30',
     'src/biocompiler/policy/chassis.py': '21960a5498db0934150ab5288eb6de30c2eb63062fe9e06a2c57a0214c811ab1',
-    'src/biocompiler/policy/cli.py': '2eab649fbcf2223e26312b4987a842bf251425b1779ce795a3542fa8ab97cc60',
+    'src/biocompiler/policy/cli.py': 'beaff7cf4994019f24fab7361e588a3702b32bb16d357bda42e16000a5060d0f',
     'src/biocompiler/policy/coordination.py': 'ce597e5c05dc1f64b73bbeb4b60ae9863b26c645155ce03ea46a827135b009c9',
     'src/biocompiler/policy/deployment.py': 'cddace3d45f04ecd722a47849325c9ff6a41fc166b0e23253c2377f037eae29f',
     'src/biocompiler/policy/effects.py': '2e228309b98defa71730cac3e2b8883a9e86c9f63f0d5c25b37bf70b27a02578',

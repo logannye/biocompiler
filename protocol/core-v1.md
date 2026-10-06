@@ -561,3 +561,43 @@ checking, cancellation, changed staged bytes and publication failures preserve
 prior output. Exit codes remain 0 for acceptance, 1 for a completed nonaccepted
 assessment, and 2 for input/transport/native errors. There is no Python semantic
 fallback.
+
+## Reusable-component policy material v0.1
+
+The separate `policy-component-mrna-v0.1` scope negotiates
+`biocompiler.core.policy_component_material.v1`,
+`biocompiler.ocaml.policy_component_material.v0.1`, and
+`biocompiler.policy_component_material_resources.v0.1`. Core alone advertises
+`compile-policy-component-material`. Core and producer-free Verify expose
+`check-policy-component-material`, `replay-policy-component-material`, and
+`export-policy-component-material`. Payload shapes follow the conditional
+material operations above; capability negotiation requires the exact component
+profile, and no older material capability substitutes for it.
+
+The closed `biocompiler.policy_component_material_request.v0.1` retains the
+original `implementation_request`, supplied `component_library`,
+`composition_rule`, `catalog_binding`, `input_bindings`, `resource_bindings`,
+`context`, and `budgets`, plus `schema_version` and the
+`biocompiler.policy_component_mrna.v0.1` profile. Its candidate schema is
+`biocompiler.policy_component_material_candidate.v0.1`, with `behavior`,
+`implementation`, `binding`, `assembly_proposal`, and `construction`.
+The original source request remains the authority throughout checking.
+
+Fresh checking independently reconstructs source/IR preservation, exact component
+ownership and wiring, ordered assembly and molecular construction, complete
+context records and shared resource demands, original catalog binding, and every
+source obligation. Only their complete conjunction can authorize export. This
+bounded profile supports one RNA assembled from one decision component and one
+reusable driver, with no helpers or alternative selection. Two supported policy
+families can use the same unchanged driver specification. Supplied component,
+composition and provider contracts are premises; empirical behavior is unassessed.
+
+The wrapper binds the full original request, candidate and invocation limits.
+Compile/check/replay withhold artifacts; replay compares the entire fresh wrapper.
+Fresh export emits `biocompiler.policy_component_mrna_export.v0.1` and a canonical
+`biocompiler.policy_component_mrna_manifest.v0.1`, retaining original inputs,
+assessment, exact molecule records and paired FASTA/manifest hashes.
+`PolicyComponentMaterialClient` and `policy.component_material` provide immutable
+Python transports and the same atomic, independently read-back ZIP publication
+used by the conditional material route. This increment adds no component CLI
+command or top-level Python re-export.

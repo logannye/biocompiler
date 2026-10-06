@@ -1,10 +1,10 @@
-# Reusable policy component composition: proposed v0.1 contract
+# Reusable policy component composition: bounded v0.1 contract
 
-**Source preparation / unaccepted profile.** The literal acceptance fixture was
+**Implemented / release acceptance pending.** The literal acceptance fixture was
 independently reviewed against `bb84421cf1f93cd1dc02813d80a2c54a3520a919`; source
 preparation starts from the corrected union `4157108cbf98a7e48b5c09a5c9dc3beb3a558b40`.
-Neither revision accepts this new composition profile. This document specifies
-future original authority and independent controls; it is not a decoded request,
+Neither starting revision accepts this new composition profile. This document specifies
+original authority and independent controls; it is not a decoded request,
 execution receipt or export capability. No producer output or expected-trace
 generator defines these literal values. Native validation remains hosted.
 
@@ -12,8 +12,11 @@ The implemented native path now includes closed component/library/rule and origi
 request domains, bounded graph arrangement, independent preservation/assembly/context
 checking, complete original-obligation discharge and fresh paired export. All sixteen
 focused native suites passed at `4d19d7b37` in hosted run `37526163552`.
-The public Python adapter and two-policy DSL-to-export witness are under validation;
-full installed, cross-platform and release acceptance remain separate work. Track completion in [the development plan](semantic-mrna-development-plan.md).
+The complete public Python DSL-to-export path then passed at `5a45d354e` in
+hosted run `37527311912`: sixteen native suites, 26 retained SDK observations,
+and independently inspected exact A/B FASTA/manifest ZIPs. These source-tree
+results do not establish installed, cross-platform or release acceptance.
+Track completion in [the development plan](semantic-mrna-development-plan.md).
 
 The preserved design and fixture review under
 `work/bounded-policy-execution/generated/policy-realization/` remain historical

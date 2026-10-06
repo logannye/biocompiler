@@ -119,7 +119,7 @@ SOURCE_PINS = {'core/lib/checker/policy_admission.ml': '7d8ba644a491438afce37fbd
  'core/lib/checker/policy_check.ml': '2aad7572b04cb20fdac3a162c4185cc1b976b895d578a249f230ae7e368b2bd1',
  'core/lib/checker/policy_implementation_binding_check.ml': 'af77acf6c93f5d7635ce7f4729afac40da4febf38705733ff031a50e5403211a',
  'core/lib/domain/policy_document.ml': 'db2860b602d63df29d1a8240417f8632c37693b797f9561e00395bd1fd2f95dc',
- 'core/lib/domain/policy_material_context.ml': '9fb3a60e865d23a094b1c334bb03d63280a9d6480c9edcde31be92d7a499ae20',
+ 'core/lib/domain/policy_material_context.ml': '12d4f24d00a364e5148f283d19c1b2e7fd56f031d68948941dca0950da43b2a0',
  'core/lib/domain/policy_operating_domain.ml': 'bad7552eaf0642d051f1d7a1cf70ccc3e3e216b2ce5659b9a7ace4577660fd08',
  'core/lib/domain/policy_operational.ml': 'bd5d03f8acefed68ab0a8059041774479426928266351b325535a124e3e23d34',
  'core/lib/domain/policy_schema.ml': 'ea829a61d0584e98e4c63a3df6404988dec0d6af4bdf3faef31158420be2b2c5',

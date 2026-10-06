@@ -28,15 +28,15 @@ LEDGER = "protocol/policy-public-api-coverage-v0.1.json"
 SCHEMA = "biocompiler.policy_public_api_coverage.v0.1"
 CLAIM = "Static public-source inventory and reviewed witness links only; neither executed coverage nor semantic/native/material/release acceptance."
 RUNTIME_SCOPE = "Entries count authored AST declarations, fields and methods. Generated or inherited dataclass runtime protocols are represented by reviewed decorator/field/base contracts, not an exhaustive runtime-attribute census; Python record equality is not symbolic policy comparison."
-# Reviewed separately from source-body pins. This literal binds all90 witness
-# meanings/owners and all700 coverage classifications, so refreshing file/AST
+# Reviewed separately from source-body pins. This literal binds all106 witness
+# meanings/owners and all740 coverage classifications, so refreshing file/AST
 # hashes cannot reassign evidence or upgrade a source-only row. It is not a
 # proof that the tests pass or that their claims establish runtime semantics.
 # Revise only with explicit independent review; no regeneration mode exists.
-REVIEWED_METADATA_SHA256 = "f16a88c77afaea4f7cbae56e80e38afc8d5a4c894616ca158578b707d393bb4a"
+REVIEWED_METADATA_SHA256 = "2367be4f22a4985eb15fce30dc799abfb254a22ae86f7de665e23fdc7ed800a2"
 PACKAGE = "src/biocompiler/policy"
-MODULES = tuple("__init__ behavior catalog chassis cli coordination deployment effects entities examples handoff implementation inspection logic material model native observations operational patterns programs requirements serialization space state time validation values".split())
-CLIENTS = ("core_policy", "core_policy_operational", "core_policy_implementation", "core_policy_material")
+MODULES = tuple("__init__ behavior catalog chassis cli component_material coordination deployment effects entities examples handoff implementation inspection logic material model native observations operational patterns programs requirements serialization space state time validation values".split())
+CLIENTS = ("core_policy", "core_policy_operational", "core_policy_implementation", "core_policy_material", "core_policy_component_material")
 PRIMARY = tuple(sorted([f"{PACKAGE}/{name}.py" for name in MODULES] + [f"src/biocompiler/{name}.py" for name in CLIENTS]))
 BOUNDARIES = ("src/biocompiler/__init__.py", "src/biocompiler/__main__.py", "src/biocompiler/entrypoint.py", "src/biocompiler/core_client.py", "pyproject.toml", "tools/check_policy_semantic_coverage.py")
 # These names remain compatible support surfaces, not cellular runtime APIs.
@@ -58,6 +58,10 @@ OPERATIONS = {
     "core_policy_material.PolicyMaterialClient.check": ("check-policy-material", ("request", "candidate", "limits")),
     "core_policy_material.PolicyMaterialClient.replay": ("replay-policy-material", ("request", "candidate", "limits", "report")),
     "core_policy_material.PolicyMaterialClient.export": ("export-policy-material", ("request", "candidate", "limits")),
+    "core_policy_component_material.PolicyComponentMaterialClient.compile": ("compile-policy-component-material", ("request", "limits")),
+    "core_policy_component_material.PolicyComponentMaterialClient.check": ("check-policy-component-material", ("request", "candidate", "limits")),
+    "core_policy_component_material.PolicyComponentMaterialClient.replay": ("replay-policy-component-material", ("request", "candidate", "limits", "report")),
+    "core_policy_component_material.PolicyComponentMaterialClient.export": ("export-policy-component-material", ("request", "candidate", "limits")),
 }
 # Reviewed access names and canonical owners, independent of the ledger file pins.
 REVIEWED_EXPORT_GROUPS = (('biocompiler.policy',
