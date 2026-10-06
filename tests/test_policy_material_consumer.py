@@ -11,6 +11,7 @@ from unittest.mock import Mock, patch
 
 from biocompiler.core_client import CoreProtocolError, CoreRejected, CoreResponse, Diagnostic
 from tests import test_core_policy_material as peers
+from tests import test_core_policy_component_material as component_peers
 
 ROOT = Path(__file__).resolve().parents[1]
 SPEC = importlib.util.spec_from_file_location("policy_material_consumer_test_tool", ROOT / "tools/check_policy_material_consumer.py")
@@ -27,6 +28,21 @@ def inputs():
     exported = deepcopy(checked)
     exported["artifact"] = peers.artifact(request, candidate, limits, checked["report"])
     return {"request": request, "candidate": candidate, "limits": limits, "checked": checked, "exported": exported}
+
+
+def component_inputs():
+    """Synthetic transport peers only; these do not claim native-admitted A/B."""
+    result = {}
+    for label in ("A", "B"):
+        request = component_peers.original()
+        request["implementation_request"]["document"]["program"]["source_map"][0]["file"] = "inert-" + label + ".py"
+        candidate, limits = component_peers.candidate(request), peers.fixture()["limits"]
+        source_candidate = peers.peer.candidate(request["implementation_request"])
+        candidate.update({key: source_candidate[key] for key in ("behavior", "implementation", "binding")})
+        payload = {"request": request, "candidate": candidate, "limits": limits}
+        row = {**payload, "checked": component_peers.result(payload), "exported": component_peers.result(payload, export=True)}
+        result.update({label + "." + name: value for name, value in row.items()})
+    return result
 
 
 def rejected(operation, code, status="error"):
@@ -59,15 +75,47 @@ class StubVerify:
         raise rejected(operation, "unsupported_operation", "unsupported")
 
 
-def worker_record(originals, manifest, system="Linux"):
-    stub = StubVerify(originals)
-    observations = TOOL.exercise(stub, stub, originals)
-    return {"schema_version": TOOL.WORKER_SCHEMA, "status": "pass", "producer_absence": deepcopy(TOOL.PRODUCER_ABSENCE),
+class ComponentStubVerify:
+    def __init__(self, originals):
+        self.originals, self.calls = originals, []
+
+    def matching(self, request):
+        return next((TOOL.case_inputs(self.originals, label) for label in ("A", "B")
+                     if TOOL.digest(self.originals[label + ".request"]) == TOOL.digest(request)), None)
+
+    def check(self, request, candidate, limits):
+        self.calls.append(("check", deepcopy(request), deepcopy(candidate), deepcopy(limits)))
+        original = self.matching(request)
+        if original is None:
+            raise rejected("check-policy-component-material", "policy_correspondence")
+        return SimpleNamespace(result=deepcopy(original["checked"]))
+
+    def replay(self, request, candidate, limits, report):
+        self.calls.append(("replay", deepcopy(request), deepcopy(candidate), deepcopy(limits), deepcopy(report)))
+        original = self.matching(request)
+        if original is None or TOOL.digest(report) != TOOL.digest(original["checked"]):
+            raise rejected("replay-policy-component-material", "policy_component_material_replay")
+        return SimpleNamespace(result=deepcopy(original["checked"]))
+
+    def export(self, request, candidate, limits):
+        self.calls.append(("export", deepcopy(request), deepcopy(candidate), deepcopy(limits)))
+        return SimpleNamespace(result=deepcopy(self.matching(request)["exported"]))
+
+    def call(self, operation, payload):
+        self.calls.append((operation, deepcopy(payload)))
+        raise rejected(operation, "unsupported_operation", "unsupported")
+
+
+def worker_record(originals, manifest, system="Linux", *, profile="material"):
+    spec = TOOL.profile_spec(profile)
+    stub = ComponentStubVerify(originals) if profile == "component" else StubVerify(originals)
+    observations = TOOL.exercise(stub, stub, originals, profile=profile)
+    return {"schema_version": spec["worker_schema"], "status": "pass", "producer_absence": deepcopy(TOOL.PRODUCER_ABSENCE),
         "network": {"status": "os_denied", "mechanism": "linux_libseccomp" if system == "Linux" else "macos_sandbox_exec",
                     "scope": "worker_and_descendants", "probes": [{"family": name, "errno": errno.EPERM} for name in ("IPv4", "IPv6")]},
         "stage_manifest": deepcopy(manifest),
-        "origins": {"biocompiler" if name == "__init__.py" else "biocompiler." + name[:-3]: "transport/biocompiler/" + name for name in TOOL.MODULE_FILES},
-        "verify_launches": [manifest["verify_sha256"]] * 13,
+        "origins": {"biocompiler" if name == "__init__.py" else "biocompiler." + name[:-3]: "transport/biocompiler/" + name for name in spec["modules"]},
+        "verify_launches": [manifest["verify_sha256"]] * spec["launches"],
         "observations": observations, "observations_fingerprint": TOOL.digest(observations)}
 
 
@@ -394,6 +442,270 @@ class MaterialConsumerComparisonTests(unittest.TestCase):
             receipt["worker"]["observations"].pop()
             receipt["worker"]["observations_fingerprint"] = TOOL.digest(receipt["worker"]["observations"])
         self.write()
+        with self.assertRaises(AssertionError):
+            self.compare()
+
+
+class ComponentConsumerTests(unittest.TestCase):
+    def setUp(self):
+        temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(temporary.cleanup)
+        self.root = Path(temporary.name).resolve()
+        self.stage = self.root / "stage"
+        self.stage.mkdir()
+        self.verify = self.root / "inert-verify"
+        self.verify.write_bytes(b"INERT COMPONENT VERIFY PLACEHOLDER")
+        self.originals = component_inputs()
+        self.manifest = TOOL.stage_consumer(self.stage, ROOT / "src/biocompiler", self.verify, self.originals, profile="component")
+        guard = patch("subprocess.Popen", side_effect=AssertionError("No native execution in synthetic consumer tests"))
+        guard.start()
+        self.addCleanup(guard.stop)
+
+    def test_seven_transports_and_ten_independent_inputs_are_closed(self):
+        TOOL.verify_stage(self.stage, self.manifest, profile="component")
+        self.assertEqual(self.manifest["schema_version"], "biocompiler.policy_component_material_consumer_worker.v0.1")
+        self.assertEqual(set(self.manifest["inputs"]), {case + "." + name for case in ("A", "B") for name in ("request", "limits", "candidate", "checked", "exported")})
+        for label in ("A", "B"):
+            self.assertEqual(TOOL.read_json(self.stage / "authority" / label / "request.json"), self.originals[label + ".request"])
+            self.assertEqual(TOOL.read_json(self.stage / "proposal" / label / "candidate.json"), self.originals[label + ".candidate"])
+        self.assertNotEqual(self.originals["A.request"], self.originals["B.request"])
+        self.assertEqual(len(list((self.stage / "transport/biocompiler").iterdir())), 7)
+        self.assertFalse((self.stage / "bin/biocompiler-core").exists())
+        with self.assertRaises(AssertionError):
+            TOOL.check_manifest(self.manifest)
+        for change in (lambda m: m["files"].pop("transport/biocompiler/core_policy_component_material.py"),
+                       lambda m: m["inputs"].pop("B.request"),
+                       lambda m: m.update(schema_version=TOOL.WORKER_SCHEMA)):
+            altered = deepcopy(self.manifest)
+            change(altered)
+            with self.assertRaises(AssertionError):
+                TOOL.check_manifest(altered, profile="component")
+        with self.assertRaises(AssertionError):
+            TOOL.profile_spec("invented")
+
+    def test_every_fresh_call_and_swapped_original_control_is_explicit(self):
+        stub = ComponentStubVerify(self.originals)
+        observations = TOOL.exercise(stub, stub, self.originals, profile="component")
+        names = ["check", "replay", "export", "forged-replay", "stale-source", "changed-budget-replay", "swapped-original-replay", "producer-rejected"]
+        self.assertEqual([row["name"] for row in observations], [label + "-" + name for label in ("A", "B") for name in names])
+        for offset, label, other in ((0, "A", "B"), (8, "B", "A")):
+            self.assertEqual(stub.calls[offset][1], self.originals[label + ".request"])
+            self.assertEqual(stub.calls[offset + 6][1:4], tuple(self.originals[other + "." + key] for key in ("request", "candidate", "limits")))
+            self.assertEqual(stub.calls[offset + 6][-1], self.originals[label + ".checked"])
+            self.assertEqual(stub.calls[offset + 7][0], "compile-policy-component-material")
+        self.assertEqual(TOOL.read_json(self.stage / "authority/A/request.json"), self.originals["A.request"])
+        stub = ComponentStubVerify(self.originals)
+        with patch.object(stub, "call", side_effect=rejected("compile-policy-component-material", "unrelated", "unsupported")), self.assertRaises(AssertionError):
+            TOOL.exercise(stub, stub, self.originals, profile="component")
+        stub = ComponentStubVerify(self.originals)
+        altered = deepcopy(self.originals["A.exported"])
+        altered["artifact"]["manifest"]["premise"] = "changed fresh pair"
+        with patch.object(stub, "export", return_value=SimpleNamespace(result=altered)), self.assertRaises(AssertionError):
+            TOOL.exercise(stub, stub, self.originals, profile="component")
+        duplicates = deepcopy(self.originals)
+        duplicates.update({"B." + name: deepcopy(duplicates["A." + name]) for name in TOOL.INPUT_FILES})
+        stub = ComponentStubVerify(duplicates)
+        with self.assertRaises(AssertionError):
+            TOOL.exercise(stub, stub, duplicates, profile="component")
+
+    def test_component_worker_full_pair_and_negative_evidence_are_checked(self):
+        value = worker_record(self.originals, self.manifest, profile="component")
+        TOOL.check_worker(value, self.originals, self.manifest, profile="component")
+        mutations = (
+            lambda v: v["verify_launches"].pop(),
+            lambda v: v["origins"].pop("biocompiler.core_policy_component_material"),
+            lambda v: v["observations"].pop(6),
+            lambda v: v["observations"][6]["result"]["diagnostics"][0].update(code="unrelated"),
+            lambda v: v["observations"][2]["result"]["artifact"].update(fasta="changed exact bases"),
+            lambda v: v["observations"][10]["result"]["artifact"]["manifest"].update(premise="invented"),
+            lambda v: v["network"]["probes"][0].update(errno=errno.ECONNREFUSED),
+        )
+        for mutate in mutations:
+            changed = deepcopy(value)
+            mutate(changed)
+            changed["observations_fingerprint"] = TOOL.digest(changed["observations"])
+            with self.subTest(mutation=mutate), self.assertRaises((AssertionError, CoreProtocolError)):
+                TOOL.check_worker(changed, self.originals, self.manifest, profile="component")
+        with self.assertRaises(AssertionError):
+            TOOL.check_worker(value, self.originals, self.manifest)
+
+    def test_component_cannot_defer_network_or_gain_producer_imports(self):
+        value = worker_record(self.originals, self.manifest, profile="component")
+        with self.assertRaises(AssertionError):
+            TOOL.check_worker(value, self.originals, self.manifest, profile="component", require_offline=False)
+        with self.assertRaises(AssertionError):
+            TOOL.worker_command(self.stage, "deferred", profile="component")
+        with patch.object(TOOL.platform, "system", return_value="Linux"):
+            command = TOOL.worker_command(self.stage, "required", profile="component")
+        self.assertEqual(command[1:4], ["-I", "-S", "-B"])
+        self.assertEqual(command[-4:], ["--profile", "component", "--mechanism", "linux_libseccomp"])
+        boundary = TOOL.ConsumerBoundary(self.stage, self.manifest, profile="component")
+        self.assertIsNone(boundary.find_spec("biocompiler.core_policy_component_material"))
+        for name in ("biocompiler.policy.component_material", "biocompiler.compiler", "biocompiler_core"):
+            with self.assertRaises(ImportError):
+                boundary.find_spec(name)
+        with self.assertRaises(AssertionError):
+            boundary.audit("subprocess.Popen", ("core", ["core"], None, None))
+
+    def test_producer_validator_receives_all_external_authority_before_inputs(self):
+        cases = {label: TOOL.case_inputs(self.originals, label) for label in ("A", "B")}
+        sources = {"exact_source": "a" * 64}
+        api = SimpleNamespace(validate_installed=Mock(return_value=cases), source_snapshot=Mock(return_value=sources))
+        receipt, fixture = {"synthetic": "separate expectation"}, {"synthetic": "original authority"}
+        pins = {"biocompiler-core": "c" * 64, "biocompiler-verify": TOOL.file_digest(self.verify)}
+        producer, original, provenance = self.root / "producer.json", self.root / "originals.json", self.root / "provenance.json"
+        with patch.object(TOOL, "component_support", return_value=api):
+            actual = TOOL.validate_component_producer(receipt, producer, fixture, original, IDENTITY, pins, provenance,
+                expected_slot=("Linux", "x86_64", "3.11"))
+            self.assertEqual(actual, self.originals)
+            api.validate_installed.assert_called_once_with(receipt, producer.parent, fixture, original, IDENTITY, pins,
+                expected_sources=sources, fixture_provenance=provenance, expected_slot=("Linux", "x86_64", "3.11"))
+            cases["A"]["request"]["budgets"]["max_work"] = 1
+            self.assertNotEqual(actual, {label + "." + key: val for label, row in cases.items() for key, val in row.items()})
+            api.validate_installed.return_value = {"A": cases["A"]}
+            with self.assertRaises(AssertionError):
+                TOOL.validate_component_producer(receipt, producer, fixture, original, IDENTITY, pins, provenance,
+                    expected_slot=("Linux", "x86_64", "3.11"))
+
+    def test_component_run_rejects_late_producer_and_full_source_mutation(self):
+        installed = self.root / "installed/biocompiler"
+        installed.mkdir(parents=True)
+        for name in TOOL.profile_spec("component")["modules"]:
+            (installed / name).write_bytes((ROOT / "src/biocompiler" / name).read_bytes())
+        fixture, provenance, producer = (self.root / name for name in ("originals.json", "provenance.json", "producer.json"))
+        args = SimpleNamespace(profile="component", network="required", fixture=fixture, fixture_provenance=provenance,
+                               producer_receipt=producer, core_sha256="c" * 64, verify=self.verify)
+        for mutation in (None, "producer", "source", "stdout.log", "stderr.log"):
+            with self.subTest(mutation=mutation):
+                for path in (fixture, provenance, producer):
+                    TOOL.write_json(path, {"synthetic": path.name})
+                for name in ("stdout.log", "stderr.log"):
+                    (self.root / name).write_bytes(b"")
+                before_producer = TOOL.file_digest(producer)
+                sources = {"tools/unrelated_source.py": "a" * 64}
+                component = SimpleNamespace(checked_fixture=Mock(return_value={"synthetic": "original authority"}),
+                                            source_snapshot=Mock(side_effect=lambda _: deepcopy(sources)),
+                                            fixture_authority_pins=TOOL.component_support().fixture_authority_pins)
+                def worker_reply(command, *, cwd, env, timeout, maximum):
+                    manifest = TOOL.read_json(cwd / "stage.json")
+                    value = worker_record(self.originals, manifest, TOOL.platform.system(), profile="component")
+                    TOOL.write_json(cwd / "worker-result.json", value)
+                    if mutation == "producer":
+                        TOOL.write_json(producer, {"synthetic": "changed after worker"})
+                    elif mutation == "source":
+                        sources["protocol/late_new_source.json"] = "b" * 64
+                    elif mutation in ("stdout.log", "stderr.log"):
+                        (self.root / mutation).write_bytes(b"late original authority log")
+                    return 0, TOOL.canonical({"status": value["status"], "worker_fingerprint": TOOL.digest(value)}), b""
+                core = SimpleNamespace(source_identity=Mock(return_value=IDENTITY), run_bounded=Mock(side_effect=worker_reply))
+                with patch.object(TOOL, "support", return_value=(core, None)), patch.object(TOOL, "component_support", return_value=component), \
+                        patch.object(TOOL, "validate_component_producer", return_value=self.originals), \
+                        patch.object(TOOL.importlib.util, "find_spec", return_value=SimpleNamespace(origin=str(installed / "__init__.py"))), \
+                        patch.object(TOOL.platform, "system", return_value="Linux"), patch.object(Path, "cwd", return_value=self.root):
+                    if mutation is None:
+                        result = TOOL.run(args)
+                        self.assertEqual(result["producer_receipt_sha256"], before_producer)
+                    else:
+                        with self.assertRaisesRegex(AssertionError, "authority changed during consumer checking"):
+                            TOOL.run(args)
+                core.run_bounded.assert_called_once()
+                self.assertGreaterEqual(component.source_snapshot.call_count, 2)
+
+
+class ComponentConsumerComparisonTests(MaterialConsumerComparisonTests):
+    def setUp(self):
+        super().setUp()
+        self.root, self.native, self.fixture = self.root.resolve(), self.native.resolve(), self.fixture.resolve()
+        self.producer_paths = [path.resolve() for path in self.producer_paths]
+        self.consumer_paths = [path.resolve() for path in self.consumer_paths]
+        self.originals = component_inputs()
+        self.provenances = {}
+        self.receipts = []
+        TOOL.write_json(self.fixture, {"synthetic_component_originals": True})
+        for system, machine, folder in (("Linux", "x86_64", "linux-x86_64"), ("Darwin", "arm64", "macos-arm64")):
+            verify = self.native / folder / "biocompiler-verify"
+            core = self.native / folder / "biocompiler-core"
+            core.write_bytes(("INERT CORE " + system).encode())
+            self.binaries[system.lower()]["sha256"]["biocompiler-core"] = TOOL.file_digest(core)
+            authority = self.root / (system + "-authority")
+            authority.mkdir()
+            for name in ("stdout.log", "stderr.log"):
+                (authority / name).write_bytes(b"")
+            (authority / "originals.json").write_bytes(self.fixture.read_bytes())
+            provenance = authority / "provenance.json"
+            TOOL.write_json(provenance, {"platform": {"system": system, "machine": machine}, "synthetic": True})
+            self.provenances[(system, machine)] = provenance
+            stage = self.root / (system + "-component-stage")
+            stage.mkdir()
+            manifest = TOOL.stage_consumer(stage, ROOT / "src/biocompiler", verify, self.originals, profile="component")
+            record = worker_record(self.originals, manifest, system, profile="component")
+            for minor in ("3.11", "3.14"):
+                producer = self.root / (system + minor + "-producer.json")
+                producer_value = TOOL.read_json(producer)
+                sidecar = self.root / (system + minor + "-component-observation.json")
+                TOOL.write_json(sidecar, {"synthetic": "retained SDK evidence"})
+                producer_value.update(observations=[{"path": sidecar.name, "sha256": TOOL.file_digest(sidecar), "bytes": sidecar.stat().st_size}], publications=[])
+                TOOL.write_json(producer, producer_value)
+                package = "/installed/biocompiler"
+                self.receipts.append({"schema_version": TOOL.COMPONENT_SCHEMA, "status": "pass", **IDENTITY,
+                    "system": system, "machine": machine, "python_version": minor + ".0",
+                    "fixture_sha256": TOOL.file_digest(self.fixture), "producer_receipt_sha256": TOOL.file_digest(producer),
+                    "verify_sha256": TOOL.file_digest(verify), "core_sha256": TOOL.file_digest(core),
+                    "fixture_provenance_sha256": TOOL.file_digest(provenance), "installed_package": package,
+                    "installed_modules": {name: {"origin": package + "/" + name, "sha256": TOOL.file_digest(ROOT / "src/biocompiler" / name)}
+                                          for name in TOOL.profile_spec("component")["modules"]}, "worker": deepcopy(record)})
+        self.write()
+
+    def compare(self, paths=None):
+        core = SimpleNamespace(source_identity=Mock(return_value=IDENTITY), native_manifests=Mock(return_value=self.binaries))
+        component = SimpleNamespace(compare_installed=Mock(), checked_fixture=Mock(return_value=TOOL.read_json(self.fixture)),
+                                    source_snapshot=Mock(return_value={"inert_source": "a" * 64}),
+                                    fixture_authority_pins=TOOL.component_support().fixture_authority_pins,
+                                    bounded_pin=TOOL.component_support().bounded_pin)
+        with patch.object(TOOL, "support", return_value=(core, None)), patch.object(TOOL, "component_support", return_value=component), \
+                patch.object(TOOL, "validate_component_producer", return_value=self.originals):
+            return TOOL.compare(self.consumer_paths if paths is None else paths, self.producer_paths, self.native, self.fixture,
+                                profile="component", fixture_provenances=self.provenances)
+
+    def test_component_comparison_retains_earlier_slot_receipts_evidence_and_original_logs(self):
+        self.assertEqual(self.compare()["status"], "pass")
+        authority = self.provenances[("Linux", "x86_64")].parent
+        sidecar = self.root / TOOL.read_json(self.producer_paths[0])["observations"][0]["path"]
+        targets = [self.consumer_paths[0], self.producer_paths[0], sidecar,
+                   authority / "stdout.log", authority / "stderr.log"]
+        original_check = TOOL.check_worker
+        for target in targets:
+            raw = target.read_bytes()
+            calls = []
+            def later_slot(*args, **kwargs):
+                original_check(*args, **kwargs)
+                calls.append(True)
+                if len(calls) == 4:
+                    target.write_bytes(raw + b" ")
+            try:
+                with self.subTest(target=target.name), patch.object(TOOL, "check_worker", side_effect=later_slot), \
+                        self.assertRaisesRegex(AssertionError, "comparison evidence/source/run/native authority changed"):
+                    self.compare()
+                self.assertEqual(len(calls), 4)
+            finally:
+                target.write_bytes(raw)
+
+    def test_component_core_provenance_and_route_cannot_be_swapped(self):
+        baseline = deepcopy(self.receipts)
+        for key, value in (("core_sha256", "0" * 64), ("fixture_provenance_sha256", "0" * 64), ("schema_version", TOOL.SCHEMA)):
+            self.receipts = deepcopy(baseline)
+            self.receipts[0][key] = value
+            self.write()
+            with self.subTest(key=key), self.assertRaises(AssertionError):
+                self.compare()
+        self.receipts = baseline
+        self.write()
+        authority = self.provenances[("Darwin", "arm64")].parent / "originals.json"
+        authority.write_text('{"synthetic_component_originals":"changed"}')
+        with self.assertRaises(AssertionError):
+            self.compare()
+        authority.write_bytes(self.fixture.read_bytes())
+        self.provenances.pop(("Darwin", "arm64"))
         with self.assertRaises(AssertionError):
             self.compare()
 

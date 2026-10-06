@@ -29,11 +29,13 @@ preserved reference/package migration. It includes exact policy head
 [PR95](https://github.com/logannye/biocompiler/pull/95). The user confirmed that
 this session is the sole integration owner. Preserve prior branches and worktrees.
 
-The first bounded Python-policy → exact-mRNA path is implemented. It uses one
-supplied whole-graph contract and one complete RNA member. Reusable component
-composition, bounded alternatives, delivered helpers and multiple RNA members
-are still unimplemented for this rich-policy path. Studio, conversational
-authoring and biological viability remain deferred.
+Two bounded Python-policy → exact-mRNA paths are implemented: the original
+supplied whole-graph route and a separate reusable-component composition route.
+The latter independently checks two policy families sharing the exact same driver
+and emits one complete RNA member with fresh paired export. Its hosted source-tree
+path passes; installed-package, release and actual-main acceptance remain open.
+Bounded alternatives, delivered helpers and multiple RNA members remain future
+extensions. Studio, conversational authoring and biological viability remain deferred.
 
 **Overall acceptance is still open.** Completed specification and implementation
 tasks are checked for their stated bounded profile. Broader source coverage,
@@ -66,11 +68,11 @@ checked native bounded profile.
 | SM-02 Request/domain/preservation contract | All seven specified tasks implemented for the bounded truth/exclusive profile, including strict admission, causal domain and exact preservation/assurance contracts | Concrete schemas, executable checks and literal counterexamples; separately audited PR95 native/service evidence | Full integration/release remains dependent on SM-00/08; wider assumptions, types and assurance profiles remain excluded |
 | SM-03 Independent primitives | Typed executable graph and candidate runtime independent of source evaluation | Current union complete native literal/mutation/dependency suites independently audited; four SDK slots and six full cross-slot comparisons passed | Complete current artifact audit and acceptance gate; new numeric/machine primitives remain future work |
 | SM-04 Lowering and bounded preservation | All six tasks implemented for the first one/two-rule family: real lowering, source obligations, complete bounded exploration, independent requirements and distinguishing mutations | Literal nine-history / 47-transition / 48-prefix success, separate rejected/incomplete requests, current union native suites passed | Complete current union audit/main gates; preserve work-exhaustion results and open broader contextual/mutation coverage |
-| SM-05 Components and architecture | One supplied whole-graph material binding with declared recipient, provider, timing and finite resources | PR95 material/context/native/prebuilt checks | **Reusable component composition, finite alternatives, helper bootstrap/dependencies, many-to-many ownership and multiple RNA members remain unimplemented.** First-profile acceptance cannot close this broader package |
-| SM-06 Exact construction | Whole-graph case, complete single-member construction, configuration correspondence and first-profile mutation tasks complete | PR95 exact material/fresh export and mutation checks in all four installed slots | Current union acceptance; reusable component joins, helper products and multi-member correspondence require extensions |
+| SM-05 Components and architecture | Original whole-graph binding plus exact two-component composition, original context/provider binding and aggregate finite resources | PR95 original-profile checks; separate component source-tree native and SDK path passed at 5a45d354e | Component installed/release acceptance; finite alternatives, helper dependencies, broader ownership and multiple RNA members remain open |
+| SM-06 Exact construction | Whole-graph and ordered component assembly both produce exact single-member construction, coordinates, chemistry and material correspondence | PR95 four-slot original-profile checks; component source-tree exact A/B FASTA/manifest ZIPs passed at 5a45d354e | Component installed/release acceptance; helper products and multiple members require extensions |
 | SM-07 Public SDK/CLI and export | All six first-profile tasks implemented and demonstrated: complete manifests, immutable native transport, conservative invalidation, compile/check/replay, producer-free Verify and fresh paired export | Current union four SDK slots, six comparisons, four policy-prebuilt installed slots and prebuilt comparison passed; separate PR95 evidence independently audited | Independent exact-union artifact audit, complete aggregate and main gates |
-| SM-08 Compatibility and acceptance | Full combined workflow, retained legacy routes/corpora, exact unit accounting and targeted prebuilt routing | Original a85 union passed all 74 hosted jobs; complete authority snapshot retained, final artifact audit pending. PR95 all 42 hosted jobs and independent audit passed | Complete a85 artifact audit, corrected-head fresh acceptance, normal merge and fresh actual-main validation |
-| SM-09 Vertical expansions | SM-09.1 complete: select exact reusable component composition; fragment and local material/library decoder/test source implemented | Independent source reviews and focused Python checks; new native feedback and complete profile acceptance remain pending | Complete original rule/request authority and the independent composition path, then accept the full profile; broader production-default cutover remains separate |
+| SM-08 Compatibility and acceptance | Full combined workflow, retained legacy routes/corpora, exact unit accounting and targeted prebuilt routing | Original a85 union passed all 74 hosted jobs and independent 102-archive audit. PR95 all 42 hosted jobs and independent audit passed | Corrected-head fresh acceptance in run 37539833174 at 8c61f45af, normal merge and fresh actual-main validation |
+| SM-09 Vertical expansions | SM-09.1 complete: select exact reusable component composition; fragment, local material/library and assembly-rule decoders/tests implemented; independent assembly checker and literal material tests implemented | Hosted source-tree path passed at 5a45d354e: all sixteen native suites and 26 public SDK observations, including exact A/B paired exports; installed and release acceptance remain open | Source registrations and hosted artifact audit complete at 6ed5a952a; installed/offline four-slot campaign implementation is in progress before full acceptance and profile expansion |
 
 ### Completed integration and validation tasks
 
@@ -98,11 +100,21 @@ broader SM acceptance items below.
 - [x] Prepare and independently review the separate actual-main identity predicates: four positive and 83 rejection controls pass on synthetic literal inputs, including normal-merge parents, push identity and unchanged accepted trees. No real main revision or main acceptance is established by these controls.
 - [x] Implement the separate partial component-fragment domain, closed schema and independent literal native-test source as `4fbf4176f`; pass the 34-test Python boundary/bundle pair and preserve the independently maintained suite/fixture census in `3518db4b7`. This closes source preparation only; native tests, complete schema validation and the composition path remain open.
 - [x] Implement and independently review the per-call source-closure validation correction as `360e2cbbd`; pass 22 synthetic/source-lineage tests on each Python version and the two unchanged restoration regressions after preserving their authentication order. Every original semantic check, historical witness and hosted comparison remains required. Original replay and corrected-head release acceptance are still pending.
-- [x] Implement local component material/library decoders and independent native test source: complete root identities, exhaustive feature carriers, products, typed symbolic prerequisites and eager exact library membership. Source review is complete; native feedback and full assembly acceptance remain open.
-- [x] Add an opt-in hosted development lane with one native build and nine fixed suites, separate source/run-bound diagnostics and no release-acceptance claim. All 12 mocked workflow tests pass on Python 3.11.15 and 3.14.6 with native/process/network execution denied. First hosted run 37515212004 is active at a89f80b07.
-- [x] Pass all 74 jobs of the original a85 union and capture its complete final authority before changing PR85. Independent archive audit remains separate and pending.
+- [x] Implement local component material/library decoders and independent native tests: complete root identities, exhaustive feature carriers, products, typed symbolic prerequisites and eager exact library membership. Focused hosted compilation/execution passed at a89f80b07; full assembly acceptance remains open.
+- [x] Add an opt-in hosted development lane with one native build and a fixed focused suite inventory, separate source/run-bound diagnostics and no release-acceptance claim. All 12 mocked workflow tests pass on Python 3.11.15 and 3.14.6 with native/process/network execution denied. First hosted run 37515212004 passed at a89f80b07 in 2m41s.
+- [x] Pass all 74 jobs of the original a85 union and capture its complete final authority before changing PR85. The independent archive audit subsequently passed for that exact subject.
+- [x] Implement exact original assembly rules and independent A/B controls; hosted run 37518443101 at ac3a0d3cb passed all ten suites, including 93 assembly-rule controls.
+- [x] Independently check complete component graph/material correspondence: all eleven native suites and 403 new assembly controls passed at 25385487c in run 37521613648. This closes the leaf checker, not original context or complete export acceptance.
+- [x] Bind original request/catalog/context authority and arrange the complete supplied component graph without replacing original source authority. Hosted run 37523740443 at 9ebd2be39 passed all twelve suites, including 469 assembly checks and 97 request controls.
+- [x] Independently check declared context, complete record layouts, exact provider identity, timing and aggregate resource sufficiency. Hosted run 37524498720 at fbfefff75 passed all thirteen suites, including 323 context checks.
+- [x] Promote recurring release auditing into stable versioned tools at 832ceb98c. Twelve test methods passed on both supported local Python versions; clean exact-tool CLI preparation and eight authority rejection controls passed. This tool validation is not acceptance of a new release.
+- [x] Complete the combined original-obligation checker and public native/Python route through paired artifacts and fresh export for both reusable-component policies. Hosted run 37527311912 at 5a45d354e passed sixteen native suites and 26 SDK observations; root independently verified all 1,133 source pins, retained observations and both exact ZIP pairs. This closes source-tree development only.
+- [x] Complete the new component profile’s source registrations at `6ed5a952a`: exact native capability census, separate component rule index, public API/source indices, migration ownership, reviewed source-addition pins and strict typing. Both supported Pythons passed 103 focused tests and 36 extra import-denial controls; historical definitions remain preserved. Fresh hosted development run 37531033330 and its independent artifact audit passed: all 1,134 source records, sixteen native suite records, 26 SDK observations and both actual RNA/manifest ZIPs. This checkbox closes source readiness and development evidence, not installed or release acceptance.
+- [x] Implement and independently review the installed component campaign source: one original-packet emission per platform, the shared 26-observation SDK witness, seven-transport/16-observation offline Verify consumer, and additive prebuilt v0.2 comparison in the same four slots. All 142 focused Python cases are covered on both supported interpreters (136 passed in the combined run; six CI tests passed after restoring omitted sparse-checkout inputs and priming read-only host metadata). Each new campaign also passed its isolated guarded pair. All 18 inventory tests and the exact inventory check passed on both runtimes; all 3,760 existing IDs/authority fields and prior test links are preserved. Hosted native, installed and release acceptance remain open.
+- [ ] Run the new installed four-slot component and Verify-only offline campaigns on hosted native builds, compare complete results, then require full release and actual-main acceptance. Existing whole-graph installed results do not transfer to the new component profile.
+- [x] Consolidate recurring release auditing into stable versioned repository tools without weakening source/run identity, complete coverage, archive bounds or merge/main checks. Tool implementation and supported-runtime profile are committed at 129bcd7d7; a later component scope still requires its own reviewed profile update.
 - [ ] Validate the three added descriptor rejection controls on hosted CI: valid-format stale digest, unsupported observation formal, unsupported effect result. Source controls are implemented in the corrected follow-up; preserve the shared-context reachability index.
-- [ ] Complete the current union's full hosted gate and independent artifact audit.
+- [x] Complete the original a85 union's full 74-job hosted gate and independent 102-archive audit. Its evidence does not accept the later corrected head.
 - [ ] Integrate the reviewed frontend corrections and coherent source-coverage follow-up; complete a fresh exact-revision hosted gate and artifact audit before normal merge. Retain the earlier a85 run as distinct evidence.
 - [ ] Merge the corrected, exactly accepted union normally, preserving branches, and validate the actual main revision with its own full fresh gate.
 - [ ] Continue reconciling each SM task against its own exit and evidence as work completes; leave wider unsupported/compositional gaps open.
@@ -111,8 +123,11 @@ broader SM acceptance items below.
 
 | Subject | Source / tested checkout / tree | Current evidence boundary |
 | --- | --- | --- |
-| Original PR85 union | H `a85b1112ff35ba988a71cc969bfabdfefb354cfe`; C `00af6e6bab506d52a700e0a72e16ef2e2e8d8d61`; shared tree `7d22ca4c27eafcd36f018b3f262ef87404a3caf6` | [Run 37471505350, attempt 1](https://github.com/logannye/biocompiler/actions/runs/37471505350): final 18:55 UTC snapshot has all 74 jobs successful, exact original head/base and all 102 selected archives available. Final artifact audit remains pending |
-| Component development batch | H `a89f80b07d5667c5bdcc2e5bc4b8db9bb586bb5a`; tree `0e176a2ad54a1bda2047becfbf2ddbd8ac0759ac` | [Development run 37515212004](https://github.com/logannye/biocompiler/actions/runs/37515212004) started 18:56 UTC: native build and nine focused suites pending. It cannot establish release acceptance |
+| Original PR85 union | H `a85b1112ff35ba988a71cc969bfabdfefb354cfe`; C `00af6e6bab506d52a700e0a72e16ef2e2e8d8d61`; shared tree `7d22ca4c27eafcd36f018b3f262ef87404a3caf6` | [Run 37471505350, attempt 1](https://github.com/logannye/biocompiler/actions/runs/37471505350): all 74 jobs and the independent 102-archive audit passed. Corrected-head and main acceptance remain distinct |
+| Corrected PR85 follow-up | H `510ba5fe8805c8e4ea13aca52283edf17aec6e3f`; C `5f512fa722757ca6c8805f007521dd8c8e62e5a4`; shared tree `1ae5c9885696cd370d7f699fb7bd1d98e056f8cf` | [Run 37519748082](https://github.com/logannye/biocompiler/actions/runs/37519748082), attempt 1, finished with 67 successful, six failed and one skipped job. The inventory omission and hosted Python patch drift explain the failures: the 3.14 unit shard received 3.14.8 and the Linux 3.11 realization aggregator received 3.11.17; dependent accounting, prebuilt and aggregate gates correctly failed. Both 149-suite native jobs, both 67-group direct jobs and all four architecture/policy SDK slots passed, without accepting the failed full run. Final diagnosis and raw evidence are retained at `work/policy-descriptor-witnesses/generated/migration-next/pr85-pr95-union/run-37519748082/final-20261006/diagnosis.json`, SHA-256 `e9f903062013118e4e5771b7add7aeea2eed8ccb4d580ddd0cdf154f1ce965f9` |
+| Supported-runtime release correction | H `8c61f45af9969d27d951754be7f633f7207d2547`; source tree `7e7a8b6f9ba3f9e95f37a53dfba9cc14ac754a25` | PR85 advanced by an ancestry-checked, leased fast-forward after the previous run finished. [Run 37539833174](https://github.com/logannye/biocompiler/actions/runs/37539833174), attempt 1, is active with a macOS setup failure: setup-python has no 3.11.15 ARM artifact, so that job never reached compilation. Tested C `10a7f358363074083afc5b938bf599bb634b46bf`, ordered parents and equal source/tested trees are independently authenticated; the stable audit plan is prepared, not accepted. A pinned prebuilt-interpreter correction is being designed while other jobs continue. Complete gate, artifact audit and actual-main acceptance remain open. The combined correction passed 129 focused and 13 inventory tests on each supported local Python. Component work incorporates this exact correction in merge `d4e0ebeb3`; the installed-campaign source batch has no hosted acceptance |
+| Component development batch | H `5a45d354ee869f26f0e5d3181c8972a6402baca6`; tree `fbc4b75d38c363e49e2a7314695fa245b426a2df` | [Development run 37527311912](https://github.com/logannye/biocompiler/actions/runs/37527311912): all sixteen native suites and 26 public Python SDK observations passed. Both exact 17/18-base RNA plus complete manifests were independently inspected. Native step completed 3m26s after run creation; full run with SDK took about 5m45s. Installed and full release acceptance remain separate |
+| Component source-registration batch | H `6ed5a952a24c295404f4c0cb761948d69f79133f`; tree `4103da6f8ef9c1b9ed2f26108a5714a12dfe08bb` | [Development run 37531033330](https://github.com/logannye/biocompiler/actions/runs/37531033330) and independent artifact audit passed, including all sixteen native suites, 26 Python DSL-to-export observations, 1,134 source records and both exact RNA/manifest ZIPs. The retained inert audit proof is `work/policy-component-composition/generated/hosted-development/37531033330/inert-audit-proof.json`, SHA-256 `280d4163a25056cfba749a919f3e0c7df24ef15cf01f4529d8fee3c658189f2c`. Local source-only checks passed on both supported Pythons: 103 focused methods, 36 extra import rejections, strict core/policy typing and five static coverage/schema checks. The 3,731 original migration entries and authority fields are preserved; 29 entries belong to the two new adapters. Installed/full release acceptance remains open |
 | Separate PR95 policy head | H `bb84421cf1f93cd1dc02813d80a2c54a3520a919`; C `4fe47eb1aa69782a03723fda2df892985b4e7328`; shared tree `889583e44a9de598a32beb4154f42c0471e4be83` | [Run 37450940506, attempt 1](https://github.com/logannye/biocompiler/actions/runs/37450940506): all 42 hosted jobs succeeded; independent final artifact audit passed for its stated scope. Normal union integration and fresh main acceptance remain pending |
 | Current main baseline | `f594991ac2ff2496723ae5f2427ad93e6df7a51d` | PR88 is merged; the policy/material/package union has not yet been merged or main-validated |
 
@@ -185,16 +200,29 @@ SHA-256 `f78a4904f9c07b00098c3b7da9df3a50f8ccf1a3338103f5149f2447ee771f9a`.
 Root rehashed the packet and all captured inputs. The old auditor has no later
 live-PR dependency; it remains bound to the unchanged local a85 checkout and
 captured authority while the corrected head can begin fresh hosted validation.
+The independent final a85 audit then passed with all 102 archives, 59 ordinary
+receipts and 14 unit artifacts accounted for. Its proof is
+`acceptance-37471505350-assembly-bounds/final-audit-output-20261006T185900Z/proof.json`,
+SHA-256 `18822e1667c5a814461f00b544be52f1f5749a1016b823bb22eb03a9e6ffedcd`.
+It retains both native bundles, all original campaigns/comparisons and exact
+four-slot package/material correspondence. Large legacy replay semantics remain
+hosted-gate evidence with independently checked receipt identities; the local
+audit executed no native code. New head 510ba5fe8 requires its own fresh audit. The intervening f4dca4f29 run failed preflight and supplies no acceptance.
 
 ### Faster development feedback
 
 The full 74-job release workflow is a release boundary, not the inner editing
 loop. The new `policy-development.yml` runs only for `codex/dev-policy/**`
-pushes: one hosted Linux build and nine fixed component/preservation/material/
+pushes: one hosted Linux build and focused component/preservation/material/
 construction suites. It records exact source/run/fixture/binary identities and
 failure logs in a separate development artifact with `acceptance: false`.
 It neither changes required release checks nor cancels a release run. The
-10–20-minute feedback target remains unmeasured until its first hosted run.
+first observed feedback time was 2m41s from run creation to job completion:
+43s dependencies, 30s compilation and 35s native suites. The later ten-suite assembly-rule run completed in 3m32s, including queue time.
+These observations do not guarantee later runtime or substitute for release coverage.
+The eleven-suite lane passed in 2m11s with independent assembly checking. A failed
+first attempt caught an overly broad alpha-renaming test helper; the narrow
+correction changes only node references, preserving input kinds and link names.
 
 Continue independent source work while full acceptance runs. Batch coherent
 source changes, focused tests and tracker updates at useful implementation or
@@ -202,6 +230,29 @@ validation boundaries. Reserve the full cross-platform/installed/packaging
 campaign for release candidates and required correction batches. The index
 reconstruction correction below reduces known redundant work; its runtime
 benefit still needs measurement on the corrected hosted head.
+
+Prioritize the complete two-policy reusable-component vertical slice through
+selection, assembly, independent checking, exact mRNA and fresh export before
+alternatives, helpers or multiple members. Keep three roles focused on
+implementation, independent tests and release validation. Share independently
+authored fixture literals and common test plumbing, while retaining separate
+coverage expectations. Promote recurring release auditing into stable versioned
+tools so each run needs only authenticated inputs, a plan and results.
+Measure time to hosted native feedback, vertical-slice completion and the
+full-release critical path; update this tracker at meaningful boundaries.
+
+The complete two-policy source-tree SDK path took about 5m45s in run
+37527311912 and 7m17s in the later registration run 37531033330, including one
+native build and sixteen suites. These measured times vary with hosted execution. The next acceptance
+batch will reuse the existing four installed Linux/macOS × Python slots and
+standalone offline harness. It needs a separately scoped component campaign,
+original domain-only fixture data, complete cross-slot outputs and actual paired
+ZIP checks; existing whole-graph receipts cannot be relabeled. No production
+resolver or new packaging API is currently required. The fresh registration
+proof is `work/policy-component-composition/generated/component-release-readiness/root-integration.json`,
+SHA-256 `33fc6aaf92e92b851d06e02336b53ff4debe7bbcf850bc0255ad36c1d93306c8`.
+
+The stable audit tools are now committed and pushed at `832ceb98ccc4ad7bb29e2f4ed5673dfd3365e4d9` in `work/release-audit-tools`. They preserve the prior identity/receipt/archive semantics and reject changes to source, tool revision, plan seal, declared scope or job evidence. The reviewed profile remains the 74-job/149-native-suite release scope; a later component release needs an explicit reviewed scope update. Clean CLI proof SHA-256: `f28db7d0dd922d9083d41cb3fdb9ca9193d2e3ed18cbfa6b243cd84913633a88`. A subsequent reviewed profile-only update at `129bcd7d73edb9e3195bb953d446b88ec96c9a47` binds the supported-runtime workflow and three added comparator setup steps; all thirteen tooling tests passed on both versions, including fifteen new rejection controls, with every acceptance algorithm and scope unchanged. New release runs need inert plans and authenticated evidence, without copied audit helpers.
 
 A separate source-cost review identified repeated reconstruction of the same
 two immutable source indexes inside each row of original-counterpart validation.
@@ -700,7 +751,7 @@ The [bounded-preservation contract](policy-bounded-preservation-v0.1.md) specifi
 Depends on: SM-04; schema/library preparation may overlap SM-03.
 
 - [ ] **SM-05.1** Add a policy-specific adapter to reusable component/template/placement/helper/deployment types. Preserve legacy Behavior APIs and reject any lossy conversion.
-- [ ] **SM-05.2** Independently reconstruct selected component transition semantics and composition, checking exact correspondence to the accepted implementation or repeating preservation on the assembly. Match full locked models and configuration; account for every primitive and connection.
+- [x] **SM-05.2** For the bounded reusable-component profile, independently reconstruct selected component transition semantics and composition, checking exact correspondence to the accepted implementation or repeating preservation on the assembly. Match full locked models and configuration; account for every primitive and connection.
 - [ ] **SM-05.3** Implement required finite resource/domain mappings currently rejected by the architecture profile; check cumulative memory, timers, queues, instances and formal resource budgets.
 - [ ] **SM-05.4** Check helper bootstrap and dependencies, declared recipient/compartment consistency, co-delivery groups and supplied availability windows against the implementation clock and lifetime. Resolve every executable non-sequence configuration to an authorized host/environment input or supplied resource.
 - [ ] **SM-05.5** Select bounded alternatives with hard constraints before preferences. Retain alternatives, deterministic ties, conflict explanations and search exhaustion without claiming global infeasibility/optimality.
@@ -708,8 +759,8 @@ Depends on: SM-04; schema/library preparation may overlap SM-03.
 
 Exit: a complete checked implementation has a complete eligible RNA architecture under the original declared contracts, with no hidden helper or unmet semantic constraint.
 
-The next bounded composition batch has four concrete slices, all still open.
-Source preparation has begun in the isolated sparse worktree
+The four bounded composition slices below now pass focused hosted source-tree validation. Installed four-slot and full release acceptance remain open; alternatives, helpers and multiple members remain separate extensions.
+Historical source preparation began in the isolated sparse worktree
 `work/policy-component-composition`, branch `codex/policy-component-composition`,
 based on the pending corrected union `4157108cb`. This overlaps the long release
 gate without changing either frozen acceptance subject. The first task is the
@@ -740,8 +791,10 @@ remain pending. These additional census files were not part of the earlier
 587-file test snapshot.
 The tracked `docs/policy-component-composition-v0.1.md` there records the full
 future path, including constant-broadcast versus encounter-scoped links and a
-new original composition context/layout authority. No new profile is admitted,
-executed or exportable.
+new original composition context/layout authority. At that initial checkpoint,
+no new profile was admitted, executed or exportable. The complete bounded
+source-tree path is now demonstrated by run 37527311912; installed/release
+acceptance is separate.
 The local material/library interface and independent native test matrix are now
 implemented and source-reviewed in that tracked composition specification.
 They retain one original primary-RNA root per component, exhaustive
@@ -758,15 +811,42 @@ and `c01-local-material-test-review.md` (SHA-256
 Both component suites are now registered: 151 suites, 153 executables, 33
 dependency-bearing suites and the unchanged 23 fixtures. The new material suite
 checks literal carrier inventories, original chemistry/product metadata, eager
-library membership and coherently changed identities. Hosted native feedback is
-pending in run 37515212004 at source `a89f80b07`; source review cannot establish
-compilation or execution. The refreshed 34-test boundary/bundle pair passes on
+library membership and coherently changed identities. Hosted native feedback
+passed in run 37515212004 at source `a89f80b07`, including compilation and all
+nine focused native suites. The refreshed 34-test boundary/bundle pair passes on
 both Python versions with all 773 source files unchanged. Its proof is
 `generated/component-material/focused-pair-proof.json`, SHA-256
 `f2c55b3fc04da38626659e6859556da1882b012fba7d65da18fe363b56f14013`.
 Independent Dune/AST/original-blob census preserves every prior ordered suite
 and all 23 original fixture bytes; its proof SHA-256 is
 `f734766cd32257aef45a89715bc902609741587ec722b3c0b1528641b4b10363`.
+The hosted feedback report SHA-256 is
+`40bab491cc1bc232e0f9ca16428db27d191129b858edeefc71bae1223ecdf8ed`;
+root checked all 1,100 source pins before/after, the nine exact suite identities
+and every retained command log against that report. All commands returned zero;
+the report explicitly retains `acceptance: false`.
+The original assembly-rule domain is now implemented: selected component pins,
+ordered global inventories and typed cross-links, complete supplied material
+authority, exact root bindings, one join and explicit carrier premises. Hosted
+run 37518443101 passed all ten suites at ac3a0d3cb, including 93 rule controls.
+The independent assembly checker and literal 17/18-base candidate tests passed
+all eleven hosted suites at 25385487c in run 37521613648, including 403 new
+controls. Root verified all 1,110 source pins and retained command logs; feedback
+SHA-256 is `69f5468aa5a2580281b17a03216990e7cf8bda0e5a1973bd2d5de482ec34ac34`.
+It requires a fresh preservation capability, reconstructs the exact
+graph/material correspondence and checks feature, chemistry and carrier
+projections. Its private leaf intentionally leaves catalog authorization,
+context/resources, complete obligation discharge and export unassessed.
+Assembly-rule/check tests share the unchanged independent literal prelude in a
+domain-only test library outside both production executable closures.
+
+Original request/catalog/context records and the bounded untrusted graph arranger passed the twelve-suite run 37523740443 at `9ebd2be390b53c352ce3a7a04c47104de43b22e9`, with 469 assembly and 97 request controls. Its report SHA-256 is `368148509eb88032bd840f1d3713f5943b112f5de0019eac1b4b0baf54985d30`. The independent context checker then passed 323 checks in thirteen-suite run 37524498720 at `fbfefff7513bf8a2840fd6898f4872adfbdd550f`; root verified all 1,121 source pins and every retained command log. Report SHA-256: `f1c56f12cd1f138b4c3f3b8323cfec6c25552659a727322b794851cb216053cf`. It checks declared complete record capacity, shared resource sums, actual identifier width, exact original providers and causal availability. Larger sufficient records are explicitly supported by the new profile; old whole-graph semantics remain unchanged.
+
+The complete coordinator/native service passed sixteen suites at `4d19d7b37c2724579c386007476e638bdf0dc41a` (run 37526163552), including 152 new complete-service controls. The immutable Python adapter passed 44 tests on each supported Python version, retaining 27 old material-route regressions.
+
+The full source-tree Python DSL → Core compile → producer-free Verify check/replay → fresh atomic ZIP export then passed at `5a45d354ee869f26f0e5d3181c8972a6402baca6` in run 37527311912. Both original policies discharge all 23 source obligations over all nine histories, 47 transitions and 48 prefixes; they reuse the exact same supplied driver and emit the independently authored 17/18-base RNA molecules. All 26 SDK observations, complete molecules/projections, source edits and guard/state/feedback/configuration/material rejection controls passed. Root verified 1,133 source pins, every retained command log, all observation bytes and both exact FASTA/manifest ZIP pairs without native execution locally. SDK receipt SHA-256: `35ffc2ac9591a97232cf6759bc47505b03d36436bae57462039160c27cf74a6c`. A ZIP: `09d232483211735a7ffdd3fbe613b973b9825dc14798eeca23d3c97ece8cce30`; B ZIP: `3d776a543f8cf99f72a8da867524b2a5b7630fbc619e913398976a899ce70243`.
+
+Installed source origins, offline consumption, four-slot equality and full release/main gates remain unestablished for this new profile. The current implementation remains one RNA, no helpers, no alternatives, no added hidden steps and one driver instance per assembly. No source-bearing v1 request may be synthesized to replace original composition authority.
 Acceptance still depends on the current profile and the complete new vertical
 path. Preserve all existing v0.1 contracts and outputs.
 
@@ -789,14 +869,14 @@ multiple driver instances remain separate later work.
 Depends on: SM-05; construction leaf work can overlap SM-04.
 
 - [x] **SM-06.1a** Define the independently supplied whole-graph material case: full implementation/configuration/connection authority, exact template roots, features, products and context.
-- [ ] **SM-06.1b** Extend that authority to reusable component configuration-to-template and connection-to-composition rules with independently supplied composition semantics.
+- [x] **SM-06.1b** Extend that authority to reusable component configuration-to-template and connection-to-composition rules with independently supplied composition semantics.
 - [x] **SM-06.2a** Independently reconstruct the whole-graph binding, including total ordered node/model/wire/group/export/carrier coverage and exact single-member material. Reject orphan operations, phantom connections and extra members.
 - [ ] **SM-06.2b** Extend reconstruction to selected reusable component assemblies and their helper dependencies; independently justify any additional behavior and every delivered member.
 - [x] **SM-06.3** Reuse existing construction operations and exact chemistry/coordinate checks, then enforce SM-01.6 completeness. Resolve full sequence extent, exact tails, required UTR/CDS/end features, chemistry and supplied product translation/junction authority; reject unresolved partial constructions.
 - [x] **SM-06.4** Check every emitted base, member, feature and source/destination coordinate against original roots and authorized transforms. No implicit back-translation, optimization or invented sequence.
 - [x] **SM-06.5** Establish complete implementation-configuration-to-material dependency maps. Sequence/layout edits invalidate affected implementation/material claims; identical bytes do not imply identical configuration authority.
 - [x] **SM-06.6a** Demonstrate first-profile mutation rejection for guards, state/atomic writes, deadlines/configuration, product/CDS, missing/extra members, altered bases, region geometry, chemistry and recipient.
-- [ ] **SM-06.6b** Add genuine component-to-component material-junction mutations with the new composition profile. Existing region-gap/overlap checks do not establish those composition semantics.
+- [x] **SM-06.6b** Add genuine component-to-component material-junction mutations with the new composition profile. Existing region-gap/overlap checks do not establish those composition semantics.
 
 Current completion scope: one complete linear coding RNA with an ordinary CDS,
 full four-region partition, exact supplied product translation, exact represented
@@ -805,7 +885,7 @@ authorized transform, base and coordinate. Configuration/carrier coverage and
 equal-RNA/wrong-authority controls preserve the conditional model-to-material
 relation. The complete profile still requires one RNA and zero helpers; broader
 standalone structural leaf tests do not establish full-profile multi-RNA support.
-Reusable fragment composition remains the explicit remainder above.
+Reusable A/B fragment composition now passes the complete source-tree route. Helper dependencies, multiple members and full installed/release acceptance remain the explicit remainder.
 
 Exit: exact complete mRNA candidates are independently checked against both their material construction authority and the accepted implementation binding.
 
@@ -862,7 +942,7 @@ The original installed campaign, subsequent diagnostic runs, budget-preserving r
 Depends on: SM-08 for acceptance; design work can be prepared earlier.
 
 - [x] **SM-09.1** Choose exact reusable component composition as the next profile: two independently supplied fragments, three explicit boundary links and two source families reusing one identical driver. Alternatives and helpers/multiple members follow as distinct extensions; design selection does not accept their implementation.
-- [ ] **SM-09.2** Extend source meaning, primitive semantics, lowering, preservation, material contracts and public profile negotiation together; specify version compatibility and artifact invalidation.
+- [x] **SM-09.2** For the bounded reusable-component extension, connect source meaning, primitive semantics, lowering, preservation, material contracts and public profile negotiation; version the separate request/candidate/resource/export contracts and reconstruct acceptance after edits. Hosted source-tree validation passed at 5a45d354e; the repeated installed/full gate remains SM-09.3.
 - [ ] **SM-09.3** Add complete accepted/rejected witness families and repeat the same hosted gate. Never mark a feature exportable merely because it is authorable or reference-executable.
 - [ ] **SM-09.4** Reconcile affected public workflow/default migration tasks with their owners. Retire a Python semantic authority only when every dependent admitted path is accepted.
 
@@ -870,8 +950,9 @@ Exit per expansion: a complete supported source-to-mRNA path with explicit bound
 
 Current profile boundary: the first material profile is a single supplied whole-graph
 case with one exact RNA/product and no delivered helper, using a narrow
-exclusive truth/encounter family and explicit formal context. General component
-composition, broader numeric/state/lifecycle operations, machines, coordination,
+exclusive truth/encounter family and explicit formal context. The separate bounded composition profile now supports two exact components and
+two source families through fresh source-tree export. Its installed/full acceptance
+remains open. Broader composition, numeric/state/lifecycle operations, machines, coordination,
 quantification, inheritance, independent delivery and helper/multiple-member
 closure remain material-profile expansion work. Existing authoring or broader
 reference-execution support does not establish admission through that entire
@@ -947,12 +1028,12 @@ The session's first major completion gate is SM-08:
 
 ## 9. Immediate execution queue
 
-1. Finish PR85's fresh `a85b1112f` union run and independent audit, preserving every required artifact and bounded audit limit. Retain PR95's completed run/audit as separate revision-bound evidence.
-2. Integrate the reviewed atomicity/ownership corrections, descriptor controls, pattern/builder witnesses and bounded API/source-context ledgers. Require a new complete 74-job hosted gate, all 59 ordinary receipts, exact unit accounting and fresh independent artifact audit for the corrected revision; earlier PASS records do not transfer.
-3. Merge the corrected, exactly accepted PR85 union normally, then validate actual main with its own complete fresh gate and independently bound audit. Preserve all branches and source histories.
-4. Update this tracker immediately as individual checks and task exits are satisfied. Record source/tested/main revisions separately. Close only the promised first-profile scope; preserve contextual gaps and the broader SM-05 work.
-5. Implement reusable component composition using untouched original request/catalog authority, independently reconstructed ordered graphs, explicit connection semantics and supplied fragment/junction rules. The reviewed first fixture demonstrates cross-program driver reuse, not multiple independent driver instances in one assembly.
-6. Add bounded alternatives and then helper/multiple-member closure as complete vertical profiles. A real executable helper requires independently authorized observable/hidden-step semantics and fresh preservation; a manifest label or counted RNA is insufficient.
+1. Validate the completed installed/offline four-slot component campaign source and complete comparisons on hosted native builds. Source registrations, the exact 6ed5 development artifact audit and the installed campaign source review are complete. Reuse the four existing owned-wheel slots, emit independent originals once per native platform build, and preserve every existing whole-graph check. Preserve the exact 17/18-base artifacts and independently checked shared driver. Keep alternatives, helpers and multiple members deferred until this profile is accepted.
+2. Preserve remaining PR85 run 37539833174 jobs at `8c61f45af`, correct macOS availability of the exact supported 3.11.15 interpreter, then obtain a fresh complete gate and independent audit before normal merge and fresh actual-main validation. Run 37519748082 is final: 67 successful, six failed and one skipped job; failures are the corrected inventory/runtime drift and their dependent gates. Do not restart healthy jobs for documentation. The old a85 74-job run and 102-archive audit are complete; prior PASS records do not transfer.
+3. Use the completed stable release-audit tools at 129bcd7d7 for the corrected release, with a fresh inert plan and authenticated evidence. Preserve every existing coverage, identity, archive-bound and main/merge guard; explicitly review the scope update before auditing a later component release.
+4. Merge the corrected, exactly accepted PR85 union normally, then validate actual main with its own complete fresh gate and independently bound audit. Preserve all branches and source histories.
+5. Batch coherent implementation, independent tests, focused review and hosted feedback. Update this tracker at completed implementation or validation boundaries, recording source/tested/main revisions separately. Close only the promised scope and retain contextual gaps.
+6. After the reusable-component vertical slice, add bounded alternatives and then helper/multiple-member closure as complete profiles. A real executable helper requires independently authorized observable/hidden-step semantics and fresh preservation; a manifest label or counted RNA is insufficient.
 
 ## 10. Related governing documents
 

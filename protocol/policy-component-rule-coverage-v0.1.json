@@ -421,12 +421,44 @@
       "sha256": "5152497133f3f52b8bf42f190e4d4b4f1a015758598d43ff62e44ced4c0f06b3"
     },
     {
+      "path": "tests/test_policy_component_fixture.py",
+      "sha256": "ea598815e6016bf0ae08b97d640b8ba6bc3704e163d5cff9e52a71cf44cc0b7a"
+    },
+    {
+      "path": "tests/test_policy_component_install.py",
+      "sha256": "c9e78677ddf3ba6f4e81447b324e82fee277d319d4b662efc5507bd4485ba831"
+    },
+    {
       "path": "tests/test_policy_component_material.py",
       "sha256": "9428bfc2938142adb4ea5a00fcf1f8f133ce91e11f82af495ee98a850f45b9d4"
     },
     {
+      "path": "tests/test_policy_component_material_campaign.py",
+      "sha256": "acd82d16823f7f8c98b26ffc7ea22e455b41aa390fba16f62420d24035492230"
+    },
+    {
+      "path": "tests/test_policy_material_consumer.py",
+      "sha256": "3308e5192595c797896f1f0f0d722f3941a1acb7be821391d8f66bec8989204f"
+    },
+    {
+      "path": "tests/test_policy_material_prebuilt.py",
+      "sha256": "a58ff5f799c91b02de7fd87320c9295925da256bd1927eab921f372ed294ba65"
+    },
+    {
+      "path": "tools/check_policy_component_fixture.py",
+      "sha256": "5fe14940575d5dd973db5d9ddf5cbc2df9c32b08c9c12330028560f8a618ab7a"
+    },
+    {
       "path": "tools/check_policy_component_material.py",
-      "sha256": "179e11989d69648baaa245f3ba478f6ca0a016061532f7f6ccdf278da3a183c3"
+      "sha256": "a03d568eab16b3979a91cacc0f589e0dd99404d8918dcc9419d3cd0f8567e118"
+    },
+    {
+      "path": "tools/check_policy_material_consumer.py",
+      "sha256": "7ff2a18cbd8eef672f179f8eced77a7d5985720d0646da2263e8142e61694666"
+    },
+    {
+      "path": "tools/check_policy_material_prebuilt.py",
+      "sha256": "2f241e75314c8b70aefc9ede92b484f09edf42b1d93af0c6a63fbc07e7d8a34c"
     }
   ],
   "rules": [
@@ -690,12 +722,22 @@
           "path": "core/test/test_policy_component_material_service.ml",
           "anchor": "let routing_and_publication request limits =",
           "occurrence": 1
+        },
+        {
+          "path": "tests/test_policy_component_material_campaign.py",
+          "anchor": "def test_complete_two_case_inputs_and_actual_zip_pair",
+          "occurrence": 1
         }
       ],
       "negative": [
         {
           "path": "core/test/test_policy_component_material_service.ml",
           "anchor": "hard UNKNOWN source requirement cannot export",
+          "occurrence": 1
+        },
+        {
+          "path": "tests/test_policy_component_material_campaign.py",
+          "anchor": "def test_changed_zip_extra_file_and_path_redirect_reject",
           "occurrence": 1
         }
       ],
@@ -727,6 +769,26 @@
           "path": "tools/check_policy_component_material.py",
           "anchor": "def source_document(",
           "occurrence": 1
+        },
+        {
+          "path": "tests/test_policy_component_fixture.py",
+          "anchor": "def test_mocked_hosted_emission_pins_one_fixed_command_and_complete_evidence",
+          "occurrence": 1
+        },
+        {
+          "path": "tests/test_policy_component_material_campaign.py",
+          "anchor": "def test_four_slots_compare_complete_evidence_and_keep_attempt_identity",
+          "occurrence": 1
+        },
+        {
+          "path": "tests/test_policy_material_consumer.py",
+          "anchor": "def test_every_fresh_call_and_swapped_original_control_is_explicit",
+          "occurrence": 1
+        },
+        {
+          "path": "tests/test_policy_material_prebuilt.py",
+          "anchor": "def test_expanded_comparison_preserves_old_gates_and_requires_both_new_four_slot_gates",
+          "occurrence": 1
         }
       ],
       "negative": [
@@ -739,10 +801,35 @@
           "path": "tests/test_core_policy_component_material.py",
           "anchor": "def test_rehashed_assembly_owner_site_and_link_mutations_reject",
           "occurrence": 1
+        },
+        {
+          "path": "tests/test_policy_component_fixture.py",
+          "anchor": "def test_source_run_attempt_platform_and_binary_authority_are_independent",
+          "occurrence": 1
+        },
+        {
+          "path": "tests/test_policy_component_material_campaign.py",
+          "anchor": "def test_self_consistent_cross_slot_change_and_shared_omission_reject",
+          "occurrence": 1
+        },
+        {
+          "path": "tests/test_policy_material_consumer.py",
+          "anchor": "def test_component_cannot_defer_network_or_gain_producer_imports",
+          "occurrence": 1
+        },
+        {
+          "path": "tests/test_policy_material_prebuilt.py",
+          "anchor": "def test_component_control_receipts_bind_exact_original_and_changed_wheel_bytes",
+          "occurrence": 1
+        },
+        {
+          "path": "tests/test_policy_component_install.py",
+          "anchor": "def test_missing_provenance_slot_or_build_order_cannot_satisfy_the_contract",
+          "occurrence": 1
         }
       ],
-      "scope": "Immutable complete requests and exact native capability negotiation feed check/replay/fresh paired atomic publication with no Python semantic fallback; hosted A/B Python authoring is compared to full independent originals.",
-      "limits": "Mock protocol bodies prove transport checks only; they are not native component admission evidence. CLI/root-export expansion is not claimed.",
+      "scope": "Immutable complete requests and exact native capability negotiation feed check/replay/fresh paired atomic publication with no Python semantic fallback; hosted A/B Python authoring is compared to full independent originals. Installed witness sources add externally pinned data-only originals, complete four-slot SDK comparison, producer-free offline verification and exact owned-wheel role/profile controls while retaining the historical route.",
+      "limits": "Mock protocol bodies prove transport checks only; they are not native component admission evidence. CLI/root-export expansion is not claimed. Installed campaign source and mocked four-slot controls do not establish hosted execution, OS isolation, actual wheel acceptance or release acceptance.",
       "evidence_scope": "source_only_not_executed_by_this_gate"
     }
   ],

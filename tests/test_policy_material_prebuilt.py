@@ -408,5 +408,324 @@ class PrebuiltMaterialTests(unittest.TestCase):
                     campaign.compare(args)
 
 
+    def test_component_pairs_are_explicit_complete_and_versioned(self):
+        from argparse import Namespace
+        self.assertEqual(campaign.component_pairs(Namespace(), 1), [])
+        self.assertNotEqual(campaign.SCHEMA, campaign.COMPONENT_SCHEMA)
+        self.assertNotEqual(campaign.PROBE_SCHEMA, campaign.COMPONENT_PROBE_SCHEMA)
+        for count in (1, 2):
+            fixtures = [self.root / ('fixture' + str(i)) for i in range(count)]
+            provenances = [self.root / ('provenance' + str(i)) for i in range(count)]
+            self.assertEqual(campaign.component_pairs(Namespace(component_fixture=fixtures, component_provenance=provenances), count), list(zip(fixtures, provenances)))
+            for left, right in ((fixtures, []), ([], provenances), (fixtures * 2, provenances), (fixtures, provenances * 2)):
+                with self.subTest(count=count, left=left, right=right), self.assertRaisesRegex(ValueError, 'fixture/provenance pair'):
+                    campaign.component_pairs(Namespace(component_fixture=left, component_provenance=right), count)
+
+    def test_component_profile_byte_mutations_restore_both_roles_and_record(self):
+        ownership, site, sdk_entries, _ = self.installed_tree()
+        name = 'biocompiler/core_policy_component_material.py'
+        raw = b'VALIDATION_SCOPE = "policy-component-mrna-v0.1"\n'
+        sdk_entries[name] = (raw, 0o644); (site / name).write_bytes(raw)
+        metadata = 'biocompiler-' + campaign.build.VERSION + '.dist-info/RECORD'
+        (site / metadata).write_bytes(record({k: v for k, v in sdk_entries.items() if k != metadata}, metadata))
+        before = {str(p): (p.read_bytes(), p.stat().st_mode, p.stat().st_mtime_ns) for p in site.rglob('*') if p.is_file()}
+        for case in ('component-profile-core', 'component-profile-verify'):
+            with self.assertRaisesRegex(RuntimeError, 'deliberate interruption'):
+                with campaign.installed_mutation(case, ownership) as changes:
+                    self.assertEqual([x['path'] for x in changes], [str(site / name), str(site / metadata)])
+                    self.assertEqual((site / name).read_bytes(), b'VALIDATION_SCOPE = "foreign-component-profile"\n')
+                    row = next(x for x in csv.reader(io.StringIO((site / metadata).read_text())) if x[0] == name)
+                    self.assertEqual(row[2], str(len((site / name).read_bytes())))
+                    self.assertTrue(all(x['before'] != x['after'] for x in changes))
+                    raise RuntimeError('deliberate interruption')
+            self.assertEqual(before, {str(p): (p.read_bytes(), p.stat().st_mode, p.stat().st_mtime_ns) for p in site.rglob('*') if p.is_file()})
+
+    def component_probe_fixture(self, mode):
+        inputs = {label: {'request': {'source': label}, 'limits': {'bound': 7}, 'candidate': {'proposal': label},
+                         'checked': {'checked': label}, 'exported': {'exported': label}} for label in ('A', 'B')}
+        before = {'ownership': {'literal_owner': 'owned'}, 'environment': deepcopy(ENVIRONMENT)}
+        if mode == 'component-resolver':
+            results = {label: {role: {'checked': {'checked': label}, 'exported': {'exported': label}} for role in ('core', 'verify')} for label in ('A', 'B')}
+        else:
+            role = 'verify' if mode == 'component-role' else mode.removeprefix('component-profile-')
+            message = 'Component production requires an explicitly selected Core producer' if mode == 'component-role' else 'Selected executable lacks the exact component material profile'
+            results = {label: {role: {'type': 'CoreProtocolError', 'message': message}} for label in ('A', 'B')}
+        value = {'schema_version': campaign.COMPONENT_PROBE_SCHEMA, 'status': 'pass' if mode == 'component-resolver' else 'rejected',
+                 'case': mode, **deepcopy(before), 'results': results}
+        return inputs, before, value
+
+    def test_component_probe_exact_outputs_roles_and_earliest_errors(self):
+        for mode in ('component-resolver', 'component-role', 'component-profile-core', 'component-profile-verify'):
+            inputs, before, value = self.component_probe_fixture(mode)
+            campaign.check_component_probe(value, mode, inputs, before)
+            mutants = []
+            changed = deepcopy(value); changed['results'].pop('B'); mutants.append(changed)
+            changed = deepcopy(value); changed['results']['A']['foreign-role'] = {}; mutants.append(changed)
+            changed = deepcopy(value); changed['environment']['isolated'] = 1; mutants.append(changed)
+            changed = deepcopy(value); changed['schema_version'] = campaign.PROBE_SCHEMA; mutants.append(changed)
+            changed = deepcopy(value); changed['ownership'] = {'literal_owner': 'foreign'}; mutants.append(changed)
+            changed = deepcopy(value); changed['results']['A'] = deepcopy(changed['results']['B']);
+            if mode == 'component-resolver': mutants.append(changed)
+            else:
+                changed = deepcopy(value); next(iter(changed['results']['A'].values()))['message'] = 'any failure'; mutants.append(changed)
+            for changed in mutants:
+                with self.subTest(mode=mode, changed=changed), self.assertRaises(ValueError):
+                    campaign.check_component_probe(changed, mode, inputs, before)
+
+    def test_component_actual_probe_calls_complete_originals_on_each_owned_role(self):
+        from argparse import Namespace
+        from types import ModuleType, SimpleNamespace
+        import sys
+        inputs, before, expected = self.component_probe_fixture('component-resolver')
+        path = self.root / 'inputs.json'; campaign.write_json(path, inputs)
+        calls = []
+        modules = {name: ModuleType(name) for name in ('biocompiler', 'biocompiler.core_client', 'biocompiler.core_distribution', 'biocompiler.core_policy_component_material')}
+        modules['biocompiler'].__path__ = []
+        class CoreUnavailable(Exception): pass
+        class CoreProtocolError(Exception): pass
+        modules['biocompiler.core_client'].CoreUnavailable = CoreUnavailable
+        modules['biocompiler.core_client'].CoreProtocolError = CoreProtocolError
+        modules['biocompiler.core_distribution'].installed_distribution = lambda: SimpleNamespace(ownership=lambda: before['ownership'])
+        def resolve(**kwargs):
+            calls.append(('resolve', kwargs)); return kwargs['role']
+        modules['biocompiler.core_distribution'].installed_core = resolve
+        mode = 'component-resolver'
+        def client(role):
+            def act(operation, request, *tail):
+                calls.append((operation, role, deepcopy(request), deepcopy(tail)))
+                if mode != 'component-resolver':
+                    raise CoreProtocolError('Component production requires an explicitly selected Core producer' if mode == 'component-role' else 'Selected executable lacks the exact component material profile')
+                return SimpleNamespace(result=inputs[request['source']]['checked' if operation == 'check' else 'exported'])
+            return SimpleNamespace(check=lambda *a: act('check', *a), export=lambda *a: act('export', *a), compile=lambda *a: act('compile', *a))
+        modules['biocompiler.core_policy_component_material'].PolicyComponentMaterialClient = client
+        with patch.dict(sys.modules, modules), patch.object(campaign, 'probe_environment', return_value=ENVIRONMENT):
+            for mode in ('component-resolver', 'component-role', 'component-profile-core', 'component-profile-verify'):
+                calls.clear(); args = Namespace(probe=mode, inputs=path, output=self.root / (mode + '.json'))
+                campaign.probe(args)
+                self.assertEqual(campaign.read_json(args.output), self.component_probe_fixture(mode)[2])
+                resolved = [row[1] for row in calls if row[0] == 'resolve']
+                roles = ['core', 'verify', 'core', 'verify'] if mode == 'component-resolver' else ['verify' if mode == 'component-role' else mode.removeprefix('component-profile-')] * 2
+                self.assertEqual(resolved, [{'role': role, 'operation': 'check-policy-component-material', 'timeout_seconds': 60} for role in roles])
+                for row in calls:
+                    if row[0] != 'resolve':
+                        original = inputs[row[2]['source']]
+                        self.assertEqual(row[3], (original['limits'],) if row[0] == 'compile' else (original['candidate'], original['limits']))
+            modules['biocompiler.core_policy_component_material'].PolicyComponentMaterialClient = lambda role: SimpleNamespace(check=lambda *a: (_ for _ in ()).throw(CoreProtocolError('unrelated boundary')))
+            with self.assertRaisesRegex(ValueError, 'unrelated boundary'):
+                campaign.probe(Namespace(probe='component-profile-core', inputs=path, output=self.root / 'wrong.json'))
+
+    def test_component_fixture_authority_uses_supplied_bytes_each_platform_and_rejects_duplicate(self):
+        import importlib
+        tool = importlib.import_module('check_policy_component_fixture')
+        pairs=[]; native={}; calls=[]
+        for target, platform_value in (('linux-x86_64', ('Linux','x86_64')), ('macos-arm64', ('Darwin','arm64'))):
+            directory=self.root/target; directory.mkdir()
+            fixture=directory/'originals.json'; fixture.write_text('{"same":"original"}')
+            provenance=directory/'provenance.json'; campaign.write_json(provenance, {'platform':dict(zip(('system','machine'),platform_value))})
+            pairs.append((fixture,provenance)); native[target]={'entries':{'biocompiler_core/bin/biocompiler-'+role:((target+role).encode(),0o755) for role in ('core','verify')}}
+        def validate(root, fixture, provenance, **kwargs):
+            calls.append((fixture,provenance,kwargs)); return {'sources':{'literal':'source'}}
+        with patch.object(tool,'validate',side_effect=validate):
+            result=campaign.component_authorities(pairs,IDENTITY,native)
+            self.assertEqual(set(result),{('Linux','x86_64'),('Darwin','arm64')})
+            for (fixture,provenance,kwargs), target in zip(calls, native):
+                self.assertEqual(kwargs['identity'],IDENTITY)
+                self.assertEqual(kwargs['native_sha256'],{role:campaign.build.sha((target+role).encode()) for role in ('core','verify')})
+            with self.assertRaisesRegex(ValueError,'Duplicate'):
+                campaign.component_authorities([pairs[0],pairs[0]],IDENTITY,native)
+            pairs[1][0].write_text('{"different":"original"}')
+            with self.assertRaisesRegex(ValueError,'packets differ'):
+                campaign.component_authorities(pairs,IDENTITY,native)
+        with patch.object(tool,'validate',side_effect=AssertionError('stale source/run/emitter')):
+            with self.assertRaisesRegex(AssertionError,'stale source/run/emitter'):
+                campaign.component_authorities(pairs,IDENTITY,native)
+
+    def test_component_command_ledger_is_additive_and_rejects_missing_guards(self):
+        rows, origin, own, fixture, receipt = self.command_fixture()
+        for role in ('core','verify'): own['files']['bin/biocompiler-'+role]['sha256']=('c' if role=='core' else 'd')*64
+        authority={'fixture':Path('/original/component/originals.json'),'provenance':Path('/original/component/provenance.json')}
+        python=str(origin/'env/bin/python'); checkout=Path(receipt['checkout_root'])
+        plans=[]
+        for name in ('component-material','component-resolver','component-role','component-profile-core','component-profile-core-restored','component-profile-verify','component-profile-verify-restored','component-consumer'):
+            if name=='component-material':
+                argv=[python,'-B',str(checkout/'tools/check_policy_component_material.py'),'--installed','--fixture',str(authority['fixture']),'--fixture-provenance',str(authority['provenance']),
+                      '--core',own['files']['bin/biocompiler-core']['path'],'--core-sha256','c'*64,'--verify',own['files']['bin/biocompiler-verify']['path'],'--verify-sha256','d'*64,'--output',str(origin/'evidence/component-material.json')]
+            elif name=='component-consumer':
+                argv=[python,'-B',str(checkout/'tools/check_policy_material_consumer.py'),'--profile','component','--fixture',str(authority['fixture']),'--fixture-provenance',str(authority['provenance']),
+                      '--producer-receipt',str(origin/'evidence/component-material.json'),'--verify',own['files']['bin/biocompiler-verify']['path'],'--core-sha256','c'*64,'--network','required','--output',str(origin/'evidence/component-consumer.json')]
+            else:
+                argv=[python,'-I','-B',str(checkout/'tools/check_policy_material_prebuilt.py'),'--probe','ownership' if name.endswith('-restored') else name,'--output',str(origin/'evidence'/(name+'.json'))]
+                if not name.endswith('-restored'): argv+=['--inputs',str(origin/'cwd/component-original-inputs.json')]
+            logs={}
+            for suffix in ('stdout','stderr'):
+                path=self.root/'logs'/(name+'.'+suffix+'.log'); path.write_bytes(b'inert component log'); logs[str(path.relative_to(self.root))]=campaign.pin(path)
+            plans.append({'name':name,'argv':argv,'cwd':str(origin/'cwd'),'executable':{'sha256':'e'*64,'size':123},'returncode':0,'timeout':False,'overflow':False,
+                          'environment':'empty_path_scrubbed_loaders' if '--probe' in argv else 'scrubbed_loaders','logs':logs})
+        original_names=[r['name'] for r in rows]; split=next(i for i,r in enumerate(rows) if r['name']=='uninstall'); rows[split:split]=plans
+        self.assertEqual([r['name'] for r in rows if r not in plans],original_names)
+        campaign.check_commands(self.root,rows,origin,own,fixture,receipt,component_authority=authority)
+        mutants=[]
+        for name,flag,value in (('component-material','--installed',None),('component-material','--core-sha256','0'*64),('component-material','--verify-sha256','0'*64),
+                               ('component-consumer','--network','deferred'),('component-consumer','--profile','material'),('component-consumer','--verify',own['files']['bin/biocompiler-core']['path']),
+                               ('component-resolver','--inputs',str(origin/'cwd/original-inputs.json')),('component-role','-I',None)):
+            changed=deepcopy(rows); argv=next(r for r in changed if r['name']==name)['argv']; index=argv.index(flag)
+            if value is None: argv.pop(index)
+            else: argv[index+1]=value
+            mutants.append(changed)
+        changed=deepcopy(rows); changed.pop(split); mutants.append(changed)
+        changed=deepcopy(rows); changed.insert(split,deepcopy(changed[split])); mutants.append(changed)
+        for changed in mutants:
+            with self.assertRaises((ValueError,IndexError)):
+                campaign.check_commands(self.root,changed,origin,own,fixture,receipt,component_authority=authority)
+        with self.assertRaisesRegex(ValueError,'ledger differs'):
+            campaign.check_commands(self.root,rows,origin,own,fixture,receipt)
+
+
+    def test_component_staging_pins_every_sidecar_without_using_output_as_original(self):
+        import importlib
+        component=importlib.import_module('check_policy_component_material')
+        evidence=self.root.resolve()/'evidence'; (evidence/'component-material').mkdir(parents=True)
+        fixture={'cases':[{'id':label,'request':{'original_request':label},'limits':{'original_limit':9}} for label in ('A','B')]}
+        authority={'fixture':self.root/'originals.json','provenance':self.root/'provenance.json','sources':{'authored':'source'},
+                   'pins':{'fixture':{'sha256':'f'*64},'provenance':{'sha256':'e'*64}}}
+        binaries={'biocompiler-core':'a'*64,'biocompiler-verify':'b'*64}; slot=('Linux','x86_64','3.11')
+        receipt={'schema_version':component.INSTALLED_SCHEMA,'status':'pass',**IDENTITY,'system':slot[0],'machine':slot[1],'python_version':'3.11.15',
+                 'package':'/installed/biocompiler','binary_sha256':binaries,'fixture_sha256':'f'*64,'fixture_provenance_sha256':'e'*64,
+                 'source_snapshot_sha256':campaign.core.canonical_digest(authority['sources']),'python_semantic_authority':'forbidden','observations':[]}
+        observations=[]
+        for label in ('A','B'):
+            for name in component.CASE_NAMES:
+                value={'candidate':{'proposal':label},'report':{'saved':label}}
+                if name=='export-verify': value={**value,'artifact':{'pair':label}}
+                relative='component-material/'+label+'-'+name+'.json'; path=evidence/relative; campaign.write_json(path,value)
+                receipt['observations'].append({'case':label,'name':name,'path':relative,'sha256':campaign.pin(path)['sha256'],'bytes':path.stat().st_size})
+                observations.append({'case':label,'name':name,'result':value})
+        receipt['observations_fingerprint']=campaign.core.canonical_digest(observations)
+        def checked(value):
+            return campaign.component_resolver_inputs(value,evidence,authority,IDENTITY,binaries,slot,'/installed/biocompiler')
+        with patch.object(component,'checked_fixture',return_value=fixture), patch.object(component,'author_request',side_effect=AssertionError('No parent authoring imports')):
+            result=checked(receipt)
+            for label in ('A','B'):
+                self.assertEqual(result[label]['request'],{'original_request':label}); self.assertEqual(result[label]['limits'],{'original_limit':9})
+                self.assertEqual(result[label]['candidate'],{'proposal':label})
+            for key,value in (('run_attempt','2'),('revision','c'*40),('package','/checkout/biocompiler'),('fixture_provenance_sha256','0'*64),('binary_sha256',{'biocompiler-core':'0'*64,'biocompiler-verify':'b'*64})):
+                with self.subTest(key=key),self.assertRaisesRegex(ValueError,'authority differs'): checked({**receipt,key:value})
+            omitted=deepcopy(receipt); omitted['observations'].pop(); omitted['observations_fingerprint']=campaign.core.canonical_digest(observations[:-1])
+            with self.assertRaisesRegex(ValueError,'census differs'): checked(omitted)
+            changed=deepcopy(receipt); changed['observations'][0]['path']='../escape.json'
+            with self.assertRaisesRegex(AssertionError,'Unsafe'): checked(changed)
+            path=evidence/receipt['observations'][0]['path']; path.write_bytes(path.read_bytes()+b' ')
+            with self.assertRaisesRegex(AssertionError,'bytes changed'): checked(receipt)
+
+    def test_component_full_validation_delegation_is_mandatory_for_final_slot(self):
+        import importlib
+        component=importlib.import_module('check_policy_component_material')
+        receipt={'untrusted_receipt':True}; evidence=self.root/'evidence'; authority={'fixture':self.root/'originals.json','provenance':self.root/'provenance.json','sources':{'original':'fullsource'}}
+        binaries={'biocompiler-core':'a'*64,'biocompiler-verify':'b'*64}; slot=('Linux','x86_64','3.11'); fixture={'full':'original'}
+        with patch.object(component,'checked_fixture',return_value=fixture),patch.object(component,'validate_installed',return_value={'A':{'validated':True},'B':{'validated':True}}) as validate:
+            campaign.component_inputs(receipt,evidence,authority,IDENTITY,binaries,slot)
+            validate.assert_called_once_with(receipt,evidence,fixture,authority['fixture'],IDENTITY,binaries,expected_sources=authority['sources'],fixture_provenance=authority['provenance'],expected_slot=slot)
+        for failure in ('self-consistent omitted sidecar','changed actual ZIP','stale producer receipt','foreign source provenance'):
+            with patch.object(component,'checked_fixture',return_value=fixture),patch.object(component,'validate_installed',side_effect=AssertionError(failure)):
+                with self.assertRaisesRegex(AssertionError,failure):
+                    campaign.component_inputs(receipt,evidence,authority,IDENTITY,binaries,slot)
+
+    def test_expanded_comparison_preserves_old_gates_and_requires_both_new_four_slot_gates(self):
+        from argparse import Namespace
+        import importlib
+        material=importlib.import_module('check_policy_material'); component=importlib.import_module('check_policy_component_material')
+        slots=[('Linux','x86_64','3.11'),('Linux','x86_64','3.14'),('Darwin','arm64','3.11'),('Darwin','arm64','3.14')]
+        paths=[self.root/str(i) for i in range(4)]
+        for path,slot in zip(paths,slots):
+            path.mkdir();campaign.write_json(path/'prebuilt.json',{'system':slot[0],'machine':slot[1],'python_version':slot[2]+'.6','run_attempt':'2'})
+        fixture=self.root/'old.json';fixture.write_text('{}'); authorities={}
+        for system,machine in (('Linux','x86_64'),('Darwin','arm64')):
+            path=self.root/system;path.mkdir();f=path/'originals.json';p=path/'provenance.json';f.write_text('{}');p.write_text('{}')
+            authorities[(system,machine)]={'fixture':f,'provenance':p,'sources':{},'pins':{'fixture':campaign.pin(f),'provenance':campaign.pin(p)}}
+        args=Namespace(compare=paths,platform_root=[self.root/'linux',self.root/'mac'],material_authority=[self.root/'a',self.root/'b'],release_candidate=self.root/'candidate.json',
+                       sdk=self.root/'sdk.whl',fixture=fixture,output_dir=self.root/'out',component_fixture=[x['fixture'] for x in authorities.values()],component_provenance=[x['provenance'] for x in authorities.values()])
+        def native(path,*args):
+            target='linux-x86_64' if path.name=='linux' else 'macos-arm64';entries={'biocompiler_core/binaries.json':(b'{"inert":true}',0o644)}
+            entries.update({'biocompiler_core/bin/'+role:((target+role).encode(),0o755) for role in campaign.build.ROLES})
+            return {'target':target,'entries':entries,'stamp':{'producer_run_attempt':'1'}}
+        events=[]; failing=[None]
+        def gate(kind,*arguments,**keywords):
+            events.append(kind)
+            if kind==failing[0]: raise AssertionError('mandatory '+kind+' failure')
+            if kind=='component':
+                self.assertEqual(arguments[0],[p/'evidence/component-material.json' for p in paths])
+                self.assertEqual(arguments[3],{key:row['provenance'] for key,row in authorities.items()})
+                for target in campaign.build.TARGETS:
+                    self.assertEqual((arguments[1]/target/'biocompiler-verify').read_bytes(),(target+'biocompiler-verify').encode())
+            return {'status':'inert_stub_pass','gate':kind}
+        def offline(consumers,producers,native_root,actual_fixture,**kwargs):
+            if kwargs:
+                self.assertEqual(kwargs,{'profile':'component','fixture_provenances':{key:row['provenance'] for key,row in authorities.items()}})
+                self.assertEqual(consumers,[p/'evidence/component-consumer.json' for p in paths]);self.assertEqual(producers,[p/'evidence/component-material.json' for p in paths])
+                return gate('component-offline')
+            self.assertEqual(consumers,[p/'evidence/consumer.json' for p in paths]);return gate('old-offline')
+        with patch.object(campaign,'hosted_identity',return_value=IDENTITY),patch.object(campaign,'candidate_authority',return_value=({}, {}, {'producer_run_attempt':'1'})),\
+             patch.object(campaign,'platform_authority',side_effect=native),patch.object(campaign,'component_authorities',return_value=authorities),\
+             patch.object(campaign,'verify_slot',side_effect=lambda directory,*a:(slots[paths.index(directory)],{})) as verify,\
+             patch.object(campaign,'source_pins',return_value={}),patch.object(material,'compare',side_effect=lambda *a:gate('old-material')),\
+             patch.object(campaign.consumer,'compare',side_effect=offline),patch.object(component,'compare_installed',side_effect=lambda *a:gate('component',*a)):
+            value=campaign.compare(args)
+            self.assertEqual(events,['old-material','old-offline','component','component-offline']);self.assertEqual(verify.call_count,4)
+            self.assertTrue(all(call.args[-1] is authorities for call in verify.call_args_list))
+            self.assertEqual(value['schema_version'],campaign.COMPONENT_SCHEMA);self.assertEqual(value['claim'],campaign.COMPONENT_CLAIM)
+            for index,name in enumerate(('old-material','old-offline','component','component-offline')):
+                failing[0]=name;events.clear();args.output_dir=self.root/('failed'+str(index))
+                with self.assertRaisesRegex(AssertionError,'mandatory '+name+' failure'):campaign.compare(args)
+                self.assertFalse(args.output_dir.exists())
+                self.assertEqual(events[-1],name)
+
+
+    def test_component_control_receipts_bind_exact_original_and_changed_wheel_bytes(self):
+        ownership,site,sdk_entries,_=self.installed_tree()
+        module='biocompiler/core_policy_component_material.py';raw=b'VALIDATION_SCOPE = "policy-component-mrna-v0.1"\n'
+        sdk_entries[module]=(raw,0o644);(site/module).write_bytes(raw)
+        metadata='biocompiler-'+campaign.build.VERSION+'.dist-info/RECORD'
+        sdk_entries[metadata]=(record({k:v for k,v in sdk_entries.items() if k!=metadata},metadata),0o644)
+        (site/metadata).write_bytes(sdk_entries[metadata][0])
+        inputs,before,resolver=self.component_probe_fixture('component-resolver');before['ownership']=ownership;resolver['ownership']=ownership
+        data={'ownership-before':before,'component-resolver':resolver,'component-role':self.component_probe_fixture('component-role')[2],'component-controls':[]}
+        data['component-role']['ownership']=ownership
+        (self.root/'evidence').mkdir()
+        for case in ('component-profile-core','component-profile-verify'):
+            rejection=self.component_probe_fixture(case)[2];rejection['ownership']=ownership
+            # Actual inert mutation, independently checked against source wheel
+            # bytes below; no executable or packaging call is possible.
+            with campaign.installed_mutation(case,ownership) as changes:
+                row={'case':case,'changes':deepcopy(changes),'rejection':rejection,'restored':campaign.consumer.digest(before)}
+            data['component-controls'].append(row)
+            campaign.write_json(self.root/'evidence'/(case+'.json'),rejection)
+            campaign.write_json(self.root/'evidence'/(case+'-restored.json'),before)
+        campaign.check_component_controls(self.root,data,inputs,sdk_entries)
+        mutations=[]
+        changed=deepcopy(data);changed['component-controls'][0]['changes'][0]['before']['sha256']='0'*64;mutations.append(changed)
+        changed=deepcopy(data);changed['component-controls'][0]['changes'][0]['after']['sha256']='0'*64;mutations.append(changed)
+        changed=deepcopy(data);changed['component-controls'][1]['changes'][1]['after']['sha256']='0'*64;mutations.append(changed)
+        changed=deepcopy(data);changed['component-controls'].pop();mutations.append(changed)
+        changed=deepcopy(data);changed['component-controls'][0]['restored']='0'*64;mutations.append(changed)
+        for changed in mutations:
+            with self.assertRaises(ValueError):campaign.check_component_controls(self.root,changed,inputs,sdk_entries)
+        campaign.write_json(self.root/'evidence/component-profile-core-restored.json',{'forged':'restoration'})
+        with self.assertRaisesRegex(ValueError,'sidecars differ'):campaign.check_component_controls(self.root,data,inputs,sdk_entries)
+
+    def test_expanded_and_historical_receipt_shapes_cannot_be_relabelled(self):
+        # Schema/census rejection precedes every unavailable artifact lookup.
+        receipt={'schema_version':campaign.SCHEMA,'status':'pass',**IDENTITY,'system':'Linux','machine':'x86_64','python_version':'3.11.15',
+                 'output_root':'/slot','checkout_root':'/checkout','fixture':{},'source_pins':{},'artifacts':{},'evidence':{},'commands':{},'cases':list(campaign.CASES),
+                 'claim':'supplied_prebuilt_material_profile_only','python_semantic_authority':'forbidden','network':'consumer_required_os_denial','default_cutover':'unassessed'}
+        campaign.write_json(self.root/'prebuilt.json',receipt)
+        args=(self.root,IDENTITY,self.root/'missing-candidate',self.root/'missing-sdk',{}, {}, {}, self.root/'missing-fixture')
+        with self.assertRaisesRegex(ValueError,'incomplete prebuilt slot'):campaign.verify_slot(*args,component_authority={})
+        expanded={**receipt,'schema_version':campaign.COMPONENT_SCHEMA,'claim':campaign.COMPONENT_CLAIM,'component_originals':{},'component_cases':list(campaign.COMPONENT_CASES)}
+        campaign.write_json(self.root/'prebuilt.json',expanded)
+        with self.assertRaisesRegex(ValueError,'incomplete prebuilt slot'):campaign.verify_slot(*args)
+        expanded['schema_version']=campaign.SCHEMA;campaign.write_json(self.root/'prebuilt.json',expanded)
+        with self.assertRaisesRegex(ValueError,'incomplete prebuilt slot'):campaign.verify_slot(*args,component_authority={})
+
+
 if __name__ == "__main__":
     unittest.main()

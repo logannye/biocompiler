@@ -101,11 +101,15 @@ COMPONENT_WITNESSES = tuple(sorted([
     "core/test/policy_component_support/literals.ml", "core/test/policy_component_support/requests.ml",
     "core/test/component_fixture_export/main.ml", "tools/check_policy_component_material.py",
     "tests/test_core_policy_component_material.py", "tests/test_policy_component_material.py",
+    "tools/check_policy_component_fixture.py", "tests/test_policy_component_fixture.py",
+    "tests/test_policy_component_install.py", "tests/test_policy_component_material_campaign.py",
+    "tools/check_policy_material_consumer.py", "tests/test_policy_material_consumer.py",
+    "tools/check_policy_material_prebuilt.py", "tests/test_policy_material_prebuilt.py",
     "core/test/data/policy_material_request_v01.json", "core/test/data/policy_material_state_v01.json",
 ]))
 # Fixed reviewed meaning/provenance projection, excluding source-body hashes and
 # lexical counts. Re-pinning changed files cannot reassign witness meaning.
-COMPONENT_METADATA_SHA256 = "8e70e8355517875a1ccfc19e7ffd46c3947f2b5a7c4e39baa5f6cfbdedcce71c"
+COMPONENT_METADATA_SHA256 = "cc880bf2ecf3a5ed8bebfd83cd6fac872a3c432dda0a0c902e53ede18afd6216"
 
 
 class CoverageError(ValueError):

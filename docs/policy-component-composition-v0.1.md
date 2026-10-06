@@ -16,6 +16,26 @@ The complete public Python DSL-to-export path then passed at `5a45d354e` in
 hosted run `37527311912`: sixteen native suites, 26 retained SDK observations,
 and independently inspected exact A/B FASTA/manifest ZIPs. These source-tree
 results do not establish installed, cross-platform or release acceptance.
+The source-registration revision `6ed5a952a` also passed development run
+`37531033330` and its independent retained-artifact audit. The installed campaign
+extension is implemented in source and awaits hosted acceptance. Each native
+platform build emits the independently authored A/B original packet once through
+a private domain-only test executable. The installed SDK receives this data,
+complete source/build provenance and externally pinned Core/Verify bytes; it
+reconstructs both public Python requests and runs the same 26-observation witness.
+The private emitter is never packaged or staged with the consumer.
+
+The standalone consumer stages only seven Python transport modules, the supplied
+Verify executable and ten separate A/B original/proposal/expected-result files.
+It runs sixteen observations with thirty Verify launches and requires OS network
+denial inherited by descendants. It replays fresh complete results and rejects
+forged reports, stale originals, changed budgets, swapped A/B originals and
+producer operations. The host filesystem is not isolated; no broader sandbox
+claim is made. Installed wheel ownership, missing/wrong binary controls and the
+old whole-graph campaign remain required. The additive prebuilt v0.2 receipt
+also binds component role/profile rejection, every command/log/sidecar, both
+actual FASTA/manifest ZIPs and complete equality in all four supported slots.
+Pure mock/source tests do not establish this installed acceptance.
 Track completion in [the development plan](semantic-mrna-development-plan.md).
 
 The preserved design and fixture review under
@@ -140,7 +160,7 @@ Full ordered-union/material reconstruction, translation, chemistry-facet
 dispositions, context sufficiency and source/catalog/export authority remain
 independent obligations.
 
-## Original assembly rule: source implemented, hosted validation pending
+## Original assembly rule: focused hosted validation passed
 
 `Policy_component_assembly_rule.of_json ~components` decodes the closed
 `biocompiler.policy_component_assembly_rule.v0.1` schema with profile
