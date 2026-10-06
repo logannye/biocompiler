@@ -1,0 +1,945 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:biocompiler:policy-component-fragment:v0.1",
+  "title": "Policy component fragment v0.1: partial graph shape",
+  "description": "Closed structural shape for a supplied partial primitive graph. JSON Schema validation grants no original-source authority, complete assembly, execution, requirement satisfaction, component-to-material correspondence or export permission. Native decoding against an independently supplied model library and later independent composition checks remain mandatory. Structural layouts 1..16 do not broaden the separately declared two-slot composition acceptance profile.",
+  "$comment": "No pre-existing primitive-model JSON Schema exists in this source revision; the closed primitive $defs mirror policy_implementation.ml. The native ingress profile additionally limits canonical JSON to 2 MiB, value/key nodes to 100000, depth to 48, UTF-8 strings to 65536 bytes and integers to 256 bits, and rejects duplicate object keys and raw floats. JSON Schema cannot enforce those lexical/aggregate/UTF-8-byte bounds, cryptographic digest correspondence, original-library membership, key-based identity uniqueness, endpoint existence/direction/type/scope, exactly one supplier per primitive input, complete ordered output inventory, local atomic ownership or acyclicity. The native decoder remains authoritative for those predicates. Fragment fingerprints exclude the independently supplied whole-library digest, which is retained separately as decoding context.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "profile",
+    "primitive_profile",
+    "observable_profile",
+    "phase_profile",
+    "id",
+    "version",
+    "slot_layout",
+    "nodes",
+    "wires",
+    "boundary_ports",
+    "external_slots",
+    "atomic_groups",
+    "semantic_exports"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "biocompiler.policy_component_fragment.v0.1"
+    },
+    "profile": {
+      "const": "biocompiler.policy_exact_fragment.v0.1"
+    },
+    "primitive_profile": {
+      "const": "biocompiler.policy_truth_primitives.v0.1"
+    },
+    "observable_profile": {
+      "const": "biocompiler.policy_truth_observables.v0.1"
+    },
+    "phase_profile": {
+      "const": "biocompiler.policy_primitive_execution.v0.1"
+    },
+    "id": {
+      "$ref": "#/$defs/name128"
+    },
+    "version": {
+      "$ref": "#/$defs/name128"
+    },
+    "slot_layout": {
+      "$ref": "#/$defs/slotLayout"
+    },
+    "nodes": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 256,
+      "items": {
+        "$ref": "#/$defs/node"
+      }
+    },
+    "wires": {
+      "type": "array",
+      "minItems": 0,
+      "maxItems": 2048,
+      "items": {
+        "$ref": "#/$defs/wire"
+      }
+    },
+    "boundary_ports": {
+      "type": "array",
+      "minItems": 0,
+      "maxItems": 256,
+      "items": {
+        "$ref": "#/$defs/boundaryPort"
+      }
+    },
+    "external_slots": {
+      "type": "array",
+      "minItems": 0,
+      "maxItems": 64,
+      "items": {
+        "$ref": "#/$defs/externalSlot"
+      }
+    },
+    "atomic_groups": {
+      "type": "array",
+      "minItems": 0,
+      "maxItems": 64,
+      "items": {
+        "$ref": "#/$defs/atomicGroup"
+      }
+    },
+    "semantic_exports": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 16384,
+      "items": {
+        "$ref": "#/$defs/endpoint"
+      }
+    }
+  },
+  "$defs": {
+    "name128": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "[^\\u0009-\\u000d\\u001c-\\u0020\\u0085\\u00a0\\u1680\\u2000-\\u200a\\u2028\\u2029\\u202f\\u205f\\u3000]",
+      "$comment": "maxLength counts Unicode code points; the native decoder additionally enforces the stated maximum in UTF-8 bytes."
+    },
+    "name256": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256,
+      "pattern": "[^\\u0009-\\u000d\\u001c-\\u0020\\u0085\\u00a0\\u1680\\u2000-\\u200a\\u2028\\u2029\\u202f\\u205f\\u3000]",
+      "$comment": "maxLength counts Unicode code points; the native decoder additionally enforces the stated maximum in UTF-8 bytes."
+    },
+    "modelName": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 65536,
+      "pattern": "[^\\u0009-\\u000d\\u001c-\\u0020\\u0085\\u00a0\\u1680\\u2000-\\u200a\\u2028\\u2029\\u202f\\u205f\\u3000]",
+      "$comment": "maxLength counts Unicode code points; the native decoder additionally enforces the stated maximum in UTF-8 bytes."
+    },
+    "sha256": {
+      "type": "string",
+      "minLength": 64,
+      "maxLength": 64,
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "truth": {
+      "enum": [
+        "true",
+        "false",
+        "unknown"
+      ]
+    },
+    "endpoint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "node",
+        "port"
+      ],
+      "properties": {
+        "node": {
+          "$ref": "#/$defs/name128"
+        },
+        "port": {
+          "$ref": "#/$defs/name128"
+        }
+      }
+    },
+    "wire": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "producer",
+        "consumer"
+      ],
+      "properties": {
+        "producer": {
+          "$ref": "#/$defs/endpoint"
+        },
+        "consumer": {
+          "$ref": "#/$defs/endpoint"
+        }
+      }
+    },
+    "slotLayout": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "slots"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/name128"
+        },
+        "slots": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 16
+        }
+      }
+    },
+    "replication": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kind"
+          ],
+          "properties": {
+            "kind": {
+              "const": "executor"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kind",
+            "layout_id",
+            "slots"
+          ],
+          "properties": {
+            "kind": {
+              "const": "encounter_slots"
+            },
+            "layout_id": {
+              "$ref": "#/$defs/name128"
+            },
+            "slots": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 16
+            }
+          }
+        }
+      ]
+    },
+    "modelIdentity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "kind",
+        "id",
+        "version",
+        "content_fingerprint"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "biocompiler.component_identity.v0.1"
+        },
+        "kind": {
+          "const": "model"
+        },
+        "id": {
+          "$ref": "#/$defs/modelName"
+        },
+        "version": {
+          "$ref": "#/$defs/modelName"
+        },
+        "content_fingerprint": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "emptyConfiguration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [],
+      "properties": {}
+    },
+    "truthConstantConfiguration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "value"
+      ],
+      "properties": {
+        "value": {
+          "$ref": "#/$defs/truth"
+        }
+      }
+    },
+    "productConstantConfiguration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "product"
+      ],
+      "properties": {
+        "product": {
+          "$ref": "#/$defs/name256"
+        }
+      }
+    },
+    "evidenceBankConfiguration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "freshness_ticks"
+      ],
+      "properties": {
+        "freshness_ticks": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10000
+        }
+      }
+    },
+    "arityConfiguration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "arity"
+      ],
+      "properties": {
+        "arity": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 64
+        }
+      }
+    },
+    "truthRegisterConfiguration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "initial",
+        "writers"
+      ],
+      "properties": {
+        "initial": {
+          "$ref": "#/$defs/truth"
+        },
+        "writers": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 64
+        }
+      }
+    },
+    "eventSelectConfiguration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "event_kind"
+      ],
+      "properties": {
+        "event_kind": {
+          "enum": [
+            "updated",
+            "rising",
+            "requested",
+            "initiated",
+            "completed",
+            "failed",
+            "timed_out"
+          ]
+        }
+      }
+    },
+    "exclusiveArbiterConfiguration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "lanes"
+      ],
+      "properties": {
+        "lanes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 64
+        }
+      }
+    },
+    "priorityArbiterConfiguration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "order"
+      ],
+      "properties": {
+        "order": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 64,
+          "items": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 63
+          },
+          "uniqueItems": true
+        }
+      },
+      "description": "The native primitive-model decoder additionally requires a complete permutation of lanes 0 through length minus one."
+    },
+    "atomicCommitConfiguration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "writes",
+        "requests"
+      ],
+      "properties": {
+        "writes": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 64
+        },
+        "requests": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 16
+        }
+      },
+      "anyOf": [
+        {
+          "properties": {
+            "writes": {
+              "minimum": 1
+            }
+          }
+        },
+        {
+          "properties": {
+            "requests": {
+              "minimum": 1
+            }
+          }
+        }
+      ]
+    },
+    "attemptBankConfiguration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "capacity",
+        "timeout_ticks",
+        "authorization",
+        "on_loss",
+        "on_unknown"
+      ],
+      "properties": {
+        "capacity": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1024
+        },
+        "timeout_ticks": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10000
+        },
+        "authorization": {
+          "enum": [
+            "initiation",
+            "continuous"
+          ]
+        },
+        "on_loss": {
+          "const": "continue"
+        },
+        "on_unknown": {
+          "enum": [
+            "continue",
+            "defer"
+          ]
+        }
+      }
+    },
+    "primitiveModelBody": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "profile",
+        "primitive",
+        "configuration",
+        "replication"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "biocompiler.policy_primitive_model.v0.1"
+        },
+        "profile": {
+          "const": "biocompiler.policy_truth_primitives.v0.1"
+        },
+        "primitive": {
+          "enum": [
+            "truth_constant",
+            "product_constant",
+            "evidence_bank",
+            "truth_not",
+            "truth_all",
+            "truth_any",
+            "truth_equal",
+            "truth_register",
+            "observed_rising",
+            "event_select",
+            "activation_gate",
+            "exclusive_arbiter",
+            "priority_arbiter",
+            "atomic_commit",
+            "attempt_bank"
+          ]
+        },
+        "configuration": {
+          "type": "object"
+        },
+        "replication": {
+          "$ref": "#/$defs/replication"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "primitive": {
+                "const": "truth_constant"
+              }
+            },
+            "required": [
+              "primitive"
+            ]
+          },
+          "then": {
+            "properties": {
+              "configuration": {
+                "$ref": "#/$defs/truthConstantConfiguration"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "primitive": {
+                "const": "product_constant"
+              }
+            },
+            "required": [
+              "primitive"
+            ]
+          },
+          "then": {
+            "properties": {
+              "configuration": {
+                "$ref": "#/$defs/productConstantConfiguration"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "primitive": {
+                "const": "evidence_bank"
+              }
+            },
+            "required": [
+              "primitive"
+            ]
+          },
+          "then": {
+            "properties": {
+              "configuration": {
+                "$ref": "#/$defs/evidenceBankConfiguration"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "primitive": {
+                "const": "truth_not"
+              }
+            },
+            "required": [
+              "primitive"
+            ]
+          },
+          "then": {
+            "properties": {
+              "configuration": {
+                "$ref": "#/$defs/emptyConfiguration"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "primitive": {
+                "const": "truth_all"
+              }
+            },
+            "required": [
+              "primitive"
+            ]
+          },
+          "then": {
+            "properties": {
+              "configuration": {
+                "$ref": "#/$defs/arityConfiguration"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "primitive": {
+                "const": "truth_any"
+              }
+            },
+            "required": [
+              "primitive"
+            ]
+          },
+          "then": {
+            "properties": {
+              "configuration": {
+                "$ref": "#/$defs/arityConfiguration"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "primitive": {
+                "const": "truth_equal"
+              }
+            },
+            "required": [
+              "primitive"
+            ]
+          },
+          "then": {
+            "properties": {
+              "configuration": {
+                "$ref": "#/$defs/emptyConfiguration"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "primitive": {
+                "const": "truth_register"
+              }
+            },
+            "required": [
+              "primitive"
+            ]
+          },
+          "then": {
+            "properties": {
+              "configuration": {
+                "$ref": "#/$defs/truthRegisterConfiguration"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "primitive": {
+                "const": "observed_rising"
+              }
+            },
+            "required": [
+              "primitive"
+            ]
+          },
+          "then": {
+            "properties": {
+              "configuration": {
+                "$ref": "#/$defs/emptyConfiguration"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "primitive": {
+                "const": "event_select"
+              }
+            },
+            "required": [
+              "primitive"
+            ]
+          },
+          "then": {
+            "properties": {
+              "configuration": {
+                "$ref": "#/$defs/eventSelectConfiguration"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "primitive": {
+                "const": "activation_gate"
+              }
+            },
+            "required": [
+              "primitive"
+            ]
+          },
+          "then": {
+            "properties": {
+              "configuration": {
+                "$ref": "#/$defs/emptyConfiguration"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "primitive": {
+                "const": "exclusive_arbiter"
+              }
+            },
+            "required": [
+              "primitive"
+            ]
+          },
+          "then": {
+            "properties": {
+              "configuration": {
+                "$ref": "#/$defs/exclusiveArbiterConfiguration"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "primitive": {
+                "const": "priority_arbiter"
+              }
+            },
+            "required": [
+              "primitive"
+            ]
+          },
+          "then": {
+            "properties": {
+              "configuration": {
+                "$ref": "#/$defs/priorityArbiterConfiguration"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "primitive": {
+                "const": "atomic_commit"
+              }
+            },
+            "required": [
+              "primitive"
+            ]
+          },
+          "then": {
+            "properties": {
+              "configuration": {
+                "$ref": "#/$defs/atomicCommitConfiguration"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "primitive": {
+                "const": "attempt_bank"
+              }
+            },
+            "required": [
+              "primitive"
+            ]
+          },
+          "then": {
+            "properties": {
+              "configuration": {
+                "$ref": "#/$defs/attemptBankConfiguration"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "primitive": {
+                "enum": [
+                  "evidence_bank",
+                  "truth_register",
+                  "observed_rising",
+                  "event_select",
+                  "activation_gate",
+                  "exclusive_arbiter",
+                  "priority_arbiter",
+                  "atomic_commit",
+                  "attempt_bank"
+                ]
+              }
+            },
+            "required": [
+              "primitive"
+            ]
+          },
+          "then": {
+            "properties": {
+              "replication": {
+                "properties": {
+                  "kind": {
+                    "const": "encounter_slots"
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "primitiveModel": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "identity",
+        "configuration_digest",
+        "body"
+      ],
+      "properties": {
+        "identity": {
+          "$ref": "#/$defs/modelIdentity"
+        },
+        "configuration_digest": {
+          "$ref": "#/$defs/sha256"
+        },
+        "body": {
+          "$ref": "#/$defs/primitiveModelBody"
+        }
+      },
+      "description": "A complete supplied primitive-model record. The native decoder requires exact identity, configuration digest and body membership in the independently supplied implementation library; this schema does not authenticate those values."
+    },
+    "node": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "model"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/name128"
+        },
+        "model": {
+          "$ref": "#/$defs/primitiveModel"
+        }
+      }
+    },
+    "boundaryPort": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "direction",
+        "signal_type",
+        "endpoint"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/name128"
+        },
+        "direction": {
+          "enum": [
+            "input",
+            "output"
+          ]
+        },
+        "signal_type": {
+          "enum": [
+            "truth_value",
+            "product_symbol",
+            "evidence_batch",
+            "feedback_batch",
+            "event_batch",
+            "activation_batch",
+            "truth_write",
+            "effect_request",
+            "attempt_snapshot"
+          ]
+        },
+        "endpoint": {
+          "$ref": "#/$defs/endpoint"
+        }
+      },
+      "description": "The native decoder resolves the endpoint and derives replication from its actual owning model. Replication is not an independently supplied boundary field."
+    },
+    "externalSlot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "kind",
+        "consumer"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/name128"
+        },
+        "kind": {
+          "enum": [
+            "evidence",
+            "feedback"
+          ]
+        },
+        "consumer": {
+          "$ref": "#/$defs/endpoint"
+        }
+      }
+    },
+    "atomicGroup": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "arbiter",
+        "commits"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/name128"
+        },
+        "arbiter": {
+          "$ref": "#/$defs/name128"
+        },
+        "commits": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 64,
+          "items": {
+            "$ref": "#/$defs/name128"
+          },
+          "uniqueItems": true
+        }
+      },
+      "description": "An arbiter and all of its commits must be local. Native graph validation checks lane count, order, scope and atomic continuations."
+    }
+  }
+}
