@@ -2,7 +2,6 @@ open Bioc_wire
 module O = Bioc_domain.Policy_operational
 module R = Bioc_domain.Policy_realization_request
 module I = Bioc_domain.Policy_implementation
-module P = Bioc_domain.Pinned_identity
 module B = Bioc_domain.Policy_implementation_binding
 module A = Bioc_checker.Policy_realization_admission
 module S = Bioc_checker.Policy_admission

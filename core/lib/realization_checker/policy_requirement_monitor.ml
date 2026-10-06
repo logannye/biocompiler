@@ -35,7 +35,7 @@ type obligation={requirement_index:int;binding:P.binding;trigger_id:string;attem
 type t={binding:B.checked_binding;binding_digest:string;limits:limits;resolution:Q.t;horizon:int;
   rows:ledger list;pending:obligation list;slots:P.slot_snapshot list;next:int;
   consumed:usage;history:string}
-type worker={base:t;now:int;mutable rows:ledger array;mutable pending:obligation list;mutable consumed:usage}
+type worker={base:t;now:int;rows:ledger array;mutable pending:obligation list;mutable consumed:usage}
 exception Unsupported of string
 let unsupported message=raise(Unsupported message)
 let support condition message=if not condition then unsupported message
