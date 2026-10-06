@@ -35,8 +35,9 @@ composition, bounded alternatives, delivered helpers and multiple RNA members
 are still unimplemented for this rich-policy path. Studio, conversational
 authoring and biological viability remain deferred.
 
-**Acceptance is still open.** All ten milestone exits remain open; completed
-narrow tasks are checked against their own stated scope below. An implemented stage, a passing
+**Overall acceptance is still open.** Completed specification and implementation
+tasks are checked for their stated bounded profile. Broader source coverage,
+composition and release obligations remain open. An implemented stage, a passing
 subset or a supplied contract is not a completed release gate. Use the following
 tracker as current status; older checkpoint paragraphs are historical evidence.
 
@@ -44,14 +45,14 @@ tracker as current status; older checkpoint paragraphs are historical evidence.
 | --- | --- | --- | --- |
 | SM-00 Operational foundation | Versioned truth/evidence, identity, scoped state, arbitration, silent freshness/timeout, correlated attempts and lifecycle semantics | Current union complete native suites and correction preflights passed; PR95 installed checks remain separate evidence | Independent current native evidence audit, full installed/aggregate gate and main acceptance; retain exclusions |
 | SM-01 Source authority and coverage | Immutable builders/serialization, original request/definitions, structural mRNA predicate, syntax and contextual ledgers | 612 syntax distinctions; 62 contextual families, 96 production dependencies and 30 witness files; 16 families explicitly partial | Complete promised contextual witnesses or narrow their claims; full source-valid exclusion and pattern/identity coverage; exact union acceptance |
-| SM-02 Request/domain/preservation contract | Closed versioned requests and decoders, finite causal domains, explicit bounds and observable/identity mappings; SM-02.1 and SM-02.6 specification tasks complete | Concrete closed schemas and separately versioned public statuses; PR95 finite-domain, requirement and forged-promotion controls | Exact union domain/requirement/nonvacuity evidence and main gate; broader assumptions/assurance profiles remain excluded |
+| SM-02 Request/domain/preservation contract | All seven specified tasks implemented for the bounded truth/exclusive profile, including strict admission, causal domain and exact preservation/assurance contracts | Concrete schemas, executable checks and literal counterexamples; separately audited PR95 native/service evidence | Full integration/release remains dependent on SM-00/08; wider assumptions, types and assurance profiles remain excluded |
 | SM-03 Independent primitives | Typed executable graph and candidate runtime independent of source evaluation | Current union complete native literal/mutation/dependency suites, four SDK slots and six full cross-slot comparisons passed | Independent current evidence audit and complete acceptance gate; new numeric/machine primitives remain future work |
-| SM-04 Lowering and bounded preservation | Real primitive lowering, source-obligation correspondence, complete bounded exploration and independent requirement checks | Current union native preservation/closure and extra ownership/type/requirement suites passed; complete evidence audit pending | Complete current union installed/audit/main gates; preserve work-exhaustion results and explicit contextual interaction gaps |
+| SM-04 Lowering and bounded preservation | All six tasks implemented for the first one/two-rule family: real lowering, source obligations, complete bounded exploration, independent requirements and distinguishing mutations | Literal nine-history / 47-transition / 48-prefix success, separate rejected/incomplete requests, current union native suites passed | Complete current union audit/main gates; preserve work-exhaustion results and open broader contextual/mutation coverage |
 | SM-05 Components and architecture | One supplied whole-graph material binding with declared recipient, provider, timing and finite resources | PR95 material/context/native/prebuilt checks | **Reusable component composition, finite alternatives, helper bootstrap/dependencies, many-to-many ownership and multiple RNA members remain unimplemented.** First-profile acceptance cannot close this broader package |
 | SM-06 Exact construction | Independent single-member base/coordinate/feature/chemistry/product and full configuration correspondence | PR95 exact material/fresh export and mutation checks in all four installed slots | Current union gate; component joins, helper products and multi-member correspondence require extensions |
 | SM-07 Public SDK/CLI and export | Immutable native transport, compile/check/replay, producer-free Verify, fresh paired FASTA/manifest export | Current union four SDK slots, six comparisons, four policy-prebuilt installed slots and prebuilt comparison passed; separate PR95 comparisons independently replayed | Independent exact-union artifact audit, complete aggregate and main gates |
 | SM-08 Compatibility and acceptance | Full combined workflow, retained legacy routes/corpora, exact unit accounting and targeted prebuilt routing | Current union both complete native/direct suites, all ten unit shards and both unit-accounting jobs passed; full run remains active. PR95 all 42 hosted jobs passed | Current union remaining installed campaigns, all 74 jobs / 59 ordinary receipts / 14 unit artifacts independently audited, normal merge and fresh actual-main validation |
-| SM-09 Vertical expansions | Next composition profile and independently authored fixture specification prepared | Design review only; no implementation or execution claim | Implement and accept each complete profile after the first path's gate; broader production-default cutover remains separate |
+| SM-09 Vertical expansions | SM-09.1 complete: select exact reusable component composition as the next profile; independently authored fixture specification prepared | Design review only; no implementation or execution claim | Implement and accept each complete profile after the first path's gate; broader production-default cutover remains separate |
 
 ### Completed integration and validation tasks
 
@@ -70,7 +71,7 @@ broader SM acceptance items below.
 - [x] Pass all ten current-union unit shards and both unit-accounting jobs with plan-bound interpreters. Independent unit-artifact accounting remains part of the final audit.
 - [x] Independently audit PR95's complete unit accounting, Linux/macOS native packages and source companions, and all four prebuilt ownership/material/offline slots. These results belong to `bb84421cf`, not the later union.
 - [x] Independently replay PR95's six complete architecture/policy comparisons against authenticated original artifacts (`six-comparisons-scoped-proof.json`).
-- [x] Pass PR95's full 42-job hosted gate at `bb84421cf`; the complete independent final artifact audit is in progress and union/main acceptance remains separate.
+- [x] Pass PR95's full 42-job hosted gate and independent final artifact audit at `bb84421cf`: 27 ordinary receipts, 14 unit artifacts, six comparisons, four owned prebuilt slots and all 53 selected ZIPs. Union/main acceptance remains separate; large legacy semantics retain their required hosted checks and receipt evidence.
 - [x] Specify the next composition fixture: two source families reuse an identical driver, with independently supplied connections and material fragments. This is completed design preparation only.
 - [ ] Add and validate the three missing descriptor rejection controls: valid-format stale digest, unsupported observation formal, unsupported effect result. Production guards already exist; preserve the shared-context reachability index.
 - [ ] Complete the current union's full hosted gate and independent artifact audit.
@@ -81,8 +82,8 @@ broader SM acceptance items below.
 
 | Subject | Source / tested checkout / tree | Current evidence boundary |
 | --- | --- | --- |
-| Current PR85 union | H `a85b1112ff35ba988a71cc969bfabdfefb354cfe`; C `00af6e6bab506d52a700e0a72e16ef2e2e8d8d61`; shared tree `7d22ca4c27eafcd36f018b3f262ef87404a3caf6` | [Run 37471505350, attempt 1](https://github.com/logannye/biocompiler/actions/runs/37471505350): 54 successful jobs and no failures at the retained snapshot; all unit shards/accounting passed, remaining installed campaigns active/queued and downstream aggregate pending |
-| Separate PR95 policy head | H `bb84421cf1f93cd1dc02813d80a2c54a3520a919`; C `4fe47eb1aa69782a03723fda2df892985b4e7328`; shared tree `889583e44a9de598a32beb4154f42c0471e4be83` | [Run 37450940506, attempt 1](https://github.com/logannye/biocompiler/actions/runs/37450940506): all 42 hosted jobs succeeded; complete independent final artifact audit in progress |
+| Current PR85 union | H `a85b1112ff35ba988a71cc969bfabdfefb354cfe`; C `00af6e6bab506d52a700e0a72e16ef2e2e8d8d61`; shared tree `7d22ca4c27eafcd36f018b3f262ef87404a3caf6` | [Run 37471505350, attempt 1](https://github.com/logannye/biocompiler/actions/runs/37471505350): 59 successful jobs and no failures at the retained snapshot; all unit shards/accounting passed, remaining installed campaigns active/queued and downstream aggregate pending |
+| Separate PR95 policy head | H `bb84421cf1f93cd1dc02813d80a2c54a3520a919`; C `4fe47eb1aa69782a03723fda2df892985b4e7328`; shared tree `889583e44a9de598a32beb4154f42c0471e4be83` | [Run 37450940506, attempt 1](https://github.com/logannye/biocompiler/actions/runs/37450940506): all 42 hosted jobs succeeded; independent final artifact audit passed for its stated scope. Normal union integration and fresh main acceptance remain pending |
 | Current main baseline | `f594991ac2ff2496723ae5f2427ad93e6df7a51d` | PR88 is merged; the policy/material/package union has not yet been merged or main-validated |
 
 The current union workflow has 27 definitions / 74 executions / 59 ordinary
@@ -96,10 +97,19 @@ Retained local evidence lives under
 `work/m11-human-evidence/generated/migration-next/pr85-pr95-union/`
 (preflight pair `preflight-unittest-passed-pair-a85b1112f.json`, guarded original
 build/continuation proofs, current `acceptance-37471505350/` checklist and hosted
-snapshots, including `hosted-progress-native-focused.json`, `hosted-progress-native-complete.json` and `hosted-progress-units-complete.json`). Earlier-head scoped proofs live under
+snapshots, including `hosted-progress-native-focused.json`, `hosted-progress-native-complete.json`, `hosted-progress-units-complete.json` and `hosted-progress-installed-partial.json`). Earlier-head scoped proofs live under
 `work/bounded-policy-execution/generated/policy-realization/acceptance-37450940506/`
 (unit, platform, `prebuilt-scoped-proof.json` and `six-comparisons-scoped-proof.json`). These generated records remain
 evidence with the stated scope, not substitutes for full acceptance.
+
+PR95's final independent proof is retained at
+`final-refresh-20261006T144143Z/final-audit-output/proof.json`, SHA-256
+`d331a734c0b863ba4a4e228c66bc260f54113368925634850baeace907be05cd`.
+It binds all 42 jobs, 27 ordinary receipts and 53 selected archives to the exact
+PR95 source/tested tree above. Each of Python 3.11.16 and 3.14.7 accounts for
+2,937 tests, 14,058 subtests and 282 classes with no omissions or duplicates.
+Large legacy semantic reconstructions remain mandatory hosted results; the inert
+local audit does not claim to rerun them or any native executable.
 
 The 16 partial contextual families are coverage/scope gaps, not a count of
 missing compiler stages. The original 486-history request remains incomplete
@@ -293,17 +303,38 @@ Freeze that completeness predicate before fixture acceptance: complete sequence 
 
 ## 5. Ordered work packages
 
-Checkboxes mean accepted completion of the stated task, not merely source written. During work, record source-ready and hosted-pending checkpoints separately. Stable SM identifiers are the session to-do IDs.
+Checkboxes mean completion of the stated task for its declared profile, supported
+by the relevant evidence, not merely source written. Specification or
+implementation tasks do not wait for unrelated release gates; a checkbox that
+explicitly requires installed, aggregate or main acceptance stays open until
+those gates pass. During work, record source-ready and hosted-pending checkpoints
+separately. Stable SM identifiers are the session to-do IDs; lettered subdivisions
+preserve the completed and remaining portions of a mixed-scope task.
+
+The 2026-10-06 SM-00–04 reconciliation is retained in
+`work/m11-human-evidence/generated/policy-realization/tracker-sm00-sm04-review-a85b1112f.md`
+(SHA-256 `a5e31097099ea42bf57bd39b80786528fc2fd4c23a6aa2aaab621cc7faf7dfb9`).
+It records exact source/test anchors and the boundaries summarized below. Native
+component evidence for unchanged files and the current union's completed native
+jobs support these narrow tasks; neither transfers aggregate acceptance between
+revisions nor closes incomplete coverage inventories.
 
 ### SM-00 — Close the current operational foundation
 
 Depends on: existing PR87–89 source and verified accepted-main ancestry; preserve the original PR branches during integration.
 
 - [x] **SM-00.1** Refresh local/remote identities and current hosted failures; retain exact diagnostic evidence without taking over PR85/87/88.
-- [ ] **SM-00.2** Review and register all new source additions/lineage changes in the frozen workflow authority machinery; preserve original comparisons and rejection controls.
-- [ ] **SM-00.3** Restrict requirement event support to implemented lifecycle phases. Add source-valid cancellation/ceased/outcome negative controls, retaining UNSUPPORTED rather than invented FAIL/PASS.
-- [ ] **SM-00.4** Audit admission/execution agreement for requirement scopes, reset/order, partial horizons, unknowns and resource limits. Repair concrete gaps in one coherent correction batch.
+- [x] **SM-00.2** Review and register all new source additions/lineage changes in the frozen workflow authority machinery; preserve original comparisons and rejection controls.
+- [x] **SM-00.3** Restrict requirement event support to implemented lifecycle phases. Add source-valid cancellation/ceased/outcome negative controls, retaining UNSUPPORTED rather than invented FAIL/PASS.
+- [x] **SM-00.4** Audit admission/execution agreement for requirement scopes, reset/order, partial horizons, unknowns and resource limits. Repair concrete gaps in one coherent correction batch.
 - [ ] **SM-00.5** Complete exact-revision hosted native, installed four-slot and aggregate gates. Update existing operational checkpoint evidence only when justified.
+
+Current task scope: SM-00.2 closes reviewed registration at `a85b1112f`, with the
+49-selector/416-test preflight and byte-exact historical source proofs. SM-00.3
+retains source-valid unsupported lifecycle phases and rejects forged promotions.
+SM-00.4 closes the focused audit and repairs for the named scope/correlation,
+reset/feedback order, partial horizon, Unknown and resource-limit cases. It is
+not universal coverage of every admitted combination; that remains SM-01/08.
 
 Exit: the operational dependency is accepted for its declared scope; existing source-assessment contracts and legacy profiles remain unchanged.
 
@@ -341,10 +372,12 @@ Depends on: source interfaces already present; final acceptance follows SM-00.
 
 - [x] **SM-01.1a** Create the complete machine-readable syntax inventory: 612 distinctions covering source records, fields, expression operators, enum/lifecycle branches and requirement forms.
 - [ ] **SM-01.1b** Complete the individual contextual unit/scope-rule inventory. The existing 62-family matrix is not yet a rule-by-rule ledger; for example, quantity-only unit ownership and positive unit scale still share a family disposition. These inventory gaps are separate from SM-01.2 witness gaps.
-- [ ] **SM-01.2** Track authorable, structurally checked, native-assessed, operationally executable, implementation-lowerable, material-bound and exportable separately; give each restriction an owner, positive witness and rejection witness.
+- [x] **SM-01.2a** Represent authorable, structurally checked, native-assessed, operationally executable, implementation-lowerable, material-bound and exportable as separate stages.
+- [ ] **SM-01.2b** Complete every restriction's owner, positive witness and rejection witness; shared controls and syntax classification alone do not close this coverage task.
 - [ ] **SM-01.3** Inventory every public rich-policy builder/pattern/serialization/submission path. Preserve symbolic truth guards, immutable snapshots, exact values, source spans and full request inputs.
-- [ ] **SM-01.4** Verify pattern/manual expansion and namespacing; separate identical instances' state/effect identity. Any added module composition requires explicit imports/exports and reference rebinding.
-- [ ] **SM-01.5** Freeze positive, negative and edit-propagation witnesses from section 4, including complete original BuildRequest/deployment/catalog/assurance authority and expected claim scopes.
+- [x] **SM-01.4a** Verify independently authored `once_per_scope` expansion, roundtrip and two namespaces with separate state/effect references.
+- [ ] **SM-01.4b** Complete manual-expansion and identity coverage for all six public patterns. Any added module composition requires explicit imports/exports and reference rebinding; the one-pattern witness does not establish that facility.
+- [x] **SM-01.5** Freeze positive, negative and edit-propagation witnesses from section 4, including complete original BuildRequest/deployment/catalog/assurance authority and expected claim scopes.
 - [x] **SM-01.6** Define and freeze the complete exact-mRNA structural predicate before accepting material fixtures; distinguish complete members from core-only sequence, unresolved tails and unresolved chemistry.
 
 Preparation checkpoint: the [coverage ledger](../protocol/policy-semantic-coverage-v0.1.json)
@@ -377,22 +410,27 @@ Exit: no authorable distinction can silently disappear, and the first complete c
 Depends on: SM-01; implementation can proceed while SM-00 hosted validation runs.
 
 - [x] **SM-02.1** Specify versioned PolicyRealizationRequest, finite operating-domain records, primitive contracts, PolicyImplementation and PolicyMaterialBinding wire forms for the declared bounded profile.
-- [ ] **SM-02.2** Implement strict bounded decoders and controlled native admission types; check complete original authority and library identities before selection.
-- [ ] **SM-02.3** Define input/output ownership, causal executable environment assumptions with prefix continuation/end rules, finite value/identity/time limits, initialization, overflow and interface compatibility. Assumptions cannot exclude bad implementation outputs.
-- [ ] **SM-02.4** Freeze the exact observable equivalence relation, causal input/feedback coupling, creation-time identity mapping, hidden-step rules, nonvacuity and per-requirement aggregation semantics from section 3.
-- [ ] **SM-02.5** Publish literal preservation examples and counterexamples for timing, unknowns, target mixing, reset, multiplicity, extra/missing events and divergent internal steps.
+- [x] **SM-02.2** Implement strict bounded decoders and controlled native admission types; check complete original authority and library identities before selection.
+- [x] **SM-02.3** Define input/output ownership, causal executable environment assumptions with prefix continuation/end rules, finite value/identity/time limits, initialization, overflow and interface compatibility. Assumptions cannot exclude bad implementation outputs.
+- [x] **SM-02.4** Freeze the exact observable equivalence relation, causal input/feedback coupling, creation-time identity mapping, hidden-step rules, nonvacuity and per-requirement aggregation semantics from section 3.
+- [x] **SM-02.5** Publish literal preservation examples and counterexamples for timing, unknowns, target mixing, reset, multiplicity, extra/missing events and divergent internal steps.
 - [x] **SM-02.6** Version separate status/report contracts; preserve current assessment/operational operations instead of broadening their meanings.
-- [ ] **SM-02.7** Check original assurance strength, requested requirement identities, horizon/domain, tolerances and allowed assumptions against the actual result. Reject omitted requirements and stronger requests satisfied only by weaker evidence.
+- [x] **SM-02.7** Check original assurance strength, requested requirement identities, horizon/domain, tolerances and allowed assumptions against the actual result. Reject omitted requirements and stronger requests satisfied only by weaker evidence.
 
-Current specification-task evidence (2026-10-06): SM-02.1 is implemented by the
+Current bounded-profile evidence (2026-10-06): SM-02.1 is implemented by the
 closed [realization decoder](../core/lib/domain/policy_realization_request.ml),
 [finite-domain interface](../core/lib/domain/policy_operating_domain.mli),
 [primitive/implementation schema](../core/lib/domain/policy_implementation.ml)
 and [material contract](../core/lib/domain/policy_material_contract.ml).
 SM-02.6 has separate source assessment, operational, preservation and material
 service reports, with native controls for forged promotions and replayed export
-authority. This closes those two specification tasks at `a85b1112f`; it does not
-close SM-02's broader exit or any union/release gate.
+authority. The other checked tasks have strict original-authority admission,
+prefix-owned causal input/feedback enumeration, exact tick/semantic-round
+correspondence, creation-time injective identity maps, nonvacuity and exact
+bounded assurance checks. Literal controls cover every SM-02.5 example category.
+The request/preservation technical exit is met for this declared profile;
+upstream coverage and full union/main acceptance remain separate obligations.
+Arbitrary assumptions, latency tolerance and hidden-step abstraction are excluded.
 
 Historical foundation checkpoint: the [realization contract](policy-realization-contracts-v0.1.md)
 now specifies and connects closed operating-domain, primitive-library/graph and
@@ -411,11 +449,20 @@ Exit: request admission and the preservation relation are reviewable and executa
 
 Depends on: SM-02.
 
-- [ ] **SM-03.1** Define a small closed primitive set covering evidence/age encoding, three-valued predicates, scoped storage, atomic commit, explicit arbitration, finite machines, timers and correlated attempt state.
-- [ ] **SM-03.2** Implement candidate-state initialization and transitions independently of Policy_execution. Reconstruct exclusively from actual supplied primitive instances, configuration, ports and wiring.
-- [ ] **SM-03.3** Check well-typed ports, units, clocks, scope, state encoding, capacity and unique ownership; reject combinational/scheduling cycles unless a specified bounded settling rule admits them.
-- [ ] **SM-03.4** Implement the independently fixed total input/observable projection, causal feedback coupling and injective encounter/attempt mappings fixed at creation. Declare any structural sharing and prove that distinct instances retain independent state.
-- [ ] **SM-03.5** Add literal primitive and composed-runtime controls authored separately from the producer; enforce the runtime/producer/source dependency boundaries.
+- [x] **SM-03.1a** Define the closed first-profile primitives for evidence/age encoding, three-valued predicates, scoped storage, atomic commit, explicit arbitration, timers and correlated attempt state.
+- [ ] **SM-03.1b** Extend implementation primitives and checked lowering to source-level finite machines and transitions. Operational machine execution already exists, but this implementation profile explicitly rejects machines/transitions.
+- [x] **SM-03.2** Implement candidate-state initialization and transitions independently of Policy_execution. Reconstruct exclusively from actual supplied primitive instances, configuration, ports and wiring.
+- [x] **SM-03.3** Check well-typed ports, units, clocks, scope, state encoding, capacity and unique ownership; reject combinational/scheduling cycles unless a specified bounded settling rule admits them.
+- [x] **SM-03.4** Implement the independently fixed total input/observable projection, causal feedback coupling and injective encounter/attempt mappings fixed at creation. Declare any structural sharing and prove that distinct instances retain independent state.
+- [x] **SM-03.5** Add literal primitive and composed-runtime controls authored separately from the producer; enforce the runtime/producer/source dependency boundaries.
+
+Current task scope: candidate execution reconstructs actual supplied graph
+contents independently of the source evaluator and producer. Type/unit checking
+covers the truth/event/fixed-text profile and exact clock conversion; quantity
+signals remain excluded. Mutable encounter slots stay distinct. Permitted sharing
+is explicit: pure constants may broadcast and identical nominal rising
+expressions may reuse checked edge history; distinct rising expressions may not.
+This does not establish multiple reusable driver instances within one assembly.
 
 Exit: a hand-authored implementation candidate executes the accepted/rejected witness histories correctly without consulting the source evaluator or producer.
 
@@ -438,12 +485,20 @@ PR89's older run cannot establish acceptance of this additional correction.
 
 Depends on: SM-02 and SM-03; accepted results also depend on SM-00.
 
-- [ ] **SM-04.1** Lower admitted operational declarations into explicit primitive instances, configuration, wires, state/timer allocation and scheduling groups. Preserve complete source occurrence/requirement ledgers.
-- [ ] **SM-04.2** Build a producer-independent structural checker that reconstructs every expected obligation against original source and supplied contracts. Reject missing, duplicate or multiply owned behavior.
-- [ ] **SM-04.3** Implement complete reachable-domain exploration for the first small profile, with exact domain/case census, finite-state coverage, budgets, counterexamples and fresh replay.
-- [ ] **SM-04.4** Check both-direction observable equivalence, bounded internal settling, environment assumptions and source/candidate requirement outcomes independently.
-- [ ] **SM-04.5** Retain active/inactive and trigger/response witnesses where relevant. Separate no-trigger histories, unknown evidence, actual failure, unsupported properties and incomplete exploration.
-- [ ] **SM-04.6** Corrupt the producer and candidate gates, encodings, parameters, wires, clocks, identities and state transitions; demonstrate rejection with the unchanged checker.
+- [x] **SM-04.1** Lower admitted operational declarations into explicit primitive instances, configuration, wires, state/timer allocation and scheduling groups. Preserve complete source occurrence/requirement ledgers.
+- [x] **SM-04.2** Build a producer-independent structural checker that reconstructs every expected obligation against original source and supplied contracts. Reject missing, duplicate or multiply owned behavior.
+- [x] **SM-04.3** Implement complete reachable-domain exploration for the first small profile, with exact domain/case census, finite-state coverage, budgets, counterexamples and fresh replay.
+- [x] **SM-04.4** Check both-direction observable equivalence, bounded internal settling, environment assumptions and source/candidate requirement outcomes independently.
+- [x] **SM-04.5** Retain active/inactive and trigger/response witnesses where relevant. Separate no-trigger histories, unknown evidence, actual failure, unsupported properties and incomplete exploration.
+- [x] **SM-04.6** Corrupt the producer and candidate gates, encodings, parameters, wires, clocks, identities and state transitions; demonstrate rejection with the unchanged checker.
+
+Current task scope: these six tasks are complete for the declared first
+one/two-rule profile. The independently authored nine-history domain is completely
+explored; larger requests retain their own outcomes and budgets. The original
+486-history request remains incomplete and cannot export. SM-04.6 records the
+frozen mutation demonstrations, including typed rewiring, Unknown/reason loss,
+identity/time changes and sequential-write counterexamples; it does not close
+every operator/type/context combination in SM-01.2b or SM-08.1–2.
 
 Exit: the first operational policy family has checked implementation preservation over its full declared finite domain, not merely one matching trace. No material producer is yet trusted to preserve that result automatically.
 
@@ -730,7 +785,7 @@ milestone acceptance checkbox.
 
 Depends on: SM-08 for acceptance; design work can be prepared earlier.
 
-- [ ] **SM-09.1** Choose the next profile from actual source coverage needs: additional finite numeric domains/quantities, richer state/lifecycle, composition, timing or other already authorable constructs.
+- [x] **SM-09.1** Choose exact reusable component composition as the next profile: two independently supplied fragments, three explicit boundary links and two source families reusing one identical driver. Alternatives and helpers/multiple members follow as distinct extensions; design selection does not accept their implementation.
 - [ ] **SM-09.2** Extend source meaning, primitive semantics, lowering, preservation, material contracts and public profile negotiation together; specify version compatibility and artifact invalidation.
 - [ ] **SM-09.3** Add complete accepted/rejected witness families and repeat the same hosted gate. Never mark a feature exportable merely because it is authorable or reference-executable.
 - [ ] **SM-09.4** Reconcile affected public workflow/default migration tasks with their owners. Retire a Python semantic authority only when every dependent admitted path is accepted.
@@ -816,7 +871,7 @@ The session's first major completion gate is SM-08:
 
 ## 9. Immediate execution queue
 
-1. Finish PR85's fresh `a85b1112f` union run and independent audit. Diagnose actual failures against the exact source; retain every native, unit, installed, comparison and release gate. Keep PR95's healthy run intact and its evidence separate.
+1. Finish PR85's fresh `a85b1112f` union run and independent audit. Diagnose actual failures against the exact source; retain every native, unit, installed, comparison and release gate. Preserve PR95's completed hosted run and final audit as separate revision-bound evidence.
 2. Require all 74 union jobs and 59 ordinary receipts, exact full unit accounting, complete native/campaign closure and both prebuilt paths. Recheck source, tested tree, current main and review requirements before integration.
 3. Merge the accepted PR85 union normally, then validate actual main freshly. Exact PR95 ancestry establishes incorporation; it does not transfer standalone or parent-run PASS records to the union.
 4. Update this tracker immediately as individual checks and task exits are satisfied. Record source/tested/main revisions separately. Close only the promised first-profile scope; preserve contextual gaps and the broader SM-05 work.
