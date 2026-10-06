@@ -45,8 +45,9 @@ tracker as current status; older checkpoint paragraphs are historical evidence.
 authoring defects: encounter construction could leave its generated target after
 rejecting the encounter ID, and `state`/`channel`/`require` could erase foreign
 ownership before checking a namespaced copy. Both reproduce on a previously
-complete source document. Narrow fixes and six regression controls are now in
-the isolated follow-up worktree. Let the healthy `a85b1112f` run finish and retain
+complete source document. Narrow fixes and six regression controls are committed as
+`ebfc76b6d` in the isolated follow-up worktree, with the reviewed descriptor and
+pattern controls in its preceding commits. Let the healthy `a85b1112f` run finish and retain
 its evidence, then integrate the coherent correction and validate its new exact
 revision before normal merge. A passing a85 run or PR95 audit cannot accept the
 changed frontend. These findings do not establish a failure of the independently
@@ -98,7 +99,7 @@ broader SM acceptance items below.
 
 | Subject | Source / tested checkout / tree | Current evidence boundary |
 | --- | --- | --- |
-| Current PR85 union | H `a85b1112ff35ba988a71cc969bfabdfefb354cfe`; C `00af6e6bab506d52a700e0a72e16ef2e2e8d8d61`; shared tree `7d22ca4c27eafcd36f018b3f262ef87404a3caf6` | [Run 37471505350, attempt 1](https://github.com/logannye/biocompiler/actions/runs/37471505350): 71 successful jobs and no failures at the retained 16:25 UTC snapshot; all 20 installed groups and four assembly jobs passed, reproducibility is active, and two final release gates remain pending |
+| Current PR85 union | H `a85b1112ff35ba988a71cc969bfabdfefb354cfe`; C `00af6e6bab506d52a700e0a72e16ef2e2e8d8d61`; shared tree `7d22ca4c27eafcd36f018b3f262ef87404a3caf6` | [Run 37471505350, attempt 1](https://github.com/logannye/biocompiler/actions/runs/37471505350): 71 successful jobs and no failures at the retained 17:05 UTC snapshot; all 20 installed groups and four assembly jobs passed, reproducibility is active at its retained-manager continuation comparison, and two final release gates remain pending |
 | Separate PR95 policy head | H `bb84421cf1f93cd1dc02813d80a2c54a3520a919`; C `4fe47eb1aa69782a03723fda2df892985b4e7328`; shared tree `889583e44a9de598a32beb4154f42c0471e4be83` | [Run 37450940506, attempt 1](https://github.com/logannye/biocompiler/actions/runs/37450940506): all 42 hosted jobs succeeded; independent final artifact audit passed for its stated scope. Normal union integration and fresh main acceptance remain pending |
 | Current main baseline | `f594991ac2ff2496723ae5f2427ad93e6df7a51d` | PR88 is merged; the policy/material/package union has not yet been merged or main-validated |
 
@@ -137,16 +138,25 @@ snapshots, including `hosted-progress-native-focused.json`, `hosted-progress-nat
 evidence with the stated scope, not substitutes for full acceptance.
 
 The later 71-success snapshot is retained in
-`status-current.json` at 16:25 UTC. All installed groups and four assemblies
-passed; reproducibility is active and the final prebuilt/aggregate gates remain.
-Three assembled ZIPs exceeded the original 512 MiB per-archive audit cap
-(about 571 MB each). The original preparation and its digest are preserved.
-A separate, independently reviewed and authenticated preparation raises only
-that cap to 640 MiB while retaining the 4 GiB compressed-total limit, every other
-bound and all required artifacts. Its external manifest is
-`7ade65653933ebda2b92ed4d3c5e7191a4e5162de8fdead91987c4507898ea1e`.
-No oversized artifact is omitted or accepted under the original cap; final
-auditing still requires the complete hosted gate and fresh artifact metadata.
+`acceptance-37471505350-cap640/hosted-gate-20261006T170503Z/`.
+All installed groups and four assemblies passed; reproducibility remains active
+and the final prebuilt/aggregate gates remain. No timeout, failure or retry of a
+hosted validation job is inferred from its active state.
+
+The original archive preparation and its digest are preserved. A separately
+reviewed 640 MiB compressed cap accommodated the four roughly 571 MB assembly
+ZIPs. Their complete downloads match API hashes/sizes, but each has about 280,000
+entries and 4.16 GB declared contents, exceeding the unchanged entry/expansion
+caps. The audit correctly rejected them; successful transfer is not acceptance.
+All 97 currently available selected archives total 3,194,331,402 compressed bytes
+and 18,327,041,494 declared expanded bytes. A separate preparation is now independently reviewed and authenticated for
+bounded 300,000-entry / 4 GiB-per-archive / 20 GiB-aggregate inspection; its
+external manifest is
+`e754c03a98b50368677c91a5e66375eacfec1aacecc29d11017dbe0dc09be83d`.
+Full CRC validation of the retained bytes remains pending.
+Compressed-total, per-member, actual-extraction and nested-native limits remain
+unchanged; no complete assembly corpus is to be extracted. Final auditing still
+requires authenticated preparation, complete hosted success and fresh metadata.
 
 Actual-main audit preparation is retained separately in
 `actual-main-identity-controls/independent-review.json`, SHA-256
@@ -601,6 +611,22 @@ Depends on: SM-04; schema/library preparation may overlap SM-03.
 - [ ] **SM-05.6** Preserve many-to-many function/component/mRNA relations, count every delivered helper, and check exact/max member and length limits.
 
 Exit: a complete checked implementation has a complete eligible RNA architecture under the original declared contracts, with no hidden helper or unmet semantic constraint.
+
+The next bounded composition batch has four concrete slices, all still open:
+
+| Order | Implementation work | Required boundary |
+| --- | --- | --- |
+| 1 | Closed component-library, assembly and original-request types; independently authored A/B inputs | Partial fragments need their own decoder. The original catalog must authorize the composition rule; no generated whole-graph v1 request can replace that authority. |
+| 2 | Independent ordered-union and local-to-final material checking before the producer | Preserve complete models, all nodes/wires/exports, exact typed cross-links and source occurrences. The driver is byte-identical across the two distinct source/library contexts. |
+| 3 | Private composition/context acceptance, complete obligation conjunction and exact construction | Reuse construction and resource predicates through checked interfaces. Derive 17/18-base outputs from supplied roots/join/chemistry rules; recompute identifier-dependent record widths. |
+| 4 | Independent producer, negotiated native/SDK profile and complete acceptance | Fresh original-bound Core/Verify checks, nine-history domains for both fixtures, distinguishing mutations, installed/offline export and full hosted/main gates. |
+
+The independently reviewed implementation decomposition and 28 input pins are
+retained in
+`work/bounded-policy-execution/generated/policy-realization/component-composition-independent-review.md`
+and its `-pins.json` companion. No fixture blocker was found. This is design
+preparation only; finite alternatives, executable helpers, multiple members and
+multiple driver instances remain separate later work.
 
 ### SM-06 — Complete implementation-to-material correspondence and exact construction
 
