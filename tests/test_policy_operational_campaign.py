@@ -229,7 +229,7 @@ class OperationalCampaignTests(unittest.TestCase):
         self.assertCountEqual(slots, [(system, minor) for system in ('linux-x86_64', 'macos-arm64')
                                      for minor in ('3.11', '3.14')])
         self.assertEqual(sdk.count('python "$GITHUB_WORKSPACE/tools/check_policy_operational.py"'), 1)
-        self.assertIn('python-version: ${{ matrix.python-version }}', sdk)
+        self.assertIn('python-version: ${{ fromJSON(env.BIOCOMPILER_SUPPORTED_PYTHON)[matrix.python-version] }}', sdk)
         self.assertIn('--core "$GITHUB_WORKSPACE/core/_build/default/bin/core/main.exe"', sdk)
         self.assertIn('--verify "$GITHUB_WORKSPACE/core/_build/default/bin/verify/main.exe"', sdk)
         self.assertIn('--fixture "$GITHUB_WORKSPACE/core/test/data/policy_operational_v01.json"', sdk)

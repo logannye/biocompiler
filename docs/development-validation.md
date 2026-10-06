@@ -81,6 +81,16 @@ Discovery, execution and accounting still require identical full environments;
 a hosted Python patch rollout cannot justify relaxing that requirement. Failed
 selection has no fallback interpreter and cannot supply successful accounting.
 
+The workflow selects CPython 3.11.15 and 3.14.6 through one explicit mapping,
+matching the two frozen archive standard-library source profiles. Matrix labels
+and receipt identities remain `3.11` and `3.14`. Every hosted Python consumer,
+including the three inline artifact comparisons and both reference-replay
+interpreters, uses that mapping; shards and accounting retain their checked-plan
+selection. The runner's Python is used only for the isolated plan-selector
+bootstrap before setup. Patch upgrades require explicit source-profile review,
+not replacement of frozen authority records. Preflight runs the original archive
+authority tests and migration inventory check before the larger campaigns.
+
 Original-only fixed build and continuation replays restore the historical
 package entrypoints alongside their archived session checker. The private
 counterpart v2 manifest retains the independently pinned current-to-original
