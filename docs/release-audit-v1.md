@@ -101,6 +101,14 @@ command groups; four installed slots with 17 campaigns each and 20 group receipt
 all six architecture/policy comparisons and both prebuilt routes. The only
 successful-run skipped steps are the two exact failure-only example uploads.
 
+The reviewed workflow selects the frozen source profiles Python 3.11.15 and
+3.14.6 while retaining the minor-version matrix and receipt names. Unit consumers
+still authenticate and select their plan's exact patch. The profile also requires
+the explicit Python setup step before authority recording in each of the three
+inline RNA, architecture and circuit comparison jobs. A changed workflow hash
+requires a reviewed profile update; pinning the interpreter does not waive source,
+runtime, receipt or full-run identity checks.
+
 Archive limits remain 640 MiB compressed and 4 GiB expanded per outer ZIP,
 512 MiB per member, 300,000 members, 4 GiB total compressed, 20 GiB total declared
 expanded, 4 GiB selectively extracted and 2 GiB expanded per nested native bundle.

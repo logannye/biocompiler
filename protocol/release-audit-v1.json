@@ -2894,14 +2894,14 @@
         },
         {
           "if": null,
-          "name": "Record job authority and start time",
-          "uses": null,
+          "name": null,
+          "uses": "actions/setup-python@v5",
           "yaml_ordinal": 2
         },
         {
           "if": null,
-          "name": null,
-          "uses": "actions/download-artifact@v4",
+          "name": "Record job authority and start time",
+          "uses": null,
           "yaml_ordinal": 3
         },
         {
@@ -2912,21 +2912,27 @@
         },
         {
           "if": null,
+          "name": null,
+          "uses": "actions/download-artifact@v4",
+          "yaml_ordinal": 5
+        },
+        {
+          "if": null,
           "name": "Compare exact RNA and contract artifacts across Python versions",
           "uses": null,
-          "yaml_ordinal": 5
+          "yaml_ordinal": 6
         },
         {
           "if": null,
           "name": "Record successful validation and runtime",
           "uses": null,
-          "yaml_ordinal": 6
+          "yaml_ordinal": 7
         },
         {
           "if": "always()",
           "name": "Retain required job receipt",
           "uses": "actions/upload-artifact@v4",
-          "yaml_ordinal": 7
+          "yaml_ordinal": 8
         }
       ]
     },
@@ -2944,14 +2950,14 @@
         },
         {
           "if": null,
-          "name": "Record job authority and start time",
-          "uses": null,
+          "name": null,
+          "uses": "actions/setup-python@v5",
           "yaml_ordinal": 2
         },
         {
           "if": null,
-          "name": null,
-          "uses": "actions/download-artifact@v4",
+          "name": "Record job authority and start time",
+          "uses": null,
           "yaml_ordinal": 3
         },
         {
@@ -2962,21 +2968,27 @@
         },
         {
           "if": null,
+          "name": null,
+          "uses": "actions/download-artifact@v4",
+          "yaml_ordinal": 5
+        },
+        {
+          "if": null,
           "name": "Compare complete source, model, RNA, matching, control and manifest artifacts across Python versions",
           "uses": null,
-          "yaml_ordinal": 5
+          "yaml_ordinal": 6
         },
         {
           "if": null,
           "name": "Record successful validation and runtime",
           "uses": null,
-          "yaml_ordinal": 6
+          "yaml_ordinal": 7
         },
         {
           "if": "always()",
           "name": "Retain required job receipt",
           "uses": "actions/upload-artifact@v4",
-          "yaml_ordinal": 7
+          "yaml_ordinal": 8
         }
       ]
     },
@@ -2994,14 +3006,14 @@
         },
         {
           "if": null,
-          "name": "Record job authority and start time",
-          "uses": null,
+          "name": null,
+          "uses": "actions/setup-python@v5",
           "yaml_ordinal": 2
         },
         {
           "if": null,
-          "name": null,
-          "uses": "actions/download-artifact@v4",
+          "name": "Record job authority and start time",
+          "uses": null,
           "yaml_ordinal": 3
         },
         {
@@ -3012,21 +3024,27 @@
         },
         {
           "if": null,
+          "name": null,
+          "uses": "actions/download-artifact@v4",
+          "yaml_ordinal": 5
+        },
+        {
+          "if": null,
           "name": "Compare complete deterministic infrastructure artifacts across Python versions",
           "uses": null,
-          "yaml_ordinal": 5
+          "yaml_ordinal": 6
         },
         {
           "if": null,
           "name": "Record successful validation and runtime",
           "uses": null,
-          "yaml_ordinal": 6
+          "yaml_ordinal": 7
         },
         {
           "if": "always()",
           "name": "Retain required job receipt",
           "uses": "actions/upload-artifact@v4",
-          "yaml_ordinal": 7
+          "yaml_ordinal": 8
         }
       ]
     },
@@ -7043,5 +7061,5 @@
     }
   ],
   "workflow_path": ".github/workflows/ci.yml",
-  "workflow_sha256": "b4548ee98928fbb9d1a078e20ea44ddf06b7c71331991168712fd24c86702e74"
+  "workflow_sha256": "ecb3c38f6cc7b9fc95878ffa2ed414c5d427774d3c3477754dcd2498070f98e1"
 }

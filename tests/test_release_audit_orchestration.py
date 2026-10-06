@@ -74,6 +74,53 @@ class ReleaseAuditOrchestrationTests(unittest.TestCase):
                 with self.subTest(name=name, field=field), self.assertRaises(AssertionError):
                     audit.validate_legacy_comparison(changed, name=name, plan=PROFILE, identity=identity)
 
+    def test_pinned_runtime_comparator_steps_remain_required_before_comparison(self):
+        self.assertEqual(PROFILE['workflow_sha256'],
+                         'ecb3c38f6cc7b9fc95878ffa2ed414c5d427774d3c3477754dcd2498070f98e1')
+        comparisons = {
+            'executable-rna-reproducibility':
+                'Compare exact RNA and contract artifacts across Python versions',
+            'payload-architecture-reproducibility':
+                'Compare complete source, model, RNA, matching, control and manifest artifacts across Python versions',
+            'circuit-reproducibility':
+                'Compare complete deterministic infrastructure artifacts across Python versions',
+        }
+        for name, comparison in comparisons.items():
+            spec = next(row for row in PROFILE['physical_jobs'] if row['name'] == name)
+            self.assertEqual((spec['job'], spec['matrix'], spec['runner']),
+                             (name, {}, 'ubuntu-latest'))
+            self.assertEqual([(step['yaml_ordinal'], step['name'], step['uses'], step['if'])
+                              for step in spec['steps']], [
+                (1, None, 'actions/checkout@v4', None),
+                (2, None, 'actions/setup-python@v5', None),
+                (3, 'Record job authority and start time', None, None),
+                (4, None, 'actions/download-artifact@v4', None),
+                (5, None, 'actions/download-artifact@v4', None),
+                (6, comparison, None, None),
+                (7, 'Record successful validation and runtime', None, None),
+                (8, 'Retain required job receipt', 'actions/upload-artifact@v4', 'always()'),
+            ])
+            for mutation in ('omit-setup', 'skip-setup', 'incomplete-setup',
+                             'old-seven-steps', 'setup-after-authority'):
+                jobs = self.jobs()
+                target = next(row for row in jobs['jobs'] if row['name'] == name)
+                setup = next(step for step in target['steps'] if step['number'] == 3)
+                if mutation in {'omit-setup', 'old-seven-steps'}:
+                    target['steps'].remove(setup)
+                    if mutation == 'old-seven-steps':
+                        for step in target['steps']:
+                            if step['number'] > 3:
+                                step['number'] -= 1
+                elif mutation == 'skip-setup':
+                    setup['conclusion'] = 'skipped'
+                elif mutation == 'incomplete-setup':
+                    setup['status'] = 'in_progress'; setup['conclusion'] = None
+                else:
+                    authority = next(step for step in target['steps'] if step['number'] == 4)
+                    setup['number'], authority['number'] = 4, 3
+                with self.subTest(job=name, mutation=mutation), self.assertRaises(AssertionError):
+                    self.check_jobs(jobs)
+
     def test_independent_input_digest_and_closed_packet_paths(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory); raw = root / 'run.json'; raw.write_text('{"id":37}')
