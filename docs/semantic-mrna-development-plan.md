@@ -302,8 +302,11 @@ Source checkpoint: [independent primitive execution](policy-primitive-execution-
 now includes a separate actual-graph runtime, causal source-prefix replay,
 producer-independent source/graph binding and exact observable prefix comparison.
 Native controls cover the one-rule and exclusion witnesses and altered traces.
-The new source is awaiting hosted execution; complete-domain exploration,
-independent requirement monitoring and material acceptance are still open.
+The runtime/binding/prefix batch is PR91 at
+`22fb05f6901cd037dbffe95ae7750c1e78803200`, with native compilation passing on
+Linux and macOS in [run 37412211034](https://github.com/logannye/biocompiler/actions/runs/37412211034).
+Full native, installed and aggregate acceptance remains pending. Complete-domain
+checking is the next source batch described below; material acceptance remains open.
 Review also found an unspecified host-language evaluation order in source
 request/initiation event creation. The explicit-order correction is pushed to
 PR90 as `4440e08c953a20d07e8d9d3a57c97bdcaa69c434`, with native validation in
@@ -322,6 +325,15 @@ Depends on: SM-02 and SM-03; accepted results also depend on SM-00.
 - [ ] **SM-04.6** Corrupt the producer and candidate gates, encodings, parameters, wires, clocks, identities and state transitions; demonstrate rejection with the unchanged checker.
 
 Exit: the first operational policy family has checked implementation preservation over its full declared finite domain, not merely one matching trace. No material producer is yet trusted to preserve that result automatically.
+
+Source checkpoint: [bounded preservation](policy-bounded-preservation-v0.1.md)
+now specifies an untrusted deterministic lowering producer, an independent
+candidate requirement monitor and fresh exhaustive causal-domain checking.
+Tests include a separately authored complete nine-history domain with a literal
+47-transition/48-prefix census, original unknown safety, failed/unsupported hard
+requirements, no-effect nonvacuity, altered authority and bounded stopping.
+These controls are source-ready and require hosted execution. No checker task
+is closed from the authored expected census or static validation alone.
 
 ### SM-05 — Bind components, deployment contracts and RNA architecture
 

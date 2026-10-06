@@ -226,4 +226,10 @@ let report state = obj["profile",str profile; "claim",str "matched_prefix_only";
   "attempts",arr(List.map(fun(candidate,source)->obj["candidate",str candidate;"source",str source])state.attempts);
   "events",arr(List.map(fun(candidate,source)->obj["candidate",str candidate;"source",str source])state.events);
   "requirements",str "unassessed"; "whole_domain",str "unassessed"; "material",str "unassessed"; "export",str "withheld"]
-let fingerprint state = Canonical.fingerprint(report state)
+let candidate_event_to_source = source_event
+let candidate_attempt_to_source = source_attempt
+let identity state = obj["profile",str profile;"history_digest",str state.history_digest;
+  "domain_cursor",str(F.cursor_digest state.cursor);"next_tick",Json.int state.next;
+  "attempts",arr(List.map(fun(candidate,source)->arr[str candidate;str source])state.attempts);
+  "events",arr(List.map(fun(candidate,source)->arr[str candidate;str source])state.events)]
+let fingerprint state = Canonical.fingerprint(identity state)

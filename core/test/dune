@@ -533,3 +533,21 @@
  (modules test_policy_implementation_binding)
  (libraries bioc_wire bioc_domain bioc_checker bioc_compiler zarith)
  (action (run %{test} %{dep:data/policy_implementation_binding_v01.json} %{dep:data/policy_realization_request_v01.json} %{dep:data/policy_exclusion_source_v01.json})))
+
+(test
+ (name test_policy_implementation_lowering)
+ (modules test_policy_implementation_lowering)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_compiler zarith)
+ (action (run %{test} %{dep:data/policy_implementation_binding_v01.json})))
+
+(test
+ (name test_policy_requirement_monitor)
+ (modules test_policy_requirement_monitor)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_compiler bioc_semantics bioc_candidate_runtime bioc_realization_checker zarith)
+ (action (run %{test} %{dep:data/policy_implementation_binding_v01.json})))
+
+(test
+ (name test_policy_preservation_check)
+ (modules test_policy_preservation_check)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_compiler bioc_realization_checker zarith)
+ (action (run %{test} %{dep:data/policy_implementation_binding_v01.json})))

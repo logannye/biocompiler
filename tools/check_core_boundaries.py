@@ -37,6 +37,9 @@ EXECUTABLES = {
     "biocompiler-verify": ("bin/verify/dune", {"bioc_wire", "bioc_service"}, "verifier"),
 }
 TESTS = {
+    "test_policy_implementation_lowering": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "zarith"},
+    "test_policy_requirement_monitor": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_semantics", "bioc_candidate_runtime", "bioc_realization_checker", "zarith"},
+    "test_policy_preservation_check": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_realization_checker", "zarith"},
     "test_policy_implementation_binding": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "zarith"},
     "test_policy_trace_correspondence": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_semantics", "bioc_candidate_runtime", "bioc_realization_checker", "zarith"},
     "test_policy_domain_reference": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_semantics", "zarith"},
@@ -435,6 +438,9 @@ def check_boundaries(root: Path):
                     "test_policy_domain_reference": ["policy_operating_domain_v01.json", "policy_operational_v01.json"],
                     "test_policy_primitives": ["policy_implementation_v01.json", "policy_primitives_v01.json"],
                     "test_policy_trace_correspondence": ["policy_implementation_binding_v01.json"],
+                    "test_policy_implementation_lowering": ["policy_implementation_binding_v01.json"],
+                    "test_policy_requirement_monitor": ["policy_implementation_binding_v01.json"],
+                    "test_policy_preservation_check": ["policy_implementation_binding_v01.json"],
                     "test_policy_implementation_binding": ["policy_implementation_binding_v01.json", "policy_realization_request_v01.json", "policy_exclusion_source_v01.json"],
                     "test_policy_document": ["policy_documents_v01.json"],
                     "test_policy_check": ["policy_frontend_request.json", "policy_frontend_submission.json", "policy_documents_v01.json"],

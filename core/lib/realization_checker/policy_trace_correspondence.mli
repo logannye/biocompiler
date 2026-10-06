@@ -27,3 +27,11 @@ val advance : t -> batch:F.input_batch -> source_frame:Json.t ->
   candidate:P.frame -> t
 val fingerprint : t -> string
 val report : t -> Json.t
+
+(** Strict lookups in the already fixed injective correspondence. *)
+val candidate_event_to_source : t -> string -> string
+val candidate_attempt_to_source : t -> string -> string
+
+(** Compact identity preimage, excluding repeated immutable authority bodies.
+    The full checked binding remains covered by its initial history digest. *)
+val identity : t -> Json.t
