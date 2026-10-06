@@ -77,8 +77,8 @@ class NativeFixtureWiringTests(unittest.TestCase):
         self.assertIn("python tools/ci_native_bundle.py bundle --path generated/native-bundle/native.zip", build)
         self.assertIn("name: native-bundle-${{ matrix.platform }}", build)
         declared = self.declared_suites(dune)
-        self.assertEqual(len(declared), 154, "complete union native suite census changed")
-        self.assertEqual(sum("dependencies" in row for row in declared), 36)
+        self.assertEqual(len(declared), 155, "complete union native suite census changed")
+        self.assertEqual(sum("dependencies" in row for row in declared), 37)
         self.assertEqual(bundle.test_plan(dune), declared, "runner changed a Dune suite or ordered fixture argv")
         for row in declared:
             for relative in row.get("dependencies", []):
