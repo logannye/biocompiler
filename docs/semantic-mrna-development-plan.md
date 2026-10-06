@@ -74,6 +74,7 @@ broader SM acceptance items below.
 - [x] Independently replay PR95's six complete architecture/policy comparisons against authenticated original artifacts (`six-comparisons-scoped-proof.json`).
 - [x] Pass PR95's full 42-job hosted gate and independent final artifact audit at `bb84421cf`: 27 ordinary receipts, 14 unit artifacts, six comparisons, four owned prebuilt slots and all 53 selected ZIPs. Union/main acceptance remains separate; large legacy semantics retain their required hosted checks and receipt evidence.
 - [x] Specify the next composition fixture: two source families reuse an identical driver, with independently supplied connections and material fragments. This is completed design preparation only.
+- [x] Prepare and independently review the separate actual-main identity predicates: four positive and 83 rejection controls pass on synthetic literal inputs, including normal-merge parents, push identity and unchanged accepted trees. No real main revision or main acceptance is established by these controls.
 - [ ] Add and validate the three missing descriptor rejection controls: valid-format stale digest, unsupported observation formal, unsupported effect result. Production guards already exist; preserve the shared-context reachability index.
 - [ ] Complete the current union's full hosted gate and independent artifact audit.
 - [ ] Merge the exact accepted union normally, preserving branches, and validate the actual main revision with its own full fresh gate.
@@ -83,7 +84,7 @@ broader SM acceptance items below.
 
 | Subject | Source / tested checkout / tree | Current evidence boundary |
 | --- | --- | --- |
-| Current PR85 union | H `a85b1112ff35ba988a71cc969bfabdfefb354cfe`; C `00af6e6bab506d52a700e0a72e16ef2e2e8d8d61`; shared tree `7d22ca4c27eafcd36f018b3f262ef87404a3caf6` | [Run 37471505350, attempt 1](https://github.com/logannye/biocompiler/actions/runs/37471505350): 63 successful jobs and no failures at the retained 15:31 UTC snapshot; four installed campaign groups remain active, with seven downstream assembly/comparison/release gates pending |
+| Current PR85 union | H `a85b1112ff35ba988a71cc969bfabdfefb354cfe`; C `00af6e6bab506d52a700e0a72e16ef2e2e8d8d61`; shared tree `7d22ca4c27eafcd36f018b3f262ef87404a3caf6` | [Run 37471505350, attempt 1](https://github.com/logannye/biocompiler/actions/runs/37471505350): 66 successful jobs and no failures at the retained 15:45 UTC snapshot; only the macOS/Python 3.14 fixed installed-campaign group remains active, with seven downstream assembly/comparison/release gates pending |
 | Separate PR95 policy head | H `bb84421cf1f93cd1dc02813d80a2c54a3520a919`; C `4fe47eb1aa69782a03723fda2df892985b4e7328`; shared tree `889583e44a9de598a32beb4154f42c0471e4be83` | [Run 37450940506, attempt 1](https://github.com/logannye/biocompiler/actions/runs/37450940506): all 42 hosted jobs succeeded; independent final artifact audit passed for its stated scope. Normal union integration and fresh main acceptance remain pending |
 | Current main baseline | `f594991ac2ff2496723ae5f2427ad93e6df7a51d` | PR88 is merged; the policy/material/package union has not yet been merged or main-validated |
 
@@ -120,6 +121,23 @@ snapshots, including `hosted-progress-native-focused.json`, `hosted-progress-nat
 `work/bounded-policy-execution/generated/policy-realization/acceptance-37450940506/`
 (unit, platform, `prebuilt-scoped-proof.json` and `six-comparisons-scoped-proof.json`). These generated records remain
 evidence with the stated scope, not substitutes for full acceptance.
+
+The later 66-success status snapshot is
+`acceptance-37471505350/status-after-main-identity-review/compact-status.json`;
+the remaining campaign had run about 60 of its allowed 120 minutes and had
+passed all six preceding setup/identity steps. No timeout, failure, cancellation
+or retry was inferred from its still-running state.
+
+Actual-main audit preparation is retained separately in
+`actual-main-identity-controls/independent-review.json`, SHA-256
+`dc5b917760fe884ebb62a6dd0aa5f0ef5e3e6e082041c84f27cf615be96598b9`.
+Its reviewed helper distinguishes source/tested identity `M/M` from ordered
+normal-merge parents `[previous main, accepted PR head]`, and binds the Git
+commit, main ref, merged PR, push run and suite to the accepted tree. The caller
+must first authenticate all expectations and helper bytes independently. The
+four positive / 83 negative controls use fictional identities; actual `M`, its
+push run and all fresh main artifacts remain absent. Optimized Python execution
+is rejected before test assertions can be disabled.
 
 PR95's final independent proof is retained at
 `final-refresh-20261006T144143Z/final-audit-output/proof.json`, SHA-256
