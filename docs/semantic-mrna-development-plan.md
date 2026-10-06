@@ -42,15 +42,15 @@ tracker as current status; older checkpoint paragraphs are historical evidence.
 
 | Package | Implemented scope / completed work | Verified evidence | Remaining work and acceptance |
 | --- | --- | --- | --- |
-| SM-00 Operational foundation | Versioned truth/evidence, identity, scoped state, arbitration, silent freshness/timeout, correlated attempts and lifecycle semantics | PR95 native/installed checks passed their stated scope; PR85 correction preflights passed | Current union native scope/lifecycle controls, full gate and main acceptance; retain exclusions |
+| SM-00 Operational foundation | Versioned truth/evidence, identity, scoped state, arbitration, silent freshness/timeout, correlated attempts and lifecycle semantics | Current union complete native suites and correction preflights passed; PR95 installed checks remain separate evidence | Independent current native evidence audit, full installed/aggregate gate and main acceptance; retain exclusions |
 | SM-01 Source authority and coverage | Immutable builders/serialization, original request/definitions, structural mRNA predicate, syntax and contextual ledgers | 612 syntax distinctions; 62 contextual families, 96 production dependencies and 30 witness files; 16 families explicitly partial | Complete promised contextual witnesses or narrow their claims; full source-valid exclusion and pattern/identity coverage; exact union acceptance |
 | SM-02 Request/domain/preservation contract | Closed versioned requests and decoders, finite causal domains, explicit bounds and observable/identity mappings | PR95 finite-domain and requirement controls; separate incomplete and accepted request authorities | Exact union domain/requirement/nonvacuity evidence and main gate; broader assumptions/assurance profiles remain excluded |
-| SM-03 Independent primitives | Typed executable graph and candidate runtime independent of source evaluation | PR95 literal, mutation, dependency and installed implementation checks | Current union complete native/runtime gate; new numeric/machine primitives remain future work |
-| SM-04 Lowering and bounded preservation | Real primitive lowering, source-obligation correspondence, complete bounded exploration and independent requirement checks | PR95 preservation/closure families; current extra ownership/type/requirement witnesses are registered | Execute current union mutations and retained work-exhaustion controls; contextual interaction gaps remain explicit |
+| SM-03 Independent primitives | Typed executable graph and candidate runtime independent of source evaluation | Current union complete native literal/mutation/dependency suites passed; PR95 installed implementation checks passed separately | Current union installed/runtime comparison and complete acceptance gate; new numeric/machine primitives remain future work |
+| SM-04 Lowering and bounded preservation | Real primitive lowering, source-obligation correspondence, complete bounded exploration and independent requirement checks | Current union native preservation/closure and extra ownership/type/requirement suites passed; complete evidence audit pending | Complete current union installed/audit/main gates; preserve work-exhaustion results and explicit contextual interaction gaps |
 | SM-05 Components and architecture | One supplied whole-graph material binding with declared recipient, provider, timing and finite resources | PR95 material/context/native/prebuilt checks | **Reusable component composition, finite alternatives, helper bootstrap/dependencies, many-to-many ownership and multiple RNA members remain unimplemented.** First-profile acceptance cannot close this broader package |
 | SM-06 Exact construction | Independent single-member base/coordinate/feature/chemistry/product and full configuration correspondence | PR95 exact material/fresh export and mutation checks in all four installed slots | Current union gate; component joins, helper products and multi-member correspondence require extensions |
 | SM-07 Public SDK/CLI and export | Immutable native transport, compile/check/replay, producer-free Verify, fresh paired FASTA/manifest export | PR95 source/operational/implementation/material/offline comparisons and independent prebuilt ownership audit passed | Exact union outside-checkout, version/error, replay/export and independent comparison gates |
-| SM-08 Compatibility and acceptance | Full combined workflow, retained legacy routes/corpora, exact unit accounting and targeted prebuilt routing | Current union local/hosted preflights, both hosted builds and both focused native policy groups passed; full run is active | All 74 jobs, 59 ordinary receipts, 14 unit artifacts, complete independent audit, normal merge and fresh actual-main validation |
+| SM-08 Compatibility and acceptance | Full combined workflow, retained legacy routes/corpora, exact unit accounting and targeted prebuilt routing | Current union local/hosted preflights, both hosted builds and both complete native-suite jobs passed; full run is active | All 74 jobs, 59 ordinary receipts, 14 unit artifacts, complete independent audit, normal merge and fresh actual-main validation |
 | SM-09 Vertical expansions | Next composition profile and independently authored fixture specification prepared | Design review only; no implementation or execution claim | Implement and accept each complete profile after the first path's gate; broader production-default cutover remains separate |
 
 ### Completed integration and validation tasks
@@ -63,7 +63,8 @@ broader SM acceptance items below.
 - [x] Pass the exact 49-selector preflight on Python 3.11.15 and 3.14.6: **416 tests each**, with all four 1,563-file source snapshots unchanged.
 - [x] Pass all nine original build-semantics methods on both interpreters with descendant process launches denied; reproduce the complete guarded 39-occurrence continuation oracle unchanged.
 - [x] Pass both hosted PR85 preflights and both native builds at the current tested tree.
-- [x] Pass the focused native policy/implementation/molecular group on both platforms, including the corrected ownership fixture. The complete 149-suite jobs, installed campaigns and final acceptance are separate downstream tasks.
+- [x] Pass the focused native policy/implementation/molecular group on both platforms, including the corrected ownership fixture. The installed campaigns and final acceptance are separate downstream tasks.
+- [x] Pass both complete hosted native-suite jobs, covering the retained 149-suite inventory on each platform. Independent final artifact auditing and the full release gate remain open.
 - [x] Independently audit PR95's complete unit accounting, Linux/macOS native packages and source companions, and all four prebuilt ownership/material/offline slots. These results belong to `bb84421cf`, not the later union.
 - [x] Specify the next composition fixture: two source families reuse an identical driver, with independently supplied connections and material fragments. This is completed design preparation only.
 - [ ] Complete the current union's full hosted gate and independent artifact audit.
@@ -74,8 +75,8 @@ broader SM acceptance items below.
 
 | Subject | Source / tested checkout / tree | Current evidence boundary |
 | --- | --- | --- |
-| Current PR85 union | H `a85b1112ff35ba988a71cc969bfabdfefb354cfe`; C `00af6e6bab506d52a700e0a72e16ef2e2e8d8d61`; shared tree `7d22ca4c27eafcd36f018b3f262ef87404a3caf6` | [Run 37471505350, attempt 1](https://github.com/logannye/biocompiler/actions/runs/37471505350): 23 successful jobs and no failures at the retained snapshot; native suites, unit shards and installed campaigns still active/queued |
-| Separate PR95 policy head | H `bb84421cf1f93cd1dc02813d80a2c54a3520a919`; C `4fe47eb1aa69782a03723fda2df892985b4e7328`; shared tree `889583e44a9de598a32beb4154f42c0471e4be83` | [Run 37450940506, attempt 1](https://github.com/logannye/biocompiler/actions/runs/37450940506): 36 successful jobs and no failures at the retained snapshot; legacy conformance, comparison and aggregate remain open |
+| Current PR85 union | H `a85b1112ff35ba988a71cc969bfabdfefb354cfe`; C `00af6e6bab506d52a700e0a72e16ef2e2e8d8d61`; shared tree `7d22ca4c27eafcd36f018b3f262ef87404a3caf6` | [Run 37471505350, attempt 1](https://github.com/logannye/biocompiler/actions/runs/37471505350): 30 successful jobs and no failures at the retained snapshot; both complete native-suite jobs passed, unit shards and installed campaigns still active/queued |
+| Separate PR95 policy head | H `bb84421cf1f93cd1dc02813d80a2c54a3520a919`; C `4fe47eb1aa69782a03723fda2df892985b4e7328`; shared tree `889583e44a9de598a32beb4154f42c0471e4be83` | [Run 37450940506, attempt 1](https://github.com/logannye/biocompiler/actions/runs/37450940506): 37 successful jobs and no failures at the retained snapshot; first legacy slot passed, remaining legacy conformance, comparison and aggregate remain open |
 | Current main baseline | `f594991ac2ff2496723ae5f2427ad93e6df7a51d` | PR88 is merged; the policy/material/package union has not yet been merged or main-validated |
 
 The current union workflow has 27 definitions / 74 executions / 59 ordinary
@@ -89,7 +90,7 @@ Retained local evidence lives under
 `work/m11-human-evidence/generated/migration-next/pr85-pr95-union/`
 (preflight pair `preflight-unittest-passed-pair-a85b1112f.json`, guarded original
 build/continuation proofs, current `acceptance-37471505350/` checklist and hosted
-snapshots, including `hosted-progress-native-focused.json`). Earlier-head scoped proofs live under
+snapshots, including `hosted-progress-native-focused.json` and `hosted-progress-native-complete.json`). Earlier-head scoped proofs live under
 `work/bounded-policy-execution/generated/policy-realization/acceptance-37450940506/`
 (unit, platform and `prebuilt-scoped-proof.json`). These generated records remain
 evidence with the stated scope, not substitutes for full acceptance.
