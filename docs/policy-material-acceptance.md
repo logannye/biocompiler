@@ -264,7 +264,7 @@ The [complete request fixture](../core/test/data/policy_material_request_v01.jso
 has request fingerprint
 `754a3a30752855c3e9458c0b657a2e7ac850d6aebb27e260009e331296341e36`.
 It independently retains the resolved exclusion source, catalog, domain, graph,
-material/context authority, complete molecule and 24 original obligations. Only
+material/context authority, complete molecule and 23 original obligations. Only
 its untrusted operational behavior is produced natively. Its authored positive
 census is nine histories, 47 transitions, 48 prefixes, 15 graph nodes and 92
 material dispositions. Context controls include 14 demands over 13 capacity
@@ -320,6 +320,40 @@ and allocation inventories. Inert adversaries update all four slot fingerprints,
 wrapper/manifest identities and ZIP bytes after truncating those inventories;
 the missing evidence must still be rejected. These are transport-completeness
 checks, not Python reimplementations of native capacity or policy semantics.
+
+At source `46fb5a5c9fded877866d333f0e1e8aef75a9fe5b`, hosted run
+`37420548147` passed the focused suites through all 124 context controls on
+both platforms, then failed the coordinator's literal obligation census.
+Independent review of both source validators shows 23 original obligations:
+the fixture incorrectly included `persistent_encounter_identity_lifetime`,
+which is emitted for persistent state associated with an encounter. This
+source has encounter-lifetime stores. The correction removes only that extra
+expected fixture entry; it preserves every original request field, checker
+obligation and the 480,645-unit decoding census. Full native coordinator,
+service and installed material acceptance remain pending.
+
+The next correction also rejects unsupported nominal references on durations
+before bounded operational admission. Generic source units retain their
+nominal reference field; the bounded clock cannot silently discard it during
+amount/scale conversion. Equivalent exact seconds/milliseconds remain a
+required positive control. A source-location-only service control requires old
+candidate/report rejection and fresh accepted export with unchanged FASTA but
+changed full request, candidate and manifest identities. Native execution of
+these added controls remains hosted work.
+
+ZIP publication now verifies every byte of the fixed stored archive, including
+local headers, against the native FASTA and manifest. It does not rely on the
+ZIP parser's central-directory metadata to validate local timestamps, versions
+or CRCs. Pure-Python corruption controls preserve prior output and remove the
+unpublished stage. The nested transport fixture also registers cleanup with
+its owning test, preventing patched assessments from leaking to later tests.
+
+The first-profile witness audit still requires coherent source/model/material
+families for authorization and uncertainty alternatives before timeout,
+compound `all`/`any` guards with explicit Unknown state, and distinct delivery
+providers with matching full phase relations. Re-pinned near-neighbor mutations
+must fail at the relevant semantic checks. These are remaining SM-08 coverage
+obligations; primitive-only tests and rejected stale pins do not close them.
 
 The initial family remains narrow: one executor, explicitly named finite
 encounters, one truth observation, one or two encounter-scoped truth stores,

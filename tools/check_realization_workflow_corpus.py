@@ -21,7 +21,7 @@ CORPUS_PIN = "2f5e7636977f559e046776c1bb92bebf67c8f0e733ca463927f8d3a1aee3d77b"
 # hashes for historical source files are deliberately unsupported.
 REVIEWED_EXAMPLES = frozenset({"examples/expressive_policies.py"})
 REVIEWED_ADDITIONS = {
-    'src/biocompiler/policy/material.py': '2ab58d3597b47147f989da073c024f5fede97f7842ce1d7c6efa311abd8544fd',
+    'src/biocompiler/policy/material.py': 'cabfab5d543c84d5732d9d9adcb1edf1482f45e3ebb80fdab1022ef3bea16359',
     'src/biocompiler/core_policy_material.py': 'b3a28a1f40d475de8848cc6cea45d4c0975042da17b2c90977facca7f2d9100c',
     'src/biocompiler/policy/implementation.py': '4e1de0535cf852885169328aaae035caff9178b367b84f204c1e68eaae478515',
     'src/biocompiler/core_policy_implementation.py': 'b0a1c56ed960e146153dcb1f89ac28cc0f809a79716a7f7c1e096496b4bcf556',

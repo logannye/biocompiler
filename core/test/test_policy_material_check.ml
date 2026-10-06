@@ -69,7 +69,17 @@ let ()=
   require(str(R.fingerprint request)=get "request_fingerprint" expected)"Frozen complete original request changed";
   require(str(S.fingerprint(R.implementation_request request))=get "source_request_digest" expected)
     "Material request substituted a different source/domain/library root";
-  require(source_obligations request=items "obligations" expected)"Literal 24-obligation original census changed";
+  (* Independently enumerated source obligations: four base obligations, three
+     BuildRequest obligations, nine supplied definitions, one catalog entry,
+     three requirements, and one each for arbitration, state and effects.
+     Both stores have encounter lifetime: the persistent-encounter obligation
+     applies only to persistent StateStore/Machine declarations. *)
+  let expected_obligations=items "obligations" expected in
+  require(List.length expected_obligations=23)"Literal original obligation count changed";
+  let original_obligations=source_obligations request in
+  require(original_obligations=expected_obligations)
+    ("Literal 23-obligation original census changed: actual="^Canonical.encode(arr original_obligations)^ "; expected="^
+      Canonical.encode(arr expected_obligations));
   let decoded_work=ref 0 in
   let charged_request=R.of_json ~charge:(fun amount->decoded_work:= !decoded_work+amount)raw in
   require(!decoded_work=R.decoding_work charged_request && !decoded_work=R.decoding_work request && !decoded_work>0)

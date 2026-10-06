@@ -91,6 +91,30 @@ let ()=
   rejects "saved export wrapper used as check receipt"["policy_material_replay"](fun()->replay export);
   rejects "saved acceptance authority supplied to export"["unknown_field"](fun()->
     S.handle ~operation:"export-policy-material"(set "report" compiled payload));
+  (* Source location is part of the original artifact, but is not an executable
+     guard. The old candidate and report must be stale; a fresh derivation may
+     legitimately preserve the exact RNA under the unchanged supplied case. *)
+  let relocated_request=put["implementation_request";"document";"program";"source_map";"0";"file"]
+    (str "relocated_original_policy.py")request in
+  rejects "old candidate after source location edit"["policy_correspondence"](fun()->
+    S.check ~export:true ~request:relocated_request ~candidate ~limits);
+  let relocated=compile relocated_request in
+  let relocated_candidate=get "candidate" relocated in
+  let relocated_payload=obj["request",relocated_request;"candidate",relocated_candidate;"limits",limits]in
+  require(Json.equal relocated(run Service.handle Protocol.Verify "check-policy-material" relocated_payload))
+    "Relocated source lacks fresh independent acceptance";
+  rejects "old report after fresh source location lowering"["policy_material_replay"](fun()->
+    run Service.handle Protocol.Verify "replay-policy-material"(set "report" compiled relocated_payload));
+  let relocated_export=run Service.handle Protocol.Verify "export-policy-material" relocated_payload in
+  let relocated_artifact=get "artifact" relocated_export in
+  require(text "fasta" relocated_artifact=fasta && text "fasta_sha256" relocated_artifact=text "fasta_sha256" artifact)
+    "A location-only source edit changed the unchanged exact material contract";
+  List.iter(fun key->require(get key relocated<>get key compiled)("Relocation reused stale "^key))
+    ["request_fingerprint";"candidate_fingerprint";"invocation_fingerprint";"report_fingerprint"];
+  require(text "manifest_sha256" relocated_artifact<>text "manifest_sha256" artifact &&
+    Json.equal(get "request"(get "manifest" relocated_artifact))relocated_request &&
+    text "status"(get "report" relocated_export)="checked_material")
+    "Fresh identical RNA publication lost changed full source authority";
   let altered_limits=put["monitor";"max_work"](Json.int 1)limits in
   let incomplete=S.check ~export:false ~request ~candidate ~limits:altered_limits in
   require(text "status"(get "report" incomplete)="not_accepted" && get "artifact" incomplete=Json.Null)

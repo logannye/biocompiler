@@ -372,7 +372,7 @@ every primitive/configuration/connection disposition to supplied exact material;
 it does not infer biological behavior from sequences. The
 [material acceptance checkpoint](policy-material-acceptance.md) specifies the
 closed schemas, record capacities and conditional scope. New literal controls
-retain the complete original request, 24 obligations, exact molecules and
+retain the complete original request, 23 obligations, exact molecules and
 9-history/47-transition/48-prefix expectations. Full material hosted acceptance
 is pending; SM-06 checkboxes remain open. Next: execute the exact-content,
 configuration/carrier, context and cross-layer mutation controls together, then
@@ -462,6 +462,22 @@ aggregate/integration acceptance. Keep packaged/offline/default-routing work
 separately visible, retain all historical gates, and record successful source
 and tested revisions before changing any checkbox. The existing reference-package
 source implementation remains under its compatibility/acceptance owner's scope.
+
+Current exact-revision checkpoint: source `46fb5a5c9fded877866d333f0e1e8aef75a9fe5b`,
+run `37420548147`, passed the focused native tests through 124 context controls
+on both platforms. The coordinator then rejected a fixture expecting one extra
+persistent-state obligation although its stores have encounter lifetime. The
+corrected independent census is 23; original authority and obligations remain
+unchanged. Pending corrections additionally cover nominal duration references,
+complete ZIP-header integrity, test isolation and metadata-only source-edit
+invalidation. These source changes require their own hosted evidence.
+
+Next SM-08 witness queue: exercise initiation/continuous and continue/defer
+alternatives while an attempt is active; compound guards and explicit Unknown
+state through bound material candidates; distinct delivery providers and
+re-pinned provider/channel conflicts; Verify-only consumer packaging with
+producer absence and explicit offline enforcement. Keep each item open until
+its complete positive and distinguishing negative controls execute successfully.
 
 ### SM-09 — Expand supported semantics through complete vertical profiles
 

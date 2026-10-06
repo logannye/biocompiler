@@ -54,7 +54,7 @@ EXPECTED = {"status": "checked_material", "claim_scope": "bounded_conditional_po
 OBLIGATIONS = [
     "arbitration_fairness_and_conflict_resolution", "chassis_capability_and_delivery_suitability",
     "effect_authorization_feedback_and_cancellation", "implementation_applicability:exclusion.response.primitives.resolved_chassis",
-    "implementation_catalog_applicability", "persistent_encounter_identity_lifetime", "policy_execution_and_lowering",
+    "implementation_catalog_applicability", "policy_execution_and_lowering",
     "realizability_and_target_suitability", "requested_assurance_not_established", "requirement_satisfaction:exclusive_selection",
     "requirement_satisfaction:initiation_progress", "requirement_satisfaction:request_progress", "safety_and_progress_satisfaction",
     "semantic_definition:exclusion.chassis", "semantic_definition:exclusion.delivery", "semantic_definition:exclusion.effect",

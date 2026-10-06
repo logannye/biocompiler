@@ -1840,7 +1840,6 @@
       "effect_authorization_feedback_and_cancellation",
       "implementation_applicability:exclusion.response.primitives.resolved_chassis",
       "implementation_catalog_applicability",
-      "persistent_encounter_identity_lifetime",
       "policy_execution_and_lowering",
       "realizability_and_target_suitability",
       "requested_assurance_not_established",

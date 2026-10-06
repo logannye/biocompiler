@@ -127,6 +127,62 @@ let run fixture =
     | exception Diagnostic.Error diagnostic ->
         require (diagnostic.code = "policy_operational_unsupported") ("Wrong operational support outcome: "^label);
         incr rejected in
+  let rec change_field path transform value = match path with
+    | [] -> transform value
+    | key::rest -> replace key (change_field rest transform (get key value)) value in
+  let timed_fields=["clock",["resolution"],"1000";"condition",["freshness"],"2000";
+    "response",["lifecycle";"timeout"],"2000";"completion",["deadline"],"2000";
+    "completion",["horizon"],"4000";"scoped_memory",["horizon"],"4000"] in
+  List.iter (fun (identity,path,_) ->
+    let label=identity^"/"^String.concat "/" path^" nominal time reference" in
+    let changed=change_declaration identity (change_field (path@["unit";"reference"])
+      (fun _ -> str "recipient-relative-time")) raw in
+    unsupported label changed;
+    let changed_document=D.of_json ~path:"/document" changed in
+    let assessment=Bioc_checker.Policy_check.check changed_document in
+    require (D.artifact_digest changed_document <> D.artifact_digest document)
+      "Nominal time-reference edit did not change original authority";
+    (* Rebuild every source pin, operand and ledger without invoking admission.
+       Fresh correspondence must reject the unsupported original itself. *)
+    let nodes=List.map2 (fun node (declaration:D.declaration) ->
+      replace "data" (remove "$type" declaration.value) node)
+      (items "nodes" initial) (D.declarations changed_document) in
+    let forged=initial |> replace "source_document" changed
+      |> replace "source_artifact_digest" (str (D.artifact_digest changed_document))
+      |> replace "nodes" (arr nodes) |> replace "source_ledger" (get "declarations" assessment)
+      |> replace "requirements_ledger" (get "requirements" assessment)
+      |> replace "assumptions" (get "assumptions" assessment)
+      |> replace "unresolved_obligations" (get "unresolved_obligations" assessment) in
+    let candidate=O.behavior_of_json forged in
+    match C.check ~expected_document:changed_document ~descriptors candidate with
+    | _ -> failwith ("Re-pinned unsupported nominal time was checked: "^label)
+    | exception Diagnostic.Error diagnostic ->
+        require (diagnostic.code = "policy_operational_unsupported")
+          ("Re-pinned time reference failed for an unrelated reason: "^label);
+        require (Option.fold ~none:false ~some:(String.ends_with ~suffix:"/unit/reference") diagnostic.path)
+          "Time-reference diagnostic omitted the unsupported original field";
+        incr rejected) timed_fields;
+  let milliseconds=List.fold_left (fun source (identity,path,amount) ->
+    change_declaration identity (change_field path (fun quantity ->
+      quantity |> replace "amount" (str amount) |> replace "unit"
+        (get "unit" quantity |> replace "id" (str "ms") |> replace "scale" (str "0.001")))) source)
+    raw timed_fields in
+  let millisecond_document=D.of_json ~path:"/document" milliseconds in
+  let millisecond_behavior=L.lower(A.admit ~document:millisecond_document ~descriptors) in
+  ignore(C.check ~expected_document:millisecond_document ~descriptors millisecond_behavior);
+  require (Json.equal millisecond_behavior.source_document milliseconds)
+    "Equivalent unit conversion discarded the original source spelling";
+  require (D.artifact_digest millisecond_document <> D.artifact_digest document)
+    "Equivalent units reused the old full source identity";
+  require (List.map (fun (value:O.clock) -> value.resolution) millisecond_behavior.clocks =
+    List.map (fun (value:O.clock) -> value.resolution) behavior.clocks &&
+    List.map (fun (value:O.observation) -> value.freshness) millisecond_behavior.observations =
+    List.map (fun (value:O.observation) -> value.freshness) behavior.observations &&
+    List.map (fun (value:O.effect_spec) -> value.lifecycle.timeout) millisecond_behavior.effects =
+    List.map (fun (value:O.effect_spec) -> value.lifecycle.timeout) behavior.effects &&
+    List.map (fun (value:O.requirement) -> value.deadline,value.horizon) millisecond_behavior.requirements =
+    List.map (fun (value:O.requirement) -> value.deadline,value.horizon) behavior.requirements)
+    "Equivalent seconds/milliseconds changed exact clock, freshness, timeout or requirement bounds";
   unsupported "observation-based clock" (change_declaration "clock" (replace "basis" (str "observation")) raw);
   unsupported "continuous observation coverage" (change_declaration "condition" (replace "coverage" (str "continuous")) raw);
   unsupported "omitted uncertainty class" (change_declaration "condition" (replace "invalidity" (arr [str "missing";str "stale";str "invalid"])) raw);

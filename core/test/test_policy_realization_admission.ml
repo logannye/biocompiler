@@ -152,6 +152,24 @@ let () =
 
   List.iter(fun level->reject_fresh("stronger/different assurance "^level)"policy_realization_assurance"
     (set(assurance_path@["level"])(str level)raw))["proof";"structural"];
+  let referenced_horizon=set(assurance_path@["horizon";"unit";"reference"])
+    (str "recipient-relative-time")raw in
+  let referenced_request=R.of_json referenced_horizon in
+  require(text "status"(Bioc_checker.Policy_check.check(R.document referenced_request))="valid")
+    "Nominal assurance time-reference control lost generic source validity";
+  require(R.fingerprint referenced_request<>R.fingerprint request)
+    "Original assurance reference failed to change the complete request pin";
+  reject_fresh "nominal assurance time reference" "policy_operational_unsupported" referenced_horizon;
+  rejects "old behavior cannot admit a referenced original assurance horizon" "policy_operational_unsupported"
+    (fun()->C.admit ~request:referenced_request ~behavior);
+  let milliseconds=raw |> set(assurance_path@["horizon";"amount"])(str "4000")
+    |>set(assurance_path@["horizon";"unit";"id"])(str "ms")
+    |>set(assurance_path@["horizon";"unit";"scale"])(str "0.001")in
+  let millisecond_admitted=fresh milliseconds in
+  check_scope(C.report millisecond_admitted);
+  require(Json.equal(R.to_json(C.request millisecond_admitted))milliseconds &&
+    R.fingerprint(C.request millisecond_admitted)<>R.fingerprint request)
+    "Equivalent assurance units lost their complete original spelling or identity";
   reject_fresh "unbounded assurance" "policy_realization_assurance"
     (set(assurance_path@["horizon"])(str "unbounded_requested")raw);
   List.iter(fun amount->reject_fresh("assurance horizon "^amount)"policy_realization_assurance"

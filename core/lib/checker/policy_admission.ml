@@ -56,15 +56,29 @@ let admit ~document ~descriptors =
   in
   let clocks=List.filter (fun (d:D.declaration) -> d.kind=D.Clock) declarations in
   require "/document" (List.length clocks = 1) "Bounded operational profile requires exactly one shared logical clock.";
-  let clock=(List.hd clocks).value in
+  let clock_declaration=List.hd clocks in
+  let clock=clock_declaration.value in
   require "/document" (List.mem (text "basis" clock) ["logical";"availability"])
     "Only exact logical or availability tick clocks sharing the timeline domain are executable.";
-  let resolution=O.duration (get "resolution" clock) in
+  let duration path value =
+    (* Unit references are nominal source scopes. The shared tick clock has no
+       executable relation to such a scope; normalization must not erase one. *)
+    require (path^"/unit/reference") (get "reference" (get "unit" value) = Json.Null)
+      "Bounded time durations require an unreferenced unit; nominal time-reference conversion is unsupported.";
+    O.duration value
+  in
+  let resolution=duration (clock_declaration.path^"/resolution") (get "resolution" clock) in
   let time path value =
-    let amount=O.duration value in
+    let amount=duration path value in
     require path (Q.sign amount > 0 && Z.equal (Q.den (Q.div amount resolution)) Z.one)
       "Operational durations must be positive integral multiples of the shared clock resolution."
   in
+  Option.iter (fun request ->
+    match get "horizon" (get "assurance" request) with
+    | Json.Object _ as horizon ->
+        let root=if D.kind document = D.Submission then "/document/request" else "/document" in
+        ignore (duration (root^"/assurance/horizon") horizon)
+    | _ -> ()) (D.request document);
   let roles=List.filter (fun (d:D.declaration) -> d.kind=D.Role) declarations in
   require "/document" (List.length roles = 1) "Bounded operational profile requires one executor role.";
   let role=(List.hd roles).id in

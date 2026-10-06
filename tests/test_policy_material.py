@@ -15,6 +15,7 @@ from tests import test_core_policy_material as peer
 class PolicyMaterialSdkTests(unittest.TestCase):
     def setUp(self):
         self.peer = peer.PolicyMaterialTransportTests()
+        self.addCleanup(self.peer.doCleanups)
         self.peer.setUp()
 
     def export(self, output, **kwargs):
@@ -126,6 +127,24 @@ class PolicyMaterialSdkTests(unittest.TestCase):
                 self.assertEqual(output.read_bytes(), b"original")
                 self.assertFalse(list(Path(directory).glob(".policy-material-*")))
 
+    def test_local_header_metadata_corruption_preserves_prior_output(self):
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory) / "result.zip"
+            output.write_bytes(b"original")
+            original_fsync = os.fsync
+            for field, member, offset in (("timestamp", 0, 10), ("version", 1, 4), ("crc", 0, 14)):
+                def changed_header(fd):
+                    original_fsync(fd)
+                    os.lseek(fd, 0, os.SEEK_SET)
+                    raw = os.read(fd, os.fstat(fd).st_size)
+                    start = 0 if member == 0 else raw.index(b"PK\x03\x04", 1)
+                    os.lseek(fd, start + offset, os.SEEK_SET)
+                    os.write(fd, bytes([raw[start + offset] ^ 1]))
+                with self.subTest(field=field), self.peer.exchange(), patch("biocompiler.policy.material.os.fsync", side_effect=changed_header), self.assertRaises(CoreProtocolError):
+                    self.export(output, replace=True)
+                self.assertEqual(output.read_bytes(), b"original")
+                self.assertFalse(list(Path(directory).glob(".policy-material-*")))
+
     def test_valid_zip_with_changed_member_bytes_or_metadata_is_rejected(self):
         with tempfile.TemporaryDirectory() as directory:
             output = Path(directory) / "result.zip"
@@ -176,6 +195,20 @@ class PolicyMaterialSdkTests(unittest.TestCase):
                 self.export(output, replace=True, cancelled=lambda: True)
             self.assertEqual(output.read_bytes(), b"original")
             self.assertFalse(list(Path(directory).glob(".policy-material-*")))
+
+
+class PolicyMaterialIsolationTests(unittest.TestCase):
+    def test_outer_cleanup_restores_manually_owned_peer_patches(self):
+        prior_assessment = peer.peer.assessment
+        prior_source_assessment = peer.peer.source_peer.source_assessment
+        outer = PolicyMaterialSdkTests("test_complete_request_snapshot_preserves_external_authority")
+        self.addCleanup(outer.doCleanups)
+        outer.setUp()
+        self.assertIsNot(peer.peer.assessment, prior_assessment)
+        self.assertIsNot(peer.peer.source_peer.source_assessment, prior_source_assessment)
+        outer.doCleanups()
+        self.assertIs(peer.peer.assessment, prior_assessment)
+        self.assertIs(peer.peer.source_peer.source_assessment, prior_source_assessment)
 
 
 if __name__ == "__main__":

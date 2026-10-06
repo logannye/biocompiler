@@ -1,12 +1,13 @@
 """Inert material requests and fresh native paired publication."""
 from __future__ import annotations
 
-from io import BytesIO
 import os
+import struct
 from pathlib import Path
 import tempfile
 from typing import Callable, Iterable, cast
 import zipfile
+import zlib
 
 from biocompiler.core_client import CoreProtocolError, JsonValue, decode_json, encode_json
 from biocompiler.core_policy_material import (
@@ -67,28 +68,35 @@ def _verify_staged(path: Path, members: tuple[tuple[str, bytes], ...]) -> None:
         archive_bytes = staged.read(expected_size + 1)
     if len(archive_bytes) != expected_size:
         raise CoreProtocolError("Staged material archive changed during bounded readback")
-    try:
-        # BytesIO also bounds malformed central-directory read lengths to the
-        # already bounded staged bytes instead of trusting ZIP size fields.
-        with zipfile.ZipFile(BytesIO(archive_bytes), "r", allowZip64=False) as archive:
-            entries = archive.infolist()
-            if archive.comment or [entry.filename for entry in entries] != [name for name, _ in members]:
-                raise CoreProtocolError("Staged material archive changed its exact member inventory")
-            offset = 0
-            for entry, (name, expected) in zip(entries, members):
-                if (entry.compress_type != zipfile.ZIP_STORED or entry.file_size != len(expected)
-                        or entry.compress_size != len(expected) or entry.header_offset != offset
-                        or entry.date_time != (1980, 1, 1, 0, 0, 0) or entry.create_system != 3
-                        or entry.external_attr != 0o100644 << 16 or entry.internal_attr != 0
-                        or entry.flag_bits != 0 or entry.extra or entry.comment
-                        or entry.create_version != 20 or entry.extract_version != 20):
-                    raise CoreProtocolError("Staged material archive changed its fixed stored metadata")
-                with archive.open(entry) as handle:
-                    if handle.read(len(expected) + 1) != expected:
-                        raise CoreProtocolError("Staged material archive differs from exact native bytes")
-                offset += 30 + len(name.encode("ascii")) + len(expected)
-    except (zipfile.BadZipFile, zipfile.LargeZipFile, EOFError) as error:
-        raise CoreProtocolError("Staged material archive failed exact readback") from error
+    # Compare every byte against the fixed stored-ZIP format independently of
+    # the writer/parser. ZipFile uses central-directory metadata when reading
+    # and does not validate every corresponding local-header field.
+    cursor = 0
+    view = memoryview(archive_bytes)
+    def expect(expected: bytes) -> None:
+        nonlocal cursor
+        if view[cursor:cursor + len(expected)] != expected:
+            raise CoreProtocolError("Staged material archive differs from exact native bytes or fixed ZIP metadata")
+        cursor += len(expected)
+
+    central_entries: list[bytes] = []
+    for name, content in members:
+        encoded_name = name.encode("ascii")
+        size, crc, local_offset = len(content), zlib.crc32(content), cursor
+        # DOS time/date 0/33 is 1980-01-01 00:00:00; all optional fields are empty.
+        expect(struct.pack("<4s5H3I2H", b"PK\x03\x04", 20, 0, 0, 0, 33,
+                           crc, size, size, len(encoded_name), 0))
+        expect(encoded_name)
+        expect(content)
+        central_entries.append(struct.pack("<4s6H3I5H2I", b"PK\x01\x02", (3 << 8) | 20, 20, 0, 0, 0, 33,
+            crc, size, size, len(encoded_name), 0, 0, 0, 0, 0o100644 << 16, local_offset) + encoded_name)
+    central_offset = cursor
+    for entry in central_entries:
+        expect(entry)
+    central_size = cursor - central_offset
+    expect(struct.pack("<4s4H2IH", b"PK\x05\x06", 0, 0, len(members), len(members), central_size, central_offset, 0))
+    if cursor != expected_size:
+        raise CoreProtocolError("Staged material archive changed its complete byte inventory")
 
 
 def export(request: JsonValue, *, candidate: JsonValue, limits: JsonValue, client: PolicyMaterialClient,
