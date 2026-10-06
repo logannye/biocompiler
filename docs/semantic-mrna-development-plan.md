@@ -22,7 +22,7 @@ Completion means a complete stack for an explicitly declared supported profile, 
 
 ## 2. Current checkpoint, starting point and ownership
 
-Current integration source: [PR85](https://github.com/logannye/biocompiler/pull/85),
+Most recently completed hosted integration source: [PR85](https://github.com/logannye/biocompiler/pull/85),
 `a85b1112ff35ba988a71cc969bfabdfefb354cfe`, contains the policy compiler and the
 preserved reference/package migration. It includes exact policy head
 `bb84421cf1f93cd1dc02813d80a2c54a3520a919` from
@@ -51,9 +51,11 @@ pattern controls in its preceding commits. The coherent follow-up and tracker
 are published on `codex/policy-descriptor-witnesses`. The later source-validation
 correction is published there as `360e2cbbd`; its exact scope and independent
 evidence are recorded below. PR85 itself
-still has the original tested head. Let the healthy `a85b1112f` run finish and retain
-its evidence, then integrate the coherent correction and validate its new exact
-revision before normal merge. A passing a85 run or PR95 audit cannot accept the
+has completed its original 74-job gate at `a85b1112f`. The complete final run,
+job, artifact and PR-head/base snapshot is preserved before advancing the head.
+Its inert artifact audit can overlap the corrected head's fresh validation;
+the old local checkout and captured authority stay frozen. Validate the corrected
+exact revision before normal merge. A passing a85 run or PR95 audit cannot accept the
 changed frontend. These findings do not establish a failure of the independently
 checked native bounded profile.
 
@@ -67,8 +69,8 @@ checked native bounded profile.
 | SM-05 Components and architecture | One supplied whole-graph material binding with declared recipient, provider, timing and finite resources | PR95 material/context/native/prebuilt checks | **Reusable component composition, finite alternatives, helper bootstrap/dependencies, many-to-many ownership and multiple RNA members remain unimplemented.** First-profile acceptance cannot close this broader package |
 | SM-06 Exact construction | Whole-graph case, complete single-member construction, configuration correspondence and first-profile mutation tasks complete | PR95 exact material/fresh export and mutation checks in all four installed slots | Current union acceptance; reusable component joins, helper products and multi-member correspondence require extensions |
 | SM-07 Public SDK/CLI and export | All six first-profile tasks implemented and demonstrated: complete manifests, immutable native transport, conservative invalidation, compile/check/replay, producer-free Verify and fresh paired export | Current union four SDK slots, six comparisons, four policy-prebuilt installed slots and prebuilt comparison passed; separate PR95 evidence independently audited | Independent exact-union artifact audit, complete aggregate and main gates |
-| SM-08 Compatibility and acceptance | Full combined workflow, retained legacy routes/corpora, exact unit accounting and targeted prebuilt routing | Current union both complete native/direct suites, all ten unit shards and both unit-accounting jobs passed; full run remains active. PR95 all 42 hosted jobs passed | Current union reproducibility/release checks and all 74 jobs / 59 ordinary receipts / 14 unit artifacts independently audited; then corrected-head acceptance, normal merge and fresh actual-main validation |
-| SM-09 Vertical expansions | SM-09.1 complete: select exact reusable component composition as the next profile; independently authored fixture specification prepared | Design review only; no implementation or execution claim | Implement and accept each complete profile after the first path's gate; broader production-default cutover remains separate |
+| SM-08 Compatibility and acceptance | Full combined workflow, retained legacy routes/corpora, exact unit accounting and targeted prebuilt routing | Original a85 union passed all 74 hosted jobs; complete authority snapshot retained, final artifact audit pending. PR95 all 42 hosted jobs and independent audit passed | Complete a85 artifact audit, corrected-head fresh acceptance, normal merge and fresh actual-main validation |
+| SM-09 Vertical expansions | SM-09.1 complete: select exact reusable component composition; fragment and local material/library decoder/test source implemented | Independent source reviews and focused Python checks; new native feedback and complete profile acceptance remain pending | Complete original rule/request authority and the independent composition path, then accept the full profile; broader production-default cutover remains separate |
 
 ### Completed integration and validation tasks
 
@@ -85,6 +87,7 @@ broader SM acceptance items below.
 - [x] Pass both complete hosted direct-core jobs, retaining all 67 original groups per platform.
 - [x] Independently audit both current-union native bundles: 151 executables, 23 fixtures, all 149 suite records and 67 direct-group records per platform, plus exact published Core/Verify bytes and all six successful producer jobs. No local native execution.
 - [x] Pass all four current-union architecture SDK slots and the complete six-comparison job, plus all four policy-prebuilt installed slots and their comparison.
+- [x] Pass the current union's hosted original-continuation and original-registration comparisons. The 18:26 UTC exact-job read confirms both successful steps; independent final artifact auditing and the remaining reference/prebuilt/aggregate gates are separate.
 - [x] Pass all ten current-union unit shards and both unit-accounting jobs with plan-bound interpreters, then independently audit all 14 unit artifacts: each runtime has 4,063 successful tests and 26,705 successful retained subtests, with no duplicates or omissions.
 - [x] Independently audit PR95's complete unit accounting, Linux/macOS native packages and source companions, and all four prebuilt ownership/material/offline slots. These results belong to `bb84421cf`, not the later union.
 - [x] Independently replay PR95's six complete architecture/policy comparisons against authenticated original artifacts (`six-comparisons-scoped-proof.json`).
@@ -95,7 +98,10 @@ broader SM acceptance items below.
 - [x] Prepare and independently review the separate actual-main identity predicates: four positive and 83 rejection controls pass on synthetic literal inputs, including normal-merge parents, push identity and unchanged accepted trees. No real main revision or main acceptance is established by these controls.
 - [x] Implement the separate partial component-fragment domain, closed schema and independent literal native-test source as `4fbf4176f`; pass the 34-test Python boundary/bundle pair and preserve the independently maintained suite/fixture census in `3518db4b7`. This closes source preparation only; native tests, complete schema validation and the composition path remain open.
 - [x] Implement and independently review the per-call source-closure validation correction as `360e2cbbd`; pass 22 synthetic/source-lineage tests on each Python version and the two unchanged restoration regressions after preserving their authentication order. Every original semantic check, historical witness and hosted comparison remains required. Original replay and corrected-head release acceptance are still pending.
-- [ ] Add and validate the three missing descriptor rejection controls: valid-format stale digest, unsupported observation formal, unsupported effect result. Production guards already exist; preserve the shared-context reachability index.
+- [x] Implement local component material/library decoders and independent native test source: complete root identities, exhaustive feature carriers, products, typed symbolic prerequisites and eager exact library membership. Source review is complete; native feedback and full assembly acceptance remain open.
+- [x] Add an opt-in hosted development lane with one native build and nine fixed suites, separate source/run-bound diagnostics and no release-acceptance claim. All 12 mocked workflow tests pass on Python 3.11.15 and 3.14.6 with native/process/network execution denied. First hosted run 37515212004 is active at a89f80b07.
+- [x] Pass all 74 jobs of the original a85 union and capture its complete final authority before changing PR85. Independent archive audit remains separate and pending.
+- [ ] Validate the three added descriptor rejection controls on hosted CI: valid-format stale digest, unsupported observation formal, unsupported effect result. Source controls are implemented in the corrected follow-up; preserve the shared-context reachability index.
 - [ ] Complete the current union's full hosted gate and independent artifact audit.
 - [ ] Integrate the reviewed frontend corrections and coherent source-coverage follow-up; complete a fresh exact-revision hosted gate and artifact audit before normal merge. Retain the earlier a85 run as distinct evidence.
 - [ ] Merge the corrected, exactly accepted union normally, preserving branches, and validate the actual main revision with its own full fresh gate.
@@ -105,7 +111,8 @@ broader SM acceptance items below.
 
 | Subject | Source / tested checkout / tree | Current evidence boundary |
 | --- | --- | --- |
-| Current PR85 union | H `a85b1112ff35ba988a71cc969bfabdfefb354cfe`; C `00af6e6bab506d52a700e0a72e16ef2e2e8d8d61`; shared tree `7d22ca4c27eafcd36f018b3f262ef87404a3caf6` | [Run 37471505350, attempt 1](https://github.com/logannye/biocompiler/actions/runs/37471505350): 71 successful jobs and no failures at the retained 17:05 UTC snapshot; all 20 installed groups and four assembly jobs passed, reproducibility is active at its retained-manager continuation comparison, and two final release gates remain pending |
+| Original PR85 union | H `a85b1112ff35ba988a71cc969bfabdfefb354cfe`; C `00af6e6bab506d52a700e0a72e16ef2e2e8d8d61`; shared tree `7d22ca4c27eafcd36f018b3f262ef87404a3caf6` | [Run 37471505350, attempt 1](https://github.com/logannye/biocompiler/actions/runs/37471505350): final 18:55 UTC snapshot has all 74 jobs successful, exact original head/base and all 102 selected archives available. Final artifact audit remains pending |
+| Component development batch | H `a89f80b07d5667c5bdcc2e5bc4b8db9bb586bb5a`; tree `0e176a2ad54a1bda2047becfbf2ddbd8ac0759ac` | [Development run 37515212004](https://github.com/logannye/biocompiler/actions/runs/37515212004) started 18:56 UTC: native build and nine focused suites pending. It cannot establish release acceptance |
 | Separate PR95 policy head | H `bb84421cf1f93cd1dc02813d80a2c54a3520a919`; C `4fe47eb1aa69782a03723fda2df892985b4e7328`; shared tree `889583e44a9de598a32beb4154f42c0471e4be83` | [Run 37450940506, attempt 1](https://github.com/logannye/biocompiler/actions/runs/37450940506): all 42 hosted jobs succeeded; independent final artifact audit passed for its stated scope. Normal union integration and fresh main acceptance remain pending |
 | Current main baseline | `f594991ac2ff2496723ae5f2427ad93e6df7a51d` | PR88 is merged; the policy/material/package union has not yet been merged or main-validated |
 
@@ -155,6 +162,46 @@ comparison and two not-yet-materialized final jobs. Later run reads through
 HTTP 502, so those reads do not establish fresh job counts. This is an API
 acquisition failure, not a hosted test failure. The reproducibility job has no
 explicit workflow timeout; the 120-minute setting belongs to a different job.
+
+At 18:26 UTC, the run and exact reproducibility-job endpoints recovered narrow
+progress: continuation comparison step 23 passed at 17:42:39, registration step
+24 passed at 17:43:19, and the final four-slot original-reference comparison
+step 25 remains active. The authority-checked run/job proof is retained at
+`acceptance-37471505350-assembly-bounds/hosted-progress-20261006T182500Z/progress-proof.json`,
+SHA-256 `ea8ea68102061b2023e180282518030d3e7ec3c19992785a069c3556d25e886e`.
+This narrow historical read did not refresh the complete 74-job census or
+establish final acceptance. At 18:39 UTC the complete census recovered: 72 jobs
+succeeded, prebuilt validation is active and the aggregate is pending. Its proof
+is `acceptance-37471505350-assembly-bounds/hosted-progress-20261006T184000Z/progress-proof.json`,
+SHA-256 `486b0cbca6ada3b8d8cef97fd0e3d0e8900bd1decd560b609c7cb21747801205`.
+At 18:43 UTC, 99 of the 102 expected archives are available and authenticated;
+the two prebuilt receipts and aggregate receipt remain pending. This is still
+not the final artifact audit. The 18:55 UTC final snapshot then confirmed all
+74 jobs successful and all 102 selected archives available. Complete run/jobs,
+raw commits, check suite, nested/live PR head/base and artifact metadata were
+captured before head advance. The final packet is
+`acceptance-37471505350-assembly-bounds/hosted-progress-20261006T185500Z/final-authority-packet-proof.json`,
+SHA-256 `f78a4904f9c07b00098c3b7da9df3a50f8ccf1a3338103f5149f2447ee771f9a`.
+Root rehashed the packet and all captured inputs. The old auditor has no later
+live-PR dependency; it remains bound to the unchanged local a85 checkout and
+captured authority while the corrected head can begin fresh hosted validation.
+
+### Faster development feedback
+
+The full 74-job release workflow is a release boundary, not the inner editing
+loop. The new `policy-development.yml` runs only for `codex/dev-policy/**`
+pushes: one hosted Linux build and nine fixed component/preservation/material/
+construction suites. It records exact source/run/fixture/binary identities and
+failure logs in a separate development artifact with `acceptance: false`.
+It neither changes required release checks nor cancels a release run. The
+10–20-minute feedback target remains unmeasured until its first hosted run.
+
+Continue independent source work while full acceptance runs. Batch coherent
+source changes, focused tests and tracker updates at useful implementation or
+validation boundaries. Reserve the full cross-platform/installed/packaging
+campaign for release candidates and required correction batches. The index
+reconstruction correction below reduces known redundant work; its runtime
+benefit still needs measurement on the corrected hosted head.
 
 A separate source-cost review identified repeated reconstruction of the same
 two immutable source indexes inside each row of original-counterpart validation.
@@ -695,6 +742,31 @@ The tracked `docs/policy-component-composition-v0.1.md` there records the full
 future path, including constant-broadcast versus encounter-scoped links and a
 new original composition context/layout authority. No new profile is admitted,
 executed or exportable.
+The local material/library interface and independent native test matrix are now
+implemented and source-reviewed in that tracked composition specification.
+They retain one original primary-RNA root per component, exhaustive
+ordered feature carriers, complete product declarations and symbolic typed
+provider prerequisites. Concrete provider/capacity/layout bodies remain outside
+reusable identity. Driver/A/B target inventories are independently 14/82/93;
+retained correlations and feedback rows keep their per-executor scopes. Local
+decoding does not claim translation, global resource sufficiency or composition
+acceptance. Reviews are retained in `generated/policy-component-composition/`
+as `c01-local-material-interface.md` (SHA-256
+`7e3af65fe34184de819644ba2130f84d304797283807b218ecbabce351f5cb8c`)
+and `c01-local-material-test-review.md` (SHA-256
+`d66f3678037985a2eb97831625498d072a77bbd03a70c2c1bce8c899266bb5a5`).
+Both component suites are now registered: 151 suites, 153 executables, 33
+dependency-bearing suites and the unchanged 23 fixtures. The new material suite
+checks literal carrier inventories, original chemistry/product metadata, eager
+library membership and coherently changed identities. Hosted native feedback is
+pending in run 37515212004 at source `a89f80b07`; source review cannot establish
+compilation or execution. The refreshed 34-test boundary/bundle pair passes on
+both Python versions with all 773 source files unchanged. Its proof is
+`generated/component-material/focused-pair-proof.json`, SHA-256
+`f2c55b3fc04da38626659e6859556da1882b012fba7d65da18fe363b56f14013`.
+Independent Dune/AST/original-blob census preserves every prior ordered suite
+and all 23 original fixture bytes; its proof SHA-256 is
+`f734766cd32257aef45a89715bc902609741587ec722b3c0b1528641b4b10363`.
 Acceptance still depends on the current profile and the complete new vertical
 path. Preserve all existing v0.1 contracts and outputs.
 
