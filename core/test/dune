@@ -551,3 +551,9 @@
  (modules test_policy_preservation_check)
  (libraries bioc_wire bioc_domain bioc_checker bioc_compiler bioc_realization_checker zarith)
  (action (run %{test} %{dep:data/policy_implementation_binding_v01.json})))
+
+(test
+ (name test_construction_content)
+ (modules test_construction_content)
+ (libraries bioc_wire bioc_domain bioc_compiler bioc_checker zarith)
+ (action (run %{test} %{dep:data/construction_content_v01.json})))

@@ -160,13 +160,15 @@ let regular_step budget step available remaining final_limit used =
   with Diagnostic.Error diagnostic as error ->
     if diagnostic.code="construction_producer_limit" then raise error else raise (Problem "invalid_operation")
 
-let construct ?parent ?(limits=Limits.make ()) original = R.protect (fun () ->
-  let budget = R.make_budget ?parent ~maximum:limits.work () in
-  R.charge budget 1;
-  R.reserve_json budget (C.Request.to_json original);
-  let request = C.Request.of_json (C.Request.to_json original) in
+type recipe = {
+  sources:C.Root_source.t list; steps:C.Transform_step.t list;
+  output_members:C.Output_member.t list; complex_members:C.Complex_member.t list;
+  requirements:C.Member_requirement.t list; amounts:C.Amount_declaration.t list;
+}
+let construct_recipe budget (limits:Limits.t) (recipe:recipe) ~authority_json
+    ~make_bundle ~bundle_to_json ~subject_complete ~validate_bundle ~make_candidate =
   let available = ref (R.Available.of_bindings (List.map (fun source -> C.Root_source.id source,R.Root (C.Root_source.molecule source))
-      (C.Request.sources request))) in
+      recipe.sources)) in
   let values = ref [] and diagnostics = ref [] and missing = ref [] and work = ref 0 in
   let add value = diagnostics := value :: !diagnostics in
   List.iter (fun step ->
@@ -186,21 +188,21 @@ let construct ?parent ?(limits=Limits.make ()) original = R.protect (fun () ->
              let staged = regular_step budget step !available remaining limits.final_residues used in
              work := !work + !used;values := List.rev_append staged !values;
              available := R.Available.add_products staged !available
-           with Problem code -> work := !work + !used;record code)) (C.Request.steps request);
+           with Problem code -> work := !work + !used;record code)) recipe.steps;
   let final_size = List.fold_left (fun count member ->
       match R.Available.find (C.Value_ref.id (C.Output_member.value member)) !available with
-      | None -> count | Some value -> count+G.Space.length (R.space value)) 0 (C.Request.output_members request) in
+      | None -> count | Some value -> count+G.Space.length (R.space value)) 0 recipe.output_members in
   let finish bundle missing amounts =
-    R.reserve_json budget (C.Request.to_json request);
+    R.reserve_json budget (authority_json ());
     List.iter (fun value -> R.reserve_json budget (A.Value.to_json value)) !values;
-    Option.iter (fun value -> R.reserve_json budget (Molecule_set.to_json value);R.reserve_output budget (Molecule_set.to_json value)) bundle;
+    Option.iter (fun value -> R.reserve_json budget (bundle_to_json value);R.reserve_output budget (bundle_to_json value)) bundle;
     List.iter (fun value -> R.reserve_output budget (Molecule_set.Amount.to_json value)) amounts;
-    A.make ~request_fingerprint:(C.Request.fingerprint request) ~values:(List.rev !values)
+    make_candidate ~values:(List.rev !values)
       ~bundle ~missing_members:(List.sort_uniq String.compare missing) ~diagnostics:(List.sort_uniq String.compare !diagnostics)
       ~experimental_amounts:amounts in
   if final_size > limits.final_residues then (
     add "bundle:residue_budget";
-    finish None (List.map C.Output_member.id (C.Request.output_members request) @ List.map C.Complex_member.id (C.Request.complex_members request)) [])
+    finish None (List.map C.Output_member.id recipe.output_members @ List.map C.Complex_member.id recipe.complex_members) [])
   else (
     let molecules = List.filter_map (fun member ->
         let id = C.Output_member.id member in
@@ -223,7 +225,7 @@ let construct ?parent ?(limits=Limits.make ()) original = R.protect (fun () ->
               R.reserve_staged budget (Molecule.to_json molecule);
               if not (Molecule.declared_nominal_complete molecule) then add ("member:" ^ id ^ ":nominal_incomplete");
               Some molecule
-            with Problem _ | Diagnostic.Error _ -> failed "invalid_molecule") (C.Request.output_members request) in
+            with Problem _ | Diagnostic.Error _ -> failed "invalid_molecule") recipe.output_members in
     let by_id = List.fold_left (fun map molecule -> Names.add (Molecule.id molecule) molecule map) Names.empty molecules in
     let complexes = List.filter_map (fun plan ->
         let id = C.Complex_member.id plan in
@@ -239,7 +241,7 @@ let construct ?parent ?(limits=Limits.make ()) original = R.protect (fun () ->
           let value=Molecule.Complex.make ~id ~kind:(C.Complex_member.kind plan) ~constituents ~provenance:(C.Complex_member.provenance plan) in
           R.reserve_staged budget (Molecule.Complex.to_json value);Some value
         with Diagnostic.Error diagnostic as error -> if diagnostic.code="construction_producer_limit" then raise error else failed "invalid_molecule")
-        (C.Request.complex_members request) in
+        recipe.complex_members in
     if !missing<>[] then finish None !missing [] else
     let bundle,amounts = try
       let subjects = List.fold_left (fun map item -> Names.add (Molecule.Complex.id item) (Molecule.Complex.fingerprint item) map)
@@ -249,10 +251,9 @@ let construct ?parent ?(limits=Limits.make ()) original = R.protect (fun () ->
               R.charge budget 1;
               Molecule.Role.make ~id:(C.Role.id role) ~subject_id:id ~subject_fingerprint:(Names.find id subjects)
                 ~role:(C.Role.role role) ~purpose:(C.Role.purpose role) ~compartment:(C.Role.compartment role)) (C.Member_requirement.roles requirement))
-          (C.Request.requirements request) in
-      let bundle = Molecule_set.make ~id:(C.Request.id request ^ ".molecules") ~request:(C.Request.circuit request)
-          ~molecules ~complexes ~role_instances:roles ~form_mappings:[] in
-      List.iter (fun item -> if not (Molecule_set.subject_complete bundle (Molecule.Complex.id item)) then
+          recipe.requirements in
+      let bundle = make_bundle ~molecules ~complexes ~role_instances:roles ~form_mappings:[] in
+      List.iter (fun item -> if not (subject_complete bundle (Molecule.Complex.id item)) then
           add ("member:" ^ Molecule.Complex.id item ^ ":nominal_incomplete")) complexes;
       let amounts = List.map (fun item ->
           R.charge budget 1;
@@ -263,10 +264,46 @@ let construct ?parent ?(limits=Limits.make ()) original = R.protect (fun () ->
           Molecule_set.Amount.make ~id:(C.Amount_declaration.id item) ~subject_id:(C.Amount_declaration.subject_id item)
             ~subject_fingerprint:(Names.find (C.Amount_declaration.subject_id item) subjects) ~preparation_id:(C.Amount_declaration.preparation_id item)
             ~role_instance_ids:(C.Amount_declaration.role_instance_ids item) ~quantity ~unit:(C.Amount_declaration.unit item)
-            ~provenance:(C.Amount_declaration.provenance item)) (C.Request.amounts request) in
-      ignore (Molecule_set.Artifact.make ~bundle ~experimental_amounts:amounts ~run_metadata:[]);
+            ~provenance:(C.Amount_declaration.provenance item)) recipe.amounts in
+      validate_bundle bundle amounts;
       Some bundle,amounts
     with Diagnostic.Error diagnostic as error ->
       if diagnostic.code="construction_producer_limit" then raise error;
       add "bundle:invalid_inventory";None,[] in
-    finish bundle [] amounts))
+    finish bundle [] amounts)
+
+let construct ?parent ?(limits=Limits.make ()) original = R.protect (fun () ->
+  let budget = R.make_budget ?parent ~maximum:limits.work () in
+  R.charge budget 1;
+  R.reserve_json budget (C.Request.to_json original);
+  let request = C.Request.of_json (C.Request.to_json original) in
+  let recipe = {sources=C.Request.sources request;steps=C.Request.steps request;
+      output_members=C.Request.output_members request;complex_members=C.Request.complex_members request;
+      requirements=C.Request.requirements request;amounts=C.Request.amounts request} in
+  construct_recipe budget limits recipe ~authority_json:(fun () -> C.Request.to_json request)
+    ~make_bundle:(Molecule_set.make ~id:(C.Request.id request ^ ".molecules") ~request:(C.Request.circuit request))
+    ~bundle_to_json:Molecule_set.to_json ~subject_complete:Molecule_set.subject_complete
+    ~validate_bundle:(fun bundle amounts -> ignore (Molecule_set.Artifact.make ~bundle ~experimental_amounts:amounts ~run_metadata:[]))
+    ~make_candidate:(A.make ~request_fingerprint:(C.Request.fingerprint request)))
+
+let construct_template ?parent ?(limits=Limits.make ()) ~member_order original = R.protect (fun () ->
+  let module P = Payload_template in
+  let module K = Construction_content in
+  let budget = R.make_budget ?parent ~maximum:limits.work () in
+  R.charge budget 1;
+  let authority = K.authority_json ~template:original ~member_order in
+  R.reserve_json budget authority;
+  let template = P.of_json (P.to_json original) in
+  let recipe = {sources=P.sources template;steps=P.steps template;
+      output_members=P.output_members template;complex_members=P.complex_members template;
+      requirements=P.requirements template;amounts=P.amounts template} in
+  let make_bundle ~molecules ~complexes ~role_instances ~form_mappings =
+    let by_id = List.map (fun molecule -> Molecule.id molecule,molecule) molecules in
+    let molecules = List.map (fun id -> List.assoc id by_id) member_order in
+    K.Inventory.make ~id:(P.id template ^ ".molecules") ~molecules ~complexes ~role_instances ~form_mappings in
+  construct_recipe budget limits recipe ~authority_json:(fun () -> authority)
+    ~make_bundle ~bundle_to_json:K.Inventory.to_json ~subject_complete:K.Inventory.subject_complete
+    ~validate_bundle:K.Inventory.validate_amounts
+    ~make_candidate:(fun ~values ~bundle ~missing_members ~diagnostics ~experimental_amounts ->
+      K.make ~authority_fingerprint:(Canonical.fingerprint authority) ~member_order ~values ~inventory:bundle
+        ~missing_members ~diagnostics ~experimental_amounts))

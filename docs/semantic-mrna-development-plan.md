@@ -361,6 +361,14 @@ Depends on: SM-05; construction leaf work can overlap SM-04.
 
 Exit: exact complete mRNA candidates are independently checked against both their material construction authority and the accepted implementation binding.
 
+Construction checkpoint: the [source-neutral construction leaf](construction-content-v0.1.md)
+now reuses the existing producer and independent reconstruction without a
+fabricated legacy circuit. Complete template authority includes explicit ordered
+members; legacy candidate/assessment bytes have frozen regression controls.
+Exact-content success leaves context and mRNA completeness unassessed. This
+source-ready leaf still needs hosted validation and the policy-specific
+implementation/material, deployment and complete-mRNA checks above.
+
 ### SM-07 — Integrate fresh acceptance, immutable artifacts and public SDK/CLI
 
 Depends on: SM-04 through SM-06.
