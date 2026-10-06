@@ -52,10 +52,7 @@ class ProgramBuilder:
         finally:
             self._namespace.pop()
 
-    def add(self, declaration: D) -> D:
-        allowed = (m.Role, m.Subject, m.Encounter, m.SpatialScope, m.Clock, m.Observation, m.StateStore, m.Effect, m.Rule, m.Machine, m.Transition, m.Channel, m.Message, m.Requirement, m.Parameter)
-        if not isinstance(declaration, allowed):
-            raise TypeError("Expected a policy declaration, not an arbitrary record")
+    def _check_ownership(self, declaration: m.Record) -> None:
         pending: list[object] = [declaration]
         while pending:
             node = pending.pop()
@@ -66,12 +63,23 @@ class ProgramBuilder:
                 pending.extend(getattr(node, field.name) for field in fields(node))
             elif isinstance(node, tuple):
                 pending.extend(node)
+
+    def _check_add(self, declaration: m.Record) -> m.Declaration:
+        allowed = (m.Role, m.Subject, m.Encounter, m.SpatialScope, m.Clock, m.Observation, m.StateStore, m.Effect, m.Rule, m.Machine, m.Transition, m.Channel, m.Message, m.Requirement, m.Parameter)
+        if not isinstance(declaration, allowed):
+            raise TypeError("Expected a policy declaration, not an arbitrary record")
+        self._check_ownership(declaration)
         identity = declaration.id
         if not _ID.fullmatch(identity) or identity in self._ids:
             raise AuthoringError(f"Invalid or duplicate declaration identity: {identity}")
+        return declaration
+
+    def add(self, declaration: D) -> D:
+        checked = self._check_add(declaration)
+        identity = checked.id
         self._ids.add(identity)
         object.__setattr__(declaration, "_policy_owner", self._owner)
-        self._declarations.append(declaration)
+        self._declarations.append(checked)
         frame = inspect.currentframe()
         try:
             caller = frame.f_back if frame else None
@@ -104,8 +112,16 @@ class ProgramBuilder:
 
     def encounter(self, identity: str, *, executor: m.Record | m.Ref, contract: m.DefinitionRef, termination: Literal["contact_loss", "explicit_event", "contract"] = "contact_loss") -> m.Encounter:
         name = self.qualified(identity)
-        target = self.add(m.Subject(name + "/target", "cell", "encounter", ref(executor), m.Ref(name, "Encounter")))
-        return self.add(m.Encounter(name, ref(executor), ref(target), contract, termination))
+        executor_ref = ref(executor)
+        target = m.Subject(name + "/target", "cell", "encounter", executor_ref, m.Ref(name, "Encounter"))
+        encounter = m.Encounter(name, executor_ref, ref(target), contract, termination)
+        # Both generated identities and their complete fields must pass before
+        # either declaration becomes visible in the draft or its source map.
+        self._check_add(target)
+        self._check_add(encounter)
+        self.add(target)
+        # Retain the now-owned target reference on the returned encounter.
+        return self.add(replace(encounter, target=ref(target)))
 
     def clock(self, identity: str, *, basis: Literal["availability", "observation", "logical"], resolution: m.Quantity) -> m.Clock:
         return self.add(m.Clock(self.qualified(identity), basis, resolution))
@@ -114,6 +130,7 @@ class ProgramBuilder:
         return self.add(m.Observation(self.qualified(identity), ref(observer), ref(subject), value_type, contract, ref(clock), access, coverage, coherence, freshness, spatial_scope))
 
     def state(self, declaration: m.StateStore) -> m.StateStore:
+        self._check_ownership(declaration)
         return self.add(replace(declaration, id=self.qualified(declaration.id)))
 
     def effect(self, identity: str, *, contract: m.DefinitionRef, executor: m.Record | m.Ref, subject: m.Record | m.Ref, lifecycle: m.EffectLifecycle, parameters: tuple[m.Argument, ...] = (), spatial_scope: m.Ref | None = None, relationship: m.DefinitionRef | None = None, resources: tuple[m.DefinitionRef, ...] = ()) -> m.Effect:
@@ -129,9 +146,11 @@ class ProgramBuilder:
         return self.add(m.Transition(self.qualified(identity), ref(machine), source, destination, on, when, unknown, effects, assignments, unknown_target, emissions))
 
     def channel(self, declaration: m.Channel) -> m.Channel:
+        self._check_ownership(declaration)
         return self.add(replace(declaration, id=self.qualified(declaration.id)))
 
     def require(self, declaration: m.Requirement) -> m.Requirement:
+        self._check_ownership(declaration)
         return self.add(replace(declaration, id=self.qualified(declaration.id)))
 
     def snapshot(self) -> m.PolicyDraft:
