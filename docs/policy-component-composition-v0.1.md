@@ -8,8 +8,8 @@ future original authority and independent controls; it is not a decoded request,
 execution receipt or export capability. No producer output or expected-trace
 generator defines these literal values. Native validation remains hosted.
 
-The first source slice is a closed partial-graph/interface decoder. Component
-material libraries, original assembly rules, request/catalog binding, independent
+The implemented source slices are closed partial-graph/interface and local
+material/library decoders. Original assembly rules, request/catalog binding, independent
 union/material/context checking, producer and public profile negotiation remain
 separate work. Track completion in [the development plan](semantic-mrna-development-plan.md).
 
@@ -61,6 +61,78 @@ input aliasing, hidden outputs and re-pinned models absent from the original
 library. The source is registered in the full native-suite inventory. Native
 compilation/execution and a full JSON Schema validator run remain pending;
 static inspection is not execution evidence.
+
+## Local material record/library: implemented source, hosted validation pending
+
+`Policy_component_material` and `Policy_component_library` implement this
+interface, with independently authored native test source. Compilation and
+execution remain pending hosted feedback; no translation or export result is
+claimed here. A component envelope has `schema_version`, `profile`,
+`identity`, and `body`; its body has exactly `fragment`, `root`, `carriers`,
+`products`, and `provider_requirements`. The Model identity pins the full body.
+Schema/profile are `biocompiler.policy_component_material.v0.1` and
+`biocompiler.policy_exact_local_material.v0.1`. The eager library has
+`schema_version`, `profile`, and ordered `components`, with schema/profile
+`biocompiler.policy_component_library.v0.1` and
+`biocompiler.policy_exact_component_library.v0.1`.
+
+Each record retains one complete linear primary-RNA root as a full
+`Construction.Root_source`, including molecule, coordinate space, origins,
+features, chemistry and provenance. Complete root spelling does not imply a
+complete delivered payload. Require raw/typed canonical roundtrip equality;
+existing molecular codecs sort some inventories. The driver fixture's canonical
+feature order is `cds`, `poly_a`, `utr3`, with unchanged sequence coordinates.
+
+Every local target requires one to four distinct actual feature sites. A site
+is `{root, feature, path}`; the complete nonempty path must equal its named
+feature. Providers are additional prerequisites and cannot replace sites. Target
+order is node triples (primitive/configuration/replication), local wires,
+external slots, boundary ports, groups, every semantic output, then layout.
+Literal target inventories are driver14, decision A82 and decision B93. Local
+endpoints do not authorize cross-links; original assembly authority must still
+supply each complete link premise and final projection.
+
+Product rows are `{node, symbol, root, cds_feature, expected}`. `expected` keeps
+the existing complete product pin, spelling, translation policy and provenance;
+preserve the supplied pin kind, including the fixture's Source-kind MA product.
+Require the full content pin, ordinary standard code without recodings,
+frame-zero CDS site, Coding root status when products are present, and exact
+product-constant inventory. This does not translate
+the root. A coherently re-pinned synonymous root is a different original
+component; rejection under an unchanged rule belongs to later authority checks.
+
+Symbolic prerequisites are input `{kind:"input", id, external_slot}` or capacity
+`{kind:"capacity", id, owner, unit, scope, minimum}`; owners are named nodes or
+external slots. Order is all input prerequisites, then input capacities, both
+in slot order, then node demands in node order. Each input requires at least one
+row: evidence per encounter slot, feedback per executor. Node minima are truth
+cells1; evidence records1 then timer1; edge history1; attempt active capacity,
+retained correlations1, then timer capacity. Retained correlations are per
+executor; other node quantities are per encounter slot. Larger local minima are
+retained and full-domain demand can be larger still. Require every static
+owner/unit/scope key once, without extras or local layout demands. Global
+generation, clock and queue demands belong once to the assembly/context.
+Concrete providers/capacities/layouts remain outside reusable identity and are
+checked afresh against each original request.
+
+Preflight uses existing molecular limits before nested decoding: 4,000,000 bytes
+for `pretty_size + newline`, 100,000 bounded visits and depth96, plus explicit
+raw-float rejection. The fragment retains its stricter bounds. Component limits
+are four features, 32,768 carrier rows, one product and 1,024 prerequisites;
+local reference and prerequisite names are at most128 UTF-8 bytes; product
+symbols retain the primitive's256-byte bound. Minima are at most1,000,000. Libraries
+have at most16 entries and reject duplicate kind/id/version identities. Every
+entry is decoded against the original primitive library; its digest remains
+contextual metadata. The first full fixture uses `[decision_A, driver]` and
+`[decision_B, driver]`; lazy cross-library selection is not part of this slice.
+
+Native test source checks the literal target inventories, original root/product
+metadata, eager library membership, content changes and rejected substitutions.
+Both component suites are registered in the complete native inventory and the
+separate hosted development lane.
+Full ordered-union/material reconstruction, translation, chemistry-facet
+dispositions, context sufficiency and source/catalog/export authority remain
+independent obligations.
 
 ## Corrections found in the deeper review
 
@@ -196,7 +268,7 @@ Final member order is exactly `[payload]`, RNA/linear, complete sequence, protei
 
 Full nominal chemistry is supplied for both roots and output. Use declared artificial cap/start-end on the leader, declared finish-end/tail on the driver, known empty modification inventories. The driver cap/start-end and leader finish-end/tail are explicit not-carried facets; all ten root facets get exactly one disposition. In `Explicit_output` mode: map leader cap/start_end to identical output facets; map driver finish_end/tail with exact final endpoint/tail projection; map both known empty modification_inventory facets to the known empty output inventory. Every output facet must have a source disposition. Root claims at non-inherited internal ends remain explicitly accounted for. Do not use Exact_inheritance for a two-root concatenation or silently assume cap/tail construction from sequence letters. Tail is explicit exact length4 and last four A bases. Geometry, status and nominal chemical identities are independently checked and fully pinned; provenance text is not execution authority.
 
-Local carrier authority is exact: driver primitive/configuration/product/replication/feedback/outputs map to its declared local feature sites and/or typed original provider entries, while decision equivalents map to its own sites/providers. Every cross-link has an explicit original composition-rule carrier relation to the two component feature sites and the authorized adjacent join/placement. Feature sites may be existing full regions; do not invent a new PM feature. The checker verifies that local sites project to those actual final features and bases. The rule's full semantic relation includes each link's actual endpoints, type, the exact scope relation (immutable executor-constant broadcast for product; same encounter layout/slot/generation for request and authorization), same tick/phase and ordering. A carrier list attached after the fact is not a substitute for this supplied relation.
+Local carrier authority is exact: driver primitive/configuration/product/replication/feedback/outputs map to its declared local feature sites, with typed original providers as additional prerequisites; decision equivalents follow the same rule. Every cross-link has an explicit original composition-rule carrier relation to the two component feature sites and the authorized adjacent join/placement. Feature sites may be existing full regions; do not invent a new PM feature. The checker verifies that local sites project to those actual final features and bases. The rule's full semantic relation includes each link's actual endpoints, type, the exact scope relation (immutable executor-constant broadcast for product; same encounter layout/slot/generation for request and authorization), same tick/phase and ordering. A carrier list attached after the fact is not a substitute for this supplied relation.
 
 The full dependency chain is: original source field/occurrence → fresh admitted behavior → actual primitive/configuration/endpoint → independently selected component-local model and instance → original composition rule for each cross-link → original root/feature and authorized transform → exact final member/base/chemistry/product. Every link is either established or unresolved. Re-pinning a changed producer output cannot create a missing original relation.
 

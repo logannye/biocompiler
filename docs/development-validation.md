@@ -1,11 +1,20 @@
 # Development cadence and validation
 
 This protocol reduces feedback time while preserving the compiler's existing
-validation coverage and independent checks. The governing workflow is
-[Python checks](../.github/workflows/ci.yml). The target is a measured **10–20
-minute hosted validation cycle**, subject to runner availability, current test
-cost and the slowest remaining job. It is not a promised runtime or permission
-to remove tests, supported Python versions, artifacts or verification gates.
+validation coverage and independent checks. The release workflow remains
+[Python checks](../.github/workflows/ci.yml). Development feedback has a separate
+[opt-in hosted workflow](../.github/workflows/policy-development.yml), triggered
+only by pushes to `codex/dev-policy/**`. It builds the native core once on Linux
+and runs nine fixed component, preservation, material and construction suites.
+The target for this focused feedback is 10–20 minutes; its runtime has not yet
+been measured. Full release acceptance still requires every existing gate.
+
+Development reports explicitly contain `acceptance: false`. They retain exact
+source/run identities, fixture and executable hashes, command logs and failed
+suite outcomes. Missing targets or changed inputs fail the job. This workflow
+does not package releases or cancel a release workflow. Native work remains
+hosted. Batch tracker updates at useful implementation and validation boundaries
+while independent development continues during full release validation.
 
 ## Work in coherent batches
 
@@ -56,7 +65,7 @@ remain distinct revision boundaries.
 | `studio-browser` | Installed Python 3.11 package, Node 22 and the pinned Playwright/Chromium setup run guided workspace, construction inspection and review suites. |
 | `studio-typescript` | Pinned strict TypeScript checks, unchanged generated release assets, runtime response decoding and current migration inventory. |
 | `ocaml-build` | Build once per native platform, check library boundaries, generated policy schema/operational/material fixtures, rule coverage and both strict transport/policy type gates. Retain locked inputs and exact compiled suite/role/fixture bytes, assemble candidate platform wheels and stamp their policy source authority. No test result is inferred from building a wheel. |
-| `ocaml-native-tests` | Restore the current run/platform-bound bundle, run the 22 focused policy/producer/construction checks with separately retained diagnostics, then all 150 Dune-declared suites with their original arguments and two bounded workers. The bundle binds 152 executable entries and 23 original JSON fixtures; 32 suites have explicit ordered fixture dependencies. The partial component-fragment suite retains both original A/B model fixtures; its local decoder checks do not establish full composition acceptance. Unsupported Dune declarations fail closed; no compilation occurs in consumers. |
+| `ocaml-native-tests` | Restore the current run/platform-bound bundle, run the 22 focused policy/producer/construction checks with separately retained diagnostics, then all 151 Dune-declared suites with their original arguments and two bounded workers. The bundle binds 153 executable entries and 23 original JSON fixtures; 33 suites have explicit ordered fixture dependencies. Both component-fragment and local-material suites retain the original A/B model fixtures; their local decoder checks do not establish full composition acceptance. Unsupported Dune declarations fail closed; no compilation occurs in consumers. |
 | `ocaml-core` | Two workers execute all 67 original direct corpus, protocol, resource-bound and Python/OCaml conformance command groups against the same restored binaries. Commands within each group keep their original order and output paths; complete current-run group/log accounting is required before success. |
 | `architecture-sdk` | Four platform/Python jobs run concurrently. Each checks installed policy source assessment, operational execution, implementation preservation, material compilation/fresh export and Verify-only offline consumption against original fixtures and exact restored Core/Verify binaries. The selected interpreter's real console runs outside the checkout; policy reports and logs remain distinct. It then uses two isolated Python workers for all 16 architecture scenarios. Case B retains all its rejection/publication controls. The coordinator applies the unchanged independent 175-check/219-artifact architecture census before reporting success. |
 | `executable-rna-reproducibility` | Depends only on `installed-executable`; compares complete relative-file SHA-256 inventories from both Python versions. |
