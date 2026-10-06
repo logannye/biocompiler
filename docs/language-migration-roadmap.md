@@ -2,6 +2,8 @@
 
 Created: 2026-10-01, America/Los_Angeles.
 
+**Active session priorities (2026-10-05):** follow the [semantic Python-policy-to-mRNA development plan](semantic-mrna-development-plan.md) and its SM checklist. This phase establishes internal correctness under supplied implementation and material contracts; Studio, conversational authoring and empirical biological viability are deferred. The historical receipts and wider migration obligations below remain separately gated.
+
 **Decision:** TypeScript for Studio; Python for authoring, orchestration and scientific exploration; OCaml for the semantic compiler, independent checking and canonical emission.
 
 **Status:** the default remains Python; explicit architecture SDK/CLI selection uses the validated OCaml core. PR48–51 passed all required PR gates and are merged, covering installed architecture routing, independent candidate/component execution and realization evidence. PR52–56 preserve independent realization/component acceptance and synthetic production; their complete current-revision gates remain pending. The next implementation exposes nine experimental realization operations and five optional Python SDK routes. Whole workflows, distribution, remaining public profiles and default cutover remain open.

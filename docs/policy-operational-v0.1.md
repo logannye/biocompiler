@@ -104,6 +104,20 @@ coherence groups, contract-defined
 arbitration and unimplemented lifecycle behavior fail admission. Unsupported
 requirements remain in the complete obligation ledger rather than disappearing.
 
+Requirement monitoring admits only `requested`, `initiated`, `completed`,
+`failed` and `timed_out` effect phases. `outcome`, cancellation requests,
+cancellation acknowledgment and cessation remain unsupported even when they are
+source-valid declarations. Every non-null original condition, trigger and response
+must have an executable decoded expression; an unsupported expression is never
+treated as an absent condition or silently replaced with true.
+
+An effect-triggered progress obligation retains that exact attempt. An event
+response is therefore supported only for a lifecycle event of the same effect;
+cross-effect event responses and observation-update responses need a separately
+specified correlation rule. They report `unsupported`, rather than monitoring an
+impossible match and reporting failure. Effect-triggered truth responses and
+observation/rising-triggered event responses retain their existing semantics.
+
 ## Timeline and deterministic bounds
 
 Timeline profile `biocompiler.policy_timeline.v0.1` has exactly `profile`,
@@ -140,6 +154,12 @@ explicit assumptions. Missing coverage and unsupported forms stay unresolved.
 Untriggered progress cannot pass through inactivity. No finite supplied history
 establishes universal satisfaction, candidate implementation behavior or
 biological function.
+
+Requirement horizon coverage uses exact rational comparison independently of
+scheduler tick allocation. A large retained horizon remains incomplete or
+unsupported as appropriate; it does not overflow an integer scheduler merely
+while reporting the original obligation. Timeline and effect/deadline scheduling
+retain their separate explicit bounds.
 
 ## Explicit native operations
 

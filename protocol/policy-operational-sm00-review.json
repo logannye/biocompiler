@@ -1,0 +1,45 @@
+{
+  "schema_version": "biocompiler.policy_operational.development_review.v1",
+  "claim": "Read-only diagnostic review and local correction checks; not hosted acceptance.",
+  "operational_profile": "biocompiler.policy_operational.v0.1",
+  "pull_request": "https://github.com/logannye/biocompiler/pull/89",
+  "run_review": {
+    "run": 37401642752,
+    "attempt": 1,
+    "source": "f5564f251dcf62627769bb0f855802c315e75dd8",
+    "tested_checkout": "74ec0ee383a57dea74c00e6ada67846f7e918348",
+    "conclusion": "in_progress_with_failed_unit_jobs",
+    "diagnostic_jobs": [
+      112070072463,
+      112070072471,
+      112070072485,
+      112070072495
+    ],
+    "diagnostic": "All inspected failed unit traces reject the unreviewed operational transport source addition; source pin correction preserves original frozen corpus.",
+    "native_snapshot": "Both platform native jobs have passed compilation and literal/mutation suites; installed legacy SDK campaigns still running at review. This is not complete acceptance."
+  },
+  "prerequisite_review": {
+    "pr": 88,
+    "state": "open",
+    "pushed_head": "5f9b39d354b43070f15114f2e8813e659ab1c4a4",
+    "previous_base": "88421d068ebc8437d6d0d4fa1a1bfdb32f150883",
+    "comparison": "ahead by two merge commits; no file changes",
+    "ownership": "read-only; merge/check owners unchanged"
+  },
+  "correction_scope": {
+    "source_registration": "Three reviewed operational transport/CLI pins; original corpus unchanged",
+    "requirement_support": "Reject unsupported lifecycle phases, undeclared cross-event correlation, and non-null undecodable requirement operands",
+    "validation": "Native literal and standalone replay controls source-ready; exact revision hosted validation required",
+    "local_python": "3.14.6 (main, Jun 10 2026, 10:03:53) [Clang 21.0.0 (clang-2100.0.123.102)]",
+    "local_platform": "Darwin-25.2.0-arm64-arm-64bit-Mach-O"
+  },
+  "local_checks": {
+    "source_scope_import_instrumentation_tests": 17,
+    "complete_historical_corpus_tests": 7,
+    "original_corpus_changed": false,
+    "migration_inventory_entries": 3380,
+    "core_dependency_boundaries": "pass",
+    "operational_fixture": "unchanged"
+  },
+  "hosted_correction_validation": "pending"
+}

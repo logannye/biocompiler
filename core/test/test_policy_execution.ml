@@ -40,6 +40,124 @@ let single timeline = timeline
 let observation base id at value = base |>replace "id"(str id)|>replace "available_at"(str at)|>replace "observed_at"(str at)|>replace "value"value
 let feedback base id at attempt outcome = base |>replace "id"(str id)|>replace "available_at"(str at)|>replace "attempt"(str attempt)|>replace "outcome"(str outcome)
 let boolean_literal base value = base |>replace "op"(str "literal")|>replace "args"(arr[])|>replace "value"(Json.Bool value)|>replace "ref"Json.Null|>replace "scope"Json.Null
+let requirement_controls document definitions timeline =
+  let one=single timeline in
+  let rule=declaration "respond" document and completion=declaration "completion" document in
+  let true_literal=boolean_literal(field "when" rule)true in
+  let completed=field "response" completion in
+  let initial=List.hd(items "observations" one) and external_feedback=List.hd(items "feedback" timeline) in
+  let success=replace "feedback"(arr[feedback external_feedback "requirement-completion" "2" "attempt/1" "completed"])one in
+  let baseline=E.execute(compiled document definitions)success in
+  let checked source =
+    require(text "status"(Bioc_checker.Policy_check.check(D.of_json source))="valid")"Requirement control is not source-valid";
+    compiled source definitions in
+  let unsupported id source =
+    let behavior=checked source in
+    let report=E.execute behavior success in
+    let row=requirement id report in
+    require(text "status" row="unsupported")("Unsupported requirement was monitored: "^id);
+    require(Json.equal(field "source" row)(declaration id source))"Unsupported requirement lost original operands";
+    require(items "obligations" row=[])"Unsupported requirement created executable obligations";
+    List.iter(fun key->require(field key(field "coverage" row)=Json.int 0)("Unsupported coverage was invented: "^key))
+      ["samples";"true";"false";"unknown";"triggers";"active";"inactive"];
+    require(Json.equal(field "attempts" report)(field "attempts" baseline))"Requirement support classification changed effect execution";
+    require(Json.equal report(E.execute(O.behavior_of_json(O.behavior_to_json behavior))success))"Unsupported requirement changed on complete execution replay" in
+  List.iter(fun phase->List.iter(fun key->
+    let expression=field key completion|>replace "value"(str phase) in
+    unsupported "completion"(change "completion" key expression document)) ["trigger";"response"])
+    ["outcome";"cancel_requested";"cancel_acknowledged";"ceased"];
+  List.iter(fun(phase,inputs)->
+    let source=change "completion" "response"(replace "value"(str phase)completed)document in
+    let result=E.execute(checked source)inputs in
+    let row=requirement "completion" result in
+    require(text "status" row="pass")("Implemented lifecycle phase lost support: "^phase);
+    require(field "triggers"(field "coverage" row)=Json.int 1)"Lifecycle positive control was vacuous")
+    ["requested",one;"initiated",one;"completed",success;
+     "failed",replace "feedback"(arr[feedback external_feedback "requirement-failure" "2" "attempt/1" "failed"])one;
+     "timed_out",one];
+  let entity=true_literal |>replace "value_type"(obj["$type",str "TypeSpec";"kind",str "entity";"unit",Json.Null;"entity_kind",str "cell"])
+    |>replace "value"Json.Null|>replace "ref"(reference "Subject" "target")|>replace "scope"(reference "Subject" "target") in
+  let distinct=true_literal|>replace "op"(str "distinct")|>replace "value"Json.Null|>replace "args"(arr[entity;entity]) in
+  unsupported "completion"(change "completion" "condition" distinct document);
+  unsupported "scoped_memory"(change "scoped_memory" "condition" distinct document);
+  unsupported "scoped_memory"(change "scoped_memory" "trigger"(replace "args"(arr[distinct])(field "on" rule))document);
+  unsupported "scoped_memory"(change "scoped_memory" "response" distinct document);
+  let updated=completed|>replace "op"(str "updated")|>replace "ref"(reference "Observation" "condition")|>replace "value"Json.Null in
+  unsupported "completion"(change "completion" "response" updated document);
+  let other_effect=declaration "response" document|>replace "id"(str "other_response") in
+  let other_completed=replace "ref"(reference "Effect" "other_response")completed in
+  unsupported "completion"(add[other_effect](change "completion" "response" other_completed document));
+  let other_target=declaration "target" document|>replace "id"(str "other_target")|>replace "encounter"(reference "Encounter" "other_encounter") in
+  let other_encounter=declaration "encounter" document|>replace "id"(str "other_encounter")|>replace "target"(reference "Subject" "other_target") in
+  let other_scope=field "scope" completion|>replace "subject"(reference "Encounter" "other_encounter") in
+  unsupported "completion"(add[other_target;other_encounter](change "completion" "scope" other_scope document));
+  unsupported "completion"(change "completion" "scope"(obj["$type",str "Scope";"kind",str "executor";"subject",reference "Role" "executor"])document);
+  unsupported "completion"(change "completion" "scope"(obj["$type",str "Scope";"kind",str "program";"subject",Json.Null])document);
+  let short=replace "horizon"(str "2")one in
+  let partial=E.execute(checked document)short in
+  List.iter(fun id->let row=requirement id partial in
+    require(text "status" row="unknown")"Partial requirement horizon gained acceptance";
+    require(field "horizon_complete"(field "coverage" row)=Json.Bool false)"Partial horizon coverage was lost") ["completion";"scoped_memory"];
+  let pending=List.hd(items "obligations"(requirement "completion" partial)) in
+  require(text "opened_at" pending="1" && text "deadline" pending="3" && field "closed_at" pending=Json.Null)"Truncated pending progress changed its deadline or closure";
+  let initiation=checked(change "completion" "response"(replace "value"(str "initiated")completed)document) in
+  let satisfied_partial=E.execute initiation short in
+  require(text "status"(List.hd(items "obligations"(requirement "completion" satisfied_partial)))="pass")"Immediate initiated response was missed";
+  require(text "status"(requirement "completion" satisfied_partial)="unknown")"One satisfied trigger waived the remaining requirement horizon";
+  let incomplete_failure=E.execute(checked document)(replace "horizon"(str "3")one) in
+  require(text "status"(requirement "completion" incomplete_failure)="fail")"An observed deadline violation was hidden by an incomplete later horizon";
+  let missing_assignment=checked(change "respond" "assignments"(arr[])document) in
+  require(text "status"(requirement "scoped_memory"(E.execute missing_assignment short))="fail")"A known safety violation was hidden by a partial horizon";
+  let horizon_two=replace "amount"(str "2")(field "horizon" completion) in
+  let cutoff=E.execute(checked(change "completion" "horizon" horizon_two document))
+    (replace "feedback"(arr[feedback external_feedback "after-requirement-horizon" "3" "attempt/1" "completed"])one) in
+  let cutoff_requirement=requirement "completion" cutoff in
+  require(text "status" cutoff_requirement="unknown" && field "horizon_complete"(field "coverage" cutoff_requirement)=Json.Bool true)
+    "A response after the requirement horizon discharged a pending obligation";
+  let huge_horizon=replace "amount"(str "1000000000000000000000000000000")(field "horizon" completion) in
+  let huge_source=change "completion" "horizon" huge_horizon document in
+  let huge_requirement=requirement "completion"(E.execute(checked huge_source)success) in
+  require(text "status" huge_requirement="unknown" && field "horizon_complete"(field "coverage" huge_requirement)=Json.Bool false)
+    "A large exact requirement horizon overflowed or became complete";
+  unsupported "completion"(change "completion" "kind"(str "objective")huge_source);
+  let empty=one|>replace "encounters"(arr[])|>replace "observations"(arr[]) in
+  let unexercised=E.execute(checked document)empty in
+  List.iter(fun id->require(text "status"(requirement id unexercised)="unknown")"Empty scope manufactured requirement coverage") ["completion";"scoped_memory"];
+  let false_guard=checked(change "completion" "condition"(boolean_literal true_literal false)document) in
+  let disabled=requirement "completion"(E.execute false_guard success) in
+  require(text "status" disabled="unknown" && field "triggers"(field "coverage" disabled)=Json.int 0)"False enabling guard gained nonvacuous progress";
+  let unknown_guard=checked(change "completion" "condition"(replace "value"(str "unknown")true_literal)document) in
+  require(text "status"(requirement "completion"(E.execute unknown_guard success))="unknown")"Completed feedback erased unknown enabling evidence";
+  let negated=true_literal|>replace "op"(str "not")|>replace "value"Json.Null|>replace "args"(arr[field "when" rule]) in
+  let uncertain_response=checked(change "completion" "response" negated document) in
+  let invalid=observation initial "response-invalid" "2" Json.Null|>replace "status"(str "invalid") in
+  let unknown_inputs=replace "observations"(arr(items "observations" one@[invalid]))one in
+  require(text "status"(requirement "completion"(E.execute uncertain_response unknown_inputs))="unknown")"Unknown response coverage became a definite failure";
+  let resolved_inputs=replace "observations"(arr(items "observations" one@[invalid;observation initial "response-resolved" "3"(Json.Bool false)]))one in
+  let resolved=requirement "completion"(E.execute uncertain_response resolved_inputs) in
+  let resolved_obligation=List.hd(items "obligations" resolved) in
+  require(text "status" resolved="pass" && text "closed_at" resolved_obligation="3" && field "response_unknown" resolved_obligation=Json.Bool true)
+    "A definite response at the deadline did not resolve earlier uncertainty";
+  let observed_request=checked(document|>change "completion" "trigger"(field "on" rule)|>change "completion" "response"(replace "value"(str "requested")completed)) in
+  require(text "status"(requirement "completion"(E.execute observed_request one))="pass")"Observed false-to-true trigger failed to observe its same-tick request";
+  let initial_true=replace "observations"(arr[observation initial "requirement-initial-true" "0"(Json.Bool true)])one in
+  require(text "status"(requirement "completion"(E.execute observed_request initial_true))="unknown")"Initial true manufactured rising progress coverage";
+  let state_expression=List.nth(items "args"(field "condition"(declaration "scoped_memory" document)))1 in
+  let other_state=declaration "seen" document|>replace "id"(str "other_seen")|>replace "reset" state_expression in
+  let other_state_expression=replace "ref"(reference "StateStore" "other_seen")state_expression in
+  let other_assignment=List.hd(items "assignments" rule)|>replace "state"(reference "StateStore" "other_seen") in
+  let shared_reset=checked(document|>add[other_state]|>change "seen" "reset" other_state_expression
+    |>change "respond" "assignments"(arr(items "assignments" rule@[other_assignment]))) in
+  let reset_states=E.execute shared_reset one in
+  List.iter(fun id->require(field "value"(state id(str "e1")(frame "1" reset_states))=Json.Bool true)"Reset test did not initialize its active precondition";
+    require(field "value"(state id(str "e1")(frame "2" reset_states))=Json.Bool false)"Reset predicates observed an earlier reset write") ["seen";"other_seen"];
+  let reset_at_deadline=one|>replace "encounters"(arr[List.hd(items "encounters" one)|>replace "resets"(arr[str "3"])])
+    |>replace "feedback"(arr[feedback external_feedback "feedback-at-reset" "3" "attempt/1" "completed"]) in
+  let reset_report=E.execute(checked document)reset_at_deadline in
+  require(text "status"(attempt "attempt/1" reset_report)="encounter_reset")"Same-time feedback overrode encounter reset precedence";
+  require(text "status"(requirement "completion" reset_report)="unknown")"Reset pending obligation manufactured pass or deadline failure";
+  require(List.map(fun action->text "reason"(field "detail" action))(actions "feedback_rejected" reset_report)=["stale_attempt"])
+    "Reset did not retain rejection of the old feedback identity"
 let run fixture =
   let document=field "document"fixture and definitions=field "definitions"fixture and timeline=field "timeline"fixture in
   let behavior=compiled document definitions in
@@ -217,6 +335,7 @@ let run fixture =
   let unsupported_report=E.execute(compiled unsupported definitions)one in
   require(text "status"(requirement "completion"unsupported_report)="unsupported")"Unsupported requirement was proved";
   require(List.map(fun r->text "id"r)(items "requirements"unsupported_report)=["completion";"scoped_memory"])"Requirement ledger was reordered or dropped";
+  requirement_controls document definitions timeline;
   print_endline "bounded operational execution: independent literal timelines and negative controls passed"
 let () =
   require(Array.length Sys.argv=2)"Expected frozen operational fixture path";

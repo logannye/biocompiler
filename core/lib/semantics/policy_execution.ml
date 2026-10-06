@@ -434,18 +434,34 @@ let rec supported_value (expression:O.expression) = expression.O.value_type<>Non
 let rec observed_predicate (expression:O.expression) = expression.O.op<>"state" && supported_value expression && List.for_all observed_predicate expression.args
 let rec contains_observation (expression:O.expression) = expression.O.op="observe" || List.exists contains_observation expression.args
 let supported_event (expression:O.expression) = expression.O.value_type=None &&
-  (match expression.op with "updated"|"effect_event"->expression.args=[] | "rising"->(match expression.args with [x]->observed_predicate x && contains_observation x|_->false)|_->false)
+  (match expression.op with
+   | "updated"->expression.args=[]
+   | "effect_event"->expression.args=[] && (match expression.phase with
+       | Some phase->List.mem phase ["requested";"initiated";"completed";"failed";"timed_out"]
+       | None->false)
+   | "rising"->(match expression.args with [x]->observed_predicate x && contains_observation x|_->false)
+   | _->false)
+let supported_response_correlation (trigger:O.expression) (response:O.expression) =
+  (* An effect trigger retains its attempt identity. Cross-effect and
+     effect-to-observation event correlation needs a separate interpretation. *)
+  trigger.op<>"effect_event" || response.value_type<>None ||
+    (response.op="effect_event" && trigger.reference=response.reference)
 let supported_requirement (r:O.requirement) =
   let absent key = match List.assoc_opt key (Json.object_fields r.source) with None|Some Json.Null->true|Some(Json.Array [])->true|_->false in
   let no_extra=List.for_all absent ["lower";"upper";"applies_to";"contract"] in
   let finite_horizon=match List.assoc_opt "horizon"(Json.object_fields r.source)with Some(Json.String _)->false|_->true in
-  no_extra && finite_horizon && r.scope<>None && match r.kind with
+  (* The domain retains unsupported expressions in [source], even when they
+     cannot decode into operational expressions. Never treat that as absence. *)
+  let decoded=List.for_all(fun(key,expression)->field key r.source=Json.Null || Option.is_some expression)
+    ["condition",r.condition;"trigger",r.trigger;"response",r.response] in
+  no_extra && finite_horizon && decoded && r.scope<>None && match r.kind with
   | "safety" -> r.trigger=None && r.response=None && r.deadline=None && (match r.condition with Some x->supported_value x && x.value_type=Some O.Truth_type|None->false)
   | "progress" -> (match r.trigger,r.response,r.deadline with Some trigger,Some response,Some deadline->
       supported_event trigger && (supported_event response || (supported_value response && response.value_type=Some O.Truth_type)) && Q.sign deadline>0
+      && supported_response_correlation trigger response
       && (match r.condition with None->true|Some x->supported_value x && x.value_type=Some O.Truth_type)|_->false)
   | _ -> false
-let requirement_in_horizon (s:session) (r:O.requirement) = match r.horizon with None->true|Some horizon->s.now<=aligned s.resolution horizon
+let requirement_in_horizon (s:session) (r:O.requirement) = match r.horizon with None->true|Some horizon->Q.compare(tick s s.now)horizon<=0
 let satisfy_progress (s:session) =
   List.iter(fun (p:pending)->charge s 1;if p.status="pending" && binding_live s p.binding && requirement_in_horizon s p.requirement then
     let response=Option.get p.requirement.response in
@@ -517,7 +533,7 @@ let attempt_json (s:session) (a:attempt) = obj[
 let requirement_json (s:session) (ledger:requirement_state) =
   let r=ledger.requirement in
   let obligations=List.filter(fun(p:pending)->p.requirement.requirement_id=r.requirement_id)s.pending in
-  let horizon_complete=match r.horizon with None->true|Some horizon->s.horizon>=aligned s.resolution horizon in
+  let horizon_complete=match r.horizon with None->true|Some horizon->Q.compare(tick s s.horizon)horizon>=0 in
   let status=if not ledger.supported then "unsupported" else if r.kind="safety" then
     if ledger.false_samples>0 then "fail" else if ledger.samples=0 || ledger.unknown_samples>0 || not horizon_complete then "unknown" else "pass"
     else if List.exists(fun(p:pending)->p.status="fail")obligations then "fail"

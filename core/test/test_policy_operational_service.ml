@@ -4,6 +4,7 @@ module Producer = Bioc_producer_service.Producer_service
 let require condition message = if not condition then failwith message
 let get name value = Json.field name (Json.object_fields value)
 let obj fields = Json.Object fields
+let replace name replacement value = obj (List.map (fun (key,item) -> key,if key=name then replacement else item) (Json.object_fields value))
 let read path =
   let channel = open_in_bin path in
   Fun.protect ~finally:(fun () -> close_in channel)
@@ -36,6 +37,36 @@ let () =
   (match run Service.handle Protocol.Verify "replay-policy-execution" (obj (execution @ ["report",forged])) with
    | _ -> failwith "Forged replay accepted"
    | exception Diagnostic.Error diagnostic -> require (diagnostic.code="policy_execution_replay") "Wrong replay rejection");
+  let declarations=Json.array(get "declarations" document) in
+  let completion=List.find(fun value->get "id" value=Json.String "completion")declarations in
+  let unsupported_replay replacement =
+    let source=replace "declarations"(Json.Array(List.map(fun value->if get "id" value=Json.String "completion" then replacement else value)declarations))document in
+    let source_authority=["document",source;"definitions",definitions] in
+    let source_assessment=run Service.handle Protocol.Verify "assess-policy"(obj["document",source]) in
+    require(get "status"(get "assessment" source_assessment)=Json.String "valid")"Unsupported replay control lost source validity";
+    let lowered=run Producer.handle Protocol.Core "compile-policy"(obj source_authority) in
+    let inputs=source_authority@["candidate",get "candidate" lowered;"timeline",get "timeline" fixture] in
+    let result=run Service.handle Protocol.Verify "execute-policy"(obj inputs) in
+    let result_report=get "report" result in
+    let executed=get "execution" result_report in
+    let requirements=Json.array(get "requirements" executed) in
+    let row=List.find(fun value->get "id" value=Json.String "completion")requirements in
+    require(get "status" row=Json.String "unsupported")"Unsupported requirement gained a monitored verdict through the service";
+    require(Json.equal(get "source" row)replacement)"Unsupported service report lost original requirement operands";
+    let replayed=run Service.handle Protocol.Verify "replay-policy-execution"(obj(inputs@["report",result_report])) in
+    require(Json.equal result replayed)"Fresh replay changed the unsupported requirement ledger";
+    let altered_rows=List.map(fun value->if get "id" value=Json.String "completion" then replace "status"(Json.String "pass")value else value)requirements in
+    let forged_report=replace "execution"(replace "requirements"(Json.Array altered_rows)executed)result_report in
+    (match run Service.handle Protocol.Verify "replay-policy-execution"(obj(inputs@["report",forged_report])) with
+     | _->failwith "Forged requirement PASS survived fresh replay"
+     | exception Diagnostic.Error diagnostic->require(diagnostic.code="policy_execution_replay")"Wrong forged requirement replay rejection") in
+  unsupported_replay(replace "response"(replace "value"(Json.String "ceased")(get "response" completion))completion);
+  let condition=get "condition" completion in
+  let target=obj["$type",Json.String "Ref";"kind",Json.String "Subject";"id",Json.String "target"] in
+  let entity=condition|>replace "value_type"(obj["$type",Json.String "TypeSpec";"kind",Json.String "entity";"unit",Json.Null;"entity_kind",Json.String "cell"])
+    |>replace "value"Json.Null|>replace "ref"target|>replace "scope"target in
+  let distinct=condition|>replace "op"(Json.String "distinct")|>replace "value"Json.Null|>replace "args"(Json.Array[entity;entity]) in
+  unsupported_replay(replace "condition" distinct completion);
   let request : Protocol.request = {request_id="verify-producer-rejection";operation="compile-policy";payload=obj authority} in
   (match Service.handle Protocol.Verify request with
    | Protocol.Unsupported,None,_::_ -> ()
