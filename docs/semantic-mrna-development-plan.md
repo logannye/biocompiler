@@ -626,7 +626,7 @@ gate without changing either frozen acceptance subject. The first task is the
 closed partial-graph/interface domain; the current whole-graph decoder requires
 all inputs to be driven and cannot represent independently connected fragments.
 `Policy_component_fragment` source, a closed JSON Schema and independent literal
-test source now exist in that worktree. The decoder preserves complete configured
+test source are committed there as `4fbf4176f` (source preparation only). The decoder preserves complete configured
 models, typed boundary/external slots, input ownership, local atomic groups and
 all ordered outputs; its identity excludes the surrounding whole-library digest.
 The new fixture uses the identical driver across independently supplied A/B
