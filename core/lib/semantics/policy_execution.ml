@@ -73,32 +73,32 @@ type session = { behavior:O.behavior; executor:string; resolution:Q.t; horizon:i
   mutable work:int; mutable trace_items:int; mutable sequence:int; mutable attempt_sequence:int;
   mutable now:int; mutable microstep:int; mutable events:event list;
   mutable tick_events:Json.t list; mutable tick_actions:Json.t list }
-let charge s n = require (n >= 0 && n <= s.bounds.max_work - s.work) "policy_execution_work_limit" "Cumulative policy execution work budget exhausted."; s.work <- s.work+n
-let retain s = charge s 1; require (s.trace_items < s.bounds.max_trace_items) "policy_execution_trace_limit" "Complete policy trace exceeds its explicit bound."; s.trace_items <- s.trace_items+1
-let charge_json s value = charge s (String.length(Canonical.encode value))
-let tick s n = Q.mul s.resolution (Q.of_int n)
+let charge (s:session) n = require (n >= 0 && n <= s.bounds.max_work - s.work) "policy_execution_work_limit" "Cumulative policy execution work budget exhausted."; s.work <- s.work+n
+let retain (s:session) = charge s 1; require (s.trace_items < s.bounds.max_trace_items) "policy_execution_trace_limit" "Complete policy trace exceeds its explicit bound."; s.trace_items <- s.trace_items+1
+let charge_json (s:session) value = charge s (String.length(Canonical.encode value))
+let tick (s:session) n = Q.mul s.resolution (Q.of_int n)
 let aligned resolution q =
   require (Q.sign q >= 0) "policy_execution_time" "Policy times must be nonnegative.";
   let ticks = Q.div q resolution in
   require (Z.equal (Q.den ticks) Z.one && Z.fits_int (Q.num ticks)) "policy_execution_time" "Policy time is not an integer number of clock ticks.";
   Z.to_int (Q.num ticks)
-let deadline s duration =
+let deadline (s:session) duration =
   let duration=aligned s.resolution duration in
   require(duration<=max_int-s.now) "policy_execution_time" "Deadline exceeds the bounded exact scheduler integer domain.";
   s.now+duration
 let binding_json (b:binding) = obj ["encounter",nullable str b.encounter;"generation",Json.int b.generation]
 let executor_binding = {encounter=None;generation=0}
 let find code id get xs = match List.find_opt (fun x -> get x=id) xs with Some x -> x | None -> fail code ("Unknown declaration or identity: " ^ id)
-let lookup s code id get xs = charge s (List.length xs+1); find code id get xs
-let encounter s id = lookup s "policy_execution_identity" id (fun x -> x.identity) s.encounters
+let lookup (s:session) code id get xs = charge s (List.length xs+1); find code id get xs
+let encounter (s:session) id = lookup s "policy_execution_identity" id (fun (x:concrete_encounter) -> x.identity) s.encounters
 let concrete_binding (e:concrete_encounter) = {encounter=Some e.identity;generation=e.generation}
-let binding_live s (b:binding) = match b.encounter with None -> true | Some identity -> let e=encounter s identity in e.active && e.generation=b.generation
-let scope_binding s scope (b:binding) = match scope with
+let binding_live (s:session) (b:binding) = match b.encounter with None -> true | Some identity -> let e=encounter s identity in e.active && e.generation=b.generation
+let scope_binding (s:session) scope (b:binding) = match scope with
   | O.Executor role -> require (List.exists (fun (r:O.role) -> r.role_id=role) s.behavior.roles) "policy_execution_scope" "State executor scope differs."; executor_binding
   | O.Encounter declaration -> (match b.encounter with
       | Some identity when (encounter s identity).declaration=declaration -> b
       | _ -> fail "policy_execution_scope" "Encounter declaration and concrete state binding differ.")
-let subject_binding s subject (b:binding) =
+let subject_binding (s:session) subject (b:binding) =
   let role = (List.hd s.behavior.roles).role_id in
   if subject=role then executor_binding else
     let declaration = lookup s "policy_execution_subject" subject (fun (x:O.subject) -> x.subject_id) s.behavior.subjects in
@@ -106,17 +106,17 @@ let subject_binding s subject (b:binding) =
     | Some expected,Some identity when (encounter s identity).declaration=expected -> b
     | None,None when declaration.executor=Some role -> executor_binding
     | _ -> fail "policy_execution_subject" "Subject is not bound to this concrete encounter/executor."
-let concrete_subject s subject (b:binding) = match (subject_binding s subject b).encounter with None -> s.executor | Some identity -> (encounter s identity).target
-let value_equal a b = match a,b with
+let concrete_subject (s:session) subject (b:binding) = match (subject_binding s subject b).encounter with None -> s.executor | Some identity -> (encounter s identity).target
+let value_equal (a:O.value) (b:O.value) = match a,b with
   | O.Truth x,O.Truth y -> x=y | O.Integer x,O.Integer y -> Z.equal x y | O.Text x,O.Text y -> x=y
   | O.Quantity(x,_),O.Quantity(y,_) -> Q.equal x y | _ -> false
 let truth (value:evaluated) = match value.value with Some(O.Truth x) -> x | None -> O.Unknown | _ -> fail "policy_execution_type" "Boolean expression did not evaluate to truth."
 let truth_json = function O.True -> str "true" | O.False -> str "false" | O.Unknown -> str "unknown"
-let truth_value x = {value=Some(O.Truth x);reasons=[]}
+let truth_value x : evaluated = {value=Some(O.Truth x);reasons=[]}
 let inverse = function O.True -> O.False | O.False -> O.True | O.Unknown -> O.Unknown
 let and_truth a b = match a,b with O.False,_|_,O.False -> O.False | O.True,O.True -> O.True | _ -> O.Unknown
 let or_truth a b = match a,b with O.True,_|_,O.True -> O.True | O.False,O.False -> O.False | _ -> O.Unknown
-let evidence_value s observation b =
+let evidence_value (s:session) observation (b:binding) : evaluated =
   let d = lookup s "policy_execution_observation" observation (fun (x:O.observation) -> x.observation_id) s.behavior.observations in
   let b=subject_binding s d.subject b in
   match Hashtbl.find_opt s.evidence (observation,b) with
@@ -125,8 +125,8 @@ let evidence_value s observation b =
       if evidence.status<>"valid" then {value=None;reasons=[evidence.status]}
       else if s.now-evidence.observed >= aligned s.resolution d.freshness then {value=None;reasons=["stale"]}
       else {value=evidence.value;reasons=[]}
-let reference expression = match expression.O.reference with Some x -> x | None -> fail "policy_execution_expression" "Expression lacks a required reference."
-let rec eval s b expression =
+let reference (expression:O.expression) = match expression.O.reference with Some x -> x | None -> fail "policy_execution_expression" "Expression lacks a required reference."
+let rec eval (s:session) (b:binding) (expression:O.expression) : evaluated =
   charge s 1;
   let args () = List.map (eval s b) expression.O.args in
   let one () = match args () with [x] -> x | _ -> fail "policy_execution_expression" "Unary expression has wrong arity." in
@@ -164,38 +164,38 @@ let rec eval s b expression =
           {value=Some(O.Quantity(n,u));reasons=[]}
       | _ -> fail "policy_execution_type" "Arithmetic operands have incompatible types.")
   | _ -> fail "policy_execution_expression" ("Unsupported value operation: " ^ expression.op)
-let emit s ?attempt kind declaration b =
+let emit (s:session) ?attempt kind declaration (b:binding) : event =
   retain s;s.sequence<-s.sequence+1;
   let event={event_id="event/"^string_of_int s.sequence;kind;declaration;binding=b;attempt} in
   let row=obj["id",str event.event_id;"kind",str kind;"declaration",str declaration;
       "binding",binding_json b;"attempt",nullable str attempt;"microstep",Json.int s.microstep]in
   charge_json s row;charge s(List.length s.tick_events);s.tick_events<-s.tick_events@[row];
   event
-let action s kind detail = retain s;let row=obj["kind",str kind;"microstep",Json.int s.microstep;"detail",detail]in
+let action (s:session) kind detail = retain s;let row=obj["kind",str kind;"microstep",Json.int s.microstep;"detail",detail]in
   charge_json s row;charge s(List.length s.tick_actions);s.tick_actions<-s.tick_actions@[row]
-let expression_key expression = Canonical.encode (obj["op",str expression.O.op;"reference",nullable str expression.reference;
+let expression_key (expression:O.expression) = Canonical.encode (obj["op",str expression.O.op;"reference",nullable str expression.reference;
   "value",nullable O.value_to_json expression.value;"scope",nullable str expression.scope;
   "phase",nullable str expression.phase])
-let rec full_expression_key expression = expression_key expression ^ "(" ^ String.concat "," (List.map full_expression_key expression.O.args) ^ ")"
-let event_matches s b ?machine expression =
+let rec full_expression_key (expression:O.expression) = expression_key expression ^ "(" ^ String.concat "," (List.map full_expression_key expression.O.args) ^ ")"
+let event_matches (s:session) (b:binding) ?machine (expression:O.expression) =
   charge s (1+List.length s.events);
   match expression.O.op with
   | "updated" ->
       let observation=lookup s "policy_execution_observation" (reference expression) (fun (x:O.observation)->x.observation_id) s.behavior.observations in
       let expected=subject_binding s observation.subject b in
-      List.filter(fun e->e.kind="updated" && e.declaration=observation.observation_id && e.binding=expected) s.events
+      List.filter(fun (e:event)->e.kind="updated" && e.declaration=observation.observation_id && e.binding=expected) s.events
   | "effect_event" ->
       let effect_spec=lookup s "policy_execution_effect" (reference expression) (fun (x:O.effect_spec)->x.effect_id) s.behavior.effects in
       let expected=subject_binding s effect_spec.subject b in
-      let matches=List.filter(fun e->e.kind=Option.value expression.phase ~default:"" && e.declaration=effect_spec.effect_id && e.binding=expected) s.events in
+      let matches=List.filter(fun (e:event)->e.kind=Option.value expression.phase ~default:"" && e.declaration=effect_spec.effect_id && e.binding=expected) s.events in
       (match machine with None->matches | Some identity ->
         let retained=Option.value(Hashtbl.find_opt s.machine_attempts(identity,b)) ~default:[] in
         List.filter(fun (e:event)->match e.attempt with Some id->List.mem id retained|None->false) matches)
   | "rising" ->
-      List.filter(fun e->e.kind="rising" && e.declaration=full_expression_key expression && e.binding=b) s.events
+      List.filter(fun (e:event)->e.kind="rising" && e.declaration=full_expression_key expression && e.binding=b) s.events
   | _ -> fail "policy_execution_event" ("Unsupported event expression: " ^ expression.op)
-let contexts s = executor_binding :: List.filter_map(fun e->if e.active then Some(concrete_binding e) else None) s.encounters
-let rec required_encounters s expression =
+let contexts (s:session) = executor_binding :: List.filter_map(fun (e:concrete_encounter)->if e.active then Some(concrete_binding e) else None) s.encounters
+let rec required_encounters (s:session) (expression:O.expression) =
   charge s (1+List.length s.behavior.subjects);
   let current=match expression.O.op,expression.reference with
     | ("observe"|"updated"),Some id -> let o=lookup s "policy_execution_observation" id (fun(x:O.observation)->x.observation_id) s.behavior.observations in
@@ -206,14 +206,14 @@ let rec required_encounters s expression =
         (match st.scope with O.Encounter id->[id]|_->[])
     | _ -> [] in
   List.sort_uniq String.compare (current @ List.concat_map(required_encounters s) expression.args)
-let expression_contexts s expressions =
+let expression_contexts (s:session) (expressions:O.expression list) =
   let required=List.sort_uniq String.compare (List.concat_map(required_encounters s) expressions) in
-  match required with []->[executor_binding] | [declaration]->List.filter_map(fun e->if e.active && e.declaration=declaration then Some(concrete_binding e) else None) s.encounters
+  match required with []->[executor_binding] | [declaration]->List.filter_map(fun (e:concrete_encounter)->if e.active && e.declaration=declaration then Some(concrete_binding e) else None) s.encounters
   | _ -> fail "policy_execution_scope" "One activation cannot mix multiple encounter declarations."
-let scope_contexts s = function None->contexts s | Some(O.Executor _)->[executor_binding]
-  | Some(O.Encounter declaration)->List.filter_map(fun e->if e.active && e.declaration=declaration then Some(concrete_binding e) else None) s.encounters
+let scope_contexts (s:session) = function None->contexts s | Some(O.Executor _)->[executor_binding]
+  | Some(O.Encounter declaration)->List.filter_map(fun (e:concrete_encounter)->if e.active && e.declaration=declaration then Some(concrete_binding e) else None) s.encounters
 
-let initialize_scope s b =
+let initialize_scope (s:session) (b:binding) =
   List.iter(fun (store:O.state_store)->
     let applies=match store.scope,b.encounter with O.Executor _,None->true|O.Encounter id,Some concrete->(encounter s concrete).declaration=id|_->false in
     if applies then (
@@ -224,7 +224,7 @@ let initialize_scope s b =
     let applies=match machine.scope,b.encounter with O.Executor _,None->true|O.Encounter id,Some concrete->(encounter s concrete).declaration=id|_->false in
     if applies then (Hashtbl.replace s.machines(machine.machine_id,b) machine.initial;
                      Hashtbl.replace s.machine_attempts(machine.machine_id,b) [])) s.behavior.machines
-let discard_scope s b reason =
+let discard_scope (s:session) (b:binding) reason =
   let remove table =
     let keys=Hashtbl.fold(fun ((_,binding) as key) _ acc -> if binding=b then key::acc else acc) table [] in
     List.iter(Hashtbl.remove table) keys in
@@ -232,8 +232,8 @@ let discard_scope s b reason =
   List.iter(fun (a:attempt)->if a.binding=b && a.status="active" then (
     a.status<-reason;a.ended<-Some s.now;ignore(emit s ~attempt:a.attempt_id reason a.effect_spec.effect_id b))) s.attempts;
   List.iter(fun (p:pending)->if p.binding=b && p.status="pending" then (p.status<-"unknown";p.closed<-Some s.now)) s.pending
-let apply_encounters s =
-  List.iter(fun e->charge s 1;
+let apply_encounters (s:session) =
+  List.iter(fun (e:concrete_encounter)->charge s 1;
     if e.active && e.finish=Some s.now then (
       let b=concrete_binding e in discard_scope s b "encounter_ended";e.active<-false;
       ignore(emit s "encounter_ended" e.declaration b));
@@ -255,7 +255,7 @@ let merge_evidence (previous:evidence option) (inputs:observation_input list) : 
       {observed=newest;available=List.fold_left(fun n (_,_,_,t)->max n t) 0 members;
        status=(if conflict then "conflicting" else status);value=(if conflict then None else value);
        occurrences=List.concat_map(fun(_,_,ids,_)->ids) members}
-let apply_observations s =
+let apply_observations (s:session) =
   let groups=ref [] in
   List.iter(fun (input:observation_input)->charge s 1;if input.available=s.now then (
     let b=match input.binding_id with None->executor_binding|Some identity->let e=encounter s identity in require e.active "policy_execution_identity" "Observation supplied outside its encounter lifetime.";concrete_binding e in
@@ -280,8 +280,8 @@ let apply_observations s =
       "retained_occurrences",arr(List.map str next.occurrences);"status",str next.status;
       "observed_at",time_json(tick s next.observed)]);
     emit s "updated" id b) !groups
-let apply_feedback s =
-  List.filter_map(fun input->charge s (1+List.length s.attempts);if input.feedback_at<>s.now then None else
+let apply_feedback (s:session) =
+  List.filter_map(fun (input:feedback)->charge s (1+List.length s.attempts);if input.feedback_at<>s.now then None else
     let reject reason = action s "feedback_rejected" (obj["id",str input.feedback_id;"attempt",str input.feedback_attempt;"reason",str reason]);None in
     match List.find_opt(fun(a:attempt)->a.attempt_id=input.feedback_attempt) s.attempts with
     | None -> reject "unknown_attempt"
@@ -291,11 +291,11 @@ let apply_feedback s =
     | Some a -> a.status<-input.outcome;a.ended<-Some s.now;
         action s "feedback_accepted" (obj["id",str input.feedback_id;"attempt",str a.attempt_id]);
         Some(emit s ~attempt:a.attempt_id input.outcome a.effect_spec.effect_id a.binding)) s.feedback
-let apply_timeouts s =
+let apply_timeouts (s:session) =
   List.filter_map(fun (a:attempt)->charge s 1;
     if a.status="active" && a.deadline=Some s.now then (
       a.status<-"timed_out";a.ended<-Some s.now;Some(emit s ~attempt:a.attempt_id "timed_out" a.effect_spec.effect_id a.binding)) else None) s.attempts
-let refresh_authorizations s =
+let refresh_authorizations (s:session) =
   List.iter(fun (a:attempt)->charge s 1;if a.status="active" && a.effect_spec.lifecycle.authorization="continuous" then (
     let evaluated=eval s a.binding a.guard in
     let current=truth evaluated in
@@ -303,14 +303,14 @@ let refresh_authorizations s =
       a.authorization<-current;
       action s "authorization_changed" (obj["attempt",str a.attempt_id;"authorization",truth_json current;
         "reasons",arr(List.map str evaluated.reasons);
-        "lifecycle_response",str(if current=O.Unknown then a.effect_spec.lifecycle.on_unknown else if current=O.False then a.effect_spec.lifecycle.on_loss else "authorized")]))) s.attempts
-let rising_expressions s =
+        "lifecycle_response",str(if current=O.Unknown then a.effect_spec.lifecycle.on_unknown else if current=O.False then a.effect_spec.lifecycle.on_loss else "authorized")])))) s.attempts
+let rising_expressions (s:session) =
   let all=List.concat_map(fun(r:O.rule)->[r.on]) s.behavior.rules @
     List.concat_map(fun(t:O.transition)->[t.on]) s.behavior.transitions @
     List.filter_map(fun(st:O.state_store)->st.reset) s.behavior.stores @
     List.concat_map(fun (ledger:requirement_state)->if ledger.supported then Option.to_list ledger.requirement.trigger @ Option.to_list ledger.requirement.response else []) s.requirements in
   List.fold_left(fun acc x->if x.O.op="rising" && not(List.exists(fun y->full_expression_key x=full_expression_key y) acc) then acc@[x] else acc) [] all
-let update_rising s =
+let update_rising (s:session) =
   List.concat_map(fun expression->
     let predicate=match expression.O.args with [x]->x|_->fail "policy_execution_event" "Rising must have one predicate." in
     List.filter_map(fun b->let key=full_expression_key expression,b in
@@ -322,7 +322,7 @@ let update_rising s =
 type activation = { identity:string; binding:binding; guard:O.expression; causes:event list;
   effects:string list; assignments:O.assignment list; arbitration:O.arbitration;
   machine:O.machine option; destination:string option }
-let candidate_activations s =
+let candidate_activations (s:session) =
   let rules=List.concat_map(fun(r:O.rule)->
     let expressions=r.on::r.guard::List.map(fun(a:O.assignment)->a.value) r.assignments in
     (* Effect-only subject binding is also part of an activation's environment. *)
@@ -352,7 +352,7 @@ let arbitration_key (a:activation) =
   let policy=a.arbitration in
   Canonical.encode(obj["mode",str policy.mode;"tie",str policy.tie;"write_conflict",str policy.write_conflict;
     "order",arr(List.map str policy.order);"binding",binding_json a.binding])
-let arbitrate s activations =
+let arbitrate (s:session) (activations:activation list) =
   let groups=List.fold_left(fun groups a->let key=arbitration_key a in
     let existing=Option.value(List.assoc_opt key groups) ~default:[] in List.remove_assoc key groups@[key,existing@[a]]) [] activations in
   List.concat_map(fun(_,group)->charge s (List.length group);match group with []->[]|first::_->
@@ -368,7 +368,7 @@ let arbitrate s activations =
         List.iter(fun (a:activation)->action s "arbitration_suppressed" (obj["declaration",str a.identity;"selected",str selected.identity;"binding",binding_json a.binding])) (List.tl sorted);
         [selected]
     | _->fail "policy_execution_arbitration" "Unsupported arbitration mode.") groups
-let apply_resets s =
+let apply_resets (s:session) =
   (* All reset predicates read the same pre-reset state. Commit their initial
      values together once per tick, before activation guards and assignments. *)
   let resets=List.concat_map(fun(st:O.state_store)->match st.reset with None->[]|Some predicate->
@@ -376,7 +376,7 @@ let apply_resets s =
       (scope_contexts s (Some st.scope))) s.behavior.stores in
   List.iter(fun((st:O.state_store),b)->Hashtbl.replace s.states(st.state_id,b)st.initial;
     action s "state_reset" (obj["state",str st.state_id;"binding",binding_json b]))resets
-let execute_activations s activations =
+let execute_activations (s:session) (activations:activation list) =
   let writes=ref [] and prepared=ref [] in
   List.iter(fun(a:activation)->
     let assigned=List.map(fun(assignment:O.assignment)->
@@ -445,8 +445,8 @@ let supported_requirement (r:O.requirement) =
       supported_event trigger && (supported_event response || (supported_value response && response.value_type=Some O.Truth_type)) && Q.sign deadline>0
       && (match r.condition with None->true|Some x->supported_value x && x.value_type=Some O.Truth_type)|_->false)
   | _ -> false
-let requirement_in_horizon s (r:O.requirement) = match r.horizon with None->true|Some horizon->s.now<=aligned s.resolution horizon
-let satisfy_progress s =
+let requirement_in_horizon (s:session) (r:O.requirement) = match r.horizon with None->true|Some horizon->s.now<=aligned s.resolution horizon
+let satisfy_progress (s:session) =
   List.iter(fun (p:pending)->charge s 1;if p.status="pending" && binding_live s p.binding && requirement_in_horizon s p.requirement then
     let response=Option.get p.requirement.response in
     let satisfied=if response.O.value_type=None then
@@ -456,7 +456,7 @@ let satisfy_progress s =
         response=O.True in
     if satisfied then (p.status<-"pass";p.closed<-Some s.now;
       action s "requirement_response" (obj["requirement",str p.requirement.requirement_id;"trigger",str p.trigger_id;"binding",binding_json p.binding]))) s.pending
-let progress_events s =
+let progress_events (s:session) =
   List.iter(fun (ledger:requirement_state)->let r=ledger.requirement in
     if ledger.supported && r.kind="progress" && requirement_in_horizon s r then
       List.iter(fun b->
@@ -472,7 +472,7 @@ let progress_events s =
             retain s;charge s(List.length s.pending);s.pending<-s.pending@[pending])) matched)
         (scope_contexts s r.scope)) s.requirements;
   satisfy_progress s
-let close_requirements s =
+let close_requirements (s:session) =
   List.iter(fun (ledger:requirement_state)->let r=ledger.requirement in
     if ledger.supported && r.kind="safety" && requirement_in_horizon s r then
       List.iter(fun b->charge s 1;ledger.samples<-ledger.samples+1;
@@ -483,7 +483,7 @@ let close_requirements s =
   List.iter(fun(p:pending)->charge s 1;if p.status="pending" && p.deadline<=s.now && requirement_in_horizon s p.requirement then (
     p.status<-(if p.response_unknown then "unknown"else "fail");p.closed<-Some s.now;
     action s "requirement_deadline" (obj["requirement",str p.requirement.requirement_id;"trigger",str p.trigger_id;"binding",binding_json p.binding]))) s.pending
-let snapshot s =
+let snapshot (s:session) =
   let states=Hashtbl.fold(fun(state,binding)value acc -> (state,binding,value)::acc)s.states[]
       |>List.sort(fun(a,b,_)(c,d,_)->compare(a,b)(c,d))
       |>List.map(fun(state,binding,value)->retain s;obj["state",str state;"binding",binding_json binding;"value",O.value_to_json value]) in
@@ -507,14 +507,14 @@ let snapshot s =
     "events",arr s.tick_events;"actions",arr s.tick_actions;"states",arr states;"machines",arr machines;
     "evidence",arr evidence;"active_attempts",arr(List.filter_map(fun(a:attempt)->if a.status="active" then Some(str a.attempt_id)else None)s.attempts)]in
   charge_json s result;result
-let attempt_json s (a:attempt) = obj[
+let attempt_json (s:session) (a:attempt) = obj[
   "id",str a.attempt_id;"effect",str a.effect_spec.effect_id;"executor",str s.executor;"subject",str a.subject;
   "binding",binding_json a.binding;"initiator",str a.initiator;"causes",arr(List.map str a.causes);
   "parameters",obj(List.map(fun(k,v)->k,O.value_to_json v)a.parameters);
   "started_at",time_json(tick s a.started);"deadline",nullable(fun t->time_json(tick s t))a.deadline;
   "ended_at",nullable(fun t->time_json(tick s t))a.ended;"status",str a.status;
   "authorization",truth_json a.authorization;"machine",nullable str a.machine]
-let requirement_json s (ledger:requirement_state) =
+let requirement_json (s:session) (ledger:requirement_state) =
   let r=ledger.requirement in
   let obligations=List.filter(fun(p:pending)->p.requirement.requirement_id=r.requirement_id)s.pending in
   let horizon_complete=match r.horizon with None->true|Some horizon->s.horizon>=aligned s.resolution horizon in
@@ -583,9 +583,9 @@ let execute (behavior:O.behavior) timeline =
     {feedback_id=name "id" value;feedback_at=within(field "available_at" value);feedback_executor=name "executor" value;
      feedback_subject=name "subject" value;feedback_encounter=optional_text(field "encounter" value);
      feedback_effect=name "effect" value;feedback_attempt=name "attempt" value;outcome})feedback_values in
-  unique "policy_execution_occurrence" (List.map(fun(o:observation_input)->o.input_id)observations @ List.map(fun f->f.feedback_id)feedback);
+  unique "policy_execution_occurrence" (List.map(fun(o:observation_input)->o.input_id)observations @ List.map(fun (f:feedback)->f.feedback_id)feedback);
   let feedback_outcomes=Hashtbl.create 16 in
-  List.iter(fun input->let key=input.feedback_at,input.feedback_attempt in
+  List.iter(fun (input:feedback)->let key=input.feedback_at,input.feedback_attempt in
     (match Hashtbl.find_opt feedback_outcomes key with None->Hashtbl.add feedback_outcomes key input.outcome
     | Some outcome->require(outcome=input.outcome) "policy_execution_feedback_conflict" "One attempt has contradictory simultaneous feedback outcomes."))feedback;
   List.iter(fun(o:O.observation)->require(aligned resolution o.freshness>0) "policy_execution_time" "Freshness must span at least one tick.")behavior.observations;

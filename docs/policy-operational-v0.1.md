@@ -122,11 +122,11 @@ Exhaustion is an error, never proof of infeasibility or a successful partial tra
 
 Every aligned clock tick through the horizon runs, even without new observations.
 At a tick, encounter end/reset precedes the atomic observation batch; feedback
-precedes equal-time timeout, so completion at its deadline succeeds. Freshness
-expiry and continuous authorization are then processed. State reset predicates
-read a shared pre-reset snapshot and their initial values commit together once
-per tick before activation guards. Rules and transitions
-settle under the declared arbitration and work bound. Requirement deadlines are
+precedes equal-time timeout, so completion at its deadline succeeds. State reset
+predicates read current freshness-aware evidence and a shared pre-reset state
+snapshot; their initial values commit together once per tick. Continuous
+authorization is then refreshed against that state and current evidence. Rules
+and transitions settle under the declared arbitration and work bound. Requirement deadlines are
 checked after settling, allowing a matching response exactly at the deadline.
 
 Safety samples settled tick states, rather than intermediate microsteps. Unknown
