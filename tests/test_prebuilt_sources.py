@@ -1,10 +1,11 @@
-"""Source download controls with inert streams; no extraction or native work."""
+"""Source controls with inert streams and tar fixtures; no native work."""
 from copy import deepcopy
 import errno
 import io
 import json
 from pathlib import Path
 import ssl
+import tarfile
 import tempfile
 import unittest
 from unittest.mock import patch
@@ -218,6 +219,171 @@ class SourceFetchTests(unittest.TestCase):
                 self.assertEqual(opener.open.call_count, 1)
                 self.assertFalse(self.output.with_suffix('.source.part').exists())
                 self.assertEqual(self.pin, original_pin)
+
+
+class SourceExtractionTests(unittest.TestCase):
+    def setUp(self):
+        temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(temporary.cleanup)
+        self.root = Path(temporary.name)
+        self.archive = self.root / 'inert.tar'
+        self.output = self.root / 'extracted'
+        for item in (
+            patch.object(sources.subprocess, 'run', side_effect=AssertionError('No native process')),
+            patch.object(sources.subprocess, 'Popen', side_effect=AssertionError('No child process')),
+            patch.object(sources.urllib.request, 'build_opener', side_effect=AssertionError('No network')),
+        ):
+            item.start(); self.addCleanup(item.stop)
+
+    @staticmethod
+    def member(name, data=b'inert source data', *, mtime=1_700_000_000, mode=0o644,
+               kind=tarfile.REGTYPE, linkname=''):
+        entry = tarfile.TarInfo(name)
+        entry.type, entry.mtime, entry.mode, entry.linkname = kind, mtime, mode, linkname
+        entry.size = len(data) if kind == tarfile.REGTYPE else 0
+        return entry, data
+
+    def write_archive(self, members):
+        with tarfile.open(self.archive, 'w', format=tarfile.PAX_FORMAT) as archive:
+            for entry, data in members:
+                archive.addfile(entry, io.BytesIO(data) if entry.isfile() else None)
+
+    def test_generated_manual_keeps_newer_archive_time_when_stored_before_its_input(self):
+        self.write_archive([
+            self.member('package/doc/manual.info', b'generated manual\n', mtime=1_700_000_200),
+            self.member('package/configure', b'inert executable text\n', mtime=1_700_000_100, mode=0o755),
+            self.member('package/doc/manual.texi', b'manual input\n', mtime=1_700_000_000),
+        ])
+        package = sources.extract_source(self.archive, self.output)
+        self.assertEqual(package, self.output / 'package')
+        for name, data, timestamp, mode in (
+            ('doc/manual.info', b'generated manual\n', 1_700_000_200, 0o644),
+            ('configure', b'inert executable text\n', 1_700_000_100, 0o755),
+            ('doc/manual.texi', b'manual input\n', 1_700_000_000, 0o644),
+        ):
+            with self.subTest(name=name):
+                path = package / name
+                self.assertEqual(path.read_bytes(), data)
+                self.assertEqual(path.stat().st_mtime_ns, timestamp * 1_000_000_000)
+                self.assertEqual(path.stat().st_mode & 0o777, mode)
+        # This is make's dependency-age condition, checked without running make.
+        self.assertGreater((package / 'doc/manual.info').stat().st_mtime_ns,
+                           (package / 'doc/manual.texi').stat().st_mtime_ns)
+
+    def test_unsafe_paths_duplicates_and_special_members_remain_rejected(self):
+        outside = self.root / 'outside'
+        outside.write_bytes(b'preserved outside file')
+        cases = (
+            [self.member('../outside')],
+            [self.member(str(outside))],
+            [self.member('package/../outside')],
+            [self.member('package/same'), self.member('./package/same')],
+            [self.member('package/device', kind=tarfile.CHRTYPE)],
+            [self.member('package/fifo', kind=tarfile.FIFOTYPE)],
+        )
+        for index, members in enumerate(cases):
+            with self.subTest(index=index):
+                self.write_archive(members)
+                output = self.root / f'rejected-{index}'
+                with self.assertRaises(ValueError):
+                    sources.extract_source(self.archive, output)
+                self.assertEqual(outside.read_bytes(), b'preserved outside file')
+                self.assertFalse(any(output.rglob('*')))
+
+    def test_exact_supported_timestamp_boundaries_and_fraction_are_preserved(self):
+        self.write_archive([
+            self.member('package/epoch', mtime=0),
+            self.member('package/latest', mtime=4_294_967_295),
+            self.member('package/fraction', mtime=1_700_000_000.5),
+        ])
+        package = sources.extract_source(self.archive, self.output)
+        for name, expected_ns in (
+            ('epoch', 0),
+            ('latest', 4_294_967_295_000_000_000),
+            ('fraction', 1_700_000_000_500_000_000),
+        ):
+            with self.subTest(name=name):
+                self.assertEqual((package / name).stat().st_mtime_ns, expected_ns)
+
+    def test_invalid_archived_times_reject_before_any_member_is_written(self):
+        for index, timestamp in enumerate(('-1', '4294967296', 'nan', 'inf', '-inf')):
+            with self.subTest(timestamp=timestamp):
+                invalid = self.member('package/invalid', mtime=0)
+                invalid[0].pax_headers = {'mtime': timestamp}
+                self.write_archive([
+                    self.member('package/first', mtime=1_700_000_000),
+                    invalid,
+                ])
+                output = self.root / f'time-rejected-{index}'
+                with self.assertRaisesRegex(ValueError, 'timestamp'):
+                    sources.extract_source(self.archive, output)
+                self.assertFalse(any(output.rglob('*')))
+
+    def test_copied_hardlink_keeps_own_time_without_retiming_source_through_symlink(self):
+        self.write_archive([
+            self.member('package/source', b'original content', mtime=1_700_000_200),
+            self.member('package/copy', kind=tarfile.LNKTYPE, linkname='package/source', mtime=1_700_000_100),
+            self.member('package/symlink', kind=tarfile.SYMTYPE, linkname='source', mtime=1_700_000_000),
+        ])
+        package = sources.extract_source(self.archive, self.output)
+        original, copied, link = package / 'source', package / 'copy', package / 'symlink'
+        self.assertEqual(original.read_bytes(), b'original content')
+        self.assertEqual(copied.read_bytes(), b'original content')
+        self.assertFalse(copied.is_symlink())
+        self.assertNotEqual(original.stat().st_ino, copied.stat().st_ino)
+        self.assertEqual(original.stat().st_mtime_ns, 1_700_000_200_000_000_000)
+        self.assertEqual(copied.stat().st_mtime_ns, 1_700_000_100_000_000_000)
+        self.assertTrue(link.is_symlink())
+        self.assertEqual(link.readlink(), Path('source'))
+        self.assertEqual(link.read_bytes(), b'original content')
+
+    def test_escaping_links_and_members_below_links_remain_rejected(self):
+        cases = (
+            [self.member('package/link', kind=tarfile.SYMTYPE, linkname='/outside')],
+            [self.member('package/link', kind=tarfile.SYMTYPE, linkname='../../outside')],
+            [self.member('package/link', kind=tarfile.LNKTYPE, linkname='/outside')],
+            [self.member('package/link', kind=tarfile.LNKTYPE, linkname='../outside')],
+            [self.member('package/link/child'),
+             self.member('package/link', kind=tarfile.SYMTYPE, linkname='safe')],
+            [self.member('package/link/child'),
+             self.member('package/link', kind=tarfile.LNKTYPE, linkname='package/safe')],
+        )
+        for index, members in enumerate(cases):
+            with self.subTest(index=index):
+                self.write_archive(members)
+                output = self.root / f'link-rejected-{index}'
+                with self.assertRaises(ValueError):
+                    sources.extract_source(self.archive, output)
+                self.assertFalse(any(output.rglob('*')))
+
+    def test_indirect_symlink_parent_cannot_supply_an_external_hardlink_source(self):
+        outside = self.root / 'outside'
+        outside.mkdir()
+        marker = outside / 'marker'
+        marker.write_bytes(b'inert external marker')
+        original_stat = marker.stat()
+        self.write_archive([
+            self.member('package', kind=tarfile.DIRTYPE),
+            self.member('package/a', kind=tarfile.SYMTYPE, linkname='..'),
+            self.member('package/c', kind=tarfile.SYMTYPE, linkname='a/../outside'),
+            self.member('package/copied', kind=tarfile.LNKTYPE, linkname='package/c/marker'),
+        ])
+        with self.assertRaises(ValueError):
+            sources.extract_source(self.archive, self.output)
+        self.assertFalse((self.output / 'package/copied').exists())
+        self.assertEqual(marker.read_bytes(), b'inert external marker')
+        self.assertEqual(marker.stat().st_mtime_ns, original_stat.st_mtime_ns)
+
+    def test_forward_hardlink_to_indexed_regular_member_preserves_bytes_and_times(self):
+        self.write_archive([
+            self.member('package/copied', kind=tarfile.LNKTYPE, linkname='package/source', mtime=1_700_000_100),
+            self.member('package/source', b'inert forward target', mtime=1_700_000_200),
+        ])
+        package = sources.extract_source(self.archive, self.output)
+        self.assertEqual((package / 'copied').read_bytes(), b'inert forward target')
+        self.assertFalse((package / 'copied').is_symlink())
+        self.assertEqual((package / 'copied').stat().st_mtime_ns, 1_700_000_100_000_000_000)
+        self.assertEqual((package / 'source').stat().st_mtime_ns, 1_700_000_200_000_000_000)
 
 
 if __name__ == '__main__':

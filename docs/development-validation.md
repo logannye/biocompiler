@@ -130,11 +130,19 @@ the native runtime locally.
 
 The separate `python-bootstrap.yml` feedback workflow runs only for pushes to
 `codex/dev-python/**`. Its single macOS ARM64 job seeds and selects 3.11.15,
-checks the unchanged archive authority and bootstrap controls, and retains the
-receipt and logs for seven days. Its concurrency group is isolated from release
+checks the unchanged archive authority and bootstrap controls, then executes the
+unchanged locked-source static GMP recipe: configure, build, `make check`, install
+and the static pkg-config probe. Source extraction preserves validated upstream
+file timestamps so packaged generated files do not become artificially older
+than their inputs. The archive pins and build/check commands remain unchanged.
+The feedback retains source-fetch receipts, all four command logs, configure
+diagnostics, the build
+receipt and probe receipt for seven days, excluding build trees and downloaded
+archives. Its concurrency group is isolated from release
 validation, and its output explicitly denies release acceptance. This short
-hosted check validates runtime acquisition before dispatching a fresh complete
-74-job release gate; it cannot replace that gate or actual-main validation.
+hosted check validates runtime acquisition and native dependency preparation
+before a fresh complete 74-job release gate; it cannot replace that gate or
+actual-main validation.
 
 Original-only fixed build and continuation replays restore the historical
 package entrypoints alongside their archived session checker. The private

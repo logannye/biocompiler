@@ -1,4 +1,4 @@
-name: Supported Python bootstrap feedback
+name: Supported runtime and static GMP feedback
 
 on:
   push:
@@ -32,11 +32,29 @@ jobs:
         run: |
           python -B -c 'import os,platform,sys; assert platform.python_version()=="3.11.15" and platform.machine()=="arm64" and platform.system()=="Darwin"; print({"revision":os.environ["GITHUB_SHA"],"run_id":os.environ["GITHUB_RUN_ID"],"run_attempt":os.environ["GITHUB_RUN_ATTEMPT"],"python":platform.python_version(),"executable":sys.executable,"release_acceptance":False})' | tee generated/ci-python/selection.log
           python -B -m unittest -v tests.test_archive_authority tests.test_bootstrap_hosted_python 2>&1 | tee generated/ci-python/checks.log
-      - name: Retain bounded bootstrap feedback without release acceptance
+      - name: Check source extraction before the unchanged hosted static build
+        env:
+          PYTHONPATH: src:.
+        run: python -B -m unittest -v tests.test_prebuilt_sources tests.test_prebuilt_release_chain.HostedPlanTests 2>&1 | tee generated/ci-python/source-checks.log
+      - name: Fetch exact locked sources and execute the complete static GMP recipe
+        run: |
+          python tools/prebuilt_sources.py fetch --output "$GITHUB_WORKSPACE/generated/prebuilt-sources"
+          python tools/prebuilt_sources.py static-build --sources "$GITHUB_WORKSPACE/generated/prebuilt-sources" \
+            --output "$GITHUB_WORKSPACE/generated/static-gmp" --platform macos-arm64 \
+            --compiler "$(command -v cc)" --make "$(command -v make)" --pkg-config "$(command -v pkg-config)"
+      - name: Retain selected bootstrap and static build diagnostics without release acceptance
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: python-bootstrap-${{ github.run_id }}-${{ github.run_attempt }}
-          path: generated/ci-python/
+          path: |
+            generated/ci-python/
+            generated/prebuilt-sources/fetch-receipt.json
+            generated/prebuilt-sources/source-receipt.json
+            generated/static-gmp/build.json
+            generated/static-gmp/command-*.log
+            generated/static-gmp/build/config.log
+            generated/static-gmp/configuration/input.json
+            generated/static-gmp/configuration/gmp.pc
           if-no-files-found: error
           retention-days: 7
