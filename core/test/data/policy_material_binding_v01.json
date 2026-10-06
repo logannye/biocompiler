@@ -4728,7 +4728,7 @@
     "monitor": {
       "max_obligations": 1000,
       "max_samples": 100000,
-      "max_work": 100000
+      "max_work": 1000000
     },
     "profile": "biocompiler.policy_preservation_resources.v0.1",
     "source": {

@@ -62,7 +62,7 @@ let limits_json=obj[
     "max_attempts",Json.int 32;"max_work",Json.int 100000;"max_trace_items",Json.int 2000;"max_microsteps",Json.int 32];
   "candidate",obj["max_work",Json.int 1000000;"max_events",Json.int 100000;
     "max_attempts",Json.int 32;"max_microsteps",Json.int 32];
-  "monitor",obj["max_work",Json.int 100000;"max_obligations",Json.int 1000;"max_samples",Json.int 100000];
+  "monitor",obj["max_work",Json.int 1000000;"max_obligations",Json.int 1000;"max_samples",Json.int 100000];
   "max_step_work",Json.int 1000000;"max_step_retained",Json.int 100000;
   "max_report_bytes",Json.int(8*1024*1024);"max_report_nodes",Json.int 1000000]
 let limits=C.limits_of_json limits_json
@@ -112,6 +112,11 @@ let stopped label category diagnostic result=
   require(text "code"(get "diagnostic" stop)=diagnostic)(label^": wrong stop diagnostic "^text "code"(get "diagnostic" stop));
   require(text "preservation" report="unassessed")(label^": resource/domain stop claimed a behavioral verdict")
 let resource_limits positive=
+  (* This former fixture allowance cannot even pin the complete independently
+     checked binding. Keep its hosted failure as an explicit incomplete case. *)
+  stopped "complete binding exceeds former monitor allowance" "incomplete"
+    "policy_requirement_monitor_work_limit"
+    (run ~limits:(C.limits_of_json(set ["monitor";"max_work"](Json.int 100000)limits_json))positive);
   List.iter(fun(label,path,code)->
     let altered=C.limits_of_json(set path(Json.int 1)limits_json)in
     stopped label "incomplete" code(run ~limits:altered positive))[
