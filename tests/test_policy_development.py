@@ -95,15 +95,15 @@ class PolicyDevelopmentTests(unittest.TestCase):
         dev.prepare(self.root)
         result = dev.run(self.root)
         self.assertEqual([row[0] for row in dev.SUITES], [
-            "test_policy_component_fragment", "test_policy_component_material", "test_policy_component_assembly_rule",
+            "test_policy_component_fragment", "test_policy_component_material", "test_policy_component_assembly_rule", "test_policy_component_assembly_check",
             "test_policy_implementation_binding",
             "test_policy_preservation_check", "test_policy_material_binding", "test_policy_material_context",
             "test_policy_material_check", "test_policy_mrna_structure", "test_construction_content"])
         self.assertEqual(self.calls[:2], [
             ["opam", "install", "core/biocompiler_core.opam", "--deps-only", "--with-test", "--yes"],
             ["opam", "exec", "--", "dune", "build", "--root", "core", "@all"]])
-        self.assertEqual(len(self.calls), 12)
-        self.assertEqual([Path(p).name for p in self.calls[5][4:]], [
+        self.assertEqual(len(self.calls), 13)
+        self.assertEqual([Path(p).name for p in next(call for call in self.calls if any(str(arg).endswith("test_policy_implementation_binding.exe") for arg in call))[4:]], [
             "policy_implementation_binding_v01.json", "policy_realization_request_v01.json", "policy_exclusion_source_v01.json"])
         self.assertEqual(result["status"], "passed")
         self.assertFalse(result["acceptance"])
@@ -182,14 +182,14 @@ class PolicyDevelopmentTests(unittest.TestCase):
         self.assertEqual(len(self.calls), 2)
         self.assertEqual(self.report()["status"], "failed")
 
-    def test_failed_suite_retains_all_ten_outcomes_and_fails(self):
+    def test_failed_suite_retains_all_eleven_outcomes_and_fails(self):
         dev.prepare(self.root)
         self.fail = dev.selected_suites(self.root)[1]["argv"]
         with self.assertRaisesRegex(ValueError, "Focused native suite failed"):
             dev.run(self.root)
         result = self.report()
-        self.assertEqual(len(self.calls), 12)
-        self.assertEqual([r["status"] for r in result["suites"]].count("passed"), 9)
+        self.assertEqual(len(self.calls), 13)
+        self.assertEqual([r["status"] for r in result["suites"]].count("passed"), 10)
         self.assertEqual(result["suites"][1]["status"], "failed")
         self.assertEqual(result["status"], "failed")
 

@@ -20,6 +20,7 @@ ROOT = Path(__file__).resolve().parents[1]
 EXTERNAL_LIBRARIES = frozenset({"digestif", "zarith", "unix"})
 # New libraries/dependencies require deliberate policy review, even when harmless.
 LIBRARIES = {
+    "bioc_policy_component_test_support": ("test/policy_component_support/dune", {"bioc_wire", "bioc_domain"}, "test_support"),
     "bioc_reference_input": ("lib/reference_input/dune", {"bioc_wire", "bioc_domain", "bioc_artifact", "zarith"}, "domain"),
     "bioc_reference_package_service": ("lib/reference_package_service/dune", {"bioc_wire", "bioc_domain", "bioc_artifact", "bioc_reference_artifact", "bioc_reference_input", "bioc_reference_export", "bioc_checker", "bioc_compiler", "bioc_pipeline", "zarith"}, "producer"),
     "bioc_reference_artifact": ("lib/reference_artifact/dune", {"bioc_wire", "bioc_domain", "bioc_artifact", "zarith"}, "domain"),
@@ -79,7 +80,8 @@ TESTS = {
     "test_policy_material_binding": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_realization_checker", "zarith"},
     "test_policy_component_fragment": {"bioc_wire", "bioc_domain", "zarith"},
     "test_policy_component_material": {"bioc_wire", "bioc_domain"},
-    "test_policy_component_assembly_rule": {"bioc_wire", "bioc_domain"},
+    "test_policy_component_assembly_rule": {"bioc_wire", "bioc_domain", "bioc_policy_component_test_support"},
+    "test_policy_component_assembly_check": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_realization_checker", "bioc_policy_component_test_support"},
     "test_policy_material_lifecycle": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_semantics", "bioc_candidate_runtime", "bioc_realization_checker", "zarith"},
     "test_policy_material_compound": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_semantics", "bioc_candidate_runtime", "bioc_realization_checker", "zarith"},
     "test_policy_material_domain": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_semantics", "bioc_candidate_runtime", "bioc_realization_checker", "bioc_service", "bioc_producer_service", "zarith"},
@@ -553,6 +555,7 @@ def check_boundaries(root: Path):
                     "test_policy_component_fragment": ["policy_material_request_v01.json", "policy_material_state_v01.json"],
                     "test_policy_component_material": ["policy_material_request_v01.json", "policy_material_state_v01.json"],
                     "test_policy_component_assembly_rule": ["policy_material_request_v01.json", "policy_material_state_v01.json"],
+                    "test_policy_component_assembly_check": ["policy_material_request_v01.json", "policy_material_state_v01.json"],
                     "test_policy_material_context": ["policy_material_context_v01.json"],
                     "test_policy_material_check": ["policy_material_request_v01.json"],
                     "test_policy_material_service": ["policy_material_request_v01.json"],

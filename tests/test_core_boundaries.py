@@ -34,9 +34,14 @@ class CoreBoundaryTests(unittest.TestCase):
                                             "bioc_realization_checker", "bioc_semantics",
                                             "bioc_candidate_runtime", "digestif", "zarith", "unix"})
         self.assertEqual(receipt["roles"]["bioc_checker"], "checker")
+        self.assertEqual(receipt["roles"]["bioc_policy_component_test_support"], "test_support")
+        self.assertNotIn("bioc_policy_component_test_support", dependencies)
+        self.assertNotIn("bioc_policy_component_test_support", receipt["transitive_dependencies"]["executable:biocompiler-core"])
+        self.assertEqual(set(receipt["transitive_dependencies"]["bioc_policy_component_test_support"]),
+                         {"bioc_wire", "bioc_domain", "digestif", "zarith"})
         self.assertEqual(receipt["private_modules"]["bioc_checker"],
                          ["construction_reconstruction", "architecture_reconstruction", "reference_check_support"])
-        self.assertEqual(len(receipt["native_tests"]), 152)
+        self.assertEqual(len(receipt["native_tests"]), 153)
         self.assertEqual(receipt["roles"]["bioc_semantics"], "source_semantics")
         self.assertEqual(receipt["roles"]["bioc_source_adapter"], "source_semantics")
         self.assertEqual(receipt["roles"]["bioc_compiler"], "compiler")

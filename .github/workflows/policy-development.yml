@@ -33,7 +33,7 @@ jobs:
           opam-pin: false
           opam-repositories: |
             default: git+https://github.com/ocaml/opam-repository.git#ac27950e5eac6c981ad809dff370c937820b7893
-      - name: Install ordinary dependencies, build once and run ten fixed suites
+      - name: Install ordinary dependencies, build once and run eleven fixed suites
         run: python -B tools/check_policy_development.py run
       - name: Retain diagnostic evidence even when native work fails
         if: always()
