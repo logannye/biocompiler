@@ -47,7 +47,9 @@ rejecting the encounter ID, and `state`/`channel`/`require` could erase foreign
 ownership before checking a namespaced copy. Both reproduce on a previously
 complete source document. Narrow fixes and six regression controls are committed as
 `ebfc76b6d` in the isolated follow-up worktree, with the reviewed descriptor and
-pattern controls in its preceding commits. Let the healthy `a85b1112f` run finish and retain
+pattern controls in its preceding commits. The coherent follow-up and tracker
+are published on `codex/policy-descriptor-witnesses` at `4157108cb`; PR85 itself
+still has the original tested head. Let the healthy `a85b1112f` run finish and retain
 its evidence, then integrate the coherent correction and validate its new exact
 revision before normal merge. A passing a85 run or PR95 audit cannot accept the
 changed frontend. These findings do not establish a failure of the independently
@@ -153,7 +155,11 @@ and 18,327,041,494 declared expanded bytes. A separate preparation is now indepe
 bounded 300,000-entry / 4 GiB-per-archive / 20 GiB-aggregate inspection; its
 external manifest is
 `e754c03a98b50368677c91a5e66375eacfec1aacecc29d11017dbe0dc09be83d`.
-Full CRC validation of the retained bytes remains pending.
+All 97 available archives then passed complete size/hash/path/member/CRC
+validation without redownload, extraction or native execution. Proof
+`available-downloads-20261006T171143Z/download-proof.json` under that preparation
+has SHA-256 `9af34c56733539fc5b2e0cae03712707a8fc93dfb64497d54e94d3d1657688ca`.
+Five final selected archives and the full final audit remain pending.
 Compressed-total, per-member, actual-extraction and nested-native limits remain
 unchanged; no complete assembly corpus is to be extracted. Final auditing still
 requires authenticated preparation, complete hosted success and fresh metadata.
@@ -612,7 +618,25 @@ Depends on: SM-04; schema/library preparation may overlap SM-03.
 
 Exit: a complete checked implementation has a complete eligible RNA architecture under the original declared contracts, with no hidden helper or unmet semantic constraint.
 
-The next bounded composition batch has four concrete slices, all still open:
+The next bounded composition batch has four concrete slices, all still open.
+Source preparation has begun in the isolated sparse worktree
+`work/policy-component-composition`, branch `codex/policy-component-composition`,
+based on the pending corrected union `4157108cb`. This overlaps the long release
+gate without changing either frozen acceptance subject. The first task is the
+closed partial-graph/interface domain; the current whole-graph decoder requires
+all inputs to be driven and cannot represent independently connected fragments.
+`Policy_component_fragment` source, a closed JSON Schema and independent literal
+test source now exist in that worktree. The decoder preserves complete configured
+models, typed boundary/external slots, input ownership, local atomic groups and
+all ordered outputs; its identity excludes the surrounding whole-library digest.
+The new fixture uses the identical driver across independently supplied A/B
+libraries. These are source changes; native compilation/tests remain pending.
+The tracked `docs/policy-component-composition-v0.1.md` there records the full
+future path, including constant-broadcast versus encounter-scoped links and a
+new original composition context/layout authority. No new profile is admitted,
+executed or exportable.
+Acceptance still depends on the current profile and the complete new vertical
+path. Preserve all existing v0.1 contracts and outputs.
 
 | Order | Implementation work | Required boundary |
 | --- | --- | --- |
