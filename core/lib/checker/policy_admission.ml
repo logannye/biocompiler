@@ -4,10 +4,10 @@ module O = Bioc_domain.Policy_operational
 module Names = Map.Make(String)
 module Seen = Set.Make(String)
 type t = { document_value : D.t; descriptors_value : O.descriptor_bundle; assessment_value : Json.t; report_value : Json.t }
-let document value = value.document_value
-let descriptors value = value.descriptors_value
-let source_assessment value = value.assessment_value
-let report value = value.report_value
+let document (value:t) = value.document_value
+let descriptors (value:t) = value.descriptors_value
+let source_assessment (value:t) = value.assessment_value
+let report (value:t) = value.report_value
 let get = O.get
 let text = O.text
 let list = O.list
@@ -82,6 +82,26 @@ let admit ~document ~descriptors =
         else List.fold_left (fun acc (_,v) -> Seen.union acc (encounter_bindings v)) Seen.empty fields
     | _ -> Seen.empty
   in
+  let scope_binding value =
+    if text "kind" value = "encounter" then Some (ref_id (get "subject" value)) else None in
+  let compatible_binding path expected required =
+    require path (match expected with
+      | None -> Seen.is_empty required
+      | Some identity -> Seen.subset required (Seen.singleton identity))
+      "Operational expression or assignment requires an encounter outside its concrete execution scope."
+  in
+  let exactly_bound_effects path expected references =
+    List.iter (fun reference ->
+      let subject=referenced_encounters (get "subject" (lookup reference)) in
+      let intended=match expected with None -> Seen.empty | Some identity -> Seen.singleton identity in
+      require path (Seen.equal subject intended)
+        "Effect subject and retained initiating environment require different concrete bindings, which this profile does not implement.") references
+  in
+  let assignment_bindings path expected value =
+    List.iter (fun assignment ->
+      compatible_binding (path^"/assignments") expected (referenced_encounters (get "state" assignment)))
+      (list "assignments" value)
+  in
   let rec expression path value =
     let op=text "op" value in
     require path (List.mem op expr_ops) "Expression operation is outside bounded operational semantics.";
@@ -155,12 +175,20 @@ let admit ~document ~descriptors =
         require p (text "overflow" v = "reject" && List.mem (text "inheritance" v) ["reset";"not_applicable"]
           && get "contract" v = Json.Null && get "coordination" v = Json.Null) "State overflow, inheritance and coordination contracts are unsupported.";
         require p (text "lifetime" v = text "kind" (get "scope" v)) "State lifetime must match its executor or encounter scope.";
-        Option.iter (expression (p^"/reset")) (if present (get "reset" v) then Some (get "reset" v) else None)
+        Option.iter (fun reset ->
+          expression (p^"/reset") reset;
+          compatible_binding (p^"/reset") (scope_binding (get "scope" v)) (encounter_bindings reset))
+          (if present (get "reset" v) then Some (get "reset" v) else None)
     | D.Effect ->
         require p (ref_id (get "executor" v) = role && get "spatial_scope" v = Json.Null && get "relationship" v = Json.Null && list "resources" v = [])
           "Effects with spatial, cross-subject or resource contracts need a later operational profile.";
         bind (p^"/contract") (get "contract" v) O.Effect_abstract_attempt;
-        List.iter (fun argument -> expression (p^"/parameters") (get "value" argument)) (list "parameters" v);
+        let subject_bindings=referenced_encounters (get "subject" v) in
+        let effect_binding=if Seen.is_empty subject_bindings then None else Some (Seen.choose subject_bindings) in
+        List.iter (fun argument ->
+          let expression_value=get "value" argument in
+          expression (p^"/parameters") expression_value;
+          compatible_binding (p^"/parameters") effect_binding (encounter_bindings expression_value)) (list "parameters" v);
         let lifecycle=get "lifecycle" v in
         bind (p^"/lifecycle/contract") (get "contract" lifecycle) O.Lifecycle_correlated_feedback;
         require p (text "on_loss" lifecycle = "continue" && List.mem (text "on_unknown" lifecycle) ["continue";"defer"]
@@ -168,12 +196,27 @@ let admit ~document ~descriptors =
           && text "feedback_identity" lifecycle = "attempt_executor_subject")
           "Only correlated completion/failure feedback with explicit continue/defer authorization is executable.";
         Option.iter (time (p^"/lifecycle/timeout")) (if present (get "timeout" lifecycle) then Some (get "timeout" lifecycle) else None)
-    | D.Rule -> behavior p v; arbitration (p^"/arbitration") (get "arbitration" v)
+    | D.Rule ->
+        behavior p v; arbitration (p^"/arbitration") (get "arbitration" v);
+        (* Rule environments come from readable expressions and effect subjects.
+           An assignment destination alone cannot bind a dynamic encounter. *)
+        let environment=List.fold_left (fun bindings expression -> Seen.union bindings (encounter_bindings expression))
+          Seen.empty ([get "on" v;get "when" v] @ List.map (get "value") (list "assignments" v) @ list "effects" v) in
+        require p (Seen.cardinal environment <= 1) "Rule expressions require incompatible concrete encounter bindings.";
+        let binding=if Seen.is_empty environment then None else Some (Seen.choose environment) in
+        assignment_bindings p binding v;
+        exactly_bound_effects p binding (list "effects" v)
     | D.Machine ->
         scoped (p^"/scope") (get "scope" v);
         require p (text "lifetime" v = text "kind" (get "scope" v)) "Machine lifetime must match finite executor or encounter scope.";
         arbitration (p^"/arbitration") (get "arbitration" v)
-    | D.Transition -> behavior p v
+    | D.Transition ->
+        behavior p v;
+        let machine=lookup (get "machine" v) in
+        let binding=scope_binding (get "scope" machine) in
+        compatible_binding p binding (encounter_bindings v);
+        assignment_bindings p binding v;
+        exactly_bound_effects p binding (list "effects" v)
     | D.Parameter ->
         require p (text "selection" v = "fixed" && List.mem (text "kind" (get "value_type" v)) supported_types) "Only explicitly fixed operational parameters are executable."
     | D.Requirement ->

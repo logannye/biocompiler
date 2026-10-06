@@ -112,7 +112,7 @@ let value_to_json = function
   | Integer value -> Json.Int value | Text value -> Json.String value
   | Quantity (value, unit) -> Json.Object ["numerator",Json.String (Z.to_string (Q.num value));
       "denominator",Json.String (Z.to_string (Q.den value));"unit",unit]
-let rec expression_of_json value =
+let rec expression_of_json value : expression =
   let kind = get "value_type" value in
   let value_type = if text "kind" kind = "event" then None else Some (value_type kind) in
   let op = text "op" value in
@@ -125,7 +125,7 @@ let scope value = match text "kind" value with
   | "executor" -> Executor (ref_id (get "subject" value))
   | "encounter" -> Encounter (ref_id (get "subject" value))
   | _ -> Diagnostic.fail "policy_operational_scope" "Scope is outside finite executor/encounter state."
-let arbitration value =
+let arbitration value : arbitration =
   {mode=text "mode" value;tie=text "tie" value;write_conflict=text "write_conflict" value;order=strings "order" value}
 let assignment value : assignment = {state=ref_id (get "state" value);value=expression_of_json (get "value" value)}
 let assignments value = List.map assignment (list "assignments" value)
@@ -143,8 +143,8 @@ let semantic_of_tag = function
   | "capability.deferred.v1" -> Capability_deferred
   | _ -> Diagnostic.fail "policy_operational_unsupported"
       "Unknown executable semantic descriptor; names and prose cannot supply operational meaning."
-let definition_ref_to_json value = value.definition_json
-let definition_ref_of_json value =
+let definition_ref_to_json (value:definition_ref) = value.definition_json
+let definition_ref_of_json value : definition_ref =
   exact ["$type";"id";"version";"digest"] value;
   require (text "$type" value = "DefinitionRef") "Descriptor must carry complete DefinitionRef identity.";
   let definition_id=Json.name (get "id" value) and definition_version=Json.name (get "version" value)
@@ -153,7 +153,7 @@ let definition_ref_of_json value =
     | '0'..'9' | 'a'..'f' -> true | _ -> false) definition_digest)
     "Definition digest must contain exactly 64 lowercase hexadecimal SHA-256 characters.";
   {definition_id;definition_version;definition_digest;definition_json=value}
-let descriptors_of_json raw =
+let descriptors_of_json raw : descriptor_bundle =
   ignore (Policy_document.document_digest raw);
   exact ["schema_version";"profile";"definitions"] raw;
   require (text "schema_version" raw = descriptor_schema && text "profile" raw = profile) "Unsupported operational descriptor profile.";
@@ -164,9 +164,9 @@ let descriptors_of_json raw =
     let definition=definition_ref_of_json (get "definition" value) in
     {definition;semantics=semantic_of_tag (Json.name (get "semantics" value))}) definitions in
   {descriptor_raw=raw;descriptor_values}
-let descriptors_to_json value = value.descriptor_raw
-let descriptors value = value.descriptor_values
-let descriptors_digest value = Canonical.fingerprint value.descriptor_raw
+let descriptors_to_json (value:descriptor_bundle) = value.descriptor_raw
+let descriptors (value:descriptor_bundle) = value.descriptor_values
+let descriptors_digest (value:descriptor_bundle) = Canonical.fingerprint value.descriptor_raw
 let measure_behavior raw =
   let max_bytes=8*1024*1024 and max_nodes=400_000 and max_depth=64
   and max_string=262_144 and max_number=256 in
@@ -205,7 +205,7 @@ let measure_behavior raw =
   match Canonical.encode_bounded ~max_bytes raw with
   | _ -> ()
   | exception Diagnostic.Error diagnostic when diagnostic.code = "response_too_large" -> limit false
-let behavior_of_json raw =
+let behavior_of_json raw : behavior =
   measure_behavior raw;
   exact ["schema_version";"profile";"source_document";"descriptor_bundle";"source_artifact_digest";
     "descriptors_digest";"nodes";"source_ledger";"requirements_ledger";"assumptions";"unresolved_obligations"] raw;
@@ -254,4 +254,4 @@ let behavior_of_json raw =
   {raw;source_document;definitions;nodes;source_ledger=get "source_ledger" raw;requirements_ledger=get "requirements_ledger" raw;
     assumptions=strings "assumptions" raw;unresolved_obligations=strings "unresolved_obligations" raw;
     roles;subjects;encounters;clocks;observations;stores;effects;rules;machines;transitions;requirements;parameters}
-let behavior_to_json value = value.raw
+let behavior_to_json (value:behavior) = value.raw

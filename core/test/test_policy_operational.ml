@@ -130,5 +130,45 @@ let run fixture =
   let observation=List.find (fun declaration -> text "id" declaration = "condition") (items "declarations" raw) in
   let same_frame=replace "declarations" (arr (items "declarations" raw @ [replace "id" (str "same_frame_observation") observation])) raw in
   unsupported "unimplemented multi-observation frame join" same_frame;
+  let named id=List.find (fun declaration -> text "id" declaration = id) (items "declarations" raw) in
+  let reference kind id=obj ["$type",str "Ref";"kind",str kind;"id",str id] in
+  let role_ref=reference "Role" "executor" and encounter_ref=reference "Encounter" "encounter" in
+  let executor_scope=obj ["$type",str "Scope";"kind",str "executor";"subject",role_ref] in
+  let append declarations source=replace "declarations" (arr (items "declarations" source @ declarations)) source in
+  let rule=named "respond" in
+  let literal=get "value" (List.hd (items "assignments" rule)) in
+  let executor_reset=named "seen" |> replace "id" (str "executor_reset") |> replace "scope" executor_scope
+    |> replace "lifetime" (str "executor") |> replace "reset" (get "when" rule) in
+  unsupported "executor reset reads encounter evidence" (append [executor_reset] raw);
+  let global_observation=observation |> replace "id" (str "executor_observation") |> replace "subject" role_ref
+    |> replace "coherence" (str "executor_frame") in
+  let global_event=get "on" rule |> replace "op" (str "updated") |> replace "args" (arr [])
+    |> replace "ref" (reference "Observation" "executor_observation") |> replace "scope" role_ref in
+  let machine=obj ["$type",str "Machine";"id",str "executor_machine";"executor",role_ref;"scope",executor_scope;
+    "states",arr [str "idle";str "done"];"initial",str "idle";"terminal",arr [str "done"];
+    "lifetime",str "executor";"arbitration",get "arbitration" rule] in
+  let transition=obj ["$type",str "Transition";"id",str "machine_step";"machine",reference "Machine" "executor_machine";
+    "source",str "idle";"destination",str "done";"on",get "on" rule;"when",literal;"unknown",str "defer";
+    "effects",arr [];"assignments",arr [];"unknown_target",Json.Null;"emissions",arr []] in
+  unsupported "executor machine reads encounter event" (append [machine;transition] raw);
+  let assignment_transition=transition |> replace "on" global_event |> replace "assignments" (get "assignments" rule) in
+  unsupported "executor machine writes encounter destination" (append [global_observation;machine;assignment_transition] raw);
+  let destination_rule=rule |> replace "id" (str "unbound_destination") |> replace "on" global_event
+    |> replace "when" literal |> replace "effects" (arr []) in
+  unsupported "rule destination cannot introduce encounter binding" (append [global_observation;destination_rule] raw);
+  let encounter_state=literal |> replace "op" (str "state") |> replace "value" Json.Null
+    |> replace "ref" (reference "StateStore" "seen") |> replace "scope" encounter_ref in
+  let executor_effect=named "response" |> replace "id" (str "executor_response") |> replace "subject" role_ref in
+  let mismatched_rule=rule |> replace "id" (str "mixed_retained_binding") |> replace "on" global_event
+    |> replace "when" encounter_state |> replace "assignments" (arr [])
+    |> replace "effects" (arr [reference "Effect" "executor_response"]) in
+  unsupported "effect subject differs from retained encounter environment" (append [global_observation;executor_effect;mismatched_rule] raw);
+  let executor_state=named "seen" |> replace "id" (str "executor_state") |> replace "scope" executor_scope
+    |> replace "lifetime" (str "executor") in
+  let global_state=encounter_state |> replace "ref" (reference "StateStore" "executor_state") |> replace "scope" role_ref in
+  let reads_global=raw |> append [executor_state] |> change_declaration "respond" (replace "when" global_state) in
+  let reads_global_document=D.of_json ~path:"/document" reads_global in
+  ignore (C.check ~expected_document:reads_global_document ~descriptors
+    (L.lower (A.admit ~document:reads_global_document ~descriptors)));
   Printf.printf "policy operational: literal lowering and %d independent mutation rejections\n" !rejected
 let () = if Array.length Sys.argv <> 2 then failwith "expected operational fixture" else run (read Sys.argv.(1))

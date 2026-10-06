@@ -193,6 +193,26 @@ class OperationalCampaignTests(unittest.TestCase):
             with self.subTest(code=code, stdout=stdout, error=error), self.assertRaises(AssertionError):
                 TOOL.check_cli_error(code, stdout, json.dumps(error).encode(), "execute-native", "policy_execution_work_limit")
 
+    def test_cli_success_retains_actual_checked_output_and_rejects_bool_integer_aliases(self):
+        outcomes = {row["name"]: row["result"] for row in self.receipts[0]["observations"]}
+        expected = outcomes["execute-verify"]
+        payload = {"document": self.fixture["document"], "definitions": self.fixture["definitions"],
+                   "candidate": outcomes["compile"]["candidate"], "timeline": self.fixture["timeline"]}
+        retained = TOOL.check_cli_success(0, json.dumps(expected).encode(), b"", "execute-native", expected, payload, "verify")
+        self.assertEqual(retained, expected)
+        self.assertIsNot(retained, expected)
+        changed = deepcopy(expected)
+        changed["report"]["execution"]["requirements"][0]["coverage"]["samples"] = False
+        self.assertEqual(changed, expected)  # Ordinary Python equality hides this corruption.
+        with self.assertRaisesRegex(AssertionError, "returned authority"):
+            TOOL.check_cli_success(0, json.dumps(changed).encode(), b"", "execute-native", expected, payload, "verify")
+        changed["report_fingerprint"] = TOOL.canonical_digest(changed["report"])
+        with self.assertRaisesRegex(AssertionError, "returned authority"):
+            TOOL.check_cli_success(0, json.dumps(changed).encode(), b"", "execute-native", expected, payload, "verify")
+        duplicated = json.dumps(expected)[:-1] + ', "schema_version":"duplicate"}'
+        with self.assertRaisesRegex(AssertionError, "returned authority"):
+            TOOL.check_cli_success(0, duplicated.encode(), b"", "execute-native", expected, payload, "verify")
+
     def test_wrong_feedback_must_leave_correlated_attempt_incomplete(self):
         outputs = {row["name"]: row["result"] for row in self.receipts[0]["observations"]}
         execution = outputs["wrong-feedback-target"]["report"]["execution"]

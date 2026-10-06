@@ -110,7 +110,7 @@ let concrete_subject s subject (b:binding) = match (subject_binding s subject b)
 let value_equal a b = match a,b with
   | O.Truth x,O.Truth y -> x=y | O.Integer x,O.Integer y -> Z.equal x y | O.Text x,O.Text y -> x=y
   | O.Quantity(x,_),O.Quantity(y,_) -> Q.equal x y | _ -> false
-let truth = function {value=Some(O.Truth x);_} -> x | {value=None;_} -> O.Unknown | _ -> fail "policy_execution_type" "Boolean expression did not evaluate to truth."
+let truth (value:evaluated) = match value.value with Some(O.Truth x) -> x | None -> O.Unknown | _ -> fail "policy_execution_type" "Boolean expression did not evaluate to truth."
 let truth_json = function O.True -> str "true" | O.False -> str "false" | O.Unknown -> str "unknown"
 let truth_value x = {value=Some(O.Truth x);reasons=[]}
 let inverse = function O.True -> O.False | O.False -> O.True | O.Unknown -> O.Unknown
@@ -190,7 +190,7 @@ let event_matches s b ?machine expression =
       let matches=List.filter(fun e->e.kind=Option.value expression.phase ~default:"" && e.declaration=effect.effect_id && e.binding=expected) s.events in
       (match machine with None->matches | Some identity ->
         let retained=Option.value(Hashtbl.find_opt s.machine_attempts(identity,b)) ~default:[] in
-        List.filter(fun e->match e.attempt with Some id->List.mem id retained|None->false) matches)
+        List.filter(fun (e:event)->match e.attempt with Some id->List.mem id retained|None->false) matches)
   | "rising" ->
       List.filter(fun e->e.kind="rising" && e.declaration=full_expression_key expression && e.binding=b) s.events
   | _ -> fail "policy_execution_event" ("Unsupported event expression: " ^ expression.op)
@@ -241,7 +241,7 @@ let apply_encounters s =
     if e.active && List.mem s.now e.resets then (
       let old=concrete_binding e in discard_scope s old "encounter_reset";
       e.generation<-e.generation+1;let b=concrete_binding e in initialize_scope s b;ignore(emit s "encounter_reset" e.declaration b))) s.encounters
-let merge_evidence (previous:evidence option) (inputs:observation_input list) =
+let merge_evidence (previous:evidence option) (inputs:observation_input list) : evidence =
   let newest=List.fold_left(fun n (input:observation_input)->max n input.observed) (match previous with None->(-1)|Some e->e.observed) inputs in
   let fresh=List.filter(fun (input:observation_input)->input.observed=newest) inputs in
   let old=match previous with Some e when e.observed=newest->Some e|_->None in
@@ -356,16 +356,16 @@ let arbitrate s activations =
   let groups=List.fold_left(fun groups a->let key=arbitration_key a in
     let existing=Option.value(List.assoc_opt key groups) ~default:[] in List.remove_assoc key groups@[key,existing@[a]]) [] activations in
   List.concat_map(fun(_,group)->charge s (List.length group);match group with []->[]|first::_->
-    if first.arbitration.mode="priority" then List.iter(fun a->require(List.mem a.identity a.arbitration.order) "policy_execution_arbitration" "Activation missing from explicit arbitration order.") group;
+    if first.arbitration.mode="priority" then List.iter(fun (a:activation)->require(List.mem a.identity a.arbitration.order) "policy_execution_arbitration" "Activation missing from explicit arbitration order.") group;
     match first.arbitration.mode,group with
     | _,[_]->group
     | "exclusive",_->fail "policy_execution_exclusive" "Simultaneous activations violate declared exclusive arbitration."
     | "priority",_->
-        let rank a=let rec loop index=function []->max_int|id::rest->if id=a.identity then index else loop(index+1)rest in loop 0 a.arbitration.order in
+        let rank (a:activation)=let rec loop index=function []->max_int|id::rest->if id=a.identity then index else loop(index+1)rest in loop 0 a.arbitration.order in
         let sorted=List.stable_sort(fun a b->compare(rank a)(rank b)) group in
         let selected=List.hd sorted in
         require(not(List.exists(fun a->rank a=rank selected)(List.tl sorted))) "policy_execution_tie" "Multiple activations have equal explicit priority.";
-        List.iter(fun a->action s "arbitration_suppressed" (obj["declaration",str a.identity;"selected",str selected.identity;"binding",binding_json a.binding])) (List.tl sorted);
+        List.iter(fun (a:activation)->action s "arbitration_suppressed" (obj["declaration",str a.identity;"selected",str selected.identity;"binding",binding_json a.binding])) (List.tl sorted);
         [selected]
     | _->fail "policy_execution_arbitration" "Unsupported arbitration mode.") groups
 let apply_resets s =
@@ -386,17 +386,17 @@ let execute_activations s activations =
     let effects=List.map(fun id->let effect=lookup s "policy_execution_effect" id (fun(e:O.effect)->e.effect_id) s.behavior.effects in
       let parameters=List.map(fun(name,expression)->name,eval s a.binding expression) effect.parameters in
       effect,parameters) a.effects in
-    if List.exists(fun(_,value)->value.value=None) assigned ||
-       List.exists(fun(_,parameters)->List.exists(fun(_,value)->value.value=None) parameters) effects
+    if List.exists(fun(_,(value:evaluated))->value.value=None) assigned ||
+       List.exists(fun(_,parameters)->List.exists(fun(_,(value:evaluated))->value.value=None) parameters) effects
     then action s "activation_deferred" (obj["declaration",str a.identity;"binding",binding_json a.binding;"reasons",arr[str "unknown_assignment_or_parameter"]])
     else (
-      List.iter(fun(key,value)->let value=Option.get value.value in
+      List.iter(fun(key,(value:evaluated))->let value=Option.get value.value in
         (match List.find_opt(fun(k,_,_)->k=key) !writes with
         | None->writes:= !writes@[key,value,a.arbitration.write_conflict]
         | Some(_,previous,policy)->require(a.arbitration.write_conflict="identical_only" && policy="identical_only" && value_equal previous value)
             "policy_execution_write_conflict" "Atomic activations conflict on a concrete state key.");
         ()) assigned;
-      prepared:= !prepared@[a,List.map(fun(e,parameters)->e,List.map(fun(name,v)->name,Option.get v.value) parameters) effects])) activations;
+      prepared:= !prepared@[a,List.map(fun(e,parameters)->e,List.map(fun(name,(v:evaluated))->name,Option.get v.value) parameters) effects])) activations;
   let requested=List.fold_left(fun count(_,effects)->count+List.length effects)0 !prepared in
   require(requested<=s.bounds.max_attempts-s.attempt_sequence) "policy_execution_attempt_limit" "Effect attempt bound exhausted before atomic batch.";
   List.iter(fun((state,b),value,_)->Hashtbl.replace s.states(state,b) value;
@@ -430,10 +430,10 @@ let execute_activations s activations =
     List.concat_map snd started) !prepared
 
 let value_ops = ["literal";"observe";"state";"parameter";"all";"any";"not";"eq";"ne";"lt";"le";"gt";"ge"]
-let rec supported_value expression = expression.O.value_type<>None && List.mem expression.op value_ops && List.for_all supported_value expression.args
-let rec observed_predicate expression = expression.O.op<>"state" && supported_value expression && List.for_all observed_predicate expression.args
-let rec contains_observation expression = expression.O.op="observe" || List.exists contains_observation expression.args
-let supported_event expression = expression.O.value_type=None &&
+let rec supported_value (expression:O.expression) = expression.O.value_type<>None && List.mem expression.op value_ops && List.for_all supported_value expression.args
+let rec observed_predicate (expression:O.expression) = expression.O.op<>"state" && supported_value expression && List.for_all observed_predicate expression.args
+let rec contains_observation (expression:O.expression) = expression.O.op="observe" || List.exists contains_observation expression.args
+let supported_event (expression:O.expression) = expression.O.value_type=None &&
   (match expression.op with "updated"|"effect_event"->expression.args=[] | "rising"->(match expression.args with [x]->observed_predicate x && contains_observation x|_->false)|_->false)
 let supported_requirement (r:O.requirement) =
   let absent key = match List.assoc_opt key (Json.object_fields r.source) with None|Some Json.Null->true|Some(Json.Array [])->true|_->false in

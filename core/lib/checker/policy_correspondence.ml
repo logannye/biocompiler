@@ -2,7 +2,7 @@ open Bioc_wire
 module D = Bioc_domain.Policy_document
 module O = Bioc_domain.Policy_operational
 let str value = Json.String value
-let check ~expected_document ~descriptors candidate =
+let check ~expected_document ~descriptors (candidate:O.behavior) =
   (* The checker imports no lowering producer, and reconstructs every expected
      instruction field directly from the original external source. *)
   let admitted=Policy_admission.admit ~document:expected_document ~descriptors in

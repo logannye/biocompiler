@@ -100,14 +100,38 @@ def check_cli_guard(guard: dict, package: str, python_version: str) -> None:
 
 
 def check_cli_error(returncode: int, stdout: bytes, stderr: bytes, command: str, diagnostic: str) -> dict:
+    from biocompiler.core_client import CoreError, decode_json
+
     if returncode != 2 or stdout:
         raise AssertionError("Corrupt CLI authority did not fail closed with invocation status 2")
-    value = json.loads(stderr)
+    try:
+        value = decode_json(stderr)
+    except CoreError as error:
+        raise AssertionError("Corrupt CLI authority returned malformed diagnostic JSON") from error
     if (type(value) is not dict or set(value) != {"status", "operation", "message"}
             or value["status"] != "error" or value["operation"] != command
             or not value["message"].startswith(diagnostic + ":")):
         raise AssertionError("Corrupt CLI authority failed for an unrelated reason")
     return value
+
+
+def check_cli_success(returncode: int, stdout: bytes, stderr: bytes, command: str,
+                      expected: dict, payload: dict, role: str) -> dict:
+    """Check and retain actual CLI output against independent operation inputs."""
+    from biocompiler.core_client import CORE_VERSION, CoreError, CoreResponse, decode_json, encode_json
+    from biocompiler.core_policy_operational import _result
+
+    operation = {"compile-native": "compile-policy", "execute-native": "execute-policy",
+                 "replay-execution-native": "replay-policy-execution"}[command]
+    try:
+        actual = decode_json(stdout)
+        checked = _result(CoreResponse("installed-cli", operation, "ok", actual, (), role, CORE_VERSION), payload)
+    except CoreError as error:
+        raise AssertionError("Installed CLI changed its complete returned authority") from error
+    expected_code = int(any(row["status"] == "fail" for row in checked.report.get("execution", {}).get("requirements", [])))
+    if returncode != expected_code or stderr or encode_json(actual) != encode_json(expected):
+        raise AssertionError(f"Installed {command} differs from complete SDK output: {stderr[:2000]!r}")
+    return checked.result
 
 
 def check_observations(observations: list, fixture: dict) -> None:
@@ -134,9 +158,10 @@ def check_observations(observations: list, fixture: dict) -> None:
             _result(CoreResponse("retained-observation", operation, "ok", outcomes[name], (), "core", CORE_VERSION), payload)
         except CoreError as error:
             raise AssertionError("Retained operational output lost complete independent authority: " + name) from error
-    if (outcomes["execute-core"] != outcomes["execute-verify"] or outcomes["replay-verify"] != outcomes["execute-verify"]
-            or outcomes["compile-cli"] != outcomes["compile"] or outcomes["execute-cli"] != outcomes["execute-verify"]
-            or outcomes["replay-cli"] != outcomes["replay-verify"]):
+    if any(canonical_digest(outcomes[left]) != canonical_digest(outcomes[right]) for left, right in (
+        ("execute-core", "execute-verify"), ("replay-verify", "execute-verify"),
+        ("compile-cli", "compile"), ("execute-cli", "execute-verify"), ("replay-cli", "replay-verify"),
+    )):
         raise AssertionError("Core, Verify, fresh replay and installed CLI outputs differ")
     check_attempt_literals(outcomes["execute-verify"]["report"]["execution"], fixture["expected_attempts"])
     for name, field, value, reason in (
@@ -281,12 +306,15 @@ def run(args: argparse.Namespace) -> dict:
                 argv += ["--report", str(directory / "report.json")]
             guard_receipt.unlink(missing_ok=True)
             code, stdout, stderr = run_bounded(argv, cwd=directory, env=env, timeout=60)
-            expected_code = int(any(row["status"] == "fail" for row in expected["report"].get("execution", {}).get("requirements", [])))
-            if code != expected_code or stderr or json.loads(stdout) != expected:
-                raise AssertionError(f"Installed {command} failed: {stderr[:2000]!r}")
+            supplied = {"document": document, "definitions": definitions}
+            if command != "compile-native":
+                supplied.update(candidate=candidate, timeline=timeline)
+            if command == "replay-execution-native":
+                supplied["report"] = execution.report
+            actual = check_cli_success(code, stdout, stderr, command, expected, supplied, executable)
             cli_guards[name] = read_json(guard_receipt)
             check_cli_guard(cli_guards[name], str(package), platform.python_version())
-            retain(name, expected)
+            retain(name, actual)
         for name, command, changed_file, changed_value, diagnostic in (
             ("forged-replay-cli", "replay-execution-native", "report", forged, "policy_execution_replay"),
             ("work-limit-cli", "execute-native", "timeline", limited, "policy_execution_work_limit"),
@@ -354,7 +382,7 @@ def compare(paths: list[Path], native_root: Path, fixture_path: Path) -> dict:
         for guard in receipt["cli_guards"].values():
             check_cli_guard(guard, receipt["package"], receipt["python_version"])
         check_observations(observations, fixture)
-        if baseline is not None and baseline != observations:
+        if baseline is not None and canonical_digest(baseline) != canonical_digest(observations):
             raise AssertionError("Complete operational results differ across installed platform/Python slots")
         baseline = observations
     if found != expected:

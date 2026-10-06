@@ -169,7 +169,8 @@ def _execution(value: JsonValue, payload: dict[str, JsonValue], candidate: JsonV
         if not _same(execution[field], timeline.get(field)):
             raise CoreProtocolError("Operational execution changed supplied timeline " + field)
     for field in ("frames", "attempts", "requirements"):
-        if type(execution[field]) is not list or any(type(row) is not dict for row in execution[field]):
+        rows = execution[field]
+        if type(rows) is not list or any(type(row) is not dict for row in rows):
             raise CoreProtocolError("Operational execution " + field + " must be a list of records")
     usage = _object(execution["usage"], {"ticks", "work", "trace_items", "attempts"}, "Execution resource usage")
     bounds = source._record(timeline.get("bounds"), "Supplied execution bounds")

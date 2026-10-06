@@ -3,7 +3,7 @@ module D = Bioc_domain.Policy_document
 module O = Bioc_domain.Policy_operational
 module A = Bioc_checker.Policy_admission
 let str value = Json.String value
-let lower admitted =
+let lower (admitted:A.t) =
   let document=A.document admitted and descriptors=A.descriptors admitted in
   let assessment=A.source_assessment admitted in
   let nodes=List.map (fun (declaration:D.declaration) ->
