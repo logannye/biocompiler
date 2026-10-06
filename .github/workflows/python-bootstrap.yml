@@ -1,0 +1,42 @@
+name: Supported Python bootstrap feedback
+
+on:
+  push:
+    branches: ['codex/dev-python/**']
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  macos-python-bootstrap:
+    runs-on: macos-14
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Seed the exact supported Python from authenticated supplied bytes
+        run: /usr/bin/python3 -I -S -B tools/bootstrap_hosted_python.py --output generated/ci-python/bootstrap.json
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11.15'
+      - name: Check the selected runtime and unchanged archive authority
+        env:
+          PYTHONPATH: src:.
+        run: |
+          python -B -c 'import os,platform,sys; assert platform.python_version()=="3.11.15" and platform.machine()=="arm64" and platform.system()=="Darwin"; print({"revision":os.environ["GITHUB_SHA"],"run_id":os.environ["GITHUB_RUN_ID"],"run_attempt":os.environ["GITHUB_RUN_ATTEMPT"],"python":platform.python_version(),"executable":sys.executable,"release_acceptance":False})' | tee generated/ci-python/selection.log
+          python -B -m unittest -v tests.test_archive_authority tests.test_bootstrap_hosted_python 2>&1 | tee generated/ci-python/checks.log
+      - name: Retain bounded bootstrap feedback without release acceptance
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: python-bootstrap-${{ github.run_id }}-${{ github.run_attempt }}
+          path: generated/ci-python/
+          if-no-files-found: error
+          retention-days: 7

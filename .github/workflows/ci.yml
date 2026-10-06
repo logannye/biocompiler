@@ -43,7 +43,7 @@ jobs:
         env:
           PYTHONPATH: src:.
         run: |
-          python -B -m unittest tests.test_ci_validation tests.test_prebuilt_ci_plan tests.test_prebuilt_release_chain tests.test_prebuilt_sdk_matrix tests.test_ci_scheduling tests.test_test_shards tests.test_ci_native_bundle tests.test_ci_core_groups tests.test_realization_protocol_parallel tests.test_native_fixture_wiring tests.test_pipeline_reference_runtime tests.test_architecture_routing_parallel tests.test_architecture_routing_reproducibility tests.test_architecture_routing_corpus tests.test_pipeline_authoring_sources tests.test_prebuilt_command_diagnostics tests.test_pipeline_fixed_continuation_identity tests.test_pipeline_occurrence_source tests.test_pipeline_fixed_continuation_workers tests.test_pipeline_fixed_direct_controls.DirectRecordObservationTests tests.test_installed_campaign_parallel tests.test_core_pipeline_callback_session.CallbackExitedPipeTests tests.test_ci_preflight tests.test_callback_source_lineage tests.test_synthetic_inspection_boundaries tests.test_pipeline_fixed_registration_locations tests.test_pipeline_fixed_registration_records tests.test_synthetic_inspection_workers tests.test_pipeline_capture_overlap tests.test_pipeline_policy_counterpart tests.test_pipeline_historical_source_integrity tests.test_checked_pipeline_corpus.CheckedPipelineCorpusTests.test_every_complete_document_source_and_generator_has_its_original_identity tests.test_fixed_pipeline_literals.FixedPipelineLiteralsTests.test_every_complete_input_return_error_source_and_document_is_preserved tests.test_policy_operational_campaign tests.test_policy_implementation_campaign tests.test_callback_unsolicited_ordering tests.test_core_pipeline_callback_session.CallbackSessionTests.test_truncated_malformed_multiple_and_unsolicited_frames_are_terminal tests.test_reference_attempt_import_modes tests.test_core_pipeline_view_fields tests.test_pipeline_reference_parallel tests.test_core_reference_contract_targets tests.test_reference_view_source_lineage tests.test_reference_target_source_lineage tests.test_pipeline_session_exit_drain tests.test_reference_observer_dispatch tests.test_reference_campaign_diagnostics tests.test_reference_session_source_lineage tests.test_reference_guard_scheduling tests.test_reference_guard_failure_evidence tests.test_archive_authority
+          python -B -m unittest tests.test_ci_validation tests.test_prebuilt_ci_plan tests.test_prebuilt_release_chain tests.test_prebuilt_sdk_matrix tests.test_ci_scheduling tests.test_bootstrap_hosted_python tests.test_test_shards tests.test_ci_native_bundle tests.test_ci_core_groups tests.test_realization_protocol_parallel tests.test_native_fixture_wiring tests.test_pipeline_reference_runtime tests.test_architecture_routing_parallel tests.test_architecture_routing_reproducibility tests.test_architecture_routing_corpus tests.test_pipeline_authoring_sources tests.test_prebuilt_command_diagnostics tests.test_pipeline_fixed_continuation_identity tests.test_pipeline_occurrence_source tests.test_pipeline_fixed_continuation_workers tests.test_pipeline_fixed_direct_controls.DirectRecordObservationTests tests.test_installed_campaign_parallel tests.test_core_pipeline_callback_session.CallbackExitedPipeTests tests.test_ci_preflight tests.test_callback_source_lineage tests.test_synthetic_inspection_boundaries tests.test_pipeline_fixed_registration_locations tests.test_pipeline_fixed_registration_records tests.test_synthetic_inspection_workers tests.test_pipeline_capture_overlap tests.test_pipeline_policy_counterpart tests.test_pipeline_historical_source_integrity tests.test_checked_pipeline_corpus.CheckedPipelineCorpusTests.test_every_complete_document_source_and_generator_has_its_original_identity tests.test_fixed_pipeline_literals.FixedPipelineLiteralsTests.test_every_complete_input_return_error_source_and_document_is_preserved tests.test_policy_operational_campaign tests.test_policy_implementation_campaign tests.test_callback_unsolicited_ordering tests.test_core_pipeline_callback_session.CallbackSessionTests.test_truncated_malformed_multiple_and_unsolicited_frames_are_terminal tests.test_reference_attempt_import_modes tests.test_core_pipeline_view_fields tests.test_pipeline_reference_parallel tests.test_core_reference_contract_targets tests.test_reference_view_source_lineage tests.test_reference_target_source_lineage tests.test_pipeline_session_exit_drain tests.test_reference_observer_dispatch tests.test_reference_campaign_diagnostics tests.test_reference_session_source_lineage tests.test_reference_guard_scheduling tests.test_reference_guard_failure_evidence tests.test_archive_authority
           python -B tools/migration_inventory.py --check
           python -B tools/check_ci_preflight.py --output generated/preflight/campaigns.json
       - uses: actions/upload-artifact@v4
@@ -926,6 +926,9 @@ jobs:
             platform: macos-arm64
     steps:
       - uses: actions/checkout@v4
+      - name: Seed the exact hosted macOS ARM64 Python runtime
+        if: ${{ runner.environment == 'github-hosted' && runner.os == 'macOS' && runner.arch == 'ARM64' && fromJSON(env.BIOCOMPILER_SUPPORTED_PYTHON)['3.11'] == '3.11.15' }}
+        run: /usr/bin/python3 -I -S -B tools/bootstrap_hosted_python.py --output generated/ci-python/bootstrap.json
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ fromJSON(env.BIOCOMPILER_SUPPORTED_PYTHON)['3.11'] }}
@@ -1056,6 +1059,9 @@ jobs:
             platform: macos-arm64
     steps:
       - uses: actions/checkout@v4
+      - name: Seed the exact hosted macOS ARM64 Python runtime
+        if: ${{ runner.environment == 'github-hosted' && runner.os == 'macOS' && runner.arch == 'ARM64' && fromJSON(env.BIOCOMPILER_SUPPORTED_PYTHON)['3.11'] == '3.11.15' }}
+        run: /usr/bin/python3 -I -S -B tools/bootstrap_hosted_python.py --output generated/ci-python/bootstrap.json
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ fromJSON(env.BIOCOMPILER_SUPPORTED_PYTHON)['3.11'] }}
@@ -1170,6 +1176,9 @@ jobs:
             platform: macos-arm64
     steps:
       - uses: actions/checkout@v4
+      - name: Seed the exact hosted macOS ARM64 Python runtime
+        if: ${{ runner.environment == 'github-hosted' && runner.os == 'macOS' && runner.arch == 'ARM64' && fromJSON(env.BIOCOMPILER_SUPPORTED_PYTHON)['3.11'] == '3.11.15' }}
+        run: /usr/bin/python3 -I -S -B tools/bootstrap_hosted_python.py --output generated/ci-python/bootstrap.json
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ fromJSON(env.BIOCOMPILER_SUPPORTED_PYTHON)['3.11'] }}
@@ -1233,6 +1242,9 @@ jobs:
             python-version: "3.14"
     steps:
       - uses: actions/checkout@v4
+      - name: Seed the exact hosted macOS ARM64 Python runtime
+        if: ${{ runner.environment == 'github-hosted' && runner.os == 'macOS' && runner.arch == 'ARM64' && fromJSON(env.BIOCOMPILER_SUPPORTED_PYTHON)[matrix.python-version] == '3.11.15' }}
+        run: /usr/bin/python3 -I -S -B tools/bootstrap_hosted_python.py --output generated/ci-python/bootstrap.json
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ fromJSON(env.BIOCOMPILER_SUPPORTED_PYTHON)[matrix.python-version] }}
@@ -1565,6 +1577,9 @@ jobs:
             group: synthetic
     steps:
       - uses: actions/checkout@v4
+      - name: Seed the exact hosted macOS ARM64 Python runtime
+        if: ${{ runner.environment == 'github-hosted' && runner.os == 'macOS' && runner.arch == 'ARM64' && fromJSON(env.BIOCOMPILER_SUPPORTED_PYTHON)[matrix.python-version] == '3.11.15' }}
+        run: /usr/bin/python3 -I -S -B tools/bootstrap_hosted_python.py --output generated/ci-python/bootstrap.json
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ fromJSON(env.BIOCOMPILER_SUPPORTED_PYTHON)[matrix.python-version] }}
@@ -1628,6 +1643,9 @@ jobs:
             python-version: "3.14"
     steps:
       - uses: actions/checkout@v4
+      - name: Seed the exact hosted macOS ARM64 Python runtime
+        if: ${{ runner.environment == 'github-hosted' && runner.os == 'macOS' && runner.arch == 'ARM64' && fromJSON(env.BIOCOMPILER_SUPPORTED_PYTHON)[matrix.python-version] == '3.11.15' }}
+        run: /usr/bin/python3 -I -S -B tools/bootstrap_hosted_python.py --output generated/ci-python/bootstrap.json
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ fromJSON(env.BIOCOMPILER_SUPPORTED_PYTHON)[matrix.python-version] }}
@@ -2037,6 +2055,9 @@ jobs:
             wheel-tag: macosx_14_0_arm64
     steps:
       - uses: actions/checkout@v4
+      - name: Seed the exact hosted macOS ARM64 Python runtime
+        if: ${{ runner.environment == 'github-hosted' && runner.os == 'macOS' && runner.arch == 'ARM64' && fromJSON(env.BIOCOMPILER_SUPPORTED_PYTHON)[matrix.python-version] == '3.11.15' }}
+        run: /usr/bin/python3 -I -S -B tools/bootstrap_hosted_python.py --output generated/ci-python/bootstrap.json
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ fromJSON(env.BIOCOMPILER_SUPPORTED_PYTHON)[matrix.python-version] }}

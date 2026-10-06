@@ -115,6 +115,122 @@ class SchedulingTests(unittest.TestCase):
             self.assertIn('--result generated/unit-results/shard-' + str(index) + '.json',
                           jobs['unit-accounting'])
 
+    def assert_hosted_bootstrap_workflow(self, text):
+        jobs = {match.group(1): match.group(2) for match in re.finditer(
+            r'^  ([a-z][a-z0-9-]*):\n(.*?)(?=^  [a-z][a-z0-9-]*:\n|\Z)',
+            text.split('\njobs:\n', 1)[1], re.M | re.S)}
+        fixed = {'ocaml-build', 'ocaml-native-tests', 'ocaml-core'}
+        selected = {'architecture-sdk', 'installed-campaigns',
+                    'realization-conformance', 'policy-prebuilt-installed'}
+        expected_slots = {'ocaml-build': 1, 'ocaml-native-tests': 1, 'ocaml-core': 1,
+                          'architecture-sdk': 1, 'installed-campaigns': 5,
+                          'realization-conformance': 1, 'policy-prebuilt-installed': 1}
+        command = ('run: /usr/bin/python3 -I -S -B tools/bootstrap_hosted_python.py '
+                   '--output generated/ci-python/bootstrap.json')
+        marker = 'name: Seed the exact hosted macOS ARM64 Python runtime'
+        total_slots = 0
+        for name, job in jobs.items():
+            steps = [match.group(1) for match in re.finditer(
+                r'^      - (.*?)(?=^      - |\Z)', job, re.M | re.S)]
+            seeds = [step for step in steps if 'tools/bootstrap_hosted_python.py' in step]
+            if name not in fixed | selected:
+                self.assertEqual(seeds, [], name)
+                continue
+            version = ("fromJSON(env.BIOCOMPILER_SUPPORTED_PYTHON)['3.11']" if name in fixed
+                       else 'fromJSON(env.BIOCOMPILER_SUPPORTED_PYTHON)[matrix.python-version]')
+            condition = ("if: ${{ runner.environment == 'github-hosted' && runner.os == 'macOS' "
+                         "&& runner.arch == 'ARM64' && " + version + " == '3.11.15' }}")
+            self.assertEqual(seeds, [marker + '\n        ' + condition +
+                                     '\n        ' + command + '\n'], name)
+            seed_index = steps.index(seeds[0])
+            self.assertGreater(seed_index, 0, name)
+            self.assertEqual(steps[seed_index - 1], 'uses: actions/checkout@v4\n', name)
+            self.assertTrue(steps[seed_index + 1].startswith('uses: actions/setup-python@v5\n'), name)
+            rows = re.findall(r'          - runner: macos-14\n            platform: macos-arm64\n'
+                              r'(?:            python-version: "([0-9.]+)"\n)?', job)
+            selected_rows = rows.count('') if name in fixed else rows.count('3.11')
+            self.assertEqual(selected_rows, expected_slots[name], name)
+            total_slots += selected_rows
+        self.assertEqual(total_slots, 11)
+        self.assertEqual(text.count('tools/bootstrap_hosted_python.py'), 7)
+        self.assertIn('tests.test_bootstrap_hosted_python', jobs['ci-preflight'])
+        self.assert_supported_runtime_workflow(text)
+
+    def test_mac_arm_bootstrap_preserves_exact_selection_and_all_existing_jobs(self):
+        text = (ROOT / '.github/workflows/ci.yml').read_text()
+        self.assert_hosted_bootstrap_workflow(text)
+        seed = re.search(r'^      - name: Seed the exact hosted macOS ARM64 Python runtime\n'
+                         r'        if: .*\n        run: .*\n', text, re.M).group(0)
+        setup = ("      - uses: actions/setup-python@v5\n        with:\n"
+                 "          python-version: ${{ fromJSON(env.BIOCOMPILER_SUPPORTED_PYTHON)['3.11'] }}\n")
+        changes = [
+            text.replace(seed, '', 1),
+            text.replace("runner.environment == 'github-hosted' && ", '', 1),
+            text.replace("runner.os == 'macOS'", "runner.os == 'Linux'", 1),
+            text.replace("runner.arch == 'ARM64'", "runner.arch == 'X64'", 1),
+            text.replace(" == '3.11.15' }}", " == '3.14.6' }}", 1),
+            text.replace('fromJSON(env.BIOCOMPILER_SUPPORTED_PYTHON)[matrix.python-version] '
+                         "== '3.11.15'", "matrix.python-version == '3.11'", 1),
+            text.replace(seed + setup, setup + seed, 1),
+            text.replace('/usr/bin/python3 -I -S -B tools/bootstrap_hosted_python.py',
+                         'python3 tools/bootstrap_hosted_python.py', 1),
+            text.replace(seed, seed + seed, 1),
+            text.replace(' tests.test_bootstrap_hosted_python', '', 1),
+        ]
+        for index, changed in enumerate(changes):
+            with self.subTest(mutation=index), self.assertRaises(AssertionError):
+                self.assert_hosted_bootstrap_workflow(changed)
+
+    def assert_bootstrap_feedback_workflow(self, text):
+        self.assertIn("on:\n  push:\n    branches: ['codex/dev-python/**']\n", text)
+        self.assertNotIn('pull_request:', text)
+        self.assertNotIn('workflow_run:', text)
+        self.assertIn('permissions:\n  contents: read\n', text)
+        self.assertIn('group: ${{ github.workflow }}-${{ github.ref }}', text)
+        jobs = re.findall(r'^  ([a-z][a-z0-9-]*):\n', text.split('\njobs:\n', 1)[1], re.M)
+        self.assertEqual(jobs, ['macos-python-bootstrap'])
+        self.assertIn('runs-on: macos-14', text)
+        self.assertIn('timeout-minutes: 15', text)
+        ordered = (
+            'uses: actions/checkout@v4',
+            '/usr/bin/python3 -I -S -B tools/bootstrap_hosted_python.py '
+            '--output generated/ci-python/bootstrap.json',
+            'uses: actions/setup-python@v5',
+            "python-version: '3.11.15'",
+            'platform.python_version()=="3.11.15" and platform.machine()=="arm64" '
+            'and platform.system()=="Darwin"',
+            '"release_acceptance":False',
+            'python -B -m unittest -v tests.test_archive_authority tests.test_bootstrap_hosted_python',
+            'if: always()',
+            'uses: actions/upload-artifact@v4',
+            'path: generated/ci-python/',
+            'if-no-files-found: error',
+            'retention-days: 7',
+        )
+        positions = [text.index(value) for value in ordered]
+        self.assertEqual(positions, sorted(positions))
+        self.assertEqual(text.count('tools/bootstrap_hosted_python.py'), 1)
+        self.assertEqual(text.count('uses: actions/setup-python@'), 1)
+        for unrelated in ('dune ', 'cargo ', 'pip install', 'ci_validation.py finish'):
+            self.assertNotIn(unrelated, text)
+
+    def test_bootstrap_feedback_is_isolated_and_preserves_runtime_authority_checks(self):
+        text = (ROOT / '.github/workflows/python-bootstrap.yml').read_text()
+        self.assert_bootstrap_feedback_workflow(text)
+        changes = [
+            text.replace("branches: ['codex/dev-python/**']", "branches: ['**']"),
+            text.replace('contents: read', 'contents: write'),
+            text.replace('group: ${{ github.workflow }}-${{ github.ref }}',
+                         'group: release-${{ github.ref }}'),
+            text.replace("python-version: '3.11.15'", "python-version: '3.11'"),
+            text.replace('tests.test_archive_authority ', ''),
+            text.replace('"release_acceptance":False', '"release_acceptance":True'),
+            text.replace('if: always()', 'if: success()'),
+        ]
+        for index, changed in enumerate(changes):
+            with self.subTest(mutation=index), self.assertRaises((AssertionError, ValueError)):
+                self.assert_bootstrap_feedback_workflow(changed)
+
     def test_complete_campaign_partition_and_all_runtime_jobs_are_required(self):
         names=pipeline.campaign_names()
         self.assertEqual(len(names),17)

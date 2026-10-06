@@ -86,10 +86,37 @@ matching the two frozen archive standard-library source profiles. Matrix labels
 and receipt identities remain `3.11` and `3.14`. Every hosted Python consumer,
 including the three inline artifact comparisons and both reference-replay
 interpreters, uses that mapping; shards and accounting retain their checked-plan
-selection. The runner's Python is used only for the isolated plan-selector
-bootstrap before setup. Patch upgrades require explicit source-profile review,
-not replacement of frozen authority records. Preflight runs the original archive
-authority tests and migration inventory check before the larger campaigns.
+selection. The runner's Python is used only for isolated bootstrap work before
+setup. Patch upgrades require explicit source-profile review, not replacement of
+frozen authority records. Preflight runs the original archive authority tests,
+hosted Python bootstrap controls and migration inventory check before the larger
+campaigns.
+
+The hosted macOS ARM64 Python 3.11 slots first seed the exact 3.11.15 tool-cache
+entry from a pinned `python-build-standalone` archive. This fills the provider's
+missing patch/platform combination while preserving the frozen source profile.
+The seed runs only on a GitHub-hosted macOS ARM64 runner when the central mapping
+selects 3.11.15, using `/usr/bin/python3 -I -S -B` and a standard-library-only
+helper. It rejects an existing, unproven cache entry, checks the downloaded
+archive's size and digest, validates member paths and links before extraction,
+and verifies the resulting runtime before publishing the cache completion
+marker. The helper retains a bounded JSON receipt at
+`generated/ci-python/bootstrap.json` and in the hosted log. The existing
+`setup-python` action then selects the same exact patch through its normal
+tool-cache path; its outputs and every downstream runtime and source-authority
+check remain required. Seven existing job definitions cover all eleven affected
+slots, including the five installed campaign groups. Python 3.14 and Linux use
+their existing setup paths. Pure preflight controls exercise omission, ordering,
+platform selection, archive and cache rejection without downloading or executing
+the native runtime locally.
+
+The separate `python-bootstrap.yml` feedback workflow runs only for pushes to
+`codex/dev-python/**`. Its single macOS ARM64 job seeds and selects 3.11.15,
+checks the unchanged archive authority and bootstrap controls, and retains the
+receipt and logs for seven days. Its concurrency group is isolated from release
+validation, and its output explicitly denies release acceptance. This short
+hosted check validates runtime acquisition before dispatching a fresh complete
+74-job release gate; it cannot replace that gate or actual-main validation.
 
 Original-only fixed build and continuation replays restore the historical
 package entrypoints alongside their archived session checker. The private

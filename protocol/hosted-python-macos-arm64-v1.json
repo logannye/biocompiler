@@ -1,0 +1,23 @@
+{
+  "schema_version": "biocompiler.hosted_python_macos_arm64.v1",
+  "python_version": "3.11.15",
+  "implementation": "CPython",
+  "system": "Darwin",
+  "machine": "arm64",
+  "archive": {
+    "url": "https://github.com/astral-sh/python-build-standalone/releases/download/20260325/cpython-3.11.15%2B20260325-aarch64-apple-darwin-install_only.tar.gz",
+    "release_tag": "20260325",
+    "asset_id": 381125647,
+    "size": 20082612,
+    "sha256": "054a5e5645c87538df903aa5ffee9ae6b84323545b63bcd0e01285bda8898b6c"
+  },
+  "limits": {
+    "members": 30000,
+    "expanded_bytes": 268435456,
+    "file_bytes": 134217728
+  },
+  "cache": {
+    "version": "3.11.15",
+    "architecture": "arm64"
+  }
+}
