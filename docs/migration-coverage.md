@@ -17,19 +17,19 @@ Unknown export bindings, dynamic export mutations, unresolved schema/profile dec
 | Inventory category | Entries |
 | --- | ---: |
 | `authority_boundary` | 94 |
-| `cli_command` | 60 |
+| `cli_command` | 63 |
 | `console_script` | 1 |
 | `example` | 37 |
 | `export` | 699 |
 | `ir_operation` | 165 |
-| `module` | 205 |
-| `public_definition` | 850 |
+| `module` | 207 |
+| `public_definition` | 856 |
 | `schema` | 329 |
 | `serializer` | 294 |
 | `studio_asset` | 8 |
 | `studio_endpoint` | 14 |
-| `version_literal` | 520 |
-| `version_profile` | 104 |
+| `version_literal` | 536 |
+| `version_profile` | 109 |
 
 ## CLI command index
 
@@ -75,7 +75,9 @@ Unknown export bindings, dynamic export mutations, unresolved schema/profile dec
 | `payload-verify` | `--expected-request` | legacy |
 | `policy assess-native` | `--expected-sha256` | legacy |
 | `policy check` | See argument contract; inspection is not verification | legacy |
+| `policy check-implementation-native` | `--expected-sha256`, `--limits`, `--candidate` | legacy |
 | `policy check-lowering-native` | `--expected-sha256`, `--definitions`, `--candidate` | legacy |
+| `policy compile-implementation-native` | `--expected-sha256`, `--limits` | legacy |
 | `policy compile-native` | `--expected-sha256`, `--definitions` | legacy |
 | `policy diff` | See argument contract; inspection is not verification | legacy |
 | `policy execute-native` | `--expected-sha256`, `--definitions`, `--candidate`, `--timeline` | legacy |
@@ -83,6 +85,7 @@ Unknown export bindings, dynamic export mutations, unresolved schema/profile dec
 | `policy export-schema` | See argument contract; inspection is not verification | legacy |
 | `policy inspect` | See argument contract; inspection is not verification | legacy |
 | `policy replay-execution-native` | `--expected-sha256`, `--definitions`, `--candidate`, `--timeline`, `--report` | legacy |
+| `policy replay-implementation-native` | `--expected-sha256`, `--limits`, `--candidate`, `--report` | legacy |
 | `reference-build` | `--request` | legacy |
 | `reference-inspect` | See argument contract; inspection is not verification | legacy |
 | `reference-verify` | `--expected-build`, `--expected-request` | legacy |

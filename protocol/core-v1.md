@@ -445,3 +445,50 @@ trace and requirement ledger. Unsupported admission, malformed source or values,
 changed candidate authority and resource exhaustion do not produce successful
 partial results. This profile has no artifact publication operation or implicit
 Python fallback and does not establish supplied-realization correspondence.
+
+## Bounded policy implementation v0.1
+
+The separate `bounded-policy-implementation-v0.1` validation scope negotiates
+`biocompiler.core.policy_implementation.v1` and
+`biocompiler.ocaml.policy_implementation.v0.1`. Core advertises producer operation
+`compile-policy-implementation`; Core and standalone Verify advertise
+`check-policy-implementation` and `replay-policy-implementation`. Verify does not
+link the producer or support the compile operation.
+
+Compile consumes exactly `{request, limits}`. Check consumes exactly
+`{request, candidate, limits}`. Replay additionally requires `report`, containing
+the **complete saved result wrapper**, not only its inner report. The original
+request is a `biocompiler.policy_realization_request.v0.1` with the complete
+BuildRequest, exact semantic descriptors, original finite operating domain,
+supplied primitive library/catalog bridges and exploration budgets. The separate
+limits use `biocompiler.policy_preservation_resources.v0.1`.
+
+The candidate is `biocompiler.policy_implementation_candidate.v0.1`, containing
+`behavior`, `implementation` and `binding`. Every check freshly admits original
+source, independently checks both IR boundaries, explores the complete supplied
+finite domain, reconstructs candidate execution and independently monitors the
+original hard requirements. The producer proposes this candidate and invokes the
+same checking service. The first family and precise acceptance conditions are in
+[bounded preservation](../docs/policy-bounded-preservation-v0.1.md).
+
+The result retains schema/implementation/resource/scope identities, full request,
+candidate and invocation fingerprints, the complete candidate and complete report
+with its fingerprint. Invocation identity includes the original request, candidate
+and limits. Replay recomputes and compares the **entire wrapper**. A serialized
+`checked_implementation` is inspection evidence; parsing it grants no checked
+native value or export permission. Preservation and hard requirements have
+separate outcomes, and incomplete exploration cannot authorize acceptance.
+
+Publication reserves the worst-case escaped legal request identity and protocol
+framing. The negotiated result limits are 8,323,072 bytes and 249,968 key/value
+nodes; the complete wrapper must fit without trimming. Native work, monitor,
+retained trace and publication limits remain distinct from therapeutic capacity.
+
+The Python `PolicyImplementationClient` and policy CLI commands
+`compile-implementation-native`, `check-implementation-native`, and
+`replay-implementation-native` are inert transport adapters. Each command requires
+`--limits`; check/replay require `--candidate`, and replay requires the saved full
+wrapper through `--report`. Authoring validation is never executed as a fallback.
+CLI exit codes are 0 for checked implementation, 1 for a completed native response
+that withholds acceptance, and 2 for input/transport/native protocol failure.
+All results retain target/material unassessed and artifact/export withheld.

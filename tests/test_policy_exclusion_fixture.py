@@ -1,5 +1,6 @@
 """Independent source-shape and literal controls, without semantic execution."""
 from copy import deepcopy
+import hashlib
 import json
 from pathlib import Path
 import unittest
@@ -34,6 +35,41 @@ class PolicyExclusionFixtureTests(unittest.TestCase):
         self.assertEqual((chassis.species, chassis.recipient_class), ("human", "immune"))
         self.assertEqual(self.request.implementations.implementations, ())
         self.assertEqual((self.request.assurance.level, self.request.assurance.horizon.amount), ("bounded", "6"))
+
+    def test_resolved_catalog_has_distinct_identity_and_retains_original_mismatch_control(self):
+        def digest(value):
+            return hashlib.sha256(json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()).hexdigest()
+
+        fixture = json.loads((ROOT / "core/test/data/policy_implementation_binding_v01.json").read_text())
+        positive = fixture["cases"][1]
+        self.assertEqual(positive["name"], "exclusion_sibling_resolved_chassis")
+        request = positive["request"]
+        document = request["document"]
+        entry = document["implementations"]["implementations"][0]
+        self.assertEqual(entry["id"], "exclusion.response.primitives.resolved_chassis")
+        self.assertEqual(entry["chassis"], [document["deployment"]["bindings"][0]["chassis"]["id"]])
+        self.assertEqual(request["catalog_bindings"][0]["entry_id"], entry["id"])
+        self.assertEqual(request["catalog_bindings"][0]["entry_digest"], digest(entry))
+        self.assertEqual(positive["proposed"]["catalog_entry"], entry["id"])
+        self.assertEqual(positive["expected"]["request_fingerprint"], digest(request))
+        self.assertEqual(positive["expected"]["implementation_fingerprint"], digest(positive["implementation"]))
+        self.assertEqual(positive["implementation"]["authority"]["source_artifact_digest"], digest(document))
+        self.assertEqual(positive["implementation"]["authority"]["implementation_catalog_digest"], digest(document["implementations"]))
+        self.assertEqual(len(fixture["negative_controls"]), 1)
+        control = fixture["negative_controls"][0]
+        self.assertEqual(control["expected_diagnostic"], "policy_realization_chassis")
+        original = control["case"]
+        original_document = original["request"]["document"]
+        original_entry = original_document["implementations"]["implementations"][0]
+        self.assertEqual(original["name"], "exclusion_sibling")
+        self.assertEqual(original_entry["chassis"], ["fixture.human_immune"])
+        self.assertEqual(original_document["deployment"]["bindings"][0]["chassis"]["id"], "exclusion.human_immune")
+        self.assertNotEqual(original_entry["id"], entry["id"])
+        for key in ("program", "deployment", "assurance"):
+            self.assertEqual(document[key], original_document[key])
+        self.assertEqual(document["program"]["declarations"], self.fixture["document"]["program"]["declarations"])
+        self.assertEqual(self.fixture["document"]["implementations"]["implementations"], [])
+        self.assertEqual(p.check(p.from_data(document, p.BuildRequest)).status, "complete")
 
     def test_literal_stores_rules_and_safety_match_independent_direct_declarations(self):
         scope = p.Scope("encounter", p.Ref("encounter", "Encounter"))

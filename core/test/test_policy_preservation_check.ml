@@ -1,4 +1,8 @@
 open Bioc_wire
+let () = Printexc.register_printer (function
+  | Diagnostic.Error diagnostic -> Some (Printf.sprintf "Diagnostic.Error(code=%s, path=%s, message=%s)"
+      diagnostic.code (Option.value ~default:"<none>" diagnostic.path) diagnostic.message)
+  | _ -> None)
 module D = Bioc_domain.Policy_document
 module O = Bioc_domain.Policy_operational
 module F = Bioc_domain.Policy_operating_domain
@@ -156,7 +160,7 @@ let ()=
   require(Array.length Sys.argv=2)"Supply independently authored policy source/graph fixture";
   let cases=items "cases"(read Sys.argv.(1))in
   let first=List.find(fun row->text "name" row="original_unknown_safety")cases
-  and second=List.find(fun row->text "name" row="exclusion_sibling")cases in
+  and second=List.find(fun row->text "name" row="exclusion_sibling_resolved_chassis")cases in
   let fixed=observations 0 "valid"(Json.Bool false)@observations 1 "valid"(Json.Bool true)@
     observations 2 "valid"(Json.Bool false)in
   let feedback=obj["effect",str "response";"ticks",arr[Json.int 2];

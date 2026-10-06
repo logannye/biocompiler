@@ -36,6 +36,10 @@ from biocompiler.core_policy_operational import (
     PROFILE as OPERATIONAL_PROFILE, PRODUCER_PROFILE as OPERATIONAL_PRODUCER_PROFILE,
     VALIDATION_SCOPE as OPERATIONAL_SCOPE,
 )
+from biocompiler.core_policy_implementation import (
+    PROFILE as IMPLEMENTATION_PROFILE, PRODUCER_PROFILE as IMPLEMENTATION_PRODUCER_PROFILE,
+    VALIDATION_SCOPE as IMPLEMENTATION_SCOPE,
+)
 from biocompiler.core_workflow import capability_profile as workflow_profile, OPERATIONS as WORKFLOW_OPERATIONS
 from biocompiler.ir.intent import IntentProgram
 from biocompiler.compiler.request import BuildRequest
@@ -453,17 +457,19 @@ def run_campaign(clients, corpus, receipt, programs):
         require(type(capabilities) is dict, "Missing capabilities")
         operations = ["canonicalize", "capabilities", "replay-architecture", "validate-intent", "verify-architecture", "verify-lowering"]
         operations += list(OPERATIONAL_PROFILE["operations"])
+        operations += list(IMPLEMENTATION_PROFILE["operations"])
         operations += ["assess-policy", "replay-policy-assessment"] + list(REALIZATION_OPERATIONS) + list(WORKFLOW_OPERATIONS)
         workflow = workflow_profile()
-        scopes = [SCOPE, LOWERING_SCOPE, ARCHITECTURE_SCOPE, POLICY_SCOPE, OPERATIONAL_SCOPE] + list(REALIZATION_SCOPES) + [workflow["validation_scope"]]
-        profiles = {"policy_operational": OPERATIONAL_PROFILE, "architecture": ARCHITECTURE_PROFILE, "policy_frontend": POLICY_PROFILE, **REALIZATION_PROFILES,
+        scopes = [SCOPE, LOWERING_SCOPE, ARCHITECTURE_SCOPE, POLICY_SCOPE, OPERATIONAL_SCOPE, IMPLEMENTATION_SCOPE] + list(REALIZATION_SCOPES) + [workflow["validation_scope"]]
+        profiles = {"policy_implementation": IMPLEMENTATION_PROFILE, "policy_operational": OPERATIONAL_PROFILE, "architecture": ARCHITECTURE_PROFILE, "policy_frontend": POLICY_PROFILE, **REALIZATION_PROFILES,
                     "artifact_transport": ARTIFACT_PROFILE, "verification_workflow": workflow}
         claim = "Structural intent validation, frozen source-to-Behavior correspondence, supplied architecture contracts and independently executed finite-history model checks. No search completeness, empirical function or human-use admission."
         if client.role == "core":
-            operations += ["compile-architecture", "export-architecture", "compile-policy"]
+            operations += ["compile-architecture", "export-architecture", "compile-policy", "compile-policy-implementation"]
             scopes.append(PRODUCER_SCOPE)
             profiles["architecture_producer"] = PRODUCER_PROFILE
             profiles["policy_operational_producer"] = OPERATIONAL_PRODUCER_PROFILE
+            profiles["policy_implementation_producer"] = IMPLEMENTATION_PRODUCER_PROFILE
             claim = "Supplied-contract architecture production, independent checking, exact RNA/manifest export and separately scoped finite-history model checks. No search completeness, empirical function or human-use admission is established."
         require(sorted(capabilities["operations"]) == sorted(operations), "Missing or untested advertised operation")
         require(capabilities["canonicalization"] == "python-json-v1" and capabilities["intent_schemas"] == ["biocompiler.intent.v0.1"]

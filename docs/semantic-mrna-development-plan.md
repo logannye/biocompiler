@@ -382,6 +382,21 @@ Depends on: SM-04 through SM-06.
 
 Exit: one complete Python-policy → implementation → exact mRNA path works through installed public APIs with fresh standalone verification and exact request-bound export.
 
+Source checkpoint: the separate bounded implementation SDK/CLI and native
+compile/check/full-wrapper replay operations are source-ready. The installed
+campaign compares complete results in all four required slots and retains the
+unchanged UNKNOWN control. The exact mRNA structural and whole-graph material
+leaves are also source-ready; they explicitly withhold context and export.
+
+Hosted correction: runs 37414250697 and 37414496311 compiled on Linux but their
+native suite step failed. A mismatched exclusion-catalog chassis was found in
+the inherited positive fixture. A separately named resolved catalog now pins the
+matching original chassis; the complete previous mismatch is retained as a
+negative control. The original UNKNOWN source and its uncertainty requirement
+remain unchanged. A separate source-only exclusion failure needs hosted diagnostic
+output; no semantic workaround has been applied. All SM-04/05/06/07 acceptance
+checkboxes remain open.
+
 ### SM-08 — Close the declared profile, compatibility and hosted acceptance
 
 Depends on: SM-07; test/campaign design starts at SM-01.

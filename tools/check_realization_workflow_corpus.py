@@ -21,6 +21,8 @@ CORPUS_PIN = "2f5e7636977f559e046776c1bb92bebf67c8f0e733ca463927f8d3a1aee3d77b"
 # hashes for historical source files are deliberately unsupported.
 REVIEWED_EXAMPLES = frozenset({"examples/expressive_policies.py"})
 REVIEWED_ADDITIONS = {
+    'src/biocompiler/policy/implementation.py': '4e1de0535cf852885169328aaae035caff9178b367b84f204c1e68eaae478515',
+    'src/biocompiler/core_policy_implementation.py': 'b0a1c56ed960e146153dcb1f89ac28cc0f809a79716a7f7c1e096496b4bcf556',
     # Explicit operational-policy transport and CLI stay excluded from the
     # original workflow cohort; these pins do not broaden historical authority.
     'src/biocompiler/core_policy_operational.py': '089805c81bf6f84e5cf5e264b6ed89babedc3d692e2a7605429aa388e6d5ed02',
@@ -33,7 +35,7 @@ REVIEWED_ADDITIONS = {
     'src/biocompiler/policy/behavior.py': '691b7710b8e915665526e57ba41f3b2df3fe1519ec22371d47441050c37e34bf',
     'src/biocompiler/policy/catalog.py': '96bd1729202b96c12fcaea35e2ca1560011bed7a5dd712e2fc8d0a5fc9ff3e30',
     'src/biocompiler/policy/chassis.py': '21960a5498db0934150ab5288eb6de30c2eb63062fe9e06a2c57a0214c811ab1',
-    'src/biocompiler/policy/cli.py': '264a656b177501a924b4454664c1ae066c48ee72018f1854d57c255cdce47f5b',
+    'src/biocompiler/policy/cli.py': '030f737952843d371dbb713e6430d3af31f52d905b839b000fd653f9644d1845',
     'src/biocompiler/policy/coordination.py': 'ce597e5c05dc1f64b73bbeb4b60ae9863b26c645155ce03ea46a827135b009c9',
     'src/biocompiler/policy/deployment.py': 'cddace3d45f04ecd722a47849325c9ff6a41fc166b0e23253c2377f037eae29f',
     'src/biocompiler/policy/effects.py': '2e228309b98defa71730cac3e2b8883a9e86c9f63f0d5c25b37bf70b27a02578',

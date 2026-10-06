@@ -1,4 +1,8 @@
 open Bioc_wire
+let () = Printexc.register_printer (function
+  | Diagnostic.Error diagnostic -> Some (Printf.sprintf "Diagnostic.Error(code=%s, path=%s, message=%s)"
+      diagnostic.code (Option.value ~default:"<none>" diagnostic.path) diagnostic.message)
+  | _ -> None)
 module D = Bioc_domain.Policy_document
 module O = Bioc_domain.Policy_operational
 module R = Bioc_domain.Policy_realization_request
@@ -123,6 +127,12 @@ let ()=
   require(items "implementations"(get "implementations"(get "document" exclusion_source))=[])
     "Binding fixture silently rewrote original empty catalog";
   let first_bound=positive first in ignore(positive second);
+  let negative_controls=items "negative_controls" fixture in
+  require(List.length negative_controls=1)"Original chassis mismatch rejection authority was lost";
+  List.iter(fun control->
+    require(text "name" control="original_exclusion_catalog_chassis_mismatch")"Unexpected original mismatch witness";
+    rejects "original catalog/chassis mismatch" [text "expected_diagnostic" control]
+      (fun()->check(get "case" control)))negative_controls;
   require(List.exists(fun(r:O.requirement)->r.requirement_id="scoped_memory")
     (A.behavior(C.admitted_inputs first_bound)).requirements)"Unknown hard safety was discarded";
   let renamed=set(declaration_path first "product"@["id"])(str "cargo")first in

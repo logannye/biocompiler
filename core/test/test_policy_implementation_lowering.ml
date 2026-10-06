@@ -1,4 +1,8 @@
 open Bioc_wire
+let () = Printexc.register_printer (function
+  | Diagnostic.Error diagnostic -> Some (Printf.sprintf "Diagnostic.Error(code=%s, path=%s, message=%s)"
+      diagnostic.code (Option.value ~default:"<none>" diagnostic.path) diagnostic.message)
+  | _ -> None)
 module O = Bioc_domain.Policy_operational
 module R = Bioc_domain.Policy_realization_request
 module I = Bioc_domain.Policy_implementation

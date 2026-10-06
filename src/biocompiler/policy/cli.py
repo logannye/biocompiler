@@ -13,6 +13,7 @@ import sys
 import tempfile
 
 _OPERATIONAL_COMMANDS = ("compile-native", "check-lowering-native", "execute-native", "replay-execution-native")
+_IMPLEMENTATION_COMMANDS = ("compile-implementation-native", "check-implementation-native", "replay-implementation-native")
 
 
 def _operational_json(path: Path, *, field: str | None = None) -> object:
@@ -88,6 +89,9 @@ def _parser() -> argparse.ArgumentParser:
         ("check-lowering-native", "Independently check a candidate against complete original policy authority."),
         ("execute-native", "Check and execute an operational candidate on a bounded supplied timeline."),
         ("replay-execution-native", "Freshly replay a complete retained bounded execution report."),
+        ("compile-implementation-native", "Lower and independently check an implementation over its complete finite domain."),
+        ("check-implementation-native", "Independently check an implementation against the complete original realization request."),
+        ("replay-implementation-native", "Freshly reproduce the full retained implementation-check wrapper."),
     ):
         command = commands.add_parser(name, help=help_text)
         command.add_argument("--json", action="store_true", default=argparse.SUPPRESS, help="Print machine-readable JSON.")
@@ -95,10 +99,10 @@ def _parser() -> argparse.ArgumentParser:
             command.add_argument("path", type=Path, help="Saved policy authoring JSON document.")
         if name == "diff":
             command.add_argument("other", type=Path, help="Document to compare against.")
-        if name in ("assess-native", "compile-native", "check-lowering-native", "execute-native", "replay-execution-native"):
+        if name in ("assess-native", "compile-native", "check-lowering-native", "execute-native", "replay-execution-native", "compile-implementation-native", "check-implementation-native", "replay-implementation-native"):
             backend = command.add_mutually_exclusive_group(required=True)
             backend.add_argument("--core", type=Path, help="Absolute path to the selected Core executable.")
-            if name != "compile-native":
+            if name not in ("compile-native", "compile-implementation-native"):
                 backend.add_argument("--verify", type=Path, help="Absolute path to the selected independent Verify executable.")
             command.add_argument("--expected-sha256", help="Optional caller-supplied executable SHA-256 pin.")
             command.add_argument("--timeout", type=float, default=30.0, help="Positive per-exchange timeout in seconds.")
@@ -110,6 +114,12 @@ def _parser() -> argparse.ArgumentParser:
                 command.add_argument("--timeline", required=True, type=Path, help="Timeline JSON retaining all explicit execution bounds.")
             if name == "replay-execution-native":
                 command.add_argument("--report", required=True, type=Path, help="Complete report JSON or a complete saved operational result.")
+        if name in ("compile-implementation-native", "check-implementation-native", "replay-implementation-native"):
+            command.add_argument("--limits", required=True, type=Path, help="Explicit preservation execution and publication resource limits.")
+            if name != "compile-implementation-native":
+                command.add_argument("--candidate", required=True, type=Path, help="Implementation candidate JSON or complete saved implementation result.")
+            if name == "replay-implementation-native":
+                command.add_argument("--report", required=True, type=Path, help="Entire saved implementation result wrapper; inner reports are insufficient.")
         command.add_argument("--output", "-o", type=Path, help="Write complete JSON atomically to this path.")
         command.add_argument("--replace", action="store_true", help="Explicitly permit atomic replacement of an existing output file.")
     return parser
@@ -129,6 +139,42 @@ def main(argv: Sequence[str] | None = None) -> int:
         result: object
         if arguments.command == "export-schema":
             result = schema()
+        elif arguments.command in _IMPLEMENTATION_COMMANDS:
+            from typing import cast
+
+            from biocompiler.core_client import CoreClient, CoreError, JsonValue
+            from biocompiler.core_policy_implementation import PolicyImplementationClient, RESULT_SCHEMA
+
+            # This is a complete realization envelope, not an authoring document.
+            # Read inert bounded JSON before the separate authoring loader below.
+            request = cast(JsonValue, _operational_json(arguments.path))
+            limits = cast(JsonValue, _operational_json(arguments.limits))
+            inputs = (arguments.path, arguments.limits)
+            try:
+                transport = CoreClient(arguments.core or arguments.verify,
+                                       role="core" if arguments.core else "verify",
+                                       timeout_seconds=arguments.timeout,
+                                       expected_sha256=arguments.expected_sha256)
+                client = PolicyImplementationClient(transport)
+                if arguments.command == "compile-implementation-native":
+                    implementation_result = client.compile(request, limits)
+                else:
+                    candidate = cast(JsonValue, _operational_json(arguments.candidate))
+                    if isinstance(candidate, dict) and candidate.get("schema_version") == RESULT_SCHEMA:
+                        if "candidate" not in candidate:
+                            raise ValueError("Saved implementation result is missing candidate.")
+                        candidate = candidate["candidate"]
+                    inputs += (arguments.candidate,)
+                    if arguments.command == "check-implementation-native":
+                        implementation_result = client.check(request, candidate, limits)
+                    else:
+                        saved = cast(JsonValue, _operational_json(arguments.report))
+                        inputs += (arguments.report,)
+                        implementation_result = client.replay(request, candidate, limits, saved)
+            except CoreError as error:
+                raise ValueError(str(error)) from error
+            result = implementation_result.result
+            exit_code = 0 if implementation_result.status == "checked_implementation" else 1
         else:
             record = load(arguments.path)
             inputs = (arguments.path,)
@@ -227,7 +273,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                 print(_json(notice), end="")
             else:
                 print(f"Wrote {arguments.output}")
-        elif arguments.json or arguments.command in ("export-schema", "export-request", "assess-native", *_OPERATIONAL_COMMANDS):
+        elif arguments.json or arguments.command in ("export-schema", "export-request", "assess-native", *_OPERATIONAL_COMMANDS, *_IMPLEMENTATION_COMMANDS):
             print(text, end="")
         else:
             label = {"check": "Authoring check", "inspect": "Authoring inspection", "diff": "Authoring comparison"}[arguments.command]
