@@ -1421,7 +1421,7 @@
     },
     {
       "path": "core/test/test_policy_implementation_binding.ml",
-      "sha256": "ccebedd537ad25cea781d3e0ff8d71ab583068591d9031789dc3ea222180c8da"
+      "sha256": "43a9c5bde964005de112c83a0b33167f67649f85d51a46d298edef72456db392"
     },
     {
       "path": "core/test/test_policy_material_binding.ml",
@@ -1732,6 +1732,15 @@
           },
           "context": "Distinguishing source control for the specifically named boundary; other boundary branches are not inferred.",
           "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_implementation_binding.ml",
+            "anchor": "second original logical clock",
+            "occurrence": 1
+          },
+          "context": "A second generic-valid logical clock rejects the exact one-clock operational admission requirement.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
         }
       ],
       "witness_status": "source_witnesses_present",
@@ -1763,7 +1772,17 @@
           "evidence_scope": "source_only_not_executed_by_this_gate"
         }
       ],
-      "negative": [],
+      "negative": [
+        {
+          "source": {
+            "path": "core/test/test_policy_implementation_binding.ml",
+            "anchor": "second fully deployed original executor",
+            "occurrence": 1
+          },
+          "context": "A second generic-valid role has complete deployment and intended-recipient bindings, and rejects the exact one-executor operational admission requirement.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
       "witness_status": "partial_source_witnesses",
       "gaps": [
         "No separately indexed positive contact_loss source witness or distinguishing population/lineage rejection witness in this matrix."
@@ -2427,12 +2446,31 @@
           },
           "context": "Frozen full-path exclusion sibling: two encounter slots, truth registers initially false, event evidence, exclusive arbitration, one fixed product, continuous/defer lifecycle, original nine-history domain. Other admitted combinations are not inferred.",
           "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_implementation_binding.ml",
+            "anchor": "let first_bound=positive first and second_bound=positive second in",
+            "occurrence": 1
+          },
+          "context": "Static binding positives for one-rule/one-store and two-rule/two-store original sources. The cited complete material witness uses only the latter.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
         }
       ],
-      "negative": [],
+      "negative": [
+        {
+          "source": {
+            "path": "core/test/test_policy_implementation_binding.ml",
+            "anchor": "let source_profile_controls case=",
+            "occurrence": 1
+          },
+          "context": "Thirteen source-family controls use fresh generic validity and full authority repinning: zero/three rules, zero/three stores, extra distinct-coherence observation, effect, fixed parameter or encounter; no parameter with a typed literal actual; correctly scoped machine/transition; contact_loss; extra clock and fully deployed role. The last two reject at operational admission, the first eleven at independent graph binding. Exact diagnostic code, path and message are required.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
       "witness_status": "partial_source_witnesses",
       "gaps": [
-        "Dedicated source-valid controls for each cardinality boundary and no-machine restriction remain to be indexed."
+        "A full material witness for the one-rule/one-store positive and independently isolated subject/encounter ownership combinations remain unindexed. Existing static binding positives and the 13 original-source family restrictions do not imply a broader full-path positive."
       ]
     },
     {
@@ -2461,10 +2499,65 @@
           "evidence_scope": "source_only_not_executed_by_this_gate"
         }
       ],
-      "negative": [],
+      "negative": [
+        {
+          "source": {
+            "path": "core/test/test_policy_implementation_binding.ml",
+            "anchor": "let integer_product=case",
+            "occurrence": 1
+          },
+          "context": "Three source-valid fixed integer product controls independently reject at the type or lower/upper refinement guard with freshly updated definition, descriptor, catalog and graph identities.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_implementation_binding.ml",
+            "anchor": "kind^\" dynamic source state is outside the finite truth domain\"",
+            "occurrence": 1
+          },
+          "context": "INTEGER and TEXT state retain well-typed initial values, writes and reads; fresh operational lowering and correspondence precede the exact finite-truth-domain rejection.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_implementation_binding.ml",
+            "anchor": "kind^\" dynamic source observation is outside the finite truth domain\"",
+            "occurrence": 1
+          },
+          "context": "INTEGER and TEXT observations retain matching definition results and typed comparisons; fresh operational lowering and correspondence precede the exact finite-truth-domain rejection.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_implementation_binding.ml",
+            "anchor": "exact integer comparison has no primitive graph operator",
+            "occurrence": 1
+          },
+          "context": "A source-valid integer equality in a guard rejects at its exact graph-binding expression path.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_implementation_binding.ml",
+            "anchor": "actual product design selection remains unresolved",
+            "occurrence": 1
+          },
+          "context": "Design selection on the actual source parameter rejects at operational admission.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        },
+        {
+          "source": {
+            "path": "core/test/test_policy_implementation_binding.ml",
+            "anchor": "equal text literal cannot replace the fixed parameter operand",
+            "occurrence": 1
+          },
+          "context": "An equal text literal actual with a retained fixed product declaration rejects at the independently checked argument-reference contract.",
+          "evidence_scope": "source_only_not_executed_by_this_gate"
+        }
+      ],
       "witness_status": "partial_source_witnesses",
       "gaps": [
-        "A complete independently source-valid type/refinement rejection matrix remains pending."
+        "Quantity/enum and other source-valid type refinements remain to be individually indexed. Generic-invalid truth/text unit or entity-kind decorations are not binder-reachable controls; the 10 source-valid type/refinement cases are distinguished by their actual admission, domain or binding stage."
       ]
     },
     {

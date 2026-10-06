@@ -519,6 +519,17 @@ contextual matrix inventories 62 rule families with explicit source witnesses
 and remaining gaps, complementary to the 612 syntax distinctions. These source
 checks do not execute semantics or close hosted acceptance.
 
+Source `54f3bd8ac51486a3fd950578b2d384c000564914`, run `37427381964`, tested
+merge `a5a66fa6c69c5144ca557c4864f2ba3bfba81c88`, stopped both native jobs
+before compilation during upstream source acquisition. The logs lacked an
+active URL; a separate source-only probe reproduced the GNU GMP-host timeout
+and verified the fixed kernel.org mirror against the unchanged archive hash and
+byte count. The correction retains bounded acquisition attempts and diagnostics
+without relaxing source identity or any native gate. The same batch adds 23
+source-valid restrictions: 16 exact graph-binding rejections, three operational
+admission rejections and four finite-domain type rejections. These require fresh
+hosted execution; source inventory and test declarations cannot close acceptance.
+
 ### SM-09 — Expand supported semantics through complete vertical profiles
 
 Depends on: SM-08 for acceptance; design work can be prepared earlier.

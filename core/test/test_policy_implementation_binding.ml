@@ -65,6 +65,60 @@ let declaration_path case identity=
   find 0 (Json.array(at["request";"document";"program";"declarations"]case))
 let source_edit case identity path replacement=
   repin_authority(set(declaration_path case identity@path)replacement case)
+let rec map_json transform value=
+  let value=match value with
+    |Json.Object fields->obj(List.map(fun(key,value)->key,map_json transform value)fields)
+    |Json.Array values->arr(List.map(map_json transform)values)
+    |value->value in
+  transform value
+let repin_source_definitions case=
+  let definitions=Json.array(at["request";"document";"program";"semantics";"definitions"]case)in
+  let digests=List.map(fun definition->text "id" definition,D.document_digest definition)definitions in
+  let case=map_json(function
+    |Json.Object fields as value when List.assoc_opt "$type" fields=Some(str "DefinitionRef")->
+        set["digest"](str(List.assoc(text "id" value)digests))value
+    |value->value)case in
+  let entries=Json.array(at["request";"document";"implementations";"implementations"]case)in
+  let bridges=Json.array(at["request";"catalog_bindings"]case)|>List.map(fun bridge->
+    let entry=List.find(fun entry->text "id" entry=text "entry_id" bridge)entries in
+    set["entry_digest"](str(Canonical.fingerprint entry))bridge)in
+  repin_authority(set["request";"catalog_bindings"](arr bridges)case)
+let rejects_exact label code path message action=
+  incr controls;
+  match action()with
+  |_->failwith("Exact source control unexpectedly accepted: "^label)
+  |exception Diagnostic.Error diagnostic->
+      require(diagnostic.code=code && diagnostic.path=path && diagnostic.message=message)
+        (label^": rejected outside the intended boundary: "^diagnostic.code^" at "^
+          Option.value ~default:"<none>" diagnostic.path^": "^diagnostic.message)
+let valid_source_case label case=
+  let request=R.of_json(get "request" case)in
+  let assessment=Bioc_checker.Policy_check.check(R.document request)in
+  require(text "status" assessment="valid")
+    (label^": generic source is invalid: "^Canonical.encode assessment);
+  (* An old candidate identity or an invalid graph must not satisfy these
+     source restrictions. Only source fields change; concrete models stay put. *)
+  require(Json.equal(at["implementation";"authority"]case)
+    (at["implementation";"authority"](repin_authority case)))
+    (label^": candidate authority was not completely refreshed");
+  ignore(I.of_json ~library:(R.implementation_library request)(get "implementation" case));
+  ignore(B.of_json(get "proposed" case));
+  request
+let reject_source_binding label ?(path=None) message case=
+  ignore(valid_source_case label case);
+  let admitted,implementation,proposed=inputs case in
+  rejects_exact label "policy_implementation_source_binding" path message
+    (fun()->C.check ~admitted ~implementation ~proposed)
+let reject_source_operational label path message case=
+  let request=valid_source_case label case in
+  rejects_exact label "policy_operational_unsupported" (Some path) message
+    (fun()->S.admit ~document:(R.document request) ~descriptors:(R.definitions request))
+let reject_source_domain label message case=
+  let request=valid_source_case label case in
+  let document=R.document request and descriptors=R.definitions request in
+  let behavior=L.lower(S.admit ~document ~descriptors)in
+  ignore(Bioc_checker.Policy_correspondence.check ~expected_document:document ~descriptors behavior);
+  rejects_exact label "policy_domain_unsupported" None message(fun()->A.admit ~request ~behavior)
 let endpoint node port=obj["node",str node;"port",str port]
 let map_wires f case=set["implementation";"wires"]
   (arr(List.map f(Json.array(at["implementation";"wires"]case))))case
@@ -115,6 +169,124 @@ let positive case=
   List.iter(fun(r:C.rule)->require(r.source_trigger.op="rising" && r.trigger.port_id="events")
     "Checked rule omitted actual event endpoint or original trigger")(C.rules bound);
   bound
+let source_profile_controls case=
+  let initial_controls= !controls in
+  let declarations_path=["request";"document";"program";"declarations"]in
+  let source identity=at(declaration_path case identity)case in
+  let edit identity path replacement value=set(declaration_path value identity@path)replacement value in
+  let clone identity renamed=source identity|>set["id"](str renamed)in
+  let add value original=append declarations_path value original in
+  let remove identities original=
+    let original=set declarations_path(arr(List.filter(fun value->not(List.mem(text "id" value)identities))
+      (Json.array(at declarations_path original))))original in
+    let spans=["request";"document";"program";"source_map"]in
+    set spans(arr(List.filter(fun value->not(List.mem(text "declaration_id" value)identities))
+      (Json.array(at spans original))))original in
+  let binding label message changed=reject_source_binding label message(repin_authority changed)in
+  let cardinality="This source/graph family has one or two exclusive rules/stores and no machines or transitions."in
+  let singleton name="This source/graph profile requires exactly one "^name^"."in
+  let type_spec kind=obj["$type",str "TypeSpec";"kind",str kind;"unit",Json.Null;"entity_kind",Json.Null]in
+  let truth_literal=at["assignments";"0";"value"](source "select")in
+  let literal kind value=truth_literal|>set["value_type"](type_spec kind)|>set["value"]value in
+  let equal left right=truth_literal|>set["op"](str "eq")|>set["value"]Json.Null
+    |>set["args"](arr[left;right])in
+  binding "source family has zero rules" cardinality(remove["select";"exclude"]case);
+  binding "source family has three rules" cardinality(add(clone "exclude" "third_rule")case);
+  let no_stores=case|>remove["selected";"excluded"]
+    |>edit "select"["assignments"](arr[])|>edit "exclude"["assignments"](arr[])
+    |>edit "exclusive_selection"["condition"](literal "truth"(Json.Bool true))in
+  (* This is a distinct rejected source, not a weakened accepted requirement. *)
+  binding "source family has zero stores" cardinality no_stores;
+  binding "source family has three stores" cardinality(add(clone "selected" "third_store")case);
+  binding "source family has two independent observations" (singleton "truth observation")
+    (add(clone "condition" "condition2"|>set["coherence"](str "independent_frame"))case);
+  binding "source family has two same-operation effects" (singleton "product-bearing effect")
+    (add(clone "response" "response2")case);
+  binding "source family has two fixed parameters" (singleton "fixed product parameter")
+    (add(clone "product" "other_product")case);
+  let product_literal=literal "text"(get "value"(source "product"))in
+  let literal_argument=edit "response"["parameters";"0";"value"]product_literal case in
+  binding "source family has zero parameters with a typed literal actual" (singleton "fixed product parameter")
+    (remove["product"]literal_argument);
+  binding "source family has two encounter declarations" (singleton "encounter declaration")
+    (add(clone "encounter" "encounter2")case);
+  let reference kind identity=obj["$type",str "Ref";"kind",str kind;"id",str identity]in
+  let machine=obj["$type",str "Machine";"id",str "idle_machine";"executor",reference "Role" "executor";
+    "scope",get "scope"(source "selected");"states",arr[str "idle";str "done"];"initial",str "idle";
+    "terminal",arr[str "done"];"lifetime",str "encounter";"arbitration",get "arbitration"(source "select")]in
+  let transition=obj["$type",str "Transition";"id",str "machine_step";"machine",reference "Machine" "idle_machine";
+    "source",str "idle";"destination",str "done";"on",get "on"(source "select");
+    "when",literal "truth"(Json.Bool true);"unknown",str "defer";"effects",arr[];"assignments",arr[];
+    "unknown_target",Json.Null;"emissions",arr[]]in
+  binding "source family has a correctly scoped machine and transition" cardinality(case|>add machine|>add transition);
+  binding "source encounter contact loss needs another graph profile"
+    "Encounter ownership, target or termination differs from the explicit slot profile."
+    (edit "encounter"["termination"](str "contact_loss")case);
+  reject_source_operational "second original logical clock" "/document"
+    "Bounded operational profile requires exactly one shared logical clock."
+    (repin_authority(add(clone "clock" "clock2")case));
+  let role_binding=at["request";"document";"deployment";"bindings";"0"]case
+    |>set["role"](reference "Role" "executor2")in
+  let another_role=case|>add(clone "executor" "executor2")
+    |>append["request";"document";"deployment";"bindings"]role_binding
+    |>append["request";"document";"deployment";"delivery";"intended_recipients"](reference "Role" "executor2")in
+  reject_source_operational "second fully deployed original executor" "/document"
+    "Bounded operational profile requires one executor role."(repin_authority another_role);
+  let definitions_path=["request";"document";"program";"semantics";"definitions"]in
+  let definition_path identity=
+    let index=List.find_index(fun definition->text "id" definition=identity)
+      (Json.array(at definitions_path case))|>Option.get in definitions_path@[string_of_int index]in
+  let effect_definition=definition_path(text "id"(get "contract"(source "response")))in
+  let integer_product=case|>edit "product"["value_type"](type_spec "integer")|>edit "product"["value"](Json.int 3)
+    |>edit "response"["parameters";"0";"value";"value_type"](type_spec "integer")
+    |>set(effect_definition@["parameters";"0";"value_type"])(type_spec "integer")|>repin_source_definitions in
+  binding "fixed integer product is outside the text product profile"
+    "Source type is outside this exact truth/product profile." integer_product;
+  let count amount=obj["$type",str "Quantity";"amount",str amount;"unit",obj[
+    "$type",str "Unit";"id",str "count";"dimension",str "count";"quantity_kind",str "count";
+    "scale",str "1";"reference",Json.Null]]in
+  List.iter(fun(field,amount)->
+    binding ("fixed actual product "^field^" refinement")
+      ("Source field "^field^" needs semantics outside this graph-binding profile.")
+      (edit "product"[field](count amount)integer_product))["lower","1";"upper","5"];
+  let expression_references operator identity value=match value with
+    |Json.Object fields->List.assoc_opt "$type" fields=Some(str "Expr") &&
+        List.assoc_opt "op" fields=Some(str operator) &&
+        (match List.assoc_opt "ref" fields with Some(Json.Object reference_fields)->
+          List.assoc_opt "id" reference_fields=Some(str identity)|_->false)
+    |_->false in
+  List.iter(fun(kind,initial,assigned)->
+    let changed=case|>edit "selected"["value_type"](type_spec kind)|>edit "selected"["initial"]initial in
+    let changed=List.fold_left(fun changed identity->
+      let assignments=items "assignments"(at(declaration_path changed identity)changed)|>List.map(fun assignment->
+        if text "id"(get "state" assignment)="selected"then set["value"](literal kind assigned)assignment else assignment)in
+      edit identity["assignments"](arr assignments)changed)changed["select";"exclude"]in
+    let changed=map_json(fun value->if expression_references "state" "selected" value then
+      equal(set["value_type"](type_spec kind)value)(literal kind assigned)else value)changed in
+    reject_source_domain (kind^" dynamic source state is outside the finite truth domain")
+      "Dynamic state in this profile is three-valued truth; fixed text product parameters remain unchanged."
+      (repin_authority changed)) ["integer",Json.int 0,Json.int 1;"text",str "off",str "on"];
+  let observation_definition=definition_path(text "id"(get "contract"(source "condition")))in
+  List.iter(fun(kind,expected)->
+    let changed=case|>edit "condition"["value_type"](type_spec kind)
+      |>set(observation_definition@["result"])(type_spec kind)in
+    let changed=map_json(fun value->if expression_references "observe" "condition" value then
+      equal(set["value_type"](type_spec kind)value)(literal kind expected)else value)changed in
+    reject_source_domain (kind^" dynamic source observation is outside the finite truth domain")
+      "The finite domain supports truth-valued dynamic observations only."
+      (repin_source_definitions changed)) ["integer",Json.int 1;"text",str "true"];
+  let comparison=equal(literal "integer"(Json.int 1))(literal "integer"(Json.int 1))in
+  reject_source_binding "exact integer comparison has no primitive graph operator"
+    ~path:(Some "/document/program/declarations/9/when")
+    "Source expression operation is outside this graph-binding family."
+    (repin_authority(edit "select"["when"]comparison case));
+  reject_source_operational "actual product design selection remains unresolved"
+    "/document/program/declarations/7" "Only explicitly fixed operational parameters are executable."
+    (repin_authority(edit "product"["selection"](str "design")case));
+  binding "equal text literal cannot replace the fixed parameter operand"
+    "This effect requires exactly the fixed typed product argument." literal_argument;
+  require(!controls-initial_controls=23)"First-profile source restriction control census changed";
+  Printf.printf "First-profile original-source restrictions: 16 graph-binding, 3 operational, 4 domain controls.\n"
 let ()=
   require(Array.length Sys.argv=4)"Supply binding fixture, original resolved request, and unchanged exclusion source fixture";
   let fixture=read Sys.argv.(1)and original_request=read Sys.argv.(2)and exclusion_source=read Sys.argv.(3)in
@@ -127,6 +299,7 @@ let ()=
   require(items "implementations"(get "implementations"(get "document" exclusion_source))=[])
     "Binding fixture silently rewrote original empty catalog";
   let first_bound=positive first and second_bound=positive second in
+  source_profile_controls second;
   List.iter(fun(case,bound)->
     let original_request=A.request(C.admitted_inputs bound) in
     let original_behavior=O.behavior_to_json(A.behavior(C.admitted_inputs bound))in

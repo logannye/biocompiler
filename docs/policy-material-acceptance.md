@@ -140,6 +140,19 @@ not RNA copy number, dosage, a software trace limit or empirical memory capacity
 The [context checker](../core/lib/realization_checker/policy_material_context_check.ml)
 derives demands from the actual graph and the entire original input grammar.
 
+The candidate interpreter also retains validation bookkeeping. Its global sets
+of seen observation/feedback occurrence IDs serve only duplicate-input guards
+and diagnostic fingerprints. For the admitted domain, the independent source
+and candidate adapters generate disjoint `domain/observation/<tick>/<index>` and
+`domain/feedback/<tick>/<index>` identities. Each cursor advances once per tick,
+so IDs remain unique across reset generations and repeated feedback. These sets
+cannot change admitted observable behavior and are not material state demands.
+This argument does not apply to arbitrary external timelines or a later input
+grammar. Work/retention accounting is likewise software validation state;
+exhaustion remains incomplete. Event ordinals, attempt allocation, logical time,
+encounter generations and retained correlations remain semantic state and keep
+their explicit material dispositions.
+
 The coordinator's explicit work unit is
 `logical_data_visits_and_child_semantic_work`. It comprises:
 
@@ -454,8 +467,11 @@ continuation; compatibility/hosted acceptance remain with its owner.
 SM-08.7 now reuses the distribution foundation from continuation revision
 `b7a176dd5c75e700b9aa86ac8006b70fcb3eaf57`, with per-file provenance in
 [`policy-material-distribution-foundation-provenance-v1.json`](../protocol/policy-material-distribution-foundation-provenance-v1.json).
-The only foundation change corrects the reviewed SDK entrypoint expectation to
-`biocompiler.entrypoint:main`. The resolver remains opt-in. The material lane does
+The initial foundation adaptation corrects the reviewed SDK entrypoint expectation
+to `biocompiler.entrypoint:main`. A subsequent source-acquisition correction adds
+a byte-pinned GMP mirror and bounded network retries, with retained attempt
+diagnostics; original archive hashes, sizes and notices remain unchanged.
+The resolver remains opt-in. The material lane does
 not invoke the copied migration pipeline's legacy installed/aggregate campaigns.
 
 Hosted validation will prepare locked static dependencies, compile and test the

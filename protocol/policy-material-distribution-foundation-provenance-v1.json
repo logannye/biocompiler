@@ -217,10 +217,10 @@
       }
     },
     {
-      "change": "none",
+      "change": "bounded_hash_pinned_https_acquisition_fallback_and_diagnostics",
       "copied": {
-        "bytes": 9421,
-        "sha256": "674c8f9d9eb01279f48669d6fcd3b1e52a5385336404ff162ad819232599bd3e"
+        "bytes": 17130,
+        "sha256": "5a5bd5e0fb88d55508412f1ebf0b33c94678e0d22f1ed36de78cb94d693c8c3f"
       },
       "path": "tools/prebuilt_sources.py",
       "source": {
@@ -267,6 +267,12 @@
       "path": "tests/test_prebuilt_sdk_entrypoint.py",
       "purpose": "Accept the current entrypoint and reject correctly rehashed legacy/foreign console metadata.",
       "sha256": "5c3edeaeefdcf9dc70ee3149c2454cf04db43e232740deaf52e0d240e53d9278"
+    },
+    {
+      "bytes": 11852,
+      "path": "tests/test_prebuilt_sources.py",
+      "purpose": "Eleven source-only controls for bounded HTTPS retry/fallback, byte identity, no-overwrite publication and retained sanitized acquisition receipts.",
+      "sha256": "3ac1c18427b2362710f89ccac66e6e19655121418575492f9adf22738194c337"
     }
   ],
   "not_copied": [
@@ -293,6 +299,20 @@
   "source_revision": "b7a176dd5c75e700b9aa86ac8006b70fcb3eaf57",
   "source_worktree": "/Users/logannye/Documents/ChatGPT/GeneMedicineCompiler/work/reference-package-continuations",
   "status": "source_only",
+  "subsequent_reviewed_deviations": [
+    {
+      "mirror": "https://mirrors.kernel.org/gnu/gmp/gmp-6.3.0.tar.xz",
+      "native_validation": "pending",
+      "original_lock_sha256": "cfff010985f7a3f9fd51b7b09176f883f76ec8ea493c71bb0611c708b3007df1",
+      "path": "tools/prebuilt_sources.py",
+      "reason": "Both hosted targets failed upstream acquisition before compilation; preserve original hashes, sizes and notices while permitting one independently byte-verified GMP transport mirror. Retry only network errors, bound attempts, reject integrity/security failures, and retain exact attempt provenance.",
+      "source_only_verification": {
+        "attempts": 8,
+        "sources": 7,
+        "status": "all_original_archive_and_notice_pins_match"
+      }
+    }
+  ],
   "target_base_revision": "3044e9d62a4c16cc294e4110ab521b019537298d",
   "unchanged_existing_dependencies": [
     {

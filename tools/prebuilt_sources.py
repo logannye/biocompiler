@@ -5,6 +5,8 @@ only on the matching hosted runner; local controls never invoke it.
 """
 from __future__ import annotations
 import argparse
+import errno
+import http.client
 import hashlib
 import json
 import os
@@ -12,9 +14,14 @@ from pathlib import Path,PurePosixPath
 import platform
 import re
 import shutil
+import socket
+import ssl
 import subprocess
 import sys
 import tarfile
+import time
+import urllib.error
+import urllib.parse
 import urllib.request
 
 if __package__:
@@ -29,18 +36,173 @@ LOCK=ROOT/'protocol/core-release-sources-v1.json'
 require=release.require
 
 
-def fetch(url,pin,output):
-    require(url.startswith('https://') and not output.exists(),'Source download requires HTTPS and a fresh path')
-    temporary=output.with_suffix(output.suffix+'.part'); size=0; digest=hashlib.sha256()
+# Mirrors are transport alternatives, never new source authority. The sole
+# fallback was source-only verified against the unchanged locked GMP bytes.
+REVIEWED_URLS = {
+    'digestif': 'https://github.com/mirage/digestif/releases/download/v1.3.0/digestif-1.3.0.tbz',
+    'dune': 'https://github.com/ocaml/dune/releases/download/3.20.2/dune-3.20.2.tbz',
+    'eqaf': 'https://github.com/mirage/eqaf/releases/download/v0.10/eqaf-0.10.tbz',
+    'gmp': 'https://ftp.gnu.org/gnu/gmp/gmp-6.3.0.tar.xz',
+    'ocaml-compiler': 'https://github.com/ocaml/ocaml/releases/download/5.4.0/ocaml-5.4.0.tar.gz',
+    'ocamlfind': 'https://github.com/ocaml/ocamlfind/archive/refs/tags/findlib-1.9.8.tar.gz',
+    'zarith': 'https://github.com/ocaml/Zarith/archive/release-1.14.tar.gz',
+}
+FALLBACKS = {REVIEWED_URLS['gmp']: ('https://mirrors.kernel.org/gnu/gmp/gmp-6.3.0.tar.xz',)}
+ATTEMPTS_PER_URL = 2
+SOCKET_TIMEOUT = 12
+STREAM_DEADLINE = 30
+FETCH_SCHEMA = 'biocompiler.prebuilt_source_fetch.v1'
+
+
+class FetchError(RuntimeError):
+    """Sanitized failure; raw upstream errors may contain signed redirect URLs."""
+
+
+def secure_url(url):
+    require(type(url) is str and len(url) <= 16384, 'Invalid source URL')
+    parsed = urllib.parse.urlsplit(url)
+    require(parsed.scheme == 'https' and bool(parsed.hostname) and parsed.username is None
+            and parsed.password is None and parsed.port in (None, 443), 'Source redirect or URL is not credential-free HTTPS')
+    return parsed
+
+
+def public_url(url):
+    parsed = secure_url(url)
+    # GitHub's release redirect has a signed query. Never log that query.
+    return urllib.parse.urlunsplit((parsed.scheme, parsed.netloc, parsed.path, '', ''))
+
+
+class HttpsRedirect(urllib.request.HTTPRedirectHandler):
+    def redirect_request(self, request, response, code, message, headers, newurl):
+        secure_url(newurl)
+        return super().redirect_request(request, response, code, message, headers, newurl)
+
+
+def error_summary(error):
+    reason = getattr(error, 'reason', error)
+    result = {'type': type(error).__name__, 'reason_type': type(reason).__name__}
+    if isinstance(error, urllib.error.HTTPError):
+        result['http_status'] = error.code
+    if type(getattr(reason, 'errno', None)) is int:
+        result['errno'] = reason.errno
+    return result
+
+
+def network_failure(error):
+    if isinstance(error, urllib.error.HTTPError):
+        return error.code in (408, 429, 500, 502, 503, 504)
+    reason = getattr(error, 'reason', error)
+    if isinstance(reason, ssl.SSLError):
+        return False
+    if isinstance(reason, (TimeoutError, socket.gaierror, ConnectionError, http.client.RemoteDisconnected)):
+        return True
+    return isinstance(reason, OSError) and reason.errno in {
+        errno.ENETUNREACH, errno.EHOSTUNREACH, errno.ETIMEDOUT, errno.ECONNRESET,
+        errno.ECONNREFUSED, errno.ECONNABORTED, errno.EPIPE,
+    }
+
+
+def fetch_once(url, pin, output):
+    secure_url(url)
+    require(not output.exists() and not output.is_symlink(), 'Source destination already exists')
+    temporary = output.with_suffix(output.suffix + '.part')
+    require(not temporary.exists() and not temporary.is_symlink(), 'Source partial destination already exists')
+    size = 0; digest = hashlib.sha256(); created = False
+    started = time.monotonic()
     try:
-        with urllib.request.urlopen(url,timeout=60) as response,temporary.open('xb') as stream:
-            require(response.geturl().startswith('https://'),'Source redirect downgraded TLS')
-            while chunk:=response.read(1024*1024):
-                size+=len(chunk);require(size<=pin['size'],'Upstream source exceeds exact pinned size');digest.update(chunk);stream.write(chunk)
-        require(size==pin['size'] and digest.hexdigest()==pin['sha256'],'Upstream source bytes differ from locked checksum')
-        temporary.replace(output)
+        opener = urllib.request.build_opener(HttpsRedirect())
+        with opener.open(url, timeout=SOCKET_TIMEOUT) as response:
+            final_url = public_url(response.geturl())
+            with temporary.open('xb') as stream:
+                created = True
+                while True:
+                    require(time.monotonic() - started <= STREAM_DEADLINE, 'Source stream exceeded its elapsed-time allowance')
+                    chunk = response.read1(min(65536, pin['size'] + 1 - size))
+                    if not chunk:
+                        break
+                    size += len(chunk)
+                    require(size <= pin['size'], 'Upstream source exceeds exact pinned size')
+                    digest.update(chunk); stream.write(chunk)
+        require(size == pin['size'] and digest.hexdigest() == pin['sha256'], 'Upstream source bytes differ from locked checksum')
+        # Atomic no-replace publication: a destination appearing during fetch is
+        # never overwritten. Both paths are in the same source directory.
+        os.link(temporary, output)
+        return {'url': url, 'final_url': final_url, 'sha256': digest.hexdigest(), 'size': size}
     finally:
-        temporary.unlink(missing_ok=True)
+        if created:
+            temporary.unlink(missing_ok=True)
+
+
+def fetch(url, pin, output, *, source=None, notify=None):
+    require(url in REVIEWED_URLS.values(), 'Source URL is outside the reviewed locked URL inventory')
+    require(type(pin.get('size')) is int and 0 < pin['size'] <= 64 * 1024 * 1024
+            and type(pin.get('sha256')) is str and re.fullmatch('[0-9a-f]{64}', pin['sha256']), 'Invalid locked source byte pin')
+    require(not output.exists() and not output.is_symlink(), 'Source download requires a fresh path')
+    source = source or next(name for name, selected in REVIEWED_URLS.items() if selected == url)
+    require(REVIEWED_URLS.get(source) == url, 'Named source differs from its reviewed URL')
+    def publish(record):
+        print(json.dumps({'source': source, **record}, sort_keys=True), flush=True)
+        if notify is not None:
+            notify({'source': source, **record})
+    urls = (url, *FALLBACKS.get(url, ()))
+    for ordinal in range(1, ATTEMPTS_PER_URL + 1):
+        for selected in urls:
+            record = {'url': selected, 'attempt': ordinal, 'status': 'started'}
+            publish(record)
+            try:
+                value = fetch_once(selected, pin, output)
+            except (OSError, ValueError, urllib.error.URLError, http.client.HTTPException) as error:
+                retry = network_failure(error)
+                record.update(status='network_error' if retry else 'rejected', error=error_summary(error))
+                publish(record)
+                if isinstance(error, urllib.error.HTTPError):
+                    error.close()
+                if not retry:
+                    raise FetchError('Locked source rejected: ' + source + ' (' + type(error).__name__ + ')') from None
+                if ordinal < ATTEMPTS_PER_URL and selected == urls[-1]:
+                    time.sleep(0.25)
+            else:
+                record.update(status='verified', sha256=value['sha256'], size=value['size'], final_url=value['final_url'])
+                publish(record)
+                return {'source': source, 'selected_url': selected, 'attempt': ordinal, **value}
+    raise FetchError('All bounded source network attempts failed: ' + source) from None
+
+
+def fetch_sources(lock, output):
+    require(not output.exists() and not output.is_symlink(), 'Source capture root already exists')
+    require(set(lock['sources']) == set(REVIEWED_URLS) and all(row['url'] == REVIEWED_URLS[name]
+            and Path(row['path']).name == row['path'] for name, row in lock['sources'].items()),
+            'Locked source URL/path inventory differs from reviewed inputs')
+    output.mkdir(parents=True)
+    receipt = {'schema_version': FETCH_SCHEMA, 'status': 'running', 'lock_sha256': release.sha(release.canonical(lock)),
+               'limits': {'attempts_per_url': ATTEMPTS_PER_URL, 'socket_timeout_seconds': SOCKET_TIMEOUT,
+                          'stream_deadline_seconds': STREAM_DEADLINE},
+               'sources': {name: {key: row[key] for key in ('url', 'path', 'sha256', 'size')} for name, row in lock['sources'].items()},
+               'attempts': [], 'completed': {}}
+    receipt_path = output / 'fetch-receipt.json'
+    def save():
+        temporary = output / 'fetch-receipt.json.part'
+        temporary.write_bytes(release.canonical(receipt)); temporary.replace(receipt_path)
+    def notice(record):
+        rows = receipt['attempts']
+        if record['status'] == 'started':
+            rows.append(record)
+        else:
+            require(rows and all(rows[-1][key] == record[key] for key in ('source', 'url', 'attempt')),
+                    'Fetch result is detached from its recorded attempt')
+            rows[-1] = record
+        save()
+    save()
+    try:
+        for name, row in lock['sources'].items():
+            receipt['completed'][name] = fetch(row['url'], row, output / row['path'], source=name, notify=notice)
+            save()
+        (output / 'source-receipt.json').write_bytes(release.canonical(inspect_sources(lock, output)))
+    except BaseException as error:
+        receipt.update(status='failed', error=error_summary(error)); save()
+        raise
+    receipt['status'] = 'complete'; save()
+    return receipt
 
 
 def archive_index(path):
@@ -151,9 +313,7 @@ def main():
     compile.add_argument('--platform',choices=tuple(release.TARGETS),required=True)
     args=parser.parse_args();lock=json.loads(LOCK.read_bytes())
     if args.operation=='fetch':
-        require(not args.output.exists(),'Source capture root already exists');args.output.mkdir(parents=True)
-        for row in lock['sources'].values():fetch(row['url'],row,args.output/row['path'])
-        (args.output/'source-receipt.json').write_bytes(release.canonical(inspect_sources(lock,args.output)))
+        fetch_sources(lock,args.output)
     else:static_build(args,lock)
 
 

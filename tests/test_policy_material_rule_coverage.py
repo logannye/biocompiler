@@ -138,10 +138,12 @@ class PolicyMaterialRuleCoverageTests(unittest.TestCase):
         self.ledger = deepcopy(self.original)
         self.rejected(lambda value: value["rules"][0].update(witness_status="complete"), "Witness status contradicts gaps")
 
-    def test_pending_context_cannot_be_relabelled_complete(self):
+    def test_context_with_missing_control_cannot_be_relabelled_complete(self):
         def mutate(value):
             row = next(row for row in value["rules"] if row["id"] == "implementation.source_family")
-            row.update(gaps=[], witness_status="source_witnesses_present")
+            # Newly indexed controls must not make this adversary depend on
+            # which reviewed family currently happens to lack a witness.
+            row.update(negative=[], gaps=[], witness_status="source_witnesses_present")
         self.rejected(mutate, "Missing witness must remain pending")
 
     def test_source_pointers_cannot_claim_native_execution(self):
