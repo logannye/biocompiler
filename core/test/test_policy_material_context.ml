@@ -12,6 +12,7 @@ module I=Bioc_domain.Policy_implementation
 module U=Bioc_domain.Policy_implementation_binding
 module K=Bioc_domain.Construction_content
 module E=Bioc_domain.Construction_assessment
+module AC=Bioc_domain.Architecture_contract
 module A=Bioc_checker.Policy_realization_admission
 module P=Bioc_realization_checker.Policy_preservation_check
 module B=Bioc_realization_checker.Policy_material_binding_check
@@ -67,6 +68,12 @@ let ()=
     match B.accepted result with Some value->value|None->failwith("Expected independently valid material leaf: "^Canonical.encode(B.report result))in
   let binding=bind contract_raw in
   let context=C.of_json context_raw in
+  require(C.delivery_group_schema="biocompiler.policy_delivery_group.v0.1" &&
+    (C.delivery_group context).assumptions=[])"Policy delivery group lost its explicit empty assumption inventory";
+  let legacy_group=get "delivery_group" context_raw|>set "schema_version"(str AC.Delivery_group.schema_version)in
+  rejected "invalid_architecture_contract"(fun()->AC.Delivery_group.of_json legacy_group);
+  ignore(AC.Delivery_group.of_json(set "assumptions"(arr[str "Legacy supplied premise"])legacy_group));
+  rejected "policy_material_context"(fun()->C.of_json(set "delivery_group" legacy_group context_raw));
   require(str(C.fingerprint context)=get "context_digest" expectations)"Frozen context body changed";
   require(str(MC.fingerprint(B.contract binding))=get "material_contract_digest" expectations)"Frozen full resource/component authority changed";
   require(Canonical.encode(C.to_json context)=Canonical.encode context_raw)"Context codec lost original bytes";
@@ -139,6 +146,8 @@ let ()=
   no_accept "Wrong compartment" "placement_identity_or_compartment"(put["placement";"compartment"](str "nucleus")context_raw);
   no_accept "Population instead of recipient" "same_concrete_executor_delivery"(put["delivery_group";"same_recipient"](Json.Bool false)context_raw);
   no_accept "Independent member delivery" "independent_delivery_group_unimplemented"(put["delivery_group";"mode"](str "independent")context_raw);
+  no_accept "Undischarged delivery assumption" "delivery_count_or_assumptions"
+    (put["delivery_group";"assumptions"](arr[str "Assume recipient compatibility"])context_raw);
   no_accept "Wrong chassis body" "complete_original_chassis_body"(put["providers";"0";"body";"chassis";"id"](str "fixture.human_immune")context_raw);
   no_accept "Narrowed environment" "complete_original_environment_grammar"
     (put["providers";"1";"body";"grammar";"feedback_factors";"0";"outcomes"](arr[str "completed"])context_raw);

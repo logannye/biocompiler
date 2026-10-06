@@ -34,6 +34,14 @@ library model. The current material conjunction supports one original catalog
 root and one supplied whole-graph case. An empty catalog or a self-authored
 candidate fingerprint cannot supply missing authority.
 
+Delivery grouping uses the distinct nested schema
+`biocompiler.policy_delivery_group.v0.1`. It retains explicit recipient roles,
+co-delivery mode, same-recipient identity, counts and length bounds. Its empty
+assumption inventory is meaningful: this profile has no interpretation for
+additional opaque assumptions and rejects them. The legacy architecture group
+requires a nonempty assumption list and keeps that behavior; its schema is not
+silently reinterpreted by this new profile. Native controls cover both boundaries.
+
 The separate, untrusted candidate uses
 `biocompiler.policy_material_candidate.v0.1` and exactly:
 `schema_version`, `behavior`, `implementation`, `binding`, `material_binding`,
@@ -168,10 +176,28 @@ when exporting, full manifest/FASTA wrapper.
 
 The report records `usage.unit`, `usage.charged_work` and
 `usage.request_decoding_work`. The frozen complete-original fixture has an
-independently calculated decoder census of **480,657 logical units**. Native
-controls require that exact allowance to succeed and 480,656 to fail. A separate
+independently calculated decoder census of **480,645 logical units**. Native
+controls require that exact allowance to succeed and 480,644 to fail. A separate
 literal `{"a":[true,12,"x\n"]}` has 16 logical units and 21 canonical bytes.
 These are fixture/accounting calibrations, not hosted execution receipts.
+The census was 480,657 before the context delivery-group codec correction.
+The context-owned `biocompiler.policy_delivery_group.v0.1` schema retains the
+same fields and modes while permitting an empty assumptions list. The context
+checker still rejects opaque nonempty assumptions. The legacy delivery-group
+codec is unchanged; its nonempty-assumptions requirement cannot represent this
+context profile. Only the schema text, context/request identities and the exact
+12-unit accounting difference changed in the complete request fixture.
+
+The Python transport retains the complete original context-obligation inventory,
+its disposition and all original provider pins in discharge evidence. A passing
+context report must retain every original allocation, in order, with its demand,
+provider, capacity, pool and reserved quantity. Its derived demands must preserve
+the original unit/scope/owner inventory, with positive quantities within the
+supplied reservations; Python does not recalculate the native lower bounds.
+Failed checks may retain partial demands and an allocation prefix; their full
+source ledger remains outside this stage and no
+context discharges are claimed. These are evidence-retention checks; capacity
+sufficiency and operational semantics remain independently checked in OCaml.
 
 ## Public operations, identities and fresh paired export
 
@@ -236,7 +262,7 @@ publication, not a claim of directory-fsync crash durability.
 
 The [complete request fixture](../core/test/data/policy_material_request_v01.json)
 has request fingerprint
-`c2bc619bb5c1c633cfca3733df94b79776959bcf31ea2bc754c2e78c9b99d6ff`.
+`754a3a30752855c3e9458c0b657a2e7ac850d6aebb27e260009e331296341e36`.
 It independently retains the resolved exclusion source, catalog, domain, graph,
 material/context authority, complete molecule and 24 original obligations. Only
 its untrusted operational behavior is produced natively. Its authored positive
@@ -271,6 +297,29 @@ adds a separate two-member `6 + 6 > 6` aggregate-bound control. No production
 semantics changed in that correction. Its hosted validation and all subsequent
 material/context/coordinator/service/export gates remain pending here. These
 partial native results cannot stand in for the complete run or material release.
+
+Subsequent hosted runs passed all earlier focused suites, including 47
+construction/legacy-equivalence checks, 129 mRNA structural checks and 32 material
+binding controls. The first context run then exposed the legacy delivery-group
+decoder's incompatible empty-assumption rule. Its exact diagnostic was retained
+from source `994c9247c8c6371802608efc371f012054b36110`, run `37419361828`.
+The separate nested policy schema above fixes the new context boundary while
+preserving legacy decoding. The complete original fixture and its fingerprints
+and decoding calibration are updated together; source/domain/material authority
+is unchanged. This correction still requires fresh hosted validation.
+
+The earlier installed implementation campaign reached its malformed-replay
+control but omitted the CLI's `--json` option while requiring a JSON diagnostic.
+The campaign now requests that format explicitly. Installed log artifacts are
+retained before the longer campaigns so future failures expose their exact
+cause promptly. The full original campaign remains required.
+
+Retained-output validation additionally requires the export CLI's publication
+helper origin and complete context obligation, provider-discharge, derived-demand
+and allocation inventories. Inert adversaries update all four slot fingerprints,
+wrapper/manifest identities and ZIP bytes after truncating those inventories;
+the missing evidence must still be rejected. These are transport-completeness
+checks, not Python reimplementations of native capacity or policy semantics.
 
 The initial family remains narrow: one executor, explicitly named finite
 encounters, one truth observation, one or two encounter-scoped truth stores,

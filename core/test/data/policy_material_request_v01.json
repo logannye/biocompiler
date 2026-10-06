@@ -1465,7 +1465,7 @@
     "artifact": "withheld",
     "carrier_count": 92,
     "claim_scope": "bounded_conditional_policy_to_exact_mrna",
-    "context_digest": "c6b394001f66c63f25d159de3a24cd24951d198e4edf3997d62ea80dd5cf4c07",
+    "context_digest": "85cc395017fe0649233eb65bc173d28d732b34b13bceafbd45ced42c98cca1f4",
     "context_discharges": [
       "chassis_capability_and_delivery_suitability",
       "semantic_definition:exclusion.chassis",
@@ -1861,8 +1861,8 @@
       "temporal_and_uncertainty_semantics"
     ],
     "prefixes_started": 48,
-    "request_decoding_work": 480657,
-    "request_fingerprint": "c2bc619bb5c1c633cfca3733df94b79776959bcf31ea2bc754c2e78c9b99d6ff",
+    "request_decoding_work": 480645,
+    "request_fingerprint": "754a3a30752855c3e9458c0b657a2e7ac850d6aebb27e260009e331296341e36",
     "sequence": "CCAUGGCUUAAGGAAAA",
     "source_request_digest": "78ba5e6c2079b91ce46482f7c91d3453babe519e53d935c0ab5f8567980dd264",
     "status": "checked_material",
@@ -1962,7 +1962,7 @@
           "executor"
         ],
         "same_recipient": true,
-        "schema_version": "biocompiler.recipient_delivery_group.v0.1"
+        "schema_version": "biocompiler.policy_delivery_group.v0.1"
       },
       "helpers": [],
       "placement": {

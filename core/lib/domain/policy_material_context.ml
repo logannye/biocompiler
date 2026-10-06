@@ -8,6 +8,7 @@ let schema_version="biocompiler.policy_material_context.v0.1"
 let profile="biocompiler.policy_truth_mrna.v0.1"
 let provider_schema="biocompiler.policy_material_provider.v0.1"
 let record_profile="biocompiler.policy_material_complete_records.v0.1"
+let delivery_group_schema="biocompiler.policy_delivery_group.v0.1"
 let require condition message=Diagnostic.require condition "policy_material_context" message
 let str value=Json.String value
 let obj value=Json.Object value
@@ -148,12 +149,39 @@ let parse_provider raw=exact["schema_version";"identity";"body"]raw;
     available=availability(get "availability" body);capacities;body=body_value}in
   require(P.content_fingerprint identity=Canonical.fingerprint(provider_body_to_json value))"Provider identity does not pin its full typed body.";
   value
+type delivery_mode=Co_delivered|Independent
+type delivery_group={group_id:string;recipient_roles:string list;mode:delivery_mode;same_recipient:bool;
+  assumptions:string list;exact_count:int option;max_count:int option;max_total_bases:int option}
+let delivery_group_json(value:delivery_group)=
+  let optional=function None->Json.Null|Some number->Json.int number in
+  obj["schema_version",str delivery_group_schema;"id",str value.group_id;
+    "recipient_roles",arr(List.map str value.recipient_roles);
+    "mode",str(match value.mode with Co_delivered->"co_delivered"|Independent->"independent");
+    "same_recipient",Json.Bool value.same_recipient;"assumptions",arr(List.map str value.assumptions);
+    "exact_count",optional value.exact_count;"max_count",optional value.max_count;
+    "max_total_bases",optional value.max_total_bases]
+let parse_delivery_group raw=
+  exact["schema_version";"id";"recipient_roles";"mode";"same_recipient";"assumptions";
+    "exact_count";"max_count";"max_total_bases"]raw;
+  require(get "schema_version" raw=str delivery_group_schema)"Unsupported policy delivery group schema.";
+  let recipient_roles=List.map text(rows 4096(get "recipient_roles" raw))
+  and assumptions=List.map text(rows 64(get "assumptions" raw))in
+  require(recipient_roles<>[])"Policy delivery needs an explicit recipient role inventory.";
+  unique "delivery recipient" recipient_roles;unique "delivery assumption" assumptions;
+  let mode=match get "mode" raw with Json.String "co_delivered"->Co_delivered|Json.String "independent"->Independent
+    |_->Diagnostic.fail "policy_material_context" "Unknown policy delivery mode."in
+  let optional maximum key=match get key raw with Json.Null->None|value->Some(integer 0 maximum value)in
+  let exact_count=optional 4096 "exact_count" and max_count=optional 4096 "max_count"in
+  require(match exact_count,max_count with Some exact,Some maximum->exact<=maximum|_->true)
+    "Exact policy RNA count exceeds the maximum count.";
+  {group_id=text(get "id" raw);recipient_roles;mode;same_recipient=Json.boolean(get "same_recipient" raw);
+    assumptions;exact_count;max_count;max_total_bases=optional M.max_residues "max_total_bases"}
 type t={clock:clock;recipient:recipient;record_layout:record_layout;placement:A.Placement.t;
-  delivery_group:A.Delivery_group.t;helpers:A.Helper.t list;providers:provider list}
+  delivery_group:delivery_group;helpers:A.Helper.t list;providers:provider list}
 let to_json(value:t)=obj["schema_version",str schema_version;"profile",str profile;
   "clock",clock_json value.clock;"recipient",recipient_to_json value.recipient;
   "record_layout",record_layout_to_json value.record_layout;"placement",A.Placement.to_json value.placement;
-  "delivery_group",A.Delivery_group.to_json value.delivery_group;"helpers",arr(List.map A.Helper.to_json value.helpers);
+  "delivery_group",delivery_group_json value.delivery_group;"helpers",arr(List.map A.Helper.to_json value.helpers);
   "providers",arr(List.map provider_to_json value.providers)]
 let of_json raw=
   M.check_resources raw;
@@ -165,7 +193,7 @@ let of_json raw=
   unique "capacity pool"(List.concat_map(fun(value:provider)->List.map(fun(capacity:capacity)->capacity.pool_id)value.capacities)providers);
   let value={clock=parse_clock(get "clock" raw);recipient=parse_recipient(get "recipient" raw);
     record_layout=parse_layout(get "record_layout" raw);placement=A.Placement.of_json(get "placement" raw);
-    delivery_group=A.Delivery_group.of_json(get "delivery_group" raw);
+    delivery_group=parse_delivery_group(get "delivery_group" raw);
     helpers=List.map(fun raw->A.Helper.of_json raw)(rows 128(get "helpers" raw));providers}in
   M.check_resources(to_json value);value
 let fingerprint value=Canonical.fingerprint(to_json value)

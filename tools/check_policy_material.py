@@ -50,7 +50,7 @@ NEGATIVE_CODES = {
 EXPECTED = {"status": "checked_material", "claim_scope": "bounded_conditional_policy_to_exact_mrna",
     "material_status": "pass", "context_status": "pass", "empirical": "unassessed", "artifact": "withheld", "export": "withheld",
     "histories": 9, "transitions": 47, "prefixes_started": 48, "node_count": 15, "carrier_count": 92,
-    "sequence": "CCAUGGCUUAAGGAAAA", "request_decoding_work": 480657}
+    "sequence": "CCAUGGCUUAAGGAAAA", "request_decoding_work": 480645}
 OBLIGATIONS = [
     "arbitration_fairness_and_conflict_resolution", "chassis_capability_and_delivery_suitability",
     "effect_authorization_feedback_and_cancellation", "implementation_applicability:exclusion.response.primitives.resolved_chassis",
@@ -160,13 +160,18 @@ def check_import_origins(origins: dict, package: str, required: set[str]) -> Non
             raise AssertionError("Forbidden or foreign installed Python semantic authority")
 
 
-def check_cli_guard(guard: dict, package: str, python_version: str) -> None:
+def check_cli_guard(guard: dict, package: str, python_version: str, *, case: str) -> None:
     if (type(guard) is not dict or set(guard) != {"status", "guard_active", "execution_guard_active", "python", "executable", "origins"}
             or guard["status"] != "ok" or guard["guard_active"] is not True or guard["execution_guard_active"] is not True
             or guard["python"] != [int(part) for part in python_version.split(".")[:2]]
             or type(guard["executable"]) is not str or not Path(guard["executable"]).is_absolute()):
         raise AssertionError("Installed material CLI guard did not complete on its declared interpreter")
-    check_import_origins(guard["origins"], package, {"biocompiler.entrypoint", "biocompiler.policy.cli", "biocompiler.core_policy_material"})
+    if case not in CLI_CASES:
+        raise AssertionError("Unknown material CLI guard case")
+    required = {"biocompiler.entrypoint", "biocompiler.policy.cli", "biocompiler.core_policy_material"}
+    if case == "export-cli":
+        required.add("biocompiler.policy.material")
+    check_import_origins(guard["origins"], package, required)
 
 
 def checked_output(result: dict, operation: str, payload: dict, role: str) -> dict:
@@ -416,7 +421,7 @@ def run(args: argparse.Namespace) -> dict:
                     raise AssertionError("Installed material CLI differs from complete SDK output")
                 retain(name, actual)
             cli_guards[name] = read_json(guard_receipt)
-            check_cli_guard(cli_guards[name], str(package), platform.python_version())
+            check_cli_guard(cli_guards[name], str(package), platform.python_version(), case=name)
     check_observations(observations, fixture)
     origins = boundary.origins()
     if pins != {"biocompiler-core": digest_file(core_path), "biocompiler-verify": digest_file(verify_path)}:
@@ -459,8 +464,8 @@ def compare(paths: list[Path], native_root: Path, fixture_path: Path) -> dict:
             "biocompiler.core_policy_operational", "biocompiler.core_policy_implementation", "biocompiler.core_policy_material", "biocompiler.policy.material"})
         if type(receipt["cli_guards"]) is not dict or set(receipt["cli_guards"]) != set(CLI_CASES):
             raise AssertionError("Missing complete material CLI guard receipts")
-        for guard in receipt["cli_guards"].values():
-            check_cli_guard(guard, receipt["package"], receipt["python_version"])
+        for name, guard in receipt["cli_guards"].items():
+            check_cli_guard(guard, receipt["package"], receipt["python_version"], case=name)
         observations = receipt["observations"]
         if canonical_digest(observations) != receipt["observations_fingerprint"]:
             raise AssertionError("Material campaign observations changed or incomplete")

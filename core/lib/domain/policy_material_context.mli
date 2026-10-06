@@ -7,6 +7,7 @@ val schema_version : string
 val profile : string
 val provider_schema : string
 val record_profile : string
+val delivery_group_schema : string
 
 type time = private { spelling:string; seconds:Q.t }
 type interval = { earliest:time; latest:time }
@@ -41,6 +42,16 @@ val provider_to_json : provider -> Json.t
 val availability_to_json : availability -> Json.t
 val recipient_to_json : recipient -> Json.t
 
+(* Separate from legacy architecture delivery groups: an empty assumption
+   inventory is representable. The context checker rejects nonempty assumptions
+   rather than treating them as established premises. *)
+type delivery_mode = Co_delivered | Independent
+type delivery_group = {
+  group_id:string; recipient_roles:string list; mode:delivery_mode;
+  same_recipient:bool; assumptions:string list; exact_count:int option;
+  max_count:int option; max_total_bases:int option;
+}
+
 type t
 val of_json : Json.t -> t
 val to_json : t -> Json.t
@@ -49,6 +60,6 @@ val clock : t -> clock
 val recipient : t -> recipient
 val record_layout : t -> record_layout
 val placement : t -> Architecture_contract.Placement.t
-val delivery_group : t -> Architecture_contract.Delivery_group.t
+val delivery_group : t -> delivery_group
 val helpers : t -> Architecture_contract.Helper.t list
 val providers : t -> provider list

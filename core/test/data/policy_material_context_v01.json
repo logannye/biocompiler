@@ -416,7 +416,7 @@
         "executor"
       ],
       "same_recipient": true,
-      "schema_version": "biocompiler.recipient_delivery_group.v0.1"
+      "schema_version": "biocompiler.policy_delivery_group.v0.1"
     },
     "helpers": [],
     "placement": {
@@ -1089,7 +1089,7 @@
   },
   "context_expectations": {
     "cause_slots": 238,
-    "context_digest": "c6b394001f66c63f25d159de3a24cd24951d198e4edf3997d62ea80dd5cf4c07",
+    "context_digest": "85cc395017fe0649233eb65bc173d28d732b34b13bceafbd45ced42c98cca1f4",
     "discharged_source_obligations": [
       "chassis_capability_and_delivery_suitability",
       "semantic_definition:exclusion.chassis",
@@ -5435,7 +5435,7 @@
           "executor"
         ],
         "same_recipient": true,
-        "schema_version": "biocompiler.recipient_delivery_group.v0.1"
+        "schema_version": "biocompiler.policy_delivery_group.v0.1"
       },
       "helpers": [],
       "placement": {
@@ -13645,7 +13645,7 @@
           "executor"
         ],
         "same_recipient": true,
-        "schema_version": "biocompiler.recipient_delivery_group.v0.1"
+        "schema_version": "biocompiler.policy_delivery_group.v0.1"
       },
       "helpers": [],
       "placement": {

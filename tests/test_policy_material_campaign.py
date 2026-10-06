@@ -51,8 +51,7 @@ def inert(payload, *, disposition="pass"):
     preservation["coverage"].update(histories=9, transitions=47, prefixes_started=48, matched_prefixes=48)
     for row in preservation["requirements"]:
         row["histories"].update(**{"pass": 9})
-    report["context"]["discharges"] = [{"id": item, "evidence": []} for item in TOOL.CONTEXT_DISCHARGES]
-    report["usage"].update(charged_work=1000000, request_decoding_work=480657)
+    report["usage"].update(charged_work=1000000, request_decoding_work=480645)
     if disposition != "pass":
         report["status"] = "not_accepted"
         report["all_original_obligations_discharged"] = False
@@ -69,6 +68,9 @@ def inert(payload, *, disposition="pass"):
             status = "unsupported" if disposition == "unsupported" else "fail"
             report["context_status"] = status
             report["context"]["outcome"] = status
+            report["context"]["discharges"] = []
+            for row in report["context"]["source_obligations"]:
+                row["context_status"] = "outside_stage"
             report["context"]["diagnostics"] = ["independent_delivery_group_unimplemented" if disposition == "unsupported" else "shared_capacity_sum_exceeded"]
         else:
             with patch.object(implementation_peers, "assessment", assessment), patch.object(source_peers, "source_assessment", assessment):
@@ -152,6 +154,9 @@ class MaterialCampaignTests(unittest.TestCase):
         self.assertEqual(len(result["slots"]), 4)
         self.assertEqual(result["empirical"], "unassessed")
         self.assertEqual(result["artifact"], "fresh_native_pair_checked")
+        context = self.receipts[0]["observations"][0]["result"]["report"]["context"]
+        self.assertEqual([row["id"] for row in context["source_obligations"]], TOOL.OBLIGATIONS)
+        self.assertEqual(len(context["resource_allocations"]), 14)
         self.assertLess(max(path.stat().st_size for path in self.paths), TOOL.MAX_RECEIPT_BYTES)
         self.receipts[0]["run_attempt"] = "1"
         self.write()
@@ -192,7 +197,7 @@ class MaterialCampaignTests(unittest.TestCase):
                 self.compare()
 
     def test_all_matching_rehashed_receipts_still_require_original_census_and_obligations(self):
-        for kind in ("census", "obligations"):
+        for kind in ("census", "obligations", "context_source_obligations", "context_resource_allocations", "context_derived_demands"):
             changed = deepcopy(observations())
             for row in changed:
                 value = row["result"]
@@ -200,6 +205,10 @@ class MaterialCampaignTests(unittest.TestCase):
                     continue
                 if kind == "obligations":
                     value["report"]["obligations"].clear()
+                elif kind.startswith("context_"):
+                    context = value["report"]["context"]
+                    if context is not None:
+                        context[kind.removeprefix("context_")].clear()
                 elif value["report"]["status"] == "checked_material":
                     value["report"]["preservation"]["coverage"].update(transitions=46, prefixes_started=47, matched_prefixes=47)
                 repin(value)
@@ -209,8 +218,12 @@ class MaterialCampaignTests(unittest.TestCase):
             for row in changed:
                 if row["name"] in ("export-library", "export-cli"):
                     row["result"] = TOOL.archive_receipt(exports)
+            for receipt in self.receipts:
+                receipt["observations"] = deepcopy(changed)
+                receipt["observations_fingerprint"] = TOOL.canonical_digest(changed)
+            self.write()
             with self.subTest(kind=kind), self.assertRaisesRegex(AssertionError, "census|independent authority"):
-                TOOL.check_observations(changed, self.fixture)
+                self.compare()
 
     def test_exact_export_pair_and_replay_wrapper_cannot_be_substituted(self):
         for name, mutate in (("export-library", lambda v: v.update(sha256="0" * 64)),
@@ -259,6 +272,7 @@ class MaterialCampaignTests(unittest.TestCase):
         original = deepcopy(self.receipts[0])
         for mutate in (lambda r: r["cli_guards"].pop("export-cli"),
                        lambda r: r["cli_guards"]["export-cli"].update(execution_guard_active=False),
+                       lambda r: r["cli_guards"]["export-cli"]["origins"].pop("biocompiler.policy.material"),
                        lambda r: r["parent_imports"].update({"biocompiler.compiler": "/installed/biocompiler/compiler.py"}),
                        lambda r: r["parent_imports"].update({"biocompiler.core_client": "/other/core_client.py"})):
             self.receipts[0] = deepcopy(original)
@@ -269,7 +283,7 @@ class MaterialCampaignTests(unittest.TestCase):
 
     def test_fixture_is_complete_original_and_cli_fresh_export_checks_actual_pair(self):
         self.assertNotIn("behavior", self.fixture["candidate_parts"])
-        self.assertEqual(self.fixture["expected"]["request_decoding_work"], 480657)
+        self.assertEqual(self.fixture["expected"]["request_decoding_work"], 480645)
         exported = next(row["result"] for row in observations() if row["name"] == "export-verify")
         artifact = exported["artifact"]
         from biocompiler.core_client import encode_json

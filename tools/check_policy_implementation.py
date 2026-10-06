@@ -339,7 +339,7 @@ def run(args: argparse.Namespace) -> dict:
             if name == "malformed-replay-cli":
                 (directory / "report.json").write_text(json.dumps(checked.report), encoding="utf-8")
             binary = core_path if role == "core" else verify_path
-            argv = [str(args.console), "policy", command, str(directory / "request.json"),
+            argv = [str(args.console), "policy", command, str(directory / "request.json"), "--json",
                     "--limits", str(directory / "limits.json"), "--" + role, str(binary),
                     "--expected-sha256", binary_pins["biocompiler-" + role]]
             payload = {"request": request, "limits": limits}

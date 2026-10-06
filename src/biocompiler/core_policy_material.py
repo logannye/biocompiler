@@ -73,6 +73,78 @@ def _preservation(response: CoreResponse, request: dict[str, JsonValue], candida
     implementation._evidence(original, evidence)
 
 
+
+def _context_inventories(request: dict[str, JsonValue], report: dict[str, JsonValue],
+                         leaf: dict[str, JsonValue]) -> None:
+    """Retain original inventories; capacity and biological semantics remain native."""
+    preservation = _record(report["preservation"], "Preservation")
+    binding = _record(preservation["binding"], "Binding")
+    admission = _record(binding["source_admission"], "Admission")
+    assessment = _record(admission["source_assessment"], "Original source assessment")
+    original_ids = assessment.get("unresolved_obligations")
+    if type(original_ids) is not list or any(type(value) is not str for value in original_ids):
+        raise CoreProtocolError("Context lacks the complete original source obligation inventory")
+    context = _record(request["context"], "Original context")
+    providers = _rows(context.get("providers"), "Original context providers")
+    provider_bodies = [_record(provider.get("body"), "Original provider body") for provider in providers]
+    names = ["chassis_capability_and_delivery_suitability"]
+    for provider in provider_bodies:
+        definition = _record(provider.get("definition"), "Original provider definition")
+        identifier = definition.get("id")
+        if type(identifier) is not str:
+            raise CoreProtocolError("Context provider lacks its original definition identity")
+        names.append("semantic_definition:" + identifier)
+    discharged = [value for value in original_ids if value in names] if leaf["outcome"] == "pass" else []
+    expected_discharges: JsonValue = [{"id": value, "evidence": [provider.get("identity") for provider in providers]}
+                                     for value in discharged]
+    expected_obligations: JsonValue = [{"id": value, "context_status": "discharged" if value in discharged else "outside_stage"}
+                                      for value in original_ids]
+    if not _same(leaf["discharges"], expected_discharges) or not _same(leaf["source_obligations"], expected_obligations):
+        raise CoreProtocolError("Context changed or omitted original source obligations or provider discharge evidence")
+
+    contract = _record(request["material_contract"], "Original material contract")
+    body = _record(contract.get("body"), "Original material body")
+    resources = _rows(body.get("resources"), "Original resources")
+    derived = [_object(row, {"unit", "scope", "owner", "quantity"}, "Retained derived demand")
+               for row in _rows(leaf["derived_demands"], "Retained derived demands")]
+    for row in derived:
+        quantity = row["quantity"]
+        if type(quantity) is not int or quantity <= 0:
+            raise CoreProtocolError("Context derived demand has an invalid positive quantity")
+    if leaf["outcome"] == "pass":
+        def demand_key(row: dict[str, JsonValue]) -> bytes:
+            return encode_json({key: row.get(key) for key in ("unit", "scope", "owner")})
+        originals = sorted(resources, key=demand_key)
+        retained = sorted(derived, key=demand_key)
+        if [demand_key(row) for row in originals] != [demand_key(row) for row in retained]:
+            raise CoreProtocolError("Context omitted or changed the original derived-demand inventory")
+        for original, actual in zip(originals, retained):
+            declared = _count(original.get("quantity"), "Original declared demand quantity")
+            required = _count(actual["quantity"], "Retained derived demand quantity")
+            if required > declared:
+                raise CoreProtocolError("Context derived demand exceeds its original declared reservation")
+    allocations = _rows(body.get("allocations"), "Original resource allocations")
+    returned = _rows(leaf["resource_allocations"], "Retained resource allocations")
+    if len(returned) > len(allocations) or (leaf["outcome"] == "pass" and len(returned) != len(allocations)):
+        raise CoreProtocolError("Context omitted or added original resource allocations")
+    # Failure may occur midway through allocation checking. Only emitted rows
+    # claim a resolved reservation, and they retain the original prefix order.
+    for row, allocation in zip(returned, allocations):
+        demands = [value for value in resources if value.get("id") == allocation.get("demand_id")]
+        owners = [value for value in provider_bodies if _same(value.get("definition"), allocation.get("provider"))]
+        if len(demands) != 1 or len(owners) != 1:
+            raise CoreProtocolError("Retained allocation has no unique original demand or provider")
+        capacities = [value for value in _rows(owners[0].get("capacities"), "Original provider capacities")
+                      if value.get("id") == allocation.get("capacity_id")]
+        if len(capacities) != 1:
+            raise CoreProtocolError("Retained allocation has no unique original capacity")
+        expected: JsonValue = {"demand": demands[0].get("id"), "provider": owners[0].get("definition"),
+                               "capacity": capacities[0].get("id"), "pool": capacities[0].get("pool_id"),
+                               "reserved": demands[0].get("quantity")}
+        if not _same(row, expected):
+            raise CoreProtocolError("Context changed an original allocation reservation or its order")
+
+
 def _leaves(request: dict[str, JsonValue], candidate: dict[str, JsonValue], report: dict[str, JsonValue]) -> None:
     contract = _record(request["material_contract"], "Original material contract")
     body = _record(contract.get("body"), "Original complete material case")
@@ -147,6 +219,7 @@ def _leaves(request: dict[str, JsonValue], candidate: dict[str, JsonValue], repo
         _pin(leaf["material_binding_fingerprint"], material, "Fresh material evidence")
         if not _same(leaf["record_layout"], original_context.get("record_layout")):
             raise CoreProtocolError("Context evidence changed its original record layout")
+        _context_inventories(request, report, leaf)
     catalog = report["catalog"]
     if catalog is not None:
         row = _object(catalog, {"status", "original_binding", "selected_catalog_entry", "contract_fingerprint", "premise"}, "Original material catalog bridge")

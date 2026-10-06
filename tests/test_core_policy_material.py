@@ -14,6 +14,7 @@ from biocompiler.core_client import (
     CoreRejected, CoreTimeout, CoreTransportError, CoreUnavailable, CoreUnsupported, encode_json,
 )
 from tests import test_core_policy_implementation as peer
+from tests.test_core_policy import assessment as basic_assessment
 
 ROOT = Path(__file__).resolve().parents[1]
 digest = peer.digest
@@ -38,6 +39,27 @@ def candidate(request):
     literal = fixture()
     return {**peer.candidate(request["implementation_request"]), "schema_version": api.CANDIDATE_SCHEMA,
             "material_binding": deepcopy(literal["proposed"]), "construction": deepcopy(literal["candidate"])}
+
+
+
+def context_inventories(request, preservation):
+    """Literal peer retention only: no demand derivation or capacity checking."""
+    source_ids = preservation["binding"]["source_admission"]["source_assessment"]["unresolved_obligations"]
+    providers = request["context"]["providers"]
+    context_ids = {"chassis_capability_and_delivery_suitability"} | {
+        "semantic_definition:" + row["body"]["definition"]["id"] for row in providers}
+    discharged = [value for value in source_ids if value in context_ids]
+    resources = {row["id"]: row for row in request["material_contract"]["body"]["resources"]}
+    reservations = []
+    for row in request["material_contract"]["body"]["allocations"]:
+        provider = next(value for value in providers if value["body"]["definition"] == row["provider"])
+        capacity = next(value for value in provider["body"]["capacities"] if value["id"] == row["capacity_id"])
+        reservations.append({"demand": row["demand_id"], "provider": deepcopy(row["provider"]),
+                             "capacity": row["capacity_id"], "pool": capacity["pool_id"],
+                             "reserved": resources[row["demand_id"]]["quantity"]})
+    return {"source_obligations": [{"id": value, "context_status": "discharged" if value in discharged else "outside_stage"} for value in source_ids],
+            "discharges": [{"id": value, "evidence": [deepcopy(provider["identity"]) for provider in providers]} for value in discharged],
+            "resource_allocations": reservations}
 
 
 def report(request, actual, limits, *, status="checked_material"):
@@ -68,9 +90,10 @@ def report(request, actual, limits, *, status="checked_material"):
     context = {"schema_version": "biocompiler.policy_material_context_assessment.v0.1", "profile": api.REQUEST_PROFILE,
         "implementation_version": "biocompiler.ocaml.policy_material_context_check.v0.1", "context_fingerprint": digest(request["context"]),
         "material_binding_fingerprint": digest(material), "outcome": "pass", "claim_scope": "conditional_exact_context_and_complete_record_capacity",
-        "record_layout": deepcopy(request["context"]["record_layout"]), "derived_demands": deepcopy(contract["body"]["resources"]), "resource_allocations": [],
+        "record_layout": deepcopy(request["context"]["record_layout"]), "derived_demands": [{key: deepcopy(value) for key, value in row.items() if key != "id"} for row in contract["body"]["resources"]], "resource_allocations": [],
         "source_obligations": [], "discharges": [], "diagnostics": [], "source_receipt_status": "unchanged", "biological_validity": "unassessed",
         "human_use": "unassessed", "export": "withheld"}
+    context.update(context_inventories(request, preservation))
     catalog = {"status": "pass", "original_binding": deepcopy(request["catalog_binding"]),
         "selected_catalog_entry": request["catalog_binding"]["entry_id"], "contract_fingerprint": digest(contract),
         "premise": "supplied_conditional_model_to_sequence_contract"}
@@ -131,6 +154,14 @@ def capabilities(role):
 
 class PolicyMaterialTransportTests(unittest.TestCase):
     def setUp(self):
+        def assessment(document):
+            value = basic_assessment(document)
+            value["unresolved_obligations"] = json.loads((ROOT / "core/test/data/policy_material_request_v01.json").read_text())["expected"]["obligations"]
+            return value
+        for module, name in ((peer, "assessment"), (peer.source_peer, "source_assessment")):
+            patcher = patch.object(module, name, assessment)
+            patcher.start()
+            self.addCleanup(patcher.stop)
         self.request = original()
         self.candidate = candidate(self.request)
         self.limits = fixture()["limits"]
@@ -217,6 +248,85 @@ class PolicyMaterialTransportTests(unittest.TestCase):
         self.assertTrue(value.candidate["construction"]["inventory"]["molecules"])
         with self.assertRaises(FrozenInstanceError):
             value.report_fingerprint = "changed"
+
+    @staticmethod
+    def rehash_context(value):
+        checked = value["report"]
+        for row in checked["obligations"]:
+            if row["evidence"] is not None and "context" in row["evidence"]:
+                row["evidence"]["context"] = digest(checked["context"])
+        value["report_fingerprint"] = digest(checked)
+
+    def test_rehashed_context_inventory_mutations_fail(self):
+        mutations = [
+            ("missing obligations", lambda c: c["source_obligations"].clear()),
+            ("omitted obligation", lambda c: c["source_obligations"].pop()),
+            ("reordered obligations", lambda c: c["source_obligations"].reverse()),
+            ("duplicate obligation", lambda c: c["source_obligations"].append(deepcopy(c["source_obligations"][0]))),
+            ("foreign obligation", lambda c: c["source_obligations"][0].update(id="foreign")),
+            ("false disposition", lambda c: next(row for row in c["source_obligations"] if row["context_status"] == "discharged").update(context_status="outside_stage")),
+            ("missing discharge", lambda c: c["discharges"].clear()),
+            ("omitted provider evidence", lambda c: c["discharges"][0]["evidence"].clear()),
+            ("reordered provider evidence", lambda c: c["discharges"][0]["evidence"].reverse()),
+            ("altered provider evidence", lambda c: c["discharges"][0]["evidence"][0].update(content_fingerprint="0" * 64)),
+            ("missing derived demands", lambda c: c["derived_demands"].clear()),
+            ("omitted derived demand", lambda c: c["derived_demands"].pop()),
+            ("extra derived demand", lambda c: c["derived_demands"].append(deepcopy(c["derived_demands"][0]))),
+            ("duplicate derived demand", lambda c: c["derived_demands"].__setitem__(1, deepcopy(c["derived_demands"][0]))),
+            ("foreign derived owner", lambda c: c["derived_demands"][0]["owner"].update(id="foreign")),
+            ("foreign derived scope", lambda c: c["derived_demands"][0].update(scope="per_executor")),
+            ("foreign derived unit", lambda c: c["derived_demands"][0].update(unit="foreign")),
+            ("extra derived field", lambda c: c["derived_demands"][0].update(id="invented")),
+            ("boolean derived quantity", lambda c: c["derived_demands"][0].update(quantity=True)),
+            ("zero derived quantity", lambda c: c["derived_demands"][0].update(quantity=0)),
+            ("negative derived quantity", lambda c: c["derived_demands"][0].update(quantity=-1)),
+            ("excess derived quantity", lambda c: c["derived_demands"][0].update(quantity=2)),
+            ("missing allocations", lambda c: c["resource_allocations"].clear()),
+            ("omitted allocation", lambda c: c["resource_allocations"].pop()),
+            ("reordered allocations", lambda c: c["resource_allocations"].reverse()),
+            ("duplicate allocation", lambda c: c["resource_allocations"].append(deepcopy(c["resource_allocations"][0]))),
+            ("foreign demand", lambda c: c["resource_allocations"][0].update(demand="foreign")),
+            ("foreign capacity", lambda c: c["resource_allocations"][0].update(capacity="foreign")),
+            ("foreign pool", lambda c: c["resource_allocations"][0].update(pool="foreign")),
+            ("foreign provider", lambda c: c["resource_allocations"][0]["provider"].update(id="foreign")),
+            ("boolean reservation", lambda c: c["resource_allocations"][0].update(reserved=True)),
+            ("changed reservation", lambda c: c["resource_allocations"][0].update(reserved=2)),
+        ]
+        for name, mutation in mutations:
+            def mutate(value):
+                mutation(value["report"]["context"])
+                self.rehash_context(value)
+            with self.subTest(name=name), self.exchange(mutate=mutate), self.assertRaises(CoreProtocolError):
+                self.check()
+
+    def test_derived_demand_order_and_native_lower_bound_are_retained_without_rederivation(self):
+        def mutate(value):
+            context = value["report"]["context"]
+            context["derived_demands"].reverse()
+            row = next(row for row in context["derived_demands"] if row["quantity"] > 1)
+            row["quantity"] = 1
+            self.rehash_context(value)
+        with self.exchange(mutate=mutate):
+            self.assertEqual(self.check().status, "checked_material")
+
+    def test_failed_context_retains_source_ledger_and_partial_allocation_prefix(self):
+        for outcome, retained in (("fail", 0), ("fail", 1), ("unsupported", 0)):
+            def mutate(value):
+                checked = value["report"]
+                context = checked["context"]
+                context.update(outcome=outcome, diagnostics=["original_context_control"], discharges=[])
+                context["source_obligations"] = [{"id": row["id"], "context_status": "outside_stage"} for row in context["source_obligations"]]
+                context["resource_allocations"] = context["resource_allocations"][:retained]
+                context["derived_demands"] = context["derived_demands"][:retained]
+                checked.update(status="not_accepted", context_status=outcome, all_original_obligations_discharged=False)
+                checked["obligations"] = [{"obligation": row["obligation"], "status": "unresolved", "stage": None, "evidence": None} for row in checked["obligations"]]
+                self.rehash_context(value)
+            with self.subTest(outcome=outcome, retained=retained), self.exchange(mutate=mutate):
+                actual = self.check()
+            self.assertEqual(actual.status, "not_accepted")
+            self.assertEqual(len(actual.report["context"]["resource_allocations"]), retained)
+            self.assertEqual(len(actual.report["context"]["source_obligations"]), len(actual.report["obligations"]))
+            self.assertIsNone(actual.artifact)
 
     def test_rehashed_original_identity_and_claim_mutations_fail(self):
         mutations = (

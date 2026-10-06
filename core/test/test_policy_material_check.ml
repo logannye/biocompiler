@@ -77,10 +77,10 @@ let ()=
   require(Json.int !decoded_work=get "request_decoding_work" expected)
     "Independent complete-original logical decoder census changed";
   require(R.fingerprint charged_request=R.fingerprint request)"Count callback changed original authority";
-  let exact_decoder=W.create ~profile:"test" ~error_code:"test_original_decode" ~maximum:480657 ()in
+  let exact_decoder=W.create ~profile:"test" ~error_code:"test_original_decode" ~maximum:480645 ()in
   ignore(R.of_json ~charge:(W.charge exact_decoder)raw);
   require(W.remaining exact_decoder=0)"Exact original decoding allowance was not fully charged";
-  let short_decoder=W.create ~profile:"test" ~error_code:"test_original_decode" ~maximum:480656 ()in
+  let short_decoder=W.create ~profile:"test" ~error_code:"test_original_decode" ~maximum:480644 ()in
   rejected "test_original_decode"(fun()->R.of_json ~charge:(W.charge short_decoder)raw);
   let positive=run()in
   let report=Check.report positive in

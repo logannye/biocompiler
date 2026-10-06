@@ -179,13 +179,13 @@ let check ?parent ?(maximum=max_work) ~context ~binding ()=
     let placement=C.placement context and group=C.delivery_group context in
     fail(AC.Placement.template_id placement=T.id template && AC.Placement.member_id placement=member &&
       Id.Role.to_string(AC.Placement.recipient_role placement)=recipient.role && AC.Placement.compartment placement=recipient.compartment &&
-      AC.Placement.delivery_group placement=AC.Delivery_group.id group)"placement_identity_or_compartment";
-    fail(List.map Id.Role.to_string(AC.Delivery_group.recipient_roles group)=[recipient.role] && AC.Delivery_group.same_recipient group)
+      AC.Placement.delivery_group placement=group.group_id)"placement_identity_or_compartment";
+    fail(group.recipient_roles=[recipient.role] && group.same_recipient)
       "same_concrete_executor_delivery";
-    supported(AC.Delivery_group.mode group=AC.Delivery_group.Co_delivered)"independent_delivery_group_unimplemented";
-    supported(AC.Delivery_group.assumptions group=[] && AC.Delivery_group.exact_count group=Some 1 &&
-      (match AC.Delivery_group.max_count group with None->true|Some value->value>=1))"delivery_count_or_assumptions";
-    Option.iter(fun maximum->fail(String.length(N.sequence molecule)<=maximum)"delivery_sequence_length") (AC.Delivery_group.max_total_bases group);
+    supported(group.mode=C.Co_delivered)"independent_delivery_group_unimplemented";
+    supported(group.assumptions=[] && group.exact_count=Some 1 &&
+      (match group.max_count with None->true|Some value->value>=1))"delivery_count_or_assumptions";
+    Option.iter(fun maximum->fail(String.length(N.sequence molecule)<=maximum)"delivery_sequence_length")group.max_total_bases;
     fail(List.for_all(fun(role:N.Role.t)->N.Role.purpose role=N.Role.Requested_payload && N.Role.compartment role=recipient.compartment)
       (K.Inventory.role_instances(Option.get(K.inventory(MS.content(B.structure binding))))))"material_role_compartment";
     let bindings=items "bindings" deployment in

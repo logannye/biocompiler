@@ -418,9 +418,14 @@ the full binding report at initialization; positive fixtures now explicitly use
 corrections, not transferred acceptance. The coordinator separately charges
 logical data visits plus child semantic work, including original decoding and
 startup/publication passes. Its frozen request decoder has an independently
-calculated 480,657-unit census with exact/one-short controls; this is not native
-CPU accounting or a hosted receipt. All SM-04/05/06/07 acceptance checkboxes
-remain open.
+calculated 480,645-unit census with exact/one-short controls; this is not native
+CPU accounting or a hosted receipt. The prior 480,657 calibration changed only
+with the separate context-owned delivery-group schema, which permits empty
+assumptions without changing the legacy codec or weakening the context's
+rejection of opaque assumptions. Python transport also checks full original
+context obligations/provider evidence and exact allocation retention, including
+legitimate partial rows on failed checks. All SM-04/05/06/07 acceptance
+checkboxes remain open.
 
 New partial native evidence: [run 37418186608](https://github.com/logannye/biocompiler/actions/runs/37418186608),
 source `d982d58642d94f9d9c798f20bc672fcc69d1f04f`, passed both early platform
