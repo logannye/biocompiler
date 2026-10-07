@@ -294,6 +294,26 @@ class PolicyDevelopmentTests(unittest.TestCase):
             dev.staged_source_sdk(self.root)
         self.assertEqual(self.calls, [])
 
+    def test_successful_empty_native_log_requires_exact_pin_status_and_zero_exit(self):
+        self.prepare_staged_sdk()
+        native = self.report()
+        row = next(value for value in native["suites"] if value["name"] == "test_policy_staged_regimen_source")
+        log = self.sdk_output / row["log"]
+        log.write_bytes(b"")
+        row["log_pin"] = {"sha256": hashlib.sha256(b"").hexdigest(), "size": 0}
+        prepared = dev.preparation(self.root)
+        dev.validate_native_feedback(self.root, native, prepared)
+        for key, changed in (("status", "failed"), ("returncode", 1), ("returncode", False),
+                             ("log_pin", {"sha256": "0" * 64, "size": 0})):
+            original = row[key]
+            row[key] = changed
+            with self.subTest(field=key, value=changed), self.assertRaises(ValueError):
+                dev.validate_native_feedback(self.root, native, prepared)
+            row[key] = original
+        log.unlink()
+        with self.assertRaises(ValueError):
+            dev.validate_native_feedback(self.root, native, prepared)
+
     def test_staged_source_sdk_rejects_incomplete_native_run_and_changed_binary(self):
         self.prepare_staged_sdk()
         path = self.sdk_output / "feedback.json"

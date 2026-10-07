@@ -286,7 +286,7 @@ def validate_native_feedback(root, native, prepared):
                 and row.get("status") == "passed" and type(row.get("returncode")) is int
                 and row["returncode"] == 0 and row.get("log") == name + ".log",
                 "Changed native command record: " + name)
-        require(row.get("log_pin") == pin(root, "generated/development-feedback/" + name + ".log"),
+        require(row.get("log_pin") == pin(root, "generated/development-feedback/" + name + ".log", allow_empty=True),
                 "Changed native command log: " + name)
 
 
