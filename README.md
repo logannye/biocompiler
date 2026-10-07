@@ -1,174 +1,137 @@
 # biocompiler
 
-biocompiler is an experimental compiler for translating **high-level Python
-therapeutic policies into exact mRNA payload specifications**. Its product target
-is human immune cells engineered in vivo. A policy describes observations,
-conditions, state, actions and required outcomes; supplied implementation
-contracts and sequence-construction rules describe how to realize its supported
-meaning.
+### A compiler for programming the immune system.
 
-The compiler's obligation is to preserve that meaning through operational
-semantics, implementation graphs, component bindings and exact nucleotide
-construction—or explain why compilation cannot proceed. A capability name,
-plausible sequence or successful structural check cannot stand in for that chain.
+**Our long-term vision is a system that humans or AI agents can use to specify arbitrary therapeutic programs for a given patient's immune system, then deterministically and correctly compile those programs into biological payloads for in vivo administration.**
 
-The current focus is **internal compiler correctness under explicit supplied
-contracts**. Those contracts are premises, not experimental findings. Biological
-viability and therapeutic efficacy are separate questions and are outside this
-phase's compiler acceptance criteria. Artifacts retain their conditional scope
-and unresolved empirical status.
+The ambition is to make a patient's therapeutic strategy programmable: describe what their immune cells should recognize, remember, and do over time, then translate that strategy into exact RNA instructions intended to implement it inside the body. Researchers, clinicians, and agents could work with the same explicit program, with a traceable path from each requirement to the resulting payload.
 
-## Current capabilities and status
+Here, *arbitrary* describes the breadth of programs we aim to let people express and compose. Successful compilation would still require a realizable implementation under the system's models and constraints; a program without one should receive an explanation of what is missing. The goal is a general programming system for human immune-cell therapies.
 
-The bounded Python-policy → mRNA compiler has source implementations and hosted
-development validation. **Complete release acceptance and production-wide native
-cutover remain pending.** The public selection check/replay/export development
-run passed at `fbd2230e8`. The current branch adds metered Core selection
-compilation; its new native path still requires hosted validation and audit.
-The [semantic mRNA development plan](docs/semantic-mrna-development-plan.md) is
-the maintained source of implementation, validation and release status. The
-[session handoff](docs/semantic-mrna-session-handoff.md) records the exact restart
-point and outstanding gates.
+**Today, biocompiler is experimental research software building toward that future.** Python is the current authoring language. Supported compilation profiles produce exact RNA payload specifications with records of their components, assumptions, and checks. Human immune cells engineered inside the body—*in vivo*—are its product focus.
 
-| Stage | Implemented boundary |
+[What works today](#what-works-today) · [The long-term vision](#the-next-1020-years) · [Explore the project](#explore-the-project)
+
+## Medicine that responds to context
+
+Imagine an immune-cell therapy designed to recognize a combination of disease signals, respond only when the required conditions are present, remember an earlier encounter, and change its response as a treatment progresses. Its specification would also describe when activity must stop and what outcomes must be avoided.
+
+That is the kind of therapeutic program we want researchers to be able to express. This example illustrates the direction of the project; it is not a treatment produced or validated by biocompiler.
+
+Turning such intent into RNA involves many linked decisions. Which molecular components could implement it? Can they work together under the stated assumptions? Does stopping production also stop an existing product's activity? Does the final sequence still correspond to the original design?
+
+**biocompiler brings those questions into one inspectable engineering workflow.**
+
+## What it is useful for
+
+- **Making therapeutic ideas precise.** Specify recognition, timing, memory, actions, and constraints so that collaborators can inspect the same design.
+- **Finding design problems earlier.** Expose missing implementations, incompatible component contracts, and unsupported requirements before treating a design as complete.
+- **Comparing implementation choices.** Evaluate supplied alternatives against explicit requirements and retain why a candidate was selected or rejected.
+- **Producing reproducible RNA designs.** Emit exact nucleotide sequences with the information needed to trace them back to their source requirements and check them again.
+
+The immediate audience is researchers and engineers developing programmable immune-cell therapies. The intended benefit is a more disciplined path from an idea to a candidate ready for experimental investigation.
+
+## Why a compiler matters
+
+A software compiler translates a program into instructions while preserving its meaning. biocompiler applies that engineering principle to therapeutic design:
+
+```text
+Therapeutic intent + supplied component models and sequence templates
+                                ↓
+                Explicit implementation and composition
+                                ↓
+                  Exact RNA design + independent checks
+```
+
+The distinguishing aim is **a traceable connection between intended behavior, the proposed implementation, and every emitted RNA molecule**. Generative models could supply new candidate components; a compiler provides a framework for checking how supported components are assembled into a specified system.
+
+For supported profiles, biocompiler retains requirements through translation, checks component relationships, and reconstructs results against the original inputs. Unsupported meaning remains visible. A complete compilation claim requires the relevant obligations to pass within the declared model and checking bounds.
+
+In the mature system, **deterministic** would mean that the same complete specification, patient-context inputs, versioned component library, and compiler version and configuration produce the same payload or the same explained rejection. **Correct** would mean that the translation preserves the program's specified meaning through component composition and exact RNA construction under explicit assumptions. Human and agent authors would be subject to the same checks.
+
+This distinction is essential: **correct translation under a model does not establish that the model holds in a living cell.** Delivery, biological function, safety, and therapeutic benefit require their own evidence. The software is designed to keep those claims separate and their dependencies explicit.
+
+## What works today
+
+The repository contains working research software for:
+
+| Capability | What it means |
 | --- | --- |
-| Python authoring | `biocompiler.policy` provides typed declarations, builders, composition patterns, immutable documents, unresolved design slots, structural diagnostics and bounded JSON serialization. |
-| Operational semantics and IR | OCaml admits an explicit subset, binds versioned executable definitions, lowers to a dedicated behavior IR and independently checks correspondence with the original source. Bounded execution preserves identity, three-valued evidence, scoped state, deterministic event handling and correlated effect attempts. |
-| Implementation lowering and checking | A bounded truth-policy family lowers to supplied typed primitives and connections. Independent source and candidate runtimes compare observable behavior over the complete declared finite domain; separate requirement checks retain every original obligation. |
-| Material and context binding | Supplied whole-graph contracts and a separate reusable-component composition path connect implementations to sequence templates. Checks retain model identities, interfaces, recipient and timing contracts, resource capacities and payload cardinality. The current component family joins two components into one RNA member. |
-| Exact construction and export | Independent checking reconstructs sequence derivation, coordinates, coding regions, chemistry and material correspondence. Fresh export publishes the exact RNA FASTA and complete manifest together. |
-| Finite material selection | Every supplied alternative is checked under one common policy before a length predicate and deterministic ranking are applied. The new Core generation route charges generation and checking to one original-bound scope and retains every loser. Its hosted validation and complete release acceptance remain pending. |
+| Python authoring | Structured descriptions of therapeutic intent, including recognition, timing, state, effects, and coordinated cell roles. |
+| Bounded compilation | Supported executable profiles connect specified behavior to supplied component implementations and exact RNA designs. |
+| Composition and control checks | Explicit checks for supported state, timing, control, helper, and deployment relationships under declared contracts. |
+| Independent verification and export | Recheck source-to-implementation correspondence and sequence construction; export RNA sequences with a detailed manifest. |
+| Inspection and reproducibility | Preserve inputs, alternatives, diagnostics, and build records; explore an artificial example in a local browser workspace. |
 
-The authoring language is intentionally broader than the executable subset.
-Coordination, quantification, complex spatial relationships and inheritance are
-not executable merely because they can be declared. Operational execution also
-does not imply that every supported state machine or expression has a molecular
-lowering. Unsupported required meaning blocks a complete compilation claim.
+Authoring is broader than executable compilation. The newer expressive policy pipeline has its own staged implementation and acceptance work; a feature appearing in the Python vocabulary does not mean every combination can already compile to RNA. See the [architecture profile](docs/payload-architecture-v0.1.md), [policy language](docs/policy-language-v0.1.md), and [semantic mRNA development plan](docs/semantic-mrna-development-plan.md) for precise boundaries and status.
 
-Start with the [policy language](docs/policy-language-v0.1.md),
-[operational semantics](docs/policy-operational-v0.1.md),
-[implementation contracts](docs/policy-realization-contracts-v0.1.md),
-[bounded preservation](docs/policy-bounded-preservation-v0.1.md) and
-[policy-to-mRNA acceptance contract](docs/policy-material-acceptance.md).
+Bundled design examples use artificial, nonfunctional molecular fixtures. They exercise the software, not a validated therapy. biocompiler is experimental research software and does not currently establish readiness for human use.
 
-## Meaning, checking and artifact identity
+## Why this is worth building now
 
-Python runs at **construction time**: loops and functions can assemble a
-declarative program. They are not the program's cellular runtime. Runtime guards,
-uncertainty, state transitions, timeouts and effect feedback must have explicit
-semantics in the supported native profile. Definition prose does not supply an
-executable interpretation.
+Three developments make the direction concrete:
 
-Core produces candidates. Standalone **Verify** independently checks supported
-profiles against separately supplied original inputs and does not link the
-producer implementations. It reconstructs correspondence and executes the
-specified checks; it does not accept a producer's success label as evidence.
-Fresh replay repeats those checks under the complete current authority.
+1. **Engineered immune cells are already medicines.** FDA-approved CAR T-cell therapies such as [Kymriah](https://www.fda.gov/vaccines-blood-biologics/cellular-gene-therapy-products/kymriah) demonstrate that genetically modified immune cells can become therapeutic products.
+2. **Engineering cells inside the body is an active research frontier.** A [2025 study in *Science*](https://pubmed.ncbi.nlm.nih.gov/40536974/) reported targeted mRNA delivery to T cells, with tumor control in humanized mice and B-cell depletion in monkeys. Those are preclinical results, distinct from proof of human therapeutic benefit.
+3. **AI is expanding the set of molecular designs researchers can explore.** [RFdiffusion](https://www.nature.com/articles/s41586-023-06415-8) demonstrated generative protein design with experimental characterization of designed structures and functions.
 
-Original source, definitions, finite domains, requirements, model libraries,
-component records and construction rules remain bound through the artifacts.
-Exported manifests retain their identities, the checked candidate, assessment
-and exact material members. Source edits, changed contracts and altered bases
-must be checked again, even when the selected sequence happens to stay the same.
-Keep the original inputs alongside the FASTA/manifest pair.
+These are advances by other research teams, not validations of biocompiler. They motivate our thesis: **as the ability to generate biological components improves, specifying and checking the systems assembled from them could become increasingly valuable.**
 
-## Getting started
+## The next 10–20 years
 
-The Python package requires **Python 3.11 or newer** and has no mandatory runtime
-dependencies. From a source checkout:
+We are building toward **a general-purpose compiler for patient-specific therapeutic programs**. A human or agent would specify a strategy for a particular patient's immune system: the disease context to recognize, the cells to engineer, the sequence of responses, the state to retain, and the conditions for changing or stopping activity. biocompiler would translate the complete program into an exact RNA payload, potentially comprising several coordinated RNA molecules, intended for in vivo administration.
 
-```sh
-python3 -m venv .venv
-. .venv/bin/activate
-python -m pip install -e .
-biocompiler --version
-biocompiler policy --help
-```
+The therapeutic program would become a shared interface between clinical reasoning, AI-assisted design, molecular engineering, and experimental science. A clinician could state a treatment objective, a researcher could refine its cellular behavior, and an agent could explore candidate implementations. Each proposed revision would remain explicit, versioned, and subject to the same compilation and verification requirements, with human oversight of therapeutic decisions.
 
-Authoring and inspection work without a native executable. This small example
-uses a bundled abstract authoring fixture; it does not supply a molecular
-implementation or demonstrate therapeutic behavior:
+If the necessary delivery technologies, biological models, and experimental evidence mature, that environment could support:
 
-```python
-import biocompiler.policy as bp
-from biocompiler.policy.examples import build_example
+- **Therapies expressed as complete programs:** compose sensing, memory, staged regimens, coordinated cell roles, and stopping conditions into an integrated strategy.
+- **The patient as the unit of design:** adapt recognition, response, timing, and constraints to an individual's disease context while retaining product-specific validation requirements.
+- **A common interface for humans and agents:** let either author propose and revise a therapeutic program, inspect why compilation succeeds or fails, and compare reproducible payload designs.
+- **Reusable biological knowledge:** component libraries that record where a behavior has been demonstrated, what it depends on, and where it fails.
+- **A tighter scientific learning loop:** connect design, automated experiments, measurement, and model revision so that each experiment can improve subsequent designs under human oversight.
 
-program = build_example("context_gated_response")
-report = bp.check(program)
-print(report.status, report.semantic_status)
-bp.dump(program, "example.policy.json")
-```
+The most ambitious outcome is an integrated system for designing, compiling, and experimentally refining programmable medicines. Agents could help propose programs and informative experiments; automated laboratories could test candidates; results could refine the component models used in subsequent compilations. Knowledge gained while developing one therapy could make the next program easier to engineer, wherever that knowledge demonstrably applies.
+
+Over 10–20 years, our aspiration is for the path from a patient-specific therapeutic strategy to a precisely specified biological payload to become a repeatable engineering process. Broad program compilation, natural-language authoring, clinical workflows, and laboratory integration belong to this future vision; they are not delivered capabilities today.
+
+## The opportunity we see
+
+For an early-stage investor, the thesis is a shared compilation and verification layer through which many humans, agents, and therapeutic programs could work. Each patient's strategy may differ, while the language, compiler, component knowledge, and verification infrastructure can be reused. Better delivery methods and better molecular components could expand what that infrastructure can support.
+
+We see three possibilities worth testing over the coming decades:
+
+- As designs grow more complex, the cost of integrating and checking components may become as consequential as generating them.
+- Experimentally grounded component libraries and records connecting predictions to outcomes could become durable assets.
+- Reusing a trustworthy design-and-verification workflow across programs could reduce duplicated engineering and make scientific iteration more productive.
+
+That is the asymmetric opportunity we are pursuing. Its value must be earned through broader end-to-end capabilities, independent experimental collaborations, and measurable improvements in researchers' workflows. These are hypotheses and milestones, not claims of established adoption or clinical performance.
+
+## Researcher alpha workflow
+
+The [researcher-alpha roadmap](docs/researcher-alpha-roadmap.md) tracks the current
+lab-free delivery work. Its [quickstart](docs/researcher-alpha-quickstart.md)
+introduces caller-owned projects, complete original-input preservation, separate
+Core compilation and Verify export, and fresh verification of the exact
+FASTA/manifest pair. The first two examples are explicitly artificial software
+references. Hosted installation and release acceptance, qualification of a useful
+real research project, and independent researcher review remain separate gates.
+
+## Explore the project
+
+Start with the [example guide](examples/README.md) or the [guided workspace](docs/studio-v0.1.md). From a source checkout with Python 3.11 or newer, launch the local browser example without installing:
 
 ```sh
-biocompiler policy check example.policy.json
-biocompiler policy inspect example.policy.json
+PYTHONPATH=src python3 -m biocompiler studio
 ```
 
-Without installing, the equivalent CLI starts with
-`PYTHONPATH=src python3 -m biocompiler policy`.
+The workspace demonstrates the earlier structural candidate workflow using artificial parts. It is an introduction to inspecting designs; the broader compiler profiles are documented separately.
 
-Native operations require an explicitly selected compatible Core or Verify
-executable. Installing the Python package alone does not establish native
-availability or select a backend. For a **complete supplied whole-graph material
-request** and its matching preservation limits, the existing CLI separates
-candidate production from fresh checked export:
-
-```sh
-biocompiler policy compile-material-native material-request.json \
-  --core /path/to/biocompiler-core --limits preservation-limits.json \
-  --output candidate.json
-
-biocompiler policy export-material-native material-request.json \
-  --verify /path/to/biocompiler-verify --limits preservation-limits.json \
-  --candidate candidate.json --output program.zip
-```
-
-These filenames represent supplied inputs, not files created by the authoring
-example. See the [material workflow](docs/policy-material-acceptance.md) for their
-complete authority and resource requirements. Component composition uses the
-dedicated Python `policy.component_material` API. Selection check/replay/export
-has a metered compile extension on the `codex/dev-policy/selection-generation`
-development branch, pending its own hosted validation.
-Neither route implicitly converts an arbitrary authored policy.
-
-## Existing workflows and remaining scope
-
-The earlier [RNA architecture compiler](docs/payload-architecture-v0.1.md) and
-[per-operator payload profile](docs/executable-rna-payload-v0.1.md) remain separate
-workflows over the legacy Behavior representations. They support their own
-supplied contracts, RNA partitions, controls and deployment assumptions. Their
-capabilities do not automatically extend the rich-policy language, and the new
-policy IR does not silently reinterpret legacy requests.
-
-[Reference builds and packages](docs/reference-build-v0.1.md) reproduce retained
-sequence authority and support independent artifact review. The native
-reference-package route has source implementations; completing compatibility and
-hosted acceptance remains part of the migration.
-Supporting DNA/reference utilities do not add another therapeutic product target.
-
-Next work follows the [development plan](docs/semantic-mrna-development-plan.md):
-finish release acceptance and selection-generation validation, close remaining
-semantic and public API coverage, and then add the user-selected state-machine
-and staged-regimen profile. Helpers and multiple RNA members retain their own
-complete-profile obligations. **Rich-policy Studio
-and conversational authoring are deferred.** Existing Studio workflows belong to
-their documented legacy profiles.
-
-## Repository and development
-
-| Path | Contents |
+| Explore | Start here |
 | --- | --- |
-| [`src/biocompiler/policy/`](src/biocompiler/policy/) | Declarative authoring, serialization, inspection and native workflow adapters. |
-| [`core/`](core/) | OCaml representations, operational semantics, producers, independent checkers, services and native tests. |
-| [`src/biocompiler/`](src/biocompiler/) | Python SDK, explicit native transports and existing compiler workflows. |
-| [`protocol/`](protocol/) | Versioned wire formats, schemas and checked source/coverage inventories. |
-| [`examples/`](examples/README.md) | Runnable examples with explicit profile and evidence boundaries. |
-| [`tests/`](tests/README.md) | Python, regression, mutation and integration checks. |
-| [`docs/`](docs/) | Semantic contracts, architecture, migration and acceptance plans. |
+| Design and direction | [Architecture](docs/architecture.md) · [Roadmap](docs/roadmap.md) |
+| Therapeutic programs | [Python policy language](docs/policy-language-v0.1.md) · [Executable RNA architecture](docs/payload-architecture-v0.1.md) |
+| Correctness and evidence | [Verification independence](docs/verification-independence-v0.1.md) · [Human-use admission boundaries](docs/human-admission-v0.1.md) |
+| Contributing | [Source](src/biocompiler/) · [Tests](tests/README.md) · [Engineering guidelines](AGENTS.md) |
 
-Follow [development validation](docs/development-validation.md). Keep editing and
-focused static/Python checks local; run native compilation, executable tests and
-packaging on hosted CI. A source checkpoint or development run does not replace
-the complete release and fresh-main gates. The
-[migration roadmap](docs/language-migration-roadmap.md) tracks native routing and
-distribution separately from the supported semantics.
+We welcome conversations with researchers, compiler engineers, experimental collaborators, and early-stage partners who want to help build this future. [Open an issue](https://github.com/logannye/biocompiler/issues) to discuss the project or a potential collaboration.
