@@ -56,13 +56,14 @@ let export_artifact scope pending request candidate limits report =
         ("Fresh selection lacks one exact "^label^" for its winner.") in
   let original=find "original alternative" (fun (row:R.alternative) -> row.id) (R.alternatives request) in
   let proposed=find "candidate alternative" (fun (row:V.alternative) -> row.id) (V.alternatives candidate) in
+  let candidate_pin=Check.fingerprint scope (CV.to_json proposed.candidate) in
   let child_report=Child.evidence material in
   let retained=find "complete child report" (fun row -> Json.string (get "id" row))
     (Json.array (get "alternatives" report)) in
   Check.charge_outer scope 512;
   require (CR.fingerprint (Child.request material)=CR.fingerprint original.request &&
     get "request_fingerprint" child_report=str (CR.fingerprint original.request) &&
-    get "candidate_fingerprint" child_report=str (CV.fingerprint proposed.candidate) &&
+    get "candidate_fingerprint" child_report=str candidate_pin &&
     get "selected_id" report=str id && get "status" report=str "checked_selection")
     "Winning material does not bind the original alternative, candidate and complete selection.";
   require (Check.equal_json scope child_report (get "inner" retained) &&
@@ -71,7 +72,7 @@ let export_artifact scope pending request candidate limits report =
   let rendered=Format.render ~charge:(Check.charge_outer scope) material in
   require (List.length rendered.members=1) "Selection export requires the exact checked single RNA member.";
   let selected=obj ["id",str id;"request_fingerprint",str (CR.fingerprint original.request);
-    "candidate_fingerprint",str (CV.fingerprint proposed.candidate);
+    "candidate_fingerprint",str candidate_pin;
     "assessment_fingerprint",str (Check.fingerprint scope child_report)] in
   let manifest=obj ["schema_version",str manifest_schema;"profile",str R.profile;
     "claim_scope",str "bounded_complete_supplied_catalog_selection_to_exact_mrna";
