@@ -659,6 +659,34 @@
       "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
     },
     {
+      "path": "core/lib/domain/policy_component_selection_candidate.ml",
+      "sha256": "9a7448d6721d5dbac2a14487a60e0d0951e70846350261b73a53d86eefcb5dad",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 1,
+          "Diagnostic.require": 3,
+          "require": 5
+        },
+        "profile_literals": {
+          "biocompiler.policy_component_selection_candidate.v0.1": 1
+        }
+      },
+      "disposition": "outside_route",
+      "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "core/lib/domain/policy_component_selection_candidate.mli",
+      "sha256": "49facff2484416ec796984dc91c814f8d5847230cad1c43787adacc1389159e5",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
       "path": "core/lib/domain/policy_component_selection_request.ml",
       "sha256": "8fe7ad47058136ac22f56f1101b95b519027400af2a2fa7241c6e82daf7fdcd1",
       "census": {
@@ -1209,6 +1237,65 @@
     {
       "path": "core/lib/realization_checker/policy_component_material_check.mli",
       "sha256": "1f5d283abdf622e1564a11b11d5d96122fc9c2654b62c649f985d70c61ab52f9",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "core/lib/realization_checker/policy_component_selection_check.ml",
+      "sha256": "a7384777b4a609428f320c03b12d1be232029f3e2f40ef0071206632331bac6a",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 2,
+          "Diagnostic.require": 1,
+          "require": 8
+        },
+        "profile_literals": {
+          "biocompiler.ocaml.policy_component_selection_check.v0.1": 1,
+          "biocompiler.policy_component_selection_assessment.v0.1": 1
+        }
+      },
+      "disposition": "outside_route",
+      "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "core/lib/realization_checker/policy_component_selection_check.mli",
+      "sha256": "e5b9344dd1d763c39251fbf0ea5ff6be58213de70c1d1f94d37c028c88510e67",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "core/lib/realization_checker/policy_component_selection_common.ml",
+      "sha256": "8ab2c7e39f3de4183c341bc76d4c88621610877a0b6752eabf81928fda169386",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 7,
+          "Diagnostic.require": 2,
+          "supported": 28
+        },
+        "profile_literals": {
+          "biocompiler.construction_concatenate.v0.1": 1,
+          "biocompiler.policy_component_ordered_union.v0.1": 1,
+          "biocompiler.policy_decision_leader_variant.v0.1": 1
+        }
+      },
+      "disposition": "outside_route",
+      "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "core/lib/realization_checker/policy_component_selection_common.mli",
+      "sha256": "7e63797efe103400ec5e7221bb2fffa06d4a76d3773dab2463603db903a45e82",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {},

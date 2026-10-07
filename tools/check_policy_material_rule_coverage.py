@@ -83,10 +83,13 @@ COMPONENT_MODULES = (
     ("domain", "policy_component_material_candidate"),
     ("domain", "policy_component_material_request"),
     ("domain", "policy_component_selection_request"),
+    ("domain", "policy_component_selection_candidate"),
     ("producer_service", "policy_component_material_producer"),
     ("realization_checker", "policy_component_assembly_check"),
     ("realization_checker", "policy_component_context_check"),
     ("realization_checker", "policy_component_material_check"),
+    ("realization_checker", "policy_component_selection_common"),
+    ("realization_checker", "policy_component_selection_check"),
     ("service", "policy_component_material_service"),
 )
 COMPONENT_SOURCES = tuple(sorted(
@@ -98,10 +101,13 @@ EXTRA_SOURCES += ("src/biocompiler/core_policy_component_material.py", "src/bioc
 COMPONENT_LEDGER = "protocol/policy-component-rule-coverage-v0.1.json"
 COMPONENT_RULE_IDS = ("component.fragment", "component.local_material", "component.assembly_rule", "component.ordered_union",
     "component.original_request", "component.context", "component.conjunction", "component.production", "component.export", "component.sdk",
-    "component.selection_request_codec", "component.material_candidate_codec")
+    "component.selection_request_codec", "component.material_candidate_codec",
+    "component.selection_candidate_codec", "component.selection_common_authority", "component.checked_selection")
 COMPONENT_WITNESSES = tuple(sorted([
     *[f"core/test/test_policy_component_{name}.ml" for name in ("fragment", "material", "assembly_rule", "assembly_check", "material_request", "context_check", "material_service")],
     "core/test/test_policy_component_selection_request.ml", "core/test/test_policy_component_material_candidate.ml",
+    "core/test/test_policy_component_selection_candidate.ml", "core/test/test_policy_component_selection_common.ml",
+    "core/test/test_policy_component_selection_check.ml", "core/test/policy_component_support/selection_requests.ml",
     "core/test/policy_component_support/literals.ml", "core/test/policy_component_support/requests.ml",
     "core/test/component_fixture_export/main.ml", "tools/check_policy_component_material.py",
     "tests/test_core_policy_component_material.py", "tests/test_policy_component_material.py",
@@ -113,7 +119,7 @@ COMPONENT_WITNESSES = tuple(sorted([
 ]))
 # Fixed reviewed meaning/provenance projection, excluding source-body hashes and
 # lexical counts. Re-pinning changed files cannot reassign witness meaning.
-COMPONENT_METADATA_SHA256 = "ee305db3815b0810f3b142d091d119be23d1ecaa25053d4409f52cab5cab629d"
+COMPONENT_METADATA_SHA256 = "f95fedd7eeb9641704488414a256669c5a17682182b571f5feffd9fed88993ef"
 
 
 class CoverageError(ValueError):

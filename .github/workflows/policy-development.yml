@@ -33,7 +33,7 @@ jobs:
           opam-pin: false
           opam-repositories: |
             default: git+https://github.com/ocaml/opam-repository.git#ac27950e5eac6c981ad809dff370c937820b7893
-      - name: Install ordinary dependencies, build once and run eighteen fixed suites
+      - name: Install ordinary dependencies, build once and run twenty-one fixed suites
         run: python -B tools/check_policy_development.py run
       - name: Exercise Python authored component policies through fresh paired export
         env:

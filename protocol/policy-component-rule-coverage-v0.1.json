@@ -227,6 +227,30 @@
       }
     },
     {
+      "path": "core/lib/domain/policy_component_selection_candidate.ml",
+      "sha256": "9a7448d6721d5dbac2a14487a60e0d0951e70846350261b73a53d86eefcb5dad",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 1,
+          "Diagnostic.require": 3,
+          "require": 5
+        },
+        "profile_literals": {
+          "biocompiler.policy_component_selection_candidate.v0.1": 1
+        }
+      }
+    },
+    {
+      "path": "core/lib/domain/policy_component_selection_candidate.mli",
+      "sha256": "49facff2484416ec796984dc91c814f8d5847230cad1c43787adacc1389159e5",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      }
+    },
+    {
       "path": "core/lib/domain/policy_component_selection_request.ml",
       "sha256": "8fe7ad47058136ac22f56f1101b95b519027400af2a2fa7241c6e82daf7fdcd1",
       "census": {
@@ -346,6 +370,57 @@
       }
     },
     {
+      "path": "core/lib/realization_checker/policy_component_selection_check.ml",
+      "sha256": "a7384777b4a609428f320c03b12d1be232029f3e2f40ef0071206632331bac6a",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 2,
+          "Diagnostic.require": 1,
+          "require": 8
+        },
+        "profile_literals": {
+          "biocompiler.ocaml.policy_component_selection_check.v0.1": 1,
+          "biocompiler.policy_component_selection_assessment.v0.1": 1
+        }
+      }
+    },
+    {
+      "path": "core/lib/realization_checker/policy_component_selection_check.mli",
+      "sha256": "e5b9344dd1d763c39251fbf0ea5ff6be58213de70c1d1f94d37c028c88510e67",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      }
+    },
+    {
+      "path": "core/lib/realization_checker/policy_component_selection_common.ml",
+      "sha256": "8ab2c7e39f3de4183c341bc76d4c88621610877a0b6752eabf81928fda169386",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 7,
+          "Diagnostic.require": 2,
+          "supported": 28
+        },
+        "profile_literals": {
+          "biocompiler.construction_concatenate.v0.1": 1,
+          "biocompiler.policy_component_ordered_union.v0.1": 1,
+          "biocompiler.policy_decision_leader_variant.v0.1": 1
+        }
+      }
+    },
+    {
+      "path": "core/lib/realization_checker/policy_component_selection_common.mli",
+      "sha256": "7e63797efe103400ec5e7221bb2fffa06d4a76d3773dab2463603db903a45e82",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      }
+    },
+    {
       "path": "core/lib/service/policy_component_material_service.ml",
       "sha256": "d59e871e0baedf70203281054350afa8957a3a41fe521c2b09834db74c0a9893",
       "census": {
@@ -436,6 +511,10 @@
       "sha256": "906aa3bef24536222ab242f8808d493dead7c110edb018e06b4f59e7eda1525b"
     },
     {
+      "path": "core/test/policy_component_support/selection_requests.ml",
+      "sha256": "b8fcf50aeca361b95ca4d6a7b3212d2f126b980f0ff2a26b41fe6cb75a53440f"
+    },
+    {
       "path": "core/test/test_policy_component_assembly_check.ml",
       "sha256": "9ef9cdf0c203d656e14d31d55de13c8383ef192d0c8b279ecec5d0474ce96c4a"
     },
@@ -466,6 +545,18 @@
     {
       "path": "core/test/test_policy_component_material_service.ml",
       "sha256": "9d0e2d79d73b97858a7161fdc3cc466bf08f133627b4b88f42a876d7cd4dd225"
+    },
+    {
+      "path": "core/test/test_policy_component_selection_candidate.ml",
+      "sha256": "4c7ebb698dac0ddfce097d307cd58a6cee720b6bfd62574c40e38295f443c1c4"
+    },
+    {
+      "path": "core/test/test_policy_component_selection_check.ml",
+      "sha256": "7f5755af485868c2e45b0030e9afecc62135f75a88dd031da5c281aa105123de"
+    },
+    {
+      "path": "core/test/test_policy_component_selection_common.ml",
+      "sha256": "e2bb96c068cf29975e071ebb005ac08fca37807a08ae48a92e7ab814a8014d01"
     },
     {
       "path": "core/test/test_policy_component_selection_request.ml",
@@ -985,6 +1076,197 @@
       "scope": "Neutral six-field candidate codec retains exact untrusted raw JSON while decoding behavior, implementation against the separately supplied library, binding, assembly proposal and construction through existing domain decoders. Whole-envelope and child preflight share the external charge owner; existing schema and top-level candidate diagnostic path remain explicit.",
       "limits": "Typed data supplies no preservation, common-authority, material, selection or export acceptance token. An empty behavior ledger and unresolved obligations remain unproved data. Existing component service parsing and publication are unchanged; adoption of this codec by service routes, selection checking and fresh selection export remain unimplemented.",
       "evidence_scope": "source_only_not_executed_by_this_gate"
+    },
+    {
+      "id": "component.selection_candidate_codec",
+      "owners": [
+        {
+          "path": "core/lib/domain/policy_component_selection_candidate.ml",
+          "anchor": "let of_json ?(charge=fun _ -> ()) ~request raw =",
+          "occurrence": 1
+        }
+      ],
+      "positive": [
+        {
+          "path": "core/test/test_policy_component_selection_candidate.ml",
+          "anchor": "Candidate codec lost raw spelling or either complete input identity",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_component_selection_candidate.ml",
+          "anchor": "Candidate input order must be retained separately from ASCII evaluation order",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_component_selection_candidate.ml",
+          "anchor": "Shape decoding must retain a known proposed winner even when it violates the outer seventeen-base predicate",
+          "occurrence": 1
+        }
+      ],
+      "negative": [
+        {
+          "path": "core/test/test_policy_component_selection_candidate.ml",
+          "anchor": "Missing losing child",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_component_selection_candidate.ml",
+          "anchor": "Duplicate child ID hides another original",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_component_selection_candidate.ml",
+          "anchor": "Child libraries follow original IDs, not candidate array positions",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_component_selection_candidate.ml",
+          "anchor": "Outer decoding obeys caller work denial before full child traversal",
+          "occurrence": 1
+        }
+      ],
+      "scope": "Closed untrusted outer candidate codec retains original JSON and canonical identity, binds a separate complete original request identity, requires each original alternative exactly once by ID, and decodes each complete child against that original's supplied implementation library. ASCII-ID evaluation is separate from retained input order. Full envelope, child decoding, encoding and hashing charge the caller before their passes.",
+      "limits": "Static wellformedness only; a proposed winner is untrusted data and may violate the outer predicate. The codec creates no common-authority proof, material or selection capability, public route or export authority.",
+      "evidence_scope": "source_only_not_executed_by_this_gate"
+    },
+    {
+      "id": "component.selection_common_authority",
+      "owners": [
+        {
+          "path": "core/lib/realization_checker/policy_component_selection_common.ml",
+          "anchor": "let check ~budget ~request =",
+          "occurrence": 1
+        },
+        {
+          "path": "core/lib/realization_checker/policy_component_selection_common.ml",
+          "anchor": "let reconstruct base target_sequence =",
+          "occurrence": 1
+        },
+        {
+          "path": "core/lib/realization_checker/policy_component_selection_common.ml",
+          "anchor": "let union original =",
+          "occurrence": 1
+        }
+      ],
+      "positive": [
+        {
+          "path": "core/test/test_policy_component_selection_common.ml",
+          "anchor": "ASCII anchor must be the three-base long original, independently of ranks/input order",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_component_selection_common.ml",
+          "anchor": "Equal-length changed-bases expectation must remain a literal",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_component_selection_common.ml",
+          "anchor": "Selection original replaced the A decision semantics",
+          "occurrence": 1
+        }
+      ],
+      "negative": [
+        {
+          "path": "core/test/test_policy_component_selection_common.ml",
+          "anchor": "weaker source assurance horizon",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_component_selection_common.ml",
+          "anchor": "re-pinned provider quantity",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_component_selection_common.ml",
+          "anchor": "different driver root with the same product and length",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_component_selection_common.ml",
+          "anchor": "B is a different program, never the long A material alternative",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_component_selection_common.ml",
+          "anchor": "Common comparison obeys the caller's tiny work ceiling",
+          "occurrence": 1
+        }
+      ],
+      "scope": "Producer-independent common-original relation inspects every complete alternative, including the ASCII-ID anchor, and independently reconstructs its ordered semantic union. Only the decision-leader sequence, its full-root/self-origin/carrier geometry, induced concatenate feature and tail coordinates, and exact serialized pin closure may vary. Reconstructing from the anchor with each target sequence must equal that entire original request. This preserves complete source, descriptors, assurance, implementation library, operating domain, driver, contracts, identities, chemistry, provenance, obligations and child budgets outside those closed edits. Bounded preflight, reconstruction, full comparisons and fingerprints charge one supplied work owner.",
+      "limits": "Success returns unit for the closed original relation only; every child still requires fresh inner checking. One complete linear leader plus the unchanged coding driver is supported. Helpers, multiple RNA outputs, arbitrary material rewrites and general component search are unsupported. Source review is not hosted executable validation.",
+      "evidence_scope": "source_only_not_executed_by_this_gate"
+    },
+    {
+      "id": "component.checked_selection",
+      "owners": [
+        {
+          "path": "core/lib/realization_checker/policy_component_selection_check.ml",
+          "anchor": "let check ~request:original ~candidate:proposed ~limits =",
+          "occurrence": 1
+        },
+        {
+          "path": "core/lib/realization_checker/policy_component_selection_check.ml",
+          "anchor": "W.charge budget child_allowance;",
+          "occurrence": 1
+        },
+        {
+          "path": "core/lib/realization_checker/policy_component_selection_check.ml",
+          "anchor": "let accepted_value = match matches,winner with",
+          "occurrence": 1
+        }
+      ],
+      "positive": [
+        {
+          "path": "core/test/test_policy_component_selection_check.ml",
+          "anchor": "Fresh selection differs from literal hard-constraint/rank/ASCII winner and RNA",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_component_selection_check.ml",
+          "anchor": "Selection dropped original obligations from a losing or winning child",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_component_selection_check.ml",
+          "anchor": "Both complete child allowances plus outer work must be conservatively charged",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_component_selection_check.ml",
+          "anchor": "Complete no-selection was confused with child failure or incomplete search",
+          "occurrence": 1
+        }
+      ],
+      "negative": [
+        {
+          "path": "core/test/test_policy_component_selection_check.ml",
+          "anchor": "Failed losing child was excluded by length or prevented visiting the returned succeeding child",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_component_selection_check.ml",
+          "anchor": "Wrong feedback on an ineligible loser cannot authorize another winner",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_component_selection_check.ml",
+          "anchor": "Two full child allowances need outer overhead and cannot refund unused work",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_component_selection_check.ml",
+          "anchor": "Outer full publication bound: ",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_component_selection_check.ml",
+          "anchor": "A differently normalized raw child cannot acquire a token for another fingerprint",
+          "occurrence": 1
+        }
+      ],
+      "scope": "Fresh producer-independent selection checker re-decodes complete originals and proposals, checks the closed common-authority relation, then evaluates every child in ASCII-ID order. It reserves each unchanged complete inner work allowance before fresh inner checking, with no usage refunds or serialized-token authority. Only freshly checked private material capabilities supply exact one-RNA sequences and actual nucleotide lengths. Every child must pass before the hard maximum-length predicate and rank/ASCII-ID preference select a winner, which must match the proposal. Child reports and complete outer publication share cumulative bounds; sticky exhaustion prevents a private selection capability.",
+      "limits": "Checked selection is bounded to the complete explicitly supplied catalog and contracts; biological behavior and unrestricted search are unassessed. A failed child never becomes an ordinary length exclusion. This source-only inventory is not a successful native run or release acceptance, and this batch adds no public selection producer/service/SDK/CLI route or fresh selection export.",
+      "evidence_scope": "source_only_not_executed_by_this_gate"
     }
   ],
   "limitations": [
@@ -992,7 +1274,8 @@
     "Body hashes, lexical inventories and exact source pointers are review tripwires, not proof of every predicate, combination or test execution.",
     "Only exact-isomorphic two-component/no-helper one-RNA composition is indexed; model-to-material and provider contracts remain supplied conditional premises.",
     "No current-head execution, installed distribution, release, empirical biology or human-use acceptance is granted by this static index.",
-    "Two appended domain-codec families add source-only static wellformedness to the ten existing component-route families; they do not establish execution or acceptance. Selection checking, common-authority validation, aggregate execution, winner selection, a public selection route and fresh selection export remain unimplemented."
+    "Two appended domain-codec families add source-only static wellformedness to the ten existing component-route families; they do not establish execution or acceptance. Selection checking, common-authority validation, aggregate execution, winner selection, a public selection route and fresh selection export remain unimplemented.",
+    "The preceding codec-batch limitation records its original boundary. This additive source-only batch defines a complete-census outer candidate codec, independent closed common-original checker and fresh checked-selection capability; hosted executable validation and release acceptance remain separate pending gates. Public selection production/service/SDK/CLI routing and fresh selection export remain unimplemented; helpers, multiple RNA outputs, general material variation and biological viability are outside this batch."
   ],
   "historical_development_feedback": {
     "revision": "5a45d354ee869f26f0e5d3181c8972a6402baca6",

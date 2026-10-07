@@ -68,7 +68,7 @@ class CoreBoundaryTests(unittest.TestCase):
                          {"bioc_wire", "bioc_domain", "digestif", "zarith"})
         self.assertEqual(receipt["private_modules"]["bioc_checker"],
                          ["construction_reconstruction", "architecture_reconstruction", "reference_check_support"])
-        self.assertEqual(len(receipt["native_tests"]), 158)
+        self.assertEqual(len(receipt["native_tests"]), 161)
         self.assertEqual(receipt["roles"]["bioc_semantics"], "source_semantics")
         self.assertEqual(receipt["roles"]["bioc_source_adapter"], "source_semantics")
         self.assertEqual(receipt["roles"]["bioc_compiler"], "compiler")
@@ -109,11 +109,14 @@ class CoreBoundaryTests(unittest.TestCase):
         self.assertIn("core/lib/checker/intent_check.ml", receipt["source_sha256"])
         self.assertEqual(receipt["native_build_and_semantic_independence"], "separate_hosted_validation_required")
 
-    def test_selection_decoders_keep_domain_only_suites_and_original_fixture_arguments(self):
+    def test_selection_suites_keep_exact_dependencies_and_original_fixture_arguments(self):
         receipt = boundaries.check_boundaries(boundaries.ROOT)
         expected = {
             "test_policy_component_selection_request": {"bioc_wire", "bioc_domain", "bioc_policy_component_test_support", "zarith"},
             "test_policy_component_material_candidate": {"bioc_wire", "bioc_domain", "bioc_policy_component_test_support"},
+            "test_policy_component_selection_candidate": {"bioc_wire", "bioc_domain", "bioc_policy_component_test_support"},
+            "test_policy_component_selection_common": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_realization_checker", "bioc_policy_component_test_support"},
+            "test_policy_component_selection_check": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_realization_checker", "bioc_producer_service", "bioc_policy_component_test_support", "zarith"},
         }
         root = self.copy_core()
         dune = root / "core/test/dune"

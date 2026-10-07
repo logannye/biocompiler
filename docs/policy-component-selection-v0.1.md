@@ -1,8 +1,11 @@
 # Bounded material selection for one component policy
 
 This is the contract for the next semantic compiler increment. Implementation
-has started in isolation; native validation, selection checking, public routing
-and export acceptance remain open. A decoded request or candidate grants no
+has started in isolation. The request and neutral child-candidate codecs passed
+hosted development validation and independent artifact auditing at `4eca5722a`.
+The outer-candidate, common-authority and selection-checker sources are under
+review in the next batch; their native validation, public routing and export
+acceptance remain open. A decoded request or candidate grants no
 acceptance capability. The existing component profile retains its own release
 and actual-main gates.
 
@@ -48,7 +51,7 @@ the smallest supplied rank, breaking ties by ascending ASCII ID. There is no
 caller-selected tie order. Reordering the original array can change its input
 fingerprint, but cannot change the selected alternative under a fresh check.
 
-The planned selection candidate contains exactly `schema_version`,
+The selection candidate contains exactly `schema_version`,
 `alternatives: [{id, candidate}, ...]` and `selected_id` (an ID or null). It must
 provide the full original ID census. Its proposed winner is checked independently.
 Each nested candidate retains the existing six-field component candidate:
@@ -56,6 +59,12 @@ Each nested candidate retains the existing six-field component candidate:
 and `construction`. A neutral domain codec decodes this untrusted data against
 the child's original implementation library. It neither invokes a producer nor
 returns an accepted token.
+
+Accepted nested candidates must also use the canonical typed spelling retained
+by the existing inner checker. The outer codec preserves the original raw
+candidate. If decoding normalizes that spelling, a fresh inner capability whose
+candidate fingerprint differs from the complete raw candidate is rejected.
+Decoding-valid input alone does not satisfy this stricter acceptance identity.
 
 ## Common meaning and material correspondence
 
@@ -98,7 +107,7 @@ discarding its cost when the declared allowance becomes available.
 
 The declared work allowance is positive and at most 17,000,000,000 units, parsed
 and bounded before conversion to the supported platform's native integer.
-The planned checker conservatively reserves each child's complete original work
+The checker conservatively reserves each child's complete original work
 allowance before calling its fresh inner check, without refunds or reliance on
 serialized usage. At most sixteen 1,000,000,000-unit child reservations and a
 separate 1,000,000,000-unit outer-work ceiling account for this maximum. Existing
@@ -113,7 +122,7 @@ a global peak-memory theorem.
 
 ## Independent acceptance and fresh export
 
-The planned independent checker obtains a fresh abstract `checked_material`
+The independent checker obtains a fresh abstract `checked_material`
 capability for every alternative, derives exact RNA through its checked
 context/assembly/structure chain, checks the predicate and independently derives
 the winner. Only a separate private checked-selection token may authorize
@@ -128,3 +137,20 @@ case, changed ranks and predicates, catalog permutations, ties, no eligible
 alternative, weaker child obligations, omitted or forged losers, child and
 aggregate exhaustion, and stale exports. Hosted native, installed and full
 release/main validation remain required before this profile is accepted.
+
+## Result and failure boundary
+
+A completed assessment retains every returned inner report in ascending ID
+order. `census_complete` means the checker visited every supplied child and
+obtained its result; `all_inner_accepted` separately reports whether every child
+granted a fresh capability. An inner rejection produces `inner_not_accepted`
+and no winner. A wrong proposed winner produces `proposed_winner_mismatch` and
+no token. An entirely checked catalog with no length-eligible alternative
+produces `no_eligible_alternative` and no token. Only `checked_selection` grants
+the private selection capability after complete work and publication checks.
+Exceptions, including any child or aggregate exhaustion, abort the complete
+assessment without a selection capability. None establishes global infeasibility.
+
+The candidate producer, public native and Python routes, complete selection
+manifest, and fresh paired selection export are separate remaining work. The
+existing component route and its A/B exports are not evidence for those exits.
