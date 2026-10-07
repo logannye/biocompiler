@@ -50,17 +50,18 @@ checkout. Full hashes and the complete observed worktree list are in `state.json
 | Worktree | Branch | Observed HEAD | Purpose / next action |
 | --- | --- | --- | --- |
 | `work/policy-component-composition` | `codex/policy-component-composition` | `278f452eccf695a84144f6e69e49bcb0d30cc8b3` | Frozen PR85 source; retain its failed run unchanged |
-| `work/session-release-corrections` | `codex/session-release-corrections` | `59c514d72` | Reviewed, committed RECORD-comparison correction; final closure docs will advance HEAD |
-| `work/policy-material-selection` | `codex/policy-material-selection` | `70f81df1ca62819dcda5f63ea6691af07f9c5ea8` | Current public selection batch; obtain fresh hosted result and audit |
-| `work/bounded-policy-execution` | `codex/policy-material-export` | `bb84421cf1f93cd1dc02813d80a2c54a3520a919` | Accepted PR95 source, merged as `ddf8e8a603`; separate main run pending |
+| `work/session-release-corrections` | `codex/session-release-corrections` | `e95d2ee5e3a825966d872f3f155ef19e1ce732e9` | Pushed RECORD correction plus README/handoff and verified PR95 main ancestry; closure docs may advance HEAD |
+| `work/policy-material-selection` | `codex/policy-material-selection` | `fbd2230e82d6ba448ae5aa4cdf33ebc0978df16b` | Pushed public selection with empty-log correction `8806cf6c4`; run `37562370369` pending |
+| `work/bounded-policy-execution` | `codex/policy-material-export` | `bb84421cf1f93cd1dc02813d80a2c54a3520a919` | Accepted PR95 source, merged as `ddf8e8a603`; main run rejected a Python patch mismatch |
 | `work/component-release-audit` | `codex/component-release-audit` | `1c67b5b3c0346bcb8cf2a8b3539056cf004e15fe` | Stable component auditor, already pushed; integrate deliberately later |
 | `work/semantic-mrna-tracker` | `codex/semantic-mrna-tracker` | `6a7d70fea717c27d60ed1e7776cf489e5c559f69` | README/tracker and this handoff; final documentation commit will advance HEAD |
 | `work/reference-package-continuations` | `codex/reference-package-continuations` | `b7a176dd5c75e700b9aa86ac8006b70fcb3eaf57` | Preserve implemented reference-package continuation |
 | `work/release-audit-tools` | `codex/release-audit-tools` | `6d73d74e73ca8f760d32f28ea9cbbd4c1e9d4925` | Earlier stable auditor; keep its old profile authority intact |
 | `work/m11-human-evidence` | `codex/ocaml-package-distribution` | `a85b1112ff35ba988a71cc969bfabdfefb354cfe` | Historical accepted union and original release evidence |
 
-The isolated correction owns only `tools/check_policy_material_prebuilt.py` and
-`tests/test_policy_material_prebuilt.py`. The source correction is committed as `59c514d72`; independent source review
+The code correction changes only `tools/check_policy_material_prebuilt.py` and
+`tests/test_policy_material_prebuilt.py`; the integrated branch also includes the
+README, roadmap and closure packet. The source correction is committed as `59c514d72`; independent source review
 and 29 guarded pure tests passed on each supported Python. It has no fresh
 hosted acceptance. README/tracker/handoff integration may advance this branch. Preserve
 all other checkouts and any pending user changes.
@@ -98,8 +99,11 @@ The original proof remains under
 PR95 merged normally on 2026-10-06 Pacific as
 `ddf8e8a6031e342ac9fda7b94b03ae35f859bb20`. Its separate actual-main
 [run 37561753806](https://github.com/logannye/biocompiler/actions/runs/37561753806)
-is in progress. Require its fresh complete gate and artifact audit before
-recording actual-main acceptance. The PR95 audit does not accept PR85 or selection.
+has failed unit shards: the runner selected different CPython patch versions
+from their plans and correctly rejected execution as stale. The plan-bound
+interpreter correction already exists in the PR85 source. Retain this run as a
+failed main attempt; the later corrected main requires a fresh complete gate
+and artifact audit before actual-main acceptance. The PR95 audit does not accept PR85 or selection.
 
 **Public selection development.** Current source H
 `70f81df1ca62819dcda5f63ea6691af07f9c5ea8`, tree
@@ -107,7 +111,14 @@ recording actual-main acceptance. The PR95 audit does not accept PR85 or selecti
 [run 37561211151](https://github.com/logannye/biocompiler/actions/runs/37561211151).
 It failed after all 23 native suites and the old component SDK campaign passed.
 The selection stage rejected the authenticated fixture exporter's empty successful
-log. A narrow correction is being prepared; retain this failed run as failure.
+log. The one-line correction `8806cf6c4` accepts an empty log only with its exact
+SHA-256/size, successful status and zero return code. Twenty-four guarded
+pure controls pass per supported Python; root source review passed. Retain
+this failed run as failure. Corrected pushed source
+`fbd2230e82d6ba448ae5aa4cdf33ebc0978df16b` (tree
+`e2d6a5cbf7a8b2d346245f1e5d9441a4c30a1b9c`) is tested by
+[run 37562370369](https://github.com/logannye/biocompiler/actions/runs/37562370369),
+currently pending.
 Require the exact 23-suite native campaign, unchanged 26-observation component
 SDK campaign, new 21-observation selection SDK campaign, actual paired artifacts,
 binary/source identities and complete retained ZIP audit. Development success
@@ -125,6 +136,39 @@ proofs remain under
 `work/policy-material-selection/generated/hosted-development/<run-id>/`.
 Known file hashes are in the dated state file. No current-run result was copied
 or assumed before its final evidence existed.
+
+## Prepared audit tools and preservation
+
+The exact reviewed selection success auditor is saved in the
+[dated packet](semantic-mrna-handoff/2026-10-06/audit-selection-development.py),
+SHA-256 `b095bccd26553c81c3f716b27570a660613738fdecaf92c587c7e428c927436a`.
+The original remains at
+`work/policy-material-selection/generated/selection-publication-integration/audit-development.py`.
+Use it only after the exact new run succeeds. Its required arguments are
+`--root`, `--evidence-dir`, `--head`, `--tree`, `--run-id`, `--run-attempt`,
+`--suite-id`, `--job-id`, `--artifact-id`, `--artifact-size`,
+`--artifact-sha256` and `--source-count`. Capture raw final run, commit, jobs and
+artifact metadata separately; validate the externally pinned ZIP and run on
+both supported Pythons. It preserves 90 ZIP entries, 23 native suites, 26 old
+component observations and 21 selection observations, complete originals and
+paired artifacts. It performs no native execution and cannot establish installed
+or release acceptance. Do not regenerate a convenient expected census from output.
+
+The stable component auditor remains `codex/component-release-audit` at
+`1c67b5b3c0346bcb8cf2a8b3539056cf004e15fe`, explicitly using
+`--profile complete-component-release-v1`. Its nine adapter correspondences passed
+all eight guarded tests per Python against corrected source `59c514d72`;
+proofs are under `work/component-release-audit/generated/record-correction-review/`.
+No adapter or reviewed function pin needed changing for the RECORD fix. Rebuild
+source/catalog and current-run authority for the final corrected release head.
+
+Both previously local-only historical branches are now pushed:
+`codex/policy-boundary-witnesses` at `0e79df920` and
+`codex/reference-package-continuations` at `b7a176dd5`. Preserve their history;
+do not merge the old continuation stack wholesale. Its route implementations
+are already part of the release integration. The completed parallel session's
+PR87/88 roadmap acceptance record is also preserved at `62e83759f` and included
+in the current tracker. No historical worktree was reset or deleted.
 
 ## First actions on resume
 

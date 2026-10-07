@@ -43,8 +43,58 @@
       "path": "work/policy-component-composition/generated/complete-release/37551706364/failures/policy-prebuilt-reproducibility/diagnosis.json",
       "sha256": "d8990938ac129ec71346c6361837abd7f7ba74c9fb4ab156ca581db36338ba5f",
       "size": 1611
+    },
+    {
+      "path": "work/policy-material-selection/generated/hosted-development/37561211151/failure-diagnosis.json",
+      "sha256": "d9ec8f71da81aa6097272faf263603f02ea9e4fd133b89159f8a11be2206a296",
+      "size": 2052
+    },
+    {
+      "path": "work/policy-component-composition/generated/complete-release/37551706364/failures/policy-prebuilt-reproducibility/wheel-record-diagnosis.json",
+      "sha256": "52373736c9d18564aac116358a18e96f363adfd798f54d606011dfd41d9af34b",
+      "size": 2408
+    },
+    {
+      "path": "work/bounded-policy-execution/generated/policy-realization/pr95-session-close/actual-main-37561753806/normal-merge-and-main-diagnosis.json",
+      "sha256": "b52d426ab12cfa3ea186e4c957cebf4f22defc42a13ad2b4d2aef1ab632d12f6",
+      "size": 5141
+    },
+    {
+      "path": "work/session-release-corrections/generated/component-record-correction/python-3.11.15/proof.json",
+      "sha256": "c6633318a8029ff121b8354ee1186ddee76eebcda75d8bd05d3feb00b783befe",
+      "size": 588
+    },
+    {
+      "path": "work/session-release-corrections/generated/component-record-correction/python-3.14.6/proof.json",
+      "sha256": "9e6126af57dd11a9d48eb4c22f3f267249b36ffba49ac75407d2edc3f7fb8197",
+      "size": 587
+    },
+    {
+      "path": "work/component-release-audit/generated/record-correction-review/python-3.11.15/proof.json",
+      "sha256": "fde63ce758a953e17e6842e21bd6744cb3736643def082b84bbf1573f7a942b1",
+      "size": 38508
+    },
+    {
+      "path": "work/component-release-audit/generated/record-correction-review/python-3.14.6/proof.json",
+      "sha256": "011a3c888febaaf06502d7f20798ae00ad68e89bfb62353fbbde25e43e442660",
+      "size": 38507
+    },
+    {
+      "path": "work/policy-material-selection/generated/hosted-development/37561211151/empty-log-fix-python-3.11.15/proof.json",
+      "sha256": "ddf463c41da1212cc960be8155392557756a27e7f19ef01a5f3cc55bc9ab00f4",
+      "size": 1627
+    },
+    {
+      "path": "work/policy-material-selection/generated/hosted-development/37561211151/empty-log-fix-python-3.14.6/proof.json",
+      "sha256": "9fedd12b16302e5aeb47075bb880e78a2af2616f6701ea3d03a31e25cf57b6ba",
+      "size": 1626
     }
   ],
+  "historical_preservation": {
+    "codex/policy-boundary-witnesses": "0e79df9200c6524b04157d1cb3b4c76e080ca3ca",
+    "codex/policy-core-integration": "62e83759f30fd734c08a776f652f97c584853865",
+    "codex/reference-package-continuations": "b7a176dd5c75e700b9aa86ac8006b70fcb3eaf57"
+  },
   "limitations": [
     "Refresh live GitHub state on resume; this snapshot is not acceptance.",
     "No PR receipt transfers to a corrected revision, merge, or actual-main run.",
@@ -62,6 +112,8 @@
     "correction_status": "committed_independently_reviewed_29_guarded_tests_per_python_fresh_hosted_gate_required",
     "head": "278f452eccf695a84144f6e69e49bcb0d30cc8b3",
     "normal_merge_accepted": false,
+    "pushed_correction_head": "e95d2ee5e3a825966d872f3f155ef19e1ce732e9",
+    "pushed_correction_tree": "ca15d0551a250250436ffa1b8b75a243be7da7ac",
     "required_gate": {
       "jobs": 74,
       "native_suites": 156,
@@ -77,11 +129,12 @@
   },
   "pr95": {
     "actual_main_run": 37561753806,
-    "actual_main_status": "in_progress_not_accepted",
+    "actual_main_status": "cannot_pass_stale_plan_python_patch_mismatch",
     "exact_pr_gate": "passed_42_jobs_and_independent_final_audit",
     "head": "bb84421cf1f93cd1dc02813d80a2c54a3520a919",
     "merge_commit": "ddf8e8a6031e342ac9fda7b94b03ae35f859bb20",
     "merge_status": "merged",
+    "normal_merge_proof": "work/bounded-policy-execution/generated/policy-realization/pr95-session-close/actual-main-37561753806/normal-merge-and-main-diagnosis.json",
     "proof_sha256": "d331a734c0b863ba4a4e228c66bc260f54113368925634850baeace907be05cd",
     "run": 37450940506,
     "run_url": "https://github.com/logannye/biocompiler/actions/runs/37450940506",
@@ -92,17 +145,25 @@
   "repository": "https://github.com/logannye/biocompiler",
   "schema_version": "biocompiler.semantic-mrna-session-handoff.v0.1",
   "selection": {
+    "audit_script": {
+      "copy": "audit-selection-development.py",
+      "profile": "development_only_23_suites_26_component_21_selection_observations",
+      "sha256": "b095bccd26553c81c3f716b27570a660613738fdecaf92c587c7e428c927436a",
+      "source_count": 1163
+    },
     "compile_implemented": false,
-    "head": "70f81df1ca62819dcda5f63ea6691af07f9c5ea8",
+    "empty_log_correction": "8806cf6c4",
+    "head": "fbd2230e82d6ba448ae5aa4cdf33ebc0978df16b",
     "previous_failed_runs": [
       37559445249,
-      37559878104
+      37559878104,
+      37561211151
     ],
     "protocol_correction": "e79be46b4bd1feefba76b213653478a4426bac81",
-    "run": 37561211151,
-    "run_status": "failure_23_native_suites_and_old_sdk_pass_selection_rejected_empty_success_log_correction_pending",
-    "run_url": "https://github.com/logannye/biocompiler/actions/runs/37561211151",
-    "tree": "56cbb9865c0bf66d5db12d54d4068c3ee91164a2"
+    "run": 37562370369,
+    "run_status": "in_progress_not_accepted",
+    "run_url": "https://github.com/logannye/biocompiler/actions/runs/37562370369",
+    "tree": "e2d6a5cbf7a8b2d346245f1e5d9441a4c30a1b9c"
   },
   "stable_auditor": {
     "branch": "codex/component-release-audit",
@@ -110,7 +171,7 @@
     "main_integration": "not_assumed",
     "pushed": true
   },
-  "status": "closure_integration_in_progress_known_failures_preserved",
+  "status": "pushed_checkpoint_hosted_acceptance_remaining",
   "timezone": "America/Los_Angeles",
   "workspace_root": "/Users/logannye/Documents/ChatGPT/GeneMedicineCompiler",
   "worktrees": [
@@ -156,7 +217,7 @@
     },
     {
       "branch": "codex/policy-core-integration",
-      "head": "5f9b39d354b43070f15114f2e8813e659ab1c4a4",
+      "head": "62e83759f30fd734c08a776f652f97c584853865",
       "path": "work/policy-core-integration"
     },
     {
@@ -166,7 +227,7 @@
     },
     {
       "branch": "codex/policy-material-selection",
-      "head": "70f81df1ca62819dcda5f63ea6691af07f9c5ea8",
+      "head": "fbd2230e82d6ba448ae5aa4cdf33ebc0978df16b",
       "path": "work/policy-material-selection"
     },
     {
@@ -181,12 +242,14 @@
     },
     {
       "branch": "codex/semantic-mrna-tracker",
-      "head": "6a7d70fea717c27d60ed1e7776cf489e5c559f69",
+      "head": "ae18202724c77327bcfa2e2e6e05f0756f3e583f",
+      "note": "Snapshot before final closure documentation commit; use current branch HEAD.",
       "path": "work/semantic-mrna-tracker"
     },
     {
       "branch": "codex/session-release-corrections",
-      "head": "278f452eccf695a84144f6e69e49bcb0d30cc8b3",
+      "head": "e95d2ee5e3a825966d872f3f155ef19e1ce732e9",
+      "note": "Source plus first closure docs; final documentation integration will advance this branch. Refresh exact PR85 head/run.",
       "path": "work/session-release-corrections"
     }
   ]

@@ -1831,6 +1831,11 @@ Depends on LM-02; individual operations route to OCaml only after their core par
 
 ### LM-20 — Layer 4: canonical intent and semantic analysis
 
+The PR87/88 records below are dated source-assessment acceptance. Subsequent
+bounded operational execution, lowering and material work are tracked separately
+in the [semantic mRNA plan](semantic-mrna-development-plan.md); these historical
+records do not describe the latest bounded profiles' entire implementation state.
+
 **Expressive-policy source integration validated:** the
 [native policy front end](policy-native-front-end-v0.1.md) adds a closed OCaml
 representation for all 45 policy records, exact numeric/source-contract checks,
