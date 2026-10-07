@@ -4,6 +4,7 @@ import json
 import subprocess
 from copy import deepcopy
 from pathlib import Path
+import threading
 import unittest
 from unittest import mock
 
@@ -328,7 +329,132 @@ class PolicyDevelopmentSelectionSDKTests(unittest.TestCase):
         text = (Path(__file__).resolve().parents[1] / dev.WORKFLOW).read_text()
         commands = [line.strip()[5:] for line in text.splitlines() if line.strip().startswith("run: ")]
         self.assertEqual(commands, ["python -B tools/check_policy_development.py " + action
-                                   for action in ("prepare", "run", "staged-source-sdk", "staged-material-sdk", "public-sdk", "selection-sdk")])
-        self.assertEqual(text.count("PYTHONPATH: src"), 4)
+                                   for action in ("prepare", "run", "sdk-all")])
+        self.assertEqual(text.count("PYTHONPATH: src"), 1)
         self.assertIn("path: generated/development-feedback/", text)
         self.assertIn("timeout-minutes: 45", text)
+
+
+class PolicyDevelopmentParallelSDKTests(unittest.TestCase):
+    """Exercise real receipt wrappers concurrently around inert child results."""
+
+    def setUp(self):
+        self.peer = fixtures.PolicyDevelopmentTests()
+        self.peer.setUp()
+        self.addCleanup(self.peer.doCleanups)
+        self.root = self.peer.root
+        for relative in set(dev.SDK_ORIGINALS + dev.SELECTION_ORIGINALS):
+            path = self.root / relative
+            if not path.exists():
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text("independent source declaration\n")
+        self.peer.freeze_tree()
+        dev.prepare(self.root)
+        dev.run(self.root)
+        self.output = self.root / "generated/development-feedback"
+        self.native = (self.output / "feedback.json").read_bytes()
+        self.lock = threading.Lock()
+        self.started, self.finished = [], []
+        self.active = self.maximum = 0
+        self.rendezvous = threading.Barrier(2)
+        self.failed = None
+
+    def command(self, root, output, name, argv):
+        self.assertEqual(root, self.root)
+        self.assertEqual(output, self.output)
+        with self.lock:
+            self.started.append(name)
+            self.active += 1
+            self.maximum = max(self.maximum, self.active)
+        try:
+            if name in ("component-sdk", "staged-source-sdk"):
+                self.rendezvous.wait(timeout=5)
+            if name.startswith("selection-"):
+                public = json.loads((output / "public-sdk.json").read_bytes())
+                self.assertEqual(public["status"], "passed")
+                self.assertIn("component-sdk", self.finished)
+            # Exclusive writes expose any overlap in campaign-owned paths.
+            with Path(argv[-1]).open("x") as stream:
+                stream.write('{"inert_child_only":true}\n')
+            log = output / (name + ".log")
+            with log.open("xb") as stream:
+                stream.write(b"inert complete command\n")
+            return {"name": name, "argv": argv, "log": log.name,
+                    "status": "failed" if name == self.failed else "passed",
+                    "returncode": 1 if name == self.failed else 0,
+                    "elapsed_seconds": 0.0,
+                    "log_pin": {"sha256": hashlib.sha256(log.read_bytes()).hexdigest(), "size": log.stat().st_size}}
+        finally:
+            with self.lock:
+                self.active -= 1
+                self.finished.append(name)
+
+    def read(self, name):
+        return json.loads((self.output / name).read_bytes())
+
+    def test_both_lanes_overlap_keep_dependencies_and_disjoint_complete_receipts(self):
+        with mock.patch.object(dev, "command", side_effect=self.command):
+            reports = dev.sdk_all(self.root)
+        self.assertEqual(dev.PARALLEL_WORKERS, 2)
+        self.assertEqual(self.maximum, 2)
+        self.assertEqual(self.active, 0)
+        self.assertCountEqual(self.started, ["component-originals", "component-sdk", "selection-originals",
+            "selection-sdk", "staged-source-sdk", "staged-material-sdk"])
+        self.assertLess(self.finished.index("component-sdk"), self.finished.index("selection-originals"))
+        self.assertLess(self.started.index("staged-source-sdk"), self.started.index("staged-material-sdk"))
+        self.assertEqual(list(reports), ["public-sdk", "selection-sdk", "staged-source-sdk", "staged-material-sdk"])
+        self.assertTrue(all(row["status"] == "passed" and row["acceptance"] is False for row in reports.values()))
+        names = {"public-sdk": "public-sdk.json", "selection-sdk": "selection-public-sdk.json",
+                 "staged-source-sdk": "staged-source-sdk.json", "staged-material-sdk": "staged-material-sdk.json"}
+        for name, report in reports.items():
+            self.assertEqual(self.read(names[name]), report)
+            self.assertEqual(report["sources_before"], report["sources_after"])
+            self.assertEqual(report["native_feedback"], dev.pin(self.root, "generated/development-feedback/feedback.json"))
+        self.assertEqual((self.output / "feedback.json").read_bytes(), self.native)
+
+    def check_failed_lane(self, failed):
+        self.failed = failed
+        with mock.patch.object(dev, "command", side_effect=self.command):
+            with self.assertRaisesRegex(ValueError, "Development SDK lanes failed"):
+                dev.sdk_all(self.root)
+        self.assertEqual(self.active, 0)
+        self.assertEqual((self.output / "feedback.json").read_bytes(), self.native)
+        if failed == "component-sdk":
+            self.assertEqual(self.read("public-sdk.json")["status"], "failed")
+            self.assertFalse((self.output / "selection-public-sdk.json").exists())
+            self.assertNotIn("selection-originals", self.started)
+            self.assertEqual(self.read("staged-source-sdk.json")["status"], "passed")
+            self.assertEqual(self.read("staged-material-sdk.json")["status"], "passed")
+        else:
+            self.assertEqual(self.read("staged-source-sdk.json")["status"], "failed")
+            self.assertFalse((self.output / "staged-material-sdk.json").exists())
+            self.assertNotIn("staged-material-sdk", self.started)
+            self.assertEqual(self.read("public-sdk.json")["status"], "passed")
+            self.assertEqual(self.read("selection-public-sdk.json")["status"], "passed")
+
+    def test_component_failure_skips_selection_and_drains_complete_staged_lane(self):
+        self.check_failed_lane("component-sdk")
+
+    def test_staged_failure_drains_complete_component_and_selection_lane(self):
+        self.check_failed_lane("staged-source-sdk")
+
+    def test_binary_mutation_during_overlap_prevents_both_lane_success(self):
+        mutated = threading.Event()
+
+        def command(root, output, name, argv):
+            result = self.command(root, output, name, argv)
+            if name == "component-sdk":
+                (self.root / dev.SDK_BINARIES["core"]).write_bytes(b"changed while both lanes active")
+                mutated.set()
+            elif name == "staged-source-sdk":
+                self.assertTrue(mutated.wait(5))
+            return result
+
+        with mock.patch.object(dev, "command", side_effect=command):
+            with self.assertRaisesRegex(ValueError, "Development SDK lanes failed"):
+                dev.sdk_all(self.root)
+        self.assertEqual(self.active, 0)
+        self.assertEqual(self.read("public-sdk.json")["status"], "failed")
+        self.assertEqual(self.read("staged-source-sdk.json")["status"], "failed")
+        self.assertNotIn("selection-sdk", self.started)
+        self.assertNotIn("staged-material-sdk", self.started)

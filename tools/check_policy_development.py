@@ -6,6 +6,7 @@ All commands are fixed here; a supplied document cannot choose a native target.
 from __future__ import annotations
 
 import argparse
+from concurrent.futures import ThreadPoolExecutor, as_completed
 import hashlib
 import json
 import os
@@ -62,6 +63,7 @@ DEPENDENCIES = ["opam", "install", "core/biocompiler_core.opam", "--deps-only", 
 BUILD = ["opam", "exec", "--", "dune", "build", "--root", "core", "@all"]
 COMMAND_TIMEOUT_SECONDS = 900
 SELECTION_SDK_TIMEOUT_SECONDS = 1800
+PARALLEL_WORKERS = 2
 SDK_BINARIES = {
     "originals": "core/_build/default/test/component_fixture_export/main.exe",
     "core": "core/_build/default/bin/core/main.exe",
@@ -260,13 +262,32 @@ def run(root):
         binary_paths = [row["executable"] for row in suites] + list(SDK_BINARIES.values())
         binaries = {path: pin(root, path, executable=True) for path in binary_paths}
         report["binaries"] = binaries
-        for index, suite in enumerate(suites):
+        def execute_suite(suite):
             require(preparation(root) == prepared, "Source or identity changed before native suite")
             require(pin(root, suite["executable"], executable=True) == binaries[suite["executable"]],
                     "Native executable changed before suite")
             row = command(root, output, suite["name"], suite["argv"])
-            report["suites"][index] = {**suite, **row}
-            save(output / "feedback.json", report)
+            return {**suite, **row}
+
+        # Each worker owns one command log. Only this coordinator writes the
+        # receipt, with rows in the original order even when completion differs.
+        errors = {}
+        print(f"Starting {len(suites)} native suites with {PARALLEL_WORKERS} workers", flush=True)
+        with ThreadPoolExecutor(max_workers=PARALLEL_WORKERS) as executor:
+            pending = {executor.submit(execute_suite, suite): index for index, suite in enumerate(suites)}
+            for completed, future in enumerate(as_completed(pending), 1):
+                index = pending[future]
+                try:
+                    report["suites"][index] = future.result()
+                except Exception as error:
+                    report["suites"][index] = {**suites[index], "status": "not_run", "error": str(error)}
+                    errors[index] = error
+                save(output / "feedback.json", report)
+                row = report["suites"][index]
+                elapsed = f"{row['elapsed_seconds']:.3f}s" if "elapsed_seconds" in row else "not launched"
+                print(f"Native suite completed {completed}/{len(suites)}: {row['name']} ({row['status']}, {elapsed})", flush=True)
+        if errors:
+            raise errors[min(errors)]
         require(all(row["status"] == "passed" for row in report["suites"]), "Focused native suite failed")
         require({path: pin(root, path, executable=True) for path in binaries} == binaries, "Native executable changed during suites")
         report["status"] = "passed"
@@ -580,13 +601,46 @@ def staged_material_sdk(root):
     return report
 
 
+def sdk_all(root):
+    """Overlap two isolated SDK process lanes without sharing witness state.
+
+    Selection retains its successful component receipt prerequisite. Each
+    campaign still owns its existing paths and launches its guarded SDK in a
+    separate process; no witness callback or native budget is parallelized.
+    """
+    lanes = (
+        (("public-sdk", public_sdk), ("selection-sdk", selection_sdk)),
+        (("staged-source-sdk", staged_source_sdk), ("staged-material-sdk", staged_material_sdk)),
+    )
+
+    def execute_lane(lane):
+        return {name: campaign(root) for name, campaign in lane}
+
+    reports, errors = {}, {}
+    with ThreadPoolExecutor(max_workers=PARALLEL_WORKERS) as executor:
+        pending = {executor.submit(execute_lane, lane): index for index, lane in enumerate(lanes)}
+        # Drain both lanes even if one fails; completed diagnostic receipts must
+        # survive, and no background campaign may outlive the final outcome.
+        for future in as_completed(pending):
+            index = pending[future]
+            name = " -> ".join(name for name, _ in lanes[index])
+            try:
+                reports[index] = future.result()
+                print(f"SDK lane completed: {name} (passed)", flush=True)
+            except Exception as error:
+                errors[index] = lanes[index][0][0] + ": " + str(error)
+                print(f"SDK lane completed: {name} (failed: {error})", flush=True)
+    require(not errors, "Development SDK lanes failed: " + "; ".join(errors[index] for index in sorted(errors)))
+    return {name: report for index in range(len(lanes)) for name, report in reports[index].items()}
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("command", choices=("prepare", "run", "public-sdk", "selection-sdk", "staged-source-sdk", "staged-material-sdk"))
+    parser.add_argument("command", choices=("prepare", "run", "public-sdk", "selection-sdk", "staged-source-sdk", "staged-material-sdk", "sdk-all"))
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[1]
     try:
-        {"prepare": prepare, "run": run, "public-sdk": public_sdk, "selection-sdk": selection_sdk, "staged-source-sdk": staged_source_sdk, "staged-material-sdk": staged_material_sdk}[args.command](root)
+        {"prepare": prepare, "run": run, "public-sdk": public_sdk, "selection-sdk": selection_sdk, "staged-source-sdk": staged_source_sdk, "staged-material-sdk": staged_material_sdk, "sdk-all": sdk_all}[args.command](root)
     except (OSError, ValueError) as error:
         print(str(error), file=sys.stderr)
         return 1

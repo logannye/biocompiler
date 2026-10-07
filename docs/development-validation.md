@@ -33,6 +33,40 @@ The component SDK workflow step took 108 seconds in run `37571805132` and
 These observations justify a bounded orchestration allowance; they do not
 establish a source-performance result or change any validation outcome.
 
+The complete serial baseline at `9eb3d7bd` is
+[run 37665270372](https://github.com/logannye/biocompiler/actions/runs/37665270372).
+Its retained command receipts separate compilation from validation:
+
+| Work | Observed command time |
+| --- | ---: |
+| Dependency installation | 45.6 seconds |
+| Native compilation | 35.0 seconds |
+| All 31 native suites, serial sum | 366.5 seconds |
+| Staged source and material SDKs | 205.7 seconds |
+| Existing component SDK | 184.5 seconds |
+| Selection SDK | 1,161.4 seconds |
+
+The complete job took about 35 minutes 41 seconds, including hosted setup,
+source checks and artifact upload. Compilation is a small part of this measured
+cycle; validation scheduling is the first optimization target.
+
+Focused development uses two native-suite workers after the single successful
+build. Each suite retains its original command, fixture, source and executable
+checks, timeout and separate log. The coordinator alone publishes the fixed
+ordered result inventory and waits for every outcome. After native completion,
+two SDK lanes overlap: component then selection, and staged source then staged
+material. Each lane preserves its dependencies and existing campaign receipts.
+There are at most two workers in either phase, and no SDK calls are moved into
+unguarded worker threads inside a campaign. All 31 suites and 110 observations
+remain mandatory.
+
+At the baseline command durations, this scheduling can remove roughly six
+minutes of serialization. That is an estimate, not a measured speedup; compare
+the next complete hosted run's wall time, command durations and total work.
+The 19-minute selection campaign remains the largest individual cost. Further
+parallelism must isolate its execution guards, preserve every fresh operation
+and cross-comparison, and merge the complete observation inventory deterministically.
+
 Its first nine-suite run at `a89f80b07` completed successfully in 2 minutes
 41 seconds, including 43 seconds of dependency installation, 30 seconds of
 compilation and 35 seconds of tests. This is one observed run, not a runtime
@@ -63,6 +97,15 @@ cohesive feature can merge without waiting for unrelated work in a longer sprint
 Preserve an active PR and its running checks while independent work continues;
 change its tested revision when a correction is needed, not to manufacture
 activity or restart a healthy run.
+
+Use focused local Python/static checks during editing and one focused hosted run
+for a coherent native batch. Run the complete cross-platform/installed gate for
+the integration candidate, rather than dispatching it for every intermediate
+edit. An infrastructure-only job failure should use the existing same-run,
+same-revision failed-job recovery after preserving its evidence; successful
+producer attempts remain identified as their actual earlier attempts. A source
+correction requires fresh validation of the changed revision. Complete release
+and actual-main gates remain required at their respective boundaries.
 
 The exact revision being integrated must have passed the required checks.
 Record both the source revision and the tested checkout revision when PR merge
