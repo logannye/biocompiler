@@ -1,7 +1,7 @@
 # Semantic mRNA compiler: session handoff
 
-Prepared 2026-10-06, America/Los_Angeles. **Closure snapshot: PR95 merged; PR85 and
-public selection still require corrected hosted validation.** Resume from this document and the
+Prepared 2026-10-06, America/Los_Angeles. **Closure snapshot: PR95 merged; corrected PR85 gate running;
+public selection development passed its independent artifact audit.** Resume from this document and the
 [development tracker](semantic-mrna-development-plan.md); do not restart the
 architecture discussion or recreate implemented routes. The [README](../README.md)
 describes the public vision and current functionality.
@@ -50,8 +50,8 @@ checkout. Full hashes and the complete observed worktree list are in `state.json
 | Worktree | Branch | Observed HEAD | Purpose / next action |
 | --- | --- | --- | --- |
 | `work/policy-component-composition` | `codex/policy-component-composition` | `278f452eccf695a84144f6e69e49bcb0d30cc8b3` | Frozen PR85 source; retain its failed run unchanged |
-| `work/session-release-corrections` | `codex/session-release-corrections` | `e95d2ee5e3a825966d872f3f155ef19e1ce732e9` | Pushed RECORD correction plus README/handoff and verified PR95 main ancestry; closure docs may advance HEAD |
-| `work/policy-material-selection` | `codex/policy-material-selection` | `fbd2230e82d6ba448ae5aa4cdf33ebc0978df16b` | Pushed public selection with empty-log correction `8806cf6c4`; run `37562370369` pending |
+| `work/session-release-corrections` | `codex/session-release-corrections` | `0b2fc34b8b82d5956c81f550a7e5bf9fdf9f15e1` | Frozen PR85 correction plus README/roadmap/handoff; full run `37563795844` active |
+| `work/policy-material-selection` | `codex/policy-material-selection` | `fbd2230e82d6ba448ae5aa4cdf33ebc0978df16b` | Pushed public selection with empty-log correction `8806cf6c4`; run `37562370369` and both independent development audits passed |
 | `work/bounded-policy-execution` | `codex/policy-material-export` | `bb84421cf1f93cd1dc02813d80a2c54a3520a919` | Accepted PR95 source, merged as `ddf8e8a603`; main run rejected a Python patch mismatch |
 | `work/component-release-audit` | `codex/component-release-audit` | `1c67b5b3c0346bcb8cf2a8b3539056cf004e15fe` | Stable component auditor, already pushed; integrate deliberately later |
 | `work/semantic-mrna-tracker` | `codex/semantic-mrna-tracker` | `6a7d70fea717c27d60ed1e7776cf489e5c559f69` | README/tracker and this handoff; final documentation commit will advance HEAD |
@@ -68,7 +68,19 @@ all other checkouts and any pending user changes.
 
 ## Pending gates and retained diagnoses
 
-**PR85 component release.** [Full run 37551706364](https://github.com/logannye/biocompiler/actions/runs/37551706364)
+**PR85 component release.** Current pushed head is
+`0b2fc34b8b82d5956c81f550a7e5bf9fdf9f15e1`; [fresh full run 37563795844](https://github.com/logannye/biocompiler/actions/runs/37563795844)
+is running. Its tested merge `66741e5918c4b1b6fd842dfacc91ea7a11dcb9f3`
+has ordered parents `[ddf8e8a6031e342ac9fda7b94b03ae35f859bb20, 0b2fc34b8b82d5956c81f550a7e5bf9fdf9f15e1]`
+and identical source tree `52a72fff46625e9ae2be6de7a1bc77fc13a910a5`.
+Run attempt 1 uses suite `101756034891`; its suite predecessor is
+`e95d2ee5e3a825966d872f3f155ef19e1ce732e9`, independently confirmed as the
+candidate's first parent. Initial authority is retained under
+`work/session-release-corrections/generated/complete-release/37563795844/`.
+This checkout is sparse (historical `tests/conformance` excluded); restore the
+complete tracked checkout before preparing the complete-source release audit.
+
+The superseded [full run 37551706364](https://github.com/logannye/biocompiler/actions/runs/37551706364)
 cannot pass. Its original source H is `278f452ec`, tested C is
 `b2a5a860be1745d707f7781d17e158d4a2261aeb`, and the equal H/C tree is
 `dee01a8bbc3d213cdc7aaa5c44aecdabb2146d1a`. The prebuilt comparison incorrectly
@@ -84,7 +96,10 @@ Evidence is under
 (`job.json`, log, `diagnosis.json`, `slot-linux-py311.zip`, `sdk.zip`). The diagnosis
 hash in the evidence index identifies the initial hypothesis; the retained ZIPs
 provide the subsequent confirmation. Preserve the failed attempt as failure.
-Let remaining healthy jobs finish. A corrected head requires a **fresh complete**
+All 20 installed campaigns finished successfully before the necessary revision
+update. The old cohort then terminated with 68 successful, three failed and
+three cancelled jobs; incomplete downstream checks remain incomplete. Do not
+restart or wait on that superseded cohort. The corrected head requires a **fresh complete**
 74-job / 59-ordinary-receipt / 156-native-suite / 102-selected-archive gate and
 independent audit, followed by normal merge and fresh actual-main validation.
 The stable auditor's `complete-component-release-v1` profile preserves the old
@@ -105,7 +120,7 @@ interpreter correction already exists in the PR85 source. Retain this run as a
 failed main attempt; the later corrected main requires a fresh complete gate
 and artifact audit before actual-main acceptance. The PR95 audit does not accept PR85 or selection.
 
-**Public selection development.** Current source H
+**Public selection development.** Previous failed source H
 `70f81df1ca62819dcda5f63ea6691af07f9c5ea8`, tree
 `56cbb9865c0bf66d5db12d54d4068c3ee91164a2`, is tested by
 [run 37561211151](https://github.com/logannye/biocompiler/actions/runs/37561211151).
@@ -118,7 +133,17 @@ this failed run as failure. Corrected pushed source
 `fbd2230e82d6ba448ae5aa4cdf33ebc0978df16b` (tree
 `e2d6a5cbf7a8b2d346245f1e5d9441a4c30a1b9c`) is tested by
 [run 37562370369](https://github.com/logannye/biocompiler/actions/runs/37562370369),
-currently pending.
+passed all 23 native suites, 26 existing SDK observations and 21 new selection
+observations. Independent data-only audits on Python 3.11.15 and 3.14.6 passed,
+authenticating 1,163 immutable source files, every original alternative and child
+obligation, all 90 outer ZIP entries and six exact paired program archives. Both
+audit proofs have SHA-256
+`e0035a155c779913d421486170c8b726bdbd156733b9c775420ca80b310476b2`.
+Artifact `11458380864` is 2,329,016 bytes with SHA-256
+`dd3afa8241e748ee0bcfb564682a202de08af838c2ada453ab01a8294f3ee4ed`.
+Proofs are retained under
+`work/policy-material-selection/generated/hosted-development/37562370369/`.
+No native code was executed locally. This closes development validation only.
 Require the exact 23-suite native campaign, unchanged 26-observation component
 SDK campaign, new 21-observation selection SDK campaign, actual paired artifacts,
 binary/source identities and complete retained ZIP audit. Development success
@@ -144,7 +169,9 @@ The exact reviewed selection success auditor is saved in the
 SHA-256 `b095bccd26553c81c3f716b27570a660613738fdecaf92c587c7e428c927436a`.
 The original remains at
 `work/policy-material-selection/generated/selection-publication-integration/audit-development.py`.
-Use it only after the exact new run succeeds. Its required arguments are
+It has now passed on both Pythons against the exact successful run above; retain
+those proofs rather than repeating the completed audit. For a later source, its
+required arguments are
 `--root`, `--evidence-dir`, `--head`, `--tree`, `--run-id`, `--run-attempt`,
 `--suite-id`, `--job-id`, `--artifact-id`, `--artifact-size`,
 `--artifact-sha256` and `--source-count`. Capture raw final run, commit, jobs and
@@ -179,12 +206,14 @@ in the current tracker. No historical worktree was reset or deleted.
 2. Reconcile PR95's normal merge and actual-main status with exact parents/tree
    and fresh push-run evidence. Preserve the original 42-job proof's subject.
 3. Continue the reviewed RECORD correction and closure documentation from the
-   final pushed correction branch. Require fresh full PR85 validation and update
-   exact-source audit inputs after the failed existing attempt finishes. Regenerate an exact-source audit plan;
+   final pushed correction branch `0b2fc34b8`. Inspect fresh run `37563795844`,
+   restore the complete checkout for the audit and update exact-source authority.
+   Regenerate an exact-source audit plan;
    never reuse the failed subject's plan as new acceptance.
-4. Close the current selection development run and independently audit complete
-   original artifacts. If it fails, retain the specific diagnosis and make only
-   the necessary coherent correction. Keep the existing release source separate.
+4. Preserve the accepted selection development subject `fbd2230e8` and its
+   completed both-Python audit. Public selection checking/replay/export no longer
+   needs another development repair. Metered candidate generation is the next
+   source task; keep it separate from the frozen PR85 release candidate.
 5. Ship the accepted bounded component compiler first. Integrate selection as a
    subsequent complete increment with its own installed/offline/release gates.
    Merge stable audit and tracker branches deliberately; they are not assumed
@@ -208,8 +237,8 @@ recorded hosted validator work; do not claim it from native decoding alone.
 > `docs/semantic-mrna-development-plan.md`. Verify live branch, PR, run and main
 > identities first; preserve all worktree ownership and retained failed evidence.
 > Close the isolated installed-RECORD correction and exact component release
-> gates, reconcile PR95 normal merge/actual-main validation, and audit the current
-> public selection batch before integration. Keep all native work hosted. Do not
+> gates, reconcile PR95 normal merge/actual-main validation, and retain the completed selection development audit at `fbd2230e8` before
+> extending that branch toward metered generation and installed release acceptance. Keep all native work hosted. Do not
 > recreate completed layers or the implemented reference-package route. Selection
 > compile remains unimplemented: use the dated reviewed metering design only
 > after the current acceptance boundaries close. Maintain the tracker as each

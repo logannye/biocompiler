@@ -88,6 +88,26 @@
       "path": "work/policy-material-selection/generated/hosted-development/37561211151/empty-log-fix-python-3.14.6/proof.json",
       "sha256": "9fedd12b16302e5aeb47075bb880e78a2af2616f6701ea3d03a31e25cf57b6ba",
       "size": 1626
+    },
+    {
+      "path": "work/session-release-corrections/generated/complete-release/37563795844/initial-authority-proof.json",
+      "sha256": "025e68d0150817732805aa25054918cf6392b8a30af4f6eb7076dd7883e14c8a",
+      "size": 3063
+    },
+    {
+      "path": "work/policy-component-composition/generated/complete-release/37551706364/supersession-observation/terminal/proof.json",
+      "sha256": "bcb2575e87a90699fc1a69a6ad4aacd675b7dd56a849cb935b84eba683098320",
+      "size": 3605
+    },
+    {
+      "path": "work/policy-material-selection/generated/hosted-development/37562370369/inert-audit-proof-python-3.11.15.json",
+      "sha256": "e0035a155c779913d421486170c8b726bdbd156733b9c775420ca80b310476b2",
+      "size": 6647
+    },
+    {
+      "path": "work/policy-material-selection/generated/hosted-development/37562370369/inert-audit-proof-python-3.14.6.json",
+      "sha256": "e0035a155c779913d421486170c8b726bdbd156733b9c775420ca80b310476b2",
+      "size": 6647
     }
   ],
   "historical_preservation": {
@@ -104,16 +124,35 @@
   "native_execution": false,
   "pr85": {
     "actual_main_accepted": false,
+    "base_revision": "ddf8e8a6031e342ac9fda7b94b03ae35f859bb20",
+    "check_suite_id": 101756034891,
     "correction_commit": "59c514d72",
     "correction_files": [
       "tools/check_policy_material_prebuilt.py",
       "tests/test_policy_material_prebuilt.py"
     ],
     "correction_status": "committed_independently_reviewed_29_guarded_tests_per_python_fresh_hosted_gate_required",
-    "head": "278f452eccf695a84144f6e69e49bcb0d30cc8b3",
+    "head": "0b2fc34b8b82d5956c81f550a7e5bf9fdf9f15e1",
+    "initial_authority_proof": "work/session-release-corrections/generated/complete-release/37563795844/initial-authority-proof.json",
     "normal_merge_accepted": false,
-    "pushed_correction_head": "e95d2ee5e3a825966d872f3f155ef19e1ce732e9",
-    "pushed_correction_tree": "ca15d0551a250250436ffa1b8b75a243be7da7ac",
+    "previous_attempt": {
+      "acceptance": false,
+      "head": "278f452eccf695a84144f6e69e49bcb0d30cc8b3",
+      "installed_campaign_groups_passed": 20,
+      "jobs": {
+        "cancelled": 3,
+        "failure": 3,
+        "success": 68
+      },
+      "run": 37551706364,
+      "run_url": "https://github.com/logannye/biocompiler/actions/runs/37551706364",
+      "status": "completed_cancelled_after_necessary_correction",
+      "tested_commit": "b2a5a860be1745d707f7781d17e158d4a2261aeb",
+      "tree": "dee01a8bbc3d213cdc7aaa5c44aecdabb2146d1a"
+    },
+    "previous_head_revision": "e95d2ee5e3a825966d872f3f155ef19e1ce732e9",
+    "pushed_correction_head": "0b2fc34b8b82d5956c81f550a7e5bf9fdf9f15e1",
+    "pushed_correction_tree": "52a72fff46625e9ae2be6de7a1bc77fc13a910a5",
     "required_gate": {
       "jobs": 74,
       "native_suites": 156,
@@ -121,11 +160,12 @@
       "profile": "complete-component-release-v1",
       "selected_archives": 102
     },
-    "run": 37551706364,
-    "run_url": "https://github.com/logannye/biocompiler/actions/runs/37551706364",
-    "status": "cannot_pass_prebuilt_comparison_failed_remaining_jobs_may_continue",
-    "tested_commit": "b2a5a860be1745d707f7781d17e158d4a2261aeb",
-    "tree": "dee01a8bbc3d213cdc7aaa5c44aecdabb2146d1a"
+    "run": 37563795844,
+    "run_attempt": 1,
+    "run_url": "https://github.com/logannye/biocompiler/actions/runs/37563795844",
+    "status": "in_progress_not_accepted",
+    "tested_commit": "66741e5918c4b1b6fd842dfacc91ea7a11dcb9f3",
+    "tree": "52a72fff46625e9ae2be6de7a1bc77fc13a910a5"
   },
   "pr95": {
     "actual_main_run": 37561753806,
@@ -145,6 +185,12 @@
   "repository": "https://github.com/logannye/biocompiler",
   "schema_version": "biocompiler.semantic-mrna-session-handoff.v0.1",
   "selection": {
+    "artifact": {
+      "id": 11458380864,
+      "sha256": "dd3afa8241e748ee0bcfb564682a202de08af838c2ada453ab01a8294f3ee4ed",
+      "size": 2329016
+    },
+    "audit_proof_sha256": "e0035a155c779913d421486170c8b726bdbd156733b9c775420ca80b310476b2",
     "audit_script": {
       "copy": "audit-selection-development.py",
       "profile": "development_only_23_suites_26_component_21_selection_observations",
@@ -152,8 +198,14 @@
       "source_count": 1163
     },
     "compile_implemented": false,
+    "component_sdk_observations": 26,
+    "development_audit_status": "passed_both_supported_pythons",
     "empty_log_correction": "8806cf6c4",
     "head": "fbd2230e82d6ba448ae5aa4cdf33ebc0978df16b",
+    "installed_release_accepted": false,
+    "native_suites": 23,
+    "outer_archive_entries": 90,
+    "paired_program_archives": 6,
     "previous_failed_runs": [
       37559445249,
       37559878104,
@@ -161,8 +213,10 @@
     ],
     "protocol_correction": "e79be46b4bd1feefba76b213653478a4426bac81",
     "run": 37562370369,
-    "run_status": "in_progress_not_accepted",
+    "run_status": "completed_success",
     "run_url": "https://github.com/logannye/biocompiler/actions/runs/37562370369",
+    "selection_sdk_observations": 21,
+    "source_count": 1163,
     "tree": "e2d6a5cbf7a8b2d346245f1e5d9441a4c30a1b9c"
   },
   "stable_auditor": {
@@ -171,7 +225,7 @@
     "main_integration": "not_assumed",
     "pushed": true
   },
-  "status": "pushed_checkpoint_hosted_acceptance_remaining",
+  "status": "session_close_source_pushed_pr95_merged_pr85_gate_pending_selection_development_audited",
   "timezone": "America/Los_Angeles",
   "workspace_root": "/Users/logannye/Documents/ChatGPT/GeneMedicineCompiler",
   "worktrees": [
@@ -248,8 +302,8 @@
     },
     {
       "branch": "codex/session-release-corrections",
-      "head": "e95d2ee5e3a825966d872f3f155ef19e1ce732e9",
-      "note": "Source plus first closure docs; final documentation integration will advance this branch. Refresh exact PR85 head/run.",
+      "head": "0b2fc34b8b82d5956c81f550a7e5bf9fdf9f15e1",
+      "note": "Frozen fresh PR85 candidate; final tracker-only status updates do not change this tested source.",
       "path": "work/session-release-corrections"
     }
   ]
