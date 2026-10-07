@@ -73,7 +73,7 @@ def models() -> dict:
         model("edge", "observed_rising", {}), model("true", "truth_constant", {"value": "true"}),
         model("product", "product_constant", {"product": "fixture.product.alpha"}, executor=True),
         model("arbiter", "exclusive_arbiter", {"lanes": 7}),
-        model("attempt", "attempt_bank", {"capacity": 4, "timeout_ticks": 2, "authorization": "continuous", "on_unknown": "defer"}),
+        model("attempt", "attempt_bank", {"capacity": 4, "timeout_ticks": 2, "authorization": "continuous", "on_loss": "continue", "on_unknown": "defer"}),
     ]
     for source, correlation in (("ready", "unbound"), ("first", "retained_attempt"), ("second", "retained_attempt")):
         values.append(model("gate." + source, "transition_gate", {"source": source, "correlation": correlation}))

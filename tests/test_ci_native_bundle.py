@@ -126,8 +126,8 @@ class NativeBundleTests(unittest.TestCase):
         self.assertEqual(len(POLICY_OPERATIONAL_FIXTURES),50)
         self.assertEqual(len(observed),53)
         self.assertEqual(len(bundle.dependency_members(ROOT)),26)
-        self.assertEqual(len(bundle.expected_members(ROOT)),199)
-        self.assertEqual(sum(path.endswith('.exe') for path in bundle.expected_members(ROOT)),173)
+        self.assertEqual(len(bundle.expected_members(ROOT)),200)
+        self.assertEqual(sum(path.endswith('.exe') for path in bundle.expected_members(ROOT)),174)
         for name, relatives in POLICY_OPERATIONAL_FIXTURES.items():
             declaration = '(test (name '+name+') (modules '+name+') (libraries example) (action (run %{test} '
             arguments = ['%{dep:'+relative+'}' for relative in relatives]

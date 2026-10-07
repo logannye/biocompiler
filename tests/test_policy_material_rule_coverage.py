@@ -42,13 +42,13 @@ class PolicyMaterialRuleCoverageTests(unittest.TestCase):
     def test_reviewed_inventory_is_current_without_semantic_acceptance(self):
         result = coverage.check()
         self.assertEqual(result["rules"], 62)
-        self.assertEqual(result["sources"], 146)
+        self.assertEqual(result["sources"], 150)
         self.assertEqual(result["witness_sources"], 30)
         self.assertEqual(result["rules_with_pending_witnesses"], 16)
         self.assertEqual(result["status"], "source_inventory_current")
         self.assertEqual(result["semantic_proof"], "not_established")
         self.assertEqual(result["test_execution"], "not_performed")
-        self.assertEqual(result["component_route"], {"rules": 20, "sources": 72, "witness_sources": 38,
+        self.assertEqual(result["component_route"], {"rules": 21, "sources": 90, "witness_sources": 58,
             "status": "source_inventory_current", "semantic_proof": "not_established", "test_execution": "not_performed",
             "historical_feedback": "reference_only_not_reauthenticated_or_transferred"})
         self.assertEqual(len(coverage.decode(coverage.read(coverage.ROOT, self.original["syntax_ledger"]))["entries"]), 612)
@@ -246,8 +246,70 @@ let check x = Diagnostic.require x "code" "message"
         with self.assertRaisesRegex(coverage.CoverageError, "Missing component source anchor"):
             coverage.check_component(coverage.ROOT, ledger)
 
-    def before_selection_generation(self):
+    def before_staged_regimen(self):
         ledger = coverage.decode(coverage.read(coverage.ROOT, coverage.COMPONENT_LEDGER))
+        added_sources = {
+            *[f"core/lib/{directory}/{name}.{suffix}" for directory, name in (
+                ("compiler", "policy_staged_lowering"), ("candidate_runtime", "policy_primitives"),
+                ("checker", "policy_implementation_binding_check"),
+                ("domain", "policy_implementation"), ("domain", "policy_implementation_binding"),
+                ("domain", "policy_material_contract"),
+                ("realization_checker", "policy_trace_correspondence"),
+                ("realization_checker", "policy_requirement_monitor"),
+            ) for suffix in ("ml", "mli")],
+            "src/biocompiler/core_policy_implementation.py", "src/biocompiler/policy/patterns.py",
+        }
+        added_witnesses = {
+            *[f"core/test/test_policy_staged_{name}.ml" for name in
+              ("regimen_source", "primitives", "binding", "generation", "component_material")],
+            "core/test/policy_staged_support/literals.ml",
+            *[f"core/test/data/policy_staged_{name}_v01.json" for name in
+              ("regimen_source", "realization_request", "material", "material_seed")],
+            "tests/test_policy_patterns.py", "tests/test_policy_staged_regimen_source.py",
+            "tests/test_policy_staged_material.py", "tests/test_policy_staged_component_sdk.py",
+            "tools/generate_policy_staged_regimen_fixture.py", "tools/generate_policy_staged_material_fixture.py",
+            "tools/check_policy_staged_regimen_source.py", "tools/check_policy_staged_component_material.py",
+            "tools/check_policy_staged_material_installed.py", "tests/test_policy_staged_material_installed.py",
+        }
+        self.assertEqual(set(coverage.COMPONENT_STAGED_SOURCES), added_sources)
+        self.assertEqual(set(coverage.COMPONENT_STAGED_WITNESSES), added_witnesses)
+        self.assertEqual(ledger["rules"][-1]["id"], "component.staged_regimen")
+        self.assertIn("universal termination is not claimed", ledger["limitations"][-1])
+        ledger["sources"] = [row for row in ledger["sources"] if row["path"] not in added_sources]
+        ledger["witness_sources"] = [row for row in ledger["witness_sources"] if row["path"] not in added_witnesses]
+        ledger["rules"].pop(); ledger["limitations"].pop()
+        return ledger
+
+    def test_staged_regimen_preserves_all_twenty_previous_rules_and_provenance(self):
+        projected = self.before_staged_regimen()
+        encoded = json.dumps(coverage.component_metadata(projected), sort_keys=True,
+                             separators=(",", ":"), ensure_ascii=False).encode()
+        self.assertEqual(hashlib.sha256(encoded).hexdigest(),
+                         "b34be1d3d66ddc94818a0328afb4f16367e43228a1031b4cbb25a0b8ff5ab554")
+
+    def test_staged_route_preserves_original_sixty_two_rule_meanings(self):
+        # Frozen from dfc006e, before the staged-regimen branch. Source hashes
+        # can move; the original route's meanings, gaps and witness pointers do not.
+        metadata = {key: value for key, value in self.original.items()
+                    if key not in {"sources", "witness_sources"}}
+        encoded = json.dumps(metadata, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()
+        self.assertEqual(hashlib.sha256(encoded).hexdigest(),
+                         "ec14bf36c539f66149a8c9f2525a973e5542c38a040ca7e15bac9bc4b3fc607d")
+
+    def test_staged_rule_cannot_relabel_source_witnesses_as_native_or_universal(self):
+        ledger = coverage.decode(coverage.read(coverage.ROOT, coverage.COMPONENT_LEDGER))
+        row = ledger["rules"][-1]
+        self.assertIn("independently handwritten", row["scope"])
+        self.assertIn("every original hard requirement", row["scope"])
+        for key, value in (("evidence_scope", "native_validation_complete"),
+                           ("limits", "Universal termination and human efficacy established.")):
+            changed = deepcopy(ledger)
+            changed["rules"][-1][key] = value
+            with self.assertRaises(coverage.CoverageError):
+                coverage.check_component(coverage.ROOT, changed)
+
+    def before_selection_generation(self):
+        ledger = self.before_staged_regimen()
         added_sources = {*coverage.COMPONENT_GENERATION_SHARED_SOURCES,
             "core/lib/producer_service/policy_component_selection_producer.ml",
             "core/lib/producer_service/policy_component_selection_producer.mli"}

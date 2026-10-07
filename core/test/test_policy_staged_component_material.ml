@@ -30,6 +30,7 @@ let rejects label operation payload=
   |Protocol.Ok,_,_->failwith("Staged material mutant accepted: "^label)
   |_,None,(_::_)->incr expected_rejection
   |_->failwith("Malformed rejection for "^label)
+  |exception Diagnostic.Error _->incr expected_rejection
 let repin value=edit["identity";"content_fingerprint"](fun _->s(Canonical.fingerprint(get "body" value)))value
 let ()=
   let channel=open_in_bin Sys.argv.(1)in

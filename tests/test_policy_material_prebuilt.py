@@ -666,7 +666,7 @@ class PrebuiltMaterialTests(unittest.TestCase):
             self.assertEqual(consumers,[p/'evidence/consumer.json' for p in paths]);return gate('old-offline')
         with patch.object(campaign,'hosted_identity',return_value=IDENTITY),patch.object(campaign,'candidate_authority',return_value=({}, {}, {'producer_run_attempt':'1'})),\
              patch.object(campaign,'platform_authority',side_effect=native),patch.object(campaign,'component_authorities',return_value=authorities),\
-             patch.object(campaign,'verify_slot',side_effect=lambda directory,*a:(slots[paths.index(directory)],{})) as verify,\
+             patch.object(campaign,'verify_slot',side_effect=lambda directory,*a,**kw:(slots[paths.index(directory)],{})) as verify,\
              patch.object(campaign,'source_pins',return_value={}),patch.object(material,'compare',side_effect=lambda *a:gate('old-material')),\
              patch.object(campaign.consumer,'compare',side_effect=offline),patch.object(component,'compare_installed',side_effect=lambda *a:gate('component',*a)):
             value=campaign.compare(args)
@@ -678,6 +678,104 @@ class PrebuiltMaterialTests(unittest.TestCase):
                 with self.assertRaisesRegex(AssertionError,'mandatory '+name+' failure'):campaign.compare(args)
                 self.assertFalse(args.output_dir.exists())
                 self.assertEqual(events[-1],name)
+            staged=importlib.import_module('check_policy_staged_material_installed')
+            args.staged_fixture=campaign.ROOT/staged.staged.FIXTURE
+            def staged_gate(paths_value, fixture_value, identity_value, binaries, **keywords):
+                self.assertEqual(paths_value,[path/'evidence/staged-material.json' for path in paths])
+                self.assertEqual(fixture_value,args.staged_fixture);self.assertEqual(identity_value,IDENTITY)
+                self.assertEqual(keywords,{'expected_sources':{}})
+                self.assertEqual(binaries,{campaign.build.TARGETS[target][:2]:{'biocompiler-'+role:campaign.build.sha((target+'biocompiler-'+role).encode())
+                    for role in ('core','verify')} for target in campaign.build.TARGETS})
+                return gate('staged')
+            with patch.object(staged,'compare_installed',side_effect=staged_gate):
+                failing[0]=None;events.clear();verify.reset_mock();args.output_dir=self.root/'staged-out'
+                value=campaign.compare(args)
+                self.assertEqual(events,['old-material','old-offline','component','component-offline','staged'])
+                self.assertEqual(value['schema_version'],campaign.STAGED_SCHEMA);self.assertEqual(value['claim'],campaign.STAGED_CLAIM)
+                self.assertEqual(value['staged_originals'],staged.input_pins());self.assertEqual(verify.call_count,4)
+                self.assertTrue(all(call.kwargs=={'staged_path':args.staged_fixture} for call in verify.call_args_list))
+                failing[0]='staged';args.output_dir=self.root/'staged-failed'
+                with self.assertRaisesRegex(AssertionError,'mandatory staged failure'):campaign.compare(args)
+                self.assertFalse(args.output_dir.exists())
+
+    def test_staged_original_is_explicit_and_never_weakens_old_modes(self):
+        from argparse import Namespace
+        import check_policy_staged_material_installed as staged
+        self.assertIsNone(campaign.staged_fixture(Namespace(), []))
+        args=Namespace(staged_fixture=campaign.ROOT/staged.staged.FIXTURE)
+        with self.assertRaisesRegex(ValueError,'preserved component'):
+            campaign.staged_fixture(args,[])
+        self.assertEqual(campaign.staged_fixture(args,[('fixture','provenance')]),args.staged_fixture)
+        args.staged_fixture=self.root/'foreign.json'
+        with self.assertRaisesRegex(AssertionError,'exact staged'):
+            campaign.staged_fixture(args,[('fixture','provenance')])
+        self.assertEqual(campaign.SCHEMA,'biocompiler.policy_material_prebuilt_campaign.v0.1')
+        self.assertEqual(campaign.COMPONENT_SCHEMA,'biocompiler.policy_material_prebuilt_campaign.v0.2')
+        self.assertEqual(campaign.COMPONENT_CASES,('component-profile-core','component-profile-verify'))
+        self.assertEqual(campaign.STAGED_EVIDENCE,('staged-material',))
+
+    def test_staged_command_ledger_binds_owned_bytes_fixture_and_no_fallback(self):
+        rows,origin,own,fixture,receipt=self.command_fixture()
+        checkout=Path(receipt['checkout_root']);python=str(origin/'env/bin/python')
+        for role in ('core','verify'):own['files']['bin/biocompiler-'+role]['sha256']=('c' if role=='core' else 'd')*64
+        authority={'fixture':Path('/original/components.json'),'provenance':Path('/original/provenance.json')}
+        plans=[]
+        for name in ('component-material','component-resolver','component-role','component-profile-core','component-profile-core-restored',
+                     'component-profile-verify','component-profile-verify-restored','component-consumer','staged-material'):
+            if name in ('component-material','component-consumer'):
+                argv=campaign.component_argv(name,python,checkout,origin,own,authority['fixture'],authority['provenance'])
+            elif name=='staged-material':
+                argv=[python,'-B',str(checkout/'tools/check_policy_staged_material_installed.py'),
+                    '--fixture',str(checkout/'core/test/data/policy_staged_material_v01.json'),
+                    '--core',own['files']['bin/biocompiler-core']['path'],'--core-sha256','c'*64,
+                    '--verify',own['files']['bin/biocompiler-verify']['path'],'--verify-sha256','d'*64,
+                    '--output',str(origin/'evidence/staged-material.json')]
+            else:
+                argv=[python,'-I','-B',str(checkout/'tools/check_policy_material_prebuilt.py'),'--probe',
+                    'ownership' if name.endswith('-restored') else name,'--output',str(origin/'evidence'/(name+'.json'))]
+                if not name.endswith('-restored'):argv+=['--inputs',str(origin/'cwd/component-original-inputs.json')]
+            logs={}
+            for suffix in ('stdout','stderr'):
+                path=self.root/'logs'/(name+'.'+suffix+'.log');path.write_bytes(b'inert additive log');logs[str(path.relative_to(self.root))]=campaign.pin(path)
+            plans.append({'name':name,'argv':argv,'cwd':str(origin/'cwd'),'executable':{'sha256':'e'*64,'size':123},'returncode':0,
+                'timeout':False,'overflow':False,'environment':'empty_path_scrubbed_loaders' if '--probe' in argv else 'scrubbed_loaders','logs':logs})
+        split=next(i for i,row in enumerate(rows) if row['name']=='uninstall');rows[split:split]=plans
+        options={'component_authority':authority,'staged_path':campaign.ROOT/'core/test/data/policy_staged_material_v01.json'}
+        campaign.check_commands(self.root,rows,origin,own,fixture,receipt,**options)
+        for flag,value in (('--core-sha256','0'*64),('--verify',own['files']['bin/biocompiler-core']['path']),
+                           ('--fixture','/foreign/original.json'),('--output',str(origin/'evidence/component-material.json'))):
+            changed=deepcopy(rows);argv=next(row for row in changed if row['name']=='staged-material')['argv'];argv[argv.index(flag)+1]=value
+            with self.subTest(flag=flag),self.assertRaisesRegex(ValueError,'Staged campaign'):
+                campaign.check_commands(self.root,changed,origin,own,fixture,receipt,**options)
+        for mutate in (lambda rs:rs.pop(split+len(plans)-1),lambda rs:rs.insert(split,deepcopy(rs[split+len(plans)-1]))):
+            changed=deepcopy(rows);mutate(changed)
+            with self.assertRaisesRegex(ValueError,'ledger'):
+                campaign.check_commands(self.root,changed,origin,own,fixture,receipt,**options)
+        with self.assertRaisesRegex(ValueError,'ledger'):
+            campaign.check_commands(self.root,rows,origin,own,fixture,receipt,component_authority=authority)
+
+    def test_staged_receipt_identity_rejects_foreign_runtime_package_or_scope(self):
+        import check_policy_staged_material_installed as staged
+        slot=('Linux','x86_64','3.11');hashes={'biocompiler-core':'c'*64,'biocompiler-verify':'d'*64};sources={'original':'source'}
+        own={'sdk_root':'/hosted/env/site-packages/biocompiler'}
+        receipt={'schema_version':staged.SCHEMA,'status':'pass',**IDENTITY,'system':slot[0],'machine':slot[1],'python_version':'3.11.15',
+            'package':own['sdk_root'],'binary_sha256':hashes,'inputs':staged.input_pins(),'source_snapshot_sha256':campaign.core.canonical_digest(sources),
+            'scope':staged.SCOPE,'empirical':'unassessed','python_semantic_authority':'forbidden'}
+        campaign.staged_identity(receipt,IDENTITY,hashes,slot,own,sources)
+        for key,value in (('run_id','stale'),('run_attempt','2'),('package','/foreign/package'),('scope','universal'),('empirical','pass'),
+                          ('status','failed'),('source_snapshot_sha256','0'*64),('python_version','3.14.6')):
+            changed={**receipt,key:value}
+            with self.subTest(key=key),self.assertRaisesRegex(ValueError,'authority or scope'):
+                campaign.staged_identity(changed,IDENTITY,hashes,slot,own,sources)
+
+    def test_staged_workflow_requires_campaign_and_comparison_on_exact_original(self):
+        source=(campaign.ROOT/'.github/workflows/ci.yml').read_text()
+        self.assertIn('tests.test_policy_staged_material_installed',source.split('\n  ',2)[-1])
+        installed=source.split('\n  policy-prebuilt-installed:',1)[1].split('\n  policy-prebuilt-reproducibility:',1)[0]
+        comparison=source.split('\n  policy-prebuilt-reproducibility:',1)[1]
+        self.assertEqual(installed.count('--staged-fixture "$GITHUB_WORKSPACE/core/test/data/policy_staged_material_v01.json"'),1)
+        self.assertEqual(comparison.count('--staged-fixture core/test/data/policy_staged_material_v01.json'),1)
+        self.assertIn('--component-provenance',installed);self.assertIn('--component-provenance',comparison)
 
 
     def component_control_fixture(self, *, installed=False):

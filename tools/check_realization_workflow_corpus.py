@@ -47,11 +47,11 @@ REVIEWED_ADDITIONS = {
     "src/biocompiler/workflow_cli.py": "641cf7f6451e52c5dd4a09a28c75c89329191aa373aed36cc9dc92c573207bd5",
     # Independently reviewed policy transports remain outside original authority.
     'src/biocompiler/policy/component_material.py': '24da1db993f5f56ff516ad3b2d14667731f681ebe9f1c9ae6898d0728bd5eaba',
-    'src/biocompiler/core_policy_component_material.py': '9afc9ad3a0ad1d7a4b85d8630667f742496f9e1fdb9248e792e8abd5863c2f8c',
+    'src/biocompiler/core_policy_component_material.py': 'e5645b27e70f39a4979fee53638007044c44d37bec4f1a8af7e866f95a38f9e0',
     'src/biocompiler/policy/material.py': '5893a53e408ff4b408049b9bdb370ebb20a77688d8b5b4b825f308d2a40fdd79',
-    'src/biocompiler/core_policy_material.py': 'df30c5b165ab92ffb88a3713c277791da6d95c8da3589a59c6fc3904c955ecb3',
+    'src/biocompiler/core_policy_material.py': 'bc8d44be6b6aa7a6d56d4352c85d6a2f8c9201ab626e6ebe1bcc265487b46704',
     'src/biocompiler/policy/implementation.py': '4e1de0535cf852885169328aaae035caff9178b367b84f204c1e68eaae478515',
-    'src/biocompiler/core_policy_implementation.py': 'b0a1c56ed960e146153dcb1f89ac28cc0f809a79716a7f7c1e096496b4bcf556',
+    'src/biocompiler/core_policy_implementation.py': 'ca0815363676dd8fd112b91b8d1adf303bedabb0f543ef2305d5f59c433906cd',
     # Explicit operational-policy transport and CLI stay excluded from the
     # original workflow cohort; these pins do not broaden historical authority.
     'src/biocompiler/core_policy_operational.py': '089805c81bf6f84e5cf5e264b6ed89babedc3d692e2a7605429aa388e6d5ed02',
@@ -75,7 +75,7 @@ REVIEWED_ADDITIONS = {
     'src/biocompiler/policy/logic.py': 'cc0a0fe952f9c8aa16fb5714d0cd1972296154cf1e5e5deed4e7ea9ece3ddf4f',
     'src/biocompiler/policy/model.py': '7197696399733e610b7a5c458aebf0ddc4b0df997f190cb53fa1659c419b6038',
     'src/biocompiler/policy/observations.py': '24400413e0b42fad132d02d0841cfdc3f9307c452e64ec1b2283be7f389f5a26',
-    'src/biocompiler/policy/patterns.py': 'a906a7acc9ca55aa0feee855d56a39c9b1d6b80bba8a502ba13beeff35de21be',
+    'src/biocompiler/policy/patterns.py': '9640080fa505e361b09a2dd9a644938365549b37c8be3a8ce547bc1391044b48',
     'src/biocompiler/policy/programs.py': 'ef2823520e47f29f666c8c6bec8f30d43a21195ab5379ae82e0a062563f686fd',
     'src/biocompiler/policy/requirements.py': '80579a127424a9d179d67406e2eecd6bc875ed2b6edcc7fc19f823cf4e7beb3b',
     'src/biocompiler/policy/serialization.py': 'd0e2feb4e8dd3fe65a10793d20c06144ad6fec396d99e6107f3485682ee570bf',

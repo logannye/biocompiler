@@ -150,7 +150,10 @@ def test_plan(text):
 
 def expected_members(root):
     plan = test_plan((root / "core/test/dune").read_text())
-    return {"core/_build/default/bin/core/main.exe", "core/_build/default/bin/verify/main.exe"} | {
+    # The independent declaration emitter is needed by restored hosted jobs.
+    # It has no producer/checker dependency and is not a native test suite.
+    return {"core/_build/default/bin/core/main.exe", "core/_build/default/bin/verify/main.exe",
+            "core/_build/default/test/component_fixture_export/main.exe"} | {
         "core/_build/default/test/" + row["name"] + ".exe" for row in plan} | set(dependency_members(root))
 
 

@@ -7751,7 +7751,7 @@
           "path": "src/biocompiler/core_policy_component_material.py",
           "symbol": "_leaves"
         },
-        "syntax_sha256": "f6ec1ab3a03a630b3be52ab4ae5cc8f59e13576cc90a86bc793d491a10e2f396"
+        "syntax_sha256": "115cf92c377dfafeb364558b74a9cdb1247640a4efc69ed30b0d2db2201e7a62"
       },
       {
         "id": "biocompiler.core_policy_component_material._original",
@@ -8609,7 +8609,7 @@
           "path": "src/biocompiler/core_policy_implementation.py",
           "symbol": "_authority"
         },
-        "syntax_sha256": "88ae0d3fe332b2c71eb42b289ccc504da940f6e47ef767a2fe6b22caf7486cb4"
+        "syntax_sha256": "8741a66c9c1fdf079b0a0c824951a5412161ddc524e1a82b3935add76a843b77"
       },
       {
         "id": "biocompiler.core_policy_implementation._claim",
@@ -9126,7 +9126,7 @@
           "path": "src/biocompiler/core_policy_material.py",
           "symbol": "_obligations"
         },
-        "syntax_sha256": "e5f627d68d69c2238de55d82ddf8bf1a6803149de608b8c91d1b17f9ddb54f7f"
+        "syntax_sha256": "c880668e358c8abd00bf7947bc70d785d80d53434c1d29d8ce4eff97c5149f14"
       },
       {
         "id": "biocompiler.core_policy_material._original",
@@ -14588,12 +14588,12 @@
         "id": "biocompiler.policy.patterns.ordered_effects",
         "kind": "function",
         "scope": "public_api",
-        "signature": "builder: ProgramBuilder, name: str, *, executor: m.Ref, scope: m.Scope, on: m.Expr, permitted: m.Expr, first: m.Effect, second: m.Effect, arbitration: m.Arbitration -> m.Machine",
+        "signature": "builder: ProgramBuilder, name: str, *, executor: m.Ref, scope: m.Scope, on: m.Expr, permitted: m.Expr, first: m.Effect, second: m.Effect, arbitration: m.Arbitration, lifetime: Literal['encounter', 'executor', 'persistent'] | None=None, handoff_when: m.Expr | None=None -> m.Machine",
         "source": {
           "path": "src/biocompiler/policy/patterns.py",
           "symbol": "ordered_effects"
         },
-        "syntax_sha256": "97b9f50d68a48abc47140e3f1aa656f655bdd2156df683cb5bd150140990ca0e"
+        "syntax_sha256": "c0c29e146526bff1ba5e182062a47bf7088288cd22e707b6a4912c7f608b93f9"
       },
       {
         "id": "biocompiler.policy.patterns.persistence_gate",
@@ -15955,10 +15955,10 @@
       "src/biocompiler/__main__.py": "d5b809722d6dfee6e4cb84d0b4a513239d99ae898defe55c1753ac85c21a9eb4",
       "src/biocompiler/core_client.py": "c8d65a42c1f92cbd75cb5edd176a9463657e03509be8ed487496d78b17be00fc",
       "src/biocompiler/core_policy.py": "9af5592f01bfb721965376ec0051b0eeaba9bfcb38ba6db3a3c56351b708044e",
-      "src/biocompiler/core_policy_component_material.py": "9afc9ad3a0ad1d7a4b85d8630667f742496f9e1fdb9248e792e8abd5863c2f8c",
+      "src/biocompiler/core_policy_component_material.py": "e5645b27e70f39a4979fee53638007044c44d37bec4f1a8af7e866f95a38f9e0",
       "src/biocompiler/core_policy_component_selection.py": "3044333719406f253edd8aa2add161fc0d1f6691a5be067bbb4373cee2c583e2",
-      "src/biocompiler/core_policy_implementation.py": "b0a1c56ed960e146153dcb1f89ac28cc0f809a79716a7f7c1e096496b4bcf556",
-      "src/biocompiler/core_policy_material.py": "df30c5b165ab92ffb88a3713c277791da6d95c8da3589a59c6fc3904c955ecb3",
+      "src/biocompiler/core_policy_implementation.py": "ca0815363676dd8fd112b91b8d1adf303bedabb0f543ef2305d5f59c433906cd",
+      "src/biocompiler/core_policy_material.py": "bc8d44be6b6aa7a6d56d4352c85d6a2f8c9201ab626e6ebe1bcc265487b46704",
       "src/biocompiler/core_policy_operational.py": "089805c81bf6f84e5cf5e264b6ed89babedc3d692e2a7605429aa388e6d5ed02",
       "src/biocompiler/entrypoint.py": "7158963ef6435bcd8d8dbbb4952b185c6a64414fe01f8651b6e3dccff5492ed8",
       "src/biocompiler/policy/__init__.py": "d9dd6be96e54f316bd087c0953d4cfce8214d170112e674b4c58edf81d28697b",
@@ -15982,7 +15982,7 @@
       "src/biocompiler/policy/native.py": "956e33656d6b5ee332fae215a56d667d7b88019d7853426440aa5502777dc9f0",
       "src/biocompiler/policy/observations.py": "24400413e0b42fad132d02d0841cfdc3f9307c452e64ec1b2283be7f389f5a26",
       "src/biocompiler/policy/operational.py": "b3db654830b8477c29de9fc13a9fd05cf6337a512cfcd86dde9391146cf4efee",
-      "src/biocompiler/policy/patterns.py": "a906a7acc9ca55aa0feee855d56a39c9b1d6b80bba8a502ba13beeff35de21be",
+      "src/biocompiler/policy/patterns.py": "9640080fa505e361b09a2dd9a644938365549b37c8be3a8ce547bc1391044b48",
       "src/biocompiler/policy/programs.py": "ef2823520e47f29f666c8c6bec8f30d43a21195ab5379ae82e0a062563f686fd",
       "src/biocompiler/policy/requirements.py": "80579a127424a9d179d67406e2eecd6bc875ed2b6edcc7fc19f823cf4e7beb3b",
       "src/biocompiler/policy/serialization.py": "d0e2feb4e8dd3fe65a10793d20c06144ad6fec396d99e6107f3485682ee570bf",
@@ -16649,6 +16649,10 @@
       {
         "path": "src/biocompiler/policy/operational.py",
         "syntax_sha256": "b52436024228c41d3698f4ba71a6bc6f62b079f1f2582488cb30fd4d9487a93b"
+      },
+      {
+        "path": "src/biocompiler/policy/patterns.py",
+        "syntax_sha256": "18e8c4d73a384193378753e969218922f9c83d8f21237d320f6e54ed83313423"
       },
       {
         "path": "src/biocompiler/policy/patterns.py",
@@ -17636,7 +17640,7 @@
     },
     "pattern.bounded_response": {
       "distinction": "Independent literal bounded_response expansion, ordered fields/refs/source origins; no execution claim.",
-      "file_sha256": "c78a4418dbb9c6b0fd520c2276d3a119f7ea8bb0e626b6f6328020bd5b36581c",
+      "file_sha256": "558339f2bc79643c13eab3b41d581a713ec3eaa90935d6e44df5eca31ee89cb9",
       "path": "tests/test_policy_patterns.py",
       "role": "positive",
       "symbol": "PolicyPatternTests.test_bounded_response_literal_counter_guard_and_write",
@@ -17644,7 +17648,7 @@
     },
     "pattern.context_gate": {
       "distinction": "Independent literal context_gate expansion, ordered fields/refs/source origins; no execution claim.",
-      "file_sha256": "c78a4418dbb9c6b0fd520c2276d3a119f7ea8bb0e626b6f6328020bd5b36581c",
+      "file_sha256": "558339f2bc79643c13eab3b41d581a713ec3eaa90935d6e44df5eca31ee89cb9",
       "path": "tests/test_policy_patterns.py",
       "role": "positive",
       "symbol": "PolicyPatternTests.test_context_gate_literal_expansion",
@@ -17652,7 +17656,7 @@
     },
     "pattern.once_per_scope": {
       "distinction": "Independent literal once_per_scope expansion, ordered fields/refs/source origins; no execution claim.",
-      "file_sha256": "c78a4418dbb9c6b0fd520c2276d3a119f7ea8bb0e626b6f6328020bd5b36581c",
+      "file_sha256": "558339f2bc79643c13eab3b41d581a713ec3eaa90935d6e44df5eca31ee89cb9",
       "path": "tests/test_policy_patterns.py",
       "role": "positive",
       "symbol": "PolicyPatternTests.test_once_per_scope_literal_expansion",
@@ -17660,15 +17664,15 @@
     },
     "pattern.ordered_effects": {
       "distinction": "Independent literal ordered_effects expansion, ordered fields/refs/source origins; no execution claim.",
-      "file_sha256": "c78a4418dbb9c6b0fd520c2276d3a119f7ea8bb0e626b6f6328020bd5b36581c",
+      "file_sha256": "558339f2bc79643c13eab3b41d581a713ec3eaa90935d6e44df5eca31ee89cb9",
       "path": "tests/test_policy_patterns.py",
       "role": "positive",
-      "symbol": "PolicyPatternTests.test_ordered_effects_literal_machine_and_all_five_transitions",
-      "syntax_sha256": "713f7bac577eb7ab6898b89986e10c4ac398c5a7f2252a684379091b2f4319f1"
+      "symbol": "PolicyPatternTests.test_ordered_effects_literal_machine_and_all_seven_transitions",
+      "syntax_sha256": "81d6181cebbce39486a9716b092ad5603944e2ec8fec3a6783c20c174aeae850"
     },
     "pattern.persistence_gate": {
       "distinction": "Independent literal persistence_gate expansion, ordered fields/refs/source origins; no execution claim.",
-      "file_sha256": "c78a4418dbb9c6b0fd520c2276d3a119f7ea8bb0e626b6f6328020bd5b36581c",
+      "file_sha256": "558339f2bc79643c13eab3b41d581a713ec3eaa90935d6e44df5eca31ee89cb9",
       "path": "tests/test_policy_patterns.py",
       "role": "positive",
       "symbol": "PolicyPatternTests.test_persistence_gate_literal_clock_duration_and_coverage",
@@ -17676,7 +17680,7 @@
     },
     "pattern.population_handoff": {
       "distinction": "Independent literal population_handoff expansion, ordered fields/refs/source origins; no execution claim.",
-      "file_sha256": "c78a4418dbb9c6b0fd520c2276d3a119f7ea8bb0e626b6f6328020bd5b36581c",
+      "file_sha256": "558339f2bc79643c13eab3b41d581a713ec3eaa90935d6e44df5eca31ee89cb9",
       "path": "tests/test_policy_patterns.py",
       "role": "positive",
       "symbol": "PolicyPatternTests.test_population_handoff_literal_sender_receiver_and_message",
@@ -17684,7 +17688,7 @@
     },
     "pattern.shared.test_every_pattern_keeps_two_instance_reference_graphs_disjoint": {
       "distinction": "Distinguishing pattern instance/default/rejection controls; no native semantics inferred.",
-      "file_sha256": "c78a4418dbb9c6b0fd520c2276d3a119f7ea8bb0e626b6f6328020bd5b36581c",
+      "file_sha256": "558339f2bc79643c13eab3b41d581a713ec3eaa90935d6e44df5eca31ee89cb9",
       "path": "tests/test_policy_patterns.py",
       "role": "mixed",
       "symbol": "PolicyPatternTests.test_every_pattern_keeps_two_instance_reference_graphs_disjoint",
@@ -17692,7 +17696,7 @@
     },
     "pattern.shared.test_every_pattern_preserves_an_alternate_supplied_name": {
       "distinction": "Distinguishing pattern instance/default/rejection controls; no native semantics inferred.",
-      "file_sha256": "c78a4418dbb9c6b0fd520c2276d3a119f7ea8bb0e626b6f6328020bd5b36581c",
+      "file_sha256": "558339f2bc79643c13eab3b41d581a713ec3eaa90935d6e44df5eca31ee89cb9",
       "path": "tests/test_policy_patterns.py",
       "role": "mixed",
       "symbol": "PolicyPatternTests.test_every_pattern_preserves_an_alternate_supplied_name",
@@ -17700,7 +17704,7 @@
     },
     "pattern.shared.test_every_pattern_retains_supplied_nondefault_arbitration": {
       "distinction": "Distinguishing pattern instance/default/rejection controls; no native semantics inferred.",
-      "file_sha256": "c78a4418dbb9c6b0fd520c2276d3a119f7ea8bb0e626b6f6328020bd5b36581c",
+      "file_sha256": "558339f2bc79643c13eab3b41d581a713ec3eaa90935d6e44df5eca31ee89cb9",
       "path": "tests/test_policy_patterns.py",
       "role": "mixed",
       "symbol": "PolicyPatternTests.test_every_pattern_retains_supplied_nondefault_arbitration",
@@ -17708,7 +17712,7 @@
     },
     "pattern.shared.test_invalid_bound_and_lifetime_are_rejected_before_any_expansion": {
       "distinction": "Distinguishing pattern instance/default/rejection controls; no native semantics inferred.",
-      "file_sha256": "c78a4418dbb9c6b0fd520c2276d3a119f7ea8bb0e626b6f6328020bd5b36581c",
+      "file_sha256": "558339f2bc79643c13eab3b41d581a713ec3eaa90935d6e44df5eca31ee89cb9",
       "path": "tests/test_policy_patterns.py",
       "role": "mixed",
       "symbol": "PolicyPatternTests.test_invalid_bound_and_lifetime_are_rejected_before_any_expansion",
@@ -17716,7 +17720,7 @@
     },
     "pattern.shared.test_repeated_instance_name_rejects_without_rebinding_existing_declarations": {
       "distinction": "Distinguishing pattern instance/default/rejection controls; no native semantics inferred.",
-      "file_sha256": "c78a4418dbb9c6b0fd520c2276d3a119f7ea8bb0e626b6f6328020bd5b36581c",
+      "file_sha256": "558339f2bc79643c13eab3b41d581a713ec3eaa90935d6e44df5eca31ee89cb9",
       "path": "tests/test_policy_patterns.py",
       "role": "mixed",
       "symbol": "PolicyPatternTests.test_repeated_instance_name_rejects_without_rebinding_existing_declarations",
@@ -18036,7 +18040,7 @@
     },
     "shared.exact_values.1": {
       "distinction": "Independent quantity wire literals, decimal text and scale comparisons, no bool/integer coercion or arbitrary objects. Explicit from_float is an opt-in conversion path.",
-      "file_sha256": "eebb83622ff3ca560e701da940d0787262f3c3e69285aa504a1478f62712ad52",
+      "file_sha256": "e59d377a3f30aada32fb3a29ebd145f3f618b0a4218660f860d16e6d915c9b1a",
       "path": "tests/test_policy_authoring.py",
       "role": "mixed",
       "symbol": "PolicyAuthoringTests.test_exact_quantities_have_independent_expected_wire",
@@ -18044,7 +18048,7 @@
     },
     "shared.exact_values.2": {
       "distinction": "Independent quantity wire literals, decimal text and scale comparisons, no bool/integer coercion or arbitrary objects. Explicit from_float is an opt-in conversion path.",
-      "file_sha256": "eebb83622ff3ca560e701da940d0787262f3c3e69285aa504a1478f62712ad52",
+      "file_sha256": "e59d377a3f30aada32fb3a29ebd145f3f618b0a4218660f860d16e6d915c9b1a",
       "path": "tests/test_policy_authoring.py",
       "role": "mixed",
       "symbol": "PolicyAuthoringTests.test_semantic_quantity_kind_is_not_only_dimension",
@@ -18052,7 +18056,7 @@
     },
     "shared.exact_values.3": {
       "distinction": "Independent quantity wire literals, decimal text and scale comparisons, no bool/integer coercion or arbitrary objects. Explicit from_float is an opt-in conversion path.",
-      "file_sha256": "eebb83622ff3ca560e701da940d0787262f3c3e69285aa504a1478f62712ad52",
+      "file_sha256": "e59d377a3f30aada32fb3a29ebd145f3f618b0a4218660f860d16e6d915c9b1a",
       "path": "tests/test_policy_authoring.py",
       "role": "mixed",
       "symbol": "PolicyAuthoringTests.test_unit_scale_obeys_numeric_wire_bounds",
@@ -18060,7 +18064,7 @@
     },
     "shared.exact_values.4": {
       "distinction": "Independent quantity wire literals, decimal text and scale comparisons, no bool/integer coercion or arbitrary objects. Explicit from_float is an opt-in conversion path.",
-      "file_sha256": "eebb83622ff3ca560e701da940d0787262f3c3e69285aa504a1478f62712ad52",
+      "file_sha256": "e59d377a3f30aada32fb3a29ebd145f3f618b0a4218660f860d16e6d915c9b1a",
       "path": "tests/test_policy_authoring.py",
       "role": "mixed",
       "symbol": "PolicyAuthoringTests.test_literal_bounds_compare_exact_declared_scales",
@@ -18148,7 +18152,7 @@
     },
     "shared.immutable_snapshots.1": {
       "distinction": "Caller lists become immutable tuples; snapshots/submissions do not alias mutable caller collections. ProgramBuilder itself is intentionally mutable.",
-      "file_sha256": "eebb83622ff3ca560e701da940d0787262f3c3e69285aa504a1478f62712ad52",
+      "file_sha256": "e59d377a3f30aada32fb3a29ebd145f3f618b0a4218660f860d16e6d915c9b1a",
       "path": "tests/test_policy_authoring.py",
       "role": "mixed",
       "symbol": "PolicyAuthoringTests.test_draft_holes_require_explicit_resolution",
@@ -18156,7 +18160,7 @@
     },
     "shared.immutable_snapshots.2": {
       "distinction": "Caller lists become immutable tuples; snapshots/submissions do not alias mutable caller collections. ProgramBuilder itself is intentionally mutable.",
-      "file_sha256": "eebb83622ff3ca560e701da940d0787262f3c3e69285aa504a1478f62712ad52",
+      "file_sha256": "e59d377a3f30aada32fb3a29ebd145f3f618b0a4218660f860d16e6d915c9b1a",
       "path": "tests/test_policy_authoring.py",
       "role": "mixed",
       "symbol": "PolicyAuthoringTests.test_list_inputs_are_frozen_and_effects_are_not_interned",
@@ -18348,7 +18352,7 @@
     },
     "shared.ownership_source_maps.1": {
       "distinction": "Cross-program refs reject, namespace and pattern origins are retained, original source locations bind native identities even where behavioral digest ignores provenance.",
-      "file_sha256": "eebb83622ff3ca560e701da940d0787262f3c3e69285aa504a1478f62712ad52",
+      "file_sha256": "e59d377a3f30aada32fb3a29ebd145f3f618b0a4218660f860d16e6d915c9b1a",
       "path": "tests/test_policy_authoring.py",
       "role": "mixed",
       "symbol": "PolicyAuthoringTests.test_same_named_cross_program_references_are_rejected",
@@ -18356,7 +18360,7 @@
     },
     "shared.ownership_source_maps.2": {
       "distinction": "Cross-program refs reject, namespace and pattern origins are retained, original source locations bind native identities even where behavioral digest ignores provenance.",
-      "file_sha256": "eebb83622ff3ca560e701da940d0787262f3c3e69285aa504a1478f62712ad52",
+      "file_sha256": "e59d377a3f30aada32fb3a29ebd145f3f618b0a4218660f860d16e6d915c9b1a",
       "path": "tests/test_policy_authoring.py",
       "role": "mixed",
       "symbol": "PolicyAuthoringTests.test_namespace_ids_and_pattern_origins",
@@ -18364,7 +18368,7 @@
     },
     "shared.ownership_source_maps.3": {
       "distinction": "Cross-program refs reject, namespace and pattern origins are retained, original source locations bind native identities even where behavioral digest ignores provenance.",
-      "file_sha256": "eebb83622ff3ca560e701da940d0787262f3c3e69285aa504a1478f62712ad52",
+      "file_sha256": "e59d377a3f30aada32fb3a29ebd145f3f618b0a4218660f860d16e6d915c9b1a",
       "path": "tests/test_policy_authoring.py",
       "role": "mixed",
       "symbol": "PolicyAuthoringTests.test_source_map_does_not_change_behavior_document_digest",
@@ -18404,7 +18408,7 @@
     },
     "shared.symbolic_truth.1": {
       "distinction": "Expression truth coercion raises; &/|/~ and explicit combinators produce declarative Expr values. Shared protocol controls do not prove every builder expansion.",
-      "file_sha256": "eebb83622ff3ca560e701da940d0787262f3c3e69285aa504a1478f62712ad52",
+      "file_sha256": "e59d377a3f30aada32fb3a29ebd145f3f618b0a4218660f860d16e6d915c9b1a",
       "path": "tests/test_policy_authoring.py",
       "role": "mixed",
       "symbol": "PolicyAuthoringTests.test_gated_expression_expected_shape",
@@ -18412,7 +18416,7 @@
     },
     "shared.symbolic_truth.2": {
       "distinction": "Expression truth coercion raises; &/|/~ and explicit combinators produce declarative Expr values. Shared protocol controls do not prove every builder expansion.",
-      "file_sha256": "eebb83622ff3ca560e701da940d0787262f3c3e69285aa504a1478f62712ad52",
+      "file_sha256": "e59d377a3f30aada32fb3a29ebd145f3f618b0a4218660f860d16e6d915c9b1a",
       "path": "tests/test_policy_authoring.py",
       "role": "mixed",
       "symbol": "PolicyAuthoringTests.test_symbolic_truth_rejects_python_control_flow",
@@ -18420,7 +18424,7 @@
     },
     "shared.symbolic_truth.3": {
       "distinction": "Expression truth coercion raises; &/|/~ and explicit combinators produce declarative Expr values. Shared protocol controls do not prove every builder expansion.",
-      "file_sha256": "eebb83622ff3ca560e701da940d0787262f3c3e69285aa504a1478f62712ad52",
+      "file_sha256": "e59d377a3f30aada32fb3a29ebd145f3f618b0a4218660f860d16e6d915c9b1a",
       "path": "tests/test_policy_authoring.py",
       "role": "mixed",
       "symbol": "PolicyAuthoringTests.test_event_and_guard_types_remain_separate",

@@ -1163,6 +1163,7 @@
               "configuration": {
                 "authorization": "continuous",
                 "capacity": 4,
+                "on_loss": "continue",
                 "on_unknown": "defer",
                 "timeout_ticks": 2
               },
@@ -1175,9 +1176,9 @@
               },
               "schema_version": "biocompiler.policy_primitive_model.v0.1"
             },
-            "configuration_digest": "3a11091719ecb3bcf83e429d97e4672e995ef7eeddaffe6fbe047d57c49accc9",
+            "configuration_digest": "7086c0e39827151137d4d122dbb787e91448e029a33fd3ca96a71e438c03a657",
             "identity": {
-              "content_fingerprint": "7f3ff645ecec9283319d9ae2430b027b1d119b14151af328a739423b68e62451",
+              "content_fingerprint": "327df25227e4a745de24e991b64e671047e57cf859a93048130fac368fd1f4b6",
               "id": "staged.primitive.attempt",
               "kind": "model",
               "schema_version": "biocompiler.component_identity.v0.1",
@@ -1193,6 +1194,7 @@
               "configuration": {
                 "authorization": "continuous",
                 "capacity": 4,
+                "on_loss": "continue",
                 "on_unknown": "defer",
                 "timeout_ticks": 2
               },
@@ -1205,9 +1207,9 @@
               },
               "schema_version": "biocompiler.policy_primitive_model.v0.1"
             },
-            "configuration_digest": "3a11091719ecb3bcf83e429d97e4672e995ef7eeddaffe6fbe047d57c49accc9",
+            "configuration_digest": "7086c0e39827151137d4d122dbb787e91448e029a33fd3ca96a71e438c03a657",
             "identity": {
-              "content_fingerprint": "7f3ff645ecec9283319d9ae2430b027b1d119b14151af328a739423b68e62451",
+              "content_fingerprint": "327df25227e4a745de24e991b64e671047e57cf859a93048130fac368fd1f4b6",
               "id": "staged.primitive.attempt",
               "kind": "model",
               "schema_version": "biocompiler.component_identity.v0.1",
@@ -2317,7 +2319,7 @@
         },
         {
           "component": {
-            "content_fingerprint": "9d1ef6129688faa1642c8cf3e99c73741c05ea52be8f7d9d5e2a09e6d964ffac",
+            "content_fingerprint": "3f1304017565f009d37e716ba61b3d75ece64761920d0113adc85f3ea3d8ce4a",
             "id": "staged.driver.supplied_material",
             "kind": "model",
             "schema_version": "biocompiler.component_identity.v0.1",
@@ -2342,7 +2344,7 @@
         "version": "1"
       },
       "rule": {
-        "content_fingerprint": "9a124ce21ab57b8f26f93235ae7c1ebeabb96f046c0368466af9666056af831a",
+        "content_fingerprint": "fd87347ca093aafe5a7b0294bb96ece0aa22290c25245536dfe4012fa455a3ff",
         "id": "staged.supplied_assembly",
         "kind": "model",
         "schema_version": "biocompiler.component_identity.v0.1",
@@ -8699,6 +8701,7 @@
                       "configuration": {
                         "authorization": "continuous",
                         "capacity": 4,
+                        "on_loss": "continue",
                         "on_unknown": "defer",
                         "timeout_ticks": 2
                       },
@@ -8711,9 +8714,9 @@
                       },
                       "schema_version": "biocompiler.policy_primitive_model.v0.1"
                     },
-                    "configuration_digest": "3a11091719ecb3bcf83e429d97e4672e995ef7eeddaffe6fbe047d57c49accc9",
+                    "configuration_digest": "7086c0e39827151137d4d122dbb787e91448e029a33fd3ca96a71e438c03a657",
                     "identity": {
-                      "content_fingerprint": "7f3ff645ecec9283319d9ae2430b027b1d119b14151af328a739423b68e62451",
+                      "content_fingerprint": "327df25227e4a745de24e991b64e671047e57cf859a93048130fac368fd1f4b6",
                       "id": "staged.primitive.attempt",
                       "kind": "model",
                       "schema_version": "biocompiler.component_identity.v0.1",
@@ -8728,6 +8731,7 @@
                       "configuration": {
                         "authorization": "continuous",
                         "capacity": 4,
+                        "on_loss": "continue",
                         "on_unknown": "defer",
                         "timeout_ticks": 2
                       },
@@ -8740,9 +8744,9 @@
                       },
                       "schema_version": "biocompiler.policy_primitive_model.v0.1"
                     },
-                    "configuration_digest": "3a11091719ecb3bcf83e429d97e4672e995ef7eeddaffe6fbe047d57c49accc9",
+                    "configuration_digest": "7086c0e39827151137d4d122dbb787e91448e029a33fd3ca96a71e438c03a657",
                     "identity": {
-                      "content_fingerprint": "7f3ff645ecec9283319d9ae2430b027b1d119b14151af328a739423b68e62451",
+                      "content_fingerprint": "327df25227e4a745de24e991b64e671047e57cf859a93048130fac368fd1f4b6",
                       "id": "staged.primitive.attempt",
                       "kind": "model",
                       "schema_version": "biocompiler.component_identity.v0.1",
@@ -9505,7 +9509,7 @@
             }
           },
           "identity": {
-            "content_fingerprint": "9d1ef6129688faa1642c8cf3e99c73741c05ea52be8f7d9d5e2a09e6d964ffac",
+            "content_fingerprint": "3f1304017565f009d37e716ba61b3d75ece64761920d0113adc85f3ea3d8ce4a",
             "id": "staged.driver.supplied_material",
             "kind": "model",
             "schema_version": "biocompiler.component_identity.v0.1",
@@ -9533,7 +9537,7 @@
           },
           {
             "component": {
-              "content_fingerprint": "9d1ef6129688faa1642c8cf3e99c73741c05ea52be8f7d9d5e2a09e6d964ffac",
+              "content_fingerprint": "3f1304017565f009d37e716ba61b3d75ece64761920d0113adc85f3ea3d8ce4a",
               "id": "staged.driver.supplied_material",
               "kind": "model",
               "schema_version": "biocompiler.component_identity.v0.1",
@@ -11971,7 +11975,7 @@
         ]
       },
       "identity": {
-        "content_fingerprint": "9a124ce21ab57b8f26f93235ae7c1ebeabb96f046c0368466af9666056af831a",
+        "content_fingerprint": "fd87347ca093aafe5a7b0294bb96ece0aa22290c25245536dfe4012fa455a3ff",
         "id": "staged.supplied_assembly",
         "kind": "model",
         "schema_version": "biocompiler.component_identity.v0.1",
@@ -12048,7 +12052,7 @@
                 "id": "decision.condition.input_rows_per_tick.per_encounter_slot",
                 "pool_id": "staged.pool.decision.condition.input_rows_per_tick.per_encounter_slot",
                 "quantity": 1,
-                "record_layout_digest": "084bb6cc95e9d658a9692d6ce989f1f29a8341588a0f8fb7c9a11ae1331de26c",
+                "record_layout_digest": "86b3345d72de74aea4cf61b7bb36b63737ba086269a41313c706454e5d0548ca",
                 "scope": "per_encounter_slot",
                 "slots": [
                   "e1",
@@ -12066,7 +12070,7 @@
                 "id": "decision.evidence.evidence_records.per_encounter_slot",
                 "pool_id": "staged.pool.decision.evidence.evidence_records.per_encounter_slot",
                 "quantity": 2,
-                "record_layout_digest": "084bb6cc95e9d658a9692d6ce989f1f29a8341588a0f8fb7c9a11ae1331de26c",
+                "record_layout_digest": "86b3345d72de74aea4cf61b7bb36b63737ba086269a41313c706454e5d0548ca",
                 "scope": "per_encounter_slot",
                 "slots": [
                   "e1",
@@ -12084,7 +12088,7 @@
                 "id": "decision.evidence.timer_cells.per_encounter_slot",
                 "pool_id": "staged.pool.decision.evidence.timer_cells.per_encounter_slot",
                 "quantity": 1,
-                "record_layout_digest": "084bb6cc95e9d658a9692d6ce989f1f29a8341588a0f8fb7c9a11ae1331de26c",
+                "record_layout_digest": "86b3345d72de74aea4cf61b7bb36b63737ba086269a41313c706454e5d0548ca",
                 "scope": "per_encounter_slot",
                 "slots": [
                   "e1",
@@ -12102,7 +12106,7 @@
                 "id": "decision.machine.machine_state_bits.per_encounter_slot",
                 "pool_id": "staged.pool.decision.machine.machine_state_bits.per_encounter_slot",
                 "quantity": 3,
-                "record_layout_digest": "084bb6cc95e9d658a9692d6ce989f1f29a8341588a0f8fb7c9a11ae1331de26c",
+                "record_layout_digest": "86b3345d72de74aea4cf61b7bb36b63737ba086269a41313c706454e5d0548ca",
                 "scope": "per_encounter_slot",
                 "slots": [
                   "e1",
@@ -12120,7 +12124,7 @@
                 "id": "decision.machine.machine_correlation_records.per_encounter_slot",
                 "pool_id": "staged.pool.decision.machine.machine_correlation_records.per_encounter_slot",
                 "quantity": 1,
-                "record_layout_digest": "084bb6cc95e9d658a9692d6ce989f1f29a8341588a0f8fb7c9a11ae1331de26c",
+                "record_layout_digest": "86b3345d72de74aea4cf61b7bb36b63737ba086269a41313c706454e5d0548ca",
                 "scope": "per_encounter_slot",
                 "slots": [
                   "e1",
@@ -12138,7 +12142,7 @@
                 "id": "decision.edge.edge_history_cells.per_encounter_slot",
                 "pool_id": "staged.pool.decision.edge.edge_history_cells.per_encounter_slot",
                 "quantity": 1,
-                "record_layout_digest": "084bb6cc95e9d658a9692d6ce989f1f29a8341588a0f8fb7c9a11ae1331de26c",
+                "record_layout_digest": "86b3345d72de74aea4cf61b7bb36b63737ba086269a41313c706454e5d0548ca",
                 "scope": "per_encounter_slot",
                 "slots": [
                   "e1",
@@ -12156,7 +12160,7 @@
                 "id": "driver.first_feedback.input_rows_per_tick.per_executor",
                 "pool_id": "staged.pool.driver.first_feedback.input_rows_per_tick.per_executor",
                 "quantity": 4,
-                "record_layout_digest": "084bb6cc95e9d658a9692d6ce989f1f29a8341588a0f8fb7c9a11ae1331de26c",
+                "record_layout_digest": "86b3345d72de74aea4cf61b7bb36b63737ba086269a41313c706454e5d0548ca",
                 "scope": "per_executor",
                 "slots": [],
                 "unit": "input_rows_per_tick"
@@ -12171,7 +12175,7 @@
                 "id": "driver.second_feedback.input_rows_per_tick.per_executor",
                 "pool_id": "staged.pool.driver.second_feedback.input_rows_per_tick.per_executor",
                 "quantity": 4,
-                "record_layout_digest": "084bb6cc95e9d658a9692d6ce989f1f29a8341588a0f8fb7c9a11ae1331de26c",
+                "record_layout_digest": "86b3345d72de74aea4cf61b7bb36b63737ba086269a41313c706454e5d0548ca",
                 "scope": "per_executor",
                 "slots": [],
                 "unit": "input_rows_per_tick"
@@ -12186,7 +12190,7 @@
                 "id": "driver.first.active_attempt_records.per_encounter_slot",
                 "pool_id": "staged.pool.driver.first.active_attempt_records.per_encounter_slot",
                 "quantity": 4,
-                "record_layout_digest": "084bb6cc95e9d658a9692d6ce989f1f29a8341588a0f8fb7c9a11ae1331de26c",
+                "record_layout_digest": "86b3345d72de74aea4cf61b7bb36b63737ba086269a41313c706454e5d0548ca",
                 "scope": "per_encounter_slot",
                 "slots": [
                   "e1",
@@ -12204,7 +12208,7 @@
                 "id": "driver.first.retained_correlation_records.per_executor",
                 "pool_id": "staged.pool.driver.first.retained_correlation_records.per_executor",
                 "quantity": 4,
-                "record_layout_digest": "084bb6cc95e9d658a9692d6ce989f1f29a8341588a0f8fb7c9a11ae1331de26c",
+                "record_layout_digest": "86b3345d72de74aea4cf61b7bb36b63737ba086269a41313c706454e5d0548ca",
                 "scope": "per_executor",
                 "slots": [],
                 "unit": "retained_correlation_records"
@@ -12219,7 +12223,7 @@
                 "id": "driver.first.timer_cells.per_encounter_slot",
                 "pool_id": "staged.pool.driver.first.timer_cells.per_encounter_slot",
                 "quantity": 4,
-                "record_layout_digest": "084bb6cc95e9d658a9692d6ce989f1f29a8341588a0f8fb7c9a11ae1331de26c",
+                "record_layout_digest": "86b3345d72de74aea4cf61b7bb36b63737ba086269a41313c706454e5d0548ca",
                 "scope": "per_encounter_slot",
                 "slots": [
                   "e1",
@@ -12237,7 +12241,7 @@
                 "id": "driver.second.active_attempt_records.per_encounter_slot",
                 "pool_id": "staged.pool.driver.second.active_attempt_records.per_encounter_slot",
                 "quantity": 4,
-                "record_layout_digest": "084bb6cc95e9d658a9692d6ce989f1f29a8341588a0f8fb7c9a11ae1331de26c",
+                "record_layout_digest": "86b3345d72de74aea4cf61b7bb36b63737ba086269a41313c706454e5d0548ca",
                 "scope": "per_encounter_slot",
                 "slots": [
                   "e1",
@@ -12255,7 +12259,7 @@
                 "id": "driver.second.retained_correlation_records.per_executor",
                 "pool_id": "staged.pool.driver.second.retained_correlation_records.per_executor",
                 "quantity": 4,
-                "record_layout_digest": "084bb6cc95e9d658a9692d6ce989f1f29a8341588a0f8fb7c9a11ae1331de26c",
+                "record_layout_digest": "86b3345d72de74aea4cf61b7bb36b63737ba086269a41313c706454e5d0548ca",
                 "scope": "per_executor",
                 "slots": [],
                 "unit": "retained_correlation_records"
@@ -12270,7 +12274,7 @@
                 "id": "driver.second.timer_cells.per_encounter_slot",
                 "pool_id": "staged.pool.driver.second.timer_cells.per_encounter_slot",
                 "quantity": 4,
-                "record_layout_digest": "084bb6cc95e9d658a9692d6ce989f1f29a8341588a0f8fb7c9a11ae1331de26c",
+                "record_layout_digest": "86b3345d72de74aea4cf61b7bb36b63737ba086269a41313c706454e5d0548ca",
                 "scope": "per_encounter_slot",
                 "slots": [
                   "e1",
@@ -12288,7 +12292,7 @@
                 "id": "layout.generation_counters.per_encounter_slot",
                 "pool_id": "staged.pool.layout.generation_counters.per_encounter_slot",
                 "quantity": 1,
-                "record_layout_digest": "084bb6cc95e9d658a9692d6ce989f1f29a8341588a0f8fb7c9a11ae1331de26c",
+                "record_layout_digest": "86b3345d72de74aea4cf61b7bb36b63737ba086269a41313c706454e5d0548ca",
                 "scope": "per_encounter_slot",
                 "slots": [
                   "e1",
@@ -12306,7 +12310,7 @@
                 "id": "layout.timer_cells.per_executor",
                 "pool_id": "staged.pool.layout.timer_cells.per_executor",
                 "quantity": 1,
-                "record_layout_digest": "084bb6cc95e9d658a9692d6ce989f1f29a8341588a0f8fb7c9a11ae1331de26c",
+                "record_layout_digest": "86b3345d72de74aea4cf61b7bb36b63737ba086269a41313c706454e5d0548ca",
                 "scope": "per_executor",
                 "slots": [],
                 "unit": "timer_cells"
@@ -12321,7 +12325,7 @@
                 "id": "layout.control_event_records.per_executor",
                 "pool_id": "staged.pool.layout.control_event_records.per_executor",
                 "quantity": 64,
-                "record_layout_digest": "084bb6cc95e9d658a9692d6ce989f1f29a8341588a0f8fb7c9a11ae1331de26c",
+                "record_layout_digest": "86b3345d72de74aea4cf61b7bb36b63737ba086269a41313c706454e5d0548ca",
                 "scope": "per_executor",
                 "slots": [],
                 "unit": "control_event_records"
@@ -12386,7 +12390,7 @@
             }
           },
           "identity": {
-            "content_fingerprint": "2d776ecb4efbffad878190c6e18ae29c1e7e73bb4c09fcf89ea7d501cb1309a5",
+            "content_fingerprint": "e13f3340a0339f6e643fbf81056995a801c41d98d17a4462c38aebcfc9f3b7e8",
             "id": "context.chassis",
             "kind": "model",
             "schema_version": "biocompiler.component_identity.v0.1",
@@ -12776,14 +12780,14 @@
           ]
         },
         "rule": {
-          "content_fingerprint": "9a124ce21ab57b8f26f93235ae7c1ebeabb96f046c0368466af9666056af831a",
+          "content_fingerprint": "fd87347ca093aafe5a7b0294bb96ece0aa22290c25245536dfe4012fa455a3ff",
           "id": "staged.supplied_assembly",
           "kind": "model",
           "schema_version": "biocompiler.component_identity.v0.1",
           "version": "1"
         },
         "slots": 2,
-        "union_digest": "1fd779a5d1a71c4a50d15477fe0c0799e204449d010d35a13fddde16006b6686"
+        "union_digest": "6034b8787ffff467a7d2981235dfd115847a73923ac3a98497adaead21193162"
       },
       "schema_version": "biocompiler.policy_component_context.v0.1"
     },
@@ -12843,7 +12847,7 @@
               "version": "1"
             },
             {
-              "content_fingerprint": "7f3ff645ecec9283319d9ae2430b027b1d119b14151af328a739423b68e62451",
+              "content_fingerprint": "327df25227e4a745de24e991b64e671047e57cf859a93048130fac368fd1f4b6",
               "id": "staged.primitive.attempt",
               "kind": "model",
               "schema_version": "biocompiler.component_identity.v0.1",
@@ -14634,6 +14638,7 @@
               "configuration": {
                 "authorization": "continuous",
                 "capacity": 4,
+                "on_loss": "continue",
                 "on_unknown": "defer",
                 "timeout_ticks": 2
               },
@@ -14646,9 +14651,9 @@
               },
               "schema_version": "biocompiler.policy_primitive_model.v0.1"
             },
-            "configuration_digest": "3a11091719ecb3bcf83e429d97e4672e995ef7eeddaffe6fbe047d57c49accc9",
+            "configuration_digest": "7086c0e39827151137d4d122dbb787e91448e029a33fd3ca96a71e438c03a657",
             "identity": {
-              "content_fingerprint": "7f3ff645ecec9283319d9ae2430b027b1d119b14151af328a739423b68e62451",
+              "content_fingerprint": "327df25227e4a745de24e991b64e671047e57cf859a93048130fac368fd1f4b6",
               "id": "staged.primitive.attempt",
               "kind": "model",
               "schema_version": "biocompiler.component_identity.v0.1",

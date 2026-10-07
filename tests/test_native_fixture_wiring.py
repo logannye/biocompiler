@@ -1,5 +1,6 @@
 """Every Dune fixture argument must receive a real path in the hosted suite."""
 
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -15,6 +16,26 @@ from tools import ci_native_bundle as bundle
 DIRECTORY_FIXTURES = {
     "BIOCOMPILER_REFERENCE_CONTRACTS_DOCUMENTS": "tests/conformance/reference-contracts-v1",
     "BIOCOMPILER_REFERENCE_PIPELINE_DOCUMENTS": "tests/conformance/reference-pipeline-semantics-v1",
+}
+
+# Reviewed source-order/argv projection of core/test/dune at
+# 4e20816141d5d28ea5e921a069078b86be64de2d. Neither the current runner nor a
+# regenerated current census supplies this historical expected fingerprint.
+BASELINE_PLAN_SHA256 = "d1fd1cc1134c7bb5091282b0d7a8e9e67e106c7a8b9b6146080cb1a7d2ecd164"
+ADDED_DEPENDENCIES = {
+    "test_policy_staged_primitives": ["data/policy_implementation_v01.json"],
+    "test_policy_component_selection_candidate": ["data/policy_material_request_v01.json"],
+    "test_policy_component_selection_common": ["data/policy_material_request_v01.json", "data/policy_material_state_v01.json"],
+    "test_policy_component_selection_check": ["data/policy_material_request_v01.json"],
+    "test_policy_component_selection_scope": ["data/policy_material_request_v01.json"],
+    "test_policy_component_selection_service": ["data/policy_material_request_v01.json"],
+    "test_policy_component_selection_producer": ["data/policy_material_request_v01.json"],
+    "test_policy_generation_admission": ["data/policy_implementation_binding_v01.json"],
+    "test_policy_generation_producers": ["data/policy_material_request_v01.json", "data/policy_material_state_v01.json"],
+    "test_policy_staged_regimen_source": ["data/policy_staged_regimen_source_v01.json"],
+    "test_policy_staged_binding": ["data/policy_staged_realization_request_v01.json"],
+    "test_policy_staged_component_material": ["data/policy_staged_material_v01.json"],
+    "test_policy_staged_generation": ["data/policy_staged_realization_request_v01.json"],
 }
 
 
@@ -45,6 +66,20 @@ class NativeFixtureWiringTests(unittest.TestCase):
             declared.append(row)
         self.assertEqual(len(declared), len({row["name"] for row in declared}), "duplicate Dune suite")
         return declared
+
+    def assert_reviewed_census(self, declared):
+        self.assertEqual(len(declared), 171, "complete union native suite census changed")
+        self.assertEqual(sum("dependencies" in row for row in declared), 53)
+        added = [row for row in declared if row["name"] in ADDED_DEPENDENCIES]
+        self.assertEqual(added, [{"name": name, "environment": [], "dependencies": dependencies}
+                                for name, dependencies in ADDED_DEPENDENCIES.items()],
+                         "reviewed additive suite names, order or fixture argv changed")
+        baseline = [row for row in declared if row["name"] not in ADDED_DEPENDENCIES]
+        self.assertEqual(len(baseline), 158)
+        self.assertEqual(sum("dependencies" in row for row in baseline), 40)
+        encoded = json.dumps(baseline, sort_keys=True, separators=(",", ":")).encode()
+        self.assertEqual(hashlib.sha256(encoded).hexdigest(), BASELINE_PLAN_SHA256,
+                         "historical native suite names, source order or fixture argv changed")
 
     def assert_native_suite_wiring(self, root, dune, workflow):
         required = set(re.findall(r"%\{env:(BIOCOMPILER_[A-Z0-9_]+)=missing\}", dune))
@@ -77,18 +112,38 @@ class NativeFixtureWiringTests(unittest.TestCase):
         self.assertIn("python tools/ci_native_bundle.py bundle --path generated/native-bundle/native.zip", build)
         self.assertIn("name: native-bundle-${{ matrix.platform }}", build)
         declared = self.declared_suites(dune)
-        self.assertEqual(len(declared), 158, "complete union native suite census changed")
-        self.assertEqual(sum("dependencies" in row for row in declared), 40)
+        self.assert_reviewed_census(declared)
         self.assertEqual(bundle.test_plan(dune), declared, "runner changed a Dune suite or ordered fixture argv")
         for row in declared:
             for relative in row.get("dependencies", []):
                 self.assert_fixture_path(root, row["name"], "core/test/" + relative)
         self.assertEqual(bundle.expected_members(root), {
             "core/_build/default/bin/core/main.exe", "core/_build/default/bin/verify/main.exe",
+            "core/_build/default/test/component_fixture_export/main.exe",
             *("core/_build/default/test/" + row["name"] + ".exe" for row in declared),
             *("core/_build/default/test/" + relative for row in declared for relative in row.get("dependencies", []))},
             "compiled bundle omitted or added a native executable or source dependency fixture")
+        members = bundle.expected_members(root)
+        self.assertEqual(len(members), 200)
+        self.assertEqual(sum(path.endswith(".exe") for path in members), 174)
         return declared, dict(bindings)
+
+    def test_reviewed_baseline_projection_rejects_changes_despite_same_total(self):
+        root = Path(__file__).resolve().parents[1]
+        declared = self.declared_suites((root / "core/test/dune").read_text())
+        self.assert_reviewed_census(declared)
+        original = next(index for index, row in enumerate(declared)
+                        if row["name"] not in ADDED_DEPENDENCIES and "dependencies" in row)
+        added = next(index for index, row in enumerate(declared) if row["name"] in ADDED_DEPENDENCIES)
+        for index in (original, added):
+            changed = json.loads(json.dumps(declared))
+            changed[index]["dependencies"][0] = "data/policy_unreviewed.json"
+            with self.subTest(index=index), self.assertRaises(AssertionError):
+                self.assert_reviewed_census(changed)
+        changed = json.loads(json.dumps(declared))
+        changed[0], changed[1] = changed[1], changed[0]
+        with self.assertRaisesRegex(AssertionError, "historical"):
+            self.assert_reviewed_census(changed)
 
     def test_every_dune_fixture_is_bound_in_the_complete_native_suite(self):
         root = Path(__file__).resolve().parents[1]

@@ -115,6 +115,25 @@ class PolicyPublicApiCoverageTests(unittest.TestCase):
         with self.assertRaisesRegex(c.ApiCoverageError, 'original-input inventory differs'):
             c.validate(self.root, self.ledger)
 
+    def before_staged_regimen(self):
+        """Restore only the explicitly superseded five-transition witness."""
+        projected = copy.deepcopy(self.ledger)
+        witness = projected['witnesses']['pattern.ordered_effects']
+        self.assertEqual(witness['symbol'],
+            'PolicyPatternTests.test_ordered_effects_literal_machine_and_all_seven_transitions')
+        witness['symbol'] = 'PolicyPatternTests.test_ordered_effects_literal_machine_and_all_five_transitions'
+        return projected
+
+    def test_staged_expansion_supersedes_only_its_original_witness(self):
+        projected = self.before_staged_regimen()
+        metadata = {'witnesses': {key: {name: row[name] for name in ('path', 'symbol', 'role', 'distinction')}
+                                 for key, row in projected['witnesses'].items()},
+                    'coverage': projected['coverage']}
+        encoded = json.dumps(metadata, ensure_ascii=True, sort_keys=True,
+                             separators=(',', ':'), allow_nan=False).encode()
+        self.assertEqual(c.digest(encoded),
+                         '59239c96840218569d770e9322cfc0693f7f05a0d79564abde6d1912bc8aab2b')
+
     def component_projection(self):
         """Remove precisely the selection extension, preserving old meanings."""
         shared_helpers = {
@@ -123,7 +142,7 @@ class PolicyPublicApiCoverageTests(unittest.TestCase):
             'biocompiler.core_policy_component_material._report',
             'biocompiler.core_policy_material._artifact_members',
         }
-        projected = copy.deepcopy(self.ledger)
+        projected = self.before_staged_regimen()
         projected['coverage'] = {key: row for key, row in projected['coverage'].items()
             if not key.startswith(('biocompiler.core_policy_component_selection.',
                                    'biocompiler.policy.component_selection.')) and key not in shared_helpers}
@@ -148,7 +167,7 @@ class PolicyPublicApiCoverageTests(unittest.TestCase):
                             and 'no native semantic execution' in row['scope'] for row in shared))
 
     def test_selection_generation_preserves_prior_metadata_except_explicit_absent_compile_supersession(self):
-        projected = copy.deepcopy(self.ledger)
+        projected = self.before_staged_regimen()
         additions = {
             'biocompiler.core_policy_component_selection.COMPILE_OPERATION',
             'biocompiler.core_policy_component_selection.PRODUCER_PROFILE',

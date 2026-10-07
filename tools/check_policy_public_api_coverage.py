@@ -33,7 +33,7 @@ RUNTIME_SCOPE = "Entries count authored AST declarations, fields and methods. Ge
 # hashes cannot reassign evidence or upgrade a source-only row. It is not a
 # proof that the tests pass or that their claims establish runtime semantics.
 # Revise only with explicit independent review; no regeneration mode exists.
-REVIEWED_METADATA_SHA256 = "59239c96840218569d770e9322cfc0693f7f05a0d79564abde6d1912bc8aab2b"
+REVIEWED_METADATA_SHA256 = "6379cd7e0a0e92cd6a39d5bb57cd16497288694b662490c23d8a305a4f11f43c"
 PACKAGE = "src/biocompiler/policy"
 MODULES = tuple("__init__ behavior catalog chassis cli component_material component_selection coordination deployment effects entities examples handoff implementation inspection logic material model native observations operational patterns programs requirements serialization space state time validation values".split())
 CLIENTS = ("core_policy", "core_policy_operational", "core_policy_implementation", "core_policy_material", "core_policy_component_material", "core_policy_component_selection")
@@ -128,7 +128,7 @@ BUILDER_WITNESSES = {
 }
 PATTERN_WITNESSES = dict(zip(PATTERNS, (
     "test_bounded_response_literal_counter_guard_and_write", "test_context_gate_literal_expansion",
-    "test_once_per_scope_literal_expansion", "test_ordered_effects_literal_machine_and_all_five_transitions",
+    "test_once_per_scope_literal_expansion", "test_ordered_effects_literal_machine_and_all_seven_transitions",
     "test_persistence_gate_literal_clock_duration_and_coverage", "test_population_handoff_literal_sender_receiver_and_message",
 )))
 BUILDER_LINKS = {
