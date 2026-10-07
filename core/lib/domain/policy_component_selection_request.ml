@@ -7,6 +7,8 @@ module Names = Set.Make (String)
 let schema_version = "biocompiler.policy_component_selection_request.v0.1"
 let profile = "biocompiler.policy_component_material_selection.v0.1"
 let resource_profile = "biocompiler.policy_component_selection_resources.v0.1"
+let publication_resource_profile = "biocompiler.policy_component_selection_resources.v0.2"
+let resource_profiles = [resource_profile;publication_resource_profile]
 let max_alternatives = 16
 let max_input_bytes = 8 * 1024 * 1024
 let max_input_nodes = 250_000
@@ -15,6 +17,7 @@ let max_work = Z.of_string "17000000000"
 let max_rank = Z.of_string "2147483647"
 let max_report_bytes = Limits.max_response_bytes - 6 * Limits.max_string_bytes - 65536
 let max_report_nodes = Limits.max_json_nodes - 32
+let max_publication_nodes = 1_000_000
 let str value = Json.String value
 let get key raw = Json.field key (Json.object_fields raw)
 let exact keys raw = Json.exact_fields keys (Json.object_fields raw)
@@ -26,7 +29,7 @@ type budgets = { max_work:int; max_report_bytes:int; max_report_nodes:int }
 type t = {
   raw:Json.t; identity:string; decoding_work_value:int;
   alternatives_value:alternative list; ordered:alternative list;
-  predicate_value:predicate; budget_values:budgets;
+  predicate_value:predicate; budget_values:budgets; resource_profile_value:string;
 }
 
 let bounded_integer ~minimum ~maximum raw =
@@ -78,13 +81,17 @@ let of_json ?(charge=fun _ -> ()) raw =
     ~maximum:(Z.of_int M.max_residues) (get "max_total_nt" predicate_raw)} in
   let budget_raw = get "budgets" raw in
   exact ["profile"; "max_work"; "max_report_bytes"; "max_report_nodes"] budget_raw;
-  require (get "profile" budget_raw = str resource_profile)
+  let resource_raw=get "profile" budget_raw in
+  require (List.exists (fun name -> resource_raw=str name) resource_profiles)
     "Unsupported component selection resource profile.";
+  let resource_profile_value=Json.string resource_raw in
+  let node_ceiling=if resource_profile_value=resource_profile then max_report_nodes
+    else max_publication_nodes in
   let budget_values = {
     max_work=bounded_integer ~minimum:1 ~maximum:max_work (get "max_work" budget_raw);
     max_report_bytes=bounded_integer ~minimum:1 ~maximum:(Z.of_int max_report_bytes)
       (get "max_report_bytes" budget_raw);
-    max_report_nodes=bounded_integer ~minimum:1 ~maximum:(Z.of_int max_report_nodes)
+    max_report_nodes=bounded_integer ~minimum:1 ~maximum:(Z.of_int node_ceiling)
       (get "max_report_nodes" budget_raw)} in
   let ordered = List.sort (fun (left:alternative) (right:alternative) ->
     spend (1 + String.length left.id + String.length right.id);
@@ -95,7 +102,7 @@ let of_json ?(charge=fun _ -> ()) raw =
     "Selection preflight byte count differs from the complete original encoding.";
   spend raw_bytes;
   {raw; identity=Canonical.sha256 encoded; decoding_work_value= !work;
-   alternatives_value; ordered; predicate_value; budget_values}
+   alternatives_value; ordered; predicate_value; budget_values; resource_profile_value}
 
 let to_json value = value.raw
 let fingerprint value = value.identity
@@ -105,3 +112,5 @@ let evaluation_order value = value.ordered
 let anchor value = List.hd value.ordered
 let predicate value = value.predicate_value
 let budgets value = value.budget_values
+
+let resources value = value.resource_profile_value

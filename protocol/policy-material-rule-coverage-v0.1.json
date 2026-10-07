@@ -688,7 +688,7 @@
     },
     {
       "path": "core/lib/domain/policy_component_selection_request.ml",
-      "sha256": "8fe7ad47058136ac22f56f1101b95b519027400af2a2fa7241c6e82daf7fdcd1",
+      "sha256": "b9300c96ab66f7b657d39fa2301694e19808343b5f84fcee4505fbfc14d62271",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
@@ -698,7 +698,8 @@
         "profile_literals": {
           "biocompiler.policy_component_material_selection.v0.1": 1,
           "biocompiler.policy_component_selection_request.v0.1": 1,
-          "biocompiler.policy_component_selection_resources.v0.1": 1
+          "biocompiler.policy_component_selection_resources.v0.1": 1,
+          "biocompiler.policy_component_selection_resources.v0.2": 1
         }
       },
       "disposition": "outside_route",
@@ -706,7 +707,7 @@
     },
     {
       "path": "core/lib/domain/policy_component_selection_request.mli",
-      "sha256": "31e79558cd7427b305329ed64f5dd8fadb178c88161bc2d2130a855a23489cea",
+      "sha256": "24cb9c515d9ca2fd0c8e72d65ddc415974e6f8ea99b6cbfada3db2ed55389a79",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {},
@@ -1247,13 +1248,13 @@
     },
     {
       "path": "core/lib/realization_checker/policy_component_selection_check.ml",
-      "sha256": "a7384777b4a609428f320c03b12d1be232029f3e2f40ef0071206632331bac6a",
+      "sha256": "e3432d1348223a7212e08b732abd7e556c57cfbbfeb435cf306d1d5510489182",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
           "Diagnostic.fail": 2,
-          "Diagnostic.require": 1,
-          "require": 8
+          "Diagnostic.require": 2,
+          "require": 9
         },
         "profile_literals": {
           "biocompiler.ocaml.policy_component_selection_check.v0.1": 1,
@@ -1265,7 +1266,7 @@
     },
     {
       "path": "core/lib/realization_checker/policy_component_selection_check.mli",
-      "sha256": "e5b9344dd1d763c39251fbf0ea5ff6be58213de70c1d1f94d37c028c88510e67",
+      "sha256": "b4bbc4a3daaa9bf506957b5fb730312ba644fc1028e92bc6c98459ae798f06c7",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {},
@@ -1539,13 +1540,38 @@
       "reason": "Pinned pipeline/profile dependency; this ledger does not claim each internal branch is an independently witnessed contextual rule."
     },
     {
-      "path": "core/lib/service/policy_component_material_service.ml",
-      "sha256": "d59e871e0baedf70203281054350afa8957a3a41fe521c2b09834db74c0a9893",
+      "path": "core/lib/service/policy_component_material_format.ml",
+      "sha256": "5335cda324e195b62be991ac928388412504cfa2a53a153117aaaecb7d47d842",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
-          "Diagnostic.fail": 2,
-          "Diagnostic.require": 5
+          "Diagnostic.fail": 1,
+          "Diagnostic.require": 1
+        },
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "core/lib/service/policy_component_material_format.mli",
+      "sha256": "4dd118bad563612ddfc195faad4eeb83ded97f111c5a73189428d007e06d30da",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "core/lib/service/policy_component_material_service.ml",
+      "sha256": "c08b062a2c56c8fa29e674fdd81243496b5bfaec5b8faa98c7356976d4d892da",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 1,
+          "Diagnostic.require": 4
         },
         "profile_literals": {
           "biocompiler.core.policy_component_material.v1": 1,
@@ -1561,6 +1587,38 @@
     {
       "path": "core/lib/service/policy_component_material_service.mli",
       "sha256": "1fa5a6032b78f2a223abefd3fe2e12a1b9be772bdd1822f844a4f10bcc3151f0",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "core/lib/service/policy_component_selection_service.ml",
+      "sha256": "fcd8cee5a41750f3bba669550b44a4e53aa516c2e3aaf374215ea7ef4ad46df4",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 2,
+          "Diagnostic.require": 4,
+          "require": 4
+        },
+        "profile_literals": {
+          "biocompiler.core.policy_component_selection.v1": 1,
+          "biocompiler.ocaml.policy_component_selection.v0.1": 1,
+          "biocompiler.policy_component_selection_mrna_export.v0.1": 1,
+          "biocompiler.policy_component_selection_mrna_manifest.v0.1": 1,
+          "biocompiler.policy_component_selection_publication.v0.1": 1
+        }
+      },
+      "disposition": "outside_route",
+      "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "core/lib/service/policy_component_selection_service.mli",
+      "sha256": "966a5b36fd260c5e94718328b4d6034618a4378cfe0ad29d826371b9190e99e3",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {},
@@ -1691,12 +1749,12 @@
     },
     {
       "path": "core/lib/service/service.ml",
-      "sha256": "15871eadda0f4ace7c662edd68a9557bf6463922bdf0d97ef182493cbd8b29f7",
+      "sha256": "889f5d1ef2f2fd2e901a603e105638ef51addd2380210a72ac495f6e7c643577",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
           "Diagnostic.fail": 1,
-          "Diagnostic.require": 7
+          "Diagnostic.require": 9
         },
         "profile_literals": {
           "biocompiler.core.artifact_response.v1": 1,
@@ -1710,7 +1768,7 @@
     },
     {
       "path": "core/lib/service/service.mli",
-      "sha256": "64aee24f637242c51b64203132f9e4471c09ac7253c7429d7f7d9b5ffe1bb279",
+      "sha256": "854e6c2ef8a060791bf72610fe8e9beb68bb2303de278c45cd5eb15c3310e603",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {},
@@ -1821,13 +1879,13 @@
     },
     {
       "path": "src/biocompiler/core_policy_component_material.py",
-      "sha256": "303e9ce373bbe03fa988717449bb1fb15676a5cb8faf844e9cec14a1db947882",
+      "sha256": "9afc9ad3a0ad1d7a4b85d8630667f742496f9e1fdb9248e792e8abd5863c2f8c",
       "census": {
         "kind": "python_ast_node_census",
         "guards": {
           "ClassDef": 2,
-          "FunctionDef": 13,
-          "Raise": 28
+          "FunctionDef": 16,
+          "Raise": 29
         },
         "profile_literals": {
           "biocompiler.core.policy_component_material.v1": 1,
@@ -1852,13 +1910,42 @@
       "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
     },
     {
-      "path": "src/biocompiler/core_policy_material.py",
-      "sha256": "45afd4c5457434b009af9293b988ae20da59672211dd7a749ee825dea63212b3",
+      "path": "src/biocompiler/core_policy_component_selection.py",
+      "sha256": "e0098c9f9be524571591f59c11a5989f79e89c3341dce5c4e5b71e1f7351ca7d",
       "census": {
         "kind": "python_ast_node_census",
         "guards": {
           "ClassDef": 2,
-          "FunctionDef": 21,
+          "FunctionDef": 14,
+          "Raise": 26
+        },
+        "profile_literals": {
+          "biocompiler.core.policy_component_selection.v1": 1,
+          "biocompiler.ocaml.policy_component_selection.v0.1": 1,
+          "biocompiler.ocaml.policy_component_selection_check.v0.1": 1,
+          "biocompiler.policy_component_material_selection.v0.1": 1,
+          "biocompiler.policy_component_selection_assessment.v0.1": 1,
+          "biocompiler.policy_component_selection_candidate.v0.1": 1,
+          "biocompiler.policy_component_selection_mrna_export.v0.1": 1,
+          "biocompiler.policy_component_selection_mrna_manifest.v0.1": 1,
+          "biocompiler.policy_component_selection_publication.v0.1": 1,
+          "biocompiler.policy_component_selection_request.v0.1": 1,
+          "biocompiler.policy_component_selection_resources.v0.1": 1,
+          "biocompiler.policy_component_selection_resources.v0.2": 1,
+          "biocompiler.policy_decision_leader_variant.v0.1": 1
+        }
+      },
+      "disposition": "outside_route",
+      "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "src/biocompiler/core_policy_material.py",
+      "sha256": "df30c5b165ab92ffb88a3713c277791da6d95c8da3589a59c6fc3904c955ecb3",
+      "census": {
+        "kind": "python_ast_node_census",
+        "guards": {
+          "ClassDef": 2,
+          "FunctionDef": 22,
           "Raise": 54
         },
         "profile_literals": {
@@ -1923,6 +2010,19 @@
         "kind": "python_ast_node_census",
         "guards": {
           "FunctionDef": 5
+        },
+        "profile_literals": {}
+      },
+      "disposition": "outside_route",
+      "reason": "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
+    },
+    {
+      "path": "src/biocompiler/policy/component_selection.py",
+      "sha256": "49a77e61c1c2951d5f746986ed9815f5e34f0487a0e97fc0dc447d7a01f1222a",
+      "census": {
+        "kind": "python_ast_node_census",
+        "guards": {
+          "FunctionDef": 4
         },
         "profile_literals": {}
       },

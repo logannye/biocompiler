@@ -36,6 +36,8 @@ SUITES = (
     ("test_policy_component_selection_candidate", ('data/policy_material_request_v01.json',)),
     ("test_policy_component_selection_common", ('data/policy_material_request_v01.json', 'data/policy_material_state_v01.json')),
     ("test_policy_component_selection_check", ('data/policy_material_request_v01.json',)),
+    ("test_policy_component_selection_scope", ("data/policy_material_request_v01.json",)),
+    ("test_policy_component_selection_service", ("data/policy_material_request_v01.json",)),
     ("test_policy_component_context_check", ("data/policy_material_request_v01.json", "data/policy_material_state_v01.json")),
     ("test_policy_component_material_service", ("data/policy_material_request_v01.json", "data/policy_material_state_v01.json")),
     ("test_protocol", ()),
@@ -58,6 +60,11 @@ SDK_BINARIES = {
 SDK_ORIGINALS = (
     "core/test/data/policy_material_request_v01.json", "core/test/data/policy_material_state_v01.json",
     "core/test/policy_component_support/literals.ml", "core/test/policy_component_support/requests.ml",
+)
+SELECTION_ORIGINALS = (
+    "core/test/data/policy_material_request_v01.json",
+    "core/test/policy_component_support/literals.ml", "core/test/policy_component_support/requests.ml",
+    "core/test/policy_component_support/selection_requests.ml",
 )
 
 
@@ -343,13 +350,120 @@ def public_sdk(root):
     return report
 
 
+def validate_public_sdk_feedback(root, report, prepared, native_pin, binaries):
+    """Keep the existing component SDK campaign a checked prerequisite."""
+    require(report.get("schema") == "biocompiler.development-sdk-feedback.v0.1"
+            and report.get("acceptance") is False and report.get("status") == "passed"
+            and report.get("identity") == prepared["identity"]
+            and report.get("sources_before") == report.get("sources_after") == prepared["sources"]
+            and report.get("native_feedback") == native_pin and report.get("binaries") == binaries,
+            "Selection SDK requires the unchanged successful component SDK campaign")
+    output = root / "generated/development-feedback"
+    fixture, witness = output / "component-originals.json", output / "sdk-witness.json"
+    expected = (
+        ("component-originals", ["opam", "exec", "--", str(root / SDK_BINARIES["originals"]),
+            *(str(root / path) for path in SDK_ORIGINALS), str(fixture)]),
+        ("component-sdk", [sys.executable, "-B", str(root / "tools/check_policy_component_material.py"),
+            "--fixture", str(fixture), "--core", str(root / SDK_BINARIES["core"]),
+            "--verify", str(root / SDK_BINARIES["verify"]), "--output", str(witness)]),
+    )
+    actions = report.get("actions")
+    require(type(actions) is list and len(actions) == len(expected), "Incomplete component SDK command census")
+    for row, (name, argv) in zip(actions, expected):
+        require(type(row) is dict and row.get("name") == name and row.get("argv") == argv
+                and row.get("status") == "passed" and type(row.get("returncode")) is int
+                and row["returncode"] == 0 and row.get("log") == name + ".log"
+                and row.get("log_pin") == pin(root, "generated/development-feedback/" + name + ".log"),
+                "Changed component SDK command or log: " + name)
+    require(fixture.stat().st_size <= 4_000_000 and witness.stat().st_size <= 1024 * 1024,
+            "Component SDK output exceeds its bound")
+    require(report.get("outputs") == {path.name: pin(root, path.relative_to(root).as_posix())
+                                     for path in (fixture, witness)}, "Changed component SDK output")
+
+
+def selection_sdk(root):
+    """Exercise explicit candidate preparation and independent selection APIs."""
+    output = root / "generated/development-feedback"
+    report = {"schema": "biocompiler.development-selection-sdk-feedback.v0.1", "acceptance": False,
+              "scope": "hosted source-tree selection SDK feedback; installed and release acceptance remain separate",
+              "status": "failed", "actions": []}
+    prepared = None
+    binaries = {}
+    try:
+        prepared = bundle.manifest_document((output / "preparation.json").read_bytes())
+        require(prepared == preparation(root), "Selection SDK source or hosted identity differs from native preparation")
+        native_pin = pin(root, "generated/development-feedback/feedback.json")
+        native = bundle.manifest_document((output / "feedback.json").read_bytes())
+        validate_native_feedback(root, native, prepared)
+        require(pin(root, "generated/development-feedback/feedback.json") == native_pin,
+                "Native feedback changed during selection validation")
+        binaries = {path: pin(root, path, executable=True) for path in SDK_BINARIES.values()}
+        require(all(native["binaries"].get(path) == value for path, value in binaries.items()),
+                "Selection SDK executable differs from the completed native build")
+        public_pin = pin(root, "generated/development-feedback/public-sdk.json")
+        validate_public_sdk_feedback(root, bundle.manifest_document((output / "public-sdk.json").read_bytes()),
+                                     prepared, native_pin, binaries)
+        require(pin(root, "generated/development-feedback/public-sdk.json") == public_pin,
+                "Component SDK feedback changed during selection validation")
+        source_inputs = {path: pin(root, path) for path in SELECTION_ORIGINALS}
+        require(all(prepared["sources"].get(path, {}).get("sha256") == value["sha256"]
+                    and prepared["sources"][path]["size"] == value["size"]
+                    for path, value in source_inputs.items()), "Selection original source pin changed")
+        report.update(identity=prepared["identity"], sources_before=prepared["sources"],
+                      native_feedback=native_pin, component_sdk_feedback=public_pin,
+                      source_inputs=source_inputs, binaries=binaries)
+        fixture, witness = output / "selection-originals.json", output / "selection-sdk-witness.json"
+        commands = (
+            ("selection-originals", ["opam", "exec", "--", str(root / SDK_BINARIES["originals"]),
+                "--selection", *(str(root / path) for path in SELECTION_ORIGINALS), str(fixture)]),
+            ("selection-sdk", [sys.executable, "-B", str(root / "tools/check_policy_component_selection.py"),
+                "--fixture", str(fixture), "--core", str(root / SDK_BINARIES["core"]),
+                "--verify", str(root / SDK_BINARIES["verify"]), "--output", str(witness)]),
+        )
+        for name, argv in commands:
+            require(preparation(root) == prepared, "Selection SDK source or identity changed before execution")
+            require({path: pin(root, path, executable=True) for path in binaries} == binaries,
+                    "Selection SDK executable changed before execution")
+            row = command(root, output, name, argv)
+            report["actions"].append(row)
+            save(output / "selection-public-sdk.json", report)
+            require(row["status"] == "passed", "Selection SDK " + name + " failed")
+        require(fixture.stat().st_size <= 4_000_000 and witness.stat().st_size <= 1024 * 1024,
+                "Selection SDK original or witness receipt exceeds its bound")
+        report["outputs"] = {path.name: pin(root, path.relative_to(root).as_posix()) for path in (fixture, witness)}
+        report["status"] = "passed"
+    except Exception as error:
+        report.update(status="failed", error=str(error))
+        raise
+    finally:
+        try:
+            after = preparation(root)
+            report["sources_after"] = after["sources"]
+            require(prepared == after, "Selection SDK source or identity changed after execution")
+            require({path: pin(root, path, executable=True) for path in binaries} == binaries,
+                    "Selection SDK executable changed during execution")
+            if "native_feedback" in report:
+                require(pin(root, "generated/development-feedback/feedback.json") == report["native_feedback"],
+                        "Native feedback changed during selection SDK execution")
+                validate_native_feedback(root, bundle.manifest_document((output / "feedback.json").read_bytes()), prepared)
+                require(pin(root, "generated/development-feedback/public-sdk.json") == report["component_sdk_feedback"],
+                        "Component SDK feedback changed during selection SDK execution")
+                validate_public_sdk_feedback(root, bundle.manifest_document((output / "public-sdk.json").read_bytes()),
+                                             prepared, report["native_feedback"], binaries)
+        except Exception as error:
+            report.update(status="failed", source_error=str(error))
+        save(output / "selection-public-sdk.json", report)
+        require(report["status"] == "passed", report.get("source_error", report.get("error", "Incomplete selection SDK feedback")))
+    return report
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("command", choices=("prepare", "run", "public-sdk"))
+    parser.add_argument("command", choices=("prepare", "run", "public-sdk", "selection-sdk"))
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[1]
     try:
-        {"prepare": prepare, "run": run, "public-sdk": public_sdk}[args.command](root)
+        {"prepare": prepare, "run": run, "public-sdk": public_sdk, "selection-sdk": selection_sdk}[args.command](root)
     except (OSError, ValueError) as error:
         print(str(error), file=sys.stderr)
         return 1

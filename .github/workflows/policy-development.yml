@@ -33,12 +33,16 @@ jobs:
           opam-pin: false
           opam-repositories: |
             default: git+https://github.com/ocaml/opam-repository.git#ac27950e5eac6c981ad809dff370c937820b7893
-      - name: Install ordinary dependencies, build once and run twenty-one fixed suites
+      - name: Install ordinary dependencies, build once and run twenty-three fixed suites
         run: python -B tools/check_policy_development.py run
       - name: Exercise Python authored component policies through fresh paired export
         env:
           PYTHONPATH: src
         run: python -B tools/check_policy_development.py public-sdk
+      - name: Exercise supplied alternatives through independent selection and paired export
+        env:
+          PYTHONPATH: src
+        run: python -B tools/check_policy_development.py selection-sdk
       - name: Retain diagnostic evidence even when native work fails
         if: always()
         uses: actions/upload-artifact@v4

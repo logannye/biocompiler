@@ -57,6 +57,8 @@ DEPENDENCY_FIXTURES = {
     'test_policy_component_selection_candidate': ['data/policy_material_request_v01.json'],
     'test_policy_component_selection_common': ['data/policy_material_request_v01.json', 'data/policy_material_state_v01.json'],
     'test_policy_component_selection_check': ['data/policy_material_request_v01.json'],
+    'test_policy_component_selection_scope': ['data/policy_material_request_v01.json'],
+    'test_policy_component_selection_service': ['data/policy_material_request_v01.json'],
     'test_policy_component_context_check': ['data/policy_material_request_v01.json', 'data/policy_material_state_v01.json'],
     'test_policy_component_material_service': ['data/policy_material_request_v01.json', 'data/policy_material_state_v01.json'],
     'test_policy_material_context': ['data/policy_material_context_v01.json'],

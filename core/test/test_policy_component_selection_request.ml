@@ -39,6 +39,29 @@ let positive child other =
     (Selection.budgets decoded).max_work=17000000000 &&
     (Selection.budgets decoded).max_report_bytes=8323072 &&
     (Selection.budgets decoded).max_report_nodes=249968) "Exact independent selection ceilings changed";
+  require (Selection.resources decoded="biocompiler.policy_component_selection_resources.v0.1")
+    "Original resource version was silently upgraded";
+  let publication_raw=raw
+    |> put ["budgets";"profile"] (str "biocompiler.policy_component_selection_resources.v0.2")
+    |> put ["budgets";"max_report_nodes"] (Json.int 1000000) in
+  let publication=Selection.of_json publication_raw in
+  require (Selection.resources publication="biocompiler.policy_component_selection_resources.v0.2" &&
+    (Selection.budgets publication).max_report_nodes=1000000 &&
+    (Selection.budgets publication).max_report_bytes=8323072 &&
+    (Selection.budgets publication).max_work=17000000000)
+    "Explicit cumulative publication version changed byte/work or node bounds";
+  require (Json.equal (Selection.to_json publication) publication_raw &&
+    Selection.fingerprint publication<>Selection.fingerprint decoded)
+    "Publication resource upgrade lost its original authority or identity";
+  let smaller=raw |> put ["budgets";"profile"]
+    (str "biocompiler.policy_component_selection_resources.v0.2") |> Selection.of_json in
+  require ((Selection.budgets smaller).max_report_nodes=249968)
+    "Resource version silently increased the supplied node allowance";
+  List.iter (fun (field,value) -> rejected "policy_component_selection_request"
+    ("Publication resource bound: "^field) (fun () ->
+      Selection.of_json (put ["budgets";field] value publication_raw)))
+    ["max_report_nodes",Json.int 1000001;"max_report_bytes",Json.int 8323073;
+      "max_work",Json.Int (Z.of_string "17000000001")];
   let reordered=edit ["alternatives"] (fun rows -> arr (List.rev (Json.array rows))) raw |> Selection.of_json in
   require (Selection.fingerprint reordered<>Selection.fingerprint decoded &&
     names (Selection.alternatives reordered)=["a-later";"A-first";"z-last"] &&
@@ -82,6 +105,8 @@ let controls raw child =
     (replace field (str "future"))) ["schema_version";"profile"];
   reject "policy_component_selection_request" "Wrong resource profile"
     (put ["budgets";"profile"] (str "biocompiler.policy_component_material_resources.v0.1"));
+  reject "policy_component_selection_request" "Non-string resource profile retains its original rejection"
+    (put ["budgets";"profile"] (Json.Bool true));
   reject "policy_component_selection_request" "Empty alternative catalog" (replace "alternatives" (arr []));
   reject "policy_component_selection_request" "Seventeenth alternative exceeds finite profile"
     (replace "alternatives" (arr (List.init 17 (fun i -> alternative (string_of_int i) 0 child))));

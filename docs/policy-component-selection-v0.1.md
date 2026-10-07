@@ -114,11 +114,31 @@ separate 1,000,000,000-unit outer-work ceiling account for this maximum. Existin
 literal children retain their 500,000,000-unit ceilings. No child domain or
 allowance is reduced to make selection finish.
 
-Outer report limits remain at most 8,323,072 bytes and 249,968 nodes. Publication
-must cumulatively reserve actual child reports and every enclosing/repeated
-occurrence. If the full result cannot fit, no selected/export token is granted.
-These logical bounds are not measurements of OCaml instructions, wall time or
-a global peak-memory theorem.
+The original resource version `biocompiler.policy_component_selection_resources.v0.1`
+retains cumulative publication limits of at most 8,323,072 bytes and 249,968
+nodes. The explicit version `biocompiler.policy_component_selection_resources.v0.2`
+permits at most 1,000,000 cumulative nodes with the same byte and work ceilings.
+A request must supply its exact version and allowances; selecting v0.2 does not
+increase a smaller supplied allowance. Existing v0.1 requests keep their limits
+and identity. This is a cumulative publication bound: the complete invocation
+and each individual publication, including the actual protocol response, still
+obey the unchanged 8 MiB, 250,000-node and depth-128 bounds.
+
+The distinction is needed because fresh export publishes child reports, the
+complete assessment, the standalone manifest and the actual enclosing protocol
+frame. The independently supplied two-alternative example has a source-derived
+lower bound of 346,508 cumulative nodes before envelope overhead; its final
+frame lower bound is 159,194 nodes. Counting repeated evidence is required even
+though it fits in a single transport frame. No child, losing alternative or
+original obligation is removed to satisfy a budget.
+
+One original-bound invocation scope cumulatively reserves all these occurrences
+and charges checking, comparison, construction of the manifest, encoding and
+hashing. Exhaustion permanently poisons the scope. The runner consumes a one-shot
+guard on the actual complete response before encoding or writing success; an
+error has a null result and cannot reuse the guard. If the full result cannot
+fit, no selected/export authority is granted. These logical bounds are not
+measurements of OCaml instructions, wall time or a global peak-memory theorem.
 
 ## Independent acceptance and fresh export
 
@@ -151,6 +171,15 @@ the private selection capability after complete work and publication checks.
 Exceptions, including any child or aggregate exhaustion, abort the complete
 assessment without a selection capability. None establishes global infeasibility.
 
-The candidate producer, public native and Python routes, complete selection
-manifest, and fresh paired selection export are separate remaining work. The
-existing component route and its A/B exports are not evidence for those exits.
+Public native and Python check/replay/export routes, complete selection manifests
+and fresh paired export are implemented in the current source batch, with their
+own hosted validation still required. The prior component route and its A/B
+exports do not establish those exits. The development lane therefore retains its
+original component campaign and adds a separate same-A selection campaign.
+
+Selection compilation remains unsupported until candidate-generation work is
+bounded and charged throughout lowering, specialization and construction. A
+caller may separately compile each complete child request and supply those
+candidates for fresh selection checking; this does not create a selection-compile
+operation or grant acceptance before every child and the complete catalog pass.
+Installed/offline and full release/main acceptance are subsequent gates.

@@ -68,7 +68,7 @@ class CoreBoundaryTests(unittest.TestCase):
                          {"bioc_wire", "bioc_domain", "digestif", "zarith"})
         self.assertEqual(receipt["private_modules"]["bioc_checker"],
                          ["construction_reconstruction", "architecture_reconstruction", "reference_check_support"])
-        self.assertEqual(len(receipt["native_tests"]), 161)
+        self.assertEqual(len(receipt["native_tests"]), 163)
         self.assertEqual(receipt["roles"]["bioc_semantics"], "source_semantics")
         self.assertEqual(receipt["roles"]["bioc_source_adapter"], "source_semantics")
         self.assertEqual(receipt["roles"]["bioc_compiler"], "compiler")
@@ -117,6 +117,8 @@ class CoreBoundaryTests(unittest.TestCase):
             "test_policy_component_selection_candidate": {"bioc_wire", "bioc_domain", "bioc_policy_component_test_support"},
             "test_policy_component_selection_common": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_realization_checker", "bioc_policy_component_test_support"},
             "test_policy_component_selection_check": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_realization_checker", "bioc_producer_service", "bioc_policy_component_test_support", "zarith"},
+            "test_policy_component_selection_scope": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_realization_checker", "bioc_producer_service", "bioc_policy_component_test_support"},
+            "test_policy_component_selection_service": {"bioc_wire", "bioc_domain", "bioc_service", "bioc_producer_service", "bioc_policy_component_test_support", "unix"},
         }
         root = self.copy_core()
         dune = root / "core/test/dune"
@@ -241,6 +243,28 @@ class CoreBoundaryTests(unittest.TestCase):
                     " architecture_reconstruction)")
         with self.assertRaisesRegex(boundaries.BoundaryError, "private module boundary"):
             boundaries.check_boundaries(root)
+
+    def test_selection_runner_process_access_is_exactly_test_owned(self):
+        owner = "test:test_policy_component_selection_service"
+        source = boundaries.ROOT / "core/test/test_policy_component_selection_service.ml"
+        boundaries.source_boundary(source, boundaries.TESTS[source.stem], owner=owner)
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / source.name
+            for text in ("let bad = Unix.system", "let bad = Unix.execv", "let bad = Unix.openfile",
+                         "let bad = Sys.command", "let bad = Sys.getenv", "let bad = Dynlink.loadfile"):
+                path.write_text(text)
+                with self.subTest(text=text), self.assertRaises(boundaries.BoundaryError):
+                    boundaries.source_boundary(path, set(), owner=owner)
+            for module, member in (("Unix", "create_process_env"), ("Sys", "executable_name")):
+                path.write_text("let reviewed = " + module + "." + member)
+                boundaries.source_boundary(path, set(), owner=owner)
+                for changed_owner in ("bioc_service", "bioc_realization_checker", "test:test_protocol"):
+                    with self.subTest(owner=changed_owner, member=member), self.assertRaises(boundaries.BoundaryError):
+                        boundaries.source_boundary(path, set(), owner=changed_owner)
+                other = path.with_name("other.ml")
+                other.write_text(path.read_text())
+                with self.subTest(member=member), self.assertRaises(boundaries.BoundaryError):
+                    boundaries.source_boundary(other, set(), owner=owner)
 
     def test_descriptor_primitive_cannot_expand_native_or_process_access(self):
         root = self.copy_core()

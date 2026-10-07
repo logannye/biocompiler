@@ -6,12 +6,8 @@ module I=Bioc_domain.Policy_implementation
 module U=Bioc_domain.Policy_implementation_binding
 module C=Bioc_domain.Policy_component_assembly_proposal
 module K=Bioc_domain.Construction_content
-module N=Bioc_domain.Molecule
 module P=Bioc_realization_checker.Policy_preservation_check
 module Check=Bioc_realization_checker.Policy_component_material_check
-module X=Bioc_realization_checker.Policy_component_context_check
-module L=Bioc_realization_checker.Policy_component_assembly_check
-module Structure=Bioc_checker.Policy_mrna_structure_check
 module W=Bioc_checker.Work_budget
 let str value=Json.String value
 let obj fields=Json.Object fields
@@ -46,26 +42,8 @@ let export_artifact checked candidate limits=
     Canonical.fingerprint candidate=Json.string(get "candidate_fingerprint" report) &&
     Json.equal limits(get "limits" report))"policy_component_material_export_identity"
     "Export inputs differ from the freshly checked complete candidate and invocation limits.";
-  let structure=L.structure(X.assembly(Check.context checked))in
-  let content=Structure.content structure in
-  let molecules=match K.inventory content with
-    |Some value->K.Inventory.molecules value
-    |None->Diagnostic.fail "policy_component_material_export_incomplete" "Checked material has no exact molecular inventory."in
-  Diagnostic.require(List.map N.id molecules=K.member_order content && molecules<>[])
-    "policy_component_material_export_incomplete""Exact delivered member order is absent from checked material.";
-  let fasta=Buffer.create 1024 in
-  let members=List.mapi(fun index molecule->
-    let id=Printf.sprintf "rna_%04d"(index+1)in
-    Buffer.add_string fasta(">"^id^" alphabet=RNA\n");
-    let sequence=N.sequence molecule in
-    let rec lines offset=if offset<String.length sequence then(
-      let count=min 80(String.length sequence-offset)in
-      Buffer.add_substring fasta sequence offset count;Buffer.add_char fasta '\n';lines(offset+count))in
-    lines 0;
-    obj["fasta_id",str id;"member_id",str(N.id molecule);"molecule",N.to_json molecule;
-      "sequence_sha256",str(Canonical.sha256 sequence)])molecules in
-  let fasta=Buffer.contents fasta in
-  let fasta_sha=Canonical.sha256 fasta in
+  let rendered=Policy_component_material_format.render checked in
+  let members=rendered.members and fasta=rendered.fasta and fasta_sha=rendered.fasta_sha256 in
   let manifest=obj["schema_version",str "biocompiler.policy_component_mrna_manifest.v0.1";
     "profile",str R.profile;"claim_scope",str "bounded_conditional_policy_via_reusable_components_to_exact_mrna";
     "premise",str "supplied_component_composition_and_provider_contracts";

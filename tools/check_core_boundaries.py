@@ -92,6 +92,8 @@ TESTS = {
     "test_policy_component_selection_candidate": {"bioc_wire", "bioc_domain", "bioc_policy_component_test_support"},
     "test_policy_component_selection_common": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_realization_checker", "bioc_policy_component_test_support"},
     "test_policy_component_selection_check": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_realization_checker", "bioc_producer_service", "bioc_policy_component_test_support", "zarith"},
+    "test_policy_component_selection_scope": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_realization_checker", "bioc_producer_service", "bioc_policy_component_test_support"},
+    "test_policy_component_selection_service": {"bioc_wire", "bioc_domain", "bioc_service", "bioc_producer_service", "bioc_policy_component_test_support", "unix"},
     "test_policy_component_assembly_rule": {"bioc_wire", "bioc_domain", "bioc_policy_component_test_support"},
     "test_policy_component_assembly_check": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_realization_checker", "bioc_policy_component_test_support"},
     "test_policy_material_lifecycle": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_semantics", "bioc_candidate_runtime", "bioc_realization_checker", "zarith"},
@@ -225,6 +227,13 @@ ARTIFACT_UNIX = frozenset({"file_descr", "Unix_error", "close", "fstat", "S_REG"
                           "st_dev", "st_ino", "lseek", "SEEK_SET", "read", "single_write_substring"})
 ARTIFACT_TEST_UNIX = ARTIFACT_UNIX | frozenset({"openfile", "O_RDONLY", "O_WRONLY", "O_RDWR", "O_CREAT",
     "O_TRUNC", "O_APPEND", "O_CLOEXEC", "O_NONBLOCK", "write", "stat", "unlink", "pipe", "link"})
+# The hosted selection-service test exercises the real protocol runner through
+# its own executable, bounded pipes and a deadline. No production owner or
+# other test inherits these process permissions.
+SELECTION_SERVICE_TEST_UNIX = frozenset({"Unix_error", "WEXITED", "WNOHANG", "close",
+    "create_process_env", "environment", "gettimeofday", "kill", "pipe", "read", "select",
+    "set_close_on_exec", "set_nonblock", "waitpid", "write_substring"})
+SELECTION_SERVICE_TEST_SYS = frozenset({"argv", "executable_name", "getenv_opt", "sigkill"})
 
 PRODUCER_ROLES = frozenset({"compiler", "matcher", "selection", "emitter", "assembler", "producer"})
 # Reconstruction is an independent checker's implementation detail. Consumers
@@ -403,12 +412,16 @@ def source_boundary(path, allowed_libraries, *, owner=None):
             raise BoundaryError(f"Unreviewed native/process/dynamic-code escape {token} in {path.name}")
         if token == "Unix":
             members = (ARTIFACT_UNIX if owner == "bioc_service" and path.name == "artifact_io.ml"
-                       else ARTIFACT_TEST_UNIX if owner == "test:test_artifact_io" else frozenset())
+                       else ARTIFACT_TEST_UNIX if owner == "test:test_artifact_io"
+                       else SELECTION_SERVICE_TEST_UNIX if owner == "test:test_policy_component_selection_service"
+                       and path.name == "test_policy_component_selection_service.ml" else frozenset())
             if (tokens[index:index + 2] != ["Unix", "."] or index + 2 >= len(tokens)
                     or tokens[index + 2] not in members):
                 raise BoundaryError(f"Unreviewed native/process/dynamic-code escape Unix in {path.name}")
         if token == "Sys":
             reviewed = {"argv"}
+            if owner == "test:test_policy_component_selection_service" and path.name == "test_policy_component_selection_service.ml":
+                reviewed.update(SELECTION_SERVICE_TEST_SYS)
             if owner in {"test:test_architecture_check", "test:test_source_transport", "test:test_architecture_producer", "test:test_construction_producer", "test:test_candidate_runtime_corpus", "test:test_component_runtime_corpus", "test:test_realization_foundation_corpus", "test:test_realization_checks_corpus", "test:test_component_acceptance_corpus", "test:test_synthetic_authority_corpus", "test:test_synthetic_acceptance_corpus", "test:test_synthetic_producers_corpus", "test:test_realization_workflow_corpus", "test:test_reference_contracts_corpus"}:
                 # The test-only document corpus must reject undeclared files.
                 # Production code gains no filesystem or process permission.
@@ -582,6 +595,8 @@ def check_boundaries(root: Path):
                     "test_policy_component_selection_candidate": ['policy_material_request_v01.json'],
                     "test_policy_component_selection_common": ['policy_material_request_v01.json', 'policy_material_state_v01.json'],
                     "test_policy_component_selection_check": ['policy_material_request_v01.json'],
+                    "test_policy_component_selection_scope": ["policy_material_request_v01.json"],
+                    "test_policy_component_selection_service": ["policy_material_request_v01.json"],
                     "test_policy_component_context_check": ["policy_material_request_v01.json", "policy_material_state_v01.json"],
                     "test_policy_material_context": ["policy_material_context_v01.json"],
                     "test_policy_material_check": ["policy_material_request_v01.json"],

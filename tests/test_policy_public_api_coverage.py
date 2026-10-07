@@ -40,11 +40,11 @@ class PolicyPublicApiCoverageTests(unittest.TestCase):
 
     def test_exact_census_and_scoped_evidence(self):
         result = c.validate(self.root, self.ledger)
-        self.assertEqual((result['files'], result['entries'], result['exports'], result['cli_commands'], result['native_operations']), (40, 740, 163, 17, 17))
-        self.assertEqual(result['coverage'], {'compatibility_support': 6, 'dependency': 149,
-            'independent_expansion': 28, 'shared_invariant': 460, 'source_only': 97})
+        self.assertEqual((result['files'], result['entries'], result['exports'], result['cli_commands'], result['native_operations']), (42, 786, 163, 17, 20))
+        self.assertEqual(result['coverage'], {'compatibility_support': 6, 'dependency': 185,
+            'independent_expansion': 28, 'shared_invariant': 470, 'source_only': 97})
         self.assertEqual(len(self.ledger['syntax_links']), 359)
-        self.assertEqual(len(self.ledger['witnesses']), 106)
+        self.assertEqual(len(self.ledger['witnesses']), 122)
         self.assertEqual(result['status'], 'source_inventory_checked')
         self.assertEqual(result['runtime_protocol_scope'], c.RUNTIME_SCOPE)
         self.assertIn('not an exhaustive runtime-attribute census', result['runtime_protocol_scope'])
@@ -59,7 +59,7 @@ class PolicyPublicApiCoverageTests(unittest.TestCase):
             stream.write('\nraise RuntimeError("Do not execute source")\n')
             stream.write(f'open({str(marker)!r}, "w").write("executed")\n')
         found = c.discover(self.root)
-        self.assertEqual(len(found['entries']), 740)
+        self.assertEqual(len(found['entries']), 786)
         self.assertFalse(marker.exists())
         self.assertEqual(before, {key for key in sys.modules if key.startswith('biocompiler')})
 
@@ -115,7 +115,40 @@ class PolicyPublicApiCoverageTests(unittest.TestCase):
         with self.assertRaisesRegex(c.ApiCoverageError, 'original-input inventory differs'):
             c.validate(self.root, self.ledger)
 
+    def component_projection(self):
+        """Remove precisely the selection extension, preserving old meanings."""
+        shared_helpers = {
+            'biocompiler.core_policy_component_material._assessment',
+            'biocompiler.core_policy_component_material._candidate',
+            'biocompiler.core_policy_component_material._report',
+            'biocompiler.core_policy_material._artifact_members',
+        }
+        projected = copy.deepcopy(self.ledger)
+        projected['coverage'] = {key: row for key, row in projected['coverage'].items()
+            if not key.startswith(('biocompiler.core_policy_component_selection.',
+                                   'biocompiler.policy.component_selection.')) and key not in shared_helpers}
+        projected['witnesses'] = {key: row for key, row in projected['witnesses'].items()
+                                  if not key.startswith('selection.')}
+        return projected
+
+    def test_selection_additions_preserve_all_component_evidence_meanings(self):
+        projected = self.component_projection()
+        witnesses = {key: {name: row[name] for name in ('path', 'symbol', 'role', 'distinction')}
+                     for key, row in projected['witnesses'].items()}
+        self.assertEqual((len(projected['coverage']), len(witnesses)), (740, 106))
+        original = json.dumps({'witnesses': witnesses, 'coverage': projected['coverage']}, ensure_ascii=True,
+                              sort_keys=True, separators=(',', ':'), allow_nan=False).encode()
+        self.assertEqual(c.digest(original), '2367be4f22a4985eb15fce30dc799abfb254a22ae86f7de665e23fdc7ed800a2')
+        self.assertEqual((len(c.MODULES), len(c.CLIENTS)), (30, 6))
+        additions = {key: row for key, row in self.ledger['coverage'].items() if key not in projected['coverage']}
+        self.assertEqual(len(additions), 46)
+        shared = [row for row in additions.values() if row['status'] == 'shared_invariant']
+        self.assertEqual(len(shared), 10)
+        self.assertTrue(all('synthetic selection transport/publication' in row['scope']
+                            and 'no native semantic execution' in row['scope'] for row in shared))
+
     def test_component_additions_preserve_all_original_evidence_meanings(self):
+        self.ledger = self.component_projection()
         additional_shared_helpers = {
             'biocompiler.core_policy_material._context_obligations',
             'biocompiler.core_policy_material._structure',
@@ -131,7 +164,8 @@ class PolicyPublicApiCoverageTests(unittest.TestCase):
         original = json.dumps({'witnesses': witnesses, 'coverage': retained}, ensure_ascii=True,
                               sort_keys=True, separators=(',', ':'), allow_nan=False).encode()
         self.assertEqual(c.digest(original), 'f16a88c77afaea4f7cbae56e80e38afc8d5a4c894616ca158578b707d393bb4a')
-        self.assertEqual((len(c.MODULES), len(c.CLIENTS)), (29, 5))
+        self.assertEqual((len(set(c.MODULES) - {'component_selection'}),
+                          len(set(c.CLIENTS) - {'core_policy_component_selection'})), (29, 5))
         component_rows = [row for key, row in self.ledger['coverage'].items()
                           if key.startswith(('biocompiler.core_policy_component_material.',
                                              'biocompiler.policy.component_material.'))
@@ -171,6 +205,49 @@ class PolicyPublicApiCoverageTests(unittest.TestCase):
         for field in ('path', 'symbol', 'file_sha256', 'syntax_sha256'):
             row[field] = unrelated[field]
         with self.assertRaisesRegex(c.ApiCoverageError, 'Reviewed API witness/coverage metadata differs'):
+            c.validate(self.root, self.ledger)
+
+    def test_selection_routes_cannot_reuse_inner_operations_or_drop_report(self):
+        path = 'src/biocompiler/core_policy_component_selection.py'
+        original = (self.root / path).read_bytes()
+        for operation in ('check', 'replay', 'export'):
+            self.edit(path, 'return self._call("' + operation + '-policy-component-selection",',
+                      'return self._call("' + operation + '-policy-component-material",', repin_file=True)
+            with self.subTest(operation=operation), self.assertRaisesRegex(c.ApiCoverageError, 'Native operation route differs'):
+                c.validate(self.root, self.ledger)
+            (self.root / path).write_bytes(original)
+        self.edit(path, '"limits": limits, "report": report}', '"limits": limits}', repin_file=True)
+        with self.assertRaisesRegex(c.ApiCoverageError, 'original-input inventory differs'):
+            c.validate(self.root, self.ledger)
+
+    def test_selection_result_and_absent_compile_remain_source_bound(self):
+        path = 'src/biocompiler/core_policy_component_selection.py'
+        original = (self.root / path).read_bytes()
+        self.edit(path, 'class PolicyComponentSelectionResult(material.PolicyMaterialResult):',
+                  'class PolicyComponentSelectionResult(object):', repin_file=True)
+        with self.assertRaisesRegex(c.ApiCoverageError, 'Source/API inventory drift'):
+            c.validate(self.root, self.ledger)
+        (self.root / path).write_bytes(original)
+        with (self.root / path).open('a') as stream:
+            stream.write('\n    def compile(self, request, limits): return self.check(request, {}, limits)\n')
+        self.ledger['inventory']['files'][path] = c.digest((self.root / path).read_bytes())
+        with self.assertRaisesRegex(c.ApiCoverageError, 'Source/API inventory drift'):
+            c.validate(self.root, self.ledger)
+
+    def test_selection_witness_meaning_owner_and_private_classification_are_pinned(self):
+        self.ledger['witnesses']['selection.routes']['distinction'] = 'Native full release acceptance.'
+        with self.assertRaisesRegex(c.ApiCoverageError, 'Reviewed API witness/coverage metadata differs'):
+            c.validate(self.root, self.ledger)
+        self.ledger = copy.deepcopy(self.original)
+        row = self.ledger['witnesses']['selection.routes']
+        unrelated = self.ledger['witnesses']['builder.freeze']
+        for field in ('path', 'symbol', 'file_sha256', 'syntax_sha256'):
+            row[field] = unrelated[field]
+        with self.assertRaisesRegex(c.ApiCoverageError, 'Reviewed API witness/coverage metadata differs'):
+            c.validate(self.root, self.ledger)
+        self.ledger = copy.deepcopy(self.original)
+        self.ledger['coverage']['biocompiler.core_policy_material._artifact_members']['status'] = 'source_only'
+        with self.assertRaisesRegex(c.ApiCoverageError, 'Private dependency classification changed'):
             c.validate(self.root, self.ledger)
 
     def test_cli_command_cannot_be_silently_renamed(self):

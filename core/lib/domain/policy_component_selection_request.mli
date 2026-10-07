@@ -8,6 +8,9 @@ module R = Policy_component_material_request
 val schema_version : string
 val profile : string
 val resource_profile : string
+val publication_resource_profile : string
+val resource_profiles : string list
+val max_publication_nodes : int
 val max_alternatives : int
 val max_input_bytes : int
 val max_input_nodes : int
@@ -39,3 +42,6 @@ val evaluation_order : t -> alternative list
 val anchor : t -> alternative
 val predicate : t -> predicate
 val budgets : t -> budgets
+
+(** Exact original resource version; no supplied allowance is upgraded. *)
+val resources : t -> string

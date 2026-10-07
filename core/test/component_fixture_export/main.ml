@@ -56,7 +56,7 @@ let case id state_reading fixture =
     "expected",obj ["molecules",arr [N.to_json molecule];"carrier_projections",carriers;"link_projections",links;
       "histories",Json.int 9;"transitions",Json.int 47;"prefixes_started",Json.int 48;
       "obligations",at ["expected";"obligations"] fixture]]
-let () =
+let component_packet () =
   require (Array.length Sys.argv=6) "Supply original A, original B, literal source, request source and one output path";
   let inputs=List.map bytes [Sys.argv.(1);Sys.argv.(2);Sys.argv.(3);Sys.argv.(4)] in
   let a=Json.parse (List.nth inputs 0) and b=Json.parse (List.nth inputs 1) in
@@ -69,3 +69,32 @@ let () =
   let encoded=Canonical.encode_bounded ~max_bytes:4_000_000 packet in
   let channel=open_out_gen [Open_wronly;Open_creat;Open_excl;Open_binary] 0o600 Sys.argv.(5) in
   Fun.protect ~finally:(fun () -> close_out_noerr channel) (fun () -> output_string channel encoded)
+
+
+(* Separate source-only selection packet. The previous A/B packet and command
+   remain byte-for-byte unchanged. Both alternatives here use the A program. *)
+let selection_packet () =
+  require (Array.length Sys.argv=7 && Sys.argv.(1)="--selection")
+    "Supply selection mode, original A, literal source, request source, selection source and one output path";
+  let inputs=List.map bytes [Sys.argv.(2);Sys.argv.(3);Sys.argv.(4);Sys.argv.(5)] in
+  let fixture=Json.parse (List.hd inputs) in
+  let original=Bioc_policy_component_test_support.Selection_requests.selection_literal fixture
+    |> put ["budgets";"profile"] (str "biocompiler.policy_component_selection_resources.v0.2")
+    |> put ["budgets";"max_report_nodes"] (Json.int 1000000) in
+  let paths=["core/test/data/policy_material_request_v01.json";
+    "core/test/policy_component_support/literals.ml";"core/test/policy_component_support/requests.ml";
+    "core/test/policy_component_support/selection_requests.ml"] in
+  let packet=obj ["schema_version",str "biocompiler.policy_component_selection_original_fixture.v0.1";
+    "status",str "source_declarations_only";"acceptance",Json.Bool false;
+    "source_sha256",obj (List.map2 (fun path raw -> path,str (Canonical.sha256 raw)) paths inputs);
+    "request",original;"limits",get "limits" fixture;
+    "expected",obj ["short_rna",str "CCAUGGCUUAAGGAAAA";"long_rna",str "CGCAUGGCUUAAGGAAAA";
+      "histories",Json.int 9;"transitions",Json.int 47;"prefixes_started",Json.int 48;
+      "obligations",at ["expected";"obligations"] fixture]] in
+  let encoded=Canonical.encode_bounded ~max_bytes:4_000_000 packet in
+  let channel=open_out_gen [Open_wronly;Open_creat;Open_excl;Open_binary] 0o600 Sys.argv.(6) in
+  Fun.protect ~finally:(fun () -> close_out_noerr channel) (fun () -> output_string channel encoded)
+
+let () =
+  if Array.length Sys.argv=7 && Sys.argv.(1)="--selection" then selection_packet ()
+  else component_packet ()

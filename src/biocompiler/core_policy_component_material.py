@@ -238,6 +238,42 @@ class PolicyComponentMaterialResult(material.PolicyMaterialResult):
     """Immutable component evidence; only a fresh export returns paired native bytes."""
 
 
+def _candidate(value: JsonValue) -> dict[str, JsonValue]:
+    candidate = _object(value, _CANDIDATE_FIELDS, "Complete component candidate")
+    if candidate["schema_version"] != CANDIDATE_SCHEMA:
+        raise CoreProtocolError("Component checking changed the complete supplied candidate")
+    proposal = _object(candidate["assembly_proposal"], {"schema_version", "profile", "rule", "nodes"}, "Assembly proposal")
+    _expect(proposal, {"schema_version": "biocompiler.policy_component_assembly_proposal.v0.1", "profile": "biocompiler.policy_exact_component_assembly.v0.1"}, "Assembly proposal")
+    return candidate
+
+
+def _report(value: JsonValue) -> dict[str, JsonValue]:
+    report = _object(value, _REPORT_FIELDS, "Complete component assessment")
+    _expect(report, {"schema_version": REPORT_SCHEMA, "profile": REQUEST_PROFILE,
+        "implementation": "biocompiler.ocaml.policy_component_material_check.v0.1", "resource_profile": RESOURCE_PROFILE,
+        "claim_scope": CLAIM_SCOPE, "premise": PREMISE, "empirical": "unassessed", "artifact": "withheld", "export": "withheld"}, "Component report")
+    return report
+
+
+def _assessment(response: CoreResponse, request: dict[str, JsonValue], candidate: dict[str, JsonValue],
+                report: dict[str, JsonValue], limits: JsonValue) -> None:
+    """Check an actual nested assessment, without constructing a child response."""
+    invocation: JsonValue = {"request": request, "candidate": candidate, "limits": limits}
+    for key, original in (("request_fingerprint", request), ("candidate_fingerprint", candidate), ("invocation_fingerprint", invocation)):
+        _pin(report[key], original, key)
+    if not _same(report["limits"], limits) or not _same(report["budgets"], request["budgets"]):
+        raise CoreProtocolError("Component checking changed original budgets or preservation limits")
+    usage = _object(report["usage"], {"unit", "charged_work", "request_decoding_work"}, "Component work accounting")
+    budgets = _record(request["budgets"], "Original component budgets")
+    charged = _count(usage["charged_work"], "Charged work")
+    if (usage["unit"] != "logical_data_visits_and_child_semantic_work" or charged < _count(usage["request_decoding_work"], "Request work")
+            or charged > _count(budgets.get("max_work"), "Original maximum work")):
+        raise CoreProtocolError("Component work accounting changed its unit or original bound")
+    material._preservation(response, request, candidate, report, limits)
+    _leaves(request, candidate, report)
+    material._obligations(report, material_key="assembly", accepted_status=ACCEPTED_STATUS, conjunction_stage="conditional_component_context_conjunction")
+
+
 def _result(response: CoreResponse, payload: dict[str, JsonValue]) -> PolicyComponentMaterialResult:
     result = _object(response.result, material._RESULT_FIELDS, "Component material result")
     _expect(result, {"schema_version": RESULT_SCHEMA, "implementation": IMPLEMENTATION,
@@ -246,35 +282,20 @@ def _result(response: CoreResponse, payload: dict[str, JsonValue]) -> PolicyComp
     candidate = _object(result["candidate"], _CANDIDATE_FIELDS, "Complete component candidate")
     if candidate["schema_version"] != CANDIDATE_SCHEMA or "candidate" in payload and not _same(candidate, payload["candidate"]):
         raise CoreProtocolError("Component checking changed the complete supplied candidate")
-    proposal = _object(candidate["assembly_proposal"], {"schema_version", "profile", "rule", "nodes"}, "Assembly proposal")
-    _expect(proposal, {"schema_version": "biocompiler.policy_component_assembly_proposal.v0.1", "profile": "biocompiler.policy_exact_component_assembly.v0.1"}, "Assembly proposal")
-    report = _object(result["report"], _REPORT_FIELDS, "Complete component assessment")
-    _expect(report, {"schema_version": REPORT_SCHEMA, "profile": REQUEST_PROFILE,
-        "implementation": "biocompiler.ocaml.policy_component_material_check.v0.1", "resource_profile": RESOURCE_PROFILE,
-        "claim_scope": CLAIM_SCOPE, "premise": PREMISE, "empirical": "unassessed", "artifact": "withheld", "export": "withheld"}, "Component report")
+    _candidate(candidate)
+    report = _report(result["report"])
     invocation: JsonValue = {"request": request, "candidate": candidate, "limits": payload["limits"]}
     request_hash = _pin(result["request_fingerprint"], request, "Complete original component request")
     candidate_hash = _pin(result["candidate_fingerprint"], candidate, "Complete component candidate")
     invocation_hash = _pin(result["invocation_fingerprint"], invocation, "Complete component invocation")
     report_hash = _pin(result["report_fingerprint"], report, "Complete component report")
-    for key, original in (("request_fingerprint", request), ("candidate_fingerprint", candidate), ("invocation_fingerprint", invocation)):
-        _pin(report[key], original, key)
-    if not _same(report["limits"], payload["limits"]) or not _same(report["budgets"], request["budgets"]):
-        raise CoreProtocolError("Component checking changed original budgets or preservation limits")
-    usage = _object(report["usage"], {"unit", "charged_work", "request_decoding_work"}, "Component work accounting")
-    budgets = _record(request["budgets"], "Original component budgets")
-    charged = _count(usage["charged_work"], "Charged work")
-    if (usage["unit"] != "logical_data_visits_and_child_semantic_work" or charged < _count(usage["request_decoding_work"], "Request work")
-            or charged > _count(budgets.get("max_work"), "Original maximum work")):
-        raise CoreProtocolError("Component work accounting changed its unit or original bound")
-    material._preservation(response, request, candidate, report, payload["limits"])
-    _leaves(request, candidate, report)
-    material._obligations(report, material_key="assembly", accepted_status=ACCEPTED_STATUS, conjunction_stage="conditional_component_context_conjunction")
+    _assessment(response, request, candidate, report, payload["limits"])
     material._artifact(result["artifact"], operation=response.operation, request=request, candidate=candidate, report=report, limits=payload["limits"],
         export_operation="export-policy-component-material", accepted_status=ACCEPTED_STATUS, export_schema=EXPORT_SCHEMA,
         manifest_schema=MANIFEST_SCHEMA, request_profile=REQUEST_PROFILE, claim_scope=CLAIM_SCOPE, premise=PREMISE)
     if response.operation == "replay-policy-component-material" and not _same(result, payload["report"]):
         raise CoreProtocolError("Fresh replay differs from the complete retained component wrapper")
+    budgets = _record(request["budgets"], "Original component budgets")
     material._publication(report, _count(budgets.get("max_report_bytes"), "Original report byte ceiling"),
                           _count(budgets.get("max_report_nodes"), "Original report node ceiling"))
     material._publication({"result": result}, MAX_RESULT_BYTES, MAX_RESULT_NODES)

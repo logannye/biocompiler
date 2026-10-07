@@ -252,7 +252,7 @@
     },
     {
       "path": "core/lib/domain/policy_component_selection_request.ml",
-      "sha256": "8fe7ad47058136ac22f56f1101b95b519027400af2a2fa7241c6e82daf7fdcd1",
+      "sha256": "b9300c96ab66f7b657d39fa2301694e19808343b5f84fcee4505fbfc14d62271",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
@@ -262,13 +262,14 @@
         "profile_literals": {
           "biocompiler.policy_component_material_selection.v0.1": 1,
           "biocompiler.policy_component_selection_request.v0.1": 1,
-          "biocompiler.policy_component_selection_resources.v0.1": 1
+          "biocompiler.policy_component_selection_resources.v0.1": 1,
+          "biocompiler.policy_component_selection_resources.v0.2": 1
         }
       }
     },
     {
       "path": "core/lib/domain/policy_component_selection_request.mli",
-      "sha256": "31e79558cd7427b305329ed64f5dd8fadb178c88161bc2d2130a855a23489cea",
+      "sha256": "24cb9c515d9ca2fd0c8e72d65ddc415974e6f8ea99b6cbfada3db2ed55389a79",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {},
@@ -371,13 +372,13 @@
     },
     {
       "path": "core/lib/realization_checker/policy_component_selection_check.ml",
-      "sha256": "a7384777b4a609428f320c03b12d1be232029f3e2f40ef0071206632331bac6a",
+      "sha256": "e3432d1348223a7212e08b732abd7e556c57cfbbfeb435cf306d1d5510489182",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
           "Diagnostic.fail": 2,
-          "Diagnostic.require": 1,
-          "require": 8
+          "Diagnostic.require": 2,
+          "require": 9
         },
         "profile_literals": {
           "biocompiler.ocaml.policy_component_selection_check.v0.1": 1,
@@ -387,7 +388,7 @@
     },
     {
       "path": "core/lib/realization_checker/policy_component_selection_check.mli",
-      "sha256": "e5b9344dd1d763c39251fbf0ea5ff6be58213de70c1d1f94d37c028c88510e67",
+      "sha256": "b4bbc4a3daaa9bf506957b5fb730312ba644fc1028e92bc6c98459ae798f06c7",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {},
@@ -421,13 +422,34 @@
       }
     },
     {
-      "path": "core/lib/service/policy_component_material_service.ml",
-      "sha256": "d59e871e0baedf70203281054350afa8957a3a41fe521c2b09834db74c0a9893",
+      "path": "core/lib/service/policy_component_material_format.ml",
+      "sha256": "5335cda324e195b62be991ac928388412504cfa2a53a153117aaaecb7d47d842",
       "census": {
         "kind": "ocaml_lexical_guard_identifier_census_not_calls",
         "guards": {
-          "Diagnostic.fail": 2,
-          "Diagnostic.require": 5
+          "Diagnostic.fail": 1,
+          "Diagnostic.require": 1
+        },
+        "profile_literals": {}
+      }
+    },
+    {
+      "path": "core/lib/service/policy_component_material_format.mli",
+      "sha256": "4dd118bad563612ddfc195faad4eeb83ded97f111c5a73189428d007e06d30da",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      }
+    },
+    {
+      "path": "core/lib/service/policy_component_material_service.ml",
+      "sha256": "c08b062a2c56c8fa29e674fdd81243496b5bfaec5b8faa98c7356976d4d892da",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 1,
+          "Diagnostic.require": 4
         },
         "profile_literals": {
           "biocompiler.core.policy_component_material.v1": 1,
@@ -448,14 +470,68 @@
       }
     },
     {
+      "path": "core/lib/service/policy_component_selection_service.ml",
+      "sha256": "fcd8cee5a41750f3bba669550b44a4e53aa516c2e3aaf374215ea7ef4ad46df4",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 2,
+          "Diagnostic.require": 4,
+          "require": 4
+        },
+        "profile_literals": {
+          "biocompiler.core.policy_component_selection.v1": 1,
+          "biocompiler.ocaml.policy_component_selection.v0.1": 1,
+          "biocompiler.policy_component_selection_mrna_export.v0.1": 1,
+          "biocompiler.policy_component_selection_mrna_manifest.v0.1": 1,
+          "biocompiler.policy_component_selection_publication.v0.1": 1
+        }
+      }
+    },
+    {
+      "path": "core/lib/service/policy_component_selection_service.mli",
+      "sha256": "966a5b36fd260c5e94718328b4d6034618a4378cfe0ad29d826371b9190e99e3",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      }
+    },
+    {
+      "path": "core/lib/service/service.ml",
+      "sha256": "889f5d1ef2f2fd2e901a603e105638ef51addd2380210a72ac495f6e7c643577",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {
+          "Diagnostic.fail": 1,
+          "Diagnostic.require": 9
+        },
+        "profile_literals": {
+          "biocompiler.core.artifact_response.v1": 1,
+          "biocompiler.core.artifact_transport.authority.v1": 1,
+          "biocompiler.core.artifact_transport.v1": 1,
+          "biocompiler.core_capabilities.v1": 1
+        }
+      }
+    },
+    {
+      "path": "core/lib/service/service.mli",
+      "sha256": "854e6c2ef8a060791bf72610fe8e9beb68bb2303de278c45cd5eb15c3310e603",
+      "census": {
+        "kind": "ocaml_lexical_guard_identifier_census_not_calls",
+        "guards": {},
+        "profile_literals": {}
+      }
+    },
+    {
       "path": "src/biocompiler/core_policy_component_material.py",
-      "sha256": "303e9ce373bbe03fa988717449bb1fb15676a5cb8faf844e9cec14a1db947882",
+      "sha256": "9afc9ad3a0ad1d7a4b85d8630667f742496f9e1fdb9248e792e8abd5863c2f8c",
       "census": {
         "kind": "python_ast_node_census",
         "guards": {
           "ClassDef": 2,
-          "FunctionDef": 13,
-          "Raise": 28
+          "FunctionDef": 16,
+          "Raise": 29
         },
         "profile_literals": {
           "biocompiler.core.policy_component_material.v1": 1,
@@ -478,6 +554,69 @@
       }
     },
     {
+      "path": "src/biocompiler/core_policy_component_selection.py",
+      "sha256": "e0098c9f9be524571591f59c11a5989f79e89c3341dce5c4e5b71e1f7351ca7d",
+      "census": {
+        "kind": "python_ast_node_census",
+        "guards": {
+          "ClassDef": 2,
+          "FunctionDef": 14,
+          "Raise": 26
+        },
+        "profile_literals": {
+          "biocompiler.core.policy_component_selection.v1": 1,
+          "biocompiler.ocaml.policy_component_selection.v0.1": 1,
+          "biocompiler.ocaml.policy_component_selection_check.v0.1": 1,
+          "biocompiler.policy_component_material_selection.v0.1": 1,
+          "biocompiler.policy_component_selection_assessment.v0.1": 1,
+          "biocompiler.policy_component_selection_candidate.v0.1": 1,
+          "biocompiler.policy_component_selection_mrna_export.v0.1": 1,
+          "biocompiler.policy_component_selection_mrna_manifest.v0.1": 1,
+          "biocompiler.policy_component_selection_publication.v0.1": 1,
+          "biocompiler.policy_component_selection_request.v0.1": 1,
+          "biocompiler.policy_component_selection_resources.v0.1": 1,
+          "biocompiler.policy_component_selection_resources.v0.2": 1,
+          "biocompiler.policy_decision_leader_variant.v0.1": 1
+        }
+      }
+    },
+    {
+      "path": "src/biocompiler/core_policy_material.py",
+      "sha256": "df30c5b165ab92ffb88a3713c277791da6d95c8da3589a59c6fc3904c955ecb3",
+      "census": {
+        "kind": "python_ast_node_census",
+        "guards": {
+          "ClassDef": 2,
+          "FunctionDef": 22,
+          "Raise": 54
+        },
+        "profile_literals": {
+          "biocompiler.construction_content_assessment.v0.1": 1,
+          "biocompiler.construction_content_authority.v0.1": 1,
+          "biocompiler.core.policy_material.v1": 1,
+          "biocompiler.ocaml.construction_content_check.v0.1": 1,
+          "biocompiler.ocaml.policy_material.v0.1": 1,
+          "biocompiler.ocaml.policy_material_binding_check.v0.1": 1,
+          "biocompiler.ocaml.policy_material_check.v0.1": 1,
+          "biocompiler.ocaml.policy_material_context_check.v0.1": 1,
+          "biocompiler.ocaml.policy_mrna_structure_check.v0.1": 1,
+          "biocompiler.policy_material_assessment.v0.1": 1,
+          "biocompiler.policy_material_binding_assessment.v0.1": 1,
+          "biocompiler.policy_material_candidate.v0.1": 1,
+          "biocompiler.policy_material_context_assessment.v0.1": 1,
+          "biocompiler.policy_material_request.v0.1": 1,
+          "biocompiler.policy_material_resources.v0.1": 1,
+          "biocompiler.policy_mrna_completeness.v0.1": 1,
+          "biocompiler.policy_mrna_export.v0.1": 1,
+          "biocompiler.policy_mrna_manifest.v0.1": 1,
+          "biocompiler.policy_mrna_structure_assessment.v0.1": 1,
+          "biocompiler.policy_preservation_report.v0.1": 1,
+          "biocompiler.policy_truth_mrna.v0.1": 1,
+          "biocompiler.policy_truth_mrna_material.v0.1": 1
+        }
+      }
+    },
+    {
       "path": "src/biocompiler/policy/component_material.py",
       "sha256": "24da1db993f5f56ff516ad3b2d14667731f681ebe9f1c9ae6898d0728bd5eaba",
       "census": {
@@ -487,12 +626,23 @@
         },
         "profile_literals": {}
       }
+    },
+    {
+      "path": "src/biocompiler/policy/component_selection.py",
+      "sha256": "49a77e61c1c2951d5f746986ed9815f5e34f0487a0e97fc0dc447d7a01f1222a",
+      "census": {
+        "kind": "python_ast_node_census",
+        "guards": {
+          "FunctionDef": 4
+        },
+        "profile_literals": {}
+      }
     }
   ],
   "witness_sources": [
     {
       "path": "core/test/component_fixture_export/main.ml",
-      "sha256": "38e73ced0aceb720070306d4e4a42b0d156410eac76490bc0f1e124d27e2628f"
+      "sha256": "90451374f8bf6dfe12d43ef42d5d6d5d5d48fc074067d4f86ae52643cd515b59"
     },
     {
       "path": "core/test/data/policy_material_request_v01.json",
@@ -560,11 +710,23 @@
     },
     {
       "path": "core/test/test_policy_component_selection_request.ml",
-      "sha256": "b6eb7fcd4fa1cd0c2acd7a9cec186163400892e162cb54bd6c920c796c365ac9"
+      "sha256": "5f6071e948f93b88be647970a5673f2a2cafdf2cb4a3b0bbcaef73a8b52f6d18"
+    },
+    {
+      "path": "core/test/test_policy_component_selection_scope.ml",
+      "sha256": "b41a11a2694b5c5e4288fb018459f2eb2ccc7e2a5c155fc9d24e68fab41bbc59"
+    },
+    {
+      "path": "core/test/test_policy_component_selection_service.ml",
+      "sha256": "293b6b49315befce209652f7e7d9285b5fe847f15414781341a4a3db04727ab6"
     },
     {
       "path": "tests/test_core_policy_component_material.py",
       "sha256": "5152497133f3f52b8bf42f190e4d4b4f1a015758598d43ff62e44ced4c0f06b3"
+    },
+    {
+      "path": "tests/test_core_policy_component_selection.py",
+      "sha256": "b27ecab853769c996b4aea9d2dabee72c92814fdb19a4f1dfd04b1a4e8ebd427"
     },
     {
       "path": "tests/test_policy_component_fixture.py",
@@ -583,6 +745,14 @@
       "sha256": "acd82d16823f7f8c98b26ffc7ea22e455b41aa390fba16f62420d24035492230"
     },
     {
+      "path": "tests/test_policy_component_selection.py",
+      "sha256": "44e4474428edd7f1d1107ab6d0407a33e2dc9f8290d58f55da61801d9369460a"
+    },
+    {
+      "path": "tests/test_policy_component_selection_witness.py",
+      "sha256": "4e63e5964571aa767c5c62412480875e5bea141dbf2dc6a67fd2eed90aa13d19"
+    },
+    {
       "path": "tests/test_policy_material_consumer.py",
       "sha256": "3308e5192595c797896f1f0f0d722f3941a1acb7be821391d8f66bec8989204f"
     },
@@ -597,6 +767,10 @@
     {
       "path": "tools/check_policy_component_material.py",
       "sha256": "a03d568eab16b3979a91cacc0f589e0dd99404d8918dcc9419d3cd0f8567e118"
+    },
+    {
+      "path": "tools/check_policy_component_selection.py",
+      "sha256": "1b841401786848b01613ea724f3c60307be7a787f39e89c696644ef74773d2c9"
     },
     {
       "path": "tools/check_policy_material_consumer.py",
@@ -1201,17 +1375,17 @@
       "owners": [
         {
           "path": "core/lib/realization_checker/policy_component_selection_check.ml",
-          "anchor": "let check ~request:original ~candidate:proposed ~limits =",
+          "anchor": "let check_in ~scope ~candidate:proposed ~limits = protect scope (fun () ->",
           "occurrence": 1
         },
         {
           "path": "core/lib/realization_checker/policy_component_selection_check.ml",
-          "anchor": "W.charge budget child_allowance;",
+          "anchor": "spend scope budget child_allowance;",
           "occurrence": 1
         },
         {
           "path": "core/lib/realization_checker/policy_component_selection_check.ml",
-          "anchor": "let accepted_value = match matches,winner with",
+          "anchor": "let selected = match matches,winner with",
           "occurrence": 1
         }
       ],
@@ -1267,6 +1441,224 @@
       "scope": "Fresh producer-independent selection checker re-decodes complete originals and proposals, checks the closed common-authority relation, then evaluates every child in ASCII-ID order. It reserves each unchanged complete inner work allowance before fresh inner checking, with no usage refunds or serialized-token authority. Only freshly checked private material capabilities supply exact one-RNA sequences and actual nucleotide lengths. Every child must pass before the hard maximum-length predicate and rank/ASCII-ID preference select a winner, which must match the proposal. Child reports and complete outer publication share cumulative bounds; sticky exhaustion prevents a private selection capability.",
       "limits": "Checked selection is bounded to the complete explicitly supplied catalog and contracts; biological behavior and unrestricted search are unassessed. A failed child never becomes an ordinary length exclusion. This source-only inventory is not a successful native run or release acceptance, and this batch adds no public selection producer/service/SDK/CLI route or fresh selection export.",
       "evidence_scope": "source_only_not_executed_by_this_gate"
+    },
+    {
+      "id": "component.selection_publication_resources",
+      "owners": [
+        {
+          "path": "core/lib/domain/policy_component_selection_request.ml",
+          "anchor": "let node_ceiling=if resource_profile_value=resource_profile then max_report_nodes",
+          "occurrence": 1
+        }
+      ],
+      "positive": [
+        {
+          "path": "core/test/test_policy_component_selection_request.ml",
+          "anchor": "Explicit cumulative publication version changed byte/work or node bounds",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_component_selection_scope.ml",
+          "anchor": "let cumulative_profile original=",
+          "occurrence": 1
+        }
+      ],
+      "negative": [
+        {
+          "path": "core/test/test_policy_component_selection_request.ml",
+          "anchor": "Resource version silently increased the supplied node allowance",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_component_selection_service.ml",
+          "anchor": "Old resource version cannot claim the new cumulative ceiling",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_component_selection_scope.ml",
+          "anchor": "The complete actual frame keeps its independent 250,000-node bound",
+          "occurrence": 1
+        }
+      ],
+      "scope": "Original resource v0.1 keeps its exact 249968-node cumulative ceiling. Explicit v0.2 accepts at most one million cumulative nodes with unchanged byte/work ceilings; every supplied smaller cap remains binding. Input and each publication retain independent 8MiB, 250000-node and depth128 bounds. Exact original resource identity survives checking and export.",
+      "limits": "This is finite logical accounting, not a CPU or peak-memory theorem. No request is automatically upgraded. A complete result that exceeds any original or per-frame limit cannot export.",
+      "evidence_scope": "source_only_not_executed_by_this_gate"
+    },
+    {
+      "id": "component.selection_scope",
+      "owners": [
+        {
+          "path": "core/lib/realization_checker/policy_component_selection_check.ml",
+          "anchor": "let create_scope ?parent ~request:original_request () =",
+          "occurrence": 1
+        },
+        {
+          "path": "core/lib/realization_checker/policy_component_selection_check.ml",
+          "anchor": "let prepare_response ~scope pending ~executable ~protocol_request ~result =",
+          "occurrence": 1
+        },
+        {
+          "path": "core/lib/service/service.ml",
+          "anchor": "let run ?(handler=handle) ?(scoped_handler=scoped_handle) executable =",
+          "occurrence": 1
+        }
+      ],
+      "positive": [
+        {
+          "path": "core/test/test_policy_component_selection_scope.ml",
+          "anchor": "Scoped assessment changed standalone evidence or counted unrelated parent usage as owned work",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_component_selection_service.ml",
+          "anchor": "Valid actual-frame callback was not run once before success",
+          "occurrence": 1
+        }
+      ],
+      "negative": [
+        {
+          "path": "core/test/test_policy_component_selection_scope.ml",
+          "anchor": "Partial output debit cannot be hidden by catching the exception",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_component_selection_scope.ml",
+          "anchor": "Identical originals do not permit pending transfer across owners",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_component_selection_scope.ml",
+          "anchor": "The actual protocol frame exceeds a fitting result-only value",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_component_selection_service.ml",
+          "anchor": "A failing success hook emitted an artifact, escaped error bounds, or changed its diagnostic",
+          "occurrence": 1
+        }
+      ],
+      "scope": "One original-bound scope owns total work, independent outer work and cumulative publication through fresh checking and actual-frame admission. Optional parents add caps without replacing local caps. First failure is sticky, pending values are owner-bound, checking and finalization are one-shot, and no reset/refund escapes. Runner consumes the complete-frame hook before bounded encoding/stdout; failures emit null-result bounded errors.",
+      "limits": "Standalone checker evidence/accounting remains compatible. Private preparation data and fresh child material cannot replace outer publication authority. Compilation generation is not covered.",
+      "evidence_scope": "source_only_not_executed_by_this_gate"
+    },
+    {
+      "id": "component.selection_export",
+      "owners": [
+        {
+          "path": "core/lib/service/policy_component_selection_service.ml",
+          "anchor": "let prepare ~executable ~(request:Protocol.request) =",
+          "occurrence": 1
+        },
+        {
+          "path": "core/lib/service/policy_component_selection_service.ml",
+          "anchor": "let export_artifact scope pending request candidate limits report =",
+          "occurrence": 1
+        },
+        {
+          "path": "core/lib/service/policy_component_material_format.ml",
+          "anchor": "let render ?(charge=fun _ -> ()) checked =",
+          "occurrence": 1
+        }
+      ],
+      "positive": [
+        {
+          "path": "core/test/test_policy_component_selection_service.ml",
+          "anchor": "Fresh outer artifact differs from the independently declared RNA/geometry, full losing authority, or exact paired hashes",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_component_selection_service.ml",
+          "anchor": "A losing or winning child lost complete original obligation evidence",
+          "occurrence": 1
+        }
+      ],
+      "negative": [
+        {
+          "path": "core/test/test_policy_component_selection_service.ml",
+          "anchor": "A changed losing original cannot borrow prior selection evidence",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_component_selection_service.ml",
+          "anchor": "All losing candidates must independently pass",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_component_selection_service.ml",
+          "anchor": "Late cumulative publication failure leaked a prepared artifact through stdout",
+          "occurrence": 1
+        },
+        {
+          "path": "core/test/test_policy_component_selection_service.ml",
+          "anchor": "The unguarded legacy handler bypassed actual-frame admission for selection",
+          "occurrence": 1
+        }
+      ],
+      "scope": "Core and producer-independent Verify fresh check/replay/export retain complete original and candidate censuses, every child report, limits, ranks, predicate and derived winner. Export formats only fresh checked material, binds exact RNA geometry and FASTA/manifest hashes, charges standalone manifest and repeated full-frame occurrences, and rejects stale complete wrappers including loser edits with unchanged winning RNA.",
+      "limits": "Only explicitly supplied same-program leader variants, two components and one RNA member are supported. No selection compile route, hidden generation accounting, CLI extension, installed or release acceptance is implied.",
+      "evidence_scope": "source_only_not_executed_by_this_gate"
+    },
+    {
+      "id": "component.selection_sdk",
+      "owners": [
+        {
+          "path": "src/biocompiler/core_policy_component_selection.py",
+          "anchor": "class PolicyComponentSelectionClient:",
+          "occurrence": 1
+        },
+        {
+          "path": "src/biocompiler/policy/component_selection.py",
+          "anchor": "def export(",
+          "occurrence": 1
+        },
+        {
+          "path": "src/biocompiler/core_policy_material.py",
+          "anchor": "def _artifact_members(",
+          "occurrence": 1
+        }
+      ],
+      "positive": [
+        {
+          "path": "tests/test_core_policy_component_selection.py",
+          "anchor": "def test_all_three_routes_preserve_complete_originals_and_have_no_compile",
+          "occurrence": 1
+        },
+        {
+          "path": "tests/test_policy_component_selection.py",
+          "anchor": "def test_fresh_pair_is_reproducible_and_retains_full_catalog",
+          "occurrence": 1
+        },
+        {
+          "path": "tools/check_policy_component_selection.py",
+          "anchor": "def checked_result(",
+          "occurrence": 1
+        }
+      ],
+      "negative": [
+        {
+          "path": "tests/test_core_policy_component_selection.py",
+          "anchor": "def test_loser_edit_invalidates_replay_even_with_unchanged_selected_rna",
+          "occurrence": 1
+        },
+        {
+          "path": "tests/test_core_policy_component_selection.py",
+          "anchor": "def test_cumulative_publication_counts_repeated_nested_values",
+          "occurrence": 1
+        },
+        {
+          "path": "tests/test_policy_component_selection.py",
+          "anchor": "def test_existing_output_is_guarded_before_native_and_bad_export_never_publishes",
+          "occurrence": 1
+        },
+        {
+          "path": "tests/test_policy_component_selection_witness.py",
+          "anchor": "def test_both_children_keep_literal_rna_and_complete_domain_obligations",
+          "occurrence": 1
+        }
+      ],
+      "scope": "Immutable explicit transport negotiates the exact native selection profile, validates full original/candidate/child-report/manifest correspondence and the repeated publication census, and uses fresh native export followed by atomic paired publication. Shared child assessment and member-format validation is factored without creating a fictitious child protocol response. Explicit preparation retains original supplied budgets. A separate hosted-only 21-observation source witness reconstructs both Python-authored A originals, prepares each child independently, and exercises fresh Core/Verify selection and four exact paired archives while preserving the old component campaign.",
+      "limits": "Mock peers establish transport rejection behavior only; native common-authority checking, preservation and construction remain OCaml authorities. Public compilation, installed/offline campaigns and complete release/main acceptance remain separate tasks.",
+      "evidence_scope": "source_only_not_executed_by_this_gate"
     }
   ],
   "limitations": [
@@ -1275,7 +1667,8 @@
     "Only exact-isomorphic two-component/no-helper one-RNA composition is indexed; model-to-material and provider contracts remain supplied conditional premises.",
     "No current-head execution, installed distribution, release, empirical biology or human-use acceptance is granted by this static index.",
     "Two appended domain-codec families add source-only static wellformedness to the ten existing component-route families; they do not establish execution or acceptance. Selection checking, common-authority validation, aggregate execution, winner selection, a public selection route and fresh selection export remain unimplemented.",
-    "The preceding codec-batch limitation records its original boundary. This additive source-only batch defines a complete-census outer candidate codec, independent closed common-original checker and fresh checked-selection capability; hosted executable validation and release acceptance remain separate pending gates. Public selection production/service/SDK/CLI routing and fresh selection export remain unimplemented; helpers, multiple RNA outputs, general material variation and biological viability are outside this batch."
+    "The preceding codec-batch limitation records its original boundary. This additive source-only batch defines a complete-census outer candidate codec, independent closed common-original checker and fresh checked-selection capability; hosted executable validation and release acceptance remain separate pending gates. Public selection production/service/SDK/CLI routing and fresh selection export remain unimplemented; helpers, multiple RNA outputs, general material variation and biological viability are outside this batch.",
+    "The preceding checker-batch limitation records its original boundary. This additive source-only batch supplies public selection check/replay/export, one original-bound invocation/publication scope, an explicit versioned cumulative node allowance and immutable Python paired-export adapters. Candidate-generation metering and selection compile, installed/offline validation and release/main acceptance remain open. All previous semantic authorities and obligations are retained; source inventory does not establish test execution."
   ],
   "historical_development_feedback": {
     "revision": "5a45d354ee869f26f0e5d3181c8972a6402baca6",

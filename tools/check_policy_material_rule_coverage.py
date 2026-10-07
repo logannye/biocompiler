@@ -91,23 +91,34 @@ COMPONENT_MODULES = (
     ("realization_checker", "policy_component_selection_common"),
     ("realization_checker", "policy_component_selection_check"),
     ("service", "policy_component_material_service"),
+    ("service", "policy_component_material_format"),
+    ("service", "policy_component_selection_service"),
 )
-COMPONENT_SOURCES = tuple(sorted(
+COMPONENT_ROUTE_SOURCES = tuple(sorted(
     [f"core/lib/{directory}/{name}.{suffix}" for directory, name in COMPONENT_MODULES for suffix in ("ml", "mli")]
-    + ["src/biocompiler/core_policy_component_material.py", "src/biocompiler/policy/component_material.py"]))
+    + ["src/biocompiler/core_policy_component_material.py", "src/biocompiler/policy/component_material.py",
+       "src/biocompiler/core_policy_component_selection.py", "src/biocompiler/policy/component_selection.py"]))
+COMPONENT_SHARED_SOURCES = ("core/lib/service/service.ml", "core/lib/service/service.mli",
+                            "src/biocompiler/core_policy_material.py")
+COMPONENT_SOURCES = tuple(sorted((*COMPONENT_ROUTE_SOURCES, *COMPONENT_SHARED_SOURCES)))
 COMPONENT_REASON = "Separate reusable-component material route; not original whole-kernel profile authority. Indexed independently in policy-component-rule-coverage-v0.1.json."
-ROUTE_EXCEPTIONS.update({path: COMPONENT_REASON for path in COMPONENT_SOURCES})
-EXTRA_SOURCES += ("src/biocompiler/core_policy_component_material.py", "src/biocompiler/policy/component_material.py")
+ROUTE_EXCEPTIONS.update({path: COMPONENT_REASON for path in COMPONENT_ROUTE_SOURCES})
+EXTRA_SOURCES += ("src/biocompiler/core_policy_component_material.py", "src/biocompiler/policy/component_material.py",
+                  "src/biocompiler/core_policy_component_selection.py", "src/biocompiler/policy/component_selection.py")
 COMPONENT_LEDGER = "protocol/policy-component-rule-coverage-v0.1.json"
 COMPONENT_RULE_IDS = ("component.fragment", "component.local_material", "component.assembly_rule", "component.ordered_union",
     "component.original_request", "component.context", "component.conjunction", "component.production", "component.export", "component.sdk",
     "component.selection_request_codec", "component.material_candidate_codec",
-    "component.selection_candidate_codec", "component.selection_common_authority", "component.checked_selection")
+    "component.selection_candidate_codec", "component.selection_common_authority", "component.checked_selection",
+    "component.selection_publication_resources", "component.selection_scope", "component.selection_export", "component.selection_sdk")
 COMPONENT_WITNESSES = tuple(sorted([
     *[f"core/test/test_policy_component_{name}.ml" for name in ("fragment", "material", "assembly_rule", "assembly_check", "material_request", "context_check", "material_service")],
     "core/test/test_policy_component_selection_request.ml", "core/test/test_policy_component_material_candidate.ml",
     "core/test/test_policy_component_selection_candidate.ml", "core/test/test_policy_component_selection_common.ml",
     "core/test/test_policy_component_selection_check.ml", "core/test/policy_component_support/selection_requests.ml",
+    "core/test/test_policy_component_selection_scope.ml", "core/test/test_policy_component_selection_service.ml",
+    "tests/test_core_policy_component_selection.py", "tests/test_policy_component_selection.py",
+    "tools/check_policy_component_selection.py", "tests/test_policy_component_selection_witness.py",
     "core/test/policy_component_support/literals.ml", "core/test/policy_component_support/requests.ml",
     "core/test/component_fixture_export/main.ml", "tools/check_policy_component_material.py",
     "tests/test_core_policy_component_material.py", "tests/test_policy_component_material.py",
@@ -119,7 +130,7 @@ COMPONENT_WITNESSES = tuple(sorted([
 ]))
 # Fixed reviewed meaning/provenance projection, excluding source-body hashes and
 # lexical counts. Re-pinning changed files cannot reassign witness meaning.
-COMPONENT_METADATA_SHA256 = "f95fedd7eeb9641704488414a256669c5a17682182b571f5feffd9fed88993ef"
+COMPONENT_METADATA_SHA256 = "b03761f725cf6fb16e8c692cce69f40314481f7865238a38dae9031d94286082"
 
 
 class CoverageError(ValueError):

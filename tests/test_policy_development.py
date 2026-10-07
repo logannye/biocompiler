@@ -103,7 +103,8 @@ class PolicyDevelopmentTests(unittest.TestCase):
             "test_policy_component_fragment", "test_policy_component_material", "test_policy_component_assembly_rule", "test_policy_component_assembly_check",
             "test_policy_component_material_request", "test_policy_component_selection_request",
             "test_policy_component_material_candidate", "test_policy_component_selection_candidate",
-            "test_policy_component_selection_common", "test_policy_component_selection_check", "test_policy_component_context_check",
+            "test_policy_component_selection_common", "test_policy_component_selection_check",
+            "test_policy_component_selection_scope", "test_policy_component_selection_service", "test_policy_component_context_check",
             "test_policy_component_material_service", "test_protocol", "test_producer_protocol",
             "test_policy_implementation_binding",
             "test_policy_preservation_check", "test_policy_material_binding", "test_policy_material_context",
@@ -111,14 +112,16 @@ class PolicyDevelopmentTests(unittest.TestCase):
         self.assertEqual(self.calls[:2], [
             ["opam", "install", "core/biocompiler_core.opam", "--deps-only", "--with-test", "--yes"],
             ["opam", "exec", "--", "dune", "build", "--root", "core", "@all"]])
-        self.assertEqual(len(self.calls), 23)
-        self.assertEqual(len(result["suites"]), 21)
+        self.assertEqual(len(self.calls), 25)
+        self.assertEqual(len(result["suites"]), 23)
         for name, fixtures in (
             ("test_policy_component_selection_request", ["policy_material_request_v01.json", "policy_material_state_v01.json"]),
             ("test_policy_component_material_candidate", ["policy_material_request_v01.json"]),
             ("test_policy_component_selection_candidate", ['policy_material_request_v01.json']),
             ("test_policy_component_selection_common", ['policy_material_request_v01.json', 'policy_material_state_v01.json']),
             ("test_policy_component_selection_check", ['policy_material_request_v01.json']),
+            ("test_policy_component_selection_scope", ["policy_material_request_v01.json"]),
+            ("test_policy_component_selection_service", ["policy_material_request_v01.json"]),
         ):
             call = next(call for call in self.calls if any(str(arg).endswith(name + ".exe") for arg in call))
             self.assertEqual([Path(arg).name for arg in call[4:]], fixtures)
@@ -142,7 +145,8 @@ class PolicyDevelopmentTests(unittest.TestCase):
         self.assertEqual(self.calls, [])
 
     def test_missing_target_and_changed_fixture_order_fail_closed(self):
-        for name in ("test_policy_component_fragment", "test_policy_component_selection_request", "test_policy_component_material_candidate"):
+        for name in ("test_policy_component_fragment", "test_policy_component_selection_request", "test_policy_component_material_candidate",
+                     "test_policy_component_selection_scope", "test_policy_component_selection_service"):
             (self.root / "core/test/dune").write_text("".join(stanza for stanza in self.stanzas
                 if "(name " + name + ")" not in stanza))
             with self.subTest(suite=name), self.assertRaisesRegex(ValueError, "Missing or changed registered suite"):
@@ -203,14 +207,14 @@ class PolicyDevelopmentTests(unittest.TestCase):
         self.assertEqual(len(self.calls), 2)
         self.assertEqual(self.report()["status"], "failed")
 
-    def test_failed_suite_retains_all_twenty_one_outcomes_and_fails(self):
+    def test_failed_suite_retains_all_twenty_three_outcomes_and_fails(self):
         dev.prepare(self.root)
         self.fail = dev.selected_suites(self.root)[1]["argv"]
         with self.assertRaisesRegex(ValueError, "Focused native suite failed"):
             dev.run(self.root)
         result = self.report()
-        self.assertEqual(len(self.calls), 23)
-        self.assertEqual([r["status"] for r in result["suites"]].count("passed"), 20)
+        self.assertEqual(len(self.calls), 25)
+        self.assertEqual([r["status"] for r in result["suites"]].count("passed"), 22)
         self.assertEqual(result["suites"][1]["status"], "failed")
         self.assertEqual(result["status"], "failed")
 

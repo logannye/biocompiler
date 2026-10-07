@@ -318,14 +318,22 @@ def _artifact(value: JsonValue, *, operation: str, request: dict[str, JsonValue]
     for key, expected in (("request_fingerprint", request), ("candidate_fingerprint", candidate),
             ("invocation_fingerprint", {"request": request, "candidate": candidate, "limits": limits}), ("assessment_fingerprint", report)):
         _pin(bindings[key], expected, "Manifest " + key)
-    construction = _record(candidate["construction"], "Checked construction")
+    _artifact_members(construction=candidate["construction"], members=manifest["members"],
+                      fasta=artifact["fasta"], fasta_sha256=artifact["fasta_sha256"],
+                      manifest_fasta_sha256=manifest["fasta_sha256"])
+
+
+def _artifact_members(*, construction: JsonValue, members: JsonValue, fasta: JsonValue,
+                      fasta_sha256: JsonValue, manifest_fasta_sha256: JsonValue) -> None:
+    """Validate the exact pair against checked construction data, independent of envelope."""
+    construction = _record(construction, "Checked construction")
     inventory = _record(construction.get("inventory"), "Checked molecular inventory")
     molecules = _rows(inventory.get("molecules"), "Checked molecules")
-    members = _rows(manifest["members"], "Manifest members")
-    if not molecules or len(members) != len(molecules) or not _same([molecule.get("id") for molecule in molecules], construction.get("member_order")):
+    member_rows = _rows(members, "Manifest members")
+    if not molecules or len(member_rows) != len(molecules) or not _same([molecule.get("id") for molecule in molecules], construction.get("member_order")):
         raise CoreProtocolError("Manifest lost the exact nonempty ordered member inventory")
     fasta_parts: list[str] = []
-    for index, (raw, molecule) in enumerate(zip(members, molecules), 1):
+    for index, (raw, molecule) in enumerate(zip(member_rows, molecules), 1):
         member = _object(raw, {"fasta_id", "member_id", "molecule", "sequence_sha256"}, "Manifest member")
         fasta_id = f"rna_{index:04d}"
         sequence = molecule.get("sequence")
@@ -337,7 +345,7 @@ def _artifact(value: JsonValue, *, operation: str, request: dict[str, JsonValue]
             raise CoreProtocolError("Manifest sequence hash differs from exact native sequence bytes")
         fasta_parts.append(f">{fasta_id} alphabet=RNA\n")
         fasta_parts.extend(sequence[offset:offset + 80] + "\n" for offset in range(0, len(sequence), 80))
-    if artifact["fasta"] != "".join(fasta_parts) or manifest["fasta_sha256"] != artifact["fasta_sha256"]:
+    if fasta != "".join(fasta_parts) or manifest_fasta_sha256 != fasta_sha256:
         raise CoreProtocolError("FASTA and manifest do not represent the same exact checked member pair")
 
 
