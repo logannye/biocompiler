@@ -219,6 +219,16 @@
     "source_count": 1163,
     "tree": "e2d6a5cbf7a8b2d346245f1e5d9441a4c30a1b9c"
   },
+  "session_direction": {
+    "active_monitoring": false,
+    "automatic_merge": false,
+    "date_pacific": "2026-10-06",
+    "development_head": "fbd2230e82d6ba448ae5aa4cdf33ebc0978df16b",
+    "existing_hosted_run": "left_running_without_restart_or_cancellation",
+    "frozen_release_head": "0b2fc34b8b82d5956c81f550a7e5bf9fdf9f15e1",
+    "instruction": "End the session cleanly; defer waiting for validation and merging; continue development in a fresh Codex session.",
+    "next_development": "reviewed_metered_selection_candidate_generation"
+  },
   "stable_auditor": {
     "branch": "codex/component-release-audit",
     "head": "1c67b5b3c0346bcb8cf2a8b3539056cf004e15fe",

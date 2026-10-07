@@ -12,6 +12,22 @@ and [machine-readable checkpoint/evidence index](semantic-mrna-handoff/2026-10-0
 Generated evidence stays in its original worktree; this packet copies no large
 artifacts, executables, environments, credentials or patient data.
 
+## Final user direction at session close
+
+On 2026-10-06 Pacific, the user deferred waiting for validation and merging in
+this session and requested a clean handoff for continued development in a fresh
+Codex session. No further merge, validation restart or active monitoring is part
+of this session. The existing hosted PR85 run may finish independently; no
+workflow cancellation or automatic merge was requested or configured.
+
+The next development task is **metered selection candidate generation**, using
+the reviewed design in this packet and the independently audited selection source
+`fbd2230e82d6ba448ae5aa4cdf33ebc0978df16b`. Keep PR85's tested source
+`0b2fc34b8b82d5956c81f550a7e5bf9fdf9f15e1` frozen. Development can proceed
+in its separate checkout while release validation remains pending. Refresh the
+existing run's state on resume; do not restart completed work or treat a green
+CI label alone as the required independent release audit.
+
 ## Scope and completed source work
 
 The target remains semantic correctness from the Python therapeutic-design DSL
@@ -218,11 +234,11 @@ in the current tracker. No historical worktree was reset or deleted.
    subsequent complete increment with its own installed/offline/release gates.
    Merge stable audit and tracker branches deliberately; they are not assumed
    present on main just because they are pushed or included in selection.
-6. After those boundaries are secure, implement the preserved metered-generation
-   design as the next selection batch. Reuse the existing architecture and shared
-   scope. Keep helpers, finite-machine extensions and multiple RNA members for
-   later complete profiles. Update the tracker at source/tested/merged/main
-   milestones rather than polling events.
+6. Implement the preserved metered-generation design in the separate selection
+   development checkout; this source work need not wait for PR85 to merge. Reuse
+   the existing architecture and shared scope. Keep helpers, finite-machine
+   extensions and multiple RNA members for later complete profiles. Update the
+   tracker at source/tested/merged/main milestones rather than polling events.
 
 All OCaml/Rust compilation, executable native tests and packaging remain hosted.
 No local native fallback or package-manager implicit rebuild is authorized.
@@ -233,13 +249,12 @@ recorded hosted validator work; do not claim it from native decoding alone.
 
 ## Resume prompt
 
-> Continue Biocompiler from `docs/semantic-mrna-session-handoff.md` and
-> `docs/semantic-mrna-development-plan.md`. Verify live branch, PR, run and main
-> identities first; preserve all worktree ownership and retained failed evidence.
-> Close the isolated installed-RECORD correction and exact component release
-> gates, reconcile PR95 normal merge/actual-main validation, and retain the completed selection development audit at `fbd2230e8` before
-> extending that branch toward metered generation and installed release acceptance. Keep all native work hosted. Do not
-> recreate completed layers or the implemented reference-package route. Selection
-> compile remains unimplemented: use the dated reviewed metering design only
-> after the current acceptance boundaries close. Maintain the tracker as each
-> source, hosted, merge and main milestone actually completes.
+> Continue Biocompiler development from
+> `/Users/logannye/Documents/ChatGPT/GeneMedicineCompiler/work/semantic-mrna-tracker/docs/semantic-mrna-session-handoff.md`
+> and the adjacent `semantic-mrna-development-plan.md`. We deferred merge work
+> at session close. Verify current worktree and GitHub identities, preserve the
+> frozen PR85 candidate and its existing run, and begin the reviewed metered
+> selection-generation milestone from audited source `fbd2230e8` in the separate
+> development checkout. Keep all native compilation, execution and packaging
+> hosted. Preserve completed audits and the implemented reference-package route;
+> do not recreate them. Update the tracker as milestones actually complete.

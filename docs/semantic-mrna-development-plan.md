@@ -22,6 +22,13 @@ Completion means a complete stack for an explicitly declared supported profile, 
 
 ## 2. Current checkpoint, starting point and ownership
 
+**Final session direction:** the user deferred waiting for validation and merging
+in this session. Stop at the pushed handoff. In the fresh session, continue the
+reviewed metered selection-generation milestone from audited source `fbd2230e8`
+while keeping PR85's release candidate frozen. The existing hosted run may
+finish independently; no automatic merge or validation restart is configured.
+See the [handoff](semantic-mrna-session-handoff.md) for the copyable resume prompt.
+
 **Session closure status:** [PR95](https://github.com/logannye/biocompiler/pull/95)
 merged normally on 2026-10-06 Pacific as
 `ddf8e8a6031e342ac9fda7b94b03ae35f859bb20`, after its exact 42-job gate and
