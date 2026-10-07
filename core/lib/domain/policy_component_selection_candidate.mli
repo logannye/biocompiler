@@ -14,6 +14,7 @@ val request_fingerprint : t -> string
 val decoding_work : t -> int
 val alternatives : t -> alternative list
 val evaluation_order : t -> alternative list
+
 (** This is the producer's proposal, including null for no proposed winner.
     A known ID may still be ineligible or incorrectly ranked. *)
 val selected_id : t -> string option
