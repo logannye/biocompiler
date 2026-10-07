@@ -27,7 +27,7 @@ let model_order (left:I.model)(right:I.model)=
   let by_capacity=compare(capacity left.primitive)(capacity right.primitive)in
   if by_capacity<>0 then by_capacity else String.compare(P.fingerprint left.identity)(P.fingerprint right.identity)
 
-let lower_metered ~charge ~admitted ~library =
+let lower_legacy_metered ~charge ~admitted ~library =
   let module Meter = Bioc_checker.Policy_generation_meter.Make (struct let charge = charge end) in
   let module List = Meter.List in
   let ( ^ ) = Meter.append_string in
@@ -289,5 +289,10 @@ let lower_metered ~charge ~admitted ~library =
     |[]->Diagnostic.fail "policy_implementation_lowering_missing_model" "No complete authorized supplied model set matches the source and encounter layout."
     |layout::remaining->(try build layout with Diagnostic.Error diagnostic when diagnostic.code="policy_implementation_lowering_missing_model"->choose remaining)in
   choose layouts
+
+let lower_metered ~charge ~admitted ~library =
+  if (A.behavior admitted).machines=[] then lower_legacy_metered ~charge ~admitted ~library
+  else let implementation,binding=Policy_staged_lowering.lower_metered ~charge ~admitted ~library in
+    {implementation;binding}
 
 let lower ~admitted ~library = lower_metered ~charge:(Bioc_checker.Policy_generation_meter.no_charge) ~admitted ~library

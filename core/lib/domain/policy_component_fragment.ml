@@ -5,6 +5,8 @@ module Names = Set.Make (String)
 
 let schema_version = "biocompiler.policy_component_fragment.v0.1"
 let profile = "biocompiler.policy_exact_fragment.v0.1"
+let staged_profile = "biocompiler.policy_staged_fragment.v0.1"
+let staged_phase_profile = "biocompiler.policy_staged_primitive_execution.v0.1"
 let primitive_profile = I.profile
 let observable_profile = I.observable_profile
 let phase_profile = "biocompiler.policy_primitive_execution.v0.1"
@@ -87,6 +89,7 @@ let signal_of_json value = match Json.string value with
   | "event_batch" -> I.Event_batch | "activation_batch" -> I.Activation_batch
   | "truth_write" -> I.Truth_write | "effect_request" -> I.Effect_request
   | "attempt_snapshot" -> I.Attempt_snapshot
+  | "machine_snapshot" -> I.Machine_snapshot | "machine_write" -> I.Machine_write
   | _ -> fail "Unknown fragment boundary signal type."
 let direction_of_json value = match Json.string value with
   | "input" -> I.Input | "output" -> I.Output
@@ -169,7 +172,7 @@ let validate_graph (value : t) =
       let commit = node identity in
       require (commit.model.replication = arbiter.model.replication) "Fragment atomic group has inconsistent scope.";
       let writes, requests = match commit.model.primitive with
-        | I.Atomic_commit { writes; requests } -> writes, requests
+        | I.Atomic_commit { writes; requests } | I.Transition_commit { writes; requests; _ } -> writes, requests
         | _ -> fail "Fragment atomic group member is not a commit." in
       let output = { I.node_id = group.arbiter; port_id = "out" ^ string_of_int lane } in
       let expected = { I.node_id = identity; port_id = "grant" } in
@@ -185,21 +188,28 @@ let validate_graph (value : t) =
         | [], true -> ()
         | _ -> fail "Fragment atomic action needs one local destination or one boundary continuation."
       done) ["write", writes; "request", requests];
+      (match commit.model.primitive with
+       | I.Transition_commit _ ->
+         let key=endpoint_key {I.node_id=identity;port_id="machine_write"} in
+         (match Option.value (Hashtbl.find_opt consumers key) ~default:[], Hashtbl.mem boundary_outputs key with
+          | [destination],false -> destinations:=destination.I.node_id:: !destinations
+          | _ -> fail "Fragment transition must write exactly one local machine bank.")
+       | _ -> ());
       unique "atomic destination" !destinations) group.commits) value.group_values;
   List.iter (fun (node : node) -> match node.model.primitive with
-    | I.Exclusive_arbiter _ | I.Priority_arbiter _ | I.Atomic_commit _ ->
+    | I.Exclusive_arbiter _ | I.Priority_arbiter _ | I.Atomic_commit _ | I.Transition_commit _ ->
         require (Hashtbl.mem member_groups node.node_id) "Fragment atomic node lacks local group ownership."
-    | I.Truth_register _ | I.Attempt_bank _ ->
+    | I.Truth_register _ | I.Attempt_bank _ | I.Machine_bank _ ->
         let groups = value.wire_values |> List.filter_map (fun (wire : I.wire) ->
           if wire.consumer.node_id = node.node_id &&
-            (match (find_node index wire.producer.node_id).model.primitive with I.Atomic_commit _ -> true | _ -> false)
+            (match (find_node index wire.producer.node_id).model.primitive with I.Atomic_commit _ | I.Transition_commit _ -> true | _ -> false)
           then Hashtbl.find_opt member_groups wire.producer.node_id else None)
           |> List.sort_uniq String.compare in
         require (List.length groups <= 1) "Fragment local bank writers require one common arbitration group."
     | _ -> ()) value.node_values;
   let instantaneous = List.filter (fun (wire : I.wire) ->
     match (node wire.consumer.node_id).model.primitive with
-    | I.Truth_register _ -> false
+    | I.Truth_register _ | I.Machine_bank _ -> false
     | I.Attempt_bank _ when wire.consumer.port_id = "request" -> false
     | _ -> true) value.wire_values in
   let visited = ref Names.empty in
@@ -219,9 +229,13 @@ let of_json ~library raw =
   exact ["schema_version"; "profile"; "primitive_profile"; "observable_profile"; "phase_profile";
     "id"; "version"; "slot_layout"; "nodes"; "wires"; "boundary_ports"; "external_slots";
     "atomic_groups"; "semantic_exports"] raw;
-  require (text "schema_version" raw = schema_version && text "profile" raw = profile &&
-    text "primitive_profile" raw = primitive_profile && text "observable_profile" raw = observable_profile &&
-    text "phase_profile" raw = phase_profile) "Unknown fragment, primitive, observable or phase profile.";
+  let staged=text "profile" raw=staged_profile in
+  require (text "schema_version" raw = schema_version &&
+    (text "profile" raw = profile || staged) &&
+    text "primitive_profile" raw = (if staged then I.staged_profile else primitive_profile) &&
+    text "observable_profile" raw = (if staged then I.staged_observable_profile else observable_profile) &&
+    text "phase_profile" raw = (if staged then staged_phase_profile else phase_profile))
+    "Unknown fragment, primitive, observable or phase profile.";
   let fragment_id = name (get "id" raw) and fragment_version = name (get "version" raw) in
   let raw_layout = get "slot_layout" raw in
   exact ["id"; "slots"] raw_layout;
@@ -230,6 +244,8 @@ let of_json ~library raw =
   let node_values = List.map (fun value ->
     exact ["id"; "model"] value;
     let node_id = name (get "id" value) and model = model_of_json ~library (get "model" value) in
+    require (staged || I.profile_for_primitive model.primitive=I.profile)
+      "Legacy fragments cannot contain staged primitives.";
     (match model.replication with
     | I.Executor -> ()
     | I.Encounter_slots { layout_id; slots } ->

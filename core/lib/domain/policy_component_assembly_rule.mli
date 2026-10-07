@@ -9,6 +9,7 @@ module C = Policy_component_material
 module L = Policy_component_library
 val schema_version : string
 val profile : string
+val staged_profile : string
 val transport_profile : string
 
 type slot = Decision | Driver
@@ -17,6 +18,8 @@ type node_ref = private { slot:slot; node_id:string }
 type endpoint_ref = private { node:node_ref; port_id:string }
 type boundary_ref = private { slot:slot; boundary_id:string }
 type link_kind = Product | Request | Authorization
+  | Stage_product of int | Stage_request of int | Stage_authorization of int
+  | Stage_event of int * I.event_kind
 type scope_relation = Same_encounter_slot | Immutable_executor_broadcast
 type link = private {
   kind:link_kind; producer:boundary_ref; consumer:boundary_ref;
@@ -56,3 +59,6 @@ val root_bindings : t -> root_binding list
 val join : t -> join
 val link_carriers : t -> link_carrier list
 val material_authority : t -> Policy_mrna_structure.t
+
+val is_staged : t -> bool
+val link_name : link_kind -> string

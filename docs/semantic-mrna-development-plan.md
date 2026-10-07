@@ -789,7 +789,7 @@ Exit: request admission and the preservation relation are reviewable and executa
 Depends on: SM-02.
 
 - [x] **SM-03.1a** Define the closed first-profile primitives for evidence/age encoding, three-valued predicates, scoped storage, atomic commit, explicit arbitration, timers and correlated attempt state.
-- [ ] **SM-03.1b** Extend implementation primitives and checked lowering to source-level finite machines and transitions. Operational machine execution already exists, but this implementation profile explicitly rejects machines/transitions.
+- [ ] **SM-03.1b** Extend implementation primitives and checked lowering to source-level finite machines and transitions. The separate staged profile is under implementation: one encounter-scoped five-state machine, seven explicit transitions and two independently owned stages of one supplied product. Native hosted validation, complete material controls and installed acceptance remain pending.
 - [x] **SM-03.2** Implement candidate-state initialization and transitions independently of Policy_execution. Reconstruct exclusively from actual supplied primitive instances, configuration, ports and wiring.
 - [x] **SM-03.3** Check well-typed ports, units, clocks, scope, state encoding, capacity and unique ownership; reject combinational/scheduling cycles unless a specified bounded settling rule admits them.
 - [x] **SM-03.4** Implement the independently fixed total input/observable projection, causal feedback coupling and injective encounter/attempt mappings fixed at creation. Declare any structural sharing and prove that distinct instances retain independent state.
@@ -1143,3 +1143,19 @@ Implementation acceptance must include literal positive/no-selection cases, tied
 - [Independent verification boundaries](verification-independence-v0.1.md)
 - [Development validation](development-validation.md)
 - [Migration roadmap and historical receipts](language-migration-roadmap.md)
+
+
+SM-03.1b implementation checkpoint (2026-10-07): the prerequisite selection
+generation revision `dfc006e8072c02d7d58b56f62245e007d0b5e7ae` passed hosted
+development run `37571805132` (26 native suites, 26 component SDK observations,
+35 selection SDK observations), with an independent inert artifact audit on both
+supported Python runtimes. That receipt does not validate subsequent staged
+changes. Current staged work adds explicit finite machine storage, correlated
+transition gates and atomic machine writes, a separately versioned binding and
+observable profile, and a two-bank component assembly with typed feedback-return
+links. All supplied source, material and deployment contracts remain external
+authority. The first staged slice repeats one fixed encoded product; the
+cleanup/repair authoring example is not thereby a supported two-product payload.
+Unknown or false event guards remain inactive without a hidden retry. Conditional
+bounded preservation and declared hard requirements do not assert universal
+termination. This checkpoint is implementation work, not acceptance.

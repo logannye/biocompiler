@@ -34,11 +34,19 @@
 
     Selected models still require separately supplied component membership and
     configuration/connection-to-material carrier authority. This module does
-    not fabricate those bindings or override an empty source catalog. *)
+    not fabricate those bindings or override an empty source catalog.
+
+    The separately named staged profile adds finite machine banks, transition
+    gates and atomic transition commits. Their supplied state labels are a
+    bounded alphabet, not executable source syntax. Machine writes cross the
+    same atomic phase boundary as register writes. Legacy model bodies retain
+    their original profile and exact identity inside a staged library. *)
 open Bioc_wire
 
 val profile : string
 val observable_profile : string
+val staged_profile : string
+val staged_observable_profile : string
 val library_schema : string
 val model_schema : string
 val candidate_schema : string
@@ -49,6 +57,7 @@ type replication = Executor | Encounter_slots of { layout_id : string; slots : i
 type event_kind = Updated | Rising | Requested | Initiated | Completed | Failed | Timed_out
 type authorization = At_initiation | Continuous
 type unknown_response = Continue | Defer
+type correlation = Unbound | Retained_attempt
 type primitive =
   | Truth_constant of truth
   | Product_constant of string
@@ -63,9 +72,14 @@ type primitive =
   | Atomic_commit of { writes : int; requests : int }
   | Attempt_bank of { capacity : int; timeout_ticks : int;
       authorization : authorization; on_unknown : unknown_response }
+  | Machine_bank of { states : string list; initial : string; terminal : string list;
+      writers : int; retained_capacity : int }
+  | Transition_gate of { source : string; correlation : correlation }
+  | Transition_commit of { destination : string; writes : int; requests : int }
 
 type signal_type = Truth_value | Product_symbol | Evidence_batch | Feedback_batch
   | Event_batch | Activation_batch | Truth_write | Effect_request | Attempt_snapshot
+  | Machine_snapshot | Machine_write
 type direction = Input | Output
 type port = { port_id : string; direction : direction; signal_type : signal_type }
 type endpoint = { node_id : string; port_id : string }
@@ -87,6 +101,7 @@ type model = private { identity : Pinned_identity.t; configuration_digest : stri
 type library
 val library_of_json : Json.t -> library
 val library_to_json : library -> Json.t
+val library_profile : library -> string
 val library_digest : library -> string
 val models : library -> model list
 val model_body_to_json : model -> Json.t
@@ -95,6 +110,8 @@ type node = private { node_id : string; model : model }
 type t
 val of_json : library:library -> Json.t -> t
 val to_json : t -> Json.t
+val implementation_profile : t -> string
+val implementation_observable_profile : t -> string
 val fingerprint : t -> string
 val authority : t -> authority
 val slot_layout : t -> slot_layout
@@ -106,6 +123,8 @@ val semantic_exports : t -> endpoint list
 val occurrences : t -> occurrence list
 val ports : primitive -> port list
 val primitive_name : primitive -> string
+val profile_for_primitive : primitive -> string
+val observable_profile_for : string -> string
 
 (** Structural equality to independently obtained authority/inventory only.
     The later source checker must derive these arguments from original external

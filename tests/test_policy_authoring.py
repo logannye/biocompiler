@@ -153,6 +153,11 @@ class PolicyAuthoringTests(unittest.TestCase):
         staged = build_example("staged_cleanup_repair")
         machine = next(x for x in staged.declarations if isinstance(x, bp.Machine))
         self.assertEqual(machine.terminal, ("completed", "failed"))
+        self.assertEqual((machine.scope.kind, machine.lifetime), ("encounter", "encounter"))
+        transitions = [x for x in staged.declarations if isinstance(x, bp.Transition)]
+        self.assertEqual(len(transitions), 7)
+        self.assertEqual([(x.source, x.destination) for x in transitions if x.on.value == "timed_out"],
+                         [("first", "failed"), ("second", "failed")])
         coordinated = build_example("coordinated_populations")
         channel = next(x for x in coordinated.declarations if isinstance(x, bp.Channel))
         self.assertEqual((channel.acknowledgment, channel.retry, channel.max_attempts), ("required", "bounded", 3))

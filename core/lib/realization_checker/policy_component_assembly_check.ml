@@ -28,7 +28,7 @@ let str value = Json.String value
 let obj values = Json.Object values
 let arr values = Json.Array values
 let slot_name = function A.Decision -> "decision" | A.Driver -> "driver"
-let link_name = function A.Product -> "product" | A.Request -> "request" | A.Authorization -> "authorization"
+let link_name = A.link_name
 let replace key replacement raw = obj (List.map (fun (name,value) ->
   name,(if name=key then replacement else value)) (Json.object_fields raw))
 let project_path ~offset ~space path =
@@ -82,7 +82,10 @@ let check ?parent ?(maximum=max_work) ~original ~components ~rule ~implementatio
   verify (equal (Pin.to_json (Q.rule proposed)) (Pin.to_json (A.identity rule))) "original_assembly_rule_pin";
   verify (A.model_library_digest rule = (I.authority actual).library_digest) "original_model_library";
   verify (A.component_library_digest rule = L.fingerprint components) "original_component_library";
-  verify (F.phase_profile = Bioc_candidate_runtime.Policy_primitives.profile) "fixed_primitive_execution_phases";
+  verify ((if A.is_staged rule then F.staged_phase_profile else F.phase_profile) =
+    Bioc_candidate_runtime.Policy_primitives.execution_profile actual &&
+    I.implementation_profile actual=(if A.is_staged rule then I.staged_profile else I.profile))
+    "fixed_primitive_execution_phases";
   let bindings = Q.nodes proposed and actual_nodes = I.nodes actual in
   verify (List.map (fun (row:Q.node_binding) -> row.slot,row.node_id) bindings =
     List.map (fun (row:A.node_ref) -> row.slot,row.node_id) (A.node_order rule)) "ordered_total_local_node_bijection";

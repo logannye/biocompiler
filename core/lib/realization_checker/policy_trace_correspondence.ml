@@ -7,6 +7,8 @@ module B = Bioc_checker.Policy_implementation_binding_check
 module A = Bioc_checker.Policy_realization_admission
 
 let profile = "biocompiler.policy_exact_trace_correspondence.v0.1"
+let staged_profile = "biocompiler.policy_staged_trace_correspondence.v0.1"
+let profile_for checked = if B.machines checked=[] then profile else staged_profile
 let str x = Json.String x
 let arr x = Json.Array x
 let obj x = Json.Object x
@@ -37,7 +39,7 @@ let create checked =
   {checked; domain; cursor=F.initial domain;
   next=0; attempts=[]; events=[];
   slots=List.map(fun(slot:B.slot)->{P.slot_id=slot.identity;generation=0;active=false})(B.environment checked).slots;
-  history_digest=Canonical.fingerprint(obj["profile",str profile;"binding",B.report checked])}
+  history_digest=Canonical.fingerprint(obj["profile",str(profile_for checked);"binding",B.report checked])}
 let original state = F.specification state.domain
 let time state tick = Bioc_semantics.Policy_execution.time_json
   (Q.mul (F.resolution state.domain) (Q.of_int tick))
@@ -51,7 +53,9 @@ let observation_by_source state id = find "source observation" (fun (x:B.observa
 let observation_by_bank state id = find "observation bank" (fun (x:B.observation)->x.bank=id) (B.observations state.checked)
 let effect_by_source state id = find "source effect" (fun (x:B.effect_binding)->x.source=id) (B.effects state.checked)
 let effect_by_bank state id = find "effect bank" (fun (x:B.effect_binding)->x.bank=id) (B.effects state.checked)
-let rule_by_gate state id = find "activation gate" (fun (x:B.rule)->x.gate=id) (B.rules state.checked)
+let rule_by_gate state id = find "activation gate" (fun (x:B.rule)->x.gate=id) (B.activations state.checked)
+let machine_by_bank state id = find "machine bank" (fun(x:B.machine)->x.bank=id) (B.machines state.checked)
+let transition_by_gate state id = find "transition gate" (fun(x:B.transition)->x.gate=id) (B.transitions state.checked)
 let store_by_register state id = find "truth register" (fun (x:B.state)->x.register=id) (B.states state.checked)
 let slot state id = find "encounter slot" (fun (x:F.encounter)->x.identity=id) (original state).encounters
 let occurrence kind tick index = "domain/" ^ kind ^ "/" ^ string_of_int tick ^ "/" ^ string_of_int index
@@ -102,7 +106,7 @@ let event_declaration state (event:P.event) =
       (observation_by_bank state origin.node_id).source
   | P.Primitive_event I.Rising -> let origin=endpoint () in
       require (event.attempt_id=None) "Rising event gained an attempt identity.";
-      let rule=find "rising edge" (fun (rule:B.rule)->rule.trigger=origin) (B.rules state.checked) in
+      let rule=find "rising edge" (fun (rule:B.rule)->rule.trigger=origin) (B.activations state.checked) in
       expression_key rule.source_trigger
   | P.Primitive_event _ | P.Attempt_reset | P.Attempt_ended -> let origin=endpoint () in
       require (origin.port_id="events" && Option.is_some event.attempt_id) "Effect event endpoint or attempt differs.";
@@ -116,12 +120,14 @@ let attempt_json state (attempt:P.attempt) =
   let effect_binding=effect_by_bank state attempt.bank and rule=rule_by_gate state attempt.gate in
   require (attempt.gate=effect_binding.gate && attempt.guard=effect_binding.guard && rule.source=effect_binding.initiating_rule)
     "Attempt guard/initiator differs from checked source binding.";
+  let machine=Option.map(fun bank->(machine_by_bank state bank).source)attempt.machine in
+  require(machine=effect_binding.machine)"Attempt machine ownership differs from the checked source initiator.";
   obj ["id",str (source_attempt state attempt.attempt_id); "effect",str effect_binding.source;
     "executor",str attempt.executor; "subject",str attempt.subject; "binding",binding attempt.binding;
     "initiator",str rule.source; "causes",arr(List.map(fun id->str(source_event state id))attempt.causes);
     "parameters",obj[effect_binding.product_parameter,str attempt.product]; "started_at",time state attempt.started_tick;
     "deadline",time state attempt.deadline_tick; "ended_at",optional (time state) attempt.ended_tick;
-    "status",str(status attempt.status); "authorization",str(truth attempt.authorization); "machine",Json.Null]
+    "status",str(status attempt.status); "authorization",str(truth attempt.authorization); "machine",optional str machine]
 let action_json state (action:P.action) =
   let kind,detail=match action.detail with
   | P.Deferred (activation,reasons) -> "activation_deferred",obj[
@@ -148,6 +154,13 @@ let action_json state (action:P.action) =
   | P.State_written write -> "state_written",obj[
       "state",str ((store_by_register state write.destination).source); "binding",binding write.binding;
       "value",truth_value write.value]
+  | P.Machine_transition value ->
+      let machine=machine_by_bank state value.bank and transition=transition_by_gate state value.gate in
+      require(transition.machine=machine.source && transition.commit=value.commit)
+        "Machine transition changes its checked machine, gate or commit identity.";
+      "machine_transition",obj["machine",str machine.source;"transition",str transition.source;
+        "destination",str value.destination;"binding",binding value.binding;
+        "retained_attempts",arr(List.map(fun id->str(source_attempt state id))value.retained_attempts)]
   | P.Effect_requested attempt -> let projected=attempt_json state attempt in
       "effect_requested",obj(List.map(fun key->key,get key projected)
         ["effect";"initiator";"binding";"subject";"causes";"parameters"] @ ["attempt",get "id" projected]) in
@@ -156,7 +169,7 @@ let source_actions frame =
   List.filter(fun row -> match text "kind" row with
     | "requirement_response" | "requirement_deadline" -> false
     | "observation_batch" | "feedback_accepted" | "feedback_rejected" | "authorization_changed"
-    | "activation_deferred" | "arbitration_suppressed" | "state_written" | "effect_requested" -> true
+    | "activation_deferred" | "arbitration_suppressed" | "state_written" | "effect_requested" | "machine_transition" -> true
     | other -> Diagnostic.fail "policy_trace_correspondence" ("Source action outside fixed observable profile: " ^ other))
     (items "actions" frame)
 let evidence_json state (value:P.evidence_snapshot) =
@@ -172,13 +185,33 @@ let state_rows state (candidate:P.frame) =
     Some(store.source,port.binding,obj["state",str store.source;"binding",binding port.binding;"value",truth_value value]))candidate.outputs)
     (B.states state.checked)
   |> List.sort(fun(a,b,_)(c,d,_)->compare(a,b)(c,d)) |> List.map(fun(_,_,row)->row)
+let machine_rows state (candidate:P.frame) =
+  let port_snapshots=List.filter_map(fun(port:P.port_value)->
+    if not(List.exists(fun(machine:B.machine)->machine.bank=port.endpoint.node_id)(B.machines state.checked)) then None
+    else (
+      require(port.endpoint.port_id="snapshot")"Machine bank exported an unexpected settled port.";
+      match port.signal with
+      |P.Machine value->require(value.bank=port.endpoint.node_id && value.binding=port.binding)
+          "Settled machine signal changes its actual bank or binding.";Some value
+      |_->Diagnostic.fail "policy_trace_correspondence" "Settled machine snapshot has the wrong signal type."))candidate.outputs in
+  require(List.sort compare port_snapshots=List.sort compare candidate.machines)
+    "Settled machine ports differ from the complete machine ledger.";
+  List.map(fun(value:P.machine_snapshot)->
+    let machine=machine_by_bank state value.bank in
+    List.iter(fun id->let attempt=find "machine-retained attempt" (fun(a:P.attempt)->a.attempt_id=id)candidate.attempts in
+      require(attempt.machine=Some value.bank && attempt.binding=value.binding)
+        "Machine retained a different machine, encounter or generation's attempt.")value.retained_attempts;
+    machine.source,value.binding,obj["machine",str machine.source;"binding",binding value.binding;"state",str value.state;
+      "attempts",arr(List.map(fun id->str(source_attempt state id))value.retained_attempts)])candidate.machines
+  |> List.sort(fun(a,b,_)(c,d,_)->compare(a,b)(c,d)) |> List.map(fun(_,_,row)->row)
 let advance state ~(batch:F.input_batch) ~source_frame ~source_attempts ~source_creations ~(candidate:P.frame) =
   require (candidate.tick=state.next && batch.tick=state.next && batch.tick<=(original state).horizon_ticks &&
     batch.origin=F.cursor_digest state.cursor) "Executions do not share this exact causal domain prefix.";
   Json.exact_fields ["time";"microsteps";"events";"actions";"states";"machines";"evidence";"active_attempts"]
     (Json.object_fields source_frame);
   same "timestamp" (time state candidate.tick) (get "time" source_frame);
-  same "unsupported machines" (arr []) (get "machines" source_frame);
+  require(candidate.execution_profile=P.execution_profile(B.implementation state.checked))
+    "Candidate frame changed its independently bound execution profile.";
   List.iteri(fun index(round:P.round)->require(round.microstep=index+1) "Candidate rounds are not consecutive.")candidate.rounds;
   same "settling steps" (Json.int(List.length candidate.rounds)) (get "microsteps" source_frame);
   let expected_slots=List.map(fun(previous:P.slot_snapshot)->
@@ -211,6 +244,7 @@ let advance state ~(batch:F.input_batch) ~source_frame ~source_attempts ~source_
   List.iter(fun(source,actual)->same "event" source (event_json state candidate.tick actual))event_pairs;
   List.iter(fun(source,actual)->same "attempt" source (attempt_json state actual)) (zip "attempt ledger" source_attempts candidate.attempts);
   same "ordered actions" (arr(source_actions source_frame)) (arr(List.map(action_json state)candidate.actions));
+  same "settled scoped machines and retained attempts" (get "machines" source_frame) (arr(machine_rows state candidate));
   same "settled scoped state" (get "states" source_frame) (arr(state_rows state candidate));
   same "settled evidence" (get "evidence" source_frame) (arr(List.map(evidence_json state)candidate.evidence));
   same "active attempts" (get "active_attempts" source_frame) (arr(List.filter_map(fun(actual:P.attempt)->
@@ -220,7 +254,7 @@ let advance state ~(batch:F.input_batch) ~source_frame ~source_attempts ~source_
     "candidate_frame",P.frame_to_json candidate]) in
   let cursor=F.advance state.domain state.cursor batch ~source_creations in
   {state with next=state.next+1;slots=expected_slots;history_digest;cursor}
-let report state = obj["profile",str profile; "claim",str "matched_prefix_only";
+let report state = obj["profile",str(profile_for state.checked); "claim",str "matched_prefix_only";
   "binding",B.report state.checked; "next_tick",Json.int state.next; "history_digest",str state.history_digest;
   "domain_cursor",str(F.cursor_digest state.cursor);
   "attempts",arr(List.map(fun(candidate,source)->obj["candidate",str candidate;"source",str source])state.attempts);
@@ -228,7 +262,7 @@ let report state = obj["profile",str profile; "claim",str "matched_prefix_only";
   "requirements",str "unassessed"; "whole_domain",str "unassessed"; "material",str "unassessed"; "export",str "withheld"]
 let candidate_event_to_source = source_event
 let candidate_attempt_to_source = source_attempt
-let identity state = obj["profile",str profile;"history_digest",str state.history_digest;
+let identity state = obj["profile",str(profile_for state.checked);"history_digest",str state.history_digest;
   "domain_cursor",str(F.cursor_digest state.cursor);"next_tick",Json.int state.next;
   "attempts",arr(List.map(fun(candidate,source)->arr[str candidate;str source])state.attempts);
   "events",arr(List.map(fun(candidate,source)->arr[str candidate;str source])state.events)]

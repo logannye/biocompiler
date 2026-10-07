@@ -64,7 +64,7 @@ let compile (binding:B.checked_binding) resolution (used:usage ref) (limits:limi
   let nodes=I.nodes(B.implementation binding) in
   let lookup_cost=1+List.length behavior.stores+List.length behavior.parameters+List.length behavior.effects+
     List.length(B.observations binding)+List.length(B.states binding)+List.length(B.effects binding)+
-    List.length(B.rules binding)+List.length(B.expressions binding)in
+    List.length(B.activations binding)+List.length(B.expressions binding)in
   let scope=match requirement.scope with Some value->value|None->unsupported "unsupported_scope" in
   (match scope with
    |O.Executor role->support(role=domain.executor_role) "wrong_executor_scope"
@@ -126,7 +126,7 @@ let compile (binding:B.checked_binding) resolution (used:usage ref) (limits:limi
         ignore(read[endpoint observation.bank "value"]Truth_kind);
         {origin=endpoint observation.bank "updated";phase=I.Updated}
     |"rising",[_]->let rule=find_supported "unmapped_rising_event"
-        (fun(r:B.rule)->r.source_trigger=expression)(B.rules binding) in
+        (fun(r:B.rule)->r.source_trigger=expression)(B.activations binding) in
         support(match scope with O.Encounter _->true|_->false) "rising_requires_encounter";
         {origin=rule.trigger;phase=I.Rising}
     |"effect_event",[]->let effect_binding=find_supported "unmapped_effect_event"

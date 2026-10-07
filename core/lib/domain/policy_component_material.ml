@@ -135,6 +135,9 @@ let static_requirements fragment =
     let per_slot unit minimum = capacity owner unit MC.Per_encounter_slot minimum in
     match node.model.primitive with
     | I.Truth_register _ -> [per_slot MC.Truth_cells 1]
+    | I.Machine_bank {states;retained_capacity;_} ->
+        let rec bits width bound=if bound>=List.length states then max 1 width else bits (width+1) (bound*2) in
+        [per_slot MC.Machine_state_bits (bits 0 1);per_slot MC.Machine_correlation_records retained_capacity]
     | I.Evidence_bank _ -> [per_slot MC.Evidence_records 1;per_slot MC.Timer_cells 1]
     | I.Observed_rising -> [per_slot MC.Edge_history_cells 1]
     | I.Attempt_bank {capacity=count;_} -> [per_slot MC.Active_attempt_records count;

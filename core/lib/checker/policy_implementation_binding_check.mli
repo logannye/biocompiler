@@ -4,6 +4,9 @@
     This first family has one executor/encounter/truth observation/product
     effect, one or two exclusive evidence-rising rules, encounter truth stores,
     no machines/predicate resets, and exactly one effect-initiating rule.
+    The separate staged profile binds one encounter machine, five exact ordered
+    source state labels, seven transitions and two distinct same-product effects.
+    Alternate state encodings and unbounded/generic machines are not admitted.
 
     A result proves only [source_graph_bound]. It does not execute a timeline,
     prove preservation or hard requirements, or authorize material/export. *)
@@ -21,8 +24,11 @@ type state = { source : string; register : string }
 (* [product_parameter] is the effect Argument.name, not the name of the fixed
    Parameter declaration from which its value was read. *)
 type effect_binding = { source : string; bank : string; feedback : string; initiating_rule : string;
-  gate : string; guard : I.endpoint; product_parameter : string }
+  gate : string; guard : I.endpoint; product_parameter : string; machine : string option }
 type rule = { source : string; gate : string; arbiter : string; lane : int; commit : string;
+  trigger : I.endpoint; source_trigger : O.expression }
+type machine = { source : string; bank : string }
+type transition = { source : string; machine : string; gate : string; arbiter : string; lane : int; commit : string;
   trigger : I.endpoint; source_trigger : O.expression }
 type expression = { source_path : string; source_expression : Json.t; endpoint : I.endpoint }
 type checked_binding
@@ -35,6 +41,11 @@ val observations : checked_binding -> observation list
 val states : checked_binding -> state list
 val effects : checked_binding -> effect_binding list
 val rules : checked_binding -> rule list
+val machines : checked_binding -> machine list
+val transitions : checked_binding -> transition list
+(** Common event/gate view; transition IDs remain source transition IDs and
+    [transitions] retains their machine ownership. *)
+val activations : checked_binding -> rule list
 
 (** For independently checked observable projection only. Source expressions
     must never be passed into the candidate runtime as executable callbacks. *)

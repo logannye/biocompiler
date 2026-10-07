@@ -1,0 +1,3 @@
+(library
+ (name bioc_policy_staged_test_support)
+ (libraries bioc_wire bioc_domain))

@@ -18,6 +18,8 @@ open Bioc_wire
 
 val schema_version : string
 val profile : string
+val staged_profile : string
+val staged_phase_profile : string
 val primitive_profile : string
 val observable_profile : string
 val phase_profile : string

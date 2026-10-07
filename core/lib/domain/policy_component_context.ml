@@ -10,6 +10,18 @@ module AC = Architecture_contract
 let schema_version = "biocompiler.policy_component_context.v0.1"
 let profile = "biocompiler.policy_component_mrna.v0.1"
 let record_profile = "biocompiler.policy_component_complete_records.v0.1"
+let staged_profile = "biocompiler.policy_staged_component_mrna.v0.1"
+let staged_record_profile = "biocompiler.policy_staged_component_complete_records.v0.1"
+let staged_record_shapes =
+  let fields values=Json.Array (List.map (fun value -> Json.String value) values) in
+  let base=Json.object_fields X.record_shapes in
+  let extend key names=match List.assoc key base with Json.Array values -> Json.Array (values @ List.map (fun value -> Json.String value) names) | _ -> assert false in
+  Json.Object (List.map (fun (key,value) -> key,match key with
+    | "active_attempt_records" | "retained_correlation_records" -> extend key ["machine_bank"]
+    | "control_event_records" -> extend key ["machine_bank";"source_state_index";"destination_state_index";"ordered_retained_attempt_ids"]
+    | _ -> value) base @ [
+    "machine_state_bits",fields ["machine_bank";"scope_slot_generation";"state_index"];
+    "machine_correlation_records",fields ["machine_bank";"scope_slot_generation";"attempt_id"]])
 let union_profile = "biocompiler.policy_component_ordered_union.v0.1"
 let str value = Json.String value
 let obj values = Json.Object values
@@ -44,8 +56,10 @@ let ordered_union_json rule =
     obj ["slot",str (slot_name row.slot);"id",str group.group_id;"arbiter",reference row.slot group.arbiter;
       "commits",arr (reference row.slot) group.commits]) (A.group_order rule) in
   let layout = A.layout rule in
-  let value = obj ["schema_version",str union_profile;"primitive_profile",str I.profile;
-    "observable_profile",str I.observable_profile;"phase_profile",str F.phase_profile;"transport_profile",str A.transport_profile;
+  let staged=A.is_staged rule in
+  let value = obj ["schema_version",str union_profile;"primitive_profile",str (if staged then I.staged_profile else I.profile);
+    "observable_profile",str (if staged then I.staged_observable_profile else I.observable_profile);
+    "phase_profile",str (if staged then F.staged_phase_profile else F.phase_profile);"transport_profile",str A.transport_profile;
     "slot_layout",obj ["id",str layout.layout_id;"slots",Json.int layout.slots];
     "nodes",Json.Array nodes;"wires",Json.Array wires;"inputs",Json.Array inputs;"atomic_groups",Json.Array groups;
     "semantic_exports",arr (fun (row:A.endpoint_ref) -> obj ["slot",str (slot_name row.node.slot);
@@ -54,10 +68,11 @@ let ordered_union_json rule =
   M.check_resources value; value
 let ordered_union_digest rule = Canonical.fingerprint (ordered_union_json rule)
 type record_layout = {
-  rule:P.t; union_digest:string; domain_digest:string; slots:int; generations:int; attempts:int;
+  staged:bool; rule:P.t; union_digest:string; domain_digest:string; slots:int; generations:int; attempts:int;
   horizon:int; maximum_tick:int; ordered_reasons:int; ordered_causes:int; identifier_bytes:int;
 }
-let record_layout_to_json (value:record_layout) = obj ["profile",str record_profile;"record_shapes",X.record_shapes;
+let record_layout_to_json (value:record_layout) = obj ["profile",str (if value.staged then staged_record_profile else record_profile);
+  "record_shapes",(if value.staged then staged_record_shapes else X.record_shapes);
   "rule",P.to_json value.rule;"union_digest",str value.union_digest;"domain_digest",str value.domain_digest;
   "slots",Json.int value.slots;"generations",Json.int value.generations;"attempts",Json.int value.attempts;
   "horizon_ticks",Json.int value.horizon;"maximum_tick",Json.int value.maximum_tick;
@@ -70,14 +85,16 @@ let record_layout_of_json raw =
   M.check_resources raw;
   exact ["profile";"record_shapes";"rule";"union_digest";"domain_digest";"slots";"generations";"attempts";
     "horizon_ticks";"maximum_tick";"ordered_reason_slots";"ordered_cause_slots";"identifier_bytes"] raw;
-  require (get "profile" raw=str record_profile && Json.equal (get "record_shapes" raw) X.record_shapes)
+  let staged=get "profile" raw=str staged_record_profile in
+  require ((get "profile" raw=str record_profile || staged) &&
+    Json.equal (get "record_shapes" raw) (if staged then staged_record_shapes else X.record_shapes))
     "Composition layout must retain the new profile and complete semantic record shapes.";
   let number minimum key = let value = Json.integer (get key raw) in
     require (Z.geq value (Z.of_int minimum) && Z.leq value (Z.of_int 1000000)) "Composition layout count exceeds its finite bound.";
     Z.to_int value in
   let rule = P.of_json (get "rule" raw) in
   require (P.kind rule=P.Model) "Composition layout requires a complete original rule Model pin.";
-  let value = {rule;union_digest=pin (get "union_digest" raw);domain_digest=pin (get "domain_digest" raw);
+  let value = {staged;rule;union_digest=pin (get "union_digest" raw);domain_digest=pin (get "domain_digest" raw);
     slots=number 1 "slots";generations=number 1 "generations";attempts=number 1 "attempts";
     horizon=number 0 "horizon_ticks";maximum_tick=number 0 "maximum_tick";
     ordered_reasons=number 1 "ordered_reason_slots";ordered_causes=number 1 "ordered_cause_slots";
@@ -87,7 +104,7 @@ let record_layout_of_json raw =
 let record_layout_fingerprint value = Canonical.fingerprint (record_layout_to_json value)
 type t = {clock_value:X.clock;recipient_value:X.recipient;layout_value:record_layout;
   placement_value:AC.Placement.t;delivery_value:X.delivery_group;provider_values:X.provider list}
-let to_json value = obj ["schema_version",str schema_version;"profile",str profile;
+let to_json value = obj ["schema_version",str schema_version;"profile",str (if value.layout_value.staged then staged_profile else profile);
   "clock",X.clock_to_json value.clock_value;"recipient",X.recipient_to_json value.recipient_value;
   "record_layout",record_layout_to_json value.layout_value;"placement",AC.Placement.to_json value.placement_value;
   "delivery_group",X.delivery_group_to_json value.delivery_value;"helpers",Json.Array [];
@@ -95,7 +112,8 @@ let to_json value = obj ["schema_version",str schema_version;"profile",str profi
 let of_json raw =
   M.check_resources raw;
   exact ["schema_version";"profile";"clock";"recipient";"record_layout";"placement";"delivery_group";"helpers";"providers"] raw;
-  require (get "schema_version" raw=str schema_version && get "profile" raw=str profile) "Unsupported original composition context profile.";
+  require (get "schema_version" raw=str schema_version && List.mem (get "profile" raw) [str profile;str staged_profile])
+    "Unsupported original composition context profile.";
   require (get "helpers" raw=Json.Array []) "Composition context does not support executable or delivered helpers.";
   let value = {clock_value=X.clock_of_json (get "clock" raw);recipient_value=X.recipient_of_json (get "recipient" raw);
     layout_value=record_layout_of_json (get "record_layout" raw);placement_value=AC.Placement.of_json (get "placement" raw);

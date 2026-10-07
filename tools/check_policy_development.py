@@ -26,6 +26,8 @@ SCHEMA = "biocompiler.development-feedback.v0.1"
 WORKFLOW = ".github/workflows/policy-development.yml"
 SOURCE_ROOTS = ("core", "src", "tools", "protocol", ".github", "pyproject.toml")
 SUITES = (
+    ("test_policy_staged_primitives", ()),
+    ("test_policy_staged_regimen_source", ("data/policy_staged_regimen_source_v01.json",)),
     ("test_policy_component_fragment", ("data/policy_material_request_v01.json", "data/policy_material_state_v01.json")),
     ("test_policy_component_material", ("data/policy_material_request_v01.json", "data/policy_material_state_v01.json")),
     ("test_policy_component_assembly_rule", ("data/policy_material_request_v01.json", "data/policy_material_state_v01.json")),

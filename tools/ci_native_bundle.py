@@ -24,6 +24,7 @@ except ImportError:
 
 
 DEPENDENCY_FIXTURES = {
+    "test_policy_staged_regimen_source": ["data/policy_staged_regimen_source_v01.json"],
     "test_policy_document": ["data/policy_documents_v01.json"],
     "test_policy_check": ["data/policy_frontend_request.json", "data/policy_frontend_submission.json",
                           "data/policy_documents_v01.json"],

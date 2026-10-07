@@ -80,6 +80,20 @@ let obligation_ledger budget request (implementation:P.checked_implementation) (
   let origin=R.catalog_binding request and descriptors=O.descriptors (S.definitions original) in
   let contextual=X.discharges checked in
   let condition value=if value then Some "bounded_implementation_preservation" else None in
+  let staged_machine_evidence () =
+    let report=P.evidence implementation and behavior=Admission.behavior admitted in
+    let coverage=get "coverage" report in
+    (* The generic source ledger label does not assert universal termination.
+       Discharge only its exact bounded operational interpretation: every
+       permitted prefix preserves finite states, terminal behavior and retained
+       attempts, and every explicit original hard requirement is satisfied. *)
+    text "profile"(B.report binding)=U.staged_profile && List.length(B.machines binding)=1 &&
+    List.length(B.transitions binding)=7 && text "preservation" report="pass" &&
+    get "complete" coverage=Json.Bool true &&
+    Json.equal(get "prefixes_started" coverage)(get "matched_prefixes" coverage) &&
+    Z.sign(Json.integer(get "histories" coverage))>0 &&
+    requirements<>[] && List.map(fun(r:O.requirement)->r.requirement_id)behavior.requirements=List.map(text "id")requirements &&
+    List.for_all(fun row->text "status" row="pass" && get "nonvacuous" row=Json.Bool true)requirements in
   let stage obligation =
     if List.exists (fun (value:X.discharge) -> value.obligation=obligation) contextual then Some "declared_context"
     else match obligation with
@@ -87,6 +101,8 @@ let obligation_ledger budget request (implementation:P.checked_implementation) (
     | "persistent_encounter_identity_lifetime" | "state_lifetime_capacity_and_inheritance"
     | "effect_authorization_feedback_and_cancellation" | "arbitration_fairness_and_conflict_resolution"
     | "safety_and_progress_satisfaction" | "requested_assurance_not_established" -> Some "bounded_implementation_preservation"
+    | "machine_reachability_termination_and_progress" ->
+        if staged_machine_evidence () then Some "bounded_machine_semantics_and_declared_requirements" else None
     | "realizability_and_target_suitability" | "implementation_catalog_applicability" -> Some "conditional_component_context_conjunction"
     | _ ->
       let suffix prefix = if String.starts_with ~prefix obligation then
@@ -106,6 +122,11 @@ let obligation_ledger budget request (implementation:P.checked_implementation) (
     | None -> obj ["obligation",str obligation;"status",str "unresolved";"stage",Json.Null;"evidence",Json.Null]
     | Some stage -> let pins=match stage with
       | "bounded_implementation_preservation" -> ["preservation",str implementation_pin]
+      | "bounded_machine_semantics_and_declared_requirements" -> ["preservation",str implementation_pin;
+          "machine_binding",str(fingerprint budget (B.report binding));
+          "state_and_terminal_semantics",str "exact_bounded_source_correspondence";
+          "prefixes",str "complete_original_domain";"retained_attempt_identity",str "creation_fixed_injective";
+          "universal_termination",str "not_claimed";"progress",str "declared_requirements_only"]
       | "declared_context" -> ["context",str context_pin]
       | _ -> ["preservation",str implementation_pin;"assembly",str assembly_pin;"context",str context_pin] in
       obj ["obligation",str obligation;"status",str "discharged";"stage",str stage;"evidence",obj pins]) obligations in

@@ -100,6 +100,7 @@ class PolicyDevelopmentTests(unittest.TestCase):
         dev.prepare(self.root)
         result = dev.run(self.root)
         self.assertEqual([row[0] for row in dev.SUITES], [
+            "test_policy_staged_primitives", "test_policy_staged_regimen_source",
             "test_policy_component_fragment", "test_policy_component_material", "test_policy_component_assembly_rule", "test_policy_component_assembly_check",
             "test_policy_component_material_request", "test_policy_component_selection_request",
             "test_policy_component_material_candidate", "test_policy_component_selection_candidate",
@@ -112,8 +113,8 @@ class PolicyDevelopmentTests(unittest.TestCase):
         self.assertEqual(self.calls[:2], [
             ["opam", "install", "core/biocompiler_core.opam", "--deps-only", "--with-test", "--yes"],
             ["opam", "exec", "--", "dune", "build", "--root", "core", "@all"]])
-        self.assertEqual(len(self.calls), 28)
-        self.assertEqual(len(result["suites"]), 26)
+        self.assertEqual(len(self.calls), 30)
+        self.assertEqual(len(result["suites"]), 28)
         for name, fixtures in (
             ("test_policy_component_selection_request", ["policy_material_request_v01.json", "policy_material_state_v01.json"]),
             ("test_policy_component_material_candidate", ["policy_material_request_v01.json"]),
@@ -216,8 +217,8 @@ class PolicyDevelopmentTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "Focused native suite failed"):
             dev.run(self.root)
         result = self.report()
-        self.assertEqual(len(self.calls), 28)
-        self.assertEqual([r["status"] for r in result["suites"]].count("passed"), 25)
+        self.assertEqual(len(self.calls), 30)
+        self.assertEqual([r["status"] for r in result["suites"]].count("passed"), 27)
         self.assertEqual(result["suites"][1]["status"], "failed")
         self.assertEqual(result["status"], "failed")
 

@@ -6,6 +6,9 @@ module X = Policy_material_context
 module A = Policy_component_assembly_rule
 val schema_version : string
 val profile : string
+val staged_profile : string
+val staged_record_profile : string
+val staged_record_shapes : Json.t
 val record_profile : string
 val union_profile : string
 
@@ -14,7 +17,7 @@ val union_profile : string
 val ordered_union_json : A.t -> Json.t
 val ordered_union_digest : A.t -> string
 type record_layout = {
-  rule:Pinned_identity.t; union_digest:string; domain_digest:string;
+  staged:bool; rule:Pinned_identity.t; union_digest:string; domain_digest:string;
   slots:int; generations:int; attempts:int; horizon:int; maximum_tick:int;
   ordered_reasons:int; ordered_causes:int; identifier_bytes:int;
 }

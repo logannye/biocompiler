@@ -120,6 +120,10 @@ let derive ~charge (binding:IB.checked_binding) rule (domain:F.t) =
   List.iter (fun (node:I.node) -> let owner=local_owner node.node_id in
     match node.model.primitive with
     | I.Truth_register _ -> add MC.Truth_cells MC.Per_encounter_slot owner 1
+    | I.Machine_bank {states;retained_capacity;_} ->
+      let rec bits width bound=charge 1;if bound>=List.length states then max 1 width else bits (width+1) (bound*2) in
+      add MC.Machine_state_bits MC.Per_encounter_slot owner (bits 0 1);
+      add MC.Machine_correlation_records MC.Per_encounter_slot owner retained_capacity
     | I.Evidence_bank {freshness_ticks} -> maximum_delta:=max !maximum_delta freshness_ticks;
       let observation=match List.find_opt (fun (value:IB.observation) -> value.bank=node.node_id) (IB.observations binding) with
         | Some value -> value.source | None -> Diagnostic.fail "policy_component_context_fail" "evidence_resource_binding" in
@@ -129,8 +133,9 @@ let derive ~charge (binding:IB.checked_binding) rule (domain:F.t) =
       add MC.Active_attempt_records MC.Per_encounter_slot owner capacity;
       add MC.Retained_correlation_records MC.Per_executor owner domain.logical_limits.max_source_attempts;
       add MC.Timer_cells MC.Per_encounter_slot owner capacity
-    | I.Activation_gate -> incr gates
+    | I.Activation_gate | I.Transition_gate _ -> incr gates
     | I.Atomic_commit {writes;requests} -> commits:= !commits+writes+requests
+    | I.Transition_commit {writes;requests;_} -> commits:= !commits+1+writes+requests
     | I.Priority_arbiter _ -> supported false "priority_material_context_unimplemented"
     | _ -> ()) nodes;
   add MC.Generation_counters MC.Per_encounter_slot R.Layout 1;
@@ -154,7 +159,7 @@ let derive ~charge (binding:IB.checked_binding) rule (domain:F.t) =
   let union=X.ordered_union_json rule in
   strings_in union;strings_in (F.to_json domain);
   List.iter (fun (node:I.node) -> strings_in (str node.node_id)) nodes;
-  let layout:X.record_layout={rule=Rule.identity rule;union_digest=Canonical.fingerprint union;domain_digest=F.digest domain;
+  let layout:X.record_layout={staged=Rule.is_staged rule;rule=Rule.identity rule;union_digest=Canonical.fingerprint union;domain_digest=F.digest domain;
     slots=List.length slots;generations=domain.logical_limits.max_generations_per_slot;attempts=domain.logical_limits.max_source_attempts;
     horizon=domain.horizon_ticks;maximum_tick=domain.horizon_ticks+ !maximum_delta;ordered_reasons;
     ordered_causes=max 1 (queue*(domain.horizon_ticks+1));identifier_bytes=max 128 (4* !max_text+128)} in
@@ -181,8 +186,11 @@ let check ?parent ?(maximum=max_work) ~request ~assembly () =
     fail (equal (L.to_json (R.component_library request)) (L.to_json (A.components assembly))) "unchanged_original_component_library";
     fail (equal (Rule.to_json rule) (Rule.to_json (A.rule assembly))) "unchanged_original_assembly_rule";
     fail (text "catalog_entry" (IB.report source)=(R.catalog_binding request).entry_id) "original_selected_catalog_entry";
-    supported(List.length behavior.rules>=1 && List.length behavior.rules<=2 && behavior.machines=[] && List.length behavior.effects=1)
-      "closed_truth_context_family_required";
+    supported (if Rule.is_staged rule then
+      behavior.rules=[] && behavior.stores=[] && List.length behavior.machines=1 &&
+      List.length behavior.transitions=7 && List.length behavior.effects=2
+      else List.length behavior.rules>=1 && List.length behavior.rules<=2 && behavior.machines=[] && List.length behavior.effects=1)
+      "closed_component_context_family_required";
     fail(recipient.role=domain.executor_role && recipient.identity=domain.executor_identity)"executor_recipient_binding";
     fail(List.for_all(fun(value:F.encounter)->value.target<>recipient.identity)domain.encounters)"encounter_target_is_not_delivery_recipient";
     let deployment=get "deployment" document in
@@ -305,7 +313,7 @@ let check ?parent ?(maximum=max_work) ~request ~assembly () =
     let demands,needed=derive ~charge source rule domain in
     derived:=List.map demand_json demands;minimum_layout:=X.record_layout_to_json needed;
     let declared=X.record_layout context in
-    fail (Pin.fingerprint declared.rule=Pin.fingerprint needed.rule && declared.union_digest=needed.union_digest &&
+    fail (declared.staged=needed.staged && Pin.fingerprint declared.rule=Pin.fingerprint needed.rule && declared.union_digest=needed.union_digest &&
       declared.domain_digest=needed.domain_digest && declared.slots=needed.slots && declared.horizon=needed.horizon)
       "complete_finite_record_identity";
     (* This separately versioned profile permits larger declared record bounds.

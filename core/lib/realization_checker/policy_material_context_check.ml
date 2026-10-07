@@ -100,6 +100,7 @@ let derive ~charge (binding:IB.checked_binding) (kernel:MC.kernel) (domain:F.t)=
       add MC.Input_rows_per_tick MC.Per_executor(MC.Input value.input_id)count)inputs;
   List.iter(fun(value:MC.local_node)->let owner=MC.Node value.local_id in
     match value.model.primitive with
+    |I.Machine_bank _|I.Transition_gate _|I.Transition_commit _->supported false "staged_requires_component_context"
     |I.Truth_register _->add MC.Truth_cells MC.Per_encounter_slot owner 1
     |I.Evidence_bank{freshness_ticks}->
       maximum_delta:=max !maximum_delta freshness_ticks;

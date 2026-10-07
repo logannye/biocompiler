@@ -30,6 +30,7 @@ POLICY_FIXTURES = ["data/policy_frontend_request.json", "data/policy_frontend_su
 
 # Literal union inventory, independent of the runner's closed allowlist.
 POLICY_OPERATIONAL_FIXTURES = {
+    "test_policy_staged_regimen_source": ["data/policy_staged_regimen_source_v01.json"],
     'test_policy_operational': ['data/policy_operational_v01.json'],
     'test_policy_execution': ['data/policy_operational_v01.json'],
     'test_policy_operational_service': ['data/policy_operational_v01.json'],
@@ -100,7 +101,7 @@ class NativeBundleTests(unittest.TestCase):
 
     def test_actual_dune_suite_census_and_argument_order_are_preserved(self):
         plan = bundle.test_plan((ROOT/'core/test/dune').read_text())
-        self.assertEqual(len(plan),166)
+        self.assertEqual(len(plan),168)
         manager = next(row for row in plan if row['name']=='test_pipeline_callback_manager')
         self.assertEqual(manager['environment'], ['BIOCOMPILER_PIPELINE_CALLBACK_MANAGER_DECLARATION',
             'BIOCOMPILER_PIPELINE_CONTRACT_LITERALS','BIOCOMPILER_FIXED_PIPELINE_CORPUS'])
@@ -118,11 +119,11 @@ class NativeBundleTests(unittest.TestCase):
             'test_policy_check':POLICY_FIXTURES,
             'test_policy_document':['data/policy_documents_v01.json'],
             'test_policy_service':['data/policy_documents_v01.json']})
-        self.assertEqual(len(POLICY_OPERATIONAL_FIXTURES),45)
-        self.assertEqual(len(observed),48)
-        self.assertEqual(len(bundle.dependency_members(ROOT)),23)
-        self.assertEqual(len(bundle.expected_members(ROOT)),191)
-        self.assertEqual(sum(path.endswith('.exe') for path in bundle.expected_members(ROOT)),168)
+        self.assertEqual(len(POLICY_OPERATIONAL_FIXTURES),46)
+        self.assertEqual(len(observed),49)
+        self.assertEqual(len(bundle.dependency_members(ROOT)),24)
+        self.assertEqual(len(bundle.expected_members(ROOT)),194)
+        self.assertEqual(sum(path.endswith('.exe') for path in bundle.expected_members(ROOT)),170)
         for name, relatives in POLICY_OPERATIONAL_FIXTURES.items():
             declaration = '(test (name '+name+') (modules '+name+') (libraries example) (action (run %{test} '
             arguments = ['%{dep:'+relative+'}' for relative in relatives]

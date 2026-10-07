@@ -11,7 +11,7 @@ from biocompiler.policy import patterns
 PATTERNS = {
     "context_gate": ("respond",),
     "once_per_scope": ("seen", "respond"),
-    "ordered_effects": ("stages", "start", "handoff", "completed", "first_failed", "second_failed"),
+    "ordered_effects": ("stages", "start", "handoff", "completed", "first_failed", "second_failed", "first_timed_out", "second_timed_out"),
     "bounded_response": ("count", "respond"),
     "persistence_gate": ("respond",),
     "population_handoff": ("send", "receive"),
@@ -90,7 +90,7 @@ def inputs(prefix, pattern, *, lifetime="encounter"):
     return declarations, result
 
 
-def manual_expansion(pattern, prefix, *, maximum=3, lifetime="encounter", duration="2.5", sender_count=1, arbitration=ARBITRATION, pattern_name="pattern"):
+def manual_expansion(pattern, prefix, *, maximum=3, lifetime="encounter", duration="2.5", sender_count=1, arbitration=ARBITRATION, pattern_name="pattern", handoff_when=None):
     """Expected records are literal specifications, never builder/helper output.
 
     In particular, no logic/time/ref or event convenience method is used here.
@@ -119,17 +119,21 @@ def manual_expansion(pattern, prefix, *, maximum=3, lifetime="encounter", durati
         target = source["target"]
         return (
             p.Machine(machine.id, executor, scope, ("ready", "first", "second", "completed", "failed"),
-                "ready", ("completed", "failed"), "executor", arbitration),
+                "ready", ("completed", "failed"), lifetime, arbitration),
             p.Transition(name + "start", machine, "ready", "first", on, permitted, "defer", (effect,)),
             p.Transition(name + "handoff", machine, "first", "second",
                 p.Expr("effect_event", p.EVENT, value="completed", ref=effect, scope=target),
-                permitted, "defer", (second,)),
+                permitted if handoff_when is None else handoff_when, "defer", (second,)),
             p.Transition(name + "completed", machine, "second", "completed",
                 p.Expr("effect_event", p.EVENT, value="completed", ref=second, scope=target), true, "defer"),
             p.Transition(name + "first_failed", machine, "first", "failed",
                 p.Expr("effect_event", p.EVENT, value="failed", ref=effect, scope=target), true, "defer"),
             p.Transition(name + "second_failed", machine, "second", "failed",
                 p.Expr("effect_event", p.EVENT, value="failed", ref=second, scope=target), true, "defer"),
+            p.Transition(name + "first_timed_out", machine, "first", "failed",
+                p.Expr("effect_event", p.EVENT, value="timed_out", ref=effect, scope=target), true, "defer"),
+            p.Transition(name + "second_timed_out", machine, "second", "failed",
+                p.Expr("effect_event", p.EVENT, value="timed_out", ref=second, scope=target), true, "defer"),
         )
     if pattern == "bounded_response":
         count = p.Ref(name + "count", "StateStore")
@@ -158,7 +162,7 @@ def manual_expansion(pattern, prefix, *, maximum=3, lifetime="encounter", durati
     raise AssertionError("Unspecified public pattern: " + pattern)
 
 
-def expand(builder, pattern, source, *, maximum=3, lifetime="encounter", duration="2.5", sender_count=1, arbitration=ARBITRATION, pattern_name="pattern"):
+def expand(builder, pattern, source, *, maximum=3, lifetime="encounter", duration="2.5", sender_count=1, arbitration=ARBITRATION, pattern_name="pattern", handoff_when=None):
     common = dict(executor=source["executor"], on=source["on"], arbitration=arbitration)
     if pattern == "context_gate":
         return patterns.context_gate(builder, pattern_name, **common, evidence=source["permitted"],
@@ -168,7 +172,8 @@ def expand(builder, pattern, source, *, maximum=3, lifetime="encounter", duratio
             permitted=source["permitted"], effect=source["effect"], lifetime=lifetime)
     if pattern == "ordered_effects":
         return patterns.ordered_effects(builder, pattern_name, **common, scope=source["scope"],
-            permitted=source["permitted"], first=source["first"], second=source["second"])
+            permitted=source["permitted"], first=source["first"], second=source["second"],
+            lifetime=lifetime, handoff_when=handoff_when)
     if pattern == "bounded_response":
         return patterns.bounded_response(builder, pattern_name, **common, scope=source["scope"],
             permitted=source["permitted"], effect=source["effect"], maximum=maximum)
@@ -255,8 +260,47 @@ class PolicyPatternTests(unittest.TestCase):
     def test_once_per_scope_literal_expansion(self):
         self.assert_expansion("once_per_scope")
 
-    def test_ordered_effects_literal_machine_and_all_five_transitions(self):
+    def test_ordered_effects_literal_machine_and_all_seven_transitions(self):
         self.assert_expansion("ordered_effects")
+
+    def test_ordered_effects_preserves_explicit_lifetime_and_handoff_guard(self):
+        for lifetime in ("encounter", "executor", "persistent"):
+            with self.subTest(lifetime=lifetime):
+                self.assert_expansion("ordered_effects", lifetime=lifetime)
+        for guard in (p.Expr("literal", p.TRUTH, value=False), p.Expr("literal", p.TRUTH, value="unknown")):
+            with self.subTest(guard=guard):
+                program = self.assert_expansion("ordered_effects", handoff_when=guard)
+                transitions = [row for row in program.declarations if isinstance(row, p.Transition)]
+                self.assertEqual(next(row for row in transitions if row.id.endswith("/handoff")).when, guard)
+                # There is no observation-triggered retry from the first state.
+                self.assertEqual([(row.on.op, row.on.value) for row in transitions if row.source == "first"],
+                    [("effect_event", "completed"), ("effect_event", "failed"), ("effect_event", "timed_out")])
+
+    def test_ordered_effects_infers_only_concrete_executor_or_encounter_lifetime(self):
+        for lifetime in ("executor", "encounter"):
+            builder = p.ProgramBuilder("inferred", semantics=semantic_bundle())
+            original, source = inputs("one", "ordered_effects", lifetime=lifetime)
+            for declaration in original:
+                builder.add(declaration)
+            result = patterns.ordered_effects(builder, "pattern", executor=source["executor"],
+                scope=source["scope"], on=source["on"], permitted=source["permitted"],
+                first=source["first"], second=source["second"], arbitration=ARBITRATION)
+            self.assertEqual(result.lifetime, lifetime)
+
+    def test_ordered_effects_invalid_lifetime_does_not_partially_expand(self):
+        for kind, lifetime, message in (("encounter", "executor", "must match"),
+                ("executor", "encounter", "must match"), ("target", None, "explicit lifetime"),
+                ("encounter", "duration", "requires encounter")):
+            builder = p.ProgramBuilder("invalid", semantics=semantic_bundle())
+            original, source = inputs("one", "ordered_effects")
+            for declaration in original:
+                builder.add(declaration)
+            before = builder.snapshot()
+            with self.subTest(kind=kind, lifetime=lifetime), self.assertRaisesRegex(ValueError, message):
+                patterns.ordered_effects(builder, "pattern", executor=source["executor"],
+                    scope=p.Scope(kind, source["scope"].subject), on=source["on"], permitted=source["permitted"],
+                    first=source["first"], second=source["second"], arbitration=ARBITRATION, lifetime=lifetime)
+            self.assertEqual(builder.snapshot(), before)
 
     def test_bounded_response_literal_counter_guard_and_write(self):
         self.assert_expansion("bounded_response")

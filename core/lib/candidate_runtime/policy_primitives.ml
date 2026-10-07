@@ -4,6 +4,9 @@ module Map = Map.Make(String)
 module Set = Set.Make(String)
 
 let profile = "biocompiler.policy_primitive_execution.v0.1"
+let staged_execution_profile = "biocompiler.policy_staged_primitive_execution.v0.1"
+let execution_profile implementation =
+  if I.implementation_profile implementation=I.staged_profile then staged_execution_profile else profile
 type reason = Missing | Stale | Invalid | Conflicting
 type truth_signal = { value : I.truth option; reasons : reason list }
 type binding = { slot : string option; generation : int }
@@ -28,12 +31,17 @@ type attempt_status = Active | Completed | Failed | Timed_out | Reset_invalidate
 type attempt = { attempt_id : string; ordinal : int; bank : string; binding : binding;
   executor : string; subject : string; gate : string; guard : I.endpoint;
   causes : string list; product : string; started_tick : int; deadline_tick : int;
-  ended_tick : int option; status : attempt_status; authorization : I.truth }
+  ended_tick : int option; status : attempt_status; authorization : I.truth; machine : string option }
 type truth_write = { commit : string; destination : string; binding : binding; value : I.truth }
 type request = { commit : string; bank : string; activation : activation; product : string }
+type machine_snapshot = { bank : string; binding : binding; state : string; retained_attempts : string list }
+type machine_write = { commit : string; destination : string; binding : binding; state : string }
+type machine_transition = { bank : string; gate : string; commit : string; binding : binding;
+  destination : string; retained_attempts : string list }
 type signal = Truth of truth_signal | Product of string | Events of event list
   | Activations of activation list | Writes of truth_write list
   | Requests of request list | Attempts of attempt list
+  | Machine of machine_snapshot | Machine_writes of machine_write list
 type port_value = { endpoint : I.endpoint; binding : binding; signal : signal }
 type evidence_snapshot = { bank : string; binding : binding; signal : truth_signal;
   observed_tick : int option; available_tick : int option; occurrences : string list }
@@ -43,13 +51,14 @@ type action_kind = Deferred of activation * reason list
   | Feedback_accepted of string * string | Feedback_rejected of string * string * string
   | Observation_batch of { bank : string; binding : binding; input_ids : string list;
       retained_ids : string list; evidence : evidence; observed_tick : int }
-  | State_written of truth_write | Effect_requested of attempt
+  | State_written of truth_write | Effect_requested of attempt | Machine_transition of machine_transition
 type action = { microstep : int; detail : action_kind }
 type round = { microstep : int; ports : port_value list }
 type slot_snapshot = { slot_id : string; generation : int; active : bool }
 type frame = { tick : int; rounds : round list; outputs : port_value list;
   events : event list; actions : action list; creations : attempt list;
-  attempts : attempt list; evidence : evidence_snapshot list; slots : slot_snapshot list }
+  attempts : attempt list; evidence : evidence_snapshot list; slots : slot_snapshot list;
+  machines : machine_snapshot list; execution_profile : string }
 type slot_state = { description : concrete_slot; generation : int; active : bool; generation_start : int }
 type retained_evidence = { observed : int; available : int; evidence : evidence; occurrences : string list }
 type control = { arbiter : string; lane : int; commit : string; gate : string }
@@ -58,6 +67,7 @@ type plan = { implementation : I.t; environment : environment; limits : limits;
   destinations : I.endpoint Map.t; controls : control list; input_index : I.external_input Map.t }
 type state = { plan : plan; next : int; slots : slot_state list;
   registers : I.truth Map.t; evidence : retained_evidence Map.t; rising : I.truth Map.t;
+  machines : machine_snapshot Map.t;
   attempts : attempt list; sequence : int; allocated : int; work : int; retained : int;
   observation_ids : Set.t; feedback_ids : Set.t }
 type usage = { work : int; retained : int; allocations : int }
@@ -108,7 +118,10 @@ let binding_cost (value:binding)=80+(match value.slot with None->0|Some slot->te
 let endpoint_cost (value:I.endpoint)=80+text_cost value.node_id+text_cost value.port_id
 let activation_cost (value:activation)=160+text_cost value.gate+endpoint_cost value.guard+binding_cost value.binding+texts_cost value.causes
 let attempt_cost (value:attempt)=1000+texts_cost[value.attempt_id;value.bank;value.executor;value.subject;value.gate;value.product]+
-  endpoint_cost value.guard+binding_cost value.binding+texts_cost value.causes
+  endpoint_cost value.guard+binding_cost value.binding+texts_cost value.causes+
+  (match value.machine with None->0|Some bank->text_cost bank)
+let machine_cost (value:machine_snapshot)=200+text_cost value.bank+binding_cost value.binding+
+  text_cost value.state+texts_cost value.retained_attempts
 let action w detail =
   let count,cost=match detail with
     |Deferred(a,reasons)->List.length a.causes+List.length reasons,activation_cost a+24*List.length reasons
@@ -118,6 +131,8 @@ let action w detail =
         text_cost bank+binding_cost binding+texts_cost input_ids+texts_cost retained_ids
     |State_written value->0,text_cost value.commit+text_cost value.destination+binding_cost value.binding
     |Effect_requested value->List.length value.causes,attempt_cost value
+    |Machine_transition value->List.length value.retained_attempts,300+text_cost value.bank+
+        text_cost value.gate+text_cost value.commit+binding_cost value.binding+text_cost value.destination+texts_cost value.retained_attempts
     |Feedback_accepted(id,attempt)->0,text_cost id+text_cost attempt
     |Feedback_rejected(id,attempt,reason)->0,text_cost id+text_cost attempt+text_cost reason in
   retain w;retain_payload w count;reserve_output w(500+cost);w.actions_rev<-{microstep=w.microstep;detail}::w.actions_rev
@@ -155,12 +170,34 @@ let initialize ~implementation ~(environment:environment) ~(limits:limits) =
   let base={implementation;environment;limits;nodes;node_index;incoming;destinations;controls=[];input_index}in
   let controls=List.concat_map(fun(g:I.atomic_group)->List.mapi(fun lane commit->
     let producer=input base g.arbiter("in"^string_of_int lane)in
-    require(producer.port_id="candidate" && (node base producer.node_id).model.primitive=I.Activation_gate)
+    require(producer.port_id="candidate" && (match(node base producer.node_id).model.primitive with
+      |I.Activation_gate|I.Transition_gate _->true|_->false))
       "unsupported" "Initial runtime requires direct activation-gate to arbiter to commit control.";
     {arbiter=g.arbiter;lane;commit;gate=producer.node_id})g.commits)(I.atomic_groups implementation)in
   unique "initiating gate control"(List.map(fun(c:control)->c.gate)controls);
   List.iter(fun(n:I.node)->match n.model.primitive with
-    |I.Activation_gate->require(List.exists(fun(c:control)->c.gate=n.node_id)controls) "unsupported" "Every gate needs exactly one direct atomic control path."
+    |I.Activation_gate|I.Transition_gate _->
+        let owner=match List.find_opt(fun(c:control)->c.gate=n.node_id)controls with
+          |Some owner->owner|None->fail "unsupported" "Every gate needs exactly one direct atomic control path."in
+        (match n.model.primitive,(node base owner.commit).model.primitive with
+         |I.Activation_gate,I.Atomic_commit _->()
+         |I.Transition_gate{source;correlation},I.Transition_commit{destination=target;_}->
+             let snapshot=input base n.node_id "machine"and writer=destination base owner.commit "machine_write"in
+             require(snapshot.port_id="snapshot" && snapshot.node_id=writer.node_id) "unsupported"
+               "Transition reads and writes different machine banks.";
+             (match(node base snapshot.node_id).model.primitive with
+              |I.Machine_bank{states;_}->require(List.mem source states && List.mem target states) "unsupported"
+                  "Transition state is absent from its actual machine alphabet."
+              |_->fail "unsupported" "Transition snapshot does not come from a machine bank.");
+             (match correlation with I.Unbound->()|I.Retained_attempt->
+               let selected=input base n.node_id "on"in
+               require(selected.port_id="selected" && (match(node base selected.node_id).model.primitive with
+                 |I.Event_select(I.Completed|I.Failed|I.Timed_out)->true|_->false)) "unsupported"
+                 "Retained transition requires an explicit completion/failure/timeout selector.";
+               let origin=input base selected.node_id "events"in
+               require(origin.port_id="events" && (match(node base origin.node_id).model.primitive with
+                 |I.Attempt_bank _->true|_->false)) "unsupported" "Retained transition selector lacks an actual attempt bank.")
+         |_->fail "unsupported" "Legacy and machine controls cannot interchange their commit semantics.")
     |I.Attempt_bank _->let producer=input base n.node_id "request"in
         let owner=match List.find_opt(fun(c:control)->c.commit=producer.node_id)controls with Some c->c|None->fail "unsupported" "Attempt requests need one actual initiating gate."in
         require(input base n.node_id "authorization"=input base owner.gate "guard") "unsupported" "Attempt authorization differs from the retained initiating guard endpoint."
@@ -179,10 +216,12 @@ let initialize ~implementation ~(environment:environment) ~(limits:limits) =
   List.iter(fun(n:I.node)->match n.model.primitive with I.Observed_rising->
     require(observed 0(input base n.node_id "in")) "unsupported" "Observed rising requires at least one evidence bank."|_->())nodes;
   {plan={base with controls};next=0;slots=List.map(fun description->{description;generation=0;active=false;generation_start=description.start_tick})environment.slots;
-   registers=Map.empty;evidence=Map.empty;rising=Map.empty;attempts=[];sequence=0;allocated=0;work=0;retained=0;
+   registers=Map.empty;evidence=Map.empty;rising=Map.empty;machines=Map.empty;attempts=[];sequence=0;allocated=0;work=0;retained=0;
    observation_ids=Set.empty;feedback_ids=Set.empty}
 let next_tick (s:state)=s.next
 let usage (s:state):usage={work=s.work;retained=s.retained;allocations=s.allocated}
+let machine (snapshot:state) bank binding = match Map.find_opt(cell bank binding)snapshot.machines with
+  |Some value->value|None->fail "scope" "Live machine has no independent slot storage."
 
 let evaluator w (snapshot:state) =
   let memo=Hashtbl.create 32 in
@@ -228,11 +267,15 @@ let initialize_slot w (slot:slot_state) =
   let b=binding slot in
   List.iter(fun(n:I.node)->charge w 1;match n.model.primitive with
     |I.Truth_register{initial;_}->let s=w.current in w.current<-{s with registers=Map.add(cell n.node_id b)initial s.registers}
+    |I.Machine_bank{initial;_}->let s=w.current in
+        let value:machine_snapshot={bank=n.node_id;binding=b;state=initial;retained_attempts=[]}in
+        w.current<-{s with machines=Map.add(cell n.node_id b)value s.machines}
     |_->())w.current.plan.nodes
 let discard_slot w (slot:slot_state) reset =
   let b=binding slot in
   List.iter(fun(n:I.node)->charge w 1;let k=cell n.node_id b in let s=w.current in
-    w.current<-{s with registers=Map.remove k s.registers;evidence=Map.remove k s.evidence;rising=Map.remove k s.rising})w.current.plan.nodes;
+    w.current<-{s with registers=Map.remove k s.registers;evidence=Map.remove k s.evidence;rising=Map.remove k s.rising;
+      machines=Map.remove k s.machines})w.current.plan.nodes;
   let attempts=List.map(fun(a:attempt)->charge w 1;if a.binding=b && a.status=Active then (
     ignore(emit w ~origin:(endpoint a.bank "events") ~attempt_id:a.attempt_id (if reset then Attempt_reset else Attempt_ended)b);
     {a with status=(if reset then Reset_invalidated else End_invalidated);ended_tick=Some w.now})else a)w.current.attempts in
@@ -337,19 +380,33 @@ let update_rising w =
         (live_bindings snapshot n)
     |_->[])snapshot.plan.nodes
 
-type prepared = { writes : (int * truth_write) list; requests : (int * request) list }
+type prepared = { writes : (int * truth_write) list; requests : (int * request) list;
+  machine_write : machine_write option; activation : activation }
 let control (p:plan) gate = match List.find_opt(fun(c:control)->c.gate=gate)p.controls with
   |Some value->value|None->fail "graph" "Gate lacks its direct atomic path."
 let candidates w (snapshot:state) (evaluate:I.endpoint -> binding -> truth_signal) events =
   let evaluate_events=event_evaluator w snapshot events in
   List.concat_map(fun(n:I.node)->match n.model.primitive with
-    |I.Activation_gate->List.filter_map(fun b->
-        let causes=evaluate_events(input snapshot.plan n.node_id "on")b in
+    |I.Activation_gate|I.Transition_gate _->List.filter_map(fun b->
+        let selected=match n.model.primitive with
+          |I.Transition_gate{source;_}->
+              let bank=input snapshot.plan n.node_id "machine"in
+              (machine snapshot bank.node_id b).state=source
+          |_->true in
+        let causes=if not selected then []else evaluate_events(input snapshot.plan n.node_id "on")b in
+        let causes=match n.model.primitive with
+          |I.Transition_gate{correlation=I.Retained_attempt;_}->
+              let bank=input snapshot.plan n.node_id "machine"in
+              let retained=(machine snapshot bank.node_id b).retained_attempts in
+              List.filter(fun(e:event)->charge w(1+List.length retained);
+                match e.attempt_id with Some id->List.mem id retained|None->false)causes
+          |_->causes in
         if causes=[] then None else (
           let guard=input snapshot.plan n.node_id "guard"in
           let a={gate=n.node_id;guard;binding=b;causes=List.map(fun(e:event)->e.event_id)causes}in
           let signal=evaluate guard b in
-          match truth signal with I.True->Some a|I.False->None|I.Unknown->action w(Deferred(a,signal.reasons));None))
+          match truth signal with I.True->Some a|I.False->None|I.Unknown->
+            (match n.model.primitive with I.Activation_gate->action w(Deferred(a,signal.reasons))|_->());None))
         (live_bindings snapshot n)
     |_->[])snapshot.plan.nodes
 let arbitrate w (values:activation list) =
@@ -373,7 +430,8 @@ let prepare w (snapshot:state) (evaluate:I.endpoint -> binding -> truth_signal) 
   List.filter_map(fun(a:activation)->charge w 1;
     let owner=control snapshot.plan a.gate in
     let writes,requests=match(node snapshot.plan owner.commit).model.primitive with
-      |I.Atomic_commit{writes;requests}->writes,requests|_->fail "graph" "Control does not terminate at an atomic commit."in
+      |I.Atomic_commit{writes;requests}|I.Transition_commit{writes;requests;_}->writes,requests
+      |_->fail "graph" "Control does not terminate at an atomic commit."in
     let operands=List.init writes(fun index->index,evaluate(input snapshot.plan owner.commit("value"^string_of_int index))a.binding)in
     if List.exists(fun(_,(value:truth_signal))->value.value=None)operands then (action w(Undefined_commit a);None)else
     let writes=List.map(fun(index,(value:truth_signal))->
@@ -383,7 +441,12 @@ let prepare w (snapshot:state) (evaluate:I.endpoint -> binding -> truth_signal) 
       let target=destination snapshot.plan owner.commit("request"^string_of_int index)in
       let product=product snapshot.plan(input snapshot.plan owner.commit("product"^string_of_int index))in
       index,{commit=owner.commit;bank=target.node_id;activation=a;product})in
-    Some{writes;requests})selected
+    let machine_write=match(node snapshot.plan owner.commit).model.primitive with
+      |I.Transition_commit{destination=state;_}->
+          let bank=destination snapshot.plan owner.commit "machine_write"in
+          Some{commit=owner.commit;destination=bank.node_id;binding=a.binding;state}
+      |_->None in
+    Some{writes;requests;machine_write;activation=a})selected
 let commit w (prepared:prepared list) =
   let writes=List.concat_map(fun(p:prepared)->List.map snd p.writes)prepared
   and requests=List.concat_map(fun(p:prepared)->List.map snd p.requests)prepared in
@@ -397,10 +460,23 @@ let commit w (prepared:prepared list) =
     let capacity=match(node w.current.plan request.bank).model.primitive with I.Attempt_bank{capacity;_}->capacity|_->fail "graph" "Request does not reach an attempt bank."in
     require(old<capacity) "capacity" "Per-bank/per-slot active attempt capacity exhausted before atomic commit.";
     counts:=Map.add key(old+1)!counts)requests;
+  let machine_writes=List.filter_map(fun(p:prepared)->p.machine_write)prepared in
+  unique ~validate:false "simultaneous machine write"
+    (List.map(fun(write:machine_write)->cell write.destination write.binding)machine_writes);
+  List.iter(fun(p:prepared)->match p.machine_write with None->()|Some write->
+    charge w 1;
+    let previous=machine w.current write.destination write.binding in
+    let terminal,capacity=match(node w.current.plan write.destination).model.primitive with
+      |I.Machine_bank{terminal;retained_capacity;_}->terminal,retained_capacity
+      |_->fail "graph" "Machine write does not reach an actual machine bank."in
+    let retained=if List.mem write.state terminal then 0 else
+      if p.requests=[]then List.length previous.retained_attempts else List.length p.requests in
+    require(retained<=capacity) "capacity" "Machine retained-attempt capacity exhausted before atomic commit.")prepared;
   List.iter(fun(write:truth_write)->charge w 1;let s=w.current in
     w.current<-{s with registers=Map.add(cell write.destination write.binding)write.value s.registers};
     action w(State_written write))writes;
-  List.concat_map(fun(request:request)->
+  List.concat_map(fun(p:prepared)->
+    let started=List.map(fun(_, (request:request))->
     let s=w.current in
     let timeout=match(node s.plan request.bank).model.primitive with I.Attempt_bank{timeout_ticks;_}->timeout_ticks|_->assert false in
     let b=request.activation.binding in
@@ -409,14 +485,26 @@ let commit w (prepared:prepared list) =
     let attempt={attempt_id="primitive/attempt/"^string_of_int ordinal;ordinal;bank=request.bank;binding=b;
       executor=s.plan.environment.executor;subject=slot.description.target;gate=request.activation.gate;guard=request.activation.guard;
       causes=request.activation.causes;product=request.product;started_tick=w.now;deadline_tick=w.now+timeout;
-      ended_tick=None;status=Active;authorization=I.True}in
+      ended_tick=None;status=Active;authorization=I.True;
+      machine=Option.map(fun(write:machine_write)->write.destination)p.machine_write}in
     retain w;charge w(List.length s.attempts);
     w.current<-{w.current with allocated=ordinal;attempts=s.attempts@[attempt]};
     w.creations_rev<-attempt::w.creations_rev;
     action w(Effect_requested attempt);
     let requested=emit w ~origin:(endpoint request.bank "events") ~attempt_id:attempt.attempt_id (Primitive_event I.Requested)b in
     let initiated=emit w ~origin:(endpoint request.bank "events") ~attempt_id:attempt.attempt_id (Primitive_event I.Initiated)b in
-    [requested;initiated])requests
+    attempt,[requested;initiated])p.requests in
+    (match p.machine_write with None->()|Some write->
+      let old=machine w.current write.destination write.binding in
+      let terminal=match(node w.current.plan write.destination).model.primitive with
+        |I.Machine_bank{terminal;_}->terminal|_->assert false in
+      let retained_attempts=if List.mem write.state terminal then []else
+        if started=[]then old.retained_attempts else List.map(fun((attempt:attempt),_)->attempt.attempt_id)started in
+      let value:machine_snapshot={bank=write.destination;binding=write.binding;state=write.state;retained_attempts}in
+      w.current<-{w.current with machines=Map.add(cell write.destination write.binding)value w.current.machines};
+      action w(Machine_transition{bank=write.destination;gate=p.activation.gate;commit=write.commit;
+        binding=write.binding;destination=write.state;retained_attempts}));
+    List.concat_map snd started)prepared
 let signal_cost=function
   |Truth value->List.length value.reasons,100+24*List.length value.reasons
   |Product value->0,100+text_cost value
@@ -431,6 +519,9 @@ let signal_cost=function
         activation_cost request.activation+text_cost request.product)0 values
   |Attempts values->List.fold_left(fun total(a:attempt)->total+1+List.length a.causes)0 values,
       List.fold_left(fun total a->total+attempt_cost a)0 values
+  |Machine value->List.length value.retained_attempts,machine_cost value
+  |Machine_writes values->List.length values,List.fold_left(fun total(write:machine_write)->
+      total+200+text_cost write.commit+text_cost write.destination+binding_cost write.binding+text_cost write.state)0 values
 let port_inventory w snapshot evaluate events (candidates:activation list) (selected:activation list) (prepared:prepared list) =
   let evaluate_events=event_evaluator w snapshot events in
   List.concat_map(fun(n:I.node)->
@@ -443,7 +534,7 @@ let port_inventory w snapshot evaluate events (candidates:activation list) (sele
         |I.Event_batch->Events(evaluate_events e b)
         |I.Activation_batch->
             let found=match n.model.primitive with
-              |I.Activation_gate->List.filter(fun(a:activation)->a.gate=n.node_id && a.binding=b)candidates
+              |I.Activation_gate|I.Transition_gate _->List.filter(fun(a:activation)->a.gate=n.node_id && a.binding=b)candidates
               |I.Exclusive_arbiter _|I.Priority_arbiter _->List.filter(fun(a:activation)->let c=control snapshot.plan a.gate in
                   c.arbiter=n.node_id && p.port_id="out"^string_of_int c.lane && a.binding=b)selected
               |_->fail "graph" "Activation output has no runtime meaning."in Activations found
@@ -452,6 +543,9 @@ let port_inventory w snapshot evaluate events (candidates:activation list) (sele
         |I.Effect_request->Requests(List.concat_map(fun(prepared:prepared)->List.filter_map(fun(index,(request:request))->
             if request.commit=n.node_id && p.port_id="request"^string_of_int index && request.activation.binding=b then Some request else None)prepared.requests)prepared)
         |I.Attempt_snapshot->Attempts(List.filter(fun(a:attempt)->a.bank=n.node_id && a.binding=b)snapshot.attempts)
+        |I.Machine_snapshot->Machine(machine snapshot n.node_id b)
+        |I.Machine_write->Machine_writes(List.filter_map(fun(prepared:prepared)->match prepared.machine_write with
+            |Some write when write.commit=n.node_id && write.binding=b->Some write|_->None)prepared)
         |I.Evidence_batch|I.Feedback_batch->fail "graph" "External input cannot appear in semantic output inventory."in
         let count,cost=signal_cost signal in retain_payload w count;reserve_output w(300+endpoint_cost e+binding_cost b+cost);
         {endpoint=e;binding=b;signal})(live_bindings snapshot n)) (I.ports n.model.primitive))snapshot.plan.nodes
@@ -501,13 +595,16 @@ let step ?max_step_work ?max_step_retained (before:state) (batch:input_batch) =
   let events=List.rev w.events_rev in
   let outputs=port_inventory w snapshot evaluate events [] [] []in
   let evidence=evidence_inventory w snapshot in
+  let machines=Map.bindings snapshot.machines|>List.map(fun(_, (value:machine_snapshot))->
+    retain w;retain_payload w(List.length value.retained_attempts);reserve_output w(machine_cost value);value)in
   let slots=List.map(fun(s:slot_state)->retain w;reserve_output w(200+text_cost s.description.slot_id);
     {slot_id=s.description.slot_id;generation=s.generation;active=s.active})snapshot.slots in
   List.iter(fun(a:attempt)->retain_payload w(1+List.length a.causes);reserve_output w(attempt_cost a))
     (snapshot.attempts@w.creations_rev);
   reserve_output w 500;
   let result={tick=batch.tick;rounds=List.rev !rounds;outputs;events;actions=List.rev w.actions_rev;
-    creations=List.rev w.creations_rev;attempts=snapshot.attempts;evidence;slots}in
+    creations=List.rev w.creations_rev;attempts=snapshot.attempts;evidence;slots;machines;
+    execution_profile=execution_profile before.plan.implementation}in
   {w.current with next=before.next+1},result
 let creations (value:frame)=value.creations
 
@@ -531,15 +628,20 @@ let event_json (value:event)=obj["id",str value.event_id;"origin",optional endpo
   "kind",str(match value.kind with Primitive_event kind->primitive_event_name kind|Encounter_started->"encounter_started"
     |Encounter_reset->"encounter_reset"|Encounter_ended->"encounter_ended"|Attempt_reset->"attempt_reset"|Attempt_ended->"attempt_ended");
   "binding",binding_json value.binding;"attempt",optional str value.attempt_id;"tick",Json.int value.tick;"microstep",Json.int value.microstep]
-let attempt_json (value:attempt)=obj["id",str value.attempt_id;"ordinal",Json.int value.ordinal;"bank",str value.bank;
+let attempt_json (value:attempt)=obj(["id",str value.attempt_id;"ordinal",Json.int value.ordinal;"bank",str value.bank;
   "binding",binding_json value.binding;"executor",str value.executor;"subject",str value.subject;
   "gate",str value.gate;"guard",endpoint_json value.guard;"causes",arr(List.map str value.causes);"product",str value.product;
   "started_tick",Json.int value.started_tick;"deadline_tick",Json.int value.deadline_tick;
-  "ended_tick",optional Json.int value.ended_tick;"status",str(status_name value.status);"authorization",str(truth_name value.authorization)]
+  "ended_tick",optional Json.int value.ended_tick;"status",str(status_name value.status);"authorization",str(truth_name value.authorization)]@
+  (match value.machine with None->[]|Some bank->["machine",str bank]))
 let write_json (value:truth_write)=obj["commit",str value.commit;"destination",str value.destination;
   "binding",binding_json value.binding;"value",str(truth_name value.value)]
 let request_json (value:request)=obj["commit",str value.commit;"bank",str value.bank;
   "activation",activation_json value.activation;"product",str value.product]
+let machine_json (value:machine_snapshot)=obj["bank",str value.bank;"binding",binding_json value.binding;
+  "state",str value.state;"retained_attempts",arr(List.map str value.retained_attempts)]
+let machine_write_json (value:machine_write)=obj["commit",str value.commit;"destination",str value.destination;
+  "binding",binding_json value.binding;"state",str value.state]
 let signal_json=function
   |Truth value->obj["kind",str "truth";"data",truth_json value]
   |Product value->obj["kind",str "product";"data",str value]
@@ -548,6 +650,8 @@ let signal_json=function
   |Writes values->obj["kind",str "writes";"data",arr(List.map write_json values)]
   |Requests values->obj["kind",str "requests";"data",arr(List.map request_json values)]
   |Attempts values->obj["kind",str "attempts";"data",arr(List.map attempt_json values)]
+  |Machine value->obj["kind",str "machine";"data",machine_json value]
+  |Machine_writes values->obj["kind",str "machine_writes";"data",arr(List.map machine_write_json values)]
 let port_json (value:port_value)=obj["endpoint",endpoint_json value.endpoint;"binding",binding_json value.binding;"signal",signal_json value.signal]
 let evidence_json (value:evidence_snapshot)=obj["bank",str value.bank;"binding",binding_json value.binding;
   "signal",truth_json value.signal;"observed_tick",optional Json.int value.observed_tick;
@@ -567,20 +671,24 @@ let action_kind_json=function
       "observed_tick",Json.int observed_tick]
   |State_written value->obj["kind",str "state_written";"write",write_json value]
   |Effect_requested value->obj["kind",str "effect_requested";"attempt",attempt_json value]
+  |Machine_transition value->obj["kind",str "machine_transition";"bank",str value.bank;
+      "gate",str value.gate;"commit",str value.commit;"binding",binding_json value.binding;
+      "destination",str value.destination;"retained_attempts",arr(List.map str value.retained_attempts)]
 let action_json (value:action)=obj["microstep",Json.int value.microstep;"detail",action_kind_json value.detail]
-let frame_to_json (value:frame)=obj["profile",str profile;"claim",str "actual_primitive_graph_only";"tick",Json.int value.tick;
+let frame_to_json (value:frame)=obj(["profile",str value.execution_profile;"claim",str "actual_primitive_graph_only";"tick",Json.int value.tick;
   "rounds",arr(List.map(fun(round:round)->obj["microstep",Json.int round.microstep;"ports",arr(List.map port_json round.ports)])value.rounds);
   "outputs",arr(List.map port_json value.outputs);"events",arr(List.map event_json value.events);
   "actions",arr(List.map action_json value.actions);"creations",arr(List.map attempt_json value.creations);
   "attempts",arr(List.map attempt_json value.attempts);"evidence",arr(List.map evidence_json value.evidence);
-  "slots",arr(List.map(fun(slot:slot_snapshot)->obj["id",str slot.slot_id;"generation",Json.int slot.generation;"active",Json.Bool slot.active])value.slots)]
+  "slots",arr(List.map(fun(slot:slot_snapshot)->obj["id",str slot.slot_id;"generation",Json.int slot.generation;"active",Json.Bool slot.active])value.slots)]@
+  (if value.execution_profile=staged_execution_profile then ["machines",arr(List.map machine_json value.machines)]else []))
 let retained_json (value:retained_evidence)=obj["observed",Json.int value.observed;"available",Json.int value.available;
   "evidence",(match value.evidence with Known value->Json.Bool value|Missing_evidence->str "missing"|Invalid_evidence->str "invalid"|Conflicting_evidence->str "conflicting");
   "occurrences",arr(List.map str value.occurrences)]
 let state_fingerprint (value:state)=
   let environment=value.plan.environment and limits=value.plan.limits in
   let map encode values=obj(List.map(fun(key,value)->key,encode value)(Map.bindings values))in
-  let raw=obj["profile",str profile;"graph_digest",str(I.fingerprint value.plan.implementation);
+  let raw=obj(["profile",str(execution_profile value.plan.implementation);"graph_digest",str(I.fingerprint value.plan.implementation);
     "environment",obj["executor",str environment.executor;"horizon_ticks",Json.int environment.horizon_ticks;
       "slots",arr(List.map(fun(slot:concrete_slot)->obj["id",str slot.slot_id;"target",str slot.target;"start_tick",Json.int slot.start_tick])environment.slots)];
     "limits",obj["max_work",Json.int limits.max_work;"max_events",Json.int limits.max_events;
@@ -591,5 +699,7 @@ let state_fingerprint (value:state)=
       "active",Json.Bool slot.active;"generation_start",Json.int slot.generation_start])value.slots);
     "registers",map(fun value->str(truth_name value))value.registers;"evidence",map retained_json value.evidence;
     "rising",map(fun value->str(truth_name value))value.rising;"attempts",arr(List.map attempt_json value.attempts);
-    "observation_ids",arr(List.map str(Set.elements value.observation_ids));"feedback_ids",arr(List.map str(Set.elements value.feedback_ids))]in
+    "observation_ids",arr(List.map str(Set.elements value.observation_ids));"feedback_ids",arr(List.map str(Set.elements value.feedback_ids))]@
+    (if I.implementation_profile value.plan.implementation=I.staged_profile then
+      ["machines",map machine_json value.machines]else []))in
   Canonical.sha256(Canonical.encode_bounded ~max_bytes:(8*1024*1024)raw)
