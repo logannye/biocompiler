@@ -680,14 +680,28 @@ class PrebuiltMaterialTests(unittest.TestCase):
                 self.assertEqual(events[-1],name)
 
 
-    def test_component_control_receipts_bind_exact_original_and_changed_wheel_bytes(self):
+    def component_control_fixture(self, *, installed=False):
         ownership,site,sdk_entries,_=self.installed_tree()
         module='biocompiler/core_policy_component_material.py';raw=b'VALIDATION_SCOPE = "policy-component-mrna-v0.1"\n'
         sdk_entries[module]=(raw,0o644);(site/module).write_bytes(raw)
         metadata='biocompiler-'+campaign.build.VERSION+'.dist-info/RECORD'
+        entry_points=metadata.removesuffix('RECORD')+'entry_points.txt'
+        sdk_entries[entry_points]=(b'[console_scripts]\nbiocompiler = biocompiler.entrypoint:main\n',0o644)
+        (site/entry_points).write_bytes(sdk_entries[entry_points][0])
         sdk_entries[metadata]=(record({k:v for k,v in sdk_entries.items() if k!=metadata},metadata),0o644)
-        (site/metadata).write_bytes(sdk_entries[metadata][0])
+        original_record=sdk_entries[metadata][0]
+        if installed:
+            rows=list(csv.reader(io.StringIO(original_record.decode())))
+            empty_hash='sha256='+base64.urlsafe_b64encode(__import__('hashlib').sha256(b'').digest()).rstrip(b'=').decode()
+            rows.extend([[metadata.removesuffix('RECORD')+name,empty_hash,'0']
+                         for name in ('INSTALLER','REQUESTED','direct_url.json')])
+            rows.extend([['../../../bin/biocompiler',empty_hash,'0'],
+                         ['biocompiler/__pycache__/core_policy_component_material.cpython-314.pyc','','']])
+            stream=io.StringIO(newline='');csv.writer(stream,lineterminator='\r\n').writerows(rows)
+            original_record=stream.getvalue().encode()
+        (site/metadata).write_bytes(original_record)
         inputs,before,resolver=self.component_probe_fixture('component-resolver');before['ownership']=ownership;resolver['ownership']=ownership
+        before['runtime']={'system':'Linux','machine':'x86_64','python_version':'3.14.6'}
         data={'ownership-before':before,'component-resolver':resolver,'component-role':self.component_probe_fixture('component-role')[2],'component-controls':[]}
         data['component-role']['ownership']=ownership
         (self.root/'evidence').mkdir()
@@ -697,9 +711,14 @@ class PrebuiltMaterialTests(unittest.TestCase):
             # bytes below; no executable or packaging call is possible.
             with campaign.installed_mutation(case,ownership) as changes:
                 row={'case':case,'changes':deepcopy(changes),'rejection':rejection,'restored':campaign.consumer.digest(before)}
+            row['installed_record']={'before':original_record.decode(),'restored':campaign.pin(site/metadata)}
             data['component-controls'].append(row)
             campaign.write_json(self.root/'evidence'/(case+'.json'),rejection)
             campaign.write_json(self.root/'evidence'/(case+'-restored.json'),before)
+        return data,inputs,sdk_entries,metadata
+
+    def test_component_control_receipts_bind_exact_original_and_changed_wheel_bytes(self):
+        data,inputs,sdk_entries,metadata=self.component_control_fixture()
         campaign.check_component_controls(self.root,data,inputs,sdk_entries)
         mutations=[]
         changed=deepcopy(data);changed['component-controls'][0]['changes'][0]['before']['sha256']='0'*64;mutations.append(changed)
@@ -711,6 +730,71 @@ class PrebuiltMaterialTests(unittest.TestCase):
             with self.assertRaises(ValueError):campaign.check_component_controls(self.root,changed,inputs,sdk_entries)
         campaign.write_json(self.root/'evidence/component-profile-core-restored.json',{'forged':'restoration'})
         with self.assertRaisesRegex(ValueError,'sidecars differ'):campaign.check_component_controls(self.root,data,inputs,sdk_entries)
+
+    def test_installed_record_additions_and_crlf_preserve_exact_wheel_authority(self):
+        data,inputs,sdk_entries,metadata=self.component_control_fixture(installed=True)
+        campaign.check_component_controls(self.root,data,inputs,sdk_entries)
+        row=data['component-controls'][0]
+        raw=row['installed_record']['before'].encode()
+        self.assertNotEqual(raw,sdk_entries[metadata][0])
+        self.assertIn(b'\r\n',raw)
+        self.assertEqual(row['changes'][1]['before'],{'sha256':campaign.build.sha(raw),'size':len(raw)})
+        module='biocompiler/core_policy_component_material.py'
+        changed=sdk_entries[module][0].replace(b'policy-component-mrna-v0.1',b'foreign-component-profile')
+        rows=list(csv.reader(io.StringIO(raw.decode(),newline='')))
+        for entry in rows:
+            if entry[0]==module:
+                entry[1]='sha256='+base64.urlsafe_b64encode(__import__('hashlib').sha256(changed).digest()).rstrip(b'=').decode()
+                entry[2]=str(len(changed))
+        expected=io.StringIO(newline='');csv.writer(expected,lineterminator='\n').writerows(rows)
+        expected=expected.getvalue().encode()
+        self.assertEqual(row['changes'][1]['after'],{'sha256':campaign.build.sha(expected),'size':len(expected)})
+        self.assertEqual(row['installed_record']['restored'],row['changes'][1]['before'])
+
+    def test_installed_record_rejects_missing_changed_duplicate_and_foreign_rows(self):
+        data,_,sdk_entries,metadata=self.component_control_fixture(installed=True)
+        text=data['component-controls'][0]['installed_record']['before']
+        original=list(csv.reader(io.StringIO(text,newline='')))
+        cases=[]
+        changed=deepcopy(original);changed.pop(0);cases.append(changed)
+        changed=deepcopy(original);changed[0][1]='sha256='+'A'*43;cases.append(changed)
+        changed=deepcopy(original);changed[0][2]='999';cases.append(changed)
+        changed=deepcopy(original);changed.append(deepcopy(changed[-1]));cases.append(changed)
+        for path in ('/absolute','../../../../foreign','../../../bin/foreign',
+                     'biocompiler/__pycache__/foreign.cpython-314.pyc',
+                     'biocompiler/__pycache__/core_policy_component_material.cpython-311.pyc',
+                     'biocompiler/../outside.py','biocompiler/foreign.py'):
+            changed=deepcopy(original);changed.append([path,'','']);cases.append(changed)
+        changed=deepcopy(original);changed[-1][1]='sha256='+'A'*43;cases.append(changed)
+        for value in ('-1','00','2097153'):
+            changed=deepcopy(original);changed[-2][2]=value;cases.append(changed)
+        changed=deepcopy(original);changed[-2][1]='sha256='+'B'*43;cases.append(changed)
+        changed=deepcopy(original);next(row for row in changed if row[0]==metadata)[1]='sha256='+'A'*43;cases.append(changed)
+        for index,rows in enumerate(cases):
+            stream=io.StringIO(newline='');csv.writer(stream,lineterminator='\r\n').writerows(rows)
+            with self.subTest(index=index),self.assertRaises(ValueError):
+                campaign.component_installed_record(stream.getvalue(),metadata,sdk_entries,'3.14.6')
+        for bad in ('"unterminated',text+'bad,extra,row,field\n',None,''):
+            with self.subTest(bad=bad),self.assertRaises(ValueError):
+                campaign.component_installed_record(bad,metadata,sdk_entries,'3.14.6')
+        with patch.object(campaign,'MAX_INSTALLED_RECORD',4),self.assertRaises(ValueError):
+            campaign.component_installed_record(text,metadata,sdk_entries,'3.14.6')
+
+    def test_component_record_raw_bytes_restoration_and_role_lifecycle_are_bound(self):
+        data,inputs,sdk_entries,metadata=self.component_control_fixture(installed=True)
+        mutations=[]
+        changed=deepcopy(data);del changed['component-controls'][0]['installed_record'];mutations.append(changed)
+        changed=deepcopy(data);changed['component-controls'][0]['installed_record']['restored']['sha256']='0'*64;mutations.append(changed)
+        changed=deepcopy(data);changed['component-controls'][0]['changes'][1]['before']['sha256']='0'*64;mutations.append(changed)
+        changed=deepcopy(data);changed['component-controls'][0]['changes'][1]['after']['size']+=1;mutations.append(changed)
+        changed=deepcopy(data);row=changed['component-controls'][1]
+        raw=row['installed_record']['before'].replace('\r\n','\n')
+        row['installed_record']['before']=raw
+        row['installed_record']['restored']=row['changes'][1]['before']={'sha256':campaign.build.sha(raw.encode()),'size':len(raw.encode())}
+        mutations.append(changed)
+        for index,changed in enumerate(mutations):
+            with self.subTest(index=index),self.assertRaises(ValueError):
+                campaign.check_component_controls(self.root,changed,inputs,sdk_entries)
 
     def test_expanded_and_historical_receipt_shapes_cannot_be_relabelled(self):
         # Schema/census rejection precedes every unavailable artifact lookup.
