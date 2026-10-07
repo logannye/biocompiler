@@ -81,6 +81,30 @@ while independent development continues during full release validation.
 
 ## Work in coherent batches
 
+The user reaffirmed this as the default Biocompiler development process on
+2026-10-07. Apply it across new profiles and ecosystem packages, with each
+package retaining its own required integration and release checks.
+
+| Change stage | Default feedback | What it establishes |
+| --- | --- | --- |
+| Small local edit | Relevant pure-Python tests, typing, formatting and static checks; no implicit native build. | Feedback on the exercised source and scope. |
+| Coherent profile change | Relevant focused checks, expanded for shared dependencies; one focused hosted native build when needed. Documentation-only work needs no native build. | Only the explicitly executed development scope. |
+| Integration candidate | Complete required cross-platform, installed-package, regression and independent artifact checks. | Exact-revision integration evidence when every required gate passes. |
+| Merged revision | Fresh required actual-main validation and audit. | Acceptance of that actual main revision. |
+
+Choose early feedback from the affected dependency surface. A staged-regimen
+change should get staged feedback promptly; edits to shared semantics, transport,
+authority, packaging or receipt accounting need broader regression coverage.
+**Automatic profile-specific hosted routing is not implemented.** The current
+`policy-development.yml` still requires all 31 native suites and all 110 SDK
+observations. Individual witnesses or future scoped runners must report their
+own scope and cannot satisfy that complete census. Until explicit scoped routing
+exists, use the supported complete workflow for hosted development acceptance.
+Do not change CI triggers, required checks or final acceptance based on this
+table; PR updates still trigger their complete workflow. Batch development
+checkpoints before updating the integration PR, while preserving active owners
+and making necessary corrections promptly.
+
 All run steps explicitly select Bash so a failed checker piped into `tee`
 fails its step. GitHub's unspecified non-Windows shell does not provide that
 same pipeline guarantee; see the [official shell behavior](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#defaultsrun).
@@ -374,6 +398,11 @@ of the same GitHub run and revision. The final gate also requires GitHub's actua
 prerequisite result to be successful; an old receipt cannot excuse a failed,
 cancelled, skipped or missing job. Uploads replace the same run's artifact names
 on retry, and reports from another run or revision cannot satisfy the gate.
+Preserve the earlier attempt's diagnostic artifacts before recovery. Keep retries
+bounded; a persistent provider outage, unavailable capacity or account billing
+lock calls for a saved checkpoint and independent safe work while the external
+condition is resolved. Do not repeatedly dispatch complete builds for the same
+infrastructure failure or weaken checks to make the run green.
 
 ## Exact unit-test accounting
 
@@ -520,6 +549,25 @@ receipt as a substitute for running the behavior under test. In particular,
 reusing a fixture must not bypass the compiler or checker whose fresh execution
 the test intends to exercise. Cross-run artifact reuse is historical input, not
 current validation evidence.
+
+For repeated adapter serialization, consider canonical-byte or fingerprint reuse
+only within one owned immutable validation invocation. Retain the complete input,
+version and measurement-profile identity; apply each caller's limits even when
+bytes or measurements are reused. Do not use mutable object identity as evidence
+that contents are unchanged, and discard invocation-local caches at the boundary.
+Every publication occurrence remains charged, including repeated child reports,
+reserved-usage assessments, manifests and transport wrappers. Distinct profiles'
+node, depth, string and integer rules remain distinct.
+
+Any faster encoder must preserve exact canonical bytes and bounded allocation.
+The current transport validator's `size_floor` is a lower bound; it cannot
+authorize a one-shot encoding allocation without an exact escaped UTF-8 size or
+a proven conservative upper bound. Preserve execution guards while profiling;
+installing an unchained profiler must not disable the authoring-execution guard.
+Validate encoding and reuse changes against the original behavior, including
+malformed inputs, limits, aliases/mutation and rejection cases on both supported
+Python versions, before fresh hosted validation of the changed source. These are
+optimization requirements, not a claim that a new encoder or cache exists.
 
 ## Keep native builds hosted
 
