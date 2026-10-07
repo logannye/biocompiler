@@ -107,9 +107,71 @@ let independent_controls library graph=
   require(P.state_fingerprint small0=original)"Machine lineage capacity partially committed requests";
   let wide_library,wide_graph=fixture ~wide:true ~retained_capacity:2 ()in
   let wide0,_=bootstrap(decode wide_library wide_graph)in
-  let _,wide1=P.step wide0(batch 1 ~observations:[observation "e1" 1(P.Known true)])in
-  expect_machine wide1 "e1" "first"[1;2]
+  let wide_state,wide1=P.step wide0(batch 1 ~observations:[observation "e1" 1(P.Known true)])in
+  expect_machine wide1 "e1" "first"[1;2];
+  let _,wide2=P.step wide_state(batch 2 ~feedback:[feedback "first" 1 P.Complete])in
+  expect_machine wide2 "e1" "second"[1;2];require(wide2.creations=[])
+    "A state-only nonterminal transition replaced the existing machine lineage"
+
+(* Independently count the public retained-inventory contract, including each
+   allocation record and its visible copies. No usage counter supplies the
+   expected value. *)
+let retained_inventory (frame:P.frame)=
+  let sum f values=List.fold_left(fun total value->total+f value)0 values in
+  let signal=function
+    |P.Truth value->List.length value.reasons|P.Product _->0
+    |P.Events values->List.length values
+    |P.Activations values->sum(fun(value:P.activation)->1+List.length value.causes)values
+    |P.Writes values->List.length values
+    |P.Requests values->sum(fun(value:P.request)->1+List.length value.activation.causes)values
+    |P.Attempts values->sum(fun(value:P.attempt)->1+List.length value.causes)values
+    |P.Machine value->List.length value.retained_attempts
+    |P.Machine_writes values->List.length values in
+  let port(value:P.port_value)=1+signal value.signal in
+  let action(value:P.action)=1+(match value.detail with
+    |P.Deferred(value,reasons)->List.length value.causes+List.length reasons
+    |P.Undefined_commit value|P.Suppressed(value,_)->List.length value.causes
+    |P.Authorization_changed(_,_,reasons,_)->List.length reasons
+    |P.Observation_batch{input_ids;retained_ids;_}->List.length input_ids+List.length retained_ids
+    |P.State_written _|P.Feedback_accepted _|P.Feedback_rejected _->0
+    |P.Effect_requested value->List.length value.causes
+    |P.Machine_transition value->List.length value.retained_attempts)in
+  List.length frame.events+sum action frame.actions+
+  sum(fun(round:P.round)->1+sum port round.ports)frame.rounds+sum port frame.outputs+
+  sum(fun(value:P.evidence_snapshot)->1+List.length value.occurrences)frame.evidence+
+  List.length frame.slots+sum(fun(value:P.machine_snapshot)->1+List.length value.retained_attempts)frame.machines+
+  sum(fun(value:P.attempt)->1+List.length value.causes)(frame.attempts@frame.creations)+List.length frame.creations
+let allocation_accounting implementation=
+  let check before input=
+    let original=P.state_fingerprint before in
+    let after,frame=P.step before input in
+    let expected=retained_inventory frame in
+    require((P.usage after).retained-(P.usage before).retained=expected)
+      "Runtime erased charged allocation records or omitted an expanded retained item";
+    require((P.usage after).allocations=(P.usage before).allocations+List.length frame.creations)
+      "Cumulative allocation count does not preserve every attempt";
+    let exact,_=P.step ~max_step_retained:expected before input in
+    require(P.state_fingerprint exact=P.state_fingerprint after)"Exact retained budget changed the successor";
+    rejects "policy_primitives_trace_limit"(fun()->P.step ~max_step_retained:(expected-1)before input);
+    require(P.state_fingerprint before=original)"Allocation budget failure mutated its predecessor";
+    after,frame in
+  let start,_=check(initial implementation)(batch 0 ~observations:
+    [observation "e1" 0(P.Known false);observation "e2" 0(P.Known false)])in
+  let first,frame=check start(batch 1 ~observations:
+    [observation "e1" 1(P.Known true);observation "e2" 1(P.Known true)])in
+  require(List.length frame.creations=2 && (P.usage first).allocations=2)"First allocation batch is vacuous";
+  let reset,_=check first(batch 2 ~lifecycle:["e1",P.Reset;"e2",P.Reset] ~observations:
+    [observation "e1" 2(P.Known false);observation "e2" 2(P.Known false)])in
+  let again,frame=check reset(batch 3 ~observations:
+    [observation "e1" 3(P.Known true);observation "e2" 3(P.Known true)])in
+  require(List.length frame.creations=2 && (P.usage again).allocations=4 && List.length frame.attempts=4)
+    "Reset reclaimed cumulative allocation identities or old correlation records"
+let read path=
+  let channel=open_in_bin path in Fun.protect ~finally:(fun()->close_in_noerr channel)(fun()->
+    let length=in_channel_length channel in require(length<=2*1024*1024)"Fixture exceeds its bound";
+    Json.parse_bounded ~max_bytes:(2*1024*1024) ~max_nodes:100000(really_input_string channel length))
 let ()=
+  require(Array.length Sys.argv=2)"Expected existing literal legacy implementation fixture";
   let library,graph=fixture ()in
   let implementation=decode library graph in
   require(I.library_profile(I.library_of_json library)=I.staged_profile && I.implementation_profile implementation=I.staged_profile &&
@@ -129,4 +191,12 @@ let ()=
   rejects "policy_primitives_unsupported"(fun()->initial(decode library(rewire "second" "authorization"(endpoint "evidence" "value")graph)));
   let _,s1=positive implementation in lifecycle_and_feedback implementation s1;
   independent_controls library graph;
+  allocation_accounting implementation;
+  let legacy=read Sys.argv.(1)in
+  let legacy_implementation=decode(get "library" legacy)(get "candidate" legacy)in
+  allocation_accounting legacy_implementation;
+  let _,legacy_frame=bootstrap legacy_implementation in
+  let legacy_json=P.frame_to_json legacy_frame in
+  require(text "profile" legacy_json=P.profile && not(List.mem_assoc "machines"(Json.object_fields legacy_json)) &&
+    legacy_frame.machines=[])"Legacy observable profile silently acquired staged fields";
   Printf.printf "Staged primitive controls passed; %d explicit rejection controls.\n" !rejected

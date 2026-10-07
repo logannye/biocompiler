@@ -30,8 +30,11 @@ let lower_metered ~charge ~admitted ~library =
   let absent keys raw=List.iter(fun key->supported(get key raw=Json.Null)("Unsupported staged source field: "^key))keys in
   let type_is kind raw=supported(text "kind" raw=kind && get "unit" raw=Json.Null && get "entity_kind" raw=Json.Null)
     "Staged lowering needs exact truth/event/product types."in
+  charge 1;
   let request=A.request admitted and behavior=A.behavior admitted in
-  supported(I.library_digest library=I.library_digest(R.implementation_library request))"Original supplied library changed.";
+  let library_pin=Canonical.fingerprint(I.library_to_json library) in
+  let original_library_pin=Canonical.fingerprint(I.library_to_json(R.implementation_library request)) in
+  supported(library_pin=original_library_pin)"Original supplied library changed.";
   let bridge=one "catalog bridge"(R.catalog_bindings request)
   and executor=one "executor" behavior.roles and encounter=one "encounter" behavior.encounters
   and subject=one "subject" behavior.subjects and clock=one "clock" behavior.clocks
@@ -68,22 +71,22 @@ let lower_metered ~charge ~admitted ~library =
   let ticks duration=let exact=Q.div duration clock.resolution in
     supported(Q.sign exact>0 && Z.equal(Q.den exact)Z.one && Z.compare(Q.num exact)(Z.of_int 10000)<=0)
       "Duration is not a bounded positive exact tick count.";Z.to_int(Q.num exact)in
-  let attempt_primitive (effect:O.effect_spec)=
-    let timeout_ticks=match effect.lifecycle.timeout with Some value->ticks value|None->
+  let attempt_primitive (operation:O.effect_spec)=
+    let timeout_ticks=match operation.lifecycle.timeout with Some value->ticks value|None->
       Diagnostic.fail "policy_staged_lowering_unsupported" "Each stage requires a finite explicit timeout."in
-    let authorization=match effect.lifecycle.authorization with "initiation"->I.At_initiation|"continuous"->I.Continuous
+    let authorization=match operation.lifecycle.authorization with "initiation"->I.At_initiation|"continuous"->I.Continuous
       |_->Diagnostic.fail "policy_staged_lowering_unsupported" "Unsupported authorization lifetime."in
-    let on_unknown=match effect.lifecycle.on_unknown with "defer"->I.Defer|"continue"->I.Continue
+    let on_unknown=match operation.lifecycle.on_unknown with "defer"->I.Defer|"continue"->I.Continue
       |_->Diagnostic.fail "policy_staged_lowering_unsupported" "Unsupported unknown authorization behavior."in
     I.Attempt_bank{capacity=domain.logical_limits.max_source_attempts;timeout_ticks;authorization;on_unknown}in
-  List.iter(fun(effect:O.effect_spec)->
-    supported(effect.executor=executor.role_id && effect.subject=subject.subject_id && effect.lifecycle.on_loss="continue" &&
-      Json.equal bridge.operation(get "contract"(source effect.effect_id)))"Stage effect changed original operation or recipient.";
-    let argument=one "product argument"(rows "parameters"(source effect.effect_id))in
+  List.iter(fun(operation:O.effect_spec)->
+    supported(operation.executor=executor.role_id && operation.subject=subject.subject_id && operation.lifecycle.on_loss="continue" &&
+      Json.equal bridge.operation(get "contract"(source operation.effect_id)))"Stage operation changed original operation or recipient.";
+    let argument=one "product argument"(rows "parameters"(source operation.effect_id))in
     supported(text "name" argument="product" && text "op"(get "value" argument)="parameter")"Unsupported stage parameter.";
-    let initiators=List.filter(fun(value:O.transition)->List.mem effect.effect_id value.effects)behavior.transitions in
-    supported(List.length initiators=1 && (List.hd initiators).effects=[effect.effect_id])"Every stage must have its own single-effect initiator.";
-    ignore(attempt_primitive effect))behavior.effects;
+    let initiators=List.filter(fun(value:O.transition)->List.mem operation.effect_id value.effects)behavior.transitions in
+    supported(List.length initiators=1 && (List.hd initiators).effects=[operation.effect_id])"Every stage must have its own single-operation initiator.";
+    ignore(attempt_primitive operation))behavior.effects;
   List.iter(fun(value:O.transition)->supported(value.machine=machine.machine_id && value.assignments=[] &&
     List.length value.effects<=1 && List.mem value.on.op["rising";"effect_event"])
     "Unsupported transition action or event.")behavior.transitions;
@@ -92,7 +95,19 @@ let lower_metered ~charge ~admitted ~library =
   let build layout_id=
     let replication=I.Encounter_slots{layout_id;slots=2}in
     let nodes=ref [] and wires=ref [] and occurrences=ref [] and memo=Hashtbl.create 32 and next=ref 0 and edges=ref [] in
+    let precharge_model (model:I.model)=
+      charge 256;
+      (match model.primitive with
+       |I.Product_constant value->charge(String.length value)
+       |I.Machine_bank value->List.iter(fun name->charge(1+String.length name))(value.states@value.terminal);
+         charge(String.length value.initial)
+       |I.Transition_gate value->charge(String.length value.source)
+       |I.Transition_commit value->charge(String.length value.destination)
+       |I.Priority_arbiter order->List.iter(fun _->charge 1)order
+       |_->());
+      (match model.replication with I.Executor->()|I.Encounter_slots value->charge(String.length value.layout_id)) in
     let matching primitive (model:I.model)=
+      precharge_model model;
       Meter.preflight(I.model_body_to_json model);
       let config=match primitive,model.primitive with
         |I.Attempt_bank wanted,I.Attempt_bank supplied->wanted.timeout_ticks=supplied.timeout_ticks &&
@@ -122,7 +137,7 @@ let lower_metered ~charge ~admitted ~library =
     let evidence=allocate "observation/0"(I.Evidence_bank{freshness_ticks=ticks observation.freshness})in
     let machine_bank=allocate "machine/0"(I.Machine_bank{states=machine.states;initial=machine.initial;terminal=machine.terminal;
       writers=7;retained_capacity=1})in
-    let attempts=List.mapi(fun index(effect:O.effect_spec)->effect.effect_id,allocate("attempt/"^string_of_int index)(attempt_primitive effect))behavior.effects in
+    let attempts=List.mapi(fun index(operation:O.effect_spec)->operation.effect_id,allocate("attempt/"^string_of_int index)(attempt_primitive operation))behavior.effects in
     let arbiter=allocate "arbitration/0"(I.Exclusive_arbiter 7)in
     let expression_node primitive=let ordinal= !next in incr next;allocate("expression/"^string_of_int ordinal)primitive in
     let rec emit role location raw=
@@ -200,8 +215,8 @@ let lower_metered ~charge ~admitted ~library =
       |D.Requirement->occurrence location "requirement" "obligation"[];obligations location value.value
       |_->Diagnostic.fail "policy_staged_lowering_unsupported" "Declaration is outside the staged source family.")declarations;
     let authority=o["source_artifact_digest",s(D.artifact_digest document);"descriptors_digest",s(O.descriptors_digest(R.definitions request));
-      "domain_digest",s(F.digest(R.operating_domain request));"implementation_catalog_digest",s(Canonical.fingerprint(get "implementations"(D.to_json document)));
-      "library_digest",s(I.library_digest library)]in
+      "domain_digest",s(Canonical.fingerprint(F.to_json(R.operating_domain request)));"implementation_catalog_digest",s(Canonical.fingerprint(get "implementations"(D.to_json document)));
+      "library_digest",s library_pin]in
     let inputs=o["id",s "evidence/0";"kind",s "evidence";"consumer",out evidence "samples"]::
       List.mapi(fun index(_,bank)->o["id",s("feedback/"^string_of_int index);"kind",s "feedback";"consumer",out bank "feedback"])attempts in
     let graph=o["schema_version",s I.candidate_schema;"profile",s I.staged_profile;"observable_profile",s I.staged_observable_profile;

@@ -705,7 +705,8 @@
 (test
  (name test_policy_staged_primitives)
  (modules test_policy_staged_primitives)
- (libraries bioc_wire bioc_domain bioc_candidate_runtime bioc_policy_staged_test_support zarith))
+ (libraries bioc_wire bioc_domain bioc_candidate_runtime bioc_policy_staged_test_support zarith)
+ (action (run %{test} %{dep:data/policy_implementation_v01.json})))
 
 (test
  (name test_policy_trace_correspondence)
@@ -931,3 +932,21 @@
  (modules test_policy_staged_regimen_source)
  (libraries bioc_wire bioc_domain bioc_compiler bioc_checker bioc_semantics)
  (action (run %{test} %{dep:data/policy_staged_regimen_source_v01.json})))
+
+(test
+ (name test_policy_staged_binding)
+ (modules test_policy_staged_binding)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_compiler bioc_semantics bioc_candidate_runtime bioc_realization_checker bioc_policy_staged_test_support zarith)
+ (action (run %{test} %{dep:data/policy_staged_realization_request_v01.json})))
+
+(test
+ (name test_policy_staged_component_material)
+ (modules test_policy_staged_component_material)
+ (libraries bioc_wire bioc_domain bioc_service bioc_producer_service)
+ (action (run %{test} %{dep:data/policy_staged_material_v01.json})))
+
+(test
+ (name test_policy_staged_generation)
+ (modules test_policy_staged_generation)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_compiler)
+ (action (run %{test} %{dep:data/policy_staged_realization_request_v01.json})))

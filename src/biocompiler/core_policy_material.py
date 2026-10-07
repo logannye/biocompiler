@@ -266,6 +266,23 @@ def _obligations(report: dict[str, JsonValue], *, material_key: str = "material"
                 raise CoreProtocolError("Unresolved obligation carries contradictory discharge evidence")
         elif row["status"] == "discharged":
             stage = row["stage"]
+            if stage == "bounded_machine_semantics_and_declared_requirements":
+                evidence = _object(row["evidence"], {"preservation", "machine_binding", "state_and_terminal_semantics", "prefixes",
+                    "retained_attempt_identity", "universal_termination", "progress"}, "Bounded machine evidence")
+                if (material_key != "assembly" or row["obligation"] != "machine_reachability_termination_and_progress"
+                        or binding.get("schema_version") != "biocompiler.policy_implementation_binding_report.v0.2"
+                        or binding.get("profile") != "biocompiler.policy_staged_source_graph.v0.1"
+                        or preservation.get("status") != "checked_implementation"
+                        or any(evidence[key] != expected for key, expected in (
+                            ("state_and_terminal_semantics", "exact_bounded_source_correspondence"),
+                            ("prefixes", "complete_original_domain"), ("retained_attempt_identity", "creation_fixed_injective"),
+                            ("universal_termination", "not_claimed"), ("progress", "declared_requirements_only")))):
+                    raise CoreProtocolError("Machine obligation widened its exact bounded interpretation")
+                _pin(evidence["preservation"], preservation, "Machine preservation")
+                _pin(evidence["machine_binding"], binding, "Machine binding")
+                continue
+            if row["obligation"] == "machine_reachability_termination_and_progress":
+                raise CoreProtocolError("Machine obligation requires its explicit bounded interpretation")
             keys = {"bounded_implementation_preservation": ("preservation",), "declared_context": ("context",),
                     conjunction_stage: ("preservation", material_key, "context")}
             if type(stage) is not str or stage not in keys:

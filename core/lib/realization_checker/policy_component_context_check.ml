@@ -167,8 +167,9 @@ let derive ~charge (binding:IB.checked_binding) rule (domain:F.t) =
 
 let check ?parent ?(maximum=max_work) ~request ~assembly () =
   Diagnostic.require (maximum>=0 && maximum<=max_work) "policy_component_context_resource_limit" "Context work budget exceeds its closed ceiling.";
-  let budget=match parent with None -> W.create ~profile:X.profile ~error_code:"policy_component_context_resource_limit" ~maximum ()
-    | Some parent -> W.nested ~parent ~profile:X.profile ~error_code:"policy_component_context_resource_limit" ~maximum () in
+  let context_profile=if Rule.is_staged(R.composition_rule request) then X.staged_profile else X.profile in
+  let budget=match parent with None -> W.create ~profile:context_profile ~error_code:"policy_component_context_resource_limit" ~maximum ()
+    | Some parent -> W.nested ~parent ~profile:context_profile ~error_code:"policy_component_context_resource_limit" ~maximum () in
   let charge value=W.charge budget value in charge 1;
   let request=R.of_json ~charge (R.to_json request) in
   let context=R.context request and rule=R.composition_rule request in
@@ -350,7 +351,7 @@ let check ?parent ?(maximum=max_work) ~request ~assembly () =
     | exception Diagnostic.Error error when error.code="policy_component_context_fail" -> E.Fail,[error.message]
     | exception Diagnostic.Error error when error.code="policy_component_context_unsupported" -> E.Unsupported,[error.message] in
   let report_value=obj ["schema_version",str "biocompiler.policy_component_context_assessment.v0.1";
-    "profile",str X.profile;"implementation_version",str implementation_version;
+    "profile",str context_profile;"implementation_version",str implementation_version;
     "request_fingerprint",str (R.fingerprint request);"context_fingerprint",str (X.fingerprint context);
     "assembly_fingerprint",str (Canonical.fingerprint (A.evidence assembly));
     "outcome",str (E.outcome_name outcome_value);"claim_scope",str "conditional_component_context_and_complete_record_capacity";
@@ -361,7 +362,7 @@ let check ?parent ?(maximum=max_work) ~request ~assembly () =
     "discharges",arr (List.map (fun (value:discharge) -> obj ["id",str value.obligation;"evidence",value.evidence]) !discharged);
     "diagnostics",arr (List.map str diagnostics);"source_receipt_status",str "unchanged";
     "biological_validity",str "unassessed";"human_use",str "unassessed";"artifact",str "withheld";"export",str "withheld"] in
-  let output=W.create_output ~profile:X.profile ~error_code:"policy_component_context_resource_limit" ~max_bytes:M.max_json_bytes ~max_nodes:M.max_items () in
+  let output=W.create_output ~profile:context_profile ~error_code:"policy_component_context_resource_limit" ~max_bytes:M.max_json_bytes ~max_nodes:M.max_items () in
   W.reserve_json output report_value;charge (2*String.length (Canonical.encode report_value));
   Diagnostic.require (not (W.exhausted budget)) "policy_component_context_resource_limit" "Context work was exhausted.";
   {outcome_value;report_value;accepted_value=(if outcome_value=E.Pass then Some {request_value=request;context_value=context;

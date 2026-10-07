@@ -24,6 +24,10 @@ except ImportError:
 
 
 DEPENDENCY_FIXTURES = {
+    "test_policy_staged_generation": ["data/policy_staged_realization_request_v01.json"],
+    "test_policy_staged_binding": ["data/policy_staged_realization_request_v01.json"],
+    "test_policy_staged_component_material": ["data/policy_staged_material_v01.json"],
+    "test_policy_staged_primitives": ["data/policy_implementation_v01.json"],
     "test_policy_staged_regimen_source": ["data/policy_staged_regimen_source_v01.json"],
     "test_policy_document": ["data/policy_documents_v01.json"],
     "test_policy_check": ["data/policy_frontend_request.json", "data/policy_frontend_submission.json",

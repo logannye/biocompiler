@@ -1,0 +1,2574 @@
+{
+  "expected_molecules": [
+    {
+      "assembly": [
+        {
+          "destination": {
+            "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+            "space_id": "payload.frame",
+            "spans": [
+              {
+                "end": 17,
+                "schema_version": "biocompiler.molecule_index_span.v0.1",
+                "start": 0
+              }
+            ],
+            "strand": "+"
+          },
+          "id": "payload.origin",
+          "provenance": {
+            "authority": [
+              {
+                "content_fingerprint": "f637247a33e74826c0d402ea56cfdc42193bf651aff06440d917cba3099c5cc9",
+                "id": "fixture.local-material.notice",
+                "kind": "source",
+                "schema_version": "biocompiler.component_identity.v0.1",
+                "version": "1"
+              }
+            ],
+            "locator": "independent native test literal",
+            "reason": "Artificial local component fixture; supplied software premise, not empirical evidence.",
+            "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+            "status": "declared"
+          },
+          "schema_version": "biocompiler.assembly_origin.v0.1",
+          "source_path": {
+            "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+            "space_id": "join.frame",
+            "spans": [
+              {
+                "end": 17,
+                "schema_version": "biocompiler.molecule_index_span.v0.1",
+                "start": 0
+              }
+            ],
+            "strand": "+"
+          },
+          "source_space": {
+            "alphabet": "RNA",
+            "axis": "5prime_to_3prime",
+            "id": "join.frame",
+            "length": 17,
+            "schema_version": "biocompiler.molecule_coordinate_space.v0.1",
+            "topology": "linear"
+          }
+        }
+      ],
+      "chemistry": {
+        "cap": {
+          "identity": {
+            "accession": "artificial_cap",
+            "namespace": "software_fixture.chemical",
+            "schema_version": "biocompiler.chemical_identity.v0.1",
+            "version": "1"
+          },
+          "provenance": {
+            "authority": [
+              {
+                "content_fingerprint": "f637247a33e74826c0d402ea56cfdc42193bf651aff06440d917cba3099c5cc9",
+                "id": "fixture.local-material.notice",
+                "kind": "source",
+                "schema_version": "biocompiler.component_identity.v0.1",
+                "version": "1"
+              }
+            ],
+            "locator": "independent native test literal",
+            "reason": "Artificial local component fixture; supplied software premise, not empirical evidence.",
+            "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+            "status": "declared"
+          },
+          "schema_version": "biocompiler.chemistry_claim.v0.1",
+          "status": "declared"
+        },
+        "finish_end": {
+          "identity": {
+            "accession": "hydroxyl",
+            "namespace": "software_fixture.chemical",
+            "schema_version": "biocompiler.chemical_identity.v0.1",
+            "version": "1"
+          },
+          "provenance": {
+            "authority": [
+              {
+                "content_fingerprint": "f637247a33e74826c0d402ea56cfdc42193bf651aff06440d917cba3099c5cc9",
+                "id": "fixture.local-material.notice",
+                "kind": "source",
+                "schema_version": "biocompiler.component_identity.v0.1",
+                "version": "1"
+              }
+            ],
+            "locator": "independent native test literal",
+            "reason": "Artificial local component fixture; supplied software premise, not empirical evidence.",
+            "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+            "status": "declared"
+          },
+          "schema_version": "biocompiler.chemistry_claim.v0.1",
+          "status": "declared"
+        },
+        "modification_inventory_provenance": {
+          "authority": [
+            {
+              "content_fingerprint": "f637247a33e74826c0d402ea56cfdc42193bf651aff06440d917cba3099c5cc9",
+              "id": "fixture.local-material.notice",
+              "kind": "source",
+              "schema_version": "biocompiler.component_identity.v0.1",
+              "version": "1"
+            }
+          ],
+          "locator": "independent native test literal",
+          "reason": "Artificial local component fixture; supplied software premise, not empirical evidence.",
+          "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+          "status": "declared"
+        },
+        "modification_inventory_status": "declared",
+        "modifications": [],
+        "schema_version": "biocompiler.molecule_chemistry.v0.1",
+        "start_end": {
+          "identity": {
+            "accession": "hydroxyl",
+            "namespace": "software_fixture.chemical",
+            "schema_version": "biocompiler.chemical_identity.v0.1",
+            "version": "1"
+          },
+          "provenance": {
+            "authority": [
+              {
+                "content_fingerprint": "f637247a33e74826c0d402ea56cfdc42193bf651aff06440d917cba3099c5cc9",
+                "id": "fixture.local-material.notice",
+                "kind": "source",
+                "schema_version": "biocompiler.component_identity.v0.1",
+                "version": "1"
+              }
+            ],
+            "locator": "independent native test literal",
+            "reason": "Artificial local component fixture; supplied software premise, not empirical evidence.",
+            "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+            "status": "declared"
+          },
+          "schema_version": "biocompiler.chemistry_claim.v0.1",
+          "status": "declared"
+        },
+        "terminal_tail": {
+          "length": {
+            "exact": 4,
+            "lower": null,
+            "mode": "exact",
+            "schema_version": "biocompiler.tail_length.v0.1",
+            "upper": null
+          },
+          "path": {
+            "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+            "space_id": "payload.frame",
+            "spans": [
+              {
+                "end": 17,
+                "schema_version": "biocompiler.molecule_index_span.v0.1",
+                "start": 13
+              }
+            ],
+            "strand": "+"
+          },
+          "placement": "represented_terminal",
+          "provenance": {
+            "authority": [
+              {
+                "content_fingerprint": "f637247a33e74826c0d402ea56cfdc42193bf651aff06440d917cba3099c5cc9",
+                "id": "fixture.local-material.notice",
+                "kind": "source",
+                "schema_version": "biocompiler.component_identity.v0.1",
+                "version": "1"
+              }
+            ],
+            "locator": "independent native test literal",
+            "reason": "Artificial local component fixture; supplied software premise, not empirical evidence.",
+            "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+            "status": "declared"
+          },
+          "schema_version": "biocompiler.tail_declaration.v0.1",
+          "status": "declared"
+        }
+      },
+      "coding_status": "coding",
+      "features": [
+        {
+          "id": "cds",
+          "kind": "coding_sequence",
+          "path": {
+            "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+            "space_id": "payload.frame",
+            "spans": [
+              {
+                "end": 11,
+                "schema_version": "biocompiler.molecule_index_span.v0.1",
+                "start": 2
+              }
+            ],
+            "strand": "+"
+          },
+          "provenance": {
+            "authority": [
+              {
+                "content_fingerprint": "f637247a33e74826c0d402ea56cfdc42193bf651aff06440d917cba3099c5cc9",
+                "id": "fixture.local-material.notice",
+                "kind": "source",
+                "schema_version": "biocompiler.component_identity.v0.1",
+                "version": "1"
+              }
+            ],
+            "locator": "independent native test literal",
+            "reason": "Artificial local component fixture; supplied software premise, not empirical evidence.",
+            "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+            "status": "declared"
+          },
+          "reading_frame": 0,
+          "schema_version": "biocompiler.molecule_feature.v0.1"
+        },
+        {
+          "id": "poly_a",
+          "kind": "poly_a_tail",
+          "path": {
+            "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+            "space_id": "payload.frame",
+            "spans": [
+              {
+                "end": 17,
+                "schema_version": "biocompiler.molecule_index_span.v0.1",
+                "start": 13
+              }
+            ],
+            "strand": "+"
+          },
+          "provenance": {
+            "authority": [
+              {
+                "content_fingerprint": "f637247a33e74826c0d402ea56cfdc42193bf651aff06440d917cba3099c5cc9",
+                "id": "fixture.local-material.notice",
+                "kind": "source",
+                "schema_version": "biocompiler.component_identity.v0.1",
+                "version": "1"
+              }
+            ],
+            "locator": "independent native test literal",
+            "reason": "Artificial local component fixture; supplied software premise, not empirical evidence.",
+            "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+            "status": "declared"
+          },
+          "reading_frame": null,
+          "schema_version": "biocompiler.molecule_feature.v0.1"
+        },
+        {
+          "id": "utr3",
+          "kind": "three_prime_utr",
+          "path": {
+            "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+            "space_id": "payload.frame",
+            "spans": [
+              {
+                "end": 13,
+                "schema_version": "biocompiler.molecule_index_span.v0.1",
+                "start": 11
+              }
+            ],
+            "strand": "+"
+          },
+          "provenance": {
+            "authority": [
+              {
+                "content_fingerprint": "f637247a33e74826c0d402ea56cfdc42193bf651aff06440d917cba3099c5cc9",
+                "id": "fixture.local-material.notice",
+                "kind": "source",
+                "schema_version": "biocompiler.component_identity.v0.1",
+                "version": "1"
+              }
+            ],
+            "locator": "independent native test literal",
+            "reason": "Artificial local component fixture; supplied software premise, not empirical evidence.",
+            "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+            "status": "declared"
+          },
+          "reading_frame": null,
+          "schema_version": "biocompiler.molecule_feature.v0.1"
+        },
+        {
+          "id": "utr5",
+          "kind": "five_prime_utr",
+          "path": {
+            "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+            "space_id": "payload.frame",
+            "spans": [
+              {
+                "end": 2,
+                "schema_version": "biocompiler.molecule_index_span.v0.1",
+                "start": 0
+              }
+            ],
+            "strand": "+"
+          },
+          "provenance": {
+            "authority": [
+              {
+                "content_fingerprint": "f637247a33e74826c0d402ea56cfdc42193bf651aff06440d917cba3099c5cc9",
+                "id": "fixture.local-material.notice",
+                "kind": "source",
+                "schema_version": "biocompiler.component_identity.v0.1",
+                "version": "1"
+              }
+            ],
+            "locator": "independent native test literal",
+            "reason": "Artificial local component fixture; supplied software premise, not empirical evidence.",
+            "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+            "status": "declared"
+          },
+          "reading_frame": null,
+          "schema_version": "biocompiler.molecule_feature.v0.1"
+        }
+      ],
+      "form": "delivered_rna",
+      "id": "payload",
+      "provenance": {
+        "authority": [
+          {
+            "content_fingerprint": "f637247a33e74826c0d402ea56cfdc42193bf651aff06440d917cba3099c5cc9",
+            "id": "fixture.local-material.notice",
+            "kind": "source",
+            "schema_version": "biocompiler.component_identity.v0.1",
+            "version": "1"
+          }
+        ],
+        "locator": "independent native test literal",
+        "reason": "Artificial local component fixture; supplied software premise, not empirical evidence.",
+        "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+        "status": "declared"
+      },
+      "schema_version": "biocompiler.circuit_molecule.v0.1",
+      "sequence": "CCAUGGCUUAAGGAAAA",
+      "sequence_extent": "complete",
+      "space": {
+        "alphabet": "RNA",
+        "axis": "5prime_to_3prime",
+        "id": "payload.frame",
+        "length": 17,
+        "schema_version": "biocompiler.molecule_coordinate_space.v0.1",
+        "topology": "linear"
+      }
+    }
+  ],
+  "material_authority": {
+    "member_order": [
+      "payload"
+    ],
+    "members": [
+      {
+        "chemistry": {
+          "cap": {
+            "identity": {
+              "accession": "artificial_cap",
+              "namespace": "software_fixture.chemical",
+              "schema_version": "biocompiler.chemical_identity.v0.1",
+              "version": "1"
+            },
+            "provenance": {
+              "authority": [
+                {
+                  "content_fingerprint": "f637247a33e74826c0d402ea56cfdc42193bf651aff06440d917cba3099c5cc9",
+                  "id": "fixture.local-material.notice",
+                  "kind": "source",
+                  "schema_version": "biocompiler.component_identity.v0.1",
+                  "version": "1"
+                }
+              ],
+              "locator": "independent native test literal",
+              "reason": "Artificial local component fixture; supplied software premise, not empirical evidence.",
+              "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+              "status": "declared"
+            },
+            "schema_version": "biocompiler.chemistry_claim.v0.1",
+            "status": "declared"
+          },
+          "finish_end": {
+            "identity": {
+              "accession": "hydroxyl",
+              "namespace": "software_fixture.chemical",
+              "schema_version": "biocompiler.chemical_identity.v0.1",
+              "version": "1"
+            },
+            "provenance": {
+              "authority": [
+                {
+                  "content_fingerprint": "f637247a33e74826c0d402ea56cfdc42193bf651aff06440d917cba3099c5cc9",
+                  "id": "fixture.local-material.notice",
+                  "kind": "source",
+                  "schema_version": "biocompiler.component_identity.v0.1",
+                  "version": "1"
+                }
+              ],
+              "locator": "independent native test literal",
+              "reason": "Artificial local component fixture; supplied software premise, not empirical evidence.",
+              "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+              "status": "declared"
+            },
+            "schema_version": "biocompiler.chemistry_claim.v0.1",
+            "status": "declared"
+          },
+          "modification_inventory_provenance": {
+            "authority": [
+              {
+                "content_fingerprint": "f637247a33e74826c0d402ea56cfdc42193bf651aff06440d917cba3099c5cc9",
+                "id": "fixture.local-material.notice",
+                "kind": "source",
+                "schema_version": "biocompiler.component_identity.v0.1",
+                "version": "1"
+              }
+            ],
+            "locator": "independent native test literal",
+            "reason": "Artificial local component fixture; supplied software premise, not empirical evidence.",
+            "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+            "status": "declared"
+          },
+          "modification_inventory_status": "declared",
+          "modifications": [],
+          "schema_version": "biocompiler.molecule_chemistry.v0.1",
+          "start_end": {
+            "identity": {
+              "accession": "hydroxyl",
+              "namespace": "software_fixture.chemical",
+              "schema_version": "biocompiler.chemical_identity.v0.1",
+              "version": "1"
+            },
+            "provenance": {
+              "authority": [
+                {
+                  "content_fingerprint": "f637247a33e74826c0d402ea56cfdc42193bf651aff06440d917cba3099c5cc9",
+                  "id": "fixture.local-material.notice",
+                  "kind": "source",
+                  "schema_version": "biocompiler.component_identity.v0.1",
+                  "version": "1"
+                }
+              ],
+              "locator": "independent native test literal",
+              "reason": "Artificial local component fixture; supplied software premise, not empirical evidence.",
+              "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+              "status": "declared"
+            },
+            "schema_version": "biocompiler.chemistry_claim.v0.1",
+            "status": "declared"
+          },
+          "terminal_tail": {
+            "length": {
+              "exact": 4,
+              "lower": null,
+              "mode": "exact",
+              "schema_version": "biocompiler.tail_length.v0.1",
+              "upper": null
+            },
+            "path": {
+              "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+              "space_id": "payload.frame",
+              "spans": [
+                {
+                  "end": 17,
+                  "schema_version": "biocompiler.molecule_index_span.v0.1",
+                  "start": 13
+                }
+              ],
+              "strand": "+"
+            },
+            "placement": "represented_terminal",
+            "provenance": {
+              "authority": [
+                {
+                  "content_fingerprint": "f637247a33e74826c0d402ea56cfdc42193bf651aff06440d917cba3099c5cc9",
+                  "id": "fixture.local-material.notice",
+                  "kind": "source",
+                  "schema_version": "biocompiler.component_identity.v0.1",
+                  "version": "1"
+                }
+              ],
+              "locator": "independent native test literal",
+              "reason": "Artificial local component fixture; supplied software premise, not empirical evidence.",
+              "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+              "status": "declared"
+            },
+            "schema_version": "biocompiler.tail_declaration.v0.1",
+            "status": "declared"
+          }
+        },
+        "id": "payload",
+        "product": {
+          "identity": {
+            "content_fingerprint": "c7434883f345ffc2100dd9e3750afbbee436ba7535cf5fb26b9be706ce413c9b",
+            "id": "payload.artificial.product",
+            "kind": "source",
+            "schema_version": "biocompiler.component_identity.v0.1",
+            "version": "1"
+          },
+          "provenance": {
+            "authority": [
+              {
+                "content_fingerprint": "f637247a33e74826c0d402ea56cfdc42193bf651aff06440d917cba3099c5cc9",
+                "id": "fixture.local-material.notice",
+                "kind": "source",
+                "schema_version": "biocompiler.component_identity.v0.1",
+                "version": "1"
+              }
+            ],
+            "locator": "independent native test literal",
+            "reason": "Artificial local component fixture; supplied software premise, not empirical evidence.",
+            "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+            "status": "declared"
+          },
+          "sequence": "MA",
+          "translation_policy": {
+            "genetic_code": "ncbi_standard_v1",
+            "profile": "ordinary_cds",
+            "recodings": [],
+            "schema_version": "biocompiler.translation_policy.v0.1"
+          }
+        },
+        "regions": {
+          "cds": "cds",
+          "poly_a": "poly_a",
+          "utr3": "utr3",
+          "utr5": "utr5"
+        }
+      }
+    ],
+    "profile": "biocompiler.policy_mrna_completeness.v0.1",
+    "schema_version": "biocompiler.policy_mrna_structure_authority.v0.1",
+    "template": {
+      "amounts": [],
+      "complex_members": [],
+      "id": "fixture.join.A",
+      "output_members": [
+        {
+          "coding_status": "coding",
+          "form": "delivered_rna",
+          "id": "payload",
+          "provenance": {
+            "authority": [
+              {
+                "content_fingerprint": "f637247a33e74826c0d402ea56cfdc42193bf651aff06440d917cba3099c5cc9",
+                "id": "fixture.local-material.notice",
+                "kind": "source",
+                "schema_version": "biocompiler.component_identity.v0.1",
+                "version": "1"
+              }
+            ],
+            "locator": "independent native test literal",
+            "reason": "Artificial local component fixture; supplied software premise, not empirical evidence.",
+            "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+            "status": "declared"
+          },
+          "schema_version": "biocompiler.construction_output_member.v0.1",
+          "sequence_extent": "complete",
+          "space_id": "payload.frame",
+          "value": {
+            "id": "joined",
+            "kind": "product",
+            "schema_version": "biocompiler.construction_value_ref.v0.1"
+          }
+        }
+      ],
+      "payload_structures": [
+        {
+          "form": "delivered_rna",
+          "member_id": "payload",
+          "provenance": {
+            "authority": [
+              {
+                "content_fingerprint": "f637247a33e74826c0d402ea56cfdc42193bf651aff06440d917cba3099c5cc9",
+                "id": "fixture.local-material.notice",
+                "kind": "source",
+                "schema_version": "biocompiler.component_identity.v0.1",
+                "version": "1"
+              }
+            ],
+            "locator": "independent native test literal",
+            "reason": "Artificial local component fixture; supplied software premise, not empirical evidence.",
+            "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+            "status": "declared"
+          },
+          "regions": [
+            {
+              "feature_id": "cds",
+              "kind": "coding_sequence",
+              "schema_version": "biocompiler.required_payload_region.v0.1"
+            },
+            {
+              "feature_id": "poly_a",
+              "kind": "poly_a_tail",
+              "schema_version": "biocompiler.required_payload_region.v0.1"
+            },
+            {
+              "feature_id": "utr3",
+              "kind": "three_prime_utr",
+              "schema_version": "biocompiler.required_payload_region.v0.1"
+            },
+            {
+              "feature_id": "utr5",
+              "kind": "five_prime_utr",
+              "schema_version": "biocompiler.required_payload_region.v0.1"
+            }
+          ],
+          "schema_version": "biocompiler.payload_structure_contract.v0.1",
+          "topology": "linear"
+        }
+      ],
+      "requirements": [
+        {
+          "category": "payload",
+          "external_fingerprint": null,
+          "external_id": null,
+          "id": "payload",
+          "member_id": "payload",
+          "roles": [
+            {
+              "compartment": "cytoplasm",
+              "id": "payload.role",
+              "purpose": "requested_payload",
+              "role": "payload",
+              "schema_version": "biocompiler.construction_role_declaration.v0.1"
+            }
+          ],
+          "schema_version": "biocompiler.construction_member_requirement.v0.1"
+        }
+      ],
+      "schema_version": "biocompiler.payload_template.v0.1",
+      "sources": [
+        {
+          "id": "driver_body",
+          "molecule": {
+            "assembly": [
+              {
+                "destination": {
+                  "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+                  "space_id": "driver_body.frame",
+                  "spans": [
+                    {
+                      "end": 15,
+                      "schema_version": "biocompiler.molecule_index_span.v0.1",
+                      "start": 0
+                    }
+                  ],
+                  "strand": "+"
+                },
+                "id": "driver_body.self",
+                "provenance": {
+                  "authority": [
+                    {
+                      "content_fingerprint": "f637247a33e74826c0d402ea56cfdc42193bf651aff06440d917cba3099c5cc9",
+                      "id": "fixture.local-material.notice",
+                      "kind": "source",
+                      "schema_version": "biocompiler.component_identity.v0.1",
+                      "version": "1"
+                    }
+                  ],
+                  "locator": "independent native test literal",
+                  "reason": "Artificial local component fixture; supplied software premise, not empirical evidence.",
+                  "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                  "status": "declared"
+                },
+                "schema_version": "biocompiler.assembly_origin.v0.1",
+                "source_path": {
+                  "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+                  "space_id": "driver_body.frame",
+                  "spans": [
+                    {
+                      "end": 15,
+                      "schema_version": "biocompiler.molecule_index_span.v0.1",
+                      "start": 0
+                    }
+                  ],
+                  "strand": "+"
+                },
+                "source_space": {
+                  "alphabet": "RNA",
+                  "axis": "5prime_to_3prime",
+                  "id": "driver_body.frame",
+                  "length": 15,
+                  "schema_version": "biocompiler.molecule_coordinate_space.v0.1",
+                  "topology": "linear"
+                }
+              }
+            ],
+            "chemistry": {
+              "cap": {
+                "identity": {
+                  "accession": "artificial_cap",
+                  "namespace": "software_fixture.chemical",
+                  "schema_version": "biocompiler.chemical_identity.v0.1",
+                  "version": "1"
+                },
+                "provenance": {
+                  "authority": [
+                    {
+                      "content_fingerprint": "f637247a33e74826c0d402ea56cfdc42193bf651aff06440d917cba3099c5cc9",
+                      "id": "fixture.local-material.notice",
+                      "kind": "source",
+                      "schema_version": "biocompiler.component_identity.v0.1",
+                      "version": "1"
+                    }
+                  ],
+                  "locator": "independent native test literal",
+                  "reason": "Artificial local component fixture; supplied software premise, not empirical evidence.",
+                  "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                  "status": "declared"
+                },
+                "schema_version": "biocompiler.chemistry_claim.v0.1",
+                "status": "declared"
+              },
+              "finish_end": {
+                "identity": {
+                  "accession": "hydroxyl",
+                  "namespace": "software_fixture.chemical",
+                  "schema_version": "biocompiler.chemical_identity.v0.1",
+                  "version": "1"
+                },
+                "provenance": {
+                  "authority": [
+                    {
+                      "content_fingerprint": "f637247a33e74826c0d402ea56cfdc42193bf651aff06440d917cba3099c5cc9",
+                      "id": "fixture.local-material.notice",
+                      "kind": "source",
+                      "schema_version": "biocompiler.component_identity.v0.1",
+                      "version": "1"
+                    }
+                  ],
+                  "locator": "independent native test literal",
+                  "reason": "Artificial local component fixture; supplied software premise, not empirical evidence.",
+                  "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                  "status": "declared"
+                },
+                "schema_version": "biocompiler.chemistry_claim.v0.1",
+                "status": "declared"
+              },
+              "modification_inventory_provenance": {
+                "authority": [
+                  {
+                    "content_fingerprint": "f637247a33e74826c0d402ea56cfdc42193bf651aff06440d917cba3099c5cc9",
+                    "id": "fixture.local-material.notice",
+                    "kind": "source",
+                    "schema_version": "biocompiler.component_identity.v0.1",
+                    "version": "1"
+                  }
+                ],
+                "locator": "independent native test literal",
+                "reason": "Artificial local component fixture; supplied software premise, not empirical evidence.",
+                "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                "status": "declared"
+              },
+              "modification_inventory_status": "declared",
+              "modifications": [],
+              "schema_version": "biocompiler.molecule_chemistry.v0.1",
+              "start_end": {
+                "identity": {
+                  "accession": "hydroxyl",
+                  "namespace": "software_fixture.chemical",
+                  "schema_version": "biocompiler.chemical_identity.v0.1",
+                  "version": "1"
+                },
+                "provenance": {
+                  "authority": [
+                    {
+                      "content_fingerprint": "f637247a33e74826c0d402ea56cfdc42193bf651aff06440d917cba3099c5cc9",
+                      "id": "fixture.local-material.notice",
+                      "kind": "source",
+                      "schema_version": "biocompiler.component_identity.v0.1",
+                      "version": "1"
+                    }
+                  ],
+                  "locator": "independent native test literal",
+                  "reason": "Artificial local component fixture; supplied software premise, not empirical evidence.",
+                  "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                  "status": "declared"
+                },
+                "schema_version": "biocompiler.chemistry_claim.v0.1",
+                "status": "declared"
+              },
+              "terminal_tail": {
+                "length": {
+                  "exact": 4,
+                  "lower": null,
+                  "mode": "exact",
+                  "schema_version": "biocompiler.tail_length.v0.1",
+                  "upper": null
+                },
+                "path": {
+                  "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+                  "space_id": "driver_body.frame",
+                  "spans": [
+                    {
+                      "end": 15,
+                      "schema_version": "biocompiler.molecule_index_span.v0.1",
+                      "start": 11
+                    }
+                  ],
+                  "strand": "+"
+                },
+                "placement": "represented_terminal",
+                "provenance": {
+                  "authority": [
+                    {
+                      "content_fingerprint": "f637247a33e74826c0d402ea56cfdc42193bf651aff06440d917cba3099c5cc9",
+                      "id": "fixture.local-material.notice",
+                      "kind": "source",
+                      "schema_version": "biocompiler.component_identity.v0.1",
+                      "version": "1"
+                    }
+                  ],
+                  "locator": "independent native test literal",
+                  "reason": "Artificial local component fixture; supplied software premise, not empirical evidence.",
+                  "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                  "status": "declared"
+                },
+                "schema_version": "biocompiler.tail_declaration.v0.1",
+                "status": "declared"
+              }
+            },
+            "coding_status": "coding",
+            "features": [
+              {
+                "id": "cds",
+                "kind": "coding_sequence",
+                "path": {
+                  "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+                  "space_id": "driver_body.frame",
+                  "spans": [
+                    {
+                      "end": 9,
+                      "schema_version": "biocompiler.molecule_index_span.v0.1",
+                      "start": 0
+                    }
+                  ],
+                  "strand": "+"
+                },
+                "provenance": {
+                  "authority": [
+                    {
+                      "content_fingerprint": "f637247a33e74826c0d402ea56cfdc42193bf651aff06440d917cba3099c5cc9",
+                      "id": "fixture.local-material.notice",
+                      "kind": "source",
+                      "schema_version": "biocompiler.component_identity.v0.1",
+                      "version": "1"
+                    }
+                  ],
+                  "locator": "independent native test literal",
+                  "reason": "Artificial local component fixture; supplied software premise, not empirical evidence.",
+                  "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                  "status": "declared"
+                },
+                "reading_frame": 0,
+                "schema_version": "biocompiler.molecule_feature.v0.1"
+              },
+              {
+                "id": "poly_a",
+                "kind": "poly_a_tail",
+                "path": {
+                  "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+                  "space_id": "driver_body.frame",
+                  "spans": [
+                    {
+                      "end": 15,
+                      "schema_version": "biocompiler.molecule_index_span.v0.1",
+                      "start": 11
+                    }
+                  ],
+                  "strand": "+"
+                },
+                "provenance": {
+                  "authority": [
+                    {
+                      "content_fingerprint": "f637247a33e74826c0d402ea56cfdc42193bf651aff06440d917cba3099c5cc9",
+                      "id": "fixture.local-material.notice",
+                      "kind": "source",
+                      "schema_version": "biocompiler.component_identity.v0.1",
+                      "version": "1"
+                    }
+                  ],
+                  "locator": "independent native test literal",
+                  "reason": "Artificial local component fixture; supplied software premise, not empirical evidence.",
+                  "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                  "status": "declared"
+                },
+                "reading_frame": null,
+                "schema_version": "biocompiler.molecule_feature.v0.1"
+              },
+              {
+                "id": "utr3",
+                "kind": "three_prime_utr",
+                "path": {
+                  "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+                  "space_id": "driver_body.frame",
+                  "spans": [
+                    {
+                      "end": 11,
+                      "schema_version": "biocompiler.molecule_index_span.v0.1",
+                      "start": 9
+                    }
+                  ],
+                  "strand": "+"
+                },
+                "provenance": {
+                  "authority": [
+                    {
+                      "content_fingerprint": "f637247a33e74826c0d402ea56cfdc42193bf651aff06440d917cba3099c5cc9",
+                      "id": "fixture.local-material.notice",
+                      "kind": "source",
+                      "schema_version": "biocompiler.component_identity.v0.1",
+                      "version": "1"
+                    }
+                  ],
+                  "locator": "independent native test literal",
+                  "reason": "Artificial local component fixture; supplied software premise, not empirical evidence.",
+                  "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                  "status": "declared"
+                },
+                "reading_frame": null,
+                "schema_version": "biocompiler.molecule_feature.v0.1"
+              }
+            ],
+            "form": "primary_rna",
+            "id": "driver_body.molecule",
+            "provenance": {
+              "authority": [
+                {
+                  "content_fingerprint": "f637247a33e74826c0d402ea56cfdc42193bf651aff06440d917cba3099c5cc9",
+                  "id": "fixture.local-material.notice",
+                  "kind": "source",
+                  "schema_version": "biocompiler.component_identity.v0.1",
+                  "version": "1"
+                }
+              ],
+              "locator": "independent native test literal",
+              "reason": "Artificial local component fixture; supplied software premise, not empirical evidence.",
+              "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+              "status": "declared"
+            },
+            "schema_version": "biocompiler.circuit_molecule.v0.1",
+            "sequence": "AUGGCUUAAGGAAAA",
+            "sequence_extent": "complete",
+            "space": {
+              "alphabet": "RNA",
+              "axis": "5prime_to_3prime",
+              "id": "driver_body.frame",
+              "length": 15,
+              "schema_version": "biocompiler.molecule_coordinate_space.v0.1",
+              "topology": "linear"
+            }
+          },
+          "provenance": {
+            "authority": [
+              {
+                "content_fingerprint": "f637247a33e74826c0d402ea56cfdc42193bf651aff06440d917cba3099c5cc9",
+                "id": "fixture.local-material.notice",
+                "kind": "source",
+                "schema_version": "biocompiler.component_identity.v0.1",
+                "version": "1"
+              }
+            ],
+            "locator": "independent native test literal",
+            "reason": "Artificial local component fixture; supplied software premise, not empirical evidence.",
+            "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+            "status": "declared"
+          },
+          "schema_version": "biocompiler.construction_root_source.v0.1"
+        },
+        {
+          "id": "leader_A",
+          "molecule": {
+            "assembly": [
+              {
+                "destination": {
+                  "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+                  "space_id": "leader_A.frame",
+                  "spans": [
+                    {
+                      "end": 2,
+                      "schema_version": "biocompiler.molecule_index_span.v0.1",
+                      "start": 0
+                    }
+                  ],
+                  "strand": "+"
+                },
+                "id": "leader_A.self",
+                "provenance": {
+                  "authority": [
+                    {
+                      "content_fingerprint": "f637247a33e74826c0d402ea56cfdc42193bf651aff06440d917cba3099c5cc9",
+                      "id": "fixture.local-material.notice",
+                      "kind": "source",
+                      "schema_version": "biocompiler.component_identity.v0.1",
+                      "version": "1"
+                    }
+                  ],
+                  "locator": "independent native test literal",
+                  "reason": "Artificial local component fixture; supplied software premise, not empirical evidence.",
+                  "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                  "status": "declared"
+                },
+                "schema_version": "biocompiler.assembly_origin.v0.1",
+                "source_path": {
+                  "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+                  "space_id": "leader_A.frame",
+                  "spans": [
+                    {
+                      "end": 2,
+                      "schema_version": "biocompiler.molecule_index_span.v0.1",
+                      "start": 0
+                    }
+                  ],
+                  "strand": "+"
+                },
+                "source_space": {
+                  "alphabet": "RNA",
+                  "axis": "5prime_to_3prime",
+                  "id": "leader_A.frame",
+                  "length": 2,
+                  "schema_version": "biocompiler.molecule_coordinate_space.v0.1",
+                  "topology": "linear"
+                }
+              }
+            ],
+            "chemistry": {
+              "cap": {
+                "identity": {
+                  "accession": "artificial_cap",
+                  "namespace": "software_fixture.chemical",
+                  "schema_version": "biocompiler.chemical_identity.v0.1",
+                  "version": "1"
+                },
+                "provenance": {
+                  "authority": [
+                    {
+                      "content_fingerprint": "f637247a33e74826c0d402ea56cfdc42193bf651aff06440d917cba3099c5cc9",
+                      "id": "fixture.local-material.notice",
+                      "kind": "source",
+                      "schema_version": "biocompiler.component_identity.v0.1",
+                      "version": "1"
+                    }
+                  ],
+                  "locator": "independent native test literal",
+                  "reason": "Artificial local component fixture; supplied software premise, not empirical evidence.",
+                  "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                  "status": "declared"
+                },
+                "schema_version": "biocompiler.chemistry_claim.v0.1",
+                "status": "declared"
+              },
+              "finish_end": {
+                "identity": {
+                  "accession": "hydroxyl",
+                  "namespace": "software_fixture.chemical",
+                  "schema_version": "biocompiler.chemical_identity.v0.1",
+                  "version": "1"
+                },
+                "provenance": {
+                  "authority": [
+                    {
+                      "content_fingerprint": "f637247a33e74826c0d402ea56cfdc42193bf651aff06440d917cba3099c5cc9",
+                      "id": "fixture.local-material.notice",
+                      "kind": "source",
+                      "schema_version": "biocompiler.component_identity.v0.1",
+                      "version": "1"
+                    }
+                  ],
+                  "locator": "independent native test literal",
+                  "reason": "Artificial local component fixture; supplied software premise, not empirical evidence.",
+                  "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                  "status": "declared"
+                },
+                "schema_version": "biocompiler.chemistry_claim.v0.1",
+                "status": "declared"
+              },
+              "modification_inventory_provenance": {
+                "authority": [
+                  {
+                    "content_fingerprint": "f637247a33e74826c0d402ea56cfdc42193bf651aff06440d917cba3099c5cc9",
+                    "id": "fixture.local-material.notice",
+                    "kind": "source",
+                    "schema_version": "biocompiler.component_identity.v0.1",
+                    "version": "1"
+                  }
+                ],
+                "locator": "independent native test literal",
+                "reason": "Artificial local component fixture; supplied software premise, not empirical evidence.",
+                "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                "status": "declared"
+              },
+              "modification_inventory_status": "declared",
+              "modifications": [],
+              "schema_version": "biocompiler.molecule_chemistry.v0.1",
+              "start_end": {
+                "identity": {
+                  "accession": "hydroxyl",
+                  "namespace": "software_fixture.chemical",
+                  "schema_version": "biocompiler.chemical_identity.v0.1",
+                  "version": "1"
+                },
+                "provenance": {
+                  "authority": [
+                    {
+                      "content_fingerprint": "f637247a33e74826c0d402ea56cfdc42193bf651aff06440d917cba3099c5cc9",
+                      "id": "fixture.local-material.notice",
+                      "kind": "source",
+                      "schema_version": "biocompiler.component_identity.v0.1",
+                      "version": "1"
+                    }
+                  ],
+                  "locator": "independent native test literal",
+                  "reason": "Artificial local component fixture; supplied software premise, not empirical evidence.",
+                  "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                  "status": "declared"
+                },
+                "schema_version": "biocompiler.chemistry_claim.v0.1",
+                "status": "declared"
+              },
+              "terminal_tail": {
+                "length": {
+                  "exact": 0,
+                  "lower": null,
+                  "mode": "exact",
+                  "schema_version": "biocompiler.tail_length.v0.1",
+                  "upper": null
+                },
+                "path": null,
+                "placement": "absent",
+                "provenance": {
+                  "authority": [
+                    {
+                      "content_fingerprint": "f637247a33e74826c0d402ea56cfdc42193bf651aff06440d917cba3099c5cc9",
+                      "id": "fixture.local-material.notice",
+                      "kind": "source",
+                      "schema_version": "biocompiler.component_identity.v0.1",
+                      "version": "1"
+                    }
+                  ],
+                  "locator": "independent native test literal",
+                  "reason": "Artificial local component fixture; supplied software premise, not empirical evidence.",
+                  "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                  "status": "declared"
+                },
+                "schema_version": "biocompiler.tail_declaration.v0.1",
+                "status": "declared"
+              }
+            },
+            "coding_status": "noncoding",
+            "features": [
+              {
+                "id": "utr5",
+                "kind": "five_prime_utr",
+                "path": {
+                  "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+                  "space_id": "leader_A.frame",
+                  "spans": [
+                    {
+                      "end": 2,
+                      "schema_version": "biocompiler.molecule_index_span.v0.1",
+                      "start": 0
+                    }
+                  ],
+                  "strand": "+"
+                },
+                "provenance": {
+                  "authority": [
+                    {
+                      "content_fingerprint": "f637247a33e74826c0d402ea56cfdc42193bf651aff06440d917cba3099c5cc9",
+                      "id": "fixture.local-material.notice",
+                      "kind": "source",
+                      "schema_version": "biocompiler.component_identity.v0.1",
+                      "version": "1"
+                    }
+                  ],
+                  "locator": "independent native test literal",
+                  "reason": "Artificial local component fixture; supplied software premise, not empirical evidence.",
+                  "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                  "status": "declared"
+                },
+                "reading_frame": null,
+                "schema_version": "biocompiler.molecule_feature.v0.1"
+              }
+            ],
+            "form": "primary_rna",
+            "id": "leader_A.molecule",
+            "provenance": {
+              "authority": [
+                {
+                  "content_fingerprint": "f637247a33e74826c0d402ea56cfdc42193bf651aff06440d917cba3099c5cc9",
+                  "id": "fixture.local-material.notice",
+                  "kind": "source",
+                  "schema_version": "biocompiler.component_identity.v0.1",
+                  "version": "1"
+                }
+              ],
+              "locator": "independent native test literal",
+              "reason": "Artificial local component fixture; supplied software premise, not empirical evidence.",
+              "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+              "status": "declared"
+            },
+            "schema_version": "biocompiler.circuit_molecule.v0.1",
+            "sequence": "CC",
+            "sequence_extent": "complete",
+            "space": {
+              "alphabet": "RNA",
+              "axis": "5prime_to_3prime",
+              "id": "leader_A.frame",
+              "length": 2,
+              "schema_version": "biocompiler.molecule_coordinate_space.v0.1",
+              "topology": "linear"
+            }
+          },
+          "provenance": {
+            "authority": [
+              {
+                "content_fingerprint": "f637247a33e74826c0d402ea56cfdc42193bf651aff06440d917cba3099c5cc9",
+                "id": "fixture.local-material.notice",
+                "kind": "source",
+                "schema_version": "biocompiler.component_identity.v0.1",
+                "version": "1"
+              }
+            ],
+            "locator": "independent native test literal",
+            "reason": "Artificial local component fixture; supplied software premise, not empirical evidence.",
+            "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+            "status": "declared"
+          },
+          "schema_version": "biocompiler.construction_root_source.v0.1"
+        }
+      ],
+      "steps": [
+        {
+          "assumptions": [],
+          "id": "join",
+          "operation": {
+            "inputs": [
+              {
+                "path": null,
+                "schema_version": "biocompiler.construction_value_selection.v0.1",
+                "value": {
+                  "id": "leader_A",
+                  "kind": "root",
+                  "schema_version": "biocompiler.construction_value_ref.v0.1"
+                }
+              },
+              {
+                "path": null,
+                "schema_version": "biocompiler.construction_value_selection.v0.1",
+                "value": {
+                  "id": "driver_body",
+                  "kind": "root",
+                  "schema_version": "biocompiler.construction_value_ref.v0.1"
+                }
+              }
+            ],
+            "schema_version": "biocompiler.construction_concatenate.v0.1"
+          },
+          "ports": [
+            {
+              "alphabet": "RNA",
+              "chemistry_transition": {
+                "dispositions": [
+                  {
+                    "component": "cap",
+                    "decision": "not_carried",
+                    "destination_components": [],
+                    "provenance": {
+                      "authority": [
+                        {
+                          "content_fingerprint": "f637247a33e74826c0d402ea56cfdc42193bf651aff06440d917cba3099c5cc9",
+                          "id": "fixture.local-material.notice",
+                          "kind": "source",
+                          "schema_version": "biocompiler.component_identity.v0.1",
+                          "version": "1"
+                        }
+                      ],
+                      "locator": "independent native test literal",
+                      "reason": "Artificial local component fixture; supplied software premise, not empirical evidence.",
+                      "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                      "status": "declared"
+                    },
+                    "schema_version": "biocompiler.chemistry_disposition.v0.1",
+                    "source_id": "driver_body"
+                  },
+                  {
+                    "component": "finish_end",
+                    "decision": "mapped_copy",
+                    "destination_components": [
+                      "finish_end"
+                    ],
+                    "provenance": {
+                      "authority": [
+                        {
+                          "content_fingerprint": "f637247a33e74826c0d402ea56cfdc42193bf651aff06440d917cba3099c5cc9",
+                          "id": "fixture.local-material.notice",
+                          "kind": "source",
+                          "schema_version": "biocompiler.component_identity.v0.1",
+                          "version": "1"
+                        }
+                      ],
+                      "locator": "independent native test literal",
+                      "reason": "Artificial local component fixture; supplied software premise, not empirical evidence.",
+                      "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                      "status": "declared"
+                    },
+                    "schema_version": "biocompiler.chemistry_disposition.v0.1",
+                    "source_id": "driver_body"
+                  },
+                  {
+                    "component": "modification_inventory",
+                    "decision": "mapped_copy",
+                    "destination_components": [
+                      "modification_inventory"
+                    ],
+                    "provenance": {
+                      "authority": [
+                        {
+                          "content_fingerprint": "f637247a33e74826c0d402ea56cfdc42193bf651aff06440d917cba3099c5cc9",
+                          "id": "fixture.local-material.notice",
+                          "kind": "source",
+                          "schema_version": "biocompiler.component_identity.v0.1",
+                          "version": "1"
+                        }
+                      ],
+                      "locator": "independent native test literal",
+                      "reason": "Artificial local component fixture; supplied software premise, not empirical evidence.",
+                      "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                      "status": "declared"
+                    },
+                    "schema_version": "biocompiler.chemistry_disposition.v0.1",
+                    "source_id": "driver_body"
+                  },
+                  {
+                    "component": "start_end",
+                    "decision": "not_carried",
+                    "destination_components": [],
+                    "provenance": {
+                      "authority": [
+                        {
+                          "content_fingerprint": "f637247a33e74826c0d402ea56cfdc42193bf651aff06440d917cba3099c5cc9",
+                          "id": "fixture.local-material.notice",
+                          "kind": "source",
+                          "schema_version": "biocompiler.component_identity.v0.1",
+                          "version": "1"
+                        }
+                      ],
+                      "locator": "independent native test literal",
+                      "reason": "Artificial local component fixture; supplied software premise, not empirical evidence.",
+                      "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                      "status": "declared"
+                    },
+                    "schema_version": "biocompiler.chemistry_disposition.v0.1",
+                    "source_id": "driver_body"
+                  },
+                  {
+                    "component": "terminal_tail",
+                    "decision": "mapped_copy",
+                    "destination_components": [
+                      "terminal_tail"
+                    ],
+                    "provenance": {
+                      "authority": [
+                        {
+                          "content_fingerprint": "f637247a33e74826c0d402ea56cfdc42193bf651aff06440d917cba3099c5cc9",
+                          "id": "fixture.local-material.notice",
+                          "kind": "source",
+                          "schema_version": "biocompiler.component_identity.v0.1",
+                          "version": "1"
+                        }
+                      ],
+                      "locator": "independent native test literal",
+                      "reason": "Artificial local component fixture; supplied software premise, not empirical evidence.",
+                      "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                      "status": "declared"
+                    },
+                    "schema_version": "biocompiler.chemistry_disposition.v0.1",
+                    "source_id": "driver_body"
+                  },
+                  {
+                    "component": "cap",
+                    "decision": "mapped_copy",
+                    "destination_components": [
+                      "cap"
+                    ],
+                    "provenance": {
+                      "authority": [
+                        {
+                          "content_fingerprint": "f637247a33e74826c0d402ea56cfdc42193bf651aff06440d917cba3099c5cc9",
+                          "id": "fixture.local-material.notice",
+                          "kind": "source",
+                          "schema_version": "biocompiler.component_identity.v0.1",
+                          "version": "1"
+                        }
+                      ],
+                      "locator": "independent native test literal",
+                      "reason": "Artificial local component fixture; supplied software premise, not empirical evidence.",
+                      "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                      "status": "declared"
+                    },
+                    "schema_version": "biocompiler.chemistry_disposition.v0.1",
+                    "source_id": "leader_A"
+                  },
+                  {
+                    "component": "finish_end",
+                    "decision": "not_carried",
+                    "destination_components": [],
+                    "provenance": {
+                      "authority": [
+                        {
+                          "content_fingerprint": "f637247a33e74826c0d402ea56cfdc42193bf651aff06440d917cba3099c5cc9",
+                          "id": "fixture.local-material.notice",
+                          "kind": "source",
+                          "schema_version": "biocompiler.component_identity.v0.1",
+                          "version": "1"
+                        }
+                      ],
+                      "locator": "independent native test literal",
+                      "reason": "Artificial local component fixture; supplied software premise, not empirical evidence.",
+                      "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                      "status": "declared"
+                    },
+                    "schema_version": "biocompiler.chemistry_disposition.v0.1",
+                    "source_id": "leader_A"
+                  },
+                  {
+                    "component": "modification_inventory",
+                    "decision": "mapped_copy",
+                    "destination_components": [
+                      "modification_inventory"
+                    ],
+                    "provenance": {
+                      "authority": [
+                        {
+                          "content_fingerprint": "f637247a33e74826c0d402ea56cfdc42193bf651aff06440d917cba3099c5cc9",
+                          "id": "fixture.local-material.notice",
+                          "kind": "source",
+                          "schema_version": "biocompiler.component_identity.v0.1",
+                          "version": "1"
+                        }
+                      ],
+                      "locator": "independent native test literal",
+                      "reason": "Artificial local component fixture; supplied software premise, not empirical evidence.",
+                      "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                      "status": "declared"
+                    },
+                    "schema_version": "biocompiler.chemistry_disposition.v0.1",
+                    "source_id": "leader_A"
+                  },
+                  {
+                    "component": "start_end",
+                    "decision": "mapped_copy",
+                    "destination_components": [
+                      "start_end"
+                    ],
+                    "provenance": {
+                      "authority": [
+                        {
+                          "content_fingerprint": "f637247a33e74826c0d402ea56cfdc42193bf651aff06440d917cba3099c5cc9",
+                          "id": "fixture.local-material.notice",
+                          "kind": "source",
+                          "schema_version": "biocompiler.component_identity.v0.1",
+                          "version": "1"
+                        }
+                      ],
+                      "locator": "independent native test literal",
+                      "reason": "Artificial local component fixture; supplied software premise, not empirical evidence.",
+                      "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                      "status": "declared"
+                    },
+                    "schema_version": "biocompiler.chemistry_disposition.v0.1",
+                    "source_id": "leader_A"
+                  },
+                  {
+                    "component": "terminal_tail",
+                    "decision": "not_carried",
+                    "destination_components": [],
+                    "provenance": {
+                      "authority": [
+                        {
+                          "content_fingerprint": "f637247a33e74826c0d402ea56cfdc42193bf651aff06440d917cba3099c5cc9",
+                          "id": "fixture.local-material.notice",
+                          "kind": "source",
+                          "schema_version": "biocompiler.component_identity.v0.1",
+                          "version": "1"
+                        }
+                      ],
+                      "locator": "independent native test literal",
+                      "reason": "Artificial local component fixture; supplied software premise, not empirical evidence.",
+                      "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                      "status": "declared"
+                    },
+                    "schema_version": "biocompiler.chemistry_disposition.v0.1",
+                    "source_id": "leader_A"
+                  }
+                ],
+                "mode": "explicit_output",
+                "output": {
+                  "cap": {
+                    "identity": {
+                      "accession": "artificial_cap",
+                      "namespace": "software_fixture.chemical",
+                      "schema_version": "biocompiler.chemical_identity.v0.1",
+                      "version": "1"
+                    },
+                    "provenance": {
+                      "authority": [
+                        {
+                          "content_fingerprint": "f637247a33e74826c0d402ea56cfdc42193bf651aff06440d917cba3099c5cc9",
+                          "id": "fixture.local-material.notice",
+                          "kind": "source",
+                          "schema_version": "biocompiler.component_identity.v0.1",
+                          "version": "1"
+                        }
+                      ],
+                      "locator": "independent native test literal",
+                      "reason": "Artificial local component fixture; supplied software premise, not empirical evidence.",
+                      "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                      "status": "declared"
+                    },
+                    "schema_version": "biocompiler.chemistry_claim.v0.1",
+                    "status": "declared"
+                  },
+                  "finish_end": {
+                    "identity": {
+                      "accession": "hydroxyl",
+                      "namespace": "software_fixture.chemical",
+                      "schema_version": "biocompiler.chemical_identity.v0.1",
+                      "version": "1"
+                    },
+                    "provenance": {
+                      "authority": [
+                        {
+                          "content_fingerprint": "f637247a33e74826c0d402ea56cfdc42193bf651aff06440d917cba3099c5cc9",
+                          "id": "fixture.local-material.notice",
+                          "kind": "source",
+                          "schema_version": "biocompiler.component_identity.v0.1",
+                          "version": "1"
+                        }
+                      ],
+                      "locator": "independent native test literal",
+                      "reason": "Artificial local component fixture; supplied software premise, not empirical evidence.",
+                      "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                      "status": "declared"
+                    },
+                    "schema_version": "biocompiler.chemistry_claim.v0.1",
+                    "status": "declared"
+                  },
+                  "modification_inventory_provenance": {
+                    "authority": [
+                      {
+                        "content_fingerprint": "f637247a33e74826c0d402ea56cfdc42193bf651aff06440d917cba3099c5cc9",
+                        "id": "fixture.local-material.notice",
+                        "kind": "source",
+                        "schema_version": "biocompiler.component_identity.v0.1",
+                        "version": "1"
+                      }
+                    ],
+                    "locator": "independent native test literal",
+                    "reason": "Artificial local component fixture; supplied software premise, not empirical evidence.",
+                    "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                    "status": "declared"
+                  },
+                  "modification_inventory_status": "declared",
+                  "modifications": [],
+                  "schema_version": "biocompiler.molecule_chemistry.v0.1",
+                  "start_end": {
+                    "identity": {
+                      "accession": "hydroxyl",
+                      "namespace": "software_fixture.chemical",
+                      "schema_version": "biocompiler.chemical_identity.v0.1",
+                      "version": "1"
+                    },
+                    "provenance": {
+                      "authority": [
+                        {
+                          "content_fingerprint": "f637247a33e74826c0d402ea56cfdc42193bf651aff06440d917cba3099c5cc9",
+                          "id": "fixture.local-material.notice",
+                          "kind": "source",
+                          "schema_version": "biocompiler.component_identity.v0.1",
+                          "version": "1"
+                        }
+                      ],
+                      "locator": "independent native test literal",
+                      "reason": "Artificial local component fixture; supplied software premise, not empirical evidence.",
+                      "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                      "status": "declared"
+                    },
+                    "schema_version": "biocompiler.chemistry_claim.v0.1",
+                    "status": "declared"
+                  },
+                  "terminal_tail": {
+                    "length": {
+                      "exact": 4,
+                      "lower": null,
+                      "mode": "exact",
+                      "schema_version": "biocompiler.tail_length.v0.1",
+                      "upper": null
+                    },
+                    "path": {
+                      "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+                      "space_id": "join.frame",
+                      "spans": [
+                        {
+                          "end": 17,
+                          "schema_version": "biocompiler.molecule_index_span.v0.1",
+                          "start": 13
+                        }
+                      ],
+                      "strand": "+"
+                    },
+                    "placement": "represented_terminal",
+                    "provenance": {
+                      "authority": [
+                        {
+                          "content_fingerprint": "f637247a33e74826c0d402ea56cfdc42193bf651aff06440d917cba3099c5cc9",
+                          "id": "fixture.local-material.notice",
+                          "kind": "source",
+                          "schema_version": "biocompiler.component_identity.v0.1",
+                          "version": "1"
+                        }
+                      ],
+                      "locator": "independent native test literal",
+                      "reason": "Artificial local component fixture; supplied software premise, not empirical evidence.",
+                      "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                      "status": "declared"
+                    },
+                    "schema_version": "biocompiler.tail_declaration.v0.1",
+                    "status": "declared"
+                  }
+                },
+                "provenance": {
+                  "authority": [
+                    {
+                      "content_fingerprint": "f637247a33e74826c0d402ea56cfdc42193bf651aff06440d917cba3099c5cc9",
+                      "id": "fixture.local-material.notice",
+                      "kind": "source",
+                      "schema_version": "biocompiler.component_identity.v0.1",
+                      "version": "1"
+                    }
+                  ],
+                  "locator": "independent native test literal",
+                  "reason": "Artificial local component fixture; supplied software premise, not empirical evidence.",
+                  "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                  "status": "declared"
+                },
+                "schema_version": "biocompiler.chemistry_transition.v0.1"
+              },
+              "feature_transition": {
+                "added": [],
+                "dispositions": [
+                  {
+                    "decision": "exact",
+                    "feature_id": "cds",
+                    "outputs": [
+                      {
+                        "id": "cds",
+                        "kind": "coding_sequence",
+                        "path": {
+                          "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+                          "space_id": "join.frame",
+                          "spans": [
+                            {
+                              "end": 11,
+                              "schema_version": "biocompiler.molecule_index_span.v0.1",
+                              "start": 2
+                            }
+                          ],
+                          "strand": "+"
+                        },
+                        "provenance": {
+                          "authority": [
+                            {
+                              "content_fingerprint": "f637247a33e74826c0d402ea56cfdc42193bf651aff06440d917cba3099c5cc9",
+                              "id": "fixture.local-material.notice",
+                              "kind": "source",
+                              "schema_version": "biocompiler.component_identity.v0.1",
+                              "version": "1"
+                            }
+                          ],
+                          "locator": "independent native test literal",
+                          "reason": "Artificial local component fixture; supplied software premise, not empirical evidence.",
+                          "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                          "status": "declared"
+                        },
+                        "reading_frame": 0,
+                        "schema_version": "biocompiler.molecule_feature.v0.1"
+                      }
+                    ],
+                    "provenance": {
+                      "authority": [
+                        {
+                          "content_fingerprint": "f637247a33e74826c0d402ea56cfdc42193bf651aff06440d917cba3099c5cc9",
+                          "id": "fixture.local-material.notice",
+                          "kind": "source",
+                          "schema_version": "biocompiler.component_identity.v0.1",
+                          "version": "1"
+                        }
+                      ],
+                      "locator": "independent native test literal",
+                      "reason": "Artificial local component fixture; supplied software premise, not empirical evidence.",
+                      "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                      "status": "declared"
+                    },
+                    "schema_version": "biocompiler.feature_disposition.v0.1",
+                    "source_id": "driver_body"
+                  },
+                  {
+                    "decision": "exact",
+                    "feature_id": "poly_a",
+                    "outputs": [
+                      {
+                        "id": "poly_a",
+                        "kind": "poly_a_tail",
+                        "path": {
+                          "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+                          "space_id": "join.frame",
+                          "spans": [
+                            {
+                              "end": 17,
+                              "schema_version": "biocompiler.molecule_index_span.v0.1",
+                              "start": 13
+                            }
+                          ],
+                          "strand": "+"
+                        },
+                        "provenance": {
+                          "authority": [
+                            {
+                              "content_fingerprint": "f637247a33e74826c0d402ea56cfdc42193bf651aff06440d917cba3099c5cc9",
+                              "id": "fixture.local-material.notice",
+                              "kind": "source",
+                              "schema_version": "biocompiler.component_identity.v0.1",
+                              "version": "1"
+                            }
+                          ],
+                          "locator": "independent native test literal",
+                          "reason": "Artificial local component fixture; supplied software premise, not empirical evidence.",
+                          "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                          "status": "declared"
+                        },
+                        "reading_frame": null,
+                        "schema_version": "biocompiler.molecule_feature.v0.1"
+                      }
+                    ],
+                    "provenance": {
+                      "authority": [
+                        {
+                          "content_fingerprint": "f637247a33e74826c0d402ea56cfdc42193bf651aff06440d917cba3099c5cc9",
+                          "id": "fixture.local-material.notice",
+                          "kind": "source",
+                          "schema_version": "biocompiler.component_identity.v0.1",
+                          "version": "1"
+                        }
+                      ],
+                      "locator": "independent native test literal",
+                      "reason": "Artificial local component fixture; supplied software premise, not empirical evidence.",
+                      "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                      "status": "declared"
+                    },
+                    "schema_version": "biocompiler.feature_disposition.v0.1",
+                    "source_id": "driver_body"
+                  },
+                  {
+                    "decision": "exact",
+                    "feature_id": "utr3",
+                    "outputs": [
+                      {
+                        "id": "utr3",
+                        "kind": "three_prime_utr",
+                        "path": {
+                          "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+                          "space_id": "join.frame",
+                          "spans": [
+                            {
+                              "end": 13,
+                              "schema_version": "biocompiler.molecule_index_span.v0.1",
+                              "start": 11
+                            }
+                          ],
+                          "strand": "+"
+                        },
+                        "provenance": {
+                          "authority": [
+                            {
+                              "content_fingerprint": "f637247a33e74826c0d402ea56cfdc42193bf651aff06440d917cba3099c5cc9",
+                              "id": "fixture.local-material.notice",
+                              "kind": "source",
+                              "schema_version": "biocompiler.component_identity.v0.1",
+                              "version": "1"
+                            }
+                          ],
+                          "locator": "independent native test literal",
+                          "reason": "Artificial local component fixture; supplied software premise, not empirical evidence.",
+                          "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                          "status": "declared"
+                        },
+                        "reading_frame": null,
+                        "schema_version": "biocompiler.molecule_feature.v0.1"
+                      }
+                    ],
+                    "provenance": {
+                      "authority": [
+                        {
+                          "content_fingerprint": "f637247a33e74826c0d402ea56cfdc42193bf651aff06440d917cba3099c5cc9",
+                          "id": "fixture.local-material.notice",
+                          "kind": "source",
+                          "schema_version": "biocompiler.component_identity.v0.1",
+                          "version": "1"
+                        }
+                      ],
+                      "locator": "independent native test literal",
+                      "reason": "Artificial local component fixture; supplied software premise, not empirical evidence.",
+                      "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                      "status": "declared"
+                    },
+                    "schema_version": "biocompiler.feature_disposition.v0.1",
+                    "source_id": "driver_body"
+                  },
+                  {
+                    "decision": "exact",
+                    "feature_id": "utr5",
+                    "outputs": [
+                      {
+                        "id": "utr5",
+                        "kind": "five_prime_utr",
+                        "path": {
+                          "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+                          "space_id": "join.frame",
+                          "spans": [
+                            {
+                              "end": 2,
+                              "schema_version": "biocompiler.molecule_index_span.v0.1",
+                              "start": 0
+                            }
+                          ],
+                          "strand": "+"
+                        },
+                        "provenance": {
+                          "authority": [
+                            {
+                              "content_fingerprint": "f637247a33e74826c0d402ea56cfdc42193bf651aff06440d917cba3099c5cc9",
+                              "id": "fixture.local-material.notice",
+                              "kind": "source",
+                              "schema_version": "biocompiler.component_identity.v0.1",
+                              "version": "1"
+                            }
+                          ],
+                          "locator": "independent native test literal",
+                          "reason": "Artificial local component fixture; supplied software premise, not empirical evidence.",
+                          "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                          "status": "declared"
+                        },
+                        "reading_frame": null,
+                        "schema_version": "biocompiler.molecule_feature.v0.1"
+                      }
+                    ],
+                    "provenance": {
+                      "authority": [
+                        {
+                          "content_fingerprint": "f637247a33e74826c0d402ea56cfdc42193bf651aff06440d917cba3099c5cc9",
+                          "id": "fixture.local-material.notice",
+                          "kind": "source",
+                          "schema_version": "biocompiler.component_identity.v0.1",
+                          "version": "1"
+                        }
+                      ],
+                      "locator": "independent native test literal",
+                      "reason": "Artificial local component fixture; supplied software premise, not empirical evidence.",
+                      "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                      "status": "declared"
+                    },
+                    "schema_version": "biocompiler.feature_disposition.v0.1",
+                    "source_id": "leader_A"
+                  }
+                ],
+                "provenance": {
+                  "authority": [
+                    {
+                      "content_fingerprint": "f637247a33e74826c0d402ea56cfdc42193bf651aff06440d917cba3099c5cc9",
+                      "id": "fixture.local-material.notice",
+                      "kind": "source",
+                      "schema_version": "biocompiler.component_identity.v0.1",
+                      "version": "1"
+                    }
+                  ],
+                  "locator": "independent native test literal",
+                  "reason": "Artificial local component fixture; supplied software premise, not empirical evidence.",
+                  "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+                  "status": "declared"
+                },
+                "schema_version": "biocompiler.feature_transition.v0.1"
+              },
+              "id": "joined",
+              "schema_version": "biocompiler.construction_product_port.v0.1",
+              "space_id": "join.frame",
+              "topology": "linear"
+            }
+          ],
+          "provenance": {
+            "authority": [
+              {
+                "content_fingerprint": "f637247a33e74826c0d402ea56cfdc42193bf651aff06440d917cba3099c5cc9",
+                "id": "fixture.local-material.notice",
+                "kind": "source",
+                "schema_version": "biocompiler.component_identity.v0.1",
+                "version": "1"
+              }
+            ],
+            "locator": "independent native test literal",
+            "reason": "Artificial local component fixture; supplied software premise, not empirical evidence.",
+            "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+            "status": "declared"
+          },
+          "schema_version": "biocompiler.construction_transform_step.v0.1"
+        }
+      ]
+    }
+  },
+  "notice": "Only original artificial RNA roots, geometry, chemistry, construction template and expected product declarations are reused. No semantic behavior or empirical claim is inferred from their sequence. New staged carriers are separately supplied premises.",
+  "origin": {
+    "case": "A",
+    "fixture_sha256": "726975219d34d5aad255440b89d58283f8cce1a2e4a6adfb6f6fea01feb41249",
+    "hosted_run": "37571805132",
+    "original_request_sha256": "1e9fef2db64ad7aa78f93d0d35e271f6891b94fe07c60298188ec909099b824e"
+  },
+  "products": [
+    {
+      "cds_feature": "cds",
+      "expected": {
+        "identity": {
+          "content_fingerprint": "c7434883f345ffc2100dd9e3750afbbee436ba7535cf5fb26b9be706ce413c9b",
+          "id": "payload.artificial.product",
+          "kind": "source",
+          "schema_version": "biocompiler.component_identity.v0.1",
+          "version": "1"
+        },
+        "provenance": {
+          "authority": [
+            {
+              "content_fingerprint": "f637247a33e74826c0d402ea56cfdc42193bf651aff06440d917cba3099c5cc9",
+              "id": "fixture.local-material.notice",
+              "kind": "source",
+              "schema_version": "biocompiler.component_identity.v0.1",
+              "version": "1"
+            }
+          ],
+          "locator": "independent native test literal",
+          "reason": "Artificial local component fixture; supplied software premise, not empirical evidence.",
+          "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+          "status": "declared"
+        },
+        "sequence": "MA",
+        "translation_policy": {
+          "genetic_code": "ncbi_standard_v1",
+          "profile": "ordinary_cds",
+          "recodings": [],
+          "schema_version": "biocompiler.translation_policy.v0.1"
+        }
+      },
+      "node": "product",
+      "root": "driver_body",
+      "symbol": "fixture.product.alpha"
+    }
+  ],
+  "roots": {
+    "decision": {
+      "id": "leader_A",
+      "molecule": {
+        "assembly": [
+          {
+            "destination": {
+              "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+              "space_id": "leader_A.frame",
+              "spans": [
+                {
+                  "end": 2,
+                  "schema_version": "biocompiler.molecule_index_span.v0.1",
+                  "start": 0
+                }
+              ],
+              "strand": "+"
+            },
+            "id": "leader_A.self",
+            "provenance": {
+              "authority": [
+                {
+                  "content_fingerprint": "f637247a33e74826c0d402ea56cfdc42193bf651aff06440d917cba3099c5cc9",
+                  "id": "fixture.local-material.notice",
+                  "kind": "source",
+                  "schema_version": "biocompiler.component_identity.v0.1",
+                  "version": "1"
+                }
+              ],
+              "locator": "independent native test literal",
+              "reason": "Artificial local component fixture; supplied software premise, not empirical evidence.",
+              "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+              "status": "declared"
+            },
+            "schema_version": "biocompiler.assembly_origin.v0.1",
+            "source_path": {
+              "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+              "space_id": "leader_A.frame",
+              "spans": [
+                {
+                  "end": 2,
+                  "schema_version": "biocompiler.molecule_index_span.v0.1",
+                  "start": 0
+                }
+              ],
+              "strand": "+"
+            },
+            "source_space": {
+              "alphabet": "RNA",
+              "axis": "5prime_to_3prime",
+              "id": "leader_A.frame",
+              "length": 2,
+              "schema_version": "biocompiler.molecule_coordinate_space.v0.1",
+              "topology": "linear"
+            }
+          }
+        ],
+        "chemistry": {
+          "cap": {
+            "identity": {
+              "accession": "artificial_cap",
+              "namespace": "software_fixture.chemical",
+              "schema_version": "biocompiler.chemical_identity.v0.1",
+              "version": "1"
+            },
+            "provenance": {
+              "authority": [
+                {
+                  "content_fingerprint": "f637247a33e74826c0d402ea56cfdc42193bf651aff06440d917cba3099c5cc9",
+                  "id": "fixture.local-material.notice",
+                  "kind": "source",
+                  "schema_version": "biocompiler.component_identity.v0.1",
+                  "version": "1"
+                }
+              ],
+              "locator": "independent native test literal",
+              "reason": "Artificial local component fixture; supplied software premise, not empirical evidence.",
+              "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+              "status": "declared"
+            },
+            "schema_version": "biocompiler.chemistry_claim.v0.1",
+            "status": "declared"
+          },
+          "finish_end": {
+            "identity": {
+              "accession": "hydroxyl",
+              "namespace": "software_fixture.chemical",
+              "schema_version": "biocompiler.chemical_identity.v0.1",
+              "version": "1"
+            },
+            "provenance": {
+              "authority": [
+                {
+                  "content_fingerprint": "f637247a33e74826c0d402ea56cfdc42193bf651aff06440d917cba3099c5cc9",
+                  "id": "fixture.local-material.notice",
+                  "kind": "source",
+                  "schema_version": "biocompiler.component_identity.v0.1",
+                  "version": "1"
+                }
+              ],
+              "locator": "independent native test literal",
+              "reason": "Artificial local component fixture; supplied software premise, not empirical evidence.",
+              "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+              "status": "declared"
+            },
+            "schema_version": "biocompiler.chemistry_claim.v0.1",
+            "status": "declared"
+          },
+          "modification_inventory_provenance": {
+            "authority": [
+              {
+                "content_fingerprint": "f637247a33e74826c0d402ea56cfdc42193bf651aff06440d917cba3099c5cc9",
+                "id": "fixture.local-material.notice",
+                "kind": "source",
+                "schema_version": "biocompiler.component_identity.v0.1",
+                "version": "1"
+              }
+            ],
+            "locator": "independent native test literal",
+            "reason": "Artificial local component fixture; supplied software premise, not empirical evidence.",
+            "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+            "status": "declared"
+          },
+          "modification_inventory_status": "declared",
+          "modifications": [],
+          "schema_version": "biocompiler.molecule_chemistry.v0.1",
+          "start_end": {
+            "identity": {
+              "accession": "hydroxyl",
+              "namespace": "software_fixture.chemical",
+              "schema_version": "biocompiler.chemical_identity.v0.1",
+              "version": "1"
+            },
+            "provenance": {
+              "authority": [
+                {
+                  "content_fingerprint": "f637247a33e74826c0d402ea56cfdc42193bf651aff06440d917cba3099c5cc9",
+                  "id": "fixture.local-material.notice",
+                  "kind": "source",
+                  "schema_version": "biocompiler.component_identity.v0.1",
+                  "version": "1"
+                }
+              ],
+              "locator": "independent native test literal",
+              "reason": "Artificial local component fixture; supplied software premise, not empirical evidence.",
+              "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+              "status": "declared"
+            },
+            "schema_version": "biocompiler.chemistry_claim.v0.1",
+            "status": "declared"
+          },
+          "terminal_tail": {
+            "length": {
+              "exact": 0,
+              "lower": null,
+              "mode": "exact",
+              "schema_version": "biocompiler.tail_length.v0.1",
+              "upper": null
+            },
+            "path": null,
+            "placement": "absent",
+            "provenance": {
+              "authority": [
+                {
+                  "content_fingerprint": "f637247a33e74826c0d402ea56cfdc42193bf651aff06440d917cba3099c5cc9",
+                  "id": "fixture.local-material.notice",
+                  "kind": "source",
+                  "schema_version": "biocompiler.component_identity.v0.1",
+                  "version": "1"
+                }
+              ],
+              "locator": "independent native test literal",
+              "reason": "Artificial local component fixture; supplied software premise, not empirical evidence.",
+              "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+              "status": "declared"
+            },
+            "schema_version": "biocompiler.tail_declaration.v0.1",
+            "status": "declared"
+          }
+        },
+        "coding_status": "noncoding",
+        "features": [
+          {
+            "id": "utr5",
+            "kind": "five_prime_utr",
+            "path": {
+              "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+              "space_id": "leader_A.frame",
+              "spans": [
+                {
+                  "end": 2,
+                  "schema_version": "biocompiler.molecule_index_span.v0.1",
+                  "start": 0
+                }
+              ],
+              "strand": "+"
+            },
+            "provenance": {
+              "authority": [
+                {
+                  "content_fingerprint": "f637247a33e74826c0d402ea56cfdc42193bf651aff06440d917cba3099c5cc9",
+                  "id": "fixture.local-material.notice",
+                  "kind": "source",
+                  "schema_version": "biocompiler.component_identity.v0.1",
+                  "version": "1"
+                }
+              ],
+              "locator": "independent native test literal",
+              "reason": "Artificial local component fixture; supplied software premise, not empirical evidence.",
+              "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+              "status": "declared"
+            },
+            "reading_frame": null,
+            "schema_version": "biocompiler.molecule_feature.v0.1"
+          }
+        ],
+        "form": "primary_rna",
+        "id": "leader_A.molecule",
+        "provenance": {
+          "authority": [
+            {
+              "content_fingerprint": "f637247a33e74826c0d402ea56cfdc42193bf651aff06440d917cba3099c5cc9",
+              "id": "fixture.local-material.notice",
+              "kind": "source",
+              "schema_version": "biocompiler.component_identity.v0.1",
+              "version": "1"
+            }
+          ],
+          "locator": "independent native test literal",
+          "reason": "Artificial local component fixture; supplied software premise, not empirical evidence.",
+          "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+          "status": "declared"
+        },
+        "schema_version": "biocompiler.circuit_molecule.v0.1",
+        "sequence": "CC",
+        "sequence_extent": "complete",
+        "space": {
+          "alphabet": "RNA",
+          "axis": "5prime_to_3prime",
+          "id": "leader_A.frame",
+          "length": 2,
+          "schema_version": "biocompiler.molecule_coordinate_space.v0.1",
+          "topology": "linear"
+        }
+      },
+      "provenance": {
+        "authority": [
+          {
+            "content_fingerprint": "f637247a33e74826c0d402ea56cfdc42193bf651aff06440d917cba3099c5cc9",
+            "id": "fixture.local-material.notice",
+            "kind": "source",
+            "schema_version": "biocompiler.component_identity.v0.1",
+            "version": "1"
+          }
+        ],
+        "locator": "independent native test literal",
+        "reason": "Artificial local component fixture; supplied software premise, not empirical evidence.",
+        "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+        "status": "declared"
+      },
+      "schema_version": "biocompiler.construction_root_source.v0.1"
+    },
+    "driver": {
+      "id": "driver_body",
+      "molecule": {
+        "assembly": [
+          {
+            "destination": {
+              "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+              "space_id": "driver_body.frame",
+              "spans": [
+                {
+                  "end": 15,
+                  "schema_version": "biocompiler.molecule_index_span.v0.1",
+                  "start": 0
+                }
+              ],
+              "strand": "+"
+            },
+            "id": "driver_body.self",
+            "provenance": {
+              "authority": [
+                {
+                  "content_fingerprint": "f637247a33e74826c0d402ea56cfdc42193bf651aff06440d917cba3099c5cc9",
+                  "id": "fixture.local-material.notice",
+                  "kind": "source",
+                  "schema_version": "biocompiler.component_identity.v0.1",
+                  "version": "1"
+                }
+              ],
+              "locator": "independent native test literal",
+              "reason": "Artificial local component fixture; supplied software premise, not empirical evidence.",
+              "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+              "status": "declared"
+            },
+            "schema_version": "biocompiler.assembly_origin.v0.1",
+            "source_path": {
+              "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+              "space_id": "driver_body.frame",
+              "spans": [
+                {
+                  "end": 15,
+                  "schema_version": "biocompiler.molecule_index_span.v0.1",
+                  "start": 0
+                }
+              ],
+              "strand": "+"
+            },
+            "source_space": {
+              "alphabet": "RNA",
+              "axis": "5prime_to_3prime",
+              "id": "driver_body.frame",
+              "length": 15,
+              "schema_version": "biocompiler.molecule_coordinate_space.v0.1",
+              "topology": "linear"
+            }
+          }
+        ],
+        "chemistry": {
+          "cap": {
+            "identity": {
+              "accession": "artificial_cap",
+              "namespace": "software_fixture.chemical",
+              "schema_version": "biocompiler.chemical_identity.v0.1",
+              "version": "1"
+            },
+            "provenance": {
+              "authority": [
+                {
+                  "content_fingerprint": "f637247a33e74826c0d402ea56cfdc42193bf651aff06440d917cba3099c5cc9",
+                  "id": "fixture.local-material.notice",
+                  "kind": "source",
+                  "schema_version": "biocompiler.component_identity.v0.1",
+                  "version": "1"
+                }
+              ],
+              "locator": "independent native test literal",
+              "reason": "Artificial local component fixture; supplied software premise, not empirical evidence.",
+              "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+              "status": "declared"
+            },
+            "schema_version": "biocompiler.chemistry_claim.v0.1",
+            "status": "declared"
+          },
+          "finish_end": {
+            "identity": {
+              "accession": "hydroxyl",
+              "namespace": "software_fixture.chemical",
+              "schema_version": "biocompiler.chemical_identity.v0.1",
+              "version": "1"
+            },
+            "provenance": {
+              "authority": [
+                {
+                  "content_fingerprint": "f637247a33e74826c0d402ea56cfdc42193bf651aff06440d917cba3099c5cc9",
+                  "id": "fixture.local-material.notice",
+                  "kind": "source",
+                  "schema_version": "biocompiler.component_identity.v0.1",
+                  "version": "1"
+                }
+              ],
+              "locator": "independent native test literal",
+              "reason": "Artificial local component fixture; supplied software premise, not empirical evidence.",
+              "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+              "status": "declared"
+            },
+            "schema_version": "biocompiler.chemistry_claim.v0.1",
+            "status": "declared"
+          },
+          "modification_inventory_provenance": {
+            "authority": [
+              {
+                "content_fingerprint": "f637247a33e74826c0d402ea56cfdc42193bf651aff06440d917cba3099c5cc9",
+                "id": "fixture.local-material.notice",
+                "kind": "source",
+                "schema_version": "biocompiler.component_identity.v0.1",
+                "version": "1"
+              }
+            ],
+            "locator": "independent native test literal",
+            "reason": "Artificial local component fixture; supplied software premise, not empirical evidence.",
+            "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+            "status": "declared"
+          },
+          "modification_inventory_status": "declared",
+          "modifications": [],
+          "schema_version": "biocompiler.molecule_chemistry.v0.1",
+          "start_end": {
+            "identity": {
+              "accession": "hydroxyl",
+              "namespace": "software_fixture.chemical",
+              "schema_version": "biocompiler.chemical_identity.v0.1",
+              "version": "1"
+            },
+            "provenance": {
+              "authority": [
+                {
+                  "content_fingerprint": "f637247a33e74826c0d402ea56cfdc42193bf651aff06440d917cba3099c5cc9",
+                  "id": "fixture.local-material.notice",
+                  "kind": "source",
+                  "schema_version": "biocompiler.component_identity.v0.1",
+                  "version": "1"
+                }
+              ],
+              "locator": "independent native test literal",
+              "reason": "Artificial local component fixture; supplied software premise, not empirical evidence.",
+              "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+              "status": "declared"
+            },
+            "schema_version": "biocompiler.chemistry_claim.v0.1",
+            "status": "declared"
+          },
+          "terminal_tail": {
+            "length": {
+              "exact": 4,
+              "lower": null,
+              "mode": "exact",
+              "schema_version": "biocompiler.tail_length.v0.1",
+              "upper": null
+            },
+            "path": {
+              "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+              "space_id": "driver_body.frame",
+              "spans": [
+                {
+                  "end": 15,
+                  "schema_version": "biocompiler.molecule_index_span.v0.1",
+                  "start": 11
+                }
+              ],
+              "strand": "+"
+            },
+            "placement": "represented_terminal",
+            "provenance": {
+              "authority": [
+                {
+                  "content_fingerprint": "f637247a33e74826c0d402ea56cfdc42193bf651aff06440d917cba3099c5cc9",
+                  "id": "fixture.local-material.notice",
+                  "kind": "source",
+                  "schema_version": "biocompiler.component_identity.v0.1",
+                  "version": "1"
+                }
+              ],
+              "locator": "independent native test literal",
+              "reason": "Artificial local component fixture; supplied software premise, not empirical evidence.",
+              "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+              "status": "declared"
+            },
+            "schema_version": "biocompiler.tail_declaration.v0.1",
+            "status": "declared"
+          }
+        },
+        "coding_status": "coding",
+        "features": [
+          {
+            "id": "cds",
+            "kind": "coding_sequence",
+            "path": {
+              "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+              "space_id": "driver_body.frame",
+              "spans": [
+                {
+                  "end": 9,
+                  "schema_version": "biocompiler.molecule_index_span.v0.1",
+                  "start": 0
+                }
+              ],
+              "strand": "+"
+            },
+            "provenance": {
+              "authority": [
+                {
+                  "content_fingerprint": "f637247a33e74826c0d402ea56cfdc42193bf651aff06440d917cba3099c5cc9",
+                  "id": "fixture.local-material.notice",
+                  "kind": "source",
+                  "schema_version": "biocompiler.component_identity.v0.1",
+                  "version": "1"
+                }
+              ],
+              "locator": "independent native test literal",
+              "reason": "Artificial local component fixture; supplied software premise, not empirical evidence.",
+              "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+              "status": "declared"
+            },
+            "reading_frame": 0,
+            "schema_version": "biocompiler.molecule_feature.v0.1"
+          },
+          {
+            "id": "poly_a",
+            "kind": "poly_a_tail",
+            "path": {
+              "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+              "space_id": "driver_body.frame",
+              "spans": [
+                {
+                  "end": 15,
+                  "schema_version": "biocompiler.molecule_index_span.v0.1",
+                  "start": 11
+                }
+              ],
+              "strand": "+"
+            },
+            "provenance": {
+              "authority": [
+                {
+                  "content_fingerprint": "f637247a33e74826c0d402ea56cfdc42193bf651aff06440d917cba3099c5cc9",
+                  "id": "fixture.local-material.notice",
+                  "kind": "source",
+                  "schema_version": "biocompiler.component_identity.v0.1",
+                  "version": "1"
+                }
+              ],
+              "locator": "independent native test literal",
+              "reason": "Artificial local component fixture; supplied software premise, not empirical evidence.",
+              "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+              "status": "declared"
+            },
+            "reading_frame": null,
+            "schema_version": "biocompiler.molecule_feature.v0.1"
+          },
+          {
+            "id": "utr3",
+            "kind": "three_prime_utr",
+            "path": {
+              "schema_version": "biocompiler.molecule_coordinate_path.v0.1",
+              "space_id": "driver_body.frame",
+              "spans": [
+                {
+                  "end": 11,
+                  "schema_version": "biocompiler.molecule_index_span.v0.1",
+                  "start": 9
+                }
+              ],
+              "strand": "+"
+            },
+            "provenance": {
+              "authority": [
+                {
+                  "content_fingerprint": "f637247a33e74826c0d402ea56cfdc42193bf651aff06440d917cba3099c5cc9",
+                  "id": "fixture.local-material.notice",
+                  "kind": "source",
+                  "schema_version": "biocompiler.component_identity.v0.1",
+                  "version": "1"
+                }
+              ],
+              "locator": "independent native test literal",
+              "reason": "Artificial local component fixture; supplied software premise, not empirical evidence.",
+              "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+              "status": "declared"
+            },
+            "reading_frame": null,
+            "schema_version": "biocompiler.molecule_feature.v0.1"
+          }
+        ],
+        "form": "primary_rna",
+        "id": "driver_body.molecule",
+        "provenance": {
+          "authority": [
+            {
+              "content_fingerprint": "f637247a33e74826c0d402ea56cfdc42193bf651aff06440d917cba3099c5cc9",
+              "id": "fixture.local-material.notice",
+              "kind": "source",
+              "schema_version": "biocompiler.component_identity.v0.1",
+              "version": "1"
+            }
+          ],
+          "locator": "independent native test literal",
+          "reason": "Artificial local component fixture; supplied software premise, not empirical evidence.",
+          "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+          "status": "declared"
+        },
+        "schema_version": "biocompiler.circuit_molecule.v0.1",
+        "sequence": "AUGGCUUAAGGAAAA",
+        "sequence_extent": "complete",
+        "space": {
+          "alphabet": "RNA",
+          "axis": "5prime_to_3prime",
+          "id": "driver_body.frame",
+          "length": 15,
+          "schema_version": "biocompiler.molecule_coordinate_space.v0.1",
+          "topology": "linear"
+        }
+      },
+      "provenance": {
+        "authority": [
+          {
+            "content_fingerprint": "f637247a33e74826c0d402ea56cfdc42193bf651aff06440d917cba3099c5cc9",
+            "id": "fixture.local-material.notice",
+            "kind": "source",
+            "schema_version": "biocompiler.component_identity.v0.1",
+            "version": "1"
+          }
+        ],
+        "locator": "independent native test literal",
+        "reason": "Artificial local component fixture; supplied software premise, not empirical evidence.",
+        "schema_version": "biocompiler.molecular_declaration_provenance.v0.1",
+        "status": "declared"
+      },
+      "schema_version": "biocompiler.construction_root_source.v0.1"
+    }
+  },
+  "schema_version": "biocompiler.policy_staged_material_seed.v0.1"
+}

@@ -396,7 +396,7 @@ let check_staged ~admitted ~implementation ~proposed =
     "Staged anchors must cover exact original declarations once and in declaration order.";
   let transition_anchor identity=List.find(fun(t:B.transition)->t.source=identity)anchors in
   let effect_anchor identity=List.find(fun(e:B.effect_binding)->e.source=identity)(B.effects proposed)in
-  let event_is effect phase (t:O.transition)=t.on.op="effect_event" && t.on.reference=Some effect && t.on.phase=Some phase in
+  let event_is effect_id phase (t:O.transition)=t.on.op="effect_event" && t.on.reference=Some effect_id && t.on.phase=Some phase in
   let requesting=List.filter(fun(t:O.transition)->t.effects<>[])behavior.transitions in
   let first=singleton "rising-triggered first stage"(List.filter(fun(t:O.transition)->t.on.op="rising")requesting)in
   let first_effect=singleton "first-stage effect" first.effects in
@@ -407,8 +407,8 @@ let check_staged ~admitted ~implementation ~proposed =
     second.source=first.destination && finish.source=second.destination && finish.effects=[] &&
     List.mem finish.destination source_machine.terminal)
     "Staged source must request stage two only on its retained first-stage completion and then terminate.";
-  let failures=List.concat_map(fun(effect,state)->List.map(fun phase->
-    let t=singleton (phase^" stage transition")(List.filter(event_is effect phase)behavior.transitions)in
+  let failures=List.concat_map(fun(effect_id,state)->List.map(fun phase->
+    let t=singleton (phase^" stage transition")(List.filter(event_is effect_id phase)behavior.transitions)in
     require(t.source=state && t.effects=[] && List.mem t.destination source_machine.terminal)
       "Stage failure/timeout must terminate its own active stage without requesting another effect.";t)
     ["failed";"timed_out"])[first_effect,first.destination;second_effect,second.destination]in
@@ -500,14 +500,14 @@ let check_staged ~admitted ~implementation ~proposed =
              edges:= !edges@[key,endpoint.node_id]);
         expression role(source_path^"/args/0")(List.hd args)(incoming(ep endpoint.node_id "in"))
     |"effect_event"->source_type "event"(get "value_type" source);output "selected";
-        let effect=match decoded.reference with Some value->value|None->Diagnostic.fail "policy_implementation_source_binding" "Missing effect event reference."in
-        require(List.exists(fun(e:O.effect_spec)->e.effect_id=effect)behavior.effects && args=[] &&
-          ref_matches source "ref" "Effect" effect && ref_matches source "scope" "Subject" subject.subject_id)
+        let effect_id=match decoded.reference with Some value->value|None->Diagnostic.fail "policy_implementation_source_binding" "Missing effect event reference."in
+        require(List.exists(fun(e:O.effect_spec)->e.effect_id=effect_id)behavior.effects && args=[] &&
+          ref_matches source "ref" "Effect" effect_id && ref_matches source "scope" "Subject" subject.subject_id)
           "Staged event changes its original effect/subject.";
         let phase=match decoded.phase with Some "completed"->I.Completed|Some "failed"->I.Failed|Some "timed_out"->I.Timed_out
           |_->Diagnostic.fail "policy_implementation_source_binding" "Unsupported staged transition effect phase."in
         require(actual=I.Event_select phase)"Staged event selector differs from the exact source phase.";
-        wire(ep(effect_anchor effect).bank "events")(ep endpoint.node_id "events")
+        wire(ep(effect_anchor effect_id).bank "events")(ep endpoint.node_id "events")
     |_->Diagnostic.fail ~path:source_path "policy_implementation_source_binding" "Unsupported staged source expression.");
     let disposition=if List.mem operator["literal";"parameter"]then I.Constant else I.Executable in
     record ~disposition role source_path [endpoint];
@@ -532,16 +532,16 @@ let check_staged ~admitted ~implementation ~proposed =
     let guard=incoming(ep anchor.gate "guard")in
     expression I.Predicate(source_path^"/when")(get "when" source)guard;guards:= !guards@[t.transition_id,guard];
     record I.Declaration source_path ([ep anchor.gate "candidate";ep arbiter("out"^string_of_int index)]@outputs(node anchor.commit)))behavior.transitions;
-  let effect_values=List.map(fun(effect:O.effect_spec)->
-    let anchor=effect_anchor effect.effect_id and source=raw effect.effect_id in
-    let initiator=singleton "staged effect initiator"(List.filter(fun(t:O.transition)->List.mem effect.effect_id t.effects)behavior.transitions)in
-    require(initiator.effects=[effect.effect_id] && effect.executor=role.role_id && effect.subject=subject.subject_id &&
-      effect.lifecycle.on_loss="continue" && Json.equal bridge.operation(get "contract" source))
+  let effect_values=List.map(fun(source_effect:O.effect_spec)->
+    let anchor=effect_anchor source_effect.effect_id and source=raw source_effect.effect_id in
+    let initiator=singleton "staged effect initiator"(List.filter(fun(t:O.transition)->List.mem source_effect.effect_id t.effects)behavior.transitions)in
+    require(initiator.effects=[source_effect.effect_id] && source_effect.executor=role.role_id && source_effect.subject=subject.subject_id &&
+      source_effect.lifecycle.on_loss="continue" && Json.equal bridge.operation(get "contract" source))
       "Staged effects must retain distinct initiators and the same original product-operation contract.";
-    let timeout=match effect.lifecycle.timeout with Some value->ticks value|None->Diagnostic.fail "policy_implementation_source_binding" "Staged effect requires a timeout."in
-    let authorization=match effect.lifecycle.authorization with "continuous"->I.Continuous|"initiation"->I.At_initiation
+    let timeout=match source_effect.lifecycle.timeout with Some value->ticks value|None->Diagnostic.fail "policy_implementation_source_binding" "Staged effect requires a timeout."in
+    let authorization=match source_effect.lifecycle.authorization with "continuous"->I.Continuous|"initiation"->I.At_initiation
       |_->Diagnostic.fail "policy_implementation_source_binding" "Unsupported staged authorization."in
-    let on_unknown=match effect.lifecycle.on_unknown with "continue"->I.Continue|"defer"->I.Defer
+    let on_unknown=match source_effect.lifecycle.on_unknown with "continue"->I.Continue|"defer"->I.Defer
       |_->Diagnostic.fail "policy_implementation_source_binding" "Unsupported staged authorization uncertainty."in
     require(match primitive anchor.bank with I.Attempt_bank value->value.timeout_ticks=timeout && value.authorization=authorization &&
       value.on_unknown=on_unknown && value.capacity>=domain.logical_limits.max_source_attempts|_->false)
@@ -551,10 +551,10 @@ let check_staged ~admitted ~implementation ~proposed =
     wire(ep action.commit "request0")(ep anchor.bank "request");wire guard(ep anchor.bank "authorization");
     let argument=singleton "staged product argument"(items "parameters" source)in
     require(text "name" argument="product" && text "op"(get "value" argument)="parameter")"Staged effect must use one fixed product argument.";
-    expression I.Effect_parameter(path effect.effect_id^"/parameters/0/value")(get "value" argument)(incoming(ep action.commit "product0"));
-    record I.Lifecycle(path effect.effect_id)(outputs(node anchor.bank));
-    record I.Lifecycle(path effect.effect_id^"/lifecycle")(outputs(node anchor.bank));
-    ({source=effect.effect_id;bank=anchor.bank;feedback=anchor.feedback;initiating_rule=initiator.transition_id;
+    expression I.Effect_parameter(path source_effect.effect_id^"/parameters/0/value")(get "value" argument)(incoming(ep action.commit "product0"));
+    record I.Lifecycle(path source_effect.effect_id)(outputs(node anchor.bank));
+    record I.Lifecycle(path source_effect.effect_id^"/lifecycle")(outputs(node anchor.bank));
+    ({source=source_effect.effect_id;bank=anchor.bank;feedback=anchor.feedback;initiating_rule=initiator.transition_id;
       gate=action.gate;guard;product_parameter=text "name" argument;machine=Some source_machine.machine_id}:effect_binding))behavior.effects in
   require(List.filter_map(fun(n:I.node)->match n.model.primitive with I.Transition_gate _->Some n.node_id|_->None)nodes=
     List.map(fun(t:B.transition)->t.gate)anchors)"Staged gate-node order changes original transition/attempt order.";

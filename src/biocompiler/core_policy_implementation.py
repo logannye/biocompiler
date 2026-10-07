@@ -105,13 +105,17 @@ def _original(request: JsonValue) -> dict[str, JsonValue]:
 
 def _authority(response: CoreResponse, request: dict[str, JsonValue], candidate: dict[str, JsonValue],
                report: dict[str, JsonValue]) -> None:
-    binding = _object(report["binding"], _BINDING_FIELDS, "Source graph binding")
+    raw_binding = _record(report["binding"], "Source graph binding")
+    staged = raw_binding.get("schema_version") == "biocompiler.policy_implementation_binding_report.v0.2"
+    binding_profile = "biocompiler.policy_staged_source_graph.v0.1" if staged else "biocompiler.policy_exclusive_source_graph.v0.1"
+    observable_profile = "biocompiler.policy_staged_observables.v0.1" if staged else "biocompiler.policy_truth_observables.v0.1"
+    binding = _object(raw_binding, _BINDING_FIELDS | ({"state_encoding"} if staged else set()), "Source graph binding")
     admission = _object(binding["source_admission"], _ADMISSION_FIELDS, "Original input admission")
     _claim(binding)
     _claim(admission)
-    if (binding["schema_version"] != "biocompiler.policy_implementation_binding_report.v0.1"
-            or binding["profile"] != "biocompiler.policy_exclusive_source_graph.v0.1"
-            or binding["observable_profile"] != "biocompiler.policy_truth_observables.v0.1"
+    if (binding["schema_version"] != ("biocompiler.policy_implementation_binding_report.v0.2" if staged else "biocompiler.policy_implementation_binding_report.v0.1")
+            or binding["profile"] != binding_profile or binding["observable_profile"] != observable_profile
+            or staged and binding["state_encoding"] != "exact_ordered_source_labels"
             or binding["status"] != "source_graph_bound" or binding["execution"] != "not_performed"
             or admission["schema_version"] != "biocompiler.policy_realization_admission.v0.1"
             or admission["profile"] != REQUEST_PROFILE
@@ -120,6 +124,10 @@ def _authority(response: CoreResponse, request: dict[str, JsonValue], candidate:
             or any(stage[key] != "unassessed" for stage in (binding, admission) for key in ("preservation", "requirements"))):
         raise CoreProtocolError("Implementation report changed a subordinate admission claim")
     document = _record(request["document"], "Original BuildRequest")
+    original_program = _record(document["program"], "Original program")
+    original_declarations = _rows(original_program["declarations"], "Original declarations")
+    if not staged and any(row.get("$type") == "Machine" for row in original_declarations):
+        raise CoreProtocolError("Original machines require the explicit staged binding profile")
     for stage in (binding, admission):
         for key, original in (
             ("request_fingerprint", request), ("source_artifact_digest", document),
@@ -136,7 +144,7 @@ def _authority(response: CoreResponse, request: dict[str, JsonValue], candidate:
         "inputs", "atomic_groups", "semantic_exports", "occurrences",
     }, "Implementation graph")
     if (graph["schema_version"] != "biocompiler.policy_implementation.v0.1"
-            or graph["profile"] != "biocompiler.policy_truth_primitives.v0.1"
+            or graph["profile"] != ("biocompiler.policy_staged_primitives.v0.1" if staged else "biocompiler.policy_truth_primitives.v0.1")
             or graph["observable_profile"] != binding["observable_profile"]):
         raise CoreProtocolError("Actual graph changed its primitive or observable profile")
     if not _same(binding["source_occurrences"], graph.get("occurrences")):
@@ -155,12 +163,31 @@ def _authority(response: CoreResponse, request: dict[str, JsonValue], candidate:
     matches = [row for row in bridges if row.get("entry_id") == binding["catalog_entry"]]
     proposed = _object(candidate["binding"], {
         "schema_version", "profile", "catalog_entry", "observations", "states", "effects", "rules",
-    }, "Proposed binding")
+    } | ({"machines", "transitions"} if staged else set()), "Proposed binding")
     if (len(matches) != 1 or binding["catalog_entry_digest"] != matches[0].get("entry_digest")
             or proposed["catalog_entry"] != binding["catalog_entry"]
-            or proposed["schema_version"] != "biocompiler.policy_implementation_binding.v0.1"
+            or proposed["schema_version"] != ("biocompiler.policy_implementation_binding.v0.2" if staged else "biocompiler.policy_implementation_binding.v0.1")
             or proposed["profile"] != binding["profile"]):
         raise CoreProtocolError("Source binding changed its original catalog entry")
+    if staged:
+        for key, kind, fields, count in (
+            ("machines", "Machine", {"source", "bank"}, 1),
+            ("transitions", "Transition", {"source", "gate", "arbiter", "lane", "commit"}, 7),
+        ):
+            anchors = [_object(row, fields, "Staged source anchor") for row in _rows(proposed[key], "Staged anchors")]
+            source_ids = [row["id"] for row in original_declarations if row.get("$type") == kind]
+            if (len(anchors) != count or len(source_ids) != count
+                    or any(type(value) is not str for value in source_ids)
+                    or any(type(row["source"]) is not str for row in anchors)
+                    or sorted(cast(str, row["source"]) for row in anchors) != sorted(cast(str, value) for value in source_ids)):
+                raise CoreProtocolError("Staged binding changed its complete original machine or transition census")
+            for anchor in anchors:
+                if any(type(value) is not str or not value for name, value in anchor.items() if name != "lane"):
+                    raise CoreProtocolError("Staged source anchor identity must be nonempty text")
+                if key == "transitions" and (type(anchor["lane"]) is not int or not 0 <= cast(int, anchor["lane"]) <= 6):
+                    raise CoreProtocolError("Staged transition lane must be a bounded integer")
+        if proposed["states"] != [] or proposed["rules"] != []:
+            raise CoreProtocolError("Staged source binding cannot invent separate state or rule anchors")
     pins: list[JsonValue] = []
     for bridge in bridges:
         for pin in _rows(bridge.get("models"), "Catalog model pins"):

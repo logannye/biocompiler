@@ -35,6 +35,10 @@ jobs:
             default: git+https://github.com/ocaml/opam-repository.git#ac27950e5eac6c981ad809dff370c937820b7893
       - name: Install ordinary dependencies, build once and run the fixed native suite inventory
         run: python -B tools/check_policy_development.py run
+      - name: Exercise Python authored staged source semantics and independent replay
+        env:
+          PYTHONPATH: src
+        run: python -B tools/check_policy_development.py staged-source-sdk
       - name: Exercise Python authored component policies through fresh paired export
         env:
           PYTHONPATH: src

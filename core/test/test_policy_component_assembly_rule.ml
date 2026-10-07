@@ -5,6 +5,7 @@ let slot_name = function A.Decision -> "decision" | A.Driver -> "driver"
 let node_json (value:A.node_ref) = nr (slot_name value.slot) value.node_id
 let endpoint_json (value:A.endpoint_ref) = er (slot_name value.node.slot) value.node.node_id value.port_id
 let kind_name = function A.Product -> "product" | A.Request -> "request" | A.Authorization -> "authorization"
+  | A.Stage_product _ | A.Stage_request _ | A.Stage_authorization _ | A.Stage_event _ -> failwith "Unexpected staged link in legacy fixture"
 let wire_json = function
   | A.Local_wire {slot;index} -> obj ["kind",str "local";"slot",str (slot_name slot);"index",Json.int index]
   | A.Cross_link kind -> link_wire (kind_name kind)

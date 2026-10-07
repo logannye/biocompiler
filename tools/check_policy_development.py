@@ -26,7 +26,10 @@ SCHEMA = "biocompiler.development-feedback.v0.1"
 WORKFLOW = ".github/workflows/policy-development.yml"
 SOURCE_ROOTS = ("core", "src", "tools", "protocol", ".github", "pyproject.toml")
 SUITES = (
-    ("test_policy_staged_primitives", ()),
+    ("test_policy_staged_generation", ("data/policy_staged_realization_request_v01.json",)),
+    ("test_policy_staged_binding", ("data/policy_staged_realization_request_v01.json",)),
+    ("test_policy_staged_component_material", ("data/policy_staged_material_v01.json",)),
+    ("test_policy_staged_primitives", ("data/policy_implementation_v01.json",)),
     ("test_policy_staged_regimen_source", ("data/policy_staged_regimen_source_v01.json",)),
     ("test_policy_component_fragment", ("data/policy_material_request_v01.json", "data/policy_material_state_v01.json")),
     ("test_policy_component_material", ("data/policy_material_request_v01.json", "data/policy_material_state_v01.json")),
@@ -462,13 +465,64 @@ def selection_sdk(root):
     return report
 
 
+def staged_source_sdk(root):
+    """Bind the fixed staged-source Python campaign to the same hosted build."""
+    output = root / "generated/development-feedback"
+    report = {"schema": "biocompiler.development-staged-source-sdk-feedback.v0.1", "acceptance": False,
+              "scope": "hosted staged source DSL feedback; material, installed and release acceptance remain separate",
+              "status": "failed", "actions": []}
+    prepared = None
+    binaries = {}
+    try:
+        prepared = bundle.manifest_document((output / "preparation.json").read_bytes())
+        require(prepared == preparation(root), "Staged SDK sources or hosted identity changed")
+        native_pin = pin(root, "generated/development-feedback/feedback.json")
+        native = bundle.manifest_document((output / "feedback.json").read_bytes())
+        validate_native_feedback(root, native, prepared)
+        report.update(identity=prepared["identity"], sources_before=prepared["sources"], native_feedback=native_pin)
+        binaries = {path: pin(root, path, executable=True) for path in SDK_BINARIES.values()}
+        require(all(native["binaries"].get(path) == value for path, value in binaries.items()),
+                "Staged SDK executable differs from completed native build")
+        report["binaries"] = binaries
+        witness = output / "staged-source-sdk-witness.json"
+        argv = [sys.executable, "-B", str(root / "tools/check_policy_staged_regimen_source.py"),
+                "--fixture", str(root / "core/test/data/policy_staged_regimen_source_v01.json"),
+                "--core", str(root / SDK_BINARIES["core"]), "--verify", str(root / SDK_BINARIES["verify"]),
+                "--output", str(witness)]
+        row = command(root, output, "staged-source-sdk", argv)
+        report["actions"].append(row)
+        require(row["status"] == "passed", "Staged source SDK failed")
+        require(witness.stat().st_size <= 1024 * 1024, "Staged source SDK receipt exceeds its bound")
+        report["outputs"] = {witness.name: pin(root, witness.relative_to(root).as_posix())}
+        report["status"] = "passed"
+    except Exception as error:
+        report.update(status="failed", error=str(error))
+        raise
+    finally:
+        try:
+            after = preparation(root)
+            report["sources_after"] = after["sources"]
+            require(prepared == after, "Staged SDK source changed during execution")
+            require({path: pin(root, path, executable=True) for path in binaries} == binaries,
+                    "Staged SDK native executable changed during execution")
+            if "native_feedback" in report:
+                require(pin(root, "generated/development-feedback/feedback.json") == report["native_feedback"],
+                        "Native feedback changed during staged SDK execution")
+                validate_native_feedback(root, bundle.manifest_document((output / "feedback.json").read_bytes()), prepared)
+        except Exception as error:
+            report.update(status="failed", source_error=str(error))
+        save(output / "staged-source-sdk.json", report)
+        require(report["status"] == "passed", report.get("source_error", report.get("error", "Incomplete staged source SDK")))
+    return report
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("command", choices=("prepare", "run", "public-sdk", "selection-sdk"))
+    parser.add_argument("command", choices=("prepare", "run", "public-sdk", "selection-sdk", "staged-source-sdk"))
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[1]
     try:
-        {"prepare": prepare, "run": run, "public-sdk": public_sdk, "selection-sdk": selection_sdk}[args.command](root)
+        {"prepare": prepare, "run": run, "public-sdk": public_sdk, "selection-sdk": selection_sdk, "staged-source-sdk": staged_source_sdk}[args.command](root)
     except (OSError, ValueError) as error:
         print(str(error), file=sys.stderr)
         return 1

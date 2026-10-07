@@ -488,6 +488,7 @@ let commit w (prepared:prepared list) =
       ended_tick=None;status=Active;authorization=I.True;
       machine=Option.map(fun(write:machine_write)->write.destination)p.machine_write}in
     retain w;charge w(List.length s.attempts);
+    (* [s] predates the debit; preserve the current work/retention counters. *)
     w.current<-{w.current with allocated=ordinal;attempts=s.attempts@[attempt]};
     w.creations_rev<-attempt::w.creations_rev;
     action w(Effect_requested attempt);

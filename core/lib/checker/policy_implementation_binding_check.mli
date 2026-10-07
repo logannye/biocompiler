@@ -43,6 +43,7 @@ val effects : checked_binding -> effect_binding list
 val rules : checked_binding -> rule list
 val machines : checked_binding -> machine list
 val transitions : checked_binding -> transition list
+
 (** Common event/gate view; transition IDs remain source transition IDs and
     [transitions] retains their machine ownership. *)
 val activations : checked_binding -> rule list
