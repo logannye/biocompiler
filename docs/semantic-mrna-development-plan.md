@@ -22,13 +22,16 @@ Completion means a complete stack for an explicitly declared supported profile, 
 
 ## 2. Current checkpoint, starting point and ownership
 
-**Current release status:** PR85 is open at `278f452ec`. Its fresh full
-[run 37551706364](https://github.com/logannye/biocompiler/actions/runs/37551706364)
-is active; exact source, merge-parent/tree and check-suite predecessor validation
-passed. The independent component-profile plan is prepared, preserving all
-74 jobs, 59 ordinary receipts, 156 native suites and 102 selected archives.
-Normal merge awaits the full gate and artifact audit, followed by separate fresh
-main validation. PR95 is included by ancestry and will be reconciled after merge.
+**Current release status:** PR85 is open at `278f452ec`.
+[Run 37551706364](https://github.com/logannye/biocompiler/actions/runs/37551706364)
+cannot pass: its installed policy-prebuilt comparison rejected a component
+mutation's original RECORD-byte authority. The four installed slots passed;
+the comparison failure is under independent diagnosis. Healthy remaining jobs
+continue and their evidence will be retained. The prepared 74-job/59-receipt/
+156-suite/102-archive audit plan does not establish acceptance of a failed run.
+A corrected source requires fresh full validation before PR85 can merge. PR95
+is separately validated and included by ancestry; final merge ordering and
+actual-main validation must be recorded in the session handoff.
 
 **Shipping order:** ship the accepted bounded component compiler first; finish
 finite selection as the next increment; then expand semantics and RNA architecture
@@ -161,6 +164,7 @@ broader SM acceptance items below.
 - [x] Pass the exact corrected selection-checker source `395935f004ba3faed97571928bf228bd6fa41a4b` (tree `7da5d610c4cffe1b8f16926299784d745f4078d3`) through [hosted development run 37555096893](https://github.com/logannye/biocompiler/actions/runs/37555096893), then independently audit the retained artifact on Python 3.11.15 and 3.14.6. All 21 native suites passed, including 47 candidate, 53 common-authority and 133 selection controls, alongside all 26 existing SDK observations and both existing A/B paired exports. The audit checked 58 safe ZIP entries and 1,154 Git-authenticated source records; identical audit proof SHA-256 `fb467e339340cc3cd318caf0bb873586bb8b95c15d409eb7593e8bd6d564e6ff`. This completes bounded checker development validation; public selection export, installed/release acceptance and SM-05.5 remain open.
 - [x] Implement and independently review public selection check/replay/export in `d5601659015ffaa175b91609665cc30076f2e45a`. One original-bound scope accounts for all children, comparison, manifests and actual response publication. Resource v0.1 remains unchanged; explicitly supplied v0.2 increases only the cumulative publication-node ceiling. Complete losing originals remain in fresh paired artifacts; selection compile is absent until candidate generation is metered. The native service/scope tests and 21-observation hosted SDK witness are source ready. Python adapters/witnesses pass 66 guarded tests per supported Python, wiring passes 60, public API coverage 34, contextual coverage 25, and migration inventory 18; strict core/policy typing passes. Independent additive projections preserve all old ledger meanings and 3,760 migration authorities. Root rechecked 265 source pins; readiness proof SHA-256 `5024560654aca48ebbd222cb424817864dcbc69352353946aa68f3eeab1be433`. This closes source/static preparation only.
 - [x] Diagnose the first public selection hosted build failure and commit its narrow correction at `af062c550`: export had called a nonexistent child-codec fingerprint function. Use the existing original-bound scoped hash over the complete candidate, consistent with the independent selector, and update only its two ledger source pins. Independent review and 25 affected guarded coverage controls pass on each supported Python. [Run 37559445249](https://github.com/logannye/biocompiler/actions/runs/37559445249) executed no native suites or SDK observations; retain its authenticated failure diagnostic SHA-256 `c33dc160f8789dc38ed3a6269ad3065ece2db26e67c0b653012d2ce194534e82`. This closes the correction only; fresh hosted execution is still required.
+- [x] Diagnose corrected selection [run 37559878104](https://github.com/logannye/biocompiler/actions/runs/37559878104): compilation passed and 22 of 23 native suites passed, including 105 scope and 164 service controls. The exact protocol capability census omitted the three new operations. Retain all existing checks, add the literal selection operations/profile and Core/Verify absent-producer controls, and pass four affected guarded static checks on each supported Python. Authenticated failure proof SHA-256 `20bfbcd375fbca945477fff653a212dcf5c8651c3fca3e6fa8fdd28f83768919`. Both SDK campaigns were skipped, so a fresh hosted run remains required.
 - [ ] Pass the public selection batch through the 23-suite hosted development lane, retain all 26 existing SDK observations and add 21 selection observations, then independently audit exact source/run identities, complete selection provenance and all paired artifacts. Native, installed and release acceptance remain open until their respective gates pass.
 - [ ] Implement explicitly metered selection candidate generation and expose compile through the same producer-independent complete-census checker; add installed/offline selection campaigns and pass the full release/main gates before closing SM-05.5.
 - [ ] Validate the three added descriptor rejection controls on hosted CI: valid-format stale digest, unsupported observation formal, unsupported effect result. Source controls are implemented in the corrected follow-up; preserve the shared-context reachability index.
