@@ -85,6 +85,28 @@ class ResearcherStarterTests(unittest.TestCase):
                 self.plan()
             self.comparison = deepcopy(original)
 
+    def test_nested_comparator_tuple_slots_survive_json_roundtrip(self):
+        self.comparison["researcher_project"]["slots"] = [
+            ("Linux", "x86_64", "3.11"), ("Darwin", "arm64", "3.14")]
+        self.comparison["component"] = {"slots": [("Linux", "x86_64", "3.14")]}
+        self.save_comparison()
+        _, manifest = self.plan()
+        self.assertEqual(manifest["status"], "installed_candidate")
+        saved = json.loads((self.output / "prebuilt-comparison.json").read_text())
+        saved["component"]["slots"][0][2] = "3.11"
+        (self.output / "prebuilt-comparison.json").write_text(json.dumps(saved))
+        with self.assertRaisesRegex(ValueError, "Saved comparison differs"):
+            self.plan()
+
+    def test_saved_comparison_scalar_types_remain_distinct(self):
+        self.comparison["count"] = 1
+        self.save_comparison()
+        saved = json.loads((self.output / "prebuilt-comparison.json").read_text())
+        saved["count"] = True
+        (self.output / "prebuilt-comparison.json").write_text(json.dumps(saved))
+        with self.assertRaisesRegex(ValueError, "Saved comparison differs"):
+            self.plan()
+
     def test_changed_wheel_example_or_saved_comparison_is_rejected(self):
         paths = [self.sdk, self.natives["linux-x86_64"]["native"],
                  self.slots[0] / "evidence/researcher-alpha/staged.zip",

@@ -65,7 +65,12 @@ def plan(args, comparison, natives, *, root=ROOT):
     files = {name: root / name for name in SOURCE_FILES}
     files.update({"wheels/" + args.sdk.name: args.sdk, "evidence/candidate.json": args.release_candidate,
                   "evidence/prebuilt-comparison.json": args.output_dir / "prebuilt-comparison.json"})
-    require(json.loads(read(files["evidence/prebuilt-comparison.json"])) == comparison, "Saved comparison differs from the current gate")
+    saved_comparison = json.loads(read(files["evidence/prebuilt-comparison.json"]))
+    # Installed comparators use tuple slots in memory; JSON represents them as
+    # arrays. Compare their JSON meaning while retaining scalar type identity.
+    require(json.dumps(saved_comparison, sort_keys=True, allow_nan=False)
+            == json.dumps(comparison, sort_keys=True, allow_nan=False),
+            "Saved comparison differs from the current gate")
     for target, native in sorted(natives.items()):
         wheel = native["native"]
         require(candidate["platforms"][target] == {"name": wheel.name, **pin(read(wheel))}, "Native starter wheel changed after checking")
