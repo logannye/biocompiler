@@ -82,8 +82,12 @@ running checks unless a necessary correction changes the tested revision.
 - Select early feedback by changed profile and shared dependencies. Shared
   semantics, transport, authority, packaging or receipt changes require broader
   checks. Profile-specific feedback is a separate scope, not a reduced complete
-  census. Until scoped hosted routing is implemented, the supported development
-  workflow still requires every declared native suite and SDK observation.
+  census. The opt-in `codex/dev-researcher/**` workflow runs all 31 development
+  native suites and all 30 researcher SDK observations for focused facade and
+  example feedback. It retains all 40 researcher evidence files and explicitly
+  excludes the complete SDK campaign, installed validation and release acceptance.
+  Use `codex/dev-policy/**` for the complete 140-observation development campaign;
+  expand checks for shared changes and preserve complete integration/main gates.
 - Profile bottlenecks before adding concurrency. Prioritize repeated canonical
   encoding/fingerprinting where measured; reuse only owned immutable data within
   an explicit invocation, preserving exact bytes, resource limits, execution

@@ -1,0 +1,49 @@
+name: Researcher development feedback
+
+on:
+  push:
+    branches: ['codex/dev-researcher/**']
+
+# Separate from the complete development and release workflow groups.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  researcher-feedback:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11.15'
+      - name: Authenticate researcher scope and fresh sources before native setup
+        run: python -B tools/check_researcher_development.py prepare
+      - uses: ocaml/setup-ocaml@93303b622b2522e4411e295f9e77411a24912ac7
+        with:
+          ocaml-compiler: '5.4.0'
+          opam-pin: false
+          opam-repositories: |
+            default: git+https://github.com/ocaml/opam-repository.git#ac27950e5eac6c981ad809dff370c937820b7893
+      - name: Build once and run all 31 registered development native suites
+        run: python -B tools/check_researcher_development.py run
+      - name: Run all 30 researcher observations and seal scoped evidence
+        env:
+          PYTHONPATH: src
+        run: python -B tools/check_researcher_development.py sdk
+      - name: Retain researcher diagnostics even when a stage fails
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: researcher-development-feedback-${{ github.run_id }}-${{ github.run_attempt }}
+          path: generated/development-feedback/
+          if-no-files-found: error
+          retention-days: 7

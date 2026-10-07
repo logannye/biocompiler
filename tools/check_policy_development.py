@@ -25,6 +25,8 @@ except ImportError:
 
 SCHEMA = "biocompiler.development-feedback.v0.1"
 WORKFLOW = ".github/workflows/policy-development.yml"
+RESEARCHER_WORKFLOW = ".github/workflows/researcher-development.yml"
+WORKFLOW_ROUTES = ((WORKFLOW, "codex/dev-policy/"), (RESEARCHER_WORKFLOW, "codex/dev-researcher/"))
 SOURCE_ROOTS = ("core", "src", "tools", "protocol", ".github", "data/researcher_alpha",
                 "examples/researcher_alpha.py", "examples/author_staged_research_project.py", "pyproject.toml")
 SUITES = (
@@ -90,19 +92,31 @@ def git(root, *args):
     return subprocess.check_output(["git", *args], cwd=root)
 
 
+def workflow_route():
+    """Authenticate one closed workflow/ref pair before any process is allowed."""
+    env = os.environ
+    ref, repository = env.get("GITHUB_REF", ""), env.get("GITHUB_REPOSITORY", "")
+    require(re.fullmatch(r"[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+", repository) is not None, "Invalid repository")
+    routes = [workflow for workflow, prefix in WORKFLOW_ROUTES
+              if re.fullmatch("refs/heads/" + re.escape(prefix) + r"[A-Za-z0-9][A-Za-z0-9._/-]*", ref)
+              and env.get("GITHUB_WORKFLOW_REF") == f"{repository}/{workflow}@{ref}"]
+    require(len(routes) == 1, "Wrong development workflow/ref pair; use its exact opt-in branch")
+    return routes[0]
+
+
 def identity(root):
     env = os.environ
     require(env.get("GITHUB_ACTIONS") == "true" and env.get("RUNNER_ENVIRONMENT") == "github-hosted",
             "Development native work requires GitHub-hosted execution")
     require(env.get("GITHUB_EVENT_NAME") == "push", "Development lane only admits push events")
     ref = env.get("GITHUB_REF", "")
-    require(re.fullmatch(r"refs/heads/codex/dev-policy/[A-Za-z0-9][A-Za-z0-9._/-]*", ref) is not None,
-            "Development lane requires an opt-in branch")
+    workflow = workflow_route()
     require((env.get("RUNNER_OS"), env.get("RUNNER_ARCH"), platform.system(), platform.machine()) ==
             ("Linux", "X64", "Linux", "x86_64"), "Development lane requires hosted Linux x86_64")
     require(Path(env.get("GITHUB_WORKSPACE", "")).resolve() == root, "Wrong hosted workspace")
     revision = env.get("GITHUB_SHA", "")
     require(re.fullmatch(r"[0-9a-f]{40}", revision) is not None, "Invalid push revision")
+    require(env.get("GITHUB_WORKFLOW_SHA") == revision, "Wrong development workflow identity")
     require(git(root, "rev-parse", "HEAD").decode().strip() == revision, "Stale checkout revision")
     tree = git(root, "rev-parse", "HEAD^{tree}").decode().strip()
     require(re.fullmatch(r"[0-9a-f]{40}", tree) is not None, "Invalid source tree identity")
@@ -110,7 +124,7 @@ def identity(root):
     require(all(re.fullmatch(r"[1-9][0-9]{0,19}", x) for x in (run_id, attempt)), "Invalid run or attempt")
     repository = env.get("GITHUB_REPOSITORY", "")
     require(re.fullmatch(r"[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+", repository) is not None, "Invalid repository")
-    require(env.get("GITHUB_WORKFLOW_REF") == f"{repository}/{WORKFLOW}@{ref}"
+    require(env.get("GITHUB_WORKFLOW_REF") == f"{repository}/{workflow}@{ref}"
             and env.get("GITHUB_WORKFLOW_SHA") == revision, "Wrong development workflow identity")
     return {"revision": revision, "tree": tree, "run_id": run_id, "run_attempt": attempt,
             "event": "push", "ref": ref, "repository": repository,

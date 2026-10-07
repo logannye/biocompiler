@@ -98,15 +98,51 @@ package retaining its own required integration and release checks.
 Choose early feedback from the affected dependency surface. A staged-regimen
 change should get staged feedback promptly; edits to shared semantics, transport,
 authority, packaging or receipt accounting need broader regression coverage.
-**Automatic profile-specific hosted routing is not implemented.** The current
-`policy-development.yml` still requires all 31 native suites and all 140 SDK
-observations. Individual witnesses or future scoped runners must report their
-own scope and cannot satisfy that complete census. Until explicit scoped routing
-exists, use the supported complete workflow for hosted development acceptance.
+Hosted scope selection is explicit, not inferred from changed paths. The complete
+`policy-development.yml` route on `codex/dev-policy/**` still requires all 31
+native suites and all 140 SDK observations. The separate
+[`researcher-development.yml`](../.github/workflows/researcher-development.yml)
+route on `codex/dev-researcher/**` runs the same fresh build and all 31 native
+suites, followed by all 30 researcher SDK observations. Use it for early feedback
+on researcher facades and examples. Its scoped result cannot satisfy the complete
+development census. Shared semantics, transport, authority, packaging and receipt
+changes still need the broader affected checks and complete integration gates.
 Do not change CI triggers, required checks or final acceptance based on this
 table; PR updates still trigger their complete workflow. Batch development
 checkpoints before updating the integration PR, while preserving active owners
 and making necessary corrections promptly.
+
+The researcher route uses the same pinned Linux, Python and OCaml environment
+and unchanged native suite runner. Its wrapper authenticates the exact workflow
+and branch pair before delegation; crossed workflow/ref pairs and other routes
+fail before subprocesses. The shared identity checker admits only the two fixed
+routes, and the researcher wrapper admits only its own route. It runs the public
+source-tree researcher witness with fresh Core and Verify, including all existing
+negative controls, typed authoring, independent RNA comparisons, paired export
+and re-verification. It does not run the component, selection or staged SDK
+campaigns, installed packages, or release gates.
+
+A successful researcher run uploads
+`researcher-development-feedback-<run-id>-<attempt>`. The directory contains
+exactly 79 files: preparation and native receipts, 33 dependency/build/suite logs,
+the researcher command receipt/log/witness, all 40 retained researcher evidence
+files, and `researcher-feedback.json`. This last seal has schema
+`biocompiler.researcher_development_feedback.v0.1` and `acceptance: false`.
+It binds all 78 peer files, fresh source and hosted identities, all 34 native
+executables, 10 researcher input pins, 30 observations, three projects/paired
+archives and four mutant archives. The seal rechecks the retained observations,
+canonical original project bytes, archive pairs and mutants before publication;
+missing, redirected, oversized, extra, stale or changed evidence cannot seal.
+Evidence is bounded to 16 MiB per peer and 96 MiB including the seal, with smaller
+bounds on metadata. Failure retains existing stage receipts and command logs;
+an absent scoped seal is incomplete feedback, even if earlier stages passed.
+
+The 19-minute selection SDK campaign motivated this opt-in lane. Its removal
+from this explicitly narrower scope is expected to shorten researcher feedback,
+but no researcher-lane speedup has yet been measured. Record compilation,
+native-suite and researcher command times separately from queue/setup time and
+total job wall time on its first fresh hosted run. Its 30-minute timeout is a
+failure bound, not a performance claim.
 
 All run steps explicitly select Bash so a failed checker piped into `tee`
 fails its step. GitHub's unspecified non-Windows shell does not provide that
