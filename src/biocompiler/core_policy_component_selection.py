@@ -1,8 +1,8 @@
 """Immutable native complete-catalog selection transport; no Python admission.
 
-All original alternatives and complete candidates cross the native boundary on
-every call. Representation checks bind returned evidence and exact paired bytes;
-only fresh native checking supplies semantic acceptance.
+All original alternatives cross the native boundary on every call. Core alone
+can generate the complete candidate census; verification binds supplied candidates
+and returned evidence without a Python semantic or generation fallback.
 """
 from __future__ import annotations
 
@@ -29,6 +29,7 @@ MANIFEST_SCHEMA = "biocompiler.policy_component_selection_mrna_manifest.v0.1"
 RESOURCE_PROFILE = "biocompiler.policy_component_selection_resources.v0.1"
 RESOURCE_PROFILE_V2 = "biocompiler.policy_component_selection_resources.v0.2"
 OPERATIONS = ("check-policy-component-selection", "replay-policy-component-selection", "export-policy-component-selection")
+COMPILE_OPERATION = "compile-policy-component-selection"
 PUBLICATION_PROFILE = "biocompiler.policy_component_selection_publication.v0.1"
 ACCEPTED_STATUS = "checked_selection"
 CLAIM_SCOPE = "bounded_complete_supplied_catalog_selection_to_exact_mrna"
@@ -48,6 +49,10 @@ PROFILE: dict[str, JsonValue] = {
     "publication_profile": PUBLICATION_PROFILE, "validation_scope": VALIDATION_SCOPE,
     "max_input_bytes": MAX_INPUT_BYTES, "max_result_bytes": MAX_RESULT_BYTES, "max_result_nodes": MAX_RESULT_NODES,
     "artifact": "on_fresh_export_only", "empirical": "unassessed",
+}
+PRODUCER_PROFILE: dict[str, JsonValue] = {
+    **PROFILE, "operations": [COMPILE_OPERATION], "artifact": "withheld",
+    "generation_work": "shared_original_scope",
 }
 _REPORT_FIELDS = {"schema_version", "profile", "implementation", "resource_profile", "common_authority_profile",
     "request_fingerprint", "candidate_fingerprint", "invocation_fingerprint", "status", "claim_scope", "premise",
@@ -279,7 +284,8 @@ class PolicyComponentSelectionResult(material.PolicyMaterialResult):
 
 def _result(response: CoreResponse, payload: dict[str, JsonValue]) -> PolicyComponentSelectionResult:
     _measure(response.result)
-    if response.status != "ok" or response.diagnostics or response.operation not in OPERATIONS or response.version != CORE_VERSION:
+    if (response.status != "ok" or response.diagnostics or response.operation not in (*OPERATIONS, COMPILE_OPERATION)
+            or response.version != CORE_VERSION or response.operation == COMPILE_OPERATION and response.executable != "core"):
         raise CoreProtocolError("Selection result lacks its actual successful negotiated operation")
     result = _object(response.result, material._RESULT_FIELDS, "Complete selection result")
     request = _original(payload["request"])
@@ -287,7 +293,7 @@ def _result(response: CoreResponse, payload: dict[str, JsonValue]) -> PolicyComp
     component._expect(result, {"schema_version": RESULT_SCHEMA, "implementation": IMPLEMENTATION,
         "resource_profile": budgets["profile"], "validation_scope": VALIDATION_SCOPE}, "Negotiated selection result")
     candidate = _object(result["candidate"], {"schema_version", "alternatives", "selected_id"}, "Selection candidate")
-    if not _same(candidate, payload["candidate"]):
+    if response.operation != COMPILE_OPERATION and not _same(candidate, payload["candidate"]):
         raise CoreProtocolError("Selection checker changed the complete supplied candidate")
     report = _object(result["report"], _REPORT_FIELDS, "Complete selection assessment")
     pins = [_pin(result[key], raw, label) for key, raw, label in (
@@ -312,11 +318,21 @@ class PolicyComponentSelectionClient:
         snapshot = cast(dict[str, JsonValue], decode_json(encode_json(payload)))
         _measure(snapshot)
         original = _original(snapshot["request"])
-        _candidates(snapshot["candidate"], _rows(original["alternatives"], "Originals"))
+        if operation == COMPILE_OPERATION:
+            if self.transport.role != "core":
+                raise CoreProtocolError("Selection production requires an explicitly selected Core producer")
+        else:
+            _candidates(snapshot["candidate"], _rows(original["alternatives"], "Originals"))
         capabilities = self.transport.negotiate(operation, cancelled=cancelled)
         if not _same(capabilities.profiles.get("policy_component_selection"), PROFILE) or VALIDATION_SCOPE not in capabilities.validation_scopes:
             raise CoreProtocolError("Selected executable lacks the exact bounded selection profile")
+        if operation == COMPILE_OPERATION and not _same(capabilities.profiles.get("policy_component_selection_producer"), PRODUCER_PROFILE):
+            raise CoreProtocolError("Selected executable lacks the exact metered selection producer profile")
         return _result(self.transport.call(operation, snapshot, cancelled=cancelled), snapshot)
+
+    def compile(self, request: JsonValue, limits: JsonValue, *, cancelled: Callable[[], bool] | None = None) -> PolicyComponentSelectionResult:
+        """Generate and freshly check every supplied alternative without export."""
+        return self._call("compile-policy-component-selection", {"request": request, "limits": limits}, cancelled=cancelled)
 
     def check(self, request: JsonValue, candidate: JsonValue, limits: JsonValue, *, cancelled: Callable[[], bool] | None = None) -> PolicyComponentSelectionResult:
         return self._call("check-policy-component-selection", {"request": request, "candidate": candidate, "limits": limits}, cancelled=cancelled)

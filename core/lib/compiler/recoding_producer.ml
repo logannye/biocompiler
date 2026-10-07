@@ -15,22 +15,184 @@ let sequence = function Root v -> Molecule.sequence v | Product v -> A.Value.seq
 let chemistry = function Root v -> Molecule.chemistry v | Product v -> A.Value.chemistry v
 let features = function Root v -> Molecule.features v | Product v -> A.Value.features v
 let sequence_extent = function Root v -> Molecule.sequence_extent v | Product v -> A.Value.sequence_extent v
+
+(* Traverse typed children before a codec allocates their JSON lists. These are
+   count-only outer passes; they never debit the historic 50M work owner. *)
+module Serialization = struct
+  let text charge value = charge (1+String.length value)
+  let iter charge f values = List.iter (fun value -> charge 1; f value) values
+  let path charge value =
+    charge 1; text charge (G.Space_id.to_string (G.Path.space_id value));
+    iter charge (fun _ -> charge 2) (G.Path.spans value)
+  let provenance charge value =
+    let module P = Molecular_record.Provenance in
+    charge 1; text charge (P.reason value); Option.iter (text charge) (P.locator value);
+    iter charge (fun pin -> text charge (Pinned_identity.id pin); text charge (Pinned_identity.version pin);
+      text charge (Pinned_identity.content_fingerprint pin)) (P.authority value)
+  let chemical_identity charge value =
+    text charge (H.Chemical_identity.namespace value); text charge (H.Chemical_identity.accession value);
+    text charge (H.Chemical_identity.version value)
+  let chemistry charge value =
+    charge 1;
+    List.iter (fun facet -> let claim=facet value in charge 1;
+      Option.iter (chemical_identity charge) (H.Claim.identity claim);
+      provenance charge (H.Claim.provenance claim)) [H.cap;H.start_end;H.finish_end];
+    iter charge (fun modification -> text charge (H.Modification.id modification);
+      chemical_identity charge (H.Modification.identity modification);
+      iter charge (fun _ -> charge 1) (H.Modification.positions modification);
+      provenance charge (H.Modification.provenance modification)) (H.modifications value);
+    provenance charge (H.modification_inventory_provenance value);
+    let tail=H.terminal_tail value in charge 1;
+    Option.iter (path charge) (H.Tail.path tail); provenance charge (H.Tail.provenance tail)
+  let feature charge value =
+    text charge (Molecule.Feature.id value); text charge (Molecule.Feature.kind value);
+    Option.iter (path charge) (Molecule.Feature.path value); provenance charge (Molecule.Feature.provenance value)
+  let value charge value =
+    text charge (A.Value.id value); text charge (A.Value.step_id value);
+    text charge (G.Space_id.to_string (G.Space.id (A.Value.space value)));
+    text charge (A.Value.sequence value); chemistry charge (A.Value.chemistry value);
+    iter charge (feature charge) (A.Value.features value);
+    iter charge (fun segment -> charge 2; text charge (A.Derived_segment.source_id segment);
+      path charge (A.Derived_segment.source_path segment)) (A.Value.segments value);
+    iter charge (fun segment -> text charge (A.Consumed_segment.source_id segment);
+      path charge (A.Consumed_segment.source_path segment)) (A.Value.consumed value)
+  let molecule charge value =
+    text charge (Molecule.id value); text charge (Molecule.sequence value);
+    text charge (G.Space_id.to_string (G.Space.id (Molecule.space value)));
+    chemistry charge (Molecule.chemistry value); provenance charge (Molecule.provenance value);
+    iter charge (feature charge) (Molecule.features value);
+    iter charge (fun origin -> text charge (Molecule.Assembly_origin.id origin);
+      path charge (Molecule.Assembly_origin.destination origin); path charge (Molecule.Assembly_origin.source_path origin);
+      text charge (G.Space_id.to_string (G.Space.id (Molecule.Assembly_origin.source_space origin)));
+      provenance charge (Molecule.Assembly_origin.provenance origin)) (Molecule.assembly value)
+  let complex charge value =
+    text charge (Molecule.Complex.id value); provenance charge (Molecule.Complex.provenance value);
+    iter charge (fun constituent -> text charge (Molecule.Constituent.molecule_id constituent);
+      text charge (Molecule.Constituent.molecule_fingerprint constituent);
+      provenance charge (Molecule.Constituent.provenance constituent)) (Molecule.Complex.constituents value)
+  let role charge value = List.iter (fun field -> text charge (field value))
+    [Molecule.Role.id;Molecule.Role.subject_id;Molecule.Role.subject_fingerprint;Molecule.Role.role;Molecule.Role.compartment]
+  let mapping charge value =
+    List.iter (fun field -> text charge (field value)) [Molecule.Form_mapping.id;Molecule.Form_mapping.source_molecule_id;
+      Molecule.Form_mapping.source_molecule_fingerprint;Molecule.Form_mapping.destination_molecule_id;
+      Molecule.Form_mapping.destination_molecule_fingerprint];
+    path charge (Molecule.Form_mapping.source_path value); path charge (Molecule.Form_mapping.destination_path value);
+    provenance charge (Molecule.Form_mapping.provenance value)
+  let selection charge value =
+    text charge (C.Value_ref.id (C.Selection.value value)); Option.iter (path charge) (C.Selection.path value)
+  let translation charge policy =
+    text charge (R.Translation_policy.genetic_code policy);
+    iter charge (fun row -> charge 2; text charge (R.Codon_recoding.expected_triplet row);
+      text charge (R.Codon_recoding.condition row)) (R.Translation_policy.recodings policy)
+  let operation charge value =
+    charge 1;
+    let processing input products = selection charge input; iter charge (fun product ->
+      text charge (C.Processing_product.port_id product); path charge (C.Processing_product.path product)) products in
+    match C.Operation.specification value with
+    | C.Operation.Slice input | C.Operation.Transcription input
+    | C.Operation.Orientation {input;_} | C.Operation.Circularization {input;_} -> selection charge input
+    | C.Operation.Concatenate inputs -> iter charge (selection charge) inputs
+    | C.Operation.Rna_cleavage {input;products} | C.Operation.Rna_splicing {input;products}
+    | C.Operation.Protein_cleavage {input;products} | C.Operation.Protein_splicing {input;products} -> processing input products
+    | C.Operation.Base_editing {input;canonical_edits;chemical_edits} ->
+        selection charge input; iter charge (fun _ -> charge 3) canonical_edits;
+        iter charge (fun row -> charge 2; Option.iter (chemical_identity charge) (R.Chemical_edit.before row);
+          Option.iter (chemical_identity charge) (R.Chemical_edit.after row)) chemical_edits
+    | C.Operation.Translation {input;policy} -> selection charge input; translation charge policy
+    | C.Operation.Multi_orf_translation products -> iter charge (fun product ->
+        text charge (C.Translation_product.port_id product); selection charge (C.Translation_product.input product);
+        translation charge (C.Translation_product.policy product)) products
+    | C.Operation.Conditional_translation branches -> iter charge (fun branch ->
+        text charge (C.Translation_branch.id branch); text charge (C.Translation_branch.condition branch);
+        selection charge (C.Translation_branch.input branch); Option.iter (translation charge) (C.Translation_branch.policy branch);
+        Option.iter (text charge) (C.Translation_branch.port_id branch)) branches
+    | C.Operation.Ribosomal_skipping {input;policy;products;event_id} ->
+        selection charge input; translation charge policy; text charge event_id;
+        iter charge (fun product -> charge 2; text charge (C.Peptide_product.port_id product)) products
+  let port charge value =
+    text charge (C.Product_port.id value); text charge (C.Product_port.space_id value);
+    let chemistry_rule=C.Product_port.chemistry_transition value in
+    Option.iter (chemistry charge) (T.Chemistry.output chemistry_rule);
+    provenance charge (T.Chemistry.provenance chemistry_rule);
+    iter charge (fun row -> text charge (T.Chemistry_disposition.source_id row);
+      text charge (T.Component.to_string (T.Chemistry_disposition.component row));
+      iter charge (fun facet -> text charge (T.Component.to_string facet)) (T.Chemistry_disposition.destination_components row);
+      provenance charge (T.Chemistry_disposition.provenance row)) (T.Chemistry.dispositions chemistry_rule);
+    let feature_rule=C.Product_port.feature_transition value in
+    provenance charge (T.Feature.provenance feature_rule);
+    iter charge (fun row -> text charge (T.Feature_disposition.source_id row); text charge (T.Feature_disposition.feature_id row);
+      iter charge (feature charge) (T.Feature_disposition.outputs row);
+      provenance charge (T.Feature_disposition.provenance row)) (T.Feature.dispositions feature_rule);
+    iter charge (feature charge) (T.Feature.added feature_rule)
+  let step charge value =
+    text charge (C.Transform_step.id value); operation charge (C.Transform_step.operation value);
+    iter charge (port charge) (C.Transform_step.ports value);
+    iter charge (text charge) (C.Transform_step.assumptions value); provenance charge (C.Transform_step.provenance value)
+  let template charge value =
+    let module P=Payload_template in
+    text charge (P.id value);
+    iter charge (fun root -> text charge (C.Root_source.id root); molecule charge (C.Root_source.molecule root);
+      provenance charge (C.Root_source.provenance root)) (P.sources value);
+    iter charge (step charge) (P.steps value);
+    iter charge (fun member -> text charge (C.Output_member.id member); text charge (C.Output_member.space_id member);
+      text charge (C.Value_ref.id (C.Output_member.value member)); provenance charge (C.Output_member.provenance member)) (P.output_members value);
+    iter charge (fun member -> text charge (C.Complex_member.id member); provenance charge (C.Complex_member.provenance member);
+      iter charge (fun row -> text charge (C.Complex_constituent.member_id row);
+        provenance charge (C.Complex_constituent.provenance row)) (C.Complex_member.constituents member)) (P.complex_members value);
+    iter charge (fun row -> text charge (C.Member_requirement.id row);
+      (match C.Member_requirement.subject row with C.Member_requirement.Materialized id -> text charge id
+        | C.Member_requirement.External {id;fingerprint} -> text charge id; text charge fingerprint);
+      iter charge (fun role -> text charge (C.Role.id role); text charge (C.Role.role role);
+        text charge (C.Role.compartment role)) (C.Member_requirement.roles row)) (P.requirements value);
+    iter charge (fun amount -> text charge (C.Amount_declaration.id amount); text charge (C.Amount_declaration.subject_id amount);
+      text charge (C.Amount_declaration.preparation_id amount); text charge (C.Amount_declaration.unit amount);
+      iter charge (text charge) (C.Amount_declaration.role_instance_ids amount);
+      (match C.Amount_declaration.quantity amount with C.Amount_declaration.Integer n -> charge (1+Z.numbits n) | _ -> charge 1);
+      provenance charge (C.Amount_declaration.provenance amount)) (P.amounts value);
+    iter charge (fun structure -> text charge (Payload_structure.member_id structure);
+      iter charge (fun region -> text charge (Payload_structure.Region.feature_id region);
+        text charge (Payload_structure.Region.kind region)) (Payload_structure.regions structure);
+      provenance charge (Payload_structure.provenance structure)) (P.payload_structures value)
+  let amount charge value =
+    let module X = Molecule_set.Amount in
+    List.iter (fun field -> text charge (field value)) [X.id;X.subject_id;X.subject_fingerprint;X.preparation_id;X.unit];
+    iter charge (text charge) (X.role_instance_ids value); provenance charge (X.provenance value);
+    (match X.quantity value with X.Integer n -> charge (1+Z.numbits n) | _ -> charge 1)
+end
+
 let input_error message = Diagnostic.fail "invalid_construction_producer_input" message
 
 module Available = struct
   type t = material Names.t
   let maximum = C.max_sources + C.max_products
-  let of_bindings bindings =
+  let of_bindings ?(charge=Bioc_checker.Policy_generation_meter.no_charge) bindings =
+    let module Meter = Bioc_checker.Policy_generation_meter.Make(struct let charge=charge end) in
+    let module List = Meter.List in
+    (* Preserve the original bounded-prefix rejection even for cyclic native
+       lists. A metered caller pays that bounded pass before it runs. *)
+    if charge != Bioc_checker.Policy_generation_meter.no_charge then (
+      let rec prefix remaining = function
+        | [] -> charge 1
+        | _::rest -> charge 1; if remaining>0 then prefix (remaining-1) rest in
+      prefix maximum bindings);
     ignore (Molecular_record.bounded_length ~maximum bindings);
+    List.iter (fun (id,_) -> charge (String.length id)) bindings;
     List.fold_left (fun map (id,value) ->
         ignore (Molecular_record.text (Json.String id));
+        Names.iter (fun key _ -> charge (1+String.length key+String.length id)) map;
         if Names.mem id map then input_error "Duplicate available material identity.";
         Names.add id value map) Names.empty bindings
-  let find = Names.find_opt
-  let add_products values map =
+  let find ?(charge=Bioc_checker.Policy_generation_meter.no_charge) id values =
+    Names.iter (fun key _ -> charge (1+String.length key+String.length id)) values;
+    Names.find_opt id values
+  let add_products ?(charge=Bioc_checker.Policy_generation_meter.no_charge) values map =
+    let module Meter = Bioc_checker.Policy_generation_meter.Make(struct let charge=charge end) in
+    let module List = Meter.List in
+    Names.iter (fun key _ -> charge (1+String.length key)) map;
     ignore (Molecular_record.bounded_length ~maximum:C.max_products values);
     let result = List.fold_left (fun map value ->
         let id = A.Value.id value in
+        Names.iter (fun key _ -> charge (1+String.length key+String.length id)) map;
         if Names.mem id map then input_error "Available product would replace existing material authority.";
         Names.add id (Product value) map) map values in
     if Names.cardinal result > maximum then input_error "Available material inventory exceeds its fixed bound.";
@@ -38,10 +200,10 @@ module Available = struct
 end
 
 let max_work = 50_000_000
-type budget = {work:Bioc_checker.Work_budget.t; output:Bioc_checker.Work_budget.output; staged:Bioc_checker.Work_budget.output}
+type budget = {outer:int -> unit;work:Bioc_checker.Work_budget.t; output:Bioc_checker.Work_budget.output; staged:Bioc_checker.Work_budget.output}
 exception Budget_exhausted of Diagnostic.t
 let protect run = try run () with Budget_exhausted diagnostic -> raise (Diagnostic.Error diagnostic)
-let make_budget ?parent ?(maximum=max_work) () =
+let make_budget ?parent ?(charge=Bioc_checker.Policy_generation_meter.no_charge) ?(maximum=max_work) () =
   Diagnostic.require (maximum >= 0 && maximum <= max_work) "construction_producer_limit" "Invalid native producer work ceiling.";
   let profile="biocompiler.construction_producer.resources.v1" and error_code="construction_producer_limit" in
   let work=match parent with
@@ -49,14 +211,23 @@ let make_budget ?parent ?(maximum=max_work) () =
     | Some parent -> Bioc_checker.Work_budget.nested ~parent ~profile ~error_code ~maximum () in
   let output ()=Bioc_checker.Work_budget.create_output ~profile ~error_code:"construction_producer_output_limit"
       ~max_bytes:Molecular_record.max_json_bytes ~max_nodes:Molecular_record.max_items () in
-  {work;output=output ();staged=output ()}
+  {outer=charge;work;output=output ();staged=output ()}
+let outer_charge budget amount =
+  try budget.outer amount with Diagnostic.Error diagnostic -> raise (Budget_exhausted diagnostic)
+let outer_meter budget =
+  if budget.outer == Bioc_checker.Policy_generation_meter.no_charge then Bioc_checker.Policy_generation_meter.no_charge
+  else outer_charge budget
 let charge budget amount =
-  try Bioc_checker.Work_budget.charge budget.work amount
+  try Bioc_checker.Work_budget.charge budget.work amount; outer_charge budget amount
   with Diagnostic.Error diagnostic -> raise (Budget_exhausted diagnostic)
 let reserve_output budget raw =
+  let module Meter=Bioc_checker.Policy_generation_meter.Make(struct let charge=outer_meter budget end) in
+  Meter.serialization raw;
   try Bioc_checker.Work_budget.reserve_json budget.output raw
   with Diagnostic.Error diagnostic -> raise (Budget_exhausted diagnostic)
 let reserve_staged budget raw =
+  let module Meter=Bioc_checker.Policy_generation_meter.Make(struct let charge=outer_meter budget end) in
+  Meter.serialization raw;
   try Bioc_checker.Work_budget.reserve_json budget.staged raw
   with Diagnostic.Error diagnostic -> raise (Budget_exhausted diagnostic)
 let reserve_json budget raw =
@@ -77,6 +248,15 @@ let reserve_json budget raw =
     | `Object ((key,value)::fields,depth)::rest -> charge budget (String.length key+1);
         loop (`Value (value,depth)::`Object (fields,depth)::rest) in
   loop [`Value (raw,0)]
+
+let step_json budget value = Serialization.step (outer_charge budget) value; C.Transform_step.to_json value
+let port_json budget value = Serialization.port (outer_charge budget) value; C.Product_port.to_json value
+let value_json budget value = Serialization.value (outer_charge budget) value; A.Value.to_json value
+let molecule_json budget value = Serialization.molecule (outer_charge budget) value; Molecule.to_json value
+let chemistry_json budget value = Serialization.chemistry (outer_charge budget) value; H.to_json value
+let feature_json budget value = Serialization.feature (outer_charge budget) value; Molecule.Feature.to_json value
+let complex_json budget value = Serialization.complex (outer_charge budget) value; Molecule.Complex.to_json value
+let amount_json budget value = Serialization.amount (outer_charge budget) value; Molecule_set.Amount.to_json value
 
 type result = {values : A.Value.t list; used_residues : int; diagnostic : string option}
 exception Problem of string
@@ -115,8 +295,13 @@ let output_chemistry port source =
   | T.Chemistry.Explicit_output -> (match T.Chemistry.output transition with Some value -> value
       | None -> raise (Problem "invalid_operation"))
 let output_value budget step port source sequence topology segments consumed =
-  reserve_json budget (C.Product_port.to_json port);
-  reserve_json budget (H.to_json (chemistry source));
+  let module Meter=Bioc_checker.Policy_generation_meter.Make(struct let charge=outer_meter budget end) in
+  let module List=Meter.List in
+  let module String=Meter.String in
+  let ( @ ) = List.append in
+
+  reserve_json budget (port_json budget port);
+  reserve_json budget (chemistry_json budget (chemistry source));
   let alphabet = match segments with
     | first::_ when A.Derived_segment.rule first = A.Derived_segment.Translation_codon -> G.Protein
     | _ -> G.Rna in
@@ -130,12 +315,22 @@ let output_value budget step port source sequence topology segments consumed =
   let transition = C.Product_port.feature_transition port in
   let features = List.concat_map T.Feature_disposition.outputs (T.Feature.dispositions transition) @ T.Feature.added transition in
   charge budget (List.length features + List.length segments + List.length consumed);
-  let value=A.Value.make ~id:(C.Product_port.id port) ~space:frame ~sequence ~chemistry:(output_chemistry port source)
+  let chemistry = output_chemistry port source in
+  Serialization.chemistry (outer_charge budget) chemistry;
+  List.iter (Serialization.feature (outer_charge budget)) features;
+  let value=A.Value.make ~id:(C.Product_port.id port) ~space:frame ~sequence ~chemistry
     ~features ~segments ~step_id:(C.Transform_step.id step) ~sequence_extent:H.Complete ~consumed in
-  reserve_output budget (A.Value.to_json value);value
+  reserve_output budget (value_json budget value);value
 let chemical_key parent identity = Option.map (fun value ->
     parent,H.Chemical_identity.namespace value,H.Chemical_identity.accession value,H.Chemical_identity.version value) identity
+let chemical_equal budget left right =
+  let inspect = function None -> outer_charge budget 1 | Some (_,namespace,accession,version) ->
+    outer_charge budget (1+String.length namespace+String.length accession+String.length version) in
+  inspect left; inspect right; left=right
 let modifications budget chemistry =
+  let module Meter=Bioc_checker.Policy_generation_meter.Make(struct let charge=outer_meter budget end) in
+  let module List=Meter.List in
+
   let policies = Hashtbl.create 4 and sites = Hashtbl.create 32 in
   List.iter (fun modification ->
       let parent = H.Modification.canonical_base modification in
@@ -150,6 +345,11 @@ let at (policies,sites) sequence position =
   match Hashtbl.find_opt sites position with Some value -> value
   | None -> Option.value ~default:None (Hashtbl.find_opt policies sequence.[position])
 let edited budget step source input canonical_edits chemical_edits =
+  let module Meter=Bioc_checker.Policy_generation_meter.Make(struct let charge=outer_meter budget end) in
+  let module List=Meter.List in
+  let module String=Meter.String in
+  let module Json=Meter.Json in
+
   let port = List.hd (C.Transform_step.ports step) in
   require (G.Space.alphabet (space source) = G.Rna) "unsupported_alphabet";
   let before = chemistry source and after = output_chemistry port source in
@@ -172,19 +372,23 @@ let edited budget step source input canonical_edits chemical_edits =
       charge budget 1;
       let position = R.Chemical_edit.position edit and parent = R.Chemical_edit.parent edit in
       require (position < Bytes.length letters && Bytes.get letters position = parent) "invalid_edit";
-      require (at old_view original position = chemical_key parent (R.Chemical_edit.before edit)) "invalid_edit";
+      require (chemical_equal budget (at old_view original position) (chemical_key parent (R.Chemical_edit.before edit))) "invalid_edit";
       Hashtbl.replace expected position (chemical_key parent (R.Chemical_edit.after edit))) chemical_edits;
   let sequence = Bytes.to_string letters in
   for position=0 to String.length sequence-1 do
     charge budget 1;
     let wanted = match Hashtbl.find_opt expected position with Some value -> value | None -> at old_view original position in
-    require (at new_view sequence position = wanted) "invalid_edit"
+    require (chemical_equal budget (at new_view sequence position) wanted) "invalid_edit"
   done;
   let selected = path (G.Space.id (space source)) [span 0 (String.length sequence)] in
   let segment = A.Derived_segment.make ~destination:(span 0 (String.length sequence))
       ~source_id:(C.Value_ref.id (C.Selection.value input)) ~source_path:selected ~rule:A.Derived_segment.Rna_editing in
   output_value budget step port source sequence (G.Space.topology (space source)) [segment] []
 let translation_span budget selection source =
+  let module Meter=Bioc_checker.Policy_generation_meter.Make(struct let charge=outer_meter budget end) in
+  let module List=Meter.List in
+  let module String=Meter.String in
+
   require (G.Space.alphabet (space source) = G.Rna) "unsupported_alphabet";
   let selected = selected_path selection source in
   charge budget (List.length (G.Path.spans selected));
@@ -195,6 +399,10 @@ let translation_span budget selection source =
   require (H.modification_inventory_status (chemistry source) = H.Declared) "unsupported_translation_chemistry";
   first
 let translate budget source selected policy =
+  let module Meter=Bioc_checker.Policy_generation_meter.Make(struct let charge=outer_meter budget end) in
+  let module List=Meter.List in
+  let module String=Meter.String in
+
   let count = G.Span.length selected / 3 in
   let overrides = Hashtbl.create 16 in
   let sequence = sequence source in
@@ -226,15 +434,19 @@ let construct_step ?budget ~step ~available ~remaining_residues () = protect (fu
   if remaining_residues < 0 || remaining_residues > C.max_cumulative_produced_residues then
     input_error "Remaining construction residue allowance is outside the fixed profile.";
   let budget = match budget with Some value -> value | None -> make_budget () in
-  reserve_json budget (C.Transform_step.to_json step);
+  let module Meter=Bioc_checker.Policy_generation_meter.Make(struct let charge=outer_meter budget end) in
+  let module List=Meter.List in
+  let module String=Meter.String in
+
+  reserve_json budget (step_json budget step);
   let used = ref 0 in
   try
     let operation = C.Transform_step.operation step in
     let selections = C.operation_selections operation in
     charge budget (List.length selections);
-    let get selection = match Available.find (C.Value_ref.id (C.Selection.value selection)) available with
+    let get selection = match Available.find ~charge:(outer_charge budget) (C.Value_ref.id (C.Selection.value selection)) available with
       | Some value -> value | None -> raise (Problem "unavailable_input") in
-    require (List.for_all (fun selection -> Available.find (C.Value_ref.id (C.Selection.value selection)) available <> None) selections)
+    require (List.for_all (fun selection -> Available.find ~charge:(outer_charge budget) (C.Value_ref.id (C.Selection.value selection)) available <> None) selections)
       "unavailable_input";
     require (List.for_all (fun selection -> sequence_extent (get selection) = H.Complete) selections) "incomplete_input";
     List.iter (fun selection -> ignore (selected_path selection (get selection))) selections;

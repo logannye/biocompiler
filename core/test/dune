@@ -898,6 +898,24 @@
  (action (run %{test} %{dep:data/policy_material_timing_v01.json})))
 
 (test
+ (name test_policy_component_selection_producer)
+ (modules test_policy_component_selection_producer)
+ (libraries bioc_wire bioc_domain bioc_service bioc_producer_service bioc_policy_component_test_support)
+ (action (run %{test} %{dep:data/policy_material_request_v01.json})))
+
+(test
+ (name test_policy_generation_admission)
+ (modules test_policy_generation_admission)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_compiler zarith)
+ (action (run %{test} %{dep:data/policy_implementation_binding_v01.json})))
+
+(test
+ (name test_policy_generation_producers)
+ (modules test_policy_generation_producers)
+ (libraries bioc_wire bioc_domain bioc_checker bioc_compiler bioc_policy_component_test_support zarith)
+ (action (run %{test} %{dep:data/policy_material_request_v01.json} %{dep:data/policy_material_state_v01.json})))
+
+(test
  (name test_policy_material_state)
  (modules test_policy_material_state)
  (libraries bioc_wire bioc_domain bioc_checker bioc_semantics bioc_candidate_runtime bioc_realization_checker bioc_service bioc_producer_service zarith)

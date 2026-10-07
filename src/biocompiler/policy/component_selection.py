@@ -23,6 +23,12 @@ def check(request: JsonValue, *, candidate: JsonValue, limits: JsonValue, client
     return client.check(request, candidate, limits, cancelled=cancelled)
 
 
+def compile(request: JsonValue, *, limits: JsonValue, client: PolicyComponentSelectionClient,
+            cancelled: Callable[[], bool] | None = None) -> PolicyComponentSelectionResult:
+    """Explicit Core generation followed by complete fresh checking, without export."""
+    return client.compile(request, limits, cancelled=cancelled)
+
+
 def replay(request: JsonValue, *, candidate: JsonValue, limits: JsonValue, report: JsonValue,
            client: PolicyComponentSelectionClient, cancelled: Callable[[], bool] | None = None) -> PolicyComponentSelectionResult:
     return client.replay(request, candidate, limits, report, cancelled=cancelled)

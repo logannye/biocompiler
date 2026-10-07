@@ -9,9 +9,6 @@ module F = Bioc_domain.Policy_operating_domain
 module P = Bioc_domain.Pinned_identity
 
 type proposal = { implementation:I.t; binding:B.t }
-let get=O.get
-let text=O.text
-let list=O.list
 let s value=Json.String value
 let o value=Json.Object value
 let a value=Json.Array value
@@ -20,10 +17,6 @@ let one label=function [value]->value|_->Diagnostic.fail "policy_implementation_
   ("Initial implementation producer requires one "^label^".")
 let endpoint node port=o["node",s node;"port",s port]
 let reference kind id=o["$type",s "Ref";"kind",s kind;"id",s id]
-let absent keys value=List.iter(fun key->supported(get key value=Json.Null)
-  ("Source "^key^" requires an unsupported interpretation."))keys
-let type_is kind value=supported(text "kind" value=kind && get "unit" value=Json.Null && get "entity_kind" value=Json.Null)
-  "Only exact truth/event/product types are supported by the initial producer."
 let truth=function O.True->I.True|O.False->I.False|O.Unknown->I.Unknown
 let primitive_equal expected actual=match expected,actual with
   |I.Attempt_bank wanted,I.Attempt_bank supplied->wanted.timeout_ticks=supplied.timeout_ticks &&
@@ -34,7 +27,31 @@ let model_order (left:I.model)(right:I.model)=
   let by_capacity=compare(capacity left.primitive)(capacity right.primitive)in
   if by_capacity<>0 then by_capacity else String.compare(P.fingerprint left.identity)(P.fingerprint right.identity)
 
-let lower ~admitted ~library =
+let lower_metered ~charge ~admitted ~library =
+  let module Meter = Bioc_checker.Policy_generation_meter.Make (struct let charge = charge end) in
+  let module List = Meter.List in
+  let ( ^ ) = Meter.append_string in
+  let module String = Meter.String in
+  let module Json = Meter.Json in
+  let module Canonical = Meter.Canonical in
+  let module O = Meter.Operational in
+  let ( @ ) = List.append in
+  let get key raw = Json.field key (Json.object_fields raw) in
+  let text key raw = Json.string (get key raw) in
+  let list key raw = Json.array (get key raw) in
+  let absent keys value = List.iter (fun key -> supported (get key value=Json.Null)
+    ("Source "^key^" requires an unsupported interpretation.")) keys in
+  let type_is kind value = supported (text "kind" value=kind && get "unit" value=Json.Null && get "entity_kind" value=Json.Null)
+    "Only exact truth/event/product types are supported by the initial producer." in
+  let primitive_equal expected actual =
+    charge 1;
+    (* Both complete model bodies are metered before this configuration comparison. *)
+    primitive_equal expected actual in
+  let model_order (left:I.model) (right:I.model) =
+    Meter.preflight (I.model_body_to_json left); Meter.preflight (I.model_body_to_json right);
+    Meter.serialization (P.to_json left.identity); Meter.serialization (P.to_json right.identity);
+    model_order left right in
+
   let request=A.request admitted and behavior=A.behavior admitted in
   Diagnostic.require(I.library_digest library=I.library_digest(R.implementation_library request))
     "policy_implementation_lowering_authority" "Supplied library differs from independently admitted original authority.";
@@ -44,8 +61,11 @@ let lower ~admitted ~library =
   and observed=one "truth observation" behavior.observations and operation=one "effect" behavior.effects
   and product=one "fixed product parameter" behavior.parameters in
   let document=R.document request and domain=F.specification(A.operating_domain admitted)in
+  Meter.serialization (D.to_json document);
+  Meter.serialization (O.descriptors_to_json (R.definitions request));
+  Meter.serialization (F.to_json (R.operating_domain request));
   let declarations=D.declarations document in
-  let declaration identity=List.find(fun(d:D.declaration)->d.id=identity)declarations in
+  let declaration identity=List.find(fun(d:D.declaration)->String.equal d.id identity)declarations in
   let source identity=(declaration identity).value and path identity=(declaration identity).path in
   supported(behavior.machines=[] && behavior.transitions=[] && List.mem(List.length behavior.rules)[1;2] &&
     List.mem(List.length behavior.stores)[1;2])"Initial producer supports one/two rules and encounter truth stores only.";
@@ -105,11 +125,14 @@ let lower ~admitted ~library =
   let layouts=I.models library|>List.filter_map(fun(model:I.model)->match model.replication with
     |I.Encounter_slots value when value.slots=slots->Some value.layout_id|_->None)|>List.sort_uniq String.compare in
   let build layout_id=
+    charge (1+String.length layout_id);
     let replication=I.Encounter_slots{layout_id;slots}in
     let selected=ref [] and wires=ref [] and occurrences=ref [] and proposal_rules=ref [] and memo=Hashtbl.create 32
     and edges=ref [] and parameter_outputs=ref [] and next_expression=ref 0 in
     let model primitive=
-      let matching scope=List.filter(fun(model:I.model)->model.replication=scope && primitive_equal primitive model.primitive)(I.models library)
+      let matching scope=List.filter(fun(model:I.model)->
+        Meter.preflight (I.model_body_to_json model);
+        model.replication=scope && primitive_equal primitive model.primitive)(I.models library)
         |>List.sort model_order in
       let choices=match primitive with
         |I.Truth_constant _|I.Product_constant _->let immutable=matching I.Executor in if immutable=[]then matching replication else immutable
@@ -142,17 +165,21 @@ let lower ~admitted ~library =
     let expression_node primitive=let ordinal= !next_expression in incr next_expression;
       allocate("expression/"^string_of_int ordinal)primitive in
     let rec emit role location raw=
+      charge (1+String.length role+String.length location);
+      Meter.serialization raw;
       absent["contract";"duration";"clock";"coverage";"binding"]raw;
       let expression=O.expression_of_json raw and args=list "args" raw in
       let pure_shape ()=absent["ref";"scope";"value"]raw in
       let key=Canonical.encode raw in
+      charge (String.length key);
       let children=List.mapi(fun index value->emit role(location^"/args/"^string_of_int index)value)args in
       let new_output primitive port input_ports=
+        charge (1+String.length key);
         match Hashtbl.find_opt memo key with
         |Some output->output
         |None->let node=expression_node primitive in
             List.iter2(fun from port->connect from(out node port))children input_ports;
-            let result=out node port in Hashtbl.add memo key result;result in
+            let result=out node port in charge (1+String.length key); Hashtbl.add memo key result;result in
       let result=match expression.op with
         |"observe"->type_is "truth"(get "value_type" raw);
             supported(args=[] && get "value" raw=Json.Null &&
@@ -182,11 +209,11 @@ let lower ~admitted ~library =
             let primitive=if expression.op="all"then I.Truth_all(List.length args)else I.Truth_any(List.length args)in
             new_output primitive "out"(List.mapi(fun index _->"in"^string_of_int index)args)
         |"rising"->type_is "event"(get "value_type" raw);pure_shape();supported(List.length args=1)"Rising arity changed.";
-            let rec evidence value=List.mem(text "op" value)["observe";"literal";"not";"all";"any"] && List.for_all evidence(list "args" value)in
-            let rec has_observation value=text "op" value="observe" || List.exists has_observation(list "args" value)in
+            let rec evidence value=charge 1;List.mem(text "op" value)["observe";"literal";"not";"all";"any"] && List.for_all evidence(list "args" value)in
+            let rec has_observation value=charge 1;text "op" value="observe" || List.exists has_observation(list "args" value)in
             supported(evidence(List.hd args) && has_observation(List.hd args))"Rising must use observed truth-only evidence once per tick.";
             let output=new_output I.Observed_rising "events"["in"]in
-            if not(List.mem key !edges)then edges:= !edges@[key];output
+            if not(List.exists (String.equal key) !edges)then edges:= !edges@[key];output
         |_->Diagnostic.fail "policy_implementation_lowering_unsupported" "Control expression lacks an initial primitive interpretation."in
       occurrence location role(if List.mem expression.op["literal";"parameter"]then "constant"else "executable")[result];result in
     let commits=List.mapi(fun rule_index(rule:O.rule)->
@@ -204,7 +231,7 @@ let lower ~admitted ~library =
         let value=emit "state_write"(assignment_path^"/value")(get "value" row)in
         connect value(out commit("value"^string_of_int assignment_index));
         let targets=List.filter(fun(_,_,id)->id=assignment.state)writers in
-        let rec position count=function
+        let rec position count values=charge 1;match values with
           |(id,index,_)::_ when id=rule.rule_id && index=assignment_index->count
           |_::rest->position(count+1)rest|[]->assert false in
         connect(out commit("write"^string_of_int assignment_index))
@@ -218,10 +245,10 @@ let lower ~admitted ~library =
       occurrence(location^"/arbitration")"declaration" "executable"[out arbiter("out"^string_of_int rule_index)];
       proposal_rules:= !proposal_rules@[o["source",s rule.rule_id;"gate",s gate;"arbiter",s arbiter;"lane",Json.int rule_index;"commit",s commit]];
       commit)behavior.rules in
-    let rec obligations location value=match value with
+    let rec obligations location value=charge (1+String.length location);match value with
       |Json.Object fields->
           (match List.assoc_opt "$type" fields with Some(Json.String "Expr")->
-            supported(text "op" value<>"rising" || List.mem(Canonical.encode value)!edges)
+            supported(text "op" value<>"rising" || List.exists (String.equal (Canonical.encode value)) !edges)
               "A requirement introduces additional rising-event memory absent from control rules.";
             occurrence location "requirement" "obligation"[]|_->());
           List.iter(fun(key,value)->obligations(location^"/"^key)value)fields
@@ -237,8 +264,8 @@ let lower ~admitted ~library =
       |D.Rule->()
       |D.Requirement->occurrence location "requirement" "obligation"[];obligations location declaration.value
       |_->Diagnostic.fail "policy_implementation_lowering_unsupported" "Declaration has no interpretation in the initial graph family.")declarations;
-    let authority=o["source_artifact_digest",s(D.artifact_digest document);"descriptors_digest",s(O.descriptors_digest(R.definitions request));
-      "domain_digest",s(F.digest(R.operating_domain request));"implementation_catalog_digest",s(Canonical.fingerprint(get "implementations"(D.to_json document)));
+    let authority=o["source_artifact_digest",s(D.artifact_digest document);"descriptors_digest",s(Canonical.fingerprint(O.descriptors_to_json(R.definitions request)));
+      "domain_digest",s(Canonical.fingerprint(F.to_json(R.operating_domain request)));"implementation_catalog_digest",s(Canonical.fingerprint(get "implementations"(D.to_json document)));
       "library_digest",s(I.library_digest library)]in
     let graph=o["schema_version",s I.candidate_schema;"profile",s I.profile;"observable_profile",s I.observable_profile;
       "authority",authority;"slot_layout",o["id",s layout_id;"encounter",s encounter.encounter_id;"slots",Json.int slots];
@@ -255,8 +282,12 @@ let lower ~admitted ~library =
       "states",a(List.map(fun(source,register)->o["source",s source;"register",s register])state_nodes);
       "effects",a[o["source",s operation.effect_id;"bank",s attempt_node;"feedback",s "feedback/0"]];
       "rules",a !proposal_rules]in
+    Meter.serialization graph; Meter.serialization binding;
+    Meter.serialization (I.library_to_json library);
     {implementation=I.of_json ~library graph;binding=B.of_json binding}in
-  let rec choose=function
+  let rec choose layouts=charge 1;match layouts with
     |[]->Diagnostic.fail "policy_implementation_lowering_missing_model" "No complete authorized supplied model set matches the source and encounter layout."
     |layout::remaining->(try build layout with Diagnostic.Error diagnostic when diagnostic.code="policy_implementation_lowering_missing_model"->choose remaining)in
   choose layouts
+
+let lower ~admitted ~library = lower_metered ~charge:(Bioc_checker.Policy_generation_meter.no_charge) ~admitted ~library

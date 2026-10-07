@@ -104,7 +104,7 @@ class PolicyDevelopmentTests(unittest.TestCase):
             "test_policy_component_material_request", "test_policy_component_selection_request",
             "test_policy_component_material_candidate", "test_policy_component_selection_candidate",
             "test_policy_component_selection_common", "test_policy_component_selection_check",
-            "test_policy_component_selection_scope", "test_policy_component_selection_service", "test_policy_component_context_check",
+            "test_policy_component_selection_scope", "test_policy_component_selection_producer", "test_policy_generation_admission", "test_policy_generation_producers", "test_policy_component_selection_service", "test_policy_component_context_check",
             "test_policy_component_material_service", "test_protocol", "test_producer_protocol",
             "test_policy_implementation_binding",
             "test_policy_preservation_check", "test_policy_material_binding", "test_policy_material_context",
@@ -112,8 +112,8 @@ class PolicyDevelopmentTests(unittest.TestCase):
         self.assertEqual(self.calls[:2], [
             ["opam", "install", "core/biocompiler_core.opam", "--deps-only", "--with-test", "--yes"],
             ["opam", "exec", "--", "dune", "build", "--root", "core", "@all"]])
-        self.assertEqual(len(self.calls), 25)
-        self.assertEqual(len(result["suites"]), 23)
+        self.assertEqual(len(self.calls), 28)
+        self.assertEqual(len(result["suites"]), 26)
         for name, fixtures in (
             ("test_policy_component_selection_request", ["policy_material_request_v01.json", "policy_material_state_v01.json"]),
             ("test_policy_component_material_candidate", ["policy_material_request_v01.json"]),
@@ -121,6 +121,9 @@ class PolicyDevelopmentTests(unittest.TestCase):
             ("test_policy_component_selection_common", ['policy_material_request_v01.json', 'policy_material_state_v01.json']),
             ("test_policy_component_selection_check", ['policy_material_request_v01.json']),
             ("test_policy_component_selection_scope", ["policy_material_request_v01.json"]),
+            ("test_policy_component_selection_producer", ["policy_material_request_v01.json"]),
+            ("test_policy_generation_admission", ['policy_implementation_binding_v01.json']),
+            ("test_policy_generation_producers", ['policy_material_request_v01.json', 'policy_material_state_v01.json']),
             ("test_policy_component_selection_service", ["policy_material_request_v01.json"]),
         ):
             call = next(call for call in self.calls if any(str(arg).endswith(name + ".exe") for arg in call))
@@ -213,8 +216,8 @@ class PolicyDevelopmentTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "Focused native suite failed"):
             dev.run(self.root)
         result = self.report()
-        self.assertEqual(len(self.calls), 25)
-        self.assertEqual([r["status"] for r in result["suites"]].count("passed"), 22)
+        self.assertEqual(len(self.calls), 28)
+        self.assertEqual([r["status"] for r in result["suites"]].count("passed"), 25)
         self.assertEqual(result["suites"][1]["status"], "failed")
         self.assertEqual(result["status"], "failed")
 

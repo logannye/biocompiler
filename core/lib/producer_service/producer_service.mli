@@ -5,3 +5,7 @@ val validation_scope : string
 val profile : Bioc_wire.Json.t
 val handle : Bioc_wire.Protocol.executable -> Bioc_wire.Protocol.request ->
   Bioc_wire.Protocol.status * Bioc_wire.Json.t option * Bioc_wire.Diagnostic.t list
+
+(** Generation and checked selection require actual-frame admission. *)
+val scoped_handle : Bioc_wire.Protocol.executable -> Bioc_wire.Protocol.request ->
+  Bioc_service.Service.scoped_reply option

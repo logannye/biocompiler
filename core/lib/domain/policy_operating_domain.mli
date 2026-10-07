@@ -50,7 +50,7 @@ val digest : t -> string
 (** Compatibility with the supplied behavior only. The caller must separately
     establish its external source/descriptor correspondence. Initial values and
     finite machine states remain those of that original source. *)
-val validate_for : behavior:Policy_operational.behavior -> t -> validated
+val validate_for : ?charge:(int -> unit) -> behavior:Policy_operational.behavior -> t -> validated
 val specification : validated -> t
 val resolution : validated -> Q.t
 

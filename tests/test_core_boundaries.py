@@ -68,7 +68,7 @@ class CoreBoundaryTests(unittest.TestCase):
                          {"bioc_wire", "bioc_domain", "digestif", "zarith"})
         self.assertEqual(receipt["private_modules"]["bioc_checker"],
                          ["construction_reconstruction", "architecture_reconstruction", "reference_check_support"])
-        self.assertEqual(len(receipt["native_tests"]), 163)
+        self.assertEqual(len(receipt["native_tests"]), 166)
         self.assertEqual(receipt["roles"]["bioc_semantics"], "source_semantics")
         self.assertEqual(receipt["roles"]["bioc_source_adapter"], "source_semantics")
         self.assertEqual(receipt["roles"]["bioc_compiler"], "compiler")
@@ -118,6 +118,9 @@ class CoreBoundaryTests(unittest.TestCase):
             "test_policy_component_selection_common": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_realization_checker", "bioc_policy_component_test_support"},
             "test_policy_component_selection_check": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_realization_checker", "bioc_producer_service", "bioc_policy_component_test_support", "zarith"},
             "test_policy_component_selection_scope": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_realization_checker", "bioc_producer_service", "bioc_policy_component_test_support"},
+            "test_policy_component_selection_producer": {"bioc_wire", "bioc_domain", "bioc_service", "bioc_producer_service", "bioc_policy_component_test_support"},
+            "test_policy_generation_admission": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "zarith"},
+            "test_policy_generation_producers": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_policy_component_test_support", "zarith"},
             "test_policy_component_selection_service": {"bioc_wire", "bioc_domain", "bioc_service", "bioc_producer_service", "bioc_policy_component_test_support", "unix"},
         }
         root = self.copy_core()
@@ -128,8 +131,10 @@ class CoreBoundaryTests(unittest.TestCase):
             start = original.index("(test\n (name " + name + ")")
             end = original.index("\n\n", start)
             stanza = original[start:end]
-            for changed in (stanza.replace("bioc_domain", "bioc_domain bioc_compiler"),
-                            stanza.replace("%{dep:data/policy_material_request_v01.json}", "")):
+            fixture = ("policy_implementation_binding_v01.json" if name == "test_policy_generation_admission"
+                       else "policy_material_request_v01.json")
+            for changed in (stanza.replace("bioc_domain", "bioc_domain bioc_artifact"),
+                            stanza.replace("%{dep:data/" + fixture + "}", "")):
                 with self.subTest(suite=name, changed=changed):
                     dune.write_text(original[:start] + changed + original[end:])
                     with self.assertRaises(boundaries.BoundaryError):
@@ -137,7 +142,7 @@ class CoreBoundaryTests(unittest.TestCase):
             dune.write_text(original)
             source = root / "core/test" / (name + ".ml")
             source_original = source.read_text()
-            source.write_text(source_original + "\nmodule Forbidden = Bioc_compiler.Policy_lowering\n")
+            source.write_text(source_original + "\nmodule Forbidden = Bioc_artifact.Archive_budget\n")
             with self.subTest(suite=name), self.assertRaisesRegex(boundaries.BoundaryError, "Undeclared local module dependency"):
                 boundaries.check_boundaries(root)
             source.write_text(source_original)

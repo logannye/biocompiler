@@ -1,16 +1,24 @@
 open Bioc_wire
 module R = Bioc_domain.Policy_realization_request
-module D = Bioc_domain.Policy_document
 module O = Bioc_domain.Policy_operational
 module F = Bioc_domain.Policy_operating_domain
 module I = Bioc_domain.Policy_implementation
 module P = Bioc_domain.Pinned_identity
-module Names = Map.Make(String)
 
 type admitted_inputs = {
   request_value:R.t; behavior_value:O.behavior; domain_value:F.validated;
-  model_values:P.t list; report_value:Json.t;
+  model_values:P.t list; report_value:Json.t; charge_value:int -> unit;
 }
+module Make (Charge : sig val charge : int -> unit end) = struct
+module Meter = Policy_generation_meter.Make(Charge)
+module List = Meter.List
+module String = Meter.String
+module Json = Meter.Json
+module Canonical = Meter.Canonical
+module D = Meter.Document
+module O = Meter.Operational
+module Names = Meter.Names
+let ( @ ) = List.append
 let get = O.get
 let text = O.text
 let items = O.list
@@ -118,11 +126,11 @@ let check_catalog request document =
 
 let admit ~request ~(behavior:O.behavior) =
   let document=R.document request and descriptors=R.definitions request in
-  let source=Policy_admission.admit ~document ~descriptors in
-  let correspondence=Policy_correspondence.check ~expected_document:document ~descriptors behavior in
+  let source=Policy_admission.admit_metered ~charge:Charge.charge ~document ~descriptors in
+  let correspondence=Policy_correspondence.check ~charge:Charge.charge ~expected_document:document ~descriptors behavior in
   (* Only externally checked source behavior reaches environment compatibility.
      Neither decoder nor caller-supplied candidate claims can replace this step. *)
-  let domain_value=F.validate_for ~behavior (R.operating_domain request) in
+  let domain_value=F.validate_for ~charge:Charge.charge ~behavior (R.operating_domain request) in
   let assessment=Policy_admission.source_assessment source in
   let requested=check_assurance document assessment behavior domain_value in
   let model_values,catalog_digest=check_catalog request document in
@@ -147,12 +155,22 @@ let admit ~request ~(behavior:O.behavior) =
       "independent_implementation_execution";"source_implementation_preservation";
       "whole_domain_hard_requirements";"original_assurance_satisfaction";
       "deployment_and_material_carriers";"material_correspondence";"fresh_export_acceptance"])] in
-  {request_value=request;behavior_value=behavior;domain_value;model_values;report_value}
+  Meter.preflight report_value;
+  {request_value=request;behavior_value=behavior;domain_value;model_values;report_value;charge_value=Charge.charge}
+end
+let admit_metered ~charge ~request ~behavior =
+  let module Admission = Make(struct let charge = charge end) in
+  Admission.admit ~request ~behavior
+let admit ~request ~behavior = admit_metered ~charge:Policy_generation_meter.no_charge ~request ~behavior
 let request value = value.request_value
 let behavior value = value.behavior_value
 let operating_domain value = value.domain_value
 let authorized_models value = value.model_values
 let require_model value ~entry_id pin =
+  let module Meter = Policy_generation_meter.Make(struct let charge = value.charge_value end) in
+  let module List = Meter.List in
+  let pin_equal left right = Meter.Json.equal(P.to_json left)(P.to_json right) in
+  let require condition code message = Diagnostic.require condition code message in
   let bridge=List.find_opt(fun (bridge:R.catalog_binding)->bridge.entry_id=entry_id)
     (R.catalog_bindings value.request_value) in
   require(match bridge with Some bridge->List.exists(pin_equal pin)bridge.models|None->false)

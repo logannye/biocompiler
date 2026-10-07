@@ -16,3 +16,11 @@ val max_result_nodes : int
 val profile : Json.t
 val prepare : executable:Protocol.executable -> request:Protocol.request ->
   Json.t * (Json.t -> unit)
+
+val producer_operation : string
+val producer_profile : Json.t
+(** Core-only generation callback returns an untrusted complete candidate.
+    Generation and mandatory fresh checking share the original owner through
+    final-frame admission. Compile does not export or confer producer authority. *)
+val prepare_generated : executable:Protocol.executable -> request:Protocol.request ->
+  produce:(charge:(int -> unit) -> Bioc_domain.Policy_component_selection_request.t -> Json.t) -> Json.t * (Json.t -> unit)

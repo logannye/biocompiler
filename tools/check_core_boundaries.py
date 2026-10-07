@@ -49,6 +49,9 @@ PRIVATE_TEST_TOOLS = {
         {"bioc_wire", "bioc_domain", "bioc_policy_component_test_support"}, "test_support"),
 }
 TESTS = {
+    "test_policy_component_selection_producer": {"bioc_wire", "bioc_domain", "bioc_service", "bioc_producer_service", "bioc_policy_component_test_support"},
+    "test_policy_generation_admission": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "zarith"},
+    "test_policy_generation_producers": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_compiler", "bioc_policy_component_test_support", "zarith"},
     "test_work_budget_retention": {"bioc_wire", "bioc_checker"},
     "test_reference_inputs": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_artifact", "bioc_reference_input", "bioc_reference_package_service"},
     "test_reference_package_workflow": {"bioc_wire", "bioc_domain", "bioc_checker", "bioc_artifact", "bioc_reference_input", "bioc_reference_artifact", "bioc_reference_export", "bioc_reference_package_service", "bioc_pipeline"},
@@ -596,6 +599,9 @@ def check_boundaries(root: Path):
                     "test_policy_component_selection_common": ['policy_material_request_v01.json', 'policy_material_state_v01.json'],
                     "test_policy_component_selection_check": ['policy_material_request_v01.json'],
                     "test_policy_component_selection_scope": ["policy_material_request_v01.json"],
+                    "test_policy_component_selection_producer": ["policy_material_request_v01.json"],
+                    "test_policy_generation_admission": ["policy_implementation_binding_v01.json"],
+                    "test_policy_generation_producers": ["policy_material_request_v01.json", "policy_material_state_v01.json"],
                     "test_policy_component_selection_service": ["policy_material_request_v01.json"],
                     "test_policy_component_context_check": ["policy_material_request_v01.json", "policy_material_state_v01.json"],
                     "test_policy_material_context": ["policy_material_context_v01.json"],

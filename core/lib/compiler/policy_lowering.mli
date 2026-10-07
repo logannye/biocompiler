@@ -1,2 +1,2 @@
 (** Producer for the dedicated bounded policy behavior IR. *)
-val lower : Bioc_checker.Policy_admission.t -> Bioc_domain.Policy_operational.behavior
+val lower : ?charge:(int -> unit) -> Bioc_checker.Policy_admission.t -> Bioc_domain.Policy_operational.behavior

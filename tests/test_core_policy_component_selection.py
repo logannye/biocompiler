@@ -9,7 +9,7 @@ import unittest
 from unittest.mock import patch
 
 from biocompiler import core_policy_component_selection as api
-from biocompiler.core_client import CORE_VERSION, PROTOCOL, CoreClient, CoreProtocolError, CoreRejected, CoreTimeout, encode_json
+from biocompiler.core_client import CORE_VERSION, PROTOCOL, CoreCancelled, CoreClient, CoreProtocolError, CoreRejected, CoreTimeout, encode_json
 from tests import test_core_policy_component_material as child
 
 digest = child.digest
@@ -34,8 +34,17 @@ def candidate(request):
             "selected_id": "a-winner"}
 
 
+def generated_candidate(request):
+    """Literal peer proposal; never a Python implementation of native compilation."""
+    proposed = candidate(request)
+    proposed["alternatives"].sort(key=lambda row: row["id"])
+    proposed["selected_id"] = "a-winner" if request["predicate"]["max_total_nt"] >= 17 else None
+    return proposed
+
+
 def result(payload, *, failed=None, export=False):
-    request, actual, limits = deepcopy(payload["request"]), deepcopy(payload["candidate"]), deepcopy(payload["limits"])
+    request = deepcopy(payload["request"])
+    actual, limits = deepcopy(payload.get("candidate", generated_candidate(request))), deepcopy(payload["limits"])
     by_id = {row["id"]: row["candidate"] for row in actual["alternatives"]}
     rows = []
     eligible = []
@@ -121,8 +130,9 @@ class PolicyComponentSelectionTransportTests(unittest.TestCase):
             invocation = json.loads(encoded)
             self.calls.append(invocation)
             operation = invocation["operation"]
+            role = self.client.transport.role
             if operation == "capabilities":
-                value = child.capabilities("verify")
+                value = child.capabilities(role)
                 value.update(operations=["capabilities", "check-policy-component-selection", "replay-policy-component-selection", "export-policy-component-selection"],
                     validation_scopes=["policy-component-selection-mrna-v0.1"], profiles={"policy_component_selection": {
                         "operations": ["check-policy-component-selection", "replay-policy-component-selection", "export-policy-component-selection"],
@@ -138,6 +148,12 @@ class PolicyComponentSelectionTransportTests(unittest.TestCase):
                         "validation_scope": "policy-component-selection-mrna-v0.1", "max_input_bytes": 8388608,
                         "max_result_bytes": 8323072, "max_result_nodes": 249968,
                         "artifact": "on_fresh_export_only", "empirical": "unassessed"}})
+                if role == "core":
+                    value["operations"].append("compile-policy-component-selection")
+                    value["profiles"]["policy_component_selection_producer"] = {
+                        **deepcopy(value["profiles"]["policy_component_selection"]),
+                        "operations": ["compile-policy-component-selection"], "artifact": "withheld",
+                        "generation_work": "shared_original_scope"}
                 if negotiate:
                     negotiate(value)
             else:
@@ -151,13 +167,13 @@ class PolicyComponentSelectionTransportTests(unittest.TestCase):
             return encode_json({"protocol": PROTOCOL, "request_id": invocation["request_id"], "operation": operation,
                 "status": "error" if bad else "ok", "result": None if bad else value,
                 "diagnostics": [{"code": "selection_rejected", "message": "Rejected", "path": None}] if bad else [],
-                "core": {"implementation": "ocaml", "version": CORE_VERSION, "protocol": PROTOCOL, "executable": "verify"}}), 2 if bad else 0
+                "core": {"implementation": "ocaml", "version": CORE_VERSION, "protocol": PROTOCOL, "executable": role}}), 2 if bad else 0
         return patch("biocompiler.core_client._exchange", side_effect=call)
 
     def check(self):
         return self.client.check(self.request, self.candidate, self.limits)
 
-    def test_all_three_routes_preserve_complete_originals_and_have_no_compile(self):
+    def test_all_three_verification_routes_preserve_complete_originals(self):
         with self.exchange():
             checked = self.check()
             replayed = self.client.replay(self.request, self.candidate, self.limits, checked.result)
@@ -168,9 +184,100 @@ class PolicyComponentSelectionTransportTests(unittest.TestCase):
         self.assertEqual(exported.artifact["manifest"]["request"], self.request)
         self.assertEqual(exported.artifact["manifest"]["candidate"], self.candidate)
         self.assertEqual(exported.artifact["manifest"]["selected"]["id"], "a-winner")
-        self.assertFalse(hasattr(self.client, "compile"))
         self.assertEqual([row["operation"] for row in self.calls], ["capabilities", "check-policy-component-selection", "capabilities", "replay-policy-component-selection", "capabilities", "export-policy-component-selection"])
         self.assertEqual(self.calls[3]["payload"]["report"], checked.result)
+
+    def core(self):
+        self.client = api.PolicyComponentSelectionClient(CoreClient(Path(sys.executable), role="core"))
+
+    def test_compile_requires_core_before_any_transport_and_preserves_verification_profile(self):
+        with self.exchange(), self.assertRaisesRegex(CoreProtocolError, "explicitly selected Core"):
+            self.client.compile(self.request, self.limits)
+        self.assertEqual(self.calls, [])
+        self.assertEqual(api.OPERATIONS, ("check-policy-component-selection", "replay-policy-component-selection", "export-policy-component-selection"))
+        self.assertEqual(api.PRODUCER_PROFILE, {**api.PROFILE, "operations": ["compile-policy-component-selection"],
+                                               "artifact": "withheld", "generation_work": "shared_original_scope"})
+
+    def test_compile_candidate_equals_fresh_verify_without_artifact(self):
+        self.core()
+        before = deepcopy(self.request)
+        with self.exchange():
+            compiled = self.client.compile(self.request, self.limits)
+        self.assertEqual(self.calls[-1]["payload"], {"request": before, "limits": self.limits})
+        self.assertEqual([row["id"] for row in compiled.candidate["alternatives"]], ["a-winner", "z-loser"])
+        self.assertEqual(compiled.status, "checked_selection")
+        self.assertIsNone(compiled.artifact)
+        self.client = api.PolicyComponentSelectionClient(CoreClient(Path(sys.executable), role="verify"))
+        with self.exchange():
+            fresh = self.client.check(self.request, compiled.candidate, self.limits)
+            replayed = self.client.replay(self.request, compiled.candidate, self.limits, compiled.result)
+        self.assertEqual(compiled.result, fresh.result)
+        self.assertEqual(compiled.result, replayed.result)
+        compiled.candidate["alternatives"].clear()
+        self.assertEqual(len(compiled.candidate["alternatives"]), 2)
+
+    def test_compile_snapshots_originals_before_negotiation(self):
+        self.core()
+        before = deepcopy(self.request)
+        with self.exchange(negotiate=lambda _: self.request["alternatives"].clear()):
+            compiled = self.client.compile(self.request, self.limits)
+        self.assertEqual(self.calls[-1]["payload"]["request"], before)
+        self.assertEqual(compiled.request_fingerprint, digest(before))
+
+    def test_compile_keeps_all_losers_and_permuted_original_authority(self):
+        self.core()
+        with self.exchange():
+            original_result = self.client.compile(self.request, self.limits)
+            self.request["alternatives"].reverse()
+            permuted_result = self.client.compile(self.request, self.limits)
+            self.assertEqual(original_result.candidate, permuted_result.candidate)
+            self.assertNotEqual(original_result.request_fingerprint, permuted_result.request_fingerprint)
+            self.assertNotEqual(original_result.invocation_fingerprint, permuted_result.invocation_fingerprint)
+            with self.assertRaises(CoreProtocolError):
+                self.client.replay(self.request, permuted_result.candidate, self.limits, original_result.result)
+            next(row for row in self.request["alternatives"] if row["id"] == "z-loser")["rank"] = 3
+            edited_result = self.client.compile(self.request, self.limits)
+            self.assertEqual(edited_result.candidate, permuted_result.candidate)
+            with self.assertRaises(CoreProtocolError):
+                self.client.replay(self.request, edited_result.candidate, self.limits, permuted_result.result)
+        with self.exchange(failed="z-loser"):
+            failed = self.client.compile(self.request, self.limits)
+            self.assertEqual(failed.status, "inner_not_accepted")
+            self.assertIsNone(failed.artifact)
+            self.assertIsNone(failed.report["alternatives"][1]["eligible"])
+        self.request["predicate"]["max_total_nt"] = 0
+        with self.exchange():
+            empty = self.client.compile(self.request, self.limits)
+            self.assertEqual(empty.status, "no_eligible_alternative")
+            self.assertIsNone(empty.artifact)
+
+    def test_compile_missing_or_changed_profile_never_calls_production(self):
+        self.core()
+        edits = (lambda value: value["profiles"].pop("policy_component_selection_producer"),
+                 lambda value: value["profiles"]["policy_component_selection_producer"].update(generation_work="posthoc_size"),
+                 lambda value: value["profiles"]["policy_component_selection_producer"].update(artifact="on_fresh_export_only"),
+                 lambda value: value["profiles"]["policy_component_selection_producer"]["operations"].clear(),
+                 lambda value: value["profiles"]["policy_component_selection"]["operations"].append("compile-policy-component-selection"),
+                 lambda value: value.update(validation_scopes=[]))
+        for edit in edits:
+            self.calls.clear()
+            with self.subTest(edit=edit), self.exchange(negotiate=edit), self.assertRaises(CoreProtocolError):
+                self.client.compile(self.request, self.limits)
+            self.assertEqual([row["operation"] for row in self.calls], ["capabilities"])
+
+    def test_compile_rejects_incomplete_census_or_artifact_and_has_no_fallback(self):
+        self.core()
+        for edit in (lambda value: value["candidate"]["alternatives"].pop(),
+                     lambda value: value["candidate"]["alternatives"].append(deepcopy(value["candidate"]["alternatives"][0])),
+                     lambda value: value.update(artifact={"status": "pass", "manifest": {}}),
+                     lambda value: value["report"].update(empirical="validated")):
+            with self.subTest(edit=edit), self.exchange(mutate=edit), self.assertRaises(CoreProtocolError):
+                self.client.compile(self.request, self.limits)
+        for error in (CoreTimeout("literal"), CoreCancelled("literal")):
+            with self.subTest(error=error), self.exchange(failure=error), self.assertRaises(type(error)):
+                self.client.compile(self.request, self.limits)
+        with self.exchange(rejection=True), self.assertRaises(CoreRejected):
+            self.client.compile(self.request, self.limits)
 
     def test_snapshot_and_result_are_immutable(self):
         request_before = deepcopy(self.request)

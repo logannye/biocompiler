@@ -52,8 +52,12 @@ class PolicyComponentSelectionWitnessTests(unittest.TestCase):
             "child-short-compile", "child-long-compile", "check-core", "check-verify", "replay-core", "replay-verify",
             "export-core", "paired-core", "export-verify", "paired-verify", "long-check", "long-export", "long-paired",
             "no-eligible-check", "no-eligible-export", "loser-rank-check", "loser-rank-export", "loser-rank-paired", "stale-replay",
-            "verify-no-selection-producer", "core-no-selection-producer"))
-        self.assertEqual(len(set(witness.OBSERVATIONS)), 21)
+            "verify-no-selection-producer", "selection-compile", "selection-compile-check", "selection-compile-replay",
+            "selection-long-compile", "selection-long-compile-check", "selection-no-eligible-compile", "selection-no-eligible-compile-check",
+            "selection-permuted-compile", "selection-permuted-compile-check", "selection-permuted-stale-replay",
+            "selection-loser-rank-compile", "selection-loser-rank-compile-check", "selection-loser-stale-replay",
+            "selection-corrupt-loser-check", "selection-corrupt-loser-export"))
+        self.assertEqual(len(set(witness.OBSERVATIONS)), 35)
         self.assertEqual(witness.INPUTS, ("core/test/data/policy_material_request_v01.json", "core/test/policy_component_support/literals.ml",
             "core/test/policy_component_support/requests.ml", "core/test/policy_component_support/selection_requests.ml"))
 

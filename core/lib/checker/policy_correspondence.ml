@@ -1,11 +1,17 @@
 open Bioc_wire
-module D = Bioc_domain.Policy_document
 module O = Bioc_domain.Policy_operational
 let str value = Json.String value
-let check ~expected_document ~descriptors (candidate:O.behavior) =
+let check ?(charge = Policy_generation_meter.no_charge) ~expected_document ~descriptors (candidate:O.behavior) =
+  let module Meter = Policy_generation_meter.Make(struct let charge = charge end) in
+  let module List = Meter.List in
+  let module Json = Meter.Json in
+  let module Canonical = Meter.Canonical in
+  let module D = Meter.Document in
+  let module O = Meter.Operational in
+  let ( ^ ) = Meter.append_string in
   (* The checker imports no lowering producer, and reconstructs every expected
      instruction field directly from the original external source. *)
-  let admitted=Policy_admission.admit ~document:expected_document ~descriptors in
+  let admitted=Policy_admission.admit_metered ~charge ~document:expected_document ~descriptors in
   let expected_document=Policy_admission.document admitted in
   let assessment=Policy_admission.source_assessment admitted in
   let equal path expected actual = Diagnostic.require ~path (Json.equal expected actual)
@@ -32,11 +38,13 @@ let check ~expected_document ~descriptors (candidate:O.behavior) =
         Diagnostic.fail ~path:(path^"/data/"^name) "policy_correspondence" "Source operand is absent from candidate behavior." in
       equal (path^"/data/"^name) value actual) source_fields)
     (List.combine source candidate.nodes);
-  Json.Object ["schema_version",str "biocompiler.policy_correspondence.v0.1";"status",str "valid";
+  let result = Json.Object ["schema_version",str "biocompiler.policy_correspondence.v0.1";"status",str "valid";
     "profile",str O.profile;"document_artifact_digest",str (D.artifact_digest expected_document);
     "descriptors_digest",str (O.descriptors_digest descriptors);
     "candidate_fingerprint",str (Canonical.fingerprint (O.behavior_to_json candidate));
     "source_assessment",assessment;"admission",Policy_admission.report admitted;
     "requirements",O.get "requirements" assessment;"assumptions",O.get "assumptions" assessment;
     "unresolved_obligations",O.get "unresolved_obligations" assessment;
-    "target_status",str "unassessed";"artifact",str "withheld"]
+    "target_status",str "unassessed";"artifact",str "withheld"] in
+  Meter.preflight result;
+  result

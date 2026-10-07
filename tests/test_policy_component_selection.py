@@ -55,7 +55,16 @@ class PolicyComponentSelectionSdkTests(unittest.TestCase):
             replayed = sdk.replay(self.peer.request, candidate=self.peer.candidate, limits=self.peer.limits,
                                   report=checked.result, client=self.peer.client)
         self.assertEqual(checked.result, replayed.result)
-        self.assertFalse(hasattr(sdk, "compile"))
+
+    def test_compile_uses_explicit_core_without_artifact_or_python_admission(self):
+        self.peer.core()
+        with self.peer.exchange(), patch("biocompiler.policy.validation.check", side_effect=AssertionError("No Python admission")):
+            compiled = sdk.compile(self.peer.request, limits=self.peer.limits, client=self.peer.client)
+            checked = sdk.check(self.peer.request, candidate=compiled.candidate, limits=self.peer.limits, client=self.peer.client)
+        self.assertEqual(compiled.result, checked.result)
+        self.assertIsNone(compiled.artifact)
+        self.assertEqual([call["operation"] for call in self.peer.calls],
+                         ["capabilities", "compile-policy-component-selection", "capabilities", "check-policy-component-selection"])
 
     def test_existing_output_is_guarded_before_native_and_bad_export_never_publishes(self):
         with tempfile.TemporaryDirectory() as directory:

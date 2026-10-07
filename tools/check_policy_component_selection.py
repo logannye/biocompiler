@@ -1,8 +1,8 @@
-"""Hosted Python DSL through complete native selection check/replay/paired export.
+"""Hosted Python DSL through native selection compile/check/replay/paired export.
 
-The domain-only fixture supplies originals, not acceptance. Core produces each
-supplied child candidate separately; no selection generation operation exists.
-Every selection check and export freshly crosses its real Core/Verify boundary.
+The domain-only fixture supplies originals, not acceptance. The retained child
+producer controls remain independent comparisons for Core's complete selection
+generation. Every selection check and export crosses its real native boundary.
 """
 from __future__ import annotations
 
@@ -34,7 +34,11 @@ INPUTS = ("core/test/data/policy_material_request_v01.json", "core/test/policy_c
 OBSERVATIONS = ("child-short-compile", "child-long-compile", "check-core", "check-verify", "replay-core", "replay-verify",
     "export-core", "paired-core", "export-verify", "paired-verify", "long-check", "long-export", "long-paired",
     "no-eligible-check", "no-eligible-export", "loser-rank-check", "loser-rank-export", "loser-rank-paired", "stale-replay",
-    "verify-no-selection-producer", "core-no-selection-producer")
+    "verify-no-selection-producer", "selection-compile", "selection-compile-check", "selection-compile-replay",
+    "selection-long-compile", "selection-long-compile-check", "selection-no-eligible-compile", "selection-no-eligible-compile-check",
+    "selection-permuted-compile", "selection-permuted-compile-check", "selection-permuted-stale-replay",
+    "selection-loser-rank-compile", "selection-loser-rank-compile-check", "selection-loser-stale-replay",
+    "selection-corrupt-loser-check", "selection-corrupt-loser-export")
 EXPECTED = {"short_rna": "CCAUGGCUUAAGGAAAA", "long_rna": "CGCAUGGCUUAAGGAAAA",
             "histories": 9, "transitions": 47, "prefixes_started": 48, "obligations": OBLIGATIONS}
 
@@ -182,9 +186,66 @@ def exercise(request, limits, child_core, core, verify, core_transport, verify_t
     retain("loser-rank-paired", archive_receipt(changed_export.result, changed_path))
     rejected("stale-replay", "policy_component_selection_replay",
         lambda: verify.replay(edited, candidate, limits, checked[1].result))
-    for name, transport in (("verify", verify_transport), ("core", core_transport)):
-        rejected(name + "-no-selection-producer", "unsupported_operation",
-            lambda transport=transport: transport.call("compile-policy-component-selection", {"request": request, "limits": limits}), expected_status="unsupported")
+    rejected("verify-no-selection-producer", "unsupported_operation",
+        lambda: verify_transport.call("compile-policy-component-selection", {"request": request, "limits": limits}), expected_status="unsupported")
+
+    def compile_checked(name, original, *, winner, maximum):
+        produced = sdk.compile(original, limits=limits, client=core)
+        checked_result(produced.result, winner=winner, maximum=maximum)
+        if produced.artifact is not None or [row["id"] for row in produced.candidate["alternatives"]] != ["long", "short"]:
+            raise AssertionError("Selection compile must retain every ASCII-ordered child without publishing")
+        retain(name, produced.result)
+        fresh = sdk.check(original, candidate=produced.candidate, limits=limits, client=verify)
+        if fresh.result != produced.result:
+            raise AssertionError("Selection compile differs from complete fresh producer-free Verify checking")
+        retain(name + "-check", fresh.result)
+        return produced
+
+    generated = compile_checked("selection-compile", request, winner="short", maximum=17)
+    if ({row["id"]: row["candidate"] for row in generated.candidate["alternatives"]}
+            != {row["id"]: row["candidate"] for row in candidate["alternatives"]}):
+        raise AssertionError("Selection generation changed the existing exact child producer candidates")
+    generated_replay = sdk.replay(request, candidate=generated.candidate, limits=limits,
+                                  report=generated.result, client=verify)
+    if generated_replay.result != generated.result:
+        raise AssertionError("Generated selection lost exact fresh replay correspondence")
+    retain("selection-compile-replay", generated_replay.result)
+    compile_checked("selection-long-compile", larger, winner="long", maximum=18)
+    compile_checked("selection-no-eligible-compile", empty, winner=None, maximum=16)
+
+    permuted = deepcopy(request)
+    permuted["alternatives"].reverse()
+    permutation = compile_checked("selection-permuted-compile", permuted, winner="short", maximum=17)
+    if (permutation.candidate != generated.candidate or permutation.report["selected_id"] != generated.report["selected_id"]
+            or permutation.request_fingerprint == generated.request_fingerprint
+            or permutation.invocation_fingerprint == generated.invocation_fingerprint
+            or permutation.report_fingerprint == generated.report_fingerprint):
+        raise AssertionError("Original order must change authority while preserving deterministic candidate and winner")
+    rejected("selection-permuted-stale-replay", "policy_component_selection_replay",
+        lambda: verify.replay(permuted, permutation.candidate, limits, generated.result))
+
+    edited_generated = compile_checked("selection-loser-rank-compile", edited, winner="short", maximum=17)
+    if edited_generated.candidate != generated.candidate or edited_generated.request_fingerprint == generated.request_fingerprint:
+        raise AssertionError("Generated selection erased an authoritative losing-original edit")
+    rejected("selection-loser-stale-replay", "policy_component_selection_replay",
+        lambda: verify.replay(edited, edited_generated.candidate, limits, generated.result))
+
+    corrupt = generated.candidate
+    losing = next(row["candidate"] for row in corrupt["alternatives"] if row["id"] == "long")
+    molecule = losing["construction"]["inventory"]["molecules"][0]
+    molecule["sequence"] = "AGCAUGGCUUAAGGAAAA"
+    losing["construction"]["inventory"]["role_instances"][0]["subject_fingerprint"] = canonical_digest(molecule)
+    invalid = sdk.check(request, candidate=corrupt, limits=limits, client=verify)
+    rows = invalid.report["alternatives"]
+    if (invalid.status != "inner_not_accepted" or invalid.artifact is not None
+            or invalid.report["census_complete"] is not True or invalid.report["all_inner_accepted"] is not False
+            or invalid.report["selected_id"] is not None or [row["id"] for row in rows] != ["long", "short"]
+            or rows[0]["inner"]["status"] != "not_accepted" or rows[0]["eligible"] is not None
+            or rows[1]["inner"]["status"] != "checked_component_material"):
+        raise AssertionError("A repinned corrupt loser must prevent complete selection acceptance")
+    retain("selection-corrupt-loser-check", invalid.result)
+    rejected("selection-corrupt-loser-export", "policy_component_selection_export_not_accepted",
+        lambda: verify.export(request, corrupt, limits))
 
 
 def run(args: argparse.Namespace) -> dict:

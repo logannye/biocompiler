@@ -94,12 +94,36 @@ let export_artifact scope pending request candidate limits report =
     "fasta_sha256",str rendered.fasta_sha256;"manifest",manifest;
     "manifest_sha256",str (Canonical.sha256 bytes)]
 
-let prepare ~executable ~(request:Protocol.request) =
-  Diagnostic.require (List.mem request.operation operations) "unsupported_operation"
-    "Selection service accepts complete supplied candidates for check, replay or fresh export only.";
-  (* Bound the complete service payload, including a retained replay wrapper,
-     before any field/list traversal. Its count is paid before fresh checking;
-     the checker records only its own phase delta so replay remains exact. *)
+let producer_operation = "compile-policy-component-selection"
+let producer_profile = obj (List.map (fun (key,value) -> key,
+    match key with
+    | "operations" -> arr [str producer_operation]
+    | "artifact" -> str "withheld"
+    | _ -> value) (Json.object_fields profile) @
+    ["generation_work",str "shared_original_scope"])
+
+let finish ~executable ~(request:Protocol.request) ~scope ~original ~candidate
+    ~limits_raw ~saved ~export =
+  let limits=P.limits_of_json limits_raw in
+  let pending=Check.check_in ~scope ~candidate ~limits in
+  let report=Check.pending_report ~scope pending in
+  let artifact=if export then export_artifact scope pending original candidate limits_raw report else Json.Null in
+  let result=obj ["schema_version",str schema_version;"implementation",str implementation;
+    "resource_profile",str (R.resources original);"validation_scope",str validation_scope;
+    "request_fingerprint",str (R.fingerprint original);
+    "candidate_fingerprint",str (V.fingerprint candidate);
+    "invocation_fingerprint",get "invocation_fingerprint" report;
+    "report_fingerprint",str (Check.fingerprint scope report);
+    "candidate",V.to_json candidate;"report",report;"artifact",artifact] in
+  Option.iter (fun saved -> Diagnostic.require (Check.equal_json scope result saved)
+    "policy_component_selection_replay"
+    "Saved complete selection wrapper differs from fresh checking of every original and candidate.") saved;
+  ignore (Input.preflight ~max_bytes:max_result_bytes ~max_nodes:max_result_nodes
+    ~max_depth:R.max_input_depth ~charge:(Check.charge_outer scope) (obj ["result",result]));
+  let before_encode=Check.prepare_response ~scope pending ~executable ~protocol_request:request ~result in
+  result,before_encode
+
+let import_payload ~keys (request:Protocol.request) =
   let startup=ref 0 in
   let charge amount =
     Diagnostic.require (amount>=0 && amount<=max_int - !startup)
@@ -107,35 +131,37 @@ let prepare ~executable ~(request:Protocol.request) =
     startup := !startup+amount in
   ignore (Input.preflight ~max_bytes:R.max_input_bytes ~max_nodes:R.max_input_nodes
     ~max_depth:R.max_input_depth ~charge request.payload);
-  let replay=request.operation="replay-policy-component-selection" in
   let fields=Json.object_fields ~path:"/payload" request.payload in
-  Json.exact_fields ~path:"/payload" (["request";"candidate";"limits"]@(if replay then ["report"] else [])) fields;
+  Json.exact_fields ~path:"/payload" keys fields;
   let original=R.of_json (Json.field "request" fields) in
   let scope=Check.create_scope ~request:original () in
+  (try Check.charge_outer scope !startup with error -> Check.abort_scope scope error);
+  fields,original,scope
+
+let prepare ~executable ~(request:Protocol.request) =
+  Diagnostic.require (List.mem request.operation operations) "unsupported_operation"
+    "Selection service accepts complete supplied candidates for check, replay or fresh export only.";
+  let replay=request.operation="replay-policy-component-selection" in
+  let fields,original,scope=import_payload
+    ~keys:(["request";"candidate";"limits"]@(if replay then ["report"] else [])) request in
   try
-    Check.charge_outer scope !startup;
     let candidate=V.of_json ~request:original (Json.field "candidate" fields) in
-    let limits_raw=Json.field "limits" fields in
-    let limits=P.limits_of_json limits_raw in
-    let pending=Check.check_in ~scope ~candidate ~limits in
-    let report=Check.pending_report ~scope pending in
-    let artifact=if request.operation="export-policy-component-selection"
-      then export_artifact scope pending original candidate limits_raw report else Json.Null in
-    let result=obj ["schema_version",str schema_version;"implementation",str implementation;
-      "resource_profile",str (R.resources original);"validation_scope",str validation_scope;
-      "request_fingerprint",str (R.fingerprint original);
-      "candidate_fingerprint",str (V.fingerprint candidate);
-      "invocation_fingerprint",get "invocation_fingerprint" report;
-      "report_fingerprint",str (Check.fingerprint scope report);
-      "candidate",V.to_json candidate;"report",report;"artifact",artifact] in
-    if replay then Diagnostic.require (Check.equal_json scope result (Json.field "report" fields))
-      "policy_component_selection_replay"
-      "Saved complete selection wrapper differs from fresh checking of every original and candidate.";
-    (* This advertised result envelope has its own smaller bound. It is a
-       checked preparation pass, not an extra publication event. The actual
-       protocol frame is still separately measured and reserved by the guard. *)
-    ignore (Input.preflight ~max_bytes:max_result_bytes ~max_nodes:max_result_nodes
-      ~max_depth:R.max_input_depth ~charge:(Check.charge_outer scope) (obj ["result",result]));
-    let before_encode=Check.prepare_response ~scope pending ~executable ~protocol_request:request ~result in
-    result,before_encode
+    finish ~executable ~request ~scope ~original ~candidate ~limits_raw:(Json.field "limits" fields)
+      ~saved:(if replay then Some (Json.field "report" fields) else None)
+      ~export:(request.operation="export-policy-component-selection")
+  with error -> Check.abort_scope scope error
+
+let prepare_generated ~executable ~(request:Protocol.request) ~produce =
+  Diagnostic.require (executable=Protocol.Core && request.operation=producer_operation)
+    "unsupported_operation" "Selection generation requires the explicit Core producer operation.";
+  let fields,original,scope=import_payload ~keys:["request";"limits"] request in
+  try
+    (* Generation, fresh checking and actual-frame admission share this owner.
+       The callback has only count-only charging and immutable original inputs;
+       it can neither reset the owner nor install accepted state. *)
+    let charge=Check.charge_outer scope in
+    let raw=produce ~charge original in
+    let candidate=V.of_json ~charge ~request:original raw in
+    finish ~executable ~request ~scope ~original ~candidate ~limits_raw:(Json.field "limits" fields)
+      ~saved:None ~export:false
   with error -> Check.abort_scope scope error

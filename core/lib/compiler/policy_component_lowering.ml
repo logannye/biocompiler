@@ -9,26 +9,37 @@ module Pin = Bioc_domain.Pinned_identity
 let str value = Json.String value
 let obj value = Json.Object value
 let arr value = Json.Array value
-let get key raw = Json.field key (Json.object_fields raw)
-let set key value raw = obj ((key,value)::List.remove_assoc key (Json.object_fields raw))
 let slot = function A.Decision -> "decision" | A.Driver -> "driver"
 (* Structured keys are internal matching labels, never implementation names or
    a replacement whole-graph material contract. *)
-let key owner id = Canonical.encode (arr [str (slot owner);str id])
 let endpoint_json (value:I.endpoint) = obj ["node",str value.node_id;"port",str value.port_id]
 let wire_json (value:I.wire) = obj ["producer",endpoint_json value.producer;"consumer",endpoint_json value.consumer]
 let input_json (value:I.external_input) = obj ["id",str value.input_id;
   "kind",str (match value.input_kind with I.Evidence_input -> "evidence" | I.Feedback_input -> "feedback");
   "consumer",endpoint_json value.consumer]
-let group_json (value:I.atomic_group) = obj ["id",str value.group_id;
-  "arbiter",str value.arbiter;"commits",arr (List.map str value.commits)]
 type local = { reference:A.node_ref; key:string; model:I.model }
 type proposal = { implementation:I.t; binding:U.t; assembly:Q.t }
-let arrange ~library ~rule (lowered:Policy_implementation_lowering.proposal) =
+let arrange ?(charge=Bioc_checker.Policy_generation_meter.no_charge) ~library ~rule (lowered:Policy_implementation_lowering.proposal) =
+  let module Meter = Bioc_checker.Policy_generation_meter.Make (struct let charge = charge end) in
+  let module List = Meter.List in
+  let module String = Meter.String in
+  let module Json = Meter.Json in
+  let module Canonical = Meter.Canonical in
+  let outer_charge = charge in
+  let get key raw = Json.field key (Json.object_fields raw) in
+  let set key value raw = obj ((key,value)::List.remove_assoc key (Json.object_fields raw)) in
+  let key owner id = Canonical.encode (arr [str (slot owner);str id]) in
+  let group_json (value:I.atomic_group) = obj ["id",str value.group_id;
+    "arbiter",str value.arbiter;"commits",arr (List.map str value.commits)] in
+  Meter.serialization (A.to_json rule);
+  Meter.serialization (I.to_json lowered.implementation);
+  Meter.serialization (U.to_json lowered.binding);
+
   let supported condition message = Diagnostic.require condition "policy_component_lowering_unsupported" message in
   let remaining = ref 1000000 in
   let charge amount = Diagnostic.require (amount>=0 && amount<= !remaining)
     "policy_component_lowering_search_exhausted" "Bounded component graph matching exhausted its work allowance.";
+    outer_charge amount;
     remaining := !remaining-amount in
   let fragment owner = C.fragment (A.component rule owner) in
   let local = List.map (fun (reference:A.node_ref) ->
@@ -71,42 +82,49 @@ let arrange ~library ~rule (lowered:Policy_implementation_lowering.proposal) =
   let actual_models = List.map (fun (value:I.node) -> value,signature value.model) actual in
   let local_models = List.map (fun value -> value,signature value.model) local in
   let original_wires = I.wires implementation in
-  let lookup pairs id = charge (List.length pairs); List.assoc_opt id pairs in
-  let same_multiset left right =
+  let lookup pairs id = charge (List.length pairs);
+    List.find_map (fun (candidate,value) -> if String.equal id candidate then Some value else None) pairs in
+  let same_multiset inspect left right =
     charge (List.length left*List.length left+List.length right*List.length right);
-    List.sort compare left=List.sort compare right in
+    let compared left right = inspect left; inspect right; compare left right in
+    let left=List.sort compared left and right=List.sort compared right in
+    List.iter inspect left; List.iter inspect right; left=right in
+  let inspect_wire value = Meter.preflight (wire_json value) in
+  let inspect_endpoint value = Meter.preflight (endpoint_json value) in
+  let inspect_text value = outer_charge (1+String.length value) in
+  let inspect_group (arbiter,commits) = inspect_text arbiter; List.iter inspect_text commits in
   let partial pairs = List.for_all (fun (value:I.wire) -> charge 1;
     match lookup pairs value.producer.node_id,lookup pairs value.consumer.node_id with
     | Some producer,Some consumer ->
       let mapped:I.wire = {producer={node_id=producer;port_id=value.producer.port_id};
         consumer={node_id=consumer;port_id=value.consumer.port_id}} in
-      charge (List.length wanted_wires); List.mem mapped wanted_wires
+      charge (List.length wanted_wires); List.exists (fun expected -> inspect_wire mapped; inspect_wire expected; mapped=expected) wanted_wires
     | _ -> true) original_wires in
   let finish pairs =
     let local_id id = match lookup pairs id with Some value -> value | None -> assert false in
     let endpoint (value:I.endpoint) : I.endpoint = {node_id=local_id value.node_id;port_id=value.port_id} in
     let wires = List.map (fun (value:I.wire) -> charge 1;
       ({producer=endpoint value.producer;consumer=endpoint value.consumer}:I.wire)) original_wires in
-    if not (same_multiset wires wanted_wires) then None else
-    if not (same_multiset (List.map endpoint (I.semantic_exports implementation)) wanted_exports) then None else
+    if not (same_multiset inspect_wire wires wanted_wires) then None else
+    if not (same_multiset inspect_endpoint (List.map endpoint (I.semantic_exports implementation)) wanted_exports) then None else
     let inputs = List.filter_map (fun (value:I.external_input) ->
       let consumer = endpoint value.consumer in charge (List.length wanted_inputs);
       match List.filter (fun (target:I.external_input) -> target.input_kind=value.input_kind && target.consumer=consumer) wanted_inputs with
       | [target] -> Some (value.input_id,target.input_id) | _ -> None) (I.inputs implementation) in
     if List.length inputs<>List.length (I.inputs implementation) ||
-      not (same_multiset (List.map snd inputs) (List.map (fun (value:I.external_input) -> value.input_id) wanted_inputs)) then None else
+      not (same_multiset inspect_text (List.map snd inputs) (List.map (fun (value:I.external_input) -> value.input_id) wanted_inputs)) then None else
     let groups = List.map (fun (value:I.atomic_group) -> charge 1;local_id value.arbiter,List.map local_id value.commits)
       (I.atomic_groups implementation) in
-    if not (same_multiset groups (List.map (fun (value:I.atomic_group) -> value.arbiter,value.commits) wanted_groups)) then None
+    if not (same_multiset inspect_group groups (List.map (fun (value:I.atomic_group) -> value.arbiter,value.commits) wanted_groups)) then None
     else Some (pairs,inputs) in
-  let rec search pairs used = function
+  let rec search pairs used candidates = outer_charge 1;match candidates with
     | [] -> finish pairs
     | (target,wanted)::rest ->
-      let rec choose = function
+      let rec choose candidates = outer_charge 1;match candidates with
         | [] -> None
         | ((candidate:I.node),provided)::remaining_candidates ->
           charge (1+String.length wanted+String.length provided);
-          if List.mem candidate.node_id used || wanted<>provided then choose remaining_candidates else
+          if List.exists (String.equal candidate.node_id) used || wanted<>provided then choose remaining_candidates else
           let next = (candidate.node_id,target.key)::pairs in
           if not (partial next) then choose remaining_candidates else
           match search next (candidate.node_id::used) rest with Some _ as result -> result | None -> choose remaining_candidates in
@@ -115,9 +133,9 @@ let arrange ~library ~rule (lowered:Policy_implementation_lowering.proposal) =
     Diagnostic.fail "policy_component_lowering_unsupported"
       "No complete model, wiring, input, group and export bijection matches the original component composition." in
   let actual_id local = charge (List.length pairs);
-    match List.find_opt (fun (_,value) -> value=local) pairs with Some (actual,_) -> actual | None -> assert false in
+    match List.find_opt (fun (_,value) -> String.equal value local) pairs with Some (actual,_) -> actual | None -> assert false in
   let endpoint (value:I.endpoint) : I.endpoint = {node_id=actual_id value.node_id;port_id=value.port_id} in
-  let nodes = List.map (fun value -> obj ["id",str (actual_id value.key);
+  let nodes = List.map (fun value -> outer_charge (1+String.length value.key); obj ["id",str (actual_id value.key);
     "model",Pin.to_json value.model.identity;"configuration_digest",str value.model.configuration_digest]) local in
   let wires = List.map (fun (value:I.wire) -> wire_json {producer=endpoint value.producer;consumer=endpoint value.consumer}) wanted_wires in
   let inputs = List.map (fun (value:I.external_input) -> input_json {value with consumer=endpoint value.consumer}) wanted_inputs in
@@ -133,8 +151,12 @@ let arrange ~library ~rule (lowered:Policy_implementation_lowering.proposal) =
   let binding = binding
     |> set "observations" (arr (List.map (rename_input "input") (Json.array (get "observations" binding))))
     |> set "effects" (arr (List.map (rename_input "feedback") (Json.array (get "effects" binding)))) in
-  let assembly = Q.of_json (obj ["schema_version",str Q.schema_version;"profile",str Q.profile;
+  let assembly_raw = obj ["schema_version",str Q.schema_version;"profile",str Q.profile;
     "rule",Pin.to_json (A.identity rule);"nodes",arr (List.map (fun value ->
       obj ["slot",str (slot value.reference.slot);"node",str value.reference.node_id;
-        "actual",str (actual_id value.key)]) local)]) in
+        "actual",str (actual_id value.key)]) local)] in
+  Meter.serialization assembly_raw;
+  let assembly = Q.of_json assembly_raw in
+  Meter.serialization raw; Meter.serialization binding;
+  Meter.serialization (I.library_to_json library);
   {implementation=I.of_json ~library raw;binding=U.of_json binding;assembly}

@@ -66,13 +66,14 @@ let capabilities executable request =
   | Protocol.Ok, Some original, [] ->
       let changed = Json.object_fields original |> List.map (fun (key, value) -> key,
           match key with
-          | "operations" -> Json.Array (Json.array value @ List.map str (operations @ ["compile-policy"; "compile-policy-implementation"; "compile-policy-material"; "compile-policy-component-material"] @ Synthetic_producer_service.operations @ Synthetic_producer_public_service.operations @ Synthetic_inspection_service.operations))
+          | "operations" -> Json.Array (Json.array value @ List.map str (operations @ ["compile-policy"; "compile-policy-implementation"; "compile-policy-material"; "compile-policy-component-material"; "compile-policy-component-selection"] @ Synthetic_producer_service.operations @ Synthetic_producer_public_service.operations @ Synthetic_inspection_service.operations))
           | "validation_scopes" -> Json.Array (Json.array value @ List.map str (validation_scope :: Synthetic_producer_service.validation_scopes @ Synthetic_producer_public_service.validation_scopes @ Synthetic_inspection_service.validation_scopes))
           | "profiles" -> obj (Json.object_fields value @ ["architecture_producer", profile;
               "policy_operational_producer", Bioc_service.Policy_operational_service.producer_profile;
               "policy_implementation_producer", Bioc_service.Policy_implementation_service.producer_profile;
               "policy_material_producer", Bioc_service.Policy_material_service.producer_profile;
-              "policy_component_material_producer", Bioc_service.Policy_component_material_service.producer_profile] @ Synthetic_producer_service.profiles @ Synthetic_producer_public_service.profiles @ Synthetic_inspection_service.profiles)
+              "policy_component_material_producer", Bioc_service.Policy_component_material_service.producer_profile;
+              "policy_component_selection_producer", Bioc_service.Policy_component_selection_service.producer_profile] @ Synthetic_producer_service.profiles @ Synthetic_producer_public_service.profiles @ Synthetic_inspection_service.profiles)
           | "claim_scope" -> str "Supplied-contract architecture production, independent checking, exact RNA/manifest export and separately scoped finite-history model checks. No search completeness, empirical function or human-use admission is established."
           | _ -> value) in
       Protocol.Ok, Some (obj changed), []
@@ -97,3 +98,10 @@ let handle executable (request : Protocol.request) =
       Protocol.Ok, Some (Synthetic_inspection_service.handle ~executable ~request_id:request.request_id
           ~operation request.payload), []
   | Protocol.Core, _ -> Base.handle executable request
+
+let scoped_handle executable (request:Protocol.request) =
+  if executable=Protocol.Core && request.operation=Bioc_service.Policy_component_selection_service.producer_operation then (
+    let result,before_encode=Bioc_service.Policy_component_selection_service.prepare_generated
+      ~executable ~request ~produce:Policy_component_selection_producer.produce in
+    Some {Base.status=Protocol.Ok;result=Some result;diagnostics=[];before_encode})
+  else Base.scoped_handle executable request
